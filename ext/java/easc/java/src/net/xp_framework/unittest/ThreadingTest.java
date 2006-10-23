@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.InetSocketAddress;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -135,6 +136,12 @@ public class ThreadingTest {
 
     protected static ArrayList<ListenerThread> servers= new ArrayList<ListenerThread>();
     
+    /**
+     * Wait for a given status - all listeners must be in this status before this
+     * method returns!
+     *
+     * Will timeout eventually...
+     */    
     protected static void waitFor(String status) {
         int times= 0;
         for (int i= 0; i < SERVER_COUNT; i++) {
@@ -206,10 +213,15 @@ public class ThreadingTest {
     public void assertConnections(int number) throws IOException {
         ArrayList<Socket> clients= new ArrayList<Socket>();
         
+        // Connect # of sockets using 2 seconds timeout
         for (int i= 0; i < number; i++) {
             try {
-                clients.add(new Socket(serverAddress, SERVER_PORT));
+                Socket s= new Socket();
+                s.connect(new InetSocketAddress(serverAddress, SERVER_PORT), 2000);
+                s.setTcpNoDelay(true);
+                clients.add(s);
             } catch (IOException e) {
+                System.out.println("Socket #" + i + " ~ " + e);
                 while (i-- > 0) {
                     clients.get(i).close();
                 }
