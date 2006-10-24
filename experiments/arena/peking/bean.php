@@ -90,7 +90,7 @@ __
     $istr->write("<?php\n");
     $istr->write("  uses('".$package.$short."');\n");
     $istr->write('  class '.$implementation.' extends '.$short." {\n");
-    $istr->write('  } implements(__FILE__, \''.$package.$interface."');\n?>");
+    $istr->write('  } implements("'.$short.'.class.php", \''.$package.$interface."');\n?>");
     $istr->close();
   }
 
