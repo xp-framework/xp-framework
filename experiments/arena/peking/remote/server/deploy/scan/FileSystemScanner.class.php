@@ -5,7 +5,7 @@
  */
 
   uses(
-    'io.cca.ArchiveClassLoader',
+    'lang.archive.Archive',
     'io.File',
     'io.Folder',
     'util.Properties',
