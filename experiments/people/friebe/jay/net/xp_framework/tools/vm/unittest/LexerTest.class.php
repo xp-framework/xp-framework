@@ -139,7 +139,7 @@
      *
      * @access  public
      */
-    #[@test, @ignore('Still regarded keywords currently')]
+    #[@test]
     function phpKeywords() {
       $deprecated= array(
         'require',
@@ -155,12 +155,12 @@
         'endfor',
         'endforeach',
         'enddeclare',
-        'cfunction',
+        // 'cfunction',   - maps to T_FUNCTION
         'exit',
         'print',
         'global',
-        'list',
-        'array',
+        // 'list',        - needed at the moment
+        // 'array',       - needed at the moment
         'empty',
         'elsif',
       );
@@ -176,7 +176,7 @@
      *
      * @access  public
      */
-    #[@test, @ignore('Still regarded keywords currently')]
+    #[@test]
     function phpMagicConstants() {
       $deprecated= array(
         '__FILE__',
