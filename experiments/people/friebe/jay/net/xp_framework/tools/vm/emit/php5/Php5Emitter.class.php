@@ -681,7 +681,14 @@
      * @access  public
      * @param   &net.xp_framework.tools.vm.VNode node
      */
-    function emitFunctionCall(&$node) { 
+    function emitFunctionCall(&$node) {
+    
+      // Check for mapping - TBD: Use functioncall-mapper-objects?
+      if (method_exists($this, $mapped= 'emit'.$node->name.'FunctionCall')) {
+        $this->{$mapped}($node);
+        return;
+      }
+
       $this->bytes.= $node->name.'(';
       foreach ($node->arguments as $arg) {
         $this->emit($arg);
@@ -689,6 +696,22 @@
       }
       $node->arguments && $this->bytes= substr($this->bytes, 0, -2);
       $this->bytes.= ')';
+    }
+    
+    /**
+     * Emits exit() FunctionCalls
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitExitFunctionCall(&$node) {
+      $this->bytes.= 'throw xp::exception(new xp·lang·SystemExit(';
+      switch (sizeof($node->arguments)) {
+        case 0: break;
+        case 1: $this->emit($node->arguments[0]); break;
+        default: $this->addError(new CompileError(4000, 'Wrong number of arguments to exit()'));
+      }
+      $this->bytes.= '))';
     }
 
     /**
@@ -903,18 +926,6 @@
           $this->emit($node->else);
         }
       }
-    }
-
-    /**
-     * Emits Exits
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitExit(&$node) { 
-      $this->bytes.= 'throw xp::exception(new xp·lang·SystemExit(';
-      $node->expression && $this->emit($node->expression);
-      $this->bytes.= '))';
     }
 
     /**
@@ -1439,34 +1450,6 @@
         $this->bytes.= '= ';
         $this->emit($node->initial);
       }
-    }
-
-    /**
-     * Emits isset
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitIsset(&$node) {
-      $this->bytes.= 'isset(';
-      foreach ($node->list as $expr) {
-        $this->emit($expr);
-        $this->bytes.= ', ';
-      }
-      $this->bytes= substr($this->bytes, 0, -2);
-      $this->bytes.= ')';
-    }
-
-    /**
-     * Emits empty
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitEmpty(&$node) {
-      $this->bytes.= 'empty(';
-      $this->emit($node->expression);
-      $this->bytes.= ')';
     }
 
     /**
