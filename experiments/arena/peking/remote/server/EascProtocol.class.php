@@ -51,26 +51,6 @@
     }
 
     /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function finalize() { }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function idle() {
-      return $this->initialize();
-    }
-
-    /**
      * Constructor
      *
      * @access  public
@@ -238,5 +218,5 @@
      */
     function handleError(&$socket, &$e) { }
 
-  } implements(__FILE__, 'peer.server.ServerProtocol', 'util.Initializable');
+  } implements(__FILE__, 'peer.server.ServerProtocol');
 ?>
