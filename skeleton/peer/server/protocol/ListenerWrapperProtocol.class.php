@@ -28,6 +28,14 @@
     function addListener(&$listener) {      
       $this->listeners[]= &$listener;
     }
+    
+    /**
+     * Initialize Protocol
+     *
+     * @access  public
+     * @return  bool
+     */
+    function initialize() { }
 
     /**
      * Notify listeners
