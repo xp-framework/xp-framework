@@ -2,7 +2,7 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'io.cca.Archive',
+    'lang.archive.Archive',
     'io.File'
   );
   
