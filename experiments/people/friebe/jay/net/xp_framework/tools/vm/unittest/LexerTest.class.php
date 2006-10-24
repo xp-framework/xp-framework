@@ -122,15 +122,15 @@
      *
      * @access  public
      */
-    #[@test, @ignore('Still regarded encapsed strings')]
+    #[@test]
     function stringsWithVariables() {
       $strings= array(
-        'echo "$name"',
-        'echo "${name}"',
+        '"$name"',
+        '"${name}"',
       );
     
       foreach ($strings as $string) {
-        $this->assertTokens('T_ECHO, T_CONSTANT_ENCAPSED_STRING<"'.$string.'">', $string);
+        $this->assertTokens('T_CONSTANT_ENCAPSED_STRING<'.$string.'>', $string);
       }
     }
 
