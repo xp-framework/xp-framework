@@ -4,80 +4,53 @@ $Id$
 
 @authors: gellweiler
 @created: Tue Sep 12 15:27:01 CEST 2006
-@status: draft
+@status: implemented, Tue Oct 24 17:30:15 CEST 2006
 @category: peer.server
 
 Scope of Change
 ---------------
-peer.server.Server classes will call 2 additional protocol methods 
-to initialize protocol and to handle idle times.
+peer.server.Server classes will call the additional protocol method
+initialize().
+
 
 Rationale
 ---------
-Need to initialize protocol and update protocol data
-in intervals between client connects.
+Certain protocols may need setup logic.
+
 
 Functionality
 -------------
-
-Refactoring of peer.server.PreforkingServer will provide a
-method handleChild():
-
+New method in ServerProtocol interface:
 <?php
   /**
-   * Handle a forked child
+   * Initialize Protocol
    *
-   * @access  protected
+   * @access  public
+   * @return  bool
    */
-  function handleChild() {
-
-    // Handle initialization of protocol. This
-    // is called once for every new child created
-    if (FALSE === $this->protocol->initialize()) return;
-
-    $requests= 0;
-    while ($requests < $this->maxrequests) {
-      try(); {
-
-        $timeout= time() + $this->timeout;
-        while (time() < $timeout) {
-          $m= &$this->socket->accept();
-          usleep(1);
-        }
-      } if (catch('IOException', $e)) {
-        $this->cat && $this->cat->warn('Child', getmypid(), 'in accept ~', $e);
-        exit(-1);
-      }
-
-      // Handle idle loop of protocol.
-      if (!$m) {
-        if (FALSE === $this->protocol->handleIdle()) return;
-        continue;
-      }
-
-      // ...
-      // Handle client connect
-    }
+  function initialize() { }
   }
 ?>
 
 The initialize method of the protocol will be called on start of the process,
 e.g. in peer.server.ForkingServer and PreforkingServer everytime a child is
-forked. After a given timout when no incoming connections could be accepted, 
-the Server calls a method handleIdle(). This provides the possibility to interrupt
-idle times while waiting on client connects.
+forked.
+
 
 Security considerations
 -----------------------
 n/a
 
+
 Speed impact
 ------------
-n/a
+Little.
+
 
 Dependencies
 ------------
-n/a
+- ListenerWrapperProtocol will be changed to implement initialize().
+
 
 Related documents
 -----------------
@@ -99,5 +72,8 @@ Comments
   Initializable).
   I don't especially like the idle() method, which is called 
   "sporadically" - non-deterministic, in other words.
+
+- friebe, Tue Oct 24 17:32:14 CEST 2006
+  Implemented the initialize() part of this RFC.
 
 <EOF>
