@@ -216,6 +216,7 @@
       );
       
       try(); {
+        $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
         $this->file->seek($pos, SEEK_SET);
         $data= $this->file->read($this->_index[$id][2]);
       } if (catch('Exception', $e)) {
