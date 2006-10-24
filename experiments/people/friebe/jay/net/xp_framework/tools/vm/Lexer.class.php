@@ -107,7 +107,7 @@
         $token= $tokens[$id];
 
         // Map
-        if(!is_array($token)) {
+        if (!is_array($token)) {
           $return[$offset] = array(ord($token), $token);
           $token = $return[$offset];
         } else {
@@ -123,11 +123,17 @@
           }
         }
 
-        if ($token[0] == 34){
-          $this->string= !$this->string;
-        } elseif (
+        if ($token[0] == 34) {
+
+          // Look ahead for encapsed
+          $value= '';
+          while (($tokens[++$id][0] != '"') && $id < $s) {
+            $value.= is_array($tokens[$id]) ? $tokens[$id][1] : $tokens[$id];
+          }
+
+          $return[$offset]= array(TOKEN_T_CONSTANT_ENCAPSED_STRING, '"'.$value.'"');
+        } else if (
           $token[0] == TOKEN_T_STRING && 
-          !$this->string && 
           isset($tokens[$id- 1]) && 
           $tokens[$id-1][0] != TOKEN_T_OBJECT_OPERATOR && 
           $tokens[$id-1][0] != TOKEN_T_DOUBLE_COLON
