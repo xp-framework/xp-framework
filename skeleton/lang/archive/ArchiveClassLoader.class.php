@@ -7,14 +7,11 @@
   uses('lang.ClassLoader');
   
   /** 
-   * Loads XP classes from a CCA (Class Collection Archive)
+   * Loads XP classes from a XAR (XP Archive)
    * 
-   * Note: The classes *must* be stored in the CCA with their fully 
-   * qualified class names as key!
-   *
    * Usage:
    * <code>
-   *   $l= &new ArchiveClassLoader(new Archive(new File('soap.cca')));
+   *   $l= &new ArchiveClassLoader(new Archive(new File('soap.xar')));
    *   try(); {
    *     $class= &$l->loadClass($argv[1]);
    *   } if (catch('ClassNotFoundException', $e)) {
