@@ -10,7 +10,7 @@
   //     Adds specified class to package using the classloader
   function addClass(&$package, &$stream, $name) {
     Console::writeLine('---> Adding ', $name);
-    $package->add($stream, $name);
+    $package->add($stream, strtr($name, '.', '/'). '.class.php');
   }
   // }}}
   
