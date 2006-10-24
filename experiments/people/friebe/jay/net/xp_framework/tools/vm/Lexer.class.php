@@ -8,9 +8,7 @@
       $token,
       $value,
       $fileName,
-      $hereDoc,
       $string = false,
-      $openTagWithEcho = false,
       $tokenMap = array(
         TOKEN_T_PUBLIC      => 'public',
         TOKEN_T_PRIVATE     => 'private',
@@ -74,32 +72,14 @@
         }
         
 
-        if ($this->hereDoc === TRUE && $this->tokens[$this->pos][0] != T_END_HEREDOC){
-          return $this->update();
-        }
         if ($this->string === TRUE && $this->tokens[$this->pos][0] != 34){
           return $this->update();   
-        }
-        if ($this->openTagWithEcho === TRUE && $this->tokens[$this->pos][0] == T_CLOSE_TAG){
-          return $this->update();
         }
         switch($this->tokens[$this->pos][0]){
           case 34:
             $this->string?$this->string = false:$this->string = true;
             return $this->update();
-          case TOKEN_T_START_HEREDOC:
-            $this->hereDoc = true;
-            return $this->update();
-          case TOKEN_T_END_HEREDOC:
-            $this->hereDoc = false;
-            return $this->update();
-          case TOKEN_T_OPEN_TAG_WITH_ECHO:
-            $this->openTagWithEcho = true;
-            return $this->update();
-          case TOKEN_T_OPEN_TAG:
-          case TOKEN_T_CLOSE_TAG:
           case TOKEN_T_WHITESPACE:
-          case TOKEN_T_ENCAPSED_AND_WHITESPACE:
           case TOKEN_T_COMMENT:
             $this->setLine($this->line + substr_count($this->tokens[$this->pos][1], "\n"));
             $this->pos++;
@@ -116,18 +96,14 @@
       $this->setLine($this->line + substr_count($this->tokens[$this->pos][1], "\n"));
       $this->token = $this->tokens[$this->pos][0];
       $this->value = $this->tokens[$this->pos][1];
-      return true;
-    }
-
-    function parseError(){
-      return sprintf("Error at line %d in file %s", $this->line, $this->fileName);
+      return TRUE;
     }
 
     function tokenGetAll($source) {
       $tokens= token_get_all('<?php '.$source.' ?>');
       $return= array();
       $offset= 0;
-      for ($id= 0, $s= sizeof($tokens); $id < $s; $id++) {
+      for ($id= 1, $s= sizeof($tokens); $id < $s- 1; $id++) {
         $token= $tokens[$id];
 
         // Map
@@ -138,25 +114,21 @@
           if (in_array($token[0], array(T_INT_CAST, T_DOUBLE_CAST, T_STRING_CAST, T_ARRAY_CAST, T_OBJECT_CAST, T_BOOL_CAST, T_UNSET_CAST))) {
             $return[$offset]= array(TOKEN_T_CAST, trim($token[1], '()'));
           } else {
+            $c= 'TOKEN_'.token_name($token[0]);
             $return[$offset]= array(
-              constant('TOKEN_'.token_name($token[0])), // Map PHP tokens to ours
+              defined($c) ? constant($c) : TOKEN_T_STRING, // Map PHP tokens to ours
               $token[1]
             );
-            $token = $return[$offset];
+            $token= $return[$offset];
           }
         }
 
-        if($token[0] == TOKEN_T_START_HEREDOC && !$this->hereDoc){
-          $this->hereDoc = true;
-        } elseif ($token[0] == TOKEN_T_END_HEREDOC && $this->hereDoc){
-          $this->hereDoc = false;
-        } elseif ($token[0] == 34){
-          $this->string?$this->string = false:$this->string = true;
+        if ($token[0] == 34){
+          $this->string= !$this->string;
         } elseif (
           $token[0] == TOKEN_T_STRING && 
           !$this->string && 
-          !$this->hereDoc &&
-          isset($tokens[$id-1]) && 
+          isset($tokens[$id- 1]) && 
           $tokens[$id-1][0] != TOKEN_T_OBJECT_OPERATOR && 
           $tokens[$id-1][0] != TOKEN_T_DOUBLE_COLON
         ) {
@@ -174,17 +146,12 @@
           }
         }
 
-        // *** echo $offset, '] ', $return[$offset][0], ' ', $GLOBALS['_TOKEN_DEBUG'][$return[$offset][0]], ' (', addcslashes($return[$offset][1], "\0..\17"), ')', "\n";
-
+        // Console::writeLine('> ', implode(', ', $return[$offset]));
         $offset++;
       }
-      $this->hereDoc= FALSE;
+
       $this->string= FALSE;
       return $return;
-    }
-
-    function tokenName($token){
-      return $token < 374 ? $GLOBALS['_TOKEN_DEBUG'][$token] : $this->tokenMap[$token];
     }
   }
 ?>
