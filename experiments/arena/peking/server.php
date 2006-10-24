@@ -24,7 +24,7 @@
   $thread->setTrace($cat);
   $thread->setScanPeriod(5);
   
-  with ($server= &new PreforkingServer($argv[1], 6448)); {
+  with ($server= &new PreforkingServer($argv[1], isset($argv[2]) ? $argv[2] : 6448)); {
     $server->setProtocol(new EascProtocol(
       new FileSystemScanner(dirname(__FILE__).'/deploy')
     ));
