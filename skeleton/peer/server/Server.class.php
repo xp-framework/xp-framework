@@ -131,7 +131,8 @@
       $null= NULL;
       $handles= array();
       $accepting= $this->socket->getHandle();
-      
+      $this->protocol->initialize();
+
       // Loop
       $tcp= getprotobyname('tcp');
       while (!$this->terminate) {

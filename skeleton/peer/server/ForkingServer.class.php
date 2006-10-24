@@ -46,6 +46,10 @@
           // Use waitpid w/ NOHANG to avoid zombies hanging around
           while (pcntl_waitpid(-1, $status, WNOHANG)) { }
         } else {                // Child
+          // Handle initialization of protocol. This is called once for 
+          // every new child created
+          $this->protocol->initialize();
+
           $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
           $this->protocol->handleConnect($m);
 
