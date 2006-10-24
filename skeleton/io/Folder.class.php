@@ -198,11 +198,13 @@
      * @throws  io.IOException in case an error occurs
      */
     function getEntry() {
-      if (
-        (FALSE === $this->_hdir) &&
-        (FALSE === ($this->_hdir= dir($this->uri)))
-      ) {
-        return throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+      if (FALSE === $this->_hdir) {
+
+        // Not open yet, try to open
+        if (!is_object($this->_hdir= dir($this->uri))) {
+          $this->_hdir= FALSE;
+          return throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+        }
       }
       
       while (FALSE !== ($entry= $this->_hdir->read())) {
