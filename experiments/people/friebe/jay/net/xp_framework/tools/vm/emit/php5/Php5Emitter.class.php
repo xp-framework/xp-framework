@@ -73,6 +73,8 @@
      */
     function typeName($type) {
       static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
+
+      if (is_array($type)) return array_map($type, array(&$this, 'typeName'));
       
       return in_array($type, $primitives) ? $type : $this->qualifiedName($type);
     }
