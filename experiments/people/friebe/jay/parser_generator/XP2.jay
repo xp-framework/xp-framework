@@ -229,6 +229,8 @@ name_and_keywords:
     |   T_FUNCTION
     |   T_PACKAGE
     |   T_CLONE
+    |   T_LIST
+    |   T_ARRAY
 //    |   T_INTERFACE (adds 10 shift/reduce conflicts)
 //    |   T_CLASS (adds 10 shift/reduce conflicts)
 ;   
@@ -647,9 +649,6 @@ return_type_name:
         }
 	|   T_CLASSNAME '[' ']' { 
           $$= array($1); 
-        }
-	|   T_ARRAY { 
-          $$= array();
         }
     |   T_VOID      { 
           $$= NULL; 
