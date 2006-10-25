@@ -75,9 +75,6 @@
 %}
  
 %left ','
-%left T_LOGICAL_OR
-%left T_LOGICAL_XOR
-%left T_LOGICAL_AND
 %left '=' T_PLUS_EQUAL T_MINUS_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL T_SL_EQUAL T_SR_EQUAL
 %left '?' ':'
 %left T_BOOLEAN_OR
@@ -98,9 +95,9 @@
 %left T_ELSE
 %right T_STATIC T_ABSTRACT T_FINAL T_PRIVATE T_PROTECTED T_PUBLIC
 
-%token T_LOGICAL_OR 257
-%token T_LOGICAL_XOR 258
-%token T_LOGICAL_AND 259
+%token T_PROPERTY 257
+%token T_CAST 258
+%token T_FOREACH 259
 %token T_COMPARE_ARROW 260
 %token T_SR_EQUAL 261
 %token T_SL_EQUAL 262
@@ -184,9 +181,6 @@
 %token T_FINALLY 339
 %token T_DESTRUCT 340
 %token T_NATIVE 341
-%token T_PROPERTY 342
-%token T_CAST 343
-%token T_FOREACH 344
 
 %% /* Rules */
 
@@ -853,15 +847,6 @@ expr_without_variable:
         }
 	|	expr T_BOOLEAN_AND expr {
           $$= &new BooleanOperatorNode($1, $3, '&&');
-        }
-	|	expr T_LOGICAL_OR expr {    // "or"
-          $$= &new BooleanOperatorNode($1, $3, '||');
-        }
-	|	expr T_LOGICAL_AND expr {   // "and"
-          $$= &new BooleanOperatorNode($1, $3, '&&');
-        }
-	|	expr T_LOGICAL_XOR expr {   // "xor"
-          $$= &new BooleanOperatorNode($1, $3, '^^');
         }
 	|	expr '|' expr {
           $$= &new BinaryNode($1, $3, '|');

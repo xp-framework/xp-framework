@@ -157,6 +157,8 @@
         'enddeclare',
         // 'cfunction',   - maps to T_FUNCTION
         'exit',
+        'and',
+        'or',
         'print',
         'global',
         // 'list',        - needed at the moment
