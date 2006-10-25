@@ -121,6 +121,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0085.diff
   Patch implementing this RFC
 
+- http://xp-framework.net/rfc/contrib/exceptions.diff
+  Patch to all exception classes
+
 
 Comments
 --------
