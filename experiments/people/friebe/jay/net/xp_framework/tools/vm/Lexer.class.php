@@ -4,8 +4,8 @@
   class Lexer extends Object {
     var 
       $tokens,
+      $position,
       $N = 0,
-      $line,
       $pos = -1,
       $token,
       $value,
@@ -47,23 +47,12 @@
       $this->tokens= $this->tokenGetAll($tokens);
       $this->N= count($this->tokens);
       $this->pos= -1;
-      $this->line= 1;
       $this->fileName= $fileName;
-      $this->offset= 1;
     }
 
-    function setLine($line) {
-      if ($this->line != $line) {
-        $this->line= $line;
-        $this->offset= 1;
-      }
-      $this->position= array($line, $this->offset);
-    }
-
-    function advance(){
+    function advance() {
       $this->pos++;
       while ($this->pos < $this->N){
-        $this->offset+= strlen($this->tokens[$this->pos][1]);
 
         // Casts (T_STRING) or (T_CLASSNAME)
         if (
@@ -78,18 +67,10 @@
           $this->pos+= 2;
           return TRUE;
         }
-        
 
-        if ($this->string === TRUE && $this->tokens[$this->pos][0] != 34){
-          return $this->update();   
-        }
-        switch($this->tokens[$this->pos][0]){
-          case 34:
-            $this->string?$this->string = false:$this->string = true;
-            return $this->update();
+        switch ($this->tokens[$this->pos][0]){
           case TOKEN_T_WHITESPACE:
           case TOKEN_T_COMMENT:
-            $this->setLine($this->line + substr_count($this->tokens[$this->pos][1], "\n"));
             $this->pos++;
             continue;
           default: 
@@ -101,33 +82,35 @@
     }
 
     function update(){
-      $this->setLine($this->line + substr_count($this->tokens[$this->pos][1], "\n"));
-      $this->token = $this->tokens[$this->pos][0];
-      $this->value = $this->tokens[$this->pos][1];
+      $this->token= $this->tokens[$this->pos][0];
+      $this->value= $this->tokens[$this->pos][1];
+      $this->position= array($this->tokens[$this->pos][2], $this->tokens[$this->pos][3]);
       return TRUE;
     }
 
     function tokenGetAll($source) {
       $tokens= token_get_all('<?php '.$source.' ?>');
       $return= array();
+      $next= 0;
+      $line= 1;
       $offset= 0;
       for ($id= 1, $s= sizeof($tokens); $id < $s- 1; $id++) {
         $token= $tokens[$id];
 
         // Map
         if (!is_array($token)) {
-          $return[$offset] = array(ord($token), $token);
-          $token = $return[$offset];
+          $return[$next] = array(ord($token), $token);
+          $token= $return[$next];
         } else {
           if (in_array($token[0], array(T_INT_CAST, T_DOUBLE_CAST, T_STRING_CAST, T_ARRAY_CAST, T_OBJECT_CAST, T_BOOL_CAST, T_UNSET_CAST))) {
-            $return[$offset]= array(TOKEN_T_CAST, trim($token[1], '()'));
+            $return[$next]= array(TOKEN_T_CAST, trim($token[1], '()'));
           } else {
             $c= 'TOKEN_'.token_name($token[0]);
-            $return[$offset]= array(
+            $return[$next]= array(
               defined($c) ? constant($c) : TOKEN_T_STRING, // Map PHP tokens to ours
               $token[1]
             );
-            $token= $return[$offset];
+            $token= $return[$next];
           }
         }
 
@@ -139,7 +122,7 @@
             $value.= is_array($tokens[$id]) ? $tokens[$id][1] : $tokens[$id];
           }
 
-          $return[$offset]= array(TOKEN_T_CONSTANT_ENCAPSED_STRING, '"'.$value.'"');
+          $return[$next]= array(TOKEN_T_CONSTANT_ENCAPSED_STRING, '"'.$value.'"');
         } else if (
           $token[0] == TOKEN_T_STRING && 
           isset($tokens[$id- 1]) && 
@@ -152,19 +135,28 @@
               $classname.= $tokens[$i- 1][1].LEXER_PACKAGE_SEPARATOR;
               $i+= 2;
             }
-            $return[$offset]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
-            $token = $return[$offset];
+            $return[$next]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
+            $token = $return[$next];
             $id= $i- 1;  // Skip tokens
           } else if ($key = array_search(strtolower($token[1]), $this->tokenMap)) {
-            $return[$offset]= array($key, $token[1]);
+            $return[$next]= array($key, $token[1]);
           }
         }
 
-        // Console::writeLine('> ', implode(', ', $return[$offset]));
-        $offset++;
-      }
+        $return[$next][2]= $line;
+        $return[$next][3]= $offset;
 
-      $this->string= FALSE;
+        if (0 != ($breaks= substr_count($return[$next][1], "\n"))) {
+          $line+= $breaks;
+          $offset= strlen($return[$next][1]) - strrpos($return[$next][1], "\n")- 1;
+          
+        } else {
+          $offset+= strlen($return[$next][1]);
+        }
+
+        // DEBUG Console::writeLine('> ', addcslashes(implode('|', $return[$next]), "\0..\17"));
+        $next++;
+      }
       return $return;
     }
   }
