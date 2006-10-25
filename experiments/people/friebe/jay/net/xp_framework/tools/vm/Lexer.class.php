@@ -1,4 +1,6 @@
 <?php
+  define('LEXER_PACKAGE_SEPARATOR', '~');
+
   class Lexer extends Object {
     var 
       $tokens,
@@ -138,10 +140,10 @@
           $tokens[$id-1][0] != TOKEN_T_OBJECT_OPERATOR && 
           $tokens[$id-1][0] != TOKEN_T_DOUBLE_COLON
         ) {
-          if ('~' == $tokens[$i= $id+ 1][0]) {
+          if (LEXER_PACKAGE_SEPARATOR == $tokens[$i= $id+ 1][0]) {
             $classname= '';
-            while ('~' == $tokens[$i][0]) {
-              $classname.= $tokens[$i- 1][1].'~';
+            while (LEXER_PACKAGE_SEPARATOR == $tokens[$i][0]) {
+              $classname.= $tokens[$i- 1][1].LEXER_PACKAGE_SEPARATOR;
               $i+= 2;
             }
             $return[$offset]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
