@@ -55,6 +55,8 @@
           'getClassName'    => TRUE,    // inherited
         ),
       );
+      $this->context['types']['xp·lang·Object::getClassName']= 'string';
+      $this->context['types']['xp·lang·Object::toString']= 'string';
       $this->context['classes']['xp·lang·Exception']= $this->context['classes']['xp·lang·Throwable'];
       $this->context['classes']['xp·lang·SystemExit']= $this->context['classes']['xp·lang·Throwable'];
       $this->context['classes']['xp·lang·IllegalAccessException']= $this->context['classes']['xp·lang·Throwable'];
@@ -132,12 +134,14 @@
         if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
-        return $this->context['types'][$this->qualifiedName($node->class).'::'.$node->method->name];
+        $class= $this->qualifiedName('$this' == $node->class->name ? $this->context['class'] : $node->class);
+        return $this->context['types'][$class.'::'.$node->method->name];
       } else if (is_a($node, 'ParameterNode')) {
         return $this->typeName($node->type);
       } else if (is_a($node, 'BinaryNode')) {
+        $type= $this->typeOf($node->left);
         // TODO: Check operator overloading
-        return NULL;
+        return $type;
       } else if (is_a($node, 'ObjectReferenceNode')) {
         $ctype= is_string($node->class) ? $this->qualifiedName($node->class) : $this->typeOf($node->class);
         return $this->context['types'][$ctype.'::$'.$node->member->name];
@@ -588,7 +592,7 @@
         $this->addError(new CompileError(1000, 'Parent class of '.$node->name.' ('.$extends.') does not exist'));
       }
       $this->context['classes'][$this->context['class']]= $parent;
-
+      
       // Interfaces
       if ($node->implements) {
         $this->bytes.= ' implements ';
@@ -606,6 +610,14 @@
           $this->bytes.= $interface.', ';
         }
         $this->bytes= substr($this->bytes, 0, -2);
+      }
+
+      // Copy types from parent class. Might be overwritten later on
+      foreach ($this->context['types'] as $k => $type) {
+        if (0 === strpos($k, $extends)) {
+          $n= $this->context['class'].substr($k, strlen($extends));
+          $this->setType($n, $type);
+        }
       }
 
       // Class body
@@ -818,7 +830,7 @@
      */
     function emitBinary(&$node) {
       $type= $this->typeOf($node->left);
-
+      
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->operator])) {
         return $this->emit(new MethodCallNode(
