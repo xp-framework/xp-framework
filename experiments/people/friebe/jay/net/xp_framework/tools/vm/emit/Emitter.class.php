@@ -304,14 +304,6 @@
     function emitCatch(&$node) { }
 
     /**
-     * Emits Exits
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitExit(&$node) { }
-
-    /**
      * Emits News
      *
      * @access  public
@@ -502,22 +494,6 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitStaticVariable(&$node) { }
-
-    /**
-     * Emits isset
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitIsset(&$node) { }
-
-    /**
-     * Emits empty
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitEmpty(&$node) { }
 
     /**
      * Emits constant references
