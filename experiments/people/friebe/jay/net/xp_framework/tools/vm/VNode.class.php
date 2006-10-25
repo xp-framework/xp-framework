@@ -9,6 +9,8 @@
    *
    */
   class VNode extends Object {
+    var
+      $position= array();
 
     /**
      * Creates a string representation of any

@@ -13,8 +13,10 @@
    */
   class Emitter extends Object {
     var
-      $cat     = NULL,
-      $errors  = array();
+      $cat      = NULL,
+      $position = array(),
+      $filename = '',
+      $errors   = array();
 
     /**
      * Emits an array of nodes
@@ -26,6 +28,26 @@
       foreach ($nodes as $node) $this->emit($node);
     }
     
+
+    /**
+     * Set Filename
+     *
+     * @access  public
+     * @param   string filename
+     */
+    function setFilename($filename) {
+      $this->filename= $filename;
+    }
+
+    /**
+     * Get Filename
+     *
+     * @access  public
+     * @return  string
+     */
+    function getFilename() {
+      return $this->filename;
+    }
     /**
      * Adds an error
      *
@@ -33,6 +55,7 @@
      * @param   &net.xp_framework.tools.vm.CompileError error
      */
     function addError(&$error) {
+      $error->message.= ' at '.$this->filename.' line '.$this->position[0].' (offset '.$this->position[1].')';
       $this->errors[]= &$error;
     }
     
@@ -71,6 +94,8 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emit(&$node) {
+      $this->position= $node->position;
+
       if (is_a($node, 'ConstantReferenceNode') && !$node->class) {
         switch (strtolower($node->name)) {
           case 'true': $this->emitBoolean(TRUE); return;

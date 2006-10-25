@@ -34,6 +34,7 @@
   $p->exists('ast') && Console::writeLine(VNode::stringOf($nodes));
   
   $emitter= &new Php5Emitter();
+  $emitter->setFilename($in);
   $emitter->emitAll($nodes);
 
   if ($emitter->hasErrors()) {

@@ -49,15 +49,21 @@
       $this->pos= -1;
       $this->line= 1;
       $this->fileName= $fileName;
+      $this->offset= 1;
     }
 
-    function setLine($line){
-      $this->line= $line;
+    function setLine($line) {
+      if ($this->line != $line) {
+        $this->line= $line;
+        $this->offset= 1;
+      }
+      $this->position= array($line, $this->offset);
     }
 
     function advance(){
       $this->pos++;
       while ($this->pos < $this->N){
+        $this->offset+= strlen($this->tokens[$this->pos][1]);
 
         // Casts (T_STRING) or (T_CLASSNAME)
         if (
