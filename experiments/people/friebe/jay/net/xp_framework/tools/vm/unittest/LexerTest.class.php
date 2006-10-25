@@ -184,6 +184,7 @@
         '__FILE__',
         '__LINE__',
         '__CLASS__',
+        '__FUNCTION__',
         '__METHOD__',
         '__COMPILER_HALT_OFFSET__',
       );
