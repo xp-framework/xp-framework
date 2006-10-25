@@ -133,9 +133,9 @@
 %token T_LNUMBER 288
 %token T_DNUMBER 289
 %token T_STRING 290
-%token T_STRING_VARNAME 291
+%token T_LIST 291
 %token T_VARIABLE 292
-%token T_NUM_STRING 293
+%token T_ARRAY 293
 %token T_CONSTANT_ENCAPSED_STRING 294
 %token T_ECHO 295
 %token T_DO 296
@@ -187,8 +187,6 @@
 %token T_PROPERTY 342
 %token T_CAST 343
 %token T_FOREACH 344
-%token T_ARRAY 345
-%token T_LIST 346
 
 %% /* Rules */
 
@@ -1045,7 +1043,6 @@ static_scalar: /* compile-time evaluated scalars */
 
 scalar:
 		T_STRING 				{ $$= &new ConstantReferenceNode(NULL, $1); }
-	|	T_STRING_VARNAME		{ $$= $1; }
 	|	class_constant			{ $$= $1; }
 	|	common_scalar			{ $$= $1; }
 ;
