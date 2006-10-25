@@ -1,0 +1,128 @@
+RFC 0085: Make lang.Throwable::toString() easily overwriteable
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Oct 25 14:10:08 CEST 2006
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+A new method compoundMessage() will be added to lang.Throwable. It will
+be called from toString().
+
+
+Rationale
+---------
+The lang.Throwable's toString() method is a mess to overwrite - for any
+changes subclasses would like to make to the compound message (usually,
+the word "Exception", the exception's fully-qualified classname and 
+message), they have to reimplement the stringification of the exception's
+stack trace.
+
+
+Functionality
+-------------
+
+Current (peer.http.UnexpectedResponseException)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  /**
+   * Returns string representation
+   *
+   * @access  public
+   * @return  string
+   */
+  function toString() {
+    $s= sprintf(
+      "Exception %s (statuscode %d: %s)\n",
+      $this->getClassName(),
+      $this->statuscode,
+      $this->message
+    );
+    for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+      $s.= $this->trace[$i]->toString();
+    }
+    return $s;
+  }
+?>
+You can clearly see the boilerplate loop on the stack trace elements.
+
+When this RFC is committed, the UnexpectedResponseException class would
+not overwrite toString() but rather the new compoundMessage() method.
+
+Refactored
+~~~~~~~~~~
+<?php
+  /**
+   * Return compound message of this exception.
+   *
+   * @access  public
+   * @return  string
+   */
+  function compoundMessage() {
+    return sprintf(
+      'Exception %s (statuscode %d: %s)',
+      $this->getClassName(),
+      $this->statuscode,
+      $this->message
+    );
+  }
+?>
+
+Of course, exception classes need not overwrite the compoundMessage()
+method. The Throwable class provides the following default 
+implementation:
+
+lang.Throwable::compoundMessage()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  /**
+   * Return compound message of this exception. In this default 
+   * implementation, returns the following:
+   *
+   * <pre>
+   *   Exception [FULLY-QUALIFIED-CLASSNAME] ([MESSAGE])
+   * </pre>
+   *
+   * May be overriden by subclasses
+   *
+   * @access  public
+   * @return  string
+   */
+  function compoundMessage() {
+    return sprintf(
+      'Exception %s (%s)',
+      $this->getClassName(),
+      $this->message
+    );
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower (one more method call).
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0085.diff
+  Patch implementing this RFC
+
+
+Comments
+--------
+
+<EOF>
