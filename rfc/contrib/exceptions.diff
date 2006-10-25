@@ -1,0 +1,644 @@
+Index: lang/MethodNotImplementedException.class.php
+===================================================================
+--- lang/MethodNotImplementedException.class.php	(revision 8264)
++++ lang/MethodNotImplementedException.class.php	(working copy)
+@@ -20,21 +20,26 @@
+      * @access  public
+      * @param   string message
+      * @param   string method
+-     * @see     lang.Exception#construct
++     * @see     xp://lang.Exception#construct
+      */
+     function __construct($message, $method) {
++      parent::__construct($message);
+       $this->method= $method;
+-      parent::__construct($message);
+     }
+-    
++
+     /**
+-     * Get string representation
++     * Return compound message of this exception.
+      *
+      * @access  public
+-     * @return  string stacktrace
++     * @return  string
+      */
+-    function toString() {
+-      return parent::toString()."\n  [method: ".$this->method."\n";
++    function compoundMessage() {
++      return sprintf(
++        'Exception %s (method %s(): %s)',
++        $this->getClassName(),
++        $this->method,
++        $this->message
++      );
+     }
+   }
+ ?>
+Index: peer/http/UnexpectedResponseException.class.php
+===================================================================
+--- peer/http/UnexpectedResponseException.class.php	(revision 8264)
++++ peer/http/UnexpectedResponseException.class.php	(working copy)
+@@ -47,23 +47,18 @@
+     }
+     
+     /**
+-     * Returns string representation
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
+-        "Exception %s (statuscode %d: %s)\n",
++    function compoundMessage() {
++      return sprintf(
++        'Exception %s (statuscode %d: %s)',
+         $this->getClassName(),
+         $this->statuscode,
+         $this->message
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s;
+     }
+-
+   }
+ ?>
+Index: peer/ldap/LDAPException.class.php
+===================================================================
+--- peer/ldap/LDAPException.class.php	(revision 8264)
++++ peer/ldap/LDAPException.class.php	(working copy)
+@@ -85,8 +85,8 @@
+      * @param   int errorcode
+      */
+     function __construct($message, $errorcode) {
++      parent::__construct($message);
+       $this->errorcode= $errorcode;
+-      parent::__construct($message);
+     }
+ 
+     /**
+@@ -98,18 +98,20 @@
+     function getErrorCode() {
+       return $this->errorcode;
+     }
+-    
++
+     /**
+-     * Create string representation
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString().sprintf(
+-        "  *** LDAP errorcode #%d [%s]\n",
++    function compoundMessage() {
++      return sprintf(
++        'Exception %s (LDAP errorcode #%d [%s]: %s)',
++        $this->getClassName(),
+         $this->errorcode,
+-        ldap_err2str($this->errorcode)
++        ldap_err2str($this->errorcode),
++        $this->message
+       );
+     }
+   }
+Index: peer/mail/MessagingException.class.php
+===================================================================
+--- peer/mail/MessagingException.class.php	(revision 8264)
++++ peer/mail/MessagingException.class.php	(working copy)
+@@ -21,18 +21,23 @@
+      * @param   string detail
+      */
+     function __construct($message, $detail) {
++      parent::__construct($message);
+       $this->detail= $detail;
+-      parent::__construct($message);
+     }
+-  
++
+     /**
+-     * Get string representation
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString().'  ['.$this->detail."]\n";
++    function compoundMessage() {
++      return sprintf(
++        'Exception %s (%s, %s)',
++        $this->getClassName(),
++        $this->message
++        $this->detail
++      );
+     }
+   }
+ ?>
+Index: peer/mail/transport/TransportException.class.php
+===================================================================
+--- peer/mail/transport/TransportException.class.php	(revision 8264)
++++ peer/mail/transport/TransportException.class.php	(working copy)
+@@ -4,39 +4,14 @@
+  * $Id$ 
+  */
+ 
++  uses('util.ChainedException');
++
+   /**
+    * TransportException
+    *
+    * @see      xp://peer.mail.transport.Transport
+    * @purpose  Indicate a transport error has occured
+    */
+-  class TransportException extends Exception {
+-    var
+-      $cause = NULL;
+-      
+-    /**
+-     * Constructor
+-     *
+-     * @access  public
+-     * @param   string message
+-     * @param   &lang.Exception cause
+-     */
+-    function __construct($message, &$cause) {
+-      $this->cause= &$cause;
+-      parent::__construct($message);
+-    }
+-  
+-    /**
+-     * Get string representation
+-     *
+-     * @access  public
+-     * @return  string
+-     */
+-    function toString() {
+-      return parent::toString().(is_a($this->cause, 'Exception') 
+-        ? '  [caused by '.$this->cause->getClassName()."\n  (".$this->cause->message.")\n  ]"
+-        : '  [no cause]'
+-      );
+-    }
++  class TransportException extends ChainedException {
+   }
+ ?>
+Index: remote/ExceptionReference.class.php
+===================================================================
+--- remote/ExceptionReference.class.php	(revision 8264)
++++ remote/ExceptionReference.class.php	(working copy)
+@@ -28,25 +28,18 @@
+     }
+     
+     /**
+-     * Return string representation of this exception
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
+-        "Exception %s<%s> (%s)\n",
++    function compoundMessage() {
++      return sprintf(
++        'Exception %s<%s> (%s)',
+         $this->getClassName(),
+         $this->referencedClassname,
+         $this->message
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s.($this->cause
+-        ? 'Caused by '.$this->cause->toString() 
+-        : ''
+-      );;
+     }
+   }
+ ?>
+Index: sapi/scriptlet/ScriptletRunner.class.php
+===================================================================
+--- sapi/scriptlet/ScriptletRunner.class.php	(revision 8264)
++++ sapi/scriptlet/ScriptletRunner.class.php	(working copy)
+@@ -41,7 +41,7 @@
+     function except(&$response, &$e) {
+       $class= &$this->getClass();
+       $loader= &$class->getClassLoader();
+-
++      
+       $response->setContent(str_replace(
+         '<xp:value-of select="reason"/>',
+         (($this->flags & SCRIPTLET_SHOW_STACKTRACE) 
+Index: xml/XMLFormatException.class.php
+===================================================================
+--- xml/XMLFormatException.class.php	(revision 8264)
++++ xml/XMLFormatException.class.php	(working copy)
+@@ -68,13 +68,13 @@
+     }
+     
+     /**
+-     * Returns a string representation of this exception
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {      
+-      $s= sprintf(
++    function compoundMessage() {
++      return sprintf(
+         "%s@('%s'){\n".
+         "  type       %d (%s)\n".
+         "  filename   %s\n".
+@@ -89,10 +89,6 @@
+         $this->getlinenumber(),
+         $this->getColumn()
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s;
+     }
+ 
+     /**
+Index: xml/soap/SOAPFaultException.class.php
+===================================================================
+--- xml/soap/SOAPFaultException.class.php	(revision 8264)
++++ xml/soap/SOAPFaultException.class.php	(working copy)
+@@ -20,8 +20,8 @@
+      * @param   &xml.soap.SOAPFault fault
+      */
+     function __construct(&$fault) {
+-      $this->fault= $fault;
+-      parent::__construct($this->fault->faultstring);
++      parent::__construct($fault->faultstring);
++      $this->fault= &$fault;
+     }
+ 
+     /**
+@@ -33,19 +33,25 @@
+     function &getFault() {
+       return $this->fault;
+     }
+-    
++
+     /**
+-     * Return a string representation of this exception
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString().sprintf(
+-        "  [\n    fault.faultcode= '%s'\n    fault.faultactor= '%s'\n    fault.detail= %s\n  ]\n",
++    function compoundMessage() {
++      return sprintf(
++        "Exception %s (%s) {\n".
++        "  fault.faultcode   = %s\n".
++        "  fault.faultactor  = '%s'\n".
++        "  fault.detail      = %s\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
+         $this->fault->faultcode,
+         $this->fault->faultactor,
+-        var_export($this->fault->detail, 1)
++        xp::stringOf($this->fault->detail)
+       );
+     }
+   }
+Index: xml/xmlrpc/XmlRpcFaultException.class.php
+===================================================================
+--- xml/xmlrpc/XmlRpcFaultException.class.php	(revision 8264)
++++ xml/xmlrpc/XmlRpcFaultException.class.php	(working copy)
+@@ -1,4 +1,4 @@
+-<?php
++5<?php
+ /* This class is part of the XP framework
+  *
+  * $Id$ 
+@@ -22,8 +22,8 @@
+      * @param   &xml.xmlrpc.XmlRpcFault fault
+      */
+     function __construct(&$fault) {
++      parent::__construct($fault->faultString);
+       $this->fault= &$fault;
+-      parent::__construct($this->fault->faultString);
+     }
+ 
+     /**
+@@ -37,14 +37,19 @@
+     }
+     
+     /**
+-     * Return a string representation of this exception
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString().sprintf(
+-        "  [\n    fault.faultcode= '%s'\n    fault.faultstring= '%s'\n  ]\n",
++    function compoundMessage() {
++      return sprintf(
++        "Exception %s (%s) {\n".
++        "  fault.faultcode   = %s\n".
++        "  fault.faultstring = '%s'\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
+         $this->fault->faultCode,
+         $this->fault->faultString
+       );
+Index: security/crypto/CryptoException.class.php
+===================================================================
+--- security/crypto/CryptoException.class.php	(revision 8264)
++++ security/crypto/CryptoException.class.php	(working copy)
+@@ -37,13 +37,20 @@
+     }
+     
+     /**
+-     * Return formatted output of stacktrace
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString()."\n".implode("\n  @", $this->errors)."\n";
++    function compoundMessage() {
++      return sprintf(
++        "Exception %s (%s) {\n".
++        "  %s\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
++        implode("\n  @", $this->errors)
++      );
+     }
+   }
+ ?>
+Index: security/cert/CertificateException.class.php
+===================================================================
+--- security/cert/CertificateException.class.php	(revision 8264)
++++ security/cert/CertificateException.class.php	(working copy)
+@@ -35,15 +35,22 @@
+     function getErrors() {
+       return $this->errors;
+     }
+-    
++
+     /**
+-     * Return formatted output of stacktrace
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString()."\n".implode("\n  @", $this->errors)."\n";
++    function compoundMessage() {
++      return sprintf(
++        "Exception %s (%s) {\n".
++        "  %s\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
++        implode("\n  @", $this->errors)
++      );
+     }
+   }
+ ?>
+Index: rdbms/SQLConnectException.class.php
+===================================================================
+--- rdbms/SQLConnectException.class.php	(revision 8264)
++++ rdbms/SQLConnectException.class.php	(working copy)
+@@ -38,13 +38,13 @@
+     }
+ 
+     /**
+-     * Retrieve string representation of the stack trace
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
++    function compoundMessage() {
++      return sprintf(
+         "Exception %s (%s) {\n".
+         "  Unable to connect to %s@%s - using password: %s\n".
+         "}\n",
+@@ -54,10 +54,6 @@
+         $this->dsn->getHost(),
+         $this->dsn->getPassword() ? 'yes' : 'no'
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s;
+     }
+   }
+ ?>
+Index: rdbms/SQLStatementFailedException.class.php
+===================================================================
+--- rdbms/SQLStatementFailedException.class.php	(revision 8264)
++++ rdbms/SQLStatementFailedException.class.php	(working copy)
+@@ -49,15 +49,15 @@
+     function getErrorcode() {
+       return $this->errorcode;
+     }
+-    
++
+     /**
+-     * Retrieve string representation of the stack trace
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
++    function compoundMessage() {
++      return sprintf(
+         "Exception %s (errorcode %s: %s) {\n".
+         "  %s\n".
+         "}\n",
+@@ -66,10 +66,6 @@
+         $this->message,
+         $this->sql
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s;
+     }
+   }
+ ?>
+Index: scriptlet/HttpScriptletException.class.php
+===================================================================
+--- scriptlet/HttpScriptletException.class.php	(revision 8264)
++++ scriptlet/HttpScriptletException.class.php	(working copy)
+@@ -47,24 +47,20 @@
+     function &getResponse() {
+       return $this->response;
+     }
+-    
++
+     /**
+-     * Return formatted output of stacktrace
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
++    function compoundMessage() {
++      return sprintf(
+         "Exception %s (%d:%s)\n",
+         $this->getClassName(),
+         $this->response->statusCode,
+         $this->message
+       );
+-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
+-        $s.= $this->trace[$i]->toString();
+-      }
+-      return $s;
+     }
+     
+     /**
+Index: scriptlet/rpc/RpcFaultException.class.php
+===================================================================
+--- scriptlet/rpc/RpcFaultException.class.php	(revision 8264)
++++ scriptlet/rpc/RpcFaultException.class.php	(working copy)
+@@ -22,8 +22,8 @@
+      * @param   &scriptlet.rpc.RpcFault fault
+      */
+     function __construct(&$fault) {
++      parent::__construct($fault->faultString);
+       $this->fault= &$fault;
+-      parent::__construct($this->fault->faultString);
+     }
+ 
+     /**
+@@ -35,16 +35,21 @@
+     function &getFault() {
+       return $this->fault;
+     }
+-    
++
+     /**
+-     * Return a string representation of this exception
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      return parent::toString().sprintf(
+-        "  [\n    fault.faultcode= '%s'\n    fault.faultstring= '%s'\n  ]\n",
++    function compoundMessage() {
++      return sprintf(
++        "Exception %s (%s) {\n".
++        "  fault.faultcode   = %s\n".
++        "  fault.faultstring = '%s'\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
+         $this->fault->faultCode,
+         $this->fault->faultString
+       );
+Index: util/profiling/unittest/AssertionFailedError.class.php
+===================================================================
+--- util/profiling/unittest/AssertionFailedError.class.php	(revision 8264)
++++ util/profiling/unittest/AssertionFailedError.class.php	(working copy)
+@@ -48,21 +48,31 @@
+     function getErrorCode() {
+       return $this->errorcode;
+     }
+-    
++
+     /**
+-     * Retrieve string representation
++     * Return compound message of this exception.
+      *
+      * @access  public
+      * @return  string
+      */
+-    function toString() {
+-      $s= sprintf(
++    function compoundMessage() {
++      return sprintf(
+         "%s (%s) { expected: [%s] but was: [%s] }\n",
+         $this->getClassName(),
+         $this->message,
+         xp::stringOf($this->expect),
+         xp::stringOf($this->actual)
+       );
++    }
++    
++    /**
++     * Retrieve string representation
++     *
++     * @access  public
++     * @return  string
++     */
++    function toString() {
++      $s= $this->compoundMessage()."\n";
+       
+       // Slice the first four trace elements, they contain the
+       // traces of assert() callbacks which aren't really interesting
+Index: util/ChainedException.class.php
+===================================================================
+--- util/ChainedException.class.php	(revision 8264)
++++ util/ChainedException.class.php	(working copy)
+@@ -54,10 +54,34 @@
+      * @return  string
+      */
+     function toString() {
+-      return parent::toString().($this->cause
+-        ? 'Caused by '.$this->cause->toString() 
+-        : ''
+-      );
++      $s= $this->compoundMessage()."\n";
++      $t= sizeof($this->trace);
++      for ($i= 0; $i < $t; $i++) {
++        $s.= $this->trace[$i]->toString(); 
++      }
++      if (!$this->cause) return $s;
++      
++      $loop= &$this->cause;
++      while ($loop) {
++
++        // String of cause
++        $s.= 'Caused by '.$loop->compoundMessage()."\n";
++
++        // Find common stack trace elements
++        for ($ct= $cc= sizeof($loop->trace)- 1, $t= sizeof($this->trace)- 1; $ct > 0, $t > 0; $cc--, $t--) {
++          if (!$loop->trace[$cc]->equals($this->trace[$t])) break;
++        }
++
++        // Output uncommon elements only and one line how many common elements exist!
++        for ($i= 0; $i < $cc; $i++) {
++          $s.= $this->cause->trace[$i]->toString(); 
++        }
++        if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
++        
++        $loop= is_a($loop, 'ChainedException') ? $loop->cause : NULL;
++      }
++      
++      return $s;
+     }
+   }
+ ?>
