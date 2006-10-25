@@ -308,7 +308,7 @@ import_list:
           $$[]= $3; 
         }
 	|	import { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
@@ -326,7 +326,7 @@ import:
 
 additional_catches:
 		non_empty_additional_catches { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 	|	/* empty */ { 
           $$= NULL; 
@@ -396,7 +396,7 @@ function_declaration_statement:
 
 optional_annotation_list:
 		/* empty */       { $$= NULL; }
-	|	annotation_list   { $$= $1; }
+	|	annotation_list   { /* $$= $1; */ }
 ;
 
 class_declaration_statement:
@@ -514,7 +514,7 @@ else:
 
 parameter_list: 
 		non_empty_parameter_list {
-          $$= $1;
+          /* $$= $1; */
         }
 	|	/* empty */ {
           $$= NULL;
@@ -544,14 +544,14 @@ optional_parameter_type:
 
 optional_class_type:
 		/* empty */		      { $$= NULL; }
-	|	name_and_keywords		      { $$= $1; }
-	|	T_CLASSNAME           { $$= $1; }
+	|	name_and_keywords		      { /* $$= $1; */ }
+	|	T_CLASSNAME           { /* $$= $1; */ }
 	|	name_and_keywords '[' ']'      { $$= array($1); }
 	|	T_CLASSNAME '[' ']'   { $$= array($1); }
 ;
 
 function_call_parameter_list:
-		non_empty_function_call_parameter_list	{ $$= $1; }
+		non_empty_function_call_parameter_list	{ /* $$= $1; */ }
 	|	/* empty */				                { $$= array(); }
 ;
 
@@ -623,10 +623,10 @@ method_declaration:
 
 return_type_name:
 	    name_and_keywords { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 	|   T_CLASSNAME { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 	|   name_and_keywords '[' ']' { 
           $$= array($1); 
@@ -713,7 +713,7 @@ method_body:
 ;
 
 non_empty_member_modifiers:
-		member_modifier								{ $$= $1; }
+		member_modifier								{ /* $$= $1; */ }
 	|	non_empty_member_modifiers member_modifier	{ $$= $1 | $2; }
 ;
 
@@ -773,7 +773,7 @@ echo_expr_list:
 
 for_expr:
 		/* empty */			        { $$= NULL; }
-	|	non_empty_for_expr	        { $$= $1; }
+	|	non_empty_for_expr	        { /* $$= $1; */ }
 ;
 
 non_empty_for_expr:
@@ -936,7 +936,7 @@ expr_without_variable:
           $$= &new SilencedExpressionNode($2); $$->position= $yyLex->position; 
         }
 	|	scalar { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
@@ -968,14 +968,14 @@ function_call:
 ;
 
 method_name:
-		name_and_keywords    { $$= $1; }
-	|	T_CONSTRUCT { $$= $1; }
-	|	T_DESTRUCT  { $$= $1; }
+		name_and_keywords    { /* $$= $1; */ }
+	|	T_CONSTRUCT { /* $$= $1; */ }
+	|	T_DESTRUCT  { /* $$= $1; */ }
 ;
 
 fully_qualified_class_name:
-		name_and_keywords    { $$= $1; }
-	|	T_CLASSNAME { $$= $1; }
+		name_and_keywords    { /* $$= $1; */ }
+	|	T_CLASSNAME { /* $$= $1; */ }
 ;
 
 class_name_reference:
@@ -1003,11 +1003,11 @@ common_scalar:
 	|	T_DNUMBER { 
           $$= &new DoubleNumberNode($1); $$->position= $yyLex->position; 
         }
-	|	T_CONSTANT_ENCAPSED_STRING	{ $$= $1; }
+	|	T_CONSTANT_ENCAPSED_STRING	{ /* $$= $1; */ }
 ;
 
 static_scalar: /* compile-time evaluated scalars */
-		common_scalar				{ $$= $1; }
+		common_scalar				{ /* $$= $1; */ }
 	|	T_STRING 					{ $$= &new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
 	|	'+' static_scalar			{ $$= $2; }
 	|	'-' static_scalar			{ $$= -1 * $2->value; } 
@@ -1017,8 +1017,8 @@ static_scalar: /* compile-time evaluated scalars */
 
 scalar:
 		T_STRING 				{ $$= &new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
-	|	class_constant			{ $$= $1; }
-	|	common_scalar			{ $$= $1; }
+	|	class_constant			{ /* $$= $1; */ }
+	|	common_scalar			{ /* $$= $1; */ }
 ;
 
 static_array_pair_list:
@@ -1026,7 +1026,7 @@ static_array_pair_list:
           $$= array(); 
         }
 	|	non_empty_static_array_pair_list possible_comma	{ 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
@@ -1064,10 +1064,10 @@ non_empty_static_array_pair_list:
 
 expr:
 		variable { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 	|	expr_without_variable { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
@@ -1082,7 +1082,7 @@ variable:
           }
 	    }
 	|	base_variable_with_function_calls { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
@@ -1136,16 +1136,16 @@ static_member:
 
 base_variable_with_function_calls:
 		base_variable { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 	|	function_call { 
-          $$= $1; 
+          /* $$= $1; */ 
         }
 ;
 
 base_variable:
-		reference_variable { $$= $1; }
-	|	static_member { $$= $1;}
+		reference_variable { /* $$= $1; */ }
+	|	static_member { /* $$= $1; */}
 ;
 	
 reference_variable:
@@ -1156,7 +1156,7 @@ reference_variable:
           $$= &new ArrayAccessNode($1, $3); $$->position= $yyLex->position;
         }
 	|	compound_variable { 
-          $$= $1;
+          /* $$= $1; */
         }
 ;
 	
@@ -1167,7 +1167,7 @@ compound_variable:
 
 dim_offset:
 		/* empty */		{ $$= FALSE; }
-	|	expr			{ $$= $1; }
+	|	expr			{ /* $$= $1; */ }
 ;
 
 
@@ -1183,7 +1183,7 @@ object_dim_list:
 ;
 
 variable_name:
-		T_STRING		{ $$= $1; }
+		T_STRING		{ /* $$= $1; */ }
 ;
 
 assignment_list:
