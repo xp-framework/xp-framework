@@ -1,0 +1,94 @@
+RFC 0086: Exclude common trace elements from ChainedException's trace
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Oct 25 14:10:08 CEST 2006
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+Chained exceptions' stacktraces will be stripped of common elements.
+
+
+Rationale
+---------
+Stacktraces will become easier to read.
+
+
+Functionality
+-------------
+
+Current behaviour
+~~~~~~~~~~~~~~~~~
+<pre>
+Exception remote.InvocationException ()
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke0() [line -2 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke() [line 39 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+Caused by Exception remote.ExceptionReference<java.lang.ArrayIndexOutOfBoundsException> (-1)
+  at php.java.util.Vector::elementAt() [line 435 of Vector.java] 
+  at php.org.apache.lucene.search.Hits::hitDoc() [line 141 of Hits.java] 
+  at php.org.apache.lucene.search.Hits::doc() [line 91 of Hits.java] 
+  at php.de.schlund.lucene.HitsIterator::getAt() [line 78 of HitsIterator.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke0() [line -2 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke() [line 39 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+</pre>
+
+New behaviour
+~~~~~~~~~~~~~
+<pre>
+Exception remote.InvocationException ()
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke0() [line -2 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.NativeMethodAccessorImpl::invoke() [line 39 of NativeMethodAccessorImpl.java] 
+  at php.sun.reflect.DelegatingMethodAccessorImpl::invoke() [line 25 of DelegatingMethodAccessorImpl.java] 
+  at php.java.lang.reflect.Method::invoke() [line 585 of Method.java] 
+  at php.net.xp_framework.easc.server.CallDelegate::invoke() [line 25 of CallDelegate.java] 
+  at php.net.xp_framework.easc.protocol.standard.ServerHandler::handle() [line 73 of ServerHandler.java] 
+  at php.net.xp_framework.easc.server.HandlerThread::run() [line 50 of HandlerThread.java] 
+Caused by Exception remote.ExceptionReference<java.lang.ArrayIndexOutOfBoundsException> (-1)
+  at php.java.util.Vector::elementAt() [line 435 of Vector.java] 
+  at php.org.apache.lucene.search.Hits::hitDoc() [line 141 of Hits.java] 
+  at php.org.apache.lucene.search.Hits::doc() [line 91 of Hits.java] 
+  at php.de.schlund.lucene.HitsIterator::getAt() [line 78 of HitsIterator.java] 
+  ... 7 more
+</pre>
+
+Note the "... 7 more"
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower for comparison check
+
+
+Dependencies
+------------
+- RFC #0085
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/exceptions.diff
+  Patch to all exception classes
+
+
+Comments
+--------
+
+<EOF>
