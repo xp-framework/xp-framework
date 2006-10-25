@@ -39,11 +39,17 @@
       $interface= $serializer->valueOf(substr($serialized, $offset), $len, $context);
       $offset+= $len;
       
-      $cl= &ClassLoader::getDefault();
+      try(); {
+        $iclass= &XPClass::forName($interface);
+      } if (catch('ClassNotFoundException', $e)) {
+        return throw($e);
+      }
+
+      $cl= &ClassLoader::getDefault();      
       try(); {
         $instance= &Proxy::newProxyInstance(
           $cl, 
-          array(XPClass::forName($interface, $cl)), 
+          array($iclass), 
           RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
         );
       } if (catch('ClassNotFoundException', $e)) {
