@@ -79,6 +79,9 @@ Slightly slower for comparison check
 
 Dependencies
 ------------
+- http://xp-framework.net/rfc/contrib/rfc0086.diff
+  Patch to lang.StackTraceElement
+
 - RFC #0085
 
 
