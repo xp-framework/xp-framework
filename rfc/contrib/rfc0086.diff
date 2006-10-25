@@ -1,0 +1,21 @@
+Index: lang/StackTraceElement.class.php
+===================================================================
+--- lang/StackTraceElement.class.php	(revision 8264)
++++ lang/StackTraceElement.class.php	(working copy)
+@@ -81,5 +81,16 @@
+         $this->message
+       );
+     }
++
++    /**
++     * Compares this stacktrace element to another object
++     *
++     * @access  public
++     * @param   &lang.Object cmp
++     * @return  bool
++     */
++    function equals(&$cmp) {
++      return is('lang.StackTraceElement', $cmp) && $this->toString() == $cmp->toString();
++    }
+   }
+ ?>
