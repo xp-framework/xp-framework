@@ -24,8 +24,8 @@ class Writer {
   }
 }
 
-function eachof(mixed[] $list) {
+function eachof(mixed... $list) {
   return new EachApplyer($list);
 }
 
-eachof(array(new Writer('foo'), new Writer('bar')))->close();
+eachof(new Writer('foo'), new Writer('bar'))->close();
