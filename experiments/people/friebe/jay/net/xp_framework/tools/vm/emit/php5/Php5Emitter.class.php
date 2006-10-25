@@ -9,7 +9,8 @@
     'net.xp_framework.tools.vm.util.Modifiers'
   );
   
-  define('DEFAULT_PACKAGE', 'main~');
+  define('PACKAGE_SEPARATOR', '~');
+  define('DEFAULT_PACKAGE',   'main'.PACKAGE_SEPARATOR);
  
   /**
    * Emits PHP5 compatible sourcecode
@@ -88,7 +89,7 @@
       if ('php~' == substr($class, 0, 4)) return substr($class, 4);
       if (strstr($class, '·')) return $class; // Already qualified!
 
-      return strtr((strstr($class, '~') ? $class : $this->prefixedClassnameFor($class, $imports)), '~', '·');
+      return strtr((strstr($class, PACKAGE_SEPARATOR) ? $class : $this->prefixedClassnameFor($class, $imports)), PACKAGE_SEPARATOR, '·');
     }
     
     /**
@@ -405,7 +406,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitPackageDeclaration(&$node) { 
-      $this->context['package']= $node->name.'~';
+      $this->context['package']= $node->name.PACKAGE_SEPARATOR;
       foreach ($node->statements as $node) {
         $this->emit($node);
       }
@@ -1019,7 +1020,7 @@
     
       // Calculate destination name if none was supplied
       if (!$destination) {
-        $destination= substr($source, strrpos($source, '~')+ 1);
+        $destination= substr($source, strrpos($source, PACKAGE_SEPARATOR)+ 1);
       }
       
       // Register import
