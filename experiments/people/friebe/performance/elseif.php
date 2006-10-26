@@ -35,9 +35,9 @@
       for ($i= 0; $i < $times; $i++) {
         if ($i % 2 == 0) {
           $two++;
-        } elseif ($i % 3 == 0) {
+        } else if ($i % 3 == 0) {
           $three++;
-        } elseif ($i % 4 == 0) {
+        } else if ($i % 4 == 0) {
           $four++;
         } else {
           $else++;
