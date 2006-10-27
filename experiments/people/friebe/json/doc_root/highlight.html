@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <title>JSON Experiment: Syntax highlighter</title>
+    <script language="JavaScript" src="/prototype-1.4.0.js"></script>
+    <script language="JavaScript" src="/json.js"></script>
+    <script language="JavaScript">
+      requestNumber= 0;
+
+      function ajaxCall() {
+        new Ajax.Request('/', {
+          method: 'post', 
+          postBody: JSON.encode(new JSONMessage('Syntax.highlight', [ $F('entry') ], requestNumber++)), 
+          onFailure: function(request) {
+            alert("Error " + request.readyState + " : " + request.responseText);
+          },
+          onSuccess: function(request) {
+            $('result').innerHTML= JSON.decode(request.responseText).result;
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Enter code to be highlighted</h1>
+    <form>
+      <textarea name="entry" id="entry" onkeyup="ajaxCall();" cols="80" rows="10">&lt;?php
+  
+?&gt;</textarea>
+    </form>
+    <h1>Result:</h1>
+    <div id="result"></div>
+  </body>
+</html>
