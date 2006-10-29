@@ -15,11 +15,12 @@
      * Returns highlighted html
      *
      * @access  public
-     * @return  bool success
+     * @param   string code
+     * @return  string
      */
     #[@webmethod]
-    function highlight($entry) {
-      return highlight_string($entry, TRUE);
+    function highlight($code) {
+      return highlight_string($code, TRUE);
     }
   }
 ?>
