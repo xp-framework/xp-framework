@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>JSON Experiment: Syntax highlighter</title>
+    <link rel="stylesheet" href="/layout.css"/>
     <script language="JavaScript" src="/prototype-1.4.0.js"></script>
     <script language="JavaScript" src="/json.js"></script>
     <script language="JavaScript">
@@ -21,13 +22,19 @@
     </script>
   </head>
   <body>
-    <h1>Enter code to be highlighted</h1>
-    <form>
-      <textarea name="entry" id="entry" onkeyup="ajaxCall();" cols="80" rows="10">&lt;?php
-  
+    <div id="top">
+      <img src="/logo.png" alt="JSON Experiment: Syntax highlighter" width="450" height="120"/>
+    </div>
+    <div id="main">
+      <h2>Enter code to be highlighted:</h2>
+      <form>
+        <textarea name="entry" id="entry" onkeyup="ajaxCall();" cols="80" rows="10">&lt;?php
+
 ?&gt;</textarea>
-    </form>
-    <h1>Result:</h1>
-    <div id="result"></div>
+      </form>
+      <h2>Result:</h2>
+      <div id="result"></div>
+    </div>
+    <div id="footer"/>
   </body>
 </html>
