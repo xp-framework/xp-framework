@@ -20,7 +20,7 @@
      */
     #[@webmethod]
     function highlight($code) {
-      return highlight_string($code, TRUE);
+      return @highlight_string($code, TRUE);
     }
   }
 ?>
