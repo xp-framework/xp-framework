@@ -7,10 +7,13 @@
     'peer.server.PreforkingServer',
     'remote.server.deploy.Deployer',
     'remote.server.deploy.scan.FileSystemScanner',
+    'remote.server.deploy.scan.SharedMemoryScanner',
     'remote.server.ContainerManager',
     'remote.server.EascProtocol',
     'remote.server.ScannerThread'
   );
+  
+  $p= &new ParamString();
   
   // Set up loggin
   $log= &Logger::getInstance();
@@ -19,26 +22,35 @@
   
   // {{{ main
   declare(ticks= 1);
-
-  $thread= &new ScannerThread(new FileSystemScanner(dirname(__FILE__).'/deploy'));
-  $thread->setTrace($cat);
-  $thread->setScanPeriod(5);
   
-  with ($server= &new PreforkingServer($argv[1], isset($argv[2]) ? $argv[2] : 6448)); {
+  // Preforking or normal server ? 
+  if ($p->exists('fork', 'f')) {
+    $thread= &new ScannerThread(new FileSystemScanner(dirname(__FILE__).'/deploy'));
+    $thread->setTrace($cat);
+    $thread->setScanPeriod(5);
+
+    $server= &new PreforkingServer($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
+    $server->setProtocol(new EascProtocol(
+      new SharedMemoryScanner()
+    ));
+  } else {
+    $server= &new Server($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
     $server->setProtocol(new EascProtocol(
       new FileSystemScanner(dirname(__FILE__).'/deploy')
-    ));
-    
-    $server->setTcpNodelay(TRUE);
-    $server->setTrace($cat);
-
-
-    $cat->info('Starting server');
-    $server->init();
-    $thread->start();
-    $server->service();
-    $thread->stop();
-    $server->shutdown();
+    )); 
   }
+  
+  $server->setTcpNodelay(TRUE);
+  $p->exists('fork', 'f') && $server->setTrace($cat);
+
+  // Main loop
+  $cat->info('Starting server');
+  $server->init();
+
+  $p->exists('fork', 'f') && $thread->start();
+  $server->service();
+
+  $p->exists('fork', 'f') && $thread->stop();
+  $server->shutdown();
   // }}}
 ?>
