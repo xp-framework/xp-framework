@@ -107,13 +107,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get deployments
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  &mixed[] deployments
      */
-    function getDeployments() {
+    function &getDeployments() {
       return $this->deployments;
     }
     
