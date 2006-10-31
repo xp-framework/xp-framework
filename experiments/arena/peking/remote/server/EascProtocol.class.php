@@ -32,21 +32,19 @@
      * @return  bool
      */
     function initialize() {
-      $storage= &new ShmSegment(0x3c872747);
-      $deployments= &$storage->get();
-      
-      try(); {
-        foreach ($deployments as $deployment) {
-          try(); {
-            $this->deployer->deployBean($deployment, $this->cm);
-          } if (catch('DeployException', $e)) {
-            // Fall through
+      if ($this->scanner->scanDeployments()) {
+        try(); {
+          foreach ($this->scanner->getDeployments() as $deployment) {
+            try(); {
+              $this->deployer->deployBean($deployment, $this->cm);
+            } if (catch('DeployException', $e)) {
+              // Fall through
+            }
           }
+        } if (catch('Exception', $e)) {
+          return throw($e);
         }
-      } if (catch('Exception', $e)) {
-        return throw($e);
       }
-      
       return TRUE; 
     }
 
