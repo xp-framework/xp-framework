@@ -88,7 +88,7 @@
         }
 
         // Iterate over results, invoking the method for each node.
-        foreach ($result->nodeset as $node) {
+        foreach ($result as $node) {
           if ($method->hasAnnotation('xmlmapping', 'class')) {
 
             // * If the xmlmapping annotation has a key "class", call recurse()
@@ -113,7 +113,7 @@
                 $factoryArgs[]= Unmarshaller::contentOf($xpath->query($pass, $node));
               }
             } else {
-              $factoryArgs= array($node->tagname);
+              $factoryArgs= array($node->nodeName);
             }
             $arguments= array(Unmarshaller::recurse(
               $xpath, 
@@ -137,13 +137,13 @@
             // * If the xmlmapping annotation contains a key "type", cast the node's
             //   contents to the specified type before passing it to the method.
             $arguments= array(cast(
-              utf8_decode($node->get_content()),
+              utf8_decode($node->textContent),
               $method->getAnnotation('xmlmapping', 'type')
             ));
           } else {
 
             // * Otherwise, pass the node's content to the method
-            $arguments= array(utf8_decode($node->get_content()));
+            $arguments= array(utf8_decode($node->textContent));
           }
           
           $method->invoke($instance, $arguments);
@@ -165,10 +165,13 @@
      * @throws  xml.XMLFormatException
      */
     public static function &unmarshal($xml, $classname) {
-      if (!($dom= &domxml_open_mem($xml, DOMXML_LOAD_PARSING, $error))) {
-        throw(new XMLFormatException(xp::stringOf($error)));
+      try {
+        $doc= new DOMDocument();
+        $doc->loadXML($xml);
+      } catch (DOMException $e) {
+        throw new XMLFormatException($e->getMessage());
       }
-      return Unmarshaller::recurse(new XPath($dom), $dom->document_element, $classname);
+      return Unmarshaller::recurse(new XPath($doc), $doc->documentElement, $classname);
     }
   }
 ?>
