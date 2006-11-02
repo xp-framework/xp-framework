@@ -136,9 +136,31 @@
     function printStackTrace($fd= STDERR) {
       fputs($fd, $this->toString());
     }
+
+    /**
+     * Return compound message of this exception. In this default 
+     * implementation, returns the following:
+     *
+     * <pre>
+     *   Exception [FULLY-QUALIFIED-CLASSNAME] ([MESSAGE])
+     * </pre>
+     *
+     * May be overriden by subclasses
+     *
+     * @access  public
+     * @return  string
+     */
+    function compoundMessage() {
+      return sprintf(
+        'Exception %s (%s)',
+        $this->getClassName(),
+        $this->message
+      );
+    }
  
     /**
-     * Return formatted output of stacktrace
+     * Return compound message followed by the formatted output of this
+     * exception's stacktrace.
      *
      * Example:
      * <pre>
@@ -150,15 +172,14 @@
      *   Undefined variable:  nam
      * </pre>
      *
+     * Usually not overridden by subclasses unless stacktrace format 
+     * should differ - otherwise overwrite compoundMessage() instead!.
+     *
      * @access  public
      * @return  string
      */
     function toString() {
-      $s= sprintf(
-        "Exception %s (%s)\n",
-        $this->getClassName(),
-        $this->message
-      );
+      $s= $this->compoundMessage()."\n";
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
         $s.= $this->trace[$i]->toString(); 
       }
