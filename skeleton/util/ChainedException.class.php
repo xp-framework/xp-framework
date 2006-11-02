@@ -54,10 +54,34 @@
      * @return  string
      */
     function toString() {
-      return parent::toString().($this->cause
-        ? 'Caused by '.$this->cause->toString() 
-        : ''
-      );
+      $s= $this->compoundMessage()."\n";
+      $t= sizeof($this->trace);
+      for ($i= 0; $i < $t; $i++) {
+        $s.= $this->trace[$i]->toString(); 
+      }
+      if (!$this->cause) return $s;
+      
+      $loop= &$this->cause;
+      while ($loop) {
+
+        // String of cause
+        $s.= 'Caused by '.$loop->compoundMessage()."\n";
+
+        // Find common stack trace elements
+        for ($ct= $cc= sizeof($loop->trace)- 1, $t= sizeof($this->trace)- 1; $ct > 0, $t > 0; $cc--, $t--) {
+          if (!$loop->trace[$cc]->equals($this->trace[$t])) break;
+        }
+
+        // Output uncommon elements only and one line how many common elements exist!
+        for ($i= 0; $i < $cc; $i++) {
+          $s.= $this->cause->trace[$i]->toString(); 
+        }
+        if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
+        
+        $loop= is_a($loop, 'ChainedException') ? $loop->cause : NULL;
+      }
+      
+      return $s;
     }
   }
 ?>
