@@ -41,7 +41,7 @@
     function except(&$response, &$e) {
       $class= &$this->getClass();
       $loader= &$class->getClassLoader();
-
+      
       $response->setContent(str_replace(
         '<xp:value-of select="reason"/>',
         (($this->flags & SCRIPTLET_SHOW_STACKTRACE) 

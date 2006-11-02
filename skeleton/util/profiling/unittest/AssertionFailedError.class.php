@@ -48,6 +48,22 @@
     function getErrorCode() {
       return $this->errorcode;
     }
+
+    /**
+     * Return compound message of this exception.
+     *
+     * @access  public
+     * @return  string
+     */
+    function compoundMessage() {
+      return sprintf(
+        "%s (%s) { expected: [%s] but was: [%s] }\n",
+        $this->getClassName(),
+        $this->message,
+        xp::stringOf($this->expect),
+        xp::stringOf($this->actual)
+      );
+    }
     
     /**
      * Retrieve string representation
@@ -56,13 +72,7 @@
      * @return  string
      */
     function toString() {
-      $s= sprintf(
-        "%s (%s) { expected: [%s] but was: [%s] }\n",
-        $this->getClassName(),
-        $this->message,
-        xp::stringOf($this->expect),
-        xp::stringOf($this->actual)
-      );
+      $s= $this->compoundMessage()."\n";
       
       // Slice the first four trace elements, they contain the
       // traces of assert() callbacks which aren't really interesting

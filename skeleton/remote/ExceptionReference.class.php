@@ -28,25 +28,18 @@
     }
     
     /**
-     * Return string representation of this exception
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    function toString() {
-      $s= sprintf(
-        "Exception %s<%s> (%s)\n",
+    function compoundMessage() {
+      return sprintf(
+        'Exception %s<%s> (%s)',
         $this->getClassName(),
         $this->referencedClassname,
         $this->message
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s.($this->cause
-        ? 'Caused by '.$this->cause->toString() 
-        : ''
-      );;
     }
   }
 ?>

@@ -49,15 +49,15 @@
     function getErrorcode() {
       return $this->errorcode;
     }
-    
+
     /**
-     * Retrieve string representation of the stack trace
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    function toString() {
-      $s= sprintf(
+    function compoundMessage() {
+      return sprintf(
         "Exception %s (errorcode %s: %s) {\n".
         "  %s\n".
         "}\n",
@@ -66,10 +66,6 @@
         $this->message,
         $this->sql
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s;
     }
   }
 ?>

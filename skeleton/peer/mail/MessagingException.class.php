@@ -21,18 +21,23 @@
      * @param   string detail
      */
     function __construct($message, $detail) {
-      $this->detail= $detail;
       parent::__construct($message);
+      $this->detail= $detail;
     }
-  
+
     /**
-     * Get string representation
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    function toString() {
-      return parent::toString().'  ['.$this->detail."]\n";
+    function compoundMessage() {
+      return sprintf(
+        'Exception %s (%s, %s)',
+        $this->getClassName(),
+        $this->message
+        $this->detail
+      );
     }
   }
 ?>
