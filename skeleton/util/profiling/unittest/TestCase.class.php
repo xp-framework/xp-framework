@@ -129,7 +129,7 @@
      */
     function assertNull($var, $error= 'notnull') {
       if (NULL !== $var) {
-        return $this->fail($error, NULL, $var);
+        return $this->fail($error, $var, NULL);
       }
       return TRUE;
     }
