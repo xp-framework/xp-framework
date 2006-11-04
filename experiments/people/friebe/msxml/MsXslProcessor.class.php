@@ -74,13 +74,14 @@
         return throw(new FileNotFoundException($this->_base.$file.' not found'));
       }
 
-      $xsl= &new COM('MSXML2.FreeThreadedDOMDocument');
-      if ($xsl->load($this->_base.$file)) {
+      $dom= &new COM('MSXML2.FreeThreadedDOMDocument');
+      $dom->async= FALSE;
+      if ($dom->load($this->_base.$file)) {
         $this->template= &new COM('MSXML2.XSLTemplate');
-        $this->template->stylesheet= $xsl->documentElement;
+        $this->template->stylesheet= $dom->documentElement;
       }
-      $xsl->release();
-      $xsl= NULL;
+      $dom->release();
+      $dom= NULL;
     }
     
     /**
@@ -90,13 +91,14 @@
      * @param   string xsl the XSL as a string
      */
     function setXSLBuf($xsl) {
-      $xsl= &new COM('MSXML2.FreeThreadedDOMDocument');
-      if ($xsl->loadXML($xsl)) {
+      $dom= &new COM('MSXML2.FreeThreadedDOMDocument');
+      $dom->async= FALSE;
+      if ($dom->loadXML($xsl)) {
         $this->template= &new COM('MSXML2.XSLTemplate');
-        $this->template->stylesheet= $xsl->documentElement;
+        $this->template->stylesheet= $dom->documentElement;
       }
-      $xsl->release();
-      $xsl= NULL;
+      $dom->release();
+      $dom= NULL;
     }
 
     /**
@@ -180,9 +182,14 @@
       if (!($proc= &$this->template->createProcessor())) {
         return throw(new TransformerException('Syntax error'));
       }
-
+      
+      // Pass parameters, define input...
+      foreach ($this->params as $name => $value) {
+        $proc->addParameter($name, $value);
+      }
       $proc->input= $this->input;
 
+      // ...and transform
       if (TRUE !== $proc->transform()) {
         $proc->release();
         $proc= NULL;
@@ -211,9 +218,9 @@
      * @access  public
      */
     function __destruct() {
-      $this->template->release();
+      $this->template && $this->template->release();
       $this->template= NULL;
-      $this->input->release();
+      $this->input && $this->input->release();
       $this->input= NULL;
     }
 
