@@ -1,6 +1,6 @@
 Index: reflect/Routine.class.php
 ===================================================================
---- reflect/Routine.class.php	(revision 8311)
+--- reflect/Routine.class.php	(revision 8325)
 +++ reflect/Routine.class.php	(working copy)
 @@ -92,7 +92,12 @@
       */
@@ -28,14 +28,15 @@ Index: reflect/Routine.class.php
      /**
 Index: ClassLoader.class.php
 ===================================================================
---- ClassLoader.class.php	(revision 8311)
+--- ClassLoader.class.php	(revision 8326)
 +++ ClassLoader.class.php	(working copy)
-@@ -40,6 +40,130 @@
+@@ -54,8 +54,132 @@
      function loadClassBytes($name) {
        return file_get_contents($this->findClass($name));
      }
+-    
 +
-+    /**
+     /**
 +     * Retrieve details for a specified class.
 +     *
 +     * @access  public
@@ -158,12 +159,14 @@ Index: ClassLoader.class.php
 +      
 +      return $details; 
 +    }
-     
-     /**
++
++    /**
       * Retrieve the default class loader
+      *
+      * @model   static
 Index: XPClass.class.php
 ===================================================================
---- XPClass.class.php	(revision 8311)
+--- XPClass.class.php	(revision 8325)
 +++ XPClass.class.php	(working copy)
 @@ -482,125 +482,11 @@
        static $details= array();
