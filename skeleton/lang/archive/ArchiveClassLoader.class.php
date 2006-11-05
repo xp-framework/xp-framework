@@ -54,20 +54,6 @@
     function loadClassBytes($name) {
       return $this->archive->extract(strtr($name, '.', '/').'.class.php');
     }
-
-    /**
-     * Creates a string representation
-     *
-     * @access  public
-     * @return  string
-     */
-    function toString() {
-      return (
-        $this->getClassName().
-        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
-        "(search= [\n  ".$this->archive->file->getURI()."\n])"
-      );
-    }
     
     /**
      * Load the class by the specified name

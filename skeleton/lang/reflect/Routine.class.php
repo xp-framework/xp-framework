@@ -92,12 +92,7 @@
      */
     function getArguments() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-
-      $r= array();      
-      foreach ($details[DETAIL_ARGUMENTS] as $arg) {
-        $r[]= &new Argument($arg[0], $arg[1], $arg[2], $arg[3]);
-      }
-      return $r;
+      return $details[DETAIL_ARGUMENTS];
     }
 
     /**
@@ -110,8 +105,7 @@
     function &getArgument($pos) {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       if (!isset($details[DETAIL_ARGUMENTS][$pos])) return NULL;
-      $arg= $details[DETAIL_ARGUMENTS][$pos];
-      return new Argument($arg[0], $arg[1], $arg[2], $arg[3]);
+      return $details[DETAIL_ARGUMENTS][$pos];
     }
 
     /**
