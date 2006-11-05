@@ -1,0 +1,86 @@
+RFC 0087: Move class details information to ClassLoader
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Nov  5 15:43:49     2006
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+The class details gathering mechanism will be refactored and the part of
+XPClass::classDetailsFor() which gathers information will be moved to 
+lang.ClassLoader.
+
+
+Rationale
+---------
+Open alternative ways of class detail gathering, e.g. for classes in the
+Remote API.
+
+
+Functionality
+-------------
+
+Changes to lang.ClassLoader
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The following method will be added:
+<?php
+  /**
+   * Retrieve details for a specified class.
+   *
+   * @access  public
+   * @param   string class fully qualified class name
+   * @return  array or NULL to indicate no details are available
+   */
+  function getClassDetails($class) {
+    // Implementation here
+  }
+?>
+
+Changes to lang.XPClass
+~~~~~~~~~~~~~~~~~~~~~~~
+The detailsForClass() method will no call the its class' classloaders's 
+method getClassDetails() to retrieve the details instead of doing the
+parsing / tokenizing itself.
+
+
+Changes to class details internal structure
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[DETAIL_ARGUMENTS] will no longer contain an array of lang.reflect.Argument
+objects but will consist of an array with four elements:
+
+* string name (the argument's name)
+* string type (the argument's type as a string)
+* bool optional (whether the argument is optional)
+* string default (the argument's default value, in case it's optional)
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+One level more of indirection, making it slightly slower.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0087.diff
+  Patch implementing this RFC
+
+
+Comments
+--------
+- friebe, Sun Nov  5 15:52:35     2006
+  All 136 core unittests pass.
+
+<EOF>
