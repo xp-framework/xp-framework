@@ -31,6 +31,20 @@
     }
 
     /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return (
+        $this->getClassName().
+        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
+        '(search= '.xp::stringOf(explode(PATH_SEPARATOR, ini_get('include_path'))).')'
+      );
+    }
+
+    /**
      * Load class bytes
      *
      * @access  public

@@ -43,6 +43,20 @@
       $this->archive= &$archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return (
+        $this->getClassName().
+        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
+        "(search= [\n  ".$this->archive->file->getURI()."\n])"
+      );
+    }
     
     /**
      * Load class bytes
