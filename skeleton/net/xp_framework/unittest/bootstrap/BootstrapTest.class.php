@@ -26,7 +26,7 @@
      */
     function assertExitCode($code, $source) {
       try(); {
-        $p= &new Process($_SERVER['_']);
+        $p= &new Process($_SERVER['_'].' -dinclude_path='.ini_get("include_path"));
         $s= &$p->getInputStream();
         $s->write('<?php '.$source.'?>');
         
