@@ -16,7 +16,35 @@
    * @purpose  purpose
    */
   class BootstrapTest extends TestCase {
+
+    /**
+     * Sets up the tests
+     *
+     * @access  public
+     */
+    function setUp() {
+      if (!isset($_SERVER['_'])) return throw(new PrerequisitesNotMetError(
+        'This test can only be run in a non-web environment'
+      ));
+    }
   
+    /**
+     * Retrieve PHP binary path. Converts the path to a proper
+     * windows path in case the PHP binary has been invoked through
+     * a cygwin path.
+     *
+     * @access  protected
+     * @return  string
+     */
+    function _binary() {
+      static $binary= NULL;
+      
+      if (!$binary) {
+        $binary= preg_replace('#^/cygdrive/(\w)/#', '$1:/', $_SERVER['_']);
+      }
+      return $binary;
+    }
+
     /**
      * Run XP script and check exitcode
      *
@@ -26,10 +54,8 @@
      */
     function assertExitCode($code, $source) {
       try(); {
-        $p= &new Process($_SERVER['_'].' -dinclude_path='.ini_get("include_path"));
-        $s= &$p->getInputStream();
-        $s->write('<?php '.$source.'?>');
-        
+        $p= &new Process($this->_binary().' -dinclude_path='.ini_get("include_path"));
+        $p->in->write('<?php '.$source.'?>');
         $p->close();
       } if (catch('Exception', $e)) {
         return throw($e);
