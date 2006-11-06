@@ -151,21 +151,26 @@
     <xsl:param name="for"/>
     <xsl:param name="indent" select="'    '"/>
 
-    <xsl:value-of select="concat(
-      $indent,
-      ' * @return  '
-    )"/>
     <xsl:choose>
-      <xsl:when test="contains($for, ':')">
+      <xsl:when test="contains($for, ':') and /wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part[1] != ''">
+        <xsl:value-of select="concat(
+          $indent,
+          ' * @return  '
+        )"/>
         <xsl:call-template name="parttype">
           <xsl:with-param name="node" select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part[1]"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:otherwise>
+      <xsl:when test="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part[1] != ''">
+        <xsl:value-of select="concat(
+          $indent,
+          ' * @return  '
+        )"/>
         <xsl:call-template name="parttype">
           <xsl:with-param name="node" select="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part[1]"/>
         </xsl:call-template>
-      </xsl:otherwise>
+      </xsl:when>
+      <xsl:otherwise></xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
@@ -192,7 +197,7 @@
           </xsl:call-template>
           <xsl:text> </xsl:text>
           <xsl:value-of select="@name"/>
-          <xsl:text>&#10;</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
@@ -206,7 +211,7 @@
           </xsl:call-template>
           <xsl:text> </xsl:text>
           <xsl:value-of select="@name"/>
-          <xsl:text>&#10;</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:otherwise>
     </xsl:choose>
@@ -518,8 +523,8 @@
       <xsl:call-template name="xpdoc:return">
         <xsl:with-param name="for" select="wsdl:output/@message"/>
       </xsl:call-template>
-      <xsl:text><![CDATA[
-     * @throws  xml.soap.SOAPFaultException in case a fault occurs
+      <xsl:text>
+<![CDATA[     * @throws  xml.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.FormatException in case not-well-formed XML is returned
      */
