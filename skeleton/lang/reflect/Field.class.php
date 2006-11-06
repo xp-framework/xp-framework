@@ -90,5 +90,15 @@
 
       return $instance->{$this->name};
     }
+    
+    /**
+     * Creates a string representation of this field
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return ('_' == $this->name{0} ? 'protected ' : 'public ').$this->getType().' $'.$this->name;
+    }
   }
 ?>
