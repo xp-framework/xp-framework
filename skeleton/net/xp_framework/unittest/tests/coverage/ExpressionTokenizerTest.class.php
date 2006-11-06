@@ -277,7 +277,6 @@
       ), $comment."\n".$method);
     }
 
-
     /**
      * Tests a class declaration
      *
