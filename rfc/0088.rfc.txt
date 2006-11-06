@@ -22,20 +22,18 @@ Functionality
 
 Basics
 ~~~~~~
-Two new interfaces will be created (pseudo-code follows):
+These new interfaces will be created (pseudo-code follows):
 <?php
   interface io.InputStream {
-    string read(int nbytes= 8192) throws io.IOException
-    void close() throws io.IOException
+    string read(int bytes= 8192) throws io.IOException
   }
 
   interface io.OutputStream {
     int write(string data) throws io.IOException
-    void close() throws io.IOException
   }
 ?>
 
-The io.Stream class will implement both of these interfaces.
+The io.Stream class will implement all of these interfaces.
 
 
 Changes: Imaging API
