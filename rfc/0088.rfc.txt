@@ -98,6 +98,9 @@ Related documents
   http://java.sun.com/j2se/1.5.0/docs/api/java/io/InputStream.html
   http://java.sun.com/j2se/1.5.0/docs/api/java/io/OutputStream.html
 
+- Stream in C#:
+  http://msdn2.microsoft.com/en-us/library/system.io.stream(VS.80).aspx
+  http://dotgnu.org/pnetlib-doc/System/IO/Stream.html
 
 Comments
 --------
