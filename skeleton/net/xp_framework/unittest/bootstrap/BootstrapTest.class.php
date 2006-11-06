@@ -67,5 +67,38 @@
     function useOfNonexistingFile() {
       $this->assertExitcode(255, 'require("lang.base.php"); uses("does.not.exist");');
     }
+    
+    /**
+     * Test
+     *
+     * @access  public
+     */
+    #[@test]
+    function recursiveInclusion() {
+      $this->assertExitcode(123, '
+        require("lang.base.php"); 
+        uses("net.xp_framework.unittest.bootstrap.A");
+        
+        exit(123);
+      ');
+    }
+    
+    /**
+     * Test
+     *
+     * @access  public
+     */
+    #[@test]
+    function recursiveInclusionWithTicks() {
+      $this->assertExitcode(123, '
+        declare(ticks=1);
+        require("lang.base.php");
+        uses("net.xp_framework.unittest.bootstrap.A");
+        
+        exit(123);
+      ');
+    }
+    
+    
   }
 ?>
