@@ -236,8 +236,9 @@ Related documents
   "The ref keyword causes arguments to be passed by reference."
   http://msdn2.microsoft.com/en-us/library/14akc2c7(VS.80).aspx
 
-- http://xp-framework.net/rfc/contrib/rfc0089.diff
-  Patch implementing this RFC
+- Patch implementing this RFC
+  Includes unittest
+  http://xp-framework.net/rfc/contrib/rfc0089.diff
 
 
 Comments
