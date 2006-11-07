@@ -403,6 +403,10 @@ public class Serializer {
         exceptionMap.put(c, name);
     }
     
+    public static boolean hasMapping(Class c) {
+        return typeMap.containsKey(c);
+    }
+    
     public static void registerMapping(Class c, Invokeable<?, ?> i) {
         typeMap.put(c, i);
     }

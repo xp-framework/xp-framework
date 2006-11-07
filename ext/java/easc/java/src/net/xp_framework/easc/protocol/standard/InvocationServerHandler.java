@@ -44,6 +44,12 @@ public class InvocationServerHandler extends ServerHandler {
                 ) + "}";
             }
         });
+        
+        if (Serializer.hasMapping(EJBObject.class)) {
+            // If a mapping already exists, skip this one as it would be
+            // a concurring one.
+            return;
+        }
         Serializer.registerMapping(EJBObject.class, new Invokeable<String, EJBObject>() {
             public String invoke(EJBObject p, Object arg) throws Exception {
                 ctx.objects.put(p.hashCode(), new WeakReference(p));
