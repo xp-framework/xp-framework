@@ -1,0 +1,244 @@
+RFC 0089: Core functions ref() and deref() 
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Tue Nov  7 12:36:21 CET 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Two new core functions ref() and deref() will be added.
+
+
+Rationale
+---------
+Passing arguments to constructors by reference does not work due to 
+the constructor wrapper and PHP's internal implementation of 
+call_user_func*().
+
+
+Functionality
+-------------
+
+Example class
+~~~~~~~~~~~~~
+<?php
+  class PrintStream extends Object {
+    var
+      $stream= NULL;
+
+    function __construct(&$stream) {
+      $this->stream= &$stream;
+    }
+    
+    function write($data) {
+      $this->stream->write($data);
+    }
+
+    function writeLine($data) {
+      $this->stream->write($data."\n");
+    }
+  }
+?>
+Although we're using references here, the stream member will still be
+a *copy* of the instance passed to the constructor. To understand this,
+we'll have to look at lang.Object's constructor wrapper implementation:
+
+Simplified example:
+<?php
+  class Object {
+    function Object() {
+      $a= func_get_args();
+      call_user_func_array(array(&$this, '__construct'), $a);
+    }
+  }
+?>
+This wrapper makes it possible for us to have unified constructors
+although PHP 4 does not support this built-in (PHP 5 does!).
+
+
+PrintStream usage with io.File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  uses('io.File');
+
+  $stream= &new File('hello.txt');
+  $stream->open(FILE_MODE_WRITE);
+  
+  $s= &new PrintStream($stream);
+  $s->writeLine('Hello');
+  
+  $stream->close();
+?>
+Here, the data will actually be written to the file as - although we 
+work on a copy of the object - the file handle still points to the 
+underlying file.
+
+
+PrintStream usage with io.Stream
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  uses('io.Stream');
+
+  $stream= &new Stream();
+  $stream->open(STREAM_MODE_WRITE);
+  
+  $s= &new PrintStream($stream);
+  $s->writeLine('Hello');
+  
+  $stream->close();
+?>
+The buffer member of the Stream instance in $stream will actually stay 
+empty because PrintStream is working on a copy.
+
+
+Possible solution #1: Workaround
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add a method called setStream() (or similar) to the PrintStream class 
+and pass the Stream instance as argument to that. This is what the
+CSVParser and CSVGenerator classes do.
+
+<?php
+  class PrintStream extends Object {
+    // ...
+    function setStream(&$stream) {
+      $this->stream= &$stream;
+    }
+    // ...
+  }
+  
+  // ...
+  $s= &new PrintStream();
+  $s->setStream($stream);
+  // ...
+?>
+The downside of this approach is that more (unintuitive) source code is
+needed.
+
+Possible solution #2: Static construction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Avoid constructor and instead create a public static method to create
+an instance of PrintStream.
+
+<?php
+  class PrintStream extends Object {
+    // ...
+    function &forStream(&$stream) {
+      $self= &new PrintStream();
+      $self->stream= &$stream;
+      return $self;
+    }
+    // ...
+  }
+  
+  // ...
+  $s= &PrintStream::forStream($stream);
+  // ...
+?>
+This can cause weird syntax when trying to make PrintStream exchangeable
+($class::forStream() syntax is not supported), for example something like 
+the following:
+
+<?php
+  $class= &XPClass::forName($className);
+  $s= &$class->invoke($i= NULL, array(&$stream));
+?>
+Obviously, this approach also is quite a bit slower.
+
+
+Possible solution #3: Arrays
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Accept an array in PrintStream's constructor and pass the stream instance 
+as array(&$stream) - when an array is copied, references inside are kept 
+intact.
+
+<?php
+  class PrintStream extends Object {
+    // ...
+    function __construct($ref) {
+      $this->stream= &$ref[0];
+    }
+    // ...
+  }
+  
+  // ...
+  $s= &new PrintStream(array(&$stream));
+  // ...
+?>
+The downside here is that it looks unnatural.
+
+
+Possible solution #4: Array-approach, but more natural syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Create "wrappers" for $ref[0] and array(&$object) from above example.
+
+<?php
+  class PrintStream extends Object {
+    // ...
+    function __construct(&$stream) {
+      $this->stream= &deref($stream);
+    }
+    // ...
+  }
+  
+  // ...
+  $s= &new PrintStream(ref($stream));
+  // ...
+?>
+This approach internally uses the same "trick" with the arrays from 
+solution #3, but wraps them nicely.
+
+
+Referencing "Wrappers" implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  // {{{ proto &mixed ref(&mixed object)
+  //     Creates a "reference" to an object
+  function &ref(&$object) {
+    return array(&$object);
+  }
+  // }}}
+
+  // {{{ proto &mixed deref(&mixed expr)
+  //     Dereferences an expression
+  function &deref(&$expr) {
+    if (is_array($expr)) return $expr[0]; else return $expr;
+  }
+  // }}}
+?>
+As one see, the deref() implementation also allows for plain objects to
+be passed in, thus assuring BC in PrintStream's constructor - for the
+use case with File objects, it doesn't really matter when it's copied - 
+so it can still be passed in via new PrintStream($file). For the Stream
+use case, new PrintStream(ref($stream)) should be used.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower when ref() and deref() are used.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+- friebe, Tue Nov  7 13:07:33 CET 2006
+  In PHP5, we can get rid of ref() and deref() as all objects may be passed
+  by value - internally, they behave like resources.
+
+<EOF>
