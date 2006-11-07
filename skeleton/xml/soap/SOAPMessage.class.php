@@ -108,18 +108,22 @@
      * @param   xml.soap.SOAPMessage msg
      */
     function create($msg= NULL) {
-      $this->action= $msg->action;
-      $this->method= $msg->method;
+      if ($msg) {
+        $this->action= $msg->action;
+        $this->method= $msg->method;
+      }
 
-      $this->root= &new Node('SOAP-ENV:Envelope', NULL, array(
+      $ns= array(
         'xmlns:SOAP-ENV'              => XMLNS_SOAPENV,
         'xmlns:xsd'                   => XMLNS_XSD,
         'xmlns:xsi'                   => XMLNS_XSI,
         'xmlns:SOAP-ENC'              => XMLNS_SOAPENC,
         'xmlns:si'                    => XMLNS_SOAPINTEROP,
-        'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC,
-        'xmlns:'.$this->namespace     => (NULL !== $msg->namespace ? $msg->namespace : $this->action)
-      ));
+        'SOAP-ENV:encodingStyle'      => XMLNS_SOAPENC
+      );
+      
+      if ($this->action) $ns['xmlns:'.$this->namespace]= $this->action;
+      $this->root= &new Node('SOAP-ENV:Envelope', NULL, $ns);
       
       if (!empty($headers)) {
         $header= &$this->root->addChild(new Node('SOAP-ENV:Header'));
@@ -571,6 +575,9 @@
      */
     function setHandlerClass($class) {
       $this->class= $class;
+      
+      // Needed in case of a SOAP fault
+      $this->action= $class;
     }
 
     /**

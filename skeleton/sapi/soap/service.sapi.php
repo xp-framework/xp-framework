@@ -15,7 +15,7 @@
     //     Convert an exception to XML
     function fault(&$exception, $code) {
       $answer= &new SOAPMessage();
-      $answer->create('Server', 'Error');
+      $answer->create();
 
       foreach ($exception->getStackTrace() as $element) {
         $stacktrace[]= $element->toString();
