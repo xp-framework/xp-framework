@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Tue Nov  7 12:36:21 CET 2006
-@status: draft
+@status: discussion, ends at Fri Nov 10 12:00:00 CET 2006
 @category: <core>
 
 Scope of Change
@@ -208,8 +208,8 @@ Referencing "Wrappers" implementation
   }
   // }}}
 ?>
-As one see, the deref() implementation also allows for plain objects to
-be passed in, thus assuring BC in PrintStream's constructor - for the
+As one can see, the deref() implementation also allows for plain objects 
+to be passed in, thus assuring BC in PrintStream's constructor - for the
 use case with File objects, it doesn't really matter when it's copied - 
 so it can still be passed in via new PrintStream($file). For the Stream
 use case, new PrintStream(ref($stream)) should be used.
@@ -232,8 +232,9 @@ n/a
 
 Related documents
 -----------------
-n/a
-
+- ref (C# Reference) 
+  "The ref keyword causes arguments to be passed by reference."
+  http://msdn2.microsoft.com/en-us/library/14akc2c7(VS.80).aspx
 
 Comments
 --------
