@@ -31,6 +31,7 @@
      * @access  public
      * @param   string namespace
      * @param   string localpart
+     * @param   string prefix default NULL
      */
     function __construct($namespace, $localpart, $prefix= NULL) {
       $this->namespace= $namespace;
