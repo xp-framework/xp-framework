@@ -63,6 +63,7 @@
      * @param   &Doclet doclet
      * @param   &util.cmd.ParamString params
      * @return  bool
+     * @throws  lang.Exception in case doclet setup fails
      */
     function start(&$doclet, &$params) {
       $classes= array();
@@ -98,8 +99,11 @@
       }
       
       // Set up class iterator
-      $root->classes= &new ClassIterator($classes);
-      $root->classes->root= &$root;
+      try(); {
+        $root->classes= &$doclet->iteratorFor($root, $classes);
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
 
       // Start the doclet
       return $doclet->start($root);
