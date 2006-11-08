@@ -155,7 +155,7 @@
 
       // Find class
       if (!($filename= $this->findClass($classname))) {
-        return throw(new IllegalArgumentException('Could not find "'.$classname.'"'));
+        return throw(new IllegalArgumentException('Could not find '.xp::stringOf($classname)));
       }
       
       // Tokenize contents
