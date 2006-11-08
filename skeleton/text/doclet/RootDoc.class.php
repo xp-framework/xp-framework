@@ -250,6 +250,14 @@
                   break;
                 }
               }
+              
+              // Nothing found!
+              if (!$lookup) return throw(new IllegalStateException(sprintf(
+                'Could not find class %s extended by %s',
+                xp::stringOf($tokens[$i][1]),
+                $classname
+              )));
+
               $doc->superclass= &$this->classNamed($lookup);
               break;
 
