@@ -126,5 +126,15 @@
     function qualifiedName() {
       return $this->qualifiedName;
     }
+    
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return $this->getClassName().'<'.$this->classType().' '.$this->qualifiedName.'>';
+    }
   }
 ?>
