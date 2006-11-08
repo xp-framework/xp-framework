@@ -58,7 +58,7 @@
      */
     function close() {
       if (FALSE != $this->_hdir) $this->_hdir->close();
-      $this->_hdir= NULL;
+      $this->_hdir= FALSE;
     }
 
     /**
