@@ -65,11 +65,19 @@
   class GeneratorDoclet extends Doclet {
 
     function start(&$root) {
+      $build= &new Folder($root->option('build', 'build'));
+      if (!$build->exists()) {
+        $build->create();
+      }
+      
       while ($root->classes->hasNext()) {
         $classdoc= &$root->classes->next();
         Console::writeLine('Q: ', $classdoc->toString());
         
-        // TODO: Implement generation!
+        FileUtil::setContents(
+          new File($build->getURI().$classdoc->qualifiedName().'.classdoc'),
+          serialize($classdoc)
+        );
       }
     }
 
