@@ -7,6 +7,19 @@
   /**
    * A composite of multiple collections
    *
+   * Example (all files in /home and /usr):
+   * <code>
+   *   $collection= &new CollectionComposite(array(
+   *     new FileCollection('/home'),
+   *     new FileCollection('/usr')
+   *   ));
+   *   $collection->open();
+   *   while (NULL !== ($element= &$collection->next())) {
+   *     Console::writeLine('- ', $element->toString());
+   *   }
+   *   $collection->close();
+   * </code>
+   *
    * @test     xp://net.xp_framework.unittest.io.collections.CollectionCompositeTest 
    * @purpose  Collection implementation
    */
