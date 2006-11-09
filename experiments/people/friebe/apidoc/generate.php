@@ -223,7 +223,9 @@
       }
       
       while ($root->classes->hasNext()) {
-        $this->marshalClassDoc($root->classes->next());
+        $doc= &$root->classes->next();
+        $doc && $this->marshalClassDoc($doc);
+        xp::gc();
       }
     }
 
