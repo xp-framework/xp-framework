@@ -9,7 +9,7 @@
   define('EXCEPTION_CLASS',   'exception');
   define('ERROR_CLASS',       'error');
   define('INTERFACE_CLASS',   'interface');
-  define('ORDINARY_CLASS',    'ordinary');
+  define('ORDINARY_CLASS',    'class');
 
   /**
    * Represents an XP class or interface and provides access to 
@@ -37,6 +37,18 @@
     function __construct() {
       $this->interfaces= &new ClassIterator();
       $this->usedClasses= &new ClassIterator();
+    }
+
+    /**
+     * Set rootdoc
+     *
+     * @access  public
+     * @param   &RootDoc root
+     */
+    function setRoot(&$root) {
+      parent::setRoot($root);
+      $this->interfaces->root= &$root;
+      $this->usedClasses->root= &$root;    
     }
     
     /**
