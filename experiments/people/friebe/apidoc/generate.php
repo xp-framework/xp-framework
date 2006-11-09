@@ -11,6 +11,7 @@
     'io.FileUtil',
     'xml.Tree',
     'text.doclet.Doclet',
+    'io.collections.CollectionComposite', 
     'io.collections.FileCollection', 
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.ExtensionEqualsFilter'
@@ -231,14 +232,19 @@
     }
 
     function &iteratorFor(&$root, $classes) {
-      $scan= &new Folder($root->option('scan'));
-      if (!$scan->exists()) {
-        return throw(new IllegalArgumentException($scan->getURI().' does not exist!'));
+      $collections= array();
+      foreach (explode(PATH_SEPARATOR, $root->option('scan')) as $path) {
+        $scan= &new Folder($path);
+        if (!$scan->exists()) {
+          return throw(new IllegalArgumentException($scan->getURI().' does not exist!'));
+        }
+     
+        $collections[]= &new FileCollection($scan->getURI());
       }
 
       $iterator= &new AllClassesIterator(
         new FilteredIOCollectionIterator(
-          new FileCollection($scan->getURI()), 
+          new CollectionComposite($collections), 
           new ExtensionEqualsFilter('class.php'),
           TRUE
         ),
