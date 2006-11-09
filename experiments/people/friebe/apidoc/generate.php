@@ -46,14 +46,14 @@
         $path= substr($path, 0, $pos); 
       }
 
-      $this->stop= TRUE;
       throw(new IllegalArgumentException('Cannot infer classname from '.$element->toString()));
     }
     
     function &next() {
       try(); {
         $classname= $this->classNameForElement($this->aggregate->next());
-      } if (catch('IllegalArgumentException', $e)) {
+      } if (catch('Exception', $e)) {
+        $this->stop= TRUE;
         return throw($e);
       }
       
@@ -66,6 +66,8 @@
   // {{{ GeneratorDoclet
   //     Specialized doclet
   class GeneratorDoclet extends Doclet {
+    var
+      $build= NULL;
 
     function tagAttribute($tags, $which, $attribute= 'text') {
       return isset($tags[$which]) ? $tags[$which]->{$attribute} : NULL;
@@ -87,48 +89,22 @@
       }
       return $n;
     }
-
-    function classNode(&$classdoc) {
-      $n= &new Node('class', NULL, array(
-        'name'    => $classdoc->qualifiedName(),
-        'type'    => $classdoc->classType()
+    
+    function classReferenceNode(&$classdoc) {
+      $n= &new Node('link', NULL, array(
+        'rel'     => 'class',
+        'href'    => $classdoc->qualifiedName(),
       ));
-      
-      // Apidoc
-      $n->addChild(new Node('comment', $classdoc->commentText()));
-      $n->addChild(new Node('purpose', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
-      foreach ($classdoc->tags('see') as $ref) {
-        $n->addChild(new Node('see', NULL, array('href' => $ref->text)));
-      }
-      foreach ($classdoc->tags('test') as $ref) {
-        $n->addChild(new Node('test', NULL, array('href' => $ref->text)));
-      }
+      $this->marshalClassDoc($classdoc);
+      return $n;
+    }
+    
+    function methodsNode(&$classdoc, $inherited= FALSE) {
+      $n= &new Node('methods');
+      $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
 
-      // Annotations
-      $n->addChild($this->annotationNode($classdoc->annotations()));
-
-      // Superclass
-      $extends= &$n->addChild(new Node('extends'));
-      $classdoc->superclass && $extends->addChild($this->classNode($classdoc->superclass));
-
-      // Interfaces
-      $interfaces= &$n->addChild(new Node('implements'));
-      for ($classdoc->interfaces->rewind(); $classdoc->interfaces->hasNext(); ) {
-        $interfaces->addChild($this->classNode($classdoc->interfaces->next()));
-      }
-
-      // Fields
-      $fields= &$n->addChild(new Node('fields'));
-      foreach ($classdoc->fields as $name => $value) {
-        $fields->addChild(new Node('field', $value, array(
-          'name'  => $name
-        )));
-      }
-      
-      // Methods
-      $methods= &$n->addChild(new Node('methods'));
       foreach ($classdoc->methods as $method) {
-        $m= &$methods->addChild(new Node('method', NULL, array(
+        $m= &$n->addChild(new Node('method', NULL, array(
           'name'   => $method->name(),
           'access' => $this->tagAttribute($method->tags('access'), 0, 'text'),
           'return' => $this->tagAttribute($method->tags('return'), 0, 'type')
@@ -154,29 +130,100 @@
           $m->addChild(new Node('argument', $default, array('name' => $name)));
         }
       }
-
       return $n;
     }
 
+    function fieldsNode(&$classdoc, $inherited= FALSE) {
+      $n= &new Node('fields');
+      $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
+
+      foreach ($classdoc->fields as $name => $value) {
+        $n->addChild(new Node('field', $value, array(
+          'name'  => $name
+        )));
+      }
+      
+      return $n;
+    }
+
+    function classNode(&$classdoc) {
+      $n= &new Node('class', NULL, array(
+        'name'    => $classdoc->qualifiedName(),
+        'type'    => $classdoc->classType()
+      ));
+      
+      // Apidoc
+      $n->addChild(new Node('comment', $classdoc->commentText()));
+      $n->addChild(new Node('purpose', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
+      foreach ($classdoc->tags('see') as $ref) {
+        $n->addChild(new Node('see', NULL, array('href' => $ref->text)));
+      }
+      foreach ($classdoc->tags('test') as $ref) {
+        $n->addChild(new Node('test', NULL, array('href' => $ref->text)));
+      }
+      if ($classdoc->tags('deprecated')) {
+        $n->addChild(new Node('deprecated', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
+      }
+
+      // Annotations
+      $n->addChild($this->annotationNode($classdoc->annotations()));
+
+      // Superclasses
+      $extends= &$n->addChild(new Node('extends'));
+      $doc= $classdoc;
+      while ($doc= $doc->superclass) {
+        $extends->addChild($this->classReferenceNode($doc));
+      }
+      
+      // Interfaces
+      $interfaces= &$n->addChild(new Node('implements'));
+      for ($classdoc->interfaces->rewind(); $classdoc->interfaces->hasNext(); ) {
+        $interfaces->addChild($this->classReferenceNode($classdoc->interfaces->next()));
+      }
+
+      // Members
+      $doc= $classdoc;
+      $inherited= FALSE;
+      do {
+        $n->addChild($this->fieldsNode($doc, $inherited));
+        $n->addChild($this->methodsNode($doc, $inherited));
+        $inherited= TRUE;
+      } while ($doc= $doc->superclass);
+      
+      return $n;
+    }
+    
+    function marshalClassDoc(&$classdoc) {
+      static $done= array();
+      
+      if (isset($done[$classdoc->hashCode()])) return;    // Already been there
+
+      $out= &new File($this->build->getURI().$classdoc->qualifiedName().'.xml');
+      Console::writeLine('- ', $classdoc->toString());
+
+      // Create XML tree
+      $tree= &new Tree('doc');
+      $tree->addChild($this->classNode($classdoc));
+
+      // Write to file
+      FileUtil::setContents(
+        $out,
+        $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
+      );
+      
+      $done[$classdoc->hashCode()]= TRUE;
+      delete($out);
+      delete($tree);
+    }
+
     function start(&$root) {
-      $build= &new Folder($root->option('build', 'build'));
-      if (!$build->exists()) {
-        $build->create();
+      $this->build= &new Folder($root->option('build', 'build'));
+      if (!$this->build->exists()) {
+        $this->build->create();
       }
       
       while ($root->classes->hasNext()) {
-        $classdoc= &$root->classes->next();
-        Console::writeLine('Q: ', $classdoc->toString());
-        
-        // Create XML tree
-        $tree= &new Tree('doc');
-        $tree->addChild($this->classNode($classdoc));
-        
-        // Write to file
-        FileUtil::setContents(
-          new File($build->getURI().$classdoc->qualifiedName().'.xml'),
-          $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
-        );
+        $this->marshalClassDoc($root->classes->next());
       }
     }
 
