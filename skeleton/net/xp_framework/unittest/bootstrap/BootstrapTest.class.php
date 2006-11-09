@@ -5,8 +5,8 @@
  */
 
   uses(
-    'lang.Process',
-    'util.profiling.unittest.TestCase'
+    'util.profiling.unittest.TestCase',
+    'net.xp_framework.unittest.bootstrap.SandboxSourceRunner'
   );
 
   /**
@@ -16,7 +16,9 @@
    * @purpose  purpose
    */
   class BootstrapTest extends TestCase {
-
+    var
+      $sandbox    = NULL;
+      
     /**
      * Sets up the tests
      *
@@ -26,25 +28,10 @@
       if (!isset($_SERVER['_'])) return throw(new PrerequisitesNotMetError(
         'This test can only be run in a non-web environment'
       ));
+      
+      $this->sandbox= &new SandboxSourceRunner();
     }
   
-    /**
-     * Retrieve PHP binary path. Converts the path to a proper
-     * windows path in case the PHP binary has been invoked through
-     * a cygwin path.
-     *
-     * @access  protected
-     * @return  string
-     */
-    function _binary() {
-      static $binary= NULL;
-      
-      if (!$binary) {
-        $binary= preg_replace('#^/cygdrive/(\w)/#', '$1:/', $_SERVER['_']);
-      }
-      return $binary;
-    }
-
     /**
      * Run XP script and check exitcode
      *
@@ -53,15 +40,7 @@
      * @param   string source sourcecode to execute
      */
     function assertExitCode($code, $source) {
-      try(); {
-        $p= &new Process($this->_binary().' -dinclude_path='.ini_get("include_path"));
-        $p->in->write('<?php '.$source.'?>');
-        $p->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
-      }
-      
-      $this->assertEquals($code, $p->exitValue());
+      $this->assertEquals($code, $this->sandbox->run($source));
     }
     
     /**
