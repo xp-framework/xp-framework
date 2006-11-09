@@ -4,15 +4,14 @@
  * $Id$
  */
  
-  uses('text.doclet.Doc');
+  uses('text.doclet.AnnotatedDoc');
 
   /**
    *
    * @purpose  Documents a method
    */
-  class MethodDoc extends Doc {
+  class MethodDoc extends AnnotatedDoc {
     var
-      $annotations  = array(),
       $arguments    = array();
       
   }

@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('text.doclet.Doc');
+  uses('text.doclet.AnnotatedDoc');
 
   define('EXCEPTION_CLASS',   'exception');
   define('ERROR_CLASS',       'error');
@@ -17,9 +17,8 @@
    *
    * @purpose  Documents a class
    */
-  class ClassDoc extends Doc {
+  class ClassDoc extends AnnotatedDoc {
     var
-      $annotations    = array(),
       $fields         = array(),
       $methods        = array(),
       $constants      = array(),
