@@ -26,8 +26,6 @@
      */
     function setRoot(&$root) {
       $this->root= &$root;
-      $this->interfaces->root= &$root;
-      $this->usedClasses->root= &$root;    
     }
     
     /**
