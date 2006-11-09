@@ -20,6 +20,7 @@
    *   $collection->close();
    * </code>
    *
+   * @see      http://xp-framework.info/xml/xp.en_US/news/view?129
    * @test     xp://net.xp_framework.unittest.io.collections.CollectionCompositeTest 
    * @purpose  Collection implementation
    */
