@@ -10,6 +10,8 @@
   class DocumentationScriptlet extends HttpScriptlet {
   
     function doGet(&$request, &$response) {
+      $response->write('<html><head><link rel="stylesheet" href="layout.css"/></head><body>');
+      
       $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
       $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
 

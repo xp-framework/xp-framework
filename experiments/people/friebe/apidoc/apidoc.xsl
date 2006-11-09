@@ -143,20 +143,6 @@
   </xsl:template>
 
   <xsl:template match="/">
-    <style type="text/css">
-      body {
-        font-family: "Verdana", "Arial", sans-serif;
-      }
-      h1, h2, h3 {
-        font-family: "Lucida Grande", "Verdana", "Arial", sans-serif;
-      }
-      h3 {
-        border-bottom: 1px solid black; margin-bottom: 20px 
-      }
-      p.comment {
-        white-space: pre;
-      }
-    </style>
     <a href="?">Back to list</a><hr/>
 
     <xsl:apply-templates select="doc"/>
