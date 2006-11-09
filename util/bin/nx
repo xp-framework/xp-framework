@@ -1,0 +1,29 @@
+#!/bin/sh
+
+export PHP_INCLUDE_PATH=`php -r 'echo ini_get("include_path");'`
+CMD=
+
+for PARAM in $@; do
+  if [ -f $PARAM ]; then
+    CMD=$CMD" $PARAM"
+  elif [ -f `echo $PARAM | cut -d : -f 1` ]; then
+    CMD=$CMD" -line `echo $PARAM | cut -d : -f 2` `echo $PARAM | cut -d : -f 1`"
+  else
+    IFS=':'
+    FOUND=0
+    for DIR in $PHP_INCLUDE_PATH; do 
+      FILE=`echo $PARAM | tr . /`
+      if [ -f "$DIR/$FILE.class.php" ]; then
+        CMD=$CMD" $DIR/$FILE.class.php" 
+        FOUND=1
+        break
+      fi
+    done
+    if [ "0" = "$FOUND" ] ; then
+      CMD=$CMD" "$PARAM
+    fi
+    IFS=' '
+  fi
+done
+
+nedit $CMD &
