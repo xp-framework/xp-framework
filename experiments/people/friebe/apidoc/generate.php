@@ -225,6 +225,7 @@
       while ($root->classes->hasNext()) {
         $doc= &$root->classes->next();
         $doc && $this->marshalClassDoc($doc);
+        delete($doc);
         xp::gc();
       }
     }
