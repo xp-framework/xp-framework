@@ -147,5 +147,15 @@
     function toString() {
       return $this->getClassName().'<'.$this->classType().' '.$this->qualifiedName.'>';
     }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return $this->getClassName().$this->qualifiedName;
+    }
   }
 ?>
