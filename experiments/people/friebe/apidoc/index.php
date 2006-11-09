@@ -10,21 +10,21 @@
   class DocumentationScriptlet extends HttpScriptlet {
   
     function doGet(&$request, &$response) {
-      $this->basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
-      $this->builddir= $this->basedir.'build'.DIRECTORY_SEPARATOR;
+      $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
+      $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
 
       if ($class= $request->getQueryString()) {
         
         $proc= &new DomXSLProcessor();
-        $proc->setXMLFile($this->builddir.basename($class).'.xml');
-        $proc->setXSLFile($this->basedir.'apidoc.xsl');
+        $proc->setXMLFile($builddir.basename($class).'.xml');
+        $proc->setXSLFile($basedir.'apidoc.xsl');
         $proc->run();
         $response->write($proc->output());
         return;
       }
 
-      $response->write('<h1>'.basename($this->builddir).'</h1>');
-      $c= &new FileCollection($this->builddir);
+      $response->write('<h1>'.basename($builddir).'</h1>');
+      $c= &new FileCollection($builddir);
       $c->open();
       $response->write('<dir>');
       while (NULL !== ($element= &$c->next())) {
