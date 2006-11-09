@@ -55,7 +55,7 @@
      * @access  public
      * @param   &org.dia.DiaConnection Conn
      */
-    #[@fromDia(xpath= 'child::dia:connection, class= 'org.dia.DiaConnection')]
+    #[@fromDia(xpath= 'child::dia:connection', class= 'org.dia.DiaConnection')]
     function addConnection($Conn) {
       $this->set($Conn->getHandle(), $Conn);
     }
