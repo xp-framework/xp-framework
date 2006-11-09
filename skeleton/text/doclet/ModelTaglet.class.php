@@ -7,7 +7,7 @@
   uses('text.doclet.ModelTag');
 
   /**
-   * A taglet that represents the @model tag. 
+   * A taglet that represents the model tag. 
    *
    * @see      xp://TagletManager
    * @purpose  Taglet

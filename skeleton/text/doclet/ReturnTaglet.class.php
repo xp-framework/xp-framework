@@ -7,7 +7,7 @@
   uses('text.doclet.ReturnTag');
 
   /**
-   * A taglet that represents the @return tag. 
+   * A taglet that represents the return tag. 
    *
    * @see      xp://TagletManager
    * @purpose  Taglet

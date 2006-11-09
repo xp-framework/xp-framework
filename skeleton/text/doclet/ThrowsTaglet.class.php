@@ -7,7 +7,7 @@
   uses('text.doclet.ThrowsTag');
 
   /**
-   * A taglet that represents the @throws tag. 
+   * A taglet that represents the throws tag. 
    *
    * @see      xp://TagletManager
    * @purpose  Taglet

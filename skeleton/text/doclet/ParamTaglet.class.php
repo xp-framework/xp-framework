@@ -7,7 +7,7 @@
   uses('text.doclet.ParamTag');
 
   /**
-   * A taglet that represents the @param tag. 
+   * A taglet that represents the param tag. 
    *
    * @see      xp://TagletManager
    * @purpose  Taglet

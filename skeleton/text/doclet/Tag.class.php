@@ -5,12 +5,12 @@
  */
 
   /**
-   * Represents a simple documentation tag, such as @since, @author, 
-   * @version. Given a tag (e.g. "@since 1.2"), holds tag name (e.g. 
-   * "@since") and tag text (e.g. "1.2"). Tags with structure or 
+   * Represents a simple documentation tag, such as since, author, 
+   * version. Given a tag (e.g. "since 1.2"), holds tag name (e.g. 
+   * "since") and tag text (e.g. "1.2"). Tags with structure or 
    * which require special processing are handled by subclasses such 
-   * as ParamTag (for @param), SeeTag (for @see and {@link}), and 
-   * ThrowsTag (for @throws). 
+   * as ParamTag (for param), SeeTag (for see and {link}), and 
+   * ThrowsTag (for throws). 
    *
    * @purpose  Base class
    */

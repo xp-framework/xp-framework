@@ -7,7 +7,7 @@
   uses('text.doclet.SeeTag');
 
   /**
-   * A taglet that represents the @see tag. 
+   * A taglet that represents the see tag. 
    *
    * @see      xp://TagletManager
    * @purpose  Taglet
