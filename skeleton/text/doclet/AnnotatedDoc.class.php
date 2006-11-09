@@ -24,15 +24,24 @@
      * Parse annotations from string
      *
      * @access  protected
+     * @throws  lang.FormatException in case the annotations cannot be parsed
      */    
     function parse() {
       if (is_array($this->_parsed)) return;   // Short-cuircuit: We've already parsed it
       
-      foreach ($this->annotations ? eval('return array('.preg_replace(
+      $this->_parsed= array();
+      if (!$this->annotations) return;
+      
+      $expr= preg_replace(
         array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
         array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
         trim($this->annotations, "[]# \t\n\r").','
-      ).');') : array() as $name => $value) {
+      );
+      if (!is_array($hash= eval('return array('.$expr.');'))) {
+        return throw(new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')'));
+      }
+      
+      foreach ($hash as $name => $value) {
         $this->_parsed[$name]= &new AnnotationDoc($name, $value);
       }
     }
@@ -41,7 +50,7 @@
      * Retrieves a list of all annotations
      *
      * @access  public
-     * @return  
+     * @return  array
      */ 
     function annotations() {
       $this->parse();
