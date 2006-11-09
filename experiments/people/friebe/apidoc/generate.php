@@ -19,7 +19,8 @@
     var
       $aggregate = NULL,
       $classpath = '',
-      $root      = NULL;
+      $root      = NULL,
+      $stop      = FALSE;
   
     function __construct(&$aggregate, $classpath) {
       $this->aggregate= &$aggregate;
@@ -27,7 +28,7 @@
     }
   
     function hasNext() {
-      return $this->aggregate->hasNext();
+      return $this->stop ? FALSE : $this->aggregate->hasNext();
     }
     
     function classNameForElement(&$element) {
@@ -42,6 +43,7 @@
         $path= substr($path, 0, $pos); 
       }
 
+      $this->stop= TRUE;
       throw(new IllegalArgumentException('Cannot infer classname from '.$element->toString()));
     }
     
