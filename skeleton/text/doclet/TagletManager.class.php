@@ -54,7 +54,7 @@
      * 
      * @model   static
      * @access  public
-     * @return  &TagletManager
+     * @return  &text.doclet.TagletManager
      */
     function &getInstance() {
       static $instance= NULL;
@@ -68,7 +68,7 @@
      *
      * @access  public
      * @param   string kind
-     * @param   &Taglet taglet
+     * @param   &text.doclet.Taglet taglet
      */
     function addCustomTag($kind, &$taglet) {
       $this->taglets[$kind]= &$taglet;
@@ -78,10 +78,10 @@
      * Factory method
      *
      * @access  public
-     * @param   &Doc holder
+     * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &Tag
+     * @return  &text.doclet.Tag
      */
     function &make(&$holder, $kind, $text) {
       if (!isset($this->taglets[$kind])) {

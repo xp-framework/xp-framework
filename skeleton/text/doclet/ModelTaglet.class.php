@@ -9,7 +9,7 @@
   /**
    * A taglet that represents the model tag. 
    *
-   * @see      xp://TagletManager
+   * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
   class ModelTaglet extends Object {
@@ -18,10 +18,10 @@
      * Create tag from text
      *
      * @access  public
-     * @param   &Doc holder
+     * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &Tag
+     * @return  &text.doclet.Tag
      */ 
     function &tagFrom(&$holder, $kind, $text) {
       return new ModelTag($kind, $text);
