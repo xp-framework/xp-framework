@@ -17,7 +17,7 @@
     /**
      * Constructor
      *
-     * @access  publid
+     * @access  public
      * @param   string uri
      */
     function __construct($uri) {

@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @access  publid
+     * @access  public
      * @param   string uri
      * @param   int size default 0
      * @param   util.Date adate default NULL
