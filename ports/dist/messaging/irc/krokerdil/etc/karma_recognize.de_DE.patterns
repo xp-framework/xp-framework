@@ -14,9 +14,9 @@
 
 # Friendliness
 /(der|die) Beste/i:1:1
-/mag|lieb|gern|nett|schlau|intelligent/i:1:0
+/mag|lieb|gern|nett|schlau|intelligent|\<3/i:1:0
 /Hero|Held/i:5:0
-/\b(Hallo|Hi|Hugh|wie geht|Gute)\b/i:2:2
+/\b(Hallo|Hi|Hugh|wie geht|Gute|moin)\b/i:2:2
 /super|toll|gut|cool/i:1:0
 /(gib|gebe).+Recht/i:1:0
 /(be)?dank/i:1:0
