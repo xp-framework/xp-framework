@@ -37,7 +37,8 @@
     <style type="text/css">
       h2 { margin-top: 30px; }
       h3 { margin-top: 20px; }
-      h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; }
+      h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; margin-top: 0px; }
+      hr { border: 1px solid #3165c5; height: 1px; }
       fieldset {
         margin-top: 20px;
         border: 1px solid #3165c5;
@@ -54,6 +55,14 @@
       code {
         display: block;
         white-space: pre;
+      }
+      p.annotations {
+        font-family: "Lucida console", "Lucida", "Courier new", monospace;
+        color: #3165c5;
+        margin: 0px;
+      }
+      p.comment {
+        color: #444444;
       }
     </style>
     <h1><xsl:value-of select="concat(@type, ' ', @name)"/></h1>
@@ -135,7 +144,8 @@
           <ul>
             <xsl:for-each select="methods[not(@from)]/method">
               <li>
-                <a href="#{@name}"><xsl:value-of select="concat(@access, ' ', @return)"/>
+                <a href="#{@name}">
+                  <xsl:value-of select="concat(@access, ' ', @return)"/>
                   <xsl:text> </xsl:text><b><xsl:value-of select="@name"/></b>
                   <xsl:text>(</xsl:text>
                   <xsl:for-each select="argument">
@@ -172,6 +182,13 @@
     <h2>Method details</h2>
     <xsl:for-each select="methods[not(@from)]/method">
       <a name="{@name}"/>
+      <p class="annotations">
+        <xsl:for-each select="annotations/annotation">
+          <xsl:value-of select="concat('@', @name, '(', value, ')')"/>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+        &#160;
+      </p>
       <h4>
         <xsl:value-of select="@access"/>
         <xsl:text> </xsl:text>
@@ -194,6 +211,27 @@
       <p class="comment">
         <xsl:value-of select="comment" disable-output-escaping="yes"/>
       </p>
+      
+      <xsl:if test="count(argument) &gt; 0">
+        <h4>Arguments:</h4>
+        <ul>
+          <xsl:for-each select="argument">
+            <li><xsl:value-of select="@name"/></li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+
+      <xsl:if test="count(exception) &gt; 0">
+        <h4>Exceptions:</h4>
+        <ul>
+          <xsl:for-each select="exception">
+            <li>
+              <a href="?{@class}"><xsl:value-of select="@class"/></a>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+      
       <hr/>
     </xsl:for-each>
   </xsl:template>
