@@ -81,8 +81,21 @@
           )));
         }
         
+        // Arguments
+        $param= array();
+        foreach ($method->tags('param') as $tag) {
+          $param['$'.$tag->name]= &$tag;
+        }
         foreach ($method->arguments as $name => $default) {
-          $m->addChild(new Node('argument', $default, array('name' => $name)));
+          $a= &$m->addChild(new Node('argument', NULL, array('name' => $name)));
+          $a->addChild(new Node('default', $default));
+          if (isset($param[$name])) {
+            $a->setAttribute('type', $param[$name]->type);
+            $a->addChild(new Node('comment', $param[$name]->text));
+          } else {
+            $a->setAttribute('type', 'mixed');
+            // DEBUG Console::writeLine('Unknown ', $name, ' in  ', xp::stringOf($method->tags('param')));
+          }
         }
       }
       return $n;

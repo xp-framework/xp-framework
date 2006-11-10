@@ -16,7 +16,7 @@
       <xsl:value-of select="substring-before(concat(translate($comment, '&#10;', ' '), '. '), '. ')"/>
     </func:result>
   </func:function>
-
+  
   <func:function name="func:ltrim">
     <xsl:param name="text"/>
     <xsl:param name="chars"/>
@@ -30,6 +30,22 @@
           <xsl:value-of select="$text"/>
         </xsl:otherwise>
       </xsl:choose>
+    </func:result>
+  </func:function>
+  
+  <func:function name="func:typelink">
+    <xsl:param name="type"/>
+    
+    <func:result>
+      <a>
+        <xsl:if test="contains($type, '.')">
+          <xsl:attribute name="href">
+            <xsl:value-of select="concat('?', func:ltrim(substring-before(concat($type, '['), '['), '&amp;'))"/>
+          </xsl:attribute>
+        </xsl:if>
+        
+        <xsl:value-of select="$type"/>
+      </a>
     </func:result>
   </func:function>
 
@@ -203,7 +219,7 @@
         <xsl:value-of select="@name"/>
         <xsl:text>(</xsl:text>
         <xsl:for-each select="argument">
-          <xsl:value-of select="@name"/>
+          <xsl:value-of select="concat(@type, ' ', @name)"/>
           <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>
         <xsl:text>)</xsl:text>
@@ -217,8 +233,10 @@
         <ul>
           <xsl:for-each select="argument">
             <li>
+              <xsl:copy-of select="func:typelink(@type)"/>
+              <xsl:text> </xsl:text>
               <xsl:value-of select="@name"/>
-              <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+              <xsl:if test="string(default) != ''"><tt>= <xsl:value-of select="default"/></tt></xsl:if>
             </li>
           </xsl:for-each>
         </ul>
