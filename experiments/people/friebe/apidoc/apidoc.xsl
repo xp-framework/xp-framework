@@ -68,6 +68,10 @@
         border: 1px solid #ffa800;
         background-color: #ffeac0;
       }
+      fieldset.warning em {
+        color: #963817;
+        font-weight: bold;
+      }
       #content ul {
         list-style-type: square;
         list-style-image: url(image/li.gif);
@@ -93,11 +97,11 @@
         <p>
           <b>This class has been marked as deprecated.</b>
           Usage is discouraged though this class remains in the framework 
-          for backward compatibility.
+          for backward compatibility.<br/><br/>
+          <em>
+            <xsl:value-of select="deprecated" disable-output-escaping="yes"/>
+          </em>
         </p>
-        <em>
-          <xsl:value-of select="deprecated" disable-output-escaping="yes"/>
-        </em>
       </fieldset>
     </xsl:if>
     
