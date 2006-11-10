@@ -109,9 +109,9 @@
      * @return  int exit value of process
      */
     function close() {
-      $this->in->close();
-      $this->out->close();
-      $this->err->close();
+      $this->in->isOpen() && $this->in->close();
+      $this->out->isOpen() && $this->out->close();
+      $this->err->isOpen() && $this->err->close();
       $this->exitv= proc_close($this->_proc);
       return $this->exitv;
     }
