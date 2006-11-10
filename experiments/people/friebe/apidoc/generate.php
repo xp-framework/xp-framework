@@ -130,7 +130,7 @@
         $n->addChild(new Node('test', NULL, array('href' => $ref->text)));
       }
       if ($classdoc->tags('deprecated')) {
-        $n->addChild(new Node('deprecated', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
+        $n->addChild(new Node('deprecated', $this->tagAttribute($classdoc->tags('deprecated'), 0, 'text')));
       }
 
       // Annotations
