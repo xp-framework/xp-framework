@@ -84,7 +84,7 @@
         // Arguments
         $param= array();
         foreach ($method->tags('param') as $tag) {
-          $param['$'.$tag->name]= &$tag;
+          $param['$'.$tag->name]= $tag;
         }
         foreach ($method->arguments as $name => $default) {
           $a= &$m->addChild(new Node('argument', NULL, array('name' => $name)));
