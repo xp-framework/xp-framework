@@ -3,6 +3,7 @@
  version="1.0"
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:str="http://exslt.org/strings"
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="exsl func"
 >
@@ -13,7 +14,7 @@
     <xsl:param name="comment"/>
     
     <func:result>
-      <xsl:value-of select="substring-before(concat(translate($comment, '&#10;', ' '), '. '), '. ')"/>
+      <xsl:value-of select="exsl:node-set(str:tokenize($comment, '.&#10;'))"/>
     </func:result>
   </func:function>
   
@@ -63,6 +64,10 @@
         font: bold 13px "Trebuchet MS", "Arial", sans-serif;
         color: #3165c5;
       }
+      fieldset.warning {
+        border: 1px solid #ffa800;
+        background-color: #ffeac0;
+      }
       #content ul {
         list-style-type: square;
         list-style-image: url(image/li.gif);
@@ -83,19 +88,38 @@
     </style>
     <h1><xsl:value-of select="concat(@type, ' ', @name)"/></h1>
 
-    <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-    
     <xsl:if test="deprecated">
-      <em>
-        Deprecated!
-        <xsl:value-of select="deprecated" disable-output-escaping="yes"/>
-      </em>
+      <fieldset class="warning">
+        <p>
+          <b>This class has been marked as deprecated.</b>
+          Usage is discouraged though this class remains in the framework 
+          for backward compatibility.
+        </p>
+        <em>
+          <xsl:value-of select="deprecated" disable-output-escaping="yes"/>
+        </em>
+      </fieldset>
     </xsl:if>
     
+
+    <h2>Purpose: <xsl:value-of select="purpose"/></h2>
+
     <p class="comment">
       <xsl:value-of select="comment" disable-output-escaping="yes"/>
     </p>
-    
+
+    <xsl:if test="count(test) &gt; 0">
+      <h2>Unittests</h2>
+      <p>
+        This class' functionality is verified by the following tests:<br/>
+        <xsl:for-each select="test">
+          <xsl:variable name="class" select="substring-after(@href, 'xp://')"/>
+          <a href="?{$class}"><xsl:value-of select="$class"/></a>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
+    </xsl:if>
+
     <h2>Inheritance</h2>
     <p>
       <a><xsl:value-of select="@name"/></a>
