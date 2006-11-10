@@ -183,7 +183,7 @@
         <xsl:for-each select="constant">
           <li>
             <a name="{@name}"><b><xsl:value-of select="@name"/></b></a>
-            <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+            <xsl:if test="string(.) != ''"><tt>= <xsl:copy-of select="func:cutstring(., 72)"/></tt></xsl:if>
           </li>
         </xsl:for-each>
       </ul>
