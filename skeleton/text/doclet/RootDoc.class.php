@@ -213,7 +213,7 @@
 
             case ST_DEFINE.T_CONSTANT_ENCAPSED_STRING:
               $state= ST_DEFINE_VALUE;
-              $define= $t[1];
+              $define= trim($t[1], '"\'');
               break;
 
             case ST_DEFINE_VALUE.T_CONSTANT_ENCAPSED_STRING:
