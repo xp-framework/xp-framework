@@ -23,7 +23,7 @@
      * @see     xp://net.xp_framework.unittest.tests.coverage.PHPCodeFragmentizer
      * @access  protected
      * @param   string code
-     * @return  net.xp_framework.unittest.tests.coverage.Fragment[] expressions
+     * @return  util.profiling.unittest.coverage.Fragment[] expressions
      */
     function fragmentsOf($code) {
       return PHPCodeFragmentizer::fragmentsOf('<?php '.trim($code).' ?>');
@@ -33,7 +33,7 @@
      * Assert method
      *
      * @access  protected
-     * @param   net.xp_framework.unittest.tests.coverage.Fragment[] expected
+     * @param   util.profiling.unittest.coverage.Fragment[] expected
      * @param   string code
      * @throws  util.profiling.unittest.AssertionFailedError
      */
