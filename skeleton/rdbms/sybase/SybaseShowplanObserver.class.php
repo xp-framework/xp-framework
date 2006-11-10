@@ -63,7 +63,7 @@
      * @model   static
      * @access  public
      * @param   mixed argument
-     * @return  &rdbms.sybase.SybaseIOObserver
+     * @return  &rdbms.sybase.SybaseShowplanObserver
      */
     function &instanceFor($arg) {
       return new SybaseShowplanObserver($arg);
