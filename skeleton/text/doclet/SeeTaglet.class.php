@@ -24,7 +24,8 @@
      * @return  &text.doclet.Tag
      */ 
     function &tagFrom(&$holder, $kind, $text) {
-      return new SeeTag($kind, $text);
+      sscanf($text, '%[^:]://%s %[^$]', $scheme, $urn, $comment);
+      return new SeeTag($kind, $comment, $scheme, $urn);
     }
 
   } implements(__FILE__, 'text.doclet.Taglet');
