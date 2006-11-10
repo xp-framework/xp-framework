@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <xsl:stylesheet
  version="1.0"
  xmlns:exsl="http://exslt.org/common"
@@ -7,7 +7,7 @@
  extension-element-prefixes="exsl func"
 >
 
-  <xsl:output method="html"/>
+  <xsl:output method="html" encoding="iso-8859-1"/>
 
   <func:function name="func:first-sentence">
     <xsl:param name="comment"/>
@@ -34,86 +34,132 @@
   </func:function>
 
   <xsl:template match="class">
-    <h1>Apidoc: <xsl:value-of select="concat(@type, ' ', @name)"/></h1>
+    <style type="text/css">
+      h2 { margin-top: 30px; }
+      h3 { margin-top: 20px; }
+      h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; }
+      fieldset {
+        margin-top: 20px;
+        border: 1px solid #3165c5;
+      }
+      legend {
+        font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+        color: #3165c5;
+      }
+      #content ul {
+        list-style-type: square;
+        list-style-image: url(image/li.gif);
+        line-height: 18px;
+      }
+      code {
+        display: block;
+        white-space: pre;
+      }
+    </style>
+    <h1><xsl:value-of select="concat(@type, ' ', @name)"/></h1>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
     
     <xsl:if test="deprecated">
-      <h5>
+      <em>
         Deprecated!
         <xsl:value-of select="deprecated" disable-output-escaping="yes"/>
-      </h5>
+      </em>
     </xsl:if>
     
     <p class="comment">
       <xsl:value-of select="comment" disable-output-escaping="yes"/>
     </p>
     
-    <h3>Inheritance</h3>
-    <xsl:for-each select="extends/link">
-      <a href="?{@href}"><xsl:value-of select="@href"/></a>
-      <br/>
-    </xsl:for-each>
+    <h2>Inheritance</h2>
+    <p>
+      <a href="#"><xsl:value-of select="@name"/></a>
+      <xsl:for-each select="extends/link">
+        &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
+      </xsl:for-each>
+    </p>
+
+    <h2>Members</h2>
 
     <!-- Fields -->
-    <h3>Field summary</h3>
-    <ul>
-      <xsl:for-each select="fields[not(@from)]/field">
-        <li>
-          <a name="@name"><b><xsl:value-of select="@name"/></b></a><br/>
-          <xsl:choose>
-            <xsl:when test="string(.) != ''">Initial value: <tt><xsl:value-of select="."/></tt></xsl:when>
-            <xsl:otherwise>(no initial value)</xsl:otherwise>
-          </xsl:choose>
-        </li>
-      </xsl:for-each>
-    </ul>
+    <fieldset>
+      <legend>Field summary</legend>
+      <xsl:choose>
+        <xsl:when test="count(fields[not(@from)]/field) &gt; 0">
+          <h3>Fields declared in this class</h3>
+          <ul>
+            <xsl:for-each select="fields[not(@from)]/field">
+              <li>
+                <a name="@name"><b><xsl:value-of select="@name"/></b></a>
+                <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </xsl:when>
+        <xsl:otherwise>
+          <em>(This class does not declare any fields)</em>
+        </xsl:otherwise>
+      </xsl:choose>
 
-    <!-- Inherited fields -->
-    <xsl:for-each select="fields[@from]">
-      <xsl:if test="count(method) &gt; 0">
-        <h3>Fields inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+      <!-- Inherited fields -->
+      <xsl:for-each select="fields[@from]">
+        <xsl:if test="count(field) &gt; 0">
+          <h3>Fields inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
 
-        <xsl:for-each select="field">
-          <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/></a>
-          <xsl:if test="position() != last()">, </xsl:if>
-        </xsl:for-each>
-        <br clear="all"/>
-      </xsl:if>
-    </xsl:for-each>
-    
-    <!-- Methods -->
-    <h3>Method summary</h3>
-    <ul>
-      <xsl:for-each select="methods[not(@from)]/method">
-        <li>
-          <a href="#{@name}"><xsl:value-of select="concat(@access, ' ', @return, ' ', @name)"/>
-            <xsl:text>(</xsl:text>
-            <xsl:for-each select="argument">
-              <xsl:value-of select="@name"/>
+          <p>
+            <xsl:for-each select="field">
+              <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/></a>
               <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
-            <xsl:text>)</xsl:text>
-          </a><br/>
-          <xsl:value-of select="func:first-sentence(comment)" disable-output-escaping="yes"/>
-        </li>
+          </p>
+        </xsl:if>
       </xsl:for-each>
-    </ul>
+    </fieldset>
 
-    <!-- Inherited methods -->
-    <xsl:for-each select="methods[@from]">
-      <xsl:if test="count(method) &gt; 0">
-        <h3>Methods inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+    <!-- Methods -->
+    <fieldset>
+      <legend>Method summary</legend>
+      <xsl:choose>
+        <xsl:when test="count(methods[not(@from)]/method) &gt; 0">
+          <h3>Methods declared in this class</h3>
+          <ul>
+            <xsl:for-each select="methods[not(@from)]/method">
+              <li>
+                <a href="#{@name}"><xsl:value-of select="concat(@access, ' ', @return)"/>
+                  <xsl:text> </xsl:text><b><xsl:value-of select="@name"/></b>
+                  <xsl:text>(</xsl:text>
+                  <xsl:for-each select="argument">
+                    <xsl:value-of select="@name"/>
+                    <xsl:if test="position() != last()">, </xsl:if>
+                  </xsl:for-each>
+                  <xsl:text>)</xsl:text>
+                </a><br/>
+                <em><xsl:value-of select="func:first-sentence(comment)" disable-output-escaping="yes"/></em>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </xsl:when>
+        <xsl:otherwise>
+          <em>(This class does not declare any methods)</em>
+        </xsl:otherwise>
+      </xsl:choose>
 
-        <xsl:for-each select="method">
-          <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/></a>
-          <xsl:if test="position() != last()">, </xsl:if>
-        </xsl:for-each>
-        <br clear="all"/>
-      </xsl:if>
-    </xsl:for-each>
+      <!-- Inherited methods -->
+      <xsl:for-each select="methods[@from]">
+        <xsl:if test="count(method) &gt; 0">
+          <h3>Methods inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
 
-    <h3>Method details</h3>
+          <p>
+            <xsl:for-each select="method">
+              <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/>()</a>
+              <xsl:if test="position() != last()">, </xsl:if>
+            </xsl:for-each>
+          </p>
+        </xsl:if>
+      </xsl:for-each>
+    </fieldset>
+
+    <h2>Method details</h2>
     <xsl:for-each select="methods[not(@from)]/method">
       <a name="{@name}"/>
       <h4>
@@ -143,8 +189,43 @@
   </xsl:template>
 
   <xsl:template match="/">
-    <a href="?">Back to list</a><hr/>
+    <div id="search">
+      <form action="/search">
+        <label for="query"><u>S</u>earch XP website for </label>
+        <input name="query" accesskey="s" type="text"></input>
+      </form>
+    </div>
+    <div id="top">&#160;
+    </div>
+    <div id="menu">
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="news.html">News</a></li>
+        <li id="active"><a href="?">Documentation</a></li>
+        <li><a href="download.html">Download</a></li>
+        <li><a href="dev.html">Developers</a></li>
+      </ul>
+      <!-- For Mozilla to calculate height correctly -->
+      &#160;
+    </div>
+    <table id="main" cellpadding="0" cellspacing="10"><tr>
+      <td id="content">
 
-    <xsl:apply-templates select="doc"/>
+        <xsl:apply-templates select="doc"/>
+        
+      </td>
+      <td id="context">
+        <h3>Further views</h3>
+        <a href="#">Inheritance tree </a><br/>
+      </td>
+    </tr></table>
+    <div id="footer">
+      <a href="credits.html">Credits</a> |
+      <a href="feedback.html">Feedback</a>
+      
+      <br/>
+      
+      (c) 2001-2006 the XP team
+    </div>
   </xsl:template>
 </xsl:stylesheet>
