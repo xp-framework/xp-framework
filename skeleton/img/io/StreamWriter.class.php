@@ -23,7 +23,7 @@
      * @param   &io.Stream stream
      */
     function __construct(&$stream) {
-      $this->stream= &$stream;
+      $this->stream= &deref($stream);
     }
 
     /**
