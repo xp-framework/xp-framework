@@ -17,6 +17,10 @@
 
       if ($class= $request->getQueryString()) {
         
+        if (!file_exists($builddir.basename($class).'.xml')) {
+          return throw(new HttpScriptletException($class.' does not exist!', HTTP_NOT_FOUND));
+        }
+        
         $proc= &new DomXSLProcessor();
         $proc->setXMLFile($builddir.basename($class).'.xml');
         $proc->setXSLFile($basedir.'apidoc.xsl');
