@@ -6,6 +6,7 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
+    'AllClassesIterator',
     'io.Folder',
     'io.File',
     'io.FileUtil',
@@ -16,53 +17,6 @@
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.ExtensionEqualsFilter'
   );
-  
-  // {{{ AllClassesIterator
-  //     ClassIterator wrapper
-  class AllClassesIterator extends Object {
-    var
-      $aggregate = NULL,
-      $classpath = '',
-      $root      = NULL,
-      $stop      = FALSE;
-  
-    function __construct(&$aggregate, $classpath) {
-      $this->aggregate= &$aggregate;
-      $this->classpath= array_flip(array_map('realpath', explode(PATH_SEPARATOR, $classpath)));
-    }
-  
-    function hasNext() {
-      return $this->stop ? FALSE : $this->aggregate->hasNext();
-    }
-    
-    function classNameForElement(&$element) {
-      $uri= realpath($element->getURI());
-      $path= dirname($uri);
-
-      while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
-        if (isset($this->classpath[$path])) {
-          return strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'); 
-        }
-
-        $path= substr($path, 0, $pos); 
-      }
-
-      throw(new IllegalArgumentException('Cannot infer classname from '.$element->toString()));
-    }
-    
-    function &next() {
-      try(); {
-        $classname= $this->classNameForElement($this->aggregate->next());
-      } if (catch('Exception', $e)) {
-        $this->stop= TRUE;
-        return throw($e);
-      }
-      
-      return $this->root->classNamed($classname);
-    }
-  }
-  // }}}
-
   
   // {{{ GeneratorDoclet
   //     Specialized doclet
