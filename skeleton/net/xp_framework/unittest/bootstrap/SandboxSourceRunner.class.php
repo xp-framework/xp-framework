@@ -17,8 +17,8 @@
       $executable   = '',
       $settings     = array(),
       $source       = '',
-      $stdout       = '',
-      $stderr       = '',
+      $stdout       = array(),
+      $stderr       = array(),
       $exitcode     = '';
 
     /**
@@ -66,6 +66,17 @@
     function setSetting($key, $value) {
       $this->settings[$key]= $value;
     }
+    
+    /**
+     * Retrieve a single setting
+     *
+     * @access  public
+     * @param   string key
+     * @return  string
+     */
+    function getSetting($key) {
+      return $this->settings[$key];
+    }    
 
     /**
      * Get Settings
@@ -175,12 +186,14 @@
         $p->in->write('<?php '.$source.'?>');
         $p->in->close();
         
-        while ($l= $p->out->readLine()) {
-          $this->stdout[]= $l;
+        while (!$p->out->eof()) {
+          $l= trim($p->out->readLine());
+          if (!empty($l)) $this->stdout[]= $l;
         }
         
-        while ($l= $p->err->readLine()) {
-          $this->stderr[]= $l;
+        while (!$p->err->eof()) {
+          $l= trim($p->err->readLine());
+          if (!empty($l)) $this->stderr[]= $l;
         }
 
         $p->close();
