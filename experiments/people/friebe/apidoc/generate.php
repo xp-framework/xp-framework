@@ -186,14 +186,11 @@
 
     function start(&$root) {
       $this->build= &new Folder($root->option('build', 'build'));
-      if (!$this->build->exists()) {
-        $this->build->create();
-      }
+      $this->build->exists() || $this->build->create();
       
       while ($root->classes->hasNext()) {
         $doc= &$root->classes->next();
         $doc && $this->marshalClassDoc($doc);
-        delete($doc);
         xp::gc();
       }
     }
@@ -223,7 +220,10 @@
     
     
     function validOptions() {
-      return array('scan' => HAS_VALUE);
+      return array(
+        'scan'  => HAS_VALUE,
+        'build' => HAS_VALUE
+      );
     }
   }
   // }}}
