@@ -110,9 +110,14 @@
      * @access  public
      * @param   string string name of resource
      * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     function getResource($string) {
-      return $this->archive->extract($string);
+      if (FALSE !== ($r= $this->archive->extract($string))) {
+        return $r;
+      }
+
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -121,9 +126,14 @@
      * @access  public
      * @param   string string name of resource
      * @return  &io.Stream
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function getResourceAsStream($string) {
-      return $this->archive->getStream($string);
+    function &getResourceAsStream($string) {
+      if (FALSE !== ($s= &$this->archive->getStream($string))) {
+        return $s;
+      }
+    
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
