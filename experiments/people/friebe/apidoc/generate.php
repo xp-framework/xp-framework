@@ -135,6 +135,11 @@
 
       // Annotations
       $n->addChild($this->annotationNode($classdoc->annotations()));
+      
+      // Constants
+      foreach ($classdoc->constants as $name => $value) {
+        $n->addChild(new Node('constant', $value, array('name' => $name)));
+      }
 
       // Superclasses
       $extends= &$n->addChild(new Node('extends'));

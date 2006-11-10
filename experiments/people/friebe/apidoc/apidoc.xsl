@@ -114,6 +114,19 @@
       </p>
     </xsl:if>
 
+    <!-- Constants -->
+    <xsl:if test="count(constant) &gt; 0">
+      <h2>Constants</h2>
+      <ul>
+        <xsl:for-each select="constant">
+          <li>
+            <a name="{@name}"><b><xsl:value-of select="@name"/></b></a>
+            <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </xsl:if>
+    
     <h2>Members</h2>
 
     <!-- Fields -->
@@ -125,7 +138,7 @@
           <ul>
             <xsl:for-each select="fields[not(@from)]/field">
               <li>
-                <a name="@name"><b><xsl:value-of select="@name"/></b></a>
+                <a name="{@name}"><b><xsl:value-of select="@name"/></b></a>
                 <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
               </li>
             </xsl:for-each>
