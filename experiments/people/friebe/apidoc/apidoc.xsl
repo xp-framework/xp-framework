@@ -55,7 +55,7 @@
       h2 { margin-top: 30px; }
       h3 { margin-top: 20px; }
       h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; margin-top: 0px; }
-      hr { border: 1px solid #3165c5; height: 1px; }
+      hr { border: 0; background-color: #3165c5; height: 1px; }
       fieldset {
         margin-top: 20px;
         border: 1px solid #3165c5;
