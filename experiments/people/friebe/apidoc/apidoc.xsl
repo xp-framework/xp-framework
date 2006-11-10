@@ -176,6 +176,7 @@
     </xsl:if>
 
     <!-- Constants -->
+    <a name="__constants"/>
     <xsl:if test="count(constant) &gt; 0">
       <h2>Constants</h2>
       <ul>
@@ -191,6 +192,7 @@
     <h2>Members</h2>
 
     <!-- Fields -->
+    <a name="__fields"/>
     <fieldset>
       <legend>Field summary</legend>
       <xsl:choose>
@@ -226,6 +228,7 @@
     </fieldset>
 
     <!-- Methods -->
+    <a name="__methods"/>
     <fieldset>
       <legend>Method summary</legend>
       <xsl:choose>
@@ -370,6 +373,11 @@
         
       </td>
       <td id="context">
+        <h3>Jump to</h3>
+        <a href="#__constants">Constants</a><br/>
+        <a href="#__fields">Fields</a><br/>
+        <a href="#__methods">Methods</a><br/>
+
         <xsl:if test="count(doc/class/see) &gt; 0">
           <h3>See also</h3>
           
