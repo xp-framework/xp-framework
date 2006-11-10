@@ -15,14 +15,13 @@
       $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
       $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
 
-      if ($class= $request->getQueryString()) {
-        
-        if (!file_exists($builddir.basename($class).'.xml')) {
-          return throw(new HttpScriptletException($class.' does not exist!', HTTP_NOT_FOUND));
+      if (0 != sscanf($request->getQueryString(), '%[^<[]', $class)) {
+        if (!file_exists($xml= $builddir.basename($class).'.xml')) {
+          return throw(new HttpScriptletException(htmlspecialchars($class).' does not exist!', HTTP_NOT_FOUND));
         }
         
         $proc= &new DomXSLProcessor();
-        $proc->setXMLFile($builddir.basename($class).'.xml');
+        $proc->setXMLFile($xml);
         $proc->setXSLFile($basedir.'apidoc.xsl');
         $proc->run();
         $response->write($proc->output());

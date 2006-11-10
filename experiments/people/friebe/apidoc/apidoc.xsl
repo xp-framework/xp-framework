@@ -60,7 +60,7 @@
       <a>
         <xsl:if test="contains($type, '.')">
           <xsl:attribute name="href">
-            <xsl:value-of select="concat('?', func:ltrim(substring-before(concat($type, '['), '['), '&amp;'))"/>
+            <xsl:value-of select="concat('?', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
           </xsl:attribute>
         </xsl:if>
         
