@@ -655,10 +655,9 @@
     function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
         $fname= strtr('.', '/', $name).'.class.php';
-        $classPaths= &xp::registry('include_path');
-        foreach ($classPaths as $path => $loader) {
+
+        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$fname)) {
-            $classloader= &$classPaths[$path];
             break;
           }
           

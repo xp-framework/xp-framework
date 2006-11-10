@@ -318,13 +318,7 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
-    $include= &xp::registry('include_path');
-
-    if (0 == sizeof($include)) {
-      $include= array_flip(explode(PATH_SEPARATOR, ini_get('include_path')));
-      xp::registry('include_path', $include);
-    }
-    
+    $include= explode(PATH_SEPARATOR, ini_get('include_path'));
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
 
@@ -348,7 +342,7 @@
       }
 
 
-      foreach ($include as $path => $loader) {
+      foreach ($include as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path)) {
