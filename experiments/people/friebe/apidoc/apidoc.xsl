@@ -73,11 +73,21 @@
     
     <h2>Inheritance</h2>
     <p>
-      <a href="#"><xsl:value-of select="@name"/></a>
+      <a><xsl:value-of select="@name"/></a>
       <xsl:for-each select="extends/link">
         &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
       </xsl:for-each>
     </p>
+
+    <xsl:if test="count(implements/link) &gt; 0">
+      <h2>Implemented Interfaces</h2>
+      <p>
+        <xsl:for-each select="implements/link">
+          <a href="?{@href}"><xsl:value-of select="@href"/></a>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
+    </xsl:if>
 
     <h2>Members</h2>
 
