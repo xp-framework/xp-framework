@@ -87,6 +87,13 @@
         border: 1px solid #ffa800;
         background-color: #ffeac0;
       }
+      fieldset.hint {
+        border: 1px solid #8c3902;
+        background-color: #fffbb4;
+      }
+      fieldset.hint a {
+        color: #8c3902;
+      }
       fieldset.warning em {
         color: #963817;
         font-weight: bold;
@@ -108,9 +115,16 @@
       p.comment {
         color: #444444;
       }
+      a.class {
+        background: url(image/arrow.png);
+        background-position: right center; 
+        background-repeat: no-repeat;
+        padding-right: 20px;
+      }
     </style>
     <h1><xsl:value-of select="concat(@type, ' ', @name)"/></h1>
 
+    <!-- Deprecation note -->
     <xsl:if test="deprecated">
       <fieldset class="warning">
         <p>
@@ -123,25 +137,25 @@
         </p>
       </fieldset>
     </xsl:if>
+
+    <xsl:if test="count(test) &gt; 0">
+      <fieldset class="hint">
+        <p>
+          This class' functionality is verified by the following tests:<br/>
+          <xsl:for-each select="test">
+            <xsl:variable name="class" select="substring-after(@href, 'xp://')"/>
+            <a class="class" href="?{$class}"><xsl:value-of select="$class"/></a>
+            <xsl:if test="position() != last()">, </xsl:if>
+          </xsl:for-each>
+        </p>
+      </fieldset>
+    </xsl:if>
     
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-
     <p class="comment">
       <xsl:value-of select="comment" disable-output-escaping="yes"/>
     </p>
-
-    <xsl:if test="count(test) &gt; 0">
-      <h2>Unittests</h2>
-      <p>
-        This class' functionality is verified by the following tests:<br/>
-        <xsl:for-each select="test">
-          <xsl:variable name="class" select="substring-after(@href, 'xp://')"/>
-          <a href="?{$class}"><xsl:value-of select="$class"/></a>
-          <xsl:if test="position() != last()">, </xsl:if>
-        </xsl:for-each>
-      </p>
-    </xsl:if>
 
     <h2>Inheritance</h2>
     <p>
