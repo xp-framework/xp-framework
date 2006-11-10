@@ -34,6 +34,25 @@
     </func:result>
   </func:function>
   
+  <func:function name="func:cutstring">
+    <xsl:param name="text"/>
+    <xsl:param name="maxlength"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="string-length($text) &lt;= $maxlength">
+          <xsl:value-of select="$text"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <span title="{$text}">
+            <xsl:value-of select="substring($text, 1, $maxlength)"/>
+            <b>[...]</b>
+          </span>
+        </xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>
+  
   <func:function name="func:typelink">
     <xsl:param name="type"/>
     
@@ -297,6 +316,18 @@
       <hr/>
     </xsl:for-each>
   </xsl:template>
+  
+  <xsl:template match="see[@scheme = 'xp']">
+    <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'php']">
+    <a href="http://php3.de/{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'http']">
+    <a href="http://{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
 
   <xsl:template match="/">
     <div id="search">
@@ -325,8 +356,13 @@
         
       </td>
       <td id="context">
-        <h3>Further views</h3>
-        <a href="#">Inheritance tree </a><br/>
+        <xsl:if test="count(doc/class/see) &gt; 0">
+          <h3>See also</h3>
+          
+          <xsl:for-each select="doc/class/see">
+            <xsl:apply-templates select="."/>
+          </xsl:for-each>
+        </xsl:if>
       </td>
     </tr></table>
     <div id="footer">

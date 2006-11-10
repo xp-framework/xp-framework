@@ -68,7 +68,10 @@
         // Apidoc
         $m->addChild(new Node('comment', $method->commentText()));
         foreach ($method->tags('see') as $ref) {
-          $m->addChild(new Node('see', NULL, array('href' => $ref->text)));
+          $m->addChild(new Node('see', $ref->text, array(
+            'scheme' => $ref->scheme,
+            'href'   => $ref->urn
+          )));
         }
 
         // Annotations
@@ -124,7 +127,10 @@
       $n->addChild(new Node('comment', $classdoc->commentText()));
       $n->addChild(new Node('purpose', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
       foreach ($classdoc->tags('see') as $ref) {
-        $n->addChild(new Node('see', NULL, array('href' => $ref->text)));
+        $n->addChild(new Node('see', $ref->text, array(
+          'scheme' => $ref->scheme,
+          'href'   => $ref->urn
+        )));
       }
       foreach ($classdoc->tags('test') as $ref) {
         $n->addChild(new Node('test', NULL, array('href' => $ref->text)));
