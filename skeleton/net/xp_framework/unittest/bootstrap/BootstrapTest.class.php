@@ -93,7 +93,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('Broken, see bug #19')]
     function recursiveInclusionWithTicks() {
       $this->assertExitcode(123, '
         declare(ticks=1);
@@ -103,7 +103,5 @@
         exit(123);
       ');
     }
-    
-    
   }
 ?>
