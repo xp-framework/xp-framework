@@ -383,6 +383,7 @@
           
           <xsl:for-each select="doc/class/see">
             <xsl:apply-templates select="."/>
+            <br/>
           </xsl:for-each>
         </xsl:if>
       </td>
