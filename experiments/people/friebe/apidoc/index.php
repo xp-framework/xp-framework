@@ -15,7 +15,7 @@
       $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
       $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
 
-      if (0 != sscanf($request->getQueryString(), '%[^<[]', $class)) {
+      if (0 != sscanf($request->getQueryString(), '%[^<[]', $class) && $class) {
         if (!file_exists($xml= $builddir.basename($class).'.xml')) {
           return throw(new HttpScriptletException(htmlspecialchars($class).' does not exist!', HTTP_NOT_FOUND));
         }
