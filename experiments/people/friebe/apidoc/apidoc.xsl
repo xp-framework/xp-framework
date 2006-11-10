@@ -216,7 +216,10 @@
         <h4>Arguments:</h4>
         <ul>
           <xsl:for-each select="argument">
-            <li><xsl:value-of select="@name"/></li>
+            <li>
+              <xsl:value-of select="@name"/>
+              <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+            </li>
           </xsl:for-each>
         </ul>
       </xsl:if>
