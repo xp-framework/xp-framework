@@ -88,11 +88,11 @@
         background-color: #ffeac0;
       }
       fieldset.hint {
-        border: 1px solid #8c3902;
-        background-color: #fffbb4;
+        border: 1px solid #001f83;
+        background-color: #e2e7f8;
       }
       fieldset.hint a {
-        color: #8c3902;
+        color: #001f83;
       }
       fieldset.warning em {
         color: #963817;
