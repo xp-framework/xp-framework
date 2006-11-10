@@ -51,7 +51,7 @@
     /**
      * Get entry (iterative use)
      * <code>
-     *   $a= &new Archive(new File('port.cca'));
+     *   $a= &new Archive(new File('port.xar'));
      *   $a->open(ARCHIVE_READ);
      *   while ($id= $a->getEntry()) {
      *     var_dump($id);
