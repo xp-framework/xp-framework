@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('util.Date', 'util.TimeSpan');
+  uses(
+    'util.Date',
+    'util.TimeSpan',
+    'util.Comparator'
+  );
   
   /**
    * DateUtil is a helper class to handle Date objects and 
@@ -13,7 +17,7 @@
    * @test    xp://util.DateUtil
    * @purpose Utils to calculate with Date objects
    */
-  class DateUtil extends Object {
+  class DateUtil extends Object implements Comparator {
 
     /**
      * Returns a Date object which represents the date at
@@ -209,5 +213,26 @@
       return $t;
     }
 
-  }
+    /**
+     * Comparator method for two Date objects
+     *
+     * Returns a negative number if a < b, a positive number if a > b 
+     * and 0 if both dates are equal
+     *
+     * Example usage with usort():
+     * <code>
+     *   usort($datelist, array('DateUtil', 'compare'))
+     * </code>
+     *
+     * @model   static
+     * @access  public
+     * @param   &util.Date a
+     * @param   &util.Date b
+     * @return  int
+     */
+    public static function compare(&$a, &$b) {
+      return $b->compareTo($a);
+    }
+
+  } 
 ?>

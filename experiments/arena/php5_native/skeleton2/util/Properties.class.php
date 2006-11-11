@@ -48,22 +48,24 @@
     /**
      * Create a property file from an io.File object
      *
+     * @model   static
      * @access  public
      * @param   &io.File file
      * @return  &util.Properties
      */
-    public function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return new Properties($file->getURI());
     }
 
     /**
      * Create a property file from a string
      *
+     * @model   static
      * @access  public
      * @param   string str
      * @return  &util.Properties
      */
-    public function &fromString($str) {
+    public static function &fromString($str) {
       with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
@@ -224,7 +226,7 @@
      *
      * @access  public
      * @param   string name
-     * @param   default default array() what to return in case the section does not exist
+     * @param   mixed[] default default array() what to return in case the section does not exist
      * @return  array
      */
     public function readSection($name, $default= array()) {
@@ -241,7 +243,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   default default '' what to return in case the section or key does not exist
+     * @param   string default default '' what to return in case the section or key does not exist
      * @return  string
      */ 
     public function readString($section, $key, $default= '') {
@@ -258,7 +260,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   default default NULL what to return in case the section or key does not exist
+     * @param   mixed[] default default NULL what to return in case the section or key does not exist
      * @return  array
      */
     public function readArray($section, $key, $default= array()) {
@@ -275,7 +277,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   default default NULL what to return in case the section or key does not exist
+     * @param   util.Hashmap default default NULL what to return in case the section or key does not exist
      * @return  &util.Hashmap
      */
     public function &readHash($section, $key, $default= NULL) {
@@ -301,7 +303,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   default default NULL what to return in case the section or key does not exist
+     * @param   int[] default default NULL what to return in case the section or key does not exist
      * @return  array
      */
     public function readRange($section, $key, $default= array()) {
@@ -318,7 +320,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   default default 0 what to return in case the section or key does not exist
+     * @param   int default default 0 what to return in case the section or key does not exist
      * @return  int
      */ 
     public function readInteger($section, $key, $default= 0) {
@@ -352,7 +354,7 @@
      * @access  public
      * @param   string section
      * @param   string key
-     * @param   int default default FALSE what to return in case the section or key does not exist
+     * @param   bool default default FALSE what to return in case the section or key does not exist
      * @return  bool TRUE, when key is 1, 'on', 'yes' or 'true', FALSE otherwise
      */ 
     public function readBool($section, $key, $default= FALSE) {

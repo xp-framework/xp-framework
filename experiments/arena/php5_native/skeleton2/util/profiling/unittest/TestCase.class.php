@@ -129,7 +129,7 @@
      */
     public function assertNull($var, $error= 'notnull') {
       if (NULL !== $var) {
-        return $this->fail($error, NULL, $var);
+        return $this->fail($error, $var, NULL);
       }
       return TRUE;
     }
@@ -214,7 +214,7 @@
         return TRUE;
       } 
       
-      return is('Generic', $a) ? $a->equals($b) : $a === $b;
+      return is('Object', $a) ? $a->equals($b) : $a === $b;
     }
 
     /**
@@ -259,7 +259,7 @@
      */
     public function assertTrue($var, $error= 'nottrue') {
       if (TRUE !== $var) {
-        return $this->fail($error, TRUE, $var);
+        return $this->fail($error, $var, TRUE);
       }
       return TRUE;
     }
@@ -274,7 +274,7 @@
      */
     public function assertFalse($var, $error= 'notfalse') {
       if (FALSE !== $var) {
-        return $this->fail($error, FALSE, $var);
+        return $this->fail($error, $var, FALSE);
       }
       return TRUE;
     }
@@ -322,7 +322,7 @@
      * @return  bool
      */
     public function assertClass(&$var, $name, $error= 'notequal') {
-      if (!is('Generic', $var)) {
+      if (!is('Object', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if ($var->getClassName() !== $name) {
@@ -341,10 +341,10 @@
      * @return  bool
      */
     public function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!is('Generic', $var)) {
+      if (!is('Object', $var)) {
         return $this->fail($error, $pattern, $var);
       }
-      if (!is($name, $var)) {
+      if (!is('$name', $var)) {
         return $this->fail($error, $name, $var->getClassName());
       }
       return TRUE;
@@ -360,7 +360,7 @@
      * @return  bool
      */
     public function assertIn($list, $var, $error= 'notinlist') {
-      if (is('Generic', $var)) {
+      if (is('Object', $var)) {
         $result= array_filter($list, array(&$var, 'equals'));
         $contained= !empty($result);
       } else {

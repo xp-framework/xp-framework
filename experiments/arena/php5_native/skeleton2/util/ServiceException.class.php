@@ -16,7 +16,7 @@
    * to recognize the type of error (other than by looking at the message).
    *
    * @see      xp://xml.soap.rpc.SoapRpcRouter#doPost
-   * @purpose  Csutom service exception.
+   * @purpose  Custom service exception.
    */
   class ServiceException extends ChainedException {
     public
