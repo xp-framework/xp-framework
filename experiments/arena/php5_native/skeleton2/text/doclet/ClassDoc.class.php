@@ -4,12 +4,12 @@
  * $Id$
  */
  
-  uses('text.doclet.Doc');
+  uses('text.doclet.AnnotatedDoc');
 
   define('EXCEPTION_CLASS',   'exception');
   define('ERROR_CLASS',       'error');
   define('INTERFACE_CLASS',   'interface');
-  define('ORDINARY_CLASS',    'ordinary');
+  define('ORDINARY_CLASS',    'class');
 
   /**
    * Represents an XP class or interface and provides access to 
@@ -17,9 +17,8 @@
    *
    * @purpose  Documents a class
    */
-  class ClassDoc extends Doc {
+  class ClassDoc extends AnnotatedDoc {
     public
-      $annotations    = array(),
       $fields         = array(),
       $methods        = array(),
       $constants      = array(),
@@ -37,6 +36,18 @@
     public function __construct() {
       $this->interfaces= new ClassIterator();
       $this->usedClasses= new ClassIterator();
+    }
+
+    /**
+     * Set rootdoc
+     *
+     * @access  public
+     * @param   &RootDoc root
+     */
+    public function setRoot(&$root) {
+      parent::setRoot($root);
+      $this->interfaces->root= &$root;
+      $this->usedClasses->root= &$root;    
     }
     
     /**
@@ -125,6 +136,26 @@
      */
     public function qualifiedName() {
       return $this->qualifiedName;
+    }
+    
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->classType().' '.$this->qualifiedName.'>';
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->getClassName().$this->qualifiedName;
     }
   }
 ?>

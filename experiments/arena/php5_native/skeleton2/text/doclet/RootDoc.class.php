@@ -63,6 +63,7 @@
      * @param   &Doclet doclet
      * @param   &util.cmd.ParamString params
      * @return  bool
+     * @throws  lang.Exception in case doclet setup fails
      */
     public static function start(&$doclet, &$params) {
       $classes= array();
@@ -98,8 +99,11 @@
       }
       
       // Set up class iterator
-      $root->classes= new ClassIterator($classes);
-      $root->classes->root= &$root;
+      try {
+        $root->classes= &$doclet->iteratorFor($root, $classes);
+      } catch (Exception $e) {
+        throw($e);
+      }
 
       // Start the doclet
       return $doclet->start($root);
@@ -151,7 +155,7 @@
 
       // Find class
       if (!($filename= $this->findClass($classname))) {
-        throw(new IllegalArgumentException('Could not find "'.$classname.'"'));
+        throw(new IllegalArgumentException('Could not find '.xp::stringOf($classname)));
       }
       
       // Tokenize contents
@@ -209,7 +213,7 @@
 
             case ST_DEFINE.T_CONSTANT_ENCAPSED_STRING:
               $state= ST_DEFINE_VALUE;
-              $define= $t[1];
+              $define= trim($t[1], '"\'');
               break;
 
             case ST_DEFINE_VALUE.T_CONSTANT_ENCAPSED_STRING:
@@ -246,6 +250,14 @@
                   break;
                 }
               }
+              
+              // Nothing found!
+              if (!$lookup) throw(new IllegalStateException(sprintf(
+                'Could not find class %s extended by %s',
+                xp::stringOf($tokens[$i][1]),
+                $classname
+              )));
+
               $doc->superclass= &$this->classNamed($lookup);
               break;
 

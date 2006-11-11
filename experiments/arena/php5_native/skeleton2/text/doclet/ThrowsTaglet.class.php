@@ -7,9 +7,9 @@
   uses('text.doclet.ThrowsTag', 'text.doclet.Taglet');
 
   /**
-   * A taglet that represents the @throws tag. 
+   * A taglet that represents the throws tag. 
    *
-   * @see      xp://TagletManager
+   * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
   class ThrowsTaglet extends Object implements Taglet {
@@ -18,10 +18,10 @@
      * Create tag from text
      *
      * @access  public
-     * @param   &Doc holder
+     * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &Tag
+     * @return  &text.doclet.Tag
      */ 
     public function &tagFrom(&$holder, $kind, $text) {
       list($class, $condition)= explode(' ', $text);

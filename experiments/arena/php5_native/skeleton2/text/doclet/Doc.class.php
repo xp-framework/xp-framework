@@ -26,8 +26,6 @@
      */
     public function setRoot(&$root) {
       $this->root= &$root;
-      $this->interfaces->root= &$root;
-      $this->usedClasses->root= &$root;    
     }
     
     /**
@@ -70,7 +68,7 @@
         );
 
         if ($t= strtok(trim(substr($stripped, $tagstart)), '@')) do {
-          list($kind, $rest)= explode(' ', $t, 2);
+          list($kind, $rest)= explode(' ', trim($t), 2);
           
           if ($tag= &$tm->make($this, $kind, trim($rest))) {
             $this->detail['tags'][$kind][]= &$tag;

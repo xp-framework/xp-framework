@@ -589,7 +589,7 @@
      * @return  &text.String string
      */
     public static function &valueOf($arg) {
-      if (is('Generic', $arg)) {
+      if (is('Object', $arg)) {
         return new String($arg->toString());
       } elseif (is_array($arg)) {
         return new String(implode('', $arg));

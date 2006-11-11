@@ -56,6 +56,16 @@
     }
 
     /**
+     * Define a string of characters of which the password will be generated
+     *
+     * @access  public
+     * @param   string chars
+     */
+    public function setChars($chars) {
+      $this->chars= $chars;
+    }
+
+    /**
      * Generate
      *
      * @access  public

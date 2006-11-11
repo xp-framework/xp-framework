@@ -7,9 +7,9 @@
   uses('text.doclet.ParamTag', 'text.doclet.Taglet');
 
   /**
-   * A taglet that represents the @param tag. 
+   * A taglet that represents the param tag. 
    *
-   * @see      xp://TagletManager
+   * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
   class ParamTaglet extends Object implements Taglet {
@@ -18,13 +18,13 @@
      * Create tag from text
      *
      * @access  public
-     * @param   &Doc holder
+     * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &Tag
+     * @return  &text.doclet.Tag
      */ 
     public function &tagFrom(&$holder, $kind, $text) {
-      list($type, $name, $text)= explode(' ', $text, 2);
+      list($type, $name, $text)= explode(' ', $text, 3);
       return new ParamTag($type, $name, $text);
     }
 

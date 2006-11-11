@@ -9,7 +9,7 @@
   /**
    * A taglet that represents simple tags.
    *
-   * @see      xp://TagletManager
+   * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
   class SimpleTaglet extends Object implements Taglet {
@@ -18,10 +18,10 @@
      * Create tag from text
      *
      * @access  public
-     * @param   &Doc holder
+     * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &Tag
+     * @return  &text.doclet.Tag
      */ 
     public function &tagFrom(&$holder, $kind, $text) {
       return new Tag($kind, $text);
