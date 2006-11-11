@@ -5,7 +5,7 @@
  */
  
   uses('lang.Generic');
-
+ 
   /**
    * Class Object is the root of the class hierarchy. Every class has 
    * Object as a superclass. 
@@ -24,6 +24,11 @@
       $this->__id= microtime();
     }
     
+    /**
+     * Cloning handler
+     *
+     * @access  public
+     */
     public function __clone() {
       $this->__id= microtime();
     }
@@ -69,7 +74,7 @@
      * @see     xp://lang.XPClass
      */
     public function &getClass() {
-      $c= &new XPClass($this);
+      $c= new XPClass($this);
       return $c;
     }
 
@@ -81,21 +86,21 @@
      * 
      * Per default, this method returns:
      * <xmp>
-     *   [fully-qualified-class-name]@[serialized-object]
+     *   [fully-qualified-class-name] '{' [members-and-value-list] '}'
      * </xmp>
      * 
      * Example:
      * <xmp>
-     * lang.Object@class object {
-     *   var $__id = '0.06823200 1062749651';
-     * }
+     *   lang.Object {
+     *     __id => "0.43080500 1158148350"
+     *   }
      * </xmp>
      *
      * @access  public
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'@'.var_export($this, 1);
+      return xp::stringOf($this);
     }
   }
 ?>

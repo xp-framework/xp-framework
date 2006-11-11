@@ -43,7 +43,7 @@
             if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
             break;
 
-          case is_a($a1[$k], 'Object'):
+          case is('Object', $a1[$k]):
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 

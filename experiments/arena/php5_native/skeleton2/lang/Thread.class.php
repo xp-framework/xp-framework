@@ -110,7 +110,7 @@
      * @access  public
      * @param   int millis
      */
-    public function sleep($millis) {
+    public static function sleep($millis) {
       usleep($millis * 1000);
     }
 

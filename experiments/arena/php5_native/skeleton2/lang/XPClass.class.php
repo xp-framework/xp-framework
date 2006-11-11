@@ -56,7 +56,7 @@
     /**
      * Constructor
      *
-     * @access  package
+     * @access  public
      * @param   &mixed ref either a class name or an object
      */
     public function __construct(&$ref) {
@@ -66,6 +66,16 @@
       $this->_reflect= new ReflectionClass($ref);
     }
     
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->name;
+    }
+     
     /**
      * Return whether an object equals this class
      *
@@ -165,7 +175,7 @@
     public function getMethods() {
       $m= array();
       foreach ($this->_methods() as $method) {
-        $m[]= &new Method($this->_objref, $method);
+        $m[]= new Method($this->_objref, $method);
       }
       return $m;
     }
@@ -182,7 +192,7 @@
     public function &getMethod($name) {
       if (!$this->hasMethod($name)) return NULL;
 
-      $m= &new Method($this->_objref, $name); 
+      $m= new Method($this->_objref, $name); 
       return $m;
     }
     
@@ -239,7 +249,7 @@
         : get_class_vars($this->_objref)
       ) as $field => $value) {
         if ('__id' == $field) continue;
-        $f[]= &new Field($this->_objref, $field, isset($value) ? gettype($value) : NULL);
+        $f[]= new Field($this->_objref, $field, isset($value) ? gettype($value) : NULL);
       }
       return $f;
     }
@@ -412,6 +422,48 @@
       return $details ? $details['class'][DETAIL_ANNOTATIONS] : array();
     }
     
+    /**
+     * Retrieve the class loader a class was loaded with
+     *
+     * @access  public
+     * @return  &lang.ClassLoader
+     */
+    public function &getClassLoader() {
+      return XPClass::_classLoaderFor($this->name);
+    }
+    
+    /**
+     * Fetch a class' classloader by its name
+     *
+     * @model   static
+     * @access  protected
+     * @param   string name fqcn of class
+     * @return  &lang.ClassLoader
+     */
+    public static function &_classLoaderFor($name) {
+      if (!($cl= &xp::registry('classloader.'.$name))) {
+        return ClassLoader::getDefault();
+      }
+
+      // The class loader information can be a string identifying the responsible
+      // classloader for the class. In that case, fetch it's class and get an
+      // instance through the instanceFor() method.
+      if (is_string($cl)) {
+        list($className, $argument)= sscanf($cl, '%[^:]://%s');
+        $class= &XPClass::forName($className);
+        $method= &$class->getMethod('instanceFor');
+
+        $dummy= NULL;
+        $cl= &$method->invoke($dummy, array($argument));
+        
+        // Replace the "symbolic" representation of the classloader with a reference
+        // to an instance.
+        xp::registry('classloader.'.$name, $cl);
+      }
+      
+      return $cl;
+    }
+
     /**
      * Retrieve details for a specified class. Note: Results from this 
      * method are cached!
@@ -601,9 +653,26 @@
      */
     public static function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
-        $classloader= &ClassLoader::getDefault();
+        $fname= strtr('.', '/', $name).'.class.php';
+
+        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$fname)) {
+            break;
+          }
+          
+          if (is_file($path)) {
+            $cl= &ArchiveClassLoader::instanceFor($path);
+            if ($cl->providesClass($name)) {
+              $classloader= &$cl;
+              break;
+            }
+          }
+        }
       }
     
+      // Last-chance fallback
+      if (NULL === $classloader) $classloader= &ClassLoader::getDefault();
+
       return $classloader->loadClass($name);
     }
     
@@ -618,7 +687,7 @@
     public static function &getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (xp::registry('class.'.$name)) $ret[]= &new XPClass($name);
+        if (xp::registry('class.'.$name)) $ret[]= new XPClass($name);
       }
       return $ret;
     }

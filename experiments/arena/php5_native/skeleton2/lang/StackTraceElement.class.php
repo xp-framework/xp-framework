@@ -82,5 +82,16 @@
         $this->message
       );
     }
+
+    /**
+     * Compares this stacktrace element to another object
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool
+     */
+    public function equals(&$cmp) {
+      return is('lang.StackTraceElement', $cmp) && $this->toString() == $cmp->toString();
+    }
   }
 ?>

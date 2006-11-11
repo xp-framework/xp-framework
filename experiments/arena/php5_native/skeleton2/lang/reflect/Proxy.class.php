@@ -43,7 +43,7 @@
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public function &getProxyClass(&$classloader, $interfaces) {
+    public static function &getProxyClass(&$classloader, $interfaces) {
       static $num= 0;
       static $cache= array();
       
@@ -85,7 +85,7 @@
               $max= max($max, $args- 1);
               if (isset($cases[$args])) continue;
               
-              $cases[$s]= (
+              $cases[$args]= (
                 'case '.$args.': '.
                 'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
                 ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
@@ -151,7 +151,7 @@
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public function &newProxyInstance(&$classloader, $interfaces, &$handler) {
+    public static function &newProxyInstance(&$classloader, $interfaces, &$handler) {
       if (!($class= &Proxy::getProxyClass($classloader, $interfaces))) return $class;
       $instance= &$class->newInstance($dummy= NULL);
       $instance->_h= &$handler;

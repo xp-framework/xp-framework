@@ -29,6 +29,31 @@
     public function __construct($path= '') {
       if (!empty($path)) $this->classpath= $path.'.';
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return (
+        $this->getClassName().
+        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
+        '(search= '.xp::stringOf(explode(PATH_SEPARATOR, ini_get('include_path'))).')'
+      );
+    }
+
+    /**
+     * Load class bytes
+     *
+     * @access  public
+     * @param   string name fully qualified class name
+     * @return  string
+     */
+    public function loadClassBytes($name) {
+      return file_get_contents($this->findClass($name));
+    }
     
     /**
      * Retrieve the default class loader
@@ -82,20 +107,20 @@
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      $class= &new XPClass($name);
-      return $class;
+      $c= new XPClass($name);
+      return $c;
     }
 
     /**
      * Define a class with a given name
      *
-     * @access  public
+     * @access  protected
      * @param   string class fully qualified class name
      * @param   string bytes sourcecode of the class
      * @return  &lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
-    public function &defineClass($class, $bytes) {
+    public function &_defineClassFromBytes($class, $bytes) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
@@ -109,8 +134,89 @@
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
-      $class= &new XPClass($name);
-      return $class;
+
+      $c= new XPClass($name);
+      return $c;
+    }
+    
+    /**
+     * Define a class with a given name
+     *
+     * @access  public
+     * @param   string class fully qualified class name
+     * @param   string parent either sourcecode of the class or FQCN of parent
+     * @param   string[] interfaces default NULL FQCNs of implemented interfaces
+     * @param   string bytes default NULL inner sourcecode of class (containing {}) 
+     * @return  &lang.XPClass
+     * @throws  lang.FormatException in case the class cannot be defined
+     * @throws  lang.ClassNotFoundException if given parent class does not exist
+     */
+    public function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
+      
+      // If invoked with less than four arguments, old behaviour will be executed
+      if (NULL === $bytes) {
+        return $this->_defineClassFromBytes($class, $parent);
+      }
+      
+      $name= xp::reflect($class);
+      if (!class_exists($name)) {
+        $qname= $this->classpath.$class;
+        $parentName= xp::reflect($parent);
+        
+        if (!class_exists($parentName)) {
+          throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
+        }
+        
+        $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
+        if (FALSE === eval($newBytes)) {
+          throw(new FormatException('Cannot define class "'.$qname.'"'));
+        }
+        
+        if (!class_exists($name)) {
+          throw(new FormatException('Class "'.$qname.'" not defined'));
+        }
+        
+        xp::registry('class.'.$name, $qname);
+        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
+        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      }
+      
+      $c= new XPClass($name);
+      return $c;
+    }
+    
+    /**
+     * Loads a resource.
+     *
+     * @access  public
+     * @param   string filename name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($filename) {
+      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
+        return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
+      }
+    
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @access  public
+     * @param   string filename name of resource
+     * @return  &io.File
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function &getResourceAsStream($filename) {
+      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
+        return new File($filename);
+      }
+    
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
   }
 ?>

@@ -20,21 +20,26 @@
      * @access  public
      * @param   string message
      * @param   string method
-     * @see     lang.Exception#construct
+     * @see     xp://lang.Exception#construct
      */
     public function __construct($message, $method) {
-      $this->method= $method;
       parent::__construct($message);
+      $this->method= $method;
     }
-    
+
     /**
-     * Get string representation
+     * Return compound message of this exception.
      *
      * @access  public
-     * @return  string stacktrace
+     * @return  string
      */
-    public function toString() {
-      return parent::toString()."\n  [method: {$this->method}]\n";
+    public function compoundMessage() {
+      return sprintf(
+        'Exception %s (method %s(): %s)',
+        $this->getClassName(),
+        $this->method,
+        $this->message
+      );
     }
   }
 ?>

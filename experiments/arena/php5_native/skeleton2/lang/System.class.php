@@ -57,7 +57,7 @@
      * @param   string name
      * @return  mixed
      */
-    public function getProperty($name) {
+    public static function getProperty($name) {
       static $prop= array();
       
       if (!isset($prop[$name])) switch ($name) {
@@ -155,7 +155,7 @@
      * @access  public
      * @return  string
      */
-    public function tempDir() {
+    public static function tempDir() {
       if (getenv('TEMP')) {
         $dir= getenv('TEMP');
       } elseif (getenv('TMP')) {
@@ -208,7 +208,7 @@
     public function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
-      if (!($pd= popen($cmdLine, 'r'))) throw(new Exception(
+      if (!($pd= popen($cmdLine, 'r'))) throw(new XPException(
         'cannot execute "'.$cmdLine.'"'
       ));
       $buf= array();

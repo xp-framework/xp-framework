@@ -57,9 +57,9 @@
       }
 
       // Assign in, out and err members
-      $this->in= &new File($pipes[0]);
-      $this->out= &new File($pipes[1]);
-      $this->err= &new File($pipes[2]);
+      $this->in= new File($pipes[0]);
+      $this->out= new File($pipes[1]);
+      $this->err= new File($pipes[2]);
     }
     
     /**
@@ -106,12 +106,12 @@
      * Close this process
      *
      * @access  public
-     * @return  exit value of process
+     * @return  int exit value of process
      */
     public function close() {
-      $this->in->close();
-      $this->out->close();
-      $this->err->close();
+      $this->in->isOpen() && $this->in->close();
+      $this->out->isOpen() && $this->out->close();
+      $this->err->isOpen() && $this->err->close();
       $this->exitv= proc_close($this->_proc);
       return $this->exitv;
     }
