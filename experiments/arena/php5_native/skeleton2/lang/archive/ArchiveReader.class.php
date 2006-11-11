@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: ArchiveReader.class.php 8413 2006-11-10 16:06:19Z kiesel $ 
+ * $Id: ArchiveReader.class.php 8444 2006-11-11 19:30:02Z kiesel $ 
  */
 
   define('ARCHIVE_READ',             0x0000);
@@ -27,11 +27,10 @@
       $_index   = array();
 
     /**
-     * (Insert method's description here)
+     * Constructor.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string filename
      */
     public function __construct($filename) {
       $this->file= $filename;
@@ -107,7 +106,6 @@
      * @access  public
      * @param   string id
      * @return  &io.Stream
-     * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
     public function &getStream($id) {
       if (!$this->contains($id)) {
@@ -130,7 +128,10 @@
     }
     
     /**
-     * Open this archive
+     * Open this archive.
+     *
+     * Note: this light-weight implementation of an ArchiveReader
+     * only supports opening the archive in ARCHIVE_READ mode.
      *
      * @access  public
      * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
@@ -187,7 +188,7 @@
      * Checks whether this archive is open
      *
      * @access  public
-     * @param   bool TRUE when the archive file is open
+     * @return  bool TRUE when the archive file is open
      */
     public function isOpen() {
       return is_resource($this->_hdl);
