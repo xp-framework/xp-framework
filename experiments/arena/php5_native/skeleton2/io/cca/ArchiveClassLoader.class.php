@@ -25,9 +25,12 @@
    *   $obj= &$class->newInstance();
    * </code>
    *
+   * @deprecated
+   * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
    * @purpose  Load classes from an archive
    * @see      xp://lang.ClassLoader
    * @see      xp://lang.cca.Archive
+   * @ext      tokenize
    */
   class ArchiveClassLoader extends ClassLoader {
     public
@@ -42,7 +45,54 @@
     public function __construct(&$archive) {
       parent::__construct();
       $this->archive= &$archive;
-      $this->archive->open(ARCHIVE_READ);
+      $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
+    }
+    
+    /**
+     * Load class bytes
+     *
+     * @access  public
+     * @param   string name fully qualified class name
+     * @return  string
+     */
+    public function loadClassBytes($name) {
+      $src= '';
+      $line= 0;
+      $tokens= token_get_all($this->archive->extract($name));
+      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+        switch ($tokens[$i][0]) {
+          case T_FILE: 
+            $tokens[$i][1]= "'".strtr($name, '.', '/').'.class.php\''; 
+            break;
+            
+          case T_LINE:
+            $tokens[$i][1]= $line;
+            break;
+
+          case T_STRING:
+            if ('uses' == $tokens[$i][1] || 'implements' == $tokens[$i][1]) {
+              $o= $i+ 1;
+              while (')' != $tokens[$o][0]) {
+                if (T_CONSTANT_ENCAPSED_STRING == $tokens[$o][0]) {
+                  $used= trim($tokens[$o][1], '"\'');
+                  $this->archive->contains($used) && $this->loadClass($used);
+                }
+                $o++;
+              }
+            }
+            break;
+        }
+
+        if (is_array($tokens[$i])) {
+          $src.= $tokens[$i][1];
+          $line+= substr_count($tokens[$i][1], "\n");
+        } else {
+          $src.= $tokens[$i];
+          $line+= substr_count($tokens[$i], "\n");
+        }
+      }
+      
+      return $src;
     }
     
     /**
@@ -58,24 +108,26 @@
 
       if (!class_exists($name)) {
         try {
-          $data= &$this->archive->extract($class);
+          $src= $this->loadClassBytes($class);
         } catch (Exception $e) {
           throw(new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
-            $className,
+            $class,
             $e->getMessage()
           )));
         }
 
-        if (FALSE === eval('?>'.$data)) {
+        if (FALSE === eval('?>'.$src)) {
           throw(new FormatException('Cannot define class "'.$class.'"'));
         }
 
         xp::registry('class.'.$name, $class);
+        xp::registry('classloader.'.$class, $this);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      return new XPClass($name);
+      $c= new XPClass($name);
+      return $c;
     }
   }
 ?>

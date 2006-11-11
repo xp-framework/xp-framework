@@ -58,7 +58,7 @@
      */
     public function close() {
       if (FALSE != $this->_hdir) $this->_hdir->close();
-      $this->_hdir= NULL;
+      $this->_hdir= FALSE;
     }
 
     /**
@@ -198,11 +198,13 @@
      * @throws  io.IOException in case an error occurs
      */
     public function getEntry() {
-      if (
-        (FALSE === $this->_hdir) &&
-        (FALSE === ($this->_hdir= dir($this->uri)))
-      ) {
-        throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+      if (FALSE === $this->_hdir) {
+
+        // Not open yet, try to open
+        if (!is_object($this->_hdir= dir($this->uri))) {
+          $this->_hdir= FALSE;
+          throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+        }
       }
       
       while (FALSE !== ($entry= $this->_hdir->read())) {
@@ -221,7 +223,7 @@
       if (FALSE === $this->_hdir)
         throw (new IOException ('Cannot rewind non-open folder.'));
       
-      rewinddir ($this->_hdir);
+      rewinddir ($this->_hdir->handle);
     }
 
     /**
@@ -272,6 +274,30 @@
         throw(new IOException('Cannot get mtime for '.$this->uri));
       }
       return $mtime;
+    }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(uri= %s)',
+        $this->getClassName(),
+        $this->uri
+      );
+    }
+
+    /**
+     * Return if the folder was already opened
+     *
+     * @access  public
+     * @return  bool
+     */
+    public function isOpen() {
+      return is_resource($this->_hdir);
     }
   }
 ?>

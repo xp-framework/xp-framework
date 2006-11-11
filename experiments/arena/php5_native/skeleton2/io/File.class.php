@@ -603,5 +603,20 @@
       $stat= stat($this->uri);
       return $stat['mode'];
     }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(uri= %s, mode= %s)',
+        $this->getClassName(),
+        $this->uri,
+        $this->mode
+      );
+    }
   }
 ?>

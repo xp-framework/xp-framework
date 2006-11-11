@@ -48,6 +48,7 @@
    *   var_dump($c);                                                         
    * </code>
    * 
+   * @deprecated
    * @purpose  Provide an archiving
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */
@@ -193,6 +194,8 @@
       if (!$this->contains($id)) {
         throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
       }
+      
+      $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
 
       // Calculate starting position      
       $pos= (
@@ -285,6 +288,22 @@
      */
     public function isOpen() {
       return $this->file->isOpen();
+    }
+    
+    /**
+     * Returns a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(version= %s, index size= %d) { %s }',
+        $this->getClassName(),
+        $this->version,
+        sizeof($this->_index),
+        xp::stringOf($this->file)
+      );
     }
     
     /**
