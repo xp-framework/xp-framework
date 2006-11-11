@@ -53,7 +53,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) { }
+    public function draw(&$image) {
       return imageline(
         $image->handle,
         $this->x1,
