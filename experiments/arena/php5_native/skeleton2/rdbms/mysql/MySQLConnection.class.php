@@ -25,6 +25,18 @@
       $formatter= NULL;
 
     /**
+     * Set Timeout
+     *
+     * @access  public
+     * @param   int timeout
+     */
+    public function setTimeout($timeout) {
+      ini_set('mysql.connect_timeout', $timeout);
+      parent::setTimeout($timeout);
+    }
+
+
+    /**
      * Constructor
      *
      * @access  public

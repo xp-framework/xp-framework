@@ -158,10 +158,10 @@
         }
 
         // Type-based conversion
-        if ([]is('Date', $ofs)) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif ([]is('Generic', $ofs)) {
+        } elseif (is('lang.Generic', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];

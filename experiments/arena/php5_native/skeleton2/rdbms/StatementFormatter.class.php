@@ -98,7 +98,7 @@
       if (is('Date', $var)) {
         $type= 's';
         $a= array($var->toString($this->dateFormat));
-      } elseif (is('Generic', $var)) {
+      } elseif (is('lang.Generic', $var)) {
         $a= array($var->toString());
       } elseif (is_array($var)) {
         $a= $var;
