@@ -37,13 +37,20 @@
     }
     
     /**
-     * Return formatted output of stacktrace
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      return parent::toString()."\n".implode("\n  @", $this->errors)."\n";
+    public function compoundMessage() {
+      return sprintf(
+        "Exception %s (%s) {\n".
+        "  %s\n".
+        "}\n",
+        $this->getClassName(),
+        $this->message,
+        implode("\n  @", $this->errors)
+      );
     }
   }
 ?>
