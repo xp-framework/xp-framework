@@ -570,7 +570,7 @@
         $this->_export('NICKNAME', $this->nick).
         $this->_export('ORG', $this->organization).
         $this->_export('URL', $this->url).
-        $this->_export('BDAY', ->birthdayis('Date', $this) ? $this->birthday->toString('Y-m-d') : '').
+        $this->_export('BDAY', is('Date', $this->birthday) ? $this->birthday->toString('Y-m-d') : '').
         $phone.
         $email.
         $address.

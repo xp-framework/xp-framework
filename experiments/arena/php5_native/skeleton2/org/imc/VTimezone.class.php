@@ -117,10 +117,10 @@
       if (NULL === $value)
         return '';
         
-      if (is('Date', $value)) {
+      if (is_a ($value, 'Date')) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
-      } else if (is('URL', $value)) {
+      } else if (is_a ($value, 'URL')) {
         // Convert URL to string
         $value= $value->toString();
       }

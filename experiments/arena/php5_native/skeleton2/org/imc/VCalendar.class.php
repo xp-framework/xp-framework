@@ -352,7 +352,7 @@
      * @return  string exported
      */    
     public function _export($key, $value) {
-      if (is('Date', $value)) {
+      if (is_a ($value, 'Date')) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
       }

@@ -336,7 +336,7 @@
       foreach (array_keys($vars) as $key) {
         if ('__id' == $key) continue;
 
-        $s.= sprintf($fmt, $key, ->is('Generic', $key) 
+        $s.= sprintf($fmt, $key, is('Object', $this->$key) 
           ? $this->$key->toString()
           : var_export($this->$key, 1)
         )."\n";

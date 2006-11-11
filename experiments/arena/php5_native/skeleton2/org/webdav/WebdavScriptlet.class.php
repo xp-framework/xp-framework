@@ -310,7 +310,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     public function doHead(&$request, &$response) {
       try {
@@ -840,7 +840,7 @@
         if (!$this->handlingAuth->isAuthorized(
           $this->handlingImpl->base.$request->getPath(),
           $request->getUser(),
-          &$request)
+          $request)
         ) {
           return 'doAuthorizationDeny';
         }
