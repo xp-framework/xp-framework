@@ -4,15 +4,17 @@
  * $Id$ 
  */
 
+  uses('util.ChainedException');
+
   /**
    * Holds a reference to an exception
    *
    * @see      xp://remote.Serializer
    * @purpose  Exception reference
    */
-  class ExceptionReference extends XPException {
+  class ExceptionReference extends ChainedException {
     public 
-      $classname= '';
+      $referencedClassname= '';
 
     /**
      * Constructor
@@ -21,17 +23,23 @@
      * @param   string classname
      */
     public function __construct($classname) {
-      $this->classname= $classname;
+      parent::__construct('(null)', $cause= NULL);
+      $this->referencedClassname= $classname;
     }
-
+    
     /**
-     * Get Classname
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function getClassname() {
-      return $this->classname;
+    public function compoundMessage() {
+      return sprintf(
+        'Exception %s<%s> (%s)',
+        $this->getClassName(),
+        $this->referencedClassname,
+        $this->message
+      );
     }
   }
 ?>

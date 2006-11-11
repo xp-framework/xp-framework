@@ -147,9 +147,9 @@
      */
     public function classSet() {
       $set= new HashSet(); 
-      if (->returnTypeis('ClassReference', $this)) $set->add($this->returnType);
+      if (is('ClassReference', $this->returnType)) $set->add($this->returnType);
       for ($i= 0, $s= sizeof($this->parameterTypes->values); $i < $s; $i++) {
-        if (!->parameterTypes->values[]is('ClassReference', $i)) continue;
+        if (!is('ClassReference', $this->parameterTypes->values[$i])) continue;
         $set->add($this->parameterTypes->values[$i]);
       }
       return $set->toArray();
