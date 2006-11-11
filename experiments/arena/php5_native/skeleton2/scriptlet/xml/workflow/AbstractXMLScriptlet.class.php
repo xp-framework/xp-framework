@@ -16,18 +16,18 @@
    */
   class AbstractXMLScriptlet extends XMLScriptlet {
     public
-      $classloader  = NULL;
+      $package  = NULL;
 
     /**
      * Constructor
      *
      * @access  public
-     * @param   &lang.ClassLoader classloader
+     * @param   string package
      * @param   string base default ''
      */
-    public function __construct(&$classloader, $base= '') {
+    public function __construct($package, $base= '') {
       parent::__construct($base);
-      $this->classloader= &$classloader;
+      $this->package= $package;
     }
 
     /**
@@ -37,7 +37,7 @@
      * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
      */
     public function &_request() {
-      return new WorkflowScriptletRequest($this->classloader);
+      return new WorkflowScriptletRequest($this->package);
     }
     
     /**
@@ -49,7 +49,7 @@
      * @throws  lang.ClassNotFoundException
      */
     public function &getContextClass(&$request) {
-      return $this->classloader->loadClass(ucfirst($request->getProduct()).'Context');
+      return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
     }
 
     /**

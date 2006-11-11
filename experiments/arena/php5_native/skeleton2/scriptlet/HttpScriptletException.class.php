@@ -47,24 +47,20 @@
     public function &getResponse() {
       return $this->response;
     }
-    
+
     /**
-     * Return formatted output of stacktrace
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      $s= sprintf(
+    public function compoundMessage() {
+      return sprintf(
         "Exception %s (%d:%s)\n",
         $this->getClassName(),
         $this->response->statusCode,
         $this->message
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s;
     }
     
     /**

@@ -29,7 +29,7 @@
      * @access  public
      */
     public function create();
-    
+
     /**
      * Set Encoding
      *
