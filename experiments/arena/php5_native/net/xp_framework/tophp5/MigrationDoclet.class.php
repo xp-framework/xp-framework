@@ -59,13 +59,20 @@
       return strtr($this->qualifiedNameOf($short), '.', '~');
     }
     
-    function mappedName($name) {
+    function mappedName($name, $extended= FALSE) {
       switch (strtolower($name)) {
         case 'exception': return 'XPException';
         case 'iterator':  return 'XPIterator';
         case 'util.iterator': return 'util.XPIterator';
         case 'lang.object': return 'lang.Generic';
-        default: return $name;
+        default: {
+          if ($extended) {
+            switch (strtolower($name)) {
+              case 'object': return 'Generic';
+            }
+          }
+          return $name;
+        }
       }
     }
     
@@ -298,7 +305,7 @@
               // Convert is('lang.Object', $o) into the respective lang.Generic
               if ('is' === $t[1]) {
                 $class= trim($tokens[$i+ 2][1], '\'"');
-                $tokens[$i+ 2][1]= "'".$this->mappedName($class)."'";
+                $tokens[$i+ 2][1]= "'".$this->mappedName($class, TRUE)."'";
                 break;
               }
               
@@ -368,9 +375,13 @@
       return array('debug' => OPTION_ONLY);
     }
     
+    function fixIs_a($matches) {
+      return 'is(\''.$this->mappedName($matches[2], TRUE).'\', '.$matches[1].')';
+    }
+    
     function postProcess() {
-    // Experimental replacement of is_a -> is
-      $this->output= preg_replace('#is_a\(([^,]+), ?[\'"]([^\'"]+)[\'"]\)#', 'is(\'\\2\', \\1)', $this->output);
+      // Experimental replacement of is_a -> is
+      $this->output= preg_replace_callback('#is_a\(([^,]+), ?[\'"]([^\'"]+)[\'"]\)#', array(&$this, 'fixIs_a'), $this->output);
     }
     
     function getOutput() {
