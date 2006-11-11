@@ -11,11 +11,11 @@
    *
    * Usage example (Creating):
    * <code>
-   *   $a= &new Archive(new File('soap.cca'));
+   *   $a= &new Archive(new File('soap.xar'));
    *   try(); {
    *     $a->open(ARCHIVE_CREATE);
    *     $a->add(
-   *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'), 
+   *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'),
    *       'xml.soap.SOAPMessage'
    *     );
    *     $a->add(
@@ -30,17 +30,17 @@
    *
    * Usage example (Extracting):
    * <code>
-   *   $a= &new Archive(new File('soap.cca'));                               
-   *   try(); {                                                              
-   *     $a->open(ARCHIVE_READ);                                             
-   *     $c= array(                                                          
-   *       'xml.soap.SOAPMessage' => $a->extract('xml.soap.SOAPMessage'),    
-   *       'xml.soap.SOAPClient'  => $a->extract('xml.soap.SOAPClient')      
-   *     );                                                                  
-   *   } if (catch('Exception', $e)) {                                       
-   *     $e->printStackTrace();                                              
-   *   }                                                                     
-   *   var_dump($c);                                                         
+   *   $a= &new Archive(new File('soap.xar'));
+   *   try(); {
+   *     $a->open(ARCHIVE_READ);
+   *     $c= array(
+   *       'xml.soap.SOAPMessage' => $a->extract('xml.soap.SOAPMessage'),
+   *       'xml.soap.SOAPClient'  => $a->extract('xml.soap.SOAPClient')
+   *     );
+   *   } if (catch('Exception', $e)) {
+   *     $e->printStackTrace();
+   *   }
+   *   var_dump($c);
    * </code>
    * 
    * @purpose  Provide an archiving
@@ -169,7 +169,7 @@
     /**
      * Get entry (iterative use)
      * <code>
-     *   $a= &new Archive(new File('port.cca'));
+     *   $a= &new Archive(new File('port.xar'));
      *   $a->open(ARCHIVE_READ);
      *   while ($id= $a->getEntry()) {
      *     var_dump($id);
@@ -321,7 +321,7 @@
      * Checks whether this archive is open
      *
      * @access  public
-     * @param   bool TRUE when the archive file is open
+     * @return  bool TRUE when the archive file is open
      */
     function isOpen() {
       return $this->file->isOpen();

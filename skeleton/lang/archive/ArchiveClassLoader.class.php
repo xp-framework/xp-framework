@@ -25,7 +25,7 @@
    * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
    * @purpose  Load classes from an archive
    * @see      xp://lang.ClassLoader
-   * @see      xp://lang.cca.Archive
+   * @see      xp://lang.archive.Archive
    * @ext      tokenize
    */
   class ArchiveClassLoader extends ClassLoader {
@@ -36,7 +36,7 @@
      * Constructor
      * 
      * @access  public
-     * @param   &lang.cca.Archive archive
+     * @param   &lang.archive.Archive archive
      */
     function __construct(&$archive) {
       parent::__construct();
@@ -117,7 +117,7 @@
         return $r;
       }
 
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**
@@ -133,14 +133,14 @@
         return $s;
       }
     
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**
      * Checks whether this loader can provide the requested class
      *
      * @access  public
-     * @param   string fqcn
+     * @param   string class
      * @return  bool
      */
     function providesClass($class) {
