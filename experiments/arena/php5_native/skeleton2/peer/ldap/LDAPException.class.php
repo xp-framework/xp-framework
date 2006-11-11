@@ -85,8 +85,8 @@
      * @param   int errorcode
      */
     public function __construct($message, $errorcode) {
-      $this->errorcode= $errorcode;
       parent::__construct($message);
+      $this->errorcode= $errorcode;
     }
 
     /**
@@ -98,18 +98,20 @@
     public function getErrorCode() {
       return $this->errorcode;
     }
-    
+
     /**
-     * Create string representation
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      return parent::toString().sprintf(
-        "  *** LDAP errorcode #%d [%s]\n",
+    public function compoundMessage() {
+      return sprintf(
+        'Exception %s (LDAP errorcode #%d [%s]: %s)',
+        $this->getClassName(),
         $this->errorcode,
-        ldap_err2str($this->errorcode)
+        ldap_err2str($this->errorcode),
+        $this->message
       );
     }
   }

@@ -68,7 +68,7 @@
       // Sanity check: Do we have at least one recipient?
       $to= '';
       for ($i= 0, $s= sizeof($message->to); $i < $s; $i++) {
-        if (!->to[]is('InternetAddress', $i)) continue; // Ignore!
+        if (!is('InternetAddress', $message->to[$i])) continue; // Ignore!
         $to.= $message->to[$i]->toString($message->getCharset()).', ';
       }
       if (empty($to)) {

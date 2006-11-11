@@ -47,23 +47,18 @@
     }
     
     /**
-     * Returns string representation
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      $s= sprintf(
-        "Exception %s (statuscode %d: %s)\n",
+    public function compoundMessage() {
+      return sprintf(
+        'Exception %s (statuscode %d: %s)',
         $this->getClassName(),
         $this->statuscode,
         $this->message
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s;
     }
-
   }
 ?>

@@ -12,6 +12,7 @@
   /**
    * Connection listener
    *
+   * @deprecated Implement peer.protocol.ServerProtocol instead!
    * @model    abstract
    * @see      xp://peer.server.Server#notify
    * @purpose  Abstract base class for listeners

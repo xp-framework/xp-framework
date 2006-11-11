@@ -85,7 +85,7 @@
       $servlet= substr($path, $p+ 1);
       $zone= substr($path, 0, $p);
 
-      if (->parametersis('RequestData', $this)) {
+      if (is('RequestData', $this->parameters)) {
         $query= "\x00".$this->parameters->getData();
       } else {
         $query= '';

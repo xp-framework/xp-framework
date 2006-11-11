@@ -92,6 +92,7 @@
      * @throws  peer.ConnectException
      */
     public function connect() {
+      if ($this->isConnected()) return TRUE;  // Already connected
       if (FALSE === ($this->_hdl= ldap_connect($this->host, $this->port))) {
         throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
       }

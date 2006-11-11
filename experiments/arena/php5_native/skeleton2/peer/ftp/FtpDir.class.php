@@ -9,6 +9,7 @@
   /**
    * FTP directory
    *
+   * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
    * @see      xp://peer.ftp.FtpConnection
    * @purpose  Represent an FTP directory
    */
@@ -25,7 +26,7 @@
     public function exists() {
       return ftp_size($this->_hdl, $this->name) != -1;
     }
-      
+
     /**
      * Get entries (iterative function)
      *
@@ -46,46 +47,7 @@
         return FALSE;
       }
 
-      // Parse entry
-      // drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .
-      // -rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html
-      sscanf(
-        $entry, 
-        '%s %d %s %s %d %s %d %[^ ] %s',
-        $permissions,
-        $numlinks,
-        $user,
-        $group,
-        $size,
-        $month,
-        $day,
-        $date,
-        $filename
-      );
-      
-      if ('d' == $permissions{0}) {
-        $e= new FtpDir($filename, $this->_hdl);
-      } else {
-        $e= new FtpEntry($filename, $this->_hdl);
-      }
-      with ($e); {
-        $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
-        
-        // Check for "recent" file which are specified "HH:MM" instead
-        // of year for the last 6 month (as specified in coreutils/src/ls.c)
-        if (strstr($date, ':')) {
-          $now= &Date::now();
-          if ($d->getMonth() > $now->getMonth()) $d->year--;
-        }
-        
-        $e->setPermissions(substr($permissions, 1));
-        $e->setNumlinks($numlinks);
-        $e->setUser($user);
-        $e->setGroup($group);
-        $e->setSize($size);
-        $e->setDate($d);
-      }
-      return $e;
+      return FtpEntry::parseFrom($entry, $this->_hdl);
     }
   }
 ?>

@@ -7,9 +7,9 @@
   /**
    * Connection event
    *
+   * @deprecated Implement peer.protocol.ServerProtocol instead!
    * @see      xp://peer.server.Server#service
    * @purpose  Event
-   * @experimental
    */
   class ConnectionEvent extends Object {
     public
