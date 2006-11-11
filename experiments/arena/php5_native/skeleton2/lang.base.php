@@ -102,7 +102,19 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        require_once('sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php');
+        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+          $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
+          
+          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
+            require_once($path.DIRECTORY_SEPARATOR.$filename);
+            continue(2);
+          } elseif (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
+            require_once('xar://'.$path.'?'.$filename);
+            continue(2);
+          }
+        }
+        
+        xp::error('Cannot open SAPI '.$name.' (include_path='.ini_get('include_path').')');
       }
       xp::registry('sapi', $a);
     }
@@ -153,6 +165,83 @@
     // }}}
   }
   // }}}
+  // {{{ final class xploader
+  class XpXarLoader {
+    var
+      $position     = 0,
+      $archive      = '',
+      $filename     = '';
+      
+    // {{{ static &mixed[] acquire(string archive)
+    //     Archive instance handling pool function, opens an archive and reads header only once
+    function &acquire($archive) {
+      static $archives= array();
+      if (!isset($archives[$archive])) {
+        $archives[$archive]= array();
+        $current= &$archives[$archive];
+
+        // Bootstrap loading, only to be used for core classes.
+        $current['handle']= fopen($archive, 'rb');
+        $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
+        for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
+          $entry= unpack(
+            'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+            fread($current['handle'], 0x0100)
+          );
+          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
+        }
+      }
+
+      return $archives[$archive];
+    }
+    // }}}
+    
+    // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
+    //     Open the given stream and check if file exists
+    function stream_open($path, $mode, $options, &$opened_path) {
+      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
+      $this->archive= $archive;
+      $this->filename= $file;
+      
+      $current= &XpXarLoader::acquire($this->archive);
+      return isset($current['index'][$this->filename]);
+    }
+    // }}}
+    
+    // {{{ string stream_read(int count)
+    //     Read $count bytes up-to-length of file
+    function stream_read($count) {
+      $current= &XpXarLoader::acquire($this->archive);
+      if (!isset($current['index'][$this->filename])) return FALSE;
+      if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
+
+      fseek($current['handle'], 0x0100 + sizeof($current['index']) * 0x0100 + $current['index'][$this->filename][1] + $this->position, SEEK_SET);
+      $bytes= fread($current['handle'], min($current['index'][$this->filename][0]- $this->position, $count));
+      $this->position+= strlen($bytes);
+      return $bytes;
+    }
+    // }}}
+    
+    // {{{ bool stream_eof()
+    //     Returns whether stream is at end of file
+    function stream_eof() {
+      $current= &XpXarLoader::acquire($this->archive);
+      return $this->position >= $current['index'][$this->filename][0];
+    }
+    // }}}
+    
+    // {{{ static bool stream_provides_file(string path)
+    //     Check whether file lives in archive. This method must be provided as PHP only supports
+    //     file_exists() on streams with PHP 5
+    function stream_provides_file($path) {
+      list($archive, $filename)= sscanf($path, 'xar://%[^?]?%[^$]');
+      
+      $current= &XpXarLoader::acquire($archive, $filename);
+      return isset($current['index'][$filename]);
+    }
+    // }}}
+  }
+  // }}}
 
   // {{{ internal void __error(int code, string msg, string file, int line)
   //     Error callback
@@ -183,21 +272,50 @@
 
         // Load using wrapper
         if (FALSE === include($str)) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path'))));
         }
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
-      } else {
-        if (FALSE === ($r= include_once(strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php'))) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str)));
-        } else if (TRUE === $r) {
-          continue;
+        
+        continue;
+      }
+      
+      foreach ($include as $path) {
+
+        // If path is a directory and the included file exists, load it
+        if (is_dir($path)) {
+          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+            continue;
+          }
+          
+          if (FALSE === ($r= include_once($f))) {
+            xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+          }
+          
+          break;
+        } elseif (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+
+          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
+          // skip to the next include_path part
+          if (FALSE === ($r= include($fname))) {
+            continue;
+          }
+          
+          xp::registry('classloader.'.$str, 'lang.archive.ArchiveClassLoader://'.$path);
+          break;
         }
       }
       
-      // Register class name and call static initializer if available
-      xp::registry('class.'.$class, $str);
-      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      if (!class_exists(xp::reflect($str))) {
+        xp::error('Cannot include '.$str.' (include_path='.ini_get('include_path').')');
+      }
+
+      // Register class name and call static initializer if available and if it has not been
+      // done before (through an ArchiveClassLoader)
+      if (NULL === xp::registry('class.'.$class)) {
+        xp::registry('class.'.$class, $str);
+        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      }
     }
   }
   // }}}
@@ -285,6 +403,20 @@
   function with() {
   }
   // }}}
+  
+  // {{{ proto &mixed ref(&mixed object)
+  //     Creates a "reference" to an object
+  function &ref(&$object) {
+    return array(&$object);
+  }
+  // }}}
+
+  // {{{ proto &mixed deref(&mixed expr)
+  //     Dereferences an expression
+  function &deref(&$expr) {
+    if (is_array($expr)) return $expr[0]; else return $expr;
+  }
+  // }}}
 
   // {{{ initialization
   error_reporting(E_ALL);
@@ -299,7 +431,6 @@
     ? getenv('SKELETON_PATH')
     : dirname(__FILE__).DIRECTORY_SEPARATOR
   ));
-  ini_set('include_path', SKELETON_PATH.PATH_SEPARATOR.ini_get('include_path'));
   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
   define('LONG_MIN', -LONG_MAX - 1);
 
@@ -313,6 +444,9 @@
   xp::registry('class.xp', '<xp>');
   xp::registry('class.null', '<null>');
 
+  // Register stream wrapper for .xar class loading
+  stream_wrapper_register('xar', 'XpXarLoader');
+
   // Omnipresent classes
   uses(
     'lang.Object',
@@ -324,7 +458,9 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'lang.FormatException',
-    'lang.ClassLoader'
+    'lang.ClassLoader',
+    'lang.archive.ArchiveReader',
+    'lang.archive.ArchiveClassLoader'
   );
   // }}}
 ?>
