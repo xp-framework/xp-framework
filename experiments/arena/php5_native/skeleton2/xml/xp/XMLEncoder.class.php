@@ -55,7 +55,7 @@
         
         switch (gettype($value[$key])) {
           case 'object':
-            if ([]is('Generic', $key)) {
+            if (is('Generic', $value[$key])) {
               $n->attribute['class']= $value[$key]->getClassName();
             }
             $this->_recurse($n, $o= get_object_vars($value[$key]), 'xp:property');

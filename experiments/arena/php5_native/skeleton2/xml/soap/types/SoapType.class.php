@@ -7,7 +7,7 @@
   /**
    * Represents a SOAP type. Special SOAP types such as
    * Base64binary or DateTime are recognized by the generic
-   * serializer/deserializer via is_a($arg, 'SoapType'),
+   * serializer/deserializer via is('SoapType', $arg),
    * so all user-defined types must inherit this class in
    * order for the serializer
    *

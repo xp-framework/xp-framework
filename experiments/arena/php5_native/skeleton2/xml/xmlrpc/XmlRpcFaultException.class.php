@@ -1,4 +1,4 @@
-<?php
+5<?php
 /* This class is part of the XP framework
  *
  * $Id$ 
@@ -22,8 +22,8 @@
      * @param   &xml.xmlrpc.XmlRpcFault fault
      */
     public function __construct(&$fault) {
+      parent::__construct($fault->faultString);
       $this->fault= &$fault;
-      parent::__construct($this->fault->faultString);
     }
 
     /**
@@ -37,14 +37,19 @@
     }
     
     /**
-     * Return a string representation of this exception
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      return parent::toString().sprintf(
-        "  [\n    fault.faultcode= '%s'\n    fault.faultstring= '%s'\n  ]\n",
+    public function compoundMessage() {
+      return sprintf(
+        "Exception %s (%s) {\n".
+        "  fault.faultcode   = %s\n".
+        "  fault.faultstring = '%s'\n".
+        "}\n",
+        $this->getClassName(),
+        $this->message,
         $this->fault->faultCode,
         $this->fault->faultString
       );

@@ -68,13 +68,13 @@
     }
     
     /**
-     * Returns a string representation of this exception
+     * Return compound message of this exception.
      *
      * @access  public
      * @return  string
      */
-    public function toString() {      
-      $s= sprintf(
+    public function compoundMessage() {
+      return sprintf(
         "%s@('%s'){\n".
         "  type       %d (%s)\n".
         "  filename   %s\n".
@@ -89,10 +89,6 @@
         $this->getlinenumber(),
         $this->getColumn()
       );
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString();
-      }
-      return $s;
     }
 
     /**

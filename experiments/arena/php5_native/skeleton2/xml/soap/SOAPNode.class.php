@@ -196,7 +196,7 @@
         return;
       }
       
-      if (is('Generic', $value)) {     // XP objects
+      if (is('Object', $value)) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
         $this->_recurse($child, get_object_vars($value), $mapping);
