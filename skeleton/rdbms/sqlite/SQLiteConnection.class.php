@@ -158,10 +158,10 @@
         }
 
         // Type-based conversion
-        if (is_a('Date', $args[$ofs])) {
+        if (is_a($args[$ofs], 'Date')) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is_a('Object', $args[$ofs])) {
+        } elseif (is_a($args[$ofs], 'Object')) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];
