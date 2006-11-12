@@ -336,8 +336,8 @@
     /**
      * Set trace
      *
-     * @accessp public
-     * @param &util.log.LogCategory cat
+     * @access  public
+     * @param   &util.log.LogCategory cat
      */
     function setTrace(&$cat) {
       $this->cat= &$cat;

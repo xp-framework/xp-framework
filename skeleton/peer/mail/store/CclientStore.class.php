@@ -39,7 +39,7 @@
      * @param   &array attr
      * @param   &int port
      * @return  bool
-     * @throws  IllegalArgumentException
+     * @throws  lang.IllegalArgumentException
      */
     function _supports(&$u, &$attr) {
       return throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
@@ -52,8 +52,8 @@
      * @param   string dsn
      * @return  bool success
      * @see     php://imap_open
-     * @throws  IllegalArgumentException in case scheme is not recognized
-     * @throws  MessagingException
+     * @throws  lang.IllegalArgumentException in case scheme is not recognized
+     * @throws  peer.mail.MessagingException
      */
     function connect($dsn) { 
       $attr= array();
@@ -116,7 +116,7 @@
      *
      * @access  public
      * @return  bool success
-     * @throws  MessagingException
+     * @throws  peer.mail.MessagingException
      */    
     function expunge() {
       if (FALSE === imap_expunge($this->_hdl[0])) {
@@ -135,7 +135,7 @@
      * @access  public
      * @param   string name
      * @return  &peer.mail.MailFolder
-     * @throws  MessagingException
+     * @throws  peer.mail.MessagingException
      */
     function &getFolder($name) { 
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
@@ -161,7 +161,7 @@
      *
      * @access  public
      * @return  &peer.mail.MailFolder
-     * @throws  MessagingException
+     * @throws  peer.mail.MessagingException
      */
     function &getFolders() {
       if (NULL === ($f= &$this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
@@ -197,8 +197,8 @@
      * @param   &peer.mail.MailFolder f
      * @param   bool readonly default FALSE
      * @return  bool success
-     * @throws  MessagingException in case opening the folder failed
-     * @throws  IllegalAccessException in case there is already a folder open
+     * @throws  peer.mail.MessagingException in case opening the folder failed
+     * @throws  lang.IllegalAccessException in case there is already a folder open
      */
     function openFolder(&$f, $readonly= FALSE) {
     
@@ -344,7 +344,7 @@
      * @param   &peer.mail.MailFolder f
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
-     * @throws  MessagingException
+     * @throws  peer.mail.MessagingException
      */
     function &getMessages(&$f) {
       if (1 == func_num_args()) {

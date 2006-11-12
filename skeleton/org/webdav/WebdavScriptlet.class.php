@@ -310,7 +310,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  Exception to indicate failure
+     * @throws  lang.Exception to indicate failure
      */
     function doHead(&$request, &$response) {
       try(); {

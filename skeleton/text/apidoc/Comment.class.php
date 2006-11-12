@@ -21,7 +21,7 @@
      * Handles tags - override!
      *
      * @access  private
-     * @param   string tag Tag (without leading "@")
+     * @param   string tag Tag (without leading "at")
      * @param   string line Line of text
      * @return  bool handled
      */
