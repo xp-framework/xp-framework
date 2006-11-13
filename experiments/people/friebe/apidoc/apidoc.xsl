@@ -384,6 +384,9 @@
         <a href="#__fields">Fields</a><br/>
         <a href="#__methods">Methods</a><br/>
 
+        <h3>Source</h3>
+        <a href="source.php?{doc/class/@name}">View</a><br/>
+
         <xsl:if test="count(doc/class/see) &gt; 0">
           <h3>See also</h3>
           
