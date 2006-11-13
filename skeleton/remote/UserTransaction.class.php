@@ -7,7 +7,7 @@
   /**
    * Remote transaction
    *
-   * @see      xp://Remote#begin
+   * @see      xp://remote.Remote#begin
    * @purpose  Transaction
    */
   class UserTransaction extends Object {
