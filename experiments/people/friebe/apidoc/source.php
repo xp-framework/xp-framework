@@ -42,6 +42,8 @@
         '__construct' => 'special',
         '__static'    => 'special',
         '__destruct'  => 'special',
+        'parent'      => 'special',
+        'self'        => 'special',   // Forward-compatible:)
       );
       
       if (0 == sscanf($request->getQueryString(), '%[^<[]', $class) && $class) {
