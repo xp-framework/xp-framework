@@ -36,7 +36,11 @@
         'var'         => 'keyword',
         'array'       => 'keyword',
         'new'         => 'keyword',
+        'deref'       => 'keyword',
+        'raise'       => 'keyword',
+        'deref'       => 'keyword',
         '__construct' => 'special',
+        '__static'    => 'special',
         '__destruct'  => 'special',
       );
       
