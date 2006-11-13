@@ -15,7 +15,7 @@
    * JSON RPC Router class. You can use this class to implement
    * a JSON webservice.
    *
-   * @see      xp://org.json.JsonClient
+   * @see      xp://org.json.rpc.JsonClient
    * @purpose  JSON-RPC-Service
    */
   class JsonRpcRouter extends AbstractRpcRouter {
@@ -24,7 +24,7 @@
      * Create a request object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.rpc.XmlRpcRequest
+     * @return  &scriptlet.rpc.AbstractRpcRequest
      */
     function &_request() {
       return new JsonRpcRequest();
@@ -34,7 +34,7 @@
      * Create a response object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.rpc.XmlRpcResponse
+     * @return  &scriptlet.rpc.AbstractRpcResponse
      */
     function &_response() {
       return new JsonRpcResponse();
@@ -44,7 +44,7 @@
      * Create a message object.
      *
      * @access  protected
-     * @return  &org.json.rpc.JsonMessage
+     * @return  &scriptlet.rpc.AbstractRpcMessage
      */
     function &_message() {
       return new JsonResponseMessage();
