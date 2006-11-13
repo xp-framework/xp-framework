@@ -85,11 +85,17 @@
       }
       fieldset.warning {
         border: 1px solid #ffa800;
-        background-color: #ffeac0;
+        background: #ffeac0 url('image/deprecated.png') 10px 10px no-repeat;
+      }
+      fieldset.warning p {
+        margin-left: 40px;
       }
       fieldset.hint {
         border: 1px solid #001f83;
-        background-color: #e2e7f8;
+        background: #e2e7f8 url('image/unittest.png') 10px 10px no-repeat;
+      }
+      fieldset.hint p {
+        margin-left: 40px;
       }
       fieldset.hint a {
         color: #001f83;
