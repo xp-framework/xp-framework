@@ -84,6 +84,7 @@
       </style>');
 
       $response->write('<code>');
+      $prev= NULL;
       do {
         $token= $tokenizer->nextToken(DELIMITERS);
         if ("'" == $token{0}) {
@@ -143,8 +144,16 @@
           $value= $token;
         }
         
-        $response->write('<span class="'.$type.'">'.htmlspecialchars($value).'</span>');
+        if ($prev != $type) {
+          $prev && $response->write('</span>');
+          $response->write('<span class="'.$type.'">');
+          $prev= $type;
+        }
+        
+        $response->write(htmlspecialchars($value));
       } while ($tokenizer->hasMoreTokens());
+      
+      $response->write('</span>');
       $response->write('</code>');
     }
   }
