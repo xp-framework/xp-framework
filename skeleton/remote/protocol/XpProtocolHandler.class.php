@@ -16,7 +16,7 @@
   /**
    * Handles the "XP" protocol
    *
-   * @see      xp://ProtocolHandler
+   * @see      xp://remote.protocol.ProtocolHandler
    * @purpose  Protocol Handler
    */
   class XpProtocolHandler extends Object {
@@ -141,7 +141,7 @@
      * Begin a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     function begin(&$tran) {
@@ -161,7 +161,7 @@
      * Rollback a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     function rollback(&$tran) {
@@ -181,7 +181,7 @@
      * Commit a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     function commit(&$tran) {
