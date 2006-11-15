@@ -173,7 +173,11 @@ directory to their include path.
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/rfc/contrib/rfc0084/manifests/
+  Manifests for XAR files
+
+- http://xp-framework.net/downloads/rfc0084/
+  BC XARs
 
 
 Comments
