@@ -20,15 +20,46 @@ To clean up the core distribution.
 
 Functionality
 -------------
-The following packages will be moved:
+
+1) The following packages will have incompatible changes:
+
+<pre>
+Current name            New name           Action
+----------------------- ------------------ -----------------------------
+gui.gtk                 org.gnome          M
+
+org.json                webservices        S
+
+util.profiling.unittest unittest           S
+util.archive            org.gnu.tar        M
+util.adt                (n/a)              R
+util.registry           (n/a)              R
+util.mp3                de.fraunhofer.mp3  M
+
+peer.ajp                org.apache.ajp     M
+peer.cvsclient          org.cvshome        M (joined w/ existing)
+
+text.apidoc             (n/a)              R
+text.translator         net.schweikhardt   M
+</pre>
+
+Legend:
+  S: stays in skeleton but gets a new name there
+  M: moved to ports/classes under a new name
+  R: removed completely
+
+
+2) The following packages will be moved as-is to ports/classes
 
 ch
 ~~
+<pre>
 * ch.ecma
   STLI telephony
-
+</pre>
 com
 ~~~
+<pre>
 * com.capeconnect
   GlobalWeather webservices
 
@@ -49,17 +80,19 @@ com
   
 * com.xmlrpc
   MetaWeblogApi
-
+</pre>
 net
 ~~~
+<pre>
 * net.xmethods
   Babelfish webservices
   
 * net.xp_framework
   XP framework website / Unit tests / Interop Webservices
-
+</pre>
 org
 ~~~
+<pre>
 * org.bugzilla
   Bugzilla email gateway / O/R mapping classes / constants
 
@@ -101,11 +134,13 @@ org
 
 * org.webdav
   WebDAV client and server
-
+</pre>
 us
 ~~
+<pre>
 * us.icio
   del.icio.us client
+</pre>
 
 
 Security considerations
