@@ -30,10 +30,10 @@
       $short= NULL;
     } else if (isset($arg['name'])) {
       $name= $select= $arg['name'];
-      $short= isset($argv['short']) ? $argv['short'] : NULL;
+      $short= isset($arg['short']) ? $arg['short'] : NULL;
     } else {
       $name= $select= strtolower(preg_replace('/^set/', '', $method->getName()));
-      $short= isset($argv['short']) ? $argv['short'] : NULL;
+      $short= isset($arg['short']) ? $arg['short'] : NULL;
     }
 
     if (!$p->exists($select, $short)) {
