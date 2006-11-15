@@ -28,7 +28,9 @@ Current name            New name           Action
 ----------------------- ------------------ -----------------------------
 gui.gtk                 org.gnome          M
 
-org.json                webservices        S
+org.json                webservices.json   S
+xml.xmlrpc              webservices.xmlrpc S
+xml.soap                webservices.soap   S
 
 util.profiling.unittest unittest           S
 util.archive            org.gnu.tar        M
@@ -47,6 +49,8 @@ Legend:
   S: stays in skeleton but gets a new name there
   M: moved to ports/classes under a new name
   R: removed completely
+
+In all cases, XAR files retaining the old classes will be created.
 
 
 2) The following packages will be moved as-is to ports/classes
