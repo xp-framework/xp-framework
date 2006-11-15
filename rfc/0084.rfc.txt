@@ -29,8 +29,14 @@ Current name            New name           Action
 gui.gtk                 org.gnome          M
 
 org.json                webservices.json   S
+
 xml.xmlrpc              webservices.xmlrpc S
 xml.soap                webservices.soap   S
+xml.wddx                webservices.wddx   S
+xml.uddi                webservices.uddi   S
+xml.xp                  (n/a)              R
+
+io.cca                  (n/a)              R
 
 util.profiling.unittest unittest           S
 util.archive            org.gnu.tar        M
@@ -43,6 +49,8 @@ peer.cvsclient          org.cvshome        M (joined w/ existing)
 
 text.apidoc             (n/a)              R
 text.translator         net.schweikhardt   M
+
+net.planet-xp           (n/a)              R
 </pre>
 
 Legend:
