@@ -20,6 +20,8 @@ To clean up the core distribution.
 
 Functionality
 -------------
+Quite a bit of reorganizing will be done, not limited to moving the domain-
+specific packages but rethinking what will be core and what will be moved.
 
 1) The following packages will have incompatible changes:
 
@@ -89,7 +91,7 @@ com
 
 * com.sun
   Java Webstart
-  
+
 * com.xmlrpc
   MetaWeblogApi
 </pre>
@@ -135,9 +137,6 @@ org
 * org.isbn
   ISBN support
 
-* org.json
-  JSON API
-
 * org.nagios
   NSCA client / O/R mapping classes
 
@@ -152,6 +151,44 @@ us
 <pre>
 * us.icio
   del.icio.us client
+</pre>
+
+After the changes are applied, the packages will be distributed as follows:
+
+skeleton
+~~~~~~~~
+<pre>
+  Package       Contents
+  ------------- ----------------------------------------------------------
+  img           convert, chart, graph, shapes, io, fonts, util, filter
+  io            dba, cca, sys, collections
+  lang          reflect, types, archive
+  peer          http, ldap, mail, ftp, server, webdav, sieve, news, irc
+  rdbms         pgsql, sybase, sqlite, mysql, util, criterion
+  remote        protocol, reflect, beans
+  sapi          soap, compat, gui, xmlrpc, scriptlet
+  scriptlet     xml, rpc
+  security      crypto, auth, sasl, checksum, cert
+  text          format, doclet, parser, util, encode
+  unittests     gui, coverage
+  util          semaphore, profiling, cmd, telephony, log, io, collections
+  webservices   soap, xmlrpc, wddx, json, uddi
+  xml           dom, uddi, xp, parser, soap, xmlrpc, wddx, rdf, meta
+</pre>
+
+ports/classes
+~~~~~~~~~~~~~
+<pre>
+  Package       Contents
+  ------------- ----------------------------------------------------------
+  ch            ecma
+  com           simpy, capeconnect, sun, microsoft, xmlrpc, google, flickr
+  de            document-root, uska, thekid, fraunhofer, schweikhardt
+  name          kiesel 
+  net           xp_framework, xmethods
+  org           fpdf, htdig, nagios, tigris, dict, cvshome, ietf, webdav, imc, 
+                gnu, bugzilla, isbn, json, dia
+  us            icio 
 </pre>
 
 
