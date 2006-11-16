@@ -82,7 +82,7 @@ __
 
   try(); {
     $report= &ReportFactory::factory($p->value('report', 'r', 'text'));
-    $scan= $c= &new FileCollection($p->value(1));
+    $scan= &new FileCollection($p->value(1));
     $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan->getURI()).'.report'));
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
@@ -91,8 +91,7 @@ __
 
   Console::writeLine('===> Generating ', $report->getType(), ' report for ', $scan->getURI(), ' to ', $out->getURI());
   for (
-    $c= &new FileCollection($scan->getURI()),
-    $it= &new FilteredIOCollectionIterator($c, new ExtensionEqualsFilter('.php'), TRUE);
+    $it= &new FilteredIOCollectionIterator($scan, new ExtensionEqualsFilter('.php'), TRUE);
     $it->hasNext();
   ) {
     performWork($it->next(), $report, $rules);
