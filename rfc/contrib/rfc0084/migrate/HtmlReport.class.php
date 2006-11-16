@@ -60,14 +60,28 @@
 
       $out->open(FILE_MODE_WRITE);
       $out->write('<html><head><title>RFC #0084 Migration report</title><style type="text/css">'.$css.'</style></head><body>');
+      
+      // Executive summary
+      $out->write('<fieldset><legend>Executive summary</legend><ul>');
+      foreach ($this->packages as $package => $count) {
+        $out->write(sprintf(
+          '<li><span class="%s">Uses of package %s: %d</span><br/>This package has been %s</li>',
+          get_class($rules[$package]),
+          $package,
+          $count,
+          $rules[$package]->toString()
+        ));
+      }
+      $out->write('</ul></fieldset><hr/>');
+      
+      // Details
       foreach ($this->messages as $uri => $messages) {
         $out->write('<fieldset><legend>Report for '.str_replace($collection->getURI(), '', $uri)."</legend><ul>");
         foreach ($messages as $package => $occurrences) {
           $out->write(sprintf(
-            "<li><span class='%s'>Use of package %s - this package has been %s</span><br/>\n",
+            "<li><span class='%s'>Use of package %s</span><br/>\n",
             get_class($rules[$package]),
-            $package,
-            $rules[$package]->toString()
+            $package
           ));
 
           foreach ($occurrences as $occurrence) {

@@ -23,13 +23,26 @@
      */
     function summarize(&$collection, &$out, $rules) {
       $out->open(FILE_MODE_WRITE);
+
+      // Executive summary
+      $out->write("== Executive summary ==\n");
+      foreach ($this->packages as $package => $count) {
+        $out->write(sprintf(
+          "* Uses of package %s: %d\nThis package has been %s\n",
+          $package,
+          $count,
+          $rules[$package]->toString()
+        ));
+      }
+      $out->write("\n".str_repeat('~', 72)."\n\n");
+      
+      // Details
       foreach ($this->messages as $uri => $messages) {
         $out->write('== Report for '.str_replace($collection->getURI(), '', $uri)." ==\n");
         foreach ($messages as $package => $occurrences) {
           $out->write(sprintf(
-            "   Use of package %s - this package has been %s {\n",
-            $package,
-            $rules[$package]->toString()
+            "   Use of package %s {\n",
+            $package
           ));
 
           foreach ($occurrences as $occurrence) {
@@ -48,14 +61,13 @@
       }
       $out->close();
     }
-    
     /**
      * Creates a string representation of this report's type
      *
      * @access  public
      * @return  string
      */
-    function toString() {
+    function getType() {
       return 'textual';
     }
   }
