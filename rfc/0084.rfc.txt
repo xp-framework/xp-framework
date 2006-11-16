@@ -2,7 +2,7 @@ RFC 0084: Move domain-specific packages out of skeleton
 ========================================================================
 $Id$
 
-@authors: friebe
+@authors: friebe, kiesel
 @created: Sun Oct 22 13:40:39     2006
 @status: draft
 @category: <core>
@@ -186,5 +186,9 @@ Comments
   The JSON API should probably stay part of the core distribution. 
   I'd suggest to create a new top-level "webservices" package and stuff
   it there; but this should be a new RFC.
+
+- friebe, Thu Nov 16 10:36:44     2006
+  The creation of a top-level webservices package will be included in
+  this RFC after all.
 
 <EOF>
