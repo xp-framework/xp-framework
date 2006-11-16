@@ -23,6 +23,16 @@
     function add(&$f, $messages) { 
       $this->messages[$f->getURI()]= $messages;
     }
+    
+    /**
+     * Return whether there's nothing to report
+     *
+     * @access  public
+     * @return  bool
+     */
+    function isEmpty() {
+      return empty($this->messages);
+    }
 
     /**
      * Summarize this report
