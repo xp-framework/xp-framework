@@ -204,8 +204,12 @@ n/a
 
 Dependencies
 ------------
-Users of the afforementioned packages will need to add the ports/classes/
-directory to their include path.
+Users of the packages moved to ports/classes will need to add the 
+/path/to/xp/trunk/ports/classes/ directory to their include path.
+
+Users of packages moved within skeleton can either change their source-
+code (a migration script will be provided) or use of the BC xars which
+retain the old class names, adding them to their include path.
 
 
 Related documents
