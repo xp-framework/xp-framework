@@ -80,12 +80,14 @@
   }
   // }}}
   
+  // {{{ TextReport
+  //     Report implementation which will output text/plain
   class TextReport extends Report {
 
-    function summarize(&$out, $rules) {
+    function summarize(&$collection, &$out, $rules) {
       $out->open(FILE_MODE_WRITE);
       foreach ($this->messages as $uri => $messages) {
-        $out->write('== Report for '.$uri." ==\n");
+        $out->write('== Report for '.str_replace($collection->getURI(), '', $uri)." ==\n");
         foreach ($messages as $package => $occurrences) {
           $out->write(sprintf(
             "   Use of package %s - this package has been %s {\n",
@@ -114,6 +116,84 @@
       return 'textual report';
     }
   }
+  // }}}
+
+  // {{{ HtmlReport
+  //     Report implementation which will output HTML
+  class HtmlReport extends Report {
+
+    function summarize(&$collection, &$out, $rules) {
+      $css= '
+        body {
+          font: 10pt Arial, helvetica;
+        }
+        pre, code {
+          font: 10pt "Courier new", courier;
+          margin: 0;
+        }
+        code {
+          background-color: #efefef;
+          white-space: pre;
+        }
+        pre {
+          margin-bottom: 8px;
+        }
+        fieldset {
+          margin-bottom: 10px;
+          border: 1px solid #cccccc;
+        }
+        fieldset legend {
+          font-weight: bold;
+        }
+        li {
+          font-weight: bold;
+        }
+        .renamedrule {
+          color: #000099;
+        }
+        .movedrule {
+          color: #ffa800;
+        }
+        .deprecatedrule {
+          color: #990000;
+        }
+      ';
+
+      $out->open(FILE_MODE_WRITE);
+      $out->write('<html><head><title>RFC #0084 Migration report</title><style type="text/css">'.$css.'</style></head><body>');
+      foreach ($this->messages as $uri => $messages) {
+        $out->write('<fieldset><legend>Report for '.str_replace($collection->getURI(), '', $uri)."</legend><ul>");
+        foreach ($messages as $package => $occurrences) {
+          $out->write(sprintf(
+            "<li><span class='%s'>Use of package %s - this package has been %s</span><br/>\n",
+            get_class($rules[$package]),
+            $package,
+            $rules[$package]->toString()
+          ));
+
+          foreach ($occurrences as $occurrence) {
+            $out->write(sprintf(
+              "<code>%s</code>\n<pre>%s^-- line %d, offset %d</pre>\n",
+              $occurrence[2],
+              str_repeat(' ', $occurrence[1]),
+              $occurrence[0],
+              $occurrence[1]
+            ));
+          }
+
+          $out->write("</li>\n");
+        }
+        $out->write("</ul></fieldset>\n");
+      }
+      $out->write('</body>');
+      $out->close();
+    }
+    
+    function toString() {
+      return 'HTML report';
+    }
+  }
+  // }}}
   
   // {{{ void performWork(&io.collections.IOElement e, &Report r, array<string, &Rule> rules) 
   //     Migrates the given element
@@ -179,8 +259,13 @@ __
     exit(1);
   }
 
+  switch ($p->value('report', 'r', 'text')) {
+    case 'text': case 't': $report= &new TextReport(); break;
+    case 'html': case 'h': $report= &new HtmlReport(); break;
+    default: Console::writeLine('Unknown report type'); exit(2);
+  }
+
   $scan= $p->value(1);
-  $report= &new TextReport();
   $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan).'.report'));
 
   Console::writeLine('===> Generating ', $report->toString(), ' for ', $scan, ' to ', $out->getURI());
@@ -194,7 +279,7 @@ __
   
   Console::writeLine();
   Console::writeLine('---> Creating summary');
-  $report->summarize($out, $rules);
+  $report->summarize($c, $out, $rules);
   Console::writeLine('===> Done');
   // }}}
 ?>
