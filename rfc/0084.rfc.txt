@@ -187,7 +187,7 @@ ports/classes
   name          kiesel 
   net           xp_framework, xmethods
   org           fpdf, htdig, nagios, tigris, dict, cvshome, ietf, webdav, imc, 
-                gnu, bugzilla, isbn, json, dia
+                gnu, bugzilla, isbn, json, dia, gnome
   us            icio 
 </pre>
 
