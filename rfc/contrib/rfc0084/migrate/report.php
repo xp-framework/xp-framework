@@ -7,10 +7,9 @@
   xp::sapi('cli');
   uses(
     'DeprecatedRule',
-    'HtmlReport',
+    'ReportFactory',
     'MovedRule',
     'RenamedRule',
-    'TextReport',
     'io.File',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -81,18 +80,18 @@ __
     exit(1);
   }
 
-  switch ($p->value('report', 'r', 'text')) {
-    case 'text': case 't': $report= &new TextReport(); break;
-    case 'html': case 'h': $report= &new HtmlReport(); break;
-    default: Console::writeLine('Unknown report type'); exit(2);
+  try(); {
+    $report= &ReportFactory::factory($p->value('report', 'r', 'text'));
+    $scan= $c= &new FileCollection($p->value(1));
+    $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan->getURI()).'.report'));
+  } if (catch('Exception', $e)) {
+    $e->printStackTrace();
+    exit(-1);
   }
 
-  $scan= $p->value(1);
-  $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan).'.report'));
-
-  Console::writeLine('===> Generating ', $report->getType(), ' report for ', $scan, ' to ', $out->getURI());
+  Console::writeLine('===> Generating ', $report->getType(), ' report for ', $scan->getURI(), ' to ', $out->getURI());
   for (
-    $c= &new FileCollection($scan),
+    $c= &new FileCollection($scan->getURI()),
     $it= &new FilteredIOCollectionIterator($c, new ExtensionEqualsFilter('.php'), TRUE);
     $it->hasNext();
   ) {
@@ -101,7 +100,7 @@ __
   
   Console::writeLine();
   Console::writeLine('---> Creating summary');
-  $report->summarize($c, $out, $rules);
+  $report->summarize($scan, $out, $rules);
   Console::writeLine('===> Done');
   // }}}
 ?>
