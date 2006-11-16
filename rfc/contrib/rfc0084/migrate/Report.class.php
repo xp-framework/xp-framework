@@ -24,7 +24,7 @@
     function add(&$f, $messages) { 
       $this->messages[$f->getURI()]= $messages;
       foreach (array_keys($messages) as $package) {
-        isset($this->packages[$package]) ? $this->packages[$package]= 1 : $this->packages[$package]++;
+        isset($this->packages[$package]) ? $this->packages[$package]++ : $this->packages[$package]= 1;
       }
     }
     
