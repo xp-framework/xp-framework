@@ -42,6 +42,7 @@
       if ($url->getUser() && $url->getPassword()) {
         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
       }
+      $this->headers['Host']= $this->url->getHost().':'.$this->url->getPort(80);
     }
     
     /**
@@ -131,12 +132,10 @@
       }
       
       $request= sprintf(
-        "%s %s HTTP/%s\r\nHost: %s:%d\r\n",
+        "%s %s HTTP/%s\r\n",
         $this->method,
         $target,
-        $this->version,
-        $this->url->getHost(),
-        $this->url->getPort(80)
+        $this->version
       );
       
       // Add request headers
