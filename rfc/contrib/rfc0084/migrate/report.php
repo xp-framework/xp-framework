@@ -6,10 +6,8 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'DeprecatedRule',
     'ReportFactory',
-    'MovedRule',
-    'RenamedRule',
+    'Rules',
     'io.File',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -45,29 +43,6 @@
   }
   // }}}
 
-  // {{{ Rule definitions
-  $rules= array(
-    'gui.gtk'                 => new MovedRule('org.gnome'),
-    'org.json'                => new RenamedRule('webservices.json'),
-    'xml.xmlrpc'              => new RenamedRule('webservices.xmlrpc'),
-    'xml.soap'                => new RenamedRule('webservices.soap'),
-    'xml.wddx'                => new RenamedRule('webservices.wddx'),
-    'xml.uddi'                => new RenamedRule('webservices.uddi'),
-    'xml.xp'                  => new DeprecatedRule(array('xml.meta')),
-    'io.cca'                  => new DeprecatedRule(array('lang.archive')),
-    'util.profiling.unittest' => new RenamedRule('unittest'),
-    'util.archive'            => new MovedRule('org.gnu.tar'),
-    'util.adt'                => new DeprecatedRule(array('util.collections')),
-    'util.registry'           => new DeprecatedRule(),
-    'util.mp3'                => new MovedRule('de.fraunhofer.mp3'),
-    'peer.ajp'                => new MovedRule('org.apache.ajp'),
-    'peer.cvsclient'          => new MovedRule('org.cvshome'),
-    'text.apidoc'             => new DeprecatedRule(array('text.doclet')),
-    'text.translator'         => new MovedRule('net.schweikhardt'),
-    'net.planet-xp'           => new DeprecatedRule(),
-  );
-  // }}}
-  
   // {{{ main
   $p= &new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
@@ -81,6 +56,7 @@ __
   }
 
   try(); {
+    $rules= &Rules::allRules();
     $report= &ReportFactory::factory($p->value('report', 'r', 'text'));
     $scan= &new FileCollection($p->value(1));
     $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan->getURI()).'.report'));
