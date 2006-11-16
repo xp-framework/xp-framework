@@ -173,7 +173,7 @@
     Console::writeLine(<<<__
 Creates a report for all files in a given directpry
 
-Usage: php report.php <base_directory>
+Usage: php report.php <base_directory> [-O output]
 __
     );
     exit(1);
@@ -181,7 +181,7 @@ __
 
   $scan= $p->value(1);
   $report= &new TextReport();
-  $out= &new File('rfc-0084_'.$p->value('output', 'O', basename($scan)).'.report');
+  $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan).'.report'));
 
   Console::writeLine('===> Generating ', $report->toString(), ' for ', $scan, ' to ', $out->getURI());
   for (
