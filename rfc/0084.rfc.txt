@@ -232,4 +232,8 @@ Comments
   The creation of a top-level webservices package will be included in
   this RFC after all.
 
+- friebe, Thu Nov 16 11:07:35     2006
+  As soon as an upgrade advisor and a migration script are available,
+  I'll set this to discussion.
+
 <EOF>
