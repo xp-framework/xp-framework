@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Sun Oct 22 13:40:39     2006
-@status: draft
+@status: discussion, ends Mon Nov 20 18:00:00 CET 2006
 @category: <core>
 
 Scope of Change
@@ -235,5 +235,5 @@ Comments
 - friebe, Thu Nov 16 11:07:35     2006
   As soon as an upgrade advisor and a migration script are available,
   I'll set this to discussion.
-
+ 
 <EOF>
