@@ -24,6 +24,9 @@
     function summarize(&$collection, &$out, $rules) {
       $out->open(FILE_MODE_WRITE);
 
+      // Header
+      $out->write('# RFC #0084 Migration report for '.$collection->getURI()." #\n");
+
       // Executive summary
       $out->write("== Executive summary ==\n");
       foreach ($this->packages as $package => $count) {

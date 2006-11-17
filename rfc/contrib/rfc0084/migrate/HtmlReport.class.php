@@ -26,6 +26,12 @@
         body {
           font: 10pt Arial, helvetica;
         }
+        h1 {
+          font: 20px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
+          letter-spacing: 2px;
+          margin-bottom: 1px;
+          color: #41a139;
+        }
         pre, code {
           font: 10pt "Courier new", courier;
           margin: 0;
@@ -58,8 +64,12 @@
         }
       ';
 
+      $title= 'RFC #0084 Migration report for '.$collection->getURI();
       $out->open(FILE_MODE_WRITE);
-      $out->write('<html><head><title>RFC #0084 Migration report</title><style type="text/css">'.$css.'</style></head><body>');
+      $out->write('<html><head><title>'.$title.'</title><style type="text/css">'.$css.'</style></head><body>');
+      
+      // Header
+      $out->write('<h1>'.$title.'</h1>');
       
       // Executive summary
       $out->write('<fieldset><legend>Executive summary</legend><ul>');
