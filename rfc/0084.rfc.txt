@@ -1,4 +1,4 @@
-RFC 0084: Move domain-specific packages out of skeleton
+RFC 0084: Packages cleanup
 ========================================================================
 $Id$
 
@@ -10,12 +10,16 @@ $Id$
 Scope of Change
 ---------------
 The domain-specific packages in the XP framework will be moved from the
-skeleton/ directory to ports/classes/.
+skeleton/ directory to ports/classes/. The domain-specific org.json-
+package and all other webservice-related packages will be joined into 
+one new package, webservices; unittests will become top-level, deprecated
+packages will be removed and other (should-be domain-specific) packages 
+will be renamed and moved to ports/classes/.
 
 
 Rationale
 ---------
-To clean up the core distribution.
+Clean up the core distribution; make it consistent.
 
 
 Functionality
@@ -235,5 +239,10 @@ Comments
 - friebe, Thu Nov 16 11:07:35     2006
   As soon as an upgrade advisor and a migration script are available,
   I'll set this to discussion.
- 
+
+- friebe, Fri Nov 17 11:05:37 CET 2006
+  contrib/rfc0084/migrate contains reporting and migration scripts.
+  See http://xp-framework.info/xml/xp.en_US/news/view?131 on how to
+  use them.
+  
 <EOF>
