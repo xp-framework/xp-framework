@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Nov 18 23:42:40     2006
-@status: draft
+@status: discussion, ends Mon Nov 20 17:00:00 CET 2006
 @category: remote.protocol
 
 Scope of Change
@@ -124,8 +124,63 @@ n/a
 
 Speed impact
 ------------
-Running all tests from remote.ini yields the same time period for both
-the old and the new implementations.
+Running all tests from remote.ini yields almost the same time period 
+for both the old and the new implementations. On one machine I tested
+the new implementation is about one tenth of a millisecond slower on 
+average for unserializing a simple object than the old one, but uses 
+about 20k less memory.
+
+Test script for the old API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  require('lang.base.php'); 
+  uses('remote.protocol.Serializer'); 
+  
+  class PersonReference extends Object { 
+    var $id; 
+  } 
+  
+  $s= &new Serializer(); 
+  $data= 'O:15:"PersonReference":1:{s:2:"id";i:1549;}'; 
+  for ($i= 0; $i < 10000; $i++) { 
+    $s->valueOf($data, &$length= 0); 
+  } 
+  var_dump(memory_get_usage());
+?>
+
+Test script for the new API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  require('lang.base.php'); 
+  uses('remote.protocol.Serializer'); 
+  
+  class PersonReference extends Object { 
+    var $id; 
+  } 
+  
+  $s= &new Serializer(); 
+  $data= &new SerializedData('O:15:"PersonReference":1:{s:2:"id";i:1549;}'); 
+  for ($i= 0; $i < 10000; $i++) { 
+    $s->valueOf($data); 
+    $data->offset= 0; 
+  } 
+  var_dump(memory_get_usage());
+?>
+
+Results
+~~~~~~~
+The test scripts were each run 20 times, using the "time" utility to
+measure their runtime.
+
+<pre>
+  Which Average execution time Per loop run
+  ----- ---------------------- -----------------------
+  Old   5.452 seconds           0.5452 milliseconds
+  New   6.567 seconds           0.6567 milliseconds
+</pre>
+
+That makes a difference of 0.1115 milliseconds per loop execution. Not
+really much...
 
 
 Dependencies
@@ -141,7 +196,6 @@ Related documents
 
 Comments
 --------
-- friebe, Sun Nov 19 00:06:29     2006
-  Needs some more performance testing...
+n/a
 
 <EOF>
