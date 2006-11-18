@@ -1,0 +1,147 @@
+RFC 0090: Refactor remote.protocol.Serializer
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Nov 18 23:42:40     2006
+@status: draft
+@category: remote.protocol
+
+Scope of Change
+---------------
+The Serializer class' valueOf() method's signature will be changed.
+
+Rationale
+---------
+First of all, the current code *inside* valueOf() (and the SerializerMapping
+implementations) consists of numerous repetitions which makes it hard to 
+read, debug and maintain. Second, exposing the &length member to "public" 
+space create ugly code there ($serializer->valueOf($data, $length= 0)). Third,
+references to primitives will not work in the XP language.
+
+
+Functionality
+-------------
+
+1) The SerializedData API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class SerializedData extends Object {
+    public string $buffer
+    public int offset
+
+    // Constructor
+    public __construct(string buffer)
+    
+    // Consume a string ([length]:"[string]") and return it
+    public string consumeString()
+
+    // Consume everything up to the next ";" and return it
+    public string consumeWord()
+
+    // Consume everything up to the next ":" character and return it
+    public string consumeSize()
+  }
+?>
+
+2) Public API
+~~~~~~~~~~~~~
+Current Serializer::valueOf() signature:
+<?php
+  public &mixed valueOf(
+    string serialized, 
+    &int length,
+    [array context]
+  )
+?>
+
+New Serializer::valueOf() signature:
+<?php
+  public &mixed valueOf(
+    &remote.protocol.SerializedData serialized,
+    [array context]
+  )
+?>
+
+Example of new public API (unserializing a PersonReference object):
+<?php
+  $reference= &$serializer->valueOf(new SerializedData(
+    'O:15:"PersonReference":1:{s:2:"id";i:1549;}'
+  ));
+?>
+
+
+3) API changes for SerializerMappings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Current SerializerMapping::valueOf() signature:
+<?php
+  public &mixed valueOf(
+    &remote.protocol.Serializer serializer, 
+    string serialized, 
+    &int length, 
+    [array context]
+  )
+?>
+
+New Serializer::valueOf() signature:
+<?php
+  public &mixed valueOf(
+    &remote.protocol.Serializer serializer, 
+    &remote.protocol.SerializedData serialized,
+    [array context]
+  )
+?>
+
+
+4) Internal changes
+~~~~~~~~~~~~~~~~~~~
+All the substr() / $length++ / $offset+= $len calls can be replaced by
+SerializedData() methods (as shown above).
+
+
+Example (from theDateMapping class):
+<?php
+  // Old API
+  function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
+    $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
+    $length= strlen($v)+ 3;
+    $value= &new Date((int)$v);
+    return $value;
+  }
+
+  // New API
+  function &valueOf(&$serializer, &$serialized, $context= array()) {
+    $value= &new Date((int)$serialized->consumeWord());
+    return $value;
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Running all tests from remote.ini yields the same time period for both
+the old and the new implementations.
+
+
+Dependencies
+------------
+New class: remote.protocol.SerializedData
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0090.diff
+  Patch implementing this RFC
+
+
+Comments
+--------
+- friebe, Sun Nov 19 00:06:29     2006
+  Needs some more performance testing...
+
+<EOF>
