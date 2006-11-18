@@ -28,17 +28,17 @@ Functionality
 <?php
   class SerializedData extends Object {
     public string $buffer
-    public int offset
+    public int $offset
 
     // Constructor
     public __construct(string buffer)
-    
+ 
     // Consume a string ([length]:"[string]") and return it
     public string consumeString()
-
+ 
     // Consume everything up to the next ";" and return it
     public string consumeWord()
-
+ 
     // Consume everything up to the next ":" character and return it
     public string consumeSize()
   }
