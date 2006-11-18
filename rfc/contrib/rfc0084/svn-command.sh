@@ -1,4 +1,4 @@
-# These commands use directories reltive to skeleton
+# These commands use directories relative to skeleton
 cd %SKELETON%
 
 # Unittests
@@ -23,10 +23,12 @@ svn rm text/apidoc/
 svn move org/ ../ports/classes/
 svn move com/ ../ports/classes/
 svn move net/ ../ports/classes/
-svn move net/xmethods/ ../ports/classes/net/
-svn move net/xp_framework/ ../ports/classes/net/
 svn move ch/ ../ports/classes/
 svn move us/ ../ports/classes/
+
+# ...ports/classes/net already exists:)
+svn move net/xmethods/ ../ports/classes/net/
+svn move net/xp_framework/ ../ports/classes/net/
 
 # peer.cvs -> ports/org.cvshome
 svn move peer/cvsclient/PServerClient.class.php ../ports/classes/org/cvshome/
