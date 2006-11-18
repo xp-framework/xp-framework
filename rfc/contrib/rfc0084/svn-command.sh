@@ -47,6 +47,7 @@ svn move util/archive/TarArchive.class.php ../ports/classes/org/gnu/tar/
 svn mkdir ../ports/classes/net/schweikhardt/
 svn move text/translator/Swabian.class.php ../ports/classes/net/schweikhardt/
 svn move text/translator/Translator.class.php ../ports/classes/net/schweikhardt/
+svn rm text/translator
 
 # peer.ajp -> ports/org.apache.ajp
 svn mkdir ../ports/classes/org/apache/
