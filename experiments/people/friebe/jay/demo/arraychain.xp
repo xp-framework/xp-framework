@@ -1,4 +1,4 @@
-class ArrayList {
+class Array {
   public mixed[] $elements= array();
   
   public __construct(mixed... $elements) {
@@ -10,4 +10,4 @@ class ArrayList {
   }
 }
 
-echo new ArrayList('Timm', 'Alex')->getElements()[0], "\n";
+echo new Array('Timm', 'Alex')->getElements()[0], "\n";
