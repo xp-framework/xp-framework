@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.io.collections.MockCollection',
     'io.collections.CollectionComposite'
   );
@@ -25,7 +25,7 @@
      * @access  protected
      * @param   string uri
      * @param   &io.collections.IOElement element
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertElement($uri, &$element) {
       $this->assertSubClass($element, 'io.collections.IOElement') &&

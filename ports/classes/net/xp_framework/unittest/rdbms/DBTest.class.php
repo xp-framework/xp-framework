@@ -6,7 +6,7 @@
  
   uses(
     'rdbms.DriverManager', 
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.rdbms.mock.MockConnection'
   );
 
@@ -54,7 +54,7 @@
      * Asserts a query works
      *
      * @access  protected
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertQuery() {
       $version= '$Revision$';

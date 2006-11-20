@@ -5,12 +5,12 @@
  */
 
   uses(
-    'gui.gtk.GtkGladeApplication',
-    'gui.gtk.util.GTKWidgetUtil',
-    'gui.gtk.util.GTKPixmapLoader',
+    'org.gnome.GtkGladeApplication',
+    'org.gnome.util.GTKWidgetUtil',
+    'org.gnome.util.GTKPixmapLoader',
     'peer.mail.store.Pop3Store',
     'peer.mail.store.ImapStore',
-    'gui.gtk.widgets.MessageBox',
+    'org.gnome.widgets.MessageBox',
     'peer.URL'
   );
 

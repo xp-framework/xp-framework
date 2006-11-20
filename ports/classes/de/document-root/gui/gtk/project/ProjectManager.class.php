@@ -5,9 +5,9 @@
  */
 
   uses (
-    'de.document-root.gui.gtk.project.ProjectManagerPopupMenu',
-    'de.document-root.gui.gtk.project.ParserManager',
-    'gui.gtk.GtkGladeApplication',
+    'de.document-root.org.gnome.project.ProjectManagerPopupMenu',
+    'de.document-root.org.gnome.project.ParserManager',
+    'org.gnome.GtkGladeApplication',
     'lang.System'
   );
   

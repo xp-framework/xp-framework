@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.rpc.SoapRpcRouter');
+  uses('webservices.soap.rpc.SoapRpcRouter');
 
   /**
    * Mock class

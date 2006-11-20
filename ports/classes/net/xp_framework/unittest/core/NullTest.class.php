@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Tests the "NULL-safe" xp::null. Requires the overload extension to

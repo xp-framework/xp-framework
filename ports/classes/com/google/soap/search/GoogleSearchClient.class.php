@@ -4,8 +4,8 @@
  * $Id$ 
  */
   uses(
-    'xml.soap.SOAPClient', 
-    'xml.soap.transport.SOAPHTTPTransport'
+    'webservices.soap.SOAPClient', 
+    'webservices.soap.transport.SOAPHTTPTransport'
   );
   
   /**
@@ -82,8 +82,8 @@
      * @access  public
      * @param   string key
      * @param   string url
-     * @return  xml.soap.types.SOAPBase64Binary
-     * @throws  xml.soap.SOAPFaultException in case a fault occurs
+     * @return  webservices.soap.types.SOAPBase64Binary
+     * @throws  webservices.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
@@ -102,7 +102,7 @@
      * @param   string key
      * @param   string phrase
      * @return  string
-     * @throws  xml.soap.SOAPFaultException in case a fault occurs
+     * @throws  webservices.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
@@ -129,7 +129,7 @@
      * @param   string ie
      * @param   string oe
      * @return  &com.google.soap.search.GoogleSearchResult
-     * @throws  xml.soap.SOAPFaultException in case a fault occurs
+     * @throws  webservices.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      * @see     http://www.google.com/apis/reference.html#searchrequest Search Parameters 

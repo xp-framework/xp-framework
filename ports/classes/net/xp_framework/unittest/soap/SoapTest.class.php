@@ -5,8 +5,8 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
-    'xml.soap.SOAPMessage'
+    'unittest.TestCase',
+    'webservices.soap.SOAPMessage'
   );
 
   /**
@@ -121,7 +121,7 @@
       $headers= $msg->getHeaders();
       $this->assertNotEquals(NULL, $msg->getHeaders());
       $this->assertEquals(1, sizeof ($headers));
-      foreach ($headers as $h) { $this->assertSubclass($h, 'xml.soap.SOAPHeaderElement'); }
+      foreach ($headers as $h) { $this->assertSubclass($h, 'webservices.soap.SOAPHeaderElement'); }
     }
   }
 ?>

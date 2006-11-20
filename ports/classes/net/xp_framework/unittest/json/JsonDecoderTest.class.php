@@ -5,8 +5,8 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
-    'org.json.JsonDecoder'
+    'unittest.TestCase',
+    'webservices.json.JsonDecoder'
   );
 
   /**
@@ -245,7 +245,7 @@
      *
      * @access  public
      */
-    #[@test,@expect('org.json.JsonException')]
+    #[@test,@expect('webservices.json.JsonException')]
     function decodeInvalidData() {
       $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
     }

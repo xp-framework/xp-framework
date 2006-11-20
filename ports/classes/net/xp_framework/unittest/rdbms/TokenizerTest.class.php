@@ -6,7 +6,7 @@
  
   uses(
     'rdbms.DriverManager', 
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

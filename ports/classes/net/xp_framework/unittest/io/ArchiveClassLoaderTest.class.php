@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.HashSet',
     'io.cca.ArchiveClassLoader',
     'io.cca.Archive',

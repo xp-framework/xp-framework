@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses('xml.soap.transport.SOAPTransport');
+  uses('webservices.soap.transport.SOAPTransport');
 
   /**
    * Dummy class for faked SOAP requests
    *
    * @purpose  Dummy SOAP Transport
-   * @see      xp://xml.soap.transport.SOAPHTTPTransport
+   * @see      xp://webservices.soap.transport.SOAPHTTPTransport
    */
   class SOAPDummyTransport extends SOAPTransport {
     var
@@ -21,7 +21,7 @@
      * Set Request
      *
      * @access  public
-     * @param   &xml.soap.SOAPMessage request
+     * @param   &webservices.soap.SOAPMessage request
      */
     function setRequest(&$request) {
       $this->request= &$request;
@@ -31,7 +31,7 @@
      * Get Request
      *
      * @access  public
-     * @return  &xml.soap.SOAPMessage
+     * @return  &webservices.soap.SOAPMessage
      */
     function &getRequest() {
       return $this->request;
@@ -71,7 +71,7 @@
      * Send the message
      *
      * @access  public
-     * @param   &xml.soap.SOAPMessage message
+     * @param   &webservices.soap.SOAPMessage message
      */
     function send(&$message) {
       $this->request= $message; // Intentional copy
@@ -82,7 +82,7 @@
      * Retrieve the answer
      *
      * @access  public
-     * @return  &xml.soap.SOAPMessage
+     * @return  &webservices.soap.SOAPMessage
      */
     function &retrieve() {
       return SOAPMessage::fromString($this->answer);

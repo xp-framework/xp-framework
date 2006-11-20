@@ -5,9 +5,9 @@
  */
 
   uses(
-    'gui.gtk.GtkGladeDialogWindow', 
-    'gui.gtk.util.GTKPixmapLoader', 
-    'gui.gtk.util.GTKWidgetUtil', 
+    'org.gnome.GtkGladeDialogWindow', 
+    'org.gnome.util.GTKPixmapLoader', 
+    'org.gnome.util.GTKWidgetUtil', 
     'io.Folder',
     'lang.System'
   );

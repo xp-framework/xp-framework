@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase', 'lang.types.ArrayList');
+  uses('unittest.TestCase', 'lang.types.ArrayList');
 
   /**
    * Tests the ArrayList class

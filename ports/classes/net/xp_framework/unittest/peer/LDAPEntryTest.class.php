@@ -6,7 +6,7 @@
  
   uses(
     'peer.ldap.LDAPEntry',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

@@ -10,7 +10,7 @@
     'security.cert.X509Certificate',
     'security.crypto.PublicKey',
     'security.crypto.PrivateKey',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

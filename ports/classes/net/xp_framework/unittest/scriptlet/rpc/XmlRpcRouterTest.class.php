@@ -5,14 +5,14 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.scriptlet.rpc.mock.XmlRpcRouterMock'
   );
 
   /**
    * Test case for XmlRpcRpcRouter
    *
-   * @see      xp://xml.xmlrpc.rpc.XmlRpcRouter
+   * @see      xp://webservices.xmlrpc.rpc.XmlRpcRouter
    * @purpose  Testcase
    */
   class XmlRpcRouterTest extends TestCase {

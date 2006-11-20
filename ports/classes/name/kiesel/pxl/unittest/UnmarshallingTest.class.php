@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'name.kiesel.pxl.Catalogue',
     'name.kiesel.pxl.Page',
     'name.kiesel.pxl.Picture',
@@ -24,7 +24,7 @@
      * Compares XML after stripping all whitespace between tags of both 
      * expected and actual strings.
      *
-     * @see     xp://util.profiling.unittest.TestCase#assertEquals
+     * @see     xp://unittest.TestCase#assertEquals
      * @access  public
      * @param   string expect
      * @param   string actual

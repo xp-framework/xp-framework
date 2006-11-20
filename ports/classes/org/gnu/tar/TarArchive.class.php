@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.archive.TarArchiveEntry');
+  uses('org.gnu.tar.TarArchiveEntry');
 
   /**
    * Kapselt ein Tar-Archiv

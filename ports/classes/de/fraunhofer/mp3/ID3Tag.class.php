@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.mp3.ID3Genre');
+  uses('de.fraunhofer.mp3.ID3Genre');
   
   // Versions 
   define('ID3_VERSION_UNKNOWN',               '?');
@@ -88,7 +88,7 @@
      * @access  public
      * @param   &string buf
      * @param   string version one of the ID3_VERSION_* constants
-     * @return  &util.mp3.ID3Tag a tag
+     * @return  &de.fraunhofer.mp3.ID3Tag a tag
      */
     function &fromString(&$buf, $version) {
       $tag= &new ID3Tag();

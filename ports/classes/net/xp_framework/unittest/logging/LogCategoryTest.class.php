@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.log.Logger',
     'util.log.LogAppender'
   );
@@ -63,7 +63,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed[] args default ["Argument"]
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertLog($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());
@@ -77,7 +77,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed[] args default ["Argument"]
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertLogf($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());

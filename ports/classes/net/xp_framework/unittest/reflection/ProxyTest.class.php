@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase', 'lang.reflect.Proxy');
+  uses('unittest.TestCase', 'lang.reflect.Proxy');
 
   /**
    * Tests the Proxy class

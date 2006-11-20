@@ -6,7 +6,7 @@
  
   uses(
     'peer.ldap.LDAPClient', 
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('gui.gtk.GtkGladeDialogWindow');
+  uses('org.gnome.GtkGladeDialogWindow');
 
   // Style: Buttons
   define('MB_OK',               0x0001);

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('org.json.rpc.JsonRpcRouter');
+  uses('webservices.json.rpc.JsonRpcRouter');
 
   /**
    * Mock class

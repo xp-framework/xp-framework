@@ -8,7 +8,7 @@
     'peer.irc.IRCConnectionListener', 
     'peer.irc.IRCColor',
     'org.dict.DictClient',
-    'text.translator.Swabian',
+    'net.schweikhardt.Swabian',
     'peer.Socket',
     'io.File',
     'io.FileUtil',

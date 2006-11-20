@@ -5,8 +5,8 @@
  */
 
   uses (
-    'gui.gtk.widgets.GtkMenuWidget',
-    'gui.gtk.widgets.FileDialog'
+    'org.gnome.widgets.GtkMenuWidget',
+    'org.gnome.widgets.FileDialog'
   );
 
   class ProjectManagerPopupMenu extends GtkMenuWidget {

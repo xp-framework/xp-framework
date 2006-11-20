@@ -6,7 +6,7 @@
  
   uses(
     'peer.http.HttpConnection', 
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'scriptlet.xml.workflow.AbstractState',
     'net.xp_framework.unittest.scriptlet.workflow.mock.MockRequest',

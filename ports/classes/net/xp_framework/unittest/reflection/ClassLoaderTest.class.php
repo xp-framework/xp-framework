@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test the XP default classloader
@@ -23,7 +23,7 @@
      * @param   string name
      * @param   &lang.XPClass class
      * @return  bool
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertXPClass($name, &$class) {
       return (

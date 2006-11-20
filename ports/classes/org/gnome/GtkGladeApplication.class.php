@@ -4,14 +4,14 @@
  * $Id$
  */
  
-  uses('gui.gtk.GtkApplication');
+  uses('org.gnome.GtkApplication');
 
   /**
    * GTK Application class using glade
    *
    * @ext      gtk
    * @ext      gtk.glade
-   * @see      xp://gui.gtk.GtkApplication
+   * @see      xp://org.gnome.GtkApplication
    * @see      http://glade.gnome.org/
    * @test     xp://net.xp_framework.unittest.runner.gtk.UnitTestUI
    * @purpose  Base class

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'org.isbn.ISBN');
+  uses('unittest.TestCase', 'org.isbn.ISBN');
 
   /**
    * ISBN class unit test

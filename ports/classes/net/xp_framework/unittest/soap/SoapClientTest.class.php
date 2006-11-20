@@ -5,15 +5,15 @@
  */
 
   uses(
-    'xml.soap.SOAPClient',
-    'util.profiling.unittest.TestCase',
+    'webservices.soap.SOAPClient',
+    'unittest.TestCase',
     'net.xp_framework.unittest.soap.SOAPDummyTransport'
   );
   
   /**
    * Test for SOAP client class
    *
-   * @see      xp://xml.soap.SOAPClient
+   * @see      xp://webservices.soap.SOAPClient
    * @purpose  Unittest
    */
   class SoapClientTest extends TestCase {

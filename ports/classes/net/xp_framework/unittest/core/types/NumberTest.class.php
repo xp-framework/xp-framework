@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase', 
+    'unittest.TestCase', 
     'lang.types.Long',
     'lang.types.Byte',
     'lang.types.Short',

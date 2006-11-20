@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test the XP exception mechanism

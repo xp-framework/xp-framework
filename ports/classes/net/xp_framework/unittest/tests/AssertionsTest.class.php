@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('util.profiling.unittest.TestCase', 'text.String');
+  uses('unittest.TestCase', 'text.String');
 
   /**
    * Test assertion methods
@@ -28,7 +28,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function falseIsNotTrue() {
       $this->assertTrue(FALSE);
     }
@@ -48,7 +48,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function trueIsNotFalse() {
       $this->assertFalse(TRUE);
     }
@@ -68,7 +68,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function falseIsNotNull() {
       $this->assertNull(FALSE);
     }
@@ -78,7 +78,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function zeroIsNotNull() {
       $this->assertNull(0);
     }
@@ -88,7 +88,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function emptyStringIsNotNull() {
       $this->assertNull('');
     }
@@ -98,7 +98,7 @@
      *
      * @access  public
      */    
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function emptyArrayIsNotNull() {
       $this->assertNull(array());
     }

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'img.filter.Kernel');
+  uses('unittest.TestCase', 'img.filter.Kernel');
 
   /**
    * Tests the kernel class

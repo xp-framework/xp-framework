@@ -7,8 +7,8 @@
   define('XML_HEADER',  '<?xml version="1.0" encoding="iso-8859-1"?>');
 
   uses(
-    'gui.gtk.GtkGladeApplication',
-    'gui.gtk.util.GTKPixmapLoader',
+    'org.gnome.GtkGladeApplication',
+    'org.gnome.util.GTKPixmapLoader',
     'peer.http.HttpConnection',
     'io.File',
     'util.Hashmap',

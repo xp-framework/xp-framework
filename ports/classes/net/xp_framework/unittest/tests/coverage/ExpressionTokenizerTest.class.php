@@ -5,8 +5,8 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
-    'util.profiling.unittest.coverage.PHPCodeFragmentizer'
+    'unittest.TestCase',
+    'unittest.coverage.PHPCodeFragmentizer'
   );
 
   /**
@@ -23,7 +23,7 @@
      * @see     xp://net.xp_framework.unittest.tests.coverage.PHPCodeFragmentizer
      * @access  protected
      * @param   string code
-     * @return  util.profiling.unittest.coverage.Fragment[] expressions
+     * @return  unittest.coverage.Fragment[] expressions
      */
     function fragmentsOf($code) {
       return PHPCodeFragmentizer::fragmentsOf('<?php '.trim($code).' ?>');
@@ -33,9 +33,9 @@
      * Assert method
      *
      * @access  protected
-     * @param   util.profiling.unittest.coverage.Fragment[] expected
+     * @param   unittest.coverage.Fragment[] expected
      * @param   string code
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertExpressions($expected, $code) {
       $fragments= $this->fragmentsOf($code);
@@ -301,7 +301,7 @@
         /**
          * Class api doc here
          *
-         * @see   xp://util.profiling.unittest.TestCase
+         * @see   xp://unittest.TestCase
          */
         class StringBuffer extends Object {
           var $buffer;
@@ -334,7 +334,7 @@
         new Comment('/**
          * Class api doc here
          *
-         * @see   xp://util.profiling.unittest.TestCase
+         * @see   xp://unittest.TestCase
          */', 1, 5),
         new Block('class StringBuffer extends Object', array(
           new Expression('var $buffer;', 7, 7),

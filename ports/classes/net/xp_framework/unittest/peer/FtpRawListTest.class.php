@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'peer.ftp.FtpDir',
     'peer.ftp.FtpEntry',
     'util.Date'

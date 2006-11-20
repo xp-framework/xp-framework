@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.remote.MockProtocolHandler',
     'net.xp_framework.unittest.remote.Person',
     'remote.Remote',

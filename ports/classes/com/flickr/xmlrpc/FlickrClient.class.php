@@ -5,8 +5,8 @@
  */
 
   uses(
-    'xml.xmlrpc.XmlRpcClient',
-    'xml.xmlrpc.transport.XmlRpcHttpTransport',
+    'webservices.xmlrpc.XmlRpcClient',
+    'webservices.xmlrpc.transport.XmlRpcHttpTransport',
     'com.flickr.api.FlickrInterestingness',
     'xml.meta.Unmarshaller'
   );

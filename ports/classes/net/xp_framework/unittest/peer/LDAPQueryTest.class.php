@@ -7,7 +7,7 @@
   uses(
     'peer.ldap.LDAPQuery',
     'util.Date',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

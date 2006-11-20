@@ -184,7 +184,7 @@
      */
     #[@webmethod]
     function echoBase64($inputBase64) {
-      $this->_assertType('xml.soap.types.SOAPBase64Binary', $inputBase64);
+      $this->_assertType('webservices.soap.types.SOAPBase64Binary', $inputBase64);
       return $inputBase64;
     }
     
@@ -198,7 +198,7 @@
      */
     #[@webmethod]
     function echoHexBinary($inputHexBinary) {
-      $this->_assertType('xml.soap.types.SOAPHexBinary', $inputHexBinary);
+      $this->_assertType('webservices.soap.types.SOAPHexBinary', $inputHexBinary);
       return $inputHexBinary;
     }
     

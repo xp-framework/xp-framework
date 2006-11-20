@@ -6,7 +6,7 @@
  
   uses(
     'org.dict.DictClient', 
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**

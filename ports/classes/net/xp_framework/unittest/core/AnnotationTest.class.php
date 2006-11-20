@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase', 'net.xp_framework.unittest.core.AnnotatedClass');
+  uses('unittest.TestCase', 'net.xp_framework.unittest.core.AnnotatedClass');
 
   /**
    * Tests the XP Framework's annotations

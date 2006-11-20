@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xml.xmlrpc.transport.XmlRpcHttpTransport',
+    'webservices.xmlrpc.transport.XmlRpcHttpTransport',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyHttpConnection'
   );
 

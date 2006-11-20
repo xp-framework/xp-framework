@@ -5,15 +5,15 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase', 
-    'util.profiling.unittest.TestSuite', 
+    'unittest.TestCase', 
+    'unittest.TestSuite', 
     'net.xp_framework.unittest.tests.SimpleTestCase'
   );
 
   /**
    * Test TestSuite class methods
    *
-   * @see      xp://util.profiling.unittest.TestSuite
+   * @see      xp://unittest.TestSuite
    * @purpose  Unit Test
    */
   class SuiteTest extends TestCase {
@@ -70,7 +70,7 @@
       $ignored= $this->suite->addTestClass(XPClass::forName('SimpleTestCase'));
       $this->assertEmpty($ignored);
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
-        $this->assertSubclass($this->suite->testAt($i), 'util.profiling.unittest.TestCase');
+        $this->assertSubclass($this->suite->testAt($i), 'unittest.TestCase');
       }
     }    
 
@@ -105,7 +105,7 @@
     #[@test]
     function runningASingleSucceedingTest() {
       $r= &$this->suite->runTest(new SimpleTestCase('succeeds'));
-      $this->assertClass($r, 'util.profiling.unittest.TestResult') &&
+      $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&
       $this->assertEquals(1, $r->successCount(), 'successCount') &&
       $this->assertEquals(0, $r->failureCount(), 'failureCount') &&
@@ -120,7 +120,7 @@
     #[@test]
     function runningASingleFailingTest() {
       $r= &$this->suite->runTest(new SimpleTestCase('fails'));
-      $this->assertClass($r, 'util.profiling.unittest.TestResult') &&
+      $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&
       $this->assertEquals(0, $r->successCount(), 'successCount') &&
       $this->assertEquals(1, $r->failureCount(), 'failureCount') &&

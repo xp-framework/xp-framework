@@ -9,7 +9,7 @@
    *
    * Example:
    * <code>
-   *   uses('text.translator.Swabian');
+   *   uses('net.schweikhardt.Swabian');
    *
    *   $translated= Swabian::translate($text);
    * </code>
@@ -139,5 +139,5 @@
       
       return strtr(preg_replace(array_keys($tr), array_values($tr), $string), $sr);
     }
-  } implements(__FILE__, 'text.translator.Translator');
+  } implements(__FILE__, 'net.schweikhardt.Translator');
 ?>

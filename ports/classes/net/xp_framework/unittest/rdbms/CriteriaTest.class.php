@@ -10,7 +10,7 @@
     'rdbms.criterion.Property', 
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**
@@ -47,7 +47,7 @@
      * @access  protected
      * @param   string sql
      * @param   &rdbms.Criteria criteria
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertSql($sql, &$criteria) {
       $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.File', 'util.mp3.ID3Tag');
+  uses('io.File', 'de.fraunhofer.mp3.ID3Tag');
   
   /**
    * MP3 file
@@ -30,7 +30,7 @@
      *
      * @access  public
      * @param   int version default ID3_VERSION_UNKNOWN ID3 Version
-     * @return  &util.mp3.ID3Tag tag object or NULL if no tag exists
+     * @return  &de.fraunhofer.mp3.ID3Tag tag object or NULL if no tag exists
      * @see     http://www.id3.org/
      */
     function &getID3Tag($version= ID3_VERSION_UNKNOWN) {

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'remote.protocol.Serializer',
     'net.xp_framework.unittest.remote.Person',
     'util.Hashmap'

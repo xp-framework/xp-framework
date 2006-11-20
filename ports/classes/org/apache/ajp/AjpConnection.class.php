@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.http.HttpConnection', 'peer.ajp.AjpRequest');
+  uses('peer.http.HttpConnection', 'org.apache.ajp.AjpRequest');
 
   /**
    * AJP connection
    *
    * <code>
-   *   uses('peer.ajp.AjpConnection');
+   *   uses('org.apache.ajp.AjpConnection');
    *   
    *   $ajp= &new AjpConnection('ajpv12://localhost:8007/xml/static?', array(
    *     'SERVER_NAME'       => 'example.com',
@@ -23,7 +23,7 @@
    *     'SCRIPT_NAME'       => 'static',
    *     'SERVER_PORT'       => 80,
    *     'SERVER_PROTOCOL'   => 'HTTP',
-   *     'SERVER_SIGNATURE'  => 'peer.ajp.AjpConnection',
+   *     'SERVER_SIGNATURE'  => 'org.apache.ajp.AjpConnection',
    *     'SERVER_SOFTWARE'   => 'PHP'
    *   ));
    *   try(); {

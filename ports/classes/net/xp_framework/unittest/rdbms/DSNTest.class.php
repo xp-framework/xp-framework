@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'rdbms.DSN');
+  uses('unittest.TestCase', 'rdbms.DSN');
 
   /**
    * Tests the DSN class

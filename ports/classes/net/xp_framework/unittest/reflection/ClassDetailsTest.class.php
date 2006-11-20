@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   define('APIDOC_TAG',        0x0001);
   define('APIDOC_VALUE',      0x0002);
@@ -23,7 +23,7 @@
      * @access  protected
      * @param   string comment
      * @return  array<string[]> matches
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function parseComment($comment) {
       $comment= trim($comment);
@@ -90,7 +90,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.profiling.unittest.AssertionFailedError')]
+    #[@test, @expect('unittest.AssertionFailedError')]
     function testParseComment() {
       $this->parseComment('NOT-A-COMMENT');
     }
@@ -102,7 +102,7 @@
      * @param   int modifiers
      * @param   string comment
      * @return  bool
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertAccessFlags($modifiers, $comment) {
       if (!($details= $this->parseComment($comment))) return;

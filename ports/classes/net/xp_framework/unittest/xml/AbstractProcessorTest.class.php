@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test XSL processor
@@ -21,11 +21,11 @@
      * Compares XML after stripping all whitespace between tags of both 
      * expected and actual strings.
      *
-     * @see     xp://util.profiling.unittest.TestCase#assertEquals
+     * @see     xp://unittest.TestCase#assertEquals
      * @access  protected
      * @param   string expect
      * @param   string actual
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertXmlEquals($expect, $actual) {
       return $this->assertEquals(
@@ -65,7 +65,7 @@
      * Tests 
      *
      * @access  public
-     * @throws  util.profiling.unittest.PrerequisitesNotMetError
+     * @throws  unittest.PrerequisitesNotMetError
      */
     function setUp() {
       if (!extension_loaded($ext= $this->neededExtension())) {

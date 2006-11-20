@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
     'xml.meta.Marshaller'
   );
@@ -22,7 +22,7 @@
      * Compares XML after stripping all whitespace between tags of both 
      * expected and actual strings.
      *
-     * @see     xp://util.profiling.unittest.TestCase#assertEquals
+     * @see     xp://unittest.TestCase#assertEquals
      * @access  public
      * @param   string expect
      * @param   string actual

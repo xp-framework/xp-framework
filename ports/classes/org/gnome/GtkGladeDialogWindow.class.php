@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('gui.gtk.GtkGladeApplication');
+  uses('org.gnome.GtkGladeApplication');
   
   /**
    * Dialog window

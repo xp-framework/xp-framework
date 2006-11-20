@@ -9,7 +9,7 @@
   /**
    * AJP Request
    *
-   * @see      xp://peer.ajp.AjpConnection
+   * @see      xp://org.apache.ajp.AjpConnection
    * @purpose  Java servlet integration
    */
   class AjpRequest extends HttpRequest {
