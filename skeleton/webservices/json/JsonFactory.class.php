@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('org.json.JsonDecoder');
+  uses('webservices.json.JsonDecoder');
 
   /**
    * Json decoder factory. Use this class to get instances
@@ -23,7 +23,7 @@
      *
      * @model   static
      * @access  public
-     * @return  &org.json.IJsonDecoder
+     * @return  &webservices.json.IJsonDecoder
      */
     function &create() {
       $n= &new JsonDecoder();

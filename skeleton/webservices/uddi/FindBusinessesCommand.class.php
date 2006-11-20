@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('xml.uddi.BusinessList', 'xml.Node');
+  uses('webservices.uddi.BusinessList', 'xml.Node');
 
   /**
    * Find businesses
    *
    * @purpose  UDDI command container
-   * @see      xp://xml.uddi.InquiryCommand
+   * @see      xp://webservices.uddi.InquiryCommand
    */
   class FindBusinessesCommand extends Object {
     var
@@ -41,7 +41,7 @@
      *
      * @access  public
      * @param   &xml.Node node
-     * @see     xp://xml.uddi.UDDICommand#marshalTo
+     * @see     xp://webservices.uddi.UDDICommand#marshalTo
      */
     function marshalTo(&$node) {
       $node->setName('find_business');
@@ -68,8 +68,8 @@
      *
      * @access  public
      * @param   &xml.Node node
-     * @return  &xml.uddi.BusinessList
-     * @see     xp://xml.uddi.UDDICommand#unmarshalFrom
+     * @return  &webservices.uddi.BusinessList
+     * @see     xp://webservices.uddi.UDDICommand#unmarshalFrom
      * @throws  lang.FormatException in case of an unexpected response
      */
     function &unmarshalFrom(&$node) {
@@ -103,5 +103,5 @@
       return $list;
     }
   
-  } implements(__FILE__, 'xml.uddi.InquiryCommand');
+  } implements(__FILE__, 'webservices.uddi.InquiryCommand');
 ?>

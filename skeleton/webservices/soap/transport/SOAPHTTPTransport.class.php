@@ -5,8 +5,8 @@
  */
 
   uses(
-    'xml.soap.transport.SOAPTransport', 
-    'xml.soap.SOAPFaultException', 
+    'webservices.soap.transport.SOAPTransport', 
+    'webservices.soap.SOAPFaultException', 
     'peer.http.HttpConnection'
   );
   
@@ -21,7 +21,7 @@
    *
    * @ext       openssl
    * @purpose   Transport SOAP messages
-   * @see       xp://xml.soap.SOAPClient
+   * @see       xp://webservices.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
     var
@@ -109,15 +109,15 @@
      * Send the message
      *
      * @access  public
-     * @param   &xml.soap.SOAPMessage message
+     * @param   &webservices.soap.SOAPMessage message
      * @return  &peer.http.HttpResponse
-     * @throws  lang.IllegalArgumentException in case the given parameter is not a xml.soap.SOAPMessage
+     * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
     function &send(&$message) {
     
       // Sanity checks
       if (!is_a($message, 'SOAPMessage')) return throw(new IllegalArgumentException(
-        'parameter "message" must be a xml.soap.SOAPMessage'
+        'parameter "message" must be a webservices.soap.SOAPMessage'
       ));
       if (!$this->_conn->request) return throw(new IllegalArgumentException(
         'Factory method failed'
@@ -172,7 +172,7 @@
      *
      * @access  public
      * @param   &peer.http.HttpResponse response
-     * @return  &xml.soap.SOAPMessage
+     * @return  &webservices.soap.SOAPMessage
      * @throws  io.IOException in case the data cannot be read
      * @throws  xml.XMLFormatException in case the XML is not well-formed
      * @throws  lang.IllegalAccessException in case authorization is required

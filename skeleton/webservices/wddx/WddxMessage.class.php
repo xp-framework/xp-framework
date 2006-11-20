@@ -32,7 +32,7 @@
      * @model   static
      * @access  public
      * @param   string string
-     * @return  &xml.wddx.WddxMessage
+     * @return  &webservices.wddx.WddxMessage
      */
     function &fromString($string) {
       return parent::fromString($string, 'WddxMessage');

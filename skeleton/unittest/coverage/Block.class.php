@@ -22,7 +22,7 @@
      * Constructor
      *
      * @access  public
-     * @param   util.profiling.unittest.coverage.Expression[] expressions
+     * @param   unittest.coverage.Expression[] expressions
      * @param   int start the first line
      * @param   int end the last line
      */
@@ -61,5 +61,5 @@
       return $this->getClassName().'@({'.$this->code.' {'.$this->expressions->toString().'}} at lines '.$this->start.' - '.$this->end.')';
     }
 
-  } implements(__FILE__, 'util.profiling.unittest.coverage.Fragment');
+  } implements(__FILE__, 'unittest.coverage.Fragment');
 ?>

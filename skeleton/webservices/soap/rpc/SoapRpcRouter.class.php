@@ -5,10 +5,10 @@
  */
   uses(
     'scriptlet.rpc.AbstractRpcRouter',
-    'xml.soap.rpc.SoapRpcRequest',
-    'xml.soap.rpc.SoapRpcResponse',
-    'xml.soap.SOAPMessage',
-    'xml.soap.SOAPMapping'
+    'webservices.soap.rpc.SoapRpcRequest',
+    'webservices.soap.rpc.SoapRpcResponse',
+    'webservices.soap.SOAPMessage',
+    'webservices.soap.SOAPMapping'
   );
 
   /**
@@ -17,7 +17,7 @@
    *
    * Example:
    * <code>
-   *   uses('xml.soap.rpc.SoapRpcRouter');
+   *   uses('webservices.soap.rpc.SoapRpcRouter');
    *
    *   $s= &new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
    *   try(); {
@@ -63,7 +63,7 @@
      * Create a request object.
      *
      * @access  protected
-     * @return  &xml.soap.rpc.SoapRpcRequest
+     * @return  &webservices.soap.rpc.SoapRpcRequest
      */
     function &_request() {
       return new SoapRpcRequest();
@@ -73,7 +73,7 @@
      * Create a response object.
      *
      * @access  protected
-     * @return  &xml.soap.rpc.SoapRpcResponse
+     * @return  &webservices.soap.rpc.SoapRpcResponse
      */
     function &_response() {
       return new SoapRpcResponse();
@@ -83,7 +83,7 @@
      * Create message object.
      *
      * @access  protected
-     * @return  &xml.soap.SOAPMessage
+     * @return  &webservices.soap.SOAPMessage
      */
     function &_message() {
       return new SOAPMessage();
@@ -93,7 +93,7 @@
      * Calls the handler that the action reflects to
      *
      * @access  protected
-     * @param   &xml.xmlrpc.XmlRpcMessage message object (from request)
+     * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
      * @return  &mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods

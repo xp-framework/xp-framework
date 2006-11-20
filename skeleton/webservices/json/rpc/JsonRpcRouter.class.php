@@ -5,9 +5,9 @@
  */
 
   uses(
-    'org.json.rpc.JsonRpcRequest',
-    'org.json.rpc.JsonRpcResponse',
-    'org.json.rpc.JsonResponseMessage',
+    'webservices.json.rpc.JsonRpcRequest',
+    'webservices.json.rpc.JsonRpcResponse',
+    'webservices.json.rpc.JsonResponseMessage',
     'scriptlet.rpc.AbstractRpcRouter'
   );
 
@@ -15,7 +15,7 @@
    * JSON RPC Router class. You can use this class to implement
    * a JSON webservice.
    *
-   * @see      xp://org.json.rpc.JsonClient
+   * @see      xp://webservices.json.rpc.JsonClient
    * @purpose  JSON-RPC-Service
    */
   class JsonRpcRouter extends AbstractRpcRouter {

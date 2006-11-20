@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('xml.soap.SOAPNode', 'xml.soap.types.SoapType');
+  uses('webservices.soap.SOAPNode', 'webservices.soap.types.SoapType');
 
   /**
    * Vector type as serialized and recogned by Apache SOAP.
    *
-   * @see      xp://xml.soap.types.SoapType
+   * @see      xp://webservices.soap.types.SoapType
    * @purpose  Vector type
    */
   class SOAPVector extends SoapType {

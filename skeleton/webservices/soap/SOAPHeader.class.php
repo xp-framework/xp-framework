@@ -7,7 +7,7 @@
   /**
    * SOAP Header interface
    *
-   * @see      xp://xml.soap.SOAPHeaderElement
+   * @see      xp://webservices.soap.SOAPHeaderElement
    * @purpose  Interface
    */
   class SOAPHeader extends Interface {

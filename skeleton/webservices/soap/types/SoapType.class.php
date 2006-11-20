@@ -11,7 +11,7 @@
    * so all user-defined types must inherit this class in
    * order for the serializer
    *
-   * @see      xp://xml.soap.SOAPNode
+   * @see      xp://webservices.soap.SOAPNode
    * @purpose  Base class for all SOAP types
    */
   class SoapType extends Object {

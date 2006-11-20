@@ -6,10 +6,10 @@
 
   uses(
     'xml.Node',
-    'xml.soap.types.SOAPBase64Binary',
-    'xml.soap.types.SOAPHexBinary',
-    'xml.soap.types.SOAPDateTime',
-    'xml.soap.types.SOAPHashMap'
+    'webservices.soap.types.SOAPBase64Binary',
+    'webservices.soap.types.SOAPHexBinary',
+    'webservices.soap.types.SOAPDateTime',
+    'webservices.soap.types.SOAPHashMap'
   );
 
   /**
@@ -118,9 +118,9 @@
      * Marshaller
      *
      * @access  private
-     * @param   &xml.soap.SOAPNode child
+     * @param   &webservices.soap.SOAPNode child
      * @param   mixed value
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      */
     function _marshall(&$child, $value, &$mapping) {
       static $ns= 0;
@@ -220,7 +220,7 @@
      * @access  protected
      * @param   &xml.Node e element to add array to
      * @param   array a
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      */
     function _recurse(&$e, $a, &$mapping) {
       foreach (array_keys($a) as $field) {
@@ -245,7 +245,7 @@
      * @access  public
      * @param   array arr
      * @param   string name default 'array'
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
     function &fromArray($arr, $name= 'array', $mapping) {
@@ -267,7 +267,7 @@
      * @access  public
      * @param   object obj
      * @param   string name default NULL
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
     function &fromObject($obj, $name= NULL, $mapping) {

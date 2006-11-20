@@ -6,8 +6,8 @@
 
   uses(
     'util.profiling.Timer',
-    'util.profiling.unittest.AssertionFailedError',
-    'util.profiling.unittest.PrerequisitesNotMetError',
+    'unittest.AssertionFailedError',
+    'unittest.PrerequisitesNotMetError',
     'lang.MethodNotImplementedException'
   );
 
@@ -379,7 +379,7 @@
      * skipped.
      *
      * @access  public
-     * @throws  util.profiling.unittest.PrerequisitesNotMetError
+     * @throws  unittest.PrerequisitesNotMetError
      */
     function setUp() { }
     
@@ -394,7 +394,7 @@
      * Run this test case.
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestResult result
+     * @param   &unittest.TestResult result
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */

@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('xml.soap.types.SoapType');
+  uses('webservices.soap.types.SoapType');
 
   /**
    * SOAP Base64 binary
    *
-   * @see      xp://xml.soap.SOAPNode
+   * @see      xp://webservices.soap.SOAPNode
    * @purpose  Transport base64 encoded data
    */
   class SOAPBase64Binary extends SoapType {
@@ -58,11 +58,11 @@
      * Indicates whether the compared binary equals this one.
      *
      * @access  public
-     * @param   &xml.soap.types.SOAPBase64Binary cmp
+     * @param   &webservices.soap.types.SOAPBase64Binary cmp
      * @return  bool TRUE if both binaries are equal
      */
     function equals(&$cmp) {
-      return is('xml.soap.types.SOAPBase64Binary', $cmp) && (0 === strcmp($this->string, $cmp->string));
+      return is('webservices.soap.types.SOAPBase64Binary', $cmp) && (0 === strcmp($this->string, $cmp->string));
     }    
   }
 ?>

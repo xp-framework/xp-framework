@@ -5,8 +5,8 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
-    'util.profiling.unittest.TestResult',
+    'unittest.TestCase',
+    'unittest.TestResult',
     'util.NoSuchElementException'
   );
 
@@ -16,7 +16,7 @@
    * Example:
    * <code>
    *   uses(
-   *     'util.profiling.unittest.TestSuite', 
+   *     'unittest.TestSuite', 
    *     'net.xp_framework.unittest.rdbms.DBTest'
    *   );
    *   
@@ -39,8 +39,8 @@
      * Add a test
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
-     * @return  &util.profiling.unittest.TestCase
+     * @param   &unittest.TestCase test
+     * @return  &unittest.TestCase
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
     function &addTest(&$test) {
@@ -55,7 +55,7 @@
      * Add a test class
      *
      * @access  public
-     * @param   &lang.XPClass<util.profiling.unittest.TestCase> class
+     * @param   &lang.XPClass<unittest.TestCase> class
      * @return  lang.reflect.Method[] ignored test methods
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase class
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
@@ -112,7 +112,7 @@
      *
      * @access  public
      * @param   int pos
-     * @return  &util.profiling.unittest.TestCase or NULL if none was found
+     * @return  &unittest.TestCase or NULL if none was found
      */
     function &testAt($pos) {
       if (isset($this->tests[$pos])) return $this->tests[$pos]; else return NULL;
@@ -122,8 +122,8 @@
      * Run a single test
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
-     * @return  &util.profiling.unittest.TestResult
+     * @param   &unittest.TestCase test
+     * @return  &unittest.TestResult
      */
     function &runTest(&$test) {
       $result= &new TestResult();
@@ -135,7 +135,7 @@
      * Run this test suite
      *
      * @access  public
-     * @return  &util.profiling.unittest.TestResult
+     * @return  &unittest.TestResult
      */
     function &run() {
       $result= &new TestResult();

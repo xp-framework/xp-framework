@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('xml.soap.transport.SOAPHTTPTransport');
+  uses('webservices.soap.transport.SOAPHTTPTransport');
   
   /**
    * Dummy class for BC reasons - SoapHttpTransport can handle
    * HTTPS now, too.
    *
    * @deprecated
-   * @see         xp://xml.soap.transport.SOAPHTTPTransport
+   * @see         xp://webservices.soap.transport.SOAPHTTPTransport
    */
   class SOAPHTTPSTransport extends SOAPHTTPTransport {
   }

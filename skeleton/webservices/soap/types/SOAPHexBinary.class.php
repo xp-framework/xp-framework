@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('xml.soap.types.SoapType');
+  uses('webservices.soap.types.SoapType');
 
   /**
    * SOAP Hex binary
    *
-   * @see      xp://xml.soap.SOAPNode
+   * @see      xp://webservices.soap.SOAPNode
    * @purpose  Transport hex encoded data
    */
   class SOAPHexBinary extends SoapType {
@@ -58,11 +58,11 @@
      * Indicates whether the compared binary equals this one.
      *
      * @access  public
-     * @param   &xml.soap.types.SOAPHexBinary cmp
+     * @param   &webservices.soap.types.SOAPHexBinary cmp
      * @return  bool TRUE if both binaries are equal
      */
     function equals(&$cmp) {
-      return is('xml.soap.types.SOAPHexBinary', $cmp) && (0 === strcmp($this->string, $cmp->string));
+      return is('webservices.soap.types.SOAPHexBinary', $cmp) && (0 === strcmp($this->string, $cmp->string));
     }    
   }
 ?>

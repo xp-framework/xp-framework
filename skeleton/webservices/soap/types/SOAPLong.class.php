@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.soap.types.SoapType');
+  uses('webservices.soap.types.SoapType');
   
   /**
    * Represents a long value. This class can be used to circumvent

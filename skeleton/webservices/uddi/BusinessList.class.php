@@ -4,12 +4,12 @@
  * $Id$ 
  */
 
-  uses('xml.uddi.Business');
+  uses('webservices.uddi.Business');
 
   /**
    * List of businesses
    *
-   * @see      xp://xml.uddi.FindBusinessesCommand
+   * @see      xp://webservices.uddi.FindBusinessesCommand
    * @purpose  Return wrapper
    */
   class BusinessList extends Object {
@@ -73,7 +73,7 @@
      *
      * @access  public
      * @param   int pos the position, starting from 0 to numItems() - 1
-     * @return  &xml.uddi.Business or NULL if there is no such item
+     * @return  &webservices.uddi.Business or NULL if there is no such item
      */
     function &itemAt($pos) {
       if (isset($this->items[$pos])) return $this->items[$pos]; else return NULL;

@@ -8,8 +8,8 @@
    * Base interface for all UDDI commands
    *
    * @purpose  Interface
-   * @see      xp://xml.uddi.InquiryCommand
-   * @see      xp://xml.uddi.PublishCommand
+   * @see      xp://webservices.uddi.InquiryCommand
+   * @see      xp://webservices.uddi.PublishCommand
    */
   class UDDICommand extends Interface {
 

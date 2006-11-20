@@ -7,7 +7,7 @@
   /**
    * Indicates a test was successful
    *
-   * @see      xp://util.profiling.unittest.TestResult
+   * @see      xp://unittest.TestResult
    * @purpose  Result wrapper
    */
   class TestSuccess extends Object {
@@ -19,7 +19,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
+     * @param   &unittest.TestCase test
      * @param   &mixed result
      * @param   float elapsed
      */

@@ -5,9 +5,9 @@
  */
 
   uses(
-    'xml.xmlrpc.rpc.XmlRpcRequest',
-    'xml.xmlrpc.rpc.XmlRpcResponse',
-    'xml.xmlrpc.XmlRpcResponseMessage',
+    'webservices.xmlrpc.rpc.XmlRpcRequest',
+    'webservices.xmlrpc.rpc.XmlRpcResponse',
+    'webservices.xmlrpc.XmlRpcResponseMessage',
     'scriptlet.rpc.AbstractRpcRouter'
   );
 
@@ -44,7 +44,7 @@
    * on it.
    *
    * @ext      xml
-   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  XML-RPC-Service
    */
   class XmlRpcRouter extends AbstractRpcRouter {
@@ -53,7 +53,7 @@
      * Create a request object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.rpc.XmlRpcRequest
+     * @return  &webservices.xmlrpc.rpc.XmlRpcRequest
      */
     function &_request() {
       return new XmlRpcRequest();
@@ -63,7 +63,7 @@
      * Create a response object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.rpc.XmlRpcResponse
+     * @return  &webservices.xmlrpc.rpc.XmlRpcResponse
      */
     function &_response() {
       return new XmlRpcResponse();
@@ -73,7 +73,7 @@
      * Create a message object.
      *
      * @access  protected
-     * @return  &xml.xmlrpc.XmlRpcResponseMessage
+     * @return  &webservices.xmlrpc.XmlRpcResponseMessage
      */
     function &_message() {
       return new XmlRpcResponseMessage();

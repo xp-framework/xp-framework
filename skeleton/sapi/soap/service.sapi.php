@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.soap.rpc.SoapRpcRouter');
+  uses('webservices.soap.rpc.SoapRpcRouter');
   
   define('EPREPEND_IDENTIFIER', "\6100");
   

@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('io.Stream', 'text.StringTokenizer', 'org.json.JsonException');
+  uses('io.Stream', 'text.StringTokenizer', 'webservices.json.JsonException');
 
   // Defines for the tokenizer
   define('JSON_TOKEN_LBRACE',     0x0000);
@@ -35,7 +35,7 @@
      * @access  public
      * @param   mixed data
      * @return  string
-     * @throws  org.json.JsonException if the data could not be serialized
+     * @throws  webservices.json.JsonException if the data could not be serialized
      */
     function encode($data) {
       static $controlChars= array(
@@ -319,7 +319,7 @@
      *
      * @access  protected
      * @return  string
-     * @throws  org.json.JsonException if the string could not be parsed
+     * @throws  webservices.json.JsonException if the string could not be parsed
      */
     function _readString() {
       do {
@@ -414,5 +414,5 @@
       
       return TRUE;
     }
-  } implements(__FILE__, 'org.json.IJsonDecoder');
+  } implements(__FILE__, 'webservices.json.IJsonDecoder');
 ?>

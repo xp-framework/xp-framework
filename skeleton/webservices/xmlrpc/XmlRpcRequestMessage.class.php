@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.XmlRpcMessage');
+  uses('webservices.xmlrpc.XmlRpcMessage');
 
   /**
    * XmlRpc request message. 
    *
    * @ext      xml
-   * @see      xp://xml.xmlrpc.XmlRpcResponseMessage
+   * @see      xp://webservices.xmlrpc.XmlRpcResponseMessage
    * @purpose  Wrap XML-RPC Request
    */
   class XmlRpcRequestMessage extends XmlRpcMessage {
@@ -36,7 +36,7 @@
      * @model   static
      * @access  public
      * @param   string string
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &webservices.xmlrpc.XmlRpcMessage
      */
     function &fromString($string) {
       $msg= &new XmlRpcRequestMessage();

@@ -15,7 +15,7 @@
    * the server's fault message's faultcode. This code can be used by clients
    * to recognize the type of error (other than by looking at the message).
    *
-   * @see      xp://xml.soap.rpc.SoapRpcRouter#doPost
+   * @see      xp://webservices.soap.rpc.SoapRpcRouter#doPost
    * @purpose  Custom service exception.
    */
   class ServiceException extends ChainedException {

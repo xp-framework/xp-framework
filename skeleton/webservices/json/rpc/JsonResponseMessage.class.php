@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('org.json.rpc.JsonMessage');
+  uses('webservices.json.rpc.JsonMessage');
 
   /**
    * JSON response message
@@ -20,7 +20,7 @@
      * @model   static
      * @access  public
      * @param   string string
-     * @return  &org.json.rpc.JsonResponseMessage
+     * @return  &webservices.json.rpc.JsonResponseMessage
      */
     function &fromString($string) {
       $decoder= &JsonFactory::create();

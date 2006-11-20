@@ -55,5 +55,5 @@
       return $this->getClassName().'@({'.$this->text.'} at lines '.$this->start.' - '.$this->end.')';
     }
 
-  } implements(__FILE__, 'util.profiling.unittest.coverage.Fragment');
+  } implements(__FILE__, 'unittest.coverage.Fragment');
 ?>

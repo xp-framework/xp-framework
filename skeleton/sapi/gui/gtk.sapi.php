@@ -33,7 +33,7 @@
   }
   // }}}
   
-  // {{{ void run (&gui.gtk.GtkApplication app)
+  // {{{ void run (&org.gnome.GtkApplication app)
   //     Runs a GTK app
   function run(&$app) {
     try(); {

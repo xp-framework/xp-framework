@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xml.soap.SOAPClient',
-    'xml.soap.transport.SOAPHTTPTransport'
+    'webservices.soap.SOAPClient',
+    'webservices.soap.transport.SOAPHTTPTransport'
   );
 ?>

@@ -5,14 +5,14 @@
  */
 
   uses(
-    'xml.xmlrpc.transport.XmlRpcTransport',
+    'webservices.xmlrpc.transport.XmlRpcTransport',
     'peer.http.HttpConnection'
   );
 
   /**
    * Transport for XmlRpc requests over HTTP.
    *
-   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  HTTP Transport for XML-RPC
    */
   class XmlRpcHttpTransport extends XmlRpcTransport {
@@ -46,13 +46,13 @@
      * Send XML-RPC message
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcMessage message
+     * @param   &webservices.xmlrpc.XmlRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     function &send(&$message) {
       
-      if (!is('xml.xmlrpc.XmlRpcMessage', $message)) return throw(new IllegalArgumentException(
-        'parameter "message" must be a xml.xmlrpc.XmlRpcMessage'
+      if (!is('webservices.xmlrpc.XmlRpcMessage', $message)) return throw(new IllegalArgumentException(
+        'parameter "message" must be a webservices.xmlrpc.XmlRpcMessage'
       ));
       
       // Send XML
@@ -79,7 +79,7 @@
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &webservices.xmlrpc.XmlRpcMessage
      */
     function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());

@@ -5,10 +5,10 @@
  */
 
   uses(
-    'xml.soap.SOAPMessage', 
-    'xml.soap.SOAPFaultException',
+    'webservices.soap.SOAPMessage', 
+    'webservices.soap.SOAPFaultException',
     'peer.http.HttpConnection', 
-    'xml.uddi.UDDIConstants'
+    'webservices.uddi.UDDIConstants'
   );
 
   /**
@@ -16,7 +16,7 @@
    *
    * Example:
    * <code>
-   *   uses('xml.uddi.UDDIServer', 'xml.uddi.FindBusinessesCommand');
+   *   uses('webservices.uddi.UDDIServer', 'webservices.uddi.FindBusinessesCommand');
    *
    *   $c= &new UDDIServer(
    *     'http://test.uddi.microsoft.com/inquire', 
@@ -36,7 +36,7 @@
    *   echo $r->toString();
    * </code>
    *
-   * @see      xp://xml.soap.SOAPClient
+   * @see      xp://webservices.soap.SOAPClient
    * @purpose  Access to UDDI
    */
   class UDDIServer extends Object {
@@ -83,17 +83,17 @@
      * Invoke a command
      *
      * @access  public
-     * @param   &xml.uddi.UDDICommand
+     * @param   &webservices.uddi.UDDICommand
      * @return  &lang.Object
      * @throws  lang.IllegalArgumentException in case an illegal command was passed
      * @throws  io.IOException in case the HTTP request failed
-     * @throws  xml.soap.SOAPFaultException in case a SOAP fault was returned
+     * @throws  webservices.soap.SOAPFaultException in case a SOAP fault was returned
      * @throws  xml.XMLFormatException in case the XML returned was not well-formed
      */
     function invoke(&$command) {
-      if (is('xml.uddi.InquiryCommand', $command)) {
+      if (is('webservices.uddi.InquiryCommand', $command)) {
         $c= &$this->conn['inquiry'];
-      } elseif (is('xml.uddi.PublishCommand', $command)) {
+      } elseif (is('webservices.uddi.PublishCommand', $command)) {
         $c= &$this->conn['publish'];
       } else {
         return throw(new IllegalArgumentException(
