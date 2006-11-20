@@ -545,6 +545,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		comment:"^;":"$"::Comment::\n\
 		key:"^[^=]+":::Text Arg::\n\
 		strings:"""":""""::String::D\n\
+		sq-strings:"'":"'"::Identifier::D\n\
 	}\n\
 	Unified diff:1:0{\n\
 		deleted_lines:"^\\-(.*)":::Comment::\n\
