@@ -6,11 +6,11 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'util.profiling.unittest.TestSuite',
+    'unittest.TestSuite',
     'util.Properties'
   );
   
-  // {{{ proto void addTestClass(&util.profiling.unittest.TestSuite suite, &lang.XPClass class [, array arguments])
+  // {{{ proto void addTestClass(&unittest.TestSuite suite, &lang.XPClass class [, array arguments])
   //     Adds a test
   function addTestClass(&$suite, &$class, $arguments= array()) {
     try(); {
@@ -65,7 +65,7 @@ Usage:
      \$ %1\$s %2\$s --class|-c classname [--arguments|-a arguments]
      
      The class name is expected to extend the base class for all test
-     cases, util.profiling.unittest.TestCase.
+     cases, unittest.TestCase.
      
      Arguments is comma-separated, e.g. "test.dict.org,2628"
 
