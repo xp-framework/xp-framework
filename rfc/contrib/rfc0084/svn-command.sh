@@ -22,7 +22,6 @@ svn rm text/apidoc/
 # Domain-specific -> ports
 svn move org/ ../ports/classes/
 svn move com/ ../ports/classes/
-svn move net/ ../ports/classes/
 svn move ch/ ../ports/classes/
 svn move us/ ../ports/classes/
 
