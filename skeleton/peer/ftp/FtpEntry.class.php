@@ -21,82 +21,17 @@
       $user         = '',
       $group        = '',
       $size         = 0,
-      $date         = NULL;
-
-    var
-      $_hdl     = NULL;
+      $date         = NULL,
+      $connection   = NULL;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string name
-     * @param   resource hdl default NULL
      */
-    function __construct($name, $hdl= NULL) {
+    function __construct($name) {
       $this->name= $name;
-      $this->_hdl= $hdl;
-    }
-
-    /**
-     * Parse raw listing entry:
-     *
-     * Example (Un*x):
-     * <pre>
-     *   drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .
-     *   -rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html
-     * </pre>
-     *
-     * Example (Windows):
-     * <pre>
-     *   01-04-06  04:51PM       <DIR>          _db_import
-     *   12-23-05  04:49PM                  807 1and1logo.gif
-     *   11-08-06  10:04AM                   27 info.txt 
-     * </pre>
-     *
-     * @model   static
-     * @access  public
-     * @param   string raw
-     * @param   resource handle default NULL
-     * @return  &peer.ftp.FtpEntry
-     */
-    function &parseFrom($raw, $handle= NULL) {
-      sscanf(
-        $raw, 
-        '%s %d %s %s %d %s %d %[^ ] %[^$]',
-        $permissions,
-        $numlinks,
-        $user,
-        $group,
-        $size,
-        $month,
-        $day,
-        $date,
-        $filename
-      );
-      
-      if ('d' == $permissions{0}) {
-        $e= &new FtpDir($filename, $handle);
-      } else {
-        $e= &new FtpEntry($filename, $handle);
-      }
-
-      $d= &new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
-
-      // Check for "recent" file which are specified "HH:MM" instead
-      // of year for the last 6 month (as specified in coreutils/src/ls.c)
-      if (strstr($date, ':')) {
-        $now= &Date::now();
-        if ($d->getMonth() > $now->getMonth()) $d->year--;
-      }
-
-      $e->setPermissions(substr($permissions, 1));
-      $e->setNumlinks($numlinks);
-      $e->setUser($user);
-      $e->setGroup($group);
-      $e->setSize($size);
-      $e->setDate($d);
-      return $e;
     }
 
     /**
@@ -256,6 +191,33 @@
      */
     function getName() {
       return $this->name;
+    }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function toString() {
+      return sprintf(
+        "%s(name= %s) {\n".
+        "  [permissions ] %d\n".
+        "  [numlinks    ] %d\n".
+        "  [user        ] %s\n".
+        "  [group       ] %s\n".
+        "  [size        ] %d\n".
+        "  [date        ] %s\n".
+        "}",
+        $this->getClassName(),
+        $this->name,
+        $this->permissions,
+        $this->numlinks,
+        $this->user,
+        $this->group,
+        $this->size,
+        xp::stringOf($this->date)
+      );
     }
   }
 ?>
