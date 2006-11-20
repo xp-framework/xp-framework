@@ -164,6 +164,7 @@ skeleton
 <pre>
   Package       Contents
   ------------- ----------------------------------------------------------
+  gui           (no subpackages)
   img           convert, chart, graph, shapes, io, fonts, util, filter
   io            dba, cca, sys, collections
   lang          reflect, types, archive
@@ -174,7 +175,7 @@ skeleton
   scriptlet     xml, rpc
   security      crypto, auth, sasl, checksum, cert
   text          format, doclet, parser, util, encode
-  unittests     gui, coverage
+  unittest      gui, coverage
   util          semaphore, profiling, cmd, telephony, log, io, collections
   webservices   soap, xmlrpc, wddx, json, uddi
   xml           dom, uddi, xp, parser, soap, xmlrpc, wddx, rdf, meta
