@@ -10,6 +10,7 @@
    * Represent an FTP entry
    *
    * @see      xp://peer.ftp.FtpDir#getEntry
+   * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
    * @purpose  Base class
    */
   class FtpEntry extends Object {
