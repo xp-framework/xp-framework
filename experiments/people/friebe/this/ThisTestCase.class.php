@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'BaseClass', 'ChildClass', 'This');
+  uses('unittest.TestCase', 'BaseClass', 'ChildClass', 'This');
 
   /**
    * Tests "this"

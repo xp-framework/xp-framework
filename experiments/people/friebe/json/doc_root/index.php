@@ -5,7 +5,7 @@
  */
   require('lang.base.php');
   xp::sapi('scriptlet.production');
-  uses('org.json.rpc.JsonRpcRouter');
+  uses('webservices.json.rpc.JsonRpcRouter');
 
   scriptlet::run(new JsonRpcRouter('service'));
 ?>

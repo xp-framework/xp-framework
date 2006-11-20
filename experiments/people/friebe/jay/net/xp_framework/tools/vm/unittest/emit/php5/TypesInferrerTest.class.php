@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.tools.vm.Parser',
     'net.xp_framework.tools.vm.Lexer',
     'net.xp_framework.tools.vm.emit.php5.Php5Emitter'

@@ -5,15 +5,15 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
-    'xml.xmlrpc.XmlRpcClient',
+    'unittest.TestCase',
+    'webservices.xmlrpc.XmlRpcClient',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyRpcTransport'
   );
 
   /**
    * Testcase for XmlRpcClient
    *
-   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  TestCase
    */
   class XmlRpcClientTest extends TestCase {

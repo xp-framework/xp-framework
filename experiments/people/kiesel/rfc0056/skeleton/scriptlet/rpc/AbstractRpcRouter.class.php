@@ -102,8 +102,8 @@
      * request.
      *
      * @access  public
-     * @param   &xml.xmlrpc.rpc.XmlRpcRequest request
-     * @param   &xml.xmlrpc.rpc.XmlRpcResponse response
+     * @param   &webservices.xmlrpc.rpc.XmlRpcRequest request
+     * @param   &webservices.xmlrpc.rpc.XmlRpcResponse response
      */
     function doPost(&$request, &$response) {
       $this->cat && $response->setTrace($this->cat);
@@ -157,7 +157,7 @@
      * Calls the handler that the action reflects to
      *
      * @access  protected
-     * @param   &xml.xmlrpc.XmlRpcMessage message object (from request)
+     * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
      * @return  &mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods

@@ -6,7 +6,7 @@
 
   uses(
     'scriptlet.rpc.AbstractRpcMessage',
-    'org.json.JsonFactory'
+    'webservices.json.JsonFactory'
   );
 
   /**
@@ -30,7 +30,7 @@
      * @model   abstract
      * @access  public
      * @param   string string
-     * @return  &org.json.rpc.JsonMessage
+     * @return  &webservices.json.rpc.JsonMessage
      */
     function &fromString($string) { }
     
@@ -39,7 +39,7 @@
      *
      * @model   abstract
      * @access  public
-     * @param   org.json.rpc.JsonMessage msg
+     * @param   webservices.json.rpc.JsonMessage msg
      */
     function create() { }
     

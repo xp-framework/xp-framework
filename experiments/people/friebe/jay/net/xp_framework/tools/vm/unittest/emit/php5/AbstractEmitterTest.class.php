@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.tools.vm.Parser',
     'net.xp_framework.tools.vm.Lexer',
     'net.xp_framework.tools.vm.emit.php5.Php5Emitter'
@@ -82,7 +82,7 @@
      * @access  protected
      * @param   string expected Expected code w/o prologue and epilogue
      * @param   string emitted emitted sourcecode returned by emit
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertSourcecodeEquals($expected, $emitted) {
       if (!is_string($emitted)) return;

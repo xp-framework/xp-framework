@@ -17,7 +17,7 @@
      * Sets JSON message
      *
      * @access  public
-     * @param   &org.json.rpc.JsonRpcMessage msg
+     * @param   &webservices.json.rpc.JsonRpcMessage msg
      */
     function setMessage(&$msg) {
       $this->message= &$msg;

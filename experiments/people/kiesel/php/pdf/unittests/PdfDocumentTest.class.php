@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'PDFDocument'
   );
 

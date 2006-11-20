@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.XmlRpcMessage');
+  uses('webservices.xmlrpc.XmlRpcMessage');
 
   /**
    * This is a XML-RPC client; XML-RPC is a remote procedure call
@@ -17,7 +17,7 @@
    * implementations really understand themselves.
    *
    * <code>
-   *   uses('xml.xmlrpc.XmlRpcClient', 'xml.xmlrpc.transport.XmlRpcHttpTransport');
+   *   uses('webservices.xmlrpc.XmlRpcClient', 'webservices.xmlrpc.transport.XmlRpcHttpTransport');
    *   $c= &new XmlRpcClient(new XMLRPCHTTPTransport('http://xmlrpc.xp-framework.net'));
    *   
    *   try(); {
@@ -44,7 +44,7 @@
      * Constructor.
      *
      * @access  public
-     * @param   &xml.xmlrpc.transport.XmlRpcTransport transport
+     * @param   &webservices.xmlrpc.transport.XmlRpcTransport transport
      */
     function __construct(&$transport) {
       $this->transport= &$transport;
@@ -68,11 +68,11 @@
      * @param   mixed vars
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
-     * @throws  xml.xmlrpc.XmlRpcFaultException
+     * @throws  webservices.xmlrpc.XmlRpcFaultException
      */
     function invoke() {
-      if (!is('xml.xmlrpc.transport.XmlRpcTransport', $this->transport))
-        return throw(new IllegalArgumentException('Transport must be a xml.xmlrpc.transport.XmlRpcTransport'));
+      if (!is('webservices.xmlrpc.transport.XmlRpcTransport', $this->transport))
+        return throw(new IllegalArgumentException('Transport must be a webservices.xmlrpc.transport.XmlRpcTransport'));
     
       $args= func_get_args();
       

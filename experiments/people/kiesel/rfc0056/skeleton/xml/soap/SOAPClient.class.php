@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPMessage', 'xml.QName', 'xml.soap.Parameter', 'xml.soap.SOAPMapping');
+  uses('webservices.soap.SOAPMessage', 'xml.QName', 'webservices.soap.Parameter', 'webservices.soap.SOAPMapping');
   
   /**
    * Basic SOAP-Client
@@ -36,7 +36,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &xml.soap.transport.SOAPTransport transport a SOAP transport
+     * @param   &webservices.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
@@ -92,8 +92,8 @@
      * Add a header
      *
      * @access  public
-     * @param   &xml.soap.SOAPHeader header
-     * @return  &xml.soap.SOAPHeader the header added
+     * @param   &webservices.soap.SOAPHeader header
+     * @return  &webservices.soap.SOAPHeader the header added
      */
     function &addHeader(&$header) {
       $this->headers[]= &$header;
@@ -108,11 +108,11 @@
      * @param   mixed vars
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
-     * @throws  xml.soap.SOAPFaultException
+     * @throws  webservices.soap.SOAPFaultException
      */
     function invoke() {
       if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
-        'Transport must be a xml.soap.transport.SOAPTransport'
+        'Transport must be a webservices.soap.transport.SOAPTransport'
       ));
       
       $args= func_get_args();

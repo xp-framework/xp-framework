@@ -6,7 +6,7 @@
  
   uses(
     'scriptlet.rpc.AbstractRpcRequest',
-    'org.json.rpc.JsonRequestMessage'
+    'webservices.json.rpc.JsonRequestMessage'
   );
   
   /**
@@ -20,7 +20,7 @@
      * Retrieve Json message from request
      *
      * @access  public
-     * @return  &xml.xmlrpc.XmlRpcMessage message object
+     * @return  &webservices.xmlrpc.XmlRpcMessage message object
      */
     function &getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());

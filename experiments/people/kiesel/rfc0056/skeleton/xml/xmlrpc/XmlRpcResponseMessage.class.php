@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.XmlRpcMessage');
+  uses('webservices.xmlrpc.XmlRpcMessage');
 
   /**
    * XmlRpc response message. 
    *
    * @ext      xml
-   * @see      xp://xml.xmlrpc.XmlRpcRequestMessage
+   * @see      xp://webservices.xmlrpc.XmlRpcRequestMessage
    * @purpose  Wrap XML-RPC Response
    */
   class XmlRpcResponseMessage extends XmlRpcMessage {
@@ -19,7 +19,7 @@
      * Create a response message for the given request
      *
      * @access  public
-     * @param   xml.xmlrpc.XmlRpcRequestMessage reqmsg
+     * @param   webservices.xmlrpc.XmlRpcRequestMessage reqmsg
      */
     function create($reqmsg) {
       $this->tree= &new Tree(XMLRPC_RESPONSE);
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      * @param   string string
-     * @return  &xml.xmlrpc.XmlRpcResponse Message
+     * @return  &webservices.xmlrpc.XmlRpcResponse Message
      */
     function &fromString($string) {
       $msg= &new XmlRpcResponseMessage();

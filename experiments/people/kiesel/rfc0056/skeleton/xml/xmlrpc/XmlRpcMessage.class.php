@@ -7,10 +7,10 @@
   uses(
     'xml.Tree', 
     'xml.Node', 
-    'xml.xmlrpc.XmlRpcFault', 
+    'webservices.xmlrpc.XmlRpcFault', 
     'util.Date', 
-    'xml.xmlrpc.XmlRpcEncoder',
-    'xml.xmlrpc.XmlRpcDecoder'
+    'webservices.xmlrpc.XmlRpcEncoder',
+    'webservices.xmlrpc.XmlRpcDecoder'
   );
 
   // Message-types
@@ -32,7 +32,7 @@
    * occurred.
    *
    * @ext      xml
-   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  Represent message
    */
   class XmlRpcMessage extends Object {
@@ -57,7 +57,7 @@
      * @model   abstract
      * @access  public
      * @param   string string
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @return  &webservices.xmlrpc.XmlRpcMessage
      */
     function &fromString($string) { }
     
@@ -160,7 +160,7 @@
      * Retrieve the fault if there is one.
      *
      * @access  public
-     * @return  &xml.xmlrpc.XmlRpcFault or NULL if no fault exists
+     * @return  &webservices.xmlrpc.XmlRpcFault or NULL if no fault exists
      */
     function &getFault() {
 

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.rpc.XmlRpcRouter');
+  uses('webservices.xmlrpc.rpc.XmlRpcRouter');
 
   /**
    * Mock class

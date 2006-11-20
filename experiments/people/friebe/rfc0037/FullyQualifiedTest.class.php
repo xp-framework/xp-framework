@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.Date',
     'info.binford6100.Date',
     'de.thekid.util.ObjectComparator'

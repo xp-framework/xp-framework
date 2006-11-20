@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestSuite');
+  uses('unittest.TestSuite');
 
   /**
    * Unittest Runner

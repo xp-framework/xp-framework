@@ -6,7 +6,7 @@
 
   uses(
     'util.log.Traceable',
-    'xml.xmlrpc.XmlRpcFaultException'
+    'webservices.xmlrpc.XmlRpcFaultException'
   );
 
   /**
@@ -32,7 +32,7 @@
      * Send XML-RPC message
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcMessage message
+     * @param   &webservices.xmlrpc.XmlRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     function &send(&$message) { }
@@ -41,8 +41,8 @@
      * Retrieve a XML-RPC message.
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcResponse response
-     * @return  &xml.xmlrpc.XmlRpcMessage
+     * @param   &webservices.xmlrpc.XmlRpcResponse response
+     * @return  &webservices.xmlrpc.XmlRpcMessage
      */
     function &retrieve(&$response) { }    
   } implements(__FILE__, 'util.log.Traceable');

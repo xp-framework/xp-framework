@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.tools.vm.Parser',
     'net.xp_framework.tools.vm.Lexer'
   );
@@ -23,7 +23,7 @@
      * @access  protected
      * @param   string tokens comma-delimited token/value list
      * @param   string src
-     * @throws  util.profiling.unittest.AssertionFailedError in case an error occurs
+     * @throws  unittest.AssertionFailedError in case an error occurs
      */
     function assertTokens($tokens, $src) {
       $l= &new Lexer($src, $this->name);

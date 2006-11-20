@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.xmlrpc.XmlRpcFault');
+  uses('webservices.xmlrpc.XmlRpcFault');
 
   /**
    * Indicates a XML-RPC error occurred.
@@ -19,7 +19,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &xml.xmlrpc.XmlRpcFault fault
+     * @param   &webservices.xmlrpc.XmlRpcFault fault
      */
     function __construct(&$fault) {
       $this->fault= &$fault;
@@ -30,7 +30,7 @@
      * Get Fault
      *
      * @access  public
-     * @return  &xml.xmlrpc.XmlRpcFault
+     * @return  &webservices.xmlrpc.XmlRpcFault
      */
     function &getFault() {
       return $this->fault;

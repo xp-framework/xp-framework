@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.tools.vm.util.Modifiers'
   );
 
@@ -22,7 +22,7 @@
      * @access  protected
      * @param   string expected a space-separated list of names
      * @param   int modifiers a modifier bitfield
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertModifiers($string, $modifiers) {
       $names= Modifiers::namesOf($modifiers);
@@ -37,7 +37,7 @@
      *
      * @access  protected
      * @param   array<string, list> list
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     function assertModifierList($list) {
       foreach ($list as $expect => $modifiers) {
