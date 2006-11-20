@@ -51,3 +51,14 @@ svn rm text/translator
 # peer.ajp -> ports/org.apache.ajp
 svn mkdir ../ports/classes/org/apache/
 svn move peer/ajp/ ../ports/classes/org/apache/
+
+# gui.gtk -> ports/org.gnome
+svn mkdir ../ports/classes/org/gome/
+svn move skeleton/gui/gtk/GtkApplication.class.php ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/GtkGladeApplication.class.php ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/GtkGladeDialogWindow.class.php ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/glade-i18n/ ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/stock/ ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/util/ ../ports/classes/org/gnome/
+svn move skeleton/gui/gtk/widgets/ ../ports/classes/org/gnome/
+svn rm skeleton/gui/gtk/
