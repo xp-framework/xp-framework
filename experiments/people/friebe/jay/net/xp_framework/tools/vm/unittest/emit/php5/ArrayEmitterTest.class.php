@@ -116,5 +116,18 @@
         $this->emit('$a[$key][]= 1;')
       );
     }
+
+    /**
+     * Tests list assignment
+     *
+     * @access  public
+     */
+    #[@test]
+    function listAssignment() {
+      $this->assertSourcecodeEquals(
+        'list($o, $t, )= array(0 => 1, 1 => 2, );',
+        $this->emit('list($o, $t)= array(1, 2);')
+      );
+    }
   }
 ?>
