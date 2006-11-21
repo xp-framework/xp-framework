@@ -44,7 +44,7 @@
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
     function &addTest(&$test) {
-      if (!is_a($test, 'TestCase')) {
+      if (!is('unittest.TestCase', $test)) {
         return throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
       }
       $this->tests[]= &$test;
@@ -61,7 +61,7 @@
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
      */
     function addTestClass(&$class, $arguments= array()) {
-      if (!$class->isSubclassOf('TestCase')) {
+      if (!$class->isSubclassOf('unittest.TestCase')) {
         return throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
       }
 
