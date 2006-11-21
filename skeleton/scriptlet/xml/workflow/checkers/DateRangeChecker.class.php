@@ -90,7 +90,7 @@
       foreach ($value as $v) {
         if ($this->minValue && $v->isBefore($this->minValue)) {
           return 'tooearly';
-        } elseif ($this->maxValue && $v->isAfter($this->maxValue)) {
+        } else if ($this->maxValue && $v->isAfter($this->maxValue)) {
           return 'toolate';
         }
       }    
