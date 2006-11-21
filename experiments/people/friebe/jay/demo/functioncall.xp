@@ -17,5 +17,4 @@ class String {
 $name= $argv[1];
 echo 'Hello, ', String::toLower($name), "!\n";
 
-$s= new String('Hello');
-echo $s->asLowerCase();
+echo new String('Hello')->asLowerCase(), "\n";
