@@ -270,13 +270,6 @@
             $instanceof[$instanceof['op']].= $t;
             break;
 
-          case ST_INSTANCE_OF.T_VARIABLE:
-          case ST_INSTANCE_OF.T_STRING:
-          case ST_INSTANCE_OF.T_LNUMBER:
-          case ST_INSTANCE_OF.T_OBJECT_OPERATOR:
-            $instanceof[$instanceof['op']].= $t[1];
-            break;
-
           case ST_INSTANCE_OF.'(':
             $instanceof['brackets']++;
             $instanceof[$instanceof['op']].= '(';
@@ -287,7 +280,7 @@
             $instanceof[$instanceof['op']].= ')';
             if (0 == $instanceof['brackets']) {
               $skip= FALSE;
-              $t= $instanceof['expression'].' instanceof '.$instanceof['class'];
+              $t= trim($instanceof['expression']).' instanceof '.trim($instanceof['class']);
               array_shift($states);
             }
             break;
@@ -304,6 +297,11 @@
             if (T_WHITESPACE != $tokens[$i+ 1][0]) {  // Kill reference operator
               $t= '';
             }
+            break;
+
+          // ST_INSTANCE_OF.* (catch-all)
+          case $states[0] == ST_INSTANCE_OF && is_array($t):
+            $instanceof[$instanceof['op']].= $t[1];
             break;
 
           case ST_FUNCTION_BODY.'}':
