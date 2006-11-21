@@ -35,6 +35,8 @@
      * @access  public
      */
     function __construct() {
+      static $lang= array();
+      
       $this->context['package']= DEFAULT_PACKAGE;
       $this->context['imports']= array();
       $this->context['uses']= array();
@@ -53,6 +55,23 @@
       );
       $this->context['types']['lang·Object::getClassName']= 'string';
       $this->context['types']['lang·Object::toString']= 'string';
+      
+      // Auto-import lang.*
+      if (empty($lang)) {
+        foreach (explode(PATH_SEPARATOR, CLASSPATH) as $node) {
+          if (!is_dir($node.DIRECTORY_SEPARATOR.'lang')) continue;
+
+          $d= dir($node.DIRECTORY_SEPARATOR.'lang');
+          while ($file= $d->read()) {
+            2 == sscanf($file, '%[^.].%s', $classname, $ext) && 'xp' == $ext && $lang[]= $classname;
+          }
+          $d->close();
+        }
+      }
+      
+      foreach ($lang as $classname) {
+        $this->context['imports'][$this->context['package']][$classname]= 'lang·'.$classname;
+      }
     }
 
     /**
