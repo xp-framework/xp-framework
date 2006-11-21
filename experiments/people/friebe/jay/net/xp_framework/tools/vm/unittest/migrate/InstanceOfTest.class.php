@@ -20,7 +20,7 @@
      */
     #[@test]
     function variableAndString() {
-      $this->assertRewritten('($a instanceof util.Date);', 'is_a($a, "Date");');
+      $this->assertExpressionRewritten('($a instanceof util.Date);', 'is_a($a, "Date");');
     }
 
     /**
@@ -30,7 +30,7 @@
      */
     #[@test]
     function expressionAndString() {
-      $this->assertRewritten('(get_class($this) instanceof util.Date);', 'is_a(get_class($this), "Date");');
+      $this->assertExpressionRewritten('(get_class($this) instanceof util.Date);', 'is_a(get_class($this), "Date");');
     }
   }
 ?>
