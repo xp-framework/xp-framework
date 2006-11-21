@@ -175,6 +175,7 @@
 
           case ST_FUNCTION.T_STRING:
             $skip= FALSE;
+            $abstract= FALSE;
             foreach ($this->names->current->methods as $method) {
               if ($method->name != $t[1]) continue;
 
@@ -194,8 +195,10 @@
               // Calculate modifier, defaulting to "public"
               $access= $method->tags('access');
               $modifiers= $access ? $access[0]->text : 'public';
-              if ($model= $method->tags('model')) {
-                $modifiers.= ' '.$model[0]->text;
+              
+              foreach ($method->tags('model') as $tag) {
+                $modifiers.= ' '.$tag->text;
+                $tag->text == 'abstract' && $abstract= TRUE;
               }
 
               $t[1]= $modifiers.' '.$type.' '.$t[1];
@@ -238,7 +241,7 @@
             break;
 
           case ST_FUNCTION.'{':
-            if ($skip= $this->names->current->isInterface()) $out= rtrim($out, ' ').';';
+            if ($skip= $this->names->current->isInterface() || $abstract) $out= rtrim($out, ' ').';';
 
             if ($method && ($throws= $method->tags('throws'))) {
               $t= 'throws ';
@@ -304,7 +307,7 @@
               array_shift($states);
               array_shift($states);
               $skip= FALSE;
-              $this->names->current->isInterface() && $t= '';
+              if ($this->names->current->isInterface() || $abstract) $t= '';
             }
             break;
 
