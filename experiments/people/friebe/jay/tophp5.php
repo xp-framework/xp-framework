@@ -10,7 +10,7 @@
     'util.cmd.ParamString'
   );
   define('MODIFIER_NATIVE', 8);   // See lang.XPClass
-  define('CLASSPATH', strtr('php5-emit/skeleton/:php5-emit/ports/classes/', '/', DIRECTORY_SEPARATOR));
+  define('CLASSPATH', strtr('php5-emit/skeleton/:php5-emit/ports/classes/', '/:', DIRECTORY_SEPARATOR.PATH_SEPARATOR));
   
   // {{{ compile
   $p= &new ParamString();
