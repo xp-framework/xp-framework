@@ -16,7 +16,7 @@
         'parent' => 'parent',
         'self' => 'self',
       ),
-      $current= '',
+      $current= NULL,
       $namespaceSeparator= '.';
     
     /**
@@ -60,10 +60,10 @@
      * Set current class
      *
      * @access  public
-     * @param   string c
+     * @param   &text.doclet.ClassDoc c
      */
-    function setCurrentClass($c) {
-      $this->current= $c;
+    function setCurrentClass(&$c) {
+      $this->current= &$c;
     }
     
     /**
@@ -76,7 +76,7 @@
      */
     function qualifiedNameOf($short) {
       $mapped= $this->getMapping(strtolower($short));      
-      return ($this->current == $mapped ? 'self' : $mapped);
+      return ($this->current && $this->current->qualifiedName() == $mapped ? 'self' : $mapped);
     }
 
     /**
