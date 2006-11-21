@@ -77,6 +77,16 @@
     function assertMethodRewritten($expect, $method, $tags, $origin) {
       $m= &new MethodDoc();
       $m->name= ltrim($method, '&');
+      
+      $tm= &TagletManager::getInstance();
+      foreach ($tags as $tag => $values) {
+        $kind= ltrim($tag, '@');
+        $m->detail['tags'][$kind]= array();
+        foreach ($values as $value) {
+          $m->detail['tags'][$kind][]= &$tm->make($m, $kind, $value);
+        }
+      }
+      
       $this->rewriter->names->current->methods[]= &$m;
 
       $origin= 'function '.$method.$origin;
