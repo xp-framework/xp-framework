@@ -30,7 +30,7 @@
           echo '*** PHP5 Version older than XP... ';
           break;
         } else {
-          echo '*** Loading ', $file, "\n";
+          // echo '*** Loading ', $file, "\n";
           return include($qualified);
         }
       } else if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
