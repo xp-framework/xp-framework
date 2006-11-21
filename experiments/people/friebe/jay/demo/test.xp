@@ -7,13 +7,13 @@ package io {
 }
 
 package bar {
-  import io~Serializable;
+  import io.Serializable;
 
   enum Coin {
     penny(1), nickel(5), dime(10), quarter(25);
   }
 
-  class Foo extends xp~lang~Object implements Serializable {
+  class Foo extends lang.Object implements Serializable {
     public $id= 0;
     protected $foo= -1;
     public static $instance= NULL;
@@ -33,14 +33,14 @@ package bar {
       return $this->id;
     }
 
-    public static operator + () throws xp~lang~Exception {
+    public static operator + () throws lang.Exception {
       throw new Exception('Not yet implemented');
     }
   }
 }
 
 try {
-  $id= bar~Foo::getInstance()->getId();
+  $id= bar.Foo::getInstance()->getId();
   throw new Exception();
 } catch (Exception $e) {
   $e->printStackTrace();
