@@ -104,7 +104,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function clone() {
+    function cloneNull() {
       clone(xp::null());
     }
 
