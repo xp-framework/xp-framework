@@ -76,7 +76,7 @@
      */
     function assertMethodRewritten($expect, $method, $tags, $origin) {
       $m= &new MethodDoc();
-      $m->name= $method;
+      $m->name= ltrim($method, '&');
       $this->rewriter->names->current->methods[]= &$m;
 
       $origin= 'function '.$method.$origin;
