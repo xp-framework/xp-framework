@@ -180,12 +180,12 @@ __;
                 $qualified= $this->current->qualifiedName();
                 $package= substr($qualified, 0, strrpos($qualified, '.'));
 
-                switch (sizeof($used)) {
-                  case 0: $uses= ''; break;
-                  case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
-                  default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
+                sort($used);
+                $uses= '';
+                foreach ($used as $classname) {
+                  $uses.= 'import '.$classname.";\n";
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
               }
               break;
 
