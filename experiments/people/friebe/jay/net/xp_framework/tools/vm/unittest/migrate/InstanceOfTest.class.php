@@ -7,7 +7,7 @@
   uses('net.xp_framework.tools.vm.unittest.migrate.AbstractRewriterTest');
 
   /**
-   * Tests type names
+   * Tests is_a() -> instanceof rewriting
    *
    * @purpose  Unit Test
    */
