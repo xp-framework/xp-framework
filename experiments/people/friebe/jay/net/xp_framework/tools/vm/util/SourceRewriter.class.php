@@ -270,7 +270,7 @@
           case ST_INSTANCE_OF.')':
             $instanceof['brackets']--;
             $instanceof[$instanceof['op']].= ')';
-            if (0 == $instanceof['op']) {
+            if (0 == $instanceof['brackets']) {
               $skip= FALSE;
               $t= $instanceof['expression'].' instanceof '.$instanceof['class'];
               array_shift($states);
