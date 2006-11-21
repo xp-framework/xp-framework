@@ -138,7 +138,8 @@
               $classname.= $tokens[$i- 1][1].LEXER_PACKAGE_SEPARATOR;
               $i+= 2;
             }
-            if (T_STRING == $tokens[$i- 1][0]) {
+            if (in_array($tokens[$i- 1][0], array(T_STRING, T_FUNCTION, T_LIST, T_ARRAY, T_CLASS))) {
+              // For PHP5, add T_INTERFACE
               $return[$next]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
               $token = $return[$next];
               $id= $i- 1;  // Skip tokens

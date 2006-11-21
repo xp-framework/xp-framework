@@ -37,6 +37,7 @@
     function __construct() {
       $this->context['package']= DEFAULT_PACKAGE;
       $this->context['imports']= array();
+      $this->context['uses']= array();
       $this->context['types']= array();
       $this->context['overloaded']= array();
       $this->context['annotations']= array();
@@ -49,19 +50,9 @@
           'toString'        => TRUE,
           'getClassName'    => TRUE,
         ),
-        'lang·Throwable' => array(
-          '__construct'     => TRUE,
-          'toString'        => TRUE,    // overwritten
-          'getClassName'    => TRUE,    // inherited
-        ),
       );
       $this->context['types']['lang·Object::getClassName']= 'string';
       $this->context['types']['lang·Object::toString']= 'string';
-      $this->context['classes']['lang·Exception']= $this->context['classes']['lang·Throwable'];
-      $this->context['classes']['lang·SystemExit']= $this->context['classes']['lang·Throwable'];
-      $this->context['classes']['lang·IllegalAccessException']= $this->context['classes']['lang·Throwable'];
-      $this->context['classes']['lang·NullPointerException']= $this->context['classes']['lang·Throwable'];
-      $this->context['classes']['io·IOException']= $this->context['classes']['lang·Throwable'];
     }
 
     /**
@@ -104,9 +95,10 @@
      * @return   string
      */
     function prefixedClassnameFor($class, $imports= TRUE) {
-      if ($imports && isset($this->context['imports'][$this->context['package']][$class]))
+      if ($imports && isset($this->context['imports'][$this->context['package']][$class])) {
         return $this->context['imports'][$this->context['package']][$class];
-        
+      }
+
       return $this->context['package'].$class;
     }
 
@@ -354,7 +346,12 @@
      * @return  string
      */
     function getResult() { 
-      return "<?php\n  ".$this->bytes."\n?>";
+      $src= "<?php\n  ";
+      if (!empty($this->context['uses'])) {
+        $src.= 'uses(\''.implode('\', \'', array_keys($this->context['uses'])).'\')';
+      }
+      
+      return $src.$this->bytes."\n?>";
     }
 
     /**
@@ -553,7 +550,9 @@
           // XXX TODO XXX Merge rest of context with ours...
           $this->context['classes'][$q]= $emitter->context['classes'][$q];
           
+          // Remember we compiled this from an external file
           $this->cat && $this->cat->info('Compiled ', $q);
+          $this->context['uses'][$q]= $in;
           return $this->context['classes'][$q];
         }
       
@@ -1023,11 +1022,13 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitImportList(&$node) {
-      $this->bytes.= 'uses(';
-
       $imports= '';      
       foreach ($node->list as $import) { 
-        $source= is_a($import->source, 'ClassReferenceNode') ? $import->source->name : $import->source;
+        $source= $import->source->name;
+        if (NULL === $this->lookupClass($this->qualifiedName($source, FALSE))) {
+          $this->addError(new CompileError(7000, 'Imported class '.$source.' does not exist'));
+        }
+        
         $destination= $import->destination;
 
         // Calculate destination name if none was supplied
@@ -1037,9 +1038,7 @@
 
         // Register import
         $this->context['imports'][$this->context['package']][$destination]= $source;
-        $imports.= "'".$source.'\', ';
       }
-      $this->bytes.= rtrim($imports, ', ').')';
     }
     
     /**

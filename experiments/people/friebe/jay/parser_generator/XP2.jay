@@ -369,22 +369,8 @@ package_inner_statement_list:
 package_inner_statement:
 		class_declaration_statement
 	|	enum_declaration_statement
-	|	T_IMPORT package_import_list ';' {
+	|	T_IMPORT import_list ';' {
           $$= &new ImportListNode($2); $$->position= $yyLex->position;
-        }
-;
-
-package_import_list:
-		package_import_list ',' package_import
-	|	package_import
-;
-
-package_import:
-		T_CLASSNAME {
-          $$= &new ImportNode($1, NULL); $$->position= $yyLex->position;
-        }
-	|	T_CLASSNAME T_AS name_and_keywords {
-          $$= &new ImportNode($1, $3); $$->position= $yyLex->position;
         }
 ;
 
