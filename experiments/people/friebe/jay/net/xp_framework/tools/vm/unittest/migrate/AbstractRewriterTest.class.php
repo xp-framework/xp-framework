@@ -34,33 +34,59 @@
       $names->setNamespaceSeparator('.');
       $names->setCurrentClass(new ClassDoc());
       
-      $this->template= '<?php class AbstractRewriterTest extends Object { function test() { '.
-        '/* < */ %s /* > */'.
-      '}} ?>';
+      $this->template= '<?php class AbstractRewriterTest extends Object { 
+        function expression() { /* e< */ %1$s /* >e */ }
+        /* m< */ %2$s /* >m */ }
+      } ?>';
 
       $names->current->qualifiedName= $this->getClassName();
       $m= &new MethodDoc();
-      $m->name= 'test';
+      $m->name= 'expression';
       $names->current->methods= array(&$m);
       $this->rewriter= &new SourceRewriter();
       $this->rewriter->setNameMapping($names);
     }
-    
+
     /**
-     * Setup method
+     * Assert an expression is rewritten
      *
      * @access  protected
      * @param   string expect expected sourcecode after rewriting occurs
      * @param   string original sourcecode
      */
-    function assertRewritten($expect, $origin) {
+    function assertExpressionRewritten($expect, $origin) {
       try(); {
-        $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, $origin)));
+        $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, $origin, NULL)));
       } if (catch('Exception', $e)) {
         return throw($e);
       }
       
-      $relevant= substr($out, $p= strpos($out, '/* < */')+ 8, strpos($out, '/* > */')- $p- 1);
+      $relevant= substr($out, $p= strpos($out, '/* e< */')+ 9, strpos($out, '/* >e */')- $p- 1);
+      $this->assertEquals($expect, $relevant);
+    }
+    
+    /**
+     * Assert a method is rewritten
+     *
+     * @access  protected
+     * @param   string expect expected sourcecode after rewriting occurs
+     * @param   string method
+     * @param   array tags
+     * @param   string original sourcecode
+     */
+    function assertMethodRewritten($expect, $method, $tags, $origin) {
+      $m= &new MethodDoc();
+      $m->name= $method;
+      $this->rewriter->names->current->methods[]= &$m;
+
+      $origin= 'function '.$method.$origin;
+      try(); {
+        $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, NULL, $origin)));
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
+
+      $relevant= substr($out, $p= strpos($out, '/* m< */')+ 9, strpos($out, '/* >m */')- $p- 1);
       $this->assertEquals($expect, $relevant);
     }
   }
