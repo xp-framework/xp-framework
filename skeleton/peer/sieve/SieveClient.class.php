@@ -110,7 +110,7 @@
 
         if ('OK' == substr($line, 0, 2)) {
           break;
-        } elseif ('"' == $line{0}) {
+        } else if ('"' == $line{0}) {
           sscanf($line, '"%[^"]" "%[^"]"', $key, $value);
           switch ($key) {
             case 'IMPLEMENTATION':
@@ -180,12 +180,12 @@
         
         if ('OK' == substr($line, 0, 2)) {
           break;
-        } elseif ('NO' == substr($line, 0, 2)) {
+        } else if ('NO' == substr($line, 0, 2)) {
           if (!$error) return FALSE;
           return throw(new FormatException(substr($line, 3)));
-        } elseif ('BYE' == substr($line, 0, 3)) {
+        } else if ('BYE' == substr($line, 0, 3)) {
           return throw(new SocketException(substr($line, 4)));
-        } elseif (!$discard) {
+        } else if (!$discard) {
           $lines[]= $line;
         }
       } while (!$this->_sock->eof());

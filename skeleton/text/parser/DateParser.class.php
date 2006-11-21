@@ -59,7 +59,7 @@
       
         // Border case
         return throw(new FormatException('Cannot parse empty string'));
-      } elseif (preg_match('/^([0-9]+)\.([0-9]+)(\.([0-9]+))? ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/', $s, $matches)) {
+      } else if (preg_match('/^([0-9]+)\.([0-9]+)(\.([0-9]+))? ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/', $s, $matches)) {
       
         // German date format
         $stamp= Date::mktime(
@@ -70,7 +70,7 @@
           $matches[1], 
           isset($matches[4]) ? DateParser::yearFor($matches[4]) : date('Y')
         );
-      } elseif (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
+      } else if (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
       
         // Generalized date format
         $stamp= Date::mktime(

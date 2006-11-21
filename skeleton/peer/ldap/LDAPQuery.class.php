@@ -76,7 +76,7 @@
         if (is_a($args[$ofs], 'Date')) {
           $tok{$mod}= 's';
           $arg= $args[$ofs]->toString('YmdHi\\ZO');
-        } elseif (is_a($args[$ofs], 'Object')) {
+        } else if (is_a($args[$ofs], 'Object')) {
           $arg= $args[$ofs]->toString();
         } else {
           $arg= $args[$ofs];

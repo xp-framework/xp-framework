@@ -56,7 +56,7 @@
           ($m[$perm{3}] | $m[$perm{4}] | $m[$perm{5}]) * 10 +
           ($m[$perm{6}] | $m[$perm{7}] | $m[$perm{8}])
         );
-      } elseif (is_int($perm)) {
+      } else if (is_int($perm)) {
         $this->permissions= $perm;
       } else {
         return throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));

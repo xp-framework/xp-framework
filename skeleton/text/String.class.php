@@ -82,7 +82,7 @@
     function charAt($pos) {
       if (-1 == $pos) {
         $pos= strlen($this->buffer)- 1;
-      } elseif ($pos < 0 || $pos >= strlen($this->buffer)) {
+      } else if ($pos < 0 || $pos >= strlen($this->buffer)) {
         return throw(new IndexOutOfBoundsException($pos.' is not a valid string offset'));
       }
 
@@ -591,7 +591,7 @@
     function &valueOf($arg) {
       if (is_a($arg, 'Object')) {
         return new String($arg->toString());
-      } elseif (is_array($arg)) {
+      } else if (is_array($arg)) {
         return new String(implode('', $arg));
       }
       return new String(strval($arg));

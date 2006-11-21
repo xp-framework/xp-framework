@@ -98,9 +98,9 @@
       if (is_a($var, 'Date')) {
         $type= 's';
         $a= array($var->toString($this->dateFormat));
-      } elseif (is_a($var, 'Object')) {
+      } else if (is_a($var, 'Object')) {
         $a= array($var->toString());
-      } elseif (is_array($var)) {
+      } else if (is_array($var)) {
         $a= $var;
       } else {
         $a= array($var);

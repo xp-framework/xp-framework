@@ -137,7 +137,7 @@
       foreach (array_keys($val) as $k) {
         if (is_array($val[$k])) {
           $c= &Node::fromArray($val[$k], 'param');
-        } elseif (is_object($val[$k])) {
+        } else if (is_object($val[$k])) {
           $c= &Node::fromObject($val[$k], 'param');
         } else {
           $c= &new Node('param', $val[$k]);
@@ -168,7 +168,7 @@
     function addFormError($checker, $type, $field= '*', $info= NULL) {
       if (is_array($info)) {
         $c= &Node::fromArray($info, 'error');
-      } elseif (is_object($info)) {
+      } else if (is_object($info)) {
         $c= &Node::fromObject($info, 'error');
       } else {
         $c= &new Node('error', $info);

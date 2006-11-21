@@ -161,9 +161,9 @@
         if (is_a($args[$ofs], 'Date')) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is_a($args[$ofs], 'Object')) {
+        } else if (is_a($args[$ofs], 'Object')) {
           $a= array($args[$ofs]->toString());
-        } elseif (is_array($args[$ofs])) {
+        } else if (is_array($args[$ofs])) {
           $a= $args[$ofs];
         } else {
           $a= array($args[$ofs]);

@@ -93,7 +93,7 @@
     function invoke(&$command) {
       if (is('webservices.uddi.InquiryCommand', $command)) {
         $c= &$this->conn['inquiry'];
-      } elseif (is('webservices.uddi.PublishCommand', $command)) {
+      } else if (is('webservices.uddi.PublishCommand', $command)) {
         $c= &$this->conn['publish'];
       } else {
         return throw(new IllegalArgumentException(
