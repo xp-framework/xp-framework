@@ -52,9 +52,9 @@
         for ($j= 0, $a= sizeof($this->args); $j < $a; $j++) {
           if (is_array($this->args[$j])) {
             $args[]= 'array['.sizeof($this->args[$j]).']';
-          } elseif (is_object($this->args[$j])) {
+          } else if (is_object($this->args[$j])) {
             $args[]= get_class($this->args[$j]).'{}';
-          } elseif (is_string($this->args[$j])) {
+          } else if (is_string($this->args[$j])) {
             $display= str_replace('%', '%%', addcslashes(substr($this->args[$j], 0, min(
               (FALSE === $p= strpos($this->args[$j], "\n")) ? 0x40 : $p, 
               0x40
@@ -64,7 +64,7 @@
               $display.
               "'"
             );
-          } elseif (is_null($this->args[$j])) {
+          } else if (is_null($this->args[$j])) {
             $args[]= 'NULL';
           } else {
             $args[]= (string)$this->args[$j];
