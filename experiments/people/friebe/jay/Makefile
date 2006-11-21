@@ -60,3 +60,4 @@ convert-ports: php5-emit/ports/classes
 convert: convert-skeleton convert-ports
 	cp override/*.xp php5-emit/skeleton/lang/
 	rm php5-emit/skeleton/lang/Object.xp    # Builtin
+	rm php5-emit/skeleton/lang/Interface.xp    # Builtin
