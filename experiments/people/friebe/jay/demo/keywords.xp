@@ -1,5 +1,3 @@
-import test.Property;
-
 function test() {
   return new Property();
 }
@@ -18,6 +16,8 @@ package test {
   class Package { }
   class Array { }
 }
+
+import test.Property;
 
 echo new main.Property()->toString(); // Resolve ambiguous name Property
 echo new Function()->toString();
