@@ -5,6 +5,7 @@
 
 PHP=$(shell grep ^php4= .environment | cut -d '=' -f 2)
 SKELETON_PATH?=../../../../skeleton/
+PORTS_PATH?=../../../../ports/classes/
 
 all: usage
 
@@ -38,12 +39,22 @@ clean:
 	rm net/xp_framework/tools/vm/Parser.class.php
 
 php5-emit/skeleton:
-	mkdir php5-emit/skeleton
+	mkdir -p php5-emit/skeleton
+
+php5-emit/ports/classes:
+	mkdir -p php5-emit/ports/classes
 
 xpclass: .environment
-	@-$(PHP) migrate.php `echo $(name) | sed -e 's#$(SKELETON_PATH)##g' | sed -e 's#.class.php$$##g' | tr / .` --output=php5-emit/skeleton;
+	@-$(PHP) migrate.php `echo $(name) | sed -e 's#$(path)##g' | sed -e 's#.class.php$$##g' | tr / .` --output=$(out);
 
-convert:  php5-emit/skeleton 
+convert-skeleton:  php5-emit/skeleton
 	for i in `find $(SKELETON_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
-	  $(MAKE) xpclass name=$$i; \
+	  $(MAKE) xpclass name=$$i path=$(SKELETON_PATH) out=php5-emit/skeleton; \
 	done
+
+convert-ports: php5-emit/ports/classes 
+	for i in `find $(PORTS_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
+	  $(MAKE) xpclass name=$$i path=$(PORTS_PATH) out=php5-emit/ports/classes; \
+	done
+
+convert: convert-skeleton convert-ports
