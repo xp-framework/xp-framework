@@ -1023,28 +1023,25 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitImportList(&$node) {
-      foreach ($node->list as $import) { $this->emit($import); }
-    }
-    
-    /**
-     * Emits Imports
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitImport(&$node) {
-      $source= is_a($node->source, 'ClassReferenceNode') ? $node->source->name : $node->source;
-      $destination= $node->destination;
-    
-      // Calculate destination name if none was supplied
-      if (!$destination) {
-        $destination= substr($source, strrpos($source, PACKAGE_SEPARATOR)+ 1);
-      }
-      
-      // Register import
-      $this->context['imports'][$this->context['package']][$destination]= $source;
-    }
+      $this->bytes.= 'uses(';
 
+      $imports= '';      
+      foreach ($node->list as $import) { 
+        $source= is_a($import->source, 'ClassReferenceNode') ? $import->source->name : $import->source;
+        $destination= $import->destination;
+
+        // Calculate destination name if none was supplied
+        if (!$destination) {
+          $destination= substr($source, strrpos($source, PACKAGE_SEPARATOR)+ 1);
+        }
+
+        // Register import
+        $this->context['imports'][$this->context['package']][$destination]= $source;
+        $imports.= "'".$source.'\', ';
+      }
+      $this->bytes.= rtrim($imports, ', ').')';
+    }
+    
     /**
      * Emits Trys
      *

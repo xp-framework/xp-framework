@@ -22,7 +22,7 @@
      * @param   mixed list
      */
     function __construct($list) {
-      $this->list[]= $list;
+      $this->list= $list;
     }  
   }
 ?>
