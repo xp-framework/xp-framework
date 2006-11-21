@@ -49,7 +49,7 @@
   function uses() {
     foreach (func_get_args() as $class) {
       $fqcn= strtr($class, '.', '·');
-      if (class_exists($fqcn)) continue;
+      if (class_exists($fqcn) || interface_exists($fqcn)) continue;
       if (FALSE === include_class($fqcn)) {
         throw new Exception('*** Cannot include '.$fqcn."\n");
       }
