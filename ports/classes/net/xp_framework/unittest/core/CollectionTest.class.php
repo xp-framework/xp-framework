@@ -25,7 +25,7 @@
     /**
      * Setup method
      *
-     * @access  
+     * @access  public
      */
     function setUp() {
       $cl= &ClassLoader::getDefault();
