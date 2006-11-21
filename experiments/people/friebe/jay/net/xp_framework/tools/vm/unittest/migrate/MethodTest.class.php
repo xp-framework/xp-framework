@@ -66,6 +66,32 @@
     }
 
     /**
+     * Tests final modifier
+     *
+     * @access  public
+     */
+    #[@test]
+    function finalMethod() {
+      $this->assertMethodRewritten(
+        'public final void noop() { }', 
+        'noop', array('@model' => array('final')), '() { }'
+      );
+    }
+
+    /**
+     * Tests final and static modifier used together
+     *
+     * @access  public
+     */
+    #[@test]
+    function finalStaticMethod() {
+      $this->assertMethodRewritten(
+        'public final static void noop() { }', 
+        'noop', array('@model' => array('final', 'static')), '() { }'
+      );
+    }
+
+    /**
      * Tests abstract modifier
      *
      * @access  public
