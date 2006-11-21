@@ -561,13 +561,16 @@
           
           // XXX TODO XXX Error handling
           $emitter= &new Php5Emitter();
+          $emitter->context['classes']= $this->context['classes'];
           $emitter->emitAll($nodes);
           
           // XXX TODO XXX Error handling
           FileUtil::setContents($out, $emitter->getResult());
 
-          // XXX TODO XXX Merge rest of context with ours...
-          $this->context['classes'][$q]= $emitter->context['classes'][$q];
+          // XXX TODO Merge not only classes but rest, too...
+          foreach (array_keys($emitter->context['classes']) as $merge) {
+            $this->context['classes'][$merge]= $emitter->context['classes'][$merge];
+          }
           
           // Remember we compiled this from an external file
           $this->cat && $this->cat->info('Compiled ', $q);
