@@ -90,7 +90,7 @@
       static $special= array('parent', 'self', 'xp');
       
       if (in_array($class, $special)) return $class;
-      if ('php~' == substr($class, 0, 4)) return substr($class, 4);
+      if ('php.' == substr($class, 0, 4)) return substr($class, 4);
       if (strstr($class, '·')) return $class; // Already qualified!
 
       return strtr((strstr($class, PACKAGE_SEPARATOR) ? $class : $this->prefixedClassnameFor($class, $imports)), PACKAGE_SEPARATOR, '·');

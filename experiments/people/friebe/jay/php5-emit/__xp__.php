@@ -5,7 +5,11 @@
  */
   error_reporting(E_ALL);
   
-  define('SKELETON_PATH', dirname(__FILE__).DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR);
+  define('SKELETON_PATH', 
+    dirname(__FILE__).DIRECTORY_SEPARATOR.'skeleton'.DIRECTORY_SEPARATOR
+    .PATH_SEPARATOR.  
+    dirname(__FILE__).DIRECTORY_SEPARATOR.'ports'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR
+  );
   ini_set('include_path', '.'.PATH_SEPARATOR.SKELETON_PATH);
 
   class XPException extends Exception {
@@ -17,34 +21,38 @@
     }
   }
   
+  function include_class($class) {
+    $file= strtr($class, '·', DIRECTORY_SEPARATOR);
+    foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+      $qualified= $path.DIRECTORY_SEPARATOR.$file.'.php5';
+      if (file_exists($qualified)) {
+        if (filemtime($qualified) < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
+          echo '*** PHP5 Version older than XP... ';
+          break;
+        } else {
+          echo '*** Loading ', $file, "\n";
+          return include($qualified);
+        }
+      } else if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
+        echo '*** PHP5 Version not yet existant... ';
+        break;
+      }
+    }
+
+    // Could not find the file, compile
+    $cmd= sprintf(getenv('COMPILE_CMD'), $path.DIRECTORY_SEPARATOR.$file.'.xp');
+    echo '*** Compiling ', $file, ' using (', $cmd, ")\n";
+    passthru($cmd);
+    return include($file.'.php5');
+  }
+  
   function uses() {
     foreach (func_get_args() as $class) {
-      $file= strtr($class, '.', DIRECTORY_SEPARATOR);
       $fqcn= strtr($class, '.', '·');
-      
       if (class_exists($fqcn)) continue;
-      
-      foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
-        $qualified= $path.DIRECTORY_SEPARATOR.$file.'.php5';
-        if (file_exists($qualified)) {
-          if (filemtime($qualified) < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
-            echo '*** PHP5 Version older than XP... ';
-            break;
-          } else {
-            // echo '*** Loading ', $file, "\n";
-            require_once($qualified);
-            is_callable(array($fqcn, '__static')) && call_user_func(array($fqcn, '__static'));
-            continue 2;
-          }
-        }
+      if (FALSE === include_class($fqcn)) {
+        throw new Exception('*** Cannot include '.$fqcn."\n");
       }
-      
-      // Could not find the file, compile
-      $cmd= sprintf(getenv('COMPILE_CMD'), SKELETON_PATH.$file.'.xp');
-      echo '*** Compiling ', $file, ' using (', $cmd, ")\n";
-      passthru($cmd);
-      require_once($file.'.php5');
-      
       is_callable(array($fqcn, '__static')) && call_user_func(array($fqcn, '__static'));
     }
   }

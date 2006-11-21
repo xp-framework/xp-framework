@@ -85,7 +85,7 @@
 %nonassoc T_IS_EQUAL T_IS_NOT_EQUAL T_IS_IDENTICAL T_IS_NOT_IDENTICAL
 %nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL T_COMPARE_ARROW
 %left T_SL T_SR
-%left '+' '-' '~'
+%left '+' '-' 
 %left '*' '/' '%'
 %right '!'
 %nonassoc T_INSTANCEOF
@@ -784,6 +784,9 @@ non_empty_for_expr:
 expr_without_variable:	
 	 	T_ARRAY '(' array_pair_list ')' { 
           $$= &new ArrayDeclarationNode($3); $$->position= $yyLex->position; 
+        }
+	|	T_ARRAY T_CAST { 
+          $$= &new ArrayDeclarationNode($2); $$->position= $yyLex->position; 
         }
 	|	T_LIST '(' assignment_list ')' '=' expr {
           $$= &new ListAssignNode($3, $6); $$->position= $yyLex->position;
