@@ -6,8 +6,6 @@
 
   uses(
     'net.xp_framework.xarwriter.command.AbstractCommand',
-    'lang.archive.Archive',
-    'io.File',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NegationOfFilter',
@@ -24,7 +22,7 @@
    * @purpose  purpose
    */
   class CreateCommand extends AbstractCommand {
-
+      
     /**
      * (Insert method's description here)
      *
@@ -35,15 +33,15 @@
     function retrieveFilelist() {
       $list= array();
 
-      for ($i= 3; $i < $this->args->count; $i++) {
-        if (is_file($this->args->value($i))) {
-          $list[]= ltrim($this->args->value($i), './');
+      foreach ($this->getArguments() as $arg) {
+        if (is_file($arg)) {
+          $list[]= ltrim($arg, './');
           continue;
         }
         
         // Recursively retrieve all files from directory
-        if (is_dir($base= $this->args->value($i))) {
-          $collection= &new FileCollection($base);
+        if (is_dir($arg)) {
+          $collection= &new FileCollection($arg);
           
           // Fetch all files except 
           $iterator= &new FilteredIOCollectionIterator(
@@ -57,7 +55,7 @@
           
           while ($iterator->hasNext()) {
             $element= $iterator->next();
-            $list[]= ltrim(substr($element->getURI(), strlen(realpath(dirname($base)))), './');
+            $list[]= ltrim(substr($element->getURI(), strlen(realpath(dirname($arg)))), './');
           }
           
           continue;

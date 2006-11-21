@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.archive.Archive',
     'io.File',
     'io.FileUtil',
     'io.Folder'
@@ -34,6 +35,33 @@
       $this->options= $options;
       $this->filename= $filename;
       $this->args= $args;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @access  
+     * @param   
+     * @return  
+     */
+    function getArguments() {
+      $args= array();
+      
+      for ($i= 3; $i < $this->args->count; $i++) {
+        $a= $this->args->value($i);
+        
+        if (0 == strncmp('--', $a, 2)) continue;
+        
+        // It's a short option with a following parameter
+        if ('-' == $a{0}) {
+          $i+= 1;
+          continue;
+        }
+        
+        $args[]= $a;
+      }
+      
+      return $args;
     }
   }
 ?>
