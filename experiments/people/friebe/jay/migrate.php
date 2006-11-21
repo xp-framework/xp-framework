@@ -35,10 +35,12 @@ __;
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
   define('ST_FUNCTION_ARGS',              'function-args');
   define('ST_USES_LIST',                  'uses-list');
+  define('ST_INSTANCE_OF',                'instance-of');
   
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
   define('T_THROW',              0x2002);
+  define('T_IS_A',               0x2003);
   
   define('NS_SEPARATOR',         '.');
   
@@ -93,7 +95,8 @@ __;
         'define'      => T_DEFINE,
         'try'         => T_TRY,
         'catch'       => T_CATCH,
-        'throw'       => T_THROW
+        'throw'       => T_THROW,
+        'is_a'        => T_IS_A
       );
 
       $debug= $root->option('debug');
@@ -194,10 +197,10 @@ __;
                 $qualified= $this->current->qualifiedName();
                 $package= substr($qualified, 0, strrpos($qualified, '.'));
 
-                switch (sizeof($used)) {
-                  case 0: $uses= ''; break;
-                  case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
-                  default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
+                sort($used);
+                $uses= '';
+                foreach ($used as $classname) {
+                  $uses.= 'import '.$classname.";\n";
                 }
                 $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
               }
@@ -330,6 +333,40 @@ __;
               $brackets++;
               break;
 
+            case ST_FUNCTION_BODY.T_IS_A:
+              array_unshift($states, ST_INSTANCE_OF);
+              $instanceof= array('op' => 'expression', 'brackets' => 0);
+              $skip= TRUE;
+              break;
+
+            case ST_INSTANCE_OF.'(':
+              $instanceof['brackets']++;
+              $instanceof[$instanceof['op']].= '(';
+              break;
+
+            case ST_INSTANCE_OF.')':
+              $instanceof['brackets']--;
+              $instanceof[$instanceof['op']].= ')';
+              if (0 == $instanceof['op']) {
+                $skip= FALSE;
+                $t= $instanceof['expression'].' instanceof '.$instanceof['class'];
+                array_shift($states);
+              }
+              break;
+              
+            case ST_INSTANCE_OF.',':
+              $instanceof['op']= 'class';
+              break;
+            
+            case ST_INSTANCE_OF.T_VARIABLE:
+            case ST_INSTANCE_OF.T_STRING:
+              $instanceof[$instanceof['op']].= $t[1];
+              break;
+              
+            case ST_INSTANCE_OF.T_CONSTANT_ENCAPSED_STRING:
+              $instanceof[$instanceof['op']]= $this->names->packagedNameOf($this->names->qualifiedNameOf(trim($tokens[$i][1], '"\'')));
+              break;
+            
             case ST_FUNCTION_BODY.'&':
               if (T_WHITESPACE != $tokens[$i+ 1][0]) {  // Kill reference operator
                 $t= '';
