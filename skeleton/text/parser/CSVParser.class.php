@@ -27,7 +27,7 @@
      *
      * @access  private
      * @param   &string string string to take token of
-     * @param   char delim delimiter
+     * @param   string delim delimiter
      * @return  string token
      */
     function _strtok(&$string, $delim) {
@@ -70,7 +70,7 @@
      * line was read.
      *
      * @access  public
-     * @param   char delimiter delimiter to set
+     * @param   string delimiter delimiter to set
      */
     function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
