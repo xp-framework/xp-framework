@@ -25,7 +25,7 @@ class Complex {
   }
 
   public string toString() {
-    return $this->real.' + '.$this->imag.'i';
+    return $this->real~' + '~$this->imag~'i';
   }
 }
 // }}}

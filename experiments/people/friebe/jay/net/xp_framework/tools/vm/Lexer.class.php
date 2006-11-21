@@ -1,5 +1,5 @@
 <?php
-  define('LEXER_PACKAGE_SEPARATOR', '~');
+  define('LEXER_PACKAGE_SEPARATOR', '.');
 
   class Lexer extends Object {
     var 
@@ -114,7 +114,10 @@
           }
         }
 
-        if ($token[0] == 34) {
+        if ($token[0] == 126 && $tokens[$id+ 1][0] == '=') {
+          $return[$next]= array(TOKEN_T_CONCAT_EQUAL, '=~');
+          $id++;
+        } else if ($token[0] == 34) {    // "
 
           // Look ahead for encapsed
           $value= '';
@@ -135,9 +138,11 @@
               $classname.= $tokens[$i- 1][1].LEXER_PACKAGE_SEPARATOR;
               $i+= 2;
             }
-            $return[$next]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
-            $token = $return[$next];
-            $id= $i- 1;  // Skip tokens
+            if (T_STRING == $tokens[$i- 1][0]) {
+              $return[$next]= array(TOKEN_T_CLASSNAME, $classname.$tokens[$i- 1][1]);
+              $token = $return[$next];
+              $id= $i- 1;  // Skip tokens
+            }
           } else if ($key = array_search(strtolower($token[1]), $this->tokenMap)) {
             $return[$next]= array($key, $token[1]);
           }
@@ -154,7 +159,7 @@
           $offset+= strlen($return[$next][1]);
         }
 
-        // DEBUG Console::writeLine('> ', addcslashes(implode('|', $return[$next]), "\0..\17"));
+        // Console::writeLine('> ', addcslashes(implode('|', $return[$next]), "\0..\17"));
         $next++;
       }
       return $return;

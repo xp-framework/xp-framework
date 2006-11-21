@@ -20,7 +20,7 @@
      */
     #[@test]
     function unassignedVariableCanBecomeAnything() {
-      foreach (array('NULL', '1', '1.0', 'array()', '"Hello"', 'new xp~lang~Object();') as $init) {
+      foreach (array('NULL', '1', '1.0', 'array()', '"Hello"', 'new xp.lang.Object();') as $init) {
         $this->emit('$x= '.$init.';');
       }
     }

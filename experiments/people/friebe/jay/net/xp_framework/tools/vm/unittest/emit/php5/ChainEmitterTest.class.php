@@ -23,7 +23,7 @@
     function chainedMethodCalls() {
       $this->assertSourcecodeEquals(
         '$o= new xp·lang·Object(); echo $o->getClass()->getName();',
-        $this->emit('$o= new xp~lang~Object(); echo $o->getClass()->getName();')
+        $this->emit('$o= new xp.lang.Object(); echo $o->getClass()->getName();')
       );
     }
 
@@ -37,7 +37,7 @@
     function chainedMethodCallsAfterConstructor() {
       $this->assertSourcecodeEquals(
         'echo xp::create(new xp·lang·Object())->getClass()->getName();',
-        $this->emit('echo new xp~lang~Object()->getClass()->getName();')
+        $this->emit('echo new xp.lang.Object()->getClass()->getName();')
       );
     }
 
@@ -50,7 +50,7 @@
     function chainedArrayOffsetAfterMethodCall() {
       $this->assertSourcecodeEquals(
         'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0];',
-        $this->emit('echo new xp~lang~Object()->getClass()->getName()[0];')
+        $this->emit('echo new xp.lang.Object()->getClass()->getName()[0];')
       );
     }
 
@@ -63,7 +63,7 @@
     function chainedArrayOffsetsAfterMethodCall() {
       $this->assertSourcecodeEquals(
         'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0][0];',
-        $this->emit('echo new xp~lang~Object()->getClass()->getName()[0][0];')
+        $this->emit('echo new xp.lang.Object()->getClass()->getName()[0][0];')
       );
     }
 

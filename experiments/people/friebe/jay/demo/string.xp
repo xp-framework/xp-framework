@@ -5,8 +5,8 @@ class String {
     $this->buffer= $initial;
   }
   
-  public static operator . (String $s, string $add) {
-    return new String($s->buffer.$add);
+  public static operator ~ (String $s, string $add) {
+    return new String($s->buffer~$add);
   }
   
   public string toString() {
@@ -16,6 +16,6 @@ class String {
 
 
 $s= new String('Hello');
-$s.= ' World';
+$s~= ' World';
 
 echo $s->toString(), "\n";

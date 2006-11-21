@@ -35,10 +35,12 @@ __;
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
   define('ST_FUNCTION_ARGS',              'function-args');
   define('ST_USES_LIST',                  'uses-list');
-
+  
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
   define('T_THROW',              0x2002);
+  
+  define('NS_SEPARATOR',         '.');
   
   // {{{ MigrationNameMapping
   //     Same as NameMapping, but
@@ -96,6 +98,7 @@ __;
 
       $debug= $root->option('debug');
       $this->names= &new MigrationNameMapping();
+      $this->names->setNamespaceSeparator(NS_SEPARATOR);
       
       // Build mapping for built-in-classes
       Console::writeLine('===> Starting');
@@ -122,12 +125,12 @@ __;
         $this->current->usedClasses->rewind();
         while ($this->current->usedClasses->hasNext()) {
           $class= $this->current->usedClasses->next();
-          $used[]= strtr($this->names->packagedNameOf($class->qualifiedName()), '~', '.');
+          $used[]= strtr($this->names->packagedNameOf($class->qualifiedName()), NS_SEPARATOR, '.');
         }
         $this->current->interfaces->rewind();
         while ($this->current->interfaces->hasNext()) {
           $interface= $this->current->interfaces->next();
-          $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), '~', '.');
+          $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), NS_SEPARATOR, '.');
         }
         
         // Tokenize file
@@ -182,7 +185,7 @@ __;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
               }
               break;
 
@@ -196,7 +199,7 @@ __;
                   case 1: case 2: case 3: $uses= 'uses(\''.implode('\', \'', $used).'\');'; break;
                   default: $uses.= "uses(\n  '".implode("',\n  '", $used)."'\n);"; break;
                 }
-                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->prefixFor($package).strtr($package, '.', '~')." {\n\n  ";
+                $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
               }
               array_unshift($states, ST_CLASS);
               $this->current->isInterface() && $t[1]= 'interface';
@@ -208,7 +211,7 @@ __;
                 $this->current->interfaces->rewind();
                 while ($this->current->interfaces->hasNext()) {
                   $interface= $this->current->interfaces->next();
-                  $out.= strtr($this->names->packagedNameOf($interface->qualifiedName()), '.', '~').', ';
+                  $out.= $this->names->packagedNameOf($interface->qualifiedName()).', ';
                 }
                 $out= substr($out, 0, -2).' ';
               }
@@ -314,7 +317,7 @@ __;
               if ($method && ($throws= $method->tags('throws'))) {
                 $t= 'throws ';
                 foreach ($throws as $thrown) {
-                  $t.= strtr($thrown->exception->qualifiedName(), '.', '~').', ';
+                  $t.= strtr($thrown->exception->qualifiedName(), '.', NS_SEPARATOR).', ';
                 }
                 $t= substr($t, 0, -2).' {';
               }
@@ -395,15 +398,6 @@ __;
               }
               break;
             
-            case ST_FUNCTION_BODY.T_CONSTANT_ENCAPSED_STRING:
-              if (preg_match('/^\'([a-z_\.]+)\.([A-Z][a-zA-Z]+)\'$/', $t[1], $matches)) {   // Looks like a fully-qualified XP class name
-                $qualified= $matches[1].'.'.$matches[2];
-                if ($classloader->findClass($qualified)) {
-                  $t[1]= "'".strtr($this->names->prefixFor($matches[1]), '~', '.').$qualified."'";
-                }
-              }
-              break;
-
             case ST_LOOKING_FOR_CATCH.T_CATCH:
               $t[1]= sprintf(                               // Reassemble and advance
                 'catch (%s %s)',
@@ -434,6 +428,15 @@ __;
               array_shift($states);
               $t= '';
               break;
+
+            case ST_FUNCTION_BODY.'.':
+              $t= '~';
+              break;
+            
+            case ST_FUNCTION_BODY.T_CONCAT_EQUAL:
+              $t[1]= '~=';
+              break;
+            
           }
 
           $skip || $out.= is_array($t) ? $t[1] : $t;
@@ -441,7 +444,7 @@ __;
         
         if ($output) {
           try(); {
-            $target= &new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), '~', DIRECTORY_SEPARATOR).'.xp');
+            $target= &new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), NS_SEPARATOR, DIRECTORY_SEPARATOR).'.xp');
             $f= &new Folder($target->getPath());
             $f->exists() || $f->create();
             FileUtil::setContents($target, $out);

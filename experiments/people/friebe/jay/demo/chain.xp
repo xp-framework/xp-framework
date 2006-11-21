@@ -6,7 +6,7 @@ class StringBuffer {
   }
   
   public self append(string $s) {
-    $this->intern.= $s;
+    $this->intern~= $s;
     return $this;
   }
 

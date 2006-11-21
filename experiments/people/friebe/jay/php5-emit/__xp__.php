@@ -25,13 +25,14 @@
       if (class_exists($fqcn)) continue;
       
       foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
-        if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.php5')) {
-          if (filemtime($path.DIRECTORY_SEPARATOR.$file.'.php5') < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
+        $qualified= $path.DIRECTORY_SEPARATOR.$file.'.php5';
+        if (file_exists($qualified)) {
+          if (filemtime($qualified) < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
             echo '*** PHP5 Version older than XP... ';
             break;
           } else {
             // echo '*** Loading ', $file, "\n";
-            require_once($file.'.php5');
+            require_once($qualified);
             is_callable(array($fqcn, '__static')) && call_user_func(array($fqcn, '__static'));
             continue 2;
           }
@@ -54,23 +55,23 @@
   
   final class null {
     public function __construct() { 
-      if (xp::$null) throw xp::exception(new xp·lang·IllegalAccessException('New'));
+      if (xp::$null) throw xp::exception(new lang·IllegalAccessException('New'));
     }
 
     public function __set($prop, $value) { 
-      throw xp::exception(new xp·lang·NullPointerException('Set: '.$prop));
+      throw xp::exception(new lang·NullPointerException('Set: '.$prop));
     }
 
     public function __get($prop) { 
-      throw xp::exception(new xp·lang·NullPointerException('Get: '.$prop));
+      throw xp::exception(new lang·NullPointerException('Get: '.$prop));
     }
 
     public function __call($method, $args) { 
-      throw xp::exception(new xp·lang·NullPointerException('Invoke: '.$method));
+      throw xp::exception(new lang·NullPointerException('Invoke: '.$method));
     }
 
     public function __clone() { 
-      throw xp::exception(new xp·lang·NullPointerException('Clone: '.$method));
+      throw xp::exception(new lang·NullPointerException('Clone: '.$method));
     }
     
     public function __toString() {
@@ -127,7 +128,7 @@
     public static function stringOf($arg, $indent= '') {
       static $protect= array();
 
-      if ($arg instanceof xp·lang·Object && !isset($arg->__id)) {
+      if ($arg instanceof lang·Object && !isset($arg->__id)) {
         $arg->__id= microtime();
       }
       
@@ -141,7 +142,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceof xp·lang·Object && !isset($protect[$arg->__id])) {
+      } else if ($arg instanceof lang·Object && !isset($protect[$arg->__id])) {
         $protect[$arg->__id]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->__id]);
@@ -173,7 +174,7 @@
     }
 
     public static function typeOf($expr) {
-      if ($expr instanceof xp·lang·Object) {
+      if ($expr instanceof lang·Object) {
         return $expr->getClassName();
       } else if ($expr instanceof null) {
         return '<null>';
@@ -203,7 +204,7 @@
       }
     }
 
-    public static function exception(xp·lang·Throwable $e) {
+    public static function exception(lang·Throwable $e) {
       XPException::$instance->cause= $e;
       return XPException::$instance;
     }
@@ -214,7 +215,7 @@
       return $o; 
     }
 
-    public static function create(xp·lang·Object $o) { 
+    public static function create(lang·Object $o) { 
       return $o; 
     }
 
@@ -222,14 +223,14 @@
       static $c= 0;
       
       $name= $class.($c++);
-      eval('class '.$name.(interface_exists($class) ? ' extends xp·lang·Object implements ' : ' extends ').$class.$bytes);
+      eval('class '.$name.(interface_exists($class) ? ' extends lang·Object implements ' : ' extends ').$class.$bytes);
 
       $class= new ReflectionClass($name);
       return $class->getConstructor() ? $class->newInstanceArgs($args) : $class->newInstance();
     }
     
     public static function handleexception($e) {
-      if ($e instanceof XPException && $e->cause instanceof xp·lang·SystemExit) {
+      if ($e instanceof XPException && $e->cause instanceof lang·SystemExit) {
         exit($e->cause->message);
       }
       echo 'Unhandled ', $e;
@@ -264,19 +265,19 @@
   
   // {{{ Builtin classes
   uses(
-    'xp.lang.Error',
-    'xp.lang.Exception',
-    'xp.lang.XPClass',
-    'xp.lang.NullPointerException',
-    'xp.lang.IllegalAccessException',
-    'xp.lang.IllegalArgumentException',
-    'xp.lang.IllegalStateException',
-    'xp.lang.FormatException',
-    'xp.lang.ClassLoader',
-    'xp.lang.SystemExit'
+    'lang.Error',
+    'lang.Exception',
+    'lang.XPClass',
+    'lang.NullPointerException',
+    'lang.IllegalAccessException',
+    'lang.IllegalArgumentException',
+    'lang.IllegalStateException',
+    'lang.FormatException',
+    'lang.ClassLoader',
+    'lang.SystemExit'
   );
   
-  class xp·lang·Object {
+  class lang·Object {
     public $__id;
 
     public function hashCode() {
@@ -295,7 +296,7 @@
     }
 
     public function getClass() {
-      $c= new xp·lang·XPClass($this);
+      $c= new lang·XPClass($this);
       return $c;
     }
  

@@ -47,8 +47,8 @@
     #[@test]
     function fqcnCast() {
       $this->assertSourcecodeEquals(
-        '$s= xp::cast(\'xp~lang~Object\', $o->getClass());',
-        $this->emit('$s= (xp~lang~Object)$o->getClass();')
+        '$s= xp::cast(\'xp.lang.Object\', $o->getClass());',
+        $this->emit('$s= (xp.lang.Object)$o->getClass();')
       );
     }
   }

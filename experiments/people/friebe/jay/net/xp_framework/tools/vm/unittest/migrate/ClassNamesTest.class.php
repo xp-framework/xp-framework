@@ -26,6 +26,7 @@
     function setUp() {
       $this->names= &new NameMapping();
       $this->names->addMapping('date', 'util.Date');
+      $this->names->setNamespaceSeparator('.');
     }
 
     /**
@@ -44,39 +45,6 @@
     }
 
     /**
-     * Tests everything except (com.*, net.*, org.*, ch.*) gets prefixed with "xp"
-     *
-     * @access  public
-     */
-    #[@test]
-    function xpPrefixForFramework() {
-      $this->assertEquals('xp~', $this->names->prefixFor('lang'));
-    }
-
-    /**
-     * Tests everything except (com.*, net.*, org.*, ch.*) gets prefixed with "xp"
-     *
-     * @access  public
-     */
-    #[@test]
-    function xpPrefixForFrameworkClass() {
-      $this->assertEquals(
-        'xp~lang~XPClass', 
-        $this->names->packagedNameOf('lang.XPClass')
-      );
-    }
-
-    /**
-     * Tests com.* package does not get prefixed
-     *
-     * @access  public
-     */
-    #[@test]
-    function noPrefixForXpFrameworkPackage() {
-      $this->assertEquals('', $this->names->prefixFor('net.xp_framework.unittest'));
-    }
-
-    /**
      * Tests net.* does not get prefixed
      *
      * @access  public
@@ -84,19 +52,9 @@
     #[@test]
     function noPrefixForXpFrameworkClasses() {
       $this->assertEquals(
-        'net~xp_framework~unittest~DemoTest', 
+        'net.xp_framework.unittest.DemoTest', 
         $this->names->packagedNameOf('net.xp_framework.unittest.DemoTest')
       );
-    }
-
-    /**
-     * Tests com.* package does not get prefixed
-     *
-     * @access  public
-     */
-    #[@test]
-    function noPrefixForGoogleContributionPackage() {
-      $this->assertEquals('', $this->names->prefixFor('com.google.soap.search'));
     }
 
     /**
@@ -107,7 +65,7 @@
     #[@test]
     function noPrefixForGoogleContributionClasses() {
       $this->assertEquals(
-        'com~google~soap~search~GoogleSearchClient', 
+        'com.google.soap.search.GoogleSearchClient', 
         $this->names->packagedNameOf('com.google.soap.search.GoogleSearchClient')
       );
     }
@@ -120,7 +78,7 @@
     #[@test]
     function nameOfDateClass() {
       $this->assertEquals(
-        'xp~util~Date', 
+        'util.Date', 
         $this->names->packagedNameOf($this->names->qualifiedNameOf('Date'))
       );
     }

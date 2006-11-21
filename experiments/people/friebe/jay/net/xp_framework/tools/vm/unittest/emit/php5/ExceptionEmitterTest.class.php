@@ -22,7 +22,7 @@
     function throwGetsWrapped() {
       $this->assertSourcecodeEquals(
         'throw xp::exception(new xp·lang·IllegalArgumentException(\'Blam!\'));',
-        $this->emit('throw new xp~lang~IllegalArgumentException("Blam!");')
+        $this->emit('throw new xp.lang.IllegalArgumentException("Blam!");')
       );
     }
 
@@ -44,7 +44,7 @@
         } };'),
         $this->emit('try {
           echo 1;
-        } catch (xp~lang~Exception $e) {
+        } catch (xp.lang.Exception $e) {
           $e->printStackTrace();
         }')
       );
@@ -70,7 +70,7 @@
         echo 2; ;'),
         $this->emit('try {
           echo 1;
-        } catch (xp~lang~Exception $e) {
+        } catch (xp.lang.Exception $e) {
           $e->printStackTrace();
         } finally {
           echo 2;
@@ -140,7 +140,7 @@
           $f= new FileReader($file);
           try {
             $f->open();
-          } catch (xp~lang~Exception $e) {
+          } catch (xp.lang.Exception $e) {
             $e->printStackTrace();
             return FALSE;
           } finally {
@@ -199,9 +199,9 @@
         } };'),
         $this->emit('try {
           echo 1;
-        } catch (xp~lang~IllegalArgumentException $e) {
+        } catch (xp.lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (xp~lang~Exception $e) {
+        } catch (xp.lang.Exception $e) {
           $e->printStackTrace();
         }')
       );

@@ -16,7 +16,18 @@
         'parent' => 'parent',
         'self' => 'self',
       ),
-      $current= '';
+      $current= '',
+      $namespaceSeparator= '.';
+    
+    /**
+     * Set namespace separator
+     *
+     * @access  public
+     * @param   string s new value
+     */
+    function setNamespaceSeparator($s) {
+      $this->namespaceSeparator= $s;
+    }
     
     /**
      * Add a mapping
@@ -69,19 +80,6 @@
     }
 
     /**
-     * Retrieves prefix for a given package
-     *
-     * @access  public
-     * @param   string package
-     * @return  string
-     */
-    function prefixFor($package) {
-      static $ports= array('com', 'net', 'ch', 'org', 'us');
-      
-      return (in_array(substr($package, 0, strpos($package, '.')), $ports) ? '' : 'xp~');
-    }
-    
-    /**
      * Retrieves packaged name of a given qualified name
      *
      * @access  public
@@ -90,7 +88,7 @@
      */
     function packagedNameOf($q) {
       if (strstr($q, '.')) {
-        $packaged= $this->prefixFor($q).strtr($q, '.', '~');
+        $packaged= strtr($q, '.', $this->namespaceSeparator);
       } else {
         $packaged= $q;
       }

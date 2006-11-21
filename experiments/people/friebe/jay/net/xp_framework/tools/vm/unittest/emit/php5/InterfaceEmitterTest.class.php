@@ -35,7 +35,7 @@
     function interfaceInPackage() {
       $this->assertSourcecodeEquals(
         'interface de·thekid·Traceable{};',
-        $this->emit('package de~thekid { interface Traceable { } }')
+        $this->emit('package de.thekid { interface Traceable { } }')
       );
     }
 
@@ -48,7 +48,7 @@
     function interfaceDeclarationsAreOmitted() {
       $this->assertSourcecodeEquals(
         'interface de·thekid·Traceable{};',
-        $this->emit('package de~thekid { interface Traceable { public void setTrace($cat); } }')
+        $this->emit('package de.thekid { interface Traceable { public void setTrace($cat); } }')
       );
     }
 

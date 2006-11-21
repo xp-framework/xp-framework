@@ -85,7 +85,7 @@
 %nonassoc T_IS_EQUAL T_IS_NOT_EQUAL T_IS_IDENTICAL T_IS_NOT_IDENTICAL
 %nonassoc '<' T_IS_SMALLER_OR_EQUAL '>' T_IS_GREATER_OR_EQUAL T_COMPARE_ARROW
 %left T_SL T_SR
-%left '+' '-' '.'
+%left '+' '-' '~'
 %left '*' '/' '%'
 %right '!'
 %nonassoc T_INSTANCEOF
@@ -288,7 +288,7 @@ statement:
 	|	expr ';' { 
           // Intentionally empty
         }
-	|	T_FOREACH '(' variable T_AS variable foreach_optional_arg ')' statement {
+	|	T_FOREACH '(' expr T_AS variable foreach_optional_arg ')' statement {
           $$= &new ForeachNode($3, $5, $6, is_array($8) ? $8 : array($8)); $$->position= $yyLex->position;
         }
 	|	';'		/* empty statement */
@@ -701,7 +701,7 @@ operator_token:
 	|	'/'								{ $$= '/'; }
 	|	'%'								{ $$= '%'; }
 	|	'!'								{ $$= '!'; }
-	|	'.'								{ $$= '.'; }
+	|	'~'								{ $$= '~'; }
 	|	T_INC							{ $$= '++'; }
 	|	T_DEC							{ $$= '--'; }
 	|	T_COMPARE						{ $$= '__compare'; }
@@ -786,7 +786,7 @@ expr_without_variable:
           $$= &new ArrayDeclarationNode($3); $$->position= $yyLex->position; 
         }
 	|	T_LIST '(' assignment_list ')' '=' expr {
-          $$= &new ListAssignNode($2, $5); $$->position= $yyLex->position;
+          $$= &new ListAssignNode($3, $6); $$->position= $yyLex->position;
         }
 	|	variable '=' expr {
           $$= &new AssignNode($1, $3); $$->position= $yyLex->position;
@@ -810,7 +810,7 @@ expr_without_variable:
           $$= &new BinaryAssignNode($1, $3, '/'); $$->position= $yyLex->position;
         }
 	|	variable T_CONCAT_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '.'); $$->position= $yyLex->position;
+          $$= &new BinaryAssignNode($1, $3, '~'); $$->position= $yyLex->position;
         }
 	|	variable T_MOD_EQUAL expr {
           $$= &new BinaryAssignNode($1, $3, '%'); $$->position= $yyLex->position;
@@ -857,8 +857,8 @@ expr_without_variable:
 	|	expr '^' expr {
           $$= &new BinaryNode($1, $3, '^'); $$->position= $yyLex->position;
         }
-	|	expr '.' expr {
-          $$= &new BinaryNode($1, $3, '.'); $$->position= $yyLex->position;
+	|	expr '~' expr {
+          $$= &new BinaryNode($1, $3, '~'); $$->position= $yyLex->position;
         }
 	|	expr '+' expr {
           $$= &new BinaryNode($1, $3, '+'); $$->position= $yyLex->position;
@@ -1184,6 +1184,9 @@ object_dim_list:
 
 variable_name:
 		T_STRING		{ /* $$= $1; */ }
+    |   '{' expr '}' {
+          $$= $2;
+        }
 ;
 
 assignment_list:

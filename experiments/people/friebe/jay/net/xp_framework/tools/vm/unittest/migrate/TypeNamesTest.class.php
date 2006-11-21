@@ -26,6 +26,7 @@
     function setUp() {
       $this->names= &new NameMapping();
       $this->names->addMapping('date', 'util.Date');
+      $this->names->setNamespaceSeparator('.');
     }
 
     /**
@@ -68,8 +69,8 @@
      */
     #[@test]
     function dateType() {
-      $this->assertEquals('xp~util~Date', $this->names->forType('Date'));
-      $this->assertEquals('xp~util~Date', $this->names->forType('util.Date'));
+      $this->assertEquals('util.Date', $this->names->forType('Date'));
+      $this->assertEquals('util.Date', $this->names->forType('util.Date'));
     }
 
     /**
@@ -99,7 +100,7 @@
      */
     #[@test]
     function genericClass() {
-      $this->assertEquals('xp~lang~XPClass', $this->names->forType('lang.XPClass<util.Date>'));
+      $this->assertEquals('lang.XPClass', $this->names->forType('lang.XPClass<util.Date>'));
     }
 
     /**
@@ -119,7 +120,7 @@
      */
     #[@test]
     function typedArrays() {
-      $this->assertEquals('xp~util~Date[]', $this->names->forType('Date[]'));
+      $this->assertEquals('util.Date[]', $this->names->forType('Date[]'));
     }
 
     /**

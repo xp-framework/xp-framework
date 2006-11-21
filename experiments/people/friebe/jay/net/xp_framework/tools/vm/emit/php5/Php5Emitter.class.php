@@ -9,7 +9,7 @@
     'net.xp_framework.tools.vm.util.Modifiers'
   );
   
-  define('PACKAGE_SEPARATOR', '~');
+  define('PACKAGE_SEPARATOR', '.');
   define('DEFAULT_PACKAGE',   'main'.PACKAGE_SEPARATOR);
  
   /**
@@ -26,7 +26,7 @@
         '+' => 'plus',
         '-' => 'minus',
         '/' => 'divide',
-        '.' => 'concat'
+        '~' => 'concat'
       );
       
     /**
@@ -45,23 +45,23 @@
       
       // Builtin classes
       $this->context['classes']= array(
-        'xp·lang·Object'    => array(
+        'lang·Object'    => array(
           'toString'        => TRUE,
           'getClassName'    => TRUE,
         ),
-        'xp·lang·Throwable' => array(
+        'lang·Throwable' => array(
           '__construct'     => TRUE,
           'toString'        => TRUE,    // overwritten
           'getClassName'    => TRUE,    // inherited
         ),
       );
-      $this->context['types']['xp·lang·Object::getClassName']= 'string';
-      $this->context['types']['xp·lang·Object::toString']= 'string';
-      $this->context['classes']['xp·lang·Exception']= $this->context['classes']['xp·lang·Throwable'];
-      $this->context['classes']['xp·lang·SystemExit']= $this->context['classes']['xp·lang·Throwable'];
-      $this->context['classes']['xp·lang·IllegalAccessException']= $this->context['classes']['xp·lang·Throwable'];
-      $this->context['classes']['xp·lang·NullPointerException']= $this->context['classes']['xp·lang·Throwable'];
-      $this->context['classes']['xp·io·IOException']= $this->context['classes']['xp·lang·Throwable'];
+      $this->context['types']['lang·Object::getClassName']= 'string';
+      $this->context['types']['lang·Object::toString']= 'string';
+      $this->context['classes']['lang·Exception']= $this->context['classes']['lang·Throwable'];
+      $this->context['classes']['lang·SystemExit']= $this->context['classes']['lang·Throwable'];
+      $this->context['classes']['lang·IllegalAccessException']= $this->context['classes']['lang·Throwable'];
+      $this->context['classes']['lang·NullPointerException']= $this->context['classes']['lang·Throwable'];
+      $this->context['classes']['io·IOException']= $this->context['classes']['lang·Throwable'];
     }
 
     /**
@@ -580,7 +580,7 @@
       $this->context['classes'][$this->context['class']]= array();
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
-      $extends= $this->qualifiedName($node->extends ? $node->extends : 'xp~lang~Object');
+      $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
 
       $this->emitAnnotations($node->annotations);
       
@@ -644,7 +644,7 @@
           function __get($name) {
             if (!isset(self::$__properties[$name])) die(\'Read of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][0]) {
-              throw xp::exception(new xp·lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
+              throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
             } else if (\'$\' == self::$__properties[$name][0][0]) {
               return $this->{substr(self::$__properties[$name][0], 1)};
             } else {
@@ -655,7 +655,7 @@
           function __set($name, $value) {
             if (!isset(self::$__properties[$name])) die(\'Write of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][1]) {
-              throw xp::exception(new xp·lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
+              throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
             } else if (\'$\' == self::$__properties[$name][1][0]) {
               $this->{substr(self::$__properties[$name][1], 1)}= $value;
             } else {
@@ -720,7 +720,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitExitFunctionCall(&$node) {
-      $this->bytes.= 'throw xp::exception(new xp·lang·SystemExit(';
+      $this->bytes.= 'throw xp::exception(new lang·SystemExit(';
       switch (sizeof($node->arguments)) {
         case 0: break;
         case 1: $this->emit($node->arguments[0]); break;
@@ -823,6 +823,10 @@
         $this->emit($chain);
       }
     }
+    
+    function mappedOperator($op) {
+      return ('~' == $op{0}) ? '.' : $op;
+    }
 
     /**
      * Emits Binarys
@@ -846,7 +850,7 @@
       
       // Regular operator
       $this->emit($node->left);
-      $this->bytes.= $node->operator;
+      $this->bytes.= $this->mappedOperator($node->operator);
       $this->emit($node->right);
     }
 
@@ -909,7 +913,7 @@
         return $this->emit($m);
       }
 
-      $this->bytes.= $node->operator.'= ';
+      $this->bytes.= $this->mappedOperator($node->operator).'= ';
       $this->emit($node->expression);
 
       $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($node->expression));

@@ -74,7 +74,7 @@
     function concat() {
       $this->assertSourcecodeEquals(
         '$a.$b;',
-        $this->emit('$a.$b;')
+        $this->emit('$a~$b;')
       );
     }
 
@@ -152,7 +152,7 @@
     function concatAssign() {
       $this->assertSourcecodeEquals(
         '$a.= $b;',
-        $this->emit('$a.= $b;')
+        $this->emit('$a~= $b;')
       );
     }
 

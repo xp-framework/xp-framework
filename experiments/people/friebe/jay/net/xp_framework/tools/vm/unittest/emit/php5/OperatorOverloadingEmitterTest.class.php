@@ -35,12 +35,12 @@
         $this->emit('class String { 
           protected $buffer;
 
-          public static operator . (String $a, string $b) {
-            return new String($a->buffer.$b);
+          public static operator ~ (String $a, string $b) {
+            return new String($a->buffer~$b);
           }
 
           public static void main(){
-            echo new String("Hello")."!";
+            echo new String("Hello")~"!";
           }
         }')
       );

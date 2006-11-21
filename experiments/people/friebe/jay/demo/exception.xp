@@ -1,5 +1,5 @@
 package test {
-  class Exception extends xp~lang~Exception {
+  class Exception extends xp.lang.Exception {
     protected $msg;
 
     public __construct($msg) {
@@ -7,11 +7,11 @@ package test {
     }
 
     public string toString() {
-      return 'Exception '.$this->msg;
+      return 'Exception '~$this->msg;
     }
   }
 
-  class IllegalException extends xp~lang~Exception {
+  class IllegalException extends xp.lang.Exception {
     protected $msg;
 
     public __construct($msg) {
@@ -19,7 +19,7 @@ package test {
     }
 
     public string toString() {
-      return 'Exception '.$this->msg;
+      return 'Exception '~$this->msg;
     }
   }
 }
@@ -28,20 +28,20 @@ try {
 
   try {
     echo "Before exception.\n";
-    throw new test~Exception("Foo");
+    throw new test.Exception("Foo");
     echo "May not be reached.\n";
-  } catch (test~Exception $e) {
+  } catch (test.Exception $e) {
     echo "Caught first Exception.\n";
-    throw(new test~IllegalException("Thrown in catch.\n"));
+    throw(new test.IllegalException("Thrown in catch.\n"));
     echo $e->toString(), "\n";
-  } catch (test~IllegalException $e) {
+  } catch (test.IllegalException $e) {
     echo "May not be called.\n";
     echo $e->toString(), "\n";
   } finally {
     echo "Finally executed in inner try/catch.\n";
   }
   
-} catch(test~IllegalException $e) {
+} catch(test.IllegalException $e) {
   echo "Ok, caught exception generated in catch.\n";
   echo $e->toString();
 } finally {
@@ -52,10 +52,10 @@ echo "\n\n";
 
 try {
   echo "Throwing new exception.\n";
-  throw new test~Exception("Exception.");
-} catch(test~IllegalException $e) {
+  throw new test.Exception("Exception.");
+} catch(test.IllegalException $e) {
   echo "Caught wrong exception!\n";
-} catch(test~Exception $e) {
+} catch(test.Exception $e) {
   echo "Caught correct exception.\n";
 } finally {
   echo "Finally executed.\n";

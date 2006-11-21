@@ -1,7 +1,7 @@
-import xp~lang~IllegalArgumentException, xp~util~DateFormatException;
+import xp.lang.IllegalArgumentException, xp.util.DateFormatException;
 
-package de~thekid { 
-  class Date extends xp~lang~Object {
+package de.thekid { 
+  class Date extends xp.lang.Object {
     private $stamp= 0;
     protected static $tz= array(
       'GMT' => 0
@@ -49,7 +49,7 @@ try {
 } catch (DateFormatException $e) {
   echo $e;
   exit;
-} catch (xp~lang~Exception $e) {
+} catch (xp.lang.Exception $e) {
   echo $e;
   exit;
 }
