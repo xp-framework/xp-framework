@@ -12,11 +12,9 @@
   );
   
   /**
-   * (Insert class' description here)
+   * Base command class
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Base command
    */
   class AbstractCommand extends Object {
     var
@@ -25,11 +23,12 @@
       $args       = array();
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int options
+     * @param   string filename
+     * @param   util.cmd.ParamString args
      */
     function __construct($options, $filename, $args) {
       $this->options= $options;
@@ -38,11 +37,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve file arguments from commandline
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string[]
      */
     function getArguments() {
       $args= array();

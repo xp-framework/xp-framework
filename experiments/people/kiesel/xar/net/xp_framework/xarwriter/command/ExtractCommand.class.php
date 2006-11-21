@@ -9,20 +9,19 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Extract command
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Extract
    */
   class ExtractCommand extends AbstractCommand {
 
     /**
-     * (Insert method's description here)
+     * Filters entries
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string entry
+     * @param   string[] list
+     * @return  bool
      */
     function _filter($entry, $list) {
     
@@ -44,11 +43,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Execute action
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function perform() {
       $archive= &new Archive(new File($this->filename));

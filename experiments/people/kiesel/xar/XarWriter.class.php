@@ -19,11 +19,12 @@
       $args     = array();
       
     /**
-     * (Insert method's description here)
+     * Main
      *
-     * @access  
-     * @param   
-     * @return  
+     * @model   static
+     * @access  public
+     * @param   util.cmd.ParamString args
+     * @return  int
      */
     function main($args) {
       $xar= &new XarWriter();
@@ -47,11 +48,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Parses the command line
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @throws  lang.IllegalArgumentException in case of illegal command line parameters
      */
     function parseParameters() {
       $pos= 1;
@@ -73,11 +73,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Executes the given command
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function executeCommand() {
       try(); {

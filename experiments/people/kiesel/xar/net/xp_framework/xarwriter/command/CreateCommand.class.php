@@ -15,20 +15,17 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Create command
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Create
    */
   class CreateCommand extends AbstractCommand {
       
     /**
-     * (Insert method's description here)
+     * Retrieve files from filesystem
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  string[]
      */
     function retrieveFilelist() {
       $list= array();
@@ -66,11 +63,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Execute action
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @return  int
      */
     function perform() {
       $archive= &new Archive(new File($this->filename));
