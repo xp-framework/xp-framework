@@ -35,20 +35,6 @@ Usage:
 php migrate.php <<fully_qualified_class_name>>
 __;
 
-  define('ST_LOOKING_FOR_CLASS',          'looking:class');
-  define('ST_LOOKING_FOR_TRY_BRACKET',    'looking:trybracket');
-  define('ST_LOOKING_FOR_THROW',          'looking:throw');
-  define('ST_LOOKING_FOR_INTERFACES_END', 'looking:iface_end');
-  define('ST_LOOKING_FOR_CATCH',          'looking:catch');
-  define('ST_FUNCTION_ARGS',              'function-args');
-  define('ST_USES_LIST',                  'uses-list');
-  define('ST_INSTANCE_OF',                'instance-of');
-  
-  define('T_TRY',                0x2000);
-  define('T_CATCH',              0x2001);
-  define('T_THROW',              0x2002);
-  define('T_IS_A',               0x2003);
-  
   define('NS_SEPARATOR',         '.');
   
   // {{{ MigrationNameMapping
