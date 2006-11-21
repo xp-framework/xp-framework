@@ -119,7 +119,7 @@
      * @return  bool success
      */
     function swap($k, $j) {
-      if (!isset($this->_hash[$k]) or !isset($this->_hash[$j])) {
+      if (!isset($this->_hash[$k]) || !isset($this->_hash[$j])) {
         return FALSE;
       }
       $t= $this->_hash[$k];

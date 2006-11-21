@@ -111,7 +111,7 @@
       // Is there a more intelligent way of doing this?
       $diff= floor(($e - $s) / CAL_SEC_DAY);
       for ($i= $s; $i <= $e; $i+= CAL_SEC_DAY) {
-        $diff-= ((date('w', $i)+ 6) % 7 > 4 or isset($holidays[$i]));
+        $diff-= ((date('w', $i)+ 6) % 7 > 4 || isset($holidays[$i]));
       }
       
       return $diff+ 1;
