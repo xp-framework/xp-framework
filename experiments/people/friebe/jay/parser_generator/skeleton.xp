@@ -115,9 +115,10 @@
 .                  case 0: return $this->error(
 .                    E_PARSE, 
 .                    sprintf(
-.                      'Syntax error at %s, line %d: Unexpected %s',
+.                      'Syntax error at %s, line %d (offset %d): Unexpected %s',
 .                      $yyLex->fileName,
-.                      $yyLex->line,
+.                      $yyLex->position[0],
+.                      $yyLex->position[1],
 .                      $this->yyName($yyToken)
 .                    ), 
 .                    $this->yyExpecting($yyState)
@@ -139,18 +140,20 @@
 .                    } while ($yyTop-- >= 0);
 .
 .                    return throw(new ParseError(E_ERROR, sprintf(
-.                      'Irrecoverable syntax error at %s, line %d',
+.                      'Irrecoverable syntax error at %s, line %d (offset %d)',
 .                      $yyLex->fileName,
-.                      $yyLex->line
+.                      $yyLex->position[0],
+.                      $yyLex->position[1]
 .                    )));
 .                  }
 .
 .                  case 3: {
 .                    if (0 == $yyToken) {
 .                      return throw(new ParseError(E_ERROR, sprintf(
-.                        'Irrecoverable syntax error at end-of-file at %s, line %d',
+.                        'Irrecoverable syntax error at end-of-file at %s, line %d (offset %d)',
 .                        $yyLex->fileName,
-.                        $yyLex->line
+.                        $yyLex->position[0],
+.                        $yyLex->position[1]
 .                      )));
 .                    }
 .
