@@ -112,16 +112,15 @@
 %token T_MINUS_EQUAL 270
 %token T_PLUS_EQUAL 271
 %token T_BOOLEAN_OR 272
-%token T_BOOLEAN_AND 272
-%token T_IS_NOT_IDENTICAL 273
-%token T_IS_IDENTICAL 274
-%token T_IS_NOT_EQUAL 275
-%token T_IS_EQUAL 276
-%token T_IS_GREATER_OR_EQUAL 277
-%token T_IS_SMALLER_OR_EQUAL 278
-%token T_SR 279
-%token T_SL 280
-%token T_INSTANCEOF 281
+%token T_BOOLEAN_AND 273
+%token T_IS_NOT_IDENTICAL 274
+%token T_IS_IDENTICAL 275
+%token T_IS_NOT_EQUAL 276
+%token T_IS_EQUAL 277
+%token T_IS_GREATER_OR_EQUAL 278
+%token T_IS_SMALLER_OR_EQUAL 279
+%token T_SR 280
+%token T_SL 281
 %token T_DEC 282
 %token T_INC 283
 %token T_CLONE 284
@@ -182,6 +181,7 @@
 %token T_FINALLY 339
 %token T_DESTRUCT 340
 %token T_NATIVE 341
+%token T_INSTANCEOF 342
 
 %% /* Rules */
 
