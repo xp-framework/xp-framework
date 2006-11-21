@@ -64,5 +64,32 @@
         'noop', array('@model' => array('static')), '() { }'
       );
     }
+
+    /**
+     * Tests abstract modifier
+     *
+     * @access  public
+     */
+    #[@test]
+    function abstractMethod() {
+      $this->assertMethodRewritten(
+        'public abstract void noop();', 
+        'noop', array('@model' => array('abstract')), '() { }'
+      );
+    }
+
+    /**
+     * Tests abstract modifier
+     *
+     * @access  public
+     */
+    #[@test]
+    function methodsInInterface() {
+      $this->rewriter->names->current->type = INTERFACE_CLASS;
+      $this->assertMethodRewritten(
+        'public void noop();', 
+        'noop', array(), '() { }'
+      );
+    }
   }
 ?>
