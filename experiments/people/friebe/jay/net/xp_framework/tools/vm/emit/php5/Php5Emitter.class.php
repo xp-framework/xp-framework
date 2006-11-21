@@ -367,7 +367,7 @@
     function getResult() { 
       $src= "<?php\n  ";
       if (!empty($this->context['uses'])) {
-        $src.= 'uses(\''.implode('\', \'', array_keys($this->context['uses'])).'\')';
+        $src.= 'uses(\''.implode('\', \'', array_keys($this->context['uses'])).'\');';
       }
       
       return $src.$this->bytes."\n?>";
