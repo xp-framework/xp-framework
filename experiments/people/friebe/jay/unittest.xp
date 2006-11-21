@@ -1,16 +1,16 @@
 uses(
-  'xp.util.cmd.ParamString',
-  'xp.util.cmd.Console',
-  'xp.util.profiling.unittest.TestSuite',
-  'xp.util.Properties'
+  'util.cmd.ParamString',
+  'util.cmd.Console',
+  'unittest.TestSuite',
+  'util.Properties'
 );
 
-import xp~util~cmd~ParamString;
-import xp~util~cmd~Console;
-import xp~util~profiling~unittest~TestSuite;
-import xp~util~Properties;
+import util.cmd.ParamString;
+import util.cmd.Console;
+import unittest.TestSuite;
+import util.Properties;
 
-// {{{ proto void addTestClass(&util.profiling.unittest.TestSuite suite, &lang.XPClass class [, array arguments])
+// {{{ proto void addTestClass(unittest.TestSuite suite, lang.XPClass class [, array arguments])
 //     Adds a test
 function addTestClass($suite, $class, $arguments= array()) {
   try {
@@ -112,9 +112,9 @@ Console::writeLine('===> Setting up suite');
 $suite= new TestSuite();
 foreach ($tests as $test) {
   try {
-    $class= xp~lang~XPClass::forName($test[0]);
-  } catch (xp~lang~ClassNotFoundException $e) {
-    Console::write('*** Error: Class "'.$test[0].'" ~ ', $e->toString());
+    $class= lang.XPClass::forName($test[0]);
+  } catch (lang.ClassNotFoundException $e) {
+    Console::write('*** Error: Class "'~$test[0]~'" ~ ', $e->toString());
     exit(-2);
   }
 
