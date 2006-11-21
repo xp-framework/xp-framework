@@ -507,7 +507,7 @@
             // Annotations
             if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
               $annotations[0]= substr($tokens[$i][1], 2);
-            } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
+            } else if (strncmp('#', $tokens[$i][1], 1) == 0) {
               $annotations[0].= substr($tokens[$i][1], 1);
             }
 
