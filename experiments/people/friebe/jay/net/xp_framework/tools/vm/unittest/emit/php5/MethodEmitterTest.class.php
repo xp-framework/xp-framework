@@ -22,7 +22,7 @@
     #[@test]
     function methodWithoutArguments() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
@@ -43,7 +43,7 @@
     #[@test]
     function emptyMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
           }
         };'),
@@ -62,7 +62,7 @@
     #[@test]
     function abstractMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'abstract class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'abstract class main·Test extends lang·Object{
           abstract public function sayHello();
         };'),
         $this->emit('abstract class Test {
@@ -79,7 +79,7 @@
     #[@test]
     function methodWithOneStringArgument() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($name){
             echo \'Hello\', $name; 
           }
@@ -100,7 +100,7 @@
     #[@test]
     function methodWithOneStringArrayArgument() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
@@ -125,7 +125,7 @@
     #[@test]
     function methodCall() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
@@ -158,7 +158,7 @@
     #[@test]
     function staticMethodCall() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public static function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
@@ -191,7 +191,7 @@
     #[@test]
     function methodWithStaticVariable() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             static $cache= array(); 
             echo \'Hello\'; 
@@ -215,7 +215,7 @@
     #[@test]
     function methodWithVarArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             $__a= func_get_args(); $names= array_slice($__a, 0);
             echo \'Hello \', implode(\', \', $names); 
@@ -237,7 +237,7 @@
     #[@test]
     function methodWithArgsAndVarArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sprintf($format){
             $__a= func_get_args(); $args= array_slice($__a, 1);
             return vsprintf($format, $args); 
@@ -273,7 +273,7 @@
     #[@test]
     function methodWithDefaultArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·XPClass extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·XPClass extends lang·Object{
           public static function forName($name, $cl= NULL){
             if (NULL==$cl){ $cl= main·ClassLoader::getDefault(); }; 
             return $cl->loadClass($name); 

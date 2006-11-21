@@ -22,8 +22,8 @@
     #[@test]
     function chainedMethodCalls() {
       $this->assertSourcecodeEquals(
-        '$o= new xp·lang·Object(); echo $o->getClass()->getName();',
-        $this->emit('$o= new xp.lang.Object(); echo $o->getClass()->getName();')
+        '$o= new lang·Object(); echo $o->getClass()->getName();',
+        $this->emit('$o= new lang.Object(); echo $o->getClass()->getName();')
       );
     }
 
@@ -36,8 +36,8 @@
     #[@test]
     function chainedMethodCallsAfterConstructor() {
       $this->assertSourcecodeEquals(
-        'echo xp::create(new xp·lang·Object())->getClass()->getName();',
-        $this->emit('echo new xp.lang.Object()->getClass()->getName();')
+        'echo xp::create(new lang·Object())->getClass()->getName();',
+        $this->emit('echo new lang.Object()->getClass()->getName();')
       );
     }
 
@@ -49,8 +49,8 @@
     #[@test]
     function chainedArrayOffsetAfterMethodCall() {
       $this->assertSourcecodeEquals(
-        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0];',
-        $this->emit('echo new xp.lang.Object()->getClass()->getName()[0];')
+        'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0];',
+        $this->emit('echo new lang.Object()->getClass()->getName()[0];')
       );
     }
 
@@ -62,8 +62,8 @@
     #[@test]
     function chainedArrayOffsetsAfterMethodCall() {
       $this->assertSourcecodeEquals(
-        'echo xp::wraparray(xp::create(new xp·lang·Object())->getClass()->getName())->backing[0][0];',
-        $this->emit('echo new xp.lang.Object()->getClass()->getName()[0][0];')
+        'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0][0];',
+        $this->emit('echo new lang.Object()->getClass()->getName()[0][0];')
       );
     }
 
@@ -88,7 +88,7 @@
     #[@test]
     function chainedMethodsAndMembers() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Long extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Long extends lang·Object{
           public $number= NULL;
 
           public function __construct($initial= 0){
@@ -100,7 +100,7 @@
           }
         }; 
 
-        class main·Date extends xp·lang·Object{
+        class main·Date extends lang·Object{
           public $stamp= NULL;
 
           public function __construct(){
@@ -108,7 +108,7 @@
           }
         }; 
 
-        class main·News extends xp·lang·Object{
+        class main·News extends lang·Object{
           public $date= NULL;
 
           public function __construct(){

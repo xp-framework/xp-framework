@@ -28,7 +28,7 @@
       
       $parser= &new Parser();
       $this->emitter->emitAll($parser->parse(new Lexer('
-        import xp.lang.Object;
+        import lang.Object;
         
         class Now {
           public string toString() {
@@ -61,7 +61,7 @@
      */
     #[@test]
     function typeOfNew() {
-      $this->assertEquals('xp·lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('xp.lang.Object'))));
+      $this->assertEquals('lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('lang.Object'))));
     }
 
     /**
@@ -72,7 +72,7 @@
      */
     #[@test]
     function typeOfUnqualifiedNew() {
-      $this->assertEquals('xp·lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('Object'))));
+      $this->assertEquals('lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('Object'))));
     }
 
     /**

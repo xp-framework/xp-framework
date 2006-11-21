@@ -21,7 +21,7 @@
     #[@test]
     function classWithWebserviceAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
@@ -47,7 +47,7 @@
     #[@test]
     function methodWithTestAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
@@ -73,7 +73,7 @@
     #[@test]
     function methodWithKeyValueAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
@@ -101,7 +101,7 @@
     #[@test]
     function methodWithTestAndIgnoreAnnotations() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }

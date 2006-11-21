@@ -21,8 +21,8 @@
     #[@test]
     function throwGetsWrapped() {
       $this->assertSourcecodeEquals(
-        'throw xp::exception(new xp·lang·IllegalArgumentException(\'Blam!\'));',
-        $this->emit('throw new xp.lang.IllegalArgumentException("Blam!");')
+        'throw xp::exception(new lang·IllegalArgumentException(\'Blam!\'));',
+        $this->emit('throw new lang.IllegalArgumentException("Blam!");')
       );
     }
 
@@ -36,7 +36,7 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·Exception) { 
+        } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
           $e= $__e->cause; 
           $e->printStackTrace();
         } else { 
@@ -44,7 +44,7 @@
         } };'),
         $this->emit('try {
           echo 1;
-        } catch (xp.lang.Exception $e) {
+        } catch (lang.Exception $e) {
           $e->printStackTrace();
         }')
       );
@@ -60,7 +60,7 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·Exception) { 
+        } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
           $e= $__e->cause; 
           $e->printStackTrace();
         } else { 
@@ -70,7 +70,7 @@
         echo 2; ;'),
         $this->emit('try {
           echo 1;
-        } catch (xp.lang.Exception $e) {
+        } catch (lang.Exception $e) {
           $e->printStackTrace();
         } finally {
           echo 2;
@@ -86,7 +86,7 @@
     #[@test]
     function finallyAfterCatchWithReturn() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·FileReader extends xp·lang·Object{
+        preg_replace('/\n\s*/', '', 'class main·FileReader extends lang·Object{
           protected $_f= NULL;
           protected $file= NULL;
           
@@ -107,7 +107,7 @@
           $f= new main·FileReader($file); 
           try { 
             $f->open(); 
-          } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·Exception) { 
+          } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
             $e= $__e->cause; 
             $e->printStackTrace();
             $f->close(); 
@@ -140,7 +140,7 @@
           $f= new FileReader($file);
           try {
             $f->open();
-          } catch (xp.lang.Exception $e) {
+          } catch (lang.Exception $e) {
             $e->printStackTrace();
             return FALSE;
           } finally {
@@ -159,7 +159,7 @@
     #[@test]
     function systemExit() {
       $this->assertSourcecodeEquals(
-        'throw xp::exception(new xp·lang·SystemExit(1));',
+        'throw xp::exception(new lang·SystemExit(1));',
         $this->emit('exit(1);')
       );
     }
@@ -188,10 +188,10 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof xp·lang·IllegalArgumentException) { 
+        } catch (XPException $__e) { if ($__e->cause instanceof lang·IllegalArgumentException) { 
           $e= $__e->cause; 
           $e->printStackTrace();
-        } else if ($__e->cause instanceof xp·lang·Exception) { 
+        } else if ($__e->cause instanceof lang·Exception) { 
           $e= $__e->cause; 
           $e->printStackTrace(); 
         } else { 
@@ -199,9 +199,9 @@
         } };'),
         $this->emit('try {
           echo 1;
-        } catch (xp.lang.IllegalArgumentException $e) {
+        } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (xp.lang.Exception $e) {
+        } catch (lang.Exception $e) {
           $e->printStackTrace();
         }')
       );

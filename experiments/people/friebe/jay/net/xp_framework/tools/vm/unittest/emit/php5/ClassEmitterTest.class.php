@@ -21,7 +21,7 @@
     #[@test]
     function classWithoutPackage() {
       $this->assertSourcecodeEquals(
-        'class main·Test extends xp·lang·Object{};',
+        'class main·Test extends lang·Object{};',
         $this->emit('class Test { }')
       );
     }
@@ -34,7 +34,7 @@
     #[@test]
     function classInPackage() {
       $this->assertSourcecodeEquals(
-        'class de·thekid·Test extends xp·lang·Object{};',
+        'class de·thekid·Test extends lang·Object{};',
         $this->emit('package de.thekid { class Test { } }')
       );
     }
@@ -47,7 +47,7 @@
     #[@test]
     function classWithParent() {
       $this->assertSourcecodeEquals(
-        'class main·Base extends xp·lang·Object{}; class main·Test extends main·Base{};',
+        'class main·Base extends lang·Object{}; class main·Test extends main·Base{};',
         $this->emit('class Base { } class Test extends Base { }')
       );
     }
@@ -70,7 +70,7 @@
     #[@test]
     function implementedInterface() {
       $this->assertSourcecodeEquals(
-        'interface main·A{}; class main·Test extends xp·lang·Object implements main·A{public function a(){echo \'A\'; }};',
+        'interface main·A{}; class main·Test extends lang·Object implements main·A{public function a(){echo \'A\'; }};',
         $this->emit('interface A { public void a(); } class Test implements A { public void a() { echo \'A\'; } }')
       );
     }
@@ -93,7 +93,7 @@
     #[@test]
     function classImplementingInterface() {
       $this->assertSourcecodeEquals(
-        'interface main·Traceable{}; class main·Test extends xp·lang·Object implements main·Traceable{};',
+        'interface main·Traceable{}; class main·Test extends lang·Object implements main·Traceable{};',
         $this->emit('interface Traceable { } class Test implements Traceable { }')
       );
     }
@@ -116,7 +116,7 @@
     #[@test]
     function classImplementingInterfaces() {
       $this->assertSourcecodeEquals(
-        'interface main·A{}; interface main·B{}; class main·Test extends xp·lang·Object implements main·A, main·B{};',
+        'interface main·A{}; interface main·B{}; class main·Test extends lang·Object implements main·A, main·B{};',
         $this->emit('interface A { } interface B { } class Test implements A, B { }')
       );
     }
