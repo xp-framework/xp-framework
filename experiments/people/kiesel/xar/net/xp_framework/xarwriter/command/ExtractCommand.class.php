@@ -5,10 +5,8 @@
  */
 
   uses(
-    'lang.archive.Archive',
-    'io.File',
-    'io.FileUtil',
-    'io.Folder'
+    'net.xp_framework.xarwriter.command.AbstractCommand',
+    'lang.archive.Archive'
   );
 
   /**
@@ -18,25 +16,8 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ExtractCommand extends Object {
-    var
-      $options    = 0,
-      $filename   = '',
-      $args       = array();
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function __construct($options, $filename, $args) {
-      $this->options= $options;
-      $this->filename= $filename;
-      $this->args= $args;
-    }
-    
+  class ExtractCommand extends AbstractCommand {
+
     /**
      * (Insert method's description here)
      *
@@ -65,9 +46,7 @@
         
           // Create folder on demand
           $dir= &new Folder(dirname($entry));
-          if (!$dir->exists()) {
-            $dir->create();
-          }
+          if (!$dir->exists()) { $dir->create(); }
           
           FileUtil::setContents($f, $archive->extract($entry));
         }
