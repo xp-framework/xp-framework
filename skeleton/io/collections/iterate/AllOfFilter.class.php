@@ -27,7 +27,6 @@
     /**
      * Accepts an element
      *
-     * @model  abstract
      * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
