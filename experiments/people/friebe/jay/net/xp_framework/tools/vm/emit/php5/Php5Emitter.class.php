@@ -97,7 +97,7 @@
      * @return  string
      */
     function qualifiedName($class, $imports= TRUE) {
-      static $special= array('parent', 'self', 'xp');
+      static $special= array('parent', 'self', 'xp', 'null');
       
       if (in_array($class, $special)) return $class;
       if ('php.' == substr($class, 0, 4)) return substr($class, 4);
