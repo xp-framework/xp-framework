@@ -1,8 +1,8 @@
-package de~thekid~dialog {
+package de.thekid.dialog {
 
-  class Album extends xp~lang~Object {
+  class Album extends lang.Object {
   
   }
 }
 
-echo new de~thekid~dialog~Album()->toString();
+echo new de.thekid.dialog.Album()->toString();
