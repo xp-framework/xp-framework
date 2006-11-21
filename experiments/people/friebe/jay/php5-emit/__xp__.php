@@ -308,7 +308,7 @@
       return $c;
     }
  
-     public function toString() {
+    public function toString() {
       return xp::stringOf($this);
     }
   }
