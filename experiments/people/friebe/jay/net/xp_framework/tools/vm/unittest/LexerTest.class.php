@@ -178,7 +178,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('Segfault')]
     function phpMagicConstants() {
       $deprecated= array(
         '__FILE__',
