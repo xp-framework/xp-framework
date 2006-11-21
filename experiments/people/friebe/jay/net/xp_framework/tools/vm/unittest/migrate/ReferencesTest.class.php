@@ -24,6 +24,26 @@
     }
 
     /**
+     * Tests reference is removed from static method call
+     *
+     * @access  public
+     */
+    #[@test]
+    function removedFromStaticMethodCall() {
+      $this->assertExpressionRewritten('$l= util.Date::create();', '$l= &Date::create();');
+    }
+
+    /**
+     * Tests reference is removed from clone call
+     *
+     * @access  public
+     */
+    #[@test]
+    function removedFromCloneCall() {
+      $this->assertExpressionRewritten('$c= clone($o);', '$c= &clone($o);');
+    }
+
+    /**
      * Tests reference is removed in assignments 
      *
      * @access  public
