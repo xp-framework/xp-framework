@@ -175,7 +175,7 @@
     function merge(&$map, $recursive= FALSE) {
       if (is_a($map, 'Hashmap')) {
         $h= &$map->_hash;
-      } elseif (is_array($map)) {
+      } else if (is_array($map)) {
         $h= &$map;
       } else {
         return throw(new IllegalArgumentException('map is neither an array nor a Hashmap'));
