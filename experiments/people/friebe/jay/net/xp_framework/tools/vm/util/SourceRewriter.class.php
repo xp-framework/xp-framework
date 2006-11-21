@@ -265,6 +265,18 @@
             $skip= TRUE;
             break;
 
+          case ST_INSTANCE_OF.'[':
+          case ST_INSTANCE_OF.']':
+            $instanceof[$instanceof['op']].= $t;
+            break;
+
+          case ST_INSTANCE_OF.T_VARIABLE:
+          case ST_INSTANCE_OF.T_STRING:
+          case ST_INSTANCE_OF.T_LNUMBER:
+          case ST_INSTANCE_OF.T_OBJECT_OPERATOR:
+            $instanceof[$instanceof['op']].= $t[1];
+            break;
+
           case ST_INSTANCE_OF.'(':
             $instanceof['brackets']++;
             $instanceof[$instanceof['op']].= '(';
@@ -282,11 +294,6 @@
 
           case ST_INSTANCE_OF.',':
             $instanceof['op']= 'class';
-            break;
-
-          case ST_INSTANCE_OF.T_VARIABLE:
-          case ST_INSTANCE_OF.T_STRING:
-            $instanceof[$instanceof['op']].= $t[1];
             break;
 
           case ST_INSTANCE_OF.T_CONSTANT_ENCAPSED_STRING:
