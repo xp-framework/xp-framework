@@ -64,13 +64,23 @@
     }
 
     /**
-     * Tests reference is removed in arrays 
+     * Tests reference is removed from method arguments
      *
      * @access  public
      */
     #[@test]
     function removedFromMethodArguments() {
       $this->assertMethodRewritten('public void equals($cmp) { }', 'equals', array(), '(&$cmp) { }');
+    }
+
+    /**
+     * Tests reference is removed from method return values
+     *
+     * @access  public
+     */
+    #[@test]
+    function removedFromMethodReturn() {
+      $this->assertMethodRewritten('public void add($cmp) { }', '&add', array(), '(&$cmp) { }');
     }
   }
 ?>
