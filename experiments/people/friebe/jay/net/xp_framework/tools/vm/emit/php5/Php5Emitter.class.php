@@ -35,7 +35,7 @@
      * @access  public
      */
     function __construct() {
-      static $lang= array();
+      static $langImported= FALSE;
       
       $this->context['package']= DEFAULT_PACKAGE;
       $this->context['imports']= array();
@@ -57,21 +57,35 @@
       $this->context['types']['lang·Object::toString']= 'string';
       
       // Auto-import lang.*
-      if (empty($lang)) {
-        foreach (explode(PATH_SEPARATOR, CLASSPATH) as $node) {
-          if (!is_dir($node.DIRECTORY_SEPARATOR.'lang')) continue;
-
-          $d= dir($node.DIRECTORY_SEPARATOR.'lang');
-          while ($file= $d->read()) {
-            2 == sscanf($file, '%[^.].%s', $classname, $ext) && 'xp' == $ext && $lang[]= $classname;
-          }
-          $d->close();
-        }
-      }
+      if (!$langImported) $langImported= $this->importAllOf('lang', FALSE);
+    }
+    
+    /**
+     * Import all files in a given package
+     *
+     * @access  protected
+     * @param   string package
+     * @param   bool use default TRUE whether to add these classes to uses()
+     * @return  int how many files where imported
+     */
+    function importAllOf($package, $use= TRUE) {
+      $imported= 0;
+      $pdir= DIRECTORY_SEPARATOR.strtr($package, '.', DIRECTORY_SEPARATOR);
       
-      foreach ($lang as $classname) {
-        $this->context['imports'][$this->context['package']][$classname]= 'lang·'.$classname;
+      foreach (explode(PATH_SEPARATOR, CLASSPATH) as $node) {
+        if (!is_dir($node.$pdir)) continue;
+
+        $d= dir($node.$pdir);
+        while ($file= $d->read()) {
+          if (2 != sscanf($file, '%[^.].%s', $classname, $ext) || 'xp' != $ext) continue;
+          
+          $use && $this->context['uses'][$package.'·'.$classname]= $d->path.DIRECTORY_SEPARATOR.$file;
+          $this->context['imports'][$this->context['package']][$classname]= $package.'·'.$classname;
+          $imported++;
+        }
+        $d->close();
       }
+      return $imported;
     }
 
     /**
@@ -1044,24 +1058,43 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitImportList(&$node) {
-      $imports= '';      
       foreach ($node->list as $import) { 
-        $source= $import->source->name;
-        if (NULL === $this->lookupClass($this->qualifiedName($source, FALSE))) {
-          $this->addError(new CompileError(7000, 'Imported class '.$source.' does not exist'));
-        }
-        
-        $destination= $import->destination;
-
-        // Calculate destination name if none was supplied
-        if (!$destination) {
-          $destination= substr($source, strrpos($source, PACKAGE_SEPARATOR)+ 1);
-        }
-
-        // Register import
-        $this->context['imports'][$this->context['package']][$destination]= $source;
+        $this->emit($import);
       }
     }
+    
+    /**
+     * Emits Import
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitImport(&$node) {
+      $source= $node->source->name;
+      if (NULL === $this->lookupClass($this->qualifiedName($source, FALSE))) {
+        $this->addError(new CompileError(7000, 'Imported class '.$source.' does not exist'));
+      }
+
+      $destination= $node->destination;
+
+      // Calculate destination name if none was supplied
+      if (!$destination) {
+        $destination= substr($source, strrpos($source, PACKAGE_SEPARATOR)+ 1);
+      }
+
+      // Register import
+      $this->context['imports'][$this->context['package']][$destination]= $source;
+    }
+
+    /**
+     * Emits ImportLists
+     *
+     * @access  public
+     * @param   &net.xp_framework.tools.vm.VNode node
+     */
+    function emitImportAll(&$node) {
+      $this->importAllOf($node->package);
+    }    
     
     /**
      * Emits Trys

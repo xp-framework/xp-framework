@@ -40,6 +40,7 @@
     'net.xp_framework.tools.vm.nodes.InterfaceDeclarationNode',
     'net.xp_framework.tools.vm.nodes.ImportListNode',
     'net.xp_framework.tools.vm.nodes.ImportNode',
+    'net.xp_framework.tools.vm.nodes.ImportAllNode',
     'net.xp_framework.tools.vm.nodes.ListAssignNode',
     'net.xp_framework.tools.vm.nodes.LongNumberNode',
     'net.xp_framework.tools.vm.nodes.MemberDeclarationListNode',
@@ -313,7 +314,10 @@ import_list:
 ;
 
 import:
-		class_name_reference { 
+        package_with_star {
+          $$= &new ImportAllNode($1); $$->position= $yyLex->position; 
+        }
+	|	class_name_reference { 
           $$= &new ImportNode($1, NULL); $$->position= $yyLex->position; 
         }
 	|	class_name_reference T_AS name_and_keywords { 
@@ -324,6 +328,14 @@ import:
         }
 ;
 
+package_with_star:
+        T_STRING '.' '*' {
+          /* $$= $1; */
+        }
+    |   T_STRING '.' package_with_star {
+          $$= $1.'.'.$3;
+        }
+;
 additional_catches:
 		non_empty_additional_catches { 
           /* $$= $1; */ 

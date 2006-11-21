@@ -1,4 +1,4 @@
-import util.cmd.ParamString, util.cmd.Console;
+import util.cmd.*;
 
 // {{{ main
 $p= new ParamString();
