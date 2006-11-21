@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('text.doclet.RootDoc');
+
   define('ST_LOOKING_FOR_CLASS',          'looking:class');
   define('ST_LOOKING_FOR_TRY_BRACKET',    'looking:trybracket');
   define('ST_LOOKING_FOR_THROW',          'looking:throw');
@@ -42,11 +44,11 @@
      *
      * @access  public
      * @param   array tokens as returned by token_get_all()
-     * @param   bool debug
+     * @param   bool debug default FALSE
      * @return  string
      * @throws  lang.Exception to indicate rewriting failures
      */
-    function rewrite($tokens, $debug) {
+    function rewrite($tokens, $debug= FALSE) {
       static $map= array(
         'uses'        => T_USES, 
         'implements'  => T_IMPLEMENTS, 
