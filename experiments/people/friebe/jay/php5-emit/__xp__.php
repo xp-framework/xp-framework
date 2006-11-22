@@ -311,6 +311,10 @@
     public function toString() {
       return xp::stringOf($this);
     }
+
+    public function __toString() {
+      return $this->toString();
+    }
   }
   // }}}
 ?>
