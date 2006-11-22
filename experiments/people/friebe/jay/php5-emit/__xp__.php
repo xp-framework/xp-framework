@@ -21,29 +21,27 @@
     }
   }
   
-  function include_class($class) {
-    $file= strtr($class, '·', DIRECTORY_SEPARATOR);
-    foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
-      $qualified= $path.DIRECTORY_SEPARATOR.$file.'.php5';
-      if (file_exists($qualified)) {
-        if (filemtime($qualified) < filemtime($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
-          echo '*** PHP5 Version older than XP... ';
-          break;
-        } else {
-          // echo '*** Loading ', $file, "\n";
-          return include($qualified);
-        }
-      } else if (file_exists($path.DIRECTORY_SEPARATOR.$file.'.xp')) {
-        echo '*** PHP5 Version not yet existant... ';
-        break;
-      }
+  function load_class_file($qualified) {
+    if (file_exists($qualified.'.php5') && filemtime($qualified.'.php5') >= filemtime($qualified.'.xp')) {
+      return include($qualified.'.php5');
     }
 
     // Could not find the file, compile
-    $cmd= sprintf(getenv('COMPILE_CMD'), $path.DIRECTORY_SEPARATOR.$file.'.xp');
-    echo '*** Compiling ', $file, ' using (', $cmd, ")\n";
+    $cmd= sprintf(getenv('COMPILE_CMD'), $qualified.'.xp');
+    echo '*** Compiling ', $qualified, ' using (', $cmd, ")\n";
     passthru($cmd);
-    return include($file.'.php5');
+    return include($qualified.'.php5');
+  }
+  
+  function include_class($class) {
+    $file= strtr($class, '·', DIRECTORY_SEPARATOR);
+    foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+      $qualified= $path.DIRECTORY_SEPARATOR.$file;
+      if (!file_exists($qualified.'.xp')) continue;
+      return load_class_file($qualified);
+    }
+    
+    return FALSE;
   }
   
   function uses() {
