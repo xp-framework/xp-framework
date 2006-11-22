@@ -204,7 +204,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     function elementAtIllegalOffset() {
       $this->queue->elementAt(-1);
     }
@@ -215,7 +215,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     function elementAtOffsetOutOfBounds() {
       $this->queue->put(new String('one'));
       $this->queue->elementAt($this->queue->size() + 1);
@@ -227,7 +227,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     function elementAtEmptyList() {
       $this->queue->elementAt(0);
     }
