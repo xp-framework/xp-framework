@@ -47,7 +47,7 @@
     function __construct($arg) {
       switch (xp::typeOf($arg)) {
         case 'string':
-          if (!($dom= &domxml_open_mem($arg, DOMXML_LOAD_PARSING, $error))) {
+          if (!($dom= domxml_open_mem($arg, DOMXML_LOAD_PARSING, $error))) {
             return throw(new XMLFormatException(
               rtrim($error[0]['errormessage']), 
               XML_ERROR_SYNTAX, 
@@ -56,15 +56,15 @@
               $error[0]['col']
             ));
           }
-          $this->context= &xpath_new_context($dom);
+          $this->context= xpath_new_context($dom);
           break;
         
         case 'php.domdocument':
-          $this->context= &xpath_new_context($arg);
+          $this->context= xpath_new_context($arg);
           break;
         
         case 'xml.Tree':
-          $this->context= &xpath_new_context(domxml_open_mem($arg->getSource()));
+          $this->context= xpath_new_context(domxml_open_mem($arg->getSource()));
           break;
         
         default:
@@ -83,9 +83,9 @@
      */
     function query($xpath, $node= NULL) {
       if ($node) {
-        $r= &xpath_eval($this->context, $xpath, $node);
+        $r= xpath_eval($this->context, $xpath, $node);
       } else {
-        $r= &xpath_eval($this->context, $xpath);
+        $r= xpath_eval($this->context, $xpath);
       }
       if (FALSE === $r) {
         return throw(new XPathException('Cannot evaluate "'.$xpath.'"'));

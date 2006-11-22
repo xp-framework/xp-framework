@@ -82,7 +82,7 @@
 
         // Perform XPath query
         try(); {
-          $result= &$xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
+          $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
         } if (catch('XPathException', $e)) {
           return throw($e);
         }
@@ -165,10 +165,12 @@
      * @throws  xml.XMLFormatException
      */
     function &unmarshal($xml, $classname) {
-      if (!($dom= &domxml_open_mem($xml, DOMXML_LOAD_PARSING, $error))) {
+      if (!($dom= domxml_open_mem($xml, DOMXML_LOAD_PARSING, $error))) {
         return throw(new XMLFormatException(xp::stringOf($error)));
       }
-      return Unmarshaller::recurse(new XPath($dom), $dom->document_element, $classname);
+      
+      $u= &Unmarshaller::recurse(new XPath($dom), $dom->document_element, $classname);
+      return $u;
     }
   }
 ?>
