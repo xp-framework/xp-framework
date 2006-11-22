@@ -96,14 +96,6 @@
     function emit(&$node) {
       $this->position= $node->position;
 
-      if (is_a($node, 'ConstantReferenceNode') && !$node->class) {
-        switch (strtolower($node->name)) {
-          case 'true': $this->emitBoolean(TRUE); return;
-          case 'false': $this->emitBoolean(FALSE); return;
-          case 'null': $this->emitNull(); return;
-        }
-      }
-
       if (is_a($node, 'VNode')) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
@@ -164,9 +156,6 @@
       } else if (is_int($node)) {
         $this->emitInteger($node);
         return;
-      } else if (is_float($node)) {
-        $this->emitDouble($node);
-        return;
       } else if (is_string($node)) {
         $this->emitConstant($node);
         return;
@@ -184,324 +173,28 @@
     function emitBlock($nodes) { }
 
     /**
-     * Emits PackageDeclarations
+     * Emits constants
      *
      * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   string name
      */
-    function emitPackageDeclaration(&$node) { }
+    function emitConstant($name) { }
 
     /**
-     * Emits FunctionDeclarations
+     * Emits constants
      *
      * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   string string
      */
-    function emitFunctionDeclaration(&$node) { }
+    function emitString($string) { }
 
     /**
-     * Emits MethodDeclarations
+     * Emits an integer
      *
      * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   int integer
      */
-    function emitMethodDeclaration(&$node) { }
-
-    /**
-     * Emits ConstructorDeclarations
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitConstructorDeclaration(&$node) { }
-
-    /**
-     * Emits ClassDeclarations
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitClassDeclaration(&$node) { }
-
-    /**
-     * Emits FunctionCalls
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitFunctionCall(&$node) { }
-
-    /**
-     * Emits MethodCalls
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitMethodCall(&$node) { }
-
-    /**
-     * Emits Nots
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitNot(&$node) { }
-
-    /**
-     * Emits ObjectReferences
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitObjectReference(&$node) { }
-
-    /**
-     * Emits Binarys
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitBinary(&$node) { }
-
-    /**
-     * Emits Variables
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitVariable(&$node) { }
-
-    /**
-     * Emits Assigns
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitAssign(&$node) { }
-
-    /**
-     * Emits BinaryAssigns
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitBinaryAssign(&$node) { }
-
-    /**
-     * Emits Ifs
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitIf(&$node) { }
-
-    /**
-     * Emits Catchs
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitCatch(&$node) { }
-
-    /**
-     * Emits News
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitNew(&$node) { }
-
-    /**
-     * Emits Trys
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitTry(&$node) { }
-
-    /**
-     * Emits Echos
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitEcho(&$node) { }
-
-    /**
-     * Emits Returns
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitReturn(&$node) { }
-
-    /**
-     * Emits Ternarys
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitTernary(&$node) { }
-    
-    /**
-     * Emits Fors
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitFor(&$node) { }
-
-    /**
-     * Emits PostIncs
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitPostInc(&$node) { }
-    
-    /**
-     * Emits MemberDeclarationLists
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitMemberDeclarationList(&$node) { }
-    
-    /**
-     * Emits OperatorDeclarations
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitOperatorDeclaration(&$node) { }
-
-    /**
-     * Emits Throws
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitThrow(&$node) { }   
-    
-    /**
-     * Emits Imports
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitImport(&$node) { }
-
-    /**
-     * Emits InstanceOfs
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitInstanceOf(&$node) { }
-
-    /**
-     * Emits ClassReferences
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitClassReference(&$node) { }
-
-    /**
-     * Emits InterfaceDeclarations
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitInterfaceDeclaration(&$node) { }
-
-    /**
-     * Emits Whiles
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitWhile(&$node) { }
- 
-    /**
-     * Emits Do ... Whiles
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitDoWhile(&$node) { }
-
-    /**
-     * Emits Foreachs
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitForeach(&$node) { }
-
-    /**
-     * Emits Switches
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitSwitch(&$node) { }
-
-    /**
-     * Emits Cases
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitCase(&$node) { }
-
-    /**
-     * Emits Defaults
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitDefault(&$node) { }
-
-    /**
-     * Emits Breaks
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitBreak(&$node) { }
-
-    /**
-     * Emits Continues
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitContinue(&$node) { }
-
-    /**
-     * Emits static variables list
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitStaticVariableList(&$node) { }
-
-    /**
-     * Emits static variables
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitStaticVariable(&$node) { }
-
-    /**
-     * Emits constant references
-     *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
-     */
-    function emitConstantReference(&$node) { }
+    function emitInteger($integer) { }
     
     /**
      * Set a logger category for debugging

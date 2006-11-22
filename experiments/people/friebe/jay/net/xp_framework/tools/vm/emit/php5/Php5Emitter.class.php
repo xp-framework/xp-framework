@@ -408,25 +408,6 @@
     }
 
     /**
-     * Emits a boolean
-     *
-     * @access  public
-     * @param   bool bool
-     */
-    function emitBoolean($bool) { 
-      $this->bytes.= $bool ? 'TRUE' : 'FALSE';
-    }
-
-    /**
-     * Emits a null
-     *
-     * @access  public
-     */
-    function emitNull() { 
-      $this->bytes.= 'NULL';
-    }
-
-    /**
      * Emits a constant
      *
      * @access  public
