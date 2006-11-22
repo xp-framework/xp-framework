@@ -7,6 +7,8 @@
     'util.cmd.Console', 
     'io.File', 
     'io.FileUtil',
+    'util.log.Logger',
+    'util.log.ConsoleAppender',
     'util.cmd.ParamString'
   );
   define('MODIFIER_NATIVE', 8);   // See lang.XPClass
@@ -17,6 +19,13 @@
   if (!$p->exists(1) || !is_file($in= $p->value(1))) {
     Console::writeLine('- Could not find "'.$in.'"');
     exit(1);
+  }
+  
+  $cat= NULL;
+  if ($p->exists('debug')) {
+    $l= &Logger::getInstance();
+    $cat= &$l->getCategory();
+    $cat->addAppender(new ConsoleAppender(), $p->value('debug', 'd'));
   }
   
   $lexer= &new Lexer(file_get_contents($in), $in);
@@ -34,6 +43,7 @@
   $p->exists('ast') && Console::writeLine(VNode::stringOf($nodes));
   
   $emitter= &new Php5Emitter();
+  $emitter->setTrace($cat);
   $emitter->setFilename($in);
   $emitter->emitAll($nodes);
 
