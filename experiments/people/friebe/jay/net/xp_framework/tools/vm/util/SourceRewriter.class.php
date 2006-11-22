@@ -63,7 +63,19 @@
       $states= array(ST_INITIAL);
       $skip= FALSE;
       $brackets= 0;
-      $classloader= &ClassLoader::getDefault();
+
+      // Compile list of classes to be added to uses()
+      $used= array();
+      $this->names->current->usedClasses->rewind();
+      while ($this->names->current->usedClasses->hasNext()) {
+        $class= $this->names->current->usedClasses->next();
+        $used[]= strtr($this->names->packagedNameOf($class->qualifiedName()), NS_SEPARATOR, '.');
+      }
+      $this->names->current->interfaces->rewind();
+      while ($this->names->current->interfaces->hasNext()) {
+        $interface= $this->names->current->interfaces->next();
+        $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), NS_SEPARATOR, '.');
+      }
 
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         $t= $tokens[$i];

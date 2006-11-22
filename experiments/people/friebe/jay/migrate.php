@@ -109,19 +109,6 @@ __;
         $this->buildMapping($this->current);
         $this->names->setCurrentClass($this->current);
 
-        // Compile list of classes to be added to uses()
-        $used= array();
-        $this->current->usedClasses->rewind();
-        while ($this->current->usedClasses->hasNext()) {
-          $class= $this->current->usedClasses->next();
-          $used[]= strtr($this->names->packagedNameOf($class->qualifiedName()), NS_SEPARATOR, '.');
-        }
-        $this->current->interfaces->rewind();
-        while ($this->current->interfaces->hasNext()) {
-          $interface= $this->current->interfaces->next();
-          $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), NS_SEPARATOR, '.');
-        }
-        
         // Tokenize file
         $tokens= token_get_all(file_get_contents($root->findClass($this->current->qualifiedName())));
         try(); {
