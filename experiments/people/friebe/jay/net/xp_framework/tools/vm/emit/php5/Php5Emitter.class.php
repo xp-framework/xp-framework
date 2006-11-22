@@ -5,6 +5,9 @@
  */
  
   uses(
+    'io.File',
+    'io.FileUtil',
+    'util.profiling.Timer',
     'net.xp_framework.tools.vm.emit.Emitter',
     'net.xp_framework.tools.vm.util.Modifiers'
   );
@@ -172,6 +175,8 @@
       } else if (is_a($node, 'ObjectReferenceNode')) {
         $ctype= is_string($node->class) ? $this->qualifiedName($node->class) : $this->typeOf($node->class);
         return $this->context['types'][$ctype.'::$'.$node->member->name];
+      } else if (is_a($node, 'ArrayDeclarationNode')) {
+        return 'mixed[]';
       } else if ('"' == $node{0}) { // Double-quoted string
         return 'string';
       } else if ("'" == $node{0}) { // Single-quoted string
@@ -336,7 +341,7 @@
       
       // Check if we find an array offset somewhere, e.g. $x->getElements()[0]
       // This will need to be translated to xp::element($x->getElements(), 0)
-      if (is_a($node, 'VNode') && $node->chain) foreach ($node->chain as $i => $expr) {
+      if (is_a($node, 'VNode') && isset($node->chain)) foreach ($node->chain as $i => $expr) {
         if (is_a($expr, 'ArrayOffsetNode')) {
           $this->bytes.= 'xp::wraparray(';
           $node->chain[$i]->first= TRUE;
@@ -546,21 +551,32 @@
           $in= $node.DIRECTORY_SEPARATOR.$filename.'.xp';
           if (!file_exists($in)) continue;
           
+          $t= &new Timer();
+          
           // Found the file, tokenize, parse and emit it.
+          $t->start();
           $lexer= &new Lexer(file_get_contents($in), $in);
-          $out= &new File(str_replace('.xp', '.php5', $in));
-
+          
           // XXX TODO XXX Error handling
           $parser= &new Parser($lexer);
           $nodes= $parser->yyparse($lexer);
+
+          $t->stop();          
+          $parse= $t->elapsedTime();
           
           // XXX TODO XXX Error handling
+          $t->start();
           $emitter= &new Php5Emitter();
+          $emitter->setTrace($this->cat);
+          $emitter->setFilename($in);
           $emitter->context['classes']= $this->context['classes'];
           $emitter->emitAll($nodes);
-          
+
+          $t->stop();   
+          $emit= $t->elapsedTime();
+
           // XXX TODO XXX Error handling
-          FileUtil::setContents($out, $emitter->getResult());
+          FileUtil::setContents(new File(str_replace('.xp', '.php5', $in)), $emitter->getResult());
 
           // XXX TODO Merge not only classes but rest, too...
           foreach (array_keys($emitter->context['classes']) as $merge) {
@@ -568,7 +584,14 @@
           }
 
           // Remember we compiled this from an external file
-          $this->cat && $this->cat->info('Compiled ', $q);
+          $this->cat && $this->cat->infof(
+            'Emit<%s>: Compiled %s (parse: %.3f seconds, emit: %.3f seconds)',
+            $this->getFilename(),
+            $q,
+            $parse,
+            $emit
+          );
+         
           $this->context['uses'][$q]= $in;
           return $this->context['classes'][$q];
         }
@@ -828,7 +851,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitObjectReference(&$node) { 
-      $this->emit($node->class);
+      $node->class && $this->emit($node->class);
       $this->bytes.= '->';
       $this->emit($node->member);
 
@@ -847,25 +870,34 @@
     /**
      * Emits Binarys
      *
+     * Caution: left can be empty!
+     * <pre>
+     *   + [expr]= BinaryNode(NULL, '-', expr)
+     *   left + right = BinaryNode(left, '+', right)
+     * </pre>
+     *
+     * XXX Optimization possibility: $i = 1 + 2 can be optimized to $i = 3; XXX
+     *
      * @access  public
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitBinary(&$node) {
-      $type= $this->typeOf($node->left);
-      
-      // Check for operator overloading
-      if (isset($this->context['operators'][$type][$node->operator])) {
-        return $this->emit(new MethodCallNode(
-          $type, 
-          new MemberNode('__operator'.$this->operators[$node->operator]),
-          array($node->left, $node->right)
-        ));
+      if ($node->left) {
+        $type= $this->typeOf($node->left);
+
+        // Check for operator overloading
+        if (isset($this->context['operators'][$type][$node->operator])) {
+          return $this->emit(new MethodCallNode(
+            $type, 
+            new MemberNode('__operator'.$this->operators[$node->operator]),
+            array($node->left, $node->right)
+          ));
+        }
+
+        // Regular operator
+        $this->emit($node->left);
       }
       
-      // XXX Optimization possibility: $i = 1 + 2 can be optimized to $i = 3;
-      
-      // Regular operator
-      $this->emit($node->left);
       $this->bytes.= $this->mappedOperator($node->operator);
       $this->emit($node->right);
     }
@@ -1138,7 +1170,7 @@
      */
     function emitReturn(&$node) { 
       $this->bytes.= 'return ';
-      $this->emit($node->value);
+      $node->value && $this->emit($node->value);
     }
 
     /**
@@ -1589,7 +1621,7 @@
     function emitArrayAccess(&$node) {
       $this->emit($node->expression);
       $this->bytes.= '[';
-      $this->emit($node->offset);
+      $node->offset && $this->emit($node->offset);
       $this->bytes.= ']';
     }
 
