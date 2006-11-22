@@ -85,7 +85,7 @@
         $this->getMessage(),
         $this->getType(),
         $this->getTypeName(),
-        var_export($this->getfilename(), 1),
+        xp::stringOf($this->getfilename()),
         $this->getlinenumber(),
         $this->getColumn()
       );
