@@ -27,7 +27,6 @@
     function emitAll($nodes) {
       foreach ($nodes as $node) $this->emit($node);
     }
-    
 
     /**
      * Set Filename
