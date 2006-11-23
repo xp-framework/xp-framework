@@ -20,6 +20,9 @@ To easily be able to see when the framework changes.
 
 Functionality
 -------------
+
+Basics
+~~~~~~
 The version number will consist of three parts:
 <pre>
   X.X.X
@@ -29,6 +32,118 @@ The version number will consist of three parts:
   Major version
 </pre>
 
+Version history
+~~~~~~~~~~~~~~~
+1.0.0, released 2003-06-23
+<pre>
+  . No more support for PHP < 4.3.0
+  . There is now a common subclass for Errors and Exceptions called Throwable
+  . An exceptions stacktrace is an array of lang.StackTraceElement objects
+  . Exception::getStackTrace() returns this array and no longer a string
+  . Removes Object::getName() which has been deprecated for a while now
+  . Uses xp::registry to keep the global namespace free of bullshit
+</pre>
+
+1.1.0, released 2003-08-25
+<pre>
+  . Add the core feature of SAPIs
+</pre>
+
+1.2.0, released 2003-09-14
+<pre>
+  . Add xp::typeOf core functionality
+  . Add core functionality xp::gc()
+</pre>
+
+2.0.0, released 2003-09-21
+<pre>
+  . Implement interfaces
+</pre>
+
+2.1.0, released 2003-10-18
+<pre>
+  . Introduce core function "delete"
+</pre>
+
+2.2.0, released 2003-11-16
+<pre>
+  . Add "with" syntactic sugar.
+</pre>
+
+2.3.0, released 2004-01-16
+<pre>
+  . Add core functionality xp::null()
+</pre>
+
+2.4.0, released 2004-01-16
+<pre>
+  . Add support for inheriting interfaces
+</pre>
+
+2.5.0, released 2004-04-18
+<pre>
+  . Make uses() fail with a fatal error in case one of the classes in 
+    its list is not found (or can not be loaded due to other reasons).
+</pre>
+
+2.6.0, released 2004-07-06
+<pre>
+  . Remove Object::clone() in favor of new core functionality clone()
+</pre>
+
+2.7.0, released 2004-08-31
+<pre>
+  . Support static initializers in classes.
+</pre>
+
+2.8.0, released 2004-11-10
+<pre>
+  . Add core function xp::stringOf()
+</pre>
+
+2.9.0, released 2005-01-25
+<pre>
+  . RFC #0014: Add core function raise()
+</pre>
+
+3.0.0, released 2005-02-22
+<pre>
+  . RFC #0016: Method and class annotations 
+</pre>
+
+3.1.0, released 2005-03-31
+<pre>
+  . RFC #0021: Add support for multi-line annotations
+</pre>
+
+3.1.0, released 2005-11-22
+<pre>
+  . Bail when magic_quotes_gpc setting is on
+  . XPClass->toString() output changes
+  . Make regular expression parse generic types
+</pre>
+
+3.2.0, released 2005-12-19
+<pre>
+  . RFC #0045: Unique multiple occurrences of errors
+  . RFC #0047: Guaranteed destructor calls
+</pre>
+
+3.3.0, released 2006-08-25
+<pre>
+  . RFC #0070: Extend ClassLoader::defineClass() 
+  . RFC #0071: Class / Classloader associations
+</pre>
+
+3.4.0, released 2006-11-10
+<pre>
+  . RFC #0089: Core functions ref() and deref() 
+</pre>
+
+4.0.0, released 2006-11-20
+<pre>
+  . RFC #0084: Packages cleanup
+</pre>
 
 Security considerations
 -----------------------
