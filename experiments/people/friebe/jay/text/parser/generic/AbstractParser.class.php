@@ -23,7 +23,7 @@
      * Adds an error
      *
      * @access  public
-     * @param   &text.parser.generic.ParseError error
+     * @param   &text.parser.generic.ParseException error
      */
     function addError(&$error) {
       $this->errors[]= &$error;
@@ -43,7 +43,7 @@
      * Returns whether errors have occured
      *
      * @access  public
-     * @return  text.parser.generic.ParseError[]
+     * @return  text.parser.generic.ParseException[]
      */
     function getErrors() {
       return $this->errors;
@@ -90,7 +90,7 @@
      * @access  public
      * @param   &text.parser.generic.AbstractLexer lexer
      * @return  mixed result of the last reduction, if any.
-     * @throws  text.parser.generic.ParseError if an exception occurs during parsing.
+     * @throws  text.parser.generic.ParseException if an exception occurs during parsing.
      */
     function parse(&$lexer) {
       $this->errors= array();
