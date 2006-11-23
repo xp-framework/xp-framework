@@ -34,23 +34,24 @@ The version number will consist of three parts:
 
 Version history
 ~~~~~~~~~~~~~~~
-0.0.1, released 2002-02-21
+0.0.1, released 2002-02-21:
 <pre>
   . Initial revision (lang.base.php)
 </pre>
 
-0.1.0, released 2002-03-27
+0.1.0, released 2002-03-27:
 <pre>
   . import --> uses
 </pre>
 
-0.2.0, released 2002-05-07
+0.2.0, released 2002-05-07:
 <pre>
   . util.log.API
   . Core functionality cast()
+  . rdbms APIs return datetimes as Date objects
 </pre>
 
-0.2.1, released 2002-06-28
+0.2.1, released 2002-06-28:
 <pre>
   . Various util.Properties enhancements
     create()
@@ -68,45 +69,53 @@ Version history
     writeComment()
 </pre>
 
-0.3.0, released 2002-11-12
+0.2.2, released 2002-10-20:
+<pre>
+  . New Imaging API
+</pre>
+
+0.3.0, released 2002-11-12:
 <pre>
   . Initial revision of lang.XPClass
 </pre>
 
-0.4.0, released 2002-12-10 
+0.4.0, released 2002-12-10:
 <pre>
+  . rdbms API: DSNs
   . Add finally()
 </pre>
 
-0.4.1, released 2003-02-17
+0.4.1, released 2003-02-17:
 <pre>
   . Remove long-time deprecated util.LOG class
 </pre>
 
-0.5.0, released 2003-04-25
+0.5.0, released 2003-04-25:
 <pre>
   . Use var_export() instead of serialize in default toString method to
     make a more readable presentation
 </pre>
 
-0.6.0, relased 2003-05-25
+0.6.0, relased 2003-05-25:
 <pre>
+  . rdbms APIs: Add support for persistent connections
+  . rdbms APIs: Remove affected() and numrows() 
   . lang.Thread: Initial release
   . Make XPClass::newInstance pass arguments to new
 </pre>
 
-0.6.0, released 2003-06-01
+0.6.0, released 2003-06-01:
 <pre>
   . Unittest API
   . Implement debug_backtrace support for exceptions
 </pre>
 
-0.7.0, released 2003-06-09
+0.7.0, released 2003-06-09:
 <pre>
   . util.Date::isBefore() and isAfter() methods
 </pre>
 
-1.0.0, released 2003-06-23
+1.0.0, released 2003-06-23:
 <pre>
   . No more support for PHP < 4.3.0
   . There is now a common subclass for Errors and Exceptions called Throwable
@@ -116,47 +125,66 @@ Version history
   . Uses xp::registry to keep the global namespace free of bullshit
 </pre>
 
-1.0.1, released 2003-06-26
+1.0.1, released 2003-06-26:
 <pre>
   . Show max. up until the first \n in exception stacktraces
 </pre>
 
-1.1.0, released 2003-08-25
+1.0.2, released 2003-07-10:
+<pre>
+  . rename [Database].class.php into [Database]Connection.class.php
+</pre>
+
+1.1.0, released 2003-08-25:
 <pre>
   . lang.NullPointerException - initial release
   . Add the core feature of SAPIs
 </pre>
 
-1.2.0, released 2003-09-14
+1.2.0, released 2003-09-14:
 <pre>
   . Add xp::typeOf core functionality
   . Add core functionality xp::gc()
   . Remove (unused) lang.ExternalClassLoader
   . Add file.separator and path.separator system properties
+  . Prefix transactions with "xp_" so there is no problem
+    with reserved words.
 </pre>
 
-2.0.0, released 2003-09-21
+2.0.0, released 2003-09-21:
 <pre>
-  . util.Configurable
+  . Implement interfaces
   . Remove check for debug_backtrace() existance (requires 4.2 compat SAPI)
   . Add method hashCode() which will return a unique id for every object
   . Add method equals()
   . Add method clone()
-  . Implement interfaces
+  . util.Configurable, util.log.Traceable interfaces
   . Made RuntimeException an Error
 </pre>
 
-2.1.0, released 2003-10-18
+2.0.1, released 2003-09-27:
+<pre>
+  . Newly introduced SQLConnectException, SQLStateException and
+    SQLStatementFailedException, all being subclasses of SQLException
+</pre>
+
+2.1.0, released 2003-10-18:
 <pre>
   . Introduce core function "delete"
 </pre>
 
-2.2.0, released 2003-11-16
+2.2.0, released 2003-11-16:
 <pre>
   . Add "with" syntactic sugar.
 </pre>
 
-2.3.0, released 2004-01-16
+2.2.1, released 2004-01-04:
+<pre>
+  . rdbms APIs: prepare("where news_id in (%d)", array(1, 2, 3)) will 
+    result in "where news_id in (1, 2, 3)"
+</pre>
+
+2.3.0, released 2004-01-16:
 <pre>
   . Remove ability to use ClassLoader statically
   . Change XPClass::getMethods() to return an array of lang.Method objects
@@ -170,12 +198,12 @@ Version history
   . Add core functionality xp::null()
 </pre>
 
-2.3.1, released 2004-03-02
+2.3.1, released 2004-03-02:
 <pre>
   . Add method ClassLoader::findClass()
 </pre>
 
-2.4.0, released 2004-04-10
+2.4.0, released 2004-04-10:
 <pre>
   . Add support for inheriting interfaces
   . Use the tokenizer to accomplish full-featured method reflection
@@ -189,114 +217,164 @@ Version history
     . getExceptionTypes() - same, but as an array of lang.XPClass objects
 </pre>
 
-2.5.0, released 2004-04-18
+2.5.0, released 2004-04-18:
 <pre>
   . Make uses() fail with a fatal error in case one of the classes in 
     its list is not found (or can not be loaded due to other reasons).
 </pre>
 
-2.6.0, released 2004-06-07
+2.5.1, released 2004-05-13:
+<pre>
+  . Fix rdbms statement tokenizer for %% or unknown tokens (e.g. %X)
+</pre>
+
+2.6.0, released 2004-06-07:
 <pre>
   . Remove Object::__construct(), it is deprecated for forward compatibility
     reasons
 </pre>
 
-2.6.1, released 2004-07-06
+2.6.1, released 2004-07-06:
 <pre>
   . Remove Object::clone() in favor of new core functionality clone()
   . Add method hasConstructor()
   . Return NULL from getConstructor() if no constructor exists
 </pre>
 
-2.7.0, released 2004-08-31
+2.6.2, released 2004-07-16:
+<pre>
+  . DBConnection now extends util.Observable, no longer implements util.Traceable,
+    util.log.LogObserver is introduced to be an Observer that log the database
+    activity.
+</pre>
+
+2.7.0, released 2004-08-31:
 <pre>
   . Support static initializers in classes.
 </pre>
 
-2.8.0, released 2004-11-10
+2.8.0, released 2004-11-10:
 <pre>
   . Add core function xp::stringOf()
 </pre>
 
-2.9.0, released 2005-01-25
+2.9.0, released 2005-01-25:
 <pre>
   . RFC #0005: Add method ClassLoader::defineClass()
   . RFC #0011: Changes to Peer/DataSet/Criteria API
   . RFC #0014: Add core function raise()
 </pre>
 
-3.0.0, released 2005-02-22
+3.0.0, released 2005-03-01:
 <pre>
   . RFC #0016: Method and class annotations 
+  . RFC #0017: Webservices metadata
+  . RFC #0020: Unit tests metadata
 </pre>
 
-3.0.1, released 2005-03-31
+3.0.1, released 2005-03-31:
 <pre>
   . RFC #0021: Add support for multi-line annotations
 </pre>
 
-3.0.2, released 2005-04-08
+3.0.2, released 2005-04-08:
 <pre>
   . lang.reflect.Proxy: First useable release
 </pre>
 
 3.0.3, released 2005-05-29:
 <pre>
+  . RFC #0025: Replace text.apidoc with new API
   . Add method Method::getArgument() which retrieves an argument by a given position
   . Add method Method::numArguments() which returns the number of arguments
 </pre>
 
-3.0.4, released 2005-08-26:
+3.0.4, released 2005-07-20:
 <pre>
-  . RFC #0033: Annotation support for members / lang.reflect.Field
+  RFC #0019: LDAP query infrastructure
 </pre>
 
-3.0.5, released 2005-09-28:
+3.0.5, released 2005-09-01:
+<pre>
+  . RFC #0032: Add annotations for Unittest API
+  . RFC #0033: Annotation support for members / lang.reflect.Field
+  . RFC #0035: Interceptors for FTP storage
+</pre>
+
+3.0.6, released 2005-09-28:
 <pre>
   . RFC #0030: Overloaded methods in lang.reflect.Proxy
 </pre>
 
-3.0.6, released 2005-10-04:
+3.0.7, released 2005-10-07:
 <pre>
+  . RFC #0039: Decode username/password when using parse_url() in framework
   . net.xp-framework => net.xp_framework
 </pre>
 
-3.0.7, released 2005-11-11:
+3.0.8, released 2005-11-11:
 <pre>
+  . RFC #0040: Annotation-based XML marshalling/unmarshalling
   . SVN rev. 6100 - MORE POWER!
 </pre>
 
-3.1.0, released 2005-11-22:
+3.1.0, released 2005-11-29:
 <pre>
+  . RFC #0028: Add a method forwardTo() to XMLScriptletResponse
+  . RFC #0042: SOAP Headers API
+  . RFC #0043: UnknownRemoteObject
   . Bail when magic_quotes_gpc setting is on
   . XPClass->toString() output changes
   . Make regular expression parse generic types
 </pre>
 
+3.1.1, released 2005-12-09:
+<pre>
+  . RFC #0044: New save() method in DataSet
+</pre>
+
 3.2.0, released 2005-12-21:
 <pre>
   . RFC #0012: EJB access API
+  . RFC #0038: Type wrappers
+  . RFC #0045: Unique multiple occurrences of errors
+  . RFC #0047: Guaranteed destructor calls
+  . RFC #0048: ESDL - Enterprise Service Description Language
   . catch AssertionFailedErrors which might be thrown in the setUp() method of a 
     testcase in addition to the PrerequisitesNotMetError.
     Tests may include common assertions which can be moved to setUp() then.
   . Fix PHP4.4.x E_NOTICEs about variables and references
-  . RFC #0045: Unique multiple occurrences of errors
-  . RFC #0047: Guaranteed destructor calls
 </pre>
 
-3.2.1, released 2006-05-14
+3.2.1, released 2006-01-30:
 <pre>
+  . RFC #0050: RDBMS Criteria API enhancement
+  . RFC #0053: Formresult information about a wrapper
+</pre>
+
+3.2.2, released 2006-05-14:
+<pre>
+  . RFC #0055: Make xp::stringOf() fatal error safe
+  . RFC #0056: Grand unified RPC api
   . RFC #0057: Collections framework
 </pre>
 
-3.2.2, released 2006-06-30
+3.2.3, released 2006-06-30:
 <pre>
+  . RFC #0058: New rdbms exception
   . RFC #0059: Timeouts for unit tests
   . Unittests: Fix assertEquals() and assertNotEquals() for arrays
 </pre>
 
+3.2.4, released 2006-07-07:
+<pre>
+  . RFC #0066: TCP_NODELAY server option
+</pre>
+
 3.3.0, released 2006-08-25:
 <pre>
+  . RFC #0065: Server Protocol API
+  . RFC #0067: Add debug logging to remote API
   . RFC #0070: Extend ClassLoader::defineClass() 
   . RFC #0071: Class / Classloader associations
 </pre>
