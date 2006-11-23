@@ -1,0 +1,54 @@
+RFC 0091: XP Versions 
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Thu Nov 23 15:48:08 CET 2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The XP framework will have a version number and versioning guidelines.
+This version number will be present in the XP's runtime XAR's filename.
+
+
+Rationale
+---------
+To easily be able to see when the framework changes.
+
+
+Functionality
+-------------
+The version number will consist of three parts:
+<pre>
+  X.X.X
+  ^ ^ ^
+  | | Patch-level
+  | Minor version
+  Major version
+</pre>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
