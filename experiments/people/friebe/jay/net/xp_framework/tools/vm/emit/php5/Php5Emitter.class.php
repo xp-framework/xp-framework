@@ -8,6 +8,8 @@
     'io.File',
     'io.FileUtil',
     'util.profiling.Timer',
+    'net.xp_framework.tools.vm.Lexer',
+    'net.xp_framework.tools.vm.Parser',
     'net.xp_framework.tools.vm.emit.Emitter',
     'net.xp_framework.tools.vm.util.Modifiers'
   );
@@ -450,6 +452,59 @@
       $this->emitAll($node->statements);
       $this->bytes.= '}';
     }
+    
+    /**
+     * Emits native source for a given class, method and signature
+     *
+     * @access  public
+     * @param   string class
+     * @param   string method
+     * @param   net.xp_framework.tools.vm.ParameterNode[] parameters
+     */
+    function emitNativeSourceFor($class, $method, $parameters) {
+      $function= $class.'·'.$method;
+      
+      $tokens= token_get_all(file_get_contents(str_replace('.xp', '.native.php5', $this->getFileName())));
+      
+      // Skip until we find the function
+      $s= sizeof($tokens);
+      while (T_FUNCTION != $tokens[$i][0] || $function != $tokens[$i+ 2][1]) { 
+        if ($i++ < $s) continue;
+
+        $this->addError(new CompileError(8000, 'Cannot find native method implementation '.$function.'()'));
+        return;
+      }
+      
+      // Record all args
+      $args= array();
+      $n= 0;
+      while ('{' != $tokens[$i][0] && $i++ < $s) {
+        T_VARIABLE == $tokens[$i][0] && $args[$tokens[$i][1]]= $parameters[$n++]->name;
+      }
+      
+      // Check signature
+      if ($n != sizeof($parameters)) {
+        $this->addError(new CompileError(8001, sprintf(
+          'Native method %s() signature mismatch (have: %d, expect: %d)',
+          $function,
+          $n,
+          sizeof($parameters)
+        )));
+        return;
+      }
+      
+      // Copy function body
+      $brackets= 0;
+      do {
+        switch ($tokens[$i][0]) {
+          case '{': $brackets++; break;
+          case '}': $brackets--; if (0 == $brackets) break 2; continue 2;
+          case T_VARIABLE: $this->bytes.= isset($args[$tokens[$i][1]]) ? $args[$tokens[$i][1]] : $tokens[$i][1]; continue 2;
+        }
+        $this->bytes.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i][0];  
+      } while ($i++ < $s);
+      $this->bytes.= '}';
+    }
 
     /**
      * Emits MethodDeclarations
@@ -473,7 +528,11 @@
 
       // Method body
       if (NULL === $node->statements) {
-        $this->bytes.= ';';
+        if ($node->modifiers & MODIFIER_NATIVE) {
+          $this->emitNativeSourceFor($this->context['class'], $method, $node->parameters);
+        } else {
+          $this->bytes.= ';';   // TODO: May only be true if in interface or if abstract
+        }
       } else {
         $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
