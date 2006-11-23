@@ -515,7 +515,7 @@
      */
     function emitMethodDeclaration(&$node) {
       $method= $this->methodName($node);
-      $this->setType($this->context['class'].'::'.$method, $node->return);
+      $this->setType($this->context['class'].'::'.$method, $node->returns);
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
@@ -833,6 +833,21 @@
       }
       $this->bytes.= '))';
     }
+    
+    function emitMemberName($name) {
+      if (is_string($name)) {          // $test->member;
+        $this->bytes.= $name;
+        return $name;
+      } else if (is_array($name)) {    // $test->{$member};
+        $this->bytes.= '{';
+        $this->emit($name[0]);
+        $this->bytes.= '}';
+        // TODO: $this->addError(new CompilerMessage('...');
+        return '${}';
+      } else {
+        $this->addError(new CompileError(12, 'Unknown member node '.xp::stringOf($name)));
+      }
+    }
 
     /**
      * Emits Members
@@ -841,7 +856,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitMember(&$node) {
-      $this->bytes.= $node->name;
+      $this->emitMemberName($node->name);
       if (NULL === $node->offset) return;
 
       $this->bytes.= '[';
@@ -868,21 +883,24 @@
         $this->bytes.= '->';
       }
 
-      $method= $node->method->name;
-      if (isset($this->context['overloaded'][$type.'::'.$method])) {
-        foreach ($node->arguments as $arg) {
-          $method.= $this->typeOf($arg);
-        }
+      // Calculate method name to invoke. Note method overloading
+      // does not work with dynamic method calls!
+      $overloaded= '';
+      if (is_string($node->method->name) && isset($this->context['overloaded'][$type.'::'.$node->method->name])) {
+        foreach ($node->arguments as $arg) $overloaded.= $this->typeOf($arg);
       }
-      $this->bytes.= $method.'(';
+      
+      // Signature
+      $name= $this->emitMemberName($node->method->name);
+      $this->bytes.= $overloaded.'(';
       for ($i= 0; $i < sizeof($node->arguments); $i++) {
         $this->emit($node->arguments[$i]);
         $this->bytes.= ', ';
       }
       
       // Pass default args
-      if (!empty($this->context['default'][$type.'::'.$method])) {
-        for ($defaults= $this->context['default'][$type.'::'.$method]; $i <= max(array_keys($defaults)); $i++) {
+      if (!empty($this->context['default'][$type.'::'.$name])) {
+        for ($defaults= $this->context['default'][$type.'::'.$name]; $i <= max(array_keys($defaults)); $i++) {
           $this->emit($defaults[$i]);
           $this->bytes.= ', ';
         }

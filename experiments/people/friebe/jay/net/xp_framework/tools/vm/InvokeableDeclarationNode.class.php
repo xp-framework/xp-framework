@@ -16,11 +16,11 @@
     var
       $name,
       $parameters,
-      $return,
+      $returns,
       $statements,
       $modifiers,
       $annotations,
-      $throws;
+      $thrown;
       
     /**
      * Constructor
@@ -28,20 +28,20 @@
      * @access  public
      * @param   string name 
      * @param   mixed parameters
-     * @param   mixed return
+     * @param   mixed returns
      * @param   mixed statements
      * @param   mixed modifiers
      * @param   mixed annotations
-     * @param   mixed throws
+     * @param   mixed thrown
      */
-    function __construct($name, $parameters, $return, $statements, $modifiers, $annotations, $throws) {
+    function __construct($name, $parameters, $returns, $statements, $modifiers, $annotations, $thrown) {
       $this->name= $name;
       $this->parameters= $parameters;
-      $this->return= $return;
+      $this->returns= $returns;
       $this->statements= $statements;
       $this->modifiers= $modifiers;
       $this->annotations= $annotations;
-      $this->throws= $throws;
+      $this->thrown= $thrown;
     }  
   }
 ?>

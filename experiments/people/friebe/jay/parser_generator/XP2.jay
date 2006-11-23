@@ -1186,7 +1186,7 @@ object_dim_list:
 variable_name:
 		T_STRING		{ /* $$= $1; */ }
     |   '{' expr '}' {
-          $$= $2;
+          $$= array($2);
         }
 ;
 
