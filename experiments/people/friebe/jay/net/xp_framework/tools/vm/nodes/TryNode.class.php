@@ -14,21 +14,21 @@
   class TryNode extends VNode {
     var
       $statements,
-      $catch,
-      $finally;
+      $firstCatch,
+      $finallyBlock;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed $statements
-     * @param   mixed $catch
-     * @param   mixed $catches
+     * @param   mixed statements
+     * @param   mixed firstCatch
+     * @param   mixed finallyBlock
      */
-    function __construct($statements, $catch, $finally) {
+    function __construct($statements, $firstCatch, $finallyBlock) {
       $this->statements= $statements;
-      $this->catch= $catch;
-      $this->finally= $finally;
+      $this->firstCatch= $firstCatch;
+      $this->finallyBlock= $finallyBlock;
     }  
   }
 ?>

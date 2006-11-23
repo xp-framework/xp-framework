@@ -15,7 +15,7 @@
     var
       $variable,
       $expression,
-      $operator;
+      $op;
       
     /**
      * Constructor
@@ -23,12 +23,12 @@
      * @access  public
      * @param   mixed variable
      * @param   mixed expression
-     * @param   string operator
+     * @param   string op
      */
-    function __construct($variable, $expression, $operator) {
+    function __construct($variable, $expression, $op) {
       $this->variable= $variable;
       $this->expression= $expression;
-      $this->operator= $operator;
+      $this->op= $op;
     }  
   }
 ?>

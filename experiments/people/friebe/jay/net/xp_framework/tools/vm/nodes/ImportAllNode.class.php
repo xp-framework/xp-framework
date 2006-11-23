@@ -13,16 +13,16 @@
    */ 
   class ImportAllNode extends VNode {
     var
-      $package;
+      $from;
       
     /**
      * Constructor
      *
      * @access  public
-     * @param   mixed package
+     * @param   mixed from
      */
-    function __construct($package) {
-      $this->package= $package;
+    function __construct($from) {
+      $this->from= $from;
     }  
   }
 ?>

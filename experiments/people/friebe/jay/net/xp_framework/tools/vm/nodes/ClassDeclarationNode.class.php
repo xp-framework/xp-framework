@@ -15,7 +15,7 @@
     var
       $name, 
       $extends, 
-      $implements, 
+      $interfaces, 
       $statements, 
       $modifiers, 
       $annotations;
@@ -26,15 +26,15 @@
      * @access  public
      * @param   string name
      * @param   mixed extends
-     * @param   mixed[] implements
+     * @param   mixed[] interfaces
      * @param   mixed[] statements
      * @param   mixed[] modifiers
      * @param   mixed annotations
      */
-    function __construct($name, $extends, $implements, $statements, $modifiers, $annotations) {
+    function __construct($name, $extends, $interfaces, $statements, $modifiers, $annotations) {
       $this->name= $name;
       $this->extends= $extends;
-      $this->implements= $implements;
+      $this->interfaces= $interfaces;
       $this->statements= $statements;
       $this->modifiers= $modifiers;
       $this->annotations= $annotations;

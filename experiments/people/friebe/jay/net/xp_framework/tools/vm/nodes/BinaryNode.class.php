@@ -15,7 +15,7 @@
     var
       $left,
       $right,
-      $operator;
+      $op;
       
     /**
      * Constructor
@@ -23,12 +23,12 @@
      * @access  public
      * @param   mixed left
      * @param   mixed right
-     * @param   string operator
+     * @param   string op
      */
-    function __construct($left, $right, $operator) {
+    function __construct($left, $right, $op) {
       $this->left= $left;
       $this->right= $right;
-      $this->operator= $operator;
+      $this->op= $op;
     }  
   }
 ?>

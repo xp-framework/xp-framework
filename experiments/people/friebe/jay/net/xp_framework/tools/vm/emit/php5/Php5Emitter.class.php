@@ -26,7 +26,7 @@
     var
       $bytes   = '',
       $context = array(),
-      $operators= array(
+      $overloadable= array(
         '*' => 'times',
         '+' => 'plus',
         '-' => 'minus',
@@ -701,9 +701,9 @@
       $this->context['classes'][$this->context['class']]= $parent;
       
       // Interfaces
-      if ($node->implements) {
+      if ($node->interfaces) {
         $this->bytes.= ' implements ';
-        foreach ($node->implements as $name) {
+        foreach ($node->interfaces as $name) {
           $interface= $this->qualifiedName($name);
           
           if (NULL === $this->lookupClass($interface)) {
@@ -773,7 +773,7 @@
       $this->bytes.= '}';
       
       // Check interface implementations
-      foreach ($node->implements as $interface) {
+      foreach ($node->interfaces as $interface) {
         $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
       }
 
@@ -952,10 +952,10 @@
         $type= $this->typeOf($node->left);
 
         // Check for operator overloading
-        if (isset($this->context['operators'][$type][$node->operator])) {
+        if (isset($this->context['operators'][$type][$node->op])) {
           return $this->emit(new MethodCallNode(
             $type, 
-            new MemberNode('__operator'.$this->operators[$node->operator]),
+            new MemberNode('__operator'.$this->overloadable[$node->op]),
             array($node->left, $node->right)
           ));
         }
@@ -964,7 +964,7 @@
         $this->emit($node->left);
       }
       
-      $this->bytes.= $this->mappedOperator($node->operator);
+      $this->bytes.= $this->mappedOperator($node->op);
       $this->emit($node->right);
     }
 
@@ -1015,11 +1015,11 @@
       $this->emit($node->variable);
 
       // Check for operator overloading
-      if (isset($this->context['operators'][$type][$node->operator])) {
+      if (isset($this->context['operators'][$type][$node->op])) {
         $this->bytes.= '= ';
         $m= &new MethodCallNode(
           $type, 
-          new MemberNode('__operator'.$this->operators[$node->operator]),
+          new MemberNode('__operator'.$this->overloadable[$node->op]),
           array($node->variable, $node->expression)
         );
 
@@ -1027,7 +1027,7 @@
         return $this->emit($m);
       }
 
-      $this->bytes.= $this->mappedOperator($node->operator).'= ';
+      $this->bytes.= $this->mappedOperator($node->op).'= ';
       $this->emit($node->expression);
 
       $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($node->expression));
@@ -1172,7 +1172,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitImportAll(&$node) {
-      $this->importAllOf($node->package);
+      $this->importAllOf($node->from);
     }    
     
     /**
@@ -1187,19 +1187,19 @@
 
       // Catch-all XPExceptions
       $this->bytes.= '} catch (XPException $__e) { ';
-      $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->catch->class).') { ';
-      $this->bytes.= $node->catch->variable.'= $__e->cause; ';
+      $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->firstCatch->class).') { ';
+      $this->bytes.= $node->firstCatch->variable.'= $__e->cause; ';
       
-      foreach ($node->catch->statements as $stmt) {
+      foreach ($node->firstCatch->statements as $stmt) {
         if (is_a($stmt, 'ReturnNode') || is_a($stmt, 'ThrowNode')) {
-          $node->finally && $this->emitAll($node->finally->statements);
+          $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
         }
       
         $this->emit($stmt);
         $this->bytes.= ';';
       }
       
-      foreach ($node->catch->catches as $catch) {
+      foreach ($node->firstCatch->catches as $catch) {
         $this->bytes.= '} else if ($__e->cause instanceof '.$this->qualifiedName($catch->class).') { ';
         $this->bytes.= $catch->variable.'= $__e->cause; ';
         $this->emitAll($catch->statements);
@@ -1207,10 +1207,10 @@
       
       // Rethrow unhandled exceptions
       $this->bytes.= '} else { ';
-      $node->finally && $this->emitAll($node->finally->statements);
+      $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
       $this->bytes.= ' throw $__e; } }';
       
-      $node->finally && $this->emitAll($node->finally->statements);
+      $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
     }
 
     /**
@@ -1362,7 +1362,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitOperatorDeclaration(&$node) {       
-      $method= '__operator'.$this->operators[$node->name];
+      $method= '__operator'.$this->overloadable[$node->name];
       $this->context['method']= $method;
       $this->setType($this->context['class'].'::'.$method, $this->context['class']);
       $this->context['operators'][$this->context['class']][$node->name]= TRUE;
@@ -1619,7 +1619,7 @@
      */
     function emitBooleanOperator(&$node) {
       $this->emit($node->left);
-      $this->bytes.= ' '.$node->operator.' ';
+      $this->bytes.= ' '.$node->op.' ';
       $this->emit($node->right);
     }
 
