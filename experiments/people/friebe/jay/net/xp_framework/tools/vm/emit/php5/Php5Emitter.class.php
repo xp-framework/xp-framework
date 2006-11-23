@@ -463,6 +463,7 @@
      */
     function emitNativeSourceFor($class, $method, $parameters) {
       $function= $class.'·'.$method;
+      $this->cat && $this->cat->debug('Linking native source for', $class.'::'.$method.'()');
       
       $tokens= token_get_all(file_get_contents(str_replace('.xp', '.native.php5', $this->getFileName())));
       
@@ -498,7 +499,7 @@
       do {
         switch ($tokens[$i][0]) {
           case '{': $brackets++; break;
-          case '}': $brackets--; if (0 == $brackets) break 2; continue 2;
+          case '}': $brackets--; if (0 == $brackets) break 2; break;
           case T_VARIABLE: $this->bytes.= isset($args[$tokens[$i][1]]) ? $args[$tokens[$i][1]] : $tokens[$i][1]; continue 2;
         }
         $this->bytes.= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i][0];  
