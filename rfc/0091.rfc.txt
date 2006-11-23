@@ -46,7 +46,26 @@ Version history
 
 0.2.0, released 2002-05-07
 <pre>
+  . util.log.API
   . Core functionality cast()
+</pre>
+
+0.2.1, released 2002-06-28
+<pre>
+  . Various util.Properties enhancements
+    create()
+    exists()
+    reset()
+    readArray()
+    readFloat()
+    hasSection()
+    writeSection()
+    writeString()
+    writeInteger()
+    writeFloat()
+    writeBool()
+    writeArray()
+    writeComment()
 </pre>
 
 0.3.0, released 2002-11-12
@@ -57,6 +76,11 @@ Version history
 0.4.0, released 2002-12-10 
 <pre>
   . Add finally()
+</pre>
+
+0.4.1, released 2003-02-17
+<pre>
+  . Remove long-time deprecated util.LOG class
 </pre>
 
 0.5.0, released 2003-04-25
@@ -73,7 +97,13 @@ Version history
 
 0.6.0, released 2003-06-01
 <pre>
+  . Unittest API
   . Implement debug_backtrace support for exceptions
+</pre>
+
+0.7.0, released 2003-06-09
+<pre>
+  . util.Date::isBefore() and isAfter() methods
 </pre>
 
 1.0.0, released 2003-06-23
@@ -107,6 +137,7 @@ Version history
 
 2.0.0, released 2003-09-21
 <pre>
+  . util.Configurable
   . Remove check for debug_backtrace() existance (requires 4.2 compat SAPI)
   . Add method hashCode() which will return a unique id for every object
   . Add method equals()
@@ -190,6 +221,7 @@ Version history
 2.9.0, released 2005-01-25
 <pre>
   . RFC #0005: Add method ClassLoader::defineClass()
+  . RFC #0011: Changes to Peer/DataSet/Criteria API
   . RFC #0014: Add core function raise()
 </pre>
 
@@ -224,7 +256,12 @@ Version history
   . RFC #0030: Overloaded methods in lang.reflect.Proxy
 </pre>
 
-3.0.6, released 2005-11-11:
+3.0.6, released 2005-10-04:
+<pre>
+  . net.xp-framework => net.xp_framework
+</pre>
+
+3.0.7, released 2005-11-11:
 <pre>
   . SVN rev. 6100 - MORE POWER!
 </pre>
@@ -236,11 +273,26 @@ Version history
   . Make regular expression parse generic types
 </pre>
 
-3.2.0, released 2005-12-19:
+3.2.0, released 2005-12-21:
 <pre>
+  . RFC #0012: EJB access API
+  . catch AssertionFailedErrors which might be thrown in the setUp() method of a 
+    testcase in addition to the PrerequisitesNotMetError.
+    Tests may include common assertions which can be moved to setUp() then.
   . Fix PHP4.4.x E_NOTICEs about variables and references
   . RFC #0045: Unique multiple occurrences of errors
   . RFC #0047: Guaranteed destructor calls
+</pre>
+
+3.2.1, released 2006-05-14
+<pre>
+  . RFC #0057: Collections framework
+</pre>
+
+3.2.2, released 2006-06-30
+<pre>
+  . RFC #0059: Timeouts for unit tests
+  . Unittests: Fix assertEquals() and assertNotEquals() for arrays
 </pre>
 
 3.3.0, released 2006-08-25:
