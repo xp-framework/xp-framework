@@ -38,6 +38,26 @@ The current version number is stored in a file in xp/trunk called
 VERSION.
 
 
+XARs
+~~~~
+For every version number starting as of version 4.0.0, a list of XARs 
+will be created containing the version number in their filenames.
+
+* xp-rt-4.0.0.xar       (skeleton/*)
+* org.gnome-4.0.0.xar   (ports/classes/org/gnome/*)
+* com.sun-4.0.0.xar     (ports/classes/com/sun/*)
+(etc.)
+
+It is guaranteed that files from exact versions will always work
+together flawlessly.
+
+Patch-level versions will also be interopable, but minor versions
+may already introduce new inter-package dependencies and thus xars
+from one minor version may or may not work together. If xars from
+one major versions work together with another version it's only
+because you're lucky:)
+
+
 Guidelines for version numbers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Definition: The XP framework's core is lang.base.php, lang and util.
@@ -50,6 +70,10 @@ Definition: The XP framework's core is lang.base.php, lang and util.
 * The minor version number is changed whenever new APIs inside the
   core are created (e.g. lang.types, util.collections) or when other
   important APIs (rdbms, remote, unittest, io, webservices) are changed.
+  
+  The minor version number is also changed if a new API is being used
+  by a different package (e.g., if the io.collections API is used by
+  org.gnome classes).
 
 * The patch-level is increased whenever changes to non-core are made,
   important bug fixes are released, new APIs are created.
@@ -526,6 +550,7 @@ Related documents
 
 - http://developer.mozilla.org/en/docs/Extension_Versioning%2C_Update_and_Compatibility
   MozDev: Extension Versioning, Update and Compatibility
+
 
 Comments
 --------
