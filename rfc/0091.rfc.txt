@@ -509,6 +509,23 @@ None.
 
 Related documents
 -----------------
+- http://apr.apache.org/versioning.html
+  APR's Version Numbering
+
+- http://developer.gnome.org/gep/gep-4.html
+  Module versioning and branching guidelines for GNOME platform
+
+- http://wiki.eclipse.org/index.php/Version_Numbering
+  Eclipse Version Numbering
+
+- http://pear.php.net/group/docs/20040226-vn.php
+  PEAR Group - Administrative Documents - Version Naming
+
+- http://en.wikipedia.org/wiki/Linux_kernel#Version_numbering
+  Linux (kernel) Version Numbering
+
+- http://developer.mozilla.org/en/docs/Extension_Versioning%2C_Update_and_Compatibility
+  MozDev: Extension Versioning, Update and Compatibility
 
 Comments
 --------
