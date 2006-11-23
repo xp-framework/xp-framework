@@ -410,6 +410,7 @@
             break;
 
           case ST_FUNCTION_BODY.'.':
+          case ST_INITIAL.'.':
             $t= '~';
             break;
 
