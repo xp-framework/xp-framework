@@ -620,7 +620,7 @@
           
           // XXX TODO XXX Error handling
           $parser= &new Parser($lexer);
-          $nodes= $parser->yyparse($lexer);
+          $nodes= $parser->parse($lexer);
 
           $t->stop();          
           $parse= $t->elapsedTime();
