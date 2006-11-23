@@ -34,6 +34,41 @@ The version number will consist of three parts:
 
 Version history
 ~~~~~~~~~~~~~~~
+0.0.1, released 2002-02-21
+<pre>
+  . Initial revision (lang.base.php)
+</pre>
+
+0.1.0, released 2002-03-27
+<pre>
+  . import --> uses
+</pre>
+
+0.2.0, released 2002-05-07
+<pre>
+  . Core functionality cast()
+</pre>
+
+0.3.0, released 2002-11-12
+<pre>
+  . Initial revision of lang.XPClass
+</pre>
+
+0.4.0, released 2002-12-10 
+<pre>
+  . Add finally()
+</pre>
+
+0.5.0, relased 2003-05-25
+<pre>
+  . Make XPClass::newInstance pass arguments to new
+</pre>
+
+0.6.0, released 2003-06-01
+<pre>
+  . Implement debug_backtrace support for exceptions
+</pre>
+
 1.0.0, released 2003-06-23
 <pre>
   . No more support for PHP < 4.3.0
