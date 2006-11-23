@@ -4,8 +4,11 @@
  * $Id$
  */
  
-  uses('net.xp_framework.tools.vm.CompileError');
- 
+  uses(
+    'net.xp_framework.tools.vm.CompileError', 
+    'net.xp_framework.tools.vm.VNode'
+  );
+  
   /**
    * Emitter
    *
