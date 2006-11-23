@@ -562,6 +562,9 @@ Comments
   An idea would be to add whether an RFC will change the framework's version
   number to the "Dependencies" section.
 
+- friebe, Thu Nov 23 18:37:28 CET 2006
+  Should we have a target version as @target in RFCs?
+
 - friebe, Thu Nov 23 18:34:04 CET 2006
   To give ports/classes a level of independency but also to make it clear
   which framework version they belong to, we could add a release number to
@@ -569,5 +572,8 @@ Comments
   
   org.gnome-4.0.0_1.xar (works with 4.0.0 of framework and is release #1)
   org.gnome-4.0.0_2.xar (works with 4.0.0 of framework and is release #2)
-  
+
+- friebe, Thu Nov 23 18:37:01 CET 2006
+  Should we have dedicated roadmaps for each release?
+    
 <EOF>
