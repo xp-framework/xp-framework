@@ -557,5 +557,17 @@ Comments
 - friebe, Thu Nov 23 18:07:09 CET 2006
   Should we store the version history in xp/trunk/HISTORY? Or in
   xp/trunk/Changelog?
+
+- friebe, Thu Nov 23 18:32:46 CET 2006
+  An idea would be to add whether an RFC will change the framework's version
+  number to the "Dependencies" section.
+
+- friebe, Thu Nov 23 18:34:04 CET 2006
+  To give ports/classes a level of independency but also to make it clear
+  which framework version they belong to, we could add a release number to
+  their versions, e.g. 
+  
+  org.gnome-4.0.0_1.xar (works with 4.0.0 of framework and is release #1)
+  org.gnome-4.0.0_2.xar (works with 4.0.0 of framework and is release #2)
   
 <EOF>
