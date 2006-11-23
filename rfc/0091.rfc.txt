@@ -59,8 +59,15 @@ Version history
   . Add finally()
 </pre>
 
-0.5.0, relased 2003-05-25
+0.5.0, released 2003-04-25
 <pre>
+  . Use var_export() instead of serialize in default toString method to
+    make a more readable presentation
+</pre>
+
+0.6.0, relased 2003-05-25
+<pre>
+  . lang.Thread: Initial release
   . Make XPClass::newInstance pass arguments to new
 </pre>
 
@@ -79,8 +86,14 @@ Version history
   . Uses xp::registry to keep the global namespace free of bullshit
 </pre>
 
+1.0.1, released 2003-06-26
+<pre>
+  . Show max. up until the first \n in exception stacktraces
+</pre>
+
 1.1.0, released 2003-08-25
 <pre>
+  . lang.NullPointerException - initial release
   . Add the core feature of SAPIs
 </pre>
 
@@ -88,11 +101,18 @@ Version history
 <pre>
   . Add xp::typeOf core functionality
   . Add core functionality xp::gc()
+  . Remove (unused) lang.ExternalClassLoader
+  . Add file.separator and path.separator system properties
 </pre>
 
 2.0.0, released 2003-09-21
 <pre>
+  . Remove check for debug_backtrace() existance (requires 4.2 compat SAPI)
+  . Add method hashCode() which will return a unique id for every object
+  . Add method equals()
+  . Add method clone()
   . Implement interfaces
+  . Made RuntimeException an Error
 </pre>
 
 2.1.0, released 2003-10-18
@@ -107,12 +127,35 @@ Version history
 
 2.3.0, released 2004-01-16
 <pre>
+  . Remove ability to use ClassLoader statically
+  . Change XPClass::getMethods() to return an array of lang.Method objects
+  . Change XPClass::getMethods() not to return constructor and destructor
+  . Add method XPClass::getConstructor()
+  . Fix XPClass::getParentclass() so that it returns NULL if there is no parent
+  . Add method XPClass::isSubclassOf()
+  . Add method XPClass::isInstance()
+  . Add method XPClass::isInterface()
+  . Add method XPClass::getInterfaces()
   . Add core functionality xp::null()
 </pre>
 
-2.4.0, released 2004-01-16
+2.3.1, released 2004-03-02
+<pre>
+  . Add method ClassLoader::findClass()
+</pre>
+
+2.4.0, released 2004-04-10
 <pre>
   . Add support for inheriting interfaces
+  . Use the tokenizer to accomplish full-featured method reflection
+    . getModifiers() - returns a bitfield of modifiers (public, private, protected,
+      abstract, final, static)
+    . getModifierNames() - same, but as an array of strings.
+    . getArguments() - returns an array of method arguments (lang.reflect.Argument)
+    . getReturnType() - returns the return type as string
+    . getExceptionNames() - returns thrown exceptions as an array of fully
+      qualified class names
+    . getExceptionTypes() - same, but as an array of lang.XPClass objects
 </pre>
 
 2.5.0, released 2004-04-18
@@ -121,9 +164,17 @@ Version history
     its list is not found (or can not be loaded due to other reasons).
 </pre>
 
-2.6.0, released 2004-07-06
+2.6.0, released 2004-06-07
+<pre>
+  . Remove Object::__construct(), it is deprecated for forward compatibility
+    reasons
+</pre>
+
+2.6.1, released 2004-07-06
 <pre>
   . Remove Object::clone() in favor of new core functionality clone()
+  . Add method hasConstructor()
+  . Return NULL from getConstructor() if no constructor exists
 </pre>
 
 2.7.0, released 2004-08-31
@@ -138,6 +189,7 @@ Version history
 
 2.9.0, released 2005-01-25
 <pre>
+  . RFC #0005: Add method ClassLoader::defineClass()
   . RFC #0014: Add core function raise()
 </pre>
 
@@ -146,36 +198,79 @@ Version history
   . RFC #0016: Method and class annotations 
 </pre>
 
-3.1.0, released 2005-03-31
+3.0.1, released 2005-03-31
 <pre>
   . RFC #0021: Add support for multi-line annotations
 </pre>
 
-3.1.0, released 2005-11-22
+3.0.2, released 2005-04-08
+<pre>
+  . lang.reflect.Proxy: First useable release
+</pre>
+
+3.0.3, released 2005-05-29:
+<pre>
+  . Add method Method::getArgument() which retrieves an argument by a given position
+  . Add method Method::numArguments() which returns the number of arguments
+</pre>
+
+3.0.4, released 2005-08-26:
+<pre>
+  . RFC #0033: Annotation support for members / lang.reflect.Field
+</pre>
+
+3.0.5, released 2005-09-28:
+<pre>
+  . RFC #0030: Overloaded methods in lang.reflect.Proxy
+</pre>
+
+3.0.6, released 2005-11-11:
+<pre>
+  . SVN rev. 6100 - MORE POWER!
+</pre>
+
+3.1.0, released 2005-11-22:
 <pre>
   . Bail when magic_quotes_gpc setting is on
   . XPClass->toString() output changes
   . Make regular expression parse generic types
 </pre>
 
-3.2.0, released 2005-12-19
+3.2.0, released 2005-12-19:
 <pre>
+  . Fix PHP4.4.x E_NOTICEs about variables and references
   . RFC #0045: Unique multiple occurrences of errors
   . RFC #0047: Guaranteed destructor calls
 </pre>
 
-3.3.0, released 2006-08-25
+3.3.0, released 2006-08-25:
 <pre>
   . RFC #0070: Extend ClassLoader::defineClass() 
   . RFC #0071: Class / Classloader associations
 </pre>
 
-3.4.0, released 2006-11-10
+3.4.0, released 2006-09-20:
 <pre>
+  . RFC #0073: Change toString() to use xp::stringOf()
+</pre>
+
+3.5.0, released 2006-10-11:
+<pre>
+  . RFC #0074: Support for class loading from class archives in the core
+</pre>
+
+3.5.1, released 2006-10-25:
+<pre>
+  . RFC #0086: Exclude common trace elements from ChainedException's trace
+</pre>
+
+3.6.0, released 2006-11-10:
+<pre>
+  . RFC #0085: Make lang.Throwable::toString() easily overwriteable
   . RFC #0089: Core functions ref() and deref() 
 </pre>
 
-4.0.0, released 2006-11-20
+4.0.0, released 2006-11-20:
 <pre>
   . RFC #0084: Packages cleanup
 </pre>
