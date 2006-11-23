@@ -36,7 +36,7 @@
          }
           return $s.$indent.'}';
         }
-      } elseif (is_a($a, 'VNode')) {
+      } else if (is_a($a, 'VNode')) {
         $s= $a->getClassName()."@{\n";
         foreach (array_keys(get_class_vars(get_class($a))) as $key) {
           if ('_' != $key{0}) $s.= sprintf(
