@@ -36,7 +36,63 @@ Version history
 ~~~~~~~~~~~~~~~
 0.0.1, released 2002-02-21:
 <pre>
-  . Initial revision (lang.base.php)
+  . Initial revision:
+    A /trunk/doc
+    A /trunk/doc/skeleton
+    A /trunk/doc/skeleton/cart.php
+    A /trunk/doc/skeleton/domain
+    A /trunk/doc/skeleton/domain/getdescr.php
+    A /trunk/doc/skeleton/domain/isfree.test.php
+    A /trunk/doc/skeleton/domain/sybinit.err
+    A /trunk/doc/skeleton/net
+    A /trunk/doc/skeleton/net/portal.php
+    A /trunk/doc/skeleton/order.php
+    A /trunk/doc/skeleton/order_idea.php
+    A /trunk/doc/skeleton/trycatch.php
+    A /trunk/doc/skeleton/xpath.php
+    A /trunk/doc/skeleton/xpath.xml
+    A /trunk/skeleton
+    A /trunk/skeleton/lang
+    A /trunk/skeleton/lang/Exception.class.php
+    A /trunk/skeleton/lang/Object.class.php
+    A /trunk/skeleton/lang.base.php
+    A /trunk/skeleton/net
+    A /trunk/skeleton/net/NetException.class.php
+    A /trunk/skeleton/net/Socket.class.php
+    A /trunk/skeleton/net/ftp
+    A /trunk/skeleton/net/ftp/FTPConnect.class.php
+    A /trunk/skeleton/net/http
+    A /trunk/skeleton/net/http/HTTPRequest.class.php
+    A /trunk/skeleton/net/session
+    A /trunk/skeleton/net/session/ToolSession.class.php
+    A /trunk/skeleton/rdbms
+    A /trunk/skeleton/rdbms/DBConnectionPool.class.php
+    A /trunk/skeleton/rdbms/sybase
+    A /trunk/skeleton/rdbms/sybase/SPSybase.class.php
+    A /trunk/skeleton/util
+    A /trunk/skeleton/util/Binford.class.php
+    A /trunk/skeleton/util/LOG.class.php
+    A /trunk/skeleton/util/Properties.class.php
+    A /trunk/skeleton/util/cmd
+    A /trunk/skeleton/util/cmd/SingleProcess.class.php
+    A /trunk/skeleton/xml
+    A /trunk/skeleton/xml/Node.class.php
+    A /trunk/skeleton/xml/OutputDocument.class.php
+    A /trunk/skeleton/xml/Tree.class.php
+    A /trunk/skeleton/xml/XML.class.php
+    A /trunk/skeleton/xml/XMLParser.class.php
+    A /trunk/skeleton/xml/XPath.class.php
+    A /trunk/skeleton/xml/XSLProcessor.class.php
+    A /trunk/skeleton/xml/XSelect.class.php
+    A /trunk/skeleton/xml/editor
+    A /trunk/skeleton/xml/editor/Part.class.php
+    A /trunk/skeleton/xml/form
+    A /trunk/skeleton/xml/form/Wizard.class.php
+    A /trunk/skeleton/xml/soap
+    A /trunk/skeleton/xml/soap/SOAPEnvelope.class.php
+    A /trunk/skeleton/xml/soap/SOAPRequestFactory.class.php
+    A /trunk/skeleton/xml/soap/SOAPSyncRequest.class.php
+    A /trunk/skeleton/xml/soap/WSDLNode.class.php
 </pre>
 
 0.1.0, released 2002-03-27:
@@ -251,6 +307,11 @@ Version history
 2.7.0, released 2004-08-31:
 <pre>
   . Support static initializers in classes.
+</pre>
+
+2.7.1, released 2004-09-21:
+<pre>
+ .  Add support for dates beyond unix timestamp
 </pre>
 
 2.8.0, released 2004-11-10:
