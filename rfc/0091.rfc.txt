@@ -32,6 +32,32 @@ The version number will consist of three parts:
   Major version
 </pre>
 
+Storage
+~~~~~~~
+The current version number is stored in a file in xp/trunk called 
+VERSION.
+
+
+Guidelines for version numbers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Definition: The XP framework's core is lang.base.php, lang and util.
+
+* The major version number is changed whenever incompatible changes
+  to the core occur (e.g. a new core functionality such as ref()/deref())
+  or when a new way of doing things is introduced (e.g. annotations,
+  xars).
+  
+* The minor version number is changed whenever new APIs inside the
+  core are created (e.g. lang.types, util.collections) or when other
+  important APIs (rdbms, remote, unittest, io, webservices) are changed.
+
+* The patch-level is increased whenever changes to non-core are made,
+  important bug fixes are released, new APIs are created.
+
+In cases where one is unsure, the procedure should be discussed on the 
+developer's mailing list.
+
+
 Version history
 ~~~~~~~~~~~~~~~
 0.0.1, released 2002-02-21:
@@ -486,5 +512,8 @@ Related documents
 
 Comments
 --------
-
+- friebe, Thu Nov 23 18:07:09 CET 2006
+  Should we store the version history in xp/trunk/HISTORY? Or in
+  xp/trunk/Changelog?
+  
 <EOF>
