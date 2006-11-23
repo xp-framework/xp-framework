@@ -612,6 +612,7 @@
           if (!file_exists($in)) continue;
           
           $t= &new Timer();
+          $this->cat && $this->cat->info('Compiling', $q);
           
           // Found the file, tokenize, parse and emit it.
           $t->start();
@@ -631,9 +632,14 @@
           $emitter->setFilename($in);
           $emitter->context['classes']= $this->context['classes'];
           $emitter->emitAll($nodes);
-
+          
           $t->stop();   
           $emit= $t->elapsedTime();
+          
+          if ($emitter->hasErrors()) foreach ($emitter->getErrors() as $err) {
+            $this->addError($err);
+            return NULL;
+          }
 
           // XXX TODO XXX Error handling
           FileUtil::setContents(new File(str_replace('.xp', '.php5', $in)), $emitter->getResult());
