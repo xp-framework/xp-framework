@@ -575,5 +575,10 @@ Comments
 
 - friebe, Thu Nov 23 18:37:01 CET 2006
   Should we have dedicated roadmaps for each release?
+
+- kiesel, Fri Nov 24 16:39:31 CET 2006
+  Adding util/ to the core but not io/ seems inconsistent. Either we should
+  declare the core as what is absolutely needed to boot XP or we open
+  up the core for util *and* io (and possibly more).
     
 <EOF>
