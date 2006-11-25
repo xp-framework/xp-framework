@@ -356,10 +356,8 @@
               
               if (T_CONSTANT_ENCAPSED_STRING == $tokens[$i+ 2][0]) {
                 // Convert is('lang.Object', $o) into the respective lang.Generic
-                var_dump($tokens[$i+ 2]);
-                $hasQuote= in_array($tokens[$i+ 2][1][0], array('"', "'"));
                 $class= trim($tokens[$i+ 2][1], '\'"');
-                $tokens[$i+ 2][1]= ($hasQuote ? "'" : '').$this->mappedName($class, TRUE).($hasQuote ? "'" : '');
+                $tokens[$i+ 2][1]= "'".$this->mappedName($class, TRUE)."'";
               }
               break;
               
