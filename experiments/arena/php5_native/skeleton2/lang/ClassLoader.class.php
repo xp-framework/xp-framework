@@ -167,7 +167,7 @@
           throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
         }
         
-        $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
+        $newBytes= 'class '.$name.' extends '.$parentName;
         if (sizeof($interfaces)) {
           $newBytes.= ' implements ';
 
@@ -176,8 +176,9 @@
           
           $newBytes.= implode(', ', $ifaces);
         }
-
         
+        $newBytes.= ' '.$bytes;
+
         if (FALSE === eval($newBytes)) {
           throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
