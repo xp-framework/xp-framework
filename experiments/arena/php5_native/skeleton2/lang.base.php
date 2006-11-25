@@ -257,6 +257,7 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
+    $include= explode(DIRECTORY_SEPARATOR, ini_get('include_path'));
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
       if (interface_exists($class= xp::reflect($str))) continue;
@@ -306,7 +307,7 @@
         }
       }
       
-      if (!class_exists(xp::reflect($str))) {
+      if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
         xp::error('Cannot include '.$str.' (include_path='.ini_get('include_path').')');
       }
 
