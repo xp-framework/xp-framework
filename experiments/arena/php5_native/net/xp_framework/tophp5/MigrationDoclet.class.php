@@ -10,7 +10,8 @@
   define('ST_LOOKING_FOR_THROW',          'looking:throw');
   define('ST_LOOKING_FOR_INTERFACES_END', 'looking:iface_end');
   define('ST_LOOKING_FOR_CATCH',          'looking:catch');
-
+  define('ST_INSTANCE_OF',                'looking:is_a');
+  
   define('T_TRY',                0x2000);
   define('T_CATCH',              0x2001);
   define('T_THROW',              0x2002);
@@ -252,6 +253,56 @@
             case ST_FUNCTION_BODY.'{':
               $brackets++;
               break;
+              
+            case ST_FUNCTION_BODY.T_STRING && 'is_a' == $t[1]:
+              array_unshift($states, ST_INSTANCE_OF);
+              $instanceof= array('op' => 'expression', 'brackets' => 0);
+              $skip= TRUE;
+              break;
+
+            case ST_INSTANCE_OF.'[':
+            case ST_INSTANCE_OF.']':
+              $instanceof[$instanceof['op']].= $t;
+              break;
+
+            case ST_INSTANCE_OF.'(':
+              $instanceof['brackets']++;
+              $instanceof[$instanceof['op']].= '(';
+              break;
+
+            case ST_INSTANCE_OF.')':
+              $instanceof['brackets']--;
+              $instanceof[$instanceof['op']].= ')';
+              if (0 == $instanceof['brackets']) {
+                $skip= FALSE;
+                $t= 'is('.trim($instanceof['class'], ')').', '.ltrim($instanceof['expression'], '(').')';
+                // $t= trim($instanceof['expression']).' instanceof '.trim($instanceof['class']);
+                array_shift($states);
+              }
+              break;
+
+            case ST_INSTANCE_OF.',':
+              $instanceof['op']= 'class';
+              break;
+
+            case ST_INSTANCE_OF.T_CONSTANT_ENCAPSED_STRING:
+              $hasQuote= ($tokens[$i][1][0] == '"' || $tokens[$i][1][0] == "'");
+              $instanceof[$instanceof['op']]= 
+                ($hasQuote ? "'" : '').
+                $this->mappedName(trim($tokens[$i][1], '"\''), TRUE).
+                ($hasQuote ? "'" : '');
+              break;
+
+            /* case ST_FUNCTION_BODY.'&':
+              if (T_WHITESPACE != $tokens[$i+ 1][0]) {  // Kill reference operator
+                $t= '';
+              }
+              break;*/
+
+            // ST_INSTANCE_OF.* (catch-all)
+            case $states[0] == ST_INSTANCE_OF && is_array($t):
+              $instanceof[$instanceof['op']].= $t[1];
+              break;
 
             case ST_FUNCTION_BODY.'}':
               $brackets--;
@@ -301,13 +352,16 @@
               break;
             
             case ST_INITIAL.T_STRING:
-            case ST_FUNCTION_BODY.T_STRING:
-              // Convert is('lang.Object', $o) into the respective lang.Generic
-              if ('is' === $t[1]) {
+            case ST_FUNCTION_BODY.T_STRING && 'is' == $t[1]:
+              
+              if (T_CONSTANT_ENCAPSED_STRING == $tokens[$i+ 2][0]) {
+                // Convert is('lang.Object', $o) into the respective lang.Generic
+                var_dump($tokens[$i+ 2]);
+                $hasQuote= in_array($tokens[$i+ 2][1][0], array('"', "'"));
                 $class= trim($tokens[$i+ 2][1], '\'"');
-                $tokens[$i+ 2][1]= "'".$this->mappedName($class, TRUE)."'";
-                break;
+                $tokens[$i+ 2][1]= ($hasQuote ? "'" : '').$this->mappedName($class, TRUE).($hasQuote ? "'" : '');
               }
+              break;
               
               /*if (T_DOUBLE_COLON == $tokens[$i+ 1][0]) {    // Look ahead
                 $t[1]= $this->packagedNameOf($t[1]);
@@ -373,15 +427,6 @@
     
     function validOptions() {
       return array('debug' => OPTION_ONLY);
-    }
-    
-    function fixIs_a($matches) {
-      return 'is(\''.$this->mappedName($matches[2], TRUE).'\', '.$matches[1].')';
-    }
-    
-    function postProcess() {
-      // Experimental replacement of is_a -> is
-      $this->output= preg_replace_callback('#is_a\(([^,]+), ?[\'"]([^\'"]+)[\'"]\)#', array(&$this, 'fixIs_a'), $this->output);
     }
     
     function getOutput() {

@@ -69,7 +69,6 @@
       continue;
     }
     
-    $doclet->postProcess();
     FileUtil::setContents($target, $doclet->getOutput());
     Console::write('.');
     xp::gc();
