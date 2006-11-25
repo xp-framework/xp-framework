@@ -168,6 +168,16 @@
         }
         
         $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
+        if (sizeof($interfaces)) {
+          $newBytes.= ' implements ';
+
+          $ifaces= array();
+          foreach ($interfaces as $i) { $ifaces[]= xp::reflect($i); }
+          
+          $newBytes.= implode(', ', $ifaces);
+        }
+
+        
         if (FALSE === eval($newBytes)) {
           throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
@@ -177,7 +187,6 @@
         }
         
         xp::registry('class.'.$name, $qname);
-        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
       
