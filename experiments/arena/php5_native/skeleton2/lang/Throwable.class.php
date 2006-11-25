@@ -107,16 +107,6 @@
     }
 
     /**
-     * Get Message
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getMessage() {
-      return $this->message;
-    }
-
-    /**
      * Return an array of stack trace elements
      *
      * @access  public
