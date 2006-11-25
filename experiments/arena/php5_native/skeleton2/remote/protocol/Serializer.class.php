@@ -129,7 +129,7 @@
       $cinfo= array();
       foreach (array_keys($this->mappings) as $token) {
         $class= &$this->mappings[$token]->handledClass();
-        if (!is('$class'->getName(), $var)) continue;
+        if (!is($class->getName(), $var)) continue;
 
         $distance= 0;
         do {

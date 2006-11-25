@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AllOfFilter.class.php 8185 2006-10-16 10:24:01Z friebe $
+ * $Id: AllOfFilter.class.php 8575 2006-11-21 06:35:04Z friebe $
  */
 
   uses('io.collections.iterate.AbstractCombinedFilter');
@@ -27,7 +27,6 @@
     /**
      * Accepts an element
      *
-     * @model  abstract
      * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool

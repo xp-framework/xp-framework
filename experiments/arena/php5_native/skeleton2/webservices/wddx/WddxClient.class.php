@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('xml.wddx.WddxMessage');
+  uses('webservices.wddx.WddxMessage');
 
   /**
    * This is a WDDX client; WDDX is a remote procedure call
    * protocol that uses XML as the message format.
    *
    * <code>
-   *   uses('xml.wddx.WddxClient');
+   *   uses('webservices.wddx.WddxClient');
    *   $c= &new WddxClient(new WddxHttpTransport('http://wddx.xp-framework.net/server/'));
    *   
    *   try(); {
@@ -38,7 +38,7 @@
      * Constructor.
      *
      * @access  public
-     * @param   &xml.wddx.transport.WddxTransport transport
+     * @param   &webservices.wddx.transport.WddxTransport transport
      */
     public function __construct(&$transport) {
       $this->transport= &$transport;
@@ -64,8 +64,8 @@
      * @throws  lang.IllegalArgumentException
      */
     public function invoke() {
-      if (!is('xml.wddx.transport.WddxTransport', $this->transport))
-        throw(new IllegalArgumentException('Transport must be a xml.wddx.transport.WddxTransport'));
+      if (!is('webservices.wddx.transport.WddxTransport', $this->transport))
+        throw(new IllegalArgumentException('Transport must be a webservices.wddx.transport.WddxTransport'));
     
       $args= func_get_args();
       

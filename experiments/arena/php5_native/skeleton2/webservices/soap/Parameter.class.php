@@ -37,7 +37,7 @@
         '%s@(%s) {%s}',
         $this->getClassName(),
         $this->name,
-        (is('Object', $this->value) 
+        (is('Generic', $this->value) 
           ? $this->value->toString() 
           : var_export($this->value, 1)
         )

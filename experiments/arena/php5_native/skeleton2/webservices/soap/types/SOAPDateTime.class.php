@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('util.Date', 'xml.soap.types.SoapType');
+  uses('util.Date', 'webservices.soap.types.SoapType');
   
   /**
    * SOAP DateTime
    *
-   * @see      xp://xml.soap.types.SoapType
+   * @see      xp://webservices.soap.types.SoapType
    * @see      http://www.w3.org/TR/xmlschema-2/#ISO8601 
    * @see      http://www.w3.org/TR/xmlschema-2/#dateTime
    * @purpose  DateTime type

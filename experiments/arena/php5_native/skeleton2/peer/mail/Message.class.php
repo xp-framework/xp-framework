@@ -216,7 +216,7 @@
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
         if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, is('Object', $vars[$var]) 
+        $s.= sprintf("  [%-12s] %s\n", $var, is('Generic', $vars[$var]) 
           ? $vars[$var]->toString() 
           : str_replace("\n", "\n  ", var_export($vars[$var], 1))
         );

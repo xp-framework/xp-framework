@@ -116,7 +116,7 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
-      $this->document= &domxml_open_file($this->_base.$file);
+      $this->document= domxml_open_file($this->_base.$file);
     }
     
     /**
@@ -126,7 +126,7 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
-      $this->document= &domxml_open_mem($xml);
+      $this->document= domxml_open_mem($xml);
     }
 
     /**
@@ -211,7 +211,7 @@
       // Get stylesheet
       switch ($this->stylesheet[0]) {
         case 0: 
-          $proc= &domxml_xslt_stylesheet_file($this->stylesheet[1]); 
+          $proc= domxml_xslt_stylesheet_file($this->stylesheet[1]); 
           break;
 
         case 1:
@@ -219,7 +219,7 @@
             $cwd= getcwd();
             chdir($this->_base);
           }
-          $proc= &domxml_xslt_stylesheet($this->stylesheet[1]);
+          $proc= domxml_xslt_stylesheet($this->stylesheet[1]);
           break;
 
         default:
@@ -229,7 +229,7 @@
       // Start transformation
       $result= NULL;
       if ($proc) {
-        $result= &$proc->process($this->document, $this->params, FALSE);
+        $result= $proc->process($this->document, $this->params, FALSE);
       }
       $cwd && chdir($cwd);
       restore_error_handler();

@@ -8,7 +8,7 @@
    * Abstract base class for all other transports
    *
    * @purpose  SOAP Transport
-   * @see      xp://xml.soap.transport.SOAPHTTPTransport
+   * @see      xp://webservices.soap.transport.SOAPHTTPTransport
    */
   class SOAPTransport extends Object {
     public
@@ -28,7 +28,7 @@
      * Send the message
      *
      * @access  public
-     * @param   &xml.soap.SOAPMessage message
+     * @param   &webservices.soap.SOAPMessage message
      */
     public function send(&$message) { }
    
@@ -36,7 +36,7 @@
      * Retrieve the answer
      *
      * @access  public
-     * @return  &xml.soap.SOAPMessage
+     * @return  &webservices.soap.SOAPMessage
      */
     public function &retrieve(&$response) { }
   }

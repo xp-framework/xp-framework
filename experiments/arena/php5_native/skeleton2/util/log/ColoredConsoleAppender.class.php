@@ -61,11 +61,11 @@
       // Colorize depending on the flag
       if (strstr($a[0], 'error')) {
         fwrite(STDERR, "\x1b[".$this->cerror."m");
-      } elseif (strstr($a[0], 'warn')) {
+      } else if (strstr($a[0], 'warn')) {
         fwrite(STDERR, "\x1b[".$this->cwarn."m");
-      } elseif (strstr($a[0], 'info')) {
+      } else if (strstr($a[0], 'info')) {
         fwrite(STDERR, "\x1b[".$this->cinfo."m");      
-      } elseif (strstr($a[0], 'debug')) {
+      } else if (strstr($a[0], 'debug')) {
         fwrite(STDERR, "\x1b[".$this->cdebug."m");      
       } else {
         fwrite(STDERR, "\x1b[".$this->cdefault."m");

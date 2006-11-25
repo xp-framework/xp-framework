@@ -5,15 +5,15 @@
  */
 
   uses(
-    'util.profiling.unittest.TestFailure',
-    'util.profiling.unittest.TestSuccess',
-    'util.profiling.unittest.TestSkipped'
+    'unittest.TestFailure',
+    'unittest.TestSuccess',
+    'unittest.TestSkipped'
   );
 
   /**
    * Test result
    *
-   * @see      xp://util.profiling.unittest.TestSuite
+   * @see      xp://unittest.TestSuite
    * @purpose  Wrapper class
    */
   class TestResult extends Object {
@@ -26,7 +26,7 @@
      * Mark a test as succeeded
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
+     * @param   &unittest.TestCase test
      * @param   float elapsed
      */
     public function setSucceeded(&$test, $elapsed) {
@@ -37,7 +37,7 @@
      * Mark a test as failed
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
+     * @param   &unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */
@@ -49,7 +49,7 @@
      * Mark a test as been skipped
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestCase test
+     * @param   &unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */

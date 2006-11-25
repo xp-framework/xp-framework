@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('org.json.rpc.JsonMessage');
+  uses('webservices.json.rpc.JsonMessage');
 
   /**
    * This is a Json-RPC client
@@ -47,14 +47,14 @@
      * @param   mixed vars
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
-     * @throws  xml.xmlrpc.XmlRpcFaultException
+     * @throws  webservices.xmlrpc.XmlRpcFaultException
      */
     public function invoke() {
       static $serial= 1000;
       if (!is('scriptlet.rpc.transport.GenericHttpTransport', $this->transport))
         throw(new IllegalArgumentException('Transport must be a scriptlet.rpc.transport.GenericHttpTransport'));
     
-      $this->transport->setMessageClass(XPClass::forName('org.json.rpc.JsonMessage'));
+      $this->transport->setMessageClass(XPClass::forName('webservices.json.rpc.JsonMessage'));
       $args= func_get_args();
       
       $this->message= new JsonMessage();

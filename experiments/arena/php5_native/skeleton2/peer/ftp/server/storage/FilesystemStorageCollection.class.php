@@ -37,7 +37,7 @@
       $uri= $root.$path;
       if ('..' == substr($uri, -2)) {
         $this->name= '..';
-      } elseif ('.' == substr($uri, -1)) {
+      } else if ('.' == substr($uri, -1)) {
         $this->name= '.';
       } else {
         $this->name= basename($uri);

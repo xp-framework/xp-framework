@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('text.doclet.AnnotatedDoc');
+  uses('text.doclet.AnnotatedDoc', 'text.doclet.ClassIterator');
 
   define('EXCEPTION_CLASS',   'exception');
   define('ERROR_CLASS',       'error');

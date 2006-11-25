@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.uddi.UDDICommand');
+  uses('webservices.uddi.UDDICommand');
 
   /**
    * (Insert class' description here)

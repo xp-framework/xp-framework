@@ -10,6 +10,7 @@
    * Represent an FTP entry
    *
    * @see      xp://peer.ftp.FtpDir#getEntry
+   * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
    * @purpose  Base class
    */
   class FtpEntry extends Object {
@@ -20,75 +21,17 @@
       $user         = '',
       $group        = '',
       $size         = 0,
-      $date         = NULL;
-
-    public
-      $_hdl     = NULL;
+      $date         = NULL,
+      $connection   = NULL;
       
     /**
      * Constructor
      *
      * @access  public
      * @param   string name
-     * @param   resource hdl default NULL
      */
-    public function __construct($name, $hdl= NULL) {
+    public function __construct($name) {
       $this->name= $name;
-      $this->_hdl= $hdl;
-    }
-
-    /**
-     * Parse raw listing entry:
-     *
-     * Examples:
-     * <pre>
-     *   drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .
-     *   -rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html
-     * </pre>
-     *
-     * @model   static
-     * @access  public
-     * @param   string raw
-     * @param   resource handle default NULL
-     * @return  &peer.ftp.FtpEntry
-     */
-    public static function &parseFrom($raw, $handle= NULL) {
-      sscanf(
-        $raw, 
-        '%s %d %s %s %d %s %d %[^ ] %[^$]',
-        $permissions,
-        $numlinks,
-        $user,
-        $group,
-        $size,
-        $month,
-        $day,
-        $date,
-        $filename
-      );
-      
-      if ('d' == $permissions{0}) {
-        $e= new FtpDir($filename, $handle);
-      } else {
-        $e= new FtpEntry($filename, $handle);
-      }
-
-      $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
-
-      // Check for "recent" file which are specified "HH:MM" instead
-      // of year for the last 6 month (as specified in coreutils/src/ls.c)
-      if (strstr($date, ':')) {
-        $now= &Date::now();
-        if ($d->getMonth() > $now->getMonth()) $d->year--;
-      }
-
-      $e->setPermissions(substr($permissions, 1));
-      $e->setNumlinks($numlinks);
-      $e->setUser($user);
-      $e->setGroup($group);
-      $e->setSize($size);
-      $e->setDate($d);
-      return $e;
     }
 
     /**
@@ -113,7 +56,7 @@
           ($m[$perm{3}] | $m[$perm{4}] | $m[$perm{5}]) * 10 +
           ($m[$perm{6}] | $m[$perm{7}] | $m[$perm{8}])
         );
-      } elseif (is_int($perm)) {
+      } else if (is_int($perm)) {
         $this->permissions= $perm;
       } else {
         throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));
@@ -248,6 +191,33 @@
      */
     public function getName() {
       return $this->name;
+    }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        "%s(name= %s) {\n".
+        "  [permissions ] %d\n".
+        "  [numlinks    ] %d\n".
+        "  [user        ] %s\n".
+        "  [group       ] %s\n".
+        "  [size        ] %d\n".
+        "  [date        ] %s\n".
+        "}",
+        $this->getClassName(),
+        $this->name,
+        $this->permissions,
+        $this->numlinks,
+        $this->user,
+        $this->group,
+        $this->size,
+        xp::stringOf($this->date)
+      );
     }
   }
 ?>

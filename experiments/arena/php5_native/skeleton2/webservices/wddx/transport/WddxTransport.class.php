@@ -29,7 +29,7 @@
      * Send WDDX message
      *
      * @access  public
-     * @param   &xml.wddx.WddxMessage message
+     * @param   &webservices.wddx.WddxMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     public function &send(&$message) { }
@@ -39,7 +39,7 @@
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &xml.wddx.WddxMessage
+     * @return  &webservices.wddx.WddxMessage
      */
     public function &retrieve(&$response) { }
   } 

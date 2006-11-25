@@ -7,7 +7,7 @@
   /**
    * Represent a XML-RPC Fault.
    *
-   * @see      xp://xml.xmlrpc.XmlRpcMessage
+   * @see      xp://webservices.xmlrpc.XmlRpcMessage
    * @purpose  Wrap fault
    */
   class XmlRpcFault extends Object {

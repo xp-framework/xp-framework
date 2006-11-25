@@ -6,9 +6,9 @@
 
   uses(
     'lang.Collection',
-    'util.profiling.unittest.coverage.Expression',
-    'util.profiling.unittest.coverage.Comment',
-    'util.profiling.unittest.coverage.Block'
+    'unittest.coverage.Expression',
+    'unittest.coverage.Comment',
+    'unittest.coverage.Block'
   );
 
   /**
@@ -25,7 +25,7 @@
      * @model   static
      * @access  public
      * @param   string code
-     * @return  util.profiling.unittest.coverage.Fragment[] expressions
+     * @return  unittest.coverage.Fragment[] expressions
      */
     public static function fragmentsOf($code) {
       static $delim= array(')', ';', ',', '=', '+', '-', '*', '/', '%');

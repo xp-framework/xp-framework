@@ -18,7 +18,7 @@
   /**
    * Handles the "XP" protocol
    *
-   * @see      xp://ProtocolHandler
+   * @see      xp://remote.protocol.ProtocolHandler
    * @purpose  Protocol Handler
    */
   class XpProtocolHandler extends Object implements ProtocolHandler, Traceable {
@@ -143,7 +143,7 @@
      * Begin a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     public function begin(&$tran) {
@@ -163,7 +163,7 @@
      * Rollback a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     public function rollback(&$tran) {
@@ -183,7 +183,7 @@
      * Commit a transaction
      *
      * @access  public
-     * @param   UserTransaction tran
+     * @param   &remote.UserTransaction tran
      * @param   bool
      */
     public function commit(&$tran) {

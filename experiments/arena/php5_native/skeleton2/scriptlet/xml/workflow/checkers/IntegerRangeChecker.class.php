@@ -45,7 +45,7 @@
       foreach ($value as $v) {
         if ($v < $this->minValue) {
           return 'toosmall';
-        } elseif ($v > $this->maxValue) {
+        } else if ($v > $this->maxValue) {
           return 'toolarge';
         }
       }    

@@ -4,12 +4,12 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPNode', 'xml.soap.SOAPHeader');
+  uses('webservices.soap.SOAPNode', 'webservices.soap.SOAPHeader');
 
   /**
    * Represent a SOAP header element.
    *
-   * @see       xp://xml.soap.SOAPMessage
+   * @see       xp://webservices.soap.SOAPMessage
    * @see       http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383497
    * @purpose   Represent SOAP header element.
    */
@@ -29,7 +29,7 @@
      * @access  public
      * @param   &xml.Node node
      * @param   &array ns current namespaces from SOAP message
-     * @return  &xml.soap.SOAPHeaderElement
+     * @return  &webservices.soap.SOAPHeaderElement
      */
     public static function &fromNode(&$node, $ns, $encoding) {
       $header= new SOAPHeaderElement();

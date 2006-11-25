@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.soap.SOAPClient', 'xml.soap.transport.SOAPHTTPTransport');
+  uses('webservices.soap.SOAPClient', 'webservices.soap.transport.SOAPHTTPTransport');
 
   /**
    * Standard Round2 Base test client
@@ -35,9 +35,9 @@
      *
      * @access  protected
      * @param   string method
-     * @param   &xml.soap.Parameter argument
+     * @param   &webservices.soap.Parameter argument
      * @return  boolean
-     * @throws  xml.soap.SOAPFaultException
+     * @throws  webservices.soap.SOAPFaultException
      */
     public function identity($method, &$argument) {
       try {
@@ -46,7 +46,7 @@
         throw($e);
       }
       
-      if (is('xml.soap.Parameter', $argument)) 
+      if (is('webservices.soap.Parameter', $argument)) 
         $cmp= &$argument->value;
       else 
         $cmp= &$argument;

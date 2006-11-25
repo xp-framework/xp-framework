@@ -17,7 +17,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &xml.soap.SOAPFault fault
+     * @param   &webservices.soap.SOAPFault fault
      */
     public function __construct(&$fault) {
       parent::__construct($fault->faultstring);
@@ -28,7 +28,7 @@
      * Get Fault
      *
      * @access  public
-     * @return  &xml.soap.SOAPFault
+     * @return  &webservices.soap.SOAPFault
      */
     public function &getFault() {
       return $this->fault;

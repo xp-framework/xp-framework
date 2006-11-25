@@ -50,9 +50,9 @@
     public function __construct($in= NULL) {
       if (is_string($in)) {
         $this->_utime(Date::_strtotime($in));
-      } elseif (is_int($in) || is_float($in)) {
+      } else if (is_int($in) || is_float($in)) {
         $this->_utime($in);
-      } elseif (is_null($in)) {
+      } else if (is_null($in)) {
         $this->_utime(time());
       } else {
         $this->_utime(time());

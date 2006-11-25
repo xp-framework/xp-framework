@@ -45,7 +45,7 @@
       foreach ($value as $v) {
         if (strlen($v) < $this->minLength) {
           return 'tooshort';
-        } elseif (($this->maxLength > 0) && (strlen($v) > $this->maxLength)) {
+        } else if (($this->maxLength > 0) && (strlen($v) > $this->maxLength)) {
           return 'toolong';
         }
       }    

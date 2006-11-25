@@ -32,24 +32,6 @@
   class XPath extends Object {
     
     /**
-     * Helper method
-     *
-     * @access  protected
-     * @param   string xml
-     * @return  php.DOMDocument
-     */
-    protected function loadXML($xml) {
-      try {
-        $doc= new DOMDocument();
-        $doc->loadXML($xml);
-      } catch (DOMException $e) {
-        throw new XMLFormatException($e->getMessage());
-      }
-      
-      return $doc;
-    }
-    
-    /**
      * Constructor. Accepts  the following types as argument:
      * <ul>
      *   <li>A string containing the XML</li>
@@ -65,15 +47,24 @@
     public function __construct($arg) {
       switch (xp::typeOf($arg)) {
         case 'string':
-          $this->context= new DomXPath($this->loadXML($arg));
+          if (!($dom= domxml_open_mem($arg, DOMXML_LOAD_PARSING, $error))) {
+            throw(new XMLFormatException(
+              rtrim($error[0]['errormessage']), 
+              XML_ERROR_SYNTAX, 
+              NULL,
+              $error[0]['line'], 
+              $error[0]['col']
+            ));
+          }
+          $this->context= xpath_new_context($dom);
           break;
         
-        case 'php.DOMDocument':
-          $this->context= new DomXPath($arg);
+        case 'php.domdocument':
+          $this->context= xpath_new_context($arg);
           break;
         
         case 'xml.Tree':
-          $this->context= new DomXPath($this->loadXML($arg->getSource()));
+          $this->context= xpath_new_context(domxml_open_mem($arg->getSource()));
           break;
         
         default:
@@ -87,19 +78,34 @@
      * @access  public
      * @param   string xpath
      * @param   php.DomNode node default NULL
-     * @return  php.DOMNodeList
+     * @return  php.XPathObject
      * @throws  xml.XPathException if evaluation fails
      */
     public function query($xpath, $node= NULL) {
       if ($node) {
-        $r= $this->context->evaluate($xpath, $node);
+        $r= xpath_eval($this->context, $xpath, $node);
       } else {
-        $r= $this->context->evaluate($xpath);
+        $r= xpath_eval($this->context, $xpath);
       }
       if (FALSE === $r) {
         throw(new XPathException('Cannot evaluate "'.$xpath.'"'));
       }
       return $r;
+    }
+
+    /**
+     * Registers a namespace
+     *
+     * @access  public
+     * @see     php://xpath_register_ns
+     * @param   string prefix
+     * @param   string uri
+     * @return  bool
+     */
+    public function registerNamespace($prefix, $uri) {
+
+      // xpath_register_ns_auto seem not to exist - but is documented
+      return $this->context->xpath_register_ns($prefix, $uri);
     }
   }
 ?>

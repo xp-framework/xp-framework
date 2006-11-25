@@ -271,7 +271,7 @@
         // the values hash which is publicly accessible.
         if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
           $this->values[$name]= $value;
-        } elseif (isset($value[key($value)])) {
+        } else if (isset($value[key($value)])) {
           $this->values[$name]= $value[key($value)];
         } else {
           $this->values[$name]= NULL;

@@ -119,7 +119,7 @@
      * @return  bool success
      */
     public function swap($k, $j) {
-      if (!isset($this->_hash[$k]) or !isset($this->_hash[$j])) {
+      if (!isset($this->_hash[$k]) || !isset($this->_hash[$j])) {
         return FALSE;
       }
       $t= $this->_hash[$k];
@@ -175,7 +175,7 @@
     public function merge(&$map, $recursive= FALSE) {
       if (is('Hashmap', $map)) {
         $h= &$map->_hash;
-      } elseif (is_array($map)) {
+      } else if (is_array($map)) {
         $h= &$map;
       } else {
         throw(new IllegalArgumentException('map is neither an array nor a Hashmap'));

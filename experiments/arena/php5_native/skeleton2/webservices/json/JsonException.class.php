@@ -7,7 +7,7 @@
   /**
    * Represents a Jsonexception
    *
-   * @see      xp://org.json.JsonDecoder
+   * @see      xp://webservices.json.JsonDecoder
    * @purpose  Exception for Json
    */
   class JsonException extends XPException {

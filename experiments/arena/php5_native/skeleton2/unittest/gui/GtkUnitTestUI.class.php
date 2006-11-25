@@ -5,11 +5,11 @@
  */
 
   uses(
-    'gui.gtk.GtkGladeApplication',
-    'gui.gtk.widgets.FileDialog',
-    'gui.gtk.widgets.MessageBox',
-    'gui.gtk.util.GTKPixmapLoader',
-    'util.profiling.unittest.TestSuite',
+    'org.gnome.GtkGladeApplication',
+    'org.gnome.widgets.FileDialog',
+    'org.gnome.widgets.MessageBox',
+    'org.gnome.util.GTKPixmapLoader',
+    'unittest.TestSuite',
     'util.Properties'
   );
 

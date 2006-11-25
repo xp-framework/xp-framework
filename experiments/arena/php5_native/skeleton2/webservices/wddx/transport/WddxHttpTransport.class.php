@@ -5,15 +5,15 @@
  */
 
   uses(
-    'xml.wddx.transport.WddxTransport',
-    'xml.wddx.WddxMessage',
+    'webservices.wddx.transport.WddxTransport',
+    'webservices.wddx.WddxMessage',
     'peer.http.HttpConnection'
   );
 
   /**
    * Transport for Wddx requests over HTTP.
    *
-   * @see      xp://xml.wddx.WddxClient
+   * @see      xp://webservices.wddx.WddxClient
    * @purpose  HTTP Transport
    */
   class WddxHttpTransport extends WddxTransport {
@@ -47,13 +47,13 @@
      * Send XML-RPC message
      *
      * @access  public
-     * @param   &xml.wddx.WddxMessage message
+     * @param   &webservices.wddx.WddxMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
     public function &send(&$message) {
       
-      if (!is('xml.wddx.WddxMessage', $message)) throw(new IllegalArgumentException(
-        'parameter "message" must be a xml.wddx.WddxMessage'
+      if (!is('webservices.wddx.WddxMessage', $message)) throw(new IllegalArgumentException(
+        'parameter "message" must be a webservices.wddx.WddxMessage'
       ));
       
       // Send request
@@ -84,7 +84,7 @@
      *
      * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &xml.wddx.WddxMessage
+     * @return  &webservices.wddx.WddxMessage
      */
     public function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());

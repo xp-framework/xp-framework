@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.coverage.Fragment');
+  uses('unittest.coverage.Fragment');
 
   /**
    * Represents a comment

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Collection', 'util.profiling.unittest.coverage.Fragment');
+  uses('lang.Collection', 'unittest.coverage.Fragment');
 
   /**
    * Represents an Block
@@ -22,7 +22,7 @@
      * Constructor
      *
      * @access  public
-     * @param   util.profiling.unittest.coverage.Expression[] expressions
+     * @param   unittest.coverage.Expression[] expressions
      * @param   int start the first line
      * @param   int end the last line
      */

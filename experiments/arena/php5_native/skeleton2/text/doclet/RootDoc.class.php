@@ -84,7 +84,7 @@
               $root->options[$name]= TRUE;
             }
           }
-        } elseif (0 == strncmp($option, '-', 1)) {   // Short: -f / -f bar
+        } else if (0 == strncmp($option, '-', 1)) {   // Short: -f / -f bar
           $name= substr($option, 1);
           if (isset($valid[$name])) {
             if ($valid[$name] == HAS_VALUE) {
@@ -186,7 +186,7 @@
 
               if (strncmp('#[@', $t[1], 3) == 0) {
                 $annotations= substr($t[1], 2);
-              } elseif (strncmp('#', $t[1], 1) == 0) {
+              } else if (strncmp('#', $t[1], 1) == 0) {
                 $annotations.= substr($t[1], 1);
               }
 

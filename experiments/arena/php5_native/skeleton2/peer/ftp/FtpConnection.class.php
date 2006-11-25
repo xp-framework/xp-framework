@@ -7,6 +7,8 @@
   uses(
     'peer.URL',
     'peer.ftp.FtpDir',
+    'peer.ftp.WindowsFtpListParser',
+    'peer.ftp.DefaultFtpListParser',
     'peer.SocketException',
     'peer.ConnectException',
     'peer.AuthenticationException'
@@ -40,10 +42,8 @@
   class FtpConnection extends Object {
     public
       $url      = array(),
-      $opt      = array();
-      
-    public
-      $_hdl     = NULL;
+      $opt      = array(),
+      $handle   = NULL;
       
     /**
      * Constructor
@@ -71,7 +71,6 @@
      */
     public function __construct($dsn) {
       $this->_dsn($dsn);
-      
     }
     
     /**
@@ -91,6 +90,19 @@
       $this->opt= $this->url->getParams();
       $this->opt['timeout']= empty($this->opt['timeout']) ? 4 : $this->opt['timeout'];
     }
+    
+    /**
+     * Setup directory list parser
+     *
+     * @access  protected
+     */
+    public function setupListParser() {
+      if ('Windows_NT' == ftp_systype($this->handle)) {
+        $this->parser= new WindowsFtpListParser();
+      } else {
+        $this->parser= new DefaultFtpListParser();
+      }
+    }
 
     /**
      * Connect (and log in, if necessary)
@@ -103,7 +115,7 @@
     public function connect() {
       switch ($this->url->getScheme()) {
         case 'ftp':
-          $this->_hdl= ftp_connect(
+          $this->handle= ftp_connect(
             $this->url->getHost(), 
             $this->url->getPort(), 
             $this->opt['timeout']
@@ -111,7 +123,7 @@
           break;
 
         case 'ftps':
-          $this->_hdl= ftp_ssl_connect(
+          $this->handle= ftp_ssl_connect(
             $this->url->getHost(), 
             $this->url->getPort(), 
             $this->opt['timeout']
@@ -119,7 +131,7 @@
           break;
       }
       
-      if (!is_resource($this->_hdl)) {
+      if (!is_resource($this->handle)) {
         throw(new ConnectException(sprintf(
           'Could not connect to %s:%d within %d seconds',
           $this->url->getHost(), $this->url->getPort(), $this->opt['timeout']
@@ -127,15 +139,16 @@
       }
       
       // User & password
-      if (!$this->url->getUser()) return TRUE;
-      
-      if (FALSE === ftp_login($this->_hdl, $this->url->getUser(), $this->url->getPassword())) {
-        throw(new AuthenticationException(sprintf(
-          'Authentication failed for %s@%s (using password: %s)',
-          $this->url->getUser(), $this->url->getHost(), $this->url->getPassword() ? 'no' : 'yes'
-        )));
+      if ($this->url->getUser()) {
+        if (FALSE === ftp_login($this->handle, $this->url->getUser(), $this->url->getPassword())) {
+          throw(new AuthenticationException(sprintf(
+            'Authentication failed for %s@%s (using password: %s)',
+            $this->url->getUser(), $this->url->getHost(), $this->url->getPassword() ? 'no' : 'yes'
+          )));
+        }
       }
-      
+
+      $this->setupListParser();
       return TRUE;
     }
     
@@ -146,7 +159,7 @@
      * @return  bool success
      */
     public function close() {
-      return ftp_close($this->_hdl);
+      return ftp_close($this->handle);
     }
     
     /**
@@ -159,12 +172,14 @@
      */
     public function &getDir($dir= NULL) {
       if (NULL === $dir) {
-        if (FALSE === ($dir= ftp_pwd($this->_hdl))) {
+        if (FALSE === ($dir= ftp_pwd($this->handle))) {
           throw(new SocketException('Cannot retrieve current directory'));
         }
       }
         
-      return new FtpDir($dir, $this->_hdl);
+      $f= new FtpDir($dir);
+      $f->connection= &$this;
+      return $f;
     }
     
     /**
@@ -176,7 +191,7 @@
      * @return  bool success
      */
     public function setDir(&$f) {
-      if (FALSE === ftp_chdir($this->_hdl, $f->name)) {
+      if (FALSE === ftp_chdir($this->handle, $f->name)) {
         throw(new SocketException('Cannot change directory to '.$f->name));
       }
       return TRUE;
@@ -190,7 +205,7 @@
      * @return  bool success
      */
     public function makeDir(&$f) {
-      return ftp_mkdir($this->_hdl, $f->name);
+      return ftp_mkdir($this->handle, $f->name);
     }
     
     /**
@@ -213,7 +228,7 @@
         if (empty($remote)) $remote= basename($arg);
         $f= 'ftp_put';
       }
-      if (FALSE === $f($this->_hdl, $remote, $local, $mode)) {
+      if (FALSE === $f($this->handle, $remote, $local, $mode)) {
         throw(new SocketException(sprintf(
           'Could not put %s to %s using mode %s',
           $local, $remote, $mode
@@ -241,7 +256,7 @@
         $origin= $arg;
         $f= 'ftp_get';
       }
-      if (FALSE === $f($this->_hdl, $local, $remote, $mode)) {
+      if (FALSE === $f($this->handle, $local, $remote, $mode)) {
         throw(new SocketException(sprintf(
           'Could not get %s to %s using mode %s',
           $remote, $local, $mode
@@ -259,7 +274,7 @@
      * @return  bool success
      */
     public function delete($remote) {
-      return ftp_delete ($this->_hdl, $remote);
+      return ftp_delete ($this->handle, $remote);
     }    
 
     /**
@@ -272,7 +287,7 @@
      */
     public function rename($src, $target) {
       return ftp_rename (
-        $this->_hdl, 
+        $this->handle, 
         $src, 
         $target
       );
@@ -288,10 +303,10 @@
      * @throws  peer.SocketException
      */
     public function setPassive($enable= TRUE) {
-      if (NULL === $this->_hdl) {
+      if (NULL === $this->handle) {
         throw(new SocketException('Cannot change passive mode flag with no open connection'));
       }
-      return ftp_pasv($this->_hdl, $enable);
+      return ftp_pasv($this->handle, $enable);
     }
   }
 ?>

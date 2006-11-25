@@ -7,11 +7,11 @@
   /**
    * Represents a SOAP type. Special SOAP types such as
    * Base64binary or DateTime are recognized by the generic
-   * serializer/deserializer via is('SoapType', $arg),
+   * serializer/deserializer via is_a($arg, 'SoapType'),
    * so all user-defined types must inherit this class in
    * order for the serializer
    *
-   * @see      xp://xml.soap.SOAPNode
+   * @see      xp://webservices.soap.SOAPNode
    * @purpose  Base class for all SOAP types
    */
   class SoapType extends Object {

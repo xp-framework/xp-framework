@@ -161,9 +161,9 @@
         if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is('lang.Generic', $args[$ofs])) {
+        } else if (is('Generic', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
-        } elseif (is_array($args[$ofs])) {
+        } else if (is_array($args[$ofs])) {
           $a= $args[$ofs];
         } else {
           $a= array($args[$ofs]);

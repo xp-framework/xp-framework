@@ -7,8 +7,8 @@
   uses(
     'io.Stream',
     'text.StringTokenizer',
-    'org.json.JsonException',
-    'org.json.IJsonDecoder'
+    'webservices.json.JsonException',
+    'webservices.json.IJsonDecoder'
   );
 
   // Defines for the tokenizer
@@ -40,7 +40,7 @@
      * @access  public
      * @param   mixed data
      * @return  string
-     * @throws  org.json.JsonException if the data could not be serialized
+     * @throws  webservices.json.JsonException if the data could not be serialized
      */
     public function encode($data) {
       static $controlChars= array(
@@ -324,7 +324,7 @@
      *
      * @access  protected
      * @return  string
-     * @throws  org.json.JsonException if the string could not be parsed
+     * @throws  webservices.json.JsonException if the string could not be parsed
      */
     public function _readString() {
       do {

@@ -6,8 +6,8 @@
 
   uses(
     'util.profiling.Timer',
-    'util.profiling.unittest.AssertionFailedError',
-    'util.profiling.unittest.PrerequisitesNotMetError',
+    'unittest.AssertionFailedError',
+    'unittest.PrerequisitesNotMetError',
     'lang.MethodNotImplementedException'
   );
 
@@ -214,7 +214,7 @@
         return TRUE;
       } 
       
-      return is('Object', $a) ? $a->equals($b) : $a === $b;
+      return is('Generic', $a) ? $a->equals($b) : $a === $b;
     }
 
     /**
@@ -322,7 +322,7 @@
      * @return  bool
      */
     public function assertClass(&$var, $name, $error= 'notequal') {
-      if (!is('Object', $var)) {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if ($var->getClassName() !== $name) {
@@ -341,10 +341,10 @@
      * @return  bool
      */
     public function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!is('Object', $var)) {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
-      if (!is('$name', $var)) {
+      if (!is($name, $var)) {
         return $this->fail($error, $name, $var->getClassName());
       }
       return TRUE;
@@ -360,7 +360,7 @@
      * @return  bool
      */
     public function assertIn($list, $var, $error= 'notinlist') {
-      if (is('Object', $var)) {
+      if (is('Generic', $var)) {
         $result= array_filter($list, array(&$var, 'equals'));
         $contained= !empty($result);
       } else {
@@ -379,7 +379,7 @@
      * skipped.
      *
      * @access  public
-     * @throws  util.profiling.unittest.PrerequisitesNotMetError
+     * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() { }
     
@@ -394,7 +394,7 @@
      * Run this test case.
      *
      * @access  public
-     * @param   &util.profiling.unittest.TestResult result
+     * @param   &unittest.TestResult result
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */

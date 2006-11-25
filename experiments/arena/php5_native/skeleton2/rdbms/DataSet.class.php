@@ -191,7 +191,7 @@
           $key,
           (in_array($key, $peer->primary) ? 'PK' : ''), 
           ($key == $peer->identity ? ',I' : ''),
-          (is('lang.Generic', $this->$key) 
+          (is('Generic', $this->$key) 
             ? $this->$key->toString()
             : var_export($this->$key, 1)
           )

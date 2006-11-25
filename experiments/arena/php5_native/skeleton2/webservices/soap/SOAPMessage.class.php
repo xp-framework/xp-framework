@@ -7,10 +7,10 @@
   uses(
     'xml.Tree',
     'xml.Node',
-    'xml.soap.SOAPNode',
-    'xml.soap.SOAPHeaderElement',
-    'xml.soap.SOAPFault',
-    'xml.soap.SOAPMapping',
+    'webservices.soap.SOAPNode',
+    'webservices.soap.SOAPHeaderElement',
+    'webservices.soap.SOAPFault',
+    'webservices.soap.SOAPMapping',
     'lang.Collection',
     'scriptlet.rpc.AbstractRpcMessage'
   );
@@ -75,7 +75,7 @@
      * @param   string action
      * @param   string method
      * @param   string targetNamespace default NULL
-     * @param   xml.soap.SOAPHeader[] headers default array()
+     * @param   webservices.soap.SOAPHeader[] headers default array()
      */
     public function createCall($action, $method, $targetNamespace= NULL, $headers= array()) {
       $this->action= $action;
@@ -106,7 +106,7 @@
      * Create a message
      *
      * @access  public
-     * @param   xml.soap.SOAPMessage msg
+     * @param   webservices.soap.SOAPMessage msg
      */
     public function create($msg= NULL) {
       if ($msg) {
@@ -142,7 +142,7 @@
      * Set Mapping
      *
      * @access  public
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      */
     public function setMapping(&$mapping) {
       $this->mapping= &$mapping;
@@ -179,7 +179,7 @@
      * @access  private
      * @param   &xml.Node child
      * @param   string context default NULL
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      * @return  &mixed result
      */
     public function &unmarshall(&$child, $context= NULL) {
@@ -497,7 +497,7 @@
      * Get fault
      *
      * @access  public
-     * @return  &xml.soap.SOAPFault or NULL if none exists
+     * @return  &webservices.soap.SOAPFault or NULL if none exists
      */
     public function &getFault() {
       if ($body= &$this->_bodyElement()) {
@@ -522,7 +522,7 @@
      *
      * @access  public
      * @param   string context default 'ENUM'
-     * @param   &xml.soap.SOAPMapping mapping
+     * @param   &webservices.soap.SOAPMapping mapping
      * @return  &mixed data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
@@ -550,7 +550,7 @@
      * Get headers from envelope.
      *
      * @access  public
-     * @return  xml.soap.SOAPHeaderElement[]
+     * @return  webservices.soap.SOAPHeaderElement[]
      */
     public function getHeaders() {
       if (!($h= &$this->_headerElement())) return NULL;

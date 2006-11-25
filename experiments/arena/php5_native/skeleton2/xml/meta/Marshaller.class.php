@@ -114,7 +114,7 @@
         $tree->root->setName($prefix.':'.$qname->localpart);
         $tree->root->setAttribute('xmlns:'.$prefix, $qname->namespace);
       } else {
-        $tree->root->setName(strtolower(get_class($instance)));
+        $tree->root->setName(get_class($instance));
       }
       
       Marshaller::recurse($instance, $class, $tree->root);

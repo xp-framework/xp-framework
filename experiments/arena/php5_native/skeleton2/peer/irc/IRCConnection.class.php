@@ -154,7 +154,7 @@
             default:
               $this->notify('serverMessage', $server, $code, $target, $data);
           }
-        } elseif (4 <= sscanf($r, ":%[^!]!%s %s %s %[^\r]", $nick, $user, $action, $target, $data)) {
+        } else if (4 <= sscanf($r, ":%[^!]!%s %s %s %[^\r]", $nick, $user, $action, $target, $data)) {
 
           // Other messages
           switch (strtolower($action)) {
