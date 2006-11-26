@@ -342,7 +342,7 @@
               break;
             
             case ST_CLASS.T_EXTENDS:
-              $skip= $this->current->isInterface();
+              $skip= ($this->current->isInterface() && $this->current->superclass && $this->current->superclass->name() == 'Interface');
               array_unshift($states, ST_LOOKING_FOR_CLASS);
               break;
   
