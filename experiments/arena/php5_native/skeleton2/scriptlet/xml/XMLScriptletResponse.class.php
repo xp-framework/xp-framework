@@ -198,7 +198,7 @@
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
       ) {
-        return throw(new IllegalArgumentException($node->name.' not allowed here'));
+        throw(new IllegalArgumentException($node->name.' not allowed here'));
       }
       return $this->document->formresult->addChild($node);
     }
@@ -287,10 +287,10 @@
 
       switch ($this->_stylesheet[0]) {
         case XSLT_FILE:
-          try(); {
+          try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
-          } if (catch('FileNotFoundException', $e)) {
-            return throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
+          } catch(FileNotFoundException $e) {
+            throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
           }
           break;
           
@@ -299,7 +299,7 @@
           break;
         
         default:
-          return throw(new IllegalStateException(
+          throw(new IllegalStateException(
             'Unknown type ('.$this->_stylesheet[0].') for stylesheet'
           ));
       }
@@ -311,10 +311,10 @@
       );
       
       // Transform XML/XSL
-      try(); {
+      try {
         $this->processor->run();
-      } if (catch('TransformerException', $e)) {
-        return throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
+      } catch(TransformerException $e) {
+        throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
       }
       
       $this->content= &$this->processor->output();
