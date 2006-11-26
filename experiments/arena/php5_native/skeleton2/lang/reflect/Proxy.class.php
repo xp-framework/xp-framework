@@ -96,7 +96,7 @@
             $bytes.= (
               'function '.$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
               'switch (func_num_args()) {'.implode("\n", $cases).
-              ' default: return throw(new IllegalArgumentException(\'Illegal number of arguments\')); }'.
+              ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
               '}'."\n"
             );
           } else {
