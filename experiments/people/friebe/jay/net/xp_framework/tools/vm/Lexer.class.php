@@ -147,6 +147,9 @@
           } else if ($key = array_search(strtolower($token[1]), $this->tokenMap)) {
             $return[$next]= array($key, $token[1]);
           }
+        } else if ($token[0] == TOKEN_T_IS_SMALLER_OR_EQUAL && $tokens[$id+ 1][0] == '>') {
+          $return[$next]= array(TOKEN_T_COMPARE, '<=>');
+          $id++;
         }
 
         $return[$next][2]= $line;
