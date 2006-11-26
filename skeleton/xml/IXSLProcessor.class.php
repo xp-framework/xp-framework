@@ -58,7 +58,7 @@
      * @access  public
      * @param   string xsl the XSL as a string
      */
-    function setXSLBuf() { }
+    function setXSLBuf($xsl) { }
     
     /**
      * Set XML file
@@ -82,7 +82,7 @@
      * @access  public
      * @param   array params associative array { param_name => param_value }
      */
-    function setParams() { }
+    function setParams($params) { }
     
     /**
      * Set XSL transformation parameter
@@ -91,7 +91,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam() { }
+    function setParam($name, $value) { }
     
     /**
      * Retrieve XSL transformation parameter
@@ -117,6 +117,6 @@
      * @access  public
      * @return  string
      */
-    function output() { }                                
+    function output() { }
   }
 ?>
