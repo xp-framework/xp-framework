@@ -217,7 +217,7 @@
      * @see     xp://lang.XPClass
      */
     function &getClass() {
-      $c= &new XPClass($this);
+      $c= new XPClass($this);
       return $c;
     }
   }
