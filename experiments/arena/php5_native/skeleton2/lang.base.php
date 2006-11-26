@@ -28,7 +28,7 @@
     //     Returns a string representation of the given argument
     static function stringOf(&$arg, $indent= '') {
       static $protect= array();
-
+      
       if (is_string($arg)) {
         return '"'.$arg.'"';
       } else if (is_bool($arg)) {
@@ -39,10 +39,10 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceOf Generic && !isset($protect[$arg->__id])) {
-        $protect[$arg->__id]= TRUE;
+      } else if ($arg instanceOf Generic && !isset($protect[$arg->hashCode()])) {
+        $protect[$arg->hashCode()]= TRUE;
         $s= $arg->toString();
-        unset($protect[$arg->__id]);
+        unset($protect[$arg->hashCode()]);
         return $s;
       } else if (is_array($arg)) {
         $ser= serialize($arg);
