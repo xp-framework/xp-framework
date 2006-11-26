@@ -31,7 +31,8 @@
         '+' => 'plus',
         '-' => 'minus',
         '/' => 'divide',
-        '~' => 'concat'
+        '~' => 'concat',
+        '%' => 'modulo',
       );
       
     /**
