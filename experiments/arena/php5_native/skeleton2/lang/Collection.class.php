@@ -43,16 +43,17 @@
     /**
      * Returns a new Collection object for a specified class
      *
+     * @model   static
      * @access  public
      * @param   string class the fully qualified class name
      * @return  &lang.Collection
      * @throws  lang.ClassNotFoundException
      */
-    public function &forClass($class) {
+    public static function &forClass($class) {
       if (!class_exists(xp::reflect($class))) {
         throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
       }
-      $c= &new Collection($class);
+      $c= new Collection($class);
       return $c;
     }
     

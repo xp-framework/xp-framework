@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Archive.class.php 8444 2006-11-11 19:30:02Z kiesel $
+ * $Id: Archive.class.php 8516 2006-11-20 19:20:03Z friebe $
  */
  
   uses('lang.ElementNotFoundException', 'io.EncapsedStream');
@@ -16,11 +16,11 @@
    *     $a->open(ARCHIVE_CREATE);
    *     $a->add(
    *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'),
-   *       'xml.soap.SOAPMessage'
+   *       'webservices.soap.SOAPMessage'
    *     );
    *     $a->add(
    *       new File(SKELETON_PATH.'xml/soap/SOAPClient.class.php'),
-   *       'xml.soap.SOAPClient'
+   *       'webservices.soap.SOAPClient'
    *     );
    *     $a->create();
    *   } if (catch('Exception', $e)) {
@@ -34,8 +34,8 @@
    *   try(); {
    *     $a->open(ARCHIVE_READ);
    *     $c= array(
-   *       'xml.soap.SOAPMessage' => $a->extract('xml.soap.SOAPMessage'),
-   *       'xml.soap.SOAPClient'  => $a->extract('xml.soap.SOAPClient')
+   *       'webservices.soap.SOAPMessage' => $a->extract('webservices.soap.SOAPMessage'),
+   *       'webservices.soap.SOAPClient'  => $a->extract('webservices.soap.SOAPClient')
    *     );
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();

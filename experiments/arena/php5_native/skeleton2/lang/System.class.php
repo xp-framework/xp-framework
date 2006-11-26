@@ -158,7 +158,7 @@
     public static function tempDir() {
       if (getenv('TEMP')) {
         $dir= getenv('TEMP');
-      } elseif (getenv('TMP')) {
+      } else if (getenv('TMP')) {
         $dir= getenv('TMP');
       } else {
         $dir= (0 == strcasecmp(substr(PHP_OS, 0, 3), 'WIN')) ? 'c:\\' : '/tmp';
