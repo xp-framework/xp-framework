@@ -6,7 +6,7 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'util.profiling.unittest.TestSuite',
+    'unittest.TestSuite',
     'util.Properties'
   );
   
