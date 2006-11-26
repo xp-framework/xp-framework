@@ -973,6 +973,20 @@
 
         // Check for operator overloading
         if (isset($this->context['operators'][$type][$node->op])) {
+          
+          // Check for comparison operator
+          if (1 === $this->context['operators'][$type][$node->op]) {
+            $this->bytes.= '(0 '.$node->op.' -1 * ';
+            $this->emit(new MethodCallNode(
+              $type, 
+              new MemberNode('__operator'.$this->overloadable[$node->op]),
+              array($node->left, $node->right)
+            ));
+            $this->bytes.= ')';
+            return;
+          }
+          
+          // Regular operator
           return $this->emit(new MethodCallNode(
             $type, 
             new MemberNode('__operator'.$this->overloadable[$node->op]),
@@ -1385,8 +1399,15 @@
       $method= '__operator'.$this->overloadable[$node->name];
       $this->context['method']= $method;
       $this->setType($this->context['class'].'::'.$method, $this->context['class']);
-      $this->context['operators'][$this->context['class']][$node->name]= TRUE;
-
+      
+      if ('__compare' == $node->name) {   // <=> overloads more than one operator:)
+        foreach (array('==', '!=', '<=', '>=', '<', '>') as $op) {
+          $this->context['operators'][$this->context['class']][$op]= 1;
+        }
+      } else {
+        $this->context['operators'][$this->context['class']][$node->name]= TRUE;
+      }
+      
       $this->bytes.= 'function '.$method.'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
