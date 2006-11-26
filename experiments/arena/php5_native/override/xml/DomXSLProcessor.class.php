@@ -92,7 +92,8 @@
      * @throws  io.FileNotFoundException
      */
     public function setXSLFile($file) {
-      $this->stylesheet= DOMDocument::load($this->_base.$file);
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->load($this->_base.$file);
     }
     
     /**
@@ -102,7 +103,8 @@
      * @param   string xsl the XSL as a string
      */
     public function setXSLBuf($xsl) {
-      $this->stylesheet= DOMDocument::loadXML($xsl);
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->loadXML($xsl);
     }
 
     /**
@@ -112,7 +114,8 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
-      $this->document= DOMDocument::load($file);
+      $this->document= new DOMDocument();
+      $this->document->load($file);
     }
     
     /**
@@ -122,7 +125,8 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
-      $this->document= DOMDocument::loadXML($xml);
+      $this->document= new DOMDocument();
+      $this->document->loadXML($xml);
     }
 
     /**
