@@ -560,7 +560,7 @@
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
 
-      if ($node->statements) {
+      if ($node->statements !== NULL) {
         $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
         $this->bytes.= '}';
@@ -586,7 +586,7 @@
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
 
-      if ($node->statements) {
+      if ($node->statements !== NULL) {
         $this->bytes.= '{'.$embed;
         $this->emitAll($node->statements);
         $this->bytes.= '}';
@@ -608,8 +608,14 @@
       if (!isset($this->context['classes'][$q])) {
       
         // Search classpath
-        $filename= strtr($q, '·', DIRECTORY_SEPARATOR);
-        foreach (explode(PATH_SEPARATOR, CLASSPATH) as $node) {
+        $filename= strtr($q, array(
+          'main·' => '',
+          '·'     => DIRECTORY_SEPARATOR
+        ));
+        foreach (array_merge(
+          explode(PATH_SEPARATOR, CLASSPATH),
+          array(dirname($this->getFilename()))
+        ) as $node) {
           $in= $node.DIRECTORY_SEPARATOR.$filename.'.xp';
           if (!file_exists($in)) continue;
           
@@ -649,6 +655,7 @@
           // XXX TODO Merge not only classes but rest, too...
           foreach (array_keys($emitter->context['classes']) as $merge) {
             $this->context['classes'][$merge]= $emitter->context['classes'][$merge];
+            $this->context['operators'][$merge]= $emitter->context['operators'][$merge];
           }
 
           // Remember we compiled this from an external file
@@ -660,7 +667,10 @@
             $emit
           );
          
-          $this->context['uses'][$q]= $in;
+          $this->context['uses'][strtr($q, array(
+            'main'  => dirname($this->getFilename()),
+            '·'     => DIRECTORY_SEPARATOR
+          ))]= $in;
           return $this->context['classes'][$q];
         }
       
