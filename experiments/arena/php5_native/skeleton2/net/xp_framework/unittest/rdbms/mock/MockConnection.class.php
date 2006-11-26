@@ -31,7 +31,7 @@
      */
     public function __construct(&$dsn) { 
       parent::__construct($dsn);
-      $this->resultSet= &new MockResultSet();
+      $this->resultSet= new MockResultSet();
     }
 
     /**
@@ -193,10 +193,10 @@
         }
 
         // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is_a($args[$ofs], 'Object')) {
+        } elseif (is('Generic', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];
@@ -370,7 +370,10 @@
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    public function &begin(&$transaction) { }
+    public function &begin(&$transaction) {
+      $transaction->db= &$this;
+      return $transaction;
+    }
     
     /**
      * Retrieve transaction state

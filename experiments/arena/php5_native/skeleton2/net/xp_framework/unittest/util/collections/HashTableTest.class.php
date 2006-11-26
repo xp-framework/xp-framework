@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.HashTable',
     'text.String'
   );
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->map= &new HashTable();
+      $this->map= new HashTable();
     }
         
     /**
@@ -57,7 +57,7 @@
      */
     #[@test]
     public function equalsOtherMapWithSameContents() {
-      $other= &new HashTable();
+      $other= new HashTable();
       $this->map->put(new String('color'), new String('green'));
       $other->put(new String('color'), new String('green'));
       $this->assertTrue($this->map->equals($other));
@@ -70,7 +70,7 @@
      */
     #[@test]
     public function doesNotEqualMapWithDifferentContents() {
-      $other= &new HashTable();
+      $other= new HashTable();
       $this->map->put(new String('color'), new String('blue'));
       $other->put(new String('color'), new String('yellow'));
       $this->assertFalse($this->map->equals($other));
@@ -95,7 +95,7 @@
      */
     #[@test]
     public function putReturnsPreviousValue() {
-      $color= &new String('color');
+      $color= new String('color');
       $this->assertNull($this->map->put($color, new String('green')));
       $this->assertEquals(new String('green'), $this->map->put($color, new String('red')));
       $this->assertEquals(new String('red'), $this->map->get($color));

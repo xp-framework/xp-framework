@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test the XP default classloader
@@ -23,7 +23,7 @@
      * @param   string name
      * @param   &lang.XPClass class
      * @return  bool
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertXPClass($name, &$class) {
       return (
@@ -125,6 +125,26 @@
       $this->assertXPClass($name, $class);
       $this->assertTrue(RuntimeDefinedClass::initializerCalled());
     }
+    
+    /**
+     * Tests defineClass() with a given interface
+     *
+     * @access  public
+     */
+    #[@test]
+    public function defineClassImplements() {
+      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
+      $class= &$this->classLoader->defineClass(
+        $name, 
+        'lang.Object',
+        array('util.log.Traceable'),
+        '{ function setTrace(&$cat) { } }'
+      );
+
+      $this->assertTrue(is('util.log.Traceable', $class->newInstance()));
+      $this->assertFalse(is('util.log.Observer', $class->newInstance()));
+    }
+     
     
     /**
      * Tests the defineClass() method for the situtation where the bytes 

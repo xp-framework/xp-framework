@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test the XP error handling semantics
@@ -80,7 +80,7 @@
       $line= __LINE__ - 1;
 
       try {
-        throw(new Exception(''));
+        throw(new XPException(''));
       } catch (Exception $e) {
         $self= get_class($this);
         foreach ($e->getStackTrace() as $element) {

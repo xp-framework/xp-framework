@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.Hashmap',
     'util.Comparator'
   );
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->map= &new Hashmap();
+      $this->map= new Hashmap();
     }
         
     /**
@@ -57,7 +57,7 @@
      */
     #[@test]
     public function equalsOtherMapWithSameContents() {
-      $other= &new HashMap();
+      $other= new HashMap();
       $this->map->put('color', 'green');
       $other->put('color', 'green');
       $this->assertTrue($this->map->equals($other));
@@ -70,7 +70,7 @@
      */
     #[@test]
     public function doesNotEqualMapWithDifferentContents() {
-      $other= &new HashMap();
+      $other= new HashMap();
       $this->map->put('color', 'green');
       $other->put('color', 'pink');
       $this->assertFalse($this->map->equals($other));
@@ -343,12 +343,15 @@
       $this->map->put('one', 'One');
       $this->map->put('two', 'two');
       $this->map->put('eins', 'one');
-      $class= &ClassLoader::defineClass('net.xp_framework.unittest.util.StringCaseComparator', '
+
+      $cl= &ClassLoader::getDefault();
+      $class= &$cl->defineClass('net.xp_framework.unittest.util.StringCaseComparator', '
         class StringCaseComparator extends Object implements Comparator {
 
-          function compare(&$a, &$b) { 
+          public static function compare(&$a, &$b) { 
             return strcasecmp($a, $b); 
           }
+
         }
       ');
       $this->map->usort($class->newInstance());

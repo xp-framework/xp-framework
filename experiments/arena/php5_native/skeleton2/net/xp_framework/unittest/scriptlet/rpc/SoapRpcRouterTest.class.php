@@ -5,14 +5,14 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.scriptlet.rpc.mock.SoapRpcRouterMock'
   );
 
   /**
    * Test case for SoapRpcRouter
    *
-   * @see      xp://xml.soap.rpc.SoapRpcRouter
+   * @see      xp://webservices.soap.rpc.SoapRpcRouter
    * @purpose  Testcase
    */
   class SoapRpcRouterTest extends TestCase {
@@ -24,7 +24,7 @@
      */
     public function setUp() {
       xp::gc();
-      $this->router= &new SoapRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',

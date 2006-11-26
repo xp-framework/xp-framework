@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xml.xmlrpc.transport.XmlRpcHttpTransport',
+    'webservices.xmlrpc.transport.XmlRpcHttpTransport',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyHttpConnection'
   );
 
@@ -24,7 +24,7 @@
      * @param   array headers default array
      */
     public function __construct($url, $headers= array()) {
-      $this->_conn= &new DummyHttpConnection($url);
+      $this->_conn= new DummyHttpConnection($url);
       $this->_headers= $headers;
     }
     

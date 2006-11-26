@@ -5,15 +5,15 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.scriptlet.rpc.mock.JsonRpcRouterMock',
-    'org.json.JsonFactory'
+    'webservices.json.JsonFactory'
   );
 
   /**
    * Test case for JsonRpcRpcRouter
    *
-   * @see      xp://org.json.rpc.JsonRpcRouter
+   * @see      xp://webservices.json.rpc.JsonRpcRouter
    * @purpose  Testcase
    */
   class JsonRpcRouterTest extends TestCase {
@@ -25,7 +25,7 @@
      */
     public function setUp() {
       xp::gc();
-      $this->router= &new JsonRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= new JsonRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.getImplementationName", "params" : [ ], "id" : 1 }');
     }

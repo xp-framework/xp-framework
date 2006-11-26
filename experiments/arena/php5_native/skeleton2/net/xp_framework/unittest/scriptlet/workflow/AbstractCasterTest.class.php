@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
   
   /**
    * Scriptlet/Caster test case

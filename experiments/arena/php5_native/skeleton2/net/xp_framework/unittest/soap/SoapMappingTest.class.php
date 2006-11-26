@@ -5,8 +5,8 @@
  */
 
   uses(
-    'xml.soap.SOAPClient',
-    'util.profiling.unittest.TestCase',
+    'webservices.soap.SOAPClient',
+    'unittest.TestCase',
     'net.xp_framework.unittest.soap.SOAPDummyTransport'
   );
   
@@ -27,7 +27,7 @@
      */
     #[@test]
     public function testDeserialization() {
-      $transport= &new SOAPDummyTransport();
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <soapenv:Body soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -42,7 +42,7 @@
 </soapenv:Envelope>
       ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->registerMapping(
         new QName('http://net.xp_framework/soap/types', 'SoapTestType'),
         XPClass::forName('net.xp_framework.unittest.soap.SoapMappingTestTarget')
@@ -67,8 +67,8 @@
      */
     #[@test]
     public function testSerialization() {
-      $transport= &new SOAPDummyTransport();
-      $client= &new SOAPClient($transport, 'urn://test');
+      $transport= new SOAPDummyTransport();
+      $client= new SOAPClient($transport, 'urn://test');
       
       // Re-set transport as constructor created a copy of it!
       $client->transport= &$transport;

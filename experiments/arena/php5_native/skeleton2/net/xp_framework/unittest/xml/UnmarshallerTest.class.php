@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
     'xml.meta.Unmarshaller'
   );
@@ -31,6 +31,7 @@
         </dialogtype>',
         'net.xp_framework.unittest.xml.DialogType'
       );
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType') &&
       $this->assertEquals('file.open', $dialog->getId());
     }
 
@@ -47,6 +48,7 @@
         </dialogtype>',
         'net.xp_framework.unittest.xml.DialogType'
       );
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType') &&
       $this->assertEquals('Open a file > Choose', $dialog->getCaption());
     }
     
@@ -65,16 +67,16 @@
         </dialogtype>', 
         'net.xp_framework.unittest.xml.DialogType'
       );
-      $this->assertTrue($dialog->hasButtons());
-      $this->assertEquals(2, $dialog->numButtons());
-      
-      with ($ok= &$dialog->buttonAt(0)); {
-        $this->assertEquals('ok', $ok->getId());
-        $this->assertEquals('Yes, go ahead', $ok->getCaption());
-      }
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType') &&
+      $this->assertTrue($dialog->hasButtons()) &&
+      $this->assertEquals(2, $dialog->numButtons()) &&
 
-      with ($cancel= &$dialog->buttonAt(1)); {
-        $this->assertEquals('cancel', $cancel->getId());
+      with ($ok= &$dialog->buttonAt(0), $cancel= &$dialog->buttonAt(1)); {
+        $this->assertClass($ok, 'net.xp_framework.unittest.xml.ButtonType') &&
+        $this->assertClass($cancel, 'net.xp_framework.unittest.xml.ButtonType') &&
+        $this->assertEquals('ok', $ok->getId()) &&
+        $this->assertEquals('cancel', $cancel->getId()) &&
+        $this->assertEquals('Yes, go ahead', $ok->getCaption()) &&
         $this->assertEquals('No, please don\'t!', $cancel->getCaption());
       }
     }

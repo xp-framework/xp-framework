@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'remote.UnknownRemoteObject',
     'util.Binford'
   );
@@ -52,7 +52,7 @@
      *
      * @access  public
      */
-    #[@test, @ignore]
+    #[@test]
     public function multipleMembersToStringInvocation() {
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n".
@@ -75,7 +75,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function readMember() {
-      $o= &new UnknownRemoteObject();
+      $o= new UnknownRemoteObject();
       $id= $o->id;
     }  
 
@@ -86,7 +86,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function writeMember() {
-      $o= &new UnknownRemoteObject();
+      $o= new UnknownRemoteObject();
       $o->id= 1;
     }  
 
@@ -97,7 +97,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function invokeMethod() {
-      $o= &new UnknownRemoteObject();
+      $o= new UnknownRemoteObject();
       $o->method();
     }  
   }

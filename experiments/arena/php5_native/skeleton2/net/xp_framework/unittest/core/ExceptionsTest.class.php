@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Test the XP exception mechanism
@@ -51,12 +51,12 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore]
     public function thrownExceptionCaughtByFqCn() {
       try {
-        throw(new XPException('Test'));
-      } catch (XPException $caught) {
-        $this->assertSubclass($caught, 'XPException');
+        throw(new Exception('Test'));
+      } catch (Exception $caught) {
+        $this->assertSubclass($caught, 'Exception');
         delete($caught);
         return TRUE;
       }
@@ -70,10 +70,10 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore]
     public function multipleCatches() {
       try {
-        throw(new Exception('Test'));
+        throw(new XPException('Test'));
       } catch (IllegalArgumentException $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'IllegalArgumentException');
       } catch (Exception $caught) {

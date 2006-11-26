@@ -26,7 +26,7 @@
      * @param   mixed in default NULL
      */
     public function __construct($in= NULL) {
-      $this->date= &new Date($in);
+      $this->date= new Date($in);
     }
     
     /**
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       TestClass::initializerCalled(TRUE);
     }
     
@@ -47,7 +47,7 @@
      * @param   bool value default NULL
      * @return  bool
      */
-    public function initializerCalled($value= NULL) {
+    public static function initializerCalled($value= NULL) {
       static $called;
       if (NULL !== $value) $called= $value;
       return $called;

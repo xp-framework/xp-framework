@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Tests the xp::stringOf() core utility
@@ -19,7 +19,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       $cl= &ClassLoader::getDefault();
       $cl->defineClass('net.xp_framework.unittest.core.TestString', 'class TestString extends Object {
         function toString() {
@@ -211,8 +211,8 @@ __
      */
     #[@test]
     public function objectRecursion() {
-      $o= &new StdClass();
-      $o->child= &new StdClass();
+      $o= new StdClass();
+      $o->child= new StdClass();
       $o->child->parent= &$o;
       $this->assertEquals(<<<__
 php.stdClass {
@@ -240,7 +240,7 @@ __
      */
     #[@test]
     public function toStringRecursion() {
-      $test= &new TestThis();
+      $test= new TestThis();
       $this->assertEquals(
         $test->getClassName()." {\n  __id => \"".$test->__id."\"\n}",
         xp::stringOf($test)
@@ -254,7 +254,7 @@ __
      */
     #[@test]
     public function repeatedCalls() {
-      $object= &new Object();
+      $object= new Object();
       $stringRep= $object->toString();
       
       $this->assertEquals($stringRep, xp::stringOf($object), 'first');

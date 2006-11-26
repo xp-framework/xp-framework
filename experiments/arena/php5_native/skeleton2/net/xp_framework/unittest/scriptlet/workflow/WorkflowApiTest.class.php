@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'scriptlet.xml.workflow.AbstractState',
     'net.xp_framework.unittest.scriptlet.workflow.mock.MockRequest',
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->scriptlet= &new AbstractXMLScriptlet(ClassLoader::getDefault());
+      $this->scriptlet= new AbstractXMLScriptlet(ClassLoader::getDefault());
       $this->scriptlet->init();
     }
 
@@ -48,7 +48,7 @@
      */
     public function &process(&$request) {
       $request->initialize();
-      $response= &new MockResponse();
+      $response= new MockResponse();
       $this->scriptlet->processWorkflow($request, $response);
       return $response;
     }
@@ -60,7 +60,7 @@
      */
     #[@test]
     public function setupAndProcessCalled() {
-      $request= &new MockRequest($this->scriptlet->classloader, '{
+      $request= new MockRequest($this->scriptlet->classloader, '{
         var $called= array();
         
         function setup(&$request, &$response, &$context) {

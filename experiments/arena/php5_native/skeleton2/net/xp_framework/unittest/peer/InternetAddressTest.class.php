@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'peer.mail.InternetAddress'
   );
 
@@ -23,7 +23,7 @@
      */
     #[@test]
     public function createAddress() {
-      $i= &new InternetAddress('kiesel@example.com');
+      $i= new InternetAddress('kiesel@example.com');
     }
     
     /**
@@ -54,7 +54,7 @@
      */
     #[@test]
     public function testToString() {
-      $address= &new InternetAddress('kiesel@example.com', 'Alex Kiesel');
+      $address= new InternetAddress('kiesel@example.com', 'Alex Kiesel');
       $this->assertEquals('=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>', $address->toString());
     }
   }

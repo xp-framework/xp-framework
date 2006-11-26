@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'rdbms.DSN');
+  uses('unittest.TestCase', 'rdbms.DSN');
 
   /**
    * Tests the DSN class
@@ -22,9 +22,9 @@
      * @access  public
      */
     public function setUp() {
-      $this->dsn['sybase']= &new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
-      $this->dsn['mysql']= &new DSN('mysql://root@localhost/?log=default');
-      $this->dsn['pgsql']= &new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
+      $this->dsn['sybase']= new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
+      $this->dsn['mysql']= new DSN('mysql://root@localhost/?log=default');
+      $this->dsn['pgsql']= new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
     }
 
     /**

@@ -18,7 +18,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       LoaderTestClass::initializerCalled(TRUE);
     }
     
@@ -30,7 +30,7 @@
      * @param   bool value default NULL
      * @return  bool
      */
-    public function initializerCalled($value= NULL) {
+    public static function initializerCalled($value= NULL) {
       static $called;
       if (NULL !== $value) $called= $value;
       return $called;

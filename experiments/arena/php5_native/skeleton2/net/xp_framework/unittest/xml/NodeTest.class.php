@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'xml.Node'
   );
 
@@ -38,7 +38,7 @@
      */
     #[@test]
     public function attributeAccessors() {
-      $n= &new Node();
+      $n= new Node();
       $n->setAttribute('id', 1);
       $this->assertTrue($n->hasAttribute('id'));
       $this->assertFalse($n->hasAttribute('href'));
@@ -55,7 +55,7 @@
     #[@test]
     public function contentAccessors() {
       $content= '"This is interesting", Tom\'s friend said. "It\'s > 4 but < 2!"';
-      $n= &new Node();
+      $n= new Node();
       $n->setContent($content);
       $this->assertEquals($content, $n->getContent());
     }
@@ -69,7 +69,7 @@
      */
     #[@test]
     public function nameAccessors() {
-      $n= &new Node();
+      $n= new Node();
       $n->setName('name');
       $this->assertEquals('name', $n->getName());
     }
@@ -83,7 +83,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function illegalContent() {
-      $n= &new Node();
+      $n= new Node();
       $n->setContent("\0");
     }
     
@@ -96,7 +96,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingNullChild() {
-      $n= &new Node();
+      $n= new Node();
       $n->addChild($child= NULL);
     }
 
@@ -108,8 +108,8 @@
      */
     #[@test]
     public function addingReturnsChild() {
-      $n= &new Node();
-      $child= &new Node();
+      $n= new Node();
+      $child= new Node();
       $this->assertEquals($child, $n->addChild($child));
     }
     

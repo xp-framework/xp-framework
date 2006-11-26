@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
     'xml.meta.Marshaller'
   );
@@ -22,7 +22,7 @@
      * Compares XML after stripping all whitespace between tags of both 
      * expected and actual strings.
      *
-     * @see     xp://util.profiling.unittest.TestCase#assertEquals
+     * @see     xp://unittest.TestCase#assertEquals
      * @access  public
      * @param   string expect
      * @param   string actual
@@ -42,7 +42,7 @@
      */
     #[@test]
     public function idAttribute() {
-      $dialog= &new DialogType();
+      $dialog= new DialogType();
       $dialog->setId('file.open');
       
       $this->assertXmlEquals('
@@ -60,7 +60,7 @@
      */
     #[@test]
     public function captionNode() {
-      $dialog= &new DialogType();
+      $dialog= new DialogType();
       $dialog->setCaption('Open a file > Choose');
       
       $this->assertXmlEquals('
@@ -78,7 +78,7 @@
      */
     #[@test]
     public function buttonsNodeSet() {
-      $dialog= &new DialogType();
+      $dialog= new DialogType();
       $dialog->setCaption('Really delete the file "Ü"?');
 
       with ($ok= &$dialog->addButton(new ButtonType())); {
@@ -107,7 +107,7 @@
      */
     #[@test]
     public function emptyMembers() {
-      $dialog= &new DialogType();
+      $dialog= new DialogType();
       $this->assertXmlEquals('
         <dialogtype id="">
           <caption/>

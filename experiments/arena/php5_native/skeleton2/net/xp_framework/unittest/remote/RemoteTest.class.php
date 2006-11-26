@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.remote.MockProtocolHandler',
     'net.xp_framework.unittest.remote.Person',
     'remote.Remote',
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       $hf= &HandlerFactory::getInstance();
       $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
     }
@@ -54,7 +54,7 @@
         REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
         REMOTE_SPEC_OTHER   => TRUE     // Other machine
       ) as $spec => $avail) {
-        $this->handler[$spec]= &$pool->acquire(new URL($spec));
+        $this->handler[$spec]= &$pool->acquire($spec);
         $this->handler[$spec]->server['available']= $avail;
       }
     }
@@ -149,7 +149,7 @@
       $r= &Remote::forName(REMOTE_SPEC_ONE);
       
       // Bind a person object
-      $person= &new Person();
+      $person= new Person();
       $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= &$person;
 
       // Lookup the person object

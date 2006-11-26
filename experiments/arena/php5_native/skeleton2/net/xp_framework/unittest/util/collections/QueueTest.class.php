@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.Queue',
     'text.String'
   );
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->queue= &new Queue();
+      $this->queue= new Queue();
     }
         
     /**
@@ -69,7 +69,7 @@
      */
     #[@test]
     public function get() {
-      $color= &new String('red');
+      $color= new String('red');
       $this->queue->put($color);
       $this->assertEquals($color, $this->queue->get());
       $this->assertTrue($this->queue->isEmpty());
@@ -93,7 +93,7 @@
      */
     #[@test]
     public function peek() {
-      $color= &new String('blue');
+      $color= new String('blue');
       $this->queue->put($color);
       $this->assertEquals($color, $this->queue->peek());
       $this->assertFalse($this->queue->isEmpty());
@@ -117,7 +117,7 @@
      */
     #[@test]
     public function remove() {
-      $color= &new String('blue');
+      $color= new String('blue');
       $this->queue->put($color);
       $this->queue->remove($color);
       $this->assertTrue($this->queue->isEmpty());
@@ -130,7 +130,7 @@
      */
     #[@test]
     public function removeReturnsWhetherDeleted() {
-      $color= &new String('pink');
+      $color= new String('pink');
       $this->queue->put($color);
       $this->assertTrue($this->queue->remove($color));
       $this->assertFalse($this->queue->remove(new String('purple')));
@@ -204,7 +204,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtIllegalOffset() {
       $this->queue->elementAt(-1);
     }
@@ -215,7 +215,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtOffsetOutOfBounds() {
       $this->queue->put(new String('one'));
       $this->queue->elementAt($this->queue->size() + 1);
@@ -227,7 +227,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('util.IndexOutOfBoundsException')]
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtEmptyList() {
       $this->queue->elementAt(0);
     }

@@ -5,8 +5,8 @@
  */
  
   uses(
-    'rdbms.DriverManager', 
-    'util.profiling.unittest.TestCase'
+    'rdbms.DriverManager',
+    'unittest.TestCase'
   );
 
   /**

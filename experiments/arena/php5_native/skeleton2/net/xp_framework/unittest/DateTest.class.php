@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.Date',
     'util.Calendar'
   );
@@ -34,7 +34,7 @@
       putenv('TZ=GMT');
       
       $this->nowTime= time();
-      $this->nowDate= &new Date($this->nowTime);
+      $this->nowDate= new Date($this->nowTime);
       $this->refDate= &Date::fromString('1977-12-14 11:55');
     }
     

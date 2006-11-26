@@ -5,7 +5,7 @@
  */
 
   /**
-   * Blah
+   * Dummy class for unittest
    *
    * @purpose  Dummy implementation
    */
@@ -44,11 +44,15 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Method which checks for the types it receives in a hardcoded
+     * manner
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string string
+     * @param   int int
+     * @param   array array
+     * @param   array struct
+     * @return  array
      */
     #[@webmethod]
     public function checkMultipleParameters($string, $int, $array, $struct) {

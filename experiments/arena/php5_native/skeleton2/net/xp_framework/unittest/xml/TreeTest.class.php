@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'xml.Tree'
   );
 
@@ -49,7 +49,7 @@
      */
     #[@test]
     public function rootMember() {
-      with ($t= &new Tree('formresult'), $r= &$t->root); {
+      with ($t= new Tree('formresult'), $r= &$t->root); {
         $this->assertClass($r, 'xml.Node');
         $this->assertEmpty($r->children);
         $this->assertEmpty($r->attribute);
@@ -64,8 +64,8 @@
      */
     #[@test]
     public function addChild() {
-      $t= &new Tree('tests');
-      $child= &new Node('test', 'success', array('name' => 'TreeTest'));
+      $t= new Tree('tests');
+      $child= new Node('test', 'success', array('name' => 'TreeTest'));
       $this->assertEquals($child, $t->addChild($child));
     }
 

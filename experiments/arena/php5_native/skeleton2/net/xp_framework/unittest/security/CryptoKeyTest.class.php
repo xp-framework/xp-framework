@@ -10,7 +10,7 @@
     'security.cert.X509Certificate',
     'security.crypto.PublicKey',
     'security.crypto.PrivateKey',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**
@@ -47,7 +47,7 @@
       $keypair= &Keypair::generate();
       $privatekey= &$keypair->getPrivateKey();
       
-      $csr= &new CSR(new Principal(array(
+      $csr= new CSR(new Principal(array(
         'C'     => 'DE',
         'ST'    => 'Baden-Württemberg',
         'L'     => 'Karlsruhe',

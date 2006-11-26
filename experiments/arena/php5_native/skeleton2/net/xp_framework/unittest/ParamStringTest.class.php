@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.cmd.ParamString'
   );
 
@@ -24,7 +24,7 @@
      */
     #[@test]
     public function testShortFlag() {
-      $p= &new ParamString(array('-k'));
+      $p= new ParamString(array('-k'));
 
       $this->assertTrue($p->exists('k'));
       $this->assertNull($p->value('k'));
@@ -37,7 +37,7 @@
      */
     #[@test]
     public function testShortValue() {
-      $p= &new ParamString(array('-d', 'sql'));
+      $p= new ParamString(array('-d', 'sql'));
 
       $this->assertTrue($p->exists('d'));
       $this->assertEquals('sql', $p->value('d'));
@@ -50,7 +50,7 @@
      */
     #[@test]
     public function testLongFlag() {
-      $p= &new ParamString(array('--verbose'));
+      $p= new ParamString(array('--verbose'));
 
       $this->assertTrue($p->exists('verbose'));
       $this->assertNull($p->value('verbose'));
@@ -63,7 +63,7 @@
      */
     #[@test]
     public function testLongValue() {
-      $p= &new ParamString(array('--level=3'));
+      $p= new ParamString(array('--level=3'));
 
       $this->assertTrue($p->exists('level'));
       $this->assertEquals('3', $p->value('level'));
@@ -76,7 +76,7 @@
      */
     #[@test]
     public function whitespaceInParameter() {
-      $p= &new ParamString(array('--realm=That is a realm'));
+      $p= new ParamString(array('--realm=That is a realm'));
       
       $this->assertTrue($p->exists('realm'));
       $this->assertEquals('That is a realm', $p->value('realm'));

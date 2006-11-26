@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Tests the lang.Object class
@@ -66,7 +66,7 @@
      */
     #[@test]
     public function hashCodeMethod() {
-      $o= &new Object();
+      $o= new Object();
       $this->assertMatches($o->hashCode(), '/^0\.[0-9]+ [0-9]+$/');
     }
 
@@ -78,7 +78,7 @@
      */
     #[@test]
     public function equalsMethod() {
-      $o= &new Object();
+      $o= new Object();
       $this->assertTrue($o->equals($o));
       $this->assertFalse($o->equals(new Object()));
     }
@@ -92,7 +92,7 @@
      */
     #[@test]
     public function getClassNameMethod() {
-      $o= &new Object();
+      $o= new Object();
       $this->assertEquals('lang.Object', $o->getClassName());
     }
 
@@ -105,7 +105,7 @@
      */
     #[@test]
     public function getClassMethod() {
-      $o= &new Object();
+      $o= new Object();
       $class= &$o->getClass();
       $this->assertClass($class, 'lang.XPClass');
       $this->assertEquals('lang.Object', $class->getName());
@@ -119,11 +119,11 @@
      */
     #[@test]
     public function toStringMethod() {
-      $o= &new Object();
+      $o= new Object();
       $this->assertEquals(
-        'lang.Object@Object::__set_state(array('."\n".
-        '   \'__id\' => \''.$o->hashCode().'\','."\n".
-        '))', 
+        'lang.Object {'."\n".
+        '  __id => "'.$o->hashCode().'"'."\n".
+        '}', 
         $o->toString()
       );
     }

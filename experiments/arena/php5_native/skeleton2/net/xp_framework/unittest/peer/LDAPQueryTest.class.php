@@ -7,7 +7,7 @@
   uses(
     'peer.ldap.LDAPQuery',
     'util.Date',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**
@@ -28,14 +28,14 @@
       date_default_timezone_set('Europe/Berlin');
     }  
   
-    /**
+    /**    /**
      * Test general functionality with tokenizer
      *
      * @access  public
      */
     #[@test]
     public function testTokenizer() {
-      $q= &new LDAPQuery();
+      $q= new LDAPQuery();
       
       // Test a default query string
       $this->assertEquals($q->prepare('(&(objectClass=*)(uid=%s))', 'kiesel'), '(&(objectClass=*)(uid=kiesel))');
@@ -54,7 +54,7 @@
      */
     #[@test]
     public function testTokenizerReplacements() {
-      $q= &new LDAPQuery();
+      $q= new LDAPQuery();
       
       // Test character replacements
       $this->assertEquals($q->prepare('%s', 'foo(bar'), 'foo\\28bar');
@@ -75,9 +75,9 @@
      */
     #[@test]
     public function testDateToken() {
-      $q= &new LDAPQuery();
+      $q= new LDAPQuery();
       
-      $d= &new Date(328336200);
+      $d= new Date(328336200);
       $this->assertEquals($q->prepare('%s', $d), '198005280630Z+0200');
       $this->assertEquals($q->prepare('%d', $d), '198005280630Z+0200');
     }
@@ -89,7 +89,7 @@
      */
     #[@test]
     public function testNullTokens() {
-      $q= &new LDAPQuery();
+      $q= new LDAPQuery();
       
       $this->assertEquals($q->prepare('%d', NULL), 'NULL');
       $this->assertEquals($q->prepare('%c', NULL), 'NULL');
@@ -103,7 +103,7 @@
      */
     #[@test, @expect('IllegalArgumentException')]
     public function testNonScalarInput() {
-      $q= &new LDAPQuery('c=DE', '(%d)', array(1,2));
+      $q= new LDAPQuery('c=DE', '(%d)', array(1,2));
     }
   }
 ?>

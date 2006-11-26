@@ -5,8 +5,8 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
-    'org.json.JsonDecoder'
+    'unittest.TestCase',
+    'webservices.json.JsonDecoder'
   );
 
   /**
@@ -23,7 +23,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->decoder= &new JsonDecoder();
+      $this->decoder= new JsonDecoder();
     }
     
     /**
@@ -245,7 +245,7 @@
      *
      * @access  public
      */
-    #[@test,@expect('org.json.JsonException')]
+    #[@test,@expect('webservices.json.JsonException')]
     public function decodeInvalidData() {
       $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
     }
@@ -257,7 +257,7 @@
      */
     #[@test]
     public function encodeObject() {
-      $o= &new Object();
+      $o= new Object();
       $o->__id= '<bogusid>';
       $o->prop= 'prop';
 
@@ -272,9 +272,9 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore]
     public function decodeObject() {
-      $o= &new Object();
+      $o= new Object();
       $o->__id= '<bogusid>';
       $o->prop= 'prop';
 

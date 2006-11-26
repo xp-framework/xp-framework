@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'lang.Collection',
     'util.Binford'
   );
@@ -25,7 +25,7 @@
     /**
      * Setup method
      *
-     * @access  
+     * @access  public
      */
     public function setUp() {
       $cl= &ClassLoader::getDefault();
@@ -236,7 +236,7 @@
      */
     #[@test]
     public function listEquality() {
-      $element= &new Binford();
+      $element= new Binford();
       $c1= &Collection::forClass(COLLECTION_CLASS_NAME);
       $c1->add($element);
 

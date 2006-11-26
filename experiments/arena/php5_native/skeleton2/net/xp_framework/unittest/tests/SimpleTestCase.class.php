@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * This class is used in the SuiteTest class' running* methods and

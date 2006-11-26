@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.LRUBuffer',
     'text.String'
   );
@@ -28,7 +28,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->buffer= &new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
+      $this->buffer= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
     }
     
     /**

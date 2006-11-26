@@ -5,8 +5,8 @@
  */
  
   uses(
-    'rdbms.DriverManager', 
-    'util.profiling.unittest.TestCase',
+    'rdbms.DriverManager',
+    'unittest.TestCase',
     'net.xp_framework.unittest.rdbms.mock.MockConnection'
   );
 
@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */  
-    public function __static() {
+    public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
     }
      
@@ -54,10 +54,10 @@
      * Asserts a query works
      *
      * @access  protected
-     * @throws  util.profiling.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertQuery() {
-      $version= '$Revision: 7136 $';
+      $version= '$Revision: 8518 $';
       $this->conn->setResultSet(new MockResultSet(array(array('version' => $version))));
       if (
         ($r= &$this->conn->query('select %s as version', $version)) &&

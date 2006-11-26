@@ -5,14 +5,14 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.scriptlet.rpc.mock.XmlRpcRouterMock'
   );
 
   /**
    * Test case for XmlRpcRpcRouter
    *
-   * @see      xp://xml.xmlrpc.rpc.XmlRpcRouter
+   * @see      xp://webservices.xmlrpc.rpc.XmlRpcRouter
    * @purpose  Testcase
    */
   class XmlRpcRouterTest extends TestCase {
@@ -24,7 +24,7 @@
      */
     public function setUp() {
       xp::gc();
-      $this->router= &new XmlRpcRouterMock(new ClassLoader('net.xp_framework.unittest.scriptlet.rpc.impl'));
+      $this->router= new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>

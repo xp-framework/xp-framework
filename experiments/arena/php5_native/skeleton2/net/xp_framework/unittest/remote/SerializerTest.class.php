@@ -5,11 +5,11 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'remote.protocol.Serializer',
+    'remote.protocol.SerializerMapping',
     'net.xp_framework.unittest.remote.Person',
-    'util.Hashmap',
-    'remote.protocol.SerializerMapping'
+    'util.Hashmap'
   );
 
   /**
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->serializer= &new Serializer();
+      $this->serializer= new Serializer();
     }
     
     /**
@@ -171,7 +171,7 @@
      */
     #[@test]
     public function representationOfHashmap() {
-      $h= &new Hashmap();
+      $h= new Hashmap();
       $h->put('key', 'value');
       $h->put('number', '6100');
 
@@ -188,7 +188,7 @@
      */
     #[@test]
     public function representationOfMixedHashmap() {
-      $h= &new Hashmap();
+      $h= new Hashmap();
       $h->put('key', 'value');
       $h->put('number', 6100);
 
@@ -221,7 +221,7 @@
     public function valueOfInt() {
       $this->assertEquals(
         1,
-        $this->serializer->valueOf('i:1;', $l)
+        $this->serializer->valueOf('i:1;')
       );
     }
 
@@ -234,7 +234,7 @@
     public function valueOfByte() {
       $this->assertEquals(
         new Byte(1),
-        $this->serializer->valueOf('B:1;', $l)
+        $this->serializer->valueOf('B:1;')
       );
     }
 
@@ -247,7 +247,7 @@
     public function valueOfLong() {
       $this->assertEquals(
         new Long(12345),
-        $this->serializer->valueOf('l:12345;', $l)
+        $this->serializer->valueOf('l:12345;')
       );
     }
 
@@ -260,7 +260,7 @@
     public function valueOfFloat() {
       $this->assertEquals(
         new Float(1.5),
-        $this->serializer->valueOf('f:1.5;', $l)
+        $this->serializer->valueOf('f:1.5;')
       );
     }
 
@@ -273,7 +273,7 @@
     public function valueOfDouble() {
       $this->assertEquals(
         1.5,
-        $this->serializer->valueOf('d:1.5;', $l)
+        $this->serializer->valueOf('d:1.5;')
       );
     }
 
@@ -287,7 +287,7 @@
     public function valueOfShorts() {
       $this->assertEquals(
         new Short(1),
-        $this->serializer->valueOf('S:1;', $l)
+        $this->serializer->valueOf('S:1;')
       );
     }
     
@@ -300,7 +300,7 @@
     public function valueOfDates() {
       $this->assertEquals(
         new Date(328312800),
-        $this->serializer->valueOf('T:328312800;', $l)
+        $this->serializer->valueOf('T:328312800;')
       );
     }
 
@@ -312,7 +312,7 @@
      */
     #[@test]
     public function valueOfArrayList() {
-      $return= &$this->serializer->valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}", $l);
+      $return= &$this->serializer->valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
       $this->assertClass($return, 'lang.types.ArrayList');
       $this->assertEquals(2, sizeof($return->values));
       $this->assertEquals(new Person(), $return->values[0]);
@@ -328,7 +328,6 @@
     public function arrayList() {
       $list= $this->serializer->valueOf(
         'A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}',
-        $l,
         $context
       );
       $this->assertEquals($list, new ArrayList(array(
@@ -356,13 +355,13 @@
       
       $fooHandler= &$cl->defineClass('net.xp_framework.unittest.remote.FooHandler', 'class FooHandler extends Object implements SerializerMapping {
         function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
-        function representationOf(&$serializer, &$value, $context= array()) { return "FOO:"; }
+        function representationOf(&$serializer, &$var, $ctx= array()) { return "FOO:"; }
         function &valueOf(&$serializer, $serialized, &$length, $context= array()) { return NULL; }
       }');
       
       $barHandler= &$cl->defineClass('net.xp_framework.unittest.remote.BarHandler', 'class BarHandler extends Object implements SerializerMapping {
         function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.BarClass"); }
-        function representationOf(&$serializer, &$value, $context= array()) { return "BAR:"; }
+        function representationOf(&$serializer, &$var, $ctx= array()) { return "BAR:"; }
         function &valueOf(&$serializer, $serialized, &$length, $context= array()) { return NULL; }
       }');
       

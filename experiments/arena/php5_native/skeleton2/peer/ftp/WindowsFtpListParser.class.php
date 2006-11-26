@@ -41,7 +41,7 @@
       $e->setGroup(NULL);
       $e->setSize(intval($result[8]));
       $e->setDate(new Date(sprintf(
-        '%d/%d/%d %d:%d%s', 
+        '%02d/%02d/%02d %02d:%02d%02s', 
         $result[1], 
         $result[2], 
         $result[3], 

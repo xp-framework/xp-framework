@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.HashSet',
     'text.String'
   );
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->set= &new HashSet();
+      $this->set= new HashSet();
     }
         
     /**
@@ -57,7 +57,7 @@
      */
     #[@test]
     public function equalsOtherSetWithSameContents() {
-      $other= &new HashSet();
+      $other= new HashSet();
       $this->set->add(new String('color'));
       $other->add(new String('color'));
       $this->assertTrue($this->set->equals($other));
@@ -70,7 +70,7 @@
      */
     #[@test]
     public function doesNotEqualSetWithDifferentContents() {
-      $other= &new HashSet();
+      $other= new HashSet();
       $this->set->add(new String('blue'));
       $other->add(new String('yellow'));
       $this->assertFalse($this->set->equals($other));
@@ -149,7 +149,7 @@
      */
     #[@test]
     public function addSameValueTwice() {
-      $color= &new String('green');
+      $color= new String('green');
       $this->assertTrue($this->set->add($color));
       $this->assertFalse($this->set->add($color));
     }
@@ -208,7 +208,7 @@
      */
     #[@test]
     public function toArray() {
-      $color= &new String('red');
+      $color= new String('red');
       $this->set->add($color);
       $this->assertEquals(array(&$color), $this->set->toArray());
     }

@@ -5,8 +5,8 @@
  */
  
   uses(
-    'peer.ldap.LDAPClient', 
-    'util.profiling.unittest.TestCase'
+    'peer.ldap.LDAPClient',
+    'unittest.TestCase'
   );
 
   /**
@@ -25,7 +25,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->lc= &new LDAPClient('ldap.openldap.org');
+      $this->lc= new LDAPClient('ldap.openldap.org');
       try {
         $this->lc->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
         $this->lc->connect();

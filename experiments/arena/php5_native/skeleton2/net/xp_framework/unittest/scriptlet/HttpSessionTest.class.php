@@ -3,7 +3,7 @@
  *
  * $Id$
  */
-  uses('scriptlet.HttpSession', 'util.profiling.unittest.TestCase');
+  uses('scriptlet.HttpSession', 'unittest.TestCase');
 
   /**
    * TestCase for scriptlet.HttpSession class.
@@ -76,7 +76,7 @@
     public function testReattach() {
       $this->session->initialize();
       
-      $copy= &new HttpSession();
+      $copy= new HttpSession();
       $copy->initialize($this->session->getId());
       $this->assertFalse($copy->isNew());
     }

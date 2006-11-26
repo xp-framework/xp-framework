@@ -5,15 +5,15 @@
  */
 
   uses(
-    'xml.soap.SOAPClient',
-    'util.profiling.unittest.TestCase',
+    'webservices.soap.SOAPClient',
+    'unittest.TestCase',
     'net.xp_framework.unittest.soap.SOAPDummyTransport'
   );
   
   /**
    * Test for SOAP client class
    *
-   * @see      xp://xml.soap.SOAPClient
+   * @see      xp://webservices.soap.SOAPClient
    * @purpose  Unittest
    */
   class SoapClientTest extends TestCase {
@@ -26,7 +26,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function testMultipleOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -46,7 +46,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->invoke('irrelevant');
     }
 
@@ -59,7 +59,7 @@
      */
     #[@test]
     public function testNoOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -76,7 +76,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->invoke('irrelevant');
     }
 
@@ -88,7 +88,7 @@
      */
     #[@test]
     public function testOneOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -107,7 +107,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $this->assertEquals(5, $client->invoke('irrelevant'));
     }
   }

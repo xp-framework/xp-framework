@@ -24,7 +24,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() { 
+    public static function __static() { 
       with ($peer= &Job::getPeer()); {
         $peer->setTable('JOBS.job');
         $peer->setConnection('jobs');

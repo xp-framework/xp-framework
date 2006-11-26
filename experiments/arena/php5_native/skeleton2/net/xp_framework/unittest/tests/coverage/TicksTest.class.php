@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * Tests ticks which we will use for code coverage.
@@ -24,7 +24,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       declare(ticks= 0);
     }
     
@@ -590,7 +590,7 @@
         $line= __LINE__;                            // tick
         $message= NULL;                             // tick
         try {                                    // tick
-          throw(new Exception('*Boom*'));           // tick
+          throw(new XPException('*Boom*'));           // tick
         } catch (Exception $e) {             // tick
           $message= $e->getMessage();               // tick
         }                                           // tick

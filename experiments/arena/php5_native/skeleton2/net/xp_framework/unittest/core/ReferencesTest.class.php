@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase');
+  uses('unittest.TestCase');
 
   /**
    * References test.
@@ -69,7 +69,7 @@
      * @access  protected
      * @param   &lang.Object a
      * @param   &lang.Object b
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertReference(&$a, &$b) {
       $this->assertEquals($a->__id, $b->__id);

@@ -5,15 +5,15 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
-    'xml.xmlrpc.XmlRpcClient',
+    'unittest.TestCase',
+    'webservices.xmlrpc.XmlRpcClient',
     'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyRpcTransport'
   );
 
   /**
    * Testcase for XmlRpcClient
    *
-   * @see      xp://xml.xmlrpc.XmlRpcClient
+   * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  TestCase
    */
   class XmlRpcClientTest extends TestCase {
@@ -25,7 +25,7 @@
      */
     #[@test]
     public function simpleRequest() {
-      $client= &new XmlRpcClient(new DummyRpcTransport('http://localhost:12345/'));
+      $client= new XmlRpcClient(new DummyRpcTransport('http://localhost:12345/'));
       $conn= &$client->transport->getConnection();
       $conn->request->setResponse('HTTP/1.1 200 Ok
 Content-type: text/xml

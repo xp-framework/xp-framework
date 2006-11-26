@@ -5,8 +5,8 @@
  */
  
   uses(
-    'peer.http.HttpConnection', 
-    'util.profiling.unittest.TestCase'
+    'peer.http.HttpConnection',
+    'unittest.TestCase'
   );
 
   /**
@@ -53,7 +53,7 @@
      * @throws  rdbms.DriverNotSupportedException
      */
     public function setUp() {
-      $this->conn= &new HttpConnection($this->uri);
+      $this->conn= new HttpConnection($this->uri);
     }
     
     /**

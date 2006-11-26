@@ -5,15 +5,15 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase', 
-    'util.profiling.unittest.TestSuite', 
+    'unittest.TestCase',
+    'unittest.TestSuite',
     'net.xp_framework.unittest.tests.SimpleTestCase'
   );
 
   /**
    * Test TestSuite class methods
    *
-   * @see      xp://util.profiling.unittest.TestSuite
+   * @see      xp://unittest.TestSuite
    * @purpose  Unit Test
    */
   class LimitTest extends TestCase {
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->suite= &new TestSuite();
+      $this->suite= new TestSuite();
     }
 
     /**

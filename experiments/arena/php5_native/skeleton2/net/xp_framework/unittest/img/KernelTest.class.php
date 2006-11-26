@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.profiling.unittest.TestCase', 'img.filter.Kernel');
+  uses('unittest.TestCase', 'img.filter.Kernel');
 
   /**
    * Tests the kernel class
@@ -27,7 +27,7 @@
         array(-1.0, -1.0, -1.0)
       );
 
-      $k= &new Kernel($matrix);
+      $k= new Kernel($matrix);
       $this->assertEquals($matrix, $k->getMatrix());
     }
 
@@ -45,7 +45,7 @@
         array(-1.0, -1.0, -1.0)
       );
 
-      $k= &new Kernel($string);
+      $k= new Kernel($string);
       $this->assertEquals($matrix, $k->getMatrix());
     }
 

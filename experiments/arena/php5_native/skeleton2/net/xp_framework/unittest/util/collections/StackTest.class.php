@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.collections.Stack',
     'text.String'
   );
@@ -26,7 +26,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->stack= &new Stack();
+      $this->stack= new Stack();
     }
         
     /**
@@ -69,7 +69,7 @@
      */
     #[@test]
     public function pop() {
-      $color= &new String('green');
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals($color, $this->stack->pop());
       $this->assertTrue($this->stack->isEmpty());
@@ -82,7 +82,7 @@
      */
     #[@test]
     public function peek() {
-      $color= &new String('green');
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals($color, $this->stack->peek());
       $this->assertFalse($this->stack->isEmpty());
@@ -95,7 +95,7 @@
      */
     #[@test]
     public function search() {
-      $color= &new String('green');
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals(0, $this->stack->search($color));
       $this->assertEquals(-1, $this->stack->search(new String('non-existant')));

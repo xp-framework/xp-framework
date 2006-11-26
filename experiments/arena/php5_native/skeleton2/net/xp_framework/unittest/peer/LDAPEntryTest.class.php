@@ -6,7 +6,7 @@
  
   uses(
     'peer.ldap.LDAPEntry',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**
@@ -37,7 +37,7 @@
      * @access  public
      */    
     public function setUp() {
-      $this->entry= &new LDAPEntry($this->dn, $this->attributes);
+      $this->entry= new LDAPEntry($this->dn, $this->attributes);
     }
 
     /**

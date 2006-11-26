@@ -5,8 +5,8 @@
  */
  
   uses(
-    'org.dict.DictClient', 
-    'util.profiling.unittest.TestCase'
+    'org.dict.DictClient',
+    'unittest.TestCase'
   );
 
   /**
@@ -40,7 +40,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->dc= &new DictClient();
+      $this->dc= new DictClient();
       try {
         $this->dc->connect($this->server, (int)$this->port);
       } catch (Exception $e) {

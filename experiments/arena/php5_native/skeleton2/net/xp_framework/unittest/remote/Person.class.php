@@ -63,7 +63,7 @@
      * @return  bool
      */
     public function equals(&$cmp) {
-      return is_a($cmp, 'Person') && $cmp->name == $this->name && $cmp->id == $this->id;
+      return is('Person', $cmp) && $cmp->name == $this->name && $cmp->id == $this->id;
     }
   }
 ?>

@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'util.log.Logger',
     'util.log.LogAppender'
   );
@@ -25,7 +25,7 @@
      *
      * @model static
      */
-    public function __static() {
+    public static function __static() {
       $cl= &ClassLoader::getDefault();
       $cl->defineClass('LogCategoryTest$.MockAppender', 'class MockAppender extends LogAppender {
         var $messages= array();
@@ -63,7 +63,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed[] args default ["Argument"]
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertLog($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());
@@ -77,7 +77,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed[] args default ["Argument"]
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertLogf($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender(new MockAppender());
@@ -102,7 +102,7 @@
      */
     #[@test]
     public function addAppender() {
-      $appender= &new MockAppender();
+      $appender= new MockAppender();
       $this->assertTrue($appender === $this->cat->addAppender($appender));
     }
 

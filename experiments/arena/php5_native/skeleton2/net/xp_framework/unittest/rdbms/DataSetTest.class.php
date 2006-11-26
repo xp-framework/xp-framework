@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase', 
+    'unittest.TestCase',
     'rdbms.DriverManager',
     'rdbms.ConnectionManager',
     'util.Date',
@@ -32,7 +32,7 @@
      * @model   static
      * @access  public
      */  
-    public function __static() {
+    public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
     }
     
@@ -123,7 +123,7 @@
      */
     #[@test]
     public function newObject() {
-      $j= &new Job();
+      $j= new Job();
       $this->assertTrue($j->isNew());
     }
 
@@ -154,7 +154,7 @@
      */
     #[@test]
     public function noLongerNewAfterSave() {
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -200,7 +200,7 @@
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -220,7 +220,7 @@
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -263,7 +263,7 @@
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -286,7 +286,7 @@
       $mock= &$this->getConnection();
       $mock->makeQueryFail(1205, 'Deadlock');
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);

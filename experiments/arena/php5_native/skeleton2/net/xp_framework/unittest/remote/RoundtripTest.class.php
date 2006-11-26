@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.beans.stateless.Roundtrip',
     'net.xp_framework.beans.stateless.RoundtripHome',
     'remote.Remote'
@@ -38,7 +38,7 @@
      * Setup method
      *
      * @access  public
-     * @throws  util.profiling.unittest.PrerequisitesNotMetError
+     * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() {
       try {
@@ -59,7 +59,7 @@
      * @access  protected
      * @param   string method
      * @param   mixed value
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertRoundtrip($method, $value) {
       $this->assertEquals($value, $this->instance->$method($value));

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase', 
     'lang.CloneNotSupportedException'
   );
 
@@ -22,7 +22,7 @@
      * @model   static
      * @access  public
      */
-    public function __static() {
+    public static function __static() {
       $cl= &ClassLoader::getDefault();
       $cl->defineClass('net.xp_framework.unittest.core.Cloneable', 'class Cloneable extends Object {
         var
@@ -66,7 +66,7 @@
      */
     #[@test]
     public function cloneOfObject() {
-      $original= &new Object();
+      $original= new Object();
       $this->assertFalse($original == clone($original));
     }
 
@@ -77,7 +77,7 @@
      */
     #[@test]
     public function cloneInterceptorCalled() {
-      $original= &new Cloneable();
+      $original= new Cloneable();
       $this->assertFalse($original->cloned);
       $clone= clone $original;
       $this->assertFalse($original->cloned);

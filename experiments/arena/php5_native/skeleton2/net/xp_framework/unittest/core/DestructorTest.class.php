@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.core.Destroyable',
     'net.xp_framework.unittest.core.DestructionCallback'
   );
@@ -37,7 +37,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->destroyable= &new Destroyable();
+      $this->destroyable= new Destroyable();
       $this->destroyable->setCallback($this);
       $this->destroyed[$this->destroyable->hashCode()]= 0;
     }
@@ -48,7 +48,7 @@
      * @access  public
      */
     #[@test]
-    public function deleteCallsConstructor() {
+    public function deleteCallsDestructor() {
       $hash= $this->destroyable->hashCode();
       delete($this->destroyable);
       $this->assertNull($this->destroyable);

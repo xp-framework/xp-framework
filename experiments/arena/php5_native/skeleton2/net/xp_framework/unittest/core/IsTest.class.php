@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.profiling.unittest.TestCase',
+    'unittest.TestCase',
     'net.xp_framework.unittest.core.DestructionCallback'
   );
 
@@ -34,7 +34,7 @@
      */
     #[@test]
     public function shortClassName() {
-      $this->assertTrue(is('Object', new Object()));
+      $this->assertTrue(is('Generic', new Object()));
     }
 
     /**
@@ -55,7 +55,7 @@
      */
     #[@test]
     public function fullyQualifiedClassName() {
-      $this->assertTrue(is('lang.Object', new Object()));
+      $this->assertTrue(is('lang.Generic', new Object()));
     }
 
     /**
@@ -72,8 +72,8 @@
           function onDestruction(&$object) { 
             // ... Implementation here
           }
-        }'
-      );
+        }
+      ');
       $cl->defineClass(
         'DestructionCallbackImplEx', 
         'class DestructionCallbackImplEx extends DestructionCallbackImpl { }'

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.profiling.unittest.TestCase', 'lang.types.ArrayList');
+  uses('unittest.TestCase', 'lang.types.ArrayList');
 
   /**
    * Tests the ArrayList class
@@ -22,7 +22,7 @@
      * @access  public
      */
     public function setUp() {
-      $this->list= &new ArrayList();
+      $this->list= new ArrayList();
     }
 
     /**

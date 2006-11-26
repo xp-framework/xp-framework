@@ -5,12 +5,12 @@
  */
  
   uses(
-    'rdbms.Criteria', 
-    'rdbms.criterion.Restrictions', 
-    'rdbms.criterion.Property', 
+    'rdbms.Criteria',
+    'rdbms.criterion.Restrictions',
+    'rdbms.criterion.Property',
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
-    'util.profiling.unittest.TestCase'
+    'unittest.TestCase'
   );
 
   /**
@@ -47,7 +47,7 @@
      * @access  protected
      * @param   string sql
      * @param   &rdbms.Criteria criteria
-     * @throws  util.profiling.unittest.AssertionFailedError
+     * @throws  unittest.AssertionFailedError
      */
     public function assertSql($sql, &$criteria) {
       $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
@@ -82,7 +82,7 @@
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function nonExistantFieldCausesException() {
-      $criteria= &new Criteria(array('non-existant-field', 1, EQUAL));
+      $criteria= new Criteria(array('non-existant-field', 1, EQUAL));
       $criteria->toSQL($this->conn, $this->peer->types);
     }
 
@@ -93,7 +93,7 @@
      */
     #[@test]
     public function complexCriteria() {
-      with ($c= &new Criteria()); {
+      with ($c= new Criteria()); {
         $c->add('job_id', 1, EQUAL);
         $c->add('valid_from', new Date('2006-01-01'), GREATER_EQUAL);
         $c->add('title', 'Hello%', LIKE);
@@ -116,7 +116,7 @@
     #[@test]
     public function restrictionsFactory() {
       $job_id= &Property::forName('job_id');
-      $c= &new Criteria(Restrictions::anyOf(
+      $c= new Criteria(Restrictions::anyOf(
         Restrictions::not($job_id->in(array(1, 2, 3))),
         Restrictions::allOf(
           Restrictions::like('title', 'Hello%'),
