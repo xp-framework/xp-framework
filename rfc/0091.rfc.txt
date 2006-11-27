@@ -60,7 +60,7 @@ because you're lucky:)
 
 Guidelines for version numbers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Definition: The XP framework's core is lang.base.php, lang and util.
+Definition: The XP framework's core is lang.base.php, lang, io and util.
 
 * The major version number is changed whenever incompatible changes
   to the core occur (e.g. a new core functionality such as ref()/deref())
