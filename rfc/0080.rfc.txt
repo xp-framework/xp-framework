@@ -83,7 +83,7 @@ Slower than declaring real classes.
 
 Dependencies
 ------------
-n/a
+This patch will increase the XP framework's minor version (4.1.0)
 
 
 Related documents
@@ -99,5 +99,10 @@ Related documents
 
 Comments
 --------
+- friebe, Mon Nov 27 12:11:33 CET 2006
+  I think we should increase only the minor version because this 
+  functionality is intended for user source only and not for core
+  components. Because no core components use this functionality, 
+  a major version jump seems not to make sense.
 
 <EOF>
