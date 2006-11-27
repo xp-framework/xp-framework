@@ -66,7 +66,7 @@
 
     // Build positive filter list
     $includes= array();
-    foreach ($include as $i) { $includes[]= &new RegexFilter('#^'.$base.DIRECTORY_SEPARATOR.$i.'#'); }
+    foreach ($include as $i) { $includes[]= &new RegexFilter('#^'.preg_quote($base.DIRECTORY_SEPARATOR.$i, '#').'#'); }
 
     // Build negative filter list
     $excludes= array(
@@ -74,7 +74,7 @@
       new RegexFilter('/CVS/'),
       new RegexFilter('/.orig$/')
     );
-    foreach ($exclude as $e) { $excludes[]= &new RegexFilter('#^'.$base.DIRECTORY_SEPARATOR.$e.'#'); }
+    foreach ($exclude as $e) { $excludes[]= &new RegexFilter('#^'.preg_quote($base.DIRECTORY_SEPARATOR.$i, '#').'#'); }
 
     for ($iterator= &new FilteredIOCollectionIterator($collection, new AllOfFilter(array(
         new AnyOfFilter($includes),
@@ -87,7 +87,7 @@
       // Do not add directories
       if (is_dir($element->getURI())) continue;
       
-      $files[ltrim(substr($element->getURI(), strlen($base)), DIRECTORY_SEPARATOR)]= $element->getURI();
+      $files[strtr(ltrim(substr($element->getURI(), strlen($base)), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR, '/')]= $element->getURI();
     }
     
     Console::writeLine('   > Got '.sizeof($files).' files in '.$base);
