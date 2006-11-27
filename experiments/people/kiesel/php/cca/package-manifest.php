@@ -74,7 +74,7 @@
       new RegexFilter('/CVS/'),
       new RegexFilter('/.orig$/')
     );
-    foreach ($exclude as $e) { $excludes[]= &new RegexFilter('#^'.preg_quote($base.DIRECTORY_SEPARATOR.$i, '#').'#'); }
+    foreach ($exclude as $e) { $excludes[]= &new RegexFilter('#^'.preg_quote($base.DIRECTORY_SEPARATOR.$e, '#').'#'); }
 
     for ($iterator= &new FilteredIOCollectionIterator($collection, new AllOfFilter(array(
         new AnyOfFilter($includes),
