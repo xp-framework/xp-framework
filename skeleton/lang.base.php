@@ -139,12 +139,13 @@
       foreach ($a= func_get_args() as $name) {
         foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
+          $xarfile= 'sapi/'.strtr($name, '.', '/').'.sapi.php';
           
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($path.DIRECTORY_SEPARATOR.$filename);
             continue(2);
-          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
-            require_once('xar://'.$path.'?'.$filename);
+          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$xarfile)) {
+            require_once('xar://'.$path.'?'.$xarfile);
             continue(2);
           }
         }
