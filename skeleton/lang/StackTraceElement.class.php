@@ -66,8 +66,12 @@
             );
           } else if (is_null($this->args[$j])) {
             $args[]= 'NULL';
-          } else {
+          } else if (is_scalar($this->args[$j])) {
             $args[]= (string)$this->args[$j];
+          } else if (is_resource($this->args[$j])) {
+            $args[]= (string)$this->args[$j]; 
+          } else {
+            $args[]= '<'.gettype($this->args[$j]).'>';
           }
         }
       }
