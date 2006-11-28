@@ -143,7 +143,7 @@
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($path.DIRECTORY_SEPARATOR.$filename);
             continue(2);
-          } elseif (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
+          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
             require_once('xar://'.$path.'?'.$filename);
             continue(2);
           }
@@ -355,7 +355,7 @@
           }
           
           break;
-        } elseif (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+        } else if (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
