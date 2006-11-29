@@ -23,8 +23,14 @@ Functionality
 
 Summary
 ~~~~~~~
+<pre>
+* scriptlet.xml.workflow.WorkflowXMLScriptlet will replace the
+  AbstractXMLScriptlet. There will be no need to extend this class.
+
 * Pre- and postfilters will be added to the scriptlet API.
-* Routers will be added
+
+* Routers will be added.
+</pre>
 
 
 Filters
@@ -37,6 +43,7 @@ Filters
 Routers
 ~~~~~~~~
 TODO
+
 
 Security considerations
 -----------------------
