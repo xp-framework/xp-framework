@@ -220,7 +220,7 @@
     function valueOfInt() {
       $this->assertEquals(
         1,
-        $this->serializer->valueOf('i:1;')
+        $this->serializer->valueOf(new SerializedData('i:1;'))
       );
     }
 
@@ -233,7 +233,7 @@
     function valueOfByte() {
       $this->assertEquals(
         new Byte(1),
-        $this->serializer->valueOf('B:1;')
+        $this->serializer->valueOf(new SerializedData('B:1;'))
       );
     }
 
@@ -246,7 +246,7 @@
     function valueOfLong() {
       $this->assertEquals(
         new Long(12345),
-        $this->serializer->valueOf('l:12345;')
+        $this->serializer->valueOf(new SerializedData('l:12345;'))
       );
     }
 
@@ -259,7 +259,7 @@
     function valueOfFloat() {
       $this->assertEquals(
         new Float(1.5),
-        $this->serializer->valueOf('f:1.5;')
+        $this->serializer->valueOf(new SerializedData('f:1.5;'))
       );
     }
 
@@ -272,7 +272,7 @@
     function valueOfDouble() {
       $this->assertEquals(
         1.5,
-        $this->serializer->valueOf('d:1.5;')
+        $this->serializer->valueOf(new SerializedData('d:1.5;'))
       );
     }
 
@@ -286,7 +286,7 @@
     function valueOfShorts() {
       $this->assertEquals(
         new Short(1),
-        $this->serializer->valueOf('S:1;')
+        $this->serializer->valueOf(new SerializedData('S:1;'))
       );
     }
     
@@ -299,7 +299,7 @@
     function valueOfDates() {
       $this->assertEquals(
         new Date(328312800),
-        $this->serializer->valueOf('T:328312800;')
+        $this->serializer->valueOf(new SerializedData('T:328312800;'))
       );
     }
 
@@ -311,7 +311,9 @@
      */
     #[@test]
     function valueOfArrayList() {
-      $return= &$this->serializer->valueOf("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+      $return= &$this->serializer->valueOf(
+        new SerializedData("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}"
+      ));
       $this->assertClass($return, 'lang.types.ArrayList');
       $this->assertEquals(2, sizeof($return->values));
       $this->assertEquals(new Person(), $return->values[0]);
@@ -326,8 +328,7 @@
     #[@test]
     function arrayList() {
       $list= $this->serializer->valueOf(
-        'A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}',
-        $context
+        new SerializedData('A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}')
       );
       $this->assertEquals($list, new ArrayList(array(
         array(
