@@ -1,0 +1,17 @@
+Index: HandlerInstancePool.class.php
+===================================================================
+--- HandlerInstancePool.class.php	(revision 50518)
++++ HandlerInstancePool.class.php	(working copy)
+@@ -90,6 +90,12 @@
+         $instance= &$this->pool($url, $class->newInstance($option));
+       }
+ 
++      // Add logger
++      if (NULL !== ($cat= $url->getParam('log'))) {
++        $l= &Logger::getInstance();
++        $instance->setTrace($l->getCategory($cat));
++      }
++
+       $initialize && $instance->initialize($url);
+       return $instance;
+     }
