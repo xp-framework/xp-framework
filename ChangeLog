@@ -1,0 +1,37 @@
+XP Framework ChangeLog
+========================================================================
+$Id$
+
+
+Version ?.?.?, released ????-??-??
+----------------------------------
+- Implemented RFC #0090 - "Refactor remote.protocol.Serializer"
+  (friebe)
+
+
+Version 4.1.1, released 2006-11-28
+----------------------------------
+- Fixed xp::sapi() to correctly load sapis from XARs.
+  (kiesel)
+
+- Build stacktrace elements in toString() output in a more
+  defensive way. In cases where exceptions are thrown, arguments 
+  of a function call in the debug_backtrace() array might already
+  be destructed and their types are no longer known. The builtin
+  gettype() function can handle those.
+  Just casting those arguments to string will result in memory overflow
+  fatal errors or segfaults like these:
+  FATAL:  emalloc():  Unable to allocate 3238256257 bytes
+  (kiesel)
+
+
+Version 4.1.0, released 2006-11-27
+----------------------------------
+- Implemented RFC #0080 - "Anonymous class creation"
+  (friebe)
+  
+
+Version 4.0.0, released 2006-11-20
+----------------------------------
+- Implemented RFC #0084 - "Packages cleanup"
+  (friebe)
