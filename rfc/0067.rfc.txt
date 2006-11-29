@@ -175,4 +175,14 @@ Comments
 - friebe, Tue Aug 15 13:31:14 CEST 2006
   New patch available, setting setTrace() is now done on HandlerInstancePool.
 
+- ohinckel, Wed 29. Nov 09:48:29 CET 2006
+  What about to add a easy way to enable debug logging by putting a "log"
+  parameter into the DSN string? Example:
+<?php
+  $remote= &Remote::forName('xp://jboss01.example.com/?log=default') &&
+  $remote->invokeThisFunction($args);
+?>
+  The patch is really small and adds convenient way to enable debugging:
+  http://xp-framework.net/rfc/contrib/rfc0067-2.diff
+
 <EOF>
