@@ -76,7 +76,7 @@
         $stamp= Date::mktime(
           $matches[4],
           $matches[5],
-          $matches[6],
+          (isset($matches[6]) ? $matches[6] : 0),
           $matches[2],
           $matches[3],
           DateParser::yearFor($matches[1])
