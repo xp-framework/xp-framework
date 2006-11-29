@@ -286,12 +286,12 @@
           case REMOTE_MSG_VALUE:
             $data= &ByteCountedString::readFrom($this->_sock);
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
-            return $this->serializer->valueOf($data, $length= 0, $ctx);
+            return $this->serializer->valueOf(new SerializedData($data), $ctx);
 
           case REMOTE_MSG_EXCEPTION:
             $data= &ByteCountedString::readFrom($this->_sock);
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
-            $reference= &$this->serializer->valueOf($data, $length= 0, $ctx);
+            $reference= &$this->serializer->valueOf(new SerializedData($data), $ctx);
             if (is('RemoteException', $reference)) {
               return throw($reference);
             } else if (is('ExceptionReference', $reference)) {

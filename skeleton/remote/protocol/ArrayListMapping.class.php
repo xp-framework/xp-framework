@@ -19,20 +19,19 @@
      *
      * @access  public
      * @param   &server.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
+    function &valueOf(&$serializer, &$serialized, $context= array()) {
       $a= &new ArrayList();
-      $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-      $offset= strlen($size)+ 2+ 2;
+      $size= $serialized->consumeSize();
+      
+      $serialized->offset++;  // Opening "{"
       for ($i= 0; $i < $size; $i++) {
-        $a->values[$i]= &$serializer->valueOf(substr($serialized, $offset), $len, $context);
-        $offset+= $len;
+        $a->values[$i]= &$serializer->valueOf($serialized, $context);
       }
-      $length= $offset+ 1;
+      $serialized->offset++;  // Closing "}"
       return $a;
     }
 

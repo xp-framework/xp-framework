@@ -27,18 +27,14 @@
      * Returns a value for the given serialized string
      *
      * @access  public
-     * @param   &remote.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &server.protocol.Serializer serializer
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
-      $oid= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-      $offset= 2 + 2 + strlen($oid);
-      $interface= $serializer->valueOf(substr($serialized, $offset), $len, $context);
-      $offset+= $len;
-      
+    function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $oid= $serialized->consumeSize();
+      $interface= $serialized->consumeSize();
       try(); {
         $iclass= &XPClass::forName($interface);
       } if (catch('ClassNotFoundException', $e)) {
@@ -56,7 +52,6 @@
         return throw($e);
       }
 
-      $length= $offset+ 1;
       return $instance;
     }
 
