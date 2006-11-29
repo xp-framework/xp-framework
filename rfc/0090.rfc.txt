@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Nov 18 23:42:40     2006
-@status: discussion, ends Mon Nov 20 17:00:00 CET 2006
+@status: implemented, Wed Nov 29 14:07:08 CET 2006
 @category: remote.protocol
 
 Scope of Change
