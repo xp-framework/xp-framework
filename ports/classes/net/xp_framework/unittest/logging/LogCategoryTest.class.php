@@ -21,22 +21,6 @@
       $cat   = NULL;
     
     /**
-     * Static initializer. Declares MockAppender "inner" class.
-     *
-     * @model static
-     */
-    function __static() {
-      $cl= &ClassLoader::getDefault();
-      $cl->defineClass('LogCategoryTest$.MockAppender', 'class MockAppender extends LogAppender {
-        var $messages= array();
-        
-        function append() { 
-          $this->messages[]= func_get_args();
-        }
-      }');
-    }
-    
-    /**
      * Setup method. Creates logger and cat member for easier access to
      * the Logger instance
      *
@@ -58,6 +42,23 @@
     }
     
     /**
+     * Create a mock appender which simply stores all messages passed to 
+     * its append() method.
+     *
+     * @access  protected
+     * @return  &util.log.LogAppender
+     */
+    function &mockAppender() {
+      return newinstance('util.log.LogAppender', array(), '{
+        var $messages= array();
+        
+        function append() { 
+          $this->messages[]= func_get_args();
+        }
+      }');
+    }
+    
+    /**
      * Helper method
      *
      * @access  protected
@@ -66,7 +67,7 @@
      * @throws  unittest.AssertionFailedError
      */
     function assertLog($method, $args= array('Argument')) {
-      $app= &$this->cat->addAppender(new MockAppender());
+      $app= &$this->cat->addAppender($this->mockAppender());
       call_user_func_array(array(&$this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)$method, $args)), $app->messages);
     }
@@ -80,7 +81,7 @@
      * @throws  unittest.AssertionFailedError
      */
     function assertLogf($method, $args= array('Argument')) {
-      $app= &$this->cat->addAppender(new MockAppender());
+      $app= &$this->cat->addAppender($this->mockAppender());
       call_user_func_array(array(&$this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)substr($method, 0, -1), (array)vsprintf(array_shift($args), $args))), $app->messages);
     }
@@ -102,7 +103,7 @@
      */
     #[@test]
     function addAppender() {
-      $appender= &new MockAppender();
+      $appender= &$this->mockAppender();
       $this->assertTrue($appender === $this->cat->addAppender($appender));
     }
 

@@ -111,21 +111,19 @@
      */    
     #[@test]
     function equalsMethodIsInvoked() {
-      $cl= &ClassLoader::getDefault();
-      $class= &$cl->defineClass('AssertionsTest$.EqualsInvocationTest', 'class EqualsInvocationTest extends Object {
-        var $equalsInvoked= 0;
+      $instance= &newinstance('lang.Object', array(), '{
+         var $equalsInvoked= 0;
 
         function equals(&$other) {
           $r= (
-            is("EqualsInvocationTest", $other) && 
+            is(get_class($this), $other) && 
             $this->equalsInvoked == $other->equalsInvoked
           );
           $this->equalsInvoked++;
           return $r;
         }
       }');
-      $instance= &$class->newInstance();
-      
+     
       // Create reference to equalsInvoked member. This is because assertEquals() 
       // will create a copy of the argument (because of its signature, where 
       // the expected and actual arguments are not pass-by-ref arguments; which

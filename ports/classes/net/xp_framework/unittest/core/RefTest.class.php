@@ -14,23 +14,6 @@
   class RefTest extends TestCase {
 
     /**
-     * Static initializer.
-     *
-     * @model   static
-     * @access  public
-     */
-    function __static() {
-      $cl= &ClassLoader::getDefault();
-      $cl->defineClass('net.xp_framework.unittest.core.ObjectReference', 'Object', array(), '{
-        var $object= NULL;
-        
-        function __construct(&$object) {
-          $this->object= &deref($object);
-        }
-      }');
-    }
-    
-    /**
      * Helper method that asserts to objects are references to each other
      *
      * @access  protected
@@ -74,7 +57,14 @@
     #[@test]
     function objectReference() {
       $object= &new Object();
-      $ref= &new ObjectReference(ref($object));
+      $ref= &newinstance('lang.Object', array(ref($object)), '{
+        var $object= NULL;
+        
+        function __construct(&$object) {
+          $this->object= &deref($object);
+        }
+      }');
+      
       $this->assertReference($object, $ref->object);
     }
   }

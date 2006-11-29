@@ -12,29 +12,6 @@
    * @purpose  Testcase
    */
   class CloningTest extends TestCase {
-    /**
-
-     * Static initializer
-     *
-     * @model   static
-     * @access  public
-     */
-    function __static() {
-      $cl= &ClassLoader::getDefault();
-      $cl->defineClass('net.xp_framework.unittest.core.Cloneable', 'class Cloneable extends Object {
-        var
-          $cloned= FALSE;
-
-        function __clone() {
-          $this->cloned= TRUE;
-        }
-      }');
-      $cl->defineClass('net.xp_framework.unittest.core.UnCloneable', 'class UnCloneable extends Object {
-        function __clone() {
-          throw(new CloneNotSupportedException("I am *UN*Cloneable"));
-        }
-      }');
-    }
 
     /**
      * Tests cloning of xp::null() which shouldn't work
@@ -74,7 +51,13 @@
      */
     #[@test]
     function cloneInterceptorCalled() {
-      $original= &new Cloneable();
+      $original= &newinstance('lang.Object', array(), '{
+        var $cloned= FALSE;
+
+        function __clone() {
+          $this->cloned= TRUE;
+        }
+      }');
       $this->assertFalse($original->cloned);
       $clone= &clone($original);
       $this->assertFalse($original->cloned);
@@ -89,7 +72,11 @@
      */
     #[@test, @expect('lang.CloneNotSupportedException')]
     function cloneInterceptorThrowsException() {
-      clone(new UnCloneable());
+      clone(newinstance('lang.Object', array(), '{
+        function __clone() {
+          throw(new CloneNotSupportedException("I am *UN*Cloneable"));
+        }
+      }'));
     }
   }
 ?>

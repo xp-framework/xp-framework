@@ -14,33 +14,20 @@
   class StringOfTest extends TestCase {
 
     /**
-     * Static initializer
+     * Returns a class with a toString() method that always returns the following:
+     * <pre>
+     *   TestString(6) { String }
+     * </pre>
      *
-     * @model   static
-     * @access  public
+     * @access  protected
+     * @return  &lang.Object
      */
-    function __static() {
-      $cl= &ClassLoader::getDefault();
-      $cl->defineClass('net.xp_framework.unittest.core.TestString', 'class TestString extends Object {
+    function &testStringInstance() {
+      return newinstance('lang.Object', array(), '{
         function toString() {
           return "TestString(6) { String }";
         }
       }');
-      $cl->defineClass('net.xp_framework.unittest.core.TestThis', 'class TestThis extends Object {
-        function toString() {
-          return xp::stringOf($this);
-        }
-      }');
-    }
-    
-    /**
-     * Returns the XPClass object for the testclass
-     *
-     * @access  protected
-     * @return  &lang.XPClass<net.xp_framework.unittest.core.TestString>
-     */
-    function &testClass() {
-      return XPClass::forName('net.xp_framework.unittest.core.TestString');
     }
 
     /**
@@ -106,8 +93,7 @@
      */
     #[@test]
     function objectArgument() {
-      $class= &$this->testClass();
-      $this->assertEquals('TestString(6) { String }', xp::stringOf($class->newInstance()));
+      $this->assertEquals('TestString(6) { String }', xp::stringOf($this->testStringInstance()));
     }
 
     /**
@@ -143,13 +129,12 @@
      */
     #[@test]
     function hashmapArgument() {
-      $class= &$this->testClass();
       $this->assertEquals(
         "[\n  foo => \"bar\"\n  bar => 2\n  baz => TestString(6) { String }\n]", 
         xp::stringOf($a= array(
           'foo' => 'bar', 
           'bar' => 2, 
-          'baz' => $class->newInstance()
+          'baz' => $this->testStringInstance()
         ))
       );
     }
@@ -240,7 +225,11 @@ __
      */
     #[@test]
     function toStringRecursion() {
-      $test= &new TestThis();
+      $test= &newinstance('lang.Object', array(), '{
+        function toString() {
+          return xp::stringOf($this);
+        }
+      }');
       $this->assertEquals(
         $test->getClassName()." {\n  __id => \"".$test->__id."\"\n}",
         xp::stringOf($test)

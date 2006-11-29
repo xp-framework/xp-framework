@@ -6,7 +6,8 @@
  
   uses(
     'unittest.TestCase',
-    'util.Hashmap'
+    'util.Hashmap',
+    'util.Comparator'
   );
 
   /**
@@ -343,17 +344,11 @@
       $this->map->put('two', 'two');
       $this->map->put('eins', 'one');
 
-      $cl= &ClassLoader::getDefault();
-      $class= &$cl->defineClass('net.xp_framework.unittest.util.StringCaseComparator', '
-        class StringCaseComparator extends Object {
-
-          function compare($a, $b) { 
-            return strcasecmp($a, $b); 
-          }
-
-        } implements("StringCaseComparator.class.php", "util.Comparator");
-      ');
-      $this->map->usort($class->newInstance());
+      $this->map->usort(newinstance('util.Comparator', array(), '{
+        function compare($a, $b) { 
+          return strcasecmp($a, $b); 
+        }
+      }'));
       $this->assertEquals(
         array('one' => 'One', 'eins' => 'one', 'two' => 'two'), 
         $this->map->toArray()

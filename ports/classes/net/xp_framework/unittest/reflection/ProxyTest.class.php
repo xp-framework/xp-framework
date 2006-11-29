@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.TestCase', 'lang.reflect.Proxy');
+  uses('unittest.TestCase', 'lang.reflect.Proxy', 'lang.reflect.InvocationHandler');
 
   /**
    * Tests the Proxy class
@@ -24,19 +24,13 @@
      * @access  public
      */
     function setUp() {
-      $cl= &ClassLoader::getDefault();
-      $class= &$cl->defineClass(
-        'net.xp_framework.unittest.reflection.DebugInvocationHandler', 
-        'class DebugInvocationHandler extends Object {
-           var $invocations= array();
+      $this->handler= &newinstance('lang.reflect.InvocationHandler', array(), '{
+        var $invocations= array();
 
-           function invoke(&$proxy, $method, $args) { 
-             $this->invocations[$method."_".sizeof($args)]= $args;
-           }
-        } implements("DebugInvocationHandler.class.php", "lang.reflect.InvocationHandler");
-        '
-      );
-      $this->handler= &$class->newInstance();
+        function invoke(&$proxy, $method, $args) { 
+          $this->invocations[$method."_".sizeof($args)]= $args;
+        }
+      }');
       $this->iteratorClass= &XPClass::forName('util.Iterator');
       $this->observerClass= &XPClass::forName('util.Observer');
     }
