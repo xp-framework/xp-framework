@@ -1,28 +1,42 @@
-RFC 0078: Scriptlet filters
+RFC 0078: Workflow Scriptlet next generation
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Thu Oct 12 11:43:43 CEST 2006
 @status: draft
-@category: scriptlet
+@category: scriptlet.xml.workflow
 
 Scope of Change
 ---------------
-Pre- and postfilters will be added to the scriptlet API.
+The Workflow Scriptlet API will be changed to be more flexible and to
+contain more common use cases.
 
 
 Rationale
 ---------
+There is not enough infrastructure around the workflow scriptlet API.
+
+
+Functionality
+-------------
+
+Summary
+~~~~~~~
+* Pre- and postfilters will be added to the scriptlet API.
+* Routers will be added
+
+
+Filters
+~~~~~~~
 - Get rid of need for AbstractAuthenticatedState
 - Add possibility to easily add remote-host based access policies (pre-
   filter) as well as gzencode (post-filter)
 
 
-Functionality
--------------
+Routers
+~~~~~~~~
 TODO
-
 
 Security considerations
 -----------------------
@@ -41,6 +55,9 @@ n/a
 
 Related documents
 -----------------
+
+Filters
+~~~~~~~
 - http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html
   Java Servlets: Interface Filter
 
