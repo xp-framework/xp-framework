@@ -23,7 +23,7 @@
      */
     function &valueOf(&$serializer, &$serialized, $context= array()) {
       try(); {
-        $class= &XPClass::forName($serialized->consumeString());
+        $class= &XPClass::forName($serializer->exceptionName($serialized->consumeString()));
       } if (catch('ClassNotFoundException', $e)) {
         return throw($e);
       }
@@ -32,8 +32,8 @@
       $serialized->offset++;  // Opening "{"
       $data= array();
       for ($i= 0; $i < $size; $i++) {
-        $member= $this->valueOf($serialized, $context);
-        $data[$member]= &$this->valueOf($serialized, $context);
+        $member= $serializer->valueOf($serialized, $context);
+        $data[$member]= &$serializer->valueOf($serialized, $context);
       }
       $serialized->offset++; // Closing "}"
       
