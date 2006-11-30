@@ -35,7 +35,7 @@
       return sprintf(
         'Exception %s (%s, %s)',
         $this->getClassName(),
-        $this->message
+        $this->message,
         $this->detail
       );
     }
