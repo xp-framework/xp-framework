@@ -41,7 +41,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) { }
+    function draw(&$image) {
       return $this->font->drawtext(
         $image->handle, 
         $this->col, 
