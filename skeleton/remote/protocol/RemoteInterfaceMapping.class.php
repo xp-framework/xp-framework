@@ -34,7 +34,9 @@
      */
     function &valueOf(&$serializer, &$serialized, $context= array()) {
       $oid= $serialized->consumeSize();
-      $interface= $serialized->consumeSize();
+      $serialized->offset++;    // '{'
+      $interface= $serializer->valueOf($serialized, $context);
+      $serialized->offset++;    // '}'
       try(); {
         $iclass= &XPClass::forName($interface);
       } if (catch('ClassNotFoundException', $e)) {
