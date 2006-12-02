@@ -37,9 +37,9 @@
           return $s.$indent.'}';
         }
       } else if (is_a($a, 'VNode')) {
-        $s= $a->getClassName()."@{\n";
+        $s= $a->getClassName().'@(position= '.implode(', ', $a->position)."){\n";
         foreach (array_keys(get_class_vars(get_class($a))) as $key) {
-          if ('_' != $key{0}) $s.= sprintf(
+          if ('_' != $key{0} && 'position' != $key) $s.= sprintf(
             "%s  [%-20s] %s\n", 
             $indent, 
             $key, 
