@@ -1348,7 +1348,6 @@
       // Check for void methods
       // The main block may contain returns with arbitrary type
       if ('<main>' !== $this->context['method'] && NULL === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
-        var_dump($this->context['types']);
         $this->addError(new CompileError(3002, sprintf(
           'Method %s() declared void but returns %s type',
           $this->context['class'].'::'.$this->context['method'],
