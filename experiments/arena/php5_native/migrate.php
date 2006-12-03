@@ -44,7 +44,6 @@ __;
     exit(-1);
   }
   
-  $doclet->postProcess();
   $output= $doclet->getOutput();
   
   Console::writeLine($output);
