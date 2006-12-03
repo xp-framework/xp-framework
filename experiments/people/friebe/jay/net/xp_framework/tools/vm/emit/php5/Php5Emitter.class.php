@@ -154,6 +154,18 @@
     }
     
     /**
+     * Sets context class
+     *
+     * @access  protected
+     * @param   string hash
+     * @return  mixed type
+     */
+    function setContextClass($name) {
+      $this->context['class']= $name;
+      // DEBUG Console::writeLine('* {contextclass= ', $name, '} *');
+    }
+    
+    /**
      * Retrieves type for a given node
      *
      * @access  protected
@@ -162,12 +174,21 @@
      */
     function typeOf(&$node) {
       if (is_a($node, 'NewNode')) {
-        return $this->qualifiedName($node->class->name);
+        if (!$node->instanciation->chain) return $this->qualifiedName($node->class->name);
+        
+        $cclass= $this->context['class'];   // Backup
+        $this->setContextClass($this->qualifiedName($node->class->name));
+        foreach ($node->instanciation->chain as $chain) {
+          $this->setContextClass($this->typeOf($chain));
+        }
+        $type= $this->context['class'];
+        $this->setContextClass($cclass);    // Restore
+        return $type;
       } else if (is_a($node, 'VariableNode')) {
         if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
-        $class= $this->qualifiedName('$this' == $node->class->name ? $this->context['class'] : $node->class);
+        $class= $this->qualifiedName(NULL === $node->class || '$this' == $node->class->name ? $this->context['class'] : $node->class);
         return $this->context['types'][$class.'::'.$node->method->name];
       } else if (is_a($node, 'ParameterNode')) {
         return $this->typeName($node->type);
@@ -176,7 +197,10 @@
         // TODO: Check operator overloading
         return $type;
       } else if (is_a($node, 'ObjectReferenceNode')) {
-        $ctype= is_string($node->class) ? $this->qualifiedName($node->class) : $this->typeOf($node->class);
+        $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
+          ? $this->qualifiedName($node->class) 
+          : $this->typeOf($node->class)
+        );
         return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if (is_a($node, 'ArrayDeclarationNode')) {
         return 'mixed[]';
@@ -694,7 +718,7 @@
      */
     function emitClassDeclaration(&$node) {
       $this->context['properties']= array();
-      $this->context['class']= $this->qualifiedName($node->name, FALSE);
+      $this->setContextClass($this->qualifiedName($node->name, FALSE));
       $this->context['classes'][$this->context['class']]= array();
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
@@ -805,7 +829,7 @@
         $this->bytes.= ');}';
       }
 
-      $this->context['class']= '<main>';
+      $this->setContextClass('<main>');
     }
 
     /**
@@ -1475,7 +1499,7 @@
      * @param   &net.xp_framework.tools.vm.VNode node
      */
     function emitInterfaceDeclaration(&$node) {
-      $this->context['class']= $this->qualifiedName($node->name, FALSE);
+      $this->setContextClass($this->qualifiedName($node->name, FALSE));
       $this->context['classes'][$this->context['class']]= array();
       $this->bytes.= 'interface '.$this->context['class'];
 
@@ -1507,7 +1531,7 @@
         }
       }
       $this->bytes.= '}';
-      $this->context['class']= '<main>';
+      $this->setContextClass('<main>');
     }
 
     /**
