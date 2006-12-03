@@ -142,7 +142,7 @@
         } else {
           $c= new Node('param', $val[$k]);
         }
-        $c->attribute['name']= $name.(is_int($k) ? '' : "[{$k}]");
+        $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
         $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
         $this->document->formvalues->addChild($c);
       } 
@@ -165,13 +165,13 @@
      * @param   mixed info default NULL 
      * @return  bool FALSE
      */
-    function addFormError($checker, $type, $field= '*', $info= NULL) {
+    public function addFormError($checker, $type, $field= '*', $info= NULL) {
       if (is_array($info)) {
         $c= &Node::fromArray($info, 'error');
       } else if (is_object($info)) {
         $c= &Node::fromObject($info, 'error');
       } else {
-        $c= &new Node('error', $info);
+        $c= new Node('error', $info);
       }
       $c->attribute= array(
         'type'        => $type,
@@ -193,7 +193,7 @@
      * @return  &xml.Node added node
      * @throws  lang.IllegalArgumentException
      */
-    function &addFormResult(&$node) {
+    public function &addFormResult(&$node) {
       if (
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
@@ -210,7 +210,7 @@
      * @param   string stylesheet
      * @param   int type default XSLT_FILE
      */
-    function setStylesheet($stylesheet, $type= XSLT_FILE) {
+    public function setStylesheet($stylesheet, $type= XSLT_FILE) {
       $this->_stylesheet= array($type, $stylesheet);
     }
 
@@ -220,7 +220,7 @@
      * @access  public
      * @return  bool
      */
-    function hasStylesheet() {
+    public function hasStylesheet() {
       return !empty($this->_stylesheet);
     }
     
@@ -231,7 +231,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $value) {
+    public function setParam($name, $value) {
       $this->params['__'.$name]= $value;
     }
     
@@ -242,7 +242,7 @@
      * @param   string name
      * @return  string value
      */
-    function getParam($name) {
+    public function getParam($name) {
       return $this->params['__'.$name];
     }
     
@@ -254,7 +254,7 @@
      * @param   string query default NULL the query string without the leading "?"
      * @param   string fraction default NULL the fraction without the leading "#"
      */
-    function forwardTo($state, $query= NULL, $fraction= NULL) {
+    public function forwardTo($state, $query= NULL, $fraction= NULL) {
       sscanf(
         getenv('REQUEST_URI'), 
         '/xml/%[^.].%[^./].psessionid=%[^/]', 
@@ -282,14 +282,14 @@
      * @throws  scriptlet.HttpScriptletException if the transformation fails
      * @see     xp://scriptlet.HttpScriptletResponse#process
      */
-    function process() {
+    public function process() {
       if (!$this->_processed) return FALSE;
 
       switch ($this->_stylesheet[0]) {
         case XSLT_FILE:
           try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
-          } catch(FileNotFoundException $e) {
+          } catch (FileNotFoundException $e) {
             throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
           }
           break;
@@ -313,7 +313,7 @@
       // Transform XML/XSL
       try {
         $this->processor->run();
-      } catch(TransformerException $e) {
+      } catch (TransformerException $e) {
         throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
       }
       
@@ -327,7 +327,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       delete($this->document);
       delete($this->processor);
     }
