@@ -23,17 +23,18 @@
      *
      * @access  protected
      * @param   string source
-     * @param   string message
+     * @param   string message default ''
      * @throws  unittest.AssertionFailedError
      */
-    function assertTypeError($source, $message) {
+    function assertTypeError($source, $message= '') {
       $emitter= &new Php5Emitter();
       
       $parser= &new Parser();
+      $emitter->setFilename('source declared in '.$this->getName().'()');
       $emitter->emitAll($parser->parse(new Lexer($source), '<'.$this->getName().'>'));
       
       $errors= $emitter->getErrors();
-      foreach ($errors as $e) { if (3001 == $e->code) return; }
+      foreach ($errors as $e) { if (in_array($e->code, array(3001, 3002))) return; }
 
       $this->fail('No type errors occured ('.$message.')', $errors, '(type error)');
     }
@@ -97,6 +98,22 @@
           }
         }
       ', 'passed');
+    }
+
+    /**
+     * Tests void method returning something raises an error.
+     *
+     * @access  public
+     */
+    #[@test]
+    function voidMethodReturningSomething() {
+      $this->assertTypeError('
+        class Test {
+          public void doIt() {
+            return 1;
+          }
+        }
+      ');
     }
   }
 ?>
