@@ -188,8 +188,21 @@
         if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
       } else if (is_a($node, 'MethodCallNode')) {
-        $class= $this->qualifiedName(NULL === $node->class || '$this' == $node->class->name ? $this->context['class'] : $node->class);
-        return $this->context['types'][$class.'::'.$node->method->name];
+        $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
+          ? $this->qualifiedName($node->class) 
+          : $this->typeOf($node->class)
+        );
+        
+        if (!$node->chain) return $this->context['types'][$ctype.'::'.$node->method->name];
+        
+        $cclass= $this->context['class'];   // Backup
+        $this->setContextClass($this->context['types'][$ctype.'::'.$node->method->name]);
+        foreach ($node->chain as $chain) {
+          $this->setContextClass($this->typeOf($chain));
+        }
+        $type= $this->context['class'];
+        $this->setContextClass($cclass);    // Restore
+        return $type;
       } else if (is_a($node, 'ParameterNode')) {
         return $this->typeName($node->type);
       } else if (is_a($node, 'BinaryNode')) {
@@ -542,7 +555,7 @@
      */
     function emitMethodDeclaration(&$node) {
       $method= $this->methodName($node);
-      $this->setType($this->context['class'].'::'.$method, $node->returns);
+      $this->setType($this->context['class'].'::'.$method, $this->typeName($node->returns));
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
