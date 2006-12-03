@@ -58,6 +58,9 @@
         $t= new Test();
         $chained_n= $t->getNow()->toString();
       '), '<setUp>'));
+      if ($this->emitter->hasErrors()) {
+        return throw(new PrerequisitesNotMetError('Fixture source contains errors '.xp::stringOf($this->emitter->getErrors())));
+      }
     }
     
     /**
