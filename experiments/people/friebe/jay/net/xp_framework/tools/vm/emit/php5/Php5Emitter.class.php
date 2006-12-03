@@ -118,7 +118,7 @@
      */
     function qualifiedName($class, $imports= TRUE) {
       static $special= array('parent', 'self', 'xp', 'null');
-      
+
       if (in_array($class, $special)) return $class;
       if ('php.' == substr($class, 0, 4)) return substr($class, 4);
       if (strstr($class, '·')) return $class; // Already qualified!
@@ -1041,7 +1041,7 @@
 
       // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
       if (is_a($node->variable, 'ObjectReferenceNode')) {
-        $scope= $this->qualifiedName($node->variable->class).'::$'.$node->variable->member->name;   // FIXME :$this!
+        $scope= $this->typeOf($node->variable).'::$'.$node->variable->member->name;   // FIXME :$this!
       } else {
         $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
       }
