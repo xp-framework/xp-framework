@@ -43,6 +43,10 @@
           public __construct() {
             $this->now= new Now();
           }
+          
+          public Now getNow() {
+            return $this->now;
+          }
         }
         
         $i= 1;
@@ -50,6 +54,9 @@
         
         $s= "";
         $chained_s= new Test()->now->toString();
+        
+        $t= new Test();
+        $chained_n= $t->getNow()->toString();
       '), '<setUp>'));
     }
     
@@ -83,8 +90,9 @@
      */
     #[@test]
     function typeOfVariableAssignedToConstant() {
-      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$i')));
-      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$s')));
+      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$i'))) &&
+      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$s'))) &&
+      $this->assertEquals('main·Test', $this->emitter->typeOf(new VariableNode('$t')));
     }
   
     /**
@@ -95,8 +103,9 @@
      */
     #[@test]
     function typeOfVariableAssignedToChain() {
-      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$chained_i')));
-      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_s')));
+      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$chained_i'))) &&
+      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_s'))) &&
+      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_n')));
     }
   }
 ?>
