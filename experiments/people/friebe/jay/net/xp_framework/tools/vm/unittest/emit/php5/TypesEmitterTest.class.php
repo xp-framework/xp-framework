@@ -74,5 +74,15 @@
     function binaryAssign() {
       $this->emit('$product= 0; $product+= 3;');
     }
-  }
+ 
+     /**
+     * Tests binary assignment
+     *
+     * @access  public
+     */
+    #[@test]
+    function arrayReturn() {
+      $this->emit('class Throwable { public lang.StackTraceElement[] getStackTrace() { return array(); } } ');
+    }
+ }
 ?>

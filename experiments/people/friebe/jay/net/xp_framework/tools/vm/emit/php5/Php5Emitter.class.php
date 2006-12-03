@@ -104,7 +104,7 @@
     function typeName($type) {
       static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
 
-      if (is_array($type)) return array_map($type, array(&$this, 'typeName'));
+      if (is_array($type)) return $this->typeName($type[0]).'[]';
       
       return in_array($type, $primitives) ? $type : $this->qualifiedName($type);
     }
@@ -308,13 +308,15 @@
       // NULL indicates unknown, so no checks performed!
       if (NULL === $type || NULL === ($ntype= $this->typeOf($node))) return $type;  
 
-      // FIXME: Inheritance/Cast?
-      if ($ntype != $type) {
-        $this->addError(new CompileError(3001, 'Type mismatch: '.$node->toString().'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
-        return NULL;
-      }
-
-      return $type;
+      // Easiest case: Types match exactly
+      if ($ntype == $type) return $type;
+      
+      // Array types
+      if ('[][]' == substr($ntype, -2).substr($type, -2)) return $type;
+      
+      // Every check failed, raise an error
+      $this->addError(new CompileError(3001, 'Type mismatch: '.$node->toString().'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
+      return NULL;
     }
     
     /**

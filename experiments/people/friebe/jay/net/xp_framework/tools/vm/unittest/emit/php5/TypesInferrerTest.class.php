@@ -34,6 +34,9 @@
           public string toString() {
             return date("r");
           }
+
+          public string[] components() {
+          }
         }
         
         class Test {
@@ -48,6 +51,8 @@
             return $this->now;
           }
         }
+        
+        $c= new Now()->components();
         
         $i= 1;
         $chained_i= new Test()->integer;
@@ -88,7 +93,18 @@
     /**
      * Tests type of VariableNode
      *
-     * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
+     * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
+     * @access  public
+     */
+    #[@test]
+    function typeOfComponentsAssignment() {
+      $this->assertEquals('string[]', $this->emitter->typeOf(new VariableNode('$c')));
+    }
+
+    /**
+     * Tests type of VariableNode
+     *
+     * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
      * @access  public
      */
     #[@test]
@@ -101,7 +117,7 @@
     /**
      * Tests type of variables that have been assigned to chained expressions
      *
-     * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
+     * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
      * @access  public
      */
     #[@test]
