@@ -1323,6 +1323,17 @@
       $this->bytes.= 'return ';
       if (!$node->value) return;
       
+      // Check for void methods
+      // The main block may contain returns with arbitrary type
+      if ('<main>' !== $this->context['method'] && NULL === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
+        $this->addError(new CompileError(3002, sprintf(
+          'Method %s() declared void but returns %s type',
+          $this->context['class'].'::'.$this->context['method'],
+          $this->typeOf($node->value)
+        )));
+        return;
+      }
+
       $this->checkedType($node->value, $this->context['types'][$this->context['class'].'::'.$this->context['method']]);
       $this->emit($node->value);
     }
