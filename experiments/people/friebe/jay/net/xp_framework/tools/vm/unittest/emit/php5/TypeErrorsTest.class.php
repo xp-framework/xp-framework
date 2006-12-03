@@ -115,5 +115,23 @@
         }
       ');
     }
+
+    /**
+     * Tests argument passed w/ incorrect type raises an error
+     *
+     * @access  public
+     */
+    #[@test]
+    function argumentPassed() {
+      $this->assertTypeError('
+        class Test {
+          public void sayHello(string $name) {
+            echo "Hello ", $name;
+          }
+        }
+        $t= new Test();
+        $t->sayHello(1);
+      ');
+    }
   }
 ?>

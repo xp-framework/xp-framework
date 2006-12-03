@@ -333,11 +333,13 @@
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
           $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, array($this->typeName($param->type)));
+          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, array($this->typeName($param->type)));
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
           }
         } else {
+          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, $this->typeName($param->type));
           $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $this->typeName($param->type));
           $this->bytes.= $param->name;
         }
@@ -947,6 +949,7 @@
       $name= $this->emitMemberName($node->method->name);
       $this->bytes.= $overloaded.'(';
       for ($i= 0; $i < sizeof($node->arguments); $i++) {
+        $this->checkedType($node->arguments[$i], $this->context['types'][$type.'::'.$node->method->name.'@'.$i]);
         $this->emit($node->arguments[$i]);
         $this->bytes.= ', ';
       }
@@ -1210,6 +1213,7 @@
       if ($node->instanciation->chain) {
         $this->bytes.= ')';
         foreach ($node->instanciation->chain as $chain) {
+          $this->context['chain_prev']= $chain;
           $this->emit($chain);
         }
       }
