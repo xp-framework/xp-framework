@@ -1318,7 +1318,10 @@
      */
     function emitReturn(&$node) { 
       $this->bytes.= 'return ';
-      $node->value && $this->emit($node->value);
+      if (!$node->value) return;
+      
+      $this->checkedType($node->value, $this->context['types'][$this->context['class'].'::'.$this->context['method']]);
+      $this->emit($node->value);
     }
 
     /**
