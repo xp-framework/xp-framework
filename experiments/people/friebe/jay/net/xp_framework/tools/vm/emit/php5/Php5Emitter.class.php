@@ -206,6 +206,7 @@
       } else if (is_a($node, 'ParameterNode')) {
         return $this->typeName($node->type);
       } else if (is_a($node, 'BinaryNode')) {
+        if (in_array($node->op, array('<', '<=', '>', '>=', '==', '!=', '===', '!=='))) return 'bool';
         $type= $this->typeOf($node->left);
         // TODO: Check operator overloading
         return $type;
