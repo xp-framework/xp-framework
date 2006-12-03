@@ -37,8 +37,8 @@
         }
         
         class Test {
-          public $integer= 1;
-          public self $now= NULL;
+          public integer $integer= 1;
+          public Now $now= NULL;
           
           public __construct() {
             $this->now= new Now();
@@ -93,7 +93,7 @@
      * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
      * @access  public
      */
-    #[@test, @ignore]
+    #[@test]
     function typeOfVariableAssignedToChain() {
       $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$chained_i')));
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_s')));
