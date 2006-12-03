@@ -129,8 +129,7 @@
             echo "Hello ", $name;
           }
         }
-        $t= new Test();
-        $t->sayHello(1);
+        new Test()->sayHello(1);
       ');
     }
   }

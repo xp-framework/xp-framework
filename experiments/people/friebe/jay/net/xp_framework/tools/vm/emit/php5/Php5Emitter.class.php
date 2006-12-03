@@ -934,7 +934,7 @@
         $type= $this->typeOf($node->class);
         $this->bytes.= '->';
       } else {                            // Chains
-        $type= $this->typeOf($this->context['chain_prev']);
+        $type= $this->context['class'];
         $this->bytes.= '->';
       }
 
@@ -967,10 +967,13 @@
       // Chain: $x->getClass()->getName()
       if (!$node->chain) return;
       
+      $cclass= $this->context['class'];   // backup
+      $this->setContextClass($this->context['types'][$type.'::'.$node->method->name]);
       foreach ($node->chain as $chain) {
-        $this->context['chain_prev']= $chain;
         $this->emit($chain);
+        $this->setContextClass($this->typeOf($chain));
       }
+      $this->setContextClass($cclass);    // restore
     }
 
     /**
@@ -997,10 +1000,13 @@
 
       if (!$node->chain) return;
       
+      $cclass= $this->context['class'];   // backup
+      $node->class && $this->setContextClass($this->typeOf($node->class));
       foreach ($node->chain as $chain) {
-        $this->context['chain_prev']= $chain;
         $this->emit($chain);
+        $this->setContextClass($this->typeOf($chain));
       }
+      $this->setContextClass($cclass);    // restore
     }
     
     function mappedOperator($op) {
@@ -1212,10 +1218,15 @@
 
       if ($node->instanciation->chain) {
         $this->bytes.= ')';
+        
+        $cclass= $this->context['class'];   // backup
+        $this->setContextClass($this->qualifiedName($node->class->name));
         foreach ($node->instanciation->chain as $chain) {
-          $this->context['chain_prev']= $chain;
           $this->emit($chain);
+          $this->setContextClass($this->typeOf($chain));
         }
+        
+        $this->setContextClass($cclass);    // restore
       }
     }
     
