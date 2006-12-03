@@ -5,6 +5,7 @@
  */
 
   uses(
+    'remote.protocol.SerializedData',
     'remote.protocol.DateMapping',
     'remote.protocol.LongMapping',
     'remote.protocol.ByteMapping',
@@ -204,19 +205,18 @@
       if (NULL !== $replace) $this->packages[$name]= $replace;
       return strtr($name, $this->packages);
     }
-
+    
     /**
      * Retrieve serialized representation of a variable
      *
      * @access  public
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array context default array()
      * @return  &mixed
      * @throws  lang.ClassNotFoundException if a class cannot be found
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    public function &valueOf($serialized, &$length, $context= array()) {
+    public function &valueOf(&$serialized, $context= array()) {
       static $types= NULL;
       
       if (!$types) $types= array(
@@ -234,130 +234,109 @@
         'T'   => new ClassReference('util.Date')
       );
 
-      switch ($serialized{0}) {
+      $token= $serialized->buffer{$serialized->offset};
+      $serialized->offset+= 2; 
+      switch ($token) {
         case 'N': {     // null
-          $length= 2; 
           $value= NULL;
           return $value;
         }
 
         case 'b': {     // booleans
-          $length= 4; 
-          $value= (bool)substr($serialized, 2, strpos($serialized, ';', 2)- 2);
+          $value= (bool)$serialized->consumeWord();
           return $value;
         }
 
         case 'i': {     // integers
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= (int)$v;
+          $value= (int)$serialized->consumeWord();
           return $value;
         }
 
         case 'd': {     // decimals
-          $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-          $length= strlen($v)+ 3;
-          $value= (float)$v;
+          $value= (float)$serialized->consumeWord();
           return $value;
         }
 
         case 's': {     // strings
-          $strlen= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $length= 2 + strlen($strlen) + 2 + $strlen + 2;
-          $value= substr($serialized, 2+ strlen($strlen)+ 2, $strlen);
+          $value= $serialized->consumeString();
           return $value;
         }
 
         case 'a': {     // arrays
           $a= array();
-          $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $offset= strlen($size)+ 2+ 2;
+          $size= $serialized->consumeSize();
+          $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
-            $key= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-            $a[$key]= &$this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
+            $key= $this->valueOf($serialized, $context);
+            $a[$key]= &$this->valueOf($serialized, $context);
           }
-          $length= $offset+ 1;
+          $serialized->offset++;  // Closing "}"
           return $a;
         }
 
         case 'E': {     // generic exceptions
-          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $instance= new ExceptionReference(substr($serialized, 2+ strlen($len)+ 2, $len));
-          $offset= 2 + 2 + strlen($len)+ $len + 2;
-          $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
-          $offset+= strlen($size)+ 2;
+          $instance= new ExceptionReference($serialized->consumeString());
+          $size= $serialized->consumeSize();
+          $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
-            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
+            $member= $this->valueOf($serialized, $context);
+            $instance->{$member}= &$this->valueOf($serialized, $context);
           }
-          $length= $offset+ 1;
+          $serialized->offset++; // Closing "}"
           return $instance;
         }
         
         case 'O': {     // generic objects
-          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $name= $this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len));
+          $name= $serialized->consumeString();
           try {
             $class= &XPClass::forName($name);
           } catch (ClassNotFoundException $e) {
             $instance= new UnknownRemoteObject($name);
-            $offset= 2 + 2 + strlen($len)+ $len + 2;
-            $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
-            $offset+= strlen($size)+ 2;
-            $members= array();
+            $size= $serialized->consumeSize();
+            $serialized->offset++;  // Opening "{"
             for ($i= 0; $i < $size; $i++) {
-              $member= $this->valueOf(substr($serialized, $offset), $len, $context);
-              $offset+= $len;
-              $members[$member]= &$this->valueOf(substr($serialized, $offset), $len, $context);
-              $offset+= $len;
+              $member= $this->valueOf($serialized, $context);
+              $members[$member]= &$this->valueOf($serialized, $context);
             }
-            $length= $offset+ 1;
+            $serialized->offset++; // Closing "}"
             $instance->__members= $members;
             return $instance;
           }
 
           $instance= &$class->newInstance();
-          $offset= 2 + 2 + strlen($len)+ $len + 2;
-          $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
-          $offset+= strlen($size)+ 2;
+          $size= $serialized->consumeSize();
+          $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
-            $member= $this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
-            $instance->{$member}= &$this->valueOf(substr($serialized, $offset), $len, $context);
-            $offset+= $len;
+            $member= $this->valueOf($serialized, $context);
+            $instance->{$member}= &$this->valueOf($serialized, $context);
           }
-          $length= $offset+ 1;
+          $serialized->offset++; // Closing "}"
           return $instance;
         }
 
         case 'c': {     // builtin classes
-          $length= 4;
-          $token= substr($serialized, 2, strpos($serialized, ';', 2)- 2);
-          if (!isset($types[$token])) {
-            throw(new FormatException('Unknown token "'.$token.'"'));
+          $type= $serialized->consumeWord();
+          if (!isset($types[$type])) {
+            throw(new FormatException('Unknown type token "'.$type.'"'));
           }
-          return $types[$token];
+          return $types[$type];
         }
         
         case 'C': {     // generic classes
-          $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-          $length= 2 + strlen($len) + 2 + $len + 2;
-          $value= new ClassReference($this->packageMapping(substr($serialized, 2+ strlen($len)+ 2, $len)));
+          $len= substr($serialized->buffer, 2, strpos($serialized->buffer, ':', 2)- 2);
+          $serialized->offset+= 2 + strlen($len) + 2 + $len + 2;
+          $value= new ClassReference($this->packageMapping(substr($serialized->buffer, 2+ strlen($len)+ 2, $len)));
           return $value;
         }
 
         default: {      // default, check if we have a mapping
-          if (!($mapping= &$this->mapping($serialized{0}, $m= NULL))) {
+          if (!($mapping= &$this->mapping($token, $m= NULL))) {
             throw(new FormatException(
-              'Cannot deserialize unknown type "'.$serialized{0}.'" ('.$serialized.')'
+              'Cannot deserialize unknown type "'.$token.'" ('.$serialized->toString().')'
             ));
           }
 
-          return $mapping->valueOf($this, $serialized, $length, $context);
+          return $mapping->valueOf($this, $serialized, $context);
         }
       }
     }

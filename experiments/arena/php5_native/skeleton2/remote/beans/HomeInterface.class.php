@@ -11,7 +11,7 @@
    *
    * @purpose  Home Interface
    */
-  interface HomeInterface {
+  interface HomeInterface extends BeanInterface {
   
     /**
      * Create method

@@ -11,7 +11,7 @@
    *
    * @purpose  Interface
    */
-  interface IOCollection {
+  interface IOCollection extends IOElement {
 
     /**
      * Open this collection

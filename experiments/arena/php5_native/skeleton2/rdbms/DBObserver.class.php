@@ -11,7 +11,7 @@
    *
    * @purpose  DB observer interface
    */
-  interface DBObserver {
+  interface DBObserver extends Observer {
   
     /**
      * Retrieves an instance.

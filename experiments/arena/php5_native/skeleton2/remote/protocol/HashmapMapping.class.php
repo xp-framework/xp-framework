@@ -19,12 +19,11 @@
      *
      * @access  public
      * @param   &server.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
       // No implementation
     }
 

@@ -13,7 +13,7 @@
    * @see      xp://peer.ftp.server.storage.StorageEntry
    * @purpose  Storage
    */
-  interface StorageCollection {
+  interface StorageCollection extends StorageEntry {
 
     /**
      * Retrieves a list of elements

@@ -19,31 +19,25 @@
      *
      * @access  public
      * @param   &server.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
-      $len= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
       try {
-        $class= &XPClass::forName($serializer->exceptionName(substr($serialized, 2+ strlen($len)+ 2, $len)));
+        $class= &XPClass::forName($serializer->exceptionName($serialized->consumeString()));
       } catch (ClassNotFoundException $e) {
         throw($e);
       }
-      
-      $offset= 2 + 2 + strlen($len)+ $len + 2;
-      $size= substr($serialized, $offset, strpos($serialized, ':', $offset)- $offset);
-      $offset+= strlen($size)+ 2;
-      
+
+      $size= $serialized->consumeSize();
+      $serialized->offset++;  // Opening "{"
       $data= array();
       for ($i= 0; $i < $size; $i++) {
-        $member= $serializer->valueOf(substr($serialized, $offset), $len, $context);
-        $offset+= $len;
-        $data[$member]= &$serializer->valueOf(substr($serialized, $offset), $len, $context);
-        $offset+= $len;
+        $member= $serializer->valueOf($serialized, $context);
+        $data[$member]= &$serializer->valueOf($serialized, $context);
       }
-      $length= $offset+ 1;
+      $serialized->offset++; // Closing "}"
       
       $instance= &$class->newInstance($data['message']);
       unset($data['message']);

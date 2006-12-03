@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: WindowsFtpListParser.class.php 8525 2006-11-20 22:30:37Z friebe $ 
+ * $Id: WindowsFtpListParser.class.php 8660 2006-11-26 12:12:33Z kiesel $ 
  */
 
   uses('peer.ftp.FtpListParser');

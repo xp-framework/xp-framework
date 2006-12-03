@@ -19,15 +19,12 @@
      *
      * @access  public
      * @param   &server.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
-      $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
-      $length= strlen($v)+ 3;
-      $value= new Integer($v);
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $value= new Integer($serialized->consumeWord());
       return $value;
     }
 

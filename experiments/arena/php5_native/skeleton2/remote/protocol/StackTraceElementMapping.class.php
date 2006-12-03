@@ -19,22 +19,19 @@
      *
      * @access  public
      * @param   &server.protocol.Serializer serializer
-     * @param   string serialized
-     * @param   &int length
+     * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
-      $size= substr($serialized, 2, strpos($serialized, ':', 2)- 2);
-      $offset= strlen($size)+ 2+ 2;
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $size= $serialized->consumeSize();
       $details= array();
+      $serialized->offset++;  // Opening "{"
       for ($i= 0; $i < $size; $i++) {
-        $detail= $serializer->valueOf(substr($serialized, $offset), $len, $context);
-        $offset+= $len;
-        $details[$detail]= $serializer->valueOf(substr($serialized, $offset), $len, $context);
-        $offset+= $len;
+        $detail= $serializer->valueOf($serialized, $context);
+        $details[$detail]= $serializer->valueOf($serialized, $context);
       }
-      $length= $offset+ 1;
+      $serialized->offset++;  // Closing "}"
       
       $value= new StackTraceElement(
         $details['file'],

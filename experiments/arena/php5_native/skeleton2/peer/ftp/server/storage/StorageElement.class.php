@@ -16,7 +16,7 @@
    * @see      xp://peer.ftp.server.storage.StorageEntry
    * @purpose  Storage
    */
-  interface StorageElement {
+  interface StorageElement extends StorageEntry {
   
     /**
      * Open this element with a specified mode

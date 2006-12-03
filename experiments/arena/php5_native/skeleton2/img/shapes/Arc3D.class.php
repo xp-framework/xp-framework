@@ -56,7 +56,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) { }
+    public function draw(&$image) {
       $this->col= &$this->colors[1];
       $cy= $this->cy;
       for ($i= 1; $i < $this->shadow; $i++) {

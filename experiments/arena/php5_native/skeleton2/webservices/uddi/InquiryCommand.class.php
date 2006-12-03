@@ -11,6 +11,6 @@
    *
    * @purpose  Interface
    */
-  interface InquiryCommand {
+  interface InquiryCommand extends UDDICommand {
   }
 ?>
