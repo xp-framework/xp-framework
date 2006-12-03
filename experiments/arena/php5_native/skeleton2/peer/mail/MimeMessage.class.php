@@ -300,7 +300,7 @@
         : '; boundary="'.$this->getBoundary().'"'
       ).(empty($this->charset) 
         ? '' 
-        : ";\n\tcharset=\"{$this->charset}\""
+        : ";\n\tcharset=\"".$this->charset.'"'
       );
     }    
 
@@ -311,7 +311,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       $this->_parts();
       $body= "This is a multi-part message in MIME format.\n\n";
       

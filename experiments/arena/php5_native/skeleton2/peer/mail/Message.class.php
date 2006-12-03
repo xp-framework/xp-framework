@@ -615,7 +615,7 @@
     public function _getContenttypeHeaderString() {
       return $this->contenttype.(empty($this->charset) 
         ? '' 
-        : ";\n\tcharset=\"{$this->charset}\""
+        : ";\n\tcharset=\"".$this->charset.'"'
       );
     }
 
@@ -627,7 +627,7 @@
      * @param   &peer.mail.InternetAddress[] addrs
      * @return  string
      */
-    function _astr($t, &$addrs) {
+    public function _astr($t, &$addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
         if (!is('InternetAddress', $addrs[$i])) continue; // Ignore!
@@ -643,7 +643,7 @@
      * @param   string str
      * @return  string
      */
-    function _qstr($str) {
+    public function _qstr($str) {
       static $q;
 
       if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
@@ -663,7 +663,7 @@
      * @access  public
      * @return  string headers
      */
-    function getHeaderString() {
+    public function getHeaderString() {
       static $priorities = array(
         MAIL_PRIORITY_LOW    => 'Low',
         MAIL_PRIORITY_NORMAL => 'Normal',
