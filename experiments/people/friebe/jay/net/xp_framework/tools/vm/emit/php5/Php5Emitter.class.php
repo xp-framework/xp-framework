@@ -1124,7 +1124,14 @@
       $this->bytes.= $this->mappedOperator($node->op).'= ';
       $this->emit($node->expression);
 
-      $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($node->expression));
+      // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
+      if (is_a($node->variable, 'ObjectReferenceNode')) {
+        $scope= $this->typeOf($node->variable).'::$'.$node->variable->member->name;   // FIXME :$this!
+      } else {
+        $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
+      }
+
+      $this->setType($scope, $this->typeOf($node->expression));
     }
 
     /**
@@ -1341,6 +1348,7 @@
       // Check for void methods
       // The main block may contain returns with arbitrary type
       if ('<main>' !== $this->context['method'] && NULL === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
+        var_dump($this->context['types']);
         $this->addError(new CompileError(3002, sprintf(
           'Method %s() declared void but returns %s type',
           $this->context['class'].'::'.$this->context['method'],
@@ -1478,16 +1486,18 @@
     function emitOperatorDeclaration(&$node) {       
       $method= '__operator'.$this->overloadable[$node->name];
       $this->context['method']= $method;
-      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
-      
-      if ('__compare' == $node->name) {   // <=> overloads more than one operator:)
+
+      if ('__compare' == $node->name) {   // <=> overloads all comparision operators
         foreach (array('==', '!=', '<=', '>=', '<', '>') as $op) {
           $this->context['operators'][$this->context['class']][$op]= 1;
         }
+        $type= 'integer';   // Returns -1, 0 or 1
       } else {
         $this->context['operators'][$this->context['class']][$node->name]= TRUE;
+        $type= $this->context['class'];
       }
-      
+      $this->setType($this->context['class'].'::'.$method, $type);
+
       $this->bytes.= 'function '.$method.'(';
       foreach ($node->parameters as $param) {
         $this->bytes.= $param->name;
