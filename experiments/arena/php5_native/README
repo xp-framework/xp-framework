@@ -1,23 +1,38 @@
 $Id$
 
-This is a effort to try to get the XP framework to work with PHP 5 (currently 5.1.4).
+This is a effort to try to get the XP framework to work with PHP 5 (currently 5.1.6).
 The target should be to convert the repository from the one for PHP 4 with as minimal
 manual interaction as possible.
 
-Converting the repo
--------------------
-* execute convert.sh in the current directory. It will call migrate.php 
-  for every class file in skeleton/ and put the newly generated class into
-  skeleton2
+Converting the repository
+=========================
+1. Removing the old generated files (optional)
+   ./cleanup.sh
+   
+   This command removes all files, making place for the classes
+   to be regenerated (files already existing will be skipped).
 
-* migrate.php is based on migrate.php from experiments/arena/php5/ but does not
-  put the classes into own packages, making the resulting sourcecode syntactically
-  PHP5 compatible
+2. Convert the classes
+   php4 convert.php <path/to/skeleton> <target>
 
-* classes won't be overwritten if the target file already exists
+   This converts all classes from the source skeleton to <target>,
+   where <target> defaults to skeleton2
 
+3. Copy over classes that need manual adjustment
+   ./setup.sh
+
+   Some classes need manual adjustments, so they're being commited
+   to a separate place and being copied over to the target path
+   after automatic conversion.
+
+Converting a single class
+=========================
+1. Using migrate.php
+  ./php4 migrate.php <fqcn>
+
+2. Removing the target file and re-run convert.php from step 2 above.
+   (recommended)
 
 Running the unittests
 =====================
-* run unittests through run.php
-* use default collection of unittests at trunk/util/tests/
+sh run_tests.php

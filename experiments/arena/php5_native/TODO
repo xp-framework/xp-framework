@@ -2,12 +2,5 @@ $Id$
 
 List of TODOs
 =============
-* fix migrate.php to put the interface's class name into
-  the uses() clause
-  
-* automatically rewrite Exception -> XException
-
-* agree on new class names:
-  . interface AnyObject
-  . class Object implements AnyObject
-  . class XException extends Exception implements AnyObject
+* check if we can replace XP's util.Iterator interface
+  with the PHP5 interface Iterator.
