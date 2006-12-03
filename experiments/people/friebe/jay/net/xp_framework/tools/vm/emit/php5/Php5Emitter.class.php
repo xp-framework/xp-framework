@@ -218,6 +218,8 @@
         return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if (is_a($node, 'ArrayDeclarationNode')) {
         return 'mixed[]';
+      } else if (is_a($node, 'ExpressionCastNode')) {
+        return $this->typeName($node->type);
       } else if (is_int($node) || is_a($node, 'LongNumberNode')) {
         return 'integer';
       } else if (is_float($node) || is_a($node, 'DoubleNumberNode')) {
