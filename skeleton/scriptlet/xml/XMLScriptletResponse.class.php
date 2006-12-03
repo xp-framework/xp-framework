@@ -142,7 +142,7 @@
         } else {
           $c= &new Node('param', $val[$k]);
         }
-        $c->attribute['name']= $name.(is_int($k) ? '' : "[{$k}]");
+        $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
         $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
         $this->document->formvalues->addChild($c);
       } 
