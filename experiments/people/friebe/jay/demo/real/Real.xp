@@ -64,6 +64,10 @@ class Real {
     return $r;
   }
 
+  private final static operator % (Real $a, Real $b) {
+    // Illegal
+  }
+
   public static operator <=> (Real $a, Real $b) {
     $numerator= $a->numerator * $b->denominator - $b->numerator * $a->denominator;
     if ($numerator < 0) return -1;    // a is smaller than b
