@@ -40,6 +40,45 @@
     }
 
     /**
+     * Tests a cast to bool
+     *
+     * @access  public
+     */
+    #[@test]
+    function boolCast() {
+      $this->assertSourcecodeEquals(
+        '$s= (bool)$num;',
+        $this->emit('$s= (bool)$num;')
+      );
+    }
+
+    /**
+     * Tests a cast to double
+     *
+     * @access  public
+     */
+    #[@test]
+    function doubleCast() {
+      $this->assertSourcecodeEquals(
+        '$s= (double)$num;',
+        $this->emit('$s= (double)$num;')
+      );
+    }
+
+    /**
+     * Tests a cast to array
+     *
+     * @access  public
+     */
+    #[@test]
+    function arrayCast() {
+      $this->assertSourcecodeEquals(
+        '$s= (array)$num;',
+        $this->emit('$s= (array)$num;')
+      );
+    }
+
+    /**
      * Tests a cast to string
      *
      * @access  public
