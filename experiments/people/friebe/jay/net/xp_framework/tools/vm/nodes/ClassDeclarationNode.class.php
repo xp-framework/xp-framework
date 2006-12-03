@@ -34,10 +34,10 @@
     function __construct($name, $extends, $interfaces, $statements, $modifiers, $annotations) {
       $this->name= $name;
       $this->extends= $extends;
-      $this->interfaces= $interfaces;
+      $this->interfaces= (array)$interfaces;
       $this->statements= $statements;
       $this->modifiers= $modifiers;
-      $this->annotations= $annotations;
+      $this->annotations= (array)$annotations;
     }  
   }
 ?>

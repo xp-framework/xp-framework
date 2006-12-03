@@ -36,12 +36,12 @@
      */
     function __construct($name, $parameters, $returns, $statements, $modifiers, $annotations, $thrown) {
       $this->name= $name;
-      $this->parameters= $parameters;
+      $this->parameters= (array)$parameters;
       $this->returns= $returns;
       $this->statements= $statements;
       $this->modifiers= $modifiers;
-      $this->annotations= $annotations;
-      $this->thrown= $thrown;
+      $this->annotations= (array)$annotations;
+      $this->thrown= (array)$thrown;
     }  
   }
 ?>
