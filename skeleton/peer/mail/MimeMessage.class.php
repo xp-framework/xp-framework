@@ -300,7 +300,7 @@
         : '; boundary="'.$this->getBoundary().'"'
       ).(empty($this->charset) 
         ? '' 
-        : ";\n\tcharset=\"{$this->charset}\""
+        : ";\n\tcharset=\"".$this->charset.'"'
       );
     }    
 

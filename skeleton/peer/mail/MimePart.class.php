@@ -298,10 +298,10 @@
       $h.= "\n";
       
       // Content-Transfer-Encoding: base64
-      if (!empty($this->encoding)) $h.= "Content-Transfer-Encoding: {$this->encoding}\n";
+      if (!empty($this->encoding)) $h.= 'Content-Transfer-Encoding: '.$this->encoding."\n";
       
       // Content-ID: <5249040$10425461803e23fe045e19e8.09373429>
-      if (!empty($this->id)) $h.= "Content-ID: <{$this->id}>\n";
+      if (!empty($this->id)) $h.= 'Content-ID: <'.$this->id.">\n";
       
       // Content-Disposition: attachment; filename="foo.bar.baz"
       if (!empty($this->disposition)) {

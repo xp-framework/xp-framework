@@ -615,7 +615,7 @@
     function _getContenttypeHeaderString() {
       return $this->contenttype.(empty($this->charset) 
         ? '' 
-        : ";\n\tcharset=\"{$this->charset}\""
+        : ";\n\tcharset=\"".$this->charset.'"'
       );
     }
 
