@@ -5,7 +5,7 @@ class Container {
     $this->id= $id;
   }
 
-  public bool equals(Object $cmp) {
+  public bool equals(lang.Object $cmp) {
     return $cmp instanceof self && $this->id == $cmp->id;
   }
 }

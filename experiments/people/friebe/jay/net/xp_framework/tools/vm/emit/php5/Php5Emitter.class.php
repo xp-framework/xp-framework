@@ -347,6 +347,19 @@
       // Array types
       if ('[][]' == substr($ntype, -2).substr($type, -2)) return $type;
       
+      // Check inheritance
+      if (isset($this->context['classes'][$ntype]) && isset($this->context['classes'][$type])) {
+        $parent= $ntype;
+        while ($parent= $this->context['classes'][$parent][0]) {
+          if ($parent === $type) return $parent;
+        }
+        
+        $parent= $type;
+        while ($parent= $this->context['classes'][$parent][0]) {
+          if ($parent === $ntype) return $parent;
+        }
+      }
+      
       // Every check failed, raise an error
       $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
       return NULL;
@@ -773,7 +786,6 @@
       $this->context['properties']= array();
       $this->setContextClass($this->qualifiedName($node->name, FALSE));
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
-      $this->context['classes'][$this->context['class']]= array(0 => $extends);
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
 
@@ -789,6 +801,9 @@
         $this->addError(new CompileError(1000, 'Parent class of '.$node->name.' ('.$extends.') does not exist'));
       }
       $this->context['classes'][$this->context['class']]= $parent;
+      
+      // Add inheritance chain
+      $this->context['classes'][$this->context['class']][0]= $extends;
       
       // Interfaces
       if ($node->interfaces) {
