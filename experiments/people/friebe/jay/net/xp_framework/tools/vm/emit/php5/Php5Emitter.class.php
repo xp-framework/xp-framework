@@ -173,14 +173,18 @@
      * @return  string
      */
     function scopeFor(&$node) {
+    
+      // $x
       if (is_a($node, 'VariableNode')) {
         return $this->context['class'].'::'.$this->context['method'].$node->name;
       }
 
+      // $a->buffer (typeOf($node) = class, "buffer" == $node->name)
       if (is_a($node, 'ObjectReferenceNode')) {
-        return $this->typeOf($node).'::$'.$node->member->name;   // FIXME :$this!
+        return $this->typeOf($node).'::$'.$node->member->name;
       } 
       
+      // $r[]= ... ($node->expression= VariableNode($r))
       if (is_a($node, 'ArrayAccessNode')) {
         return $this->scopeFor($node->expression);
       } 
