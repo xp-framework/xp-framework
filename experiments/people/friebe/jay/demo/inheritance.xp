@@ -1,4 +1,4 @@
-class AbstractMap extends xp.lang.Object {
+class AbstractMap extends lang.Object {
   
   public string toString() {
     return $this->getClassName()~'<K, V>';
