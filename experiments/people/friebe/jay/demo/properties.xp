@@ -36,7 +36,7 @@ foreach ($s->chars as $char) {  // iterate on chars property
 
 try {
   $s->length++;
-} catch (xp.lang.IllegalAccessException $e) {
+} catch (lang.IllegalAccessException $e) {
   // Expected
   echo ', caught expected ', $e->getClassName();
 }
