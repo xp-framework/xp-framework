@@ -368,7 +368,7 @@
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
           $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $this->typeName(array($param->type)));
-          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, $this->typeName(array($param->type)));
+          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, $this->typeName($param->type).'*');
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
@@ -983,8 +983,18 @@
       // Signature
       $name= $this->emitMemberName($node->method->name);
       $this->bytes.= $overloaded.'(';
+      $vartype= NULL;
       for ($i= 0; $i < sizeof($node->arguments); $i++) {
-        $this->checkedType($node->arguments[$i], $this->context['types'][$type.'::'.$node->method->name.'@'.$i]);
+      
+        // Check if the argument is vararg argument.
+        if (!$vartype) {
+          $argtype= $this->context['types'][$type.'::'.$node->method->name.'@'.$i];
+          '*' == substr($argtype, -1) && $argtype= $vartype= substr($argtype, 0, -1);
+        } else {
+          $argtype= $vartype;
+        }
+
+        $this->checkedType($node->arguments[$i], $argtype);
         $this->emit($node->arguments[$i]);
         $this->bytes.= ', ';
       }
