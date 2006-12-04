@@ -105,8 +105,11 @@
       static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
 
       if (is_array($type)) return $this->typeName($type[0]).'[]';
+      if (in_array($type, $primitives)) return $type;
+      if ('self' == $type) return $this->context['class'];
+      if ('parent' == $type) return $this->context['classes'][$this->context['class']][0];
       
-      return in_array($type, $primitives) ? $type : $this->qualifiedName($type);
+      return $this->qualifiedName($type);
     }
 
     /**
@@ -114,6 +117,7 @@
      *
      * @access  protected
      * @param   string class
+     * @param   bool imports default TRUE whether to look for qualified names in imports
      * @return  string
      */
     function qualifiedName($class, $imports= TRUE) {
@@ -131,7 +135,8 @@
      *
      * @access  protected
      * @param   string class
-     * @return   string
+     * @param   bool imports default TRUE whether to look for qualified names in imports
+     * @return  string
      */
     function prefixedClassnameFor($class, $imports= TRUE) {
       if ($imports && isset($this->context['imports'][$this->context['package']][$class])) {
@@ -343,7 +348,7 @@
       if ('[][]' == substr($ntype, -2).substr($type, -2)) return $type;
       
       // Every check failed, raise an error
-      $this->addError(new CompileError(3001, 'Type mismatch: '.$node->toString().'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
+      $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
       return NULL;
     }
     
@@ -767,10 +772,10 @@
     function emitClassDeclaration(&$node) {
       $this->context['properties']= array();
       $this->setContextClass($this->qualifiedName($node->name, FALSE));
-      $this->context['classes'][$this->context['class']]= array();
+      $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
+      $this->context['classes'][$this->context['class']]= array(0 => $extends);
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
-      $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
 
       $this->emitAnnotations($node->annotations);
       
