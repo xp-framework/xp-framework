@@ -164,6 +164,30 @@
       $this->context['class']= $name;
       // DEBUG Console::writeLine('* {contextclass= ', $name, '} *');
     }
+ 
+    /**
+     * Retrieves scope for a given node
+     *
+     * @access  protected
+     * @param   &net.xp_framework.tools.vm.VNode node
+     * @return  string
+     */
+    function scopeFor(&$node) {
+      if (is_a($node, 'VariableNode')) {
+        return $this->context['class'].'::'.$this->context['method'].$node->name;
+      }
+
+      if (is_a($node, 'ObjectReferenceNode')) {
+        return $this->typeOf($node).'::$'.$node->member->name;   // FIXME :$this!
+      } 
+      
+      if (is_a($node, 'ArrayAccessNode')) {
+        return $this->scopeFor($node->expression);
+      } 
+
+      $this->addError(new CompileError(9000, 'Internal compiler error: Cannot associate scope w/ '.xp::stringOf($node)));
+      return NULL;
+    }
     
     /**
      * Retrieves type for a given node
@@ -389,7 +413,7 @@
     function emit(&$node) {
       
       // Check if we find an array offset somewhere, e.g. $x->getElements()[0]
-      // This will need to be translated to xp::element($x->getElements(), 0)
+      // This will need to be translated to xp::wraparray($x->getElements(), 0)
       if (is_a($node, 'VNode') && isset($node->chain)) foreach ($node->chain as $i => $expr) {
         if (is_a($expr, 'ArrayOffsetNode')) {
           $this->bytes.= 'xp::wraparray(';
@@ -1089,15 +1113,7 @@
       $this->emit($node->variable);
       $this->bytes.= '= ';
       $this->emit($node->expression);
-
-      // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
-      if (is_a($node->variable, 'ObjectReferenceNode')) {
-        $scope= $this->typeOf($node->variable).'::$'.$node->variable->member->name;   // FIXME :$this!
-      } else {
-        $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
-      }
-
-      $this->setType($scope, $this->checkedType($node->variable, $this->typeOf($node->expression)));
+      $this->setType($this->scopeFor($node->variable), $this->checkedType($node->variable, $this->typeOf($node->expression)));
     }
 
     /**
@@ -1125,15 +1141,7 @@
 
       $this->bytes.= $this->mappedOperator($node->op).'= ';
       $this->emit($node->expression);
-
-      // Handle ObjectReferenceNode ($this->buffer) vs. of VariableNode ($name)
-      if (is_a($node->variable, 'ObjectReferenceNode')) {
-        $scope= $this->typeOf($node->variable).'::$'.$node->variable->member->name;   // FIXME :$this!
-      } else {
-        $scope= $this->context['class'].'::'.$this->context['method'].$node->variable->name;
-      }
-
-      $this->setType($scope, $this->typeOf($node->expression));
+      $this->setType($this->scopeFor($node->variable), $this->typeOf($node->expression));
     }
 
     /**
