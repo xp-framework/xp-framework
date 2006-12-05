@@ -146,6 +146,17 @@
     }
 
     /**
+     * Returns true if the visitor has changed classes of the diagram
+     * (update_classes is not empty
+     *
+     * @return  bool
+     */
+    function changedClasses() {
+      if (!empty($this->updated_classes)) return TRUE;
+      return FALSE;
+    }
+
+    /**
      * Updates the given UMLClass of the diagram according to the given
      * ClassDoc
      *
