@@ -584,6 +584,8 @@
       $return_tags= $Method->tags('return');
       if (!empty($return_tags)) {
         $type= $return_tags[0]->type;
+      } else {
+        $type= NULL;
       }
       $Oper->setType($type);
 

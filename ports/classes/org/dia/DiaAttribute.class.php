@@ -63,6 +63,8 @@
         if (in_array($this->_type, array('float', 'double'))) $this->_type= 'real';
         if ($this->_type === 'bool') $this->_type= 'boolean';
         $value= $this->_value;
+      } else {
+        $value= NULL;
       }
 
       // set type if defined
