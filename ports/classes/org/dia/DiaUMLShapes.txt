@@ -1,0 +1,173 @@
+List of UML Shapes and their (shared) attributes
+
+General (shared) attributes of 'dia:object' nodes:
+-obj_pos
+-obj_bb
+-elem_corner
+-elem_width
+-elem_height
+-line_color
+-fill_color
+-text_color
+-name
+-stereotype
+-type
+-value ? only attribute and parameter..
+-comment ? only class, attribute, method and parameter
+-text => Text
+
+Class: object @type="UML - Class"
+-abstract
+-suppress_(attributes|operations)
+-visible_(attributes|operations|comments)
+-wrap_operations
+-wrap_after_char
+-comment_line_length
+-comment_tagging
+-normal_font
+-abstract_font
+-polymorphic_font
+-classname_font
+-abstract_classname_font
+-comment_font
+-normal_font_height
+-polymorphic_font_height
+-abstract_font_height
+-classname_font_height
+-abstract_classname_font_height
+-comment_font_height
+-attributes => Attribute
+-operations => Method
+-template
+-templates => Template
+
+Attribute: (umlattribute)
+-visibility
+-abstract
+-class_scope
+
+Method: (umloperation)
+-visibility
+-abstract
+-inheritance_type
+-query
+-class_scope
+-parameters => Parameter
+
+Parameter: (umlparameter)
+-kind
+
+Template: (umlformalparameter)
+
+----------------------------
+Note: object @type="UML - Note"
+
+Text: @type="text"
+-string
+-font
+-height
+-pos
+-color
+-alignment
+
+Dependency: object @type="UML - Dependency"
+-orth_(points|orient|autoroute)
+-draw_arrow
+
+Realizes: object @type="UML - Realizes"
+-orth_(points|orient|autoroute)
+
+Generalization: object @type="UML - Generalization"
+-orth_(points|orient|autoroute)
+
+Association: object @type="UML - Association"
+-orth_(points|orient|autoroute) autorouting?
+-direction
+-ends => Ends
+
+Ends: (composite)
+-role
+-multiplicity
+-arrow
+-aggregate
+-visibility
+
+Implements: object @type="UML - Implements"
+-conn_endpoints
+-text
+-text_pos
+-diameter
+
+Constraint: object @type="UML - Constraint"
+-conn_endpoints
+-constraint
+-text_pos
+
+SmallPackage: object @type="UML - SmallPackage"
+
+LargePackage: object @type="UML - LargePackage"
+
+Actor: object @type="UML - Actor"
+
+UseCase: object @type="UML - Usecase"
+-text_outside
+-collaboration
+
+Lifeline: object @type="UML - Lifeline"
+-conn_endpoints
+-rtop
+-rbot
+-draw_focus
+-draw_cross
+-cpl_northwest
+-cpl_southwest
+-cpl_northeast
+-cpl_southeast
+
+Object: object @type="UML - Object"
+-exstate
+-is_active
+-show_attribs
+-multiple
+-attrib => Text
+
+Message: object @type="UML - Message"
+-conn_endpoints
+-text
+-text_pos
+
+Component: object @type="UML - Component"
+
+ComponentFeature: object @type="UML - Component Feature"
+-orth_(points|orient|autoroute)
+-role
+-text_pos
+
+Node: object @type="UML - Node"
+-name => Text
+
+Classicon: object @type="UML - Classicon"
+-is_object
+
+State term: object @type="UML - State Term"
+-is_final
+
+State: object @type="UML - State"
+-entry_action
+-do_action
+-exit_action
+
+Activity: object @type="UML - Activity"
+
+Branch: object @type="UML - Branch"
+
+Fork: object @type="UML - Fork"
+Transition: object @type="UML - Transition"
+-orth_(points|orient|autoroute)
+-trigger
+-action
+-guard
+-trigger_text_pos
+-guard_text_pos
+-direction_inverted
+
