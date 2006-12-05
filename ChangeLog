@@ -3,10 +3,12 @@ XP Framework ChangeLog
 $Id$
 
 
-Version ?.?.?, released ????-??-??
+Version 4.1.2, released 2006-12-05
 ----------------------------------
 - Implemented RFC #0090 - "Refactor remote.protocol.Serializer"
   (friebe)
+- Added setConnectTimeout() to peer.http.HttpConnection
+  (kiesel)
 
 
 Version 4.1.1, released 2006-11-28
