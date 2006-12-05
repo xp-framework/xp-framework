@@ -223,6 +223,8 @@
      * Annotation uses workaround 'string(@type)' to be able to evaluate
      * annotation in XPClass
      *
+     * fromDia(xpath= 'dia:object[not(starts-with(string(@type), "UML"))]', class= 'org.dia.DiaObject')
+     *
      * @access  public
      * @param   &org.dia.DiaObject Object
      */
