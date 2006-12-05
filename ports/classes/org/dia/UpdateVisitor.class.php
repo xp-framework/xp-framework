@@ -68,7 +68,7 @@
         $this->classdocs[$Classdoc->qualifiedName()]= &$Classdoc;
       }
 
-      if (UDT_VIS_DEBUG) Console::writeLine('UpdateVisitor: classes='.sizeof($classnames).' update='.$update.' add='.$add);
+      if (UDT_VIS_DEBUG) Console::writeLine('UpdateVisitor: classes='.sizeof($classnames).' add='.$add.' update='.$update);
     }
 
     /**
@@ -130,6 +130,10 @@
           } if (catch('IllegalArgumentException', $e)) {
             $e->printStackTrace();
             Console::writeLine("Class '$name' could not be found or parsed!");
+            exit(-1);
+          } elseif (catch('Exception', $e)) {
+            $e->printStackTrace();
+            Console::writeLine('Caught unknown exception!');
             exit(-1);
           }
           $this->classdocs[$name]= &$ClassDoc;
