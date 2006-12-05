@@ -3,14 +3,13 @@
  *
  * $Id:$
  */
-
   uses(
     'xml.XPath',
     'xml.XMLFormatException',
     'util.cmd.Console'
   );
 
-  define(DIA_UNM_DEBUG,   FALSE);
+  define('DIA_UNM_DEBUG', FALSE);
 
   /**
    * Unmarshaller for XML diagram files
