@@ -64,7 +64,7 @@
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals(&$cmp) {
-      return is( get_class($this, $cmp) && $this->value === $cmp->value;
+      return is(get_class($this), $cmp) && $this->value === $cmp->value;
     }
   }
 ?>
