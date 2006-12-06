@@ -468,6 +468,7 @@
      * @access  public
      * @param   bool block default FALSE
      * @see     xp://io.File#_lock
+     * @return  bool success
      */
     function lockShared($block= FALSE) {
       return $this->_lock(LOCK_SH + ($block ? 0 : LOCK_NB));
@@ -479,6 +480,7 @@
      * @access  public
      * @param   bool block default FALSE
      * @see     xp://io.File#_lock
+     * @return  bool success
      */
     function lockExclusive($block= FALSE) {
       return $this->_lock(LOCK_EX + ($block ? 0 : LOCK_NB));
@@ -489,6 +491,7 @@
      *
      * @access  public
      * @see     xp://io.File#_lock
+     * @return  bool success
      */
     function unLock() {
       return $this->_lock(LOCK_UN);
