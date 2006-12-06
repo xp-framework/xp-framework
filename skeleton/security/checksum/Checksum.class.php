@@ -49,7 +49,6 @@
      * Create a new checksum from a string. Override this
      * method in child classes!
      *
-     * @model   abstract
      * @model   static
      * @access  public
      * @param   string str
@@ -61,7 +60,6 @@
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
-     * @model   abstract
      * @model   static
      * @access  public
      * @param   &io.File file

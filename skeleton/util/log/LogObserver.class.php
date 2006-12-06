@@ -19,6 +19,7 @@
     /**
      * Retrieve instance bound to log category.
      *
+     * @model   static
      * @access  public
      * @param   string arg
      * @return  &util.log.LogObserver
