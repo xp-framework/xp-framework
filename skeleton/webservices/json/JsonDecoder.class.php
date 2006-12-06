@@ -330,6 +330,7 @@
       
         $esc= FALSE;
         $tokenizer= &new StringTokenizer($str, '\"', TRUE);
+        $tok= '';
         while (strlen($tok) || $tokenizer->hasMoreTokens()) {
           if (empty($tok)) {
             $tok= $tokenizer->nextToken();
