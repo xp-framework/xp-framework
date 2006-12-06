@@ -353,17 +353,25 @@
       $fooClass= &$cl->defineClass('net.xp_framework.unittest.remote.FooClass', 'class FooClass extends Object { }');
       $barClass= &$cl->defineClass('net.xp_framework.unittest.remote.BarClass', 'class BarClass extends FooClass { }');
       
-      $fooHandler= &$cl->defineClass('net.xp_framework.unittest.remote.FooHandler', 'class FooHandler extends Object {
+      $fooHandler= &$cl->defineClass(
+        'net.xp_framework.unittest.remote.FooHandler', 
+        'Object',
+        array('remote.protocol.SerializerMapping'),
+        '{
         function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
-        function representationOf(&$serializer, &$var, $ctx) { return "FOO:"; }
-        function &valueOf(&$serializer, $serialized, &$length, $context) { return NULL; }
-      } implements("net/xp_framework/unittest/remote/FooHandler.class.php", "remote.protocol.SerializerMapping");');
+        function representationOf(&$serializer, &$value, $context= array()) { return "FOO:"; }
+        function &valueOf(&$serializer, &$serialized, $context= array()) { return NULL; }
+      }');
       
-      $barHandler= &$cl->defineClass('net.xp_framework.unittest.remote.BarHandler', 'class BarHandler extends Object {
+      $barHandler= &$cl->defineClass(
+        'net.xp_framework.unittest.remote.BarHandler', 
+        'Object',
+        array('remote.protocol.SerializerMapping'),
+        '{
         function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.BarClass"); }
-        function representationOf(&$serializer, &$var, $ctx) { return "BAR:"; }
-        function &valueOf(&$serializer, $serialized, &$length, $context) { return NULL; }
-      } implements("net/xp_framework/unittest/remote/BarHandler.class.php", "remote.protocol.SerializerMapping");');
+        function representationOf(&$serializer, &$value, $context= array()) { return "BAR:"; }
+        function &valueOf(&$serializer, &$serialized, $context= array()) { return NULL; }
+      }');
       
       
       // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
