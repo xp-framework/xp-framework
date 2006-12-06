@@ -24,7 +24,7 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
+    function &valueOf(&$serializer, &$serialized, $context= array()) {
       // No implementation
     }
 
