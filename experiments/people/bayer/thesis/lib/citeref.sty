@@ -1,0 +1,119 @@
+% File:   citeref.sty
+% Author: Bj"orn Briel, Uni Oldenburg
+% Date:   27.05.1999
+% 
+% (Partially based on CITESIDX.STY by Frank Buchholz)
+% (Contributions by Florian Werner Sauer)
+% (Modifications by Bjoern Briel)
+%
+% Main purpose:
+% 	Add reference-page-list to bibliography-items.
+%
+% Features:
+%	- This is done WITHOUT using the index-facility.
+% 	- Full transparency - no special \cite-replacement
+% 	- Works with or without BibTeX
+% 	- No extra LaTeX runs needed, neither external programs
+% 	- Customizeable look of the back-references
+%
+% Caveats:
+% 	- Does probably NOT work with other \cite-related style-options
+% 	  which redefine the (internal) \@citex macro
+%	- Citation tags may no longer contain a '=' char due to expansion
+%	  issues.
+%
+% Usage:
+% 	\usepackage{citeref}
+% 	No Options declared
+%
+% 	Change Style of printed page references by redefining the macro
+% 	'\bibitempages#1'. The parameter is a comma-separated list of 
+% 	page references. The default macro puts it into brackets [...].
+%
+% 	Print comments in the bibliography: Use the macro
+%	\bibintro{Blah...} before \thebibliography
+%
+% Revision History:
+%	1999/01/05	Initial release
+%	1999/27/05	Got sometimes wrong page numbers;
+%	                Removed \immediate from \write of \citepageref-Macro
+%	                in redefinition of \@citex to fix this
+%
+\def\fileversion{v1.1}
+\def\filedate{1999/27/05}
+
+% comment out the next two lines if using latex 2.09
+\NeedsTeXFormat{LaTeX2e}[1996/12/01]
+\ProvidesPackage{citeref}[\filedate]
+
+\typeout{Package citeref \fileversion\space <\filedate> (Bjoern Briel)}
+
+\def\@cprwrite#1={\write\@auxout{\string\citepageref{#1}{\thepage}}}
+
+% REDEFINITION OF \@citex[#1]#2 TO FACILITATE REFERENCE BACKPOINTERS
+% see LATEX.LTX
+\def\@citex[#1]#2{%
+  \let\@citea\@empty
+  \@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{,\penalty\@m\ }%
+     \edef\@citeb{\expandafter\@firstofone\@citeb}%
+% begin change
+     \if@filesw%
+       \immediate\write\@auxout{\string\citation{\@citeb}}%
+       \expandafter\@cprwrite\@citeb=%
+     \fi%
+% end change
+     \@ifundefined{b@\@citeb}{\mbox{\reset@font\bfseries ?}%
+       \G@refundefinedtrue
+       \@fcwarning{Citation `\@citeb' on page \thepage \space undefined}}%
+       {\hbox{\csname b@\@citeb\endcsname}}}}{#1}}
+
+
+% Seiten der Zitatstellen aus dem aux-File einlesen
+\def\@namexdef#1{\expandafter\xdef\csname #1\endcsname}
+\def\citepageref#1#2{%
+	\xdef\cpr@testa{\@nameuse{cpr@last@#1}}%letzte Zitatstelle
+	\xdef\cpr@testb{#2}% Seite dieser Zitatstelle
+	\ifx\cpr@testa\cpr@testb%
+		\relax% Konsekutive identische Seitenangaben weglassen
+	\else%
+		\@namexdef{cpr@last@#1}{#2}%
+		\@ifundefined{cpr@#1}%
+			{\@namexdef{cpr@#1}{#2}}%
+			{\@namexdef{cpr@#1}{\@nameuse{cpr@#1}, #2}}%
+	\fi
+	}
+
+
+% WARNING MESSAGE
+\def\@fcwarning#1{\typeout{CiteRef Warning: #1.}}
+
+% bibitem umdefinieren, damit Zitatstellen angefuegt werden:
+\def\bibitem{\@ifnextchar[{\@@lbibitem}{\@@bibitem}}%
+
+% used by \bibitem
+\def\@@lbibitem[#1]#2#3\par{\@lbibitem[#1]{#2}#3\bibitempages{\@citerefpages{#2}}}
+\def\@@bibitem#1#2\par{\@bibitem{#1}#2\bibitempages{\@citerefpages{#1}}}
+
+% used by \@@lbibitem, \@@bibitem
+% liefert die Liste der Seitenreferenzen
+\def\@citerefpages#1{\@ifundefined{cpr@#1}%
+                   {{\bf -}\@fcwarning{Never cited from `\@nameuse{#1}'}}%
+                   {\@nameuse{cpr@#1}}%
+}
+% used by \@@lbibitem, \@@bibitem
+\def\bibitempages#1{\newblock [#1]}
+
+% used by \bibitempages#1 
+% see ARTICLE.STY, REPORT.STY, BOOK.STY
+%\def\newblock{\hskip .11em plus .33em minus -.07em}%
+
+% put some text in front of the bibliography
+\def\bibintro#1{%
+  \let\@origthebib=\thebibliography
+  \let\@origlist=\list
+  \def\thebibliography{\def\list{#1\par\bigskip\@origlist}\@origthebib}%
+}
+
+\endinput
+
