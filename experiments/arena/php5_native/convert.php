@@ -26,6 +26,7 @@
   }
  
   $base= realpath($p->value(1));
+  $targetdir= $p->value(2, 2, 'skeleton2');
   $collection= &new FileCollection($base);
   $collection->open();
   
@@ -34,6 +35,7 @@
     TRUE
   );
   while ($iterator->hasNext()) {
+    xp::gc();
     $element= &$iterator->next();
     
     // Construct classname from that
@@ -41,13 +43,13 @@
     $fqcn= strtr(substr($relative, 0, -10), DIRECTORY_SEPARATOR, '.');
     
     // Skip existing files
-    $folder= &new Folder(dirname('skeleton2'.DIRECTORY_SEPARATOR.$relative));
+    $folder= &new Folder(dirname($targetdir.DIRECTORY_SEPARATOR.$relative));
     if (!$folder->exists()) {
       Console::write('p');
       $folder->create();
     }
     
-    $target= &new File('skeleton2'.DIRECTORY_SEPARATOR.$relative);
+    $target= &new File($targetdir.DIRECTORY_SEPARATOR.$relative);
     if ($target->exists()) {
       Console::write('s');
       continue;
@@ -62,7 +64,7 @@
       $doclet= &new MigrationDoclet();
       RootDoc::start($doclet, $param);
     } if (catch('Exception', $e)) {
-      Console::writeLine('*** Could not convert '.$fqcn);
+      Console::writeLine('*** Could not convert '.$fqcn.': '.$e->getMessage());
       $e->printStackTrace();
       Console::writeLine();
       xp::gc();
