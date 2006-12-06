@@ -52,7 +52,7 @@
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals(&$cmp) {
-      return $this === $cmp;
+      return $this == $cmp;
     }
     
     /** 
