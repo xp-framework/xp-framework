@@ -28,19 +28,36 @@
       $key= strtolower($doc->name());
       if (isset($this->mapping[$key])) return;
       
-      $this->mapping[$key]= $doc->qualifiedName();
+      try(); {
+        $this->mapping[$key]= $doc->qualifiedName();
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
       
       // Build mapping for superclass if existant
-      $doc->superclass && $this->buildMapping($doc->superclass);
+      try(); {
+        $doc->superclass && $this->buildMapping($doc->superclass);
+      } if (catch('Exception', $e)) {
+        return throw($e);
+      }
       
       // Build mapping for used classes
       while ($doc->usedClasses->hasNext()) {
-        $this->buildMapping($doc->usedClasses->next());
+        try(); {
+          $class= &$doc->usedClasses->next();
+          $class && $this->buildMapping($class);
+        } if (catch ('Exception', $e)) {
+          return throw($e);
+        }
       }
 
       // Build mapping for interfaces
       while ($doc->interfaces->hasNext()) {
-        $this->buildMapping($doc->interfaces->next());
+        try(); {
+          $this->buildMapping($doc->interfaces->next());
+        } if (catch('Exception', $e)) {
+          return throw($e);
+        }
       }
     }
 
@@ -120,11 +137,20 @@
       $this->mapping['parent']= 'parent';
 
       while ($root->classes->hasNext()) {
-        $this->current= &$root->classes->next();
-        $debug && Console::writeLine('---> Processing ', $this->current->qualifiedName());
-        
-        // Build mapping short names => long names
-        $this->buildMapping($this->current);
+        xp::gc();
+        try(); {
+          $this->current= &$root->classes->next();
+          $debug && Console::writeLine('---> Processing ', $this->current->qualifiedName());
+        } if (catch('Exception', $e)) {
+          return throw($e);
+        }
+
+        try(); {
+          // Build mapping short names => long names
+          $this->buildMapping($this->current);
+        } if (catch('Exception', $e)) {
+          return throw($e);
+        }
         
         // Tokenize file
         $tokens= token_get_all(file_get_contents($root->findClass($this->current->qualifiedName())));
