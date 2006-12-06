@@ -5,7 +5,6 @@
  */
 
   uses(
-    'xml.XML',
     'xml.TransformerException',
     'io.FileNotFoundException',
     'xml.IXSLProcessor'
@@ -33,7 +32,7 @@
    * @purpose  Transform XML/XSLT using PHPs domXSL functions
    * @ext      dom
    */
-  class DomXSLProcessor extends XML implements IXSLProcessor {
+  class DomXSLProcessor extends Object implements IXSLProcessor {
     public 
       $processor    = NULL,
       $stylesheet   = array(),
@@ -93,10 +92,8 @@
      * @throws  io.FileNotFoundException
      */
     public function setXSLFile($file) {
-      if (!file_exists($this->_base.$file)) {
-        throw(new FileNotFoundException($this->_base.$file.' not found'));
-      }
-      $this->stylesheet= array(0, $this->_base.$file);
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->load($this->_base.$file);
     }
     
     /**
@@ -106,7 +103,8 @@
      * @param   string xsl the XSL as a string
      */
     public function setXSLBuf($xsl) {
-      $this->stylesheet= array(1, &$xsl);
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->loadXML($xsl);
     }
 
     /**
@@ -116,7 +114,8 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
-      $this->document= domxml_open_file($this->_base.$file);
+      $this->document= new DOMDocument();
+      $this->document->load($file);
     }
     
     /**
@@ -126,7 +125,8 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
-      $this->document= domxml_open_mem($xml);
+      $this->document= new DOMDocument();
+      $this->document->loadXML($xml);
     }
 
     /**
@@ -162,30 +162,6 @@
     }    
 
     /**
-     * Error handler callback
-     *
-     * @access  private
-     * @param   int code
-     * @param   string msg
-     * @param   string file
-     * @param   int line
-     * @see     php://set_error_handler
-     */
-    public function _traperror($code, $msg, $file, $line) {
-      @list($method, $message)= explode(':', trim($msg), 2);
-      if (in_array($method, array(
-        'domxml_xslt_stylesheet()', 
-        'domxml_xslt_stylesheet_file()',
-        'process()',
-      ))) {
-        $message && $this->_errors[]= trim($message);
-        return;
-      }
-
-      __error($code, $msg, $file, $line);
-    }
-    
-    /**
      * Retrieve messages generate during processing.
      *
      * @access  public
@@ -205,44 +181,14 @@
     public function run() {
       $cwd= FALSE;
 
-      $this->_errors= array();
-      set_error_handler(array(&$this, '_traperror'));
-
-      // Get stylesheet
-      switch ($this->stylesheet[0]) {
-        case 0: 
-          $proc= domxml_xslt_stylesheet_file($this->stylesheet[1]); 
-          break;
-
-        case 1:
-          if ($this->_base) {
-            $cwd= getcwd();
-            chdir($this->_base);
-          }
-          $proc= domxml_xslt_stylesheet($this->stylesheet[1]);
-          break;
-
-        default:
-          $proc= FALSE;
-      }
+      $this->processor= new XSLTProcessor();
+      $this->processor->importStyleSheet($this->stylesheet);
+      $this->processor->setParameter('', $this->params);
       
       // Start transformation
       $result= NULL;
-      if ($proc) {
-        $result= $proc->process($this->document, $this->params, FALSE);
-      }
-      $cwd && chdir($cwd);
-      restore_error_handler();
-
-      // Check result
-      if (!$result) {
-        throw(new TransformerException(
-          "Transformation failed: [\n".implode("\n  ", $this->_errors)."\n]"
-        ));
-      }
+      $this->output= $this->processor->transformToXML($this->document);
       
-      // Copy output from transformation
-      $this->output= $proc->result_dump_mem($result);
       return TRUE;
     }
 
@@ -255,17 +201,5 @@
     public function output() {
       return $this->output;
     }
-
-    /**
-     * Destructor
-     *
-     * @access  public
-     */
-    public function __destruct() {
-      if ($this->document) { with ($n= &$this->document->document_element); {
-        $n && $n->unlink_node($n);
-      }}
-      $this->document= NULL;
-    }
-  } 
+  }
 ?>

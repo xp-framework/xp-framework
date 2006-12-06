@@ -163,7 +163,7 @@
     public function getExceptionTypes() {
       $r= array();
       foreach ($this->getExceptionNames() as $name) {
-        $r[]= &new XPClass($name);
+        $r[]= new XPClass($name);
       }
       return $r;
     }

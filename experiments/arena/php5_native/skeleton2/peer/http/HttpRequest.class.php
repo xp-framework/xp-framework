@@ -155,13 +155,13 @@
      * @access  public
      * @return  &peer.http.HttpResponse response object
      */
-    public function &send($timeout= 60) {
+    public function &send($timeout= 60, $connecttimeout= 2.0) {
       $s= new Socket($this->url->getHost(), $this->url->getPort(80));
       $s->setTimeout($timeout);
       
       $request= $this->getRequestString();
       try {
-        $s->connect() && $s->write($request);
+        $s->connect($connecttimeout) && $s->write($request);
       } catch (Exception $e) {
         throw($e);
       }

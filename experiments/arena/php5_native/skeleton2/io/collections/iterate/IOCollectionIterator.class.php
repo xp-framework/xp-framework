@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: IOCollectionIterator.class.php 8186 2006-10-16 10:24:18Z friebe $
+ * $Id: IOCollectionIterator.class.php 8770 2006-12-06 11:42:06Z kiesel $
  */
 
-  uses('io.IOCollection', 'util.XPIterator');
+  uses('io.collections.IOCollection', 'util.XPIterator');
 
   /**
    * Iterates over elements of a collection.

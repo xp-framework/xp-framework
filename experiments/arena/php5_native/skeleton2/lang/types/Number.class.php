@@ -23,7 +23,6 @@
      * @param   string value
      */
     public function __construct($value) {
-      parent::__construct();
       $this->value= (string)$value;
     }
     
@@ -65,7 +64,7 @@
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals(&$cmp) {
-      return is_a($cmp, get_class($this)) && $this->value === $cmp->value;
+      return is( get_class($this, $cmp) && $this->value === $cmp->value;
     }
   }
 ?>

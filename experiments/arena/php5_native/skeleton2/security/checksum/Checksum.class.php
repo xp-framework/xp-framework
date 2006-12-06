@@ -49,25 +49,23 @@
      * Create a new checksum from a string. Override this
      * method in child classes!
      *
-     * @model   abstract
      * @model   static
      * @access  public
      * @param   string str
      * @return  &security.checksum.Checksum
      */
-    public function &fromString($str) { }
+    public static function &fromString($str) { }
 
     /**
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
-     * @model   abstract
      * @model   static
      * @access  public
      * @param   &io.File file
      * @return  &security.checksum.Checksum
      */
-    public function &fromFile(&$file) { }
+    public static function &fromFile(&$file) { }
     
     /**
      * Retrieve the checksum's value

@@ -46,7 +46,8 @@
       $auth        = NULL;
     
     public
-      $_timeout    = 60;
+      $_ctimeout    = 2.0,
+      $_timeout     = 60;
 
     /**
      * Constructor
@@ -71,10 +72,30 @@
     }
 
     /**
+     * Set connect timeout
+     *
+     * @access  public
+     * @param   float timeout
+     */
+    public function setConnectTimeout($timeout) {
+      $this->_ctimeout= $timeout;
+    }
+
+    /**
+     * Get timeout
+     *
+     * @access  public
+     * @return  float
+     */
+    public function getConnectTimeout() {
+      return $this->_ctimeout;
+    }
+
+    /**
      * Set timeout
      *
      * @access  public
-     * @param   mixed imeout
+     * @param   int timeout
      */
     public function setTimeout($timeout) {
       $this->_timeout= $timeout;
@@ -84,7 +105,7 @@
      * Get timeout
      *
      * @access  public
-     * @return  mixed
+     * @return  int
      */
     public function getTimeout() {
       return $this->_timeout;
@@ -111,7 +132,7 @@
       $this->request->addHeaders($headers);
       
       try {
-        $this->response= &$this->request->send($this->_timeout);
+        $this->response= &$this->request->send($this->_timeout, $this->_ctimeout);
       } catch (Exception $e) {
         throw($e);
       }

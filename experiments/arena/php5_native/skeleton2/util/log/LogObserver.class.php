@@ -19,11 +19,12 @@
     /**
      * Retrieve instance bound to log category.
      *
+     * @model   static
      * @access  public
      * @param   string arg
      * @return  &util.log.LogObserver
      */
-    public function &instanceFor($arg) {
+    public static function &instanceFor($arg) {
       static $inst= array();
       
       if (!isset ($inst[$arg])) {

@@ -37,7 +37,7 @@
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
-   *   $o= &new File();
+   *   $o= new File();
    *   $c= &$o->getClass();
    *   echo 'The class name for $o is '.$c->getName();
    * </code>
@@ -352,7 +352,7 @@
     public function getInterfaces() {
       $r= array();
       foreach ($this->_reflect->getInterfaces() as $iface) {
-        $r[]= &new XPClass($iface->getName());
+        $r[]= new XPClass($iface->getName());
       }
       return $r;
     }
@@ -572,7 +572,7 @@
                     break;
 
                   case 'param':
-                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= &new Argument(
+                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
                       isset($match[3]) ? $match[3] : 'param',
                       $match[2],
                       isset($match[4]),
