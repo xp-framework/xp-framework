@@ -200,7 +200,11 @@
               break;
 
             case ST_USES.T_CONSTANT_ENCAPSED_STRING:
-              $doc->usedClasses->classes[trim($t[1], '"\'')]= NULL;
+              $cn= trim($t[1], '"\'');
+              if (!$this->findClass($cn)) return throw(new IllegalStateException(
+                'Could not find used class "'.$cn.'" for class '.$classname
+              ));
+              $doc->usedClasses->classes[$cn]= NULL;
               break;
 
             case ST_USES.')':
