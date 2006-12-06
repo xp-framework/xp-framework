@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.IOCollection');
+  uses('io.collections.IOCollection');
 
   /**
    * Iterates over elements of a collection.
