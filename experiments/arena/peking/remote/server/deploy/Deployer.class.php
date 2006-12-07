@@ -14,17 +14,14 @@
     'remote.server.strategy.StatelessSessionInvocationStrategy'
   );
 
-  // Constants for annotations
   define('DEPLOY_LOOKUP_KEY',         'lookupName');
   define('DEPLOY_PEERCLASS_KEY',      'peerClass');
   define('DEPLOY_HOMEINTERFACE_KEY',  'homeInterface');
 
   /**
-   * (Insert class' description here)
+   * Deployer
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Deployer
    */
   class Deployer extends Object {
   
@@ -33,8 +30,7 @@
      *
      * @access  public
      * @param   remote.server.deploy.Deployable deployment
-     * @param   remote.server.ContainerManager
-     * @param   remote.server.BeanContainer
+     * @param   remote.server.ContainerManager containerManager
      */
     function deployBean(&$deployment, &$containerManager) {
 
@@ -48,8 +44,15 @@
       $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
       try(); {
         $cl= &$deployment->getClassLoader();
+        
+        $org= ini_get('include_path');
+        ini_set('include_path', $org.PATH_SEPARATOR.$cl->archive->file->getURI());
+        
         $impl= &$cl->loadClass($deployment->getImplementation());
         $interface= &$cl->loadClass($deployment->getInterface());
+        
+        ini_set('include_path', $org);
+        
         $directoryName= $deployment->getDirectoryName();
         
         // Fetch naming directory
@@ -89,11 +92,12 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Throw DeployException
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  protected
+     * @param   string msg
+     * @return  bool
+     * @throws  remote.server.deploy.DeployException
      */
     function _deployException($msg) {
       $log= &Logger::getInstance();
