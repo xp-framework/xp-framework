@@ -1,0 +1,90 @@
+RFC 0092: Add support for PHP 5 in the XP framework
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Thu Dec  7 14:14:46 CET 2006
+@status: draft
+@category: <strategy>
+
+Scope of Change
+---------------
+The XP framework will add support for PHP 5 from a certain release date on.
+Support for PHP 4 will continue until a not yet defined point in the future.
+
+Version numbers of the PHP4 version and the PHP5 version will be connected,
+with the only difference being the major version number.
+Eg. Classes in XP version 4.1.2 for PHP4 are at the same like XP 
+version 5.1.2.
+
+Rationale
+---------
+XP framework for PHP4 has been written with PHP5's features in mind,
+planning to migrate to PHP5 as soon as it was released.
+
+To increase stability and development speed and to gain advantage of some
+of the new features / APIs that PHP5 does offer, support for PHP 5 is
+required.
+
+Functionality
+-------------
+
+Repository layout
+~~~~~~~~~~~~~~~~~
+
+A new directory next to skeleton/ will be introduces that contains a fully
+working, migrated copy of all classes of the framework. Also, another tree
+of files will be added with files that cannot be automatically converted,
+like the source files of the XP framework core.
+
+The new directory layout in the repository looks like that:
+<pre>
+trunk/
+  ports/
+    classes/
+  skeleton/
+  xp5/
+    skeleton2/
+    ports2/
+    override/
+</pre>
+
+Files from skeleton/ will be migrated and saved in skeleton2, files from ports/
+will be migrated to ports2/ and so on.
+
+Master/slave
+~~~~~~~~~~~~
+
+Until declared otherwise through a follow-up RFC, the versions in the skeleton/
+directory (the PHP4 classes) will stay "the master" version. The PHP5 classes
+will be generated through the migration script.
+
+Manual changes to generated classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Manual changes to classes are only allowed in the following exceptions:
+ - the class is part of the core (= lang, util, io)
+ - the class uses an API that does no longer exist in PHP5
+ - the class uses features that cannot be automatically converted
+   to PHP5 (eg.: overload)
+ - places where no forward-compatible change can be found for the PHP4
+   version
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/A
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
