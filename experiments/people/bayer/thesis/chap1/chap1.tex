@@ -145,9 +145,11 @@ beziehen sich auf Funktionen welche die Skriptengine selbst direkt auf Funktione
 der PHP-Befehl "'\emph{echo}"' direkt einen Aufruf der Java-Methode \emph{System.out.println} bewirken.
 Der zweite grosse Abschnitt besch"aftigt sich mit der \emph{General Scripting API}, einer Sammlung von Interfaces und Klassen, 
 welche es erlauben dass Skriptengines als Komponenten in Java-Anwendungen eingebettet werden k"onnen. Diese API unterteilt sich
-in einen implementationsabh"angigen und einen Impelentationsunabh"angigen Teil um eine gro"esstm"ogliche Portabilit"at zwischen
+in einen implementationsabh"angigen und einen Implementationsunabh"angigen Teil um eine gro"esstm"ogliche Portabilit"at zwischen
 verschiedenen Implementationen zu erreichen. Hierzu ist es notwendig zur Laufzeit Informationen "uber Skriptengines abfragen
 zu k"onnen, diese \emph{Metainformationen} beschreiben F"ahigkeiten und Funktionsdetails und werden von jeder Implementation bereitgestellt.
+Dieser Mechanismus zum Auffinden und zum Abfragen von ScriptEngineFactories zur Laufzeit wird im Spezifikationsdokument 
+als \emph{discovery mechanism} bezeichnet.
 Die wichtigsten Klassen der General Scripting API sind der \emph{ScriptContext},
 die \emph{ScriptEngine}, die \emph{ScriptEngineFactory} und der \emph{ScriptEngineManager}.
 \begin{description}
@@ -223,8 +225,8 @@ f"ur PHP durchgef"uhrt. Es sollte ein einfaches PHP Skript ausgef"uhrt werden, w
 des Funktionsumfanges des mitgelieferten PHPs erlauben sollte. Um allerdings sicherzustellen, dass zumindest der 
 Implementationsunabh"angige Teil funktioniert wurde ein Programm geschrieben, welches lediglich eine Liste der verf"ugbaren
 Skriptengines ausgibt. Hierbei wurde nun festgestellt, dass sich die Referenzimplementation nicht komplett an den Standard
-h"alt - die Signatur der Methode \emph{getScriptEngineFactories()} des ScriptEngineManagers lautet nicht wie von
-der Spezifikation verlangt
+h"alt - so lautet die Signatur der Methode \emph{getScriptEngineFactories()} des ScriptEngineManagers beispielsweise 
+nicht wie von der Spezifikation verlangt
 \begin{lstlisting}[name=Vom Standard verlangte Signatur]
     List<ScriptEngineFactory> getScriptEngineFactories()
 \end{lstlisting}
@@ -238,6 +240,41 @@ HTML ausgibt aus dem sich alle geladenen Extensions, sowie alle gesetzten Umgebu
 PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementation
 zu verwirklichen, da das Laden der mitgelieferten php5.so sowohl und FreeBSD, als auch unter 64- und 32-Bit Linux mit verschiedensten
 Java Versionen zum Absturz der Java Virtual Machine f"uhrte.
+
+Aus diesem und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementation f"ur PHP zu entwickeln.
+
+\section{Design}
+\label{sec:chap1:design}
+
+Eine JSR 223 Implementation f"ur PHP besteht gezwungenermassen aus zwei Teilen: einem Java-Teil, welcher im Wesentlichen
+die ScriptEngineFactory enth"alt, komplett in Java ohne die Verwendung von nativen (JNI-) Aufrufen implementiert ist und
+s"amtliche Funktionalit"at des Auffindungsmechanismus abdeckt, sowie einem nativen Teil, welcher aus 
+einem C- oder C++ - Programm das die n"otigen Aufrufe an PHP vornimmt und der eigentlichen ScriptEngine besteht, die dieses in
+nativen Code "ubersetzte Programm mittels JNI anspricht. TODO: Arschlochsatz
+Um allerdings JSR 223 "uberhaupt nutzen zu k"onnen m"ussen die Klassen aus javax.script, vor allem der ScriptEngineManager, 
+im Java-Classpath liegen. Hierzu kann entweder eine Java-Runtime der Version 6, oder aber eine eigene Implementation dieser
+Klassen genutzt werden.
+
+\subsection{Java}
+\label{sec:chap1:design:java}
+Discovery Method -> META-INF
+PHPScriptEngineFactory
+PHPScriptEngine
+
+\subsection{Native}
+\label{sec:chap1:design:native}
+
+
+\section{Implementation}
+\label{sec:chap1:impl}
+
+Ref-Impl .jar zusammengebaut, ohne scriptengines, nur javax.script.*, allerdings: entspricht nicht der Spez 
+(ScriptEngine.getProgram: String[] statements statt String... statements), deswegen: java 6 runtergeladen.
+Da nicht system vm - mittels makefile ausf"uhren.
+
+Enginelist "portiert" -> 1 engines, Rhino, wird von Sun mit dem SDK 6 mitgeliefert.
+META-INF/services/javax.script.ScriptEngineFactory geschrieben -> 0 engines
+ScriptEngine angelegt
 
 
 
