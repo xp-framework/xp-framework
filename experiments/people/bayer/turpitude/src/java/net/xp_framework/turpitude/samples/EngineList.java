@@ -14,10 +14,9 @@ public class EngineList {
         ScriptEngineManager mgr = new ScriptEngineManager();
         List<ScriptEngineFactory> lst = mgr.getEngineFactories();
         System.out.println("found " + lst.size() + " available ScriptEngines:");
-        ListIterator it = lst.listIterator();
+        ListIterator<ScriptEngineFactory> it = lst.listIterator();
         while (it.hasNext()) {
-            ScriptEngineFactory f = (ScriptEngineFactory)it.next();
-            System.out.println("Engine: " + f.getEngineName());
+            System.out.println("Engine: " + it.next().getEngineName());
         }
     }
 
