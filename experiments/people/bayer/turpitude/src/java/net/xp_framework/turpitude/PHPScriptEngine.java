@@ -10,6 +10,13 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
 
     /**
+     * Constructor
+     */
+    PHPScriptEngine(ScriptEngineFactory fac) {
+        setScriptEngineFactory(fac);
+    }
+
+    /**
      * Executes a script from a Reader containing the source code
      * @return The value returned by the script
      */
@@ -68,5 +75,13 @@ public class PHPScriptEngine extends AbstractScriptEngine {
         }
         return MyFactory;
     }
+
+    /**
+     * sets the factory
+     */
+    public void setScriptEngineFactory(ScriptEngineFactory fac) {
+        MyFactory = fac;
+    }
+
 
 }

@@ -3,8 +3,15 @@ package net.xp_framework.turpitude;
 import javax.script.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class PHPScriptEngineFactory implements ScriptEngineFactory {
+    
+    /**
+     * default constructor
+     */
+    public PHPScriptEngineFactory() {
+    }
 
     /**
      * @return the name of the ScriptEngine.
@@ -137,7 +144,7 @@ public class PHPScriptEngineFactory implements ScriptEngineFactory {
      * @return An instance of PHPScriptEngine
      */
     public ScriptEngine getScriptEngine() {
-        //TODO: implement
-        return null;
+        PHPScriptEngine eng = new PHPScriptEngine(this);
+        return eng;
     }
 }

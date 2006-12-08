@@ -14,7 +14,6 @@ list: turpitude.jar
 	$(JBIN) -cp $(CPATH) net.xp_framework.turpitude.samples.EngineList
 
 classes: $(JSRC)
-	@echo $(JSRC)
 	$(JCC)  -d classes -cp $(CPATH) $(JSRC)
 
 jarrun: jar
