@@ -4,7 +4,9 @@ $Id$
 
 Version ?.?.?, released ????-??-??
 ----------------------------------
-
+- Fix (De-)Serializer bug in remote package
+  (kiesel)
+  
 Version 4.1.2, released 2006-12-05
 ----------------------------------
 - Implemented RFC #0090 - "Refactor remote.protocol.Serializer"
