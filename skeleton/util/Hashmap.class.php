@@ -78,7 +78,7 @@
     }
 
     /**
-     * Sort this hashmap in reverse order
+     * Sort this hashmap by key
      *
      * @access  public
      * @param   int flags default SORT_REGULAR sort flags
