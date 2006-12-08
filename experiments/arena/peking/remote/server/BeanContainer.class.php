@@ -7,11 +7,9 @@
   uses('lang.Collection');
 
   /**
-   * (Insert class' description here)
+   * Bean container
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  container
    */
   class BeanContainer extends Object {
     var
@@ -19,11 +17,11 @@
       $strategy     = NULL;
 
     /**
-     * (Insert method's description here)
+     * Get instance for class
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.XPClass class
+     * @return  &remote.server.BeanContainer
      */
     function &forClass(&$class) {
       $bc= &new BeanContainer();
@@ -32,33 +30,33 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Set container id
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int cid
      */
     function setContainerID($cid) {
       $this->cid= $cid;
     }    
     
     /**
-     * (Insert method's description here)
+     * Set strategy
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &remote.server.strategy.InvocationStrategy strategy
      */
     function setInvocationStrategy(&$strategy) {
       $this->strategy= &$strategy;
     }
       
     /**
-     * (Insert method's description here)
+     * Invoke a method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object proxy
+     * @param   string method
+     * @param   mixed args
+     * @return  mixed
      */
     function invoke(&$proxy, $method, $args) {
       $class= &$this->instancePool->getElementClass();

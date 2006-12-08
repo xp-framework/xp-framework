@@ -5,11 +5,10 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Invocation handler for stateless
+   * session beans
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  invocationhandler
    */
   class StatelessSessionBeanContainerInvocationHandler extends Object {
     var
@@ -17,22 +16,20 @@
       $type       = NULL;
     
     /**
-     * (Insert method's description here)
+     * Set container
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &remote.server.BeanContainer container
      */
     function setContainer(&$container) {
       $this->container= &$container;
     }
     
     /**
-     * (Insert method's description here)
+     * Set type
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int type
      */
     function setType($type) {
       $this->type= $type;
@@ -43,9 +40,9 @@
      * the result.
      *
      * @access  public
-     * @param   lang.reflect.Proxy proxy
+     * @param   &lang.reflect.Proxy proxy
      * @param   string method the method name
-     * @param   mixed* args an array of arguments
+     * @param   mixed args an array of arguments
      * @return  mixed
      */
     function invoke(&$proxy, $method, $args) {

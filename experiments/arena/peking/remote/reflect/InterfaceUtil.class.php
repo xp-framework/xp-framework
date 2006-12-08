@@ -5,11 +5,11 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Find implemented interfaces
    *
    * @ext      extension
    * @see      reference
-   * @purpose  purpose
+   * @purpose  helperclass
    */
   class InterfaceUtil extends Object {
   
@@ -22,7 +22,7 @@
      * @param   &lang.XPClass class
      * @return  &lang.XPClass[]
      */
-    function getUniqueInterfacesFor(&$class) {
+    function &getUniqueInterfacesFor(&$class) {
       $interfaces= &$class->getInterfaces();
       $out= array();
       

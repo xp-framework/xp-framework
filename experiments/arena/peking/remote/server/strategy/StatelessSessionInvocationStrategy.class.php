@@ -10,22 +10,22 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Stateless session invocation strategy
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  strategy
    */
   class StatelessSessionInvocationStrategy extends Object {
     var
       $poolSize = 1;
 
     /**
-     * (Insert method's description here)
+     * Invoke a method
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object instance
+     * @param   string method
+     * @param   mixed args
+     * @return  &mixed
      */
     function &invoke(&$instance, $method, $args) {
       if (!$method) return FALSE;
@@ -33,5 +33,5 @@
       $ret= $method->invoke($instance, $args);
       return $ret;
     }
-  }
+  } implements(__FILE__, 'remote.server.strategy.InvocationStrategy');
 ?>

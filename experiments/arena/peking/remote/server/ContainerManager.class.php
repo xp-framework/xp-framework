@@ -5,32 +5,27 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Container manager
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Manage beancontainer
    */
   class ContainerManager extends Object {
     var
       $containers= array();
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
-    function __construct() {
-    }    
+    function __construct() { }
     
     /**
-     * (Insert method's description here)
+     * Register
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &remote.server.BeanContainer container
+     * @return  int
      */
     function register(&$container) {
       $this->containers[]= &$container;
@@ -39,15 +34,15 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Get a  beancontainer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   int oid
+     * @return mixed
      */
     function getContainerByOID($oid) {
-      // TBI
-    }    
-        
+
+      // TDB
+    }
   }
 ?>

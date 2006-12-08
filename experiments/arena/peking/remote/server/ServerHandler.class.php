@@ -11,31 +11,29 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Server handler
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  handler
    */
   class ServerHandler extends Object {
       
     /**
-     * (Insert method's description here)
+     * Set serializer
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &remote.protocol.Serializer serializer
      */
     function setSerializer(&$serializer) {
       $this->serializer= &$serializer;
     }  
   
     /**
-     * (Insert method's description here)
+     * Extract a string out of packed data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string data
+     * @param   &int offset
+     * @return  string
      */
     function readString($data, &$offset) {
       $string= '';
@@ -49,11 +47,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Write response
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &io.Stream stream
+     * @param   int type
+     * @param   string buffer
      */
     function writeResponse(&$stream, $type, $buffer) {
       $bcs= &new ByteCountedString($buffer);
@@ -74,11 +73,13 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Handle incoming data
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &peer.Socket socket
+     * @param   &peer.server.ServerProtocol protocol
+     * @param   int type
+     * @param   string data
      */
     function handle(&$socket, &$protocol, $type, $data) {
       try(); {

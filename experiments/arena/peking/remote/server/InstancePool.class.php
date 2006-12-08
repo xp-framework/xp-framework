@@ -7,11 +7,9 @@
   uses('util.Hashmap');
 
   /**
-   * (Insert class' description here)
+   * Instance pool
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Hold instances of deployed beans
    */
   class InstancePool extends Object {
     var
@@ -19,22 +17,20 @@
       $_h2id    = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
      */
     function __construct() {
       $this->_pool= &new Hashmap();
     }
       
     /**
-     * (Insert method's description here)
+     * Register a new instance
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &lang.Object object
+     * @return  bool
      */
     function registerInstance(&$object) {
       $this->_pool->putref($object->hashCode(), $object);
@@ -42,11 +38,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Fetch
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   string hashcode
+     * @return  mixed
      */
     function fetch($hashCode) {
       return $this->_pool->get($hashCode);

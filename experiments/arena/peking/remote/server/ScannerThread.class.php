@@ -19,7 +19,6 @@
       $scanner    = NULL,
       $period     = 60;
 
-
     /**
      * Constructor
      *
@@ -44,11 +43,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Distribute deployments
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   remote.server.deploy.Deployable[] deployments
      */
     function distribute($deployments) {
       if (!$this->storage->isEmpty()) $this->storage->remove();
@@ -70,7 +68,6 @@
 
       $this->period= $period;
     }
-
 
     /**
      * Periodically scan for deployments

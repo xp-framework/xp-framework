@@ -5,22 +5,19 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Container invocation handler
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  invocation handler
    */
   class ContainerInvocationHandler extends Object {
     var
       $container  = NULL;
     
     /**
-     * (Insert method's description here)
+     * Set container
      *
-     * @access  
-     * @param   
-     * @return  
+     * @access  public
+     * @param   &remote.server.BeanContainer container
      */
     function setContainer(&$container) {
       $this->container= &$container;
@@ -33,12 +30,12 @@
      * @access  public
      * @param   lang.reflect.Proxy proxy
      * @param   string method the method name
-     * @param   mixed* args an array of arguments
+     * @param   mixed args an array of arguments
      * @return  mixed
      */
     function invoke(&$proxy, $method, $args) {
 
-      // TBI: Invocation interceptors
+      // TBD Invocation interceptors
       return $this->container->invoke($proxy, $method, $args);
     }
 
