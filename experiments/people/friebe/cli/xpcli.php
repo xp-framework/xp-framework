@@ -14,6 +14,46 @@
     return throw($e);
   }
   
+  // Usage
+  if ($p->exists('help', '?')) {
+    foreach ($class->getMethods() as $method) {
+      if (!$method->hasAnnotation('arg')) continue;
+      
+      $arg= $method->getAnnotation('arg');
+      $name= strtolower(preg_replace('/^set/', '', $method->getName()));;
+      $comment= trim($method->getComment());
+      list($first, )= $method->getArguments();
+      if (isset($arg['position'])) {
+        $details['#'.($arg['position'] + 1)]= $comment;
+        $positional[$arg['position']]= $name;
+      } else if (isset($arg['name'])) {
+        $details['--'.$arg['name'].' | -'.(isset($arg['short']) ? $arg['short'] : $arg['name']{0})]= $comment;
+        $extra[$arg['name']]= $first->isOptional();
+      } else {
+        $details['--'.$name.' | -'.(isset($arg['short']) ? $arg['short'] : $name{0})]= $comment;
+        $extra[$name]= $first->isOptional();
+      }
+    }
+    
+    // Usage
+    asort($positional);
+    Console::write('Usage: $ xpcli ', $class->getName(), ' ');
+    foreach ($positional as $name) {
+      Console::write('<', $name, '> ');
+    }
+    foreach ($extra as $name => $optional) {
+      Console::write(($optional ? '[' : ''), '--', $name, ($optional ? '] ' : ' '));
+    }
+    Console::writeLine();
+    
+    // Argument details
+    Console::writeLine('Arguments:');
+    foreach ($details as $which => $comment) {
+      Console::writeLine('* ', $which, "\n  ", $comment, "\n");
+    }
+    exit(1);
+  }
+  
   $instance= &$class->newInstance();
   foreach ($class->getMethods() as $method) {
     if (!$method->hasAnnotation('arg')) continue;
