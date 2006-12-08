@@ -26,7 +26,7 @@ public class PHPScriptEngineFactory implements ScriptEngineFactory {
     public List<String> getExtensions() {
         List<String> exts = new ArrayList<String>();
         exts.add("php");
-        exts.add("pp5");
+        exts.add("php5");
         return exts;
     }
 
