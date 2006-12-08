@@ -304,7 +304,7 @@
     }
 
     /**
-     * Test deserialization of an integer
+     * Test deserialization of an arraylist
      *
      * @access  public
      * @see     xp://Person
@@ -312,7 +312,7 @@
     #[@test]
     function valueOfArrayList() {
       $return= &$this->serializer->valueOf(
-        new SerializedData("A:2:{O:6:\"Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}"
+        new SerializedData('A:2:{O:6:"Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
       ));
       $this->assertClass($return, 'lang.types.ArrayList');
       $this->assertEquals(2, sizeof($return->values));
@@ -321,7 +321,7 @@
     }
 
     /**
-     * Assert 
+     * Test deserialization of an encapsed arraylist
      *
      * @access  public
      */
@@ -341,6 +341,32 @@
       ));
     }
     
+    /**
+     * Test deserialization of a classreference
+     *
+     * @access  public
+     */
+    #[@test]
+    function genericClass() {
+      $class= &$this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+      $this->assertTrue(is('remote.ClassReference', $class));
+      $this->assertEquals("net.xp_framework.easc.reflect.MethodDescription", $class->referencedName());
+    }
+    
+    /**
+     * Test deserialization of a package-mapped classreference
+     *
+     * @access  public
+     */
+    #[@test]
+    function genericPackageMappedClass() {
+      $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
+      
+      $class= &$this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+      $this->assertTrue(is('remote.ClassReference', $class));
+      $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
+    }
+
     /**
      * Check serialization through custom class mappings. Check that the serialization
      * is always carried through by the best matching serializer mapping.
