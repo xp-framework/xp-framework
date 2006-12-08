@@ -13,7 +13,7 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:output method="text" encoding="iso-8859-1" indent="0"/>
+  <xsl:output method="text" encoding="iso-8859-1" indent="no"/>
   
   <!--
    ! Retrieves short class name for a fully qualified class name
@@ -79,9 +79,9 @@
    */
   class ]]></xsl:text><xsl:value-of select="func:shortname(exsl:node-set($interface)/className)"/>
     <xsl:text> extends Interface {&#10;</xsl:text>
-    <xsl:for-each select="set:distinct(exsl:node-set($interface)/methods/method/name/text())">
+    <xsl:for-each select="set:distinct(exsl:node-set($interface)/methods/values/value/name/text())">
       <xsl:variable name="name" select="."/>
-      <xsl:variable name="methods" select="exsl:node-set($interface)/methods/method[name = $name]"/>
+      <xsl:variable name="methods" select="exsl:node-set($interface)/methods/values/value[name = $name]"/>
       
       <!-- Generate different sourcecode depending on whether the method is overloaded or not -->
       <xsl:choose>
@@ -94,15 +94,16 @@
      *
      * @access  public
 ]]></xsl:text>
-          <xsl:for-each select="$methods[1]/parameterTypes/parameterType">
+          <xsl:for-each select="$methods[1]/parameterTypes/values/value">
             <xsl:text>     * @param   </xsl:text>
             <xsl:value-of select="concat(func:typeOf(.), ' arg', position())"/>
             <xsl:text>&#10;</xsl:text>
           </xsl:for-each>
-          <xsl:text><![CDATA[     * @return  ]]></xsl:text><xsl:value-of select="func:typeOf($methods[1]/returnType)"/><xsl:text><![CDATA[
-     */
+          <xsl:if test="$methods[1]/returnType != ''">
+            <xsl:text><![CDATA[     * @return  ]]></xsl:text><xsl:value-of select="func:typeOf($methods[1]/returnType)"/><xsl:text>&#10;</xsl:text>
+          </xsl:if><xsl:text><![CDATA[     */
     function ]]></xsl:text><xsl:value-of select="$name"/><xsl:text>(</xsl:text>
-          <xsl:for-each select="$methods[1]/parameterTypes/parameterType">
+          <xsl:for-each select="$methods[1]/parameterTypes/values/value">
             <xsl:value-of select="concat('$arg', position())"/>
             <xsl:if test="position() &lt; last()">, </xsl:if>
           </xsl:for-each>
@@ -122,7 +123,7 @@
     #[@overloaded(signatures= array(]]>&#10;</xsl:text>
         <xsl:for-each select="$methods">
           <xsl:text>    #  array('</xsl:text>
-          <xsl:for-each select="parameterTypes/parameterType">
+          <xsl:for-each select="parameterTypes/values/value">
             <xsl:value-of select="func:typeOf(.)"/>
             <xsl:if test="position() &lt; last()">', '</xsl:if>
           </xsl:for-each>
@@ -143,14 +144,14 @@
   <xsl:template match="description[@purpose= 'home']">
     <xsl:call-template name="interface">
       <xsl:with-param name="description" select="concat('Home interface for ', jndiName)"/>
-      <xsl:with-param name="interface" select="interfaces/interface[1]"/>
+      <xsl:with-param name="interface" select="interfaces/values/value[1]"/>
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="description[@purpose= 'remote']">
     <xsl:call-template name="interface">
       <xsl:with-param name="description" select="concat('Remote interface for ', jndiName)"/>
-      <xsl:with-param name="interface" select="interfaces/interface[2]"/>
+      <xsl:with-param name="interface" select="interfaces/values/value[2]"/>
     </xsl:call-template>
   </xsl:template>
 

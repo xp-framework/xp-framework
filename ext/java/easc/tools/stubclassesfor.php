@@ -181,8 +181,8 @@ __
   // Otherwise, create all classes
   foreach (classSetOf($jndi, $remote, $description->classSet()) as $classwrapper) {
     if ((
-      $classwrapper->getName() == $description->interfaces[HOME_INTERFACE]->getClassName() ||
-      $classwrapper->getName() == $description->interfaces[REMOTE_INTERFACE]->getClassName()
+      $classwrapper->getName() == $description->interfaces->values[HOME_INTERFACE]->getClassName() ||
+      $classwrapper->getName() == $description->interfaces->values[REMOTE_INTERFACE]->getClassName()
     )) continue;
 
     try(); {
@@ -200,12 +200,12 @@ __
   // Write home and remote interfaces
   writeTo(
     $path, 
-    $description->interfaces[HOME_INTERFACE]->getClassName(), 
+    $description->interfaces->values[HOME_INTERFACE]->getClassName(), 
     processInterface($description, 'home', 'xp', $showXml)
   );
   writeTo(
     $path, 
-    $description->interfaces[REMOTE_INTERFACE]->getClassName(), 
+    $description->interfaces->values[REMOTE_INTERFACE]->getClassName(), 
     processInterface($description, 'remote', 'xp', $showXml)
   );
   // }}}
