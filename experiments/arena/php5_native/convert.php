@@ -64,9 +64,10 @@
       $doclet= &new MigrationDoclet();
       RootDoc::start($doclet, $param);
     } if (catch('Exception', $e)) {
-      Console::writeLine('*** Could not convert '.$fqcn.': '.$e->getMessage());
+      fputs(STDERR, '*** Could not convert '.$fqcn.":\n");
       $e->printStackTrace();
-      Console::writeLine();
+      fputs(STDERR, "\n\n");
+      Console::write('E');
       xp::gc();
       continue;
     }
