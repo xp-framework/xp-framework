@@ -32,7 +32,7 @@ Functionality
 Repository layout
 ~~~~~~~~~~~~~~~~~
 
-A new directory next to skeleton/ will be introduces that contains a fully
+A new directory next to skeleton/ will be introduced that contains a fully
 working, migrated copy of all classes of the framework. Also, another tree
 of files will be added with files that cannot be automatically converted,
 like the source files of the XP framework core.
@@ -70,13 +70,22 @@ Manual changes to classes are only allowed in the following exceptions:
  - places where no forward-compatible change can be found for the PHP4
    version
 
+Third-party applications
+~~~~~~~~~~~~~~~~~~~~~~~~
+Third-party applications - or in general - applications that base on
+version 4 of the XP framework are not required to support both branches.
+The co-existance of PHP4- and PHP5-versions targets a
+seamless traversion from PHP4 to PHP5 for just these applications.
+
+Application developers may decide to switch from 4 to 5 at one point.
+
 Security considerations
 -----------------------
 n/a
 
 Speed impact
 ------------
-n/A
+n/a
 
 Dependencies
 ------------
