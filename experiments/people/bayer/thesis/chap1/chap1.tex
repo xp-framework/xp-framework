@@ -68,6 +68,9 @@ aus Java heraus anzusprechen.
 Um PHP in anderen Umgebungen einzubetten bietet es dem Benutzer die M"oglichkeit als dynamisch ladbare
 Bilbliothek (.dll unter Windows, .so unter unixoiden Betriebssytemen) kompiliert zu werden, Java wiederum
 erlaubt das Einbinden solcher Bibliotheken zur Laufzeit mittels des JNI (siehe \ref{sec:intro:stand:JNI}).
+Um auf den PHP-Interpreter derart zugreiffen zu k"onnen muss eine sogenannte \emph{SAPI} implementiert
+werden. SAPI steht in diesem Kontext f"ur "'Server Application Programming Interface"' und ist ein PHP-interner
+Begriff. 
 Der naive Ansatz PHP innerhalb von Java auszuf"uhren w"are nun das simple Einbinden dieser Bibliothek und
 der Zugriff auf Selbige "uber JNI gewesen. Hierzu w"are es aber n"otig gewesen selbst eine Schnittstelle 
 zu entwickeln die diesen Zugriff formalisiert, allerdings existierten schon zwei unabh"ngig voneinander entwickelte
@@ -263,6 +266,7 @@ nativen Code "ubersetzte Programm mittels JNI anspricht. TODO: Arschlochsatz
 Um allerdings JSR 223 "uberhaupt nutzen zu k"onnen m"ussen die Klassen aus javax.script, vor allem der ScriptEngineManager, 
 im Java-Classpath liegen. Hierzu kann entweder eine Java-Runtime der Version 6, oder aber eine eigene Implementation dieser
 Klassen genutzt werden.
+Die im folgenden beschriebene JSR 223 Implementation tr"agt den Namen "'Turpitude"'.
 
 \subsection{Java}
 \label{sec:chap1:design:java}
@@ -277,7 +281,11 @@ Die ScriptEngineFactory-Implementation hei\ss t \emph{PHPScriptEngineFactory} un
 \emph{ScriptEngineFactory} aus \emph{javax.script}. Im Gegensatz dazu implementiert die Klasse \emph{PHPScriptEngine} nicht
 direkt das Interface \emph{ScriptEngine}, sondern erbt von der abstrakten Klasse \emph{AbstractScriptEngine}, welche f"ur
 viele Varianten der \emph{eval()}-Methode schon eine Realisierung, sowie mit der Klasse \emph{SimpleScriptContext} schon einen 
-\emph{ScriptContext} mitbringt. Die Abbildung \ref{fig:jsr223impl} zeigt die beteiligten Klassen und ihre Abh"anigkeiten untereinander.
+\emph{ScriptContext} mitbringt. Um den "ubergebenen Scriptcode tats"achlich auszu"fuhren muss dieser an den mittels der Java-Methode
+\emph{System.loadLibary()} geladenen nativen Teil der Implementation weitergegeben werden. Die Kommunikation mit diesem
+nativen Teil findet mittels der JNI-Methoden TODO: Methoden auflisten.
+Die Abbildung \ref{fig:jsr223impl} zeigt die beteiligten Klassen und ihre Abh"anigkeiten untereinander,
+zusammen mit einigen wichtigen Methoden und Attributen. 
 
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{chap1/img/turpitude.png}
@@ -285,9 +293,18 @@ viele Varianten der \emph{eval()}-Methode schon eine Realisierung, sowie mit der
 \label{fig:jsr223impl}
 \end{figure}
 
-
 \subsection{Native}
 \label{sec:chap1:design:native}
+
+Der native Teil der Implementation teilt sich wiederum auf in JNI-Methoden, f"ur welche die Headerdateien automatisch aus
+dem Java-Quelltext der PHPScriptEngine generiert werden k"onnen, und in die Implementation einer SAPI. Hierzu muss im
+Wesentlichen ein sogenanntes \emph{sapi\_module\_struct} angelegt und bef"ullt werden, welches neben einigen Strings
+haupts"achlich Funktionspointer auf R"uckruffunktionen enth"alt, welche vom PHP-Interpreter aufgerufen werden. Da es
+kaum m"oglich ist dieses Konstrukt sinnvoll in eine objektorientierte Architektur einzuf"ugen, wird auf eine solche
+vollst"andig verzichtet. Das sapi\_module\_struct und die dazugeh"origen Funktionen werden in traditioneller,
+prozeduraler Art und Weise implementiert.
+TODO: JNI Methoden
+TODO: sapi methoden
 
 
 \section{Implementation}

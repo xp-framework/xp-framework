@@ -1,9 +1,19 @@
-JCC = /home/nsn/jdk1.6.0/bin/javac
-JBIN = /home/nsn/jdk1.6.0/bin/java
-JARBIN = /home/nsn/jdk1.6.0/bin/jar
+################################################
+# change these values accorgind to your system #
+################################################
+JAVA_HOME = /home/nsn/jdk1.6.0
+PHP_HOME = /home/nsn/devel/php/php-5.2.0
+############################################
+JCC = $(JAVA_HOME)/bin/javac
+JBIN = $(JAVA_HOME)/bin/java
+JARBIN = $(JAVA_HOME)/bin/jar
+JAVAH = $(JAVA_HOME)/javah
 JSRC = $(shell find ./src/java -type f -name \*.java)
+SRC = $(shell find ./src/native -type f -name \*.cpp)
 CPATH = ./classes:./turpitude.jar
-LIBRARY_PATH= ./natives
+INCLUDES = -I./src/native/include -I$(JAVA_HOME)/include/ -I$(JAVA_HOME)/include/linux
+PHP_INCLUDES = -I$(PHP_HOME) -I$(PHP_HOME)/main -I$(PHP_HOME)/TSRM -I$(PHP_HOME)/Zend -I$(PHP_HOME)/ext
+CC= gcc
 
 all: turpitude.jar
 
@@ -13,6 +23,9 @@ version:
 list: turpitude.jar
 	$(JBIN) -cp $(CPATH) net.xp_framework.turpitude.samples.EngineList
 
+hello: turpitude.jar
+	$(JBIN) -cp $(CPATH) net.xp_framework.turpitude.samples.HelloWorld
+
 classes: $(JSRC)
 	$(JCC)  -d classes -cp $(CPATH) $(JSRC)
 
@@ -21,6 +34,15 @@ jarrun: jar
 
 jar: turpitude.jar
 
+lib: turpitude.so
+
+headers: classes
+	$(JAVAH) -classpath $(CPATH) -d ./src/native/include net.xp_framework.turpitude.PHPScriptEngine
+
 turpitude.jar: classes
 	cd ./classes && $(JARBIN) -cvfm ../turpitude.jar META-INF/MANIFEST.MF META-INF/services/javax.script.ScriptEngineFactory net
+
+turpitude.so:
+	$(CC) $(INCLUDES) $(PHP_INCLUDES) -shared -o libturpitude.so $(PHP_HOME)/libs/libphp5.so $(SRC) 
+	
 

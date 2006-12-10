@@ -79,9 +79,20 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     /**
      * sets the factory
      */
-    public void setScriptEngineFactory(ScriptEngineFactory fac) {
+    void setScriptEngineFactory(ScriptEngineFactory fac) {
         MyFactory = fac;
     }
 
+    /**
+     * Starts up a the PHP engine. Called from static initializer
+     *
+     */
+    protected static native void startUp();
+
+    /**
+     * Shuts down the PHP engine. Called from finalizer.
+     *
+     */
+    protected static native void shutDown();
 
 }

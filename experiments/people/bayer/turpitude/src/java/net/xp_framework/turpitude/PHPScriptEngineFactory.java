@@ -55,6 +55,7 @@ public class PHPScriptEngineFactory implements ScriptEngineFactory {
      */
     public List<String> getNames() {
         List<String> names = new ArrayList<String>();
+        names.add("turpitude");
         names.add("PHP5");
         names.add("PHP");
         return names;
