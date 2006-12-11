@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, gelli
 @created: Mon Aug 14 17:50:46 CEST 2006
-@status: draft
+@status: discussion, ends at Fri Dec 08 12:00:00 CET 2006
 @category: remote
 
 Scope of Change
@@ -31,7 +31,7 @@ The following features will be included in the first release:
 The following features will not be included in the basic version:
 <pre>
   * Authentication and protection
-  * Resource management (rbms connections)
+  * (Resource management (rbms connections))
   * Other bean types
   * Messaging
   * Transactions
@@ -66,7 +66,6 @@ Example:
 
 The bean class does not need to implement any interfaces or extend any
 classes other than lang.Object.
-
 
 Packaging
 ~~~~~~~~~
@@ -110,7 +109,18 @@ Deployment
 ~~~~~~~~~~
 The server will support deployment by means of copying the XAR packages 
 to a "deploy" directory, which the server monitors by scanning for new
-or touched files periodically, deploying as needed.
+or touched files periodically, deploying as needed. In order to differ beans
+from normal XAR library packages, archives containing deployable beans end with
+".bean.xar." Normal XAR archives found in the "deploy" directory will only be
+added to the php inlude path.
+
+Resources
+~~~~~~~~~~
+The server will support a set of configuration files stored in a "etc"
+directory. Additionally, resource configurations for database connections, ldap
+clients etc will reside in "etc/env". The server will hold the configured
+resources globally for all beans.
+
 
 
 Security considerations
@@ -149,5 +159,9 @@ Comments
   to support classes in XARs using other classes from the archive.
   This functionality is verified by the ArchiveClassLoaderTest
   unittest.
+- gelli, Mo Dez 11 17:20:58 CET 2006
+  Added some info concerning the resources management and deployment
+  of beans and libraries.
+
 
 <EOF>
