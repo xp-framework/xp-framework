@@ -107,7 +107,12 @@
 
       // generate and add classes to DiaDiagram
       foreach (array_keys($I->_classes) as $classname) {
-        $Dia_class= &$I->_genClass($I->_classes[$classname]);
+        try (); {
+          $Dia_class= &$I->_genClass($I->_classes[$classname]);
+        } if (catch('IllegalArgumentException', $e)) {
+          $e->printStackTrace();
+          exit(-1);
+        }
         // save dia object-id by classname
         $I->_class_ids[$classname]= $Dia_class->getId();
         // add to DiaDiagram
@@ -238,12 +243,14 @@
       // loop over methods (annotations)
       for ($i= 0, $s= sizeof($DiaMethods); $i < $s; $i++) {
         $Method= &$DiaMethods[$i];
+        // Console::writeLine('Method: '.$Method->getName().' Annotations: '.xp::stringOf($Method->getAnnotations()));
         // skip methods that don't have the appropriate annotation
         if (!$Method->hasAnnotation('fromClass')) continue;
         if (!$Method->hasAnnotation('fromClass', 'type')) continue;
 
         // determine action according to 'type'
         $ann_type= $Method->getAnnotation('fromClass', 'type');
+        // Console::writeLine('Method: '.$Method->getName()." Annotation-type: $ann_type");
         switch ($ann_type) {
           case 'string':
           case 'integer':
