@@ -249,7 +249,6 @@
               if (!($lookup= xp::registry('class.'.$search))) {
                 foreach (array_keys($doc->usedClasses->classes) as $class) {
                   if (($cmp= xp::reflect($class)) != $search) continue;
-                  xp::registry('class.'.$cmp, $class);
                   $lookup= $class;
                   break;
                 }
