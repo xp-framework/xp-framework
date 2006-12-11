@@ -40,7 +40,7 @@
       // initialize objects
       try (); {
         // Visitor checks if the given classes exist
-        $Visitor= &new UpdateVisitor($classes);
+        $Visitor= &new UpdateVisitor($classes, TRUE, TRUE);
       } if (catch('Exception', $e)) {
         $e->printStackTrace();
         exit(-1);
@@ -48,7 +48,7 @@
 
       Console::writeLine('Parsing XML diagram file...');
       try (); {
-        $Dia= &DiaUnmarshaller::unmarshal($file, $classes);
+        $Dia= &DiaUnmarshaller::unmarshal($file);
       } if (catch('Exception', $e)) {
         $e->printStackTrace();
         exit(-1);
@@ -57,11 +57,13 @@
       // do the updates
       Console::writeLine('Running visitor...');
       $Dia->accept($Visitor);
+      Console::writeLine('Finalize visitor...');
+      $Visitor->finalize();
 
       // write changes back to file if the visitor has changed something
       if ($Visitor->changedClasses()) {
         Console::writeLine('Writing changes back to diagram file...');
-        $Dia->saveTo($file);
+        $Dia->saveTo($file, FALSE);
       }
     }
   }
