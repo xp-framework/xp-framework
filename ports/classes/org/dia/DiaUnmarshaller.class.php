@@ -38,7 +38,7 @@
 
       // TODO: if the URI is wrong, unmarshalling won't work!
       $XPath->registerNamespace('dia', 'http://www.lysator.liu.se/~alla/dia/');
-      //$XPath->registerNamespace('dia', 'http://www.gnome.org/projects/dia/');
+      // new (unused): $XPath->registerNamespace('dia', 'http://www.gnome.org/projects/dia/');
       // go
       $Dia= &DiaUnmarshaller::recurse($XPath, $dom->document_element(), 'org.dia.DiaDiagram');
       Console::writeLine('DiaUnmarshaller used up '.round(memory_get_usage()/1024, 2).' Kb of memory.');
@@ -64,7 +64,7 @@
         exit(-1);
       }
       $Instance= &$Class->newInstance(); 
-      //Console::writeLine('Instance: '.$Instance->getClassName());
+      if (DIA_UNM_DEBUG) Console::writeLine('Instance: '.$Instance->getClassName());
 
       // loop over class methods with annotation 'fromDia'
       $methods= $Class->getMethods();
@@ -74,7 +74,7 @@
         $name= $Method->getName();
         $xpath= $Method->getAnnotation('fromDia', 'xpath');
 
-        if (DIA_UNM_DEBUG) Console::writeLine("-->Method: $name Xpath: $xpath");
+        if (DIA_UNM_DEBUG) Console::writeLine("--> Method: $name Xpath: $xpath");
 
         // continue if this fails: some expressions don't work on WRONG nodes...
         try (); {
@@ -92,6 +92,8 @@
           continue;
         }
 
+        if (DIA_UNM_DEBUG) Console::writeLine('  + Size of nodeset: '.sizeof($result->nodeset));
+
         // loop over nodeset
         foreach (array_keys($result->nodeset) as $key) {
           $Node= &$result->nodeset[$key];
@@ -99,6 +101,8 @@
           // key 'value' (simple value)
           if ($Method->hasAnnotation('fromDia', 'value')) {
             $type= $Method->getAnnotation('fromDia', 'value');
+
+            if (DIA_UNM_DEBUG) Console::writeLine("  + Value-type: '$type'");
 
             // get node value depending on nod type
             if (is('domattribute', $Node)) {
@@ -182,6 +186,8 @@
           // key 'class'
           if ($Method->hasAnnotation('fromDia', 'class')) {
             $classname= $Method->getAnnotation('fromDia', 'class');
+            if (DIA_UNM_DEBUG) Console::writeLine("  + Class: $classname");
+
             // recurse with given classname
             $Obj= &DiaUnmarshaller::recurse($XPath, $Node, $classname);
             // hand results over to the method
