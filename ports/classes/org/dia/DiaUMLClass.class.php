@@ -57,9 +57,11 @@
   class DiaUMLClass extends DiaObject {
 
     var
-      $int_color= '#1ec8ff',  // color of interfaces
-      $exc_color= '#3cc864',   // color of exceptions
-      $err_color= '#ff3c3c';   // color of errors
+      $int_color= '#88f0ff',   // color of interfaces (blue)
+      $exc_color= '#7ded9d',   // color of exceptions (green)
+      $err_color= '#ff9f9f';   // color of errors? (red)
+      // color for XP classes: #d8e5e5 (gray)
+      // color for ??? classes: #ffff9f (yellow)
 
     /**
      * Constructor
@@ -169,8 +171,10 @@
      * @access  public
      * @param   string name
      */
-    #[@fromClass(type = 'string', eval = '$ClassDoc->qualifiedName()')]
-    #[@fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')]
+    #[
+    # @fromClass(type = 'string', eval = '$ClassDoc->qualifiedName()'),
+    # @fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')
+    #]
     function setName($name) {
       $this->setString('name', $name);
     }
@@ -181,8 +185,10 @@
      * @access  public
      * @param   string stereotype
      */
-    #[@fromClass(type = 'string', eval = '$ClassDoc->classType()')]
-    #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
+    #[
+    # @fromClass(type = 'string', eval = '$ClassDoc->classType()'),
+    # @fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')
+    #]
     function setStereotype($stereotype) {
       switch ($stereotype) {
         case ORDINARY_CLASS: 
@@ -215,8 +221,10 @@
      * @access  public
      * @param   string comment
      */
-    #[@fromClass(type = 'string', eval = '$ClassDoc->commentText()')]
-    #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
+    #[
+    # @fromClass(type = 'string', eval = '$ClassDoc->commentText()'),
+    # @fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')
+    #]
     function setComment($comment) {
       $this->setString('comment', $comment);
     }
@@ -230,10 +238,12 @@
      * @access  public
      * @param   bool abstract
      */
-    #[@fromClass(type = 'bool', eval = 
+    #[
+    # @fromClass(type = 'bool', eval = 
     #  '$ClassDoc->parseDetail("tags") && isset($ClassDoc->tags["model"][0]) && $ClassDoc->tags["model"][0]->text() === "abstract"'
-    #)]
-    #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
+    # ),
+    # @fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')
+    #]
     function setAbstract($abstract) {
       $this->setBoolean('abstract', $abstract);
     }
@@ -488,7 +498,7 @@
      * @access  public
      * @param   &org.dia.DiaUMLAttribute Attribute
      */
-    //TODO fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')
+    // TODO? fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')
     #[@fromDia(xpath= 'dia:attribute[@name="attributes"]/*', class= 'org.dia.DiaUMLAttribute')]
     function addUMLAttribute($Attribute) {
       $Attributes= &$this->getChild('attributes');
