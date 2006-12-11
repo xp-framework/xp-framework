@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
 
 /*
  * Class:     net_xp_framework_turpitude_PHPScriptEngine
@@ -21,7 +21,15 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
-  (JNIEnv *, jobject);
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     net_xp_framework_turpitude_PHPScriptEngine
+ * Method:    evalPHP
+ * Signature: (Ljava/lang/String;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP
+  (JNIEnv *, jclass, jstring);
 
 #ifdef __cplusplus
 }

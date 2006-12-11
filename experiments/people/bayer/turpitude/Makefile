@@ -28,6 +28,9 @@ list: turpitude.jar lib
 hello: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.HelloWorld
 
+exec: jar lib
+	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/phpinfo.php
+	
 classes: $(JSRC)
 	$(JCC)  -d classes -cp $(CPATH) $(JSRC)
 

@@ -6,17 +6,21 @@ public class HelloWorld {
 
    /**
     * default constructor
-    * outputs a list of available ScriptEngines via System.out
     */
     public HelloWorld() {
         ScriptEngineManager mgr = new ScriptEngineManager();
-        ScriptEngine eng = mgr.getEngineByName("turpitude"); 
+        ScriptEngine eng = mgr.getEngineByName("turpitude");
+        if (null == eng) {
+            System.out.println("unable to find engine, please check classpath");
+            return;
+        }
         System.out.println("found Engine: " + eng.getFactory().getEngineName());
         try {
-            eng.eval("<?php echo \"Hello World!\"; ?>");
+            eng.eval("echo(\"Hello World!\n\");");
         } catch(ScriptException e) {
-            System.out.println("Exception while executing PHP code");
+            System.out.println("ScriptException caught:");
             e.printStackTrace();
+            return;
         }
     }
 
@@ -24,7 +28,7 @@ public class HelloWorld {
      * entry point
      */
     public static void main(String[] argv) {
-        HelloWorld el = new HelloWorld();
+        HelloWorld hw = new HelloWorld();
     }
  
 

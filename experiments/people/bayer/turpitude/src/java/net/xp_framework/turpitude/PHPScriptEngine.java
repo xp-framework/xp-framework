@@ -15,7 +15,12 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     PHPScriptEngine(ScriptEngineFactory fac) {
         setScriptEngineFactory(fac);
         //load library
-        System.loadLibrary("turpitude");
+        try {
+            System.loadLibrary("turpitude");
+        } catch(UnsatisfiedLinkError e) {
+            System.out.println("library load failed");
+            throw(e);
+        }
         startUp();
         //make sure we shut down properly
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -62,7 +67,7 @@ public class PHPScriptEngine extends AbstractScriptEngine {
      */
     public Object eval(String str, ScriptContext ctx) throws ScriptException,
                                                              NullPointerException {
-        return null; //evalPHP(str);
+        return evalPHP(str);
     }
 
     /**
@@ -95,16 +100,16 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     /**
      * Starts up a the PHP engine. Called from Constructor
      */
-    protected native void startUp();
+    protected static native void startUp();
 
     /**
      * Shuts down the PHP engine. Called from finalizer.
      */
-    protected native void shutDown();
+    protected static native void shutDown();
 
     /**
      * calls native php interpreter to eval the sourcecode
      */
-    //protected native Object evalPHP(String source);
+    protected static native Object evalPHP(String source);
 
 }

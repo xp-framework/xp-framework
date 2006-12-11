@@ -2,8 +2,8 @@
 #include <Turpitude.h>
 
 typedef struct {
-    JNIEnv *env;
-    jobject object;
+    JNIEnv* env;
+    jclass cls;
 } turpitude_context;
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jclass jc) {
@@ -24,8 +24,7 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
     sapi_shutdown();
 }
 
-JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jobject obj, jstring src) {
-    /*
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jclass cls, jstring src) {
     TSRMLS_FETCH();
     zend_first_try {
         zend_llist global_vars;
@@ -33,7 +32,7 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
 
         SG(server_context)= emalloc(sizeof(turpitude_context));
         ((turpitude_context*)SG(server_context))->env= env;
-        ((turpitude_context*)SG(server_context))->object= obj;
+        ((turpitude_context*)SG(server_context))->cls= cls;
 
         zend_error_cb= turpitude_error_cb;
         zend_uv.html_errors= 0;
@@ -72,6 +71,5 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
         java_throw(env, "java/lang/IllegalArgumentException", "Bailout");
     } zend_end_try();
 
-    */
     return NULL;
 }
