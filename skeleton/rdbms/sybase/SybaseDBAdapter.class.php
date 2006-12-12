@@ -115,7 +115,7 @@
         $pos= -1;
         while ($record= $q->next()) {
           if ($name != $record['table']) {
-            $t[]= &new Table($record['table']);
+            $t[]= &new DBTable($record['table']);
             $pos++;
             $name= $record['table'];
           }
