@@ -75,6 +75,82 @@
       
       return $dbs;
     }
+
+    /**
+     * Get indexes for a given table
+     *
+     * @access  protected
+     * @param   &rdbms.DBTable table
+     */    
+    function _populateIndexesFor(&$table) {
+      
+      // This query is taken in part from sp_helpindex (part of core sps)
+      $q= &$this->conn->query('
+        declare @i int
+        declare @id int
+        declare @last int
+        declare @keys varchar(200)
+        declare @key varchar(30)
+        declare @obj varchar(30)
+
+        delete from #indexes  
+
+        select @obj= %s
+        select @id= min(indid) from sysindexes where id= object_id(@obj)
+
+        while @id is not NULL
+        begin
+          set nocount on
+          select @keys= "", @i= 1
+          while (@i <= 16) begin
+          select @key= index_col(@obj, @id, @i) 
+          if @key is NULL begin
+            goto done
+          end
+          if @i > 1 begin
+            select @keys= @keys + ","
+          end 
+          select @keys= @keys + @key
+          select @i= @i + 1  
+          end
+          done:
+          set nocount off
+
+
+          insert #indexes select 
+          @keys,
+          i.name,
+          v.number,
+          i.status
+          from 
+          master.dbo.spt_values v, sysindexes i
+          where 
+          i.status & v.number = v.number
+          and v.type = "I"
+          and i.id = object_id(@obj)
+          and i.indid = @id 
+
+          select @last = @id
+          select @id = min(indid) from sysindexes where id = object_id(@obj) and indid > @last
+        end
+
+        select * from #indexes', 
+        $table->name
+      );
+      
+      $keys= NULL;
+      while ($record= $q->next()) {
+        if ($keys != $record['keys']) {
+          $index= &$table->addIndex(new DBIndex(
+            $record['name'],
+            explode(',', $record['keys'])
+          ));
+          $keys= $record['keys'];
+        }
+        if (2 == $record['number']) $index->unique= TRUE;
+        if ($record['status'] & 2048) $index->primary= TRUE;
+      }  
+    }
     
     /**
      * Get tables by database
@@ -86,6 +162,12 @@
     function getTables($database) {
       $t= array();
       try(); {
+        $this->conn->query('create table #indexes (
+          keys varchar(200),
+          name varchar(28),
+          number int,
+          status int
+        )');
       
         // This query is taken in part from sp_help (part of core sps from
         // SQL Server/11.0.3.3 ESD#6/P-FREE/Linux Intel/Linux 2.2.14 
@@ -115,6 +197,7 @@
         while ($record= $q->next()) {
           if (!isset($t[$record['table']])) {
             $t[$record['table']]= &new DBTable($record['table']);
+            $this->_populateIndexesFor($t[$record['table']]);
           }
           $t[$record['table']]->addAttribute(new DBTableAttribute(
             $record['name'], 
@@ -125,13 +208,15 @@
             $record['scale']
           ));
         }
+        
+        $this->conn->query('drop table #indexes');
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
       
       return array_values($t);
     }
-    
+
     /**
      * Get table by name
      *
@@ -142,6 +227,12 @@
     function getTable($table) {
       $t= &new DBTable($table);
       try(); {
+        $this->conn->query('create table #indexes (
+          keys varchar(200),
+          name varchar(28),
+          number int,
+          status int
+        )');
       
         // Get the table's attributes
         // This query is taken in part from sp_help (part of core sps)
@@ -177,77 +268,8 @@
           ));
         }
         
-        // Get indexes
-        // This query is taken in part from sp_helpindex (part of core sps)
-        $q= &$this->conn->query('
-          create table #indexes (
-            keys varchar(200),
-            name varchar(28),
-            number int,
-            status int
-          )
-
-          declare @i int
-          declare @id int
-          declare @last int
-          declare @keys varchar(200)
-          declare @key varchar(30)
-          declare @obj varchar(30)
-
-          select @obj= %s
-          select @id= min(indid) from sysindexes where id= object_id(@obj)
-
-          while @id is not NULL
-          begin
-            set nocount on
-            select @keys= "", @i= 1
-            while (@i <= 16) begin
-            select @key= index_col(@obj, @id, @i) 
-            if @key is NULL begin
-              goto done
-            end
-            if @i > 1 begin
-              select @keys= @keys + ","
-            end 
-            select @keys= @keys + @key
-            select @i= @i + 1  
-            end
-            done:
-            set nocount off
-
-
-            insert #indexes select 
-            @keys,
-            i.name,
-            v.number,
-            i.status
-            from 
-            master.dbo.spt_values v, sysindexes i
-            where 
-            i.status & v.number = v.number
-            and v.type = "I"
-            and i.id = object_id(@obj)
-            and i.indid = @id 
-
-            select @last = @id
-            select @id = min(indid) from sysindexes where id = object_id(@obj) and indid > @last
-          end
-
-          select * from #indexes
-          drop table #indexes
-        ', $table);
-        $keys= NULL;
-        while ($record= $q->next()) {
-          if ($keys != $record['keys']) {
-            $index= &$t->addIndex(new DBIndex(
-              $record['name'],
-              explode(',', $record['keys'])
-            ));
-            $keys= $record['keys'];
-          }
-          if (2 == $record['number']) $index->unique= TRUE;
-          if ($record['status'] & 2048) $index->primary= TRUE;
-        }  
+        $this->_populateIndexesFor($t);
+        $this->conn->query('drop table #indexes');
       } if (catch('SQLException', $e)) {
         return throw($e);
       }
