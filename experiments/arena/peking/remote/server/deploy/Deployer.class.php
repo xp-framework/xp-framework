@@ -10,8 +10,7 @@
     'remote.server.container.StatelessSessionBeanContainer',
     'remote.server.naming.NamingDirectory',
     'remote.server.ContainerInvocationHandler',
-    'remote.reflect.InterfaceUtil',
-    'remote.server.strategy.StatelessSessionInvocationStrategy'
+    'remote.reflect.InterfaceUtil'
   );
 
   define('DEPLOY_LOOKUP_KEY',         'lookupName');
