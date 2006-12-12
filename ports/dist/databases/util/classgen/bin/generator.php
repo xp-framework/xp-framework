@@ -15,7 +15,9 @@
     'rdbms.DriverManager',
     'util.log.Logger',
     'util.log.FileAppender',
-    'util.cmd.ParamString'
+    'util.cmd.ParamString',
+    'io.File',
+    'io.FileUtil'
   );
   
   // Scheme => Adapter mapping
@@ -42,6 +44,9 @@ Usage: php generator.php <DSN> <FQCN> [<options>]
 
   * Options:
     --connection, -C: Define connection name, defaults to <host> from DSN
+    --output, -O    : Output to file (without value: [classname].xml)
+
+--------------------------------------------------------------------------------
 __
     );
     exit(1);
@@ -95,5 +100,17 @@ __
     $node->setAttribute('class', substr($fqcn, strrpos($fqcn, '.')+ 1));
     $node->setAttribute('package', substr($fqcn, 0, strrpos($fqcn, '.')));
   }
-  echo $gen->getSource();
+  
+  // Decides whether output is written into a file or stdout
+  if (!$param->exists('output', 'O')) {
+    Console::write($gen->getSource());
+  } else {
+    $f= &new File($param->value('output', 'O', substr($fqcn, strrpos($fqcn, '.')+ 1).'.xml'));
+    $written= FileUtil::setContents($f, $gen->getSource());
+    Console::writeLinef(
+      '===> Output written to %s (%.2f kB)', 
+      $f->getURI(),
+      $written / 1024
+    );
+  } 
 ?>
