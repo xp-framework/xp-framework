@@ -14,7 +14,8 @@
     'util.log.FileAppender',
     'util.cmd.ParamString',
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'io.Folder'
   );
   
   // Scheme => Adapter mapping
@@ -41,8 +42,8 @@ Usage: php generate-all.php <DSN> <package> [<options>]
 
   * Options:
     --connection, -C: Define connection name, defaults to <host> from DSN
-    --prefix, -p    : Prefix classes with <prefix> (default: none)
-
+    --prefix,     -p: Prefix classes with <prefix> (default: none)
+    --directory   -D: Output directory (automaticaly created if necessary).
 --------------------------------------------------------------------------------
 __
     );
@@ -69,12 +70,18 @@ __
     $dsn['host'],
     $database
   ));
-
   try(); {
     $dbo->connect();
   } if (catch('SQLException', $e)) {
     $e->printStackTrace();
     exit;
+  }
+  
+  // Create new Folder Object and new Folder(s) if necessary
+  $directory=$param->value('directory', 'D', './');
+  $fold = new Folder ($directory);
+  if (!$fold->exists()) {
+    $fold->create();
   }
 
   // Create adapter instance
@@ -103,7 +110,7 @@ __
       $node->setAttribute('package', $package);
     }
 
-    $f= &new File($filename.'.xml');
+    $f= &new File($fold->getURI().$filename.'.xml');
     $written= FileUtil::setContents($f, $gen->getSource());
     Console::writeLinef(
       '===> Output written to %s (%.2f kB)', 
