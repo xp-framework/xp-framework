@@ -36,7 +36,7 @@
         try(); {
           foreach ($this->scanner->getDeployments() as $deployment) {
             try(); {
-              $this->deployer->deployBean($deployment, $this->cm);
+              $this->deployer->deployBean($deployment);
             } if (catch('DeployException', $e)) {
               // Fall through
             }
@@ -61,7 +61,6 @@
       $this->context[RIH_OIDS_KEY]= &new HashMap();
       $this->scanner= &$scanner;
 
-      $this->cm= &new ContainerManager();
       $this->deployer= &new Deployer();
     }      
 
