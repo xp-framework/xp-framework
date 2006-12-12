@@ -31,7 +31,7 @@
           <dia:boolean val="false"/>
         </dia:attribute>
         <dia:attribute name="scaling">        
-          <dia:real val="0.322245150805"/>
+          <dia:real val="0.322245180607"/>
         </dia:attribute>
         <dia:attribute name="fitto">        
           <dia:boolean val="true"/>
@@ -78,7 +78,7 @@
         <dia:point val="33,0"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">      
-        <dia:rectangle val="33,-3.3307e-17;41.4775,1.5325"/>
+        <dia:rectangle val="33,0;41.45,1.45"/>
       </dia:attribute>
       <dia:attribute name="text">      
         <dia:composite type="text">        
@@ -96,7 +96,7 @@
             <dia:real val="1.2"/>
           </dia:attribute>
           <dia:attribute name="pos">          
-            <dia:point val="33,0.8775"/>
+            <dia:point val="33,0.85"/>
           </dia:attribute>
           <dia:attribute name="color">          
             <dia:color val="#000000"/>
@@ -632,7 +632,7 @@
             <dia:string>#string#</dia:string>
           </dia:attribute>
           <dia:attribute name="value">          
-            <dia:string>#'#1ec8ff'#</dia:string>
+            <dia:string>#'#88f0ff'#</dia:string>
           </dia:attribute>
           <dia:attribute name="comment">          
             <dia:string>##</dia:string>
@@ -655,7 +655,7 @@
             <dia:string>#string#</dia:string>
           </dia:attribute>
           <dia:attribute name="value">          
-            <dia:string>#'#3cc864'#</dia:string>
+            <dia:string>#'#7ded9d'#</dia:string>
           </dia:attribute>
           <dia:attribute name="comment">          
             <dia:string>##</dia:string>
@@ -678,7 +678,7 @@
             <dia:string>#string#</dia:string>
           </dia:attribute>
           <dia:attribute name="value">          
-            <dia:string>#'#ff3c3c'#</dia:string>
+            <dia:string>#'#ff9f9f'#</dia:string>
           </dia:attribute>
           <dia:attribute name="comment">          
             <dia:string>##</dia:string>
