@@ -6,6 +6,7 @@ typedef struct {
     jobject object;
 } turpitude_context;
 
+
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jobject jc) {
     //make sure php info outputs plain text
     turpitude_sapi_module.phpinfo_as_text= 1;
@@ -30,9 +31,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
-        SG(server_context)= emalloc(sizeof(turpitude_context));
-        ((turpitude_context*)SG(server_context))->env= env;
-        ((turpitude_context*)SG(server_context))->object= obj;
+        //SG(server_context)= emalloc(sizeof(turpitude_context));
+        //((turpitude_context*)SG(server_context))->env= env;
+        //((turpitude_context*)SG(server_context))->object= obj;
 
         zend_error_cb= turpitude_error_cb;
         zend_uv.html_errors= 0;
@@ -48,6 +49,7 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
         }
 
         // Execute 
+        LastError = "";
         const char *str= env->GetStringUTFChars(src, 0); 
         {
             // copy string containing source
@@ -55,24 +57,25 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
             strncpy(eval, str, strlen(str));
             eval[strlen(str)]= '\0';
 
-            printf("Code --> |%s| <--\n", eval);
+            //printf("Code --> |%s| <--\n", eval);
             if (FAILURE == zend_eval_string(eval, NULL, "(jni)" TSRMLS_CC)) {
-                java_throw(env, "java/lang/IllegalArgumentException", "zend_eval_string()");
+                java_throw(env, "javax/script/ScriptException", "zend_eval_string()");
             }
             efree(eval);
         }
         // make sure memory is freed properly
         env->ReleaseStringUTFChars(src, str);
+        //efree(SG(server_context));
+        //SG(server_context)= 0;
 
-        // Shutdown request 
-        efree(SG(server_context));
-        SG(server_context)= 0;
-
+        // Shutdown request
         zend_llist_destroy(&global_vars);
         php_request_shutdown((void *) 0);
+
     } zend_catch {
-        java_throw(env, "java/lang/IllegalArgumentException", "Bailout");
+        java_throw(env, "javax/script/ScriptException", LastError.data());
     } zend_end_try();
+
 
     return NULL;
 }

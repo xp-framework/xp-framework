@@ -11,6 +11,7 @@
 #include <zend_compile.h>
 #include <zend_execute.h>
 #include <jni.h>
+#include <string>
 
 
 /* PHP module functions */
@@ -35,5 +36,8 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 
 /* PHP SAPI registry */
 extern sapi_module_struct turpitude_sapi_module;
+
+/* last error string */
+extern std::string LastError;
 
 #endif

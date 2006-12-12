@@ -1,5 +1,7 @@
 #include <Turpitude.h>
 
+std::string LastError = "no error";
+
 int turpitude_startup(sapi_module_struct* sapi_module) {
     return php_module_startup(sapi_module, NULL, 0);
 }
@@ -47,19 +49,18 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
 
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
     //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
-    //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
 
+    LastError += "\n";
+    LastError += buffer;
+    efree(buffer);
     switch (type) {
         case E_ERROR:
         case E_CORE_ERROR:
         case E_USER_ERROR:
-            fprintf(stderr, "FICKEN %d %d\n", type, E_ERROR);
             zend_bailout();
             break;
     }
 
-    fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
-    efree(buffer);
 
 }
 
