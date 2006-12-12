@@ -103,8 +103,8 @@
             %c..sysobjects o,
             syscolumns c, 
             systypes t 
-          where 
-            c.id= o.id
+          where o.type = "U"  -- User table
+            and c.id= o.id
             and t.type = c.type 
             and t.usertype < 100 
             and t.name not in ("sysname", "nchar", "nvarchar")
