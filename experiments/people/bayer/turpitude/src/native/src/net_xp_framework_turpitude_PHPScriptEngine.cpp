@@ -3,10 +3,10 @@
 
 typedef struct {
     JNIEnv* env;
-    jclass cls;
+    jobject object;
 } turpitude_context;
 
-JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jclass jc) {
+JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jobject jc) {
     //make sure php info outputs plain text
     turpitude_sapi_module.phpinfo_as_text= 1;
     //start up sapi
@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
         java_throw(env, "java/lang/IllegalArgumentException", "Cannot startup SAPI module");
 }
 
-JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jclass) {
+JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jobject) {
     TSRMLS_FETCH();
 
     // Shutdown PHP module 
@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
     sapi_shutdown();
 }
 
-JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jclass cls, jstring src) {
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jobject obj, jstring src) {
     TSRMLS_FETCH();
     zend_first_try {
         zend_llist global_vars;
@@ -32,7 +32,7 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
 
         SG(server_context)= emalloc(sizeof(turpitude_context));
         ((turpitude_context*)SG(server_context))->env= env;
-        ((turpitude_context*)SG(server_context))->cls= cls;
+        ((turpitude_context*)SG(server_context))->object= obj;
 
         zend_error_cb= turpitude_error_cb;
         zend_uv.html_errors= 0;
@@ -43,22 +43,25 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
 
         // Initialize request 
         if (SUCCESS != php_request_startup(TSRMLS_C)) {
-            fprintf(stderr, "Cannot startup request\n");
+            java_throw(env, "javax/script/ScriptException", "unable to start up request - php_request_startup()");
             return NULL;
         }
 
         // Execute 
-        const char *str= env->GetStringUTFChars(src, 0);
+        const char *str= env->GetStringUTFChars(src, 0); 
         {
+            // copy string containing source
             char *eval= (char*) emalloc(strlen(str)+ 1);
             strncpy(eval, str, strlen(str));
             eval[strlen(str)]= '\0';
 
+            printf("Code --> |%s| <--\n", eval);
             if (FAILURE == zend_eval_string(eval, NULL, "(jni)" TSRMLS_CC)) {
                 java_throw(env, "java/lang/IllegalArgumentException", "zend_eval_string()");
             }
             efree(eval);
         }
+        // make sure memory is freed properly
         env->ReleaseStringUTFChars(src, str);
 
         // Shutdown request 

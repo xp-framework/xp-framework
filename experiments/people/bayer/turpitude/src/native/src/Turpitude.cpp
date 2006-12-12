@@ -20,7 +20,6 @@ int turpitude_ub_write(const char *str, uint str_length TSRMLS_DC) {
 }
 
 void turpitude_flush(void* server_context) {
-    fprintf(stderr, "[SAPI] flush\n");
 }
 
 int turpitude_send_headers(sapi_headers_struct *sapi_headers TSRMLS_DC) {
@@ -47,16 +46,20 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
     if (!(EG(error_reporting) & type)) return;
 
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
-    fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
-    efree(buffer);
+    //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
+    //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
 
     switch (type) {
         case E_ERROR:
         case E_CORE_ERROR:
         case E_USER_ERROR:
+            fprintf(stderr, "FICKEN %d %d\n", type, E_ERROR);
             zend_bailout();
             break;
     }
+
+    fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
+    efree(buffer);
 
 }
 

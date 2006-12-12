@@ -100,16 +100,16 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     /**
      * Starts up a the PHP engine. Called from Constructor
      */
-    protected static native void startUp();
+    protected native void startUp();
 
     /**
      * Shuts down the PHP engine. Called from finalizer.
      */
-    protected static native void shutDown();
+    protected native void shutDown();
 
     /**
      * calls native php interpreter to eval the sourcecode
      */
-    protected static native Object evalPHP(String source);
+    protected native Object evalPHP(String source);
 
 }
