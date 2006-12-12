@@ -7,7 +7,7 @@
   uses(
     'util.log.Logger',
     'remote.server.deploy.DeployException',
-    'remote.server.BeanContainer',
+    'remote.server.container.StatelessSessionBeanContainer',
     'remote.server.naming.NamingDirectory',
     'remote.server.ContainerInvocationHandler',
     'remote.reflect.InterfaceUtil',
@@ -30,10 +30,9 @@
      *
      * @access  public
      * @param   remote.server.deploy.Deployable deployment
-     * @param   remote.server.ContainerManager containerManager
      */
-    function deployBean(&$deployment, &$containerManager) {
-
+    function deployBean(&$deployment) {
+    
       if (is('IncompleteDeployment', $deployment)) {
         return throw(new DeployException(
           'Incomplete deployment originating from '.$deployment->origin, 
@@ -44,14 +43,11 @@
       $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
       try(); {
         $cl= &$deployment->getClassLoader();
-        
         $org= ini_get('include_path');
         ini_set('include_path', $org.PATH_SEPARATOR.$cl->archive->file->getURI());
         
         $impl= &$cl->loadClass($deployment->getImplementation());
         $interface= &$cl->loadClass($deployment->getInterface());
-        
-        ini_set('include_path', $org);
         
         $directoryName= $deployment->getDirectoryName();
         
@@ -59,9 +55,9 @@
         $directory= &NamingDirectory::getInstance();
         
         // Create beanContainer
-        $beanContainer= &BeanContainer::forClass($impl);
-        $beanContainer->setInvocationStrategy(new StatelessSessionInvocationStrategy());
-        $containerManager->register($beanContainer);
+        // T.B.D Check which kind of bean container
+        // has to be created
+        $beanContainer= &StatelessSessionBeanContainer::forClass($impl);
         
         // Create invocation handler
         $invocationHandler= &new ContainerInvocationHandler();
