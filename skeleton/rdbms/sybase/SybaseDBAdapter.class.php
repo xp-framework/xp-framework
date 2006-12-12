@@ -111,15 +111,12 @@
           ',
           $database
         );
-        $name= NULL;
-        $pos= -1;
+
         while ($record= $q->next()) {
-          if ($name != $record['table']) {
-            $t[]= &new DBTable($record['table']);
-            $pos++;
-            $name= $record['table'];
+          if (!isset($t[$record['table']])) {
+            $t[$record['table']]= &new DBTable($record['table']);
           }
-          $t[$pos]->addAttribute(new DBTableAttribute(
+          $t[$record['table']]->addAttribute(new DBTableAttribute(
             $record['name'], 
             $this->map[$record['type']],
             ($record['status'] & 8), 
@@ -132,7 +129,7 @@
         return throw($e);
       }
       
-      return $t;
+      return array_values($t);
     }
     
     /**
