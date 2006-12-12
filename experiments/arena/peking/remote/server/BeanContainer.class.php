@@ -9,12 +9,11 @@
   /**
    * Bean container
    *
-   * @purpose  container
+   * @purpose  abstract baseclass
    */
   class BeanContainer extends Object {
     var
-      $container    = NULL,
-      $strategy     = NULL;
+      $instancePool = NULL;
 
     /**
      * Get instance for class
@@ -28,27 +27,7 @@
       $bc->instancePool= &Collection::forClass($class->getName());
       return $bc;
     }
-    
-    /**
-     * Set container id
-     *
-     * @access  public
-     * @param   int cid
-     */
-    function setContainerID($cid) {
-      $this->cid= $cid;
-    }    
-    
-    /**
-     * Set strategy
-     *
-     * @access  public
-     * @param   &remote.server.strategy.InvocationStrategy strategy
-     */
-    function setInvocationStrategy(&$strategy) {
-      $this->strategy= &$strategy;
-    }
-      
+
     /**
      * Invoke a method
      *
@@ -58,22 +37,6 @@
      * @param   mixed args
      * @return  mixed
      */
-    function invoke(&$proxy, $method, $args) {
-      $class= &$this->instancePool->getElementClass();
-      if (!$this->instancePool->contains($oid)) {
-        $instance= &$class->newInstance();
-        $this->instancePool->add($instance);
-      } else {
-        $instance= &$this->instancePool->get($oid);
-      }
-
-      $m= &$class->getMethod($method);
-      
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory($this->getClassName());
-      $cat->debug('BeanContainer::invoke(', $oid, ') ', $m->toString(), '(', $args, ')');
-
-      return $m->invoke($instance, $args);
-    }
+    function invoke(&$proxy, $method, $args) { }
   }
 ?>
