@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Dec  7 14:14:46 CET 2006
-@status: draft
+@status: discussion, ends Mon Dec 18 18:00:00 CET 2006
 @category: <strategy>
 
 Scope of Change
