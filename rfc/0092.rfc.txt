@@ -95,5 +95,10 @@ Related documents
 
 Comments
 --------
+- friebe, Thu Dec 14 13:32:06     2006
+  Another idea would be to keep the migrated PHP5 classes in a branch,
+  say, branches/xp5 and have skeleton/ and ports/ there (no "2" in the
+  directory names). At the time we want to switch, we'd move trunk to 
+  branches/xp4 and branches/xp5 to trunk.
 
 <EOF>
