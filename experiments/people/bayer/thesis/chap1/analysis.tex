@@ -1,0 +1,343 @@
+% ********** Chapter 1 **********
+\section{Analyse}
+\label{sec:chap1:ana}
+Dieses Kapitel erl"autert wie der erste Teil der Aufgabenstellung - das Ausf"uhren von PHP Sourcecode innerhalb
+einer Java-Anwendung - erf"ullt wurde, welche Technologien heirzu benutzt, aber auch welche nicht benutzt wurden.
+Die Anforderung war m"oglichst grosse Teile des XP-Frameworks innerhalb von Java auszuf"uhren.
+Vom vollen Umfang des XP-Frameworks ausgenommen waren lediglich die Komponenten welche eine Kommunikation
+nach aussen erlaubten, so zum Beispiel die Datenbankkonnektivit"at, da diese Funktionen sp"ater vom Application Server
+bereitgestellt werden sollten. Idealerweise sollte die verwendete PHP Version leicht austauschbar sein.
+
+Beim Erweitern von Java um die F"ahigkeit Skriptsprachen auszuf"uhren exisiteren zwei wesentliche Anwendungsf"alle:
+\begin{description}
+\item[Java Objekte in Skriptsprachen:]
+Hierbei werden Java-Klassen benutzt um das Leistungsverm"ogen einer Skriptsprache zu erweitern. Die Skriptsprache
+soll f"ahig sein Java Objekte zu instanziieren und auf deren "offentliche (public) Methoden und Variablen 
+zuzugreiffen. Beispiele f"ur eine solche Integration von Java und einer Skriptsprache sind \emph{Live Connect} von
+Netscape und propriet"are APIs der Microsoft Java Implementationen.
+\item[Skripte in Java:]
+Java Applikationen soll es m"oglich sein existierende Skripte auszuf"uhren, diesen Skripten Eingabedaten
+zur Verf"ugung zu stellen, deren R"uckgabewerte und innerhalb der Skripte vorhandene Daten auszulesen, 
+und gezielt auf Funktionen und Methoden eines laufenden Skriptes zuzugreiffen.
+\end{description}
+Diese beiden Use-Cases enthalten sich zum Teil gegenseitig und teilen sich viele Anforderungen, um sie
+zu erf"ullen existieren mehrere Herangehensweisen:
+\begin{description}
+\item[Java Interpreter:]
+F"ur einige Skriptsprachen sind Interpreter erh"altlich die komplett in Java implementiert sind, und welche
+meist "uber externe Schnittstellen verf"ugen, was es einer Java-Applikation erlaubt dies einzubetten
+und Skripte der entsprechenden Sprache auszuf"uhren. Leider folgen diese Schnittstellen keinem gemeinsamen
+Standard, auch weil zum Entwicklungszeitpunkt dieser Interpreter oftmals kein solcher Standard existierte.
+Beispiele f"ur diese Art der Einbettung sind unter anderem die Javascript-Implementation
+der Mozilla Foundation \emph{Rhino} und \emph{Jacl}, ein vollst"andig in Java geschriebener Interpreter
+f"ur TCL. 
+\item["Ubersetzung von Skriptcode nach Java Sourcecode:]
+Einige Skriptsprachen verf"ugen "uber Sprachkonstrukte und eine Syntax welche stark an Java angelehnt sind,
+daher ist es m"oglich Sourcecode solcher Sprachen in Java-Sourcecode zu "ubersetzen. Allerdings ist das
+Entwickeln eines solchen Transcoders "ausserst aufw"andig, so dass es meist einfacher ist Skripte solcher
+Sprachen manuell nach Java zu portieren. Beispiele solcher Sprachen sind die BeanShell und Groovy.
+\item["Ubersetzung von Skriptcode nach Java Bytecode:]
+Es existieren einige Compiler die versuchen Skriptcode direkt in Java Bytecode zu "ubersetzen. Die so
+generierten Klassen sind k"onnen direkt von der JVM ausgef"uhrt werden. Das Entwickeln eines solchen
+Compilers ist zwar "ahnlich aufw"andig wie das Entwickeln eines oben vorgestellten Transcoders, allerdings
+kann die JVM vom Compiler einfach wie eine weitere Hardwareplatform behandelt werden, und da viele
+Skriptsprachen schon ausf"uhrbaren Code erzeugen k"onnen muss nur noch die Codegenerierung ausgetauscht,
+alle anderen Teile des Compilers, wie syntaktische und semantische Analyse, k"onnen unver"andert weiterbenutzt
+werden. Ein Beispiel eines solchen Compilers ist Jython f"ur die Skriptsprache Python. 
+\item[Eingebettete, native Interpreter:]
+Die wohl einfachste M"oglichkeit eine Skriptsprache in Java einzubetten ist, diese als native Bibliothek mittels
+des JNI (siehe \ref{sec:intro:stand:JNI}) einzubinden und mit einem Adapter zu umh"ullen (engl. \emph{wrapping}). 
+Ein solcher Wrapper wird auch \emph{language binding} genannt.
+\end{description}
+Eine Softwarekomponente die das Ausf"uhren von Skripten einer bestimmten Sprache erlaubt, und dabei ein standardisiertes
+Interface implementiert und somit zumindest in der Theorie austauschbar ist, soll im weiteren Verlauf
+dieses Dokumentes \emph{Skriptengine} genannt werden.
+
+Es existieren zwar Ans"atze PHP Interpreter in Java zu implementieren, ein prominentes Beispiel
+ist \emph{Quercus} von \emph{Caucho Technology} \cite{CAUCHOHP}. Allerdings gestaltet sich dieses Vorhaben durch
+die grosse Menge an PHP "'built-in"' Funktionen, Funktionen also die nicht mittels PHP verwirklich wurden, 
+sondern die direkt vom Interpreter erkannt und ausgef"uhrt werden, als sehr schwierig. Diese "'Bibliothek"' wird
+auch mit jeder PHP-Version umfangreicher und unterliegt  st"andigen Ver"aenderungen. Desweiteren enthalten solche
+Interpreter in aller Regel keine M"oglichkeit PHP-Extensions zu benutzen. Folglich schied diese Art der
+Integration von PHP in Java aus, und es musste eine Methode gefunden werden den vorhandenen, originalen PHP-Interpreter
+aus Java heraus anzusprechen.
+
+Um PHP in anderen Umgebungen einzubetten bietet es dem Benutzer die M"oglichkeit als dynamisch ladbare
+Bibliothek (.dll unter Windows, .so unter unixoiden Betriebssytemen) kompiliert zu werden, Java wiederum
+erlaubt das Einbinden solcher Bibliotheken zur Laufzeit mittels des JNI (siehe \ref{sec:intro:stand:JNI}).
+Um auf den PHP-Interpreter derart zugreiffen zu k"onnen muss eine sogenannte \emph{SAPI} implementiert
+werden. SAPI steht in diesem Kontext f"ur "'Server Application Programming Interface"' und ist ein PHP-interner
+Begriff. 
+Der naive Ansatz PHP innerhalb von Java auszuf"uhren w"are nun das simple Einbinden dieser Bibliothek und
+der Zugriff auf Selbige "uber JNI gewesen. Hierzu w"are es aber n"otig gewesen selbst eine Schnittstelle 
+zu entwickeln die diesen Zugriff formalisiert, allerdings existierten schon zwei unabh"ngig voneinander entwickelte
+Methoden Skriptsprachen innerhalb Javas zu verwenden - das \emph{Bean Scripting Framework} des \emph{Apache
+Jakarta Project} und ein sogenannter \emph{Java Specification Request}. So musste evaluiert werden, ob nicht
+eine dieser beiden Technologien ein geeigner Weg w"are dieses Ziel zu erreichen. 
+
+\subsection{Bean Scripting Framework - BSF}
+\label{sec:chap1:ana:bsf}
+
+Die aktuelle Version 2.4 des Bean Scripting Frameworks - urspr"unglich von IBM entwickelt und nun Teil des
+Apach Jakarta Projektes \cite{BSFHP} - bietet eine API, welche es einer Java-Applikation erlaubt 
+Skriptsprachen einzubinden und die den derart ausgef"uhrten Skripten den Zugriff auf Java-Objekte der ausf"uhrenden Applikation erm"oglicht.
+F"ur jede auszuf"uhrende Skriptsprache wird eine Implementation des Interfaces \emph{BSFEngine} ben"otigt, welches eine
+Abstraktion der F"ahigkeiten der Skriptsprache darstellt und so der Applikation ein generisches Zugriffschema
+auf jegliche Skriptsprache bietet. Alle Instanzen von BSFEngines werden von einer einzigen Instanz der Klasse \emph{BSFManager} 
+verwaltet. Zus"atzlich h"alt dieser ein Register von Objekten (die \emph{object registry}) vor, auf welche der Zugriff aus den 
+laufenden Skripten heraus m"oglich sein soll. Der BSFManager h"alt so lange er existiert den Ausf"uhrungszustand aller bei 
+ihm registrierten BSFEngines vor, was das Anhalten und sp"atere Fortsetzen eines Skriptes erlaubt.
+Das BSF ist in so gut wie allen Jakarta-Produkten wie Ant, Xalan, und Tomcat schon enthalten, so ist es beispielsweise
+m"oglich unter Tomcat JSPs in vom BSF unterst"utzten Skriptsprachen zu formulieren.
+Zu diesem Zeitpunkt existieren BSFEngine-Implementation f"ur eine Vielzahl von Skriptsprachen, darunter Javascript/ECMAScript, 
+Python, Ruby und XSLT, allerdings keine Implementation f"ur PHP. Die Dokumentation des BSF ist sehr knapp gehalten, allerdings
+beinhaltet sie alle n"otigen Informationen "uber Architektur und Funktionsweise des Frameworks, ausserdem sind alle
+Teile des Frameworks unter einer Open Source Lizenz im Quelltext verf"ugbar.
+
+Eine BSFEngine muss folgende Methoden implementieren:
+\begin{description}
+    \item[initialize()] - wird zu Begin der Lebenszeit der Skriptengine aufgerufen, um diese zu initialisieren.
+    \item[call()] - zum Aufruf bestimmter Funktionen oder Methoden innerhalb des in der BSFEngine geladenen Skriptes.
+    \item[eval()] - mittels eval wird ein als String "ubergebener Ausdruck ausgewertet und ein R"uckgabewert zur"uckgeliefert.
+    \item[exec()] - mittels exec wird ein komplettes Skript ausgef"uhrt.
+    \item[declareBean()] - mit dieser Methode wird explizit eine Instanz einer bestimmten Klasse innerhalb der BSFEngine erzeugt.
+    \item[undeclareBean()] - wird genutzt, um ein vorher mittels declareBean erzeugtes Objekt aus der Engine zu entfernen.
+\end{description}
+
+Nachdem dieser Wrapper f"ur die gew"unschte Sprache implementiert ist muss die neue BSFEngine beim BSFManager mittels der
+Methode \emph{registerScriptingEngine()} registriert werden. Fortan k"onnen Skripte dieser Sprache mittels der normalen
+BSF API ausgef"uhrt werden, hierzu bietet der BSFManager, neben vielen Methoden die auch in einer BSFEngine zu finden sind,
+unter anderem folgende Methoden:
+\begin{description}
+    \item[loadScriptingEngine()] - versucht eine BSFEngine f"ur eine gew"unschte Sprache zu erstellen.
+    \item[registerBean()] - f"ugt der object registry ein Objekt hinzu.
+    \item[lookupBean()] - gibt ein Objekt aus der object registry zur"uck.
+\end{description}
+Ausserdem verf"ugt der BSFManager noch "uber methoden mit denen es m"oglich ist Sourcecode und ganze Skripte in sogenannte
+\emph{CodeBuffer} Objekte zu "ubersetzen und erst sp"ater auszuf"uhren.
+Das BSF deklariert automatisch innerhalb des ausgef"uhrten Skriptes ein Objekt namens \emph{BSF}, welches den mit der
+BSFEngine assoziierten BSFManager repr"asentiert. "Uber dieses Objekt kann aus dem Skript auf Daten und Objekte aus der
+Java-Anwendung zugegriffen werden.
+
+\subsection{JSR 223 - Scripting for the Java Platform}
+\label{sec:chap1:ana:jsr}
+
+Ein \textbf{J}ava \textbf{S}pecification \textbf{R}equest ist Teil des Java Community Process (JCP), stellt
+eine Anforderung den Java Standard (\textbf{J}ava \textbf{L}anguage \textbf{S}pecification - JLS) zu erweitern dar und wird 
+normalerweise von einem Expertenteam geleitet.
+
+Der JSR mit der Nummer 223 \cite{JSRHP} beschreibt - "ahnlich dem BSF - Mechanismen welche es Skripten erlauben sollen auf Informationen
+innerhalb einer Java-Applikation zuzugreiffen, sowie serverseitige Java-Applikationen dazu bef"ahigen sollen Skriptsprachen f"ur Webseiten 
+einzusetzen (\emph{web scripting}). Urspr"unglich wurde JSR 223 zwar explizit f"ur diesen serverseitigen Einsatz von Skriptsprachen 
+konzipiert, allerdings wird diese Einschr"ankung in der neuesten Version (Proposed Final Draft, 10 August 2006) relativiert
+und auch der Einsatz in anderen Anwendungsgebieten ber"ucksichtigt. In diesem Dokument werden einige Begrifflichkeiten definiert:
+
+Als \emph{scripting engine} wird eine Softwarekomponente bezeichnet, welche in einer Skriptsprache geschriebene Programme ausf"uhrt.
+Eine scripting engine beinhaltet normalerweise einen \emph{interpreter} der die eigentliche Ausf"uhrung des Programmes "ubernimmt und
+wiederum aus einem \emph{front-end} und einem \emph{back-end} besteht. Das front-end ist f"ur die lexikalische und syntaktische
+Analyse des Quelltextes zust"andig und "uberf"uhrt diesen in eine Zwischenform, den sogenannten \emph{intermediate code}.
+Das back-end f"uhrt diesen intermediate code aus und nutzt Symboltabellen (\emph{symbol table}) um Variablen innerhalb des Skriptes
+zu speichern. Die Spezifikation geht davon aus, dass alle diese Softwarekomponenten Java Objekte sind, wobei explizit erlaubt wird
+dass einige dieser Objekte native Aufrufe nutzen. Scripting engines die die \emph{General Scripting API} implementieren werden als 
+\emph{Java Script Engines} bezeichnet, eine ob der Existenz einer Programmiersprache gleichen Namens etwas ungl"ucklich gew"ahlten 
+Bezeichnung.
+
+Die Spezifikation unterteilt sich in zwei gro\ss e Abschnitte: zun"achst werden \emph{Java Language Bindings} besprochen, Mechanismen
+die es Skripten erlauben Java-Klassen zu laden, Objekte zu erzeugen und Methoden dieser Objekte aufzurufen. Im selben Kapitel wird
+auch beschreiben wie Methodenaufrufe in Skriptsprachen in Java-Methodenaufrufe umgesetzt, und wie die Argumente und 
+R"uckgabewerte dieser Aufrufe zwischen den beiden Sprachen hin- und hergereicht werden. Dieser Teil der Spezifikation ist allerdings
+nicht normgebend, da es sehr von den Eigenschaften der Skriptsprache abh"angt wie solche Sprachbindungen realisiert werden m"ussen.
+Es werden drei Arten von Language Bindings besprochen: \emph{Dynamic Bindings} werden zur Laufzeit des Skriptes erzeugt, als
+\emph{Programmatic Bindings} werden Sprachbindungen bezeichnet die etwa "uber Stellvertreterobjekte innerhalb des Skriptes 
+den Zugriff auf Objekte der Java-Anwendung erlauben. Die dritte Art Sprachbindungen werden \emph{Static Bindings} genannt und
+beziehen sich auf Funktionen welche die Skriptengine selbst direkt auf Funktionen innerhalb Javas abbildet, so k"onnte beispielsweise
+der PHP-Befehl "'\emph{echo}"' direkt einen Aufruf der Java-Methode \emph{System.out.println} bewirken.
+Der zweite grosse Abschnitt besch"aftigt sich mit der \emph{General Scripting API}, einer Sammlung von Interfaces und Klassen, 
+welche es erlauben dass Skriptengines als Komponenten in Java-Anwendungen eingebettet werden k"onnen. Diese API unterteilt sich
+in einen implementationsabh"angigen und einen Implementationsunabh"angigen Teil um eine gro"esstm"ogliche Portabilit"at zwischen
+verschiedenen Implementationen zu erreichen. Hierzu ist es notwendig zur Laufzeit Informationen "uber Skriptengines abfragen
+zu k"onnen, diese \emph{Metainformationen} beschreiben F"ahigkeiten und Funktionsdetails und werden von jeder Implementation bereitgestellt.
+Dieser Mechanismus zum Auffinden und zum Abfragen von ScriptEngineFactories zur Laufzeit wird im Spezifikationsdokument 
+als \emph{discovery mechanism} bezeichnet.
+Die wichtigsten Klassen der General Scripting API sind der \emph{ScriptContext},
+die \emph{ScriptEngine}, die \emph{ScriptEngineFactory} und der \emph{ScriptEngineManager}.
+\begin{description}
+    \item[ScriptContext] - der ScriptContext wird benutzt um einem Skript den Zugriff (engl. \emph{view}) auf Daten der 
+    Wirtsapplikation zu erlauben. Dies geschieht mittels Schl"ussel/Wertepaaren, die verschiedenen G"ultigkeitsbereichen
+    (engl. \emph{scope}) zugeordnet sind. Die Scopes unterscheiden sich in Sichtbarkeit und Bedeutung. Der ScriptContext 
+    bietet den \emph{GlobalScope}, auf welchen welchen von jeder ScriptEngine aus zugegriffen werden kann die den
+    jeweiligen ScriptContext benutzt, und welcher den Zustand der Hostapplikation darstellt.
+    Ausserdem bietet der ScriptContext den \emph{EngineScope}, der nur f"ur eine einzige ScriptEngine g"ultig ist und 
+    vorwiegend dazu genutzt wird Variablen innerhalb dieser auszulesen.
+    Der Anwender kann jederzeit weitere Scopes definieren, sie werden durch Integerwerte identifiziert. Mittels der
+    Methode \textbf{getScopes()} kann der Anwender eine Liste der bekannten Scopes erhalten. Innerhalb der einzelnen Scopes
+    k"onnen Werte mittels der Methoden des ScriptContext \textbf{setAttribute()}, \textbf{getAttribute()} und \textbf{removeAttribute()} 
+    gesetzt, beziehungsweise abgerufen und gel"oscht werden, dazu ist jeweils der Schl"ussel als String "ubergeben werden muss.
+    \item[Binding] - auf Scopes kann mittels des Interfaces \emph{Bindings} zugegriffen werden. Bindings implementiert
+    das Interface \emph{Map}, mit der zus"atzlichen Anforderung dass alle Schl"ussel nicht-leer und nicht Null sind.
+    \item[ScriptEngine] - das ScriptEngine-Interface ist eine Abstraktion eines Skriptinterpreters und muss von
+    allen Java Script Engines implementiert werden. Es beinhaltet Methoden um Skripte auszuf"uhren und diesen
+    Schl"ussel/Wertepaare zu "ubergeben. Optional kann eine Skriptengine dem Anwender auch die M"oglichkeit bieten
+    Skriptquelltexte in intermediate Code zu "ubersetzen und diesen dann wiederholt auszuf"uhren, was allerdings
+    vorraussetzt dass die Skriptengine den explizit den Zugriff auf front- und back-end erlaubt. Jede ScriptEngine hat einen
+    Standardkontext, der mittels der Methoden \textbf{getContext()} und \textbf{setContext()} manipuliert werden kann. Anstatt den
+    Umweg "uber die Scopes zu gehen kann der Anwender einer ScriptEngine Werte auch direkt mittels der Methoden \textbf{get()} und 
+    \textbf{put()} "ubergeben, welche sich auf den EngineScope auswirken. Die eigentliche Ausf"uhrung eines Skriptes kann mittels der
+    verschiedenen \textbf{eval()} Methoden bewerkstelligt werden, die sich meist nur in der Art und Weise der Quelltext"ubergabe
+    unterscheiden.
+    \item[Compilable] - Compilable ist ein Interface das optional von einer ScriptEngine implementiert werden kann, wenn sie in der Lage
+    ist intermediate Code zu produzieren. Eine solche ScriptEngine bietet die Methode \textbf{compile()} an, welche eine Instanz
+    von \emph{CompiledScript} zur"uckgibt. Ein CompiledScript kann von der ScriptEngine wieder mittels \textbf{eval()} ausgef"uhrt werden.
+    Es wird davon ausgegangen, dass CompiledScripts von anderen Aufrufen von eval() nicht beeinflusst werden.
+    \item[Invocable] - Invocable ist wie Compilable ein weiteres optionales Interface welches von einer ScriptEngine implementiert
+    werden kann. Invocable ScriptEngines bieten dem Anwender die M"oglichkeit Prozeduren, Funktionen und Methoden eines Skriptes 
+    direkt aufzurufen, deren Aufruf mittels der Methoden \textbf{invokeFunction()} und \textbf{invokeMethod()} geschieht.
+    Die Methode \textbf{getInterface()} liefert eine Instanz einer Java-Klasse zur"uck, welche in der ScriptEngine mittels
+    Skriptcode implementiert ist.
+    \item[ScriptEngineFactory] - Die ScriptEngineFactory kann genutzt werden um eine ben"otigte ScriptEngine zu erstellen,
+    f"ur jede ScriptEngine-Implementation muss eine korrespondierende Implementation der ScriptEngineFactory vorhanden sein.
+    Hierzu enth"alt sie Methoden um auf die oben beschriebenen Metainformationen zuzugreiffen, zus"atzlich bietet eine ScriptEngineFactory
+    die Methoden \textbf{getOutputStatement()}, \textbf{getMethodCallSyntax()} und \textbf{getProgram()} an, mit deren Hilfe
+    man Strings erzeugen kann, die von der zugeh"origen ScriptEngine als Skript ausgef"uhrt werden k"onnen.
+    \item[ScriptEngineManager] - der ScriptEngineManager hilft dem Anwender ScriptEngineFactories f"ur alle verf"ugbaren
+    ScriptEngines zu finden. Hierzu bietet er die Methoden \textbf{getEngineByExtension()}, \textbf{getEngineByMimeType()} und
+    \textbf{getEngineByName()}. Mittels analoger \textbf{register...()}-Methoden kann dieser Auffindungsprozess zur Laufzeit
+    angepasst werden.
+    Zus"atzlich verwaltet er - "ahnlich wie in der BSF der BSFManager - die Kontexte der ihm unterstellten Skriptengines.
+\end{description}
+
+Von der Firma Zend existiert eine JSR 223 Referenzimplementation f"ur PHP5, allerdings ist diese nicht im Quelltext verf"ugbar,
+und das mitgelieferte PHP erf"ullt wegen fehlender Extensions nicht ganz die Anspr"uche die die Aufgabe stellt.
+Der JSR 223 wird Teil der JLS 6 sein, welche vorraussichtlich im Dezember 2006 erscheinen wird.
+
+\subsection{Fazit}
+\label{sec:chap1:ana:fazit}
+
+Sowohl das Bean Scripting Framework, als auch der JSR 223 erwiesen sich als geeignete Technologien, um die gestellte Aufgabe zu 
+erf"ullen. Allerdings bot der JSR 223 aus Sicht des Autors einige Vorteile: 
+Die verf"ugbare Dokumentation ist - ganz im Gegensatz zur Dokumentation des BSF - sehr umfangreich, vor allem geht sie auch
+auf Details wie Methodenaufrufe ein. Die API stellt sich auch etwas kompletter dar, die Interfaces Invocable und Compilable 
+helfen Implementationsunterschiede zu sauber "uberwinden. Auch die Tatsache dass der JSR 223 aller Vorraussicht nach Teil
+des Java Standards werden wird sprach, gepaart mit der Unterst"utzung durch namhafte Firmen wie Sun, IBM und vor allem auch 
+Zend, eher f"ur als gegen diese Technologie. Die Existenz einer Referenzimplementation f"ur PHP erlaubt nicht nur das
+schnelle Entwickeln eines Prototypen, sondern bewies eben auch, dass die Vorgehensweisen welche der JSR 223 vorschl"agt 
+gangbar und eine L"osung der gestellten Probleme zumindest im Bereich des M"oglichen lagen, w"ahrend alle verf"ugbaren
+Skriptengines f"ur das BSF komplett in Java implementiert waren.
+Somit wurde vom Autor gemeinsam mit den Betreuern entschieden dem JSR 223 den Vorzug zu gew"ahren.
+
+\section{Prototyp}
+\label{sec:chap1:prototype}
+
+Nachdem die Entscheidung "uber die zu verwendete Technologie getroffen wurde musste diese validiert werden. Hierzu wurde
+eine Machbarkeitsstudie mit der von Zend zu Verf"ugung gestellten, und kostenlos herunterladbaren Referenzimplementation
+f"ur PHP durchgef"uhrt. Es sollte ein einfaches PHP Skript ausgef"uhrt werden, welches trotzdem eine gute Absch"atzung
+des Funktionsumfanges des mitgelieferten PHPs erlauben sollte. Um allerdings sicherzustellen, dass zumindest der 
+Implementationsunabh"angige Teil funktioniert wurde ein Programm geschrieben, welches lediglich eine Liste der verf"ugbaren
+Skriptengines ausgibt. Hierbei wurde nun festgestellt, dass sich die Referenzimplementation nicht komplett an den Standard
+h"alt - so lautet die Signatur der Methode \emph{getScriptEngineFactories()} des ScriptEngineManagers beispielsweise 
+nicht wie von der Spezifikation verlangt
+\begin{lstlisting}[name=Vom Standard verlangte Signatur]
+    List<ScriptEngineFactory> getScriptEngineFactories()
+\end{lstlisting}
+sondern
+\begin{lstlisting}[name=Signatur in der Referenzimplementation]
+    ScriptEngineFactory[] getScriptEngineFactories()
+\end{lstlisting}
+Dies lies f"ur die weitere Entwicklung unter Zuhilfename der Referenzimplementation schlimmes vermuten.
+Als Test f"ur den Implementationabh"angigen Teil wurde die PHP-Funktion \emph{phpinfo()} ausgew"ahlt, welche
+Text ausgibt, aus dem sich alle geladenen Extensions, sowie alle gesetzten Umgebungsvariablen und 
+PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementation
+zu verwirklichen, da das Laden der mitgelieferten php5.so sowohl und FreeBSD, als auch unter 64- und 32-Bit Linux mit 
+verschiedensten Java Versionen zum Absturz der Java Virtual Machine f"uhrte. Die Tatsache dass die Referenzimplementation nicht
+im Quelltext verf"ugbar ist verhinderte gleichzeitig die Neu"ubersetzung oder eine effektive Fehlersuche .
+
+Aus diesem und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementation f"ur PHP zu entwickeln.
+
+\section{Projektbeschreibung}
+\label{sec:chap1:project}
+
+TODO: Arbeitspakete, und zwar f"ur die komplette Arbeit
+
+\section{Design}
+\label{sec:chap1:design}
+
+Eine JSR 223 Implementation f"ur PHP besteht gezwungenermassen aus zwei Teilen: einem Java-Teil, welcher im Wesentlichen
+die ScriptEngineFactory enth"alt, komplett in Java ohne die Verwendung von nativen (JNI-) Aufrufen implementiert ist und
+s"amtliche Funktionalit"at des Auffindungsmechanismus abdeckt, sowie einem nativen Teil, welcher aus 
+einem C- oder C++ - Programm das die n"otigen Aufrufe an PHP vornimmt und der eigentlichen ScriptEngine besteht, die dieses in
+nativen Code "ubersetzte Programm mittels JNI anspricht. TODO: Arschlochsatz
+Um allerdings JSR 223 "uberhaupt nutzen zu k"onnen m"ussen die Klassen aus javax.script, vor allem der ScriptEngineManager, 
+im Java-Classpath liegen. Hierzu kann entweder eine Java-Runtime der Version 6, oder aber eine eigene Implementation dieser
+Klassen genutzt werden.
+Die im folgenden beschriebene JSR 223 Implementation tr"agt den Namen "'Turpitude"'.
+
+\subsection{Java}
+\label{sec:chap1:design:java}
+
+Um f"ur ScriptEngineManager auffindbar zu sein muss eine JSR 223 Implementation sich gem"ass der \emph{Jar File Specification} \cite{JARSPEC} 
+als sogenannter \emph{Service Provider} registrieren. Hierzu muss sich im Verzeichnis \emph{META-INF/services} des .jars eine Datei
+mit dem Namen der Service-Klasse (in diesem Fall \emph{javax.script.ScriptEngineFactory}) befinden, in welcher verf"ugbare 
+ScriptEngineFactories zeilenweise aufgelistet werden.
+
+Alle Klassen der Implementation befinden sich im Package \emph{net.xp\_framework.turpitude}. 
+Die ScriptEngineFactory-Implementation hei\ss t \emph{PHPScriptEngineFactory} und implementiert direkt das Interface 
+\emph{ScriptEngineFactory} aus \emph{javax.script}. Im Gegensatz dazu implementiert die Klasse \emph{PHPScriptEngine} nicht
+direkt das Interface \emph{ScriptEngine}, sondern erbt von der abstrakten Klasse \emph{AbstractScriptEngine}, welche f"ur
+viele Varianten der \emph{eval()}-Methode schon eine Realisierung, sowie mit der Klasse \emph{SimpleScriptContext} schon einen 
+\emph{ScriptContext} mitbringt. Um den "ubergebenen Scriptcode tats"achlich auszu"fuhren muss dieser an den mittels der Java-Methode
+\emph{System.loadLibary()} geladenen nativen Teil der Implementation weitergegeben werden. Die Kommunikation mit diesem
+nativen Teil findet mittels der JNI-Methoden TODO: Methoden auflisten.
+Die Abbildung \ref{fig:jsr223impl} zeigt die beteiligten Klassen und ihre Abh"anigkeiten untereinander,
+zusammen mit einigen wichtigen Methoden und Attributen. 
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{chap1/img/turpitude.png}
+\caption{JSR 223 Implementation - Architektur}
+\label{fig:jsr223impl}
+\end{figure}
+
+TODO: Compilable, Invocable
+
+\subsection{Native}
+\label{sec:chap1:design:native}
+
+Der native Teil der Implementation teilt sich wiederum auf in JNI-Methoden, f"ur welche die Headerdateien automatisch aus
+der Java-Klasse der PHPScriptEngine generiert werden k"onnen, und in die Implementation einer SAPI. Hierzu muss im
+Wesentlichen ein sogenanntes \emph{sapi\_module\_struct} angelegt und bef"ullt werden, welches neben einigen Strings
+haupts"achlich Funktionspointer auf R"uckruffunktionen enth"alt, welche vom PHP-Interpreter aufgerufen werden. Da es
+kaum m"oglich ist dieses Konstrukt sinnvoll in eine objektorientierte Architektur einzuf"ugen, wird auf eine solche
+vollst"andig verzichtet. Das sapi\_module\_struct und die dazugeh"origen Funktionen werden in traditioneller,
+prozeduraler Art und Weise implementiert.
+TODO: JNI Methoden
+TODO: sapi methoden
+
+
+\section{Implementation}
+\label{sec:chap1:impl}
+
+Ref-Impl .jar zusammengebaut, ohne scriptengines, nur javax.script.*, allerdings: entspricht nicht der Spez 
+(ScriptEngine.getProgram: String[] statements statt String... statements), deswegen: java 6 runtergeladen.
+Da nicht system vm - mittels makefile ausf"uhren.
+
+Enginelist "portiert" -> 1 engine, Rhino, wird von Sun mit dem SDK 6 mitgeliefert.
+ScriptEngineFactory implementiert -> 2 engines, whohoo!
+PHP vom Source gebaut --enable-embed=shared
+ScriptEngine angelegt
+native Implementierung gestartet
+HelloWorld geht
+error\_cb  -> java exceptions
+ScriptExecutor geschrieben
+einfache Scripte mit Variablen scheinen zu gehen
+phpinfo() segfaultet, muss weiter erforscht werden.
+zval\_to\_jobject geschrieben, jni api suckt, zend api suckt haerter
+
+
+Problem: <?php erzeugt fehler in zend\_eval\_string -> rausparsen?
+ini file -> wie?
+Segfaults: --enable-debug, C-Frontend schreiben
+
+
+
+
+
+% ********** End of chapter **********

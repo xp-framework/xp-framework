@@ -1,0 +1,31 @@
+% ********** Chapter 1 **********
+
+\section{Implementation}
+\label{sec:chap1:impl}
+
+Ref-Impl .jar zusammengebaut, ohne scriptengines, nur javax.script.*, allerdings: entspricht nicht der Spez 
+(ScriptEngine.getProgram: String[] statements statt String... statements), deswegen: java 6 runtergeladen.
+Da nicht system vm - mittels makefile ausf"uhren.
+
+Enginelist "portiert" -> 1 engine, Rhino, wird von Sun mit dem SDK 6 mitgeliefert.
+ScriptEngineFactory implementiert -> 2 engines, whohoo!
+PHP vom Source gebaut --enable-embed=shared
+ScriptEngine angelegt
+native Implementierung gestartet
+HelloWorld geht
+error\_cb  -> java exceptions
+ScriptExecutor geschrieben
+einfache Scripte mit Variablen scheinen zu gehen
+phpinfo() segfaultet, muss weiter erforscht werden.
+zval\_to\_jobject geschrieben, jni api suckt, zend api suckt haerter
+
+
+Problem: <?php erzeugt fehler in zend\_eval\_string -> rausparsen?
+ini file -> wie?
+Segfaults: --enable-debug, C-Frontend schreiben
+
+
+
+
+
+% ********** End of chapter **********
