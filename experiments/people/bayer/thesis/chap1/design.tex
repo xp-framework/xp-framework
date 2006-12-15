@@ -9,7 +9,17 @@ einem C- oder C++ - Programm das die n"otigen Aufrufe an PHP vornimmt und der ei
 nativen Code "ubersetzte Programm mittels JNI anspricht. TODO: Arschlochsatz
 Um allerdings JSR 223 "uberhaupt nutzen zu k"onnen m"ussen die Klassen aus javax.script, vor allem der ScriptEngineManager, 
 im Java-Classpath liegen. Hierzu kann entweder eine Java-Runtime der Version 6, oder aber eine eigene Implementation dieser
-Klassen genutzt werden.
+Klassen genutzt werden. Wichtige Use-Cases f"ur diesen Teil des Projektes sind:
+\begin{enumerate}
+\item Test, ob die PHP-ScriptEngine verf"ugbar ist. Durch einfache Ausgabe auf der Konsole soll schnell ermittelbar sein, welche
+    ScriptEngines geladen und einsatzbereit sind. Dies dient haupts"chlich der "Uberpr"ufung, ob die aktuelle Java-Umgebung
+    richtig konfiguriert ist.
+\item Test, ob die PHP-ScriptEngine funktioniert. Es soll ein einfaches PHP-Skript ausgef"uhrt werden, um dem Anwender
+    die korrekte Funktionsweise der ScriptEngine vorzuf"uhren und zu pr"ufen ob die nativen Teile der Implementation
+    ordnungsgem"a\ss funktionieren.
+\item Ausf"uhren beliebiger PHP-Skripte. Es soll dem Anwender m"oglich sein, ohne selbst Java-Quelltext zu schreiben, beliebige
+    PHP-Skripte auszuf"uhren.
+\end{enumerate}
 Die im folgenden beschriebene JSR 223 Implementation tr"agt den Namen "'Turpitude"'.
 
 \subsection{Java}
@@ -38,6 +48,7 @@ zusammen mit einigen wichtigen Methoden und Attributen.
 \end{figure}
 
 TODO: Compilable, Invocable
+TODO: Use-Cases
 
 \subsection{Native}
 \label{sec:chap1:design:native}

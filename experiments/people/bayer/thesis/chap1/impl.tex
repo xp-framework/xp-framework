@@ -3,11 +3,48 @@
 \section{Implementation}
 \label{sec:chap1:impl}
 
-Ref-Impl .jar zusammengebaut, ohne scriptengines, nur javax.script.*, allerdings: entspricht nicht der Spez 
-(ScriptEngine.getProgram: String[] statements statt String... statements), deswegen: java 6 runtergeladen.
-Da nicht system vm - mittels makefile ausf"uhren.
+Um mit der Implementation beginnen zu k"onnen musste zun"achst ein als dynamisch ladbare Bibliothek verf"ugbares
+PHP erzeugt werden. Hierzu wurde von \cite{PHPHP} ein PHP in der Version 5.2.0 im Quelltext heruntergeladen und 
+"ubersetzt, nachdem es mittels des Kommandozeilenparameters "'--enable-embed=shared"' konfiguriert wurde. Die so
+erzeugte \emph{libphp5.so} konnte, zusammen mit den vorhandenen Headerdateien, zur Entwicklung genutzt werden.
 
-Enginelist "portiert" -> 1 engine, Rhino, wird von Sun mit dem SDK 6 mitgeliefert.
+Nun musste noch daf"ur gesorgt werden, dass sich die vom JSR 223 verlangten Klassen aus \emph{javax.script} im
+Classpath befinden. Nachdem allerdings die Klassen aus der Referenzimplementation aus den zum Teil in 
+\ref{sec:chap1:prototype} beschriebenen Gr"unden nicht in Frage kamen, wurde von \cite{JAVAHP} ein
+\emph{Java Development Toolkit (JDK)} der Version 6 heruntergeladen. Da dieses JDK nicht als System-VM genutzt
+werden kann wurde ein Makefile erstellt, welches die zur "Ubersetzung und Ausf"uhrung n"otigen Kommandos
+vereinfacht.
+
+Nachdem diese Vorarbeiten geleistet waren konnte mit der eigentlichen Implementation begonnen werden.
+Der erste Schritt war das Abbilden des ersten Use-Cases (verf"ugbare ScriptEngines auflisten), erstens um 
+sicherzustellen dass die Entwicklungsumgebung den Anforderungen gerecht wird, und zweitens um einen ersten
+Eindruck der JSR 223 API zu erhalten. Also wurde im Package \emph{samples} eine Klasse namens
+\emph{EngineList} geschrieben, die einen ScriptEngineManager erzeugt, und mittels der Methode
+\emph{getEngineFactories()} eine Liste aller verf"ugbaren ScriptEngines erstellt. Der Inhalt dieser
+Liste wird dann mittels \emph{System.out.println()} ausgegeben. 
+Nachdem dem Makefile ein Target namens "'list"' hinzugef"ugt wurde, ergab ein erstes Ausf"uhren dieser Klasse
+zum einen keine Fehler, und zweitens dass dem JDK 6 mit \emph{Mozilla Rhino} bereits eine ScriptEngine beiliegt:
+\begin{lstlisting}[caption=erste Tests]
+# make list
+found 1 available ScriptEngines:
+Engine: Mozilla Rhino
+#
+\end{lstlisting}
+
+Im Folgenden wurde die Klasse \emph{PHPScriptEngineFactory} erstellt, welche gem"a\ss \ref{sec:chap1:design:java} 
+das Interface \emph{ScriptEngineFactory} implementiert, hierbei erw"ahnenswert sind die Methoden 
+\emph{getProgram()} und \emph{getMethodCallSyntax()}, erstere erstellt aus als Strings vorliegenden
+einzelnen Anweisungen ein ausf"uhrbares PHP-Programm, zweitere erzeugt aus den "ubergebenen Parametern
+einen der PHP-Syntax entsprechenden Methodenaufruf. Wurde nun die EngineList ausgef"uhrt stellte sich heraus,
+dass der ScriptEngineManager die neue ScriptEngine schon erkannte:
+\begin{lstlisting}[caption=Neue ScriptEngine]
+# make list
+found 2 available ScriptEngines:
+Engine: Mozilla Rhino
+Engine: XP-Framework Turpitude PHP Engine
+#
+\end{lstlisting}
+
 ScriptEngineFactory implementiert -> 2 engines, whohoo!
 PHP vom Source gebaut --enable-embed=shared
 ScriptEngine angelegt
@@ -18,6 +55,17 @@ ScriptExecutor geschrieben
 einfache Scripte mit Variablen scheinen zu gehen
 phpinfo() segfaultet, muss weiter erforscht werden.
 zval\_to\_jobject geschrieben, jni api suckt, zend api suckt haerter
+
+zend\_eval\_string: echo ("'Hello World"'); tut, aber: wenn retval\_ptr == NULL dann wird das Script ausgef"uhrt,
+wenn retval\_ptr valid zval* ist, dann wird die erste Zuweisung ausgef"uhrt, und der R"uckgabewert == FAILURE;
+TestScript:
+\begin{lstlisting}[caption=Testscript f"ur zend\_eval\_string()]
+$bla = "Test";
+for ($i=0; $i<10; $i++) {
+    printf("Hello %s\n", $bla);
+}
+\end{lstlisting}
+
 
 
 Problem: <?php erzeugt fehler in zend\_eval\_string -> rausparsen?
