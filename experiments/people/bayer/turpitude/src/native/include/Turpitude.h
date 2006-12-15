@@ -33,6 +33,7 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
             env->ThrowNew(exception, message);
 }
 
+jobject zval_to_jobject(JNIEnv* env, zval* val);
 
 /* PHP SAPI registry */
 extern sapi_module_struct turpitude_sapi_module;

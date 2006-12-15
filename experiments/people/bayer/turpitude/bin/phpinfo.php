@@ -1,6 +1,5 @@
-  $bla = "World";
-  $all = "";
-  for ($i=0; $i<1; $i++) {
-    $all .= sprintf("Hello %s\n", $bla);
+
+  $bla = "Test";
+  for ($i=0; $i<10; $i++) {
+    printf("Hello %s\n", $bla);
   }
-  echo $all;

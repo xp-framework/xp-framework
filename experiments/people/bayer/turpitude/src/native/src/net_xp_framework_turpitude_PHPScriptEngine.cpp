@@ -27,6 +27,7 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jobject obj, jstring src) {
     TSRMLS_FETCH();
+    jobject jret;
     zend_first_try {
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
@@ -48,6 +49,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
             return NULL;
         }
 
+        // return value
+        //zval* retval = new zval();
+        zval* retval= (zval*)malloc(sizeof(zval));
         // Execute 
         LastError = "";
         const char *str= env->GetStringUTFChars(src, 0); 
@@ -57,9 +61,10 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
             strncpy(eval, str, strlen(str));
             eval[strlen(str)]= '\0';
 
-            //printf("Code --> |%s| <--\n", eval);
-            if (FAILURE == zend_eval_string(eval, NULL, "(jni)" TSRMLS_CC)) {
-                java_throw(env, "javax/script/ScriptException", "zend_eval_string()");
+            printf("Code --> |%s| <--\n", eval);
+            if (FAILURE == zend_eval_string(eval, retval, "(jni)" TSRMLS_CC)) {
+                //java_throw(env, "javax/script/ScriptException", "script execution failed in zend_eval_string()");
+                printf("%s\n", "script execution failed in zend_eval_string()");
             }
             efree(eval);
         }
@@ -68,6 +73,10 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
         //efree(SG(server_context));
         //SG(server_context)= 0;
 
+        // evaluate return value
+        printf("retval type: %d\n", Z_TYPE_P(retval));
+        jret = zval_to_jobject(env, retval); 
+        
         // Shutdown request
         zend_llist_destroy(&global_vars);
         php_request_shutdown((void *) 0);
@@ -77,5 +86,5 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
     } zend_end_try();
 
 
-    return NULL;
+    return jret;
 }

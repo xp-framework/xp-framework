@@ -27,14 +27,18 @@ public class ScriptExec {
         }
         System.out.println("found Engine: " + eng.getFactory().getEngineName());
         System.out.println("evaluating... ");
+        Object retval = null;
         try {
-            eng.eval(r);
+            retval = eng.eval(r);
         } catch(ScriptException e) {
             System.out.println("ScriptException caught:");
             e.printStackTrace();
             return;
         }
-        System.out.println("done evaluating");
+        if (null == retval)
+            System.out.println("done evaluating, return value " + retval);
+        else 
+            System.out.println("done evaluating, return value " + retval.getClass() + " : " + retval);
     }
 
     public static void echoUsage() {
