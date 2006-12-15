@@ -63,7 +63,21 @@
     function register($name, &$properties) {
       $this->_prop[$this->_path.$name]= &$properties;
     }
-    
+
+    /**
+     * Return whether a given property file exists
+     *
+     * @access  public
+     * @param   string name
+     * @return  bool
+     */
+    function hasProperties($name) {
+      return (
+        isset($this->_prop[$this->_path.$name]) || 
+        file_exists($this->_path.DIRECTORY_SEPARATOR.$name.'.ini')
+      );
+    }
+   
     /**
      * Return properties by name
      *
