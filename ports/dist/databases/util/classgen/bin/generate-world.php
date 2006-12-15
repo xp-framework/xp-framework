@@ -42,6 +42,8 @@ Usage: php generate-world.php <options>
     --config  -c: specify a config file (default: config.ini)
     --help    -h: I guess you already figured that one out (or you wouldn't be
                   reading this).
+    --output  -O: Determine output directory (overwrites outputdir in the 
+                  config files.
     
 The list of Databases has to be specified in the config file.
 
@@ -53,10 +55,10 @@ outputdir="/home/rene/spam"
 
 [database1]
 dsn="scheme://user:passwordl@host/DATABASE"
-prefix="methadon"
+prefix="something"
 prefix.include="foo|bar|stfu|crap"
-connection="methadon"
-package="de.schlund.db.methadon"
+connection="something"
+package="name.doebele.db.pirating"
 
 [database2]
 dsn=""
@@ -68,12 +70,17 @@ package=""
 --------------------------------------------------------------------------------    
 __
     );
-    exit(1);
+    exit(-1);
   };
+  
+  // Check for the config file
   if (!$ini->exists()) {
     Console::writeLine('No config file found. Use --help for more details');
   };
+  $outputdir=$param->value('output', 'O', '');
+  if (empty($outputdir)) {
   $outputdir=$ini->readString('configuration', 'outputdir', './');
+  };
   if (substr($outputdir, -1, 1) != '/') {
     $outputdir= $outputdir.'/';
   };
@@ -98,7 +105,7 @@ __
                    $outputdir, 
                    $adapters
                    );
-    Console::writeLine('Done here ==> Jumping to the next database');
+    Console::writeLine('Done here ==> Jumping to next database');
     };
   };
 
