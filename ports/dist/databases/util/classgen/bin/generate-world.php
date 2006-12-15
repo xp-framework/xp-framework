@@ -30,19 +30,64 @@
   $param= &new ParamString();
 
   // Read Config file
-  $ini=new Properties('config.ini');
+  $ini=new Properties($param->value('config', 'c', 'config.ini'));
+  if ($param->exists('help', 'h')) {
+    Console::writeLine(<<<__
+Generates O/R XML for multiple databases
+--------------------------------------------------------------------------------
+
+Usage: php generate-world.php <options>
+
+  Options:
+    --config  -c: specify a config file (default: config.ini)
+    --help    -h: I guess you already figured that one out (or you wouldn't be
+                  reading this).
+    
+The list of Databases has to be specified in the config file.
+
+The syntax of the configuration:
+
+--snip--
+[configuration]
+outputdir="/home/rene/spam"
+
+[database1]
+dsn="scheme://user:passwordl@host/DATABASE"
+prefix="methadon"
+prefix.include="foo|bar|stfu|crap"
+connection="methadon"
+package="de.schlund.db.methadon"
+
+[database2]
+dsn=""
+prefix=""
+prefix.include=""
+connection=""
+package=""
+--snip--
+--------------------------------------------------------------------------------    
+__
+    );
+    exit(1);
+  };
+  if (!$ini->exists()) {
+    Console::writeLine('No config file found. Use --help for more details');
+  };
   $outputdir=$ini->readString('configuration', 'outputdir', './');
+  if (substr($outputdir, -1, 1) != '/') {
+    $outputdir= $outputdir.'/';
+  };
   while(TRUE) {
     $section=$ini->getNextSection();
     if (empty($section)) {
-    Console::WriteLine('==> No more sections found in config.ini');
-    Console::WriteLine('==> Generation complete');
+    Console::writeLine('==> No more sections found in config.ini');
+    Console::writeLine('==> Generation complete');
     exit(-1);
     };
     if ($section != 'configuration') {
     $dsntemp    = $ini->readString($section, 'dsn');
     $prefix     = $ini->readString($section, 'prefix');
-    $incprefix  = $ini->readArray($section, 'prefix.include');
+    $incprefix  = $ini->readArray ($section, 'prefix.include');
     $connection = $ini->readString($section, 'connection');
     $package    = $ini->readString($section, 'package');
     generateTables($dsntemp, 
@@ -53,7 +98,7 @@
                    $outputdir, 
                    $adapters
                    );
-    Console::writeLine('Jumping to the next database');
+    Console::writeLine('Done here ==> Jumping to the next database');
     };
   };
 
@@ -90,7 +135,7 @@
     }
 
     // Create new Folder Object and new Folder(s) if necessary
-    $fold = new Folder ($outputdir.'/'.strtolower($database).'/');
+    $fold = new Folder ($outputdir.strtolower($database).'/');
     if (!$fold->exists()) {
       $fold->create();
     }
