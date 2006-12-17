@@ -1,0 +1,78 @@
+RFC 0098: Generic Filter interface
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 19:15:56     2006
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+A generic Filter interface will be created.
+
+
+Rationale
+---------
+Reusable iteration iteration / filter model.
+
+
+Functionality
+-------------
+
+The filter interface
+~~~~~~~~~~~~~~~~~~~~
+<?php
+  class Filter extends Interface {
+  
+    /**
+     * Returns whether to accept the given object.
+     *
+     * @access  public
+     * @param   &lang.Object subject
+     * @return  bool
+     */
+    function accept(&$subject) { }
+  
+  }
+?>
+
+Futurama: XP language version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  interface Filter<T> {
+
+    /**
+     * Returns whether to accept the given object.
+     *
+     */
+    public bool accept(T $subject);
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- The io.collections.iterate package will be changed to use the
+  Filter interface instead of defining its own.
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
