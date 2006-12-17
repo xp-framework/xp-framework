@@ -1,4 +1,4 @@
-RFC 0024: Resource Pool
+RFC 0024: ResourceManager
 ========================================================================
 $Id$
 
@@ -9,40 +9,18 @@ $Id$
 
 Scope of Change
 ---------------
-A new singleton named ResourcePool will be added. It contains instances
-of the following elements: Database connections, property files, logger
-categories, LDAP clients and RMI objects.
+A new singleton named ResourceManager will be added. It will hold 
+database connections, webservice endpoints, LDAP urls, mail connections 
+and remote specs.
 
 
 Rationale
 ---------
-Unify ConnectionManager, PropertyManager and Logger APIs.
-
+While a efficient method exists to manage database connections there is
+currently no way 
 
 Functionality
 -------------
-
-The following elements implement the Resource interface:
-
-* Property files
-  Namespace : xp://env
-  Contains  : util.Properties
-
-* Database connections
-  Namespace : xp://env/rdbms
-  Contains  : rdbms.DBConnection
-
-* Logfiles
-  Namespace : xp://env/log
-  Contains  : util.log.LogCategory
-
-* LDAP clients
-  Namespace : xp://env/naming
-  Contains  : peer.ldap.LDAPClient
-
-* RMI
-  Namespace : xp://env/remote
-  Contains  : rmi.Remote
 
 
 Resource interface
@@ -58,27 +36,10 @@ Resource interface
   }
 ?>
 
-Defining a class needs an object from the Resource Pool
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
-  class MyClass extends Object {
-  
-    function __construct() {
-      ResourcePool::injectFor($this);
-    }
-  
-    #[@inject(name = 'xp://env/rdbms/orders')]
-    function setConnection(&$conn) {
-      $this->conn= &$conn;
-    }  
-
-  }
-?>
-
 Example #1: Registering the database connection to the "orders" database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
-  $pool= &ResourcePool::getInstance();
+  $pool= &ResourceManager::getInstance();
   $pool->bind(
     'xp://env/rdbms/orders', 
     DriverManager::getConnection('mysql://...')
@@ -88,7 +49,7 @@ Example #1: Registering the database connection to the "orders" database
 Example #2: Get an rdbms.DBConnection instance by name "orders"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
-  $pool= &ResourcePool::getInstance();
+  $pool= &ResourceManager::getInstance();
   $conn= &$pool->lookup('xp://env/rdbms/orders');
 ?>
 
@@ -119,6 +80,7 @@ Related documents
 - Inversion of Control Containers and the Dependency Injection pattern
   http://www.martinfowler.com/articles/injection.html 
 
+
 Comments
 --------
 - friebe, Wed May 11 16:53:13 CEST 2005
@@ -137,5 +99,8 @@ Comments
 - friebe, Wed Jun 28 12:10:04 CEST 2006
   Maybe ResourcePool::attachTo($this); is better than 
   ResourcePool::injectFor($this);?
+
+- friebe, Sun Dec 17 17:27:47     2006
+  RFC rewritten completely
 
 <EOF>
