@@ -1,0 +1,50 @@
+RFC 0093: Make xml.meta.Marshaller useable within xml.Trees
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 17:06:16     2006
+@status: draft
+@category: xml.meta
+
+Scope of Change
+---------------
+The xml.meta API will be extended to include a way to marshal objects 
+to trees instead of only to strings.
+
+
+Rationale
+---------
+- Performance improvement over Tree::fromString(Marshaller::marshal())
+- Include the tree in formresult
+- Use the tree / node objects for further modification
+
+
+Functionality
+-------------
+na
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Faster.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
