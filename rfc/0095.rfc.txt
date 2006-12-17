@@ -1,0 +1,64 @@
+RFC 0095: Annotation utilities
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 18:14:43     2006
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+A new API will be created to easily work with annotations.
+
+
+Rationale
+---------
+Remove boilerplate code.
+
+
+Functionality
+-------------
+
+Current
+~~~~~~~
+<?php
+  $class= &XPClass::forName('some.annotated.Class');
+  foreach ($class->getMethods() as $m) {
+    if (!$m->hasAnnotation('inject')) continue;
+    
+    $value= $m->getAnnotation('inject');
+    // ...
+  }
+?>
+
+New
+~~~
+<?php
+  $class= &XPClass::forName('some.annotated.Class');
+  $inject= &Annotation::forName('inject');
+  foreach ($inject->decoratedMethods($class) as $m) {
+    $value= $m->getAnnotation($inject->getName());
+    // ...
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
