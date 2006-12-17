@@ -1,0 +1,41 @@
+RFC 0096: Foreign key relations
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 18:22:48     2006
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The DataSet classes will be enhanced to know about foreign keys.
+
+
+Rationale
+---------
+- Easy access to related data
+- Create "Rails-like" applications
+
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
