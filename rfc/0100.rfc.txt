@@ -1,0 +1,70 @@
+RFC 0100: IllegalArgumentException for Type hints
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 20:18:10     2006
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Methods declared with type hints will throw an IllegalArgumentException when 
+type mismatches occur.
+
+
+Rationale
+---------
+Fatal error prevention.
+
+
+Functionality
+-------------
+
+What happens currently
+~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+$ php5 -r 'class Test { static function x(Object $o) { }} Test::x();'
+
+Fatal error: Argument 1 passed to Test::x() must be an object of class 
+Object, called in Command line code on line 1 and defined in Command 
+line code on line 1
+</pre>
+
+How to fix it
+~~~~~~~~~~~~~
+Prepending this:
+<?php
+  set_error_handler(
+    create_function('$c, $m', 'throw new Exception($m);'),
+    E_RECOVERABLE_ERROR
+  );
+?>
+... to the above code will yield in an uncaught exception instead of
+a fatal error.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://www.derickrethans.nl/erecoverableerror.php
+  E_RECOVERABLE_ERROR announce
+
+Comments
+--------
+
+<EOF>
