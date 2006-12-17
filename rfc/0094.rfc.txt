@@ -1,0 +1,54 @@
+RFC 0094: ServiceManager
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 18:07:42     2006
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+Unify remote method invokations (webservices & remote APIs).
+
+
+Rationale
+---------
+
+Functionality
+-------------
+
+Example
+~~~~~~~
+<?php
+  $sm= &ServiceManager::getInstance();
+  $service= &$sm->locateService('com.1and1.intranet.search');
+  $invoker= &$service->getInvoker();
+
+  try(); {
+    $result= $invoker->doSearch($query);
+  } if (catch('ServiceException', $e)) {
+    $e->printStackTrace();
+    exit(1);
+  }
+  
+  Console::writeLine(xp::stringOf($result));
+?>
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
