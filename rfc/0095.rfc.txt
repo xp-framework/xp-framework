@@ -43,6 +43,34 @@ New
   }
 ?>
 
+Optional type-safety
+~~~~~~~~~~~~~~~~~~~~
+Annotations can be declared as interfaces.
+
+unittest.Expect declaration:
+<?php
+  #[@target(METHOD)]
+  class Expect extends Annotation {
+
+    /**
+     * Expected exception class
+     * 
+     * @return  string
+     */
+    function value() { }
+  }
+?>
+
+unittest.Expect example:
+<?php
+  class ThrowsTest extends TestCase {
+  
+    #[@expect('lang.IllegalArgumentException')]
+    function blam() {
+      throw(new IllegalArgumentException());
+    }
+  }
+?>
 
 Security considerations
 -----------------------
