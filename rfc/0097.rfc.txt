@@ -46,6 +46,12 @@ Dependencies
 
 Related documents
 -----------------
+- http://java.sun.com/j2se/1.5.0/docs/api/java/lang/reflect/InvocationTargetException.html
+  Java calls this "InvocationTargetException"
+
+- http://msdn2.microsoft.com/en-us/library/f7ykdhsy.aspx
+  .NET Reflection overview
+
 
 Comments
 --------
