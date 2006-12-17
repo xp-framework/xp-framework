@@ -128,7 +128,20 @@ TODO!
 
 Details: Facades
 ~~~~~~~~~~~~~~~~
-TODO!
+1) EntityManagementFacade
+  - Backing by database (DataSet API) or EASC (Remote API)
+  - Has the following operations
+    Modify: Create
+    Modify: Edit
+    Modify: Delete
+    View  : List (optional, may be problematic w/ large amount of data)
+    View  : Search (optional, may be useless w/ little amount of data)
+    Entity: Show
+  - The "Modifiy" operations may trigger additional business
+    logic (e.g., invalidate or even recalculate cache contents)
+  - The delete operation may only mark entries as deleted (and not 
+    really delete them). The view operations should then respect
+    the marks
 
 Details: Permissions and roles system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
