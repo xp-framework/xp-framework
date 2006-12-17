@@ -160,7 +160,8 @@ None, filters are an optional addition.
 
 Dependencies
 ------------
-n/a
+- RFC #0096
+  Foreign key relations (for EntityManagementFacade DB backing)
 
 
 Related documents
