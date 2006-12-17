@@ -38,7 +38,7 @@ New
   $class= &XPClass::forName('some.annotated.Class');
   $inject= &Annotation::forName('inject');
   foreach ($inject->decoratedMethods($class) as $m) {
-    $value= $m->getAnnotation($inject->getName());
+    $value= $inject->annotationValue($m)
     // ...
   }
 ?>
