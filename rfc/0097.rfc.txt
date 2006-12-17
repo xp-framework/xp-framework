@@ -1,0 +1,53 @@
+RFC 0097: MethodInvocationException
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 18:25:48     2006
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+lang.reflect.Routine will be changed to rethrow any exception as 
+MethodInvocationException (which is a chained exception).
+
+
+Rationale
+---------
+Get rid of another case where catch-all is needed.
+
+
+Functionality
+-------------
+<?php
+  $m= &$class->getMethod('doSelect');
+  try(); {
+    $r= $m->invoke($class->newInstance(), $args);
+  } if (catch('MethodInvocationException', $e)) {
+    Console::writeLine($m->getName(), ' invocation failed, cause: ', $e->cause->toString());
+  }
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower
+
+
+Dependencies
+------------
+- New class lang.reflect.MethodInvocationException
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
