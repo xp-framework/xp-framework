@@ -21,28 +21,118 @@ There is not enough infrastructure around the workflow scriptlet API.
 Functionality
 -------------
 
-Summary
-~~~~~~~
+Summary: API changes / enhancements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <pre>
-* scriptlet.xml.workflow.WorkflowXMLScriptlet will replace the
+* One scriptlet for all scenarios:
+  scriptlet.xml.workflow.WorkflowXMLScriptlet will replace the
   AbstractXMLScriptlet. There will be no need to extend this class.
 
-* Pre- and postfilters will be added to the scriptlet API.
+* Filters will be added.
+  Pre-Filters can influence request data and routes.
+  Post-Filters can influence response data.
+  Around-Invoke-Filters are a composite of Pre- and Postfilters
 
-* Routers will be added.
+* Routing API will be added.
+  Routers map URLs to states
+
+* Facades API will be added.
+  Facades are use-case implementations and group several states
+
+* Permissions and roles system
+</pre>
+
+Summary: Minor adjustements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+* The HttpScriptletException will extend ChainedException
 </pre>
 
 
-Filters
-~~~~~~~
+Use case: Weblog
+~~~~~~~~~~~~~~~~
+- Database driven
+- Views as well as "admin" area
+- Admin area requires login
+- View may look different when logged in (e.g. "edit" buttons)
+- Views may be cached
+- Cache needs to be invalidated on changes in the admin area / when
+  adding comments, e.g.
+
+Use case: Static contents, generated
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- For example, XP apidocs
+- Depending on request, one state "loads" XML for display (maybe even
+  only by means of document('...') in XSLT)
+
+Use case: Search page
+~~~~~~~~~~~~~~~~~~~~~
+- Does not use Handler/Wrappers
+- May be reloaded as often as wanted to refresh search results
+- Should not be cacheable by browsers
+- Provides results split up into smaller blocks (users can navigate
+  through them by using next and previous operations)
+- Results may require filtering (e.g. based on access permissions /
+  content / other policies)
+
+Use case: Portal pages
+~~~~~~~~~~~~~~~~~~~~~~
+- Consist of a number if portlets the user has configured to appear
+- Default list of portlets may exist
+- May have different layouts, e.g. one or more columns, whith different
+  sizes
+- Uses predefined portlets (e.g., an RSS reader) as well as own 
+  implementations
+- Page (or parts of it) may be cached
+- Portlets should be configurable inline (an RSS reader portlet may allow
+  configuration of the feed's URL and how many items to show)
+- Drag&Drop support for aligning the portlets
+- Which portlets are to be displayed will be configured elsewhere, e.g.
+  inside a popup window
+
+Use case: "Ordering process" / Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Consists of multiple stepts
+- Uses a cart
+- Users may jump back and forth between states
+- Is complete when all steps are satisfied with the data they have collected
+- May contain switches (alternative paths), e.g. distinction between
+  new customers (need customer data / address / payment preferences) and
+  existing customers (user customer number and password)
+
+Use case: Table view / "sheet"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Displays list of rows
+- Can be filtered by ranges, patterns or value(s)
+
+Use case: Logon page
+~~~~~~~~~~~~~~~~~~~~
+- Asks username and password
+- Loads userdata
+- Brute force protection
+- Forgot password
+- May need to provide masterlogin ability
+
+
+Details: Filters
+~~~~~~~~~~~~~~~~~
 - Get rid of need for AbstractAuthenticatedState
 - Add possibility to easily add remote-host based access policies (pre-
   filter) as well as gzencode (post-filter)
 
+TODO!
 
-Routers
-~~~~~~~~
-TODO
+Details: Routers
+~~~~~~~~~~~~~~~~~
+TODO!
+
+Details: Facades
+~~~~~~~~~~~~~~~~
+TODO!
+
+Details: Permissions and roles system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO!
 
 
 Security considerations
