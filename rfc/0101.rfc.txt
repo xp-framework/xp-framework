@@ -1,0 +1,86 @@
+RFC 0101: Add lang.types.String
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 20:30:01     2006
+@status: draft
+@category: lang.types
+
+Scope of Change
+---------------
+A new class lang.types.String will be added.
+
+
+Rationale
+---------
+Complement rest of the classes in lang.types.
+
+
+Functionality
+-------------
+Classes currently in lang.types:
+<pre>
+* lang.types.ArrayList
+* lang.types.Number
+  * lang.types.Byte
+  * lang.types.Double
+  * lang.types.Float
+  * lang.types.Integer
+  * lang.types.Long
+  * lang.types.Short
+</pre>
+
+New class lang.types.String (minimalistic because wrapper type):
+<pre>
+  class String extends Object {
+    var $intern= '';
+    
+    function __construct($initial= '') {
+      $this->intern= $initial;
+    }
+    
+    function length() {
+      return strlen($this->intern);
+    }
+
+    function hashCode() {
+      return DJBX33AHashImplementation::hashOf($this->intern);
+    }
+
+    function equals(&$cmp) {
+      return is_a($cmp, 'String') && $this->intern == $cmp->intern;
+    }
+    
+    function toString() {
+      return $this->intern;
+    }
+  }
+</pre>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- Removal or renaming of text.String (e.g. to text.StringBuffer)
+- Move of DJBX33AHashImplementation to lang.types or a more generic
+  place
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
