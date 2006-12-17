@@ -1,0 +1,67 @@
+RFC 0099: New rdbms.finder API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 17 19:21:50     2006
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The new finder API will assist in finding DataSet objects.
+
+
+Rationale
+---------
+Make it unnecessary to extend the DataSet objects.
+
+
+Functionality
+-------------
+
+Current
+~~~~~~~
+<?php
+  $peer= &News::getPeer();
+  $entries= $peer->doSelect(new Criteria(Restrictions::allOf(
+    Restrictions::like('title', 'Hello%'),
+    Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
+  ));
+?>
+
+New
+~~~
+<?php
+  // Idea #1
+  $peer= &News::getPeer();
+  $entries= $peer->doSelect(new TodaysHelloNewsFinder());
+  
+  // Idea #2
+  $finder= &new TodaysHelloNewsFinder();
+  $entries= $finder->find(News::getPeer());
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
