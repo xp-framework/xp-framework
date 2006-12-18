@@ -121,8 +121,10 @@
     function putDoesNotOverwriteValue() {
       $this->session->initialize(NULL);
       $fixture= &new Object();
+      $hash= $fixture->hashCode();
       $this->session->putValue('foo', $fixture);
-      $this->assertClass($fixture, 'lang.Object');
+      $this->assertClass($fixture, 'lang.Object') &&
+      $this->assertEquals($hash, $fixture->hashCode());
     }
     
     /**
