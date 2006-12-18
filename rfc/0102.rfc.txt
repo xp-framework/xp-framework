@@ -23,7 +23,7 @@ Functionality
 Instead of writing a complete script we now declare a class as follows:
 
 <?php
-  class DumpNews extends Object {
+  class DumpNews extends Command {
     var
       $id   = 0,
       $conn = NULL;
@@ -39,7 +39,7 @@ Instead of writing a complete script we now declare a class as follows:
     }
   
     function run() {
-      Console::writeLine(xp::stringOf($conn->select(
+      $this->out->writeLine(xp::stringOf($conn->select(
         '* from news where news_id= %d', 
         $this->id
       )));
