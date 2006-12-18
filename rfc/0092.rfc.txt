@@ -10,12 +10,11 @@ $Id$
 Scope of Change
 ---------------
 The XP framework will add support for PHP 5 from a certain release date on.
-Support for PHP 4 will continue until a not yet defined point in the future.
+Support for PHP 4 will continue until a not yet defined point in the future
+in form of security or bug fixes.
 
-Version numbers of the PHP4 version and the PHP5 version will be connected,
-with the only difference being the major version number.
-Eg. Classes in XP version 4.1.2 for PHP4 are at the same like XP 
-version 5.1.2.
+Version numbers are bumped to 5.0.0. A 5-x version number indicates that
+XP is only running on PHP 5.2.0 or greater.
 
 Rationale
 ---------
@@ -40,35 +39,33 @@ like the source files of the XP framework core.
 The new directory layout in the repository looks like that:
 <pre>
 trunk/
+  skeleton/
   ports/
     classes/
-  skeleton/
-  xp5/
-    skeleton2/
-    ports2/
-    override/
+    dist/
+  web/
+  util/
+branches/
+  xp4/
+    skeleton/
+    ports/
+      classes/
+      dist/
+    web/
+    util/
 </pre>
 
-Files from skeleton/ will be migrated and saved in skeleton2, files from ports/
-will be migrated to ports2/ and so on.
+First, files from trunk/ will be copied (branched) to branches/xp4. Second,
+all classes in skeleton and ports/classes will be migrated to their PHP5
+versions.
 
-Master/slave
-~~~~~~~~~~~~
+The xp4 branch will only receive security updates or bugfixes. It's status will
+be changed to "bugfix only, no development". The trunk version (PHP5) will be
+the officially supported XP version.
 
-Until declared otherwise through a follow-up RFC, the versions in the skeleton/
-directory (the PHP4 classes) will stay "the master" version. The PHP5 classes
-will be generated through the migration script.
-
-Manual changes to generated classes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Manual changes to classes are only allowed in the following exceptions:
- - the class is part of the core (= lang, util, io)
- - the class uses an API that does no longer exist in PHP5
- - the class uses features that cannot be automatically converted
-   to PHP5 (eg.: overload)
- - places where no forward-compatible change can be found for the PHP4
-   version
+In the initial migration, all projects in ports/dist are excluded. They continue
+to exist in branches/xp4 and can be migrated step by step into trunk again
+once they're manually migrated and checked.
 
 Third-party applications
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,5 +97,11 @@ Comments
   say, branches/xp5 and have skeleton/ and ports/ there (no "2" in the
   directory names). At the time we want to switch, we'd move trunk to 
   branches/xp4 and branches/xp5 to trunk.
+
+- kiesel, Mon Dec 18 17:05:49 CET 2006
+  As discussed, the master/slave model and priority for the XP4 version
+  will be dropped, in favor of XP5 which becomes the main development
+  tree.
+
 
 <EOF>
