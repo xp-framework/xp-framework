@@ -20,6 +20,9 @@ Simplify command line utilities development.
 
 Functionality
 -------------
+
+Overview
+~~~~~~~~
 Instead of writing a complete script we now declare a class as follows:
 
 <?php
@@ -53,6 +56,95 @@ We can run this class by using the cli-runner:
 </pre>
 
 
+Rules
+~~~~~
+<pre>
+* The class must extend the util.cmd.Command class
+
+* Arguments and resources are injected by means of annotated methods
+
+* We use an output stream to write data
+
+* The class can be reused in different environments because it is not 
+  dependant on anything console-specific.
+</pre>
+
+
+The util.cmd.Command class
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class Command extends Object {
+    var
+      $out = NULL,
+      $err = NULL;
+    
+    /**
+     * Run method
+     *
+     * @model   abstract
+     * @access  public
+     */
+    function run() { }
+  }
+?>
+The out and err members are created by the runner and are 
+PrintOutputStream objects. For the console runner, they write data
+to STDOUT and STDERR.
+
+
+The @arg annotation
+~~~~~~~~~~~~~~~~~~~
+This annotation marks methods as parameter acceptors.
+
+<pre>
+* Methods that wish to accept a command line argument must have exactly 
+  one argument.
+
+* This argument may have a default value.
+
+* If the method does not have a default value, the parameter passing
+  stops hard at this point.
+
+* Otherwise, the method is invoked without arguments, so that the
+  default value will be passed.
+</pre>
+
+How to accept arguments:
+
+1) Positional argument
+<?php
+  #[@arg(position= 0)]
+  function setFirstArgument($v) { }
+?>
+  This will take the first command line argument
+
+
+2) Named argument
+<?php
+  #[@arg(name= 'verbosity')]
+  function setVerbosity($v) { }
+?>
+  This will take the value passed as --verbosity=<value> or -v <value>
+
+
+3) Auto-named argument
+<?php
+  #[@arg]
+  function setClassname($v) { }
+?>
+  This will take the value passed as --classname=<value> or -c <value>
+
+  The argument name is calculated by using a lowercase version of the 
+  method name and stripping a leading "set".
+
+<pre>
+Note for cases 2) and 3): The short argument's name is calculated by using 
+the first character of the long argument's name. It can be overwritten to
+resolve ambiguous names by adding a short= '[CHARACTER]' to the @arg
+annotation.
+</pre>
+
+
 Security considerations
 -----------------------
 n/a
@@ -65,7 +157,8 @@ n/a
 
 Dependencies
 ------------
-n/a
+- RFC #0088
+  I/O Streams API
 
 
 Related documents
