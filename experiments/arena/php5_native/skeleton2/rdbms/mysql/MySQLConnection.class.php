@@ -272,6 +272,7 @@
       
       if (FALSE === $result) {
         switch ($e= mysql_errno($this->handle)) {
+          case 2006: // MySQL server has gone away
           case 2013: // Lost connection to MySQL server during query
             throw(new SQLConnectionClosedException(
               'Statement failed: '.mysql_error($this->handle), 

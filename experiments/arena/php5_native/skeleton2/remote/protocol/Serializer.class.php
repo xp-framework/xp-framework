@@ -289,7 +289,7 @@
         case 'O': {     // generic objects
           $name= $serialized->consumeString();
           try {
-            $class= &XPClass::forName($name);
+            $class= &XPClass::forName($this->packageMapping($name));
           } catch (ClassNotFoundException $e) {
             $instance= new UnknownRemoteObject($name);
             $size= $serialized->consumeSize();
@@ -323,9 +323,7 @@
         }
         
         case 'C': {     // generic classes
-          $len= substr($serialized->buffer, 2, strpos($serialized->buffer, ':', 2)- 2);
-          $serialized->offset+= 2 + strlen($len) + 2 + $len + 2;
-          $value= new ClassReference($this->packageMapping(substr($serialized->buffer, 2+ strlen($len)+ 2, $len)));
+          $value= new ClassReference($this->packageMapping($serialized->consumeString()));
           return $value;
         }
 

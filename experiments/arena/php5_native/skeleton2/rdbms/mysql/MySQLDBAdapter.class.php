@@ -66,8 +66,8 @@
       $t= array();
       try {
         $q= &$this->conn->query('show tables');
-        while ($table= $q->next('table')) {
-          $t[]= new DBTable($table);
+        while ($table= $q->next()) {
+          $t[]= &$this->getTable($table[key($table)]);
         }
       } catch (SQLException $e) {
         throw($e);

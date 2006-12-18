@@ -76,6 +76,17 @@
     public function sort($flags= SORT_REGULAR) {
       asort($this->_hash, $flags);
     }
+
+    /**
+     * Sort this hashmap by key
+     *
+     * @access  public
+     * @param   int flags default SORT_REGULAR sort flags
+     * @see     xp://util.Hashmap#sort
+     */
+    public function ksort($flags= SORT_REGULAR) {
+      ksort($this->_hash, $flags);
+    }
     
     /**
      * Sort this hashmap in reverse order

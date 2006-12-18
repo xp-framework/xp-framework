@@ -84,17 +84,14 @@
       
       // Find home interface
       $class= &$var->getClass();
-      $homeInterface= NULL;
       
       foreach (($interfaces= &$class->getInterfaces()) as $interface) {
         if ($interface->isSubclassOf('remote.beans.BeanInterface')) {
-          $homeInterface= &$interface;
-          break;
+          return 'I:'.$eoid.':{'.$serializer->representationOf($interface->getName(), $context).'}';
         }
       }
       
-      $name= $homeInterface->getName();
-      return 'I:'.$eoid.':{'.$serializer->representationOf($name, $context).'}';
+      throw(new IllegalArgumentException('Not a BeanInterface: '.$class->toString()));
     }
     
     /**
