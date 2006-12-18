@@ -145,6 +145,48 @@ annotation.
 </pre>
 
 
+The @inject annotation
+~~~~~~~~~~~~~~~~~~~~~~
+This annotation marks methods as resource injectors.
+
+<pre>
+* Resources are one of the following: database connections, logger 
+  categories, properties.
+
+* Resources are configured by property objects:
+  - The property manager's lookup path is set to "etc/" per default
+    and may be set via xpcli -c <path>
+  - The connection manager is configured by database.ini
+  - The logger is configured by log.ini
+</pre>
+
+1) Injecting database connections
+<?php
+  #[@inject(type= 'rdbms.DBConnection', name= 'news')]  
+  function setConnection(&$conn) { }
+?>
+  This method will receive a DBConnection instance (via 
+  ConnectionManager::getInstance()->getByHost('news', 0))
+
+
+2) Injecting logger categories
+<?php
+  #[@inject(type= 'util.log.LogCategory', name= 'default')]  
+  function setTrace(&$cat) { }
+?>
+  This method will receive a LogCategory instance (via 
+  Logger::getInstance()->getCategory('default'))
+
+
+3) Injecting properties
+<?php
+  #[@inject(type= 'util.Properties', name= 'app')]  
+  function setApplicationConfig(&$conf) { }
+?>
+  This method will receive a LogCategory instance (via 
+  PropertyManager::getInstance()->getProperties('app'))
+
+
 Security considerations
 -----------------------
 n/a
