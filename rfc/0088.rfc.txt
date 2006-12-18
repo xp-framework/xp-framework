@@ -24,11 +24,11 @@ Basics
 ~~~~~~
 These new interfaces will be created (pseudo-code follows):
 <?php
-  interface io.InputStream {
+  interface io.streams.InputStream {
     string read(int bytes= 8192) throws io.IOException
   }
 
-  interface io.OutputStream {
+  interface io.streams.OutputStream {
     int write(string data) throws io.IOException
   }
 ?>
@@ -38,32 +38,32 @@ The io.Stream class will implement all of these interfaces.
 
 Changes: Imaging API
 ~~~~~~~~~~~~~~~~~~~~
-* The img.io.StreamWriter class will accept an io.OutputStream
-* The img.io.StreamReader class will accept an io.InputStream
+* The img.io.StreamWriter class will accept an io.streams.OutputStream
+* The img.io.StreamReader class will accept an io.streams.InputStream
 
 
 Changes: Text API
 ~~~~~~~~~~~~~~~~~
-* The text.CSVGenerator class will accept an io.OutputStream
-* The text.parser.CSVParser class will accept an io.InputStream
+* The text.CSVGenerator class will accept an io.streams.OutputStream
+* The text.parser.CSVParser class will accept an io.streams.InputStream
 
 
 Changes: Remote API
 ~~~~~~~~~~~~~~~~~~~
 * The remote.protocol.ByteCountedString class' writeTo() method
-  will accept an io.OutputStream
+  will accept an io.streams.OutputStream
 * The remote.protocol.ByteCountedString class' readRrom() method
-  will accept an io.InputStream
+  will accept an io.streams.InputStream
 
 
 Changes: Peer API
 ~~~~~~~~~~~~~~~~~
-* The peer.ldap.util.LDIFWriter class will accept an io.OutputStream
+* The peer.ldap.util.LDIFWriter class will accept an io.streams.OutputStream
 
 
 Enhancement: Scriptlet API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-* The HttpScriptletResponse class will implement the io.OutputStream 
+* The HttpScriptletResponse class will implement the io.streams.OutputStream 
   interface
   
 
