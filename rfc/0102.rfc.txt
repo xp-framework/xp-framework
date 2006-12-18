@@ -1,0 +1,80 @@
+RFC 0102: XP Class Runner
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Dec 18 11:57:41 CET 2006
+@status: draft
+@category: util.cmd
+
+Scope of Change
+---------------
+An runner script (similar to the unittest runner) will be created to run
+classes as scripts.
+
+
+Rationale
+---------
+Simplify command line utilities development.
+
+
+Functionality
+-------------
+Instead of writing a complete script we now declare a class as follows:
+
+<?php
+  class DumpNews extends Object {
+    var
+      $id   = 0,
+      $conn = NULL;
+
+    #[@arg(position= 0)]
+    function setNewsId($id) {
+      $this->id= $id;
+    }
+
+    #[@inject(type= 'rdbms.DBConnection', name= 'news')]  
+    function setConnection(&$conn) {
+      $this->conn= &$conn;
+    }
+  
+    function run() {
+      Console::writeLine(xp::stringOf($conn->select(
+        '* from news where news_id= %d', 
+        $this->id
+      )));
+    }    
+  }
+?>
+
+We can run this class by using the cli-runner:
+<pre>
+  $ xpcli -c ~/.xp/news/ de.thekid.blog.DumpNews 1
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?people,friebe,cli
+  Experiment
+
+
+Comments
+--------
+
+<EOF>
