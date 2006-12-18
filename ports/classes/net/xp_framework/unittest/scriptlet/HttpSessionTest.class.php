@@ -111,6 +111,19 @@
         $this->session->getValueNames()
       );
     }
+
+    /**
+     * Test fetching of registered session keys
+     *
+     * @access  public
+     */
+    #[@test]
+    function putDoesNotOverwriteValue() {
+      $this->session->initialize(NULL);
+      $fixture= &new Object();
+      $this->session->putValue('foo', $fixture);
+      $this->assertClass($fixture, 'lang.Object');
+    }
     
     /**
      * Test resetting of sessions
