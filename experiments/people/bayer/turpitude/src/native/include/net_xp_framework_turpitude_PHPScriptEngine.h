@@ -25,10 +25,10 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
 
 /*
  * Class:     net_xp_framework_turpitude_PHPScriptEngine
- * Method:    evalPHP
+ * Method:    compilePHP
  * Signature: (Ljava/lang/String;)Ljava/lang/Object;
  */
-JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compilePHP
   (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus

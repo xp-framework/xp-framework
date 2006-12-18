@@ -19,13 +19,17 @@ Klassen genutzt werden. Wichtige Use-Cases f"ur diesen Teil des Projektes sind:
     ordnungsgem"a\ss funktionieren.
 \item Ausf"uhren beliebiger PHP-Skripte. Es soll dem Anwender m"oglich sein, ohne selbst Java-Quelltext zu schreiben, beliebige
     PHP-Skripte auszuf"uhren.
+\item "Ubersetzen eines beliebigen Skriptes. Gem"a\ss des in \emph{javax.script} vorhandenen Interfaces \emph{Compilable} soll 
+    ein beliebiges Skript "ubersetzt und mehrfach ausgef"uhrt werden k"onnen.
+\item Aufrufen von Methoden in "ubersetzten Skripten. Das zu entwickelnde Softwaresystem soll das Aufrufen von Funktionen und
+    Methoden in "ubersetzten Skripten erlauben. Hierzu soll das Interface \emph{javax.script.Invocable} unterst"utzt werden.
 \end{enumerate}
 Die im folgenden beschriebene JSR 223 Implementation tr"agt den Namen "'Turpitude"'.
 
 \subsection{Java}
 \label{sec:chap1:design:java}
 
-Um f"ur ScriptEngineManager auffindbar zu sein muss eine JSR 223 Implementation sich gem"ass der \emph{Jar File Specification} \cite{JARSPEC} 
+Um f"ur den ScriptEngineManager auffindbar zu sein muss eine JSR 223 Implementation sich gem"ass der \emph{Jar File Specification} \cite{JARSPEC} 
 als sogenannter \emph{Service Provider} registrieren. Hierzu muss sich im Verzeichnis \emph{META-INF/services} des .jars eine Datei
 mit dem Namen der Service-Klasse (in diesem Fall \emph{javax.script.ScriptEngineFactory}) befinden, in welcher verf"ugbare 
 ScriptEngineFactories zeilenweise aufgelistet werden.
@@ -37,7 +41,7 @@ direkt das Interface \emph{ScriptEngine}, sondern erbt von der abstrakten Klasse
 viele Varianten der \emph{eval()}-Methode schon eine Realisierung, sowie mit der Klasse \emph{SimpleScriptContext} schon einen 
 \emph{ScriptContext} mitbringt. Um den "ubergebenen Scriptcode tats"achlich auszu"fuhren muss dieser an den mittels der Java-Methode
 \emph{System.loadLibary()} geladenen nativen Teil der Implementation weitergegeben werden. Die Kommunikation mit diesem
-nativen Teil findet mittels der JNI-Methoden TODO: Methoden auflisten.
+nativen Teil findet mittels JNI-Methoden statt.
 Die Abbildung \ref{fig:jsr223impl} zeigt die beteiligten Klassen und ihre Abh"anigkeiten untereinander,
 zusammen mit einigen wichtigen Methoden und Attributen. 
 

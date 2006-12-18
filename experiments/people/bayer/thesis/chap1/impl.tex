@@ -45,8 +45,15 @@ Engine: XP-Framework Turpitude PHP Engine
 #
 \end{lstlisting}
 
-ScriptEngine angelegt, makefile total toll
+TODO: ScriptEngine angelegt, makefile total toll
 
+Da\ss\ PHP urspr"unglich ausschlie\ss lich als CGI ausgef"uhrt wurde merkt man dem Kern der Sprache noch
+deutlich an. So muss eine SAPI Funktionen aufrufen, welche den Beginn des sogenannten "'Requests"', respektive
+dessen Ende anzeigen, auch m"ussen Funktionen zum setzen und lesen von HTTP-Headern und Cookies bereitgestellt
+werden. Die n"otigen Aufrufe werden in der PHPScriptEngine von zwei privaten, nativen Methoden erledigt, welche
+die ScriptEngine bei sich selbst aufruft.
+
+TODO:
 native Implementierung gestartet
 HelloWorld geht
 error\_cb  -> java exceptions
@@ -65,9 +72,10 @@ for ($i=0; $i<10; $i++) {
 }
 \end{lstlisting}
 
+zend\_eval\_string nicht der weg - compile\_string. Deswegen: gleich mal Compilable implementiert, PHPCompiledScript
+angelegt
 
 
-Problem: <?php erzeugt fehler in zend\_eval\_string -> rausparsen?
 ini file -> wie?
 Segfaults: --enable-debug, C-Frontend schreiben
 

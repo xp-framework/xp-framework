@@ -25,6 +25,27 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
     sapi_shutdown();
 }
 
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compilePHP(JNIEnv* env, jobject obj, jstring src) {
+    TSRMLS_FETCH();
+
+    // return value
+    zend_op_array* compiled_op_array= NULL;
+
+    zend_first_try {
+        zend_error_cb= turpitude_error_cb;
+        zend_uv.html_errors= 0;
+        CG(in_compilation)= 0;
+        CG(interactive)= 0;
+        EG(uninitialized_zval_ptr)= NULL;
+        EG(error_reporting)= E_ALL;
+    } zend_catch {
+        java_throw(env, "javax/script/ScriptException", LastError.data());
+    } zend_end_try();
+
+
+    return NULL;
+}
+
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jobject obj, jstring src) {
     TSRMLS_FETCH();
     jobject jret;

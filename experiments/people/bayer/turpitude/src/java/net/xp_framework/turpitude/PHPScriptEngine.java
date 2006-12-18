@@ -5,7 +5,7 @@ import javax.script.*;
 import java.io.Reader;
 import java.io.IOException;
 
-public class PHPScriptEngine extends AbstractScriptEngine {
+public class PHPScriptEngine extends AbstractScriptEngine implements Compilable {
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
 
@@ -30,13 +30,12 @@ public class PHPScriptEngine extends AbstractScriptEngine {
         });
 
     }
-
+    
     /**
-     * Executes a script from a Reader containing the source code
-     * @return The value returned by the script
+     * helper method, extracts a String from a reader
      */
-    public Object eval(Reader reader, ScriptContext ctx) throws ScriptException,
-                                                                NullPointerException {
+    private static String read(Reader reader) throws ScriptException,
+                                              NullPointerException {
         //check reader validity
         if (reader == null)
             throw new NullPointerException("reader == null");
@@ -58,7 +57,16 @@ public class PHPScriptEngine extends AbstractScriptEngine {
             throw new ScriptException(exp);
         }
 
-        return eval(buf.toString(), ctx);
+        return buf.toString();
+    }
+
+    /**
+     * Executes a script from a Reader containing the source code
+     * @return The value returned by the script
+     */
+    public Object eval(Reader reader, ScriptContext ctx) throws ScriptException,
+                                                                NullPointerException {
+        return eval(read(reader), ctx);
     }
 
     /**
@@ -67,8 +75,29 @@ public class PHPScriptEngine extends AbstractScriptEngine {
      */
     public Object eval(String str, ScriptContext ctx) throws ScriptException,
                                                              NullPointerException {
-        return evalPHP(str);
+        CompiledScript sc = compile(str);
+        return sc.eval(ctx);
     }
+
+    /**
+     * Compiles the script (source represented as a String) for later execution.
+     */
+    public CompiledScript compile(Reader script) throws ScriptException,
+                                                        NullPointerException {
+        return compile(read(script));
+    }
+
+    /**
+     * Compiles the script (source contained in a Reader) for later execution.
+     */
+     public CompiledScript compile(String script) throws ScriptException,
+                                                         NullPointerException {
+        Object o = compilePHP(script);
+        if (!(o instanceof CompiledScript)) {
+            throw (new ScriptException("compile did not return a CompiledScript" + o));
+        }
+        return (CompiledScript)o;
+     }
 
     /**
      * @return an uninitialized Bindings
@@ -110,6 +139,6 @@ public class PHPScriptEngine extends AbstractScriptEngine {
     /**
      * calls native php interpreter to eval the sourcecode
      */
-    protected native Object evalPHP(String source);
+    protected native Object compilePHP(String source);
 
 }
