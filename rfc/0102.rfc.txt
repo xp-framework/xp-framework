@@ -70,6 +70,55 @@ Rules
 </pre>
 
 
+The xpcli runner
+~~~~~~~~~~~~~~~~
+Usage:
+<pre>
+  $ xpcli [runner-args]* [fully.qualified.ClassName] [class-args]*
+</pre>
+
+The runner-args are any arguments beginning with a dash ("-"). The class
+name argument is the first argument without a dash in front of it.
+
+Runner-args:
+<pre>
+* -c | --config
+  Path to configuration files, defaults to "etc/".
+</pre>
+
+Class-args:
+<pre>
+* -? | --help
+  Always supported. Shows a usage generated from the @arg-methods' apidoc
+  comments.
+</pre>
+
+
+The runner goes through the following steps when invoked:
+
+1) Extract runner arguments
+
+2) Load command class
+
+3) Check for -? or --help and show a usage
+
+4) Configure the property manager
+
+5) In case a database.ini exists in the property manager's configuration
+   file path, configure the connection manager with it
+
+6) In case a log.ini exists in the property manager's configuration
+   file path, configure the logger with it
+
+7) Perform dependency injection. In case an exception is thrown from any
+   of the methods, stop.
+
+8) Pass arguments. In case an argument is missing or an exception is thrown 
+   from any of the methods, stop.
+
+9) Invoke the run() method
+
+
 The util.cmd.Command class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
