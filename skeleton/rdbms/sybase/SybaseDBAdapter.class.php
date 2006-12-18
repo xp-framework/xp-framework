@@ -77,14 +77,66 @@
     }
 
     /**
-     * Get indexes for a given table
+     * Creates temporary table needed for fetching table indexes
      *
      * @access  protected
-     * @param   &rdbms.DBTable table
+     */
+    function prepareTemporaryIndexesTable() {
+      $this->conn->query('create table #indexes (
+        keys varchar(200),
+        name varchar(28),
+        number int,
+        status int
+      )');
+    }
+
+    /**
+     * Get indexes for a given table. Expects a temporary table to exist.
+     *
+     * @access  protected
+     * @param   string table thee table's name
+     * @return  &rdbms.DBTable
      */    
-    function _populateIndexesFor(&$table) {
+    function dbTableObjectFor($table) {
+      $t= &new DBTable($table);
       
-      // This query is taken in part from sp_helpindex (part of core sps)
+      // Get the table's attributes
+      $q= &$this->conn->query('
+        select 
+          c.name, 
+          t.name as type, 
+          c.status,
+          c.length, 
+          c.prec, 
+          c.scale,
+          s.ident
+        from 
+          syscolumns c,
+          systypes s,
+          systypes t 
+        where 
+          c.id= object_id(%s) 
+          and s.usertype= c.usertype
+          and t.type = c.type 
+          and t.usertype < 100 
+          and t.name not in ("sysname", "nchar", "nvarchar")
+      ', $table);
+      while ($record= $q->next()) {
+        $t->addAttribute(new DBTableAttribute(
+          $record['name'], 
+          $this->map[$record['type']],
+          $record['ident'],
+          ($record['status'] & 8), 
+          $record['length'], 
+          $record['prec'], 
+          $record['scale']
+        ));
+      }
+      delete($q);
+        
+      // This query is taken in part from sp_help (part of core sps from
+      // SQL Server/11.0.3.3 ESD#6/P-FREE/Linux Intel/Linux 2.2.14 
+      // i686/1/OPT/Fri Mar 17 15:45:30 CET 2000)
       $q= &$this->conn->query('
         declare @i int
         declare @id int
@@ -135,13 +187,13 @@
         end
 
         select * from #indexes', 
-        $table->name
+        $table
       );
       
       $keys= NULL;
       while ($record= $q->next()) {
         if ($keys != $record['keys']) {
-          $index= &$table->addIndex(new DBIndex(
+          $index= &$t->addIndex(new DBIndex(
             $record['name'],
             explode(',', $record['keys'])
           ));
@@ -149,7 +201,18 @@
         }
         if (2 == $record['number']) $index->unique= TRUE;
         if ($record['status'] & 2048) $index->primary= TRUE;
-      }  
+      }
+      
+      return $t;
+    }
+    
+    /**
+     * Drops temporary created by prepareTemporaryIndexesTable()
+     *
+     * @access  protected
+     */
+    function dropTemporaryIndexesTable() {
+      $this->conn->query('drop table #indexes');
     }
     
     /**
@@ -162,59 +225,25 @@
     function getTables($database) {
       $t= array();
       try(); {
-        $this->conn->query('create table #indexes (
-          keys varchar(200),
-          name varchar(28),
-          number int,
-          status int
-        )');
-      
-        // This query is taken in part from sp_help (part of core sps from
-        // SQL Server/11.0.3.3 ESD#6/P-FREE/Linux Intel/Linux 2.2.14 
-        // i686/1/OPT/Fri Mar 17 15:45:30 CET 2000)
-        $q= &$this->conn->query('
-          select 
-            o.name as "table",
-            c.name, 
-            t.name as type, 
-            c.status,
-            c.length, 
-            c.prec, 
-            c.scale 
-          from 
-            %c..sysobjects o,
-            syscolumns c, 
-            systypes t 
-          where o.type = "U"  -- User table
-            and c.id= o.id
-            and t.type = c.type 
-            and t.usertype < 100 
-            and t.name not in ("sysname", "nchar", "nvarchar")
-          ',
+        $this->prepareTemporaryIndexesTable();
+        
+        // Get all tables
+        $q= &$this->conn->query(
+          'select o.name from %c..sysobjects o where o.type = "U"  -- User table',
           $database
         );
-
-        while ($record= $q->next()) {
-          if (!isset($t[$record['table']])) {
-            $t[$record['table']]= &new DBTable($record['table']);
-            $this->_populateIndexesFor($t[$record['table']]);
-          }
-          $t[$record['table']]->addAttribute(new DBTableAttribute(
-            $record['name'], 
-            $this->map[$record['type']],
-            ($record['status'] & 8), 
-            $record['length'], 
-            $record['prec'], 
-            $record['scale']
-          ));
+        if ($q) while ($record= $q->next()) {
+          $t[]= &$this->dbTableObjectFor($record['name']);
         }
         
-        $this->conn->query('drop table #indexes');
       } if (catch('SQLException', $e)) {
-        return throw($e);
+        delete($t);
+      } finally(); {
+        $this->dropTemporaryIndexesTable();
+        if ($e) return throw($e);
       }
       
-      return array_values($t);
+      return $t;
     }
 
     /**
@@ -225,53 +254,14 @@
      * @return  rdbms.DBTable a DBTable object
      */
     function getTable($table) {
-      $t= &new DBTable($table);
       try(); {
-        $this->conn->query('create table #indexes (
-          keys varchar(200),
-          name varchar(28),
-          number int,
-          status int
-        )');
-      
-        // Get the table's attributes
-        // This query is taken in part from sp_help (part of core sps)
-        $q= &$this->conn->query('
-          select 
-            c.name, 
-            t.name as type, 
-            c.status,
-            c.length, 
-            c.prec, 
-            c.scale,
-            s.ident
-          from 
-            syscolumns c,
-            systypes s,
-            systypes t 
-          where 
-            c.id= object_id(%s) 
-            and s.usertype= c.usertype
-            and t.type = c.type 
-            and t.usertype < 100 
-            and t.name not in ("sysname", "nchar", "nvarchar")
-        ', $table);
-        while ($record= $q->next()) {
-          $t->addAttribute(new DBTableAttribute(
-            $record['name'], 
-            $this->map[$record['type']],
-            $record['ident'],
-            ($record['status'] & 8), 
-            $record['length'], 
-            $record['prec'], 
-            $record['scale']
-          ));
-        }
-        
-        $this->_populateIndexesFor($t);
-        $this->conn->query('drop table #indexes');
+        $this->prepareTemporaryIndexesTable();
+        $t= &$this->dbTableObjectFor($table);
       } if (catch('SQLException', $e)) {
-        return throw($e);
+        delete($t);
+      } finally(); {
+        $this->dropTemporaryIndexesTable();
+        if ($e) return throw($e);
       }
       
       return $t;
