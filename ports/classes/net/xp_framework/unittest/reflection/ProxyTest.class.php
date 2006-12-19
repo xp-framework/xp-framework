@@ -35,7 +35,7 @@
           $this->invocations[$method."_".sizeof($args)]= $args;
         }
       }');
-      $this->iteratorClass= &XPClass::forName('util.Iterator');
+      $this->iteratorClass= &XPClass::forName('util.XPIterator');
       $this->observerClass= &XPClass::forName('util.Observer');
     }
 
@@ -110,7 +110,7 @@
     public function iteratorInterfaceIsImplemented() {
       $class= &$this->proxyClassFor(array($this->iteratorClass));
       $interfaces= $class->getInterfaces();
-      $this->assertEquals(1, sizeof($interfaces));
+      $this->assertEquals(2, sizeof($interfaces));
       $this->assertEquals($this->iteratorClass, $interfaces[0]);
     }
 
@@ -123,7 +123,7 @@
     public function allInterfacesAreImplemented() {
       $class= &$this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
       $interfaces= $class->getInterfaces();
-      $this->assertEquals(2, sizeof($interfaces));
+      $this->assertEquals(3, sizeof($interfaces));
       $this->assertIn($interfaces, $this->iteratorClass);
       $this->assertIn($interfaces, $this->observerClass);
     }
@@ -136,9 +136,9 @@
     #[@test]
     public function iteratorMethods() {
       $expected= array(
-        'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', // lang.Object
+        'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', '__clone',  // lang.Object
         'getproxyclass', 'newproxyinstance',                          // lang.reflect.Proxy
-        'hasnext', 'next'                                             // util.Iterator
+        'hasnext', 'next'                                             // util.XPIterator
       );
       
       $class= &$this->proxyClassFor(array($this->iteratorClass));
@@ -184,12 +184,10 @@
     #[@test]
     public function allowDoubledInterfaceMethod() {
       $cl= &ClassLoader::getDefault();
-      $newIteratorClass= &$cl->defineClass('util.NewIterator', 'class NewIterator extends Iterator {
-        function next() { }
-      }');
+      $newIteratorClass= &$cl->defineClass('util.NewIterator', 'interface NewIterator extends XPIterator {}');
       
       $this->proxyInstanceFor(array(
-        XPClass::forName('util.Iterator'),
+        XPClass::forName('util.XPIterator'),
         XPClass::forName('util.NewIterator')
       ));
     }

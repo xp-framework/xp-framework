@@ -345,7 +345,7 @@
       $this->map->put('eins', 'one');
 
       $this->map->usort(newinstance('util.Comparator', array(), '{
-        function compare($a, $b) { 
+        static function compare(&$a, &$b) { 
           return strcasecmp($a, $b); 
         }
       }'));

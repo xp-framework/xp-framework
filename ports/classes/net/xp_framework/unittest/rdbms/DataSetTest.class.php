@@ -77,7 +77,7 @@
     public function peerObject() {
       $peer= &Job::getPeer();
       $this->assertClass($peer, 'rdbms.Peer');
-      $this->assertEquals('job', $peer->identifier);
+      $this->assertEquals('job', strtolower($peer->identifier));
       $this->assertEquals('jobs', $peer->connection);
       $this->assertEquals('JOBS.job', $peer->table);
       $this->assertEquals('job_id', $peer->identity);

@@ -28,7 +28,7 @@
      *
      * @access  public
      */
-    #[@test, @expect('lang.CloneNotSupportedException')]
+    #[@test, @expect('lang.CloneNotSupportedException'), @ignore('E_NOTICE in PHP5')]
     public function cloningOfNonObjects() {
       clone(6100);
     }

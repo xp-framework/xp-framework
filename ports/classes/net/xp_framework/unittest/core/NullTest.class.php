@@ -20,12 +20,6 @@
      * @access  public
      */
     public function setUp() {
-      if (!extension_loaded('overload')) {
-        throw(new PrerequisitesNotMetError(
-          'Overload extension not enabled', 
-          $cause= NULL
-        ));
-      }
     }
     
     /**
@@ -62,7 +56,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('Does no longer work with PHP5')]
     public function isFalse() {
       $this->assertTrue(!xp::null());
     }

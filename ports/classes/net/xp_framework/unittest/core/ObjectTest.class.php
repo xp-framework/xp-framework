@@ -19,7 +19,7 @@
      *
      * @access  public
      */
-    #[@test]
+    #[@test, @ignore('Changed with PHP5')]
     public function noConstructor() {
       $c= &XPClass::forName('lang.Object');
       $this->assertFalse($c->hasConstructor());
@@ -44,7 +44,7 @@
     #[@test]
     public function noInterfaces() {
       $c= &XPClass::forName('lang.Object');
-      $this->assertEmpty($c->getInterfaces());
+      $this->assertEquals(1, sizeof($c->getInterfaces()));
     }
 
     /**
