@@ -401,6 +401,11 @@
               break;
 
             case ST_LOOKING_FOR_CATCH.T_CATCH:
+              // Chech for correct coding-standards
+              if (T_CONSTANT_ENCAPSED_STRING != $tokens[$i+ 2][0]) return throw(new IllegalStateException(
+                'Illegal syntax at "if (catch (" (be sure to omit whitespace after catch'
+              ));
+              
               $t[1]= sprintf(                               // Reassemble and advance
                 'catch (%s %s)',
                 //$this->packagedNameOf(trim($tokens[$i+ 2][1], '\'"')),
