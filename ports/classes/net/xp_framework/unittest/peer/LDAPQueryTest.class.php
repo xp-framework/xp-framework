@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function testTokenizer() {
-      $q= &new LDAPQuery();
+    public function testTokenizer() {
+      $q= new LDAPQuery();
       
       // Test a default query string
       $this->assertEquals($q->prepare('(&(objectClass=*)(uid=%s))', 'kiesel'), '(&(objectClass=*)(uid=kiesel))');
@@ -42,8 +42,8 @@
      * @access  public
      */
     #[@test]
-    function testTokenizerReplacements() {
-      $q= &new LDAPQuery();
+    public function testTokenizerReplacements() {
+      $q= new LDAPQuery();
       
       // Test character replacements
       $this->assertEquals($q->prepare('%s', 'foo(bar'), 'foo\\28bar');
@@ -63,10 +63,10 @@
      * @access  public
      */
     #[@test]
-    function testDateToken() {
-      $q= &new LDAPQuery();
+    public function testDateToken() {
+      $q= new LDAPQuery();
       
-      $d= &new Date(328336200);
+      $d= new Date(328336200);
       $this->assertEquals($q->prepare('%s', $d), '198005280630Z+0200');
       $this->assertEquals($q->prepare('%d', $d), '198005280630Z+0200');
     }
@@ -77,8 +77,8 @@
      * @access  public
      */
     #[@test]
-    function testNullTokens() {
-      $q= &new LDAPQuery();
+    public function testNullTokens() {
+      $q= new LDAPQuery();
       
       $this->assertEquals($q->prepare('%d', NULL), 'NULL');
       $this->assertEquals($q->prepare('%c', NULL), 'NULL');
@@ -91,8 +91,8 @@
      * @access public 
      */
     #[@test, @expect('IllegalArgumentException')]
-    function testNonScalarInput() {
-      $q= &new LDAPQuery('c=DE', '(%d)', array(1,2));
+    public function testNonScalarInput() {
+      $q= new LDAPQuery('c=DE', '(%d)', array(1,2));
     }
   }
 ?>

@@ -28,7 +28,7 @@
    * @see http://www.simpy.com/simpy/service/api/rest/
    */
   class SimpyClient extends Object {
-    var
+    public
       $username= '',
       $password= '';
 
@@ -39,7 +39,7 @@
      * @param   string username from simpy
      * @param   string password from simpy
      */
-    function __construct(
+    public function __construct(
       $username,
       $password
     ) {
@@ -55,15 +55,15 @@
      * @param   array param of simply-request
      * @return  string
      */
-    function _doRequest($url, $param= array()) {
-      try(); {
+    public function _doRequest($url, $param= array()) {
+      try {
         $buf= HttpUtil::get(
           new HttpConnection($url),
           $param,
           array(new BasicAuthorization($this->username, $this->password))
         );
-      } if (catch('UnexpectedResponseException', $e)) {
-        return throw($e);
+      } catch (UnexpectedResponseException $e) {
+        throw($e);
         exit(-1);
       }
       return $buf;    
@@ -75,7 +75,7 @@
      * @access  public
      * @return  string
      */  
-    function getTags() {
+    public function getTags() {
       return $this->_doRequest(
         'http://www.simpy.com/simpy/api/rest/GetTags.do'
       );
@@ -91,7 +91,7 @@
      * @param   &util.Date beforeDate show links before this date
      * @return  string
      */  
-    function getLinks($q= '', $date, $afterDate, $beforeDate) {
+    public function getLinks($q= '', $date, $afterDate, $beforeDate) {
       return $this->_doRequest(
         'http://www.simpy.com/simpy/api/rest/GetLinks.do', 
         array(
@@ -108,7 +108,7 @@
      * @access  public
      * @return  string
      */  
-    function getTopics() {
+    public function getTopics() {
       return $this->_doRequest(
         'http://www.simpy.com/simpy/api/rest/GetTopics.do'
       );
@@ -121,7 +121,7 @@
      * @param   string q query-string for notes
      * @return  string
      */  
-    function getNotes($q= '') {
+    public function getNotes($q= '') {
       return $this->_doRequest(
         'http://www.simpy.com/simpy/api/rest/GetNotes.do', 
         array('q' => $q)

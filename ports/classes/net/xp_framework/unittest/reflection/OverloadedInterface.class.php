@@ -10,7 +10,7 @@
    * @see      xp://lang.reflect.Proxy
    * @purpose  Test interface
    */
-  class OverloadedInterface extends Interface {
+  interface OverloadedInterface {
     
     /**
      * Overloaded method.
@@ -22,6 +22,6 @@
     #  array('string', 'string'),
     #  array('string', 'string')
     #))]
-    function overloaded() { }
+    public function overloaded();
   }
 ?>

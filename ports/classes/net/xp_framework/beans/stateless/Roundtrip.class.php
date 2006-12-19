@@ -11,7 +11,7 @@
    *
    * @purpose  EASC Client stub
    */
-  class Roundtrip extends RemoteInterface {
+  interface Roundtrip extends RemoteInterface {
 
     /**
      * EchoString method
@@ -20,7 +20,7 @@
      * @param   string arg1
      * @return  string
      */
-    function echoString($arg1) { }
+    public function echoString($arg1);
 
     /**
      * EchoInt method
@@ -29,7 +29,7 @@
      * @param   integer arg1
      * @return  integer
      */
-    function echoInt($arg1) { }
+    public function echoInt($arg1);
 
     /**
      * EchoDouble method
@@ -38,7 +38,7 @@
      * @param   double arg1
      * @return  double
      */
-    function echoDouble($arg1) { }
+    public function echoDouble($arg1);
 
     /**
      * EchoBool method
@@ -47,7 +47,7 @@
      * @param   boolean arg1
      * @return  boolean
      */
-    function echoBool($arg1) { }
+    public function echoBool($arg1);
 
     /**
      * EchoNull method
@@ -56,7 +56,7 @@
      * @param   java.lang.Object arg1
      * @return  java.lang.Object
      */
-    function echoNull($arg1) { }
+    public function echoNull($arg1);
 
     /**
      * EchoDate method
@@ -65,7 +65,7 @@
      * @param   util.Date arg1
      * @return  util.Date
      */
-    function echoDate($arg1) { }
+    public function echoDate($arg1);
 
     /**
      * EchoHash method
@@ -74,7 +74,7 @@
      * @param   array<mixed, mixed> arg1
      * @return  array<mixed, mixed>
      */
-    function echoHash($arg1) { }
+    public function echoHash($arg1);
 
     /**
      * EchoArrayList method
@@ -83,7 +83,7 @@
      * @param   lang.types.ArrayList arg1
      * @return  lang.types.ArrayList
      */
-    function echoArray($arg1) { }
+    public function echoArray($arg1);
 
   }
 ?>

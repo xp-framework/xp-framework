@@ -13,7 +13,8 @@
     'img.Image',
     'img.Color',
     'img.io.StreamReader',
-    'img.io.JpegStreamWriter'
+    'img.io.JpegStreamWriter',
+    'util.log.Traceable'
   );
 
   /**
@@ -22,8 +23,8 @@
    *
    * @purpose  Utility class
    */
-  class ImageProcessor extends Object {
-    var
+  class ImageProcessor extends Object implements Traceable {
+    public
       $outputFolder     = NULL,
       $cat              = NULL,
       $filters          = array(),
@@ -37,7 +38,7 @@
      * @access  public
      * @param   &io.Folder outputFolder
      */
-    function setOutputFolder(&$outputFolder) {
+    public function setOutputFolder(&$outputFolder) {
       $this->outputFolder= &$outputFolder;
     }
     
@@ -49,7 +50,7 @@
      * @param   &img.filter.ImageFilter filter
      * @return  &img.filter.ImageFilter filter
      */
-    function &addFilter(&$filter) {
+    public function &addFilter(&$filter) {
       $this->filters[]= &$filter;
       return $filter;
     }
@@ -60,7 +61,7 @@
      * @access  public
      * @return  &io.Folder
      */
-    function &getOutputFolder() {
+    public function &getOutputFolder() {
       return $this->outputFolder;
     }
     
@@ -70,7 +71,7 @@
      * @access  public
      * @param   int quality A quality value in percent
      */
-    function setQuality($quality) {
+    public function setQuality($quality) {
       $this->quality= $quality;
     }
 
@@ -80,7 +81,7 @@
      * @access  public
      * @return  int
      */
-    function getQuality() {
+    public function getQuality() {
       return $this->quality;
     }
     
@@ -93,7 +94,7 @@
      * @param   int[2] dimensions (0 = X, 1 = Y)
      * @return  &img.Image
      */
-    function resampleTo(&$origin, $horizontal, $dimensions) {
+    public function resampleTo(&$origin, $horizontal, $dimensions) {
     
       // Check whether the picture is landscape or portrait
       if ($origin->getWidth() < $origin->getHeight()) {
@@ -136,7 +137,7 @@
      * @param   &img.Color color
      * @return  &img.Image
      */
-    function resampleToFixed(&$origin, $dimensions, &$color) {
+    public function resampleToFixed(&$origin, $dimensions, &$color) {
       $this->cat && $this->cat->debug('Resampling image to fixed', implode('x', $dimensions));
       
       with ($resized= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
@@ -159,7 +160,7 @@
      * @param   &img.util.ExifData exifData
      * @return  &img.Image
      */
-    function thumbImageFor(&$origin, &$exifData) {
+    public function thumbImageFor(&$origin, &$exifData) {
       return $this->resampleToFixed($origin, $this->thumbDimensions, new Color('#ffffff'));
     }
 
@@ -171,7 +172,7 @@
      * @param   &img.util.ExifData exifData
      * @return  &img.Image
      */
-    function fullImageFor(&$origin, &$exifData) {
+    public function fullImageFor(&$origin, &$exifData) {
       return $this->resampleTo($origin, $exifData->isHorizontal(), $this->fullDimensions);
     }
     
@@ -182,7 +183,7 @@
      * @param   &io.File in
      * @return  de.thekid.dialog.io.ProcessorTarget[]
      */
-    function targetsFor(&$in) {
+    public function targetsFor(&$in) {
       return array(
         new ProcessorTarget('thumbImageFor', 'thumb.'.$in->getFilename(), FALSE),
         new ProcessorTarget('fullImageFor', $in->getFilename(), TRUE)
@@ -197,23 +198,23 @@
      * @return  &de.thekid.dialog.AlbumImage
      * @throws  img.ImagingException in case of an error
      */
-    function &albumImageFor($filename) {
-      with ($image= &new AlbumImage(basename($filename))); {
-        $in= &new File($filename);
+    public function &albumImageFor($filename) {
+      with ($image= new AlbumImage(basename($filename))); {
+        $in= new File($filename);
 
         // Read the image's EXIF data
         $this->cat && $this->cat->debug('Extracting EXIF data from', $filename);        
-        try(); {
+        try {
           $image->exifData= &ExifData::fromFile($in);
-        } if (catch('ImagingException', $e)) {
+        } catch (ImagingException $e) {
           $this->cat && $this->cat->error($e);
-          return throw($e);
+          throw($e);
         }
 
         // Go over targets
         $origin= NULL;
         foreach ($this->targetsFor($in) as $target) {
-          $destination= &new File($this->outputFolder->getURI().$target->getDestination());
+          $destination= new File($this->outputFolder->getURI().$target->getDestination());
           if ($destination->exists()) {
             $this->cat && $this->cat->debugf(
               'Target method %s has been processed before, skipping...',
@@ -225,11 +226,11 @@
           // If we haven't done so before, load origin image
           if (!isset($origin)) {
             $this->cat && $this->cat->debug('Loading', $filename);        
-            try(); {
+            try {
               $origin= &Image::loadFrom(new StreamReader($in));
-            } if (catch('ImagingException', $e)) {
+            } catch (ImagingException $e) {
               $this->cat && $this->cat->error($e);
-              return throw($e);
+              throw($e);
             }
           }
           
@@ -251,13 +252,13 @@
           
           // Save
           $this->cat && $this->cat->debug('Saving to', $destination->getURI());
-          try(); {
+          try {
             $transformed->saveTo(new JpegStreamWriter($destination, $this->quality));
-          } if (catch('ImagingException', $e)) {
+          } catch (ImagingException $e) {
             $this->cat && $this->cat->error($e);
             delete($transformed);
             delete($origin);
-            return throw($e);
+            throw($e);
           }
 
           delete($transformed);
@@ -275,9 +276,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

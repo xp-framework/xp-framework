@@ -54,7 +54,7 @@
    * @purpose  Widget
    */
   class MessageBox extends GtkGladeDialogWindow {
-    var
+    public
       $message  = '',
       $caption  = '',
       $style    = 0,
@@ -70,7 +70,7 @@
      * @param   int style default MB_DEFAULT
      * @param   array buttons default array() user defined buttons
      */
-    function __construct(
+    public function __construct(
       $message, 
       $caption= 'Message', 
       $style= MB_DEFAULT, 
@@ -94,13 +94,13 @@
      * @param   array buttons default array() user defined buttons
      * @return  int
      */
-    function display(
+    public static function display(
       $message, 
       $caption= 'Message', 
       $style= MB_DEFAULT, 
       $buttons= array()
     ) {
-      $m= &new MessageBox($message, $caption, $style, $buttons);
+      $m= new MessageBox($message, $caption, $style, $buttons);
       return $m->show();
     }
        
@@ -109,7 +109,7 @@
      *
      * @access  public
      */
-    function init() {
+    public function init() {
       $this->window->set_default_size(320, 140);
       
       // Message
@@ -117,15 +117,15 @@
       
       // Icon
       $this->icon= &$this->widget('icon');
-      $loader= &new GTKPixmapLoader($this->window->window, dirname(__FILE__));
-      try(); {
+      $loader= new GTKPixmapLoader($this->window->window, dirname(__FILE__));
+      try {
         $this->pixmaps= $loader->load(array(
           'information',
           'warning',
           'question',
           'error'
         ));
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->cat->error($e->getStackTrace());
         
         // Well, we'll be without icons, then
@@ -140,7 +140,7 @@
      *
      * @access  public
      */
-    function run() {
+    public function run() {
       static $map= array(
         MB_ICONHAND         => 'error',
         MB_ICONQUESTION     => 'question',
@@ -162,7 +162,7 @@
       // Buttons
       foreach (array('OK', 'CANCEL', 'YES', 'NO', 'RETRY', 'IGNORE', 'ABORT') as $name) {
         if ($this->style & constant('MB_'.$name)) {
-          $b= &new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
+          $b= new GtkButton(ucfirst(strtolower($name)));    // TBD: Get via gettext?
           $b->set_name($name);
           $b->set_flags(GTK_CAN_DEFAULT);
           $b->show();
@@ -181,7 +181,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onButtonClicked(&$widget) {
+    public function onButtonClicked(&$widget) {
       $this->pressed= constant('MB_'.$widget->get_name());
       $this->close();
     }
@@ -192,7 +192,7 @@
      * @access  public
      * @return  int
      */
-    function show() {
+    public function show() {
       parent::show();
       return $this->pressed;
     }

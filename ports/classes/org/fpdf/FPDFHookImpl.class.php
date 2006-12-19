@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('org.fpdf.FPDFHook');
+
   /**
    * FPDFHook interface implementation that does nothing
    *
    * @see      xp://org.fpdf.FPDFHook
    * @purpose  Base class
    */
-  class FPDFHookImpl extends Object {
+  class FPDFHookImpl extends Object implements FPDFHook {
   
     /**
      * Gets called when a page is finalized
@@ -19,8 +21,8 @@
      * @param   &org.fpdf.FPDF pdf
      * @param   int page the number of the page
      */
-    function onEndPage(&$pdf, $page) { 
+    public function onEndPage(&$pdf, $page) { 
     }
   
-  } implements(__FILE__, 'org.fpdf.FPDFHook');
+  } 
 ?>

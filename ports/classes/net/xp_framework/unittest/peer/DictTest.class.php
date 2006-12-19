@@ -5,7 +5,7 @@
  */
  
   uses(
-    'org.dict.DictClient', 
+    'org.dict.DictClient',
     'unittest.TestCase'
   );
 
@@ -16,7 +16,7 @@
    * @purpose  Unit Test
    */
   class DictTest extends TestCase {
-    var
+    public
       $dc      = NULL,
       $server  = '',
       $port    = 0;
@@ -28,7 +28,7 @@
      * @param   string name
      * @param   string uri
      */
-    function __construct($name, $server, $port) {
+    public function __construct($name, $server, $port) {
       $this->server= $server;
       $this->port= $port;
       parent::__construct($name);
@@ -39,11 +39,11 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->dc= &new DictClient();
-      try(); {
+    public function setUp() {
+      $this->dc= new DictClient();
+      try {
         $this->dc->connect($this->server, (int)$this->port);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         throw (new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
@@ -57,7 +57,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->dc->close();
     }
     
@@ -67,7 +67,7 @@
      * @access  public
      */
     #[@test]
-    function testDefinition() {
+    public function testDefinition() {
       $definition= $this->dc->getDefinition('XP', '*');
       return $definition;
     }

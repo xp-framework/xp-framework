@@ -22,7 +22,7 @@
    * @purpose   Testcase
    */
   class CryptoKeyTest extends TestCase {
-    var
+    public
       $publickey    = NULL,
       $privatekey   = NULL,
       $cert         = NULL;
@@ -32,9 +32,9 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       if (!extension_loaded('openssl')) {
-        return throw(new PrerequisitesNotMetError(
+        throw(new PrerequisitesNotMetError(
           PREREQUISITE_LIBRARYMISSING, 
           $cause= NULL, 
           array('openssl')
@@ -47,7 +47,7 @@
       $keypair= &Keypair::generate();
       $privatekey= &$keypair->getPrivateKey();
       
-      $csr= &new CSR(new Principal(array(
+      $csr= new CSR(new Principal(array(
         'C'     => 'DE',
         'ST'    => 'Baden-Württemberg',
         'L'     => 'Karlsruhe',
@@ -70,7 +70,7 @@
      * @access  public
      */
     #[@test]
-    function generateKeys() {
+    public function generateKeys() {
       $this->assertTrue($this->cert->checkPrivateKey($this->privatekey));
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      */
     #[@test]
-    function testSignature() {
+    public function testSignature() {
       $signature= $this->privatekey->sign('This is just some testdata');
       
       $this->assertTrue($this->publickey->verify('This is just some testdata', $signature));
@@ -93,7 +93,7 @@
      * @access  public
      */
     #[@test]
-    function testEncryptionWithPublickey() {
+    public function testEncryptionWithPublickey() {
       $crypt= $this->publickey->encrypt('This is the secret data.');
       
       $this->assertEquals('This is the secret data.', $this->privatekey->decrypt($crypt));
@@ -105,7 +105,7 @@
      * @access  public
      */
     #[@test]
-    function testEncryptionWithPrivatekey() {
+    public function testEncryptionWithPrivatekey() {
       $crypt= $this->privatekey->encrypt('This is the secret data.');
       
       $this->assertEquals('This is the secret data.', $this->publickey->decrypt($crypt));
@@ -117,7 +117,7 @@
      * @access  public
      */
     #[@test]
-    function testSeals() {
+    public function testSeals() {
       list($data, $key)= $this->publickey->seal('This is my secret data.');
       
       $this->assertEquals($this->privatekey->unseal($data, $key));

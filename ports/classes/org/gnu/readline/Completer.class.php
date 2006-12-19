@@ -11,7 +11,7 @@
    * @see      xp://org.gnu.readline.ReadLine#setCompleter
    * @purpose  Interface
    */
-  class Completer extends Interface {
+  interface Completer {
   
     /**
      * Completion function
@@ -22,7 +22,7 @@
      * @param   int length
      * @return  string[] completion matches
      */
-    function complete($string, $offset, $length) { }
+    public function complete($string, $offset, $length);
   }
   
 ?>

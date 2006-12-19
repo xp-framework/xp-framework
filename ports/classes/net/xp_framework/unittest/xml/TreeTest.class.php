@@ -25,7 +25,7 @@
      * @param   &xml.Tree tree
      * @return  string
      */
-    function sourceOf(&$tree, $mode= INDENT_DEFAULT) {
+    public function sourceOf(&$tree, $mode= INDENT_DEFAULT) {
       return rtrim($tree->getSource($mode), "\n");
     }
 
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function emptyTree() {
+    public function emptyTree() {
       $this->assertEquals(
         '<root/>', 
         $this->sourceOf(new Tree('root'))
@@ -48,8 +48,8 @@
      * @access  public
      */
     #[@test]
-    function rootMember() {
-      with ($t= &new Tree('formresult'), $r= &$t->root); {
+    public function rootMember() {
+      with ($t= new Tree('formresult'), $r= &$t->root); {
         $this->assertClass($r, 'xml.Node');
         $this->assertEmpty($r->children);
         $this->assertEmpty($r->attribute);
@@ -63,9 +63,9 @@
      * @access  public
      */
     #[@test]
-    function addChild() {
-      $t= &new Tree('tests');
-      $child= &new Node('test', 'success', array('name' => 'TreeTest'));
+    public function addChild() {
+      $t= new Tree('tests');
+      $child= new Node('test', 'success', array('name' => 'TreeTest'));
       $this->assertEquals($child, $t->addChild($child));
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      */
     #[@test]
-    function fromString() {
+    public function fromString() {
       $t= &Tree::fromString('
         <c:config xmlns:c="http://example.com/cfg/1.0">
           <attribute name="key">value</attribute>
@@ -104,7 +104,7 @@
      * @access  public
      */
     #[@test, @expect('xml.XMLFormatException')]
-    function fromNonXmlString() {
+    public function fromNonXmlString() {
       Tree::fromString('@@NO-XML-HERE@@');
     }
   }

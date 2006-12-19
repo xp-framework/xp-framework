@@ -42,7 +42,7 @@
    * @see      http://www.ecma.ch/ecma1/STAND/ecma-323.htm
    */
   class StliConnection extends TelephonyProvider {
-    var
+    public
       $sock       = NULL,
       $version    = 0;
 
@@ -59,7 +59,7 @@
      * @param   &peer.Socket sock
      * @param   int version default STLI_VERSION_2
      */
-    function __construct(&$sock, $version= STLI_VERSION_2) {
+    public function __construct(&$sock, $version= STLI_VERSION_2) {
       $this->sock= &$sock;
       $this->version= $version;
     }
@@ -70,7 +70,7 @@
      * @access  protected
      * @param   string buf
      */
-    function _write($buf) {
+    public function _write($buf) {
       $this->trace('>>>', $buf);
       $this->sock->write($buf."\n");
     }
@@ -81,7 +81,7 @@
      * @access  protected
      * @return  string
      */
-    function _read() {
+    public function _read() {
       $read= chop($this->sock->read());
       $this->trace('<<<', $read);
       return $read;
@@ -95,8 +95,8 @@
      * @param   int version
      * @throws  lang.IllegalStateException in case already having connected
      */
-    function setVersion($version) { 
-      if ($this->sock->isConnected()) return throw(new IllegalStateException(
+    public function setVersion($version) { 
+      if ($this->sock->isConnected()) throw(new IllegalStateException(
         'Cannot set version after already having connected'
       ));    
       $this->version= $version;
@@ -107,7 +107,7 @@
      *
      * @access  private
      */
-    function _sockcmd() {
+    public function _sockcmd() {
       $args= func_get_args();
       $write= vsprintf($args[0], array_slice($args, 1));
       
@@ -123,7 +123,7 @@
      *
      * @access  private
      */
-    function _expect($expect, $have) {
+    public function _expect($expect, $have) {
       if ($expect !== $have) {
         throw(new TelephonyException(sprintf(
           'Protocol error: Expecting "%s", have "%s"', $expect, $have
@@ -139,7 +139,7 @@
      *
      * @access  private
      */
-    function _expectf($expect, $have) {
+    public function _expectf($expect, $have) {
       $res= sscanf($have, $expect);
 
       foreach ($res as $val) {
@@ -161,7 +161,7 @@
      * @return  mixed the return code of the socket's connect method
      * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
-    function connect() {
+    public function connect() {
       if (FALSE === ($ret= $this->sock->connect())) return FALSE;
       
       // Send initialization string and check response
@@ -178,7 +178,7 @@
      * @return  mixed the return code of the socket's close method
      * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
-    function close() {
+    public function close() {
       if (FALSE === $this->_expect(
         STLI_BYE_RESPONSE,
         $this->_sockcmd('BYE')
@@ -195,7 +195,7 @@
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    function &createCall(&$terminal, &$destination) {
+    public function &createCall(&$terminal, &$destination) {
       if (FALSE === $this->_expect(
         STLI_MAKECALL_RESPONSE,
         $this->_sockcmd('MakeCall %s %s', 
@@ -219,7 +219,7 @@
      * @param   &util.telephony.TelephonyAddress address
      * @return  &util.telephony.TelephonyTerminal
      */
-    function &getTerminal(&$address) {
+    public function &getTerminal(&$address) {
       return new TelephonyTerminal($address);
     }
 
@@ -231,7 +231,7 @@
      * @param   bool status TRUE to start observing, FALSE top stop
      * @return  bool success
      */
-    function observeTerminal(&$terminal, $status) {
+    public function observeTerminal(&$terminal, $status) {
       if ($status) {
         $success= $this->_expect(
           STLI_MON_START_RESPONSE,
@@ -255,7 +255,7 @@
      * @param   &util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
-    function releaseTerminal(&$terminal) {
+    public function releaseTerminal(&$terminal) {
       return TRUE;
     }
   }

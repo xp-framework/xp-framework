@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class Bug extends DataSet {
-    var
+    public
       $bug_id             = 0,
       $assigned_to        = 0,
       $bug_file_loc       = NULL,
@@ -49,7 +49,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &Bug::getPeer()); {
         $peer->setTable('bugs');
         $peer->setConnection('bugzilla');
@@ -94,7 +94,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -106,7 +106,7 @@
      * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_id($bug_id) {
+    public function &getByBug_id($bug_id) {
       $peer= &Bug::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL))));
     }
@@ -119,7 +119,7 @@
      * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByAlias($alias) {
+    public function &getByAlias($alias) {
       $peer= &Bug::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('alias', $alias, EQUAL))));
     }
@@ -132,7 +132,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByAssigned_to($assigned_to) {
+    public function &getByAssigned_to($assigned_to) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('assigned_to', $assigned_to, EQUAL)));
     }
@@ -145,7 +145,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByCreation_ts($creation_ts) {
+    public function &getByCreation_ts($creation_ts) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('creation_ts', $creation_ts, EQUAL)));
     }
@@ -158,7 +158,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByDelta_ts($delta_ts) {
+    public function &getByDelta_ts($delta_ts) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('delta_ts', $delta_ts, EQUAL)));
     }
@@ -171,7 +171,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_severity($bug_severity) {
+    public function &getByBug_severity($bug_severity) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('bug_severity', $bug_severity, EQUAL)));
     }
@@ -184,7 +184,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_status($bug_status) {
+    public function &getByBug_status($bug_status) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('bug_status', $bug_status, EQUAL)));
     }
@@ -197,7 +197,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByOp_sys($op_sys) {
+    public function &getByOp_sys($op_sys) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('op_sys', $op_sys, EQUAL)));
     }
@@ -210,7 +210,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByPriority($priority) {
+    public function &getByPriority($priority) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('priority', $priority, EQUAL)));
     }
@@ -223,7 +223,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByReporter($reporter) {
+    public function &getByReporter($reporter) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('reporter', $reporter, EQUAL)));
     }
@@ -236,7 +236,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByVersion($version) {
+    public function &getByVersion($version) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('version', $version, EQUAL)));
     }
@@ -249,7 +249,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByResolution($resolution) {
+    public function &getByResolution($resolution) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('resolution', $resolution, EQUAL)));
     }
@@ -262,7 +262,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByVotes($votes) {
+    public function &getByVotes($votes) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('votes', $votes, EQUAL)));
     }
@@ -275,7 +275,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByProduct_id($product_id) {
+    public function &getByProduct_id($product_id) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('product_id', $product_id, EQUAL)));
     }
@@ -288,7 +288,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByComponent_id($component_id) {
+    public function &getByComponent_id($component_id) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('component_id', $component_id, EQUAL)));
     }
@@ -301,7 +301,7 @@
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByShort_desc($short_desc) {
+    public function &getByShort_desc($short_desc) {
       $peer= &Bug::getPeer();
       return $peer->doSelect(new Criteria(array('short_desc', $short_desc, EQUAL)));
     }
@@ -312,7 +312,7 @@
      * @access  public
      * @return  int
      */
-    function getBug_id() {
+    public function getBug_id() {
       return $this->bug_id;
     }
       
@@ -323,7 +323,7 @@
      * @param   int bug_id
      * @return  int the previous value
      */
-    function setBug_id($bug_id) {
+    public function setBug_id($bug_id) {
       return $this->_change('bug_id', $bug_id);
     }
 
@@ -333,7 +333,7 @@
      * @access  public
      * @return  int
      */
-    function getAssigned_to() {
+    public function getAssigned_to() {
       return $this->assigned_to;
     }
       
@@ -344,7 +344,7 @@
      * @param   int assigned_to
      * @return  int the previous value
      */
-    function setAssigned_to($assigned_to) {
+    public function setAssigned_to($assigned_to) {
       return $this->_change('assigned_to', $assigned_to);
     }
 
@@ -354,7 +354,7 @@
      * @access  public
      * @return  string
      */
-    function getBug_file_loc() {
+    public function getBug_file_loc() {
       return $this->bug_file_loc;
     }
       
@@ -365,7 +365,7 @@
      * @param   string bug_file_loc
      * @return  string the previous value
      */
-    function setBug_file_loc($bug_file_loc) {
+    public function setBug_file_loc($bug_file_loc) {
       return $this->_change('bug_file_loc', $bug_file_loc);
     }
 
@@ -375,7 +375,7 @@
      * @access  public
      * @return  string
      */
-    function getBug_severity() {
+    public function getBug_severity() {
       return $this->bug_severity;
     }
       
@@ -386,7 +386,7 @@
      * @param   string bug_severity
      * @return  string the previous value
      */
-    function setBug_severity($bug_severity) {
+    public function setBug_severity($bug_severity) {
       return $this->_change('bug_severity', $bug_severity);
     }
 
@@ -396,7 +396,7 @@
      * @access  public
      * @return  string
      */
-    function getBug_status() {
+    public function getBug_status() {
       return $this->bug_status;
     }
       
@@ -407,7 +407,7 @@
      * @param   string bug_status
      * @return  string the previous value
      */
-    function setBug_status($bug_status) {
+    public function setBug_status($bug_status) {
       return $this->_change('bug_status', $bug_status);
     }
 
@@ -417,7 +417,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getCreation_ts() {
+    public function &getCreation_ts() {
       return $this->creation_ts;
     }
       
@@ -428,7 +428,7 @@
      * @param   &util.Date creation_ts
      * @return  &util.Date the previous value
      */
-    function &setCreation_ts(&$creation_ts) {
+    public function &setCreation_ts(&$creation_ts) {
       return $this->_change('creation_ts', $creation_ts);
     }
 
@@ -438,7 +438,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDelta_ts() {
+    public function &getDelta_ts() {
       return $this->delta_ts;
     }
       
@@ -449,7 +449,7 @@
      * @param   &util.Date delta_ts
      * @return  &util.Date the previous value
      */
-    function &setDelta_ts(&$delta_ts) {
+    public function &setDelta_ts(&$delta_ts) {
       return $this->_change('delta_ts', $delta_ts);
     }
 
@@ -459,7 +459,7 @@
      * @access  public
      * @return  string
      */
-    function getShort_desc() {
+    public function getShort_desc() {
       return $this->short_desc;
     }
       
@@ -470,7 +470,7 @@
      * @param   string short_desc
      * @return  string the previous value
      */
-    function setShort_desc($short_desc) {
+    public function setShort_desc($short_desc) {
       return $this->_change('short_desc', $short_desc);
     }
 
@@ -480,7 +480,7 @@
      * @access  public
      * @return  string
      */
-    function getOp_sys() {
+    public function getOp_sys() {
       return $this->op_sys;
     }
       
@@ -491,7 +491,7 @@
      * @param   string op_sys
      * @return  string the previous value
      */
-    function setOp_sys($op_sys) {
+    public function setOp_sys($op_sys) {
       return $this->_change('op_sys', $op_sys);
     }
 
@@ -501,7 +501,7 @@
      * @access  public
      * @return  string
      */
-    function getPriority() {
+    public function getPriority() {
       return $this->priority;
     }
       
@@ -512,7 +512,7 @@
      * @param   string priority
      * @return  string the previous value
      */
-    function setPriority($priority) {
+    public function setPriority($priority) {
       return $this->_change('priority', $priority);
     }
 
@@ -522,7 +522,7 @@
      * @access  public
      * @return  string
      */
-    function getRep_platform() {
+    public function getRep_platform() {
       return $this->rep_platform;
     }
       
@@ -533,7 +533,7 @@
      * @param   string rep_platform
      * @return  string the previous value
      */
-    function setRep_platform($rep_platform) {
+    public function setRep_platform($rep_platform) {
       return $this->_change('rep_platform', $rep_platform);
     }
 
@@ -543,7 +543,7 @@
      * @access  public
      * @return  int
      */
-    function getReporter() {
+    public function getReporter() {
       return $this->reporter;
     }
       
@@ -554,7 +554,7 @@
      * @param   int reporter
      * @return  int the previous value
      */
-    function setReporter($reporter) {
+    public function setReporter($reporter) {
       return $this->_change('reporter', $reporter);
     }
 
@@ -564,7 +564,7 @@
      * @access  public
      * @return  string
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
       
@@ -575,7 +575,7 @@
      * @param   string version
      * @return  string the previous value
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       return $this->_change('version', $version);
     }
 
@@ -585,7 +585,7 @@
      * @access  public
      * @return  string
      */
-    function getResolution() {
+    public function getResolution() {
       return $this->resolution;
     }
       
@@ -596,7 +596,7 @@
      * @param   string resolution
      * @return  string the previous value
      */
-    function setResolution($resolution) {
+    public function setResolution($resolution) {
       return $this->_change('resolution', $resolution);
     }
 
@@ -606,7 +606,7 @@
      * @access  public
      * @return  string
      */
-    function getTarget_milestone() {
+    public function getTarget_milestone() {
       return $this->target_milestone;
     }
       
@@ -617,7 +617,7 @@
      * @param   string target_milestone
      * @return  string the previous value
      */
-    function setTarget_milestone($target_milestone) {
+    public function setTarget_milestone($target_milestone) {
       return $this->_change('target_milestone', $target_milestone);
     }
 
@@ -627,7 +627,7 @@
      * @access  public
      * @return  int
      */
-    function getQa_contact() {
+    public function getQa_contact() {
       return $this->qa_contact;
     }
       
@@ -638,7 +638,7 @@
      * @param   int qa_contact
      * @return  int the previous value
      */
-    function setQa_contact($qa_contact) {
+    public function setQa_contact($qa_contact) {
       return $this->_change('qa_contact', $qa_contact);
     }
 
@@ -648,7 +648,7 @@
      * @access  public
      * @return  string
      */
-    function getStatus_whiteboard() {
+    public function getStatus_whiteboard() {
       return $this->status_whiteboard;
     }
       
@@ -659,7 +659,7 @@
      * @param   string status_whiteboard
      * @return  string the previous value
      */
-    function setStatus_whiteboard($status_whiteboard) {
+    public function setStatus_whiteboard($status_whiteboard) {
       return $this->_change('status_whiteboard', $status_whiteboard);
     }
 
@@ -669,7 +669,7 @@
      * @access  public
      * @return  int
      */
-    function getVotes() {
+    public function getVotes() {
       return $this->votes;
     }
       
@@ -680,7 +680,7 @@
      * @param   int votes
      * @return  int the previous value
      */
-    function setVotes($votes) {
+    public function setVotes($votes) {
       return $this->_change('votes', $votes);
     }
 
@@ -690,7 +690,7 @@
      * @access  public
      * @return  string
      */
-    function getKeywords() {
+    public function getKeywords() {
       return $this->keywords;
     }
       
@@ -701,7 +701,7 @@
      * @param   string keywords
      * @return  string the previous value
      */
-    function setKeywords($keywords) {
+    public function setKeywords($keywords) {
       return $this->_change('keywords', $keywords);
     }
 
@@ -711,7 +711,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getLastdiffed() {
+    public function &getLastdiffed() {
       return $this->lastdiffed;
     }
       
@@ -722,7 +722,7 @@
      * @param   &util.Date lastdiffed
      * @return  &util.Date the previous value
      */
-    function &setLastdiffed(&$lastdiffed) {
+    public function &setLastdiffed(&$lastdiffed) {
       return $this->_change('lastdiffed', $lastdiffed);
     }
 
@@ -732,7 +732,7 @@
      * @access  public
      * @return  int
      */
-    function getEverconfirmed() {
+    public function getEverconfirmed() {
       return $this->everconfirmed;
     }
       
@@ -743,7 +743,7 @@
      * @param   int everconfirmed
      * @return  int the previous value
      */
-    function setEverconfirmed($everconfirmed) {
+    public function setEverconfirmed($everconfirmed) {
       return $this->_change('everconfirmed', $everconfirmed);
     }
 
@@ -753,7 +753,7 @@
      * @access  public
      * @return  int
      */
-    function getReporter_accessible() {
+    public function getReporter_accessible() {
       return $this->reporter_accessible;
     }
       
@@ -764,7 +764,7 @@
      * @param   int reporter_accessible
      * @return  int the previous value
      */
-    function setReporter_accessible($reporter_accessible) {
+    public function setReporter_accessible($reporter_accessible) {
       return $this->_change('reporter_accessible', $reporter_accessible);
     }
 
@@ -774,7 +774,7 @@
      * @access  public
      * @return  int
      */
-    function getCclist_accessible() {
+    public function getCclist_accessible() {
       return $this->cclist_accessible;
     }
       
@@ -785,7 +785,7 @@
      * @param   int cclist_accessible
      * @return  int the previous value
      */
-    function setCclist_accessible($cclist_accessible) {
+    public function setCclist_accessible($cclist_accessible) {
       return $this->_change('cclist_accessible', $cclist_accessible);
     }
 
@@ -795,7 +795,7 @@
      * @access  public
      * @return  string
      */
-    function getEstimated_time() {
+    public function getEstimated_time() {
       return $this->estimated_time;
     }
       
@@ -806,7 +806,7 @@
      * @param   string estimated_time
      * @return  string the previous value
      */
-    function setEstimated_time($estimated_time) {
+    public function setEstimated_time($estimated_time) {
       return $this->_change('estimated_time', $estimated_time);
     }
 
@@ -816,7 +816,7 @@
      * @access  public
      * @return  string
      */
-    function getRemaining_time() {
+    public function getRemaining_time() {
       return $this->remaining_time;
     }
       
@@ -827,7 +827,7 @@
      * @param   string remaining_time
      * @return  string the previous value
      */
-    function setRemaining_time($remaining_time) {
+    public function setRemaining_time($remaining_time) {
       return $this->_change('remaining_time', $remaining_time);
     }
 
@@ -837,7 +837,7 @@
      * @access  public
      * @return  string
      */
-    function getAlias() {
+    public function getAlias() {
       return $this->alias;
     }
       
@@ -848,7 +848,7 @@
      * @param   string alias
      * @return  string the previous value
      */
-    function setAlias($alias) {
+    public function setAlias($alias) {
       return $this->_change('alias', $alias);
     }
 
@@ -858,7 +858,7 @@
      * @access  public
      * @return  string
      */
-    function getProduct_id() {
+    public function getProduct_id() {
       return $this->product_id;
     }
       
@@ -869,7 +869,7 @@
      * @param   string product_id
      * @return  string the previous value
      */
-    function setProduct_id($product_id) {
+    public function setProduct_id($product_id) {
       return $this->_change('product_id', $product_id);
     }
 
@@ -879,7 +879,7 @@
      * @access  public
      * @return  string
      */
-    function getComponent_id() {
+    public function getComponent_id() {
       return $this->component_id;
     }
       
@@ -890,7 +890,7 @@
      * @param   string component_id
      * @return  string the previous value
      */
-    function setComponent_id($component_id) {
+    public function setComponent_id($component_id) {
       return $this->_change('component_id', $component_id);
     }
   }

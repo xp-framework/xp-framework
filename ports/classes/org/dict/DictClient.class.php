@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'org.dict.DictDefinitionEntry');
+  uses(
+    'peer.Socket',
+    'org.dict.DictDefinitionEntry',
+    'util.log.Traceable'
+  );
 
   define('DICT_STRATEGY_SUBSTRING', 'substring');
   define('DICT_STRATEGY_EXACT',     'exact');
@@ -41,12 +45,12 @@
    * @test     xp://net.xp_framework.unittest.peer.DictTest
    * @purpose  Implement DICT
    */
-  class DictClient extends Object {
-    var
+  class DictClient extends Object implements Traceable {
+    public
       $info  = '',
       $cat   = NULL;
       
-    var
+    public
       $_sock = NULL;
       
     /**
@@ -55,7 +59,7 @@
      * @access  public
      * @param   string info default ''
      */
-    function __construct($info= '') {
+    public function __construct($info= '') {
       $this->info= $info;
     }
 
@@ -70,16 +74,16 @@
      * @throws  io.IOException
      * @throws  lang.IllegalStateException in case of not being connected
      */
-    function _sockcmd() {
+    public function _sockcmd() {
       if (NULL === $this->_sock) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       
       // Arguments
       $args= func_get_args();
       $expect= (array)$args[sizeof($args)- 1];
       
-      try(); {
+      try {
         if (FALSE !== $args[0]) {
           $cmd= vsprintf($args[0], array_slice($args, 1, -1));
           $this->_sock->write($cmd."\n");
@@ -88,14 +92,14 @@
 
         // Read
         $buf= substr($this->_sock->read(), 0, -2);
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        return throw(new FormatException(
+        throw(new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"] '.
           '- command was '.$cmd
         ));
@@ -123,13 +127,13 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function connect($server, $port= 2628) {
-      $this->_sock= &new Socket($server, $port);
-      try(); {
+    public function connect($server, $port= 2628) {
+      $this->_sock= new Socket($server, $port);
+      try {
         $this->_sock->connect();
         $this->_sockcmd(FALSE, 220); 
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return TRUE;
@@ -148,13 +152,13 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function close() {
+    public function close() {
       if (NULL === $this->_sock) return;
-      try(); {
+      try {
         $this->_sockcmd('QUIT', 221); 
         $this->_sock->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       $this->_sock= NULL;
@@ -192,9 +196,9 @@
      * @return  &org.dict.DictDefinitionEntry[]
      * @throws  io.IOException
      */
-    function &getDefinition($word, $db= '*') {
+    public function &getDefinition($word, $db= '*') {
       $def= array();
-      try(); {
+      try {
         $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(150, 552));
         if ('150' == substr($ret, 0, 3)) {
 
@@ -210,11 +214,11 @@
               $definition.= $buf;
             }
             
-            $def[]= &new DictDefinitionEntry(substr($ret, 4), $definition);
+            $def[]= new DictDefinitionEntry(substr($ret, 4), $definition);
           }
         }
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return $def;    
@@ -241,7 +245,7 @@
      * @return  string definition
      * @throws  io.IOException
      */
-    function getWords($word, $strategy= DICT_STRATEGY_SUBSTRING, $db= '*') {
+    public function getWords($word, $strategy= DICT_STRATEGY_SUBSTRING, $db= '*') {
       // TBD
     }
     
@@ -268,7 +272,7 @@
      * @return  mixed
      * @throws  io.IOException
      */
-    function getStrategies() {
+    public function getStrategies() {
       // TBD    
     }
     
@@ -298,7 +302,7 @@
      * @return  mixed
      * @throws  io.IOException
      */
-    function getDatabases() {
+    public function getDatabases() {
       // TBD    
     }
     
@@ -321,7 +325,7 @@
      * @return  mixed
      * @throws  io.IOException
      */
-    function getDatabaseInfo() {
+    public function getDatabaseInfo() {
       // TBD    
     }
     
@@ -355,7 +359,7 @@
      * @return  mixed
      * @throws  io.IOException
      */
-    function getServer() {
+    public function getServer() {
       // TBD    
     }
     
@@ -371,7 +375,7 @@
      * @return  mixed
      * @throws  io.IOException
      */
-    function getStatus() {
+    public function getStatus() {
       return $this->_sockcmd('STATUS', 210);   
     }  
 
@@ -381,9 +385,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

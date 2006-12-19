@@ -20,7 +20,7 @@
      * @param   &org.webdav.xml.WebdavScriptletRequest request The Request
      * @return  bool
      */
-    function isAuthorized($path, &$user, &$request) {
+    public function isAuthorized($path, &$user, &$request) {
       return TRUE;
     }
   }

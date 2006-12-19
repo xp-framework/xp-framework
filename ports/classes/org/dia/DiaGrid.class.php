@@ -14,7 +14,7 @@
    */
   class DiaGrid extends DiaComposite {
 
-    var
+    public
       $type= 'grid';
 
     /**
@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setWidthX(1);
       $this->setWidthY(1);
@@ -37,7 +37,7 @@
      * @access  public
      * @return  real
      */
-    function getWidthX() {
+    public function getWidthX() {
       return $this->getChildValue('width_x');
     }
 
@@ -48,7 +48,7 @@
      * @param   real width
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="width_x"]/dia:real/@val', value= 'real')]
-    function setWidthX($width) {
+    public function setWidthX($width) {
       $this->setReal('width_x', $width);
     }
 
@@ -58,7 +58,7 @@
      * @access  public
      * @return  real
      */
-    function getWidthY() {
+    public function getWidthY() {
       return $this->getChildValue('width_y');
     }
 
@@ -69,7 +69,7 @@
      * @param   real height
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="width_y"]/dia:real/@val', value= 'real')]
-    function setWidthY($width) {
+    public function setWidthY($width) {
       $this->setReal('width_y', $width);
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  real
      */
-    function getVisibleX() {
+    public function getVisibleX() {
       return $this->getChildValue('visible_x');
     }
 
@@ -90,7 +90,7 @@
      * @param   int visible
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="visible_x"]/dia:int/@val', value= 'int')]
-    function setVisibleX($visible) {
+    public function setVisibleX($visible) {
       $this->setInt('visible_x', $visible);
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @return  real
      */
-    function getVisibleY() {
+    public function getVisibleY() {
       return $this->getChildValue('visible_y');
     }
 
@@ -111,7 +111,7 @@
      * @param   int visible
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="visible_y"]/dia:int/@val', value= 'int')]
-    function setVisibleY($visible) {
+    public function setVisibleY($visible) {
       $this->setInt('visible_y', $visible);
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  &org.dia.DiaComposite
      */
-    function getGridColor() {
+    public function getGridColor() {
       return $this->getChild('color');
     }
 
@@ -132,7 +132,7 @@
      * @param   &org.dia.DiaComposite Color
      */
     #[@fromDia(xpath= 'dia:composite/dia:composite[@type="color"]', class= 'org.dia.DiaComposite')]
-    function setGridColor(&$Color) {
+    public function setGridColor(&$Color) {
       $this->set('color', $Color);
     }
 

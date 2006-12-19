@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.beans.Bean');
+  uses('remote.beans.Bean', 'net.xp_framework.beans.stateless.Roundtrip');
 
   /**
    * (Insert class' description here)
@@ -16,7 +16,7 @@
   #[@lookupName('xp/demo/Roundtrip'),
   # @homeInterface('net.xp_framework.beans.stateless.RoundtripHome')
   #]
-  class RoundtripBean extends Bean {
+  class RoundtripBean extends Bean implements Roundtrip {
   
     /**
      * EchoString method
@@ -26,7 +26,7 @@
      * @return  string
      */
     #[@remote]
-    function echoString($arg1) {
+    public function echoString($arg1) {
       return $arg1;
     }
 
@@ -38,7 +38,7 @@
      * @return  integer
      */
     #[@remote]
-    function echoInt($arg1) {
+    public function echoInt($arg1) {
       return $arg1;
     }
 
@@ -50,7 +50,7 @@
      * @return  double
      */
     #[@remote]
-    function echoDouble($arg1) {
+    public function echoDouble($arg1) {
       return $arg1;
     }
 
@@ -62,7 +62,7 @@
      * @return  boolean
      */
     #[@remote]
-    function echoBool($arg1) {
+    public function echoBool($arg1) {
       return $arg1;
     }
 
@@ -74,7 +74,7 @@
      * @return  java.lang.Object
      */
     #[@remote]
-    function echoNull($arg1) {
+    public function echoNull($arg1) {
       return $arg1;
     }
 
@@ -86,7 +86,7 @@
      * @return  util.Date
      */
     #[@remote]
-    function echoDate($arg1) {
+    public function echoDate($arg1) {
       return $arg1;
     }
 
@@ -98,7 +98,7 @@
      * @return  array<mixed, mixed>
      */
     #[@remote]
-    function echoHash($arg1) {
+    public function echoHash($arg1) {
       return $arg1;
     }
 
@@ -110,11 +110,11 @@
      * @return  lang.types.ArrayList
      */
     #[@remote]
-    function echoArray($arg1) {
-      if (!is('lang.types.ArrayList', $arg1)) return throw(new IllegalArgumentException(
+    public function echoArray($arg1) {
+      if (!is('lang.types.ArrayList', $arg1)) throw(new IllegalArgumentException(
         'arg1 is not an array.'
       ));
       return $arg1;
     }
-  } implements(__FILE__, 'net.xp_framework.beans.stateless.Roundtrip');
+  } 
 ?>

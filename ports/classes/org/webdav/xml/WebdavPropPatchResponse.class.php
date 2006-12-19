@@ -34,7 +34,7 @@
    */
   class WebdavPropPatchResponse extends WebdavScriptletResponse {
     
-    var
+    public
       $hrefNode=     NULL,
       $propstatNode= array(),
       $propNode=     array();
@@ -46,7 +46,7 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
-    function __construct() {
+    public function __construct() {
       $this->setRootNode(new Node(
         'D:response',
         NULL,
@@ -61,7 +61,7 @@
      * @access public
      * @param  string href The href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->hrefNode->setContent($href);
     }
 
@@ -74,7 +74,7 @@
      * @param   string namespace default DAV:
      * @return  bool   
      */
-    function addProperty($property, $status= HTTP_OK) {
+    public function addProperty($property, $status= HTTP_OK) {
       if (!isset($this->statusNode[$status])) {
         $this->propstatNode[$status]= &$this->addChild(new Node('D:propstat'));
         $this->propNode[$status]= &$this->propstatNode[$status]->addChild(new Node('D:prop'));
@@ -101,7 +101,7 @@
      *
      * @access public
      */    
-    function process() {
+    public function process() {
       foreach (array_keys($this->propstatNode) as $status) {
         $this->propstatNode[$status]->addChild(new Node('D:status', 'HTTP/1.0 '.$status));
       }

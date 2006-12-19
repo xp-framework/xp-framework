@@ -24,7 +24,7 @@
    * @purpose  Dav Implementation
    */ 
   class DavFileImpl extends DavImpl {
-    var
+    public
       $base=              '',
       $dataDirectory=     '/data/',
       $propStorage=       NULL;
@@ -35,14 +35,14 @@
      * @access  public
      * @param   string base
      */
-    function __construct($base) {
+    public function __construct($base) {
       $this->base= $base.$this->dataDirectory;
       $this->capabilities= (
         WEBDAV_IMPL_PROPFIND | 
         WEBDAV_IMPL_PROPPATCH
       );
       
-      $this->propStorage= &new DBAFilePropertyStorage($this->base.'../Webdav.props');
+      $this->propStorage= new DBAFilePropertyStorage($this->base.'../Webdav.props');
       
       $l= &Logger::getInstance();
       $this->c= &$l->getCategory();
@@ -56,21 +56,21 @@
      * @param   int maxdepth
      * @throws  lang.ElementNotFoundException
      */
-    function _recurse(&$request, &$response, $path, $maxdepth) {
+    public function _recurse(&$request, &$response, $path, $maxdepth) {
       $path= rtrim($path, '/');
       $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($path.' not found'));
+        throw(new ElementNotFoundException($path.' not found'));
       }
       $rootURL= $request->getRootURL();
       $root= $rootURL->getPath();
 
       // It's a directory:
       if (is_dir($realpath)) {
-        $f= &new Folder($realpath);
-        try(); {
-          $o= &new WebdavObject(
+        $f= new Folder($realpath);
+        try {
+          $o= new WebdavObject(
             $root.$path,
             WEBDAV_COLLECTION,
             0,
@@ -84,7 +84,7 @@
             $o->addProperty($property);
           }
           $response->addWebdavObject($o, $request->getProperties());
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           $this->c->debug(get_class($this).'::_recurse', 'Exeption ', $e->message);
         }
         
@@ -99,8 +99,8 @@
       }
       
       // It's a File
-      $f= &new File($realpath);
-      $o= &new WebdavObject(
+      $f= new File($realpath);
+      $o= new WebdavObject(
         $root.$path,
         NULL,
         filesize($realpath),
@@ -143,7 +143,7 @@
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    function move($filename, $destination, $overwrite, $docopy= 0) {
+    public function move($filename, $destination, $overwrite, $docopy= 0) {
 
       // Securitychecks (../etc/passwd)
       $uri= $this->_normalizePath($this->base.$filename);
@@ -151,7 +151,7 @@
 
       // Copy of folders is not allowed (implemented)
       if ($docopy && is_dir($uri)) {
-        return throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
+        throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
       }
       
       // Create src and dst objects
@@ -160,19 +160,19 @@
 
       // Is overwriting permitted?
       if ($dst->exists() && !$overwrite) {
-        return throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$uri));
+        throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$uri));
       }
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        return throw(new OperationNotAllowedException($src->getURI().' is locked'));
+        throw(new OperationNotAllowedException($src->getURI().' is locked'));
       }
       
       // Copy/move the file to destination file/folder
-      try(); {
+      try {
         $docopy ? $src->copy($dst->getURI()) : $src->move($dst->getURI());
-      } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
+      } catch (IOException $e) {
+        throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
       }
       
       $src= substr($uri, strlen($this->base));
@@ -198,7 +198,7 @@
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    function copy($filename, $destination, $overwrite) {
+    public function copy($filename, $destination, $overwrite) {
       return $this->move($filename, $destination, $overwrite, 1);
     }
 
@@ -210,22 +210,22 @@
      * @return  bool success
      * @throws  org.webdav.OperationFailedException
      */
-    function mkcol($col) {
+    public function mkcol($col) {
 
       $colname= $this->_normalizePath($this->base.$col);
       if (file_exists($colname)) {
-        return throw(new OperationFailedException($colname.' already exists'));
+        throw(new OperationFailedException($colname.' already exists'));
       }
           
-      try(); {
-        $f= &new Folder($colname);
+      try {
+        $f= new Folder($colname);
         $f->create(0755);
         
         // Create also backup directory
-        $b= &new Folder($this->_normalizePath($this->base.'../versions/'.$col));
+        $b= new Folder($this->_normalizePath($this->base.'../versions/'.$col));
         $b->create(0755);        
-      } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
+      } catch (IOException $e) {
+        throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
       }
       
       return TRUE;
@@ -241,29 +241,29 @@
      * @throws  org.webdav.OperationFailedException
      * @throws  org.webdav.OperationNotAllowedException
      */
-    function delete($filename) {    
+    public function delete($filename) {    
       $uri= $this->_normalizePath($this->base.$filename);
 
       if (strlen($uri) <= strlen($this->base)) {
-        return throw(new OperationNotAllowedException($uri.' root-dir can not be deleted'));
+        throw(new OperationNotAllowedException($uri.' root-dir can not be deleted'));
       }
       
       $f= is_dir($uri) ? new Folder($uri): new File($uri);
           
       // If the specified argument doesn't exist, throw an exception
       if (!$f->exists()) {
-        return throw(new ElementNotFoundException($filename.' not found'));
+        throw(new ElementNotFoundException($filename.' not found'));
       }
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        return throw(new OperationNotAllowedException($filename.' is locked'));
+        throw(new OperationNotAllowedException($filename.' is locked'));
       }
 
-      try(); {
+      try {
         $f->unlink();
-      } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
+      } catch (IOException $e) {
+        throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
       }
   
       // Delete backup versions
@@ -293,15 +293,15 @@
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    function put($filename, &$data, $resourcetype= NULL) {
+    public function put($filename, &$data, $resourcetype= NULL) {
       
       $uri= $this->base.$filename;
       if (is_dir($uri)) {
-        return throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
+        throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
       }
       
       // Open file and write contents
-      $f= &new File($uri);
+      $f= new File($uri);
       
       // Check if VersionControl is activated
       if (($prop= $this->propStorage->getProperty($filename, 'D:version')) !== NULL) {
@@ -320,20 +320,20 @@
         $this->backup($filename, '../versions/'.dirname($filename).'/'.$newVersion->getVersionName());
       }
       
-      try(); {
+      try {
         $new= !$f->exists();
         $f->open(FILE_MODE_WRITE);
         $f->write($data);
         $f->close();
-      } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($filename.' cannot be written '.$e->toString()));
+      } catch (IOException $e) {
+        throw(new OperationFailedException($filename.' cannot be written '.$e->toString()));
       }
       
       // Set the resourcetype on first put
       if (($prop= $this->propStorage->getProperty($filename, 'D:resourcetype')) == NULL) {      
       
         // Set ResourceType
-        with ($p= &new WebdavProperty('resourcetype', $resourcetype)); {
+        with ($p= new WebdavProperty('resourcetype', $resourcetype)); {
           $p->setNameSpaceName('DAV:');
           $p->setNameSpacePrefix('D:');          
         }
@@ -352,7 +352,7 @@
      * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationNotAllowedException
      */
-    function &get($filename, $token= NULL) {
+    public function &get($filename, $token= NULL) {
     
       $this->c->debug('FILENAME', $filename);
       $this->c->debug('TOKEN', $token);
@@ -366,14 +366,14 @@
         $lockinfo['type'] == 'exclusive'  and 
         'opaquelocktoken:'.$lockinfo['token'] != $token
       )
-      return throw(new IllegalArgumentException($filename.' is locked exclusive'));
+      throw(new IllegalArgumentException($filename.' is locked exclusive'));
       
       if (is_dir($this->base.$filename)) {
         $this->c->debug(get_class($this), '::GET Dir', $filename);
 
-        $f= &new Folder($this->base.$filename);
+        $f= new Folder($this->base.$filename);
         if (!$f->exists()) {
-          return throw(new ElementNotFoundException($filename.' not found'));
+          throw(new ElementNotFoundException($filename.' not found'));
         }
 
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
@@ -407,7 +407,7 @@
         asort($flist[1]);
         $flist= $html.implode('', $flist[1]).'</table>'; 
 
-        $o= &new WebdavObject(
+        $o= new WebdavObject(
           $f->uri,
           NULL,
           strlen($flist),
@@ -427,10 +427,10 @@
       // Open file and read contents
       // contentype
       if (!file_exists($this->base.$filename))
-        return throw(new ElementNotFoundException($filename.' not found'));
+        throw(new ElementNotFoundException($filename.' not found'));
 
 
-      $f= &new File($this->base.$filename);
+      $f= new File($this->base.$filename);
       $contentType= '';
       
       $this->c->debug(get_class($this), '::get ', $this->base.filename);
@@ -440,7 +440,7 @@
       if (empty($contentType))
         $contentType= MimeType::getByFilename($f->uri, 'text/plain');
 
-      $o= &new WebdavObject(
+      $o= new WebdavObject(
         $f->uri,
         NULL,
         $f->size(),
@@ -449,12 +449,12 @@
         new Date($f->lastModified())
       );
         
-      try(); {
+      try {
         $f->open(FILE_MODE_READ);
         $o->setData($f->read($f->size()));
         $f->close();
-      } if (catch('FileFoundException', $e)) {
-        return throw(new ElementNotFoundException($filename.' not found'));
+      } catch (FileFoundException $e) {
+        throw(new ElementNotFoundException($filename.' not found'));
       }
       $this->c->debug('OBJ', $o->properties);
       return $o;
@@ -469,10 +469,10 @@
      * @throws  org.webdav.OperationFailedException
      * @throws  lang.ElementNotFoundException
      */
-    function proppatch(&$request, &$response) {
+    public function proppatch(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($realpath.' not found'));
+        throw(new ElementNotFoundException($realpath.' not found'));
       }
 
       foreach (array(FALSE, TRUE) as $remove) {
@@ -486,7 +486,7 @@
             case 'isfolder':
             case 'getcontentlength':
             case 'executable':
-              return throw(new OperationNotAllowedException($key.' is a standard property'));
+              throw(new OperationNotAllowedException($key.' is a standard property'));
               break;
 
             default:
@@ -498,10 +498,10 @@
                 $response->addProperty($property);
                 $eProps[$key]= $property;
               }
-              try();{
+              try {
                 $this->propStorage->setProperties($request->getPath(), $eProps);
-              } if  (catch('Exception', $e)) {
-                return throw($e);
+              } catch (Exception $e) {
+                throw($e);
               }
           }
         }
@@ -516,11 +516,11 @@
      * @param   &org.webdav.xml.WebdavScripltetResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
-    function &unlock(&$request, &$response) {
+    public function &unlock(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($realpath.' not found'));
+        throw(new ElementNotFoundException($realpath.' not found'));
       }
       parent::unlock($request, $response);      
     }
@@ -533,7 +533,7 @@
      * @param   &org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
-    function &lock(&$request, &$response) {
+    public function &lock(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
@@ -549,16 +549,16 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatusResponse response
      */
-    function &propfind(&$request, &$response, $useragent= 0) {
-      try(); {
+    public function &propfind(&$request, &$response, $useragent= 0) {
+      try {
         $this->_recurse(
           $request,
           $response,
           $request->getPath(),
           $request->getDepth()
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
     }
     
@@ -570,18 +570,18 @@
      * @param   &io.File file
      * @throws  lang.ElementNotFoundException 
      */
-    function &VersionControl($path, &$file) {
+    public function &VersionControl($path, &$file) {
       $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($realpath.' not found'));
+        throw(new ElementNotFoundException($realpath.' not found'));
       }
       
       // Get name of file, without extension
       $fname= basename($realpath, '.'.$file->getExtension());
       
       // Create Version object 
-      with ($version= &new WebdavFileVersion($file->getFilename())); {
+      with ($version= new WebdavFileVersion($file->getFilename())); {
         $version->setVersionNumber('1.0');
         $version->setHref('../versions/'.dirname($path).'/'.$fname.'[1.0].'.$file->getExtension());
         $version->setVersionName($fname.'[1.0].'.$file->getExtension());
@@ -600,11 +600,11 @@
      * @param   &org.webdav.xml.WebdavMultistatusResponse
      * @throws  lang.ElementNotFoundException
      */
-    function &report(&$request, &$response) {
+    public function &report(&$request, &$response) {
       $realpath= $this->base.$request->getPath();
 
       if (!file_exists($realpath)) {
-        return throw(new ElementNotFoundException($realpath.' not found'));
+        throw(new ElementNotFoundException($realpath.' not found'));
       }
       parent::report($request, $response);
     }
@@ -619,7 +619,7 @@
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    function &backup($filename, $destination) {
+    public function &backup($filename, $destination) {
 
       // Securitychecks (../etc/passwd)
       $uri= $this->_normalizePath($this->base.$filename);
@@ -627,7 +627,7 @@
 
       // Copy of folders is not allowed (implemented)
       if (is_dir($uri)) {
-        return throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
+        throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
       }
       
       // Create src and dst objects
@@ -636,14 +636,14 @@
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        return throw(new OperationNotAllowedException($src->getURI().' is locked'));
+        throw(new OperationNotAllowedException($src->getURI().' is locked'));
       }
       
       // Copy the file to destination file
-      try(); {
+      try {
         $src->copy($dst->getURI());
-      } if (catch('IOException', $e)) {
-        return throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
+      } catch (IOException $e) {
+        throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
       }
       
       return !$exists;

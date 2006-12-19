@@ -38,7 +38,7 @@
    * @see      xp://org.webdav.WebdavScriptlet#doPropFind
    */
   class WebdavPropFindRequest extends WebdavScriptletRequest {
-    var
+    public
       $request    = NULL,
       $properties = array(),
       $path       = '',
@@ -51,7 +51,7 @@
      * @access public
      * @param  string data The data
      */
-    function setData(&$data) {
+    public function setData(&$data) {
       parent::setData($data);
       
       // Set properties
@@ -67,7 +67,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= &new WebdavProperty($name);
+          $p= new WebdavProperty($name);
           if ($nsname= $node->getAttribute($ns)) {
             $p->setNamespaceName($nsname);
             if ($nsprefix) $p->setNamespacePrefix($nsprefix);
@@ -83,7 +83,7 @@
      * @access public
      * @return string
      */
-    function getDepth() {
+    public function getDepth() {
       switch ($this->getHeader('Depth')) {
         case 'infinity': return 0x7FFFFFFF; break;
         case 1:          return 0x00000001; break;
@@ -98,7 +98,7 @@
      * @access  public
      * @return  string
      */
-    function getWebroot() {
+    public function getWebroot() {
       return $this->webroot;
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      * @param   org.webdav.WebdavProperty property The property object
      */
-    function addProperty($property) {
+    public function addProperty($property) {
       $this->properties[]= $property;
     }
     
@@ -118,7 +118,7 @@
      * @access  public
      * @return  &org.webdav.WebdavProperty[]
      */
-    function &getProperties() {
+    public function &getProperties() {
       return $this->properties;
     }
   }

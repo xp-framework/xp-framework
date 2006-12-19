@@ -14,7 +14,7 @@
    * @purpose  purpose
    */
   class PxlContext extends Context {
-    var
+    public
       $user   = NULL;
       
     /**
@@ -24,7 +24,7 @@
      * @param   
      * @return  
      */
-    function setUser($u) {
+    public function setUser($u) {
       $this->user= $u;
       $this->setChanged();
     }      
@@ -36,7 +36,7 @@
      * @param   
      * @return  
      */
-    function setup(&$request) {
+    public function setup(&$request) {
       return TRUE;
     }
     
@@ -47,7 +47,7 @@
      * @param   
      * @return  
      */
-    function insertStatus(&$response) {
+    public function insertStatus(&$response) {
       $this->user && $response->addFormResult(Node::fromArray($this->user, 'user'));
     }    
   }

@@ -24,7 +24,7 @@
      * @access  public
      */
     #[@test]
-    function newTraceable() {
+    public function newTraceable() {
       $appender= &newinstance('util.log.Traceable', array(), '{
         function setTrace($cat) {
           // Intentionally empty
@@ -40,7 +40,7 @@
      * @access  public
      */
     #[@test]
-    function newLogAppender() {
+    public function newLogAppender() {
       $appender= &newinstance('util.log.LogAppender', array(), '{
         function append() { 
           // Intentionally empty
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test]
-    function argumentsArePassedToConstructor() {
+    public function argumentsArePassedToConstructor() {
       $appender= &newinstance('util.log.LogAppender', array('[PREFIX]', 1), '{
         var $prefix, $severity;
 
@@ -83,11 +83,11 @@
      * @param   string expr
      * @throws  unittest.PrerequisitesNotMetError in case the sandbox runner cannot be setup
      */
-    function assertBailsWith($message, $expr) {
-      try(); {
-        $sandbox= &new SandboxSourceRunner();
-      } if (catch('IllegalStateException', $e)) {
-        return throw(new PrerequisitesNotMetError($e->getMessage(), $e));
+    public function assertBailsWith($message, $expr) {
+      try {
+        $sandbox= new SandboxSourceRunner();
+      } catch (IllegalStateException $e) {
+        throw(new PrerequisitesNotMetError($e->getMessage(), $e));
       }
       
       // Run and verify exitcode 255
@@ -111,7 +111,7 @@
      * @access  public
      */
     #[@test]
-    function interfaceMethodNotImplemented() {
+    public function interfaceMethodNotImplemented() {
       $this->assertBailsWith(
         'Interface method traceable::settrace() not implemented', 
         'uses("util.log.Traceable"); newinstance("util.log.Traceable", array(), "{}");'
@@ -125,7 +125,7 @@
      * @access  public
      */
     #[@test]
-    function nonExistantClass() {
+    public function nonExistantClass() {
       $this->assertBailsWith(
         'Class "@@NON-EXISTANT-CLASS@" does not exist', 
         'newinstance("@@NON-EXISTANT-CLASS@", array(), "{}");'
@@ -138,7 +138,7 @@
      * @access  public
      */
     #[@test]
-    function syntaxError() {
+    public function syntaxError() {
       $this->assertBailsWith(
         'Parse error', 
         'uses("util.log.LogAppender"); newinstance("util.log.LogAppender", array(), "{ @__SYNTAX ERROR__@ }");'

@@ -30,7 +30,7 @@
    * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
   class OpaqueLockTocken extends Object {
-    var
+    public
       $uuid= NULL;
     
     /**
@@ -39,7 +39,7 @@
      * @access  public
      * @param   &org.ietf.UUID uuid
      */
-    function __construct(&$uuid) {
+    public function __construct(&$uuid) {
       $this->uuid= &$uuid;
       
     }
@@ -53,13 +53,13 @@
      * @return  &util.webdav.LockTocken
      * @throws  lang.FormatException in case the string is not a valid opaquelocktoken
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       list($prefix, $uuidstr)= explode(':', $str, 2);
       if (
         (LOCKTOKEN_PREFIX !== $prefix) ||
         (FALSE === ($uuid= UUID::fromString($uuidstr)))
       ) {
-        return throw(new FormatException($str.' is not a valid opaquelocktoken string'));
+        throw(new FormatException($str.' is not a valid opaquelocktoken string'));
       }
       
       return new OpaqueLockTocken($uuid);
@@ -77,7 +77,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return LOCKTOKEN_PREFIX.':'.$this->uuid->toString();
     }
   }

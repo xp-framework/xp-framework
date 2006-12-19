@@ -30,7 +30,7 @@
      * @param   string actual
      * @return  bool
      */
-    function assertXmlEquals($expect, $actual) {
+    public function assertXmlEquals($expect, $actual) {
       return $this->assertEquals(
         preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
         preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
@@ -44,7 +44,7 @@
      * @param   
      * @return  
      */
-    function tearDown() {
+    public function tearDown() {
       // TODO: Fill code that gets executed after every test method
       //       or remove this method
     }
@@ -55,7 +55,7 @@
      * @access  public
      */
     #[@test]
-    function loadCatalogue() {
+    public function loadCatalogue() {
       $catalogue= &Catalogue::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <catalogue>
@@ -73,9 +73,9 @@
      * @access  public
      */
     #[@test]
-    function saveCatalogue() {
-      $c= &new Catalogue();
-      $e= &new CatalogueEntry();
+    public function saveCatalogue() {
+      $c= new Catalogue();
+      $e= new CatalogueEntry();
       $e->setId(1);
       $c->addEntry($e);
       
@@ -111,7 +111,7 @@
      * @access  public
      */
     #[@test]
-    function loadPage() {
+    public function loadPage() {
       $page= &Page::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <page>
@@ -140,7 +140,7 @@
      * @return  
      */
     #[@test]
-    function loadPicture() {
+    public function loadPicture() {
       $picture= &Picture::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <picture>

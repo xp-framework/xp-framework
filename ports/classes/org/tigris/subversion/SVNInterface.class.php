@@ -15,7 +15,7 @@
   define('SVN_UPTODATE', 0x0008);
   define('SVN_BROKEN',   0x0009);
 
-  uses (
+  uses(
     'lang.System',
     'util.log.Logger',
     'org.tigris.subversion.SVNInterfaceException'
@@ -28,7 +28,7 @@
    */
   class SVNInterface extends Object {
     
-    var
+    public
       $_SVN= 'svn';
   
     /**
@@ -40,16 +40,16 @@
      * @throws  org.tigris.subversion.SVNInterfaceException if svn fails
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
-    function _execute($svnCmd, $params= '') {
+    public function _execute($svnCmd, $params= '') {
       $cmdLine= $this->_SVN.' '.$svnCmd;
       foreach ($params as $param) $cmdLine.='  '.$param;
-      try(); {
+      try {
         $l= &Logger::getInstance();
         $c= &$l->getCategory();
         $c->debug('SVN execute:', $cmdLine);
         $output= System::exec($cmdLine, '2>&1', FALSE);
-      } if (catch('SystemException', $e)) {
-        return throw (new SVNInterfaceException ('SVN returned failure ['.$cmdLine.']'));
+      } catch (SystemException $e) {
+        throw (new SVNInterfaceException ('SVN returned failure ['.$cmdLine.']'));
       }
       
       return $output;
@@ -67,7 +67,7 @@
      * @param string line The line to parse
      * @return mixed[]
      */
-    function getStatusFromString($line) {
+    public function getStatusFromString($line) {
       if (!preg_match('/^([UADCG]+)([ UADCG]+)([ B]+)  (.*)$/', $r, $regs)) return FALSE;
       $regs[1]= $this->getStatus($regs[1]);
       $regs[2]= $this->getStatus($regs[2]);
@@ -83,7 +83,7 @@
      * @param string char The status character
      * @return int
      */
-    function getStatus($char) {
+    public function getStatus($char) {
       switch ($regs[1]) {
         case 'U': return SVN_UPDATED;
         case 'A': return SVN_ADDDED;

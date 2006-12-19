@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses ('rdbms.mysql.MySQLConnection');
+  uses('rdbms.mysql.MySQLConnection');
 
   /**
    * Bugzilla MySQL connection. Automatically handles shadow db
@@ -14,10 +14,10 @@
    * @purpose  Specialized connection class
    */
   class BugzillaMySQLConnection extends MySQLConnection {
-    var
+    public
       $shadow    = TRUE;
     
-    var
+    public
       $_affected = -1,
       $_insert_id= -1;
 
@@ -27,7 +27,7 @@
      * @access  public
      * @param   &rdbms.DSN dsn
      */
-    function __construct(&$dsn) { 
+    public function __construct(&$dsn) { 
       parent::__construct($dsn);
             
       $this->shadow= $this->dsn->getValue('shadow', FALSE);
@@ -39,7 +39,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() {
+    public function identity() {
       return $this->_insert_id;
     }      
 
@@ -51,7 +51,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -70,7 +70,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -88,7 +88,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function delete() { 
+    public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -106,14 +106,14 @@
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function &query() {
+    public function &query() {
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
-      try(); {
+      try {
         $res= &parent::query($sql);
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       if (TRUE !== $res || !$this->shadow) return $res;

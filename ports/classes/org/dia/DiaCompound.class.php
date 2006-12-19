@@ -20,9 +20,9 @@
    * </ul>
    *
    */
-  class DiaCompound extends Object {
+  class DiaCompound extends Object implements DiaComponent {
 
-    var
+    public
       $_children= array();
 
     /**
@@ -32,11 +32,11 @@
      * @param   &org.dia.DiaComponent Component
      * @throws  lang.IllegalArgumentException
      */
-    function set($name, &$Component) {
+    public function set($name, &$Component) {
       if (!is('org.dia.DiaComponent', $Component)) {
         $name= xp::typeOf($Component);
         if (is_object($Component)) $name= $Component->getClassName();
-        return throw(new IllegalArgumentException("Wrong object type: $name"));
+        throw(new IllegalArgumentException("Wrong object type: $name"));
       }
       $this->_children[$name]= &$Component;
     }
@@ -48,7 +48,7 @@
      * @param   string name
      * @param   bool boolean
      */
-    function setBoolean($name, $boolean) {
+    public function setBoolean($name, $boolean) {
       $this->set($name, new DiaAttribute($name, $boolean, 'boolean'));
     }
 
@@ -59,7 +59,7 @@
      * @param   string name
      * @param   int int
      */
-    function setInt($name, $int) {
+    public function setInt($name, $int) {
       $this->set($name, new DiaAttribute($name, $int, 'int'));
     }
 
@@ -70,7 +70,7 @@
      * @param   string name
      * @param   float real
      */
-    function setReal($name, $real) {
+    public function setReal($name, $real) {
       $this->set($name, new DiaAttribute($name, $real, 'real'));
     }
 
@@ -81,7 +81,7 @@
      * @param   string name
      * @param   string string
      */
-    function setString($name, $string) {
+    public function setString($name, $string) {
       $this->set($name, new DiaAttribute($name, $string, 'string'));
     }
 
@@ -92,7 +92,7 @@
      * @param   string name
      * @param   int enum
      */
-    function setEnum($name, $enum) {
+    public function setEnum($name, $enum) {
       $this->set($name, new DiaAttribute($name, $enum, 'enum'));
     }
 
@@ -103,7 +103,7 @@
      * @param   string name
      * @param   array point
      */
-    function setPoint($name, $point) {
+    public function setPoint($name, $point) {
       $this->set($name, new DiaAttribute($name, $point, 'point'));
     }
 
@@ -114,7 +114,7 @@
      * @param   string name
      * @param   array points
      */
-    function setRectangle($name, $points) {
+    public function setRectangle($name, $points) {
       $this->set($name, new DiaAttribute($name, $points, 'rectangle'));
     }
 
@@ -125,7 +125,7 @@
      * @param   string name
      * @param   string color
      */
-    function setColor($name, $color) {
+    public function setColor($name, $color) {
       $this->set($name, new DiaAttribute($name, $color, 'color'));
     }
 
@@ -136,7 +136,7 @@
      * @param   string name
      * @param   array font
      */
-    function setFont($name, $font) {
+    public function setFont($name, $font) {
       $this->set($name, new DiaAttribute($name, $font, 'font'));
     }
 
@@ -147,7 +147,7 @@
      * @param   string name
      * @return  &org.dia.DiaComponent
      */
-    function &getChild($name) {
+    public function &getChild($name) {
       return $this->_children[$name];
     }
 
@@ -157,7 +157,7 @@
      * @param   string name
      * @return  mixed
      */
-    function getChildValue($name) {
+    public function getChildValue($name) {
       if (NULL === ($Child= &$this->getChild($name))) return NULL;
       if (NULL === ($Value= &$Child->getChild('value'))) return NULL;
       return $Value->getValue();
@@ -170,7 +170,7 @@
      * @param   string type The object type
      * @return  org.dia.DiaComponent[]
      */
-    function getChildByType($type) {
+    public function getChildByType($type) {
       $objs= array();
       foreach (array_keys($this->_children) as $key) {
         if (is($type, $this->_children[$key])) {
@@ -185,7 +185,7 @@
      * childByName: getName() attribute, layer(, font)
      * USE getChild($name)!
      */
-    function &getChildAttributeByName($name) {
+    public function &getChildAttributeByName($name) {
       $attrs= &$this->getChildByType('org.dia.DiaAttribute');
       foreach (array_keys($attrs) as $key) {
         if ($attrs[$key]->getName() === $name) {
@@ -203,7 +203,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->getChildValue('name');
     }
 
@@ -214,7 +214,7 @@
      * @param   string name
      */
     #[@fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')]
-    function setName($name) {
+    public function setName($name) {
       $this->setString('name', $name);
     }
 
@@ -226,8 +226,8 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
-      $node= &new Node($this->node_name);
+    public function &getNode() {
+      $node= new Node($this->node_name);
       $children= $this->getChildren();
       foreach (array_keys($children) as $key) {
         if (!is('org.dia.DiaComponent', $children[$key])) {
@@ -246,7 +246,7 @@
      * @access  public
      * @param   &lang.Visitor Visitor
      */
-    function accept(&$Visitor) {
+    public function accept(&$Visitor) {
       $Visitor->visit($this);
       $children= &$this->getChildren();
       foreach (array_keys($children) as $key) {
@@ -268,9 +268,9 @@
      * @param   &org.dia.DiaComponent Comp
      * @throws  lang.IllegalArgumentException
      */
-    function addChild(&$Comp) {
+    public function addChild(&$Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
-        return throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+        throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
       // TODO: what if child exists?
       if (method_exists($Comp, 'getName')) {
         $this->_children[$Comp->getName()]= &$Comp;
@@ -286,9 +286,9 @@
      * @param   &org.dia.DiaComponent Comp
      * @return  bool
      */
-    function remChild(&$Comp) {
+    public function remChild(&$Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
-        return throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+        throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
       // TODO: how do we uniquely identify components?
       foreach (array_keys($this->_children) as $name) {
         if ($Comp->getName() === $name) {
@@ -305,9 +305,9 @@
      * @access  public
      * @return  &org.dia.DiaComponent[]
      */
-    function getChildren() {
+    public function getChildren() {
       return $this->_children;
     }
 
-  } implements(__FILE__, 'org.dia.DiaComponent');
+  } 
 ?>

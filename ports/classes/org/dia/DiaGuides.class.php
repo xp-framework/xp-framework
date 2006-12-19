@@ -15,7 +15,7 @@
    */
   class DiaGuides extends DiaComposite {
     
-    var
+    public
       $type= 'guides';
 
     /**
@@ -23,7 +23,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $this->set('hguides', new DiaAttribute('hguides'));
       $this->set('vguides', new DiaAttribute('vguides'));
     }
@@ -34,7 +34,7 @@
      * @access  public
      * @return  &org.dia.DiaAttribute
      */
-    function &getHorizontalGuides() {
+    public function &getHorizontalGuides() {
       return $this->getChild('hguides');
     }
 
@@ -44,7 +44,7 @@
      * @param   string? hguides
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="hguides"]', value= 'string')]
-    function setHorizontalGuides($hguides) {
+    public function setHorizontalGuides($hguides) {
       $this->set('hguides', new DiaAttribute('hguides'));
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  &org.dia.DiaAttribute
      */
-    function &getVerticalGuides() {
+    public function &getVerticalGuides() {
       return $this->getChild('vguides');
     }
 
@@ -63,7 +63,7 @@
      * @param   string? vguides
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="vguides"]', value= 'string')]
-    function setVerticalGuides($vguides) {
+    public function setVerticalGuides($vguides) {
       $this->set('vguides', new DiaAttribute('vguides'));
     }
 

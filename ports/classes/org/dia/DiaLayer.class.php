@@ -15,7 +15,7 @@
    */
   class DiaLayer extends DiaCompound {
 
-    var
+    public
       $name= NULL, 
       $visibility= NULL,
       $node_name= 'dia:layer';
@@ -28,7 +28,7 @@
      * @param   string name default NULL
      * @param   bool visible default NULL
      */
-    function __construct($name= NULL, $visible= NULL) {
+    public function __construct($name= NULL, $visible= NULL) {
       if (isset($name)) $this->setName($name);
       if (isset($visible)) $this->setVisibility($visible);
     }
@@ -39,7 +39,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -50,7 +50,7 @@
      * @param   string name
      */
     #[@fromDia(xpath= 'attribute::name', value= 'string')]
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @return  bool
      */
-    function getVisibility() {
+    public function getVisibility() {
       return $this->visibility;
     }
 
@@ -71,7 +71,7 @@
      * @param   bool visible
      */
     #[@fromDia(xpath= 'attribute::visible', value= 'boolean')]
-    function setVisibility($visible) {
+    public function setVisibility($visible) {
       $this->visibility= $visible;
     }
 
@@ -82,7 +82,7 @@
      * @param   &org.dia.DiaTextObject Text
      */
     #[@fromDia(xpath= 'dia:object[@type="Standard - Text"]', class= 'org.dia.DiaTextObject')]
-    function addText(&$Text) {
+    public function addText(&$Text) {
       $this->set($Text->getName(), $Text);
     }
 
@@ -99,7 +99,7 @@
      * @param   &org.dia.DiaUMLLargePackage Package
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - LargePackage"]', class= 'org.dia.DiaUMLLargePackage')]
-    function addLargePackage(&$Package) {
+    public function addLargePackage(&$Package) {
       $this->set($Package->getName(), $Package);
     }
 
@@ -110,7 +110,7 @@
      * @param   &org.dia.DiaUMLClass Class
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Class"]', class= 'org.dia.DiaUMLClass')]
-    function addClass(&$Class) {
+    public function addClass(&$Class) {
       $this->set($Class->getName(), $Class);
     }
 
@@ -121,7 +121,7 @@
      * @param   &org.dia.DiaUMLGeneralization Gen
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Generalization"]', class= 'org.dia.DiaUMLGeneralization')]
-    function addGeneralization(&$Gen) {
+    public function addGeneralization(&$Gen) {
       $this->set($Gen->getName(), $Gen);
     }
 
@@ -132,7 +132,7 @@
      * @param   &org.dia.DiaUMLDependency Dep
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Dependency"]', class= 'org.dia.DiaUMLDependency')]
-    function addDependency(&$Dep) {
+    public function addDependency(&$Dep) {
       $this->set($Dep->getName(), $Dep);
     }
 
@@ -143,7 +143,7 @@
      * @param   &org.dia.DiaUMLRealizes Real
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Realizes"]', class= 'org.dia.DiaUMLRealizes')]
-    function addRealizes(&$Real) {
+    public function addRealizes(&$Real) {
       $this->set($Real->getName(), $Real);
     }
 
@@ -154,7 +154,7 @@
      * @param   &org.dia.DiaUMLImplements Impl
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Implements"]', class= 'org.dia.DiaUMLImplements')]
-    function addImplements(&$Impl) {
+    public function addImplements(&$Impl) {
       $this->set($Impl->getName(), $Impl);
     }
 
@@ -165,7 +165,7 @@
      * @param   &org.dia.DiaUMLAssociation Assoc
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Association"]', class= 'org.dia.DiaUMLAssociation')]
-    function addAssociation(&$Assoc) {
+    public function addAssociation(&$Assoc) {
       $this->set($Assoc->getName(), $Assoc);
     }
 
@@ -176,7 +176,7 @@
      * @param   &org.dia.DiaUMLNote Note
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Note"]', class= 'org.dia.DiaUMLNote')]
-    function addNote(&$Note) {
+    public function addNote(&$Note) {
       $this->set($Note->getName(), $Note);
     }
 
@@ -186,10 +186,10 @@
      * @access  public
      * @return  &org.dia.DiaObject
      */
-    function &getObject($name) {
+    public function &getObject($name) {
       $Child= &$this->getChild($name);
       if (!is('org.dia.DiaObject', $Child))
-        return throw(new IllegalArgumentException("The object with name='$name' is no DiaObject!"));
+        throw(new IllegalArgumentException("The object with name='$name' is no DiaObject!"));
       return $Child;
     }
 
@@ -200,7 +200,7 @@
      * @param   string type The DiaObject->getNodeType() (type)
      * @return  org.dia.DiaObject[]
      */
-    function getObjectsByType($type) {
+    public function getObjectsByType($type) {
       $children= $this->getChildren();
       $ret= array();
       foreach (array_keys($children) as $key) {
@@ -228,7 +228,7 @@
      * @access  public
      * @param   &org.dia.DiaObject Object
      */
-    function addObject(&$Object) {
+    public function addObject(&$Object) {
       $this->set($Object->getName(), $Object);
     }
 
@@ -238,7 +238,7 @@
      * @access  public
      * @return  &xml.Node
      */ 
-    function &getNode() {
+    public function &getNode() {
       $Node= &parent::getNode(); 
       if (isset($this->name))
         $Node->setAttribute('name', $this->name);

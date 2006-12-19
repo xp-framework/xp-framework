@@ -19,7 +19,7 @@
    * @purpose  JNLP resource
    */
   class JnlpExtensionResource extends JnlpResource {
-    var
+    public
       $name     = '',
       $href     = '',
       $version  = '';
@@ -32,7 +32,7 @@
      * @param   string href
      * @param   string version
      */
-    function __construct($name, $href, $version) {
+    public function __construct($name, $href, $version) {
       $this->name= $name;
       $this->href= $href;
       $this->version= $version;
@@ -44,7 +44,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->href= $href;
     }
 
@@ -74,7 +74,7 @@
      * @access  public
      * @return  string
      */
-    function getHref() {
+    public function getHref() {
       return $this->href;
     }
     
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function getLocation() {
+    public function getLocation() {
       return $this->href.($this->version ? '?version-id='.$this->version : '');
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @param   string version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @return  string
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @return  string
      */
-    function getTagName() { 
+    public function getTagName() { 
       return 'extension';
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @return  array
      */
-    function getTagAttributes() { 
+    public function getTagAttributes() { 
       return array_merge(
         array('href' => $this->href), 
         $this->name ? array('name' => $this->name) : array(),

@@ -25,11 +25,11 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       $cm= &ConnectionManager::getInstance();
       
       // Fetch entry
-      try(); {
+      try {
         $db= &$cm->getByHost('news', 0);
         $q= &$db->query('
           select 
@@ -47,8 +47,8 @@
           ',
           $request->getQueryString()
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       // Check if we found an entry
@@ -67,7 +67,7 @@
         $entry->addChild(FormresultHelper::markupNodeFor('extended', $record['extended']));
         
         // Fetch comments
-        try(); {
+        try {
           $q= &$db->query('
             select 
               comment.id as id,
@@ -84,9 +84,9 @@
             ',
             $entry->getAttribute('id')
           );
-        } if (catch('SQLException', $e)) {
+        } catch (SQLException $e) {
           $cat->error($e);
-          return throw($e);
+          throw($e);
         }
       
         // Add comments to the entry node

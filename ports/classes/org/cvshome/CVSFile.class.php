@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'org.cvshome.CVSInterface',
     'io.File',
     'io.TempFile'
@@ -18,7 +18,7 @@
    * @see      http://www.cvshome.org
    */
   class CVSFile extends CVSInterface {
-    var
+    public
       $filename= NULL;
       
     /**
@@ -28,11 +28,11 @@
      * @param   string filename
      * @throws  io.FileNotFoundException if filename is not a file
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
-        return throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
+        throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
       }
     }
     
@@ -45,7 +45,7 @@
      * @param   string cvsCmd
      * @return  string[]
      */
-    function _execute($cvsCmd) {
+    public function _execute($cvsCmd) {
       $olddir= getcwd(); 
       chdir(dirname ($this->filename));
       $r= parent::_execute ($cvsCmd, basename ($this->filename));
@@ -62,7 +62,7 @@
      * @return  stdclass[] objects
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
      */
-    function update($sim= FALSE) {
+    public function update($sim= FALSE) {
       $results= $this->_execute (sprintf ('update %s',
         ($sim ? '-nq' : '')
       ));
@@ -96,20 +96,20 @@
      * @access  public
      * @return  &stdclass status
      */
-    function &getStatus() {
-      try(); {
+    public function &getStatus() {
+      try {
         $output= $this->_execute ('status -v');
-      } if (catch('CVSInterfaceException', $e)) {
-        return throw($e);
+      } catch (CVSInterfaceException $e) {
+        throw($e);
       }
       
       if (strstr ($output[0], 'cvs server: nothing known about')) {
-        return throw (new CVSInterfaceException (
+        throw (new CVSInterfaceException (
           'File '.$this->filename.' is not known to CVS'
         ));
       }
 
-      $result= &new stdClass(); 
+      $result= new stdClass(); 
       $inTags= false;
       $result->tags= array();
       foreach ($output as $r) {
@@ -157,14 +157,14 @@
      * @param   string comment
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
      */
-    function commit($comment) {
-      $f= &new TempFile();
-      try(); {
+    public function commit($comment) {
+      $f= new TempFile();
+      try {
         $f->open (FILE_MODE_WRITE);
         $f->writeLine ($comment);
         $f->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       $return= &$this->_execute(sprintf ('commit -F %s', $f->getURI()));
@@ -182,12 +182,12 @@
      * @access  public
      * @return  bool success
      */
-    function remove() {
-      $f= &new File ($this->filename);
-      try(); {
+    public function remove() {
+      $f= new File ($this->filename);
+      try {
         $f->move ($this->filename.'.cvsremove');
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       return $this->_execute ('remove');
@@ -201,7 +201,7 @@
      * @access  public
      * @return  bool success
      */    
-    function add() {
+    public function add() {
       return $this->_execute ('add');
     }
     
@@ -218,7 +218,7 @@
      * @return  array diff lines from the diff
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC129
      */
-    function diff($r1= NULL, $r2= NULL) {
+    public function diff($r1= NULL, $r2= NULL) {
       $cmd= sprintf ('diff -B -b %s %s',
         (NULL !== $r1 ? '-r'.$r1 : ''),
         (NULL !== $r2 ? '-r'.$r2 : '')
@@ -234,7 +234,7 @@
      * @param   string tag
      * @return  bool success
      */    
-    function tag($tag) {
+    public function tag($tag) {
       $result= $this->_execute(sprintf ('tag -F %s',
         $tag
       ));
@@ -252,7 +252,7 @@
      * @return  &array logs
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
      */
-    function &getLog() {
+    public function &getLog() {
       $output= $this->_execute ('log');
       $divider= str_repeat ('-', 28);
       $log= array();
@@ -306,7 +306,7 @@
      * @param   string revision default NULL 
      * @return  string contents
      */    
-    function getRevision($rev= NULL) {
+    public function getRevision($rev= NULL) {
       $data= $this->_execute (sprintf ('update -p %s', 
         NULL !== $rev ? '-r '.$rev : ''
       ));

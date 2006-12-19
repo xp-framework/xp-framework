@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.SOAPClient', 
+    'webservices.soap.SOAPClient',
     'webservices.soap.transport.SOAPHTTPTransport'
   );
   
@@ -51,7 +51,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct(
         new SOAPHTTPTransport('http://services.xmethods.net:80/perl/soaplite.cgi'),
         'urn:xmethodsBabelFish'
@@ -67,7 +67,7 @@
      * @param   string target_lang Target language
      * @return  &string Translated text
      */
-    function &translate($sourcedata, $src_lang, $target_lang) {
+    public function &translate($sourcedata, $src_lang, $target_lang) {
       $translated= $this->invoke(
         'BabelFish',
         new Parameter('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),

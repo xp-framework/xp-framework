@@ -12,7 +12,8 @@
     'de.thekid.dialog.Album',
     'de.thekid.dialog.Update',
     'de.thekid.dialog.SingleShot',
-    'de.thekid.dialog.EntryCollection'
+    'de.thekid.dialog.EntryCollection',
+    'util.log.Traceable'
   );
 
   /**
@@ -20,8 +21,8 @@
    *
    * @purpose  Helper class
    */
-  class IndexCreator extends Object {
-    var
+  class IndexCreator extends Object implements Traceable {
+    public
       $cat            = NULL,
       $folder         = NULL,
       $entriesPerPage = 5;
@@ -32,7 +33,7 @@
      * @access  public
      * @param   int entriesPerPage
      */
-    function setEntriesPerPage($entriesPerPage) {
+    public function setEntriesPerPage($entriesPerPage) {
       $this->entriesPerPage= $entriesPerPage;
     }
 
@@ -42,7 +43,7 @@
      * @access  public
      * @return  int
      */
-    function getEntriesPerPage() {
+    public function getEntriesPerPage() {
       return $this->entriesPerPage;
     }
     
@@ -54,8 +55,8 @@
      * @param   &io.Folder folder
      * @return  &de.thekid.dialog.io.IndexCreator
      */
-    function &forFolder(&$folder) {
-      $i= &new IndexCreator();
+    public static function &forFolder(&$folder) {
+      $i= new IndexCreator();
       $i->folder= &$folder;
       return $i;
     }
@@ -67,14 +68,14 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function regenerate() {
+    public function regenerate() {
       $entries= array();
-      for ($i= &new FilteredFolderIterator($this->folder, '/\.dat$/'); $i->hasNext(); ) {
+      for ($i= new FilteredFolderIterator($this->folder, '/\.dat$/'); $i->hasNext(); ) {
         $entry= $i->next();
-        $file= &new File($entry);
-        try(); {
+        $file= new File($entry);
+        try {
           $data= &unserialize(FileUtil::getContents($file));
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           $e->printStackTrace();
           exit(-1);
         }
@@ -100,7 +101,7 @@
           $i+ $this->entriesPerPage
         );
 
-        try(); {
+        try {
           FileUtil::setContents(
             new File($this->folder->getURI().'page_'.($i / $this->entriesPerPage).'.idx'), 
             serialize(array(
@@ -109,8 +110,8 @@
               'entries' => array_slice($entries, $i, $this->entriesPerPage)
             ))
           );
-        } if (catch('IOException', $e)) {
-          return throw($e);
+        } catch (IOException $e) {
+          throw($e);
         }
       }
       
@@ -123,13 +124,13 @@
           $page
         );
         
-        try(); {
+        try {
           FileUtil::setContents(
             new File($this->folder->getURI().$entries[$key].'.idx'), 
             serialize($page)
           );
-        } if (catch('IOException', $e)) {
-          return throw($e);
+        } catch (IOException $e) {
+          throw($e);
         }
       }
       
@@ -142,9 +143,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

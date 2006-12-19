@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.Folder');
+  uses('io.Folder', 'util.XPIterator');
 
   /**
    * Iterates over elements of a directory, only returning those elements that
@@ -20,13 +20,13 @@
    *
    * @purpose  Iterator
    */
-  class FilteredFolderIterator extends Object {
-    var
+  class FilteredFolderIterator extends Object implements XPIterator {
+    public
       $pattern   = '',
       $folders   = array(),
       $recursive = FALSE;
     
-    var
+    public
       $_entry  = FALSE;
     
     /**
@@ -37,7 +37,7 @@
      * @param   string pattern regular expression
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    function __construct(&$folder, $pattern, $recursive= FALSE) {
+    public function __construct(&$folder, $pattern, $recursive= FALSE) {
       $this->folders= array(&$folder);
       $this->pattern= $pattern;
       $this->recursive= $recursive;
@@ -51,7 +51,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() {
+    public function hasNext() {
       do {
         if (FALSE === ($this->_entry= $this->folders[0]->getEntry())) {
           array_shift($this->folders);
@@ -73,12 +73,12 @@
      * @return  string the fully qualified name of the element
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function next() {
+    public function next() {
       if (FALSE === $this->_entry) {
-        return throw(new NoSuchElementException('No more '.$this->pattern.' entries'));
+        throw(new NoSuchElementException('No more '.$this->pattern.' entries'));
       }
       return $this->folders[0]->getURI().$this->_entry;
     }  
 
-  } implements(__FILE__, 'util.Iterator');
+  } 
 ?>

@@ -24,7 +24,7 @@
      * @access  protected
      * @return  string
      */
-    function neededExtension() { 
+    public function neededExtension() { 
       return 'xslt';
     }
   
@@ -34,7 +34,7 @@
      * @access  protected
      * @return  &xml.IXSLProcessor
      */
-    function &processorInstance() {
+    public function &processorInstance() {
       return new XSLProcessor();
     }
 
@@ -44,7 +44,7 @@
      * @access  protected
      * @return  string
      */
-    function processorCharset() { 
+    public function processorCharset() { 
       return 'utf-8';
     }
   }

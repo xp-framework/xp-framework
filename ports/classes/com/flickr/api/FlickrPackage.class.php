@@ -11,7 +11,7 @@
    * @purpose  Flickr package base class
    */
   class FlickrPackage extends Object {
-    var
+    public
       $client   = NULL;
     
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    function setClient(&$client) {
+    public function setClient(&$client) {
       $this->client= &$client;
     }    
   }

@@ -28,7 +28,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       if (2 != sscanf($request->getData(), '%[^/]/%s', $collection, $fqcn)) {
         $response->addFormError('illegalaccess');
         return;
@@ -55,12 +55,12 @@
       }
       
       // Read cached api docs
-      $stor= &new File('../build/cache/'.$collection.'/class/'.$fqcn);
-      try(); {
+      $stor= new File('../build/cache/'.$collection.'/class/'.$fqcn);
+      try {
         $apidoc= unserialize(FileUtil::getContents($stor));
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $response->addFormError('corrupt', $e->getMessage());
-        return throw($e);
+        throw($e);
         return;
       }
 

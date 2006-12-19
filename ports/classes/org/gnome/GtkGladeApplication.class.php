@@ -17,7 +17,7 @@
    * @purpose  Base class
    */  
   class GtkGladeApplication extends GtkApplication {
-    var 
+    public 
       $glade        = NULL,
       $mainwin      = '';
 
@@ -29,9 +29,9 @@
      * @param   string gladefile location of the .glade-file
      * @param   string mainwin default 'window1'
      */
-    function __construct(&$p, $gladefile, $mainwin= 'window1') {
-      if (!$this->glade= &new GladeXML($gladefile)) {
-        return throw(new GuiException('Cannot read glade file '.$gladefile));
+    public function __construct(&$p, $gladefile, $mainwin= 'window1') {
+      if (!$this->glade= new GladeXML($gladefile)) {
+        throw(new GuiException('Cannot read glade file '.$gladefile));
       }
       $this->mainwin= $mainwin;
       parent::__construct($p);
@@ -44,9 +44,9 @@
      * @param   string name
      * @return  &php.GtkWidget
      */
-    function &widget($name) {
+    public function &widget($name) {
       if (!$this->glade || !$w= &$this->glade->get_widget($name)) {
-        return throw(new WidgetNotFoundException($name));
+        throw(new WidgetNotFoundException($name));
       } 
       return $w;
     }
@@ -56,7 +56,7 @@
      *
      * @access  protected
      */
-    function create() {
+    public function create() {
       $this->window= &$this->widget($this->mainwin);
     }
   }

@@ -13,7 +13,7 @@
    */
   class WebdavScriptletRequest extends HttpScriptletRequest {
   
-    var
+    public
       $user=     NULL,
       $path=     NULL,
       $rootURI=  NULL,
@@ -27,7 +27,7 @@
      * @param  string string The string which should be encoded
      * @return string
      */    
-    function decode($string) {
+    public function decode($string) {
       return utf8_decode($string);
     }
     
@@ -37,7 +37,7 @@
      * @access  public
      * @param   string user
      */
-    function setUser(&$user) {
+    public function setUser(&$user) {
       $this->user= &$user;
     }
 
@@ -47,7 +47,7 @@
      * @access  public
      * @return  &string
      */
-    function &getUser() {
+    public function &getUser() {
       return $this->user;
     }
 
@@ -57,7 +57,7 @@
      * @access public
      * @param  string path The path
      */
-    function setPath($path) {
+    public function setPath($path) {
       $this->path= $path;
     }
     
@@ -68,7 +68,7 @@
      * @access  public
      * @return  string
      */
-    function getPath() {
+    public function getPath() {
       return rtrim($this->path, "/");
     }
 
@@ -80,7 +80,7 @@
      * @access private
      * @param  string uri The URL object
      */
-    function setRootURL($url) {
+    public function setRootURL($url) {
       $this->rootURL= $url;
     }
     
@@ -90,7 +90,7 @@
      * @access public
      * @return peer.URL
      */
-    function getRootURL() {
+    public function getRootURL() {
       return $this->rootURL;
     }
     
@@ -107,7 +107,7 @@
      * @return  string
      * @see org.webdav.WebdavScriptletResponse#encodePath
      */
-    function decodePath($path) {
+    public function decodePath($path) {
       $parts = explode('/', $path);
       for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurldecode($parts[$i]);
       return implode('/', $parts);
@@ -121,8 +121,8 @@
      * @param   string url
      * @return  string
      */
-    function getRelativePath($url) {
-      $url= &new URL($url);
+    public function getRelativePath($url) {
+      $url= new URL($url);
       return $this->decodePath(substr(
         rawurldecode($url->getPath()),
         strlen($this->rootURL->getPath())
@@ -135,7 +135,7 @@
      * @access  public 
      * @param   string uri (e.g. /path/to/resource/directory/test.txt => /path/to/resource/directory/)
      */
-    function setAbsoluteURI($uri) {
+    public function setAbsoluteURI($uri) {
       $this->absoluteUri= is_file($uri) ? dirname($uri) : $uri;
     }
     
@@ -145,7 +145,7 @@
      * @access  public 
      * @return  string uri
      */
-    function getAbsoluteURI() {
+    public function getAbsoluteURI() {
       return $this->absoluteUri;
     }
     
@@ -155,12 +155,12 @@
      * @access private
      * @param  string data The request's data
      */
-    function setData(&$data) {
+    public function setData(&$data) {
       parent::setData($data);
       
-      try(); {
+      try {
         $this->tree= Tree::fromString($data);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         // Catch exception which occur when request body contains binary
         // data (e.g. when PUTting files)
       }
@@ -173,7 +173,7 @@
      * @param  string path The path string
      * @return &xml.Node
      */
-    function &getNode($path) {
+    public function &getNode($path) {
 
       if (!$this->tree || $this->tree->root === NULL) return NULL;
       $node= &$this->tree->root;
@@ -201,7 +201,7 @@
      * @access  public
      * @return  string prefix; (e.g. skunk), default "D"
      */
-    function getNamespacePrefix() {
+    public function getNamespacePrefix() {
       $ns= explode(":", key($this->tree->root->attribute));
       return empty($ns[1]) ? 'D' : $ns[1];
     }

@@ -10,7 +10,7 @@
    * @purpose  Read subversion configuration files
    */
   class SVNConfigurationReader extends Object {
-    var
+    public
       $stream = NULL,
       $hash   = NULL;
 
@@ -20,7 +20,7 @@
      * @access  public
      * @param   &io.Steram stream
      */
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &$stream;
     }
     
@@ -29,11 +29,11 @@
      *
      * @access  protected
      */
-    function _parseFile() {
-      try(); {
+    public function _parseFile() {
+      try {
         $this->stream->open(FILE_MODE_READ);
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       // Read key-value pairs into hash
@@ -55,7 +55,7 @@
      * @access  protected 
      * @return  string
      */
-    function _readKey() {
+    public function _readKey() {
       $l= $this->stream->readLine();
 
       // END token marks end of file      
@@ -72,7 +72,7 @@
      * @access  protected
      * @return  string
      */
-    function _readValue() {
+    public function _readValue() {
     
       // Read e.g. "V 6"
       $l= $this->stream->readLine();
@@ -88,7 +88,7 @@
      * @param   string key
      * @return  string value
      */
-    function getValue($key) {
+    public function getValue($key) {
       if (!$this->hash) $this->_parseFile();
       
       if (!isset($this->hash[$key])) return NULL;

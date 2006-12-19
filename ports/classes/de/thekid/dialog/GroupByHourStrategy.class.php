@@ -4,12 +4,14 @@
  * $Id$
  */
 
+  uses('de.thekid.dialog.GroupingStrategy');
+
   /**
    * Groups images by hour
    *
    * @purpose  GroupingStrategy interface implementation
    */
-  class GroupByHourStrategy extends Object {
+  class GroupByHourStrategy extends Object implements GroupingStrategy {
   
     /**
      * Returns group for a given album image.
@@ -18,9 +20,9 @@
      * @param   &de.thekid.dialog.AlbumImage
      * @return  string unique group identifier
      */
-    function groupFor(&$image) { 
+    public function groupFor(&$image) { 
       return $image->exifData->dateTime->toString('Y-m-d H');
     }
   
-  } implements(__FILE__, 'de.thekid.dialog.GroupingStrategy');
+  } 
 ?>

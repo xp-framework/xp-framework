@@ -26,8 +26,8 @@
      * @access  public
      */
     #[@test]
-    function testDeserialization() {
-      $transport= &new SOAPDummyTransport();
+    public function testDeserialization() {
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <soapenv:Body soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -42,7 +42,7 @@
 </soapenv:Envelope>
       ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->registerMapping(
         new QName('http://net.xp_framework/soap/types', 'SoapTestType'),
         XPClass::forName('net.xp_framework.unittest.soap.SoapMappingTestTarget')
@@ -66,9 +66,9 @@
      * @access  public
      */
     #[@test]
-    function testSerialization() {
-      $transport= &new SOAPDummyTransport();
-      $client= &new SOAPClient($transport, 'urn://test');
+    public function testSerialization() {
+      $transport= new SOAPDummyTransport();
+      $client= new SOAPClient($transport, 'urn://test');
       
       // Re-set transport as constructor created a copy of it!
       $client->transport= &$transport;
@@ -78,9 +78,9 @@
         XPClass::forName('net.xp_framework.unittest.soap.SoapMappingTestTarget')
       );
       
-      try(); {
+      try {
         $client->invoke('foo', new SoapMappingTestTarget('Teststring', 12345));
-      } if (catch('XMLFormatException', $ignored)) {
+      } catch (XMLFormatException $ignored) {
         // We don't receive a "real" answer, which will cause an exception
       }
       

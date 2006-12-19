@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: UpdateVisitor.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
   uses(
     'util.Visitor',
@@ -14,9 +14,9 @@
    * Visitor that runs over a diagram structure and updates or adds classes
    *
    */
-  class UpdateVisitor extends Object {
+  class UpdateVisitor extends Object implements Visitor {
 
-    var
+    public
       $RootDoc= NULL,
       $Dia= NULL,
       $add= FALSE,
@@ -35,8 +35,8 @@
      * @param   bool add default FALSE Add classes that don't exist in the diagram
      * @param   bool update default FALSE Update all classes found in the diagram
      */
-    function __construct($classnames, $add= FALSE, $update= FALSE) {
-      $this->RootDoc= &new RootDoc();
+    public function __construct($classnames, $add= FALSE, $update= FALSE) {
+      $this->RootDoc= new RootDoc();
       $this->classdocs= array();
       $this->add= $add;
       $this->update= $update;
@@ -58,9 +58,9 @@
 
       // check given classnames and create ClassDoc for each class
       foreach ($classnames as $name) {
-        try (); {
+        try {
           $Classdoc= &$this->RootDoc->classNamed($name);
-        } if (catch('IllegalArgumentException', $e)) {
+        } catch (IllegalArgumentException $e) {
           $e->printStackTrace();
           Console::writeLine("Class '$name' could not be found or parsed!");
           exit(-1);
@@ -76,16 +76,16 @@
      *
      * @access  public
      */
-    function finalize() {
+    public function finalize() {
       // classes that are missing in the diagram
       $tobe_added= array_diff(array_keys($this->classdocs), $this->existing_classes);
 
       // add missing classes?
       if ($this->add) {
         foreach ($tobe_added as $classname) {
-          try (); {
+          try {
             $ClassDoc= &$this->RootDoc->classNamed($classname);
-          } if (catch('IllegalArgumentException', $e)) {
+          } catch (IllegalArgumentException $e) {
             Console::writeLine("Class '$classname' could not be found or parsed!");
             exit(-1);
           }
@@ -112,7 +112,7 @@
      * @access  public
      * @param   &org.dia.DiaComponent Comp
      */
-    function visit(&$Comp) {
+    public function visit(&$Comp) {
       // save reference to 
       if (is('org.dia.DiaDiagram', $Comp)) {
         $this->Dia= &$Comp;
@@ -127,13 +127,13 @@
         // update existing classes?
         if (!isset($this->classdocs[$name]) and $this->update) {
           // update: create ClassDoc and add it to $this->classdocs
-          try (); {
+          try {
             $ClassDoc= &$this->RootDoc->classNamed($name);
-          } if (catch('IllegalArgumentException', $e)) {
+          } catch (IllegalArgumentException $e) {
             $e->printStackTrace();
             Console::writeLine("Class '$name' could not be found or parsed!");
             exit(-1);
-          } elseif (catch('Exception', $e)) {
+          } catch(XPException $e) {
             $e->printStackTrace();
             Console::writeLine('Caught unknown exception!');
             exit(-1);
@@ -153,7 +153,7 @@
      *
      * @return  bool
      */
-    function changedClasses() {
+    public function changedClasses() {
       if (!empty($this->updated_classes)) return TRUE;
       return FALSE;
     }
@@ -166,7 +166,7 @@
      * @param   &org.dia.DiaUMLClass Class
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    function _updateClass(&$Class, &$ClassDoc) {
+    public function _updateClass(&$Class, &$ClassDoc) {
       if (UDT_VIS_DEBUG) Console::writeLine('* Updating class '.$ClassDoc->qualifiedName().'...');
       /*
       ClassDoc vs. DiaUMLClass...
@@ -220,7 +220,7 @@
           }
         } else {
           // dia attribute doesn't exist: add
-          $Attribute= &new DiaUMLAttribute();
+          $Attribute= new DiaUMLAttribute();
           $Attribute->setName($name);
 
           $value= $attributes[$name];
@@ -311,7 +311,7 @@
           if (empty($methods[$name]->arguments)) {
             if (!empty($Params)) {
               // overwrite 'parameters' node with an empty one
-              $Params_node= &new DiaAttribute('parameters');
+              $Params_node= new DiaAttribute('parameters');
               //=$Method->set('parameters', new DiaAttribute('parameters'));
               if (UDT_VIS_DEBUG) Console::writeLine("    -> Parameters got deleted...");
             } else {
@@ -336,7 +336,7 @@
         } else {
           if (UDT_VIS_DEBUG) Console::writeLine("  => Adding Method '$name'...");
           // dia method does't exist: add
-          $Method= &new DiaUMLMethod();
+          $Method= new DiaUMLMethod();
           $Method->setName($name);
 
           // return type
@@ -371,7 +371,7 @@
           // loop over arguments
           foreach (array_keys($methods[$name]->arguments) as $param_name) {
             if (UDT_VIS_DEBUG) Console::writeLine("    -> Adding parameter '$param_name'...");
-            $Param= &new DiaUMLMethodParameter();
+            $Param= new DiaUMLMethodParameter();
             $Param->setName($param_name);
 
             // type
@@ -403,7 +403,7 @@
      * @access  private
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    function _addClass(&$ClassDoc) {
+    public function _addClass(&$ClassDoc) {
       // check for DiaDiagram instance
       if (!isset($this->Dia)) {
         Console::writeLine('DiaDiagram object not defined!');
@@ -413,7 +413,7 @@
       $Layer= &$this->Dia->getLayer('Background');
 
       // create new (empty) UMLClass and update it
-      $Class= &new DiaUMLClass();
+      $Class= new DiaUMLClass();
       $Class->setName($ClassDoc->qualifiedName());
       $this->_updateClass($Class, $ClassDoc);
 
@@ -423,5 +423,5 @@
       $this->added_classes[]= $ClassDoc->qualifiedName();
     }
 
-  } implements(__FILE__, 'util.Visitor');
+  } 
 ?>

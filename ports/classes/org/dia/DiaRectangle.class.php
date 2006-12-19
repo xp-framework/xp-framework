@@ -13,7 +13,7 @@
    */
   class DiaRectangle extends DiaElement {
 
-    var
+    public
       $node_name= 'dia:rectangle',
       $value= array();
 
@@ -26,7 +26,7 @@
      * @param   array corners default array()
      * @return  bool
      */
-    function setValue($corners) {
+    public function setValue($corners) {
       // $corners must be an array with two elements...
       if (!is_array($corners) or sizeof($corners) !== 2) return FALSE;
       // each element must be an array...
@@ -43,7 +43,7 @@
      * @access  public 
      * @return  &xml.Node 
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       if (
         is_array($this->value) and 

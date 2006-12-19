@@ -25,7 +25,7 @@
      * @access  public
      */
     #[@test]
-    function noMemberstoStringInvocation() {
+    public function noMemberstoStringInvocation() {
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n}", 
         xp::stringOf(new UnknownRemoteObject('Test'))
@@ -39,7 +39,7 @@
      * @access  public
      */
     #[@test]
-    function oneMemberToStringInvocation() {
+    public function oneMemberToStringInvocation() {
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n  [referenceId         ] 6100\n}", 
         xp::stringOf(new UnknownRemoteObject('Test', array('referenceId' => 6100)))
@@ -53,7 +53,7 @@
      * @access  public
      */
     #[@test]
-    function multipleMembersToStringInvocation() {
+    public function multipleMembersToStringInvocation() {
       $this->assertEquals(
         "remote.UnknownRemoteObject@(Test) {\n".
         "  [referenceId         ] 6100\n".
@@ -74,8 +74,8 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    function readMember() {
-      $o= &new UnknownRemoteObject();
+    public function readMember() {
+      $o= new UnknownRemoteObject();
       $id= $o->id;
     }  
 
@@ -85,8 +85,8 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    function writeMember() {
-      $o= &new UnknownRemoteObject();
+    public function writeMember() {
+      $o= new UnknownRemoteObject();
       $o->id= 1;
     }  
 
@@ -96,8 +96,8 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    function invokeMethod() {
-      $o= &new UnknownRemoteObject();
+    public function invokeMethod() {
+      $o= new UnknownRemoteObject();
       $o->method();
     }  
   }

@@ -15,7 +15,7 @@
    * @experimental
    */
   class CHMDirectory extends Object {
-    var
+    public
       $identifier       = CHM_DIRECTORY_IDENTIFIER,
       $version          = 0,
       $length           = 0,
@@ -38,7 +38,7 @@
      * @access  public
      * @param   string chunk
      */
-    function addChunk($chunk) {
+    public function addChunk($chunk) {
       $this->chunks[]= $chunk;
     }
     
@@ -49,7 +49,7 @@
      * @param   int i
      * @return  string
      */
-    function getChunk($i) {
+    public function getChunk($i) {
       return $this->chunks[$i];
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @param   string identifier
      */
-    function setIdentifier($identifier) {
+    public function setIdentifier($identifier) {
       $this->identifier= $identifier;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  string
      */
-    function getIdentifier() {
+    public function getIdentifier() {
       return $this->identifier;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   int version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  int
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   int length
      */
-    function setLength($length) {
+    public function setLength($length) {
       $this->length= $length;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  int
      */
-    function getLength() {
+    public function getLength() {
       return $this->length;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @param   int chunk_size
      */
-    function setChunk_size($chunk_size) {
+    public function setChunk_size($chunk_size) {
       $this->chunk_size= $chunk_size;
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  int
      */
-    function getChunk_size() {
+    public function getChunk_size() {
       return $this->chunk_size;
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @param   int density
      */
-    function setDensity($density) {
+    public function setDensity($density) {
       $this->density= $density;
     }
 
@@ -149,7 +149,7 @@
      * @access  public
      * @return  int
      */
-    function getDensity() {
+    public function getDensity() {
       return $this->density;
     }
 
@@ -159,7 +159,7 @@
      * @access  public
      * @param   int depth
      */
-    function setDepth($depth) {
+    public function setDepth($depth) {
       $this->depth= $depth;
     }
 
@@ -169,7 +169,7 @@
      * @access  public
      * @return  int
      */
-    function getDepth() {
+    public function getDepth() {
       return $this->depth;
     }
 
@@ -179,7 +179,7 @@
      * @access  public
      * @param   int rootindex_chunk
      */
-    function setRootindex_chunk($rootindex_chunk) {
+    public function setRootindex_chunk($rootindex_chunk) {
       $this->rootindex_chunk= $rootindex_chunk;
     }
 
@@ -189,7 +189,7 @@
      * @access  public
      * @return  int
      */
-    function getRootindex_chunk() {
+    public function getRootindex_chunk() {
       return $this->rootindex_chunk;
     }
 
@@ -199,7 +199,7 @@
      * @access  public
      * @param   int first_pmgl
      */
-    function setFirst_pmgl($first_pmgl) {
+    public function setFirst_pmgl($first_pmgl) {
       $this->first_pmgl= $first_pmgl;
     }
 
@@ -209,7 +209,7 @@
      * @access  public
      * @return  int
      */
-    function getFirst_pmgl() {
+    public function getFirst_pmgl() {
       return $this->first_pmgl;
     }
 
@@ -219,7 +219,7 @@
      * @access  public
      * @param   int last_pmgl
      */
-    function setLast_pmgl($last_pmgl) {
+    public function setLast_pmgl($last_pmgl) {
       $this->last_pmgl= $last_pmgl;
     }
 
@@ -229,7 +229,7 @@
      * @access  public
      * @return  int
      */
-    function getLast_pmgl() {
+    public function getLast_pmgl() {
       return $this->last_pmgl;
     }
 
@@ -239,7 +239,7 @@
      * @access  public
      * @param   int num_chunks
      */
-    function setNum_chunks($num_chunks) {
+    public function setNum_chunks($num_chunks) {
       $this->num_chunks= $num_chunks;
     }
 
@@ -249,7 +249,7 @@
      * @access  public
      * @return  int
      */
-    function getNum_chunks() {
+    public function getNum_chunks() {
       return $this->num_chunks;
     }
 
@@ -259,7 +259,7 @@
      * @access  public
      * @param   int lang
      */
-    function setLang($lang) {
+    public function setLang($lang) {
       $this->lang= $lang;
     }
 
@@ -269,7 +269,7 @@
      * @access  public
      * @return  int
      */
-    function getLang() {
+    public function getLang() {
       return $this->lang;
     }
 
@@ -279,7 +279,7 @@
      * @access  public
      * @param   string guid
      */
-    function setGuid($guid) {
+    public function setGuid($guid) {
       $this->guid= $guid;
     }
 
@@ -289,7 +289,7 @@
      * @access  public
      * @return  string
      */
-    function getGuid() {
+    public function getGuid() {
       return $this->guid;
     }
 
@@ -299,7 +299,7 @@
      * @access  public
      * @param   mixed[] ext
      */
-    function setExt($ext) {
+    public function setExt($ext) {
       $this->ext= $ext;
     }
 
@@ -309,7 +309,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getExt() {
+    public function getExt() {
       return $this->ext;
     }
   }

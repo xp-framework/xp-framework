@@ -23,12 +23,12 @@
    * @purpose  Represents JNLP XML structure
    */
   class JnlpDocument extends Tree {
-    var
+    public
       $resources    = NULL,
       $information  = NULL,
       $appdesc      = NULL;
       
-    var
+    public
       $_nodes       = array();
 
     /**
@@ -39,7 +39,7 @@
      * @param   string href
      * @param   string spec default JNLP_SPEC_1_PLUS
      */
-    function __construct($codebase= NULL, $href= NULL, $spec= JNLP_SPEC_1_PLUS) {
+    public function __construct($codebase= NULL, $href= NULL, $spec= JNLP_SPEC_1_PLUS) {
       parent::__construct('jnlp');
       $this->root->setAttribute('spec', $spec);
       $this->root->setAttribute('codebase', $codebase);
@@ -59,7 +59,7 @@
      * @param   string name
      * @return  &xml.Node
      */
-    function &findFirst(&$base, $name) {
+    public function &findFirst(&$base, $name) {
       for ($i= 0, $s= sizeof($base->children); $i < $s; $i++) {
         if ($name == $base->children[$i]->getName()) return $base->children[$i];
       }
@@ -72,11 +72,11 @@
      * @access  protected
      * @throws  lang.FormatException in case extraction fails
      */
-    function extract() {
+    public function extract() {
 
       // Extract information
       with ($this->_nodes['information']= &$this->findFirst($this->root, 'information')); {
-        $this->information= &new JnlpInformation();
+        $this->information= new JnlpInformation();
         for ($i= 0, $s= sizeof($this->_nodes['information']->children); $i < $s; $i++) {
           $name= $this->_nodes['information']->children[$i]->getName();
           switch ($name) {
@@ -116,7 +116,7 @@
               break;
 
             default:
-              return throw(new FormatException('Unknown identifier "'.$name.'" / Section "information"'));
+              throw(new FormatException('Unknown identifier "'.$name.'" / Section "information"'));
           }
         }
       }
@@ -130,7 +130,7 @@
           $node= &$this->_nodes['resources']->children[$i];
           switch ($name= $node->getName()) {
             case 'j2se':    // The Java2 version required
-              $this->resources[]= &new JnlpJ2seResource(
+              $this->resources[]= new JnlpJ2seResource(
                 $node->getAttribute('version'),
                 $node->getAttribute('href'),
                 $node->getAttribute('initial-heap-size'),
@@ -139,28 +139,28 @@
               break;
 
             case 'jar':     // A jar
-              $this->resources[]= &new JnlpJarResource(
+              $this->resources[]= new JnlpJarResource(
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
               );
               break;
             
             case 'property':
-              $this->resources[]= &new JnlpPropertyResource(
+              $this->resources[]= new JnlpPropertyResource(
                 $node->getAttribute('name'),
                 $node->getAttribute('value')
               );
               break;
 
             case 'nativelib':
-              $this->resources[]= &new JnlpJarResource(
+              $this->resources[]= new JnlpJarResource(
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
               );
               break;              
 
             case 'extension':
-              $this->resources[]= &new JnlpExtensionResource(
+              $this->resources[]= new JnlpExtensionResource(
                 $node->getAttribute('name'),
                 $node->getAttribute('href'),
                 $node->getAttribute('version')
@@ -168,14 +168,14 @@
               break;              
 
             default:
-              return throw(new FormatException('Unknown identifier "'.$name.'" / Section "resources"'));
+              throw(new FormatException('Unknown identifier "'.$name.'" / Section "resources"'));
           }
         }
       }
 
       // Extract application description
       with ($this->_nodes['application-desc']= &$this->findFirst($this->root, 'application-desc')); {
-        $this->appdesc= &new JnlpApplicationDesc();
+        $this->appdesc= new JnlpApplicationDesc();
         $this->appdesc->setMain_class($this->_nodes['application-desc']->getAttribute('main-class'));
         
         for ($i= 0, $s= sizeof($this->_nodes['application-desc']->children); $i < $s; $i++) {
@@ -192,7 +192,7 @@
      * @param   string str
      * @return  &com.sun.webstart.JnlpDocument
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       if ($j= &parent::fromString($str, __CLASS__)) {
         $j->extract();
       }
@@ -207,7 +207,7 @@
      * @param   &io.File file
      * @return  &com.sun.webstart.JnlpDocument
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if ($j= &parent::fromFile($file, __CLASS__)) {
         $j->extract();
       }
@@ -220,7 +220,7 @@
      * @access  public
      * @param   string codebase
      */
-    function setCodebase($codebase) {
+    public function setCodebase($codebase) {
       $this->root->setAttribute('codebase', $codebase);
     }
 
@@ -230,7 +230,7 @@
      * @access  public
      * @return  string
      */
-    function getCodebase() {
+    public function getCodebase() {
       return $this->root->getAttribute('codebase');
     }
 
@@ -240,7 +240,7 @@
      * @access  public
      * @param   string spec
      */
-    function setSpec($spec) {
+    public function setSpec($spec) {
       $this->root->setAttribute('spec', $spec);
     }
 
@@ -250,7 +250,7 @@
      * @access  public
      * @return  string
      */
-    function getSpec() {
+    public function getSpec() {
       return $this->root->getAttribute('spec');
     }
 
@@ -260,7 +260,7 @@
      * @access  public
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->root->setAttribute('href', $href);
     }
 
@@ -270,7 +270,7 @@
      * @access  public
      * @return  string
      */
-    function getHref() {
+    public function getHref() {
       return $this->root->getAttribute('href');
     }
     
@@ -281,7 +281,7 @@
      * @param   &com.sun.webstart.JnlpResource resource
      * @return  &com.sun.webstart.JnlpResource the added resource
      */
-    function &addResource(&$resource) {
+    public function &addResource(&$resource) {
       $this->resources[]= &$resource;
       $this->_nodes['resources']->addChild(new Node(
         $resource->getTagName(), 
@@ -297,7 +297,7 @@
      * @access  public
      * @return  com.sun.webstart.JnlpResource[]
      */
-    function getResources() {
+    public function getResources() {
       return $this->resources;
     }
 
@@ -307,7 +307,7 @@
      * @access  public
      * @return  &com.sun.webstart.JnlpInformation
      */
-    function &getInformation() {
+    public function &getInformation() {
       return $this->information;
     }
 
@@ -317,7 +317,7 @@
      * @access  public
      * @param   &com.sun.webstart.JnlpInformation i
      */
-    function setInformation(&$i) {
+    public function setInformation(&$i) {
       $this->information= &$i;
       $this->_nodes['information']->addChild(new Node('title', $i->getTitle()));
       $this->_nodes['information']->addChild(new Node('vendor', $i->getVendor()));
@@ -339,7 +339,7 @@
      * @access  public
      * @return  &com.sun.webstart.JnlpApplicationDesc
      */
-    function &getApplicationDesc() {
+    public function &getApplicationDesc() {
       return $this->appdesc;
     }
   }

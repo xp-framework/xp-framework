@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setWrapper(new EditEventWrapper());
       parent::__construct();
     }
@@ -35,7 +35,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    function identifierFor(&$request, &$context) {
+    public function identifierFor(&$request, &$context) {
       return $this->name.'.'.$request->getParam('event_id', 'new');
     }
 
@@ -47,7 +47,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function setup(&$request, &$context) {
+    public function setup(&$request, &$context) {
       if (
         $request->hasParam('event_id', 'new') && ($event= &Event::getByEvent_id($request->getParam('event_id')))
       ) {
@@ -90,7 +90,7 @@
       $prop= &$pm->getProperties('product');
       $cm= &ConnectionManager::getInstance();
       
-      try(); {
+      try {
         $db= &$cm->getByHost('uska', 0);
         $teams= $db->select('
             team_id,
@@ -100,8 +100,8 @@
           where team_id in (%d)',
           $prop->readArray($request->getProduct(), 'teams')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $this->setValue('teams', $teams);
@@ -117,20 +117,20 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
-          try(); {
+          try {
             $event= &Event::getByEvent_id($this->wrapper->getEvent_id());
-          } if (catch('SQLException', $e)) {
-            return throw($e);
+          } catch (SQLException $e) {
+            throw($e);
           }
           break;
         
         case 'create':
         default:
-          $event= &new Event();
+          $event= new Event();
           break;
       }
 
@@ -145,7 +145,7 @@
       $deadline= &$this->wrapper->getDeadline_date();
       
       list($th, $tm)= preg_split('/[:\.\-]/', $this->wrapper->getTarget_time(), 2);
-      $targetdate= &new Date(Date::mktime(
+      $targetdate= new Date(Date::mktime(
         $th,
         $tm,
         0,
@@ -156,7 +156,7 @@
       
       if ($deadline) {
         list($dh, $dm)= preg_split('/[:\.\-]/', $this->wrapper->getDeadline_time(), 2);
-        $deadline= &new Date(Date::mktime(
+        $deadline= new Date(Date::mktime(
           $dh,
           $dm,
           0,
@@ -199,7 +199,7 @@
       // Some check failed, bail out...
       if (!$sane) return FALSE;
       
-      try(); {
+      try {
         switch ($this->getValue('mode')) {
           case 'update': {
             $event->update();
@@ -212,8 +212,8 @@
             break;
           }
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return TRUE;

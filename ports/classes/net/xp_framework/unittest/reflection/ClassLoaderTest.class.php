@@ -13,7 +13,7 @@
    * @purpose  Testcase
    */
   class ClassLoaderTest extends TestCase {
-    var
+    public
       $classLoader= NULL;
     
     /**
@@ -25,7 +25,7 @@
      * @return  bool
      * @throws  unittest.AssertionFailedError
      */
-    function assertXPClass($name, &$class) {
+    public function assertXPClass($name, &$class) {
       return (
         $this->assertClass($class, 'lang.XPClass') &&
         $this->assertEquals($name, $class->getName()) &&
@@ -38,7 +38,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->classLoader= &ClassLoader::getDefault();
       $this->assertXPClass('lang.ClassLoader', $this->classLoader->getClass());
     }
@@ -49,7 +49,7 @@
      * @access  public
      */
     #[@test]
-    function loadClass() {
+    public function loadClass() {
       $this->assertXPClass('lang.Object', $this->classLoader->loadClass('lang.Object'));
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      */
     #[@test]
-    function findThisClass() {
+    public function findThisClass() {
       $this->assertEquals(realpath(__FILE__), $this->classLoader->findClass($this->getClassName()));
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      */
     #[@test]
-    function findNullClass() {
+    public function findNullClass() {
       $this->assertFalse($this->classLoader->findClass(NULL));
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      */
     #[@test]
-    function initializerCalled() {
+    public function initializerCalled() {
       $name= 'net.xp_framework.unittest.reflection.LoaderTestClass';
       if (class_exists(xp::reflect($name))) {
         return $this->fail('Class "'.$name.'" may not exist!');
@@ -98,7 +98,7 @@
      * @access  public
      */
     #[@test, @expect('lang.ClassNotFoundException')]
-    function loadNonExistantClass() {
+    public function loadNonExistantClass() {
       $this->classLoader->loadClass('@@NON-EXISTANT@@');
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      */
     #[@test]
-    function defineClass() {
+    public function defineClass() {
       $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClass';
       if (class_exists(xp::reflect($name))) {
         return $this->fail('Class "'.$name.'" may not exist!');
@@ -132,7 +132,7 @@
      * @access  public
      */
     #[@test]
-    function defineClassImplements() {
+    public function defineClassImplements() {
       $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
       $class= &$this->classLoader->defineClass(
         $name, 
@@ -153,7 +153,7 @@
      * @access  public
      */
     #[@test, @expect('lang.FormatException')]
-    function defineIllegalClass() {
+    public function defineIllegalClass() {
       $name= 'net.xp_framework.unittest.reflection.IllegalClass';
       if (class_exists(xp::reflect($name))) {
         return $this->fail('Class "'.$name.'" may not exist!');

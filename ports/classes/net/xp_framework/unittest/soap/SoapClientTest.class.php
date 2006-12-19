@@ -25,8 +25,8 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function testMultipleOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+    public function testMultipleOutputArguments() {
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -46,7 +46,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->invoke('irrelevant');
     }
 
@@ -58,8 +58,8 @@
      * @access  public
      */
     #[@test]
-    function testNoOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+    public function testNoOutputArguments() {
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -76,7 +76,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $client->invoke('irrelevant');
     }
 
@@ -87,8 +87,8 @@
      * @access  public
      */
     #[@test]
-    function testOneOutputArguments() {
-      $transport= &new SOAPDummyTransport();
+    public function testOneOutputArguments() {
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
@@ -107,7 +107,7 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= &new SOAPClient($transport, 'urn://test');
+      $client= new SOAPClient($transport, 'urn://test');
       $this->assertEquals(5, $client->invoke('irrelevant'));
     }
   }

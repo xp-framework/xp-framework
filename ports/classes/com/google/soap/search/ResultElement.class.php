@@ -10,7 +10,7 @@
    * @purpose  Specialized SOAP type
    */
   class ResultElement extends Object {
-    var
+    public
       $summary,
       $URL,
       $snippet,
@@ -27,7 +27,7 @@
      * @access  public
      * @return  string 
      */
-    function getSummary() {
+    public function getSummary() {
       return $this->summary;
     }
 
@@ -37,7 +37,7 @@
      * @access  public
      * @param   string summary
      */
-    function setSummary($summary) {
+    public function setSummary($summary) {
       $this->summary= $summary;
     }
 
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string 
      */
-    function getURL() {
+    public function getURL() {
       return $this->URL;
     }
 
@@ -57,7 +57,7 @@
      * @access  public
      * @param   string URL
      */
-    function setURL($URL) {
+    public function setURL($URL) {
       $this->URL= $URL;
     }
 
@@ -67,7 +67,7 @@
      * @access  public
      * @return  string 
      */
-    function getSnippet() {
+    public function getSnippet() {
       return $this->snippet;
     }
 
@@ -77,7 +77,7 @@
      * @access  public
      * @param   string snippet
      */
-    function setSnippet($snippet) {
+    public function setSnippet($snippet) {
       $this->snippet= $snippet;
     }
 
@@ -87,7 +87,7 @@
      * @access  public
      * @return  string 
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -97,7 +97,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -107,7 +107,7 @@
      * @access  public
      * @return  string 
      */
-    function getCachedSize() {
+    public function getCachedSize() {
       return $this->cachedSize;
     }
 
@@ -117,7 +117,7 @@
      * @access  public
      * @param   string cachedSize
      */
-    function setCachedSize($cachedSize) {
+    public function setCachedSize($cachedSize) {
       $this->cachedSize= $cachedSize;
     }
 
@@ -127,7 +127,7 @@
      * @access  public
      * @return  bool 
      */
-    function getRelatedInformationPresent() {
+    public function getRelatedInformationPresent() {
       return $this->relatedInformationPresent;
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @param   bool relatedInformationPresent
      */
-    function setRelatedInformationPresent($relatedInformationPresent) {
+    public function setRelatedInformationPresent($relatedInformationPresent) {
       $this->relatedInformationPresent= $relatedInformationPresent;
     }
 
@@ -147,7 +147,7 @@
      * @access  public
      * @return  string 
      */
-    function getHostName() {
+    public function getHostName() {
       return $this->hostName;
     }
 
@@ -157,7 +157,7 @@
      * @access  public
      * @param   string hostName
      */
-    function setHostName($hostName) {
+    public function setHostName($hostName) {
       $this->hostName= $hostName;
     }
 
@@ -167,7 +167,7 @@
      * @access  public
      * @return  mixed (typens:DirectoryCategory) 
      */
-    function getDirectoryCategory() {
+    public function getDirectoryCategory() {
       return $this->directoryCategory;
     }
 
@@ -177,7 +177,7 @@
      * @access  public
      * @param   mixed directoryCategory (typens:DirectoryCategory)
      */
-    function setDirectoryCategory($directoryCategory) {
+    public function setDirectoryCategory($directoryCategory) {
       $this->directoryCategory= $directoryCategory;
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @return  string 
      */
-    function getDirectoryTitle() {
+    public function getDirectoryTitle() {
       return $this->directoryTitle;
     }
 
@@ -197,7 +197,7 @@
      * @access  public
      * @param   string directoryTitle
      */
-    function setDirectoryTitle($directoryTitle) {
+    public function setDirectoryTitle($directoryTitle) {
       $this->directoryTitle= $directoryTitle;
     }
   }

@@ -12,7 +12,7 @@
    * @purpose  Mock
    */
   class XmlRpcRouterMock extends XmlRpcRouter {
-    var
+    public
       $headers= array(),
       $method=  '',
       $params=  array(),
@@ -24,7 +24,7 @@
      * @access  protected
      * @param   &scriptlet.HttpRequest request
      */
-    function _setupRequest(&$request) {
+    public function _setupRequest(&$request) {
       $request->headers= array_change_key_case($this->headers, CASE_LOWER);
       $request->method= $this->method;
       $request->setParams(array_change_key_case($this->params, CASE_LOWER));
@@ -38,7 +38,7 @@
      * @param   &scriptlet.HttpRequest request
      * @return  string
      */
-    function handleMethod(&$request) {
+    public function handleMethod(&$request) {
       switch ($request->method) {
         case HTTP_POST:
           $request->setData($this->data);
@@ -68,7 +68,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getParams() {
+    public function getParams() {
       return $this->params;
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      * @param   mixed[] headers
      */
-    function setMockHeaders($h) {
+    public function setMockHeaders($h) {
       $this->headers= $h;
     }
     
@@ -88,7 +88,7 @@
      * @access  public
      * @param   string m
      */
-    function setMockMethod($m) {
+    public function setMockMethod($m) {
       $this->method= $m;
     }
     
@@ -98,7 +98,7 @@
      * @access  public
      * @param   mixed[] params
      */
-    function setMockParams($p) {
+    public function setMockParams($p) {
       $this->params= $p;
     }
     
@@ -108,7 +108,7 @@
      * @access  public
      * @param   string data
      */
-    function setMockData($data) {
+    public function setMockData($data) {
       $this->data= $data;
     }
   }

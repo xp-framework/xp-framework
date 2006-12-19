@@ -27,7 +27,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  boolean
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);
       
       $eventid= $request->getParam('event_id', 0);
@@ -36,7 +36,7 @@
       // Bail out
       if (!$eventid && !$teamid) return TRUE;
       
-      try(); {
+      try {
         $eventid && $event= &Event::getByEvent_id($eventid);
         
         $query= &$this->db->query('
@@ -63,8 +63,8 @@
           ($eventid ? $this->db->prepare('and t.event_id= %d', $event->getEvent_id()) : ''),
           ($teamid ? $this->db->prepare('and e.team_id= %d', $teamid) : '')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       // Convert event object into array, so we can add it without

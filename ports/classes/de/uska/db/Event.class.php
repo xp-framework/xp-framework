@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class Event extends DataSet {
-    var
+    public
       $event_id           = 0,
       $team_id            = 0,
       $name               = '',
@@ -33,7 +33,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &Event::getPeer()); {
         $peer->setTable('uska.event');
         $peer->setConnection('uskadb');
@@ -62,7 +62,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -74,7 +74,7 @@
      * @return  &de.uska.db.Event object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByEvent_id($event_id) {
+    public function &getByEvent_id($event_id) {
       $peer= &Event::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL))));
     }
@@ -87,7 +87,7 @@
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByTarget_date($target_date) {
+    public function &getByTarget_date($target_date) {
       $peer= &Event::getPeer();
       return $peer->doSelect(new Criteria(array('target_date', $target_date, EQUAL)));
     }
@@ -100,7 +100,7 @@
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByTeam_id($team_id) {
+    public function &getByTeam_id($team_id) {
       $peer= &Event::getPeer();
       return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
@@ -113,7 +113,7 @@
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByEvent_type_id($event_type_id) {
+    public function &getByEvent_type_id($event_type_id) {
       $peer= &Event::getPeer();
       return $peer->doSelect(new Criteria(array('event_type_id', $event_type_id, EQUAL)));
     }
@@ -124,7 +124,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_id() {
+    public function getEvent_id() {
       return $this->event_id;
     }
       
@@ -135,7 +135,7 @@
      * @param   int event_id
      * @return  int the previous value
      */
-    function setEvent_id($event_id) {
+    public function setEvent_id($event_id) {
       return $this->_change('event_id', $event_id);
     }
 
@@ -145,7 +145,7 @@
      * @access  public
      * @return  int
      */
-    function getTeam_id() {
+    public function getTeam_id() {
       return $this->team_id;
     }
       
@@ -156,7 +156,7 @@
      * @param   int team_id
      * @return  int the previous value
      */
-    function setTeam_id($team_id) {
+    public function setTeam_id($team_id) {
       return $this->_change('team_id', $team_id);
     }
 
@@ -166,7 +166,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
       
@@ -177,7 +177,7 @@
      * @param   string name
      * @return  string the previous value
      */
-    function setName($name) {
+    public function setName($name) {
       return $this->_change('name', $name);
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
       
@@ -198,7 +198,7 @@
      * @param   string description
      * @return  string the previous value
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       return $this->_change('description', $description);
     }
 
@@ -208,7 +208,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getTarget_date() {
+    public function getTarget_date() {
       return $this->target_date;
     }
       
@@ -219,7 +219,7 @@
      * @param   util.Date target_date
      * @return  util.Date the previous value
      */
-    function setTarget_date($target_date) {
+    public function setTarget_date($target_date) {
       return $this->_change('target_date', $target_date);
     }
 
@@ -229,7 +229,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getDeadline() {
+    public function getDeadline() {
       return $this->deadline;
     }
       
@@ -240,7 +240,7 @@
      * @param   util.Date deadline
      * @return  util.Date the previous value
      */
-    function setDeadline($deadline) {
+    public function setDeadline($deadline) {
       return $this->_change('deadline', $deadline);
     }
 
@@ -250,7 +250,7 @@
      * @access  public
      * @return  int
      */
-    function getMax_attendees() {
+    public function getMax_attendees() {
       return $this->max_attendees;
     }
       
@@ -261,7 +261,7 @@
      * @param   int max_attendees
      * @return  int the previous value
      */
-    function setMax_attendees($max_attendees) {
+    public function setMax_attendees($max_attendees) {
       return $this->_change('max_attendees', $max_attendees);
     }
 
@@ -271,7 +271,7 @@
      * @access  public
      * @return  int
      */
-    function getReq_attendees() {
+    public function getReq_attendees() {
       return $this->req_attendees;
     }
       
@@ -282,7 +282,7 @@
      * @param   int req_attendees
      * @return  int the previous value
      */
-    function setReq_attendees($req_attendees) {
+    public function setReq_attendees($req_attendees) {
       return $this->_change('req_attendees', $req_attendees);
     }
 
@@ -292,7 +292,7 @@
      * @access  public
      * @return  int
      */
-    function getAllow_guests() {
+    public function getAllow_guests() {
       return $this->allow_guests;
     }
       
@@ -303,7 +303,7 @@
      * @param   int allow_guests
      * @return  int the previous value
      */
-    function setAllow_guests($allow_guests) {
+    public function setAllow_guests($allow_guests) {
       return $this->_change('allow_guests', $allow_guests);
     }
 
@@ -313,7 +313,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_type_id() {
+    public function getEvent_type_id() {
       return $this->event_type_id;
     }
       
@@ -324,7 +324,7 @@
      * @param   int event_type_id
      * @return  int the previous value
      */
-    function setEvent_type_id($event_type_id) {
+    public function setEvent_type_id($event_type_id) {
       return $this->_change('event_type_id', $event_type_id);
     }
 
@@ -334,7 +334,7 @@
      * @access  public
      * @return  string
      */
-    function getChangedby() {
+    public function getChangedby() {
       return $this->changedby;
     }
       
@@ -345,7 +345,7 @@
      * @param   string changedby
      * @return  string the previous value
      */
-    function setChangedby($changedby) {
+    public function setChangedby($changedby) {
       return $this->_change('changedby', $changedby);
     }
 
@@ -355,7 +355,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getLastchange() {
+    public function getLastchange() {
       return $this->lastchange;
     }
       
@@ -366,7 +366,7 @@
      * @param   util.Date lastchange
      * @return  util.Date the previous value
      */
-    function setLastchange($lastchange) {
+    public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
   }

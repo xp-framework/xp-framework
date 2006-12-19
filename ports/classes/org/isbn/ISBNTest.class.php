@@ -21,7 +21,7 @@
      * @see     http://isbntools.com/default.html#ij
      */
     #[@test]
-    function verifyISBNToolsExampleISBN() {
+    public function verifyISBNToolsExampleISBN() {
       $this->assertTrue(ISBN::isValid('0-8436-1072-7'));
     }
 
@@ -32,7 +32,7 @@
      * @see     http://www.amazon.de/exec/obidos/ISBN=3898643255
      */
     #[@test]
-    function verifyJUnitTestBookISBN() {
+    public function verifyJUnitTestBookISBN() {
       $this->assertTrue(ISBN::isValid('3-89864-325-5'));
     }
 
@@ -43,7 +43,7 @@
      * @see     http://www.isbn.org/standards/home/isbn/transition.asp
      */
     #[@test]
-    function verify13DigitISBN() {
+    public function verify13DigitISBN() {
       $this->assertTrue(ISBN::isValid('978-0-393-04002-9'));
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      */
     #[@test]
-    function verifyInvalidChecksum() {
+    public function verifyInvalidChecksum() {
       $this->assertFalse(ISBN::isValid('0-8436-1072-3'));
     }
     
@@ -63,7 +63,7 @@
      * @access  public
      */
     #[@test]
-    function testStringRepresentation() {
+    public function testStringRepresentation() {
       $this->assertEquals(
         'org.isbn.ISBN(3-89864-325-5)', 
         xp::stringOf(new ISBN('3-89864-325-5'))

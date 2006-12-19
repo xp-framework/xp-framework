@@ -32,7 +32,7 @@
    * @see      http://www.id3.org/id3v1.html
    */
   class ID3Tag extends Object {
-    var 
+    public 
       $version  = ID3_VERSION_UNKNOWN,
       $tag      = '',
       $name     = '',
@@ -49,7 +49,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       static $ver= array(
         ID3_VERSION_UNKNOWN => 'ID3_VERSION_UNKNOWN',
         ID3_VERSION_1       => 'ID3_VERSION_1',
@@ -90,22 +90,22 @@
      * @param   string version one of the ID3_VERSION_* constants
      * @return  &de.fraunhofer.mp3.ID3Tag a tag
      */
-    function &fromString(&$buf, $version) {
-      $tag= &new ID3Tag();
+    public static function &fromString(&$buf, $version) {
+      $tag= new ID3Tag();
       
       switch ($version) {
         case ID3_VERSION_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a30comment/C1genre', $buf);
-          if ('TAG' != $data['tag']) return throw(new FormatException('Tag corrupt'));
+          if ('TAG' != $data['tag']) throw(new FormatException('Tag corrupt'));
           break;
           
         case ID3_VERSION_1_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
-          if ('TAG' != $data['tag']) return throw(new FormatException('Tag corrupt'));
+          if ('TAG' != $data['tag']) throw(new FormatException('Tag corrupt'));
           break;
         
         default:
-          return throw(new IllegalArgumentException('Version '.$version.' not supported'));
+          throw(new IllegalArgumentException('Version '.$version.' not supported'));
       }
 
       // Copy information
@@ -116,7 +116,7 @@
       $tag->album=      $data['album'];
       $tag->year=       (int)$data['year'];
       $tag->comment=    $data['comment'];
-      $tag->genre=      &new ID3Genre((int)$data['genre']);
+      $tag->genre=      new ID3Genre((int)$data['genre']);
       return $tag;
     }
   }

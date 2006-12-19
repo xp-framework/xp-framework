@@ -20,7 +20,7 @@
      * @access  public
      */
     #[@test]
-    function noConstructor() {
+    public function noConstructor() {
       $c= &XPClass::forName('lang.Object');
       $this->assertFalse($c->hasConstructor());
     }
@@ -31,7 +31,7 @@
      * @access  public
      */
     #[@test]
-    function baseClass() {
+    public function baseClass() {
       $c= &XPClass::forName('lang.Object');
       $this->assertNull($c->getParentClass());
     }
@@ -42,7 +42,7 @@
      * @access  public
      */
     #[@test]
-    function noInterfaces() {
+    public function noInterfaces() {
       $c= &XPClass::forName('lang.Object');
       $this->assertEmpty($c->getInterfaces());
     }
@@ -54,7 +54,7 @@
      * @access  public
      */
     #[@test]
-    function typeOf() {
+    public function typeOf() {
       $this->assertEquals('lang.Object', xp::typeOf(new Object()));
     }
 
@@ -65,8 +65,8 @@
      * @access  public
      */
     #[@test]
-    function hashCodeMethod() {
-      $o= &new Object();
+    public function hashCodeMethod() {
+      $o= new Object();
       $this->assertMatches($o->hashCode(), '/^0\.[0-9]+ [0-9]+$/');
     }
 
@@ -77,8 +77,8 @@
      * @access  public
      */
     #[@test]
-    function equalsMethod() {
-      $o= &new Object();
+    public function equalsMethod() {
+      $o= new Object();
       $this->assertTrue($o->equals($o));
       $this->assertFalse($o->equals(new Object()));
     }
@@ -91,8 +91,8 @@
      * @access  public
      */
     #[@test]
-    function getClassNameMethod() {
-      $o= &new Object();
+    public function getClassNameMethod() {
+      $o= new Object();
       $this->assertEquals('lang.Object', $o->getClassName());
     }
 
@@ -104,8 +104,8 @@
      * @access  public
      */
     #[@test]
-    function getClassMethod() {
-      $o= &new Object();
+    public function getClassMethod() {
+      $o= new Object();
       $class= &$o->getClass();
       $this->assertClass($class, 'lang.XPClass');
       $this->assertEquals('lang.Object', $class->getName());
@@ -118,8 +118,8 @@
      * @access  public
      */
     #[@test]
-    function toStringMethod() {
-      $o= &new Object();
+    public function toStringMethod() {
+      $o= new Object();
       $this->assertEquals(
         'lang.Object {'."\n".
         '  __id => "'.$o->hashCode().'"'."\n".

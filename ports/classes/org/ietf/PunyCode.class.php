@@ -42,7 +42,7 @@
      * @return  &string
      * @see rfc://3492
      */
-    function &getASCII() {
+    public function &getASCII() {
       static $ascii;
       $ascii =
         "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n".
@@ -66,7 +66,7 @@
      * @return  int
      * @see rfc://3492#6.1
      */
-    function _adapt($delta, $numpoints, $firsttime) {
+    public function _adapt($delta, $numpoints, $firsttime) {
       $delta = $firsttime ? (int)($delta / PUNYCODE_DAMP) : $delta >> 1;
       // delta >> 1 is a faster way of doing delta / 2
       $delta += (int)($delta / $numpoints);
@@ -88,7 +88,7 @@
      * @return int
      * @see rfc://3492#5
      */
-    function _decode_digit($cp) {
+    public function _decode_digit($cp) {
       return
         $cp - 48 < 10 ? $cp - 22 :  ($cp - 65 < 26 ? $cp - 65 :
         $cp - 97 < 26 ? $cp - 97 :  PUNYCODE_BASE);
@@ -104,7 +104,7 @@
      * @param  bool flag
      * @return int
      */
-    function _encode_digit($d, $flag) {
+    public function _encode_digit($d, $flag) {
       return $d + 22 + 75 * ($d < 26) - (($flag != 0) << 5);
     }
 
@@ -117,7 +117,7 @@
      * @return int
      * @see rfc://3492#5
      */
-    function _encode_basic($bcp, $flag) {
+    public function _encode_basic($bcp, $flag) {
       $bcp= $bcp;
       $bcp -= ($bcp - 97 < 26) << 5;
       return $bcp + ((!$flag && ($bcp - 65 < 26)) << 5);
@@ -133,7 +133,7 @@
      * @param  int bcp
      * @return int
      */
-    function _flagged($bcp) {
+    public function _flagged($bcp) {
       return ord($bcp) - 65 < 26;
     }
 
@@ -148,7 +148,7 @@
      * @throws lang.IllegalArgumentException in case $input is not a punycode string
      * @throws lang.SystemException in case there's an interger overflow
      */
-    function decode($input, &$result, &$flags) {
+    public function decode($input, &$result, &$flags) {
       $in_len= strlen($input);
       $n= PUNYCODE_INITIAL_N;
       $out= $i= 0;
@@ -159,7 +159,7 @@
       // Check for ASCII characters
       for ($b= 0; $b<$in_len; $b++) {
         if (strpos($this->getASCII(), $input[$b]) === FALSE) {
-          return throw(new IllegalArgumentException('Input is not valid punycode'));
+          throw(new IllegalArgumentException('Input is not valid punycode'));
         }
       }
 
@@ -173,7 +173,7 @@
       for ($j= 0; $j < $b; ++$j) {
         if ($flags !== NULL) $flags[$out] = $this->_flagged($input[$j]);
         if (ord($input[$j]) >= 0x80) {
-          return throw(new IllegalArgumentException('Input is not valid punycode'));
+          throw(new IllegalArgumentException('Input is not valid punycode'));
         }
         $output[$out++] = ord($input[$j]);
       }
@@ -191,14 +191,14 @@
         // value at the end to obtain delta.
         for ($oldi = $i, $w = 1, $k = PUNYCODE_BASE; ; $k += PUNYCODE_BASE) {
           if ($in >= $in_len) {
-            return throw(new IllegalArgumentException('Input is not valid punycode'));
+            throw(new IllegalArgumentException('Input is not valid punycode'));
           }
           $digit = $this->_decode_digit(ord($input[$in++]));
           if ($digit >= PUNYCODE_BASE) {
-            return throw(new IllegalArgumentException('Input is not valid punycode'));
+            throw(new IllegalArgumentException('Input is not valid punycode'));
           }
           if ($digit > (LONG_MAX - $i) / $w) {
-            return throw(new SystemException('Integer overflow'));
+            throw(new SystemException('Integer overflow'));
           }
           $i += $digit * $w;
           $t =
@@ -206,7 +206,7 @@
             ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
           if ($digit < $t) break;
           if ($w > LONG_MAX / (PUNYCODE_BASE - $t)) {
-            return throw(new SystemException('Integer overflow'));
+            throw(new SystemException('Integer overflow'));
           }
           $w *= (PUNYCODE_BASE - $t);
         }
@@ -216,7 +216,7 @@
         // i was supposed to wrap around from out+1 to 0,
         // incrementing n each time, so we'll fix that now:
         if ($i / ($out + 1) > LONG_MAX - $n) {
-          return throw(new SystemException('Integer overflow'));
+          throw(new SystemException('Integer overflow'));
         }
         $n += (int)($i / ($out + 1));
         $i %= ($out + 1);
@@ -253,7 +253,7 @@
      * @throws lang.IllegalArgumentException in case $input is not a punycode string
      * @throws lang.SystemException in case there's an interger overflow
      */
-    function encode($input, &$result, $flags) {
+    public function encode($input, &$result, $flags) {
       $in_len= strlen($input);
       $n = PUNYCODE_INITIAL_N;
       $delta = $out = 0;
@@ -293,7 +293,7 @@
         // <n,i> state to <m,0>, but guard against overflow:
 
         if ($m - $n > (LONG_MAX - $delta) / ($h + 1)) {
-          return throw(new SystemException('Integer overflow'));
+          throw(new SystemException('Integer overflow'));
         }
         $delta += ($m - $n) * ($h + 1);
         $n = $m;
@@ -302,7 +302,7 @@
           // Punycode does not need to check whether input[j] is basic:
           if (ord($input[$j]) < $n) {
             if (++$delta == 0) {
-              return throw(new SystemException('Integer overflow'));
+              throw(new SystemException('Integer overflow'));
             }
           }
 
@@ -341,18 +341,18 @@
      * @return  bool
      * @throws  lang.Exception from _decode()
      */
-    function decodeString($str, $charset= 'ISO-8859-1') {
-      try(); {
+    public function decodeString($str, $charset= 'ISO-8859-1') {
+      try {
         $out= '';
         $flags= array();
-        $p= &new PunyCode();
+        $p= new PunyCode();
         $p->decode($str, $out, $flags);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       if ($charset != 'UCS-4') {
         if (($out= iconv('UCS-4', $charset, $out)) === FALSE) {
-          return throw(new Exception('Can not convert string to requested encoding('.$charset.')'));
+          throw(new XPException('Can not convert string to requested encoding('.$charset.')'));
         }
       }
       return $out;
@@ -366,15 +366,15 @@
      * @return  bool
      * @throws  lang.Exception from _encode()
      */
-    function encodeString($str) {
-      try(); {
+    public function encodeString($str) {
+      try {
         $out= '';
         $flags= array_fill(0, strlen($str)+ 1, FALSE);
         array_pop($flags);
-        $p= &new PunyCode();
+        $p= new PunyCode();
         $p->encode($str, $out, $flags);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $out;
     }

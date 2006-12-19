@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: DiaUMLConnection.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
 
   uses(
@@ -17,7 +17,7 @@
    */
   class DiaUMLConnection extends DiaObject {
 
-    var
+    public
       $conn_assoc= array(0 => 'begin', 1 => 'end');
 
     /**
@@ -25,7 +25,7 @@
      * 
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setName('__noname__');
       $this->setStereotype(NULL);
@@ -54,7 +54,7 @@
      * @access  public
      * @return  org.dia.DiaConnection[]
      */
-    function getConnections() {
+    public function getConnections() {
       $conns['begin']= $this->getChild('begin');
       $conns['end']= $this->getChild('end');
       return $conns;
@@ -67,7 +67,7 @@
      * @param   &org.dia.DiaConnection Conn
      */
     #[@fromDia(xpath= 'dia:connections/dia:connection', class= 'org.dia.DiaConnection')]
-    function addConnection(&$Conn) {
+    public function addConnection(&$Conn) {
       $Conns= &$this->getChild('connections');
       $Conns->set($this->conn_assoc[$Conn->getHandle()], $Conn);
     }
@@ -79,7 +79,7 @@
      * @access  public
      * @return  org.dia.DiaPoint[]
      */
-    function getOrthPoints() {
+    public function getOrthPoints() {
       $Points= &$this->getChild('orth_points');
       return $Points->getChildren();
     }
@@ -91,7 +91,7 @@
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_points"]/dia:point/@val', value= 'array')]
-    function addOrthPoint($point) {
+    public function addOrthPoint($point) {
       $Points= &$this->getChild('orth_points');
       $Points->addChild(new DiaPoint($point));
     }
@@ -102,7 +102,7 @@
      * @access  public
      * @return  org.dia.DiaEnum[]
      */
-    function getOrthOrients() {
+    public function getOrthOrients() {
       $Orient= &$this->getChild('orth_orient');
       return $Orient->getChildren();
     }
@@ -114,7 +114,7 @@
      * @param   int direction
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_orient"]/dia:enum/@val', value= 'int')]
-    function addOrthOrient($direction) {
+    public function addOrthOrient($direction) {
       $Orient= &$this->getChild('orth_orient');
       $Orient->addChild(new DiaEnum($direction));
     }
@@ -125,7 +125,7 @@
      * @access  public
      * @return  bool
      */
-    function getOrthAutoroute() {
+    public function getOrthAutoroute() {
       return $this->getChildValue('autoroute');
     }
 
@@ -136,7 +136,7 @@
      * @param   bool autoroute
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_autoroute"]/dia:boolean/@val', value= 'boolean')]
-    function setOrthAutoroute($autoroute) {
+    public function setOrthAutoroute($autoroute) {
       $this->setBoolean('autoroute', $autoroute);
     }
 
@@ -148,9 +148,9 @@
      * @param   string id
      * @param   int connpoint default 0
      */
-    function beginAt($id, $connpoint= 0) {
+    public function beginAt($id, $connpoint= 0) {
       $Conns= &$this->getChild('connections');
-      $Conn= &new DiaConnection(0);
+      $Conn= new DiaConnection(0);
       $Conn->setTo($id);
       $Conn->setConnection($connpoint);
       $Conns->set('begin', $Conn);
@@ -164,9 +164,9 @@
      * @param   string id
      * @param   int connpoint default 0
      */
-    function endAt($id, $connpoint= 0) {
+    public function endAt($id, $connpoint= 0) {
       $Conns= &$this->getChild('connections');
-      $Conn= &new DiaConnection(1);
+      $Conn= new DiaConnection(1);
       $Conn->setTo($id);
       $Conn->setConnection($connpoint);
       $Conns->set('end', $Conn);

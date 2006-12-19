@@ -15,7 +15,7 @@
    * @purpose  Base state
    */
   class UskaState extends AbstractState {
-    var
+    public
       $cat=     NULL,
       $db=      NULL;
       
@@ -24,7 +24,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $log= &Logger::getInstance();
       $this->cat= &$log->getCategory();
     }
@@ -38,7 +38,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
     
       // Automatically handle authentication if state indicates so
       if ($this->requiresAuthentication()) {
@@ -77,11 +77,11 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function insertTeams(&$request, &$response) {
+    public function insertTeams(&$request, &$response) {
       $pm= &PropertyManager::getInstance();
       $prop= &$pm->getProperties('product');
       
-      try(); {
+      try {
         $teams= $this->db->select('
             team_id,
             name
@@ -90,8 +90,8 @@
           where team_id in (%d)',
           $prop->readArray($request->getProduct(), 'teams')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $response->addFormResult(Node::fromArray($teams, 'teams'));
@@ -104,7 +104,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function insertEventCalendar(&$request, &$response, $team= NULL, $contextDate= NULL) {
+    public function insertEventCalendar(&$request, &$response, $team= NULL, $contextDate= NULL) {
       $pm= &PropertyManager::getInstance();
       $prop= &$pm->getProperties('product');
       
@@ -119,7 +119,7 @@
         )) + 6) % 7
       )));
 
-      try(); {
+      try {
         $calendar= &$this->db->query('
           select
             dayofmonth(target_date) as day,
@@ -134,8 +134,8 @@
           $contextDate->getMonth(),
           ($team ? $this->db->prepare('and team_id= %d', $team) : '')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       while ($record= &$calendar->next()) {

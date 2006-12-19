@@ -18,7 +18,7 @@
      * @access  public
      */
     #[@simple]
-    function simple() { }
+    public function simple() { }
 
     /**
      * Method annotated with more than one annotation
@@ -26,7 +26,7 @@
      * @access  public
      */
     #[@one, @two, @three]
-    function multiple() { }
+    public function multiple() { }
 
     /**
      * Method annotated with an annotation with a string value
@@ -34,7 +34,7 @@
      * @access  public
      */
     #[@strval('String value')]
-    function stringValue() { }
+    public function stringValue() { }
 
     /**
      * Method annotated with an annotation with a hash value containing one
@@ -43,7 +43,7 @@
      * @access  public
      */
     #[@config(key = 'value')]
-    function keyValuePair() { }
+    public function keyValuePair() { }
 
     /**
      * Unittest method annotated with @test, @ignore and @limit
@@ -51,7 +51,7 @@
      * @access  public
      */
     #[@test, @ignore, @limit(time = 0.1, memory = 100)]
-    function testMethod() { }
+    public function testMethod() { }
 
     /**
      * Method annotated with an annotation with a hash value containing 
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@config(key = 'value', times= 5, disabled= FALSE, null = NULL, list= array(1, 2))]
-    function keyValuePairs() { }
+    public function keyValuePairs() { }
 
     /**
      * Method annotated with a multi-line annotation
@@ -71,7 +71,7 @@
     #  'net.xp_framework.unittest.core.FirstInterceptor',
     #  'net.xp_framework.unittest.core.SecondInterceptor',
     #))]
-    function multiLine() { }
+    public function multiLine() { }
 
     /**
      * Method annotated with a simple xpath expression
@@ -79,13 +79,13 @@
      * @access  public
      */
     #[@fromXml(xpath= '/parent/child/@attribute')]
-    function simpleXPath() { }
+    public function simpleXPath() { }
     /**
      * Method annotated with a complex xpath expression
      *
      * @access  public
      */
     #[@fromXml(xpath= '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"')]
-    function complexXPath() { }
+    public function complexXPath() { }
   }
 ?>

@@ -13,7 +13,7 @@
    * @purpose  Unit Test
    */
   class DSNTest extends TestCase {
-    var
+    public
       $dsn= array();
       
     /**
@@ -21,10 +21,10 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->dsn['sybase']= &new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
-      $this->dsn['mysql']= &new DSN('mysql://root@localhost/?log=default');
-      $this->dsn['pgsql']= &new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
+    public function setUp() {
+      $this->dsn['sybase']= new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
+      $this->dsn['mysql']= new DSN('mysql://root@localhost/?log=default');
+      $this->dsn['pgsql']= new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
     }
 
     /**
@@ -33,7 +33,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentationWithPassword() {
+    public function stringRepresentationWithPassword() {
       $this->assertEquals(
         'rdbms.DSN@(sybase://sa:********@localhost:1999/CAFFEINE?autoconnect=1)',
         $this->dsn['sybase']->toString()
@@ -46,7 +46,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentationWithoutPassword() {
+    public function stringRepresentationWithoutPassword() {
       $this->assertEquals(
         'rdbms.DSN@(mysql://root@localhost/?log=default)',
         $this->dsn['mysql']->toString()
@@ -59,7 +59,7 @@
      * @access  public
      */
     #[@test]
-    function noFlags() {
+    public function noFlags() {
       $this->assertEquals(0, $this->dsn['mysql']->getFlags());
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      */
     #[@test]
-    function definedFlags() {
+    public function definedFlags() {
       $this->assertEquals(DB_AUTOCONNECT, $this->dsn['sybase']->getFlags());
     }
     
@@ -79,7 +79,7 @@
      * @access  public
      */
     #[@test]
-    function stringPropertyValue() {
+    public function stringPropertyValue() {
       $this->assertEquals('default', $this->dsn['mysql']->getProperty('log'));
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      */
     #[@test]
-    function arrayPropertyValue() {
+    public function arrayPropertyValue() {
       $this->assertEquals(array('util.log.LogObserver' => 'default'), $this->dsn['pgsql']->getProperty('observer'));
     }
   }

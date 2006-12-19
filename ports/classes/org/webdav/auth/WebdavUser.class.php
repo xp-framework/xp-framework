@@ -10,7 +10,7 @@
    * @purpose  Webdav user
    */
   class WebdavUser extends Object {
-    var
+    public
       $username = NULL,
       $password = NULL;
 
@@ -21,7 +21,7 @@
      * @param   string username
      * @param   string password
      */
-    function __construct($username, $password) {
+    public function __construct($username, $password) {
       $this->username= $username;
       $this->password= $password;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @param   string username The username
      */
-    function setUsername($username) {
+    public function setUsername($username) {
       $this->username= $username;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->username;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @param   string password The password
      */
-    function setPassword($password) {
+    public function setPassword($password) {
       $this->password= $password;
     }
 
@@ -62,7 +62,7 @@
      * @access  public
      * @return  string
      */
-    function getPassword() {
+    public function getPassword() {
       return $this->password;
     }
   }

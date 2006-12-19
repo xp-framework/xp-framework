@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase', 
+    'unittest.TestCase',
     'rdbms.DriverManager',
     'rdbms.ConnectionManager',
     'util.Date',
@@ -32,7 +32,7 @@
      * @model   static
      * @access  public
      */  
-    function __static() {
+    public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
     }
     
@@ -41,7 +41,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $cm= &ConnectionManager::getInstance();
       $cm->register(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 'jobs');
     }
@@ -52,7 +52,7 @@
      * @access  protected
      * @return  &net.xp_framework.unittest.rdbms.mock.MockConnection
      */
-    function &getConnection() {
+    public function &getConnection() {
       $cm= &ConnectionManager::getInstance();
       return $cm->getByHost('jobs', 0);
     }
@@ -63,7 +63,7 @@
      * @access  protected
      * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet r
      */
-    function setResults(&$r) {
+    public function setResults(&$r) {
       $conn= &$this->getConnection();
       $conn->setResultSet($r);
     }
@@ -74,7 +74,7 @@
      * @access  public
      */
     #[@test]
-    function peerObject() {
+    public function peerObject() {
       $peer= &Job::getPeer();
       $this->assertClass($peer, 'rdbms.Peer');
       $this->assertEquals('job', $peer->identifier);
@@ -97,7 +97,7 @@
      * @access  public
      */
     #[@test]
-    function getByJob_id() {
+    public function getByJob_id() {
       $now= &Date::now();
       $this->setResults(new MockResultSet(array(
         0 => array(   // First row
@@ -122,8 +122,8 @@
      * @access  public
      */
     #[@test]
-    function newObject() {
-      $j= &new Job();
+    public function newObject() {
+      $j= new Job();
       $this->assertTrue($j->isNew());
     }
 
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function existingObject() {
+    public function existingObject() {
       $this->setResults(new MockResultSet(array(
         0 => array(   // First row
           'job_id'      => 1,
@@ -153,8 +153,8 @@
      * @access  public
      */
     #[@test]
-    function noLongerNewAfterSave() {
-      $j= &new Job();
+    public function noLongerNewAfterSave() {
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -170,7 +170,7 @@
      * @access  public
      */
     #[@test]
-    function noResultsDuringGetByJob_id() {
+    public function noResultsDuringGetByJob_id() {
       $this->setResults(new MockResultSet());
       $this->assertNull(Job::getByJob_id(IRRELEVANT_NUMBER));
     }
@@ -182,7 +182,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLException')]
-    function failedQueryInGetByJob_id() {
+    public function failedQueryInGetByJob_id() {
       $mock= &$this->getConnection();
       $mock->makeQueryFail(1, 'Select failed');
 
@@ -196,11 +196,11 @@
      * @access  public
      */
     #[@test]
-    function insertReturnsIdentity() {
+    public function insertReturnsIdentity() {
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -216,11 +216,11 @@
      * @access  public
      */
     #[@test]
-    function saveReturnsIdentityForInserts() {
+    public function saveReturnsIdentityForInserts() {
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -236,7 +236,7 @@
      * @access  public
      */
     #[@test]
-    function saveReturnsIdentityForUpdates() {
+    public function saveReturnsIdentityForUpdates() {
       $this->setResults(new MockResultSet(array(
         0 => array(   // First row
           'job_id'      => 1,
@@ -259,11 +259,11 @@
      * @access  public
      */
     #[@test]
-    function identityFieldIsSet() {
+    public function identityFieldIsSet() {
       $mock= &$this->getConnection();
       $mock->setIdentityValue(14121977);
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -282,11 +282,11 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLException')]
-    function failedQueryInInsert() {
+    public function failedQueryInInsert() {
       $mock= &$this->getConnection();
       $mock->makeQueryFail(1205, 'Deadlock');
 
-      $j= &new Job();
+      $j= new Job();
       $j->setTitle('New job');
       $j->setValid_from(Date::now());
       $j->setExpire_at(NULL);
@@ -300,7 +300,7 @@
      * @access  public
      */
     #[@test]
-    function oneResultForDoSelect() {
+    public function oneResultForDoSelect() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 1,
@@ -324,7 +324,7 @@
      * @access  public
      */
     #[@test]
-    function noResultForDoSelect() {
+    public function noResultForDoSelect() {
       $this->setResults(new MockResultSet());
     
       $peer= &Job::getPeer();
@@ -340,7 +340,7 @@
      * @access  public
      */
     #[@test]
-    function multipleResultForDoSelect() {
+    public function multipleResultForDoSelect() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 1,
@@ -373,7 +373,7 @@
      * @access  public
      */
     #[@test]
-    function iterateOverCriteria() {
+    public function iterateOverCriteria() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 654,
@@ -419,7 +419,7 @@
      * @access  public
      */
     #[@test]
-    function nextCallWithoutHasNext() {
+    public function nextCallWithoutHasNext() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 654,
@@ -452,7 +452,7 @@
      * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
-    function nextCallOnEmptyResultSet() {
+    public function nextCallOnEmptyResultSet() {
       $this->setResults(new MockResultSet());
       $peer= &Job::getPeer();
       $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
@@ -466,7 +466,7 @@
      * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
-    function nextCallPastEndOfResultSet() {
+    public function nextCallPastEndOfResultSet() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 654,
@@ -488,7 +488,7 @@
      * @access  public
      */
     #[@test]
-    function iterateOverStatement() {
+    public function iterateOverStatement() {
       $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 654,
@@ -518,7 +518,7 @@
      * @access  public
      */
     #[@test]
-    function updateUnchangedObject() {
+    public function updateUnchangedObject() {
 
       // First, retrieve an object
       $this->setResults(new MockResultSet(array(

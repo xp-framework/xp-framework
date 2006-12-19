@@ -5,7 +5,7 @@
  */
  
   uses(
-    'util.log.Logger', 
+    'util.log.Logger',
     'util.log.FileAppender',
     'gui.WidgetNotFoundException'
   );
@@ -24,7 +24,7 @@
    * @purpose  Base class
    */
   class GtkApplication extends Object {
-    var 
+    public 
       $window   = NULL,
       $cat      = NULL,
       $rcfile   = '';
@@ -35,7 +35,7 @@
      * @access  public
      * @param   &util.ParamString p
      */
-    function __construct(&$p) {
+    public function __construct(&$p) {
 
       // Set up logger
       $l= &Logger::getInstance();
@@ -68,9 +68,9 @@
      * @return  &php.GtkWidget
      * @throws  gui.WidgetNotFoundException
      */
-    function &widget($name) {
+    public function &widget($name) {
       if (isset($this->{$name})) {
-        return throw(new WidgetNotFoundException($name));
+        throw(new WidgetNotFoundException($name));
       } 
       return $this->{$name};
     }
@@ -108,7 +108,7 @@
      * @return  &php.GtkWidget widget
      * @throws  gui.GuiException in case the signal connecting failed
      */
-    function &connect(&$widget, $signal, $callback= NULL, $data= NULL) {
+    public function &connect(&$widget, $signal, $callback= NULL, $data= NULL) {
       if (!$widget) return FALSE;
       if ('after:' == substr($signal, 0, 6)) {
         $signal= substr($signal, 6);
@@ -122,7 +122,7 @@
         array(&$this, $callback ? $callback : 'on'.$widget->get_name().$signal),
         $data
       )) {
-        return throw(new GuiException('Connecting "'.$widget->get_name().'.'.$signal.'" failed'));
+        throw(new GuiException('Connecting "'.$widget->get_name().'.'.$signal.'" failed'));
       }
       
       return $widget;
@@ -133,8 +133,8 @@
      *
      * @access  protected
      */
-    function create() {
-      $this->window= &new GtkWindow();
+    public function create() {
+      $this->window= new GtkWindow();
     }
 
     /**
@@ -143,7 +143,7 @@
      * @model   abstract
      * @access  public
      */
-    function init() { }
+    public function init() { }
 
     /**
      * Is called after the application comes down. Include cleanup
@@ -152,14 +152,14 @@
      * @model   abstract
      * @access  public
      */
-    function done() { }
+    public function done() { }
 
     /**
      * Shows application window and enters main loop.
      *
      * @access  public
      */    
-    function run() {
+    public function run() {
       $this->window->show_all();
       Gtk::main();
     }
@@ -169,7 +169,7 @@
      *
      * @access  public
      */       
-    function destroy() {
+    public function destroy() {
       Gtk::main_quit();
     }
     
@@ -179,7 +179,7 @@
      * @access  public
      * @see     http://gtk.php.net/manual/en/gtk.method.events_pending.php
      */
-    function processEvents() {
+    public function processEvents() {
       while (Gtk::events_pending()) Gtk::main_iteration();
     }
   }

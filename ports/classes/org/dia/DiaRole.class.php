@@ -14,7 +14,7 @@
    */
   class DiaRole extends DiaComposite {
 
-    var
+    public
       $type= NULL; 
 
     /**
@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setRole();
       $this->setMultiplicity('');
@@ -38,7 +38,7 @@
      * @param   string name
      */
     #[@fromDia(xpath= 'dia:attribute[@name="role"]/dia:string', value= 'string')]
-    function setRole($name) {
+    public function setRole($name) {
       $this->setString('role', $name);
     }
 
@@ -49,7 +49,7 @@
      * @param   string multi
      */
     #[@fromDia(xpath= 'dia:attribute[@name="multiplicity"]/dia:string', value= 'string')]
-    function setMultiplicity($multi) {
+    public function setMultiplicity($multi) {
       $this->setString('multiplicity', $multi);
     }
 
@@ -60,7 +60,7 @@
      * @param   bool arrow
      */
     #[@fromDia(xpath= 'dia:attribute[@name="arrow"]/dia:boolean/@val', value= 'boolean')]
-    function setArrow($arrow) {
+    public function setArrow($arrow) {
       $this->setBoolean('arrow', $arrow);
     }
 
@@ -71,7 +71,7 @@
      * @param   int value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="aggregate"]/dia:enum/@val', value= 'int')]
-    function setAggregate($value) {
+    public function setAggregate($value) {
       $this->setEnum('aggregate', $value);
     }
 
@@ -82,7 +82,7 @@
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'int')]
-    function setVisibility($visibility) {
+    public function setVisibility($visibility) {
       $this->setEnum('visibility', $visibility);
     }
  }

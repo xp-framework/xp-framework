@@ -30,7 +30,7 @@
      * @param   string string
      * @return  &xml.Node
      */
-    function markupNodeFor($name, $string) {
+    public static function markupNodeFor($name, $string) {
       static $parser= NULL, $builder= NULL;
       
       if (!$parser) $parser= new XMLParser();
@@ -38,12 +38,12 @@
 
       // Convert string to XML - TBD: Use more fault-tolerant method
       $markup= $builder->markupFor($string);
-      try(); {
+      try {
         $parser->parse(
           '<?xml version="1.0" encoding="iso-8859-1"?>'.
           '<body>'.$markup.'</body>'
         );
-      } if (catch('XMLFormatException', $e)) {
+      } catch (XMLFormatException $e) {
         return new Node($name, strip_tags($string));
       }
 

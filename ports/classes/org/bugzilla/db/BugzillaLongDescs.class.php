@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaLongDescs extends DataSet {
-    var
+    public
       $bug_id             = 0,
       $who                = 0,
       $bug_when           = NULL,
@@ -25,7 +25,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaLongDescs::getPeer()); {
         $peer->setTable('longdescs');
         $peer->setConnection('bugzilla');
@@ -45,7 +45,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -57,7 +57,7 @@
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_id($bug_id) {
+    public function &getByBug_id($bug_id) {
       $peer= &BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
@@ -70,7 +70,7 @@
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByWho($who) {
+    public function &getByWho($who) {
       $peer= &BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('who', $who, EQUAL)));
     }
@@ -83,7 +83,7 @@
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_when($bug_when) {
+    public function &getByBug_when($bug_when) {
       $peer= &BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('bug_when', $bug_when, EQUAL)));
     }
@@ -94,7 +94,7 @@
      * @access  public
      * @return  int
      */
-    function getBug_id() {
+    public function getBug_id() {
       return $this->bug_id;
     }
       
@@ -105,7 +105,7 @@
      * @param   int bug_id
      * @return  int the previous value
      */
-    function setBug_id($bug_id) {
+    public function setBug_id($bug_id) {
       return $this->_change('bug_id', $bug_id);
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      * @return  int
      */
-    function getWho() {
+    public function getWho() {
       return $this->who;
     }
       
@@ -126,7 +126,7 @@
      * @param   int who
      * @return  int the previous value
      */
-    function setWho($who) {
+    public function setWho($who) {
       return $this->_change('who', $who);
     }
 
@@ -136,7 +136,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getBug_when() {
+    public function getBug_when() {
       return $this->bug_when;
     }
       
@@ -147,7 +147,7 @@
      * @param   util.Date bug_when
      * @return  util.Date the previous value
      */
-    function setBug_when($bug_when) {
+    public function setBug_when($bug_when) {
       return $this->_change('bug_when', $bug_when);
     }
 
@@ -157,7 +157,7 @@
      * @access  public
      * @return  string
      */
-    function getThetext() {
+    public function getThetext() {
       return $this->thetext;
     }
       
@@ -168,7 +168,7 @@
      * @param   string thetext
      * @return  string the previous value
      */
-    function setThetext($thetext) {
+    public function setThetext($thetext) {
       return $this->_change('thetext', $thetext);
     }
   }

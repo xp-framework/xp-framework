@@ -11,7 +11,7 @@
    * @purpose  Represent a Version of a File
    */
   class WebdavFileVersion extends Object {
-    var
+    public
       $versnr=        NULL,
       $href=          NULL,
       $versionname=   NULL,
@@ -25,7 +25,7 @@
      * @access  public
      * @param   string filename
      */   
-    function __construct($filename) {
+    public function __construct($filename) {
       $this->filename= $filename;
     }
     
@@ -35,7 +35,7 @@
      * @access  public
      * @param   string filename
      */
-    function setFilename($filename) {
+    public function setFilename($filename) {
       $this->filename= $filename;
     }
     
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string filename
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
     
@@ -55,7 +55,7 @@
      * @access  public
      * @param   float versnr
      */
-    function setVersionNumber($versnr) {
+    public function setVersionNumber($versnr) {
       $this->versnr= $versnr;
     }
     
@@ -65,7 +65,7 @@
      * @access  public
      * @return  float versnr
      */
-    function getVersionNumber() {
+    public function getVersionNumber() {
       return $this->versnr;
     }
     
@@ -75,7 +75,7 @@
      * @access  public
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->href= $href;
     }
     
@@ -85,7 +85,7 @@
      * @access  public
      * @return  string href
      */
-    function getHref() {
+    public function getHref() {
       return $this->href;
     }
     
@@ -95,7 +95,7 @@
      * @access  public
      * @param   string versionname
      */
-    function setVersionName($versname) {
+    public function setVersionName($versname) {
       $this->versionname= $versname;
     }
     
@@ -105,7 +105,7 @@
      * @access  public
      * @return  string versionname
      */
-    function getVersionName() {
+    public function getVersionName() {
       return $this->versionname;
     }
     
@@ -115,7 +115,7 @@
      * @access  public
      * @param   string creator, default NULL
      */
-    function setCreatorName($creator= NULL) {
+    public function setCreatorName($creator= NULL) {
       $this->creatorname= $creator;
     }
     
@@ -125,7 +125,7 @@
      * @access  public
      * @return  string creatorname
      */
-    function getCreatorName() {
+    public function getCreatorName() {
       return $this->creatorname;
     }
     
@@ -135,7 +135,7 @@
      * @access  public
      * @param   int length
      */
-    function setContentLength($length) {
+    public function setContentLength($length) {
       $this->contentlength= $length;
     }
     
@@ -145,7 +145,7 @@
      * @access  public
      * @return  int contentlength
      */
-    function getContentLength() {
+    public function getContentLength() {
       return $this->contentlength;
     }
     
@@ -155,7 +155,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setLastModified(&$date) {
+    public function setLastModified(&$date) {
       $this->lastmodified= &$date;
     }
     
@@ -165,7 +165,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getLastModified() {
+    public function &getLastModified() {
       return $this->lastmodified;
     }
     
@@ -175,7 +175,7 @@
      * @access  public
      * @param   string location
      */
-    function setLocation($loc) {
+    public function setLocation($loc) {
       $this->location= $loc;
     }
     
@@ -185,7 +185,7 @@
      * @access  public
      * @return  string location
      */
-    function getLocation() {
+    public function getLocation() {
       return $this->location;
     }
      

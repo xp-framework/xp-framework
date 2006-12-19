@@ -22,8 +22,8 @@
      * @access  public
      */
     #[@test]
-    function createAddress() {
-      $i= &new InternetAddress('kiesel@example.com');
+    public function createAddress() {
+      $i= new InternetAddress('kiesel@example.com');
     }
     
     /**
@@ -32,7 +32,7 @@
      * @access  public
      */
     #[@test]
-    function testFromString() {
+    public function testFromString() {
       $strings= array(
         'Alex Kiesel <kiesel@example.com>',
         'kiesel@example.com (Alex Kiesel)',
@@ -53,8 +53,8 @@
      * @access  public
      */
     #[@test]
-    function testToString() {
-      $address= &new InternetAddress('kiesel@example.com', 'Alex Kiesel');
+    public function testToString() {
+      $address= new InternetAddress('kiesel@example.com', 'Alex Kiesel');
       $this->assertEquals('=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>', $address->toString());
     }
   }

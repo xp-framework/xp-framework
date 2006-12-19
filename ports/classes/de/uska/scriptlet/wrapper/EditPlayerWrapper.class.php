@@ -9,7 +9,7 @@
     'scriptlet.xml.workflow.casters.ToEmailAddress',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
     'scriptlet.xml.workflow.checkers.LengthChecker',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'    
+    'scriptlet.xml.workflow.checkers.RegexpChecker'
   );
 
   /**
@@ -26,7 +26,7 @@
      *
      * @access  public
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'player_id',
         OCCURRENCE_OPTIONAL | OCCURRENCE_PASSBEHIND,
@@ -107,7 +107,7 @@
      * @access  public
      * @return  int
      */
-    function getPlayer_id() {
+    public function getPlayer_id() {
       return $this->getValue('player_id');
     }
 
@@ -117,7 +117,7 @@
      * @access  public
      * @return  string
      */
-    function getFirstname() {
+    public function getFirstname() {
       return $this->getValue('firstname');
     }
 
@@ -127,7 +127,7 @@
      * @access  public
      * @return  string
      */
-    function getLastname() {
+    public function getLastname() {
       return $this->getValue('lastname');
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->getValue('username');
     }
 
@@ -147,7 +147,7 @@
      * @access  public
      * @return  string
      */
-    function getPassword() {
+    public function getPassword() {
       return $this->getValue('password');
     }
 
@@ -157,7 +157,7 @@
      * @access  public
      * @return  string
      */
-    function getEmail() {
+    public function getEmail() {
       return $this->getValue('email');
     }
 
@@ -167,7 +167,7 @@
      * @access  public
      * @return  int
      */
-    function getTeam_id() {
+    public function getTeam_id() {
       return $this->getValue('team_id');
     }
 
@@ -177,7 +177,7 @@
      * @access  public
      * @return  int
      */
-    function getPosition() {
+    public function getPosition() {
       return $this->getValue('position');
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @return  int[]
      */
-    function getMailinglist() {
+    public function getMailinglist() {
       return $this->getValue('mailinglist');
     }
 

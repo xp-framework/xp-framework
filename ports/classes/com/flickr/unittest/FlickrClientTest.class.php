@@ -15,7 +15,7 @@
    * @purpose  Testcase
    */
   class FlickrClientTest extends TestCase {
-    var 
+    public 
       $client= NULL;
 
     /**
@@ -23,8 +23,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->client= &new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
+    public function setUp() {
+      $this->client= new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
     }
     
     /**
@@ -33,7 +33,7 @@
      * @access  public
      */
     #[@test]
-    function unserializeScalar() {
+    public function unserializeScalar() {
       $this->assertEquals(
         array('foo' => 'bar'),
         $this->client->unserialize('<foo>bar</foo>')
@@ -46,7 +46,7 @@
      * @access  public
      */
     #[@test]
-    function unserializeArray() {
+    public function unserializeArray() {
       $this->assertEquals(
         array('foo' => 'bar', 'bar' => 'baz'),
         $this->client->unserialize('<foo>bar</foo><bar>baz</bar>')
@@ -59,7 +59,7 @@
      * @access  public
      */
     #[@test]
-    function unserializeComplex() {
+    public function unserializeComplex() {
       $this->assertEquals(
         array('foo' => array('bar' => 'baz')),
         $this->client->unserialize('<foo><bar>baz</bar></foo>')
@@ -72,7 +72,7 @@
      * @access  public
      */
     #[@test]
-    function unserializeAttributes() {
+    public function unserializeAttributes() {
       $this->assertEquals(
         array('foo' => array('bar' => 'baz')),
         $this->client->unserialize('<foo bar="baz"/>')

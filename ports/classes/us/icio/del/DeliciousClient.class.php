@@ -34,7 +34,7 @@
    * @see http://del.icio.us/doc/api
    */
   class DeliciousClient extends Object {
-    var
+    public
       $username= '',
       $password= '';
 
@@ -45,7 +45,7 @@
      * @param   string username from del.icio.us
      * @param   string password from del.icio.us
      */
-    function __construct(
+    public function __construct(
       $username,
       $password
     ) {
@@ -61,15 +61,15 @@
      * @param   array param of del.icio.us-request
      * @return  string
      */
-    function _doRequest($url, $param= array()) {
-      try(); {
+    public function _doRequest($url, $param= array()) {
+      try {
          $buf= HttpUtil::get(
            new HttpConnection($url),
            $param,
            array(new BasicAuthorization($this->username, $this->password))
          );
-       } if (catch('UnexpectedResponseException', $e)) {
-         return throw($e);
+       } catch (UnexpectedResponseException $e) {
+         throw($e);
          exit(-1);
        }
        return $buf;    
@@ -82,7 +82,7 @@
      * @param   string tag filter by this tag
      * @return  string
      */  
-    function getDatesByTag($tag) {
+    public function getDatesByTag($tag) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/dates?', API_URL, API_VERSION),
         array(
@@ -97,7 +97,7 @@
      * @access  public
      * @return  string
      */  
-    function getTags() {
+    public function getTags() {
       return $this->_doRequest(
         sprintf('%s/%s/tags/get?', API_URL, API_VERSION)
       );
@@ -111,7 +111,7 @@
      * @param   &util.Date filter by this date - defaults to the most recent date
      * @return  string 
      */
-    function getPostsByTag($tag, $date) {
+    public function getPostsByTag($tag, $date) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/get?', API_URL, API_VERSION),
         array(
@@ -129,7 +129,7 @@
      * @param   string count - defaults to 15, max is 100
      * @return  string
      */
-    function getRecentPosts($tag, $count) {
+    public function getRecentPosts($tag, $count) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/recent?', API_URL, API_VERSION),
         array(
@@ -146,7 +146,7 @@
      * @param   string tag filter by this tag
      * @return  string
      */
-    function getAllPosts($tag) {
+    public function getAllPosts($tag) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/all?', API_URL, API_VERSION),
         array(
@@ -161,7 +161,7 @@
      * @access  public
      * @return  string
      */
-    function getLastUpdateTime() {
+    public function getLastUpdateTime() {
       return $this->_doRequest(
         sprintf('%s/%s/posts/update?', API_URL, API_VERSION)
       );
@@ -178,7 +178,7 @@
      * @param   &util.Date dt datestamp for post, format "CCYY-MM-DDThh:mm:ssZ"     
      * @return  string
      */
-    function addPost($url, $description, $extended, $tags, $dt) {
+    public function addPost($url, $description, $extended, $tags, $dt) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/add?', API_URL, API_VERSION),
         array(
@@ -198,7 +198,7 @@
      * @param   string url url for post
      * @return  string
      */
-    function deletePost($url) {
+    public function deletePost($url) {
       return $this->_doRequest(
         sprintf('%s/%s/posts/delete?', API_URL, API_VERSION),
         array(
@@ -215,7 +215,7 @@
      * @param   string new new tag
      * @return  string
      */
-    function renameTag($old, $new) {
+    public function renameTag($old, $new) {
       return $this->_doRequest(
         sprintf('%s/%s/tags/rename?', API_URL, API_VERSION),
         array(
@@ -231,7 +231,7 @@
      * @access  public
      * @return  string
      */
-    function getAllBundles() {
+    public function getAllBundles() {
       return $this->_doRequest(
         sprintf('%s/%s/tags/bundles/all?', API_URL, API_VERSION)
       );
@@ -245,7 +245,7 @@
      * @param   string tags space-separated list of tags
      * @return  string
      */
-    function setBundle($bundle, $tags) {
+    public function setBundle($bundle, $tags) {
       return $this->_doRequest(
         sprintf('%s/%s/tags/bundles/set?', API_URL, API_VERSION),
         array(
@@ -262,7 +262,7 @@
      * @param   string bundle bundle name
      * @return  string
      */
-    function deleteBundle($bundle) {
+    public function deleteBundle($bundle) {
       return $this->_doRequest(
         sprintf('%s/%s/tags/bundles/delete?', API_URL, API_VERSION),
         array(

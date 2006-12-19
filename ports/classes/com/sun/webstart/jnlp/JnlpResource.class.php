@@ -19,7 +19,7 @@
      * @access  public
      * @return  string
      */
-    function getTagName() { }
+    public function getTagName() { }
 
     /**
      * Get attributes
@@ -28,6 +28,6 @@
      * @access  public
      * @return  array
      */
-    function getTagAttributes() { }
+    public function getTagAttributes() { }
   }
 ?>

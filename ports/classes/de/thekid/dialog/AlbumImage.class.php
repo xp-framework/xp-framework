@@ -13,7 +13,7 @@
    * @purpose  Value object
    */
   class AlbumImage extends Object {
-    var
+    public
       $name       = '',
       $exifData   = NULL;
 
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
 
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @param   &img.util.ExifData exifData
      */
-    function setExifData(&$exifData) {
+    public function setExifData(&$exifData) {
       $this->exifData= &$exifData;
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  &img.util.ExifData
      */
-    function &getExifData() {
+    public function &getExifData() {
       return $this->exifData;
     }
     
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(%s) <%s>',
         $this->getClassName(),

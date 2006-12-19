@@ -15,7 +15,7 @@
    * @purpose  Interface to SVN binary
    */
   class SVNDirectory extends SVNInterface {
-    var
+    public
       $path     = NULL,
       $_folder  = NULL;
     
@@ -25,9 +25,9 @@
      * @access  public
      * @param   string path
      */
-    function __construct($path) {
+    public function __construct($path) {
       $this->path= $path;
-      $this->_folder= &new Folder($path);
+      $this->_folder= new Folder($path);
     }
     
     /**
@@ -38,14 +38,14 @@
      * @return  stdclass[] objects
      * @throws  org.cvshome.CVSInterfaceException
      */
-    function update($recursive= FALSE) {
-      try(); {
+    public function update($recursive= FALSE) {
+      try {
         $results= $this->_execute(sprintf('update %s %s',
           ($recursive ? '' : '-N'),
           $this->path
         ));
-      } if (catch('SVNInterfaceException', $e)) {
-        return throw ($e);
+      } catch (SVNInterfaceException $e) {
+        throw ($e);
       }
       
       $stats= array();
@@ -71,14 +71,14 @@
      * @access  public
      * @param   string comment
      */
-    function commit($comment) {
-      $f= &new TempFile();
-      try(); {
+    public function commit($comment) {
+      $f= new TempFile();
+      try {
         $f->open(FILE_MODE_WRITE);
         $f->writeLine($comment);
         $f->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       $return= &$this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->path));
@@ -94,7 +94,7 @@
      * @access  public
      * @return  bool success
      */
-    function delete() {
+    public function delete() {
       return $this->_execute('delete '.$this->path);
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @return  bool success
      */    
-    function add() {
+    public function add() {
       return $this->_execute('add '.$this->path);
     }
   }  

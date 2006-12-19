@@ -15,7 +15,7 @@
    * @purpose  Wrapper class
    */
   class JnlpInformation extends Object {
-    var
+    public
       $title          = '',
       $vendor         = '',
       $homepage       = '',
@@ -29,7 +29,7 @@
      * @access  public
      * @param   bool offlineAllowed
      */
-    function setOfflineAllowed($offlineAllowed) {
+    public function setOfflineAllowed($offlineAllowed) {
       $this->offlineAllowed= $offlineAllowed;
     }
 
@@ -39,7 +39,7 @@
      * @access  public
      * @return  bool
      */
-    function getOfflineAllowed() {
+    public function getOfflineAllowed() {
       return $this->offlineAllowed;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @param   string vendor
      */
-    function setVendor($vendor) {
+    public function setVendor($vendor) {
       $this->vendor= $vendor;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  string
      */
-    function getVendor() {
+    public function getVendor() {
       return $this->vendor;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   string homepage
      */
-    function setHomepage($homepage) {
+    public function setHomepage($homepage) {
       $this->homepage= $homepage;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  string
      */
-    function getHomepage() {
+    public function getHomepage() {
       return $this->homepage;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @param   string icon
      */
-    function setIcon($icon) {
+    public function setIcon($icon) {
       $this->icon= $icon;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  string
      */
-    function getIcon() {
+    public function getIcon() {
       return $this->icon;
     }
 
@@ -130,7 +130,7 @@
      * @param   string description
      * @param   string type default JNLP_DESCR_DEFAULT one of the JNLP_DESCR_* constants
      */
-    function setDescription($description, $type= JNLP_DESCR_DEFAULT) {
+    public function setDescription($description, $type= JNLP_DESCR_DEFAULT) {
       $this->description[$type]= $description;
     }
 
@@ -141,7 +141,7 @@
      * @param   string type default JNLP_DESCR_DEFAULT one of the JNLP_DESCR_* constants
      * @return  string
      */
-    function getDescription($type= JNLP_DESCR_DEFAULT) {
+    public function getDescription($type= JNLP_DESCR_DEFAULT) {
       return $this->description[$type];
     }
 

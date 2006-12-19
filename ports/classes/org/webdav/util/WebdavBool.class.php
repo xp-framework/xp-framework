@@ -20,7 +20,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    function fromString($s) {
+    public static function fromString($s) {
       switch ($s) {
         case 't':
         case 'T':
@@ -32,7 +32,7 @@
           return FALSE;
           
         default:  
-          return throw(new IllegalArgumentException('Value '.$s.' not recognized'));
+          throw(new IllegalArgumentException('Value '.$s.' not recognized'));
       }
     }
     
@@ -44,7 +44,7 @@
      * @param   bool bool
      * @return  string
      */
-    function fromBool($bool) {
+    public static function fromBool($bool) {
       return $bool ? 'T' : 'F';
     }
   }

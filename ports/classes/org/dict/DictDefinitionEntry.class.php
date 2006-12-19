@@ -11,7 +11,7 @@
    * @purpose  Definition wrapper
    */
   class DictDefinitionEntry extends Object {
-    var
+    public
       $database     = '',
       $definition   = '';
 
@@ -22,7 +22,7 @@
      * @param   string database
      * @param   string definition
      */
-    function __construct($database, $definition) {
+    public function __construct($database, $definition) {
       $this->database= $database;
       $this->definition= $definition;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function getDatabase() {
+    public function getDatabase() {
       return $this->database;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getDefinition() {
+    public function getDefinition() {
       return $this->definition;
     }
 

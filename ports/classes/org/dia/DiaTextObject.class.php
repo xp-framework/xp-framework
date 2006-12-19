@@ -19,7 +19,7 @@
      * Initializes this TextObject with default values
      *
      */
-    function initialize() {
+    public function initialize() {
       // default positioning information
       $this->setPosition(array(0, 0));
       $this->setBoundingBox(array(array(0, 0), array(1, 1)));
@@ -38,7 +38,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return 'text_'.$this->getId();
     }
 

@@ -13,7 +13,7 @@
    * @purpose  Represent dimension information
    */
   class FlickrPhotoSize extends Object {
-    var
+    public
       $label    = '',
       $width    = 0,
       $height   = 0,
@@ -27,7 +27,7 @@
      * @param   string label
      */
     #[@xmlmapping(element= '@label')]
-    function setLabel($label) {
+    public function setLabel($label) {
       $this->label= $label;
     }
 
@@ -37,7 +37,7 @@
      * @access  public
      * @return  string
      */
-    function getLabel() {
+    public function getLabel() {
       return $this->label;
     }
 
@@ -48,7 +48,7 @@
      * @param   int width
      */
     #[@xmlmapping(element= '@width', type= 'int')]
-    function setWidth($width) {
+    public function setWidth($width) {
       $this->width= $width;
     }
 
@@ -58,7 +58,7 @@
      * @access  public
      * @return  int
      */
-    function getWidth() {
+    public function getWidth() {
       return $this->width;
     }
 
@@ -69,7 +69,7 @@
      * @param   int height
      */
     #[@xmlmapping(element= '@height', type= 'int')]
-    function setHeight($height) {
+    public function setHeight($height) {
       $this->height= $height;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  int
      */
-    function getHeight() {
+    public function getHeight() {
       return $this->height;
     }
 
@@ -90,7 +90,7 @@
      * @param   &lang.Object url
      */
     #[@xmlmapping(element= '@url')]
-    function setUrl(&$url) {
+    public function setUrl(&$url) {
       $this->url= new URL($url);
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getUrl() {
+    public function &getUrl() {
       return $this->url;
     }
 
@@ -111,7 +111,7 @@
      * @param   &lang.Object source
      */
     #[@xmlmapping(element= '@source')]
-    function setSource(&$source) {
+    public function setSource(&$source) {
       $this->source= new URL($source);
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getSource() {
+    public function &getSource() {
       return $this->source;
     }
 
@@ -131,7 +131,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf('%s (%dx%d) @ %s',
         $this->label,
         $this->width,

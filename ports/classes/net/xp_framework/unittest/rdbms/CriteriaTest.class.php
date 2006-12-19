@@ -5,9 +5,9 @@
  */
  
   uses(
-    'rdbms.Criteria', 
-    'rdbms.criterion.Restrictions', 
-    'rdbms.criterion.Property', 
+    'rdbms.Criteria',
+    'rdbms.criterion.Restrictions',
+    'rdbms.criterion.Property',
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
     'unittest.TestCase'
@@ -24,7 +24,7 @@
    * @purpose  Unit Test
    */
   class CriteriaTest extends TestCase {
-    var
+    public
       $conn = NULL,
       $peer = NULL;
       
@@ -34,7 +34,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       parent::__construct($name);
       $this->conn= &DriverManager::getConnection('sybase://localhost:1999/');
       $this->peer= &Job::getPeer();
@@ -49,7 +49,7 @@
      * @param   &rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
-    function assertSql($sql, &$criteria) {
+    public function assertSql($sql, &$criteria) {
       $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
     }
       
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@test]
-    function emptyCriteria() {
+    public function emptyCriteria() {
       $this->assertSql('', new Criteria());
     }
 
@@ -70,7 +70,7 @@
      * @access  public
      */
     #[@test]
-    function simpleCriteria() {
+    public function simpleCriteria() {
       $this->assertSql('where job_id = 1', new Criteria(array('job_id', 1, EQUAL)));
     }
 
@@ -81,8 +81,8 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
-    function nonExistantFieldCausesException() {
-      $criteria= &new Criteria(array('non-existant-field', 1, EQUAL));
+    public function nonExistantFieldCausesException() {
+      $criteria= new Criteria(array('non-existant-field', 1, EQUAL));
       $criteria->toSQL($this->conn, $this->peer->types);
     }
 
@@ -92,8 +92,8 @@
      * @access  public
      */
     #[@test]
-    function complexCriteria() {
-      with ($c= &new Criteria()); {
+    public function complexCriteria() {
+      with ($c= new Criteria()); {
         $c->add('job_id', 1, EQUAL);
         $c->add('valid_from', new Date('2006-01-01'), GREATER_EQUAL);
         $c->add('title', 'Hello%', LIKE);
@@ -114,9 +114,9 @@
      * @access  public
      */
     #[@test]
-    function restrictionsFactory() {
+    public function restrictionsFactory() {
       $job_id= &Property::forName('job_id');
-      $c= &new Criteria(Restrictions::anyOf(
+      $c= new Criteria(Restrictions::anyOf(
         Restrictions::not($job_id->in(array(1, 2, 3))),
         Restrictions::allOf(
           Restrictions::like('title', 'Hello%'),
@@ -136,7 +136,7 @@
      * @access  public
      */
     #[@test]
-    function constructorAcceptsVarArgArrays() {
+    public function constructorAcceptsVarArgArrays() {
       $this->assertSql(
         'where job_id = 1 and title = "Hello"', 
         new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))

@@ -19,7 +19,7 @@
    * @purpose  purpose
    */
   class Catalogue extends Object {
-    var
+    public
       $entries=   array();
       
     /**
@@ -29,7 +29,7 @@
      * @param   
      * @return  
      */
-    function __construct() {
+    public function __construct() {
       $this->entries= &Collection::forClass('name.kiesel.pxl.CatalogueEntry');
     }
     
@@ -40,7 +40,7 @@
      * @param   
      * @return  
      */
-    function setStorage(&$storage) {
+    public function setStorage(&$storage) {
       $this->storage= &$storage;
     }    
     
@@ -51,7 +51,7 @@
      * @param   
      * @return  
      */
-    function &create(&$storage) {
+    public function &create(&$storage) {
       $data= $storage->load('catalogue');
       if (!$data) return NULL;
       
@@ -67,7 +67,7 @@
      * @param   
      * @return  
      */
-    function hibernate() {
+    public function hibernate() {
       return $this->storage->save('catalogue', Marshaller::marshal($this));    
     }
     
@@ -79,7 +79,7 @@
      * @return  
      */    
     #[@xmlmapping(element= 'entry', class= 'name.kiesel.pxl.CatalogueEntry')]
-    function addEntry($entry) {
+    public function addEntry($entry) {
       $this->entries->add($entry);
     }
     
@@ -91,7 +91,7 @@
      * @return  
      */
     #[@xmlfactory(element= 'entry', class= 'name.kiesel.pxl.CatalogueEntry')]
-    function getEntries() {
+    public function getEntries() {
       return $this->entries;
     }    
   }

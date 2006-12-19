@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaDuplicates extends DataSet {
-    var
+    public
       $dupe_of            = 0,
       $dupe               = 0;
 
@@ -23,7 +23,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaDuplicates::getPeer()); {
         $peer->setTable('duplicates');
         $peer->setConnection('bugzilla');
@@ -41,7 +41,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -53,7 +53,7 @@
      * @return  &Duplicates object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByDupe($dupe) {
+    public function &getByDupe($dupe) {
       $peer= &BugzillaDuplicates::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('dupe', $dupe, EQUAL))));
     }
@@ -64,7 +64,7 @@
      * @access  public
      * @return  int
      */
-    function getDupe_of() {
+    public function getDupe_of() {
       return $this->dupe_of;
     }
       
@@ -75,7 +75,7 @@
      * @param   int dupe_of
      * @return  int the previous value
      */
-    function setDupe_of($dupe_of) {
+    public function setDupe_of($dupe_of) {
       return $this->_change('dupe_of', $dupe_of);
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @return  int
      */
-    function getDupe() {
+    public function getDupe() {
       return $this->dupe;
     }
       
@@ -96,7 +96,7 @@
      * @param   int dupe
      * @return  int the previous value
      */
-    function setDupe($dupe) {
+    public function setDupe($dupe) {
       return $this->_change('dupe', $dupe);
     }
   }

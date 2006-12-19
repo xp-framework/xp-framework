@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class IStorage extends Interface {
+  interface IStorage {
   
     /**
      * (Insert method's description here)
@@ -20,7 +20,7 @@
      * @param   
      * @return  
      */
-    function load() {}
+    public function load();
     
     /**
      * (Insert method's description here)
@@ -29,6 +29,6 @@
      * @param   
      * @return  
      */
-    function save() {}    
+    public function save();    
   }
 ?>

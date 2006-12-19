@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('name.kiesel.pxl.storage.IStorage');
+
   /**
    * (Insert class' description here)
    *
@@ -11,8 +13,8 @@
    * @see      reference
    * @purpose  purpose
    */
-  class MemoryContainer extends Object {
-    var
+  class MemoryContainer extends Object implements IStorage {
+    public
       $data=  array();
       
     /**
@@ -22,7 +24,7 @@
      * @param   
      * @return  
      */
-    function __construct($data= array()) {
+    public function __construct($data= array()) {
       $this->data= $data;
     }
     
@@ -33,7 +35,7 @@
      * @param   
      * @return  
      */
-    function load($abstract) {
+    public function load($abstract) {
       return $this->data[$abstract];
     }    
     
@@ -44,10 +46,10 @@
      * @param   
      * @return  
      */
-    function save($abstract, $data) {
+    public function save($abstract, $data) {
       $this->data[$abstract]= $data;
     }
   
   
-  } implements(__FILE__, 'name.kiesel.pxl.storage.IStorage');
+  } 
 ?>

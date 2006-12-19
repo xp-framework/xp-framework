@@ -85,7 +85,7 @@
    * @purpose  Handle vCard
    */
   class VCard extends Object {
-    var
+    public
       $name             = array(),
       $address          = array(),
       $email            = array(),
@@ -108,7 +108,7 @@
      * @param   string title default ''
      * @param   string suffix default ''
      */
-    function setName($last, $first, $middle= '', $title= '', $suffix= '') {
+    public function setName($last, $first, $middle= '', $title= '', $suffix= '') {
       $this->name= array(
         'last'    => $last,
         'first'   => $first,
@@ -126,7 +126,7 @@
      * @param   string portion default '' either last, first, middle, title or initial
      * @return  mixed
      */
-    function getName($portion= '') {
+    public function getName($portion= '') {
       return $portion ? $this->name[$portion] : $this->name;
     }
 
@@ -143,7 +143,7 @@
      * @param   string pobox default ''
      * @param   string suffix default ''
      */
-    function setAddress(
+    public function setAddress(
       $type,
       $street, 
       $zip, 
@@ -173,7 +173,7 @@
      * @param   string portion default '' either street, zip, city, province, country, pobox or suffix
      * @return  mixed
      */
-    function getAddress($type, $portion= '') {
+    public function getAddress($type, $portion= '') {
       return $portion ? $this->address[$type][$portion] : $this->address[$type];
     }
 
@@ -184,7 +184,7 @@
      * @param   string type one of the VCARD_EMAIL_* constants
      * @param   string email
      */
-    function addEmail($type, $email) {
+    public function addEmail($type, $email) {
       $this->email[$type][]= $email;
     }
 
@@ -195,7 +195,7 @@
      * @param   string type one of the VCARD_EMAIL_* constants
      * @return  string[] emails
      */
-    function getEmails($type= VCARD_EMAIL_DEFAULT) {
+    public function getEmails($type= VCARD_EMAIL_DEFAULT) {
       return $this->email[$type];
     }
 
@@ -205,7 +205,7 @@
      * @access  public
      * @param   mixed[] phone
      */
-    function setPhone($phone) {
+    public function setPhone($phone) {
       $this->phone= $phone;
     }
 
@@ -215,7 +215,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getPhone() {
+    public function getPhone() {
       return $this->phone;
     }
 
@@ -225,7 +225,7 @@
      * @access  public
      * @param   mixed[] organization
      */
-    function setOrganization($organization) {
+    public function setOrganization($organization) {
       $this->organization= $organization;
     }
 
@@ -235,7 +235,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getOrganization() {
+    public function getOrganization() {
       return $this->organization;
     }
 
@@ -245,7 +245,7 @@
      * @access  public
      * @param   mixed[] logo
      */
-    function setLogo($logo) {
+    public function setLogo($logo) {
       $this->logo= $logo;
     }
 
@@ -255,7 +255,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getLogo() {
+    public function getLogo() {
       return $this->logo;
     }
 
@@ -265,7 +265,7 @@
      * @access  public
      * @param   &util.Date birthday
      */
-    function setBirthday(&$birthday) {
+    public function setBirthday(&$birthday) {
       $this->birthday= &$birthday;
     }
 
@@ -275,7 +275,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getBirthday() {
+    public function &getBirthday() {
       return $this->birthday;
     }
 
@@ -285,7 +285,7 @@
      * @access  public
      * @param   string fullname
      */
-    function setFullname($fullname) {
+    public function setFullname($fullname) {
       $this->fullname= $fullname;
     }
 
@@ -295,7 +295,7 @@
      * @access  public
      * @return  string
      */
-    function getFullname() {
+    public function getFullname() {
       return $this->fullname;
     }
 
@@ -305,7 +305,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -315,7 +315,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -325,7 +325,7 @@
      * @access  public
      * @param   string url
      */
-    function setUrl($url) {
+    public function setUrl($url) {
       $this->url= $url;
     }
 
@@ -335,7 +335,7 @@
      * @access  public
      * @return  string
      */
-    function getUrl() {
+    public function getUrl() {
       return $this->url;
     }
 
@@ -345,7 +345,7 @@
      * @access  public
      * @param   string nick
      */
-    function setNick($nick) {
+    public function setNick($nick) {
       $this->nick= $nick;
     }
 
@@ -355,7 +355,7 @@
      * @access  public
      * @return  string
      */
-    function getNick() {
+    public function getNick() {
       return $this->nick;
     }
       
@@ -367,7 +367,7 @@
      * @param   mixed value
      * @throws  lang.FormatException
      */
-    function addProperty($keys, $value) {
+    public function addProperty($keys, $value) {
       switch ($keys[0]) {
         case 'LOGO':
           $this->logo= array(
@@ -377,7 +377,7 @@
           break;
           
         case 'BDAY':
-          $this->birthday= &new Date($value);
+          $this->birthday= new Date($value);
           break;
         
         case 'EMAIL':
@@ -409,7 +409,7 @@
               break;
               
             default: 
-              return throw(new FormatException($keys[1].' is not a recognized phone type'));
+              throw(new FormatException($keys[1].' is not a recognized phone type'));
           }
           break;
         
@@ -434,7 +434,7 @@
             case VCARD_ADR_WORK:   $loc= 'work'; break;
             case VCARD_ADR_POSTAL: $loc= 'postal'; break;
             default: 
-              return throw(new FormatException($keys[1].' is not a recognized address type'));
+              throw(new FormatException($keys[1].' is not a recognized address type'));
           }
           
           $values= explode(';', $value);
@@ -474,16 +474,16 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    function &fromStream(&$stream) {
-      $card= &new VCard();
+    public static function &fromStream(&$stream) {
+      $card= new VCard();
       
-      $p= &new VFormatParser(VCARD_ID);
+      $p= new VFormatParser(VCARD_ID);
       $p->setDefaultHandler(array(&$card, 'addProperty'));
       
-      try(); {
+      try {
         $p->parse($stream);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return $card;
@@ -497,7 +497,7 @@
      * @param   mixed values
      * @return  string
      */
-    function _export($key, $values) {
+    public function _export($key, $values) {
       $value= is_array($values) ? implode(';', $values) : $values;
       if (0 == strlen($value)) return '';
       
@@ -518,7 +518,7 @@
      * @access  public
      * @return  string
      */
-    function export() {
+    public function export() {
     
       // Build addresses string
       $address= '';
@@ -570,7 +570,7 @@
         $this->_export('NICKNAME', $this->nick).
         $this->_export('ORG', $this->organization).
         $this->_export('URL', $this->url).
-        $this->_export('BDAY', is_a($this->birthday, 'Date') ? $this->birthday->toString('Y-m-d') : '').
+        $this->_export('BDAY', is('Date', $this->birthday) ? $this->birthday->toString('Y-m-d') : '').
         $phone.
         $email.
         $address.

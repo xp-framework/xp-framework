@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.Wrapper'    
+    'scriptlet.xml.workflow.Wrapper'
   );
 
   /**
@@ -22,7 +22,7 @@
      *
      * @access  public
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'event_id',
         OCCURRENCE_PASSBEHIND,
@@ -47,7 +47,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_id() {
+    public function getEvent_id() {
       return $this->getValue('event_id');
     }
 
@@ -57,7 +57,7 @@
      * @access  public
      * @return  int[]
      */
-    function getPoints() {
+    public function getPoints() {
       return $this->getValue('points');
     }
 

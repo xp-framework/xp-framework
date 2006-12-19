@@ -19,10 +19,10 @@
      * @access  public
      */
     #[@test]
-    function noException() {
-      try(); {
+    public function noException() {
+      try {
         // Nothing
-      } if (catch('Exception', $caught)) {
+      } catch (Exception $caught) {
         return $this->fail('Caught an exception but none where thrown', $caught);
       }
     }
@@ -33,29 +33,10 @@
      * @access  public
      */
     #[@test]
-    function thrownExceptionCaught() {
-      try(); {
-        throw(new Exception('Test'));
-      } if (catch('Exception', $caught)) {
-        $this->assertSubclass($caught, 'Exception');
-        delete($caught);
-        return TRUE;
-      }
-
-      $this->fail('Thrown Exception not caught');
-    }
-
-    /**
-     * Basics: Tests thrown exception is caught by fully qualified 
-     * class name ("FQCN")
-     *
-     * @access  public
-     */
-    #[@test]
-    function thrownExceptionCaughtByFqCn() {
-      try(); {
-        throw(new Exception('Test'));
-      } if (catch('lang.Exception', $caught)) {
+    public function thrownExceptionCaught() {
+      try {
+        throw(new XPException('Test'));
+      } catch (Exception $caught) {
         $this->assertSubclass($caught, 'Exception');
         delete($caught);
         return TRUE;
@@ -71,14 +52,14 @@
      * @access  public
      */
     #[@test]
-    function multipleCatches() {
-      try(); {
-        throw(new Exception('Test'));
-      } if (catch('IllegalArgumentException', $caught)) {
+    public function multipleCatches() {
+      try {
+        throw(new XPException('Test'));
+      } catch (IllegalArgumentException $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'IllegalArgumentException');
-      } if (catch('Exception', $caught)) {
+      } catch (Exception $caught) {
         return TRUE;
-      } if (catch('Throwable', $caught)) {
+      } catch (Throwable $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'Throwable');
       }
 

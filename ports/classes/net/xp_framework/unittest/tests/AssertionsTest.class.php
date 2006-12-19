@@ -19,7 +19,7 @@
      * @access  public
      */    
     #[@test]
-    function trueIsTrue() {
+    public function trueIsTrue() {
       $this->assertTrue(TRUE);
     }
 
@@ -29,7 +29,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function falseIsNotTrue() {
+    public function falseIsNotTrue() {
       $this->assertTrue(FALSE);
     }
 
@@ -39,7 +39,7 @@
      * @access  public
      */    
     #[@test]
-    function falseIsFalse() {
+    public function falseIsFalse() {
       $this->assertFalse(FALSE);
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function trueIsNotFalse() {
+    public function trueIsNotFalse() {
       $this->assertFalse(TRUE);
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      */    
     #[@test]
-    function NullIsNull() {
+    public function NullIsNull() {
       $this->assertNull(NULL);
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function falseIsNotNull() {
+    public function falseIsNotNull() {
       $this->assertNull(FALSE);
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function zeroIsNotNull() {
+    public function zeroIsNotNull() {
       $this->assertNull(0);
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function emptyStringIsNotNull() {
+    public function emptyStringIsNotNull() {
       $this->assertNull('');
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
-    function emptyArrayIsNotNull() {
+    public function emptyArrayIsNotNull() {
       $this->assertNull(array());
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      */    
     #[@test]
-    function equalsMethodIsInvoked() {
+    public function equalsMethodIsInvoked() {
       $instance= &newinstance('lang.Object', array(), '{
          var $equalsInvoked= 0;
 
@@ -140,7 +140,7 @@
      * @access  public
      */    
     #[@test]
-    function integersAreEqual() {
+    public function integersAreEqual() {
       foreach (array(0, 1, -1) as $int) {
         $this->assertEquals($int, $int, $int);
       }
@@ -152,7 +152,7 @@
      * @access  public
      */    
     #[@test]
-    function stringsAreEqual() {
+    public function stringsAreEqual() {
       foreach (array('', 'Hello', 'äöüß') as $str) {
         $this->assertEquals($str, $str, $str);
       }
@@ -164,7 +164,7 @@
      * @access  public
      */    
     #[@test]
-    function arraysAreEqual() {
+    public function arraysAreEqual() {
       foreach (array(
         array(), 
         array(1, 2, 3),
@@ -180,7 +180,7 @@
      * @access  public
      */    
     #[@test]
-    function hashesAreEqual() {
+    public function hashesAreEqual() {
       foreach (array(
         array(), 
         array('foo' => 2), 
@@ -196,7 +196,7 @@
      * @access  public
      */    
     #[@test]
-    function hashesOrderNotRelevant() {
+    public function hashesOrderNotRelevant() {
       $hash= array('&' => '&amp;', '"' => '&quot;');
       $reverse= array_reverse($hash, TRUE);
       $this->assertEquals($hash, $reverse, xp::stringOf($hash));
@@ -208,7 +208,7 @@
      * @access  public
      */    
     #[@test]
-    function stringObjectsAreEqual() {
+    public function stringObjectsAreEqual() {
       foreach (array(new String(''), new String('Hello'), new String('äöüß')) as $str) {
         $this->assertEquals($str, $str, xp::stringOf($str));
       }
@@ -220,7 +220,7 @@
      * @access  public
      */    
     #[@test]
-    function integersAreNotEqual() {
+    public function integersAreNotEqual() {
       foreach (array(-1, 1.0, NULL, FALSE, TRUE, '', array(), new String('1')) as $cmp) {
         $this->assertNotEquals(1, $cmp);
       }
@@ -233,7 +233,7 @@
      * @access  public
      */    
     #[@test]
-    function stringsAreNotEqual() {
+    public function stringsAreNotEqual() {
       foreach (array(-1, 1.0, NULL, FALSE, TRUE, 1, array(), new String('1')) as $cmp) {
         $this->assertNotEquals('', $cmp);
       }
@@ -245,7 +245,7 @@
      * @access  public
      */    
     #[@test]
-    function arraysAreNotEqual() {
+    public function arraysAreNotEqual() {
       foreach (array(-1, 1.0, NULL, FALSE, TRUE, 1, array(1), new String('1')) as $cmp) {
         $this->assertNotEquals(array(), $cmp);
       }

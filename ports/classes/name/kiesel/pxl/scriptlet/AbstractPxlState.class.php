@@ -29,7 +29,7 @@
      * @param   
      * @return  
      */
-    function _getDataPath($path) {
+    public function _getDataPath($path) {
       $path= $_SERVER['DOCUMENT_ROOT'].'/pages/'.$path;
       return realpath($path);
     }    
@@ -41,7 +41,7 @@
      * @param   
      * @return  
      */
-    function _getCatalogue() {
+    public function _getCatalogue() {
       if (NULL === $this->catalogue) {
         $this->catalogue= &Catalogue::create(new FilesystemContainer($this->_getDataPath()));
       }
@@ -56,7 +56,7 @@
      * @param   
      * @return  
      */
-    function _getPage($path) {
+    public function _getPage($path) {
       $page= &Page::create(new FilesystemContainer($this->_getDataPath($path)));
       return $page;
     }
@@ -70,7 +70,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
     
       // Automatically handle authentication if state indicates so
       if ($this->requiresAuthentication()) {

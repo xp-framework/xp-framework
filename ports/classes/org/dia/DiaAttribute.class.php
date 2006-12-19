@@ -23,7 +23,7 @@
    */
   class DiaAttribute extends DiaCompound {
 
-    var
+    public
       $name= NULL, 
       $_type= NULL,
       $_value= NULL,
@@ -39,9 +39,9 @@
      * @param   string type default NULL Attrubute type
      * @throws  lang.IllegalArgumentException
      */
-    function __construct($name, $value= NULL, $type= NULL) {
+    public function __construct($name, $value= NULL, $type= NULL) {
       if (!isset($name)) 
-        return throw(new IllegalArgumentException('Parameter "name" is required!'));
+        throw(new IllegalArgumentException('Parameter "name" is required!'));
 
       $this->setName($name);
       if (isset($value)) $this->_value= $value;
@@ -55,7 +55,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // determine type from value if type is not set
       if (isset($this->_value)) {
         if (!isset($this->_type)) $this->_type= xp::typeOf($this->_value);
@@ -81,7 +81,7 @@
           case 'color':   $this->set('value', new DiaColor($value)); break;
   
           default:
-            return throw(new IllegalArgumentException('Unkown type "'.$this->_type.'"'));
+            throw(new IllegalArgumentException('Unkown type "'.$this->_type.'"'));
         }
       }
     }
@@ -92,7 +92,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -102,7 +102,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -112,7 +112,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       if (isset($this->name))
         $node->setAttribute('name', $this->name);

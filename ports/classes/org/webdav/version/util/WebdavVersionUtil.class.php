@@ -21,7 +21,7 @@
      * @param   &io.File file
      * @return  &org.webdav.version.Webdav*Version
      */
-    function &getNextVersion(&$actVersion, &$file) {
+    public function &getNextVersion(&$actVersion, &$file) {
       // Load same type of version as before
       $obj= &XPClass::forName(XP::typeOf($actVersion));
       

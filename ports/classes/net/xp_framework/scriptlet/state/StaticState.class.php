@@ -19,7 +19,7 @@
      * @access  public
      * @return  int
      */
-    function getParentCategory() {
+    public function getParentCategory() {
       return 9;
     }
 
@@ -31,7 +31,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &rdbms.ResultSet
      */
-    function &getEntries(&$db, &$request) { 
+    public function &getEntries(&$db, &$request) { 
       return $db->query('
         select 
           entry.id as id,

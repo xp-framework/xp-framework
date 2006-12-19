@@ -49,7 +49,7 @@
      * @param   mixed url a string or a peer.URL object
      * @param   array env environment
      */
-    function __construct($url, $env) {
+    public function __construct($url, $env) {
       parent::__construct($url);
       $this->request->setEnvironment($env);
     }
@@ -60,8 +60,8 @@
      * @access  protected
      * @param   &mixed url a string or a peer.URL object
      */
-    function _createRequest(&$url) {
-      $this->request= &new AjpRequest($url);
+    public function _createRequest(&$url) {
+      $this->request= new AjpRequest($url);
     }  
   }
 ?>

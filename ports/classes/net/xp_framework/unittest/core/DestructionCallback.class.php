@@ -10,7 +10,7 @@
    * @see      xp://net.xp_framework.unittest.core.Destroyable
    * @purpose  Test class
    */
-  class DestructionCallback extends Interface {
+  interface DestructionCallback {
 
     /**
      * Callback for Destroyable class
@@ -18,7 +18,7 @@
      * @access  public
      * @param   &lang.Object object
      */
-    function onDestruction(&$object) { }
+    public function onDestruction(&$object);
   
   }
 ?>

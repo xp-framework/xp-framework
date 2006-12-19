@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class Player extends DataSet {
-    var
+    public
       $player_id          = 0,
       $player_type_id     = 0,
       $bz_id              = 0,
@@ -34,7 +34,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &Player::getPeer()); {
         $peer->setTable('uska.player');
         $peer->setConnection('uska');
@@ -64,7 +64,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -76,7 +76,7 @@
      * @return  &de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByPlayer_id($player_id) {
+    public function &getByPlayer_id($player_id) {
       $peer= &Player::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL))));
     }
@@ -89,7 +89,7 @@
      * @return  &de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByUsername($username) {
+    public function &getByUsername($username) {
       $peer= &Player::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('username', $username, EQUAL))));
     }
@@ -102,7 +102,7 @@
      * @return  &de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByCreated_by($created_by) {
+    public function &getByCreated_by($created_by) {
       $peer= &Player::getPeer();
       return $peer->doSelect(new Criteria(array('created_by', $created_by, EQUAL)));
     }
@@ -115,7 +115,7 @@
      * @return  &de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByTeam_id($team_id) {
+    public function &getByTeam_id($team_id) {
       $peer= &Player::getPeer();
       return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
@@ -126,7 +126,7 @@
      * @access  public
      * @return  int
      */
-    function getPlayer_id() {
+    public function getPlayer_id() {
       return $this->player_id;
     }
       
@@ -137,7 +137,7 @@
      * @param   int player_id
      * @return  int the previous value
      */
-    function setPlayer_id($player_id) {
+    public function setPlayer_id($player_id) {
       return $this->_change('player_id', $player_id);
     }
 
@@ -147,7 +147,7 @@
      * @access  public
      * @return  int
      */
-    function getPlayer_type_id() {
+    public function getPlayer_type_id() {
       return $this->player_type_id;
     }
       
@@ -158,7 +158,7 @@
      * @param   int player_type_id
      * @return  int the previous value
      */
-    function setPlayer_type_id($player_type_id) {
+    public function setPlayer_type_id($player_type_id) {
       return $this->_change('player_type_id', $player_type_id);
     }
 
@@ -168,7 +168,7 @@
      * @access  public
      * @return  int
      */
-    function getBz_id() {
+    public function getBz_id() {
       return $this->bz_id;
     }
       
@@ -179,7 +179,7 @@
      * @param   int bz_id
      * @return  int the previous value
      */
-    function setBz_id($bz_id) {
+    public function setBz_id($bz_id) {
       return $this->_change('bz_id', $bz_id);
     }
 
@@ -189,7 +189,7 @@
      * @access  public
      * @return  string
      */
-    function getFirstname() {
+    public function getFirstname() {
       return $this->firstname;
     }
       
@@ -200,7 +200,7 @@
      * @param   string firstname
      * @return  string the previous value
      */
-    function setFirstname($firstname) {
+    public function setFirstname($firstname) {
       return $this->_change('firstname', $firstname);
     }
 
@@ -210,7 +210,7 @@
      * @access  public
      * @return  string
      */
-    function getLastname() {
+    public function getLastname() {
       return $this->lastname;
     }
       
@@ -221,7 +221,7 @@
      * @param   string lastname
      * @return  string the previous value
      */
-    function setLastname($lastname) {
+    public function setLastname($lastname) {
       return $this->_change('lastname', $lastname);
     }
 
@@ -231,7 +231,7 @@
      * @access  public
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->username;
     }
       
@@ -242,7 +242,7 @@
      * @param   string username
      * @return  string the previous value
      */
-    function setUsername($username) {
+    public function setUsername($username) {
       return $this->_change('username', $username);
     }
 
@@ -252,7 +252,7 @@
      * @access  public
      * @return  string
      */
-    function getPassword() {
+    public function getPassword() {
       return $this->password;
     }
       
@@ -263,7 +263,7 @@
      * @param   string password
      * @return  string the previous value
      */
-    function setPassword($password) {
+    public function setPassword($password) {
       return $this->_change('password', $password);
     }
 
@@ -273,7 +273,7 @@
      * @access  public
      * @return  string
      */
-    function getEmail() {
+    public function getEmail() {
       return $this->email;
     }
       
@@ -284,7 +284,7 @@
      * @param   string email
      * @return  string the previous value
      */
-    function setEmail($email) {
+    public function setEmail($email) {
       return $this->_change('email', $email);
     }
 
@@ -294,7 +294,7 @@
      * @access  public
      * @return  int
      */
-    function getPosition() {
+    public function getPosition() {
       return $this->position;
     }
       
@@ -305,7 +305,7 @@
      * @param   int position
      * @return  int the previous value
      */
-    function setPosition($position) {
+    public function setPosition($position) {
       return $this->_change('position', $position);
     }
 
@@ -315,7 +315,7 @@
      * @access  public
      * @return  int
      */
-    function getCreated_by() {
+    public function getCreated_by() {
       return $this->created_by;
     }
       
@@ -326,7 +326,7 @@
      * @param   int created_by
      * @return  int the previous value
      */
-    function setCreated_by($created_by) {
+    public function setCreated_by($created_by) {
       return $this->_change('created_by', $created_by);
     }
 
@@ -336,7 +336,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getLastchange() {
+    public function &getLastchange() {
       return $this->lastchange;
     }
       
@@ -347,7 +347,7 @@
      * @param   &util.Date lastchange
      * @return  &util.Date the previous value
      */
-    function &setLastchange(&$lastchange) {
+    public function &setLastchange(&$lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
 
@@ -357,7 +357,7 @@
      * @access  public
      * @return  string
      */
-    function getChangedby() {
+    public function getChangedby() {
       return $this->changedby;
     }
       
@@ -368,7 +368,7 @@
      * @param   string changedby
      * @return  string the previous value
      */
-    function setChangedby($changedby) {
+    public function setChangedby($changedby) {
       return $this->_change('changedby', $changedby);
     }
 
@@ -378,7 +378,7 @@
      * @access  public
      * @return  int
      */
-    function getTeam_id() {
+    public function getTeam_id() {
       return $this->team_id;
     }
       
@@ -389,7 +389,7 @@
      * @param   int team_id
      * @return  int the previous value
      */
-    function setTeam_id($team_id) {
+    public function setTeam_id($team_id) {
       return $this->_change('team_id', $team_id);
     }
   }

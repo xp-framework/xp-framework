@@ -17,7 +17,7 @@
    * @purpose  Unit test
    */
   class AbstractCollectionTest extends TestCase {
-    var
+    public
       $fixture = NULL,
       $sizes   = array(),
       $total   = 0;
@@ -30,7 +30,7 @@
      * @return  &io.collection.IOElement e
      * @return  &io.collection.IOElement
      */
-    function &addElement(&$c, &$e) {
+    public function &addElement(&$c, &$e) {
       $c->addElement($e);
       $this->total++;
       with ($key= $c->getURI()); {
@@ -44,8 +44,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->fixture= &new MockCollection('.');
+    public function setUp() {
+      $this->fixture= new MockCollection('.');
       
       // Warning: Changing this list will make some tests fail!
       $this->addElement($this->fixture, new MockElement(

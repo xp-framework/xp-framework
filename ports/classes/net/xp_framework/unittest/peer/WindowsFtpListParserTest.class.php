@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->fixture= &new WindowsFtpListParser();
+    public function setUp() {
+      $this->fixture= new WindowsFtpListParser();
     }
     
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function directory() {
+    public function directory() {
       $e= &$this->fixture->entryFrom('01-04-06  04:51PM       <DIR>          _db_import');
 
       $this->assertSubclass($e, 'peer.ftp.FtpDir') &&
@@ -54,7 +54,7 @@
      * @access  public
      */
     #[@test]
-    function regularFile() {
+    public function regularFile() {
       $e= &$this->fixture->entryFrom('11-08-06  10:04AM                   27 info.txt');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&

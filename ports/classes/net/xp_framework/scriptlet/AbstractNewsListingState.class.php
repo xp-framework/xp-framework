@@ -27,7 +27,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &rdbms.ResultSet
      */
-    function &getEntries(&$db, &$request) { }
+    public function &getEntries(&$db, &$request) { }
     
     /**
      * Return date
@@ -36,7 +36,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &util.Date
      */
-    function &getContextMonth(&$request) {
+    public function &getContextMonth(&$request) {
       return Date::now();
     }
     
@@ -46,7 +46,7 @@
      * @access  public
      * @return  int
      */
-    function getParentCategory() {
+    public function getParentCategory() {
       return 0;
     }
     
@@ -57,7 +57,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
 
       // Retrieve date information
       $contextDate= &$this->getContextMonth($request);
@@ -71,7 +71,7 @@
       )));
 
       $cm= &ConnectionManager::getInstance();
-      try(); {
+      try {
         $db= &$cm->getByHost('news', 0);
         
         // Add all categories to the formresult
@@ -111,8 +111,8 @@
         // does a join on entries and categories (which have a 1:n 
         // relationship, so the returned results are not unique)
         $q= &$this->getEntries($db, $request);
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $n= &$response->addFormResult(new Node('entries'));

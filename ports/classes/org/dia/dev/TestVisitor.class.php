@@ -9,12 +9,12 @@
   /**
    *
    */
-  class TestVisitor extends Object {
+  class TestVisitor extends Object implements Visitor {
 
-    var
+    public
       $depth= 0;
 
-    function visit(&$Object) {
+    public function visit(&$Object) {
       if (is('org.dia.DiaObject', $Object))
         Console::writeLine("DiaObject: ".$Object->getName());
       if (is('org.dia.DiaComposite', $Object)) {
@@ -24,5 +24,5 @@
       }
     } 
 
-  } implements(__FILE__, 'util.Visitor');
+  } 
 ?>

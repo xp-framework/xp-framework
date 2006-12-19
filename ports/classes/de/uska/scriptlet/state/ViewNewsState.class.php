@@ -20,11 +20,11 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       $cm= &ConnectionManager::getInstance();
       
       // Fetch entry
-      try(); {
+      try {
         $db= &$cm->getByHost('uskanews', 0);
         $q= &$db->query('
           select 
@@ -42,8 +42,8 @@
           ',
           $request->getQueryString()
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       // Check if we found an entry
@@ -59,8 +59,8 @@
         $entry->addChild(new Node('author', $record['author']));
         $entry->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
         
-        $parser= &new XMLParser();
-        try(); {
+        $parser= new XMLParser();
+        try {
           $body= nl2br(str_replace('&', '&amp;', $record['body']));
           if ($parser->parse('<body>'.$body.'</body>')) {
             $entry->addChild(new Node('body', new PCData($body)));
@@ -70,7 +70,7 @@
           if ($parser->parse('<body>'.$extended.'</body>')) {
             $entry->addChild(new Node('extended', new PCData($extended)));
           }
-        } if (catch('XMLFormatException', $e)) {
+        } catch (XMLFormatException $e) {
           $response->addFormError('text.xml.XMLParser', 'XMLFormatException', 'body', $e->getMessage());
         }
       }

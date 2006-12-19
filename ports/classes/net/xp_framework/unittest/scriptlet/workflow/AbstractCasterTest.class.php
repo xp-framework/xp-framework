@@ -14,7 +14,7 @@
    * @purpose   Base class for Caster test
    */
   class AbstractCasterTest extends TestCase {
-    var
+    public
       $caster = NULL;
 
     /**
@@ -23,7 +23,7 @@
      * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    function &caster() { }
+    public function &caster() { }
 
     /**
      * Setup method.
@@ -31,7 +31,7 @@
      * @model   final
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->caster= &$this->caster();
     }
 
@@ -44,9 +44,9 @@
      * @return  mixed
      * @throws  lang.IllegalArgumentException in case the caster fails
      */
-    function castValue($value) {
+    public function castValue($value) {
       if (!is_array($casted= call_user_func(array(&$this->caster, 'castValue'), array((string)$value)))) {
-        return throw(new IllegalArgumentException('Cannot cast '.$value));
+        throw(new IllegalArgumentException('Cannot cast '.$value));
       }
       return array_pop($casted);
     }

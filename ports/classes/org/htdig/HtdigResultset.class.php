@@ -11,11 +11,11 @@
    * @purpose  Wrap search result
    */
   class HtdigResultset extends Object {
-    var
+    public
       $metaresult=  NULL,
       $results=     array();
     
-    var
+    public
       $_csvdef=     NULL;
 
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   &array _cvsdef
      */
-    function setCsvdef($csvdef) {
+    public function setCsvdef($csvdef) {
       $this->_csvdef= $csvdef;
     }
 
@@ -35,7 +35,7 @@
      * @access  public
      * @param   &mixed metaresult
      */
-    function setMetaresult(&$metaresult) {
+    public function setMetaresult(&$metaresult) {
       static $mapping= array(
         'boolean'       => 'boolean',
         'logicalwords'  => 'logicalWords',
@@ -59,7 +59,7 @@
      * @access  public
      * @return  int matches
      */
-    function getMatches() {
+    public function getMatches() {
       return $this->metaresult['matches'];
     }
     
@@ -70,7 +70,7 @@
      * @access  public
      * @return  string words
      */
-    function getLogicalWords() {
+    public function getLogicalWords() {
       return $this->metaresult['logicalWords'];
     }    
 
@@ -80,7 +80,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getMetaresult() {
+    public function &getMetaresult() {
       return $this->metaresult;
     }
 
@@ -90,7 +90,7 @@
      * @access  public
      * @param   mixed[] results
      */
-    function setResults($results) {
+    public function setResults($results) {
       $this->results= $results;
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getResults() {
+    public function getResults() {
       return $this->results;
     }
     
@@ -110,7 +110,7 @@
      * @access  public
      * @param   &mixed array raw form of result data
      */
-    function addResult($result) {
+    public function addResult($result) {
       $res= array();
       foreach (array_keys($result) as $idx) {
         $res[$this->_csvdef[$idx]]= &$result[$idx];
@@ -125,7 +125,7 @@
      *
      * @access  public
      */
-    function rewindResults() {
+    public function rewindResults() {
       reset($this->results);
     }
     
@@ -136,7 +136,7 @@
      * @access  public
      * @return  &mixed
      */
-    function &getNextResult() {
+    public function &getNextResult() {
       $result= &current($this->results);
       next($this->results);
       return $result;
@@ -148,7 +148,7 @@
      * @access  public
      * @return  string 
      */
-    function toString() {
+    public function toString() {
       
       // Retrieve object variables and figure out the maximum length 
       // of a key which will be used for the key "column". The minimum
@@ -174,7 +174,7 @@
           continue;
         }
 
-        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
+        $s.= sprintf($fmt, $key, is('Generic', $this->$key) 
           ? $this->$key->toString()
           : var_export($this->$key, 1)
         )."\n";

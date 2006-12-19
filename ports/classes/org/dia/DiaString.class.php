@@ -13,7 +13,7 @@
    */
   class DiaString extends DiaElement {
 
-    var
+    public
       $node_name= 'dia:string';
 
     /**
@@ -22,7 +22,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       if (isset($this->value)) {
         $node->setContent('#'.$this->value.'#');

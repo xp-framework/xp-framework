@@ -16,7 +16,7 @@
    * @purpose  Specialized processor
    */
   class ShotProcessor extends ImageProcessor {
-    var
+    public
       $converter        = array(),
       $detailDimensions = array();
 
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function __construct() {
-      $this->converter['grayscale']= &new GrayscaleConverter();
+    public function __construct() {
+      $this->converter['grayscale']= new GrayscaleConverter();
       $this->detailDimensions = array(459, 230);
     }
     
@@ -39,7 +39,7 @@
      * @param   int[2] dimensions (0 = X, 1 = Y)
      * @return  &img.Image
      */
-    function resampleToFixedCut(&$origin, $dimensions) {
+    public function resampleToFixedCut(&$origin, $dimensions) {
       $this->cat && $this->cat->debug('Resampling image to fixed', implode('x', $dimensions));
       
       with ($resized= &Image::create($dimensions[0], $dimensions[1], IMG_TRUECOLOR)); {
@@ -61,7 +61,7 @@
      * @param   &img.util.ExifData exifData
      * @return  &img.Image
      */
-    function detailImageFor(&$origin, &$exifData) {
+    public function detailImageFor(&$origin, &$exifData) {
       return $this->resampleToFixedCut($origin, $this->detailDimensions);
     }
 
@@ -73,7 +73,7 @@
      * @param   &img.util.ExifData exifData
      * @return  &img.Image
      */
-    function grayScaleThumbImageFor(&$origin, &$exifData) {
+    public function grayScaleThumbImageFor(&$origin, &$exifData) {
       $resized= &$this->resampleToFixedCut($origin, $this->thumbDimensions);
       $resized->convertTo($this->converter['grayscale']);
       return $resized;
@@ -87,7 +87,7 @@
      * @param   &img.util.ExifData exifData
      * @return  &img.Image
      */
-    function grayScaleFullImageFor(&$origin, &$exifData) {
+    public function grayScaleFullImageFor(&$origin, &$exifData) {
       $resized= &$this->resampleTo($origin, $exifData->isHorizontal(), $this->fullDimensions);
       $resized->convertTo($this->converter['grayscale']);
       return $resized;
@@ -100,7 +100,7 @@
      * @param   &io.File in
      * @return  de.thekid.dialog.io.ProcessorTarget[]
      */
-    function targetsFor(&$in) {
+    public function targetsFor(&$in) {
       return array(
         new ProcessorTarget('detailImageFor', 'detail.'.$in->getFilename(), TRUE),
         new ProcessorTarget('fullImageFor', 'color.'.$in->getFilename(), TRUE),

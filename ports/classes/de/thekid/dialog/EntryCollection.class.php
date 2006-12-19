@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('de.thekid.dialog.IEntry');
+
   /**
    * Represents a collection of any IEntry objects
    *
    * @see      xp://de.thekid.dialog.IEntry
    * @purpose  Value object
    */
-  class EntryCollection extends Object {
-    var
+  class EntryCollection extends Object implements IEntry {
+    public
       $name         = '',
       $title        = '',
       $createdAt    = NULL,
@@ -24,7 +26,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -34,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -44,7 +46,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -54,7 +56,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -64,7 +66,7 @@
      * @access  public
      * @param   &lang.Object createdAt
      */
-    function setCreatedAt(&$createdAt) {
+    public function setCreatedAt(&$createdAt) {
       $this->createdAt= &$createdAt;
     }
 
@@ -74,7 +76,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getCreatedAt() {
+    public function &getCreatedAt() {
       return $this->createdAt;
     }
 
@@ -85,7 +87,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->createdAt;
     }
 
@@ -95,7 +97,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -105,7 +107,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -116,7 +118,7 @@
      * @param   &de.thekid.dialog.IEntry entry
      * @return  &de.thekid.dialog.IEntry the added entry
      */
-    function &addEntry(&$entry) {
+    public function &addEntry(&$entry) {
       $this->entries[]= &$entry;
       return $entry;
     }
@@ -129,7 +131,7 @@
      * @param   int i
      * @return  &de.thekid.dialog.IEntry
      */
-    function &entryAt($i) {
+    public function &entryAt($i) {
       if (!isset($this->entries[$i])) return NULL;
       return $this->entries[$i];
     }
@@ -140,9 +142,9 @@
      * @access  public
      * @return  int
      */
-    function numEntries() {
+    public function numEntries() {
       return sizeof($this->entries);
     }
   
-  } implements(__FILE__, 'de.thekid.dialog.IEntry');
+  } 
 ?>

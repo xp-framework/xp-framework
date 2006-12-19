@@ -12,7 +12,7 @@
    * @purpose  Processor
    */
   class CopyProcessor extends MarkupProcessor {
-    var
+    public
       $patterns= array(
         '#\r#',
         '#\n#',
@@ -30,7 +30,7 @@
      * @access  public
      * @return  string
      */
-    function initialize() {
+    public function initialize() {
       return '<pre>';
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */    
-    function finalize() {
+    public function finalize() {
       return '</pre>';
     }
 
@@ -51,7 +51,7 @@
      * @param   string token
      * @return  string
      */
-    function process($token) {
+    public function process($token) {
       return preg_replace($this->patterns, $this->replacements, $token);
     }
   }

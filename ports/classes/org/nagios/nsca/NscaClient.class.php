@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.Socket', 
+    'peer.Socket',
     'security.checksum.CRC32',
     'org.nagios.nsca.NscaMessage',
     'lang.MethodNotImplementedException'
@@ -53,11 +53,11 @@
    * @purpose  Passive checks for Nagios
    */
   class NscaClient extends Object {
-    var
+    public
       $version      = 0,
       $cryptmethod  = 0;
       
-    var
+    public
       $_xorkey      = '',
       $_timestamp   = '';
 
@@ -70,14 +70,14 @@
      * @param   int version default NSCA_VERSION_3
      * @param   int cryptmethod default NSCA_CRYPT_XOR
      */
-    function __construct(
+    public function __construct(
       $host, 
       $port= 5667, 
       $version= NSCA_VERSION_3, 
       $cryptmethod= NSCA_CRYPT_XOR
     ) {
       
-      $this->sock= &new Socket($host, $port);
+      $this->sock= new Socket($host, $port);
       $this->version= $version;
       $this->cryptmethod= $cryptmethod;
     }
@@ -88,7 +88,7 @@
      * @access  public
      * @param   int version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -98,7 +98,7 @@
      * @access  public
      * @return  int
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      * @param   int cryptmethod
      */
-    function setCryptmethod($cryptmethod) {
+    public function setCryptmethod($cryptmethod) {
       $this->cryptmethod= $cryptmethod;
     }
 
@@ -118,7 +118,7 @@
      * @access  public
      * @return  int
      */
-    function getCryptmethod() {
+    public function getCryptmethod() {
       return $this->cryptmethod;
     }
 
@@ -128,7 +128,7 @@
      * @access  public
      * @return  bool
      */
-    function connect() {
+    public function connect() {
       if (!$this->sock->connect()) return FALSE;
 
       // Get 128bit xor key and 4bit timestamp
@@ -143,7 +143,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       static $cryptname= array(
         NSCA_CRYPT_NONE => 'NONE',
         NSCA_CRYPT_XOR  => 'XOR'
@@ -176,7 +176,7 @@
      * @access  public
      * @return  bool 
      */
-    function close() {
+    public function close() {
       return $this->sock->isConnected() ? $this->sock->close() : TRUE;
     }
     
@@ -188,7 +188,7 @@
      * @param   &org.nagios.nsca.NscaMessage message
      * @return  string packed data
      */
-    function pack($crc, &$message) {
+    public function pack($crc, &$message) {
       return pack(
         'nxxNa4na64a128a512xx',
         $this->version,
@@ -209,7 +209,7 @@
      * @return  string encrypted data
      * @throws  lang.MethodNotImplementedException in case the encryption method is not supported
      */
-    function encrypt($data) {
+    public function encrypt($data) {
       switch ($this->cryptmethod) {
         case NSCA_CRYPT_NONE:
           return $data;
@@ -223,7 +223,7 @@
           );
        
         default:
-          return throw(new MethodNotImplementedException(
+          throw(new MethodNotImplementedException(
             'Encryption method '.$this->cryptmethod.' not supported'
           ));
       }
@@ -237,9 +237,9 @@
      * @return  bool
      * @throws  lang.IllegalStateException
      */
-    function send(&$message) {
+    public function send(&$message) {
       if (!$this->sock->isConnected()) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       
       // Calculate CRC32 checksum, then build the final packet with the sig

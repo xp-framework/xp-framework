@@ -19,9 +19,9 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       if (!extension_loaded('overload')) {
-        return throw(new PrerequisitesNotMetError(
+        throw(new PrerequisitesNotMetError(
           'Overload extension not enabled', 
           $cause= NULL
         ));
@@ -34,7 +34,7 @@
      * @access  public
      */
     #[@test]
-    function isNull() {
+    public function isNull() {
       $this->assertTrue(is(NULL, xp::null()));
     }
 
@@ -44,8 +44,8 @@
      * @access  public
      */
     #[@test]
-    function isNotAnObject() {
-      $this->assertFalse(is('lang.Object', xp::null()));
+    public function isNotAnObject() {
+      $this->assertFalse(is('lang.Generic', xp::null()));
     }
 
     /**
@@ -63,7 +63,7 @@
      * @access  public
      */
     #[@test]
-    function isFalse() {
+    public function isFalse() {
       $this->assertTrue(!xp::null());
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      */
     #[@test]
-    function typeOf() {
+    public function typeOf() {
       $this->assertEquals('<null>', xp::typeOf(xp::null()));
     }
     
@@ -83,7 +83,7 @@
      * @access  public
      */
     #[@test]
-    function stringOf() {
+    public function stringOf() {
       $this->assertEquals('<null>', xp::stringOf(xp::null()));
     }
     
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    function newInstance() {
+    public function newInstance() {
       new null();
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function cloneNull() {
+    public function cloneNull() {
       clone(xp::null());
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function methodInvocation() {
+    public function methodInvocation() {
       $null= &xp::null();
       $null->method();
     }
@@ -125,7 +125,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function memberReadAccess() {
+    public function memberReadAccess() {
       $null= &xp::null();
       $i= $null->member;
     }
@@ -136,7 +136,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function memberWriteccess() {
+    public function memberWriteccess() {
       $null= &xp::null();
       $null->member= $i;
     }

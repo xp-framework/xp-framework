@@ -13,7 +13,7 @@
    */
   class DiaFont extends DiaElement {
 
-    var
+    public
       $family= NULL,
       $style= NULL,
       $name= NULL,
@@ -25,14 +25,14 @@
      * @access  public
      * @param   array font default NULL
      */
-    function __construct($font= NULL) {
+    public function __construct($font= NULL) {
       if (isset($font['family'])) $this->setFamily($font['family']);
       if (isset($font['style'])) $this->setStyle($font['style']);
       if (isset($font['name'])) $this->setName($font['name']);
       $this->initialize();
     }
 
-    function initialize() {
+    public function initialize() {
       if (!isset($this->family))
         $this->family= 'monospace';
       if (!isset($this->style)) 
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function getFamily() {
+    public function getFamily() {
       return $this->family;
     }
 
@@ -58,7 +58,7 @@
      * @param   string family
      */
     #[@fromDia(xpath= '@family', value= 'string')]
-    function setFamily($family) {
+    public function setFamily($family) {
       $this->family= $family;
     }
 
@@ -68,7 +68,7 @@
      * @access  public
      * @return  int
      */
-    function getStyle() {
+    public function getStyle() {
       return $this->style;
     }
 
@@ -79,7 +79,7 @@
      * @param   int style
      */
     #[@fromDia(xpath= '@style', value= 'int')]
-    function setStyle($style) {
+    public function setStyle($style) {
       $this->style= $style;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -100,7 +100,7 @@
      * @param   string name
      */
     #[@fromDia(xpath = '@name', value= 'string')]
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $Node= &parent::getNode();
       $Node->setAttribute('family', $this->family);
       $Node->setAttribute('style', $this->style);

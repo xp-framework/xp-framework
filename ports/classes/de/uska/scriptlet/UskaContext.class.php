@@ -15,7 +15,7 @@
    * @purpose  Uska context
    */
   class UskaContext extends Context {
-    var
+    public
       $user=          NULL,
       $permissions=   NULL,
       $eventtypes=    array();
@@ -26,20 +26,20 @@
      * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      */
-    function setup(&$request) {
+    public function setup(&$request) {
       $cm= &ConnectionManager::getInstance();
       $db= &$cm->getByHost('uska', 0);
       
       $this->eventtypes= array();
-      try(); {
+      try {
         $q= $db->query('select event_type_id, name, description from uska.event_type');
         while ($q && $r= $q->next()) { $this->eventtypes[$r['event_type_id']]= array(
           'type'  => $r['name'],
           'name'  => $r['description']
           );
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
     }
     
@@ -50,7 +50,7 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    function process(&$request) {
+    public function process(&$request) {
       if ($this->user) {
         $cookie= $request->getCookie('uska-user');
         if (!is('scriptlet.Cookie', $cookie) || !$this->user->getUsername() == $cookie->getValue()) {
@@ -84,7 +84,7 @@
      * @access  public
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function insertStatus(&$response) {
+    public function insertStatus(&$response) {
       if (isset($this->_forwardTo)) {
 
         // Forward to same page without session (session hijacking)
@@ -112,7 +112,7 @@
      * @access  public
      * @param   &de.uska.db.Player user
      */
-    function setUser(&$user) {
+    public function setUser(&$user) {
       $this->user= &$user;
       $this->setChanged();
     }
@@ -123,7 +123,7 @@
      * @access  public
      * @param   &array perms
      */
-    function setPermissions(&$perm) {
+    public function setPermissions(&$perm) {
       $this->permissions= &$perm;
       $this->setChanged();
     }
@@ -135,7 +135,7 @@
      * @param   string name
      * @return  bool
      */
-    function hasPermission($name) {
+    public function hasPermission($name) {
       return isset($this->permissions[$name]);
     }
   }

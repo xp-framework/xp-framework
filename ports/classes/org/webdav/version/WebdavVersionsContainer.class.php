@@ -11,7 +11,7 @@
    * @purpose  Container of versions
    */
   class WebdavVersionsContainer extends Object {
-    var
+    public
       $versions= array();
   
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   org.webdav.version.Webdav*Version
      */
-    function __construct($version= NULL) {
+    public function __construct($version= NULL) {
       if ($version !== NULL) $this->addVersion($version);
     }
     
@@ -30,7 +30,7 @@
      * @access  public
      * @param   org.webdav.version.Webdav*Version
      */
-    function addVersion(&$version) {
+    public function addVersion(&$version) {
       $this->versions[]= $version;
     }
     
@@ -40,7 +40,7 @@
      * @access  public
      * @return  array versions
      */
-    function getVersions() {
+    public function getVersions() {
       return $this->versions;
     }
     
@@ -50,7 +50,7 @@
      * @access  public
      * @return  &org.webdav.version.Webdav*Version
      */
-    function &getLatestVersion() {
+    public function &getLatestVersion() {
       return end($this->versions);
     }
   

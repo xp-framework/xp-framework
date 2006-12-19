@@ -32,7 +32,7 @@
    * @see http://www.xmlrpc.com/metaWeblogApi
    */
   class MetaWeblogApi extends XmlRpcClient {
-    var
+    public
       $url      = '',
       $username = '',
       $password = '',
@@ -50,7 +50,7 @@
      * @param   string password for the weblog
      * @param   int blogid of the weblog
      */
-    function __construct($url, $username, $password, $blogid= '0') {
+    public function __construct($url, $username, $password, $blogid= '0') {
       parent::__construct(new XMLRPCHTTPTransport($url));
       $this->username= $username;
       $this->password= $password;
@@ -67,7 +67,7 @@
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  string the postid of the new post
      */  
-    function newPost($title= '', $link= '', $description= '', $publish= FALSE) {
+    public function newPost($title= '', $link= '', $description= '', $publish= FALSE) {
       return $this->invoke(
         'metaWeblog.newPost',
         $this->blogid,
@@ -93,7 +93,7 @@
      * @param   bool publish if set false, post will be saved as draft, true is publish it
      * @return  bool true when post is successfull
      */  
-    function editPost($postid, $title= '', $link= '', $description= '', $publish= FALSE) {
+    public function editPost($postid, $title= '', $link= '', $description= '', $publish= FALSE) {
       $response= $this->invoke(
         'metaWeblog.editPost',
         $postid,
@@ -116,7 +116,7 @@
      * @param   int postid
      * @return  array if posting
      */  
-    function getPost($postid) {
+    public function getPost($postid) {
       return $this->invoke(
         'metaWeblog.getPost',
         $postid,
@@ -132,7 +132,7 @@
      * @param   &io.File file
      * @return  array url of the file
      */  
-    function newMediaObject(&$file) {
+    public function newMediaObject(&$file) {
       return $this->invoke(
         'metaWeblog.newMediaObject',
         $this->blogid,
@@ -152,7 +152,7 @@
      * @access  public
      * @return  array categories
      */  
-    function getCategories() {
+    public function getCategories() {
       return $this->invoke(
         'metaWeblog.getCategories',
         $this->blogid,
@@ -168,7 +168,7 @@
      * @param   int number of posts to get
      * @return  array categories
      */  
-    function getRecentPosts($numberofposts) {
+    public function getRecentPosts($numberofposts) {
       return $this->invoke(
         'metaWeblog.getRecentPosts',
         $this->blogid,

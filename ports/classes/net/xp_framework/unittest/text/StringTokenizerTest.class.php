@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function testSimpleString() {
-      $t= &new StringTokenizer("Hello World!\nThis is an example", " \n");
+    public function testSimpleString() {
+      $t= new StringTokenizer("Hello World!\nThis is an example", " \n");
       $this->assertEquals('Hello', $t->nextToken());
       $this->assertEquals('World!', $t->nextToken());
       $this->assertEquals('This', $t->nextToken());
@@ -40,8 +40,8 @@
      * @access  public
      */
     #[@test]
-    function testSimpleStringWithDelims() {
-      $t= &new StringTokenizer("Hello World!\nThis is an example", " \n", TRUE);
+    public function testSimpleStringWithDelims() {
+      $t= new StringTokenizer("Hello World!\nThis is an example", " \n", TRUE);
       $this->assertEquals('Hello', $t->nextToken());
       $this->assertEquals(' ', $t->nextToken());
       $this->assertEquals('World!', $t->nextToken());
@@ -62,8 +62,8 @@
      * @access  public
      */
     #[@test]
-    function repetetiveDelimiters() {
-      $t= &new StringTokenizer("Hello \nWorld!", " \n");
+    public function repetetiveDelimiters() {
+      $t= new StringTokenizer("Hello \nWorld!", " \n");
       $this->assertEquals('Hello', $t->nextToken());
       $this->assertEquals('', $t->nextToken());
       $this->assertEquals('World!', $t->nextToken());
@@ -76,8 +76,8 @@
      * @access  public
      */
     #[@test]
-    function repetetiveDelimitersWithDelims() {
-      $t= &new StringTokenizer("Hello \nWorld!", " \n", TRUE);
+    public function repetetiveDelimitersWithDelims() {
+      $t= new StringTokenizer("Hello \nWorld!", " \n", TRUE);
       $this->assertEquals('Hello', $t->nextToken());
       $this->assertEquals(' ', $t->nextToken());
       $this->assertEquals("\n", $t->nextToken());

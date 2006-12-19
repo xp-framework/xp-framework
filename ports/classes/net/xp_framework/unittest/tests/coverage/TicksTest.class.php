@@ -14,7 +14,7 @@
    * @purpose  Unit Test
    */
   class TicksTest extends TestCase {
-    var
+    public
       $ticks= array();
 
     /**
@@ -24,7 +24,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       declare(ticks= 0);
     }
     
@@ -33,7 +33,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       set_error_handler(array(&$this, 'tick'));
       register_tick_function('trigger_error', NULL, E_USER_NOTICE);
     }
@@ -43,7 +43,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       unregister_tick_function('trigger_error');
       restore_error_handler();
     }
@@ -57,7 +57,7 @@
      * @param   string file
      * @param   int line
      */
-    function tick($level, $message, $file, $line) {
+    public function tick($level, $message, $file, $line) {
       if (E_USER_NOTICE == $level) {
         $key= basename($file);
         if (!isset($this->ticks[$key])) $this->ticks[$key]= array();
@@ -81,7 +81,7 @@
      * @param   string file
      * @param   array<int, int> frequencies keys are line numbers, values are frequency
      */
-    function assertTicks($file, $frequencies) {
+    public function assertTicks($file, $frequencies) {
       $this->assertEquals(
         $frequencies,
         $this->ticks[basename($file)]
@@ -107,7 +107,7 @@
      * @access  public
      */
     #[@test]
-    function mostBasicForm() {
+    public function mostBasicForm() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
       }                       // tick
@@ -125,7 +125,7 @@
      * @access  public
      */
     #[@test]
-    function ifCondition() {
+    public function ifCondition() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         if (TRUE) {
@@ -152,7 +152,7 @@
      * @access  public
      */
     #[@test]
-    function ifConditionWithoutBlock() {
+    public function ifConditionWithoutBlock() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick 
         $executed= FALSE;                           // tick      
@@ -175,7 +175,7 @@
      * @access  public
      */
     #[@test]
-    function elseCondition() {
+    public function elseCondition() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         if (FALSE) {
@@ -200,7 +200,7 @@
      * @access  public
      */
     #[@test]
-    function forLoop() {
+    public function forLoop() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         $executed= 0;         // tick
@@ -225,7 +225,7 @@
      * @access  public
      */
     #[@test]
-    function notExecutedforLoop() {
+    public function notExecutedforLoop() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         $executed= 0;         // tick
@@ -249,7 +249,7 @@
      * @access  public
      */
     #[@test]
-    function whileLoop() {
+    public function whileLoop() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         $executed= 0;         // tick
@@ -276,7 +276,7 @@
      * @access  public
      */
     #[@test]
-    function notExecutedWhileLoop() {
+    public function notExecutedWhileLoop() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         $executed= 0;         // tick
@@ -300,7 +300,7 @@
      * @access  public
      */
     #[@test]
-    function multiLineStatement() {
+    public function multiLineStatement() {
       declare(ticks= 1) {
         $line= __LINE__;      // tick
         $greeting= (strlen('Hello') == 5
@@ -326,7 +326,7 @@
      * @param   string who
      * @return  string
      */
-    function sayHelloTo($who) {
+    public function sayHelloTo($who) {
       $length= strlen($who);
       return 'Hello '.$who.' ('.$length.' bytes)';
     }
@@ -337,7 +337,7 @@
      * @access  public
      */
     #[@test]
-    function methodCall() {
+    public function methodCall() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $helloWorld= $this->sayHelloTo('World');    // tick
@@ -357,12 +357,12 @@
      * @access  public
      */
     #[@test]
-    function switchStatementWithEmptyCase() {
+    public function switchStatementWithEmptyCase() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         switch (strlen('Hello')) {
           case 5: break;
-          default: return throw(new PrerequisitesNotMetError('strlen() broken!'));
+          default: throw(new PrerequisitesNotMetError('strlen() broken!'));
         }                                           // tick
       }                                             // tick
 
@@ -379,12 +379,12 @@
      * @access  public
      */
     #[@test]
-    function switchStatement() {
+    public function switchStatement() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         switch (strlen('Hello')) {
           case 5: $result= TRUE; break;             // tick
-          default: return throw(new PrerequisitesNotMetError('strlen() broken!'));
+          default: throw(new PrerequisitesNotMetError('strlen() broken!'));
         }                                           // tick
       }                                             // tick
 
@@ -404,7 +404,7 @@
      * @access  public
      */
     #[@test]
-    function evaluation() {
+    public function evaluation() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         eval('$evaluated= TRUE;');                  // tick
@@ -425,7 +425,7 @@
      * @access  protected
      * @return  int the line creating a tick within this method
      */
-    function tickedReturnSomething() {
+    public function tickedReturnSomething() {
       declare(ticks= 1) {
         $line= __LINE__;    // tick
         return $line;
@@ -439,7 +439,7 @@
      * @access  public
      */
     #[@test]
-    function returnStatement() {
+    public function returnStatement() {
       $line= $this->tickedReturnSomething();
 
       $this->assertTicks(__FILE__, array(
@@ -458,7 +458,7 @@
      * @access  public
      */
     #[@test]
-    function evaluationOfMultiLineCode() {
+    public function evaluationOfMultiLineCode() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         eval('
@@ -483,7 +483,7 @@
      * @access  public
      */
     #[@test]
-    function runtimeCreatedFunction() {
+    public function runtimeCreatedFunction() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $strcmp= create_function(
@@ -508,7 +508,7 @@
      * @access  public
      */
     #[@test]
-    function multipleStatements() {
+    public function multipleStatements() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $one= 1; $two= 2;                           // tick (2)
@@ -534,7 +534,7 @@
      * @access  public
      */
     #[@test]
-    function codeBlock() {
+    public function codeBlock() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         {
@@ -554,7 +554,7 @@
      * @access  public
      */
     #[@test]
-    function nestedCodeBlocks() {
+    public function nestedCodeBlocks() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $nestingLevel= 0;                           // tick
@@ -585,13 +585,13 @@
      * @access  public
      */
     #[@test]
-    function exception() {
+    public function exception() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $message= NULL;                             // tick
-        try(); {                                    // tick
-          throw(new Exception('*Boom*'));           // tick
-        } if (catch('Exception', $e)) {             // tick
+        try {                                    // tick
+          throw(new XPException('*Boom*'));           // tick
+        } catch (Exception $e) {             // tick
           $message= $e->getMessage();               // tick
         }                                           // tick
       }                                             // tick (2?)
@@ -616,7 +616,7 @@
      * @access  public
      */
     #[@test]
-    function definition() {
+    public function definition() {
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         define('DEFINITION_TEST', 'defined');       // tick

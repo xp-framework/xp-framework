@@ -21,7 +21,7 @@
      *
      * @access  private
      */    
-    function __construct() {
+    public function __construct() {
       parent::__construct('WScript.Shell');
     }
     
@@ -32,7 +32,7 @@
      * @access  public
      * @return  &com.microsoft.wscript.WshShell
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new WshShell();

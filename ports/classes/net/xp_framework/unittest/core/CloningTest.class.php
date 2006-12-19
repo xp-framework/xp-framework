@@ -19,7 +19,7 @@
      * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
-    function cloningOfNulls() {
+    public function cloningOfNulls() {
       clone(xp::null());
     }
 
@@ -29,7 +29,7 @@
      * @access  public
      */
     #[@test, @expect('lang.CloneNotSupportedException')]
-    function cloningOfNonObjects() {
+    public function cloningOfNonObjects() {
       clone(6100);
     }
 
@@ -39,8 +39,8 @@
      * @access  public
      */
     #[@test]
-    function cloneOfObject() {
-      $original= &new Object();
+    public function cloneOfObject() {
+      $original= new Object();
       $this->assertFalse($original == clone($original));
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      */
     #[@test]
-    function cloneInterceptorCalled() {
+    public function cloneInterceptorCalled() {
       $original= &newinstance('lang.Object', array(), '{
         var $cloned= FALSE;
 
@@ -59,7 +59,7 @@
         }
       }');
       $this->assertFalse($original->cloned);
-      $clone= &clone($original);
+      $clone= clone($original);
       $this->assertFalse($original->cloned);
       $this->assertTrue($clone->cloned);
     }
@@ -71,7 +71,7 @@
      * @access  public
      */
     #[@test, @expect('lang.CloneNotSupportedException')]
-    function cloneInterceptorThrowsException() {
+    public function cloneInterceptorThrowsException() {
       clone(newinstance('lang.Object', array(), '{
         function __clone() {
           throw(new CloneNotSupportedException("I am *UN*Cloneable"));

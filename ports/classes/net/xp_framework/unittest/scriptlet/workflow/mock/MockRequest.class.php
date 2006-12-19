@@ -26,7 +26,7 @@
      * @param   string stateName
      * @param   array<string, mixed> params default array()
      */
-    function __construct($package, $functionality, $stateName, $params= array()) {
+    public function __construct($package, $functionality, $stateName, $params= array()) {
       static $i= 0;
 
       parent::__construct($package);

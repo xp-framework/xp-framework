@@ -15,7 +15,7 @@
    * @purpose  Value object
    */
   class FlickrInterestingnessResponse extends Object {
-    var
+    public
       $photos   =  NULL;
     
     /**
@@ -23,7 +23,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->photos= &Collection::forClass('com.flickr.FlickrPhoto');
     }
     
@@ -34,7 +34,7 @@
      * @param   &com.flickr.FlickrPhoto photo
      */
     #[@xmlmapping(element= 'photo', class= 'com.flickr.FlickrPhoto')]
-    function addPhoto(&$photo) {
+    public function addPhoto(&$photo) {
       $this->photos->add($photo);
     }
   }

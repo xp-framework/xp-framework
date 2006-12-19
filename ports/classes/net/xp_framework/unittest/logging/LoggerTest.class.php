@@ -15,7 +15,7 @@
    * @purpose  Unit Test
    */
   class LoggerTest extends TestCase {
-    var
+    public
       $logger= NULL;
     
     /**
@@ -24,7 +24,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->logger= &Logger::getInstance();
     }
     
@@ -33,7 +33,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->logger->finalize();
     }
     
@@ -43,7 +43,7 @@
      * @access  public
      */
     #[@test]
-    function loggerIsASingleton() {
+    public function loggerIsASingleton() {
       $this->assertTrue($this->logger === Logger::getInstance());
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      */
     #[@test]
-    function defaultCategory() {
+    public function defaultCategory() {
       with ($cat= &$this->logger->getCategory()); {
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertFalse($cat->hasAppenders());
@@ -66,7 +66,7 @@
      * @access  public
      */
     #[@test]
-    function isConfigurable() {
+    public function isConfigurable() {
       $this->assertTrue(is('Configurable', $this->logger));
     }
 
@@ -76,7 +76,7 @@
      * @access  public
      */
     #[@test]
-    function configure() {
+    public function configure() {
       $this->logger->configure(Properties::fromString(<<<__
 [sql]
 appenders="util.log.FileAppender"

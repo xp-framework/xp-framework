@@ -13,7 +13,7 @@
    * @purpose  Unit Test
    */
   class AbstractProcessorTest extends TestCase {
-    var
+    public
       $processor      = NULL,
       $xmlDeclaration = '';
       
@@ -27,7 +27,7 @@
      * @param   string actual
      * @throws  unittest.AssertionFailedError
      */
-    function assertXmlEquals($expect, $actual) {
+    public function assertXmlEquals($expect, $actual) {
       return $this->assertEquals(
         $this->xmlDeclaration.preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
         preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
@@ -41,7 +41,7 @@
      * @access  protected
      * @return  string
      */
-    function neededExtension() { }
+    public function neededExtension() { }
 
     /**
      * Returns the XSL processor instance to be used
@@ -50,7 +50,7 @@
      * @access  protected
      * @return  &xml.IXSLProcessor
      */
-    function &processorInstance() { }
+    public function &processorInstance() { }
 
     /**
      * Returns the XSL processor's default output charset
@@ -59,7 +59,7 @@
      * @access  protected
      * @return  string
      */
-    function processorCharset() { }
+    public function processorCharset() { }
 
     /**
      * Tests 
@@ -67,9 +67,9 @@
      * @access  public
      * @throws  unittest.PrerequisitesNotMetError
      */
-    function setUp() {
+    public function setUp() {
       if (!extension_loaded($ext= $this->neededExtension())) {
-        return throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+        throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
       }
       $this->processor= &$this->processorInstance();
       $this->xmlDeclaration= '<?xml version="1.0" encoding="'.$this->processorCharset().'"?>';
@@ -81,7 +81,7 @@
      * @access  public
      */
     #[@test]
-    function paramAccessors() {
+    public function paramAccessors() {
       $this->processor->setParam('a', 'b');
       $this->assertEquals('b', $this->processor->getParam('a'));
     }
@@ -92,7 +92,7 @@
      * @access  public
      */
     #[@test]
-    function baseAccessors() {
+    public function baseAccessors() {
       $path= rtrim(realpath('../xml/'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       $this->processor->setBase($path);
       $this->assertEquals($path, $this->processor->getBase());
@@ -104,7 +104,7 @@
      * @access  public
      */
     #[@test]
-    function setBaseAddsTrailingDirectorySeparator() {
+    public function setBaseAddsTrailingDirectorySeparator() {
       $path= rtrim(realpath('../xml/'), DIRECTORY_SEPARATOR);
       $this->processor->setBase($path);
       $this->assertEquals($path.DIRECTORY_SEPARATOR, $this->processor->getBase());
@@ -116,7 +116,7 @@
      * @access  public
      */
     #[@test]
-    function setParams() {
+    public function setParams() {
       $this->processor->setParams(array(
         'a'     => 'b',
         'left'  => 'one',
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function transformationWithEmptyResult() {
+    public function transformationWithEmptyResult() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('
         <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -150,7 +150,7 @@
      * @access  public
      */
     #[@test]
-    function transformationWithResult() {
+    public function transformationWithResult() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('
         <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -170,7 +170,7 @@
      * @access  public
      */
     #[@test]
-    function transformationWithParameter() {
+    public function transformationWithParameter() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('
         <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -192,7 +192,7 @@
      * @access  public
      */
     #[@test]
-    function transformationWithParameters() {
+    public function transformationWithParameters() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('
         <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -218,7 +218,7 @@
      * @access  public
      */
     #[@test, @expect('xml.TransformerException')]
-    function malformedXML() {
+    public function malformedXML() {
       $this->processor->setXMLBuf('@@MALFORMED@@');
       $this->processor->setXSLBuf('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>');
       $this->processor->run();
@@ -230,7 +230,7 @@
      * @access  public
      */
     #[@test, @expect('xml.TransformerException')]
-    function malformedXSL() {
+    public function malformedXSL() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('@@MALFORMED@@');
       $this->processor->run();

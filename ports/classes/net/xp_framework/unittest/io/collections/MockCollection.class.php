@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.io.collections.MockElement');
+  uses('net.xp_framework.unittest.io.collections.MockElement', 'io.collections.IOCollection');
 
   /**
    * IOCollection implementation
@@ -12,8 +12,8 @@
    * @see      xp://io.collections.IOCollection
    * @purpose  Mock object
    */
-  class MockCollection extends Object {
-    var
+  class MockCollection extends Object implements IOCollection {
+    public
       $_elements = array(),
       $_offset   = -1;
       
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string uri
      */
-    function __construct($uri) {
+    public function __construct($uri) {
       $this->uri= $uri;
     }
 
@@ -34,7 +34,7 @@
      * @return  &io.collection.IOElement e
      * @return  &io.collection.IOElement
      */
-    function &addElement(&$e) {
+    public function &addElement(&$e) {
       $this->_elements[]= &$e;
       return $e;
     }
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function getURI() {
+    public function getURI() {
       return $this->uri;
     }
     
@@ -54,7 +54,7 @@
      *
      * @access  public
      */
-    function open() { 
+    public function open() { 
       $this->_offset= 0;
     }
 
@@ -63,7 +63,7 @@
      *
      * @access  public
      */
-    function rewind() { 
+    public function rewind() { 
       $this->_offset= 0;
     }
     
@@ -74,8 +74,8 @@
      * @access  public
      * @return  &io.collection.IOElement
      */
-    function &next() {
-      if (-1 == $this->_offset) return throw(new IllegalStateException('Not open'));
+    public function &next() {
+      if (-1 == $this->_offset) throw(new IllegalStateException('Not open'));
       if ($this->_offset >= sizeof($this->_elements)) return NULL;
 
       return $this->_elements[$this->_offset++];
@@ -86,7 +86,7 @@
      *
      * @access  public
      */
-    function close() { 
+    public function close() { 
       $this->_offset= -1;
     }
 
@@ -96,7 +96,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() { 
+    public function getSize() { 
       return 512;
     }
 
@@ -106,7 +106,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &createdAt() {
+    public function &createdAt() {
       return NULL;
     }
 
@@ -116,7 +116,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastAccessed() {
+    public function &lastAccessed() {
       return NULL;
     }
 
@@ -126,7 +126,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastModified() {
+    public function &lastModified() {
       return NULL;
     }
 
@@ -136,9 +136,9 @@
      * @access  public
      * @return  string
      */
-    function toString() { 
+    public function toString() { 
       return $this->getClassName().'('.$this->uri.')';
     }
   
-  } implements(__FILE__, 'io.collections.IOCollection');
+  } 
 ?>

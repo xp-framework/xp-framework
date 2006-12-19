@@ -16,7 +16,7 @@
    * @purpose  Unit Test
    */
   class LDAPEntryTest extends TestCase {
-    var
+    public
       $dn         = 'uid=friebe,ou=People,dc=xp-framework,dc=net',
       $attributes = array(
         'cn'          => array('Friebe, Timm J.'),
@@ -36,8 +36,8 @@
      *
      * @access  public
      */    
-    function setUp() {
-      $this->entry= &new LDAPEntry($this->dn, $this->attributes);
+    public function setUp() {
+      $this->entry= new LDAPEntry($this->dn, $this->attributes);
     }
 
     /**
@@ -46,7 +46,7 @@
      * @access public 
      */
     #[@test]
-    function getDN() {
+    public function getDN() {
       $this->assertEquals($this->dn, $this->entry->getDN());
     }
 
@@ -56,7 +56,7 @@
      * @access public 
      */
     #[@test]
-    function getAttributes() {
+    public function getAttributes() {
       $this->assertEquals($this->attributes, $this->entry->getAttributes());
     }
 
@@ -66,7 +66,7 @@
      * @access public 
      */
     #[@test]
-    function cnAttribute() {
+    public function cnAttribute() {
       $this->assertEquals(array('Friebe, Timm J.'), $this->entry->getAttribute('cn'));
     }
 
@@ -76,7 +76,7 @@
      * @access public 
      */
     #[@test]
-    function firstCnAttribute() {
+    public function firstCnAttribute() {
       $this->assertEquals('Friebe, Timm J.', $this->entry->getAttribute('cn', 0));
     }
 
@@ -86,7 +86,7 @@
      * @access public 
      */
     #[@test]
-    function nonExistantAttribute() {
+    public function nonExistantAttribute() {
       $this->assertEquals(NULL, $this->entry->getAttribute('@@NON-EXISTANT@@'));
     }
 
@@ -97,7 +97,7 @@
      * @access public 
      */
     #[@test]
-    function objectClassAttribute() {
+    public function objectClassAttribute() {
       $this->assertEquals(
         $this->attributes['objectclass'], 
         $this->entry->getAttribute('objectclass')
@@ -110,7 +110,7 @@
      * @access public 
      */
     #[@test]
-    function fromData() {
+    public function fromData() {
       $cmp= &LDAPEntry::fromData($data= array(
         'objectclass' => array(
           'count' => 3,

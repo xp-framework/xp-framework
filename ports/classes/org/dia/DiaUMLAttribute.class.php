@@ -13,7 +13,7 @@
    */
   class DiaUMLAttribute extends DiaComposite {
 
-    var
+    public
       $type= 'umlattribute';
 
     /**
@@ -21,7 +21,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values and flags
       $this->setName('__noname__');
       $this->setType(NULL);
@@ -38,7 +38,7 @@
      * @access  public
      * @return  string
      */
-    function getComment() {
+    public function getComment() {
       return $this->getChildValue('comment');
     }
 
@@ -49,7 +49,7 @@
      * @param   string comment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
-    function setComment($comment) {
+    public function setComment($comment) {
       $this->setString('comment', $comment);
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @return  int
      */
-    function getVisibility() {
+    public function getVisibility() {
       return $this->getChildValue('visibility');
     }
 
@@ -70,7 +70,7 @@
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'enum')]
-    function setVisibility($visibility) {
+    public function setVisibility($visibility) {
       $this->setEnum('visibility', $visibility);
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @return  bool
      */
-    function getAbstract() {
+    public function getAbstract() {
       return $this->getChildValue('abstract');
     }
 
@@ -91,7 +91,7 @@
      * @param   bool abstract
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
-    function setAbstract($abstract) {
+    public function setAbstract($abstract) {
       $this->setBoolean('abstract', $abstract);
     }
 
@@ -101,7 +101,7 @@
      * @access  public
      * @return  bool
      */
-    function getClassScope() {
+    public function getClassScope() {
       return $this->getChildValue('class_scope');
     }
 
@@ -112,7 +112,7 @@
      * @param   bool class_scope
      */
     #[@fromDia(xpath= 'dia:attribute[@name="class_scope"]/dia:boolean/@val', value= 'boolean')]
-    function setClassScope($class_scope) {
+    public function setClassScope($class_scope) {
       $this->setBoolean('class_scope', $class_scope);
     }
  }

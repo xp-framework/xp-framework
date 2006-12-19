@@ -19,7 +19,7 @@
    * @purpose  Unit Test
    */
   class LRUBufferTest extends TestCase {
-    var
+    public
       $buffer= NULL;
     
     /**
@@ -27,8 +27,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->buffer= &new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
+    public function setUp() {
+      $this->buffer= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
     }
     
     /**
@@ -37,7 +37,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertEquals(0, $this->buffer->numElements());
     }
     
@@ -47,7 +47,7 @@
      * @access  public
      */
     #[@test]
-    function getSize() {
+    public function getSize() {
       $this->assertEquals(LRUTEST_BUFFER_DEAULT_SIZE, $this->buffer->getSize());
     }
 
@@ -57,7 +57,7 @@
      * @access  public
      */
     #[@test]
-    function add() {
+    public function add() {
       $this->buffer->add(new String('one'));
       $this->assertEquals(1, $this->buffer->numElements());
     }
@@ -68,7 +68,7 @@
      * @access  public
      */
     #[@test]
-    function addReturnsVictim() {
+    public function addReturnsVictim() {
 
       // We should be able to add at least as many as the buffer's size
       // elements to the LRUBuffer. Nothing should be deleted from it
@@ -97,7 +97,7 @@
      * @access  protected
      * @param   int num
      */
-    function addElements($num) {
+    public function addElements($num) {
       for ($i= 0; $i < $num; $i++) {
         $this->buffer->add(new String('item #'.$i));
       }
@@ -109,7 +109,7 @@
      * @access  public
      */
     #[@test]
-    function bufferDoesNotGrowBeyondSize() {
+    public function bufferDoesNotGrowBeyondSize() {
       $this->addElements($this->buffer->getSize()+ 1);
       $this->assertEquals($this->buffer->getSize(), $this->buffer->numElements());
     }
@@ -120,7 +120,7 @@
      * @access  public
      */
     #[@test]
-    function update() {
+    public function update() {
     
       // Fill the LRUBuffer until its size is reached
       $this->addElements($this->buffer->getSize());
@@ -142,7 +142,7 @@
      * @access  public
      */
     #[@test]
-    function setSize() {
+    public function setSize() {
       $this->buffer->setSize(10);
       $this->assertEquals(10, $this->buffer->getSize());
     }
@@ -153,7 +153,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function illegalSize() {
+    public function illegalSize() {
       $this->buffer->setSize(0);
     }
   }

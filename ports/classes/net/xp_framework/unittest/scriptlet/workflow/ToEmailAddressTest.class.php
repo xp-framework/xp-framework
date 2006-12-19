@@ -25,7 +25,7 @@
      * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    function &caster() {
+    public function &caster() {
       return new ToEmailAddress();
     }
 
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function validEmailAdresses() {
+    public function validEmailAdresses() {
       foreach (array('xp@php3.de', 'xp-cvs@php3.de') as $email) {
         $this->assertEquals(new InternetAddress($email), $this->castValue($email));
       }
@@ -47,7 +47,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function stringWithoutAt() {
+    public function stringWithoutAt() {
       $this->castValue('FOO');
     }
 
@@ -57,7 +57,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function emptyInput() {
+    public function emptyInput() {
       $this->castValue('');
     }
   }

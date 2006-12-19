@@ -13,7 +13,7 @@
    * @purpose  Java servlet integration
    */
   class AjpRequest extends HttpRequest {
-    var
+    public
       $env= array();
       
     /**
@@ -23,7 +23,7 @@
      * @param   string str string to be encoded
      * @return  string
      */
-    function _encode($str) {
+    public function _encode($str) {
       if (NULL === $str) return '\xff\xff';
       $l= strlen($str);
       return chr(($l >> 8) & 0xFF).chr($l & 0xff).$str;
@@ -35,7 +35,7 @@
      * @access  public
      * @param   array env
      */
-    function setEnvironment($env) {
+    public function setEnvironment($env) {
       $this->env= $env;
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function getRequestString() {
+    public function getRequestString() {
       static $methods= array(
         'OPTIONS'              => 0x0001,
         'GET'                  => 0x0002,
@@ -85,7 +85,7 @@
       $servlet= substr($path, $p+ 1);
       $zone= substr($path, 0, $p);
 
-      if (is_a($this->parameters, 'RequestData')) {
+      if (is('RequestData', $this->parameters)) {
         $query= "\x00".$this->parameters->getData();
       } else {
         $query= '';
@@ -127,10 +127,10 @@
           
           // Headers
           foreach ($this->headers as $k => $v) {
-            $name= is_a($v, 'Header') ? $v->getName() : $k;
+            $name= is('Header', $v) ? $v->getName() : $k;
             $idx= strtolower($name);
             $p.= isset($headermap[$idx]) ? $headermap[$idx] : $this->_encode($name);
-            $p.= $this->_encode(is_a($v, 'Header') ? $v->getValueRepresentation() : $v);
+            $p.= $this->_encode(is('Header', $v) ? $v->getValueRepresentation() : $v);
           }
           $p.= "\xFF";
           
@@ -178,7 +178,7 @@
           
           // Headers
           foreach ($this->headers as $k => $v) {
-            $p.= "\x03".(is_a($v, 'Header') 
+            $p.= "\x03".(is('Header', $v) 
               ? $this->_encode($v->getName()).$this->_encode($v->getValue())
               : $this->_encode($k).$this->_encode($v)
             );

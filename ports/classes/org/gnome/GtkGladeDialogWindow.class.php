@@ -12,7 +12,7 @@
    * @purpose  Base class
    */
   class GtkGladeDialogWindow extends GtkGladeApplication {
-    var
+    public
       $initialized  = FALSE;
 
     /**
@@ -22,7 +22,7 @@
      * @param   string gladefile
      * @param   string windowname
      */
-    function __construct($gladefile, $windowname) {
+    public function __construct($gladefile, $windowname) {
       parent::__construct($p= NULL, $gladefile, $windowname);
     }
       
@@ -31,7 +31,7 @@
      *
      * @access  protected
      */
-    function create() {
+    public function create() {
       parent::create();
       $this->window->connect('delete-event', array(&$this, 'destroy'));
     }
@@ -42,7 +42,7 @@
      * @access  public
      * @param   bool modal
      */
-    function setModal($modal) {
+    public function setModal($modal) {
       $this->window->set_modal($modal);
     }
     
@@ -52,11 +52,11 @@
      * @access  public
      * @return  bool
      */
-    function show() {
+    public function show() {
       if (!$this->initialized) {
-        try(); {
+        try {
           $this->init();
-        } if (catch('GuiException', $e)) {
+        } catch (GuiException $e) {
           $this->cat->error($e->getStackTrace());
           return FALSE;
         }
@@ -71,7 +71,7 @@
      *
      * @access  public
      */
-    function close() {
+    public function close() {
       $this->window->hide_all();
       if ($this->initialized) Gtk::main_quit();
     }
@@ -81,7 +81,7 @@
      *
      * @access  public
      */       
-    function destroy() {
+    public function destroy() {
       $this->close();
       return TRUE;
     }

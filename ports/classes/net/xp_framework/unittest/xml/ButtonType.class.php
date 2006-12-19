@@ -12,7 +12,7 @@
    * @purpose  Test class
    */
   class ButtonType extends Object {
-    var
+    public
       $id       = '',
       $caption  = '';
 
@@ -24,7 +24,7 @@
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -35,7 +35,7 @@
      * @return  string id
      */
     #[@xmlfactory(element= '@id')]
-    function getId() {
+    public function getId() {
       return $this->id;
     }
 
@@ -46,7 +46,7 @@
      * @param   string caption
      */
     #[@xmlmapping(element= '.')]
-    function setCaption($caption) {
+    public function setCaption($caption) {
       $this->caption= $caption;
     }
 
@@ -57,7 +57,7 @@
      * @param   string caption
      */
     #[@xmlfactory(element= '.')]
-    function getCaption() {
+    public function getCaption() {
       return $this->caption;
     }  
   }

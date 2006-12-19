@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function testWrite() {
-      $s= &new Stream();
+    public function testWrite() {
+      $s= new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $this->assertEquals($s->write('Foo'), 3);
       $this->assertEquals($s->buffer, 'Foo');
@@ -37,8 +37,8 @@
      * @access  public
      */
     #[@test]
-    function testRead() {
-      $s= &new Stream();
+    public function testRead() {
+      $s= new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $s->writeLine('Pellentesque sapien enim, pellentesque sed.');
       $s->writeLine('Sed et tortor suscipit velit.');
@@ -66,8 +66,8 @@
      * @access  public
      */
     #[@test]
-    function testOverwrite() {
-      $s= &new Stream();
+    public function testOverwrite() {
+      $s= new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $s->writeLine('Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur aliquam.');
       $s->seek(20);
@@ -84,8 +84,8 @@
      * @access  public
      */
     #[@test]
-    function testSeekTell() {
-      $s= &new Stream();
+    public function testSeekTell() {
+      $s= new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $this->assertEquals($s->tell(), 0, 'wrong start position');
       $this->assertEquals($s->size(), 0, 'wrong initial size');
@@ -101,8 +101,8 @@
      * @access  public
      */
     #[@test]
-    function testTruncate() {
-      $s= &new Stream();
+    public function testTruncate() {
+      $s= new Stream();
       $s->open(STREAM_MODE_READWRITE);
       $s->write('This is a beautiful example stream.');
       
@@ -123,8 +123,8 @@
      * @access  public
      */
     #[@test]
-    function positionAfterReOpen() {
-      $s= &new Stream();
+    public function positionAfterReOpen() {
+      $s= new Stream();
       $s->open(STREAM_MODE_WRITE);
       $s->write('GIF89a');
       $s->close();

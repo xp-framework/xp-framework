@@ -45,7 +45,7 @@
    * @see      xp://org.webdav.WebdavScriptlet#doLock
    */
   class WebdavLockRequest extends WebdavScriptletRequest {
-    var
+    public
       $properties=  array();
       
     
@@ -55,7 +55,7 @@
      * @access  public
      * @param   string name
      */
-    function registerLock(
+    public function registerLock(
       $owner,
       $lktype,
       $lkscope,
@@ -64,7 +64,7 @@
       $timeout,
       $depth) {
 
-      with ($lockprop= &new WebdavLock($filename)); {
+      with ($lockprop= new WebdavLock($filename)); {
         $lockprop->setOwner($owner);
         $lockprop->setLockType($lktype);
         $lockprop->setLockScope($lkscope);
@@ -82,7 +82,7 @@
      * @access  public
      * @return  &string[] properties
      */
-    function &getProperties() {
+    public function &getProperties() {
       return $this->properties;
     }
 
@@ -92,7 +92,7 @@
      * @access public
      * @param  string data The data
      */
-    function setData(&$data) {    
+    public function setData(&$data) {    
       parent::setData($data);
       
       // locktype

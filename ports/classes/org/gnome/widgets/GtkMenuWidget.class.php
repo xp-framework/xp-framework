@@ -14,7 +14,7 @@
    * @purpose  Wrapper for GtkMenu
    */
   class GtkMenuWidget extends Object {
-    var
+    public
       $menu   = NULL;
     
     /**
@@ -22,8 +22,8 @@
      *
      * @access  public
      */
-    function __construct() {
-      $this->menu= &new GtkMenu();
+    public function __construct() {
+      $this->menu= new GtkMenu();
     }
 
     /**
@@ -34,8 +34,8 @@
      * @param   string callback
      * @return  &GtkMenuItem
      */    
-    function &addMenuItem($string, $callback) {
-      $item= &new GtkMenuItem ($string);
+    public function &addMenuItem($string, $callback) {
+      $item= new GtkMenuItem ($string);
       $this->menu->append ($item);
       $item->connect ('button_press_event', $callback);
       return $item;
@@ -47,7 +47,7 @@
      * @access  public
      * @return  &GtkMenuItem
      */
-    function &addSeparator() {
+    public function &addSeparator() {
       $s= &$this->addMenuItem ('', NULL);
       $s->set_sensitive (FALSE);
       return $s;
@@ -60,7 +60,7 @@
      * @param   int button which button to click
      * @param   int time events time
      */    
-    function show($button= MENU_WANT_LEFTCLICK, $time= 0) {
+    public function show($button= MENU_WANT_LEFTCLICK, $time= 0) {
       $this->menu->show_all();
 
       $this->menu->popup (

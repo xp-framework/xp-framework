@@ -5,7 +5,7 @@
  */
  
   uses(
-    'rdbms.DriverManager', 
+    'rdbms.DriverManager',
     'unittest.TestCase'
   );
 
@@ -16,7 +16,7 @@
    * @purpose   Unit Test
    */
   class TokenizerTest extends TestCase {
-    var
+    public
       $conn = array();
       
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       parent::__construct($name);
       $this->conn['sybase']= &DriverManager::getConnection('sybase://localhost:1999/');
       $this->conn['mysql']= &DriverManager::getConnection('mysql://localhost/');
@@ -38,7 +38,7 @@
      * @access  public
      */
     #[@test]
-    function testPercentToken() {
+    public function testPercentToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select * from test where name like "%.de"',
         $value->prepare('select * from test where name like "%%.de"', 1),
@@ -52,7 +52,7 @@
      * @access  public
      */
     #[@test]
-    function testUnknownToken() {
+    public function testUnknownToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select * from test where name like "%X"',
         $value->prepare('select * from test where name like "%X"', 1),
@@ -66,7 +66,7 @@
      * @access  public
      */
     #[@test]
-    function testIntegerToken() {
+    public function testIntegerToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 1 as intval',
         $value->prepare('select %d as intval', 1),
@@ -80,7 +80,7 @@
      * @access  public
      */
     #[@test]
-    function testFloatToken() {
+    public function testFloatToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 6.1 as floatval',
         $value->prepare('select %f as floatval', 6.1),
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function testStringToken() {
+    public function testStringToken() {
       static $expect= array(
         'sybase'  => 'select """Hello"", Tom\'s friend said" as strval',
         'mysql'   => 'select "\"Hello\", Tom\'s friend said" as strval',
@@ -115,7 +115,7 @@
      * @access  public
      */
     #[@test]
-    function testBackslash() {
+    public function testBackslash() {
       static $expect= array(
         'sybase'  => 'select "Hello \\ " as strval',    // one backslash
         'mysql'   => 'select "Hello \\\\ " as strval',  // two backslashes
@@ -136,7 +136,7 @@
      * @access  public
      */
     #[@test]
-    function testIntegerArrayToken() {
+    public function testIntegerArrayToken() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'select * from news where news_id in ()',
@@ -157,7 +157,7 @@
      * @access  public
      */
     #[@test]
-    function testLeadingToken() {
+    public function testLeadingToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 1',
         $value->prepare('%c', 'select 1'),
@@ -171,7 +171,7 @@
      * @access  public
      */
     #[@test]
-    function testRandomAccess() {
+    public function testRandomAccess() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select column from table',
         $value->prepare('select %2$c from %1$c', 'table', 'column'),
@@ -185,7 +185,7 @@
      * @access  public
      */
     #[@test]
-    function testPassNullValues() {
+    public function testPassNullValues() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select NULL from NULL',
         $value->prepare('select %2$c from %1$c', NULL, NULL),
@@ -200,7 +200,7 @@
      * @access  public
      */
     #[@test]
-    function testAccessNonexistant() {
+    public function testAccessNonexistant() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'NULL',
         $value->prepare('%2$c', NULL),
@@ -214,7 +214,7 @@
      * @access  public
      */
     #[@test]
-    function testPercentWithinString() {
+    public function testPercentWithinString() {
       static $expect= array(
         'sybase'  => 'insert into table values ("value", "str%&ing", "value")',
         'mysql'   => 'insert into table values ("value", "str%&ing", "value")',
@@ -235,7 +235,7 @@
      * @access  public
      */
     #[@test]
-    function testHugeIntegerNumber() {
+    public function testHugeIntegerNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',
@@ -267,7 +267,7 @@
      * @access  public
      */
     #[@test]
-    function testHugeFloatNumber() {
+    public function testHugeFloatNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',
@@ -298,7 +298,7 @@
      * @access  public
      */
     #[@test]
-    function testEmptyStringAsNumber() {
+    public function testEmptyStringAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',
@@ -314,7 +314,7 @@
      * @access  public
      */
     #[@test]
-    function testDashAsNumber() {
+    public function testDashAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',
@@ -330,7 +330,7 @@
      * @access  public
      */
     #[@test]
-    function testDotAsNumber() {
+    public function testDotAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',
@@ -346,7 +346,7 @@
      * @access  public
      */
     #[@test]
-    function testPlusAsNumber() {
+    public function testPlusAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'NULL',

@@ -16,7 +16,7 @@
    * @purpose  purpose
    */
   class BootstrapTest extends TestCase {
-    var
+    public
       $sandbox    = NULL;
       
     /**
@@ -24,12 +24,12 @@
      *
      * @access  public
      */
-    function setUp() {
-      if (!isset($_SERVER['_'])) return throw(new PrerequisitesNotMetError(
+    public function setUp() {
+      if (!isset($_SERVER['_'])) throw(new PrerequisitesNotMetError(
         'This test can only be run in a non-web environment'
       ));
       
-      $this->sandbox= &new SandboxSourceRunner();
+      $this->sandbox= new SandboxSourceRunner();
     }
   
     /**
@@ -39,7 +39,7 @@
      * @param   int code expected exitcode
      * @param   string source sourcecode to execute
      */
-    function assertExitCode($code, $source) {
+    public function assertExitCode($code, $source) {
       $this->assertEquals($code, $this->sandbox->run($source));
     }
     
@@ -49,7 +49,7 @@
      * @access  public
      */
     #[@test]
-    function emptyBootstrap() {
+    public function emptyBootstrap() {
       $this->assertExitcode(0, 'require("lang.base.php");');
     }
     
@@ -59,7 +59,7 @@
      * @access  public
      */
     #[@test]
-    function useOfExistingFile() {
+    public function useOfExistingFile() {
       $this->assertExitcode(0, 'require("lang.base.php"); uses("'.$this->getClassName().'");');
     }    
     
@@ -69,7 +69,7 @@
      * @access  public
      */
     #[@test]
-    function useOfNonexistingFile() {
+    public function useOfNonexistingFile() {
       $this->assertExitcode(255, 'require("lang.base.php"); uses("does.not.exist");');
     }
     
@@ -79,7 +79,7 @@
      * @access  public
      */
     #[@test]
-    function recursiveInclusion() {
+    public function recursiveInclusion() {
       $this->assertExitcode(123, '
         require("lang.base.php"); 
         uses("net.xp_framework.unittest.bootstrap.A");
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test, @ignore('Broken, see bug #19')]
-    function recursiveInclusionWithTicks() {
+    public function recursiveInclusionWithTicks() {
       $this->assertExitcode(123, '
         declare(ticks=1);
         require("lang.base.php");

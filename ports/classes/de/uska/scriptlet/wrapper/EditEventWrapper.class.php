@@ -11,7 +11,7 @@
     'scriptlet.xml.workflow.casters.ToInteger',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
     'scriptlet.xml.workflow.checkers.LengthChecker',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'    
+    'scriptlet.xml.workflow.checkers.RegexpChecker'
   );
 
   /**
@@ -28,7 +28,7 @@
      *
      * @access  public
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'event_id',
         OCCURRENCE_PASSBEHIND | OCCURRENCE_OPTIONAL,
@@ -133,7 +133,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_id() {
+    public function getEvent_id() {
       return $this->getValue('event_id');
     }
 
@@ -143,7 +143,7 @@
      * @access  public
      * @return  int
      */
-    function getTeam() {
+    public function getTeam() {
       return $this->getValue('team');
     }
 
@@ -153,7 +153,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_type() {
+    public function getEvent_type() {
       return $this->getValue('event_type');
     }
 
@@ -163,7 +163,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->getValue('name');
     }
 
@@ -173,7 +173,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->getValue('description');
     }
 
@@ -183,7 +183,7 @@
      * @access  public
      * @return  string
      */
-    function getTarget_date() {
+    public function getTarget_date() {
       return $this->getValue('target_date');
     }
 
@@ -193,7 +193,7 @@
      * @access  public
      * @return  string
      */
-    function getTarget_time() {
+    public function getTarget_time() {
       return $this->getValue('target_time');
     }
 
@@ -203,7 +203,7 @@
      * @access  public
      * @return  string
      */
-    function getDeadline_date() {
+    public function getDeadline_date() {
       return $this->getValue('deadline_date');
     }
 
@@ -213,7 +213,7 @@
      * @access  public
      * @return  string
      */
-    function getDeadline_time() {
+    public function getDeadline_time() {
       return $this->getValue('deadline_time');
     }
 
@@ -223,7 +223,7 @@
      * @access  public
      * @return  int
      */
-    function getMax() {
+    public function getMax() {
       return $this->getValue('max');
     }
 
@@ -233,7 +233,7 @@
      * @access  public
      * @return  int
      */
-    function getReq() {
+    public function getReq() {
       return $this->getValue('req');
     }
 
@@ -243,7 +243,7 @@
      * @access  public
      * @return  boolean
      */
-    function getGuests() {
+    public function getGuests() {
       return $this->getValue('guests');
     }
 

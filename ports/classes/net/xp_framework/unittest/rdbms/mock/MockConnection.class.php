@@ -13,14 +13,14 @@
    * @purpose  Mock object
    */
   class MockConnection extends DBConnection {
-    var
+    public
       $affectedRows   = 1,
       $identityValue  = 1,
       $resultSet      = NULL,
       $queryError     = array(),
       $connectError   = NULL;
 
-    var
+    public
       $_connected     = FALSE;
 
     /**
@@ -29,9 +29,9 @@
      * @access  public
      * @param   &rdbms.DSN dsn
      */
-    function __construct(&$dsn) { 
+    public function __construct(&$dsn) { 
       parent::__construct($dsn);
-      $this->resultSet= &new MockResultSet();
+      $this->resultSet= new MockResultSet();
     }
 
     /**
@@ -40,7 +40,7 @@
      * @access  public
      * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
      */
-    function setResultSet(&$resultSet) {
+    public function setResultSet(&$resultSet) {
       $this->queryError= array();
       $this->resultSet= &$resultSet;
     }
@@ -51,7 +51,7 @@
      * @access  public
      * @return  &net.xp_framework.unittest.rdbms.mock.MockResultSet
      */
-    function &getResultSet() {
+    public function &getResultSet() {
       return $this->resultSet;
     }
 
@@ -62,7 +62,7 @@
      * @param   int errNo
      * @param   int errMsg
      */
-    function makeQueryFail($errNo, $errMsg) {
+    public function makeQueryFail($errNo, $errMsg) {
       $this->queryError= array($errNo, $errMsg);
     }
 
@@ -71,7 +71,7 @@
      *
      * @access  public
      */
-    function letServerDisconnect() {
+    public function letServerDisconnect() {
       $this->queryError= array(2013);
     }
 
@@ -81,7 +81,7 @@
      * @access  public
      * @param   int errMsg
      */
-    function makeConnectFail($errMsg) {
+    public function makeConnectFail($errMsg) {
       $this->connectError= $errMsg;
     }
 
@@ -91,7 +91,7 @@
      * @access  public
      * @param   mixed identityValue
      */
-    function setIdentityValue($identityValue) {
+    public function setIdentityValue($identityValue) {
       $this->identityValue= $identityValue;
     }
 
@@ -101,7 +101,7 @@
      * @access  public
      * @return  mixed
      */
-    function getIdentityValue() {
+    public function getIdentityValue() {
       return $this->identityValue;
     }
 
@@ -111,7 +111,7 @@
      * @access  public
      * @param   int affectedRows
      */
-    function setAffectedRows($affectedRows) {
+    public function setAffectedRows($affectedRows) {
       $this->affectedRows= $affectedRows;
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  int
      */
-    function getAffectedRows() {
+    public function getAffectedRows() {
       return $this->affectedRows;
     }
 
@@ -133,12 +133,12 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE) {
+    public function connect($reconnect= FALSE) {
       if ($this->_connected && !$reconnect) return TRUE;
       
       if ($this->connectError) {
         $this->_connected= FALSE;
-        return throw(new SQLConnectException($this->connectError, $this->dsn));
+        throw(new SQLConnectException($this->connectError, $this->dsn));
       }
       $this->_connected= TRUE;
       return TRUE;
@@ -150,7 +150,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       $this->_connected= FALSE;
       return TRUE;
     }
@@ -162,7 +162,7 @@
      * @param   string db name of database to select
      * @return  bool success
      */
-    function selectdb($db) { 
+    public function selectdb($db) { 
       return TRUE;
     }
 
@@ -173,7 +173,7 @@
      * @param   array args
      * @return  string
      */
-    function _prepare($args) {
+    public function _prepare($args) {
       $sql= $args[0];
       if (sizeof($args) <= 1) return $sql;
 
@@ -193,10 +193,10 @@
         }
 
         // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is_a($args[$ofs], 'Object')) {
+        } elseif (is('Generic', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];
@@ -227,7 +227,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() { 
+    public function prepare() { 
       $args= func_get_args();
       return $this->_prepare($args);    
     }
@@ -239,7 +239,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -255,7 +255,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { 
+    public function identity() { 
       return $this->identityValue;
     }
     
@@ -266,7 +266,7 @@
      * @param   mixed* args
      * @return  int number of affected rows
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -283,7 +283,7 @@
      * @param   mixed* args
      * @return  int number of affected rows
      */
-    function delete() {
+    public function delete() {
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -300,7 +300,7 @@
      * @param   mixed* args
      * @return  array rowsets
      */
-    function select() { 
+    public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -319,20 +319,20 @@
      * @param   mixed* args
      * @return  &rdbms.ResultSet
      */
-    function &query() { 
+    public function &query() { 
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
       if (!$this->_connected) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
-        try(); {
+        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        try {
           $c= $this->connect();
-        } if (catch('SQLException', $e)) {
-          return throw ($e);
+        } catch (SQLException $e) {
+          throw ($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
       }
 
       switch (sizeof($this->queryError)) {
@@ -343,7 +343,7 @@
         case 1: {   // letServerDisconnect() sets this
           $this->queryError= array();
           $this->_connected= FALSE;
-          return throw(new SQLConnectionClosedException(
+          throw(new SQLConnectionClosedException(
             'Statement failed: Read from server failed',
             $sql
           ));
@@ -352,7 +352,7 @@
         case 2: {   // makeQueryFail() sets this
           $error= $this->queryError;
           $this->queryError= array();       // Reset so next query succeeds again
-          return throw(new SQLStatementFailedException(
+          throw(new SQLStatementFailedException(
             'Statement failed: '.$error[1],
             $sql, 
             $error[0]
@@ -370,7 +370,7 @@
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    function &begin(&$transaction) {
+    public function &begin(&$transaction) {
       $transaction->db= &$this;
       return $transaction;
     }
@@ -382,7 +382,7 @@
      * @param   string name
      * @return  mixed state
      */
-    function transtate($name) { }
+    public function transtate($name) { }
     
     /**
      * Rollback a transaction
@@ -391,7 +391,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { }
+    public function rollback($name) { }
     
     /**
      * Commit a transaction
@@ -400,7 +400,7 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { }
+    public function commit($name) { }
   
   }
 ?>

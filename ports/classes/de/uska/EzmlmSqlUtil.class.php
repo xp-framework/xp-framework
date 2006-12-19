@@ -18,7 +18,7 @@
    * @purpose  Maintain mailing list subscriptions
    */
   class EzmlmSqlUtil extends Object {
-    var
+    public
       $db=          NULL,
       $database=    '',
       $mailinglist= '';
@@ -30,7 +30,7 @@
      * @param   string database
      * @param   string mailinglist
      */
-    function __construct($database, $mailinglist) {
+    public function __construct($database, $mailinglist) {
       $this->database= $database;
       $this->mailinglist= $mailinglist;
     }
@@ -41,7 +41,7 @@
      * @access  public
      * @param   &rdbms.mysql.MysqlConnection db
      */
-    function setConnection(&$db) {
+    public function setConnection(&$db) {
       $this->db= &$db;
     }
   
@@ -52,7 +52,7 @@
      * @param   string address
      * @return  bool
      */
-    function isSubscribed($address) {
+    public function isSubscribed($address) {
       $s= $this->db->select('
           1
         from
@@ -74,7 +74,7 @@
      * @access  public
      * @return  string[]
      */
-    function getSubscribers() {
+    public function getSubscribers() {
       $q= &$this->db->query('
         select
           address
@@ -96,7 +96,7 @@
      * @access  public
      * @param   string address
      */
-    function addSubscriber($address) {
+    public function addSubscriber($address) {
       $this->db->insert('
         into %c.%c (
           hash,
@@ -120,7 +120,7 @@
      * @param   string address
      * @return  int
      */
-    function removeSubscriber($address) {
+    public function removeSubscriber($address) {
       $cnt= $this->db->delete('
         from 
           %c.%c
@@ -142,7 +142,7 @@
      * @param   string to
      * @return  int count
      */
-    function alterAddress($from, $to) {
+    public function alterAddress($from, $to) {
       if (!$this->isSubscribed($from)) return FALSE;
       $cnt= $this->db->update('
         %c.%c
@@ -168,7 +168,7 @@
      * @param   string action
      * @param   string who
      */
-    function writeLog($addr, $from, $action, $who= EZMLM_WHO) {
+    public function writeLog($addr, $from, $action, $who= EZMLM_WHO) {
       $this->db->insert('
         %c.%c_slog (
           tai,

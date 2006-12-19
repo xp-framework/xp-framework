@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class HashSetTest extends TestCase {
-    var
+    public
       $set= NULL;
     
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->set= &new HashSet();
+    public function setUp() {
+      $this->set= new HashSet();
     }
         
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertTrue($this->set->isEmpty());
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function equalsClone() {
+    public function equalsClone() {
       $this->set->add(new String('green'));
       $this->assertTrue($this->set->equals(clone($this->set)));
     }
@@ -56,8 +56,8 @@
      * @access  public
      */
     #[@test]
-    function equalsOtherSetWithSameContents() {
-      $other= &new HashSet();
+    public function equalsOtherSetWithSameContents() {
+      $other= new HashSet();
       $this->set->add(new String('color'));
       $other->add(new String('color'));
       $this->assertTrue($this->set->equals($other));
@@ -69,8 +69,8 @@
      * @access  public
      */
     #[@test]
-    function doesNotEqualSetWithDifferentContents() {
-      $other= &new HashSet();
+    public function doesNotEqualSetWithDifferentContents() {
+      $other= new HashSet();
       $this->set->add(new String('blue'));
       $other->add(new String('yellow'));
       $this->assertFalse($this->set->equals($other));
@@ -82,7 +82,7 @@
      * @access  public
      */
     #[@test]
-    function add() {
+    public function add() {
       $this->set->add(new String('green'));
       $this->assertFalse($this->set->isEmpty());
       $this->assertEquals(1, $this->set->size());
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function addAll() {
+    public function addAll() {
       $array= array(new String('one'), new String('two'), new String('three'));
       $this->set->addAll($array);
       $this->assertFalse($this->set->isEmpty());
@@ -107,7 +107,7 @@
      * @access  public
      */
     #[@test]
-    function addAllUniques() {
+    public function addAllUniques() {
       $array= array(new String('one'), new String('one'), new String('two'));
       $this->set->addAll($array);
       $this->assertFalse($this->set->isEmpty());
@@ -121,7 +121,7 @@
      * @access  public
      */
     #[@test]
-    function addAllReturnsWhetherSetHasChanged() {
+    public function addAllReturnsWhetherSetHasChanged() {
       $array= array(new String('caffeine'), new String('nicotine'));
       $this->assertTrue($this->set->addAll($array));
       $this->assertFalse($this->set->addAll($array));
@@ -135,7 +135,7 @@
      * @access  public
      */
     #[@test]
-    function contains() {
+    public function contains() {
       $this->set->add(new String('key'));
       $this->assertTrue($this->set->contains(new String('key')));
       $this->assertFalse($this->set->contains(new String('non-existant-key')));
@@ -148,8 +148,8 @@
      * @access  public
      */
     #[@test]
-    function addSameValueTwice() {
-      $color= &new String('green');
+    public function addSameValueTwice() {
+      $color= new String('green');
       $this->assertTrue($this->set->add($color));
       $this->assertFalse($this->set->add($color));
     }
@@ -160,7 +160,7 @@
      * @access  public
      */
     #[@test]
-    function remove() {
+    public function remove() {
       $this->set->add(new String('key'));
       $this->assertTrue($this->set->remove(new String('key')));
       $this->assertTrue($this->set->isEmpty());
@@ -173,7 +173,7 @@
      * @access  public
      */
     #[@test]
-    function removeOnEmptySet() {
+    public function removeOnEmptySet() {
       $this->assertFalse($this->set->remove(new String('irrelevant-set-is-empty-anyway')));
     }
 
@@ -184,7 +184,7 @@
      * @access  public
      */
     #[@test]
-    function removeNonExistantObject() {
+    public function removeNonExistantObject() {
       $this->set->add(new String('key'));
       $this->assertFalse($this->set->remove(new String('non-existant-key')));
     }
@@ -195,7 +195,7 @@
      * @access  public
      */
     #[@test]
-    function clear() {
+    public function clear() {
       $this->set->add(new String('key'));
       $this->set->clear();
       $this->assertTrue($this->set->isEmpty());
@@ -207,8 +207,8 @@
      * @access  public
      */
     #[@test]
-    function toArray() {
-      $color= &new String('red');
+    public function toArray() {
+      $color= new String('red');
       $this->set->add($color);
       $this->assertEquals(array(&$color), $this->set->toArray());
     }
@@ -219,7 +219,7 @@
      * @access  public
      */
     #[@test]
-    function toArrayOnEmptySet() {
+    public function toArrayOnEmptySet() {
       $this->assertEquals(array(), $this->set->toArray());
     }
 
@@ -229,7 +229,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentation() {
+    public function stringRepresentation() {
       $this->set->add(new String('color'));
       $this->set->add(new String('price'));
       $this->assertEquals(
@@ -244,7 +244,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentationOfEmptySet() {
+    public function stringRepresentationOfEmptySet() {
       $this->assertEquals(
         'util.collections.HashSet[0] { }',
         $this->set->toString()

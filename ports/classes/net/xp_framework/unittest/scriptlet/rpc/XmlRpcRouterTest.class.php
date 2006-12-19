@@ -22,9 +22,9 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       xp::gc();
-      $this->router= &new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
+      $this->router= new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
@@ -40,7 +40,7 @@
      * @access  public
      */
     #[@test]
-    function basicPostRequest() {
+    public function basicPostRequest() {
       $this->router->init();
       $response= &$this->router->process();
       $this->assertEquals(200, $response->statusCode);
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
-    function basicGetRequest() {
+    public function basicGetRequest() {
       $this->router->setMockMethod(HTTP_GET);
       $this->router->init();
       $response= &$this->router->process();
@@ -68,7 +68,7 @@
      * @access  public
      */
     #[@test]
-    function callNonexistingClass() {
+    public function callNonexistingClass() {
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>ClassDoesNotExist.getImplementationName</methodName>
@@ -88,7 +88,7 @@
      * @access  public
      */
     #[@test]
-    function callNonexistingMethod() {
+    public function callNonexistingMethod() {
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>DummyRpcImplementation.methodDoesNotExist</methodName>
@@ -108,7 +108,7 @@
      * @access  public
      */
     #[@test]
-    function callNonWebmethodMethod() {
+    public function callNonWebmethodMethod() {
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>DummyRpcImplementation.methodExistsButIsNotAWebmethod</methodName>
@@ -128,7 +128,7 @@
      * @access  public
      */
     #[@test]
-    function callFailingMethod() {
+    public function callFailingMethod() {
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>DummyRpcImplementation.giveMeFault</methodName>
@@ -152,7 +152,7 @@
      * @access  public
      */
     #[@test]
-    function multipleParameters() {
+    public function multipleParameters() {
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>DummyRpcImplementation.checkMultipleParameters</methodName>

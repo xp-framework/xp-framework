@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaProfile extends DataSet {
-    var
+    public
       $userid             = 0,
       $login_name         = '',
       $cryptpassword      = NULL,
@@ -30,7 +30,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaProfile::getPeer()); {
         $peer->setTable('profiles');
         $peer->setConnection('bugzilla');
@@ -55,7 +55,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -67,7 +67,7 @@
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByUserid($userid) {
+    public function &getByUserid($userid) {
       $peer= &BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('userid', $userid, EQUAL))));
     }
@@ -80,7 +80,7 @@
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByLogin_name($login_name) {
+    public function &getByLogin_name($login_name) {
       $peer= &BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('login_name', $login_name, EQUAL))));
     }
@@ -93,7 +93,7 @@
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByPerson_id($person_id) {
+    public function &getByPerson_id($person_id) {
       $peer= &BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('person_id', $person_id, EQUAL))));
     }
@@ -104,7 +104,7 @@
      * @access  public
      * @return  int
      */
-    function getUserid() {
+    public function getUserid() {
       return $this->userid;
     }
       
@@ -115,7 +115,7 @@
      * @param   int userid
      * @return  int the previous value
      */
-    function setUserid($userid) {
+    public function setUserid($userid) {
       return $this->_change('userid', $userid);
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      * @return  string
      */
-    function getLogin_name() {
+    public function getLogin_name() {
       return $this->login_name;
     }
       
@@ -136,7 +136,7 @@
      * @param   string login_name
      * @return  string the previous value
      */
-    function setLogin_name($login_name) {
+    public function setLogin_name($login_name) {
       return $this->_change('login_name', $login_name);
     }
 
@@ -146,7 +146,7 @@
      * @access  public
      * @return  string
      */
-    function getCryptpassword() {
+    public function getCryptpassword() {
       return $this->cryptpassword;
     }
       
@@ -157,7 +157,7 @@
      * @param   string cryptpassword
      * @return  string the previous value
      */
-    function setCryptpassword($cryptpassword) {
+    public function setCryptpassword($cryptpassword) {
       return $this->_change('cryptpassword', $cryptpassword);
     }
 
@@ -167,7 +167,7 @@
      * @access  public
      * @return  string
      */
-    function getRealname() {
+    public function getRealname() {
       return $this->realname;
     }
       
@@ -178,7 +178,7 @@
      * @param   string realname
      * @return  string the previous value
      */
-    function setRealname($realname) {
+    public function setRealname($realname) {
       return $this->_change('realname', $realname);
     }
 
@@ -188,7 +188,7 @@
      * @access  public
      * @return  string
      */
-    function getDisabledtext() {
+    public function getDisabledtext() {
       return $this->disabledtext;
     }
       
@@ -199,7 +199,7 @@
      * @param   string disabledtext
      * @return  string the previous value
      */
-    function setDisabledtext($disabledtext) {
+    public function setDisabledtext($disabledtext) {
       return $this->_change('disabledtext', $disabledtext);
     }
 
@@ -209,7 +209,7 @@
      * @access  public
      * @return  int
      */
-    function getMybugslink() {
+    public function getMybugslink() {
       return $this->mybugslink;
     }
       
@@ -220,7 +220,7 @@
      * @param   int mybugslink
      * @return  int the previous value
      */
-    function setMybugslink($mybugslink) {
+    public function setMybugslink($mybugslink) {
       return $this->_change('mybugslink', $mybugslink);
     }
 
@@ -230,7 +230,7 @@
      * @access  public
      * @return  int
      */
-    function getPerson_id() {
+    public function getPerson_id() {
       return $this->person_id;
     }
       
@@ -241,7 +241,7 @@
      * @param   int person_id
      * @return  int the previous value
      */
-    function setPerson_id($person_id) {
+    public function setPerson_id($person_id) {
       return $this->_change('person_id', $person_id);
     }
 
@@ -251,7 +251,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getRefreshed_when() {
+    public function &getRefreshed_when() {
       return $this->refreshed_when;
     }
       
@@ -262,7 +262,7 @@
      * @param   &util.Date refreshed_when
      * @return  &util.Date the previous value
      */
-    function &setRefreshed_when(&$refreshed_when) {
+    public function &setRefreshed_when(&$refreshed_when) {
       return $this->_change('refreshed_when', $refreshed_when);
     }
 
@@ -273,7 +273,7 @@
      * @param   string extern_id
      * @return  string the previous value
      */
-    function setExtern_id($extern_id) {
+    public function setExtern_id($extern_id) {
       return $this->_change('extern_id', $extern_id);
     }
 
@@ -283,7 +283,7 @@
      * @access  public
      * @return  string
      */
-    function getExtern_id() {
+    public function getExtern_id() {
       return $this->extern_id;
     }
   }

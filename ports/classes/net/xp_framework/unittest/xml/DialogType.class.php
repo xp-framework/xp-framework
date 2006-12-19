@@ -15,7 +15,7 @@
    * @purpose  Test class
    */
   class DialogType extends Object {
-    var
+    public
       $id       = '',
       $caption  = '',
       $buttons  = NULL;
@@ -25,7 +25,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->buttons= &Collection::forClass('net.xp_framework.unittest.xml.ButtonType');
     }
 
@@ -36,7 +36,7 @@
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -47,7 +47,7 @@
      * @return  string id
      */
     #[@xmlfactory(element= '@id')]
-    function getId() {
+    public function getId() {
       return $this->id;
     }
 
@@ -58,7 +58,7 @@
      * @param   string caption
      */
     #[@xmlmapping(element= 'caption')]
-    function setCaption($caption) {
+    public function setCaption($caption) {
       $this->caption= $caption;
     }
 
@@ -69,7 +69,7 @@
      * @param   string caption
      */
     #[@xmlfactory(element= 'caption')]
-    function getCaption() {
+    public function getCaption() {
       return $this->caption;
     }
     
@@ -81,7 +81,7 @@
      * @return  &net.xp_framework.unittest.xml.ButtonType the added button
      */
     #[@xmlmapping(element= 'button', class= 'net.xp_framework.unittest.xml.ButtonType')]
-    function &addButton(&$button) {
+    public function &addButton(&$button) {
       $this->buttons->add($button);
       return $button;
     }
@@ -92,7 +92,7 @@
      * @access  public
      * @return  int
      */
-    function numButtons() {
+    public function numButtons() {
       return $this->buttons->size();
     }
 
@@ -103,7 +103,7 @@
      * @param   int
      * @return  &net.xp_framework.unittest.xml.ButtonType 
      */
-    function &buttonAt($offset) {
+    public function &buttonAt($offset) {
       return $this->buttons->get($offset);
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @return  int
      */
-    function hasButtons() {
+    public function hasButtons() {
       return !$this->buttons->isEmpty();
     }
     
@@ -124,7 +124,7 @@
      * @return  &lang.Collection<net.xp_framework.unittest.xml.ButtonType>
      */
     #[@xmlfactory(element= 'button')]
-    function getButtons() {
+    public function getButtons() {
       return $this->buttons;
     }
   }

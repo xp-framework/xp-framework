@@ -27,7 +27,7 @@
      * @access  protected
      * @return  string
      */
-    function driverName() { }
+    public function driverName() { }
     
     /**
      * Tests driver is available in current PHP setup
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function driverAvailable() {
+    public function driverAvailable() {
       extract(parse_url($this->driverName()));
       switch ($scheme) {
         case 'ext': {
@@ -49,7 +49,7 @@
         }
 
         default: {
-          return throw(new PrerequisitesNotMetError('Test error, unknown scheme "'.$scheme.'"'));
+          throw(new PrerequisitesNotMetError('Test error, unknown scheme "'.$scheme.'"'));
         }
       }
       

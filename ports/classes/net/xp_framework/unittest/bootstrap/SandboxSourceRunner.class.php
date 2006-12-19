@@ -13,7 +13,7 @@
    * @purpose  Runs sourcecode in a sandbox
    */
   class SandboxSourceRunner extends Object {
-    var
+    public
       $executable   = '',
       $settings     = array(),
       $source       = '',
@@ -27,9 +27,9 @@
      * @access  public
      * @throws  lang.IllegalStateException if sapi does not support forking
      */
-    function __construct() {
+    public function __construct() {
       if (!isset($_SERVER['_'])) {
-        return throw(new IllegalStateException('Sandbox not supported in sapi '.php_sapi_name()));
+        throw(new IllegalStateException('Sandbox not supported in sapi '.php_sapi_name()));
       }
       
       $this->setExecutable(preg_replace('#^/cygdrive/(\w)/#', '$1:/', $_SERVER['_']));
@@ -42,7 +42,7 @@
      * @access  public
      * @param   string executable
      */
-    function setExecutable($executable) {
+    public function setExecutable($executable) {
       $this->executable= $executable;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function getExecutable() {
+    public function getExecutable() {
       return $this->executable;
     }
 
@@ -63,7 +63,7 @@
      * @param   string key
      * @param   string value
      */
-    function setSetting($key, $value) {
+    public function setSetting($key, $value) {
       $this->settings[$key]= $value;
     }
     
@@ -74,7 +74,7 @@
      * @param   string key
      * @return  string
      */
-    function getSetting($key) {
+    public function getSetting($key) {
       return $this->settings[$key];
     }    
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getSettings() {
+    public function getSettings() {
       return $this->settings;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @param   string source
      */
-    function setSource($source) {
+    public function setSource($source) {
       $this->source= $source;
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @return  string
      */
-    function getSource() {
+    public function getSource() {
       return $this->source;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @param   string stdout
      */
-    function setStdout($stdout) {
+    public function setStdout($stdout) {
       $this->stdout= $stdout;
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @return  string
      */
-    function getStdout() {
+    public function getStdout() {
       return $this->stdout;
     }
 
@@ -134,7 +134,7 @@
      * @access  public
      * @param   string stderr
      */
-    function setStderr($stderr) {
+    public function setStderr($stderr) {
       $this->stderr= $stderr;
     }
 
@@ -144,7 +144,7 @@
      * @access  public
      * @return  string
      */
-    function getStderr() {
+    public function getStderr() {
       return $this->stderr;
     }
 
@@ -154,7 +154,7 @@
      * @access  public
      * @param   string exitcode
      */
-    function setExitcode($exitcode) {
+    public function setExitcode($exitcode) {
       $this->exitcode= $exitcode;
     }
 
@@ -164,7 +164,7 @@
      * @access  public
      * @return  string
      */
-    function getExitcode() {
+    public function getExitcode() {
       return $this->exitcode;
     }
 
@@ -175,14 +175,14 @@
      * @param   string source
      * @return  int exitcode
      */
-    function run($source) {
-      try(); {
+    public function run($source) {
+      try {
         $cmdline= $this->getExecutable();
         foreach ($this->settings as $key => $value) {
           $cmdline.= sprintf(' -d%s=%s', $key, $value);
         }
         
-        $p= &new Process($cmdline);
+        $p= new Process($cmdline);
         $p->in->write('<?php '.$source.'?>');
         $p->in->close();
         
@@ -197,8 +197,8 @@
         }
 
         $p->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return $this->exitcode= $p->exitValue();

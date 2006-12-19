@@ -26,7 +26,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       // FIXME: Put into ini-file?
       static $types= array(
         'training'    => 1,
@@ -36,7 +36,7 @@
       );
       parent::process($request, $response, $context);
       
-      try(); {
+      try {
         $team= FALSE;
         $type= FALSE;
         $all=  FALSE;
@@ -78,8 +78,8 @@
           ($month ? $this->db->prepare('and month(e.target_date)= %d', $month) : ''),
           ($day  ? $this->db->prepare('and day(e.target_date)= %d', $day) : '')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $events= &$response->addFormResult(new Node('events', NULL, array(

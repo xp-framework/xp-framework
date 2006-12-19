@@ -12,7 +12,7 @@
    * @purpose  Mock Object
    */
   class MockResultSet extends ResultSet {
-    var
+    public
       $offset= 0;
 
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   array<string, mixed>[] data
      */
-    function __construct($data= array()) {
+    public function __construct($data= array()) {
       parent::__construct($data, NULL);
     }
 
@@ -33,9 +33,9 @@
      * @return  bool success
      * @throws  rdbms.SQLException
      */
-    function seek($offset) {
+    public function seek($offset) {
       if ($offset < 0 || $offset >= sizeof($this->handle)) {
-        return throw(new SQLException('Seek to position #'.$offset.' failed'));
+        throw(new SQLException('Seek to position #'.$offset.' failed'));
       }
       $this->offset= $offset;
       return TRUE;
@@ -50,7 +50,7 @@
      * @param   string field default NULL
      * @return  mixed
      */
-    function next($field= NULL) {
+    public function next($field= NULL) {
       if ($this->offset >= sizeof($this->handle)) return FALSE;
       $this->offset++;
       
@@ -66,7 +66,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       return TRUE;
     }  
   }

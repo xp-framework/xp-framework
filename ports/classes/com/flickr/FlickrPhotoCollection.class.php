@@ -15,14 +15,14 @@
    * @purpose  Collection of photos
    */
   class FlickrPhotoCollection extends Object {
-    var
+    public
       $photos   = NULL,
       $page     = 1,
       $pages    = 1,
       $perPage  = 1,
       $total    = 1;
     
-    var
+    public
       $_client   = NULL;
 
     /**
@@ -31,7 +31,7 @@
      * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    function setClient(&$client) {
+    public function setClient(&$client) {
       $this->_client= &$client;
       for ($i= 0; $i < $this->photos->size(); $i++) {
         $p= &$this->photos->get($i);
@@ -44,7 +44,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->photos= &Collection::forClass('com.flickr.FlickrPhoto');
     }
     
@@ -55,7 +55,7 @@
      * @param   &lang.Object photos
      */
     #[@xmlmapping(element= 'photo', class= 'com.flickr.FlickrPhoto')]
-    function addPhoto(&$photo) {
+    public function addPhoto(&$photo) {
       $this->photos->add($photo);
       return $photo;
     }
@@ -66,7 +66,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getPhotos() {
+    public function &getPhotos() {
       return $this->photos;
     }
 
@@ -77,7 +77,7 @@
      * @param   mixed page
      */
     #[@xmlmapping(element= '@page')]
-    function setPage($page) {
+    public function setPage($page) {
       $this->page= $page;
     }
 
@@ -87,7 +87,7 @@
      * @access  public
      * @return  mixed
      */
-    function getPage() {
+    public function getPage() {
       return $this->page;
     }
 
@@ -98,7 +98,7 @@
      * @param   mixed pages
      */
     #[@xmlmapping(element= '@pages')]
-    function setPages($pages) {
+    public function setPages($pages) {
       $this->pages= $pages;
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      * @return  mixed
      */
-    function getPages() {
+    public function getPages() {
       return $this->pages;
     }
 
@@ -119,7 +119,7 @@
      * @param   mixed perPage
      */
     #[@xmlmapping(element= '@perpage')]
-    function setPerPage($perPage) {
+    public function setPerPage($perPage) {
       $this->perPage= $perPage;
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  mixed
      */
-    function getPerPage() {
+    public function getPerPage() {
       return $this->perPage;
     }
 
@@ -140,7 +140,7 @@
      * @param   mixed total
      */
     #[@xmlmapping(element= '@total')]
-    function setTotal($total) {
+    public function setTotal($total) {
       $this->total= $total;
     }
 
@@ -150,7 +150,7 @@
      * @access  public
      * @return  mixed
      */
-    function getTotal() {
+    public function getTotal() {
       return $this->total;
     }
   }

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.AbstractXMLScriptlet', 
+    'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'xml.DomXSLProcessor'
   );
 
@@ -23,7 +23,7 @@
      * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    function &_processor() {
+    public function &_processor() {
       return new DomXSLProcessor();
     }
   }

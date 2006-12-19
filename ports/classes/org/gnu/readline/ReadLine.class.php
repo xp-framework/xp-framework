@@ -60,7 +60,7 @@
      * @param   mixed* arg
      * @return  &mixed arg
      */
-    function &registry() {
+    public function &registry() {
       static $static= array();
       
       switch (func_num_args()) {
@@ -77,9 +77,9 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException
      */
-    function setCompleter(&$completer) {
+    public function setCompleter(&$completer) {
       if (!is('org.gnu.readline.Completer', $completer)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Argument is expected to implement org.gnu.readline.Completer'
         ));
       }
@@ -95,7 +95,7 @@
      * @param   bool add default TRUE whether to add the read line to the history
      * @return  string line or FALSE if ^D was pressed
      */
-    function readLn($prompt= '', $add= TRUE) {
+    public function readLn($prompt= '', $add= TRUE) {
       if (($l= readline($prompt)) && $add) {
         ReadLine::addHistory($l);
       }
@@ -109,7 +109,7 @@
      * @param   const name e.g. RL_LIBRARY_VERSION
      * @return  string
      */
-    function getVar($name) {
+    public function getVar($name) {
       return readline_info($name);
     }
 
@@ -120,7 +120,7 @@
      * @param   string l
      * @return  bool success
      */
-    function addHistory($l) {
+    public function addHistory($l) {
       return readline_add_history($l);
     }
 
@@ -130,7 +130,7 @@
      * @access  public
      * @return  bool success
      */
-    function clearHistory() {
+    public function clearHistory() {
       return readline_clear_history();
     }
     
@@ -140,7 +140,7 @@
      * @access  public
      * @return  string[]
      */
-    function getHistory() {
+    public function getHistory() {
       return readline_list_history();
     }
 
@@ -152,9 +152,9 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function readHistoryFile(&$file) {
+    public function readHistoryFile(&$file) {
       if (FALSE === readline_read_history($file->getURI())) {
-        return throw(new IOException('Could not read history from '.$file->getURI()));
+        throw(new IOException('Could not read history from '.$file->getURI()));
       }
       return TRUE;
     }
@@ -167,16 +167,14 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function writeHistoryFile(&$file) {
+    public function writeHistoryFile(&$file) {
       if (FALSE === readline_write_history($file->getURI())) {
-        return throw(new IOException('Could not write history to '.$file->getURI()));
+        throw(new IOException('Could not write history to '.$file->getURI()));
       }
       return TRUE;
     }
-  }
   
-  {
-    function __complete($string, $offset, $length) {
+    public function __complete($string, $offset, $length) {
       return call_user_func(
         array(ReadLine::registry('completer'), 'complete'), 
         $string, $offset, $length

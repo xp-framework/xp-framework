@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function testSimpleAddition() {
-      $date= &new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
+    public function testSimpleAddition() {
+      $date= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
       
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 30, 1, 1, 2000)),
@@ -58,8 +58,8 @@
      * @access  public
      */
     #[@test]
-    function testSimpleSubstraction() {
-      $date= &new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
+    public function testSimpleSubstraction() {
+      $date= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
       
       $this->assertEquals(
         new Date(Date::mktime(12, 14, 52, 1, 1, 2000)),
@@ -93,8 +93,8 @@
      * @access  public
      */
     #[@test]
-    function testLeapYear() {
-      $date= &new Date(Date::mktime(0, 0, 0, 2, 1, 2000));
+    public function testLeapYear() {
+      $date= new Date(Date::mktime(0, 0, 0, 2, 1, 2000));
       
       $this->assertEquals(
         new Date(Date::mktime(0, 0, 0, 3, 1, 2000)),
@@ -113,8 +113,8 @@
      * @access  public
      */
     #[@test]
-    function testNonLeapYear() {
-      $date= &new Date(Date::mktime(0, 0, 0, 2, 1, 1999));
+    public function testNonLeapYear() {
+      $date= new Date(Date::mktime(0, 0, 0, 2, 1, 1999));
       
       $this->assertEquals(
         new Date(Date::mktime(0, 0, 0, 3, 1, 1999)),
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function comparison() {
+    public function comparison() {
       $this->assertTrue(DateUtil::compare(new Date('1977-12-14'), new Date('1980-05-28')) < 0, 'a < b') &&
       $this->assertTrue(DateUtil::compare(new Date('1980-05-28'), new Date('1977-12-14')) > 0, 'a > b') &&
       $this->assertTrue(DateUtil::compare(new Date('1980-05-28'), new Date('1980-05-28')) == 0, 'a == b');
@@ -146,7 +146,7 @@
      * @see     php://usort
      */
     #[@test]
-    function sorting() {
+    public function sorting() {
       $list= array(
         new Date('1977-12-14'),
         new Date('2002-02-21'),

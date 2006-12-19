@@ -14,7 +14,7 @@
    * @purpose  purpose
    */
   class Picture extends Object {
-    var
+    public
       $name     = '',
       $date     = NULL,
       $author   = '',
@@ -28,7 +28,7 @@
      * @param   
      * @return  
      */
-    function setStorage(&$storage) {
+    public function setStorage(&$storage) {
       $this->storage= &$storage;
     }
     
@@ -39,7 +39,7 @@
      * @param   
      * @return  
      */
-    function wakeup($context) {
+    public function wakeup($context) {
       $this->setStorage($context['storage']);
     }
     
@@ -50,7 +50,7 @@
      * @param   
      * @return  
      */
-    function &create(&$storage) {
+    public function &create(&$storage) {
       $data= $storage->load('picture');
       if (!$data) return NULL;
       
@@ -66,7 +66,7 @@
      * @param   string name
      */
     #[@xmlmapping(element= 'name')]
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -77,7 +77,7 @@
      * @return  string
      */
     #[@xmlmapping(element= 'name')]
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -88,7 +88,7 @@
      * @param   &lang.Object date
      */
     #[@xmlmapping(element= 'date')]
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &Date::fromString($date);
     }
 
@@ -99,7 +99,7 @@
      * @return  &lang.Object
      */
     #[@xmlfactory(element= 'date')]
-    function &serializeDate() {
+    public function &serializeDate() {
       if (!$this->date) return NULL;
       return $this->date->toString('Y-m-d H:i:s');
     }
@@ -111,7 +111,7 @@
      * @param   string author
      */
     #[@xmlmapping(element= 'author')]
-    function setAuthor($author) {
+    public function setAuthor($author) {
       $this->author= $author;
     }
 
@@ -122,7 +122,7 @@
      * @return  string
      */
     #[@xmlfactory(element= 'author')]
-    function getAuthor() {
+    public function getAuthor() {
       return $this->author;
     }
 
@@ -133,7 +133,7 @@
      * @param   &lang.Object filename
      */
     #[@xmlmapping(element= 'filename')]
-    function setFilename(&$filename) {
+    public function setFilename(&$filename) {
       $this->filename= &$filename;
     }
 
@@ -144,7 +144,7 @@
      * @return  &lang.Object
      */
     #[@xmlfactory(element= 'filename')]
-    function &getFilename() {
+    public function &getFilename() {
       return $this->filename;
     }
 
@@ -155,16 +155,16 @@
      * @param   
      * @return  
      */
-    function toXml() {
+    public function toXml() {
       $filename= $this->storage->getBase().'/'.$this->getFilename();
-      try(); {
+      try {
         $exif= &ExifData::fromFile(new File($filename));
-      } if (catch('ImagingException', $e)) {
+      } catch (ImagingException $e) {
         $exif= NULL;
       }
     
       $dimensions= getimagesize($filename);
-      $n= &new Node('picture', NULL, array(
+      $n= new Node('picture', NULL, array(
         'author'  => $this->getAuthor(),
         'filename'  => $this->getFilename(),
         'name'      => $this->getName(),

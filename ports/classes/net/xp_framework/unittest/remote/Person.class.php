@@ -11,7 +11,7 @@
    * @purpose  Helper class for SerializerTest
    */
   class Person extends Object {
-    var
+    public
       $id     = 1549,
       $name   = 'Timm Friebe';
 
@@ -21,7 +21,7 @@
      * @access  public
      * @param   mixed id
      */
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -31,7 +31,7 @@
      * @access  public
      * @return  mixed
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
 
@@ -41,7 +41,7 @@
      * @access  public
      * @param   mixed name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @return  mixed
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -62,8 +62,8 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
-      return is_a($cmp, 'Person') && $cmp->name == $this->name && $cmp->id == $this->id;
+    public function equals(&$cmp) {
+      return is('Person', $cmp) && $cmp->name == $this->name && $cmp->id == $this->id;
     }
   }
 ?>

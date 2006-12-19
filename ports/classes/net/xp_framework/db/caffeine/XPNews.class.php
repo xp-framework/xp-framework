@@ -17,7 +17,7 @@
    * @purpose  Datasource accessor
    */
   class XPNews extends DataSet {
-    var
+    public
       $news_id      = 0,
       $caption      = '',
       $link         = '',
@@ -33,7 +33,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       with ($peer= &XPNews::getPeer()); {
         $peer->setTable('CAFFEINE..news');
         $peer->setConnection('caffeine');
@@ -58,7 +58,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
 
@@ -71,7 +71,7 @@
      * @return  &net.xp_framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByNews_id($news_id) {
+    public static function &getByNews_id($news_id) {
       $peer= &XPNews::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('news_id', $news_id, EQUAL))));
     }
@@ -85,7 +85,7 @@
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function getByBz_id($bz_id) {
+    public static function getByBz_id($bz_id) {
       $peer= &XPNews::getPeer();
       return $peer->doSelect(new Criteria(array('bz_id', $bz_id, EQUAL)));
     }
@@ -100,9 +100,9 @@
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function getByDateOrdered($max= 0) {
+    public static function getByDateOrdered($max= 0) {
       $peer= &XPNews::getPeer();
-      with ($c= &new Criteria()); {
+      with ($c= new Criteria()); {
         $c->add('bz_id', 500, EQUAL);
         $c->addOrderBy('created_at', DESCENDING);
       }
@@ -116,7 +116,7 @@
      * @access  public
      * @return  int
      */
-    function getNews_id() {
+    public function getNews_id() {
       return $this->news_id;
     }
       
@@ -127,7 +127,7 @@
      * @param   int news_id
      * @return  int previous value
      */
-    function setNews_id($news_id) {
+    public function setNews_id($news_id) {
       return $this->_change('news_id', $news_id);
     }
       
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    function getCaption() {
+    public function getCaption() {
       return $this->caption;
     }
       
@@ -148,7 +148,7 @@
      * @param   string caption
      * @return  string previous value
      */
-    function setCaption($caption) {
+    public function setCaption($caption) {
       return $this->_change('caption', $caption);
     }
       
@@ -158,7 +158,7 @@
      * @access  public
      * @return  string
      */
-    function getLink() {
+    public function getLink() {
       return $this->link;
     }
       
@@ -170,7 +170,7 @@
      * @return  string previous value
      * @return  previous previous value
      */
-    function setLink($link) {
+    public function setLink($link) {
       return $this->_change('link', $link);
     }
       
@@ -180,7 +180,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       return $this->body;
     }
       
@@ -191,7 +191,7 @@
      * @param   string body
      * @return  string previous value
      */
-    function setBody($body) {
+    public function setBody($body) {
       return $this->_change('body', $body);
     }
       
@@ -201,7 +201,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getCreated_at() {
+    public function &getCreated_at() {
       return $this->created_at;
     }
       
@@ -212,7 +212,7 @@
      * @param   &util.Date created_at
      * @return  &util.Date previous value
      */
-    function &setCreated_at(&$created_at) {
+    public function &setCreated_at(&$created_at) {
       return $this->_change('created_at', $created_at);
     }
       
@@ -222,7 +222,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getLastchange() {
+    public function &getLastchange() {
       return $this->lastchange;
     }
       
@@ -233,7 +233,7 @@
      * @param   &util.Date lastchange
      * @return  &util.Date previous value
      */
-    function &setLastchange(&$lastchange) {
+    public function &setLastchange(&$lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
       
@@ -243,7 +243,7 @@
      * @access  public
      * @return  string
      */
-    function getChangedby() {
+    public function getChangedby() {
       return $this->changedby;
     }
       
@@ -254,7 +254,7 @@
      * @param   string changedby
      * @return  string previous value
      */
-    function setChangedby($changedby) {
+    public function setChangedby($changedby) {
       return $this->_change('changedby', $changedby);
     }
       
@@ -264,7 +264,7 @@
      * @access  public
      * @return  int
      */
-    function getBz_id() {
+    public function getBz_id() {
       return $this->bz_id;
     }
       
@@ -275,7 +275,7 @@
      * @param   int bz_id
      * @return  int previous value
      */
-    function setBz_id($bz_id) {
+    public function setBz_id($bz_id) {
       return $this->_change('bz_id', $bz_id);
     }
   }

@@ -21,9 +21,9 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $name, $type, $chapter, $id)) {
-        return throw(new IllegalAccessException('Malformed query string'));
+        throw(new IllegalAccessException('Malformed query string'));
       }
       
       if ($album= &$this->getAlbumFor($name)) {

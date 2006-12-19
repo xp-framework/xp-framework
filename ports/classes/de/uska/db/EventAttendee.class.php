@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class EventAttendee extends DataSet {
-    var
+    public
       $event_id           = 0,
       $player_id          = 0,
       $attend             = 0,
@@ -28,7 +28,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &EventAttendee::getPeer()); {
         $peer->setTable('uska.event_attendee');
         $peer->setConnection('uskadb');
@@ -51,7 +51,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -64,7 +64,7 @@
      * @return  &de.uska.db.EventAttendee object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByEvent_idPlayer_id($event_id, $player_id) {
+    public function &getByEvent_idPlayer_id($event_id, $player_id) {
       $peer= &EventAttendee::getPeer();
       return array_shift($peer->doSelect(new Criteria(
         array('event_id', $event_id, EQUAL),
@@ -80,7 +80,7 @@
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByEvent_id($event_id) {
+    public function &getByEvent_id($event_id) {
       $peer= &EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL)));
     }
@@ -93,7 +93,7 @@
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByPlayer_id($player_id) {
+    public function &getByPlayer_id($player_id) {
       $peer= &EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL)));
     }
@@ -104,7 +104,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_id() {
+    public function getEvent_id() {
       return $this->event_id;
     }
       
@@ -115,7 +115,7 @@
      * @param   int event_id
      * @return  int the previous value
      */
-    function setEvent_id($event_id) {
+    public function setEvent_id($event_id) {
       return $this->_change('event_id', $event_id);
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      * @return  int
      */
-    function getPlayer_id() {
+    public function getPlayer_id() {
       return $this->player_id;
     }
       
@@ -136,7 +136,7 @@
      * @param   int player_id
      * @return  int the previous value
      */
-    function setPlayer_id($player_id) {
+    public function setPlayer_id($player_id) {
       return $this->_change('player_id', $player_id);
     }
 
@@ -146,7 +146,7 @@
      * @access  public
      * @return  int
      */
-    function getAttend() {
+    public function getAttend() {
       return $this->attend;
     }
       
@@ -157,7 +157,7 @@
      * @param   int attend
      * @return  int the previous value
      */
-    function setAttend($attend) {
+    public function setAttend($attend) {
       return $this->_change('attend', $attend);
     }
 
@@ -167,7 +167,7 @@
      * @access  public
      * @return  int
      */
-    function getOffers_seats() {
+    public function getOffers_seats() {
       return $this->offers_seats;
     }
       
@@ -178,7 +178,7 @@
      * @param   int offers_seats
      * @return  int the previous value
      */
-    function setOffers_seats($offers_seats) {
+    public function setOffers_seats($offers_seats) {
       return $this->_change('offers_seats', $offers_seats);
     }
 
@@ -188,7 +188,7 @@
      * @access  public
      * @return  int
      */
-    function getNeeds_driver() {
+    public function getNeeds_driver() {
       return $this->needs_driver;
     }
       
@@ -199,7 +199,7 @@
      * @param   int needs_driver
      * @return  int the previous value
      */
-    function setNeeds_driver($needs_driver) {
+    public function setNeeds_driver($needs_driver) {
       return $this->_change('needs_driver', $needs_driver);
     }
 
@@ -209,7 +209,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getLastchange() {
+    public function getLastchange() {
       return $this->lastchange;
     }
       
@@ -220,7 +220,7 @@
      * @param   util.Date lastchange
      * @return  util.Date the previous value
      */
-    function setLastchange($lastchange) {
+    public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
 
@@ -230,7 +230,7 @@
      * @access  public
      * @return  string
      */
-    function getChangedby() {
+    public function getChangedby() {
       return $this->changedby;
     }
       
@@ -241,7 +241,7 @@
      * @param   string changedby
      * @return  string the previous value
      */
-    function setChangedby($changedby) {
+    public function setChangedby($changedby) {
       return $this->_change('changedby', $changedby);
     }
   }

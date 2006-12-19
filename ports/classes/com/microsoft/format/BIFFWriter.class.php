@@ -25,10 +25,10 @@
    * @purpose  Write Excel (Biff) files
    */
   class BIFFWriter extends Object {
-    var 
+    public 
       $version      = 0x0500;
       
-    var
+    public
       $_data        = '',
       $_datasize    = 0,
       $_limit       = 2080,
@@ -40,7 +40,7 @@
      * @access  public
      * @throws  lang.FormatException if byte order (big / little endian) cannot be determined
      */  
-    function __construct() {
+    public function __construct() {
       $s= pack('d', 1.2345);
       $n= pack("C8", 0x8D, 0x97, 0x6E, 0x12, 0x83, 0xC0, 0xF3, 0x3F);
       if ($n == $s) {
@@ -59,7 +59,7 @@
      * @access  public
      * @param   int version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
     
@@ -69,7 +69,7 @@
      * @access  public
      * @return  int version
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
     
@@ -79,7 +79,7 @@
      * @access  private
      * @param   string d
      */
-    function _prepend($d) {
+    public function _prepend($d) {
       if (strlen($d) > $this->_limit) {
         $d= $this->_cont($d);
       }
@@ -93,7 +93,7 @@
      * @access  private
      * @param   string d
      */
-    function _append($d) {
+    public function _append($d) {
       if (strlen($d) > $this->_limit) {
         $d= $this->_addCont($d);
       }
@@ -107,7 +107,7 @@
      * @access  private
      * @param   int type one of the BOF_TYPE_* constants
      */
-    function _bof($type) {
+    public function _bof($type) {
       $this->_prepend(
         pack('vv', 0x0809, 0x0008).
         pack('vvvv', $this->version, $type, 0x096C, 0x07C9)
@@ -119,7 +119,7 @@
      *
      * @access  private
      */
-    function _eof() {
+    public function _eof() {
       $this->_append(pack('vv', 0x000A, 0x0000));
     }
     
@@ -130,7 +130,7 @@
      * @param   string data
      * @return  string data
      */
-    function _cont($d) {
+    public function _cont($d) {
       $h= pack('vv', 0x003C, $this->_limit);
       $t= substr($d, 0, 2).pack('v', $this->_limit- 4).substr($d, 4, $this->_limit- 4);
       for ($i= $this->_limit, $len= strlen($d); $i < $len; $i+= $this->_limit) {
@@ -148,7 +148,7 @@
      * @return  &io.Stream stream passed in
      * @throws  io.IOException
      */
-    function &write(&$stream) {
+    public function &write(&$stream) {
       $stream->open(FILE_MODE_WRITE);
       $stream->write($this->_data);
       $stream->close();

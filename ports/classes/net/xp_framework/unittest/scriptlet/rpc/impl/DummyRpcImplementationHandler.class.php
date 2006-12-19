@@ -18,7 +18,7 @@
      * @return  string
      */
     #[@webmethod]
-    function getImplementationName() {
+    public function getImplementationName() {
       return $this->getClassName();
     }
     
@@ -28,7 +28,7 @@
      * @access  public
      * @return  bool
      */    
-    function methodExistsButIsNotAWebmethod() {
+    public function methodExistsButIsNotAWebmethod() {
       return TRUE;
     }
 
@@ -39,8 +39,8 @@
      * @return  string
      */
     #[@webmethod]
-    function giveMeFault() {
-      return throw(new ServiceException(403, 'This is a intentionally caused exception.'));
+    public function giveMeFault() {
+      throw(new ServiceException(403, 'This is a intentionally caused exception.'));
     }
     
     /**
@@ -55,11 +55,11 @@
      * @return  array
      */
     #[@webmethod]
-    function checkMultipleParameters($string, $int, $array, $struct) {
-      if (!is_string($string)) return throw(new IllegalArgumentException('String not string'));
-      if (!is_int($int)) return throw(new IllegalArgumentException('Int not Int'));
-      if (!is_array($array)) return throw(new IllegalArgumentException('Array not array'));
-      if (!is_array($struct)) return throw(new IllegalArgumentException('Struct not struct'));
+    public function checkMultipleParameters($string, $int, $array, $struct) {
+      if (!is_string($string)) throw(new IllegalArgumentException('String not string'));
+      if (!is_int($int)) throw(new IllegalArgumentException('Int not Int'));
+      if (!is_array($array)) throw(new IllegalArgumentException('Array not array'));
+      if (!is_array($struct)) throw(new IllegalArgumentException('Struct not struct'));
       
       return array(
         $string,
@@ -77,7 +77,7 @@
      * @return  mixed
      */
     #[@webmethod]
-    function passBackMethod() {
+    public function passBackMethod() {
       $args= func_get_args();
       return $args;
     }

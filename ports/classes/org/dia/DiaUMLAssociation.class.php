@@ -16,7 +16,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Association', 1);
     }
 
@@ -25,7 +25,7 @@
      * 
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $this->setName('__noname__');
 
       // add essencial nodes
@@ -51,7 +51,7 @@
      * @access  public
      * @return  int
      */
-    function getDirection() {
+    public function getDirection() {
       return $this->getChildValue('direction');
     }
 
@@ -63,7 +63,7 @@
      * @param   int dir
      */
     #[@fromDia(xpath= 'dia:attribute[@name="direction"]/dia:enum/@val', value= 'int')]
-    function setDirection($dir) {
+    public function setDirection($dir) {
       $this->setEnum('direction', $dir);
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @return  &org.dia.DiaRole
      */
-    function &getRoleA() {
+    public function &getRoleA() {
       $Ends= &$this->getChild('ends');
       return $Ends->getChild('A');
     }
@@ -85,7 +85,7 @@
      * @param   &org.dia.DiaRole Role
      */
     #[@fromDia(xpath= 'dia:attribute[@name="ends"]/dia:composite[position()=1]', class= 'org.dia.DiaRole')]
-    function setRoleA(&$Role) {
+    public function setRoleA(&$Role) {
       $Ends= &$this->getChild('ends');
       $Ends->set('A', $Role);
     }
@@ -96,7 +96,7 @@
      * @access  public
      * @return  &org.dia.DiaRole
      */
-    function &getRoleB() {
+    public function &getRoleB() {
       $Ends= &$this->getChild('ends');
       return $Ends->getChild('B');
     }
@@ -108,7 +108,7 @@
      * @param   &org.dia.DiaRole Role
      */
     #[@fromDia(xpath= 'dia:attribute[@name="ends"]/dia:composite[position()=2]', class= 'org.dia.DiaRole')]
-    function setRoleB(&$Role) {
+    public function setRoleB(&$Role) {
       $Ends= &$this->getChild('ends');
       $Ends->set('B', $Role);
     }
@@ -119,7 +119,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 0 The connection point of the object
      */
-    function beginAt($id, $connpoint= 0) {
+    public function beginAt($id, $connpoint= 0) {
       parent::endAt($id, $connpoint);
     }
 
@@ -129,7 +129,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 5 The connection point of the object
      */
-    function endAt($id, $connpoint= 5) {
+    public function endAt($id, $connpoint= 5) {
       parent::beginAt($id, $connpoint);
     }
   }

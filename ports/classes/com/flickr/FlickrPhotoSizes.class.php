@@ -16,7 +16,7 @@
    * @purpose  Container
    */
   class FlickrPhotoSizes extends Object {
-    var
+    public
       $sizes  = NULL;
     
     /**
@@ -24,7 +24,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->sizes= &Collection::forClass('com.flickr.FlickrPhotoSize');
     }
     
@@ -34,7 +34,7 @@
      * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    function setClient(&$client) {
+    public function setClient(&$client) {
     }
       
     /**
@@ -44,7 +44,7 @@
      * @param   &lang.Object size
      */
     #[@xmlmapping(element= 'size', class= 'com.flickr.FlickrPhotoSize')]
-    function addSize(&$size) {
+    public function addSize(&$size) {
       $this->sizes->add($size);
       return $size;
     }

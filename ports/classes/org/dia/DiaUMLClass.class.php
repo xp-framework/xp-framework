@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: DiaUMLClass.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
 
   uses(
@@ -56,7 +56,7 @@
    */
   class DiaUMLClass extends DiaObject {
 
-    var
+    public
       $int_color= '#88f0ff',   // color of interfaces (blue)
       $exc_color= '#7ded9d',   // color of exceptions (green)
       $err_color= '#ff9f9f';   // color of errors? (red)
@@ -68,7 +68,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Class', 1);
 
       // always initialize
@@ -80,7 +80,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // add default values
       $this->setName('__noname__');
       $this->setStereotype(NULL);
@@ -160,7 +160,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->getChildValue('name');
     }
 
@@ -175,7 +175,7 @@
     # @fromClass(type = 'string', eval = '$ClassDoc->qualifiedName()'),
     # @fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')
     #]
-    function setName($name) {
+    public function setName($name) {
       $this->setString('name', $name);
     }
 
@@ -189,7 +189,7 @@
     # @fromClass(type = 'string', eval = '$ClassDoc->classType()'),
     # @fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')
     #]
-    function setStereotype($stereotype) {
+    public function setStereotype($stereotype) {
       switch ($stereotype) {
         case ORDINARY_CLASS: 
           return; // no stereotype
@@ -225,7 +225,7 @@
     # @fromClass(type = 'string', eval = '$ClassDoc->commentText()'),
     # @fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')
     #]
-    function setComment($comment) {
+    public function setComment($comment) {
       $this->setString('comment', $comment);
     }
 
@@ -244,7 +244,7 @@
     # ),
     # @fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')
     #]
-    function setAbstract($abstract) {
+    public function setAbstract($abstract) {
       $this->setBoolean('abstract', $abstract);
     }
 
@@ -255,7 +255,7 @@
      * @param   bool suppress
      */
     #[@fromDia(xpath= 'dia:attribute[@name="suppress_attributes"]/dia:boolean/@val', value= 'boolean')]
-    function suppressAttributes($suppress) {
+    public function suppressAttributes($suppress) {
       $this->setBoolean('suppress_attributes', $suppress);
     }
 
@@ -266,7 +266,7 @@
      * @param   bool suppress
      */
     #[@fromDia(xpath= 'dia:attribute[@name="suppress_operations"]/dia:boolean/@val', value= 'boolean')]
-    function suppressOperations($suppress) {
+    public function suppressOperations($suppress) {
       $this->setBoolean('suppress_operations', $suppress);
     }
 
@@ -277,7 +277,7 @@
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_attributes"]/dia:boolean/@val', value= 'boolean')]
-    function showAttributes($visible) {
+    public function showAttributes($visible) {
       $this->setBoolean('visible_attributes', $visible);
     }
 
@@ -288,7 +288,7 @@
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_operations"]/dia:boolean/@val', value= 'boolean')]
-    function showOperations($visible) {
+    public function showOperations($visible) {
       $this->setBoolean('visible_operations', $visible);
     }
 
@@ -299,7 +299,7 @@
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_comments"]/dia:boolean/@val', value= 'boolean')]
-    function showComments($visible) {
+    public function showComments($visible) {
       $this->setBoolean('visible_comments', $visible);
     }
 
@@ -310,7 +310,7 @@
      * @param   bool wrap
      */
     #[@fromDia(xpath= 'dia:attribute[@name="wrap_operations"]/dia:boolean/@val', value= 'boolean')]
-    function wrapOperations($wrap) {
+    public function wrapOperations($wrap) {
       $this->setBoolean('wrap_operations', $wrap);
     }
 
@@ -321,7 +321,7 @@
      * @param   int char
      */
     #[@fromDia(xpath= 'dia:attribute[@name="wrap_after_char"]/dia:int/@val', value= 'int')]
-    function wrapAfterChar($char) {
+    public function wrapAfterChar($char) {
       $this->setInt('wrap_after_char', $char);
     }
 
@@ -332,7 +332,7 @@
      * @param   int length
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_line_length"]/dia:int/@val', value= 'int')]
-    function setCommentLineLength($length) {
+    public function setCommentLineLength($length) {
       $this->setInt('comment_line_length', $length);
     }
 
@@ -343,7 +343,7 @@
      * @param   bool tagging
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_tagging"]/dia:boolean/@val', value= 'boolean')]
-    function setCommentTagging($tagging) {
+    public function setCommentTagging($tagging) {
       $this->setBoolean('comment_tagging', $tagging);
     }
 
@@ -354,7 +354,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="normal_font"]/dia:font', value= 'font')]
-    function setNormalFont($font) {
+    public function setNormalFont($font) {
       $this->setFont('normal_font', $font);
     }
 
@@ -365,7 +365,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_font"]/dia:font', value= 'font')]
-    function setAbstractFont($font) {
+    public function setAbstractFont($font) {
       $this->setFont('abstract_font', $font);
     }
 
@@ -376,7 +376,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font"]/dia:font', value= 'font')]
-    function setPolymorphicFont($font) {
+    public function setPolymorphicFont($font) {
       $this->setFont('polymorphic_font', $font);
     }
 
@@ -387,7 +387,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="classname_font"]/dia:font', value= 'font')]
-    function setClassnameFont($font) {
+    public function setClassnameFont($font) {
       $this->setFont('classname_font', $font);
     }
 
@@ -398,7 +398,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font"]/dia:font', value= 'font')]
-    function setAbstractClassnameFont($font) {
+    public function setAbstractClassnameFont($font) {
       $this->setFont('abstract_classname_font', $font);
     }
 
@@ -409,7 +409,7 @@
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_font"]/dia:font', value= 'font')]
-    function setCommentFont($font) {
+    public function setCommentFont($font) {
       $this->setFont('comment_font', $font);
     }
 
@@ -420,7 +420,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="normal_font_height"]/dia:real/@val', value= 'real')]
-    function setNormalFontHeight($height) {
+    public function setNormalFontHeight($height) {
       $this->setReal('normal_font_height', $height);
     }
 
@@ -431,7 +431,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_font_height"]/dia:real/@val', value= 'real')]
-    function setAbstractFontHeight($height) {
+    public function setAbstractFontHeight($height) {
       $this->setReal('abstract_font_height', $height);
     }
 
@@ -442,7 +442,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font_height"]/dia:real/@val', value= 'real')]
-    function setPolymorphicFontHeight($height) {
+    public function setPolymorphicFontHeight($height) {
       $this->setReal('polymorphic_font_height', $height);
     }
 
@@ -453,7 +453,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="classname_font_height"]/dia:real/@val', value= 'real')]
-    function setClassnameFontHeight($height) {
+    public function setClassnameFontHeight($height) {
       $this->setReal('classname_font_height', $height);
     }
 
@@ -464,7 +464,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font_height"]/dia:real/@val', value= 'real')]
-    function setAbstractClassnameFontHeight($height) {
+    public function setAbstractClassnameFontHeight($height) {
       $this->setReal('abstract_classname_font_height', $height);
     }
 
@@ -475,7 +475,7 @@
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_font_height"]/dia:real/@val', value= 'real')]
-    function setCommentFontHeight($height) {
+    public function setCommentFontHeight($height) {
       $this->setReal('comment_font_height', $height);
     }
 
@@ -486,7 +486,7 @@
      * @param   bool template
      */
     #[@fromDia(xpath= 'dia:attribute[@name="template"]/dia:boolean/@val', value= 'boolean')]
-    function setTemplate($template) {
+    public function setTemplate($template) {
       $this->setBoolean('template', $template);
     }
 
@@ -500,7 +500,7 @@
      */
     // TODO? fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')
     #[@fromDia(xpath= 'dia:attribute[@name="attributes"]/*', class= 'org.dia.DiaUMLAttribute')]
-    function addUMLAttribute($Attribute) {
+    public function addUMLAttribute($Attribute) {
       $Attributes= &$this->getChild('attributes');
       $Attributes->set($Attribute->getName(), $Attribute);
     }
@@ -512,7 +512,7 @@
      * @param   &org.dia.DiaUMLMethod Method
      */
     #[@fromDia(xpath= 'dia:attribute[@name="operations"]/*', class= 'org.dia.DiaUMLMethod')]
-    function addUMLMethod($Method) {
+    public function addUMLMethod($Method) {
       $Operations= &$this->getChild('operations');
       $Operations->set($Method->getName(), $Method);
     }
@@ -524,7 +524,7 @@
      * @param   &org.dia.DiaUMLFormalParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="templates"]/*', class= 'org.dia.DiaUMLFormalParameter')]
-    function addTemplate($Parameter) {
+    public function addTemplate($Parameter) {
       $Templates= &$this->getChild('templates');
       $Templates->set($Parameter->getName(), $Parameter);
     }
@@ -536,7 +536,7 @@
      * @param   &org.dia.DiaChildnode Childnode
      */
     #[@fromDia(xpath= 'dia:childnode', class= 'org.dia.DiaChildnode')]
-    function addParentLink($Childnode) {
+    public function addParentLink($Childnode) {
       $this->set('childnode', $Childnode);
     }
 
@@ -549,12 +549,12 @@
      * @param   array field
      */
     #[@fromClass(type = 'attribute')]
-    function addAttribute($field) {
+    public function addAttribute($field) {
       $Attributes= &$this->getChild('attributes');
 
       // create new UMLAttribute
       list($name, $value)= each($field);
-      $Attrib= &new DiaUMLAttribute();
+      $Attrib= new DiaUMLAttribute();
       $Attrib->setName($name);
 
       // determine type if possible
@@ -583,11 +583,11 @@
      * @param   &text.doclet.MethodDoc Method
      */
     #[@fromClass(type = 'method')]
-    function addMethod(&$Method) {
+    public function addMethod(&$Method) {
       $Operations= &$this->getChild('operations');
 
       // create new UMLMethod
-      $Oper= &new DiaUMLMethod();
+      $Oper= new DiaUMLMethod();
       $Oper->setName($Method->name());
 
       // check @return tag
@@ -635,7 +635,7 @@
         }
 
         // create parameter 'composite'
-        $Param= &new DiaUMLMethodParameter();
+        $Param= new DiaUMLMethodParameter();
         $Param->setName($name);
         $Param->setValue($value);
         if (isset($type)) $Param->setType($type);

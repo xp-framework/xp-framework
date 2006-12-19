@@ -24,7 +24,7 @@
      * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    function &caster() {
+    public function &caster() {
       return new ToDate();
     }
 
@@ -34,7 +34,7 @@
      * @access  public
      */
     #[@test]
-    function europeanDateFormat() {
+    public function europeanDateFormat() {
       $this->assertEquals(new Date('1977-12-14'), $this->castValue('14.12.1977'));
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      */
     #[@test]
-    function usDateFormat() {
+    public function usDateFormat() {
       $this->assertEquals(new Date('1977-12-14'), $this->castValue('1977-12-14'));
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function emptyInput() {
+    public function emptyInput() {
       $this->castValue('');
     }
   }

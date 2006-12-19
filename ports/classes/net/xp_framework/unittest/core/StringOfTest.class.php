@@ -22,7 +22,7 @@
      * @access  protected
      * @return  &lang.Object
      */
-    function &testStringInstance() {
+    public function &testStringInstance() {
       return newinstance('lang.Object', array(), '{
         function toString() {
           return "TestString(6) { String }";
@@ -36,7 +36,7 @@
      * @access  public
      */
     #[@test]
-    function stringArgument() {
+    public function stringArgument() {
       $this->assertEquals('"Hello"', xp::stringOf($string= 'Hello'));
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      */
     #[@test]
-    function booleanArgument() {
+    public function booleanArgument() {
       $this->assertEquals('true', xp::stringOf($bool= TRUE));
       $this->assertEquals('false', xp::stringOf($bool= FALSE));
     }
@@ -57,7 +57,7 @@
      * @access  public
      */
     #[@test]
-    function nullArgument() {
+    public function nullArgument() {
       $this->assertEquals('null', xp::stringOf($null= NULL));
     }
 
@@ -68,7 +68,7 @@
      * @access  public
      */
     #[@test]
-    function xpNullArgument() {
+    public function xpNullArgument() {
       $this->assertEquals('<null>', xp::stringOf(xp::null()));
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      */
     #[@test]
-    function numericArgument() {
+    public function numericArgument() {
       $this->assertEquals('1', xp::stringOf($int= 1));
       $this->assertEquals('-1', xp::stringOf($negativeInt= -1));
       $this->assertEquals('1.5', xp::stringOf($float= 1.5));
@@ -92,7 +92,7 @@
      * @access  public
      */
     #[@test]
-    function objectArgument() {
+    public function objectArgument() {
       $this->assertEquals('TestString(6) { String }', xp::stringOf($this->testStringInstance()));
     }
 
@@ -102,7 +102,7 @@
      * @access  public
      */
     #[@test]
-    function simpleArrayArgument() {
+    public function simpleArrayArgument() {
       $this->assertEquals(
         "[\n  0 => 1\n  1 => 2\n  2 => 3\n]", 
         xp::stringOf($a= array(1, 2, 3))
@@ -115,7 +115,7 @@
      * @access  public
      */
     #[@test]
-    function arrayOfArraysArgument() {
+    public function arrayOfArraysArgument() {
       $this->assertEquals(
         "[\n  0 => [\n    0 => 1\n    1 => 2\n    2 => 3\n  ]\n]", 
         xp::stringOf($a= array(array(1, 2, 3)))
@@ -128,7 +128,7 @@
      * @access  public
      */
     #[@test]
-    function hashmapArgument() {
+    public function hashmapArgument() {
       $this->assertEquals(
         "[\n  foo => \"bar\"\n  bar => 2\n  baz => TestString(6) { String }\n]", 
         xp::stringOf($a= array(
@@ -145,7 +145,7 @@
      * @access  public
      */
     #[@test]
-    function builtinObjectsArgument() {
+    public function builtinObjectsArgument() {
       $this->assertEquals("php.stdClass {\n}", xp::stringOf(new StdClass()));
       $this->assertEquals("php.Directory {\n}", xp::stringOf(new Directory('.')));
     }
@@ -156,7 +156,7 @@
      * @access  public
      */
     #[@test]
-    function resourceArgument() {
+    public function resourceArgument() {
       $fd= fopen('php://stdin', 'r');
       $this->assertMatches(xp::stringOf($fd), '/resource\(type= stream, id= [0-9]+\)/');
       fclose($fd);
@@ -168,7 +168,7 @@
      * @access  public
      */
     #[@test]
-    function arrayRecursion() {
+    public function arrayRecursion() {
       $a= array();
       $a[0]= 'Outer array';
       $a[1]= array();
@@ -195,9 +195,9 @@ __
      * @access  public
      */
     #[@test]
-    function objectRecursion() {
-      $o= &new StdClass();
-      $o->child= &new StdClass();
+    public function objectRecursion() {
+      $o= new StdClass();
+      $o->child= new StdClass();
       $o->child->parent= &$o;
       $this->assertEquals(<<<__
 php.stdClass {
@@ -224,7 +224,7 @@ __
      * @access  public
      */
     #[@test]
-    function toStringRecursion() {
+    public function toStringRecursion() {
       $test= &newinstance('lang.Object', array(), '{
         function toString() {
           return xp::stringOf($this);
@@ -242,8 +242,8 @@ __
      * @access  public
      */
     #[@test]
-    function repeatedCalls() {
-      $object= &new Object();
+    public function repeatedCalls() {
+      $object= new Object();
       $stringRep= $object->toString();
       
       $this->assertEquals($stringRep, xp::stringOf($object), 'first');

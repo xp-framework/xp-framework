@@ -25,7 +25,7 @@
    * @purpose  Klip viewer
    */
   class Klip extends GTKGladeApplication {
-    var
+    public
       $conn     = NULL,
       $proc     = NULL,
       $view     = NULL,
@@ -40,14 +40,14 @@
      * @param   &util.cmd.ParamString p
      * @param   &util.Properties prop
      */
-    function __construct(&$p, &$prop) {
+    public function __construct(&$p, &$prop) {
       parent::__construct($p, dirname($p->value(0)).'/../ui/klip.glade', 'main');
 
       // Initialize visited hashmap to an empty set
-      $this->visited= &new Hashmap();
+      $this->visited= new Hashmap();
       
       // Set up HTTP connection from property file
-      $this->conn= &new HttpConnection($prop->readString('settings', 'url'));
+      $this->conn= new HttpConnection($prop->readString('settings', 'url'));
       
       // Set refresh interval, defaulting to 60 seconds
       $timer= &Gtk::timeout_add(
@@ -56,7 +56,7 @@
       );
 
       // Set up XSL processor
-      $this->proc= &new XSLProcessor();
+      $this->proc= new XSLProcessor();
       $this->proc->setXSLFile(sprintf(
         '%s/../ui/skins/%s.xsl',
         dirname($p->value(0)),
@@ -72,7 +72,7 @@
      *
      * @access  public
      */
-    function init() {
+    public function init() {
       parent::init();
       
       // Try to remove all decorations
@@ -81,7 +81,7 @@
       }
 
       // Set up GtkHTML
-      $this->view= &new GtkHtml();
+      $this->view= new GtkHtml();
       $this->view->connect_url_request(array(&$this, 'onURLRequest'));
       $this->view->connect('link-clicked', array(&$this, 'onLinkClicked'));
       $this->view->connect('title-changed', array(&$this, 'onTitleChanged'));
@@ -114,12 +114,12 @@
      * @param   string rest
      * @return  string
      */
-    function onScheme(&$proc, $scheme, $rest) {
+    public function onScheme(&$proc, $scheme, $rest) {
       switch ($scheme) {
         case 'rdf':
           $this->cat->debug('Retrieving', $scheme.'('.$rest.')');
-          $c= &new HttpConnection(substr($rest, 1));
-          try(); {
+          $c= new HttpConnection(substr($rest, 1));
+          try {
             if ($response= &$c->get()) {
               $this->cat->debug('Response headers:', $response->getHeaders());
               $src= '';
@@ -142,10 +142,10 @@
                 $xml.= '</items>';
               }
             }
-          } if (catch('IOException', $e)) {
+          } catch (IOException $e) {
             $this->cat->error('Retrieving url', $url, 'failed:', $e);
             $xml= '<items count="0" error="retrieval-error:'.$e->getMessage().'"/>';
-          } if (catch('Exception', $e)) {
+          } catch (Exception $e) {
             $this->cat->error('Format error in', $url, ':', $e, $src);
             $xml= '<items count="0" error="format-error:'.$e->getMessage().'"/>';
           }
@@ -168,17 +168,17 @@
      * @param   &php.gtk.GtkWidget widget
      * @param   string url
      */
-    function onLinkClicked(&$widget, $url) {
+    public function onLinkClicked(&$widget, $url) {
       $this->cat->debug('Clicked:', $url, 'in widget', $widget);
       $this->visited->put($url, TRUE);
 
-      try(); {
+      try {
         System::exec(
           sprintf($this->prop->readString('settings', 'browser', 'galeon %s'), $url),
           '2>/dev/null 1>/dev/null', 
           TRUE
         );
-      } if (catch('SystemException', $e)) {
+      } catch (SystemException $e) {
         $this->cat->error('Opening browser failed', $e);
         return FALSE;
       }
@@ -195,7 +195,7 @@
      * @param   &php.gtk.GtkWidget widget
      * @param   string title
      */
-    function onTitleChanged(&$widget, $title) {
+    public function onTitleChanged(&$widget, $title) {
       $this->window->set_title('Klip: '.$title);
     }
     
@@ -206,19 +206,19 @@
      * @param   string uri
      * @param   &php.gtk.GtkHTMLStream stream
      */
-    function onURLRequest($uri, &$stream) {
+    public function onURLRequest($uri, &$stream) {
       $this->cat->debug('Requested:', $uri, $stream);
       
-      $url= &new URL($uri);
+      $url= new URL($uri);
       switch ($url->getScheme()) {
         case 'chrome':
-          $f= &new File(dirname($this->param->value(0)).'/../ui/'.$url->getPath());
+          $f= new File(dirname($this->param->value(0)).'/../ui/'.$url->getPath());
           $this->cat->debug('Loading chrome ui element', $url->getURL());
-          try(); {
+          try {
             $f->open(FILE_MODE_READ);
             $this->streamWrite($stream, $f->read($f->size()), $f->size());
             $f->close();
-          } if (catch('IOException', $e)) {
+          } catch (IOException $e) {
             $this->cat->error('Loading chrome element', $g->getURI(), 'failed:', $e);
             // Fall through
           }
@@ -226,16 +226,16 @@
           break;
         
         case 'http':
-          $c= &new HttpConnection($url);
+          $c= new HttpConnection($url);
           $this->cat->debug('Loading HTTP element', $url);
-          try(); {
+          try {
             if ($response= &$c->get()) {
               $this->cat->debug('Response headers:', $response->getHeaders());
               while ($buf= $response->readData(0x2000, $binary= TRUE)) {
                 $this->streamWrite($stream, $buf);
               }
             }
-          } if (catch('IOException', $e)) {
+          } catch (IOException $e) {
             $this->cat->error('Retrieving url', $url, 'failed:', $e);
             // Fall through
           }
@@ -256,7 +256,7 @@
      * @param   int len default -1
      * @return  mixed
      */
-    function streamWrite(&$stream, $str, $len= -1) {
+    public function streamWrite(&$stream, $str, $len= -1) {
       return $this->view->write($stream, $str, (-1 == $len ? strlen($str) : $len));
     }
     
@@ -265,10 +265,10 @@
      *
      * @access  protected
      */
-    function refreshView() {
-      try(); {
+    public function refreshView() {
+      try {
         $this->proc->run();
-      } if (catch('TransformerException', $e)) {
+      } catch (TransformerException $e) {
         $this->cat->error($e);
         $this->cat->debug($this->proc);
         return;
@@ -291,13 +291,13 @@
      * @param   &php.gtk.GtkWidget widget
      * @return  bool
      */
-    function onRefresh(&$widget) {
+    public function onRefresh(&$widget) {
       
       // Retrieve klip. Prepend header to make encoding default to iso-8859-1,
       // map some known characters (Klip looks like XML but actually isn't 
       // conform - the KlipFolio parser seems to ignore this...) and strip off
       // junk after document element
-      try(); {
+      try {
         if ($response= &$this->conn->get()) {
           $klipsrc= XML_HEADER;
           while ($buf= $response->readData()) {
@@ -309,7 +309,7 @@
           
           $this->proc->setXMLBuf(substr($klipsrc, 0, strpos($klipsrc, '</klip>')+ 7));
         }
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->cat->error($e);
         return TRUE;
       }

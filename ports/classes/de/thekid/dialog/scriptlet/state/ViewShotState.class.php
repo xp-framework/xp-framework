@@ -21,7 +21,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       static $modes= array(
         0 => 'color',
         1 => 'gray'
@@ -31,7 +31,7 @@
         (2 != sscanf($request->getQueryString(), '%[^,],%d', $name, $mode)) ||
         !isset($modes[$mode])
       ) {
-        return throw(new IllegalAccessException('Malformed query string'));
+        throw(new IllegalAccessException('Malformed query string'));
       }
 
       if ($shot= &$this->getEntryFor($name, 'de.thekid.dialog.SingleShot')) {

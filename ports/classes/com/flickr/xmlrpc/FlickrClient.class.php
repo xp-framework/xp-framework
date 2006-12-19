@@ -20,7 +20,7 @@
    * @purpose   Flickr client
    */
   class FlickrClient extends XmlRpcClient {
-    var
+    public
       $apiKey     = '',
       $sharedKey  = '';  
 
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string apiKey
      */
-    function setApiKey($apiKey) {
+    public function setApiKey($apiKey) {
       $this->apiKey= $apiKey;
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function getApiKey() {
+    public function getApiKey() {
       return $this->apiKey;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @param   string sharedKey
      */
-    function setSharedKey($sharedKey) {
+    public function setSharedKey($sharedKey) {
       $this->sharedKey= $sharedKey;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @return  string
      */
-    function getSharedKey() {
+    public function getSharedKey() {
       return $this->sharedKey;
     }
     
@@ -71,7 +71,7 @@
      * @param   mixed<string,string> arguments[]
      * @return  mixed<string,string>
      */
-    function signArray($arguments) {
+    public function signArray($arguments) {
       $arguments['api_key']= $this->getApiKey();
       ksort($arguments);
 
@@ -90,7 +90,7 @@
      * @param   string xml
      * @return  mixed
      */
-    function unserialize($xml) {
+    public function unserialize($xml) {
       $tree= &Tree::fromString('<?xml version="1.0" encoding="utf-8"?><data>'.$xml.'</data>');
       return $this->_recurse($tree->root);
     }    
@@ -102,7 +102,7 @@
      * @param   &xml.Node node
      * @return  mixed
      */
-    function _recurse(&$node) {
+    public function _recurse(&$node) {
       if (sizeof($node->children)) {
         $ret= array();
         foreach ($node->children as $index => $value) {
@@ -131,7 +131,7 @@
      * @param   mixed*
      * @return  mixed
      */
-    function invoke() {
+    public function invoke() {
       $args= func_get_args();
       
       $method= array_shift($args);
@@ -140,10 +140,10 @@
         array('method'  => $method)
       ));
 
-      try(); {
+      try {
         $res= parent::invoke($method, $arguments);
-      } if (catch('XmlRpcFaultException', $e)) {
-        return throw($e);
+      } catch (XmlRpcFaultException $e) {
+        throw($e);
       }
 
       return $this->unserialize($res[0]);
@@ -159,16 +159,16 @@
      * @param   string expect
      * @return  Object
      */
-    function invokeExpecting($method, $args, $expect) {
+    public function invokeExpecting($method, $args, $expect) {
       $arguments= $this->signArray(array_merge(
         $args,
         array('method'  => $method)
       ));
 
-      try(); {
+      try {
         $res= parent::invoke($method, $arguments);
-      } if (catch('XmlRpcFaultException', $e)) {
-        return throw($e);
+      } catch (XmlRpcFaultException $e) {
+        throw($e);
       }
       
       $return= &Unmarshaller::unmarshal($res[0], $expect);
@@ -182,8 +182,8 @@
      * @access  public
      * @return  &com.flickr.api.FlickrInterestingness
      */
-    function &getInterestingnessInterface() {
-      $if= &new FlickrInterestingness();
+    public function &getInterestingnessInterface() {
+      $if= new FlickrInterestingness();
       $if->setClient($this);
       return $if;
     }    

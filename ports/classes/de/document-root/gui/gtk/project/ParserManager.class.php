@@ -13,7 +13,7 @@
    * @purpose  Manager parsers
    */
   class ParserManager extends Object {
-    var
+    public
       $functions= array(),
       $classes=   array(),
       $uses=      array(),
@@ -22,7 +22,7 @@
       $history=   array(),
       $filename=     NULL;
     
-    var
+    public
       $_utimeLastChange=  0;
   
     /**
@@ -31,7 +31,7 @@
      * @access  public
      * @param   string filename
      */
-    function __construct($file) {
+    public function __construct($file) {
       $this->filename= $file;
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  bool
      */
-    function needsReparsing() {
+    public function needsReparsing() {
       clearstatcache();
       if (FALSE !== ($mtime= filemtime ($this->filename)))
         return ($mtime > $this->_utimeLastChange);
@@ -56,7 +56,7 @@
      * @access  public
      * @return  int
      */
-    function getLastChange() {
+    public function getLastChange() {
       return $this->_utimeLastChange;
     }
     
@@ -65,14 +65,14 @@
      *
      * @access  public
      */
-    function parse() {
+    public function parse() {
       
       // Try to parse file
-      try(); {
-        $parser= &new PHPParser($this->filename);
+      try {
+        $parser= new PHPParser($this->filename);
         $parser->parse();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       $this->requires=  $parser->requires;

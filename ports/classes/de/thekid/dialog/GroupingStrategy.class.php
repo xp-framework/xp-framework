@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class GroupingStrategy extends Interface {
+  interface GroupingStrategy {
   
     /**
      * Returns group for a given album image.
@@ -18,7 +18,7 @@
      * @param   &de.thekid.dialog.AlbumImage
      * @return  string unique group identifier
      */
-    function groupFor(&$image) { }
+    public function groupFor(&$image);
   
   }
 ?>

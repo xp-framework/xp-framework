@@ -7,7 +7,7 @@
   uses(
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToFileData',
-    'scriptlet.xml.workflow.checkers.FileUploadPrechecker'    
+    'scriptlet.xml.workflow.checkers.FileUploadPrechecker'
   );
 
   /**
@@ -24,7 +24,7 @@
      *
      * @access  public
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'name',
         OCCURRENCE_UNDEFINED,
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->getValue('name');
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->getValue('description');
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @return  string
      */
-    function getFile() {
+    public function getFile() {
       return $this->getValue('file');
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  boolean
      */
-    function getOnline() {
+    public function getOnline() {
       return $this->getValue('online');
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @return  string
      */
-    function getTags() {
+    public function getTags() {
       return $this->getValue('tags');
     }
 

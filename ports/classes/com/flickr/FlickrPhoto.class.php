@@ -12,7 +12,7 @@
    * @purpose  Flickr photo
    */
   class FlickrPhoto extends Object {
-    var
+    public
       $id       = '',
       $owner    = '',
       $secret   = '',
@@ -22,7 +22,7 @@
       $isFriend = TRUE,
       $isFamily = TRUE;
     
-    var
+    public
       $_client   = NULL;
 
     /**
@@ -31,7 +31,7 @@
      * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    function setClient(&$client) {
+    public function setClient(&$client) {
       $this->_client= &$client;
     }
 
@@ -42,7 +42,7 @@
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
 
@@ -63,7 +63,7 @@
      * @param   string owner
      */
     #[@xmlmapping(element= '@owner')]
-    function setOwner($owner) {
+    public function setOwner($owner) {
       $this->owner= $owner;
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function getOwner() {
+    public function getOwner() {
       return $this->owner;
     }
 
@@ -84,7 +84,7 @@
      * @param   string secret
      */
     #[@xmlmapping(element= '@secret')]
-    function setSecret($secret) {
+    public function setSecret($secret) {
       $this->secret= $secret;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @return  string
      */
-    function getSecret() {
+    public function getSecret() {
       return $this->secret;
     }
 
@@ -105,7 +105,7 @@
      * @param   string server
      */
     #[@xmlmapping(element= '@server')]
-    function setServer($server) {
+    public function setServer($server) {
       $this->server= $server;
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      * @return  string
      */
-    function getServer() {
+    public function getServer() {
       return $this->server;
     }
 
@@ -126,7 +126,7 @@
      * @param   string title
      */
     #[@xmlmapping(element= '@title')]
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -136,7 +136,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -147,7 +147,7 @@
      * @param   bool isPublic
      */
     #[@xmlmapping(element= '@isPublic', type= 'boolean')]
-    function setIsPublic($isPublic) {
+    public function setIsPublic($isPublic) {
       $this->isPublic= $isPublic;
     }
 
@@ -157,7 +157,7 @@
      * @access  public
      * @return  bool
      */
-    function getIsPublic() {
+    public function getIsPublic() {
       return $this->isPublic;
     }
 
@@ -168,7 +168,7 @@
      * @param   bool isFriend
      */
     #[@xmlmapping(element= '@isFriend', type= 'boolean')]
-    function setIsFriend($isFriend) {
+    public function setIsFriend($isFriend) {
       $this->isFriend= $isFriend;
     }
 
@@ -178,7 +178,7 @@
      * @access  public
      * @return  bool
      */
-    function getIsFriend() {
+    public function getIsFriend() {
       return $this->isFriend;
     }
 
@@ -189,7 +189,7 @@
      * @param   bool isFamily
      */
     #[@xmlmapping(element= '@isFamily', type= 'boolean')]
-    function setIsFamily($isFamily) {
+    public function setIsFamily($isFamily) {
       $this->isFamily= $isFamily;
     }
 
@@ -199,7 +199,7 @@
      * @access  public
      * @return  bool
      */
-    function getIsFamily() {
+    public function getIsFamily() {
       return $this->isFamily;
     }
     
@@ -209,8 +209,8 @@
      * @access  public
      * @return  &peer.URL
      */
-    function &getURL() {
-      $url= &new URL(sprintf('http://static.flickr.com/%s/%s_%s_b.jpg',
+    public function &getURL() {
+      $url= new URL(sprintf('http://static.flickr.com/%s/%s_%s_b.jpg',
         $this->getServer(),
         $this->getId(),
         $this->getSecret()
@@ -224,7 +224,7 @@
      * @access  public
      * @return  com.flickr.FlicksPhotoSizes
      */
-    function getSizes() {
+    public function getSizes() {
       return $this->_client->invokeExpecting(
         'flickr.photos.getSizes',
         array('photo_id'  => $this->getId()),
@@ -238,7 +238,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'@('.$this->__id.") {\n";
       foreach (get_object_vars($this) as $key => $value) {
         if ('_' == $key{0}) continue;

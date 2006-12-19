@@ -66,7 +66,7 @@
   define('PFDF_EVENT_ENDPAGE',      0x0000);
   
   uses(
-    'org.fpdf.FPDFFont', 
+    'org.fpdf.FPDFFont',
     'lang.IllegalArgumentException',
     'lang.MethodNotImplementedException'
   );
@@ -78,7 +78,7 @@
    * @see      http://fpdf.org/
    */
   class FPDF extends Object {
-    var 
+    public 
       $page               = 0,        // current page number
       $n                  = 2,        // current object number
       $offsets,                       // array of object offsets
@@ -125,7 +125,7 @@
       $LayoutMode,                    // layout display mode
       $info               = array();  // Information (creator, author, title, ...)
     
-    var
+    public
       $_hooks             = array();
 
     /**
@@ -136,7 +136,7 @@
      * @param   string unit default FPDF_UNIT_MM
      * @param   string format default FPDF_FORMAT_A4
      */
-    function __construct(
+    public function __construct(
       $orientation= FPDF_PORTRAIT, 
       $unit= FPDF_UNIT_MM, 
       $format= FPDF_FORMAT_A4
@@ -179,7 +179,7 @@
      * @param   &org.fpdf.FPDFHook hook
      * @return  &org.fpdf.FPDFHook the hook added
      */
-    function &addHook($event, &$hook) {
+    public function &addHook($event, &$hook) {
       if (!isset($this->_hooks[$event])) $this->_hooks[$event]= array();
 
       $this->_hooks[$event][]= &$hook;
@@ -192,10 +192,10 @@
      * @access  public
      * @param   &util.Properties prop
      */
-    function loadFonts(&$prop) {
+    public function loadFonts(&$prop) {
       $section= $prop->getFirstSection();
       do {
-        $f= &new FPDFFont($section);
+        $f= new FPDFFont($section);
         $f->configure($prop);
         $this->addFont($f);
       } while ($section= $prop->getNextSection());
@@ -208,7 +208,7 @@
      * @param   string unit on of the FPDF_UNIT_* constants
      * @return  float
      */
-    function getScaleFactor($unit) {
+    public function getScaleFactor($unit) {
       static $map= array(
         FPDF_UNIT_PT    => 1,
         FPDF_UNIT_MM    => 2.83464566929,   // 72 / 25.4,
@@ -226,7 +226,7 @@
      * @param   string format on of the FPDF_FORMAT_* constants
      * @return  float[2]
      */
-    function getPageDimensions($format) {
+    public function getPageDimensions($format) {
       static $map= array(
         FPDF_FORMAT_A3          => array(841.89, 1190.55),
         FPDF_FORMAT_A4          => array(595.28, 841.89),
@@ -244,7 +244,7 @@
      * @access  public
      * @param   string format on of the FPDF_FORMAT_* constants
      */ 
-    function setPageFormat($format) {
+    public function setPageFormat($format) {
       list($this->fwPt, $this->fhPt)= $this->getPageDimensions($format);
       $this->fw= round($this->fwPt / $this->k, 2);
       $this->fh= round($this->fhPt / $this->k, 2);  
@@ -256,7 +256,7 @@
      * @access  public
      * @param   string orientation one of FPDF_PORTRAIT or FPDF_LANDSCAPE
      */
-    function setOrientation($orientation) {
+    public function setOrientation($orientation) {
       switch ($orientation) {
         case FPDF_PORTRAIT:
           $this->wPt= $this->fwPt;
@@ -283,7 +283,7 @@
      * @param   float top
      * @param   float right default -1 Default value is the left one. 
      */
-    function setMargins($left, $top, $right= -1) {
+    public function setMargins($left, $top, $right= -1) {
       $this->setLeftMargin($left);
       $this->setTopMargin($top);
       $this->setRightMargin((-1 == $right) ? $left : $right);
@@ -295,7 +295,7 @@
      * @access  public
      * @param   float margin
      */
-    function setLeftMargin($margin) {
+    public function setLeftMargin($margin) {
       $this->lMargin= $margin;
       if ($this->page > 0 and $this->x < $margin) $this->x= $margin;
     }
@@ -306,7 +306,7 @@
      * @access  public
      * @param   float margin
      */
-    function setTopMargin($margin) {
+    public function setTopMargin($margin) {
       $this->tMargin= $margin;
     }
 
@@ -316,7 +316,7 @@
      * @access  public
      * @param   float margin
      */
-    function setRightMargin($margin) {
+    public function setRightMargin($margin) {
       $this->rMargin= $margin;
     }
 
@@ -327,7 +327,7 @@
      * @param   int auto
      * @param   int margin default 0
      */
-    function setAutoPageBreak($auto, $margin= 0) {
+    public function setAutoPageBreak($auto, $margin= 0) {
       $this->AutoPageBreak= $auto;
       $this->bMargin= $margin;
       $this->PageBreakTrigger= $this->h- $margin;
@@ -340,7 +340,7 @@
      * @param   mixed zoom either one of the FPDF_ZOOM_* constants or a number indicating the zooming factor to use.
      * @param   string layout default FPDF_LAYOUT_CONTINUOUS
      */
-    function setDisplayMode($zoom, $layout= FPDF_LAYOUT_CONTINUOUS) {
+    public function setDisplayMode($zoom, $layout= FPDF_LAYOUT_CONTINUOUS) {
       $this->ZoomMode= $zoom;
       $this->LayoutMode= $layout;
     }
@@ -357,9 +357,9 @@
      * @param   bool compress
      * @throws  lang.MethodNotImplementedException
      */
-    function setCompression($compress) {
+    public function setCompression($compress) {
       if ($compress && !function_exists('gzcompress')) {
-        return throw(new MethodNotImplementedException('Compression not available'));
+        throw(new MethodNotImplementedException('Compression not available'));
       }
       $this->compress= $compress;
     }
@@ -370,7 +370,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->info['title']= $title;
     }
 
@@ -380,7 +380,7 @@
      * @access  public
      * @param   string subject
      */
-    function setSubject($subject) {
+    public function setSubject($subject) {
       $this->info['subject']= $subject;
     }
 
@@ -390,7 +390,7 @@
      * @access  public
      * @param   string author
      */
-    function setAuthor($author) {
+    public function setAuthor($author) {
       $this->info['author']= $author;
     }
 
@@ -403,7 +403,7 @@
      * @access  public
      * @param   string keywords
      */
-    function setKeywords($keywords) {
+    public function setKeywords($keywords) {
       $this->info['keywords']= $keywords;
     }
 
@@ -414,7 +414,7 @@
      * @access  public
      * @param   string creator
      */
-    function setCreator($creator) {
+    public function setCreator($creator) {
       $this->info['creator']= $creator;
     }
 
@@ -427,7 +427,7 @@
      *
      * @access  public
      */
-    function open() {
+    public function open() {
       $this->_begindoc();
     }
 
@@ -440,7 +440,7 @@
      *
      * @access  public
      */
-    function close() {
+    public function close() {
       if (0 == $this->page) $this->addPage();
       $this->_endpage();
       $this->_enddoc();
@@ -453,7 +453,7 @@
      * @access  public
      * @param   string orientation default NULL
      */
-    function addPage($orientation= NULL) {
+    public function addPage($orientation= NULL) {
       $family= $this->FontFamily;
       
       // Finalize previous page if needed
@@ -485,7 +485,7 @@
      * @access  public
      * @return  int
      */
-    function pageNumber() {
+    public function pageNumber() {
       return $this->page;
     }
 
@@ -499,7 +499,7 @@
      * @param   string[2] identifiers
      * @return  string
      */    
-    function _colorspec($r, $g, $b, $identifiers) {
+    public function _colorspec($r, $g, $b, $identifiers) {
 
       // Border case: Black or no green
       if (($r == 0 and $g == 0 and $b == 0) or $g == -1) {
@@ -521,7 +521,7 @@
      * @param   int g default -1
      * @param   int b default -1
      */
-    function setDrawColor($r, $g= -1, $b =-1) {
+    public function setDrawColor($r, $g= -1, $b =-1) {
       $this->DrawColor= $this->_colorspec($r, $g, $b, array('G', 'RG'));
       if ($this->page > 0) $this->_out($this->DrawColor);
     }
@@ -534,7 +534,7 @@
      * @param   int g default -1
      * @param   int b default -1
      */
-    function setFillColor($r, $g= -1, $b =-1) {
+    public function setFillColor($r, $g= -1, $b =-1) {
       $this->FillColor= $this->_colorspec($r, $g, $b, array('g', 'rg'));
       $this->ColorFlag= ($this->FillColor != $this->TextColor);
       if ($this->page > 0) $this->_out($this->FillColor);
@@ -548,7 +548,7 @@
      * @param   int g default -1
      * @param   int b default -1
      */
-    function setTextColor($r, $g= -1, $b =-1) {
+    public function setTextColor($r, $g= -1, $b =-1) {
       $this->TextColor= $this->_colorspec($r, $g, $b, array('g', 'rg'));
       $this->ColorFlag= ($this->FillColor != $this->TextColor);
     }
@@ -560,7 +560,7 @@
      * @param   string s
      * @return  float
      */
-    function getStringWidth($s) {
+    public function getStringWidth($s) {
       $s= (string)$s; // Explicitely cast to a string
 
       for ($i= 0, $l= strlen($s), $w= 0; $i < $l; $i++) {
@@ -575,7 +575,7 @@
      * @access  public
      * @param   int width
      */
-    function setLineWidth($width) {
+    public function setLineWidth($width) {
       $this->LineWidth= $width;
       if ($this->page > 0) $this->_out($width.' w');
     }
@@ -590,7 +590,7 @@
      * @param   int y2
      * @return  string
      */
-    function _renderline($x1, $y1, $x2, $y2) {
+    public function _renderline($x1, $y1, $x2, $y2) {
       return $x1.' -'.$y1.' m '.$x2.' -'.$y2.' l S';
     }
 
@@ -603,7 +603,7 @@
      * @param   int x2
      * @param   int y2
      */
-    function drawLine($x1, $y1, $x2, $y2) {
+    public function drawLine($x1, $y1, $x2, $y2) {
       $this->_out($this->_renderline($x1, $y1, $x2, $y2));
     }
 
@@ -618,7 +618,7 @@
      * @param   int style bitfield of FPDF_RECT_* constants
      * @return  string
      */
-    function _renderrect($x, $y, $w, $h, $style= NULL) {
+    public function _renderrect($x, $y, $w, $h, $style= NULL) {
       static $ops= array(
         FPDF_RECT_DRAW       => 'S',
         FPDF_RECT_FILL       => 'f',
@@ -637,7 +637,7 @@
      * @param   int h height
      * @param   int style default FPDF_RECT_DRAW bitfield of FPDF_RECT_* constants
      */
-    function drawRect($x, $y, $w, $h, $style= FPDF_RECT_DRAW) {
+    public function drawRect($x, $y, $w, $h, $style= FPDF_RECT_DRAW) {
       $this->_out($this->_renderrect($x, $y, $w, $h, $style));
     }
 
@@ -647,7 +647,7 @@
      * @access  public
      * @param   &org.pdf.FPDFFont font
      */
-    function addFont(&$font) {
+    public function addFont(&$font) {
       if (isset($this->fonts[$font->family.$font->style])) return 1;
       
       // Diff?
@@ -674,7 +674,7 @@
      * @param   string style default ''
      * @return  &org.pdf.FPDFFont
      */
-    function &getFontByName($family, $style= '') {
+    public function &getFontByName($family, $style= '') {
       if (!isset($this->fonts[$idx= strtolower($family).strtoupper($style)])) {
         return NULL;
       }
@@ -688,7 +688,7 @@
      * @access  public
      * @return  &org.pdf.FPDFFont
      */
-    function &getFont() {
+    public function &getFont() {
       return $this->CurrentFont;
     }
 
@@ -701,9 +701,9 @@
      * @throws  lang.IllegalArgumentException
      * @return  bool TRUE if the font was changed
      */
-    function setFont(&$font, $size= 0) {
-      if (!is_a($font, 'FPDFFont')) {
-        return throw(new IllegalArgumentException('Font is not a org.pdf.FPDFFont'));
+    public function setFont(&$font, $size= 0) {
+      if (!is('FPDFFont', $font)) {
+        throw(new IllegalArgumentException('Font is not a org.pdf.FPDFFont'));
       }
       
       $this->underline= $font->isUnderline();
@@ -734,7 +734,7 @@
      * @param   int size
      * @return  bool TRUE if the font size was changed
      */
-    function setFontSize($size) {
+    public function setFontSize($size) {
       if ($this->FontSizePt == $size) return FALSE;
 
       $this->FontSizePt= $size;
@@ -752,7 +752,7 @@
      * @return  int
      * @see     xp://org.fpdf.FPDF#setLink
      */
-    function addLink() {
+    public function addLink() {
       $n= sizeof($this->links)+ 1;
       $this->links[$n]= array(0, 0);
       return $n;
@@ -771,7 +771,7 @@
      * @param   float y default 0 Ordinate of target position; -1 indicates the current position. The default value is 0 (top of page).
      * @param   int page default -1 Number of target page; -1 indicates the current page. This is the default value.
      */
-    function setLink($link, $y= 0, $page= -1) {
+    public function setLink($link, $y= 0, $page= -1) {
       if ($y == -1) $y= $this->y;
       if ($page == -1) $page= $this->page;
 
@@ -791,7 +791,7 @@
      * @param   int h height
      * @param   mixed link URL or identifier returned by addLink().
      */
-    function putLink($x, $y, $w, $h, $link) {
+    public function putLink($x, $y, $w, $h, $link) {
       $this->PageLinks[$this->page][]= array(
         $x * $this->k, 
         $this->hPt- $y * $this->k, 
@@ -810,7 +810,7 @@
      * @param   string text
      * @return  string
      */
-    function _rendertext($x, $y, $text) {
+    public function _rendertext($x, $y, $text) {
       $text= $this->_escape($text);
       $s= 'BT '.$x.' -'.$y.' Td ('.$text.') Tj ET';
       if ($this->underline and $text != '') {
@@ -832,7 +832,7 @@
      * @param   int y Ordinate of the origin.
      * @param   string text
      */
-    function putText($x, $y, $text) {
+    public function putText($x, $y, $text) {
       $this->_out($this->_rendertext($s));
     }
 
@@ -842,7 +842,7 @@
      * @access  public
      * @return  bool
      */
-    function getAcceptPageBreak() {
+    public function getAcceptPageBreak() {
       return $this->AutoPageBreak;
     }
 
@@ -869,7 +869,7 @@
      * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
      * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function writeCell(
+    public function writeCell(
       $w, 
       $h= 0, 
       $text= '', 
@@ -983,7 +983,7 @@
      * @param   int align default FPDF_ALIGN_LEFT one of the FPDF_ALIGN_* constants
      * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
      */
-    function writeCells(
+    public function writeCells(
       $w, 
       $h= 5, 
       $txt, 
@@ -1080,7 +1080,7 @@
      * @param   string txt String to print.
      * @param   mixed link default '' URL or identifier returned by addLink().
      */
-    function writeText($h, $text, $link= '') {
+    public function writeText($h, $text, $link= '') {
       $w= $this->w- $this->rMargin- $this->x;
       $wmax= ($w- 2 * $this->cMargin) * 1000 / $this->FontSize;
       $s= str_replace("\r", '', $text);
@@ -1198,13 +1198,13 @@
      * @param   string link default ''
      * @throws  lang.IllegalArgumentException
      */
-    function putImage($file, $x, $y, $w= 0, $h= 0, $type= '', $link= '') {
+    public function putImage($file, $x, $y, $w= 0, $h= 0, $type= '', $link= '') {
       if (!isset($this->images[$file])) {
 
         // First use of image, get info
         if ($type == '') {
           if (FALSE === ($pos= strrpos($file, '.'))) {
-            return throw(new IllegalArgumentException(
+            throw(new IllegalArgumentException(
               'Image file has no extension and no type was specified: '.$file
             ));
           }
@@ -1214,23 +1214,23 @@
         switch (strtolower($type)) {
           case 'jpg': 
           case 'jpeg':
-            try(); {
+            try {
               $info= $this->_parsejpg($file);
-            } if (catch('IllegalArgumentException', $e)) {
-              return throw($e);
+            } catch (IllegalArgumentException $e) {
+              throw($e);
             }
             break;
           
           case 'png':
-            try(); {
+            try {
               $info= $this->_parsepng($file);
-            } if (catch('IllegalArgumentException', $e)) {
-              return throw($e);
+            } catch (IllegalArgumentException $e) {
+              throw($e);
             }
             break;
           
           default:
-            return throw(new IllegalArgumentException(
+            throw(new IllegalArgumentException(
               'Unsupported image file type: '.$type
             ));
         }
@@ -1260,7 +1260,7 @@
      * @access  public
      * @param   int h default -1
      */
-    function lineFeed($h= -1) {
+    public function lineFeed($h= -1) {
       $this->x= $this->lMargin;
       $this->y+= ($h < 0) ? $this->lasth : $h;
     }
@@ -1271,7 +1271,7 @@
      * @access  public
      * @return  int
      */
-    function getX() {
+    public function getX() {
       return $this->x;
     }
 
@@ -1282,7 +1282,7 @@
      * @access  public
      * @param   int x
      */
-    function setX($x) {
+    public function setX($x) {
       $this->x= ($x < 0) ? $this->w+ $x : $x;
     }
 
@@ -1292,7 +1292,7 @@
      * @access  public
      * @return  int
      */
-    function getY() {
+    public function getY() {
       return $this->y;
     }
 
@@ -1303,7 +1303,7 @@
      * @access  public
      * @param   int y
      */
-    function setY($y) {
+    public function setY($y) {
       $this->x= $this->lMargin;
       $this->y= ($y < 0) ? $this->h+ $y : $y;
     }
@@ -1315,7 +1315,7 @@
      * @param   int x
      * @param   int y
      */
-    function setXY($x, $y) {
+    public function setXY($x, $y) {
       $this->SetY($y);
       $this->SetX($x);
     }
@@ -1327,7 +1327,7 @@
      * @access  public
      * @return  string
      */
-    function getBuffer() {
+    public function getBuffer() {
       if ($this->state < 3) $this->close();
       return $this->buffer;
     }
@@ -1337,7 +1337,7 @@
      *
      * @access  public
      */
-    function _begindoc() {
+    public function _begindoc() {
       $this->state= 1;
       $this->_out('%PDF-1.3');
     }
@@ -1347,7 +1347,7 @@
      *
      * @access  public
      */
-    function _enddoc() {
+    public function _enddoc() {
       $nb= $this->page;
 
       if ($this->DefOrientation == FPDF_PORTRAIT) {
@@ -1412,7 +1412,7 @@
         
         // Sanity check
         if (!file_exists($file)) {
-          return throw(new IOException('Font file "'.$file.'" not found'));
+          throw(new IOException('Font file "'.$file.'" not found'));
         }
         
         $size= filesize($file);
@@ -1634,7 +1634,7 @@
      * @access  private
      * @param   string orientation
      */
-    function _beginpage($orientation) {
+    public function _beginpage($orientation) {
       $this->page++;
       $this->pages[$this->page]='';
       $this->state= 2;
@@ -1679,7 +1679,7 @@
      *
      * @access  private
      */
-    function _endpage() {
+    public function _endpage() {
       for ($i= 0, $s= sizeof($this->_hooks[PFDF_EVENT_ENDPAGE]); $i < $s; $i++) {
         $this->_hooks[PFDF_EVENT_ENDPAGE][$i]->onEndPage($this, $this->page);
       }
@@ -1691,7 +1691,7 @@
      *
      * @access  private
      */
-    function _newobj() {
+    public function _newobj() {
       $this->n++;
       $this->offsets[$this->n]= strlen($this->buffer);
       $this->_out($this->n.' 0 obj');
@@ -1706,7 +1706,7 @@
      * @param   string txt
      * @return  string
      */
-    function _renderunderline($x, $y, $txt) {
+    public function _renderunderline($x, $y, $txt) {
       $up= $this->CurrentFont->up;
       $ut= $this->CurrentFont->ut;
       $w= $this->getStringWidth($txt)+ $this->ws * substr_count($txt, ' ');
@@ -1720,14 +1720,14 @@
      * @param   string file
      * @throws  lang.IllegalArgumentException in case image is not a JPEG file
      */
-    function _parsejpg($file) {
+    public function _parsejpg($file) {
       if (FALSE === ($a= getimagesize($file))) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Missing or incorrect image file: '.$file
         ));
       }
       if ($a[2] != IMG_JPEG) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Not a JPEG file: '.$file
         ));
       }
@@ -1764,28 +1764,28 @@
      * @param   string file
      * @throws  lang.IllegalArgumentException in case the file is corrupt
      */
-    function _parsepng($file) {
+    public function _parsepng($file) {
       $f= fopen($file, 'rb');
       if (!$f) {
-        return throw(new IllegalArgumentException('Cannot open image file: '.$file));
+        throw(new IllegalArgumentException('Cannot open image file: '.$file));
       }
 
       // Check signature
       if (fread($f, 8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
-        return throw(new IllegalArgumentException('Not a PNG file: '.$file));
+        throw(new IllegalArgumentException('Not a PNG file: '.$file));
       }
 
       // Read header chunk
       fread($f, 4);
       if (fread($f, 4) != 'IHDR') {
-        return throw(new IllegalArgumentException('Incorrect PNG file: '.$file));
+        throw(new IllegalArgumentException('Incorrect PNG file: '.$file));
       }
       
       $w= $this->_freadint($f);
       $h= $this->_freadint($f);
       $bpc= ord(fread($f, 1));
       if ($bpc > 8) {
-        return throw(new IllegalArgumentException('16-bit depth not supported: '.$file));
+        throw(new IllegalArgumentException('16-bit depth not supported: '.$file));
       }
 
       // Figure out colorspace      
@@ -1794,17 +1794,17 @@
         case 2: $colspace= 'DeviceRGB'; break;
         case 3: $colspace= 'Indexed'; break;
         default:
-          return throw(new IllegalArgumentException('Alpha channel not supported: '.$file));
+          throw(new IllegalArgumentException('Alpha channel not supported: '.$file));
       }
       
       if (ord(fread($f, 1)) != 0) {
-        return throw(new IllegalArgumentException('Unknown compression method: '.$file));
+        throw(new IllegalArgumentException('Unknown compression method: '.$file));
       }
       if (ord(fread($f, 1)) != 0) {
-        return throw(new IllegalArgumentException('Unknown filter method: '.$file));
+        throw(new IllegalArgumentException('Unknown filter method: '.$file));
       }
       if (ord(fread($f, 1)) != 0) {
-        return throw(new IllegalArgumentException('Interlacing not supported: '.$file));
+        throw(new IllegalArgumentException('Interlacing not supported: '.$file));
       }
 
       fread($f, 4);
@@ -1849,7 +1849,7 @@
       } while ($n);
 
       if ($colspace == 'Indexed' and empty($pal)) {
-        return throw(new IllegalArgumentException('Missing palette in '.$file));
+        throw(new IllegalArgumentException('Missing palette in '.$file));
       }
       
       fclose($f);
@@ -1873,7 +1873,7 @@
      * @param   resource f
      * @return  int
      */
-    function _freadint($f) {
+    public function _freadint($f) {
       return (
         (ord(fread($f, 1)) << 24) + 
         (ord(fread($f, 1)) << 16) + 
@@ -1889,7 +1889,7 @@
      * @param   string s
      * @return  string
      */
-    function _escape($s) {
+    public function _escape($s) {
       return str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\', $s)));
     }
 
@@ -1899,7 +1899,7 @@
      * @access  private
      * @param   string s
      */
-    function _out($s) {
+    public function _out($s) {
       if (2 == $this->state) {
         $this->pages[$this->page].= $s."\n"; 
       } else {

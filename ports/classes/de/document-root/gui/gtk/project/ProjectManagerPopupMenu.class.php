@@ -4,13 +4,13 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'org.gnome.widgets.GtkMenuWidget',
     'org.gnome.widgets.FileDialog'
   );
 
   class ProjectManagerPopupMenu extends GtkMenuWidget {
-    var
+    public
       $parent=    NULL;
     
     /**
@@ -19,7 +19,7 @@
      * @access  public
      * @param   &Object
      */
-    function setParent(&$parent) {
+    public function setParent(&$parent) {
       $this->parent= &$parent;
     }
 
@@ -31,7 +31,7 @@
      * @param   &GdkEvent
      * @return  boolean success
      */
-    function addFile(&$menuItem, &$event) {
+    public function addFile(&$menuItem, &$event) {
       if ($this->parent->dialog->show ()) {
       
         // OK pressed and file selected
@@ -49,7 +49,7 @@
      *
      * @access  public
      */    
-    function reparse() {
+    public function reparse() {
       $this->parent->reparse();
     }
   }

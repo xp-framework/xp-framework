@@ -10,7 +10,7 @@
    * @see      xp://org.fpdf.FPDF#addHook
    * @purpose  Interface
    */
-  class FPDFHook extends Interface {
+  interface FPDFHook {
   
     /**
      * Gets called when a page is finalized
@@ -19,7 +19,7 @@
      * @param   &org.fpdf.FPDF pdf
      * @param   int page the number of the page
      */
-    function onEndPage(&$pdf, $page) { }
+    public function onEndPage(&$pdf, $page);
   
   }
 ?>

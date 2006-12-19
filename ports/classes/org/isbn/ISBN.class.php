@@ -18,7 +18,7 @@
    * @purpose  Represent an International Standard Book Number (ISBN)
    */
   class ISBN extends Object {
-    var
+    public
       $number = '';
       
     /**
@@ -28,9 +28,9 @@
      * @param   string isbn
      * @throws  lang.IllegalArgumentException in case the ISBN is invalid
      */
-    function __construct($isbn) {
+    public function __construct($isbn) {
       if (!ISBN::isValid($isbn)) {
-        return throw(new IllegalArgumentException('ISBN "'.$isbn.'" is invalid'));
+        throw(new IllegalArgumentException('ISBN "'.$isbn.'" is invalid'));
       }
       $this->number= $isbn;
     }
@@ -41,7 +41,7 @@
      * @access  public
      * @return  string
      */
-    function getNumber() {
+    public function getNumber() {
       return $this->number;
     }
     
@@ -53,7 +53,7 @@
      * @param   string isbn
      * @return  bool TRUE if the number is valid
      */
-    function isValid($isbn) {      
+    public static function isValid($isbn) {      
       switch ($s= strlen($stripped= str_replace('-', '', $isbn))) {
         case 10: {      // ISBN10, until 01.01.2007
           for ($product= 0, $i= 0; $i < 9; $i++) {
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->number.')';
     }
   }

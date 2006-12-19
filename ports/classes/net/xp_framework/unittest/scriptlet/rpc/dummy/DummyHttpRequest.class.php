@@ -16,7 +16,7 @@
    * @purpose  Unittesting dummy
    */
   class DummyHttpRequest extends HttpRequest {
-    var
+    public
       $_response= '';
       
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   string data
      */
-    function setResponse($data) {
+    public function setResponse($data) {
       $this->_response= $data;
     }    
     
@@ -35,7 +35,7 @@
      * @access  public
      * @return  &peer.http.HttpResponse response object
      */
-    function &send($timeout= 60) {
+    public function &send($timeout= 60) {
       return new HttpResponse(new DummySocket($this->_response));
     }
   }

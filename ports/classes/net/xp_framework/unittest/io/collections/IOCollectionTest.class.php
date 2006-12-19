@@ -20,8 +20,8 @@
      * @access  public
      */
     #[@test]
-    function nextReturnsNull() {
-      $empty= &new MockCollection('empty-dir');
+    public function nextReturnsNull() {
+      $empty= new MockCollection('empty-dir');
       $empty->open();
       $this->assertNull($empty->next());
       $empty->close();
@@ -33,7 +33,7 @@
      * @access  public
      */
     #[@test]
-    function nextReturnsIOElements() {
+    public function nextReturnsIOElements() {
       $this->fixture->open();
       for ($i= 0; $e= &$this->fixture->next(); $i++) {
         $this->assertTrue(is('io.collections.IOElement', $e));
@@ -48,7 +48,7 @@
      * @access  public
      */
     #[@test]
-    function nextReturnsNullAfterIteration() {
+    public function nextReturnsNullAfterIteration() {
       $this->fixture->open();
       while ($this->fixture->next()) { 
         // Intentionally empty
@@ -63,7 +63,7 @@
      * @access  public
      */
     #[@test]
-    function consecutiveIteration() {
+    public function consecutiveIteration() {
       for ($i= 0; $i < 2; $i++) {
         $elements= 0;
         $this->fixture->open();
@@ -82,7 +82,7 @@
      * @access  public
      */
     #[@test]
-    function consecutiveIterationWithRewind() {
+    public function consecutiveIterationWithRewind() {
       $this->fixture->open();
       for ($i= 0; $i < 2; $i++) {
         $elements= 0;

@@ -69,7 +69,7 @@
    * @purpose  Wrap htdig query
    */
   class HtdigSearch extends Object {
-    var
+    public
       $config=      NULL,    
       $params=      array(), 
       $words=       array(),
@@ -79,7 +79,7 @@
       $method=      'boolean',
       $maxresults=  0;
     
-    var
+    public
       $delimiter=   '|',
       $executable=  '';
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   string config
      */
-    function setConfig($config) {
+    public function setConfig($config) {
       $this->config= $config;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  string
      */
-    function getConfig() {
+    public function getConfig() {
       return $this->config;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @param   mixed[] params
      */
-    function setParams($params) {
+    public function setParams($params) {
       $this->params= $params;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getParams() {
+    public function getParams() {
       return $this->params;
     }
     
@@ -130,7 +130,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $value) {
+    public function setParam($name, $value) {
       $this->params[$name]= $value;
     }
     
@@ -141,7 +141,7 @@
      * @param   string name
      * @return  string value or NULL if isset
      */
-    function getParam($name) {
+    public function getParam($name) {
       return (isset($this->params[$name])
         ? $this->params[$name]
         : NULL
@@ -154,7 +154,7 @@
      * @access  public
      * @param   mixed[] words
      */
-    function setWords($words) {
+    public function setWords($words) {
       $this->words= $words;
     }
 
@@ -164,7 +164,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getWords() {
+    public function getWords() {
       return $this->words;
     }
 
@@ -174,7 +174,7 @@
      * @access  public
      * @param   mixed[] excludes
      */
-    function setExcludes($excludes) {
+    public function setExcludes($excludes) {
       $this->excludes= $excludes;
     }
 
@@ -184,7 +184,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getExcludes() {
+    public function getExcludes() {
       return $this->excludes;
     }
 
@@ -194,7 +194,7 @@
      * @access  public
      * @param   string algorithm
      */
-    function setAlgorithms($algorithm) {
+    public function setAlgorithms($algorithm) {
       $this->algorithms= $algorithm;
     }
 
@@ -204,7 +204,7 @@
      * @access  public
      * @return  string
      */
-    function getAlgorithms() {
+    public function getAlgorithms() {
       return $this->algorithms;
     }
 
@@ -214,7 +214,7 @@
      * @access  public
      * @param   mixed sort
      */
-    function setSort($sort) {
+    public function setSort($sort) {
       $this->sort= $sort;
     }
 
@@ -224,7 +224,7 @@
      * @access  public
      * @return  mixed
      */
-    function getSort() {
+    public function getSort() {
       return $this->sort;
     }
 
@@ -234,7 +234,7 @@
      * @access  public
      * @param   int maxresults
      */
-    function setMaxresults($maxresults) {
+    public function setMaxresults($maxresults) {
       $this->maxresults= $maxresults;
     }
 
@@ -244,7 +244,7 @@
      * @access  public
      * @return  int
      */
-    function getMaxresults() {
+    public function getMaxresults() {
       return $this->maxresults;
     }
 
@@ -254,7 +254,7 @@
      * @access  public
      * @param   mixed method
      */
-    function setMethod($method) {
+    public function setMethod($method) {
       $this->method= $method;
     }
 
@@ -264,7 +264,7 @@
      * @access  public
      * @return  mixed
      */
-    function getMethod() {
+    public function getMethod() {
       return $this->method;
     }
 
@@ -274,7 +274,7 @@
      * @access  protected
      * @return  string query
      */
-    function _getWordString() {
+    public function _getWordString() {
       $str= '';
       foreach ($this->getWords() as $w) { 
         if ($w{0} != '-') {
@@ -293,7 +293,7 @@
      * @access  protected
      * @return  string query
      */
-    function _getQuery() {
+    public function _getQuery() {
       $params= $this->getParams();
 
       // If excludes are given, add them to the query
@@ -332,7 +332,7 @@
      * @access  public
      * @param   string executable
      */
-    function setExecutable($executable) {
+    public function setExecutable($executable) {
       $this->executable= $executable;
     }
 
@@ -342,7 +342,7 @@
      * @access  public
      * @return  string
      */
-    function getExecutable() {
+    public function getExecutable() {
       return $this->executable;
     }
 
@@ -354,30 +354,30 @@
      * @throws  io.IOException in case the invocation of htdig failed
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
-    function &invoke() {
+    public function &invoke() {
       $log= &Logger::getInstance();
       $cat= &$log->getCategory();
 
-      try(); {
+      try {
         $cmdline= sprintf('%s -v %s %s',
           $this->getExecutable(),
           strlen($this->getConfig()) ? '-c '.$this->getConfig() : '',
           "'".$this->_getQuery()."' 2>&1"
         );
-        $p= &new Process($cmdline);
+        $p= new Process($cmdline);
 
         // Read standard output
         $output= array();
         while (!$p->out->eof()) { $output[]= $p->out->readLine(); }
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
-      $result= &new HtdigResultset();
+      $result= new HtdigResultset();
       $metaresult= array();
       $hasCsv= FALSE;
 
-      try(); {
+      try {
       
         // Parse metadata result (search result header)
         while (FALSE !== current($output) && !$hasCsv) {
@@ -411,8 +411,8 @@
           }
           next ($output);
         }
-      } if (catch('IllegalArgumentException', $e)) {
-        return throw ($e);
+      } catch (IllegalArgumentException $e) {
+        throw ($e);
       }
 
       return $result;

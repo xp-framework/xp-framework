@@ -5,8 +5,8 @@
  */
  
   uses(
-    'unittest.TestCase', 
-    'unittest.TestSuite', 
+    'unittest.TestCase',
+    'unittest.TestSuite',
     'net.xp_framework.unittest.tests.SimpleTestCase'
   );
 
@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class LimitTest extends TestCase {
-    var
+    public
       $suite= NULL;
       
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->suite= &new TestSuite();
+    public function setUp() {
+      $this->suite= new TestSuite();
     }
 
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */    
     #[@test]
-    function timeouts() {
+    public function timeouts() {
       $r= &$this->suite->runTest(new SimpleTestCase('timeouts'));
       $this->assertEquals(1, $r->failureCount());
     }    
@@ -46,7 +46,7 @@
      * @access  public
      */    
     #[@test]
-    function noTimeout() {
+    public function noTimeout() {
       $r= &$this->suite->runTest(new SimpleTestCase('noTimeout'));
       $this->assertEquals(1, $r->successCount());
     }    

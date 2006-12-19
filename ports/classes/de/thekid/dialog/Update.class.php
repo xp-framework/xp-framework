@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'de.thekid.dialog.IEntry');
 
   /**
    * Represents an update to an album
@@ -12,8 +12,8 @@
    * @see      xp://de.thekid.dialog.Album
    * @purpose  Value object
    */
-  class Update extends Object {
-    var
+  class Update extends Object implements IEntry {
+    public
       $albumName    = '',
       $title        = '',
       $description  = '',
@@ -25,7 +25,7 @@
      * @access  public
      * @param   string albumName
      */
-    function setAlbumName($albumName) {
+    public function setAlbumName($albumName) {
       $this->albumName= $albumName;
     }
 
@@ -35,7 +35,7 @@
      * @access  public
      * @return  string
      */
-    function getAlbumName() {
+    public function getAlbumName() {
       return $this->albumName;
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -65,7 +65,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &$date;
     }
 
@@ -95,9 +95,9 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
 
-  } implements(__FILE__, 'de.thekid.dialog.IEntry');
+  } 
 ?>

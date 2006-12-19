@@ -19,7 +19,7 @@
    * @see http://www.gnu.org/software/tar/tar.html
    */
   class TarArchiveEntry extends Object {
-    var
+    public
       $filename,        // Dateiname
       $mode,            // Modus
       $uid,             // User-ID
@@ -44,7 +44,7 @@
      * @param   array data Daten aus unpack
      * @param   int offset Offset innerhalb des Archivs
      */
-    function __construct($data, $offset) {
+    public function __construct($data, $offset) {
       $this->filename= trim($data['filename']);
       $this->mode= octdec(trim($data['mode']));
       $this->uid= octdec(trim($data['uid']));
@@ -64,7 +64,7 @@
       
     }
     
-    function getFileTypeString() {
+    public function getFileTypeString() {
       static $map = array(
         '-' => TAR_FTYPE_IFREG,
         'd' => TAR_FTYPE_IFDIR,
@@ -78,19 +78,19 @@
       foreach ($map as $char => $mask) if ($this->mode & $mask) return $char;
     }
 
-    function getUserPermissions() {
+    public function getUserPermissions() {
       return ($this->mode >> 6) & 7;
     }
     
-    function getGroupPermissions() {
+    public function getGroupPermissions() {
       return ($this->mode >> 3) & 7;
     }
 
-    function getWorldPermissions() {
+    public function getWorldPermissions() {
       return ($this->mode) & 7;
     }
     
-    function getPermissionString() {
+    public function getPermissionString() {
       return sprintf(
         '%s%s%s', 
         $this->_rwx($this->getUserPermissions()),
@@ -99,7 +99,7 @@
       );
     }
 
-    function _rwx($bits) {
+    public function _rwx($bits) {
       $str= '';
       $str.= ($bits & 4) ? 'r' : '-';
       $str.= ($bits & 2) ? 'w' : '-';

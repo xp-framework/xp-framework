@@ -28,7 +28,7 @@
    * @platform Windows
    */
   class COMObject extends Object {
-    var
+    public
       $h   = NULL;
   
     /**
@@ -38,7 +38,7 @@
      * @param   string identifier
      * @param   string server default NULL
      */    
-    function __construct($identifier, $server= NULL) {
+    public function __construct($identifier, $server= NULL) {
       
       $this->h= com_load($identifier, $server);
     }
@@ -51,9 +51,9 @@
      * @param   &mixed value
      * @return  bool success
      */
-    function __get($name, &$value) {
+    public function __get($name) {
       $value= &com_get($this->h, $name);
-      return TRUE;
+      return $value;
     }
     
     /**
@@ -64,7 +64,7 @@
      * @param   &mixed value
      * @return  bool success
      */
-    function __set($name, &$value) {
+    public function __set($name, &$value) {
       com_set($this->h, $name, $value);
       return TRUE;
     }
@@ -78,12 +78,12 @@
      * @param   &mixed return
      * @return  bool success
      */
-    function __call($name, $args, $return) {
+    public function __call($name, $args) {
       $return= call_user_func_array(
         'com_invoke', 
         array_merge(array(&$this->h, $name), $args)
       );
-      return TRUE;
+      return $return;
     }
     
     /**
@@ -91,7 +91,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       com_release($this->h);
       $this->h= NULL;
     }

@@ -11,11 +11,11 @@
    * @purpose  Represent a font
    */
   class FPDFFont extends Object {
-    var 
+    public 
       $name     = NULL,
       $index    = 0;
 
-    var
+    public
       $family,
       $style,
       $type,
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
       
     }
@@ -44,7 +44,7 @@
      * @access  public
      * @return  bool
      */
-    function isUnderline() {
+    public function isUnderline() {
       return (FALSE !== strpos($this->style, 'U'));
     }
     
@@ -54,7 +54,7 @@
      * @access  public
      * @return  bool
      */
-    function isBold() {
+    public function isBold() {
       return (FALSE !== strpos($this->style, 'B'));
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  bool
      */
-    function isItalic() {
+    public function isItalic() {
       return (FALSE !== strpos($this->style, 'I'));
     }
     
@@ -74,8 +74,8 @@
      * @access  public
      * @param   &util.Properties p
      */
-    function configure(&$p) {
-      if (NULL == $this->name) return throw(new IllegalStateException('no name defined'));
+    public function configure(&$p) {
+      if (NULL == $this->name) throw(new IllegalStateException('no name defined'));
       
       $this->cw= $p->readArray($this->name, 'cw', array());
       $this->fontname= $p->readString($this->name, 'name', $this->name);
@@ -100,7 +100,7 @@
      * @param   char c
      * @return  int
      */
-    function getCharWidth($c) {
+    public function getCharWidth($c) {
       return $this->charwidths[ord($c)];
     }
   }

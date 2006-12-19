@@ -20,7 +20,7 @@
      * @access  protected
      * @return  string
      */
-    function driverName() {
+    public function driverName() {
       return 'ext://pgsql';
     }
   }

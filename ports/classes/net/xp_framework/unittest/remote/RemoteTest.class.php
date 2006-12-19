@@ -25,7 +25,7 @@
    * @purpose  TestCase
    */
   class RemoteTest extends TestCase {
-    var
+    public
       $handler= array();
 
     /**
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       $hf= &HandlerFactory::getInstance();
       $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
     }
@@ -45,7 +45,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $pool= &HandlerInstancePool::getInstance();
       
       foreach (array(
@@ -65,7 +65,7 @@
      * @access  public
      */
     #[@test]
-    function mockHandler() {
+    public function mockHandler() {
       foreach ($this->handler as $handler) {
         $this->assertClass($handler, 'net.xp_framework.unittest.remote.MockProtocolHandler');
       }
@@ -77,7 +77,7 @@
      * @access  public
      */
     #[@test]
-    function forNameSucceeds() {
+    public function forNameSucceeds() {
       Remote::forName(REMOTE_SPEC_ONE);
     }
 
@@ -88,7 +88,7 @@
      * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
-    function forNameFailsToConnect() {
+    public function forNameFailsToConnect() {
       Remote::forName(REMOTE_SPEC_TWO);
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      */
     #[@test]
-    function forNameSucceedsForCluster() {
+    public function forNameSucceedsForCluster() {
       Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_ONE);
       Remote::forName(REMOTE_SPEC_ONE.','.REMOTE_SPEC_TWO);
     }
@@ -111,7 +111,7 @@
      * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
-    function forNameFailsToConnectCluster() {
+    public function forNameFailsToConnectCluster() {
       Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_THREE);
       Remote::forName(REMOTE_SPEC_THREE.','.REMOTE_SPEC_TWO);
     }
@@ -123,7 +123,7 @@
      * @access  public
      */
     #[@test]
-    function forNameSameInstance() {
+    public function forNameSameInstance() {
       $this->assertTrue(Remote::forName(REMOTE_SPEC_ONE) === Remote::forName(REMOTE_SPEC_ONE), 'a != a');
       $this->assertTrue(Remote::forName(REMOTE_SPEC_ONE) !== Remote::forName(REMOTE_SPEC_OTHER), 'a == b');
     }
@@ -135,7 +135,7 @@
      * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
-    function forNameFailsForUnknownProtocol() {
+    public function forNameFailsForUnknownProtocol() {
       Remote::forName('unknown://irrelevant');
     }
 
@@ -145,11 +145,11 @@
      * @access  public
      */
     #[@test]
-    function lookup() {
+    public function lookup() {
       $r= &Remote::forName(REMOTE_SPEC_ONE);
       
       // Bind a person object
-      $person= &new Person();
+      $person= new Person();
       $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= &$person;
 
       // Lookup the person object
@@ -163,7 +163,7 @@
      * @access  public
      */
     #[@test, @expect('remote.NameNotFoundException')]
-    function lookupNonExistantName() {
+    public function lookupNonExistantName() {
       $r= &Remote::forName(REMOTE_SPEC_ONE);
       $r->lookup('does/not/Exist');
     }

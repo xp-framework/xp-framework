@@ -11,7 +11,7 @@
    * @purpose  Represent Excel object
    */
   class Worksheet extends Object {
-    var
+    public
       $sheets   = array();
       
   }

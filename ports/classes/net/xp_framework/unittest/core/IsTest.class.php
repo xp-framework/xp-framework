@@ -20,7 +20,7 @@
      * @access  public
      */
     #[@test]
-    function xpNullIsNull() {
+    public function xpNullIsNull() {
       $this->assertTrue(is(NULL, xp::null()));
     }
 
@@ -30,8 +30,8 @@
      * @access  public
      */
     #[@test]
-    function shortClassName() {
-      $this->assertTrue(is('Object', new Object()));
+    public function shortClassName() {
+      $this->assertTrue(is('Generic', new Object()));
     }
 
     /**
@@ -40,7 +40,7 @@
      * @access  public
      */
     #[@test]
-    function undefinedClassName() {
+    public function undefinedClassName() {
       $this->assertFalse(class_exists('Undefined_Class'));
       $this->assertFalse(is('Undefined_Class', new Object()));
     }
@@ -51,8 +51,8 @@
      * @access  public
      */
     #[@test]
-    function fullyQualifiedClassName() {
-      $this->assertTrue(is('lang.Object', new Object()));
+    public function fullyQualifiedClassName() {
+      $this->assertTrue(is('lang.Generic', new Object()));
     }
 
     /**
@@ -61,7 +61,7 @@
      * @access  public
      */
     #[@test]
-    function interfaces() {
+    public function interfaces() {
       $cl= &ClassLoader::getDefault();
       $cl->defineClass(
         'DestructionCallbackImpl', 

@@ -28,7 +28,7 @@
    * @purpose  JNLP resource
    */
   class JnlpJ2seResource extends JnlpResource {
-    var
+    public
       $version          = '',
       $href             = '',
       $initialHeapSize  = 0,
@@ -43,7 +43,7 @@
      * @param   int initialHeapSize default 0
      * @param   int maxHeapSize default 0
      */
-    function __construct($version, $href= NULL, $initialHeapSize= 0, $maxHeapSize= 0) {
+    public function __construct($version, $href= NULL, $initialHeapSize= 0, $maxHeapSize= 0) {
       $this->version= $version;
       $this->href= $href;
       $this->initialHeapSize= $initialHeapSize;
@@ -56,7 +56,7 @@
      * @access  public
      * @param   string version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      * @return  string
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
     
@@ -76,7 +76,7 @@
      * @access  public
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->href= $href;
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function getHref() {
+    public function getHref() {
       return $this->href;
     }
 
@@ -96,7 +96,7 @@
      * @access  public
      * @param   int initialHeapSize
      */
-    function setInitialHeapSize($initialHeapSize) {
+    public function setInitialHeapSize($initialHeapSize) {
       $this->initialHeapSize= $initialHeapSize;
     }
 
@@ -106,7 +106,7 @@
      * @access  public
      * @return  int
      */
-    function getInitialHeapSize() {
+    public function getInitialHeapSize() {
       return $this->initialHeapSize;
     }
 
@@ -116,7 +116,7 @@
      * @access  public
      * @param   int maxHeapSize
      */
-    function setMaxHeapSize($maxHeapSize) {
+    public function setMaxHeapSize($maxHeapSize) {
       $this->maxHeapSize= $maxHeapSize;
     }
 
@@ -126,7 +126,7 @@
      * @access  public
      * @return  int
      */
-    function getMaxHeapSize() {
+    public function getMaxHeapSize() {
       return $this->maxHeapSize;
     }
 
@@ -136,7 +136,7 @@
      * @access  public
      * @return  string
      */
-    function getTagName() { 
+    public function getTagName() { 
       return 'j2se';
     }
 
@@ -146,7 +146,7 @@
      * @access  public
      * @return  array
      */
-    function getTagAttributes() { 
+    public function getTagAttributes() { 
       return array_merge(
         array('href' => $this->href), 
         $this->href ? array('href' => $this->href) : array(),

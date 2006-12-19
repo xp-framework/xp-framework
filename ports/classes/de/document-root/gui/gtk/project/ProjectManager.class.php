@@ -36,9 +36,9 @@
       $l= &Logger::getInstance();
       $this->log= &$l->getCategory ($this->getClassName());
 
-      try(); {
+      try {
         $this->prop= &$pm->getProperties('prj');
-      } if (catch('IOException', $e)) {
+      } catch(IOException $e) {
         // Ignore exception, but take it off the stack
       }
       
@@ -186,9 +186,9 @@
 
       // Handle commandline arguments
       for ($i= 1; $i <= $this->param->count; $i++) {
-        try(); { 
+        try { 
           $a= $this->param->value ($i); 
-        } if (catch ('Exception', $e)) { 
+        } catch(Exception $e) { 
           break; 
         }
         if ('-' !== $a{0}) $this->_recursiveAddFile ($a);

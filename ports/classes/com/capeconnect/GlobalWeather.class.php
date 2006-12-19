@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.SOAPClient', 
+    'webservices.soap.SOAPClient',
     'webservices.soap.transport.SOAPHTTPTransport'
   );
   
@@ -42,7 +42,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct(
         new SOAPHTTPTransport('http://live.capescience.com/ccx/GlobalWeather'),
         'capeconnect:GlobalWeather:GlobalWeather'
@@ -58,7 +58,7 @@
      * @param   string code Airport code, such as "FRA" for Frankfurt/Main, Germany  
      * @return  &lang.Object report                                                        
      */
-    function &getWeatherReport($code) {
+    public function &getWeatherReport($code) {
       return $this->invoke('getWeatherReport', new Parameter('code', $code));
     }
   }

@@ -13,7 +13,7 @@
    * @see      xp://webservices.soap.transport.SOAPHTTPTransport
    */
   class SOAPDummyTransport extends SOAPTransport {
-    var
+    public
       $answer=    '',
       $request=   NULL;
 
@@ -23,7 +23,7 @@
      * @access  public
      * @param   &webservices.soap.SOAPMessage request
      */
-    function setRequest(&$request) {
+    public function setRequest(&$request) {
       $this->request= &$request;
     }
 
@@ -33,7 +33,7 @@
      * @access  public
      * @return  &webservices.soap.SOAPMessage
      */
-    function &getRequest() {
+    public function &getRequest() {
       return $this->request;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getRequestString() {
+    public function getRequestString() {
       return $this->request->getSource(0);
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @param   string answer
      */
-    function setAnswer($answer) {
+    public function setAnswer($answer) {
       $this->answer= $answer;
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  string
      */
-    function getAnswer() {
+    public function getAnswer() {
       return $this->answer;
     }
     
@@ -73,7 +73,7 @@
      * @access  public
      * @param   &webservices.soap.SOAPMessage message
      */
-    function send(&$message) {
+    public function send(&$message) {
       $this->request= $message; // Intentional copy
       return TRUE;
     }    
@@ -84,7 +84,7 @@
      * @access  public
      * @return  &webservices.soap.SOAPMessage
      */
-    function &retrieve() {
+    public function &retrieve() {
       return SOAPMessage::fromString($this->answer);
     }
   }

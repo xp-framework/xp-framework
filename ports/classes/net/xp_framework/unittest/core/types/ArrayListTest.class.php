@@ -13,7 +13,7 @@
    * @purpose  Testcase
    */
   class ArrayListTest extends TestCase {
-    var
+    public
       $list = NULL;
 
     /**
@@ -21,8 +21,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->list= &new ArrayList();
+    public function setUp() {
+      $this->list= new ArrayList();
     }
 
     /**
@@ -31,7 +31,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertEquals(0, sizeof($this->list->values));
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      */
     #[@test]
-    function newListsAreEqual() {
+    public function newListsAreEqual() {
       $this->assertEquals($this->list, new ArrayList());
     }
   }

@@ -14,10 +14,10 @@
    */
   class DiaUMLFormalParameter extends DiaComposite {
 
-    var
+    public
       $type= 'umlformalparameter';
 
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setName('__noname__');
       $this->setType(NULL);

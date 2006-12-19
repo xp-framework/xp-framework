@@ -11,7 +11,7 @@
    * @purpose   TestCase
    */
   class HttpSessionTest extends TestCase {
-    var
+    public
       $session  = NULL;
   
     /**
@@ -20,7 +20,7 @@
      * @access  protected
      * @return  scriptlet.HttpSession
      */
-    function _session() {
+    public function _session() {
       return new HttpSession();
     }
   
@@ -29,7 +29,7 @@
      *
      * @access  protected
      */
-    function setUp() {
+    public function setUp() {
       $this->session= $this->_session();
     }
     
@@ -39,7 +39,7 @@
      *
      * @access  protected
      */
-    function tearDown() {
+    public function tearDown() {
       if (is('scriptlet.HttpSession', $this->session) && $this->session->isValid()) {
         $this->session->invalidate();
       }
@@ -51,7 +51,7 @@
      * @access  public
      */
     #[@test]
-    function testCreate() {
+    public function testCreate() {
       $this->session->initialize(NULL);
       $this->assertTrue($this->session->isValid());
     }
@@ -62,7 +62,7 @@
      * @access  public
      */
     #[@test]
-    function testNew() {
+    public function testNew() {
       $this->session->initialize(NULL);
       $this->assertTrue($this->session->isNew());
     }
@@ -73,10 +73,10 @@
      * @access  public
      */
     #[@test]
-    function testReattach() {
+    public function testReattach() {
       $this->session->initialize();
       
-      $copy= &new HttpSession();
+      $copy= new HttpSession();
       $copy->initialize($this->session->getId());
       $this->assertFalse($copy->isNew());
     }
@@ -87,7 +87,7 @@
      * @access  public
      */
     #[@test]
-    function testInvalidate() {
+    public function testInvalidate() {
       $this->session->initialize(NULL);
       $this->assertTrue($this->session->isValid());
       
@@ -101,7 +101,7 @@
      * @access  public
      */
     #[@test]
-    function testValueNames() {
+    public function testValueNames() {
       $this->session->initialize(NULL);
       $this->session->putValue('foo', $f= 1);
       $this->session->putValue('bar', $f= 2);
@@ -118,9 +118,9 @@
      * @access  public
      */
     #[@test]
-    function putDoesNotOverwriteValue() {
+    public function putDoesNotOverwriteValue() {
       $this->session->initialize(NULL);
-      $fixture= &new Object();
+      $fixture= new Object();
       $hash= $fixture->hashCode();
       $this->session->putValue('foo', $fixture);
       $this->assertClass($fixture, 'lang.Object') &&
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function testReset() {
+    public function testReset() {
       $this->session->initialize(NULL);
       $this->session->putValue('foo', $f= NULL);
       $this->assertEquals(1, sizeof($this->session->getValueNames()));
@@ -149,7 +149,7 @@
      * @access  public
      */
     #[@test]
-    function testIllegalConstruct() {
+    public function testIllegalConstruct() {
       $this->assertFalse($this->session->initialize('ILLEGALSESSIONID'));
     }
     
@@ -159,7 +159,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalStateException')]
-    function testIllegalSessionAccess() {
+    public function testIllegalSessionAccess() {
       $this->session->initialize('ILLEGALSESSIONID');
       $this->session->putValue('foo', $f= 3);
     }

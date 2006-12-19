@@ -53,7 +53,7 @@
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
-    function __construct(&$request, &$response) {
+    public function __construct(&$request, &$response) {
       $this->setStatus(WEBDAV_MULTISTATUS);
       $this->setRootNode(new Node(
         'D:multistatus',
@@ -68,11 +68,11 @@
      * @access  private
      * @param   &org.webdav.version.WebdavVersionContainer container
      */
-    function addWebdavVersionContainer(&$container) {
+    public function addWebdavVersionContainer(&$container) {
 
       foreach ($container->getVersions() as $version) {
 
-        $res= &new Node('D:response');
+        $res= new Node('D:response');
         $res->addChild(new Node('D:href', $version->getHref()));
         $propstat= &$res->addChild(new Node('D:propstat'));
 

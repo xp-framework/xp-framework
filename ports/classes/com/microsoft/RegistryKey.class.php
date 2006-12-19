@@ -56,10 +56,10 @@
    * @platform Windows
    */
   class RegistryKey extends Object {
-    var 
+    public 
       $name = '';
        
-    var
+    public
       $_sh  = NULL;
   
     /**
@@ -68,7 +68,7 @@
      * @access  public
      * @param   string name e.g. HKEY_CURRENT_USER\Environment\TMP
      */    
-    function __construct($name) {
+    public function __construct($name) {
       
       $this->name= $name;
       $this->_sh= &WshShell::getInstance();
@@ -80,7 +80,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -90,7 +90,7 @@
      * @access  public
      * @return  bool
      */
-    function exists() {
+    public function exists() {
     
       // Really ugly, but the WshShell object does not have a 
       // regExists() method
@@ -104,9 +104,9 @@
      * @return  bool
      * @throws  com.microsoft.RegistryException
      */
-    function delete() {
+    public function delete() {
       if (NULL === $this->_sh->regDelete($this->name)) {
-        return throw(new RegistryException('Could not delete key "'.$this->name.'"'));        
+        throw(new RegistryException('Could not delete key "'.$this->name.'"'));        
       }
       return TRUE;
     }
@@ -118,9 +118,9 @@
      * @return  &mixed   
      * @throws  com.microsoft.RegistryException
      */
-    function &getValue() {
+    public function &getValue() {
       if (NULL === ($v= $this->_sh->regRead($this->name))) {
-        return throw(new RegistryException('Could not read key "'.$this->name.'"'));  
+        throw(new RegistryException('Could not read key "'.$this->name.'"'));  
       }
       return $v;
     }
@@ -134,9 +134,9 @@
      * @return  bool
      * @throws  com.microsoft.RegistryException
      */
-    function setValue($val, $type= REG_SZ) {
+    public function setValue($val, $type= REG_SZ) {
       if (NULL === $this->_sh->regWrite($this->name, $val, $type)) {
-        return throw(new RegistryException('Could not write key "'.$this->name.'"'));        
+        throw(new RegistryException('Could not write key "'.$this->name.'"'));        
       }
       return TRUE;
     }

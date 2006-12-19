@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('io.collections.IOElement');
+
   /**
    * Represents a Mock element
    *
    * @see      xp://net.xp_framework.unittest.io.collections.MockCollection
    * @purpose  Mock object
    */
-  class MockElement extends Object {
-    var
+  class MockElement extends Object implements IOElement {
+    public
       $uri    = '',
       $size   = 0,
       $adate  = NULL,
@@ -28,7 +30,7 @@
      * @param   util.Date adate default NULL
      * @param   util.Date cdate default NULL
      */
-    function __construct($uri, $size= 0, $adate= NULL, $mdate= NULL, $cdate= NULL) {
+    public function __construct($uri, $size= 0, $adate= NULL, $mdate= NULL, $cdate= NULL) {
       $this->uri= $uri;
       $this->size= $size;
       $this->adate= &$adate;
@@ -42,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getURI() { 
+    public function getURI() { 
       return $this->uri;
     }
 
@@ -52,7 +54,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() { 
+    public function getSize() { 
       return $this->size;
     }
 
@@ -62,7 +64,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &createdAt() {
+    public function &createdAt() {
       return $this->cdate;
     }
 
@@ -72,7 +74,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastAccessed() {
+    public function &lastAccessed() {
       return $this->adate;
     }
 
@@ -82,7 +84,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastModified() {
+    public function &lastModified() {
       return $this->mdate;
     }
 
@@ -92,9 +94,9 @@
      * @access  public
      * @return  string
      */
-    function toString() { 
+    public function toString() { 
       return $this->getClassName().'('.$this->uri.')';
     }
 
-  } implements(__FILE__, 'io.collections.IOElement');
+  } 
 ?>

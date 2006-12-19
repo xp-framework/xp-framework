@@ -19,7 +19,7 @@
    */
   class DiaData extends DiaCompound {
 
-    var
+    public
       $node_name= 'dia:diagramdata';
 
     /**
@@ -27,7 +27,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->initialize();
     }
 
@@ -36,7 +36,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setBackgroundColor('#FFFFFF');
       $this->setPagebreakColor('#000099');
@@ -58,7 +58,7 @@
      * @access  public
      * @return  string
      */
-    function getBackgroundColor() {
+    public function getBackgroundColor() {
       return $this->getChildValue('background');
     }
 
@@ -69,7 +69,7 @@
      * @param   string color Example: '#FFFFFF'
      */
     #[@fromDia(xpath= 'dia:attribute[@name="background"]/dia:color/@val', value= 'string')] 
-    function setBackgroundColor($color) {
+    public function setBackgroundColor($color) {
       $this->setColor('background', $color);
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  string
      */
-    function getPagebreakColor() {
+    public function getPagebreakColor() {
       return $this->getChildValue('pagebreak');
     }
 
@@ -90,7 +90,7 @@
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="pagebreak"]/dia:color/@val', value= 'string')]
-    function setPagebreakColor($color) {
+    public function setPagebreakColor($color) {
       $this->setColor('pagebreak', $color);
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @return  string
      */
-    function getGridColor() {
+    public function getGridColor() {
       return $this->getChildValue('color');
     }
 
@@ -111,7 +111,7 @@
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="color"]/dia:color/@val', value= 'string')]
-    function setGridColor($color) {
+    public function setGridColor($color) {
       $this->setColor('color', $color);
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  &org.dia.DiaPaper
      */
-    function &getPaper() {
+    public function &getPaper() {
       return $this->getChild('paper');
     }
 
@@ -132,7 +132,7 @@
      * @param   &org.dia.DiaPaper Paper
      */
     #[@fromDia(xpath= 'dia:attribute[@name="paper"]', class= 'org.dia.DiaPaper')]
-    function setPaper(&$Paper) {
+    public function setPaper(&$Paper) {
       $Paper_node= &$this->getChild('paper');
       $Paper_node->set('paper', $Paper);
     }
@@ -143,7 +143,7 @@
      * @access  public
      * @return  &org.dia.DiaGrid
      */
-    function &getGrid() {
+    public function &getGrid() {
       return $this->getChild('grid');
     }
 
@@ -154,7 +154,7 @@
      * @param   &org.dia.DiaGrid Grid
      */
     #[@fromDia(xpath= 'dia:attribute[@name="grid"]', class= 'org.dia.DiaGrid')]
-    function setGrid(&$Grid) {
+    public function setGrid(&$Grid) {
       $Grid_node= &$this->getChild('grid');
       $Grid_node->set('grid', $Grid);
     }
@@ -165,7 +165,7 @@
      * @access  public
      * @return  &org.dia.DiaGuides
      */
-    function &getGuides() {
+    public function &getGuides() {
       return $this->getChild('guides');
     }
 
@@ -176,7 +176,7 @@
      * @param   &org.dia.DiaGuides Guides
      */
     #[@fromDia(xpath= 'dia:attribute[@name="guides"]', class= 'org.dia.DiaGuides')]
-    function setGuides(&$Guides) {
+    public function setGuides(&$Guides) {
       $Guides_node= &$this->getChild('guides');
       $Guides_node->set('guides', $Guides);
     }

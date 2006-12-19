@@ -158,7 +158,7 @@
    *
    */
   class ID3Genre extends Object {
-    var
+    public
       $id= -1;
       
     /**
@@ -167,7 +167,7 @@
      * @access  public
      * @param   int id
      */
-    function __construct($id) {
+    public function __construct($id) {
       $this->id= $id;
       
     }
@@ -179,7 +179,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       static $genre= array(
         ID3_GENRE_BLUES                   => 'ID_GENRE_BLUES',         
         ID3_GENRE_CLASSIC_ROCK            => 'ID_GENRE_CLASSIC_ROCK',    

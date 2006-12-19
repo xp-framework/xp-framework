@@ -56,7 +56,7 @@
    * @see      http://www.gnu.org/manual/gettext/index.html
    */
   class GetText extends Object {
-    var
+    public
       $domain    = '',
       $directory = '',
       $lang      = '';
@@ -69,12 +69,12 @@
      * @param   string directory
      * @return  &org.gnu.GetText
      */
-    function &bind($domain, $directory) {
+    public function &bind($domain, $directory) {
       static $g= array();
       
       $idx= $domain.'@'.$directory;
       if (!isset($g[$idx])) {
-        $g[$idx]= &new GetText();
+        $g[$idx]= new GetText();
         $g[$idx]->domain= $domain;
         $g[$idx]->directory= $directory;
         bindtextdomain($domain, $directory);
@@ -88,7 +88,7 @@
      * @access  public
      * @param   string lang
      */
-    function setLanguage($lang) {
+    public function setLanguage($lang) {
       textdomain($this->domain);
       $this->lang= $lang;
       putenv('LANG='.$lang);
@@ -102,7 +102,7 @@
      * @param   string lang default NULL
      * @return  string
      */
-    function get($id, $lang= NULL) {
+    public function get($id, $lang= NULL) {
       static $l= NULL;
       
       if (NULL == $lang) $lang= $this->lang;

@@ -10,7 +10,7 @@
 
   class DiaText extends DiaComposite {
 
-    var
+    public
       $type= 'text';
 
     /**
@@ -18,7 +18,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setText('__notext__');
       $this->setTextFont(array(
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return "text".$this->hashCode();
     }
 
@@ -51,7 +51,7 @@
      * @param   string text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="string"]/dia:string', value= 'string')]
-    function setText($text) {
+    public function setText($text) {
       $this->setString('string', $text);
     }
 
@@ -62,7 +62,7 @@
      * @param   array font Example: array('familiy' => 'monospace', 'style' => 0, 'name' => 'Courier')
      */
     #[@fromDia(xpath= 'dia:attribute[@name="font"]/dia:font', value= 'font')]
-    function setTextFont($font) {
+    public function setTextFont($font) {
       $this->setFont('font', $font);
     }
 
@@ -73,7 +73,7 @@
      * @param   real height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="height"]/dia:real/@val', value= 'real')]
-    function setHeight($height) {
+    public function setHeight($height) {
       $this->setReal('height', $height);
     }
 
@@ -84,7 +84,7 @@
      * @param   array position Example: array(0, 0)
      */
     #[@fromDia(xpath= 'dia:attribute[@name="pos"]/dia:point/@val', value= 'array')]
-    function setPosition($position) {
+    public function setPosition($position) {
       $this->setPoint('pos', $position);
     }
 
@@ -95,7 +95,7 @@
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="color"]/dia:color/@val', value= 'string')]
-    function setTextColor($color) {
+    public function setTextColor($color) {
       $this->setColor('color', $color);
     }
 
@@ -106,7 +106,7 @@
      * @param   int alignment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="alignment"]/dia:enum/@val', value= 'int')]
-    function setAlignment($alignment) {
+    public function setAlignment($alignment) {
       $this->setEnum('alignment', $alignment);
     }
  }

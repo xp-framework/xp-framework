@@ -28,7 +28,7 @@
      * @param   string actual
      * @return  bool
      */
-    function assertXmlEquals($expect, $actual) {
+    public function assertXmlEquals($expect, $actual) {
       return $this->assertEquals(
         preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
         preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
@@ -41,8 +41,8 @@
      * @access  public
      */
     #[@test]
-    function idAttribute() {
-      $dialog= &new DialogType();
+    public function idAttribute() {
+      $dialog= new DialogType();
       $dialog->setId('file.open');
       
       $this->assertXmlEquals('
@@ -59,8 +59,8 @@
      * @access  public
      */
     #[@test]
-    function captionNode() {
-      $dialog= &new DialogType();
+    public function captionNode() {
+      $dialog= new DialogType();
       $dialog->setCaption('Open a file > Choose');
       
       $this->assertXmlEquals('
@@ -77,8 +77,8 @@
      * @access  public
      */
     #[@test]
-    function buttonsNodeSet() {
-      $dialog= &new DialogType();
+    public function buttonsNodeSet() {
+      $dialog= new DialogType();
       $dialog->setCaption('Really delete the file "Ü"?');
 
       with ($ok= &$dialog->addButton(new ButtonType())); {
@@ -106,8 +106,8 @@
      * @access  public
      */
     #[@test]
-    function emptyMembers() {
-      $dialog= &new DialogType();
+    public function emptyMembers() {
+      $dialog= new DialogType();
       $this->assertXmlEquals('
         <dialogtype id="">
           <caption/>

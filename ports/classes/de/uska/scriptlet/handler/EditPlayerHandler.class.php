@@ -23,7 +23,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setWrapper(new EditPlayerWrapper());
       parent::__construct();
     }
@@ -36,7 +36,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    function identifierFor(&$request, &$context) {
+    public function identifierFor(&$request, &$context) {
       return $this->name.'.'.$request->getParam('player_id', 'new');
     }
     
@@ -48,7 +48,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function setup(&$request, &$context) {
+    public function setup(&$request, &$context) {
       if (
         $request->hasParam('player_id') && 
         ($player= &Player::getByPlayer_id($request->getParam('player_id')))
@@ -83,7 +83,7 @@
       $prop= &$pm->getProperties('product');
       $cm= &ConnectionManager::getInstance();
       
-      try(); {
+      try {
         $db= &$cm->getByHost('uska', 0);
         $teams= $db->select('
             team_id,
@@ -93,13 +93,13 @@
           where team_id in (%d)',
           $prop->readArray($request->getProduct(), 'teams')
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       $this->setValue('teams', $teams);
       
       // Select mailinglists
-      try(); {
+      try {
         $mls= $db->select('
             m.mailinglist_id,
             m.name,
@@ -114,8 +114,8 @@
           ',
           $request->getParam('player_id', NULL)
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       foreach ($mls as $m) {
@@ -137,22 +137,22 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       $log= &Logger::getInstance();
       $cat= &$log->getCategory();
       
       switch ($this->getValue('mode')) {
         case 'update':
-          try(); {
+          try {
             $player= &Player::getByPlayer_id($this->wrapper->getPlayer_id());
-          } if (catch('SQLException', $e)) {
-            return throw($e);
+          } catch (SQLException $e) {
+            throw($e);
           }
           break;
         
         case 'create':
         default:
-          $player= &new Player();
+          $player= new Player();
           $player->setPlayer_type_id(1);  // Normal player
           break;
       }
@@ -190,7 +190,7 @@
       $player->setLastchange(Date::now());
       
       // Now insert or update...
-      try(); {
+      try {
         $peer= &Player::getPeer();
         $transaction= &$peer->begin(new Transaction('editplayer'));
         
@@ -207,7 +207,7 @@
         $mls= $this->getValue('mailinglists');
         if ($oldemail) {
           foreach ($mls as $mailinglist) {
-            $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+            $ezmlm= new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
             $ezmlm->setConnection($db);
             $ezmlm->alterAddress($oldemail, $player->getEmail());
           }
@@ -219,7 +219,7 @@
 
           if (!empty($newml['ml_'.$mailinglist['mailinglist_id']])) {
             $found= FALSE;
-            try(); {
+            try {
               $db->insert('into mailinglist_player_matrix (
                   mailinglist_id,
                   player_id,
@@ -236,13 +236,13 @@
                 Date::now(),
                 $context->user->getUsername()
               );
-            } if (catch('SQLStatementFailedException', $ignored)) {
+            } catch (SQLStatementFailedException $ignored) {
               // already there, ok...
               $found= TRUE;
             }
 
             if (!$found) {
-              $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+              $ezmlm= new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
               $ezmlm->setConnection($db);
               $ezmlm->addSubscriber($player->getEmail());
             }
@@ -258,13 +258,13 @@
             );
 
             if ($cnt) {
-              $ezmlm= &new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
+              $ezmlm= new EzmlmSqlUtil('ezmlm', $mailinglist['name']);
               $ezmlm->setConnection($db);
               $ezmlm->removeSubscriber($player->getEmail());
             }
           }
         }
-      } if (catch('SQLException', $e)) {
+      } catch (SQLException $e) {
         $transaction->rollback();
         $this->addError('dberror', '*', $e->getMessage());
         return FALSE;

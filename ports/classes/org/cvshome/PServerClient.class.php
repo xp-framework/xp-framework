@@ -8,7 +8,8 @@
     'peer.Socket',
     'text.encode.CvsPassword',
     'peer.ProtocolException',
-    'peer.AuthenticationException'
+    'peer.AuthenticationException',
+    'util.log.Traceable'
   );
 
   define('CVSR_EXPECT_NONE',     'none');  
@@ -27,13 +28,13 @@
    * @see      http://libcvs.cvshome.org/servlets/ProjectSource 
    * @purpose  CVS PServer protocol implementation
    */
-  class PServerClient extends Object {
-    var
+  class PServerClient extends Object implements Traceable {
+    public
       $cat      = NULL,
       $root     = '',
       $verbs    = array();
 
-    var
+    public
       $_sock    = NULL;
 
     /**
@@ -43,8 +44,8 @@
      * @param   string host
      * @param   int port default 2401
      */  
-    function __construct($host, $port= 2401) {
-      $this->_sock= &new Socket($host, $port);
+    public function __construct($host, $port= 2401) {
+      $this->_sock= new Socket($host, $port);
     }
     
     /**
@@ -54,7 +55,7 @@
      * @return  bool success
      * @throws  io.IOException in case connecting failed
      */  
-    function connect() {
+    public function connect() {
       return $this->_sock->connect();
     }
 
@@ -66,7 +67,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    function _sendcmd() {
+    public function _sendcmd() {
       $a= func_get_args();
       $cmd= vsprintf(array_shift($a), $a);
       $this->cat && $this->cat->debug('>>>', $cmd);
@@ -83,7 +84,7 @@
      * @throws  peer.ProtocolException in case expectation is not met
      * @see     http://www.loria.fr/~molli/cvs/doc/cvsclient_5.html#SEC14
      */
-    function _readline($expect= CVSR_EXPECT_NONE, $data= '') {
+    public function _readline($expect= CVSR_EXPECT_NONE, $data= '') {
       $line= $this->_sock->readLine();
       $this->cat && $this->cat->debug('<<<', $line);
       
@@ -125,7 +126,7 @@
       }
       
       if (!$met) {
-        return throw(new ProtocolException(sprintf(
+        throw(new ProtocolException(sprintf(
           'Unexpected response "%s[...]", expecting (%s: "%s")',
           substr($line, 0, min(strlen($line), 20)),
           $expect,
@@ -142,7 +143,7 @@
      * @return  bool success
      * @see     http://www.loria.fr/~molli/cvs/doc/cvsclient_5.html#SEC13
      */
-    function negotiate() {
+    public function negotiate() {
       $this->_sendcmd('Root %s', $this->root);
       $this->_sendcmd('Valid-responses %s M E F MT', implode(' ', array(
         'Valid-requests',
@@ -190,7 +191,7 @@
      * @throws  peer.AuthenticationException in case login fails
      * @see     http://www.loria.fr/~molli/cvs/doc/cvsclient_3.html 
      */    
-    function login($cvsroot, $user, $pass= '') {
+    public function login($cvsroot, $user, $pass= '') {
       $this->_sendcmd('BEGIN AUTH REQUEST');
       $this->_sendcmd($cvsroot);
       $this->_sendcmd($user);
@@ -231,11 +232,11 @@
           // Error code and detail, read, remember and continue
           continue;        
         }
-        return throw(new ProtocolException('Unexpected response "'.$line.'"'));
+        throw(new ProtocolException('Unexpected response "'.$line.'"'));
       }
       
       // Authentication failed
-      return throw(new AuthenticationException(
+      throw(new AuthenticationException(
         sprintf('%d: %s (%s)', $code, $message, $error),
         $user,
         $pass
@@ -248,7 +249,7 @@
      * @access  public
      * @return  string
      */
-    function version() {
+    public function version() {
       $this->_sendcmd('version');
       $version= $this->_readline(CVSR_EXPECT_MESSAGE);
       $this->_readline(CVSR_EXPECT_OK);
@@ -260,11 +261,11 @@
      *
      * @access  public
      */
-    function close() {
-      try(); {
+    public function close() {
+      try {
         $this->_sock->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       return TRUE;      
@@ -276,9 +277,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) { 
+    public function setTrace(&$cat) { 
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

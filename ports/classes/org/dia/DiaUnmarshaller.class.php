@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: DiaUnmarshaller.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
   uses(
     'xml.XPath',
@@ -28,13 +28,13 @@
      * @param   string filename The diagram filename (.dia)
      * @return  &org.dia.DiaDiagram
      */
-    function &unmarshal($diagram) {
+    public static function &unmarshal($diagram) {
       // suck in XML document
       if (!($dom= &domxml_open_file($diagram, DOMXML_LOAD_PARSING, $error))) {
-        return throw(new XMLFormatException(xp::stringOf($error)));
+        throw(new XMLFormatException(xp::stringOf($error)));
       }
       // initialize XPath
-      $XPath= &new XPath($dom);
+      $XPath= new XPath($dom);
 
       // TODO: if the URI is wrong, unmarshalling won't work!
       $XPath->registerNamespace('dia', 'http://www.lysator.liu.se/~alla/dia/');
@@ -54,12 +54,12 @@
      * @param   &php.DomNode Context The XML node to recurse from
      * @param   string classname Fully qualified class name
      */
-    function &recurse(&$XPath, &$Context, $classname) {
+    public static function &recurse(&$XPath, &$Context, $classname) {
       if (DIA_UNM_DEBUG) Console::writeLine('recurse: '.$Context->tagname()."-> $classname");
 
-      try (); {
+      try {
         $Class= &XPClass::forName($classname);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $e->printStackTrace();
         exit(-1);
       }
@@ -77,9 +77,9 @@
         if (DIA_UNM_DEBUG) Console::writeLine("--> Method: $name Xpath: $xpath");
 
         // continue if this fails: some expressions don't work on WRONG nodes...
-        try (); {
+        try {
           $result= &$XPath->query($xpath, $Context);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           if (DIA_UNM_DEBUG) $e->printStackTrace();
           $nodename= $Context->tagname();
           if ($Context->has_attribute('type')) {

@@ -22,9 +22,9 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       xp::gc();
-      $this->router= &new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
+      $this->router= new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',
@@ -53,7 +53,7 @@
      * @access  public
      */
     #[@test]
-    function basicPostRequest() {
+    public function basicPostRequest() {
       $this->router->init();
       $response= &$this->router->process();
       $this->assertEquals(200, $response->statusCode);
@@ -66,7 +66,7 @@
      * @access  public
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
-    function basicGetRequest() {
+    public function basicGetRequest() {
       $this->router->setMockMethod(HTTP_GET);
       $this->router->init();
       $response= &$this->router->process();
@@ -78,7 +78,7 @@
      * @access  public
      */
     #[@test]
-    function callNonexistingClass() {
+    public function callNonexistingClass() {
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'NonExistingClass#getImplementationName',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
@@ -96,7 +96,7 @@
      * @access  public
      */
     #[@test]
-    function callNonexistingMethod() {
+    public function callNonexistingMethod() {
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#nonExistingMethod',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
@@ -113,7 +113,7 @@
      * @access  public
      */
     #[@test]
-    function callNonWebmethodMethod() {
+    public function callNonWebmethodMethod() {
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#methodExistsButIsNotAWebmethod',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
@@ -130,7 +130,7 @@
      * @access  public
      */
     #[@test]
-    function callFailingMethod() {
+    public function callFailingMethod() {
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#giveMeFault',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
@@ -151,7 +151,7 @@
      * @access  public
      */
     #[@test]
-    function multipleParameters() {
+    public function multipleParameters() {
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#checkMultipleParameters',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'

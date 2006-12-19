@@ -40,7 +40,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setRootNode(new Node(
         'D:prop',
         NULL,
@@ -55,7 +55,7 @@
      * @param   &org.webdav.WebdavObject object   The webdav object
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
-    function addLock(&$lock) {
+    public function addLock(&$lock) {
       $lockdiscovery= &$this->addChild(new Node('D:lockdiscovery'));
       $activelock= &$lockdiscovery->addChild(new Node('D:activelock'));
       

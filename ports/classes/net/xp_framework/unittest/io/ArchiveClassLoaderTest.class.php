@@ -19,7 +19,7 @@
    * @purpose  purpose
    */
   class ArchiveClassLoaderTest extends TestCase {
-    var
+    public
       $classloader     = NULL,
       $classname       = '',
       $interfacename   = '';
@@ -31,8 +31,8 @@
      * @param   string bytes
      * @return  &io.Stream
      */
-    function &classStream($bytes) {
-      $cstr= &new Stream();
+    public function &classStream($bytes) {
+      $cstr= new Stream();
       $cstr->open(STREAM_MODE_WRITE);
       $cstr->write('<?php '.$bytes.' ?>');
       $cstr->close();
@@ -48,10 +48,10 @@
      * @return  string
      * @throws  lang.IllegalStateException in case the generated class name already exists!
      */
-    function testClassName($prefix= '') {
+    public function testClassName($prefix= '') {
       $classname= $prefix.'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
       if (class_exists($classname)) {
-        return throw(new IllegalStateException('Class '.$this->classname.' may not exist!'));
+        throw(new IllegalStateException('Class '.$this->classname.' may not exist!'));
       }
       return $classname;
     }
@@ -61,16 +61,16 @@
      *
      * @access  public
      */
-    function setUp() {
-      try(); {
+    public function setUp() {
+      try {
         $this->classname= $this->testClassName();
         $this->interfacename= $this->testClassName('I');
-      } if (catch('IllegalStateException', $e)) {
-        return throw(new PrerequisitesNotMetError($e->getMessage()));
+      } catch (IllegalStateException $e) {
+        throw(new PrerequisitesNotMetError($e->getMessage()));
       }
 
       // Create an archive
-      $archive= &new Archive(new Stream());
+      $archive= new Archive(new Stream());
       $archive->open(ARCHIVE_CREATE);
       $archive->add(
         $this->classStream(
@@ -93,7 +93,7 @@
       $archive->create();
       
       // Setup classloader
-      $this->classloader= &new ArchiveClassLoader($archive);
+      $this->classloader= new ArchiveClassLoader($archive);
     }
 
     /**
@@ -102,7 +102,7 @@
      * @access  public
      */
     #[@test]
-    function loadClass() {
+    public function loadClass() {
       $class= &$this->classloader->loadClass($this->classname);
       $class && $this->assertEquals($class->getName(), $this->classname);
     }
@@ -113,12 +113,12 @@
      * @access  public
      */
     #[@test]
-    function classImplementsArchivedInterface() {
+    public function classImplementsArchivedInterface() {
       if (
         $class= &$this->classloader->loadClass($this->classname) &&
         $interface= &$this->classloader->loadClass($this->interfacename)
       ) {
-        $interfaces= &new HashSet();
+        $interfaces= new HashSet();
         $interfaces->addAll($class->getInterfaces());
         $this->assertTrue($interfaces->contains($interface));
       }
@@ -130,12 +130,12 @@
      * @access  public
      */
     #[@test]
-    function classImplementsComparatorInterface() {
+    public function classImplementsComparatorInterface() {
       if (
         $class= &$this->classloader->loadClass($this->classname) &&
         $interface= &XPClass::forName('util.Comparator')
       ) {
-        $interfaces= &new HashSet();
+        $interfaces= new HashSet();
         $interfaces->addAll($class->getInterfaces());
         $this->assertTrue($interfaces->contains($interface));
       }

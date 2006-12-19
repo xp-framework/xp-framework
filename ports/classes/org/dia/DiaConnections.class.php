@@ -15,7 +15,7 @@
    */
   class DiaConnections extends DiaCompound {
 
-    var
+    public
       $node_name= 'dia:connections';
 
     /**
@@ -23,7 +23,7 @@
      * 
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->initialize();
     }
 
@@ -32,7 +32,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // TODO: Implements only has ONE connection point (begin)
       //$this->set('begin', new DiaConnection(0));
       //$this->set('end', new DiaConnection(1));
@@ -45,7 +45,7 @@
      * @param   int handle
      * @return  &org.dia.DiaConnection
      */
-    function &getConnection($handle) {
+    public function &getConnection($handle) {
       return $this->getChild($handle);
     }
 
@@ -56,7 +56,7 @@
      * @param   &org.dia.DiaConnection Conn
      */
     #[@fromDia(xpath= 'child::dia:connection', class= 'org.dia.DiaConnection')]
-    function addConnection($Conn) {
+    public function addConnection($Conn) {
       $this->set($Conn->getHandle(), $Conn);
     }
   }

@@ -13,7 +13,7 @@
    * @purpose  Testcase
    */
   class AnnotationTest extends TestCase {
-    var
+    public
       $class = NULL;
 
     /**
@@ -21,7 +21,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->class= &XPClass::forName('net.xp_framework.unittest.core.AnnotatedClass');
     }
 
@@ -33,7 +33,7 @@
      * @param   string annotation
      * @return  bool
      */
-    function annotationExists($method, $annotation) {
+    public function annotationExists($method, $annotation) {
       $method= &$this->class->getMethod($method);
       return $method->hasAnnotation($annotation);
     }
@@ -46,7 +46,7 @@
      * @param   string annotation
      * @return  mixed annotation value
      */
-    function methodAnnotation($method, $annotation) {
+    public function methodAnnotation($method, $annotation) {
       $method= &$this->class->getMethod($method);
       return $method->getAnnotation($annotation);
     }
@@ -58,7 +58,7 @@
      * @access  public
      */
     #[@test]
-    function simpleAnnotationExists() {
+    public function simpleAnnotationExists() {
       $this->assertTrue($this->annotationExists('simple', 'simple'));
     }
     
@@ -70,7 +70,7 @@
      * @access  public
      */
     #[@test]
-    function simpleAnnotationValue() {
+    public function simpleAnnotationValue() {
       $this->assertEquals(NULL, $this->methodAnnotation('simple', 'simple'));
     }
 
@@ -81,7 +81,7 @@
      * @access  public
      */
     #[@test]
-    function multipleAnnotationsExist() {
+    public function multipleAnnotationsExist() {
       foreach (array('one', 'two', 'three') as $annotation) {
         $this->assertTrue($this->annotationExists('multiple', $annotation), $annotation);
       }
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function multipleAnnotationsReturnedAsList() {
+    public function multipleAnnotationsReturnedAsList() {
       $method= &$this->class->getMethod('multiple');
       $this->assertEquals(
         array('one' => NULL, 'two' => NULL, 'three' => NULL),
@@ -110,7 +110,7 @@
      * @access  public
      */
     #[@test]
-    function stringAnnotationValue() {
+    public function stringAnnotationValue() {
       $this->assertEquals('String value', $this->methodAnnotation('stringValue', 'strval'));
     }
 
@@ -122,7 +122,7 @@
      * @access  public
      */
     #[@test]
-    function keyValuePairAnnotationValue() {
+    public function keyValuePairAnnotationValue() {
       $this->assertEquals(array('key' => 'value'), $this->methodAnnotation('keyValuePair', 'config'));
     }
 
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function testMethod() {
+    public function testMethod() {
       $m= &$this->class->getMethod('testMethod');
       $this->assertTrue($m->hasAnnotation('test'));
       $this->assertTrue($m->hasAnnotation('ignore'));
@@ -153,7 +153,7 @@
      * @access  public
      */
     #[@test]
-    function keyValuePairsAnnotationValue() {
+    public function keyValuePairsAnnotationValue() {
       $this->assertEquals(
         array('key' => 'value', 'times' => 5, 'disabled' => FALSE, 'null' => NULL, 'list' => array(1, 2)), 
         $this->methodAnnotation('keyValuePairs', 'config')
@@ -167,7 +167,7 @@
      * @access  public
      */
     #[@test]
-    function multiLineAnnotation() {
+    public function multiLineAnnotation() {
       $this->assertEquals(array('classes' => array(
         'net.xp_framework.unittest.core.FirstInterceptor',
         'net.xp_framework.unittest.core.SecondInterceptor',
@@ -181,7 +181,7 @@
      * @access  public
      */
     #[@test]
-    function simpleXPathAnnotation() {
+    public function simpleXPathAnnotation() {
       $this->assertEquals(array(
         'xpath' => '/parent/child/@attribute'
       ), $this->methodAnnotation('simpleXPath', 'fromXml'));
@@ -194,7 +194,7 @@
      * @access  public
      */
     #[@test]
-    function complexXPathAnnotation() {
+    public function complexXPathAnnotation() {
       $this->assertEquals(array(
         'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"'
       ), $this->methodAnnotation('complexXPath', 'fromXml'));

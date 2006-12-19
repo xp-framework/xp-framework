@@ -14,7 +14,7 @@
    */
   class DiaPaper extends DiaComposite {
 
-    var
+    public
       $type= 'paper';
 
     /**
@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setName('A4');
       $this->setTopMargin(2.8);
@@ -44,7 +44,7 @@
      * @access  public
      * @return  float
      */
-    function getTopMargin() {
+    public function getTopMargin() {
       return $this->getChildValue('tmargin');
     }
 
@@ -55,7 +55,7 @@
      * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="tmargin"]/dia:real/@val', value= 'real')]
-    function setTopMargin($tmargin) {
+    public function setTopMargin($tmargin) {
       $this->setReal('tmargin', $tmargin);
     }
 
@@ -65,7 +65,7 @@
      * @access  public
      * @return  float
      */
-    function getBottomMargin() {
+    public function getBottomMargin() {
       return $this->getChildValue('bmargin');
     }
 
@@ -76,7 +76,7 @@
      * @param   float bmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="bmargin"]/dia:real/@val', value= 'real')]
-    function setBottomMargin($bmargin) {
+    public function setBottomMargin($bmargin) {
       $this->setReal('bmargin', $bmargin);
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  float
      */
-    function getLeftMargin() {
+    public function getLeftMargin() {
       return $this->getChildValue('lmargin');
     }
 
@@ -97,7 +97,7 @@
      * @param   float lmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="lmargin"]/dia:real/@val', value= 'real')]
-    function setLeftMargin($lmargin) {
+    public function setLeftMargin($lmargin) {
       $this->setReal('lmargin', $lmargin);
     }
 
@@ -107,7 +107,7 @@
      * @access  public
      * @return  float
      */
-    function getRightMargin() {
+    public function getRightMargin() {
       return $this->getChildValue('rmargin');
     }
 
@@ -118,7 +118,7 @@
      * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="rmargin"]/dia:real/@val', value= 'real')]
-    function setRightMargin($rmargin) {
+    public function setRightMargin($rmargin) {
       $this->setReal('rmargin', $rmargin);
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  boole
      */
-    function getPortrait() {
+    public function getPortrait() {
       return $this->getChildValue('is_portrait');
     }
 
@@ -140,7 +140,7 @@
      * @param   bool portrait
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="is_portrait"]/dia:boolean/@val', value= 'boolean')]
-    function setPortrait($portrait) {
+    public function setPortrait($portrait) {
       $this->setBoolean('is_portrait', $portrait);
     }
 
@@ -150,7 +150,7 @@
      * @access  public
      * @return  float
      */
-    function getScaling() {
+    public function getScaling() {
       return $this->getChildValue('scaling');
     }
 
@@ -161,7 +161,7 @@
      * @param   float scaling
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="scaling"]/dia:real/@val', value= 'real')]
-    function setScaling($scaling) {
+    public function setScaling($scaling) {
       $this->setReal('scaling', $scaling);
     }
 
@@ -172,7 +172,7 @@
      * @access  public
      * @return  bool
      */
-    function getFitTo() {
+    public function getFitTo() {
       return $this->getChildValue('fitto');
     }
 
@@ -182,7 +182,7 @@
      *
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitto"]/dia:boolean/@val', value= 'boolean')]
-    function setFitTo($fitto) {
+    public function setFitTo($fitto) {
       $this->setBoolean('fitto', $fitto);
     }
 
@@ -192,7 +192,7 @@
      * @access  public
      * @return  int
      */
-    function getFitWidth() {
+    public function getFitWidth() {
       return $this->getChildValue('fitwidth');
     }
 
@@ -204,7 +204,7 @@
      * @param   int width
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitwidth"]/dia:int/@val', value= 'int')]
-    function setFitWidth($width) {
+    public function setFitWidth($width) {
       $this->setInt('fitwidth', $width);
     }
 
@@ -214,7 +214,7 @@
      * @access  public
      * @return  int
      */
-    function getFitHeight() {
+    public function getFitHeight() {
       return $this->getChildValue('fitheight');
     }
 
@@ -226,7 +226,7 @@
      * @param   int height
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitheight"]/dia:int/@val', value= 'int')]
-    function setFitHeight($height) {
+    public function setFitHeight($height) {
       $this->setInt('fitheight', $height);
     }
             

@@ -29,7 +29,7 @@
    * @see      xp://org.webdav.WebdavScriptlet#doPropPatch
    */
   class WebdavPropPatchRequest extends WebdavScriptletRequest {
-    var
+    public
       $filename=   '',
       $properties= array(),
       $baseurl=    '';
@@ -40,7 +40,7 @@
      * @access public
      * @param  string data The data
      */
-    function setData(&$data) {
+    public function setData(&$data) {
       static $trans;
       parent::setData($data);
 
@@ -63,7 +63,7 @@
             $ns.= ':'.($nsprefix= substr($name, 0, $p));
             $name= substr($name, $p+1);
           }
-          $p= &new WebdavProperty(
+          $p= new WebdavProperty(
             $name,
             $this->decode($node->getContent())
           );
@@ -83,7 +83,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
     
@@ -93,7 +93,7 @@
      * @access  public
      * @param   org.webdav.WebdavProperty property The property object
      */
-    function addProperty($property, $remove= FALSE) {
+    public function addProperty($property, $remove= FALSE) {
       $this->properties[$remove][]= $property;
     }
     
@@ -103,7 +103,7 @@
      * @access  public
      * @return  &org.webdav.WebdavProperty[]
      */
-    function &getProperties($remove= FALSE) {
+    public function &getProperties($remove= FALSE) {
       return $this->properties[$remove];
     }
   }

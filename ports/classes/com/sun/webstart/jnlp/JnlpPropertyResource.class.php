@@ -18,7 +18,7 @@
    * @purpose  JNLP resource
    */
   class JnlpPropertyResource extends JnlpResource {
-    var 
+    public 
       $name   = '',
       $value  = '';
 
@@ -29,7 +29,7 @@
      * @param   string name
      * @param   string value
      */
-    function __construct($name, $value) {
+    public function __construct($name, $value) {
       $this->name= $name;
       $this->value= $value;
     }
@@ -40,7 +40,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @param   string value
      */
-    function setValue($value) {
+    public function setValue($value) {
       $this->value= $value;
     }
 
@@ -70,7 +70,7 @@
      * @access  public
      * @return  string
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @return  string
      */
-    function getTagName() { 
+    public function getTagName() { 
       return 'property';
     }
 
@@ -90,7 +90,7 @@
      * @access  public
      * @return  array
      */
-    function getTagAttributes() { 
+    public function getTagAttributes() { 
       return array(
         'name'  => $this->name,
         'value' => $this->value

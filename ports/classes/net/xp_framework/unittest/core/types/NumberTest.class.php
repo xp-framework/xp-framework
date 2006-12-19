@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase', 
+    'unittest.TestCase',
     'lang.types.Long',
     'lang.types.Byte',
     'lang.types.Short',
@@ -21,7 +21,7 @@
    * @purpose  Testcase
    */
   class NumberTest extends TestCase {
-    var
+    public
       $number = NULL;
 
     /**
@@ -32,7 +32,7 @@
      * @param   int int
      * @param   float float
      */
-    function testType(&$number, $int, $float) {
+    public function testType(&$number, $int, $float) {
       $this->assertEquals($int, $number->intValue(), 'intValue') &&
       $this->assertEquals($float, $number->floatValue(), 'floatValue') &&
       $this->assertEquals($number, clone($number), 'clone');
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function longType() {
+    public function longType() {
       $this->testType(new Long(0), 0, 0.0);
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test]
-    function byteType() {
+    public function byteType() {
       $this->testType(new Byte(0), 0, 0.0);
     }
 
@@ -67,7 +67,7 @@
      * @access  public
      */
     #[@test]
-    function shortType() {
+    public function shortType() {
       $this->testType(new Short(0), 0, 0.0);
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      */
     #[@test]
-    function IntegerType() {
+    public function IntegerType() {
       $this->testType(new Integer(0), 0, 0.0);
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      */
     #[@test]
-    function doubleType() {
+    public function doubleType() {
       $this->testType(new Double(0), 0, 0.0);
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      */
     #[@test]
-    function floatType() {
+    public function floatType() {
       $this->testType(new Float(0), 0, 0.0);
     }
   }

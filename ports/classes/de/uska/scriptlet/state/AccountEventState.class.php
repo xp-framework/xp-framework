@@ -19,7 +19,7 @@
      * @access  public
      * @return  bool
      */
-    function requiresAuthentication() { return TRUE; }
+    public function requiresAuthentication() { return TRUE; }
 
     /**
      * Setup the state
@@ -29,7 +29,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       $this->addHandler(new AccountEventHandler());
       parent::setup($request, $response, $context);
     }

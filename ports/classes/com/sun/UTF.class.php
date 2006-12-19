@@ -22,7 +22,7 @@
      * @param   string str
      * @return  string
      */
-    function encode($str) {
+    public static function encode($str) {
       $encoded= utf8_encode($str);
       $return= '';
       do {
@@ -41,7 +41,7 @@
      * @param   string str
      * @return  string
      */
-    function decode($str) { 
+    public static function decode($str) { 
       $return= '';
       do {
         $length= array_pop(unpack('nbytes', substr($str, 0, 2)));

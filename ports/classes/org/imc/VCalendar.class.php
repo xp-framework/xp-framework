@@ -5,8 +5,8 @@
  */
 
   uses(
-    'text.parser.VFormatParser', 
-    'org.imc.VEvent', 
+    'text.parser.VFormatParser',
+    'org.imc.VEvent',
     'org.imc.VTimezone',
     'util.Date'
   );
@@ -101,7 +101,7 @@
    * @purpose  Handle vCalendar
    */
   class VCalendar extends Object {
-    var
+    public
       $uid      = '',
       $method   = '',
       $events   = array();
@@ -112,7 +112,7 @@
      * @access  public
      * @param   string uid
      */
-    function setUID($uid) {
+    public function setUID($uid) {
       $this->uid= $uid;
     }
     
@@ -122,7 +122,7 @@
      * @access  public
      * @return  string uid
      */    
-    function getUID() {
+    public function getUID() {
       return $this->uid;
     }
 
@@ -132,7 +132,7 @@
      * @access  public
      * @param   string method
      */
-    function setMethod($method) {
+    public function setMethod($method) {
       $this->method= $method;
     }
 
@@ -142,7 +142,7 @@
      * @access  public
      * @return  string
      */
-    function getMethod() {
+    public function getMethod() {
       return $this->method;
     }
 
@@ -152,7 +152,7 @@
      * @access  public
      * @param   org.imc.VEvent event
      */
-    function addEvent(&$event) {
+    public function addEvent(&$event) {
       $this->events[]= &$event;
     }
 
@@ -162,7 +162,7 @@
      * @access  public
      * @return  &org.imc.VEvent[]
      */
-    function &getEvents() {
+    public function &getEvents() {
       return $this->events;
     }
       
@@ -174,7 +174,7 @@
      * @param   mixed value
      * @throws  lang.FormatException
      */
-    function addProperty($keys, $value) {
+    public function addProperty($keys, $value) {
       static $context= array();
       static $event;
       static $timezone;
@@ -197,7 +197,7 @@
         case 'vevent':
           switch ($keys[0]) {
             case 'BEGIN':
-              $event= &new VEvent();
+              $event= new VEvent();
               break;
               
             case 'END':
@@ -205,15 +205,15 @@
               break;
             
             case 'DTSTAMP':     // DTSTAMP:20030220T101358Z
-              $event->date= &new Date(VFormatParser::decodeDate($value));
+              $event->date= new Date(VFormatParser::decodeDate($value));
               break;
               
             case 'DTSTART':
-              $event->starts= &new Date(VFormatParser::decodeDate($value));
+              $event->starts= new Date(VFormatParser::decodeDate($value));
               break;
 
             case 'DTEND':
-              $event->ends= &new Date(VFormatParser::decodeDate($value));
+              $event->ends= new Date(VFormatParser::decodeDate($value));
               break;
             
             case 'SUMMARY':
@@ -258,7 +258,7 @@
         case 'vtimezone':
           switch ($keys[0]) {
             case 'BEGIN':
-              $timezone= &new VTimezone();
+              $timezone= new VTimezone();
               break;
             
             case 'END':
@@ -288,7 +288,7 @@
               break;
             
             case 'DTSTART':
-              $timezone->{$type}['dtstart']= &new Date(VFormatParser::decodeDate($value));
+              $timezone->{$type}['dtstart']= new Date(VFormatParser::decodeDate($value));
               break;
             
             case 'TZOFFSETTO':
@@ -328,16 +328,16 @@
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    function &fromStream(&$stream) {
-      $cal= &new VCalendar();
+    public static function &fromStream(&$stream) {
+      $cal= new VCalendar();
       
-      $p= &new VFormatParser(VCAL_ID);
+      $p= new VFormatParser(VCAL_ID);
       $p->setDefaultHandler(array(&$cal, 'addProperty'));
       
-      try(); {
+      try {
         $p->parse($stream);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return $cal;
@@ -351,8 +351,8 @@
      * @param   mixed value
      * @return  string exported
      */    
-    function _export($key, $value) {
-      if (is_a ($value, 'Date')) {
+    public function _export($key, $value) {
+      if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
       }
@@ -378,7 +378,7 @@
      * @access  public
      * @return  string
      */
-    function export() {
+    public function export() {
 
       // First construct the calendar itself
       $ret = $this->_export ('BEGIN',     VCAL_ID);
@@ -406,7 +406,7 @@
      * @access  public
      * @return  string version
      */
-    function getVersion() {
+    public function getVersion() {
       return '2.0';
     }
   }

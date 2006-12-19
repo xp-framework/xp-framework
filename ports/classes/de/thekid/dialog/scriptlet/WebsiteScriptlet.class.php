@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.AbstractXMLScriptlet', 
+    'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'xml.DomXSLProcessor'
   );
 
@@ -23,7 +23,7 @@
      * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    function &_processor() {
+    public function &_processor() {
       return new DomXSLProcessor();
     }
 
@@ -34,7 +34,7 @@
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet(&$request, &$response) {
       $response->setStylesheet(sprintf(
         '%s/%s.xsl',
         $request->getProduct(),

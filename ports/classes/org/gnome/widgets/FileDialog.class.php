@@ -5,9 +5,9 @@
  */
 
   uses(
-    'org.gnome.GtkGladeDialogWindow', 
-    'org.gnome.util.GTKPixmapLoader', 
-    'org.gnome.util.GTKWidgetUtil', 
+    'org.gnome.GtkGladeDialogWindow',
+    'org.gnome.util.GTKPixmapLoader',
+    'org.gnome.util.GTKWidgetUtil',
     'io.Folder',
     'lang.System'
   );
@@ -25,7 +25,7 @@
    * @purpose  Provide a widget for file dialogs
    */
   class FileDialog extends GtkGladeDialogWindow {
-    var
+    public
       $filename = '',
       $dir      = '',
       $filter   = '',
@@ -38,7 +38,7 @@
      * @param   string dir default '.'
      * @param   string filter default '.*'
      */
-    function __construct($dir= '.', $filter= '.*') {
+    public function __construct($dir= '.', $filter= '.*') {
       $this->dir= $dir;
       $this->filter= $filter;
       parent::__construct(dirname(__FILE__).'/filedialog.glade', 'filedialog');
@@ -50,7 +50,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onClose(&$widget) {
+    public function onClose(&$widget) {
       $this->success= ('button_ok' == $widget->get_name());
       $this->close();
     }
@@ -61,7 +61,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onUpDirClicked(&$widget) {
+    public function onUpDirClicked(&$widget) {
       $this->setDirectory(substr($this->dir, 0, strrpos(
         substr($this->dir, 0, -1), 
         DIRECTORY_SEPARATOR
@@ -75,7 +75,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onHomeClicked(&$widget) {
+    public function onHomeClicked(&$widget) {
       $this->setDirectory(System::getProperty('user.home'));
     }
 
@@ -85,7 +85,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onFavoriteClicked(&$widget) {
+    public function onFavoriteClicked(&$widget) {
       $d= strtr(substr($widget->get_name(), 11), array(
         'HOME'  => System::getProperty('user.home'),
         'TMP'   => System::getProperty('os.tempdir'),
@@ -101,7 +101,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onRefreshClicked(&$widget) {
+    public function onRefreshClicked(&$widget) {
       $this->setDirectory($this->dir);
     }
     
@@ -111,7 +111,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onPNClicked(&$widget) {
+    public function onPNClicked(&$widget) {
       $this->cat->debug($widget->get_name(), $this->history, $this->history_offset);
       $this->history_offset+= ('button_prev' == $widget->get_name()) ? -1 : 1;
       $this->cat->debug($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
@@ -127,7 +127,7 @@
      * @param   mixed data
      * @param   php.GtkEvent event
      */
-    function onEntrySelected(&$widget, $row, $data, $event) {
+    public function onEntrySelected(&$widget, $row, $data, $event) {
       $filetype= $widget->get_text($row, 1);
       $entry= $widget->get_pixtext($row, 0);
       
@@ -156,7 +156,7 @@
      *
      * @access  public
      */
-    function init() {
+    public function init() {
       $this->window->set_default_size(400, 420);
       
       // File list
@@ -206,9 +206,9 @@
 
       // Load pixmaps
       $this->pixmaps= array();
-      $if= &new Folder(dirname(__FILE__).'/icons/');
-      $loader= &new GTKPixmapLoader($this->window->window, $if->uri);
-      try(); {
+      $if= new Folder(dirname(__FILE__).'/icons/');
+      $loader= new GTKPixmapLoader($this->window->window, $if->uri);
+      try {
         while ($entry= $if->getEntry()) {
           if ('.xpm' != substr($entry, -4)) continue;
           $entry= substr($entry, 0, -4);
@@ -219,7 +219,7 @@
           );
         }
         $if->close();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->cat->error($e);
         
         // Fall through, this is not critical
@@ -234,7 +234,7 @@
      *
      * @access  public
      */
-    function run() {
+    public function run() {
       $this->success= FALSE;
       parent::run();
     }
@@ -246,7 +246,7 @@
      * @param   int s size
      * @return  string formatted output
      */
-    function _size($s) {
+    public function _size($s) {
       if ($s < 1024) return sprintf('%d Bytes', $s);
       if ($s < 1048576) return sprintf('%0.2f KB', $s / 1024);
       if ($s < 1073741824) return sprintf('%0.2f MB', $s / 1048576);
@@ -259,7 +259,7 @@
      * @access  public
      * @param   string filename
      */
-    function setFilename($filename) {
+    public function setFilename($filename) {
       $this->filename= $filename;
     }
 
@@ -269,7 +269,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
 
@@ -279,7 +279,7 @@
      * @access  public
      * @param   string filter
      */
-    function setFilter($filter) {
+    public function setFilter($filter) {
       $this->filter= $filter;
     }
 
@@ -289,7 +289,7 @@
      * @access  public
      * @return  string
      */
-    function getFilter() {
+    public function getFilter() {
       return $this->filter;
     }
 
@@ -299,7 +299,7 @@
      * @access  public
      * @return  string
      */
-    function getDirectory() {
+    public function getDirectory() {
       return $this->dir;
     }
     
@@ -310,7 +310,7 @@
      * @param   string directory
      * @param   bool update_offset default TRUE
      */
-    function setDirectory($dir, $update_offset= TRUE) {
+    public function setDirectory($dir, $update_offset= TRUE) {
       $this->cat->debug('Change dir from ', $this->dir, 'to', $dir);
       $this->dir= $dir;
       
@@ -336,8 +336,8 @@
      *
      * @access  protected
      */  
-    function readFiles() {
-      $f= &new Folder($this->dir);
+    public function readFiles() {
+      $f= new Folder($this->dir);
 
       // Disable Up button if we are at top
       $this->buttons['up']->set_sensitive(strlen($this->dir) > 1);
@@ -349,7 +349,7 @@
       // Update list
       $this->files->freeze();
       $this->files->clear();
-      try(); {
+      try {
         while ($entry= $f->getEntry()) {
           $icon= $mask= NULL;
           if ($dir= is_dir($f->uri.$entry)) {
@@ -400,7 +400,7 @@
         // Copy folder's URI (will be full path)
         $this->dir= $f->uri;
         $f->close();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $e->printStackTrace();
       }
       $this->files->sort();
@@ -413,7 +413,7 @@
      * @access  public
      * @return  bool TRUE in case a file was selected and OK pressed
      */
-    function show() {
+    public function show() {
       parent::show();
       return $this->success;
     }

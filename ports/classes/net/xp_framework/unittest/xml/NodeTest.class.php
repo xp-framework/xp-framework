@@ -25,7 +25,7 @@
      * @param   &xml.Node node
      * @return  string
      */
-    function sourceOf(&$node, $mode= INDENT_DEFAULT) {
+    public function sourceOf(&$node, $mode= INDENT_DEFAULT) {
       return rtrim($node->getSource($mode), "\n");
     }
     
@@ -37,8 +37,8 @@
      * @access  public
      */
     #[@test]
-    function attributeAccessors() {
-      $n= &new Node();
+    public function attributeAccessors() {
+      $n= new Node();
       $n->setAttribute('id', 1);
       $this->assertTrue($n->hasAttribute('id'));
       $this->assertFalse($n->hasAttribute('href'));
@@ -53,9 +53,9 @@
      * @access  public
      */
     #[@test]
-    function contentAccessors() {
+    public function contentAccessors() {
       $content= '"This is interesting", Tom\'s friend said. "It\'s > 4 but < 2!"';
-      $n= &new Node();
+      $n= new Node();
       $n->setContent($content);
       $this->assertEquals($content, $n->getContent());
     }
@@ -68,8 +68,8 @@
      * @access  public
      */
     #[@test]
-    function nameAccessors() {
-      $n= &new Node();
+    public function nameAccessors() {
+      $n= new Node();
       $n->setName('name');
       $this->assertEquals('name', $n->getName());
     }
@@ -82,8 +82,8 @@
      * @access  public
      */
     #[@test, @expect('xml.XMLFormatException')]
-    function illegalContent() {
-      $n= &new Node();
+    public function illegalContent() {
+      $n= new Node();
       $n->setContent("\0");
     }
     
@@ -95,8 +95,8 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function addingNullChild() {
-      $n= &new Node();
+    public function addingNullChild() {
+      $n= new Node();
       $n->addChild($child= NULL);
     }
 
@@ -107,9 +107,9 @@
      * @access  public
      */
     #[@test]
-    function addingReturnsChild() {
-      $n= &new Node();
-      $child= &new Node();
+    public function addingReturnsChild() {
+      $n= new Node();
+      $child= new Node();
       $this->assertEquals($child, $n->addChild($child));
     }
     
@@ -120,7 +120,7 @@
      * @access  public
      */
     #[@test]
-    function fromEmptyArray() {
+    public function fromEmptyArray() {
       $this->assertEquals(
         '<node/>', 
         $this->sourceOf(Node::fromArray(array(), 'node'))
@@ -134,7 +134,7 @@
      * @access  public
      */
     #[@test]
-    function fromNumberArray() {
+    public function fromNumberArray() {
       $this->assertEquals(
         '<items><item>1</item><item>2</item></items>', 
         $this->sourceOf(Node::fromArray(array(1, 2), 'items'), INDENT_NONE)
@@ -148,7 +148,7 @@
      * @access  public
      */
     #[@test]
-    function fromCharacterArray() {
+    public function fromCharacterArray() {
       $this->assertEquals(
         '<characters><character>1</character><character>&amp;</character><character>1</character></characters>', 
         $this->sourceOf(Node::fromArray(array('1', '&', '1'), 'characters'), INDENT_NONE)
@@ -161,7 +161,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfEmptyNode() {
+    public function sourceOfEmptyNode() {
       $this->assertEquals(
         '<node/>', 
         $this->sourceOf(new Node('node'))
@@ -174,7 +174,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfNodeWithOneAttribute() {
+    public function sourceOfNodeWithOneAttribute() {
       $this->assertEquals(
         '<node id="1"/>', 
         $this->sourceOf(new Node('node', NULL, array('id' => 1)))
@@ -187,7 +187,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfNodeWithTwoAttributes() {
+    public function sourceOfNodeWithTwoAttributes() {
       $this->assertEquals(
         '<node id="2" name="&amp;XML"/>', 
         $this->sourceOf(new Node('node', NULL, array('id' => 2, 'name' => '&XML')))
@@ -201,7 +201,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfNodeWithContent() {
+    public function sourceOfNodeWithContent() {
       $this->assertEquals(
         '<expr>eval(\'1 &lt;&gt; 2 &amp;&amp; \') == &quot;Parse Error&quot;</expr>', 
         $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'))
@@ -214,7 +214,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfNodeWithCData() {
+    public function sourceOfNodeWithCData() {
       $this->assertEquals(
         '<text><![CDATA[Special characters: <>"\'&]]></text>', 
         $this->sourceOf(new Node('text', new CData('Special characters: <>"\'&')))
@@ -227,7 +227,7 @@
      * @access  public
      */
     #[@test]
-    function sourceOfNodeWithPCData() {
+    public function sourceOfNodeWithPCData() {
       $this->assertEquals(
         '<text>A <a href="http://xp-framework.net/">link</a> to click on</text>', 
         $this->sourceOf(new Node('text', new PCData('A <a href="http://xp-framework.net/">link</a> to click on')))

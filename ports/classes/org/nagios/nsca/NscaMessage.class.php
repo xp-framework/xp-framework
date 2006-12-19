@@ -16,7 +16,7 @@
    * @purpose  Wrapper
    */
   class NscaMessage extends Object {
-    var
+    public
       $host         = '',
       $service      = '',
       $status       = 0,
@@ -31,7 +31,7 @@
      * @param   int status one of NSCA_* constants
      * @param   string information
      */ 
-    function __construct($host, $service, $status, $information) {
+    public function __construct($host, $service, $status, $information) {
       
       $this->host= $host;
       $this->service= $service;
@@ -47,7 +47,7 @@
      * @param   int status
      * @return  string name
      */
-    function nameOfStatus($status) {
+    public static function nameOfStatus($status) {
       static $map= array(
         NSCA_OK      => 'NSCA_OK',     
         NSCA_WARN    => 'NSCA_WARN',   
@@ -63,7 +63,7 @@
      * @access  public
      * @param   string host
      */
-    function setHost($host) {
+    public function setHost($host) {
       $this->host= $host;
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function getHost() {
+    public function getHost() {
       return $this->host;
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @param   string service
      */
-    function setService($service) {
+    public function setService($service) {
       $this->service= $service;
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @return  string
      */
-    function getService() {
+    public function getService() {
       return $this->service;
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @param   int status one of NSCA_* constants
      */
-    function setStatus($status) {
+    public function setStatus($status) {
       $this->status= $status;
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @return  int one of NSCA_* constants
      */
-    function getStatus() {
+    public function getStatus() {
       return $this->status;
     }
 
@@ -123,7 +123,7 @@
      * @access  public
      * @param   string information
      */
-    function setInformation($information) {
+    public function setInformation($information) {
       $this->information= $information;
     }
 
@@ -133,7 +133,7 @@
      * @access  public
      * @return  string
      */
-    function getInformation() {
+    public function getInformation() {
       return $this->information;
     }
     

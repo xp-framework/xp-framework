@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: DiaDiagram.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
 
   uses(
@@ -19,7 +19,7 @@
    */
   class DiaDiagram extends DiaCompound {
 
-    var
+    public
       $ns= array('dia' => 'http://www.lysator.liu.se/~alla/dia/'), // new (unused) 'http://www.gnome.org/projects/dia/'
       $node_name= 'dia:diagram';
 
@@ -28,7 +28,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->initialize();
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  int
      */
-    function getId() {
+    public static function getId() {
       static $id= 0;
       return 'O'.$id++;
       // too complicated: return sprintf('%0'.(strlen($id)+1).'d', $id++);
@@ -51,7 +51,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $this->set('data', new DiaData());
       $this->addLayer(new DiaLayer('Background', TRUE));
     }
@@ -62,7 +62,7 @@
      * @access  public
      * @return  string uri The namespace URI
      */
-    function getNamespace($prefix) {
+    public function getNamespace($prefix) {
       return $this->ns[$prefix];
     }
 
@@ -73,7 +73,7 @@
      * @param   array namespace Example: array($prefix => $url)
      */
     #[@fromDia(xpath= 'namespace::dia', value= 'namespace')]
-    function addNamespace($namespace) {
+    public function addNamespace($namespace) {
       list($prefix, $uri)= each($namespace);
       $this->ns[$prefix]= $uri;
     }
@@ -84,7 +84,7 @@
      * @access  public
      * @return  &org.dia.DiaData
      */
-    function &getData() {
+    public function &getData() {
       return $this->getChild('data');
     }
 
@@ -95,7 +95,7 @@
      * @param   &org.dia.DiaData Data
      */
     #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
-    function setData(&$Data) {
+    public function setData(&$Data) {
       $this->set('data', $Data);
     }
 
@@ -106,10 +106,10 @@
      * @param   string name default 'Background'
      * @return  &org.dia.DiaLayer
      */
-    function &getLayer($name= 'Background') {
+    public function &getLayer($name= 'Background') {
       $Child= &$this->getChild($name);
       if (!is('org.dia.DiaLayer', $Child))
-        return throw(new IllegalArgumentException("The object with name='$name' is no DiaLayer!"));
+        throw(new IllegalArgumentException("The object with name='$name' is no DiaLayer!"));
       return $Child;
     }
 
@@ -120,7 +120,7 @@
      * @param   &org.dia.DiaLayer Layer
      */
     #[@fromDia(xpath= 'dia:layer', class= 'org.dia.DiaLayer')]
-    function addLayer(&$Layer) {
+    public function addLayer(&$Layer) {
       $this->set($Layer->getName(), $Layer);
     }
 
@@ -130,9 +130,9 @@
      * @access  public
      * @return  string XML representation of the DIAgramm
      */
-    function getSource($indent= INDENT_DEFAULT) {
+    public function getSource($indent= INDENT_DEFAULT) {
       $Node= &$this->getNode();
-      $Tree= &new Tree();
+      $Tree= new Tree();
       $Tree->root= &$Node;
       return $Tree->getDeclaration()."\n".$Tree->getSource($indent);
     }
@@ -144,22 +144,22 @@
      * @param   string filename Filename to save the DIAgramm to
      * @param   boolean zip default TRUE Gzip the DIAgram file?
      */
-    function saveTo($filename, $zip= TRUE) {
+    public function saveTo($filename, $zip= TRUE) {
       // open $File according to $zip
       if ($zip) {
         uses('io.ZipFile');
-        $File= &new ZipFile($filename);
+        $File= new ZipFile($filename);
       } else {
         uses('io.File');
-        $File= &new File($filename);
+        $File= new File($filename);
       }
 
       // try to write XML source to file
-      try (); {
+      try {
         $File->open(FILE_MODE_WRITE) && // default compression: 6
         $File->write($this->getSource(INDENT_DEFAULT)); // default indentation
         $File->close();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         Console::writeLine('Fatal Exception: '.$e->toString());
         exit(-1);
       }
@@ -173,7 +173,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       foreach (array_keys($this->ns) as $prefix) {
         $node->setAttribute('xmlns:'.$prefix, $this->ns[$prefix]);

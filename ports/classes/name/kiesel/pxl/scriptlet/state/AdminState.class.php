@@ -25,7 +25,7 @@
      * @param   
      * @return  
      */
-    function __construct() {
+    public function __construct() {
       $this->addHandler(new NewPageHandler());
     }  
   
@@ -36,7 +36,7 @@
      * @param   
      * @return  
      */
-    function requiresAuthentication() {
+    public function requiresAuthentication() {
       return TRUE;
     }    
   
@@ -47,7 +47,7 @@
      * @param   
      * @return  
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       
     }
   }

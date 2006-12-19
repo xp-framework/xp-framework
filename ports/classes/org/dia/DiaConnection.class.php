@@ -12,7 +12,7 @@
    */
   class DiaConnection extends DiaElement {
 
-    var
+    public
       $node_name= 'dia:connection',
       $value= array();
 
@@ -22,7 +22,7 @@
      * @access  public
      * @param   int handle default 0
      */
-    function __construct($handle= 0) {
+    public function __construct($handle= 0) {
       $this->handle= $handle;
       $this->initialize();
     }
@@ -32,7 +32,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       if (!isset($this->handle)) $this->handle= 0;
       $this->to= '00';
       $this->conn= 0;
@@ -44,7 +44,7 @@
      * @access  public
      * @return  int
      */
-    function getHandle() {
+    public function getHandle() {
       return $this->handle;
     }
 
@@ -57,7 +57,7 @@
      * @param   int handle
      */
     #[@fromDia(xpath= '@handle', value= 'int')]
-    function setHandle($handle) {
+    public function setHandle($handle) {
       $this->handle= $handle;
     }
 
@@ -67,7 +67,7 @@
      * @access  public
      * @return  string
      */
-    function getTo() {
+    public function getTo() {
       return $this->to;
     }
 
@@ -78,7 +78,7 @@
      * @param   string to
      */
     #[@fromDia(xpath= '@to', value= 'string')]
-    function setTo($to) {
+    public function setTo($to) {
       $this->to= $to;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  int
      */
-    function getConnection() {
+    public function getConnection() {
       return $this->conn;
     }
 
@@ -102,7 +102,7 @@
      * @param   int conn
      */
     #[@fromDia(xpath= '@connection', value= 'int')]
-    function setConnection($conn) {
+    public function setConnection($conn) {
       $this->conn= $conn;
     }
 
@@ -112,7 +112,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $Node= &parent::getNode();
       $Node->setAttribute('handle', $this->handle);
       $Node->setAttribute('to', $this->to);

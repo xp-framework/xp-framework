@@ -7,7 +7,7 @@
   uses(
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToBoolean',
-    'scriptlet.xml.workflow.checkers.IntegerRangeChecker'    
+    'scriptlet.xml.workflow.checkers.IntegerRangeChecker'
   );
 
   /**
@@ -24,7 +24,7 @@
      *
      * @access  public
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'event_id',
         OCCURRENCE_PASSBEHIND,
@@ -89,7 +89,7 @@
      * @access  public
      * @return  int
      */
-    function getEvent_id() {
+    public function getEvent_id() {
       return $this->getValue('event_id');
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  int
      */
-    function getPlayer_id() {
+    public function getPlayer_id() {
       return $this->getValue('player_id');
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  string
      */
-    function getFirstname() {
+    public function getFirstname() {
       return $this->getValue('firstname');
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  string
      */
-    function getLastname() {
+    public function getLastname() {
       return $this->getValue('lastname');
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  int
      */
-    function getAttend() {
+    public function getAttend() {
       return $this->getValue('attend');
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @return  boolean
      */
-    function getNeeds_seat() {
+    public function getNeeds_seat() {
       return $this->getValue('needs_seat');
     }
 
@@ -149,7 +149,7 @@
      * @access  public
      * @return  int
      */
-    function getOffers_seats() {
+    public function getOffers_seats() {
       return $this->getValue('offers_seats');
     }
 

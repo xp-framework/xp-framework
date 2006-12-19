@@ -13,15 +13,15 @@
      * @param   bool depend default FALSE
      * @return  &org.dia.DiaDiagram
      */
-    function &marshal($classnames, $recurse= 0, $depend= FALSE) {
+    public function &marshal($classnames, $recurse= 0, $depend= FALSE) {
       // create new DiaDiagram
-      $Dia= &new DiaDiagram();
+      $Dia= new DiaDiagram();
 
       // check classnames?
       foreach ($classnames as $classname) {
-        try (); {
+        try {
           $Class= &XPClass::forName($Classname);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           Console::writeLine("CLASS NOT FOUND: $classname!");
         }
       }
@@ -37,7 +37,7 @@
      * @param   bool depend
      * @return  &org.dia.DiaDiagram
      */
-    function &recurse(&$Dia, $classnames, $recurse, $depend) {
+    public function &recurse(&$Dia, $classnames, $recurse, $depend) {
       $Layer= &$Dia->getLayer();
 
 

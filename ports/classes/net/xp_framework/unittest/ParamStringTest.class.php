@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function testShortFlag() {
-      $p= &new ParamString(array('-k'));
+    public function testShortFlag() {
+      $p= new ParamString(array('-k'));
 
       $this->assertTrue($p->exists('k'));
       $this->assertNull($p->value('k'));
@@ -36,8 +36,8 @@
      * @access  public
      */
     #[@test]
-    function testShortValue() {
-      $p= &new ParamString(array('-d', 'sql'));
+    public function testShortValue() {
+      $p= new ParamString(array('-d', 'sql'));
 
       $this->assertTrue($p->exists('d'));
       $this->assertEquals('sql', $p->value('d'));
@@ -49,8 +49,8 @@
      * @access  public
      */
     #[@test]
-    function testLongFlag() {
-      $p= &new ParamString(array('--verbose'));
+    public function testLongFlag() {
+      $p= new ParamString(array('--verbose'));
 
       $this->assertTrue($p->exists('verbose'));
       $this->assertNull($p->value('verbose'));
@@ -62,8 +62,8 @@
      * @access  public
      */
     #[@test]
-    function testLongValue() {
-      $p= &new ParamString(array('--level=3'));
+    public function testLongValue() {
+      $p= new ParamString(array('--level=3'));
 
       $this->assertTrue($p->exists('level'));
       $this->assertEquals('3', $p->value('level'));
@@ -75,8 +75,8 @@
      * @access  public
      */
     #[@test]
-    function whitespaceInParameter() {
-      $p= &new ParamString(array('--realm=That is a realm'));
+    public function whitespaceInParameter() {
+      $p= new ParamString(array('--realm=That is a realm'));
       
       $this->assertTrue($p->exists('realm'));
       $this->assertEquals('That is a realm', $p->value('realm'));

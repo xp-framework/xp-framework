@@ -12,7 +12,7 @@
    * @purpose  purpose
    */
   class SoapMappingTestTarget extends Object {
-    var
+    public
       $string     = '',
       $integer    = 0;  
 
@@ -23,7 +23,7 @@
      * @param   string string default ''
      * @param   integer integer default 0
      */
-    function __construct($string= '', $integer= 0) {
+    public function __construct($string= '', $integer= 0) {
       $this->string= $string;
       $this->integer= $integer;
     }
@@ -34,7 +34,7 @@
      * @access  public
      * @param   string string
      */
-    function setString($string) {
+    public function setString($string) {
       $this->string= $string;
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getString() {
+    public function getString() {
       return $this->string;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @param   int integer
      */
-    function setInteger($integer) {
+    public function setInteger($integer) {
       $this->integer= $integer;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  int
      */
-    function getInteger() {
+    public function getInteger() {
       return $this->integer;
     }
   }

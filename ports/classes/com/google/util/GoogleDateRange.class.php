@@ -42,7 +42,7 @@
    * @purpose  Helper class
    */
   class GoogleDateRange extends Object {
-    var
+    public
       $start    = NULL,
       $end      = NULL;
       
@@ -55,8 +55,8 @@
      * @param   &util.Date end
      * @return  &com.google.util.GoogleDateRange
      */
-    function &forDates(&$start, &$end) {
-      $range= &new GoogleDateRange();
+    public static function &forDates(&$start, &$end) {
+      $range= new GoogleDateRange();
       $range->setStart($start);
       $range->setEnd($end);
       return $range;
@@ -68,7 +68,7 @@
      * @access  public
      * @param   &util.Date start
      */
-    function setStart(&$start) {
+    public function setStart(&$start) {
       $this->start= &$start;
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getStart() {
+    public function &getStart() {
       return $this->start;
     }
 
@@ -88,7 +88,7 @@
      * @access  public
      * @param   &util.Date end
      */
-    function setEnd(&$end) {
+    public function setEnd(&$end) {
       $this->end= &$end;
     }
 
@@ -98,7 +98,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getEnd() {
+    public function &getEnd() {
       return $this->end;
     }
     
@@ -115,7 +115,7 @@
      * @param   &util.Date date
      * @return  int
      */
-    function dateToJulian(&$date) {
+    public static function dateToJulian(&$date) {
       with ($iyear= $date->getYear(), $imonth= $date->getMonth(), $iday= $date->getDay()); {
       
         // Check for invalid dates
@@ -165,7 +165,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         'daterange:%d-%d',
         GoogleDateRange::dateToJulian($this->start),

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'org.tigris.subversion.SVNInterface',
     'io.File',
     'io.TempFile'
@@ -18,7 +18,7 @@
    * @see      http://www.tigris.org/subversion/
    */
   class SVNFile extends SVNInterface {
-    var
+    public
       $filename= NULL;
       
     /**
@@ -28,11 +28,11 @@
      * @param   string filename
      * @throws  io.FileNotFoundException if filename is not a file
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
-        return throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
+        throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
       }
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  stdclass[] objects
      */
-    function update() {
+    public function update() {
       $results= $this->_execute ('update '.$this->path);
       
       $stats= array();
@@ -68,14 +68,14 @@
      * @access  public
      * @param   string comment
      */
-    function commit($comment) {
-      $f= &new TempFile();
-      try(); {
+    public function commit($comment) {
+      $f= new TempFile();
+      try {
         $f->open (FILE_MODE_WRITE);
         $f->writeLine($comment);
         $f->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       $return= &$this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->filename));
@@ -91,7 +91,7 @@
      * @access  public
      * @return  bool success
      */
-    function delete() {
+    public function delete() {
       return $this->_execute('delete '.$this->filename);
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  bool success
      */    
-    function add() {
+    public function add() {
       return $this->_execute('add '.$this->filename);
     }
     
@@ -119,7 +119,7 @@
      * @param   string revision_to
      * @return  array diff lines from the diff
      */
-    function diff($r1= NULL, $r2= NULL) {
+    public function diff($r1= NULL, $r2= NULL) {
       $cmd= sprintf ('diff %s %s %s',
         (NULL !== $r1 ? '-r'.$r1 : ''),
         (NULL !== $r2 ? '-r'.$r2 : ''),
@@ -136,7 +136,7 @@
      * @param   string target
      * @return  bool
      */
-    function move($target) {
+    public function move($target) {
       return $this->_execute('move '.$this->filename.' '.dirname($this->filename).'/'.$target);
     }
   }

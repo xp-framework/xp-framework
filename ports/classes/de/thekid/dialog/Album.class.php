@@ -4,15 +4,20 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'de.thekid.dialog.AlbumImage', 'de.thekid.dialog.AlbumChapter');
+  uses(
+    'util.Date',
+    'de.thekid.dialog.AlbumImage',
+    'de.thekid.dialog.AlbumChapter',
+    'de.thekid.dialog.IEntry'
+  );
 
   /**
    * Represents a single album.
    *
    * @purpose  Value object
    */
-  class Album extends Object {
-    var
+  class Album extends Object implements IEntry {
+    public
       $name         = '',
       $title        = '',
       $createdAt    = NULL,
@@ -26,7 +31,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -36,7 +41,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -46,7 +51,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -56,7 +61,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -66,7 +71,7 @@
      * @access  public
      * @param   &util.Date createdAt
      */
-    function setCreatedAt(&$createdAt) {
+    public function setCreatedAt(&$createdAt) {
       $this->createdAt= &$createdAt;
     }
 
@@ -76,7 +81,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getCreatedAt() {
+    public function &getCreatedAt() {
       return $this->createdAt;
     }
     
@@ -87,7 +92,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->createdAt;
     }
 
@@ -97,7 +102,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -107,7 +112,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -118,7 +123,7 @@
      * @param   &de.thekid.dialog.AlbumImage highlight
      * @return  &de.thekid.dialog.AlbumImage the added highlight
      */
-    function &addHighlight(&$highlight) {
+    public function &addHighlight(&$highlight) {
       $this->highlights[]= &$highlight;
       return $highlight;
     }
@@ -131,7 +136,7 @@
      * @param   int i
      * @return  &de.thekid.dialog.AlbumImage
      */
-    function &highlightAt($i) {
+    public function &highlightAt($i) {
       if (!isset($this->highlights[$i])) return NULL;
       return $this->highlights[$i];
     }
@@ -142,7 +147,7 @@
      * @access  public
      * @return  int
      */
-    function numHighlights() {
+    public function numHighlights() {
       return sizeof($this->highlights);
     }
 
@@ -153,7 +158,7 @@
      * @param   &de.thekid.dialog.AlbumChapter chapter
      * @return  &de.thekid.dialog.AlbumChapter the added chapter
      */
-    function &addChapter(&$chapter) {
+    public function &addChapter(&$chapter) {
       $this->chapters[]= &$chapter;
       return $chapter;
     }
@@ -166,7 +171,7 @@
      * @param   int i
      * @return  &de.thekid.dialog.AlbumChapter
      */
-    function &chapterAt($i) {
+    public function &chapterAt($i) {
       if (!isset($this->chapters[$i])) return NULL;
       return $this->chapters[$i];
     }
@@ -177,7 +182,7 @@
      * @access  public
      * @return  int
      */
-    function numChapters() {
+    public function numChapters() {
       return sizeof($this->chapters);
     }
 
@@ -187,7 +192,7 @@
      * @access  public
      * @return  int
      */
-    function numImages() {
+    public function numImages() {
       $r= 0;
       for ($i= 0, $s= sizeof($this->chapters); $i < $s; $i++) {
         $r+= $this->chapters[$i]->numImages();
@@ -201,7 +206,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $hs= '';
       for ($i= 0, $s= sizeof($this->highlights); $i < $s; $i++) {
         $hs.= '  '.$this->highlights[$i]->toString()."\n";
@@ -228,5 +233,5 @@
       );
     }
 
-  } implements(__FILE__, 'de.thekid.dialog.IEntry');
+  } 
 ?>

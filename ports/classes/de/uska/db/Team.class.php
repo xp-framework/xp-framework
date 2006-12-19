@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class Team extends DataSet {
-    var
+    public
       $team_id            = 0,
       $name               = '';
 
@@ -23,7 +23,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &Team::getPeer()); {
         $peer->setTable('uska.team');
         $peer->setConnection('uskadb');
@@ -42,7 +42,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -54,7 +54,7 @@
      * @return  &de.uska.db.Team object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByTeam_id($team_id) {
+    public function &getByTeam_id($team_id) {
       $peer= &Team::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL))));
     }
@@ -65,7 +65,7 @@
      * @access  public
      * @return  int
      */
-    function getTeam_id() {
+    public function getTeam_id() {
       return $this->team_id;
     }
       
@@ -76,7 +76,7 @@
      * @param   int team_id
      * @return  int the previous value
      */
-    function setTeam_id($team_id) {
+    public function setTeam_id($team_id) {
       return $this->_change('team_id', $team_id);
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
       
@@ -97,7 +97,7 @@
      * @param   string name
      * @return  string the previous value
      */
-    function setName($name) {
+    public function setName($name) {
       return $this->_change('name', $name);
     }
   }

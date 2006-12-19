@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class HashmapTest extends TestCase {
-    var
+    public
       $map= NULL;
     
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->map= &new Hashmap();
+    public function setUp() {
+      $this->map= new Hashmap();
     }
         
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertTrue($this->map->isEmpty());
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function equalsClone() {
+    public function equalsClone() {
       $this->map->put('color', 'green');
       $this->assertTrue($this->map->equals(clone($this->map)));
     }
@@ -56,8 +56,8 @@
      * @access  public
      */
     #[@test]
-    function equalsOtherMapWithSameContents() {
-      $other= &new HashMap();
+    public function equalsOtherMapWithSameContents() {
+      $other= new HashMap();
       $this->map->put('color', 'green');
       $other->put('color', 'green');
       $this->assertTrue($this->map->equals($other));
@@ -69,8 +69,8 @@
      * @access  public
      */
     #[@test]
-    function doesNotEqualMapWithDifferentContents() {
-      $other= &new HashMap();
+    public function doesNotEqualMapWithDifferentContents() {
+      $other= new HashMap();
       $this->map->put('color', 'green');
       $other->put('color', 'pink');
       $this->assertFalse($this->map->equals($other));
@@ -82,7 +82,7 @@
      * @access  public
      */
     #[@test]
-    function put() {
+    public function put() {
       $this->map->put('color', 'green');
       $this->assertFalse($this->map->isEmpty());
       $this->assertEquals(1, $this->map->size());
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function get() {
+    public function get() {
       $this->map->put('key', 'value');
       $this->assertEquals('value', $this->map->get('key'));
     }
@@ -105,7 +105,7 @@
      * @access  public
      */
     #[@test]
-    function remove() {
+    public function remove() {
       $this->map->put('key', 'value');
       $this->map->remove('key');
       $this->assertTrue($this->map->isEmpty());
@@ -117,7 +117,7 @@
      * @access  public
      */
     #[@test]
-    function getReturnsNullOnEmptyList() {
+    public function getReturnsNullOnEmptyList() {
       $this->assertTrue($this->map->isEmpty());
       $this->assertNull($this->map->get('key'));
     }
@@ -128,7 +128,7 @@
      * @access  public
      */
     #[@test]
-    function containsKey() {
+    public function containsKey() {
       $this->map->put('key', 'value');
       $this->assertTrue($this->map->containsKey('key'));
       $this->assertFalse($this->map->containsKey('non-existant-key'));
@@ -142,7 +142,7 @@
      * @param   array<mixed, mixed> toMerge
      * @param   array<mixed, mixed> expect
      */
-    function testMerge($recursive, $toMerge, $expect) {
+    public function testMerge($recursive, $toMerge, $expect) {
       $this->map->put('color', 'red');
       $this->map->put('count', 5);
 
@@ -156,7 +156,7 @@
      * @access  public
      */
     #[@test]
-    function merge() {
+    public function merge() {
       $this->testMerge(
         FALSE,
         array('color' => 'green', 'key' => 'value'),
@@ -170,7 +170,7 @@
      * @access  public
      */
     #[@test]
-    function mergeRecursive() {
+    public function mergeRecursive() {
       $this->testMerge(
         TRUE,
         array('color' => 'green', 'key' => 'value'),
@@ -184,7 +184,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]    
-    function mergeWithIllegalArgument() {
+    public function mergeWithIllegalArgument() {
       $this->map->merge(new Object());
     }
 
@@ -194,7 +194,7 @@
      * @access  public
      */
     #[@test]
-    function swap() {
+    public function swap() {
       $this->map->put('color', 'purple');
       $this->map->put('price', 15);
 
@@ -211,7 +211,7 @@
      * @access  public
      */
     #[@test]
-    function swapNonExistantKeys() {
+    public function swapNonExistantKeys() {
       $this->map->put('color', 'purple');
       $this->map->put('price', 15);
 
@@ -225,7 +225,7 @@
      * @access  public
      */
     #[@test]
-    function flip() {
+    public function flip() {
       $this->map->put('color', 'purple');
       $this->map->put('price', 15);
 
@@ -242,7 +242,7 @@
      * @access  public
      */
     #[@test]
-    function clear() {
+    public function clear() {
       $this->map->put('key', 'value');
       $this->map->clear();
       $this->assertTrue($this->map->isEmpty());
@@ -254,7 +254,7 @@
      * @access  public
      */
     #[@test]
-    function containsValue() {
+    public function containsValue() {
       $this->map->put('key', 'value');
       $this->assertTrue($this->map->containsValue($v= 'value'));
       $this->assertFalse($this->map->containsValue($v= 'non-existant-value'));
@@ -266,7 +266,7 @@
      * @access  public
      */
     #[@test]
-    function keys() {
+    public function keys() {
       $this->map->put('one', 1);
       $this->map->put('two', 2);
       $this->assertEquals(array('one', 'two'), $this->map->keys());
@@ -278,7 +278,7 @@
      * @access  public
      */
     #[@test]
-    function values() {
+    public function values() {
       $this->map->put('one', 1);
       $this->map->put('two', 2);
       $this->assertEquals(array(1, 2), $this->map->values());
@@ -290,7 +290,7 @@
      * @access  public
      */
     #[@test]
-    function filter() {
+    public function filter() {
       $this->map->put('one', 1);
       $this->map->put('two', 2);
       $this->map->put('three', 3);
@@ -305,7 +305,7 @@
      * @access  public
      */
     #[@test]
-    function sort() {
+    public function sort() {
       $this->map->put('two', 2);
       $this->map->put('one', 1);
       $this->map->sort(SORT_NUMERIC);
@@ -322,7 +322,7 @@
      * @access  public
      */
     #[@test]
-    function rsort() {
+    public function rsort() {
       $this->map->put('one', 1);
       $this->map->put('two', 2);
       $this->map->rsort(SORT_NUMERIC);
@@ -339,7 +339,7 @@
      * @access  public
      */
     #[@test]
-    function usort() {
+    public function usort() {
       $this->map->put('one', 'One');
       $this->map->put('two', 'two');
       $this->map->put('eins', 'one');

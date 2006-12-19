@@ -13,7 +13,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Implements', 0);
     }
 
@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setText('');
       $this->setTextPosition(array(0, 0));
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function getText() {
+    public function getText() {
       return $this->getChildValue('text');
     }
 
@@ -58,7 +58,7 @@
      * @param   string text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text"]/dia:string', value= 'string')]
-    function setText($text) {
+    public function setText($text) {
       $this->setString('text', $text);
     }
 
@@ -68,7 +68,7 @@
      * @access  public
      * @return  array
      */
-    function getTextPosition() {
+    public function getTextPosition() {
       return $this->getChildValue('text_pos');
     }
 
@@ -79,7 +79,7 @@
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text_pos"]/dia:point/@val', value= 'array')]
-    function setTextPosition($point) {
+    public function setTextPosition($point) {
       $this->setPoint('text_pos', $point);
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  float
      */
-    function getDiameter() {
+    public function getDiameter() {
       return $this->getChildValue('diameter');
     }
 
@@ -100,7 +100,7 @@
      * @param   float diameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="diameter"]/dia:real/@val', value= 'real')]
-    function setDiameter($diameter) {
+    public function setDiameter($diameter) {
       $this->setReal('diameter', $diameter);
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @return  array[]
      */
-    function getEndPoints() {
+    public function getEndPoints() {
       $Conns= $this->getChild('conn_endpoints');
       return $Conns->getChildren();
     }
@@ -122,7 +122,7 @@
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="conn_endpoints"]/dia:point/@val', value= 'array')]
-    function addEndPoint($point) {
+    public function addEndPoint($point) {
       $Conns= &$this->getChild('conn_endpoints');
       $Conns->addChild(new DiaPoint($point));
     }
@@ -133,7 +133,7 @@
      * @access  public
      * @return  &org.dia.DiaConnection
      */
-    function &getConnection() {
+    public function &getConnection() {
       $Conns= &$this->getChild('connections');
       return $Conns->getChild('connection');
     }
@@ -145,7 +145,7 @@
      * @param   &org.dia.DiaConnection Conn
      */
     #[@fromDia(xpath= 'dia:attribute[@name="connetions"]/dia:connection', class= 'org.dia.DiaConnection')]
-    function setConnection(&$Conn) {
+    public function setConnection(&$Conn) {
       $Conns= &$this->getChild('connections');
       $Conns->set('connection', $Conn);
     }
@@ -156,7 +156,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 0 The connection point of the object
      */
-    function beginAt($id, $connpoint= 0) {
+    public function beginAt($id, $connpoint= 0) {
       $Conns= &$this->getChild('connections');
       $Conns->set('connection', new DiaConnection("0, $id, $connpoint"));
     }
@@ -167,6 +167,6 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 5 The connection point of the object
      */
-    function endAt($id, $connpoint= 5) { }
+    public function endAt($id, $connpoint= 5) { }
   }
 ?>

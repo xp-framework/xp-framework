@@ -13,7 +13,7 @@
    */
   class DiaPoint extends DiaElement {
 
-    var
+    public
       $node_name= 'dia:point',
       $value= array();
 
@@ -26,7 +26,7 @@
      * @param   array coords
      * @return  bool
      */
-    function setValue($coords) {
+    public function setValue($coords) {
       // $coords must be an array with zero or two elements:
       if (!is_array($coords) or (!empty($coords) and sizeof($coords) !== 2)) return FALSE;
       $this->value= $coords;
@@ -39,7 +39,7 @@
      * @access  public 
      * @return  &xml.Node 
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       if (isset($this->value)) {
         $node->setAttribute('val', implode(',', $this->value));

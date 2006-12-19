@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class QueueTest extends TestCase {
-    var
+    public
       $queue= NULL;
     
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->queue= &new Queue();
+    public function setUp() {
+      $this->queue= new Queue();
     }
         
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertTrue($this->queue->isEmpty());
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function equalsClone() {
+    public function equalsClone() {
       $this->queue->put(new String('green'));
       $this->assertTrue($this->queue->equals(clone($this->queue)));
     }
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test]
-    function put() {
+    public function put() {
       $this->queue->put(new String('green'));
       $this->assertFalse($this->queue->isEmpty());
       $this->assertEquals(1, $this->queue->size());
@@ -68,8 +68,8 @@
      * @access  public
      */
     #[@test]
-    function get() {
-      $color= &new String('red');
+    public function get() {
+      $color= new String('red');
       $this->queue->put($color);
       $this->assertEquals($color, $this->queue->get());
       $this->assertTrue($this->queue->isEmpty());
@@ -82,7 +82,7 @@
      * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
-    function exceptionOnNoMoreElements() {
+    public function exceptionOnNoMoreElements() {
       $this->queue->get();
     }
 
@@ -92,8 +92,8 @@
      * @access  public
      */
     #[@test]
-    function peek() {
-      $color= &new String('blue');
+    public function peek() {
+      $color= new String('blue');
       $this->queue->put($color);
       $this->assertEquals($color, $this->queue->peek());
       $this->assertFalse($this->queue->isEmpty());
@@ -106,7 +106,7 @@
      * @access  public
      */
     #[@test]
-    function peekReturnsNullOnNoMoreElements() {
+    public function peekReturnsNullOnNoMoreElements() {
       $this->assertNull($this->queue->peek());
     }
 
@@ -116,8 +116,8 @@
      * @access  public
      */
     #[@test]
-    function remove() {
-      $color= &new String('blue');
+    public function remove() {
+      $color= new String('blue');
       $this->queue->put($color);
       $this->queue->remove($color);
       $this->assertTrue($this->queue->isEmpty());
@@ -129,8 +129,8 @@
      * @access  public
      */
     #[@test]
-    function removeReturnsWhetherDeleted() {
-      $color= &new String('pink');
+    public function removeReturnsWhetherDeleted() {
+      $color= new String('pink');
       $this->queue->put($color);
       $this->assertTrue($this->queue->remove($color));
       $this->assertFalse($this->queue->remove(new String('purple')));
@@ -145,7 +145,7 @@
      * @access  public
      */
     #[@test]
-    function elementAt() {
+    public function elementAt() {
       $this->queue->put(new String('red'));
       $this->queue->put(new String('green'));
       $this->queue->put(new String('blue'));
@@ -177,7 +177,7 @@
      * @access  public
      */
     #[@test]
-    function iterativeUse() {
+    public function iterativeUse() {
       $input= array(new String('red'), new String('green'), new String('blue'));
       
       // Add
@@ -205,7 +205,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
-    function elementAtIllegalOffset() {
+    public function elementAtIllegalOffset() {
       $this->queue->elementAt(-1);
     }
 
@@ -216,7 +216,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
-    function elementAtOffsetOutOfBounds() {
+    public function elementAtOffsetOutOfBounds() {
       $this->queue->put(new String('one'));
       $this->queue->elementAt($this->queue->size() + 1);
     }
@@ -228,7 +228,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
-    function elementAtEmptyList() {
+    public function elementAtEmptyList() {
       $this->queue->elementAt(0);
     }
   }

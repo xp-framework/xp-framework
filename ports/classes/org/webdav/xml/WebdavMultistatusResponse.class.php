@@ -43,7 +43,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setStatus(WEBDAV_MULTISTATUS);
       $this->setRootNode(new Node(
         'D:multistatus',
@@ -59,15 +59,15 @@
      * @param   &org.webdav.WebdavObject object The webdav object
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
-    function addWebdavObject(&$object, &$reqprops) {
+    public function addWebdavObject(&$object, &$reqprops) {
 
       // Get the property lists
       $propsList= &$object->getProperties();         // properties available
       
       // Create the result nodes (for found and not found properties)
-      $found_stat= &new Node('D:propstat');
+      $found_stat= new Node('D:propstat');
       $found_props= &$found_stat->addChild(new Node('D:prop'));
-      $notfound_stat= &new Node('D:propstat');
+      $notfound_stat= new Node('D:propstat');
       $notfound_props= &$notfound_stat->addChild(new Node('D:prop'));
       
       $stdprops= array();
@@ -153,7 +153,7 @@
       }
 
       // Build result (href, properties, status, ...)
-      $response= &new Node('D:response');
+      $response= new Node('D:response');
       $response->addChild(new Node('D:href', $this->encodePath($object->getHref())));
       $found_stat->addChild(new Node('D:status' , 'HTTP/1.1 200 OK'));
       $response->addChild($found_stat);

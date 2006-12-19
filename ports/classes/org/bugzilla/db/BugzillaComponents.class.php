@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaComponents extends DataSet {
-    var
+    public
       $name               = '',
       $initialowner       = 0,
       $initialqacontact   = 0,
@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaComponents::getPeer()); {
         $peer->setTable('components');
         $peer->setConnection('bugzilla');
@@ -50,7 +50,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -62,7 +62,7 @@
      * @return  &org.bugzilla.db.BugzillaComponents object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getById($id) {
+    public function &getById($id) {
       $peer= &BugzillaComponents::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('id', $id, EQUAL))));
     }
@@ -76,7 +76,7 @@
      * @return  &org.bugzilla.db.BugzillaComponents object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByProduct_idName($product_id, $name) {
+    public function &getByProduct_idName($product_id, $name) {
       $peer= &BugzillaComponents::getPeer();
       return array_shift($peer->doSelect(new Criteria(
         array('product_id', $product_id, EQUAL),
@@ -92,7 +92,7 @@
      * @return  &org.bugzilla.db.BugzillaComponents[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByName($name) {
+    public function &getByName($name) {
       $peer= &BugzillaComponents::getPeer();
       return $peer->doSelect(new Criteria(array('name', $name, EQUAL)));
     }
@@ -103,7 +103,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
       
@@ -114,7 +114,7 @@
      * @param   string name
      * @return  string the previous value
      */
-    function setName($name) {
+    public function setName($name) {
       return $this->_change('name', $name);
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @return  int
      */
-    function getInitialowner() {
+    public function getInitialowner() {
       return $this->initialowner;
     }
       
@@ -135,7 +135,7 @@
      * @param   int initialowner
      * @return  int the previous value
      */
-    function setInitialowner($initialowner) {
+    public function setInitialowner($initialowner) {
       return $this->_change('initialowner', $initialowner);
     }
 
@@ -145,7 +145,7 @@
      * @access  public
      * @return  int
      */
-    function getInitialqacontact() {
+    public function getInitialqacontact() {
       return $this->initialqacontact;
     }
       
@@ -156,7 +156,7 @@
      * @param   int initialqacontact
      * @return  int the previous value
      */
-    function setInitialqacontact($initialqacontact) {
+    public function setInitialqacontact($initialqacontact) {
       return $this->_change('initialqacontact', $initialqacontact);
     }
 
@@ -166,7 +166,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
       
@@ -177,7 +177,7 @@
      * @param   string description
      * @return  string the previous value
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       return $this->_change('description', $description);
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @return  string
      */
-    function getProduct_id() {
+    public function getProduct_id() {
       return $this->product_id;
     }
       
@@ -198,7 +198,7 @@
      * @param   string product_id
      * @return  string the previous value
      */
-    function setProduct_id($product_id) {
+    public function setProduct_id($product_id) {
       return $this->_change('product_id', $product_id);
     }
 
@@ -208,7 +208,7 @@
      * @access  public
      * @return  string
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
       
@@ -219,7 +219,7 @@
      * @param   string id
      * @return  string the previous value
      */
-    function setId($id) {
+    public function setId($id) {
       return $this->_change('id', $id);
     }
   }

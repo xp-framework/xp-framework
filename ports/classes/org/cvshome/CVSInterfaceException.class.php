@@ -10,6 +10,6 @@
    * @see xp://org.cvshome.CVSInterface
    * @purpose Exceptions for class CVSInterface
    */
-  class CVSInterfaceException extends Exception {
+  class CVSInterfaceException extends XPException {
   }
 ?>

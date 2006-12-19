@@ -21,7 +21,7 @@
    * @purpose  Application
    */
   class MBoxMonitor extends GTKGladeApplication {
-    var
+    public
       $stor         = NULL,
       $statusbar    = NULL,
       $list         = NULL,
@@ -34,7 +34,7 @@
      * @access  public
      * @param   &util.cmd.ParamString p
      */
-    function __construct(&$p) {
+    public function __construct(&$p) {
       if (!$p->exists(1)) {
         printf(
           "Usage: gtkphp %1\$s protocol://user:password@server\n".
@@ -45,15 +45,15 @@
       }
     
       // Find protocol
-      $this->dsn= &new URL($p->value(1));
+      $this->dsn= new URL($p->value(1));
       switch ($this->dsn->getScheme()) {
         case 'pop3': 
-          $this->stor= &new Pop3Store(); 
+          $this->stor= new Pop3Store(); 
           break;
           
         case 'imap': 
         case 'imaps':
-          $this->stor= &new ImapStore(); 
+          $this->stor= new ImapStore(); 
           break;
           
         default: 
@@ -69,7 +69,7 @@
      *
      * @access  public
      */
-    function init() {
+    public function init() {
       parent::init();
       $this->window->set_title(sprintf(
         'MailboxMonitor [%s] %s@%s',
@@ -103,7 +103,7 @@
       ));
       
       // Load art
-      $p= &new GTKPixmapLoader($this->window->window, dirname($this->param->value(0)).'/../ui');
+      $p= new GTKPixmapLoader($this->window->window, dirname($this->param->value(0)).'/../ui');
       $this->pixmaps= $p->load(array(
         'priority-high',
         'mail-new',
@@ -118,14 +118,14 @@
      * @access  protected
      * @param   int[] selection
      */
-    function onDeleteMenuItemActivated($selection) {
+    public function onDeleteMenuItemActivated($selection) {
       $this->tree->freeze();
       foreach (array_values($this->tree->selection) as $idx) {
         $msg= &$this->tree->node_get_row_data($idx);
         
-        try(); {
+        try {
           $msg->folder->deleteMessage($msg);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           $this->cat->error($e);
           MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION, MB_OK | MB_ICONEXCLAMATION);
           $this->setStatusText('Error updating message status');
@@ -151,14 +151,14 @@
      * @access  protected
      * @param   int[] selection
      */
-    function onUndeleteMenuItemActivated($selection) {
+    public function onUndeleteMenuItemActivated($selection) {
       $this->tree->freeze();
       foreach (array_values($this->tree->selection) as $idx) {
         $msg= &$this->tree->node_get_row_data($idx);
         
-        try(); {
+        try {
           $msg->folder->undeleteMessage($msg);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           $this->cat->error($e);
           MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
           $this->setStatusText('Error updating message status');
@@ -184,7 +184,7 @@
      * @access  protected
      * @param   &php.GtkWidget item
      */
-    function onMenuItemActivated(&$item) {
+    public function onMenuItemActivated(&$item) {
       return call_user_func(
         array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
         $this->tree->selection
@@ -198,7 +198,7 @@
      * @param   &php.GtkWidget widget
      * @param   &php.GdkEvent event
      */
-    function onListButtonPressed(&$widget, &$event) {
+    public function onListButtonPressed(&$widget, &$event) {
       if (3 != $event->button || empty($widget->selection)) return;
       
       // Show context menu
@@ -218,7 +218,7 @@
      * @param   &php.GtkWidget widget
      * @param   int column
      */
-    function onListColumnClicked(&$widget, $column) {
+    public function onListColumnClicked(&$widget, $column) {
       $this->cat->debug('Column', $column, 'clicked, sorting...');
       $widget->set_sort_column($column);
       $widget->sort();
@@ -232,7 +232,7 @@
      * @param   string fmt
      * @param   mixed* args
      */
-    function setStatusText($fmt) {
+    public function setStatusText($fmt) {
       $args= func_get_args();
       $text= vsprintf($args[0], array_slice($args, 1));
       $this->statusbar->push(1, $text);
@@ -247,7 +247,7 @@
      * @access  protected
      * @param   &peer.mail.Message msg
      */
-    function addMessage(&$msg) {
+    public function addMessage(&$msg) {
       static $style= NULL;
 
       // Set up child row style
@@ -279,7 +279,7 @@
       );
 
       // Attachment
-      if (is_a($msg, 'MimeMessage')) $this->tree->node_set_pixtext(
+      if (is('MimeMessage', $msg)) $this->tree->node_set_pixtext(
         $node, 
         1,
         'TRUE',
@@ -369,10 +369,10 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onExpungeButtonClicked(&$widget) {
-      try(); {
+    public function onExpungeButtonClicked(&$widget) {
+      try {
         $this->stor->expunge();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->cat->error($e);
         MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
         $this->setStatusText('Error expunging!');
@@ -391,7 +391,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onReceiveButtonClicked(&$widget) {
+    public function onReceiveButtonClicked(&$widget) {
 
       // Set receive button unsensitive
       $r= &$this->widget('button_receive');
@@ -401,7 +401,7 @@
       $this->tree->set_sensitive(FALSE);
       $this->tree->freeze();
       
-      try(); {
+      try {
         $this->stor->cache->expunge();
         
         // Check if a mailbox was specified. Else, use "INBOX"
@@ -425,7 +425,7 @@
             $this->addMessage($msg);
           }
         }
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->setStatusText('Error retrieving messages');
         MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONEXCLAMATION);
         $this->cat->error($e);
@@ -456,7 +456,7 @@
      *
      * @access  public
      */
-    function done() {
+    public function done() {
       if ($this->stor->isConnected()) {
         $this->stor->close();
       }

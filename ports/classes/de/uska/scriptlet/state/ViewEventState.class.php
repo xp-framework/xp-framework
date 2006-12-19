@@ -28,13 +28,13 @@
      * @param   &scriptlet.xml.Context context
      * @return  boolean
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       parent::process($request, $response, $context);
       
       $eventid= intval($request->getQueryString());
       if (!$eventid) return FALSE;
       
-      try(); {
+      try {
         $event= &Event::getByEvent_id($eventid);
         
         $event && $query= &$this->db->query('
@@ -77,8 +77,8 @@
           ',
           $event->getEvent_id()
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       // Convert event object into array, so we can add it without
@@ -89,7 +89,7 @@
       $target= &$event->getTarget_date();
       $attendeesCount= 0;
       
-      $n= &new Node('attendeeinfo');
+      $n= new Node('attendeeinfo');
       while ($query && $record= &$query->next()) {
         $t= &$n->addChild(new Node('player', NULL, $record));
         

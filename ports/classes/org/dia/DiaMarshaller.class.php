@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id: DiaMarshaller.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
 
   uses(
@@ -32,7 +32,7 @@
    */
   class DiaMarshaller extends Object {
 
-    var
+    public
       $_root= NULL,
       $_dia= NULL,
       $_layer= NULL,
@@ -46,7 +46,7 @@
     /**
      *
      */
-    function &getInstance() {
+    public function &getInstance() {
       static $Instance= NULL;
 
       if (!$Instance) {
@@ -64,13 +64,13 @@
      * @param   bool depend default FALSE Include dependencies
      * @return  &org.dia.DiaDiagram
      */
-    function &marshal($classnames, $recurse= 0, $depend= FALSE) {
+    public static function &marshal($classnames, $recurse= 0, $depend= FALSE) {
       $I= &DiaMarshaller::getInstance();
       // initialize RootDoc
-      $I->_root= &new RootDoc();
+      $I->_root= new RootDoc();
 
       // initialize DiaDiagram
-      $I->_dia= &new DiaDiagram();
+      $I->_dia= new DiaDiagram();
       $I->_dia->initialize();
       $Layers= $I->_dia->getChildByType('DiaLayer');
       $I->_layer= &$Layers[0]; 
@@ -107,9 +107,9 @@
 
       // generate and add classes to DiaDiagram
       foreach (array_keys($I->_classes) as $classname) {
-        try (); {
+        try {
           $Dia_class= &$I->_genClass($I->_classes[$classname]);
-        } if (catch('IllegalArgumentException', $e)) {
+        } catch (IllegalArgumentException $e) {
           $e->printStackTrace();
           exit(-1);
         }
@@ -166,7 +166,7 @@
      * @param   int recurse The level of recursion
      * @param   bool depend Include dependencies (uses())
      */
-    function _recurse($classname, $recurse, $depend) {
+    public function _recurse($classname, $recurse, $depend) {
       if (isset($this->_classes[$classname])) {
         Console::writeLine("skipping $classname...");
         return;
@@ -174,12 +174,12 @@
         Console::writeLine("processing $classname (recurse=$recurse, depend=$depend)...");
       }
       // get ClassDoc
-      try (); {
+      try {
         $Classdoc= &$this->_root->classNamed($classname);
-      } if (catch('IllegalArgumentException', $e)) {
+      } catch (IllegalArgumentException $e) {
         Console::writeLine("Class not found: $classname");
         exit(-1);
-      } elseif (catch('Exception', $e)) {
+      } catch(XPException $e) {
         die('Unexpected exception: '.$e->toString());
       }
       // add classname to $this->_classes
@@ -228,15 +228,15 @@
      * @return  &org.dia.DiaUMLClass
      * @throws  lang.IllegalArgumentException If argument is not usable
      */
-    function &_genClass(&$classdoc) {
+    public function &_genClass(&$classdoc) {
       // accept only ClassDoc
       if (!is('ClassDoc', $classdoc)) {
-        return throw(new IllegalArgumentException('No ClassDoc given!'));
+        throw(new IllegalArgumentException('No ClassDoc given!'));
       }
       $ClassDoc= &$classdoc;
         
       // get DiaUMLClass
-      $UMLClass= &new DiaUMLClass();
+      $UMLClass= new DiaUMLClass();
       $DiaClass= &$UMLClass->getClass();
       $DiaMethods= $DiaClass->getMethods();
 
@@ -260,9 +260,9 @@
               // Console::write('Evaluating: ', $ann_eval);
               $value= eval("return $ann_eval;");
               // Console::writeLine('... Value: ', $value);
-              try (); {
+              try {
                 $Method->invoke($UMLClass, array($value));
-              } if (catch('Exception', $e)) {
+              } catch (Exception $e) {
                 Console::writeLine('Fatal: ', $e->toString());
                 exit(-1);
               }
@@ -298,7 +298,7 @@
             }
             break;
           default:
-            return throw(new IllegalArgumentException("Unknown annotation type: '$type'"));
+            throw(new IllegalArgumentException("Unknown annotation type: '$type'"));
         }
       }
 
@@ -312,8 +312,8 @@
      * @param   string from Fully qualified classname of the depended class
      * @return  &org.dia.DiaUMLDependecy
      */
-    function &_genDependency($from, $to) {
-      $Dia_dep= &new DiaUMLDependency();
+    public function &_genDependency($from, $to) {
+      $Dia_dep= new DiaUMLDependency();
       $Dia_dep->beginAt($this->_getObjectId($from));
       $Dia_dep->endAt($this->_getObjectId($to));
       return $Dia_dep;
@@ -326,8 +326,8 @@
      * @param   string to Fully qualified classname of the interface class
      * @return  &org.dia.DiaUMLRealizes
      */
-    function &_genImplemenation($from, $to) {
-      $Dia_imp= &new DiaUMLRealizes();
+    public function &_genImplemenation($from, $to) {
+      $Dia_imp= new DiaUMLRealizes();
       $Dia_imp->beginAt($this->_getObjectId($from));
       $Dia_imp->endAt($this->_getObjectId($to));
       return $Dia_imp;
@@ -340,8 +340,8 @@
      * @param   string to Fully qualified classname of the parent class
      * @return  &org.dia.DiaUMLGeneralization
      */
-    function &_genGeneralization($from, $to) {
-      $Dia_gen= &new DiaUMLGeneralization();
+    public function &_genGeneralization($from, $to) {
+      $Dia_gen= new DiaUMLGeneralization();
       $Dia_gen->beginAt($this->_getObjectId($from));
       $Dia_gen->endAt($this->_getObjectId($to));
       return $Dia_gen;
@@ -353,7 +353,7 @@
      * @param   string classname Fully qualified classname (i.e. 'util.Date')
      * @return  string
      */
-    function _getObjectId($classname) {
+    public function _getObjectId($classname) {
       if (isset($this->_class_ids[$classname])) {
         return $this->_class_ids[$classname];
       }

@@ -11,7 +11,7 @@
    * @purpose  Test class
    */
   class Destroyable extends Object {
-    var
+    public
       $callback= NULL;
 
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   &net.xp_framework.unittest.core.DestructionCallback callback
      */
-    function setCallback(&$callback) {
+    public function setCallback(&$callback) {
       $this->callback= &$callback;
     }
   
@@ -29,7 +29,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       $this->callback->onDestruction($this);
     }
   }

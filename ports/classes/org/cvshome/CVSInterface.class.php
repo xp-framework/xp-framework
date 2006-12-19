@@ -14,7 +14,7 @@
   define('CVS_CONFLICT', 0x0007);
   define('CVS_UPTODATE', 0x0008);
 
-  uses (
+  uses(
     'lang.System',
     'org.cvshome.CVSInterfaceException'
   );
@@ -25,10 +25,10 @@
    * @purpose  Base class
    */
   class CVSInterface extends Object {
-    var
+    public
       $cvsRoot= NULL;
     
-    var
+    public
       $_CVS= 'cvs';
   
     /**
@@ -40,7 +40,7 @@
      * @throws  org.cvshome.CVSInterfaceException if cvs fails
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC115
      */
-    function _execute($cvsCmd, $object= '') {
+    public function _execute($cvsCmd, $object= '') {
       $cmdLine= sprintf ("%s %s %s %s",
         $this->_CVS,
         (NULL !== $this->cvsRoot ? '-d'.$this->cvsRoot : ''),
@@ -48,17 +48,17 @@
         $object
       );
       
-      try(); {
+      try {
         $output= System::exec ($cmdLine, '2>&1', FALSE);
-      } if (catch('SystemException', $e)) {
+      } catch (SystemException $e) {
       
         // Only return error if command was not "diff"
         if ('diff' != substr ($cvsCmd, 0, 4))
-          return throw (new CVSInterfaceException ('CVS returned failure ['.$cmdLine.']'));
+          throw (new CVSInterfaceException ('CVS returned failure ['.$cmdLine.']'));
       }
       
       if (count ($output) && strstr ($output[0], 'Cannot access'))
-        return throw (
+        throw (
           new CVSInterfaceException ('Cannot access CVSROOT! ['.$cmdLine.']')
         );
 
@@ -74,7 +74,7 @@
      * @param   string cvsroot
      * @param   string login
      */
-    function setCVSRoot($cvsRoot, $login= '') {
+    public function setCVSRoot($cvsRoot, $login= '') {
       $this->cvsRoot= sprintf ("%s%s%s",
         !empty ($login) ? '-d' : '',
         !empty ($login) ? $login.':' : '',
@@ -90,7 +90,7 @@
      * @return  int statusCode
      * @throws  org.cvshome.CVSInterfaceException
      */
-    function getCVSStatusFromString($statusCode) {
+    public function getCVSStatusFromString($statusCode) {
       switch ($statusCode) {
         case 'Up-to-date': return CVS_UPTODATE;
         case 'Added': return CVS_ADDED;
@@ -101,7 +101,7 @@
         default: break;
       }
       
-      return throw (new CVSInterfaceException ('Unknown statusstring '.$statusCode));
+      throw (new CVSInterfaceException ('Unknown statusstring '.$statusCode));
     }
 
     /**
@@ -112,7 +112,7 @@
      * @return  int statusCode
      * @throws  org.cvshome.CVSInterfaceException
      */
-    function getCVSStatus($statusCode) {
+    public function getCVSStatus($statusCode) {
       switch ($statusCode) {
         case '?': return CVS_UNKNOWN;
         case 'P': return CVS_PATCHED;
@@ -123,7 +123,7 @@
         default: break;
       }
       
-      return throw (new CVSInterfaceException ('Unknown statuscode '.$statusCode));
+      throw (new CVSInterfaceException ('Unknown statuscode '.$statusCode));
     }
     
   }

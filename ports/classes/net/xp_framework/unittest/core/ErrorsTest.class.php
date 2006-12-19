@@ -20,7 +20,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->assertEquals(E_ALL, error_reporting(), 'Error reporting level not E_ALL');
       xp::registry('errors', array());
       $this->assertEmpty(xp::registry('errors'), 'Error registry initially not empty');
@@ -31,7 +31,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       xp::gc();
     }
     
@@ -41,7 +41,7 @@
      * @access  public
      */
     #[@test]
-    function errorsGetAppendedToRegistry() {
+    public function errorsGetAppendedToRegistry() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $this->assertEquals(1, sizeof(xp::registry('errors')));
     }
@@ -52,7 +52,7 @@
      * @access  public
      */
     #[@test]
-    function errorAtFile() {
+    public function errorAtFile() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $this->assertTrue(xp::errorAt(__FILE__));
     }
@@ -64,7 +64,7 @@
      * @access  public
      */
     #[@test]
-    function errorAtFileAndLine() {
+    public function errorAtFileAndLine() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
     }
@@ -75,13 +75,13 @@
      * @access  public
      */
     #[@test]
-    function errorsAppearInStackTrace() {
+    public function errorsAppearInStackTrace() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $line= __LINE__ - 1;
 
-      try(); {
-        throw(new Exception(''));
-      } if (catch('Exception', $e)) {
+      try {
+        throw(new XPException(''));
+      } catch (Exception $e) {
         $self= get_class($this);
         foreach ($e->getStackTrace() as $element) {
           if ($element->class != $self || $element->line != $line) continue;

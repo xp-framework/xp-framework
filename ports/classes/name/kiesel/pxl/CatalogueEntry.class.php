@@ -12,7 +12,7 @@
    * @purpose  purpose
    */
   class CatalogueEntry extends Object {
-    var
+    public
       $id   = 0,
       $name = '',
       $path = '';
@@ -24,7 +24,7 @@
      * @param   int id
      */
     #[@xmlmapping(element= '@id')]
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -35,7 +35,7 @@
      * @return  int
      */
     #[@xmlfactory(element= '@id')]
-    function getId() {
+    public function getId() {
       return $this->id;
     }
 
@@ -46,7 +46,7 @@
      * @param   string name
      */
     #[@xmlmapping(element= '@name')]
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -57,7 +57,7 @@
      * @return  string
      */
     #[@xmlfactory(element= '@name')]
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -68,7 +68,7 @@
      * @param   string path
      */
     #[@xmlmapping(element= '@path')]
-    function setPath($path) {
+    public function setPath($path) {
       $this->path= $path;
     }
 
@@ -79,7 +79,7 @@
      * @return  string
      */
     #[@xmlfactory(element= '@path')]
-    function getPath() {
+    public function getPath() {
       return $this->path;
     }
   }

@@ -22,8 +22,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->sandbox= &new SandboxSourceRunner();
+    public function setUp() {
+      $this->sandbox= new SandboxSourceRunner();
       
       // Include XAR into include_path
       $this->sandbox->setSetting('include_path',
@@ -39,7 +39,7 @@
      * @access  public
      */
     #[@test]
-    function load() {
+    public function load() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.A");
@@ -52,7 +52,7 @@
      * @access  public
      */
     #[@test]
-    function loadFromArchive() {
+    public function loadFromArchive() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.D");
@@ -65,7 +65,7 @@
      * @access  public
      */
     #[@test]
-    function loadFromArchiveWithArchiveDependency() {
+    public function loadFromArchiveWithArchiveDependency() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.E");
@@ -81,7 +81,7 @@
      * @access  public
      */
     #[@test]
-    function loadFromArchiveWithNonarchiveDependency() {
+    public function loadFromArchiveWithNonarchiveDependency() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.F");
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function registeredClassLoader() {
+    public function registeredClassLoader() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
         $xpclass= &XPClass::forName("net.xp_framework.unittest.bootstrap.F");

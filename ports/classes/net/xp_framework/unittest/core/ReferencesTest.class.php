@@ -18,7 +18,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $cl= &ClassLoader::getDefault();
       
       // For singletonInstance test
@@ -71,7 +71,7 @@
      * @param   &lang.Object b
      * @throws  unittest.AssertionFailedError
      */
-    function assertReference(&$a, &$b) {
+    public function assertReference(&$a, &$b) {
       $this->assertEquals($a->__id, $b->__id);
       $a->__id= 'R:'.$a->__id;
       $this->assertEquals($a->__id, $b->__id);
@@ -92,7 +92,7 @@
      * @access  public
      */
     #[@test]
-    function singletonInstance() {
+    public function singletonInstance() {
       $s1= &AnonymousSingleton::getInstance();
       $s2= &AnonymousSingleton::getInstance();
       
@@ -107,7 +107,7 @@
      * @param   &mixed val
      * @return  &mixed
      */
-    function &registry($key, &$val) {
+    public function &registry($key, &$val) {
       static $registry= array();
       
       if (NULL !== $val) $registry[$key]= &$val;
@@ -120,7 +120,7 @@
      * @access  public
      */
     #[@test]
-    function returnNewObject() {
+    public function returnNewObject() {
       $object= &AnonymousFactory::factory();
       $value= &ReferencesTest::registry('list', $r= NULL);
       
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function returnNewObjectViaMethodInvoke() {
+    public function returnNewObjectViaMethodInvoke() {
       $class= &XPClass::forName('net.xp_framework.unittest.core.AnonymousFactory');
       $factory= &$class->getMethod('factory');
       $object= &$factory->invoke($instance= NULL);
@@ -148,7 +148,7 @@
      * @access  public
      */
     #[@test]
-    function returnNewObjectViaNewInstance() {
+    public function returnNewObjectViaNewInstance() {
       $object= &AnonymousNewInstanceFactory::factory();
       $value= &ReferencesTest::registry('list', $r= NULL);
       

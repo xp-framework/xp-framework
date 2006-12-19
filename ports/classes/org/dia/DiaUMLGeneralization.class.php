@@ -11,7 +11,7 @@
    */
   class DiaUMLGeneralization extends DiaUMLConnection {
 
-    var
+    public
       $conn_assoc= array(0 => 'end', 1 => 'begin');
 
     /**
@@ -19,7 +19,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Generalization', 1);
     }
 
@@ -31,7 +31,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 1 The connection point of the object
      */
-    function beginAt($id, $connpoint= 1) {
+    public function beginAt($id, $connpoint= 1) {
       parent::endAt($id, $connpoint);
     }
 
@@ -43,7 +43,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 6 The connection point of the object
      */
-    function endAt($id, $connpoint= 6) {
+    public function endAt($id, $connpoint= 6) {
       parent::beginAt($id, $connpoint);
     }
   }

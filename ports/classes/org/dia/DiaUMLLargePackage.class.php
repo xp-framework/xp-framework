@@ -18,7 +18,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - LargePackage', 0);
     }
 
@@ -27,7 +27,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $this->setPosition(array(0, 0));
       $this->setBoundingBox(array(array(0, 0), array(1, 1)));
 

@@ -104,7 +104,7 @@
    * @purpose  Provide the base for Webdav Services
    */
   class WebdavScriptlet extends HttpScriptlet {
-    var
+    public
       $methods= array(
         HTTP_GET                 => 'doGet',
         HTTP_POST                => 'doPost',
@@ -135,7 +135,7 @@
      * @access  public
      * @param   array impl (associative array of pathmatch => org.webdav.impl.DavImpl)
      */  
-    function __construct($impl) {
+    public function __construct($impl) {
 
       // Make sure patterns are always with trailing /
       foreach (array_keys($impl) as $pattern) {
@@ -165,7 +165,7 @@
      * @access private
      * @return org.webdav.WebdavScriptletRequest
      */
-    function &_request() {
+    public function &_request() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavPropFindRequest();
@@ -184,7 +184,7 @@
      * @access private
      * @return org.webdav.WebdavResponse
      */
-    function &_response() {
+    public function &_response() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavMultistatusResponse($this->map);
@@ -209,7 +209,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doOptions(&$request, &$response) {
+    public function doOptions(&$request, &$response) {
       $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
       $response->setHeader('Allow', implode(', ', array_keys($this->methods)));
       $response->setHeader('DAV', '1,2,<http://apache.org/dav/propset/fs/1>');
@@ -225,16 +225,16 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doDelete(&$request, &$response) {
-      try(); {
+    public function doDelete(&$request, &$response) {
+      try {
         $object= &$this->handlingImpl->delete($request->getPath());
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
       
         // Not allowd
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
@@ -255,25 +255,25 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doGet(&$request, &$response) {
-      try(); {
+    public function doGet(&$request, &$response) {
+      try {
         $object= &$this->handlingImpl->get($request->getPath());
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
 
         // Element not found
          $response->setStatus(HTTP_NOT_FOUND);
          return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         return FALSE;
-      } if (catch('IllegalArgumentException', $e)) {
+      } catch (IllegalArgumentException $e) {
       
         // Conflict       
         $response->setStatus(WEBDAV_LOCKED);       
         return FALSE;
-      } if (catch('Exception', $e)) {      
+      } catch (Exception $e) {      
       
         // Conflict        
         $response->setStatus(HTTP_CONFLICT);        
@@ -298,8 +298,8 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doPost(&$request, &$response) {
-      return throw(new MethodNotImplementedException($this->getName().'::post not implemented'));
+    public function doPost(&$request, &$response) {
+      throw(new MethodNotImplementedException($this->getName().'::post not implemented'));
     }
 
     /**
@@ -312,16 +312,16 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doHead(&$request, &$response) {
-      try(); {
+    public function doHead(&$request, &$response) {
+      try {
         $object= &$this->handlingImpl->get($request->getPath());
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
 
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
@@ -346,19 +346,19 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doPut(&$request, &$response) {
-      try(); {
+    public function doPut(&$request, &$response) {
+      try {
         $created= $this->handlingImpl->put(
           $request->getPath(),
           $request->getData()
         );
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
@@ -382,10 +382,10 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doMkCol(&$request, &$response) {
-      try(); {
+    public function doMkCol(&$request, &$response) {
+      try {
         $created= $this->handlingImpl->mkcol($request->getPath());
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
@@ -406,20 +406,20 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doMove(&$request, &$response) {
-      try(); {
+    public function doMove(&$request, &$response) {
+      try {
         $created= $this->handlingImpl->move(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
           WebdavBool::fromString($request->getHeader('Overwrite'))
         );
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
@@ -440,8 +440,8 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doCopy(&$request, &$response) {
-      try(); {
+    public function doCopy(&$request, &$response) {
+      try {
         $created= $this->handlingImpl->copy(
           $request->getPath(),
           $request->getRelativePath($request->getHeader('Destination')),
@@ -451,13 +451,13 @@
             $request->getHeader('Overwrite')
           )
         );
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
       
         // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
@@ -487,18 +487,18 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doLock(&$request, &$response) {
-      try(); {
+    public function doLock(&$request, &$response) {
+      try {
         $this->handlingImpl->lock(
           $request,
           $response
         );
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
 
         $response->setStatus(HTTP_PRECONDITION_FAILED);
         $response->setContent($e->toString());        
         return FALSE; 
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
 
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
@@ -517,24 +517,24 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doUnlock(&$request, &$response) {
-      try(); {
+    public function doUnlock(&$request, &$response) {
+      try {
         $this->handlingImpl->unlock(
           $request,
           $response
           );
           
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
     
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE; 
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         $response->setStatus(WEBDAV_PRECONDFAILED);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
 
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
@@ -560,33 +560,33 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doPropFind(&$request, &$response) {
-      try(); {
+    public function doPropFind(&$request, &$response) {
+      try {
         $this->handlingImpl->propfind(
           $request,
           $response
         );
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
 
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED); 
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('FormatException', $e)) {
+      } catch (FormatException $e) {
 
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
-        return throw(new HttpScriptletException($e->message));
+        throw(new HttpScriptletException($e->message));
       }
       
       return TRUE;
@@ -603,42 +603,42 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doPropPatch(&$request, &$response) {
-      try(); {
+    public function doPropPatch(&$request, &$response) {
+      try {
         $this->handlingImpl->proppatch(
           $request,
           $response
         );
         
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
 
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('FormatException', $e)) {
+      } catch (FormatException $e) {
       
         // XML parse errors
         $response->setStatus(HTTP_BAD_REQUEST);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationFailedException', $e)) {
+      } catch (OperationFailedException $e) {
       
         // Element not found
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('OperationNotAllowedException', $e)) {
+      } catch (OperationNotAllowedException $e) {
 
         // Forbidden
         $response->setStatus(HTTP_FORBIDDEN);
         $response->setContent($e->toString());
         return FALSE;
 
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
-        return throw(new HttpScriptletException($e->message));
+        throw(new HttpScriptletException($e->message));
       } 
       
       $rootURL= &$request->getRootURL();
@@ -653,19 +653,19 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response  
      */
-    function doVersionControl(&$request, &$response) {
-      try(); {
+    public function doVersionControl(&$request, &$response) {
+      try {
         $this->handlingImpl->versionControl(
           $request->getPath(),
           new File($this->handlingImpl->base.$request->getPath())
         );
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {        
+      } catch (Exception $e) {        
         
         // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
@@ -682,16 +682,16 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response  
      */
-    function doReport(&$request, &$response) {
-      try(); {
+    public function doReport(&$request, &$response) {
+      try {
         $this->handlingImpl->report($request, $response);
-      } if (catch('ElementNotFoundException', $e)) {
+      } catch (ElementNotFoundException $e) {
       
         // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } if (catch('Exception', $e)) {        
+      } catch (Exception $e) {        
         
         // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
@@ -713,7 +713,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    function doNotFound(&$request, &$response) {
+    public function doNotFound(&$request, &$response) {
       $response->setStatus(HTTP_NOT_FOUND);
       
       return FALSE;
@@ -728,7 +728,7 @@
      * @return  bool processed
      * @throws  lang.Exception to indicate failure
      */
-    function doAuthorizationRequest(&$request, &$response) {
+    public function doAuthorizationRequest(&$request, &$response) {
       $response->setStatus(HTTP_AUTHORIZATION_REQUIRED);
       $response->setHeader('WWW-Authenticate',  'Basic realm="WebDAV Authorization"');
       
@@ -744,7 +744,7 @@
      * @return  bool processed
      * @throws  lang.Exception to indicate failure
      */
-    function doAuthorizationDeny(&$request, &$response) {
+    public function doAuthorizationDeny(&$request, &$response) {
       $response->setStatus(HTTP_FORBIDDEN);
       
       return TRUE;
@@ -759,10 +759,10 @@
      * @param   string method Request-Method
      * @see     rfc://2518#8 Description of methods
      */
-    function handleMethod(&$request) {
+    public function handleMethod(&$request) {
       // Check if we recognize this method
       if (!isset($this->methods[$request->method])) {
-        return throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
+        throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
       }
 
       // Select implementation
@@ -771,7 +771,7 @@
         if (0 !== strpos(rtrim($request->uri->getPath(), '/').'/', $pattern)) continue;
         
         // Set the root URL (e.g. http://wedav.host.com/dav/)
-        $request->setRootURL($rootURL= &new URL(sprintf(
+        $request->setRootURL($rootURL= new URL(sprintf(
           '%s://%s%s',
           $request->uri->getScheme(),
           $request->uri->Host(),
@@ -793,7 +793,7 @@
       
       // Implementation not found
       if (NULL === $this->handlingImpl) {
-        return throw(new HttpScriptlet('Cannot handle requests to '.$request->uri->getPath()));
+        throw(new HttpScriptlet('Cannot handle requests to '.$request->uri->getPath()));
       }
 
       // determine Useragent

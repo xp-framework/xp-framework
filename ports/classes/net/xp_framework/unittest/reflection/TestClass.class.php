@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'util.log.Traceable');
 
   /**
    * Test class
@@ -13,8 +13,8 @@
    * @purpose  Test class
    */
   #[@test('Annotation')]
-  class TestClass extends Object {
-    var
+  class TestClass extends Object implements Traceable {
+    public
       #[@type('util.Date')]
       $date= NULL,
       $map = array();
@@ -25,8 +25,8 @@
      * @access  public
      * @param   mixed in default NULL
      */
-    function __construct($in= NULL) {
-      $this->date= &new Date($in);
+    public function __construct($in= NULL) {
+      $this->date= new Date($in);
     }
     
     /**
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       TestClass::initializerCalled(TRUE);
     }
     
@@ -47,7 +47,7 @@
      * @param   bool value default NULL
      * @return  bool
      */
-    function initializerCalled($value= NULL) {
+    public static function initializerCalled($value= NULL) {
       static $called;
       if (NULL !== $value) $called= $value;
       return $called;
@@ -59,7 +59,7 @@
      * @access  public
      * @return  &util.Date
      */    
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &util.Date date
      */    
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &$date;
     }
     
@@ -80,7 +80,7 @@
      * @return  int
      */
     #[@webmethod, @security(roles= array('admin', 'god'))]
-    function currentTimestamp() {
+    public function currentTimestamp() {
       return time();
     }
     
@@ -91,8 +91,8 @@
      * @param   &util.log.LogCategory cat
      * @throws  lang.IllegalStateException
      */
-    function setTrace(&$cat) {
-      return throw(new IllegalStateException('Not debuggable yet'));
+    public function setTrace(&$cat) {
+      throw(new IllegalStateException('Not debuggable yet'));
     }
 
       
@@ -102,7 +102,7 @@
      * @access  public
      * @return  array<string, &lang.Object>
      */
-    function getMap() {
+    public function getMap() {
       return $this->map;
     }
     
@@ -112,11 +112,11 @@
      * @access  public
      * @return  &lang.Collection<lang.Object>
      */
-    function &mapValues() {
+    public function &mapValues() {
       $c= &Collection::forClass('lang.Object');
       $c->addAll(array_values($this->map));
       return $c;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

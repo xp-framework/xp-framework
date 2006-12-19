@@ -39,7 +39,7 @@
    * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
   class UUID extends Object {
-    var
+    public
       $time_low                     = 0,
       $time_mid                     = 0,
       $time_hi_and_version          = 0,
@@ -55,14 +55,14 @@
      * @return  &org.ietf.UUID
      * @see     http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt section 4.1.4
      */
-    function &create() {
+    public static function &create() {
     
       // Get timestamp and convert it to UTC (based Oct 15, 1582).
       list($usec, $sec) = explode(' ', microtime());
       $t= ($sec * 10000000) + ($usec * 10) + 122192928000000000;
       $clock_seq= mt_rand();
       
-      $uuid= &new UUID();
+      $uuid= new UUID();
       $uuid->time_low= ($t & 0xFFFFFFFF);
       $uuid->time_mid= (($t >> 32) & 0xFFFF);
       $uuid->time_hi_and_version= (($t >> 48) & 0x0FFF);
@@ -93,8 +93,8 @@
      * @return  &org.ietf.UUID
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
-    function &fromString($str) {
-      $uuid= &new UUID();
+    public static function &fromString($str) {
+      $uuid= new UUID();
       $a= array();
       if (11 != sscanf(
         $str, 
@@ -111,7 +111,7 @@
         $uuid->node[4],
         $uuid->node[5]
       )) {
-        return throw(new FormatException($str.' is not a valid UUID string'));
+        throw(new FormatException($str.' is not a valid UUID string'));
       }
       return $uuid;
     }
@@ -128,7 +128,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         UUID_FMTSTRING,
         $this->time_low, 

@@ -23,8 +23,8 @@
      * @param   string url
      * @param   array headers default array
      */
-    function __construct($url, $headers= array()) {
-      $this->_conn= &new DummyHttpConnection($url);
+    public function __construct($url, $headers= array()) {
+      $this->_conn= new DummyHttpConnection($url);
       $this->_headers= $headers;
     }
     
@@ -34,7 +34,7 @@
      * @access  public
      * @return  &peer.http.HttpConnection
      */
-    function &getConnection() {
+    public function &getConnection() {
       return $this->_conn;
     }
   }

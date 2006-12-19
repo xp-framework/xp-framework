@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('net.schweikhardt.Translator');
+
   /**
    * This class translates any word or sentence from de_DE to de_SW.
    *
@@ -17,7 +19,7 @@
    * @see      http://www.schweikhardt.net/schwob
    * @purpose  Schwobify
    */
-  class Swabian extends Object {
+  class Swabian extends Object implements Translator {
 
     /**
      * Translates the given sentence to schwobian.
@@ -27,7 +29,7 @@
      * @param   string sentence
      * @return  string translation
      */  
-    function translate($string) {
+    public static function translate($string) {
       static $tr= array(    // Translations array (pattern => replacement)
         '/\b([Dd])a\b([^ß])/'    => '$1o$2',
         '/\bdann\b/'             => 'no',
@@ -139,5 +141,5 @@
       
       return strtr(preg_replace(array_keys($tr), array_values($tr), $string), $sr);
     }
-  } implements(__FILE__, 'net.schweikhardt.Translator');
+  } 
 ?>

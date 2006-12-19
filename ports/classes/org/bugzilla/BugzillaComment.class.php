@@ -15,7 +15,7 @@
    * @purpose  Simplify handling with bugzilla comments
    */
   class BugzillaComment extends Object {
-    var
+    public
       $bug_id=      NULL,
       $user_id=     NULL,
       $comment=     NULL;
@@ -29,7 +29,7 @@
      * @param   int user_id,    The bugzilla user id
      * @param   string comment, The comment
      */
-    function __construct($bug_id= NULL, $user_id= NULL, $comment= NULL) {
+    public function __construct($bug_id= NULL, $user_id= NULL, $comment= NULL) {
       $this->bug_id= $bug_id;
       $this->user_id= $user_id;
       $this->comment= $comment;
@@ -41,7 +41,7 @@
      * @access  public
      * @param   int bug_id
      */
-    function setBug_id($bug_id) {
+    public function setBug_id($bug_id) {
       $this->bug_id= $bug_id;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @return  int bug_id
      */
-    function getBug_id() {
+    public function getBug_id() {
       return $this->bug_id;
     }
 
@@ -61,7 +61,7 @@
      * @access  public
      * @param   int user_id
      */
-    function setUser_id($user_id) {
+    public function setUser_id($user_id) {
       $this->user_id= $user_id;
     }
 
@@ -71,7 +71,7 @@
      * @access  public
      * @return  int user_id
      */
-    function getUser_id() {
+    public function getUser_id() {
       return $this->user_id;
     }
 
@@ -81,7 +81,7 @@
      * @access  public
      * @param   string comment
      */
-    function setComment($comment) {
+    public function setComment($comment) {
       $this->comment= $comment;
     }
 
@@ -91,7 +91,7 @@
      * @access  public
      * @return  string
      */
-    function getComment() {
+    public function getComment() {
       return $this->comment;
     }
     
@@ -103,17 +103,17 @@
      * @throws  rdbms.SQLException
      * @return  bool
      */
-    function add() {
+    public function add() {
 
       // Check if all needed params are given
       if (
         empty($this->bug_id) or
         empty($this->user_id) or
         empty($this->comment)
-      ) return throw(new IllegalArgumentException('Too few arguments given'));
+      ) throw(new IllegalArgumentException('Too few arguments given'));
 
-      try(); {
-        with ($desc= &new BugzillaLongDescs()); {
+      try {
+        with ($desc= new BugzillaLongDescs()); {
           $desc->setBug_id($this->bug_id);
           $desc->setBug_when(Date::now());
           $desc->setThetext($this->comment);
@@ -121,8 +121,8 @@
         }
         $desc->insert();
         
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       return TRUE;
     }

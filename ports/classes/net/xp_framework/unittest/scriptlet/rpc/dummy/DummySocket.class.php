@@ -12,7 +12,7 @@
    * @purpose  Unittesting dummy
    */
   class DummySocket extends Socket {
-    var
+    public
       $isConnected  = FALSE;
 
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string string
      */
-    function __construct($string) {
+    public function __construct($string) {
       $this->_data= explode("\n", $string);
     }
     
@@ -31,7 +31,7 @@
      * @access  public
      * @return  bool
      */
-    function isConnected() {
+    public function isConnected() {
       return $this->isConnected;
     }    
     
@@ -42,7 +42,7 @@
      * @param   float timeout default 2.0
      * @return  bool
      */
-    function connect($timeout= 2.0) {
+    public function connect($timeout= 2.0) {
       $this->isConnected= TRUE;
       return 1;
     }
@@ -53,7 +53,7 @@
      * @access  public
      * @return  bool
      */
-    function close() {
+    public function close() {
       $this->isConnected= FALSE;
       return TRUE;
     } 
@@ -64,7 +64,7 @@
      * @access  public
      * @param   float timeout default 2.0
      */
-    function setTimeout($timeout= 2.0) {
+    public function setTimeout($timeout= 2.0) {
       $this->_timeout= $timeout;
     }
     
@@ -74,7 +74,7 @@
      * @access  public
      * @param   bool blockMode
      */
-    function setBlocking($blockMode) {}
+    public function setBlocking($blockMode) {}
     
     /**
      * Check whether data is available
@@ -82,7 +82,7 @@
      * @access  public
      * @return  bool
      */
-    function canRead() {
+    public function canRead() {
       return 0 < sizeof($this->_data);
     }
     
@@ -93,7 +93,7 @@
      * @param   int len default 4096
      * @return  string
      */
-    function read($len= 4096) {
+    public function read($len= 4096) {
       if (0 == sizeof($this->_data)) return NULL;
       return array_shift($this->_data);
     }
@@ -105,7 +105,7 @@
      * @param   int len
      * @return  string
      */
-    function readLine($len) {
+    public function readLine($len) {
       return $this->read($len);
     }
     
@@ -115,7 +115,7 @@
      * @access  public
      * @return  string
      */
-    function readBinary() {}
+    public function readBinary() {}
     
     /**
      * Returns whether we're at the end of the data
@@ -123,7 +123,7 @@
      * @access  public
      * @return  bool
      */
-    function eof() {
+    public function eof() {
       return 0 == sizeof($this->_data);
     }
   }

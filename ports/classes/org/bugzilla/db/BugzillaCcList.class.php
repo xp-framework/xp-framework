@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaCcList extends DataSet {
-    var
+    public
       $bug_id             = 0,
       $who                = 0;
 
@@ -23,7 +23,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaCcList::getPeer()); {
         $peer->setTable('cc');
         $peer->setConnection('bugzilla');
@@ -41,7 +41,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -53,7 +53,7 @@
      * @return  &BugzillaCcList object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_id($bug_id) {
+    public function &getByBug_id($bug_id) {
       $peer= &BugzillaCcList::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
@@ -66,7 +66,7 @@
      * @return  &BugzillaCcList[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByWho($who) {
+    public function &getByWho($who) {
       $peer= &BugzillaCcList::getPeer();
       return $peer->doSelect(new Criteria(array('who', $who, EQUAL)));
     }
@@ -77,7 +77,7 @@
      * @access  public
      * @return  int
      */
-    function getBug_id() {
+    public function getBug_id() {
       return $this->bug_id;
     }
       
@@ -88,7 +88,7 @@
      * @param   int bug_id
      * @return  int the previous value
      */
-    function setBug_id($bug_id) {
+    public function setBug_id($bug_id) {
       return $this->_change('bug_id', $bug_id);
     }
 
@@ -98,7 +98,7 @@
      * @access  public
      * @return  int
      */
-    function getWho() {
+    public function getWho() {
       return $this->who;
     }
       
@@ -109,7 +109,7 @@
      * @param   int who
      * @return  int the previous value
      */
-    function setWho($who) {
+    public function setWho($who) {
       return $this->_change('who', $who);
     }
   }

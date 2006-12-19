@@ -13,7 +13,7 @@
    * @purpose  Represent a Webdav lock
    */
   class WebdavLock extends Object {
-    var
+    public
       $owner=        NULL,
       $locktype=     NULL,
       $lockscope=    NULL,
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string uri
      */   
-    function __construct($uri) {
+    public function __construct($uri) {
       $this->uri= $uri;
       $this->setCreationDate(new Date(time()));
     }
@@ -41,7 +41,7 @@
      * @access  public
      * @param   string uri
      */
-    function setURI($uri) {
+    public function setURI($uri) {
       $this->uri= $uri;
     }
     
@@ -51,7 +51,7 @@
      * @access  public
      * @return  string uri
      */
-    function getURI() {
+    public function getURI() {
       return $this->uri;
     }
     
@@ -61,7 +61,7 @@
      * @access  public
      * @param   string owner
      */
-    function setOwner($owner) {
+    public function setOwner($owner) {
       $this->owner= $owner;
     }
     
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string owner
      */
-    function getOwner() {
+    public function getOwner() {
       return $this->owner;
     }
     
@@ -81,7 +81,7 @@
      * @access  public
      * @param   string locktype, default 'write'
      */
-    function setLockType($locktype= 'write') {
+    public function setLockType($locktype= 'write') {
       $this->locktype= $locktype;
     }
     
@@ -91,7 +91,7 @@
      * @access  public
      * @return  string locktype
      */
-    function getLockType() {
+    public function getLockType() {
       return $this->locktype;
     }
     
@@ -101,7 +101,7 @@
      * @access  public
      * @param   string scope, default exclusive
      */
-    function setLockScope($scope= 'exclusive') {
+    public function setLockScope($scope= 'exclusive') {
       $this->lockscope= $scope;
     }
     
@@ -111,7 +111,7 @@
      * @access  public
      * @return  string lockscope
      */
-    function getLockScope() {
+    public function getLockScope() {
       return $this->lockscope;
     }
     
@@ -121,7 +121,7 @@
      * @access  public
      * @param   string token (e.g. opaquelocktoken:e97a3400-3400-197a-84ce-48de5b3f07f4)
      */
-    function setLockToken($token) {
+    public function setLockToken($token) {
       $this->locktoken= $token;
     }
     
@@ -131,7 +131,7 @@
      * @access  public
      * @return  string 
      */
-    function getLockToken() {
+    public function getLockToken() {
       return $this->locktoken;
     }
     
@@ -141,7 +141,7 @@
      * @access  public 
      * @param   int timeout, default 604800  seconds
      */
-    function setTimeout($timeout= 604800 ) {
+    public function setTimeout($timeout= 604800 ) {
       $this->timeout= $timeout;
     }
         
@@ -151,7 +151,7 @@
      * @access  public
      * @return  int timeout
      */
-    function getTimeout() {
+    public function getTimeout() {
       return $this->timeout == NULL ? 604800  : $this->timeout;
     }
     
@@ -161,7 +161,7 @@
      * @access  public 
      * @param   string depth, default 'infinity'
      */
-    function setDepth($depth= 'infinity') {
+    public function setDepth($depth= 'infinity') {
       $this->depth= $depth;
     }
     
@@ -171,7 +171,7 @@
      * @access  public
      * @return  string depth
      */
-    function getDepth() {
+    public function getDepth() {
       return $this->depth;
     }
     
@@ -181,7 +181,7 @@
      * @access  public 
      * @param   &util.Date date
      */
-    function setCreationDate(&$date) {
+    public function setCreationDate(&$date) {
       $this->date= &$date;
     }
     
@@ -191,7 +191,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getCreationDate() {
+    public function &getCreationDate() {
       return $this->date;
     }
   }

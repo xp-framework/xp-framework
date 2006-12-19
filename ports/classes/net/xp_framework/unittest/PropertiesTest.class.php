@@ -25,7 +25,7 @@
      * @access  public
      */
     #[@test]
-    function testFromString() {
+    public function testFromString() {
       $p= &Properties::fromString('');
     }
     
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function basicTest() {
+    public function basicTest() {
       $p= &Properties::fromString('
 [section]
 string="value1"
@@ -54,7 +54,7 @@ bool=0
      * @access  public
      */
     #[@test]
-    function readString() {
+    public function readString() {
       $p= &Properties::fromString('
 [section]
 string1=string
@@ -71,7 +71,7 @@ string2="string"
      * @access  public
      */
     #[@test]
-    function readArray() {
+    public function readArray() {
       $p= &Properties::fromString('
 [section]
 array="foo|bar|baz"
@@ -85,7 +85,7 @@ array="foo|bar|baz"
      * @access  public
      */
     #[@test]
-    function readHash() {
+    public function readHash() {
       $p= &Properties::fromString('
 [section]
 hash="foo:bar|bar:foo"
@@ -102,7 +102,7 @@ hash="foo:bar|bar:foo"
      * @access  public
      */
     #[@test]
-    function readRange() {
+    public function readRange() {
       $p= &Properties::fromString('
 [section]
 range="1..5"
@@ -119,7 +119,7 @@ range="1..5"
      * @access  public
      */
     #[@test]
-    function readInteger() {
+    public function readInteger() {
       $p= &Properties::fromString('
 [section]
 int1=1
@@ -137,7 +137,7 @@ int3=-5
      * @access  public
      */
     #[@test]
-    function readFloat() {
+    public function readFloat() {
       $p= &Properties::fromString('
 [section]
 float1=1
@@ -157,7 +157,7 @@ float4=-5.0
      * @access  public
      */
     #[@test]
-    function readBool() {
+    public function readBool() {
      $p= &Properties::fromString('
 [section]
 bool1=1
@@ -173,7 +173,7 @@ bool5=0
      * @access  public
      */
     #[@test]
-    function hasSection() {
+    public function hasSection() {
       $p= &Properties::fromString('
 [section]
 foo=bar
@@ -189,7 +189,7 @@ foo=bar
      * @access  public
      */
     #[@test]
-    function iterateSections() {
+    public function iterateSections() {
      $p= &Properties::fromString('
 [section]
 foo=bar

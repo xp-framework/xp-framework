@@ -16,7 +16,7 @@
    */
   class WebdavScriptletResponse extends HttpScriptletResponse {
   
-    var
+    public
       $tree=   NULL;
     
     /**
@@ -25,7 +25,7 @@
      * @access public
      * @param  xml.Node node The node
      */
-    function setRootNode(&$node) {
+    public function setRootNode(&$node) {
       if ($this->tree === NULL) {
         $this->tree= new Tree();
         $this->tree->setEncoding('UTF-8');
@@ -40,7 +40,7 @@
      * @param  string string The string which should be encoded
      * @return string
      */    
-    function encode($string) {
+    public function encode($string) {
       return utf8_encode($string);
     }
     
@@ -51,7 +51,7 @@
      * @param  &xml.Node node The node
      * @return &xml.Node
      */
-    function &addChild(&$node) {
+    public function &addChild(&$node) {
       return $this->tree->addChild($node);
     }
     
@@ -61,7 +61,7 @@
      *
      * @access public
      */
-    function process() {
+    public function process() {
       parent::process();
       
       if ($this->tree !== NULL) {
@@ -84,7 +84,7 @@
      * @return  string
      * @see org.webdav.WebdavScriptletRequest#decodePath
      */
-    function encodePath($path) {
+    public function encodePath($path) {
       $parts = explode('/', $path);
       for ($i = 0; $i < sizeof($parts); $i++) $parts[$i]= rawurlencode($parts[$i]);
       return implode('/', $parts);

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'util.Date',
     'peer.URL'
   );
@@ -18,7 +18,7 @@
    * @purpose  Timezone wrapper for VCalendar
    */
   class VTimezone extends Object {
-    var
+    public
       $tzid=      '',
       $daylight=  NULL,
       $standard=  NULL,
@@ -30,7 +30,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       
       $this->daylight= $this->standard= array (
         'dtstart'       => NULL,    // Mandatory
@@ -50,7 +50,7 @@
      * @access  public
      * @param   string id
      */    
-    function setTzid($id) {
+    public function setTzid($id) {
       $this->tzid= $id;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @return  string id
      */    
-    function getTzid() {
+    public function getTzid() {
       return $this->tzid;
     }
     /**
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &peer.URL url
      */    
-    function setTZUrl(&$url) {
+    public function setTZUrl(&$url) {
       $this->tzurl= &$url;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  &peer.URL url
      */    
-    function &getTZUrl() {
+    public function &getTZUrl() {
       return $this->tzurl;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   &util.Date date
      */    
-    function setLastMod(&$date) {
+    public function setLastMod(&$date) {
       $this->lastmod= &$date;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  &util.Date date
      */    
-    function &getLastMod() {
+    public function &getLastMod() {
       return $this->lastmod;
     }
 
@@ -111,16 +111,16 @@
      * @param   mixed value
      * @return  string exported
      */    
-    function _export($key, $value) {
+    public function _export($key, $value) {
 
       // Never add empty fields
       if (NULL === $value)
         return '';
         
-      if (is_a ($value, 'Date')) {
+      if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
-      } else if (is_a ($value, 'URL')) {
+      } else if (is('URL', $value)) {
         // Convert URL to string
         $value= $value->toString();
       }
@@ -139,7 +139,7 @@
      * @access  public
      * @return  string representation
      */    
-    function export() {
+    public function export() {
       $ret = $this->_export ('BEGIN',     VTZ_ID);
       $ret.= $this->_export ('TZID',      $this->getTzid());
 

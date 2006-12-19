@@ -8,7 +8,7 @@
 
   class DiaUMLRealizes extends DiaUMLConnection {
 
-    var
+    public
       $conn_assoc= array(0 => 'end', 1 => 'begin');
     
     /**
@@ -16,7 +16,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Realizes', 1);
     }
 
@@ -28,7 +28,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 0 The connection point of the object
      */
-    function beginAt($id, $connpoint= 0) {
+    public function beginAt($id, $connpoint= 0) {
       parent::endAt($id, $connpoint);
     }
 
@@ -40,7 +40,7 @@
      * @param   string id The diagram object ID
      * @param   int connpoint default 5 The connection point of the object
      */
-    function endAt($id, $connpoint= 5) {
+    public function endAt($id, $connpoint= 5) {
       parent::beginAt($id, $connpoint);
     }
   }

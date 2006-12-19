@@ -5,7 +5,7 @@
  */
 
   uses(
-    'peer.irc.IRCConnectionListener', 
+    'peer.irc.IRCConnectionListener',
     'peer.irc.IRCColor',
     'org.dict.DictClient',
     'net.schweikhardt.Swabian',
@@ -25,7 +25,7 @@
    * @purpose  IRC Bot
    */
   class KrokerdilBotListener extends IRCConnectionListener {
-    var
+    public
       $tstart       = 0,
       $registry     = array(),
       $config       = NULL,
@@ -44,7 +44,7 @@
      * @access  public
      * @param   &util.Properties config
      */
-    function __construct(&$config) {
+    public function __construct(&$config) {
       $this->config= &$config;
       $this->reloadConfiguration();
       $this->tstart= time();
@@ -56,10 +56,10 @@
       $this->registry['laststore']= time();
 
       // Set up DictClient
-      $this->dictc= &new DictClient();
+      $this->dictc= new DictClient();
       
       // Set up quote client
-      $this->quote= &new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
+      $this->quote= new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
       
       $l= &Logger::getInstance();
       $this->cat= &$l->getCategory();
@@ -71,7 +71,7 @@
      *
      * @access  protected
      */
-    function reloadConfiguration() {
+    public function reloadConfiguration() {
       $this->config->reset();
       $this->lists= array();
       
@@ -81,21 +81,21 @@
       // Read word/message lists
       foreach ($this->config->readSection('lists') as $identifier => $file) {
         $this->lists[$identifier]= array();
-        $f= &new File($base.$file);
-        try(); {
+        $f= new File($base.$file);
+        try {
           if ($f->open(FILE_MODE_READ)) while (($line= $f->readLine()) && !$f->eof()) {
             $this->lists[$identifier][]= $line;
           }
           $f->close();
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           $e->printStackTrace();
           return FALSE;
         }
       }
       
       // Read karma recognition phrases
-      $f= &new File($base.$this->config->readString('karma', 'recognition'));
-      try(); {
+      $f= new File($base.$this->config->readString('karma', 'recognition'));
+      try {
         if ($f->open(FILE_MODE_READ)) while (!$f->eof()) {
           $line= $f->readLine();
           if (empty($line) || strspn($line, ';#')) continue;
@@ -104,20 +104,20 @@
           $this->recognition[$pattern]= array((int)$channel, (int)$direct);
         }
         $f->close();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $e->printStackTrace();
         return FALSE;
       }
       
       // If no karma is set and the karma storage exists, load it
       if (0 == sizeof($this->karma)) {
-        try(); {
-          $f= &new File($base.'karma.list');
+        try {
+          $f= new File($base.'karma.list');
           if ($f->exists()) {
             $karma= unserialize(FileUtil::getContents($f));
             if ($karma) $this->karma= &$karma;
           }
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
         
           // Karma loading failed - log, but ignore...
           $this->cat && $this->cat->error($e);
@@ -130,18 +130,18 @@
      *
      * @access  public
      */
-    function storeConfiguration() {
+    public function storeConfiguration() {
     
       // Set base directory for lists relative to that of the config file's
       $base= dirname($this->config->getFilename()).DIRECTORY_SEPARATOR;
 
-      try(); {
-        $f= &new File($base.'karma.list');
+      try {
+        $f= new File($base.'karma.list');
         $f->open(FILE_MODE_WRITE);
         
         $f->write(serialize($this->karma));
         $f->close();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->cat && $this->cat->error($e);
       }
       
@@ -160,7 +160,7 @@
      * @param   string message
      * @return  bool success
      */
-    function sendRandomMessage(&$connection, $target, $list, $nick, $message) {
+    public function sendRandomMessage(&$connection, $target, $list, $nick, $message) {
       $format= $this->lists[$list][rand(0, sizeof($this->lists[$list])- 1)];
       if (empty($format)) return;
       
@@ -193,7 +193,7 @@
      * @param   string password
      * @return  bool
      */
-    function doPrivileged(&$connection, $nick, $password) {
+    public function doPrivileged(&$connection, $nick, $password) {
       if ($this->config->readString('control', 'password') == $password) return TRUE;
       
       $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $password);
@@ -208,7 +208,7 @@
      * @param   int delta
      * @param   string reason default NULL
      */
-    function setKarma($nick, $delta, $reason= NULL) {
+    public function setKarma($nick, $delta, $reason= NULL) {
       static $last= array();
       
       if (!isset($this->karma[$nick])) {
@@ -250,7 +250,7 @@
      * @param   string mode the mode including a + or - as its first letter
      * @param   string params additional parameters
      */
-    function onModeChanges(&$connection, $nick, $target, $mode, $params) { 
+    public function onModeChanges(&$connection, $nick, $target, $mode, $params) { 
       if (strcasecmp($params, $connection->user->getNick()) != 0) return;
 
       $delta= ('-' == $mode[0] ? -10 : 10);
@@ -283,7 +283,7 @@
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    function onNickChanges(&$connection, $nick, $new) {
+    public function onNickChanges(&$connection, $nick, $new) {
       $this->cat && $this->cat->debug('Moving karma from', $nick, 'to', $new);
       $this->setKarma($new, $this->karma[$nick]);
       unset($this->karma[$nick]);
@@ -297,7 +297,7 @@
      * @param   string message
      * @return  string swear
      */
-    function containsSwear($message) {
+    public function containsSwear($message) {
       for ($i= 0, $s= sizeof($this->lists['swears']); $i < $s; $i++) {
         $pattern= '/('.str_replace(' ', ')? (', preg_quote($this->lists['swears'][$i])).')/i';
         if (preg_match($pattern, $message)) {
@@ -318,7 +318,7 @@
      * @param   string target
      * @param   string message
      */
-    function handlePrivateMessageDefault(&$connection, $nick, $target, $message) {
+    public function handlePrivateMessageDefault(&$connection, $nick, $target, $message) {
 
       // Commands
       if (sscanf($message, "!%s %[^\r]", $command, $params)) {
@@ -459,7 +459,7 @@
             break;
 
           case 'quote':
-            try(); {
+            try {
               if ($this->quote->connect()) do {
                 if (!($buf= $this->quote->readLine())) continue;
                 $connection->sendMessage(
@@ -470,7 +470,7 @@
                 );
               } while (!$this->quote->eof());
               $this->quote->close();
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $e->printStackTrace();
               $connection->sendMessage($target, '!%s', $e->getMessage());
               break;
@@ -478,12 +478,12 @@
             break;              
             
           case 'whatis':
-            try(); {
+            try {
               if ($this->dictc->connect('dict.org', 2628)) {
                 $definitions= $this->dictc->getDefinition($params, '*');
               }
               $this->dictc->close();
-            } if (catch('Exception', $e)) {
+            } catch (Exception $e) {
               $e->printStackTrace();
               $connection->sendMessage($target, '!%s', $e->getMessage());
               break;
@@ -500,13 +500,13 @@
             }
             
             // Make definitions available via www
-            $file= &new File(sprintf(
+            $file= new File(sprintf(
               '%s%swhatis_%s.html',
               rtrim($this->config->readString('whatis_www', 'document_root'), DIRECTORY_SEPARATOR),
               DIRECTORY_SEPARATOR,
               strtolower(preg_replace('/[^a-z0-9_]/i', '_', $params))
             ));
-            try(); {
+            try {
               $file->open(FILE_MODE_WRITE);
               $file->write('<h1>What is "'.$params.'"?</h1>');
               $file->write('<ol>');
@@ -518,7 +518,7 @@
               $file->write('</ol>');
               $file->write('<hr/><small>Generated by '.$connection->user->getNick().' at '.date('r').'</small>');
               $file->close();
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $e->printStackTrace();
               $connection->sendMessage(
                 $target, 
@@ -639,17 +639,17 @@
             $this->lists['swears'][]= $params;
             
             // Also update the swears file
-            $f= &new File(sprintf(
+            $f= new File(sprintf(
               '%s%s%s',
               dirname($this->config->getFilename()),
               DIRECTORY_SEPARATOR,
               $this->config->readString('lists', 'swears')
             ));
-            try(); {
+            try {
               $f->open(FILE_MODE_APPEND);
               $f->write($params."\n");
               $f->close();
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $connection->sendMessage($target, '! '.$e->getMessage());
               break;
             }
@@ -675,33 +675,33 @@
             unset($this->lists['swears'][$index]);
             
             // Store the removed word
-            $f= &new File(sprintf(
+            $f= new File(sprintf(
               '%s%s%s.deleted',
               dirname($this->config->getFilename()),
               DIRECTORY_SEPARATOR,
               $this->config->readString('lists', 'swears')
             ));
-            try(); {
+            try {
               $f->open(FILE_MODE_APPEND);
               $f->write($params."\n");
               $f->close();
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $connection->sendMessage($target, '! '.$e->getMessage());
               break;
             }
             
             // Also update the swears file
-            $f= &new File(sprintf(
+            $f= new File(sprintf(
               '%s%s%s',
               dirname($this->config->getFilename()),
               DIRECTORY_SEPARATOR,
               $this->config->readString('lists', 'swears')
             ));
-            try(); {
+            try {
               $f->open(FILE_MODE_WRITE);
               $f->write(implode("\n", $this->lists['swears']));
               $f->close();
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $connection->sendMessage($target, '! '.$e->getMessage());
               break;
             }
@@ -809,7 +809,7 @@
      * @param   string target
      * @param   string message
      */
-    function handlePrivateMessageSleeping(&$connection, $nick, $target, $message) {
+    public function handlePrivateMessageSleeping(&$connection, $nick, $target, $message) {
     
       // Auto-Wakeup after the specified period of time
       if (time() > $this->registry['wakeup']) {
@@ -857,7 +857,7 @@
      * @param   &peer.irc.IRCConnection connection
      * @param   int time time to sleep
      */
-    function doSleep(&$connection, $time) {
+    public function doSleep(&$connection, $time) {
       if ($this->mode == MODE_SLEEP) return;
       
       $this->cat && $this->cat->debugf('Going to sleep for %d seconds', $time);
@@ -885,7 +885,7 @@
      * @access  public
      * @param   &peer.irc.IRCConnection connection
      */
-    function doWakeup(&$connection) {
+    public function doWakeup(&$connection) {
       if ($this->mode == MODE_AWAKE) return;
       
       $this->cat && $this->cat->debug('The bot is waking up again. Scheduled wake time was',
@@ -917,7 +917,7 @@
      * @param   string target
      * @param   string message
      */
-    function onPrivateMessage(&$connection, $nick, $target, $message) {
+    public function onPrivateMessage(&$connection, $nick, $target, $message) {
       switch ($this->mode) {
         case MODE_AWAKE:
         default:
@@ -939,7 +939,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    function onEndOfMOTD(&$connection, $server, $target, $data) {
+    public function onEndOfMOTD(&$connection, $server, $target, $data) {
       if ($this->config->hasSection('autojoin')) {
         $hash= &$this->config->readHash('autojoin', 'channels');
         foreach ($hash->keys() as $channel) {
@@ -964,7 +964,7 @@
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    function onInvite(&$connection, $nick, $who, $channel) {
+    public function onInvite(&$connection, $nick, $who, $channel) {
       if ($this->config->readBool('invitations', 'follow', FALSE)) {
         $connection->join($channel);
         $this->setKarma($nick, 5, '@@invite');
@@ -981,7 +981,7 @@
      * @param   string who who was kicked
      * @param   string reason what reason the user was kicked for
      */
-    function onKicks(&$connection, $channel, $nick, $who, $reason) {
+    public function onKicks(&$connection, $channel, $nick, $who, $reason) {
       if (strcasecmp($who, $connection->user->getNick()) == 0) {
         $connection->join($channel);
         $connection->sendMessage($nick, 'He! "%s" ist KEIN Grund', $reason);
@@ -1001,7 +1001,7 @@
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
-    function onJoins(&$connection, $channel, $nick) {
+    public function onJoins(&$connection, $channel, $nick) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $connection->writeln('NOTICE %s :%s is back!', $channel, $nick);
         $this->channels[$channel]= TRUE;
@@ -1021,7 +1021,7 @@
      * @param   string nick who part
      * @param   string message the part message, if any
      */
-    function onParts(&$connection, $channel, $nick, $message) {
+    public function onParts(&$connection, $channel, $nick, $message) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $this->channels[$channel]= FALSE;
       }
@@ -1040,7 +1040,7 @@
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
      */
-    function onAction(&$connection, $nick, $target, $params) {
+    public function onAction(&$connection, $nick, $target, $params) {
       if (MODE_AWAKE != $this->mode) return;
       
       if (10 == rand(0, 20)) {
@@ -1064,7 +1064,7 @@
      * @param   string target where version was requested
      * @param   string params additional parameters
      */
-    function onVersion(&$connection, $nick, $target, $params) {
+    public function onVersion(&$connection, $nick, $target, $params) {
       $connection->writeln('NOTICE %s :%sVERSION Krokerdil $Revision$%s', $nick, "\1", "\1");
     }
     
@@ -1075,7 +1075,7 @@
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
      */
-    function onPings(&$connection, $data) {
+    public function onPings(&$connection, $data) {
     
       // Automatically store configuration every hour
       if (time() > $this->registry['laststore'] + 3600) {

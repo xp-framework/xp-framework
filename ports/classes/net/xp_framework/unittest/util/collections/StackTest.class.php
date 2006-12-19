@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class StackTest extends TestCase {
-    var
+    public
       $stack= NULL;
     
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->stack= &new Stack();
+    public function setUp() {
+      $this->stack= new Stack();
     }
         
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertTrue($this->stack->isEmpty());
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function equalsClone() {
+    public function equalsClone() {
       $this->stack->push(new String('green'));
       $this->assertTrue($this->stack->equals(clone($this->stack)));
     }
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test]
-    function push() {
+    public function push() {
       $this->stack->push(new String('green'));
       $this->assertFalse($this->stack->isEmpty());
       $this->assertEquals(1, $this->stack->size());
@@ -68,8 +68,8 @@
      * @access  public
      */
     #[@test]
-    function pop() {
-      $color= &new String('green');
+    public function pop() {
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals($color, $this->stack->pop());
       $this->assertTrue($this->stack->isEmpty());
@@ -81,8 +81,8 @@
      * @access  public
      */
     #[@test]
-    function peek() {
-      $color= &new String('green');
+    public function peek() {
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals($color, $this->stack->peek());
       $this->assertFalse($this->stack->isEmpty());
@@ -94,8 +94,8 @@
      * @access  public
      */
     #[@test]
-    function search() {
-      $color= &new String('green');
+    public function search() {
+      $color= new String('green');
       $this->stack->push($color);
       $this->assertEquals(0, $this->stack->search($color));
       $this->assertEquals(-1, $this->stack->search(new String('non-existant')));
@@ -107,7 +107,7 @@
      * @access  public
      */
     #[@test]
-    function elementAt() {
+    public function elementAt() {
       $this->stack->push(new String('red'));
       $this->stack->push(new String('green'));
       $this->stack->push(new String('blue'));
@@ -123,7 +123,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
-    function elementAtIllegalOffset() {
+    public function elementAtIllegalOffset() {
       $this->stack->elementAt(-1);
     }
   }

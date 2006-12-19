@@ -17,7 +17,7 @@
    * @purpose  Plain text to markup converter
    */
   class MarkupBuilder extends Object {
-    var 
+    public 
       $stack= array();
 
     /**
@@ -27,7 +27,7 @@
      * @param   &net.xp_framework.util.markup.MarkupProcessor proc
      * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
-    function &pushProcessor(&$proc) {
+    public function &pushProcessor(&$proc) {
       array_unshift($this->stack, $proc);
       return $proc;
     }
@@ -38,7 +38,7 @@
      * @access  protected
      * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
-    function &popProcessor() {
+    public function &popProcessor() {
       array_shift($this->stack);
       return $this->stack[0];
     }
@@ -50,7 +50,7 @@
      * @param   string text
      * @return  string
      */
-    function markupFor($text) {
+    public function markupFor($text) {
       static $processors= array();
       static $state= array(
         'pre'   => 'copy',
@@ -58,14 +58,14 @@
       );
 
       if (!$processors) {
-        $processors['default']= &new DefaultProcessor();
-        $processors['copy']= &new CopyProcessor();
-        $processors['code']= &new CodeProcessor();
+        $processors['default']= new DefaultProcessor();
+        $processors['copy']= new CopyProcessor();
+        $processors['code']= new CodeProcessor();
       }
       
       $processor= &$this->pushProcessor($processors['default']);
 
-      $st= &new StringTokenizer($text, '<>', $returnDelims= TRUE);
+      $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';      
       while ($st->hasMoreTokens()) {
         if ('<' == ($token= $st->nextToken())) {

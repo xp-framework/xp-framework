@@ -22,7 +22,7 @@
      * @param   
      * @return  
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       $pm= &PropertyManager::getInstance();
       $prop= &$pm->getProperties('site');
       

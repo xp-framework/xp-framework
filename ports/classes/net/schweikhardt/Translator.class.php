@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class Translator extends Interface {
+  interface Translator {
   
     /**
      * Translates the given sentence
@@ -19,7 +19,7 @@
      * @param   string sentence
      * @return  string translation
      */  
-    function translate($string) { }
+    public static function translate($string);
 
   }
 ?>

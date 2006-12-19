@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.NameNotFoundException');
+  uses('remote.NameNotFoundException', 'remote.protocol.ProtocolHandler');
 
   /**
    * Handles the "mock" protocol
@@ -12,8 +12,8 @@
    * @see      xp://remote.protocol.XpProtocolHandler
    * @purpose  Protocol Handler
    */
-  class MockProtocolHandler extends Object {
-    var
+  class MockProtocolHandler extends Object implements ProtocolHandler {
+    public
       $server= array('initialized' => FALSE);
 
     /**
@@ -23,12 +23,12 @@
      * @param   &peer.URL proxy
      * @throws  io.IOException in case connecting fails
      */
-    function initialize(&$proxy) {
+    public function initialize(&$proxy) {
       if (!$this->server['available']) {
-        return throw(new IOException('Cannot connect to '.$proxy->getHost()));
+        throw(new IOException('Cannot connect to '.$proxy->getHost()));
       }
       if ($this->server['initialized']) {
-        return throw(new IOException('Already initialized'));
+        throw(new IOException('Already initialized'));
       }
       $this->server['initialized']= TRUE;
     }
@@ -42,9 +42,9 @@
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
-    function &lookup($name) {
+    public function &lookup($name) {
       if (!isset($this->server['ctx'][$name])) {
-        return throw(new NameNotFoundException($name.' not bound'));
+        throw(new NameNotFoundException($name.' not bound'));
       }
       
       return $this->server['ctx'][$name];
@@ -57,7 +57,7 @@
      * @param   UserTransaction tran
      * @param   bool
      */
-    function begin(&$tran) {
+    public function begin(&$tran) {
     }
 
     /**
@@ -67,7 +67,7 @@
      * @param   UserTransaction tran
      * @param   bool
      */
-    function rollback(&$tran) {
+    public function rollback(&$tran) {
     }
 
     /**
@@ -77,7 +77,7 @@
      * @param   UserTransaction tran
      * @param   bool
      */
-    function commit(&$tran) {
+    public function commit(&$tran) {
     }
 
     /**
@@ -90,8 +90,8 @@
      * @param   mixed[] args
      * @return  &mixed
      */
-    function &invoke($oid, $method, $args) {
+    public function &invoke($oid, $method, $args) {
     }
 
-  } implements(__FILE__, 'remote.protocol.ProtocolHandler');
+  } 
 ?>

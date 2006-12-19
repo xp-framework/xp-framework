@@ -12,7 +12,7 @@
    * @purpose  Interface to CVS binary
    */
   class CVSDirectory extends CVSInterface {
-    var
+    public
       $path     = NULL,
       $_folder  = NULL;
     
@@ -22,9 +22,9 @@
      * @access  public
      * @param   string path
      */
-    function __construct($path) {
+    public function __construct($path) {
       $this->path= $path;
-      $this->_folder= &new Folder ($path);
+      $this->_folder= new Folder ($path);
     }
     
     /**
@@ -36,7 +36,7 @@
      * @param   string cvsCmd
      * @return  string[]
      */
-    function _execute($cvsCmd) {
+    public function _execute($cvsCmd) {
       $olddir= getcwd(); 
       chdir($this->path);
       $r= parent::_execute ($cvsCmd);
@@ -54,14 +54,14 @@
      * @return  stdclass[] objects
      * @throws  org.cvshome.CVSInterfaceException
      */
-    function update($recursive= FALSE, $sim= TRUE) {
-      try(); {
+    public function update($recursive= FALSE, $sim= TRUE) {
+      try {
         $results= $this->_execute (sprintf ('%s update %s',
           ($sim ? '-nq' : ''),
           ($recursive ? '' : '-l')
         ));
-      } if (catch('CVSInterfaceException', $e)) {
-        return throw ($e);
+      } catch (CVSInterfaceException $e) {
+        throw ($e);
       }
       
       $stats= array();
@@ -76,7 +76,7 @@
     
         list ($state, $filename)= explode (' ', $r, 2);
         if (FALSE !== ($s= $this->getCVSStatus ($state))) {
-          $f= &new stdClass();
+          $f= new stdClass();
           $f->status= $s;
           $f->filename= $filename;
           $f->uri= $this->path.DIRECTORY_SEPARATOR.$filename;

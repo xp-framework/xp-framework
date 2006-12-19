@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.AbstractXMLScriptlet', 
+    'scriptlet.xml.workflow.AbstractXMLScriptlet',
     'xml.DomXSLProcessor'
   );
 
@@ -23,8 +23,8 @@
      * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    function &_processor() {
-      $p= &new DomXSLProcessor();
+    public function &_processor() {
+      $p= new DomXSLProcessor();
       return $p;
     }
     
@@ -35,7 +35,7 @@
      * @param   
      * @return  
      */
-    function wantsContext(&$request) {
+    public function wantsContext(&$request) {
       return $this->needsSession($request) || $request->hasSession();
     }
 
@@ -46,7 +46,7 @@
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet(&$request, &$response) {
       $response->setStylesheet(sprintf(
         '%s/%s.xsl',
         $request->getProduct(),

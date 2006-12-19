@@ -52,12 +52,12 @@
    * @experimental
    */
   class CHMFile extends Object {
-    var
+    public
       $stream           = NULL,
       $header           = NULL,
       $directory        = NULL;
       
-    var
+    public
       $_headeroffset    = 0,
       $_diroffset       = 0;
     
@@ -67,7 +67,7 @@
      * @access  public
      * @param   &io.Stream stream
      */  
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &$stream;
       
     }
@@ -79,7 +79,7 @@
      * @param   array g
      * @return  string guid
      */
-    function _guid($g) {
+    public function _guid($g) {
       return vsprintf('{%08X-%04X-%04X-%02X%02X-%02X%02X-%02X%02X-%02X%02X}', $g);
     }
 
@@ -93,7 +93,7 @@
      * @param   int len
      * @return  string str
      */
-    function _substr($str, &$p, $len) {
+    public function _substr($str, &$p, $len) {
       $str= substr($str, ++$p, $len);
       $p+= $len;
       return $str;
@@ -108,7 +108,7 @@
      * @param   &int p
      * @return  int
      */
-    function _int($str, &$p) {
+    public function _int($str, &$p) {
       $r= 0;
       while (ord($str{$p}) & 0x80) {
         $r= ($r << 7) | (ord($str{$p++}) & 0x7F);
@@ -124,7 +124,7 @@
      * @param   int length
      * @return  array entries
      */
-    function _dir($length, $qref, $format) {
+    public function _dir($length, $qref, $format) {
       $str= $this->stream->read($length- $qref);
       $pos= 0;
       $max= strlen($str);
@@ -160,7 +160,7 @@
      * @access  public
      * @return  bool success
      */
-    function open() {
+    public function open() {
       return $this->stream->open(FILE_MODE_READ);
     }
     
@@ -170,7 +170,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       return $this->stream->open(FILE_MODE_READ);
     }
     
@@ -181,7 +181,7 @@
      * @return  &com.microsoft.format.chm.CHMHeader
      * @throws  lang.FormatException if the identifier is not correct
      */
-    function &getHeader() {
+    public function &getHeader() {
       if (!empty($this->header)) {
         $this->stream->seek($this->_headeroffset, SEEK_SET);
         return $this->header;
@@ -189,13 +189,13 @@
       
       $this->stream->seek(0x00, SEEK_SET);
       if (CHM_HEADER_IDENTIFIER !== ($id= $this->stream->read(4))) {
-        return throw(new FormatException(
+        throw(new FormatException(
           '"'.addcslashes($id, "\0..\17").'" is not a correct identifier, expecting "ITSF"'
         ));
       }
       
       // Create header
-      $this->header= &new CHMHeader(unpack(
+      $this->header= new CHMHeader(unpack(
         'a4identifier/Lversion/Llength/Lunknown/Ltime/Llang', 
         $id.$this->stream->read(0x14)
       ));
@@ -235,7 +235,7 @@
      * @return  &com.microsoft.format.chm.CHMDirectory
      * @throws  lang.FormatException if the identifier is not correct
      */ 
-    function &getDirectory() {
+    public function &getDirectory() {
       $this->getHeader();       // We need this so the file pointer position is correct
       if (!empty($this->directory)) {
         $this->stream->seek($this->_diroffset, SEEK_SET);
@@ -243,13 +243,13 @@
       }
 
       if (CHM_DIRECTORY_IDENTIFIER !== ($id= $this->stream->read(4))) {
-        return throw(new FormatException(
+        throw(new FormatException(
           '"'.addcslashes($id, "\0..\17").'" is not a correct identifier, expecting "ITSP"'
         ));
       }
       
       // Create directory object
-      $directory= &new CHMDirectory(unpack(
+      $directory= new CHMDirectory(unpack(
         'a4identifier/Lversion/Llength/Lunknown/Lchunk_size/Ldensity/Ldepth/Lrootindex_chunk/Lfirst_pmgl/Llast_pmgl/Lunknown/Lnum_chunks/Llang',
         $id.$this->stream->read(0x30)
       ));

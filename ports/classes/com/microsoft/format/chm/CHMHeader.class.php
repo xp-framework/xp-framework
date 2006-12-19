@@ -15,7 +15,7 @@
    * @experimental
    */
   class CHMHeader extends Object {
-    var
+    public
       $identifier       = CHM_HEADER_IDENTIFIER,
       $version          = 0,
       $length           = 0,
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string identifier
      */
-    function setIdentifier($identifier) {
+    public function setIdentifier($identifier) {
       $this->identifier= $identifier;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getIdentifier() {
+    public function getIdentifier() {
       return $this->identifier;
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @param   int version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  int
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @param   int length
      */
-    function setLength($length) {
+    public function setLength($length) {
       $this->length= $length;
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @return  int
      */
-    function getLength() {
+    public function getLength() {
       return $this->length;
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @param   int time
      */
-    function setTime($time) {
+    public function setTime($time) {
       $this->time= $time;
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  int
      */
-    function getTime() {
+    public function getTime() {
       return $this->time;
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @param   int lang
      */
-    function setLang($lang) {
+    public function setLang($lang) {
       $this->lang= $lang;
     }
 
@@ -123,7 +123,7 @@
      * @access  public
      * @return  int
      */
-    function getLang() {
+    public function getLang() {
       return $this->lang;
     }
 
@@ -133,7 +133,7 @@
      * @access  public
      * @param   string guid1
      */
-    function setGuid1($guid1) {
+    public function setGuid1($guid1) {
       $this->guid1= $guid1;
     }
 
@@ -143,7 +143,7 @@
      * @access  public
      * @return  string
      */
-    function getGuid1() {
+    public function getGuid1() {
       return $this->guid1;
     }
 
@@ -153,7 +153,7 @@
      * @access  public
      * @param   string guid2
      */
-    function setGuid2($guid2) {
+    public function setGuid2($guid2) {
       $this->guid2= $guid2;
     }
 
@@ -163,7 +163,7 @@
      * @access  public
      * @return  string
      */
-    function getGuid2() {
+    public function getGuid2() {
       return $this->guid2;
     }
 
@@ -173,7 +173,7 @@
      * @access  public
      * @param   mixed[] section
      */
-    function setSection($section) {
+    public function setSection($section) {
       $this->section= $section;
     }
 
@@ -183,7 +183,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getSection() {
+    public function getSection() {
       return $this->section;
     }
 
@@ -193,7 +193,7 @@
      * @access  public
      * @param   int content_offset
      */
-    function setContent_offset($content_offset) {
+    public function setContent_offset($content_offset) {
       $this->content_offset= $content_offset;
     }
 
@@ -203,7 +203,7 @@
      * @access  public
      * @return  int
      */
-    function getContent_offset() {
+    public function getContent_offset() {
       return $this->content_offset;
     }
   }

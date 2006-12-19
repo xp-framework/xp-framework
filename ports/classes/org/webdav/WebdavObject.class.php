@@ -12,7 +12,7 @@
    * @purpose   Represent a "file" or "directory"
    */
   class WebdavObject extends Object {
-    var
+    public
       $href             = '',
       $_data            = '',
       $contentLength    = 0,
@@ -36,7 +36,7 @@
      * @param   &util.Date lastModified
      * @param   array properties default array()
      */
-    function __construct(
+    public function __construct(
       $href,
       $resourceType,
       $contentLength= 0,
@@ -62,7 +62,7 @@
      * @access  public 
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->href= $href;
     }
     
@@ -72,7 +72,7 @@
      * @access  public 
      * @return  string href
      */
-    function getHref() {
+    public function getHref() {
       return $this->href;
     }
     
@@ -82,7 +82,7 @@
      * @access  public
      * @param   string resourcetype
      */
-    function setResourceType($restype) {
+    public function setResourceType($restype) {
       $this->resourceType= $restype;
     }
     
@@ -92,7 +92,7 @@
      * @access  public
      * @return  string Resourcetype
      */
-    function getResourceType() {
+    public function getResourceType() {
       return $this->resourceType;
     }
     
@@ -103,7 +103,7 @@
      * @access  public
      * @param   string contentlength
      */
-    function setContentLength($contentlength) {
+    public function setContentLength($contentlength) {
       $this->contentLength= $contentlength;
     }
     
@@ -113,7 +113,7 @@
      * @access  public
      * @return  string contentlength
      */
-    function getContentLength() {
+    public function getContentLength() {
       return $this->contentLength;
     }
     
@@ -123,7 +123,7 @@
      * @access  public
      * @param   string type
      */
-    function setContentType($type) {
+    public function setContentType($type) {
       $this->contentType= $type;
     }
     
@@ -133,7 +133,7 @@
      * @access  public
      * @return  string contenttype
      */
-    function getContentType() {
+    public function getContentType() {
       return $this->contentType;
     }
     
@@ -143,7 +143,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setCreationDate($date) {
+    public function setCreationDate($date) {
       $this->creationDate= &$data;
     }
     
@@ -153,7 +153,7 @@
      * @access  public
      * @return  &util.Date date
      */
-    function getCreationDate() {
+    public function getCreationDate() {
       return $this->creationDate;
     }
     
@@ -163,7 +163,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setModifiedDate($date) {
+    public function setModifiedDate($date) {
       $this->modifiedDate= &$date;
     }
     
@@ -173,7 +173,7 @@
      * @access  public
      * @return  &util.Date date
      */
-    function getModifiedDate() {
+    public function getModifiedDate() {
       return $this->modifiedDate;
     }
     
@@ -183,7 +183,7 @@
      * @access  public
      * @param   array properties
      */
-    function setProperties($properties) {
+    public function setProperties($properties) {
       $this->properties= $properties;
     }
     
@@ -193,7 +193,7 @@
      * @access  public
      * @return  array properties
      */
-    function getProperty() {
+    public function getProperty() {
       return $this->properties;
     }
 
@@ -202,7 +202,7 @@
      *
      * @access  private
      */
-    function _calcProperties() {
+    public function _calcProperties() {
       $etag= md5($this->href);
       $etag= sprintf(
         '%s-%s-%s',
@@ -236,7 +236,7 @@
         
       ) as $name => $propDef) {
         if ($propDef['value'] === NULL) continue;
-        $p= &new WebdavProperty($name, $propDef['value']);
+        $p= new WebdavProperty($name, $propDef['value']);
         $p->setNamespaceName($propDef['ns']);
         $p->setProtected(TRUE);
         $this->addProperty($p);
@@ -249,7 +249,7 @@
      * @access  public 
      * @param   &string data
      */
-    function setData(&$data) {
+    public function setData(&$data) {
       $this->_data= &$data;
     }
     
@@ -259,7 +259,7 @@
      * @access  public 
      * @param   &string data
      */
-    function setEncoding($data) {
+    public function setEncoding($data) {
       $this->contentEncoding= $data;
     }
 
@@ -269,7 +269,7 @@
      * @access  public
      * @return  &string data
      */
-    function &getData() {
+    public function &getData() {
       return $this->_data;
     }
 
@@ -279,7 +279,7 @@
      * @access  public
      * @return  array lockinfo
      */
-    function &getLockInfo() {
+    public function &getLockInfo() {
       return $this->_lockinfo;
     }
     
@@ -294,7 +294,7 @@
      * @param   string token
      * @param   string depth
      */
-    function &addLockInfo($locktype, $lockscope, $owner, $timeout, $token, $depth) {
+    public function &addLockInfo($locktype, $lockscope, $owner, $timeout, $token, $depth) {
       $this->_lockinfo[]= array(
         'owner'   => $owner,
         'type'    => $locktype,
@@ -311,7 +311,7 @@
      * @access  public
      * @param   string propname
      */      
-    function &addProperty($property) {
+    public function &addProperty($property) {
       $this->properties[$property->getName()]= $property;
     }
     
@@ -321,7 +321,7 @@
      * @access  public
      * @return  array properties
      */
-    function &getProperties() {
+    public function &getProperties() {
       $this->_calcProperties();
       return $this->properties;
     }

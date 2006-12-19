@@ -21,9 +21,9 @@
    *  <li>type</li>
    * </ul>
    */
-  class DiaComposite extends DiaCompound {
+  class DiaComposite extends DiaCompound implements DiaComponent {
 
-    var
+    public
       $type= NULL,
       $node_name= 'dia:composite';
 
@@ -44,7 +44,7 @@
      *
      * @param   string type default NULL
      */
-    function __construct($type= NULL) {
+    public function __construct($type= NULL) {
       if (isset($type)) $this->setNodeType($type);
       $this->initialize();
     }
@@ -54,7 +54,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $type= $this->getNodeType();
       if (!isset($type)) return;
 
@@ -83,7 +83,7 @@
           break;
 
         default: 
-          return throw(new IllegalArgumentException('Undefined type "'.$type.'"'));
+          throw(new IllegalArgumentException('Undefined type "'.$type.'"'));
       }
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @return  int
      */
-    function getNodeType() {
+    public function getNodeType() {
       return $this->type;
     }
 
@@ -104,7 +104,7 @@
      * @param   string type
      */
     #[@fromDia(xpath= '@type', value= 'string')]
-    function setNodeType($type) {
+    public function setNodeType($type) {
       $this->type= $type;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @return  string
      */
-    function getValue() {
+    public function getValue() {
       return $this->getChildValue('value');
     }
 
@@ -125,7 +125,7 @@
      * @param   string value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="value"]/dia:string', value= 'string')]
-    function setValue($value) {
+    public function setValue($value) {
       $this->setString('value', $value);
     }
 
@@ -135,7 +135,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return $this->getChildValue('type');
     }
 
@@ -146,7 +146,7 @@
      * @param   string type
      */
     #[@fromDia(xpath= 'dia:attribute[@name="type"]/dia:string', value= 'string')]
-    function setType($type) {
+    public function setType($type) {
       $this->setString('type', $type);
     }
 
@@ -158,7 +158,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       if (isset($this->type)) {
         $node->setAttribute('type', $this->type);
@@ -169,5 +169,5 @@
       return $node;
     }
 
-  } implements(__FILE__, 'org.dia.DiaComponent');
+  } 
 ?>

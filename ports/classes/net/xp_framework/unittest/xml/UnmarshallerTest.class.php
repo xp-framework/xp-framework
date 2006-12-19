@@ -24,7 +24,7 @@
      * @access  public
      */
     #[@test]
-    function idAttribute() {
+    public function idAttribute() {
       $dialog= &Unmarshaller::unmarshal('
         <dialogtype id="file.open">
           <caption/>
@@ -41,7 +41,7 @@
      * @access  public
      */
     #[@test]
-    function captionNode() {
+    public function captionNode() {
       $dialog= &Unmarshaller::unmarshal('
         <dialogtype id="">
           <caption>Open a file &gt; Choose</caption>
@@ -58,7 +58,7 @@
      * @access  public
      */
     #[@test]
-    function buttonsNodeSet() {
+    public function buttonsNodeSet() {
       $dialog= &Unmarshaller::unmarshal('
         <dialogtype id="">
           <caption>Really delete the file &quot;Ü&quot;?</caption>

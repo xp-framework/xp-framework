@@ -22,7 +22,7 @@
      * @param   
      * @return  
      */
-    function requiresAuthentication() { return TRUE; }
+    public function requiresAuthentication() { return TRUE; }
 
     /**
      * (Insert method's description here)
@@ -31,7 +31,7 @@
      * @param   
      * @return  
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       $this->addHandler(new AttendEventHandler());
       parent::setup($request, $response, $context);
     }

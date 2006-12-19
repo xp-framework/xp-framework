@@ -22,7 +22,7 @@
      * @access  public
      */
     #[@test]
-    function succeeds() {
+    public function succeeds() {
       $this->assertTrue(TRUE);
     }
 
@@ -32,7 +32,7 @@
      * @access  public
      */
     #[@test]
-    function fails() {
+    public function fails() {
       $this->assertTrue(FALSE);
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      */
     #[@test, @limit(time= 0.010)]
-    function timeouts() {
+    public function timeouts() {
       $start= gettimeofday();
       $end= (1000000 * $start['sec']) + $start['usec'] + 1000 * 50;    // 0.05 seconds
       do {
@@ -56,7 +56,7 @@
      * @access  public
      */
     #[@test, @limit(time= 1.0)]
-    function noTimeout() {
+    public function noTimeout() {
     }
   }
 ?>

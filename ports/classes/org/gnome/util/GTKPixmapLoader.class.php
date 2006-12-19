@@ -21,7 +21,7 @@
    * @purpose  Pixmap loader
    */
   class GTKPixmapLoader extends Object {
-    var 
+    public 
       $windowRef,
       $baseDir,
       $transparentColor;
@@ -33,7 +33,7 @@
      * @param   GtkWindow window a valid window object
      * @param   string baseDir default '.' base directory for pixmaps
      */      
-    function __construct(&$window, $baseDir= '.') {
+    public function __construct(&$window, $baseDir= '.') {
       $this->setWindowRef($window);
       $this->setBase($baseDir);
       $this->setTransparentColor(new GdkColor(0, 0, 0));
@@ -46,7 +46,7 @@
      * @access  public
      * @param   GtkWindow window a valid window object
      */
-    function setWindowRef(&$window) {
+    public function setWindowRef(&$window) {
       $this->windowRef= &$window;
     }
     
@@ -56,7 +56,7 @@
      * @access  public
      * @param   string base base directory
      */
-    function setBase($base) {
+    public function setBase($base) {
       $this->baseDir= $base;
     }
     
@@ -66,7 +66,7 @@
      * @access  public
      * @param   GdkColor color the color to be transparent
      */
-    function setTransparentColor(&$color) {
+    public function setTransparentColor(&$color) {
       $this->transparentColor= &$color;
     }
     
@@ -77,7 +77,7 @@
      * @param   &array container
      * @param   string name
      */
-    function _load(&$container, $name) {
+    public function _load(&$container, $name) {
       list(
         $container['p:'.$name],
         $container['m:'.$name]
@@ -96,7 +96,7 @@
      *          names of the pixmaps to be loaded (w/o trailing .xpm!)
      * @return  &array pixmaps
      */
-    function &load($names) {
+    public function &load($names) {
       $container= array();
       if (is_string($names)) $names= array($names);
       foreach ($names as $name) {

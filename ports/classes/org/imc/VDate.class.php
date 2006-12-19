@@ -12,7 +12,7 @@
    * @purpose  Date wrapper for VCalendar
    */
   class VDate extends Object {
-    var
+    public
       $name=      NULL,
       $date=      NULL,
       $timezone=  NULL;
@@ -23,12 +23,12 @@
      * @access  public
      * @param   &mixed arg
      */    
-    function __construct(&$arg) {
+    public function __construct(&$arg) {
       if (is_object($arg)) {
-        $this->date= &new Date (VFormatParser::decodeDate($arg->_value));
+        $this->date= new Date (VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;
       } else {
-        $this->date= &new Date (VFormatParser::decodeDate($arg));
+        $this->date= new Date (VFormatParser::decodeDate($arg));
       }
     }
     
@@ -38,7 +38,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->date->toString ('Ymd').'T'.$this->date->toString ('His').'Z';
     }
     
@@ -48,7 +48,7 @@
      * @access  public
      * @return  string
      */
-    function export() {
+    public function export() {
       return ($this->name.
         (NULL !== $this->timezone ? ';TZID='.$this->timezone : '').
         ':'.

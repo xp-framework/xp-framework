@@ -40,7 +40,7 @@
    * @purpose  Specialized mail message
    */
   class BugMessage extends Message {
-    var
+    public
       $tokens= array();
 
 
@@ -50,7 +50,7 @@
      * @access  public
      * @param   string product
      */
-    function setProduct($product) {
+    public function setProduct($product) {
       $this->tokens['product']= $product;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @param   string component
      */
-    function setComponent($component) {
+    public function setComponent($component) {
       $this->tokens['component']= $component;
     }
 
@@ -70,7 +70,7 @@
      * @access  public
      * @param   string short_desc
      */
-    function setShort_desc($short_desc) {
+    public function setShort_desc($short_desc) {
       $this->tokens['short_desc']= $short_desc;
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @param   string rep_platform
      */
-    function setRep_platform($rep_platform) {
+    public function setRep_platform($rep_platform) {
       $this->tokens['rep_platform']= $rep_platform;
     }
 
@@ -90,7 +90,7 @@
      * @access  public
      * @param   string bug_severity
      */
-    function setBug_severity($bug_severity) {
+    public function setBug_severity($bug_severity) {
       $this->tokens['bug_severity']= $bug_severity;
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @param   string priority
      */
-    function setPriority($priority) {
+    public function setPriority($priority) {
       $this->tokens['priority']= $priority;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @param   string op_sys
      */
-    function setOp_sys($op_sys) {
+    public function setOp_sys($op_sys) {
       $this->tokens['op_sys']= $op_sys;
     }
 
@@ -120,7 +120,7 @@
      * @access  public
      * @param   string version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->tokens['version']= $version;
     }
     
@@ -130,7 +130,7 @@
      * @access  public
      * @param   bool suppress
      */
-    function setNoReport($b= TRUE) {
+    public function setNoReport($b= TRUE) {
       $this->tokens['nomail']= ($b ? 'yes' : 'no');
     }    
 
@@ -142,7 +142,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       $header= '';
       foreach ($this->tokens as $key => $val) {
         $header.= '@'.$key.':'.$val."\n";

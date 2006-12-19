@@ -16,10 +16,7 @@
    * 
    * @purpose   Define a generic interface for all Dia* classes
    */
-  class DiaComponent extends Component {
-
-    var
-      $node_name= NULL;
+  interface DiaComponent extends Component {
 
     /**
      * Return the XML representation of this object including the child objects
@@ -27,7 +24,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() { }
+    public function &getNode();
 
   }
 ?>

@@ -22,8 +22,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->decoder= &new JsonDecoder();
+    public function setUp() {
+      $this->decoder= new JsonDecoder();
     }
     
     /**
@@ -32,7 +32,7 @@
      * @access  public
      */
     #[@test]
-    function encodeString() {
+    public function encodeString() {
       $this->assertEquals('"foo"', $this->decoder->encode('foo'));
       $this->assertEquals('"fo\\no"', $this->decoder->encode('fo'."\n".'o'));
     }
@@ -43,7 +43,7 @@
      * @access  public
      */
     #[@test]
-    function encodeInt() {
+    public function encodeInt() {
       $this->assertEquals('1', $this->decoder->encode(1));
       $this->assertEquals('-1', $this->decoder->encode(-1));
     }
@@ -54,7 +54,7 @@
      * @access  public
      */
     #[@test]
-    function encodeFloat() {
+    public function encodeFloat() {
       $this->assertEquals('1', $this->decoder->encode(1.0));    
       $this->assertEquals('1.1', $this->decoder->encode(1.1));
     }
@@ -65,7 +65,7 @@
      * @access  public
      */
     #[@test]
-    function encodeBooleanAndNull() {
+    public function encodeBooleanAndNull() {
       $this->assertEquals('true', $this->decoder->encode(TRUE));
       $this->assertEquals('false', $this->decoder->encode(FALSE));
       $this->assertEquals('null', $this->decoder->encode(NULL));
@@ -77,7 +77,7 @@
      * @access  public
      */
     #[@test]
-    function encodeArray() {
+    public function encodeArray() {
       $this->assertEquals(
         '[ ]',
         $this->decoder->encode(array())
@@ -100,7 +100,7 @@
      * @access  public
      */
     #[@test]
-    function encodeHashmap() {
+    public function encodeHashmap() {
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
         $this->decoder->encode(array('foo' => 'bar', 'bar' => 'baz'))
@@ -113,7 +113,7 @@
      * @access  public
      */
     #[@test]
-    function decodeArray() {
+    public function decodeArray() {
       $this->assertEquals(
         array(TRUE, FALSE, NULL),
         $this->decoder->decode('[ true , false, null ]')
@@ -126,7 +126,7 @@
      * @access  public
      */
     #[@test]
-    function decodeString() {
+    public function decodeString() {
       $this->assertEquals(
         'foobar',
         $this->decoder->decode('"foobar"')
@@ -165,7 +165,7 @@
      * @access  public
      */
     #[@test]
-    function decodeNumber() {
+    public function decodeNumber() {
       $this->assertEquals(
         1,
         $this->decoder->decode('1')
@@ -194,7 +194,7 @@
      * @access  public
      */
     #[@test]
-    function decodeStringArray() {
+    public function decodeStringArray() {
       $this->assertEquals(
         array('foo', 'bar'),
         $this->decoder->decode('[ "foo" , "bar" ]')
@@ -207,7 +207,7 @@
      * @access  public
      */
     #[@test]
-    function decodeHashmap() {
+    public function decodeHashmap() {
       $this->assertEquals(
         array('foo' => 'bar', 'bar' => 'baz'),
         $this->decoder->decode('{ "foo" : "bar", "bar" : "baz" }')
@@ -220,7 +220,7 @@
      * @access  public
      */
     #[@test]
-    function decodeObjectArray() {
+    public function decodeObjectArray() {
       $this->assertEquals(
         array(array('foo' => 1), array('bar' => 'baz')),
         $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
@@ -233,7 +233,7 @@
      * @access  public
      */
     #[@test]
-    function decodeNestedObject() {
+    public function decodeNestedObject() {
       $this->assertEquals(
         array('ref' => array('foo' => 'bar')),
         $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
@@ -246,7 +246,7 @@
      * @access  public
      */
     #[@test,@expect('webservices.json.JsonException')]
-    function decodeInvalidData() {
+    public function decodeInvalidData() {
       $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
     }
     
@@ -256,8 +256,8 @@
      * @access  public
      */
     #[@test]
-    function encodeObject() {
-      $o= &new Object();
+    public function encodeObject() {
+      $o= new Object();
       $o->__id= '<bogusid>';
       $o->prop= 'prop';
 
@@ -273,8 +273,8 @@
      * @access  public
      */
     #[@test]
-    function decodeObject() {
-      $o= &new Object();
+    public function decodeObject() {
+      $o= new Object();
       $o->__id= '<bogusid>';
       $o->prop= 'prop';
 

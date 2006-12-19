@@ -13,7 +13,6 @@
     'io.collections.iterate.AccessedBeforeFilter',
     'io.collections.iterate.CreatedAfterFilter',
     'io.collections.iterate.CreatedBeforeFilter',
-    'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.IterationFilter',
     'io.collections.iterate.ModifiedAfterFilter',
     'io.collections.iterate.ModifiedBeforeFilter',
@@ -41,8 +40,8 @@
      * @access  public
      */
     #[@test]
-    function iteration() {
-      for ($it= &new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
+    public function iteration() {
+      for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
         $e= &$it->next();
         $this->assertTrue(is('io.collections.IOElement', $e));
       }
@@ -55,8 +54,8 @@
      * @access  public
      */
     #[@test]
-    function recursiveIteration() {
-      for ($it= &new IOCollectionIterator($this->fixture, TRUE), $i= 0; $it->hasNext(); $i++) {
+    public function recursiveIteration() {
+      for ($it= new IOCollectionIterator($this->fixture, TRUE), $i= 0; $it->hasNext(); $i++) {
         $e= &$it->next();
         $this->assertTrue(is('io.collections.IOElement', $e));
       }
@@ -71,10 +70,10 @@
      * @param   bool recursive default FALSE
      * @return  string[] an array of the elements' URIs
      */
-    function filterFixtureWith(&$filter, $recursive= FALSE) {
+    public function filterFixtureWith(&$filter, $recursive= FALSE) {
       $elements= array();
       for (
-        $it= &new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);
+        $it= new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);
         $it->hasNext(); 
       ) {
         $e= &$it->next();
@@ -90,7 +89,7 @@
      * @access  public
      */
     #[@test]
-    function filteredIteration() {
+    public function filteredIteration() {
       $this->assertEquals(
         $this->sizes[$this->fixture->getURI()],
         sizeof($this->filterFixtureWith(new NullFilter(), FALSE))
@@ -103,7 +102,7 @@
      * @access  public
      */
     #[@test]
-    function filteredRecursiveIteration() {
+    public function filteredRecursiveIteration() {
       $this->assertEquals(
         $this->total,
         sizeof($this->filterFixtureWith(new NullFilter(), TRUE))
@@ -117,7 +116,7 @@
      * @access  public
      */
     #[@test]
-    function nameMatches() {
+    public function nameMatches() {
       $this->assertEquals(
         array('first.txt', 'second.txt'), 
         $this->filterFixtureWith(new NameMatchesFilter('/\.txt$/'), FALSE)
@@ -131,7 +130,7 @@
      * @access  public
      */
     #[@test]
-    function nameMatchesRecursive() {
+    public function nameMatchesRecursive() {
       $this->assertEquals(
         array('first.txt', 'second.txt', 'sub/IMG_6100.txt'), 
         $this->filterFixtureWith(new NameMatchesFilter('/\.txt$/'), TRUE)
@@ -145,7 +144,7 @@
      * @access  public
      */
     #[@test]
-    function nameEquals() {
+    public function nameEquals() {
       $this->assertEquals(
         array(), 
         $this->filterFixtureWith(new NameEqualsFilter('__xp__.php'), FALSE)
@@ -159,7 +158,7 @@
      * @access  public
      */
     #[@test]
-    function nameEqualsRecursive() {
+    public function nameEqualsRecursive() {
       $this->assertEquals(
         array('sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new NameEqualsFilter('__xp__.php'), TRUE)
@@ -173,7 +172,7 @@
      * @access  public
      */
     #[@test]
-    function extensionEquals() {
+    public function extensionEquals() {
       $this->assertEquals(
         array(), 
         $this->filterFixtureWith(new ExtensionEqualsFilter('.php'), FALSE)
@@ -187,7 +186,7 @@
      * @access  public
      */
     #[@test]
-    function extensionEqualsRecursive() {
+    public function extensionEqualsRecursive() {
       $this->assertEquals(
         array('sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new extensionEqualsFilter('.php'), TRUE)
@@ -201,7 +200,7 @@
      * @access  public
      */
     #[@test]
-    function zeroBytes() {
+    public function zeroBytes() {
       $this->assertEquals(
         array('zerobytes.png'), 
         $this->filterFixtureWith(new SizeEqualsFilter(0), FALSE)
@@ -215,7 +214,7 @@
      * @access  public
      */
     #[@test]
-    function bigFiles() {
+    public function bigFiles() {
       $this->assertEquals(
         array('sub/IMG_6100.jpg'), 
         $this->filterFixtureWith(new SizeBiggerThanFilter(500000), TRUE)
@@ -229,7 +228,7 @@
      * @access  public
      */
     #[@test]
-    function smallFiles() {
+    public function smallFiles() {
       $this->assertEquals(
         array('second.txt', 'zerobytes.png'), 
         $this->filterFixtureWith(new SizeSmallerThanFilter(500), TRUE)
@@ -243,7 +242,7 @@
      * @access  public
      */
     #[@test]
-    function accessedAfter() {
+    public function accessedAfter() {
       $this->assertEquals(
         array('first.txt', 'second.txt', 'sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new AccessedAfterFilter(new Date('Oct  1  2006')), TRUE)
@@ -257,7 +256,7 @@
      * @access  public
      */
     #[@test]
-    function accessedBefore() {
+    public function accessedBefore() {
       $this->assertEquals(
         array('third.jpg', 'zerobytes.png'), 
         $this->filterFixtureWith(new AccessedBeforeFilter(new Date('Dec 14  2004')), TRUE)
@@ -271,7 +270,7 @@
      * @access  public
      */
     #[@test]
-    function modifiedAfter() {
+    public function modifiedAfter() {
       $this->assertEquals(
         array('sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new ModifiedAfterFilter(new Date('Oct  7  2006')), TRUE)
@@ -285,7 +284,7 @@
      * @access  public
      */
     #[@test]
-    function modifiedBefore() {
+    public function modifiedBefore() {
       $this->assertEquals(
         array('third.jpg', 'zerobytes.png'), 
         $this->filterFixtureWith(new ModifiedBeforeFilter(new Date('Dec 14  2004')), TRUE)
@@ -299,7 +298,7 @@
      * @access  public
      */
     #[@test]
-    function createdAfter() {
+    public function createdAfter() {
       $this->assertEquals(
         array('sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new CreatedAfterFilter(new Date('Jul  1  2006')), TRUE)
@@ -313,7 +312,7 @@
      * @access  public
      */
     #[@test]
-    function createdBefore() {
+    public function createdBefore() {
       $this->assertEquals(
         array('sub/sec/lang.base.php'), 
         $this->filterFixtureWith(new CreatedBeforeFilter(new Date('Feb 22  2002')), TRUE)
@@ -327,7 +326,7 @@
      * @access  public
      */
     #[@test]
-    function allOf() {
+    public function allOf() {
       $this->assertEquals(
         array('third.jpg'), 
         $this->filterFixtureWith(new AllOfFilter(array(
@@ -344,7 +343,7 @@
      * @access  public
      */
     #[@test]
-    function anyOf() {
+    public function anyOf() {
       $this->assertEquals(
         array('first.txt', 'second.txt', 'zerobytes.png', 'sub/IMG_6100.txt'), 
         $this->filterFixtureWith(new AnyOfFilter(array(

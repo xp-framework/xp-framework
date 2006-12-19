@@ -13,7 +13,7 @@
    * @purpose  Processor
    */
   class DefaultProcessor extends MarkupProcessor {
-    var
+    public
       $patterns= array(
         '#\r#',
         '#\n#',
@@ -54,7 +54,7 @@
      * @param   string token
      * @return  string
      */
-    function process($token) {
+    public function process($token) {
       return preg_replace($this->patterns, $this->replacements, $token);
     }
   }

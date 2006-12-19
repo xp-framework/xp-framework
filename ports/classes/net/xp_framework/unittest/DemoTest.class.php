@@ -19,7 +19,7 @@
      * @access  public
      */
     #[@test]
-    function alwaysSucceeds() {
+    public function alwaysSucceeds() {
       $this->assertTrue(TRUE);
     }
 
@@ -29,7 +29,7 @@
      * @access  public
      */
     #[@test, @ignore('Ignored')]
-    function ignored() {
+    public function ignored() {
       $this->fail('Ignored test executed', 'executed', 'ignored');
     }
 
@@ -38,7 +38,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       if (0 == strcasecmp('alwaysSkipped', $this->name)) {
         throw(new PrerequisitesNotMetError('Skipping', $this->name));
       }
@@ -50,7 +50,7 @@
      * @access  public
      */
     #[@test]
-    function alwaysSkipped() {
+    public function alwaysSkipped() {
       $this->fail('Skipped test executed', 'executed', 'skipped');
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@test]
-    function alwaysFails() {
+    public function alwaysFails() {
       $this->assertTrue(FALSE);
     }
 
@@ -71,7 +71,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function expectedExceptionNotThrown() {
+    public function expectedExceptionNotThrown() {
       TRUE;
     }
 
@@ -81,7 +81,7 @@
      * @access  public
      */
     #[@test, @limit(time= 0.1)]
-    function timeouts() {
+    public function timeouts() {
       $start= gettimeofday();
       $end= (1000000 * $start['sec']) + $start['usec'] + 1000 * 200;    // 0.2 seconds
       do {

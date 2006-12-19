@@ -10,7 +10,7 @@
    * @purpose  Specialized SOAP type
    */
   class GoogleSearchResult extends Object {
-    var
+    public
       $documentFiltering,
       $searchComments,
       $estimatedTotalResultsCount,
@@ -29,7 +29,7 @@
      * @access  public
      * @return  bool 
      */
-    function getDocumentFiltering() {
+    public function getDocumentFiltering() {
       return $this->documentFiltering;
     }
 
@@ -39,7 +39,7 @@
      * @access  public
      * @param   bool documentFiltering
      */
-    function setDocumentFiltering($documentFiltering) {
+    public function setDocumentFiltering($documentFiltering) {
       $this->documentFiltering= $documentFiltering;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @return  string 
      */
-    function getSearchComments() {
+    public function getSearchComments() {
       return $this->searchComments;
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @param   string searchComments
      */
-    function setSearchComments($searchComments) {
+    public function setSearchComments($searchComments) {
       $this->searchComments= $searchComments;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  int 
      */
-    function getEstimatedTotalResultsCount() {
+    public function getEstimatedTotalResultsCount() {
       return $this->estimatedTotalResultsCount;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   int estimatedTotalResultsCount
      */
-    function setEstimatedTotalResultsCount($estimatedTotalResultsCount) {
+    public function setEstimatedTotalResultsCount($estimatedTotalResultsCount) {
       $this->estimatedTotalResultsCount= $estimatedTotalResultsCount;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  bool 
      */
-    function getEstimateIsExact() {
+    public function getEstimateIsExact() {
       return $this->estimateIsExact;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   bool estimateIsExact
      */
-    function setEstimateIsExact($estimateIsExact) {
+    public function setEstimateIsExact($estimateIsExact) {
       $this->estimateIsExact= $estimateIsExact;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  com.google.soap.search.ResultElement[]
      */
-    function getResultElements() {
+    public function getResultElements() {
       return $this->resultElements;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  int
      */
-    function numResultElements() {
+    public function numResultElements() {
       return sizeof($this->resultElements);
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  bool
      */
-    function hasResultElements() {
+    public function hasResultElements() {
       return !empty($this->resultElements);
     }
 
@@ -141,7 +141,7 @@
      * @param   int pos
      * @return  &com.google.soap.search.ResultElement
      */
-    function &getResultElement($pos) {
+    public function &getResultElement($pos) {
       if (!isset($this->resultElements[$pos])) return NULL;
       return $this->resultElements[$pos];
     }
@@ -152,7 +152,7 @@
      * @access  public
      * @param   mixed resultElements (typens:ResultElementArray)
      */
-    function setResultElements($resultElements) {
+    public function setResultElements($resultElements) {
       $this->resultElements= $resultElements;
     }
 
@@ -162,7 +162,7 @@
      * @access  public
      * @return  string 
      */
-    function getSearchQuery() {
+    public function getSearchQuery() {
       return $this->searchQuery;
     }
 
@@ -172,7 +172,7 @@
      * @access  public
      * @param   string searchQuery
      */
-    function setSearchQuery($searchQuery) {
+    public function setSearchQuery($searchQuery) {
       $this->searchQuery= $searchQuery;
     }
 
@@ -182,7 +182,7 @@
      * @access  public
      * @return  int 
      */
-    function getStartIndex() {
+    public function getStartIndex() {
       return $this->startIndex;
     }
 
@@ -192,7 +192,7 @@
      * @access  public
      * @param   int startIndex
      */
-    function setStartIndex($startIndex) {
+    public function setStartIndex($startIndex) {
       $this->startIndex= $startIndex;
     }
 
@@ -202,7 +202,7 @@
      * @access  public
      * @return  int 
      */
-    function getEndIndex() {
+    public function getEndIndex() {
       return $this->endIndex;
     }
 
@@ -212,7 +212,7 @@
      * @access  public
      * @param   int endIndex
      */
-    function setEndIndex($endIndex) {
+    public function setEndIndex($endIndex) {
       $this->endIndex= $endIndex;
     }
 
@@ -222,7 +222,7 @@
      * @access  public
      * @return  string 
      */
-    function getSearchTips() {
+    public function getSearchTips() {
       return $this->searchTips;
     }
 
@@ -232,7 +232,7 @@
      * @access  public
      * @param   string searchTips
      */
-    function setSearchTips($searchTips) {
+    public function setSearchTips($searchTips) {
       $this->searchTips= $searchTips;
     }
 
@@ -242,7 +242,7 @@
      * @access  public
      * @return  com.google.soap.search.DirectoryCategory[]
      */
-    function getDirectoryCategories() {
+    public function getDirectoryCategories() {
       return $this->directoryCategories;
     }
 
@@ -252,7 +252,7 @@
      * @access  public
      * @return  int
      */
-    function numDirectoryCategories() {
+    public function numDirectoryCategories() {
       return sizeof($this->directoryCategories);
     }
 
@@ -262,7 +262,7 @@
      * @access  public
      * @return  bool
      */
-    function hasDirectoryCategories() {
+    public function hasDirectoryCategories() {
       return !empty($this->directoryCategories);
     }
 
@@ -274,7 +274,7 @@
      * @param   int pos
      * @return  &com.google.soap.search.DirectoryCategory
      */
-    function &getDirectoryCategory($pos) {
+    public function &getDirectoryCategory($pos) {
       if (!isset($this->directoryCategories[$pos])) return NULL;
       return $this->directoryCategories[$pos];
     }
@@ -285,7 +285,7 @@
      * @access  public
      * @param   com.google.soap.search.DirectoryCategory[] directoryCategories
      */
-    function setDirectoryCategories($directoryCategories) {
+    public function setDirectoryCategories($directoryCategories) {
       $this->directoryCategories= $directoryCategories;
     }
 
@@ -295,7 +295,7 @@
      * @access  public
      * @return  float 
      */
-    function getSearchTime() {
+    public function getSearchTime() {
       return $this->searchTime;
     }
 
@@ -305,7 +305,7 @@
      * @access  public
      * @param   float searchTime
      */
-    function setSearchTime($searchTime) {
+    public function setSearchTime($searchTime) {
       $this->searchTime= $searchTime;
     }
     
@@ -315,7 +315,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(%d-%d/%s%.0f){\n".
         "  [searchQuery        ] %s\n".

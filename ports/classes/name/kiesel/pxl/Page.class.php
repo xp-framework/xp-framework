@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('lang.Collection', 'xml.PCData', 'xml.Node');
+  uses(
+    'lang.Collection',
+    'xml.PCData',
+    'xml.Node'
+  );
 
   /**
    * (Insert class' description here)
@@ -14,7 +18,7 @@
    * @purpose  purpose
    */
   class Page extends Object {
-    var
+    public
       $title        = '',
       $description  = '',
       $pictures     = NULL,
@@ -28,7 +32,7 @@
      * @param   
      * @return  
      */
-    function __construct() {
+    public function __construct() {
       $this->pictures= &Collection::forClass('name.kiesel.pxl.Picture');
     }
 
@@ -39,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -49,7 +53,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getComments() {
+    public function &getComments() {
       return $this->comments;
     }
 
@@ -59,7 +63,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getTrackbacks() {
+    public function &getTrackbacks() {
       return $this->trackbacks;
     }
 
@@ -70,7 +74,7 @@
      * @param   
      * @return  
      */
-    function &create(&$storage) {
+    public function &create(&$storage) {
       $data= $storage->load('page');
       if (!$data) return NULL;
       
@@ -88,7 +92,7 @@
      * @param   
      * @return  
      */
-    function hibernate() {
+    public function hibernate() {
       return $this->storage->save('page', Marshaller::marshal($this));
     }
     
@@ -99,7 +103,7 @@
      * @param   
      * @return  
      */
-    function setStorage(&$storage) {
+    public function setStorage(&$storage) {
       $this->storage= &$storage;
     }    
     
@@ -111,7 +115,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'description')]
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= trim($description);
     }
     
@@ -123,7 +127,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'comment')]
-    function addComment($comment) {
+    public function addComment($comment) {
       $this->comments[]= $comment;
     }
     
@@ -135,7 +139,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'trackback')]
-    function addTrackback($trackback) {
+    public function addTrackback($trackback) {
       $this->trackbacks[]= $trackback;
     }
     
@@ -146,7 +150,7 @@
      * @param   string title
      */
     #[@xmlmapping(element= 'title')]
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -157,7 +161,7 @@
      * @return  string
      */
     #[@xmlfactory(element= 'title')]
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -169,7 +173,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'picture', class= 'name.kiesel.pxl.Picture')]
-    function addPicture(&$p) {
+    public function addPicture(&$p) {
       $this->pictures->add($p);
     }
     
@@ -181,7 +185,7 @@
      * @return  
      */
     #[@xmlfactory(element= 'picture')]
-    function getPictures() {
+    public function getPictures() {
       return $this->pictures;
     }    
     
@@ -192,8 +196,8 @@
      * @param   
      * @return  
      */
-    function toXml() {
-      $n= &new Node('page');
+    public function toXml() {
+      $n= new Node('page');
       $n->addChild(new Node('description', new PCData($this->description)));
       
       for ($i= 0; $i < $this->pictures->size(); $i++) {

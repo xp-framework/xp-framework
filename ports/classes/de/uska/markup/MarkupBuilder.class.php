@@ -12,7 +12,7 @@
    * @purpose  Plain text to markup converter
    */
   class MarkupBuilder extends Object {
-    var
+    public
       $patterns= array(
         '#&(?![a-z0-9\#]+;)#',
         '#(^| )_([^_]+)_([ \.,]|$)#', 
@@ -39,13 +39,13 @@
      * @param   string text
      * @return  string
      */
-    function markupFor($text) {
+    public function markupFor($text) {
       static $nl2br= array("\r" => '', "\n" => "<br/>\n");
 
       $patterns= $this->patterns;
       $replacements= $this->replacements;
 
-      $st= &new StringTokenizer($text, '<>', $returnDelims= TRUE);
+      $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';
       $translation= $nl2br;
       while ($st->hasMoreTokens()) {

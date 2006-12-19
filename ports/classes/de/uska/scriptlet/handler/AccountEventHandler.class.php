@@ -21,7 +21,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct();
       $this->setWrapper(new AccountEventWrapper());
     }
@@ -34,7 +34,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  string
      */
-    function identifierFor(&$request, &$context) {
+    public function identifierFor(&$request, &$context) {
       return $this->name.'#'.$request->getParam('event_id');
     }
     
@@ -46,13 +46,13 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function setup(&$request, &$context) {
+    public function setup(&$request, &$context) {
       if (!$context->hasPermission('edit_points')) return FALSE;
       $cm= &ConnectionManager::getInstance();
       
       $event_id= $request->getParam('event_id');
       
-      try(); {
+      try {
         $db= &$cm->getByHost('uska', 0);
         
         $query= &$db->query('
@@ -83,8 +83,8 @@
             $this->setFormValue(sprintf('points[player_%d]', $record['player_id']), $record['points']);
           }
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $this->setValue('players', $players);
@@ -99,9 +99,9 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       $cm= &ConnectionManager::getInstance();
-      try(); {
+      try {
         $db= &$cm->getByHost('uska', 0);
         
         $transaction= &$db->begin(new Transaction('updpoints'));
@@ -131,7 +131,7 @@
             $context->user->getUsername().'@'.$this->getClassName()
           );
         }
-      } if (catch('SQLException', $e)) {
+      } catch (SQLException $e) {
         $this->addError($e->getMessage());
         $transaction->rollback();
         return FALSE;
@@ -149,7 +149,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function finalize(&$request, &$response, &$context) {
+    public function finalize(&$request, &$response, &$context) {
       $response->forwardTo('event/viewpoints', 'event_id='.$this->getValue('event_id'));
     }
   }

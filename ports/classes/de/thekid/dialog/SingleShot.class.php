@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'de.thekid.dialog.AlbumImage');
+  uses(
+    'util.Date',
+    'de.thekid.dialog.AlbumImage',
+    'de.thekid.dialog.IEntry'
+  );
 
   /**
    * Represents an single shot
@@ -12,8 +16,8 @@
    * @see      xp://de.thekid.dialog.IEntry
    * @purpose  Value object
    */
-  class SingleShot extends Object {
-    var
+  class SingleShot extends Object implements IEntry {
+    public
       $name         = '',
       $fileName     = '',
       $title        = '',
@@ -27,7 +31,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -37,7 +41,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -47,7 +51,7 @@
      * @access  public
      * @param   string fileName
      */
-    function setFileName($fileName) {
+    public function setFileName($fileName) {
       $this->fileName= $fileName;
     }
 
@@ -57,7 +61,7 @@
      * @access  public
      * @return  string
      */
-    function getFileName() {
+    public function getFileName() {
       return $this->fileName;
     }
 
@@ -67,7 +71,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -77,7 +81,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -87,7 +91,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -97,7 +101,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -107,7 +111,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &$date;
     }
 
@@ -117,7 +121,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
 
@@ -127,7 +131,7 @@
      * @access  public
      * @param   &de.thekid.dialog.AlbumImage image
      */
-    function setImage(&$image) {
+    public function setImage(&$image) {
       $this->image= &$image;
     }
 
@@ -137,9 +141,9 @@
      * @access  public
      * @return  &de.thekid.dialog.AlbumImage
      */
-    function &getImage() {
+    public function &getImage() {
       return $this->image;
     }
 
-  } implements(__FILE__, 'de.thekid.dialog.IEntry');
+  } 
 ?>

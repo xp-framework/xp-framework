@@ -13,7 +13,7 @@
    */
   class DiaBoolean extends DiaElement {
 
-    var
+    public
       $node_name= 'dia:boolean';
 
     /**
@@ -22,7 +22,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
+    public function &getNode() {
       $node= &parent::getNode();
       // TODO: the value should always be 'boolean'!
       if (isset($this->value)) {

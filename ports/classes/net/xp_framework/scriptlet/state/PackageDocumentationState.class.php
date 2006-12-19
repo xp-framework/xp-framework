@@ -22,7 +22,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       if (2 != sscanf($request->getData(), '%[^/]/%s', $collection, $package)) {
         $response->addFormError('illegalaccess');
         return;

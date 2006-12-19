@@ -10,7 +10,7 @@
    * @purpose  Webdav property
    */
   class WebdavProperty extends Object {
-    var
+    public
       $name         = NULL,
       $value        = NULL,
       $protected    = FALSE,
@@ -25,7 +25,7 @@
      * @param   string name
      * @param   string value default NULL
      */
-    function __construct($name, $value= NULL) {
+    public function __construct($name, $value= NULL) {
       $this->name= $name;
       $this->value= $value;
     }
@@ -36,7 +36,7 @@
      * @access  public
      * @param   string name The name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      * @param   mixed value The value
      */
-    function setValue($value) {
+    public function setValue($value) {
       $this->value= $value;
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      * @return  mixed
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
 
@@ -76,7 +76,7 @@
      * @access  public
      * @param   string namespace Namespace
      */
-    function setNamespaceName($namespace) {
+    public function setNamespaceName($namespace) {
       $this->nsname= $namespace;
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function getNamespaceName() {
+    public function getNamespaceName() {
       return $this->nsname;
     }
     
@@ -96,7 +96,7 @@
      * @access public
      * @param  string prefix The namespace prefix
      */
-    function setNamespacePrefix($prefix) {
+    public function setNamespacePrefix($prefix) {
       $this->nsprefix= $prefix;
     }
     
@@ -106,7 +106,7 @@
      * @access public
      * @return string
      */
-    function getNamespacePrefix() {
+    public function getNamespacePrefix() {
       return $this->nsprefix;
     }
 
@@ -116,7 +116,7 @@
      * @access  public
      * @param   bool protected
      */
-    function setProtected($protected) {
+    public function setProtected($protected) {
       $this->protected= $protected;
     }
 
@@ -126,7 +126,7 @@
      * @access  public
      * @return  bool
      */
-    function getProtected() {
+    public function getProtected() {
       return $this->protected;
     }
     
@@ -136,7 +136,7 @@
      * @access  public
      * @return  array[]
      */
-    function getAttributes() {
+    public function getAttributes() {
       return $this->attributes;
     }
     
@@ -146,7 +146,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       switch (xp::typeOf($this->value)) {
         case 'boolean': 
           return $this->value ? 'T' : 'F';

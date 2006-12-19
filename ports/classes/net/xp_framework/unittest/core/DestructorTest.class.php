@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'net.xp_framework.unittest.core.Destroyable'
+    'net.xp_framework.unittest.core.Destroyable',
+    'net.xp_framework.unittest.core.DestructionCallback'
   );
 
   /**
@@ -14,8 +15,8 @@
    *
    * @purpose  Testcase
    */
-  class DestructorTest extends TestCase {
-    var
+  class DestructorTest extends TestCase implements DestructionCallback {
+    public
       $destroyed   = array(),
       $destroyable = NULL;
       
@@ -25,7 +26,7 @@
      * @access  public
      * @param   &lang.Object object
      */
-    function onDestruction(&$object) {
+    public function onDestruction(&$object) {
       $this->destroyed[$object->hashCode()]++;
     }
     
@@ -35,8 +36,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->destroyable= &new Destroyable();
+    public function setUp() {
+      $this->destroyable= new Destroyable();
       $this->destroyable->setCallback($this);
       $this->destroyed[$this->destroyable->hashCode()]= 0;
     }
@@ -47,12 +48,12 @@
      * @access  public
      */
     #[@test]
-    function deleteCallsDestructor() {
+    public function deleteCallsDestructor() {
       $hash= $this->destroyable->hashCode();
       delete($this->destroyable);
       $this->assertNull($this->destroyable);
       $this->assertEquals(1, $this->destroyed[$hash]);
     }
     
-  } implements(__FILE__, 'net.xp_framework.unittest.core.DestructionCallback');
+  } 
 ?>

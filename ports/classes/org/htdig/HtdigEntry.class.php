@@ -12,7 +12,7 @@
    * @purpose  Wrap search entry
    */
   class HtdigEntry extends Object {
-    var
+    public
       $current=          0,
       $docId=            0,
       $stars=            0,
@@ -32,7 +32,7 @@
      * @access  public
      * @param   int current
      */
-    function setCurrent($current) {
+    public function setCurrent($current) {
       $this->current= (int)$current;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  int
      */
-    function getCurrent() {
+    public function getCurrent() {
       return $this->current;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @param   string docId
      */
-    function setDocId($docId) {
+    public function setDocId($docId) {
       $this->docId= (int)$docId;
     }
 
@@ -62,7 +62,7 @@
      * @access  public
      * @return  string
      */
-    function getDocId() {
+    public function getDocId() {
       return $this->docId;
     }
 
@@ -72,7 +72,7 @@
      * @access  public
      * @param   int stars
      */
-    function setStars($stars) {
+    public function setStars($stars) {
       $this->stars= (int)$stars;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @param   int stars
      */
-    function setNstars($stars) {
+    public function setNstars($stars) {
       $this->setStars($stars);
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @return  int
      */
-    function getStars() {
+    public function getStars() {
       return $this->stars;
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @param   int score
      */
-    function setScore($score) {
+    public function setScore($score) {
       $this->score= (int)$score;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @return  int
      */
-    function getScore() {
+    public function getScore() {
       return $this->score;
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @param   string url
      */
-    function setUrl($url) {
+    public function setUrl($url) {
       $this->url= urldecode($url);
     }
 
@@ -134,7 +134,7 @@
      * @access  public
      * @return  string
      */
-    function getUrl() {
+    public function getUrl() {
       return $this->url;
     }
 
@@ -144,7 +144,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= urldecode($title);
     }
 
@@ -154,7 +154,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -164,7 +164,7 @@
      * @access  public
      * @param   string excerpt
      */
-    function setExcerpt($excerpt) {
+    public function setExcerpt($excerpt) {
       $this->excerpt= urldecode($excerpt);
     }
 
@@ -174,7 +174,7 @@
      * @access  public
      * @return  string
      */
-    function getExcerpt() {
+    public function getExcerpt() {
       return $this->excerpt;
     }
 
@@ -184,7 +184,7 @@
      * @access  public
      * @param   string metadescription
      */
-    function setMetadescription($metadesc) {
+    public function setMetadescription($metadesc) {
       $this->metadescription= urldecode($metadesc);
     }
 
@@ -194,7 +194,7 @@
      * @access  public
      * @return  string
      */
-    function getMetadescription() {
+    public function getMetadescription() {
       return $this->metadescription;
     }
 
@@ -204,15 +204,15 @@
      * @access  public
      * @param   &lang.Object modified
      */
-    function setModified(&$modified) {
+    public function setModified(&$modified) {
       if (is('util.Date', $modified)) {
         $this->modified= &$modified;
         return;
       }
       
-      try(); {
+      try {
         $d= &DateParser::parse(urldecode($modified));
-      } if (catch('FormatException', $e)) {
+      } catch (FormatException $e) {
       
         // Date could not be parsed, so default to now.
         $this->modified= &Date::now();
@@ -227,7 +227,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getModified() {
+    public function &getModified() {
       return $this->modified;
     }
 
@@ -237,7 +237,7 @@
      * @access  public
      * @param   int size
      */
-    function setSize($size) {
+    public function setSize($size) {
       $this->size= (int)$size;
     }
 
@@ -247,7 +247,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       return $this->size;
     }
 
@@ -257,7 +257,7 @@
      * @access  public
      * @param   int hopcount
      */
-    function setHopcount($hopcount) {
+    public function setHopcount($hopcount) {
       $this->hopcount= (int)$hopcount;
     }
 
@@ -267,7 +267,7 @@
      * @access  public
      * @return  int
      */
-    function getHopcount() {
+    public function getHopcount() {
       return $this->hopcount;
     }
 
@@ -277,7 +277,7 @@
      * @access  public
      * @param   int percent
      */
-    function setPercent($percent) {
+    public function setPercent($percent) {
       $this->percent= (int)$percent;
     }
 
@@ -287,7 +287,7 @@
      * @access  public
      * @return  int
      */
-    function getPercent() {
+    public function getPercent() {
       return $this->percent;
     }
     
@@ -300,12 +300,12 @@
      * @return  &org.htdig.HtdigResult
      * @throws  lang.IllegalArgumentException when array is malformed
      */
-    function &fromArray(&$arr) {
-      $entry= &new HtdigEntry();
+    public static function &fromArray(&$arr) {
+      $entry= new HtdigEntry();
       
       foreach (array_keys($arr) as $key) {
         if (!method_exists($entry, 'set'.$key))
-          return throw (new IllegalArgumentException('The given array is malformed. Its key '.$key.' is not associated with a function.'));
+          throw (new IllegalArgumentException('The given array is malformed. Its key '.$key.' is not associated with a function.'));
           
         call_user_func(array(&$entry, 'set'.$key), $arr[$key]);
       }
@@ -319,7 +319,7 @@
      * @access  public
      * @return  string 
      */
-    function toString() {
+    public function toString() {
       
       // Retrieve object variables and figure out the maximum length 
       // of a key which will be used for the key "column". The minimum
@@ -336,7 +336,7 @@
       foreach (array_keys($vars) as $key) {
         if ('__id' == $key) continue;
 
-        $s.= sprintf($fmt, $key, is_a($this->$key, 'Object') 
+        $s.= sprintf($fmt, $key, is('Generic', $this->$key) 
           ? $this->$key->toString()
           : var_export($this->$key, 1)
         )."\n";

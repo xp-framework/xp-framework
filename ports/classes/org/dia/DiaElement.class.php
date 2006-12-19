@@ -13,9 +13,9 @@
    * Base class for all simple (leaf) value DIAgram elements
    *
    */
-  class DiaElement extends Object {
+  class DiaElement extends Object implements DiaComponent {
     
-    var
+    public
       $value= NULL;
 
     /**
@@ -24,7 +24,7 @@
      * @access  public
      * @param   mixed value
      */
-    function __construct($value= NULL) {
+    public function __construct($value= NULL) {
       if (isset($value)) $this->setValue($value);
     }
 
@@ -34,7 +34,7 @@
      * @access  public
      * @return  mixed
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
 
@@ -46,7 +46,7 @@
      */
     // TODO: xpath will probably not work as expected!
     #[@fromDia(xpath= 'text() | @val', value= 'string')]
-    function setValue($value) {
+    public function setValue($value) {
       $this->value= $value;
     }
 
@@ -58,8 +58,8 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getNode() {
-      $node= &new Node($this->node_name);
+    public function &getNode() {
+      $node= new Node($this->node_name);
       return $node;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &util.Visitor
      */
-    function accept(&$Visitor) {
+    public function accept(&$Visitor) {
       $Visitor->visit($this);
     }
 
@@ -77,19 +77,19 @@
      * DiaElement and its child-classes are 'leaf' elements which have no
      * children
      */
-    function addChild(&$Comp) { }
+    public function addChild(&$Comp) { }
 
     /**
      * DiaElement and its child-classes are 'leaf' elements which have no
      * children
      */
-    function remChild(&$Comp) { }
+    public function remChild(&$Comp) { }
 
     /**
      * DiaElement and its child-classes are 'leaf' elements which have no
      * children
      */
-    function getChildren() { }
+    public function getChildren() { }
 
-  } implements(__FILE__, 'org.dia.DiaComponent');
+  } 
 ?>

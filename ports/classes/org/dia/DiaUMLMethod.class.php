@@ -10,7 +10,7 @@
 
   class DiaUMLMethod extends DiaComposite {
 
-    var
+    public
       $type= 'umloperation';
 
     /**
@@ -18,7 +18,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       // default values
       $this->setName('__noname__');
       $this->setStereotype(NULL);
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function getStereotype() {
+    public function getStereotype() {
       return $this->getChildValue('stereotype');
     }
 
@@ -53,7 +53,7 @@
      * @param   string stereotype
      */
     #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
-    function setStereotype($stereotype) {
+    public function setStereotype($stereotype) {
       $this->setString('stereotype', $stereotype);
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  string
      */
-    function getComment() {
+    public function getComment() {
       return $this->getChildValue('comment');
     }
 
@@ -74,7 +74,7 @@
      * @param   string comment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
-    function setComment($comment) {
+    public function setComment($comment) {
       $this->setString('comment', $comment);
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  int
      */
-    function getVisibility() {
+    public function getVisibility() {
       return $this->getChildValue('visibility');
     }
 
@@ -95,7 +95,7 @@
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'enum')]
-    function setVisibility($visibility) {
+    public function setVisibility($visibility) {
       $this->setEnum('visibility', $visibility);
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @return  bool
      */
-    function getAbstract() {
+    public function getAbstract() {
       return $this->getChildValue('abstract');
     }
 
@@ -116,7 +116,7 @@
      * @param   bool abstract
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
-    function setAbstract($abstract) {
+    public function setAbstract($abstract) {
       $this->setBoolean('abstract', $abstract);
     }
 
@@ -126,7 +126,7 @@
      * @access  public
      * @return  bool
      */
-    function getClassScope() {
+    public function getClassScope() {
       return $this->getChildValue('class_scope');
     }
 
@@ -137,7 +137,7 @@
      * @param   bool class_scope
      */
     #[@fromDia(xpath= 'dia:attribute[@name="class_scope"]/dia:boolean/@val', value= 'boolean')]
-    function setClassScope($class_scope) {
+    public function setClassScope($class_scope) {
       $this->setBoolean('class_scope', $class_scope);
     }
 
@@ -147,7 +147,7 @@
      * @access  public
      * @return  int
      */
-    function getInheritanceType() {
+    public function getInheritanceType() {
       return $this->getChildValue('inheritance_type');
     }
 
@@ -158,7 +158,7 @@
      * @param   int inheritance_type
      */
     #[@fromDia(xpath= 'dia:attribute[@name="inheritance_type"]/dia:enum/@val', value= 'enum')]
-    function setInheritanceType($inheritance_type) {
+    public function setInheritanceType($inheritance_type) {
       $this->setEnum('inheritance_type', $inheritance_type);
     }
 
@@ -168,7 +168,7 @@
      * @access  public
      * @return  bool
      */
-    function getQuery() {
+    public function getQuery() {
       return $this->getChildValue('query');
     }
 
@@ -179,7 +179,7 @@
      * @param   bool query
      */
     #[@fromDia(xpath= 'dia:attribute[@name="query"]/dia:boolean/@val', value= 'boolean')]
-    function setQuery($query) {
+    public function setQuery($query) {
       $this->setBoolean('query', $query);
     }
 
@@ -189,7 +189,7 @@
      * @access  public
      * @return  org.dia.DiaUMLMethodParameter[]
      */
-    function getParameters() {
+    public function getParameters() {
       $Parameters= &$this->getChild('parameters');
       return $Parameters->getChildren();
     }
@@ -201,9 +201,9 @@
      * @param   &org.dia.DiaUMLMethodParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="parameters"]/dia:composite[@type="umlparameter"]', class= 'org.dia.DiaUMLMethodParameter')]
-    function addParameter($Parameter) {
+    public function addParameter($Parameter) {
       if (!is('org.dia.DiaUMLMethodParameter', $Parameter)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Passed parameter is no "org.dia.DiaUMLMethodParameter"!'
         ));
       }

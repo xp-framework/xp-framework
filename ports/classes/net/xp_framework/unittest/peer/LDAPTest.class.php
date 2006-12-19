@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.ldap.LDAPClient', 
+    'peer.ldap.LDAPClient',
     'unittest.TestCase'
   );
 
@@ -16,7 +16,7 @@
    * @purpose  Unit Test
    */
   class LDAPTest extends TestCase {
-    var
+    public
       $lc      = NULL;
       
     /**
@@ -24,19 +24,19 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->lc= &new LDAPClient('ldap.openldap.org');
-      try(); {
+    public function setUp() {
+      $this->lc= new LDAPClient('ldap.openldap.org');
+      try {
         $this->lc->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
         $this->lc->connect();
         $this->lc->bind();
-      } if (catch('ConnectException', $e)) {
+      } catch (ConnectException $e) {
         throw (new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
           array('connect', 'ldapv3://ldap.openldap.org')
         ));
-      } if (catch('LDAPException', $e)) {
+      } catch (LDAPException $e) {
         throw (new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
@@ -50,7 +50,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->lc->close();
     }
     
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@test]
-    function testSearch() {
+    public function testSearch() {
       $res= &$this->lc->search(
         'ou=People,dc=OpenLDAP,dc=Org', 
         '(objectClass=*)'

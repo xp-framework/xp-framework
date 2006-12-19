@@ -25,7 +25,7 @@
      * @param   string code
      * @return  unittest.coverage.Fragment[] expressions
      */
-    function fragmentsOf($code) {
+    public function fragmentsOf($code) {
       return PHPCodeFragmentizer::fragmentsOf('<?php '.trim($code).' ?>');
     }
     
@@ -37,7 +37,7 @@
      * @param   string code
      * @throws  unittest.AssertionFailedError
      */
-    function assertExpressions($expected, $code) {
+    public function assertExpressions($expected, $code) {
       $fragments= $this->fragmentsOf($code);
 
       // Compare sizes
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@test]
-    function emptyInput() {
+    public function emptyInput() {
       $this->assertExpressions(array(), '');
     }
     
@@ -70,7 +70,7 @@
      * @access  public
      */
     #[@test]
-    function singleExpression() {
+    public function singleExpression() {
       $this->assertExpressions(array(
         new Expression('$a= 1;', 1, 1),
       ), '$a= 1;');
@@ -83,7 +83,7 @@
      * @access  public
      */
     #[@test]
-    function missingTrailingSemicolon() {
+    public function missingTrailingSemicolon() {
       $this->assertExpressions(array(
         new Expression('$a= 1;', 1, 1),
       ), '$a= 1');
@@ -95,7 +95,7 @@
      * @access  public
      */
     #[@test]
-    function multipleExpressionsPerLine() {
+    public function multipleExpressionsPerLine() {
       $this->assertExpressions(array(
         new Expression('$a= 1;', 1, 1),
         new Expression('$b= 1;', 1, 1),
@@ -108,7 +108,7 @@
      * @access  public
      */
     #[@test]
-    function multilineLineExpression() {
+    public function multilineLineExpression() {
       $this->assertExpressions(array(
         new Expression('$a= (5 == strlen("Hello")
           ? "good"
@@ -128,7 +128,7 @@
      * @access  public
      */
     #[@test]
-    function twoExpressions() {
+    public function twoExpressions() {
       $this->assertExpressions(array(
         new Expression('statement_on_line_one();', 1, 1),
         new Expression('statement_on_line_two();', 2, 2),
@@ -145,7 +145,7 @@
      * @access  public
      */
     #[@test]
-    function stringsContainingExpressions() {
+    public function stringsContainingExpressions() {
       $this->assertExpressions(array(
         new Expression('echo "A statement: statement_on_line_one();";', 1, 1),
       ), 'echo "A statement: statement_on_line_one();";');
@@ -157,7 +157,7 @@
      * @access  public
      */
     #[@test]
-    function singleBlock() {
+    public function singleBlock() {
       $this->assertExpressions(array(
         new Block(NULL, array(new Expression('$a= 1;', 1, 1)), 1, 1),
       ), '{ $a= 1; }');
@@ -169,7 +169,7 @@
      * @access  public
      */
     #[@test]
-    function scalarStringOffset() {
+    public function scalarStringOffset() {
       $this->assertExpressions(array(
         new Expression('echo $string{0};', 1, 1),
       ), 'echo $string{0};');
@@ -181,7 +181,7 @@
      * @access  public
      */
     #[@test]
-    function dynamicStringOffset() {
+    public function dynamicStringOffset() {
       $this->assertExpressions(array(
         new Expression('echo $string{strlen($var[0]{0})};', 1, 1),
       ), 'echo $string{strlen($var[0]{0})};');
@@ -193,7 +193,7 @@
      * @access  public
      */
     #[@test]
-    function ifBlock() {
+    public function ifBlock() {
       $this->assertExpressions(array(
         new Block('if (TRUE)', array(new Expression('exit;', 1, 1)), 1, 1),
       ), 'if (TRUE) { exit; }');
@@ -205,7 +205,7 @@
      * @access  public
      */
     #[@test]
-    function ifElseBlock() {
+    public function ifElseBlock() {
       $this->assertExpressions(array(
         new Block('if (TRUE)', array(new Expression('$i++;', 2, 2)), 1, 3),
         new Block('else', array(new Expression('$i--;', 4, 4)), 3, 5),
@@ -224,7 +224,7 @@
      * @access  public
      */
     #[@test]
-    function nestedBlocks() {
+    public function nestedBlocks() {
       $this->assertExpressions(array(
         new Block(NULL, array(new Block(NULL, array(new Expression('$a= 1;', 1, 1)), 1, 1)), 1, 1),
       ), '{ { $a= 1; } }');
@@ -236,7 +236,7 @@
      * @access  public
      */
     #[@test]
-    function cPlusPlusComment() {
+    public function cPlusPlusComment() {
       $this->assertExpressions(
         array(new Comment('/* Hello */', 1, 1)),
         '/* Hello */'
@@ -249,7 +249,7 @@
      * @access  public
      */
     #[@test]
-    function apiDocComment() {
+    public function apiDocComment() {
       $comment= "/**\n * APIDOC\n * @return  Should return TRUE\n */";
       $this->assertExpressions(
         array(new Comment($comment, 1, 4)),
@@ -263,7 +263,7 @@
      * @access  public
      */
     #[@test]
-    function methodWithApiDocComment() {
+    public function methodWithApiDocComment() {
       $comment= "/**\n * APIDOC\n * @return  Should return TRUE\n */";
       $method= "function phrickeling() {\n  return TRUE;\n}";
       $this->assertExpressions(array(
@@ -283,7 +283,7 @@
      * @access  public
      */
     #[@test]
-    function hereDoc() {
+    public function hereDoc() {
       $heredoc= "<<<__\nHereDOC\n__;";
       $this->assertExpressions(array(
         new Expression('$a= '.$heredoc, 1, 4),
@@ -296,7 +296,7 @@
      * @access  public
      */
     #[@test]
-    function classDeclaration() {
+    public function classDeclaration() {
       $declaration= '
         /**
          * Class api doc here

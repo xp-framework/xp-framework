@@ -27,7 +27,7 @@
      * @param   &io.collections.IOElement element
      * @throws  unittest.AssertionFailedError
      */
-    function assertElement($uri, &$element) {
+    public function assertElement($uri, &$element) {
       $this->assertSubClass($element, 'io.collections.IOElement') &&
       $this->assertEquals($uri, $element->getURI());
     }
@@ -40,8 +40,8 @@
      * @param   io.collections.IOElement[] elements
      * @return  &io.collections.IOCollection
      */
-    function &newCollection($name, $elements) {
-      $c= &new MockCollection($name);
+    public function &newCollection($name, $elements) {
+      $c= new MockCollection($name);
       foreach ($elements as $element) {
         $c->addElement($element);
       }
@@ -55,7 +55,7 @@
      * @param   string name
      * @return  &io.collections.IOCollection
      */
-    function &emptyCollection($name) {
+    public function &emptyCollection($name) {
       return $this->newCollection($name, array());
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function constructorThrowsExceptionForEmptyList() {
+    public function constructorThrowsExceptionForEmptyList() {
       new CollectionComposite(array());
     }
     
@@ -76,8 +76,8 @@
      * @access  public
      */
     #[@test]
-    function nextReturnsNullForOneEmptyCollection() {
-      $empty= &new CollectionComposite(array($this->emptyCollection('empty-dir')));
+    public function nextReturnsNullForOneEmptyCollection() {
+      $empty= new CollectionComposite(array($this->emptyCollection('empty-dir')));
       $empty->open();
       $this->assertNull($empty->next());
       $empty->close();
@@ -89,8 +89,8 @@
      * @access  public
      */
     #[@test]
-    function nextReturnsNullForTwoEmptyCollections() {
-      $empty= &new CollectionComposite(array(
+    public function nextReturnsNullForTwoEmptyCollections() {
+      $empty= new CollectionComposite(array(
         $this->emptyCollection('empty-dir'),
         $this->emptyCollection('lost+found')
       ));
@@ -105,8 +105,8 @@
      * @access  public
      */
     #[@test]
-    function elementsFromAllCollections() {
-      $composite= &new CollectionComposite(array(
+    public function elementsFromAllCollections() {
+      $composite= new CollectionComposite(array(
         $this->newCollection('/home', array(new MockElement('.nedit'))),
         $this->newCollection('/usr/local/etc', array(new MockElement('php.ini'))),
       ));

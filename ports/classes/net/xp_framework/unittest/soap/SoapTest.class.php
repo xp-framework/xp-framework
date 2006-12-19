@@ -22,8 +22,8 @@
      * @access  public
      */
     #[@test]
-    function testSerialization() {
-      $msg= &new SOAPMessage();
+    public function testSerialization() {
+      $msg= new SOAPMessage();
       $msg->createCall('Test', 'testSerialization');
       $this->assertEquals($msg->action, 'Test');
       $this->assertEquals($msg->method, 'testSerialization');
@@ -97,7 +97,7 @@
      * @access  public
      */
     #[@test]
-    function testHeader() {
+    public function testHeader() {
       $msg= &SOAPMessage::fromString('
         <SOAP-ENV:Envelope
           xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"

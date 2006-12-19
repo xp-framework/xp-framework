@@ -12,7 +12,7 @@
    * @purpose  State
    */
   class ViewCollectionState extends AbstractDialogState {
-    var
+    public
       $nodeHandlers = array();
   
     /**
@@ -20,7 +20,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       for ($c= &$this->getClass(), $m= $c->getMethods(), $i= 0, $s= sizeof($m); $i < $s; $i++) {
         $m[$i]->hasAnnotation('handles') && (
           $this->nodeHandlers[$m[$i]->getAnnotation('handles')]= &$m[$i]
@@ -36,8 +36,8 @@
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.Album')]
-    function &albumNode(&$album) {
-      $child= &new Node('entry', NULL, array(
+    public function &albumNode(&$album) {
+      $child= new Node('entry', NULL, array(
         'name'          => $album->getName(),
         'title'         => $album->getTitle(),
         'num_images'    => $album->numImages(),
@@ -58,8 +58,8 @@
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.Update')]
-    function &updateNode(&$update) {
-      $child= &new Node('entry', NULL, array(
+    public function &updateNode(&$update) {
+      $child= new Node('entry', NULL, array(
         'album'         => $update->getAlbumName(),
         'title'         => $update->getTitle()
       ));
@@ -77,8 +77,8 @@
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.SingleShot')]
-    function &shotNode(&$shot) {
-      $child= &new Node('entry', NULL, array(
+    public function &shotNode(&$shot) {
+      $child= new Node('entry', NULL, array(
         'name'      => $shot->getName(),
         'filename'  => $shot->getFileName(),
         'title'     => $shot->getTitle()
@@ -97,9 +97,9 @@
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.EntryCollection')]
-    function &collectionNode(&$collection) {
+    public function &collectionNode(&$collection) {
       $numEntries= $collection->numEntries();
-      $node= &new Node('entry', NULL, array(
+      $node= new Node('entry', NULL, array(
         'name'          => $collection->getName(),
         'title'         => $collection->getTitle(),
         'num_entries'   => $numEntries
@@ -110,7 +110,7 @@
       for ($i= 0; $i < $numEntries; $i++) {
         $entry= &$collection->entryAt($i);
         if (!isset($this->nodeHandlers[$entry->getClassName()])) {
-          return throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
+          throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
         }
         
         $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
@@ -128,7 +128,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       $name= $request->getQueryString();
 
       if ($collection= &$this->getEntryFor($name)) {
@@ -144,7 +144,7 @@
         $node= &$response->addFormResult(new Node('entries'));
         foreach ($collection->entries as $entry) {
           if (!isset($this->nodeHandlers[$entry->getClassName()])) {
-            return throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
+            throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
           }
 
           $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));

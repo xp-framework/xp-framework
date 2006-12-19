@@ -23,7 +23,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->addHandler(new LoginHandler());
     }
   
@@ -34,7 +34,7 @@
      * @param   
      * @return  
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       parent::setup($request, $response, $context);
     }
   }

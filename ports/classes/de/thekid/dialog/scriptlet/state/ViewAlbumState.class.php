@@ -21,7 +21,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
       $name= $request->getQueryString();
 
       if ($album= &$this->getAlbumFor($name)) {

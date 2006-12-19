@@ -25,7 +25,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
 
       $service= $request->getParam('service', NULL);
       $method=  $request->getParam('method',  NULL);
@@ -36,10 +36,10 @@
         return;
       }
 
-      try(); {
+      try {
 
         // Open logfile
-        $f= &new File(sprintf('%s/%s.%s',
+        $f= new File(sprintf('%s/%s.%s',
           $request->getEnvValue('DOCUMENT_ROOT').'/../log/'.basename($service),
           basename(strtolower($method)),
           basename(strtolower($type))
@@ -50,8 +50,8 @@
           return;
         }
         
-        $contents= &new CData(FileUtil::getContents($f));
-      } if (catch('XMLFormatException', $e)) {
+        $contents= new CData(FileUtil::getContents($f));
+      } catch (XMLFormatException $e) {
         $response->addFormError($this->getClassName(),'not-well-formed', 'details');
         return;
       }

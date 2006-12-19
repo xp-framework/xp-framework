@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('io.File', 'io.FileUtil');
+  uses(
+    'io.File',
+    'io.FileUtil',
+    'name.kiesel.pxl.storage.IStorage'
+  );
 
   /**
    * (Insert class' description here)
@@ -13,20 +17,20 @@
    * @see      reference
    * @purpose  purpose
    */
-  class FilesystemContainer extends Object {
-    var
+  class FilesystemContainer extends Object implements IStorage {
+    public
       $base = '';
     
-    function __construct($base) {
+    public function __construct($base) {
       $this->base= $base;
     }
     
-    function load($abstract) {
+    public function load($abstract) {
       return FileUtil::getContents(new File($this->base.'/'.$abstract.'.xml'));
     }
     
-    function save($abstract, $data) {
-      $f= &new File($this->base.'/'.$abstract.'.xml');
+    public function save($abstract, $data) {
+      $f= new File($this->base.'/'.$abstract.'.xml');
       $f->open(FILE_MODE_WRITE);
       $f->lockExclusive(TRUE);
       $f->write($data);
@@ -34,12 +38,12 @@
       $f->close();
     }
     
-    function getRelative($path) {
+    public function getRelative($path) {
       return new FilesystemContainer($base.'/'.$path);
     }
     
-    function getBase() {
+    public function getBase() {
       return $this->base;
     }
-  } implements(__FILE__, 'name.kiesel.pxl.storage.IStorage');
+  } 
 ?>

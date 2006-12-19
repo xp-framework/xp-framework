@@ -10,7 +10,7 @@
    * @purpose  Specialized SOAP type
    */
   class DirectoryCategory extends Object {
-    var
+    public
       $fullViewableName,
       $specialEncoding;
 
@@ -20,7 +20,7 @@
      * @access  public
      * @return  string 
      */
-    function getFullViewableName() {
+    public function getFullViewableName() {
       return $this->fullViewableName;
     }
 
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string fullViewableName
      */
-    function setFullViewableName($fullViewableName) {
+    public function setFullViewableName($fullViewableName) {
       $this->fullViewableName= $fullViewableName;
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string 
      */
-    function getSpecialEncoding() {
+    public function getSpecialEncoding() {
       return $this->specialEncoding;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @param   string specialEncoding
      */
-    function setSpecialEncoding($specialEncoding) {
+    public function setSpecialEncoding($specialEncoding) {
       $this->specialEncoding= $specialEncoding;
     }
   }

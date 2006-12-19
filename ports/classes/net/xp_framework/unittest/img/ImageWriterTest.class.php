@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase', 
+    'unittest.TestCase',
     'io.Stream',
     'io.FileUtil',
     'img.Image',
@@ -21,7 +21,7 @@
    * @purpose  Test case
    */
   class ImageWriterTest extends TestCase {
-    var
+    public
       $image= NULL;
 
     /**
@@ -29,7 +29,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->image= &Image::create(1, 1);
       $this->image->fill($this->image->allocate(new Color('#ffffff')));
     }
@@ -39,7 +39,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       delete($this->image);
     }
     
@@ -50,8 +50,8 @@
      * @access  public
      */
     #[@test]
-    function writeGif() {
-      $s= &new Stream();
+    public function writeGif() {
+      $s= new Stream();
       $this->image->saveTo(new GifStreamWriter(ref($s)));
       $this->assertNotEmpty(FileUtil::getContents($s));
     }
@@ -63,8 +63,8 @@
      * @access  public
      */
     #[@test]
-    function writeJpeg() {
-      $s= &new Stream();
+    public function writeJpeg() {
+      $s= new Stream();
       $this->image->saveTo(new JpegStreamWriter(ref($s)));
       $this->assertNotEmpty(FileUtil::getContents($s));
     }
@@ -76,8 +76,8 @@
      * @access  public
      */
     #[@test]
-    function writePng() {
-      $s= &new Stream();
+    public function writePng() {
+      $s= new Stream();
       $this->image->saveTo(new PngStreamWriter(ref($s)));
       $this->assertNotEmpty(FileUtil::getContents($s));
     }

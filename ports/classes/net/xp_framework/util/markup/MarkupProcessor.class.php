@@ -19,7 +19,7 @@
      * @access  public
      * @return  string
      */
-    function initialize() {
+    public function initialize() {
       return '';
     }
     
@@ -31,7 +31,7 @@
      * @param   string token
      * @return  string
      */
-    function process($token) {
+    public function process($token) {
       return '';
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function finalize() {
+    public function finalize() {
       return '';
     }
   }

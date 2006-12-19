@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.http.HttpConnection', 
+    'peer.http.HttpConnection',
     'unittest.TestCase'
   );
 
@@ -30,7 +30,7 @@
    * @purpose  Unit Test
    */
   class HttpTest extends TestCase {
-    var
+    public
       $conn = NULL,
       $uri  = '';
       
@@ -41,7 +41,7 @@
      * @param   string name
      * @param   string uri
      */
-    function __construct($name, $uri) {
+    public function __construct($name, $uri) {
       $this->uri= $uri;
       parent::__construct($name);
     }
@@ -52,8 +52,8 @@
      * @access  public
      * @throws  rdbms.DriverNotSupportedException
      */
-    function setUp() {
-      $this->conn= &new HttpConnection($this->uri);
+    public function setUp() {
+      $this->conn= new HttpConnection($this->uri);
     }
     
     /**
@@ -64,14 +64,14 @@
      * @param   bool expectingData
      * @return  array data
      */
-    function _testRequest($method, $expectingData) {
-      try(); {
+    public function _testRequest($method, $expectingData) {
+      try {
         $response= &$this->conn->request($method, array(
           'a'   => 'b',
           'b'   => 'c'
         ));
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       if (!$this->assertSubclass($response, 'peer.http.HttpResponse')) return;
 
@@ -105,7 +105,7 @@
      * @access  public
      */
     #[@test]
-    function testGet() {
+    public function testGet() {
       return $this->_testRequest(HTTP_GET, TRUE);
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      */
     #[@test]
-    function testPost() {
+    public function testPost() {
       return $this->_testRequest(HTTP_POST, TRUE);
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      */
     #[@test]
-    function testHead() {
+    public function testHead() {
       return $this->_testRequest(HTTP_HEAD, FALSE);
     }
   }

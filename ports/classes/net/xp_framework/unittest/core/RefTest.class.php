@@ -21,7 +21,7 @@
      * @param   &lang.Object b
      * @throws  unittest.AssertionFailedError
      */
-    function assertReference(&$a, &$b) {
+    public function assertReference(&$a, &$b) {
       $this->assertEquals($a->__id, $b->__id);
       $a->__id= 'R:'.$a->__id;
       $this->assertEquals($a->__id, $b->__id);
@@ -33,8 +33,8 @@
      * @access  public
      */
     #[@test]
-    function deref() {
-      $object= &new Object();
+    public function deref() {
+      $object= new Object();
       $this->assertReference($object, deref($object));
     }
 
@@ -44,8 +44,8 @@
      * @access  public
      */
     #[@test]
-    function derefOfRef() {
-      $object= &new Object();
+    public function derefOfRef() {
+      $object= new Object();
       $this->assertReference($object, deref(ref($object)));
     }
 
@@ -55,8 +55,8 @@
      * @access  public
      */
     #[@test]
-    function objectReference() {
-      $object= &new Object();
+    public function objectReference() {
+      $object= new Object();
       $ref= &newinstance('lang.Object', array(ref($object)), '{
         var $object= NULL;
         

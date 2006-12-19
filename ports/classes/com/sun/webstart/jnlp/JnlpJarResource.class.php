@@ -23,7 +23,7 @@
    * @purpose  JNLP resource
    */
   class JnlpJarResource extends JnlpResource {
-    var
+    public
       $href     = '',
       $version  = '';
 
@@ -34,7 +34,7 @@
      * @param   string href
      * @param   string version default NULL
      */
-    function __construct($href, $version= NULL) {
+    public function __construct($href, $version= NULL) {
       $this->href= $href;
       $this->version= $version;
     }
@@ -45,7 +45,7 @@
      * @access  public
      * @param   string href
      */
-    function setHref($href) {
+    public function setHref($href) {
       $this->href= $href;
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      * @return  string
      */
-    function getHref() {
+    public function getHref() {
       return $this->href;
     }
     
@@ -65,7 +65,7 @@
      * @access  public
      * @return  string
      */
-    function getLocation() {
+    public function getLocation() {
       return $this->href.($this->version ? '?version-id='.$this->version : '');
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      * @param   string version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @return  string
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
 
@@ -95,7 +95,7 @@
      * @access  public
      * @return  string
      */
-    function getTagName() { 
+    public function getTagName() { 
       return 'jar';
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @return  array
      */
-    function getTagAttributes() { 
+    public function getTagAttributes() { 
       return array_merge(
         array('href' => $this->href), 
         $this->version ? array('version' => $this->version) : array()

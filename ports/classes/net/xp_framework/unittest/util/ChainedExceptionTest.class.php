@@ -23,8 +23,8 @@
      * @access  public
      */
     #[@test]
-    function withoutCause() {
-      $e= &new ChainedException('Message');
+    public function withoutCause() {
+      $e= new ChainedException('Message');
       $this->assertEquals('Message', $e->getMessage()) &&
       $this->assertNull($e->getCause()) &&
       $this->assertFalse(strstr($e->toString(), 'Caused by'));
@@ -36,8 +36,8 @@
      * @access  public
      */
     #[@test]
-    function withCause() {
-      $e= &new ChainedException('Message', new IllegalArgumentException('Arg'));
+    public function withCause() {
+      $e= new ChainedException('Message', new IllegalArgumentException('Arg'));
       $this->assertEquals('Message', $e->getMessage()) &&
       $this->assertClass($e->getCause(), 'lang.IllegalArgumentException') &&
       $this->assertEquals('Arg', $e->cause->getMessage()) &&
@@ -50,8 +50,8 @@
      * @access  public
      */
     #[@test]
-    function commonElements() {
-      $e= &new ChainedException('Message', new IllegalArgumentException('Arg'));
+    public function commonElements() {
+      $e= new ChainedException('Message', new IllegalArgumentException('Arg'));
       $this->assertEquals(1, preg_match_all('/  ... [0-9]+ more/', $e->toString(), $matches));
     }
 
@@ -61,8 +61,8 @@
      * @access  public
      */
     #[@test]
-    function chainedCommonElements() {
-      $e= &new ChainedException('Message', new ChainedException('Message2', new IllegalArgumentException('Arg')));
+    public function chainedCommonElements() {
+      $e= new ChainedException('Message', new ChainedException('Message2', new IllegalArgumentException('Arg')));
       $this->assertEquals(2, preg_match_all('/  ... [0-9]+ more/', $e->toString(), $matches));
     }
   }

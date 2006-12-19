@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugsActivity extends DataSet {
-    var
+    public
       $bug_id             = 0,
       $who                = 0,
       $bug_when           = NULL,
@@ -28,7 +28,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugsActivity::getPeer()); {
         $peer->setTable('bugs_activity');
         $peer->setConnection('bugzilla');
@@ -51,7 +51,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -63,7 +63,7 @@
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_id($bug_id) {
+    public function &getByBug_id($bug_id) {
       $peer= &BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
@@ -76,7 +76,7 @@
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByBug_when($bug_when) {
+    public function &getByBug_when($bug_when) {
       $peer= &BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('bug_when', $bug_when, EQUAL)));
     }
@@ -89,7 +89,7 @@
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByFieldid($fieldid) {
+    public function &getByFieldid($fieldid) {
       $peer= &BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('fieldid', $fieldid, EQUAL)));
     }
@@ -100,7 +100,7 @@
      * @access  public
      * @return  int
      */
-    function getBug_id() {
+    public function getBug_id() {
       return $this->bug_id;
     }
       
@@ -111,7 +111,7 @@
      * @param   int bug_id
      * @return  int the previous value
      */
-    function setBug_id($bug_id) {
+    public function setBug_id($bug_id) {
       return $this->_change('bug_id', $bug_id);
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  int
      */
-    function getWho() {
+    public function getWho() {
       return $this->who;
     }
       
@@ -132,7 +132,7 @@
      * @param   int who
      * @return  int the previous value
      */
-    function setWho($who) {
+    public function setWho($who) {
       return $this->_change('who', $who);
     }
 
@@ -142,7 +142,7 @@
      * @access  public
      * @return  util.Date
      */
-    function getBug_when() {
+    public function getBug_when() {
       return $this->bug_when;
     }
       
@@ -153,7 +153,7 @@
      * @param   util.Date bug_when
      * @return  util.Date the previous value
      */
-    function setBug_when($bug_when) {
+    public function setBug_when($bug_when) {
       return $this->_change('bug_when', $bug_when);
     }
 
@@ -163,7 +163,7 @@
      * @access  public
      * @return  int
      */
-    function getFieldid() {
+    public function getFieldid() {
       return $this->fieldid;
     }
       
@@ -174,7 +174,7 @@
      * @param   int fieldid
      * @return  int the previous value
      */
-    function setFieldid($fieldid) {
+    public function setFieldid($fieldid) {
       return $this->_change('fieldid', $fieldid);
     }
 
@@ -184,7 +184,7 @@
      * @access  public
      * @return  string
      */
-    function getAdded() {
+    public function getAdded() {
       return $this->added;
     }
       
@@ -195,7 +195,7 @@
      * @param   string added
      * @return  string the previous value
      */
-    function setAdded($added) {
+    public function setAdded($added) {
       return $this->_change('added', $added);
     }
 
@@ -205,7 +205,7 @@
      * @access  public
      * @return  string
      */
-    function getRemoved() {
+    public function getRemoved() {
       return $this->removed;
     }
       
@@ -216,7 +216,7 @@
      * @param   string removed
      * @return  string the previous value
      */
-    function setRemoved($removed) {
+    public function setRemoved($removed) {
       return $this->_change('removed', $removed);
     }
 
@@ -226,7 +226,7 @@
      * @access  public
      * @return  int
      */
-    function getAttach_id() {
+    public function getAttach_id() {
       return $this->attach_id;
     }
       
@@ -237,7 +237,7 @@
      * @param   int attach_id
      * @return  int the previous value
      */
-    function setAttach_id($attach_id) {
+    public function setAttach_id($attach_id) {
       return $this->_change('attach_id', $attach_id);
     }
   }

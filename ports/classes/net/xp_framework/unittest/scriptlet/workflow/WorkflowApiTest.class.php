@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->scriptlet= &new AbstractXMLScriptlet(ClassLoader::getDefault());
+    public function setUp() {
+      $this->scriptlet= new AbstractXMLScriptlet(ClassLoader::getDefault());
       $this->scriptlet->init();
     }
 
@@ -35,7 +35,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->scriptlet->finalize();
     }
     
@@ -46,9 +46,9 @@
      * @param   &net.xp_framework.unittest.scriptlet.mock.MockRequest
      * @return  &net.xp_framework.unittest.scriptlet.mock.MockResponse
      */
-    function &process(&$request) {
+    public function &process(&$request) {
       $request->initialize();
-      $response= &new MockResponse();
+      $response= new MockResponse();
       $this->scriptlet->processWorkflow($request, $response);
       return $response;
     }
@@ -59,8 +59,8 @@
      * @access  public
      */
     #[@test]
-    function setupAndProcessCalled() {
-      $request= &new MockRequest($this->scriptlet->classloader, '{
+    public function setupAndProcessCalled() {
+      $request= new MockRequest($this->scriptlet->classloader, '{
         var $called= array();
         
         function setup(&$request, &$response, &$context) {

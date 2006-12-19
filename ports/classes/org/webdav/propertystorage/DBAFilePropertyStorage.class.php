@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.dba.DBAFile');
+  uses('io.dba.DBAFile', 'org.webdav.propertystorage.PropertyStorageProvider');
 
   /**
    * WebDav property storage with DBA files
@@ -12,8 +12,8 @@
    * @see      xp://org.webdav.propertystorage.PropertyStorageProvider
    * @purpose  Property storage
    */
-  class DBAFilePropertyStorage extends DBAFile {
-    var
+  class DBAFilePropertyStorage extends DBAFile implements PropertyStorageProvider {
+    public
       $properties= array();
     
     /**
@@ -24,7 +24,7 @@
      * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
      */
-    function __construct($filename, $handler= DBH_GDBM) {
+    public function __construct($filename, $handler= DBH_GDBM) {
       parent::__construct($filename, $handler);
       
       // Create the storage file if it doesn't exist
@@ -41,7 +41,7 @@
      * @param   string uri The URI
      * @param   org.webdav.WebdavProperty[] properties
      */
-    function setProperties($uri, $properties) {
+    public function setProperties($uri, $properties) {
       $uri= 'PROP:'.$uri;
       $this->open(DBO_WRITE);
       if ($properties === NULL) {
@@ -59,7 +59,7 @@
      * @param   string uri The URI
      * @return  org.webdav.WebdavProperty[]
      */
-    function getProperties($uri) {
+    public function getProperties($uri) {
       if (!isset($this->properties[$uri])) {
         $uri= 'PROP:'.$uri;
         $this->open(DBO_READ);
@@ -76,7 +76,7 @@
      * @param   string uri The URI
      * @param   &org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
      */
-    function setProperty($uri, &$property) {
+    public function setProperty($uri, &$property) {
       $name= $property->getName();
       $prefix= $property->getNameSpacePrefix();
       $properties= $this->getProperties($uri);
@@ -96,7 +96,7 @@
      * @param   string name The property's name
      * @return  &org.webdav.WebdavProperty
      */
-    function &getProperty($uri, $name) {
+    public function &getProperty($uri, $name) {
       $properties= $this->getProperties($uri);
       return isset($properties[$name]) ? $properties[$name] : NULL;
     }
@@ -109,7 +109,7 @@
      * @param   string name The property's name
      * @return  bool
      */
-    function hasProperty($uri, $name) {
+    public function hasProperty($uri, $name) {
       $properties= $this->getProperties($uri);
       return isset($properties[$name]);
     }
@@ -121,7 +121,7 @@
      * @param  string uri The URI
      * @param  org.webdav.WebdavLock The WebDav lock
      */
-    function setLock($uri, &$lock) {
+    public function setLock($uri, &$lock) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_WRITE);
       $ret= $this->store($uri, serialize($lock));
@@ -136,7 +136,7 @@
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    function &getLock($uri) {
+    public function &getLock($uri) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_READ);
       $lock= $this->lookup($uri) ? unserialize($this->fetch($uri)) : NULL;
@@ -150,7 +150,7 @@
      * @access public
      * @param  string uri The URI
      */
-    function removeLock($uri) {
+    public function removeLock($uri) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_WRITE);
       if ($this->lookup($uri)) $ret= $this->delete($uri);
@@ -158,5 +158,5 @@
       return $ret;
     }
   
-  } implements(__FILE__, 'org.webdav.propertystorage.PropertyStorageProvider');
+  } 
 ?>

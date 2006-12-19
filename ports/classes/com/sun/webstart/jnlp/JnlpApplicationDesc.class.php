@@ -11,7 +11,7 @@
    * @purpose  Wrapper class
    */
   class JnlpApplicationDesc extends Object {
-    var
+    public
       $main_class = '',
       $arguments  = array();
 
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string main_class
      */
-    function setMain_class($main_class) {
+    public function setMain_class($main_class) {
       $this->main_class= $main_class;
     }
 
@@ -31,7 +31,7 @@
      * @access  public
      * @return  string
      */
-    function getMain_class() {
+    public function getMain_class() {
       return $this->main_class;
     }
     
@@ -41,7 +41,7 @@
      * @access  public
      * @param   string argument
      */
-    function addArgument($argument) {
+    public function addArgument($argument) {
       $this->arguments[]= $argument;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @param   string[] arguments
      */
-    function setArguments($arguments) {
+    public function setArguments($arguments) {
       $this->arguments= $arguments;
     }
 
@@ -61,7 +61,7 @@
      * @access  public
      * @return  string[]
      */
-    function getArguments() {
+    public function getArguments() {
       return $this->arguments;
     }
   }

@@ -21,7 +21,7 @@
    * @purpose  Base class
    */
   class AbstractDialogState extends AbstractState {
-    var
+    public
       $dataLocation = '';
     
     /**
@@ -31,11 +31,11 @@
      * @param   int i default 0 page number
      * @return  string[]
      */
-    function getIndexPage($i= 0) {
-      try(); {
+    public function getIndexPage($i= 0) {
+      try {
         $index= unserialize(FileUtil::getContents(new File($this->dataLocation.'page_'.$i.'.idx')));
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       return $index;
     }
@@ -47,11 +47,11 @@
      * @param   string name
      * @return  int
      */
-    function getDisplayPageFor($name) {
-      try(); {
+    public function getDisplayPageFor($name) {
+      try {
         $page= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.idx')));
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       return $page;
     }
@@ -65,15 +65,15 @@
      * @return  &de.thekid.dialog.IEntry
      * @throws  lang.IllegalArgumentException if found entry is not of expected type
      */
-    function &_getEntryFor($name, $expect) {
-      try(); {
+    public function &_getEntryFor($name, $expect) {
+      try {
         $entry= &unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       // Check expectancy
-      if (!is($expect, $entry)) return throw(new IllegalArgumentException(sprintf(
+      if (!is($expect, $entry)) throw(new IllegalArgumentException(sprintf(
         'Entry of type %s found, %s expected',
         xp::typeOf($entry),
         $expect
@@ -89,7 +89,7 @@
      * @param   string name
      * @return  &de.thekid.dialog.IEntry
      */
-    function &getEntryFor($name) {
+    public function &getEntryFor($name) {
       return $this->_getEntryFor($name, 'de.thekid.dialog.IEntry');
     }
 
@@ -101,7 +101,7 @@
      * @return  &de.thekid.dialog.Album
      * @throws  lang.IllegalArgumentException if it is not an album
      */
-    function &getAlbumFor($name) {
+    public function &getAlbumFor($name) {
       return $this->_getEntryFor($name, 'de.thekid.dialog.Album');
     }
     
@@ -113,7 +113,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       parent::setup($request, $response, $context);
       
       // Read configuration

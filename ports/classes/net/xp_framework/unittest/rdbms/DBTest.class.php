@@ -5,7 +5,7 @@
  */
  
   uses(
-    'rdbms.DriverManager', 
+    'rdbms.DriverManager',
     'unittest.TestCase',
     'net.xp_framework.unittest.rdbms.mock.MockConnection'
   );
@@ -18,7 +18,7 @@
    * @purpose  Unit Test
    */
   class DBTest extends TestCase {
-    var
+    public
       $conn = NULL;
  
      /**
@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */  
-    function __static() {
+    public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
     }
      
@@ -36,7 +36,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->conn= &DriverManager::getConnection('mock://mock/MOCKDB');
       $this->assertEquals(0, $this->conn->flags & DB_AUTOCONNECT);
     }
@@ -46,7 +46,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->conn->close();
     }
 
@@ -56,7 +56,7 @@
      * @access  protected
      * @throws  unittest.AssertionFailedError
      */
-    function assertQuery() {
+    public function assertQuery() {
       $version= '$Revision$';
       $this->conn->setResultSet(new MockResultSet(array(array('version' => $version))));
       if (
@@ -72,7 +72,7 @@
      * @access  public
      */
     #[@test]
-    function connect() {
+    public function connect() {
       $result= $this->conn->connect();
       $this->assertTrue($result);
     }
@@ -83,7 +83,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLConnectException')]
-    function connectFailure() {
+    public function connectFailure() {
       $this->conn->makeConnectFail('Unknown server');
       $this->conn->connect();
     }
@@ -94,7 +94,7 @@
      * @access  public
      */
     #[@test]
-    function select() {
+    public function select() {
       $this->conn->connect();
       $this->assertQuery();
     }
@@ -106,7 +106,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
-    function queryOnUnConnected() {
+    public function queryOnUnConnected() {
       $this->conn->query('select 1');   // Not connected
     }
 
@@ -117,7 +117,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
-    function queryOnDisConnected() {
+    public function queryOnDisConnected() {
       $this->conn->connect();
       $this->assertQuery();
       $this->conn->close();
@@ -132,7 +132,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLConnectionClosedException')]
-    function connectionLost() {
+    public function connectionLost() {
       $this->conn->connect();
       $this->assertQuery();
       $this->conn->letServerDisconnect();
@@ -146,11 +146,11 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
-    function queryOnFailedConnection() {
+    public function queryOnFailedConnection() {
       $this->conn->makeConnectFail('Access denied');
-      try(); {
+      try {
         $this->conn->connect();
-      } if (catch('SQLConnectException', $ignored)) { }
+      } catch (SQLConnectException $ignored) { }
 
       $this->conn->query('select 1');   // Previously failed to connect
     }
@@ -161,7 +161,7 @@
      * @access  public
      */
     #[@test, @expect('rdbms.SQLStatementFailedException')]
-    function statementFailed() {
+    public function statementFailed() {
       $this->conn->connect();
       $this->conn->makeQueryFail('Deadlock', 1205);
       $this->conn->query('select 1');

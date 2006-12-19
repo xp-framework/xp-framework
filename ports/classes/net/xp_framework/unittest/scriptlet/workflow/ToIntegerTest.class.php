@@ -24,7 +24,7 @@
      * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    function &caster() {
+    public function &caster() {
       return new ToInteger();
     }
 
@@ -34,7 +34,7 @@
      * @access  public
      */
     #[@test]
-    function wholeNumbers() {
+    public function wholeNumbers() {
       foreach (array('1' => 1, '-1' => -1, '0' => 0) as $input => $expect) {
         $this->assertEquals($expect, $this->castValue($input), $input);
       }
@@ -46,7 +46,7 @@
      * @access  public
      */
     #[@test]
-    function emptyInput() {
+    public function emptyInput() {
       $this->assertEquals(0, $this->castValue(''));
     }
   }

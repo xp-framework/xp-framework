@@ -19,10 +19,10 @@
    */
   class DiaUMLBaseObject extends DiaObject {
 
-    var
+    public
       $type= NULL;
 
-    function __construct() {
+    public function __construct() {
       $valid_types= array(
         'Class', 'Note', 'Dependency', 'Realizes', 'Generalization',
         'Association', 'Implements'
@@ -34,7 +34,7 @@
       );
     }
 
-    function initialize() {
+    public function initialize() {
     }
 
 

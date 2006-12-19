@@ -21,7 +21,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct();
       $this->setWrapper(new LoginWrapper());
     }
@@ -34,7 +34,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       $pm= &PropertyManager::getInstance();
       $prop= &$pm->getProperties('site');
       
@@ -54,7 +54,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function finalize(&$request, &$response, &$context) {
+    public function finalize(&$request, &$response, &$context) {
       $return= $request->session->getValue('authreturn');
 
       if ($return) {

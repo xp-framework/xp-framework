@@ -35,7 +35,7 @@
      * @access  public
      * @return  array
      */
-    function validOptions() {
+    public function validOptions() {
       return array(
         'verbose' => OPTION_ONLY,
         'gzipped' => OPTION_ONLY,
@@ -50,7 +50,7 @@
      * Run Doclet
      *
      */
-    function start(&$root) {  
+    public function start(&$root) {  
       // test hasNext()?
 
       while ($root->classes->hasNext()) {

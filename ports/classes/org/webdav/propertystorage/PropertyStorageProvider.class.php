@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class PropertyStorageProvider extends Interface {
+  interface PropertyStorageProvider {
 
     /**
      * Set all properties for specific uri
@@ -18,7 +18,7 @@
      * @param   string uri The URI
      * @param   org.webdav.WebdavProperty[] properties
      */
-    function setProperties($uri, $properties) { }
+    public function setProperties($uri, $properties);
   
     /**
      * Read all properties for specific uri
@@ -27,7 +27,7 @@
      * @param   string uri The URI
      * @return  org.webdav.WebdavProperty[]
      */
-    function getProperties($uri) { }
+    public function getProperties($uri);
 
     /**
      * Sets a property for a specific URI
@@ -36,7 +36,7 @@
      * @param   string uri The URI
      * @param   &org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
      */
-    function setProperty($uri, &$property) { }
+    public function setProperty($uri, &$property);
 
     /**
      * Retrieve property for specific URI
@@ -46,7 +46,7 @@
      * @param   string name The property's name
      * @return  &org.webdav.WebdavProperty
      */
-    function &getProperty($uri, $name) { }
+    public function &getProperty($uri, $name);
     
     /**
      * Check if property is available
@@ -56,7 +56,7 @@
      * @param   string name The property's name
      * @return  bool
      */
-    function hasProperty($uri, $name) { }
+    public function hasProperty($uri, $name);
     
     /**
      * Sets a lock for a specific URI
@@ -65,7 +65,7 @@
      * @param   string uri The URI
      * @param   &org.webdav.WebdavLock The WebDav Lock (use NULL to remove property)
      */
-    function setLock($uri, &$property) { }
+    public function setLock($uri, &$property);
     
     /**
      * Retrieve lock for specific URI
@@ -74,7 +74,7 @@
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    function &getLock($uri) { }
+    public function &getLock($uri);
     
     /**
      * Removes a lock for specific URI
@@ -83,7 +83,7 @@
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    function &removeLock($uri) { }
+    public function &removeLock($uri);
     
   }
 ?>

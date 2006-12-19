@@ -25,7 +25,7 @@
      * @return  array<string[]> matches
      * @throws  unittest.AssertionFailedError
      */
-    function parseComment($comment) {
+    public function parseComment($comment) {
       $comment= trim($comment);
       if (!preg_match_all(
         '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
@@ -64,7 +64,7 @@
             break;
 
           case 'param':
-            $details[DETAIL_ARGUMENTS][]= &new Argument(
+            $details[DETAIL_ARGUMENTS][]= new Argument(
               isset($match[3]) ? $match[3] : 'param',
               $match[2],
               isset($match[4]),
@@ -91,7 +91,7 @@
      * @access  public
      */
     #[@test, @expect('unittest.AssertionFailedError')]
-    function testParseComment() {
+    public function testParseComment() {
       $this->parseComment('NOT-A-COMMENT');
     }
     
@@ -104,7 +104,7 @@
      * @return  bool
      * @throws  unittest.AssertionFailedError
      */
-    function assertAccessFlags($modifiers, $comment) {
+    public function assertAccessFlags($modifiers, $comment) {
       if (!($details= $this->parseComment($comment))) return;
       return $this->assertEquals($modifiers, $details[DETAIL_MODIFIERS]);
     }
@@ -115,7 +115,7 @@
      * @access  public
      */
     #[@test]
-    function commentString() {
+    public function commentString() {
       $details= $this->parseComment('
         /**
          * A protected method
@@ -138,7 +138,7 @@
      * @access  public
      */
     #[@test]
-    function noCommentString() {
+    public function noCommentString() {
       $details= $this->parseComment('
         /**
          * @access  protected
@@ -156,7 +156,7 @@
      * @access  public
      */
     #[@test]
-    function publicAccess() {
+    public function publicAccess() {
       $this->assertAccessFlags(MODIFIER_PUBLIC, '
         /**
          * A public method
@@ -172,7 +172,7 @@
      * @access  public
      */
     #[@test]
-    function protectedAccess() {
+    public function protectedAccess() {
       $this->assertAccessFlags(MODIFIER_PROTECTED, '
         /**
          * A protected method
@@ -188,7 +188,7 @@
      * @access  public
      */
     #[@test]
-    function privateAccess() {
+    public function privateAccess() {
       $this->assertAccessFlags(MODIFIER_PRIVATE, '
         /**
          * A private method
@@ -204,7 +204,7 @@
      * @access  public
      */
     #[@test]
-    function staticAccess() {
+    public function staticAccess() {
       $this->assertAccessFlags(MODIFIER_PUBLIC | MODIFIER_STATIC, '
         /**
          * A public method
@@ -221,7 +221,7 @@
      * @access  public
      */
     #[@test]
-    function scalarParameter() {
+    public function scalarParameter() {
       $details= $this->parseComment('
         /**
          * A protected method
@@ -244,7 +244,7 @@
      * @access  public
      */
     #[@test]
-    function arrayParameter() {
+    public function arrayParameter() {
       $details= $this->parseComment('
         /**
          * Another protected method
@@ -267,7 +267,7 @@
      * @access  public
      */
     #[@test]
-    function objectParameter() {
+    public function objectParameter() {
       $details= $this->parseComment('
         /**
          * Yet another protected method
@@ -290,7 +290,7 @@
      * @access  public
      */
     #[@test]
-    function defaultParameter() {
+    public function defaultParameter() {
       $details= $this->parseComment('
         /**
          * A private method
@@ -314,7 +314,7 @@
      * @access  public
      */
     #[@test]
-    function genericArrayParameter() {
+    public function genericArrayParameter() {
       $details= $this->parseComment('
         /**
          * Final protected method
@@ -338,7 +338,7 @@
      * @access  public
      */
     #[@test]
-    function genericObjectParameter() {
+    public function genericObjectParameter() {
       $details= $this->parseComment('
         /**
          * Abstract protected method
@@ -362,7 +362,7 @@
      * @access  public
      */
     #[@test]
-    function throwsList() {
+    public function throwsList() {
       $details= $this->parseComment('
         /**
          * Test method
@@ -381,7 +381,7 @@
      * @access  public
      */
     #[@test]
-    function returnType() {
+    public function returnType() {
       $details= $this->parseComment('
         /**
          * Test method

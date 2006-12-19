@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->fixture= &new DefaultFtpListParser();
+    public function setUp() {
+      $this->fixture= new DefaultFtpListParser();
     }
     
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function dotDirectory() {
+    public function dotDirectory() {
       $e= &$this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .');
 
       $this->assertSubclass($e, 'peer.ftp.FtpDir') &&
@@ -54,7 +54,7 @@
      * @access  public
      */
     #[@test]
-    function regularFile() {
+    public function regularFile() {
       $e= &$this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
@@ -73,7 +73,7 @@
      * @access  public
      */
     #[@test]
-    function whitespaceInFileName() {
+    public function whitespaceInFileName() {
       $e= &$this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 answer me.html');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&

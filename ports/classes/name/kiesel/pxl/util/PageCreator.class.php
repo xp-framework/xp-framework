@@ -21,7 +21,7 @@
    * @purpose  purpose
    */
   class PageCreator extends Object {
-    var
+    public
       $storage  = NULL,
       $title    = '',
       $description  = '',
@@ -36,7 +36,7 @@
      * @param   
      * @return  
      */
-    function __construct(&$storage, $title, $pictures) {
+    public function __construct(&$storage, $title, $pictures) {
       $this->storage= &$storage;
       $this->title= $title;
       $this->picturefiles= $pictures;
@@ -49,7 +49,7 @@
      * @param   
      * @return  
      */
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= $date;
     }
     
@@ -60,11 +60,11 @@
      * @param   
      * @return  
      */
-    function addPage() {
-      try(); {
+    public function addPage() {
+      try {
         $c= &Catalogue::create($this->storage);
-      } if (catch('FileNotFoundException', $e)) {
-        $c= &new Catalogue();
+      } catch (FileNotFoundException $e) {
+        $c= new Catalogue();
         $c->setStorage($this->storage);
       }
       
@@ -74,29 +74,29 @@
       // Create page directory
       $targetdir= $this->storage->getBase().'/'.$dirname;
       
-      $folder= &new Folder($targetdir);
-      try(); {
+      $folder= new Folder($targetdir);
+      try {
         $folder->create(0755);
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
-      $p= &new Page();
+      $p= new Page();
       $p->setStorage(new FilesystemContainer($targetdir));
       $p->setTitle($this->title);
 
       foreach ($this->picturefiles as $filename) {
-        try(); {
-          $f= &new File($filename);
+        try {
+          $f= new File($filename);
           if (!$f->exists()) continue;
 
           // Copy over to new destination
           $f->copy($folder->getURI().'/'.$f->getFileName());
 
-          $picture= &new Picture();
+          $picture= new Picture();
           $picture->setFilename($f->getFileName());
           $picture->setStorage($this->storage);
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           continue;
         }
           
@@ -104,10 +104,10 @@
       }
       
       if ($p->pictures->size() == 0) {
-        return throw(new IllegalStateException('No pictures added to page, cannot add page to index'));
+        throw(new IllegalStateException('No pictures added to page, cannot add page to index'));
       }
       
-      $entry= &new CatalogueEntry();
+      $entry= new CatalogueEntry();
       $entry->setId($c->entries->size());
       $entry->setName($this->title);
       $entry->setPath($dirname);

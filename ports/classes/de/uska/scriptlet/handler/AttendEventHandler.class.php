@@ -24,7 +24,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setWrapper(new AttendEventWrapper());
       parent::__construct();
     }
@@ -37,7 +37,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  string
      */
-    function identifierFor(&$request, &$context) {
+    public function identifierFor(&$request, &$context) {
       return $this->name.'.'.$request->getParam('event_id');
     }
     
@@ -49,7 +49,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function setup(&$request, &$context) {
+    public function setup(&$request, &$context) {
       $this->setFormValue('offers_seats', 0);
       if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
       
@@ -106,7 +106,7 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       $cm= &ConnectionManager::getInstance();
       
       // Either user requires a driver or he can offer seats - not both.
@@ -126,7 +126,7 @@
       }
       
       $attendee= $this->wrapper->getPlayer_id();
-      try(); {
+      try {
         $db= &$cm->getByHost('uskadb', 0);
         $transaction= &$db->begin(new Transaction('attend'));
         
@@ -143,7 +143,7 @@
           }
           
           // Create guest player
-          $player= &new Player();
+          $player= new Player();
           $player->setFirstname($this->wrapper->getFirstname());
           $player->setLastname($this->wrapper->getLastname());
           $player->setCreated_by($context->user->getPlayer_id());
@@ -159,7 +159,7 @@
         $newAttend= FALSE;
         $eventattend= &EventAttendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
         if (!is('de.uska.db.EventAttendee', $eventattend)) {
-          $eventattend= &new EventAttendee();
+          $eventattend= new EventAttendee();
           $eventattend->setEvent_id($this->wrapper->getEvent_id());
           $eventattend->setPlayer_id($attendee);
           $newAttend= TRUE;
@@ -190,9 +190,9 @@
           ',
           $event->getEvent_id()
         ));
-      } if (catch('SQLException', $e)) {
+      } catch (SQLException $e) {
         $transaction->rollback();
-        return throw($e);
+        throw($e);
       }
       
       if (
@@ -216,7 +216,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function finalize(&$request, &$response, &$context) {
+    public function finalize(&$request, &$response, &$context) {
       $response->forwardTo('event/view', $this->getValue('event_id'));
     }
   }

@@ -11,7 +11,7 @@
    * @purpose  Value object
    */
   class AlbumChapter extends Object {
-    var
+    public
       $name   = '',
       $images = array();
 
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
 
@@ -31,7 +31,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -41,7 +41,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @param   &de.thekid.dialog.AlbumImage image
      */
-    function addImage(&$image) {
+    public function addImage(&$image) {
       $this->images[]= &$image;
     }
 
@@ -63,7 +63,7 @@
      * @param   int i
      * @return  &de.thekid.dialog.AlbumImage
      */
-    function &imageAt($i) {
+    public function &imageAt($i) {
       if (!isset($this->images[$i])) return NULL;
       return $this->images[$i];
     }
@@ -74,7 +74,7 @@
      * @access  public
      * @return  int
      */
-    function numImages() {
+    public function numImages() {
       return sizeof($this->images);
     }
     
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $is= '';
       for ($i= 0, $s= sizeof($this->images); $i < $s; $i++) {
         $is.= '    '.str_replace("\n", "\n  ", $this->images[$i]->toString())."\n";

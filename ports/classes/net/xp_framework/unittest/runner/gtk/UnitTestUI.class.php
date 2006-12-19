@@ -20,7 +20,7 @@
    * @purpose  Application
    */
   class UnitTestUI extends GtkGladeApplication {
-    var
+    public
       $pixmaps          = array(),
       $hierarchy        = NULL,
       $trace            = NULL,
@@ -37,7 +37,7 @@
      * @access  public
      * @param   &util.cmd.ParamString p
      */
-    function __construct(&$p) {
+    public function __construct(&$p) {
       parent::__construct($p, dirname($p->value(0)).'/gtkui.glade', 'mainwindow');
     }
     
@@ -46,11 +46,11 @@
      *
      * @access  public
      */
-    function init() {
-      $this->suite= &new TestSuite();
+    public function init() {
+      $this->suite= new TestSuite();
       
       // File Open Dialog
-      $this->dialog= &new FileDialog(SKELETON_PATH.'/../util/tests');
+      $this->dialog= new FileDialog(SKELETON_PATH.'/../util/tests');
       $this->dialog->setFilter('ini$');
       $this->dialog->setModal(TRUE);
       
@@ -79,7 +79,7 @@
       $this->setStatusText('Select test suite configuration');
       
       // Pixmaps
-      $loader= &new GTKPixmapLoader($this->window->window, dirname($this->param->value(0)));
+      $loader= new GTKPixmapLoader($this->window->window, dirname($this->param->value(0)));
       $this->pixmaps= $loader->load(array(
         'suite', 
         'test', 
@@ -112,7 +112,7 @@
      * @param   string fmt
      * @param   mixed* args
      */
-    function setStatusText($fmt) {
+    public function setStatusText($fmt) {
       $args= func_get_args();
       $text= vsprintf($args[0], array_slice($args, 1));
       $this->statusbar->push(1, $text);
@@ -129,7 +129,7 @@
      * @param   string result
      * @param   &mixed data
      */
-    function updateTest($id, $result, &$data) {
+    public function updateTest($id, $result, &$data) {
       $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
       $this->hierarchy->node_set_pixtext(
         $this->node[$id], 
@@ -149,7 +149,7 @@
      * @param   &php.GtkWidget widget the ctree
      * @param   &php.GtkNode node the selected node
      */
-    function onSelectTest(&$widget, &$node) {
+    public function onSelectTest(&$widget, &$node) {
     
       // Only make test nodes selectable
       if (!$node->is_leaf) return;
@@ -161,7 +161,7 @@
       
       // Update trace
       $this->trace->clear();
-      if (is_a($data, 'Throwable')) {
+      if (is('Throwable', $data)) {
         $type= 'exception';
         $caption= $data->getClassName().' ('.$data->getMessage().')';
         $trace= $data->getStackTrace();
@@ -208,7 +208,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onClearClicked(&$widget) {
+    public function onClearClicked(&$widget) {
       $this->hierarchy->clear();
       $this->trace->clear();
       $this->trace->columns_autosize();
@@ -224,10 +224,10 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onRunClicked(&$widget) {
+    public function onRunClicked(&$widget) {
       $numtests= $this->suite->numTests();
       $this->progress->configure(0.0, 0.0, $numtests);
-      $result= &new TestResult();
+      $result= new TestResult();
 
       $this->setStatusText('Running suite, %d tests', $numtests);
       for ($i= 0; $i < $numtests; $i++) {
@@ -263,7 +263,7 @@
      * @param   &util.Properties config
      * @param   string section
      */
-    function addTestsFromSection(&$config, $section) {
+    public function addTestsFromSection(&$config, $section) {
       if (-1 == ($numtests= $config->readInteger($section, 'numtests', -1))) {
         MessageBox::display('Section '.$section.': key "numtests" missing', 'Error', MB_OK | MB_ICONERROR);
         return FALSE;
@@ -283,9 +283,9 @@
       );
 
       for ($i= 0; $i < $numtests; $i++) {
-        try(); {
+        try {
           $class= &XPClass::forName($config->readString($section, 'test.'.$i.'.class'));
-        } if (catch('ClassNotFoundException', $e)) {
+        } catch (ClassNotFoundException $e) {
           $this->cat->error('Test group "'.$section.'", test #'.$i.':: ', $e->getStackTrace());
           MessageBox::display($e->getMessage(), 'Error', MB_OK | MB_ICONERROR);
 
@@ -338,14 +338,14 @@
      * @param   string section default NULL
      * @return  bool
      */
-    function addConfiguration($uri, $section= NULL) {
+    public function addConfiguration($uri, $section= NULL) {
       if (isset($this->loaded[$uri])) {
         MessageBox::display('Cannot load the same test config twice!', 'Error', MB_OK | MB_ICONWARNING);
         return FALSE;
       }
       $this->loaded[$uri]= TRUE;
 
-      $config= &new Properties($uri);
+      $config= new Properties($uri);
       if ($section) {
         $this->addTestsFromSection($config, $section);
       } else {
@@ -367,7 +367,7 @@
      * @access  protected
      * @param   &php.GtkWidget widget
      */
-    function onSelectClicked(&$widget) {
+    public function onSelectClicked(&$widget) {
       do {
       
         // If anything else than "OK" is pressed in the dialog, break

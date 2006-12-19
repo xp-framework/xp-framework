@@ -24,7 +24,7 @@
      * @access  public
      * @return  bool
      */
-    function requiresAuthentication() {
+    public function requiresAuthentication() {
       return TRUE;
     }
     
@@ -36,7 +36,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       $this->addHandler(new EditEventHandler());
       parent::setup($request, $response, $context);
     }

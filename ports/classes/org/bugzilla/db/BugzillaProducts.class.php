@@ -13,7 +13,7 @@
    * @purpose  Datasource accessor
    */
   class BugzillaProducts extends DataSet {
-    var
+    public
       $name               = '',
       $description        = NULL,
       $milestoneurl       = '',
@@ -30,7 +30,7 @@
      * @model   static
      * @access  public
      */
-    function __static() { 
+    public static function __static() { 
       with ($peer= &BugzillaProducts::getPeer()); {
         $peer->setTable('products');
         $peer->setConnection('bugzilla');
@@ -56,7 +56,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() {
+    public function &getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -68,7 +68,7 @@
      * @return  &org.bugzilla.db.BugzillaProducts object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getById($id) {
+    public function &getById($id) {
       $peer= &BugzillaProducts::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('id', $id, EQUAL))));
     }
@@ -81,7 +81,7 @@
      * @return  &org.bugzilla.db.BugzillaProducts object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function &getByName($name) {
+    public function &getByName($name) {
       $peer= &BugzillaProducts::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('name', $name, EQUAL))));
     }
@@ -92,7 +92,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
       
@@ -103,7 +103,7 @@
      * @param   string name
      * @return  string the previous value
      */
-    function setName($name) {
+    public function setName($name) {
       return $this->_change('name', $name);
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
       
@@ -124,7 +124,7 @@
      * @param   string description
      * @return  string the previous value
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       return $this->_change('description', $description);
     }
 
@@ -134,7 +134,7 @@
      * @access  public
      * @return  string
      */
-    function getMilestoneurl() {
+    public function getMilestoneurl() {
       return $this->milestoneurl;
     }
       
@@ -145,7 +145,7 @@
      * @param   string milestoneurl
      * @return  string the previous value
      */
-    function setMilestoneurl($milestoneurl) {
+    public function setMilestoneurl($milestoneurl) {
       return $this->_change('milestoneurl', $milestoneurl);
     }
 
@@ -155,7 +155,7 @@
      * @access  public
      * @return  int
      */
-    function getDisallownew() {
+    public function getDisallownew() {
       return $this->disallownew;
     }
       
@@ -166,7 +166,7 @@
      * @param   int disallownew
      * @return  int the previous value
      */
-    function setDisallownew($disallownew) {
+    public function setDisallownew($disallownew) {
       return $this->_change('disallownew', $disallownew);
     }
 
@@ -176,7 +176,7 @@
      * @access  public
      * @return  string
      */
-    function getVotesperuser() {
+    public function getVotesperuser() {
       return $this->votesperuser;
     }
       
@@ -187,7 +187,7 @@
      * @param   string votesperuser
      * @return  string the previous value
      */
-    function setVotesperuser($votesperuser) {
+    public function setVotesperuser($votesperuser) {
       return $this->_change('votesperuser', $votesperuser);
     }
 
@@ -197,7 +197,7 @@
      * @access  public
      * @return  string
      */
-    function getMaxvotesperbug() {
+    public function getMaxvotesperbug() {
       return $this->maxvotesperbug;
     }
       
@@ -208,7 +208,7 @@
      * @param   string maxvotesperbug
      * @return  string the previous value
      */
-    function setMaxvotesperbug($maxvotesperbug) {
+    public function setMaxvotesperbug($maxvotesperbug) {
       return $this->_change('maxvotesperbug', $maxvotesperbug);
     }
 
@@ -218,7 +218,7 @@
      * @access  public
      * @return  string
      */
-    function getVotestoconfirm() {
+    public function getVotestoconfirm() {
       return $this->votestoconfirm;
     }
       
@@ -229,7 +229,7 @@
      * @param   string votestoconfirm
      * @return  string the previous value
      */
-    function setVotestoconfirm($votestoconfirm) {
+    public function setVotestoconfirm($votestoconfirm) {
       return $this->_change('votestoconfirm', $votestoconfirm);
     }
 
@@ -239,7 +239,7 @@
      * @access  public
      * @return  string
      */
-    function getDefaultmilestone() {
+    public function getDefaultmilestone() {
       return $this->defaultmilestone;
     }
       
@@ -250,7 +250,7 @@
      * @param   string defaultmilestone
      * @return  string the previous value
      */
-    function setDefaultmilestone($defaultmilestone) {
+    public function setDefaultmilestone($defaultmilestone) {
       return $this->_change('defaultmilestone', $defaultmilestone);
     }
 
@@ -260,7 +260,7 @@
      * @access  public
      * @return  string
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
       
@@ -271,7 +271,7 @@
      * @param   string id
      * @return  string the previous value
      */
-    function setId($id) {
+    public function setId($id) {
       return $this->_change('id', $id);
     }
   }

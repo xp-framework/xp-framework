@@ -20,14 +20,14 @@
      * @access  public
      */
     #[@test]
-    function fromArray() {
+    public function fromArray() {
       $matrix= array(
         array(-1.0, -1.0, -1.0), 
         array(-1.0, 16.0, -1.0), 
         array(-1.0, -1.0, -1.0)
       );
 
-      $k= &new Kernel($matrix);
+      $k= new Kernel($matrix);
       $this->assertEquals($matrix, $k->getMatrix());
     }
 
@@ -37,7 +37,7 @@
      * @access  public
      */
     #[@test]
-    function fromString() {
+    public function fromString() {
       $string= '[[-1.0, -1.0, -1.0], [-1.0, 16.0, -1.0], [-1.0, -1.0, -1.0]]';
       $matrix= array(
         array(-1.0, -1.0, -1.0), 
@@ -45,7 +45,7 @@
         array(-1.0, -1.0, -1.0)
       );
 
-      $k= &new Kernel($string);
+      $k= new Kernel($string);
       $this->assertEquals($matrix, $k->getMatrix());
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function wrongArraySize() {
+    public function wrongArraySize() {
       new Kernel(array());
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function wrongRowSizeInArray() {
+    public function wrongRowSizeInArray() {
       $matrix= array(
         array(-1.0, -1.0, -1.0), 
         array(-1.0, 16.0, -1.0, 6100), 
@@ -81,7 +81,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function illegalStringSyntax() {
+    public function illegalStringSyntax() {
       new Kernel('@@SYNTAX-ERROR@@');
     }
 
@@ -92,7 +92,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function wrongRowSizeInString() {
+    public function wrongRowSizeInString() {
       new Kernel('[[-1.0, -1.0, -1.0], [-1.0, -1.0], [-1.0, -1.0, -1.0]]');
     }
   }

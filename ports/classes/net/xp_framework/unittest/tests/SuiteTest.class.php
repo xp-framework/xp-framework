@@ -5,8 +5,8 @@
  */
  
   uses(
-    'unittest.TestCase', 
-    'unittest.TestSuite', 
+    'unittest.TestCase',
+    'unittest.TestSuite',
     'net.xp_framework.unittest.tests.SimpleTestCase'
   );
 
@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class SuiteTest extends TestCase {
-    var
+    public
       $suite= NULL;
       
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->suite= &new TestSuite();
+    public function setUp() {
+      $this->suite= new TestSuite();
     }
 
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */    
     #[@test]
-    function initallyEmpty() {
+    public function initallyEmpty() {
       $this->assertEquals(0, $this->suite->numTests());
     }    
 
@@ -45,7 +45,7 @@
      * @access  public
      */    
     #[@test]
-    function addingATest() {
+    public function addingATest() {
       $this->suite->addTest($this);
       $this->assertEquals(1, $this->suite->numTests());
     }    
@@ -56,7 +56,7 @@
      * @access  public
      */    
     #[@test, @expect('lang.IllegalArgumentException')]
-    function addNonTest() {
+    public function addNonTest() {
       $this->suite->addTest(new Object());
     }    
 
@@ -66,7 +66,7 @@
      * @access  public
      */    
     #[@test]
-    function addingATestClass() {
+    public function addingATestClass() {
       $ignored= $this->suite->addTestClass(XPClass::forName('SimpleTestCase'));
       $this->assertEmpty($ignored);
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
@@ -80,7 +80,7 @@
      * @access  public
      */    
     #[@test, @expect('lang.IllegalArgumentException')]
-    function addingANonTestClass() {
+    public function addingANonTestClass() {
       $this->suite->addTestClass(XPClass::forName('Object'));
     }    
 
@@ -90,7 +90,7 @@
      * @access  public
      */    
     #[@test]
-    function clearingTests() {
+    public function clearingTests() {
       $this->suite->addTest($this);
       $this->assertEquals(1, $this->suite->numTests());
       $this->suite->clearTests();
@@ -103,7 +103,7 @@
      * @access  public
      */    
     #[@test]
-    function runningASingleSucceedingTest() {
+    public function runningASingleSucceedingTest() {
       $r= &$this->suite->runTest(new SimpleTestCase('succeeds'));
       $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&
@@ -118,7 +118,7 @@
      * @access  public
      */    
     #[@test]
-    function runningASingleFailingTest() {
+    public function runningASingleFailingTest() {
       $r= &$this->suite->runTest(new SimpleTestCase('fails'));
       $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&

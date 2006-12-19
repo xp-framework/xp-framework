@@ -11,7 +11,7 @@
    * @purpose  Utility class for ImageProcessor
    */
   class ProcessorTarget extends Object {
-    var
+    public
       $method       = '',
       $destination  = '',
       $applyFilters = TRUE;
@@ -24,7 +24,7 @@
      * @param   string destination
      * @param   bool applyFilters default TRUE
      */
-    function __construct($method, $destination, $applyFilters= TRUE) {
+    public function __construct($method, $destination, $applyFilters= TRUE) {
       $this->method= $method;
       $this->destination= $destination;
       $this->applyFilters= $applyFilters;
@@ -36,7 +36,7 @@
      * @access  public
      * @param   string method
      */
-    function setMethod($method) {
+    public function setMethod($method) {
       $this->method= $method;
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function getMethod() {
+    public function getMethod() {
       return $this->method;
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      * @param   string destination
      */
-    function setDestination($destination) {
+    public function setDestination($destination) {
       $this->destination= $destination;
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      * @return  string
      */
-    function getDestination() {
+    public function getDestination() {
       return $this->destination;
     }
 
@@ -76,7 +76,7 @@
      * @access  public
      * @param   bool applyFilters
      */
-    function setApplyFilters($applyFilters) {
+    public function setApplyFilters($applyFilters) {
       $this->applyFilters= $applyFilters;
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  bool
      */
-    function getApplyFilters() {
+    public function getApplyFilters() {
       return $this->applyFilters;
     }
   }

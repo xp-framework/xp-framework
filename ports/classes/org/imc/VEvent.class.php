@@ -13,7 +13,7 @@
    * @purpose  Represent a single event
    */
   class VEvent extends Object {
-    var
+    public
       $date         = NULL,
       $starts       = NULL,
       $ends         = NULL,
@@ -29,7 +29,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &$date;
     }
 
@@ -39,7 +39,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @param   &util.Date starts
      */
-    function setStarts(&$starts) {
+    public function setStarts(&$starts) {
       $this->starts= &$starts;
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getStarts() {
+    public function &getStarts() {
       return $this->starts;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &util.Date ends
      */
-    function setEnds(&$ends) {
+    public function setEnds(&$ends) {
       $this->ends= &$ends;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getEnds() {
+    public function &getEnds() {
       return $this->ends;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   string summary
      */
-    function setSummary($summary) {
+    public function setSummary($summary) {
       $this->summary= $summary;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  string
      */
-    function getSummary() {
+    public function getSummary() {
       return $this->summary;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @param   string location
      */
-    function setLocation($location) {
+    public function setLocation($location) {
       $this->location= $location;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  string
      */
-    function getLocation() {
+    public function getLocation() {
       return $this->location;
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -149,7 +149,7 @@
      * @access  public
      * @param   mixed[] attendee
      */
-    function addAttendee($attendee) {
+    public function addAttendee($attendee) {
       $this->attendee[]= $attendee;
     }
 
@@ -159,7 +159,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getAttendees() {
+    public function getAttendees() {
       return $this->attendee;
     }
 
@@ -169,7 +169,7 @@
      * @access  public
      * @param   string organizer
      */
-    function setOrganizer($organizer) {
+    public function setOrganizer($organizer) {
       $this->organizer= $organizer;
     }
 
@@ -179,7 +179,7 @@
      * @access  public
      * @return  string
      */
-    function getOrganizer() {
+    public function getOrganizer() {
       return $this->organizer;
     }
 
@@ -191,8 +191,8 @@
      * @param   mixed value
      * @return  string exported
      */    
-    function _export($key, $value) {
-      if (is_a ($value, 'Date')) {
+    public function _export($key, $value) {
+      if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
       } else if (is_object ($value)) {
@@ -218,7 +218,7 @@
      * @access  public
      * @return  string event
      */    
-    function export() {
+    public function export() {
       $ret = $this->_export ('BEGIN',       'VEVENT');
       $ret.= $this->_export ('LOCATION',    $this->getLocation());
       $ret.= $this->_export ('DTSTAMP',     $this->getDate());

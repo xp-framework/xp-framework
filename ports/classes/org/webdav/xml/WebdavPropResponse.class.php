@@ -53,7 +53,7 @@
      * @param   &org.webdav.xml.WebdavMultistatus response
      * @param   &org.webdav.WebdavObject o
      */
-    function __construct(&$request, &$response, &$o) {
+    public function __construct(&$request, &$response, &$o) {
       $this->setStatus(WEBDAV_MULTISTATUS);
       $this->setRootNode(new Node('D:multistatus'));
     }
@@ -65,16 +65,16 @@
      * @param   &org.webdav.WebdavObject o
      * @param   &org.webdav.xml.WebdavPropFindRequest request     
      */
-    function addWebdavObject(&$o) {
+    public function addWebdavObject(&$o) {
 
       // Get the property lists
       $reqprops= &$request->getProperties();    // properties requested
       $propsList= &$o->getProperties();         // properties available
       
       // Create the result nodes (for found and not found properties)
-      $found_stat= &new Node('D:propstat');
+      $found_stat= new Node('D:propstat');
       $found_props= &$found_stat->addChild(new Node('D:prop'));
-      $notfound_stat= &new Node('D:propstat');
+      $notfound_stat= new Node('D:propstat');
       $notfound_props= &$notfound_stat->addChild(new Node('D:prop'));
       
       $stdprops= array();

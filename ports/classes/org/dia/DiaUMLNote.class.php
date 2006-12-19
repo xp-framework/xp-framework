@@ -13,7 +13,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('UML - Note', 0);
     }
 
@@ -22,7 +22,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       $this->setPosition(array(0, 0));
       $this->setBoundingBox(array(array(0, 0), array(1, 1)));
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return 'text_'.$this->getId();
     }
 

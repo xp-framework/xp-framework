@@ -24,13 +24,13 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function process(&$request, &$response) {
+    public function process(&$request, &$response) {
       with ($query= $request->getParam('q', $request->getData()), $uri= $request->getURI()); {
         $target= 'search?q='.$query;
         
         // Use cache directory
         $query= basename($query);
-        $folder= &new Folder('../build/cache/');
+        $folder= new Folder('../build/cache/');
         while ($entry= &$folder->getEntry()) {
           $fn= $folder->getURI().$entry.DIRECTORY_SEPARATOR;
 

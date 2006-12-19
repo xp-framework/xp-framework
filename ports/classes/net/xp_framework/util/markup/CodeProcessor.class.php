@@ -12,7 +12,7 @@
    * @purpose  Processor
    */
   class CodeProcessor extends MarkupProcessor {
-    var
+    public
       $buffer = '';
 
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @return  string
      */
-    function initialize() {
+    public function initialize() {
       $this->buffer= '';
       return '';
     }
@@ -33,7 +33,7 @@
      * @param   string token
      * @return  string
      */
-    function process($token) {
+    public function process($token) {
       $this->buffer.= $token;
       return '';
     }
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */    
-    function finalize() {
+    public function finalize() {
       static $classes= array(
         T_VARIABLE                      => 'variable',
         T_CLASS                         => 'keyword',

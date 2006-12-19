@@ -16,7 +16,7 @@
    * @purpose  Unit Test
    */
   class LogCategoryTest extends TestCase {
-    var
+    public
       $logger= NULL,
       $cat   = NULL;
     
@@ -26,7 +26,7 @@
      *
      * @access  public
      */
-    function setUp() {
+    public function setUp() {
       $this->logger= &Logger::getInstance();
       $this->cat= &$this->logger->getCategory();
       $this->cat->format= '%3$s';
@@ -37,7 +37,7 @@
      *
      * @access  public
      */
-    function tearDown() {
+    public function tearDown() {
       $this->logger->finalize();
     }
     
@@ -48,7 +48,7 @@
      * @access  protected
      * @return  &util.log.LogAppender
      */
-    function &mockAppender() {
+    public function &mockAppender() {
       return newinstance('util.log.LogAppender', array(), '{
         var $messages= array();
         
@@ -66,7 +66,7 @@
      * @param   mixed[] args default ["Argument"]
      * @throws  unittest.AssertionFailedError
      */
-    function assertLog($method, $args= array('Argument')) {
+    public function assertLog($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender($this->mockAppender());
       call_user_func_array(array(&$this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)$method, $args)), $app->messages);
@@ -80,7 +80,7 @@
      * @param   mixed[] args default ["Argument"]
      * @throws  unittest.AssertionFailedError
      */
-    function assertLogf($method, $args= array('Argument')) {
+    public function assertLogf($method, $args= array('Argument')) {
       $app= &$this->cat->addAppender($this->mockAppender());
       call_user_func_array(array(&$this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)substr($method, 0, -1), (array)vsprintf(array_shift($args), $args))), $app->messages);
@@ -92,7 +92,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyNoAppenders() {
+    public function initiallyNoAppenders() {
       $this->assertFalse($this->cat->hasAppenders());
     }
 
@@ -102,7 +102,7 @@
      * @access  public
      */
     #[@test]
-    function addAppender() {
+    public function addAppender() {
       $appender= &$this->mockAppender();
       $this->assertTrue($appender === $this->cat->addAppender($appender));
     }
@@ -113,7 +113,7 @@
      * @access  public
      */
     #[@test]
-    function debug() {
+    public function debug() {
       $this->assertLog(__FUNCTION__);
     }
 
@@ -123,7 +123,7 @@
      * @access  public
      */
     #[@test]
-    function debugf() {
+    public function debugf() {
       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
     }
 
@@ -133,7 +133,7 @@
      * @access  public
      */
     #[@test]
-    function info() {
+    public function info() {
       $this->assertLog(__FUNCTION__);
     }
 
@@ -143,7 +143,7 @@
      * @access  public
      */
     #[@test]
-    function infof() {
+    public function infof() {
       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
     }
 
@@ -153,7 +153,7 @@
      * @access  public
      */
     #[@test]
-    function warn() {
+    public function warn() {
       $this->assertLog(__FUNCTION__);
     }
 
@@ -163,7 +163,7 @@
      * @access  public
      */
     #[@test]
-    function warnf() {
+    public function warnf() {
       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
     }
 
@@ -173,7 +173,7 @@
      * @access  public
      */
     #[@test]
-    function error() {
+    public function error() {
       $this->assertLog(__FUNCTION__);
     }
 
@@ -183,7 +183,7 @@
      * @access  public
      */
     #[@test]
-    function errorf() {
+    public function errorf() {
       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
     }
   }

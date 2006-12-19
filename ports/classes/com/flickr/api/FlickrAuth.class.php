@@ -12,7 +12,7 @@
    * @purpose  Authentication
    */
   class FlickrAuth extends Object {
-    var
+    public
       $frob     = '',
       $token    = '';
 
@@ -22,7 +22,7 @@
      * @access  public
      * @param   string frob
      */
-    function setFrobValue($frob) {
+    public function setFrobValue($frob) {
       $this->frob= $frob;
     }
 
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string
      */
-    function getFrobValue() {
+    public function getFrobValue() {
       return $this->frob;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @param   string token
      */
-    function setTokenValue($token) {
+    public function setTokenValue($token) {
       $this->token= $token;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function getTokenValue() {
+    public function getTokenValue() {
       return $this->token;
     }
 
@@ -62,7 +62,7 @@
      * @access  public
      * @param   &com.flickr.xmlrpc.Client client
      */
-    function getFrob(&$client) {
+    public function getFrob(&$client) {
       $res= $client->invoke('flickr.auth.getFrob', array(
         'perms' => 'read'
       ));
@@ -76,14 +76,14 @@
      * @param   &com.flickr.xmlrpc.Client client
      * @return  string url
      */
-    function getFrobURL(&$client) {
+    public function getFrobURL(&$client) {
       $arguments= array(
         'frob'  => $this->getFrobValue(),
         'perms' => 'read'
       );
       $arguments= $client->signArray($arguments);
       
-      $url= &new URL('http://flickr.com/services/auth');
+      $url= new URL('http://flickr.com/services/auth');
       $url->addParams($arguments);
       
       return $url->getURL();
@@ -96,7 +96,7 @@
      * @param   &com.flickr.xmlrpc.Client client
      * @return  mixed
      */
-    function getToken(&$client) {
+    public function getToken(&$client) {
       $res= $client->invoke('flickr.auth.getToken', array(
         'frob'  => $this->getFrobValue()
       ));

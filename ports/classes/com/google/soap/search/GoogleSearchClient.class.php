@@ -4,7 +4,7 @@
  * $Id$ 
  */
   uses(
-    'webservices.soap.SOAPClient', 
+    'webservices.soap.SOAPClient',
     'webservices.soap.transport.SOAPHTTPTransport'
   );
   
@@ -56,7 +56,7 @@
      * @access  public
      * @param   string endpoint default 'http://api.google.com/search/beta2'
      */
-    function __construct($endpoint= 'http://api.google.com/search/beta2') {
+    public function __construct($endpoint= 'http://api.google.com/search/beta2') {
       parent::__construct(
         new SOAPHTTPTransport($endpoint),
         'urn:GoogleSearch'
@@ -87,7 +87,7 @@
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
-    function doGetCachedPage($key, $url) {
+    public function doGetCachedPage($key, $url) {
       return $this->invoke(
         'doGetCachedPage',
         new Parameter('key', $key),
@@ -106,7 +106,7 @@
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
-    function doSpellingSuggestion($key, $phrase) {
+    public function doSpellingSuggestion($key, $phrase) {
       return $this->invoke(
         'doSpellingSuggestion',
         new Parameter('key', $key),
@@ -134,7 +134,7 @@
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      * @see     http://www.google.com/apis/reference.html#searchrequest Search Parameters 
      */
-    function &doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
+    public function &doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
       return $this->invoke(
         'doGoogleSearch',
         new Parameter('key', $key),

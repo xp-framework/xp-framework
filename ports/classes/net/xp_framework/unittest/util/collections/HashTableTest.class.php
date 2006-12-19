@@ -17,7 +17,7 @@
    * @purpose  Unit Test
    */
   class HashTableTest extends TestCase {
-    var
+    public
       $map= NULL;
     
     /**
@@ -25,8 +25,8 @@
      *
      * @access  public
      */
-    function setUp() {
-      $this->map= &new HashTable();
+    public function setUp() {
+      $this->map= new HashTable();
     }
         
     /**
@@ -35,7 +35,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $this->assertTrue($this->map->isEmpty());
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      */
     #[@test]
-    function equalsClone() {
+    public function equalsClone() {
       $this->map->put(new String('color'), new String('green'));
       $this->assertTrue($this->map->equals(clone($this->map)));
     }
@@ -56,8 +56,8 @@
      * @access  public
      */
     #[@test]
-    function equalsOtherMapWithSameContents() {
-      $other= &new HashTable();
+    public function equalsOtherMapWithSameContents() {
+      $other= new HashTable();
       $this->map->put(new String('color'), new String('green'));
       $other->put(new String('color'), new String('green'));
       $this->assertTrue($this->map->equals($other));
@@ -69,8 +69,8 @@
      * @access  public
      */
     #[@test]
-    function doesNotEqualMapWithDifferentContents() {
-      $other= &new HashTable();
+    public function doesNotEqualMapWithDifferentContents() {
+      $other= new HashTable();
       $this->map->put(new String('color'), new String('blue'));
       $other->put(new String('color'), new String('yellow'));
       $this->assertFalse($this->map->equals($other));
@@ -82,7 +82,7 @@
      * @access  public
      */
     #[@test]
-    function put() {
+    public function put() {
       $this->map->put(new String('color'), new String('green'));
       $this->assertFalse($this->map->isEmpty());
       $this->assertEquals(1, $this->map->size());
@@ -94,8 +94,8 @@
      * @access  public
      */
     #[@test]
-    function putReturnsPreviousValue() {
-      $color= &new String('color');
+    public function putReturnsPreviousValue() {
+      $color= new String('color');
       $this->assertNull($this->map->put($color, new String('green')));
       $this->assertEquals(new String('green'), $this->map->put($color, new String('red')));
       $this->assertEquals(new String('red'), $this->map->get($color));
@@ -107,7 +107,7 @@
      * @access  public
      */
     #[@test]
-    function get() {
+    public function get() {
       $this->map->put(new String('key'), new String('value'));
       $this->assertEquals(new String('value'), $this->map->get(new String('key')));
     }
@@ -118,7 +118,7 @@
      * @access  public
      */
     #[@test]
-    function getReturnsNullOnEmptyList() {
+    public function getReturnsNullOnEmptyList() {
       $this->assertTrue($this->map->isEmpty());
       $this->assertNull($this->map->get(new String('key')));
     }
@@ -129,7 +129,7 @@
      * @access  public
      */
     #[@test]
-    function remove() {
+    public function remove() {
       $this->map->put(new String('key'), new String('value'));
       $this->map->remove(new String('key'));
       $this->assertTrue($this->map->isEmpty());
@@ -141,7 +141,7 @@
      * @access  public
      */
     #[@test]
-    function removeReturnsPreviousValue() {
+    public function removeReturnsPreviousValue() {
       $this->map->put(new String('key'), new String('value'));
       $this->assertEquals(new String('value'), $this->map->remove(new String('key')));
     }
@@ -152,7 +152,7 @@
      * @access  public
      */
     #[@test]
-    function containsKey() {
+    public function containsKey() {
       $this->map->put(new String('key'), new String('value'));
       $this->assertTrue($this->map->containsKey(new String('key')));
       $this->assertFalse($this->map->containsKey(new String('non-existant-key')));
@@ -164,7 +164,7 @@
      * @access  public
      */
     #[@test]
-    function clear() {
+    public function clear() {
       $this->map->put(new String('key'), new String('value'));
       $this->map->clear();
       $this->assertTrue($this->map->isEmpty());
@@ -176,7 +176,7 @@
      * @access  public
      */
     #[@test]
-    function containsValue() {
+    public function containsValue() {
       $this->map->put(new String('key'), new String('value'));
       $this->assertTrue($this->map->containsValue(new String('value')));
       $this->assertFalse($this->map->containsValue(new String('non-existant-value')));
@@ -188,7 +188,7 @@
      * @access  public
      */
     #[@test]
-    function keys() {
+    public function keys() {
       $this->map->put(new String('key'), new String('value'));
       $this->assertEquals(array(new String('key')), $this->map->keys());
     }
@@ -199,7 +199,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentation() {
+    public function stringRepresentation() {
       $this->map->put(new String('color'), new String('purple'));
       $this->map->put(new String('price'), new String('25 USD'));
       $this->assertEquals(
@@ -214,7 +214,7 @@
      * @access  public
      */
     #[@test]
-    function stringRepresentationOfEmptyMap() {
+    public function stringRepresentationOfEmptyMap() {
       $this->assertEquals(
         'util.collections.HashTable[0] { }',
         $this->map->toString()

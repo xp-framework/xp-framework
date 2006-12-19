@@ -4,12 +4,14 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Accept-all filter
    *
    * @purpose  Iteration Filter
    */
-  class NullFilter extends Object {
+  class NullFilter extends Object implements IterationFilter {
   
     /**
      * Accepts an element
@@ -18,9 +20,9 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return TRUE;
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

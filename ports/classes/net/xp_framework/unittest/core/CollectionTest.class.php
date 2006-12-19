@@ -26,7 +26,7 @@
      * @access  public
      */
     #[@test, @expect('lang.ClassNotFoundException')]
-    function nonExistantClass() {
+    public function nonExistantClass() {
       Collection::forClass('@@NON-EXISTANT@@');
     }
 
@@ -36,7 +36,7 @@
      * @access  public
      */
     #[@test]
-    function initiallyEmpty() {
+    public function initiallyEmpty() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $this->assertTrue($collection->isEmpty());
       $this->assertEquals(0, $collection->size());
@@ -48,7 +48,7 @@
      * @access  public
      */
     #[@test]
-    function elementClass() {
+    public function elementClass() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $this->assertEquals(COLLECTION_CLASS_NAME, $collection->getElementClassName());
       $this->assertEquals(XPClass::forName(COLLECTION_CLASS_NAME), $collection->getElementClass());
@@ -60,7 +60,7 @@
      * @access  public
      */
     #[@test]
-    function addElement() {
+    public function addElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->add(new Binford());
       $collection->add(newinstance(COLLECTION_CLASS_NAME, array(), '{}'));
@@ -74,7 +74,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function addElementOfWrongClass() {
+    public function addElementOfWrongClass() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->add(new Object());
     }
@@ -85,7 +85,7 @@
      * @access  public
      */
     #[@test]
-    function addAll() {
+    public function addAll() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->addAll(array(new Binford(), new Binford()));
       $this->assertEquals(2, $collection->size());
@@ -98,7 +98,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function addAllWithElementOfWrongClass() {
+    public function addAllWithElementOfWrongClass() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->addAll(array(new Binford(), new Object()));
     }
@@ -109,12 +109,12 @@
      * @access  public
      */
     #[@test]
-    function addAllDoesNotModifyCollectionOnException() {
+    public function addAllDoesNotModifyCollectionOnException() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
-      try(); {
+      try {
         $collection->addAll(array(new Binford(), new Object())) &&
         $this->fail('IllegalArgumentException expected');
-      } if (catch('IllegalArgumentException', $e)) {
+      } catch (IllegalArgumentException $e) {
         // Expected behaviour
       }
       $this->assertEquals(0, $collection->size());
@@ -126,7 +126,7 @@
      * @access  public
      */
     #[@test]
-    function prependElement() {
+    public function prependElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->prepend(new Binford());
       $collection->prepend(newinstance(COLLECTION_CLASS_NAME, array(), '{}'));
@@ -140,7 +140,7 @@
      * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function prependElementOfWrongClass() {
+    public function prependElementOfWrongClass() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->prepend(new Object());
     }
@@ -151,7 +151,7 @@
      * @access  public
      */
     #[@test]
-    function getElement() {
+    public function getElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $element= &$collection->add(new Binford());
       $this->assertEquals($element, $collection->get(0));
@@ -164,7 +164,7 @@
      * @access  public
      */
     #[@test]
-    function removeElement() {
+    public function removeElement() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $element= &$collection->add(new Binford());
       $this->assertEquals($element, $collection->remove(0));
@@ -177,7 +177,7 @@
      * @access  public
      */
     #[@test]
-    function clearCollection() {
+    public function clearCollection() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $collection->add(new Binford());
       $collection->clear();
@@ -190,7 +190,7 @@
      * @access  public
      */
     #[@test]
-    function elementContained() {
+    public function elementContained() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $e1= &$collection->add(new Binford());
       $e2= &$collection->add(new Binford());
@@ -205,7 +205,7 @@
      * @access  public
      */
     #[@test]
-    function elementIndex() {
+    public function elementIndex() {
       $collection= &Collection::forClass(COLLECTION_CLASS_NAME);
       $e1= &$collection->add(new Binford());
       $e2= &$collection->add(new Binford());
@@ -220,8 +220,8 @@
      * @access  public
      */
     #[@test]
-    function listEquality() {
-      $element= &new Binford();
+    public function listEquality() {
+      $element= new Binford();
       $c1= &Collection::forClass(COLLECTION_CLASS_NAME);
       $c1->add($element);
 

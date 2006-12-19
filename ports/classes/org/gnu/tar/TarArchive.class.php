@@ -22,7 +22,7 @@
    * @see http://www.gnu.org/software/tar/tar.html
    */
   class TarArchive extends Object {
-    var
+    public
       $file;
     
     /**
@@ -31,7 +31,7 @@
      * @access  public
      * @param   io.File file File-Objekt
      */  
-    function __construct($file) {
+    public function __construct($file) {
       $this->file= $file;
       
     }
@@ -43,7 +43,7 @@
      * @param   mixed args Argumente für die open()-Method des Datei-Objekts
      * @return  bool Das Ergebnis der open()-Method des Datei-Objekts
      */
-    function open() {
+    public function open() {
       $args= func_get_args();
       return call_user_func_array(
         array(&$this->file, 'open'), 
@@ -57,7 +57,7 @@
      * @access  public
      * @return  bool Das Ergebnis der close()-Method des Datei-Objekts
      */
-    function close() {
+    public function close() {
       return $this->file->close();
     }
     
@@ -67,7 +67,7 @@
      * @access  public
      * @return  io.TarArchiveEntry Eintrag 
      */
-    function getEntry() {
+    public function getEntry() {
       static $size= 0;
       
       // Am EOF nicht mehr weiterlesen
@@ -85,7 +85,7 @@
       if ('' == trim($data['filename'])) return FALSE;
       
       // TarArchiveEntry-Objekt erzeugen
-      $f= &new TarArchiveEntry(
+      $f= new TarArchiveEntry(
         $data, 
         $this->file->tell()
       );
@@ -103,7 +103,7 @@
      * @param   io.TarArchiveEntry e TarArchvieEntry-Objekt
      * @return  string content
      */
-    function getEntryData($e) {
+    public function getEntryData($e) {
       $this->file->seek($e->offset);
       $content= $this->file->read($e->size);
       $this->file->seek($e->offset);
