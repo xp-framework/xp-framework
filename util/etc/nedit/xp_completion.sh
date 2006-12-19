@@ -14,12 +14,7 @@
 
 export SED_CMD=`which gsed sed 2>/dev/null | head -n1`
 
-# Slow, but secure
-# export PHP_INCLUDE_PATH=`php -r 'echo ini_get("include_path");'`
-
-# Fast, but less error prone
-PHP_INI=/etc/php/cli-php4/php.ini
-export PHP_INCLUDE_PATH=`grep ^include_path $PHP_INI | cut -d '"' -f 2`
+export PHP_INCLUDE_PATH=`php -r 'echo ini_get("include_path");'`
 
 
 _xpclasses() {
