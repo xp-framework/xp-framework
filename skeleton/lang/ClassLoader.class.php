@@ -128,7 +128,7 @@
         if (FALSE === eval($bytes)) {
           throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
-        if (!class_exists($name)) {
+        if (!class_exists($name) && !interface_exists($name)) {
           throw(new FormatException('Class "'.$qname.'" not defined'));
         }
         xp::registry('class.'.$name, $qname);
