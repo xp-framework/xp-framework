@@ -62,8 +62,12 @@
     Console::writeLine('*** Missing classname');
     exit(1);
   }
-  
-  $class= XPClass::forName($classname);
+  try {
+    $class= XPClass::forName($classname);
+  } catch (ClassNotFoundException $e) {
+    Console::writeLine('*** ', $e->getMessage());
+    exit(1);
+  }  
   
   // Usage
   if ($classparams->exists('help', '?')) {
