@@ -20,7 +20,7 @@
   class DiaDiagram extends DiaCompound {
 
     public
-      $ns= array('dia' => 'http://www.gnome.org/projects/dia/'),
+      $ns= array('dia' => 'http://www.lysator.liu.se/~alla/dia/'), // new (unused) 'http://www.gnome.org/projects/dia/'
       $node_name= 'dia:diagram';
 
     /**

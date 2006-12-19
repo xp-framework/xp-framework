@@ -150,7 +150,10 @@
      */
     public function beginAt($id, $connpoint= 0) {
       $Conns= &$this->getChild('connections');
-      $Conns->set('begin', new DiaConnection("0, $id, $connpoint"));
+      $Conn= new DiaConnection(0);
+      $Conn->setTo($id);
+      $Conn->setConnection($connpoint);
+      $Conns->set('begin', $Conn);
     }
 
     /**
@@ -163,7 +166,10 @@
      */
     public function endAt($id, $connpoint= 0) {
       $Conns= &$this->getChild('connections');
-      $Conns->set('end', new DiaConnection("1, $id, $connpoint"));
+      $Conn= new DiaConnection(1);
+      $Conn->setTo($id);
+      $Conn->setConnection($connpoint);
+      $Conns->set('end', $Conn);
     }
 
   }

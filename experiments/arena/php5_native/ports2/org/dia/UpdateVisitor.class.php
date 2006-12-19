@@ -101,6 +101,8 @@
       Console::writeLine("Existing classes: ", implode(', ', $this->existing_classes));
       Console::writeLine("Updated classes: ", implode(', ', $this->updated_classes));
       Console::writeLine("Added classes: ", implode(', ', $this->added_classes));
+
+      Console::writeLine('UpdateVisitor used up '.round(memory_get_usage()/1024, 2).' Kb of memory.');
     }
 
     /**

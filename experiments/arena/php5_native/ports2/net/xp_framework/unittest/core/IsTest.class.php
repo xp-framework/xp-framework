@@ -65,11 +65,13 @@
       $cl= &ClassLoader::getDefault();
       $cl->defineClass(
         'DestructionCallbackImpl', 
-        'class DestructionCallbackImpl extends Object {
+        'lang.Object',
+        array('net.xp_framework.unittest.core.DestructionCallback'),
+        '{
           function onDestruction(&$object) { 
             // ... Implementation here
           }
-        } implements("DestructionCallbackImpl.class.php", "net.xp_framework.unittest.core.DestructionCallback");'
+        }'
       );
       $cl->defineClass(
         'DestructionCallbackImplEx', 
