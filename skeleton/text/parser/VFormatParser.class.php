@@ -32,7 +32,7 @@
    * @purpose  Parser
    */
   class VFormatParser extends Object {
-    var
+    public
       $identifier   = '',
       $handlers     = array();
       
@@ -42,7 +42,7 @@
      * @access  public
      * @param   string identifier, e.g. "VCARD"
      */
-    function __construct($identifier) {
+    public function __construct($identifier) {
       $this->identifier= $identifier;
     }
     
@@ -52,7 +52,7 @@
      * @access  public
      * @param   function func
      */
-    function setDefaultHandler($func) {
+    public function setDefaultHandler($func) {
       $this->handlers[NULL]= &$func;
     }
     
@@ -63,7 +63,7 @@
      * @param   string element
      * @param   function func
      */
-    function setHandler($element, $func) {
+    public function setHandler($element, $func) {
       $this->handlers[$element]= &$func;
     }
     
@@ -81,7 +81,7 @@
      * @param   string str
      * @return  string
      */
-    function decodeString($str) {
+    public static function decodeString($str) {
       return strtr(utf8_decode($str), array(
         '\,'    => ',',
         '\N'    => "\n",
@@ -102,7 +102,7 @@
      * @param   string str
      * @return  int
      */
-    function decodeDate($str) {
+    public static function decodeDate($str) {
       $parts= sscanf($str, '%4d%2d%2dT%2d%2d%2d');
       return mktime($parts[3], $parts[4], $parts[5], $parts[1], $parts[2], $parts[0]);
     }
@@ -115,11 +115,11 @@
      * @return  bool success
      * @throws  lang.FormatException
      */
-    function parse(&$stream) {
+    public function parse(&$stream) {
       $stream->open(STREAM_MODE_READ);
       if (!($result= $this->_checkHeader($l= $stream->readLine()))) {
         $stream->close();
-        return throw(new FormatException(
+        throw(new FormatException(
           'Expecting "BEGIN:'.$this->identifier.'", have "'.$l.'"'
         ));
       }
@@ -171,7 +171,7 @@
       return $r;
     }
     
-    function _parseProperties($str) {
+    public function _parseProperties($str) {
       $arr= array();
       $key= $val= ''; $tok= strtok ($str, ";:=");
       while ($tok) {
@@ -197,14 +197,14 @@
      * @param   string value
      * @return  bool success
      */
-    function _parse($key, $value) {
+    public function _parse($key, $value) {
      
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
         $props= explode(';', $key);
         $kargs= array (strtoupper (array_shift ($props)));
 
-        $val= &new stdClass();
+        $val= new stdClass();
         $val->_value= $value;
         foreach ($this->_parseProperties (implode(';', $props)) as $pname => $pvalue) {
           $val->{$pname}= $pvalue;
@@ -238,10 +238,10 @@
         $func= $this->handlers[NULL];
       }
       
-      try(); {
+      try {
         call_user_func($func, $kargs, $value);
-      } if (catch('FormatException', $e)) {
-        return throw(new MethodNotImplementedException(
+      } catch (FormatException $e) {
+        throw(new MethodNotImplementedException(
           'Errors during invokation of callback for "'.$kargs[0].'": '.$e->getMessage(),
           (is_array($func) ? get_class($func[0]).'::'.$func[1] : $func)
         ));
@@ -257,7 +257,7 @@
      * @param   string l Line where header is supposedly located
      * @return  bool valid
      */
-    function _checkHeader($l) {
+    public function _checkHeader($l) {
       return (strcasecmp(
         'BEGIN:'.$this->identifier,
         substr($l, 0, strlen($this->identifier)+ 6)
@@ -271,7 +271,7 @@
      * @param   string l Line where footer is supposedly located
      * @return  bool valid
      */
-    function _checkFooter($l) {
+    public function _checkFooter($l) {
       return (strcasecmp(
         'END:'.$this->identifier,
         substr($l, 0, strlen($this->identifier)+ 4)

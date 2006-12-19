@@ -23,7 +23,7 @@
      * @return  resource
      * @throws  img.ImagingException
      */    
-    function readFromStream() {
+    public function readFromStream() {
       return imagecreatefromgd2($this->stream->getURI());
     }
   }

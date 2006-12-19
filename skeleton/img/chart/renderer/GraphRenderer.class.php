@@ -10,7 +10,7 @@
    * @see      xp://img.chart.Chart
    * @purpose  Interface
    */
-  class GraphRenderer extends Interface {
+  interface GraphRenderer {
   
     /**
      * Renders a chart
@@ -19,6 +19,6 @@
      * @param   &img.chart.Chart chart
      * @return  &mixed
      */
-    function &render(&$chart) { }
+    public function &render(&$chart);
   }
 ?>

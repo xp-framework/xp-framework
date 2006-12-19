@@ -58,11 +58,11 @@
    * @purpose  Access Berkeley DB style databases.
    */
   class DBAFile extends Object {
-    var
+    public
       $filename = '',
       $handler  = '';
 
-    var
+    public
       $_fd      = NULL;
       
     /**
@@ -73,7 +73,7 @@
      * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
      */
-    function __construct($filename, $handler) {
+    public function __construct($filename, $handler) {
       $this->filename= $filename;
       $this->handler= $handler;
     }
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @return  string
      */
-    function getHandler() {
+    public function getHandler() {
       return $this->handler;
     }
   
@@ -106,14 +106,14 @@
      * @return  bool
      * @throws  io.IOException in case opening the file fails
      */
-    function open($mode= DBO_CREATE) {
+    public function open($mode= DBO_CREATE) {
       if (!is_resource($this->_fd= dba_open(
         $this->filename, 
         $mode, 
         $this->handler
       ))) {
         $this->_fd= -1;
-        return throw(new IOException(
+        throw(new IOException(
           'Could not open '.$this->handler.'://'.$this->filename.' mode "'.$mode.'"'
         ));
       }
@@ -127,7 +127,7 @@
      * @return  &io.dba.DBAIterator
      * @see     xp://io.dba.DBAIterator
      */
-    function &iterator() {
+    public function &iterator() {
       return new DBAIterator($this->_fd);
     }
     
@@ -142,10 +142,10 @@
      * @throws  io.IOException in case fetching the keys fails
      * @see     xp://io.dba.DBAFile#iterator
      */
-    function keys() {
+    public function keys() {
       $keys= array();
       if (NULL === ($k= dba_firstkey($this->_fd))) {
-        return throw(new IOException('Could not fetch first key'));
+        throw(new IOException('Could not fetch first key'));
       }
       while (is_string($k)) {
         $keys[]= $k;
@@ -166,14 +166,14 @@
      * @throws  io.IOException in case writing failed
      * @see     xp://io.dba.DBAFile#store
      */
-    function insert($key, $value) {
+    public function insert($key, $value) {
       if (!dba_insert($key, $value, $this->_fd)) {
       
         // dba_insert() failed due to the fact key already existed
         if (dba_exists($key, $this->_fd)) return FALSE;
         
         // dba_insert() failed to any other reason
-        return throw(new IOException('Could not insert key "'.$key.'"'));
+        throw(new IOException('Could not insert key "'.$key.'"'));
       }
       return TRUE;
     }
@@ -189,9 +189,9 @@
      * @throws  io.IOException in case writing failed
      * @see     xp://io.dba.DBAFile#insert
      */
-    function store($key, $value) {
+    public function store($key, $value) {
       if (!dba_replace($key, $value, $this->_fd)) {
-        return throw(new IOException('Could not replace key "'.$key.'"'));
+        throw(new IOException('Could not replace key "'.$key.'"'));
       }
       return TRUE;
     }
@@ -204,9 +204,9 @@
      * @return  bool success
      * @throws  io.IOException in case writing failed
      */
-    function delete($key) {
+    public function delete($key) {
       if (!dba_delete($key, $this->_fd)) {
-        return throw(new IOException('Could not delete key "'.$key.'"'));
+        throw(new IOException('Could not delete key "'.$key.'"'));
       }
       return TRUE;
     }
@@ -218,7 +218,7 @@
      * @param   string key
      * @return  bool TRUE if the specified key exists
      */
-    function lookup($key) {
+    public function lookup($key) {
       return dba_exists($key, $this->_fd);
     }
     
@@ -231,10 +231,10 @@
      * @return  bool success
      * @throws  io.IOException in case reading failed
      */
-    function fetch($key) {
+    public function fetch($key) {
       $r= dba_fetch($key, $this->_fd);
       if (NULL === $r) {
-        return throw(new IOException('Could not fetch key "'.$key.'"'));
+        throw(new IOException('Could not fetch key "'.$key.'"'));
       }
       return $r;
     }
@@ -248,12 +248,12 @@
      * @return  bool success
      * @throws  io.IOException in case saving and/or optimizing failed
      */    
-    function save($optimize= FALSE) {
+    public function save($optimize= FALSE) {
       if ($optimize) if (!dba_optimize($this->_fd)) {
-        return throw(new IOException('Could not optimize database'));
+        throw(new IOException('Could not optimize database'));
       }
       if (!dba_sync($this->_fd)) {
-        return throw(new IOException('Could not save database'));
+        throw(new IOException('Could not save database'));
       }
       return TRUE;
     }
@@ -264,7 +264,7 @@
      * @access  public
      * @return  bool
      */
-    function close() {
+    public function close() {
       $r= dba_close($this->_fd);
       $this->_fd= NULL;
       return $r;

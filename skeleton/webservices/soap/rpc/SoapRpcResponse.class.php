@@ -19,7 +19,7 @@
      * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
-    function process() {
+    public function process() {
       if (!$this->message) return;
 
       $this->setHeader('Content-type', 'text/xml');      

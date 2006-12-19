@@ -4,15 +4,19 @@
  * $Id$ 
  */
   
-  uses('rdbms.ConnectionNotRegisteredException', 'rdbms.DriverManager');
+  uses(
+    'rdbms.ConnectionNotRegisteredException',
+    'rdbms.DriverManager',
+    'util.Configurable'
+  );
   
   /**
    * ConnectionManager
    *
    * @purpose  Hold connections to databases
    */
-  class ConnectionManager extends Object {
-    var 
+  class ConnectionManager extends Object implements Configurable {
+    public 
       $pool= array();
     
     /**
@@ -22,7 +26,7 @@
      * @access  public
      * @return  &rdbms.ConnectionManager
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ConnectionManager();
@@ -46,13 +50,13 @@
      * @return  bool
      * @throws  rdbms.DriverNotSupportedException
      */
-    function configure(&$properties) {
+    public function configure(&$properties) {
       $section= $properties->getFirstSection();
       if ($section) do {
-        try(); {
+        try {
           $conn= &DriverManager::getConnection($properties->readString($section, 'dsn'));
-        } if (catch('DriverNotSupportedException', $e)) {
-          return throw($e);
+        } catch (DriverNotSupportedException $e) {
+          throw($e);
         }
 
         if (FALSE !== ($p= strpos($section, '.'))) {
@@ -73,7 +77,7 @@
      * @access  public
      * @return  rdbms.DBConnection[]
      */
-    function getConnections() {
+    public function getConnections() {
       return array_values($this->pool);
     }
     
@@ -85,7 +89,7 @@
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    function &register(&$conn, $hostAlias= NULL, $userAlias= NULL) {
+    public function &register(&$conn, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       
@@ -104,9 +108,9 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
-    function &get($host, $user) {
+    public function &get($host, $user) {
       if (!isset($this->pool[$user.'@'.$host])) {
-        return throw(new ConnectionNotRegisteredException(
+        throw(new ConnectionNotRegisteredException(
           'No connections registered for '.$user.'@'.$host
         ));
       }
@@ -121,14 +125,14 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
-    function &getByHost($hostName, $num= -1) {
+    public function &getByHost($hostName, $num= -1) {
       $results= array();
       foreach (array_keys($this->pool) as $id) {
         list ($user, $host)= explode('@', $id);
         if ($hostName == $host) $results[]= &$this->pool[$id];
       }
       if (sizeof($results) < 1) {
-        return throw(new ConnectionNotRegisteredException(
+        throw(new ConnectionNotRegisteredException(
           'No connections registered for '.$hostName
         ));
       }
@@ -139,5 +143,5 @@
       return $results[$num];
     }
 
-  } implements(__FILE__, 'util.Configurable');
+  } 
 ?>

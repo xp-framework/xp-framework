@@ -22,14 +22,14 @@
      * @return  &security.crypto.PublicKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       if (!is_resource($_hdl= openssl_pkey_get_public($string))) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not read public key', OpenSslUtil::getErrors()
         ));
       }
       
-      $pk= &new PublicKey($_hdl);
+      $pk= new PublicKey($_hdl);
       return $pk;
     }
     
@@ -45,9 +45,9 @@
      * @return  bool TRUE if data + signature are valid
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function verify($data, $signature) {
+    public function verify($data, $signature) {
       if (-1 === ($res= openssl_verify($data, $signature, $this->_hdl))) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Error verifying signature', OpenSslUtil::getErrors()
         ));
       }
@@ -69,9 +69,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function encrypt($data) {
+    public function encrypt($data) {
       if (FALSE === openssl_public_encrypt($data, $out, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Error encrypting data', OpenSslUtil::getErrors()
         ));
       }
@@ -88,9 +88,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function decrypt($data) {
+    public function decrypt($data) {
       if (FALSE === openssl_public_decrypt($data, $decrypted, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
         ));
       }
@@ -108,9 +108,9 @@
      * @return  array<string,string>[1] first element is data, second is the key
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function seal($data) {
+    public function seal($data) {
       if (FALSE === openssl_seal($data, $sealed, $keys, array($this->_hdl))) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not seal data', OpenSslUtil::getErrors()
         ));
       }

@@ -14,7 +14,7 @@
    * @purpose  Mapping for QNames
    */
   class SOAPMapping extends Object {
-    var
+    public
       $_classes     = array(),
       $_qnames      = array(),
       $_q2c         = array(),
@@ -28,15 +28,15 @@
      * @param   &lang.XPClass class
      * @throws  lang.IllegalArgumentException
      */
-    function registerMapping(&$qname, &$class) {
+    public function registerMapping(&$qname, &$class) {
       if (!is('xml.QName', $qname)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Argument class is not an xml.QName (given: '.xp::typeOf($qname).')'
         ));
       }
       
       if (!is('lang.XPClass', $class)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Argument class is not an XPClass (given: '.xp::typeOf($class).')'
         ));
       }
@@ -54,7 +54,7 @@
      * @param   &lang.XPClass class
      * @return  &mixed xml.QName or NULL if no mapping exists
      */
-    function &qnameFor(&$class) {
+    public function &qnameFor(&$class) {
       if (!is('lang.XPClass', $class) || !isset($this->_c2q[$class->getName()])) return NULL;
       return $this->_qnames[$this->_c2q[$class->getName()]];
     }
@@ -66,7 +66,7 @@
      * @param   &xml.QName qname
      * @return  &mixed lang.XPClass or NULL if no mapping exists
      */
-    function &classFor(&$qname) {
+    public function &classFor(&$qname) {
       if (!is('xml.QName', $qname) || !isset($this->_q2c[$qname->toString()])) return NULL;
       return $this->_classes[$this->_q2c[$qname->toString()]];
     }

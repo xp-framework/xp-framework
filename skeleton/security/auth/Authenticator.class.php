@@ -12,7 +12,7 @@
    *
    * @purpose  Authenticator
    */
-  class Authenticator extends Interface {
+  interface Authenticator {
   
     /**
      * Authenticate a user
@@ -23,6 +23,6 @@
      * @return  bool
      * @throws  security.auth.AuthenticatorException
      */
-    function authenticate($user, $pass) { }
+    public function authenticate($user, $pass);
   }
 ?>

@@ -12,7 +12,7 @@
    * @see      xp://lang.Exception
    * @purpose  Exception
    */
-  class IOException extends Exception {
+  class IOException extends XPException {
   
   }
 ?>

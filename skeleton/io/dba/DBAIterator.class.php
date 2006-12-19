@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterator over the keys of a DBA object
    *
@@ -21,8 +23,8 @@
    * @ext      dba
    * @purpose  Iterator
    */
-  class DBAIterator extends Object {
-    var
+  class DBAIterator extends Object implements XPIterator {
+    public
       $_key     = NULL,
       $_fd      = NULL;
   
@@ -33,7 +35,7 @@
      * @param   resource fd
      * @see     xp://io.dba.DBAFile#iterator
      */
-    function __construct($fd) {
+    public function __construct($fd) {
       
       $this->_fd= $fd;
     }
@@ -46,7 +48,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() {
+    public function hasNext() {
       if (NULL === $this->_key) {   // First call
         $this->_key= dba_firstkey($this->_fd);
       } else {                      // Subsequent calls
@@ -62,11 +64,11 @@
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() {
+    public function &next() {
       if (!is_string($this->_key)) {
-        return throw(new NoSuchElementException('No more elements'));
+        throw(new NoSuchElementException('No more elements'));
       }
       return $this->_key;
     }
-  } implements(__FILE__, 'util.Iterator');
+  } 
 ?>

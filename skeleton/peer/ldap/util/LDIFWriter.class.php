@@ -41,7 +41,7 @@
    * @purpose  LDIF Writer
    */
   class LDIFWriter extends Object {
-    var
+    public
       $stream       = NULL;
       
     /**
@@ -50,7 +50,7 @@
      * @access  public
      * @param   &io.Stream stream
      */
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &$stream;
       
     }
@@ -62,7 +62,7 @@
      * @param   string mode default STREAM_MODE_WRITE
      * @return  bool success
      */
-    function initialize($mode= STREAM_MODE_WRITE) {
+    public function initialize($mode= STREAM_MODE_WRITE) {
       return $this->stream->open($mode);
     }
     
@@ -73,9 +73,9 @@
      * @param   &peer.ldap.LDAPEntry entry
      * @throws  lang.IllegalArgumentException in case the parameter is not an LDAPEntry object
      */
-    function write(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException(
+    public function write(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException(
           'Parameter entry is expected to be a peer.ldap.LDAPEntry object (given: '.xp::typeOf($entry).')'
         ));
       }

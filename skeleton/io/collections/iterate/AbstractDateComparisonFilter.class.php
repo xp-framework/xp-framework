@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Date comparison iteration filter
    *
    * @purpose  Iteration Filter
    */
-  class AbstractDateComparisonFilter extends Object {
-    var
+  class AbstractDateComparisonFilter extends Object implements IterationFilter {
+    public
       $date= NULL;
       
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function __construct(&$date) {
+    public function __construct(&$date) {
       $this->date= &$date;
     }
     
@@ -31,7 +33,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) { }
+    public function accept(&$element) { }
 
     /**
      * Creates a string representation of this iterator
@@ -39,9 +41,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->date->toString().')';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

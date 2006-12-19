@@ -19,11 +19,11 @@
    * @experimental
    */
   class MaildirStore extends MailStore {
-    var 
+    public 
       $cache= NULL,
       $currentFolder= NULL;
     
-    var
+    public
       $_folder= NULL,
       $_root=   NULL;
       
@@ -32,7 +32,7 @@
      *
      * @access public
      */
-    function __construct($cache= NULL) {
+    public function __construct($cache= NULL) {
       parent::__construct($cache);
     }
     
@@ -44,14 +44,14 @@
      * @param   string folder default NULL
      * @return  boolean success
      */    
-    function open($folder= NULL) {
+    public function open($folder= NULL) {
       if (NULL === $folder)
         $folder= getenv ('HOME').DIRECTORY_SEPARATOR.'Maildir';
       
-      try(); {
-        $this->_folder= &new Folder ($folder);
+      try {
+        $this->_folder= new Folder ($folder);
         $this->_folder->open();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->_folder= NULL;
         return $e;
       }
@@ -69,7 +69,7 @@
      * @param   string folder
      * @return  string realfolder
      */
-    function _getFolderName($folder) {
+    public function _getFolderName($folder) {
       return str_replace (
         $this->_root,
         '',
@@ -83,7 +83,7 @@
      * @access  public
      * @return  bool
      */
-    function close() {
+    public function close() {
       return $this->_folder->close();
     }
     
@@ -95,14 +95,14 @@
      * @param   string foldername
      * @return  &peer.mail.MailFolder folder;
      */    
-    function &getFolder($name) {
-      $f= &new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
+    public function &getFolder($name) {
+      $f= new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
       if (!$f->exists())
-        return throw (new MessagingException (
+        throw (new MessagingException (
           'Maildir does not exist: '.$f->getURI()
         ));
       
-      $mf= &new MailFolder ($this, $name);
+      $mf= new MailFolder ($this, $name);
       return $mf;
     }
     
@@ -112,12 +112,12 @@
      * @access  public
      * @return  &array* folders array of peer.mail.MailFolder objects
      */
-    function &getFolders() {
+    public function &getFolders() {
       $f= array();
       while ($entry= $this->_folder->getEntry()) {
         if (is_dir ($this->_folder->getURI().DIRECTORY_SEPARATOR.$entry)) {
           if ('.' != $entry{0} || '.' == $entry || '..' == $entry) {
-            $f[]= &new MailFolder (
+            $f[]= new MailFolder (
               $this,
               $this->_getFolderName ($entry)
             );
@@ -138,7 +138,7 @@
      * @throws  lang.IllegalAccessException if another folder is still open
      * @throws  io.IOException if folder cannot be opened
      */
-    function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder(&$f, $readonly= FALSE) {
       // Is it already open?
       if ($this->currentfolder === $f->name)
         return TRUE;
@@ -146,17 +146,17 @@
       // Only one open folder at a time
       if (NULL !== $this->currentfolder) {
         trigger_error('Currently open Folder: '.$this->currentfolder, E_USER_NOTICE);
-        return throw(new IllegalAccessException(
+        throw(new IllegalAccessException(
           'There can only be one open folder at a time. Close the currently open folder first.',
           $f->name
         ));      
       }
       
-      try(); {
-        $nf= &new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
+      try {
+        $nf= new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
         $nf->open();
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       $this->_folder= &$nf;
@@ -173,10 +173,10 @@
      * @return  boolean success
      * @throws  lang.IllegalArgumentException if folder is not opened folder
      */    
-    function closeFolder(&$f) {
+    public function closeFolder(&$f) {
       // Is it already open?
       if ($this->currentfolder !== $f->name)
-        return throw (new IllegalArgumentException (
+        throw (new IllegalArgumentException (
           'Cannot close non-opened folder!',
           $f->name
         ));
@@ -195,21 +195,21 @@
      * @param   int attr default 0xFFFF
      * @return  int count
      */    
-    function getMessageCount(&$f, $attr= 0xFFFF) {
+    public function getMessageCount(&$f, $attr= 0xFFFF) {
       $this->openFolder ($f);
-      $f= &new Folder ($f->name.DIRECTORY_SEPARATOR.'cur');
+      $f= new Folder ($f->name.DIRECTORY_SEPARATOR.'cur');
       if (!$f->exists())
         return 0;
       
       $cnt= 0;
-      try(); {
+      try {
         $f->open();
         while ($e= $f->getEntry()) {
           if ($attr & $this->_getMailFlags ($e)) $cnt++;
         }
         $f->close();
-      } if (catch('Exception', $e)) {
-        return throw ($e);
+      } catch (Exception $e) {
+        throw ($e);
       }
       
       return $cnt;
@@ -224,7 +224,7 @@
      * @param   int number
      * @return  string uri
      */    
-    function _getMessageURI(&$f, $nr) {
+    public function _getMessageURI(&$f, $nr) {
       $this->_folder->rewind();
 
       while (FALSE !== ($entry= $this->_folder->getEntry()) && $nr <= $i++) {
@@ -241,7 +241,7 @@
      * @param string filename
      * @return int flags
      */    
-    function _getMailFlags($filename) {
+    public function _getMailFlags($filename) {
       static
         $maildirFlagMatrix= array (
           'R' => MAIL_FLAG_ANSWERED,
@@ -268,16 +268,16 @@
      * @return  &peer.mail.Message
      * @throws  io.IOException if file cannot be read
      */    
-    function &_readMessageRaw($filename) {
+    public function &_readMessageRaw($filename) {
       $header= '';
       $body= '';
-      try(); {
-        $f= &new File ($filename);
+      try {
+        $f= new File ($filename);
         $f->open ();
         $d= $f->read ($f->size());
         $f->close();
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
     
       if (FALSE === ($hdrEnd= strpos ($d, "\n\r\n\r")))
@@ -286,7 +286,7 @@
       $h= substr ($c, 0, $hdrEnd);
       $b= substr ($c, $hdrEnd);
       
-      $msg= &new Message();
+      $msg= new Message();
       $msg->setHdrString ($h);
       $msg->setBody ($b);
       
@@ -302,7 +302,7 @@
      * @param   mixed* msgnums
      * @return  array messages
      */    
-    function getMessages(&$f) {
+    public function getMessages(&$f) {
       $this->openFolder ($f);
       if (1 == func_num_args()) {
         $count= $this->getMessageCount ();
@@ -320,9 +320,9 @@
         $filename= $this->_getMessageURI($f, $msg);
         $flags= $this->_getMailFlags($filename);
         
-        try(); {
+        try {
           $msg= &$this->_readMessageRaw($filename);
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
         
           // Ignore any errors
           continue;

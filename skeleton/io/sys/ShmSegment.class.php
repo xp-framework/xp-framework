@@ -23,7 +23,7 @@
    * @see       xp://io.sys.Semaphore
    */
   class ShmSegment extends Object {
-    var 
+    public 
       $name     = '',
       $spot     = '';
       
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
       $str= str_pad($name, 4, 'Z');
       $this->spot= '';
@@ -50,7 +50,7 @@
      * @access  private
      * @return  &mixed data
      */
-    function &_get() {
+    public function &_get() {
       $h= shm_attach($this->spot);
       $data= shm_get_var($h, $this->name);
       shm_detach($h);
@@ -65,7 +65,7 @@
      * @access  public
      * @return  bool TRUE if this segment is empty
      */
-    function isEmpty() {
+    public function isEmpty() {
       return (FALSE === $this->_get());
     }
     
@@ -76,9 +76,9 @@
      * @return  &mixed data
      * @throws  io.IOException in case an error occurs
      */
-    function &get() {
+    public function &get() {
       if (FALSE === ($data= $this->_get())) {
-        return throw(new IOException('Could not read segment '.$this->name));
+        throw(new IOException('Could not read segment '.$this->name));
       }
       
       return $data[0];
@@ -93,13 +93,13 @@
      * @return  bool success
      * @throws  io.IOException in case an error occurs
      */
-    function put(&$val, $permissions= 0666) {
+    public function put(&$val, $permissions= 0666) {
       $v= array($val);
       $h= shm_attach($this->spot, (strlen(serialize($v)) + 44) * 2, $permissions);
       $ret= shm_put_var($h, $this->name, $v);
       shm_detach($h);
       if (FALSE === $ret) {
-        return throw(new IOException('Could not write segment '.$this->name));
+        throw(new IOException('Could not write segment '.$this->name));
       }
       
       return $ret;
@@ -112,13 +112,13 @@
      * @return  bool success
      * @throws  io.IOException in case an error occurs
      */
-    function remove() {
+    public function remove() {
       $h= shm_attach($this->spot);
       $ret= shm_remove_var($h, $this->name);
       shm_detach($h);
       
       if (FALSE === $ret) {
-        return throw(new IOException('Could not remove segment '.$this->name));
+        throw(new IOException('Could not remove segment '.$this->name));
       }
       
       return $ret;

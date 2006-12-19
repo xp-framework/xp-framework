@@ -15,7 +15,7 @@
    * @purpose  Writer
    */
   class XbmStreamWriter extends StreamWriter {
-    var
+    public
       $foreground  = 0;
     
     /**
@@ -25,7 +25,7 @@
      * @param   &io.Stream stream
      * @param   int foreground default 0
      */
-    function __construct(&$stream, $foreground= 0) {
+    public function __construct(&$stream, $foreground= 0) {
       parent::__construct($stream);
       $this->foreground= $foreground;
     }
@@ -37,7 +37,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    function output($handle) {
+    public function output($handle) {
       return imagexbm($handle, '', $this->foreground);
     }
   }

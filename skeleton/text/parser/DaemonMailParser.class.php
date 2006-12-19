@@ -5,8 +5,8 @@
  */
 
   uses(
-    'peer.mail.Message', 
-    'text.parser.DaemonMessage', 
+    'peer.mail.Message',
+    'text.parser.DaemonMessage',
     'text.parser.DaemonMailParserException',
     'text.parser.DaemonMailParserAutoresponderException'
   );
@@ -51,7 +51,7 @@
    * @purpose  DaemonMail Parser
    */
   class DaemonMailParser extends Object {
-    var
+    public
       $_hcb = array();
       
       
@@ -62,7 +62,7 @@
      * @param   string element
      * @param   function func
      */
-    function addHeaderFound($header, $func) {
+    public function addHeaderFound($header, $func) {
       $this->_hcb[]= array($header, NULL, &$func);
     }
 
@@ -74,7 +74,7 @@
      * @param   string regex
      * @param   function func
      */
-    function addHeaderMatch($header, $regex, $func) {
+    public function addHeaderMatch($header, $regex, $func) {
       $this->_hcb[]= array($header, $regex, &$func);
     }
     
@@ -97,7 +97,7 @@
      * @param   string str
      * @param   &text.parser.DaemonMessage daemonmessage
      */
-    function _parseDeliveryStatus($str, &$daemonmessage) {
+    public function _parseDeliveryStatus($str, &$daemonmessage) {
       $l= strtok(chop($str), "\n");
       $r= array();
       do {
@@ -148,7 +148,7 @@
      * @throws  lang.FormatException
      * @throws  lang.IllegalArgumentException
      */
-    function parse(&$message) {
+    public function parse(&$message) {
       static $magic= array(
         '550'                    => DAEMON_GENERIC,
         '5.5.0'                  => DAEMON_GENERIC,
@@ -165,8 +165,8 @@
         'Delay'                  => DAEMON_DELAYED,
       );
       
-      if (!is_a($message, 'Message')) {
-        return throw(new IllegalArgumentException(
+      if (!is('Message', $message)) {
+        throw(new IllegalArgumentException(
           'Parameter message is not peer.mail.Message object (given: '.xp::typeOf($message).')'
         ));
       }
@@ -177,14 +177,14 @@
       // "In-Reply-To": These are stupid autoresponders or people replying 
       // to an address they shouldn't be.
       if (NULL !== ($irt= $message->getHeader('In-Reply-To'))) {
-        return throw(new DaemonMailParserAutoresponderException(
+        throw(new DaemonMailParserAutoresponderException(
           'Message has In-Reply-To header, Mailer Daemons do not set these [hint: Lame autoresponders do]',
           $message
         ));
       }
       
       // Set up daemon mail object
-      $daemonmessage= &new DaemonMessage();
+      $daemonmessage= new DaemonMessage();
       $daemonmessage->setFrom($message->getFrom());
       $daemonmessage->date= &$message->date;
       $daemonmessage->headers= $message->headers;
@@ -305,7 +305,7 @@
       // MIME-Version: 1.0
       // Content-Transfer-Encoding: 8bit
       // Date: Mon, 17 Feb 2003 10:05:35 +0100
-      if (is_a($message, 'MimeMessage')) {
+      if (is('MimeMessage', $message)) {
         $body= NULL;
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
@@ -423,7 +423,7 @@
       // Begin tokenizing
       if (!($t= strtok($body, "\n"))) {
         trigger_error('Body: '.var_export($body, 1), E_USER_NOTICE);
-        return throw(new FormatException('Tokenizing failed'));
+        throw(new FormatException('Tokenizing failed'));
       }
       
       // Loop through tokens
@@ -681,14 +681,14 @@
 
               // Find first line starting with with an email address
               do {
-                if (FALSE === $t) { return throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                if (FALSE === $t) { throw(new DaemonMailParserException('Cannot parse message', $message)); }
                 if (FALSE !== strpos($t, '@')) break;
               } while ($t= strtok("\n"));
               
-              try(); {
+              try {
                 $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($t, "\n\r<>: ")));
-              } if (catch('Exception', $e)) {
-                return throw($e);
+              } catch (Exception $e) {
+                throw($e);
               }
               
               // Next line
@@ -706,7 +706,7 @@
                 0 != strncmp('------ This is a copy of the message, including all the headers. ------', $t, 71) &&
                 0 != strncmp('-----------------------------------------------------------------', $t, 65)
               ) {
-                if (FALSE === $t) { return throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                if (FALSE === $t) { throw(new DaemonMailParserException('Cannot parse message', $message)); }
                 $t= strtok("\n");
               }
               
@@ -725,7 +725,7 @@
             break 2;
           
           default: 
-            return throw(new DaemonMailParserException('Unknown state '.var_export($state, 1), $message));
+            throw(new DaemonMailParserException('Unknown state '.var_export($state, 1), $message));
         }
         
       } while ($t= strtok("\n"));
@@ -733,7 +733,7 @@
       // No reason found?
       if (DMP_FINISH != $state) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
-        trigger_error('Body: '.(is_a($message, 'MimeMessage') 
+        trigger_error('Body: '.(is('MimeMessage', $message) 
           ? sizeof($message->parts).' parts'
           : strlen($message->body).' bytes'
         ), E_USER_ERROR);
@@ -743,7 +743,7 @@
           DMP_ORIGMSG   => 'DMP_ORIGMSG',
           DMP_FINISH    => 'DMP_FINISH'
         );
-        return throw(new FormatException('Unable to parse message, state "'.$states[$state].'"'));
+        throw(new FormatException('Unable to parse message, state "'.$states[$state].'"'));
       }
       
       // Apply some string magic on the reason

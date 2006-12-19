@@ -10,7 +10,7 @@
    * @purpose  Wrapper
    */
   class ArrayList extends Object {
-    var
+    public
       $values=  NULL;
     
     /**
@@ -19,7 +19,7 @@
      * @access  public
      * @param   mixed[] values default array()
      */
-    function __construct($values= array()) {
+    public function __construct($values= array()) {
       $this->values= $values;
     }
     
@@ -31,7 +31,7 @@
      * @param   array a2
      * @return  bool
      */
-    function arrayequals($a1, $a2) {
+    public function arrayequals($a1, $a2) {
       if (sizeof($a1) != sizeof($a2)) return FALSE;
 
       foreach (array_keys($a1) as $k) {
@@ -43,7 +43,7 @@
             if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
             break;
 
-          case is_a($a1[$k], 'Object'):
+          case is('Generic', $a1[$k]):
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 
@@ -61,7 +61,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('ArrayList', $cmp) && $this->arrayequals($this->values, $cmp->values);
     }
     
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().'['.sizeof($this->values)."]@{".
         implode(', ', array_map(array('xp', 'stringOf'), $this->values)).

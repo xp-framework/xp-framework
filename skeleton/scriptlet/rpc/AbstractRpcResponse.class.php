@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('scriptlet.HttpScriptletResponse');
+  uses('scriptlet.HttpScriptletResponse', 'util.log.Traceable');
 
   /**
    * RPC response object
@@ -12,11 +12,11 @@
    * @see      xp://scriptlet.rpc.AbstractRpcRouter
    * @purpose  Response
    */
-  class AbstractRpcResponse extends HttpScriptletResponse {
-    var
+  class AbstractRpcResponse extends HttpScriptletResponse implements Traceable {
+    public
       $message  = NULL;
     
-    var
+    public
       $cat      = NULL;
     
     /**
@@ -24,7 +24,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setHeader('Server', 'Abstract RPC 1.0 / PHP'.phpversion().' / XP Framework');
     }
     
@@ -34,7 +34,7 @@
      * @access  public
      * @param   scriptlet.rpc.AbstractRpcMessage msg
      */
-    function setMessage($msg) {
+    public function setMessage($msg) {
       $this->message= &$msg;
     }
     
@@ -44,8 +44,8 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

@@ -20,7 +20,7 @@
      *
      * @access  protected
      */
-    function __destruct() {
+    public function __destruct() {
       $this->finalize();
     }
         
@@ -32,7 +32,7 @@
      * @param   int facility default LOG_USER
      * @see     php://openlog for valid facility values
      */
-    function __construct($identifier= NULL, $facility= LOG_USER) {
+    public function __construct($identifier= NULL, $facility= LOG_USER) {
       openlog(
         $identifier ? $identifier : basename($_SERVER['PHP_SELF']), 
         LOG_ODELAY | LOG_PID, 
@@ -46,7 +46,7 @@
      * @access  public
      * @param   mixed args variables
      */
-    function append() {
+    public function append() {
       $buf= '';
       foreach (func_get_args() as $arg) {
         $buf.= $this->varSource($arg).' ';
@@ -60,7 +60,7 @@
      *
      * @access  public 
      */
-    function finalize() {
+    public function finalize() {
       closelog();
     }
   }

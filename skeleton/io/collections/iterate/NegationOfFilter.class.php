@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Negation filter
    *
    * @purpose  Iteration Filter
    */
-  class NegationOfFilter extends Object {
-    var
+  class NegationOfFilter extends Object implements IterationFilter {
+    public
       $filter= NULL;
       
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   io.collections.iterate.IterationFilter filter
      */
-    function __construct(&$filter) {
+    public function __construct(&$filter) {
       $this->filter= $filter;
     }
   
@@ -30,7 +32,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return !$this->filter->accept($element);
     }
 
@@ -40,9 +42,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'<'.$this->filter->toString().'>';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

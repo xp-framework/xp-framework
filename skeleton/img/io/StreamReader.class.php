@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.io.ImageReader');
+
   /**
    * Read images from a stream
    *
@@ -12,8 +14,8 @@
    * @see      xp://img.Image#loadFrom
    * @purpose  Base class
    */
-  class StreamReader extends Object {
-    var
+  class StreamReader extends Object implements ImageReader {
+    public
       $stream   = NULL;
     
     /**
@@ -22,7 +24,7 @@
      * @access  public
      * @param   &io.Stream stream
      */
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &deref($stream);
     }
 
@@ -33,13 +35,13 @@
      * @return  resource
      * @throws  img.ImagingException
      */    
-    function readFromStream() {
-      try(); {
+    public function readFromStream() {
+      try {
         $this->stream->open(STREAM_MODE_READ);
         $buf= $this->stream->read($this->stream->size());
         $this->stream->close();
-      } if (catch('IOException', $e)) {
-        return throw(new ImagingException($e->getMessage()));
+      } catch (IOException $e) {
+        throw(new ImagingException($e->getMessage()));
       }
 
       return imagecreatefromstring($buf);
@@ -52,17 +54,17 @@
      * @return  resource
      * @throws  img.ImagingException
      */
-    function getResource() {
-      try(); {
+    public function getResource() {
+      try {
         $handle= $this->readFromStream();
-      } if (catch('ImagingException', $e)) {
-        return throw($e);
+      } catch (ImagingException $e) {
+        throw($e);
       }
       if (!is_resource($handle)) {
-        return throw(new ImagingException('Cannot read image'));
+        throw(new ImagingException('Cannot read image'));
       }
       return $handle;
     }
     
-  } implements(__FILE__, 'img.io.ImageReader');
+  } 
 ?>

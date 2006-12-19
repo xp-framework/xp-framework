@@ -14,7 +14,7 @@
    * @purpose  Reflection
    */
   class Method extends Routine {
-    
+
     /**
      * Invokes the underlying method represented by this Method object, 
      * on the specified object with the specified parameters.
@@ -49,26 +49,23 @@
      * @return  &mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    function &invoke(&$obj, $args= array()) {
+    public function &invoke(&$obj, $args= array()) {
       if (NULL !== $obj) {
         if (!is(xp::nameOf($this->_ref), $obj)) {
-          return throw(new IllegalArgumentException(sprintf(
+          throw(new IllegalArgumentException(sprintf(
             'Passed argument is not a %s class (%s)',
             xp::nameOf($this->_ref),
             xp::typeOf($obj)
           )));
         }
-        $invocation= '$obj->'.$this->name;
-      } else {
-        $invocation= $this->_ref.'::'.$this->name;
       }
-
-      for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
+      try {
+        if (!is_array($args)) $args= (array)$args;
+        $result= $this->_reflect->invokeArgs($obj, $args);
+        return $result;
+      } catch(ReflectionException $e) {
+        throw(new XPException($e->getMessage()));
       }
-
-      eval('$result= &'.$invocation.'('.substr($paramstr, 2).');');
-      return $result;
     }
   }
 ?>

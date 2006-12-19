@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing a polygon
    *
@@ -30,8 +32,8 @@
    *
    * @see xp://img.Image
    */
-  class Polygon extends Object {
-    var
+  class Polygon extends Object implements Drawable {
+    public
       $col=     NULL,
       $points=  array(),
       $fill=    FALSE;
@@ -44,7 +46,7 @@
      * @param   int[] points
      * @param   bool fill default FALSE
      */ 
-    function __construct(&$col, $points, $fill= FALSE) {
+    public function __construct(&$col, $points, $fill= FALSE) {
       $this->col= &$col;
       $this->points= $points;
       $this->fill= $fill;
@@ -58,7 +60,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) { }
+    public function draw(&$image) {
       if ($this->fill) return imagefilledpolygon(
         $image->handle,
         $this->points,
@@ -72,5 +74,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

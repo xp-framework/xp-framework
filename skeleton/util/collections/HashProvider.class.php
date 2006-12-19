@@ -26,7 +26,7 @@
    * @purpose  Hashing
    */
   class HashProvider extends Object {
-    var
+    public
       $impl= NULL;
 
     /**
@@ -35,7 +35,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       $self= &HashProvider::getInstance();
       $self->setImplementation(new DJBX33AHashImplementation());
     }
@@ -47,7 +47,7 @@
      * @access  public
      * @return  &util.collections.HashProvider
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
 
       if (!isset($instance)) {
@@ -68,7 +68,7 @@
      * @param   string str
      * @return  int
      */
-    function hashOf($str) {
+    public static function hashOf($str) {
       $self= &HashProvider::getInstance();
       return $self->impl->hashOf($str);
     }
@@ -80,9 +80,9 @@
      * @param   &util.collections.HashImplementation impl
      * @throws  lang.IllegalArgumentException when impl is not a HashImplementation
      */
-    function setImplementation(&$impl) {
+    public function setImplementation(&$impl) {
       if (!is('util.collections.HashImplementation', $impl)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Implementation is not a HashImplementation, '.xp::typeOf($impl).' given'
         ));
       }
@@ -95,7 +95,7 @@
      * @access  public
      * @return  &util.collections.HashImplementation
      */
-    function &getImplementation() {
+    public function &getImplementation() {
       return $this->impl;
     }
   }

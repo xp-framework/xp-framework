@@ -22,7 +22,7 @@
      * @access  public
      * @param   string key
      */
-    function remove($key) { }
+    public function remove($key) { }
 
     /**
      * Get a value from cache by key
@@ -31,7 +31,7 @@
      * @param   string key
      * @return  &mixed value or NULL to indicate the value doesn't exist
      */    
-    function &get($key) {
+    public function &get($key) {
       return NULL;
     }
   
@@ -42,7 +42,7 @@
      * @param   string key
      * @param   &mixed val
      */
-    function put($key, &$val) { }
+    public function put($key, &$val) { }
     
     /**
      * Check whether cache has a value by key
@@ -51,7 +51,7 @@
      * @param   string key
      * @return  bool TRUE if a value exists
      */
-    function has($key) {
+    public function has($key) {
       return FALSE;
     }
   }

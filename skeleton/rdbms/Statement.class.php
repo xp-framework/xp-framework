@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.SQLExpression');
+
   /**
    * Represents an SQL statement
    *
@@ -23,8 +25,8 @@
    *
    * @purpose  Expression
    */
-  class Statement extends Object {
-    var
+  class Statement extends Object implements SQLExpression {
+    public
       $arguments = array();
 
     /**
@@ -34,7 +36,7 @@
      * @param   string format
      * @param   mixed* args
      */
-    function __construct() {
+    public function __construct() {
       $this->arguments= func_get_args();
     }
 
@@ -44,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName()."@{\n  ".$this->arguments[0]."\n}";
     }
         
@@ -56,7 +58,7 @@
      * @param   &rdbms.Peer peer
      * @return  &rdbms.ResultSet
      */
-    function &executeSelect(&$conn, &$peer) {
+    public function &executeSelect(&$conn, &$peer) {
       $this->arguments[0]= preg_replace(
         '/object\(([^\)]+)\)/i', 
         '$1.'.implode(', $1.', array_keys($peer->types)),
@@ -65,5 +67,5 @@
       return $conn->query(call_user_func_array(array(&$conn, 'prepare'), $this->arguments));
     }
 
-  } implements(__FILE__, 'rdbms.SQLExpression');
+  } 
 ?>

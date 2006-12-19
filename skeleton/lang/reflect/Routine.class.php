@@ -21,22 +21,25 @@
    * @purpose  Reflection
    */
   class Routine extends Object {
-    var
-      $_ref = NULL,
-      $name = '';
+    public
+      $_ref     = NULL,
+      $name     = '',
+      $_reflect = NULL;
 
     /**
      * Constructor
      *
-     * @access  public
+     * @access  private
      * @param   &mixed ref
      * @param   string name
      */    
-    function __construct(&$ref, $name) {
+    public function __construct(&$ref, $name) {
+      parent::__construct();
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
-      $this->name= strtolower($name);
+      $this->name= $name;
+      $this->_reflect= new ReflectionMethod($this->_ref, $this->name);
     }
-
+    
     /**
      * Get method's name. If the optional parameter "asDeclared" is set to TRUE,
      * the name will be parsed from the sourcecode, thus preserving case.
@@ -45,7 +48,7 @@
      * @param   bool asDeclared default FALSE
      * @return  string
      */
-    function getName($asDeclared= FALSE) {
+    public function getName($asDeclared= FALSE) {
       if (!$asDeclared) return $this->name;
 
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
@@ -58,7 +61,7 @@
      * @access  public
      * @return  int
      */    
-    function getModifiers() {
+    public function getModifiers() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return $details[DETAIL_MODIFIERS];
     }
@@ -69,7 +72,7 @@
      * @access  public
      * @return  string[]
      */    
-    function getModifierNames() {
+    public function getModifierNames() {
       $m= $this->getModifiers();
       $names= array();
       if ($m & MODIFIER_ABSTRACT) $names[]= 'abstract';
@@ -90,7 +93,7 @@
      * @access  public
      * @return  lang.reflect.Argument[]
      */
-    function getArguments() {
+    public function getArguments() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return $details[DETAIL_ARGUMENTS];
     }
@@ -102,7 +105,7 @@
      * @param   int pos
      * @return  &lang.reflect.Argument
      */
-    function &getArgument($pos) {
+    public function &getArgument($pos) {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       if (!isset($details[DETAIL_ARGUMENTS][$pos])) return NULL;
       return $details[DETAIL_ARGUMENTS][$pos];
@@ -114,7 +117,7 @@
      * @access  public
      * @return  int
      */
-    function numArguments() {
+    public function numArguments() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return sizeof($details[DETAIL_ARGUMENTS]);
     }
@@ -125,7 +128,7 @@
      * @access  public
      * @return  string
      */
-    function getReturnType() {
+    public function getReturnType() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return ltrim($details[DETAIL_RETURNS], '&');
     }
@@ -136,9 +139,8 @@
      * @access  public
      * @return  string
      */
-    function returnsReference() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return '&' == $details[DETAIL_RETURNS]{0};
+    public function returnsReference() {
+      return $this->_reflect->returnsReference();
     }
     
     /**
@@ -147,7 +149,7 @@
      * @access  public
      * @return  string[]
      */
-    function getExceptionNames() {
+    public function getExceptionNames() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return $details[DETAIL_THROWS];
     }
@@ -158,10 +160,10 @@
      * @access  public
      * @return  lang.XPClass[]
      */
-    function getExceptionTypes() {
+    public function getExceptionTypes() {
       $r= array();
       foreach ($this->getExceptionNames() as $name) {
-        $r[]= &new XPClass($name);
+        $r[]= new XPClass($name);
       }
       return $r;
     }
@@ -173,7 +175,7 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &getDeclaringClass() {
+    public function &getDeclaringClass() {
       $class= $this->_ref;
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[1][$this->name])) return new XPClass($class);
@@ -189,7 +191,7 @@
      * @access  public
      * @return  string
      */
-    function getComment() {
+    public function getComment() {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       return $details[DETAIL_COMMENT];
     }
@@ -202,7 +204,7 @@
      * @param   string key default NULL
      * @return  bool
      */
-    function hasAnnotation($name, $key= NULL) {
+    public function hasAnnotation($name, $key= NULL) {
       $details= XPClass::detailsForMethod($this->_ref, $this->name);
 
       return $details && ($key 
@@ -220,7 +222,7 @@
      * @return  mixed
      * @throws  lang.ElementNotFoundException
      */
-    function getAnnotation($name, $key= NULL) {
+    public function getAnnotation($name, $key= NULL) {
       $details= XPClass::detailsForMethod($this->_ref, $this->name);
 
       if (!$details || !($key 
@@ -243,7 +245,7 @@
      * @access  public
      * @return  bool
      */
-    function hasAnnotations() {
+    public function hasAnnotations() {
       $details= XPClass::detailsForMethod($this->_ref, $this->name);
       return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
     }
@@ -254,7 +256,7 @@
      * @access  public
      * @return  array annotations
      */
-    function getAnnotations() {
+    public function getAnnotations() {
       $details= XPClass::detailsForMethod($this->_ref, $this->name);
       return $details ? $details[DETAIL_ANNOTATIONS] : array();
     }
@@ -271,7 +273,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $args= '';
       for ($arguments= $this->getArguments(), $i= 0, $s= sizeof($arguments); $i < $s; $i++) {
         if ($arguments[$i]->isOptional()) {
@@ -289,7 +291,7 @@
         '%s %s %s(%s)%s',
         implode(' ', $this->getModifierNames()),
         $this->getReturnType(),
-        $this->getName(TRUE),
+        $this->getName(),
         substr($args, 2),
         $throws
       );

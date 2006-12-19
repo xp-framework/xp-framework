@@ -13,7 +13,7 @@
    * @see   xp://rdbms.sybase.SybaseConnection
    */
   class SybaseDBAdapter extends DBAdapter {
-    var
+    public
       $map= array();
       
     /**
@@ -22,7 +22,7 @@
      * @access  public
      * @param   &Object conn database connection
      */
-    function __construct(&$conn) {
+    public function __construct(&$conn) {
       $this->map= array(
         'binary'        => DB_ATTRTYPE_BINARY, 
         'bit'           => DB_ATTRTYPE_BIT,      
@@ -62,15 +62,15 @@
      * @access  public
      * @return  string[] databases
      */
-    function getDatabases() {
+    public function getDatabases() {
       $dbs= array();
-      try(); {
+      try {
         $q= &$this->conn->query('select name from master..sysdatabases');
         while ($name= $q->next('name')) {
           $dbs[]= $name;
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return $dbs;
@@ -81,7 +81,7 @@
      *
      * @access  protected
      */
-    function prepareTemporaryIndexesTable() {
+    public function prepareTemporaryIndexesTable() {
       $this->conn->query('create table #indexes (
         keys varchar(200),
         name varchar(28),
@@ -97,8 +97,8 @@
      * @param   string table thee table's name
      * @return  &rdbms.DBTable
      */    
-    function dbTableObjectFor($table) {
-      $t= &new DBTable($table);
+    public function dbTableObjectFor($table) {
+      $t= new DBTable($table);
       
       // Get the table's attributes
       $q= &$this->conn->query('
@@ -211,7 +211,7 @@
      *
      * @access  protected
      */
-    function dropTemporaryIndexesTable() {
+    public function dropTemporaryIndexesTable() {
       $this->conn->query('drop table #indexes');
     }
     
@@ -222,9 +222,9 @@
      * @param   string database
      * @return  rdbms.DBTable[] array of DBTable objects
      */
-    function getTables($database) {
+    public function getTables($database) {
       $t= array();
-      try(); {
+      try {
         $this->prepareTemporaryIndexesTable();
         
         // Get all tables
@@ -236,11 +236,11 @@
           $t[]= &$this->dbTableObjectFor($record['name']);
         }
         
-      } if (catch('SQLException', $e)) {
+      } catch (SQLException $e) {
         delete($t);
       } finally(); {
         $this->dropTemporaryIndexesTable();
-        if ($e) return throw($e);
+        if ($e) throw($e);
       }
       
       return $t;
@@ -253,15 +253,15 @@
      * @param   string table
      * @return  rdbms.DBTable a DBTable object
      */
-    function getTable($table) {
-      try(); {
+    public function getTable($table) {
+      try {
         $this->prepareTemporaryIndexesTable();
         $t= &$this->dbTableObjectFor($table);
-      } if (catch('SQLException', $e)) {
+      } catch (SQLException $e) {
         delete($t);
       } finally(); {
         $this->dropTemporaryIndexesTable();
-        if ($e) return throw($e);
+        if ($e) throw($e);
       }
       
       return $t;

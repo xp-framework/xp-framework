@@ -26,7 +26,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcRequest
      */
-    function &_request() {
+    public function &_request() {
       return new JsonRpcRequest();
     }
 
@@ -36,7 +36,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcResponse
      */
-    function &_response() {
+    public function &_response() {
       return new JsonRpcResponse();
     }
     
@@ -46,7 +46,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function &_message() {
+    public function &_message() {
       return new JsonResponseMessage();
     }
   }

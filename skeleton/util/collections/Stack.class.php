@@ -37,7 +37,7 @@
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/util/Stack.html 
    */
   class Stack extends Object {
-    var
+    public
       $_elements = array(),
       $_hash     = 0;
   
@@ -49,7 +49,7 @@
      * @param   &lang.Object object
      * @return  &lang.Object object
      */
-    function &push(&$object) {
+    public function &push(&$object) {
       array_unshift($this->_elements, $object);
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
@@ -62,9 +62,9 @@
      * @return  &lang.Object
      * @throws  util.NoSuchElementException
      */    
-    function &pop() {
+    public function &pop() {
       if (empty($this->_elements)) {
-        return throw(new NoSuchElementException('Stack is empty'));
+        throw(new NoSuchElementException('Stack is empty'));
       }
       $element= array_shift($this->_elements);
       $this->_hash+= HashProvider::hashOf($element->hashCode());
@@ -80,7 +80,7 @@
      * @access  public
      * @return  &lang.Object object
      */        
-    function &peek() {
+    public function &peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
   
@@ -91,7 +91,7 @@
      * @access  public
      * @return  bool
      */
-    function isEmpty() {
+    public function isEmpty() {
       return empty($this->_elements);
     }
 
@@ -101,7 +101,7 @@
      * @access  public
      * @return  int
      */
-    function size() {
+    public function size() {
       return sizeof($this->_elements);
     }
     
@@ -113,7 +113,7 @@
      * @param   &lang.Object object
      * @return  int position
      */
-    function search(&$object) {
+    public function search(&$object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
     
@@ -125,9 +125,9 @@
      * @return  &lang.Object
      * @throws  lang.IndexOutOfBoundsException
      */
-    function &elementAt($index) {
+    public function &elementAt($index) {
       if (!isset($this->_elements[$index])) {
-        return throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
+        throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
       }
       return $this->_elements[$index];
     }
@@ -138,7 +138,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->_hash;
     }
     
@@ -149,7 +149,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
         is('util.collections.Stack', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())

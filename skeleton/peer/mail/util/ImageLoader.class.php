@@ -10,7 +10,7 @@
    * @see      xp://peer.mail.util.HtmlMessage
    * @purpose  Interface
    */
-  class ImageLoader extends Interface {
+  interface ImageLoader {
 
     /**
      * Load an image
@@ -19,6 +19,6 @@
      * @param   &peer.URL source
      * @return  string[2] data and contenttype
      */
-    function load(&$source) { }
+    public function load(&$source);
   }
 ?>

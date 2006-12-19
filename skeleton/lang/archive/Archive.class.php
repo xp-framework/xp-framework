@@ -47,11 +47,11 @@
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */
   class Archive extends Object {
-    var
+    public
       $file     = NULL,
       $version  = 1;
     
-    var
+    public
       $_index  = array();
         
     /**
@@ -60,7 +60,7 @@
      * @access  public
      * @param   &io.File file
      */
-    function __construct(&$file) {
+    public function __construct(&$file) {
       $this->file= &$file;
       
     }
@@ -73,13 +73,13 @@
      * @param   string id the id under which this entry will be located
      * @return  bool success
      */
-    function add(&$file, $id) {
-      try(); {
+    public function add(&$file, $id) {
+      try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());
         $file->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       $this->_index[$id]= array(
         $file->filename,
@@ -100,7 +100,7 @@
      * @param   string filename
      * @param   string bytes
      */
-    function addFileBytes($id, $path, $filename, $bytes) {
+    public function addFileBytes($id, $path, $filename, $bytes) {
       $this->_index[$id]= array(
         $filename,
         $path,
@@ -116,8 +116,8 @@
      * @access  public
      * @return  bool success
      */
-    function create() {
-      try(); {
+    public function create() {
+      try {
         $this->file->truncate();
         $this->file->write(pack(
           'a3c1i1a248', 
@@ -148,8 +148,8 @@
         }
         
         $this->file->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return TRUE;
@@ -162,7 +162,7 @@
      * @param   string id the element's id
      * @return  bool TRUE when the element exists
      */
-    function contains($id) {
+    public function contains($id) {
       return isset($this->_index[$id]);
     }
     
@@ -180,7 +180,7 @@
      * @access  public
      * @return  string id or FALSE to indicate the pointer is at the end of the list
      */
-    function getEntry() {
+    public function getEntry() {
       $key= key($this->_index);
       next($this->_index);
       return $key;
@@ -191,7 +191,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       reset($this->_index);
     }
     
@@ -203,9 +203,9 @@
      * @return  &string content
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
-    function &extract($id) {
+    public function &extract($id) {
       if (!$this->contains($id)) {
-        return throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
+        throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
       }
 
       // Calculate starting position      
@@ -215,12 +215,12 @@
         $this->_index[$id][3]
       );
       
-      try(); {
+      try {
         $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
         $this->file->seek($pos, SEEK_SET);
         $data= $this->file->read($this->_index[$id][2]);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return $data;
@@ -234,9 +234,9 @@
      * @return  &io.Stream
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
-    function &getStream($id) {
+    public function &getStream($id) {
       if (!$this->contains($id)) {
-        return throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
+        throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
       }
 
       // Calculate starting position      
@@ -260,10 +260,10 @@
      * @throws  lang.IllegalArgumentException in case an illegal mode was specified
      * @throws  lang.FormatException in case the header is malformed
      */
-    function open($mode) {
+    public function open($mode) {
       switch ($mode) {
         case ARCHIVE_READ:      // Load
-          try(); {
+          try {
             $this->file->open(FILE_MODE_READ);
             
             // Read header
@@ -275,8 +275,8 @@
               'Header malformed: "CCA" expected, have "%s"', 
               substr($header, 0, 3)
             )));
-          } if (catch('Exception', $e)) {
-            return throw($e);
+          } catch (Exception $e) {
+            throw($e);
           }
           
           // Copy information
@@ -304,7 +304,7 @@
           
       }
       
-      return throw(new IllegalArgumentException('Mode '.$mode.' not recognized'));
+      throw(new IllegalArgumentException('Mode '.$mode.' not recognized'));
     }
     
     /**
@@ -313,7 +313,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       return $this->file->close();
     }
     
@@ -323,7 +323,7 @@
      * @access  public
      * @return  bool TRUE when the archive file is open
      */
-    function isOpen() {
+    public function isOpen() {
       return $this->file->isOpen();
     }
     
@@ -333,7 +333,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(version= %s, index size= %d) { %s }',
         $this->getClassName(),
@@ -348,7 +348,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       if ($this->isOpen()) $this->close();
     }
   }

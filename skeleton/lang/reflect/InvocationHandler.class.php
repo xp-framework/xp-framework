@@ -16,7 +16,7 @@
    * @see      xp://lang.reflect.Proxy
    * @purpose  Interface
    */
-  class InvocationHandler extends Interface {
+  interface InvocationHandler {
   
     /**
      * Processes a method invocation on a proxy instance and returns
@@ -28,7 +28,7 @@
      * @param   mixed* args an array of arguments
      * @return  mixed
      */
-    function invoke(&$proxy, $method, $args) { }
+    public function invoke(&$proxy, $method, $args);
   
   }
 ?>

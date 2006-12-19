@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AbstractRpcRequest.class.php 6696 2006-03-24 15:56:09Z kiesel $ 
+ * $Id: GenericRpcRequest.class.php 7447 2006-07-21 16:15:49Z kiesel $ 
  */
 
   uses('scriptlet.rpc.AbstractRpcRequest');
@@ -18,7 +18,7 @@
    * @purpose  Generic RPC request
    */
   class GenericRpcRequest extends AbstractRpcRequest {
-    var
+    public
       $_cb=   NULL;
     
     /**
@@ -27,7 +27,7 @@
      * @access  public
      * @param   &mixed object
      */
-    function setCallback(&$object) {
+    public function setCallback(&$object) {
       $this->_cb= &$object;
     }
     
@@ -37,7 +37,7 @@
      * @access  public
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function &getMessage() {
+    public function &getMessage() {
       return $this->_cb->getMessage($this);
     }
     
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {
+    public function getEncoding() {
       if (method_exists($this->_cb, 'getEncoding')) return $this->_cb->getEncoding($this);
       return parent::getEncoding();
     }

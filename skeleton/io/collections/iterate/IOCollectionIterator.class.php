@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.collections.IOCollection');
+  uses('io.collections.IOCollection', 'util.XPIterator');
 
   /**
    * Iterates over elements of a collection.
@@ -24,12 +24,12 @@
    *
    * @purpose  Iterator
    */
-  class IOCollectionIterator extends Object {
-    var
+  class IOCollectionIterator extends Object implements XPIterator {
+    public
       $collections = array(),
       $recursive   = FALSE;
     
-    var
+    public
       $_element    = NULL;
     
     /**
@@ -39,7 +39,7 @@
      * @param   &io.collections.IOCollection collection
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    function __construct(&$collection, $recursive= FALSE) {
+    public function __construct(&$collection, $recursive= FALSE) {
       $this->collections= array(&$collection);
       $this->collections[0]->open();
       $this->recursive= $recursive;
@@ -53,7 +53,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function acceptElement(&$element) {
+    public function acceptElement(&$element) {
       return TRUE;
     }
     
@@ -65,7 +65,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() {
+    public function hasNext() {
       if ($this->_element) return TRUE; // next() not yet invoked, previously found entry available
 
       do {
@@ -99,9 +99,9 @@
      * @return  &io.collections.IOElement
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() {
+    public function &next() {
       if (!$this->hasNext()) {
-        return throw(new NoSuchElementException('No more  entries'));
+        throw(new NoSuchElementException('No more  entries'));
       }
       
       $next= $this->_element;
@@ -115,7 +115,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s<%s%s>',
         $this->getClassName(),
@@ -124,5 +124,5 @@
       );
     }
 
-  } implements(__FILE__, 'util.Iterator');
+  } 
 ?>

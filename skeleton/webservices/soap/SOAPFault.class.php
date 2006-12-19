@@ -12,7 +12,7 @@
    * @purpose  XML subtree
    */
   class SOAPFault extends XML {
-    var 
+    public 
       $faultcode    = '', 
       $faultstring  = '', 
       $faultactor   = NULL,
@@ -27,7 +27,7 @@
      * @param   string faultactor default NULL
      * @param   mixed detail default NULL
      */  
-    function __construct(
+    public function __construct(
       $faultcode, 
       $faultstring, 
       $faultactor= NULL, 
@@ -45,7 +45,7 @@
      * @access  public
      * @param   string faultcode
      */
-    function setFaultcode($faultcode) {
+    public function setFaultcode($faultcode) {
       $this->faultcode= $faultcode;
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      * @return  string
      */
-    function getFaultcode() {
+    public function getFaultcode() {
       return $this->faultcode;
     }
 
@@ -65,7 +65,7 @@
      * @access  public
      * @param   string faultstring
      */
-    function setFaultstring($faultstring) {
+    public function setFaultstring($faultstring) {
       $this->faultstring= $faultstring;
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      * @return  string
      */
-    function getFaultstring() {
+    public function getFaultstring() {
       return $this->faultstring;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @param   string faultactor
      */
-    function setFaultactor($faultactor) {
+    public function setFaultactor($faultactor) {
       $this->faultactor= $faultactor;
     }
 
@@ -95,7 +95,7 @@
      * @access  public
      * @return  string
      */
-    function getFaultactor() {
+    public function getFaultactor() {
       return $this->faultactor;
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @param   mixed detail
      */
-    function setDetail($detail) {
+    public function setDetail($detail) {
       $this->detail= $detail;
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      * @return  mixed
      */
-    function getDetail() {
+    public function getDetail() {
       return $this->detail;
     }
   }

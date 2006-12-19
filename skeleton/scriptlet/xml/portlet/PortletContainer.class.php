@@ -12,7 +12,7 @@
    * @purpose  Container class
    */
   class PortletContainer extends Object {
-    var
+    public
       $portlets= array();
 
     /**
@@ -23,11 +23,11 @@
      * @param   string layout
      * @return  &xml.portlet.Portlet
      */
-    function &addPortlet($classname, $layout= NULL) {
-      try(); {
+    public function &addPortlet($classname, $layout= NULL) {
+      try {
         $class= &XPClass::forName($classname);
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
+      } catch (ClassNotFoundException $e) {
+        throw($e);
       }
       
       with ($portlet= &$class->newInstance()); {
@@ -45,8 +45,8 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function process(&$request, &$response, &$context) {
-      $rundata= &new Rundata();
+    public function process(&$request, &$response, &$context) {
+      $rundata= new Rundata();
       $rundata->request= &$request;
       $rundata->context= &$context;
 
@@ -58,9 +58,9 @@
           'layout' =>  $this->portlets[$i]->getLayout()
         )));
         
-        try(); {
+        try {
           $content= &$this->portlets[$i]->getContent($rundata);
-        } if (catch('Throwable', $e)) {
+        } catch (Throwable $e) {
           $response->addFormError($e->getClassName(), '*', $e->getMessage());
           return;
         }

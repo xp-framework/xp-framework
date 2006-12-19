@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.server.interceptor.InterceptorCondition');
+
   /**
    * Path condition for interceptors
    *
    * @purpose  Path condition
    */
-  class PathCondition extends Object {
+  class PathCondition extends Object implements InterceptorCondition {
   
     /**
      * Constructor
@@ -17,7 +19,7 @@
      * @access public
      * @param string path The path to match
      */
-    function __construct($path) {
+    public function __construct($path) {
       $this->path= $path;
     }
   
@@ -29,11 +31,11 @@
      * @param peer.ftp.server.storage.StorageEntry entry
      * @return bool
      */
-    function check(&$session, &$entry) {
+    public function check(&$session, &$entry) {
     
       // Check if the entry's path start with the path to check
       return substr($entry->getFilename(), 0, strlen($this->path)) == $this->path;
     }
   
-  } implements(__FILE__, 'peer.ftp.server.interceptor.InterceptorCondition');
+  } 
 ?>

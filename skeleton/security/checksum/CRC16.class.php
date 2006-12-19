@@ -22,7 +22,7 @@
      * @param   string str
      * @return  &security.checksum.CRC16
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       $sum= 0xFFFF;
       for ($x= 0, $s= strlen ($str); $x < $s; $x++) {
         $sum= $sum ^ ord($str{$x});
@@ -44,13 +44,13 @@
      * @param   &io.File file
      * @return  &security.checksum.CRC16
      */
-    function &fromFile(&$file) {
-      try(); {
+    public static function &fromFile(&$file) {
+      try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());
         $file->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return CRC16::fromString($data);
     }

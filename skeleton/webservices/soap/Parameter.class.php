@@ -10,7 +10,7 @@
    * @purpose  Wrapper
    */
   class Parameter extends Object {
-    var
+    public
       $name     = '',
       $value    = NULL;
 
@@ -21,7 +21,7 @@
      * @param   string name
      * @param   mixed value default NULL
      */
-    function __construct($name, $value= NULL) {
+    public function __construct($name, $value= NULL) {
       $this->name= $name;
       $this->value= &$value;
     }
@@ -32,12 +32,12 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s@(%s) {%s}',
         $this->getClassName(),
         $this->name,
-        (is_a($this->value, 'Object') 
+        (is('Generic', $this->value) 
           ? $this->value->toString() 
           : var_export($this->value, 1)
         )

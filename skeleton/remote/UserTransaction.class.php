@@ -11,7 +11,7 @@
    * @purpose  Transaction
    */
   class UserTransaction extends Object {
-    var
+    public
       $_handler= NULL;
 
     /**
@@ -19,7 +19,7 @@
      *
      * @access  public
      */
-    function commit() {
+    public function commit() {
       $this->_handler->commit($this);
     }
     
@@ -28,7 +28,7 @@
      *
      * @access  public
      */
-    function rollback() {
+    public function rollback() {
       $this->_handler->rollback($this);
     }  
   }

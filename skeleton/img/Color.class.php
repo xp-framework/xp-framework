@@ -10,12 +10,12 @@
    * @see xp://img.Image
    */
   class Color extends Object {
-    var
+    public
       $red      = 0,
       $green    = 0,
       $blue     = 0;
       
-    var
+    public
       $handle     = NULL;
     
     /**
@@ -25,7 +25,7 @@
      * @param   mixed a string containing the hexadecimal format or
      *          three ints (red, green blue)
      */
-    function __construct() {
+    public function __construct() {
       $a= func_get_args();
       if (is_string($a[0])) {
         $this->fromHex($a[0]);
@@ -44,7 +44,7 @@
      * @access  public
      * @param   string h a string in the format RRGGBB (may contain a leading "#")
      */
-    function fromHex($h) {
+    public function fromHex($h) {
       if ('#' == $h{0}) $h= substr($h, 1);
       $this->red= hexdec(substr($h, 0, 2));
       $this->green= hexdec(substr($h, 2, 2));
@@ -57,7 +57,7 @@
      * @access  public
      * @return  string HTML-style color
      */
-    function toHex() {
+    public function toHex() {
       return '#'.dechex($this->red).dechex($this->green).dechex($this->blue);
     }
     
@@ -67,7 +67,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s@(%03d, %03d, %03d)',
         $this->getClassName(),

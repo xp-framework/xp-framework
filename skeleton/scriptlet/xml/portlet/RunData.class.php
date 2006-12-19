@@ -11,7 +11,7 @@
    * @purpose  purpose
    */
   class RunData extends Object {
-    var
+    public
       $request  = NULL,
       $context  = NULL;
   }

@@ -10,8 +10,8 @@
    * @see      xp://security.crypto.CryptoKey
    * @purpose  This exception indicates one of a variety of public/private key problems.
    */
-  class CryptoException extends Exception {
-    var
+  class CryptoException extends XPException {
+    public
       $errors = array();
       
     /**
@@ -21,7 +21,7 @@
      * @param   string message
      * @param   string[] errors default array()
      */
-    function __construct($message, $errors= array()) {
+    public function __construct($message, $errors= array()) {
       parent::__construct($message);
       $this->errors= $errors;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string[] errors
      */
-    function getErrors() {
+    public function getErrors() {
       return $this->errors;
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  %s\n".

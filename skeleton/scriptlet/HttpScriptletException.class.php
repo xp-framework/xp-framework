@@ -20,8 +20,8 @@
    * @see      xp://scriptlet.HttpScriptlet#process
    * @purpose  Exception
    */  
-  class HttpScriptletException extends Exception {
-    var
+  class HttpScriptletException extends XPException {
+    public
       $response     = NULL,
       $statusCode   = 0;
       
@@ -32,7 +32,7 @@
      * @param   string message
      * @param   int statusCode default HTTP_INTERNAL_SERVER_ERROR
      */
-    function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR) {
+    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR) {
       parent::__construct($message);
       $this->statusCode= $statusCode;
       $this->_response($statusCode);
@@ -44,7 +44,7 @@
      * @access  public
      * @return  &scriptlet.HttpScriptletResponse response object
      */
-    function &getResponse() {
+    public function &getResponse() {
       return $this->response;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%d:%s)\n",
         $this->getClassName(),
@@ -69,8 +69,8 @@
      * @access  protected
      * @param   int statusCode
      */
-    function _response($statusCode) {
-      $this->response= &new HttpScriptletResponse();
+    public function _response($statusCode) {
+      $this->response= new HttpScriptletResponse();
       $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(
         "<h1>HTTP/1.1 %d %s</h1>\n<xmp>\n%s</xmp>\n",

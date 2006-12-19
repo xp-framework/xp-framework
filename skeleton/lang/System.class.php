@@ -27,7 +27,7 @@
      * @param   string* args
      * @return  string environment variable by name
      */
-    function _env() {
+    public function _env() {
       foreach (func_get_args() as $a) {
         if ($e= getenv($a)) return $e;
       }
@@ -57,7 +57,7 @@
      * @param   string name
      * @return  mixed
      */
-    function getProperty($name) {
+    public static function getProperty($name) {
       static $prop= array();
       
       if (!isset($prop[$name])) switch ($name) {
@@ -129,7 +129,7 @@
      * @param   mixed var
      * @return  bool success
      */
-    function putEnv($name, $var) {
+    public function putEnv($name, $var) {
       return putenv($name.'='.$var);
     }
     
@@ -141,7 +141,7 @@
      * @param   string name
      * @return  mixed var
      */
-    function getEnv($name) {
+    public function getEnv($name) {
       return getenv($name);
     }
     
@@ -155,7 +155,7 @@
      * @access  public
      * @return  string
      */
-    function tempDir() {
+    public static function tempDir() {
       if (getenv('TEMP')) {
         $dir= getenv('TEMP');
       } else if (getenv('TMP')) {
@@ -205,10 +205,10 @@
      * @see     php://exec
      * @see     xp://lang.Process
      */
-    function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
+    public function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
-      if (!($pd= popen($cmdLine, 'r'))) return throw(new Exception(
+      if (!($pd= popen($cmdLine, 'r'))) throw(new XPException(
         'cannot execute "'.$cmdLine.'"'
       ));
       $buf= array();

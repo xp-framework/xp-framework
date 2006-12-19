@@ -10,7 +10,7 @@
    * @purpose  Indicate a security violation has occured
    * @see      xp://lang.Exception
    */
-  class SecurityException extends Exception {
+  class SecurityException extends XPException {
   
   }
 ?>

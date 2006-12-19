@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: RandomCodeGenerator.class.php,v 1.2 2004/06/03 22:16:19 friebe Exp $ 
+ * $Id: RandomPasswordGenerator.class.php 8437 2006-11-11 16:42:56Z kiesel $ 
  */
 
   uses('text.StringUtil');
@@ -15,7 +15,7 @@
    */
   class RandomPasswordGenerator extends Object {
 
-    var
+    public
       $lc= 'abcdefghijklmnopqrstuvwxyz',
       $uc= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       // TODO: split special characters into printable/non-printable?
@@ -37,7 +37,7 @@
      * @param   int length default 8
      * @param   string type default NULL
      */
-    function __construct($length= 8, $type= NULL) {
+    public function __construct($length= 8, $type= NULL) {
       $this->length= $length;
       if (NULL === $type) {
         $this->chars= $this->lc.$this->uc.$this->sc.$this->nc;
@@ -61,7 +61,7 @@
      * @access  public
      * @param   string chars
      */
-    function setChars($chars) {
+    public function setChars($chars) {
       $this->chars= $chars;
     }
 
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function generate() {
+    public function generate() {
       $pass= "";
       for ($i= 0; $i< $this->length; $i++) {
         // $temp= str_shuffle($this->chars);

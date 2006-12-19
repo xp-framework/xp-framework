@@ -31,7 +31,7 @@
    * @purpose  Iterator
    */
   class FilteredIOCollectionIterator extends IOCollectionIterator {
-    var
+    public
       $filter    = NULL;
     
     /**
@@ -42,7 +42,7 @@
      * @param   &io.collections.iterate.Filter filter
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    function __construct(&$collection, &$filter, $recursive= FALSE) {
+    public function __construct(&$collection, &$filter, $recursive= FALSE) {
       parent::__construct($collection, $recursive);
       $this->filter= &$filter;
     }
@@ -54,7 +54,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function acceptElement(&$element) {
+    public function acceptElement(&$element) {
       return $this->filter->accept($element);
     }
     
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return parent::toString()."@{\n  ".str_replace("\n", "\n  ", $this->filter->toString())."\n}";
     }
   }

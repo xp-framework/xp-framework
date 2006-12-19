@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.StackTraceElement');
+  uses('lang.Generic', 'lang.StackTraceElement');
 
   /**
    * Throwable
@@ -14,8 +14,8 @@
    * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
    * @purpose  Base class
    */
-  class Throwable extends Object {
-    var 
+  class Throwable extends Exception implements Generic {
+    public 
       $message  = '',
       $trace    = array();
 
@@ -25,12 +25,13 @@
      * @access  public
      * @param   string message
      */
-    function __construct($message) {
+    public function __construct($message) {
       static $except= array(
         'call_user_func_array'  => 1, 
         'call_user_func'        => 1, 
         'object'                => 1
       );
+      $this->__id= microtime();
       $this->message= $message;
       
       $errors= xp::registry('errors');
@@ -60,7 +61,7 @@
       // Remaining error messages
       foreach ($errors as $file => $list) {
         $class= ('.class.php' == substr($file, -10)
-          ? strtolower(substr(basename($file), 0, -10))
+          ? substr(basename($file), 0, -10)
           : '<main>'
         );
         
@@ -90,10 +91,10 @@
      * @param   mixed[] args
      * @param   mixed[] errors
      */
-    function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
+    public function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
       foreach ($errors as $line => $errormsg) {
         foreach ($errormsg as $message => $amount) {
-          $this->trace[]= &new StackTraceElement(
+          $this->trace[]= new StackTraceElement(
             $file,
             $class,
             $function,
@@ -106,23 +107,13 @@
     }
 
     /**
-     * Get Message
-     *
-     * @access  public
-     * @return  string
-     */
-    function getMessage() {
-      return $this->message;
-    }
-
-    /**
      * Return an array of stack trace elements
      *
      * @access  public
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */
-    function getStackTrace() {
+    public function getStackTrace() {
       return $this->trace;
     }
 
@@ -133,7 +124,7 @@
      * @param   resource fd default STDERR
      * @access  public
      */
-    function printStackTrace($fd= STDERR) {
+    public function printStackTrace($fd= STDERR) {
       fputs($fd, $this->toString());
     }
 
@@ -150,7 +141,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s (%s)',
         $this->getClassName(),
@@ -178,12 +169,56 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->compoundMessage()."\n";
       for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
         $s.= $this->trace[$i]->toString(); 
       }
       return $s;
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    function hashCode() {
+      return $this->__id;
+    }
+    
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     *
+     * @access  public
+     * @param   &lang.Object cmp
+     * @return  bool TRUE if the compared object is equal to this object
+     */
+    function equals(&$cmp) {
+      return $this === $cmp;
+    }
+    
+    /** 
+     * Returns the fully qualified class name for this class 
+     * (e.g. "io.File")
+     * 
+     * @access  public
+     * @return  string fully qualified class name
+     */
+    function getClassName() {
+      return xp::nameOf(get_class($this));
+    }
+
+    /**
+     * Returns the runtime class of an object.
+     *
+     * @access  public
+     * @return  &lang.XPClass runtime class
+     * @see     xp://lang.XPClass
+     */
+    function &getClass() {
+      $c= new XPClass($this);
+      return $c;
     }
   }
 ?>

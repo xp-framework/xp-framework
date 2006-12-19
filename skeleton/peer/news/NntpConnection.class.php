@@ -11,7 +11,8 @@
     'peer.news.NntpReply',
     'peer.news.Newsgroup',
     'peer.news.Article',
-    'util.Date'
+    'util.Date',
+    'util.log.Traceable'
   );
   
   /**
@@ -37,8 +38,8 @@
    * @see      rfc://977
    * @purpose  News protocol implementation
    */
-  class NntpConnection extends Object {
-    var
+  class NntpConnection extends Object implements Traceable {
+    public
       $url      = NULL,
       $cat      = NULL,
       $response = array();
@@ -49,9 +50,9 @@
      * @access  private
      * @param   &peer.URL url
      */
-    function __construct(&$url) {
+    public function __construct(&$url) {
       $this->url= &$url;
-      $this->_sock= &new Socket(
+      $this->_sock= new Socket(
         $this->url->getHost(),
         $this->url->getPort(119)
       );
@@ -63,7 +64,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
     
@@ -76,7 +77,7 @@
      * @return  bool success
      * @throws  peer.ProtocolException in case the command is too long
      */
-    function _sendcmd() {
+    public function _sendcmd() {
       if (!$this->_sock->isConnected()) return FALSE;
 
       $a= func_get_args();
@@ -84,13 +85,13 @@
 
       // NNTP/RFC977 only allows command up to 512 (-2) chars.
       if (strlen($cmd) > 510) {
-        return throw(new ProtocolException('Command too long! Max. 510 chars'));
+        throw(new ProtocolException('Command too long! Max. 510 chars'));
       }
       
       $this->cat && $this->cat->debug('>>>', $cmd);
-      try(); {
+      try {
         $this->_sock->write($cmd."\r\n");
-      } if (catch('SocketException', $e)) {
+      } catch (SocketException $e) {
         return FALSE;
       }
       
@@ -105,7 +106,7 @@
      * @access  private
      * @return  string status
      */
-    function _readResponse() {
+    public function _readResponse() {
       if (!($line= $this->_sock->readLine())) return FALSE;
       $this->cat && $this->cat->debug('<<<', $line);
       
@@ -122,7 +123,7 @@
      * @access  private
      * @return  string status
      */
-    function _readData() {
+    public function _readData() {
       if ($this->_sock->eof()) return FALSE;
 
       $line= $this->_sock->readLine();
@@ -140,16 +141,16 @@
      * @return  bool success
      * @throws  peer.ConnectException in case there's an error during connecting
      */
-    function connect($auth= FALSE) {
-      try(); {
+    public function connect($auth= FALSE) {
+      try {
         $this->_sock->connect();
-      } if (catch('ConnectException', $e)) {
-        return throw($e);
+      } catch (ConnectException $e) {
+        throw($e);
       }
       
       // Read banner message
       if (!($response= $this->_readResponse()))
-        return throw(new ConnectException('No valid response from server'));
+        throw(new ConnectException('No valid response from server'));
         
       $this->cat && $this->cat->debug('<<<', $this->getResponse());
       if ($auth) return $this->authenticate();
@@ -164,12 +165,12 @@
      * @return  bool success
      * @throws  io.IOException in case there's an error during disconnecting
      */
-    function close() {
+    public function close() {
       if (!$this->_sock->isConnected()) return TRUE;
 
       $status= $this->_sendcmd('QUIT');
       if (!NntpReply::isPositiveCompletion($status)) {
-        return throw(new IOException('Error during disconnect'));
+        throw(new IOException('Error during disconnect'));
       }
       $this->_sock->close();
       return TRUE;
@@ -183,16 +184,16 @@
      * @return  bool success
      * @throws  peer.AuthenticationException in case authentication failed
      */  
-    function authenticate() {
-      try(); {
+    public function authenticate() {
+      try {
         $status= $this->_sendcmd('AUTHINFO user', $this->url->getUser());
 
         // Send password if requested
         if (NNTP_AUTH_NEEDMODE === $status) {
           $status= $this->_sendcmd('AUTHINFO pass', $this->url->getPassword());
         }
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       switch ($status) {
@@ -201,19 +202,19 @@
           break;
         }
         case NNTP_AUTH_NEEDMODE: {
-          return throw(new AuthenticatorException('Authentication uncomplete'));
+          throw(new AuthenticatorException('Authentication uncomplete'));
           break;
         }
         case NNTP_AUTH_REJECTED: {
-          return throw(new AuthenticatorException('Authentication rejected'));
+          throw(new AuthenticatorException('Authentication rejected'));
           break;
         }
         case NNTP_NOPERM: {
-          return throw(new AuthenticatorException('No permission'));
+          throw(new AuthenticatorException('No permission'));
           break;
         }
         default: {
-          return throw(new AuthenticatorException('Unexpected authentication error'));
+          throw(new AuthenticatorException('Unexpected authentication error'));
         }
       }
     }
@@ -225,10 +226,10 @@
      * @param   string groupname
      * @return  success
      */
-    function setGroup($group) {
+    public function setGroup($group) {
       $status= $this->_sendcmd('GROUP', $group);
       if (!NntpReply::isPositiveCompletion($status))
-        return throw (new IOException('Could not set group'));
+        throw (new IOException('Could not set group'));
 
       return TRUE;
     }
@@ -239,14 +240,14 @@
      * @access  public
      * @return  &peer.news.Newsgroup[]
      */
-    function &getGroups() {
+    public function &getGroups() {
       $status= $this->_sendcmd('LIST');
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get groups'));
+        throw(new IOException('Could not get groups'));
 
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
-        $groups[]= &new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
+        $groups[]= new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
       }
 
       return $groups;
@@ -260,13 +261,13 @@
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    function &getArticle($id= NULL) {
+    public function &getArticle($id= NULL) {
       $status= $this->_sendcmd('ARTICLE', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get article'));
+        throw(new IOException('Could not get article'));
         
       with($args= explode(' ', $this->getResponse())); {
-        $article= &new Article($args[0], $args[1]);
+        $article= new Article($args[0], $args[1]);
       }
       
       // retrieve headers
@@ -296,10 +297,10 @@
      * @return  array articleId
      * @throws  io.IOException in case article list could not be retrieved
      */
-    function getArticleList() {
+    public function getArticleList() {
       $status= $this->_sendcmd('LISTGROUP');
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get article list'));
+        throw(new IOException('Could not get article list'));
       
       while ($line= $this->_readData()) $articles[]= $line;
       
@@ -314,10 +315,10 @@
      * @return  string body
      * @throws  io.IOException in case body could not be retrieved
      */
-    function getBody($id= NULL) {
+    public function getBody($id= NULL) {
       $status= $this->_sendcmd('BODY', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get article body'));
+        throw(new IOException('Could not get article body'));
 
       // retrieve body
       while (FALSE !== ($line= $this->_readData())) $body.= $line."\n";
@@ -332,10 +333,10 @@
      * @return  array headers
      * @throws  io.IOException in case headers could not be retrieved
      */
-    function getHeaders($id= NULL) {
+    public function getHeaders($id= NULL) {
       $status= $this->_sendcmd('HEAD', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get article headers'));
+        throw(new IOException('Could not get article headers'));
 
       // retrieve headers
       while ($line= $this->_readData()) {
@@ -353,10 +354,10 @@
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    function &getNextArticle() {
+    public function &getNextArticle() {
       $status= $this->_sendcmd('NEXT');
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get next article'));
+        throw(new IOException('Could not get next article'));
 
       return $this->getArticle(current(explode(' ', $this->getResponse())));
     }
@@ -368,10 +369,10 @@
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    function &getLastArticle() {
+    public function &getLastArticle() {
       $status= $this->_sendcmd('LAST');
       if (!NntpReply::isPositiveCompletion($status)) 
-        return throw(new IOException('Could not get last article'));
+        throw(new IOException('Could not get last article'));
 
       return $this->getArticle(current(explode(' ', $this->getResponse())));
     }
@@ -383,10 +384,10 @@
      * @return  array fields
      * @throws  io.IOException in case format could not be retrieved
      */    
-    function getOverviewFormat() {
+    public function getOverviewFormat() {
       $status= $this->_sendcmd('LIST OVERVIEW.FMT');
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get overview'));
+        throw(new IOException('Could not get overview'));
         
       while ($line= $this->_readData()) {
         $fields[]= current(explode(':', $line, 2));
@@ -402,10 +403,10 @@
      * @param   string range default NULL
      * @return  &int[] articleId
      */
-    function &getOverview($range= NULL) {
+    public function &getOverview($range= NULL) {
       $status= $this->_sendcmd('XOVER', $range);
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get overview'));
+        throw(new IOException('Could not get overview'));
 
       while ($line= $this->_readData()) {
         $articles[]= current(explode("\t", $line, 9));
@@ -422,14 +423,14 @@
      * @param   string newsgroup
      * @return  array messageId
      */ 
-    function newNews(&$date, $newsgroup) {
+    public function newNews(&$date, $newsgroup) {
       $status= $this->_sendcmd(
         'NEWNEWS',
         $newsgroup,
         $date->format('%y%m%d %H%M%S')
       );
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get new articles'));
+        throw(new IOException('Could not get new articles'));
         
       while ($line= $this->_readData()) $articles[]= $line;
       
@@ -444,17 +445,17 @@
      * @param   &util.Date date
      * @return  array &peer.news.Newsgroup
      */
-    function newGroups(&$date) {
+    public function newGroups(&$date) {
       $status= $this->_sendcmd(
         'NEWGROUPS',
         $date->format('%y%m%d %H%M%S')
       );
       if (!NntpReply::isPositiveCompletion($status))
-        return throw(new IOException('Could not get new groups'));
+        throw(new IOException('Could not get new groups'));
         
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
-        $groups[]= &new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
+        $groups[]= new Newsgroup($buf[0], (int)$buf[1], (int)$buf[2], $buf[3]);
       }
 
       return $groups;
@@ -466,7 +467,7 @@
      * @access  public
      * @return  string response
      */
-    function getResponse() {
+    public function getResponse() {
       return $this->response[1];
     }
 
@@ -476,9 +477,9 @@
      * @access  public
      * @return  int statuscode
      */
-    function getStatus() {
+    public function getStatus() {
       return $this->response[0];
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

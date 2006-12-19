@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.ArrayList');
+  uses('lang.types.ArrayList', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for strictly numeric arrays
@@ -12,7 +12,7 @@
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping
    */
-  class ArrayListMapping extends Object {
+  class ArrayListMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -23,8 +23,8 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
-      $a= &new ArrayList();
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $a= new ArrayList();
       $size= $serialized->consumeSize();
       
       $serialized->offset++;  // Opening "{"
@@ -44,7 +44,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       $s= 'A:'.sizeof($value->values).':{';
       foreach (array_keys($value->values) as $key) {
         $s.= $serializer->representationOf($value->values[$key], $context);
@@ -58,8 +58,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('lang.types.ArrayList');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

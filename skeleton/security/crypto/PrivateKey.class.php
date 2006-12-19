@@ -23,14 +23,14 @@
      * @return  &security.crypto.PrivateKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function &fromString($str, $passphrase= NULL) {
+    public static function &fromString($str, $passphrase= NULL) {
       if (!is_resource($_hdl= openssl_pkey_get_private($str, $passphrase))) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not read private key', OpenSslUtil::getErrors()
         ));
       }
     
-      $pk= &new PrivateKey($_hdl);
+      $pk= new PrivateKey($_hdl);
       return $pk;
     }
     
@@ -42,9 +42,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function sign($data) {
+    public function sign($data) {
       if (FALSE === openssl_sign($data, $signature, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not sign data', OpenSslUtil::getErrors()
         ));
       }
@@ -66,9 +66,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function encrypt($data) {
+    public function encrypt($data) {
       if (FALSE === openssl_private_encrypt($data, $crypted, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
         ));
       }
@@ -85,9 +85,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function decrypt($data) {
+    public function decrypt($data) {
       if (FALSE === openssl_private_decrypt($data, $decrypted, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
         ));
       }
@@ -103,9 +103,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function export($passphrase= NULL) {
+    public function export($passphrase= NULL) {
       if (FALSE === openssl_pkey_export($this->_hdl, $out, $passphrase)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not export private key', OpenSslUtil::getErrors()
         ));
       }
@@ -123,9 +123,9 @@
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    function unseal($data, $key) {
+    public function unseal($data, $key) {
       if (FALSE === openssl_open($data, $unsealed, $key, $this->_hdl)) {
-        return throw(new CryptoException(
+        throw(new CryptoException(
           'Could not export private key', OpenSslUtil::getErrors()
         ));
       }

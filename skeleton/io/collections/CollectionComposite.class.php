@@ -25,10 +25,10 @@
    * @purpose  Collection implementation
    */
   class CollectionComposite extends Object {
-    var
+    public
       $collections = array();
     
-    var
+    public
       $_current    = 0;
       
     /**
@@ -38,9 +38,9 @@
      * @param   io.collections.IOCollection[] collections
      * @throws  lang.IllegalArgumentException if collections is an empty array
      */
-    function __construct($collections) {
+    public function __construct($collections) {
       if (empty($collections)) {
-        return throw(new IllegalArgumentException('Collections may not be empty'));
+        throw(new IllegalArgumentException('Collections may not be empty'));
       }
       $this->collections= $collections;
     }
@@ -50,7 +50,7 @@
      *
      * @access  public
      */
-    function open() { 
+    public function open() { 
       $this->collections[0]->open();
     }
 
@@ -59,7 +59,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       do {
         $this->collections[$this->_current]->rewind(); 
       } while ($this->_current-- > 0);
@@ -72,7 +72,7 @@
      * @access  public
      * @return  &io.collection.IOElement
      */
-    function &next() {
+    public function &next() {
       do { 
         if (NULL !== ($element= &$this->collections[$this->_current]->next())) return $element;
         
@@ -92,7 +92,7 @@
      *
      * @access  public
      */
-    function close() { 
+    public function close() { 
       do {
         $this->collections[$this->_current]->close(); 
       } while ($this->_current-- > 0);

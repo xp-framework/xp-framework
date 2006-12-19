@@ -21,7 +21,7 @@
    * @purpose  Wrap
    */
   class MimePart extends Object {
-    var
+    public
       $contenttype      = '',
       $charset          = '',
       $encoding         = '',
@@ -41,7 +41,7 @@
      * @param   string encoding default ''
      * @param   string name
      */ 
-    function __construct(
+    public function __construct(
       $body= '', 
       $contenttype= '',
       $encoding= '',
@@ -67,7 +67,7 @@
      * @access  public
      * @return  bool TRUE if this part is an attachment
      */
-    function isAttachment() {
+    public function isAttachment() {
       return (MIME_DISPOSITION_ATTACHMENT == $this->disposition);
     }
 
@@ -77,7 +77,7 @@
      * @access  public
      * @return  bool TRUE if this part is an inline
      */
-    function isInline() {
+    public function isInline() {
       return (
         (MIME_DISPOSITION_INLINE == $this->disposition) ||
         (MIME_DISPOSITION_UNKNOWN == $this->disposition)
@@ -90,7 +90,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @param   string filename
      */
-    function setFilename($filename) {
+    public function setFilename($filename) {
       $this->filename= $filename;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @return  string
      */
-    function getDisposition() {
+    public function getDisposition() {
       return $this->disposition;
     }
 
@@ -120,7 +120,7 @@
      * @access  public
      * @param   string disposition
      */
-    function setDisposition($disposition) {
+    public function setDisposition($disposition) {
       $this->disposition= $disposition;
     }
 
@@ -130,7 +130,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -140,7 +140,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -150,7 +150,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {
+    public function getEncoding() {
       return $this->encoding;
     }
 
@@ -160,7 +160,7 @@
      * @access  public
      * @param   string encoding
      */
-    function setEncoding($encoding) {
+    public function setEncoding($encoding) {
       $this->encoding= $encoding;
     }
 
@@ -170,7 +170,7 @@
      * @access  public
      * @return  string
      */
-    function getContenttype() {
+    public function getContenttype() {
       return $this->contenttype;
     }
 
@@ -180,7 +180,7 @@
      * @access  public
      * @param   string contenttype
      */
-    function setContenttype($contenttype) {
+    public function setContenttype($contenttype) {
       $this->contenttype= $contenttype;
     }
     
@@ -192,7 +192,7 @@
      * @access  public
      * @return  string id
      */
-    function getContentId() {
+    public function getContentId() {
       if (empty ($this->id))
         $this->generateContentId();
         
@@ -207,7 +207,7 @@
      * @access  public
      * @param   string id
      */    
-    function setContentId($id) {
+    public function setContentId($id) {
       $this->id= $id;
     }
     
@@ -216,7 +216,7 @@
      *
      * @access  public
      */
-    function generateContentId() {
+    public function generateContentId() {
       $this->id= uniqid(time(), TRUE);
     }
       
@@ -227,7 +227,7 @@
      * @param   string body
      * @param   bool encoded default FALSE
      */
-    function setBody($body) {
+    public function setBody($body) {
       $this->body= $body;
     }
   
@@ -238,7 +238,7 @@
      * @param   decode default FALSE
      * @return  string
      */
-    function getBody($d= FALSE) {
+    public function getBody($d= FALSE) {
       if ($d && !empty ($this->encoding)) switch ($this->getEncoding()) {
         case MIME_ENC_BASE64:
           return base64_decode ($this->body);
@@ -256,7 +256,7 @@
      * @access  public
      * @param   string str
      */
-    function setHeaderString($str) {
+    public function setHeaderString($str) {
       $t= strtok($str, "\n\r");
       while ($t) {
         if ("\t" != $t{0}) list($k, $t)= explode(': ', $t, 2);
@@ -281,7 +281,7 @@
      * @access  public
      * @return  string headers
      */
-    function getHeaderString() {
+    public function getHeaderString() {
     
       // Content-Type: application/octet-stream; name="Document003.pif"
       // Content-Type: text/plain; charset="iso-8859-1"

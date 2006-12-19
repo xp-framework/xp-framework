@@ -29,7 +29,7 @@
    * @purpose  Generic WDDX Client base class
    */
   class WddxClient extends Object {
-    var
+    public
       $transport  = NULL,
       $message    = NULL,
       $answer     = NULL;
@@ -40,7 +40,7 @@
      * @access  public
      * @param   &webservices.wddx.transport.WddxTransport transport
      */
-    function __construct(&$transport) {
+    public function __construct(&$transport) {
       $this->transport= &$transport;
     }
     
@@ -50,7 +50,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->transport->setTrace($cat);
     }
     
@@ -63,13 +63,13 @@
      * @return  mixed answer
      * @throws  lang.IllegalArgumentException
      */
-    function invoke() {
+    public function invoke() {
       if (!is('webservices.wddx.transport.WddxTransport', $this->transport))
-        return throw(new IllegalArgumentException('Transport must be a webservices.wddx.transport.WddxTransport'));
+        throw(new IllegalArgumentException('Transport must be a webservices.wddx.transport.WddxTransport'));
     
       $args= func_get_args();
       
-      $this->message= &new WddxMessage();
+      $this->message= new WddxMessage();
       $this->message->create();
       $this->message->setData($args);
       

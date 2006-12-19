@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Size comparison filter
    *
    * @purpose  Iteration Filter
    */
-  class AbstractSizeComparisonFilter extends Object {
-    var
+  class AbstractSizeComparisonFilter extends Object implements IterationFilter {
+    public
       $size= 0;
       
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   int size the size to compare to in bytes
      */
-    function __construct($size) {
+    public function __construct($size) {
       $this->size= $size;
     }
   
@@ -31,7 +33,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) { }
+    public function accept(&$element) { }
 
     /**
      * Creates a string representation of this iterator
@@ -39,9 +41,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->size.')';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

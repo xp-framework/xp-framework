@@ -14,7 +14,7 @@
    * @purpose  Session information
    */
   class FtpSession extends Object {
-    var
+    public
       $username       = '',
       $authenticated  = FALSE,
       $type           = TYPE_ASCII,
@@ -45,7 +45,7 @@
      * @access  protected
      * @return  string
      */
-    function typeName() {
+    public function typeName() {
       static $names= array(
         TYPE_ASCII  => 'ASCII',
         TYPE_BINARY => 'BINARY'
@@ -59,7 +59,7 @@
      * @access  public
      * @param   string username
      */
-    function setUsername($username) {
+    public function setUsername($username) {
       $this->username= $username;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->username;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   bool authenticated
      */
-    function setAuthenticated($authenticated) {
+    public function setAuthenticated($authenticated) {
       $this->authenticated= $authenticated;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  bool
      */
-    function isAuthenticated() {
+    public function isAuthenticated() {
       return $this->authenticated;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   int type
      */
-    function setType($type) {
+    public function setType($type) {
       $this->type= $type;
     }
 
@@ -110,7 +110,7 @@
      * @param   string name
      * @param   mixed value
      */
-    function setTempVar($name, $value) {
+    public function setTempVar($name, $value) {
       $this->tempVar[$name]= $value;
     }
 
@@ -121,7 +121,7 @@
      * @param   string name
      * @return  mixed value
      */    
-    function getTempVar($name) {
+    public function getTempVar($name) {
       return $this->tempVar[$name];
     }
     
@@ -131,7 +131,7 @@
      * @access  public
      * @param   string name
      */    
-    function removeTempVar($name) {
+    public function removeTempVar($name) {
       unset($this->tempVar[$name]);
     }
 
@@ -141,7 +141,7 @@
      * @access  public
      * @return  int
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
   }

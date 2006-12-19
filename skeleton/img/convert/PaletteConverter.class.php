@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.convert.ImageConverter');
+
   /**
    * Converts a truecolor image to a paletted image
    *
@@ -11,8 +13,8 @@
    * @see      xp://img.convert.ImageConverter
    * @purpose  Converter
    */
-  class PaletteConverter extends Object {
-    var
+  class PaletteConverter extends Object implements ImageConverter {
+    public
       $dither   = FALSE,
       $ncolors  = 0;
 
@@ -24,7 +26,7 @@
      * @param   bool dither default FALSE indicates if the image should be dithered
      * @param   int ncolors default 256 maximum # of colors retained in the palette
      */
-    function __construct($dither= FALSE, $ncolors= 256) {
+    public function __construct($dither= FALSE, $ncolors= 256) {
       $this->dither= $dither;
       $this->ncolors= $ncolors;
     }
@@ -38,7 +40,7 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function convert(&$image) { 
+    public function convert(&$image) { 
       if (!imageistruecolor($image->handle)) return FALSE;
 
       return imagetruecolortopalette(
@@ -48,5 +50,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.convert.ImageConverter');
+  } 
 ?>

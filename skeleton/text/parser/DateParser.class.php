@@ -38,7 +38,7 @@
      * @param   int year
      * @return  int
      */
-    function yearFor($year) {
+    public static function yearFor($year) {
       if (strlen((int)$year) <= 2) {
         return (int)floor(date('Y') / 100) * 100 + $year;
       }
@@ -54,11 +54,11 @@
      * @return  &util.Date
      * @throws  lang.FormatException in case the date could not be parsed
      */
-    function &parse($s) {
+    public static function &parse($s) {
       if (empty($s)) {
       
         // Border case
-        return throw(new FormatException('Cannot parse empty string'));
+        throw(new FormatException('Cannot parse empty string'));
       } else if (preg_match('/^([0-9]+)\.([0-9]+)(\.([0-9]+))? ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/', $s, $matches)) {
       
         // German date format
@@ -84,16 +84,16 @@
         
         // If a timezone information has been given, try to convert timestamp into local time
         if (!empty($matches[7])) {
-          try(); {
+          try {
             if (
-              ($tz= &new TimeZone($matches[7])) &&
+              ($tz= new TimeZone($matches[7])) &&
               ($lc= &TimeZone::getLocal())
             ) {
             
               $date= &$lc->convertDate(new Date($stamp), $tz);
               $stamp= $date->getTime();
             }
-          } if (catch('IllegalArgumentException', $e)) {
+          } catch (IllegalArgumentException $e) {
           
             // Ignore, do not modify timestamp...
           }
@@ -110,7 +110,7 @@
         // or at least raise a warning), but for now, we will have to live 
         // with it.
         if (-1 === ($stamp= strtotime(strtolower($s)))) {
-          return throw(new FormatException('Could not parse "'.$s.'"'));
+          throw(new FormatException('Could not parse "'.$s.'"'));
         }
       }
       

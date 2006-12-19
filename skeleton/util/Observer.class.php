@@ -10,7 +10,7 @@
    * @see      &util.Observable
    * @purpose  Interface
    */
-  class Observer extends Interface {
+  interface Observer {
   
     /**
      * Update method
@@ -19,7 +19,7 @@
      * @param   &util.Observable obs
      * @param   mixed arg default NULL
      */
-    function update(&$obs, $arg= NULL) { }
+    public function update(&$obs, $arg= NULL);
   
   }
 ?>

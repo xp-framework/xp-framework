@@ -71,7 +71,7 @@
      * @param   string salt default NULL
      * @return  string crypted
      */
-    function crypt($original, $salt= NULL) {
+    public static function crypt($original, $salt= NULL) {
       return crypt($original, $salt);
     }
     
@@ -84,7 +84,7 @@
      * @param   string entered
      * @return  bool
      */
-    function matches($encrypted, $entered) {
+    public static function matches($encrypted, $entered) {
       return ($encrypted == crypt($entered, $encrypted));
     }
   }

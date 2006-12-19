@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class Fragment extends Interface {
+  interface Fragment {
   
   }
 ?>

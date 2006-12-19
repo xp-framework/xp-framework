@@ -21,7 +21,7 @@
      * @access  protected
      * @return  bool success
      */
-    function _readhead() {
+    public function _readhead() {
       if (0 != $this->statuscode) return TRUE;
       
       // Read status line
@@ -36,7 +36,7 @@
         $minor, 
         $this->statuscode
       ))) {
-        return throw(new FormatException('"'.$h[0].'" is not a valid HTTP response ['.$r.']'));
+        throw(new FormatException('"'.$h[0].'" is not a valid HTTP response ['.$r.']'));
       }
 
       $this->message= substr($s, 12);      
@@ -61,7 +61,7 @@
      * @param   bool binary default FALSE
      * @return  string buf or FALSE to indicate EOF
      */
-    function readData($size= 8192, $binary= FALSE) {
+    public function readData($size= 8192, $binary= FALSE) {
       if (!$this->_readhead()) return FALSE;            // Read head if not done before
       if (!isset($this->stream) || 0 == strlen($this->stream[1])) return FALSE;  // EOF
       

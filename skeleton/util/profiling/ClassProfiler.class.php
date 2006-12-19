@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('util.profiling.Timer');
+  uses('util.profiling.Timer');
 
   /**
    * Class that implements a simple class profiler. Every call
@@ -13,11 +13,11 @@
    * @ext overload
    */
   class ClassProfiler extends Object {
-    var
+    public
       $timer= array(),
       $calls= array();
       
-    var
+    public
       $_profilee;
 
     /**
@@ -25,7 +25,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->_profilee= NULL;
     }
 
@@ -35,7 +35,7 @@
      * @access  public
      * @param   &Object obj
      */    
-    function attachProfilee(&$obj) {
+    public function attachProfilee(&$obj) {
       $this->_profilee= $obj;
     }
 
@@ -48,8 +48,8 @@
      * @param   &mixed return
      * @return  boolean success
      */    
-    function __call($method, $params, &$return) {
-      $t= &new Timer();
+    public function __call($method, $params) {
+      $t= new Timer();
       $t->start();
       if (!isset ($this->timer[$method]))
         $this->timer[$method]= 0;
@@ -64,7 +64,7 @@
       $this->timer[$method]+= $t->elapsedTime();
       $this->calls[$method]++;
 
-      return TRUE;
+      return $return;
     }
     
     /**
@@ -75,12 +75,12 @@
      * @param   &mixed propvalue
      * @return  boolean success
      */
-    function __get($propname, &$propvalue) {
+    public function __get($propname) {
       if (!isset ($this->_profilee->{$propname}))
         return FALSE;
         
       $propvalue= &$this->_profilee->{$propname};
-      return TRUE;        
+      return $propvalue;        
     }
     
     /**
@@ -91,7 +91,7 @@
      * @param   &mixed propvalue
      * @return  bool success
      */
-    function __set($propname, $propvalue) {
+    public function __set($propname, $propvalue) {
       $this->_profilee->{$propname}= $propvalue;
       return TRUE;
     }
@@ -102,7 +102,7 @@
      * @access  public
      * @return  array names
      */
-    function getCalledFunction() {
+    public function getCalledFunction() {
       return array_keys ($this->timer);
     }    
 
@@ -113,7 +113,7 @@
      * @param   string method
      * @return  float time
      */
-    function getTiming($method) {
+    public function getTiming($method) {
       return $this->timer[$method];
     }
     
@@ -124,7 +124,7 @@
      * @param   string method
      * @return  int calls
      */
-    function getCalledCount($method) {
+    public function getCalledCount($method) {
       return $this->calls[$method];
     }
     
@@ -135,10 +135,10 @@
      * @access  public
      * @return  string representation
      */
-    function toString() {
+    public function toString() {
       $vals= array_unique(array_merge(array_keys ($this->timer), array_keys ($this->calls)));
       $t= sprintf ("Profiling information for class %s\n", 
-        (is_a($this->_profilee, 'Object') 
+        (is('Generic', $this->_profilee) 
           ? $this->_profilee->getClassName() 
           : get_class ($this->_profilee)
       ));

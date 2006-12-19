@@ -24,12 +24,12 @@
    * @purpose  Represent a locale
    */
   class Locale extends Object {
-    var
+    public
       $lang     = '',
       $country  = '',
       $variant  = '';
     
-    var
+    public
       $_str     = '';
 
     /**
@@ -40,7 +40,7 @@
      * @param   string country 2-letter abbreviation of country
      * @param   string variant default ''
      */
-    function __construct() {
+    public function __construct() {
       switch (func_num_args()) {
         case 1: 
           $this->_str= func_get_arg(0);
@@ -66,7 +66,7 @@
      * @access  public
      * @return  &util.Locale
      */
-    function &getDefault() {
+    public static function &getDefault() {
       return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
@@ -81,9 +81,9 @@
      * @param   &util.Locale locale
      * @throws  lang.IllegalArgumentException in case the locale is not available
      */
-    function setDefault(&$locale) {
+    public static function setDefault(&$locale) {
       if (FALSE === setlocale(LC_ALL, $locale->toString())) {
-        return throw(new IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Locale [lang=%s,country=%s,variant=%s] not available',
           $this->lang, 
           $this->country, 
@@ -98,7 +98,7 @@
      * @access  public
      * @return  string
      */
-    function getLanguage() {
+    public function getLanguage() {
       return $this->lang;
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      * @return  string
      */
-    function getCountry() {
+    public function getCountry() {
       return $this->country;
     }
 
@@ -118,7 +118,7 @@
      * @access  public
      * @return  string
      */
-    function getVariant() {
+    public function getVariant() {
       return $this->variant;
     }
 
@@ -128,7 +128,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return sprintf('%u', crc32($this->_str));
     }
     
@@ -146,7 +146,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->_str;
     }
   }

@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  uses('util.collections.HashProvider');
+  uses('util.collections.HashProvider', 'util.collections.Set');
 
   /**
    * A set of objects
    *
    * @purpose  Interface
    */
-  class HashSet extends Object {
-    var
+  class HashSet extends Object implements Set {
+    public
       $_elements = array(),
       $_hash     = 0;
     
@@ -23,7 +23,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    function add(&$object) { 
+    public function add(&$object) { 
       $h= $object->hashCode();
       if (isset($this->_elements[$h])) return FALSE;
       
@@ -39,7 +39,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    function remove(&$object) { 
+    public function remove(&$object) { 
       $h= $object->hashCode();
       if (!isset($this->_elements[$h])) return FALSE;
 
@@ -55,7 +55,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    function contains(&$object) { 
+    public function contains(&$object) { 
       return isset($this->_elements[$object->hashCode()]);
     }
 
@@ -65,7 +65,7 @@
      * @access  public
      * @return  int
      */
-    function size() { 
+    public function size() { 
       return sizeof($this->_elements);
     }
 
@@ -74,7 +74,7 @@
      *
      * @access  public
      */
-    function clear() { 
+    public function clear() { 
       $this->_elements= array();
       $this->_hash= 0;
     }
@@ -85,7 +85,7 @@
      * @access  public
      * @return  bool
      */
-    function isEmpty() {
+    public function isEmpty() {
       return 0 == sizeof($this->_elements);
     }
     
@@ -96,7 +96,7 @@
      * @param   lang.Object[] objects
      * @return  bool TRUE if this set changed as a result of the call. 
      */
-    function addAll($objects) { 
+    public function addAll($objects) { 
       $result= FALSE;
       for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
         $h= $objects[$i]->hashCode();
@@ -115,7 +115,7 @@
      * @access  public
      * @return  lang.Object[] objects
      */
-    function toArray() { 
+    public function toArray() { 
       return array_values($this->_elements);
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->_hash;
     }
     
@@ -136,7 +136,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
         is('util.collections.Set', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())
@@ -149,7 +149,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'['.sizeof($this->_elements).'] {';
       if (0 == sizeof($this->_elements)) return $s.' }';
 
@@ -160,5 +160,5 @@
       return substr($s, 0, -2)."\n}";
     }
 
-  } implements(__FILE__, 'util.collections.Set');
+  } 
 ?>

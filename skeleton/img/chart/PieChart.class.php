@@ -14,7 +14,7 @@
    */
   class PieChart extends Chart {
 
-    var
+    public
       $valinset= array();
     
     /**
@@ -23,7 +23,7 @@
      * @access  public
      * @return  float
      */
-    function sum() {
+    public function sum() {
       $sum= 0;
       for ($i= 0, $s= sizeof($this->series[0]->values); $i < $s; $i++) {
         $sum+= $this->series[0]->values[$i];
@@ -37,7 +37,7 @@
      * @access public
      * @param int item The item index
      */
-    function setValueInset($item, $inset= 10) {
+    public function setValueInset($item, $inset= 10) {
       $this->valinset[$item]= $inset;
     }
     
@@ -48,7 +48,7 @@
      * @param int item The item index
      * @return int
      */
-    function getValueInset($item) {
+    public function getValueInset($item) {
       return isset($this->valinset[$item]) ? $this->valinset[$item] : 0;
     }
   }

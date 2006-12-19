@@ -12,7 +12,7 @@
    * @purpose  purpose
    */
   class Business extends Object {
-    var
+    public
       $names        = array(),
       $description  = '',
       $businessKey  = '';
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string key
      */
-    function __construct($key) {
+    public function __construct($key) {
       $this->businessKey= $key;
     }
 
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->names[0];
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      * @param   string description
      */
-    function setDescription($description) {
+    public function setDescription($description) {
       $this->description= $description;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  bool
      */
-    function hasDescription() {
+    public function hasDescription() {
       return !empty($this->description);
     }
 
@@ -74,7 +74,7 @@
      * @access  public
      * @param   string businessKey
      */
-    function setBusinessKey($businessKey) {
+    public function setBusinessKey($businessKey) {
       $this->businessKey= $businessKey;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function getBusinessKey() {
+    public function getBusinessKey() {
       return $this->businessKey;
     }
 

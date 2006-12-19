@@ -9,7 +9,7 @@
    *
    * @see Exception
    */
-  class IllegalStateException extends Exception {
+  class IllegalStateException extends XPException {
   
   }
 ?>

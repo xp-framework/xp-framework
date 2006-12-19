@@ -16,7 +16,7 @@
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/lang/reflect/Proxy.html
    */
   class Proxy extends Object {
-    var
+    public
       $_h= NULL;
 
     /**
@@ -25,7 +25,8 @@
      * @access  protected
      * @param   &lang.reflect.InvocationHandler handler
      */
-    function __construct(&$handler) {
+    public function __construct(&$handler) {
+      parent::__construct();
       $this->_h= &$handler;
     }
     
@@ -42,7 +43,7 @@
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    function &getProxyClass(&$classloader, $interfaces) {
+    public static function &getProxyClass(&$classloader, $interfaces) {
       static $num= 0;
       static $cache= array();
       
@@ -64,7 +65,7 @@
         
         // Verify that the Class object actually represents an interface
         if (!$if->isInterface()) {
-          return throw(new IllegalArgumentException($if->getName().' is not an interface'));
+          throw(new IllegalArgumentException($if->getName().' is not an interface'));
         }
         
         // Implement all the interface's methods
@@ -95,7 +96,7 @@
             $bytes.= (
               'function '.$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
               'switch (func_num_args()) {'.implode("\n", $cases).
-              ' default: return throw(new IllegalArgumentException(\'Illegal number of arguments\')); }'.
+              ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
               '}'."\n"
             );
           } else {
@@ -123,10 +124,10 @@
       $bytes.= ' }';
 
       // Define the generated class
-      try(); {
+      try {
         $class= &$classloader->defineClass($name, $bytes);
-      } if (catch('FormatException', $e)) {
-        return throw(new IllegalArgumentException($e->getMessage()));
+      } catch (FormatException $e) {
+        throw(new IllegalArgumentException($e->getMessage()));
       }
 
       // Register implemented interfaces
@@ -150,7 +151,7 @@
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    function &newProxyInstance(&$classloader, $interfaces, &$handler) {
+    public static function &newProxyInstance(&$classloader, $interfaces, &$handler) {
       if (!($class= &Proxy::getProxyClass($classloader, $interfaces))) return $class;
       $instance= &$class->newInstance($dummy= NULL);
       $instance->_h= &$handler;

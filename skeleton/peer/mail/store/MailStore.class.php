@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.mail.MessagingException', 
+    'peer.mail.MessagingException',
     'peer.mail.store.StoreCache',
     'peer.mail.MailFolder'
   );
@@ -42,7 +42,7 @@
    * @purpose  Interface for different MailStores
    */
   class MailStore extends Object {
-    var 
+    public 
       $_hdl  = NULL,
       $cache = NULL;
      
@@ -52,9 +52,9 @@
      * @access  public
      * @param   peer.mail.store.StoreCache cache default NULL
      */ 
-    function __construct($cache= NULL) {
+    public function __construct($cache= NULL) {
       if (NULL === $cache) {
-        $this->cache= &new StoreCache();
+        $this->cache= new StoreCache();
       } else {
         $this->cache= &$cache;
       }
@@ -68,7 +68,7 @@
      * @param   string dsn
      * @return  bool success
      */
-    function open($dsn) { }
+    public function open($dsn) { }
     
     /**
      * Disconnect from store
@@ -76,7 +76,7 @@
      * @access  abstract
      * @return  bool success
      */
-    function close() { }
+    public function close() { }
   
     /**
      * Get a folder
@@ -85,7 +85,7 @@
      * @param   string name
      * @return  &peer.mail.MailFolder
      */
-    function &getFolder($name) { }
+    public function &getFolder($name) { }
     
     /**
      * Get all folders
@@ -93,7 +93,7 @@
      * @access  abstract
      * @return  &peer.mail.MailFolder[]
      */
-    function &getFolders() { }
+    public function &getFolders() { }
 
     /**
      * Open a folder
@@ -103,7 +103,7 @@
      * @param   bool readonly default FALSE
      * @return  bool success
      */
-    function openFolder(&$f, $readonly= FALSE) { }
+    public function openFolder(&$f, $readonly= FALSE) { }
     
     /**
      * Close a folder
@@ -112,7 +112,7 @@
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    function closeFolder(&$f) { }
+    public function closeFolder(&$f) { }
     
     /**
      * Get messages in a folder
@@ -122,7 +122,7 @@
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    function &getMessages(&$f) { }
+    public function &getMessages(&$f) { }
 
     /**
      * Get number of messages in this folder
@@ -132,6 +132,6 @@
      * @param   string attr one of "message", "recent" or "unseen"
      * @return  int
      */
-    function getMessageCount(&$f, $attr) { }
+    public function getMessageCount(&$f, $attr) { }
   }
 ?>

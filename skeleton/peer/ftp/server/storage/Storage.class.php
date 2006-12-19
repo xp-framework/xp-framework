@@ -13,7 +13,7 @@
    *
    * @purpose  Storage
    */
-  class Storage extends Interface {
+  interface Storage {
 
     /**
      * Sets base
@@ -23,7 +23,7 @@
      * @param   string uri
      * @return  string new base
      */
-    function setBase($clientId, $uri) { }
+    public function setBase($clientId, $uri);
     
     /**
      * Retrieves base
@@ -32,7 +32,7 @@
      * @param   int clientId
      * @return  string
      */
-    function getBase($clientId) { }
+    public function getBase($clientId);
 
     /**
      * Looks up a element. Returns a StorageCollection, a StorageElement 
@@ -43,7 +43,7 @@
      * @param   string uri
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &lookup($clientId, $uri) { }
+    public function &lookup($clientId, $uri);
 
     /**
      * Creates a new StorageEntry and return it
@@ -54,7 +54,7 @@
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &createEntry($clientId, $uri, $type) { }
+    public function &createEntry($clientId, $uri, $type);
     
     /**
      * Creates a new StorageEntry and return it
@@ -65,7 +65,7 @@
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &create($clientId, $uri, $type) { }
+    public function &create($clientId, $uri, $type);
   
   }
 ?>

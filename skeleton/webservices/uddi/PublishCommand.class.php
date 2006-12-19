@@ -11,6 +11,6 @@
    *
    * @purpose  Interface
    */
-  class PublishCommand extends UDDICommand {
+  interface PublishCommand extends UDDICommand {
   }
 ?>

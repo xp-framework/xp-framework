@@ -13,7 +13,7 @@
    * @purpose  Tag
    */
   class SeeTag extends Tag {
-    var
+    public
       $scheme  = '',
       $urn     = '';
     
@@ -26,7 +26,7 @@
      * @param   string scheme
      * @param   string urn
      */
-    function __construct($name, $text, $scheme, $urn) {
+    public function __construct($name, $text, $scheme, $urn) {
       parent::__construct($name, $text);
       $this->scheme= $scheme;
       $this->urn= $urn;

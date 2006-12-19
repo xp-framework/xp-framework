@@ -5,10 +5,11 @@
  */
 
   uses(
-    'webservices.soap.SOAPMessage', 
+    'webservices.soap.SOAPMessage',
     'webservices.soap.SOAPFaultException',
-    'peer.http.HttpConnection', 
-    'webservices.uddi.UDDIConstants'
+    'peer.http.HttpConnection',
+    'webservices.uddi.UDDIConstants',
+    'util.log.Traceable'
   );
 
   /**
@@ -39,8 +40,8 @@
    * @see      xp://webservices.soap.SOAPClient
    * @purpose  Access to UDDI
    */
-  class UDDIServer extends Object {
-    var
+  class UDDIServer extends Object implements Traceable {
+    public
       $cat      = NULL,
       $conn     = array(),
       $version  = 0;
@@ -53,9 +54,9 @@
      * @param   string publishUrl
      * @param   int version default 2
      */
-    function __construct($inquiryUrl, $publishUrl, $version= 2) {
-      $this->conn['inquiry']= &new HttpConnection($inquiryUrl);
-      $this->conn['publish']= &new HttpConnection($publishUrl);
+    public function __construct($inquiryUrl, $publishUrl, $version= 2) {
+      $this->conn['inquiry']= new HttpConnection($inquiryUrl);
+      $this->conn['publish']= new HttpConnection($publishUrl);
       $this->version= $version;
     }
 
@@ -65,7 +66,7 @@
      * @access  public
      * @param   int version
      */
-    function setVersion($version) {
+    public function setVersion($version) {
       $this->version= $version;
     }
 
@@ -75,7 +76,7 @@
      * @access  public
      * @return  int
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->version;
     }
     
@@ -90,21 +91,21 @@
      * @throws  webservices.soap.SOAPFaultException in case a SOAP fault was returned
      * @throws  xml.XMLFormatException in case the XML returned was not well-formed
      */
-    function invoke(&$command) {
+    public function invoke(&$command) {
       if (is('webservices.uddi.InquiryCommand', $command)) {
         $c= &$this->conn['inquiry'];
       } else if (is('webservices.uddi.PublishCommand', $command)) {
         $c= &$this->conn['publish'];
       } else {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Unknown command type "'.xp::typeOf($command).'"'
         ));
       }
       
       // Create message
-      with ($m= &new SOAPMessage()); {
+      with ($m= new SOAPMessage()); {
         $m->encoding= 'utf-8';
-        $m->root= &new Node('soap:Envelope', NULL, array(
+        $m->root= new Node('soap:Envelope', NULL, array(
           'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
         ));
         $body= &$m->root->addChild(new Node('soap:Body'));
@@ -124,17 +125,17 @@
       $c->request->setHeader('Content-Type', 'text/xml; charset='.$m->encoding);
 
       // Send it
-      try(); {
+      try {
         $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
         $response= &$c->request->send();
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
 
       // Read response
       $sc= $response->getStatusCode();
       $this->cat && $this->cat->debug('<<<', $response);
-      try(); {
+      try {
         $xml= '';
         while ($buf= $response->readData()) $xml.= $buf;
         $this->cat && $this->cat->debug('<<<', $xml);
@@ -145,13 +146,13 @@
             if (!empty($charset)) $answer->setEncoding($charset);
           }
         }
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       // Check for faults
       if (NULL !== ($fault= $answer->getFault())) {
-        return throw(new SOAPFaultException($fault));
+        throw(new SOAPFaultException($fault));
       }
       
       // Unmarshal response
@@ -164,9 +165,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

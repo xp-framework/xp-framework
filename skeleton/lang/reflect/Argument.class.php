@@ -11,7 +11,7 @@
    * @purpose  Reflection
    */
   class Argument extends Object {
-    var
+    public
       $name     = '',
       $type     = '',
       $optional = FALSE,
@@ -26,7 +26,7 @@
      * @param   bool optional default FALSE
      * @param   string default default NULL
      */    
-    function __construct($name, $type= 'mixed', $optional= FALSE, $default= NULL) {
+    public function __construct($name, $type= 'mixed', $optional= FALSE, $default= NULL) {
       $this->name= $name;
       $this->type= $type;
       $this->optional= $optional;
@@ -39,7 +39,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return ltrim($this->type, '&');
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @return  string
      */
-    function isPassedByReference() {
+    public function isPassedByReference() {
       return '&' == $this->type{0};
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  bool
      */
-    function isOptional() {
+    public function isOptional() {
       return $this->optional;
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @return  string
      */
-    function getDefault() {
+    public function getDefault() {
       return $this->optional ? $this->default : FALSE;
     }
   }

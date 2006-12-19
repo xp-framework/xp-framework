@@ -26,7 +26,7 @@
    * @purpose  Type wrapper
    */
   class String extends Object {
-    var 
+    public 
       $buffer   = '';
 
     /**
@@ -35,7 +35,7 @@
      * @access  public
      * @param   string initial default ''
      */
-    function __construct($initial= '') {
+    public function __construct($initial= '') {
       $this->buffer= $initial;
     }
     
@@ -45,7 +45,7 @@
      * @access  public
      * @return  int
      */
-    function length() {
+    public function length() {
       return strlen($this->buffer);
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      * @param   string buffer
      */
-    function setBuffer($buffer) {
+    public function setBuffer($buffer) {
       $this->buffer= $buffer;
     }
 
@@ -65,7 +65,7 @@
      * @access  public
      * @return  string
      */
-    function getBuffer() {
+    public function getBuffer() {
       return $this->buffer;
     }
     
@@ -79,11 +79,11 @@
      * @return  string character
      * @throws  lang.IndexOutOfBoundsException
      */
-    function charAt($pos) {
+    public function charAt($pos) {
       if (-1 == $pos) {
         $pos= strlen($this->buffer)- 1;
       } else if ($pos < 0 || $pos >= strlen($this->buffer)) {
-        return throw(new IndexOutOfBoundsException($pos.' is not a valid string offset'));
+        throw(new IndexOutOfBoundsException($pos.' is not a valid string offset'));
       }
 
       return $this->buffer{$pos};
@@ -99,7 +99,7 @@
      * @see     php://strcmp for case-sensitive comparison
      * @see     php://strcasecmp for case-insensitive comparison
      */
-    function compareTo(&$string, $cs= TRUE) {
+    public function compareTo(&$string, $cs= TRUE) {
       return ($cs 
         ? strcmp($string->buffer, $this->buffer) 
         : strcasecmp($string->buffer, $this->buffer)
@@ -112,7 +112,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return md5($this->buffer);
     }
 
@@ -123,9 +123,9 @@
      * @param   &lang.Object value
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
-        is_a($cmp, 'String') && 
+        is('String', $cmp) && 
         ($this->buffer === $cmp->buffer)
       );
     }
@@ -137,7 +137,7 @@
      * @param   string str
      * @return  bool
      */
-    function isEqualTo($str, $cs= TRUE) {
+    public function isEqualTo($str, $cs= TRUE) {
       return 0 == ($cs 
         ? strcmp($str, $this->buffer) 
         : strcasecmp($str, $this->buffer)
@@ -155,7 +155,7 @@
      * @see     php://strnatcmp for case-sensitive comparison
      * @see     php://strnatcasecmp for case-insensitive comparison
      */
-    function compareToNat(&$string, $cs= TRUE) {
+    public function compareToNat(&$string, $cs= TRUE) {
       return ($cs 
         ? strnatcmp($string->buffer, $this->buffer) 
         : strnatcasecmp($string->buffer, $this->buffer)
@@ -171,7 +171,7 @@
      * @param   int offset default 0 where to begin looking in the string
      * @return  bool
      */
-    function startsWith($prefix, $offset= 0) {
+    public function startsWith($prefix, $offset= 0) {
       return substr($this->buffer, $offset, strlen($prefix)) == $prefix;
     }
     
@@ -182,7 +182,7 @@
      * @param   string suffix
      * @return  bool
      */
-    function endsWith($suffix) {
+    public function endsWith($suffix) {
       return substr($this->buffer, -1 * strlen($suffix)) == $suffix;
     }
     
@@ -196,7 +196,7 @@
      * @return  int the index of the first occurrence of the substring or FALSE
      * @see     php://strpos
      */
-    function indexOf($substr, $offset= 0) {
+    public function indexOf($substr, $offset= 0) {
       return strpos($this->buffer, $substr, $offset);
     }
     
@@ -209,7 +209,7 @@
      * @return  int the index of the first occurrence of the substring or FALSE
      * @see     php://strrpos
      */
-    function lastIndexOf($substr) {
+    public function lastIndexOf($substr) {
       return strrpos($this->buffer, $substr);
     }
     
@@ -221,7 +221,7 @@
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  bool
      */
-    function contains($substr, $cs= TRUE) {
+    public function contains($substr, $cs= TRUE) {
       return ($cs 
         ? FALSE !== strpos($this->buffer, $substr)
         : FALSE !== strpos(strtolower($this->buffer), strtolower($substr))
@@ -246,7 +246,7 @@
      * @return  string or FALSE if substr is not found
      * @see     php://strstr
      */
-    function substrAfter($substr, $cs= TRUE) {
+    public function substrAfter($substr, $cs= TRUE) {
       return ($cs 
         ? strstr($this->buffer, $substr)
         : stristr($this->buffer, $substr)
@@ -263,7 +263,7 @@
      * @return  &text.String or NULL if substr is not found
      * @see     php://strstr
      */
-    function &substringAfter($substr, $cs= TRUE) {
+    public function &substringAfter($substr, $cs= TRUE) {
       if (FALSE === ($s= ($cs 
         ? strstr($this->buffer, $substr)
         : stristr($this->buffer, $substr)
@@ -281,7 +281,7 @@
      * @return  &text.String
      * @see     php://substr
      */
-    function &substring($begin, $end= -1) {
+    public function &substring($begin, $end= -1) {
       return new String(substr($this->buffer, $begin, $end));
     }
 
@@ -294,7 +294,7 @@
      * @return  string
      * @see     php://substr
      */
-    function substr($begin, $end= -1) {
+    public function substr($begin, $end= -1) {
       return substr($this->buffer, $begin, $end);
     }
     
@@ -306,7 +306,7 @@
      * @param   &text.String string
      * @return  &text.String a new string
      */
-    function &concat(&$string) {
+    public function &concat(&$string) {
       return new String($this->buffer.$string->buffer);
     }
     
@@ -317,7 +317,7 @@
      * @access  public
      * @param   &text.String string
      */
-    function append(&$string) {
+    public function append(&$string) {
       $this->buffer.= $string->buffer;
     }
     
@@ -329,7 +329,7 @@
      * @param   mixed replace
      * @see     php://str_replace
      */
-    function replace($search, $replace) {
+    public function replace($search, $replace) {
       $this->buffer= str_replace($search, $replace, $this->buffer);
     }
     
@@ -340,7 +340,7 @@
      * @param   array pairs an associative array, where keys are replaced by values
      * @see     php://strtr
      */
-    function replacePairs($pairs) {
+    public function replacePairs($pairs) {
       $this->buffer= strtr($search, $pairs);
     }
     
@@ -352,7 +352,7 @@
      * @param   int pos
      * @param   int len default 1
      */
-    function delete($pos, $len= 1) {
+    public function delete($pos, $len= 1) {
       $this->buffer= substr($this->buffer, 0, $pos).substr($this->buffer, $pos+ 1);
     }
     
@@ -363,7 +363,7 @@
      * @param   int pos
      * @param   string substring
      */
-    function insert($pos, $substring) {
+    public function insert($pos, $substring) {
       $this->buffer= substr($this->buffer, 0, $pos).$substring.substr($this->buffer, $pos);
     }
     
@@ -375,7 +375,7 @@
      * @return  bool
      * @see     php://preg_match
      */
-    function matches($regex) {
+    public function matches($regex) {
       return preg_match($regex, $this->buffer);
     }
     
@@ -388,7 +388,7 @@
      * @return  &text.String[]
      * @see     php://explode
      */
-    function &explode($separator, $limit= 0) {
+    public function &explode($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? explode($separator, $this->buffer) 
@@ -397,7 +397,7 @@
         $i < $s; 
         $i++
       ) {
-        $a[$i]= &new String($a[$i]);
+        $a[$i]= new String($a[$i]);
       }
       return $a;
     }
@@ -411,7 +411,7 @@
      * @return  &text.String[]
      * @see     php://preg_split
      */
-    function &split($separator, $limit= 0) {
+    public function &split($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? preg_split($separator, $this->buffer) 
@@ -420,7 +420,7 @@
         $i < $s; 
         $i++
       ) {
-        $a[$i]= &new String($a[$i]);
+        $a[$i]= new String($a[$i]);
       }
       return $a;
     }
@@ -434,7 +434,7 @@
      * @param   int type default STR_PAD_RIGHT
      * @see     php://str_pad
      */
-    function pad($length, $str= ' ', $type= STR_PAD_RIGHT) {
+    public function pad($length, $str= ' ', $type= STR_PAD_RIGHT) {
       $this->buffer= str_pad($this->buffer, $length, $str, $type);
     }
     
@@ -456,7 +456,7 @@
      * @param   string charlist default NULL
      * @see     php://trim
      */
-    function trim($charlist= NULL) {
+    public function trim($charlist= NULL) {
       if ($charlist) {
         $this->buffer= trim($this->buffer, $charlist);
       } else {
@@ -472,7 +472,7 @@
      * @see     php://ltrim
      * @see     xp://text.String#trim
      */
-    function ltrim($charlist= NULL) {
+    public function ltrim($charlist= NULL) {
       if ($charlist) {
         $this->buffer= ltrim($this->buffer, $charlist);
       } else {
@@ -488,7 +488,7 @@
      * @see     php://ltrim
      * @see     xp://text.String#trim
      */
-    function rtrim($charlist= NULL) {
+    public function rtrim($charlist= NULL) {
       if ($charlist) {
         $this->buffer= rtrim($this->buffer, $charlist);
       } else {
@@ -504,7 +504,7 @@
      * @see     php://strtoupper
      * @return  &text.String this string
      */
-    function &toUpperCase() {
+    public function &toUpperCase() {
       $this->buffer= strtoupper($this->buffer);
       return $this;
     }
@@ -517,7 +517,7 @@
      * @see     php://strtolower
      * @return  &text.String this string
      */
-    function &toLowerCase() {
+    public function &toLowerCase() {
       $this->buffer= strtolower($this->buffer);
       return $this;
     }
@@ -530,7 +530,7 @@
      * @return  array
      * @see     php://sscanf
      */
-    function scan($format) {
+    public function scan($format) {
       return sscanf($this->buffer, $format);
     }
     
@@ -550,7 +550,7 @@
      * @param   string delim default ''
      * @return  string[]
      */
-    function toArray($delim= '') {
+    public function toArray($delim= '') {
       if ($delim) return explode($delim, $this->buffer);
       
       $a= array();
@@ -575,7 +575,7 @@
      * @param   string delim default ''
      * @return  &text.String string
      */
-    function &fromArray($arr, $delim= '') {
+    public static function &fromArray($arr, $delim= '') {
       return new String(implode($delim, $arr));
     }
     
@@ -588,8 +588,8 @@
      * @param   mixed arg
      * @return  &text.String string
      */
-    function &valueOf($arg) {
-      if (is_a($arg, 'Object')) {
+    public static function &valueOf($arg) {
+      if (is('Generic', $arg)) {
         return new String($arg->toString());
       } else if (is_array($arg)) {
         return new String(implode('', $arg));
@@ -604,7 +604,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->buffer;
     }
   }

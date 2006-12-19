@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('security.auth.Authenticator');
+
   /**
    * Autenticates users against a property
    *
    * @purpose  Authenticator
    */
-  class PropertyAuthenticator extends Object {
-    var
+  class PropertyAuthenticator extends Object implements Authenticator {
+    public
       $users = NULL;
 
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   &util.Properties users
      */    
-    function __construct(&$prop) {
+    public function __construct(&$prop) {
       $this->users= &$prop;
 
     }
@@ -32,10 +34,10 @@
      * @param   string pass
      * @return  bool
      */
-    function authenticate($user, $pass) {
+    public function authenticate($user, $pass) {
       $user= $this->users->readSection(sprintf('user::%s', $user), NULL);
       return ($pass === $user['password']) ? TRUE : FALSE;
     }
   
-  } implements(__FILE__, 'security.auth.Authenticator');
+  } 
 ?>

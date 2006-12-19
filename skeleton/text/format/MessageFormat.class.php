@@ -54,7 +54,7 @@
    * @purpose  Format strings
    */
   class MessageFormat extends IFormat {
-    var
+    public
       $formatters   = array();
       
     /**
@@ -63,7 +63,7 @@
      * @access  public
      * @param   string f default NULL format string
      */
-    function __construct($f= NULL) {
+    public function __construct($f= NULL) {
 
       // Add some default formatters
       $this->setFormatter('printf', PrintfFormat::getInstance());
@@ -82,7 +82,7 @@
      * @access  public
      * @return  &text.format.MessageFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('MessageFormat');
     }
   
@@ -95,9 +95,9 @@
      * @return  &text.format.PrintfFormat formatter
      * @throws  lang.IllegalArgumentException 
      */
-    function &setFormatter($alias, &$formatter) {
-      if (!is_a($formatter, 'IFormat')) {
-        return throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
+    public function &setFormatter($alias, &$formatter) {
+      if (!is('IFormat', $formatter)) {
+        throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
       }
       $this->formatters[$alias]= &$formatter;
       return $this->formatters[$alias];
@@ -110,7 +110,7 @@
      * @param   string alias
      * @return  bool true in case the specified formatter exists, false otherwise
      */
-    function hasFormatter($alias) {
+    public function hasFormatter($alias) {
       return isset($this->formatters[$alias]);
     }
     
@@ -122,7 +122,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       static $instance;
       static $level= 0;
       
@@ -161,7 +161,7 @@
             $p,
             $fmt
           ), E_USER_NOTICE);
-          return throw(new FormatException('Parse error [level '.$level.']: closing curly bracket not found'));
+          throw(new FormatException('Parse error [level '.$level.']: closing curly bracket not found'));
         }
         
         // Syntax: {2} = paste argument, {2,printf,%s} use formatter
@@ -173,7 +173,7 @@
         
         // Check argument index
         if (!isset($argument[$index])) {
-          return throw(new FormatException('Missing argument at index '.$index));
+          throw(new FormatException('Missing argument at index '.$index));
         }
         
         // Default
@@ -187,7 +187,7 @@
         
         // No formatter registered
         if (!$this->hasFormatter($type)) {
-          return throw(new FormatException('Unknown formatter "'.$type.'"'));
+          throw(new FormatException('Unknown formatter "'.$type.'"'));
         }
         
         // Formatters return FALSE to indicate failure

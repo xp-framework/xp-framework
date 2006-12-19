@@ -31,7 +31,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       for ($i= 0; $i < $this->_size; $i++) {
       
         // The first filter that accepts the element => we accept the element

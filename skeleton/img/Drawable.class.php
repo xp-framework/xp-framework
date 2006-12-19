@@ -10,7 +10,7 @@
    * @see      xp://img.Image#draw
    * @purpose  Interface
    */
-  class Drawable extends Interface {
+  interface Drawable {
   
     /**
      * Draws this object onto an image
@@ -19,7 +19,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) { }
+    public function draw(&$image);
   
   }
 ?>

@@ -10,7 +10,7 @@
    * @see      xp://xml.XPath
    * @purpose  Exception
    */
-  class XPathException extends Exception {
+  class XPathException extends XPException {
   
   }
 ?>

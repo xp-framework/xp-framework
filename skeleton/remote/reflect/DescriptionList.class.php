@@ -11,7 +11,7 @@
    * @purpose  Wrapper
    */
   class DescriptionList extends Object {
-    var
+    public
       $beans= array();
       
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @return  remote.reflect.BeanDescription[]
      */
-    function beans() {
+    public function beans() {
       return array_values($this->beans);
     }
 
@@ -30,7 +30,7 @@
      * @access  public
      * @return  int
      */
-    function size() {
+    public function size() {
       return sizeof($this->beans);
     }
 
@@ -41,7 +41,7 @@
      * @param   string name
      * @return  &remote.reflect.BeanDescription or NULL if nothing is found
      */
-    function &bean($name) {
+    public function &bean($name) {
       if (!isset($this->beans[$name])) {
         return xp::null();
       }

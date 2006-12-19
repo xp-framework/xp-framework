@@ -15,7 +15,7 @@
    * @purpose Wrap LDAP queries
    */
   class LDAPQuery extends Object {
-    var
+    public
       $filter=      '',
       $scope=       0,
       $base=        '',
@@ -32,7 +32,7 @@
      * @param   string base
      * @param   mixed[] args
      */
-    function __construct() {
+    public function __construct() {
       $args= func_get_args();
       
       $this->base= array_shift($args);
@@ -47,7 +47,7 @@
      * @param   mixed[] args
      * @return  string filter
      */
-    function _prepare($args) {
+    public function _prepare($args) {
       $query= $args[0];
       if (sizeof($args) <= 1) return $query;
 
@@ -67,16 +67,16 @@
         }
         
         if (is_array($args[$ofs])) {
-          return throw(new IllegalArgumentException(
+          throw(new IllegalArgumentException(
             'Non-scalar or -object given in for LDAP query.'
           ));
         } 
         
         // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $arg= $args[$ofs]->toString('YmdHi\\ZO');
-        } else if (is_a($args[$ofs], 'Object')) {
+        } else if (is('Generic', $args[$ofs])) {
           $arg= $args[$ofs]->toString();
         } else {
           $arg= $args[$ofs];
@@ -104,7 +104,7 @@
      * @param   mixed[] args
      * @return  string
      */
-    function prepare() {
+    public function prepare() {
       $args= func_get_args();
       return $this->_prepare($args);
     }
@@ -115,7 +115,7 @@
      * @access  public
      * @param   string filter
      */
-    function setFilter() {
+    public function setFilter() {
       $args= func_get_args();
       $this->filter= $this->_prepare($args);
     }
@@ -126,7 +126,7 @@
      * @access  public
      * @return  string
      */
-    function getFilter() {
+    public function getFilter() {
       return $this->filter;
     }
 
@@ -136,7 +136,7 @@
      * @access  public
      * @param   int scope
      */
-    function setScope($scope) {
+    public function setScope($scope) {
       $this->scope= $scope;
     }
 
@@ -146,7 +146,7 @@
      * @access  public
      * @return  string
      */
-    function getScope() {
+    public function getScope() {
       return $this->scope;
     }
 
@@ -156,7 +156,7 @@
      * @access  public
      * @param   mixed[] args
      */
-    function setBase() {
+    public function setBase() {
       $args= func_get_args();
       $this->base= $this->_prepare($args);
     }
@@ -167,7 +167,7 @@
      * @access  public
      * @return  string
      */
-    function getBase() {
+    public function getBase() {
       return $this->base;
     }
 
@@ -177,7 +177,7 @@
      * @access  public
      * @return  bool 
      */
-    function hasBase() {
+    public function hasBase() {
       return (bool)strlen($this->base);
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @param   mixed[] attrs
      */
-    function setAttrs($attrs) {
+    public function setAttrs($attrs) {
       $this->attrs= $attrs;
     }
 
@@ -197,7 +197,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getAttrs() {
+    public function getAttrs() {
       return $this->attrs;
     }
     
@@ -209,7 +209,7 @@
      * @access  public
      * @return  bool attrsonly
      */
-    function getAttrsOnly() {
+    public function getAttrsOnly() {
       return sizeof($this->attrs);
     }
 
@@ -219,7 +219,7 @@
      * @access  public
      * @param   int sizelimit
      */
-    function setSizelimit($sizelimit) {
+    public function setSizelimit($sizelimit) {
       $this->sizelimit= $sizelimit;
     }
 
@@ -229,7 +229,7 @@
      * @access  public
      * @return  int
      */
-    function getSizelimit() {
+    public function getSizelimit() {
       return $this->sizelimit;
     }
 
@@ -239,7 +239,7 @@
      * @access  public
      * @param   int timelimit
      */
-    function setTimelimit($timelimit) {
+    public function setTimelimit($timelimit) {
       $this->timelimit= $timelimit;
     }
 
@@ -249,7 +249,7 @@
      * @access  public
      * @return  int
      */
-    function getTimelimit() {
+    public function getTimelimit() {
       return $this->timelimit;
     }
 
@@ -262,7 +262,7 @@
      * @access  public
      * @param   string[] sort array of fields to sort with
      */
-    function setSort($sort) {
+    public function setSort($sort) {
       $this->sort= $sort;
     }
 
@@ -272,7 +272,7 @@
      * @access  public
      * @return  array sort
      */
-    function getSort() {
+    public function getSort() {
       return (array)$this->sort;
     }        
 
@@ -282,7 +282,7 @@
      * @access  public
      * @param   bool deref
      */
-    function setDeref($deref) {
+    public function setDeref($deref) {
       $this->deref= $deref;
     }
 
@@ -292,7 +292,7 @@
      * @access  public
      * @return  bool
      */
-    function getDeref() {
+    public function getDeref() {
       return $this->deref;
     }
     
@@ -302,7 +302,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $namelen= 0;
       
       $str= sprintf('%s(%s)@{', $this->getClassName(), $this->__id)."\n";

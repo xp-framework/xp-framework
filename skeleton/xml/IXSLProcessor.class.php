@@ -9,7 +9,7 @@
    *
    * @purpose  Interface for XSL processor classes
    */
-  class IXSLProcessor extends Interface {
+  interface IXSLProcessor {
   
     /**
      * Retrieve messages generate during processing.
@@ -17,7 +17,7 @@
      * @access  public
      * @return  string[]
      */
-    function getMessages() { }
+    public function getMessages();
     
     /**
      * Set a scheme handler
@@ -26,7 +26,7 @@
      * @param   mixed callback
      * @see     php://xslt_set_scheme_handlers
      */
-    function setSchemeHandler($cb) { }
+    public function setSchemeHandler($cb);
     
     /**
      * Set base directory
@@ -34,7 +34,7 @@
      * @access  public
      * @param   string dir
      */
-    function setBase($dir) { }
+    public function setBase($dir);
     
     /**
      * Get base
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function getBase() { }
+    public function getBase();
     
     /**
      * Set XSL file
@@ -50,7 +50,7 @@
      * @access  public
      * @param   string file file name
      */
-    function setXSLFile($file) { }
+    public function setXSLFile($file);
     
     /**
      * Set XSL buffer
@@ -58,7 +58,7 @@
      * @access  public
      * @param   string xsl the XSL as a string
      */
-    function setXSLBuf($xsl) { }
+    public function setXSLBuf($xsl);
     
     /**
      * Set XML file
@@ -66,7 +66,7 @@
      * @access  public
      * @param   string file file name
      */
-    function setXMLFile($file) { }    
+    public function setXMLFile($file);    
     
     /**
      * Set XML buffer
@@ -74,7 +74,7 @@
      * @access  public
      * @param   string xml the XML as a string
      */
-    function setXMLBuf($xml) { }
+    public function setXMLBuf($xml);
 
     /**
      * Set XSL transformation parameters
@@ -82,7 +82,7 @@
      * @access  public
      * @param   array params associative array { param_name => param_value }
      */
-    function setParams($params) { }
+    public function setParams($params);
     
     /**
      * Set XSL transformation parameter
@@ -91,7 +91,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $value) { }
+    public function setParam($name, $value);
     
     /**
      * Retrieve XSL transformation parameter
@@ -100,7 +100,7 @@
      * @param   string name
      * @return  string value
      */
-    function getParam($name) { }
+    public function getParam($name);
     
     /**
      * Run the XSL transformation
@@ -109,7 +109,7 @@
      * @return  bool success
      * @throws  xml.TransformerException
      */
-    function run() { }
+    public function run();
     
     /**
      * Retrieve the transformation's result
@@ -117,6 +117,6 @@
      * @access  public
      * @return  string
      */
-    function output() { }
+    public function output();
   }
 ?>

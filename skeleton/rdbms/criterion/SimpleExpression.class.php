@@ -17,13 +17,15 @@
   define('GREATER_EQUAL',   '>= ?');
   define('BIT_AND',         ' & ? = ?');
 
+  uses('rdbms.criterion.Criterion');
+
   /**
    * Simple expression
    *
    * @purpose  Criterion
    */
-  class SimpleExpression extends Object {
-    var
+  class SimpleExpression extends Object implements Criterion {
+    public
       $field  = '',
       $value  = NULL,
       $op     = '';
@@ -49,7 +51,7 @@
      * @param   mixed value
      * @param   string op default EQUAL
      */
-    function __construct($field, $value, $op= EQUAL) {
+    public function __construct($field, $value, $op= EQUAL) {
       static $nullMapping= array(
         EQUAL     => IS,
         NOT_EQUAL => IS_NOT
@@ -74,9 +76,9 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    function asSql(&$conn, $types) { 
+    public function asSql(&$conn, $types) { 
       if (!isset($types[$this->field])) {
-        return throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
       }
 
       return $this->field.' '.$conn->prepare(
@@ -85,5 +87,5 @@
       );      
     }
 
-  } implements(__FILE__, 'rdbms.criterion.Criterion');
+  } 
 ?>

@@ -9,8 +9,8 @@
    *
    * @purpose  Exception
    */
-  class AssertionFailedError extends Exception {
-    var
+  class AssertionFailedError extends XPException {
+    public
       $actual       = NULL,
       $expect       = NULL;
       
@@ -23,7 +23,7 @@
      * @param   mixed actual default NULL
      * @param   mixed expect default NULL
      */
-    function __construct($message, $actual= NULL, $expect= NULL) {
+    public function __construct($message, $actual= NULL, $expect= NULL) {
       parent::__construct($message);
       $this->actual= $actual;
       $this->expect= $expect;
@@ -35,7 +35,7 @@
      * @access  public
      * @param   string errorcode
      */
-    function setErrorCode($errorcode) {
+    public function setErrorCode($errorcode) {
       $this->errorcode= $errorcode;
     }
 
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function getErrorCode() {
+    public function getErrorCode() {
       return $this->errorcode;
     }
 
@@ -55,7 +55,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "%s (%s) { expected: [%s] but was: [%s] }\n",
         $this->getClassName(),
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->compoundMessage()."\n";
       
       // Slice the first four trace elements, they contain the

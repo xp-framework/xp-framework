@@ -11,7 +11,7 @@
    *
    * @purpose  Interface
    */
-  class Iterator extends Interface {
+  interface XPIterator {
   
     /**
      * Returns true if the iteration has more elements. (In other words, 
@@ -21,7 +21,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() { }
+    public function hasNext();
     
     /**
      * Returns the next element in the iteration.
@@ -30,6 +30,6 @@
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() { }
+    public function &next();
   }
 ?>

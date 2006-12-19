@@ -10,7 +10,7 @@
    * @purpose  Base class
    */
   class Article extends Object {
-    var
+    public
       $articleId        = NULL,
       $messageId        = NULL,
       $header           = array(),
@@ -22,7 +22,7 @@
      * @access  private
      * @param   int articleId
      */
-    function __construct($articleId, $messageId) {
+    public function __construct($articleId, $messageId) {
       $this->articleId= $articleId;
       $this->messageId= $messageId;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string articleId
      */
-    function setArticleId($articleId) {
+    public function setArticleId($articleId) {
       $this->articleId= $articleId;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getArticleId() {
+    public function getArticleId() {
       return $this->articleId;
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @param   int messageId
      */
-    function setMessageId($messageId) {
+    public function setMessageId($messageId) {
       $this->messageId= $messageId;
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  int
      */
-    function getMessageId() {
+    public function getMessageId() {
       return $this->messageId;
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @param   mixed[] header
      */
-    function setHeader($name, $value) {
+    public function setHeader($name, $value) {
       $this->header[$name]= $value;
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getHeaders() {
+    public function getHeaders() {
       return $this->header;
     }
 
@@ -94,7 +94,7 @@
      * @param   string name
      * @return  string value
      */
-    function getHeader($name) {
+    public function getHeader($name) {
       return $this->header[$name];
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @param   string body
      */
-    function setBody($body) {
+    public function setBody($body) {
       $this->body= $body;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       return $this->body;
     }
     
@@ -125,7 +125,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= sprintf("%s %s {\n", $this->getClassName(), $this->getMessageId());
       foreach ($this->header as $name => $attr) {
         $s.= sprintf("  [%-26s] %s\n", $name, $attr);

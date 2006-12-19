@@ -15,7 +15,7 @@
    * @purpose  DateTime type
    */
   class SOAPDateTime extends SoapType {
-    var
+    public
       $value= NULL;
       
     /**
@@ -24,8 +24,8 @@
      * @access  public
      * @param   mixed arg
      */
-    function __construct($arg) {
-      $this->value= &new Date($arg);
+    public function __construct($arg) {
+      $this->value= new Date($arg);
     }
     
     /**
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string ISO 8601 conform date (1977-12-14T11:55:0)
      */
-    function toString() {
+    public function toString() {
       return $this->value->toString('Y-m-d\TH:i:s');
     }
     
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'xsd:dateTime';
     }
   }

@@ -21,7 +21,7 @@
      * @access  public
      * @return  &text.format.DateFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('DateFormat');
     }  
 
@@ -34,11 +34,11 @@
      * @return  string
      * @throws  lang.FormatException
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       switch (gettype($argument)) {
         case 'string':
           if (-1 == ($u= strtotime($argument))) {
-            return throw(new FormatException('Argument "'.$argument.'" cannot be converted to a date'));
+            throw(new FormatException('Argument "'.$argument.'" cannot be converted to a date'));
           }
           break;
           
@@ -48,14 +48,14 @@
           break;
           
         case 'object':
-          if (is_a($argument, 'Date')) {
+          if (is('Date', $argument)) {
             $u= $argument->getTime();
             break;
           }
           // Break missing intentionally
           
         default:
-          return throw(new FormatException('Argument of type "'.gettype($argument).'" cannot be converted to a date'));
+          throw(new FormatException('Argument of type "'.gettype($argument).'" cannot be converted to a date'));
       }
       
       return strftime($fmt, $u);

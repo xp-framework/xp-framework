@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'util.telephony.TelephonyAddress',
     'lang.IllegalArgumentException'
   );
@@ -20,12 +20,12 @@
    * @see     http://www.construction-site.com/int_dial.htm
    */
   class TelephonyAddressParser extends Object {
-    var 
+    public 
       $defaultCountryCode=  NULL,
       $defaultAreaCode=     NULL,
       $defaultSubscriber=   NULL;
 
-    var $intDialCodes= array (
+    public $intDialCodes= array (
       '93'       => 'Afghanistan',               
       '355'      => 'Albania',                  
       '213'      => 'Algeria',                  
@@ -253,7 +253,7 @@
      * @access  public
      * @param   array defaults array with default values (may be omitted)
      */      
-    function __construct($params= NULL) {
+    public function __construct($params= NULL) {
       parent::__construct($params);
     }
 
@@ -266,7 +266,7 @@
      * @param   string phonestring
      * @return  string phonestring
      */
-    function _prepare($string) {
+    public function _prepare($string) {
       static $letters= array(
         '/a|b|c/',
         '/d|e|f/',
@@ -303,18 +303,18 @@
      * @throws  lang.FormatException if number is malformed
      * @throws  lang.IllegalStateException in case no default number has been set
      */
-    function &parseNumber($number) {
+    public function &parseNumber($number) {
       // Check current state
       if (
         NULL === $this->defaultCountryCode ||
         NULL === $this->defaultAreaCode ||
         NULL === $this->defaultSubscriber
       ) {
-        return throw (new IllegalStateException ('At least one of the default numbers has not been set. Set them before parsing'));
+        throw (new IllegalStateException ('At least one of the default numbers has not been set. Set them before parsing'));
       }
 
       // Parsing
-      $a= &new TelephonyAddress();
+      $a= new TelephonyAddress();
       $a->setType (TEL_ADDRESS_INTERNATIONAL);
       
       $number= $this->_prepare ($number);
@@ -366,7 +366,7 @@
       
       $number= preg_replace ('/[^\d]/', '', $number);
       if (strlen ($number) < 3)
-        return throw (new FormatException ('No parseable phone number'));
+        throw (new FormatException ('No parseable phone number'));
     
       $a->setSubscriber ($number);
       return $a;

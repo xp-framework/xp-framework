@@ -26,7 +26,7 @@
      * @throws  io.IOException
      * @throws  io.FileNotFoundException
      */
-    function getContents(&$file) {
+    public static function getContents(&$file) {
       $file->open(FILE_MODE_READ);
       $data= $file->read($file->size());
       $file->close();
@@ -47,7 +47,7 @@
      * @return  int filesize
      * @throws  io.IOException
      */
-    function setContents(&$file, $data) {
+    public static function setContents(&$file, $data) {
       $file->open(FILE_MODE_WRITE);
       $file->write($data);
       $file->close();

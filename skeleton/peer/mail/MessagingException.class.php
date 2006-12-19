@@ -9,8 +9,8 @@
    *
    * @purpose  Indicate a general messaging error has occured
    */
-  class MessagingException extends Exception {
-    var
+  class MessagingException extends XPException {
+    public
       $detail = '';
       
     /**
@@ -20,7 +20,7 @@
      * @param   string message
      * @param   string detail
      */
-    function __construct($message, $detail) {
+    public function __construct($message, $detail) {
       parent::__construct($message);
       $this->detail= $detail;
     }
@@ -31,7 +31,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s (%s, %s)',
         $this->getClassName(),

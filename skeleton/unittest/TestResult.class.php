@@ -5,8 +5,8 @@
  */
 
   uses(
-    'unittest.TestFailure', 
-    'unittest.TestSuccess', 
+    'unittest.TestFailure',
+    'unittest.TestSuccess',
     'unittest.TestSkipped'
   );
 
@@ -17,7 +17,7 @@
    * @purpose  Wrapper class
    */
   class TestResult extends Object {
-    var
+    public
       $succeeded    = array(),
       $failed       = array(),
       $skipped      = array();
@@ -29,8 +29,8 @@
      * @param   &unittest.TestCase test
      * @param   float elapsed
      */
-    function setSucceeded(&$test, $elapsed) {
-      $this->succeeded[$test->hashCode()]= &new TestSuccess($test, $elapsed);
+    public function setSucceeded(&$test, $elapsed) {
+      $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
     }
     
     /**
@@ -41,8 +41,8 @@
      * @param   mixed reason
      * @param   float elapsed
      */
-    function setFailed(&$test, $reason, $elapsed) {
-      $this->failed[$test->hashCode()]= &new TestFailure($test, $reason, $elapsed);
+    public function setFailed(&$test, $reason, $elapsed) {
+      $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
     }
 
     /**
@@ -53,8 +53,8 @@
      * @param   mixed reason
      * @param   float elapsed
      */
-    function setSkipped(&$test, $reason, $elapsed) {
-      $this->skipped[$test->hashCode()]= &new TestSkipped($test, $reason, $elapsed);
+    public function setSkipped(&$test, $reason, $elapsed) {
+      $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
     }
 
     /**
@@ -63,7 +63,7 @@
      * @access  public
      * @return  int
      */
-    function successCount() {
+    public function successCount() {
       return sizeof($this->succeeded);
     }
     
@@ -73,7 +73,7 @@
      * @access  public
      * @return  int
      */
-    function failureCount() {
+    public function failureCount() {
       return sizeof($this->failed);
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @return  int
      */
-    function skipCount() {
+    public function skipCount() {
       return sizeof($this->skipped);
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @return  int
      */
-    function runCount() {
+    public function runCount() {
       return sizeof($this->succeeded) + sizeof($this->failed);
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  int
      */
-    function count() {
+    public function count() {
       return sizeof($this->succeeded)+ sizeof($this->failed)+ sizeof($this->skipped);
     }
     
@@ -113,7 +113,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $div= str_repeat('=', 72);
       $str= sprintf(
         "Results for test suite run at %s\n".

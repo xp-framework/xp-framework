@@ -20,7 +20,7 @@
    * @see     http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
    */
   class IptcData extends Object {
-    var
+    public
       $title           = '',
       $urgency         = '',
       $category        = '',
@@ -50,16 +50,16 @@
      * @return  &img.util.IptcData
      * @throws  img.ImagingException in case extracting data fails
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       getimagesize($file->getURI(), $info);
       if (!($info['APP13'])) {
-        return throw(new ImagingException(
+        throw(new ImagingException(
           'Cannot get IPTC information from '.$file->getURI()
         ));
       }
       $iptc= iptcparse($info['APP13']);
       
-      with ($i= &new IptcData()); {
+      with ($i= new IptcData()); {
         $i->setTitle($iptc['2#005'][0]);
         $i->setUrgency($iptc['2#010'][0]);
         $i->setCategory($iptc['2#015'][0]);
@@ -89,7 +89,7 @@
      * @access  public
      * @param   string title
      */
-    function setTitle($title) {
+    public function setTitle($title) {
       $this->title= $title;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @return  string
      */
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @param   string urgency
      */
-    function setUrgency($urgency) {
+    public function setUrgency($urgency) {
       $this->urgency= $urgency;
     }
 
@@ -120,7 +120,7 @@
      * @access  public
      * @return  string
      */
-    function getUrgency() {
+    public function getUrgency() {
       return $this->urgency;
     }
 
@@ -131,7 +131,7 @@
      * @access  public
      * @param   string category
      */
-    function setCategory($category) {
+    public function setCategory($category) {
       $this->category= $category;
     }
 
@@ -141,7 +141,7 @@
      * @access  public
      * @return  string
      */
-    function getCategory() {
+    public function getCategory() {
       return $this->category;
     }
 
@@ -152,7 +152,7 @@
      * @access  public
      * @param   string keywords
      */
-    function setKeywords($keywords) {
+    public function setKeywords($keywords) {
       $this->keywords= $keywords;
     }
 
@@ -162,7 +162,7 @@
      * @access  public
      * @return  string
      */
-    function getKeywords() {
+    public function getKeywords() {
       return $this->keywords;
     }
 
@@ -173,7 +173,7 @@
      * @access  public
      * @param   string dateCreated
      */
-    function setDateCreated($dateCreated) {
+    public function setDateCreated($dateCreated) {
       $this->dateCreated= $dateCreated;
     }
 
@@ -183,7 +183,7 @@
      * @access  public
      * @return  string
      */
-    function getDateCreated() {
+    public function getDateCreated() {
       return $this->dateCreated;
     }
 
@@ -194,7 +194,7 @@
      * @access  public
      * @param   string author
      */
-    function setAuthor($author) {
+    public function setAuthor($author) {
       $this->author= $author;
     }
 
@@ -204,7 +204,7 @@
      * @access  public
      * @return  string
      */
-    function getAuthor() {
+    public function getAuthor() {
       return $this->author;
     }
 
@@ -215,7 +215,7 @@
      * @access  public
      * @param   string authorPosition
      */
-    function setAuthorPosition($authorPosition) {
+    public function setAuthorPosition($authorPosition) {
       $this->authorPosition= $authorPosition;
     }
 
@@ -225,7 +225,7 @@
      * @access  public
      * @return  string
      */
-    function getAuthorPosition() {
+    public function getAuthorPosition() {
       return $this->authorPosition;
     }
 
@@ -236,7 +236,7 @@
      * @access  public
      * @param   string city
      */
-    function setCity($city) {
+    public function setCity($city) {
       $this->city= $city;
     }
 
@@ -246,7 +246,7 @@
      * @access  public
      * @return  string
      */
-    function getCity() {
+    public function getCity() {
       return $this->city;
     }
 
@@ -257,7 +257,7 @@
      * @access  public
      * @param   string state
      */
-    function setState($state) {
+    public function setState($state) {
       $this->state= $state;
     }
 
@@ -267,7 +267,7 @@
      * @access  public
      * @return  string
      */
-    function getState() {
+    public function getState() {
       return $this->state;
     }
 
@@ -278,7 +278,7 @@
      * @access  public
      * @param   string country
      */
-    function setCountry($country) {
+    public function setCountry($country) {
       $this->country= $country;
     }
 
@@ -288,7 +288,7 @@
      * @access  public
      * @return  string
      */
-    function getCountry() {
+    public function getCountry() {
       return $this->country;
     }
 
@@ -299,7 +299,7 @@
      * @access  public
      * @param   string headline
      */
-    function setHeadline($headline) {
+    public function setHeadline($headline) {
       $this->headline= $headline;
     }
 
@@ -309,7 +309,7 @@
      * @access  public
      * @return  string
      */
-    function getHeadline() {
+    public function getHeadline() {
       return $this->headline;
     }
 
@@ -320,7 +320,7 @@
      * @access  public
      * @param   string credit
      */
-    function setCredit($credit) {
+    public function setCredit($credit) {
       $this->credit= $credit;
     }
 
@@ -330,7 +330,7 @@
      * @access  public
      * @return  string
      */
-    function getCredit() {
+    public function getCredit() {
       return $this->credit;
     }
 
@@ -341,7 +341,7 @@
      * @access  public
      * @param   string source
      */
-    function setSource($source) {
+    public function setSource($source) {
       $this->source= $source;
     }
 
@@ -351,7 +351,7 @@
      * @access  public
      * @return  string
      */
-    function getSource() {
+    public function getSource() {
       return $this->source;
     }
 
@@ -362,7 +362,7 @@
      * @access  public
      * @param   string copyrightNotice
      */
-    function setCopyrightNotice($copyrightNotice) {
+    public function setCopyrightNotice($copyrightNotice) {
       $this->copyrightNotice= $copyrightNotice;
     }
 
@@ -372,7 +372,7 @@
      * @access  public
      * @return  string
      */
-    function getCopyrightNotice() {
+    public function getCopyrightNotice() {
       return $this->copyrightNotice;
     }
 
@@ -383,7 +383,7 @@
      * @access  public
      * @param   string caption
      */
-    function setCaption($caption) {
+    public function setCaption($caption) {
       $this->caption= $caption;
     }
 
@@ -393,7 +393,7 @@
      * @access  public
      * @return  string
      */
-    function getCaption() {
+    public function getCaption() {
       return $this->caption;
     }
 
@@ -404,7 +404,7 @@
      * @access  public
      * @param   string writer
      */
-    function setWriter($writer) {
+    public function setWriter($writer) {
       $this->writer= $writer;
     }
 
@@ -414,7 +414,7 @@
      * @access  public
      * @return  string
      */
-    function getWriter() {
+    public function getWriter() {
       return $this->writer;
     }
 
@@ -425,7 +425,7 @@
      * @access  public
      * @param   string supplementalCategories
      */
-    function setSupplementalCategories($supplementalCategories) {
+    public function setSupplementalCategories($supplementalCategories) {
       $this->supplementalCategories= $supplementalCategories;
     }
 
@@ -435,7 +435,7 @@
      * @access  public
      * @return  string
      */
-    function getSupplementalCategories() {
+    public function getSupplementalCategories() {
       return $this->supplementalCategories;
     }
 
@@ -446,7 +446,7 @@
      * @access  public
      * @param   string specialInstructions
      */
-    function setSpecialInstructions($specialInstructions) {
+    public function setSpecialInstructions($specialInstructions) {
       $this->specialInstructions= $specialInstructions;
     }
 
@@ -456,7 +456,7 @@
      * @access  public
      * @return  string
      */
-    function getSpecialInstructions() {
+    public function getSpecialInstructions() {
       return $this->specialInstructions;
     }
 
@@ -467,7 +467,7 @@
      * @access  public
      * @param   string originalTransmissionReference
      */
-    function setOriginalTransmissionReference($originalTransmissionReference) {
+    public function setOriginalTransmissionReference($originalTransmissionReference) {
       $this->originalTransmissionReference= $originalTransmissionReference;
     }
 
@@ -477,7 +477,7 @@
      * @access  public
      * @return  string
      */
-    function getOriginalTransmissionReference() {
+    public function getOriginalTransmissionReference() {
       return $this->originalTransmissionReference;
     }
 
@@ -487,7 +487,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "  [title                        ] %s\n".
         "  [urgency                      ] %s\n".

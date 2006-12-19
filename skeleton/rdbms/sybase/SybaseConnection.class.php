@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.sybase.SybaseResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter'
@@ -28,7 +28,7 @@
      * @access  public
      * @param   int timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       ini_set('sybct.login_timeout', $timeout);
       parent::setTimeout($timeout);
     }
@@ -41,7 +41,7 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE) {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
@@ -60,7 +60,7 @@
       }
 
       if (!is_resource($this->handle)) {
-        return throw(new SQLConnectException(trim(sybase_get_last_message()), $this->dsn));
+        throw(new SQLConnectException(trim(sybase_get_last_message()), $this->dsn));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
@@ -73,7 +73,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       if ($this->handle && $r= sybase_close($this->handle)) {
         $this->handle= NULL;
         return $r;
@@ -89,9 +89,9 @@
      * @return  bool success
      * @throws  rdbms.SQLStatementFailedException
      */
-    function selectdb($db) {
+    public function selectdb($db) {
       if (!sybase_select_db($db, $this->handle)) {
-        return throw(new SQLStatementFailedException(
+        throw(new SQLStatementFailedException(
           'Cannot select database: '.trim(sybase_get_last_message()),
           'use '.$db,
           array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
@@ -107,7 +107,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() {
+    public function prepare() {
       static $formatter= NULL;
       $args= func_get_args();
       
@@ -127,7 +127,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { 
+    public function identity() { 
       if (!($r= &$this->query('select @@identity as i'))) {
         return FALSE;
       }
@@ -144,7 +144,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -163,7 +163,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -181,7 +181,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function delete() { 
+    public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -199,7 +199,7 @@
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
      */
-    function select() { 
+    public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -220,20 +220,20 @@
      * @return  &rdbms.sybase.SybaseResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function &query() { 
+    public function &query() { 
       $args= func_get_args();
       $sql= call_user_func_array(array(&$this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
-        try(); {
+        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        try {
           $c= $this->connect();
-        } if (catch('SQLException', $e)) {
-          return throw ($e);
+        } catch (SQLException $e) {
+          throw ($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect'));
+        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect'));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -253,13 +253,13 @@
           // Sybase:  Client message:  Read from SQL server failed. (severity 78)
           //
           // but that seems a bit errorprone. 
-          return throw(new SQLConnectionClosedException(
+          throw(new SQLConnectionClosedException(
             'Statement failed: '.trim(sybase_get_last_message()), 
             $sql
           ));
         }
 
-        return throw(new SQLStatementFailedException(
+        throw(new SQLStatementFailedException(
           'Statement failed: '.trim(sybase_get_last_message()), 
           $sql,
           array_pop(sybase_fetch_row($error))
@@ -271,7 +271,7 @@
         return $result;
       }
       
-      $resultset= &new SybaseResultSet($result);
+      $resultset= new SybaseResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;
@@ -284,7 +284,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function &begin(&$transaction) {
+    public function &begin(&$transaction) {
       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
         return FALSE;
       }
@@ -299,7 +299,7 @@
      * @param   string name
      * @return  mixed state
      */
-    function transtate($name) { 
+    public function transtate($name) { 
       if (FALSE === ($r= &$this->query('select @@transtate as transtate'))) {
         return FALSE;
       }
@@ -313,7 +313,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { 
+    public function rollback($name) { 
       return $this->query('rollback transaction xp_%c', $name);
     }
     
@@ -324,7 +324,7 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { 
+    public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
     }
   }

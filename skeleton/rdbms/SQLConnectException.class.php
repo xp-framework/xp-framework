@@ -12,7 +12,7 @@
    * @purpose  SQL-Exception
    */
   class SQLConnectException extends SQLException {
-    var 
+    public 
       $dsn  = NULL;
 
     /**
@@ -22,7 +22,7 @@
      * @param   string message
      * @param   &rdbms.DSN dsn
      */
-    function __construct($message, &$dsn) {
+    public function __construct($message, &$dsn) {
       parent::__construct($message);
       $this->dsn= &$dsn;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @return  &rdbms.DSN
      */
-    function &getDsn() {
+    public function &getDsn() {
       return $this->dsn;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  Unable to connect to %s@%s - using password: %s\n".

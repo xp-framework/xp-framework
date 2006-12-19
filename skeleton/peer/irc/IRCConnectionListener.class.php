@@ -26,7 +26,7 @@
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
      */
-    function onPings(&$connection, $data) { }
+    public function onPings(&$connection, $data) { }
 
     /**
      * Callback for when a connection to the IRC server has been 
@@ -38,7 +38,7 @@
      * @param   string server
      * @param   int port
      */
-    function onConnect(&$connection, $server, $port) { }
+    public function onConnect(&$connection, $server, $port) { }
 
     /**
      * Callback for when a connection to the IRC server has been 
@@ -51,7 +51,7 @@
      * @param   string server
      * @param   int port
      */
-    function onDisconnect(&$connection, $server, $port) { }
+    public function onDisconnect(&$connection, $server, $port) { }
     
     /**
      * Callback for server message MOTDSTART (375)
@@ -62,7 +62,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    function onMOTDStart(&$connection, $server, $target, $data) { }
+    public function onMOTDStart(&$connection, $server, $target, $data) { }
 
     /**
      * Callback for server message MOTD (372)
@@ -73,7 +73,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    function onMOTD(&$connection, $server, $target, $data) { }
+    public function onMOTD(&$connection, $server, $target, $data) { }
 
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
@@ -84,7 +84,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    function onEndOfMOTD(&$connection, $server, $target, $data) { }
+    public function onEndOfMOTD(&$connection, $server, $target, $data) { }
     
     /**
      * Callback for all other server messages
@@ -96,7 +96,7 @@
      * @param   string target whom the message is for
      * @param   string data
      */
-    function onServerMessage(&$connection, $server, $code, $target, $data) { }
+    public function onServerMessage(&$connection, $server, $code, $target, $data) { }
 
     /**
      * Callback for invitations. Note: Due to the limitations of the INVITE
@@ -114,7 +114,7 @@
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    function onInvite(&$connection, $nick, $who, $channel) { }
+    public function onInvite(&$connection, $nick, $who, $channel) { }
 
     /**
      * Callback for kicks
@@ -133,7 +133,7 @@
      * @param   string who who was kicked
      * @param   string reason what reason the user was kicked for
      */
-    function onKicks(&$connection, $channel, $nick, $who, $reason) { }
+    public function onKicks(&$connection, $channel, $nick, $who, $reason) { }
 
     /**
      * Callback for quits
@@ -144,7 +144,7 @@
      * @param   string nick who quit
      * @param   string reason what reason the user supplied for quitting
      */
-    function onQuits(&$connection, $channel, $nick, $reason) { }
+    public function onQuits(&$connection, $channel, $nick, $reason) { }
 
     /**
      * Callback for nick changes
@@ -154,7 +154,7 @@
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    function onNickChanges(&$connection, $nick, $new) { }
+    public function onNickChanges(&$connection, $nick, $new) { }
 
     /**
      * Callback for joins
@@ -173,7 +173,7 @@
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
-    function onJoins(&$connection, $channel, $nick) { }
+    public function onJoins(&$connection, $channel, $nick) { }
 
     /**
      * Callback for parts
@@ -184,7 +184,7 @@
      * @param   string nick who part
      * @param   string message the part message, if any
      */
-    function onParts(&$connection, $channel, $nick, $message) { }
+    public function onParts(&$connection, $channel, $nick, $message) { }
     
     /**
      * Callback for mode changes
@@ -196,7 +196,7 @@
      * @param   string mode the mode including a + or - as its first letter
      * @param   string params additional parameters
      */
-    function onModeChanges(&$connection, $nick, $target, $mode, $params) { }
+    public function onModeChanges(&$connection, $nick, $target, $mode, $params) { }
   
     /**
      * Callback for private messages
@@ -217,7 +217,7 @@
      * @param   string target
      * @param   string message
      */
-    function onPrivateMessage(&$connection, $nick, $target, $message) { }
+    public function onPrivateMessage(&$connection, $nick, $target, $message) { }
 
     /**
      * Callback for topic changes
@@ -228,7 +228,7 @@
      * @param   string channel what channel the topic was changed for
      * @param   string topic the new topic
      */
-    function onTopic(&$connection, $nick, $channel, $topic) { }
+    public function onTopic(&$connection, $nick, $channel, $topic) { }
 
     /**
      * Callback for notices
@@ -239,7 +239,7 @@
      * @param   string target
      * @param   string message
      */
-    function onNotice(&$connection, $nick, $target, $message) { }
+    public function onNotice(&$connection, $nick, $target, $message) { }
 
     /**
      * Callback for actions. Actions are when somebody writes /me ...
@@ -256,7 +256,7 @@
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
      */
-    function onAction(&$connection, $nick, $target, $action) { }
+    public function onAction(&$connection, $nick, $target, $action) { }
 
     /**
      * Callback for CTCP VERSION
@@ -267,7 +267,7 @@
      * @param   string target where version was requested
      * @param   string params additional parameters
      */
-    function onVersion(&$connection, $nick, $target, $params) { }
+    public function onVersion(&$connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP USERINFO
@@ -278,7 +278,7 @@
      * @param   string target where user information was requested
      * @param   string params additional parameters
      */
-    function onUserInfo(&$connection, $nick, $target, $params) { }
+    public function onUserInfo(&$connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP CLIENTINFO
@@ -289,7 +289,7 @@
      * @param   string target where client information was requested
      * @param   string params additional parameters
      */
-    function onClientInfo(&$connection, $nick, $target, $params) { }
+    public function onClientInfo(&$connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP PING
@@ -300,7 +300,7 @@
      * @param   string target where ping was requested
      * @param   string params additional parameters
      */
-    function onPing(&$connection, $nick, $target, $params) { }
+    public function onPing(&$connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP TIME
@@ -311,7 +311,7 @@
      * @param   string target where time was requested
      * @param   string params additional parameters
      */
-    function onTime(&$connection, $nick, $target, $params) { }
+    public function onTime(&$connection, $nick, $target, $params) { }
 
     /**
      * Callback for CTCP FINGER
@@ -322,7 +322,7 @@
      * @param   string target where finger information was requested
      * @param   string params additional parameters
      */
-    function onFinger(&$connection, $nick, $target, $params) { }
+    public function onFinger(&$connection, $nick, $target, $params) { }
   
   }
 ?>

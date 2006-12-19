@@ -12,7 +12,7 @@
    * @purpose  Exception in DaemonMailParser
    */
   class DaemonMailParserAutoresponderException extends DaemonMailParserException {
-    var
+    public
       $sourceMessage  = NULL;
       
     /**
@@ -22,7 +22,7 @@
      * @param   string errormessage
      * @param   peer.mail.Message sourceMessage default NULL
      */
-    function __construct($errormessage, $sourceMessage= NULL) {
+    public function __construct($errormessage, $sourceMessage= NULL) {
       parent::__construct($errormessage);
       $causingMessage && $this->sourceMessage= $sourceMessage;
     }

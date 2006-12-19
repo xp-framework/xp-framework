@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.File');
+  uses('io.File', 'peer.ftp.server.storage.StorageElement');
 
   /**
    * Implements the StorageElement via filesystem
@@ -12,8 +12,8 @@
    * @ext      posix
    * @purpose  StorageElement
    */
-  class FilesystemStorageElement extends Object {
-    var
+  class FilesystemStorageElement extends Object implements StorageElement {
+    public
       $path = NULL,
       $f    = NULL,
       $st   = array();
@@ -26,9 +26,9 @@
      * @param string root The FTP root directory
      * @return  string uri
      */
-    function __construct($path, $root) { 
+    public function __construct($path, $root) { 
       $this->path= $path;
-      $this->f= &new File($root.$path);
+      $this->f= new File($root.$path);
       $this->st= stat($this->f->getURI());
       $this->st['pwuid']= posix_getpwuid($this->st['uid']);
       $this->st['grgid']= posix_getgrgid($this->st['gid']);
@@ -40,7 +40,7 @@
      * @access  public
      * @return  bool TRUE to indicate success
      */
-    function delete() { 
+    public function delete() { 
       return $this->f->unlink();
     }
 
@@ -51,7 +51,7 @@
      * @param   string target
      * @return  bool TRUE to indicate success
      */
-    function rename($target) {
+    public function rename($target) {
       $path= (DIRECTORY_SEPARATOR == $target{0}
         ? substr($this->f->getPath(), 0, strrpos($this->f->getPath(), dirname($target)))
         : $this->f->getPath().DIRECTORY_SEPARATOR
@@ -66,7 +66,7 @@
      * @access public
      * @return string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->path;
     }
 
@@ -76,7 +76,7 @@
      * @access  public
      * @return  string
      */  
-    function getName() { 
+    public function getName() { 
       return basename($this->f->getURI());
     }
     
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */  
-    function getOwner() { 
+    public function getOwner() { 
       return $this->st['pwuid']['name'];
     }
 
@@ -96,7 +96,7 @@
      * @access  public
      * @return  string
      */  
-    function getGroup() {
+    public function getGroup() {
       return $this->st['grgid']['name'];
     }
     
@@ -106,7 +106,7 @@
      * @access  public
      * @return  int bytes
      */  
-    function getSize() { 
+    public function getSize() { 
       return $this->st['size'];
     }
 
@@ -116,7 +116,7 @@
      * @access  public
      * @return  int unix timestamp
      */  
-    function getModifiedStamp() { 
+    public function getModifiedStamp() { 
       return $this->st['mtime'];
     }
     
@@ -128,7 +128,7 @@
      * @access  public
      * @return  int
      */  
-    function getPermissions() { 
+    public function getPermissions() { 
       return $this->st['mode'];
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @param   int permissions
      */  
-    function setPermissions($permissions) { 
+    public function setPermissions($permissions) { 
       chmod($this->f->getURI(), intval((string)$permissions, 8));
       $this->st['mode']= $permissions;
     }
@@ -150,7 +150,7 @@
      * @access  protected
      * @return  string
      */
-    function numLinks() {
+    public function numLinks() {
       return $this->st['nlink'];
     }
 
@@ -160,7 +160,7 @@
      * @access  public
      * @param   string mode of of the SE_* constants
      */
-    function open($mode) { 
+    public function open($mode) { 
       switch ($mode) {
         case SE_READ: return $this->f->open(FILE_MODE_READ);
         case SE_WRITE: return $this->f->open(FILE_MODE_WRITE);
@@ -173,7 +173,7 @@
      * @access  public
      * @return  string
      */
-    function read() { 
+    public function read() { 
       return $this->f->read(32768);
     }
     
@@ -183,7 +183,7 @@
      * @access  public
      * @param   string buf
      */
-    function write($buf) { 
+    public function write($buf) { 
       return $this->f->write($buf);
     }
     
@@ -192,9 +192,9 @@
      *
      * @access  public
      */
-    function close() { 
+    public function close() { 
       return $this->f->close();
     }
     
-  } implements(__FILE__, 'peer.ftp.server.storage.StorageElement');
+  } 
 ?>

@@ -11,8 +11,8 @@
    *
    * @purpose  Base class.
    */
-  class WddxTransport extends Object {
-    var
+  class WddxTransport extends Object implements Traceable {
+    public
       $cat  = NULL;
       
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
  
@@ -32,7 +32,7 @@
      * @param   &webservices.wddx.WddxMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    function &send(&$message) { }
+    public function &send(&$message) { }
     
     /**
      * Retrieve a WDDX message.
@@ -41,6 +41,6 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &webservices.wddx.WddxMessage
      */
-    function &retrieve(&$response) { }
-  } implements(__FILE__, 'util.log.Traceable');
+    public function &retrieve(&$response) { }
+  } 
 ?>

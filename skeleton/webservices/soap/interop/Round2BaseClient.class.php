@@ -13,7 +13,7 @@
    * @purpose  Perform Round2 base tests
    */
   class Round2BaseClient extends SOAPClient {
-    var
+    public
       $_iotrace=  NULL;
 
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setInputOutputTrace(&$cat) {
+    public function setInputOutputTrace(&$cat) {
       $this->_iotrace= &$cat;
     }
 
@@ -39,11 +39,11 @@
      * @return  boolean
      * @throws  webservices.soap.SOAPFaultException
      */
-    function identity($method, &$argument) {
-      try(); {
+    public function identity($method, &$argument) {
+      try {
         $result= &$this->invoke($method, $argument);
-      } if (catch('SOAPFaultException', $e)) {
-        return throw($e);
+      } catch (SOAPFaultException $e) {
+        throw($e);
       }
       
       if (is('webservices.soap.Parameter', $argument)) 
@@ -56,7 +56,7 @@
         $this->_iotrace->info('Method', $method, 'returned', xp::typeOf($result), $result, var_export($result, 1));
       }
       
-      if (is('lang.Object', $cmp) && is('lang.Object', $result)) {
+      if (is('lang.Generic', $cmp) && is('lang.Generic', $result)) {
         return $cmp->equals($result);
       }
       
@@ -69,7 +69,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoString() {
+    public function echoString() {
       return $this->identity('echoString', new Parameter('inputString', 'Hello World!'));
     }
     
@@ -79,7 +79,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoStringArray() {
+    public function echoStringArray() {
       return $this->identity(
         'echoStringArray',
         new Parameter('inputStringArray', array('Hello Earth!', 'Hello Mars!'))
@@ -92,7 +92,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoInteger() {
+    public function echoInteger() {
       return $this->identity('echoInteger', new Parameter('inputInteger', 42));
     }
     
@@ -102,7 +102,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoIntegerArray() {
+    public function echoIntegerArray() {
       return $this->identity('echoIntegerArray', new Parameter('inputIntegerArray', array(42, 23)));
     }
 
@@ -112,7 +112,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoFloat() {
+    public function echoFloat() {
       return $this->identity('echoFloat', new Parameter('inputFloat', 0.5));
     }
     
@@ -122,7 +122,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoFloatArray() {
+    public function echoFloatArray() {
       return $this->identity('echoFloatArray', new Parameter('inputFloatArray', array(0.5, 1.5, 45789234.45)));
     }
     
@@ -132,7 +132,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoStruct() {
+    public function echoStruct() {
       return $this->identity(
         'echoStruct', new Parameter('inputStruct', array(
           'varString' => 'myString',
@@ -148,7 +148,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoStructArray() {
+    public function echoStructArray() {
       $s= array(
         'varString' => 'myString',
         'varInt'    => 23,
@@ -163,7 +163,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoVoid() {
+    public function echoVoid() {
       return $this->identity('echoVoid', new Parameter('inputVoid', NULL));
     }
     
@@ -173,7 +173,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoBase64() {
+    public function echoBase64() {
       return $this->identity('echoBase64', 
         new Parameter('inputBase64', new SOAPBase64Binary("\0\1\127")
       ));
@@ -185,7 +185,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoHexBinary() {
+    public function echoHexBinary() {
       return $this->identity('echoHexBinary',
         new Parameter('inputHexBinary', new SOAPHexBinary("\0\1\127")
       ));
@@ -197,7 +197,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoDate() {
+    public function echoDate() {
       return $this->identity('echoDate', new Parameter('inputDate', Date::now()));
     }
     
@@ -207,7 +207,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoDecimal() {
+    public function echoDecimal() {
       return $this->identity('echoDecimal', new Parameter('inputDecimal', 0.5005));
     }
     
@@ -217,7 +217,7 @@
      * @access  public
      * @return  boolean match
      */
-    function echoBoolean() {
+    public function echoBoolean() {
       return $this->identity('echoBoolean', new Parameter('inputBoolean', TRUE));
     }
   }

@@ -73,8 +73,8 @@
    * @ext      ldap
    * @see      http://developer.netscape.com/docs/manuals/dirsdk/jsdk40/Reference/netscape/ldap/LDAPException.html
    */
-  class LDAPException extends Exception {
-    var
+  class LDAPException extends XPException {
+    public
       $errorcode = 0;
       
     /**
@@ -84,7 +84,7 @@
      * @param   string message
      * @param   int errorcode
      */
-    function __construct($message, $errorcode) {
+    public function __construct($message, $errorcode) {
       parent::__construct($message);
       $this->errorcode= $errorcode;
     }
@@ -95,7 +95,7 @@
      * @access  public
      * @return  int
      */
-    function getErrorCode() {
+    public function getErrorCode() {
       return $this->errorcode;
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s (LDAP errorcode #%d [%s]: %s)',
         $this->getClassName(),

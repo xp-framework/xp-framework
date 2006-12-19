@@ -12,7 +12,7 @@
    * @purpose  Base class
    */
   class Number extends Object {
-    var
+    public
       $value = '';
 
     
@@ -22,7 +22,7 @@
      * @access  public
      * @param   string value
      */
-    function __construct($value) {
+    public function __construct($value) {
       $this->value= (string)$value;
     }
     
@@ -32,7 +32,7 @@
      * @access  public
      * @return  int
      */
-    function intValue() {
+    public function intValue() {
       return (int)$this->value;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  int
      */
-    function floatValue() {
+    public function floatValue() {
       return (float)$this->value;
     }
     
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->value.')';
     }
     
@@ -63,8 +63,8 @@
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    function equals(&$cmp) {
-      return is_a($cmp, get_class($this)) && $this->value === $cmp->value;
+    public function equals(&$cmp) {
+      return is(get_class($this), $cmp) && $this->value === $cmp->value;
     }
   }
 ?>

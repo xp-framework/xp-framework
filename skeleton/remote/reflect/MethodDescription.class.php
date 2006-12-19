@@ -21,7 +21,7 @@
    * @purpose  Reflection
    */
   class MethodDescription extends Object {
-    var
+    public
       $name             = '',
       $returnType       = '',
       $parameterTypes   = NULL,
@@ -34,7 +34,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @param   string returnType
      */
-    function setReturnType($returnType) {
+    public function setReturnType($returnType) {
       $this->returnType= $returnType;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string
      */
-    function getReturnType() {
+    public function getReturnType() {
       return $this->returnType;
     }
 
@@ -74,7 +74,7 @@
      * @access  public
      * @param   lang.ArrayList<string> parameterTypes
      */
-    function setParameterTypes(&$parameterTypes) {
+    public function setParameterTypes(&$parameterTypes) {
       $this->parameterTypes= &$parameterTypes;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  lang.ArrayList<string>
      */
-    function &getParameterTypes() {
+    public function &getParameterTypes() {
       return $this->parameterTypes;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @param   lang.ArrayList<string> roles
      */
-    function setRoles(&$roles) {
+    public function setRoles(&$roles) {
       $this->roles= &$roles;
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @return  lang.ArrayList<string>
      */
-    function &getRoles() {
+    public function &getRoles() {
       return $this->roles;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @param   int transactionType
      */
-    function setTransactionType($transactionType) {
+    public function setTransactionType($transactionType) {
       $this->transactionType= $transactionType;
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @return  int
      */
-    function getTransactionType() {
+    public function getTransactionType() {
       return $this->transactionType;
     }
     
@@ -135,8 +135,8 @@
      * @param   mixed arg
      * @return  string
      */
-    function typeString($arg) {
-      return NULL === $arg ? 'void' : (is_a($arg, 'ClassReference') ? $arg->referencedName() : $arg);
+    public function typeString($arg) {
+      return NULL === $arg ? 'void' : (is('ClassReference', $arg) ? $arg->referencedName() : $arg);
     }
 
     /**
@@ -145,11 +145,11 @@
      * @access  public
      * @return  remote.ClassReference[]
      */
-    function classSet() {
-      $set= &new HashSet(); 
-      if (is_a($this->returnType, 'ClassReference')) $set->add($this->returnType);
+    public function classSet() {
+      $set= new HashSet(); 
+      if (is('ClassReference', $this->returnType)) $set->add($this->returnType);
       for ($i= 0, $s= sizeof($this->parameterTypes->values); $i < $s; $i++) {
-        if (!is_a($this->parameterTypes->values[$i], 'ClassReference')) continue;
+        if (!is('ClassReference', $this->parameterTypes->values[$i])) continue;
         $set->add($this->parameterTypes->values[$i]);
       }
       return $set->toArray();
@@ -161,7 +161,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       static $transactionTypes= array(
         TX_NOT_SUPPORTED   => 'NOT_SUPPORTED',
         TX_REQUIRED        => 'REQUIRED',

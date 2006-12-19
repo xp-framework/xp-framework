@@ -11,7 +11,7 @@
    * @see      xp://util.Properties
    * @purpose  Interface
    */
-  class Configurable extends Interface {
+  interface Configurable {
   
     /**
      * Configure
@@ -20,6 +20,6 @@
      * @param   &util.Properties properties
      * @return  bool
      */
-    function configure(&$properties) { }
+    public function configure(&$properties);
   }
 ?>

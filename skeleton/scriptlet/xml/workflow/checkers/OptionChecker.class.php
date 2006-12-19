@@ -17,7 +17,7 @@
    * @purpose  Checker
    */
   class OptionChecker extends ParamChecker {
-    var
+    public
       $validOptions = array();
     
     /**
@@ -26,7 +26,7 @@
      * @access  public
      * @param   array validOptions
      */
-    function __construct($validOptions) {
+    public function __construct($validOptions) {
       $this->validOptions= $validOptions;
     }
     
@@ -37,7 +37,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) {
+    public function check($value) {
       foreach ($value as $v) {
         if (!in_array($v, $this->validOptions)) return 'invalidoption';
       }    

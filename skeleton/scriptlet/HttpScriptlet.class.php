@@ -60,7 +60,7 @@
    * </code>
    */
   class HttpScriptlet extends Object {
-    var
+    public
       $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
     
     /**
@@ -70,7 +70,7 @@
      * @access  protected
      * @return  &scriptlet.HttpScriptletRequest
      */
-    function &_request() {
+    public function &_request() {
       return new HttpScriptletRequest();
     }
     
@@ -81,7 +81,7 @@
      * @access  protected
      * @return  &scriptlet.HttpSession
      */
-    function &_session() {
+    public function &_session() {
       return new HttpSession();
     }
     
@@ -92,7 +92,7 @@
      * @access  protected
      * @return  &scriptlet.HttpScriptletResponse
      */
-    function &_response() {
+    public function &_response() {
       return new HttpScriptletResponse();
     }
     
@@ -102,7 +102,7 @@
      * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request
      */
-    function handleSessionInitialization(&$request) {
+    public function handleSessionInitialization(&$request) {
       $request->session->initialize($request->getSessionId());
     }
 
@@ -118,7 +118,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
-    function handleInvalidSession(&$request, &$response) {
+    public function handleInvalidSession(&$request, &$response) {
       return $request->session->initialize(NULL);
     }
 
@@ -135,7 +135,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
-    function handleSessionInitializationError(&$request, &$response) {
+    public function handleSessionInitializationError(&$request, &$response) {
       return FALSE;
     }
     
@@ -147,7 +147,7 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @return  bool
      */
-    function needsSession(&$request) {
+    public function needsSession(&$request) {
       return FALSE;
     }
     
@@ -166,7 +166,7 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @return  string class method (one of doGet, doPost, doHead)
      */
-    function handleMethod(&$request) {
+    public function handleMethod(&$request) {
       switch ($request->method) {
         case HTTP_POST:
           $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
@@ -222,7 +222,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    function doGet(&$request, &$response) {
+    public function doGet(&$request, &$response) {
     }
     
     /**
@@ -235,7 +235,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    function doPost(&$request, &$response) {
+    public function doPost(&$request, &$response) {
     }
     
     /**
@@ -258,7 +258,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    function doHead(&$request, &$response) {
+    public function doHead(&$request, &$response) {
     }
     
     /**
@@ -287,7 +287,7 @@
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    function doCreateSession(&$request, &$response) {
+    public function doCreateSession(&$request, &$response) {
       $uri= &$request->getURL();
       $response->sendRedirect(sprintf(
         $this->sessionURIFormat,
@@ -312,7 +312,7 @@
      *
      * @access  public
      */
-    function init() { }
+    public function init() { }
     
     /**
      * Finalize the scriptlet. This method is called after all response
@@ -321,7 +321,7 @@
      *
      * @access  public
      */
-    function finalize() { }
+    public function finalize() { }
     
     /**
      * Set the request from the environment.
@@ -329,7 +329,7 @@
      * @access  protected
      * @param   &scriptlet.HttpRequest request
      */
-    function _setupRequest(&$request) {
+    public function _setupRequest(&$request) {
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= getenv('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
@@ -349,7 +349,7 @@
      * @return  &scriptlet.HttpScriptletResponse the response object
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
-    function &process() {
+    public function &process() {
       $request= &$this->_request();
       $this->_setupRequest($request);
 
@@ -358,7 +358,7 @@
       // implemented"). The request object will already have all headers
       // and the request method set when this method is called.
       if (!($method= $this->handleMethod($request))) {
-        return throw(new HttpScriptletException(
+        throw(new HttpScriptletException(
           'HTTP method "'.$request->method.'" not supported',
           HTTP_METHOD_NOT_IMPLEMENTED
         ));
@@ -372,15 +372,15 @@
       // one (by returning TRUE from needsSession()).
       if ($this->needsSession($request) || $request->getSessionId()) {
         $request->setSession($this->_session());
-        try(); {
+        try {
           $this->handleSessionInitialization($request);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
         
           // Check if session initialization errors can be handled gracefully
           // (default: no). If not, throw a HttpSessionInvalidException with
           // the HTTP status code 503 ("Service temporarily unavailable").
           if (!$this->handleSessionInitializationError($request, $response)) {
-            return throw(new HttpSessionInvalidException(
+            throw(new HttpSessionInvalidException(
               'Session initialization failed: '.$e->getMessage(),
               HTTP_SERVICE_TEMPORARILY_UNAVAILABLE
             ));
@@ -394,7 +394,7 @@
         // code 400 ("Bad request").
         if (!$request->session->isValid()) {
           if (!$this->handleInvalidSession($request, $response)) {
-            return throw(new HttpSessionInvalidException(
+            throw(new HttpSessionInvalidException(
               'Session is invalid',
               HTTP_BAD_REQUEST
             ));
@@ -412,7 +412,7 @@
       // the two methods will result in a HttpScriptletException with the HTTP
       // status code 500 ("Internal Server Error") being thrown.
       $response= &$this->_response();
-      try(); {
+      try {
         $r= call_user_func_array(
           array(&$this, $method), 
           array(&$request, &$response)
@@ -421,10 +421,10 @@
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
-      } if (catch('HttpScriptletException', $e)) {
-        return throw($e);
-      } if (catch('Exception', $e)) {
-        return throw(new HttpScriptletException(
+      } catch (HttpScriptletException $e) {
+        throw($e);
+      } catch (Exception $e) {
+        throw(new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
           HTTP_INTERNAL_SERVER_ERROR
         ));

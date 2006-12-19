@@ -11,7 +11,7 @@
    * @purpose  Documents a method
    */
   class MethodDoc extends AnnotatedDoc {
-    var
+    public
       $arguments    = array();
       
   }

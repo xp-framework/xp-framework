@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ReturnTag');
+  uses('text.doclet.ReturnTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the return tag. 
@@ -12,7 +12,7 @@
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
-  class ReturnTaglet extends Object {
+  class ReturnTaglet extends Object implements Taglet {
      
     /**
      * Create tag from text
@@ -23,10 +23,10 @@
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    function &tagFrom(&$holder, $kind, $text) {
+    public function &tagFrom(&$holder, $kind, $text) {
       list($type, $label)= explode(' ', $text, 2);
       return new ReturnTag($type, $label);
     }
 
-  } implements(__FILE__, 'text.doclet.Taglet');
+  } 
 ?>

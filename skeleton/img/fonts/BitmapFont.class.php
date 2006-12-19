@@ -12,7 +12,7 @@
    * @purpose  Font
    */
   class BitmapFont extends Object {
-    var
+    public
       $id= 0;
       
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   int id
      */ 
-    function __construct($id) {
+    public function __construct($id) {
       $this->id= $id;
     }
     
@@ -35,7 +35,7 @@
      * @param   int x
      * @param   int y
      */
-    function drawtext(&$hdl, &$col, $text, $x, $y) {
+    public function drawtext(&$hdl, &$col, $text, $x, $y) {
       return imagestring(
         $hdl,
         $this->id,

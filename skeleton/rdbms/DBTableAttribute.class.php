@@ -39,7 +39,7 @@
    * @see   xp://rdbms.DBTable
    */
   class DBTableAttribute extends Object {
-    var 
+    public 
       $name=        '',
       $type=        -1,
       $ident=       FALSE,
@@ -60,7 +60,7 @@
      * @param   int precision default 0,
      * @param   int scale default 0
      */
-    function __construct(
+    public function __construct(
       $name, 
       $type, 
       $identity= FALSE, 
@@ -85,7 +85,7 @@
      * @access  public
      * @return  bool
      */
-    function isIdentity() {
+    public function isIdentity() {
       return $this->identity;
     } 
     
@@ -95,7 +95,7 @@
      * @access  public
      * @return  bool
      */
-    function isNullable() {
+    public function isNullable() {
       return $this->nullable;
     }
     
@@ -105,7 +105,7 @@
      * @access  public
      * @return  bool
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -116,7 +116,7 @@
      * @access  public
      * @return  string type
      */
-    function getTypeString() {
+    public function getTypeString() {
       static $map= array(
         'DB_ATTRTYPE_BINARY',   
         'DB_ATTRTYPE_BIT',     
@@ -156,7 +156,7 @@
      * @access  public
      * @return  string type or FALSE if unknown
      */
-    function typeName() {
+    public function typeName() {
       switch ($this->type) {   
         case DB_ATTRTYPE_BIT:
           return 'bool';

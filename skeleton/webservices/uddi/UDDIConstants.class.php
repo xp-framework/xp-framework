@@ -35,7 +35,7 @@
      * @param   int version
      * @return  string namespace
      */  
-    function namespaceFor($version) {
+    public static function namespaceFor($version) {
       return constant('UDDI_NAMESPACE_V'.$version);
     }
 
@@ -47,7 +47,7 @@
      * @param   int version
      * @return  string version identifier, e.g. "1.0"
      */  
-    function versionIdFor($version) {
+    public static function versionIdFor($version) {
       return constant('UDDI_V'.$version);
     }
   }

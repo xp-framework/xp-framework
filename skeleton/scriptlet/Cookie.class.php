@@ -26,7 +26,7 @@
    * @purpose  Cookie header
    */
   class Cookie extends Object {
-    var 
+    public 
       $name         = '',
       $value        = '',
       $secure       = FALSE,
@@ -45,7 +45,7 @@
      * @param   string domain default ''
      * @param   bool secure default FALSE
      */
-    function __construct($name, $value= '', $expires= 0, $path= '', $domain= '', $secure= FALSE) {
+    public function __construct($name, $value= '', $expires= 0, $path= '', $domain= '', $secure= FALSE) {
       
       $this->name= $name;
       $this->value= $value;
@@ -65,7 +65,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @param   string value
      */
-    function setValue($value) {
+    public function setValue($value) {
       $this->value= $value;
     }
 
@@ -95,7 +95,7 @@
      * @access  public
      * @return  string
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @param   bool secure
      */
-    function setSecure($secure) {
+    public function setSecure($secure) {
       $this->secure= $secure;
     }
 
@@ -117,7 +117,7 @@
      * @access  public
      * @return  bool
      */
-    function getSecure() {
+    public function getSecure() {
       return $this->secure;
     }
 
@@ -127,7 +127,7 @@
      * @access  public
      * @param   string domain
      */
-    function setDomain($domain) {
+    public function setDomain($domain) {
       $this->domain= $domain;
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @return  string
      */
-    function getDomain() {
+    public function getDomain() {
       return $this->domain;
     }
 
@@ -149,7 +149,7 @@
      * @access  public
      * @param   string path
      */
-    function setPath($path) {
+    public function setPath($path) {
       $this->path= $path;
     }
 
@@ -161,7 +161,7 @@
      * @access  public
      * @return  string
      */
-    function getPath() {
+    public function getPath() {
       return $this->path;
     }
 
@@ -171,7 +171,7 @@
      * @access  public
      * @param   int expires
      */
-    function setExpires($expires) {
+    public function setExpires($expires) {
       $this->expires= (is('util.Date', $expires)
         ? $expires->getTime()
         : $expires
@@ -186,7 +186,7 @@
      * @access  public
      * @return  int
      */
-    function getExpires() {
+    public function getExpires() {
       return $this->expires;
     }
 
@@ -196,7 +196,7 @@
      * @access  public
      * @return  string value
      */
-    function getHeaderValue() {
+    public function getHeaderValue() {
       return (
         $this->name.'='.
         ($this->value === '' ? 'deleted' : $this->value).
@@ -213,7 +213,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s@{\n".
         "  [name    ] %s\n".

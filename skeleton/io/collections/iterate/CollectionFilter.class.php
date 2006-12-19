@@ -4,12 +4,14 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Filter that accepts only IOCollections (e.g. directories)
    *
    * @purpose  Iteration Filter
    */
-  class CollectionFilter extends Object {
+  class CollectionFilter extends Object implements IterationFilter {
       
     /**
      * Accepts an element
@@ -18,7 +20,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return is('io.collections.IOCollection', $element);
     }
 
@@ -28,9 +30,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName();
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

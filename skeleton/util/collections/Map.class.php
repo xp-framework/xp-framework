@@ -13,7 +13,7 @@
    * @see      xp://util.collections.HashProvider
    * @purpose  Interface
    */
-  class Map extends Interface {
+  interface Map {
     
     /**
      * Associates the specified value with the specified key in this map.
@@ -27,7 +27,7 @@
      * @param   &lang.Object value
      * @return  &lang.Object the previous value associated with the key
      */
-    function &put(&$key, &$value) { }
+    public function &put(&$key, &$value);
 
     /**
      * Returns the value to which this map maps the specified key. 
@@ -37,7 +37,7 @@
      * @param   &lang.Object key
      * @return  &lang.Object the value associated with the key
      */
-    function &get(&$key) { }
+    public function &get(&$key);
     
     /**
      * Removes the mapping for this key from this map if it is present.
@@ -48,28 +48,28 @@
      * @param   &lang.Object key
      * @return  &lang.Object the previous value associated with the key
      */
-    function &remove(&$key) { }
+    public function &remove(&$key);
     
     /**
      * Removes all mappings from this map.
      *
      * @access  public
      */
-    function clear() { }
+    public function clear();
 
     /**
      * Returns the number of key-value mappings in this map
      *
      * @access  public
      */
-    function size() { }
+    public function size();
 
     /**
      * Returns true if this map contains no key-value mappings. 
      *
      * @access  public
      */
-    function isEmpty() { }
+    public function isEmpty();
     
     /**
      * Returns true if this map contains a mapping for the specified key.
@@ -78,7 +78,7 @@
      * @param   &lang.Object key
      * @return  bool
      */
-    function containsKey(&$key) { }
+    public function containsKey(&$key);
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
@@ -87,7 +87,7 @@
      * @param   &lang.Object value
      * @return  bool
      */
-    function containsValue(&$value) { }
+    public function containsValue(&$value);
 
     /**
      * Returns a hashcode for this map
@@ -95,7 +95,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() { }
+    public function hashCode();
     
     /**
      * Returns true if this map equals another map.
@@ -104,7 +104,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) { }
+    public function equals(&$cmp);
 
   }
 ?>

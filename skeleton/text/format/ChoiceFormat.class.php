@@ -20,7 +20,7 @@
      * @access  public
      * @return  &text.format.ChoiceFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('ChoiceFormat');
     }  
   
@@ -33,7 +33,7 @@
      * @return  string
      * @throws  lang.FormatException
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       foreach (explode('|', $fmt) as $choice) {
         list($cmp, $val)= explode(':', $choice);
         if ($argument == $cmp) {
@@ -43,7 +43,7 @@
           return $val;
         }
       }
-      return throw(new FormatException('Value is out of bounds'));
+      throw(new FormatException('Value is out of bounds'));
     }
   }
 ?>

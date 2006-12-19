@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter'
@@ -21,7 +21,7 @@
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
-    var
+    public
       $formatter= NULL;
 
     /**
@@ -30,7 +30,7 @@
      * @access  public
      * @param   int timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       ini_set('mysql.connect_timeout', $timeout);
       parent::setTimeout($timeout);
     }
@@ -42,7 +42,7 @@
      * @access  public
      * @param   &rdbms.DSN dsn
      */
-    function __construct(&$dsn) { 
+    public function __construct(&$dsn) { 
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter();
       $this->formatter->setEscape('"');
@@ -61,7 +61,7 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE) {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
@@ -82,7 +82,7 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
-        return throw(new SQLConnectException(mysql_error(), $this->dsn));
+        throw(new SQLConnectException(mysql_error(), $this->dsn));
       }
 
       // Figure out sql_mode and update formatter's escaperules accordingly
@@ -111,7 +111,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       if ($this->handle && $r= mysql_close($this->handle)) {
         $this->handle= NULL;
         return $r;
@@ -127,9 +127,9 @@
      * @return  bool success
      * @throws  rdbms.SQLStatementFailedException
      */
-    function selectdb($db) {
+    public function selectdb($db) {
       if (!mysql_select_db($db, $this->handle)) {
-        return throw(new SQLStatementFailedException(
+        throw(new SQLStatementFailedException(
           'Cannot select database: '.mysql_error($this->handle), 
           'use '.$db,
           mysql_errno($this->handle)
@@ -145,7 +145,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() {
+    public function prepare() {
       $args= func_get_args();
       return $this->formatter->format(array_shift($args), $args);
     }
@@ -156,7 +156,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { 
+    public function identity() { 
       $i= mysql_insert_id($this->handle);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
@@ -170,7 +170,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -189,7 +189,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -207,7 +207,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function delete() { 
+    public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -225,7 +225,7 @@
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
      */
-    function select() { 
+    public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -245,21 +245,21 @@
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function &query() { 
+    public function &query() { 
       $args= func_get_args();
       $sql= call_user_func_array(array(&$this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
-        try(); {
+        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        try {
           $c= $this->connect();
         }
-        if (catch('SQLException', $e)) {
-          return throw ($e);
+        catch (SQLException $e) {
+          throw ($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -274,7 +274,7 @@
         switch ($e= mysql_errno($this->handle)) {
           case 2006: // MySQL server has gone away
           case 2013: // Lost connection to MySQL server during query
-            return throw(new SQLConnectionClosedException(
+            throw(new SQLConnectionClosedException(
               'Statement failed: '.mysql_error($this->handle), 
               $sql, 
               $e
@@ -282,7 +282,7 @@
             break;
           
           default:  
-            return throw(new SQLStatementFailedException(
+            throw(new SQLStatementFailedException(
               'Statement failed: '.mysql_error($this->handle), 
               $sql, 
               $e
@@ -295,7 +295,7 @@
         return $result;
       }
 
-      $resultset= &new MySQLResultSet($result);
+      $resultset= new MySQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;
@@ -308,7 +308,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function &begin(&$transaction) {
+    public function &begin(&$transaction) {
       if (!$this->query('begin')) return FALSE;
       $transaction->db= &$this;
       return $transaction;
@@ -321,7 +321,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { 
+    public function rollback($name) { 
       return $this->query('rollback');
     }
     
@@ -332,7 +332,7 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { 
+    public function commit($name) { 
       return $this->query('commit');
     }
   }

@@ -11,7 +11,7 @@
    * @purpose  Pass request data directly to
    */
   class RequestData extends Object {
-    var
+    public
       $data = '';
 
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   string buf
      */
-    function __construct($buf) {
+    public function __construct($buf) {
       $this->data= $buf;
       
     }
@@ -31,7 +31,7 @@
      * @access  public
      * @return  string
      */
-    function getData() {
+    public function getData() {
       return $this->data;
     }
   }

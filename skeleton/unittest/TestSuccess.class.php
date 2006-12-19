@@ -11,7 +11,7 @@
    * @purpose  Result wrapper
    */
   class TestSuccess extends Object {
-    var
+    public
       $test     = NULL,
       $elapsed  = 0.0;
       
@@ -23,7 +23,7 @@
      * @param   &mixed result
      * @param   float elapsed
      */
-    function __construct(&$test, $elapsed) {
+    public function __construct(&$test, $elapsed) {
       $this->test= &$test;
       $this->elapsed= $elapsed;
     }
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().
         '(test= '.$this->test->getClassName().'::'.$this->test->getName().

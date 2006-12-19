@@ -33,7 +33,7 @@
      * @param   string dsn default NULL additional parameters for sendmail
      * @return  bool success
      */
-    function connect($dsn= NULL) { 
+    public function connect($dsn= NULL) { 
       $this->parameters= $dsn;
       return TRUE;
     }
@@ -44,7 +44,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       return TRUE;
     }
   
@@ -55,11 +55,11 @@
      * @param   &peer.mail.Message message the Message object to send
      * @return  bool success
      */
-    function send(&$message) { 
+    public function send(&$message) { 
     
       // Sanity check: Is this a message?
-      if (!is_a($message, 'Message')) {
-        return throw(new TransportException(
+      if (!is('Message', $message)) {
+        throw(new TransportException(
           'Can only send messages (given: '.xp::typeOf($message).')',
           new IllegalArgumentException('Parameter message is not a Message object')
         ));
@@ -68,11 +68,11 @@
       // Sanity check: Do we have at least one recipient?
       $to= '';
       for ($i= 0, $s= sizeof($message->to); $i < $s; $i++) {
-        if (!is_a($message->to[$i], 'InternetAddress')) continue; // Ignore!
+        if (!is('InternetAddress', $message->to[$i])) continue; // Ignore!
         $to.= $message->to[$i]->toString($message->getCharset()).', ';
       }
       if (empty($to)) {
-        return throw(new TransportException(
+        throw(new TransportException(
           'No recipients defined (recipients[0]: '.xp::typeOf($message->to[0]),
           new IllegalArgumentException('Recipient #0 is not an InternetAddress object')
         ));
@@ -94,7 +94,7 @@
         rtrim($tmp->getHeaderString(), "\n"),
         $this->parameters
       )) {
-        return throw(new TransportException(
+        throw(new TransportException(
           'Could not send mail to '.$message->to[0], 
           new IOException('Call to mail() failed')
         ));

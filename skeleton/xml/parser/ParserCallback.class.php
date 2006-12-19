@@ -11,7 +11,7 @@
    * @see      xp://xml.parser.XMLParser#setCallBack
    * @purpose  Interface
    */
-  class ParserCallback extends Interface {
+  interface ParserCallback {
   
     /**
      * Callback function for XMLParser
@@ -21,7 +21,7 @@
      * @param   string name
      * @param   array attrs
      */
-    function onStartElement($parser, $name, $attrs) { }
+    public function onStartElement($parser, $name, $attrs);
     
     /**
      * Callback function for XMLParser
@@ -30,7 +30,7 @@
      * @param   resource parser
      * @param   string name
      */
-    function onEndElement($parser, $name) { }
+    public function onEndElement($parser, $name);
 
     /**
      * Callback function for XMLParser
@@ -39,7 +39,7 @@
      * @param   resource parser
      * @param   string cdata
      */
-    function onCData($parser, $cdata) { }
+    public function onCData($parser, $cdata);
 
     /**
      * Callback function for XMLParser
@@ -48,6 +48,6 @@
      * @param   resource parser
      * @param   string data
      */
-    function onDefault($parser, $data) { }
+    public function onDefault($parser, $data);
   }
 ?>

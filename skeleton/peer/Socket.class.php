@@ -16,11 +16,11 @@
    * @purpose  Basic TCP/IP socket
    */
   class Socket extends Object {
-    var
+    public
       $host     = '',
       $port     = 0;
       
-    var
+    public
       $_sock    = NULL,
       $_prefix  = '',
       $_timeout = 60;
@@ -37,7 +37,7 @@
      * @param   int port
      * @param   resource socket default NULL
      */
-    function __construct($host, $port, $socket= NULL) {
+    public function __construct($host, $port, $socket= NULL) {
       $this->host= $host;
       $this->port= $port;
       $this->_sock= $socket;
@@ -51,7 +51,7 @@
      * @access  public
      * @return  string error
      */  
-    function getLastError() {
+    public function getLastError() {
       $e= xp::registry('errors');
       return isset($e[__FILE__]) ? key(end($e[__FILE__])) : 'unknown error';
     }
@@ -62,7 +62,7 @@
      * @access  public
      * @return  bool connected
      */
-    function isConnected() {
+    public function isConnected() {
       return is_resource($this->_sock);
     }
     
@@ -75,7 +75,7 @@
      * @return  bool success
      * @throws  peer.ConnectException
      */
-    function connect($timeout= 2.0) {
+    public function connect($timeout= 2.0) {
       if ($this->isConnected()) return 1;
       
       if (!$this->_sock= fsockopen(
@@ -85,7 +85,7 @@
         $errstr, 
         $timeout
       )) {
-        return throw(new ConnectException(sprintf(
+        throw(new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
@@ -105,7 +105,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {    
+    public function close() {    
       $res= fclose($this->_sock);
       $this->_sock= NULL;
       return $res;
@@ -117,7 +117,7 @@
      * @access  public
      * @param   mixed _timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       $this->_timeout= $timeout;
       
       // Apply changes to already opened connection
@@ -132,7 +132,7 @@
      * @access  public
      * @return  mixed
      */
-    function getTimeout() {
+    public function getTimeout() {
       return $this->_timeout;
     }
 
@@ -145,9 +145,9 @@
      * @throws  peer.SocketException
      * @see     php://socket_set_blocking
      */
-    function setBlocking($blockMode) {
+    public function setBlocking($blockMode) {
       if (FALSE === socket_set_blocking($this->_sock, $blockMode)) {
-        return throw(new SocketException('Set blocking call failed: '.$this->getLastError()));
+        throw(new SocketException('Set blocking call failed: '.$this->getLastError()));
       }
       
       return TRUE;
@@ -161,7 +161,7 @@
      * @return  bool there is data that can be read
      * @throws  peer.SocketException in case of failure
      */
-    function canRead($timeout= NULL) {
+    public function canRead($timeout= NULL) {
       if (NULL === $timeout) {
         $tv_sec= $tv_usec= NULL;
       } else {
@@ -170,15 +170,15 @@
       }
 
       if (FALSE === socket_set_timeout($this->_sock, $tv_sec, $tv_usec)) {
-        return throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw(new SocketException('Select failed: '.$this->getLastError()));
       }
       
       if (!is_array($status= socket_get_status($this->_sock))) {
-        return throw(new SocketException('Get status failed: '.$this->getLastError()));
+        throw(new SocketException('Get status failed: '.$this->getLastError()));
       }
 
       if (FALSE === socket_set_timeout($this->_sock, $this->_timeout)) {
-        return throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw(new SocketException('Select failed: '.$this->getLastError()));
       }
 
       return $status['unread_bytes'] > 0;
@@ -192,14 +192,14 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function read($maxLen= 4096) {
+    public function read($maxLen= 4096) {
       if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
       
         // fgets returns FALSE on eof, this is particularily dumb when 
         // looping, so check for eof() and make it "no error"
         if ($this->eof()) return NULL;
         
-        return throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
       }
       
       return $r;
@@ -213,14 +213,14 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function readLine($maxLen= 4096) {
+    public function readLine($maxLen= 4096) {
       if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
       
         // fgets returns FALSE on eof, this is particularily dumb when 
         // looping, so check for eof() and make it "no error"
         if ($this->eof()) return NULL;
         
-        return throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
       }
       
       return chop($r);
@@ -234,9 +234,9 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function readBinary($maxLen= 4096) {
+    public function readBinary($maxLen= 4096) {
       if (FALSE === ($r= fread($this->_sock, $maxLen))) {
-        return throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
       }
       
       return $r;
@@ -248,7 +248,7 @@
      * @access  public
      * @return  bool EOF erhalten
      */
-    function eof() {
+    public function eof() {
       return feof($this->_sock);
     }
     
@@ -260,9 +260,9 @@
      * @return  int bytes written
      * @throws  peer.SocketException in case of an error
      */
-    function write($str) {
+    public function write($str) {
       if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
-        return throw(new SocketException('Write of '.strlen($len).' bytes to socket failed: '.$this->getLastError()));
+        throw(new SocketException('Write of '.strlen($len).' bytes to socket failed: '.$this->getLastError()));
       }
       
       return $bytesWritten;
@@ -274,7 +274,7 @@
      * @access  public
      * @return  resource
      */
-    function getHandle() {
+    public function getHandle() {
       return $this->_sock;
     }
     
@@ -283,7 +283,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       if ($this->isConnected()) $this->close();
     }
   }

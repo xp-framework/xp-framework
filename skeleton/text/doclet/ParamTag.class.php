@@ -13,7 +13,7 @@
    * @purpose  Tag
    */
   class ParamTag extends Tag {
-    var
+    public
       $type= '',
       $name= '';
 
@@ -25,7 +25,7 @@
      * @param   string name
      * @param   string label
      */
-    function __construct($type, $name, $label) {
+    public function __construct($type, $name, $label) {
       parent::__construct('type', $label);
       $this->type= $type;
       $this->name= $name;

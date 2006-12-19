@@ -12,7 +12,7 @@
    * @see   rdbms.DBAdapter
    */  
   class DBAdapter extends Object {
-    var
+    public
       $conn=  NULL;
       
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   &rdbms.DBConnection conn a database connection
      */
-    function __construct(&$conn) {
+    public function __construct(&$conn) {
       $this->conn= &$conn;
       
     }
@@ -32,7 +32,7 @@
      * @access  abstract
      * @param   string name
      */    
-    function getTable($name) {}
+    public function getTable($name) {}
 
     /**
      * Get tables
@@ -40,7 +40,7 @@
      * @access  abstract
      * @param   string database
      */    
-    function getTables($database) {}
+    public function getTables($database) {}
     
     /**
      * Get databaases
@@ -48,6 +48,6 @@
      * @access  abstract
      * @param   string name
      */    
-    function getDatabases() {}
+    public function getDatabases() {}
   }
 ?>

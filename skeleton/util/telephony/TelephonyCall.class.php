@@ -9,7 +9,7 @@
    *
    */
   class TelephonyCall extends Object {
-    var 
+    public 
       $origin       = NULL,
       $destination  = NULL;
       
@@ -20,7 +20,7 @@
      * @param   &util.telephony.TelephonyAddress origin
      * @param   &util.telephony.TelephonyAddress destination
      */
-    function __construct(&$origin, &$destination) {
+    public function __construct(&$origin, &$destination) {
       $this->origin= &$origin;
       $this->destination= &$destination;
       
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string number
      */
-    function getOriginNumber() {
+    public function getOriginNumber() {
       return $this->origin->toString();
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string number
      */
-    function getDestinationNumber() {
+    public function getDestinationNumber() {
       return $this->destination->toString();
     }
   }

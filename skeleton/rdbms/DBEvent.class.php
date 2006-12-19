@@ -10,7 +10,7 @@
    * @purpose  Wrap database events
    */
   class DBEvent extends Object {
-    var
+    public
       $name=  '',
       $arg=   NULL;
 
@@ -19,7 +19,7 @@
      *
      * @access  public
      */
-    function __construct($name, $arg= NULL) {
+    public function __construct($name, $arg= NULL) {
       $this->name=  $name;
       $this->arg=   $arg;
     }
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @param   &lang.Object arg
      */
-    function setArgument(&$arg) {
+    public function setArgument(&$arg) {
       $this->arg= &$arg;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getArgument() {
+    public function &getArgument() {
       return $this->arg;
     }
     
@@ -70,7 +70,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->name.') {'.var_export($this->arg, TRUE).'}';
     }
   }

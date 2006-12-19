@@ -21,12 +21,12 @@
      * @param   array value
      * @return  array value
      */
-    function castValue($value) {
+    public function castValue($value) {
       $return= array();
       foreach ($value as $k => $v) {
-        try(); {
+        try {
           $addr= &InternetAddress::fromString($v);
-        } if (catch('FormatException', $e)) {
+        } catch (FormatException $e) {
           return $e->getMessage();
         }
         

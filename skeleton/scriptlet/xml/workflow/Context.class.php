@@ -10,7 +10,7 @@
    * @purpose  Context
    */
   class Context extends Object {
-    var
+    public
       $_changed  = FALSE;
 
     /**
@@ -19,7 +19,7 @@
      * @access  public
      * @param   bool changed default TRUE
      */
-    function setChanged($changed= TRUE) {
+    public function setChanged($changed= TRUE) {
       $this->_changed= $changed;
     }
 
@@ -29,7 +29,7 @@
      * @access  public
      * @return  bool
      */
-    function getChanged() {
+    public function getChanged() {
       return $this->_changed;
     }
     
@@ -43,7 +43,7 @@
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    function setup(&$request) { }
+    public function setup(&$request) { }
 
     /**
      * Process the context.
@@ -55,7 +55,7 @@
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    function process(&$request) { }
+    public function process(&$request) { }
     
     /**
      * Sleep function. Returns an array of the names of those member 
@@ -66,7 +66,7 @@
      * @access  protected
      * @return  string[]
      */
-    function __sleep() {
+    public function __sleep() {
       return array_filter(
         array_keys(get_class_vars(get_class($this))), 
         create_function('$k', 'return "_" != $k{0};')
@@ -79,6 +79,6 @@
      * @access  public
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    function insertStatus(&$response) { }
+    public function insertStatus(&$response) { }
   }
 ?>

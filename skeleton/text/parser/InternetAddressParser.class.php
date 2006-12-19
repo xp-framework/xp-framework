@@ -13,7 +13,7 @@
    * @purpose  Parse internet addresses
    */
   class InternetAddressParser extends Object {
-    var
+    public
       $_str= NULL;
 
     /**
@@ -35,19 +35,19 @@
      * @return  &InternetAddress[]
      * @throws  lang.FormatException in case the string is malformed
      */
-    function &parse($str) {
+    public function &parse($str) {
       $result= array();
-      $st= &new StringTokenizer($str, ',');
+      $st= new StringTokenizer($str, ',');
       
       $st->hasMoreTokens() && $tok= $st->nextToken();
       while ($tok) {
       
         // No " in this string, so this contains one address
         if (FALSE === ($pos= strpos($tok, '"'))) {
-          try(); {
+          try {
             $result[]= &InternetAddress::fromString($tok);
-          } if (catch('FormatException', $e)) {
-            return throw($e);
+          } catch (FormatException $e) {
+            throw($e);
           }
           
           $tok= $st->nextToken();
@@ -64,15 +64,15 @@
         }
         
         if ($inquot) {
-          if (!$st->hasMoreTokens()) { return throw(new FormatException('Cannot parse string: no ending delimiter found.')); }
+          if (!$st->hasMoreTokens()) { throw(new FormatException('Cannot parse string: no ending delimiter found.')); }
           $tok= $tok.','.$st->nextToken();
           continue;
         }
 
-        try(); {
+        try {
           $result[]= &InternetAddress::fromString($tok);
-        } if (catch('FormatException', $e)) {
-          return throw($e);
+        } catch (FormatException $e) {
+          throw($e);
         }
         
         // Handle next token

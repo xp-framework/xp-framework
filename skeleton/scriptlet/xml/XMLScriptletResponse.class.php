@@ -25,12 +25,12 @@
    * @purpose  Scriptlet response wrapper
    */
   class XMLScriptletResponse extends HttpScriptletResponse {
-    var 
+    public 
       $document     = NULL,
       $processor    = NULL,
       $params       = array();
     
-    var
+    public
       $_processed   = TRUE,
       $_stylesheet  = array();
     
@@ -40,9 +40,9 @@
      * @access  public
      * @param   xml.XSLProcessor processor
      */
-    function __construct($processor= NULL) {
+    public function __construct($processor= NULL) {
       $this->processor= &$processor;
-      $this->document= &new OutputDocument();
+      $this->document= new OutputDocument();
     }
 
     /**
@@ -51,7 +51,7 @@
      * @access  public
      * @param   &xml.IXSLProcessor processor
      */
-    function setProcessor(&$processor) {
+    public function setProcessor(&$processor) {
       $this->processor= &$processor;
     }
 
@@ -61,7 +61,7 @@
      * @access  public
      * @return  &xml.IXSLProcessor processor
      */
-    function &getProcessor() {
+    public function &getProcessor() {
       return $this->processor;
     }
 
@@ -71,7 +71,7 @@
      * @access  public
      * @param   bool processed
      */
-    function setProcessed($processed) {
+    public function setProcessed($processed) {
       $this->_processed= $processed;
     }
 
@@ -82,9 +82,9 @@
      * @param   string s string to add to the content
      * @throws  lang.IllegalAccessException in case processing is requested
      */
-    function write($s) {
+    public function write($s) {
       if ($this->_processed) {
-        return throw(new IllegalAccessException('Cannot write directly'));
+        throw(new IllegalAccessException('Cannot write directly'));
       }
       parent::write($s);
     }
@@ -96,9 +96,9 @@
      * @param   string content Content
      * @throws  lang.IllegalAccessException
      */
-    function setContent($content) {
+    public function setContent($content) {
       if ($this->_processed) {
-        return throw(new IllegalAccessException('Cannot write directly'));
+        throw(new IllegalAccessException('Cannot write directly'));
       }
       parent::setContent($content);
     }
@@ -131,7 +131,7 @@
      * @param   string name name
      * @param   &mixed val
      */
-    function addFormValue($name, &$val) {
+    public function addFormValue($name, &$val) {
       if (!is_array($val)) $val= array($val);
 
       foreach (array_keys($val) as $k) {
@@ -140,7 +140,7 @@
         } else if (is_object($val[$k])) {
           $c= &Node::fromObject($val[$k], 'param');
         } else {
-          $c= &new Node('param', $val[$k]);
+          $c= new Node('param', $val[$k]);
         }
         $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
         $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
@@ -165,13 +165,13 @@
      * @param   mixed info default NULL 
      * @return  bool FALSE
      */
-    function addFormError($checker, $type, $field= '*', $info= NULL) {
+    public function addFormError($checker, $type, $field= '*', $info= NULL) {
       if (is_array($info)) {
         $c= &Node::fromArray($info, 'error');
       } else if (is_object($info)) {
         $c= &Node::fromObject($info, 'error');
       } else {
-        $c= &new Node('error', $info);
+        $c= new Node('error', $info);
       }
       $c->attribute= array(
         'type'        => $type,
@@ -193,12 +193,12 @@
      * @return  &xml.Node added node
      * @throws  lang.IllegalArgumentException
      */
-    function &addFormResult(&$node) {
+    public function &addFormResult(&$node) {
       if (
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
       ) {
-        return throw(new IllegalArgumentException($node->name.' not allowed here'));
+        throw(new IllegalArgumentException($node->name.' not allowed here'));
       }
       return $this->document->formresult->addChild($node);
     }
@@ -210,7 +210,7 @@
      * @param   string stylesheet
      * @param   int type default XSLT_FILE
      */
-    function setStylesheet($stylesheet, $type= XSLT_FILE) {
+    public function setStylesheet($stylesheet, $type= XSLT_FILE) {
       $this->_stylesheet= array($type, $stylesheet);
     }
 
@@ -220,7 +220,7 @@
      * @access  public
      * @return  bool
      */
-    function hasStylesheet() {
+    public function hasStylesheet() {
       return !empty($this->_stylesheet);
     }
     
@@ -231,7 +231,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $value) {
+    public function setParam($name, $value) {
       $this->params['__'.$name]= $value;
     }
     
@@ -242,7 +242,7 @@
      * @param   string name
      * @return  string value
      */
-    function getParam($name) {
+    public function getParam($name) {
       return $this->params['__'.$name];
     }
     
@@ -254,7 +254,7 @@
      * @param   string query default NULL the query string without the leading "?"
      * @param   string fraction default NULL the fraction without the leading "#"
      */
-    function forwardTo($state, $query= NULL, $fraction= NULL) {
+    public function forwardTo($state, $query= NULL, $fraction= NULL) {
       sscanf(
         getenv('REQUEST_URI'), 
         '/xml/%[^.].%[^./].psessionid=%[^/]', 
@@ -282,15 +282,15 @@
      * @throws  scriptlet.HttpScriptletException if the transformation fails
      * @see     xp://scriptlet.HttpScriptletResponse#process
      */
-    function process() {
+    public function process() {
       if (!$this->_processed) return FALSE;
 
       switch ($this->_stylesheet[0]) {
         case XSLT_FILE:
-          try(); {
+          try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
-          } if (catch('FileNotFoundException', $e)) {
-            return throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
+          } catch (FileNotFoundException $e) {
+            throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
           }
           break;
           
@@ -299,7 +299,7 @@
           break;
         
         default:
-          return throw(new IllegalStateException(
+          throw(new IllegalStateException(
             'Unknown type ('.$this->_stylesheet[0].') for stylesheet'
           ));
       }
@@ -311,10 +311,10 @@
       );
       
       // Transform XML/XSL
-      try(); {
+      try {
         $this->processor->run();
-      } if (catch('TransformerException', $e)) {
-        return throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
+      } catch (TransformerException $e) {
+        throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
       }
       
       $this->content= &$this->processor->output();
@@ -327,7 +327,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       delete($this->document);
       delete($this->processor);
     }

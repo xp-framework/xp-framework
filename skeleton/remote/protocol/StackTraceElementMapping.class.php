@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('remote.protocol.SerializerMapping');
+
   /**
    * Mapping for lang.StackTraceElement
    *
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping
    */
-  class StackTraceElementMapping extends Object {
+  class StackTraceElementMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -21,7 +23,7 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
       $size= $serialized->consumeSize();
       $details= array();
       $serialized->offset++;  // Opening "{"
@@ -31,7 +33,7 @@
       }
       $serialized->offset++;  // Closing "}"
       
-      $value= &new StackTraceElement(
+      $value= new StackTraceElement(
         $details['file'],
         $details['class'],
         $details['method'],
@@ -51,7 +53,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       return 't:4:{'.
         's:4:"file";'.$serializer->representationOf($value->file).
         's:5:"class";'.$serializer->representationOf($value->class).
@@ -66,8 +68,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('lang.StackTraceElement');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

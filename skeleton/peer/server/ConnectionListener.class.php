@@ -18,7 +18,7 @@
    * @purpose  Abstract base class for listeners
    */
   class ConnectionListener extends Object {
-    var
+    public
       $server = NULL;
 
     /**
@@ -32,7 +32,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function connected(&$event) {
+    public function connected(&$event) {
     }
     
     /**
@@ -53,7 +53,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function data(&$event) { 
+    public function data(&$event) { 
     }
     
     /**
@@ -67,7 +67,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function disconnected(&$event) { 
+    public function disconnected(&$event) { 
     }
     
     /**
@@ -82,7 +82,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function error(&$event) { 
+    public function error(&$event) { 
     }
   
   }

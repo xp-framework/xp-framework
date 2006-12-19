@@ -19,7 +19,7 @@
    * @purpose  Custom service exception.
    */
   class ServiceException extends ChainedException {
-    var
+    public
       $faultcode;
 
     /**
@@ -30,7 +30,7 @@
      * @param   string message
      * @param   lang.Throwable default NULL cause causing exception
      */
-    function __construct($faultcode, $message, $cause= NULL) {
+    public function __construct($faultcode, $message, $cause= NULL) {
       $this->faultcode= $faultcode;
       parent::__construct($message, $cause);
     }
@@ -41,7 +41,7 @@
      * @access  public
      * @param   mixed faultcode
      */
-    function setFaultcode($faultcode) {
+    public function setFaultcode($faultcode) {
       $this->faultcode= $faultcode;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @return  mixed
      */
-    function getFaultcode() {
+    public function getFaultcode() {
       return $this->faultcode;
     }
     
@@ -62,7 +62,7 @@
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */
-    function getStackTrace() {
+    public function getStackTrace() {
       if (NULL !== $this->cause) return $this->cause->getStackTrace();
       
       return parent::getStackTrace();

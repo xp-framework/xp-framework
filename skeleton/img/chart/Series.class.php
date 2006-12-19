@@ -11,7 +11,7 @@
    * @purpose  Value object
    */
   class Series extends Object {
-    var
+    public
       $name   = '',
       $values = array();
       
@@ -22,7 +22,7 @@
      * @param   string name
      * @param   float[] values default array()
      */
-    function __construct($name, $values= array()) {
+    public function __construct($name, $values= array()) {
       $this->name= $name;
       $this->values= $values;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @param   float f
      */
-    function add($f) {
+    public function add($f) {
       $this->values[]= $f;
     }
   }

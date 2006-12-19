@@ -28,7 +28,7 @@
    * @purpose  Wire format encoding
    */
   class ByteCountedString extends Object {
-    var
+    public
       $string= '';
       
     /**
@@ -37,7 +37,7 @@
      * @access  public
      * @param   string string default ''
      */
-    function __construct($string= '') {
+    public function __construct($string= '') {
       $this->string= utf8_encode($string);
     }
     
@@ -48,7 +48,7 @@
      * @param   int chunksize default BCS_DEFAULT_CHUNK_SIZE
      * @return  int
      */
-    function length($chunksize= BCS_DEFAULT_CHUNK_SIZE) {
+    public function length($chunksize= BCS_DEFAULT_CHUNK_SIZE) {
       return strlen($this->string) + 3 * (int)ceil(strlen($this->string) / $chunksize);
     }
 
@@ -59,7 +59,7 @@
      * @param   &io.Stream stream
      * @param   int chunksize default BCS_DEFAULT_CHUNK_SIZE
      */
-    function writeTo(&$stream, $chunksize= BCS_DEFAULT_CHUNK_SIZE) {
+    public function writeTo(&$stream, $chunksize= BCS_DEFAULT_CHUNK_SIZE) {
       $length= strlen($this->string);
       $offset= 0;
 
@@ -82,7 +82,7 @@
      * @param   int length
      * @return  string
      */
-    function readFully(&$stream, $length) {
+    public static function readFully(&$stream, $length) {
       $return= '';
       while (strlen($return) < $length) {
         if (0 == strlen($buf= $stream->readBinary($length - strlen($return)))) return;
@@ -99,7 +99,7 @@
      * @param   &io.Stream stream
      * @return  string
      */
-    function readFrom(&$stream) {
+    public static function readFrom(&$stream) {
       $s= '';
       do {
         if (FALSE === ($ctl= unpack('nlength/cnext', ByteCountedString::readFully($stream, 3)))) return;

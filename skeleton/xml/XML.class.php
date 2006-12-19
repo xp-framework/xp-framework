@@ -10,7 +10,7 @@
    * @access public
    */
   class XML extends Object {
-    var 
+    public 
       $version   = '1.0',
       $_encoding = 'iso-8859-1';
     
@@ -20,7 +20,7 @@
      * @access  public
      * @param   string e encoding
      */
-    function setEncoding($e) {
+    public function setEncoding($e) {
       $this->_encoding= $e;
     }
     
@@ -30,7 +30,7 @@
      * @access  public
      * @return  string encoding
      */
-    function getEncoding() {
+    public function getEncoding() {
       return $this->_encoding;
     }
     
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string declaration
      */
-    function getDeclaration() {
+    public function getDeclaration() {
       return sprintf(
         '<?xml version="%s" encoding="%s"?>',
         $this->version,

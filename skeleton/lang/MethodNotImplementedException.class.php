@@ -10,8 +10,8 @@
    * This exception indicates a certain class method is not
    * implemented.
    */
-  class MethodNotImplementedException extends Exception {
-    var
+  class MethodNotImplementedException extends XPException {
+    public
       $method= '';
       
     /**
@@ -22,7 +22,7 @@
      * @param   string method
      * @see     xp://lang.Exception#construct
      */
-    function __construct($message, $method) {
+    public function __construct($message, $method) {
       parent::__construct($message);
       $this->method= $method;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s (method %s(): %s)',
         $this->getClassName(),

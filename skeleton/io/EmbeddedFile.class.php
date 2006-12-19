@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
     'io.Stream',
     'util.io.VirtualFileManager'
@@ -18,7 +18,7 @@
    * @ext     overload
    */  
   class EmbeddedFile extends Object {
-    var
+    public
       $_stream=   NULL;
 
     /**
@@ -28,12 +28,12 @@
      * @param   string filename
      * @return  mixed
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       $vfm= &VirtualFileManager::getInstance();
       if (FALSE !== ($s= &$vfm->getByFilename($filename))) {
         $this->_stream= &$s;
       } else {
-        $this->_stream= &new File();
+        $this->_stream= new File();
       }
     }
 
@@ -45,12 +45,12 @@
      * @param   &mixed value
      * @return  boolean 
      */    
-    function __get($name, &$value) {
+    public function __get($name) {
       if (!isset($this->_stream->{$name}))
         return FALSE;
         
       $value= &$this->_stream->{$name};
-      return TRUE;
+      return $value;
     }
 
     /**
@@ -60,7 +60,7 @@
      * @param   string name
      * @param   &mixed value
      */    
-    function __set($name, &$value) {
+    public function __set($name, &$value) {
       $this->_stream->{$name}= &$value;
     }
 
@@ -73,9 +73,9 @@
      * @param   &mixed return
      * @return  boolean
      */    
-    function __call($method, $params, &$return) {
+    public function __call($method, $params) {
       $return= call_user_func_array(array(&$this->_stream, $method), $params);
-      return TRUE;
+      return $return;
     }
   } overload('EmbeddedFile');
 ?>

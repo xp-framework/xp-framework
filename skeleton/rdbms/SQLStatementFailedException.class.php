@@ -12,7 +12,7 @@
    * @purpose  SQL-Exception
    */
   class SQLStatementFailedException extends SQLException {
-    var 
+    public 
       $sql  = '',
       $errorcode = 0;
 
@@ -24,7 +24,7 @@
      * @param   string sql default NULL the SQL query string sent
      * @param   int errorcode default -1
      */
-    function __construct($message, $sql= NULL, $errorcode= -1) {
+    public function __construct($message, $sql= NULL, $errorcode= -1) {
       parent::__construct($message);
       $this->sql= $sql;
       $this->errorcode= $errorcode;
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function getSql() {
+    public function getSql() {
       return $this->sql;
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      * @return  int
      */
-    function getErrorcode() {
+    public function getErrorcode() {
       return $this->errorcode;
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (errorcode %s: %s) {\n".
         "  %s\n".

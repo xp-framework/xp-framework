@@ -27,7 +27,7 @@
    * @purpose  Wrapper
    */
   class PCData extends Object {
-    var
+    public
       $pcdata= '';
       
     /**
@@ -36,7 +36,7 @@
      * @access  public
      * @param   string pcdata
      */
-    function __construct($pcdata) {
+    public function __construct($pcdata) {
       $this->pcdata= $pcdata;
       
     }

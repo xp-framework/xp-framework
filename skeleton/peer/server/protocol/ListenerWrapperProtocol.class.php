@@ -6,7 +6,8 @@
 
   uses(
     'peer.server.ConnectionEvent',
-    'peer.server.ConnectionListener'
+    'peer.server.ConnectionListener',
+    'peer.server.ServerProtocol'
   );
 
   /**
@@ -15,8 +16,8 @@
    * @see      xp://peer.server.Server#addListener
    * @purpose  BC Wrapper 
    */
-  class ListenerWrapperProtocol extends Object {
-    var
+  class ListenerWrapperProtocol extends Object implements ServerProtocol {
+    public
       $listeners= array();
 
     /**
@@ -25,7 +26,7 @@
      * @access  public
      * @param   &peer.server.ConnectionListener listener
      */
-    function addListener(&$listener) {      
+    public function addListener(&$listener) {      
       $this->listeners[]= &$listener;
     }
     
@@ -35,7 +36,7 @@
      * @access  public
      * @return  bool
      */
-    function initialize() { }
+    public function initialize() { }
 
     /**
      * Notify listeners
@@ -43,7 +44,7 @@
      * @access  protected
      * @param   &peer.server.ConnectionEvent event
      */
-    function notify(&$event) {
+    public function notify(&$event) {
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
         $this->listeners[$i]->{$event->type}($event);
       }
@@ -55,7 +56,7 @@
      * @access  public
      * @param   &peer.Socket
      */
-    function handleConnect(&$socket) {
+    public function handleConnect(&$socket) {
       $this->notify(new ConnectionEvent(EVENT_CONNECTED, $socket));
     }
 
@@ -65,7 +66,7 @@
      * @access  public
      * @param   &peer.Socket
      */
-    function handleDisconnect(&$socket) {
+    public function handleDisconnect(&$socket) {
        $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
      }
   
@@ -76,11 +77,11 @@
      * @param   &peer.Socket
      * @return  mixed
      */
-    function handleData(&$socket) { 
-      try(); {
+    public function handleData(&$socket) { 
+      try {
         if (NULL === ($data= $socket->readBinary())) throw(new IOException('EOF'));
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       $this->notify(new ConnectionEvent(EVENT_DATA, $socket, $data));
@@ -93,9 +94,9 @@
      * @param   &peer.Socket
      * @param   &lang.Exception e
      */
-    function handleError(&$socket, &$e) {
+    public function handleError(&$socket, &$e) {
       $this->notify(new ConnectionEvent(EVENT_ERROR, $socket, $e));
     }
 
-  } implements(__FILE__, 'peer.server.ServerProtocol');
+  } 
 ?>

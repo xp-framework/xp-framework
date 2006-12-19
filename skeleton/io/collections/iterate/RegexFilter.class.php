@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Regular expression iteration filter
    *
@@ -11,8 +13,8 @@
    * @see      php://preg_match
    * @purpose  Iteration Filter
    */
-  class RegexFilter extends Object {
-    var
+  class RegexFilter extends Object implements IterationFilter {
+    public
       $pattern= '';
       
     /**
@@ -21,7 +23,7 @@
      * @access  public
      * @param   string pattern a Perl-compatible regular expression
      */
-    function __construct($pattern) {
+    public function __construct($pattern) {
       $this->pattern= $pattern;
     }
   
@@ -32,9 +34,9 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return (bool)preg_match($this->pattern, $element->getURI());
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

@@ -5,10 +5,11 @@
  */
 
   uses(
-    'peer.Socket', 
+    'peer.Socket',
     'peer.irc.IRCConstants',
     'peer.irc.IRCUser',
-    'peer.irc.IRCConnectionListener'
+    'peer.irc.IRCConnectionListener',
+    'util.log.Traceable'
   );
 
   /**
@@ -44,8 +45,8 @@
    * @see      xp://peer.irc.IRCUser
    * @purpose  A socket connection to a RFC-1459 compatible IRC server.
    */
-  class IRCConnection extends Object {
-    var
+  class IRCConnection extends Object implements Traceable {
+    public
       $sock         = NULL,
       $cat          = NULL,
       $user         = NULL,
@@ -59,9 +60,9 @@
      * @param   string server
      * @param   int port default 6667
      */
-    function __construct(&$user, $server, $port= 6667) {
+    public function __construct(&$user, $server, $port= 6667) {
       $this->user= &$user;
-      $this->sock= &new Socket($server, $port);
+      $this->sock= new Socket($server, $port);
     }
     
     /**
@@ -72,7 +73,7 @@
      * @param   &peer.irc.IRCConnectionListener listener
      * @return  &peer.irc.IRCConnectionListener the listener added
      */
-    function &addListener(&$listener) {
+    public function &addListener(&$listener) {
       $this->listeners[]= &$listener;
       return $listener;
     }
@@ -83,7 +84,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
   
@@ -96,7 +97,7 @@
      * @see     xp://peer.Socket#setBlocking
      * @throws  peer.SocketException in case connecting fails
      */
-    function open() {
+    public function open() {
       if (!$this->sock->connect()) return FALSE;
       $this->sock->setBlocking(TRUE);
       $this->notify('connect', $this->sock->host, $this->sock->port); 
@@ -109,7 +110,7 @@
      * @param   string event
      * @param   mixed* parameters
      */
-    function notify() {
+    public function notify() {
       $a= func_get_args();
       $function= 'on'.ucfirst(array_shift($a));
       array_unshift($a, $this);
@@ -131,7 +132,7 @@
      * @param   string r the data
      * @return  bool TRUE when line was successfully processed
      */
-    function process($r) { 
+    public function process($r) { 
       if (':' == $r{0}) {
       
         if (4 == sscanf($r, ":%s %d %s %[^\r]", $server, $code, $target, $data)) {
@@ -247,9 +248,9 @@
      * @return  bool success TRUE in case the command could be sent
      * @throws  lang.IllegalStateException in case the socket is not connected
      */
-    function setNick($nick) {
+    public function setNick($nick) {
       if (!$this->sock->isConnected()) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       if (!$this->writeln('NICK %s', $nick)) return FALSE;
       $this->user->setNick($nick);
@@ -265,9 +266,9 @@
      * @return  bool success TRUE in case the command could be sent
      * @throws  lang.IllegalStateException in case the socket is not connected
      */
-    function join($channel, $keyword= NULL) {
+    public function join($channel, $keyword= NULL) {
       if (!$this->sock->isConnected()) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       
       // Be tolerant about channel parameter and rip off leading # if necessary
@@ -282,9 +283,9 @@
      * @return  bool success TRUE in case the command could be sent
      * @throws  lang.IllegalStateException in case the socket is not connected
      */
-    function part($channel) {
+    public function part($channel) {
       if (!$this->sock->isConnected()) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       
       // Be tolerant about channel parameter and rip off leading # if necessary
@@ -300,7 +301,7 @@
      * @param   mixed* format_arguments
      * @return  bool success TRUE in case the command could be sent
      */
-    function sendMessage() {
+    public function sendMessage() {
       $dest= array_shift($a= func_get_args());
       return $this->writeln('PRIVMSG %s :%s', $dest, vsprintf(array_shift($a), $a));
     }
@@ -314,7 +315,7 @@
      * @param   mixed* format_arguments
      * @return  bool success TRUE in case the command could be sent
      */
-    function sendAction() {
+    public function sendAction() {
       $dest= array_shift($a= func_get_args());
       return $this->writeln("PRIVMSG %s :\1ACTION %s\1", $dest, vsprintf(array_shift($a), $a));
     }
@@ -327,13 +328,13 @@
      * @throws  lang.IllegalStateException in case the socket is not connected
      * @throws  io.IOException in case registration failed
      */
-    function run() {
+    public function run() {
       if (!$this->sock->isConnected()) {
-        return throw(new IllegalStateException('Not connected'));
+        throw(new IllegalStateException('Not connected'));
       }
       
       // Register with the server
-      try(); {
+      try {
         $this->writeln(
           'USER %s %s %s :%s', 
           $this->user->getUsername(),
@@ -344,8 +345,8 @@
 
         // Set nickname
         $this->setNick($this->user->getNick());
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       // Loop while socket is not disconnected
@@ -372,7 +373,7 @@
      * @see     xp://peer.Socket#close
      * @return  bool success
      */
-    function close() {
+    public function close() {
       if ($this->sock->isConnected()) return TRUE;
       
       $this->notify('disconnect', $this->sock->host, $this->sock->port); 
@@ -390,11 +391,11 @@
      * @see     xp://peer.Socket#readLine
      * @return  string or FALSE to indicate failure
      */    
-    function readln() {
+    public function readln() {
       xp::gc();
-      try(); {
+      try {
         $r= $this->sock->readLine(0x2000);
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->cat && $this->cat->warn($e);
         return FALSE;
       }
@@ -422,7 +423,7 @@
      * @param   mixed* formatargs
      * @return  bool success
      */
-    function writeln() {
+    public function writeln() {
       $cmd= vsprintf(array_shift($a= func_get_args()), $a);
       $this->cat && $this->cat->infof(
         '>>> %s %3d: %s', 
@@ -433,5 +434,5 @@
       
       return $this->sock->write($cmd."\r\n");
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

@@ -16,7 +16,7 @@
    * @purpose  Wrap request
    */  
   class HttpScriptletRequest extends Object {
-    var
+    public
       $headers=         array(),
       $params=          array(),
       $data=            '',
@@ -30,7 +30,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
     }
     
     /**
@@ -39,7 +39,7 @@
      * @access  public
      * @return  &scriptlet.HttpSession session object
      */
-    function &getSession() {
+    public function &getSession() {
       return $this->session;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @return  bool
      */
-    function hasSession() {
+    public function hasSession() {
       return $this->session != NULL;
     }
     
@@ -59,7 +59,7 @@
      * @access  public
      * @param   &scriptlet.HttpSession session
      */
-    function setSession(&$s) {
+    public function setSession(&$s) {
       $this->session= &$s;
     }
 
@@ -72,7 +72,7 @@
      * @param   mixed default default NULL
      * @return  string
      */
-    function getEnvValue($name, $default= NULL) {
+    public function getEnvValue($name, $default= NULL) {
       return (FALSE === ($e= getenv($name))) ? $default : $e;
     }
 
@@ -82,10 +82,10 @@
      * @access  public
      * @return  peer.http.Cookie[]
      */
-    function getCookies() {
+    public function getCookies() {
       $r= array();
       foreach (array_keys($_COOKIE) as $name) {
-        $r[]= &new Cookie($name, $_COOKIE[$name]);
+        $r[]= new Cookie($name, $_COOKIE[$name]);
       }
       return $r;
     }
@@ -105,7 +105,7 @@
      * @param   string name
      * @return  bool
      */
-    function hasCookie($name) {
+    public function hasCookie($name) {
       return isset($_COOKIE[$name]);
     }
 
@@ -116,7 +116,7 @@
      * @param   mixed default default NULL the default value if cookie is non-existant
      * @return  &peer.http.Cookie
      */
-    function &getCookie($name, $default= NULL) {
+    public function &getCookie($name, $default= NULL) {
       if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
     }
 
@@ -130,7 +130,7 @@
      * @param   mixed default default NULL the default value if header is non-existant
      * @return  string Header value
      */
-    function getHeader($name, $default= NULL) {
+    public function getHeader($name, $default= NULL) {
       $name= strtolower($name);
       if (isset($this->headers[$name])) return $this->headers[$name]; else return $default;
     }
@@ -144,7 +144,7 @@
      * @param   mixed default default NULL the default value if parameter is non-existant
      * @return  string Parameter value
      */
-    function getParam($name, $default= NULL) {
+    public function getParam($name, $default= NULL) {
       $name= strtolower(strtr($name, '. ', '__'));
       if (isset($this->params[$name])) return $this->params[$name]; else return $default;
     }
@@ -156,7 +156,7 @@
      * @param   string name Parameter name
      * @return  bool
      */
-    function hasParam($name) {
+    public function hasParam($name) {
       return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
     }
 
@@ -167,7 +167,7 @@
      * @param   string name Parameter name
      * @param   mixed value
      */
-    function setParam($name, $value) {
+    public function setParam($name, $value) {
       $this->params[$name]= $value;
     }
     
@@ -177,7 +177,7 @@
      * @access  public
      * @param   peer.URL uri a uri representated by peer.URL
      */
-    function setURI(&$uri) {
+    public function setURI(&$uri) {
       $this->uri= &$uri;
     }
     
@@ -188,7 +188,7 @@
      * @return  string
      */
     #[@deprecated]
-    function getURI() {
+    public function getURI() {
       return $this->uri->_info;     // HACK
     }
 
@@ -198,7 +198,7 @@
      * @access  public
      * @return  peer.URL
      */
-    function &getURL() {
+    public function &getURL() {
       return $this->uri;
     }
     
@@ -208,7 +208,7 @@
      * @access  public
      * @return  string session's id
      */
-    function getSessionId() {
+    public function getSessionId() {
       return $this->getParam('psessionid');
     }
     
@@ -218,7 +218,7 @@
      * @access  public
      * @param   &array params
      */
-    function setParams(&$params) {
+    public function setParams(&$params) {
       $this->params= &$params;
     }
 
@@ -228,7 +228,7 @@
      * @access  public
      * @return  array params
      */
-    function getParams() {
+    public function getParams() {
       return $this->params;
     }
     
@@ -239,7 +239,7 @@
      * @param   &string data
      * @see     xp://scriptlet.HttpScriptlet#_handleMethod
      */
-    function setData(&$data) {
+    public function setData(&$data) {
       $this->data= &$data;
     }
     
@@ -254,7 +254,7 @@
      * @access  public
      * @return  &string data
      */
-    function &getData() {
+    public function &getData() {
       if (NULL === $this->data) {
         $fd= fopen('php://input', 'r');
         $this->data= '';
@@ -273,7 +273,7 @@
      * @access  public
      * @return  string
      */
-    function getQueryString() {
+    public function getQueryString() {
       return urldecode(getenv('QUERY_STRING'));
     }
     
@@ -283,7 +283,7 @@
      * @access  public
      * @return  string
      */
-    function getContentType() {
+    public function getContentType() {
       return $this->getHeader('Content-Type');
     }
     
@@ -293,7 +293,7 @@
      * @access  public
      * @return  bool
      */
-    function isMultiPart() {
+    public function isMultiPart() {
       return (bool)strstr($this->getHeader('Content-Type'), 'multipart/form-data');
     }
   }

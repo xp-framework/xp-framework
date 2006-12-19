@@ -53,7 +53,7 @@
      * @param   &security.Principal principal
      * @param   &security.KeyPair keypair
      */
-    function __construct(&$principal, &$keypair) {
+    public function __construct(&$principal, &$keypair) {
       $this->_res= openssl_csr_new(array(
         'countryName'               => $principal->getCountryName(),
         'stateOrProvinceName'       => $principal->getStateOrProvinceName(),
@@ -72,10 +72,10 @@
      * @access  public
      * @return  string CSR
      */
-    function export() {
+    public function export() {
       if (FALSE === openssl_csr_export($this->_res, $out)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        return throw(new Exception('Could not export CSR'));
+        throw(new XPException('Could not export CSR'));
       }
       
       return $out;
@@ -90,14 +90,14 @@
      * @param   mixed cacert default NULL
      * @return  &security.cert.X509Certificate
      */
-    function &sign(&$keypair, $days= 365, $cacert= NULL) {
+    public function &sign(&$keypair, $days= 365, $cacert= NULL) {
       if (FALSE === ($x509= openssl_csr_sign($this->_res, $cacert, $keypair->_res, $days))) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        return throw(new CertificateException('Cannot sign certificate'));
+        throw(new CertificateException('Cannot sign certificate'));
       }      
       if (FALSE === openssl_x509_export($x509, $str)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        return throw(new CertificateException('Cannot export certificate'));
+        throw(new CertificateException('Cannot export certificate'));
       }
       
       return X509Certificate::fromString($str);

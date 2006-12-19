@@ -20,8 +20,8 @@
      * @access  public
      * @param   array params
      */
-    function __construct($params) {
-      $this->item= &new SOAPNode('hash', NULL, array(
+    public function __construct($params) {
+      $this->item= new SOAPNode('hash', NULL, array(
         'xmlns:hash'  => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'hash:Map'
       ));
@@ -38,7 +38,7 @@
      * @access  public
      * @return  mixed
      */
-    function toString() {
+    public function toString() {
       return '';
     }
     
@@ -48,7 +48,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'hash:Map';
     }
   }

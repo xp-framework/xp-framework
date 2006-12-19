@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('unittest.coverage.Fragment');
+
   /**
    * Represents a comment
    *
    * @purpose  Helper class
    */
-  class Comment extends Object {
-    var
+  class Comment extends Object implements Fragment {
+    public
       $text   = '',
       $start  = 0,
       $end    = 0;
@@ -23,7 +25,7 @@
      * @param   int start the first line
      * @param   int end the last line
      */
-    function __construct($text, $start, $end) {
+    public function __construct($text, $start, $end) {
       $this->text= $text;
       $this->start= $start;
       $this->end= $end;
@@ -36,7 +38,7 @@
      * @param   &lang.Object expr
      * @return  bool
      */
-    function equals(&$expr) {
+    public function equals(&$expr) {
       return (
         is('Comment', $expr) && 
         $this->text == $expr->text &&
@@ -51,9 +53,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'@({'.$this->text.'} at lines '.$this->start.' - '.$this->end.')';
     }
 
-  } implements(__FILE__, 'unittest.coverage.Fragment');
+  } 
 ?>

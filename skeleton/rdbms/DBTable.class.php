@@ -11,7 +11,7 @@
    *
    */  
   class DBTable extends Object {
-    var 
+    public 
       $name=        '',
       $attributes=  array(),
       $indexes=     array(),
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string name table's name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
       
     }
@@ -36,7 +36,7 @@
      * @param   string name
      * @return  &rdbms.DBTable a table object
      */
-    function &getByName(&$adapter, $name) {
+    public function &getByName(&$adapter, $name) {
       return $adapter->getTable($name);
     }
 
@@ -48,7 +48,7 @@
      * @param   string database
      * @return  &rdbms.DBTable[] an array of table objects
      */
-    function &getByDatabase(&$adapter, $database) {
+    public function &getByDatabase(&$adapter, $database) {
       return $adapter->getTables($database);
     }
 
@@ -59,7 +59,7 @@
      * @return  &rdbms.DBAttribute an attribute
      * @see     getNextAttribute
      */
-    function &getFirstAttribute() {
+    public function &getFirstAttribute() {
       reset($this->attributes);
       return current($this->attributes);
     }
@@ -79,7 +79,7 @@
      * @access  public
      * @return  &rdbms.DBAttribute an attribute or FALSE if none more exist
      */
-    function &getNextAttribute() {
+    public function &getNextAttribute() {
       return next($this->attributes);
     }
 
@@ -90,7 +90,7 @@
      * @param   &rdbms.DBAttribute attr the attribute to add
      * @return  &rdbms.DBAttribute the added attribute
      */
-    function &addAttribute(&$attr) {
+    public function &addAttribute(&$attr) {
       $this->attributes[]= &$attr;
       return $attr;
     }
@@ -102,7 +102,7 @@
      * @param   &rdbms.DBIndex index the index to add
      * @return  &rdbms.DBIndex the added index
      */
-    function &addIndex(&$index) {
+    public function &addIndex(&$index) {
       $this->indexes[]= &$index;
       return $index;
     }
@@ -114,7 +114,7 @@
      * @return  &rdbms.DBIndex an index
      * @see     getNextIndex
      */
-    function &getFirstIndex() {
+    public function &getFirstIndex() {
       reset($this->indexes);
       return current($this->indexes);
     }
@@ -126,7 +126,7 @@
      * @return  &rdbms.DBIndex an index or FALSE to indicate there are none left
      * @see     getNextIndex
      */
-    function &getNextIndex() {
+    public function &getNextIndex() {
       return next($this->indexes);
     }
 
@@ -137,7 +137,7 @@
      * @param   string name the attribute's name to search for
      * @return  bool TRUE if this attribute exists
      */
-    function hasAttribute($name) {
+    public function hasAttribute($name) {
       for ($i= 0, $m= sizeof($this->attributes); $i < $m; $i++) {
         if ($name == $this->attributes[$i]->name) {
           return TRUE;

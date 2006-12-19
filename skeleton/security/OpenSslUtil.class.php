@@ -19,7 +19,7 @@
      * @access  public
      * @return  string[] error
      */
-    function getErrors() {
+    public static function getErrors() {
       $e= array();
       while ($msg= openssl_error_string()) {
         $e[]= $msg;
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function getConfiguration() {
+    public function getConfiguration() {
       return getenv('OPENSSL_CONF');
     }
   }

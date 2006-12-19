@@ -25,7 +25,7 @@
    * @purpose  Lock process so it can only be run once
    */  
   class SingleProcess extends Object {
-    var 
+    public 
       $lockfile     = NULL;
 
     /**
@@ -35,9 +35,9 @@
      * @param   string lockfileName default NULL the lockfile's name,
      *          defaulting to <<program_name>>.lck
      */
-    function __construct($lockFileName= NULL) {
+    public function __construct($lockFileName= NULL) {
       if (NULL === $lockFileName) $lockFileName= $_SERVER['argv'][0].'.lck';
-      $this->lockfile= &new File($lockFileName);
+      $this->lockfile= new File($lockFileName);
     }
     
     /**
@@ -46,11 +46,11 @@
      * @access  public
      * @return  bool success
      */
-    function lock() {
-      try(); {
+    public function lock() {
+      try {
         $this->lockfile->open(FILE_MODE_WRITE);
         $this->lockfile->lockExclusive();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->lockfile->close();
         return FALSE;
       }
@@ -64,7 +64,7 @@
      * @access  public
      * @return  bool Success
      */
-    function unlock() {
+    public function unlock() {
       if ($this->lockfile->unlock()) {
         $this->lockfile->close();
         $this->lockfile->unlink();

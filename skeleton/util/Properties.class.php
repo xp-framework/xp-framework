@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('io.IOException', 'io.File', 'util.Hashmap');
+  uses(
+    'io.IOException',
+    'io.File',
+    'util.Hashmap'
+  );
   
   /**
    * An interface to property-files (aka "ini-files")
@@ -26,7 +30,7 @@
    * @purpose   Wrapper around parse_ini_file
    */
   class Properties extends Object {
-    var
+    public
       $_file    = '',
       $_data    = NULL;
       
@@ -36,7 +40,7 @@
      * @access  public
      * @param   string filename
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       $this->_file= $filename;
       
     }
@@ -49,7 +53,7 @@
      * @param   &io.File file
      * @return  &util.Properties
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return new Properties($file->getURI());
     }
 
@@ -61,8 +65,8 @@
      * @param   string str
      * @return  &util.Properties
      */
-    function &fromString($str) {
-      with ($prop= &new Properties(NULL)); {
+    public static function &fromString($str) {
+      with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
         if ($t= strtok($str, "\r\n")) do {
@@ -96,7 +100,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->_file;
     }
     
@@ -106,8 +110,8 @@
      * @access  public
      * @throws  io.IOException if the property file could not be created
      */
-    function create() {
-      $fd= &new File($this->_file);
+    public function create() {
+      $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       $fd->close();
     }
@@ -118,7 +122,7 @@
      * @access  public
      * @return  bool
      */
-    function exists() {
+    public function exists() {
       return file_exists($this->_file);
     }
     
@@ -129,10 +133,10 @@
      * @param   bool force default FALSE
      * @throws  io.IOException
      */
-    function _load($force= FALSE) {
+    public function _load($force= FALSE) {
       if (!$force && NULL != $this->_data) return;
       if (FALSE === ($this->_data= parse_ini_file($this->_file, 1))) {
-        return throw(new IOException('The file "'.$this->_file.'" could not be read'));
+        throw(new IOException('The file "'.$this->_file.'" could not be read'));
       }
     }
     
@@ -141,7 +145,7 @@
      *
      * @access  public
      */
-    function reset() {
+    public function reset() {
       return $this->_load(TRUE);
     }
     
@@ -151,8 +155,8 @@
      * @access  public
      * @throws  io.IOException if the property file could not be written
      */
-    function save() {
-      $fd= &new File($this->_file);
+    public function save() {
+      $fd= new File($this->_file);
       $fd->open(FILE_MODE_WRITE);
       
       foreach (array_keys($this->_data) as $section) {
@@ -162,7 +166,7 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
-            if (is_a($val, 'Hashmap')) {
+            if (is('Hashmap', $val)) {
               $str= '';
               foreach ($val->keys() as $k) {
                 $str.= '|'.$k.':'.$val->get($v);
@@ -190,7 +194,7 @@
      * @access  public
      * @return  string the first section's name
      */
-    function getFirstSection() {
+    public function getFirstSection() {
       $this->_load();
       reset($this->_data);
       return key($this->_data);
@@ -210,7 +214,7 @@
      * @access  public
      * @return  mixed string section or FALSE if this was the last section
      */
-    function getNextSection() {
+    public function getNextSection() {
       $this->_load();
       if (FALSE === next($this->_data)) return FALSE;
 
@@ -225,7 +229,7 @@
      * @param   mixed[] default default array() what to return in case the section does not exist
      * @return  array
      */
-    function readSection($name, $default= array()) {
+    public function readSection($name, $default= array()) {
       $this->_load();
       return isset($this->_data[$name]) 
         ? $this->_data[$name] 
@@ -242,7 +246,7 @@
      * @param   string default default '' what to return in case the section or key does not exist
      * @return  string
      */ 
-    function readString($section, $key, $default= '') {
+    public function readString($section, $key, $default= '') {
       $this->_load();
       return isset($this->_data[$section][$key])
         ? $this->_data[$section][$key]
@@ -259,7 +263,7 @@
      * @param   mixed[] default default NULL what to return in case the section or key does not exist
      * @return  array
      */
-    function readArray($section, $key, $default= array()) {
+    public function readArray($section, $key, $default= array()) {
       $this->_load();
       return isset($this->_data[$section][$key])
         ? explode('|', $this->_data[$section][$key])
@@ -276,7 +280,7 @@
      * @param   util.Hashmap default default NULL what to return in case the section or key does not exist
      * @return  &util.Hashmap
      */
-    function &readHash($section, $key, $default= NULL) {
+    public function &readHash($section, $key, $default= NULL) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       
@@ -302,7 +306,7 @@
      * @param   int[] default default NULL what to return in case the section or key does not exist
      * @return  array
      */
-    function readRange($section, $key, $default= array()) {
+    public function readRange($section, $key, $default= array()) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       
@@ -319,7 +323,7 @@
      * @param   int default default 0 what to return in case the section or key does not exist
      * @return  int
      */ 
-    function readInteger($section, $key, $default= 0) {
+    public function readInteger($section, $key, $default= 0) {
       $this->_load();
       return isset($this->_data[$section][$key])
         ? intval($this->_data[$section][$key])
@@ -336,7 +340,7 @@
      * @param   float default default 0.0 what to return in case the section or key does not exist
      * @return  float
      */ 
-    function readFloat($section, $key, $default= 0.0) {
+    public function readFloat($section, $key, $default= 0.0) {
       $this->_load();
       return isset($this->_data[$section][$key])
         ? doubleval($this->_data[$section][$key])
@@ -353,7 +357,7 @@
      * @param   bool default default FALSE what to return in case the section or key does not exist
      * @return  bool TRUE, when key is 1, 'on', 'yes' or 'true', FALSE otherwise
      */ 
-    function readBool($section, $key, $default= FALSE) {
+    public function readBool($section, $key, $default= FALSE) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       return ('1' === $this->_data[$section][$key]);
@@ -366,7 +370,7 @@
      * @param   string name
      * @return  bool
      */
-    function hasSection($name) {
+    public function hasSection($name) {
       $this->_load();
       return isset($this->_data[$name]);
     }
@@ -379,7 +383,7 @@
      * @param   bool overwrite default FALSE whether to overwrite existing sections
      * @return  string name
      */
-    function writeSection($name, $overwrite= FALSE) {
+    public function writeSection($name, $overwrite= FALSE) {
       $this->_load();
       if ($overwrite || !$this->hasSection($name)) $this->_data[$name]= array();
       return $name;
@@ -393,7 +397,7 @@
      * @param   string key
      * @param   string value
      */
-    function writeString($section, $key, $value) {
+    public function writeString($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= (string)$value;
@@ -407,7 +411,7 @@
      * @param   string key
      * @param   int value
      */
-    function writeInteger($section, $key, $value) {
+    public function writeInteger($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= (int)$value;
@@ -421,7 +425,7 @@
      * @param   string key
      * @param   float value
      */
-    function writeFloat($section, $key, $value) {
+    public function writeFloat($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= (float)$value;
@@ -435,7 +439,7 @@
      * @param   string key
      * @param   bool value
      */
-    function writeBool($section, $key, $value) {
+    public function writeBool($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value ? 'yes' : 'no';
@@ -449,7 +453,7 @@
      * @param   string key
      * @param   array value
      */
-    function writeArray($section, $key, $value) {
+    public function writeArray($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][$key]= $value;
@@ -463,13 +467,13 @@
      * @param   string key
      * @param   mixed value either a util.Hashmap or an array
      */
-    function writeHash($section, $key, $value) {
+    public function writeHash($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      if (is_a($value, 'Hashmap')) {
+      if (is('Hashmap', $value)) {
         $this->_data[$section][$key]= &$value;
       } else {
-        $this->_data[$section][$key]= &new Hashmap($value);
+        $this->_data[$section][$key]= new Hashmap($value);
       }
     }
     
@@ -481,7 +485,7 @@
      * @param   string key
      * @param   string value
      */
-    function writeComment($section, $comment) {
+    public function writeComment($section, $comment) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][';'.sizeof($this->_data[$section])]= $comment;

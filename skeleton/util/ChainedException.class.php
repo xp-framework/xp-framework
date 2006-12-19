@@ -11,8 +11,8 @@
    * @see      http://mindprod.com/jgloss/chainedexceptions.html
    * @see      http://www.jguru.com/faq/view.jsp?EID=1026405  
    */
-  class ChainedException extends Exception {
-    var
+  class ChainedException extends XPException {
+    public
       $cause    = NULL;
 
     /**
@@ -22,7 +22,7 @@
      * @param   string message
      * @param   &lang.Throwable cause
      */
-    function __construct($message, &$cause) {
+    public function __construct($message, &$cause) {
       parent::__construct($message);
       $this->cause= &$cause;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @param   &lang.Throwable cause
      */
-    function setCause(&$cause) {
+    public function setCause(&$cause) {
       $this->cause= &$cause;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  &lang.Throwable
      */
-    function &getCause() {
+    public function &getCause() {
       return $this->cause;
     }
     
@@ -53,7 +53,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->compoundMessage()."\n";
       $t= sizeof($this->trace);
       for ($i= 0; $i < $t; $i++) {
@@ -78,7 +78,7 @@
         }
         if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
         
-        $loop= is_a($loop, 'ChainedException') ? $loop->cause : NULL;
+        $loop= is('ChainedException', $loop) ? $loop->cause : NULL;
       }
       
       return $s;

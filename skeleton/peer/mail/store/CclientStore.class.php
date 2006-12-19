@@ -14,7 +14,7 @@
    * @purpose  Wrap
    */
   class CclientStore extends MailStore {
-    var
+    public
       $currentfolder= NULL;
       
     /**
@@ -23,7 +23,7 @@
      * @access  private
      * @return  string
      */
-    function _errors() {
+    public function _errors() {
       return sprintf(
         'Alerts {%s} | Errors {%s}',
         @implode(', ', imap_alerts()),
@@ -41,8 +41,8 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    function _supports(&$u, &$attr) {
-      return throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
+    public function _supports(&$u, &$attr) {
+      throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
     }
     
     /**
@@ -55,12 +55,12 @@
      * @throws  lang.IllegalArgumentException in case scheme is not recognized
      * @throws  peer.mail.MessagingException
      */
-    function connect($dsn) { 
+    public function connect($dsn) { 
       $attr= array();
       $flags= OP_HALFOPEN;
 
       // Parse DSN
-      $u= &new URL($dsn);
+      $u= new URL($dsn);
       
       
       // DSN supported?
@@ -79,7 +79,7 @@
       
       // Connect
       if (FALSE === ($conn= imap_open($mbx, @$u->getUser(), @$u->getPassword(), $flags))) {
-        return throw(new MessagingException(
+        throw(new MessagingException(
           'Connect to "'.$u->getUser().'@'.$mbx.'" failed',
           $this->_errors()
         ));
@@ -95,7 +95,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       $r= imap_close($this->_hdl[0]);
       $this->_hdl[0]= NULL;
       return $r;
@@ -107,7 +107,7 @@
      * @access  public
      * @return  bool
      */
-    function isConnected() {
+    public function isConnected() {
       return isset($this->_hdl[0]) && is_resource($this->_hdl[0]);
     }
 
@@ -118,9 +118,9 @@
      * @return  bool success
      * @throws  peer.mail.MessagingException
      */    
-    function expunge() {
+    public function expunge() {
       if (FALSE === imap_expunge($this->_hdl[0])) {
-        return throw(new MessagingException(
+        throw(new MessagingException(
           'Expunging deleted messages failed',
           $this->_errors()
         ));      
@@ -137,17 +137,17 @@
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
-    function &getFolder($name) { 
+    public function &getFolder($name) { 
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
         if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
           trigger_error('Folder: '.$name, E_USER_NOTICE);
-          return throw(new MessagingException(
+          throw(new MessagingException(
             'Retrieving folder failed',
             $this->_errors()
           ));      
         }
         
-        $folder= &new MailFolder($this, $name);
+        $folder= new MailFolder($this, $name);
         $this->cache->put(SKEY_FOLDER.$name, $folder);
       } else {
         $folder= &$this->cache->get(SKEY_FOLDER.$name);
@@ -163,12 +163,12 @@
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
-    function &getFolders() {
+    public function &getFolders() {
       if (NULL === ($f= &$this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
       
         // Retrieve list and cache it
         if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
-          return throw(new MessagingException(
+          throw(new MessagingException(
             'Retrieving folder list failed',
             $this->_errors()
           ));      
@@ -178,7 +178,7 @@
         $f= array();
         $l= strlen($this->_hdl[1]);
         for ($i= 0; $i < $s; $i++) {
-          $f[]= &new MailFolder(
+          $f[]= new MailFolder(
             $this,
             imap_utf7_decode(substr($list[$i]->name, $l))
           );
@@ -200,7 +200,7 @@
      * @throws  peer.mail.MessagingException in case opening the folder failed
      * @throws  lang.IllegalAccessException in case there is already a folder open
      */
-    function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder(&$f, $readonly= FALSE) {
     
       // Is it already open?
       if ($this->currentfolder === $f->name) return TRUE;
@@ -208,7 +208,7 @@
       // Only one open folder at a time
       if (NULL !== $this->currentfolder) {
         trigger_error('Currently open Folder: '.$this->currentfolder, E_USER_NOTICE);
-        return throw(new IllegalAccessException(
+        throw(new IllegalAccessException(
           'There can only be one open folder at a time. Close the currently open folder first.',
           $f->name
         ));      
@@ -221,7 +221,7 @@
         $readonly ? OP_READONLY : 0
       )) {
         trigger_error('Folder: '.$name, E_USER_NOTICE);
-        return throw(new MessagingException(
+        throw(new MessagingException(
           'Opening folder failed',
           $this->_errors()
         ));      
@@ -239,7 +239,7 @@
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    function closeFolder(&$f) { 
+    public function closeFolder(&$f) { 
       $this->currentfolder= NULL;
       return TRUE;
     }
@@ -253,7 +253,7 @@
      * @param   string part
      * @return  string
      */
-    function getMessagePart(&$f, $uid, $part) {
+    public function getMessagePart(&$f, $uid, $part) {
       return imap_fetchbody(
         $this->_hdl[0], 
         $uid, 
@@ -271,7 +271,7 @@
      * @see     php://imap_fetchstructure
      * @return  &object
      */
-    function &getMessageStruct(&$f, $uid) {
+    public function &getMessageStruct(&$f, $uid) {
       return imap_fetchstructure(
         $this->_hdl[0], 
         $uid,
@@ -287,10 +287,10 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function deleteMessage(&$f, &$msg) {
+    public function deleteMessage(&$f, &$msg) {
       if (FALSE === imap_delete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
-        return throw(new MessagingException(
+        throw(new MessagingException(
           'Setting flag \Deleted-flag for message failed',
           $this->_errors()
         ));
@@ -308,10 +308,10 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function undeleteMessage(&$f, &$msg) {
+    public function undeleteMessage(&$f, &$msg) {
       if (FALSE === imap_undelete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
-        return throw(new MessagingException(
+        throw(new MessagingException(
           'Removing \Deleted-flag for message failed',
           $this->_errors()
         ));
@@ -329,9 +329,9 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function moveMessage(&$f, $msg) {
+    public function moveMessage(&$f, $msg) {
       if (FALSE === imap_mail_move($this->_hdl[0], $msg->uid, $f->name, CP_UID)) {
-        return throw (new MessagingException('Can not move mail'));
+        throw (new MessagingException('Can not move mail'));
       }
       
       return TRUE;
@@ -346,7 +346,7 @@
      * @return  &peer.mail.Message[]
      * @throws  peer.mail.MessagingException
      */
-    function &getMessages(&$f) {
+    public function &getMessages(&$f) {
       if (1 == func_num_args()) {
         $count= $this->getMessageCount($f, 'messages');
         $msgnums= range(1, $count);
@@ -373,7 +373,7 @@
       if (!empty($seq)) {
         if (FALSE === ($list= &imap_fetch_overview($this->_hdl[0], substr($seq, 1)))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
-          return throw(new MessagingException(
+          throw(new MessagingException(
             'Reading messages {'.$seq.'} failed',
             $this->_errors()
           ));            
@@ -383,7 +383,7 @@
           $header= $this->getMessagePart($f, $list[$i]->uid, '0');
           $class= stristr($header, 'Content-Type: multipart/') ? 'MimeMessage': 'Message';
           
-          $m= &new $class($list[$i]->uid);
+          $m= new $class($list[$i]->uid);
           $m->size= $list[$i]->size;
           $m->folder= &$f;
           $m->body= NULL;   // Indicate this needs to be fetched
@@ -419,7 +419,7 @@
      * @param   string attr one of "messages", "recent" or "unseen"
      * @return  int status
      */
-    function getMessageCount(&$f, $attr) {
+    public function getMessageCount(&$f, $attr) {
       if (NULL === ($info= $this->cache->get(SKEY_INFO.SKEY_FOLDER.$f->name))) {
         if (FALSE === ($info= imap_status(
           $this->_hdl[0], 
@@ -427,7 +427,7 @@
           SA_MESSAGES | SA_RECENT | SA_UNSEEN
         ))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
-          return throw(new MessagingException(
+          throw(new MessagingException(
             'Retrieving message count [SA_'.strtoupper($attr).'] failed',
             $this->_errors()
           ));

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.collections.FileElement');
+  uses('io.collections.FileElement', 'io.collections.IOCollection');
 
   /**
    * File collection
@@ -12,11 +12,11 @@
    * @see      xp://io.collections.IOCollection
    * @purpose  IOCollection implementation
    */
-  class FileCollection extends Object {
-    var
+  class FileCollection extends Object implements IOCollection {
+    public
       $uri = '';
     
-    var
+    public
       $_hd = NULL;
       
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   string uri
      */
-    function __construct($uri) {
+    public function __construct($uri) {
       $this->uri= rtrim(realpath($uri), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
@@ -35,7 +35,7 @@
      * @access  public
      * @return  string
      */
-    function getURI() {
+    public function getURI() {
       return $this->uri;
     }
     
@@ -44,7 +44,7 @@
      *
      * @access  public
      */
-    function open() { 
+    public function open() { 
       $this->_hd= opendir($this->uri);
     }
 
@@ -53,7 +53,7 @@
      *
      * @access  public
      */
-    function rewind() { 
+    public function rewind() { 
       rewinddir($this->_hd);
     }
   
@@ -64,16 +64,16 @@
      * @access  public
      * @return  &io.collection.IOElement
      */
-    function &next() { 
+    public function &next() { 
       do {
         if (FALSE === ($entry= readdir($this->_hd))) return NULL;
       } while ('.' == $entry || '..' == $entry);
       
       $qualified= $this->uri.$entry; 
       if (is_dir($qualified)) {
-        $next= &new FileCollection($qualified);
+        $next= new FileCollection($qualified);
       } else {
-        $next= &new FileElement($qualified);
+        $next= new FileElement($qualified);
       }
       return $next;
     }
@@ -83,7 +83,7 @@
      *
      * @access  public
      */
-    function close() { 
+    public function close() { 
       closedir($this->_hd);
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() { 
+    public function getSize() { 
       return filesize($this->uri);
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &createdAt() {
+    public function &createdAt() {
       return new Date(filectime($this->uri));
     }
 
@@ -113,7 +113,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastAccessed() {
+    public function &lastAccessed() {
       return new Date(fileatime($this->uri));
     }
 
@@ -123,7 +123,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastModified() {
+    public function &lastModified() {
       return new Date(filemtime($this->uri));
     }
 
@@ -133,9 +133,9 @@
      * @access  public
      * @return  string
      */
-    function toString() { 
+    public function toString() { 
       return $this->getClassName().'('.$this->uri.')';
     }
   
-  } implements(__FILE__, 'io.collections.IOCollection');
+  } 
 ?>

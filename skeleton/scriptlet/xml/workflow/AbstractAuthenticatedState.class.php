@@ -20,7 +20,7 @@
      * @access  public
      * @return  bool
      */
-    function requiresAuthentication() {
+    public function requiresAuthentication() {
       return TRUE;
     }
   }

@@ -4,16 +4,18 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Combined filter
    *
    * @purpose  Iteration Filter
    */
-  class AbstractCombinedFilter extends Object {
-    var
+  class AbstractCombinedFilter extends Object implements IterationFilter {
+    public
       $list  = array();
 
-    var
+    public
       $_size = 0;
       
     /**
@@ -22,7 +24,7 @@
      * @access  public
      * @param   io.collections.iterate.IterationFilter[] list
      */
-    function __construct($list) {
+    public function __construct($list) {
       $this->list= $list;
       $this->_size= sizeof($list);
     }
@@ -35,7 +37,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) { }
+    public function accept(&$element) { }
 
     /**
      * Creates a string representation of this iterator
@@ -43,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'('.$this->_size.")@{\n";
       for ($i= 0; $i < $this->_size; $i++) {
         $s.= '  '.str_replace("\n", "\n  ", $this->list[$i]->toString())."\n";
@@ -51,5 +53,5 @@
       return $s.'}';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

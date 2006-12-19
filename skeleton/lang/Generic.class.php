@@ -4,45 +4,21 @@
  * $Id$
  */
  
-  uses('lang.Generic');
- 
   /**
    * Class Object is the root of the class hierarchy. Every class has 
    * Object as a superclass. 
    *
    * @purpose  Base class for all others
    */
-  class Object implements Generic {
-    public $__id;
+  interface Generic {
     
-    /**
-     * Constructor wrapper 
-     * 
-     * @access  private
-     */
-    public function __construct() {
-      $this->__id= microtime();
-    }
-    
-    /**
-     * Cloning handler
-     *
-     * @access  public
-     */
-    public function __clone() {
-      $this->__id= microtime();
-    }
-
     /**
      * Returns a hashcode for this object
      *
      * @access  public
      * @return  string
      */
-    public function hashCode() {
-      if (!$this->__id) $this->__id= microtime();
-      return $this->__id;
-    }
+    public function hashCode();
     
     /**
      * Indicates whether some other object is "equal to" this one.
@@ -51,9 +27,7 @@
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    public function equals(&$cmp) {
-      return $this == $cmp;
-    }
+    public function equals(&$cmp);
     
     /** 
      * Returns the fully qualified class name for this class 
@@ -62,9 +36,7 @@
      * @access  public
      * @return  string fully qualified class name
      */
-    public function getClassName() {
-      return xp::nameOf(get_class($this));
-    }
+    public function getClassName();
 
     /**
      * Returns the runtime class of an object.
@@ -73,10 +45,7 @@
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    public function &getClass() {
-      $c= new XPClass($this);
-      return $c;
-    }
+    public function &getClass();
 
     /**
      * Creates a string representation of this object. In general, the toString 
@@ -86,21 +55,19 @@
      * 
      * Per default, this method returns:
      * <xmp>
-     *   [fully-qualified-class-name] '{' [members-and-value-list] '}'
+     *   [fully-qualified-class-name]@[serialized-object]
      * </xmp>
      * 
      * Example:
      * <xmp>
-     *   lang.Object {
-     *     __id => "0.43080500 1158148350"
-     *   }
+     * lang.Object@class object {
+     *   var $__id = '0.06823200 1062749651';
+     * }
      * </xmp>
      *
      * @access  public
      * @return  string
      */
-    public function toString() {
-      return xp::stringOf($this);
-    }
+    public function toString();
   }
 ?>

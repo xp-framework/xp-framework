@@ -23,7 +23,7 @@
      * @param   string str
      * @return  &security.checksum.CRC32
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       return new CRC32(crc32($str));
     }
 
@@ -35,13 +35,13 @@
      * @param   &io.File file
      * @return  &security.checksum.CRC32
      */
-    function &fromFile(&$file) {
-      try(); {
+    public static function &fromFile(&$file) {
+      try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());
         $file->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return CRC32::fromString($data);
     }

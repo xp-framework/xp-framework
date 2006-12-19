@@ -19,7 +19,7 @@
      * @access  public
      * @param   mixed* args
      */ 
-    function append() { }
+    public function append() { }
  
     /**
      * Finalize this appender. This method is called when the logger
@@ -27,7 +27,7 @@
      *
      * @access  public
      */   
-    function finalize() { }
+    public function finalize() { }
     
     /**
      * Retrieve a readable representation of a variable
@@ -36,7 +36,7 @@
      * @param   mixed var
      * @return  string
      */
-    function varSource($var) {
+    public function varSource($var) {
       return is_string($var) ? $var : xp::stringOf($var);
     }
   }

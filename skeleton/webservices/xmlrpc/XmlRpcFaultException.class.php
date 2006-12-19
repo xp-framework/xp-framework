@@ -11,8 +11,8 @@
    *
    * @purpose  Exception
    */
-  class XmlRpcFaultException extends Exception {
-    var
+  class XmlRpcFaultException extends XPException {
+    public
       $fault  = NULL;
     
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   &webservices.xmlrpc.XmlRpcFault fault
      */
-    function __construct(&$fault) {
+    public function __construct(&$fault) {
       parent::__construct($fault->faultString);
       $this->fault= &$fault;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  &webservices.xmlrpc.XmlRpcFault
      */
-    function &getFault() {
+    public function &getFault() {
       return $this->fault;
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  fault.faultcode   = %s\n".

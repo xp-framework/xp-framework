@@ -10,7 +10,7 @@
    * @see      peer.ftp.server.FtpConnectionListener
    * @purpose  Interceptor interface
    */
-  class StorageActionInterceptor extends Interface {
+  interface StorageActionInterceptor {
   
     /**
      * Invoked when an entry is created
@@ -20,7 +20,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onCreate(&$session, &$entry) { }
+    public function onCreate(&$session, &$entry);
   
     /**
      * Invoked when an entry is deleted
@@ -30,7 +30,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onDelete(&$session, &$entry) { }
+    public function onDelete(&$session, &$entry);
   
     /**
      * Invoked when an entry is read
@@ -40,7 +40,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onRead(&$session, &$entry) { }
+    public function onRead(&$session, &$entry);
   
     /**
      * Invoked when an entry is renamed
@@ -50,7 +50,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onRename(&$session, &$entry) { }
+    public function onRename(&$session, &$entry);
   
     /**
      * Invoked when permissions are changed for an entry
@@ -60,6 +60,6 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onChangePermissions(&$session, &$entry) { }
+    public function onChangePermissions(&$session, &$entry);
   }
 ?>

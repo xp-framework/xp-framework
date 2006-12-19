@@ -13,7 +13,7 @@
    * @purpose  Return wrapper
    */
   class BusinessList extends Object {
-    var 
+    public 
       $operator  = '',
       $truncated = FALSE,
       $items     = array();
@@ -24,7 +24,7 @@
      * @access  public
      * @param   string operator
      */
-    function setOperator($operator) {
+    public function setOperator($operator) {
       $this->operator= $operator;
     }
 
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function getOperator() {
+    public function getOperator() {
       return $this->operator;
     }
       
@@ -44,7 +44,7 @@
      * @access  public
      * @param   bool truncated
      */
-    function setTruncated($truncated) {
+    public function setTruncated($truncated) {
       $this->truncated= $truncated;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  bool
      */
-    function isTruncated() {
+    public function isTruncated() {
       return $this->truncated;
     }
     
@@ -64,7 +64,7 @@
      * @access  public
      * @return  int
      */
-    function numItems() {
+    public function numItems() {
       return sizeof($this->items);
     }
     
@@ -75,7 +75,7 @@
      * @param   int pos the position, starting from 0 to numItems() - 1
      * @return  &webservices.uddi.Business or NULL if there is no such item
      */
-    function &itemAt($pos) {
+    public function &itemAt($pos) {
       if (isset($this->items[$pos])) return $this->items[$pos]; else return NULL;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= sizeof($this->items);
       $r= sprintf(
         "%s (operator='%s',#items=%d,truncated=%s)@{\n",

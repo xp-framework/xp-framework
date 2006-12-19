@@ -23,7 +23,7 @@
    * @purpose  Resultset wrapper
    */
   class ResultSet extends Object {
-    var
+    public
       $handle,
       $fields;
       
@@ -34,7 +34,7 @@
      * @param   resource handle
      * @param   array fields
      */
-    function __construct($handle, $fields) {
+    public function __construct($handle, $fields) {
       $this->handle= $handle;
       $this->fields= $fields;
     }
@@ -48,7 +48,7 @@
      * @return  bool success
      * @throws  rdbms.SQLException
      */
-    function seek($offset) { }
+    public function seek($offset) { }
 
     /**
      * Iterator function. Returns a rowset if called without parameter,
@@ -60,7 +60,7 @@
      * @param   string field default NULL
      * @return  mixed
      */
-    function next($field= NULL) { }
+    public function next($field= NULL) { }
     
     /**
      * Close resultset and free result memory
@@ -68,7 +68,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { }
+    public function close() { }
 
   }
 ?>

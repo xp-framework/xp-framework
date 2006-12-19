@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class SQLExpression extends Interface {
+  interface SQLExpression {
   
   }
 ?>

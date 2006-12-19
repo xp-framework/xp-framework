@@ -18,7 +18,7 @@
    * @purpose  Checker
    */
   class IntegerRangeChecker extends ParamChecker {
-    var
+    public
       $minValue  = 0,
       $maxValue  = 0;
     
@@ -29,7 +29,7 @@
      * @param   int min
      * @param   int max
      */
-    function __construct($min, $max) {
+    public function __construct($min, $max) {
       $this->minValue= $min;
       $this->maxValue= $max;
     }
@@ -41,7 +41,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) { 
+    public function check($value) { 
       foreach ($value as $v) {
         if ($v < $this->minValue) {
           return 'toosmall';

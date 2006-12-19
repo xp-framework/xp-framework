@@ -22,7 +22,7 @@
    * @purpose  HTTP request
    */
   class HttpRequest extends Object {
-    var
+    public
       $url        = NULL,
       $method     = HTTP_GET,
       $version    = HTTP_VERSION_1_1,
@@ -37,7 +37,7 @@
      * @access  public
      * @param   &peer.URL url object
      */
-    function __construct(&$url) {
+    public function __construct(&$url) {
       $this->url= &$url;
       if ($url->getUser() && $url->getPassword()) {
         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
@@ -51,7 +51,7 @@
      * @access  public
      * @param   string method request method, e.g. HTTP_GET
      */
-    function setMethod($method) {
+    public function setMethod($method) {
       $this->method= $method;
     }
 
@@ -61,8 +61,8 @@
      * @access  public
      * @param   mixed p either a string, a PostData object or an associative array
      */
-    function setParameters($p) {
-      if (is_a($p, 'RequestData')) {
+    public function setParameters($p) {
+      if (is('RequestData', $p)) {
         $this->parameters= &$p;
       } else if (is_string($p)) {
         parse_str($p, $this->parameters); 
@@ -78,7 +78,7 @@
      * @param   string k header name
      * @param   string v header value
      */
-    function setHeader($k, $v) {
+    public function setHeader($k, $v) {
       $this->headers[$k]= $v;
     }
 
@@ -88,9 +88,9 @@
      * @access  public
      * @param   array headers
      */
-    function addHeaders($headers) {
+    public function addHeaders($headers) {
       foreach ($headers as $key => $header) {
-        $this->headers[is_a($header, 'Header') ? $header->getName() : $key] = $header;
+        $this->headers[is('Header', $header) ? $header->getName() : $key] = $header;
       }
     }
     
@@ -100,8 +100,8 @@
      * @access  public
      * @return  string
      */
-    function getRequestString() {
-      if (is_a($this->parameters, 'RequestData')) {
+    public function getRequestString() {
+      if (is('RequestData', $this->parameters)) {
         $query= "\0".$this->parameters->getData();
       } else {
         $query= '';
@@ -140,7 +140,7 @@
       
       // Add request headers
       foreach ($this->headers as $k => $v) {
-        $request.= (is_a($v, 'Header') 
+        $request.= (is('Header', $v) 
           ? $v->toString() 
           : $k.': '.$v
         )."\r\n";
@@ -155,15 +155,15 @@
      * @access  public
      * @return  &peer.http.HttpResponse response object
      */
-    function &send($timeout= 60, $connecttimeout= 2.0) {
-      $s= &new Socket($this->url->getHost(), $this->url->getPort(80));
+    public function &send($timeout= 60, $connecttimeout= 2.0) {
+      $s= new Socket($this->url->getHost(), $this->url->getPort(80));
       $s->setTimeout($timeout);
       
       $request= $this->getRequestString();
-      try(); {
+      try {
         $s->connect($connecttimeout) && $s->write($request);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       
       return new HttpResponse($s);

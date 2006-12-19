@@ -25,7 +25,7 @@
      * @param   array value
      * @return  array value
      */
-    function castValue($value) {
+    public function castValue($value) {
       $return= array();
       foreach ($value as $k => $v) {
         $return[$k]= trim($v);

@@ -15,7 +15,7 @@
    * @purpose  Base class
    */
   class Tag extends Object {
-    var
+    public
       $name = '',
       $text = '';
     
@@ -26,7 +26,7 @@
      * @param   string name
      * @param   string text
      */
-    function __construct($name, $text) {
+    public function __construct($name, $text) {
       $this->name= $name;
       $this->text= $text;
     }
@@ -37,7 +37,7 @@
      * @access  public
      * @return  string
      */
-    function name() {
+    public function name() {
       return $this->name;
     }  
     
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function text() {
+    public function text() {
       return $this->text;
     }  
   }

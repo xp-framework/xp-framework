@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.ConnectionManager', 'rdbms.Peer', 'rdbms.Criteria');
+  uses(
+    'rdbms.ConnectionManager',
+    'rdbms.Peer',
+    'rdbms.Criteria'
+  );
 
   /**
    * A dataset represents a row of data selected from a database. Dataset 
@@ -79,7 +83,7 @@
    * @purpose  Base class
    */
   class DataSet extends Object {
-    var
+    public
       $_new         = TRUE,
       $_changed     = array();
     
@@ -91,7 +95,7 @@
      * @access  public
      * @param   array params default NULL
      */
-    function __construct($params= NULL) {
+    public function __construct($params= NULL) {
       if (is_array($params)) {
         foreach (array_keys($params) as $key) {
           $k= substr(strrchr('#'.$key, '#'), 1);
@@ -108,7 +112,7 @@
      * @access  public
      * @return  &rdbms.Peer
      */
-    function &getPeer() { }
+    public function &getPeer() { }
 
     /**
      * Changes a value by a specified key and returns the previous value.
@@ -118,7 +122,7 @@
      * @param   &mixed value
      * @return  &mixed previous value
      */
-    function &_change($key, &$value) {
+    public function &_change($key, &$value) {
       $this->_changed[$key]= &$value;
       $previous= &$this->{$key};
       $this->{$key}= &$value;
@@ -132,7 +136,7 @@
      * @access  public
      * @return  array
      */
-    function changes() {
+    public function changes() {
       return $this->_changed;
     }
 
@@ -142,7 +146,7 @@
      * @access  public
      * @return  bool
      */    
-    function isNew() {
+    public function isNew() {
       return $this->_new;
     }
     
@@ -167,7 +171,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $peer= &$this->getPeer();
             
       // Retrieve types from peer and figure out the maximum length 
@@ -187,7 +191,7 @@
           $key,
           (in_array($key, $peer->primary) ? 'PK' : ''), 
           ($key == $peer->identity ? ',I' : ''),
-          (is_a($this->$key, 'Object') 
+          (is('Generic', $this->$key) 
             ? $this->$key->toString()
             : var_export($this->$key, 1)
           )
@@ -204,7 +208,7 @@
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    function doInsert() {
+    public function doInsert() {
       $peer= &$this->getPeer();
       if ($id= $peer->doInsert($this->_changed)) {
       
@@ -226,7 +230,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    function doUpdate(&$criteria) {
+    public function doUpdate(&$criteria) {
       $peer= &$this->getPeer();
       $affected= $peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
@@ -242,7 +246,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    function doDelete(&$criteria) {
+    public function doDelete(&$criteria) {
       $peer= &$this->getPeer();
       $affected= $peer->doDelete($criteria);
       $this->_changed= array();
@@ -256,11 +260,11 @@
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
-    function insert() {
-      try(); {
+    public function insert() {
+      try {
         $identity= $this->doInsert();
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       $this->_new= FALSE;
       return $identity;
@@ -274,14 +278,14 @@
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
-    function update() {
+    public function update() {
       if (empty($this->_changed)) return 0;
 
       $peer= &$this->getPeer();
       if (empty($peer->primary)) {
-        return throw(new SQLStateException('No primary key'));
+        throw(new SQLStateException('No primary key'));
       }
-      $criteria= &new Criteria();
+      $criteria= new Criteria();
       foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }
@@ -299,13 +303,13 @@
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
-    function save() {
+    public function save() {
       $peer= &$this->getPeer();
       
-      try(); {
+      try {
         $this->_new ? $this->insert() : $this->update();
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
 
       return $this->{$peer->identity};
@@ -320,12 +324,12 @@
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
-    function delete() { 
+    public function delete() { 
       $peer= &$this->getPeer();
       if (empty($peer->primary)) {
-        return throw(new SQLStateException('No primary key'));
+        throw(new SQLStateException('No primary key'));
       }
-      $criteria= &new Criteria();
+      $criteria= new Criteria();
       foreach ($peer->primary as $key) {
         $criteria->add($key, $this->{$key}, EQUAL);
       }

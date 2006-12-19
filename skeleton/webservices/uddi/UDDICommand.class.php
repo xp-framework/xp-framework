@@ -11,7 +11,7 @@
    * @see      xp://webservices.uddi.InquiryCommand
    * @see      xp://webservices.uddi.PublishCommand
    */
-  class UDDICommand extends Interface {
+  interface UDDICommand {
 
     /**
      * Marshal command to a specified node
@@ -19,7 +19,7 @@
      * @access  public
      * @param   &xml.Node node
      */
-    function marshalTo(&$node) { }
+    public function marshalTo(&$node);
 
     /**
      * Unmarshal return value from a specified node
@@ -28,6 +28,6 @@
      * @param   &xml.Node node
      * @return  &lang.Object
      */
-    function &unmarshalFrom(&$node) { }
+    public function &unmarshalFrom(&$node);
   }
 ?>

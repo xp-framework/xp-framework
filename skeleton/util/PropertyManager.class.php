@@ -25,7 +25,7 @@
    * @purpose  Container
    */
   class PropertyManager extends Object {
-    var 
+    public 
       $_path    = '.',
       $_prop    = array();
     
@@ -36,7 +36,7 @@
      * @access  public
      * @return  &util.PropertyManager
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance;
       
       if (!isset($instance)) $instance= new PropertyManager();
@@ -49,7 +49,7 @@
      * @access  public
      * @param   string path search path to the property files
      */
-    function configure($path) {
+    public function configure($path) {
       $this->_path= $path;
     }
     
@@ -60,7 +60,7 @@
      * @param   string name
      * @param   &util.Properties properties
      */
-    function register($name, &$properties) {
+    public function register($name, &$properties) {
       $this->_prop[$this->_path.$name]= &$properties;
     }
 
@@ -71,7 +71,7 @@
      * @param   string name
      * @return  bool
      */
-    function hasProperties($name) {
+    public function hasProperties($name) {
       return (
         isset($this->_prop[$this->_path.$name]) || 
         file_exists($this->_path.DIRECTORY_SEPARATOR.$name.'.ini')
@@ -85,9 +85,9 @@
      * @param   string name
      * @return  &util.Properties
      */
-    function &getProperties($name) {
+    public function &getProperties($name) {
       if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= &new Properties(
+        $this->_prop[$this->_path.$name]= new Properties(
           $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
         );
       }

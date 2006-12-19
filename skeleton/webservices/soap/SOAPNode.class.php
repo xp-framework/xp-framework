@@ -18,7 +18,7 @@
    * @see   xp://xml.Node
    */
   class SOAPNode extends Node {
-    var 
+    public 
       $namespace= 'ctl';
     
     /**
@@ -28,7 +28,7 @@
      * @param   &mixed content
      * @return  string typename, e.g. "xsd:string"
      */
-    function _typeName(&$content) {
+    public function _typeName(&$content) {
       static $tmap= array(      // Mapping PHP-typename => SOAP-typename
         'double'        => 'float',
         'integer'       => 'int'
@@ -46,7 +46,7 @@
      * @param   &mixed content
      * @return  &mixed content, formatted, if necessary
      */
-    function &_contentFormat(&$content) {
+    public function &_contentFormat(&$content) {
       if (is_bool($content)) {
         return $content ? 'true' : 'false';
       }
@@ -61,7 +61,7 @@
      * @param   &mixed namespaces
      * @return  &mixed data
      */
-    function &getContent($encoding, &$namespaces) {
+    public function &getContent($encoding, &$namespaces) {
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
       
@@ -122,7 +122,7 @@
      * @param   mixed value
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    function _marshall(&$child, $value, &$mapping) {
+    public function _marshall(&$child, $value, &$mapping) {
       static $ns= 0;
       
       if (is_scalar($value)) {          // Scalar
@@ -148,23 +148,23 @@
         return;
       }
 
-      if (is_a($value, 'Parameter')) {  // Named parameter
+      if (is('Parameter', $value)) {  // Named parameter
         $child->name= $value->name;
         $this->_marshall($child, $value->value, $mapping);
         return;
       }
       
-      if (is_a($value, 'Date')) {       // Date
-        $value= &new SOAPDateTime($value->_utime);
+      if (is('Date', $value)) {       // Date
+        $value= new SOAPDateTime($value->_utime);
         // Fallthrough intended
       }
       
-      if (is_a($value, 'Hashmap')) {    // Hashmap
-        $value= &new SOAPHashMap($value->_hash);
+      if (is('Hashmap', $value)) {    // Hashmap
+        $value= new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
       
-      if (is_a($value, 'SoapType')) {   // Special SoapTypes
+      if (is('SoapType', $value)) {   // Special SoapTypes
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
         $this->_marshall($child, $value->toString(), $mapping);
         
@@ -188,7 +188,7 @@
         return;
       }
       
-      if (is_a($value, 'Collection')) { // XP collection
+      if (is('Collection', $value)) { // XP collection
         $child->attribute['xsi:type']= 'SOAP-ENC:Array';
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
@@ -196,7 +196,7 @@
         return;
       }
       
-      if (is_a($value, 'Object')) {     // XP objects
+      if (is('Generic', $value)) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
         $this->_recurse($child, get_object_vars($value), $mapping);
@@ -222,7 +222,7 @@
      * @param   array a
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    function _recurse(&$e, $a, &$mapping) {
+    public function _recurse(&$e, $a, &$mapping) {
       foreach (array_keys($a) as $field) {
         if ('_' == $field{0}) continue;
         $this->_marshall(
@@ -248,8 +248,8 @@
      * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    function &fromArray($arr, $name= 'array', $mapping) {
-      $n= &new SOAPNode($name);
+    public static function &fromArray($arr, $name= 'array', $mapping) {
+      $n= new SOAPNode($name);
       $n->_recurse($n, $arr, $mapping);
       return $n;  
     }
@@ -270,7 +270,7 @@
      * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    function &fromObject($obj, $name= NULL, $mapping) {
+    public static function &fromObject($obj, $name= NULL, $mapping) {
       return SOAPNode::fromArray(
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name,

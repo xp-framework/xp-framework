@@ -12,7 +12,7 @@
    * @purpose  Factory
    */
   class Property extends Object {
-    var 
+    public 
       $name= '';
 
     /**
@@ -21,7 +21,7 @@
      * @access  protected
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
 
@@ -33,11 +33,11 @@
      * @param   string name
      * @return  &rdbms.criterion.Property
      */
-    function &forName($name) {
+    public static function &forName($name) {
       static $instances= array();
       
       if (!isset($instances[$name])) {
-        $instances[$name]= &new Property($name);
+        $instances[$name]= new Property($name);
       }
       return $instances[$name];
     }
@@ -49,7 +49,7 @@
      * @param   mixed[] values
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &in($values) {
+    public function &in($values) {
       return Restrictions::in($this->name, $values);
     }
 
@@ -60,7 +60,7 @@
      * @param   mixed[] values
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &notIn($values) {
+    public function &notIn($values) {
       return Restrictions::notIn($this->name, $values);
     }
 
@@ -71,7 +71,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &like($value) {
+    public function &like($value) {
       return Restrictions::like($this->name, $value);
     }
 
@@ -83,7 +83,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &ilike($value) {
+    public function &ilike($value) {
       return Restrictions::ilike($this->name, $value);
     }
         
@@ -94,7 +94,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &equal($value) {
+    public function &equal($value) {
       return Restrictions::equal($this->name, $value);
     }
 
@@ -105,7 +105,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &notEqual($value) {
+    public function &notEqual($value) {
       return Restrictions::notEqual($this->name, $value);
     }
 
@@ -116,7 +116,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &lessThan($value) {
+    public function &lessThan($value) {
       return Restrictions::lessThan($this->name, $value);
     }
 
@@ -127,7 +127,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &greaterThan($value) {
+    public function &greaterThan($value) {
       return Restrictions::greaterThan($this->name, $value);
     }
 
@@ -138,7 +138,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &lessThanOrEqualTo($value) {
+    public function &lessThanOrEqualTo($value) {
       return Restrictions::lessThanOrEqualTo($this->name, $value);
     }
 
@@ -149,7 +149,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &greaterThanOrEqualTo($value) {
+    public function &greaterThanOrEqualTo($value) {
       return Restrictions::greaterThanOrEqualTo($this->name, $value);
     }
 
@@ -161,7 +161,7 @@
      * @param   mixed hi
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &between($lo, $hi) {
+    public function &between($lo, $hi) {
       return Restrictions::between($this->name, $lo, $hi);
     }
   }

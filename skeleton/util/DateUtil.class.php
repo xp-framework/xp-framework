@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses ('util.Date', 'util.TimeSpan');
+  uses(
+    'util.Date',
+    'util.TimeSpan',
+    'util.Comparator'
+  );
   
   /**
    * DateUtil is a helper class to handle Date objects and 
@@ -13,7 +17,7 @@
    * @test    xp://util.DateUtil
    * @purpose Utils to calculate with Date objects
    */
-  class DateUtil extends Object {
+  class DateUtil extends Object implements Comparator {
 
     /**
      * Returns a Date object which represents the date at
@@ -24,8 +28,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &getMidnight(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getMidnight(&$date) {
+      $d= new Date(Date::mktime (
         0,
         0,
         0,
@@ -44,8 +48,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &getLastOfMonth(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getLastOfMonth(&$date) {
+      $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -64,8 +68,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &getFirstOfMonth(&$date) {
-      $d= &new Date(Date::mktime (
+    public static function &getFirstOfMonth(&$date) {
+      $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -85,8 +89,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addMonths(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addMonths(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -106,7 +110,7 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addWeeks(&$date, $count= 1) {
+    public static function &addWeeks(&$date, $count= 1) {
       return DateUtil::addDays($date, $count * 7);
     }
     
@@ -119,8 +123,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addDays(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addDays(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -140,8 +144,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addHours(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addHours(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours() + $count,
         $date->getMinutes(),
         $date->getSeconds(),
@@ -161,8 +165,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addMinutes(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addMinutes(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes() + $count,
         $date->getSeconds(),
@@ -182,8 +186,8 @@
      * @param   int count default 1
      * @return  &util.Date
      */
-    function &addSeconds(&$date, $count= 1) {
-      $d= &new Date(Date::mktime(
+    public static function &addSeconds(&$date, $count= 1) {
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds() + $count,
@@ -204,8 +208,8 @@
      * @param   &util.Date d2
      * @return  &util.TimeSpan
      */
-    function &timeSpanBetween(&$d1, &$d2) {
-      $t= &new TimeSpan($d1->getTime()-$d2->getTime());
+    public static function &timeSpanBetween(&$d1, &$d2) {
+      $t= new TimeSpan($d1->getTime()-$d2->getTime());
       return $t;
     }
 
@@ -226,9 +230,9 @@
      * @param   &util.Date b
      * @return  int
      */
-    function compare(&$a, &$b) {
+    public static function compare(&$a, &$b) {
       return $b->compareTo($a);
     }
 
-  } implements(__FILE__, 'util.Comparator');
+  } 
 ?>

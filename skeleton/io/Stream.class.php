@@ -22,7 +22,7 @@
    * @purpose  Represent a generic stream
    */
   class Stream extends Object {
-    var
+    public
       $buffer   = '',
       $flags    = 0,
       $offset   = 0;
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string mode default STREAM_MODE_READ one of the STREAM_MODE_* constants
      */
-    function open($mode= STREAM_MODE_READ) {
+    public function open($mode= STREAM_MODE_READ) {
       $this->offset= 0;
 
       switch ($mode) {
@@ -71,7 +71,7 @@
      * @access  public
      * @return  bool TRUE, when the stream is open
      */
-    function isOpen() {
+    public function isOpen() {
       return $this->flags != 0;
     }
     
@@ -81,7 +81,7 @@
      * @access  public
      * @return  int size streamsize in bytes
      */
-    function size() {
+    public function size() {
       return strlen($this->buffer);
     }
     
@@ -92,7 +92,7 @@
      * @param   int size default 0
      * @return  bool
      */
-    function truncate($size= 0) {
+    public function truncate($size= 0) {
       if (strlen($this->buffer) > $size) {
         $this->buffer= substr($this->buffer, 0, $size);
         
@@ -115,7 +115,7 @@
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
-    function readLine($bytes= 4096) {
+    public function readLine($bytes= 4096) {
       return chop($this->gets($bytes));
     }
     
@@ -125,7 +125,7 @@
      * @access  public
      * @return  char the character read
      */
-    function readChar() {
+    public function readChar() {
       return substr($this->buffer, $this->offset++, 1);
     }
 
@@ -139,7 +139,7 @@
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
-    function gets($bytes= 4096) {
+    public function gets($bytes= 4096) {
       if ($this->eof()) return '';
       if (FALSE === ($p= strpos($this->buffer, "\n", $this->offset))) $p= $bytes;
       $l= min($p + 1 - $this->offset, $bytes);
@@ -154,10 +154,10 @@
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
-    function read($bytes= 4096) {
+    public function read($bytes= 4096) {
       if ($this->eof()) return '';
       if (FALSE === ($data= substr($this->buffer, $this->offset, $bytes))) {
-        return throw(new IOException('Cannot read '.$bytes.' bytes from stream.'));
+        throw(new IOException('Cannot read '.$bytes.' bytes from stream.'));
       }
       
       $this->offset+= strlen($data);
@@ -171,7 +171,7 @@
      * @param   string string data to write
      * @return  int number of bytes written
      */
-    function write($string) {
+    public function write($string) {
     
       // Handle faster common case where we append to the end
       if ($this->offset == strlen($this->buffer)) {
@@ -197,7 +197,7 @@
      * @param   string string default '' data to write
      * @return  int number of bytes written
      */
-    function writeLine($string= '') {
+    public function writeLine($string= '') {
       return $this->write($string."\n");
     }
     
@@ -210,7 +210,7 @@
      * @access  public
      * @return  bool TRUE when the end of the stream is reached
      */
-    function eof() {
+    public function eof() {
       return $this->offset >= strlen($this->buffer);
     }
     
@@ -222,7 +222,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       $this->offset= 0;
     }
     
@@ -237,7 +237,7 @@
      * @param   int mode default SEEK_SET 
      * @return  bool success
      */
-    function seek($position= 0, $mode= SEEK_SET) {
+    public function seek($position= 0, $mode= SEEK_SET) {
       switch ($mode) {
         case SEEK_SET: $this->offset= $position; break;
         case SEEK_CUR: $this->offset+= $position; break;
@@ -256,7 +256,7 @@
      * @access  public
      * @return  int position
      */
-    function tell() {
+    public function tell() {
       return $this->offset;
     }
 
@@ -267,7 +267,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       $this->flags= 0;
       return TRUE;
     }

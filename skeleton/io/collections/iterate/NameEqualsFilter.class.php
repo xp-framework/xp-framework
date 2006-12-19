@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Name filter
    *
    * @purpose  Iteration Filter
    */
-  class NameEqualsFilter extends Object {
-    var
+  class NameEqualsFilter extends Object implements IterationFilter {
+    public
       $compare= '';
       
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   string compare the filename to compare to
      */
-    function __construct($compare) {
+    public function __construct($compare) {
       $this->compare= $compare;
     }
   
@@ -30,7 +32,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return $this->compare == basename($element->getURI());
     }
 
@@ -40,9 +42,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'("'.$this->compare.'")';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

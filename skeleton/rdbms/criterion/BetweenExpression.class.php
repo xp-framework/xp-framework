@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('rdbms.criterion.Criterion');
+
   /**
    * Between expression
    *
    * @purpose  Criterion
    */
-  class BetweenExpression extends Object {
-    var
+  class BetweenExpression extends Object implements Criterion {
+    public
       $field  = '',
       $lo     = NULL,
       $hi     = NULL;
@@ -23,7 +25,7 @@
      * @param   mixed lo
      * @param   mixed hi
      */
-    function __construct($field, $lo, $hi) {
+    public function __construct($field, $lo, $hi) {
       $this->field= $field;
       $this->lo= &$lo;
       $this->hi= &$hi;
@@ -38,9 +40,9 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    function asSql(&$conn, $types) { 
+    public function asSql(&$conn, $types) { 
       if (!isset($types[$this->field])) {
-        return throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
       }
 
       return $this->field.' between '.$conn->prepare(
@@ -50,5 +52,5 @@
       );
     }
 
-  } implements(__FILE__, 'rdbms.criterion.Criterion');
+  } 
 ?>

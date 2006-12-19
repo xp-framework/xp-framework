@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing a line
    *
@@ -17,8 +19,8 @@
    *
    * @see xp://img.Image
    */
-  class Line extends Object {
-    var
+  class Line extends Object implements Drawable {
+    public
       $col=  NULL,
       $x1=   0,
       $y1=   0,
@@ -35,7 +37,7 @@
      * @param   int x2 x coordinate of ending point
      * @param   int y2 y coordinate of ending point
      */ 
-    function __construct(&$col, $x1, $y1, $x2, $y2) {
+    public function __construct(&$col, $x1, $y1, $x2, $y2) {
       $this->col= &$col;
       $this->x1= $x1;
       $this->y1= $y1;
@@ -51,7 +53,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) {
+    public function draw(&$image) {
       return imageline(
         $image->handle,
         $this->x1,
@@ -62,5 +64,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

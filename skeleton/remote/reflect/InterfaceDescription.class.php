@@ -13,7 +13,7 @@
    * @purpose  Reflection
    */
   class InterfaceDescription extends Object {
-    var 
+    public 
       $className = '',
       $methods   = NULL;
 
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string className
      */
-    function setClassName($className) {
+    public function setClassName($className) {
       $this->className= $className;
     }
 
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function getClassName() {
+    public function getClassName() {
       return $this->className;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @param   lang.ArrayList<remote.reflect.MethodDescription> methods
      */
-    function setMethods(&$methods) {
+    public function setMethods(&$methods) {
       $this->methods= &$methods;
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @return  lang.ArrayList<remote.reflect.MethodDescription>
      */
-    function &getMethods() {
+    public function &getMethods() {
       return $this->methods;
     }
 
@@ -63,8 +63,8 @@
      * @access  public
      * @return  remote.ClassReference[]
      */
-    function classSet() {
-      $set= &new HashSet(); 
+    public function classSet() {
+      $set= new HashSet(); 
       for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
         $set->addAll($this->methods->values[$i]->classSet()); 
       }
@@ -77,7 +77,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $r= $this->getClassName().'@(class= '.$this->className.") {\n";
       for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
         $r.= '  - '.str_replace("\n", "\n  ", $this->methods->values[$i]->toString())."\n";

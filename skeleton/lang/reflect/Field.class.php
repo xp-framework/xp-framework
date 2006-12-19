@@ -11,7 +11,7 @@
    * @purpose  Reflection
    */
   class Field extends Object {
-    var
+    public
       $_ref   = NULL,
       $name   = '',
       $type   = NULL;
@@ -24,7 +24,7 @@
      * @param   string name
      * @param   string type default NULL
      */    
-    function __construct(&$ref, $name, $type= NULL) {
+    public function __construct(&$ref, $name, $type= NULL) {
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
       $this->type= $type;
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -46,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       if (isset($this->type)) return $this->type;
       if ($details= XPClass::detailsForField($this->_ref, $this->name)) {
         if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
@@ -61,7 +61,7 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &getDeclaringClass() {
+    public function &getDeclaringClass() {
       $class= $this->_ref;
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[0][$this->name])) return new XPClass($class);
@@ -79,9 +79,9 @@
      * @return  &mixed  
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    function &get(&$instance) {
+    public function &get(&$instance) {
       if (!is(xp::nameOf($this->_ref), $instance)) {
-        return throw(new IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
           xp::nameOf($this->_ref),
           xp::nameOf($instance)
@@ -97,7 +97,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return ('_' == $this->name{0} ? 'protected ' : 'public ').$this->getType().' $'.$this->name;
     }
   }

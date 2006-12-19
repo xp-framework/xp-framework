@@ -18,7 +18,7 @@
    * @purpose  Run scriptlets
    */
   class ScriptletRunner extends Object {
-    var
+    public
       $flags    = 0x0000;
       
     /**
@@ -27,7 +27,7 @@
      * @access  public
      * @param   int flags default 0
      */
-    function __construct($flags= 0x0000) {
+    public function __construct($flags= 0x0000) {
       $this->flags= $flags;
     }
     
@@ -38,7 +38,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &lang.Exception e
      */
-    function except(&$response, &$e) {
+    public function except(&$response, &$e) {
       $class= &$this->getClass();
       $loader= &$class->getClassLoader();
       
@@ -58,11 +58,11 @@
      * @access  public
      * @param   &scriptlet.HttpScriptlet scriptlet
      */
-    function run(&$scriptlet) {
-      try(); {
+    public function run(&$scriptlet) {
+      try {
         $scriptlet->init();
         $response= &$scriptlet->process();
-      } if (catch('HttpScriptletException', $e)) {
+      } catch (HttpScriptletException $e) {
         $response= &$e->getResponse();
         $this->except($response, $e);
       }

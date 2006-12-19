@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing an arc
    *
@@ -17,8 +19,8 @@
    *
    * @see xp://img.Image
    */
-  class Arc extends Object {
-    var
+  class Arc extends Object implements Drawable {
+    public
       $col=  NULL,
       $cx=   0,
       $cy=   0,
@@ -45,7 +47,7 @@
      *          IMG_ARC_NOFILL
      *          IMG_ARC_EDGED
      */ 
-    function __construct(&$col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
+    public function __construct(&$col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
       $this->col= &$col;
       $this->cx= $cx;
       $this->cy= $cy;
@@ -63,7 +65,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) {
+    public function draw(&$image) {
       if (FALSE !== $this->fill) return imagefilledarc(
         $image->handle,
         $this->cx,
@@ -86,5 +88,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

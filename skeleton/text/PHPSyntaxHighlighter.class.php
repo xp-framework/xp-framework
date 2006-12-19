@@ -23,8 +23,8 @@
      * @access  public
      * @param   mixed input default NULL a string or a file object
      */
-    function __construct($input= NULL) {
-      if (is_a($input, 'File')) {
+    public function __construct($input= NULL) {
+      if (is('File', $input)) {
         $this->setFile($input);
       } else {
         $this->setSource($input);
@@ -48,7 +48,7 @@
      * @param   string what one of the keywords listed above
      * @param   string style anything which will work within style="??????"
      */
-    function setStyle($what, $style) {
+    public function setStyle($what, $style) {
       $this->styles[$what]= $style;
       ini_set('highlight.'.$what, $style);
     }
@@ -60,7 +60,7 @@
      * @param   string style
      * @see     #setStyle
      */
-    function setStringStyle($style) {
+    public function setStringStyle($style) {
       $this->setStyle('string', $style);
     }
 
@@ -71,7 +71,7 @@
      * @param   string style
      * @see     #setStyle
      */
-    function setCommentStyle($style) {
+    public function setCommentStyle($style) {
       $this->setStyle('comment', $style);
     }
   
@@ -82,7 +82,7 @@
      * @param   string style
      * @see     #setStyle
      */
-    function setKeywordStyle($style) {
+    public function setKeywordStyle($style) {
       $this->setStyle('keyword', $style);
     }
     
@@ -93,7 +93,7 @@
      * @param   string Style
      * @see     #setStyle
      */
-    function setDefaultStyle($style) {
+    public function setDefaultStyle($style) {
       $this->setStyle('default', $style);
     }
 
@@ -104,7 +104,7 @@
      * @param   string style
      * @see     #setStyle
      */
-    function setHtmlStyle($style) {
+    public function setHtmlStyle($style) {
       $this->setStyle('html', $style);
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      * @param   string source 
      */
-    function setSource($source) {
+    public function setSource($source) {
       $this->source= $source;
     }
 
@@ -126,7 +126,7 @@
      * @param   io.File file
      * @throws  io.IOException
      */    
-    function setFile(&$file) {
+    public function setFile(&$file) {
       $file->open(FILE_MODE_READ);
       $this->source= $file->read($file->size());
       $file->close();
@@ -140,7 +140,7 @@
      * @access  public
      * @return  string highlighted source
      */
-    function getHighlight() {
+    public function getHighlight() {
       ob_start();
       highlight_string($this->source);
       $s= ob_get_contents();

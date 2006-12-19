@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('scriptlet.xml.portlet.Portlet');
+
   /**
    * Abstract portlet
    *
    * @see      xp://scriptlet.xml.portlet.Portlet
    * @purpose  Abstract base class
    */
-  class AbstractPortlet extends Object {
-    var
+  class AbstractPortlet extends Object implements Portlet {
+    public
       $name       = '',
       $properties = NULL,
       $layout     = NULL,
@@ -22,7 +24,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->setName(substr(get_class($this), 0, -1* strlen('Portlet')));
     }
 
@@ -32,7 +34,7 @@
      * @access  public
      * @return  string name
      */
-    function getName() { 
+    public function getName() { 
       return $this->name;
     }
     
@@ -42,7 +44,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) { 
+    public function setName($name) { 
       $this->name= $name;
     }
     
@@ -52,7 +54,7 @@
      * @access  public
      * @param   string layout
      */
-    function setLayout($layout) {
+    public function setLayout($layout) {
       $this->layout= $layout;
     }
     
@@ -62,7 +64,7 @@
      * @access  public
      * @return  string layout
      */
-    function getLayout() {
+    public function getLayout() {
       return $this->layout;
     }
   
@@ -72,7 +74,7 @@
      * @access  public
      * @param   &util.Properties properties
      */
-    function init(&$properties) { 
+    public function init(&$properties) { 
       $this->properties= &$properties;
     }
     
@@ -84,7 +86,7 @@
      * @param   &mixed value
      * @param   &scriptlet.xml.portlet.RunData rundata
      */
-    function setAttribute($name, &$value, &$rundata) {
+    public function setAttribute($name, &$value, &$rundata) {
       $this->attributes[$name]= &$value;
     }
 
@@ -98,7 +100,7 @@
      * @param   &scriptlet.xml.portlet.RunData rundata
      * @return  &mixed
      */
-    function &getAttribute($name, $default, &$rundata) {
+    public function &getAttribute($name, $default, &$rundata) {
       if (!array_key_exists($name, $this->attributes)) return $default;
 
       return $this->attributes[$name];
@@ -112,7 +114,7 @@
      * @param   &scriptlet.xml.portlet.RunData rundata
      * @return  &xml.Node
      */
-    function &getContent(&$rundata) { }
+    public function &getContent(&$rundata) { }
 
     /**
      * Retrieve whether this portlet provides customization mechanisms.
@@ -121,9 +123,9 @@
      * @access  public
      * @return  bool
      */
-    function providesCustomization() { 
+    public function providesCustomization() { 
       return FALSE;
     }
   
-  } implements(__FILE__, 'scriptlet.xml.portlet.Portlet');
+  } 
 ?>

@@ -15,7 +15,7 @@
    * @purpose  Writer
    */
   class GifStreamWriter extends StreamWriter {
-    var
+    public
       $dither   = FALSE,
       $ncolors  = 0;
 
@@ -28,7 +28,7 @@
      * @param   bool dither default FALSE indicates if the image should be dithered
      * @param   int ncolors default 256 maximum # of colors retained in the palette
      */
-    function __construct(&$stream, $dither= FALSE, $ncolors= 256) {
+    public function __construct(&$stream, $dither= FALSE, $ncolors= 256) {
       parent::__construct($stream);
       $this->dither= $dither;
       $this->ncolors= $ncolors;
@@ -42,7 +42,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    function output($handle) {
+    public function output($handle) {
       if (imageistruecolor($handle)) {
         imagetruecolortopalette($handle, $this->dither, $this->ncolors);
       }

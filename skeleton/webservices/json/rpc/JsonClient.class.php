@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: XmlRpcClient.class.php 5378 2005-07-25 12:58:56Z jens $ 
+ * $Id: JsonClient.class.php 8651 2006-11-25 17:18:51Z kiesel $ 
  */
 
   uses('webservices.json.rpc.JsonMessage');
@@ -14,7 +14,7 @@
    * @purpose   Json RPC Client base class
    */
   class JsonClient extends Object {
-    var
+    public
       $transport  = NULL,
       $message    = NULL,
       $answer     = NULL;
@@ -25,7 +25,7 @@
      * @access  public
      * @param   &scriptlet.rpc.transport.GenericHttpTransport transport
      */
-    function __construct(&$transport) {
+    public function __construct(&$transport) {
       $this->transport= &$transport;
     }
     
@@ -35,7 +35,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->transport->setTrace($cat);
     }
     
@@ -49,15 +49,15 @@
      * @throws  lang.IllegalArgumentException
      * @throws  webservices.xmlrpc.XmlRpcFaultException
      */
-    function invoke() {
+    public function invoke() {
       static $serial= 1000;
       if (!is('scriptlet.rpc.transport.GenericHttpTransport', $this->transport))
-        return throw(new IllegalArgumentException('Transport must be a scriptlet.rpc.transport.GenericHttpTransport'));
+        throw(new IllegalArgumentException('Transport must be a scriptlet.rpc.transport.GenericHttpTransport'));
     
       $this->transport->setMessageClass(XPClass::forName('webservices.json.rpc.JsonMessage'));
       $args= func_get_args();
       
-      $this->message= &new JsonMessage();
+      $this->message= new JsonMessage();
       $this->message->createCall(array_shift($args), time().(++$serial));
       $this->message->setData($args);
       

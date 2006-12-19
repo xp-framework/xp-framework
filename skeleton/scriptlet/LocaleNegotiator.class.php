@@ -56,7 +56,7 @@
    * @purpose  Negotiate locales
    */
   class LocaleNegotiator extends Object {
-    var
+    public
       $languages    = array(),
       $charsets     = array();
 
@@ -67,7 +67,7 @@
      * @param   string languages
      * @param   string charset
      */
-    function __construct($languages, $charsets) {
+    public function __construct($languages, $charsets) {
       $this->languages= $this->_parse($languages);
       $this->charsets= $this->_parse($charsets);
       
@@ -81,7 +81,7 @@
      * @param   string default default NULL
      * @return  &util.Locale
      */
-    function &getLocale($supported, $default= NULL) {
+    public function &getLocale($supported, $default= NULL) {
       $chosen= FALSE;
       foreach ($this->languages as $lang => $q) {
         if (
@@ -100,7 +100,7 @@
      * @param   string default default NULL
      * @return  string charset or default if none matches
      */
-    function getCharset($supported, $default= NULL) {
+    public function getCharset($supported, $default= NULL) {
       $chosen= FALSE;
       foreach ($this->charsets as $charset => $q) {
         if ($chosen= $this->_find($charset, $supported)) break;
@@ -121,7 +121,7 @@
      * @param   string str
      * @return  array values
      */
-    function _parse($str) {
+    public function _parse($str) {
       $values= array();
       if ($t= strtok($str, ', ')) do {
         if (FALSE === ($p= strpos($t, ';'))) {
@@ -148,7 +148,7 @@
      * @param   int len default -1
      * @return  string found or FALSE to indicate it wasn't found
      */
-    function _find($value, $array, $len= -1) {
+    public function _find($value, $array, $len= -1) {
       if (-1 == $len) $len= strlen($value);
       foreach ($array as $cmp) {
         if (0 == strncasecmp($value, $cmp, $len)) return $cmp;

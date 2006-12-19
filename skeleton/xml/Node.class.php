@@ -5,7 +5,11 @@
  *
  */
 
-  uses('xml.PCData', 'xml.CData', 'xml.XMLFormatException');
+  uses(
+    'xml.PCData',
+    'xml.CData',
+    'xml.XMLFormatException'
+  );
   
   define('INDENT_DEFAULT',    0);
   define('INDENT_WRAPPED',    1);
@@ -20,7 +24,7 @@
    * @test  xp://net.xp_framework.unittest.xml.NodeTest
    */
   class Node extends Object {
-    var 
+    public 
       $name         = '',
       $attribute    = array(),
       $content      = NULL,
@@ -41,7 +45,7 @@
      * @param   array attribute default array() attributes
      * @throws  lang.IllegalArgumentException
      */
-    function __construct($name, $content= NULL, $attribute= array()) {
+    public function __construct($name, $content= NULL, $attribute= array()) {
       $this->name= $name;
       $this->attribute= $attribute;
       $this->setContent($content);
@@ -61,8 +65,8 @@
      * @param   string name default 'array'
      * @return  &xml.Node
      */
-    function &fromArray($a, $name= 'array') {
-      $n= &new Node($name);
+    public static function &fromArray($a, $name= 'array') {
+      $n= new Node($name);
       $sname= rtrim($name, 's');
       foreach (array_keys($a) as $field) {
         $nname= is_numeric($field) || '' == $field ? $sname : $field;
@@ -92,7 +96,7 @@
      * @param   string name default NULL
      * @return  &xml.Node
      */
-    function &fromObject($obj, $name= NULL) {
+    public static function &fromObject($obj, $name= NULL) {
       if (!method_exists($obj, '__sleep')) {
         $vars= get_object_vars($obj);
       } else {
@@ -111,7 +115,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -121,7 +125,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -132,12 +136,12 @@
      * @param   string content
      * @throws  xml.XMLFormatException in case content contains illegal characters
      */
-    function setContent($content) {
+    public function setContent($content) {
 
       // Scan the given string for illegal characters.
       if (is_string($content)) {  
         if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
-          return throw(new XMLFormatException(
+          throw(new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
           ));
         }
@@ -152,7 +156,7 @@
      * @access  public
      * @return  string content
      */
-    function getContent() {
+    public function getContent() {
       return $this->content;
     }
 
@@ -163,7 +167,7 @@
      * @param   string name
      * @param   string value
      */
-    function setAttribute($name, $value) {
+    public function setAttribute($name, $value) {
       $this->attribute[$name]= $value;
     }
     
@@ -176,7 +180,7 @@
      * @param   mixed default default NULL
      * @return  string
      */
-    function getAttribute($name, $default= NULL) {
+    public function getAttribute($name, $default= NULL) {
       return isset($this->attribute[$name]) ? $this->attribute[$name] : $default;
     }
 
@@ -187,7 +191,7 @@
      * @param   string name
      * @return  bool
      */
-    function hasAttribute($name) {
+    public function hasAttribute($name) {
       return isset($this->attribute[$name]);
     }
     
@@ -233,7 +237,7 @@
      * @param   string inset default ''
      * @return  string XML
      */
-    function getSource($indent= INDENT_WRAPPED, $inset= '') {
+    public function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
       switch (gettype($this->content)) {
         case 'string': 
@@ -241,9 +245,9 @@
           break;
 
         case 'object':
-          if (is_a($this->content, 'PCData')) {
+          if (is('PCData', $this->content)) {
             $content= $this->content->pcdata;
-          } else if (is_a($this->content, 'CData')) {
+          } else if (is('CData', $this->content)) {
             $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
           }
           break;
@@ -313,9 +317,9 @@
      * @return  &xml.Node added child
      * @throws  lang.IllegalArgumentException
      */
-    function &addChild(&$child) {
-      if (!is_a($child, 'Node')) {
-        return throw(new IllegalArgumentException(
+    public function &addChild(&$child) {
+      if (!is('Node', $child)) {
+        throw(new IllegalArgumentException(
           'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
         ));
       }

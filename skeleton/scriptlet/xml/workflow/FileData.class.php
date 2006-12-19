@@ -12,7 +12,7 @@
    * @purpose  Wrapper
    */
   class FileData extends Object {
-    var
+    public
       $name = '',
       $type = '',
       $size = 0,
@@ -24,11 +24,11 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name, $type, $size, $uri) {
+    public function __construct($name, $type, $size, $uri) {
       $this->name= $name;
       $this->type= $type;
       $this->size= $size;
-      $this->file= &new File($uri);
+      $this->file= new File($uri);
     }
 
     /**
@@ -37,7 +37,7 @@
      * @access  public
      * @param   &io.File file
      */
-    function setFile(&$file) {
+    public function setFile(&$file) {
       $this->file= &$file;
     }
 
@@ -47,7 +47,7 @@
      * @access  public
      * @return  &io.File
      */
-    function &getFile() {
+    public function &getFile() {
       return $this->file;
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   string type
      */
-    function setType($type) {
+    public function setType($type) {
       $this->type= $type;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   int size
      */
-    function setSize($size) {
+    public function setSize($size) {
       $this->size= $size;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       return $this->size;
     }
 

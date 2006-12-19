@@ -27,7 +27,7 @@
    * @purpose  Associative array wrapper class
    */
   class Hashmap extends Object {
-    var 
+    public 
       $_hash= array();
 
     /**
@@ -36,7 +36,7 @@
      * @access  public
      * @param   map default NULL an array
      */
-    function __construct($map= NULL) {
+    public function __construct($map= NULL) {
       if (is_array($map)) $this->_hash= $map;
       
     }
@@ -46,7 +46,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       unset($this->_hash);
     }
 
@@ -57,7 +57,7 @@
      * @return  &util.HashmapIterator
      * @see     xp://util.HashmapIterator
      */
-    function &iterator() {
+    public function &iterator() {
       return new HashmapIterator($this->_hash);
     }
         
@@ -73,7 +73,7 @@
      * @access  public
      * @param   int flags default SORT_REGULAR sort flags
      */
-    function sort($flags= SORT_REGULAR) {
+    public function sort($flags= SORT_REGULAR) {
       asort($this->_hash, $flags);
     }
 
@@ -84,7 +84,7 @@
      * @param   int flags default SORT_REGULAR sort flags
      * @see     xp://util.Hashmap#sort
      */
-    function ksort($flags= SORT_REGULAR) {
+    public function ksort($flags= SORT_REGULAR) {
       ksort($this->_hash, $flags);
     }
     
@@ -95,7 +95,7 @@
      * @param   int flags default SORT_REGULAR sort flags
      * @see     xp://util.Hashmap#sort
      */
-    function rsort($flags= SORT_REGULAR) {
+    public function rsort($flags= SORT_REGULAR) {
       arsort($this->_hash, $flags);
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @param   &util.Comparator comparator an existing function or method
      */
-    function usort(&$comparator) {
+    public function usort(&$comparator) {
       uasort($this->_hash, array(&$comparator, 'compare'));
     }
     
@@ -116,7 +116,7 @@
      * @access  public 
      * @param   mixed function an existing function or method
      */
-    function filter($function) {
+    public function filter($function) {
       $this->_hash= array_filter($this->_hash, $function);
     }
     
@@ -129,7 +129,7 @@
      * @param   scalar j
      * @return  bool success
      */
-    function swap($k, $j) {
+    public function swap($k, $j) {
       if (!isset($this->_hash[$k]) || !isset($this->_hash[$j])) {
         return FALSE;
       }
@@ -158,10 +158,10 @@
      * @return  bool all keys/values have been flipped
      * @throws  lang.FormatException in case this hash contains non-scalar values
      */
-    function flip() {
+    public function flip() {
       $h= array_flip($this->_hash);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        return throw(new FormatException('hash contains values which are not scalar'));
+        throw(new FormatException('hash contains values which are not scalar'));
       }
       $this->_hash= &$h;
       return TRUE;
@@ -183,13 +183,13 @@
      * @param   bool recursive default FALSE Merge hashmaps recursively
      * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
-    function merge(&$map, $recursive= FALSE) {
-      if (is_a($map, 'Hashmap')) {
+    public function merge(&$map, $recursive= FALSE) {
+      if (is('Hashmap', $map)) {
         $h= &$map->_hash;
       } else if (is_array($map)) {
         $h= &$map;
       } else {
-        return throw(new IllegalArgumentException('map is neither an array nor a Hashmap'));
+        throw(new IllegalArgumentException('map is neither an array nor a Hashmap'));
       }
       
       if ($recursive) {
@@ -204,7 +204,7 @@
      *
      * @access  public
      */
-    function clear() {
+    public function clear() {
       $this->_hash= array();
     }
 
@@ -215,7 +215,7 @@
      * @param   scalar key key to check for
      * @return  bool key exists
      */
-    function containsKey($key) {
+    public function containsKey($key) {
       return isset($this->_hash[$key]);
     }
 
@@ -229,7 +229,7 @@
      * @param  bool strict default FALSE use strict checking.
      * @return bool TRUE if value exists, FALSE otherwise
      */     
-    function containsValue(&$val, $strict= FALSE) {
+    public function containsValue(&$val, $strict= FALSE) {
       return in_array($val, $this->_hash, $strict);
     }
     
@@ -240,7 +240,7 @@
      * @param   scalar key
      * @param   &mixed value
      */
-    function putref($key, &$value) {
+    public function putref($key, &$value) {
       $this->_hash[$key]= &$value;
     }
 
@@ -251,7 +251,7 @@
      * @param   scalar key
      * @param   mixed value
      */
-    function put($key, $value) {
+    public function put($key, $value) {
       $this->_hash[$key]= $value;
     }
 
@@ -262,7 +262,7 @@
      * @param   scalar key
      * @return  &mixed value
      */
-    function &get($key) {
+    public function &get($key) {
       if (isset($this->_hash[$key])) return $this->_hash[$key]; else return NULL;
     }
 
@@ -272,7 +272,7 @@
      * @access  public
      * @param   scalar key
      */
-    function remove($key) {
+    public function remove($key) {
       unset($this->_hash[$key]);
     }
 
@@ -282,7 +282,7 @@
      * @access  public
      * @return  int size
      */
-    function size() {
+    public function size() {
       return sizeof(array_keys($this->_hash));
     }
 
@@ -293,7 +293,7 @@
      * @access  public
      * @return  bool empty TRUE if the hashmap is empty, FALSE otherwise
      */
-    function isEmpty() {
+    public function isEmpty() {
       return (0 == $this->size());
     }
 
@@ -303,7 +303,7 @@
      * @access  public
      * @return  &scalar[] keys
      */
-    function &keys() {
+    public function &keys() {
       return array_keys($this->_hash);
     }
 
@@ -313,7 +313,7 @@
      * @access  public
      * @return  &mixed[] values
      */
-    function &values() {
+    public function &values() {
       return array_values($this->_hash);
     }
     
@@ -324,7 +324,7 @@
      * @param   &mixed object to compare with
      * @return  boolean
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('util.Hashmap', $cmp) && ($this->_hash === $cmp->_hash);
     }
     
@@ -334,7 +334,7 @@
      * @access  public
      * @return  array<mixed, mixed>
      */
-    function toArray() {
+    public function toArray() {
       return $this->_hash;
     }
     
@@ -352,7 +352,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->size().')@'.xp::stringOf($this->_hash);
     }
   }

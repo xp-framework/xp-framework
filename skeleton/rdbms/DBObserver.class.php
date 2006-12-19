@@ -11,7 +11,7 @@
    *
    * @purpose  DB observer interface
    */
-  class DBObserver extends Observer {
+  interface DBObserver extends Observer {
   
     /**
      * Retrieves an instance.
@@ -21,6 +21,6 @@
      * @param   mixed argument
      * @return  &rdbms.DBObserver
      */
-    function &instanceFor($arg) { }
+    public static function &instanceFor($arg);
   }
 ?>

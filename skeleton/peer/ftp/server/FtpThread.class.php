@@ -6,7 +6,8 @@
 
   uses(
     'lang.Thread',
-    'lang.reflect.Proxy'
+    'lang.reflect.Proxy',
+    'util.log.Traceable'
   );
   
   define('LISTENER_CLASS',  'peer.ftp.server.FtpConnectionListener');
@@ -17,8 +18,8 @@
    * @purpose   Thread
    * @model     Singleton
    */
-  class FtpThread extends Thread {
-    var
+  class FtpThread extends Thread implements Traceable {
+    public
       $server                 = NULL,
       $terminate              = FALSE,
       $cat                    = NULL,
@@ -35,7 +36,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('server');
     }
 
@@ -45,7 +46,7 @@
      * @access  public
      * @param   &peer.server.Server server
      */
-    function setServer(&$server) {
+    public function setServer(&$server) {
       $this->server= &$server;
     }
     
@@ -55,7 +56,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) { 
+    public function setTrace(&$cat) { 
       $this->cat= &$cat;
     }
     
@@ -65,7 +66,7 @@
      * @access  public
      * @param   &lang.reflect.InvokationHandler handler
      */
-    function setAuthenticatorHandler(&$handler) {
+    public function setAuthenticatorHandler(&$handler) {
       $this->authenticatorHandler= &$handler;
     }
     
@@ -76,7 +77,7 @@
      * @access  public
      * @param   &lang.reflect.InvokationHandler handler
      */
-    function setStorageHandler(&$handler) {
+    public function setStorageHandler(&$handler) {
       $this->storageHandler= &$handler;
     }
 
@@ -87,7 +88,7 @@
      * @param peer.ftp.server.interceptor.InterceptorCondition Condition
      * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
-    function addInterceptorFor($conditions, &$interceptor) {
+    public function addInterceptorFor($conditions, &$interceptor) {
       $this->interceptors[]= array($conditions, $interceptor);
     }
     
@@ -97,7 +98,7 @@
      * @access public
      * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
-    function addInterceptor(&$interceptor) {
+    public function addInterceptor(&$interceptor) {
       $this->addInterceptorFor(array(), $interceptor);
     }
     
@@ -108,7 +109,7 @@
      * @access  protected
      * @return  &peer.ftp.server.FtpThread
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
 
       if (!$instance) $instance= new FtpThread();
@@ -121,7 +122,7 @@
      * @access  public
      * @param   String processOwner
      */
-    function setProcessOwner($processOwner) {
+    public function setProcessOwner($processOwner) {
       $this->processOwner= $processOwner;
     }
 
@@ -131,7 +132,7 @@
      * @access  public
      * @return  String
      */
-    function getProcessOwner() {
+    public function getProcessOwner() {
       return $this->processOwner;
     }
 
@@ -141,7 +142,7 @@
      * @access  public
      * @param   String processGroup
      */
-    function setProcessGroup($processGroup) {
+    public function setProcessGroup($processGroup) {
       $this->processGroup= $processGroup;
     }
 
@@ -151,7 +152,7 @@
      * @access  public
      * @return  String
      */
-    function getProcessGroup() {
+    public function getProcessGroup() {
       return $this->processGroup;
     }
 
@@ -164,8 +165,8 @@
      * @throws  lang.Exception in case initializing the server fails
      * @throws  lang.SystemException in case setuid fails
      */
-    function run() {
-      try(); {
+    public function run() {
+      try {
         with ($class= &XPClass::forName(LISTENER_CLASS), $cl= &ClassLoader::getDefault()); {
         
           // Add listener
@@ -194,9 +195,9 @@
 
         // Try to start the server
         $this->server->init();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->server->shutdown();
-        return throw($e);
+        throw($e);
       }
       
       // Check if we should run child processes
@@ -208,7 +209,7 @@
           $group['uid']
         );
 
-        if (!posix_setgid($group['gid'])) return throw(new SystemException('Could not set GID'));
+        if (!posix_setgid($group['gid'])) throw(new SystemException('Could not set GID'));
       }
 
       if (isset($this->processOwner)) {
@@ -217,10 +218,10 @@
           $user['name'],
           $user['uid']
         );
-        if (!posix_setuid($user['uid'])) return throw(new SystemException('Could not set UID'));
+        if (!posix_setuid($user['uid'])) throw(new SystemException('Could not set UID'));
       }
 
       $this->server->service();
     }
-  } implements (__FILE__, 'util.log.Traceable');
+  } 
 ?>

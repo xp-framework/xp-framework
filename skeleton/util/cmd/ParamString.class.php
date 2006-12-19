@@ -14,7 +14,7 @@
    * @purpose  Easy access to commandline arguments
    */
   class ParamString extends Object {
-    var 
+    public 
       $list     = array(),
       $count    = 0,
       $string   = '';
@@ -25,7 +25,7 @@
      * @access  public
      * @param   array list default NULL the argv array. If omitted, $_SERVER['argv'] is used
      */
-    function __construct($list= NULL) {
+    public function __construct($list= NULL) {
       $this->setParams(NULL === $list ? $_SERVER['argv'] : $list);
     }
     
@@ -35,7 +35,7 @@
      * @access  public
      * @param   array params
      */  
-    function setParams($params) {
+    public function setParams($params) {
       $this->list= $params;
       $this->list[-1]= $_SERVER['_'];
       $this->count= sizeof($params);
@@ -50,7 +50,7 @@
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @return  mixed position on which the parameter is placed or FALSE if nonexistant
      */ 
-    function _find($long, $short= NULL) {
+    public function _find($long, $short= NULL) {
       if (is_null($short)) $short= $long{0};
       foreach (array_keys($this->list) as $i) {
       
@@ -76,7 +76,7 @@
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @return  boolean
      */  
-    function exists($long, $short= NULL) {
+    public function exists($long, $short= NULL) {
       if (is_int($long)) return isset($this->list[$long]);
       return ($this->_find($long, $short) !== FALSE);
     }
@@ -105,17 +105,17 @@
      * @return  string 
      * @throws  lang.IllegalArgumentException if parameter does not exist and no default value was supplied.
      */ 
-    function value($long, $short= NULL, $default= NULL) {
+    public function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) {
         if (NULL === $default && !isset($this->list[$long]))
-          return throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
+          throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
 
         return isset($this->list[$long]) ? $this->list[$long] : $default;
       }
   
       $pos= $this->_find($long, $short);
       if (FALSE === $pos && NULL === $default)
-        return throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));
+        throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));
       
       // Default usage (eg.: '--with-foo=bar')
       if (

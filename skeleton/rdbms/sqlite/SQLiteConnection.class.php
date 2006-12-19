@@ -57,7 +57,7 @@
      * @param   mixed type
      * @return  mixed
      */
-    function _cast($s, $type) {
+    public function _cast($s, $type) {
       static $identifiers= array(
         'date'  => "\2",
         'int'   => "\3",
@@ -75,7 +75,7 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE) {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
@@ -94,7 +94,7 @@
       }
 
       if (!is_resource($this->handle)) {
-        return throw(new SQLConnectException($err, $this->dsn));
+        throw(new SQLConnectException($err, $this->dsn));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
@@ -109,7 +109,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       if ($this->handle && $r= sqlite_close($this->handle)) {
         $this->handle= NULL;
         return $r;
@@ -125,8 +125,8 @@
      * @return  bool success
      * @throws  rdbms.SQLStatementFailedException
      */
-    function selectdb($db) {
-      return throw(new SQLStatementFailedException(
+    public function selectdb($db) {
+      throw(new SQLStatementFailedException(
         'Cannot select database, not implemented in SQLite'
       ));
     }
@@ -138,7 +138,7 @@
      * @param   array args
      * @return  string
      */
-    function _prepare($args) {
+    public function _prepare($args) {
       $sql= $args[0];
       if (sizeof($args) <= 1) return $sql;
 
@@ -158,10 +158,10 @@
         }
 
         // Type-based conversion
-        if (is_a($args[$ofs], 'Date')) {
+        if (is('Date', $args[$ofs])) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } else if (is_a($args[$ofs], 'Object')) {
+        } else if (is('Generic', $args[$ofs])) {
           $a= array($args[$ofs]->toString());
         } else if (is_array($args[$ofs])) {
           $a= $args[$ofs];
@@ -192,7 +192,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() {
+    public function prepare() {
       $args= func_get_args();
       return $this->_prepare($args);    
     }
@@ -203,7 +203,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { 
+    public function identity() { 
       $i= sqlite_last_insert_rowid($this->handle);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
@@ -217,7 +217,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -236,7 +236,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -254,7 +254,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function delete() { 
+    public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -272,7 +272,7 @@
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
      */
-    function select() { 
+    public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
       if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
@@ -292,20 +292,20 @@
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function &query() { 
+    public function &query() { 
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
-        try(); {
+        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        try {
           $c= $this->connect();
-        } if (catch('SQLException', $e)) {
-          return throw($e);
+        } catch (SQLException $e) {
+          throw($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -318,7 +318,7 @@
       
       if (FALSE === $result) {
         $e= sqlite_last_error($this->handle);
-        return throw(new SQLStatementFailedException(
+        throw(new SQLStatementFailedException(
           'Statement failed: '.sqlite_error_string($e), 
           $sql, 
           $e
@@ -330,7 +330,7 @@
         return TRUE;
       }
       
-      $resultset= &new SQLiteResultSet($result);
+      $resultset= new SQLiteResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;
@@ -343,7 +343,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function &begin($transaction) {
+    public function &begin($transaction) {
       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
         return FALSE;
       }
@@ -358,7 +358,7 @@
      * @param   string name
      * @return  mixed state
      */
-    function transtate($name) { 
+    public function transtate($name) { 
       if (FALSE === ($r= $this->query('@@transtate as transtate'))) {
         return FALSE;
       }
@@ -372,7 +372,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { 
+    public function rollback($name) { 
       return $this->query('rollback transaction xp_%c', $name);
     }
     
@@ -383,7 +383,7 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { 
+    public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
     }
   }

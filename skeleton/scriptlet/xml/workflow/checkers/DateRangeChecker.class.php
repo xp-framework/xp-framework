@@ -22,7 +22,7 @@
    * @purpose  Checker
    */
   class DateRangeChecker extends ParamChecker {
-    var
+    public
       $minValue  = NULL,
       $maxValue  = NULL;
     
@@ -41,7 +41,7 @@
      * @param   string min
      * @param   string max
      */
-    function __construct($min, $max) {
+    public function __construct($min, $max) {
       $this->minValue= &$this->parseDate($min, TRUE);
       $this->maxValue= &$this->parseDate($max, FALSE);
     }
@@ -54,7 +54,7 @@
      * @param   bool lower whether this is the lower boundary
      * @return  &util.Date
      */
-    function &parseDate($input, $lower) {
+    public function &parseDate($input, $lower) {
       switch ($input) {
         case '__NOW__': 
           if ($lower) {
@@ -86,7 +86,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) {
+    public function check($value) {
       foreach ($value as $v) {
         if ($this->minValue && $v->isBefore($this->minValue)) {
           return 'tooearly';

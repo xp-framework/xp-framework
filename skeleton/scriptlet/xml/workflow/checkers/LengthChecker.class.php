@@ -18,7 +18,7 @@
    * @purpose  Checker
    */
   class LengthChecker extends ParamChecker {
-    var
+    public
       $minLength  = 0,
       $maxLength  = 0;
     
@@ -29,7 +29,7 @@
      * @param   int min
      * @param   int max default -1
      */
-    function __construct($min, $max= -1) {
+    public function __construct($min, $max= -1) {
       $this->minLength= $min;
       $this->maxLength= $max;
     }
@@ -41,7 +41,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) { 
+    public function check($value) { 
       foreach ($value as $v) {
         if (strlen($v) < $this->minLength) {
           return 'tooshort';

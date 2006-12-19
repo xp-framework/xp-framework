@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.reflect.InvocationHandler');
+
   /**
    * Invocation handler for client stubs
    *
@@ -11,8 +13,8 @@
    * @see      xp://RemoteInterfaceMapping
    * @purpose  InvocationHandler
    */
-  class RemoteInvocationHandler extends Object {
-    var
+  class RemoteInvocationHandler extends Object implements InvocationHandler {
+    public
       $oid      = NULL,
       $handler  = NULL;
 
@@ -25,8 +27,8 @@
      * @param   &ProtocolHandler handler
      * @return  &RemoteInvocationHandler
      */
-    function &newInstance($oid, &$handler) {
-      with ($i= &new RemoteInvocationHandler()); {
+    public static function &newInstance($oid, &$handler) {
+      with ($i= new RemoteInvocationHandler()); {
         $i->oid= $oid;
         $i->handler= &$handler;
       }
@@ -44,9 +46,9 @@
      * @param   mixed* args an array of arguments
      * @return  mixed
      */
-    function invoke(&$proxy, $method, $args) { 
+    public function invoke(&$proxy, $method, $args) { 
       return $this->handler->invoke($this->oid, $method, $args);
     }
   
-  } implements(__FILE__, 'lang.reflect.InvocationHandler');
+  } 
 ?>

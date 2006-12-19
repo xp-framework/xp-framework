@@ -46,7 +46,7 @@
    * @see scriptlet.HttpScriptlet
    */
   class ErrorDocument extends Object {
-    var 
+    public 
       $statusCode,
       $language,
       $message,
@@ -61,7 +61,7 @@
      * @param   string message default ''
      * @param   string filename default ''
      */
-    function __construct($statusCode, $language, $message= '', $filename= '') {
+    public function __construct($statusCode, $language, $message= '', $filename= '') {
       $this->statusCode= $statusCode;
       $this->language= $language;
       $this->message= $message;
@@ -78,13 +78,13 @@
      * @access  public
      * @return  string content
      */
-    function getContent() {
-      $f= &new File($this->filename);
-      try(); {
+    public function getContent() {
+      $f= new File($this->filename);
+      try {
         $f->open(FILE_MODE_READ);
         $contents= $f->read($f->size());
         $f->close();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->message.= $e->toString();
         $contents= '<xp:value-of select="reason"/>';
       }

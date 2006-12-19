@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.io.ImageWriter');
+
   /**
    * Writes to a stream
    *
@@ -12,8 +14,8 @@
    * @see      xp://img.Image#saveTo
    * @purpose  Abstract base class
    */
-  class StreamWriter extends Object {
-    var
+  class StreamWriter extends Object implements ImageWriter {
+    public
       $stream   = NULL;
     
     /**
@@ -22,7 +24,7 @@
      * @access  public
      * @param   &io.Stream stream
      */
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &deref($stream);
     }
 
@@ -35,7 +37,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    function output($handle) { }
+    public function output($handle) { }
     
     /**
      * Callback function for ob_start
@@ -43,7 +45,7 @@
      * @access  private
      * @param   string data
      */
-    function writeToStream($data) {
+    public function writeToStream($data) {
       $this->stream->write($data);
     }
 
@@ -54,8 +56,8 @@
      * @param   resource handle
      * @throws  img.ImagingException
      */
-    function setResource($handle) {
-      try(); {
+    public function setResource($handle) {
+      try {
         $this->stream->open(STREAM_MODE_WRITE);
         
         // Use output buffering with a callback method to capture the 
@@ -66,10 +68,10 @@
         
         $this->stream->close();
         if (!$r) throw(new IOException('Could not write image'));
-      } if (catch('IOException', $e)) {
-        return throw(new ImagingException($e->getMessage()));
+      } catch (IOException $e) {
+        throw(new ImagingException($e->getMessage()));
       }
     }
     
-  } implements(__FILE__, 'img.io.ImageWriter');
+  } 
 ?>

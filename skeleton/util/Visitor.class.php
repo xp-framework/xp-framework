@@ -10,7 +10,7 @@
    * @see       xp://util.Composite
    * @purpose   Interface
    */
-  class Visitor extends Interface {
+  interface Visitor {
 
     /**
      * Visits the given Component. Work on the visited objects
@@ -19,6 +19,6 @@
      * @access  public
      * @param   &util.Component Component
      */
-    function visit(&$Component) { }
+    public function visit(&$Component);
   }
 ?>

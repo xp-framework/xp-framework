@@ -20,7 +20,7 @@
      * @access  public
      * @return  &text.format.ArrayFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('ArrayFormat');
     }  
   
@@ -32,9 +32,9 @@
      * @param   &mixed argument
      * @return  string
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       if (!is_array($argument)) {
-        return throw(new FormatException('Argument with type '.gettype($argument).' is not an array'));
+        throw(new FormatException('Argument with type '.gettype($argument).' is not an array'));
       }
       
       return implode($fmt, $argument);

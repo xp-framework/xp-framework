@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('scriptlet.xml.workflow.Handler', 'xml.Node');
+  uses(
+    'scriptlet.xml.workflow.Handler',
+    'xml.Node',
+    'util.log.Traceable'
+  );
 
   /**
    * Represents a single state
@@ -12,8 +16,8 @@
    * @see      xp://scriptlet.xml.workflow.AbstractXMLScriptlet
    * @purpose  Base class
    */
-  class AbstractState extends Object {
-    var
+  class AbstractState extends Object implements Traceable {
+    public
       $cat      = NULL,
       $handlers = array();
     
@@ -24,7 +28,7 @@
      * @param   &scriptlet.xml.workflow.Handler handler
      * @return  &scriptlet.xml.workflow.Handler the added handler
      */
-    function &addHandler(&$handler) {
+    public function &addHandler(&$handler) {
       $this->handlers[]= &$handler;
       return $handler;
     }
@@ -35,7 +39,7 @@
      * @access  public
      * @return  bool
      */
-    function hasHandlers() {
+    public function hasHandlers() {
       return !empty($this->handlers);
     }
     
@@ -49,7 +53,7 @@
      * @param   &xml.Node node the node to add the handler representation to
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      */
-    function addHandlerToFormresult(&$handler, &$node, &$request) {
+    public function addHandlerToFormresult(&$handler, &$node, &$request) {
       $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
       foreach (array_keys($handler->values[HVAL_FORMPARAM]) as $key) {
 
@@ -91,7 +95,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function setup(&$request, &$response, &$context) {
+    public function setup(&$request, &$response, &$context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
       
       with ($h= &$response->addFormResult(new Node('handlers'))); {
@@ -123,7 +127,7 @@
 
             // Set up the handler if necessary
             if ($setup) {
-              try(); {
+              try {
                 // In case a wrapper is defined, call its setup() method. This 
                 // method is not allowed to fail.
                 if ($this->handlers[$i]->hasWrapper()) {
@@ -131,8 +135,8 @@
                 }
 
                 $result= $this->handlers[$i]->setup($request, $context);
-              } if (catch('Exception', $e)) {
-                return throw($e);
+              } catch (Exception $e) {
+                throw($e);
               }
 
               // In case setup() returns FALSE, it indicates the form can not be 
@@ -221,7 +225,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function process(&$request, &$response, &$context) {
+    public function process(&$request, &$response, &$context) {
     }
     
     /**
@@ -231,7 +235,7 @@
      * @access  public
      * @return  bool
      */
-    function requiresAuthentication() {
+    public function requiresAuthentication() {
       return FALSE;
     }
 
@@ -242,9 +246,9 @@
      * @param   &util.log.LogCategory cat
      * @see     xp://util.log.Traceable
      */
-    function setTrace(&$cat) { 
+    public function setTrace(&$cat) { 
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

@@ -20,7 +20,7 @@
      * @access  public
      * @param   resource handle
      */
-    function __construct($result) {
+    public function __construct($result) {
       $fields= array();
       if (is_resource($result)) {
         for ($i= 0, $num= mysql_num_fields($result); $i < $num; $i++) {
@@ -39,9 +39,9 @@
      * @return  bool success
      * @throws  rdbms.SQLException
      */
-    function seek($offset) { 
+    public function seek($offset) { 
       if (!mysql_data_seek($this->handle, $offset)) {
-        return throw(new SQLException('Cannot seek to offset '.$offset));
+        throw(new SQLException('Cannot seek to offset '.$offset));
       }
       return TRUE;
     }
@@ -55,7 +55,7 @@
      * @param   string field default NULL
      * @return  mixed
      */
-    function next($field= NULL) {
+    public function next($field= NULL) {
       if (
         !is_resource($this->handle) ||
         FALSE === ($row= mysql_fetch_assoc($this->handle))
@@ -69,7 +69,7 @@
           case 'timestamp':
             if (strlen($row[$key]) == 14) {
               $time= sscanf ((string)$row[$key], '%04s%02s%02s%02s%02s%02s');
-              $row[$key]= &new Date(mktime(
+              $row[$key]= new Date(mktime(
                 $time[3],
                 $time[4],
                 $time[5],
@@ -113,7 +113,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       return mysql_free_result($this->handle);
     }
 

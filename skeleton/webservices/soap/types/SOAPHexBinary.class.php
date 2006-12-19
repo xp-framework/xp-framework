@@ -13,7 +13,7 @@
    * @purpose  Transport hex encoded data
    */
   class SOAPHexBinary extends SoapType {
-    var
+    public
       $string,
       $encoded;
     
@@ -24,7 +24,7 @@
      * @param   string string
      * @param   bool encoded default FALSE
      */
-    function __construct($string, $encoded= FALSE) {
+    public function __construct($string, $encoded= FALSE) {
       if ($encoded) {
         $this->string= pack('H*', $string);
         $this->encoded= $string;
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string 
      */
-    function toString() {
+    public function toString() {
       return $this->encoded;
     }
     
@@ -50,7 +50,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'xsd:hexBinary';
     }
     
@@ -61,7 +61,7 @@
      * @param   &webservices.soap.types.SOAPHexBinary cmp
      * @return  bool TRUE if both binaries are equal
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('webservices.soap.types.SOAPHexBinary', $cmp) && (0 === strcmp($this->string, $cmp->string));
     }    
   }

@@ -22,7 +22,7 @@
      * @access  public
      * @return  string 
      */
-    function toString() { 
+    public function toString() { 
       return FALSE; 
     }
     
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string
      */
-    function getType() { 
+    public function getType() { 
       return FALSE; 
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */    
-    function getItemName() { 
+    public function getItemName() { 
       return FALSE; 
     }
   }

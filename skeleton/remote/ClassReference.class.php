@@ -11,7 +11,7 @@
    * @purpose  Class reference
    */
   class ClassReference extends Object {
-    var 
+    public 
       $classname = '';
 
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   string classname
      */
-    function __construct($classname) {
+    public function __construct($classname) {
       $this->classname= $classname;
     }
 
@@ -30,7 +30,7 @@
      * @access  public
      * @return  string
      */
-    function referencedName() {
+    public function referencedName() {
       return $this->classname;
     }
 
@@ -41,7 +41,7 @@
      * @param   lang.ClassLoader cl default NULL
      * @return  &lang.XPClass
      */
-    function &referencedClass($cl= NULL) {
+    public function &referencedClass($cl= NULL) {
       return XPClass::forName($this->classname, $cl);
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return md5($this->classname);
     }
   }

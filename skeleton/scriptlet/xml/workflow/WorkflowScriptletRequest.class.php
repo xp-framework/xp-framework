@@ -13,7 +13,7 @@
    * @purpose  Scriptlet request wrapper
    */
   class WorkflowScriptletRequest extends XMLScriptletRequest {
-    var
+    public
       $package      = NULL,
       $state        = NULL;
 
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string package
      */
-    function __construct($package) {
+    public function __construct($package) {
       $this->package= $package;
     }
 
@@ -33,15 +33,15 @@
      * @access  public
      * @see     xp://scriptlet.xml.XMLScriptletRequest#initialize
      */
-    function initialize() {
+    public function initialize() {
       parent::initialize();
       if ($this->stateName) {
         $name= implode('', array_map('ucfirst', array_reverse(explode('/', $this->stateName))));
-        try(); {
+        try {
           $class= &XPClass::forName($this->package.'.'.('state.'.$name.'State'));
-        } if (catch('ClassNotFoundException', $e)) {
+        } catch (ClassNotFoundException $e) {
           $this->state= &xp::null();
-          return throw($e);
+          throw($e);
         }
 
         $this->state= &$class->newInstance();

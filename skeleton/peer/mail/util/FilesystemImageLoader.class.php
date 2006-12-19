@@ -4,14 +4,19 @@
  * $Id$ 
  */
 
-  uses('io.File', 'io.FileUtil', 'util.MimeType');
+  uses(
+    'io.File',
+    'io.FileUtil',
+    'util.MimeType',
+    'peer.mail.util.ImageLoader'
+  );
 
   /**
    * Loads images from the filesystem
    *
    * @purpose  ImageLoader
    */
-  class FilesystemImageLoader extends Object {
+  class FilesystemImageLoader extends Object implements ImageLoader {
 
     /**
      * Load an image
@@ -20,12 +25,12 @@
      * @param   &peer.URL source
      * @return  string[2] data and contenttype
      */
-    function load(&$source) { 
+    public function load(&$source) { 
       return array(
         FileUtil::getContents(new File($source->getURL())),
         MimeType::getByFilename($source->getURL())
       );
     }
   
-  } implements(__FILE__, 'peer.mail.util.ImageLoader');
+  } 
 ?>

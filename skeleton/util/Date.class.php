@@ -25,10 +25,10 @@
    * @purpose  Represent a date
    */
   class Date extends Object {
-    var
+    public
       $_utime   = 0;
       
-    var
+    public
       $seconds  = 0,
       $minutes  = 0,
       $hours    = 0,
@@ -47,7 +47,7 @@
      * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
-    function __construct($in= NULL) {
+    public function __construct($in= NULL) {
       if (is_string($in)) {
         $this->_utime(Date::_strtotime($in));
       } else if (is_int($in) || is_float($in)) {
@@ -69,7 +69,7 @@
      * @access  protected
      * @return  int offset in seconds
      */
-    function _getGMTOffset() {
+    public function _getGMTOffset() {
       static $o;
       
       if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
@@ -84,7 +84,7 @@
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */
-    function _isLeapYear($year) {
+    public static function _isLeapYear($year) {
       return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
     }
     
@@ -96,7 +96,7 @@
      * @param   string in
      * @return  int
      */
-    function _strtotime($in) {
+    public static function _strtotime($in) {
       static $month_names= array(
         'Jan' => 1,
         'Feb' => 2,
@@ -154,7 +154,7 @@
      * @param   int is_dst default -1
      * @return  int stamp
      */
-    function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
+    public static function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
@@ -229,7 +229,7 @@
      * @param   int stamp
      * @return  array
      */
-    function _getdate($stamp, $isGMT= FALSE) {
+    public static function _getdate($stamp, $isGMT= FALSE) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
@@ -348,7 +348,7 @@
      * @param   &util.Date cmp
      * @return  bool TRUE if dates are equal
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
     }    
     
@@ -359,8 +359,8 @@
      * @access  public
      * @return  &util.Date
      */
-    function &now() {
-      $d= &new Date(NULL);
+    public static function &now() {
+      $d= new Date(NULL);
       return $d;
     }
     
@@ -378,8 +378,8 @@
      * @param   string str
      * @return  &util.Date
      */
-    function &fromString($str) {
-      $d= &new Date($str);
+    public static function &fromString($str) {
+      $d= new Date($str);
       return $d;
     }
     
@@ -389,7 +389,7 @@
      * @access  private
      * @param   int utime Unix-Timestamp
      */
-    function _utime($utime) {
+    public function _utime($utime) {
       foreach ($this->_getdate($this->_utime= $utime) as $key => $val) {
         is_string($key) && $this->{$key}= $val;
       }
@@ -402,7 +402,7 @@
      * @param   &util.Date date A date object
      * @return  int equal: 0, date before $this: < 0, date after $this: > 0
      */
-    function compareTo(&$date) {
+    public function compareTo(&$date) {
       return $date->getTime()- $this->getTime();
     }
     
@@ -413,7 +413,7 @@
      * @param   &util.Date date
      * @return  bool
      */
-    function isBefore(&$date) {
+    public function isBefore(&$date) {
       return $this->getTime() < $date->getTime();
     }
 
@@ -424,7 +424,7 @@
      * @param   &util.Date date
      * @return  bool
      */
-    function isAfter(&$date) {
+    public function isAfter(&$date) {
       return $this->getTime() > $date->getTime();
     }
     
@@ -434,7 +434,7 @@
      * @access  public
      * @return  int Unix-Timestamp
      */
-    function getTime() {
+    public function getTime() {
       return $this->_utime;
     }
 
@@ -444,7 +444,7 @@
      * @access  public
      * @return  int
      */
-    function getSeconds() {
+    public function getSeconds() {
       return $this->seconds;
     }
 
@@ -454,7 +454,7 @@
      * @access  public
      * @return  int
      */
-    function getMinutes() {
+    public function getMinutes() {
       return $this->minutes;
     }
 
@@ -464,7 +464,7 @@
      * @access  public
      * @return  int
      */
-    function getHours() {
+    public function getHours() {
       return $this->hours;
     }
 
@@ -474,7 +474,7 @@
      * @access  public
      * @return  int
      */
-    function getDay() {
+    public function getDay() {
       return $this->mday;
     }
 
@@ -484,7 +484,7 @@
      * @access  public
      * @return  int
      */
-    function getMonth() {
+    public function getMonth() {
       return $this->mon;
     }
 
@@ -494,7 +494,7 @@
      * @access  public
      * @return  int
      */
-    function getYear() {
+    public function getYear() {
       return $this->year;
     }
 
@@ -504,7 +504,7 @@
      * @access  public
      * @return  int
      */
-    function getDayOfYear() {
+    public function getDayOfYear() {
       return $this->yday;
     }
 
@@ -514,7 +514,7 @@
      * @access  public
      * @return  int
      */
-    function getDayOfWeek() {
+    public function getDayOfWeek() {
       return $this->wday;
     }
     
@@ -526,7 +526,7 @@
      * @param   string format default 'r' format-string
      * @return  string the formatted date
      */
-    function toString($format= 'r') {
+    public function toString($format= 'r') {
       static $daynames= array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
       static $monthnames= array(NULL, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
       static $suffix= array('th', 'st', 'nd', 'rd', 'th');
@@ -609,7 +609,7 @@
      * @param   string format default '%c' format-string
      * @return  string the formatted date
      */
-    function format($format= '%c') {
+    public function format($format= '%c') {
 
       // Use builtin?
       if (1971 < $this->year && $this->year < 2038) return strftime($format, $this->_utime);

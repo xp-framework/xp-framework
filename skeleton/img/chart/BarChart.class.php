@@ -17,7 +17,7 @@
    * @purpose  Chart
    */
   class BarChart extends Chart {
-    var
+    public
       $alignment = CHART_HORIZONTAL,
       $barWidth  = 20,
       $distance  = DISTANCE_AUTO,
@@ -30,7 +30,7 @@
      * @access  public
      * @return  float
      */
-    function max() {
+    public function max() {
       if (!$this->getAccumulated()) return parent::max();
       
       $max= array();
@@ -48,7 +48,7 @@
      * @access  public
      * @return  float
      */
-    function min() {
+    public function min() {
       if ($this->getAccumulated()) return parent::min();
 
       $min= array();
@@ -69,7 +69,7 @@
      * @param   float upper
      * @param   float step
      */
-    function setRange($lower, $upper, $step) {
+    public function setRange($lower, $upper, $step) {
       $this->range= array($lower, $upper, $step);
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   float[] the lower and upper range and the range setp, in this order
      */
-    function getRange() {
+    public function getRange() {
       return $this->range;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @param   int alignment one of CHART_HORIZONTAL, CHART_VERTICAL
      */
-    function setAlignment($alignment) {
+    public function setAlignment($alignment) {
       $this->alignment= $alignment;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   int width
      */
-    function setBarWidth($width) {
+    public function setBarWidth($width) {
       $this->barWidth= $width;
     }
     
@@ -109,7 +109,7 @@
      * @access  public
      * @return  int
      */
-    function getBarWidth() {
+    public function getBarWidth() {
       return $this->barWidth;
     }
 
@@ -120,7 +120,7 @@
      * @access  public
      * @param   int distance
      */
-    function setDistance($distance) {
+    public function setDistance($distance) {
       $this->distance= $distance;
     }
 
@@ -130,7 +130,7 @@
      * @access  public
      * @return  int
      */
-    function getDistance() {
+    public function getDistance() {
       return $this->distance;
     }
     
@@ -140,7 +140,7 @@
      * @access public
      * @return bool
      */
-    function getAccumulated() {
+    public function getAccumulated() {
       return $this->accumulated;
     }
     
@@ -150,7 +150,7 @@
      * @access public
      * @param bool bool The flag
      */
-    function setAccumulated($bool) {
+    public function setAccumulated($bool) {
       $this->accumulated= $bool;
     }
   }

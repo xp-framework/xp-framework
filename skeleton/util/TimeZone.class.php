@@ -20,7 +20,7 @@
    * @purpose  Time zone calculation
    */
   class TimeZone extends Object {
-    var 
+    public 
       $offset=  '',
       $tz=      '';
 
@@ -31,7 +31,7 @@
      * @param   string offset
      * @param   string timezone name default ''
      */
-    function __construct($offset, $tz= '') {
+    public function __construct($offset, $tz= '') {
       $this->offset= $offset;
       $this->tz= $tz;
     }
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string name
      */
-    function getName() {
+    public function getName() {
       return $this->tz;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string offset
      */    
-    function getOffset() {
+    public function getOffset() {
       return $this->offset;
     }
 
@@ -63,7 +63,7 @@
      * @param   string string
      * @return  string
      */
-    function getOffsetByTimeZoneString($string) {
+    public function getOffsetByTimeZoneString($string) {
       static $tz= array (
         // East of Greenwich
         'IDLE'=> '+1200',             // International Date Line East
@@ -127,14 +127,14 @@
      * @return  &util.TimeZone
      * @throws  lang.IllegalArgumentException if timezone is unknown
      */    
-    function &getByName($abbrev) {
+    public static function &getByName($abbrev) {
       if (FALSE === ($offset= TimeZone::getOffsetByTimeZoneString($abbrev))) {
-        return throw (new IllegalArgumentException (
+        throw (new IllegalArgumentException (
           'Unknown time zone abbreviation: '.$abbrev
         ));
       }
       
-      $tz= &new TimeZone($offset, $abbrev);
+      $tz= new TimeZone($offset, $abbrev);
       return $tz;
     }
     
@@ -145,7 +145,7 @@
      * @access  public
      * @return  &util.TimeZone
      */
-    function &getLocal() {
+    public static function &getLocal() {
       return TimeZone::getByName(date('T'));
     }
 
@@ -155,7 +155,7 @@
      * @access  public
      * @return  int offset
      */    
-    function getOffsetInSeconds() {
+    public function getOffsetInSeconds() {
       list($s, $h, $m)= sscanf ($this->offset, '%c%2d%2d');
       return (('+' == $s ? 1 : -1) * ((3600 * $h) + (60 * $m)));
     }
@@ -169,7 +169,7 @@
      * @param   &util.TimeZone tz
      * @return  &util.Date
      */
-    function &convertDate(&$date, &$tz) {
+    public function &convertDate(&$date, &$tz) {
       return new Date ($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
     }
 
@@ -181,7 +181,7 @@
      * @param   &util.Date date
      * @return  &util.Date
      */    
-    function &convertLocalDate(&$date) {
+    public function &convertLocalDate(&$date) {
       return $this->convertDate($date, TimeZone::getLocal());
     }
   }

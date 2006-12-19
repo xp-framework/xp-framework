@@ -5,8 +5,8 @@
  */
 
   uses(
-    'webservices.soap.transport.SOAPTransport', 
-    'webservices.soap.SOAPFaultException', 
+    'webservices.soap.transport.SOAPTransport',
+    'webservices.soap.SOAPFaultException',
     'peer.http.HttpConnection'
   );
   
@@ -24,7 +24,7 @@
    * @see       xp://webservices.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
-    var
+    public
       $_conn        = NULL,
       $_action      = '',
       $_actiontype  = NULL,
@@ -38,8 +38,8 @@
      * @param   array headers default array()
      * @param   int actiontype
      */  
-    function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
-      $this->_conn= &new HttpConnection($url);
+    public function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
+      $this->_conn= new HttpConnection($url);
       $this->_headers= array_merge(
         array('User-Agent' => 'XP-Framework SOAP Client (http://xp-framework.net)'),
         $headers
@@ -54,7 +54,7 @@
      * @access  public
      * @param   int timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       $this->_conn->setTimeout($timeout);
     }
     
@@ -71,7 +71,7 @@
      * @param   string name header name
      * @param   string value header value
      */
-    function setHeader($name, $value) {
+    public function setHeader($name, $value) {
       $this->_headers[$name]= $value;
     }
 
@@ -82,7 +82,7 @@
      * @access  public
      * @return  int
      */
-    function getTimeout() {
+    public function getTimeout() {
       return $this->_conn->getTimeout();
     }
 
@@ -91,7 +91,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       delete($this->_conn);
     }
     
@@ -101,7 +101,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf('%s { %s }', $this->getClassName(), $this->_conn->request->url->_info['url']);
     }
 
@@ -113,13 +113,13 @@
      * @return  &peer.http.HttpResponse
      * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
-    function &send(&$message) {
+    public function &send(&$message) {
     
       // Sanity checks
-      if (!is_a($message, 'SOAPMessage')) return throw(new IllegalArgumentException(
+      if (!is('SOAPMessage', $message)) throw(new IllegalArgumentException(
         'parameter "message" must be a webservices.soap.SOAPMessage'
       ));
-      if (!$this->_conn->request) return throw(new IllegalArgumentException(
+      if (!$this->_conn->request) throw(new IllegalArgumentException(
         'Factory method failed'
       ));
 
@@ -157,11 +157,11 @@
 
       // Add more headers
       $this->_conn->request->addHeaders($this->_headers);
-      try(); {
+      try {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send($this->_conn->getTimeout());
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return $res;
@@ -178,19 +178,19 @@
      * @throws  lang.IllegalAccessException in case authorization is required
      * @throws  lang.IllegalStateException in case an unexpected HTTP status code is returned
      */
-    function &retrieve(&$response) {
+    public function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
-      try(); {
+      try {
         $code= $response->getStatusCode();
-      } if (catch('SocketException', $e)) {
-        return throw($e);
+      } catch (SocketException $e) {
+        throw($e);
       }
       
       switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
-          try(); {
+          try {
             $xml= '';
             while ($buf= $response->readData()) $xml.= $buf;
 
@@ -206,24 +206,24 @@
 
               $answer->action= $this->action;
             }
-          } if (catch('Exception', $e)) {
-            return throw($e);
+          } catch (Exception $e) {
+            throw($e);
           }
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            return throw(new SOAPFaultException($fault));
+            throw(new SOAPFaultException($fault));
           }
           
           return $answer;
         
         case HTTP_AUTHORIZATION_REQUIRED:
-          return throw(new IllegalAccessException(
+          throw(new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
           ));
         
         default:
-          return throw(new IllegalStateException(
+          throw(new IllegalStateException(
             'Unexpected return code: '.$response->getStatusCode()
           ));
       }

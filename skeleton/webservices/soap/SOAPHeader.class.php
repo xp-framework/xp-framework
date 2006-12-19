@@ -10,7 +10,7 @@
    * @see      xp://webservices.soap.SOAPHeaderElement
    * @purpose  Interface
    */
-  class SOAPHeader extends Interface {
+  interface SOAPHeader {
 
     /**
      * Retrieve XML representation of this header for use in a SOAP
@@ -20,6 +20,6 @@
      * @param   array<string, string> ns list of namespaces
      * @return  &xml.Node
      */
-    function &getNode($ns) { }
+    public function &getNode($ns);
   }
 ?>

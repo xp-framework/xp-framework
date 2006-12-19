@@ -29,7 +29,7 @@
    * @purpose  Scriptlet request wrapper
    */
   class XMLScriptletRequest extends HttpScriptletRequest {
-    var
+    public
       $product      = '',
       $stateName    = '',
       $language     = '',
@@ -40,7 +40,7 @@
      *
      * @access  public
      */
-    function initialize() {
+    public function initialize() {
       parent::initialize();
       $this->product= $this->getEnvValue('PRODUCT');
       $this->stateName= $this->getEnvValue('STATE');
@@ -54,7 +54,7 @@
      * @access  public
      * @param   string page
      */
-    function setPage($page) {
+    public function setPage($page) {
       $this->page= $page;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string
      */
-    function getPage() {
+    public function getPage() {
       return $this->page;
     }
 
@@ -74,7 +74,7 @@
      * @access  public
      * @return  string stateName
      */
-    function getStateName() {
+    public function getStateName() {
       return $this->stateName;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @param   string stateName
      */
-    function setStateName($stateName) {
+    public function setStateName($stateName) {
       $this->stateName= $stateName;
     }
     
@@ -94,7 +94,7 @@
      * @access  public
      * @return  string product
      */
-    function getProduct() {
+    public function getProduct() {
       return $this->product;
     }
 
@@ -104,7 +104,7 @@
      * @access  public
      * @param   string product
      */
-    function setProduct($product) {
+    public function setProduct($product) {
       $this->product= $product;
     }
 
@@ -114,7 +114,7 @@
      * @access  public
      * @return  string language
      */
-    function getLanguage() {
+    public function getLanguage() {
       return $this->language;
     }
 
@@ -124,7 +124,7 @@
      * @access  public
      * @param   string language
      */
-    function setLanguage($language) {
+    public function setLanguage($language) {
       $this->language= $language;
     }
     
@@ -134,7 +134,7 @@
      * @access  public
      * @return  string session id
      */
-    function getSessionId() {
+    public function getSessionId() {
       return $this->getEnvValue('SESS');
     }
   }

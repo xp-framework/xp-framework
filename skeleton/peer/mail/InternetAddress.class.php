@@ -17,7 +17,7 @@
    * @purpose   Represents an Internet address
    */
   class InternetAddress extends Object {
-    var 
+    public 
       $personal  = '',
       $localpart = '',
       $domain    = '';
@@ -29,7 +29,7 @@
      * @param   mixed mail
      * @param   string personal default ''
      */
-    function __construct($mail, $personal= '') {
+    public function __construct($mail, $personal= '') {
       list($this->localpart, $this->domain)= (is_array($mail) 
         ? $mail
         : explode('@', $mail)
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return md5($this->localpart.'@'.$this->domain);
     }
     
@@ -54,9 +54,9 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
-        is_a($cmp, 'InternetAddress') and 
+        is('InternetAddress', $cmp) and 
         $this->personal.$this->localpart.$this->domain === $cmp->personal.$cmp->localpart.$cmp->domain
       );
     }
@@ -80,7 +80,7 @@
      * @return  &peer.mail.InternetAddress address object
      * @throws  lang.FormatException in case the string could not be parsed into an address
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       static $matches= array(
         '/^=\?([^\?])+\?([QB])\?([^\?]+)\?= <([^ @]+@[0-9a-z.-]+)>$/i' => 3,
         '/^<?([^ @]+@[0-9a-z.-]+)>?$/i'                                => 0,
@@ -108,7 +108,7 @@
       }
       
       // Was it unparsable?
-      if (!isset($mail)) return throw(
+      if (!isset($mail)) throw(
         new FormatException('String "'.$str.'" could not be parsed')
       );
       
@@ -128,7 +128,7 @@
      * @param   string charset default 'iso-8859-1'
      * @return  string
      */
-    function toString($charset= 'iso-8859-1') {
+    public function toString($charset= 'iso-8859-1') {
       return (
         empty($this->personal) ? '' : 
         QuotedPrintable::encode($this->personal, $charset).' '

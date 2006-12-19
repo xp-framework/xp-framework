@@ -4,15 +4,19 @@
  * $Id$ 
  */
 
-  uses('io.File', 'security.crypto.UnixCrypt');
+  uses(
+    'io.File',
+    'security.crypto.UnixCrypt',
+    'security.auth.Authenticator'
+  );
 
   /**
    * Autenticates users against a .htpasswd file
    *
    * @purpose  Authenticator
    */
-  class HtpasswdAuthenticator extends Object {
-    var
+  class HtpasswdAuthenticator extends Object implements Authenticator {
+    public
       $_modified = 0,
       $_file     = NULL,
       $_hash     = array();
@@ -23,7 +27,7 @@
      * @access  public
      * @param   &io.File file
      */
-    function __construct(&$file) {
+    public function __construct(&$file) {
       $this->_file= &$file;
     }
     
@@ -36,18 +40,18 @@
      * @return  string
      * @throws  security.auth.AuthenticatorException
      */
-    function lookup($user) {
+    public function lookup($user) {
       if ($this->_file->lastModified() != $this->_modified) {
         $hash= array();
-        try(); {
+        try {
           $this->_file->open(FILE_MODE_READ);
           while ($line= $this->_file->readLine()) {
             list($username, $crypt)= explode(':', $line, 2);
             $hash[$username]= $crypt;
           }
           $this->_file->close();
-        } if (catch('IOException', $e)) {
-          return throw(new AuthenticatorException(
+        } catch (IOException $e) {
+          throw(new AuthenticatorException(
             'Failed rehashing from '.$this->_file->getURI(), 
             $e
           ));
@@ -67,10 +71,10 @@
      * @return  bool
      * @throws  security.auth.AuthenticatorException
      */
-    function authenticate($user, $pass) {
+    public function authenticate($user, $pass) {
       if (!($crypt= $this->lookup($user))) return FALSE;
       return UnixCrypt::matches($crypt, $pass);
     }
       
-  } implements(__FILE__, 'security.auth.Authenticator');
+  } 
 ?>

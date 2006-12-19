@@ -20,14 +20,14 @@
      *
      * @access  public
      */
-    function service() {
+    public function service() {
       if (!$this->socket->isConnected()) return FALSE;
       
       $tcp= getprotobyname('tcp');
       while (!$this->terminate) {
-        try(); {
+        try {
           $m= &$this->socket->accept();
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           $this->shutdown();
           break;
         }
@@ -36,7 +36,7 @@
         // Have connection, fork child
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
-          return throw(new RuntimeError('Could not fork'));
+          throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
 
           // Close own copy of message socket
@@ -55,9 +55,9 @@
 
           // Loop
           do {
-            try(); {
+            try {
               $this->protocol->handleData($m);
-            } if (catch('IOException', $e)) {
+            } catch (IOException $e) {
               $this->protocol->handleError($m, $e);
               break;
             }

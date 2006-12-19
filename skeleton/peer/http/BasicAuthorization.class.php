@@ -22,7 +22,7 @@
    * @purpose  Basic Authorization header
    */
   class BasicAuthorization extends Header {
-    var 
+    public 
       $user = '',
       $pass = '';
     
@@ -33,7 +33,7 @@
      * @param   string user
      * @param   string pass
      */
-    function __construct($user, $pass) {
+    public function __construct($user, $pass) {
       $this->user= $user;
       $this->pass= $pass;
       parent::__construct('Authorization', 'Basic');
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */    
-    function getUser() {
+    public function getUser() {
       return $this->user;
     }
     
@@ -55,7 +55,7 @@
      * @access  public
      * @return  string
      */    
-    function getPassword() {
+    public function getPassword() {
       return $this->pass;
     }
     
@@ -67,7 +67,7 @@
      * @param   stirng value The header value
      * @return  peer.http.BasicAuthorization
      */    
-    function fromValue($value) {
+    public function fromValue($value) {
       if (!preg_match('/^Basic (.*)$/', $value, $matches)) return FALSE;
       list($user, $password)= explode(':', base64_decode($matches[1]), 2);
       return new BasicAuthorization($user, $password);
@@ -79,7 +79,7 @@
      * @access  public
      * @return  string value
      */
-    function getValueRepresentation() {
+    public function getValueRepresentation() {
       return $this->value.' '.base64_encode($this->user.':'.$this->pass);
     }
   }

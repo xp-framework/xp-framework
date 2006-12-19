@@ -6,7 +6,8 @@
 
   uses(
     'lang.reflect.Proxy',
-    'remote.RemoteInvocationHandler'
+    'remote.RemoteInvocationHandler',
+    'remote.protocol.SerializerMapping'
   );
 
   // Defines for context keys
@@ -21,7 +22,7 @@
    * @see      xp://remote.protocol.Serializer
    * @purpose  Serializer mapping
    */
-  class RemoteInterfaceMapping extends Object {
+  class RemoteInterfaceMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -32,26 +33,26 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
       $oid= $serialized->consumeSize();
       $serialized->offset++;    // '{'
       $interface= $serializer->valueOf($serialized, $context);
       $serialized->offset++;    // '}'
-      try(); {
+      try {
         $iclass= &XPClass::forName($interface);
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
+      } catch (ClassNotFoundException $e) {
+        throw($e);
       }
 
       $cl= &ClassLoader::getDefault();      
-      try(); {
+      try {
         $instance= &Proxy::newProxyInstance(
           $cl, 
           array($iclass), 
           RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
         );
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
+      } catch (ClassNotFoundException $e) {
+        throw($e);
       }
 
       return $instance;
@@ -66,7 +67,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$var, $context= array()) {
+    public function representationOf(&$serializer, &$var, $context= array()) {
       static $oid=  0;
       
       // Check if we've serialized this object before by looking it up
@@ -90,7 +91,7 @@
         }
       }
       
-      return throw(new IllegalArgumentException('Not a BeanInterface: '.$class->toString()));
+      throw(new IllegalArgumentException('Not a BeanInterface: '.$class->toString()));
     }
     
     /**
@@ -99,8 +100,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('lang.reflect.Proxy');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

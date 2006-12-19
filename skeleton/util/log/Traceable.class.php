@@ -11,7 +11,7 @@
    *
    * @purpose  Interface
    */
-  class Traceable extends Interface {
+  interface Traceable {
   
     /**
      * Set a trace for debugging
@@ -19,6 +19,6 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) { }
+    public function setTrace(&$cat);
   }
 ?>

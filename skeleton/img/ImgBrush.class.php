@@ -10,11 +10,11 @@
    * @see xp://img.Image#setBrush
    */
   class ImgBrush extends Object {
-    var
+    public
       $image    = NULL,
       $style    = NULL;
       
-    var
+    public
       $handle     = IMG_COLOR_STYLEDBRUSHED;
     
     /**
@@ -24,7 +24,7 @@
      * @param   img.Image an image object
      * @param   img.ImgStyle a style object
      */
-    function __construct(&$i, &$s) {
+    public function __construct(&$i, &$s) {
       $this->image= &$i;
       $this->style= &$s;
       

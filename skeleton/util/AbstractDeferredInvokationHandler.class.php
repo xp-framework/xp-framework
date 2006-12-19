@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  uses('util.DeferredInitializationException');
+  uses('util.DeferredInitializationException', 'lang.reflect.InvocationHandler');
 
   /**
    * Lazy initializable InvokationHandler 
    *
    * @purpose  proxy
    */
-  class AbstractDeferredInvokationHandler extends Object {
-    var
+  class AbstractDeferredInvokationHandler extends Object implements InvocationHandler {
+    public
       $_instance = NULL;
 
     /**
@@ -22,7 +22,7 @@
      * @access  protected
      * @return  &lang.Object
      */
-    function &initialize() { }
+    public function &initialize() { }
 
     /**
      * Processes a method invocation on a proxy instance and returns
@@ -35,17 +35,17 @@
      * @return  mixed
      * @throws  util.DeferredInitializationException
      */
-    function invoke(&$proxy, $method, $args) {
+    public function invoke(&$proxy, $method, $args) {
       if (!isset($this->_instance)) {
-        try(); {
+        try {
           $this->_instance= &$this->initialize();
-        } if (catch('Throwable', $e)) {
+        } catch (Throwable $e) {
           $this->_instance= NULL;
-          return throw(new DeferredInitializationException($method, $e));
+          throw(new DeferredInitializationException($method, $e));
         }
       }
       return call_user_func_array(array(&$this->_instance, $method), $args);
     }
     
-  } implements(__FILE__, 'lang.reflect.InvocationHandler');
+  } 
 ?>

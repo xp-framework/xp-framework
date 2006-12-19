@@ -11,7 +11,7 @@
    * @purpose  User
    */
   class IRCUser extends Object {
-    var
+    public
       $nick     = '',
       $username = '',
       $hostname = '',
@@ -26,7 +26,7 @@
      * @param   string username default NULL (defaults to current username)
      * @param   string hostname default 'localhost'
      */
-    function __construct($nick, $realname= NULL, $username= NULL, $hostname= 'localhost') {
+    public function __construct($nick, $realname= NULL, $username= NULL, $hostname= 'localhost') {
       
       $this->nick= $nick;
       $this->realname= $realname ? $realname : $nick;
@@ -40,7 +40,7 @@
      * @access  public
      * @param   string nick
      */
-    function setNick($nick) {
+    public function setNick($nick) {
       $this->nick= $nick;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @return  string
      */
-    function getNick() {
+    public function getNick() {
       return $this->nick;
     }
 
@@ -60,7 +60,7 @@
      * @access  public
      * @param   string username
      */
-    function setUsername($username) {
+    public function setUsername($username) {
       $this->username= $username;
     }
 
@@ -70,7 +70,7 @@
      * @access  public
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->username;
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @param   string hostname
      */
-    function setHostname($hostname) {
+    public function setHostname($hostname) {
       $this->hostname= $hostname;
     }
 
@@ -90,7 +90,7 @@
      * @access  public
      * @return  string
      */
-    function getHostname() {
+    public function getHostname() {
       return $this->hostname;
     }
 
@@ -100,7 +100,7 @@
      * @access  public
      * @param   string realname
      */
-    function setRealname($realname) {
+    public function setRealname($realname) {
       $this->realname= $realname;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @return  string
      */
-    function getRealname() {
+    public function getRealname() {
       return $this->realname;
     }
   }

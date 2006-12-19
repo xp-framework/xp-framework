@@ -13,7 +13,7 @@
    *
    */
   class SOAPLong extends SoapType {
-    var
+    public
       $long;
       
     /**
@@ -22,7 +22,7 @@
      * @access  public
      * @param   int long
      */  
-    function __construct($long) {
+    public function __construct($long) {
       $this->long= number_format($long, 0, FALSE, FALSE);
     }
     
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string 
      */    
-    function toString() {
+    public function toString() {
       return (string)$this->long;
     }
     
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'xsd:long';
     }
   }

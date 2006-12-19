@@ -11,7 +11,7 @@
    * @purpose  create an ipc message
    */
   class IPCMessage extends Object {
-    var
+    public
       $message        = '',
       $type           = 0;
 
@@ -22,7 +22,7 @@
      * @param   string message
      * @param   int messagetype
      */      
-    function __construct($message, $type= 1) {
+    public function __construct($message, $type= 1) {
       $this->message= $message;
       $this->type= $type;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @param   string message
      */
-    function setMessage($message) {
+    public function setMessage($message) {
       $this->message= $message;
     }
 
@@ -43,7 +43,7 @@
      * @access  public
      * @return  string
      */
-    function getMessage() {
+    public function getMessage() {
       return $this->message;
     }
 
@@ -53,7 +53,7 @@
      * @access  public
      * @param   mixed type
      */
-    function setType($type) {
+    public function setType($type) {
       $this->type= $type;
     }
 
@@ -63,7 +63,7 @@
      * @access  public
      * @return  mixed
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
   }

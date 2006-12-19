@@ -11,7 +11,7 @@
    * @purpose  Time and date
    */
   class TimeSpan extends Object {
-    var
+    public
       $_seconds = 0;
 
 
@@ -22,7 +22,7 @@
      * @param   int secs - an amount of seconds, absolute value is used
      * @throws  lang.IllegalArgumentException in case the value given is not numeric
      */
-    function __construct($secs= 0) {
+    public function __construct($secs= 0) {
       if (!is_numeric($secs)) {
         throw (new IllegalArgumentException(
           'Given argument is not an integer: '.xp::stringOf($secs)
@@ -38,7 +38,7 @@
      * @access  public
      * @return  int
      */
-    function getSeconds() {
+    public function getSeconds() {
       return $this->_seconds;
     }
 
@@ -49,8 +49,8 @@
      * @access  public
      * @return  int
      */
-    function getWholeSeconds() {
-      $ts= &new TimeSpan();
+    public function getWholeSeconds() {
+      $ts= new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
       $ts->addMinutes($this->getWholeMinutes());
@@ -64,7 +64,7 @@
      * @access  public
      * @return  int
      */
-    function getMinutes() {
+    public function getMinutes() {
       return floor($this->_seconds / 60);
     }
     
@@ -75,7 +75,7 @@
      * @access  public
      * @return  float
      */
-    function getMinutesFloat() {
+    public function getMinutesFloat() {
       return $this->_seconds / 60;
     }
 
@@ -86,8 +86,8 @@
      * @access  public
      * @return  int
      */
-    function getWholeMinutes() {
-      $ts = &new TimeSpan();
+    public function getWholeMinutes() {
+      $ts = new TimeSpan();
       $ts->addDays($this->getWholeDays());
       $ts->addHours($this->getWholeHours());
       return floor(($this->_seconds- $ts->getSeconds()) / 60);
@@ -99,7 +99,7 @@
      * @access  public
      * @param   int mins
      */
-    function addMinutes($mins) {
+    public function addMinutes($mins) {
       $this->_seconds+= $mins * 60;
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @return  int
      */
-    function getHours() {
+    public function getHours() {
       return floor($this->_seconds / 3600);
     }
     
@@ -121,7 +121,7 @@
      * @access  public
      * @return  float
      */
-    function getHoursFloat() {
+    public function getHoursFloat() {
       return $this->_seconds / 3600;
     }
 
@@ -132,8 +132,8 @@
      * @access  public
      * @return  int
      */
-    function getWholeHours() {
-      $ts= &new TimeSpan();
+    public function getWholeHours() {
+      $ts= new TimeSpan();
       $ts->addDays($this->getWholeDays());
       return floor(($this->_seconds- $ts->getSeconds()) / 3600);
     }
@@ -144,7 +144,7 @@
      * @access  public
      * @param   int hours
      */
-    function addHours($hours) {
+    public function addHours($hours) {
       $this->_seconds+= $hours * 3600;
     }
 
@@ -155,7 +155,7 @@
      * @access  public
      * @return  int
      */
-    function getDays() {
+    public function getDays() {
       return floor($this->_seconds / 86400);
     }
     
@@ -166,7 +166,7 @@
      * @access  public
      * @return  float
      */
-    function getDaysFloat() {
+    public function getDaysFloat() {
       return $this->_seconds / 86400;
     }
 
@@ -177,7 +177,7 @@
      * @access  public
      * @return  int
      */
-    function getWholeDays() {
+    public function getWholeDays() {
       return $this->getDays();
     }
 
@@ -187,7 +187,7 @@
      * @access  public
      * @param   int days
      */
-    function addDays($days) {
+    public function addDays($days) {
       $this->_seconds+= $days * 86400;
     }
 
@@ -213,7 +213,7 @@
      * @param   string format
      * @return  string the formatted timespan
      */
-    function format($format) {
+    public function format($format) {
       $return= '';
 
       $tok= strtok($format, '%');
@@ -271,7 +271,7 @@
      * @param   string format, defaults to '%ed, %yh, %jm, %ws'
      * @return  string
      */
-    function toString($format= '%ed, %yh, %jm, %ws') {
+    public function toString($format= '%ed, %yh, %jm, %ws') {
       return $this->format($format);
     }
   }

@@ -47,7 +47,7 @@
      * @param   int code
      * @return  string color representation
      */
-    function forCode($code) {
+    public static function forCode($code) {
       return "\3".$code;
     }
   }

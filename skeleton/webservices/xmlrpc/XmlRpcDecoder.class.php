@@ -23,7 +23,7 @@
      * @param   &xml.Node node
      * @return  &mixed
      */
-    function &decode(&$node) {
+    public function &decode(&$node) {
       return $this->_unmarshall($node);
     }
   
@@ -38,9 +38,9 @@
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException
      */
-    function &_unmarshall(&$node) {
+    public function &_unmarshall(&$node) {
       if (!is('xml.Node', $node->children[0]))
-        return throw(new XMLFormatException('Tried to access nonexistant node.'));
+        throw(new XMLFormatException('Tried to access nonexistant node.'));
         
       switch ($node->children[0]->getName()) {
         case 'struct':
@@ -58,10 +58,10 @@
             $cname= $ret['__xp_class'];
             
             // Load the class definition
-            try(); {
+            try {
               XPClass::forName($cname);
-            } if (catch('ClassNotFoundException', $e)) {
-              return throw($e);
+            } catch (ClassNotFoundException $e) {
+              throw($e);
             }
             
             // Cast the object to the class
@@ -102,7 +102,7 @@
           return $d;
           
         default:
-          return throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));
+          throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));
           break;
       }
     }

@@ -10,11 +10,11 @@
    * @see   xp://img.Image#setStyle
    */
   class ImgStyle extends Object {
-    var
+    public
       $colors   = array(),
       $pixels   = array();
       
-    var
+    public
       $handle     = IMG_COLOR_STYLED;
     
     /**
@@ -23,7 +23,7 @@
      * @access  public
      * @param   img.Color[] colors an array of pixels
      */
-    function __construct(&$colors) {
+    public function __construct(&$colors) {
       $this->colors= &$colors;
       for ($i= 0, $s= sizeof($this->colors); $i < $s; $i++) {
         $this->pixels[]= $this->colors[$i]->handle;
@@ -40,7 +40,7 @@
      * @return  int[] array of color indices
      * @see     php://imagesetstyle
      */
-    function getPixels() {
+    public function getPixels() {
       return $this->pixels;
     }
   }

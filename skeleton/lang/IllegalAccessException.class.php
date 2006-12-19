@@ -11,6 +11,6 @@
    * @see      xp://lang.Exception
    * @purpose  Exception
    */
-  class IllegalAccessException extends Exception {
+  class IllegalAccessException extends XPException {
   }
 ?>

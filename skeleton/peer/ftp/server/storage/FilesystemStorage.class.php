@@ -16,7 +16,7 @@
    * @purpose  Storage
    */
   class FilesystemStorage extends Object {
-    var
+    public
       $base   = array(),
       $root   = '';
 
@@ -26,7 +26,7 @@
      * @access  public
      * @return  string root
      */
-    function __construct($root) {
+    public function __construct($root) {
       $this->root= realpath(rtrim($root, DIRECTORY_SEPARATOR));
     }
     
@@ -37,7 +37,7 @@
      * @param   string uri
      * @return  string
      */
-    function realname($clientId, $uri) {
+    public function realname($clientId, $uri) {
       $path= (DIRECTORY_SEPARATOR == $uri{0}
         ? $uri
         : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
@@ -74,9 +74,9 @@
      * @param   string uri
      * @return  string new base
      */
-    function setBase($clientId, $uri= NULL) {
+    public function setBase($clientId, $uri= NULL) {
       if (!is_dir($path= $this->realname($clientId, $uri))) {
-        return throw(new IOException($uri.': not a directory'));
+        throw(new IOException($uri.': not a directory'));
       }
       $this->base[$clientId]= DIRECTORY_SEPARATOR.ltrim(
         str_replace($this->root, '', $path),
@@ -93,7 +93,7 @@
      * @param   int clientId
      * @return  string
      */
-    function getBase($clientId) {
+    public function getBase($clientId) {
       if (NULL == $this->base[$clientId]) { $this->setBase($clientId); }
       return $this->base[$clientId];
     }
@@ -108,7 +108,7 @@
      * @param int type
      * @return &peer.ftp.server.storage.StorageEntry
      */
-    function &createEntry($clientId, $uri, $type) {
+    public function &createEntry($clientId, $uri, $type) {
       $path= substr($this->realname($clientId, $uri), strlen($this->root));
       switch ($type) {
         case ST_ELEMENT:
@@ -128,19 +128,19 @@
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &create($clientId, $uri, $type) {
+    public function &create($clientId, $uri, $type) {
       $path= $this->realname($clientId, $uri);
 
       switch ($type) {
         case ST_ELEMENT:
           if (FALSE === touch($path)) {
-            return throw(new IOException('File '.$path.' could not be created'));
+            throw(new IOException('File '.$path.' could not be created'));
           }
           break;
         
         case ST_COLLECTION:
           if (FALSE === mkdir($path)) {
-            return throw(new IOException($path.' could not be created'));
+            throw(new IOException($path.' could not be created'));
           }
           break;
       }
@@ -155,7 +155,7 @@
      * @param   string uri
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    function &lookup($clientId, $uri) {
+    public function &lookup($clientId, $uri) {
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
       
       return $this->createEntry($clientId, $uri, is_dir($path) ? ST_COLLECTION : ST_ELEMENT);

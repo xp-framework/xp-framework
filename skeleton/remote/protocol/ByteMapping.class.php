@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.types.Byte');
+  uses('lang.types.Byte', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for lang.types.Byte
@@ -12,7 +12,7 @@
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping
    */
-  class ByteMapping extends Object {
+  class ByteMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -23,8 +23,8 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
-      $value= &new Byte($serialized->consumeWord());
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $value= new Byte($serialized->consumeWord());
       return $value;
     }
 
@@ -37,7 +37,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       return 'B:'.$value->value.';';
     }
     
@@ -47,8 +47,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('lang.types.Byte');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

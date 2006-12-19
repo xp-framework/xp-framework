@@ -43,7 +43,7 @@
    * @purpose   Provide a client to access an webdav server
    */
   class WebdavClient extends Object {
-    var 
+    public 
       $url=     NULL,
       $uri=     '',
       $path=    '',
@@ -59,8 +59,8 @@
      * @access  public
      * @param   mixed url either a string or a peer.URL object
      */
-    function __construct($url) {
-      if (!is_a($url, 'URL')) $this->url= &new URL($url); else $this->url= &$url;
+    public function __construct($url) {
+      if (!is('URL', $url)) $this->url= new URL($url); else $this->url= &$url;
     }
     
     /**
@@ -70,8 +70,8 @@
      * @param   string uri
      * @return  &peer.webdav.WebdavConnection
      */
-    function &getConnection($uri= NULL) {
-      $url= &new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
+    public function &getConnection($uri= NULL) {
+      $url= new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
       return new WebdavConnection($url);
     }
     
@@ -81,7 +81,7 @@
      * @access  public
      * @param   string path
      */
-    function setPath($path) {
+    public function setPath($path) {
       $this->path= $path;
     }
     
@@ -93,12 +93,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function exists($uri) {    
-      try(); {
+    public function exists($uri) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->head();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;  
     }
@@ -113,8 +113,8 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function &read($uri= NULL, $xml= NULL, $depth= '1') {     
-      try(); {
+    public function &read($uri= NULL, $xml= NULL, $depth= '1') {     
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->propfind(
           $xml,
@@ -122,8 +122,8 @@
             new Header('Depth', $depth)
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;
     }
@@ -137,7 +137,7 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function &put(&$file, $uri= NULL) {  
+    public function &put(&$file, $uri= NULL) {  
       // If no uri or filename is specified, take the original filename  
       if ($uri === NULL) $uri= $file->getFilename();
             
@@ -145,7 +145,7 @@
       $uri= rawurlencode($uri);    
       
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
-      try(); {
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->put(
           $file->read($file->size()),
@@ -153,8 +153,8 @@
             new Header('Content-Type', MimeType::getByFilename($uri))
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;
     }
@@ -167,12 +167,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function &get($uri= NULL) {    
-      try(); {
+    public function &get($uri= NULL) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->get();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;
     }
@@ -186,12 +186,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function &proppatch($xml, $uri= NULL) {          
-      try(); {
+    public function &proppatch($xml, $uri= NULL) {          
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->proppatch($xml);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;    
     }
@@ -204,12 +204,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function mkcol($uri) {        
-      try(); {
+    public function mkcol($uri) {        
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->mkcol();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;      
     }
@@ -225,8 +225,8 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
-      try(); {
+    public function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
+      try {
         $c= &$this->getConnection($source);
         $response= &$c->copy(
           NULL,
@@ -236,8 +236,8 @@
             new Header('Depth', $depth)
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;      
     }
@@ -252,8 +252,8 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function move($source, $destination, $overwrite= FALSE) {   
-      try(); {
+    public function move($source, $destination, $overwrite= FALSE) {   
+      try {
         $c= &$this->getConnection($source);
         $response= &$c->move(
           NULL,
@@ -262,8 +262,8 @@
             new Header('Destination', $destination)
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;     
     }
@@ -277,8 +277,8 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function lock($uri, $xml) {    
-      try(); {
+    public function lock($uri, $xml) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->lock(
           $xml,
@@ -288,8 +288,8 @@
             new Header('Content-Length', strlen($xml))
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;   
     }  
@@ -303,8 +303,8 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function unlock($uri, $locktoken) {    
-      try(); {
+    public function unlock($uri, $locktoken) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->unlock(
           NULL,
@@ -312,8 +312,8 @@
             new Header('Lock-Token', $locktoken)
           )
         );
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;  
     }
@@ -326,12 +326,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function delete($uri) {    
-      try(); {
+    public function delete($uri) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->delete();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;  
     }
@@ -344,12 +344,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function version($uri) {    
-      try(); {
+    public function version($uri) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->version();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;  
     }
@@ -362,12 +362,12 @@
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    function report($uri) {    
-      try(); {
+    public function report($uri) {    
+      try {
         $c= &$this->getConnection($uri);
         $response= &$c->report();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return $response;  
     }

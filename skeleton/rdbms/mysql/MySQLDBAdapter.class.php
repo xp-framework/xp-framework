@@ -20,7 +20,7 @@
      * @access  public
      * @param   &Object conn database connection
      */
-    function __construct(&$conn) {
+    public function __construct(&$conn) {
       $this->map= array(
         'varchar'    => DB_ATTRTYPE_VARCHAR,
         'int'        => DB_ATTRTYPE_INT,
@@ -41,15 +41,15 @@
      * @access  public
      * @return  string[] databases
      */
-    function getDatabases() {
+    public function getDatabases() {
       $dbs= array();
-      try(); {
+      try {
         $q= &$this->conn->query('show databases');
         while ($name= $q->next('name')) {
           $dbs[]= $name;
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return $dbs;
@@ -62,15 +62,15 @@
      * @param   string database
      * @return  rdbms.DBTable[] array of DBTable objects
      */
-    function getTables($database) {
+    public function getTables($database) {
       $t= array();
-      try(); {
+      try {
         $q= &$this->conn->query('show tables');
         while ($table= $q->next()) {
           $t[]= &$this->getTable($table[key($table)]);
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return $t;
@@ -83,9 +83,9 @@
      * @param   string table
      * @return  rdbms.DBTable a DBTable object
      */
-    function getTable($table) {
-      $t= &new DBTable($table);
-      try(); {
+    public function getTable($table) {
+      $t= new DBTable($table);
+      try {
       
         // Get the table's attributes
         // +-------------+--------------+------+-----+---------------------+----------------+
@@ -138,8 +138,8 @@
           $index->primary= ('PRIMARY' == $record['Key_name']);
           $index->keys[]= $record['Column_name'];
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return $t;

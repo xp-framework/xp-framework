@@ -26,7 +26,7 @@
      * @param   string str
      * @return  string
      */
-    function encode($str) { 
+    public static function encode($str) { 
       return utf8_encode($str);
     }
     
@@ -38,7 +38,7 @@
      * @param   string str
      * @return  string
      */
-    function decode($str) { 
+    public static function decode($str) { 
       return utf8_decode($str);
     }
   }

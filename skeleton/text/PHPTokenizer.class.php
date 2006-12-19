@@ -16,11 +16,11 @@
    * @see   xp://text.apidoc.parser.GenericParser
    */ 
   class PHPTokenizer extends Object {
-    var 
+    public 
       $tokens= array(),
       $rules=  array();
       
-    var
+    public
       $_offset,
       $_size;
       
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string str a string containing all of the tokens
      */
-    function setTokenString($str) {
+    public function setTokenString($str) {
       $this->tokens= token_get_all($str);
       $this->_offset= 0;
       $this->_size= sizeof($this->tokens);
@@ -42,7 +42,7 @@
      * @access  public
      * @param   array tokens
      */
-    function setTokens($tokens) {
+    public function setTokens($tokens) {
       $this->tokens= $tokens;
       $this->_offset= 0;
       $this->_size= sizeof($tokens);
@@ -55,7 +55,7 @@
      * @param   int tok Token constant, e.g. T_WHITESPACE
      * @return  string name
      */
-    function getTokenName($tok) {
+    public function getTokenName($tok) {
       switch ($tok) {
         case T_NONE:  return 'T_NONE';
         case T_ANY:   return 'T_ANY';
@@ -89,7 +89,7 @@
      * @param   mixed callback either a string or array(&$obj, 'function') syntax
      * @param   array params parameters for callback
      */
-    function addRule($name, $match, $callback, $params) {
+    public function addRule($name, $match, $callback, $params) {
       $this->rules[$name]= array(
         'expect'        => 0,
         'match'         => $match, 
@@ -105,7 +105,7 @@
      * @param   int i offset
      * @return  array tokendata (type, cdata)
      */
-    function getToken($i) {
+    public function getToken($i) {
       return (is_array($this->tokens[$i])
         ? $this->tokens[$i]
         : array(T_NONE, $this->tokens[$i])
@@ -118,7 +118,7 @@
      * @access  public
      * @return  array first token
      */
-    function getFirstToken() {
+    public function getFirstToken() {
       return $this->getToken($this->_offset= 0);
     }
     
@@ -128,7 +128,7 @@
      * @access  public
      * @return  array next token from current offset or FALSE when no more tokens exist
      */
-    function getNextToken() {
+    public function getNextToken() {
       if (++$this->_offset >= $this->_size) return FALSE;
       return $this->getToken($this->_offset);
     }
@@ -140,7 +140,7 @@
      * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  bool success
      */
-    function applyRules($CAT= NULL) {
+    public function applyRules($CAT= NULL) {
       $data= array();
       
       // Loop throught tokens

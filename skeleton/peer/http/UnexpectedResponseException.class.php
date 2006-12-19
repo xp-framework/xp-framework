@@ -10,8 +10,8 @@
    * @see      xp://peer.http.HttpUtil
    * @purpose  Exception
    */
-  class UnexpectedResponseException extends Exception {
-    var
+  class UnexpectedResponseException extends XPException {
+    public
       $statuscode = 0;
 
     /**
@@ -21,7 +21,7 @@
      * @param   string message
      * @param   int statuscode
      */
-    function __construct($message, $statuscode= 0) {
+    public function __construct($message, $statuscode= 0) {
       parent::__construct($message);
       $this->statuscode= $statuscode;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @param   int statuscode
      */
-    function setStatusCode($statuscode) {
+    public function setStatusCode($statuscode) {
       $this->statuscode= $statuscode;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  int
      */
-    function getStatusCode() {
+    public function getStatusCode() {
       return $this->statuscode;
     }
     
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s (statuscode %d: %s)',
         $this->getClassName(),

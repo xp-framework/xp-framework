@@ -22,10 +22,10 @@
      * @param   string string
      * @return  &webservices.json.rpc.JsonRequestMessage
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       $decoder= &JsonFactory::create();
 
-      $msg= &new JsonRequestMessage();
+      $msg= new JsonRequestMessage();
       $data= $decoder->decode($string);
 
       $msg->data= $data;
@@ -45,7 +45,7 @@
      * @param   string method
      * @param   int id
      */
-    function create($method= NULL, $id= NULL) {
+    public function create($method= NULL, $id= NULL) {
       $this->method= $method;
       $this->id= $id;
     }
@@ -56,7 +56,7 @@
      * @access  public
      * @param   mixed data
      */
-    function setData($data) {
+    public function setData($data) {
       $this->data= array(
         'method'  => $this->method,
         'params'  => (array)$data,
@@ -70,7 +70,7 @@
      * @access  public 
      * @return  mixed
      */
-    function &getData() {
+    public function &getData() {
       return $this->data['params'];
     }    
   }

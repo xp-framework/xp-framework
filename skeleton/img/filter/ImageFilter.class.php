@@ -12,7 +12,7 @@
    * @see      xp://img.Image#apply
    * @purpose  Interface
    */
-  class ImageFilter extends Interface {
+  interface ImageFilter {
   
     /**
      * Apply this filter on a given image. Note: This changes the given image!
@@ -22,6 +22,6 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function applyOn(&$image) { }
+    public function applyOn(&$image);
   }
 ?>

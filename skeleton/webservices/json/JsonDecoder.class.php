@@ -4,7 +4,12 @@
  * $Id$ 
  */
  
-  uses('io.Stream', 'text.StringTokenizer', 'webservices.json.JsonException');
+  uses(
+    'io.Stream',
+    'text.StringTokenizer',
+    'webservices.json.JsonException',
+    'webservices.json.IJsonDecoder'
+  );
 
   // Defines for the tokenizer
   define('JSON_TOKEN_LBRACE',     0x0000);
@@ -22,11 +27,11 @@
    * @see       http://json.org
    * @purpose   JSON en- and decoder
    */
-  class JsonDecoder extends Object {
-    var
+  class JsonDecoder extends Object implements IJsonDecoder {
+    public
       $stream     = NULL;
     
-    var
+    public
       $_tokenValue  = NULL;
   
     /**
@@ -37,7 +42,7 @@
      * @return  string
      * @throws  webservices.json.JsonException if the data could not be serialized
      */
-    function encode($data) {
+    public function encode($data) {
       static $controlChars= array(
         '"'   => '\\"', 
         '\\'  => '\\\\', 
@@ -68,7 +73,7 @@
         case 'object': {
           // Convert objects to arrays and store the classname with them as
           // suggested by JSON-RPC
-          if (is('lang.Object', $data)) {
+          if (is('lang.Generic', $data)) {
             if (!method_exists($data, '__sleep')) {
               $vars= get_object_vars($data);
             } else {
@@ -119,7 +124,7 @@
         }
         
         default: {
-          return throw(new JsonException('Cannot encode data of type '.gettype($data)));
+          throw(new JsonException('Cannot encode data of type '.gettype($data)));
         }
       }
     }
@@ -131,8 +136,8 @@
      * @param   string string
      * @return  mixed
      */
-    function decode($string) {
-      $this->stream= &new Stream();
+    public function decode($string) {
+      $this->stream= new Stream();
       $this->stream->open(STREAM_MODE_READWRITE);
       $this->stream->write($string);
       $this->stream->rewind();
@@ -158,7 +163,7 @@
      * @access  protected
      * @return  array
      */
-    function _decodeArray() {
+    public function _decodeArray() {
       $array= array();
       do {
         $token= $this->_getNextToken();
@@ -186,7 +191,7 @@
      * @access  protected
      * @return  &stdclass
      */
-    function _decodeObject() {
+    public function _decodeObject() {
       $array= array();
       do {
         $token= $this->_getNextToken();
@@ -235,7 +240,7 @@
      * @access  protected
      * @return  int
      */
-    function _getNextToken() {
+    public function _getNextToken() {
       if ($this->stream->eof()) return JSON_TOKEN_EOF;
       $this->_trim();
       
@@ -289,7 +294,7 @@
         }
         
         default: 
-          return throw(new JsonException('Invalid character: "'.token.'" at position '.$this->stream->tell()));
+          throw(new JsonException('Invalid character: "'.token.'" at position '.$this->stream->tell()));
       }
     }
     
@@ -299,7 +304,7 @@
      * @access  protected
      * @return  mixed
      */
-    function _getTokenValue() {
+    public function _getTokenValue() {
       return $this->_tokenValue;
     }    
     
@@ -309,7 +314,7 @@
      *
      * @access  protected
      */
-    function _trim() {
+    public function _trim() {
       $str= $this->stream->read(10);
       $this->stream->seek($this->stream->tell() - strlen($str) + (strlen($str) - strlen(ltrim($str, ' '))));
     }
@@ -321,7 +326,7 @@
      * @return  string
      * @throws  webservices.json.JsonException if the string could not be parsed
      */
-    function _readString() {
+    public function _readString() {
       do {
         $initpos= $this->stream->tell();
         $offset= 0;
@@ -329,7 +334,7 @@
         $ret= '';
       
         $esc= FALSE;
-        $tokenizer= &new StringTokenizer($str, '\"', TRUE);
+        $tokenizer= new StringTokenizer($str, '\"', TRUE);
         $tok= '';
         while (strlen($tok) || $tokenizer->hasMoreTokens()) {
           if (empty($tok)) {
@@ -375,7 +380,7 @@
           }
         }
       } while (!$this->stream->eof());
-      return throw(new JsonException('String not well-formed.'));
+      throw(new JsonException('String not well-formed.'));
     }
     
     /**
@@ -384,7 +389,7 @@
      * @access  protected
      * @return  mixed
      */
-    function _readNumber() {
+    public function _readNumber() {
       $initpos= $this->stream->tell();
       $str= $this->stream->read();
       
@@ -407,7 +412,7 @@
      * @param   array data
      * @return  bool
      */
-    function _isVector($data) {
+    public function _isVector($data) {
       $start= 0;
       foreach (array_keys($data) as $key) {
         if ($key !== $start++) return FALSE;
@@ -415,5 +420,5 @@
       
       return TRUE;
     }
-  } implements(__FILE__, 'webservices.json.IJsonDecoder');
+  } 
 ?>

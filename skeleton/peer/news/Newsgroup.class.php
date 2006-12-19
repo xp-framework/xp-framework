@@ -12,7 +12,7 @@
    * @purpose  Base class
    */
   class Newsgroup extends Object {
-    var
+    public
       $name         = '',
       $last         = NULL,
       $first        = NULL,
@@ -26,7 +26,7 @@
      * @param   string lastmessage
      * @param   string firstmessage
      */
-    function __construct($name, $last, $first, $flags) {
+    public function __construct($name, $last, $first, $flags) {
       $this->name= $name;
       $this->last= $last;
       $this->first= $first;
@@ -39,7 +39,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -59,7 +59,7 @@
      * @access  public
      * @param   int last
      */
-    function setLast($last) {
+    public function setLast($last) {
       $this->last= $last;
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  int
      */
-    function getLast() {
+    public function getLast() {
       return $this->last;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   int first
      */
-    function setFirst($first) {
+    public function setFirst($first) {
       $this->first= $first;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  int
      */
-    function getFirst() {
+    public function getFirst() {
       return $this->first;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   string flags
      */
-    function setFlags($flags) {
+    public function setFlags($flags) {
       $this->flags= $flags;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  string
      */
-    function getFlags() {
+    public function getFlags() {
       return $this->flags;
     }
   }

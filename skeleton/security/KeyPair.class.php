@@ -56,17 +56,17 @@
      * @param   int bits default 1024
      * @return  &security.KeyPair
      */
-    function &generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
+    public function &generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
       if (FALSE === ($res= openssl_pkey_new(array(
         'digest_alg'        => $algorithm,
         'private_key_type'  => $type,
         'private_key_bits'  => $bits
       )))) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        return throw(new Exception('Could not generate keypair'));
+        throw(new XPException('Could not generate keypair'));
       }
       
-      $k= &new KeyPair();
+      $k= new KeyPair();
       $k->_res= $res;
       return $k;
     }
@@ -78,10 +78,10 @@
      * @param   string passphrase default NULL
      * @return  string key
      */
-    function export($passphrase= NULL) {
+    public function export($passphrase= NULL) {
       if (FALSE === openssl_pkey_export($this->_res, $out, $passphrase)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        return throw(new Exception('Could not export key'));
+        throw(new XPException('Could not export key'));
       }
       
       return $out;
@@ -93,7 +93,7 @@
      * @access  public
      * @return  &security.crypto.PrivateKey
      */
-    function &getPrivateKey() {
+    public function &getPrivateKey() {
       return new PrivateKey(openssl_pkey_get_private($this->export(NULL)));
     }
   }

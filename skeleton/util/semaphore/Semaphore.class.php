@@ -11,7 +11,7 @@
    * @purpose  Semaphore to serialize request
    */
   class Semaphore extends Object {
-    var
+    public
       $name=    '',
       $storage= NULL;
   
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string name default 'semaphore'
      */  
-    function __construct(&$storage, $name= 'semaphore') {
+    public function __construct(&$storage, $name= 'semaphore') {
       $this->storage= &$storage;
       $this->name= $name;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @return  bool succeed
      */
-    function lock() { }
+    public function lock() { }
     
     /**
      * Remove the semaphore to unlock
@@ -42,7 +42,7 @@
      * @access  public
      * @return  bool succeed
      */
-    function unlock() { }
+    public function unlock() { }
     
     /**
      * Retrieve the creation time of the semaphore
@@ -52,7 +52,7 @@
      * @access  public
      * @return  int utime
      */
-    function getCreatedAt() { }
+    public function getCreatedAt() { }
     
   }
 ?>

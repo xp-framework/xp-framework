@@ -6,7 +6,8 @@
 
   uses(
     'peer.ldap.LDAPClient',
-    'security.crypto.UnixCrypt'
+    'security.crypto.UnixCrypt',
+    'security.auth.Authenticator'
   );
 
   /**
@@ -14,8 +15,8 @@
    *
    * @purpose  Authenticator
    */
-  class LdapAuthenticator extends Object {
-    var
+  class LdapAuthenticator extends Object implements Authenticator {
+    public
       $lc     = NULL,
       $basedn = '';
 
@@ -26,7 +27,7 @@
      * @param   &peer.ldap.LDAPClient lc
      * @param   string basedn
      */
-    function __construct(&$lc, $basedn) {
+    public function __construct(&$lc, $basedn) {
       $this->lc= &$lc;
       $this->basedn= $basedn;
     }
@@ -39,17 +40,17 @@
      * @param   string pass
      * @return  bool
      */
-    function authenticate($user, $pass) {
-      try(); {
+    public function authenticate($user, $pass) {
+      try {
         $r= $this->lc->search($this->basedn, '(uid='.$user.')');
-      } if (catch('LDAPException', $e)) {
-        return throw(new AuthenticatorException(sprintf(
+      } catch (LDAPException $e) {
+        throw(new AuthenticatorException(sprintf(
           'Authentication failed (#%d: "%s")', 
           $e->getErrorCode(),
           $e->getMessage()
         ), $e));
-      } if (catch('ConnectException', $e)) {
-        return throw(new AuthenticatorException(sprintf(
+      } catch (ConnectException $e) {
+        throw(new AuthenticatorException(sprintf(
           'Authentication failed (<connect>: "%s")', 
           $e->getMessage()
         ), $e));
@@ -62,5 +63,5 @@
       return UnixCrypt::matches($entry->getAttribute('userpassword', 0), $pass);
     }
     
-  } implements(__FILE__, 'security.auth.Authenticator');
+  } 
 ?>

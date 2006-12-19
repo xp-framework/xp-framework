@@ -24,7 +24,7 @@
    * @purpose  Base class for database connections
    */
   class DBConnection extends Observable {
-    var 
+    public 
       $handle  = NULL,
       $dsn     = NULL,
       $timeout = 0,
@@ -36,7 +36,7 @@
      * @access  public
      * @param   &rdbms.DSN dsn
      */
-    function __construct(&$dsn) { 
+    public function __construct(&$dsn) { 
       $this->dsn= &$dsn;
       $this->flags= $dsn->getFlags();
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
@@ -49,11 +49,11 @@
       
       // Add observers
       foreach (array_keys($obs) as $observer) {
-        try(); {
+        try {
           $class= &XPClass::forName($observer);
           $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
-        } if (catch('ClassNotFoundException', $e)) {
-          return throw ($e);
+        } catch (ClassNotFoundException $e) {
+          throw ($e);
         }
 
         $this->addObserver($inst);
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
 
@@ -81,7 +81,7 @@
      * @access  public
      * @param   int timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       $this->timeout= $timeout;
     }
 
@@ -91,7 +91,7 @@
      * @access  public
      * @return  int
      */
-    function getTimeout() {
+    public function getTimeout() {
       return $this->timeout;
     }
     
@@ -101,7 +101,7 @@
      * @access  public
      * @param   int flag
      */
-    function setFlag($flag) { 
+    public function setFlag($flag) { 
       $this->flags |= $flag;
     }
     
@@ -111,7 +111,7 @@
      * @access  public
      * @return  bool success
      */
-    function connect() { 
+    public function connect() { 
       if ($db= $this->dsn->getDatabase()) {
         return $this->selectdb($db);
       }
@@ -125,7 +125,7 @@
      * @access  public
      * @return  bool
      */
-    function hasChanged() {
+    public function hasChanged() {
       return TRUE;
     }
 
@@ -135,7 +135,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { }
+    public function close() { }
     
     /**
      * Select database
@@ -144,7 +144,7 @@
      * @param   string db name of database to select
      * @return  bool success
      */
-    function selectdb($db) { }
+    public function selectdb($db) { }
 
     /**
      * Prepare an SQL statement
@@ -153,7 +153,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() { }
+    public function prepare() { }
     
     /**
      * Execute an insert statement
@@ -162,7 +162,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    function insert() { }
+    public function insert() { }
     
     /**
      * Retrieve identity
@@ -170,7 +170,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity() { }
+    public function identity() { }
     
     /**
      * Execute an update statement
@@ -179,7 +179,7 @@
      * @param   mixed* args
      * @return  int number of affected rows
      */
-    function update() { }
+    public function update() { }
     
     /**
      * Execute an update statement
@@ -188,7 +188,7 @@
      * @param   mixed* args
      * @return  int number of affected rows
      */
-    function delete() { }
+    public function delete() { }
     
     /**
      * Execute a select statement
@@ -197,7 +197,7 @@
      * @param   mixed* args
      * @return  array rowsets
      */
-    function select() { }
+    public function select() { }
     
     /**
      * Execute any statement
@@ -206,7 +206,7 @@
      * @param   mixed* args
      * @return  &rdbms.ResultSet
      */
-    function &query() { }
+    public function &query() { }
     
     /**
      * Begin a transaction
@@ -215,7 +215,7 @@
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    function &begin(&$transaction) { }
+    public function &begin(&$transaction) { }
     
     /**
      * Retrieve transaction state
@@ -224,7 +224,7 @@
      * @param   string name
      * @return  mixed state
      */
-    function transtate($name) { }
+    public function transtate($name) { }
     
     /**
      * Rollback a transaction
@@ -233,7 +233,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { }
+    public function rollback($name) { }
     
     /**
      * Commit a transaction
@@ -242,6 +242,6 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { }
+    public function commit($name) { }
   }
 ?>

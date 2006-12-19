@@ -17,7 +17,7 @@
    * @purpose  Factory
    */
   class HandlerFactory extends Object {
-    var
+    public
       $handlers= array();
 
     /**
@@ -27,7 +27,7 @@
      * @model   static
      * @access  public
      */
-    function __static() {
+    public static function __static() {
       $self= &HandlerFactory::getInstance();
       $self->register('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
     }
@@ -39,7 +39,7 @@
      * @access  public
      * @return  &remote.HandlerFactory
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!isset($instance)) $instance= new HandlerFactory();
@@ -54,7 +54,7 @@
      * @param   &lang.XPClass<remote.protocol.ProtocolHandler> handler class
      * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
      */
-    function &register($type, &$handler) {
+    public function &register($type, &$handler) {
       $this->handlers[$type]= &$handler;
       return $handler;
     }
@@ -68,10 +68,10 @@
      * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
      * @throws  remote.protocol.UnknownProtocolException
      */
-    function &handlerFor($type) {
+    public static function &handlerFor($type) {
       $self= &HandlerFactory::getInstance();
       if (!isset($self->handlers[$type])) {
-        return throw(new UnknownProtocolException($type));
+        throw(new UnknownProtocolException($type));
       }
       return $self->handlers[$type];
     }

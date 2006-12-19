@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: XmlRpcFault.class.php 6701 2006-03-27 17:27:39Z kiesel $ 
+ * $Id: RpcFault.class.php 7447 2006-07-21 16:15:49Z kiesel $ 
  */
 
   /**
@@ -10,7 +10,7 @@
    * @purpose  Wrap fault
    */
   class RpcFault extends Object {
-    var
+    public
       $faultCode=     0,
       $faultString=   '';
 
@@ -21,7 +21,7 @@
      * @param   int code
      * @param   string string
      */
-    function __construct($code, $string) {
+    public function __construct($code, $string) {
       $this->faultCode= $code;
       $this->faultString= $string;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @param   int faultCode
      */
-    function setFaultCode($faultCode) {
+    public function setFaultCode($faultCode) {
       $this->faultCode= $faultCode;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  int
      */
-    function getFaultCode() {
+    public function getFaultCode() {
       return $this->faultCode;
     }
 
@@ -52,7 +52,7 @@
      * @access  public
      * @param   string faultString
      */
-    function setFaultString($faultString) {
+    public function setFaultString($faultString) {
       $this->faultString= $faultString;
     }
 
@@ -62,7 +62,7 @@
      * @access  public
      * @return  string
      */
-    function getFaultString() {
+    public function getFaultString() {
       return $this->faultString;
     }
   }

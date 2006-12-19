@@ -18,7 +18,7 @@
    * @purpose  Checker
    */
   class RegexpChecker extends ParamChecker {
-    var
+    public
       $pattern  = '';
     
     /**
@@ -27,7 +27,7 @@
      * @access  public
      * @param   string pattern including the delimiters
      */
-    function __construct($pattern) {
+    public function __construct($pattern) {
       $this->pattern= $pattern;
     }
     
@@ -38,7 +38,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) { 
+    public function check($value) { 
       foreach ($value as $v) {
         if (!preg_match($this->pattern, $v)) return 'nomatch';
       }    

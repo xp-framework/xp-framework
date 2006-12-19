@@ -23,7 +23,7 @@
      * @access  public
      * @return  &webservices.soap.SOAPMessage message object
      */
-    function &getMessage() {
+    public function &getMessage() {
       $m= &SOAPMessage::fromString($this->getData());
       list(
         $class, 

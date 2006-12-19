@@ -12,7 +12,7 @@
    * @see      xp://security.Policy
    */
   class Permission extends Object {
-    var
+    public
       $name     = '',
       $actions  = array();
       
@@ -22,7 +22,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name, $actions) {
+    public function __construct($name, $actions) {
       $this->name= $name;
       $this->actions= $actions;
       
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string[]
      */
-    function getActions() {
+    public function getActions() {
       return $this->actions;
     }
     
@@ -60,7 +60,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         'permission %s: "%s", "%s";',
         $this->getClassName(),

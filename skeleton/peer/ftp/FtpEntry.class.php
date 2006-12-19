@@ -14,7 +14,7 @@
    * @purpose  Base class
    */
   class FtpEntry extends Object {
-    var
+    public
       $name         = '',
       $permissions  = 0,
       $numlinks     = 0,
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
 
@@ -47,7 +47,7 @@
      * @param   mixed perm
      * @throws  lang.IllegalArgumentException
      */
-    function setPermissions($perm) {
+    public function setPermissions($perm) {
       static $m= array('r' => 4, 'w' => 2, 'x' => 1, '-' => 0);
 
       if (is_string($perm) && 9 == strlen($perm)) {
@@ -59,7 +59,7 @@
       } else if (is_int($perm)) {
         $this->permissions= $perm;
       } else {
-        return throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));
+        throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));
       }
     }
 
@@ -69,7 +69,7 @@
      * @access  public
      * @return  int
      */
-    function getPermissions() {
+    public function getPermissions() {
       return $this->permissions;
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   int numlinks
      */
-    function setNumlinks($numlinks) {
+    public function setNumlinks($numlinks) {
       $this->numlinks= $numlinks;
     }
 
@@ -89,7 +89,7 @@
      * @access  public
      * @return  int
      */
-    function getNumlinks() {
+    public function getNumlinks() {
       return $this->numlinks;
     }
 
@@ -99,7 +99,7 @@
      * @access  public
      * @param   string user
      */
-    function setUser($user) {
+    public function setUser($user) {
       $this->user= $user;
     }
 
@@ -109,7 +109,7 @@
      * @access  public
      * @return  string
      */
-    function getUser() {
+    public function getUser() {
       return $this->user;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @param   string group
      */
-    function setGroup($group) {
+    public function setGroup($group) {
       $this->group= $group;
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @return  string
      */
-    function getGroup() {
+    public function getGroup() {
       return $this->group;
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @param   int size
      */
-    function setSize($size) {
+    public function setSize($size) {
       $this->size= $size;
     }
 
@@ -149,7 +149,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       return $this->size;
     }
 
@@ -159,7 +159,7 @@
      * @access  public
      * @param   &util.Date date
      */
-    function setDate(&$date) {
+    public function setDate(&$date) {
       $this->date= &$date;
     }
 
@@ -169,7 +169,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
 
@@ -179,7 +179,7 @@
      * @access  public
      * @param   mixed name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -189,7 +189,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -199,7 +199,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(name= %s) {\n".
         "  [permissions ] %d\n".

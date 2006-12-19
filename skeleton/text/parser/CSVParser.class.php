@@ -14,7 +14,7 @@
    * @see     http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm
    */
   class CSVParser extends Object {
-    var
+    public
       $stream=    NULL,
       $hasHeader= FALSE,
       $colDelim=  '|',
@@ -30,7 +30,7 @@
      * @param   string delim delimiter
      * @return  string token
      */
-    function _strtok(&$string, $delim) {
+    public function _strtok(&$string, $delim) {
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
@@ -54,11 +54,11 @@
      * @access  public
      * @param   Stream stream
      */    
-    function setInputStream(&$stream) {
-      try(); {
+    public function setInputStream(&$stream) {
+      try {
         if (!$stream->isOpen()) $stream->open();
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       $this->stream= &$stream;
     }
@@ -72,7 +72,7 @@
      * @access  public
      * @param   string delimiter delimiter to set
      */
-    function setColDelimiter($delim) {
+    public function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
     }
     
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string guesseddelimiter
      */
-    function guessDelimiter() {
+    public function guessDelimiter() {
       $pos= $this->stream->tell();
       $line= $this->_getNextRecord();
       
@@ -116,7 +116,7 @@
      * @access  public
      * @return  bool hasHeader TRUE, if header is available
      */
-    function hasHeader() {
+    public function hasHeader() {
       return is_array($this->colName) && !empty($this->colName);
     }
     
@@ -129,7 +129,7 @@
      * @param   string columnname
      * @return  int columnindex
      */    
-    function getColumnIndex($column) {
+    public function getColumnIndex($column) {
       $reverse= array_flip($this->colName);
       if (!isset($reverse[$column])) return FALSE; else return $reverse[$column];
     }
@@ -142,8 +142,8 @@
      * @access  private
      * @return  string buffer
      */    
-    function &_getNextRecord() {
-      try(); {
+    public function &_getNextRecord() {
+      try {
         if ($this->stream->eof()) return FALSE;
 
         $row= $this->stream->readLine();
@@ -151,8 +151,8 @@
           $row.= "\n".$this->stream->readLine();
       
         $this->buffer= $row;
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return $this->buffer;
@@ -167,7 +167,7 @@
      * @access  private
      * @return  string buffer
      */
-    function _parseColumn() {
+    public function _parseColumn() {
       if (empty($this->buffer)) return FALSE;
 
       $tok= $this->_strtok($this->buffer, $this->colDelim);
@@ -199,7 +199,7 @@
      *
      * @access  public
      */    
-    function getHeaderRecord() {
+    public function getHeaderRecord() {
       $this->colName= $this->getNextRecord();
     }
     
@@ -210,7 +210,7 @@
      * @access  public
      * @param   array headers
      */    
-    function setHeaderRecord($headers) {
+    public function setHeaderRecord($headers) {
       $this->colName= $headers;
     }
     
@@ -221,7 +221,7 @@
      * @param   int number
      * @return  string name or FALSE if none is available
      */
-    function getColumnName($nr) {
+    public function getColumnName($nr) {
       if (!$this->hasHeader()) return FALSE;
       if (!isset($this->colName[$nr])) return FALSE;
       
@@ -238,11 +238,11 @@
      * @return  array data
      * @throws  io.IOException if stream operation failed
      */    
-    function getNextRecord() {
-      try(); {
+    public function getNextRecord() {
+      try {
         $this->_getNextRecord();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
 
       if (empty($this->buffer)) return FALSE;

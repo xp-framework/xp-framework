@@ -26,7 +26,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) {
+    public function check($value) {
       foreach ($value as $v) {
         if (!is_numeric($v)) return 'notnumeric';
       }    

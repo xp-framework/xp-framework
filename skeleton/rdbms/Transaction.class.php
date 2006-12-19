@@ -25,7 +25,7 @@
    * @purpose  Wrap a transaction
    */
   class Transaction extends Object {
-    var
+    public
       $name     = '',
       $db       = NULL;
       
@@ -35,7 +35,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
     
@@ -44,7 +44,7 @@
      *
      * @access  public
      */
-    function getState() { 
+    public function getState() { 
       return $this->db->transtate($this->name);
     }
     
@@ -53,7 +53,7 @@
      *
      * @access  public
      */
-    function rollback() { 
+    public function rollback() { 
       return $this->db->rollback($this->name);
     }
     
@@ -62,7 +62,7 @@
      *
      * @access  public
      */
-    function commit() { 
+    public function commit() { 
       return $this->db->commit($this->name);
     }
   }

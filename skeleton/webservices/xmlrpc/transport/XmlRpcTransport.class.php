@@ -15,8 +15,8 @@
    *
    * @purpose  Base class.
    */
-  class XmlRpcTransport extends Object {
-    var
+  class XmlRpcTransport extends Object implements Traceable {
+    public
       $cat  = NULL;
       
     /**
@@ -25,7 +25,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
  
@@ -36,7 +36,7 @@
      * @param   &webservices.xmlrpc.XmlRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    function &send(&$message) { }
+    public function &send(&$message) { }
     
     /**
      * Retrieve a XML-RPC message.
@@ -45,7 +45,7 @@
      * @param   &webservices.xmlrpc.XmlRpcResponse response
      * @return  &webservices.xmlrpc.XmlRpcMessage
      */
-    function &retrieve(&$response) { }    
+    public function &retrieve(&$response) { }    
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

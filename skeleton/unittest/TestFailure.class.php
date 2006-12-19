@@ -11,7 +11,7 @@
    * @purpose  Result wrapper
    */
   class TestFailure extends Object {
-    var
+    public
       $result   = NULL,
       $test     = NULL,
       $elapsed  = 0.0;
@@ -24,7 +24,7 @@
      * @param   &mixed reason
      * @param   float elapsed
      */
-    function __construct(&$test, &$reason, $elapsed) {
+    public function __construct(&$test, &$reason, $elapsed) {
       $this->test= &$test;
       $this->reason= &$reason;
       $this->elapsed= $elapsed;
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().
         '(test= '.$this->test->getClassName().'::'.$this->test->getName().

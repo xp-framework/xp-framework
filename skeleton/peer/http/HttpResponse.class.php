@@ -13,14 +13,14 @@
    * @purpose  Represents a HTTP response
    */
   class HttpResponse extends Object {
-    var
+    public
       $statuscode    = 0,
       $message       = '',
       $version       = '',
       $headers       = array(),
       $chunked       = NULL;
     
-    var
+    public
       $_headerlookup = array();
       
     /**
@@ -29,7 +29,7 @@
      * @access  public
      * @param   &lang.Object stream
      */
-    function __construct(&$stream) {
+    public function __construct(&$stream) {
       $this->stream= &$stream;
       
     }
@@ -40,11 +40,11 @@
      * @access  private
      * @return  bool success
      */    
-    function _readstatus() {
-      try(); {
+    public function _readstatus() {
+      try {
         $str= $this->stream->read();
-      } if (catch('SocketException', $e)) {
-        return throw($e);
+      } catch (SocketException $e) {
+        throw($e);
       }
       
       $s= chop($str);
@@ -56,7 +56,7 @@
         $this->statuscode,
         $this->message
       ))) {
-        return throw(new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
+        throw(new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
       }
       
       $this->version= $major.'.'.$minor;
@@ -69,7 +69,7 @@
      * @access  protected
      * @return  bool success
      */
-    function _readhead() {
+    public function _readhead() {
       if (0 != $this->statuscode) return TRUE;
       if (!$this->_readstatus()) return FALSE;
       
@@ -105,7 +105,7 @@
      * @param   bool binary default FALSE
      * @return  string buf or FALSE to indicate EOF
      */
-    function readData($size= 8192, $binary= FALSE) {
+    public function readData($size= 8192, $binary= FALSE) {
       if (!$this->_readhead()) return FALSE;        // Read head if not done before
       if ($this->stream->eof()) return $this->closeStream();
       
@@ -160,7 +160,7 @@
      * @access  protected
      * @return  boolean 
      */
-    function closeStream() {
+    public function closeStream() {
       if ($this->stream->eof()) {
         $this->stream->close();
       }
@@ -185,7 +185,7 @@
      * @access  public
      * @return  toString
      */
-    function toString() {
+    public function toString() {
       if (!$this->_readhead()) return parent::toString();
       
       $h= '';
@@ -208,7 +208,7 @@
      * @access  public
      * @return  int status code
      */
-    function getStatusCode() {
+    public function getStatusCode() {
       return $this->_readhead() ? $this->statuscode : FALSE;
     }
 
@@ -218,7 +218,7 @@
      * @access  public
      * @return  string
      */
-    function getMessage() {
+    public function getMessage() {
       return $this->message;
     }
     
@@ -228,7 +228,7 @@
      * @access  public
      * @return  array headers
      */
-    function getHeaders() {
+    public function getHeaders() {
       return $this->_readhead() ? $this->headers : FALSE;
     }
 
@@ -239,7 +239,7 @@
      * @access  public
      * @return  string value or NULL if this header does not exist
      */
-    function getHeader($name) {
+    public function getHeader($name) {
       if (!$this->_readhead()) return FALSE;
       if (empty($this->_headerlookup)) {
         $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);

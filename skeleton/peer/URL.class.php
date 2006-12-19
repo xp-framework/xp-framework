@@ -20,7 +20,7 @@
    * @see    php://parse_url
    */
   class URL extends Object {
-    var
+    public
       $_info = array();
       
     /**
@@ -29,7 +29,7 @@
      * @access  public
      * @param   string str
      */
-    function __construct($str) {
+    public function __construct($str) {
       $this->setURL($str);
     }
 
@@ -40,7 +40,7 @@
      * @return  string
      * @see     xp://lang.Object#toString
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s@ {\n".
         "  [scheme]      %s\n".
@@ -71,7 +71,7 @@
      * @param   mixed default default NULL  
      * @return  string scheme or default if none is set
      */
-    function getScheme($default= NULL) {
+    public function getScheme($default= NULL) {
       return isset($this->_info['scheme']) ? $this->_info['scheme'] : $default;
     }
 
@@ -82,7 +82,7 @@
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
-    function getHost($default= NULL) {
+    public function getHost($default= NULL) {
       return isset($this->_info['host']) ? $this->_info['host'] : $default;
     }
 
@@ -93,7 +93,7 @@
      * @param   mixed default default NULL  
      * @return  string path or default if none is set
      */
-    function getPath($default= NULL) {
+    public function getPath($default= NULL) {
       return isset($this->_info['path']) ? $this->_info['path'] : $default;
     }
 
@@ -104,7 +104,7 @@
      * @param   mixed default default NULL  
      * @return  string user or default if none is set
      */
-    function getUser($default= NULL) {
+    public function getUser($default= NULL) {
       return isset($this->_info['user']) ? $this->_info['user'] : $default;
     }
 
@@ -115,7 +115,7 @@
      * @param   mixed default default NULL  
      * @return  string password or default if none is set
      */
-    function getPassword($default= NULL) {
+    public function getPassword($default= NULL) {
       return isset($this->_info['pass']) ? $this->_info['pass'] : $default;
     }
 
@@ -126,7 +126,7 @@
      * @param   mixed default default NULL  
      * @return  string query or default if none is set
      */
-    function getQuery($default= NULL) {
+    public function getQuery($default= NULL) {
       return isset($this->_info['query']) ? $this->_info['query'] : $default;
     }
 
@@ -137,7 +137,7 @@
      * @param   mixed default default NULL  
      * @return  string fragment or default if none is set
      */
-    function getFragment($default= NULL) {
+    public function getFragment($default= NULL) {
       return isset($this->_info['fragment']) ? $this->_info['fragment'] : $default;
     }
 
@@ -148,7 +148,7 @@
      * @param   mixed default default NULL  
      * @return  int port or default if none is set
      */
-    function getPort($default= NULL) {
+    public function getPort($default= NULL) {
       return isset($this->_info['port']) ? $this->_info['port'] : $default;
     }
     
@@ -160,7 +160,7 @@
      * @param   mixed default default NULL  
      * @return  string url-decoded parameter value or default if none is set
      */
-    function getParam($name, $default= NULL) {
+    public function getParam($name, $default= NULL) {
       return isset($this->_info['params'][$name]) ? $this->_info['params'][$name] : $default;
     }
 
@@ -170,7 +170,7 @@
      * @access  public
      * @return  array params
      */
-    function getParams() {
+    public function getParams() {
       return $this->_info['params'];
     }
     
@@ -181,7 +181,7 @@
      * @param   string key
      * @param   string value
      */
-    function addParam($key, $value) {
+    public function addParam($key, $value) {
       $this->_info['query'].= sprintf(
         '%s%s=%s',
         ('' == $this->_info['query']) ? '' : '&',
@@ -199,7 +199,7 @@
      * @access  public
      * @param   array hash
      */
-    function addParams($hash) {
+    public function addParams($hash) {
       if ('' != $this->_info['query']) $this->_info['query'].= '&';
       
       foreach (array_keys($hash) as $key) {
@@ -220,7 +220,7 @@
      * @access  public
      * @return  bool
      */
-    function hasParams() {
+    public function hasParams() {
       return !empty($this->_info['params']);
     }
     
@@ -230,7 +230,7 @@
      * @access  public
      * @return  string
      */
-    function getURL() {
+    public function getURL() {
       if (!isset($this->_info['url'])) {
         $this->_info['url']= $this->_info['scheme'].'://';
         if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
@@ -253,7 +253,7 @@
      * @access  public
      * @param   string str URL
      */
-    function setURL($str) {
+    public function setURL($str) {
       $this->_info= parse_url($str);
       if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);
       if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
@@ -271,7 +271,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return md5($this->_info['url']);
     }
     
@@ -282,7 +282,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('peer.URL', $cmp) && $this->getURL() == $cmp->getURL();
     }
   }

@@ -13,7 +13,7 @@
    * @purpose  Exception reference
    */
   class ExceptionReference extends ChainedException {
-    var 
+    public 
       $referencedClassname= '';
 
     /**
@@ -22,7 +22,7 @@
      * @access  public
      * @param   string classname
      */
-    function __construct($classname) {
+    public function __construct($classname) {
       parent::__construct('(null)', $cause= NULL);
       $this->referencedClassname= $classname;
     }
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         'Exception %s<%s> (%s)',
         $this->getClassName(),

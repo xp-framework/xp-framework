@@ -9,8 +9,8 @@
    *
    * @purpose  Exception
    */
-  class SOAPFaultException extends Exception {
-    var 
+  class SOAPFaultException extends XPException {
+    public 
       $fault= NULL; 
 
     /**
@@ -19,7 +19,7 @@
      * @access  public
      * @param   &webservices.soap.SOAPFault fault
      */
-    function __construct(&$fault) {
+    public function __construct(&$fault) {
       parent::__construct($fault->faultstring);
       $this->fault= &$fault;
     }
@@ -30,7 +30,7 @@
      * @access  public
      * @return  &webservices.soap.SOAPFault
      */
-    function &getFault() {
+    public function &getFault() {
       return $this->fault;
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  fault.faultcode   = %s\n".

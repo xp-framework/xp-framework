@@ -21,7 +21,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct('wddxPacket');
       $this->root->setAttribute('version', '1.0');
     }
@@ -34,7 +34,7 @@
      * @param   string string
      * @return  &webservices.wddx.WddxMessage
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, 'WddxMessage');
     }    
     
@@ -44,7 +44,7 @@
      * @access  public
      * @param   string comment
      */
-    function create($comment= NULL) {
+    public function create($comment= NULL) {
       $h= &$this->root->addChild(new Node('header'));
       if ($comment) $h->addChild(new Node('comment', $comment));
     }
@@ -55,7 +55,7 @@
      * @access  public
      * @param   &mixed[] arr
      */
-    function setData(&$arr) {
+    public function setData(&$arr) {
       $d= &$this->root->addChild(new Node('data'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
         $this->_marshall($d, $arr[$idx]);
@@ -70,7 +70,7 @@
      * @param   &mixed data
      * @throws  lang.IllegalArgumentException if passed data could not be serialized
      */
-    function _marshall(&$node, &$data) {
+    public function _marshall(&$node, &$data) {
     
       switch (xp::typeOf($data)) {
         case 'NULL':
@@ -117,7 +117,7 @@
           break;
         
         default:
-          return throw(new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data)));
+          throw(new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data)));
       }
     }
     
@@ -128,7 +128,7 @@
      * @return  &mixed[]
      * @throws  lang.IllegalStateException if no payload data could be found in the message
      */
-    function &getData() {
+    public function &getData() {
       $ret= array();
       foreach (array_keys($this->root->children) as $idx) {
         if ('header' == $this->root->children[$idx]->getName())
@@ -136,17 +136,17 @@
         
         // Process params node
         foreach (array_keys($this->root->children[$idx]->children) as $params) {
-          try(); {
+          try {
             $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]);
-          } if (catch('Exception', $e)) {
-            return throw($e);
+          } catch (Exception $e) {
+            throw($e);
           }
         }
         
         return $ret;
       }
       
-      return throw(new IllegalStateException('No payload found.'));
+      throw(new IllegalStateException('No payload found.'));
     }
     
     /**
@@ -157,13 +157,13 @@
      * @return  &mixed[]
      * @throws  lang.IllegalArgumentException if document is not well-formed
      */
-    function &_unmarshall(&$node) {
+    public function &_unmarshall(&$node) {
       switch ($node->getName()) {
         case 'null': return NULL;
         case 'boolean': return ($node->getContent() == 'true' ? TRUE : FALSE);
         case 'string': return $node->getContent();
         case 'dateTime': 
-          $parser= &new DateParser();
+          $parser= new DateParser();
           return $parser->parse($node->getContent());
         
         case 'number':
@@ -192,7 +192,7 @@
           return $struct;
       }
       
-      return throw(new IllegalArgumentException('Cannot unserialize not well-formed WDDX document'));
+      throw(new IllegalArgumentException('Cannot unserialize not well-formed WDDX document'));
     }
   }
 ?>

@@ -44,7 +44,7 @@
      * @access  public
      * @param   string prefix default "tmp"
      */
-    function __construct($prefix= 'tmp') {
+    public function __construct($prefix= 'tmp') {
       parent::__construct(tempnam(System::tempDir(), $prefix.uniqid((double)microtime())));
     }
   }

@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('io.collections.IOElement');
+
   /**
    * Represents a file element
    *
    * @see      xp://io.collections.FileCollection
    * @purpose  Interface
    */
-  class FileElement extends Object {
-    var
+  class FileElement extends Object implements IOElement {
+    public
       $uri= '';
 
     /**
@@ -20,7 +22,7 @@
      * @access  public
      * @param   string uri
      */
-    function __construct($uri) {
+    public function __construct($uri) {
       $this->uri= $uri;
     }
 
@@ -30,7 +32,7 @@
      * @access  public
      * @return  string
      */
-    function getURI() { 
+    public function getURI() { 
       return $this->uri;
     }
 
@@ -40,7 +42,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() { 
+    public function getSize() { 
       return filesize($this->uri);
     }
 
@@ -50,7 +52,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &createdAt() {
+    public function &createdAt() {
       return new Date(filectime($this->uri));
     }
 
@@ -60,7 +62,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastAccessed() {
+    public function &lastAccessed() {
       return new Date(fileatime($this->uri));
     }
 
@@ -70,7 +72,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &lastModified() {
+    public function &lastModified() {
       return new Date(filemtime($this->uri));
     }
     
@@ -80,9 +82,9 @@
      * @access  public
      * @return  string
      */
-    function toString() { 
+    public function toString() { 
       return $this->getClassName().'('.$this->uri.')';
     }
 
-  } implements(__FILE__, 'io.collections.IOElement');
+  } 
 ?>

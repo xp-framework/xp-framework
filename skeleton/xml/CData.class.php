@@ -23,7 +23,7 @@
    * @purpose  Wrapper
    */
   class CData extends Object {
-    var
+    public
       $cdata= '';
       
     /**
@@ -32,7 +32,7 @@
      * @access  public
      * @param   string cdata
      */
-    function __construct($cdata) {
+    public function __construct($cdata) {
       $this->cdata= $cdata;
     }
   }

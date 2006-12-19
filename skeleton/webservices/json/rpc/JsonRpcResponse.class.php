@@ -19,7 +19,7 @@
      * @access  public
      * @param   &webservices.json.rpc.JsonRpcMessage msg
      */
-    function setMessage(&$msg) {
+    public function setMessage(&$msg) {
       $this->message= &$msg;
     }
     
@@ -29,7 +29,7 @@
      * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
-    function process() {
+    public function process() {
       if (!$this->message) return;
 
       if (NULL !== $this->message->getFault()) {

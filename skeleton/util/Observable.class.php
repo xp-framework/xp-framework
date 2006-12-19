@@ -62,7 +62,7 @@
    * @purpose  Base class
    */
   class Observable extends Object {
-    var
+    public
       $_obs      = array(),
       $_changed  = FALSE;
       
@@ -73,9 +73,9 @@
      * @param   &util.Observer observer a class implementing the util.Observer interface
      * @throws  lang.IllegalArgumentException in case the argument is not an observer
      */
-    function addObserver(&$observer) {
+    public function addObserver(&$observer) {
       if (!is('util.Observer', $observer)) {
-        return throw(new IllegalArgumentException('Passed argument is not an util.Observer'));
+        throw(new IllegalArgumentException('Passed argument is not an util.Observer'));
       }
       $this->_obs[]= &$observer;
     }
@@ -86,7 +86,7 @@
      * @access  public
      * @param   mixed arg default NULL
      */
-    function notifyObservers($arg= NULL) {
+    public function notifyObservers($arg= NULL) {
       if (!$this->hasChanged()) return;
       
       for ($i= 0, $s= sizeof($this->_obs); $i < $s; $i++) {
@@ -102,7 +102,7 @@
      *
      * @access  protected
      */
-    function setChanged() {
+    public function setChanged() {
       $this->_changed= TRUE;
     }
 
@@ -111,7 +111,7 @@
      *
      * @access  protected
      */
-    function clearChanged() {
+    public function clearChanged() {
       $this->_changed= FALSE;
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @return  bool
      */
-    function hasChanged() {
+    public function hasChanged() {
       return $this->_changed;
     }
   }

@@ -12,7 +12,7 @@
    * @model    static
    */
   class IFormat extends Object {
-    var
+    public
       $formatString = '';
 
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string f default NULL format string
      */
-    function __construct($f= NULL) {
+    public function __construct($f= NULL) {
       $this->formatString= $f;
     }
 
@@ -31,7 +31,7 @@
      * @access  public
      * @return  &text.format.Format
      */
-    function &getInstance($name) {
+    public function &getInstance($name) {
       static $instance= array();
       
       if (!isset($instance[$name])) $instance[$name]= new $name();
@@ -47,8 +47,8 @@
      * @return  string
      * @throws  lang.IllegalAccessException
      */
-    function apply($fmt, &$argument) { 
-      return throw(new IllegalAccessException('Calling apply method of base class text.format.Format'));
+    public function apply($fmt, &$argument) { 
+      throw(new IllegalAccessException('Calling apply method of base class text.format.Format'));
     }
     
     /**
@@ -58,7 +58,7 @@
      * @param   mixed* args
      * @throws  lang.FormatException
      */
-    function format() {
+    public function format() {
       $a= func_get_args();
       return $this->apply($this->formatString, $a);
     }

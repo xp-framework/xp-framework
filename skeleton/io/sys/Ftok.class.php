@@ -44,7 +44,7 @@
      * @param   string path default __FILE__
      * @return  int key
      */
-    function get($id= 1, $path= __FILE__) {
+    public static function get($id= 1, $path= __FILE__) {
       return ftok($path, $id);
     }
   }

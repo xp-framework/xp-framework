@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ModelTag');
+  uses('text.doclet.ModelTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the model tag. 
@@ -12,7 +12,7 @@
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
-  class ModelTaglet extends Object {
+  class ModelTaglet extends Object implements Taglet {
      
     /**
      * Create tag from text
@@ -23,9 +23,9 @@
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    function &tagFrom(&$holder, $kind, $text) {
+    public function &tagFrom(&$holder, $kind, $text) {
       return new ModelTag($kind, $text);
     }
 
-  } implements(__FILE__, 'text.doclet.Taglet');
+  } 
 ?>

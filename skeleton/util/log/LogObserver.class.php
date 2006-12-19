@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger');
+  uses('util.log.Logger', 'rdbms.DBObserver');
 
   /**
    * Observer interface
@@ -12,8 +12,8 @@
    * @see      &util.Observable
    * @purpose  Interface
    */
-  class LogObserver extends Object {
-    var
+  class LogObserver extends Object implements DBObserver {
+    public
       $cat=   NULL;
 
     /**
@@ -24,12 +24,12 @@
      * @param   string arg
      * @return  &util.log.LogObserver
      */
-    function &instanceFor($arg) {
+    public static function &instanceFor($arg) {
       static $inst= array();
       
       if (!isset ($inst[$arg])) {
         $log= &Logger::getInstance();
-        $inst[$arg]= &new LogObserver();
+        $inst[$arg]= new LogObserver();
         $inst[$arg]->cat= &$log->getCategory($arg);
       }
       
@@ -43,9 +43,9 @@
      * @param   &util.Observable obs
      * @param   mixed arg default NULL
      */
-    function update(&$obs, $arg= NULL) {
+    public function update(&$obs, $arg= NULL) {
       $this->cat->debug($arg);
     }
 
-  } implements (__FILE__, 'rdbms.DBObserver');
+  } 
 ?>

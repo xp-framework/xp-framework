@@ -20,7 +20,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) { 
+    public function accept(&$element) { 
       return ($cmp= &$element->createdAt()) && $cmp->isBefore($this->date);
     }
   }

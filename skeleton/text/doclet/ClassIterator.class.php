@@ -4,13 +4,15 @@
  * $Id$
  */
  
+  uses('util.XPIterator');
+
   /**
    * Iterates over a collection of classes, parsing them as going along.
    *
    * @purpose  Iterator
    */
-  class ClassIterator extends Object {
-    var
+  class ClassIterator extends Object implements XPIterator {
+    public
       $classes = array(),
       $root    = NULL,
       $_key    = NULL;
@@ -21,7 +23,7 @@
      * @access  public
      * @param   string[] classes
      */
-    function __construct($classes= array()) {
+    public function __construct($classes= array()) {
       $this->classes= array_flip($classes);
     }
     
@@ -30,7 +32,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       reset($this->classes);
     }
 
@@ -42,7 +44,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() {
+    public function hasNext() {
       return !is_null($this->_key= key($this->classes));
     }
     
@@ -53,13 +55,13 @@
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() {
+    public function &next() {
       if (is_null($this->_key)) {
-        return throw(new NoSuchElementException('No more elements'));
+        throw(new NoSuchElementException('No more elements'));
       }
       next($this->classes);
       return $this->root->classNamed($this->_key);
     }
 
-  } implements(__FILE__, 'util.Iterator');
+  } 
 ?>

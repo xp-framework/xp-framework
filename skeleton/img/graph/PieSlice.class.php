@@ -12,7 +12,7 @@
    * @purpose Value object
    */
   class PieSlice extends Object {
-    var 
+    public 
       $value    = 0.0,
       $caption  = '',
       $detached = FALSE,
@@ -26,7 +26,7 @@
      * @param   &mixed colors either an array of two colors, the second
      *          representing the shadow, or one color, for both lid and shadow
      */
-    function __construct($value, &$colors) {
+    public function __construct($value, &$colors) {
       $this->value= $value;
       if (!is_array($colors)) {
         $this->colors= array($colors, $colors);
@@ -41,7 +41,7 @@
      * @access  public
      * @param   int value
      */
-    function setValue($value) {
+    public function setValue($value) {
       $this->value= $value;
     }
 
@@ -51,7 +51,7 @@
      * @access  public
      * @return  int
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
 
@@ -61,7 +61,7 @@
      * @access  public
      * @param   string caption
      */
-    function setCaption($caption) {
+    public function setCaption($caption) {
       $this->caption= $caption;
     }
 
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function getCaption() {
+    public function getCaption() {
       return $this->caption;
     }
   }

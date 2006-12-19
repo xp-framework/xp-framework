@@ -10,8 +10,8 @@
    * @see      xp://security.cert.Certificate
    * @purpose  This exception indicates one of a variety of certificate problems.
    */
-  class CertificateException extends Exception {
-    var
+  class CertificateException extends XPException {
+    public
       $errors = array();
       
     /**
@@ -21,7 +21,7 @@
      * @param   string message
      * @param   string[] errors default array()
      */
-    function __construct($message, $errors= array()) {
+    public function __construct($message, $errors= array()) {
       parent::__construct($message);
       $this->errors= $errors;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string[] errors
      */
-    function getErrors() {
+    public function getErrors() {
       return $this->errors;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  %s\n".

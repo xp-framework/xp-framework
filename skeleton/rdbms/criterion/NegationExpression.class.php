@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('rdbms.criterion.Criterion');
+
   /**
    * Negates another criterion
    *
    * @purpose  Criterion
    */
-  class NegationExpression extends Object {
-    var
+  class NegationExpression extends Object implements Criterion {
+    public
       $criterion  = NULL;
 
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   &rdbms.criterion.Criterion criterion
      */
-    function __construct(&$criterion) {
+    public function __construct(&$criterion) {
       $this->criterion= &$criterion;
     }
   
@@ -32,9 +34,9 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    function asSql(&$conn, $types) { 
+    public function asSql(&$conn, $types) { 
       return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $types));
     }
 
-  } implements(__FILE__, 'rdbms.criterion.Criterion');
+  } 
 ?>

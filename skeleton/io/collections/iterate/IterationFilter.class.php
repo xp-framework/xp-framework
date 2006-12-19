@@ -10,7 +10,7 @@
    * @see      xp://io.folder.iterate.FilteredFolderIterator
    * @purpose  Interface
    */
-  class IterationFilter extends Interface {
+  interface IterationFilter {
   
     /**
      * Accepts an element
@@ -19,7 +19,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) { }
+    public function accept(&$element);
   
   }
 ?>

@@ -21,7 +21,7 @@
      * @access  public
      * @return  &peer.http.HttpsResponse response object
      */
-    function &send($timeout= 60) {
+    public function &send($timeout= 60) {
       $curl= curl_init($this->url->getURL());
       curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $this->getRequestString());
       curl_setopt($curl, CURLOPT_HEADER, 1);

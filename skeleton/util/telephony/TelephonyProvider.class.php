@@ -5,11 +5,12 @@
  */
 
   uses(
-    'util.telephony.TelephonyAddress', 
-    'util.telephony.TelephonyAddressParser',    
+    'util.telephony.TelephonyAddress',
+    'util.telephony.TelephonyAddressParser',
     'util.telephony.TelephonyTerminal',
     'util.telephony.TelephonyCall',
-    'util.telephony.TelephonyException'
+    'util.telephony.TelephonyException',
+    'util.log.Traceable'
   );
 
   /**
@@ -55,8 +56,8 @@
    * @purpose  Provides an interface to telephony
    * @see      http://java.sun.com/products/jtapi/jtapi-1.3/html/overview-summary.html
    */
-  class TelephonyProvider extends Object {
-    var
+  class TelephonyProvider extends Object implements Traceable {
+    public
       $cat  = NULL;
     
     /**
@@ -68,9 +69,9 @@
      * @return  &util.log.LogCategory
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
-    function &setTrace(&$cat) {
+    public function &setTrace(&$cat) {
       if (NULL !== $cat && !is('LogCategory', $cat)) {
-        return throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
+        throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
       }
       
       $this->cat= &$cat;
@@ -82,7 +83,7 @@
      * @access  protected
      * @param   mixed* arguments
      */
-    function trace() {
+    public function trace() {
       if (!$this->cat) return;
 
       $args= func_get_args();
@@ -95,14 +96,14 @@
      * @model   abstract
      * @access  public
      */
-    function connect() { }
+    public function connect() { }
 
     /**
      * Close connection and end the communication
      *
      * @access  public
      */
-    function close() { }
+    public function close() { }
     
     /**
      * Retrieve an address
@@ -111,7 +112,7 @@
      * @param   string number
      * @return  &util.telephony.TelephonyAddress 
      */
-    function &getAddress($number) { 
+    public function &getAddress($number) { 
       return new TelephonyAddress($number);
     }
     
@@ -124,7 +125,7 @@
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    function &createCall(&$terminal, &$destination) { }
+    public function &createCall(&$terminal, &$destination) { }
     
     /**
      * Get terminal
@@ -134,7 +135,7 @@
      * @param   &util.telephony.TelephonyAddress address
      * @return  &util.telephony.TelephonyTerminal
      */
-    function &getTerminal(&$address) { }
+    public function &getTerminal(&$address) { }
     
     /**
      * Release terminal
@@ -144,7 +145,7 @@
      * @param   &util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
-    function releaseTerminal(&$terminal) { }
+    public function releaseTerminal(&$terminal) { }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

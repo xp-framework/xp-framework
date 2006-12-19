@@ -7,7 +7,7 @@
   uses(
     'util.cmd.ParamString',
     'text.doclet.ClassIterator',
-    'text.doclet.ClassDoc', 
+    'text.doclet.ClassDoc',
     'text.doclet.MethodDoc'
   );
   
@@ -51,7 +51,7 @@
    * @purpose  Entry point
    */
   class RootDoc extends Object {
-    var
+    public
       $classes = NULL,
       $options = array();
     
@@ -65,9 +65,9 @@
      * @return  bool
      * @throws  lang.Exception in case doclet setup fails
      */
-    function start(&$doclet, &$params) {
+    public static function start(&$doclet, &$params) {
       $classes= array();
-      $root= &new RootDoc();
+      $root= new RootDoc();
       
       // Separate options from classes
       $valid= $doclet->validOptions();
@@ -99,10 +99,10 @@
       }
       
       // Set up class iterator
-      try(); {
+      try {
         $root->classes= &$doclet->iteratorFor($root, $classes);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
 
       // Start the doclet
@@ -118,7 +118,7 @@
      * @param   string default default NULL
      * @return  string
      */
-    function option($name, $default= NULL) {
+    public function option($name, $default= NULL) {
       return isset($this->options[$name]) ? $this->options[$name] : $default;
     }
     
@@ -129,7 +129,7 @@
      * @param   string classname
      * @return  string filename
      */
-    function findClass($classname) {
+    public function findClass($classname) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $classname).'.class.php';
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
@@ -146,7 +146,7 @@
      * @return  &ClassDoc
      * @throws  lang.IllegalArgumentException if class could not be found or parsed
      */
-    function &classNamed($classname) {
+    public function &classNamed($classname) {
       static $cache= array();
       static $map= array('uses' => T_USES, 'implements' => T_IMPLEMENTS, 'define' => T_DEFINE);
 
@@ -155,15 +155,15 @@
 
       // Find class
       if (!($filename= $this->findClass($classname))) {
-        return throw(new IllegalArgumentException('Could not find '.xp::stringOf($classname)));
+        throw(new IllegalArgumentException('Could not find '.xp::stringOf($classname)));
       }
       
       // Tokenize contents
       if (!($tokens= token_get_all(file_get_contents($filename)))) {
-        return throw(new IllegalArgumentException('Could not parse "'.$filename.'"'));
+        throw(new IllegalArgumentException('Could not parse "'.$filename.'"'));
       }
 
-      with ($doc= &new ClassDoc(), $doc->setRoot($this)); {
+      with ($doc= new ClassDoc(), $doc->setRoot($this)); {
         $annotations= $comment= NULL;
         $state= ST_INITIAL;          
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
@@ -201,7 +201,7 @@
 
             case ST_USES.T_CONSTANT_ENCAPSED_STRING:
               $cn= trim($t[1], '"\'');
-              if (!$this->findClass($cn)) return throw(new IllegalStateException(
+              if (!$this->findClass($cn)) throw(new IllegalStateException(
                 'Could not find used class "'.$cn.'" for class '.$classname
               ));
               $doc->usedClasses->classes[$cn]= NULL;
@@ -255,7 +255,7 @@
               }
               
               // Nothing found!
-              if (!$lookup) return throw(new IllegalStateException(sprintf(
+              if (!$lookup) throw(new IllegalStateException(sprintf(
                 'Could not find class %s extended by %s',
                 xp::stringOf($tokens[$i][1]),
                 $classname
@@ -323,7 +323,7 @@
             case ST_CLASS_BODY.T_FUNCTION:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
-              with ($method= &new MethodDoc(), $method->setRoot($this)); {
+              with ($method= new MethodDoc(), $method->setRoot($this)); {
                 $method->name= $tokens[$i][1];
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;

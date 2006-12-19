@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('util.Properties', 'xml.Node', 'scriptlet.xml.portlet.RunData');
+  uses(
+    'util.Properties',
+    'xml.Node',
+    'scriptlet.xml.portlet.RunData'
+  );
 
   /**
    * A portlet is an implementation of a small control (rendered from its 
@@ -12,7 +16,7 @@
    *
    * @purpose  Interface
    */
-  class Portlet extends Interface {
+  interface Portlet {
   
     /**
      * Get portlet's name
@@ -20,7 +24,7 @@
      * @access  public
      * @return  string name
      */
-    function getName() { }
+    public function getName();
     
     /**
      * Set portlet's name
@@ -28,7 +32,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) { }
+    public function setName($name);
   
     /**
      * Initialize portlet
@@ -36,7 +40,7 @@
      * @access  public
      * @param   &util.Properties properties
      */
-    function init(&$properties) { }
+    public function init(&$properties);
     
     /**
      * Set an attribut by name
@@ -46,7 +50,7 @@
      * @param   &mixed value
      * @param   &scriptlet.xml.portlet.RunData rundata
      */
-    function setAttribute($name, &$value, &$rundata) { }
+    public function setAttribute($name, &$value, &$rundata);
 
     /**
      * Get an attribute by name. Returns default value if the specified 
@@ -58,7 +62,7 @@
      * @param   &scriptlet.xml.portlet.RunData rundata
      * @return  &mixed
      */
-    function &getAttribute($name, $default, &$rundata) { }
+    public function &getAttribute($name, $default, &$rundata);
     
     /**
      * Retrieve portlet content as Node object
@@ -67,7 +71,7 @@
      * @param   &scriptlet.xml.portlet.RunData rundata
      * @return  &xml.Node
      */
-    function &getContent(&$rundata) { }
+    public function &getContent(&$rundata);
 
     /**
      * Retrieve whether this portlet provides customization mechanisms
@@ -75,7 +79,7 @@
      * @access  public
      * @return  bool
      */
-    function providesCustomization() { }
+    public function providesCustomization();
   
   }
 ?>

@@ -13,7 +13,7 @@
    * @see      http://www.binford.de/
    */
   class Binford extends Object { 
-    var 
+    public 
       $poweredBy= 0;
 
     /**
@@ -23,7 +23,7 @@
      * @param   int power default 6100
      * @throws  lang.IllegalArgumentException in case power contains an illegal value
      */
-    function __construct($poweredBy= 6100) {
+    public function __construct($poweredBy= 6100) {
       $this->setPoweredBy($poweredBy);
     }
     
@@ -34,9 +34,9 @@
      * @param   int p power
      * @throws  lang.IllegalArgumentException in case the parameter p contains an illegal value
      */
-    function setPoweredBy($p) {
+    public function setPoweredBy($p) {
       if (!($x= log10($p / 6.1)) || (floor($x) != $x)) {
-        return throw(new IllegalArgumentException($p.' not allowed'));
+        throw(new IllegalArgumentException($p.' not allowed'));
       }
       $this->poweredBy= $p;
     }
@@ -47,7 +47,7 @@
      * @access  public
      * @return  int power
      */
-    function getPoweredBy() {
+    public function getPoweredBy() {
       return $this->poweredBy;
     }
     
@@ -57,7 +57,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->poweredBy.')';
     }
 
@@ -72,7 +72,7 @@
      * @access  public
      * @return  &peer.Header
      */
-    function &getHeader() {
+    public function &getHeader() {
       return new Header('X-Binford', $this->poweredBy.' (more power)');
     }
   }

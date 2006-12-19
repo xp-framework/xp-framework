@@ -21,11 +21,11 @@
    * @see       http://www.cs.cf.ac.uk/Dave/C/node26.html#SECTION002600000000000000000
    */
   class Semaphore extends Object {
-    var
+    public
       $key       = 0,
       $maxAquire = 1;
       
-    var
+    public
       $_hdl      = NULL;
       
     /**
@@ -42,16 +42,16 @@
      * @return  &io.sys.Semaphore a semaphore
      * @throws  io.IOException
      */
-    function &get($key, $maxAquire= 1, $permissions= 0666) {
+    public static function &get($key, $maxAquire= 1, $permissions= 0666) {
       static $semaphores= array();
       
       if (!isset($semaphores[$key])) {
-        $s= &new Semaphore();
+        $s= new Semaphore();
         $s->key= $key;
         $s->maxAquire= $maxAquire;
         $s->permissions= $permissions;
         if (FALSE === ($s->_hdl= sem_get($key, $maxAquire, $permissions, TRUE))) {
-          return throw(new IOException('Could not get semaphore '.$key));
+          throw(new IOException('Could not get semaphore '.$key));
         }
         
         $semaphores[$key]= &$s;
@@ -70,9 +70,9 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function acquire() {
+    public function acquire() {
       if (FALSE === sem_acquire($this->_hdl)) {
-        return throw(new IOException('Could not acquire semaphore '.$this->key));
+        throw(new IOException('Could not acquire semaphore '.$this->key));
       }
       return TRUE;
     }
@@ -86,9 +86,9 @@
      * @throws  io.IOException
      * @see     xp://io.sys.Semaphore#acquire
      */
-    function release() {
+    public function release() {
       if (FALSE === sem_release($this->_hdl)) {
-        return throw(new IOException('Could not release semaphore '.$this->key));
+        throw(new IOException('Could not release semaphore '.$this->key));
       }
       return TRUE;
     }
@@ -101,9 +101,9 @@
      * @return  bool success
      * @throws  io.IOException
      */
-    function remove() {
+    public function remove() {
       if (FALSE === sem_remove($this->_hdl)) {
-        return throw(new IOException('Could not remove semaphore '.$this->key));
+        throw(new IOException('Could not remove semaphore '.$this->key));
       }
       return TRUE;
     }

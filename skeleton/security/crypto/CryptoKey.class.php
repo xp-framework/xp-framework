@@ -14,7 +14,7 @@
    * @purpose  Crypto key base
    */
   class CryptoKey extends Object {
-    var
+    public
       $_hdl = NULL;
 
     /**
@@ -23,7 +23,7 @@
      * @access  public
      * @param   resource handle
      */
-    function __construct($handle) {
+    public function __construct($handle) {
       $this->_hdl= $handle;
     }
     
@@ -33,7 +33,7 @@
      * @access  public
      * @return  resource
      */
-    function getHandle() {
+    public function getHandle() {
       return $this->_hdl;
     }    
     
@@ -45,7 +45,7 @@
      * @param   string string
      * @return  &security.crypto.CryptoKey
      */
-    function &fromString($string) { }
+    public static function &fromString($string) { }
     
     /**
      * Encrypt data using this key
@@ -55,7 +55,7 @@
      * @param   string data
      * @return  string
      */
-    function encrypt($data) { }
+    public function encrypt($data) { }
     
     /**
      * Decrypt data using this key
@@ -65,7 +65,7 @@
      * @param   string data
      * @return  string 
      */
-    function decrypt($data) { }    
+    public function decrypt($data) { }    
       
   }
 ?>

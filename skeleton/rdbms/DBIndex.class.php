@@ -9,7 +9,7 @@
    *
    */
   class DBIndex extends Object {
-    var
+    public
       $name=     '',
       $keys=     array(),
       $unique=   FALSE,
@@ -22,7 +22,7 @@
      * @param   string name
      * @param   string[] keys an array of keys this index is composed of
      */
-    function __construct($name, $keys) {
+    public function __construct($name, $keys) {
       $this->name= $name;
       $this->keys= $keys;
       
@@ -34,7 +34,7 @@
      * @access  public
      * @return  bool TRUE when this key is the primary key
      */
-    function isPrimaryKey() {
+    public function isPrimaryKey() {
       return $this->primary;
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      * @return  bool TRUE when this is a unique index
      */
-    function isUnique() {
+    public function isUnique() {
       return $this->unique;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string name
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string[] keys
      */
-    function getKeys() {
+    public function getKeys() {
       return $this->keys;
     }
   }

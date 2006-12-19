@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: XmlRpcFaultException.class.php 6701 2006-03-27 17:27:39Z kiesel $ 
+ * $Id: RpcFaultException.class.php 8439 2006-11-11 16:45:16Z kiesel $ 
  */
 
   uses('scriptlet.rpc.RpcFault');
@@ -11,8 +11,8 @@
    *
    * @purpose  Exception
    */
-  class RpcFaultException extends Exception {
-    var
+  class RpcFaultException extends XPException {
+    public
       $fault  = NULL;
     
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   &scriptlet.rpc.RpcFault fault
      */
-    function __construct(&$fault) {
+    public function __construct(&$fault) {
       parent::__construct($fault->faultString);
       $this->fault= &$fault;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  &scriptlet.rpc.RpcFault
      */
-    function &getFault() {
+    public function &getFault() {
       return $this->fault;
     }
 
@@ -42,7 +42,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
         "  fault.faultcode   = %s\n".

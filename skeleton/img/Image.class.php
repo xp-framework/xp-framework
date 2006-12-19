@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('img.ImagingException', 'img.Color', 'lang.CloneNotSupportedException');
+  uses(
+    'img.ImagingException',
+    'img.Color',
+    'lang.CloneNotSupportedException'
+  );
 
   define('IMG_PALETTE',   0x0000);
   define('IMG_TRUECOLOR', 0x0001);
@@ -27,7 +31,7 @@
    * @see php://image
    */
   class Image extends Object {
-    var
+    public
       $width    = 0,
       $height   = 0,
       $palette  = array(),
@@ -39,7 +43,7 @@
      * @access  protected
      * @param   resource handle
      */
-    function __construct($handle) {
+    public function __construct($handle) {
       $this->handle= $handle;
       $this->width= imagesx($handle);
       $this->height= imagesy($handle);
@@ -50,7 +54,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       if (is_resource($this->handle)) imagedestroy($this->handle);
     }
 
@@ -59,12 +63,12 @@
      *
      * @access  public
      */
-    function __clone() {
+    public function __clone() {
       if (!is_resource($handle= (imageistruecolor($this->handle)
         ? imagecreatetruecolor($this->width, $this->height)
         : imagecreate($this->width, $this->height)
       ))) {
-        return throw(new CloneNotSupportedException('Could not clone the image'));
+        throw(new CloneNotSupportedException('Could not clone the image'));
       }
       imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->width, $this->height);
       $this->handle= $handle;
@@ -82,7 +86,7 @@
      * @return  &img.Image
      * @throws  img.ImagingException in case the image could not be created
      */
-    function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
+    public static function &create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
       switch ($type) {
         case IMG_PALETTE:
           $handle= imagecreate($w, $h);
@@ -93,11 +97,11 @@
           break;
 
         default:
-          return throw(new ImagingException('Unknown type '.$type));
+          throw(new ImagingException('Unknown type '.$type));
       }
 
       if (!is_resource($handle)) {
-        return throw(new ImagingException('Could not create image of type '.$type));
+        throw(new ImagingException('Could not create image of type '.$type));
       }
       return new $class($handle);
     }
@@ -110,7 +114,7 @@
      * @param   &img.io.ImageReader reader
      * @return  &img.Image
      */
-    function &loadFrom(&$reader) {
+    public static function &loadFrom(&$reader) {
       return new Image($reader->getResource());
     }
 
@@ -120,7 +124,7 @@
      * @access  public
      * @param   &img.io.ImageWriter writer
      */
-    function saveTo(&$writer) {
+    public function saveTo(&$writer) {
       $writer->setResource($this->handle);
     }
 
@@ -132,9 +136,9 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException if converter is not a img.convert.ImageConverter
      */
-    function convertTo(&$converter) {
+    public function convertTo(&$converter) {
       if (!is('img.convert.ImageConverter', $converter)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Given argument is not a img.convert.ImageConverter object ('.xp::typeOf($converter).')'
         ));
       }
@@ -149,9 +153,9 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException if filter is not a img.filter.ImageFilter
      */
-    function apply(&$filter) {
+    public function apply(&$filter) {
       if (!is('img.filter.ImageFilter', $filter)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Given argument is not a img.filter.ImageFilter object ('.xp::typeOf($filter).')'
         ));
       }
@@ -164,7 +168,7 @@
      * @access  public
      * @return  int width
      */
-    function getWidth() {
+    public function getWidth() {
       return $this->width;
     }
 
@@ -174,7 +178,7 @@
      * @access  public
      * @return  int height
      */
-    function getHeight() {
+    public function getHeight() {
       return $this->height;
     }
 
@@ -184,7 +188,7 @@
      * @access  public
      * @return  int[2] width, height
      */
-    function getDimensions() {
+    public function getDimensions() {
       return array($this->width, $this->height);
     }
 
@@ -201,7 +205,7 @@
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
      */
-    function copyFrom(
+    public function copyFrom(
       &$img,
       $dst_x= 0,
       $dst_y= 0,
@@ -238,7 +242,7 @@
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
      */
-    function resizeFrom(
+    public function resizeFrom(
       &$img,
       $dst_x= 0,
       $dst_y= 0,
@@ -279,7 +283,7 @@
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
      */
-    function resampleFrom(
+    public function resampleFrom(
       &$img,
       $dst_x= 0,
       $dst_y= 0,
@@ -321,7 +325,7 @@
      * @param   int src_h default -1 height of the area to copy, -1 defaults to the source image's height
      * @return  bool
      */
-    function mergeFrom(
+    public function mergeFrom(
       &$img,
       $pct= 50,
       $dst_x= 0,
@@ -352,7 +356,7 @@
      * @param   int alpha default -1 alpha value (0= opaque - 127= transparent)
      * @return  &img.Color color the color put in
      */
-    function &allocate(&$color, $alpha= -1) {
+    public function &allocate(&$color, $alpha= -1) {
       if ($alpha > -1) {
         $color->handle= imagecolorallocatealpha(
           $this->handle,
@@ -382,9 +386,9 @@
      * @return  &img.ImgStyle the new style object
      * @throws  lang.IllegalArgumentException if style is not an ImgStyle object
      */
-    function &setStyle(&$style) {
-      if (!is_a($style, 'ImgStyle')) {
-        return throw(new IllegalArgumentException('style parameter is not an ImgStyle object'));
+    public function &setStyle(&$style) {
+      if (!is('ImgStyle', $style)) {
+        throw(new IllegalArgumentException('style parameter is not an ImgStyle object'));
       }
       imagesetstyle($this->handle, $style->getPixels());
       return $style;
@@ -399,9 +403,9 @@
      * @return  &img.ImgBrush the new style object
      * @throws  lang.IllegalArgumentException if style is not an ImgBrush object
      */
-    function &setBrush(&$brush) {
-      if (!is_a($brush, 'ImgBrush')) {
-        return throw(new IllegalArgumentException('brush parameter is not an ImgBrush object'));
+    public function &setBrush(&$brush) {
+      if (!is('ImgBrush', $brush)) {
+        throw(new IllegalArgumentException('brush parameter is not an ImgBrush object'));
       }
       if (NULL !== $brush->style) {
         imagesetstyle($this->handle, $brush->style->getPixels());
@@ -418,20 +422,20 @@
      * @param   int y
      * @return  &img.Color color object
      */
-    function &colorAt($x, $y) {
+    public function &colorAt($x, $y) {
       if (FALSE === ($idx= imagecolorat($this->handle, $x, $y))) return NULL;
 
       // See if we have this in our palette
       if (!isset($this->palette[$idx])) {
         if (imageistruecolor($this->handle)) {
-          $this->palette[$idx]= &new Color(
+          $this->palette[$idx]= new Color(
             ($idx >> 16) & 0xFF,
             ($idx >> 8) & 0xFF,
             $idx & 0xFF
           );
         } else {
           $i= imagecolorsforindex($this->handle, $idx);
-          $this->palette[$idx]= &new Color(
+          $this->palette[$idx]= new Color(
             $i['red'],
             $i['green'],
             $i['blue']
@@ -449,7 +453,7 @@
      * @param   float out
      * @return  bool success
      */
-    function correctGamma($in, $out) {
+    public function correctGamma($in, $out) {
       return imagegammacorrect($this->handle, $in, $out);
     }
 
@@ -465,7 +469,7 @@
      * @see     php://imagefill
      * @see     php://imagefilltoborder
      */
-    function fill(&$col, $x= 0, $y= 0) {
+    public function fill(&$col, $x= 0, $y= 0) {
       if (is_array($col)) {
         imagefilltoborder($this->handle, $x, $y, $col[1]->handle, $col[0]->handle);
       } else {
@@ -483,7 +487,7 @@
      * @param   bool on interlace on (TRUE) or off (FALSE)
      * @return  bool success
      */
-    function setInterlace($on) {
+    public function setInterlace($on) {
       return imageinterlace($this->handle, $on);
     }
 
@@ -498,7 +502,7 @@
      * @access  public
      * @param   &img.Color color
      */
-    function setTransparency(&$col) {
+    public function setTransparency(&$col) {
       imagecolortransparent($this->handle, $col->handle);
     }
 
@@ -508,7 +512,7 @@
      * @access  public
      * @return  &img.Color color
      */
-    function &getTransparency() {
+    public function &getTransparency() {
       if (-1 == ($t= imagecolortransparent($this->handle))) return NULL;
       return $this->palette[$t];
     }
@@ -520,7 +524,7 @@
      * @param   img.Drawable obj
      * @return  mixed the return value of obj's draw function
      */
-    function draw(&$drawable) {
+    public function draw(&$drawable) {
       return $drawable->draw($this);
     }
 
@@ -535,7 +539,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
 
@@ -545,7 +549,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(%dx%d) {\n  #colors = %s\n}",
         $this->getClassName(),

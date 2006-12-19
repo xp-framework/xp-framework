@@ -94,7 +94,7 @@
      * @param   string default default MIME_APPLICATION_OCTET_STREAM
      * @return  string type
      */
-    function getByFilename($name, $default= MIME_APPLICATION_OCTET_STREAM) {
+    public static function getByFilename($name, $default= MIME_APPLICATION_OCTET_STREAM) {
       static $map= array(
         '.ez'      => MIME_APPLICATION_ANDREW_INSET,
         '.xls'     => MIME_APPLICATION_EXCEL,

@@ -21,7 +21,7 @@
      * @access  public
      * @return  &text.format.PrintfFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('PrintfFormat');
     }  
   
@@ -33,7 +33,7 @@
      * @param   &mixed argument
      * @return  string
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       switch (gettype($argument)) {
         case 'array':
           return vsprintf($fmt, array_values($argument));

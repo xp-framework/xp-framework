@@ -73,7 +73,7 @@
    * @purpose  P3P header
    */
   class P3PHeader extends Header {
-    var 
+    public 
       $policyref = '',
       $compact   = array();
 
@@ -83,7 +83,7 @@
      * @access  public
      * @param   string policyref
      */
-    function __construct($policyref) {
+    public function __construct($policyref) {
       parent::__construct('P3P', NULL);
       $this->policyref= $policyref;
     }
@@ -95,7 +95,7 @@
      * @param   string name
      * @param   string value
      */
-    function _setCompact($name, $value) {
+    public function _setCompact($name, $value) {
       if ($value) {
         $this->compact[$name]= $value;
       } else {
@@ -111,7 +111,7 @@
      * @access  public
      * @param   string access one of the P3PC_ACCESS_* constants
      */
-    function setCompactAccess($access) {
+    public function setCompactAccess($access) {
       $this->_setCompact('access', $access);
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      * @param   bool disputes
      */
-    function setCompactDisputes($disputes) {
+    public function setCompactDisputes($disputes) {
       $this->_setCompact('disputes', $disputes ? 'DSP' : NULL);
     }
 
@@ -140,7 +140,7 @@
      * @access  public
      * @param   string remedies one of the P3PC_REMEDIES_* constants
      */
-    function setCompactRemedies($remedies) {
+    public function setCompactRemedies($remedies) {
       $this->_setCompact('remedies', $remedies);
     }
 
@@ -154,7 +154,7 @@
      * @access  public
      * @param   bool non_identifiable
      */
-    function setCompactNonIdentifiable($non_identifiable) {
+    public function setCompactNonIdentifiable($non_identifiable) {
       $this->_setCompact('non-identifiable', $non_identifiable ? 'NID' : NULL);
     }
 
@@ -178,7 +178,7 @@
      * @param   string purpose one of the P3PC_PURPOSE_* constants
      * @param   string creq default '' one of the P3PC_CREQ_* constants
      */
-    function setCompactPurpose($purpose, $creq= '') {
+    public function setCompactPurpose($purpose, $creq= '') {
       $this->_setCompact('purpose', $purpose.$creq);
     }
     
@@ -198,7 +198,7 @@
      * @param   string recipient one of the P3PC_RECIPIENT_* constants
      * @param   string creq default '' one of the P3PC_CREQ_* constants
      */
-    function setCompactRecipient($recipient, $creq= '') {
+    public function setCompactRecipient($recipient, $creq= '') {
       $this->_setCompact('recipient', $recipient.$creq);
     }
 
@@ -213,7 +213,7 @@
      * @access  public
      * @param   string retention one of the P3PC_RETENTION_* constants
      */
-    function setCompactRetention($retention) {
+    public function setCompactRetention($retention) {
       $this->_setCompact('retention', $retention);
     }
 
@@ -227,7 +227,7 @@
      * @access  public
      * @param   string categories one of the P3PC_CATEGORIES_* constants
      */
-    function setCompactCategories($categories) {
+    public function setCompactCategories($categories) {
       $this->_setCompact('categories', $categories);
     }
 
@@ -238,7 +238,7 @@
      * @access  public
      * @param   bool test
      */
-    function setCompactTest($test) {
+    public function setCompactTest($test) {
       $this->_setCompact('test', $test ? 'TST' : NULL);
     }
 
@@ -248,7 +248,7 @@
      * @access  public
      * @param   string policyref
      */
-    function setPolicyref($policyref) {
+    public function setPolicyref($policyref) {
       $this->policyref= $policyref;
     }
 
@@ -258,7 +258,7 @@
      * @access  public
      * @return  string
      */
-    function getPolicyref() {
+    public function getPolicyref() {
       return $this->policyref;
     }
     
@@ -268,7 +268,7 @@
      * @access  public
      * @return  string value
      */
-    function getValueRepresentation() {
+    public function getValueRepresentation() {
       $r= 'policyref="'.$this->policyref.'"';
       if ($this->compact) {                     // Compact policy is optional
         $r.= ', CP="'.implode(' ', array_values($this->compact)).'"';

@@ -28,7 +28,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    function _supports(&$u, &$attr) {
+    public function _supports(&$u, &$attr) {
       switch (strtolower($u->getScheme())) {
         case 'mbox': 
           $attr['mbx']= '/'.$u->getHost().$u->getPath();
@@ -50,7 +50,7 @@
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */  
-    function &getFolder() {
+    public function &getFolder() {
       return parent::getFolder('*');
     }
   }

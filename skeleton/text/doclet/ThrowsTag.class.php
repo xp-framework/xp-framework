@@ -13,7 +13,7 @@
    * @purpose  Tag
    */
   class ThrowsTag extends Tag {
-    var
+    public
       $exception = NULL;
 
     /**
@@ -23,7 +23,7 @@
      * @param   &ClassDoc exception
      * @param   string label
      */
-    function __construct(&$exception, $label) {
+    public function __construct(&$exception, $label) {
       parent::__construct('throws', $label);
       $this->exception= &$exception;
     }

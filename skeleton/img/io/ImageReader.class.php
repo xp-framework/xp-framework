@@ -12,7 +12,7 @@
    * @see      xp://img.Image#loadFrom
    * @purpose  Interface
    */
-  class ImageReader extends Interface {
+  interface ImageReader {
   
     /**
      * Retrieve an image resource
@@ -21,6 +21,6 @@
      * @return  resource
      * @throws  img.ImagingException
      */
-    function getResource() { }
+    public function getResource();
   }
 ?>

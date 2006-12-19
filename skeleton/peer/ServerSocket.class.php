@@ -34,7 +34,7 @@
    * @ext      sockets                                                    
    */
   class ServerSocket extends BSDSocket {
-    var
+    public
       $domain   = 0,
       $type     = 0,
       $protocol = 0;
@@ -49,7 +49,7 @@
      * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
      * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
      */
-    function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP) {
+    public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP) {
       $this->domain= $domain;
       $this->type= $type;
       $this->protocol= $protocol;
@@ -64,8 +64,8 @@
      * @return  bool success
      * @throws  lang.IllegalAccessException
      */
-    function connect() {
-      return throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
+    public function connect() {
+      throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
     }
     
     /**
@@ -75,9 +75,9 @@
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
-    function create() {
+    public function create() {
       if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'Creating socket failed',
           $this->getLastError()
         )));
@@ -93,12 +93,12 @@
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
-    function bind($reuse= FALSE) {
+    public function bind($reuse= FALSE) {
       if (
         (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
         (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'Binding socket to '.$this->host.':'.$this->port.' failed',
           $this->getLastError()
         )));
@@ -123,9 +123,9 @@
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
-    function listen($backlog= 10) {
+    public function listen($backlog= 10) {
       if (FALSE === socket_listen($this->_sock, $backlog)) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'Listening on socket failed',
           $this->getLastError()
         )));
@@ -151,9 +151,9 @@
      * @return  &mixed a peer.BSDSocket object or FALSE
      * @throws  peer.SocketException in case of an error
      */
-    function &accept() {
+    public function &accept() {
       if (0 > ($msgsock= socket_accept($this->_sock))) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'Accept failed',
           $this->getLastError()
         )));
@@ -162,7 +162,7 @@
       
       // Get peer
       if (FALSE === socket_getpeername($msgsock, $host, $port)) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'Cannot get peer',
           $this->getLastError()
         )));      

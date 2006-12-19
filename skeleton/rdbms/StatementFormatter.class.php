@@ -25,7 +25,7 @@
    * @purpose Format database query strings
    */
   class StatementFormatter extends Object {
-    var
+    public
       $escape       = '',
       $escapeRules  = array(),
       $dateFormat   = '';
@@ -39,7 +39,7 @@
      * @param   mixed[] args
      * @return  string
      */
-    function format($fmt, $args) {
+    public function format($fmt, $args) {
       static $tokens= 'sdcfu';
       $statement= '';
       
@@ -93,12 +93,12 @@
      * @param   mixed var
      * @return  string
      */
-    function prepare($type, $var) {
+    public function prepare($type, $var) {
       // Type-based conversion
-      if (is_a($var, 'Date')) {
+      if (is('Date', $var)) {
         $type= 's';
         $a= array($var->toString($this->dateFormat));
-      } else if (is_a($var, 'Object')) {
+      } else if (is('Generic', $var)) {
         $a= array($var->toString());
       } else if (is_array($var)) {
         $a= $var;
@@ -128,7 +128,7 @@
      * @access  public
      * @param   string format
      */
-    function setDateFormat($format) {
+    public function setDateFormat($format) {
       $this->dateFormat= $format;
     }
     
@@ -138,7 +138,7 @@
      * @access  public
      * @param   array<String,String> rules
      */
-    function setEscapeRules($rules) {
+    public function setEscapeRules($rules) {
       $this->escapeRules= $rules;
     }
     
@@ -148,7 +148,7 @@
      * @access  public
      * @param   string escape
      */
-    function setEscape($escape) {
+    public function setEscape($escape) {
       $this->escape= $escape;
     }
     
@@ -159,7 +159,7 @@
      * @param   mixed arg
      * @return  string
      */
-    function numval($arg) {
+    public function numval($arg) {
       if (
         (0 >= sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e)) ||
         !is_numeric($n)

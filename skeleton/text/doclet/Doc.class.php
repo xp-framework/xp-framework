@@ -12,7 +12,7 @@
    * @purpose  Base class
    */
   class Doc extends Object {
-    var
+    public
       $name         = '',
       $rawComment   = '',
       $detail       = NULL,
@@ -24,7 +24,7 @@
      * @access  public
      * @param   &RootDoc root
      */
-    function setRoot(&$root) {
+    public function setRoot(&$root) {
       $this->root= &$root;
     }
     
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function name() {
+    public function name() {
       return $this->name;
     }
     
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getRawCommentText() {
+    public function getRawCommentText() {
       return $this->rawComment;
     }
     
@@ -55,7 +55,7 @@
      * @param   int what
      * @return  array
      */
-    function parseDetail($what) {
+    public function parseDetail($what) {
       if (!isset($this->detail)) {
         $tm= &TagletManager::getInstance();
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function commentText() {
+    public function commentText() {
       return $this->parseDetail('text');
     }
     
@@ -96,7 +96,7 @@
      * @param   string kind default NULL kind of tags, e.g. "param"
      * @return  Tag[]
      */
-    function tags($kind= NULL) {
+    public function tags($kind= NULL) {
       $tags= $this->parseDetail('tags');
       if ($kind) {
         return isset($tags[$kind]) ? $tags[$kind] : array();

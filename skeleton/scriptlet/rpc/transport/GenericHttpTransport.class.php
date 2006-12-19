@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: XmlRpcHttpTransport.class.php 6599 2006-02-13 18:37:10Z kiesel $ 
+ * $Id: GenericHttpTransport.class.php 7540 2006-08-04 15:23:14Z kiesel $ 
  */
 
   uses('peer.http.HttpConnection', 'scriptlet.rpc.RpcFaultException');
@@ -12,7 +12,7 @@
    * @purpose  HTTP Transport for RPC clients
    */
   class GenericHttpTransport extends Object {
-    var
+    public
       $_conn    = NULL,
       $_headers = array();
     
@@ -23,8 +23,8 @@
      * @param   string url
      * @param   array headers
      */
-    function __construct($url, $headers= array()) {
-      $this->_conn= &new HttpConnection($url);
+    public function __construct($url, $headers= array()) {
+      $this->_conn= new HttpConnection($url);
       $this->_headers= $headers;
     }
     
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf('%s { %s }', $this->getClassName(), $this->_conn->request->url->_info['url']);
     }
     
@@ -44,7 +44,7 @@
      * @access  public
      * @param   &lang.XPClass c
      */
-    function setMessageClass(&$c) {
+    public function setMessageClass(&$c) {
       $this->messageClass= &$c;
     }    
 
@@ -55,9 +55,9 @@
      * @param   &scriptlet.rpc.AbstractRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    function &send(&$message) {
+    public function &send(&$message) {
       
-      if (!is('scriptlet.rpc.AbstractRpcMessage', $message)) return throw(new IllegalArgumentException(
+      if (!is('scriptlet.rpc.AbstractRpcMessage', $message)) throw(new IllegalArgumentException(
         'parameter "message" must be a scriptlet.rpc.AbstractRpcMessage'
       ));
       
@@ -70,11 +70,11 @@
       // Add custom headers
       $this->_conn->request->addHeaders($this->_headers);
       
-      try(); {
+      try {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
         $res= &$this->_conn->request->send($this->_conn->getTimeout());
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return $res;
@@ -87,19 +87,19 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function &retrieve(&$response) {
+    public function &retrieve(&$response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
-      try(); {
+      try {
         $code= $response->getStatusCode();
-      } if (catch('SocketException', $e)) {
-        return throw($e);
+      } catch (SocketException $e) {
+        throw($e);
       }
       
       switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
-          try(); {
+          try {
             $xml= '';
             while ($buf= $response->readData()) $xml.= $buf;
 
@@ -114,24 +114,24 @@
                 if (!empty($charset)) $answer->setEncoding($charset);
               }
             }
-          } if (catch('Exception', $e)) {
-            return throw($e);
+          } catch (Exception $e) {
+            throw($e);
           }
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            return throw(new RpcFaultException($fault));
+            throw(new RpcFaultException($fault));
           }
           
           return $answer;
         
         case HTTP_AUTHORIZATION_REQUIRED:
-          return throw(new IllegalAccessException(
+          throw(new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
           ));
         
         default:
-          return throw(new IllegalStateException(
+          throw(new IllegalStateException(
             'Unexpected return code: '.$response->getStatusCode()
           ));
       }

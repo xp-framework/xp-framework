@@ -28,7 +28,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) { 
+    public function check($value) { 
       switch ($value['error']) {
         case UPLOAD_ERR_OK: return;
         case UPLOAD_ERR_INI_SIZE:

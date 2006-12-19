@@ -36,9 +36,9 @@
   // {{{ void run (&org.gnome.GtkApplication app)
   //     Runs a GTK app
   function run(&$app) {
-    try(); {
+    try {
       $app->init();
-    } if (catch('GuiException', $e)) {
+    } catch(GuiException $e) {
       xp::error('Error initializing '.$app->getClassName().': '.$e->toString());
       // Bails out
     }

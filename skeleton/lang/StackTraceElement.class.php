@@ -12,7 +12,7 @@
    * @purpose  Represent execution stack frame
    */
   class StackTraceElement extends Object {
-    var
+    public
       $file     = '',
       $class    = '',
       $method   = '',
@@ -31,7 +31,8 @@
      * @param   array args
      * @param   string message
      */
-    function __construct($file, $class, $method, $line, $args, $message) {
+    public function __construct($file, $class, $method, $line, $args, $message) {
+      parent::__construct();
       $this->file     = $file;  
       $this->class    = $class; 
       $this->method   = $method;
@@ -46,15 +47,15 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $args= array();
       if (isset($this->args)) {
         for ($j= 0, $a= sizeof($this->args); $j < $a; $j++) {
           if (is_array($this->args[$j])) {
             $args[]= 'array['.sizeof($this->args[$j]).']';
-          } else if (is_object($this->args[$j])) {
+          } elseif (is_object($this->args[$j])) {
             $args[]= get_class($this->args[$j]).'{}';
-          } else if (is_string($this->args[$j])) {
+          } elseif (is_string($this->args[$j])) {
             $display= str_replace('%', '%%', addcslashes(substr($this->args[$j], 0, min(
               (FALSE === $p= strpos($this->args[$j], "\n")) ? 0x40 : $p, 
               0x40
@@ -64,14 +65,10 @@
               $display.
               "'"
             );
-          } else if (is_null($this->args[$j])) {
+          } elseif (is_null($this->args[$j])) {
             $args[]= 'NULL';
-          } else if (is_scalar($this->args[$j])) {
-            $args[]= (string)$this->args[$j];
-          } else if (is_resource($this->args[$j])) {
-            $args[]= (string)$this->args[$j]; 
           } else {
-            $args[]= '<'.gettype($this->args[$j]).'>';
+            $args[]= (string)$this->args[$j];
           }
         }
       }
@@ -93,7 +90,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return is('lang.StackTraceElement', $cmp) && $this->toString() == $cmp->toString();
     }
   }

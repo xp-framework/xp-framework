@@ -22,7 +22,7 @@
      * @access  public
      * @return  &text.format.NumberFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('NumberFormat');
     }  
   
@@ -35,9 +35,9 @@
      * @return  string
      * @throws  lang.FormatException
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       if (!is_numeric($argument)) {
-        return throw(new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number'));
+        throw(new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number'));
       }
       
       list($decimals, $dec_point, $thousands_sep)= explode('#', $fmt);

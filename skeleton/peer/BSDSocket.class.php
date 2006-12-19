@@ -17,7 +17,7 @@
    * @ext      sockets                                                    
    */
   class BSDSocket extends Socket {
-    var
+    public
       $_eof     = FALSE,
       $domain   = AF_INET,
       $type     = SOCK_STREAM,
@@ -31,9 +31,9 @@
      * @param   int domain one of AF_INET or AF_UNIX
      * @throws  lang.IllegalStateException if socket is already connected
      */
-    function setDomain($domain) {
+    public function setDomain($domain) {
       if ($this->isConnected()) {
-        return throw(new IllegalStateException('Cannot set domain on connected socket'));
+        throw(new IllegalStateException('Cannot set domain on connected socket'));
       }
       $this->domain= $domain;
     }
@@ -44,7 +44,7 @@
      * @access  public
      * @return  int
      */
-    function getDomain() {
+    public function getDomain() {
       return $this->domain;
     }
 
@@ -55,9 +55,9 @@
      * @param   int type one of SOCK_STREAM, SOCK_DGRAM, SOCK_RAW, SOCK_SEQPACKET or SOCK_RDM
      * @throws  lang.IllegalStateException if socket is already connected
      */
-    function setType($type) {
+    public function setType($type) {
       if ($this->isConnected()) {
-        return throw(new IllegalStateException('Cannot set type on connected socket'));
+        throw(new IllegalStateException('Cannot set type on connected socket'));
       }
       $this->type= $type;
     }
@@ -68,7 +68,7 @@
      * @access  public
      * @return  int
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
 
@@ -80,9 +80,9 @@
      * @param   int protocol one of SOL_TCP or SOL_UDP
      * @throws  lang.IllegalStateException if socket is already connected
      */
-    function setProtocol($protocol) {
+    public function setProtocol($protocol) {
       if ($this->isConnected()) {
-        return throw(new IllegalStateException('Cannot set protocol on connected socket'));
+        throw(new IllegalStateException('Cannot set protocol on connected socket'));
       }
       $this->protocol= $protocol;
     }
@@ -93,7 +93,7 @@
      * @access  public
      * @return  int
      */
-    function getProtocol() {
+    public function getProtocol() {
       return $this->protocol;
     }
 
@@ -103,7 +103,7 @@
      * @access  public
      * @return  string error
      */  
-    function getLastError() {
+    public function getLastError() {
       return sprintf('%d: %s', $e= socket_last_error($this->_sock), socket_strerror($e));
     }
     
@@ -116,7 +116,7 @@
      * @param   mixed value
      * @see     php://socket_set_option
      */
-    function setOption($level, $name, $value) {
+    public function setOption($level, $name, $value) {
       $this->options[$level][$name]= $value;
 
       if ($this->isConnected()) {
@@ -131,7 +131,7 @@
      * @return  bool success
      * @throws  peer.ConnectException
      */
-    function connect() {
+    public function connect() {
       static $domains= array(
         AF_INET   => 'AF_INET',
         AF_UNIX   => 'AF_UNIX'
@@ -148,7 +148,7 @@
       
       // Create socket...
       if (!($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        return throw(new ConnectException(sprintf(
+        throw(new ConnectException(sprintf(
           'Create of %s socket (type %s, protocol %s) failed: %d: %s',
           $domains[$this->domain],
           $types[$this->type],
@@ -179,7 +179,7 @@
       }
       
       // Check return status
-      if (FALSE === $r) return throw(new ConnectException(sprintf(
+      if (FALSE === $r) throw(new ConnectException(sprintf(
         'Connect to %s:%d failed: %s',
         $this->host,
         $this->port,
@@ -195,7 +195,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       $res= socket_close($this->_sock);
       $this->_sock= NULL;
       return $res;
@@ -209,14 +209,14 @@
      * @return  bool success
      * @throws  peer.SocketException
      */
-    function setBlocking($blocking) {
+    public function setBlocking($blocking) {
       if ($blocking) {
         $ret= socket_set_block($this->_sock);
       } else {
         $ret= socket_set_nonblock($this->_sock);
       }
       if (FALSE === $ret) {
-        return throw(new SocketException(sprintf(
+        throw(new SocketException(sprintf(
           'setBlocking (%s) failed: %s',
           ($blocking ? 'blocking' : 'nonblocking'),
           $this->getLastError()
@@ -234,7 +234,7 @@
      * @return  bool there is data that can be read
      * @throws  peer.SocketException in case of failure
      */
-    function canRead($timeout= NULL) {
+    public function canRead($timeout= NULL) {
       if (NULL === $timeout) {
         $tv_sec= $tv_usec= 0;
       } else {
@@ -249,7 +249,7 @@
         $tv_sec,
         $tv_usec
       ))) {
-        return throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw(new SocketException('Select failed: '.$this->getLastError()));
       }
       
       return $n > 0;
@@ -261,7 +261,7 @@
      * @access  public
      * @return  bool
      */
-    function eof() {
+    public function eof() {
       return $this->_eof;
     }
 
@@ -273,9 +273,9 @@
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
      * @return  string data
      */
-    function _read($maxLen, $type, $chop= FALSE) {
+    public function _read($maxLen, $type, $chop= FALSE) {
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
-        return throw(new SocketException('Read failed: '.$this->getLastError()));
+        throw(new SocketException('Read failed: '.$this->getLastError()));
       }
       if ('' === $res) {
         $this->_eof= TRUE;
@@ -293,7 +293,7 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function read($maxLen= 4096) {
+    public function read($maxLen= 4096) {
       return $this->_read($maxLen, PHP_NORMAL_READ);
     }
 
@@ -305,7 +305,7 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function readLine($maxLen= 4096) {
+    public function readLine($maxLen= 4096) {
       return $this->_read($maxLen, PHP_NORMAL_READ, TRUE);
     }
     
@@ -317,7 +317,7 @@
      * @return  string data
      * @throws  peer.SocketException
      */
-    function readBinary($maxLen= 4096) {
+    public function readBinary($maxLen= 4096) {
       return $this->_read($maxLen, PHP_BINARY_READ);
     }
 
@@ -329,10 +329,10 @@
      * @return  int bytes written
      * @throws  peer.SocketException
      */
-    function write($str) {
+    public function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));
       if (FALSE === $bytesWritten) {
-        return throw(new SocketException('Write failed: '.$this->getLastError()));
+        throw(new SocketException('Write failed: '.$this->getLastError()));
       }
       return $bytesWritten;
     }

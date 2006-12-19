@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ParamTag');
+  uses('text.doclet.ParamTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the param tag. 
@@ -12,7 +12,7 @@
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
-  class ParamTaglet extends Object {
+  class ParamTaglet extends Object implements Taglet {
      
     /**
      * Create tag from text
@@ -23,10 +23,10 @@
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    function &tagFrom(&$holder, $kind, $text) {
+    public function &tagFrom(&$holder, $kind, $text) {
       list($type, $name, $text)= explode(' ', $text, 3);
       return new ParamTag($type, $name, $text);
     }
 
-  } implements(__FILE__, 'text.doclet.Taglet');
+  } 
 ?>

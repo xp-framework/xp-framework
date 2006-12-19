@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses ('io.Stream');
+  uses('io.Stream');
   
   /**
    * A file manager singleton to provide access to 
@@ -20,7 +20,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->fileMap= array();
     }
     
@@ -30,7 +30,7 @@
      * @access  public
      * @return  &io.VirtualFileManager
      */
-    function &getInstance() {
+    public function &getInstance() {
       static $instance= NULL;
       
       if (NULL === $instance) $instance= new VirtualFileManager();
@@ -44,8 +44,8 @@
      * @param   string path
      * @param   &string data
      */
-    function addFile($path, &$data) {
-      $stream= &new Stream();
+    public function addFile($path, &$data) {
+      $stream= new Stream();
       $stream->open (STREAM_MODE_READWRITE);
       $stream->write ($data);
       $stream->rewind();
@@ -60,7 +60,7 @@
      * @param   string path
      * @return  &io.Stream file
      */
-    function &getFile($path) {
+    public function &getFile($path) {
       if (isset ($this->fileMap[$path]))
         return $this->fileMap[$path];
     }

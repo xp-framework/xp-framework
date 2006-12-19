@@ -55,7 +55,7 @@
      * @access  protected
      * @return  &webservices.xmlrpc.rpc.XmlRpcRequest
      */
-    function &_request() {
+    public function &_request() {
       return new XmlRpcRequest();
     }
 
@@ -65,7 +65,7 @@
      * @access  protected
      * @return  &webservices.xmlrpc.rpc.XmlRpcResponse
      */
-    function &_response() {
+    public function &_response() {
       return new XmlRpcResponse();
     }
     
@@ -75,7 +75,7 @@
      * @access  protected
      * @return  &webservices.xmlrpc.XmlRpcResponseMessage
      */
-    function &_message() {
+    public function &_message() {
       return new XmlRpcResponseMessage();
     }
   }

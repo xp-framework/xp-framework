@@ -4,7 +4,12 @@
  * $Id$
  */
 
-  uses('xml.XML', 'xml.TransformerException', 'io.FileNotFoundException');
+  uses(
+    'xml.XML',
+    'xml.TransformerException',
+    'io.FileNotFoundException',
+    'xml.IXSLProcessor'
+  );
   
   /**
    * XSL Processor
@@ -29,15 +34,15 @@
    * @ext      xslt
    * @see      http://www.gingerall.com - Sablotron
    */
-  class XSLProcessor extends XML {
-    var 
+  class XSLProcessor extends XML implements IXSLProcessor {
+    public 
       $processor    = NULL,
       $stylesheet   = array(),
       $buffer       = array(),
       $params       = array(),
       $output       = '';
 
-    var
+    public
       $_base        = '';
 
     /**
@@ -45,7 +50,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->processor= xslt_create();
     }
     
@@ -59,7 +64,7 @@
      * @param   array detail
      * @see     php://xslt_set_error_handler
      */
-    function _traperror($parser, $num, $level, $detail) {
+    public function _traperror($parser, $num, $level, $detail) {
       $message= sprintf(
         '%s %s #%d: %s', 
         $detail['module'], 
@@ -81,7 +86,7 @@
      * @access  public
      * @return  string[]
      */
-    function getMessages() {
+    public function getMessages() {
       return array();   // TBI
     }
 
@@ -92,7 +97,7 @@
      * @param   mixed callback
      * @see     php://xslt_set_scheme_handlers
      */
-    function setSchemeHandler($defines) {
+    public function setSchemeHandler($defines) {
       xslt_set_scheme_handlers($this->processor, $defines);
     }
 
@@ -102,7 +107,7 @@
      * @access  public
      * @param   string dir
      */
-    function setBase($dir) {
+    public function setBase($dir) {
       $this->_base= rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
@@ -112,7 +117,7 @@
      * @access  public
      * @return  string
      */
-    function getBase() {
+    public function getBase() {
       return $this->_base;
     }
 
@@ -123,9 +128,9 @@
      * @param   string file file name
      * @throws  io.FileNotFoundException
      */
-    function setXSLFile($file) {
+    public function setXSLFile($file) {
       if (!file_exists($this->_base.$file)) {
-        return throw(new FileNotFoundException($this->_base.$file.' not found'));
+        throw(new FileNotFoundException($this->_base.$file.' not found'));
       }
       $this->stylesheet= array($this->_base.$file, NULL);
     }
@@ -136,7 +141,7 @@
      * @access  public
      * @param   string xsl the XSL as a string
      */
-    function setXSLBuf($xsl) {
+    public function setXSLBuf($xsl) {
       $this->stylesheet= array('arg:/_xsl', $xsl);
     }
 
@@ -146,7 +151,7 @@
      * @access  public
      * @param   string file file name
      */
-    function setXMLFile($file) {
+    public function setXMLFile($file) {
       $this->buffer= array($this->_base.$file, NULL);
     }
     
@@ -156,7 +161,7 @@
      * @access  public
      * @param   string xml the XML as a string
      */
-    function setXMLBuf($xml) {
+    public function setXMLBuf($xml) {
       $this->buffer= array('arg:/_xml', $xml);
     }
 
@@ -166,7 +171,7 @@
      * @access  public
      * @param   array params associative array { param_name => param_value }
      */
-    function setParams($params) {
+    public function setParams($params) {
       $this->params= $params;
     }
     
@@ -177,7 +182,7 @@
      * @param   string name
      * @return  string value
      */
-    function getParam($name) {
+    public function getParam($name) {
       return $this->params[$name];
     }    
 
@@ -188,7 +193,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $val) {
+    public function setParam($name, $val) {
       $this->params[$name]= $val;
     }
 
@@ -199,7 +204,7 @@
      * @return  bool success
      * @throws  xml.TransformerException
      */
-    function run($buffers= array()) {
+    public function run($buffers= array()) {
       if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
       if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= &$this->stylesheet[1];
       
@@ -215,7 +220,7 @@
       xslt_set_error_handler($this->processor, NULL);
       
       if (FALSE === $this->output) {
-        return throw(new TransformerException('Transformation failed'));
+        throw(new TransformerException('Transformation failed'));
       }
       
       return TRUE;
@@ -227,7 +232,7 @@
      * @access  public
      * @return  string
      */
-    function output() {
+    public function output() {
       return $this->output;
     }
 
@@ -236,11 +241,11 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       if ($this->processor) {
         xslt_free($this->processor);
         $this->processor= NULL;
       }
     }
-  } implements(__FILE__, 'xml.IXSLProcessor');
+  } 
 ?>

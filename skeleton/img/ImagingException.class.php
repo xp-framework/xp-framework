@@ -9,7 +9,7 @@
    *
    * @see xp://lang.Exception
    */
-  class ImagingException extends Exception {
+  class ImagingException extends XPException {
   
   }
 ?>

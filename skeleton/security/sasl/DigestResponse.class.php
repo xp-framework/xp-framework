@@ -13,7 +13,7 @@
    * @purpose  Challenge Response wrapper
    */
   class DigestResponse extends Object {
-    var
+    public
       $qop          = '',
       $user         = '',
       $pass         = '',
@@ -31,7 +31,7 @@
      * @param   string nonce
      * @param   string qop
      */
-    function __construct($realm, $nonce, $qop) {
+    public function __construct($realm, $nonce, $qop) {
       $this->realm= $realm;
       $this->nonce= $nonce;
       $this->qop= $qop;
@@ -44,7 +44,7 @@
      * @param   string value
      * @return  string
      */    
-    function _encode($value) {
+    public function _encode($value) {
       if (0 == strcasecmp('utf-8', $this->charset)) {
         return utf8_encode($value);
       }        
@@ -57,7 +57,7 @@
      * @access  public
      * @return  string
      */
-    function getString() {
+    public function getString() {
       $cnonce= base64_encode(bin2hex(HMAC_MD5::hash(microtime())));
       $ncount= sprintf('%08d', $this->ncount);
       
@@ -142,7 +142,7 @@
      * @access  public
      * @param   string qop
      */
-    function setQop($qop) {
+    public function setQop($qop) {
       $this->qop= $qop;
     }
 
@@ -152,7 +152,7 @@
      * @access  public
      * @return  string
      */
-    function getQop() {
+    public function getQop() {
       return $this->qop;
     }
 
@@ -162,7 +162,7 @@
      * @access  public
      * @param   string user
      */
-    function setUser($user) {
+    public function setUser($user) {
       $this->user= $user;
     }
 
@@ -172,7 +172,7 @@
      * @access  public
      * @return  string
      */
-    function getUser() {
+    public function getUser() {
       return $this->user;
     }
 
@@ -182,7 +182,7 @@
      * @access  public
      * @param   string pass
      */
-    function setPass($pass) {
+    public function setPass($pass) {
       $this->pass= $pass;
     }
 
@@ -192,7 +192,7 @@
      * @access  public
      * @return  string
      */
-    function getPass() {
+    public function getPass() {
       return $this->pass;
     }
 
@@ -202,7 +202,7 @@
      * @access  public
      * @param   string authzid
      */
-    function setAuthzid($authzid) {
+    public function setAuthzid($authzid) {
       $this->authzid= $authzid;
     }
 
@@ -212,7 +212,7 @@
      * @access  public
      * @return  string
      */
-    function getAuthzid() {
+    public function getAuthzid() {
       return $this->authzid;
     }
 
@@ -222,7 +222,7 @@
      * @access  public
      * @param   string nonce
      */
-    function setNonce($nonce) {
+    public function setNonce($nonce) {
       $this->nonce= $nonce;
     }
 
@@ -232,7 +232,7 @@
      * @access  public
      * @return  string
      */
-    function getNonce() {
+    public function getNonce() {
       return $this->nonce;
     }
 
@@ -242,7 +242,7 @@
      * @access  public
      * @param   int ncount
      */
-    function setNcount($ncount) {
+    public function setNcount($ncount) {
       $this->ncount= $ncount;
     }
 
@@ -252,7 +252,7 @@
      * @access  public
      * @return  int
      */
-    function getNcount() {
+    public function getNcount() {
       return $this->ncount;
     }
 
@@ -262,7 +262,7 @@
      * @access  public
      * @param   string digestUri
      */
-    function setDigestUri($digestUri) {
+    public function setDigestUri($digestUri) {
       $this->digestUri= $digestUri;
     }
 
@@ -272,7 +272,7 @@
      * @access  public
      * @return  string
      */
-    function getDigestUri() {
+    public function getDigestUri() {
       return $this->digestUri;
     }
 
@@ -282,7 +282,7 @@
      * @access  public
      * @param   string charset
      */
-    function setCharset($charset) {
+    public function setCharset($charset) {
       $this->charset= $charset;
     }
 
@@ -292,7 +292,7 @@
      * @access  public
      * @return  string
      */
-    function getCharset() {
+    public function getCharset() {
       return $this->charset;
     }
   }

@@ -12,12 +12,12 @@
    * @purpose  Wrap
    */
   class MultiPart extends MimePart {
-    var 
+    public 
       $parts     = array(),
       $charset   = '',
       $boundary  = '';
 
-    var
+    public
       $_ofs      = 0;
       
     /**
@@ -29,7 +29,7 @@
      * @param   &peer.mail.MimePart* parts
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct();
       $this->charset= '';
       for ($i= 0, $s= func_num_args(); $i < $s; $i++) {
@@ -47,7 +47,7 @@
      * @access  public
      * @param   string b the new boundary
      */
-    function setBoundary($b) {
+    public function setBoundary($b) {
       $this->boundary= $b;
       // $this->contenttype= 'multipart/alternative; boundary="'.$this->boundary.'"';
       $this->setContenttype('multipart/alternative');
@@ -60,7 +60,7 @@
      * @access  public
      * @return  string
      */
-    function getBoundary() {
+    public function getBoundary() {
       return $this->boundary;
     }
     
@@ -71,7 +71,7 @@
      * @access  public
      * @param   string content-type
      */
-    function setContenttype($c) {
+    public function setContenttype($c) {
       $this->contenttype= $c;
     }
     
@@ -83,9 +83,9 @@
      * @return  &peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    function &addPart(&$part) {
-      if (!is_a($part, 'MimePart')) {
-        return throw(new IllegalArgumentException(
+    public function &addPart(&$part) {
+      if (!is('MimePart', $part)) {
+        throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
       }
@@ -100,7 +100,7 @@
      * @param   int id default -1
      * @return  &peer.mail.MimePart part
      */
-    function &getPart($id= -1) {
+    public function &getPart($id= -1) {
 
       // Iterative use
       if (-1 == $id) $id= $this->_ofs++;
@@ -121,7 +121,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       $body= '';
       
       if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {

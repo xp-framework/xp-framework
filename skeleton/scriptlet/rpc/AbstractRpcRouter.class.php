@@ -7,7 +7,8 @@
   uses(
     'scriptlet.HttpScriptlet',
     'util.ServiceException',
-    'scriptlet.rpc.RpcFault'
+    'scriptlet.rpc.RpcFault',
+    'util.log.Traceable'
   );
 
   /**
@@ -15,8 +16,8 @@
    *
    * @purpose  Provide RPC services
    */
-  class AbstractRpcRouter extends HttpScriptlet {
-    var
+  class AbstractRpcRouter extends HttpScriptlet implements Traceable {
+    public
       $package      = NULL,
       $cat          = NULL;
     
@@ -26,7 +27,7 @@
      * @access  public
      * @param   string package
      */
-    function __construct($package) {
+    public function __construct($package) {
       $this->package= $package;
     }
     
@@ -36,7 +37,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
     
@@ -47,7 +48,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcRequest
      */
-    function &_request() {}
+    public function &_request() {}
 
     /**
      * Create a response object.
@@ -56,7 +57,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcResponse
      */
-    function &_response() {}
+    public function &_response() {}
 
     /**
      * Create a message object.
@@ -65,7 +66,7 @@
      * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function &_message() {}
+    public function &_message() {}
 
     /**
      * Handle GET requests. XML-RPC requests are only sent via HTTP POST,
@@ -75,8 +76,8 @@
      * @param   &scriptlet.rpc.AbstractRpcRequest request
      * @param   &scriptlet.rpc.AbstractRpcResponse response
      */
-    function doGet(&$request, &$response) {
-      return throw(new IllegalAccessException('GET is not supported'));
+    public function doGet(&$request, &$response) {
+      throw(new IllegalAccessException('GET is not supported'));
     }
 
     /**
@@ -88,7 +89,7 @@
      * @param   lang.StackTraceElement[] elements
      * @return  string[]
      */
-    function formatStackTrace($elements) {
+    public function formatStackTrace($elements) {
       $stacktrace= array();
       $replace= str_repeat('¿', strlen(XML_ILLEGAL_CHARS));
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
@@ -105,12 +106,12 @@
      * @param   &webservices.xmlrpc.rpc.XmlRpcRequest request
      * @param   &webservices.xmlrpc.rpc.XmlRpcResponse response
      */
-    function doPost(&$request, &$response) {
+    public function doPost(&$request, &$response) {
       $this->cat && $response->setTrace($this->cat);
       $this->cat && $request->setTrace($this->cat);
       
       $hasFault= FALSE;
-      try(); {
+      try {
 
         // Get message
         $msg= &$request->getMessage();
@@ -123,7 +124,7 @@
         // Call handler
         $return= &$this->callReflectHandler($msg);
 
-      } if (catch('ServiceException', $e)) {
+      } catch (ServiceException $e) {
       
         // Server methods may throw a ServerFaultException to have more
         // conveniant control over the faultcode which is returned to the client.
@@ -135,7 +136,7 @@
         );
         $hasFault= TRUE;
         
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
       
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
@@ -162,23 +163,23 @@
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */
-    function &callReflectHandler(&$msg) {
+    public function &callReflectHandler(&$msg) {
     
       // Check on valid params
       if (0 == strlen($msg->getMethod())) {
-        return throw(new IllegalArgumentException('No method name passed.'));
+        throw(new IllegalArgumentException('No method name passed.'));
       }
 
       // Create message from request data
-      try(); {
+      try {
         $class= &XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
+      } catch (ClassNotFoundException $e) {
+        throw($e);
       }
 
       // Check if method can be handled
       if (!$class->hasMethod($msg->getMethod())) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           $class->getName().' cannot handle method '.$msg->getMethod()
         ));
       }
@@ -187,7 +188,7 @@
 
         // Check if this method is a webmethod
         if (!$method->hasAnnotation('webmethod')) {
-          return throw(new IllegalAccessException('Cannot access non-web method '.$msg->getMethod()));
+          throw(new IllegalAccessException('Cannot access non-web method '.$msg->getMethod()));
         }
         
         // Create instance and invoke method
@@ -196,5 +197,5 @@
         return $method->invoke($inst, $msg->getData());
       }
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

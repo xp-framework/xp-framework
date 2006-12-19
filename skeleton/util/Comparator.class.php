@@ -11,7 +11,7 @@
    * @see      php://usort
    * @purpose  A comparison function
    */
-  class Comparator extends Interface {
+  interface Comparator {
   
     /**
      * Compares its two arguments for order. Returns a negative integer, 
@@ -24,6 +24,6 @@
      * @param   &mixed b
      * @return  int
      */
-    function compare(&$a, &$b) { }
+    public static function compare(&$a, &$b);
   }
 ?>

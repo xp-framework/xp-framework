@@ -24,7 +24,7 @@
    * @purpose  Base class
    */
   class Wrapper extends Object {
-    var
+    public
       $paraminfo    = array(),
       $values       = array();
 
@@ -37,7 +37,7 @@
      * @param   &scriptlet.xml.workflow.Handler handler
      * @param   &scriptlet.xml.workflow.Context context
      */
-    function setup(&$request, &$handler, &$context) {
+    public function setup(&$request, &$handler, &$context) {
       foreach ($this->paraminfo as $name => $definitions) {
         
         // Pre-fill form value if a default is defined and the request
@@ -65,15 +65,15 @@
      * @param   array defines
      * @return  &lang.Object
      */
-    function &checkerInstanceFor($defines) {
+    public function &checkerInstanceFor($defines) {
       static $class= array();
 
       if (!$defines) return NULL;
 
       $name= array_shift($defines);
-      try(); {
+      try {
         if (!isset($class[$name])) $class[$name]= &XPClass::forName($name);
-      } if (catch('ClassNotFoundException', $e)) {
+      } catch (ClassNotFoundException $e) {
         unset($class[$name]);
         return NULL;
       }
@@ -125,7 +125,7 @@
      * @param   string type default 'core:string'
      * @param   array values default array()
      */
-    function registerParamInfo(
+    public function registerParamInfo(
       $name, 
       $occurrence= OCCURRENCE_UNDEFINED, 
       $default= NULL,
@@ -152,7 +152,7 @@
      * @access  public
      * @return  string[]
      */
-    function getParamNames() {
+    public function getParamNames() {
       return array_keys($this->paraminfo);
     }
 
@@ -164,7 +164,7 @@
      * @param   string type one of of the PARAM_* constants
      * @return  mixed
      */
-    function getParamInfo($name, $type) {
+    public function getParamInfo($name, $type) {
       return $this->paraminfo[$name][$type];
     }
     
@@ -176,7 +176,7 @@
      * @param   mixed default default NULL
      * @return  mixed value
      */
-    function getValue($name, $default= NULL) {
+    public function getValue($name, $default= NULL) {
       return isset($this->values[$name]) ? $this->values[$name] : $default;
     }
 
@@ -187,7 +187,7 @@
      * @param   string name
      * @param   mixed value
      */
-    function setValue($name, $value) {
+    public function setValue($name, $value) {
       $this->values[$name]= $value;
     }
     
@@ -198,7 +198,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.workflow.Handler handler
      */
-    function load(&$request, &$handler) { 
+    public function load(&$request, &$handler) { 
       foreach ($this->paraminfo as $name => $definitions) {
 
         // Retrieve the parameter's value from the request (or from the

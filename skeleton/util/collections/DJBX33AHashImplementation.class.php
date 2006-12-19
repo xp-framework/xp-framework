@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.collections.HashImplementation');
+
   /**
    * DJBX33A (Daniel J. Bernstein, Times 33 with Addition)
    *
@@ -38,7 +40,7 @@
    * @see      xp://util.collections.HashProvider
    * @purpose  Hashing
    */
-  class DJBX33AHashImplementation extends Object {
+  class DJBX33AHashImplementation extends Object implements HashImplementation {
 
     /**
      * Retrieve hash code for a given string
@@ -47,7 +49,7 @@
      * @param   string str
      * @return  int hashcode
      */
-    function hashOf($str) {
+    public function hashOf($str) {
       $hash= 5381;
       $offset= 0;
       for ($len= strlen($str); $len >= 8; $len-= 8) {
@@ -73,5 +75,5 @@
       return $hash;
     }
 
-  } implements(__FILE__, 'util.collections.HashImplementation');
+  } 
 ?>

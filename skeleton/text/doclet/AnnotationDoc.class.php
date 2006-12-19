@@ -12,7 +12,7 @@
    * @purpose  Documents an annotation
    */
   class AnnotationDoc extends Doc {
-    var
+    public
       $value= NULL;
   
     /**
@@ -22,7 +22,7 @@
      * @param   string name
      * @param   mixed value
      */
-    function __construct($name, $value) {
+    public function __construct($name, $value) {
       $this->name= $name;
       $this->value= $value;
     }

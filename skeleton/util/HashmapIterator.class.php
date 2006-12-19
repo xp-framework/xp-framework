@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterator over the keys of a Hashmap object
    *
@@ -20,8 +22,8 @@
    * @see      xp://util.Hashmap
    * @purpose  Iterator
    */
-  class HashmapIterator extends Object {
-    var
+  class HashmapIterator extends Object implements XPIterator {
+    public
       $_hash    = NULL,
       $_key     = FALSE;
   
@@ -32,7 +34,7 @@
      * @param   &array hash
      * @see     xp://util.Hashmap#iterator
      */
-    function __construct(&$hash) {
+    public function __construct(&$hash) {
       $this->_hash= &$hash;
       reset($this->_hash);
     }
@@ -45,7 +47,7 @@
      * @access  public
      * @return  bool
      */
-    function hasNext() {
+    public function hasNext() {
       return !is_null($this->_key= key($this->_hash));
     }
     
@@ -56,12 +58,12 @@
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() {
+    public function &next() {
       if (is_null($this->_key)) {
-        return throw(new NoSuchElementException('No more elements'));
+        throw(new NoSuchElementException('No more elements'));
       }
       next($this->_hash);
       return $this->_key;
     }
-  } implements(__FILE__, 'util.Iterator');
+  } 
 ?>

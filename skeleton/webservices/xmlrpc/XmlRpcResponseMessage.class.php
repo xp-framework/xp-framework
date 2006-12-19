@@ -21,8 +21,8 @@
      * @access  public
      * @param   webservices.xmlrpc.XmlRpcRequestMessage reqmsg
      */
-    function create($reqmsg= NULL) {
-      $this->tree= &new Tree(XMLRPC_RESPONSE);
+    public function create($reqmsg= NULL) {
+      $this->tree= new Tree(XMLRPC_RESPONSE);
     }
     
     /**
@@ -37,8 +37,8 @@
      * @param   string string
      * @return  &webservices.xmlrpc.XmlRpcResponse Message
      */
-    function &fromString($string) {
-      $msg= &new XmlRpcResponseMessage();
+    public static function &fromString($string) {
+      $msg= new XmlRpcResponseMessage();
       $msg->tree= &Tree::fromString($string);
 
       // Set class and method members from XML structure
@@ -54,8 +54,8 @@
      * @access  public
      * @param   &mixed arr
      */
-    function setData($value) {
-      $encoder= &new XmlRpcEncoder();
+    public function setData($value) {
+      $encoder= new XmlRpcEncoder();
 
       $params= &$this->tree->root->addChild(new Node('params'));
       $param= &$params->addChild(new Node('param'));
@@ -68,18 +68,18 @@
      * @access  public
      * @return  &mixed
      */
-    function &getData() {
+    public function &getData() {
       $ret= array();
       
       if (
         !is('xml.Node', $this->tree->root->children[0]->children[0]->children[0]) ||
         'value' != $this->tree->root->children[0]->children[0]->children[0]->getName()
       ) {
-        return throw(new IllegalStateException('No node "params" found.'));
+        throw(new IllegalStateException('No node "params" found.'));
       }
 
       // Process params node
-      $decoder= &new XmlRpcDecoder();
+      $decoder= new XmlRpcDecoder();
       
       // Access node /methodResponse/params/param/value node
       return $decoder->decode($this->tree->root->children[0]->children[0]->children[0]);

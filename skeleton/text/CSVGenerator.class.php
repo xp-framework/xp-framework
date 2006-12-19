@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses ('io.Stream');
+  uses('io.Stream');
 
   /**
    * This class can be used to easily create correct csv-files.
@@ -15,18 +15,18 @@
    * @purpose Small and simple CSV Generator
    */ 
   class CSVGenerator extends Object {
-    var
+    public
       $stream;
       
-    var
+    public
       $colDelim= '|',
       $lineDelim = "\n",  // on unix-based systems we expect an \n as delimiter
       $escape= '"';
     
-    var
+    public
       $colName;
       
-    var
+    public
       $headerWritten= FALSE,
       $delimWritten= TRUE;
     
@@ -38,12 +38,12 @@
      * @param   stream stream
      * @return  bool success
      */    
-    function setOutputStream(&$stream) {
-      try(); {
+    public function setOutputStream(&$stream) {
+      try {
         if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
         $this->stream= &$stream;
-      } if (catch('Exception', $e)) {
-        return throw ($e);
+      } catch (Exception $e) {
+        throw ($e);
       }
       return true;
     }
@@ -54,7 +54,7 @@
      * @access  public
      * @param   char delim
      */
-    function setColDelimiter($delim) {
+    public function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
     }
     
@@ -67,7 +67,7 @@
      * @access public 
      * @param  string delim 
      */
-    function setLineDelimiter($delim) {
+    public function setLineDelimiter($delim) {
       $this->lineDelim= $delim; // could be more than one character
     }
 
@@ -79,7 +79,7 @@
      * @access  public
      * @param   array header
      */    
-    function setHeader($array) {
+    public function setHeader($array) {
       $this->colName= $array;
       $this->headerWritten= FALSE;
     }
@@ -90,7 +90,7 @@
      * @access  private
      * @return  bool hasHeader
      */    
-    function _hasHeader() {
+    public function _hasHeader() {
       return (isset ($this->colName) && !empty ($this->colName));
     }
 
@@ -99,7 +99,7 @@
      *
      * @access  private
      */    
-    function _writeHeader() {
+    public function _writeHeader() {
       $this->stream->write(
         implode ($this->colDelim, array_values ($this->colName))
       );
@@ -115,7 +115,7 @@
      * @access  private
      * @param   string data
      */    
-    function _writeColumn($data= '') {
+    public function _writeColumn($data= '') {
       if (!$this->delimWritten) $this->stream->write ($this->colDelim);
       $this->delimWritten= FALSE;
 
@@ -142,7 +142,7 @@
      * @param   array data
      * @throws  lang.Exception e if any error occurs
      */    
-    function writeRecord($data) {
+    public function writeRecord($data) {
       if ($this->_hasHeader() && !$this->headerWritten)
         $this->_writeHeader();
     

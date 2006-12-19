@@ -30,11 +30,11 @@
    * @see   php://strtok
    */
   class StringTokenizer extends Object {
-    var 
+    public 
       $delimiters   = '',
       $returnDelims = FALSE;
     
-    var
+    public
       $_str         = '',
       $_stack       = array();
     
@@ -46,7 +46,7 @@
      * @param   string delimiter default ' '
      * @param   bool returnDelims default FALSE
      */
-    function __construct($str, $delimiters= ' ', $returnDelims= FALSE) {
+    public function __construct($str, $delimiters= ' ', $returnDelims= FALSE) {
       $this->delimiters= $delimiters;
       $this->returnDelims= $returnDelims;
       $this->_str= $str;
@@ -58,7 +58,7 @@
      * @access  public
      * @return  bool more tokens
      */
-    function hasMoreTokens() {
+    public function hasMoreTokens() {
       return (!empty($this->_stack) or strlen($this->_str) > 0);
     }
     
@@ -69,7 +69,7 @@
      * @param   bool delimiters default NULL
      * @return  string next token
      */
-    function nextToken($delimiters= NULL) {
+    public function nextToken($delimiters= NULL) {
       if (empty($this->_stack)) {
         $offset= strcspn($this->_str, $delimiters ? $delimiters : $this->delimiters);
         if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_str, 0, $offset);

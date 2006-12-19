@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('img.convert.ImageConverter');
+
   /**
    * Converts an image to grayscale. 
    * 
@@ -29,7 +31,7 @@
    * @see      xp://img.convert.ImageConverter
    * @purpose  Converter
    */
-  class GrayscaleConverter extends Object {
+  class GrayscaleConverter extends Object implements ImageConverter {
 
     /**
      * Convert an image.
@@ -39,7 +41,7 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function convert(&$image) {
+    public function convert(&$image) {
     
       // Create temporary variable as local variable access is faster 
       // than member variable access.
@@ -73,5 +75,5 @@
       }
     }
 
-  } implements(__FILE__, 'img.convert.ImageConverter');
+  } 
 ?>

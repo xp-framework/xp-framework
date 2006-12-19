@@ -34,7 +34,7 @@
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  &util.Date
      */
-    function &dstBegin($year= -1, $method= CAL_DST_EU) {
+    public static function &dstBegin($year= -1, $method= CAL_DST_EU) {
       if (-1 == $year) $year= date('Y');
       $i= 0;
       $ofs= ($method == CAL_DST_US) ? 1 : -1;
@@ -43,7 +43,7 @@
         $i+= $ofs;
       } while ($w > 0);
 
-      $d= &new Date($m);
+      $d= new Date($m);
       return $d;
     }
   
@@ -56,14 +56,14 @@
      * @param   int year default -1 Year, defaults to current year
      * @return  &util.Date
      */
-    function &dstEnd($year= -1) {
+    public static function &dstEnd($year= -1) {
       if (-1 == $year) $year= date('Y');
       $i= 0;
       do {
         $w= date('w', $m= mktime(0, 0, 0, 11, $i--, $year));
       } while ($w > 0);
 
-      $d= &new Date($m);
+      $d= new Date($m);
       return $d;
     }
     
@@ -76,7 +76,7 @@
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  bool
      */
-    function inDst(&$date, $method= CAL_DST_EU) {
+    public static function inDst(&$date, $method= CAL_DST_EU) {
       return (
         $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
         $date->isBefore(Calendar::dstEnd($date->getYear()))
@@ -100,7 +100,7 @@
      * @param   array holidays default array() holidays to be included in calculation
      * @return  int number of workdays
      */
-    function workdays(&$start, &$end, $holidays= array()) {
+    public function workdays(&$start, &$end, $holidays= array()) {
       $s= $start->getTime();
       $e= $end->getTime();
 
@@ -125,8 +125,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &midnight(&$date) {
-      $d= &new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
+    public static function &midnight(&$date) {
+      $d= new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
       return $d;
     }
     
@@ -139,8 +139,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &monthBegin(&$date) {
-      $d= &new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
+    public static function &monthBegin(&$date) {
+      $d= new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
       return $d;
     }
 
@@ -153,8 +153,8 @@
      * @param   &util.Date date
      * @return  &util.Date
      */
-    function &monthEnd(&$date) {
-      $d= &new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
+    public static function &monthEnd(&$date) {
+      $d= new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
       return $d;
     }
 
@@ -167,7 +167,7 @@
      * @param   int year
      * @return  int
      */
-    function caldiff($stamp, $year) {
+    public static function caldiff($stamp, $year) {
       $d4= mktime(0, 0, 0, 1, 4, $year);
       return floor(1.05 + ($stamp- $d4) / CAL_SEC_WEEK+ ((date('w', $d4)+ 6) % 7) / 7);
     }
@@ -181,7 +181,7 @@
      * @return  int calendar week
      * @see     http://www.salesianer.de/util/kalwoch.html 
      */
-    function week(&$date) {
+    public static function week(&$date) {
       $d= $date->getTime();
       $y= $date->year + 1;
       do {
@@ -201,7 +201,7 @@
      * @return  &util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
-    function &advent($year= -1) {
+    public static function &advent($year= -1) {
       if (-1 == $year) $year= date('Y');
      
       $s= mktime(0, 0, 0, 11, 26, $year);
@@ -209,7 +209,7 @@
         $s+= CAL_SEC_DAY;
       }
       
-      $d= &new Date($s);
+      $d= new Date($s);
       return $d;
     }
     
@@ -224,7 +224,7 @@
      * @see     http://www.salesianer.de/util/kalfaq.html
      * @see     php://easter-date#user_contrib
      */
-    function &easter($year= -1) {
+    public static function &easter($year= -1) {
       if (-1 == $year) $year= date('Y');
       
       $g = $year % 19;
@@ -236,7 +236,7 @@
       $m = 3 + (int)(($l + 40) / 44);
       $d = $l + 28 - 31 * ((int)($m / 4));
 
-      $d= &new Date(mktime(0, 0, 0, $m, $d, $year));
+      $d= new Date(mktime(0, 0, 0, $m, $d, $year));
       return $d;
     }
     
@@ -248,7 +248,7 @@
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */
-    function isLeapYear($year) {
+    public static function isLeapYear($year) {
       return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
     }
   }

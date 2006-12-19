@@ -9,7 +9,7 @@
    * 
    * @purpose  Exception
    */
-  class SQLException extends Exception {
+  class SQLException extends XPException {
 
   }
 ?>

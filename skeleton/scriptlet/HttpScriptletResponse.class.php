@@ -17,7 +17,7 @@
    * @purpose  Provide a way to access the HTTP response
    */  
   class HttpScriptletResponse extends Object {
-    var
+    public
       $version=         '1.1',
       $content=         '',
       $statusCode=      HTTP_OK,
@@ -37,7 +37,7 @@
      * @access  public
      * @param   string target an absolute URI
      */
-    function sendRedirect($location) {
+    public function sendRedirect($location) {
       $this->statusCode= HTTP_FOUND;
       $this->setHeader('Location', $location);
     }
@@ -51,7 +51,7 @@
      * @access  public
      * @param   string realm default 'Restricted area'
      */
-    function sendBasicAuthenticate($realm= 'Restricted area') {
+    public function sendBasicAuthenticate($realm= 'Restricted area') {
       $this->statusCode= HTTP_AUTHORIZATION_REQUIRED;
       $this->setHeader('WWW-Authenticate', 'Basic realm="'.$realm.'"');
     }
@@ -70,7 +70,7 @@
      * @param   string name header name
      * @param   string value header value
      */
-    function setHeader($name, $value) {
+    public function setHeader($name, $value) {
       $this->headers[]= $name.': '.$value;
     }
 
@@ -80,7 +80,7 @@
      * @access  public
      * @param   int len
      */
-    function setContentLength($len) {
+    public function setContentLength($len) {
       $this->headers[]= 'Content-Length: '.$len;
     }
 
@@ -93,7 +93,7 @@
      * @access  public
      * @param   string type
      */
-    function setContentType($type) {
+    public function setContentType($type) {
       $this->headers[]= 'Content-Type: '.$type;
     }
     
@@ -109,7 +109,7 @@
      * @access  public
      * @param   &scriptlet.Cookie cookie
      */
-    function setCookie(&$cookie) {
+    public function setCookie(&$cookie) {
       $this->headers[]= 'Set-Cookie: '.$cookie->getHeaderValue();
     }
     
@@ -120,7 +120,7 @@
      * @param   int sc statuscode
      * @see     rfc://2616#10
      */
-    function setStatus($sc) {
+    public function setStatus($sc) {
       $this->statusCode= $sc;
     }
     
@@ -132,7 +132,7 @@
      * @access  public
      * @return  bool
      */
-    function headersSent() {
+    public function headersSent() {
       return headers_sent();
     }
     
@@ -145,9 +145,9 @@
      * @access  public
      * @throws  lang.IllegalStateException if headers have already been sent
      */  
-    function sendHeaders() {
+    public function sendHeaders() {
       if (headers_sent($file, $line))
-        return throw(new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line));
+        throw(new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line));
         
       switch (php_sapi_name()) {
         case 'cgi':
@@ -181,7 +181,7 @@
      * @see     scriptlet.xml.XMLScriptletResponse#process
      * @access  public
      */    
-    function process() {
+    public function process() {
     }
     
     /**
@@ -190,7 +190,7 @@
      *
      * @access  public
      */
-    function sendContent() {
+    public function sendContent() {
       echo $this->getContent();
     }
     
@@ -200,7 +200,7 @@
      * @access  public
      * @param   string s string to add to the content
      */
-    function write($s) {
+    public function write($s) {
       $this->content.= $s;
     }
     
@@ -210,7 +210,7 @@
      * @access  public
      * @param   string content Content
      */
-    function setContent($content) {
+    public function setContent($content) {
       $this->content= $content;
     }
 
@@ -220,7 +220,7 @@
      * @access  public
      * @return  string Content
      */
-    function getContent() {
+    public function getContent() {
       return $this->content;
     }
   }

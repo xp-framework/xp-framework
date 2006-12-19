@@ -10,7 +10,7 @@
    * @purpose  an abstract wrapper for addresses
    */
   class TelephonyAddress extends Object {
-    var
+    public
       $number   = '';
 
     /**
@@ -19,7 +19,7 @@
      * @access  public
      * @param   string number
      */
-    function __construct($number) {
+    public function __construct($number) {
       
       $this->number= $number;
     }
@@ -30,7 +30,7 @@
      * @access  public
      * @param   string number
      */
-    function setNumber($number) {
+    public function setNumber($number) {
       $this->number= $number;
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @return  string
      */
-    function getNumber() {
+    public function getNumber() {
       return $this->number;
     }
   }

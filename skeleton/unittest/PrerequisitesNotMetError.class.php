@@ -12,8 +12,8 @@
    *
    * @purpose  Exception
    */
-  class PrerequisitesNotMetError extends Exception {
-    var
+  class PrerequisitesNotMetError extends XPException {
+    public
       $cause           = NULL,
       $prerequisites   = array();
       
@@ -26,7 +26,7 @@
      * @param   array prerequisites default array()
      * @param   string code
      */
-    function __construct($message, &$cause, $prerequisites= array()) {
+    public function __construct($message, &$cause, $prerequisites= array()) {
       $this->cause= &$cause;
       $this->prerequisites= $prerequisites;
       parent::__construct($message);
@@ -38,7 +38,7 @@
      * @access  public
      * @return  string
      */
-    function getStackTrace() {
+    public function getStackTrace() {
       return $this->cause ? $this->cause->getStackTrace() : $this->getStackTrace();
     }
   }

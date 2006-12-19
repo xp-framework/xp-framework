@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing a rectangle
    *
@@ -17,8 +19,8 @@
    *
    * @see xp://img.Image
    */
-  class Rectangle extends Object {
-    var
+  class Rectangle extends Object implements Drawable {
+    public
       $col=  NULL,
       $x1=   0,
       $y1=   0,
@@ -36,7 +38,7 @@
      * @param   int y2 y coordinate of bottom right corner
      * @param   bool fill default FALSE
      */ 
-    function __construct(&$col, $x1, $y1, $x2, $y2, $fill= FALSE) {
+    public function __construct(&$col, $x1, $y1, $x2, $y2, $fill= FALSE) {
       $this->col= &$col;
       $this->x1= $x1;
       $this->y1= $y1;
@@ -53,7 +55,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) { }
+    public function draw(&$image) {
       if ($this->fill) return imagefilledrectangle(
         $image->handle,
         $this->x1,
@@ -71,5 +73,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

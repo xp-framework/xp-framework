@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class IJsonDecoder extends Interface {
+  interface IJsonDecoder {
   
     /**
      * Encode data into string
@@ -20,7 +20,7 @@
      * @param   mixed data
      * @return  string
      */
-    function encode($data) { }
+    public function encode($data);
     
     /**
      * Decode string into data
@@ -29,7 +29,7 @@
      * @param   string string
      * @return  mixed
      */
-    function decode($string) { }      
+    public function decode($string);      
   
   }
 ?>

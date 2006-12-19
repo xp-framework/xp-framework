@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.criterion.SimpleExpression');
+  uses('rdbms.criterion.SimpleExpression', 'rdbms.SQLExpression');
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');
@@ -16,8 +16,8 @@
    * @see      xp://rdbms.DataSet
    * @purpose  purpose
    */
-  class Criteria extends Object {
-    var 
+  class Criteria extends Object implements SQLExpression {
+    public 
       $conditions   = array(),
       $orderings    = array(),
       $groupings    = array();
@@ -38,14 +38,14 @@
      * @access  public
      * @param   rdbms.criterion.Criterion condition default NULL
      */
-    function __construct($criterion= NULL) {
+    public function __construct($criterion= NULL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
         $this->conditions[]= &$criterion;
       } else if (is_array($criterion)) {
-        $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+        $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
         for ($i= 1, $n= func_num_args(); $i < $n; $i++) {
           $criterion= func_get_arg($i);
-          $this->conditions[]= &new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
+          $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
         }
       }
     }
@@ -72,11 +72,11 @@
      * @access  public
      * @param   rdbms.criterion.Criterion criterion
      */
-    function add($criterion, $value= NULL, $comparison= EQUAL) {
+    public function add($criterion, $value= NULL, $comparison= EQUAL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
         $this->conditions[]= &$criterion;
       } else {
-        $this->conditions[]= &new SimpleExpression($criterion, $value, $comparison);        
+        $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
       }
     }
 
@@ -100,7 +100,7 @@
      * @param   string column
      * @param   string order default ASCENDING
      */
-    function addOrderBy($column, $order= ASCENDING) {
+    public function addOrderBy($column, $order= ASCENDING) {
       $this->orderings[]= array($column, $order);
     }
 
@@ -110,7 +110,7 @@
      * @access  public
      * @param   string column
      */
-    function addGroupBy($column) {
+    public function addGroupBy($column) {
       $this->groupings[]= $column;
     }
     
@@ -120,7 +120,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName()."@{\n";
       foreach ($this->conditions as $condition) {
         $s.= '  '.xp::stringOf($condition);
@@ -137,7 +137,7 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    function toSQL(&$db, $types) {
+    public function toSQL(&$db, $types) {
       $sql= '';
       
       // Process conditions
@@ -159,7 +159,7 @@
         $sql= rtrim($sql, ' ').' order by ';
         foreach ($this->orderings as $order) {
           if (!isset($types[$order[0]])) {
-            return throw(new SQLStateException('Field "'.$order[0].'" unknown'));
+            throw(new SQLStateException('Field "'.$order[0].'" unknown'));
           }
           $sql.= $order[0].' '.$order[1].', ';
         }
@@ -177,7 +177,7 @@
      * @param   &rdbms.Peer peer
      * @return  &rdbms.ResultSet
      */
-    function executeSelect(&$conn, &$peer) {
+    public function executeSelect(&$conn, &$peer) {
       return $conn->query(
         'select %c from %c%c', 
         array_keys($peer->types),
@@ -186,5 +186,5 @@
       );
     }
 
-  } implements(__FILE__, 'rdbms.SQLExpression');
+  } 
 ?>

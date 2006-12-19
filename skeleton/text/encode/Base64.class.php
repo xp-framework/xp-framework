@@ -25,7 +25,7 @@
      * @param   string str
      * @return  string
      */
-    function encode($str) { 
+    public static function encode($str) { 
       return base64_encode($str);
     }
     
@@ -37,7 +37,7 @@
      * @param   string str
      * @return  string
      */
-    function decode($str) { 
+    public static function decode($str) { 
       return base64_decode($str);
     }
   }

@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  class Set extends Interface {
+  interface Set {
   
     /**
      * Adds an object
@@ -18,7 +18,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    function add(&$object) { }
+    public function add(&$object);
 
     /**
      * Removes an object from this set
@@ -27,7 +27,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    function remove(&$object) { }
+    public function remove(&$object);
 
     /**
      * Removes an object from this set
@@ -36,7 +36,7 @@
      * @param   &lang.Object object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    function contains(&$object) { }
+    public function contains(&$object);
 
     /**
      * Returns this set's size
@@ -44,14 +44,14 @@
      * @access  public
      * @return  int
      */
-    function size() { }
+    public function size();
 
     /**
      * Removes all of the elements from this set
      *
      * @access  public
      */
-    function clear() { }
+    public function clear();
 
     /**
      * Returns whether this set is empty
@@ -59,7 +59,7 @@
      * @access  public
      * @return  bool
      */
-    function isEmpty() { }
+    public function isEmpty();
 
     /**
      * Adds an array of objects
@@ -68,7 +68,7 @@
      * @param   lang.Object[] objects
      * @return  bool TRUE if this set changed as a result of the call. 
      */
-    function addAll($objects) { }
+    public function addAll($objects);
 
     /**
      * Returns an array containing all of the elements in this set. 
@@ -76,7 +76,7 @@
      * @access  public
      * @return  lang.Object[] objects
      */
-    function toArray() { }
+    public function toArray();
 
     /**
      * Returns a hashcode for this set
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() { }
+    public function hashCode();
     
     /**
      * Returns true if this set equals another set.
@@ -93,6 +93,6 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) { }
+    public function equals(&$cmp);
   }
 ?>

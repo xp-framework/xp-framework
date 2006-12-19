@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.SOAPMessage', 'xml.QName', 'webservices.soap.Parameter', 'webservices.soap.SOAPMapping');
+  uses(
+    'webservices.soap.SOAPMessage',
+    'xml.QName',
+    'webservices.soap.Parameter',
+    'webservices.soap.SOAPMapping',
+    'util.log.Traceable'
+  );
   
   /**
    * Basic SOAP-Client
@@ -24,8 +30,8 @@
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
-  class SOAPClient extends Object {
-    var 
+  class SOAPClient extends Object implements Traceable {
+    public 
       $encoding           = 'iso-8859-1',
       $transport          = NULL,
       $action             = '',
@@ -41,11 +47,11 @@
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
-    function __construct(&$transport, $action, $targetNamespace= NULL) {
+    public function __construct(&$transport, $action, $targetNamespace= NULL) {
       $this->transport= &$transport;
       $this->action= $action;
       $this->targetNamespace= $targetNamespace;
-      $this->mapping= &new SOAPMapping();
+      $this->mapping= new SOAPMapping();
     }
 
     /**
@@ -54,7 +60,7 @@
      * @access  public
      * @param   string targetNamespace
      */
-    function setTargetNamespace($targetNamespace= NULL) {
+    public function setTargetNamespace($targetNamespace= NULL) {
       $this->targetNamespace= $targetNamespace;
     }
 
@@ -64,7 +70,7 @@
      * @access  public
      * @param   string encoding either utf-8 oder iso-8859-1
      */
-    function setEncoding($encoding) {
+    public function setEncoding($encoding) {
       $this->encoding= $encoding;
     }
 
@@ -74,7 +80,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->transport->setTrace($cat);
     }
     
@@ -85,7 +91,7 @@
      * @param   &xml.QName qname
      * @param   &lang.XPClass class
      */
-    function registerMapping(&$qname, &$class) {
+    public function registerMapping(&$qname, &$class) {
       $this->mapping->registerMapping($qname, $class);
     }
     
@@ -96,7 +102,7 @@
      * @param   &webservices.soap.SOAPHeader header
      * @return  &webservices.soap.SOAPHeader the header added
      */
-    function &addHeader(&$header) {
+    public function &addHeader(&$header) {
       $this->headers[]= &$header;
       return $header;
     }
@@ -111,14 +117,14 @@
      * @throws  lang.IllegalArgumentException
      * @throws  webservices.soap.SOAPFaultException
      */
-    function invoke() {
-      if (!is_a($this->transport, 'SOAPTransport')) return throw(new IllegalArgumentException(
+    public function invoke() {
+      if (!is('SOAPTransport', $this->transport)) throw(new IllegalArgumentException(
         'Transport must be a webservices.soap.transport.SOAPTransport'
       ));
       
       $args= func_get_args();
       
-      $message= &new SOAPMessage();
+      $message= new SOAPMessage();
       $message->setEncoding($this->encoding);
       $message->createCall($this->action, array_shift($args), $this->targetNamespace, $this->headers);
       $message->setMapping($this->mapping);
@@ -136,9 +142,9 @@
       if (sizeof($data) == 1) return $data[0];
       if (sizeof($data) == 0) return NULL;
 
-      return throw(new IllegalArgumentException(
+      throw(new IllegalArgumentException(
         'Multiple return values not supported (have '.sizeof($data).')'
       ));
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

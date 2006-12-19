@@ -25,14 +25,14 @@
    * @purpose  Represent a file
    */
   class File extends Stream {
-    var 
+    public 
       $uri=         '', 
       $filename=    '',
       $path=        '',
       $extension=   '',
       $mode=        FILE_MODE_READ;
     
-    var 
+    public 
       $_fd= NULL;
     
     /**
@@ -41,7 +41,7 @@
      * @access  public
      * @param   mixed file either a filename or a resource (as returned from fopen)
      */
-    function __construct($file) {
+    public function __construct($file) {
       if (is_resource($file)) {
         $this->uri= NULL;
         $this->_fd= $file;
@@ -56,7 +56,7 @@
      * @access  public
      * @return  resource
      */
-    function getHandle() {
+    public function getHandle() {
       return $this->_fd;
     }
     
@@ -66,7 +66,7 @@
      * @access public
      * @return string uri
      */
-    function getURI() {
+    public function getURI() {
       return $this->uri;
     }
     
@@ -76,7 +76,7 @@
      * @access public
      * @return string filename
      */
-    function getFileName() {
+    public function getFileName() {
       return $this->filename;
     }
 
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string
      */
-    function getPath() {
+    public function getPath() {
       return $this->path;
     }
 
@@ -96,7 +96,7 @@
      * @access  public
      * @return  string
      */
-    function getExtension() {
+    public function getExtension() {
       return $this->extension;
     }
 
@@ -106,7 +106,7 @@
      * @access  private
      * @param   string uri
      */
-    function setURI($uri) {
+    public function setURI($uri) {
     
       // PHP-Scheme
       if (0 == strncmp('php://', $uri, 6)) {
@@ -137,16 +137,16 @@
      * @throws  io.FileNotFoundException in case the file is not found
      * @throws  io.IOException in case the file cannot be opened (e.g., lacking permissions)
      */
-    function open($mode= FILE_MODE_READ) {
+    public function open($mode= FILE_MODE_READ) {
       $this->mode= $mode;
       if (
         0 != strncmp('php://', $this->uri, 6) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
-      ) return throw(new FileNotFoundException($this->uri));
+      ) throw(new FileNotFoundException($this->uri));
       
       $this->_fd= fopen($this->uri, $this->mode);
-      if (!$this->_fd) return throw(new IOException('Cannot open '.$this->uri.' mode '.$this->mode));
+      if (!$this->_fd) throw(new IOException('Cannot open '.$this->uri.' mode '.$this->mode));
       
       return TRUE;
     }
@@ -157,7 +157,7 @@
      * @access  public
      * @return  bool TRUE, if the file is open
      */
-    function isOpen() {
+    public function isOpen() {
       return $this->_fd;
     }
     
@@ -167,7 +167,7 @@
      * @access  public
      * @return  bool TRUE in case the file exists
      */
-    function exists() {
+    public function exists() {
       return file_exists($this->uri);
     }
     
@@ -178,9 +178,9 @@
      * @return  int size filesize in bytes
      * @throws  io.IOException in case of an error
      */
-    function size() {
+    public function size() {
       $size= filesize($this->uri);
-      if (FALSE === $size) return throw(new IOException('Cannot get filesize for '.$this->uri));
+      if (FALSE === $size) throw(new IOException('Cannot get filesize for '.$this->uri));
       return $size;
     }
     
@@ -191,9 +191,9 @@
      * @param   bool TRUE if method succeeded
      * @throws  io.IOException in case of an error
      */
-    function truncate($size= 0) {
+    public function truncate($size= 0) {
       $return= ftruncate($this->_fd, $size);
-      if (FALSE === $return) return throw(new IOException('Cannot truncate file '.$this->uri));
+      if (FALSE === $return) throw(new IOException('Cannot truncate file '.$this->uri));
       return $return;
     }
 
@@ -212,9 +212,9 @@
      * @return  int The date the file was last accessed as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function lastAccessed() {
+    public function lastAccessed() {
       $atime= fileatime($this->uri);
-      if (FALSE === $atime) return throw(new IOException('Cannot get atime for '.$this->uri));
+      if (FALSE === $atime) throw(new IOException('Cannot get atime for '.$this->uri));
       return $atime;
     }
     
@@ -225,9 +225,9 @@
      * @return  int The date the file was last modified as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function lastModified() {
+    public function lastModified() {
       $mtime= filemtime($this->uri);
-      if (FALSE === $mtime) return throw(new IOException('Cannot get mtime for '.$this->uri));
+      if (FALSE === $mtime) throw(new IOException('Cannot get mtime for '.$this->uri));
       return $mtime;
     }
     
@@ -239,10 +239,10 @@
      * @return  bool success
      * @throws  io.IOException in case of an error
      */
-    function touch($time= -1) {
+    public function touch($time= -1) {
       if (-1 == $time) $time= time();
       if (FALSE === touch($this->uri, $time)) {
-        return throw(new IOException('Cannot set mtime for '.$this->uri));
+        throw(new IOException('Cannot set mtime for '.$this->uri));
       }
       return TRUE;
     }
@@ -254,9 +254,9 @@
      * @return  int The date the file was created as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function createdAt() {
+    public function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        return throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw(new IOException('Cannot get mtime for '.$this->uri));
       }
       return $mtime;
     }
@@ -273,7 +273,7 @@
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
-    function readLine($bytes= 4096) {
+    public function readLine($bytes= 4096) {
       return chop($this->gets($bytes));
     }
     
@@ -284,9 +284,9 @@
      * @return  char the character read
      * @throws  io.IOException in case of an error
      */
-    function readChar() {
+    public function readChar() {
       if (FALSE === ($result= fgetc($this->_fd)) && !feof($this->_fd)) {
-        return throw(new IOException('Cannot read 1 byte from '.$this->uri));
+        throw(new IOException('Cannot read 1 byte from '.$this->uri));
       }
       return $result;
     }
@@ -302,9 +302,9 @@
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
-    function gets($bytes= 4096) {
+    public function gets($bytes= 4096) {
       if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
-        return throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
+        throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -317,9 +317,9 @@
      * @return  string Data read
      * @throws  io.IOException in case of an error
      */
-    function read($bytes= 4096) {
+    public function read($bytes= 4096) {
       if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
-        return throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
+        throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }
       return $result;
     }
@@ -332,9 +332,9 @@
      * @return  int number of bytes written
      * @throws  io.IOException in case of an error
      */
-    function write($string) {
+    public function write($string) {
       if (FALSE === ($result= fwrite($this->_fd, $string))) {
-        return throw(new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri));
+        throw(new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -347,9 +347,9 @@
      * @return  int number of bytes written
      * @throws  io.IOException in case of an error
      */
-    function writeLine($string= '') {
+    public function writeLine($string= '') {
       if (FALSE === ($result= fwrite($this->_fd, $string."\n"))) {
-        return throw(new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+        throw(new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
       }
       return $result;
     }
@@ -365,10 +365,10 @@
      * @return  bool TRUE when the end of the file is reached
      * @throws  io.IOException in case of an error (e.g., the file's not been opened)
      */
-    function eof() {
+    public function eof() {
       $result= feof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        return throw(new IOException('Cannot determine eof of '.$this->uri));
+        throw(new IOException('Cannot determine eof of '.$this->uri));
       }
       return $result;
     }
@@ -383,9 +383,9 @@
      * @return  bool TRUE if rewind suceeded
      * @throws  io.IOException in case of an error
      */
-    function rewind() {
+    public function rewind() {
       if (FALSE === ($result= rewind($this->_fd))) {
-        return throw(new IOException('Cannot rewind file pointer'));
+        throw(new IOException('Cannot rewind file pointer'));
       }
       return TRUE;
     }
@@ -400,9 +400,9 @@
      * @throws  io.IOException in case of an error
      * @return  bool success
      */
-    function seek($position= 0, $mode= SEEK_SET) {
+    public function seek($position= 0, $mode= SEEK_SET) {
       if (0 != ($result= fseek($this->_fd, $position, $mode))) {
-        return throw(new IOException('Seek error, position '.$position.' in mode '.$mode));
+        throw(new IOException('Seek error, position '.$position.' in mode '.$mode));
       }
       return TRUE;
     }
@@ -414,9 +414,9 @@
      * @return  int position
      * @throws  io.IOException in case of an error
      */
-    function tell() {
+    public function tell() {
       $result= ftell($this->_fd);
-      if (FALSE === $result) return throw(new IOException('Cannot retrieve file pointer\'s position'));
+      if (FALSE === $result) throw(new IOException('Cannot retrieve file pointer\'s position'));
       return $result;
     }
 
@@ -442,7 +442,7 @@
      * @return  bool success
      * @see     php://flock
      */
-    function _lock($mode) {
+    public function _lock($mode) {
       if (FALSE === flock($this->_fd, $mode)) {
         $os= '';
         foreach (array(
@@ -456,7 +456,7 @@
             $mode-= $o;
           }
         }
-        return throw(new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
+        throw(new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
       }
       
       return TRUE;
@@ -470,7 +470,7 @@
      * @see     xp://io.File#_lock
      * @return  bool success
      */
-    function lockShared($block= FALSE) {
+    public function lockShared($block= FALSE) {
       return $this->_lock(LOCK_SH + ($block ? 0 : LOCK_NB));
     }
     
@@ -482,7 +482,7 @@
      * @see     xp://io.File#_lock
      * @return  bool success
      */
-    function lockExclusive($block= FALSE) {
+    public function lockExclusive($block= FALSE) {
       return $this->_lock(LOCK_EX + ($block ? 0 : LOCK_NB));
     }
     
@@ -493,7 +493,7 @@
      * @see     xp://io.File#_lock
      * @return  bool success
      */
-    function unLock() {
+    public function unLock() {
       return $this->_lock(LOCK_UN);
     }
 
@@ -504,9 +504,9 @@
      * @return  bool success
      * @throws  io.IOException if close fails
      */
-    function close() {
+    public function close() {
       if (FALSE === fclose($this->_fd)) {
-        return throw(new IOException('Cannot close file '.$this->uri));
+        throw(new IOException('Cannot close file '.$this->uri));
       }
       
       $this->_fd= NULL;
@@ -524,13 +524,13 @@
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
      */
-    function unlink() {
+    public function unlink() {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('File still open'));
+        throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === unlink($this->uri)) {
-        return throw(new IOException('Cannot delete file '.$this->uri));
+        throw(new IOException('Cannot delete file '.$this->uri));
       }
       return TRUE;
     }
@@ -547,13 +547,13 @@
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
      */
-    function move($target) {
+    public function move($target) {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('File still open'));
+        throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === rename($this->uri, $target)) {
-        return throw(new IOException('Cannot move file '.$this->uri.' to '.$target));
+        throw(new IOException('Cannot move file '.$this->uri.' to '.$target));
       }
       
       $this->setURI($target);
@@ -572,13 +572,13 @@
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
      */
-    function copy($target) {
+    public function copy($target) {
       if (is_resource($this->_fd)) {
-        return throw(new IllegalStateException('File still open'));
+        throw(new IllegalStateException('File still open'));
       }
       
       if (FALSE === copy($this->uri, $target)) {
-        return throw(new IOException('Cannot copy file '.$this->uri.' to '.$target));
+        throw(new IOException('Cannot copy file '.$this->uri.' to '.$target));
       }
       return TRUE;
     }
@@ -591,7 +591,7 @@
      * @param   mixed mode
      * @return  bool success
      */
-    function setPermissions($mode) {
+    public function setPermissions($mode) {
       return chmod($this->uri, $mode);
     }
     
@@ -602,7 +602,7 @@
      * @access  public
      * @return  int
      */
-    function getPermissions() {
+    public function getPermissions() {
       $stat= stat($this->uri);
       return $stat['mode'];
     }
@@ -613,7 +613,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(uri= %s, mode= %s)',
         $this->getClassName(),

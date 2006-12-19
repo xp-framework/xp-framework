@@ -7,7 +7,7 @@
   uses(
     'lang.MethodNotImplementedException',
     'peer.mail.util.FilesystemImageLoader',
-    'peer.mail.MimeMessage', 
+    'peer.mail.MimeMessage',
     'peer.URL'
   );
 
@@ -18,11 +18,11 @@
    * @purpose  Specialized mime message
    */
   class HtmlMessage extends MimeMessage {
-    var
+    public
       $html         = NULL,
       $text         = NULL;
     
-    var
+    public
       $_loaders     = array(),
       $_prepared    = FALSE;
     
@@ -31,7 +31,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       parent::__construct(-1);
       
       // Construct multipart and set content type accordingly
@@ -55,7 +55,7 @@
      * @param   string contentType  
      * @return  string content id
      */
-    function addImage($data, $contentType) {
+    public function addImage($data, $contentType) {
       with ($image= &$this->addPart(new MimePart())); {
         $image->setDisposition(MIME_DISPOSITION_INLINE);
         $image->setEncoding(MIME_ENC_BASE64);
@@ -78,7 +78,7 @@
      * @param   &peer.mail.util.ImageLoader loader
      * @return  &peer.mail.util.ImageLoader
      */
-    function &registerLoader($scheme, &$loader) {
+    public function &registerLoader($scheme, &$loader) {
       $this->_loaders[$scheme]= &$loader;
       return $loader;
     }
@@ -92,19 +92,19 @@
      * @throws  lang.MethodNotImplementedException in case no loader is present
      * @throws  lang.Throwable
      */
-    function loadImage(&$source) {
+    public function loadImage(&$source) {
       $scheme= $source->getScheme('file');
       if (!isset($this->_loaders[$scheme])) {
-        return throw(new MethodNotImplementedException(
+        throw(new MethodNotImplementedException(
           'Unhandled scheme',
           $scheme
         ));
       }
       
-      try(); {
+      try {
         list($data, $contentType)= $this->_loaders[$scheme]->load($source);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
         
       return $this->addImage($data, $contentType);
@@ -118,7 +118,7 @@
      * @access  public
      * @throws  lang.Throwable
      */
-    function prepare() {
+    public function prepare() {
       if ($this->_prepared) return;
 
       // Find images references
@@ -147,10 +147,10 @@
         if (isset($images[$uri])) {
           $cid= $images[$uri];
         } else {
-          try(); {
+          try {
             $cid= $this->loadImage(new URL($uri));
-          } if (catch('Throwable', $e)) {
-            return throw($e);
+          } catch (Throwable $e) {
+            throw($e);
           }
         }
         
@@ -171,7 +171,7 @@
      * @return  string headers
      * @throws  lang.Throwable if prepare() fails
      */
-    function getHeaderString() {
+    public function getHeaderString() {
       $this->prepare();        
       return parent::getHeaderString();
     }

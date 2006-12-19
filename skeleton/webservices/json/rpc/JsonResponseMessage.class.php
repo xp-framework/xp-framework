@@ -22,10 +22,10 @@
      * @param   string string
      * @return  &webservices.json.rpc.JsonResponseMessage
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       $decoder= &JsonFactory::create();
 
-      $msg= &new JsonResponseMessage();
+      $msg= new JsonResponseMessage();
       $data= $decoder->decode($string);
 
       $msg->data= $data;
@@ -40,7 +40,7 @@
      * @param   string method
      * @param   int id
      */
-    function create($msg= NULL) {
+    public function create($msg= NULL) {
       $this->id= $msg->getId();
     }
     
@@ -50,7 +50,7 @@
      * @access  public
      * @param   mixed data
      */
-    function setData($data) {
+    public function setData($data) {
       $this->data= array(
         'result'  => $data,
         'error'   => NULL,
@@ -64,7 +64,7 @@
      * @access  public
      * @return  mixed
      */
-    function &getData() {
+    public function &getData() {
       return $this->data['result'];
     }    
     
@@ -75,7 +75,7 @@
      * @param   string faultCode
      * @param   string faultString
      */
-    function setFault($faultCode, $faultString) {
+    public function setFault($faultCode, $faultString) {
       $this->data= array(
         'result'  => FALSE,
         'error'   => array(

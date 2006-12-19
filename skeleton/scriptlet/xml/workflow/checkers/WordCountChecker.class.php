@@ -17,7 +17,7 @@
    * @purpose  Checker
    */
   class WordCountChecker extends ParamChecker {
-    var
+    public
       $minWords = 0;
     
     /**
@@ -26,7 +26,7 @@
      * @access  public
      * @param   int minWords
      */
-    function __construct($minWords) {
+    public function __construct($minWords) {
       $this->minWords= $minWords;
     }
     
@@ -37,7 +37,7 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    function check($value) { 
+    public function check($value) { 
       foreach ($value as $v) {
         if (str_word_count($v) < $this->minWords) return 'notenough';
       }    

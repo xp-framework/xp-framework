@@ -5,9 +5,10 @@
  */
 
   uses(
-    'peer.server.ConnectionListener', 
+    'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
-    'peer.SocketException'
+    'peer.SocketException',
+    'util.log.Traceable'
   );
   
   define('DATA_PASSIVE',    0x0001);
@@ -28,8 +29,8 @@
    * @see      xp://peer.server.ConnectionListener
    * @purpose  Connection listener
    */
-  class FtpConnectionListener extends ConnectionListener {
-    var
+  class FtpConnectionListener extends ConnectionListener implements Traceable {
+    public
       $sessions         = array(),
       $cat              = NULL,
       $authenticator    = NULL,
@@ -44,7 +45,7 @@
      * @param   &peer.ftp.server.Storage storage
      * @param   &peer.ftp.server.Authenticator authenticator
      */
-    function __construct(&$storage, &$authenticator) {
+    public function __construct(&$storage, &$authenticator) {
       $this->storage= &$storage;
       $this->authenticator= &$authenticator;
     }
@@ -55,7 +56,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) { 
+    public function setTrace(&$cat) { 
       $this->cat= &$cat;
     }
     
@@ -69,7 +70,7 @@
      * @param string method Interceptor method to invoke
      * @return bool
      */
-    function checkInterceptors(&$event, &$entry, $method) {
+    public function checkInterceptors(&$event, &$entry, $method) {
       if (!$this->interceptors) return TRUE;
     
       // Check each interceptors an it's conditions
@@ -81,12 +82,12 @@
         }
         
         // Invoke interceptor method
-        try(); {
+        try {
           $intercept[1]->{$method}(
             $this->sessions[$event->stream->hashCode()],
             $entry
           );
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           $this->answer($event->stream, 550, 'Intercepted: '.$e->getMessage());
           return FALSE;
         }
@@ -101,14 +102,14 @@
      * @param   &peer.server.ConnectionEvent event
      * @return  &peer.BSDSocket
      */
-    function &openDatasock(&$event) {
+    public function &openDatasock(&$event) {
       if (is('ServerSocket', $this->datasock[$event->stream->hashCode()])) {
 
         // Open socket in passive mode
         $this->cat && $this->cat->debug('+++ Opening passive connection');
-        try(); {
+        try {
           $socket= &$this->datasock[$event->stream->hashCode()]->accept();
-        } if (catch('SocketException', $e)) {
+        } catch (SocketException $e) {
           $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
           return FALSE;        
         }
@@ -117,9 +118,9 @@
         // Open socket in active mode
         $this->cat && $this->cat->debug('+++ Opening active connection');
         with ($socket= &$this->datasock[$event->stream->hashCode()]); {
-          try(); {
+          try {
             $socket->connect();
-          } if (catch('SocketException', $e)) {
+          } catch (SocketException $e) {
             $this->answer($event->stream, 425, 'Cannot open active connection '.$e->getMessage());
             return FALSE;        
           }
@@ -136,7 +137,7 @@
      * @param   char type
      * @return  string
      */
-    function eol($type) {
+    public function eol($type) {
       return (TYPE_ASCII == $type) ? "\r\n" : "\n";
     }
     
@@ -151,7 +152,7 @@
      * @return  int number of bytes written
      * @throws  io.IOException
      */
-    function answer(&$sock, $code, $text, $lines= NULL) {
+    public function answer(&$sock, $code, $text, $lines= NULL) {
       if (is_array($lines)) {
         $answer= $code.'-'.$text.":\r\n  ".implode("\n  ", $lines)."\r\n".$code." End\r\n";
       } else {
@@ -168,7 +169,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onUser(&$event, $params) {
+    public function onUser(&$event, $params) {
       $this->sessions[$event->stream->hashCode()]->setUsername($params);
       $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
       $this->answer($event->stream, 331, 'Password required for '.$params);
@@ -181,11 +182,11 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onPass(&$event, $params) {
+    public function onPass(&$event, $params) {
       with ($user= $this->sessions[$event->stream->hashCode()]->getUsername()); {
-        try(); {
+        try {
           $r= $this->authenticator->authenticate($user, $params);
-        } if (catch('AuthenticatorException', $e)) {
+        } catch (AuthenticatorException $e) {
           $this->answer($event->stream, 550, $e->getMessage());
           return;
         }
@@ -209,7 +210,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onRein(&$event, $params) {
+    public function onRein(&$event, $params) {
       delete($this->datasock[$event->stream->hashCode()]);
       $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
     }
@@ -221,7 +222,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onPwd(&$event, $params) {
+    public function onPwd(&$event, $params) {
       $this->answer($event->stream, 257, '"'.$this->storage->getBase($event->stream->hashCode()).'" is current directory');
     }
 
@@ -234,10 +235,10 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onCwd(&$event, $params) {
-      try(); {
+    public function onCwd(&$event, $params) {
+      try {
         $pwd= $this->storage->setBase($event->stream->hashCode(), $params);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 450, $e->getMessage());
         return;
       }
@@ -251,13 +252,13 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onCdup(&$event, $params) {
-      try(); {
+    public function onCdup(&$event, $params) {
+      try {
         $pwd= $this->storage->setBase(
           $event->stream->hashCode(),
           dirname($this->storage->getBase($event->stream->hashCode()))
         );
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $e->getMessage());
         return;
       }
@@ -273,7 +274,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onFeat(&$event, $params) {
+    public function onFeat(&$event, $params) {
       $this->answer($event->stream, 211, 'Features', array('MDTM', 'SIZE'));
     }
 
@@ -285,7 +286,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onHelp(&$event, $params) {
+    public function onHelp(&$event, $params) {
       $methods= array();
       $i= 0;
       foreach (get_class_methods($this) as $name) {
@@ -305,7 +306,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onSite(&$event, $params) {
+    public function onSite(&$event, $params) {
       $method= 'onSite'.strtolower(strtok($params, ' '));
 
       // Check if method is implemented and answer with code 550 in case
@@ -325,7 +326,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onSiteHelp(&$event, $params) {
+    public function onSiteHelp(&$event, $params) {
       return $this->onHelp($event, $params);
     }
 
@@ -336,7 +337,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onSiteChmod(&$event, $params) {
+    public function onSiteChmod(&$event, $params) {
       list($permissions, $uri)= explode(' ', trim($params), 2);
       $this->cat->warn($permissions);
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $uri))) {
@@ -357,7 +358,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onSyst(&$event, $params) {
+    public function onSyst(&$event, $params) {
       $this->answer($event->stream, 215, 'UNIX Type: L8');
     }
 
@@ -370,7 +371,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */    
-    function onNoop(&$event, $params) {
+    public function onNoop(&$event, $params) {
       $this->answer($event->stream, 200, 'OK');
     }
 
@@ -381,7 +382,7 @@
      * @param   int bits
      * @return  string
      */
-    function _rwx($bits) {
+    public function _rwx($bits) {
       return (
         (($bits & 4) ? 'r' : '-').
         (($bits & 2) ? 'w' : '-').
@@ -396,7 +397,7 @@
      * @param   int permissions
      * @return  string
      */
-    function permissionString($permissions) {
+    public function permissionString($permissions) {
       return (
         ($permissions & 0x4000 ? 'd' : '-').
         $this->_rwx(($permissions >> 6) & 7).
@@ -413,7 +414,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onList(&$event, $params) {
+    public function onList(&$event, $params) {
       if (!$socket= &$this->openDatasock($event)) return;
             
       // Remove all -options
@@ -475,7 +476,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onNlst(&$event, $params) {
+    public function onNlst(&$event, $params) {
       if (!$socket= &$this->openDatasock($event)) return;
       
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
@@ -521,7 +522,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onMdtm(&$event, $params) {
+    public function onMdtm(&$event, $params) {
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
@@ -543,7 +544,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onSize(&$event, $params) {
+    public function onSize(&$event, $params) {
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
@@ -565,7 +566,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onMkd(&$event, $params) {
+    public function onMkd(&$event, $params) {
       if ($this->storage->lookup($event->stream->hashCode(), $params)) {
         $this->answer($event->stream, 550, $params.': already exists');
         return;
@@ -576,9 +577,9 @@
       if (!$this->checkInterceptors($event, $entry, 'onCreate')) return;
 
       // Create the element
-      try(); {
+      try {
         $this->storage->create($event->stream->hashCode(), $params, ST_COLLECTION);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
@@ -595,7 +596,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onRmd(&$event, $params) {
+    public function onRmd(&$event, $params) {
       if (!($element= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': no such file or directory');
         return;
@@ -605,9 +606,9 @@
       if (!$this->checkInterceptors($event, $element, 'onDelete')) return;
 
       // Delete the element
-      try(); {
+      try {
         $element->delete();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
@@ -623,7 +624,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onRetr(&$event, $params) {
+    public function onRetr(&$event, $params) {
       if (!$socket= &$this->openDatasock($event)) return;
     
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
@@ -650,13 +651,13 @@
         $entry->getName(),
         $entry->getSize()
       ));
-      try(); {
+      try {
         $entry->open(SE_READ);
         while (!$socket->eof() && $buf= $entry->read()) {
           if (!$socket->write($buf)) break;
         }
         $entry->close();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
       } finally(); {
         $socket->close();
@@ -672,7 +673,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onStor(&$event, $params) {
+    public function onStor(&$event, $params) {
       if (!$socket= &$this->openDatasock($event)) return;
       
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
@@ -684,9 +685,9 @@
           return;
         }
 
-        try(); {
+        try {
           $entry= &$this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           $this->answer($event->stream, 550, $params.': '.$e->getMessage());
           $socket->close();
           return;
@@ -702,13 +703,13 @@
         $this->sessions[$event->stream->hashCode()]->getType(),
         $entry->getName()
       ));
-      try(); {
+      try {
         $entry->open(SE_WRITE);
         while (!$socket->eof() && $buf= $socket->readBinary(32768)) {
           $entry->write($buf);
         }
         $entry->close();
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
       } finally(); {
         $socket->close();
@@ -724,7 +725,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onDele(&$event, $params) {
+    public function onDele(&$event, $params) {
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
@@ -737,9 +738,9 @@
       // Invoke interceptor
       if (!$this->checkInterceptors($event, $entry, 'onDelete')) return;
 
-      try(); {
+      try {
         $entry->delete();
-      } if (catch('IOException', $e)) {
+      } catch (IOException $e) {
         $this->answer($event->stream, 450, $params.': ', $e->getMessage());
         return;
       }
@@ -754,7 +755,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onRnfr(&$event, $params) {
+    public function onRnfr(&$event, $params) {
       if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
@@ -772,7 +773,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onRnto(&$event, $params) {
+    public function onRnto(&$event, $params) {
       if (!$entry= &$this->sessions[$event->stream->hashCode()]->getTempVar('rnfr')) {
         $this->answer($event->stream, 503, 'Bad sequence of commands');
         return;
@@ -781,10 +782,10 @@
       // Invoke interceptor
       if (!$this->checkInterceptors($event, $entry, 'onRename')) return;
 
-      try(); {
+      try {
         $entry->rename($params);
         $this->cat->debug($params);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->answer($event->stream, 550, $params.': '. $e->getMessage());
         return;
       }
@@ -801,7 +802,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onType(&$event, $params) {
+    public function onType(&$event, $params) {
       switch ($params= strtoupper($params)) {
         case TYPE_ASCII:
         case TYPE_BINARY:
@@ -821,7 +822,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onStru(&$event, $params) {
+    public function onStru(&$event, $params) {
       switch ($params= strtoupper($params)) {
         case STRU_FILE:
           $this->answer($event->stream, 200, 'Structure set to '.$params);
@@ -844,7 +845,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onMode(&$event, $params) {
+    public function onMode(&$event, $params) {
       switch ($params= strtoupper($params)) {
         case MODE_STREAM:
           $this->answer($event->stream, 200, 'Mode set to '.$params);
@@ -867,7 +868,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onQuit(&$event, $params) {
+    public function onQuit(&$event, $params) {
       $this->answer($event->stream, 221, 'Goodbye');
       $event->stream->close();
       
@@ -882,7 +883,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onPort(&$event, $params) {
+    public function onPort(&$event, $params) {
       $this->mode[$event->stream->hashCode()]= DATA_ACTIVE;
       $octets= sscanf($params, '%d,%d,%d,%d,%d,%d');
       $host= sprintf('%s.%s.%s.%s', $octets[0], $octets[1], $octets[2], $octets[3]);
@@ -891,7 +892,7 @@
       $this->cat && $this->cat->debug('+++ Host is ', $host);
       $this->cat && $this->cat->debug('+++ Port is ', $port);
 
-      $this->datasock[$event->stream->hashCode()]= &new BsdSocket($host, $port);
+      $this->datasock[$event->stream->hashCode()]= new BsdSocket($host, $port);
       $this->answer($event->stream, 200, 'PORT command successful');      
     }
 
@@ -902,7 +903,7 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onOpts(&$event, $params) {
+    public function onOpts(&$event, $params) {
       if (2 != sscanf($params, '%s %s', $option, $value)) {
         $this->answer($event->stream, 501, 'OPTS: Invalid numer of arguments');
         return;
@@ -919,19 +920,19 @@
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    function onPasv(&$event, $params) {
+    public function onPasv(&$event, $params) {
       $this->mode[$event->stream->hashCode()]= DATA_PASSIVE;
 
       if ($this->datasock[$event->stream->hashCode()]) {
         $port= $this->datasock[$event->stream->hashCode()]->port;   // Recycle it!
       } else {      
         $port= rand(1000, 65536);
-        $this->datasock[$event->stream->hashCode()]= &new ServerSocket($this->server->socket->host, $port);
-        try(); {
+        $this->datasock[$event->stream->hashCode()]= new ServerSocket($this->server->socket->host, $port);
+        try {
           $this->datasock[$event->stream->hashCode()]->create();
           $this->datasock[$event->stream->hashCode()]->bind();
           $this->datasock[$event->stream->hashCode()]->listen();
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
           delete($this->datasock[$event->stream->hashCode()]);
           return;
@@ -948,11 +949,11 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function connected(&$event) {
+    public function connected(&$event) {
       $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
 
       // Create a new session object for this client
-      $this->sessions[$event->stream->hashCode()]= &new FtpSession();
+      $this->sessions[$event->stream->hashCode()]= new FtpSession();
       $this->answer($event->stream, 220, 'FTP server ready');
     }
     
@@ -962,7 +963,7 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function data(&$event) {
+    public function data(&$event) {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
       
       $this->cat && $this->cat->debug('>>> ', addcslashes($event->data, "\0..\17"));
@@ -985,9 +986,9 @@
         return;
       }
       
-      try(); {
+      try {
         $this->{$method}($event, $params);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $this->cat && $this->cat->warn('*** ', $e->toString());
         // Fall through
       }
@@ -1000,12 +1001,12 @@
      * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    function disconnected(&$event) {
+    public function disconnected(&$event) {
       $this->cat && $this->cat->debugf('Client %s disconnected', $event->stream->host);
       
       // Kill associated session
       delete($this->sessions[$event->stream->hashCode()]);
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

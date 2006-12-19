@@ -18,7 +18,7 @@
    * @purpose  Base class
    */
   class TestCase extends Object {
-    var
+    public
       $name     = '';
       
     /**
@@ -27,7 +27,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
 
@@ -37,7 +37,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -50,7 +50,7 @@
      * @param   mixed expect
      * @return  bool FALSE
      */
-    function fail($reason, $actual, $expect) {
+    public function fail($reason, $actual, $expect) {
       throw(new AssertionFailedError(
         $reason, 
         $actual,
@@ -67,7 +67,7 @@
      * @param   string error default 'notbool'
      * @return  bool
      */
-    function assertBoolean($var, $error= 'notbool') {
+    public function assertBoolean($var, $error= 'notbool') {
       if (!is_bool($var)) {
         return $this->fail($error, 'bool', xp::typeOf($var));
       }
@@ -82,7 +82,7 @@
      * @param   string error default 'notfloat'
      * @return  bool
      */
-    function assertFloat($var, $error= 'notfloat') {
+    public function assertFloat($var, $error= 'notfloat') {
       if (!is_float($var)) {
         return $this->fail($error, 'float', xp::typeOf($var));
       }
@@ -97,7 +97,7 @@
      * @param   string error default 'notinteger'
      * @return  bool
      */
-    function assertInteger($var, $error= 'notinteger') {
+    public function assertInteger($var, $error= 'notinteger') {
       if (!is_int($var)) {
         return $this->fail($error, 'int', xp::typeOf($var));
       }
@@ -112,7 +112,7 @@
      * @param   string error default 'notstring'
      * @return  bool
      */
-    function assertString($var, $error= 'notstring') {
+    public function assertString($var, $error= 'notstring') {
       if (!is_string($var)) {
         return $this->fail($error, 'string', xp::typeOf($var));
       }
@@ -127,7 +127,7 @@
      * @param   string error default 'notnull'
      * @return  bool
      */
-    function assertNull($var, $error= 'notnull') {
+    public function assertNull($var, $error= 'notnull') {
       if (NULL !== $var) {
         return $this->fail($error, $var, NULL);
       }
@@ -142,7 +142,7 @@
      * @param   string error default 'notarray'
      * @return  bool
      */
-    function assertArray($var, $error= 'notarray') {
+    public function assertArray($var, $error= 'notarray') {
       if (!is_array($var)) {
         return $this->fail($error, 'array', xp::typeOf($var));
       }
@@ -157,7 +157,7 @@
      * @param   string error default 'notobject'
      * @return  bool
      */
-    function assertObject(&$var, $error= 'notobject') {
+    public function assertObject(&$var, $error= 'notobject') {
       if (!is_object($var)) {
         return $this->fail($error, 'object', xp::typeOf($var));
       }
@@ -173,7 +173,7 @@
      * @param   string error default 'notempty'
      * @see     php://empty
      */
-    function assertEmpty($var, $error= 'notempty') {
+    public function assertEmpty($var, $error= 'notempty') {
       if (!empty($var)) {
         return $this->fail($error, '<empty>', $var);
       }
@@ -189,7 +189,7 @@
      * @param   string error default 'empty'
      * @see     php://empty
      */
-    function assertNotEmpty($var, $error= 'empty') {
+    public function assertNotEmpty($var, $error= 'empty') {
       if (empty($var)) {
         return $this->fail($error, '<not empty>', $var);
       }
@@ -204,7 +204,7 @@
      * @param   &mixed b
      * @return  bool
      */
-    function _compare(&$a, &$b) {
+    public function _compare(&$a, &$b) {
       if (is_array($a)) {
         if (!is_array($b) || sizeof($a) != sizeof($b)) return FALSE;
 
@@ -214,7 +214,7 @@
         return TRUE;
       } 
       
-      return is_a($a, 'Object') ? $a->equals($b) : $a === $b;
+      return is('Generic', $a) ? $a->equals($b) : $a === $b;
     }
 
     /**
@@ -226,7 +226,7 @@
      * @param   string error default 'notequal'
      * @return  bool
      */
-    function assertEquals($expected, $actual, $error= 'notequal') {
+    public function assertEquals($expected, $actual, $error= 'notequal') {
       if (!$this->_compare($expected, $actual)) {
         return $this->fail($error, $actual, $expected);
       }
@@ -242,7 +242,7 @@
      * @param   string error default 'equal'
      * @return  bool
      */
-    function assertNotEquals($expected, $actual, $error= 'equal') {
+    public function assertNotEquals($expected, $actual, $error= 'equal') {
       if ($this->_compare($expected, $actual)) {
         return $this->fail($error, $actual, $expected);
       }
@@ -257,7 +257,7 @@
      * @param   string error default 'nottrue'
      * @return  bool
      */
-    function assertTrue($var, $error= 'nottrue') {
+    public function assertTrue($var, $error= 'nottrue') {
       if (TRUE !== $var) {
         return $this->fail($error, $var, TRUE);
       }
@@ -272,7 +272,7 @@
      * @param   string error default 'notfalse'
      * @return  bool
      */
-    function assertFalse($var, $error= 'notfalse') {
+    public function assertFalse($var, $error= 'notfalse') {
       if (FALSE !== $var) {
         return $this->fail($error, $var, FALSE);
       }
@@ -289,7 +289,7 @@
      * @return  bool
      * @see     php://preg_match
      */
-    function assertMatches($var, $pattern, $error= 'nomatches') {
+    public function assertMatches($var, $pattern, $error= 'nomatches') {
       if (!preg_match($pattern, $var)) {
         return $this->fail($error, $pattern, $var);
       }
@@ -305,7 +305,7 @@
      * @param   string error default 'notcontained'
      * @return  bool
      */
-    function assertContains($var, $needle, $error= 'notcontained') {
+    public function assertContains($var, $needle, $error= 'notcontained') {
       if (!strstr($var, $needle)) {
         return $this->fail($error, $pattern, $var);
       }
@@ -321,8 +321,8 @@
      * @param   string error default 'notequal'
      * @return  bool
      */
-    function assertClass(&$var, $name, $error= 'notequal') {
-      if (!is_a($var, 'Object')) {
+    public function assertClass(&$var, $name, $error= 'notequal') {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if ($var->getClassName() !== $name) {
@@ -340,8 +340,8 @@
      * @param   string error default 'notsubclass'
      * @return  bool
      */
-    function assertSubclass(&$var, $name, $error= 'notsubclass') {
-      if (!is_a($var, 'Object')) {
+    public function assertSubclass(&$var, $name, $error= 'notsubclass') {
+      if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
       if (!is($name, $var)) {
@@ -359,8 +359,8 @@
      * @param   string error default 'notinlist'
      * @return  bool
      */
-    function assertIn($list, $var, $error= 'notinlist') {
-      if (is_a($var, 'Object')) {
+    public function assertIn($list, $var, $error= 'notinlist') {
+      if (is('Generic', $var)) {
         $result= array_filter($list, array(&$var, 'equals'));
         $contained= !empty($result);
       } else {
@@ -381,14 +381,14 @@
      * @access  public
      * @throws  unittest.PrerequisitesNotMetError
      */
-    function setUp() { }
+    public function setUp() { }
     
     /**
      * Tear down this test case. Overwrite in subclasses.
      *
      * @access  public
      */
-    function tearDown() { }
+    public function tearDown() { }
     
     /**
      * Run this test case.
@@ -398,12 +398,12 @@
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    function run(&$result) {
+    public function run(&$result) {
       $class= &$this->getClass();
       $method= &$class->getMethod($this->name);
 
       if (!$method) {
-        return throw(new MethodNotImplementedException(
+        throw(new MethodNotImplementedException(
           'Method does not exist', $this->name
         ));
       }
@@ -411,10 +411,10 @@
       // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
-        try(); {
+        try {
           $expected= &XPClass::forName($method->getAnnotation('expect'));
-        } if (catch('Exception', $e)) {
-          return throw($e);
+        } catch (Exception $e) {
+          throw($e);
         }
       }
       
@@ -424,26 +424,26 @@
         $eta= $method->getAnnotation('limit', 'time');
       }
 
-      $timer= &new Timer();
+      $timer= new Timer();
       $timer->start();
 
       // Setup test
-      try(); {
+      try {
         $this->setUp();
-      } if (catch('PrerequisitesNotMetError', $e)) {
+      } catch (PrerequisitesNotMetError $e) {
         $timer->stop();
         $result->setSkipped($this, $e, $timer->elapsedTime());
         return FALSE;
-      } if (catch('AssertionFailedError', $e)) {
+      } catch (AssertionFailedError $e) {
         $timer->stop();
         $result->setFailed($this, $e, $timer->elapsedTime());
         return FALSE;
       }
 
       // Run test
-      try(); {
+      try {
         $method->invoke($this, NULL);
-      } if (catch('Exception', $e)) {
+      } catch (Exception $e) {
         $timer->stop();
 
         // Was that an expected exception?
@@ -467,7 +467,7 @@
 
       // Check expected exception
       if ($expected) {
-        $e= &new AssertionFailedError(
+        $e= new AssertionFailedError(
           'Expected exception not caught',
           ($e ? $e->getClassName() : NULL),
           $method->getAnnotation('expect')

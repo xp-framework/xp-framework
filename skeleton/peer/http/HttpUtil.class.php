@@ -46,13 +46,13 @@
      * @return  string
      * @throws  peer.http.UnexpectedResponseException
      */
-    function get(&$connection, $params= array(), $headers= array()) {
+    public static function get(&$connection, $params= array(), $headers= array()) {
       $redirected= 0;
       do {
-        try(); {
+        try {
           $response= &$connection->get($params, $headers);
-        } if (catch('Exception', $e)) {
-          return throw(new UnexpectedResponseException(
+        } catch (Exception $e) {
+          throw(new UnexpectedResponseException(
             $e->getMessage(),
             -1
           ));
@@ -70,13 +70,13 @@
           case 301:             // 301 Moved permanently or
           case 302:             // 302 Moved temporarily - redirect
             if (!($loc= $response->getHeader('Location'))) {
-              return throw(new UnexpectedResponseException(
+              throw(new UnexpectedResponseException(
                 'Redirect status '.$sc.', but no location header in '.$response->toString(),
                 $sc
               ));
             }
             if ($redirected >= REDIRECT_LIMIT) {
-              return throw(new UnexpectedResponseException(
+              throw(new UnexpectedResponseException(
                 'Redirection limit ('.REDIRECT_LIMIT.') reached @ '.$loc,
                 $sc
               ));
@@ -86,7 +86,7 @@
             break;
 
           default:              // Any other code
-            return throw(new UnexpectedResponseException(
+            throw(new UnexpectedResponseException(
               'Unexpected answer '.$response->toString(),
               $sc
             ));

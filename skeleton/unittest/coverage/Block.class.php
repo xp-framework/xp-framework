@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  uses('lang.Collection');
+  uses('lang.Collection', 'unittest.coverage.Fragment');
 
   /**
    * Represents an Block
    *
    * @purpose  Helper class
    */
-  class Block extends Object {
-    var
+  class Block extends Object implements Fragment {
+    public
       $code        = '',
       $start       = 0,
       $end         = 0,
@@ -26,7 +26,7 @@
      * @param   int start the first line
      * @param   int end the last line
      */
-    function __construct($code, $expressions, $start, $end) {
+    public function __construct($code, $expressions, $start, $end) {
       $this->code= $code;
       $this->start= $start;
       $this->end= $end;
@@ -41,7 +41,7 @@
      * @param   &lang.Object block
      * @return  bool
      */
-    function equals(&$block) {
+    public function equals(&$block) {
       return (
         is('Block', $block) && 
         $this->start == $block->start &&
@@ -57,9 +57,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'@({'.$this->code.' {'.$this->expressions->toString().'}} at lines '.$this->start.' - '.$this->end.')';
     }
 
-  } implements(__FILE__, 'unittest.coverage.Fragment');
+  } 
 ?>

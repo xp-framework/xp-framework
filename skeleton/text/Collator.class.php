@@ -4,15 +4,15 @@
  * $Id$ 
  */
 
-  uses('util.Locale');
+  uses('util.Locale', 'util.Comparator');
 
   /**
    * The Collator class performs locale-sensitive String comparison. 
    *
    * @purpose  Comparator
    */
-  class Collator extends Object {
-    var
+  class Collator extends Object implements Comparator {
+    public
       $locale = '';
      
     /**
@@ -21,7 +21,7 @@
      * @access  protected
      * @param   string locale
      */ 
-    function __construct($locale) {
+    public function __construct($locale) {
       $this->locale= $locale;
     }
     
@@ -32,7 +32,7 @@
      * @param   &util.Locale locale
      * @return  &text.Collator
      */
-    function &getInstance(&$locale) {
+    public function &getInstance(&$locale) {
       static $instance= array();
       
       $id= $locale->hashCode();
@@ -52,10 +52,10 @@
      * @param   &string b
      * @return  int
      */
-    function compare(&$a, &$b) {
+    public function compare(&$a, &$b) {
       setlocale(LC_COLLATE, $this->locale);
       return strcoll($a, $b);
     }
   
-  } implements(__FILE__, 'util.Comparator');
+  } 
 ?>

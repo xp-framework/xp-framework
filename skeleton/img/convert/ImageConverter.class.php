@@ -12,7 +12,7 @@
    * @see      xp://img.Image#convertTo
    * @purpose  Interface
    */
-  class ImageConverter extends Interface {
+  interface ImageConverter {
   
     /**
      * Convert an image. Note: This changes the given image!
@@ -22,6 +22,6 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function convert(&$image) { }
+    public function convert(&$image);
   }
 ?>

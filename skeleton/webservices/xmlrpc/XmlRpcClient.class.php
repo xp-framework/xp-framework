@@ -35,7 +35,7 @@
    * @purpose  Generic XML-RPC Client base class
    */
   class XmlRpcClient extends Object {
-    var
+    public
       $transport  = NULL,
       $message    = NULL,
       $answer     = NULL;
@@ -46,7 +46,7 @@
      * @access  public
      * @param   &webservices.xmlrpc.transport.XmlRpcTransport transport
      */
-    function __construct(&$transport) {
+    public function __construct(&$transport) {
       $this->transport= &$transport;
     }
     
@@ -56,7 +56,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->transport->setTrace($cat);
     }
     
@@ -70,13 +70,13 @@
      * @throws  lang.IllegalArgumentException
      * @throws  webservices.xmlrpc.XmlRpcFaultException
      */
-    function invoke() {
+    public function invoke() {
       if (!is('webservices.xmlrpc.transport.XmlRpcTransport', $this->transport))
-        return throw(new IllegalArgumentException('Transport must be a webservices.xmlrpc.transport.XmlRpcTransport'));
+        throw(new IllegalArgumentException('Transport must be a webservices.xmlrpc.transport.XmlRpcTransport'));
     
       $args= func_get_args();
       
-      $this->message= &new XmlRpcRequestMessage();
+      $this->message= new XmlRpcRequestMessage();
       $this->message->create(array_shift($args));
       $this->message->setData($args);
       

@@ -12,7 +12,7 @@
    * @see      xp://scriptlet.xml.workflow.Wrapper
    * @purpose  Interface
    */
-  class IFormresultAggregate extends Interface {
+  interface IFormresultAggregate {
   
   }
 ?>

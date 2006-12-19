@@ -16,7 +16,7 @@
    * @purpose  Writer
    */
   class GD2StreamWriter extends StreamWriter {
-    var
+    public
       $format  = IMG_GD2_RAW;
     
     /**
@@ -26,7 +26,7 @@
      * @param   &io.Stream stream
      * @param   int format default IMG_GD2_RAW one of the IMG_GD2_* constants
      */
-    function __construct(&$stream, $format= IMG_GD2_RAW) {
+    public function __construct(&$stream, $format= IMG_GD2_RAW) {
       parent::__construct($stream);
       $this->format= $format;
     }
@@ -38,7 +38,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    function output($handle) {
+    public function output($handle) {
       return imagegd2($handle, '', 0, $this->format);
     }
   }

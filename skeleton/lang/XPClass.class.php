@@ -37,7 +37,7 @@
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
-   *   $o= &new File();
+   *   $o= new File();
    *   $c= &$o->getClass();
    *   echo 'The class name for $o is '.$c->getName();
    * </code>
@@ -48,9 +48,10 @@
    * @purpose  Reflection
    */
   class XPClass extends Object {
-    var 
+    public 
       $_objref  = NULL,
-      $name     = '';
+      $name     = '',
+      $_reflect = NULL;
       
     /**
      * Constructor
@@ -58,11 +59,23 @@
      * @access  public
      * @param   &mixed ref either a class name or an object
      */
-    function __construct(&$ref) {
+    public function __construct(&$ref) {
+      parent::__construct();
       $this->_objref= &$ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
+      $this->_reflect= new ReflectionClass($ref);
     }
-
+    
+    /**
+     * Returns a hashcode for this object
+     *
+     * @access  public
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->name;
+    }
+     
     /**
      * Return whether an object equals this class
      *
@@ -70,21 +83,11 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
-      return (is_a($cmp, 'XPClass') 
+    public function equals(&$cmp) {
+      return (is('XPClass', $cmp) 
         ? 0 == strcmp($this->getName(), $cmp->getName())
         : FALSE
       );
-    }
-
-    /**
-     * Returns a hashcode for this object
-     *
-     * @access  public
-     * @return  string
-     */
-    function hashCode() {
-      return $this->name;
     }
     
     /**
@@ -93,7 +96,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return 'lang.XPClass<'.$this->name.'>';
     }
     
@@ -103,7 +106,7 @@
      * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -135,13 +138,9 @@
      * @param   mixed* args
      * @return  &lang.Object 
      */
-    function &newInstance() {
-      for ($args= func_get_args(), $paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
-      }
-      
-      eval('$instance= &new '.xp::reflect($this->name).'('.substr($paramstr, 2).');');
-      return $instance;
+    public function &newInstance() {
+      $args= func_get_args();
+      return $this->_reflect->newInstanceArgs($args);
     }
     
     /**
@@ -151,9 +150,9 @@
      * @access  private
      * @return  string[] method names
      */
-    function _methods() {
+    public function _methods() {
       $methods= array_flip(get_class_methods($this->_objref));
-      
+
       // Well-known methods
       unset($methods['__construct']);
       unset($methods['__destruct']);
@@ -173,10 +172,10 @@
      * @access  public
      * @return  lang.reflect.Method[]
      */
-    function getMethods() {
+    public function getMethods() {
       $m= array();
       foreach ($this->_methods() as $method) {
-        $m[]= &new Method($this->_objref, $method);
+        $m[]= new Method($this->_objref, $method);
       }
       return $m;
     }
@@ -190,10 +189,10 @@
      * @return  &lang.Method
      * @see     xp://lang.reflect.Method
      */
-    function &getMethod($name) {
+    public function &getMethod($name) {
       if (!$this->hasMethod($name)) return NULL;
 
-      $m= &new Method($this->_objref, $name); 
+      $m= new Method($this->_objref, $name); 
       return $m;
     }
     
@@ -208,8 +207,8 @@
      * @param   string method the method's name
      * @return  bool TRUE if method exists
      */
-    function hasMethod($method) {
-      return in_array(strtolower($method), $this->_methods());
+    public function hasMethod($method) {
+      return in_array($method, $this->_methods());
     }
     
     /**
@@ -218,7 +217,7 @@
      * @access  public
      * @return  bool
      */
-    function hasConstructor() {
+    public function hasConstructor() {
       return in_array('__construct', get_class_methods($this->_objref));
     }
     
@@ -230,7 +229,7 @@
      * @return  &lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
      */
-    function &getConstructor() {
+    public function &getConstructor() {
       if ($this->hasConstructor()) {
         return new Constructor($this->_objref); 
       }
@@ -243,14 +242,14 @@
      * @access  public
      * @return  lang.reflect.Field[] array of field objects
      */
-    function getFields() {
+    public function getFields() {
       $f= array();
       foreach ((is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
       ) as $field => $value) {
         if ('__id' == $field) continue;
-        $f[]= &new Field($this->_objref, $field, isset($value) ? gettype($value) : NULL);
+        $f[]= new Field($this->_objref, $field, isset($value) ? gettype($value) : NULL);
       }
       return $f;
     }
@@ -263,7 +262,7 @@
      * @param   string name
      * @return  &lang.reflect.Field
      */
-    function &getField($name) {
+    public function &getField($name) {
       if (!$this->hasField($name)) return NULL;
 
       $v= (is_object($this->_objref) 
@@ -280,7 +279,7 @@
      * @param   string field the fields's name
      * @return  bool TRUE if field exists
      */
-    function hasField($field) {
+    public function hasField($field) {
       return '__id' == $field ? FALSE : array_key_exists($field, is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
@@ -294,9 +293,10 @@
      * @access  public
      * @return  &lang.XPClass class object
      */
-    function &getParentclass() {
-      if (!($p= get_parent_class($this->_objref))) return NULL;
-      return new XPClass($p);
+    public function &getParentclass() {
+      $parent= $this->_reflect->getParentClass();
+      if (!$parent) return NULL;
+      return new XPClass($parent->getName());
     }
     
     /**
@@ -306,13 +306,10 @@
      * @param   string name class name
      * @return  bool
      */
-    function isSubclassOf($name) {
-      $cmp= xp::reflect($this->name);
-      $name= xp::reflect($name);
-      while ($cmp= get_parent_class($cmp)) {
-        if ($cmp == $name) return TRUE;
-      }
-      return FALSE;
+    public function isSubclassOf($name) {
+      // Catch bordercase (ZE bug?)
+      if ($name == $this->name) return FALSE;
+      return $this->_reflect->isSubclassOf(new ReflectionClass(xp::reflect($name)));
     }
     
     /**
@@ -332,7 +329,7 @@
      * @param   &lang.Object obj
      * @return  bool
      */
-    function isInstance(&$obj) {
+    public function isInstance(&$obj) {
       return is($this->name, $obj);
     }
     
@@ -342,8 +339,8 @@
      * @access  public
      * @return  bool
      */
-    function isInterface() {
-      return $this->isSubclassOf('lang.Interface');
+    public function isInterface() {
+      return $this->_reflect->isInterface();
     }
     
     /**
@@ -352,12 +349,10 @@
      * @access  public
      * @return  lang.XPClass[]
      */
-    function getInterfaces() {
+    public function getInterfaces() {
       $r= array();
-      $c= xp::reflect($this->name);
-      $implements= xp::registry('implements');
-      if (isset($implements[$c])) foreach (array_keys($implements[$c]) as $iface) {
-        $r[]= &new XPClass($iface);
+      foreach ($this->_reflect->getInterfaces() as $iface) {
+        $r[]= new XPClass($iface->getName());
       }
       return $r;
     }
@@ -370,7 +365,7 @@
      * @param   string key default NULL
      * @return  bool
      */
-    function hasAnnotation($name, $key= NULL) {
+    public function hasAnnotation($name, $key= NULL) {
       $details= XPClass::detailsForClass($this->name);
 
       return $details && ($key 
@@ -388,7 +383,7 @@
      * @return  mixed
      * @throws  lang.ElementNotFoundException
      */
-    function getAnnotation($name, $key= NULL) {
+    public function getAnnotation($name, $key= NULL) {
       $details= XPClass::detailsForClass($this->name);
 
       if (!$details || !($key 
@@ -411,7 +406,7 @@
      * @access  public
      * @return  bool
      */
-    function hasAnnotations() {
+    public function hasAnnotations() {
       $details= XPClass::detailsForClass($this->name);
       return $details ? !empty($details['class'][DETAIL_ANNOTATIONS]) : FALSE;
     }
@@ -422,7 +417,7 @@
      * @access  public
      * @return  array annotations
      */
-    function getAnnotations() {
+    public function getAnnotations() {
       $details= XPClass::detailsForClass($this->name);
       return $details ? $details['class'][DETAIL_ANNOTATIONS] : array();
     }
@@ -433,7 +428,7 @@
      * @access  public
      * @return  &lang.ClassLoader
      */
-    function &getClassLoader() {
+    public function &getClassLoader() {
       return XPClass::_classLoaderFor($this->name);
     }
     
@@ -445,7 +440,7 @@
      * @param   string name fqcn of class
      * @return  &lang.ClassLoader
      */
-    function &_classLoaderFor($name) {
+    public static function &_classLoaderFor($name) {
       if (!($cl= &xp::registry('classloader.'.$name))) {
         return ClassLoader::getDefault();
       }
@@ -468,7 +463,7 @@
       
       return $cl;
     }
-    
+
     /**
      * Retrieve details for a specified class. Note: Results from this 
      * method are cached!
@@ -478,125 +473,131 @@
      * @param   string class fully qualified class name
      * @return  array or NULL to indicate no details are available
      */
-    function detailsForClass($class) {
+    public static function detailsForClass($class) {
       static $details= array();
 
       if (!$class) return NULL;        // Border case
       if (isset($details[$class])) return $details[$class];
 
-      // Retrieve class' sourcecode
-      $cl= &XPClass::_classLoaderFor($class);
-      if (!($bytes= $cl->loadClassBytes($class))) return NULL;
-
-      // Found the class, now get API documentation
       $details[$class]= array(array(), array());
-      $annotations= array();
-      $comment= NULL;
-      $members= TRUE;
+      $name= strtr($class, '.', DIRECTORY_SEPARATOR);
+      $l= strlen($name);
 
-      $tokens= token_get_all($bytes);
-      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-        switch ($tokens[$i][0]) {
-          case T_COMMENT:
-            // Apidoc comment
-            if (strncmp('/**', $tokens[$i][1], 3) == 0) {
-              $comment= $tokens[$i][1];
-              break;
-            }
+      foreach (get_included_files() as $file) {
+        if ($name != substr($file, -10- $l, -10)) continue;
 
-            // Annotations
-            if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
-              $annotations[0]= substr($tokens[$i][1], 2);
-            } else if (strncmp('#', $tokens[$i][1], 1) == 0) {
-              $annotations[0].= substr($tokens[$i][1], 1);
-            }
-
-            // End of annotations
-            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-              $annotations= eval('return array('.preg_replace(
-                array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-                array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
-                trim($annotations[0], "[]# \t\n\r").','
-              ).');');
-            }
-            break;
-
-          case T_CLASS:
-            $details[$class]['class']= array(
-              DETAIL_COMMENT      => $comment,
-              DETAIL_ANNOTATIONS  => $annotations
-            );
-            $annotations= array();
-            $comment= NULL;
-            break;
-
-          case T_VARIABLE:
-            if (!$members) break;
-
-            // Have a member variable
-            $name= substr($tokens[$i][1], 1);
-            $details[$class][0][$name]= array(
-              DETAIL_ANNOTATIONS => $annotations
-            );
-            $annotations= array();
-            break;
-
-          case T_FUNCTION:
-            $members= FALSE;
-            while (T_STRING !== $tokens[$i][0]) $i++;
-            $m= strtolower($tokens[$i][1]);
-            $details[$class][1][$m]= array(
-              DETAIL_MODIFIERS    => 0,
-              DETAIL_ARGUMENTS    => array(),
-              DETAIL_RETURNS      => 'void',
-              DETAIL_THROWS       => array(),
-              DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
-                $comment, 
-                4,                              // "/**\n"
-                strpos($comment, '* @')- 2      // position of first details token
-              )),
-              DETAIL_ANNOTATIONS  => $annotations,
-              DETAIL_NAME         => $tokens[$i][1]
-            );
-            $matches= NULL;
-            preg_match_all(
-              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
-              $comment, 
-              $matches, 
-              PREG_SET_ORDER
-            );
-            $annotations= array();
-            $comment= NULL;
-            foreach ($matches as $match) {
-              switch ($match[1]) {
-                case 'access':
-                case 'model':
-                  $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
-                  break;
-
-                case 'param':
-                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= &new Argument(
-                    isset($match[3]) ? $match[3] : 'param',
-                    $match[2],
-                    isset($match[4]),
-                    isset($match[4]) ? $match[5] : NULL
-                  );
-                  break;
-
-                case 'return':
-                  $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
-                  break;
-
-                case 'throws': 
-                  $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
-                  break;
+        // Found the class, now get API documentation
+        $annotations= array();
+        $comment= NULL;
+        $members= TRUE;
+        $tokens= token_get_all($str= file_get_contents($file));
+        for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+          switch ($tokens[$i][0]) {
+            case T_DOC_COMMENT:
+            case T_COMMENT:
+              // Apidoc comment
+              if (strncmp('/**', $tokens[$i][1], 3) == 0) {
+                $comment= $tokens[$i][1];
+                break;
               }
-            }
-            break;
 
-          default:
-            // Empty
+              // Annotations
+              if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
+                $annotations[0]= substr($tokens[$i][1], 2);
+              } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
+                $annotations[0].= substr($tokens[$i][1], 1);
+              }
+
+              // End of annotations
+              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+                $annotations= eval('return array('.preg_replace(
+                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
+                  array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
+                  trim($annotations[0], "[]# \t\n\r").','
+                ).');');
+              }
+              break;
+
+            case T_CLASS:
+              $details[$class]['class']= array(
+                DETAIL_COMMENT      => $comment,
+                DETAIL_ANNOTATIONS  => $annotations
+              );
+              $annotations= array();
+              $comment= NULL;
+              break;
+            
+            case T_VARIABLE:
+              if (!$members) break;
+              
+              // Have a member variable
+              $name= substr($tokens[$i][1], 1);
+              $details[$class][0][$name]= array(
+                DETAIL_ANNOTATIONS => $annotations
+              );
+              $annotations= array();
+              break;
+            
+            case T_FUNCTION:
+              $members= FALSE;
+              while (T_STRING !== $tokens[$i][0]) $i++;
+              $m= $tokens[$i][1];
+              $details[$class][1][$m]= array(
+                DETAIL_MODIFIERS    => 0,
+                DETAIL_ARGUMENTS    => array(),
+                DETAIL_RETURNS      => 'void',
+                DETAIL_THROWS       => array(),
+                DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+                  $comment, 
+                  4,                              // "/**\n"
+                  strpos($comment, '* @')- 2      // position of first details token
+                )),
+                DETAIL_ANNOTATIONS  => $annotations,
+                DETAIL_NAME         => $tokens[$i][1]
+              );
+              $matches= NULL;
+              preg_match_all(
+                '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
+                $comment, 
+                $matches, 
+                PREG_SET_ORDER
+              );
+              $annotations= array();
+              $comment= NULL;
+              foreach ($matches as $match) {
+                switch ($match[1]) {
+                  case 'access':
+                  case 'model':
+                    $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
+                    break;
+
+                  case 'param':
+                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
+                      isset($match[3]) ? $match[3] : 'param',
+                      $match[2],
+                      isset($match[4]),
+                      isset($match[4]) ? $match[5] : NULL
+                    );
+                    break;
+
+                  case 'return':
+                    $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
+                    break;
+
+                  case 'throws': 
+                    $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
+                    break;
+                }
+              }
+              break;
+
+            default:
+              // Empty
+          }
         }
+
+        // Break out of search loop
+        break;
       }
       
       // Return details for specified class
@@ -613,8 +614,7 @@
      * @param   string method
      * @return  array
      */
-    function detailsForMethod($class, $method) {
-      $method= strtolower($method);
+    public static function detailsForMethod($class, $method) {
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[1][$method])) return $details[1][$method];
         $class= get_parent_class($class);
@@ -632,8 +632,7 @@
      * @param   string method
      * @return  array
      */
-    function detailsForField($class, $field) {
-      $field= strtolower($field);
+    public static function detailsForField($class, $field) {
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[0][$field])) return $details[0][$field];
         $class= get_parent_class($class);
@@ -652,7 +651,7 @@
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    function &forName($name, $classloader= NULL) {
+    public static function &forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
         $fname= strtr('.', '/', $name).'.class.php';
 
@@ -670,7 +669,7 @@
           }
         }
       }
-      
+    
       // Last-chance fallback
       if (NULL === $classloader) $classloader= &ClassLoader::getDefault();
 
@@ -685,10 +684,10 @@
      * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    function &getClasses() {
+    public static function &getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (xp::registry('class.'.$name)) $ret[]= &new XPClass($name);
+        if (xp::registry('class.'.$name)) $ret[]= new XPClass($name);
       }
       return $ret;
     }

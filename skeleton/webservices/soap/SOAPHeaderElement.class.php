@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.SOAPNode');
+  uses('webservices.soap.SOAPNode', 'webservices.soap.SOAPHeader');
 
   /**
    * Represent a SOAP header element.
@@ -13,8 +13,8 @@
    * @see       http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383497
    * @purpose   Represent SOAP header element.
    */
-  class SOAPHeaderElement extends Object {
-    var
+  class SOAPHeaderElement extends Object implements SOAPHeader {
+    public
       $name=              '',
       $mustUnderstand=    FALSE,
       $actor=             '',
@@ -31,8 +31,8 @@
      * @param   &array ns current namespaces from SOAP message
      * @return  &webservices.soap.SOAPHeaderElement
      */
-    function &fromNode(&$node, $ns, $encoding) {
-      $header= &new SOAPHeaderElement();
+    public static function &fromNode(&$node, $ns, $encoding) {
+      $header= new SOAPHeaderElement();
       $header->name= $node->getName();
       $header->mustUnderstand= (bool)$node->getAttribute($ns[XMLNS_SOAPENV].':mustUnderstand');
       $header->actor= $node->getAttribute($ns[XMLNS_SOAPENV].':actor');
@@ -50,7 +50,7 @@
      * @param   &array ns list of namespaces
      * @return  &xml.Node
      */
-    function &getNode($ns) {
+    public function &getNode($ns) {
       $attr= array();
       if ($this->mustUnderstand) $attr[$ns[XMLNS_SOAPENV].':mustUnderstand']= 1;
       if ($this->actor) $attr[$ns[XMLNS_SOAPENV].':actor']= $this->actor;
@@ -65,7 +65,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -75,7 +75,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -85,7 +85,7 @@
      * @access  public
      * @param   bool mustUnderstand
      */
-    function setMustUnderstand($mustUnderstand) {
+    public function setMustUnderstand($mustUnderstand) {
       $this->mustUnderstand= $mustUnderstand;
     }
 
@@ -95,7 +95,7 @@
      * @access  public
      * @return  bool
      */
-    function getMustUnderstand() {
+    public function getMustUnderstand() {
       return $this->mustUnderstand;
     }
 
@@ -105,7 +105,7 @@
      * @access  public
      * @param   string actor
      */
-    function setActor($actor) {
+    public function setActor($actor) {
       $this->actor= $actor;
     }
 
@@ -115,7 +115,7 @@
      * @access  public
      * @return  string
      */
-    function getActor() {
+    public function getActor() {
       return $this->actor;
     }
 
@@ -125,7 +125,7 @@
      * @access  public
      * @param   string encodingStyle
      */
-    function setEncodingStyle($encodingStyle) {
+    public function setEncodingStyle($encodingStyle) {
       $this->encodingStyle= $encodingStyle;
     }
 
@@ -135,7 +135,7 @@
      * @access  public
      * @return  string
      */
-    function getEncodingStyle() {
+    public function getEncodingStyle() {
       return $this->encodingStyle;
     }
 
@@ -145,7 +145,7 @@
      * @access  public
      * @param   &lang.Object value
      */
-    function setValue(&$value) {
+    public function setValue(&$value) {
       $this->value= &$value;
     }
 
@@ -155,7 +155,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getValue() {
+    public function &getValue() {
       return $this->value;
     }
 
@@ -165,7 +165,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'@('.$this->hashCode()."){\n";
       $s.= '  [           name ] '.$this->name."\n";
       $s.= '  [          value ] '.$this->value."\n";
@@ -175,5 +175,5 @@
       return $s.'}';
     }
     
-  } implements(__FILE__, 'webservices.soap.SOAPHeader');
+  } 
 ?>

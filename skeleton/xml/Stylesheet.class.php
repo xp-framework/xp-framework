@@ -35,7 +35,7 @@
      * @access  public
      * @param   string version default XSL_VERSION_1_0
      */
-    function __construct($version= XSL_VERSION_1_0) {
+    public function __construct($version= XSL_VERSION_1_0) {
       parent::__construct('xsl:stylesheet');
       
       // Add attributes for root node
@@ -54,7 +54,7 @@
      * @param   bool indent default TRUE
      * @param   string encoding default NULL
      */
-    function setOutputMethod($method, $indent= TRUE, $encoding= NULL) {
+    public function setOutputMethod($method, $indent= TRUE, $encoding= NULL) {
       with ($n= &$this->root->addChild(new Node('xsl:output'))); {
         $n->setAttribute('method', $method);
         $n->setAttribute('encoding', $encoding ? $encoding : $this->getEncoding());
@@ -69,7 +69,7 @@
      * @param   string import
      * @return  &xml.Node the added node
      */
-    function &addImport($import) {
+    public function &addImport($import) {
       with ($n= &$this->root->addChild(new Node('xsl:import'))); {
         $n->setAttribute('href', $import);
       }
@@ -83,7 +83,7 @@
      * @param   string include
      * @return  &xml.Node the added node
      */
-    function &addInclude($include) {
+    public function &addInclude($include) {
       with ($n= &$this->root->addChild(new Node('xsl:include'))); {
         $n->setAttribute('href', $include);
       }
@@ -97,7 +97,7 @@
      * @param   string import
      * @return  &xml.Node the added node
      */
-    function &addParam($name) {
+    public function &addParam($name) {
       with ($n= &$this->root->addChild(new Node('xsl:param'))); {
         $n->setAttribute('name', $name);
       }
@@ -111,7 +111,7 @@
      * @param   string import
      * @return  &xml.Node the added node
      */
-    function &addVariable($name) {
+    public function &addVariable($name) {
       with ($n= &$this->root->addChild(new Node('xsl:variable'))); {
         $n->setAttribute('name', $name);
       }
@@ -126,7 +126,7 @@
      * @param   string string
      * @return  &xml.Stylesheet
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, __CLASS__);
     }
 
@@ -139,7 +139,7 @@
      * @param   &xml.File file
      * @return  &xml.Stylesheet
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return parent::fromFile($file, __CLASS__);
     }
   }

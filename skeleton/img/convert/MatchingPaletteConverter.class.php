@@ -26,10 +26,10 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function convert(&$image) { 
+    public function convert(&$image) { 
       if (!imageistruecolor($image->handle)) return FALSE;
       
-      try(); {
+      try {
         $tmp= &Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
         $tmp->copyFrom($image);
         imagetruecolortopalette(
@@ -39,8 +39,8 @@
         );
         imagecolormatch($tmp->handle, $image->handle);
         delete($tmp);
-      } if (catch('ImagingException', $e)) {
-        return throw($e);
+      } catch (ImagingException $e) {
+        throw($e);
       }
       return TRUE;
     }

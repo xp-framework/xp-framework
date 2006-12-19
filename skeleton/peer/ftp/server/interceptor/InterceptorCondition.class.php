@@ -9,7 +9,7 @@
    *
    * @purpose  Interceptor condition
    */
-  class InterceptorCondition extends Interface {
+  interface InterceptorCondition {
   
     /**
      * Checks the condition
@@ -18,6 +18,6 @@
      * @param peer.ftp.server.storage.StorageEntry entry
      * @return bool
      */
-    function check(&$session, &$entry) { }
+    public function check(&$session, &$entry);
   }
 ?>

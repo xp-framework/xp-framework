@@ -37,7 +37,7 @@
    * @purpose  Exception
    */
   class XMLFormatException extends FormatException {
-    var
+    public
       $type        = 0,
       $filename    = '',
       $linenumber  = 0,
@@ -53,7 +53,7 @@
      * @param   int linenumber
      * @param   int column
      */
-    function __construct(
+    public function __construct(
       $message, 
       $type = XML_ERROR_SYNTAX,
       $filename = NULL,
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function compoundMessage() {
+    public function compoundMessage() {
       return sprintf(
         "%s@('%s'){\n".
         "  type       %d (%s)\n".
@@ -97,7 +97,7 @@
      * @access  public
      * @return  int
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
     
@@ -107,7 +107,7 @@
      * @access  public
      * @return  string
      */
-    function getTypeName() {
+    public function getTypeName() {
       static $types= array(
         XML_ERROR_NONE                           => 'NONE',
         XML_ERROR_NO_MEMORY                      => 'NO_MEMORY',
@@ -141,7 +141,7 @@
      * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
 
@@ -151,7 +151,7 @@
      * @access  public
      * @return  int
      */
-    function getLineNumber() {
+    public function getLineNumber() {
       return $this->linenumber;
     }
 
@@ -161,7 +161,7 @@
      * @access  public
      * @return  int
      */
-    function getColumn() {
+    public function getColumn() {
       return $this->column;
     }  
   }

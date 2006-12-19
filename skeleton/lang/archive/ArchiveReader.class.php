@@ -18,11 +18,11 @@
    * @purpose  Lightweight archive reader
    */
   class ArchiveReader extends Object {
-    var
+    public
       $file     = '',
       $version  = 1;
     
-    var
+    public
       $_hdl     = NULL,
       $_index   = array();
 
@@ -32,7 +32,7 @@
      * @access  public
      * @param   string filename
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       $this->file= $filename;
     }
     
@@ -43,7 +43,7 @@
      * @param   string id the element's id
      * @return  bool TRUE when the element exists
      */
-    function contains($id) {
+    public function contains($id) {
       return isset($this->_index[$id]);
     }    
     
@@ -61,7 +61,7 @@
      * @access  public
      * @return  string id or FALSE to indicate the pointer is at the end of the list
      */
-    function getEntry() {
+    public function getEntry() {
       $key= key($this->_index);
       next($this->_index);
       return $key;
@@ -72,7 +72,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       reset($this->_index);
     }
     
@@ -83,7 +83,7 @@
      * @param   string id
      * @return  &string content
      */
-    function &extract($id) {
+    public function &extract($id) {
       if (!$this->contains($id)) {
         return FALSE;
       }
@@ -107,7 +107,7 @@
      * @param   string id
      * @return  &io.Stream
      */
-    function &getStream($id) {
+    public function &getStream($id) {
       if (!$this->contains($id)) {
         return FALSE;
       }
@@ -137,7 +137,7 @@
      * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
      * @return  bool success
      */
-    function open($mode) {
+    public function open($mode) {
       switch ($mode) {
         case ARCHIVE_READ:      // Load
           $this->_hdl= fopen($this->file, 'rb');
@@ -180,7 +180,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       return fclose($this->_hdl);
     }
     
@@ -190,7 +190,7 @@
      * @access  public
      * @return  bool TRUE when the archive file is open
      */
-    function isOpen() {
+    public function isOpen() {
       return is_resource($this->_hdl);
     }
     
@@ -200,7 +200,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(version= %s, index size= %d) { %s }',
         $this->getClassName(),

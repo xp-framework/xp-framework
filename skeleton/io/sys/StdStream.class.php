@@ -27,11 +27,11 @@
      * @param   resource handle one of STDIN | STDOUT | STDERR
      * @return  &io.File
      */
-    function &get($handle) {
+    public static function &get($handle) {
       static $f= array();
       
       if (!isset($f[$handle])) {
-        $f[$handle]= &new File($handle);
+        $f[$handle]= new File($handle);
       }
       return $f[$handle];
     }

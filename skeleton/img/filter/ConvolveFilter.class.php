@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('img.filter.Kernel');
+  uses('img.filter.Kernel', 'img.filter.ImageFilter');
 
   /**
    * A filter which applies a convolution kernel to an image. 
@@ -13,8 +13,8 @@
    * @see      php://imageconvolution  
    * @purpose  Filter implementation
    */
-  class ConvolveFilter extends Object {
-    var
+  class ConvolveFilter extends Object implements ImageFilter {
+    public
       $kernel   = NULL,
       $divisor  = 0.0,
       $offset   = 0.0;
@@ -27,7 +27,7 @@
      * @param   float divisor
      * @param   float offset
      */
-    function __construct(&$kernel, $divisor, $offset) {
+    public function __construct(&$kernel, $divisor, $offset) {
       $this->kernel= &$kernel;
       $this->divisor= $divisor;
       $this->offset= $offset;
@@ -41,8 +41,8 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function applyOn(&$image) { 
-      $clone= &clone($image);
+    public function applyOn(&$image) { 
+      $clone= clone $image;
 
       // Create local variables for faster access
       $chandle= $clone->handle;
@@ -99,5 +99,5 @@
       delete($clone);
     }
   
-  } implements(__FILE__, 'img.filter.ImageFilter');
+  } 
 ?>

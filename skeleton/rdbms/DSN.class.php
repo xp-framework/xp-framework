@@ -23,7 +23,7 @@
    * @purpose  Unified connect string
    */
   class DSN extends Object {
-    var 
+    public 
       $url      = NULL,
       $dsn      = array(),
       $flags    = 0,
@@ -35,8 +35,8 @@
      * @access  public
      * @param   string str
      */
-    function __construct($str) {
-      $this->url= &new URL($str);
+    public function __construct($str) {
+      $this->url= new URL($str);
       $this->dsn= $str;
 
       if ($config= $this->url->getParams()) {
@@ -56,7 +56,7 @@
      * @access  public
      * @return  int flags
      */
-    function getFlags() {
+    public function getFlags() {
       return $this->flags;
     }
     
@@ -68,7 +68,7 @@
      * @param   string defaullt default NULL
      * @return  string property or the default value if the property does not exist
      */
-    function getProperty($name, $default= NULL) {
+    public function getProperty($name, $default= NULL) {
       return isset($this->prop[$name]) ? $this->prop[$name] : $default;
     }
 
@@ -81,7 +81,7 @@
      * @return  string value
      */
     #[@deprecated('Duplicates getProperty()')]
-    function getValue($key, $default= NULL) {
+    public function getValue($key, $default= NULL) {
       if (!isset($this->parts['query'])) return $default;
       
       parse_str($this->parts['query'], $config);
@@ -95,7 +95,7 @@
      * @param   mixed default default NULL  
      * @return  string driver or default if none is set
      */
-    function getDriver($default= NULL) {
+    public function getDriver($default= NULL) {
       return $this->url->getScheme() ? $this->url->getScheme() : $default;
     }
     
@@ -106,7 +106,7 @@
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
-    function getHost($default= NULL) {
+    public function getHost($default= NULL) {
       return $this->url->getHost() ? $this->url->getHost() : $default;
     }
 
@@ -117,7 +117,7 @@
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
-    function getPort($default= NULL) {
+    public function getPort($default= NULL) {
       return $this->url->getPort() ? $this->url->getPort() : $default;
     }
 
@@ -128,7 +128,7 @@
      * @param   mixed default default NULL  
      * @return  string databse or default if none is set
      */
-    function getDatabase($default= NULL) {
+    public function getDatabase($default= NULL) {
       return $this->url->getPath() ? substr($this->url->getPath(), 1) : $default;
     }
 
@@ -139,7 +139,7 @@
      * @param   mixed default default NULL  
      * @return  string user or default if none is set
      */
-    function getUser($default= NULL) {
+    public function getUser($default= NULL) {
       return $this->url->getUser() ? $this->url->getUser() : $default;
     }
 
@@ -150,7 +150,7 @@
      * @param   mixed default default NULL  
      * @return  string password or default if none is set
      */
-    function getPassword($default= NULL) {
+    public function getPassword($default= NULL) {
       return $this->url->getPassword() ? $this->url->getPassword() : $default;
     }
 
@@ -160,7 +160,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s@(%s://%s%s%s/%s%s)',
         $this->getClassName(),

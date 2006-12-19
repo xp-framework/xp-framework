@@ -13,7 +13,7 @@
    * @purpose  Reflection
    */
   class ClassWrapper extends Object {
-    var 
+    public 
       $className   = '',
       $fields      = array(); 
 
@@ -23,10 +23,10 @@
      * @access  public
      * @return  remote.ClassReference[]
      */
-    function classSet() {
-      $set= &new HashSet();
+    public function classSet() {
+      $set= new HashSet();
       foreach (array_keys($this->fields) as $name) {
-        if (!is_a($this->fields[$name], 'ClassReference')) continue;
+        if (!is('ClassReference', $this->fields[$name])) continue;
         
         $set->add($this->fields[$name]);
       }
@@ -39,7 +39,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->className;
     }
 
@@ -49,7 +49,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $fields= '';
       foreach (array_keys($this->fields) as $name) {
         $fields.= sprintf("  [%-20s] %s\n", $name, xp::stringOf($this->fields[$name]));

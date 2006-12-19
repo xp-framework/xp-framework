@@ -10,10 +10,7 @@
    * @see       xp://util.Visitor
    * @purpose   Interface
    */
-  class Component extends Interface {
-    
-    var
-      $_children= array();
+  interface Component {
 
     /**
      * Takes a Visitor as argument and calls its 'visit()' method with the
@@ -22,7 +19,7 @@
      * @access  public
      * @param   &util.Visitor Visitor
      */
-    function accept(&$Visitor) { }
+    public function accept(&$Visitor);
 
     /**
      * Adds the given component to the children
@@ -30,7 +27,7 @@
      * @access  public
      * @param   &util.Component Component
      */
-    function addChild(&$Component) { }
+    public function addChild(&$Component);
 
     /**
      * Removes the given component from the children
@@ -38,7 +35,7 @@
      * @access  public
      * @param   &util.Component Component
      */
-    function remChild(&$Component) { }
+    public function remChild(&$Component);
 
     /**
      * Returns an array with all children
@@ -46,7 +43,7 @@
      * @access  public
      * @return  &util.Component[]
      */
-    function getChildren() { }
+    public function getChildren();
 
   }
 ?>

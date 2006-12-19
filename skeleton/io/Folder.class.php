@@ -23,12 +23,12 @@
    * </code>
    */
   class Folder extends Object {
-    var 
+    public 
       $uri= '',
       $dirname= '',
       $path= '';
     
-    var
+    public
       $_hdir= FALSE;
       
     /**
@@ -37,7 +37,7 @@
      * @access  public
      * @param   string dirname the directory's name
      */
-    function __construct($dirname= NULL) {
+    public function __construct($dirname= NULL) {
       if (NULL != $dirname) $this->setURI($dirname);
       
     }
@@ -47,7 +47,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       $this->close();
     }
     
@@ -56,7 +56,7 @@
      *
      * @access  public
      */
-    function close() {
+    public function close() {
       if (FALSE != $this->_hdir) $this->_hdir->close();
       $this->_hdir= FALSE;
     }
@@ -67,7 +67,7 @@
      * @access  private
      * @param   string uri the complete path name
      */
-    function setURI($uri) {
+    public function setURI($uri) {
       $this->uri= realpath($uri);
       
       // Bug in real_path if file is not existant
@@ -89,7 +89,7 @@
      * @access public
      * @return uri of this folder
      */    
-    function getURI() {
+    public function getURI() {
       return $this->uri;
     }
     
@@ -101,7 +101,7 @@
      * @return  bool TRUE in case the creation succeeded or the directory already exists
      * @throws  io.IOException in case of an error
      */
-    function create($permissions= 0700) {
+    public function create($permissions= 0700) {
       if (is_dir($this->uri)) return TRUE;
       $i= 0;
       $umask= umask(000);
@@ -109,7 +109,7 @@
         if (is_dir($d= substr($this->uri, 0, ++$i))) continue;
         if (FALSE === mkdir($d, $permissions)) {
           umask($umask);
-          return throw(new IOException(sprintf(
+          throw(new IOException(sprintf(
             'mkdir("%s", %d) failed',
             $d,
             $permissions
@@ -128,11 +128,11 @@
      * @return  bool success
      * @throws  io.IOException in case one of the entries could'nt be deleted
      */
-    function unlink($uri= NULL) {
+    public function unlink($uri= NULL) {
       if (NULL === $uri) $uri= $this->uri; // We also use this recursively
       
       if (FALSE === ($d= dir($uri))) {
-        return throw(new IOException('Directory '.$uri.' does not exist'));
+        throw(new IOException('Directory '.$uri.' does not exist'));
       }
       
       while (FALSE !== ($e= $d->read())) {
@@ -144,14 +144,14 @@
         } else {
           $ret= $this->unlink($fn.DIRECTORY_SEPARATOR);
         }
-        if (FALSE === $ret) return throw(new IOException(sprintf(
+        if (FALSE === $ret) throw(new IOException(sprintf(
           'unlink of "%s" failed',
           $fn
         )));
       }
       $d->close();
 
-      if (FALSE === rmdir($uri)) return throw(new IOException(sprintf(
+      if (FALSE === rmdir($uri)) throw(new IOException(sprintf(
         'unlink of "%s" failed',
         $uri
       )));
@@ -170,12 +170,12 @@
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the directory is still open
      */
-    function move($target) {
+    public function move($target) {
       if (is_resource($this->_hdir)) {
-        return throw(new IllegalStateException('Directory still open'));
+        throw(new IllegalStateException('Directory still open'));
       }
       if (FALSE === rename($this->uri, $target)) {
-        return throw(new IOException('Cannot move directory '.$this->uri.' to '.$target));
+        throw(new IOException('Cannot move directory '.$this->uri.' to '.$target));
       }
       return TRUE;
     }
@@ -186,7 +186,7 @@
      * @access  public
      * @return  bool TRUE in case the directory exists
      */
-    function exists() {
+    public function exists() {
       return is_dir($this->uri);
     }
     
@@ -197,13 +197,13 @@
      * @return  string entry directory entry (w/o path!), FALSE, if no more entries are left
      * @throws  io.IOException in case an error occurs
      */
-    function getEntry() {
+    public function getEntry() {
       if (FALSE === $this->_hdir) {
 
         // Not open yet, try to open
         if (!is_object($this->_hdir= dir($this->uri))) {
           $this->_hdir= FALSE;
-          return throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+          throw(new IOException('Cannot open directory "'.$this->uri.'"'));
         }
       }
       
@@ -219,9 +219,9 @@
      * @access  public
      * @throws  io.IOException in case an error occurs
      */
-    function rewind() {
+    public function rewind() {
       if (FALSE === $this->_hdir)
-        return throw (new IOException ('Cannot rewind non-open folder.'));
+        throw (new IOException ('Cannot rewind non-open folder.'));
       
       rewinddir ($this->_hdir->handle);
     }
@@ -233,9 +233,9 @@
      * @return  int The date the file was created as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function createdAt() {
+    public function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        return throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw(new IOException('Cannot get mtime for '.$this->uri));
       }
       return $mtime;
     }
@@ -255,9 +255,9 @@
      * @return  int The date the file was last accessed as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function lastAccessed() {
+    public function lastAccessed() {
       if (FALSE === ($atime= fileatime($this->uri))) {
-        return throw(new IOException('Cannot get atime for '.$this->uri));
+        throw(new IOException('Cannot get atime for '.$this->uri));
       }
       return $atime;
     }
@@ -269,9 +269,9 @@
      * @return  int The date the file was last modified as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
-    function lastModified() {
+    public function lastModified() {
       if (FALSE === ($mtime= filemtime($this->uri))) {
-        return throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw(new IOException('Cannot get mtime for '.$this->uri));
       }
       return $mtime;
     }
@@ -282,7 +282,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(uri= %s)',
         $this->getClassName(),
@@ -296,7 +296,7 @@
      * @access  public
      * @return  bool
      */
-    function isOpen() {
+    public function isOpen() {
       return is_resource($this->_hdir);
     }
   }

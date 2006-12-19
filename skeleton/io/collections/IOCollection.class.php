@@ -11,21 +11,21 @@
    *
    * @purpose  Interface
    */
-  class IOCollection extends IOElement {
+  interface IOCollection extends IOElement {
 
     /**
      * Open this collection
      *
      * @access  public
      */
-    function open() { }
+    public function open();
 
     /**
      * Rewind this collection (reset internal pointer to beginning of list)
      *
      * @access  public
      */
-    function rewind() { }
+    public function rewind();
   
     /**
      * Retrieve next element in collection. Return NULL if no more entries
@@ -34,14 +34,14 @@
      * @access  public
      * @return  &io.collection.IOElement
      */
-    function &next() { }
+    public function &next();
 
     /**
      * Close this collection
      *
      * @access  public
      */
-    function close() { }
+    public function close();
 
   }
 ?>

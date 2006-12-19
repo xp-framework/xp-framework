@@ -13,7 +13,7 @@
    */
   class EntrynameInterceptor extends DefaultInterceptor {
   
-    var
+    public
       $regexp= NULL;
   
     /**
@@ -22,7 +22,7 @@
      * @access public
      * @param string regexp Regular expression to match entry name
      */
-    function __construct($regexp) {
+    public function __construct($regexp) {
       $this->regexp= $regexp;
     }
   
@@ -34,7 +34,7 @@
      * @param string name The entry name
      * @return bool
      */
-    function validFilename($name) {
+    public function validFilename($name) {
       return preg_match($this->regexp, $name);
     }
   
@@ -46,11 +46,11 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onCreate(&$session, &$entry) {
+    public function onCreate(&$session, &$entry) {
       if (is('peer.ftp.server.storage.StorageCollection', $entry)) return;
     
       if (!$this->validFilename($entry->getFilename())) {
-        return throw(new IllegalAccessException('Invalid filename'));
+        throw(new IllegalAccessException('Invalid filename'));
       }
     }
   
@@ -62,11 +62,11 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onRename(&$session, &$entry) {
+    public function onRename(&$session, &$entry) {
       if (is('peer.ftp.server.storage.StorageCollection', $entry)) return;
 
       if (!$this->validFilename($entry->getFilename())) {
-        return throw(new IllegalAccessException('Invalid filename'));
+        throw(new IllegalAccessException('Invalid filename'));
       }
     }
   }

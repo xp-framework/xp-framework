@@ -13,7 +13,7 @@
    * @purpose  Vector type
    */
   class SOAPVector extends SoapType {
-    var 
+    public 
       $_vector;
     
     /**
@@ -22,9 +22,9 @@
      * @access  public
      * @param   array params
      */
-    function __construct($params) {
+    public function __construct($params) {
       $this->_vector= &$params;
-      $this->item= &new SOAPNode('vec', NULL, array(
+      $this->item= new SOAPNode('vec', NULL, array(
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'vec:Vector'
       ));
@@ -36,7 +36,7 @@
      * @access  public
      * @return  mixed
      */
-    function toString() {
+    public function toString() {
       return $this->_vector;
     }
     
@@ -46,7 +46,7 @@
      * @access  public
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'vec:Vector';
     }
   }

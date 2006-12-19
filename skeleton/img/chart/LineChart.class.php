@@ -13,7 +13,7 @@
    * @purpose  Chart
    */
   class LineChart extends Chart {
-    var
+    public
       $distance  = DISTANCE_AUTO,
       $range     = array(RANGE_AUTO, RANGE_AUTO, RANGE_AUTO),
       $accumulated= FALSE;
@@ -24,7 +24,7 @@
      * @access  public
      * @return  float
      */
-    function max() {
+    public function max() {
       if (!$this->getAccumulated()) return parent::max();
       
       $max= array();
@@ -42,7 +42,7 @@
      * @access  public
      * @return  float
      */
-    function min() {
+    public function min() {
       if ($this->getAccumulated()) return parent::min();
 
       $min= array();
@@ -63,7 +63,7 @@
      * @param   float upper
      * @param   float step
      */
-    function setRange($lower, $upper, $step) {
+    public function setRange($lower, $upper, $step) {
       $this->range= array($lower, $upper, $step);
     }
 
@@ -73,7 +73,7 @@
      * @access  public
      * @param   float[] the lower and upper range and the range setp, in this order
      */
-    function getRange() {
+    public function getRange() {
       return $this->range;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @param   int distance
      */
-    function setDistance($distance) {
+    public function setDistance($distance) {
       $this->distance= $distance;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @return  int
      */
-    function getDistance() {
+    public function getDistance() {
       return $this->distance;
     }
     
@@ -104,7 +104,7 @@
      * @access public
      * @return bool
      */
-    function getAccumulated() {
+    public function getAccumulated() {
       return $this->accumulated;
     }
     
@@ -114,7 +114,7 @@
      * @access public
      * @param bool bool The flag
      */
-    function setAccumulated($bool) {
+    public function setAccumulated($bool) {
       $this->accumulated= $bool;
     }
   }

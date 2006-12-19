@@ -4,14 +4,16 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Name filter
    *
    * @see      php://preg_match
    * @purpose  Iteration Filter
    */
-  class NameMatchesFilter extends Object {
-    var
+  class NameMatchesFilter extends Object implements IterationFilter {
+    public
       $pattern= '';
       
     /**
@@ -20,7 +22,7 @@
      * @access  public
      * @param   string pattern a Perl-compatible regular expression
      */
-    function __construct($pattern) {
+    public function __construct($pattern) {
       $this->pattern= $pattern;
     }
   
@@ -31,7 +33,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return (bool)preg_match($this->pattern, basename($element->getURI()));
     }
 
@@ -41,9 +43,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->pattern.')';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

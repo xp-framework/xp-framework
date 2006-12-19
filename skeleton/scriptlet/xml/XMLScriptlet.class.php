@@ -48,7 +48,7 @@
    * @purpose  Base class for websites using XML/XSL to render their output
    */
   class XMLScriptlet extends HttpScriptlet {
-    var 
+    public 
       $processor = NULL;
       
     /**
@@ -57,7 +57,7 @@
      * @access  public
      * @param   string base default ''
      */
-    function __construct($base= '') {
+    public function __construct($base= '') {
       $this->processor= &$this->_processor();
       $this->processor->setBase($base);
     }
@@ -68,7 +68,7 @@
      * @access  protected
      * @return  &xml.XSLProcessor
      */
-    function &_processor() {
+    public function &_processor() {
       return new XSLProcessor();
     }
     
@@ -79,8 +79,8 @@
      * @return  &scriptlet.xml.XMLScriptletResponse
      * @see     xp://scriptlet.HttpScriptlet#_response
      */
-    function &_response() {
-      $response= &new XMLScriptletResponse();
+    public function &_response() {
+      $response= new XMLScriptletResponse();
       $response->setProcessor($this->processor);
       return $response;
     }
@@ -92,7 +92,7 @@
      * @return  &scriptlet.xml.XMLScriptletRequest
      * @see     xp://scriptlet.HttpScriptlet#_request
      */
-    function &_request() {
+    public function &_request() {
       return new XMLScriptletRequest();
     }
     
@@ -106,7 +106,7 @@
      * @return  string class method (one of doGet, doPost, doHead)
      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
      */
-    function handleMethod(&$request) {
+    public function handleMethod(&$request) {
       if (!$request->getEnvValue('PRODUCT')) {
         return 'doCreate';
       }
@@ -123,7 +123,7 @@
      * @param   string sessionId default NULL
      * @return  bool
      */
-    function doRedirect(&$request, &$response, $sessionId= NULL) {
+    public function doRedirect(&$request, &$response, $sessionId= NULL) {
       $uri= &$request->getURL();
 
       // Get product, language and statename from the environment if 
@@ -166,7 +166,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @return  bool
      */
-    function doCreate(&$request, &$response) {
+    public function doCreate(&$request, &$response) {
       return $this->doRedirect($request, $response);
     }
 
@@ -178,7 +178,7 @@
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      */
-    function doCreateSession(&$request, &$response) {
+    public function doCreateSession(&$request, &$response) {
       return $this->doRedirect($request, $response, $request->session->getId());
     }
 
@@ -189,7 +189,7 @@
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet(&$request, &$response) {
       $response->setStylesheet(sprintf(
         '%s/%s/%s.xsl',
         $request->getProduct(),
@@ -205,7 +205,7 @@
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function processRequest(&$request, &$response) {
+    public function processRequest(&$request, &$response) {
 
       // Define special parameters
       $response->setParam('state',   $request->getStateName());
@@ -240,7 +240,7 @@
      * @throws  lang.Exception to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
-    function doGet(&$request, &$response) {
+    public function doGet(&$request, &$response) {
       return $this->processRequest($request, $response);
     }
     
@@ -254,7 +254,7 @@
      * @throws  lang.Exception to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doPost
      */
-    function doPost(&$request, &$response) {
+    public function doPost(&$request, &$response) {
       return $this->processRequest($request, $response);
     }
   }

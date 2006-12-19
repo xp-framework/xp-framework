@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
+  uses('img.filter.ImageFilter');
+
   /**
    * A filter which sharpens an image
    *
    * @purpose  Filter implementation
    */
-  class SharpenFilter extends Object {
+  class SharpenFilter extends Object implements ImageFilter {
     
     /**
      * Apply this filter on a given image. Note: This changes the given image!
@@ -19,8 +21,8 @@
      * @return  bool
      * @throws  img.ImagingException
      */
-    function applyOn(&$image) {
-      $clone= &clone($image);
+    public function applyOn(&$image) {
+      $clone= clone $image;
 
       // Create local variables for faster access
       $chandle= $clone->handle;
@@ -61,5 +63,5 @@
       delete($clone);
     }
   
-  } implements(__FILE__, 'img.filter.ImageFilter');
+  } 
 ?>

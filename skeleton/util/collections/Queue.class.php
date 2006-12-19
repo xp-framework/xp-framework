@@ -36,7 +36,7 @@
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
   class Queue extends Object {
-    var
+    public
       $_elements = array(),
       $_hash     = 0;
   
@@ -47,7 +47,7 @@
      * @param   &lang.Object object
      * @return  &lang.Object object
      */
-    function &put(&$object) {
+    public function &put(&$object) {
       $this->_elements[]= &$object;
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
@@ -60,9 +60,9 @@
      * @return  &lang.Object
      * @throws  util.NoSuchElementException
      */    
-    function &get() {
+    public function &get() {
       if (empty($this->_elements)) {
-        return throw(new NoSuchElementException('Queue is empty'));
+        throw(new NoSuchElementException('Queue is empty'));
       }
 
       $e= &$this->_elements[0];
@@ -80,7 +80,7 @@
      * @access  public
      * @return  &lang.Object object
      */        
-    function &peek() {
+    public function &peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
   
@@ -91,7 +91,7 @@
      * @access  public
      * @return  bool
      */
-    function isEmpty() {
+    public function isEmpty() {
       return empty($this->_elements);
     }
 
@@ -101,7 +101,7 @@
      * @access  public
      * @return  int
      */
-    function size() {
+    public function size() {
       return sizeof($this->_elements);
     }
     
@@ -113,7 +113,7 @@
      * @param   &lang.Object object
      * @return  int position
      */
-    function search(&$object) {
+    public function search(&$object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
 
@@ -125,7 +125,7 @@
      * @return  &lang.Object
      * @return  bool
      */
-    function remove(&$object) {
+    public function remove(&$object) {
       if (-1 == ($pos= $this->search($object))) return FALSE;
       
       $this->_hash-= HashProvider::hashOf($this->_elements[$pos]->hashCode());
@@ -142,9 +142,9 @@
      * @return  &lang.Object
      * @throws  lang.IndexOutOfBoundsException
      */
-    function &elementAt($index) {
+    public function &elementAt($index) {
       if (!isset($this->_elements[$index])) {
-        return throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
+        throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
       }
       return $this->_elements[$index];
     }
@@ -155,7 +155,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->_hash;
     }
     
@@ -166,7 +166,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
         is('util.collections.Queue', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())

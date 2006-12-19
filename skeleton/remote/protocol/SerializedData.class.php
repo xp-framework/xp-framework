@@ -11,7 +11,7 @@
    * @purpose  Value object
    */
   class SerializedData extends Object {
-    var
+    public
       $buffer= '',
       $offset= 0;
 
@@ -21,7 +21,7 @@
      * @access  public
      * @param   string buffer
      */
-    function __construct($buffer) {
+    public function __construct($buffer) {
       $this->buffer= &$buffer;
       $this->offset= 0;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string
      */
-    function consumeString() {
+    public function consumeString() {
       $l= substr(
         $this->buffer, 
         $this->offset, 
@@ -51,7 +51,7 @@
      * @param   string stop
      * @return  string
      */     
-    function consumeWord() {
+    public function consumeWord() {
       $v= substr(
         $this->buffer, 
         $this->offset, 
@@ -68,7 +68,7 @@
      * @param   string stop
      * @return  string
      */     
-    function consumeSize() {
+    public function consumeSize() {
       $v= substr(
         $this->buffer, 
         $this->offset, 

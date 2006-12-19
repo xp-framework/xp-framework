@@ -18,7 +18,7 @@
    * @purpose  Appender
    */  
   class ColoredConsoleAppender extends ConsoleAppender {
-    var
+    public
       $cerror    = '',
       $cwarn     = '', 
       $cinfo     = '', 
@@ -35,7 +35,7 @@
      * @param   string cdebug default '00;34' color for debug
      * @param   string cdefault default '07;37' default color
      */
-    function __construct(
+    public function __construct(
       $cerror   = '01;31', 
       $cwarn    = '00;31', 
       $cinfo    = '00;30', 
@@ -55,7 +55,7 @@
      * @access public
      * @param  mixed args variables
      */
-    function append() {
+    public function append() {
       $a= func_get_args();
       
       // Colorize depending on the flag

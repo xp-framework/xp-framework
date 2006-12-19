@@ -5,8 +5,8 @@
  */
 
   uses(
-    'security.cert.Certificate', 
-    'security.Principal', 
+    'security.cert.Certificate',
+    'security.Principal',
     'security.crypto.PublicKey',
     'security.OpenSslUtil',
     'util.Date'
@@ -72,7 +72,7 @@
    * @purpose  Represent X509 certificate
    */
   class X509Certificate extends Certificate {
-    var
+    public
       $_res=  NULL,
       $_info= array();
     
@@ -83,7 +83,7 @@
      * @param   array _info
      * @param   resource _res
      */
-    function __construct($_info, $_res) {
+    public function __construct($_info, $_res) {
       $this->_info= $_info;
       $this->_res= $_res;
     }
@@ -95,8 +95,8 @@
      * @param   util.Date date default NULL (date to check against, defaulting to now)
      * @return  bool TRUE if this certificate is valid for the given date
      */
-    function checkValidity($date= NULL) {
-      if (NULL === $date) $date= &new Date(time());
+    public function checkValidity($date= NULL) {
+      if (NULL === $date) $date= new Date(time());
       return (
         ($date->getTime() >= $this->_info['validFrom_time_t']) ||
         ($date->getTime() <= $this->_info['validTo_time_t'])
@@ -109,7 +109,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getNotBefore() {
+    public function &getNotBefore() {
       return new Date($this->_info['validFrom_time_t']);
     }
     
@@ -119,7 +119,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getNotAfter() {
+    public function &getNotAfter() {
       return new Date($this->_info['validTo_time_t']);
     }
     
@@ -129,7 +129,7 @@
      * @access  public
      * @return  &security.Principal
      */
-    function &getIssuerDN() {
+    public function &getIssuerDN() {
       return new Principal($this->_info['issuer']);
     }
     
@@ -139,7 +139,7 @@
      * @access  public
      * @return  &security.Principal
      */
-    function &getSubjectDN() {
+    public function &getSubjectDN() {
       return new Principal($this->_info['subject']);
     }
     
@@ -149,7 +149,7 @@
      * @access  public
      * @return  int version
      */
-    function getVersion() {
+    public function getVersion() {
       return $this->_info['version'];
     }
 
@@ -159,7 +159,7 @@
      * @access  public
      * @return  int serial number
      */
-    function getSerialNumber() {
+    public function getSerialNumber() {
       return $this->_info['serialNumber'];
     }
     
@@ -169,7 +169,7 @@
      * @access  public
      * @return  string hash
      */
-    function getHash() {
+    public function getHash() {
       return $this->_info['hash'];
     }
     
@@ -179,7 +179,7 @@
      * @access  public
      * @return  array<string, bool>
      */
-    function getKeyUsage() {
+    public function getKeyUsage() {
       $usage= array();
       foreach ($this->_info['purposes'] as $v) {
         $usage[$v[2]]= $v[1];
@@ -194,9 +194,9 @@
      * @return  string cert
      * @throws  security.cert.CertificateException
      */
-    function export() {
+    public function export() {
       if (FALSE === openssl_x509_export($this->_res, $out)) {
-        return throw(new CertificateException(
+        throw(new CertificateException(
           'Could not export certificate', OpenSslUtil::getErrors()
         ));
       }
@@ -213,14 +213,14 @@
      * @return  &security.cert.X509Certificate
      * @throws  security.cert.CertificateException
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       if (!is_resource($_res= openssl_x509_read($str))) {
-        return throw(new CertificateException(
+        throw(new CertificateException(
           'Could not read certificate', OpenSslUtil::getErrors()
         ));
       }
       if (!is_array($_info= openssl_x509_parse($_res, TRUE))) {
-        return throw(new CertificateException(
+        throw(new CertificateException(
           'Cannot parse certificate information', OpenSslUtil::getErrors()
         ));
       }
@@ -236,7 +236,7 @@
      * @param   &security.crypto.PrivateKey privatekey
      * @return  bool
      */
-    function checkPrivateKey(&$privatekey) {
+    public function checkPrivateKey(&$privatekey) {
       return openssl_x509_check_private_key($this->_res, $privatekey->getHandle());
     }
     
@@ -247,7 +247,7 @@
      * @access  public
      * @return  &security.crypto.PublicKey
      */
-    function &getPublicKey() {
+    public function &getPublicKey() {
       return PublicKey::fromString($this->export());
     }
   
@@ -256,7 +256,7 @@
      *
      * @access  public
      */
-    function __destruct() {
+    public function __destruct() {
       if (is_resource($this->_res)) openssl_x509_free($this->_res);
     }  
   }

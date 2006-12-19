@@ -24,7 +24,7 @@
      * @access public
      * @param  mixed args variables
      */
-    function append() {
+    public function append() {
       foreach (func_get_args() as $arg) {
         fwrite(STDERR, $this->varSource($arg).' ');
       }

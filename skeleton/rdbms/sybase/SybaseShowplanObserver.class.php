@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger');
+  uses('util.log.Logger', 'rdbms.DBObserver');
 
   /**
    * Observer class to observe a SybaseConnections IO
@@ -13,7 +13,7 @@
    * @ext      sybase
    * @purpose  Observe SybaseConnection
    */
-  class SybaseShowplanObserver extends Object {
+  class SybaseShowplanObserver extends Object implements DBObserver {
 
     /**
      * Constructor.
@@ -21,7 +21,7 @@
      * @access  protected
      * @param   string argument
      */
-    function __construct($arg) {
+    public function __construct($arg) {
       $log= &Logger::getInstance();
       $this->cat= &$log->getCategory($arg);
       $this->messagecodes= array_merge(
@@ -43,7 +43,7 @@
      * @param   string text
      * @return  bool handled
      */
-    function _msghandler($msgnumber, $severity, $state, $line, $text) {
+    public function _msghandler($msgnumber, $severity, $state, $line, $text) {
 
       // Filter 'optimizer'-messages by their msgnumber
       if (in_array($msgnumber, $this->messagecodes)) {
@@ -65,7 +65,7 @@
      * @param   mixed argument
      * @return  &rdbms.sybase.SybaseShowplanObserver
      */
-    function &instanceFor($arg) {
+    public static function &instanceFor($arg) {
       return new SybaseShowplanObserver($arg);
     }
     
@@ -76,7 +76,7 @@
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    function update(&$obs, $arg= NULL) {
+    public function update(&$obs, $arg= NULL) {
       if (!is('rdbms.DBEvent', $arg)) return;
       
       // Passthrough event to appropriate function, if existant
@@ -95,7 +95,7 @@
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    function onConnect(&$obs, &$arg) {
+    public function onConnect(&$obs, &$arg) {
       if (0 <= version_compare(phpversion(), '4.3.5')) {
         ini_set('sybct.min_server_severity', 0);
         sybase_set_message_handler(array(&$this, '_msghandler'), $obs->handle);
@@ -116,7 +116,7 @@
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    function onQuery(&$obs, &$arg) {
+    public function onQuery(&$obs, &$arg) {
       
       // Add query to cache
       $this->queries[]= $arg->getArgument();
@@ -129,7 +129,7 @@
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    function onQueryEnd(&$obs, &$arg) {
+    public function onQueryEnd(&$obs, &$arg) {
       $this->cat->info($this->getClassName().'::onQueryEnd() Query was:', (sizeof($this->queries) == 1 ? $this->queries[0] : $this->queries));
 
       $showplan= '';
@@ -140,5 +140,5 @@
       $this->cat->infof("Showplan output is:\n%s", $showplan);
       $this->queries= $this->messages= array();
     }
-  } implements (__FILE__, 'rdbms.DBObserver');
+  } 
 ?>

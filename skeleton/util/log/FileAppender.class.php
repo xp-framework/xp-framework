@@ -13,7 +13,7 @@
    * @purpose  Appender
    */  
   class FileAppender extends LogAppender {
-    var 
+    public 
       $filename = '',
       $perms    = NULL;
     
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string filename default 'php://stderr' filename to log to
      */
-    function __construct($filename= 'php://stderr') {
+    public function __construct($filename= 'php://stderr') {
       $this->filename= $filename;
     }
     
@@ -33,7 +33,7 @@
      * @access  public
      * @param   mixed* args variables
      */
-    function append() {
+    public function append() {
       $fd= fopen($this->filename, 'a');
 
       if ($this->perms) {

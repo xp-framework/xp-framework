@@ -5,8 +5,8 @@
  */
 
   uses(
-    'security.Policy', 
-    'security.PolicyException', 
+    'security.Policy',
+    'security.PolicyException',
     'security.Permission'
   );
   
@@ -34,7 +34,7 @@
    * @see      xp://security.Permission
    */
   class Policy extends Object {
-    var
+    public
       $permissions  = array();
       
     /**
@@ -44,7 +44,7 @@
      * @param   &security.Permission p
      * @return  &security.Permission the added permission
      */
-    function &addPermission(&$p) {
+    public function &addPermission(&$p) {
       $this->permissions[]= &$p;
       return $p;
     }
@@ -71,7 +71,7 @@
      * @param   &io.Stream stream
      * @return  &security.Policy policy
      */
-    function &fromFile(&$stream) {
+    public static function &fromFile(&$stream) {
       static $errors= array(
         PF_ST_EPARSE    => 'Parse error', 
         PF_ST_EGRANT    => 'Grant syntax error',
@@ -80,7 +80,7 @@
         PF_ST_EREFLECT  => 'Reflection error'
       );
       
-      $policy= &new Policy();
+      $policy= new Policy();
       
       $stream->open(FILE_MODE_READ);
       $state= PF_ST_INITIAL;
@@ -183,9 +183,9 @@
                 break 3;
               }
               
-              try(); {
+              try {
                 $permission= &XPClass::forName($class);
-              } if (catch('ClassNotFoundException', $e)) {
+              } catch (ClassNotFoundException $e) {
                 $state= PF_ST_EREFLECT;
                 $message= $e->message;
                 break 3;
@@ -217,7 +217,7 @@
       if (PF_ST_DONE == $state) return $policy;
       
       // Errors
-      return throw(new PolicyException(sprintf(
+      throw(new PolicyException(sprintf(
         "%s in %s on line %d: %s",
         $errors[$state],
         $stream->uri,

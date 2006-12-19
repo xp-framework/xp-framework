@@ -11,6 +11,6 @@
    * @purpose  Exception
    * @see      xp://util.Iterator
    */
-  class NoSuchElementException extends Exception {
+  class NoSuchElementException extends XPException {
   }
 ?>

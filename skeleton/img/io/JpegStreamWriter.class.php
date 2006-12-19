@@ -15,7 +15,7 @@
    * @purpose  Writer
    */
   class JpegStreamWriter extends StreamWriter {
-    var
+    public
       $quality  = 0;
     
     /**
@@ -25,7 +25,7 @@
      * @param   &io.Stream stream
      * @param   int quality default 75
      */
-    function __construct(&$stream, $quality= 75) {
+    public function __construct(&$stream, $quality= 75) {
       parent::__construct($stream);
       $this->quality= $quality;
     }
@@ -37,7 +37,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    function output($handle) {
+    public function output($handle) {
       return imagejpeg($handle, '', $this->quality);
     }
   }

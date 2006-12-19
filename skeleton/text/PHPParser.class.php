@@ -4,9 +4,10 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
-    'io.FileUtil'
+    'io.FileUtil',
+    'util.log.Traceable'
   );
 
   // Modes of operation
@@ -25,8 +26,8 @@
    * @ext      tokenizer
    * @purpose  Parser
    */
-  class PHPParser extends Object {
-    var
+  class PHPParser extends Object implements Traceable {
+    public
       $functions= array(),
       $classes=   array(),
       $uses=      array(),
@@ -41,7 +42,7 @@
      * @access  public
      * @param   string filename The filename to parse
      */
-    function __construct($filename) {
+    public function __construct($filename) {
       
       $this->filename= $filename;
     }
@@ -52,7 +53,7 @@
      * @access  public
      * @param   &util.log.LogCategory log
      */
-    function setTrace(&$log) {
+    public function setTrace(&$log) {
       $this->log= &$log;
     }    
     
@@ -63,11 +64,11 @@
      * @return  bool success
      * @throws  lang.Exception in case the file could not be read
      */
-    function parse() {
-      try(); {
+    public function parse() {
+      try {
         $php= FileUtil::getContents (new File ($this->filename));
-      } if (catch('Exception', $e)) {
-        return throw ($e);
+      } catch (Exception $e) {
+        throw ($e);
       }
       
       $tokens= token_get_all ($php);
@@ -158,7 +159,7 @@
                 $this->log && $this->log->info ('Function', $data, 'at line', $lineno);
                 
                 // Add new function, if currentClass exists add to that, otherwise to file
-                $f= &new StdClass();
+                $f= new StdClass();
                 $f->type= 'function';
                 $f->name= $data;
                 $f->line= $lineno;
@@ -187,7 +188,7 @@
                 $this->log && $this->log->info ('Class', $data, 'at line', $lineno);
                 
                 // Add new class object, and remember this as the active
-                $c= &new StdClass();
+                $c= new StdClass();
                 $c->type= 'class';
                 $c->name= $data;
                 $c->line= $lineno;
@@ -289,5 +290,5 @@
       
       return TRUE;
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

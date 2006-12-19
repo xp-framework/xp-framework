@@ -20,7 +20,7 @@
      * @access  public
      * @return  &text.format.HashFormat
      */
-    function &getInstance() {
+    public function &getInstance() {
       return parent::getInstance('HashFormat');
     }  
   
@@ -32,11 +32,11 @@
      * @param   &mixed argument
      * @return  string
      */
-    function apply($fmt, &$argument) {
+    public function apply($fmt, &$argument) {
       if (is_scalar($argument)) {
-        return throw(new FormatException('Argument with type '.gettype($argument).' is not an array or object'));
+        throw(new FormatException('Argument with type '.gettype($argument).' is not an array or object'));
       }
-      if (is_a($argument, 'Hashmap')) {
+      if (is('Hashmap', $argument)) {
         $hash= $argument->_hash;
       } else if (is_object($argument)) {
         $hash= get_object_vars($argument);

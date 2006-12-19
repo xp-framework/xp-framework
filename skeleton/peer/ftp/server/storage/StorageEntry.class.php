@@ -10,7 +10,7 @@
    *
    * @purpose  Storage
    */
-  class StorageEntry extends Interface {
+  interface StorageEntry {
 
     /**
      * Constructor
@@ -18,7 +18,7 @@
      * @access  public
      * @return  string uri
      */
-    function __construct($uri) { }
+    public function __construct($uri);
 
     /**
      * Deletes an entry
@@ -26,7 +26,7 @@
      * @access  public
      * @return  bool TRUE to indicate success
      */
-    function delete() { }
+    public function delete();
 
     /**
      * Renames an entry
@@ -35,7 +35,7 @@
      * @param   string target
      * @return  bool TRUE to indicate success
      */
-    function rename($target) { }
+    public function rename($target);
 
     /**
      * Returns the filename including the path (relative to storage root)
@@ -43,7 +43,7 @@
      * @access public
      * @return string
      */
-    function getFilename() { }
+    public function getFilename();
 
     /**
      * Retrieves the (short) name of a storage entry
@@ -51,7 +51,7 @@
      * @access  public
      * @return  string
      */  
-    function getName() { }
+    public function getName();
     
     /**
      * Retrieves the owner's username
@@ -59,7 +59,7 @@
      * @access  public
      * @return  string
      */  
-    function getOwner() { }
+    public function getOwner();
 
     /**
      * Retrieves the owner's group name
@@ -67,7 +67,7 @@
      * @access  public
      * @return  string
      */  
-    function getGroup() { }
+    public function getGroup();
     
     /**
      * Retrieves the size of this storage entry
@@ -75,7 +75,7 @@
      * @access  public
      * @return  int bytes
      */  
-    function getSize() { }
+    public function getSize();
 
     /**
      * Retrieves the modified timestamp of this storage entry
@@ -83,7 +83,7 @@
      * @access  public
      * @return  int unix timestamp
      */  
-    function getModifiedStamp() { }
+    public function getModifiedStamp();
     
     /**
      * Retrieves the permissions of this storage entry expressed in a
@@ -93,7 +93,7 @@
      * @access  public
      * @return  int
      */  
-    function getPermissions() { }
+    public function getPermissions();
 
     /**
      * Sets the permissions of this storage entry expressed in a
@@ -102,7 +102,7 @@
      * @access  public
      * @param   int permissions
      */  
-    function setPermissions($permissions) { }
+    public function setPermissions($permissions);
 
     /**
      * Retrieves the number of links
@@ -110,7 +110,7 @@
      * @access  public
      * @return  int
      */  
-    function numLinks() { }
+    public function numLinks();
     
   }
 ?>

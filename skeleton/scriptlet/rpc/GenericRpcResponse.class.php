@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AbstractRpcResponse.class.php 6701 2006-03-27 17:27:39Z kiesel $ 
+ * $Id: GenericRpcResponse.class.php 7447 2006-07-21 16:15:49Z kiesel $ 
  */
 
   uses('scriptlet.rpc.AbstractRpcResponse');
@@ -18,7 +18,7 @@
    * @purpose  Generic RPC response
    */
   class GenericRpcResponse extends AbstractRpcResponse {
-    var
+    public
       $_cb=   NULL;
     
     /**
@@ -27,7 +27,7 @@
      * @access  public
      * @param   &mixed object
      */
-    function setCallback(&$object) {
+    public function setCallback(&$object) {
       $this->_cb= &$object;
     }
   
@@ -41,7 +41,7 @@
      * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
-    function process() {
+    public function process() {
       return $this->_cb->setResponse($this);
     }
   }

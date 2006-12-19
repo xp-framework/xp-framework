@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('xml.XML', 'xml.TransformerException', 'io.FileNotFoundException');
+  uses(
+    'xml.TransformerException',
+    'io.FileNotFoundException',
+    'xml.IXSLProcessor'
+  );
   
   /**
    * XSL Processor using DomXML
@@ -28,15 +32,15 @@
    * @purpose  Transform XML/XSLT using PHPs domXSL functions
    * @ext      dom
    */
-  class DomXSLProcessor extends XML {
-    var 
+  class DomXSLProcessor extends Object implements IXSLProcessor {
+    public 
       $processor    = NULL,
       $stylesheet   = array(),
       $document     = NULL,
       $params       = array(),
       $output       = '';
 
-    var
+    public
       $_base        = '',
       $_errors      = array();
       
@@ -45,7 +49,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->processor= NULL;
     }
 
@@ -55,7 +59,7 @@
      * @access  public
      * @param   string dir
      */
-    function setBase($dir) {
+    public function setBase($dir) {
       $this->_base= rtrim(realpath($dir), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
@@ -65,7 +69,7 @@
      * @access  public
      * @return  string
      */
-    function getBase() {
+    public function getBase() {
       return $this->_base;
     }
     
@@ -76,7 +80,7 @@
      * @param   mixed callback
      * @see     php://xslt_set_scheme_handlers
      */
-    function setSchemeHandler($defines) {
+    public function setSchemeHandler($defines) {
       // Not implemented in DOM
     }
 
@@ -87,11 +91,9 @@
      * @param   string file file name
      * @throws  io.FileNotFoundException
      */
-    function setXSLFile($file) {
-      if (!file_exists($this->_base.$file)) {
-        return throw(new FileNotFoundException($this->_base.$file.' not found'));
-      }
-      $this->stylesheet= array(0, $this->_base.$file);
+    public function setXSLFile($file) {
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->load($this->_base.$file);
     }
     
     /**
@@ -100,8 +102,9 @@
      * @access  public
      * @param   string xsl the XSL as a string
      */
-    function setXSLBuf($xsl) {
-      $this->stylesheet= array(1, &$xsl);
+    public function setXSLBuf($xsl) {
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->loadXML($xsl);
     }
 
     /**
@@ -110,8 +113,9 @@
      * @access  public
      * @param   string file file name
      */
-    function setXMLFile($file) {
-      $this->document= domxml_open_file($this->_base.$file);
+    public function setXMLFile($file) {
+      $this->document= new DOMDocument();
+      $this->document->load($file);
     }
     
     /**
@@ -120,8 +124,9 @@
      * @access  public
      * @param   string xml the XML as a string
      */
-    function setXMLBuf($xml) {
-      $this->document= domxml_open_mem($xml);
+    public function setXMLBuf($xml) {
+      $this->document= new DOMDocument();
+      $this->document->loadXML($xml);
     }
 
     /**
@@ -130,7 +135,7 @@
      * @access  public
      * @param   array params associative array { param_name => param_value }
      */
-    function setParams($params) {
+    public function setParams($params) {
       $this->params= $params;
     }
     
@@ -141,7 +146,7 @@
      * @param   string name
      * @param   string value
      */
-    function setParam($name, $val) {
+    public function setParam($name, $val) {
       $this->params[$name]= $val;
     }
     
@@ -152,41 +157,17 @@
      * @param   string name
      * @return  string value
      */
-    function getParam($name) {
+    public function getParam($name) {
       return $this->params[$name];
     }    
 
-    /**
-     * Error handler callback
-     *
-     * @access  private
-     * @param   int code
-     * @param   string msg
-     * @param   string file
-     * @param   int line
-     * @see     php://set_error_handler
-     */
-    function _traperror($code, $msg, $file, $line) {
-      @list($method, $message)= explode(':', trim($msg), 2);
-      if (in_array($method, array(
-        'domxml_xslt_stylesheet()', 
-        'domxml_xslt_stylesheet_file()',
-        'process()',
-      ))) {
-        $message && $this->_errors[]= trim($message);
-        return;
-      }
-
-      __error($code, $msg, $file, $line);
-    }
-    
     /**
      * Retrieve messages generate during processing.
      *
      * @access  public
      * @return  string[]
      */
-    function getMessages() {
+    public function getMessages() {
       return $this->_errors;
     }
 
@@ -197,47 +178,17 @@
      * @return  bool success
      * @throws  xml.TransformerException
      */
-    function run() {
+    public function run() {
       $cwd= FALSE;
 
-      $this->_errors= array();
-      set_error_handler(array(&$this, '_traperror'));
-
-      // Get stylesheet
-      switch ($this->stylesheet[0]) {
-        case 0: 
-          $proc= domxml_xslt_stylesheet_file($this->stylesheet[1]); 
-          break;
-
-        case 1:
-          if ($this->_base) {
-            $cwd= getcwd();
-            chdir($this->_base);
-          }
-          $proc= domxml_xslt_stylesheet($this->stylesheet[1]);
-          break;
-
-        default:
-          $proc= FALSE;
-      }
+      $this->processor= new XSLTProcessor();
+      $this->processor->importStyleSheet($this->stylesheet);
+      $this->processor->setParameter('', $this->params);
       
       // Start transformation
       $result= NULL;
-      if ($proc) {
-        $result= $proc->process($this->document, $this->params, FALSE);
-      }
-      $cwd && chdir($cwd);
-      restore_error_handler();
-
-      // Check result
-      if (!$result) {
-        return throw(new TransformerException(
-          "Transformation failed: [\n".implode("\n  ", $this->_errors)."\n]"
-        ));
-      }
+      $this->output= $this->processor->transformToXML($this->document);
       
-      // Copy output from transformation
-      $this->output= $proc->result_dump_mem($result);
       return TRUE;
     }
 
@@ -247,20 +198,8 @@
      * @access  public
      * @return  string
      */
-    function output() {
+    public function output() {
       return $this->output;
     }
-
-    /**
-     * Destructor
-     *
-     * @access  public
-     */
-    function __destruct() {
-      if ($this->document) { with ($n= &$this->document->document_element); {
-        $n && $n->unlink_node($n);
-      }}
-      $this->document= NULL;
-    }
-  } implements(__FILE__, 'xml.IXSLProcessor');
+  }
 ?>

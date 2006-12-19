@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses (
+  uses(
     'io.File',
     'io.Folder'
   );
@@ -16,10 +16,10 @@
    * @purpose   Reliable spool directory class
    */    
   class SpoolDirectory extends Object {
-    var
+    public
       $root;
     
-    var
+    public
       $_hNew=   NULL,
       $_hDone=  NULL,
       $_hTodo=  NULL,
@@ -30,7 +30,7 @@
      *
      * @param   string root Root of the spool hierarchy
      */    
-    function __construct($root) {
+    public function __construct($root) {
       $this->root= $root;
     }
 
@@ -41,19 +41,19 @@
      * @return  bool success
      * @throws  io.IOException if there are permission problems
      */    
-    function open() {
-      try(); {
-        $this->_hNew=   &new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
-        $this->_hTodo=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
-        $this->_hDone=  &new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
-        $this->_hError= &new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
+    public function open() {
+      try {
+        $this->_hNew=   new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
+        $this->_hTodo=  new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
+        $this->_hDone=  new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
+        $this->_hError= new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
 
         if (!$this->_hNew->exists())    $this->_hNew->create ();
         if (!$this->_hTodo->exists())   $this->_hTodo->create ();
         if (!$this->_hDone->exists())   $this->_hDone->create ();
         if (!$this->_hError->exists())  $this->_hError->create ();                  
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return TRUE;
@@ -70,17 +70,17 @@
      * @return  &io.File opened spool file
      * @throws  io.IOException if file could not be created
      */    
-    function &createSpoolEntry($abstract= NULL) {
+    public function &createSpoolEntry($abstract= NULL) {
       if (NULL === $abstract)
         $abstract= date ('Y-m-d-H-i-s'.md5 (microtime()));
       else
         $abstract= date ('Y-m-d-H-i-s').'_'.$abstract;
       
-      try(); {
-        $f= &new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
+      try {
+        $f= new File ($this->_hNew->getURI().DIRECTORY_SEPARATOR.$abstract.'.spool');
         $f->open (FILE_MODE_WRITE);
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return $f;
@@ -94,12 +94,12 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    function enqueueSpoolEntry(&$f) {
-      try(); {
+    public function enqueueSpoolEntry(&$f) {
+      try {
         $f->close();
         $f->move ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return TRUE;
@@ -112,14 +112,14 @@
      * @return  &io.File spoolfile next spoolfile. Its opened in read/write mode.
      * @throws  io.IOException if an error occurs
      */    
-    function &getNextSpoolEntry() {
-      try(); {
+    public function &getNextSpoolEntry() {
+      try {
         if (FALSE !== ($entry= $this->_hTodo->getEntry())) {
-          $f= &new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
+          $f= new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
           $f->open (FILE_MODE_READWRITE);
         }
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return $f;
@@ -133,12 +133,12 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */
-    function finishSpoolEntry(&$f) {
-      try(); {
+    public function finishSpoolEntry(&$f) {
+      try {
         $f->close();
         $f->move ($this->_hDone->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return TRUE;
@@ -152,12 +152,12 @@
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    function failSpoolEntry(&$f) {
-      try(); {
+    public function failSpoolEntry(&$f) {
+      try {
         $f->close();
         $f->move ($this->_hError->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
-      } if (catch('IOException', $e)) {
-        return throw ($e);
+      } catch (IOException $e) {
+        throw ($e);
       }
       
       return TRUE;

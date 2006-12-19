@@ -10,8 +10,8 @@
    *
    * @see Exception
    */
-  class SystemException extends Exception {
-    var $code= 0;
+  class SystemException extends XPException {
+    public $code= 0;
     
     /**
      * Constructor
@@ -20,7 +20,7 @@
      * @param   string message the error-message
      * @param   int code the error-code
      */
-    function __construct($message, $code) {
+    public function __construct($message, $code) {
       $this->code= $code;
       parent::__construct($message);
     }

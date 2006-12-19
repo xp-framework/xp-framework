@@ -13,7 +13,7 @@
    * @purpose  Appender
    */  
   class BufferedAppender extends LogAppender {
-    var 
+    public 
       $buffer = '';
 
     /**
@@ -22,7 +22,7 @@
      * @access public
      * @param  mixed* args variables
      */
-    function append() {
+    public function append() {
       foreach (func_get_args() as $arg) {
         $this->buffer.= $this->varSource($arg).' ';
       }
@@ -35,7 +35,7 @@
      * @access  public
      * @return  string
      */
-    function getBuffer() {
+    public function getBuffer() {
       return $this->buffer;
     }
     
@@ -44,7 +44,7 @@
      *
      * @access  public
      */
-    function clear() {
+    public function clear() {
       $this->buffer= '';
     }    
   }

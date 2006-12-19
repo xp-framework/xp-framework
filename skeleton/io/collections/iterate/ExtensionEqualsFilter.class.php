@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('io.collections.iterate.IterationFilter');
+
   /**
    * Extension filter
    *
    * @purpose  Iteration Filter
    */
-  class ExtensionEqualsFilter extends Object {
-    var
+  class ExtensionEqualsFilter extends Object implements IterationFilter {
+    public
       $extension= '';
       
     /**
@@ -19,7 +21,7 @@
      * @access  public
      * @param   string extension the file extension to compare to
      */
-    function __construct($extension) {
+    public function __construct($extension) {
       $this->extension= '.'.ltrim($extension, '.');
     }
   
@@ -30,7 +32,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    function accept(&$element) {
+    public function accept(&$element) {
       return $this->extension == substr($element->getURI(), -1 * strlen($this->extension));
     }
 
@@ -40,9 +42,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'("'.$this->compare.'")';
     }
   
-  } implements(__FILE__, 'io.collections.iterate.IterationFilter');
+  } 
 ?>

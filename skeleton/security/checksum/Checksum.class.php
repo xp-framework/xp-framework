@@ -32,7 +32,7 @@
    * @purpose  Abstract base class to all other checksums
    */
   class Checksum extends Object {
-    var
+    public
       $value = '';
       
     /**
@@ -41,7 +41,7 @@
      * @access  public
      * @param   mixed value
      */
-    function __construct($value) {
+    public function __construct($value) {
       $this->value= $value;
     }
   
@@ -54,7 +54,7 @@
      * @param   string str
      * @return  &security.checksum.Checksum
      */
-    function &fromString($str) { }
+    public static function &fromString($str) { }
 
     /**
      * Create a new checksum from a file object. Override this
@@ -65,7 +65,7 @@
      * @param   &io.File file
      * @return  &security.checksum.Checksum
      */
-    function &fromFile(&$file) { }
+    public static function &fromFile(&$file) { }
     
     /**
      * Retrieve the checksum's value
@@ -73,7 +73,7 @@
      * @access  public
      * @return  mixed value
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
   
@@ -84,7 +84,7 @@
      * @param   &security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
-    function verify(&$sum) {
+    public function verify(&$sum) {
       return $this->value === $sum->value;
     }
   }

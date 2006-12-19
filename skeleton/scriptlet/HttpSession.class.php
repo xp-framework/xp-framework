@@ -52,7 +52,7 @@
    * @purpose Session                                                       
    */
   class HttpSession extends Object {
-    var 
+    public 
       $id    = '',
       $isNew = FALSE;
       
@@ -61,7 +61,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       ini_set('session.use_cookies', 0);
       session_name('psessionid');
     }
@@ -73,7 +73,7 @@
      * @param   string id session id
      * @return  bool
      */
-    function initialize($id) {
+    public function initialize($id) {
       if (!empty($id)) {
         $this->id= $id;
         session_id($this->id);
@@ -100,7 +100,7 @@
      * @access  public
      * @return  bool valid
      */
-    function isValid() {
+    public function isValid() {
       return isset($_SESSION[SESS_CREATE]);
     }
     
@@ -110,7 +110,7 @@
      * @access  public
      * @return  bool new
      */
-    function isNew() {
+    public function isNew() {
       return $this->isNew;
     }
     
@@ -120,7 +120,7 @@
      * @access  public
      * @return  string id
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
     
@@ -132,8 +132,8 @@
      * @return  int Unix-timestamp
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function getCreationTime() {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function getCreationTime() {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       return $_SESSION[SESS_CREATE];
     }
     
@@ -145,8 +145,8 @@
      * @return  int
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function reset() {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function reset() {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       $size= sizeof($_SESSION) - 1;
       $_SESSION= array(SESS_CREATE => $_SESSION[SESS_CREATE]);
       return $size;
@@ -162,8 +162,8 @@
      * @param   mixed& value Any data type
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function putValue($name, &$value) {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function putValue($name, &$value) {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       $_SESSION[$name]= serialize($value);
     }
     
@@ -177,8 +177,8 @@
      * @return  &mixed value
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function &getValue($name, $default= NULL) {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function &getValue($name, $default= NULL) {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       if (isset($_SESSION[$name])) return unserialize($_SESSION[$name]); else return $default;
     }
     
@@ -189,7 +189,7 @@
      * @param   string name 
      * @return  bool TRUE if the value exists, FALSE otherwiese
      */
-    function hasValue($name) {
+    public function hasValue($name) {
       return isset($_SESSION[$name]);
     }
     
@@ -200,8 +200,8 @@
      * @access  public
      * @param   name The name of the value to delete
      */
-    function removeValue($name) {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function removeValue($name) {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       if (isset($_SESSION[$name])) {
         $_SESSION[$name]= NULL;
       }
@@ -214,8 +214,8 @@
      * @return  &string[] names
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function &getValueNames() {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function &getValueNames() {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       $names= array_keys($_SESSION);
       unset($names[array_search(SESS_CREATE, $names)]);
       return array_values($names);
@@ -227,8 +227,8 @@
      * @access  public
      * @throws  lang.IllegalStateException when session is invalid
      */
-    function invalidate() {
-      if (!$this->isValid()) return throw(new IllegalStateException('Session is invalid'));
+    public function invalidate() {
+      if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       session_destroy();
       $_SESSION= array();
     }

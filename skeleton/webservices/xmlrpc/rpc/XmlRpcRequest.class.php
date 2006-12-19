@@ -23,7 +23,7 @@
      * @access  public
      * @return  &webservices.xmlrpc.XmlRpcMessage message object
      */
-    function &getMessage() {
+    public function &getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
       $m= &XmlRpcRequestMessage::fromString($this->getData());
       return $m;

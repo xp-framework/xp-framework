@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Hashmap');
+  uses('util.Hashmap', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for Hashmaps
@@ -12,7 +12,7 @@
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping
    */
-  class HashmapMapping extends Object {
+  class HashmapMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -23,7 +23,7 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
       // No implementation
     }
 
@@ -36,7 +36,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       return $serializer->representationOf($value->_hash, $context);
     }
     
@@ -46,8 +46,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('util.Hashmap');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

@@ -9,7 +9,7 @@
   
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
-    function nameOf($name) {
+    static function nameOf($name) {
       if (!($n= xp::registry('class.'.$name))) {
         return $name ? 'php.'.$name : NULL;
       }
@@ -19,16 +19,16 @@
 
     // {{{ public string typeOf(&mixed arg)
     //     Returns the fully qualified type name
-    function typeOf(&$arg) {
+    static function typeOf(&$arg) {
       return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
     }
     // }}}
 
     // {{{ public string stringOf(&mixed arg [, string indent default ''])
     //     Returns a string representation of the given argument
-    function stringOf(&$arg, $indent= '') {
+    static function stringOf(&$arg, $indent= '') {
       static $protect= array();
-
+      
       if (is_string($arg)) {
         return '"'.$arg.'"';
       } else if (is_bool($arg)) {
@@ -39,10 +39,10 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if (is_a($arg, 'Object') && !isset($protect[$arg->__id])) {
-        $protect[$arg->__id]= TRUE;
+      } else if ($arg instanceOf Generic && !isset($protect[$arg->hashCode()])) {
+        $protect[$arg->hashCode()]= TRUE;
         $s= $arg->toString();
-        unset($protect[$arg->__id]);
+        unset($protect[$arg->hashCode()]);
         return $s;
       } else if (is_array($arg)) {
         $ser= serialize($arg);
@@ -70,59 +70,24 @@
       }
     }
     // }}}
-    
-    // {{{ public void implements(string class, string[] interfaces)
-    //     Checks the implementation of the class against the interfaces and registers the connection
-    function implements($class, $interfaces) {
-      $signature= array_flip(get_class_methods($class));
-      $implements= xp::registry('implements');
-
-      for ($i= 0, $s= sizeof($interfaces); $i < $s; $i++) {
-        $interface= $interfaces[$i];
-        uses($interface);
-        $name= xp::reflect($interface);
-        $methods= array_flip(get_class_methods($name));
-        
-        // Get rid of constructors
-        $c= $name;
-        do {
-          unset($methods[$c]);
-          $implements[$class][$c]= 1;
-        } while ($c= get_parent_class($c));
-  
-        // Pop off 'lang.Interface'
-        array_pop($implements[$class]);
-  
-        // Check implementation
-        foreach (array_keys($methods) as $method) {
-          if (!isset($signature[$method])) {
-            xp::error('Interface method '.$interface.'::'.$method.'() not implemented by class '.$class);
-          }
-        }
-      }
-      
-      xp::registry('implements', $implements);
-    }
-    // }}}
 
     // {{{ public void gc()
     //     Runs the garbage collector
-    function gc() {
+    static function gc() {
       xp::registry('errors', array());
-      xp::registry('exceptions', array());
     }
     // }}}
 
     // {{{ public <null> null()
     //     Runs a fatal-error safe version of NULL
-    function &null() {
+    static function &null() {
       return xp::registry('null');
     }
     // }}}
 
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
-    function errorAt($file, $line= -1) {
+    static function errorAt($file, $line= -1) {
       $errors= &xp::registry('errors');
       
       // If no line is given, check for an error in the file
@@ -135,31 +100,29 @@
     
     // {{{ public mixed sapi(string* sapis)
     //     Sets an SAPI
-    function sapi() {
+    static function sapi() {
       foreach ($a= func_get_args() as $name) {
         foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
-          $xarfile= 'sapi/'.strtr($name, '.', '/').'.sapi.php';
           
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($path.DIRECTORY_SEPARATOR.$filename);
             continue(2);
-          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$xarfile)) {
-            require_once('xar://'.$path.'?'.$xarfile);
+          } elseif (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
+            require_once('xar://'.$path.'?'.$filename);
             continue(2);
           }
         }
         
         xp::error('Cannot open SAPI '.$name.' (include_path='.ini_get('include_path').')');
       }
-      
       xp::registry('sapi', $a);
     }
     // }}}
     
     // {{{ internal mixed registry(mixed args*)
     //     Stores static data
-    function &registry() {
+    static function &registry() {
       static $registry= array();
       static $nullref= NULL;
       
@@ -174,8 +137,8 @@
     
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
-    function reflect($str) {
-      return strtolower(substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1));
+    static function reflect($str) {
+      return substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1);
     }
     // }}}
 
@@ -188,7 +151,47 @@
     }
   }
   // }}}
-  
+
+  // {{{ final class null
+  class null {
+
+    // {{{ public object __construct(void)
+    //     Constructor to avoid magic __call invokation
+    public function __construct() {
+      if (NULL !== xp::registry('null')) {
+        throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
+      }
+    }
+    
+    // {{{ public void __clone(void)
+    //     Clone interceptor
+    public function __clone() {
+      throw(new NullPointerException('Object cloning intercepted.'));
+    }
+    // }}}
+    
+    // {{{ magic bool __call(string name, mixed[] args, &mixed return)
+    //     Call proxy
+    function __call($name, $args) {
+      throw(new NullPointerException('Method.invokation('.$name.')'));
+    }
+    // }}}
+
+    // {{{ magic bool __set(string name, mixed value)
+    //     Set proxy
+    function __set($name, $value) {
+      throw(new NullPointerException('Property.write('.$name.')'));
+    }
+    // }}}
+
+    // {{{ magic bool __get(string name, &mixed value)
+    //     Set proxy
+    function __get($name) {
+      throw(new NullPointerException('Property.read('.$name.')'));
+    }
+    // }}}
+  }
+  // }}}
   // {{{ final class xploader
   class XpXarLoader {
     var
@@ -267,44 +270,6 @@
   }
   // }}}
 
-  // {{{ final class null
-  class null {
-
-    // {{{ public object null(void)
-    //     Constructor to avoid magic __call invokation
-    function null() {
-      if (NULL !== xp::registry('null')) {
-        throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
-      }
-    }
-    // }}}
-    
-    // {{{ magic bool __call(string name, mixed[] args, &mixed return)
-    //     Call proxy
-    function __call($name, $args, &$return) {
-      $return= &throw(new NullPointerException('Method.invokation('.$name.')'));
-      return FALSE;
-    }
-    // }}}
-
-    // {{{ magic bool __set(string name, mixed value)
-    //     Set proxy
-    function __set($name, $value) {
-      throw(new NullPointerException('Property.write('.$name.')'));
-      return FALSE;
-    }
-    // }}}
-
-    // {{{ magic bool __get(string name, &mixed value)
-    //     Set proxy
-    function __get($name, &$value) {
-      $value= &throw(new NullPointerException('Property.read('.$name.')'));
-      return FALSE;
-    }
-    // }}}
-  }
-  // }}}
-
   // {{{ internal void __error(int code, string msg, string file, int line)
   //     Error callback
   function __error($code, $msg, $file, $line) {
@@ -315,13 +280,15 @@
     xp::registry('errors', $errors);
   }
   // }}}
-  
+
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
     $include= explode(PATH_SEPARATOR, ini_get('include_path'));
+
     foreach (func_get_args() as $str) {
       if (class_exists($class= xp::reflect($str))) continue;
+      if (interface_exists($class= xp::reflect($str))) continue;
 
       if ($p= strpos($str, '+xp://')) {
         $type= substr($str, 0, $p);
@@ -334,15 +301,14 @@
 
         // Load using wrapper
         if (FALSE === include($str)) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
+          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path'))));
         }
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
         
         continue;
       }
-
-
+      
       foreach ($include as $path) {
 
         // If path is a directory and the included file exists, load it
@@ -356,7 +322,7 @@
           }
           
           break;
-        } else if (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+        } elseif (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
@@ -369,10 +335,10 @@
         }
       }
       
-      if (!class_exists(xp::reflect($str))) {
+      if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
         xp::error('Cannot include '.$str.' (include_path='.ini_get('include_path').')');
       }
-            
+
       // Register class name and call static initializer if available and if it has not been
       // done before (through an ArchiveClassLoader)
       if (NULL === xp::registry('class.'.$class)) {
@@ -383,57 +349,16 @@
   }
   // }}}
 
-  // {{{ void try (void)
-  //     Begins a try ... catch block
-  function try() {
-  }
-  // }}}
-
-  // {{{ bool catch (string name, &lang.Exception e)
-  //     Ends a try ... catch block
-  function catch($name, &$e) {
-    $exceptions= &xp::registry('exceptions');
-    
-    $return= FALSE;
-    foreach (array_keys($exceptions) as $i) {
-      if (is($name, $exceptions[$i])) {
-        $e= $exceptions[$i];       // Intentional copy
-        unset($exceptions[$i]);
-        $return= TRUE;
-      }
-    }
-    return $return;
-  }
-  // }}}
-
-  // {{{ void finally (void)
-  //     Syntactic sugar. Intentionally empty
-  function finally() {
-  }
-  // }}}
-
-  // {{{ null throw (lang.Exception e)
-  //     throws an exception
-  function &throw(&$e) {
-    $exceptions= &xp::registry('exceptions');
-    $exceptions[]= &$e;
-    xp::registry('exceptions', $exceptions);
-    return xp::registry('null');
-  }
-  // }}}
-
   // {{{ null raise (string classname, string message)
   //     throws an exception by a given class name
   function &raise($classname, $message) {
-    try(); {
+    try {
       $class= &XPClass::forName($classname);
-    } if (catch('ClassNotFoundException', $e)) {
+    } catch(ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
-    $exceptions= &xp::registry('exceptions');
-    $exceptions[]= &$class->newInstance($message);
-    xp::registry('exceptions', $exceptions);
-    return xp::registry('null');
+    
+    throw($class->newInstance($message));
   }
   // }}}
 
@@ -464,7 +389,7 @@
 
       default:
         // Cast to an object of "$type"
-        $o= &new $type;
+        $o= new $type;
         if (is_object($var) || is_array($var)) {
           foreach ($var as $k => $v) {
             $o->$k= $v;
@@ -479,25 +404,14 @@
   }
   // }}}
 
-  // {{{ proto void implements(string file, string interface [, string interface [, ...]]) 
-  //     Defines that the class this is called in implements certain interface(s)
-  function implements() {
-    $args= func_get_args();
-    $class= strtolower(substr(basename(array_shift($args)), 0, -10));
-    
-    xp::implements($class, $args);
-  }
-  // }}}
-  
   // {{{ proto bool is(string class, &lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, &$object) {
     $p= get_class($object);
     if (is_null($class) && 'null' == $p) return TRUE;
     $class= xp::reflect($class);
-    if (is_a($object, $class)) return TRUE;
+    if (@is_a($object, $class)) return TRUE;
     $implements= xp::registry('implements');
-    
     
     do {
       if (isset($implements[$p][$class])) return TRUE;
@@ -509,26 +423,7 @@
   // {{{ proto void delete(&lang.Object object)
   //     Destroys an object
   function delete(&$object) {
-    is_a($object, 'Object') && method_exists($object, '__destruct') && $object->__destruct();
     $object= NULL;
-  }
-  // }}}
-
-  // {{{ proto lang.Object &clone(lang.Object object) throws CloneNotSupportedException
-  //     Clones an object
-  function &clone($object) {
-    if (is(NULL, $object)) return throw(new NullPointerException('Cannot clone NULLs'));
-    if (!is_a($object, 'Object')) return raise('lang.CloneNotSupportedException', 'Cannot clone non-objects');
-
-    $object->__id= microtime();
-    if (is_callable(array(&$object, '__clone'))) {
-      try(); {
-        call_user_func(array(&$object, '__clone'));
-      } if (catch('CloneNotSupportedException', $e)) {
-        return throw($e);
-      }
-    }
-    return $object;
   }
   // }}}
 
@@ -558,7 +453,7 @@
     static $u= 0;
 
     $class= xp::reflect($classname);
-    if (!class_exists($class)) {
+    if (!class_exists($class) && !interface_exists($class)) {
       xp::error(xp::stringOf(new Error('Class "'.$classname.'" does not exist')));
       // Bails
     }
@@ -572,13 +467,10 @@
     }
 
     // Checks whether an interface or a class was given
-    $c= $class;
-    while ($c= get_parent_class($c)) {
-      if ('interface' != $c) continue;
+    if (interface_exists($class)) {
       
       // It's an interface
-      eval('class '.$name.' extends Object '.$bytes.' $instance= &new '.$name.'('.substr($paramstr, 2).');');
-      implements($name.'.class.php', $class);
+      eval('class '.$name.' extends Object implements '.$class.' '.$bytes.' $instance= &new '.$name.'('.substr($paramstr, 2).');');
       return $instance;
     }
     
@@ -611,7 +503,6 @@
   // Registry initialization
   xp::registry('null', new null());
   xp::registry('errors', array());
-  xp::registry('exceptions', array());
   xp::registry('class.xp', '<xp>');
   xp::registry('class.null', '<null>');
 
@@ -622,8 +513,7 @@
   uses(
     'lang.Object',
     'lang.Error',
-    'lang.Exception',
-    'lang.Interface',
+    'lang.XPException',
     'lang.XPClass',
     'lang.NullPointerException',
     'lang.IllegalAccessException',

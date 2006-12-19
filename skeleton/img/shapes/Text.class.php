@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  uses('img.Drawable');
+
   /**
    * Shape class representing a text
    *
    * @see xp://img.Image
    */
-  class Text extends Object {
-    var
+  class Text extends Object implements Drawable {
+    public
       $font=    NULL,
       $col=     NULL,
       $text=    '',
@@ -26,7 +28,7 @@
      * @param   int x
      * @param   int y
      */ 
-    function __construct(&$col, &$font, $text, $x, $y) {
+    public function __construct(&$col, &$font, $text, $x, $y) {
       $this->col= &$col;
       $this->font= &$font;
       $this->text= $text;
@@ -41,7 +43,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) {
+    public function draw(&$image) {
       return $this->font->drawtext(
         $image->handle, 
         $this->col, 
@@ -51,5 +53,5 @@
       );
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

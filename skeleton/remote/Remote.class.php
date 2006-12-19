@@ -5,8 +5,8 @@
  */
 
   uses(
-    'remote.HandlerInstancePool', 
-    'remote.protocol.RemoteInterfaceMapping', 
+    'remote.HandlerInstancePool',
+    'remote.protocol.RemoteInterfaceMapping',
     'remote.UserTransaction'
   );
 
@@ -38,7 +38,7 @@
    * @purpose  RMI
    */
   class Remote extends Object {
-    var
+    public
       $_handler       = NULL;
 
     /**
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'(handler= '.$this->_handler->toString().')';
     }
     
@@ -61,7 +61,7 @@
      * @return  &remote.Remote
      * @throws  remote.RemoteException in case of setup failure
      */
-    function &forName($dsn) {
+    public static function &forName($dsn) {
       static $instances= array();
       
       $pool= &HandlerInstancePool::getInstance();
@@ -72,13 +72,13 @@
 
         // No instance yet, so get it
         $e= $instance= NULL;
-        try(); {
-          $instance= &new Remote();
+        try {
+          $instance= new Remote();
           $instance->_handler= &$pool->acquire($key, TRUE);
-        } if (catch('RemoteException', $e)) {
+        } catch (RemoteException $e) {
           continue;   // try next
-        } if (catch('Exception', $e)) {
-          $e= &new RemoteException($e->getMessage(), $e);
+        } catch (Exception $e) {
+          $e= new RemoteException($e->getMessage(), $e);
           continue;   // try next
         }
 
@@ -88,7 +88,7 @@
       }
 
       // No more active hosts
-      return throw($e);
+      throw($e);
     }
     
     /**
@@ -100,7 +100,7 @@
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
-    function &lookup($name) {
+    public function &lookup($name) {
       return $this->_handler->lookup($name);
     }
 
@@ -111,7 +111,7 @@
      * @param   &remote.UserTransaction tran
      * @return  &remote.UserTransaction
      */
-    function &begin(&$tran) {
+    public function &begin(&$tran) {
       $this->_handler->begin($tran);
       $tran->_handler= &$this->_handler;
       return $tran;

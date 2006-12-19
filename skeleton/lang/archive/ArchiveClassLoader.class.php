@@ -29,7 +29,7 @@
    * @ext      tokenize
    */
   class ArchiveClassLoader extends ClassLoader {
-    var
+    public
       $archive  = NULL;
     
     /**
@@ -38,7 +38,7 @@
      * @access  public
      * @param   &lang.archive.Archive archive
      */
-    function __construct(&$archive) {
+    public function __construct(&$archive) {
       parent::__construct();
       $this->archive= &$archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
@@ -50,7 +50,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().
         ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
@@ -65,7 +65,7 @@
      * @param   string name fully qualified class name
      * @return  string
      */
-    function loadClassBytes($name) {
+    public function loadClassBytes($name) {
       return $this->archive->extract(strtr($name, '.', '/').'.class.php');
     }
     
@@ -77,14 +77,14 @@
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    function &loadClass($class) {
+    public function &loadClass($class) {
       $name= xp::reflect($class);
 
       if (!class_exists($name)) {
-        try(); {
+        try {
           $src= $this->loadClassBytes($class);
-        } if (catch('Exception', $e)) {
-          return throw(new ClassNotFoundException(sprintf(
+        } catch (Exception $e) {
+          throw(new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
             $class,
             $e->getMessage()
@@ -92,7 +92,7 @@
         }
 
         if (FALSE === eval('?>'.$src)) {
-          return throw(new FormatException('Cannot define class "'.$class.'"'));
+          throw(new FormatException('Cannot define class "'.$class.'"'));
         }
 
         xp::registry('class.'.$name, $class);
@@ -100,7 +100,7 @@
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      $c= &new XPClass($name);
+      $c= new XPClass($name);
       return $c;
     }
     
@@ -112,7 +112,7 @@
      * @return  string
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function getResource($string) {
+    public function getResource($string) {
       if (FALSE !== ($r= $this->archive->extract($string))) {
         return $r;
       }
@@ -128,7 +128,7 @@
      * @return  &io.Stream
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function &getResourceAsStream($string) {
+    public function &getResourceAsStream($string) {
       if (FALSE !== ($s= &$this->archive->getStream($string))) {
         return $s;
       }
@@ -143,7 +143,7 @@
      * @param   string class
      * @return  bool
      */
-    function providesClass($class) {
+    public function providesClass($class) {
       return $this->archive->contains(strtr($class, '.', '/').'.class.php');
     }
     
@@ -155,14 +155,14 @@
      * @param   string path
      * @return  &lang.archive.ArchiveClassLoader
      */
-    function &instanceFor($path) {
+    public static function &instanceFor($path) {
       static $pool= array();
       
       if (isset($pool[$path])) {
         return $pool[$path];
       }
       
-      $instance= &new ArchiveClassLoader(new ArchiveReader($path));
+      $instance= new ArchiveClassLoader(new ArchiveReader($path));
       $pool[$path]= $instance;
       return $instance;
     }

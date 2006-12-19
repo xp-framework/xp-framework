@@ -31,7 +31,7 @@
      * @param   int max default -1
      * @return  xml.Node[]
      */
-    function _getElementsByTagName(&$node, $tagname, $max= -1) {
+    public function _getElementsByTagName(&$node, $tagname, $max= -1) {
       $r= array();
       foreach (array_keys($node->children) as $key) {
         if ($tagname == $node->children[$key]->getName()) {
@@ -58,7 +58,7 @@
      * @param   int max
      * @return  xml.Node[]
      */
-    function _getElementsByAttribute(&$node, $attribute, $name, $max) {
+    public function _getElementsByAttribute(&$node, $attribute, $name, $max) {
       $r= array();
       foreach (array_keys($node->children) as $key) {
         if (
@@ -87,7 +87,7 @@
      * @param   int max default -1 maximum number of elements to be returned
      * @return  xml.Node[]
      */
-    function getElementsByTagName($tagname, $max= -1) {
+    public function getElementsByTagName($tagname, $max= -1) {
       return $this->_getElementsByTagName($this->root, $tagname, $max);
     }
 
@@ -99,7 +99,7 @@
      * @param   int max default -1 maximum number of elements to be returned
      * @return  xml.Node[]
      */
-    function getElementsByName($name, $max= -1) {
+    public function getElementsByName($name, $max= -1) {
       return $this->_getElementsByAttribute($this->root, 'name', $name);
     }
 
@@ -110,7 +110,7 @@
      * @param   string id
      * @return  &xml.Node
      */
-    function &getElementById($id) {
+    public function &getElementById($id) {
       return $this->_getElementsByAttribute($this->root, 'id', $id, 1);
     }
     
@@ -121,7 +121,7 @@
      * @param   string name
      * @return  &xml.Node node
      */
-    function &createElement($name) {
+    public function &createElement($name) {
       return new $this->nodeType($name);
     }
     
@@ -132,7 +132,7 @@
      * @access  public
      * @return  &xml.Node
      */
-    function &getDocumentElement() {
+    public function &getDocumentElement() {
       return $this->root;
     }
     
@@ -144,7 +144,7 @@
      * @param   string string
      * @return  &xml.dom.Document
      */
-    function &fromString($string) {
+    public static function &fromString($string) {
       return parent::fromString($string, __CLASS__);
     }
 
@@ -157,7 +157,7 @@
      * @param   &xml.File file
      * @return  &xml.dom.Document
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return parent::fromFile($file, __CLASS__);
     }
   }

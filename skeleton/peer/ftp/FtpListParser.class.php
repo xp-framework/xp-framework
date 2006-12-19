@@ -24,7 +24,7 @@
    * @see      php://ftp_rawlist
    * @purpose  Interface
    */
-  class FtpListParser extends Interface {
+  interface FtpListParser {
     
     /**
      * Parse raw listing entry.
@@ -33,7 +33,7 @@
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    function &entryFrom($raw) { }
+    public function &entryFrom($raw);
   
   }
 ?>

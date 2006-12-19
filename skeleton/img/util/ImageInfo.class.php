@@ -13,7 +13,7 @@
    * @purpose  Utility
    */
   class ImageInfo extends Object {
-    var
+    public
       $width      = 0,
       $height     = 0,
       $type       = 0,
@@ -31,14 +31,14 @@
      * @return  &img.util.ImageInfo
      * @throws  img.ImagingException in case extracting information from image file fails
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
-        return throw(new ImagingException(
+        throw(new ImagingException(
           'Cannot load image information from '.$file->getURI()
         ));
       }
       
-      with ($i= &new ImageInfo()); {
+      with ($i= new ImageInfo()); {
         $i->width= $data[0];
         $i->height= $data[1];
         $i->type= $data[2];
@@ -56,7 +56,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(%d x %d %s)@{\n".
         "  [type       ] %d\n".
@@ -81,7 +81,7 @@
      * @access  public
      * @param   int width
      */
-    function setWidth($width) {
+    public function setWidth($width) {
       $this->width= $width;
     }
 
@@ -91,7 +91,7 @@
      * @access  public
      * @return  int
      */
-    function getWidth() {
+    public function getWidth() {
       return $this->width;
     }
 
@@ -101,7 +101,7 @@
      * @access  public
      * @param   int height
      */
-    function setHeight($height) {
+    public function setHeight($height) {
       $this->height= $height;
     }
 
@@ -111,7 +111,7 @@
      * @access  public
      * @return  int
      */
-    function getHeight() {
+    public function getHeight() {
       return $this->height;
     }
 
@@ -121,7 +121,7 @@
      * @access  public
      * @param   int type
      */
-    function setType($type) {
+    public function setType($type) {
       $this->type= $type;
     }
 
@@ -131,7 +131,7 @@
      * @access  public
      * @return  int
      */
-    function getType() {
+    public function getType() {
       return $this->type;
     }
 
@@ -141,7 +141,7 @@
      * @access  public
      * @param   int bits
      */
-    function setBits($bits) {
+    public function setBits($bits) {
       $this->bits= $bits;
     }
 
@@ -151,7 +151,7 @@
      * @access  public
      * @return  int
      */
-    function getBits() {
+    public function getBits() {
       return $this->bits;
     }
 
@@ -161,7 +161,7 @@
      * @access  public
      * @param   int channels
      */
-    function setChannels($channels) {
+    public function setChannels($channels) {
       $this->channels= $channels;
     }
 
@@ -171,7 +171,7 @@
      * @access  public
      * @return  int
      */
-    function getChannels() {
+    public function getChannels() {
       return $this->channels;
     }
 
@@ -181,7 +181,7 @@
      * @access  public
      * @param   string mime
      */
-    function setMime($mime) {
+    public function setMime($mime) {
       $this->mime= $mime;
     }
 
@@ -191,7 +191,7 @@
      * @access  public
      * @return  string
      */
-    function getMime() {
+    public function getMime() {
       return $this->mime;
     }
     
@@ -203,7 +203,7 @@
      * @param   string id the segment's name
      * @return  bool
      */    
-    function hasSegment($id) {
+    public function hasSegment($id) {
       return isset($this->segments[$id]);
     }
 
@@ -213,7 +213,7 @@
      * @access  public
      * @return  string[]
      */    
-    function getSegmentNames() {
+    public function getSegmentNames() {
       return array_keys($this->segments);
     }
 
@@ -225,8 +225,8 @@
      * @return  bool
      * @throws  img.ImagingException when the specified segment is not available
      */    
-    function getSegment($id) {
-      if (!isset($this->segments[$id])) return throw(new ImagingException(
+    public function getSegment($id) {
+      if (!isset($this->segments[$id])) throw(new ImagingException(
         'Segment "'.$id.'" not available'
       ));
 

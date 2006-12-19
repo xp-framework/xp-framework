@@ -27,7 +27,7 @@
    * @purpose  Manager
    */
   class DriverManager extends Object {
-    var
+    public
       $drivers  = array();
       
     /**
@@ -37,7 +37,7 @@
      * @access  public
      * @return  &rdbms.DriverManager
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new DriverManager();
@@ -59,7 +59,7 @@
      * @param   string name identifier
      * @param   &lang.XPClass class
      */
-    function register($name, &$class) {
+    public static function register($name, &$class) {
       $i= &DriverManager::getInstance();
       $i->drivers[$name]= &$class;
     }
@@ -73,7 +73,7 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.DriverNotSupportedException
      */
-    function &getConnection($str) {
+    public static function &getConnection($str) {
       static $builtin= array(
         'sybase'   => 'rdbms.sybase.SybaseConnection',
         'mysql'    => 'rdbms.mysql.MySQLConnection',
@@ -82,16 +82,16 @@
         // TBI: Oracle, ...
       );
       
-      $dsn= &new DSN($str);
+      $dsn= new DSN($str);
       $id= $dsn->getDriver();
       $i= &DriverManager::getInstance();
       
       // Lookup driver by identifier. If it's one
       if (!isset($i->drivers[$id])) {
-        try(); {
+        try {
           $i->drivers[$id]= &XPClass::forName($builtin[$id]);
-        } if (catch('ClassNotFoundException', $e)) {
-          return throw(new DriverNotSupportedException(
+        } catch (ClassNotFoundException $e) {
+          throw(new DriverNotSupportedException(
             'No driver registered for '.$id.': '.$e->getMessage()
           ));
         }

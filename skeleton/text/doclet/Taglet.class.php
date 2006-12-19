@@ -10,7 +10,7 @@
    * @see      xp://text.doclet.TagletManager
    * @purpose  Interface
    */
-  class Taglet extends Interface {
+  interface Taglet {
   
     /**
      * Create tag from text
@@ -21,7 +21,7 @@
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    function &tagFrom(&$holder, $kind, $text) { }
+    public function &tagFrom(&$holder, $kind, $text);
 
   }
 ?>

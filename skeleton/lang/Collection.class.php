@@ -22,11 +22,11 @@
    * @purpose  "Type-safe" array
    */
   class Collection extends Object {
-    var
+    public
       $class   = '',
       $list    = array();
       
-    var
+    public
       $_name   = '';
     
     /**
@@ -35,7 +35,7 @@
      * @access  protected
      * @param   string class
      */
-    function __construct($class) {
+    public function __construct($class) {
       $this->class= $class;
       $this->_name= xp::reflect($class);
     }
@@ -49,11 +49,11 @@
      * @return  &lang.Collection
      * @throws  lang.ClassNotFoundException
      */
-    function &forClass($class) {
+    public static function &forClass($class) {
       if (!class_exists(xp::reflect($class))) {
-        return throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
+        throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
       }
-      $c= &new Collection($class);
+      $c= new Collection($class);
       return $c;
     }
     
@@ -63,7 +63,7 @@
      * @access  public
      * @return  int
      */
-    function size() {
+    public function size() {
       return sizeof($this->list);
     }
     
@@ -73,7 +73,7 @@
      * @access  public
      * @return  string
      */
-    function getElementClassName() {
+    public function getElementClassName() {
       return $this->class;
     }
 
@@ -83,7 +83,7 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &getElementClass() {
+    public function &getElementClass() {
       return XPClass::forName($this->class);
     }
     
@@ -93,7 +93,7 @@
      * @access  public
      * @return  bool
      */
-    function isEmpty() {
+    public function isEmpty() {
       return empty($this->list);
     }
     
@@ -105,9 +105,9 @@
      * @return  &lang.Object the added element
      * @throws  lang.IllegalArgumentException
      */
-    function &add(&$element) {
+    public function &add(&$element) {
       if (!is($this->_name, $element)) {
-        return throw(new IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           xp::typeOf($element)
@@ -125,9 +125,9 @@
      * @return  &lang.Object the prepended element
      * @throws  lang.IllegalArgumentException
      */
-    function &prepend(&$element) {
+    public function &prepend(&$element) {
       if (!is($this->_name, $element)) {
-        return throw(new IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           xp::typeOf($element)
@@ -144,12 +144,12 @@
      * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
-    function addAll($array) {
+    public function addAll($array) {
       $original= $this->list;
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          return throw(new IllegalArgumentException(sprintf(
+          throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,
@@ -167,12 +167,12 @@
      * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
-    function prependAll($array) {
+    public function prependAll($array) {
       $original= $this->list;
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          return throw(new IllegalArgumentException(sprintf(
+          throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,
@@ -192,7 +192,7 @@
      * @param   &lang.Object element
      * @return  &lang.Object the element previously at the specified position.
      */
-    function &set($index, &$element) {
+    public function &set($index, &$element) {
       $orig= &$this->list[$index];
       $this->list[$index]= &$element;
       return $orig;
@@ -205,7 +205,7 @@
      * @param   int index
      * @return  &lang.Object
      */
-    function &get($index) {
+    public function &get($index) {
       return $this->list[$index];
     }
     
@@ -218,7 +218,7 @@
      * @param   int index
      * @return  &lang.Object the element that was removed from the list
      */
-    function &remove($index) {
+    public function &remove($index) {
       $element= &$this->list[$index];
       unset($this->list[$index]);
       $this->list= array_values($this->list);
@@ -231,7 +231,7 @@
      *
      * @access  public
      */
-    function clear() {
+    public function clear() {
       $this->list= array();
     }
     
@@ -241,7 +241,7 @@
      * @access  public
      * @return  lang.Object[]
      */
-    function values() {
+    public function values() {
       return array_values($this->list);
     }
     
@@ -252,7 +252,7 @@
      * @param   &lang.Object element
      * @return  bool
      */
-    function contains(&$element) {
+    public function contains(&$element) {
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
         if ($this->list[$i]->equals($element)) return TRUE;
       }
@@ -266,7 +266,7 @@
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    function indexOf(&$element) {
+    public function indexOf(&$element) {
     
       // Note: array_search() does NOT work for objects:
       //
@@ -289,7 +289,7 @@
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    function lastIndexOf(&$element) {
+    public function lastIndexOf(&$element) {
       for ($i= sizeof($this->list)- 1; $i > -1; $i--) {
         if ($this->list[$i]->equals($element)) return $i;
       }
@@ -302,7 +302,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $r= $this->getClassName().'<'.$this->class.">@{\n";
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
         $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->list[$i]))."\n";
@@ -317,7 +317,7 @@
      * @param   &lang.Object collection
      * @return  bool
      */
-    function equals(&$collection) {
+    public function equals(&$collection) {
       if (
         !is('Collection', $collection) || 
         $this->size != $collection->size

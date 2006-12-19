@@ -18,7 +18,7 @@
    * @purpose  Provide a simple profiling timer
    */
   class Timer extends Object {
-    var
+    public
       $start    = 0.0,
       $float    = 0.0;
       
@@ -28,7 +28,7 @@
      * @access  public
      * @return  float microtime
      */
-    function microtime() {
+    public function microtime() {
       list($usec, $sec) = explode(' ', microtime()); 
       return (float)$usec + (float)$sec;
     }
@@ -38,7 +38,7 @@
      *
      * @access  public
      */
-    function start() {
+    public function start() {
       $this->start= $this->microtime();
     }
     
@@ -47,7 +47,7 @@
      *
      * @access  public
      */
-    function stop() {
+    public function stop() {
       $this->stop= $this->microtime();
     }
     
@@ -57,7 +57,7 @@
      * @access  public
      * @return  float seconds elapsed
      */
-    function elapsedTime() {
+    public function elapsedTime() {
       return $this->stop - $this->start;
     }
   }

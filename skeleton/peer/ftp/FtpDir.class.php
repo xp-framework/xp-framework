@@ -13,7 +13,7 @@
    * @purpose  Represent an FTP directory
    */
   class FtpDir extends FtpEntry {
-    var
+    public
       $entries  = NULL,
       $_offset  = 0;
 
@@ -23,7 +23,7 @@
      * @access  public
      * @return  bool
      */
-    function exists() {
+    public function exists() {
       return ftp_size($this->connection->handle, $this->name) != -1;
     }
 
@@ -33,7 +33,7 @@
      * @access  public
      * @return  &peer.ftp.FtpEntry FALSE to indicate EOL
      */
-    function &getEntry() {
+    public function &getEntry() {
       if (NULL === $this->entries) {
 
         // Retrieve entries
@@ -53,9 +53,9 @@
       // Get rid of directory self-reference "." and parent directory 
       // reference, ".."
       do {        
-        try(); {
+        try {
           $entry= &$this->connection->parser->entryFrom($this->entries[$this->_offset]);
-        } if (catch('Exception', $e)) {
+        } catch (Exception $e) {
           throw(new SocketException(sprintf(
             'During listing of #%d (%s): %s',
             $this->_offset,

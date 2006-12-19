@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'img.ImagingException', 'img.Image', 'img.io.StreamReader', 'io.Stream');
+  uses(
+    'util.Date',
+    'img.ImagingException',
+    'img.Image',
+    'img.io.StreamReader',
+    'io.Stream'
+  );
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
@@ -13,7 +19,7 @@
    * @purpose  Utility
    */
   class ExifData extends Object {
-    var
+    public
       $height           = 0,
       $width            = 0,
       $make             = '',
@@ -41,9 +47,9 @@
      * @return  &img.util.ExifData
      * @throws  img.ImagingException in case extracting data fails
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       if (!($info= exif_read_data($file->getURI()))) {
-        return throw(new ImagingException(
+        throw(new ImagingException(
           'Cannot get EXIF information from '.$file->getURI()
         ));
       }
@@ -56,7 +62,7 @@
         );
       }
       
-      with ($e= &new ExifData()); {
+      with ($e= new ExifData()); {
         $e->setWidth($info['COMPUTED']['Width']);
         $e->setHeight($info['COMPUTED']['Height']);
         $e->setMake($info['Make']);
@@ -92,7 +98,7 @@
      * @access  public
      * @param   int height
      */
-    function setHeight($height) {
+    public function setHeight($height) {
       $this->height= $height;
     }
 
@@ -102,7 +108,7 @@
      * @access  public
      * @return  int
      */
-    function getHeight() {
+    public function getHeight() {
       return $this->height;
     }
 
@@ -112,7 +118,7 @@
      * @access  public
      * @param   int width
      */
-    function setWidth($width) {
+    public function setWidth($width) {
       $this->width= $width;
     }
 
@@ -122,7 +128,7 @@
      * @access  public
      * @return  int
      */
-    function getWidth() {
+    public function getWidth() {
       return $this->width;
     }
 
@@ -132,7 +138,7 @@
      * @access  public
      * @param   string make
      */
-    function setMake($make) {
+    public function setMake($make) {
       $this->make= $make;
     }
 
@@ -142,7 +148,7 @@
      * @access  public
      * @return  string
      */
-    function getMake() {
+    public function getMake() {
       return $this->make;
     }
 
@@ -152,7 +158,7 @@
      * @access  public
      * @param   string model
      */
-    function setModel($model) {
+    public function setModel($model) {
       $this->model= $model;
     }
 
@@ -162,7 +168,7 @@
      * @access  public
      * @return  string
      */
-    function getModel() {
+    public function getModel() {
       return $this->model;
     }
 
@@ -172,7 +178,7 @@
      * @access  public
      * @param   int flash
      */
-    function setFlash($flash) {
+    public function setFlash($flash) {
       $this->flash= $flash;
     }
 
@@ -182,7 +188,7 @@
      * @access  public
      * @return  int
      */
-    function getFlash() {
+    public function getFlash() {
       return $this->flash;
     }
 
@@ -192,7 +198,7 @@
      * @access  public
      * @param   int orientation
      */
-    function setOrientation($orientation) {
+    public function setOrientation($orientation) {
       $this->orientation= $orientation;
     }
 
@@ -202,7 +208,7 @@
      * @access  public
      * @return  int
      */
-    function getOrientation() {
+    public function getOrientation() {
       return $this->orientation;
     }
 
@@ -212,7 +218,7 @@
      * @access  public
      * @param   string fileName
      */
-    function setFileName($fileName) {
+    public function setFileName($fileName) {
       $this->fileName= $fileName;
     }
 
@@ -222,7 +228,7 @@
      * @access  public
      * @return  string
      */
-    function getFileName() {
+    public function getFileName() {
       return $this->fileName;
     }
 
@@ -232,7 +238,7 @@
      * @access  public
      * @param   int fileSize
      */
-    function setFileSize($fileSize) {
+    public function setFileSize($fileSize) {
       $this->fileSize= $fileSize;
     }
 
@@ -242,7 +248,7 @@
      * @access  public
      * @return  int
      */
-    function getFileSize() {
+    public function getFileSize() {
       return $this->fileSize;
     }
 
@@ -252,7 +258,7 @@
      * @access  public
      * @param   string mimeType
      */
-    function setMimeType($mimeType) {
+    public function setMimeType($mimeType) {
       $this->mimeType= $mimeType;
     }
 
@@ -262,7 +268,7 @@
      * @access  public
      * @return  string
      */
-    function getMimeType() {
+    public function getMimeType() {
       return $this->mimeType;
     }
 
@@ -272,7 +278,7 @@
      * @access  public
      * @param   &util.Date dateTime
      */
-    function setDateTime(&$dateTime) {
+    public function setDateTime(&$dateTime) {
       $this->dateTime= &$dateTime;
     }
 
@@ -282,7 +288,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDateTime() {
+    public function &getDateTime() {
       return $this->dateTime;
     }
     
@@ -293,7 +299,7 @@
      * @access  public
      * @return  bool
      */
-    function flashUsed() {
+    public function flashUsed() {
       return 1 == ($this->flash % 8);
     }
     
@@ -304,7 +310,7 @@
      * @access  public
      * @return  bool
      */
-    function isHorizontal() {
+    public function isHorizontal() {
       return $this->orientation <= 4;
     }
 
@@ -315,7 +321,7 @@
      * @access  public
      * @return  bool
      */
-    function isVertical() {
+    public function isVertical() {
       return $this->orientation > 4;
     }
     
@@ -342,7 +348,7 @@
      * @access  public
      * @return  string
      */
-    function getOrientationString() {
+    public function getOrientationString() {
       static $string= array(
         1 => 'normal',
         2 => 'flip_horizonal',
@@ -363,7 +369,7 @@
      * @access  public
      * @return  int
      */
-    function getRotationDegree() {
+    public function getRotationDegree() {
       static $degree= array(
         3 => 180,   // flip
         6 => 90,    // clockwise
@@ -379,7 +385,7 @@
      * @access  public
      * @param   string apertureFNumber
      */
-    function setApertureFNumber($apertureFNumber) {
+    public function setApertureFNumber($apertureFNumber) {
       $this->apertureFNumber= $apertureFNumber;
     }
 
@@ -389,7 +395,7 @@
      * @access  public
      * @return  string
      */
-    function getApertureFNumber() {
+    public function getApertureFNumber() {
       return $this->apertureFNumber;
     }
 
@@ -399,7 +405,7 @@
      * @access  public
      * @param   string software
      */
-    function setSoftware($software) {
+    public function setSoftware($software) {
       $this->software= $software;
     }
 
@@ -409,7 +415,7 @@
      * @access  public
      * @return  string
      */
-    function getSoftware() {
+    public function getSoftware() {
       return $this->software;
     }
 
@@ -419,7 +425,7 @@
      * @access  public
      * @param   string exposureTime
      */
-    function setExposureTime($exposureTime) {
+    public function setExposureTime($exposureTime) {
       $this->exposureTime= $exposureTime;
     }
 
@@ -429,7 +435,7 @@
      * @access  public
      * @return  string
      */
-    function getExposureTime() {
+    public function getExposureTime() {
       return $this->exposureTime;
     }
 
@@ -439,7 +445,7 @@
      * @access  public
      * @param   int exposureProgram
      */
-    function setExposureProgram($exposureProgram) {
+    public function setExposureProgram($exposureProgram) {
       $this->exposureProgram= $exposureProgram;
     }
 
@@ -449,7 +455,7 @@
      * @access  public
      * @return  int
      */
-    function getExposureProgram() {
+    public function getExposureProgram() {
       return $this->exposureProgram;
     }
     
@@ -459,7 +465,7 @@
      * @access  public
      * @return  string
      */
-    function getExposureProgramString() {
+    public function getExposureProgramString() {
       static $ep= array(
         0 => 'not defined',
         1 => 'manual',
@@ -484,7 +490,7 @@
      * @access  public
      * @param   int meteringMode
      */
-    function setMeteringMode($meteringMode) {
+    public function setMeteringMode($meteringMode) {
       $this->meteringMode= $meteringMode;
     }
 
@@ -494,7 +500,7 @@
      * @access  public
      * @return  int
      */
-    function getMeteringMode() {
+    public function getMeteringMode() {
       return $this->meteringMode;
     }
     
@@ -504,7 +510,7 @@
      * @access  public
      * @return  string
      */
-    function getMeteringModeString() {
+    public function getMeteringModeString() {
       static $mm= array(
         0   => 'unknown',                 
         1   => 'average',                 
@@ -528,7 +534,7 @@
      * @access  public
      * @param   int whitebalance
      */
-    function setWhitebalance($whitebalance) {
+    public function setWhitebalance($whitebalance) {
       $this->whitebalance= $whitebalance;
     }
 
@@ -539,7 +545,7 @@
      * @access  public
      * @return  int
      */
-    function getWhitebalance() {
+    public function getWhitebalance() {
       return $this->whitebalance;
     }
 
@@ -549,7 +555,7 @@
      * @access  public
      * @param   int isoSpeedRatings
      */
-    function setIsoSpeedRatings($isoSpeedRatings) {
+    public function setIsoSpeedRatings($isoSpeedRatings) {
       $this->isoSpeedRatings= $isoSpeedRatings;
     }
 
@@ -559,7 +565,7 @@
      * @access  public
      * @return  int
      */
-    function getIsoSpeedRatings() {
+    public function getIsoSpeedRatings() {
       return $this->isoSpeedRatings;
     }
 
@@ -569,8 +575,8 @@
      * @access  public
      * @return  &img.Image  
      */
-    function &getThumbnail() {
-      $s= &new Stream();
+    public function &getThumbnail() {
+      $s= new Stream();
       $s->open(STREAM_MODE_WRITE);
       $s->write(exif_thumbnail($this->getFilename()));
       $s->rewind();
@@ -583,7 +589,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(%d x %d %s)@{\n".
         "  [file            ] %s (%d bytes)\n".

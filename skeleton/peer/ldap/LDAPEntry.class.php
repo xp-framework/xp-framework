@@ -13,7 +13,7 @@
    * @test     xp://net.xp_framework.unittest.peer.LDAPEntryTest
    */
   class LDAPEntry extends Object {
-    var
+    public
       $dn=          '',
       $attributes=  array();
       
@@ -23,7 +23,7 @@
      * @access  public
      * @param   string dn default NULL "distinct name"
      */
-    function __construct($dn= NULL, $attrs= array()) {
+    public function __construct($dn= NULL, $attrs= array()) {
       $this->dn= $dn;
       $this->attributes= $attrs;
       
@@ -36,7 +36,7 @@
      * @param   &mixed v
      * @return  string decoded entry
      */
-    function _decode(&$v) {
+    public function _decode(&$v) {
       if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
         $v[$i]= $this->_decode($v[$i]);
         return $v;
@@ -53,8 +53,8 @@
      * @param   &mixed data return value from ldap_* functions
      * @return  &peer.ldap.LDAPEntry object
      */
-    function &fromData(&$data) {
-      $e= &new LDAPEntry($data['dn']);
+    public static function &fromData(&$data) {
+      $e= new LDAPEntry($data['dn']);
       unset($data['dn']);
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;
@@ -76,7 +76,7 @@
      * @access  public
      * @param   string dn
      */
-    function setDN($dn) {
+    public function setDN($dn) {
       $this->dn= $dn;
     }
     
@@ -86,7 +86,7 @@
      * @access  public
      * @return  string DN
      */
-    function getDN() {
+    public function getDN() {
       return $this->dn;
     }
 
@@ -97,7 +97,7 @@
      * @param   string key
      * @param   mixed value
      */
-    function setAttribute($key, $value) {
+    public function setAttribute($key, $value) {
       $this->attributes[$key]= (array)$value;
     }
     
@@ -113,7 +113,7 @@
      * @param   int idx default -1
      * @return  mixed attribute
      */
-    function getAttribute($key, $idx= -1) {
+    public function getAttribute($key, $idx= -1) {
       return (($idx >= 0)
         ? (isset($this->attributes[$key][$idx]) ? $this->attributes[$key][$idx] : NULL)
         : (isset($this->attributes[$key]) ? $this->attributes[$key] : NULL)
@@ -126,7 +126,7 @@
      * @access  public
      * @return  array
      */
-    function getAttributes() {
+    public function getAttributes() {
       return $this->attributes;
     }
     
@@ -136,7 +136,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= sprintf("%s@DN(%s){\n", $this->getClassName(), $this->getDN());
       foreach ($this->attributes as $name => $attr) {
         $s.= sprintf("  [%-20s] %s\n", $name, implode(', ', $attr));

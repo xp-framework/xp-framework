@@ -26,7 +26,7 @@
      * @param   string lim delimiters to use
      * @return  string tokenizes token
      */
-    function getNextToken($lim) {
+    public function getNextToken($lim) {
       $pos= FALSE;  
       for ($i= 0; $i < strlen ($lim); $i++) {
         if ($npos= strpos ($this->buffer, $lim{$i}, $this->offset))
@@ -48,7 +48,7 @@
      * @param   string* delimiters
      * @return  string token
      */
-    function getNextComplexToken() {
+    public function getNextComplexToken() {
       $delims= func_get_args();
       $pos= FALSE;
       
@@ -77,7 +77,7 @@
      * @param   string string to search
      * @return  int offset
      */    
-    function findNext($substring) {
+    public function findNext($substring) {
       return strpos ($this->buffer, $substring, $this->offset);
     }
   }

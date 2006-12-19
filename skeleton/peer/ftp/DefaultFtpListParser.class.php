@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.FtpListParser');
+
   /**
    * Parses output from a FTP LIST command from Un*x FTP daemons.
    *
@@ -11,7 +13,7 @@
    * @see      xp://peer.ftp.FtpListParser
    * @purpose  FTP LIST parser implementation
    */
-  class DefaultFtpListParser extends Object {
+  class DefaultFtpListParser extends Object implements FtpListParser {
 
     /**
      * Parse raw listing entry.
@@ -20,7 +22,7 @@
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    function &entryFrom($raw) {
+    public function &entryFrom($raw) {
       sscanf(
         $raw, 
         '%s %d %s %s %d %s %d %[^ ] %[^$]',
@@ -36,12 +38,12 @@
       );
       
       if ('d' == $permissions{0}) {
-        $e= &new FtpDir($filename);
+        $e= new FtpDir($filename);
       } else {
-        $e= &new FtpEntry($filename);
+        $e= new FtpEntry($filename);
       }
 
-      $d= &new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
+      $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
 
       // Check for "recent" file which are specified "HH:MM" instead
       // of year for the last 6 month (as specified in coreutils/src/ls.c)
@@ -59,5 +61,5 @@
       return $e;
     }
   
-  } implements(__FILE__, 'peer.ftp.FtpListParser');
+  } 
 ?>

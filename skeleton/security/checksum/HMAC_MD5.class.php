@@ -23,7 +23,7 @@
      * @param   string key default NULL
      * @return  string
      */
-    function hash($str, $key= NULL) {
+    public static function hash($str, $key= NULL) {
       if (NULL === $key) return pack('H*', md5($str));
       
       $key= str_pad($key, 0x40, "\x00");
@@ -45,7 +45,7 @@
      * @param   string key default NULL
      * @return  &security.checksum.HMAC_MD5
      */
-    function &fromString($str, $key= NULL) {
+    public function &fromString($str, $key= NULL) {
       return new HMAC_MD5(HMAC_MD5::hash($str, $key));
     }
 
@@ -57,13 +57,13 @@
      * @param   string key default NULL
      * @return  &security.checksum.HMAC_MD5
      */
-    function &fromFile(&$file, $key= NULL) {
-      try(); {
+    public function &fromFile(&$file, $key= NULL) {
+      try {
         $file->open(FILE_MODE_READ);
         $str= $file->read($file->size());
         $file->close();
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
       return new HMAC_MD5(HMAC_MD5::hash($str, $key));
     }

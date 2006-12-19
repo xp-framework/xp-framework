@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('img.Image');
+  uses('img.Image', 'img.chart.renderer.GraphRenderer');
 
   /**
    * Renders charts to images
@@ -13,8 +13,8 @@
    * @see      xp://img.chart.GraphRenderer
    * @purpose  Renderer
    */
-  class ImageRenderer extends Object {
-    var
+  class ImageRenderer extends Object implements GraphRenderer {
+    public
       $width  = 0, 
       $height = 0;
     
@@ -25,7 +25,7 @@
      * @param   int width
      * @param   int height
      */
-    function __construct($width, $height) {
+    public function __construct($width, $height) {
       $this->width= $width;
       $this->height= $height;
     }
@@ -38,7 +38,7 @@
      * @param  int font The font size
      * @return mixed[]
      */
-    function _prepare(&$chart, $font) {
+    public function _prepare(&$chart, $font) {
       list($lower, $upper, $step)= $chart->getRange();
       RANGE_AUTO == $lower && $lower= $chart->min();
       RANGE_AUTO == $upper && $upper= $chart->max();
@@ -92,7 +92,7 @@
      * @param  string[] c The colors
      * @return &img.Color[]
      */
-    function &_colors(&$img, $c) {
+    public function &_colors(&$img, $c) {
       $colors= array();
       if (!is_array($c)) $c= array($c);
       foreach ($c as $color) $colors[]= $img->allocate($color);
@@ -107,7 +107,7 @@
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    function &_renderAxis($params, &$img) {
+    public function &_renderAxis($params, &$img) {
       $count= $params['count'];
       $distance= $params['distance'];
       $lower= $params['lower'];
@@ -221,7 +221,7 @@
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    function _renderLegend($params, &$img) {
+    public function _renderLegend($params, &$img) {
       $labels= $params['labels'];
       $font= $params['font'];
       $fontw= $params['fontWidth'];
@@ -290,7 +290,7 @@
      * @param   img.chart.BarChart bc
      * @return  &img.Image
      */
-    function &renderBarChart(&$bc) {
+    public function &renderBarChart(&$bc) {
  
       // Create local variables for faster access
       list(
@@ -306,7 +306,7 @@
       
       // Sanity checks
       if ($lower > $upper) {
-        return throw(new IllegalArgumentException('Lower range greater than upper range'));
+        throw(new IllegalArgumentException('Lower range greater than upper range'));
       }
 
       // Figure out the distance between the bars
@@ -416,7 +416,7 @@
      * @param   img.chart.LineChart bc
      * @return  &img.Image
      */
-    function &renderLineChart($lc) {
+    public function &renderLineChart($lc) {
  
       // Create local variables for faster access
       list(
@@ -431,7 +431,7 @@
 
       // Sanity checks
       if ($lower > $upper) {
-        return throw(new IllegalArgumentException('Lower range greater than upper range'));
+        throw(new IllegalArgumentException('Lower range greater than upper range'));
       }
 
       // Figure out the distance between the bars
@@ -543,7 +543,7 @@
      * @param   img.chart.PieChart bc
      * @return  &img.Image
      */
-    function &renderPieChart($pc) {
+    public function &renderPieChart($pc) {
  
       // Create local variables for faster access
       $border= 50;
@@ -619,14 +619,14 @@
      * @return  &img.Image
      * @throws  lang.IllegalArgumentException if chart is not renderable
      */
-    function &render(&$chart) { 
+    public function &render(&$chart) { 
     
       // Method overloading by delegation
-      if (!is_a($chart, 'Chart') || !method_exists($this, $method= 'render'.get_class($chart))) {
-        return throw(new IllegalArgumentException('Cannot render '.xp::typeOf($chart).'s'));
+      if (!is('Chart', $chart) || !method_exists($this, $method= 'render'.get_class($chart))) {
+        throw(new IllegalArgumentException('Cannot render '.xp::typeOf($chart).'s'));
       }
       return $this->{$method}($chart);
     }
 
-  } implements(__FILE__, 'img.chart.renderer.GraphRenderer');
+  } 
 ?>

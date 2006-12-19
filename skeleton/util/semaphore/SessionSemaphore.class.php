@@ -39,9 +39,9 @@
      * @param   &scriptlet.HttpSession storage
      * @param   string name default 'semaphore'
      */
-    function __construct(&$storage, $name= 'semaphore') {
+    public function __construct(&$storage, $name= 'semaphore') {
       if (!is('scriptlet.HttpSession', $storage))
-        return throw(new IllegalArgumentException('Given argument is not a HttpSession'));
+        throw(new IllegalArgumentException('Given argument is not a HttpSession'));
       
       parent::__construct($storage, 'xp-'.$name);
     }
@@ -53,7 +53,7 @@
      * @access  public
      * @return  bool succeed
      */
-    function lock() {
+    public function lock() {
       if ($this->storage->hasValue($this->name))
         return FALSE;
         
@@ -68,7 +68,7 @@
      * @access  public
      * @return  bool succeed
      */
-    function unlock() {
+    public function unlock() {
     
       // $v= &$this->storage->getValue($this->name);
       $this->storage->removeValue($this->name);
@@ -83,7 +83,7 @@
      * @access  public
      * @return  int utime
      */
-    function getCreatedAt() {
+    public function getCreatedAt() {
       return $this->storage->getValue($this->name);
     }
   }

@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('remote.protocol.SerializerMapping');
+
   /**
    * Mapping for lang.Throwable
    *
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping for 
    */
-  class ExceptionMapping extends Object {
+  class ExceptionMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -21,11 +23,11 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
-      try(); {
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      try {
         $class= &XPClass::forName($serializer->exceptionName($serialized->consumeString()));
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
+      } catch (ClassNotFoundException $e) {
+        throw($e);
       }
 
       $size= $serialized->consumeSize();
@@ -55,7 +57,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       $trace= &$value->getStackTrace();
       
       if (FALSE !== ($token= array_search($value->getClassName(), $serializer->exceptions, TRUE))) {
@@ -86,8 +88,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('lang.Throwable');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

@@ -4,7 +4,12 @@
  * $Id$
  */
  
-  uses('xml.XML', 'xml.parser.XMLParser', 'xml.Node');
+  uses(
+    'xml.XML',
+    'xml.parser.XMLParser',
+    'xml.Node',
+    'xml.parser.ParserCallback'
+  );
  
   /**
    * The Tree class represents a tree which can be exported
@@ -13,13 +18,13 @@
    * @see      xp://xml.parser.XMLParser
    * @purpose  Tree
    */
-  class Tree extends XML {
-    var 
+  class Tree extends XML implements ParserCallback {
+    public 
       $root     = NULL,
       $children = array(),
       $nodeType = 'node';
 
-    var
+    public
       $_cnt,
       $_cdata,
       $_objs;
@@ -30,8 +35,8 @@
      * @access  public
      * @param   string rootName default 'document'
      */
-    function __construct($rootName= 'document') {
-      $this->root= &new Node($rootName);
+    public function __construct($rootName= 'document') {
+      $this->root= new Node($rootName);
     }
     
     /**
@@ -41,7 +46,7 @@
      * @param   bool indent default TRUE whether to indent
      * @return  string
      */
-    function getSource($indent= TRUE) {
+    public function getSource($indent= TRUE) {
       return (isset($this->root)
         ? $this->root->getSource($indent)
         : NULL
@@ -55,7 +60,7 @@
      * @param   &xml.Node child 
      * @return  &xml.Node the added child
      */   
-    function &addChild(&$child) {
+    public function &addChild(&$child) {
       return $this->root->addChild($child);
     }
 
@@ -73,15 +78,15 @@
      * @return  &xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      */
-    function &fromString($string, $c= __CLASS__) {
-      $parser= &new XMLParser();
-      $tree= &new $c();
-      try(); {
+    public static function &fromString($string, $c= __CLASS__) {
+      $parser= new XMLParser();
+      $tree= new $c();
+      try {
         $parser->setCallback($tree);
         $parser->parse($string, 1);
         delete($parser);
-      } if (catch('XMLFormatException', $e)) {
-        return throw($e);
+      } catch (XMLFormatException $e) {
+        throw($e);
       }
       
       return $tree;
@@ -102,11 +107,11 @@
      * @throws  xml.XMLFormatException in case of a parser error
      * @throws  io.IOException in case reading the file fails
      */ 
-    function &fromFile(&$file, $c= __CLASS__) {
-      $parser= &new XMLParser();
-      $tree= &new $c();
+    public static function &fromFile(&$file, $c= __CLASS__) {
+      $parser= new XMLParser();
+      $tree= new $c();
       
-      try(); {
+      try {
         $parser->setCallback($tree);
         $parser->dataSource= $file->uri;
         $file->open(FILE_MODE_READ);
@@ -114,10 +119,10 @@
         $file->close();
         $parser->parse($string);
         delete($parser);
-      } if (catch('XMLFormatException', $e)) {
-        return throw($e);
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (XMLFormatException $e) {
+        throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       return $tree;
@@ -132,10 +137,10 @@
      * @param   string attrs
      * @see     xp://xml.parser.XMLParser
      */
-    function onStartElement($parser, $name, $attrs) {
+    public function onStartElement($parser, $name, $attrs) {
       $this->_cdata= '';
 
-      $element= &new $this->nodeType($name, NULL, $attrs);
+      $element= new $this->nodeType($name, NULL, $attrs);
       if (!isset($this->_cnt)) {
         $this->root= &$element;
         $this->_objs[1]= &$element;
@@ -154,7 +159,7 @@
      * @param   string name
      * @see     xp://xml.parser.XMLParser
      */
-    function onEndElement($parser, $name) {
+    public function onEndElement($parser, $name) {
       if ($this->_cnt > 1) {
         $node= &$this->_objs[$this->_cnt];
         $node->content= $this->_cdata;
@@ -173,7 +178,7 @@
      * @param   string cdata
      * @see     xp://xml.parser.XMLParser
      */
-    function onCData($parser, $cdata) {
+    public function onCData($parser, $cdata) {
       $this->_cdata.= $cdata;
     }
 
@@ -185,8 +190,8 @@
      * @param   string data
      * @see     xp://xml.parser.XMLParser
      */
-    function onDefault($parser, $data) {
+    public function onDefault($parser, $data) {
     }
 
-  } implements(__FILE__, 'xml.parser.ParserCallback');
+  } 
 ?>

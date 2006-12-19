@@ -20,7 +20,7 @@
    * @purpose  XML Namespaces
    */
   class QName extends Object {
-    var
+    public
       $namespace    = '',
       $localpart    = '',
       $prefix       = '';
@@ -33,7 +33,7 @@
      * @param   string localpart
      * @param   string prefix default NULL
      */
-    function __construct($namespace, $localpart, $prefix= NULL) {
+    public function __construct($namespace, $localpart, $prefix= NULL) {
       $this->namespace= $namespace;
       $this->localpart= $localpart;
       $this->prefix= $prefix;
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return ltrim($this->namespace.'/'.$this->localpart, '/');
     }
   }

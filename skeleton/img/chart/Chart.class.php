@@ -34,7 +34,7 @@
    * @purpose  Base class for charts
    */
   class Chart extends Object {
-    var
+    public
       $series = array(),
       $colors = array(),
       $theme  = array(
@@ -58,7 +58,7 @@
      * @param   &img.graph.Series series
      * @return  &img.graph.Series
      */
-    function &add(&$series) {
+    public function &add(&$series) {
       $this->series[]= &$series;
       return $series;
     }
@@ -69,7 +69,7 @@
      * @access  public
      * @param   &img.Color color
      */
-    function setBackgroundColor(&$color) {
+    public function setBackgroundColor(&$color) {
       $this->setColor('background', $color);
     }
     
@@ -80,7 +80,7 @@
      * @param   string key
      * @param   &img.Color color
      */
-    function setColor($key, &$color) {
+    public function setColor($key, &$color) {
       $this->colors[$key]= &$color;
     }
     
@@ -91,7 +91,7 @@
      * @param   string key
      * @return  &img.Color
      */
-    function &getColor($key) {
+    public function &getColor($key) {
       if (!isset($this->colors[$key])) return new Color($this->theme[$key]);
       return $this->colors[$key];
     }
@@ -102,7 +102,7 @@
      * @access public
      * @param string[] labels The series labels
      */
-    function setLabels($labels) {
+    public function setLabels($labels) {
       $this->labels= $labels;
     }
     
@@ -112,7 +112,7 @@
      * @access public
      * @return string[]
      */
-    function getLabels() {
+    public function getLabels() {
       return $this->labels;
     }
     
@@ -122,7 +122,7 @@
      * @access public
      * @param bool gridlines Draw grid lines
      */
-    function setGridLines($gridlines) {
+    public function setGridLines($gridlines) {
       $this->gridlines= $gridlines;
     }
     
@@ -132,7 +132,7 @@
      * @access public
      * @return bool
      */
-    function getGridLines() {
+    public function getGridLines() {
       return $this->gridlines;
     }
     
@@ -142,7 +142,7 @@
      * @access public
      * @param bool bool The flag
      */
-    function setDisplayLegend($bool) {
+    public function setDisplayLegend($bool) {
       $this->displeg= $bool;
     }
     
@@ -152,7 +152,7 @@
      * @access public
      * @return bool
      */
-    function getDisplayLegend() {
+    public function getDisplayLegend() {
       return $this->displeg;
     }
     
@@ -162,7 +162,7 @@
      * @access public
      * @return bool
      */
-    function getDisplayValues() {
+    public function getDisplayValues() {
       return $this->dispval;
     }
     
@@ -172,7 +172,7 @@
      * @access public
      * @param bool bool The flag
      */
-    function setDisplayValues($bool) {
+    public function setDisplayValues($bool) {
       $this->dispval= $bool;
     }
     
@@ -182,7 +182,7 @@
      * @access  public
      * @return  int
      */
-    function count() {
+    public function count() {
       $max= 0;
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         $max= max($max, sizeof($this->series[$i]->values));
@@ -196,7 +196,7 @@
      * @access public
      * @return int
      */
-    function seriesCount() {
+    public function seriesCount() {
       return sizeof($this->series);
     }
     
@@ -206,7 +206,7 @@
      * @access  public
      * @return  float
      */
-    function max() {
+    public function max() {
       $max= 0;
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         $max= max($max, max($this->series[$i]->values));
@@ -220,7 +220,7 @@
      * @access  public
      * @return  float
      */
-    function min() {
+    public function min() {
       $min= 0;
       for ($i= 0, $s= sizeof($this->series); $i < $s; $i++) {
         $min= min($min, min($this->series[$i]->values));

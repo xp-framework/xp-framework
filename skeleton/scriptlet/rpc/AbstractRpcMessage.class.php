@@ -11,7 +11,7 @@
    *
    * @purpose  RpcMessage interface
    */
-  class AbstractRpcMessage extends Interface {
+  interface AbstractRpcMessage {
 
     /**
      * Create message from string
@@ -21,14 +21,14 @@
      * @param   string string
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    function &fromString($string) {}
+    public static function &fromString($string);
     
     /**
      * Create message
      *
      * @access  public
      */
-    function create() {}
+    public function create();
 
     /**
      * Set Encoding
@@ -36,7 +36,7 @@
      * @access  public
      * @param   string encoding
      */
-    function setEncoding($encoding) {}
+    public function setEncoding($encoding);
 
     /**
      * Get Encoding
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {}
+    public function getEncoding();
     
     /**
      * Retrieve Content-type for requests
@@ -52,7 +52,7 @@
      * @access  public
      * @return  string
      */
-    function getContentType() {}    
+    public function getContentType();    
     
     /**
      * Set Data
@@ -60,7 +60,7 @@
      * @access  public
      * @param   &lang.Object data
      */
-    function setData($data) {}
+    public function setData($data);
 
     /**
      * Get Data
@@ -68,7 +68,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getData() {}
+    public function &getData();
     
     /**
      * Retrieve string representation of message as used in the
@@ -77,7 +77,7 @@
      * @access  public
      * @return  string
      */
-    function serializeData() {}
+    public function serializeData();
     
     /**
      * Set Class
@@ -85,7 +85,7 @@
      * @access  public
      * @param   string class
      */
-    function setHandlerClass($class) {}
+    public function setHandlerClass($class);
 
     /**
      * Get Class
@@ -93,7 +93,7 @@
      * @access  public
      * @return  string
      */
-    function getHandlerClass() {}
+    public function getHandlerClass();
 
     /**
      * Set Method
@@ -101,7 +101,7 @@
      * @access  public
      * @param   string method
      */
-    function setMethod($method) {}
+    public function setMethod($method);
 
     /**
      * Get Method
@@ -109,14 +109,14 @@
      * @access  public
      * @return  string
      */
-    function getMethod() {}
+    public function getMethod();
     
     /**
      * Set fault
      *
      * @access  public
      */
-    function setFault($faultCode, $faultString) {}
+    public function setFault($faultCode, $faultString);
     
     /**
      * Get fault
@@ -124,6 +124,6 @@
      * @access  public
      * @return  &scriptlet.rpc.RpcFault
      */
-    function &getFault() {}        
+    public function &getFault();        
   }
 ?>

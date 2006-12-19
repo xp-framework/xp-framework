@@ -12,7 +12,7 @@
    * @purpose  Principal
    */
   class Principal extends Object {
-    var
+    public
       $dn= array();
       
     /**
@@ -21,7 +21,7 @@
      * @access  public
      * @param   array dn
      */
-    function __construct($dn) {
+    public function __construct($dn) {
       $this->dn= array_change_key_case($dn, CASE_UPPER);
     }
   
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       $name= '';
       foreach ($this->dn as $k => $v) {
         $name.= '/'.$k.'='.$v;
@@ -50,7 +50,7 @@
      * @access  public
      * @return  string
      */
-    function getCountryName() {
+    public function getCountryName() {
       return $this->dn['C'];
     }
     
@@ -60,7 +60,7 @@
      * @access  public
      * @return  string
      */
-    function getStateOrProvinceName() {
+    public function getStateOrProvinceName() {
       return $this->dn['ST'];
     }
     
@@ -70,7 +70,7 @@
      * @access  public
      * @return  string
      */
-    function getLocalityName() {
+    public function getLocalityName() {
       return $this->dn['L'];
     }
     
@@ -80,7 +80,7 @@
      * @access  public
      * @return  string
      */
-    function getOrganizationName() {
+    public function getOrganizationName() {
       return $this->dn['O'];
     }
     
@@ -90,7 +90,7 @@
      * @access  public
      * @return  string
      */
-    function getOrganizationalUnitName() {
+    public function getOrganizationalUnitName() {
       return $this->dn['OU'];
     }
     
@@ -100,7 +100,7 @@
      * @access  public
      * @return  string
      */
-    function getCommonName() {
+    public function getCommonName() {
       return $this->dn['CN'];
     }
     
@@ -110,7 +110,7 @@
      * @access  public
      * @return  string
      */
-    function getEmailAddress() {
+    public function getEmailAddress() {
       return $this->dn['EMAIL'];
     }
   }

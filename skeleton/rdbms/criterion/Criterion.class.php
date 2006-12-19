@@ -12,7 +12,7 @@
    * @see      xp://rdbms.Criteria#add
    * @purpose  Interface
    */
-  class Criterion extends Interface {
+  interface Criterion {
   
     /**
      * Returns the fragment SQL
@@ -23,6 +23,6 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    function asSql(&$conn, $types) { }
+    public function asSql(&$conn, $types);
   }
 ?>

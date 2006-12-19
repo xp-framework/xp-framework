@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'remote.protocol.SerializerMapping');
 
   /**
    * Mapping for util.Date
@@ -12,7 +12,7 @@
    * @see      xp://remote.protocol.Serializer
    * @purpose  Mapping
    */
-  class DateMapping extends Object {
+  class DateMapping extends Object implements SerializerMapping {
 
     /**
      * Returns a value for the given serialized string
@@ -23,8 +23,8 @@
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    function &valueOf(&$serializer, &$serialized, $context= array()) {
-      $value= &new Date((int)$serialized->consumeWord());
+    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+      $value= new Date((int)$serialized->consumeWord());
       return $value;
     }
 
@@ -37,7 +37,7 @@
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf(&$serializer, &$value, $context= array()) {
       return 'T:'.$value->getTime().';';
     }
     
@@ -47,8 +47,8 @@
      * @access  public
      * @return  &lang.XPClass
      */
-    function &handledClass() {
+    public function &handledClass() {
       return XPClass::forName('util.Date');
     }
-  } implements(__FILE__, 'remote.protocol.SerializerMapping');
+  } 
 ?>

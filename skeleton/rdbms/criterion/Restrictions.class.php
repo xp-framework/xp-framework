@@ -28,7 +28,7 @@
      * @param   mixed[] values
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &in($field, $values) {
+    public static function &in($field, $values) {
       return new SimpleExpression($field, $values, IN);
     }
 
@@ -41,7 +41,7 @@
      * @param   mixed[] values
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &notIn($field, $values) {
+    public static function &notIn($field, $values) {
       return new SimpleExpression($field, $values, NOT_IN);
     }
 
@@ -54,7 +54,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &like($field, $value) {
+    public static function &like($field, $value) {
       return new SimpleExpression($field, $value, LIKE);
     }
 
@@ -68,7 +68,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &ilike($field, $value) {
+    public static function &ilike($field, $value) {
       return new SimpleExpression($field, sql_regcase($value), LIKE);
     }
         
@@ -81,7 +81,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &equal($field, $value) {
+    public static function &equal($field, $value) {
       return new SimpleExpression($field, $value, EQUAL);
     }
 
@@ -94,7 +94,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &notEqual($field, $value) {
+    public static function &notEqual($field, $value) {
       return new SimpleExpression($field, $value, NOT_EQUAL);
     }
 
@@ -107,7 +107,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &lessThan($field, $value) {
+    public static function &lessThan($field, $value) {
       return new SimpleExpression($field, $value, LESS_THAN);
     }
 
@@ -120,7 +120,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &greaterThan($field, $value) {
+    public static function &greaterThan($field, $value) {
       return new SimpleExpression($field, $value, GREATER_THAN);
     }
 
@@ -133,7 +133,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &lessThanOrEqualTo($field, $value) {
+    public static function &lessThanOrEqualTo($field, $value) {
       return new SimpleExpression($field, $value, LESS_EQUAL);
     }
 
@@ -146,7 +146,7 @@
      * @param   mixed value
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &greaterThanOrEqualTo($field, $value) {
+    public static function &greaterThanOrEqualTo($field, $value) {
       return new SimpleExpression($field, $value, GREATER_EQUAL);
     }
 
@@ -160,7 +160,7 @@
      * @param   mixed hi
      * @return  &rdbms.criterion.SimpleExpression
      */
-    function &between($field, $lo, $hi) {
+    public static function &between($field, $lo, $hi) {
       return new BetweenExpression($field, $lo, $hi);
     }
 
@@ -174,7 +174,7 @@
      * @param   &rdbms.criterion.Criterion*
      * @return  &rdbms.criterion.LogicalExpression
      */
-    function &anyOf(&$first, &$second) {
+    public static function &anyOf(&$first, &$second) {
       $args= array(&$first, &$second);
       for ($i= 2, $n= func_num_args(); $i < $n; $i++) {
         $args[]= func_get_arg($i);
@@ -192,7 +192,7 @@
      * @param   &rdbms.criterion.Criterion*
      * @return  &rdbms.criterion.LogicalExpression
      */
-    function &allOf(&$first, &$second) {
+    public static function &allOf(&$first, &$second) {
       $args= array(&$first, &$second);
       for ($i= 2, $n= func_num_args(); $i < $n; $i++) {
         $args[]= func_get_arg($i);
@@ -208,7 +208,7 @@
      * @param   &rdbms.criterion.Criterion expression
      * @return  &rdbms.criterion.NegationExpression
      */
-    function &not(&$expression) {
+    public static function &not(&$expression) {
       return new NegationExpression($expression);
     }
   }

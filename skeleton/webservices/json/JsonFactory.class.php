@@ -25,8 +25,8 @@
      * @access  public
      * @return  &webservices.json.IJsonDecoder
      */
-    function &create() {
-      $n= &new JsonDecoder();
+    public static function &create() {
+      $n= new JsonDecoder();
       return $n;
     }
   }

@@ -25,7 +25,7 @@
    * @purpose  Parse XML
    */
   class XMLParser extends Object {
-    var
+    public
       $encoding     = '',
       $callback     = NULL;
     
@@ -36,7 +36,7 @@
      * @access  public
      * @param   string encoding default ''
      */
-    function __construct($encoding= '') {
+    public function __construct($encoding= '') {
       $this->encoding= $encoding;
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      * @param   &xml.parser.ParserCallback callback
      */
-    function setCallback(&$callback) {
+    public function setCallback(&$callback) {
       $this->callback= &$callback;
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      * @param   string encoding
      */
-    function setEncoding($encoding) {
+    public function setEncoding($encoding) {
       $this->encoding= $encoding;
     }
 
@@ -66,7 +66,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {
+    public function getEncoding() {
       return $this->encoding;
     }
     
@@ -80,7 +80,7 @@
      * @throws  xml.XMLFormatException in case the data could not be parsed
      * @throws  lang.NullPointerException in case a parser could not be created
      */
-    function parse($data, $source= NULL) {
+    public function parse($data, $source= NULL) {
       if ($parser = xml_parser_create($this->encoding)) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
 
@@ -98,7 +98,7 @@
           $line= xml_get_current_line_number($parser);
           $column= xml_get_current_column_number($parser);
           xml_parser_free($parser);
-          return throw(new XMLFormatException(
+          throw(new XMLFormatException(
             xml_error_string($type),
             $type,
             $source,
@@ -110,7 +110,7 @@
         return TRUE;
       }
 
-      return throw(new NullPointerException('Could not create parser'));
+      throw(new NullPointerException('Could not create parser'));
     }
   }
 ?>

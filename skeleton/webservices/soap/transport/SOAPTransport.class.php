@@ -11,7 +11,7 @@
    * @see      xp://webservices.soap.transport.SOAPHTTPTransport
    */
   class SOAPTransport extends Object {
-    var
+    public
       $cat  = NULL;
       
     /**
@@ -20,7 +20,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
  
@@ -30,7 +30,7 @@
      * @access  public
      * @param   &webservices.soap.SOAPMessage message
      */
-    function send(&$message) { }
+    public function send(&$message) { }
    
     /**
      * Retrieve the answer
@@ -38,6 +38,6 @@
      * @access  public
      * @return  &webservices.soap.SOAPMessage
      */
-    function &retrieve(&$response) { }
+    public function &retrieve(&$response) { }
   }
 ?>

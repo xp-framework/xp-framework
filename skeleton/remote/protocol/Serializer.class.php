@@ -30,12 +30,12 @@
    * @purpose  Serializer
    */
   class Serializer extends Object {
-    var
+    public
       $mappings   = array(),
       $packages   = array(),
       $exceptions = array();
     
-    var
+    public
       $_classMapping  = array();
 
     /**
@@ -43,22 +43,22 @@
      *
      * @access  public
      */
-    function __construct() {
-      $this->mapping('T', $m= &new DateMapping());
-      $this->mapping('l', $m= &new LongMapping());
-      $this->mapping('B', $m= &new ByteMapping());
-      $this->mapping('S', $m= &new ShortMapping());
-      $this->mapping('f', $m= &new FloatMapping());
-      $this->mapping('d', $m= &new DoubleMapping());
-      $this->mapping('i', $m= &new IntegerMapping());
-      $this->mapping('A', $m= &new ArrayListMapping());
-      $this->mapping('e', $m= &new ExceptionMapping());
-      $this->mapping('t', $m= &new StackTraceElementMapping());
+    public function __construct() {
+      $this->mapping('T', $m= new DateMapping());
+      $this->mapping('l', $m= new LongMapping());
+      $this->mapping('B', $m= new ByteMapping());
+      $this->mapping('S', $m= new ShortMapping());
+      $this->mapping('f', $m= new FloatMapping());
+      $this->mapping('d', $m= new DoubleMapping());
+      $this->mapping('i', $m= new IntegerMapping());
+      $this->mapping('A', $m= new ArrayListMapping());
+      $this->mapping('e', $m= new ExceptionMapping());
+      $this->mapping('t', $m= new StackTraceElementMapping());
       
       // A hashmap doesn't have its own token, because it'll be serialized
       // as an array. We use HASHMAP as the token, so it will never match
       // another one (can only be one char). This is a little bit hackish.
-      $this->mapping('HASHMAP', $m= &new HashmapMapping());
+      $this->mapping('HASHMAP', $m= new HashmapMapping());
       
       // Setup default exceptions
       $this->exceptionName('IllegalArgument', 'lang.IllegalArgumentException');
@@ -75,7 +75,7 @@
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    function representationOf(&$var, $ctx= array()) {
+    public function representationOf(&$var, $ctx= array()) {
       switch (gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
@@ -117,8 +117,8 @@
      * @param   &lang.Object var
      * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
-    function &mappingFor(&$var) {
-      if (!is('lang.Object', $var)) return FALSE;
+    public function &mappingFor(&$var) {
+      if (!is('lang.Generic', $var)) return FALSE;
       
       // Check the mapping-cache for an entry for this object's class
       if (isset($this->_classMapping[$var->getClassName()])) {
@@ -167,9 +167,9 @@
      * @return  &remote.protocol.SerializerMapping mapping
      * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
-    function &mapping($token, &$mapping) {
+    public function &mapping($token, &$mapping) {
       if (NULL !== $mapping) {
-        if (!is('SerializerMapping', $mapping)) return throw(new IllegalArgumentException(
+        if (!is('SerializerMapping', $mapping)) throw(new IllegalArgumentException(
           'Given argument is not a SerializerMapping ('.xp::typeOf($mapping).')'
         ));
 
@@ -188,7 +188,7 @@
      * @param   string exception fully qualified class name
      * @return  string 
      */
-    function exceptionName($name, $exception= NULL) {
+    public function exceptionName($name, $exception= NULL) {
       if (NULL !== $exception) $this->exceptions[$name]= $exception;
       return $this->exceptions[$name];
     }
@@ -201,7 +201,7 @@
      * @param   string class fully qualified class name
      * @return  string fully qualified class name
      */
-    function packageMapping($name, $replace= NULL) {
+    public function packageMapping($name, $replace= NULL) {
       if (NULL !== $replace) $this->packages[$name]= $replace;
       return strtr($name, $this->packages);
     }
@@ -216,7 +216,7 @@
      * @throws  lang.ClassNotFoundException if a class cannot be found
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    function &valueOf(&$serialized, $context= array()) {
+    public function &valueOf(&$serialized, $context= array()) {
       static $types= NULL;
       
       if (!$types) $types= array(
@@ -275,7 +275,7 @@
         }
 
         case 'E': {     // generic exceptions
-          $instance= &new ExceptionReference($serialized->consumeString());
+          $instance= new ExceptionReference($serialized->consumeString());
           $size= $serialized->consumeSize();
           $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
@@ -288,10 +288,10 @@
         
         case 'O': {     // generic objects
           $name= $serialized->consumeString();
-          try(); {
+          try {
             $class= &XPClass::forName($this->packageMapping($name));
-          } if (catch('ClassNotFoundException', $e)) {
-            $instance= &new UnknownRemoteObject($name);
+          } catch (ClassNotFoundException $e) {
+            $instance= new UnknownRemoteObject($name);
             $size= $serialized->consumeSize();
             $serialized->offset++;  // Opening "{"
             for ($i= 0; $i < $size; $i++) {
@@ -317,19 +317,19 @@
         case 'c': {     // builtin classes
           $type= $serialized->consumeWord();
           if (!isset($types[$type])) {
-            return throw(new FormatException('Unknown type token "'.$type.'"'));
+            throw(new FormatException('Unknown type token "'.$type.'"'));
           }
           return $types[$type];
         }
         
         case 'C': {     // generic classes
-          $value= &new ClassReference($this->packageMapping($serialized->consumeString()));
+          $value= new ClassReference($this->packageMapping($serialized->consumeString()));
           return $value;
         }
 
         default: {      // default, check if we have a mapping
           if (!($mapping= &$this->mapping($token, $m= NULL))) {
-            return throw(new FormatException(
+            throw(new FormatException(
               'Cannot deserialize unknown type "'.$token.'" ('.$serialized->toString().')'
             ));
           }

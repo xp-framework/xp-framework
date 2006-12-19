@@ -67,7 +67,7 @@
    * @purpose  Provide a basic e-mail message (single-part)
    */
   class Message extends Object {
-    var 
+    public 
       $headers          = array(),
       $body             = '',
       $to               = array(),
@@ -88,7 +88,7 @@
       $message_id       = '',
       $returnpath       = '';
       
-    var
+    public
       $_headerlookup    = NULL;
       
     /**
@@ -97,9 +97,9 @@
      * @access  public
      * @param   int uid default -1
      */
-    function __construct($uid= -1) {
+    public function __construct($uid= -1) {
       $this->uid= $uid;
-      $this->date= &new Date(time());
+      $this->date= new Date(time());
       
     }
     
@@ -109,7 +109,7 @@
      * @access  public
      * @param   string mimeversion
      */
-    function setMimeVersion($mimeversion) {
+    public function setMimeVersion($mimeversion) {
       $this->mimever= $mimeversion;
     }
 
@@ -119,7 +119,7 @@
      * @access  public
      * @return  string
      */
-    function getMimeVersion() {
+    public function getMimeVersion() {
       return $this->mimever;
     }
 
@@ -129,7 +129,7 @@
      * @access  public
      * @param   string returnpath
      */
-    function setReturnPath($returnpath) {
+    public function setReturnPath($returnpath) {
       $this->returnpath= $returnpath;
     }
 
@@ -139,7 +139,7 @@
      * @access  public
      * @return  string
      */
-    function getReturnPath() {
+    public function getReturnPath() {
       return $this->returnpath;
     }
 
@@ -211,12 +211,12 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= '';
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
         if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, is_a($vars[$var], 'Object') 
+        $s.= sprintf("  [%-12s] %s\n", $var, is('Generic', $vars[$var]) 
           ? $vars[$var]->toString() 
           : str_replace("\n", "\n  ", var_export($vars[$var], 1))
         );
@@ -230,7 +230,7 @@
      * @access  public
      * @param   int size
      */
-    function setSize($size) {
+    public function setSize($size) {
       $this->size= $size;
     }
     
@@ -240,7 +240,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       return $this->size;
     }
 
@@ -250,7 +250,7 @@
      * @access  public
      * @param   string message_id
      */
-    function setMessageId($message_id) {
+    public function setMessageId($message_id) {
       $this->message_id= $message_id;
     }
     
@@ -260,7 +260,7 @@
      * @access  public
      * @return  string
      */
-    function getMessageId() {
+    public function getMessageId() {
       return $this->message_id;
     }
     
@@ -270,8 +270,8 @@
      * @access  public
      * @param   mixed arg
      */
-    function setDate(&$arg) {
-      if (is_a($arg, 'Date')) $this->date= &$arg; else $this->date= &new Date($arg);
+    public function setDate(&$arg) {
+      if (is('Date', $arg)) $this->date= &$arg; else $this->date= new Date($arg);
     }
     
     /**
@@ -280,7 +280,7 @@
      * @access  public
      * @return  &util.Date
      */
-    function &getDate() {
+    public function &getDate() {
       return $this->date;
     }
   
@@ -291,7 +291,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress adr address to add
      */
-    function addRecipient($type, &$adr) {
+    public function addRecipient($type, &$adr) {
       $m= &$this->$type;
       $m[]= &$adr;
     }
@@ -303,7 +303,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    function addRecipients($type, &$adr) {
+    public function addRecipients($type, &$adr) {
       $this->$type= array_merge($this->$type, $adr);
     }
 
@@ -314,7 +314,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @return  &peer.mail.InternetAddress[] adr recipients of type
      */
-    function &getRecipients($type) {
+    public function &getRecipients($type) {
       return $this->$type;
     }
     
@@ -330,7 +330,7 @@
      * @param   string type one of the constants TO, CC, BCC
      * @return  &peer.mail.InternetAddress[] adr recipients of type
      */
-    function &getRecipient($type) {
+    public function &getRecipient($type) {
       static $ofs= array();
       
       if (!isset($ofs[$type])) $ofs[$type]= 0;
@@ -348,7 +348,7 @@
      * @access  public
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    function setFrom(&$adr) {
+    public function setFrom(&$adr) {
       $this->from= &$adr;
     }
 
@@ -358,7 +358,7 @@
      * @access  public
      * @return  &peer.mail.InternetAddress[] adr addresses to add
      */
-    function &getFrom() {
+    public function &getFrom() {
       return $this->from;
     }
     
@@ -371,7 +371,7 @@
      * @param   mixed add default FALSE
      * @return  bool TRUE if operation was successfull
      */
-    function _setHeader($header, $value, $add= FALSE) {
+    public function _setHeader($header, $value, $add= FALSE) {
       static $notallowed= array(HEADER_FROM, HEADER_TO, HEADER_CC, HEADER_BCC);
       
       if (in_array(ucfirst($header), $notallowed)) return FALSE;
@@ -396,8 +396,8 @@
      * @param   string value
      * @throws  lang.IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
      */
-    function setHeader($header, $value) {
-      if (FALSE === $this->_setHeader($header, $value)) return throw(
+    public function setHeader($header, $value) {
+      if (FALSE === $this->_setHeader($header, $value)) throw(
         new IllegalArgumentException('You cannot use this method to set '.$header)
       );
     }
@@ -411,7 +411,7 @@
      * @param   string header a header name to look for
      * @return  string value header value or NULL to indicate the header doesn't exist
      */
-    function getHeader($header) {
+    public function getHeader($header) {
       $header= strtolower($header);
       if (!isset($this->_headerlookup)) {
         $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
@@ -428,7 +428,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       if (
         (NULL === $this->folder) ||
         (NULL !== $this->body)
@@ -444,7 +444,7 @@
      * @access  public
      * @param   string body
      */
-    function setBody($body) {
+    public function setBody($body) {
       $this->body= $body;
     }
 
@@ -454,7 +454,7 @@
      * @access  public
      * @return  string
      */
-    function getSubject() {
+    public function getSubject() {
       return $this->subject;
     }
 
@@ -464,7 +464,7 @@
      * @access  public
      * @param   string subject
      */
-    function setSubject($subject) {
+    public function setSubject($subject) {
       $this->subject= $subject;
     }
 
@@ -474,7 +474,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {
+    public function getEncoding() {
       return $this->encoding;
     }
 
@@ -484,7 +484,7 @@
      * @access  public
      * @param   string encoding
      */
-    function setEncoding($encoding) {
+    public function setEncoding($encoding) {
       $this->encoding= $encoding;
     }
 
@@ -494,7 +494,7 @@
      * @access  public
      * @return  string
      */
-    function getCharset() {
+    public function getCharset() {
       return $this->charset;
     }
 
@@ -504,7 +504,7 @@
      * @access  public
      * @param   string charset
      */
-    function setCharset($charset) {
+    public function setCharset($charset) {
       $this->charset= $charset;
     }
 
@@ -514,7 +514,7 @@
      * @access  public
      * @return  string
      */
-    function getContenttype() {
+    public function getContenttype() {
       return $this->contenttype;
     }
 
@@ -524,7 +524,7 @@
      * @access  public
      * @param   string contenttype
      */
-    function setContenttype($contenttype) {
+    public function setContenttype($contenttype) {
       $this->contenttype= $contenttype;
     }
     
@@ -534,7 +534,7 @@
      * @access  public
      * @param   string str
      */
-    function setHeaderString($str) {
+    public function setHeaderString($str) {
       $this->subject= $this->contenttype= '';
       
       $t= strtok($str, "\n\r");
@@ -543,11 +543,11 @@
         
         switch (ucfirst($k)) {
           case HEADER_FROM:
-            try(); {
+            try {
               if ('' != trim($t)) {
                 $this->setFrom(InternetAddress::fromString($t));
               }
-            } if (catch('FormatException', $e)) {
+            } catch (FormatException $e) {
               $this->setFrom(new InternetAddress(array(NULL, NULL), $t));
                             
               // Fall through
@@ -557,12 +557,12 @@
           case HEADER_TO:
           case HEADER_CC:
           case HEADER_BCC:
-            try(); {
+            try {
               $k= strtolower($k);
               if ('' != trim($t)) {
                 $this->addRecipient($k, InternetAddress::fromString($t));
               }
-            } if (catch('FormatException', $e)) {
+            } catch (FormatException $e) {
               $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
               
               // Fall through
@@ -612,7 +612,7 @@
      * @access  private
      * @return  string header
      */
-    function _getContenttypeHeaderString() {
+    public function _getContenttypeHeaderString() {
       return $this->contenttype.(empty($this->charset) 
         ? '' 
         : ";\n\tcharset=\"".$this->charset.'"'
@@ -627,10 +627,10 @@
      * @param   &peer.mail.InternetAddress[] addrs
      * @return  string
      */
-    function _astr($t, &$addrs) {
+    public function _astr($t, &$addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
-        if (!is_a($addrs[$i], 'InternetAddress')) continue; // Ignore!
+        if (!is('InternetAddress', $addrs[$i])) continue; // Ignore!
         $l.= $addrs[$i]->toString($this->getCharset()).",\n\t";
       }
       return empty($l) ? '' : $t.': '.substr($l, 0, -3)."\n";
@@ -643,7 +643,7 @@
      * @param   string str
      * @return  string
      */
-    function _qstr($str) {
+    public function _qstr($str) {
       static $q;
 
       if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();
@@ -663,7 +663,7 @@
      * @access  public
      * @return  string headers
      */
-    function getHeaderString() {
+    public function getHeaderString() {
       static $priorities = array(
         MAIL_PRIORITY_LOW    => 'Low',
         MAIL_PRIORITY_NORMAL => 'Normal',

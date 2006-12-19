@@ -45,7 +45,7 @@
    * @see scriptlet.HttpScriptlet
    */
   class SoapRpcRouter extends AbstractRpcRouter {
-    var
+    public
       $mapping     = NULL;
 
     /**
@@ -54,9 +54,9 @@
      * @access  public
      * @param   string package
      */
-    function __construct($package) {
+    public function __construct($package) {
       parent::__construct($package);
-      $this->mapping= &new SOAPMapping();
+      $this->mapping= new SOAPMapping();
     }
     
     /**
@@ -65,7 +65,7 @@
      * @access  protected
      * @return  &webservices.soap.rpc.SoapRpcRequest
      */
-    function &_request() {
+    public function &_request() {
       return new SoapRpcRequest();
     }
 
@@ -75,7 +75,7 @@
      * @access  protected
      * @return  &webservices.soap.rpc.SoapRpcResponse
      */
-    function &_response() {
+    public function &_response() {
       return new SoapRpcResponse();
     }
     
@@ -85,7 +85,7 @@
      * @access  protected
      * @return  &webservices.soap.SOAPMessage
      */
-    function &_message() {
+    public function &_message() {
       return new SOAPMessage();
     }    
 
@@ -98,11 +98,11 @@
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */
-    function &callReflectHandler(&$msg) {
-      try(); {
+    public function &callReflectHandler(&$msg) {
+      try {
         $r= &parent::callReflectHandler($msg);
-      } if (catch('Throwable', $e)) {
-        return throw($e);   // catch/rethrow because of PHP4 limitations
+      } catch (Throwable $e) {
+        throw($e);   // catch/rethrow because of PHP4 limitations
       }
       return array(&$r);
     }   

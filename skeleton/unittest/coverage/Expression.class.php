@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('unittest.coverage.Fragment');
+
   /**
    * Represents an expression
    *
    * @purpose  Helper class
    */
-  class Expression extends Object {
-    var
+  class Expression extends Object implements Fragment {
+    public
       $code   = '',
       $start  = 0,
       $end    = 0;
@@ -23,7 +25,7 @@
      * @param   int start the first line
      * @param   int end the last line
      */
-    function __construct($code, $start, $end) {
+    public function __construct($code, $start, $end) {
       $this->code= $code;
       $this->start= $start;
       $this->end= $end;
@@ -36,7 +38,7 @@
      * @param   &lang.Object expr
      * @return  bool
      */
-    function equals(&$expr) {
+    public function equals(&$expr) {
       return (
         is('Expression', $expr) && 
         $this->code == $expr->code &&
@@ -51,9 +53,9 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'@({'.$this->code.'} at lines '.$this->start.' - '.$this->end.')';
     }
 
-  } implements(__FILE__, 'unittest.coverage.Fragment');
+  } 
 ?>

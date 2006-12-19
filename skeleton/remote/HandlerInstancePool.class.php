@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('remote.HandlerFactory', 'util.collections.HashTable', 'peer.URL');
+  uses(
+    'remote.HandlerFactory',
+    'util.collections.HashTable',
+    'peer.URL'
+  );
 
   /**
    * Pool of handler instances
@@ -13,7 +17,7 @@
    * @purpose  Pool
    */
   class HandlerInstancePool extends Object {
-    var
+    public
       $pool = NULL,
       $cat  = NULL;
 
@@ -22,8 +26,8 @@
      *
      * @access  protected
      */
-    function __construct() {
-      $this->pool= &new HashTable();
+    public function __construct() {
+      $this->pool= new HashTable();
     }
     
     /**
@@ -32,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'(size= '.$this->pool->size().")@{\n";
       foreach ($this->pool->keys() as $url) {
         $s.= '  '.$url->getURL().' => '.xp::stringOf($this->pool->get($url))."\n";
@@ -47,7 +51,7 @@
      * @access  public
      * @return  &remote.HandlerInstancePool
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance= NULL;
       
       if (!isset($instance)) $instance= new HandlerInstancePool();
@@ -62,7 +66,7 @@
      * @param   &remote.protocol.ProtocolHandler instance
      * @return  &remote.protocol.ProtocolHandler the pooled instance
      */
-    function &pool(&$url, &$instance) {
+    public function &pool(&$url, &$instance) {
       $this->pool->put($url, $instance);
       return $instance;
     }
@@ -75,16 +79,16 @@
      * @return  &remote.protocol.ProtocolHandler
      * @throws  remote.protocol.UnknownProtocolException
      */
-    function &acquire($key, $initialize= FALSE) {
-      $url= &new URL($key);
+    public function &acquire($key, $initialize= FALSE) {
+      $url= new URL($key);
       if ($this->pool->containsKey($url)) {
         $instance= &$this->pool->get($url);
       } else {
         sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
-        try(); {
+        try {
           $class= &HandlerFactory::handlerFor($type);
-        } if (catch('Exception', $e)) {
-          return throw($e);
+        } catch (Exception $e) {
+          throw($e);
         }
 
         $instance= &$this->pool($url, $class->newInstance($option));

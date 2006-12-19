@@ -22,7 +22,7 @@
    * @purpose  Part of DataSet model
    */
   class Peer extends Object {
-    var
+    public
       $identifier = '',
       $table      = '',
       $connection = '',
@@ -37,7 +37,7 @@
      * @access  protected
      * @param   string identifier
      */
-    function __construct($identifier) {
+    public function __construct($identifier) {
       $this->identifier= $identifier;
     }
 
@@ -47,7 +47,7 @@
      * @access  public
      * @param   string identifier
      */
-    function setIdentifier($identifier) {
+    public function setIdentifier($identifier) {
       $this->identifier= $identifier;
     }
 
@@ -57,7 +57,7 @@
      * @access  public
      * @param   string table
      */
-    function setTable($table) {
+    public function setTable($table) {
       $this->table= $table;
     }
 
@@ -67,7 +67,7 @@
      * @access  public
      * @param   string connection
      */
-    function setConnection($connection) {
+    public function setConnection($connection) {
       $this->connection= $connection;
     }
 
@@ -77,7 +77,7 @@
      * @access  public
      * @param   string identity
      */
-    function setIdentity($identity) {
+    public function setIdentity($identity) {
       $this->identity= $identity;
     }
 
@@ -87,7 +87,7 @@
      * @access  public
      * @param   string sequence
      */
-    function setSequence($sequence) {
+    public function setSequence($sequence) {
       $this->sequence= $sequence;
     }
 
@@ -97,7 +97,7 @@
      * @access  public
      * @param   mixed[] types
      */
-    function setTypes($types) {
+    public function setTypes($types) {
       $this->types= $types;
     }
 
@@ -107,7 +107,7 @@
      * @access  public
      * @param   mixed[] primary
      */
-    function setPrimary($primary) {
+    public function setPrimary($primary) {
       $this->primary= $primary;
     }
 
@@ -118,11 +118,11 @@
      * @param   string identifier
      * @return  &rdbms.Peer
      */
-    function &getInstance($identifier) {
+    public function &getInstance($identifier) {
       static $instance= array();
       
       if (!isset($instance[$identifier])) {
-        $instance[$identifier]= &new Peer($identifier);
+        $instance[$identifier]= new Peer($identifier);
       }
       return $instance[$identifier];
     }
@@ -134,7 +134,7 @@
      * @param   string fully qualified class name
      * @return  &rdbms.Peer
      */
-    function &forName($classname) {
+    public function &forName($classname) {
       return Peer::getInstance(xp::reflect($classname));
     }
 
@@ -145,7 +145,7 @@
      * @param   &lang.Object instance
      * @return  &rdbms.Peer
      */
-    function &forInstance(&$instance) {
+    public function &forInstance(&$instance) {
       return Peer::getInstance(get_class($instance));
     }
     
@@ -156,7 +156,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function &begin(&$transaction) {
+    public function &begin(&$transaction) {
       $cm= &ConnectionManager::getInstance();
       $db= &$cm->getByHost($this->connection, 0);
 
@@ -169,7 +169,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s@(%s accessing %s on connection "%s"){%s}', 
         $this->getClassName(),
@@ -190,18 +190,18 @@
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function doSelect(&$criteria, $max= 0) {
+    public function doSelect(&$criteria, $max= 0) {
       $cm= &ConnectionManager::getInstance();  
-      try(); {
+      try {
         $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
-        $r[]= &new $this->identifier($record);
+        $r[]= new $this->identifier($record);
       }
       return $r;
     }
@@ -214,9 +214,9 @@
      * @return  &rdbms.DataSet
      * @throws  lang.IllegalArgumentException
      */    
-    function &objectFor($record) {
+    public function &objectFor($record) {
       if (array_keys($this->types) != array_keys($record)) {
-        return throw(new IllegalArgumentException(
+        throw(new IllegalArgumentException(
           'Record not compatible with '.$this->identifier.' class'
         ));
       }
@@ -231,12 +231,12 @@
      * @return  &rdbms.ResultIterator
      * @see     xp://rdbms.ResultIterator
      */
-    function &iteratorFor(&$criteria) {
+    public function &iteratorFor(&$criteria) {
       $cm= &ConnectionManager::getInstance();  
-      try(); {
+      try {
         $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       return new ResultIterator($q, $this->identifier);
@@ -254,9 +254,9 @@
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function doJoin(&$peer, &$join, &$criteria, $max= 0) {
+    public function doJoin(&$peer, &$join, &$criteria, $max= 0) {
       $cm= &ConnectionManager::getInstance();  
-      try(); {
+      try {
         $db= &$cm->getByHost($this->connection, 0);
         
         $columns= $map= $qualified= array();
@@ -281,16 +281,16 @@
           $join->toSQL($db, $map),
           $where ? ' and '.substr($where, 7) : ''
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
       
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
         
-        $o= &new $this->identifier(array_slice($record, 0, sizeof($this->types)));
-        $o->{$peer->identifier}= &new $peer->identifier(array_slice($record, sizeof($this->types)));
+        $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
+        $o->{$peer->identifier}= new $peer->identifier(array_slice($record, sizeof($this->types)));
         $r[]= &$o;
       }
       return $r;
@@ -305,10 +305,10 @@
      * @return  mixed identity value or NULL if not applicable
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function doInsert($values) {
+    public function doInsert($values) {
       $id= NULL;
       $cm= &ConnectionManager::getInstance();
-      try(); {
+      try {
         $db= &$cm->getByHost($this->connection, 0);
 
         // Build the insert command
@@ -327,8 +327,8 @@
           // Fetch identity value if applicable.
           $this->identity && $id= $db->identity($this->sequence);
         }
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
 
       return $id;
@@ -344,9 +344,9 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */
-    function doUpdate($values, &$criteria) {
+    public function doUpdate($values, &$criteria) {
       $cm= &ConnectionManager::getInstance();  
-      try(); {
+      try {
         $db= &$cm->getByHost($this->connection, 0);
 
         // Build the update command
@@ -362,8 +362,8 @@
           substr($sql, 0, -2),
           $criteria->toSQL($db, $this->types)
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
 
       return $affected;
@@ -378,9 +378,9 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    function doDelete(&$criteria) {
+    public function doDelete(&$criteria) {
       $cm= &ConnectionManager::getInstance();  
-      try(); {
+      try {
         $db= &$cm->getByHost($this->connection, 0);
 
         // Send it
@@ -389,8 +389,8 @@
           $this->table,
           $criteria->toSQL($db, $this->types)
         );
-      } if (catch('SQLException', $e)) {
-        return throw($e);
+      } catch (SQLException $e) {
+        throw($e);
       }
 
       return $affected;

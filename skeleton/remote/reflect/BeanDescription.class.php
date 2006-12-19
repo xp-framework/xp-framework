@@ -16,7 +16,7 @@
    * @purpose  Reflection
    */
   class BeanDescription extends Object {
-    var 
+    public 
       $jndiName   = '',
       $interfaces = NULL;
 
@@ -26,7 +26,7 @@
      * @access  public
      * @param   string jndiName
      */
-    function setJndiName($jndiName) {
+    public function setJndiName($jndiName) {
       $this->jndiName= $jndiName;
     }
 
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function getJndiName() {
+    public function getJndiName() {
       return $this->jndiName;
     }
 
@@ -46,7 +46,7 @@
      * @access  public
      * @param   lang.ArrayList<remote.reflect.InterfaceDescription> interfaces
      */
-    function setInterfaces(&$interfaces) {
+    public function setInterfaces(&$interfaces) {
       $this->interfaces= &$interfaces;
     }
 
@@ -56,7 +56,7 @@
      * @access  public
      * @return  lang.ArrayList<remote.reflect.InterfaceDescription>
      */
-    function &getInterfaces() {
+    public function &getInterfaces() {
       return $this->interfaces;
     }
     
@@ -66,8 +66,8 @@
      * @access  public
      * @return  remote.ClassReference[]
      */
-    function classSet() {
-      $set= &new HashSet();
+    public function classSet() {
+      $set= new HashSet();
       foreach (array_keys($this->interfaces->values) as $kind) {
         $set->addAll($this->interfaces->values[$kind]->classSet());
       }
@@ -80,7 +80,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s@(jndi= %s) {\n".
         "  [Home  ]: %s\n".

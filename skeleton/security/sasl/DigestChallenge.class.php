@@ -25,7 +25,7 @@
    * @purpose  Digest challenge wrapper
    */
   class DigestChallenge extends Object {
-    var
+    public
       $realm        = '',
       $maxbuf       = 65536,
       $nonce        = '',
@@ -53,8 +53,8 @@
      * @return  &security.sasl.DigestChallenge
      * @throws  lang.FormatException
      */
-    function &fromString($s) {
-      with ($challenge= &new DigestChallenge()); {
+    public static function &fromString($s) {
+      with ($challenge= new DigestChallenge()); {
         $s.= ',';
         while ($p= strpos($s, '=')) {
           $key= substr($s, 0, $p);
@@ -103,7 +103,7 @@
               break;
             
             default:
-              return throw(new FormatException('Unrecognized key "'.$key.'"'));
+              throw(new FormatException('Unrecognized key "'.$key.'"'));
           }
           $s= substr($s, $t+ 1);
         }
@@ -122,12 +122,12 @@
      * @return  &security.sasl.DigestResponse
      * @throws  lang.FormatException
      */
-    function &responseFor($qop, $user, $pass, $authzid= NULL) {
+    public function &responseFor($qop, $user, $pass, $authzid= NULL) {
       if (!$this->hasQop($qop)) {
-        return throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
+        throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
       }
       
-      with ($r= &new DigestResponse(
+      with ($r= new DigestResponse(
         $this->getRealm(), 
         $this->getNonce(), 
         $qop
@@ -148,7 +148,7 @@
      * @access  public
      * @param   int maxbuf
      */
-    function setMaxbuf($maxbuf) {
+    public function setMaxbuf($maxbuf) {
       $this->maxbuf= $maxbuf;
     }
 
@@ -158,7 +158,7 @@
      * @access  public
      * @return  int
      */
-    function getMaxbuf() {
+    public function getMaxbuf() {
       return $this->maxbuf;
     }
     
@@ -168,7 +168,7 @@
      * @access  public
      * @param   string realm
      */
-    function setRealm($realm) {
+    public function setRealm($realm) {
       $this->realm= $realm;
     }
 
@@ -193,7 +193,7 @@
      * @access  public
      * @return  string
      */
-    function getRealm() {
+    public function getRealm() {
       return $this->realm;
     }
 
@@ -203,7 +203,7 @@
      * @access  public
      * @param   string domain
      */
-    function setDomain($domain) {
+    public function setDomain($domain) {
       $this->domain= $domain;
     }
 
@@ -213,7 +213,7 @@
      * @access  public
      * @return  string
      */
-    function getDomain() {
+    public function getDomain() {
       return $this->domain;
     }
 
@@ -223,7 +223,7 @@
      * @access  public
      * @param   string nonce
      */
-    function setNonce($nonce) {
+    public function setNonce($nonce) {
       $this->nonce= $nonce;
     }
 
@@ -233,7 +233,7 @@
      * @access  public
      * @return  string
      */
-    function getNonce() {
+    public function getNonce() {
       return $this->nonce;
     }
 
@@ -243,7 +243,7 @@
      * @access  public
      * @param   mixed[] qop
      */
-    function setQop($qop) {
+    public function setQop($qop) {
       $this->qop= $qop;
     }
 
@@ -256,7 +256,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getQop() {
+    public function getQop() {
       return $this->qop;
     }
     
@@ -267,7 +267,7 @@
      * @param   string qop one of the DC_QOP_* constants
      * @return  bool
      */
-    function hasQop($qop) {
+    public function hasQop($qop) {
       return in_array($qop, $this->qop);
     }
 
@@ -277,7 +277,7 @@
      * @access  public
      * @param   mixed[] cipher
      */
-    function setCipher($cipher) {
+    public function setCipher($cipher) {
       $this->cipher= $cipher;
     }
 
@@ -287,7 +287,7 @@
      * @access  public
      * @return  mixed[]
      */
-    function getCipher() {
+    public function getCipher() {
       return $this->cipher;
     }
 
@@ -298,7 +298,7 @@
      * @param   string cipher one of the DC_CPIHER_* constants
      * @return  bool
      */
-    function hasCipher($cipher) {
+    public function hasCipher($cipher) {
       return in_array($cipher, $this->cipher);
     }
 
@@ -308,7 +308,7 @@
      * @access  public
      * @param   string charset
      */
-    function setCharset($charset) {
+    public function setCharset($charset) {
       $this->charset= $charset;
     }
 
@@ -326,7 +326,7 @@
      * @access  public
      * @return  string
      */
-    function getCharset() {
+    public function getCharset() {
       return $this->charset;
     }
 
@@ -336,7 +336,7 @@
      * @access  public
      * @param   string algorithm
      */
-    function setAlgorithm($algorithm) {
+    public function setAlgorithm($algorithm) {
       $this->algorithm= $algorithm;
     }
 
@@ -346,7 +346,7 @@
      * @access  public
      * @return  string
      */
-    function getAlgorithm() {
+    public function getAlgorithm() {
       return $this->algorithm;
     }
 
@@ -356,7 +356,7 @@
      * @access  public
      * @param   bool stale
      */
-    function setStale($stale) {
+    public function setStale($stale) {
       $this->stale= $stale;
     }
 
@@ -366,7 +366,7 @@
      * @access  public
      * @return  bool
      */
-    function getStale() {
+    public function getStale() {
       return $this->stale;
     }
 
@@ -376,7 +376,7 @@
      * @access  public
      * @param   string opaque
      */
-    function setOpaque($opaque) {
+    public function setOpaque($opaque) {
       $this->opaque= $opaque;
     }
 
@@ -386,7 +386,7 @@
      * @access  public
      * @return  string
      */
-    function getOpaque() {
+    public function getOpaque() {
       return $this->opaque;
     }
   }

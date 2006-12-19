@@ -5,7 +5,7 @@
  */
  
   uses(
-    'peer.mail.Message', 
+    'peer.mail.Message',
     'peer.mail.MimePart',
     'peer.mail.MultiPart'
   );
@@ -80,12 +80,12 @@
    * @purpose  MimeMessage class
    */
   class MimeMessage extends Message {
-    var
+    public
       $parts     = array(),
       $encoding  = '',
       $boundary  = '';
       
-    var
+    public
       $_ofs      = 0;
 
     /**
@@ -96,7 +96,7 @@
      *
      * @access  public
      */
-    function __construct($uid= -1) {
+    public function __construct($uid= -1) {
       $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
       $this->headers[HEADER_MIMEVER]= $this->mimever;
       parent::__construct($uid);
@@ -110,9 +110,9 @@
      * @return  &peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    function &addPart(&$part) {
-      if (!is_a($part, 'MimePart')) {
-        return throw(new IllegalArgumentException(
+    public function &addPart(&$part) {
+      if (!is('MimePart', $part)) {
+        throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
       }
@@ -127,7 +127,7 @@
      * @access  public
      * @param   string b the new boundary
      */
-    function setBoundary($b) {
+    public function setBoundary($b) {
       $this->boundary= $b;
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    function getBoundary() {
+    public function getBoundary() {
       return $this->boundary;
     }
     
@@ -147,10 +147,10 @@
      * @access  public
      * @return  string headers
      */
-    function getHeaderString() {
+    public function getHeaderString() {
       if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
         $this->setContenttype($this->parts[0]->getContenttype());
-        if (is_a($this->parts[0], 'MultiPart'))
+        if (is('MultiPart', $this->parts[0]))
           $this->setBoundary($this->parts[0]->getBoundary());
 
         $this->charset= $this->parts[0]->charset;
@@ -167,7 +167,7 @@
      * @param   string val
      * @return  mixed value or FALSE if not found
      */
-    function _lookupattr($parameters, $val) {
+    public function _lookupattr($parameters, $val) {
       if (!is_array($parameters)) return FALSE;
       
       for ($i= 0, $s= sizeof($parameters); $i < $s; $i++) {
@@ -187,7 +187,7 @@
      * @param   &array p structure parts as retrieved from cclient lib
      * @param   string id default '' part id
      */
-    function _recurseparts(&$parts, &$p, $id= '') {
+    public function _recurseparts(&$parts, &$p, $id= '') {
       static $types= array(
         'text',
         'multipart',
@@ -203,14 +203,14 @@
         $pid= sprintf('%s%d', $id, $i+ 1);
         
         if (empty($p[$i]->parts)) {
-          $part= &new MimePart(
+          $part= new MimePart(
             NULL,
             NULL,
             $this->_lookupattr(@$p[$i]->parameters, 'CHARSET'),
             $this->_lookupattr(@$p[$i]->dparameters, 'NAME')
           );
         } else {
-          $part= &new MultiPart();
+          $part= new MultiPart();
         }
         $part->setContentType($types[$p[$i]->type].'/'.strtolower($p[$i]->subtype));
         $part->setDisposition($p[$i]->ifdisposition 
@@ -254,7 +254,7 @@
      * @param   int id default -1
      * @return  &peer.mail.MimePart part
      */
-    function &getPart($id= -1) {
+    public function &getPart($id= -1) {
       $this->_parts();
       
       // Iterative use
@@ -275,7 +275,7 @@
      * @access  private
      * @return  bool got parts
      */    
-    function _parts() {
+    public function _parts() {
       if ((NULL === $this->folder) || (!empty($this->parts))) return FALSE;
       
       $struct= &$this->folder->getMessageStruct($this->uid);
@@ -294,7 +294,7 @@
      * @access  private
      * @return  string header
      */
-    function _getContenttypeHeaderString() {
+    public function _getContenttypeHeaderString() {
       return $this->contenttype.(empty ($this->boundary)
         ? ''
         : '; boundary="'.$this->getBoundary().'"'
@@ -311,7 +311,7 @@
      * @access  public
      * @return  string
      */
-    function getBody() {
+    public function getBody() {
       $this->_parts();
       $body= "This is a multi-part message in MIME format.\n\n";
       

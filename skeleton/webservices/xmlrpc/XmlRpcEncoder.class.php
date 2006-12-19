@@ -22,7 +22,7 @@
      * @param   mixed data
      * @return  &xml.Node
      */
-    function &encode($data) {
+    public function &encode($data) {
       return $this->_marshall($data);
     }
 
@@ -42,10 +42,10 @@
      * @param   mixed data
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
-    function &_marshall($data) {
-      $value= &new Node('value');
+    public function &_marshall($data) {
+      $value= new Node('value');
       
-      if (is_a($data, 'Object')) {
+      if (is('Generic', $data)) {
         if (is('util.Date', $data)) {
           return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
         }
@@ -85,7 +85,7 @@
           break;
         
         default:
-          return throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
+          throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
           break;
       }
       

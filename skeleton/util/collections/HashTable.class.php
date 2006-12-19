@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('util.collections.Map');
+
   /**
    * Hash table consisting of non-null objects as keys and values
    *
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
-  class HashTable extends Object {
-    var
+  class HashTable extends Object implements Map {
+    public
       $_buckets = array(),
       $_hash    = 0;
 
@@ -27,7 +29,7 @@
      * @param   &lang.Object value
      * @return  &lang.Object the previous value associated with the key
      */
-    function &put(&$key, &$value) {
+    public function &put(&$key, &$value) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -48,7 +50,7 @@
      * @param   &lang.Object key
      * @return  &lang.Object the value associated with the key
      */
-    function &get(&$key) {
+    public function &get(&$key) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
@@ -64,7 +66,7 @@
      * @param   &lang.Object key
      * @return  &lang.Object the previous value associated with the key
      */
-    function &remove(&$key) {
+    public function &remove(&$key) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -82,7 +84,7 @@
      *
      * @access  public
      */
-    function clear() {
+    public function clear() {
       $this->_buckets= array();
       $this->_hash= 0;
     }
@@ -92,7 +94,7 @@
      *
      * @access  public
      */
-    function size() {
+    public function size() {
       return sizeof($this->_buckets);
     }
 
@@ -101,7 +103,7 @@
      *
      * @access  public
      */
-    function isEmpty() {
+    public function isEmpty() {
       return empty($this->_buckets);
     }
     
@@ -112,7 +114,7 @@
      * @param   &lang.Object key
      * @return  bool
      */
-    function containsKey(&$key) {
+    public function containsKey(&$key) {
       return isset($this->_buckets[$key->hashCode()]);
     }
 
@@ -123,7 +125,7 @@
      * @param   &lang.Object value
      * @return  bool
      */
-    function containsValue(&$value) {
+    public function containsValue(&$value) {
       foreach (array_keys($this->_buckets) as $key) {
         if ($this->_buckets[$key][1]->equals($value)) return TRUE;
       }
@@ -136,7 +138,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->_hash;
     }
     
@@ -147,7 +149,7 @@
      * @param   &lang.Object cmp
      * @return  bool
      */
-    function equals(&$cmp) {
+    public function equals(&$cmp) {
       return (
         is('util.collections.Map', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())
@@ -160,7 +162,7 @@
      * @access  public
      * @return  &lang.Object[]
      */
-    function keys() {
+    public function keys() {
       $keys= array();
       foreach (array_keys($this->_buckets) as $key) {
         $keys[]= &$this->_buckets[$key][0];
@@ -174,7 +176,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'['.sizeof($this->_buckets).'] {';
       if (0 == sizeof($this->_buckets)) return $s.' }';
 
@@ -185,5 +187,5 @@
       return substr($s, 0, -2)."\n}";
     }
 
-  } implements(__FILE__, 'util.collections.Map');
+  } 
 ?>

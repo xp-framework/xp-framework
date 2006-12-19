@@ -15,8 +15,8 @@
    * @see       http://json-rpc.org/wiki/specification
    * @purpose   Contains the Json message
    */
-  class JsonMessage extends Object {
-    var
+  class JsonMessage extends Object implements AbstractRpcMessage {
+    public
       $method   = '',
       $id       = '',
       $encoding = 'iso-8859-1',
@@ -31,7 +31,7 @@
      * @param   string string
      * @return  &webservices.json.rpc.JsonMessage
      */
-    function &fromString($string) { }
+    public static function &fromString($string) { }
     
     /**
      * Create message 
@@ -40,7 +40,7 @@
      * @access  public
      * @param   webservices.json.rpc.JsonMessage msg
      */
-    function create() { }
+    public function create() { }
     
     /**
      * Retrieve content type for request
@@ -48,7 +48,7 @@
      * @access  public
      * @return  string
      */
-    function getContentType() {
+    public function getContentType() {
       return 'application/json';
     }    
 
@@ -58,7 +58,7 @@
      * @access  public
      * @param   string method
      */
-    function setMethod($method) {
+    public function setMethod($method) {
       $this->method= $method;
     }
 
@@ -68,7 +68,7 @@
      * @access  public
      * @return  string
      */
-    function getMethod() {
+    public function getMethod() {
       return $this->method;
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      * @param   string encoding
      */
-    function setEncoding($encoding) {
+    public function setEncoding($encoding) {
       $this->encoding= $encoding;
     }
 
@@ -88,7 +88,7 @@
      * @access  public
      * @return  string
      */
-    function getEncoding() {
+    public function getEncoding() {
       return $this->encoding;
     }
 
@@ -98,7 +98,7 @@
      * @access  public
      * @param   &lang.Object data
      */
-    function setData($data) { }
+    public function setData($data) { }
 
     /**
      * Get Data
@@ -106,7 +106,7 @@
      * @access  public
      * @return  &lang.Object
      */
-    function &getData() {
+    public function &getData() {
       return $this->data;
     }
     
@@ -116,7 +116,7 @@
      * @access  public
      * @return  string
      */
-    function serializeData() {
+    public function serializeData() {
       $decoder= &JsonFactory::create();
       return $decoder->encode($this->data);
     }
@@ -127,7 +127,7 @@
      * @access  public
      * @param   string class
      */
-    function setHandlerClass($class) {
+    public function setHandlerClass($class) {
       $this->class= $class;
     }
 
@@ -137,7 +137,7 @@
      * @access  public
      * @return  string
      */
-    function getHandlerClass() {
+    public function getHandlerClass() {
       return $this->class;
     }
     
@@ -148,7 +148,7 @@
      * @param   string faultCode
      * @param   string faultString
      */
-    function setFault($faultCode, $faultString) {
+    public function setFault($faultCode, $faultString) {
       $this->data= array(
         'result'  => FALSE,
         'error'   => array(
@@ -165,7 +165,7 @@
      * @access  public
      * @return  &scriptlet.rpc.RpcFault
      */
-    function &getFault() {
+    public function &getFault() {
       if (empty($this->data['error'])) return NULL;
       return new RpcFault(
         $this->data['error']['faultCode'],
@@ -179,7 +179,7 @@
      * @access  public
      * @param   string id
      */
-    function setId($id) {
+    public function setId($id) {
       $this->id= $id;
     }
 
@@ -189,8 +189,8 @@
      * @access  public
      * @return  string
      */
-    function getId() {
+    public function getId() {
       return $this->id;
     }
-  } implements(__FILE__, 'scriptlet.rpc.AbstractRpcMessage');
+  } 
 ?>

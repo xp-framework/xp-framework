@@ -13,7 +13,7 @@
    * @see      xp://peer.ftp.server.storage.StorageEntry
    * @purpose  Storage
    */
-  class StorageCollection extends StorageEntry {
+  interface StorageCollection extends StorageEntry {
 
     /**
      * Retrieves a list of elements
@@ -21,7 +21,7 @@
      * @access  public
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
-    function &elements() { }
+    public function &elements();
   
   }
 ?>

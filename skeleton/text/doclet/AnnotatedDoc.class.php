@@ -14,10 +14,10 @@
    * @purpose  Base class
    */
   class AnnotatedDoc extends Doc {
-    var
+    public
       $annotations= NULL;
     
-    var
+    public
       $_parsed    = NULL;
       
     /**
@@ -26,7 +26,7 @@
      * @access  protected
      * @throws  lang.FormatException in case the annotations cannot be parsed
      */    
-    function parse() {
+    public function parse() {
       if (is_array($this->_parsed)) return;   // Short-cuircuit: We've already parsed it
       
       $this->_parsed= array();
@@ -38,11 +38,11 @@
         trim($this->annotations, "[]# \t\n\r").','
       );
       if (!is_array($hash= eval('return array('.$expr.');'))) {
-        return throw(new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')'));
+        throw(new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')'));
       }
       
       foreach ($hash as $name => $value) {
-        $this->_parsed[$name]= &new AnnotationDoc($name, $value);
+        $this->_parsed[$name]= new AnnotationDoc($name, $value);
       }
     }
      
@@ -52,7 +52,7 @@
      * @access  public
      * @return  array
      */ 
-    function annotations() {
+    public function annotations() {
       $this->parse();
       return array_values($this->_parsed);
     }

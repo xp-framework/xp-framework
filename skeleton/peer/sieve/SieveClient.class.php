@@ -5,10 +5,11 @@
  */
 
   uses(
-    'peer.Socket', 
-    'peer.sieve.SieveScript', 
+    'peer.Socket',
+    'peer.sieve.SieveScript',
     'security.checksum.HMAC_MD5',
-    'security.sasl.DigestChallenge'
+    'security.sasl.DigestChallenge',
+    'util.log.Traceable'
   );
 
   // Authentication methods
@@ -64,11 +65,11 @@
    * @see      http://www.cyrusoft.com/sieve/
    * @purpose  Sieve Implementation
    */
-  class SieveClient extends Object {
-    var
+  class SieveClient extends Object implements Traceable {
+    public
       $cat      = NULL;
 
-    var
+    public
       $_sock    = NULL,
       $_sinfo   = array();
 
@@ -79,8 +80,8 @@
      * @param   string host
      * @param   int port default 2000
      */  
-    function __construct($host, $port= 2000) {
-      $this->_sock= &new Socket($host, $port);
+    public function __construct($host, $port= 2000) {
+      $this->_sock= new Socket($host, $port);
     }
   
     /**
@@ -91,11 +92,11 @@
      * @throws  io.IOException in case connecting failed
      * @throws  lang.FormatException in case the response cannot be parsed
      */  
-    function connect() {
-      try(); {
+    public function connect() {
+      try {
         $this->_sock->connect();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       // Read the banner message. Example:
@@ -127,12 +128,12 @@
               break;
 
             default:
-              return throw(new FormatException('Cannot parse banner message line >'.$line.'<'));
+              throw(new FormatException('Cannot parse banner message line >'.$line.'<'));
           }
           continue;
         }
 
-        return throw(new FormatException('Unexpected response line >'.$line.'<'));
+        throw(new FormatException('Unexpected response line >'.$line.'<'));
       } while (1);
       
       $this->cat && $this->cat->debug('Server information:', $this->_sinfo);
@@ -147,7 +148,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    function _sendcmd() {
+    public function _sendcmd() {
       $a= func_get_args();
       $cmd= vsprintf(array_shift($a), $a);
       $this->cat && $this->cat->debug('>>>', $cmd);
@@ -167,13 +168,13 @@
      * @throws  lang.FormatException in case "NO" occurs
      * @throws  peer.SocketException in case "BYE" occurs
      */
-    function _response($discard= FALSE, $error= TRUE) {
+    public function _response($discard= FALSE, $error= TRUE) {
       $lines= array();
       do {
-        try(); {
+        try {
           $line= $this->_sock->readLine();
-        } if (catch('IOException', $e)) {
-          return throw ($e);
+        } catch (IOException $e) {
+          throw ($e);
         }
         
         $this->cat && $this->cat->debug('<<<', $line);
@@ -182,9 +183,9 @@
           break;
         } else if ('NO' == substr($line, 0, 2)) {
           if (!$error) return FALSE;
-          return throw(new FormatException(substr($line, 3)));
+          throw(new FormatException(substr($line, 3)));
         } else if ('BYE' == substr($line, 0, 3)) {
-          return throw(new SocketException(substr($line, 4)));
+          throw(new SocketException(substr($line, 4)));
         } else if (!$discard) {
           $lines[]= $line;
         }
@@ -199,7 +200,7 @@
      * @access  public
      * @return  string
      */
-    function getImplementation() {
+    public function getImplementation() {
       return $this->_sinfo['IMPLEMENTATION'];
     }
 
@@ -210,7 +211,7 @@
      * @access  public
      * @return  string[] 
      */
-    function getSupportedModules() {
+    public function getSupportedModules() {
       return $this->_sinfo['SIEVE'];
     }
 
@@ -221,7 +222,7 @@
      * @param   string method one of the SIEVE_MOD_* constants
      * @return  bool
      */
-    function supportsModule($module) {
+    public function supportsModule($module) {
       return in_array($module, $this->_sinfo['SIEVE']);
     }
     
@@ -233,7 +234,7 @@
      * @access  public
      * @return  string[] 
      */
-    function getAuthenticationMethods() {
+    public function getAuthenticationMethods() {
       return $this->_sinfo['SASL'];
     }
 
@@ -244,7 +245,7 @@
      * @param   string method one of the SIEVE_SASL_* constants
      * @return  bool
      */
-    function hasAuthenticationMethod($method) {
+    public function hasAuthenticationMethod($method) {
       return in_array($method, $this->_sinfo['SASL']);
     }
     
@@ -267,9 +268,9 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException when the specified method is not supported
      */
-    function authenticate($method, $user, $pass, $auth= NULL) {
+    public function authenticate($method, $user, $pass, $auth= NULL) {
       if (!$this->hasAuthenticationMethod($method)) {
-        return throw(new IllegalArgumentException('Authentication method '.$method.' not supported'));
+        throw(new IllegalArgumentException('Authentication method '.$method.' not supported'));
       }
       
       // Check whether we want to impersonate
@@ -306,11 +307,11 @@
           $len= $this->_sock->readLine(0x400);
           $str= base64_decode($this->_sock->readLine());
           $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $str);
-          try(); {
+          try {
             $challenge= &DigestChallenge::fromString($str);
             $response= &$challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
-          } if (catch('FormatException', $e)) {
-            return throw($e);
+          } catch (FormatException $e) {
+            throw($e);
           }
           $this->cat && $this->cat->debug($challenge, $response);
 
@@ -349,7 +350,7 @@
           break;
 
         default:
-          return throw(new IllegalArgumentException('Authentication method '.$method.' not implemented'));
+          throw(new IllegalArgumentException('Authentication method '.$method.' not implemented'));
       }
       
       // Read the response. Examples:
@@ -365,7 +366,7 @@
      * @access  public
      * @return  peer.sieve.SieveScript[] scripts
      */
-    function getScripts() {
+    public function getScripts() {
       $r= array();
       foreach ($this->getScriptNames() as $name => $info) {
         with ($s= &$this->getScript($name)); {
@@ -382,7 +383,7 @@
      * @access  public
      * @return  array
      */
-    function getScriptNames() {
+    public function getScriptNames() {
       $this->_sendcmd('LISTSCRIPTS');
       
       // Response is something like this:
@@ -404,7 +405,7 @@
      * @param   string name
      * @return  &peer.sieve.SieveScript script
      */
-    function &getScript($name) {
+    public function &getScript($name) {
       $this->_sendcmd('GETSCRIPT "%s"', $name);
       if (!($r= $this->_response())) return $r;
       
@@ -417,7 +418,7 @@
       //
       // The number on the first line indicates the length. We simply 
       // discard this information.
-      $s= &new SieveScript($name);
+      $s= new SieveScript($name);
       $s->setCode(implode("\n", array_slice($r, 1)));
       return $s;
     }
@@ -429,7 +430,7 @@
      * @param   string name
      * @return  bool success
      */
-    function deleteScript($name) {
+    public function deleteScript($name) {
       $this->_sendcmd('DELETESCRIPT "%s"', $name);
       return $this->_response(TRUE);
     }
@@ -441,7 +442,7 @@
      * @param   &peer.sieve.SieveScript script
      * @return  bool success
      */
-    function putScript(&$script) {
+    public function putScript(&$script) {
       $this->_sendcmd('PUTSCRIPT "%s" {%d+}', $script->getName(), $script->getLength());
       $this->_sendcmd($script->getCode());
       return $this->_response(TRUE);
@@ -467,7 +468,7 @@
      * @param   string name
      * @return  bool success
      */
-    function activateScript($name) {
+    public function activateScript($name) {
       $this->_sendcmd('SETACTIVE "%s"', $name);
       return $this->_response(TRUE);
     }
@@ -479,7 +480,7 @@
      * @param   &peer.sieve.SieveScript script
      * @return  bool success
      */
-    function hasSpaceFor(&$script) {
+    public function hasSpaceFor(&$script) {
       $this->_sendcmd('HAVESPACE "%s" %d', $script->getName(), $script->getLength());
       return $this->_response(TRUE, FALSE);
     }
@@ -489,12 +490,12 @@
      *
      * @access  public
      */
-    function close() {
-      try(); {
+    public function close() {
+      try {
         $this->_sock->write("LOGOUT\r\n"); 
         $this->_sock->close();
-      } if (catch('IOException', $e)) {
-        return throw($e);
+      } catch (IOException $e) {
+        throw($e);
       }
       
       return TRUE;      
@@ -506,9 +507,9 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) { 
+    public function setTrace(&$cat) { 
       $this->cat= &$cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

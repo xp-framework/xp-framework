@@ -13,12 +13,12 @@
    * @purpose  Appender
    */  
   class SmtpAppender extends LogAppender {
-    var 
+    public 
       $email    = '',
       $prefix   = '',
       $sync     = TRUE;
       
-    var
+    public
       $_data    = array();
     
     /**
@@ -29,7 +29,7 @@
      * @param   string prefix
      * @param   bool sync default TRUE
      */
-    function __construct($email= NULL, $prefix= '', $sync= TRUE) {
+    public function __construct($email= NULL, $prefix= '', $sync= TRUE) {
       $this->email= $email;
       $this->prefix= $prefix;
       $this->sync= $sync;
@@ -40,7 +40,7 @@
      *
      * @access  protected
      */
-    function __destruct() {
+    public function __destruct() {
       $this->finalize();
     }
     
@@ -50,7 +50,7 @@
      * @access  public
      * @param   mixed args variables
      */
-    function append() {
+    public function append() {
       $body= '';
       
       with ($args= func_get_args()); {
@@ -72,7 +72,7 @@
      *
      * @access  public 
      */
-    function finalize() {
+    public function finalize() {
       if ($this->sync || 0 == sizeof($this->_data)) return;
       
       $body= '';

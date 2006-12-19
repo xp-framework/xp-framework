@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.LogCategory');
+  uses('util.log.LogCategory', 'util.Configurable');
   
   define('LOG_DEFINES_DEFAULT', 'default');
   
@@ -79,18 +79,18 @@
    * @test     xp://net.xp_framework.unittest.logging.LoggerTest
    * @purpose  Singleton logger
    */
-  class Logger extends Object {
-    var 
+  class Logger extends Object implements Configurable {
+    public 
       $category     = array();
     
-    var
+    public
       $defaultIdentifier,
       $defaultDateformat,
       $defaultFormat,
       $defaultFlags,
       $defaultAppenders;
   
-    var
+    public
       $_finalized   = FALSE;
 
     /**
@@ -100,7 +100,7 @@
      * @param   string name default LOG_DEFINES_DEFAULT
      * @return  &util.log.LogCategory
      */ 
-    function &getCategory($name= LOG_DEFINES_DEFAULT) {
+    public function &getCategory($name= LOG_DEFINES_DEFAULT) {
       if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
       return $this->category[$name];
     }
@@ -111,7 +111,7 @@
      * @access  public
      * @param   &util.Properties prop instance of a Properties object
      */
-    function configure(&$prop) {
+    public function configure(&$prop) {
       $class= array();
       
       // Read default properties
@@ -124,10 +124,10 @@
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        try(); {
+        try {
           $catclass= &XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-        } if (catch('ClassNotFoundException', $e)) {
-          return throw($e);
+        } catch (ClassNotFoundException $e) {
+          throw($e);
         }
 
         $this->category[$section]= &$catclass->newInstance(
@@ -147,10 +147,10 @@
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
           if (!isset($class[$appender])) {
-            try(); {
+            try {
               $class[$appender]= &XPClass::forName($appender);
-            } if (catch('ClassNotFoundException', $e)) {
-              return throw($e);
+            } catch (ClassNotFoundException $e) {
+              throw($e);
             }
           }
           
@@ -183,7 +183,7 @@
      *
      * @access  public
      */
-    function finalize() {
+    public function finalize() {
       if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
         $this->category[$name]->finalize();
       }
@@ -197,7 +197,7 @@
      * @access  public
      * @return  &util.log.Logger a logger object
      */
-    function &getInstance() {
+    public static function &getInstance() {
       static $instance;
   
       if (!isset($instance)) {
@@ -209,7 +209,7 @@
         $instance->defaultAppenders= array();
         
         // Create an empty LogCategory
-        $instance->category[LOG_DEFINES_DEFAULT]= &new LogCategory(
+        $instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
           $instance->defaultIdentifier,
           $instance->defaultFormat,
           $instance->defaultDateformat,
@@ -220,5 +220,5 @@
       return $instance;
     }
 
-  } implements(__FILE__, 'util.Configurable');
+  } 
 ?>

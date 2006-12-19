@@ -18,7 +18,7 @@
    * @purpose  Provide an API for caching of MailStore objects
    */
   class StoreCache extends Object {
-    var
+    public
       $data = array();
     
     /**
@@ -37,7 +37,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $keys= array_keys($this->data);
       $str= '';
       foreach ($keys as $key) {
@@ -57,7 +57,7 @@
      * @access  public
      * @param   string key
      */
-    function remove($key) {
+    public function remove($key) {
       unset($this->data[$key]);
     }
 
@@ -66,7 +66,7 @@
      *
      * @access  public
      */    
-    function expunge() {
+    public function expunge() {
       unset($this->data);
       $this->data= array();
     }
@@ -78,7 +78,7 @@
      * @param   string key
      * @return  &mixed value or NULL to indicate the value doesn't exist
      */    
-    function &get($key) {
+    public function &get($key) {
       if (isset($this->data[$key])) return $this->data[$key]; else return NULL;
     }
   
@@ -89,7 +89,7 @@
      * @param   string key
      * @param   &mixed val
      */
-    function put($key, &$val) {
+    public function put($key, &$val) {
       $this->data[$key]= &$val;
     }
     
@@ -100,7 +100,7 @@
      * @param   string key
      * @return  bool TRUE if a value exists
      */
-    function has($key) {
+    public function has($key) {
       return isset($this->data[$key]);
     }
   }

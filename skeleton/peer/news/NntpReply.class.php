@@ -59,7 +59,7 @@
      * @param   int statuscode
      * @return  bool
      */
-    function isInformational($status) {
+    public function isInformational($status) {
       return (bool) (1 == substr($status,0,1));
     }
   
@@ -72,7 +72,7 @@
      * @param   int statuscode
      * @return  bool
      */
-    function isPositiveCompletion($status) {
+    public function isPositiveCompletion($status) {
       return (bool) (2 == substr($status,0,1));
     }
 
@@ -85,7 +85,7 @@
      * @param   int statuscode
      * @return  bool
      */
-    function isPositiveIntermediate($status) {
+    public function isPositiveIntermediate($status) {
       return (bool) (3 == substr($status,0,1));
     }
 
@@ -98,7 +98,7 @@
      * @param   int statuscode
      * @return  bool
      */
-    function isNegativeTransient($status) {
+    public function isNegativeTransient($status) {
       return (bool) (4 == substr($status,0,1));
     }
 
@@ -111,7 +111,7 @@
      * @param   int statuscode
      * @return  bool
      */
-    function isNegativePermanent($status) {
+    public function isNegativePermanent($status) {
       return (bool) (5 == substr($status,0,1));
     }
   }

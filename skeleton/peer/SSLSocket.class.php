@@ -22,7 +22,7 @@
      * @param   int port
      * @param   resource socket default NULL
      */
-    function __construct($host, $port, $socket= NULL) {
+    public function __construct($host, $port, $socket= NULL) {
       parent::__construct($host, $port, $socket);
       $this->_prefix= 'ssl://';
     }

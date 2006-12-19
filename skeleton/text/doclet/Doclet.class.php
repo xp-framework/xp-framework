@@ -34,7 +34,7 @@
      * @param   &text.doclet.RootDoc root
      * @return  bool TRUE on success
      */ 
-    function start(&$root) {
+    public function start(&$root) {
       return TRUE;
     }
 
@@ -47,8 +47,8 @@
      * @return  &text.doclet.ClassIterator
      * @throws  lang.Exception in case the iterator cannot be created.
      */ 
-    function &iteratorFor(&$root, $classes) {
-      $iterator= &new ClassIterator($classes);
+    public function &iteratorFor(&$root, $classes) {
+      $iterator= new ClassIterator($classes);
       $iterator->root= &$root;
       return $iterator;
     }
@@ -71,7 +71,7 @@
      * @access  public
      * @return  array
      */
-    function validOptions() {
+    public function validOptions() {
       return array();
     }
   }

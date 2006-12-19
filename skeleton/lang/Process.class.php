@@ -22,13 +22,13 @@
    * @purpose  Execute external programs
    */
   class Process extends Object {
-    var
+    public
       $in     = NULL,
       $out    = NULL,
       $err    = NULL,
       $exitv  = -1;
       
-    var
+    public
       $_proc  = NULL;
       
     /**
@@ -39,7 +39,7 @@
      * @param   mixed* arguments
      * @throws  io.IOException in case the command could not be executed
      */
-    function __construct() {
+    public function __construct() {
       static $spec= array(
         0 => array('pipe', 'r'),  // stdin
         1 => array('pipe', 'w'),  // stdout
@@ -57,9 +57,9 @@
       }
 
       // Assign in, out and err members
-      $this->in= &new File($pipes[0]);
-      $this->out= &new File($pipes[1]);
-      $this->err= &new File($pipes[2]);
+      $this->in= new File($pipes[0]);
+      $this->out= new File($pipes[1]);
+      $this->err= new File($pipes[2]);
     }
     
     /**
@@ -68,7 +68,7 @@
      * @access  public
      * @return  &io.File STDERR
      */
-    function &getErrorStream() {
+    public function &getErrorStream() {
       return $this->err;
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      * @return  &io.File STDIN
      */
-    function &getInputStream() {
+    public function &getInputStream() {
       return $this->in;
     }
     
@@ -88,7 +88,7 @@
      * @access  public
      * @return  &io.File STDOUT
      */
-    function &getOutputStream() {
+    public function &getOutputStream() {
       return $this->out;
     }
     
@@ -98,7 +98,7 @@
      * @access  public
      * @return  int
      */
-    function exitValue() {
+    public function exitValue() {
       return $this->exitv;
     }
     
@@ -108,7 +108,7 @@
      * @access  public
      * @return  int exit value of process
      */
-    function close() {
+    public function close() {
       $this->in->isOpen() && $this->in->close();
       $this->out->isOpen() && $this->out->close();
       $this->err->isOpen() && $this->err->close();

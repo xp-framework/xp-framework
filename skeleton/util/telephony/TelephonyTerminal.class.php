@@ -9,7 +9,7 @@
    *
    */
   class TelephonyTerminal extends Object {
-    var 
+    public 
       $address  = NULL,
       $observed = FALSE;
       
@@ -19,7 +19,7 @@
      * @access  public
      * @param   &util.telephony.TelephonyAddress address
      */
-    function __construct(&$address) {
+    public function __construct(&$address) {
       
       $this->address= &$address;
     }
@@ -30,7 +30,7 @@
      * @access  public
      * @return  string number
      */
-    function getAttachedNumber() {
+    public function getAttachedNumber() {
       return $this->address->getNumber();
     }
 
@@ -40,7 +40,7 @@
      * @access  public
      * @param   bool observed
      */
-    function setObserved($observed) {
+    public function setObserved($observed) {
       $this->observed= $observed;
     }
 
@@ -50,7 +50,7 @@
      * @access  public
      * @return  bool
      */
-    function isObserved() {
+    public function isObserved() {
       return $this->observed;
     }
   }

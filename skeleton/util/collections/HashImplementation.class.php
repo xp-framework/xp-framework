@@ -10,7 +10,7 @@
    * @see      xp://util.collections.HashProvider
    * @purpose  Interface
    */
-  class HashImplementation extends Interface {
+  interface HashImplementation {
 
     /**
      * Retrieve hash code for a given string
@@ -19,7 +19,7 @@
      * @param   string str
      * @return  int hashcode
      */
-    function hashOf($str) { }
+    public function hashOf($str);
 
   }
 ?>

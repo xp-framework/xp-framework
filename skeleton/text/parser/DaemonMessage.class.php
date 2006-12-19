@@ -29,7 +29,7 @@
    * @purpose  Mailer daemom message
    */
   class DaemonMessage extends Message {
-    var 
+    public 
       $failed=   NULL,
       $reason=   '',
       $details=  array(),
@@ -41,7 +41,7 @@
      * @access  public
      * @param   &peer.mail.InternetAddress r
      */
-    function setFailedRecipient(&$r) {
+    public function setFailedRecipient(&$r) {
       $this->failed= &$r;
     }
     
@@ -51,7 +51,7 @@
      * @access  public
      * @return  &peer.mail.InternetAddress
      */
-    function &getFailedRecipient() {
+    public function &getFailedRecipient() {
       return $this->failed;
     }
     
@@ -61,7 +61,7 @@
      * @access  public
      * @param   string reason
      */
-    function setReason($reason) {
+    public function setReason($reason) {
       $this->reason= $reason;
     }
     
@@ -71,7 +71,7 @@
      * @access  public
      * @return  string
      */
-    function getReason() {
+    public function getReason() {
       return $this->reason;
     }
   }

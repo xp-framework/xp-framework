@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.SeeTag');
+  uses('text.doclet.SeeTag', 'text.doclet.Taglet');
 
   /**
    * A taglet that represents the see tag. 
@@ -12,7 +12,7 @@
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
-  class SeeTaglet extends Object {
+  class SeeTaglet extends Object implements Taglet {
   
     /**
      * Create tag from text
@@ -23,10 +23,10 @@
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    function &tagFrom(&$holder, $kind, $text) {
+    public function &tagFrom(&$holder, $kind, $text) {
       sscanf($text, '%[^:]://%s %[^$]', $scheme, $urn, $comment);
       return new SeeTag($kind, $comment, $scheme, $urn);
     }
 
-  } implements(__FILE__, 'text.doclet.Taglet');
+  } 
 ?>

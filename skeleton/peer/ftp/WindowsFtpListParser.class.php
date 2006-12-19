@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.FtpListParser');
+
   /**
    * Parses output from a FTP LIST command from Windows FTP daemons.
    *
@@ -11,7 +13,7 @@
    * @see      xp://peer.ftp.FtpListParser
    * @purpose  FTP LIST parser implementation
    */
-  class WindowsFtpListParser extends Object {
+  class WindowsFtpListParser extends Object implements FtpListParser {
 
     /**
      * Parse raw listing entry.
@@ -20,7 +22,7 @@
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    function &entryFrom($raw) {
+    public function &entryFrom($raw) {
       preg_match(
         '/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +(<DIR>)?([0-9]+)? +(.+)/',
         $raw,
@@ -28,9 +30,9 @@
       );
 
       if ($result[7]) {
-        $e= &new FtpDir($result[9]);
+        $e= new FtpDir($result[9]);
       } else {
-        $e= &new FtpEntry($result[9]);
+        $e= new FtpEntry($result[9]);
       }
 
       $e->setPermissions(0);
@@ -50,5 +52,5 @@
       return $e;
     }
   
-  } implements(__FILE__, 'peer.ftp.FtpListParser');
+  } 
 ?>

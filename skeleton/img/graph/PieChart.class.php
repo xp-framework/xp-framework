@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('img.shapes.Arc', 'img.graph.PieSlice');
+  uses(
+    'img.shapes.Arc',
+    'img.graph.PieSlice',
+    'img.Drawable'
+  );
   
   /**
    * Shape class representing a 3D Pie chart
@@ -12,8 +16,8 @@
    * @deprecated
    * @see img.Image
    */
-  class PieChart extends Object {
-    var
+  class PieChart extends Object implements Drawable {
+    public
       $slices       = array(),
       $perspective  = 0,
       $shadow       = 0,
@@ -27,7 +31,7 @@
      * @param   int shadow default 10 
      * @param   int fill default IMG_ARC_PIE one of IMG_ARC_* constants
      */ 
-    function __construct($perspective= 0, $shadow= 10, $fill= IMG_ARC_PIE) {
+    public function __construct($perspective= 0, $shadow= 10, $fill= IMG_ARC_PIE) {
       $this->perspective= $perspective;
       $this->shadow= $shadow;
       $this->fill= $fill;
@@ -41,7 +45,7 @@
      * @param   &img.graph.PieSlice a slice object
      * @return  &img.graph.PieSlice the slice object put in
      */
-    function &add(&$slice) {
+    public function &add(&$slice) {
       $this->slices[]= &$slice;
       return $slice;
     }
@@ -53,8 +57,8 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) {
-      $arc= &new Arc(
+    public function draw(&$image) {
+      $arc= new Arc(
         NULL,
         $image->getWidth() / 2, 
         $image->getHeight() / 2, 
@@ -91,5 +95,5 @@
       }
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

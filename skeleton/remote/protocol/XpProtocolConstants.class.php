@@ -41,7 +41,7 @@
      * @param   int id
      * @return  string
      */
-    function nameOfMessage($id) {
+    public static function nameOfMessage($id) {
       $names= array(
         REMOTE_MSG_INIT       => 'REMOTE_MSG_INIT',
         REMOTE_MSG_LOOKUP     => 'REMOTE_MSG_LOOKUP',
@@ -67,7 +67,7 @@
      * @param   int id
      * @return  string
      */
-    function nameOfTransaction($id) {
+    public static function nameOfTransaction($id) {
       $names= array(
         REMOTE_TRAN_BEGIN   => 'REMOTE_TRAN_BEGIN',
         REMOTE_TRAN_STATE   => 'REMOTE_TRAN_STATE',

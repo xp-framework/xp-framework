@@ -98,7 +98,7 @@
    * @purpose  Send and receive System V IPC messages
    */
   class IPCQueue extends Object {
-    var
+    public
       $key      = 0,
       $id       = 0,
       $stat     = array();
@@ -109,7 +109,7 @@
      * @access  public
      * @param   int System V IPC keys default NULL
      */  
-    function __construct($key= NULL) {
+    public function __construct($key= NULL) {
       $this->key= (NULL == $key) ? Ftok::get() : $key;
       $this->id= msg_get_queue($this->key, IPC_QUEUE_PERM);
       $this->stat= msg_stat_queue($this->id);
@@ -124,9 +124,9 @@
      * @param   bool blocking default TRUE
      * @throws  io.IOException
      */
-    function putMessage($msg, $serialize= TRUE, $blocking= TRUE) {
+    public function putMessage($msg, $serialize= TRUE, $blocking= TRUE) {
       if (!msg_send($this->id, $msg->getType(), $msg->getMessage(), $serialize, $blocking, $err)) {
-        return throw(new IOException('Message could not be send. Errorcode '.$err));
+        throw(new IOException('Message could not be send. Errorcode '.$err));
       }
     }
     
@@ -141,7 +141,7 @@
      * @throws  io.IOException
      * @return  string message 
      */    
-    function getMessage($desiredType= 0, $flags= 0, $maxSize= IPC_MSG_MAXSIZE, $serialize= TRUE) {
+    public function getMessage($desiredType= 0, $flags= 0, $maxSize= IPC_MSG_MAXSIZE, $serialize= TRUE) {
     
       // refresh queue
       $this->stat= msg_stat_queue($this->id);
@@ -154,7 +154,7 @@
       // t.b.d. handle message flags and message types
       // see http://de3.php.net/manual/en/function.msg-receive.php
       if (!msg_receive($this->id, $desiredType, $msgType, $maxSize, $msg, $serialize, $flags, $err)) {
-        return throw(new IOException('Message could not be received. Errorcode '.$err));
+        throw(new IOException('Message could not be received. Errorcode '.$err));
       }
       return new IPCMessage($msg, $msgType);
     }
@@ -166,13 +166,13 @@
      * @access  public
      * @throws  io.IOException
      */    
-    function removeQueue() {
+    public function removeQueue() {
     
       // refresh queue
       $this->stat= msg_stat_queue($this->id);
       
       if (0 !== $this->stat['msg_qnum']) {
-        return throw(new IOException('Queue cannot be removed. There are unreceived messages.'));
+        throw(new IOException('Queue cannot be removed. There are unreceived messages.'));
       }
       msg_remove_queue($this->key);
     }
@@ -183,7 +183,7 @@
      * @access  public
      * @return  int
      */
-    function getOwnerUID() {
+    public function getOwnerUID() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_perm.uid'];
     }
@@ -194,7 +194,7 @@
      * @access  public
      * @return  int
      */
-    function getOwnerGID() {
+    public function getOwnerGID() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_perm.gid'];
     }
@@ -205,7 +205,7 @@
      * @access  public
      * @return  int
      */
-    function getPermissions() {
+    public function getPermissions() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_perm.mode'];
     }
@@ -216,7 +216,7 @@
      * @access  public
      * @return  int
      */
-    function getSentTime() {
+    public function getSentTime() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_stime'];
     }
@@ -227,7 +227,7 @@
      * @access  public
      * @return  int
      */
-    function getReceivedTime() {
+    public function getReceivedTime() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_rtime'];
     }
@@ -238,7 +238,7 @@
      * @access  public
      * @return  int
      */
-    function getChangedTime() {
+    public function getChangedTime() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_ctime'];
     }
@@ -249,7 +249,7 @@
      * @access  public
      * @return  int
      */
-    function getQuantity() {
+    public function getQuantity() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_qnum'];
     }
@@ -260,7 +260,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['qbytes'];
     }
@@ -271,7 +271,7 @@
      * @access  public
      * @return  int
      */
-    function getSentPID() {
+    public function getSentPID() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_lspid'];
     }
@@ -282,7 +282,7 @@
      * @access  public
      * @return  int
      */
-    function getReceivedPID() {
+    public function getReceivedPID() {
       $this->stat= msg_stat_queue($this->id);
       return $this->stat['msg_lrpid'];
     }
@@ -293,7 +293,7 @@
      * @access  public
      * @return  int
      */
-    function getKey() {
+    public function getKey() {
       return $this->key;
     }
     

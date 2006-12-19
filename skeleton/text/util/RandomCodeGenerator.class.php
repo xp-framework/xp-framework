@@ -14,7 +14,7 @@
    * @purpose  Generator
    */
   class RandomCodeGenerator extends Object {
-    var
+    public
       $length   = 0;
       
     /**
@@ -23,7 +23,7 @@
      * @access  public
      * @param   int length default 16
      */
-    function __construct($length= 16) {
+    public function __construct($length= 16) {
       $this->length= $length;
       
     }
@@ -34,7 +34,7 @@
      * @access  public
      * @return  string
      */
-    function generate() {
+    public function generate() {
       $uniq= str_shuffle(strtr(uniqid(microtime(), TRUE), ' .', 'gh'));
       while (strlen($uniq) > $this->length) {
         StringUtil::delete($uniq, rand(0, strlen($uniq)));

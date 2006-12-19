@@ -65,11 +65,11 @@
    * @purpose  LDAP client
    */
   class LDAPClient extends Object {
-    var 
+    public 
       $host,
       $port;
       
-    var
+    public
       $_hdl;
     
     /**
@@ -79,7 +79,7 @@
      * @param   string host default 'localhost' LDAP server
      * @param   int port default 389 Port
      */
-    function __construct($host= 'localhost', $port= 389) {
+    public function __construct($host= 'localhost', $port= 389) {
       $this->host= $host;
       $this->port= $port;
     }
@@ -91,10 +91,10 @@
      * @return  resource LDAP resource handle
      * @throws  peer.ConnectException
      */
-    function connect() {
+    public function connect() {
       if ($this->isConnected()) return TRUE;  // Already connected
       if (FALSE === ($this->_hdl= ldap_connect($this->host, $this->port))) {
-        return throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+        throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
       }
       
       return $this->_hdl;
@@ -110,14 +110,14 @@
      * @throws  peer.ldap.LDAPException
      * @throws  peer.ConnectException
      */
-    function bind($user= NULL, $pass= NULL) {
+    public function bind($user= NULL, $pass= NULL) {
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
         switch ($error= ldap_errno($this->_hdl)) {
           case LDAP_SERVER_DOWN:
-            return throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+            throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
           
           default:
-            return throw(new LDAPException('Cannot bind for "'.$user.'"', $error));
+            throw(new LDAPException('Cannot bind for "'.$user.'"', $error));
         }
       }
       
@@ -132,9 +132,9 @@
      * @param   mixed value
      * @return  boolean success
      */
-    function setOption($option, $value) {
+    public function setOption($option, $value) {
       if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {
-        return throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_errno($this->_hdl)));
+        throw (new LDAPException ('Cannot set value "'.$option.'"', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -147,9 +147,9 @@
      * @param   int option
      * @return  mixed value
      */    
-    function getOption($option) {
+    public function getOption($option) {
       if (FALSE === ($res= ldap_get_option ($this->_hdl, $option, $value))) {
-        return throw (new LDAPException ('Cannot get value "'.$option.'"', ldap_errno($this->_hdl)));
+        throw (new LDAPException ('Cannot get value "'.$option.'"', ldap_errno($this->_hdl)));
       }
       
       return $value;
@@ -161,7 +161,7 @@
      * @access  public
      * @return  bool true, when we're connected, false otherwise (OK, what else?:))
      */
-    function isConnected() {
+    public function isConnected() {
       return is_resource($this->_hdl);
     }
     
@@ -172,7 +172,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() {
+    public function close() {
       if (!$this->isConnected()) return TRUE;
       
       ldap_unbind($this->_hdl);
@@ -194,11 +194,11 @@
      * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
-    function &search() {
+    public function &search() {
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
       if (FALSE === ($res= call_user_func_array('ldap_search', $args))) {
-        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -211,7 +211,7 @@
      * @param   &peer.ldap.LDAPQuery filter
      * @return  &peer.ldap.LDAPSearchResult search result object
      */
-    function &searchBy(&$filter) {
+    public function &searchBy(&$filter) {
       static $methods= array(
         LDAP_SCOPE_BASE     => 'ldap_read',
         LDAP_SCOPE_ONELEVEL => 'ldap_list',
@@ -219,7 +219,7 @@
       );
       
       if (empty($methods[$filter->getScope()]))
-        return throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+        throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
       
       if (FALSE === ($res= &call_user_func_array(
         $methods[$filter->getScope()], array(
@@ -232,7 +232,7 @@
         $filter->getTimelimit(),
         $filter->getDeref()
       )))) {
-        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
 
       // Sort results by given sort attributes
@@ -258,17 +258,17 @@
      * @throws  peer.ldap.LDAPException
      * @see     php://ldap_search
      */
-    function &searchScope() {
+    public function &searchScope() {
       $args= func_get_args();
       switch ($args[0]) {
         case LDAP_SCOPE_BASE: $func= 'ldap_read'; break;
         case LDAP_SCOPE_ONELEVEL: $func= 'ldap_list'; break;
         case LDAP_SCOPE_SUB: $func= 'ldap_search'; break;
-        default: return throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+        default: throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
       }
       $args[0]= $this->_hdl;
       if (FALSE === ($res= call_user_func_array($func, $args))) {
-        return throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -283,14 +283,14 @@
      * @throws  lang.IllegalArgumentException
      * @throws  peer.ldap.LDAPException
      */
-    function &read(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+    public function &read(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
       $res= ldap_read($this->_hdl, $entry->getDN(), 'objectClass=*', array(), FALSE, 0);
       if (0 != ldap_errno($this->_hdl)) {
-        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       // Nothing found?
@@ -308,9 +308,9 @@
      * @param   &peer.ldap.LDAPEntry entry specifying the dn
      * @return  bool TRUE if the entry exists
      */
-    function exists(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+    public function exists(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       }
       
       $res= ldap_read($this->_hdl, $entry->getDN(), 'objectClass=*', array(), FALSE, 0);
@@ -322,7 +322,7 @@
       
       // Check for other errors
       if (LDAP_SUCCESS != ldap_errno($this->_hdl)) {
-        return throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       // No errors occurred, requested object exists
@@ -337,7 +337,7 @@
      * @param   &mixed v
      * @return  string encoded entry
      */
-    function _encode(&$v) {
+    public function _encode(&$v) {
       if (is_array($v)) {
         foreach (array_keys($v) as $i) $v[$i]= $this->_encode($v[$i]);
         return $v;
@@ -354,9 +354,9 @@
      * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    function add(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+    public function add(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
       // This actually returns NULL on failure, not FALSE, as documented
@@ -365,7 +365,7 @@
         $entry->getDN(), 
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -383,9 +383,9 @@
      * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    function modify(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+    public function modify(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
       if (FALSE == ($res= ldap_modify(
@@ -393,7 +393,7 @@
         $entry->getDN(),
         array_map(array(&$this, '_encode'), $entry->getAttributes())
       ))) {
-        return throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;
@@ -408,16 +408,16 @@
      * @throws  lang.IllegalArgumentException when entry parameter is not an LDAPEntry object
      * @throws  peer.ldap.LDAPException when an error occurs during adding the entry
      */
-    function delete(&$entry) {
-      if (!is_a($entry, 'LDAPEntry')) {
-        return throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
+    public function delete(&$entry) {
+      if (!is('LDAPEntry', $entry)) {
+        throw(new IllegalArgumentException('Given parameter is not an LDAPEntry object'));
       } 
       
       if (FALSE == ($res= ldap_delete(
         $this->_hdl,
         $entry->getDN()
       ))) {
-        return throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
       
       return $res;

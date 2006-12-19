@@ -15,11 +15,11 @@
    * @purpose  Wrap
    */
   class MailFolder extends Object {
-    var
+    public
       $name  = '',
       $store = NULL;
       
-    var
+    public
       $_ofs  = 0;
     
     /**
@@ -29,7 +29,7 @@
      * @param   &peer.mail.store.MailStore store
      * @param   string name default ''
      */  
-    function __construct(&$store, $name= '') {
+    public function __construct(&$store, $name= '') {
       $this->name= $name;
       $this->store= &$store;
       
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().
         '['.
@@ -74,7 +74,7 @@
      * @param   bool readonly default FALSE
      * @return  bool success
      */
-    function open($readonly= FALSE) { 
+    public function open($readonly= FALSE) { 
       $this->_ofs= 0;
       return $this->store->openFolder($this, $readonly);
     }
@@ -85,7 +85,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       return $this->store->closeFolder($this);
     }
   
@@ -107,7 +107,7 @@
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    function &getMessages() { 
+    public function &getMessages() { 
       $args= func_get_args();
       array_unshift($args, $this);
       return call_user_func_array(array($this->store, 'getMessages'), $args);
@@ -118,7 +118,7 @@
      *
      * @access  public
      */
-    function rewind() {
+    public function rewind() {
       $this->_ofs= 0;
     }
     
@@ -129,7 +129,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function deleteMessage(&$msg) {
+    public function deleteMessage(&$msg) {
       return $this->store->deleteMessage($this, $msg);
     }
 
@@ -140,7 +140,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function undeleteMessage(&$msg) {
+    public function undeleteMessage(&$msg) {
       return $this->store->undeleteMessage($this, $msg);
     }
     
@@ -151,7 +151,7 @@
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    function moveMessage(&$msg) {
+    public function moveMessage(&$msg) {
       return $this->store->moveMessage($this, $msg);
     }
     
@@ -170,7 +170,7 @@
      * @access  public
      * @return  &peer.mail.Message or FALSE to indicate we reached the last mail
      */
-    function &getMessage() {
+    public function &getMessage() {
       $this->_ofs++;
       $ret= &$this->store->getMessages($this, $this->_ofs);
       return $ret[0];
@@ -184,7 +184,7 @@
      * @param   string part
      * @return  &int
      */
-    function &getMessagePart($uid, $part) { 
+    public function &getMessagePart($uid, $part) { 
       return $this->store->getMessagePart($this, $uid, $part);
     }
 
@@ -195,7 +195,7 @@
      * @param   string uid
      * @return  &object
      */
-    function &getMessageStruct($uid) { 
+    public function &getMessageStruct($uid) { 
       return $this->store->getMessageStruct($this, $uid);
     }
 
@@ -205,7 +205,7 @@
      * @access  public
      * @return  int
      */
-    function getMessageCount() {
+    public function getMessageCount() {
       return $this->store->getMessageCount($this, 'message');
     }
 
@@ -215,7 +215,7 @@
      * @access  public
      * @return  int
      */
-    function getNewMessageCount() {
+    public function getNewMessageCount() {
       return $this->store->getNewMessageCount($this, 'recent');
     }
 
@@ -225,7 +225,7 @@
      * @access  public
      * @return  intGet number of messages in this folder
      */
-    function getUnreadMessageCount() {
+    public function getUnreadMessageCount() {
       return $this->store->getUnreadMessageCount($this, 'unseen');
     }
 

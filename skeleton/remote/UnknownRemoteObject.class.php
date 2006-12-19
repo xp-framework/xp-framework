@@ -13,7 +13,7 @@
    * @purpose  purpose
    */
   class UnknownRemoteObject extends Object {
-    var
+    public
       $__name     = '',
       $__members  = array();
 
@@ -24,7 +24,7 @@
      * @param   string name
      * @param   array<string, mixed> members default array()
      */
-    function __construct($name, $members= array()) {
+    public function __construct($name, $members= array()) {
       $this->__name= $name;
       $this->__members= $members;
     }
@@ -35,7 +35,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= $this->getClassName().'@('.$this->__name.") {\n";
       foreach (array_keys($this->__members) as $member) {
 
@@ -64,7 +64,7 @@
      * @param   mixed value
      * @return  bool TRUE on success
      */
-    function __set($name, $value) {
+    public function __set($name, $value) {
       throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
       return FALSE;
     }
@@ -77,7 +77,7 @@
      * @param   &mixed value
      * @return  bool TRUE on success
      */
-    function __get($name, &$value) {
+    public function __get($name) {
       throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
       return FALSE;
     }
@@ -92,10 +92,9 @@
      * @return  bool TRUE on success
      * @throws  lang.IllegalAccessException
      */
-    function __call($name, $args, &$return) {
+    public function __call($name, $args) {
       throw(new IllegalAccessException('Cannot call method "'.$name.'" on an unknown remote object'));
       return FALSE;
     }
-
-  } overload('UnknownRemoteObject');
+  }
 ?>

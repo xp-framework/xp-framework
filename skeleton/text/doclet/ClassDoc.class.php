@@ -18,7 +18,7 @@
    * @purpose  Documents a class
    */
   class ClassDoc extends AnnotatedDoc {
-    var
+    public
       $fields         = array(),
       $methods        = array(),
       $constants      = array(),
@@ -33,9 +33,9 @@
      *
      * @access  public
      */
-    function __construct() {
-      $this->interfaces= &new ClassIterator();
-      $this->usedClasses= &new ClassIterator();
+    public function __construct() {
+      $this->interfaces= new ClassIterator();
+      $this->usedClasses= new ClassIterator();
     }
 
     /**
@@ -44,7 +44,7 @@
      * @access  public
      * @param   &RootDoc root
      */
-    function setRoot(&$root) {
+    public function setRoot(&$root) {
       parent::setRoot($root);
       $this->interfaces->root= &$root;
       $this->usedClasses->root= &$root;    
@@ -63,7 +63,7 @@
      * @access  public
      * @return  string
      */
-    function classType() {
+    public function classType() {
       static $map= array(
         'lang.Exception' => EXCEPTION_CLASS,
         'lang.Error'     => ERROR_CLASS,
@@ -88,7 +88,7 @@
      * @access  public
      * @return  bool
      */
-    function isException() {
+    public function isException() {
       return EXCEPTION_CLASS == $this->classType();
     }
     
@@ -98,7 +98,7 @@
      * @access  public
      * @return  bool
      */
-    function isError() {
+    public function isError() {
       return ERROR_CLASS == $this->classType();
     }
 
@@ -108,7 +108,7 @@
      * @access  public
      * @return  bool
      */
-    function isInterface() {
+    public function isInterface() {
       return INTERFACE_CLASS == $this->classType();
     }
     
@@ -118,7 +118,7 @@
      * @access  public
      * @return  bool
      */
-    function subclassOf(&$classdoc) {
+    public function subclassOf(&$classdoc) {
       $cmp= &$this;
       do {
         if ($cmp->qualifiedName == $classdoc->qualifiedName) return TRUE;
@@ -134,7 +134,7 @@
      * @access  public
      * @return  string
      */
-    function qualifiedName() {
+    public function qualifiedName() {
       return $this->qualifiedName;
     }
     
@@ -144,7 +144,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'<'.$this->classType().' '.$this->qualifiedName.'>';
     }
 
@@ -154,7 +154,7 @@
      * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->getClassName().$this->qualifiedName;
     }
   }

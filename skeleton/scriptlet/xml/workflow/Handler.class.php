@@ -23,7 +23,7 @@
    * @purpose  Base class
    */
   class Handler extends Object {
-    var
+    public
       $wrapper      = NULL,
       $values       = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
       $errors       = array(),
@@ -35,7 +35,7 @@
      *
      * @access  public
      */
-    function __construct() {
+    public function __construct() {
       $this->name= strtolower(get_class($this));
     }
     
@@ -45,7 +45,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       $s= sprintf(
         "%s@{\n".
         "  [name               ] %s\n".
@@ -68,7 +68,7 @@
      * @access  public
      * @param   &scriptlet.xml.workflow.Wrapper wrapper
      */
-    function setWrapper(&$wrapper) {
+    public function setWrapper(&$wrapper) {
       $this->wrapper= &$wrapper;
     }
 
@@ -78,7 +78,7 @@
      * @access  public
      * @return  &scriptlet.xml.workflow.Wrapper
      */
-    function &getWrapper() {
+    public function &getWrapper() {
       return $this->wrapper;
     }
 
@@ -88,7 +88,7 @@
      * @access  public
      * @return  bool
      */
-    function hasWrapper() {
+    public function hasWrapper() {
       return NULL != $this->wrapper;
     }
     
@@ -99,7 +99,7 @@
      * @param   string name
      * @param   mixed value
      */
-    function setValue($name, $value) {
+    public function setValue($name, $value) {
       $this->values[HVAL_PERSISTENT][$name]= $value;
     }
 
@@ -110,7 +110,7 @@
      * @param   string name
      * @param   mixed value
      */
-    function setFormValue($name, $value) {
+    public function setFormValue($name, $value) {
       $this->values[HVAL_FORMPARAM][$name]= $value;
     }
     
@@ -120,7 +120,7 @@
      * @access  public
      * @return  array
      */
-    function getValues() {
+    public function getValues() {
       return $this->values[HVAL_PERSISTENT];
     }
 
@@ -130,7 +130,7 @@
      * @access  public
      * @return  array
      */
-    function getFormValues() {
+    public function getFormValues() {
       return $this->values[HVAL_FORMPARAM];
     }
     
@@ -142,7 +142,7 @@
      * @param   mixed default default NULL
      * @return  mixed value
      */
-    function getValue($name, $default= NULL) {
+    public function getValue($name, $default= NULL) {
       return (isset($this->values[HVAL_PERSISTENT][$name]) 
         ? $this->values[HVAL_PERSISTENT][$name] 
         : $default
@@ -157,7 +157,7 @@
      * @param   mixed default default NULL
      * @return  mixed value
      */
-    function getFormValue($name, $default= NULL) {
+    public function getFormValue($name, $default= NULL) {
       return (isset($this->values[HVAL_FORMPARAM][$name]) 
         ? $this->values[HVAL_FORMPARAM][$name] 
         : $default
@@ -170,7 +170,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
 
@@ -183,7 +183,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    function identifierFor(&$request, &$context) {
+    public function identifierFor(&$request, &$context) {
       return $this->name;
     }
 
@@ -195,7 +195,7 @@
      * @param   string field default '*'
      * @param   mixed info default NULL
      */
-    function addError($code, $field= '*', $info= NULL) {
+    public function addError($code, $field= '*', $info= NULL) {
       $this->errors[]= array($code, $field, $info);
       return FALSE;
     }
@@ -206,7 +206,7 @@
      * @access  public
      * @return  bool
      */
-    function errorsOccured() {
+    public function errorsOccured() {
       return !empty($this->errors);
     }
     
@@ -220,7 +220,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function isActive(&$request, &$context) {
+    public function isActive(&$request, &$context) {
       return ($request->getParam('__handler') == $this->identifier);
     }
 
@@ -235,7 +235,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function setup(&$request, &$context) { 
+    public function setup(&$request, &$context) { 
       return TRUE;
     }
 
@@ -247,7 +247,7 @@
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    function needsData(&$request, &$context) {
+    public function needsData(&$request, &$context) {
       return TRUE;
     }  
 
@@ -258,7 +258,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      */
-    function handleErrorCondition(&$request, &$context) {
+    public function handleErrorCondition(&$request, &$context) {
       return FALSE;
     }
 
@@ -269,7 +269,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      */
-    function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData(&$request, &$context) {
       return FALSE;
     }
     
@@ -281,6 +281,6 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    function finalize(&$request, &$response, &$context) { }
+    public function finalize(&$request, &$response, &$context) { }
   }
 ?>

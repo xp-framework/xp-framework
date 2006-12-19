@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('webservices.uddi.BusinessList', 'xml.Node');
+  uses(
+    'webservices.uddi.BusinessList',
+    'xml.Node',
+    'webservices.uddi.InquiryCommand'
+  );
 
   /**
    * Find businesses
@@ -12,8 +16,8 @@
    * @purpose  UDDI command container
    * @see      xp://webservices.uddi.InquiryCommand
    */
-  class FindBusinessesCommand extends Object {
-    var
+  class FindBusinessesCommand extends Object implements InquiryCommand {
+    public
       $names            = array(),
       $findQualifiers   = array(),
       $maxRows          = 0;
@@ -26,7 +30,7 @@
      * @param   string[] qualifiers default array()
      * @param   int maxRows default 0
      */
-    function __construct(
+    public function __construct(
       $names, 
       $findQualifiers= array(), 
       $maxRows= 0
@@ -43,7 +47,7 @@
      * @param   &xml.Node node
      * @see     xp://webservices.uddi.UDDICommand#marshalTo
      */
-    function marshalTo(&$node) {
+    public function marshalTo(&$node) {
       $node->setName('find_business');
       
       // Add maxRows if non-zero
@@ -72,18 +76,18 @@
      * @see     xp://webservices.uddi.UDDICommand#unmarshalFrom
      * @throws  lang.FormatException in case of an unexpected response
      */
-    function &unmarshalFrom(&$node) {
+    public function &unmarshalFrom(&$node) {
       if (0 != strcasecmp($node->name, 'businessList')) {
-        return throw(new FormatException('Expected "businessList", got "'.$node->name.'"'));
+        throw(new FormatException('Expected "businessList", got "'.$node->name.'"'));
       }
       
       // Create business list object from XML representation
-      with ($list= &new BusinessList(), $children= &$node->children[0]->children); {
+      with ($list= new BusinessList(), $children= &$node->children[0]->children); {
         $list->setOperator($node->getAttribute('operator'));
         $list->setTruncated(0 == strcasecmp('true', $node->getAttribute('truncated')));
         
         for ($i= 0, $s= sizeof($children); $i < $s; $i++) {
-          $b= &new Business($children[$i]->getAttribute('businessKey'));
+          $b= new Business($children[$i]->getAttribute('businessKey'));
           
           for ($j= 0, $t= sizeof($children[$i]->children); $j < $s; $j++) {
             switch ($children[$i]->children[$j]->name) {
@@ -103,5 +107,5 @@
       return $list;
     }
   
-  } implements(__FILE__, 'webservices.uddi.InquiryCommand');
+  } 
 ?>

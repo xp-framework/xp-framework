@@ -11,7 +11,7 @@
    * @purpose  Wrappper
    */
   class SieveScript extends Object {
-    var
+    public
       $name     = '',
       $code     = '',
       $active   = FALSE;
@@ -23,7 +23,7 @@
      * @param   string name
      * @param   string code
      */
-    function __construct($name, $code= NULL) {
+    public function __construct($name, $code= NULL) {
       $this->name= $name;
       $this->code= $code;
     }
@@ -34,7 +34,7 @@
      * @access  public
      * @param   bool active
      */
-    function setActive($active) {
+    public function setActive($active) {
       $this->active= $active;
     }
 
@@ -44,7 +44,7 @@
      * @access  public
      * @return  bool
      */
-    function isActive() {
+    public function isActive() {
       return $this->active;
     }
 
@@ -54,7 +54,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -74,7 +74,7 @@
      * @access  public
      * @param   string code
      */
-    function setCode($code) {
+    public function setCode($code) {
       $this->code= $code;
     }
 
@@ -84,7 +84,7 @@
      * @access  public
      * @return  string
      */
-    function getCode() {
+    public function getCode() {
       return $this->code;
     }
 
@@ -94,7 +94,7 @@
      * @access  public
      * @return  int
      */
-    function getLength() {
+    public function getLength() {
       return strlen($this->code);
     }
   }

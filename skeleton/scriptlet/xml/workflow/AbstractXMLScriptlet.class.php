@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.XMLScriptlet', 
+    'scriptlet.xml.XMLScriptlet',
     'scriptlet.xml.workflow.WorkflowScriptletRequest'
   );
 
@@ -15,7 +15,7 @@
    * @purpose  Base class
    */
   class AbstractXMLScriptlet extends XMLScriptlet {
-    var
+    public
       $package  = NULL;
 
     /**
@@ -25,7 +25,7 @@
      * @param   string package
      * @param   string base default ''
      */
-    function __construct($package, $base= '') {
+    public function __construct($package, $base= '') {
       parent::__construct($base);
       $this->package= $package;
     }
@@ -36,7 +36,7 @@
      * @access  protected
      * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
      */
-    function &_request() {
+    public function &_request() {
       return new WorkflowScriptletRequest($this->package);
     }
     
@@ -48,7 +48,7 @@
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException
      */
-    function &getContextClass(&$request) {
+    public function &getContextClass(&$request) {
       return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
     }
 
@@ -59,7 +59,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
-    function needsSession(&$request) {
+    public function needsSession(&$request) {
       return ($request->state && (
         $request->state->hasHandlers() || 
         $request->state->requiresAuthentication()
@@ -74,7 +74,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
-    function wantsContext(&$request) {
+    public function wantsContext(&$request) {
       return FALSE;
     }
     
@@ -90,7 +90,7 @@
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @return  bool
      */
-    function processWorkflow(&$request, &$response) {
+    public function processWorkflow(&$request, &$response) {
 
       // Context initialization
       $context= NULL;
@@ -98,9 +98,9 @@
       
         // Set up context. The context contains - so to say - the "autoglobals",
         // in other words, the omnipresent data such as the user
-        try(); {
+        try {
           $class= &$this->getContextClass($request);;
-        } if (catch('ClassNotFoundException', $e)) {
+        } catch (ClassNotFoundException $e) {
           throw(new HttpScriptletException($e->getMessage()));
           return FALSE;
         }
@@ -111,15 +111,15 @@
         if (!($context= &$request->session->getValue($cidx))) {
           $context= &$class->newInstance();
 
-          try(); {
+          try {
             $context->setup($request);
-          } if (catch('IllegalStateException', $e)) {
+          } catch (IllegalStateException $e) {
             throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
             return FALSE;
-          } if (catch('IllegalArgumentException', $e)) {
+          } catch (IllegalArgumentException $e) {
             throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE));
             return FALSE;
-          } if (catch('IllegalAccessException', $e)) {
+          } catch (IllegalAccessException $e) {
             throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
             return FALSE;
           }
@@ -127,12 +127,12 @@
         }
 
         // Run context's process() method.
-        try(); {
+        try {
           $context->process($request);
-        } if (catch('IllegalStateException', $e)) {
+        } catch (IllegalStateException $e) {
           throw(new HttpSessionInvalidException($e->getMessage(), HTTP_BAD_REQUEST));
           return FALSE;
-        } if (catch('IllegalAccessException', $e)) {
+        } catch (IllegalAccessException $e) {
           throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
           return FALSE;
         }
@@ -141,15 +141,15 @@
       }
       
       // Call state's setup() method
-      try(); {
+      try {
         $request->state->setup($request, $response, $context);
-      } if (catch('IllegalStateException', $e)) {
+      } catch (IllegalStateException $e) {
         throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
         return FALSE;
-      } if (catch('IllegalArgumentException', $e)) {
+      } catch (IllegalArgumentException $e) {
         throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE));
         return FALSE;
-      } if (catch('IllegalAccessException', $e)) {
+      } catch (IllegalAccessException $e) {
         throw(new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN));
         return FALSE;
       }
@@ -176,7 +176,7 @@
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    function processRequest(&$request, &$response) {
+    public function processRequest(&$request, &$response) {
       if (FALSE === $this->processWorkflow($request, $response)) {
       
         // The processWorkflow() method indicates no further processing

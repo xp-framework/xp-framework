@@ -21,7 +21,7 @@
      * @access  public
      * @param   &mixed ref
      */    
-    function __construct(&$ref) {
+    public function __construct(&$ref) {
       parent::__construct($ref, '__construct');
     }
     
@@ -42,7 +42,7 @@
      * @param   mixed* args
      * @return  &lang.Object
      */
-    function &newInstance() {
+    public function &newInstance() {
       $paramstr= '';
       $args= func_get_args();
       for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
@@ -58,7 +58,7 @@
      * @access  public
      * @return  string
      */
-    function getReturnType() {
+    public function getReturnType() {
       return xp::nameOf($this->_ref);
     }
   }

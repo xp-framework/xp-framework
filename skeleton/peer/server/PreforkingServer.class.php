@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('peer.server.Server', 'lang.RuntimeError');
+  uses(
+    'peer.server.Server',
+    'lang.RuntimeError',
+    'util.log.Traceable'
+  );
 
   /**
    * Pre-Forking TCP/IP Server
@@ -13,8 +17,8 @@
    * @see      xp://peer.server.Server
    * @purpose  TCP/IP Server
    */
-  class PreforkingServer extends Server {
-    var
+  class PreforkingServer extends Server implements Traceable {
+    public
       $cat          = NULL,
       $count        = 0,
       $sigs         = array(),
@@ -30,7 +34,7 @@
      * @param   int count default 10 number of children to fork
      * @param   int maxrequests default 1000 maxmimum # of requests per child
      */
-    function __construct($addr, $port, $count= 10, $maxrequests= 1000) {
+    public function __construct($addr, $port, $count= 10, $maxrequests= 1000) {
       parent::__construct($addr, $port);
       $this->count= $count;
       $this->maxrequests= $maxrequests;
@@ -42,7 +46,7 @@
      * @access  public
      * @param   &util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
+    public function setTrace(&$cat) {
       $this->cat= &$cat;
     }
 
@@ -52,7 +56,7 @@
      * @access  protected
      * @param   int sig
      */
-    function handleSignal($sig) {
+    public function handleSignal($sig) {
       $this->cat && $this->cat->debugf('Received signal %d in pid %d', $sig, getmypid());
       
       switch ($sig) {
@@ -67,7 +71,7 @@
      * @access  private
      * @param   array children
      */
-    function _killChildren(&$children) {
+    public function _killChildren(&$children) {
       foreach ($children as $pid => $i) {
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
@@ -84,7 +88,7 @@
      *
      * @access  protected
      */
-    function handleChild() {
+    public function handleChild() {
       
       // Install child signal handler
       pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
@@ -96,7 +100,7 @@
       $read= array($this->socket->_sock);
       $requests= 0;
       while (!$this->terminate && $requests < $this->maxrequests) {
-        try(); {
+        try {
         
           // Wait for incoming data. This call can be interrupted
           // by an incoming signal.
@@ -108,7 +112,7 @@
           // There is data on the socket.
           // Handle it!
           $m= &$this->socket->accept();
-        } if (catch('IOException', $e)) {
+        } catch (IOException $e) {
           $this->cat && $this->cat->warn('Child', getmypid(), 'in accept ~', $e);
           return;
         }
@@ -118,9 +122,9 @@
 
         // Loop
         do {
-          try(); {
+          try {
             $this->protocol->handleData($m);
-          } if (catch('IOException', $e)) {
+          } catch (IOException $e) {
             $this->protocol->handleError($m, $e);
             break;
           }
@@ -141,7 +145,7 @@
      *
      * @access  public
      */
-    function service() {
+    public function service() {
       if (!$this->socket->isConnected()) return FALSE;
 
       $children= array();
@@ -151,7 +155,7 @@
         $this->cat && $this->cat->debugf('Server #%d: Forking child %d', getmypid(), $i);
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
-          return throw(new RuntimeError('Could not fork'));
+          throw(new RuntimeError('Could not fork'));
         } else if ($pid) {      // Parent
           $this->cat && $this->cat->infof('Server #%d: Forked child #%d with pid %d', getmypid(), $i, $pid);
           $children[$pid]= $i;
@@ -209,5 +213,5 @@
       $this->shutdown();
       $this->cat && $this->cat->infof('Server #%d: Shutdown complete', getmypid());
     }
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

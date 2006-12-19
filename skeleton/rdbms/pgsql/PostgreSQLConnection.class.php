@@ -5,7 +5,7 @@
  */
 
   uses(
-    'rdbms.DBConnection', 
+    'rdbms.DBConnection',
     'rdbms.Transaction',
     'rdbms.pgsql.PostgreSQLResultSet'
   );
@@ -28,7 +28,7 @@
      * @return  bool success
      * @throws  rdbms.SQLConnectException
      */
-    function connect($reconnect= FALSE) {
+    public function connect($reconnect= FALSE) {
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
@@ -47,7 +47,7 @@
       }
 
       if (!is_resource($this->handle)) {
-        return throw(new SQLConnectException(rtrim(pg_last_error()), $this->dsn));
+        throw(new SQLConnectException(rtrim(pg_last_error()), $this->dsn));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
@@ -61,7 +61,7 @@
      * @access  public
      * @return  bool success
      */
-    function close() { 
+    public function close() { 
       if ($this->handle && $r= pg_close($this->handle)) {
         $this->handle= NULL;
         return $r;
@@ -77,8 +77,8 @@
      * @return  bool success
      * @throws  rdbms.SQLStatementFailedException
      */
-    function selectdb($db) {
-      return throw(new SQLStatementFailedException(
+    public function selectdb($db) {
+      throw(new SQLStatementFailedException(
         'Cannot select database, not implemented in PostgreSQL'
       ));
     }
@@ -90,7 +90,7 @@
      * @param   mixed* args
      * @return  string
      */
-    function prepare() {
+    public function prepare() {
       static $formatter= NULL;
       $args= func_get_args();
       
@@ -109,7 +109,7 @@
      * @access  public
      * @return  mixed identity value
      */
-    function identity($field) {
+    public function identity($field) {
       $q= &$this->query('select currval(%s) as id', $field);
       $id= $q ? $q->next('id') : NULL;
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
@@ -124,7 +124,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function insert() { 
+    public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -142,7 +142,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function update() {
+    public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -160,7 +160,7 @@
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
-    function delete() { 
+    public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -178,7 +178,7 @@
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
      */
-    function select() { 
+    public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
       if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
@@ -198,21 +198,21 @@
      * @return  &rdbms.pgsql.PostgreSQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    function &query() { 
+    public function &query() { 
       $args= func_get_args();
       $sql= call_user_func_array(array(&$this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) return throw(new SQLStateException('Not connected'));
-        try(); {
+        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        try {
           $c= $this->connect();
         }
-        if (catch('SQLException', $e)) {
-          return throw ($e);
+        catch (SQLException $e) {
+          throw ($e);
         }
         
         // Check for subsequent connection errors
-        if (FALSE === $c) return throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -220,7 +220,7 @@
       $result= pg_query($this->handle, $sql);
 
       if (empty($result)) {
-        return throw(new SQLStatementFailedException(
+        throw(new SQLStatementFailedException(
           'Statement failed: '.rtrim(pg_last_error($this->handle)),
           $sql
         ));
@@ -231,7 +231,7 @@
         return TRUE;
       }
 
-      $resultset= &new PostgreSQLResultSet($result);
+      $resultset= new PostgreSQLResultSet($result);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;
@@ -244,7 +244,7 @@
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    function &begin(&$transaction) {
+    public function &begin(&$transaction) {
       if (FALSE === $this->query('begin transaction')) {
         return FALSE;
       }
@@ -259,7 +259,7 @@
      * @param   string name
      * @return  mixed state
      */
-    function transtate($name) { 
+    public function transtate($name) { 
       return -1;
     }
     
@@ -270,7 +270,7 @@
      * @param   string name
      * @return  bool success
      */
-    function rollback($name) { 
+    public function rollback($name) { 
       return $this->query('rollback transaction');
     }
     
@@ -281,7 +281,7 @@
      * @param   string name
      * @return  bool success
      */
-    function commit($name) { 
+    public function commit($name) { 
       return $this->query('commit transaction');
     }
   }

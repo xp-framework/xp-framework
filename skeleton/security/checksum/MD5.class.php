@@ -23,7 +23,7 @@
      * @param   string str
      * @return  &security.checksum.MD5
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       return new MD5(md5($str));
     }
 
@@ -35,7 +35,7 @@
      * @param   &io.File file
      * @return  &security.checksum.MD5
      */
-    function &fromFile(&$file) {
+    public static function &fromFile(&$file) {
       return new MD5(md5_file($file->uri));
     }
   }

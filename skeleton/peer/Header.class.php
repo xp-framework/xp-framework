@@ -10,7 +10,7 @@
    * @purpose  Base class for Cookie, Authorization, etc.
    */
   class Header extends Object {
-    var 
+    public 
       $name     = '',
       $value    = '';
       
@@ -21,7 +21,7 @@
      * @param   string name
      * @param   string value
      */
-    function __construct($name, $value) {
+    public function __construct($name, $value) {
       $this->name= $name;
       $this->value= $value;
       
@@ -33,7 +33,7 @@
      * @access  public
      * @return  string name
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -44,7 +44,7 @@
      * @access  public
      * @return  string value
      */
-    function getValue() {
+    public function getValue() {
       return $this->value;
     }
     
@@ -54,7 +54,7 @@
      * @access  public
      * @return  string value
      */
-    function getValueRepresentation() {
+    public function getValueRepresentation() {
       return $this->value;
     }
     
@@ -64,7 +64,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getName().': '.$this->getValueRepresentation();
     }
     
@@ -76,7 +76,7 @@
      * @param   string str
      * @return  &peer.Header header object
      */
-    function &fromString($str) {
+    public static function &fromString($str) {
       list($k, $v)= explode(': ', $str, 2);
       return new Header($k, $v);
     }

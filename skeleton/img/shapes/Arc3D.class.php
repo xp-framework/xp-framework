@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('img.shapes.Arc');
+  uses('img.shapes.Arc', 'img.Drawable');
   
   /**
    * Shape class representing a three-dimensional arc
@@ -20,8 +20,8 @@
    *
    * @see xp://img.Image
    */
-  class Arc3D extends Arc {
-    var
+  class Arc3D extends Arc implements Drawable {
+    public
       $colors= array(),
       $shadow= 0;
       
@@ -43,7 +43,7 @@
      *          IMG_ARC_EDGED
      * @param   int shadow default 10 
      */ 
-    function __construct(&$colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
+    public function __construct(&$colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
       $this->colors= &$colors;
       $this->shadow= $shadow;
       parent::__construct($colors[0], $cx, $cy, $w, $h, $s, $e, $fill);
@@ -56,7 +56,7 @@
      * @param   &img.Image image
      * @return  mixed
      */
-    function draw(&$image) {
+    public function draw(&$image) {
       $this->col= &$this->colors[1];
       $cy= $this->cy;
       for ($i= 1; $i < $this->shadow; $i++) {
@@ -68,5 +68,5 @@
       parent::draw($image);
     }
 
-  } implements(__FILE__, 'img.Drawable');
+  } 
 ?>

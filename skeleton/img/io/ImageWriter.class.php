@@ -12,7 +12,7 @@
    * @see      xp://img.Image#saveTo
    * @purpose  Interface
    */
-  class ImageWriter extends Interface {
+  interface ImageWriter {
   
     /**
      * Sets the image resource that is to be written
@@ -21,6 +21,6 @@
      * @param   resource handle
      * @throws  img.ImagingException
      */
-    function setResource($handle) { }
+    public function setResource($handle);
   }
 ?>

@@ -14,7 +14,7 @@
    * @see      xp://lang.XPClass#forName
    */
   class ClassLoader extends Object {
-    var 
+    public 
       $classpath= '';
     
     /**
@@ -26,7 +26,7 @@
      * @access  public
      * @param   string path default '' classpath
      */
-    function __construct($path= '') {
+    public function __construct($path= '') {
       if (!empty($path)) $this->classpath= $path.'.';
     }
 
@@ -36,7 +36,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return (
         $this->getClassName().
         ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
@@ -51,7 +51,7 @@
      * @param   string name fully qualified class name
      * @return  string
      */
-    function loadClassBytes($name) {
+    public function loadClassBytes($name) {
       return file_get_contents($this->findClass($name));
     }
     
@@ -62,7 +62,7 @@
      * @access  public
      * @return  &lang.ClassLoader
      */
-    function &getDefault() {
+    public static function &getDefault() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ClassLoader();
@@ -76,7 +76,7 @@
      * @param   string class fully qualified class name io.File
      * @return  string filename, FALSE if not found
      */
-    function findClass($class) {
+    public function findClass($class) {
       if (!$class) return FALSE;    // Border case
 
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $this->classpath.$class).'.class.php';
@@ -95,19 +95,19 @@
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    function &loadClass($class) {
+    public function &loadClass($class) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
+      if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-          return throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
+          throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
         }
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      $c= &new XPClass($name);
+      $c= new XPClass($name);
       return $c;
     }
 
@@ -120,22 +120,22 @@
      * @return  &lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
-    function &_defineClassFromBytes($class, $bytes) {
+    public function &_defineClassFromBytes($class, $bytes) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
+      if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
-          return throw(new FormatException('Cannot define class "'.$qname.'"'));
+          throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
         if (!class_exists($name)) {
-          return throw(new FormatException('Class "'.$qname.'" not defined'));
+          throw(new FormatException('Class "'.$qname.'" not defined'));
         }
         xp::registry('class.'.$name, $qname);
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
 
-      $c= &new XPClass($name);
+      $c= new XPClass($name);
       return $c;
     }
     
@@ -151,7 +151,7 @@
      * @throws  lang.FormatException in case the class cannot be defined
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */
-    function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
+    public function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
       
       // If invoked with less than four arguments, old behaviour will be executed
       if (NULL === $bytes) {
@@ -164,24 +164,34 @@
         $parentName= xp::reflect($parent);
         
         if (!class_exists($parentName)) {
-          return throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
+          throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
         }
         
-        $newBytes= 'class '.$name.' extends '.$parentName.' '.$bytes;
+        $newBytes= 'class '.$name.' extends '.$parentName;
+        if (sizeof($interfaces)) {
+          $newBytes.= ' implements ';
+
+          $ifaces= array();
+          foreach ($interfaces as $i) { $ifaces[]= xp::reflect($i); }
+          
+          $newBytes.= implode(', ', $ifaces);
+        }
+        
+        $newBytes.= ' '.$bytes;
+
         if (FALSE === eval($newBytes)) {
-          return throw(new FormatException('Cannot define class "'.$qname.'"'));
+          throw(new FormatException('Cannot define class "'.$qname.'"'));
         }
         
         if (!class_exists($name)) {
-          return throw(new FormatException('Class "'.$qname.'" not defined'));
+          throw(new FormatException('Class "'.$qname.'" not defined'));
         }
         
         xp::registry('class.'.$name, $qname);
-        if (sizeof($interfaces)) { xp::implements($name, $interfaces); }
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
       
-      $c= &new XPClass($name);
+      $c= new XPClass($name);
       return $c;
     }
     
@@ -193,7 +203,7 @@
      * @return  string
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function getResource($filename) {
+    public function getResource($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
@@ -210,7 +220,7 @@
      * @return  &io.File
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    function &getResourceAsStream($filename) {
+    public function &getResourceAsStream($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return new File($filename);

@@ -12,7 +12,7 @@
    * @see      xp://remote.HandlerFactory
    * @purpose  Interface
    */
-  class ProtocolHandler extends Interface {
+  interface ProtocolHandler {
 
     /**
      * Initialize this protocol handler
@@ -21,7 +21,7 @@
      * @param   &peer.URL proxy
      * @throws  remote.RemoteException
      */
-    function initialize(&$proxy) { }
+    public function initialize(&$proxy);
     
     /**
      * Look up an object by its name
@@ -31,7 +31,7 @@
      * @param   &lang.Object
      * @throws  remote.RemoteException
      */
-    function &lookup($name) { }
+    public function &lookup($name);
 
     /**
      * Invoke a method on a given object id with given method name
@@ -44,6 +44,6 @@
      * @return  &mixed
      * @throws  remote.RemoteException
      */
-    function &invoke($oid, $method, $args) { }
+    public function &invoke($oid, $method, $args);
   }
 ?>

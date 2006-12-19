@@ -13,10 +13,10 @@
    * @purpose  Abstract data type
    */
   class LRUBuffer extends Object {
-    var
+    public
       $size = 0;
 
-    var
+    public
       $_access   = array(),
       $_elements = array();
     
@@ -27,7 +27,7 @@
      * @param   int size
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
-    function __construct($size) {
+    public function __construct($size) {
       $this->setSize($size);
     }
     
@@ -37,7 +37,7 @@
      * @access  public
      * @return  float microtime
      */
-    function microtime() {
+    public function microtime() {
       list($usec, $sec)= explode(' ', microtime());
       return (float)$usec + (float)$sec;
     }
@@ -56,7 +56,7 @@
      * @param   &lang.Object element
      * @return  &lang.Object victim
      */
-    function &add(&$element) {
+    public function &add(&$element) {
       $h= $element->hashCode();
       $this->_access[$h]= $this->microtime();
       $this->_elements[$h]= &$element;
@@ -80,7 +80,7 @@
      * @access  public
      * @param   &lang.Object element
      */
-    function update(&$element) {
+    public function update(&$element) {
       $this->_access[$element->hashCode()]= $this->microtime();
     }
     
@@ -90,7 +90,7 @@
      * @access  public
      * @return  int
      */
-    function numElements() {
+    public function numElements() {
       return sizeof($this->_access);
     }
     
@@ -101,8 +101,8 @@
      * @param   int size
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
-    function setSize($size) {
-      if ($size <= 0) return throw(new IllegalArgumentException(
+    public function setSize($size) {
+      if ($size <= 0) throw(new IllegalArgumentException(
         'Size must be greater than zero, '.$size.' given'
       ));
 
@@ -115,7 +115,7 @@
      * @access  public
      * @return  int
      */
-    function getSize() {
+    public function getSize() {
       return $this->size;
     }
   }

@@ -32,7 +32,7 @@
    * @purpose  Testcase container
    */
   class TestSuite extends Object {
-    var
+    public
       $tests    = array();
 
     /**
@@ -43,9 +43,9 @@
      * @return  &unittest.TestCase
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
-    function &addTest(&$test) {
+    public function &addTest(&$test) {
       if (!is('unittest.TestCase', $test)) {
-        return throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
+        throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
       }
       $this->tests[]= &$test;
       return $test;
@@ -60,9 +60,9 @@
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase class
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
      */
-    function addTestClass(&$class, $arguments= array()) {
+    public function addTestClass(&$class, $arguments= array()) {
       if (!$class->isSubclassOf('unittest.TestCase')) {
-        return throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
+        throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
       }
 
       $ignored= array();
@@ -82,7 +82,7 @@
       }
 
       if (0 == $this->numTests()) {
-        return throw(new NoSuchElementException('No tests found in ', $class->getName()));
+        throw(new NoSuchElementException('No tests found in ', $class->getName()));
       }
 
       return $ignored;
@@ -94,7 +94,7 @@
      * @access  public
      * @return  int
      */
-    function numTests() {
+    public function numTests() {
       return sizeof($this->tests);
     }
     
@@ -103,7 +103,7 @@
      *
      * @access  public
      */
-    function clearTests() {
+    public function clearTests() {
       $this->tests= array();
     }
     
@@ -114,7 +114,7 @@
      * @param   int pos
      * @return  &unittest.TestCase or NULL if none was found
      */
-    function &testAt($pos) {
+    public function &testAt($pos) {
       if (isset($this->tests[$pos])) return $this->tests[$pos]; else return NULL;
     }
     
@@ -125,8 +125,8 @@
      * @param   &unittest.TestCase test
      * @return  &unittest.TestResult
      */
-    function &runTest(&$test) {
-      $result= &new TestResult();
+    public function &runTest(&$test) {
+      $result= new TestResult();
       $test->run($result);
       return $result;
     }
@@ -137,8 +137,8 @@
      * @access  public
      * @return  &unittest.TestResult
      */
-    function &run() {
-      $result= &new TestResult();
+    public function &run() {
+      $result= new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
         $this->tests[$i]->run($result);
       }

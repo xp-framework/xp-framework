@@ -13,7 +13,7 @@
    * @purpose  Exception
    */
   class AuthenticationException extends SocketException {
-    var
+    public
       $user = '',
       $pass = '';
 
@@ -25,7 +25,7 @@
      * @param   string user
      * @param   string pass default ''
      */
-    function __construct($message, $user, $pass= '') {
+    public function __construct($message, $user, $pass= '') {
       parent::__construct($message);
       $this->user= $user;
       $this->pass= $pass;
@@ -37,7 +37,7 @@
      * @access  public
      * @return  string
      */
-    function getUser() {
+    public function getUser() {
       return $this->user;
     }
 
@@ -47,7 +47,7 @@
      * @access  public
      * @return  string
      */
-    function getPass() {
+    public function getPass() {
       return $this->pass;
     }
   }

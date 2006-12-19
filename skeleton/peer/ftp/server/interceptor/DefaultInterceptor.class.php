@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.server.interceptor.StorageActionInterceptor');
+
   /**
    * Default implementation of a StorageActionInterceptor which just
    * returns TRUE in any case.
    *
    * @purpose  Interceptor
    */
-  class DefaultInterceptor extends Object {
+  class DefaultInterceptor extends Object implements StorageActionInterceptor {
 
     /**
      * Invoked when an entry is created
@@ -20,7 +22,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onCreate(&$session, &$entry) {
+    public function onCreate(&$session, &$entry) {
       return TRUE;
     }
   
@@ -32,7 +34,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onDelete(&$session, &$entry) {
+    public function onDelete(&$session, &$entry) {
       return TRUE;
     }
   
@@ -44,7 +46,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onRead(&$session, &$entry) {
+    public function onRead(&$session, &$entry) {
       return TRUE;
     }
   
@@ -56,7 +58,7 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onRename(&$session, &$entry) {
+    public function onRename(&$session, &$entry) {
       return TRUE;
     }
   
@@ -68,8 +70,8 @@
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    function onChangePermissions(&$session, &$entry) {
+    public function onChangePermissions(&$session, &$entry) {
       return TRUE;
     }
-  } implements(__FILE__, 'peer.ftp.server.interceptor.StorageActionInterceptor');
+  } 
 ?>

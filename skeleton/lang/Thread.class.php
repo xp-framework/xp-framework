@@ -53,11 +53,11 @@
    * @purpose  Base class
    */
   class Thread extends Object {
-    var
+    public
       $name     = '',
       $running  = FALSE;
       
-    var
+    public
       $_id      = -1,
       $_pid     = -1;
       
@@ -67,7 +67,7 @@
      * @access  public
      * @param   string name
      */
-    function __construct($name= '') {
+    public function __construct($name= '') {
       $this->name= $name;
       
     }
@@ -78,7 +78,7 @@
      * @access  public
      * @return  bool
      */
-    function isRunning() {
+    public function isRunning() {
       return $this->running;
     }
     
@@ -88,7 +88,7 @@
      * @access  public
      * @param   string name
      */
-    function setName($name) {
+    public function setName($name) {
       $this->name= $name;
     }
 
@@ -98,7 +98,7 @@
      * @access  public
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->name;
     }
     
@@ -110,7 +110,7 @@
      * @access  public
      * @param   int millis
      */
-    function sleep($millis) {
+    public static function sleep($millis) {
       usleep($millis * 1000);
     }
 
@@ -121,15 +121,15 @@
      * @throws  lang.IllegalThreadStateException if this thread is already running
      * @throws  lang.SystemException if the thread cannot be started
      */
-    function start() {
+    public function start() {
       if ($this->isRunning()) {
-        return throw(new IllegalThreadStateException('Already running'));
+        throw(new IllegalThreadStateException('Already running'));
       }
 
       $parent= getmypid();
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
-        return throw(new SystemException('Cannot fork'));
+        throw(new SystemException('Cannot fork'));
       } else if ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;
@@ -152,7 +152,7 @@
      * @return  int status
      * @see     php://pcntl_waitpid
      */
-    function join($wait= TRUE) {
+    public function join($wait= TRUE) {
       if (0 == pcntl_waitpid($this->_id, $status, $wait ? WUNTRACED : WNOHANG)) return -1;
       $this->running= FALSE;
       $this->_id= $this->_pid= -1;
@@ -166,9 +166,9 @@
      * @param   int signal default SIGINT
      * @throws  lang.IllegalThreadStateException
      */
-    function stop($signal= SIGINT) {
+    public function stop($signal= SIGINT) {
       if ($this->_id <= 0) {
-        return throw(new IllegalThreadStateException('Illegal thread id '.$this->_id));
+        throw(new IllegalThreadStateException('Illegal thread id '.$this->_id));
       }
       posix_kill($this->_id, $signal);
       $this->running= FALSE;
@@ -181,7 +181,7 @@
      * @access  public
      * @return  int
      */
-    function getId() {
+    public function getId() {
       return $this->_id;
     }
     
@@ -191,7 +191,7 @@
      * @access  public
      * @return  int
      */
-    function getParentId() {
+    public function getParentId() {
       return $this->_pid;
     }
     
@@ -201,7 +201,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf('%s[%d]@%s', $this->getClassName(), $this->_id, var_export($this, 1));
     }
     
@@ -211,6 +211,6 @@
      * @model   abstract
      * @access  public
      */
-    function run() { }
+    public function run() { }
   }
 ?>

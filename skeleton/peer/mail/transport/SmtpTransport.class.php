@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('peer.URL', 'peer.mail.transport.Transport', 'peer.Socket');
+  uses(
+    'peer.URL',
+    'peer.mail.transport.Transport',
+    'peer.Socket'
+  );
   
   // Authentication methods
   define('SMTP_AUTH_PLAIN', 'plain');
@@ -41,7 +45,7 @@
    * @purpose  Provide a transport for SMTP/ESMTP
    */
   class SmtpTransport extends Transport {
-    var
+    public
       $host  = '127.0.0.1',
       $me    = 'localhost',
       $user  = '',
@@ -51,7 +55,7 @@
       $port  = 25,
       $auth  = NULL;
       
-    var
+    public
       $_sock = NULL;
     
     /**
@@ -64,7 +68,7 @@
      *          or FALSE to indicate not to read any data
      * @return  string buf
      */
-    function _sockcmd() {
+    public function _sockcmd() {
       if (NULL === $this->_sock) return;
       
       // Arguments
@@ -89,7 +93,7 @@
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        return throw(new FormatException(
+        throw(new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"]'
         ));
       }
@@ -103,7 +107,7 @@
      * @access  protected
      * @return  bool success
      */
-    function _hello() {
+    public function _hello() {
       if (!$this->ext) return $this->_sockcmd('HELO %s', $this->me, 250);
       
       // Example:
@@ -142,7 +146,7 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException in case authentication method is not supported
      */
-    function _login() {
+    public function _login() {
       if (empty($this->auth)) return TRUE;
       
       switch (strtolower($this->auth)) {
@@ -161,7 +165,7 @@
           break;
           
         default:
-          return throw(new IllegalArgumentException(
+          throw(new IllegalArgumentException(
             'Authentication method '.$this->auth.' not supported'
           ));
       }
@@ -174,12 +178,12 @@
      * @param   string dsn
      * @return  bool success
      */
-    function _parsedsn($dsn) {
+    public function _parsedsn($dsn) {
       if (NULL === $dsn) return TRUE;
       
-      $u= &new URL($dsn);
+      $u= new URL($dsn);
       if (!$u->getHost()) {
-        return throw(new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]'));
+        throw(new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]'));
       }
       
       // Scheme
@@ -193,7 +197,7 @@
           break;
           
         default: 
-          return throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not supported'));
+          throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not supported'));
       }
       
       // Copy host and port
@@ -222,17 +226,17 @@
      * @access  public
      * @param   string dsn default NULL if omitted, 'smtp://localhost:25' will be assumed
      */
-    function connect($dsn= NULL) { 
+    public function connect($dsn= NULL) { 
       if (FALSE === $this->_parsedsn($dsn)) return FALSE;
       
-      $this->_sock= &new Socket($this->host, $this->port);
-      try(); {
+      $this->_sock= new Socket($this->host, $this->port);
+      try {
         $this->_sock->connect();
         $this->_sockcmd(FALSE, 220);            // Read banner message
         $this->_hello();                        // Polite people say hello
         $this->_login();                        // Log in
-      } if (catch('Exception', $e)) {
-        return throw(new TransportException('Connect failed', $e));
+      } catch (Exception $e) {
+        throw(new TransportException('Connect failed', $e));
       }
       
       return TRUE;
@@ -243,13 +247,13 @@
      *
      * @access  public
      */
-    function close() {
+    public function close() {
       if (NULL === $this->_sock) return;
-      try(); {
+      try {
         $this->_sock->write("QUIT\r\n"); 
         $this->_sock->close();
-      } if (catch('Exception', $e)) {
-        return throw(new TransportException('Could not shutdown communications', $e));
+      } catch (Exception $e) {
+        throw(new TransportException('Could not shutdown communications', $e));
       }
       
       return TRUE;      
@@ -263,8 +267,8 @@
      * @return  bool TRUE in case of success
      * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
-    function send(&$message) {
-      try(); {
+    public function send(&$message) {
+      try {
         $this->_sockcmd(
           'MAIL FROM: %s', 
           $message->from->localpart.'@'.$message->from->domain, 
@@ -294,8 +298,8 @@
             $message->getBody()
           ), FALSE);
         }
-      } if (catch('Exception', $e)) {
-        return throw(new TransportException('Sending message failed', $e));
+      } catch (Exception $e) {
+        throw(new TransportException('Sending message failed', $e));
       }
       
       return (bool)$this->_sockcmd('.', 250);

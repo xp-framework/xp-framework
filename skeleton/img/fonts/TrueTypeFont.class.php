@@ -12,7 +12,7 @@
    * @purpose  Font
    */
   class TrueTypeFont extends Object {
-    var
+    public
       $name=            '',
       $size=            0.0,
       $angle=           0.0,
@@ -26,7 +26,7 @@
      * @param   float size default 10.0
      * @param   float angle default 0.0
      */ 
-    function __construct($name, $size= 10.0, $angle= 0.0) {
+    public function __construct($name, $size= 10.0, $angle= 0.0) {
       $this->name= $name;
       $this->size= $size;
       $this->angle= $angle;
@@ -42,7 +42,7 @@
      * @param   int x
      * @param   int y
      */
-    function drawtext(&$hdl, &$col, $text, $x, $y) {
+    public function drawtext(&$hdl, &$col, $text, $x, $y) {
       return imagettftext(
         $hdl,
         $this->size,

@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.URL', 'peer.http.HttpRequest', 'peer.http.HttpsRequest');
+  uses(
+    'peer.URL',
+    'peer.http.HttpRequest',
+    'peer.http.HttpsRequest'
+  );
 
   /**
    * Request factory. Used internally by the HttpConnection class.
@@ -22,7 +26,7 @@
      * @return  &lang.Object a request object
      * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
-    function &factory(&$url) {
+    public function &factory(&$url) {
       switch ($url->getScheme()) {
         case 'http':
           return new HttpRequest($url);
