@@ -23,7 +23,7 @@
      */
     #[@arg(position= 0)]
     public function setClassname($classname) {
-      $this->class= &XPClass::forName($classname);
+      $this->class= XPClass::forName($classname);
     }
 
     /**
