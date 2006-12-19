@@ -38,14 +38,6 @@
       foreach (debug_backtrace() as $no => $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
 
-        // Pop error messages off the copied error stack
-        if (isset($trace['file']) && isset($errors[$trace['file']])) {
-          $messages= $errors[$trace['file']];
-          unset($errors[$trace['file']]);
-        } else {
-          $messages= array(array('' => 1));
-        }
-
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
         $this->addStackTraceFor(
@@ -54,7 +46,7 @@
           isset($trace['function']) ? $trace['function'] : NULL,
           isset($trace['line']) ? $trace['line'] : NULL,
           isset($trace['args']) ? $trace['args'] : NULL,
-          $messages
+          array(array('' => 1))
         );
       }
       
