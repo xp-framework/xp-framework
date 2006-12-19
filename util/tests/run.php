@@ -13,12 +13,12 @@
   // {{{ proto void addTestClass(&unittest.TestSuite suite, &lang.XPClass class [, array arguments])
   //     Adds a test
   function addTestClass(&$suite, &$class, $arguments= array()) {
-    try(); {
+    try {
       $ignored= $suite->addTestClass($class, $arguments);
-    } if (catch('NoSuchElementException', $e)) {
+    } catch(NoSuchElementException $e) {
       Console::writeLine('*** Warning: ', $e->getMessage());
       exit(-4);
-    } if (catch('IllegalArgumentException', $e)) {
+    } catch(IllegalArgumentException $e) {
       Console::writeLine('*** Error: ', $e->getMessage());
       exit(-3);
     }
@@ -110,15 +110,9 @@ __
   }
   
   Console::writeLine('===> Setting up suite');
-  $suite= &new TestSuite();
+  $suite= new TestSuite();
   foreach ($tests as $test) {
-    try(); {
-      $class= &XPClass::forName($test[0]);
-    } if (catch('ClassNotFoundException', $e)) {
-      Console::write('*** Error: Class "'.$test[0].'" ~ ', $e->toString());
-      exit(-2);
-    }
-    
+    $class= &XPClass::forName($test[0]);
     addTestClass($suite, $class, $test[1]);
   }
 
