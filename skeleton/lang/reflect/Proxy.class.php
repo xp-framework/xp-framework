@@ -56,9 +56,13 @@
       
       // Create proxy class' name, using a unique identifier and a prefix
       $name= PROXY_PREFIX.($num++);
-      $implements= xp::registry('implements');
-      $bytes= 'class '.$name.' extends Proxy { ';
+      $bytes= 'class '.$name.' extends Proxy implements ';
       $added= array();
+      
+      for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
+        $bytes.= xp::reflect($interfaces[$j]->getName()).', ';
+      }
+      $bytes= substr($bytes, 0, -2)." {\n";
 
       for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
         $if= &$interfaces[$j];
@@ -94,7 +98,7 @@
 
             // Create method
             $bytes.= (
-              'function '.$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
+              'function '.($methods[$i]->returnsReference() ? '&' : '').$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
               'switch (func_num_args()) {'.implode("\n", $cases).
               ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
               '}'."\n"
@@ -102,7 +106,7 @@
           } else {
             $signature= $args= '';
             foreach ($methods[$i]->getArguments() as $argument) {
-              $signature.= ', $'.$argument->getName();
+              $signature.= ', '.($argument->isPassedByReference() ? '&' : '').'$'.$argument->getName();
               $args.= ', $'.$argument->getName();
               $argument->isOptional() && $signature.= '= '.$argument->getDefault();
             }
@@ -111,15 +115,12 @@
 
             // Create method
             $bytes.= (
-              'function '.$methods[$i]->getName().'('.$signature.') { '.
+              'function '.($methods[$i]->returnsReference() ? '&' : '').$methods[$i]->getName().'('.$signature.') { '.
               'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.$args.')); '.
               '}'."\n"
             );
           }
         }
-        
-        // Implement the interface itself
-        $implements[strtolower($name)][xp::reflect($if->getName())]= 1;
       }
       $bytes.= ' }';
 
@@ -130,9 +131,6 @@
         throw(new IllegalArgumentException($e->getMessage()));
       }
 
-      // Register implemented interfaces
-      xp::registry('implements', $implements);
-      
       // Update cache and return XPClass object
       $cache[$key]= &$class;
       return $class;
