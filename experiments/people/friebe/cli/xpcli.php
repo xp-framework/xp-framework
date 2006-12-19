@@ -12,7 +12,7 @@
   );
 
   // {{{ main
-  $params= &new ParamString();
+  $params= new ParamString();
   
   // Separate runner options from class options
   $map= array();
@@ -52,7 +52,7 @@
     } else {
       unset($params->list[-1]);
       $classname= $option;
-      $classparams= &new ParamString(array_slice($params->list, $i+ 1));
+      $classparams= new ParamString(array_slice($params->list, $i+ 1));
       break;
     }
   }
@@ -63,11 +63,7 @@
     exit(1);
   }
   
-  try(); {
-    $class= &XPClass::forName($classname);
-  } if (catch('ClassNotFoundException', $e)) {
-    return throw($e);
-  }
+  $class= XPClass::forName($classname);
   
   // Usage
   if ($classparams->exists('help', '?')) {
@@ -110,16 +106,16 @@
   }
 
   // Load, instantiate and initialize
-  $pm= &PropertyManager::getInstance();
+  $pm= PropertyManager::getInstance();
   $pm->configure($options['config']);
   
-  $cm= &ConnectionManager::getInstance();
+  $cm= ConnectionManager::getInstance();
   $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
 
-  $l= &Logger::getInstance();
+  $l= Logger::getInstance();
   $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
   
-  $instance= &$class->newInstance();
+  $instance= $class->newInstance();
   foreach ($class->getMethods() as $method) {
     if ($method->hasAnnotation('inject')) {     // Perform injection
       $inject= $method->getAnnotation('inject');
@@ -145,9 +141,9 @@
         }
       }
       
-      try(); {
+      try {
         $method->invoke($instance, $args);
-      } if (catch('Throwable', $e)) {
+      } catch (Throwable $e) {
         Console::writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
         exit(-2);
       }
@@ -182,9 +178,9 @@
         $args= array($classparams->value($select, $short));
       }
 
-      try(); {
+      try {
         $method->invoke($instance, $args);
-      } if (catch('Throwable', $e)) {
+      } catch (Throwable $e) {
         Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
         exit(-2);
       }

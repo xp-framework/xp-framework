@@ -12,49 +12,46 @@
    * @purpose  purpose
    */
   class Api extends Object {
-    var
+    protected
       $class          = '',
       $showDeclaring  = FALSE;
 
     /**
      * Set classname
      *
-     * @access  public
      * @param   string classname
      */
     #[@arg(position= 0)]
-    function setClassname($classname) {
+    public function setClassname($classname) {
       $this->class= &XPClass::forName($classname);
     }
 
     /**
      * Set whether declaring classes should be shown
      *
-     * @access  public
      * @param   bool show default FALSE
      */
     #[@arg(short= 'd')]
-    function setShowDeclaring($show= FALSE) {
+    public function setShowDeclaring($show= FALSE) {
       $this->showDeclaring= (bool)$show;
     }
 
     /**
-     * Run this
+     * Run this command
      *
-     * @access  public
      */
-    function run() {
+    public function run() {
       Console::write($this->class->toString());
-      Console::writeLine(' extends ', xp::stringOf($this->class->getParentClass()), ' {');
+      Console::writeLine(' extends ', $this->class->getParentClass()->toString(), ' {');
       foreach ($this->class->getFields() as $field) {
-        Console::writeLine('  ', xp::stringOf($field));
+        Console::writeLine('  ', $field->toString());
       }
       if ($this->class->hasConstructor()) {
-        Console::writeLine('  ', xp::stringOf($this->class->getConstructor()));
+        Console::writeLine('  ', $this->class->getConstructor()->toString());
       }
       foreach($this->class->getMethods() as $method) {
-        Console::write('  ', xp::stringOf($method));
-        $this->showDeclaring && Console::write(' declared in '.xp::stringOf($method->getDeclaringClass()));
+        Console::write('  ', $method->toString());
+        $this->showDeclaring && Console::write(' declared in '.$method->getDeclaringClass()->toString());
         Console::writeLine();
       }
       Console::writeLine('}');
