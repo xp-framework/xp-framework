@@ -1,0 +1,116 @@
+RFC 0103: Coding standards adjustements for XP5
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Dec 20 12:48:40 CET 2006
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+Coding standards will be adjusted to the new language version.
+
+
+Rationale
+---------
+- New keywords
+- Modifiers
+
+
+Functionality
+-------------
+
+References
+~~~~~~~~~~
+References are no longer needed and thus disallowed.
+
+
+Method modifiers
+~~~~~~~~~~~~~~~~
+Because we have method modifiers the @access und @model tags will become
+obsolete.
+
+XP4:
+<?php
+  /**
+   * Gets the Logger instance
+   *
+   * @model   static
+   * @access  public
+   * @return  &util.log.Logger
+   */
+  function &getInstance() {
+    // ...
+  }
+?>
+
+XP5:
+<?php
+  /**
+   * Gets the Logger instance
+   *
+   * @return  util.log.Logger
+   */
+  public static function getInstance() {
+    // ...
+  }
+?>
+
+Please also note the reference have disappeared!
+
+
+Try / Throw / Catch Statements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Because try, throw and catch are now supported by the language, the 
+following changes are necessary:
+<pre>
+* The (); needs to be removed from try
+* Because catch and throw are now real keywords, they require
+  whitespace in front of the opening bracket
+* throw does not require ().
+</pre>
+
+XP4:
+<?php
+  try(); {
+    throw(new IllegalArgumentException('*BLAM*'));
+  } if (catch('IllegalArgumentException', $e)) {
+    // ...
+  }
+?>
+
+XP5:
+<?php
+  try(); {
+    throw new IllegalArgumentException('*BLAM*');
+  } catch (IllegalArgumentException $e) {
+    // ...
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/devel/coding.html
+  XP Coding standards
+
+Comments
+--------
+
+<EOF>
