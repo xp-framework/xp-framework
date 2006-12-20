@@ -362,6 +362,12 @@
   }
   // }}}
 
+  // {{{ void finally (void)
+  //     Syntactic sugar. Intentionally empty
+  function finally() {
+  }
+  // }}}
+
   // {{{ mixed cast (&mixed var, mixed type default NULL)
   //     Casts. If var === NULL, it won't be touched
   function &cast(&$var, $type= NULL) {
