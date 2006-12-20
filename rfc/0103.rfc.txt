@@ -26,8 +26,8 @@ References
 References are no longer needed and thus disallowed.
 
 
-Method modifiers
-~~~~~~~~~~~~~~~~
+Method modifiers & API-Doc tags
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Because we have method modifiers the @access und @model tags will become
 obsolete.
 
@@ -58,6 +58,25 @@ XP5:
 ?>
 
 Please also note the reference have disappeared!
+
+
+Method modifiers order
+~~~~~~~~~~~~~~~~~~~~~~
+Method modifiers should be given in the following order:
+
+<pre>
+  [access] static abstract final
+</pre>
+
+[access] is one on public, private or protected.
+
+Examples:
+<?php
+  protected function __construct() { }
+  public static function getInstance() { }
+  public abstract function run();
+  protected final function getMessage() { }
+?>
 
 
 Try / Throw / Catch Statements
