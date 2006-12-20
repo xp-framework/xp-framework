@@ -40,7 +40,7 @@
     public function write() {
       $a= func_get_args();
       foreach ($a as $arg) {
-        if (is_a($arg, 'Object')) {
+        if (is('Generic', $arg)) {
           $this->out->write($arg->toString());
         } else if (is_array($arg)) {
           $this->out->write(xp::stringOf($arg));
@@ -58,7 +58,7 @@
     public function writeLine() {
       $a= func_get_args();
       foreach ($a as $arg) {
-        if (is_a($arg, 'Object')) {
+        if (is('Generic', $arg)) {
           $this->out->write($arg->toString());
         } else if (is_array($arg)) {
           $this->out->write(xp::stringOf($arg));
