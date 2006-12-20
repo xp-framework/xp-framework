@@ -186,8 +186,20 @@ How to accept arguments:
   The argument name is calculated by using a lowercase version of the 
   method name and stripping a leading "set".
 
+4) Existance argument
+<?php
+  #[@arg]
+  function setDebug() { 
+    $this->debug= TRUE;
+  }
+?>
+  This method will be called only if --debug is supplied.
+
+  The argument name is calculated by using a lowercase version of the 
+  method name and stripping a leading "set".
+
 <pre>
-Note for cases 2) and 3): The short argument's name is calculated by using 
+Note for cases 2), 3) and 4): The short argument's name is calculated by using 
 the first character of the long argument's name. It can be overwritten to
 resolve ambiguous names by adding a short= '[CHARACTER]' to the @arg
 annotation.
@@ -256,6 +268,9 @@ Related documents
 -----------------
 - http://experiments.xp-framework.net/?people,friebe,cli
   Experiment
+
+- http://xp-framework.net/downloads/experiments/xpcli-5.0.0-alpha.tar.gz
+  Download (contains xpcli.php and supporting classes for PHP5)
 
 
 Comments
