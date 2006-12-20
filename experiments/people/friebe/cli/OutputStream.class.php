@@ -16,6 +16,6 @@
      *
      * @param   mixed arg
      */
-    public function write($arg) { }
+    public function write($arg);
   }
 ?>
