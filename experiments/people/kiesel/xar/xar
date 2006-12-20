@@ -8,5 +8,5 @@ else
   file=$2
   shift 2
 fi
-
-php5 -dinclude_path=".:../../../../skeleton/:lib/xpcli-5.0.0-alpha.xar" xpcli.php Xar $cmd $file -R `pwd` --args="$*"
+D=`dirname $0`
+php5 -dinclude_path="$D:$D/../../../../skeleton/:$D/lib/xpcli-5.0.0-alpha.xar" $D/xpcli.php Xar $cmd $file -R `pwd` --args="$*"

@@ -20,18 +20,31 @@
    * @purpose  Create
    */
   class CreateCommand extends AbstractCommand {
-      
+
+    /**
+     * Add a single URI
+     *
+     * @param   string uri
+     * @param   string cwd
+     */
+    protected function add($uri, $cwd) {
+      $urn= strtr(preg_replace('#^('.preg_quote($cwd, '#').'|/)#', '', $uri), DIRECTORY_SEPARATOR, '/');
+      $this->options & Xar::OPTION_VERBOSE && Console::writeLine($urn);
+      $this->archive->add(new File($uri), $urn);
+    }
+
     /**
      * Retrieve files from filesystem
      *
+     * @param   string cwd
      * @return  string[]
      */
-    public function retrieveFilelist() {
+    public function addAll($cwd) {
       $list= array();
 
       foreach ($this->getArguments() as $arg) {
         if (is_file($arg)) {
-          $list[]= realpath($arg);
+          $this->add(realpath($arg), $cwd);
           continue;
         }
         
@@ -50,7 +63,7 @@
           );
           
           while ($iterator->hasNext()) {
-            $list[]= $iterator->next()->getURI();
+            $this->add($iterator->next()->getURI(), $cwd);
           }
           
           continue;
@@ -67,14 +80,7 @@
      */
     public function perform() {
       $this->archive->open(ARCHIVE_CREATE);
-      
-      $cwd= rtrim(realpath(getcwd()), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-      foreach ($this->retrieveFilelist() as $file) {
-        $urn= strtr(preg_replace('#^'.preg_quote($cwd, '#').'#', '', $file), DIRECTORY_SEPARATOR, '/');
-        $this->options & Xar::OPTION_VERBOSE && Console::writeLine($urn);
-        $this->archive->add(new File($file), $urn);
-      }
-      
+      $this->addAll(rtrim(realpath(getcwd()), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR);
       $this->archive->create();
     }
   }
