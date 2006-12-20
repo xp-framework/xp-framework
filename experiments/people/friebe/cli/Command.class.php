@@ -9,17 +9,15 @@
    *
    * @purpose  Abstract base class
    */
-  class Command extends Object {
-    var
+  abstract class Command extends Object {
+    protected
       $out = NULL,
       $err = NULL;
     
     /**
-     * Run method
+     * Run method. Implemented by subclasses.
      *
-     * @model   abstract
-     * @access  public
      */
-    function run() { }
+    abstract function run() { }
   }
 ?>

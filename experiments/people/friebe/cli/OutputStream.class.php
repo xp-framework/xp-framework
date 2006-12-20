@@ -9,14 +9,13 @@
    *
    * @purpose  Interface
    */
-  class OutputStream extends Interface {
+  interface OutputStream {
 
     /**
      * Write a string
      *
-     * @access  public
      * @param   mixed arg
      */
-    function write($arg) { }
+    public function write($arg) { }
   }
 ?>

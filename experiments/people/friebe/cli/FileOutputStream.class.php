@@ -4,44 +4,42 @@
  * $Id$
  */
 
+  uses('OutputStream');
+
   /**
    * OuputStream that writes to files
    *
    * @purpose  OuputStream implementation
    */
-  class FileOutputStream extends Object {
-    var
+  class FileOutputStream extends Object implements OutputStream {
+    protected
       $file= NULL;
     
     /**
      * Constructor
      *
-     * @access  public
-     * @param   &io.File file
+     * @param   io.File file
      */
-    function __construct(&$file) {
-      $this->file= deref($file);
+    public function __construct($file) {
+      $this->file= $file;
       $this->file->open(FILE_MODE_WRITE);
     }
 
     /**
      * Write a string
      *
-     * @access  public
      * @param   mixed arg
      */
-    function write($arg) { 
+    public function write($arg) { 
       $this->file->write($arg);
     }
 
     /**
      * Destructor. Ensures file is closed.
      *
-     * @access  public
      */
-    function __destruct() {
+    protected function __destruct() {
       $this->file->close();
     }
-
-  } implements(__FILE__, 'OutputStream');
+  }
 ?>

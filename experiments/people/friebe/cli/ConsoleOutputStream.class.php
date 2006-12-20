@@ -4,40 +4,39 @@
  * $Id$
  */
 
+  uses('OutputStream');
+
   /**
    * OuputStream that writes to the console
    *
    * Usage:
    * <code>
-   *   $out= &new ConsoleOutputStream(STDOUT);
-   *   $err= &new ConsoleOutputStream(STDERR);
+   *   $out= new ConsoleOutputStream(STDOUT);
+   *   $err= new ConsoleOutputStream(STDERR);
    * </code>
    *
    * @purpose  OuputStream implementation
    */
-  class ConsoleOutputStream extends Object {
-    var
+  class ConsoleOutputStream extends Object implements OutputStream {
+    protected
       $descriptor= NULL;
     
     /**
      * Constructor
      *
-     * @access  public
      * @param   resource descriptor one of STDOUT, STDERR
      */
-    function __construct($descriptor) {
+    public function __construct($descriptor) {
       $this->descriptor= $descriptor;
     }
 
     /**
      * Write a string
      *
-     * @access  public
      * @param   mixed arg
      */
-    function write($arg) { 
+    public function write($arg) { 
       fwrite($this->descriptor, $arg);
     }
-
-  } implements(__FILE__, 'OutputStream');
+  }
 ?>
