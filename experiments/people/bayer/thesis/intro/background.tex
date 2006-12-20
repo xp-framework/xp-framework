@@ -7,9 +7,6 @@ Weiterhin werden Technologien angesprochen, die alternative L"osungen darstellen
 darauf eingegangen, warum sie keine Verwendung finden. Weiterhin werden Begrifflichkeiten f"ur den weiteren Verlauf
 des Dokumentes eingef"uhrt und erkl"art.
 
-\section{Common Gateway Interface - CGI}
-TODO: bla cgi bla fastcgi bla module
-
 \section{Serviceorientierte Architektur - SOA}
 \label{sec:background:soa}
 Der Begriff Serviceorientierte Architektur oder englisch Service Oriented Architecture, auch diensteorientierte Architektur,
@@ -91,6 +88,20 @@ Der Einsatz von PHP innerhalb von 1\&1 ist historisch vor allem dadurch zu erkl"
 konkurrenzf"ahigen Technologien gab, und sp"ater erstens schon sehr viel in diese Technologie investiert
 worden war und zweitens etwaiige technischen Nachteile von PHP durch im Unternehmen vorhandenes Know-How sehr gut
 ausgeglichen werden konnten.
+
+\subsection{Common Gateway Interface - CGI}
+\label{sec:background:cgi}
+
+Scriptsprachen im Allgemeinen und PHP im Besonderen sind sehr stark mit dem \emph{Common Gateway Interface} verbunden.
+CGI erlaubt einem Webserver (zum Beispiel dem \emph{apache.org HTTP Server} \cite{APACHEHP}) externe Programme zu nutzen, um
+neben normalen, statischen Inhalten auch dynamische Inhalte zu generieren. Hierzu wird der Zugriff (engl. \emph{Request}) mittels
+Umgebungsvariablen formalisiert und an ein externes Programm weitergegeben, welches f"ur jeden Zugriff neu gestartet wird.
+Diese Programme sind oftmals Skriptsprachen, auch weil diese oftmals sehr komfortable Methoden besitzen um Strings zu manipulieren.
+CGI wurde mit \emph{FastCGI} weiterentwickelt, FastCGI-Programme werden nicht f"ur jeden Request neu gestartet, sondern werden
+im Speicher gehalten und nur mit den neu ankommenden Requests versorgt. Einem "ahnlichen Prinzip folgen Server-Module, nur sind
+diese ausf"uhrbaren Programme, sondern Programmbibliotheken und werden direkt in den Webserver geladen.
+PHP wurde haupts"achlich f"ur den Einsatz als CGI-Programm entwickelt, und man merkt der Sprache diese Urspr"unge heute noch sehr
+deutlich an.
 
 
 \section{XP-Framework}

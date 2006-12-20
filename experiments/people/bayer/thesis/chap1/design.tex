@@ -5,8 +5,9 @@
 Eine JSR 223 Implementation f"ur PHP besteht gezwungenermassen aus zwei Teilen: einem Java-Teil, welcher im Wesentlichen
 die ScriptEngineFactory enth"alt, komplett in Java ohne die Verwendung von nativen (JNI-) Aufrufen implementiert ist und
 s"amtliche Funktionalit"at des Auffindungsmechanismus abdeckt, sowie einem nativen Teil, welcher aus 
-einem C- oder C++ - Programm das die n"otigen Aufrufe an PHP vornimmt und der eigentlichen ScriptEngine besteht, die dieses in
-nativen Code "ubersetzte Programm mittels JNI anspricht. TODO: Arschlochsatz
+einem C- oder C++ - Programm, das die n"otigen Aufrufe an PHP vornimmt besteht.
+Die eigentliche ScriptEngine verbindet diese beiden Teile indem sie aus Java heraus dieses, in nativen Code "ubersetzte, 
+Programm mittels JNI anspricht.
 Um allerdings JSR 223 "uberhaupt nutzen zu k"onnen m"ussen die Klassen aus javax.script, vor allem der ScriptEngineManager, 
 im Java-Classpath liegen. Hierzu kann entweder eine Java-Runtime der Version 6, oder aber eine eigene Implementation dieser
 Klassen genutzt werden. Wichtige Use-Cases f"ur diesen Teil des Projektes sind:
@@ -23,6 +24,8 @@ Klassen genutzt werden. Wichtige Use-Cases f"ur diesen Teil des Projektes sind:
     ein beliebiges Skript "ubersetzt und mehrfach ausgef"uhrt werden k"onnen.
 \item Aufrufen von Methoden in "ubersetzten Skripten. Das zu entwickelnde Softwaresystem soll das Aufrufen von Funktionen und
     Methoden in "ubersetzten Skripten erlauben. Hierzu soll das Interface \emph{javax.script.Invocable} unterst"utzt werden.
+\item "Ubergabe von Daten mittels des Kontextes. Der Anwender soll Daten mittels des Engine-Kontextes "ubergeben und in PHP
+    weiterverwenden k"onnen. Genauso soll es m"oglich sein Daten aus PHP heraus an die JVM zur"uckzu"ubergeben.
 \end{enumerate}
 Die im folgenden beschriebene JSR 223 Implementation tr"agt den Namen "'Turpitude"'.
 
@@ -42,6 +45,11 @@ viele Varianten der \emph{eval()}-Methode schon eine Realisierung, sowie mit der
 \emph{ScriptContext} mitbringt. Um den "ubergebenen Scriptcode tats"achlich auszu"fuhren muss dieser an den mittels der Java-Methode
 \emph{System.loadLibary()} geladenen nativen Teil der Implementation weitergegeben werden. Die Kommunikation mit diesem
 nativen Teil findet mittels JNI-Methoden statt.
+Weiterhin implementiert die PHPScriptEngine die beiden in \emph{javax.script} enthaltenen Interfaces \emph{Compilable} und
+\emph{Invocable}, deren Funktionalit"at zur Erff"ullung einiger der Use-Cases ben"otigt wird. F"ur die Methoden aus
+Compilable wird noch eine weitere Klasse - \emph{PHPCompiledScript} - erstellt, welche direkt von der abstrakten
+Klasse \emph{javax.script.CompiledScript} erbt.
+
 Die Abbildung \ref{fig:jsr223impl} zeigt die beteiligten Klassen und ihre Abh"anigkeiten untereinander,
 zusammen mit einigen wichtigen Methoden und Attributen. 
 
@@ -51,8 +59,6 @@ zusammen mit einigen wichtigen Methoden und Attributen.
 \label{fig:jsr223impl}
 \end{figure}
 
-TODO: Compilable, Invocable
-TODO: Use-Cases
 
 \subsection{Native}
 \label{sec:chap1:design:native}

@@ -210,7 +210,7 @@ Von der Firma Zend existiert eine JSR 223 Referenzimplementation f"ur PHP5, alle
 und das mitgelieferte PHP erf"ullt wegen fehlender Extensions nicht ganz die Anspr"uche die die Aufgabe stellt.
 Der JSR 223 wird Teil der JLS 6 sein, welche vorraussichtlich im Dezember 2006 erscheinen wird.
 
-\subsection{Fazit}
+\subsection{Ergebnis der Analyse}
 \label{sec:chap1:ana:fazit}
 
 Sowohl das Bean Scripting Framework, als auch der JSR 223 erwiesen sich als geeignete Technologien, um die gestellte Aufgabe zu 
@@ -246,7 +246,7 @@ sondern
 Dies lies f"ur die weitere Entwicklung unter Zuhilfename der Referenzimplementation schlimmes vermuten.
 Als Test f"ur den Implementationabh"angigen Teil wurde die PHP-Funktion \emph{phpinfo()} ausgew"ahlt, welche
 Text ausgibt, aus dem sich alle geladenen Extensions, sowie alle gesetzten Umgebungsvariablen und 
-PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementation
+PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementation \cite{JSRDL}
 zu verwirklichen, da das Laden der mitgelieferten php5.so sowohl und FreeBSD, als auch unter 64- und 32-Bit Linux mit 
 verschiedensten Java Versionen zum Absturz der Java Virtual Machine f"uhrte. Die Tatsache dass die Referenzimplementation nicht
 im Quelltext verf"ugbar ist verhinderte gleichzeitig die Neu"ubersetzung oder eine effektive Fehlersuche .
@@ -268,7 +268,7 @@ werden kann. Fuer diesen Teil des Projektes werden sechs Wochen veranschlagt.
 Im zweiten Teilprojekt soll der Einsatz von PHP innerhalb eines Java Application Servers - beispielsweise JBoss - erforscht
 und vereinfacht werden. Grossen Wert wird hierbei auf ein m"oglichst einfaches Ausbringen (\emph{deployment}) derart 
 entwickelter Anwendungen gelegt. Hierzu soll auch die Notwendigkeit Java-Quelltext zu schreiben auf ein Minumum reduziert, 
-oder wenn m"oglich komplett TODO:Verb werden. Hierf"ur werden weitere sechs Wochen ausreichen.
+oder wenn m"oglich komplett eliminiert werden. Hierf"ur werden weitere sechs Wochen ausreichen.
 
 Schlussendlich soll die restliche Zeit darauf verwandt werden m"oglichst viele Eigenschaften des JavaEE Application Servers
 f"ur die ausgef"uhrten PHP-Skripte erreichbar zu machen. Dazu z"ahlen die Persistenzanbindung, beispielsweise mittels Java
