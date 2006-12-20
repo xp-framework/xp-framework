@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('Command');
+  uses('util.cmd.Command');
 
   /**
    * Dumps an API
