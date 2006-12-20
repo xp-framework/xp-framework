@@ -1,7 +1,12 @@
 #!/bin/sh
 
-cmd=$1
-file=$2
-shift 2
+if [ $# -lt 2 ] ; then
+  cmd='--help'
+  file=''
+else 
+  cmd=$1
+  file=$2
+  shift 2
+fi
 
 php5 -dinclude_path=".:../../../../skeleton/:lib/xpcli-5.0.0-alpha.xar" xpcli.php Xar $cmd $file -R `pwd` --args="$*"
