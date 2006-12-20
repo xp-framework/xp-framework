@@ -6,8 +6,8 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
-    'PrintStream', 
-    'ConsoleOutputStream',
+    'io.streams.PrintStream', 
+    'io.streams.ConsoleOutputStream',
     'util.log.Logger',
     'util.PropertyManager',
     'rdbms.ConnectionManager'
