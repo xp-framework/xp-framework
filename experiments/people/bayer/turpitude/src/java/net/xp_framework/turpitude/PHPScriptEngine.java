@@ -22,7 +22,7 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
             throw(e);
         }
         startUp();
-        //make sure we shut down properly
+        //make sure we shut down properly, at least whenever the vm shuts down
         Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     shutDown();
@@ -61,6 +61,24 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
     }
 
     /**
+     * parses the php tags from a string
+     * e.g. &lt;?php
+     */
+    private String removePHPTag(String in) {
+        String out = "";
+
+        if (in.substring(0, 5).equals("<?php")) {
+            out = in.substring(5);
+        } else if (in.substring(0, 2).equals("<?")) {
+            out = in.substring(2);
+        } else {
+            out = in;
+        }
+       
+        return out;
+    }
+
+    /**
      * Executes a script from a Reader containing the source code
      * @return The value returned by the script
      */
@@ -75,6 +93,7 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
      */
     public Object eval(String str, ScriptContext ctx) throws ScriptException,
                                                              NullPointerException {
+        str = removePHPTag(str);
         CompiledScript sc = compile(str);
         return sc.eval(ctx);
     }

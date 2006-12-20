@@ -14,13 +14,19 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
     sapi_startup(&turpitude_sapi_module);
     //start up php backend, check for errors
     if (SUCCESS != php_module_startup(&turpitude_sapi_module, NULL, 0))
-        java_throw(env, "java/lang/IllegalArgumentException", "Cannot startup SAPI module");
+        java_throw(env, "javax/script/ScriptException", "Cannot startup SAPI module");
+
+    // Initialize request 
+    if (SUCCESS != php_request_startup(TSRMLS_C)) 
+        java_throw(env, "javax/script/ScriptException", "unable to start up request - php_request_startup()");
+
 }
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jobject) {
     TSRMLS_FETCH();
 
     // Shutdown PHP module 
+    php_request_shutdown((void *) 0);
     php_module_shutdown(TSRMLS_C);
     sapi_shutdown();
 }
@@ -32,31 +38,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compi
     zend_op_array* compiled_op_array= NULL;
 
     zend_first_try {
-        zend_error_cb= turpitude_error_cb;
-        zend_uv.html_errors= 0;
-        CG(in_compilation)= 0;
-        CG(interactive)= 0;
-        EG(uninitialized_zval_ptr)= NULL;
-        EG(error_reporting)= E_ALL;
-    } zend_catch {
-        java_throw(env, "javax/script/ScriptException", LastError.data());
-    } zend_end_try();
-
-
-    return NULL;
-}
-
-JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalPHP(JNIEnv* env, jobject obj, jstring src) {
-    TSRMLS_FETCH();
-    jobject jret;
-    zend_first_try {
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
-        //SG(server_context)= emalloc(sizeof(turpitude_context));
-        //((turpitude_context*)SG(server_context))->env= env;
-        //((turpitude_context*)SG(server_context))->object= obj;
-
         zend_error_cb= turpitude_error_cb;
         zend_uv.html_errors= 0;
         CG(in_compilation)= 0;
@@ -64,48 +48,59 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_evalP
         EG(uninitialized_zval_ptr)= NULL;
         EG(error_reporting)= E_ALL;
 
-        // Initialize request 
-        if (SUCCESS != php_request_startup(TSRMLS_C)) {
-            java_throw(env, "javax/script/ScriptException", "unable to start up request - php_request_startup()");
-            return NULL;
-        }
-
-        // return value
-        //zval* retval = new zval();
-        zval* retval= (zval*)malloc(sizeof(zval));
-        // Execute 
         LastError = "";
-        const char *str= env->GetStringUTFChars(src, 0); 
+        const char* str= env->GetStringUTFChars(src, 0); 
         {
-            // copy string containing source
-            char *eval= (char*) emalloc(strlen(str)+ 1);
-            strncpy(eval, str, strlen(str));
-            eval[strlen(str)]= '\0';
 
-            printf("Code --> |%s| <--\n", eval);
-            if (FAILURE == zend_eval_string(eval, retval, "(jni)" TSRMLS_CC)) {
-                //java_throw(env, "javax/script/ScriptException", "script execution failed in zend_eval_string()");
-                printf("%s\n", "script execution failed in zend_eval_string()");
-            }
-            efree(eval);
+            zval eval;
+            char* eval_desc = zend_make_compiled_string_description("jni compile()'d code" TSRMLS_CC);
+
+            eval.value.str.val= (char*) emalloc(strlen(str)+ 1);
+            eval.value.str.len= strlen(str);
+            strncpy(eval.value.str.val, str, eval.value.str.len);
+            eval.value.str.val[eval.value.str.len]= '\0';
+            eval.type= IS_STRING;
+
+            //printf("Code --> |%s| <--\n", eval.value.str.val);
+            compiled_op_array= compile_string(&eval, eval_desc TSRMLS_CC);
+
+            efree(eval_desc);
+            zval_dtor(&eval);
         }
         // make sure memory is freed properly
         env->ReleaseStringUTFChars(src, str);
-        //efree(SG(server_context));
-        //SG(server_context)= 0;
 
-        // evaluate return value
-        printf("retval type: %d\n", Z_TYPE_P(retval));
-        jret = zval_to_jobject(env, retval); 
-        
-        // Shutdown request
         zend_llist_destroy(&global_vars);
-        php_request_shutdown((void *) 0);
-
     } zend_catch {
         java_throw(env, "javax/script/ScriptException", LastError.data());
     } zend_end_try();
 
+    /* Check if compilation worked */
+    if (!compiled_op_array) {
+        //java_throw(env, "javax/script/ScriptException", "Compilation Error, op_array is empty");
+        java_throw(env, "javax/script/ScriptException", LastError.data());
+    }
 
-    return jret;
+    // Create PHPCompiledScript object and return it 
+    jclass cls = env->FindClass("net/xp_framework/turpitude/PHPCompiledScript");
+    if (NULL == cls) 
+        java_throw(env, "javax/script/ScriptException", "unable to find class net/xp_framework/turpitude/PHPCompiledScript");
+
+    jobject compiledscript = env->AllocObject(cls);
+    if (NULL == compiledscript) 
+        java_throw(env, "javax/script/ScriptException", "unable to allocate object (net/xp_framework/turpitude/PHPCompiledScript)");
+
+    jfieldID oparrayField = env->GetFieldID(cls, "ZendOpArrayptr", "Ljava/nio/ByteBuffer;");
+    if (NULL == oparrayField) 
+        java_throw(env, "javax/script/ScriptException", "unable find fieldID (ZendOpArrayptr)");
+
+
+    env->SetObjectField(
+        compiledscript, 
+        oparrayField,
+        env->NewDirectByteBuffer(compiled_op_array, sizeof(compiled_op_array))
+    );
+
+    return compiledscript;
 }
+
