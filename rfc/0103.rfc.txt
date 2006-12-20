@@ -79,6 +79,33 @@ Examples:
 ?>
 
 
+Type hints
+~~~~~~~~~~
+In PHP5, type hints can be used to ensure types on method invocation. These
+type hints include any type of object and the keyword "array". For scalar
+types, the type hint must be omitted (supplying "string" as type hint will
+make the engine try to look up a class called "string").
+
+Type hints are optional.
+
+Example:
+<?php
+  /**
+   * Adds a test
+   *
+   * @param   Test t
+   * @return  Test the added test
+   */
+  public function addTest(Test $t) { 
+    $this->tests[]= $t;
+    return $t;
+  }
+?>
+
+If addTest() is called with - say - a Date object, an IllegalArgumentException
+will be thrown (see RFC #0100).
+
+
 Try / Throw / Catch Statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Because try, throw and catch are now supported by the language, the 
