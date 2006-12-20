@@ -145,7 +145,7 @@ XP4:
 
 XP5:
 <?php
-  try(); {
+  try {
     throw new IllegalArgumentException('*BLAM*');
   } catch (IllegalArgumentException $e) {
     // ...
