@@ -79,16 +79,23 @@
       $arg= $method->getAnnotation('arg');
       $name= strtolower(preg_replace('/^set/', '', $method->getName()));;
       $comment= trim($method->getComment());
-      list($first, )= $method->getArguments();
+      
+      if (0 == $method->numArguments()) {
+        $optional= TRUE;
+      } else {
+        list($first, )= $method->getArguments();
+        $optional= $first->isOptional();
+      }
+      
       if (isset($arg['position'])) {
         $details['#'.($arg['position'] + 1)]= $comment;
         $positional[$arg['position']]= $name;
       } else if (isset($arg['name'])) {
         $details['--'.$arg['name'].' | -'.(isset($arg['short']) ? $arg['short'] : $arg['name']{0})]= $comment;
-        $extra[$arg['name']]= $first->isOptional();
+        $extra[$arg['name']]= $optional;
       } else {
         $details['--'.$name.' | -'.(isset($arg['short']) ? $arg['short'] : $name{0})]= $comment;
-        $extra[$name]= $first->isOptional();
+        $extra[$name]= $optional;
       }
     }
     
