@@ -122,8 +122,8 @@
   $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
   
   $instance= $class->newInstance();
-  $instance->out= &new PrintStream(new ConsoleOutputStream(STDOUT));
-  $instance->err= &new PrintStream(new ConsoleOutputStream(STDERR));
+  $instance->out= new PrintStream(new ConsoleOutputStream(STDOUT));
+  $instance->err= new PrintStream(new ConsoleOutputStream(STDERR));
   
   foreach ($class->getMethods() as $method) {
     if ($method->hasAnnotation('inject')) {     // Perform injection
