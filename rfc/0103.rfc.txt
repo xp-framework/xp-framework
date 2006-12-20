@@ -106,6 +106,23 @@ If addTest() is called with - say - a Date object, an IllegalArgumentException
 will be thrown (see RFC #0100).
 
 
+Interface and abstract methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Interface methods and methods with the abstract modifier may not include a
+method body. The correct syntax is a semi-colon after the method declaration,
+without any whitespace:
+
+<?php
+  interface Filter {
+    public function accept($e);
+  }
+
+  abstract class Command {
+    public abstract function run();
+  }
+?>
+
+
 Try / Throw / Catch Statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Because try, throw and catch are now supported by the language, the 
