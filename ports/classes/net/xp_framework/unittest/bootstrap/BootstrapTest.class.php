@@ -89,11 +89,11 @@
     }
     
     /**
-     * Test
+     * Test broken behaviour described in Bug #19
      *
      * @access  public
      */
-    #[@test, @ignore('Broken, see bug #19')]
+    #[@test]
     public function recursiveInclusionWithTicks() {
       $this->assertExitcode(123, '
         declare(ticks=1);
