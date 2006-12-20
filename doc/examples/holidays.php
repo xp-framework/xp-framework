@@ -9,14 +9,14 @@
   
   define('DATEFMT', '%a, %b %d %Y');
   
-  // {{{ &util.Date dateParam(&util.cmd.ParamString p, string param, int default
+  // {{{ util.Date dateParam(util.cmd.ParamString p, string param, int default
   //     Retrieves a date from the command line arguments
-  function &dateParam(&$p, $param, $default) {
+  function dateParam($p, $param, $default) {
     if (!$p->exists($param)) return new Date($default);
     
-    try(); {
-      $date= &DateParser::parse($p->value($param));
-    } if (catch('FormatException', $e)) {
+    try {
+      $date= DateParser::parse($p->value($param));
+    } catch (FormatException $e) {
       Console::writeLine('*** ', $e->getMessage());
       exit(-1);
     }
@@ -25,9 +25,9 @@
   // }}}
   
   // {{{ main
-  with ($p= &new ParamString()); {
-    $s= &dateParam($p, 'start', time());
-    $e= &dateParam($p, 'end', time()+ 2 * CAL_SEC_DAY);
+  with ($p= new ParamString()); {
+    $s= dateParam($p, 'start', time());
+    $e= dateParam($p, 'end', time()+ 2 * CAL_SEC_DAY);
   }
 
   // Sanity check

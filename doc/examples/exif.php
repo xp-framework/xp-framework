@@ -8,7 +8,7 @@
   uses('img.util.ExifData', 'io.File');
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLinef(
       'Usage: %s %s <infile>',
@@ -20,9 +20,9 @@
   
   // Load original
   Console::write('===> Loading ', $p->value(1), ': ');
-  try(); {
-    $data= &ExifData::fromFile(new File($p->value(1)));
-  } if (catch('ImagingException', $e)) {
+  try {
+    $data= ExifData::fromFile(new File($p->value(1)));
+  } catch (ImagingException $e) {
     $e->printStackTrace();
     exit(-1);
   }

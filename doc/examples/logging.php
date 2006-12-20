@@ -15,7 +15,7 @@
   //     Formats using php://vsprintf, throws FormatException
   function format($args) {
     if (!$format= vsprintf($args[0], array_slice($args, 1))) {
-      throw(new FormatException('Format is uncorrect'));
+      throw new FormatException('Format is uncorrect');
     }
     return $format;
   }
@@ -28,8 +28,7 @@
   );
   
   // Set up logger
-  $l= &Logger::getInstance();
-  $cat= &$l->getCategory();
+  $cat= Logger::getInstance()->getCategory();
   $cat->addAppender(new ColoredConsoleAppender());
   
   // Write debug
@@ -37,9 +36,9 @@
   $cat->debug('Called', $argv[0], 'with', $argc, 'argument(s):', $argv);
   
   // Try to format given the arguments
-  try(); {
+  try {
     $format= format(array_slice($argv, 1));
-  } if (catch('FormatException', $e)) {
+  } catch (FormatException $e) {
     $cat->error('Exception caught:', $e);
     $cat->warn('Exiting at', Date::now());
     exit;

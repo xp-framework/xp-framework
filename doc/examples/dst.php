@@ -15,9 +15,9 @@
   // }}}
 
   // {{{ main
-  $db_eu= &Calendar::dstBegin();
-  $db_us= &Calendar::dstBegin(-1, CAL_DST_US);
-  $de= &Calendar::dstEnd();
+  $db_eu= Calendar::dstBegin();
+  $db_us= Calendar::dstBegin(-1, CAL_DST_US);
+  $de= Calendar::dstEnd();
 
   Console::writeLine(underline('Daylight savings time'));
   Console::writeLine('  Begin (EU) : ', $db_eu->format('%c'));

@@ -16,9 +16,9 @@
     'io.Folder'
   );
   
-  // {{{ string makeLink(&peer.URL codebase, string href)
+  // {{{ string makeLink(peer.URL codebase, string href)
   //     Returns fully qualified link for a given codebase and a specified URI reference
-  function makeLink(&$codebase, $href) {
+  function makeLink($codebase, $href) {
     if (strstr($href, '://')) return $href;   // Fully qualified
     
     $base= sprintf(
@@ -35,7 +35,7 @@
   // }}}
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLinef('Usage: %s <url_to_jnlp_file> [--java=<java_executable>]', $p->value(0));
     exit(1);
@@ -44,38 +44,38 @@
   $uri= $p->value(1);
   if (strstr($uri, '://')) {
     Console::writeLine('===> Downloading webstart URL ', $uri);
-    try(); {
-      $c= &new HttpConnection($uri);
-      if ($response= &$c->get()) {
+    try {
+      $c= new HttpConnection($uri);
+      if ($response= $c->get()) {
         $document= '';
         while (FALSE !== ($buf= $response->readData())) {
           $document.= preg_replace('/&(?!(amp;))/', '&amp;', $buf);
         }
       }
       delete($c);
-    } if (catch('Exception', $e)) {
+    } catch (XPException $e) {
       $e->printStackTrace();
       exit(-1);
     }
   } else {
     Console::writeLine('===> Reading webstart document ', $uri);
-    try(); {
+    try {
       $document= preg_replace('/&(?!(amp;))/', '&amp;', FileUtil::getContents(new File($uri)));
-    } if (catch('Exception', $e)) {
+    } catch (XPException $e) {
       $e->printStackTrace();
       exit(-1);
     }
   }
   
-  try(); {
-    $j= &JnlpDocument::fromString($document);
-  } if (catch('Exception', $e)) {
+  try {
+    $j= JnlpDocument::fromString($document);
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }
   
   // Print out information provided by the JNLP information section
-  $inf= &$j->getInformation();
+  $inf= $j->getInformation();
   Console::writeLinef(
     "---> Application is %s (%s)\n     Vendor %s (see %s)", 
     $inf->getTitle(),
@@ -85,10 +85,10 @@
   );
   
   // Create an application directory
-  $folder= &new Folder(strtr(basename($j->getCodebase()), PATH_SEPARATOR, '_'));
-  try(); {
+  $folder= new Folder(strtr(basename($j->getCodebase()), PATH_SEPARATOR, '_'));
+  try {
     if (!$folder->exists()) $folder->create();
-  } if (catch('Exception', $e)) {
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -96,22 +96,22 @@
   // Download all JAR files, adding them to the classpath as we go
   $classpath= System::getEnv('CLASSPATH');
   $properties= '';
-  $codebase= &new URL($j->getCodebase());
+  $codebase= new URL($j->getCodebase());
   Console::writeLinef('---> Processing resources from codebase %s', $j->getCodebase());
   foreach ($j->getResources() as $resource) {
     switch (xp::typeOf($resource)) {
 
       // A JAR file, download it
       case 'com.sun.webstart.jnlp.JnlpJarResource':
-        $href= &new URL(makeLink($codebase, $resource->getHref()));
+        $href= new URL(makeLink($codebase, $resource->getHref()));
         
         $target= rtrim($folder->getURI(), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $href->getPath());
         $classpath.= PATH_SEPARATOR.'"'.$target.'"';
-        try(); {
+        try {
           $params= array();
 
           // Create a new file instance
-          $jar= &new File($target);
+          $jar= new File($target);
           if ($jar->exists()) {
             Console::writef('     >> Have %s... ', basename($jar->getURI()));
             $params['If-Modified-Since']= date('D, d M Y H:i:s \G\M\T', $jar->lastModified());
@@ -120,8 +120,8 @@
 
           // Issue HTTP request
           $url= makeLink($codebase, $resource->getLocation());
-          $c= &new HttpConnection($url);
-          $response= &$c->get(NULL, $params);
+          $c= new HttpConnection($url);
+          $response= $c->get(NULL, $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
           // Check response code
@@ -132,7 +132,7 @@
 
               // Check if this file resided in a subdirectory. If so, create this
               // subdirectory if necessary
-              $f= &new Folder(dirname($jar->getURI()));
+              $f= new Folder(dirname($jar->getURI()));
               if (!$f->exists()) $f->create();
 
               $jar->open(FILE_MODE_WRITE);
@@ -154,7 +154,7 @@
             default:
               Console::writeLine('FAIL');
           }
-        } if (catch('Exception', $e)) {
+        } catch (XPException $e) {
           Console::writeLine('FAIL');
           $e->printStackTrace();
           exit(-1);
@@ -176,7 +176,7 @@
   // 
   
   // Execute Java
-  $app= &$j->getApplicationDesc();
+  $app= $j->getApplicationDesc();
   $cmd= sprintf(
     '%s %s -cp %s %s %s 2>&1',
     $p->value('java', 'j', 'java'),
@@ -187,12 +187,12 @@
   );
   Console::writeLine('---> Executing ', $cmd);
 
-  try(); {
-    $p= &new Process($cmd);
+  try {
+    $p= new Process($cmd);
     while (!$p->out->eof()) {
       Console::writeLine($p->out->readLine());
     }
-  } if (catch('Exception', $e)) {
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }

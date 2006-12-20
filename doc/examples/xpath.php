@@ -8,7 +8,7 @@
   uses('xml.XPath');
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
 
   $xml= <<<__
 <dialog id="file.open">
@@ -25,10 +25,10 @@ __;
   Console::writeLine('>>> XML: ', "\n", $xml);
   Console::writeLine('>>> Query: ', $query);
   
-  $xpath= &new XPath($xml);
-  try(); {
+  $xpath= new XPath($xml);
+  try {
     $result= $xpath->query($query);
-  } if (catch('XPathException', $e)) {
+  } catch (XPathException $e) {
     $e->printStackTrace();
     exit(-1);
   }

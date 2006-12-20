@@ -9,16 +9,15 @@
   uses('util.log.Logger', 'util.log.LogCategory', 'util.log.ColoredConsoleAppender');
   
   /// {{{ main
-  $log= &Logger::getInstance();
-  $cat= &$log->getCategory();
+  $cat= Logger::getInstance()->getCategory();
   $cat->addAppender(new ColoredConsoleAppender());
   
-  $c= &new XmlRpcClient(new XmlRpcHttpTransport('http://xmlrpc.boost.home.ahk:80'));
+  $c= new XmlRpcClient(new XmlRpcHttpTransport('http://xmlrpc.boost.home.ahk:80'));
   $c->setTrace($cat);
   
-  try(); {
-    $res= &$c->invoke('XmlRpcTest::echoArguments', 3, 'foobar', TRUE, -5.666667, array('foo' => 'bar'));
-  } if (catch('Exception', $e)) {
+  try {
+    $res= $c->invoke('XmlRpcTest::echoArguments', 3, 'foobar', TRUE, -5.666667, array('foo' => 'bar'));
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }

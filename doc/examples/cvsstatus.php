@@ -7,16 +7,16 @@
   xp::sapi('cli');
   uses('org.cvshome.CVSFile');
 
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     printf("Usage: %s <filename>\n", $p->value(0));
     exit(-2);
   }
   
-  $f= &new CVSFile($p->value(1));
-  try(); {
-    $status= &$f->getStatus();
-  } if (catch('Exception', $e)) {
+  $f= new CVSFile($p->value(1));
+  try {
+    $status= $f->getStatus();
+  } catch (Exception $e) {
     $e->printStackTrace();
     exit(-1);
   }

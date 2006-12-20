@@ -13,21 +13,21 @@
 
   // {{{ sender thread
   class SenderThread extends Thread {
-    var
+    public
       $num  = 0;
 
     // {{{ SenderThread __construct(int num)
     //     Constructor
-    function __construct($num) {
+    public function __construct($num) {
       parent::__construct('sender.'.$num);
       $this->num= $num;
-      $this->queue= &new IPCQueue(8925638);
+      $this->queue= new IPCQueue(8925638);
     }
     // }}}
 
     // {{{ void run(void)
     //     Thread runner implementation
-    function run() {
+    public function run() {
       while ($this->sent < $this->num) {
         Thread::sleep(rand(100, 4000));
         Console::writeLinef('<%s> Sending message #%d @ %s', $this->name, $this->sent, date('r'));
@@ -54,15 +54,15 @@
 
     // {{{ ReceiverThread __construct(void)
     //     Constructor
-    function __construct() {
+    public function __construct() {
       parent::__construct('receiver');
-      $this->queue= &new IPCQueue(8925638);
+      $this->queue= new IPCQueue(8925638);
     }
     // }}}
 
     // {{{ void run(void)
     //     Thread runner implementation
-    function run() {
+    public function run() {
       do {
 
         // Wait for messages to arrive
@@ -98,7 +98,7 @@
   // }}}
 
   // {{{ main
-  with ($s= &new SenderThread(5), $r= &new ReceiverThread()); {
+  with ($s= new SenderThread(5), $r= new ReceiverThread()); {
     $s->start();
     $r->start();
     $s->join();  

@@ -8,21 +8,21 @@
   uses('util.Hashmap', 'text.Collator');
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLinef('Usage: %s %s <<locale>>', $p->value(-1), $p->value(0));
     exit(1);
   }
 
-  try(); {
-    $locale= &new Locale($p->value(1));
-  } if (catch('IllegalArgumentException', $e)) {
+  try {
+    $locale= new Locale($p->value(1));
+  } catch (IllegalArgumentException $e) {
     $e->printStackTrace();
     exit(-1);
   }
   
   // Create a hashmap
-  $h= &new Hashmap();
+  $h= new Hashmap();
   $h->put('auml', 'ä');
   $h->put('a', 'a');
   $h->put('b', 'b');

@@ -13,7 +13,7 @@
   );
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
 
   // Set up logger
   if ($p->exists('debug')) {
@@ -22,8 +22,8 @@
     $cat->addAppender(new ColoredConsoleAppender());
   }
 
-  $conn= &DriverManager::getConnection('sqlite://thekid@test/?log=default');
-  try(); {
+  $conn= DriverManager::getConnection('sqlite://thekid@test/?log=default');
+  try {
     $conn->connect();
     
     // Create table
@@ -77,7 +77,7 @@
         $record['changedby']
       );
     }
-  } if (catch('SQLException', $e)) {
+  } catch (SQLException $e) {
     $e->printStackTrace();
   } finally(); {
     $conn->query('drop table test');

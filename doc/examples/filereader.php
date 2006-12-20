@@ -7,10 +7,10 @@
   xp::sapi('cli');
   uses('io.File', 'io.FileUtil');
   
-  $p= &new ParamString();
-  try(); {
+  $p= new ParamString();
+  try {
     $contents= FileUtil::getContents(new File($p->value(1)));
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }

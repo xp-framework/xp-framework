@@ -7,14 +7,14 @@
   xp::sapi('cli');
   uses('io.Folder');
 
-  $p= &new ParamString();
-  try(); {
-    $d= &new Folder($p->value(1, NULL, '.'));
+  $p= new ParamString();
+  try {
+    $d= new Folder($p->value(1, NULL, '.'));
     while ($entry= $d->getEntry()) {
       Console::writeLinef('%s%s', $d->getURI(), $entry);
     }
     $d->close();
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }

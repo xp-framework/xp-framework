@@ -8,7 +8,7 @@
   uses('util.Hashmap');
 
   // {{{ main
-  $h= &new Hashmap();
+  $h= new Hashmap();
   $h->put('color', 'red');
   $h->put('count', 5);
   
@@ -26,7 +26,7 @@
 
   // Show iterator functionality
   Console::writeLine('- Using iterator to enumerate keys');
-  for ($i= &$h->iterator(); $i->hasNext(); ) {
+  for ($i= $h->iterator(); $i->hasNext(); ) {
     $key= $i->next();
     Console::writeLinef('  * %-20s => %s', var_export($key, 1), var_export($h->get($key), 1));
   }

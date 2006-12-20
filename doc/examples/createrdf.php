@@ -17,24 +17,22 @@
   );
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   
   // Set up connection manager
-  $cm= &ConnectionManager::getInstance();
-  $conn= &$cm->register(DriverManager::getConnection(
+  $conn= ConnectionManager::getInstance()->register(DriverManager::getConnection(
     'sybase://'.$p->value(1).'/CAFFEINE?autoconnect=1'
   ), 'caffeine');
   
   // Enable debugging if requested
   if ($p->exists('debug')) {
-    $l= &Logger::getInstance();
-    $cat= &$l->getCategory('sql');
+    $cat= Logger::getInstance()->getCategory('sql');
     $cat->addAppender(new ConsoleAppender());
     $conn->addObserver(LogObserver::instanceFor('sql'));
   }
 
   // Create RDF object
-  $rdf= &new RDFNewsFeed();
+  $rdf= new RDFNewsFeed();
   $rdf->setChannel(
     'XP News', 
     'http://xp-framework.net/',
@@ -47,9 +45,9 @@
   );
   
   // Get news entries ordered by date, maximum 20
-  try(); {
-    $news= &XPNews::getByDateOrdered(20);
-  } if (catch('Exception', $e)) {
+  try {
+    $news= XPNews::getByDateOrdered(20);
+  } catch (Exception $e) {
     $e->printStackTrace();
     exit(-1);
   }

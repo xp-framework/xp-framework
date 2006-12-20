@@ -7,20 +7,20 @@
   xp::sapi('cli');
 
   // {{{ main
-  $p= &new ParamString();
-  $cl= &ClassLoader::getDefault();
+  $p= new ParamString();
+  $cl= ClassLoader::getDefault();
   if (!$cl->findClass($p->value(1))) {
     Console::writeLinef('Class "%s" could not be found', $p->value(1));
     exit();
   }
 
-  try(); {
-    $class= &XPClass::forName($p->value(1));
-    $parent= &$class->getParentClass();
-  } if (catch ('ClassNotFoundException', $e)) {
+  try {
+    $class= XPClass::forName($p->value(1));
+    $parent= $class->getParentClass();
+  } catch (ClassNotFoundException $e) {
     $e->printStackTrace();
     exit(-1);
-  } if (catch ('Exception', $e)) {
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-2);
   }
@@ -28,7 +28,7 @@
   // Retrieve class methods
   $methods= '';
   for ($i= 0, $m= $class->getMethods(), $s= sizeof($m); $i < $s; $i++) {
-    $decl= &$m[$i]->getDeclaringClass();
+    $decl= $m[$i]->getDeclaringClass();
     $methods.= '  - '.$m[$i]->toString().' declared in '.$decl->getName();
     if ($m[$i]->hasAnnotations()) $methods.= ' [#'.var_export($m[$i]->getAnnotations(), 1).']';
     $methods.="\n";
@@ -48,8 +48,8 @@
   } else {
 
     // Retrieve constructor
-    if ($constructor= &$class->getConstructor()) {
-      $decl= &$constructor->getDeclaringClass();
+    if ($constructor= $class->getConstructor()) {
+      $decl= $constructor->getDeclaringClass();
     }
     
     // Retrieve implemented interfaces
@@ -65,7 +65,7 @@
     }
 
     // Create a new instance
-    $instance= &$class->newInstance();
+    $instance= $class->newInstance();
   
     Console::writef(
       "Class '%s' (extends %s) %s\n".
@@ -88,8 +88,8 @@
     );
 
     if ($p->exists('invoke')) {
-      with ($m= &$class->getMethod($p->value('invoke'))); {
-        $result= &$m->invoke($instance);
+      with ($m= $class->getMethod($p->value('invoke'))); {
+        $result= $m->invoke($instance);
         Console::writeLinef(
           '* Method %s() invokation (without parameters) results in [%s]%s', 
           $m->getName(),

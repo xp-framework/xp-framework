@@ -8,7 +8,7 @@
   uses('io.dba.DBAFile');
   
   // {{{ main
-  $dba= &new DBAFile('test.db', DBH_GDBM);
+  $dba= new DBAFile('test.db', DBH_GDBM);
   $dba->open(DBO_TRUNC);
   
   // Insert some values
@@ -19,7 +19,7 @@
   $dba->insert('php.logoguid', php_logo_guid());
   
   // Use the iterator functionality
-  for ($i= &$dba->iterator(); $i->hasNext(); ) {
+  for ($i= $dba->iterator(); $i->hasNext(); ) {
     $key= $i->next();
     Console::writeLinef('[%-14s] %s', $key, var_export($dba->fetch($key), 1));
   }

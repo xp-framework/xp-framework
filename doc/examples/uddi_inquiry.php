@@ -13,22 +13,21 @@
   );
   
   // {{{ main
-  $l= &Logger::getInstance();
-  $cat= &$l->getCategory();
+  $cat= Logger::getInstance()->getCategory();
   $cat->addAppender(new ConsoleAppender());
   
-  $c= &new UDDIServer(
+  $c= new UDDIServer(
     'http://test.uddi.microsoft.com/inquire', 
     'https://test.uddi.microsoft.com/publish'
   );
   $c->setTrace($cat);
-  try(); {
+  try {
     $r= $c->invoke(new FindBusinessesCommand(
       array('%IBM%'), 
       array(SORT_BY_DATE_ASC, SORT_BY_NAME_ASC),
       5
     ));
-  } if (catch('Exception', $e)) {
+  } catch (XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }
