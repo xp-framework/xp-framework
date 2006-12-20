@@ -9,7 +9,7 @@ $Id$
 
 Scope of Change
 ---------------
-An runner script (similar to the unittest runner) will be created to run
+A runner script (similar to the unittest runner) will be created to run
 classes as scripts.
 
 
