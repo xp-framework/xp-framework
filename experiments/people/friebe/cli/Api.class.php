@@ -29,11 +29,10 @@
     /**
      * Set whether declaring classes should be shown
      *
-     * @param   bool show default FALSE
      */
     #[@arg(short= 'd')]
-    public function setShowDeclaring($show= FALSE) {
-      $this->showDeclaring= (bool)$show;
+    public function setShowDeclaring() {
+      $this->showDeclaring= TRUE;
     }
 
     /**

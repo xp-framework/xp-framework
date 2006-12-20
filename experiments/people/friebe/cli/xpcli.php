@@ -157,11 +157,6 @@
         exit(-2);
       }
     } else if ($method->hasAnnotation('arg')) { // Pass arguments
-      if (0 == $method->numArguments()) {
-        Console::writeLine('*** Method ', $method->toString(), ' does not accept any arguments');
-        exit(1);
-      }
-
       $arg= $method->getAnnotation('arg');
       if (isset($arg['position'])) {
         $name= '#'.$arg['position'];
@@ -174,8 +169,11 @@
         $name= $select= strtolower(preg_replace('/^set/', '', $method->getName()));
         $short= isset($arg['short']) ? $arg['short'] : NULL;
       }
-
-      if (!$classparams->exists($select, $short)) {
+      
+      if (0 == $method->numArguments()) {
+        if (!$classparams->exists($select, $short)) continue;
+        $args= array();
+      } else if (!$classparams->exists($select, $short)) {
         list($first, )= $method->getArguments();
         if (!$first->isOptional()) {
           Console::writeLine('*** Argument '.$name.' does not exist!');
