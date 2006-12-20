@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('util.cmd.Console');
+  uses('Command');
 
   /**
    * Dumps an API
    *
    * @purpose  purpose
    */
-  class Api extends Object {
+  class Api extends Command {
     protected
       $class          = '',
       $showDeclaring  = FALSE;
@@ -41,20 +41,20 @@
      *
      */
     public function run() {
-      Console::write($this->class->toString());
-      Console::writeLine(' extends ', $this->class->getParentClass()->toString(), ' {');
+      $this->out->write($this->class->toString());
+      $this->out->writeLine(' extends ', $this->class->getParentClass()->toString(), ' {');
       foreach ($this->class->getFields() as $field) {
-        Console::writeLine('  ', $field->toString());
+        $this->out->writeLine('  ', $field->toString());
       }
       if ($this->class->hasConstructor()) {
-        Console::writeLine('  ', $this->class->getConstructor()->toString());
+        $this->out->writeLine('  ', $this->class->getConstructor()->toString());
       }
       foreach($this->class->getMethods() as $method) {
-        Console::write('  ', $method->toString());
-        $this->showDeclaring && Console::write(' declared in '.$method->getDeclaringClass()->toString());
-        Console::writeLine();
+        $this->out->write('  ', $method->toString());
+        $this->showDeclaring && $this->out->write(' declared in '.$method->getDeclaringClass()->toString());
+        $this->out->writeLine();
       }
-      Console::writeLine('}');
+      $this->out->writeLine('}');
     }
   }
 ?>

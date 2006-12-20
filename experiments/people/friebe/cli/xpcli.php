@@ -6,6 +6,8 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
+    'PrintStream', 
+    'ConsoleOutputStream',
     'util.log.Logger',
     'util.PropertyManager',
     'rdbms.ConnectionManager'
@@ -120,6 +122,9 @@
   $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
   
   $instance= $class->newInstance();
+  $instance->out= &new PrintStream(ref(new ConsoleOutputStream(STDOUT)));
+  $instance->err= &new PrintStream(ref(new ConsoleOutputStream(STDERR)));
+  
   foreach ($class->getMethods() as $method) {
     if ($method->hasAnnotation('inject')) {     // Perform injection
       $inject= $method->getAnnotation('inject');
