@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   OutputStream out
+     * @param   io.streams.OutputStream out
      */
     public function __construct($out) {
       $this->out= $out;

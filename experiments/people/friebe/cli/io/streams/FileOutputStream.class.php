@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('OutputStream');
+  uses('io.streams.OutputStream');
 
   /**
    * OuputStream that writes to files
