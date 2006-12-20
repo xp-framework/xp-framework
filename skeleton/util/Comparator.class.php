@@ -18,12 +18,11 @@
      * zero, or a positive integer as the first argument is less than, 
      * equal to, or greater than the second.
      *
-     * @model   static
      * @access  public
      * @param   &mixed a
      * @param   &mixed b
      * @return  int
      */
-    public static function compare(&$a, &$b);
+    public function compare(&$a, &$b);
   }
 ?>
