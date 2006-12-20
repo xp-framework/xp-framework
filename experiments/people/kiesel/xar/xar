@@ -4,4 +4,4 @@ cmd=$1
 file=$2
 shift 2
 
-php5 -dinclude_path=".:../../../../skeleton/:lib/xpcli-5.0.0-alpha.xar" xpcli.php Xar $cmd $file --args="$*"
+php5 -dinclude_path=".:../../../../skeleton/:lib/xpcli-5.0.0-alpha.xar" xpcli.php Xar $cmd $file -R `pwd` --args="$*"

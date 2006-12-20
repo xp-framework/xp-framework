@@ -63,6 +63,16 @@
     public function setArgs($args) {
       $this->args= '' == trim($args) ? array() : explode(' ', trim($args));
     }
+
+    /**
+     * Set working directory
+     *
+     * @param   string dir
+     */
+    #[@arg(short= 'R')]
+    public function setWorkDirectory($dir) {
+      chdir($dir);
+    }
     
     /**
      * Runs this command

@@ -68,9 +68,9 @@
     public function perform() {
       $this->archive->open(ARCHIVE_CREATE);
       
-      $cwd= dirname($this->archive->file->getURI());
+      $cwd= rtrim(realpath(getcwd()), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       foreach ($this->retrieveFilelist() as $file) {
-        $urn= substr($file, strlen($cwd)+ 1);
+        $urn= strtr(preg_replace('#^'.preg_quote($cwd, '#').'#', '', $file), DIRECTORY_SEPARATOR, '/');
         $this->options & Xar::OPTION_VERBOSE && Console::writeLine($urn);
         $this->archive->add(new File($file), $urn);
       }
