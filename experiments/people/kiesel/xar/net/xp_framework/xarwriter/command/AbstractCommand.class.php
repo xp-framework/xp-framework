@@ -16,50 +16,38 @@
    *
    * @purpose  Base command
    */
-  class AbstractCommand extends Object {
-    var
+  abstract class AbstractCommand extends Object {
+    protected
       $options    = 0,
-      $filename   = '',
+      $archive    = NULL,
       $args       = array();
     
     /**
      * Constructor
      *
-     * @access  public
      * @param   int options
-     * @param   string filename
-     * @param   util.cmd.ParamString args
+     * @param   lang.archive.Archive archive
+     * @param   string[] args
      */
-    function __construct($options, $filename, $args) {
+    public function __construct($options, $archive, $args) {
       $this->options= $options;
-      $this->filename= $filename;
+      $this->archive= $archive;
       $this->args= $args;
     }
     
     /**
      * Retrieve file arguments from commandline
      *
-     * @access  public
      * @return  string[]
      */
-    function getArguments() {
-      $args= array();
-      
-      for ($i= 3; $i < $this->args->count; $i++) {
-        $a= $this->args->value($i);
-        
-        if (0 == strncmp('--', $a, 2)) continue;
-        
-        // It's a short option with a following parameter
-        if ('-' == $a{0}) {
-          $i+= 1;
-          continue;
-        }
-        
-        $args[]= $a;
-      }
-      
-      return $args;
+    protected function getArguments() {
+      return $this->args;
     }
+    
+    /**
+     * Perform
+     *
+     */
+    public abstract function perform();
   }
 ?>

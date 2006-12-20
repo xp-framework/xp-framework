@@ -24,15 +24,14 @@
     /**
      * Retrieve files from filesystem
      *
-     * @access  public
      * @return  string[]
      */
-    function retrieveFilelist() {
+    public function retrieveFilelist() {
       $list= array();
 
       foreach ($this->getArguments() as $arg) {
         if (is_file($arg)) {
-          $list[]= ltrim($arg, './');
+          $list[]= realpath($arg);
           continue;
         }
         
@@ -51,8 +50,7 @@
           );
           
           while ($iterator->hasNext()) {
-            $element= $iterator->next();
-            $list[]= ltrim(substr($element->getURI(), strlen(realpath(dirname($arg)))), './');
+            $list[]= $iterator->next()->getURI();
           }
           
           continue;
@@ -65,30 +63,19 @@
     /**
      * Execute action
      *
-     * @access  public
      * @return  int
      */
-    function perform() {
-      $archive= &new Archive(new File($this->filename));
-      $archive->open(ARCHIVE_CREATE);
+    public function perform() {
+      $this->archive->open(ARCHIVE_CREATE);
       
-      $cwd= getcwd();
-      if ($this->args->exists('C', 'C', FALSE)) {
-        chdir($this->args->value('C', 'C'));
-      }
-      
+      $cwd= dirname($this->archive->file->getURI());
       foreach ($this->retrieveFilelist() as $file) {
-        if (($this->options & OPTION_VERBOSE)) {
-          Console::writeLine($file);
-        }
-        
-        $archive->add(new File($file), $file);
+        $urn= substr($file, strlen($cwd)+ 1);
+        $this->options & Xar::OPTION_VERBOSE && Console::writeLine($urn);
+        $this->archive->add(new File($file), $urn);
       }
       
-      $archive->create();
-      chdir($cwd);
-      
-      return 0;
+      $this->archive->create();
     }
   }
 ?>
