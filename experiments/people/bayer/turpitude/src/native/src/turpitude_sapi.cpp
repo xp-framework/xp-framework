@@ -40,16 +40,25 @@ void turpitude_register_variables(zval *track_vars_array TSRMLS_DC) {
 }
 
 void turpitude_error_cb(int type, const char *error_filename, const uint error_lineno, const char *format, va_list args) {
-    char *buffer;
-    int buffer_len;
+    char *buffer, *msg;
+    int buffer_len, msg_len;
     TSRMLS_FETCH();
     if (!(EG(error_reporting) & type)) return;
 
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
+    msg_len = spprintf(&msg, 
+        PG(log_errors_max_len)+100, 
+        "Error #%d on line %d of %s: %s", 
+        type,
+        error_lineno,
+        error_filename ? error_filename : "(Unknown)",
+        buffer
+    );
     //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
-
-    setErrorMsg(buffer);
+    
+    setErrorMsg(msg);
     efree(buffer);
+    efree(msg);
     switch (type) {
         case E_ERROR:
         case E_CORE_ERROR:
