@@ -4,11 +4,11 @@ $Id$
 
 Version ?.?.?, released ????-??-??
 ----------------------------------
+
+Version 5.0.0, released 2006-12-21
+----------------------------------
 - fix reflection for classes from .xars
   (kiesel)
-
-Version 5.0.0, released 2006-12-20
-----------------------------------
 - implemented RFC #0092 (migrated to PHP5)
   (all)
   
