@@ -19,12 +19,12 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
     if (NULL == compiled_op_array)
         java_throw(env, "javax/script/ScriptException", "ZendOpArrayptr empty");
 
+    zval* retval_ptr = NULL;
     // execute!
     zend_first_try {
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
         
-        zval *retval_ptr = NULL;
         zend_fcall_info_cache fci_cache;
         zend_fcall_info fci;
          
@@ -45,11 +45,13 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
        
         zend_llist_destroy(&global_vars);
     } zend_catch {
-        java_throw(env, "java/lang/IllegalArgumentException", "Bailout");
+        if (ErrorCBCalled)
+            java_throw(env, "net/xp_framework/turpitude/PHPEvalException", LastError.data());
     } zend_end_try();
 
     jclass retcls = env->FindClass("java/lang/Boolean");
     jmethodID retmid = env->GetMethodID(retcls, "<init>", "(Z)V");
+    return zval_to_jobject(env, retval_ptr);
     return env->NewObject(retcls, retmid, true);
 }
 

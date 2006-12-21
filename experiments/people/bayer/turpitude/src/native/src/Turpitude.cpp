@@ -1,8 +1,8 @@
 #include <Turpitude.h>
 
-std::string LastError = "no error";
-
 jobject zval_to_jobject(JNIEnv* env, zval* val) {
+    if (NULL == val)
+        return NULL;
 
     jclass cls = NULL;
     jobject obj = NULL;
@@ -10,6 +10,7 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
 
     switch (Z_TYPE_P(val)) {
         case IS_LONG:
+            printf("IS_LONG\n");
             cls = env->FindClass("java/lang/Long");
             mid = env->GetMethodID(cls, "<init>", "(J)V");
             obj = env->NewObject(cls, mid, val->value.lval);
@@ -34,6 +35,7 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             break;
         case IS_CONSTANT:
         case IS_STRING:
+            printf("IS_STRING or IS_CONSTANT\n");
             obj = env->NewStringUTF(val->value.str.val);
             break;
         default:

@@ -59,6 +59,18 @@ zusammen mit einigen wichtigen Methoden und Attributen.
 \label{fig:jsr223impl}
 \end{figure}
 
+Der JSR 223 spezifiziert nur eine Exception (\emph{javax.script.ScriptException}) um alle m"oglichen Laufzeitfehler innerhalb einer 
+Implementation abzudecken. Um dem Anwender trotzdem eine M"oglichkeit einer differenzierten Fehlerauswertung zu geben werden drei
+zus"atzliche Exceptions eingef"uhrt: \emph{PHPScriptException}, \emph{PHPCompileException} und \emph{PHPEvalException} (siehe Abbildung
+\ref{fig:jsr223exceptions}). Die PHPScriptException dient zum Einen als Oberklasse, zum anderen kann der Anwender durch sie erkennen, ob
+das aufgetretene Problem implementationsspezifisch ist. Die beiden anderen neuen Exceptions werden genutzt um Fehler beim "Ubersetzen 
+(PHPCompileException) oder beim Ausf"uhren (PHPEvalException) eines Skriptes voneinander abzugrenzen.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{chap1/img/exceptions.png}
+\caption{JSR 223 Implementation - Exceptions}
+\label{fig:jsr223exceptions}
+\end{figure}
 
 \subsection{Native}
 \label{sec:chap1:design:native}

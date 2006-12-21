@@ -29,5 +29,11 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
 /* PHP SAPI registry */
 extern sapi_module_struct turpitude_sapi_module;
 
+static void setErrorMsg(const char* msg);
+static void resetErrorMsg();
+
+/* last error string */
+extern std::string LastError;
+extern bool ErrorCBCalled;
 
 #endif

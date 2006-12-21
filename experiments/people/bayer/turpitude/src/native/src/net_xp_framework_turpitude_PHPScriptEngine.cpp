@@ -72,13 +72,12 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compi
 
         zend_llist_destroy(&global_vars);
     } zend_catch {
-        java_throw(env, "javax/script/ScriptException", LastError.data());
+        java_throw(env, "net/xp_framework/turpitude/PHPCompileException", LastError.data());
     } zend_end_try();
 
     /* Check if compilation worked */
     if (!compiled_op_array) {
-        //java_throw(env, "javax/script/ScriptException", "Compilation Error, op_array is empty");
-        java_throw(env, "javax/script/ScriptException", LastError.data());
+        java_throw(env, "net/xp_framework/turpitude/PHPCompileException", LastError.data());
     }
 
     // Create PHPCompiledScript object and return it 

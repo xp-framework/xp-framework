@@ -24,7 +24,5 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 
 jobject zval_to_jobject(JNIEnv* env, zval* val);
 
-/* last error string */
-extern std::string LastError;
 
 #endif

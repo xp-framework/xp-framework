@@ -3,6 +3,8 @@ package net.xp_framework.turpitude.samples;
 import javax.script.*;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import net.xp_framework.turpitude.PHPEvalException;
+import net.xp_framework.turpitude.PHPCompileException;
 
 public class ScriptExec {
 
@@ -30,6 +32,14 @@ public class ScriptExec {
         Object retval = null;
         try {
             retval = eng.eval(r);
+        } catch(PHPCompileException e) {
+            System.out.println("Compile Error:");
+            e.printStackTrace();
+            return;
+        } catch(PHPEvalException e) {
+            System.out.println("Eval Error:");
+            e.printStackTrace();
+            return;
         } catch(ScriptException e) {
             System.out.println("ScriptException caught:");
             e.printStackTrace();

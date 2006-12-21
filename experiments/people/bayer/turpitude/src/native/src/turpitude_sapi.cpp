@@ -1,4 +1,4 @@
-#include <Turpitude.h>
+#include <turpitude_sapi.h>
 
 int turpitude_startup(sapi_module_struct* sapi_module) {
     return php_module_startup(sapi_module, NULL, 0);
@@ -48,8 +48,7 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
     //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
 
-    LastError += "\n";
-    LastError += buffer;
+    setErrorMsg(buffer);
     efree(buffer);
     switch (type) {
         case E_ERROR:
@@ -95,5 +94,18 @@ sapi_module_struct turpitude_sapi_module = {
     STANDARD_SAPI_MODULE_PROPERTIES
 };
 /* }}} */
+
+std::string LastError = "no error";
+bool ErrorCBCalled = false;
+
+static void setErrorMsg(const char* msg) {
+    LastError = msg;
+    ErrorCBCalled = true;
+}
+
+static void resetErrorMsg() {
+    LastError = "";
+    ErrorCBCalled = false;
+}
 
 
