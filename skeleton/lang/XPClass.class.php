@@ -479,125 +479,118 @@
       if (!$class) return NULL;        // Border case
       if (isset($details[$class])) return $details[$class];
 
+      // Retrieve class' sourcecode
+      $cl= &XPClass::_classLoaderFor($class);
+      if (!($bytes= $cl->loadClassBytes($class))) return NULL;
+
       $details[$class]= array(array(), array());
-      $name= strtr($class, '.', DIRECTORY_SEPARATOR);
-      $l= strlen($name);
-
-      foreach (get_included_files() as $file) {
-        if ($name != substr($file, -10- $l, -10)) continue;
-
-        // Found the class, now get API documentation
-        $annotations= array();
-        $comment= NULL;
-        $members= TRUE;
-        $tokens= token_get_all($str= file_get_contents($file));
-        for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-          switch ($tokens[$i][0]) {
-            case T_DOC_COMMENT:
-            case T_COMMENT:
-              // Apidoc comment
-              if (strncmp('/**', $tokens[$i][1], 3) == 0) {
-                $comment= $tokens[$i][1];
-                break;
-              }
-
-              // Annotations
-              if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
-                $annotations[0]= substr($tokens[$i][1], 2);
-              } elseif (strncmp('#', $tokens[$i][1], 1) == 0) {
-                $annotations[0].= substr($tokens[$i][1], 1);
-              }
-
-              // End of annotations
-              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-                $annotations= eval('return array('.preg_replace(
-                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-                  array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
-                  trim($annotations[0], "[]# \t\n\r").','
-                ).');');
-              }
+      $annotations= array();
+      $comment= NULL;
+      $members= TRUE;
+      $tokens= token_get_all($bytes);
+      for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+        switch ($tokens[$i][0]) {
+          case T_DOC_COMMENT:
+          case T_COMMENT:
+            // Apidoc comment
+            if (strncmp('/**', $tokens[$i][1], 3) == 0) {
+              $comment= $tokens[$i][1];
               break;
+            }
 
-            case T_CLASS:
-              $details[$class]['class']= array(
-                DETAIL_COMMENT      => $comment,
-                DETAIL_ANNOTATIONS  => $annotations
-              );
-              $annotations= array();
-              $comment= NULL;
-              break;
-            
-            case T_VARIABLE:
-              if (!$members) break;
-              
-              // Have a member variable
-              $name= substr($tokens[$i][1], 1);
-              $details[$class][0][$name]= array(
-                DETAIL_ANNOTATIONS => $annotations
-              );
-              $annotations= array();
-              break;
-            
-            case T_FUNCTION:
-              $members= FALSE;
-              while (T_STRING !== $tokens[$i][0]) $i++;
-              $m= $tokens[$i][1];
-              $details[$class][1][$m]= array(
-                DETAIL_MODIFIERS    => 0,
-                DETAIL_ARGUMENTS    => array(),
-                DETAIL_RETURNS      => 'void',
-                DETAIL_THROWS       => array(),
-                DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
-                  $comment, 
-                  4,                              // "/**\n"
-                  strpos($comment, '* @')- 2      // position of first details token
-                )),
-                DETAIL_ANNOTATIONS  => $annotations,
-                DETAIL_NAME         => $tokens[$i][1]
-              );
-              $matches= NULL;
-              preg_match_all(
-                '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
+            // Annotations
+            if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
+              $annotations[0]= substr($tokens[$i][1], 2);
+            } else if (strncmp('#', $tokens[$i][1], 1) == 0) {
+              $annotations[0].= substr($tokens[$i][1], 1);
+            }
+
+            // End of annotations
+            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+              $annotations= eval('return array('.preg_replace(
+                array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
+                array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
+                trim($annotations[0], "[]# \t\n\r").','
+              ).');');
+            }
+            break;
+
+          case T_CLASS:
+            $details[$class]['class']= array(
+              DETAIL_COMMENT      => $comment,
+              DETAIL_ANNOTATIONS  => $annotations
+            );
+            $annotations= array();
+            $comment= NULL;
+            break;
+
+          case T_VARIABLE:
+            if (!$members) break;
+
+            // Have a member variable
+            $name= substr($tokens[$i][1], 1);
+            $details[$class][0][$name]= array(
+              DETAIL_ANNOTATIONS => $annotations
+            );
+            $annotations= array();
+            break;
+
+          case T_FUNCTION:
+            $members= FALSE;
+            while (T_STRING !== $tokens[$i][0]) $i++;
+            $m= $tokens[$i][1];
+            $details[$class][1][$m]= array(
+              DETAIL_MODIFIERS    => 0,
+              DETAIL_ARGUMENTS    => array(),
+              DETAIL_RETURNS      => 'void',
+              DETAIL_THROWS       => array(),
+              DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
                 $comment, 
-                $matches, 
-                PREG_SET_ORDER
-              );
-              $annotations= array();
-              $comment= NULL;
-              foreach ($matches as $match) {
-                switch ($match[1]) {
-                  case 'access':
-                  case 'model':
-                    $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
-                    break;
+                4,                              // "/**\n"
+                strpos($comment, '* @')- 2      // position of first details token
+              )),
+              DETAIL_ANNOTATIONS  => $annotations,
+              DETAIL_NAME         => $tokens[$i][1]
+            );
+            $matches= NULL;
+            preg_match_all(
+              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
+              $comment, 
+              $matches, 
+              PREG_SET_ORDER
+            );
+            $annotations= array();
+            $comment= NULL;
+            foreach ($matches as $match) {
+              switch ($match[1]) {
+                case 'access':
+                case 'model':
+                  $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
+                  break;
 
-                  case 'param':
-                    $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
-                      isset($match[3]) ? $match[3] : 'param',
-                      $match[2],
-                      isset($match[4]),
-                      isset($match[4]) ? $match[5] : NULL
-                    );
-                    break;
+                case 'param':
+                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
+                    isset($match[3]) ? $match[3] : 'param',
+                    $match[2],
+                    isset($match[4]),
+                    isset($match[4]) ? $match[5] : NULL
+                  );
+                  break;
 
-                  case 'return':
-                    $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
-                    break;
+                case 'return':
+                  $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
+                  break;
 
-                  case 'throws': 
-                    $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
-                    break;
-                }
+                case 'throws': 
+                  $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
+                  break;
               }
-              break;
+            }
+            break;
 
-            default:
-              // Empty
-          }
+          default:
+            // Empty
         }
-
-        // Break out of search loop
-        break;
       }
       
       // Return details for specified class
