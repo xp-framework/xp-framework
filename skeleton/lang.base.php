@@ -108,7 +108,7 @@
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($path.DIRECTORY_SEPARATOR.$filename);
             continue(2);
-          } elseif (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
+          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
             require_once('xar://'.$path.'?'.$filename);
             continue(2);
           }
@@ -201,7 +201,7 @@
       
     // {{{ static &mixed[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
-    function &acquire($archive) {
+    public static function &acquire($archive) {
       static $archives= array();
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
@@ -260,7 +260,7 @@
     // {{{ static bool stream_provides_file(string path)
     //     Check whether file lives in archive. This method must be provided as PHP only supports
     //     file_exists() on streams with PHP 5
-    function stream_provides_file($path) {
+    public static function stream_provides_file($path) {
       list($archive, $filename)= sscanf($path, 'xar://%[^?]?%[^$]');
       
       $current= &XpXarLoader::acquire($archive, $filename);
@@ -287,8 +287,7 @@
     $include= explode(PATH_SEPARATOR, ini_get('include_path'));
 
     foreach (func_get_args() as $str) {
-      if (class_exists($class= xp::reflect($str))) continue;
-      if (interface_exists($class= xp::reflect($str))) continue;
+      if (class_exists($class= xp::reflect($str)) || interface_exists($class)) continue;
 
       if ($p= strpos($str, '+xp://')) {
         $type= substr($str, 0, $p);
@@ -301,7 +300,7 @@
 
         // Load using wrapper
         if (FALSE === include($str)) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path'))));
+          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
         }
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
@@ -318,11 +317,11 @@
           }
           
           if (FALSE === ($r= include_once($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$str)));
+            xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
           }
           
           break;
-        } elseif (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+        } else if (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
@@ -336,7 +335,7 @@
       }
       
       if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
-        xp::error('Cannot include '.$str.' (include_path='.ini_get('include_path').')');
+        xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
       }
 
       // Register class name and call static initializer if available and if it has not been
