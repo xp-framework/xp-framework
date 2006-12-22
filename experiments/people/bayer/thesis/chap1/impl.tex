@@ -60,14 +60,20 @@ sorgt dass zumindest beim Herunterfahren der Virtual Machine shutDown() aufgeruf
 Nachdem in Java die Grundlagen gelegt waren konnte mit dem Realisieren des nativen Teiles begonnen werden.
 Die l"uckenhafte, an vielen Stellen sogar g"anzlich fehlende Dokumentation der Zend-Engine machte es unm"oglich
 herauszufinden was der von den Zend-Entwicklern vorgesehene Weg ist, um PHP auf die beschriebene Art und Weise
-einzubetten. Folglich musste erraten werden wie vorgegangen werden sollte.
+einzubetten. Folglich musste durch reines Ausprobieren erraten werden wie vorgegangen werden sollte.
+Zun"achst musste ein zur "Ubergabe an die Zend-Engine geeignetes \emph{sapi\_module\_struct} definiert werden.
+Hierbei handelt es sich um ein C-Struct, welches im Wesentlichen Pointer auf Callback-Funktionen enth"alt.
+Viele dieser Funktionen, wie \emph{read\_cookies} und \emph{send\_headers}, wurden leer implementiert, da sie f"ur 
+die geplante Art des Einsatzes nicht sinnvoll sind. Lediglich \emph{error\_callback} soll hier erw"ahnt werden:
+innerhalb dieser Methode werden zwei globale Variablen gesetzt, eine zeigt an ob die Fehlermethode aufgerufen wurde,
+die andere h"alt die beim Aufruf ausgelesene Fehlermeldung vor, um sie sp"ater an den Benutzer weiterzugeben.
 Ein erster Ansatz PHP-Code auszuf"uhren war die Zend-API Funktion \emph{zend\_eval\_string}. Nachdem der n"otige
 Boilerplate-Code geschrieben war zeigten sich auch Erfolge: eine in Java geschriebene HelloWorld-Klasse, welche
-den Quelltext <echo "'Hello World\\n"';> direkt an die ScriptEngine weiterreicht, erzeugte die gew"unschte Ausgabe.
+den Quelltext "'echo 'Hello World';"' direkt an die ScriptEngine weiterreicht, erzeugte die gew"unschte Ausgabe.
 Eigehendere Tests unter Zuhilfenahme der \emph{ScriptExec} Klasse, die ein Skript aus einer ihr "ubergebenen Datei
 ausliest und an die ScriptEngine weitergibt f"orderten allerdings einen gravierenden Nachteil von zend\_eval\_string
 zutage: Sobald als Parameter "'retval\_ptr"' nicht mehr \emph{NULL} "ubergeben wird, wird nicht mehr das komplette
-Skript, sondern nur noch die erste Zuweisung innerhalb des Quelltextes ausgef"uhrt. Wurde diese Skript
+Skript, sondern nur noch die erste Zuweisung innerhalb des Quelltextes ausgef"uhrt. Wurde dieses Skript
 \begin{lstlisting}[caption=Testscript f"ur zend\_eval\_string()]
 $var = "Test";
 for ($i=0; $i<10; $i++) {
@@ -77,17 +83,29 @@ for ($i=0; $i<10; $i++) {
 mit retval\_ptr == NULL ausgef"uhrt, so wurde wie erwartet der Text "'Hello Test"' zehnfach auf der Konsole
 ausgegeben. "Ubergab man allerdings einen Pointer auf ein valides zval-Struct so wurde nichts mehr ausgegeben,
 und jener Struct enthielt als Wert den String "'Test"', und zus"atzlilch gab zend\_eval\_string einen Fehlercode
-als eigenen R"uckgabewert zur"uck. Dieses Ph"anomen lies sich auch mit beliebig komplizierten Zuweisungen reproduzieren.
+als eigenen R"uckgabewert zur"uck. Dieses Ph"anomen lies sich auch mit anderen, beliebig komplizierten Zuweisungen 
+reproduzieren.
+
+Obwohl der Versuch zend\_eval\_string zu nutzen fehlschlug konnten einige geschriebene Komponenten f"ur weitere
+Ans"atze weiterverwandt werden, insbesondere die Funktionen \emph{zval\_to\_jobject} zur Konvertierung des Zend-Engine
+Datentypes \emph{zval} in den JNI-Datentyp \emph{jobject}, und \emph{java\_throw}, die dass werfen von Java-Exceptions
+aus dem nativen Teil heraus vereinfacht. Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen, die
+Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten sind. PHP-Skripte werden "ublicherweise
+innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
+Die PHPScriptEngine filtert diese Zeichen automatisch aus dem Quelltextstrom.
+
+Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ullen wurde nach einer Alternative gesucht, und
+die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
+\emph{zend\_opcode\_array} "ubersetzt und dieser sp"ater ohnehin seperat ausgef"uhrt werden muss, wurde an dieser Stelle dem
+geplanten Projektablauf vorgegriffen, und das Interface \emph{Compilable} gleich mitimplementiert. Im Rahmen dieses Schrittes
+wurde die Klasse \emph{PHPCompiledScript} wie geplant realisiert. Diese enth"alt die native Methode \emph{execute}, con welcher
+der von der PHPScriptEngine erzeugte und in einen im PHPCompiledScript enhaltenen ByteBuffer geschriebene Opcode letztendlich
+ausgef"uhrt wird. 
+
 
 TODO:
-error\_cb  -> java exceptions
-einfache Scripte mit Variablen scheinen zu gehen
-zval\_to\_jobject geschrieben, jni api suckt, zend api suckt haerter
-
 zend\_eval\_string nicht der weg - compile\_string. Deswegen: gleich mal Compilable implementiert, PHPCompiledScript
 angelegt
-
-rausparsen von PHP-Tags
 
 compile tut, execute segfaultet. Loesung: function call?
 function call funktioniert, allerdungs nur mittels Hack...
