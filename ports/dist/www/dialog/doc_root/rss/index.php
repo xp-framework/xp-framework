@@ -18,23 +18,14 @@
   
   // {{{ function getEntryFor($name)
   function getEntryFor($name) {
-    try(); {
-      $entry= &unserialize(FileUtil::getContents(new File(DATALOCATION.$name.'.dat')));
-    } if (catch('IOException', $e)) {
-      return throw($e);
-    }
-    
+    $entry= &unserialize(FileUtil::getContents(new File(DATALOCATION.$name.'.dat')));
     return $entry;
   }
   // }}}
   
   // {{{ function getIndexFor($page
   function getIndexFor($i= 0) {
-    try(); {
-      $index= unserialize(FileUtil::getContents(new File(DATALOCATION.'page_'.$i.'.idx')));
-    } if (catch('IOException', $e)) {
-      return throw($e);
-    }
+    $index= unserialize(FileUtil::getContents(new File(DATALOCATION.'page_'.$i.'.idx')));
     return $index;
   }
   // }}}
@@ -111,18 +102,13 @@
   
   // Load index of first two pages
   $index= array();
-  try(); {
-    $index[0]= getIndexFor(0);
-    $index[0] && $entries= $index[0]['entries'];
-  } if (catch('IOException', $e)) {
-    echo $e->getMessage();
-    exit(1);
-  }
+  $index[0]= getIndexFor(0);
+  $index[0] && $entries= $index[0]['entries'];
 
-  try(); {
+  try {
     $index[1]= getIndexFor(1);
     $index[1] && $entries= array_merge($entries, $index[1]['entries']);
-  } if (catch('IOException', $ignored)) {
+  } catch(IOException $ignored) {
   }
 
   // Find date of newest entry
@@ -143,12 +129,7 @@
   );
   
   foreach (array_reverse($entries) as $name) {
-    try(); {
-      $entry= &getEntryFor($name);
-    } if (catch('IOException', $e)) {
-      echo $e->toString();
-      exit;
-    }
+    $entry= &getEntryFor($name);
 
     switch (get_class($entry)) {
       case 'album': addAlbumItem($rdf, $entry); break;
