@@ -33,7 +33,7 @@
      * @param   &text.String source
      * @return  &RuleApplyResult
      */
-    function &applyTo($package, &$source) {
+    function applyTo($package, $source) {
       $pattern= '/'.preg_quote($package).'/';
       if (0 != ($c= preg_match($pattern, $source->buffer))) {
         if (FALSE === ($replaced= preg_replace($pattern, $this->new, $source->buffer))) {

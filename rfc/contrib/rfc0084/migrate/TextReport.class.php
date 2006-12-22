@@ -21,7 +21,7 @@
      * @param   &io.File out
      * @param   array<string, &Rule> rules
      */
-    function summarize(&$collection, &$out, $rules) {
+    function summarize($collection, $out, $rules) {
       $out->open(FILE_MODE_WRITE);
 
       // Header

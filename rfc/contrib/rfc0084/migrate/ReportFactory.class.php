@@ -26,7 +26,7 @@
      * @return  &Report 
      * @throws  lang.IllegalArgumentException in case an error occurs
      */
-    function &factory($type) {  
+    function factory($type) {  
       switch ($type) {
         case REPORT_TYPE_TEXT: case 't': return new TextReport();
         case REPORT_TYPE_HTML: case 'h': return new HtmlReport();

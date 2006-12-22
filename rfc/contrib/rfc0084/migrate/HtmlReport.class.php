@@ -21,7 +21,7 @@
      * @param   &io.File out
      * @param   array<string, &Rule> rules
      */
-    function summarize(&$collection, &$out, $rules) {
+    function summarize($collection, $out, $rules) {
       $css= '
         body {
           font: 10pt Arial, helvetica;

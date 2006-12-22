@@ -21,7 +21,7 @@
      * @param   &io.File file
      * @param   array<string, mixed[]> messages
      */
-    function add(&$f, $messages) { 
+    function add($f, $messages) { 
       $this->messages[$f->getURI()]= $messages;
       foreach (array_keys($messages) as $package) {
         isset($this->packages[$package]) ? $this->packages[$package]++ : $this->packages[$package]= 1;
@@ -47,7 +47,7 @@
      * @param   &io.File out
      * @param   array<string, &Rule> rules
      */
-    function summarize(&$collection, &$out, $rules) { }
+    function summarize($collection, $out, $rules) { }
 
     /**
      * Creates a string representation of this report's type

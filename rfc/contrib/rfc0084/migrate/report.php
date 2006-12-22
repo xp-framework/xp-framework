@@ -17,8 +17,8 @@
   
   // {{{ void performWork(&io.collections.IOElement e, &Report r, array<string, &Rule> rules) 
   //     Migrates the given element
-  function performWork(&$e, &$r, $rules) {
-    $f= &new File($e->getURI());
+  function performWork($e, $r, $rules) {
+    $f= new File($e->getURI());
     $f->open(FILE_MODE_READ);
     $l= 1;
     $messages= array();
@@ -45,7 +45,7 @@
   // }}}
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLine(<<<__
 Creates a report for all files in a given directpry
@@ -70,14 +70,14 @@ __
 
   // Initialize
   try(); {
-    $scan= &new FileCollection($p->value(1));
-    $rules= &Rules::allRules();
-    $report= &ReportFactory::factory($p->value('report', 'r', 'text'));
-    $out= &new File($p->value('output', 'O', 'rfc-0084_'.basename($scan->getURI()).'.report'));
+    $scan= new FileCollection($p->value(1));
+    $rules= Rules::allRules();
+    $report= ReportFactory::factory($p->value('report', 'r', 'text'));
+    $out= new File($p->value('output', 'O', 'rfc-0084_'.basename($scan->getURI()).'.report'));
 
     $filters= array();
     foreach (explode(',', $p->value('extensions', 'e', 'php')) as $ext) {
-      $filters[]= &new ExtensionEqualsFilter($ext);
+      $filters[]= new ExtensionEqualsFilter($ext);
     }
   } if (catch('Exception', $e)) {
     $e->printStackTrace();
@@ -87,7 +87,7 @@ __
   // Iterate
   Console::writeLine('===> Generating ', $report->getType(), ' report for ', $scan->getURI(), ' to ', $out->getURI());
   for (
-    $it= &new FilteredIOCollectionIterator($scan, new AnyOfFilter($filters), TRUE);
+    $it= new FilteredIOCollectionIterator($scan, new AnyOfFilter($filters), TRUE);
     $it->hasNext();
   ) {
     performWork($it->next(), $report, $rules);

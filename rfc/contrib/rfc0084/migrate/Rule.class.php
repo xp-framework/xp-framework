@@ -22,6 +22,6 @@
      * @param   &text.String source
      * @return  &RuleApplyResult
      */
-    function &applyTo($package, &$source) { }
+    function applyTo($package, $source) { }
   }
 ?>
