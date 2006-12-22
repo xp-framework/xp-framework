@@ -15,7 +15,7 @@
   $pm->configure('../etc/');
 
   scriptlet::run(new WebsiteScriptlet(
-    new ClassLoader('de.thekid.dialog.scriptlet'), 
+    'de.thekid.dialog.scriptlet', 
     '../xsl/'
   ));
   // }}}  
