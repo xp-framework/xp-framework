@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, alexp
 @created: Fri Dec 23 12:42:28 CET 2005
-@status: draft
+@status: obsoleted (by RFC #0078)
 @category: scriptlet.xml
 
 Scope of Change
