@@ -165,13 +165,20 @@ n/a
 
 Dependencies
 ------------
-n/a
+This will change the version number to 5.1.0
 
 
 Related documents
 -----------------
 - http://xp-framework.net/devel/coding.html
   XP Coding standards
+
+- http://xp-framework.net/rfc/contrib/rfc0103/ports-no-ref.diff
+  Diff against ports w/o references
+
+- http://xp-framework.net/rfc/contrib/rfc0103/skeleton-no-ref.diff
+  Diff against skeleton w/o references
+
 
 Comments
 --------
