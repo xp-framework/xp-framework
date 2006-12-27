@@ -13,7 +13,7 @@ Version 5.1.0, released 2006-12-27
   (friebe)
 - Implemented RFC #0088: Streams API
   (friebe)
-- Updates SQLite class to use StatementFormatter
+- Updated SQLite class to use StatementFormatter
   (kiesel)
 - Added webservices.soap.types.SOAPDouble class
   (kiesel)
