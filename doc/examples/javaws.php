@@ -119,9 +119,9 @@
 
 
           // Issue HTTP request
-          $url= makeLink($codebase, $resource->getLocation());
+          $url= new URL(makeLink($codebase, $resource->getLocation()));
           $c= new HttpConnection($url);
-          $response= $c->get(NULL, $params);
+          $response= $c->get($url->getParams(), $params);
           Console::write('     << ', $response->getStatuscode(), ' "', $response->getMessage(), '": ');
           
           // Check response code
