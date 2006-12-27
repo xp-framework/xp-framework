@@ -77,7 +77,7 @@
      * @param   int length
      * @return  string
      */
-    public static function readFully($stream, $length) {
+    protected static function readFully($stream, $length) {
       $return= '';
       while (strlen($return) < $length) {
         if (0 == strlen($buf= $stream->readBinary($length - strlen($return)))) return;
@@ -95,8 +95,8 @@
     public static function readFrom($stream) {
       $s= '';
       do {
-        if (FALSE === ($ctl= unpack('nlength/cnext', ByteCountedString::readFully($stream, 3)))) return;
-        $s.= ByteCountedString::readFully($stream, $ctl['length']);
+        if (FALSE === ($ctl= unpack('nlength/cnext', self::readFully($stream, 3)))) return;
+        $s.= self::readFully($stream, $ctl['length']);
       } while ($ctl['next']);
       
       return utf8_decode($s);

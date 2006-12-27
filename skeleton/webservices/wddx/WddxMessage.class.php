@@ -64,8 +64,7 @@
      * @param   &mixed data
      * @throws  lang.IllegalArgumentException if passed data could not be serialized
      */
-    public function _marshall($node, $data) {
-    
+    protected function _marshall($node, $data) {
       switch (xp::typeOf($data)) {
         case 'NULL':
           $node->addChild(new Node('null'));
@@ -149,7 +148,7 @@
      * @return  &mixed[]
      * @throws  lang.IllegalArgumentException if document is not well-formed
      */
-    public function _unmarshall($node) {
+    protected function _unmarshall($node) {
       switch ($node->getName()) {
         case 'null': return NULL;
         case 'boolean': return ($node->getContent() == 'true' ? TRUE : FALSE);

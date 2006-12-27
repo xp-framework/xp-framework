@@ -52,7 +52,7 @@
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function acceptElement($element) {
+    protected function acceptElement($element) {
       return $this->filter->accept($element);
     }
     

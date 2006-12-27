@@ -22,7 +22,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    public function output($handle) {
+    protected function output($handle) {
       return imagegd($handle);
     }
   }

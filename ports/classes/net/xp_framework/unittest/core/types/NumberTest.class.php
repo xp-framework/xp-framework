@@ -31,9 +31,9 @@
      * @param   int int
      * @param   float float
      */
-    public function testType($number, $int, $float) {
-      $this->assertEquals($int, $number->intValue(), 'intValue') &&
-      $this->assertEquals($float, $number->floatValue(), 'floatValue') &&
+    protected function testType($number, $int, $float) {
+      $this->assertEquals($int, $number->intValue(), 'intValue');
+      $this->assertEquals($float, $number->floatValue(), 'floatValue');
       $this->assertEquals($number, clone($number), 'clone');
     }
 

@@ -44,21 +44,21 @@
      *
      * @return  &scriptlet.rpc.AbstractRpcRequest
      */
-    public function _request() {}
+    protected function _request() {}
 
     /**
      * Create a response object.
      *
      * @return  &scriptlet.rpc.AbstractRpcResponse
      */
-    public function _response() {}
+    protected function _response() {}
 
     /**
      * Create a message object.
      *
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function _message() {}
+    protected function _message() {}
 
     /**
      * Handle GET requests. XML-RPC requests are only sent via HTTP POST,

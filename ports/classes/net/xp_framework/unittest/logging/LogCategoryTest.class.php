@@ -45,11 +45,11 @@
      *
      * @return  &util.log.LogAppender
      */
-    public function mockAppender() {
+    protected function mockAppender() {
       return newinstance('util.log.LogAppender', array(), '{
-        var $messages= array();
+        public $messages= array();
         
-        function append() { 
+        public function append() { 
           $this->messages[]= func_get_args();
         }
       }');
@@ -62,7 +62,7 @@
      * @param   mixed[] args default ["Argument"]
      * @throws  unittest.AssertionFailedError
      */
-    public function assertLog($method, $args= array('Argument')) {
+    protected function assertLog($method, $args= array('Argument')) {
       $app= $this->cat->addAppender($this->mockAppender());
       call_user_func_array(array($this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)$method, $args)), $app->messages);
@@ -75,7 +75,7 @@
      * @param   mixed[] args default ["Argument"]
      * @throws  unittest.AssertionFailedError
      */
-    public function assertLogf($method, $args= array('Argument')) {
+    protected function assertLogf($method, $args= array('Argument')) {
       $app= $this->cat->addAppender($this->mockAppender());
       call_user_func_array(array($this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)substr($method, 0, -1), (array)vsprintf(array_shift($args), $args))), $app->messages);

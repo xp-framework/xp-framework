@@ -81,7 +81,7 @@
      * @param   mixed[] args
      * @param   mixed[] errors
      */
-    public function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
+    protected function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
       foreach ($errors as $line => $errormsg) {
         foreach ($errormsg as $message => $amount) {
           $this->trace[]= new StackTraceElement(

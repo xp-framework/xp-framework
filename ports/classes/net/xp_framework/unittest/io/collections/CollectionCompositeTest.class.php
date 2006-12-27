@@ -26,8 +26,8 @@
      * @param   &io.collections.IOElement element
      * @throws  unittest.AssertionFailedError
      */
-    public function assertElement($uri, $element) {
-      $this->assertSubClass($element, 'io.collections.IOElement') &&
+    protected function assertElement($uri, $element) {
+      $this->assertSubClass($element, 'io.collections.IOElement');
       $this->assertEquals($uri, $element->getURI());
     }
     
@@ -38,7 +38,7 @@
      * @param   io.collections.IOElement[] elements
      * @return  &io.collections.IOCollection
      */
-    public function newCollection($name, $elements) {
+    protected function newCollection($name, $elements) {
       $c= new MockCollection($name);
       foreach ($elements as $element) {
         $c->addElement($element);
@@ -52,7 +52,7 @@
      * @param   string name
      * @return  &io.collections.IOCollection
      */
-    public function emptyCollection($name) {
+    protected function emptyCollection($name) {
       return $this->newCollection($name, array());
     }
 

@@ -160,7 +160,7 @@
      *
      * @return  array
      */
-    public function _decodeArray() {
+    protected function _decodeArray() {
       $array= array();
       do {
         $token= $this->_getNextToken();
@@ -187,7 +187,7 @@
      *
      * @return  &stdclass
      */
-    public function _decodeObject() {
+    protected function _decodeObject() {
       $array= array();
       do {
         $token= $this->_getNextToken();
@@ -235,7 +235,7 @@
      *
      * @return  int
      */
-    public function _getNextToken() {
+    protected function _getNextToken() {
       if ($this->stream->eof()) return JSON_TOKEN_EOF;
       $this->_trim();
       
@@ -298,7 +298,7 @@
      *
      * @return  mixed
      */
-    public function _getTokenValue() {
+    protected function _getTokenValue() {
       return $this->_tokenValue;
     }    
     
@@ -307,7 +307,7 @@
      * (but not from within string)
      *
      */
-    public function _trim() {
+    protected function _trim() {
       $str= $this->stream->read(10);
       $this->stream->seek($this->stream->tell() - strlen($str) + (strlen($str) - strlen(ltrim($str, ' '))));
     }
@@ -318,7 +318,7 @@
      * @return  string
      * @throws  webservices.json.JsonException if the string could not be parsed
      */
-    public function _readString() {
+    protected function _readString() {
       do {
         $initpos= $this->stream->tell();
         $offset= 0;
@@ -380,7 +380,7 @@
      *
      * @return  mixed
      */
-    public function _readNumber() {
+    protected function _readNumber() {
       $initpos= $this->stream->tell();
       $str= $this->stream->read();
       
@@ -402,7 +402,7 @@
      * @param   array data
      * @return  bool
      */
-    public function _isVector($data) {
+    protected function _isVector($data) {
       $start= 0;
       foreach (array_keys($data) as $key) {
         if ($key !== $start++) return FALSE;

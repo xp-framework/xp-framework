@@ -75,7 +75,7 @@
      * @param   string file
      * @param   array<int, int> frequencies keys are line numbers, values are frequency
      */
-    public function assertTicks($file, $frequencies) {
+    protected function assertTicks($file, $frequencies) {
       $this->assertEquals(
         $frequencies,
         $this->ticks[basename($file)]

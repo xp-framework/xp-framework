@@ -27,7 +27,7 @@
      * Parse configuration stream
      *
      */
-    public function _parseFile() {
+    protected function _parseFile() {
       try {
         $this->stream->open(FILE_MODE_READ);
       } catch (IOException $e) {
@@ -52,7 +52,7 @@
      *
      * @return  string
      */
-    public function _readKey() {
+    protected function _readKey() {
       $l= $this->stream->readLine();
 
       // END token marks end of file      
@@ -68,7 +68,7 @@
      *
      * @return  string
      */
-    public function _readValue() {
+    protected function _readValue() {
     
       // Read e.g. "V 6"
       $l= $this->stream->readLine();

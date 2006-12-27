@@ -32,7 +32,6 @@
      * @param   string name
      */    
     public function __construct($ref, $name) {
-      parent::__construct();
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
       $this->_reflect= new ReflectionMethod($this->_ref, $this->name);

@@ -57,14 +57,14 @@
     #[@test]
     public function setupAndProcessCalled() {
       $request= new MockRequest($this->scriptlet->classloader, '{
-        var $called= array();
+        public $called= array();
         
-        function setup(&$request, &$response, &$context) {
+        public function setup($request, $response, $context) {
           parent::setup($request, $response, $context);
           $this->called["setup"]= TRUE;
         }
 
-        function process(&$request, &$response, &$context) {
+        public function process($request, $response, $context) {
           parent::process($request, $response, $context);
           $this->called["process"]= TRUE;
         }

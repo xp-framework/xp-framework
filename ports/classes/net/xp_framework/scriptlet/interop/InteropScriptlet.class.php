@@ -22,7 +22,7 @@
      *
      * @return  &.xml.XSLProcessor
      */
-    public function _processor() {
+    protected function _processor() {
       return new DomXSLProcessor();
     }
   }

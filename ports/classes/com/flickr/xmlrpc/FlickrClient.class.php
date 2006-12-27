@@ -95,7 +95,7 @@
      * @param   &xml.Node node
      * @return  mixed
      */
-    public function _recurse($node) {
+    protected function _recurse($node) {
       if (sizeof($node->children)) {
         $ret= array();
         foreach ($node->children as $index => $value) {

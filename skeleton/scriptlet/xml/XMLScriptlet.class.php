@@ -66,7 +66,7 @@
      *
      * @return  &xml.XSLProcessor
      */
-    public function _processor() {
+    protected function _processor() {
       return new XSLProcessor();
     }
     
@@ -76,7 +76,7 @@
      * @return  &scriptlet.xml.XMLScriptletResponse
      * @see     xp://scriptlet.HttpScriptlet#_response
      */
-    public function _response() {
+    protected function _response() {
       $response= new XMLScriptletResponse();
       $response->setProcessor($this->processor);
       return $response;
@@ -88,7 +88,7 @@
      * @return  &scriptlet.xml.XMLScriptletRequest
      * @see     xp://scriptlet.HttpScriptlet#_request
      */
-    public function _request() {
+    protected function _request() {
       return new XMLScriptletRequest();
     }
     
@@ -180,7 +180,7 @@
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    public function _setStylesheet($request, $response) {
+    protected function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s/%s/%s.xsl',
         $request->getProduct(),

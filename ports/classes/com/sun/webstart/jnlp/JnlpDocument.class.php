@@ -57,7 +57,7 @@
      * @param   string name
      * @return  &xml.Node
      */
-    public function findFirst($base, $name) {
+    protected function findFirst($base, $name) {
       for ($i= 0, $s= sizeof($base->children); $i < $s; $i++) {
         if ($name == $base->children[$i]->getName()) return $base->children[$i];
       }

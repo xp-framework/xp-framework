@@ -45,7 +45,7 @@
      * @param   mixed[] args
      * @return  string filter
      */
-    public function _prepare($args) {
+    protected function _prepare($args) {
       $query= $args[0];
       if (sizeof($args) <= 1) return $query;
 

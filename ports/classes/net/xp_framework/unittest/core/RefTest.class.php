@@ -20,7 +20,7 @@
      * @param   &lang.Object b
      * @throws  unittest.AssertionFailedError
      */
-    public function assertReference($a, $b) {
+    protected function assertReference($a, $b) {
       $this->assertEquals($a->__id, $b->__id);
       $a->__id= 'R:'.$a->__id;
       $this->assertEquals($a->__id, $b->__id);

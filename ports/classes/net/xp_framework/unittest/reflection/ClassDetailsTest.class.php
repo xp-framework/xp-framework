@@ -24,7 +24,7 @@
      * @return  array<string[]> matches
      * @throws  unittest.AssertionFailedError
      */
-    public function parseComment($comment) {
+    protected function parseComment($comment) {
       $comment= trim($comment);
       if (!preg_match_all(
         '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 

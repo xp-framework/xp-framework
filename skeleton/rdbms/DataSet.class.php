@@ -118,7 +118,7 @@
      * @param   &mixed value
      * @return  &mixed previous value
      */
-    public function _change($key, $value) {
+    protected function _change($key, $value) {
       $this->_changed[$key]= $value;
       $previous= $this->{$key};
       $this->{$key}= $value;

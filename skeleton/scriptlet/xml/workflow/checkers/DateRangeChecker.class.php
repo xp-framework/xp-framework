@@ -52,7 +52,7 @@
      * @param   bool lower whether this is the lower boundary
      * @return  &util.Date
      */
-    public function parseDate($input, $lower) {
+    protected function parseDate($input, $lower) {
       switch ($input) {
         case '__NOW__': 
           if ($lower) {

@@ -29,7 +29,7 @@
      * @param   array a2
      * @return  bool
      */
-    public function arrayequals($a1, $a2) {
+    protected function arrayequals($a1, $a2) {
       if (sizeof($a1) != sizeof($a2)) return FALSE;
 
       foreach (array_keys($a1) as $k) {

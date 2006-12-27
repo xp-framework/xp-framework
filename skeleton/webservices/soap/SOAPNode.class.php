@@ -27,7 +27,7 @@
      * @param   &mixed content
      * @return  string typename, e.g. "xsd:string"
      */
-    public function _typeName($content) {
+    protected function _typeName($content) {
       static $tmap= array(      // Mapping PHP-typename => SOAP-typename
         'double'        => 'float',
         'integer'       => 'int'
@@ -44,7 +44,7 @@
      * @param   &mixed content
      * @return  &mixed content, formatted, if necessary
      */
-    public function _contentFormat($content) {
+    protected function _contentFormat($content) {
       if (is_bool($content)) {
         return $content ? 'true' : 'false';
       }
@@ -118,7 +118,7 @@
      * @param   mixed value
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    public function _marshall($child, $value, $mapping) {
+    protected function _marshall($child, $value, $mapping) {
       static $ns= 0;
       
       if (is_scalar($value)) {          // Scalar
@@ -217,11 +217,11 @@
      * @param   array a
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    public function _recurse($e, $a, $mapping) {
+    protected function _recurse($e, $a, $mapping) {
       foreach (array_keys($a) as $field) {
         if ('_' == $field{0}) continue;
         $this->_marshall(
-          $e->addChild(new SOAPNode(is_numeric($field) ? 'item' : $field)),
+          $e->addChild(new self(is_numeric($field) ? 'item' : $field)),
           $a[$field],
           $mapping
         );
@@ -242,7 +242,7 @@
      * @return  &xml.Node
      */
     public static function fromArray($arr, $name= 'array', $mapping) {
-      $n= new SOAPNode($name);
+      $n= new self($name);
       $n->_recurse($n, $arr, $mapping);
       return $n;  
     }
@@ -262,7 +262,7 @@
      * @return  &xml.Node
      */
     public static function fromObject($obj, $name= NULL, $mapping) {
-      return SOAPNode::fromArray(
+      return self::fromArray(
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name,
         $mapping

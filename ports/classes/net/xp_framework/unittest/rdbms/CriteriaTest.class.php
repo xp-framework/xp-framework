@@ -47,7 +47,7 @@
      * @param   &rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
-    public function assertSql($sql, $criteria) {
+    protected function assertSql($sql, $criteria) {
       $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
     }
       

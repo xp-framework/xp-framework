@@ -40,7 +40,7 @@
      * @param   mixed data
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
-    public function _marshall($data) {
+    protected function _marshall($data) {
       $value= new Node('value');
       
       if (is('Generic', $data)) {

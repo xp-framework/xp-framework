@@ -59,7 +59,6 @@
      * @param   &mixed ref either a class name or an object
      */
     public function __construct($ref) {
-      parent::__construct();
       $this->_objref= $ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
       $this->_reflect= new ReflectionClass($ref);
@@ -133,6 +132,8 @@
      * @return  &lang.Object 
      */
     public function newInstance() {
+      if (!$this->hasConstructor()) return $this->_reflect->newInstance();
+
       $args= func_get_args();
       return $this->_reflect->newInstanceArgs($args);
     }
@@ -143,7 +144,7 @@
      *
      * @return  string[] method names
      */
-    public function _methods() {
+    protected function _methods() {
       $methods= array_flip(get_class_methods($this->_objref));
 
       // Well-known methods
@@ -413,7 +414,7 @@
      * @param   string name fqcn of class
      * @return  &lang.ClassLoader
      */
-    public static function _classLoaderFor($name) {
+    protected static function _classLoaderFor($name) {
       if (!($cl= xp::registry('classloader.'.$name))) {
         return ClassLoader::getDefault();
       }
@@ -451,7 +452,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      $cl= XPClass::_classLoaderFor($class);
+      $cl= self::_classLoaderFor($class);
       if (!($bytes= $cl->loadClassBytes($class))) return NULL;
 
       $details[$class]= array(array(), array());

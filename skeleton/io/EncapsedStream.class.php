@@ -42,7 +42,7 @@
      * pointer to the correct position).
      *
      */
-    public function _prepare() {
+    protected function _prepare() {
       $this->_super->seek($this->_offset + $this->offset);
     }
     
@@ -56,7 +56,7 @@
      * @param   mixed arg
      * @return  mixed arg
      */
-    public function _track($arg) {
+    protected function _track($arg) {
       $this->offset+= ($this->_super->tell()- ($this->_offset+ $this->offset));
       return $arg;
     }

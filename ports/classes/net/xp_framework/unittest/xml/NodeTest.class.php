@@ -24,7 +24,7 @@
      * @param   &xml.Node node
      * @return  string
      */
-    public function sourceOf($node, $mode= INDENT_DEFAULT) {
+    protected function sourceOf($node, $mode= INDENT_DEFAULT) {
       return rtrim($node->getSource($mode), "\n");
     }
     

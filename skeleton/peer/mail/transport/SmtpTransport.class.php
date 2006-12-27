@@ -67,7 +67,7 @@
      *          or FALSE to indicate not to read any data
      * @return  string buf
      */
-    public function _sockcmd() {
+    protected function _sockcmd() {
       if (NULL === $this->_sock) return;
       
       // Arguments
@@ -105,7 +105,7 @@
      *
      * @return  bool success
      */
-    public function _hello() {
+    protected function _hello() {
       if (!$this->ext) return $this->_sockcmd('HELO %s', $this->me, 250);
       
       // Example:
@@ -143,7 +143,7 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException in case authentication method is not supported
      */
-    public function _login() {
+    protected function _login() {
       if (empty($this->auth)) return TRUE;
       
       switch (strtolower($this->auth)) {
@@ -174,7 +174,7 @@
      * @param   string dsn
      * @return  bool success
      */
-    public function _parsedsn($dsn) {
+    protected function _parsedsn($dsn) {
       if (NULL === $dsn) return TRUE;
       
       $u= new URL($dsn);

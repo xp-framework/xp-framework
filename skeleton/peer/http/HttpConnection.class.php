@@ -65,7 +65,7 @@
      *
      * @param   &peer.URL object
      */
-    public function _createRequest($url) {
+    protected function _createRequest($url) {
       $this->request= HttpRequestFactory::factory($url);
     }
 

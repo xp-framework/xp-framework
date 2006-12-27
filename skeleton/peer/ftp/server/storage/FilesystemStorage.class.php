@@ -35,7 +35,7 @@
      * @param   string uri
      * @return  string
      */
-    public function realname($clientId, $uri) {
+    protected function realname($clientId, $uri) {
       $path= (DIRECTORY_SEPARATOR == $uri{0}
         ? $uri
         : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri

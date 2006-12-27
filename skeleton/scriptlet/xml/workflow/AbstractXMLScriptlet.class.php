@@ -34,7 +34,7 @@
      *
      * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
      */
-    public function _request() {
+    protected function _request() {
       return new WorkflowScriptletRequest($this->package);
     }
     

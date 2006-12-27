@@ -53,7 +53,7 @@
      * @param   &mixed value
      * @return  string
      */
-    public function stringOf($value) {
+    protected function stringOf($value) {
       if (is('Proxy', $value)) {
         $s= 'Proxy<';
         $c= get_class($value);
@@ -231,7 +231,7 @@
      * @throws  remote.RemoteException for server errors
      * @throws  lang.Error for unrecoverable errors
      */
-    public function sendPacket($type, $data= '', $bytes= array()) {
+    protected function sendPacket($type, $data= '', $bytes= array()) {
       $bsize= sizeof($bytes);
       
       // Calculate packet length
@@ -315,7 +315,7 @@
      * @param   int num
      * @return  string 
      */
-    public function readBytes($num) {
+    protected function readBytes($num) {
       $return= '';
       while (strlen($return) < $num) {
         if (0 == strlen($buf= $this->_sock->readBinary($num - strlen($return)))) return;

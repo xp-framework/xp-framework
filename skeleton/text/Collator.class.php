@@ -20,7 +20,7 @@
      *
      * @param   string locale
      */ 
-    public function __construct($locale) {
+    protected function __construct($locale) {
       $this->locale= $locale;
     }
     

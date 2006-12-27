@@ -25,7 +25,7 @@
      *
      * @throws  lang.FormatException in case the annotations cannot be parsed
      */    
-    public function parse() {
+    protected function parse() {
       if (is_array($this->_parsed)) return;   // Short-cuircuit: We've already parsed it
       
       $this->_parsed= array();

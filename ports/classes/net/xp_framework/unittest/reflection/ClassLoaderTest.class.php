@@ -24,7 +24,7 @@
      * @return  bool
      * @throws  unittest.AssertionFailedError
      */
-    public function assertXPClass($name, $class) {
+    protected function assertXPClass($name, $class) {
       return (
         $this->assertClass($class, 'lang.XPClass') &&
         $this->assertEquals($name, $class->getName()) &&
@@ -107,15 +107,14 @@
       }
       
       $class= $this->classLoader->defineClass($name, 'class RuntimeDefinedClass extends Object {
-        function __static() { RuntimeDefinedClass::initializerCalled(TRUE); }
-        function initializerCalled($value= NULL) { 
-          static $called; 
-          if (NULL !== $value) $called= $value;
-          return $called;
+        public static $initializerCalled= FALSE;
+        
+        static function __static() { 
+          self::$initializerCalled= TRUE; 
         }
       }');
       $this->assertXPClass($name, $class);
-      $this->assertTrue(RuntimeDefinedClass::initializerCalled());
+      $this->assertTrue(RuntimeDefinedClass::$initializerCalled);
     }
     
     /**
@@ -129,7 +128,7 @@
         $name, 
         'lang.Object',
         array('util.log.Traceable'),
-        '{ function setTrace($cat) { } }'
+        '{ public function setTrace($cat) { } }'
       );
 
       $this->assertTrue(is('util.log.Traceable', $class->newInstance()));

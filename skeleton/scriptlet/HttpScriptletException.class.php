@@ -65,7 +65,7 @@
      *
      * @param   int statusCode
      */
-    public function _response($statusCode) {
+    protected function _response($statusCode) {
       $this->response= new HttpScriptletResponse();
       $this->response->setStatus($statusCode);
       $this->response->setContent(sprintf(

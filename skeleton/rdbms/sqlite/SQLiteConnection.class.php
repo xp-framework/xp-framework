@@ -57,7 +57,7 @@
      * @param   mixed type
      * @return  mixed
      */
-    public function _cast($s, $type) {
+    protected function _cast($s, $type) {
       static $identifiers= array(
         'date'  => "\2",
         'int'   => "\3",

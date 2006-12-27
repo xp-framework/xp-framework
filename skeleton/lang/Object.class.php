@@ -16,18 +16,11 @@
     public $__id;
     
     /**
-     * Constructor wrapper 
-     * 
-     */
-    public function __construct() {
-      $this->__id= microtime();
-    }
-    
-    /**
      * Cloning handler
      *
      */
     public function __clone() {
+      if (!$this->__id) $this->__id= microtime();
       $this->__id= microtime();
     }
 
@@ -48,6 +41,8 @@
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals($cmp) {
+      if (!$this->__id) $this->__id= microtime();
+      if (!$cmp->__id) $cmp->__id= microtime();
       return $this === $cmp;
     }
     
@@ -93,6 +88,7 @@
      * @return  string
      */
     public function toString() {
+      if (!$this->__id) $this->__id= microtime();
       return xp::stringOf($this);
     }
   }

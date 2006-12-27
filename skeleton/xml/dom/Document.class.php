@@ -30,7 +30,7 @@
      * @param   int max default -1
      * @return  xml.Node[]
      */
-    public function _getElementsByTagName($node, $tagname, $max= -1) {
+    protected function _getElementsByTagName($node, $tagname, $max= -1) {
       $r= array();
       foreach (array_keys($node->children) as $key) {
         if ($tagname == $node->children[$key]->getName()) {
@@ -56,7 +56,7 @@
      * @param   int max
      * @return  xml.Node[]
      */
-    public function _getElementsByAttribute($node, $attribute, $name, $max) {
+    protected function _getElementsByAttribute($node, $attribute, $name, $max) {
       $r= array();
       foreach (array_keys($node->children) as $key) {
         if (

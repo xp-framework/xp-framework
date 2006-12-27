@@ -145,7 +145,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    public function _sendcmd() {
+    protected function _sendcmd() {
       $a= func_get_args();
       $cmd= vsprintf(array_shift($a), $a);
       $this->cat && $this->cat->debug('>>>', $cmd);
@@ -164,7 +164,7 @@
      * @throws  lang.FormatException in case "NO" occurs
      * @throws  peer.SocketException in case "BYE" occurs
      */
-    public function _response($discard= FALSE, $error= TRUE) {
+    protected function _response($discard= FALSE, $error= TRUE) {
       $lines= array();
       do {
         try {

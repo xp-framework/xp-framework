@@ -23,7 +23,7 @@
      *
      * @param   &scriptlet.HttpRequest request
      */
-    public function _setupRequest($request) {
+    protected function _setupRequest($request) {
       $request->headers= array_change_key_case($this->headers, CASE_LOWER);
       $request->method= $this->method;
       $request->setParams(array_change_key_case($this->params, CASE_LOWER));

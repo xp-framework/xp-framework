@@ -41,7 +41,7 @@
      * @param   &lang.XPClass class
      * @param   &xml.Node node
      */
-    public static function recurse($instance, $class, $node) {
+    protected static function recurse($instance, $class, $node) {
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlfactory', 'element')) continue;
         
@@ -83,10 +83,10 @@
         } else if (is('lang.Collection', $result)) {
           $elementClass= $result->getElementClass();
           foreach ($result->values() as $value) {
-            Marshaller::recurse($value, $elementClass, $node->addChild(new Node($element)));
+            self::recurse($value, $elementClass, $node->addChild(new Node($element)));
           }
         } else if (is('lang.Generic', $result)) {
-          Marshaller::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
+          self::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
         }
       }
     }
@@ -113,7 +113,7 @@
         $tree->root->setName(strtolower(get_class($instance)));
       }
       
-      Marshaller::recurse($instance, $class, $tree->root);
+      self::recurse($instance, $class, $tree->root);
       return $tree->getSource(INDENT_DEFAULT);
     }
   }

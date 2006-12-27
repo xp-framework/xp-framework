@@ -51,7 +51,7 @@
      * @param   int what
      * @return  array
      */
-    public function parseDetail($what) {
+    protected function parseDetail($what) {
       if (!isset($this->detail)) {
         $tm= TagletManager::getInstance();
 

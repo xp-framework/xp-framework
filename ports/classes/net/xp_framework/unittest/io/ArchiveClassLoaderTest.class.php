@@ -30,7 +30,7 @@
      * @param   string bytes
      * @return  &io.Stream
      */
-    public function classStream($bytes) {
+    protected function classStream($bytes) {
       $cstr= new Stream();
       $cstr->open(STREAM_MODE_WRITE);
       $cstr->write('<?php '.$bytes.' ?>');
@@ -46,7 +46,7 @@
      * @return  string
      * @throws  lang.IllegalStateException in case the generated class name already exists!
      */
-    public function testClassName($prefix= '') {
+    protected function testClassName($prefix= '') {
       $classname= $prefix.'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
       if (class_exists($classname)) {
         throw(new IllegalStateException('Class '.$this->classname.' may not exist!'));

@@ -66,7 +66,7 @@
      *
      * @return  bool success
      */
-    public function _readhead() {
+    protected function _readhead() {
       if (0 != $this->statuscode) return TRUE;
       if (!$this->_readstatus()) return FALSE;
       

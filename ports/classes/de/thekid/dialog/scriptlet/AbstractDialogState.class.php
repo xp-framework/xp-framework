@@ -62,7 +62,7 @@
      * @return  &de.thekid.dialog.IEntry
      * @throws  lang.IllegalArgumentException if found entry is not of expected type
      */
-    public function _getEntryFor($name, $expect) {
+    protected function _getEntryFor($name, $expect) {
       try {
         $entry= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
       } catch (IOException $e) {

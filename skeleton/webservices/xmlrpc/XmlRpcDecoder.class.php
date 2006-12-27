@@ -36,7 +36,7 @@
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException
      */
-    public function _unmarshall($node) {
+    protected function _unmarshall($node) {
       if (!is('xml.Node', $node->children[0]))
         throw(new XMLFormatException('Tried to access nonexistant node.'));
         

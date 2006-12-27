@@ -53,7 +53,7 @@
      *
      * @param   int sig
      */
-    public function handleSignal($sig) {
+    protected function handleSignal($sig) {
       $this->cat && $this->cat->debugf('Received signal %d in pid %d', $sig, getmypid());
       
       switch ($sig) {
@@ -67,7 +67,7 @@
      *
      * @param   array children
      */
-    public function _killChildren($children) {
+    protected function _killChildren($children) {
       foreach ($children as $pid => $i) {
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);

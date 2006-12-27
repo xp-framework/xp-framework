@@ -124,7 +124,7 @@
      * @param   mixed arg
      * @return  string
      */
-    public function typeString($arg) {
+    protected function typeString($arg) {
       return NULL === $arg ? 'void' : (is('ClassReference', $arg) ? $arg->referencedName() : $arg);
     }
 

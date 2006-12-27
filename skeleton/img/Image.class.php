@@ -42,7 +42,7 @@
      *
      * @param   resource handle
      */
-    public function __construct($handle) {
+    protected function __construct($handle) {
       $this->handle= $handle;
       $this->width= imagesx($handle);
       $this->height= imagesy($handle);

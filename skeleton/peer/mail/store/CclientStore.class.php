@@ -39,7 +39,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function _supports($u, $attr) {
+    protected function _supports($u, $attr) {
       throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
     }
     

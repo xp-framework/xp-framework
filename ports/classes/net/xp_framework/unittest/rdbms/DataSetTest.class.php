@@ -39,8 +39,10 @@
      *
      */
     public function setUp() {
-      $cm= ConnectionManager::getInstance();
-      $cm->register(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 'jobs');
+      ConnectionManager::getInstance()->register(
+        DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 
+        'jobs'
+      );
     }
     
     /**
@@ -48,9 +50,8 @@
      *
      * @return  &net.xp_framework.unittest.rdbms.mock.MockConnection
      */
-    public function getConnection() {
-      $cm= ConnectionManager::getInstance();
-      return $cm->getByHost('jobs', 0);
+    protected function getConnection() {
+      return ConnectionManager::getInstance()->getByHost('jobs', 0);
     }
     
     /**
@@ -58,9 +59,8 @@
      *
      * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet r
      */
-    public function setResults($r) {
-      $conn= $this->getConnection();
-      $conn->setResultSet($r);
+    protected function setResults($r) {
+      $this->getConnection()->setResultSet($r);
     }
     
     /**

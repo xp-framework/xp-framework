@@ -131,7 +131,7 @@
      * @param   array<mixed, mixed> toMerge
      * @param   array<mixed, mixed> expect
      */
-    public function testMerge($recursive, $toMerge, $expect) {
+    protected function testMerge($recursive, $toMerge, $expect) {
       $this->map->put('color', 'red');
       $this->map->put('count', 5);
 

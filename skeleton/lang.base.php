@@ -17,16 +17,16 @@
     }
     // }}}
 
-    // {{{ public string typeOf(&mixed arg)
+    // {{{ public string typeOf(mixed arg)
     //     Returns the fully qualified type name
-    static function typeOf(&$arg) {
+    static function typeOf($arg) {
       return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
     }
     // }}}
 
-    // {{{ public string stringOf(&mixed arg [, string indent default ''])
+    // {{{ public string stringOf(mixed arg [, string indent default ''])
     //     Returns a string representation of the given argument
-    static function stringOf(&$arg, $indent= '') {
+    static function stringOf($arg, $indent= '') {
       static $protect= array();
       
       if (is_string($arg)) {
@@ -80,7 +80,7 @@
 
     // {{{ public <null> null()
     //     Runs a fatal-error safe version of NULL
-    static function &null() {
+    static function null() {
       return xp::registry('null');
     }
     // }}}
@@ -88,7 +88,7 @@
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     static function errorAt($file, $line= -1) {
-      $errors= &xp::registry('errors');
+      $errors= xp::registry('errors');
       
       // If no line is given, check for an error in the file
       if ($line < 0) return !empty($errors[$file]);
@@ -122,7 +122,7 @@
     
     // {{{ internal mixed registry(mixed args*)
     //     Stores static data
-    static function &registry() {
+    static function registry() {
       static $registry= array();
       static $nullref= NULL;
       
@@ -170,21 +170,21 @@
     }
     // }}}
     
-    // {{{ magic bool __call(string name, mixed[] args, &mixed return)
+    // {{{ magic mixed __call(string name, mixed[] args)
     //     Call proxy
     function __call($name, $args) {
       throw(new NullPointerException('Method.invokation('.$name.')'));
     }
     // }}}
 
-    // {{{ magic bool __set(string name, mixed value)
+    // {{{ magic void __set(string name, mixed value)
     //     Set proxy
     function __set($name, $value) {
       throw(new NullPointerException('Property.write('.$name.')'));
     }
     // }}}
 
-    // {{{ magic bool __get(string name, &mixed value)
+    // {{{ magic mixed __get(string name)
     //     Set proxy
     function __get($name) {
       throw(new NullPointerException('Property.read('.$name.')'));
@@ -199,13 +199,13 @@
       $archive      = '',
       $filename     = '';
       
-    // {{{ static &mixed[] acquire(string archive)
+    // {{{ static mixed[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
-    public static function &acquire($archive) {
+    public static function acquire($archive) {
       static $archives= array();
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
-        $current= &$archives[$archive];
+        $current= $archives[$archive];
 
         // Bootstrap loading, only to be used for core classes.
         $current['handle']= fopen($archive, 'rb');
@@ -225,12 +225,12 @@
     
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
-    function stream_open($path, $mode, $options, &$opened_path) {
+    function stream_open($path, $mode, $options, $opened_path) {
       list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
       $this->archive= $archive;
       $this->filename= $file;
       
-      $current= &XpXarLoader::acquire($this->archive);
+      $current= XpXarLoader::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
     // }}}
@@ -238,7 +238,7 @@
     // {{{ string stream_read(int count)
     //     Read $count bytes up-to-length of file
     function stream_read($count) {
-      $current= &XpXarLoader::acquire($this->archive);
+      $current= XpXarLoader::acquire($this->archive);
       if (!isset($current['index'][$this->filename])) return FALSE;
       if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
 
@@ -252,7 +252,7 @@
     // {{{ bool stream_eof()
     //     Returns whether stream is at end of file
     function stream_eof() {
-      $current= &XpXarLoader::acquire($this->archive);
+      $current= XpXarLoader::acquire($this->archive);
       return $this->position >= $current['index'][$this->filename][0];
     }
     // }}}
@@ -263,7 +263,7 @@
     public static function stream_provides_file($path) {
       list($archive, $filename)= sscanf($path, 'xar://%[^?]?%[^$]');
       
-      $current= &XpXarLoader::acquire($archive, $filename);
+      $current= XpXarLoader::acquire($archive, $filename);
       return isset($current['index'][$filename]);
     }
     // }}}
@@ -275,7 +275,7 @@
   function __error($code, $msg, $file, $line) {
     if (0 == error_reporting() || is_null($file)) return;
 
-    $errors= &xp::registry('errors');
+    $errors= xp::registry('errors');
     @$errors[$file][$line][$msg]++;
     xp::registry('errors', $errors);
   }
@@ -350,9 +350,9 @@
 
   // {{{ null raise (string classname, string message)
   //     throws an exception by a given class name
-  function &raise($classname, $message) {
+  function raise($classname, $message) {
     try {
-      $class= &XPClass::forName($classname);
+      $class= XPClass::forName($classname);
     } catch(ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
@@ -367,9 +367,9 @@
   }
   // }}}
 
-  // {{{ mixed cast (&mixed var, mixed type default NULL)
+  // {{{ mixed cast (mixed var, mixed type default NULL)
   //     Casts. If var === NULL, it won't be touched
-  function &cast(&$var, $type= NULL) {
+  function cast($var, $type= NULL) {
     if (NULL === $var) return NULL;
 
     switch ($type) {
@@ -409,19 +409,13 @@
   }
   // }}}
 
-  // {{{ proto bool is(string class, &lang.Object object)
+  // {{{ proto bool is(string class, lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
-  function is($class, &$object) {
+  function is($class, $object) {
     $p= get_class($object);
     if (is_null($class) && 'null' == $p) return TRUE;
     $class= xp::reflect($class);
-    if (@is_a($object, $class)) return TRUE;
-    $implements= xp::registry('implements');
-    
-    do {
-      if (isset($implements[$p][$class])) return TRUE;
-    } while ($p= get_parent_class($p));
-    return FALSE;
+    return @is_a($object, $class);
   }
   // }}}
 
@@ -438,7 +432,7 @@
   }
   // }}}
   
-  // {{{ proto &mixed ref(&mixed object)
+  // {{{ proto mixed ref(mixed object)
   //     Creates a "reference" to an object
   function &ref(&$object) {
     return array(&$object);
@@ -452,9 +446,9 @@
   }
   // }}}
 
-  // {{{ proto &lang.Object newinstance(string classname, mixed[] args, string bytes)
+  // {{{ proto lang.Object newinstance(string classname, mixed[] args, string bytes)
   //     Anonymous instance creation
-  function &newinstance($classname, $args, $bytes) {
+  function newinstance($classname, $args, $bytes) {
     static $u= 0;
 
     $class= xp::reflect($classname);
@@ -475,12 +469,12 @@
     if (interface_exists($class)) {
       
       // It's an interface
-      eval('class '.$name.' extends Object implements '.$class.' '.$bytes.' $instance= &new '.$name.'('.substr($paramstr, 2).');');
+      eval('class '.$name.' extends Object implements '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
       return $instance;
     }
     
     // It's a class
-    eval('class '.$name.' extends '.$class.' '.$bytes.' $instance= &new '.$name.'('.substr($paramstr, 2).');');
+    eval('class '.$name.' extends '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
     return $instance;
   }
   // }}}
@@ -502,7 +496,6 @@
   define('LONG_MIN', -LONG_MAX - 1);
 
   // Hooks
-  extension_loaded('overload') && overload('null');
   set_error_handler('__error');
   
   // Registry initialization

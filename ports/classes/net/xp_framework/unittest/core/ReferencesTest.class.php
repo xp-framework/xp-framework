@@ -24,11 +24,11 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousSingleton', 
         'class AnonymousSingleton extends Object {
-           static function &getInstance() {
-             static $instance= NULL;
-             
-             if (!isset($instance)) $instance= new AnonymousSingleton();
-             return $instance;
+           protected static $instance= NULL;
+           
+           static function getInstance() {
+             if (!isset(self::$instance)) self::$instance= new AnonymousSingleton();
+             return self::$instance;
            }
         }'
       );
@@ -45,18 +45,16 @@
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousFactory', 
         'class AnonymousFactory extends Object {
-          static function &factory() {
-            $list= &new AnonymousList();
-            return $list;
+          static function factory() {
+            return new AnonymousList();
           }
         }'
       );
       $cl->defineClass(
         'net.xp_framework.unittest.core.AnonymousNewInstanceFactory', 
         'class AnonymousNewInstanceFactory extends Object {
-          static function &factory() {
-            $class= &XPClass::forName("net.xp_framework.unittest.core.AnonymousList");
-            return $class->newInstance();
+          static function factory() {
+            return XPClass::forName("net.xp_framework.unittest.core.AnonymousList")->newInstance();
           }
         }'
       );
@@ -69,7 +67,7 @@
      * @param   &lang.Object b
      * @throws  unittest.AssertionFailedError
      */
-    public function assertReference($a, $b) {
+    protected function assertReference($a, $b) {
       $this->assertEquals($a->__id, $b->__id);
       $a->__id= 'R:'.$a->__id;
       $this->assertEquals($a->__id, $b->__id);
@@ -103,7 +101,7 @@
      * @param   &mixed val
      * @return  &mixed
      */
-    public function registry($key, $val) {
+    public static function registry($key, $val) {
       static $registry= array();
       
       if (NULL !== $val) $registry[$key]= $val;

@@ -593,7 +593,7 @@
      * @param   &peer.mail.InternetAddress[] addrs
      * @return  string
      */
-    public function _astr($t, $addrs) {
+    protected function _astr($t, $addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
         if (!is('InternetAddress', $addrs[$i])) continue; // Ignore!
@@ -608,7 +608,7 @@
      * @param   string str
      * @return  string
      */
-    public function _qstr($str) {
+    protected function _qstr($str) {
       static $q;
 
       if (!isset($q)) $q= QuotedPrintable::getCharsToEncode();

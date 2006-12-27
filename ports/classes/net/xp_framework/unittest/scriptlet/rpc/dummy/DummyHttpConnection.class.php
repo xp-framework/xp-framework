@@ -21,7 +21,7 @@
      *
      * @param   &peer.URL url
      */
-    public function _createRequest($url) {
+    protected function _createRequest($url) {
       $this->request= new DummyHttpRequest($url);
     }
   }

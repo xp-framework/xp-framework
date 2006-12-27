@@ -352,7 +352,7 @@
      * @param   array mapping
      * @return  &mixed data
      */    
-    public function _recurseData($node, $names= FALSE, $context= NULL) {
+    protected function _recurseData($node, $names= FALSE, $context= NULL) {
       if (empty($node->children)) {
         $a= array();
         return $a;
@@ -427,7 +427,7 @@
      *
      * @param   &xml.SOAPNode node
      */
-    public function _retrieveNamespaces($node) {
+    protected function _retrieveNamespaces($node) {
       foreach ($node->attribute as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
         $this->namespaces[$val]= substr($key, 6);
@@ -440,7 +440,7 @@
      *
      * @return  &xml.SOAPNode
      */
-    public function _headerElement() {
+    protected function _headerElement() {
       
       // The header element must - if it exists - be the first child
       // of the SOAP envelope.

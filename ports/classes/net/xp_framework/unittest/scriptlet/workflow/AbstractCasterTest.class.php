@@ -12,7 +12,7 @@
    * @see       xp://scriptlet.xml.workflow.casters.ParamCaster
    * @purpose   Base class for Caster test
    */
-  class AbstractCasterTest extends TestCase {
+  abstract class AbstractCasterTest extends TestCase {
     public
       $caster = NULL;
 
@@ -21,7 +21,7 @@
      *
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function caster() { }
+    protected abstract function caster();
 
     /**
      * Setup method.
@@ -39,7 +39,7 @@
      * @return  mixed
      * @throws  lang.IllegalArgumentException in case the caster fails
      */
-    public function castValue($value) {
+    protected function castValue($value) {
       if (!is_array($casted= call_user_func(array($this->caster, 'castValue'), array((string)$value)))) {
         throw(new IllegalArgumentException('Cannot cast '.$value));
       }

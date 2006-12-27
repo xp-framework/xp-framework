@@ -67,7 +67,7 @@
      *
      * @return  int offset in seconds
      */
-    public function _getGMTOffset() {
+    protected function _getGMTOffset() {
       static $o;
       
       if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
@@ -80,7 +80,7 @@
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */
-    public static function _isLeapYear($year) {
+    protected static function _isLeapYear($year) {
       return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
     }
     
@@ -90,7 +90,7 @@
      * @param   string in
      * @return  int
      */
-    public static function _strtotime($in) {
+    protected static function _strtotime($in) {
       static $month_names= array(
         'Jan' => 1,
         'Feb' => 2,
@@ -219,7 +219,7 @@
      * @param   int stamp
      * @return  array
      */
-    public static function _getdate($stamp, $isGMT= FALSE) {
+    protected static function _getdate($stamp, $isGMT= FALSE) {
       static $month_table= array(
         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
         array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
@@ -373,7 +373,7 @@
      *
      * @param   int utime Unix-Timestamp
      */
-    public function _utime($utime) {
+    protected function _utime($utime) {
       foreach ($this->_getdate($this->_utime= $utime) as $key => $val) {
         is_string($key) && $this->{$key}= $val;
       }

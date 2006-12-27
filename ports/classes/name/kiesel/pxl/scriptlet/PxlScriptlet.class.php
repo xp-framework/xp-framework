@@ -22,7 +22,7 @@
      *
      * @return  &.xml.XSLProcessor
      */
-    public function _processor() {
+    protected function _processor() {
       $p= new DomXSLProcessor();
       return $p;
     }
@@ -43,7 +43,7 @@
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    public function _setStylesheet($request, $response) {
+    protected function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s/%s.xsl',
         $request->getProduct(),

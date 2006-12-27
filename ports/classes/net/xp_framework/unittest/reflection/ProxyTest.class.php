@@ -46,7 +46,7 @@
      * @param   lang.XPClass[] interfaces
      * @return  &lang.reflect.Proxy
      */
-    public function proxyInstanceFor($interfaces) {
+    protected function proxyInstanceFor($interfaces) {
       return Proxy::newProxyInstance(
         ClassLoader::getDefault(),
         $interfaces, 
@@ -62,7 +62,7 @@
      * @param   lang.XPClass[] interfaces
      * @return  &lang.XPClass
      */
-    public function proxyClassFor($interfaces) {
+    protected function proxyClassFor($interfaces) {
       return Proxy::getProxyClass(
         ClassLoader::getDefault(),
         $interfaces,
@@ -105,7 +105,7 @@
       $class= $this->proxyClassFor(array($this->iteratorClass));
       $interfaces= $class->getInterfaces();
       $this->assertEquals(2, sizeof($interfaces));
-      $this->assertEquals($this->iteratorClass, $interfaces[0]);
+      $this->assertEquals($this->iteratorClass, $interfaces[1]);
     }
 
     /**

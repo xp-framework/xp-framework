@@ -91,7 +91,7 @@
      *
      * @param   int num
      */
-    public function addElements($num) {
+    protected function addElements($num) {
       for ($i= 0; $i < $num; $i++) {
         $this->buffer->add(new String('item #'.$i));
       }

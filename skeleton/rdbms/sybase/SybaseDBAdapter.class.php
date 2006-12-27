@@ -78,7 +78,7 @@
      * Creates temporary table needed for fetching table indexes
      *
      */
-    public function prepareTemporaryIndexesTable() {
+    protected function prepareTemporaryIndexesTable() {
       $this->conn->query('create table #indexes (
         keys varchar(200),
         name varchar(28),
@@ -93,7 +93,7 @@
      * @param   string table thee table's name
      * @return  &rdbms.DBTable
      */    
-    public function dbTableObjectFor($table) {
+    protected function dbTableObjectFor($table) {
       $t= new DBTable($table);
       
       // Get the table's attributes
@@ -206,7 +206,7 @@
      * Drops temporary created by prepareTemporaryIndexesTable()
      *
      */
-    public function dropTemporaryIndexesTable() {
+    protected function dropTemporaryIndexesTable() {
       $this->conn->query('drop table #indexes');
     }
     

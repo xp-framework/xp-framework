@@ -57,7 +57,7 @@
      *
      * @param   mixed* arguments
      */
-    public function trace() {
+    protected function trace() {
       if (NULL == $this->cat) return;
       $args= func_get_args();
       call_user_func_array(array($this->cat, 'debug'), $args);

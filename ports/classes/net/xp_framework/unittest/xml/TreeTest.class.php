@@ -24,7 +24,7 @@
      * @param   &xml.Tree tree
      * @return  string
      */
-    public function sourceOf($tree, $mode= INDENT_DEFAULT) {
+    protected function sourceOf($tree, $mode= INDENT_DEFAULT) {
       return rtrim($tree->getSource($mode), "\n");
     }
 

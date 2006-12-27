@@ -112,7 +112,7 @@
      * @return  &lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
-    public function _defineClassFromBytes($class, $bytes) {
+    protected function _defineClassFromBytes($class, $bytes) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {

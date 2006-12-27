@@ -105,7 +105,7 @@
      * @param   string event
      * @param   mixed* parameters
      */
-    public function notify() {
+    protected function notify() {
       $a= func_get_args();
       $function= 'on'.ucfirst(array_shift($a));
       array_unshift($a, $this);

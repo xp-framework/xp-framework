@@ -67,7 +67,7 @@
      * @param   bool recursive default FALSE
      * @return  string[] an array of the elements' URIs
      */
-    public function filterFixtureWith($filter, $recursive= FALSE) {
+    protected function filterFixtureWith($filter, $recursive= FALSE) {
       $elements= array();
       for (
         $it= new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);

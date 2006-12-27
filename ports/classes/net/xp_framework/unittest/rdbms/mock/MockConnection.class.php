@@ -159,7 +159,7 @@
      * @param   array args
      * @return  string
      */
-    public function _prepare($args) {
+    protected function _prepare($args) {
       $sql= $args[0];
       if (sizeof($args) <= 1) return $sql;
 

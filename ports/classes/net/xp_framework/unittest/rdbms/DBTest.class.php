@@ -51,7 +51,7 @@
      *
      * @throws  unittest.AssertionFailedError
      */
-    public function assertQuery() {
+    protected function assertQuery() {
       $version= '$Revision$';
       $this->conn->setResultSet(new MockResultSet(array(array('version' => $version))));
       if (

@@ -14,7 +14,7 @@
    * @see      xp://img.Image#saveTo
    * @purpose  Abstract base class
    */
-  class StreamWriter extends Object implements ImageWriter {
+  abstract class StreamWriter extends Object implements ImageWriter {
     public
       $stream   = NULL;
     
@@ -34,7 +34,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    public function output($handle) { }
+    protected abstract function output($handle);
     
     /**
      * Callback function for ob_start

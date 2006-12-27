@@ -66,7 +66,7 @@
      * @param   string folder
      * @return  string realfolder
      */
-    public function _getFolderName($folder) {
+    protected function _getFolderName($folder) {
       return str_replace (
         $this->_root,
         '',
@@ -214,7 +214,7 @@
      * @param   int number
      * @return  string uri
      */    
-    public function _getMessageURI($f, $nr) {
+    protected function _getMessageURI($f, $nr) {
       $this->_folder->rewind();
 
       while (FALSE !== ($entry= $this->_folder->getEntry()) && $nr <= $i++) {
@@ -230,7 +230,7 @@
      * @param string filename
      * @return int flags
      */    
-    public function _getMailFlags($filename) {
+    protected function _getMailFlags($filename) {
       static
         $maildirFlagMatrix= array (
           'R' => MAIL_FLAG_ANSWERED,
@@ -256,7 +256,7 @@
      * @return  &peer.mail.Message
      * @throws  io.IOException if file cannot be read
      */    
-    public function _readMessageRaw($filename) {
+    protected function _readMessageRaw($filename) {
       $header= '';
       $body= '';
       try {

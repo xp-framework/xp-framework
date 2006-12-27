@@ -36,7 +36,7 @@
      * @param   &php.DomElement element
      * @return  string
      */
-    public static function contentOf($element) {
+    protected static function contentOf($element) {
       switch ($element->type) {
         case 1:   // Nodeset
           return empty($element->nodeset) ? NULL : utf8_decode($element->nodeset[0]->get_content());
@@ -65,7 +65,7 @@
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
-    public static function recurse($xpath, $context, $classname) {
+    protected static function recurse($xpath, $context, $classname) {
       try {
         $class= XPClass::forName($classname);
       } catch (ClassNotFoundException $e) {
@@ -90,7 +90,7 @@
             // * If the xmlmapping annotation has a key "class", call recurse()
             //   with the given XPath, the node as context and the key's value
             //   as classname
-            $arguments= array(Unmarshaller::recurse(
+            $arguments= array(self::recurse(
               $xpath, 
               $node, 
               $method->getAnnotation('xmlmapping', 'class')
@@ -106,12 +106,12 @@
             if ($method->hasAnnotation('xmlmapping', 'pass')) {
               $factoryArgs= array();
               foreach ($method->getAnnotation('xmlmapping', 'pass') as $pass) {
-                $factoryArgs[]= Unmarshaller::contentOf($xpath->query($pass, $node));
+                $factoryArgs[]= self::contentOf($xpath->query($pass, $node));
               }
             } else {
               $factoryArgs= array($node->nodeName);
             }
-            $arguments= array(Unmarshaller::recurse(
+            $arguments= array(self::recurse(
               $xpath, 
               $node, 
               call_user_func_array(
@@ -126,7 +126,7 @@
             //   argument list from the XPaths' results.
             $arguments= array();
             foreach ($method->getAnnotation('xmlmapping', 'pass') as $pass) {
-              $arguments[]= Unmarshaller::contentOf($xpath->query($pass, $node));
+              $arguments[]= self::contentOf($xpath->query($pass, $node));
             }
           } else if ($method->hasAnnotation('xmlmapping', 'type')) {
 
@@ -165,7 +165,7 @@
       } catch (DOMException $e) {
         throw new XMLFormatException($e->getMessage());
       }
-      return Unmarshaller::recurse(new XPath($doc), $doc->documentElement, $classname);
+      return self::recurse(new XPath($doc), $doc->documentElement, $classname);
     }
   }
 ?>

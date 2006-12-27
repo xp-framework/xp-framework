@@ -21,7 +21,7 @@
      *
      * @return  &lang.Object
      */
-    public function testStringInstance() {
+    protected function testStringInstance() {
       return newinstance('lang.Object', array(), '{
         function toString() {
           return "TestString(6) { String }";
@@ -166,10 +166,7 @@
   0 => "Outer array"
   1 => [
     0 => "Inner array"
-    1 => [
-      0 => "Outer array"
-      1 => ->{:recursion:}
-    ]
+    1 => ->{:recursion:}
   ]
 ]
 __
@@ -216,7 +213,7 @@ __
         }
       }');
       $this->assertEquals(
-        $test->getClassName()." {\n  __id => \"".$test->__id."\"\n}",
+        $test->getClassName()." {\n  __id => \"".$test->hashCode()."\"\n}",
         xp::stringOf($test)
       );
     }

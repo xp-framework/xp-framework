@@ -31,7 +31,6 @@
      * @param   string message
      */
     public function __construct($file, $class, $method, $line, $args, $message) {
-      parent::__construct();
       $this->file     = $file;  
       $this->class    = $class; 
       $this->method   = $method;

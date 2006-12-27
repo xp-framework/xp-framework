@@ -34,7 +34,7 @@
      *
      * @param   string class
      */
-    public function __construct($class) {
+    protected function __construct($class) {
       $this->class= $class;
       $this->_name= xp::reflect($class);
     }

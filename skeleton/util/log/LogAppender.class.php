@@ -10,14 +10,14 @@
    * @see      xp://util.log.LogCategory#addAppender
    * @purpose  Base class
    */
-  class LogAppender extends Object {
+  abstract class LogAppender extends Object {
 
     /**
      * Append data
      *
      * @param   mixed* args
      */ 
-    public function append() { }
+    public abstract function append();
  
     /**
      * Finalize this appender. This method is called when the logger
@@ -32,7 +32,7 @@
      * @param   mixed var
      * @return  string
      */
-    public function varSource($var) {
+    protected function varSource($var) {
       return is_string($var) ? $var : xp::stringOf($var);
     }
   }

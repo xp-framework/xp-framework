@@ -58,7 +58,7 @@
      * @param   mixed value
      * @throws  unittest.AssertionFailedError
      */
-    public function assertRoundtrip($method, $value) {
+    protected function assertRoundtrip($method, $value) {
       $this->assertEquals($value, $this->instance->$method($value));
     }
     

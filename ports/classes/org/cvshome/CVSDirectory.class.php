@@ -34,7 +34,7 @@
      * @param   string cvsCmd
      * @return  string[]
      */
-    public function _execute($cvsCmd) {
+    protected function _execute($cvsCmd) {
       $olddir= getcwd(); 
       chdir($this->path);
       $r= parent::_execute ($cvsCmd);

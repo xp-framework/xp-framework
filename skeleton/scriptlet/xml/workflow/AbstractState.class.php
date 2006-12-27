@@ -50,7 +50,7 @@
      * @param   &xml.Node node the node to add the handler representation to
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      */
-    public function addHandlerToFormresult($handler, $node, $request) {
+    protected function addHandlerToFormresult($handler, $node, $request) {
       $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
       foreach (array_keys($handler->values[HVAL_FORMPARAM]) as $key) {
 

@@ -63,7 +63,7 @@
      *
      * @return  &webservices.soap.rpc.SoapRpcRequest
      */
-    public function _request() {
+    protected function _request() {
       return new SoapRpcRequest();
     }
 
@@ -72,7 +72,7 @@
      *
      * @return  &webservices.soap.rpc.SoapRpcResponse
      */
-    public function _response() {
+    protected function _response() {
       return new SoapRpcResponse();
     }
     
@@ -81,7 +81,7 @@
      *
      * @return  &webservices.soap.SOAPMessage
      */
-    public function _message() {
+    protected function _message() {
       return new SOAPMessage();
     }    
 
@@ -94,12 +94,7 @@
      * @throws  lang.IllegalAccessException for non-public methods
      */
     public function callReflectHandler($msg) {
-      try {
-        $r= parent::callReflectHandler($msg);
-      } catch (Throwable $e) {
-        throw($e);   // catch/rethrow because of PHP4 limitations
-      }
-      return array($r);
+      return array(parent::callReflectHandler($msg));
     }   
   }
 ?>

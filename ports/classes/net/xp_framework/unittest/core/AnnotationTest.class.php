@@ -31,9 +31,8 @@
      * @param   string annotation
      * @return  bool
      */
-    public function annotationExists($method, $annotation) {
-      $method= $this->class->getMethod($method);
-      return $method->hasAnnotation($annotation);
+    protected function annotationExists($method, $annotation) {
+      return $this->class->getMethod($method)->hasAnnotation($annotation);
     }
 
     /**
@@ -43,9 +42,8 @@
      * @param   string annotation
      * @return  mixed annotation value
      */
-    public function methodAnnotation($method, $annotation) {
-      $method= $this->class->getMethod($method);
-      return $method->getAnnotation($annotation);
+    protected function methodAnnotation($method, $annotation) {
+      return $this->class->getMethod($method)->getAnnotation($annotation);
     }
 
     /**

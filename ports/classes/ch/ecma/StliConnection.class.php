@@ -68,7 +68,7 @@
      *
      * @param   string buf
      */
-    public function _write($buf) {
+    protected function _write($buf) {
       $this->trace('>>>', $buf);
       $this->sock->write($buf."\n");
     }
@@ -78,7 +78,7 @@
      *
      * @return  string
      */
-    public function _read() {
+    protected function _read() {
       $read= chop($this->sock->read());
       $this->trace('<<<', $read);
       return $read;
@@ -102,7 +102,7 @@
      * Private helper function
      *
      */
-    public function _sockcmd() {
+    protected function _sockcmd() {
       $args= func_get_args();
       $write= vsprintf($args[0], array_slice($args, 1));
       
@@ -117,7 +117,7 @@
      * Private helper function
      *
      */
-    public function _expect($expect, $have) {
+    protected function _expect($expect, $have) {
       if ($expect !== $have) {
         throw(new TelephonyException(sprintf(
           'Protocol error: Expecting "%s", have "%s"', $expect, $have
@@ -132,7 +132,7 @@
      * Private helper function
      *
      */
-    public function _expectf($expect, $have) {
+    protected function _expectf($expect, $have) {
       $res= sscanf($have, $expect);
 
       foreach ($res as $val) {

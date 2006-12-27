@@ -64,7 +64,7 @@
      * @param   mixed* args
      * @return  bool success
      */
-    public function _sendcmd() {
+    protected function _sendcmd() {
       $a= func_get_args();
       $cmd= vsprintf(array_shift($a), $a);
       $this->cat && $this->cat->debug('>>>', $cmd);
@@ -80,7 +80,7 @@
      * @throws  peer.ProtocolException in case expectation is not met
      * @see     http://www.loria.fr/~molli/cvs/doc/cvsclient_5.html#SEC14
      */
-    public function _readline($expect= CVSR_EXPECT_NONE, $data= '') {
+    protected function _readline($expect= CVSR_EXPECT_NONE, $data= '') {
       $line= $this->_sock->readLine();
       $this->cat && $this->cat->debug('<<<', $line);
       

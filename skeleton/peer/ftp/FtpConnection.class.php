@@ -77,7 +77,7 @@
      *
      * @param   string dsn
      */
-    public function _dsn($dsn) {
+    protected function _dsn($dsn) {
     
       // URL and defaults
       $this->url= new URL($dsn);
@@ -93,7 +93,7 @@
      * Setup directory list parser
      *
      */
-    public function setupListParser() {
+    protected function setupListParser() {
       if ('Windows_NT' == ftp_systype($this->handle)) {
         $this->parser= new WindowsFtpListParser();
       } else {

@@ -23,7 +23,7 @@
      *
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function caster() {
+    protected function caster() {
       return new ToFloat();
     }
 

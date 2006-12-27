@@ -19,7 +19,7 @@
      *
      * @return  scriptlet.HttpSession
      */
-    public function _session() {
+    protected function _session() {
       return new HttpSession();
     }
   

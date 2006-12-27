@@ -36,7 +36,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    public function output($handle) {
+    protected function output($handle) {
       return imagegd2($handle, '', 0, $this->format);
     }
   }

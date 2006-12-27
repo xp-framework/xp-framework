@@ -35,7 +35,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    public function output($handle) {
+    protected function output($handle) {
       return imagexbm($handle, '', $this->foreground);
     }
   }

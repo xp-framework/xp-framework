@@ -40,7 +40,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    public function output($handle) {
+    protected function output($handle) {
       if (imageistruecolor($handle)) {
         imagetruecolortopalette($handle, $this->dither, $this->ncolors);
       }

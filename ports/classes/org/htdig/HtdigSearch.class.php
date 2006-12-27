@@ -255,7 +255,7 @@
      *
      * @return  string query
      */
-    public function _getWordString() {
+    protected function _getWordString() {
       $str= '';
       foreach ($this->getWords() as $w) { 
         if ($w{0} != '-') {
@@ -273,7 +273,7 @@
      *
      * @return  string query
      */
-    public function _getQuery() {
+    protected function _getQuery() {
       $params= $this->getParams();
 
       // If excludes are given, add them to the query
@@ -332,8 +332,7 @@
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
     public function invoke() {
-      $log= Logger::getInstance();
-      $cat= $log->getCategory();
+      $cat= Logger::getInstance()->getCategory();
 
       try {
         $cmdline= sprintf('%s -v %s %s',

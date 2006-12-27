@@ -24,7 +24,7 @@
      * @param   string code
      * @return  unittest.coverage.Fragment[] expressions
      */
-    public function fragmentsOf($code) {
+    protected function fragmentsOf($code) {
       return PHPCodeFragmentizer::fragmentsOf('<?php '.trim($code).' ?>');
     }
     
@@ -35,7 +35,7 @@
      * @param   string code
      * @throws  unittest.AssertionFailedError
      */
-    public function assertExpressions($expected, $code) {
+    protected function assertExpressions($expected, $code) {
       $fragments= $this->fragmentsOf($code);
 
       // Compare sizes

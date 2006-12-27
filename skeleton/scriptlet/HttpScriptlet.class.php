@@ -69,7 +69,7 @@
      *
      * @return  &scriptlet.HttpScriptletRequest
      */
-    public function _request() {
+    protected function _request() {
       return new HttpScriptletRequest();
     }
     
@@ -79,7 +79,7 @@
      *
      * @return  &scriptlet.HttpSession
      */
-    public function _session() {
+    protected function _session() {
       return new HttpSession();
     }
     
@@ -89,7 +89,7 @@
      *
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function _response() {
+    protected function _response() {
       return new HttpScriptletResponse();
     }
     
@@ -314,7 +314,7 @@
      *
      * @param   &scriptlet.HttpRequest request
      */
-    public function _setupRequest($request) {
+    protected function _setupRequest($request) {
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= getenv('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
