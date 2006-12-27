@@ -15,8 +15,6 @@
     /**
      * Retrieve errors
      *
-     * @model   static
-     * @access  public
      * @return  string[] error
      */
     public static function getErrors() {
@@ -30,7 +28,6 @@
     /**
      * Get OpenSSL configuration file environment value
      *
-     * @access  public
      * @return  string
      */
     public function getConfiguration() {

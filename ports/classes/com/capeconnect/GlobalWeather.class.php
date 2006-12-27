@@ -40,7 +40,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct(
@@ -54,11 +53,10 @@
      *
      * @see     http://www.gironet.nl/home/aviator1/iata/iatacode.htm                
      * @see     http://www.wajb.freeserve.co.uk/codes.htm                            
-     * @access  public
      * @param   string code Airport code, such as "FRA" for Frankfurt/Main, Germany  
      * @return  &lang.Object report                                                        
      */
-    public function &getWeatherReport($code) {
+    public function getWeatherReport($code) {
       return $this->invoke('getWeatherReport', new Parameter('code', $code));
     }
   }

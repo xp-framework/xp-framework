@@ -50,7 +50,6 @@
     /**
      * Process
      *
-     * @access  public
      * @param   string token
      * @return  string
      */

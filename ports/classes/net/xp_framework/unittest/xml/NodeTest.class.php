@@ -21,11 +21,10 @@
      * Helper method which returns the XML representation of a Node object,
      * trimmed of trailing \ns.
      *
-     * @access  protected
      * @param   &xml.Node node
      * @return  string
      */
-    public function sourceOf(&$node, $mode= INDENT_DEFAULT) {
+    public function sourceOf($node, $mode= INDENT_DEFAULT) {
       return rtrim($node->getSource($mode), "\n");
     }
     
@@ -34,7 +33,6 @@
      *
      * @see     xp://xml.Node#setAttribute
      * @see     xp://xml.Node#getAttribute
-     * @access  public
      */
     #[@test]
     public function attributeAccessors() {
@@ -50,7 +48,6 @@
      *
      * @see     xp://xml.Node#setContent
      * @see     xp://xml.Node#getContent
-     * @access  public
      */
     #[@test]
     public function contentAccessors() {
@@ -65,7 +62,6 @@
      *
      * @see     xp://xml.Node#setName
      * @see     xp://xml.Node#getName
-     * @access  public
      */
     #[@test]
     public function nameAccessors() {
@@ -79,7 +75,6 @@
      * content contains illegal characters
      *
      * @see     xp://xml.Node#setContent
-     * @access  public
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function illegalContent() {
@@ -92,7 +87,6 @@
      * passed argument is not a node object
      *
      * @see     xp://xml.Node#addChild
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingNullChild() {
@@ -104,7 +98,6 @@
      * Tests that addChild() will return the child added
      *
      * @see     xp://xml.Node#addChild
-     * @access  public
      */
     #[@test]
     public function addingReturnsChild() {
@@ -117,7 +110,6 @@
      * Tests that fromArray() will return an empty node when passed an empty array
      *
      * @see     xp://xml.Node#fromArray
-     * @access  public
      */
     #[@test]
     public function fromEmptyArray() {
@@ -131,7 +123,6 @@
      * Tests fromArray() with an array of two numbers
      *
      * @see     xp://xml.Node#fromArray
-     * @access  public
      */
     #[@test]
     public function fromNumberArray() {
@@ -145,7 +136,6 @@
      * Tests fromArray() with an array of characters
      *
      * @see     xp://xml.Node#fromArray
-     * @access  public
      */
     #[@test]
     public function fromCharacterArray() {
@@ -158,7 +148,6 @@
     /**
      * Tests a node without attributes or content
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfEmptyNode() {
@@ -171,7 +160,6 @@
     /**
      * Tests a node with one attribute
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfNodeWithOneAttribute() {
@@ -184,7 +172,6 @@
     /**
      * Tests a node with two attributes
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfNodeWithTwoAttributes() {
@@ -198,7 +185,6 @@
      * Tests a node with content. Makes sure escaping of special characters
      * is performed as necessary.
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfNodeWithContent() {
@@ -211,7 +197,6 @@
     /**
      * Tests a node with CDATA content. 
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfNodeWithCData() {
@@ -224,7 +209,6 @@
     /**
      * Tests a node with PCDATA content. 
      *
-     * @access  public
      */
     #[@test]
     public function sourceOfNodeWithPCData() {

@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string identifier
      * @param   string server default NULL
      */    
@@ -46,25 +45,23 @@
     /**
      * Magic interceptor for member read access
      *
-     * @access  protected
      * @param   string name
      * @param   &mixed value
      * @return  bool success
      */
     public function __get($name) {
-      $value= &com_get($this->h, $name);
+      $value= com_get($this->h, $name);
       return $value;
     }
     
     /**
      * Magic interceptor for member write access
      *
-     * @access  protected
      * @param   string name
      * @param   &mixed value
      * @return  bool success
      */
-    public function __set($name, &$value) {
+    public function __set($name, $value) {
       com_set($this->h, $name, $value);
       return TRUE;
     }
@@ -72,7 +69,6 @@
     /**
      * Magic interceptor for member method access
      *
-     * @access  protected
      * @param   string name
      * @param   array args
      * @param   &mixed return
@@ -81,7 +77,7 @@
     public function __call($name, $args) {
       $return= call_user_func_array(
         'com_invoke', 
-        array_merge(array(&$this->h, $name), $args)
+        array_merge(array($this->h, $name), $args)
       );
       return $return;
     }
@@ -89,7 +85,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       com_release($this->h);

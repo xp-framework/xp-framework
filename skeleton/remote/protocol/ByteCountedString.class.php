@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string string default ''
      */
     public function __construct($string= '') {
@@ -44,7 +43,6 @@
     /**
      * Return length of encoded string based on specified chunksize
      *
-     * @access  public
      * @param   int chunksize default BCS_DEFAULT_CHUNK_SIZE
      * @return  int
      */
@@ -55,11 +53,10 @@
     /**
      * Write to a given stream using a specified chunk size
      *
-     * @access  public
      * @param   &io.Stream stream
      * @param   int chunksize default BCS_DEFAULT_CHUNK_SIZE
      */
-    public function writeTo(&$stream, $chunksize= BCS_DEFAULT_CHUNK_SIZE) {
+    public function writeTo($stream, $chunksize= BCS_DEFAULT_CHUNK_SIZE) {
       $length= strlen($this->string);
       $offset= 0;
 
@@ -76,13 +73,11 @@
     /**
      * Read a specified number of bytes from a given stream
      *
-     * @model   static
-     * @access  protected
      * @param   &io.Stream stream
      * @param   int length
      * @return  string
      */
-    public static function readFully(&$stream, $length) {
+    public static function readFully($stream, $length) {
       $return= '';
       while (strlen($return) < $length) {
         if (0 == strlen($buf= $stream->readBinary($length - strlen($return)))) return;
@@ -94,12 +89,10 @@
     /**
      * Read from a stream
      *
-     * @model   static
-     * @access  public
      * @param   &io.Stream stream
      * @return  string
      */
-    public static function readFrom(&$stream) {
+    public static function readFrom($stream) {
       $s= '';
       do {
         if (FALSE === ($ctl= unpack('nlength/cnext', ByteCountedString::readFully($stream, 3)))) return;

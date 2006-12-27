@@ -22,7 +22,6 @@
      * Set Csvdef. This is the mapping of the no. of the retrieved
      * column to its name, just like a csv-file header.
      *
-     * @access  public
      * @param   &array _cvsdef
      */
     public function setCsvdef($csvdef) {
@@ -32,10 +31,9 @@
     /**
      * Set Metaresult
      *
-     * @access  public
      * @param   &mixed metaresult
      */
-    public function setMetaresult(&$metaresult) {
+    public function setMetaresult($metaresult) {
       static $mapping= array(
         'boolean'       => 'boolean',
         'logicalwords'  => 'logicalWords',
@@ -56,7 +54,6 @@
      * Returns the number of matches contained in
      * this resultset.
      *
-     * @access  public
      * @return  int matches
      */
     public function getMatches() {
@@ -67,7 +64,6 @@
      * Returns the logical words determined for the
      * search query.
      *
-     * @access  public
      * @return  string words
      */
     public function getLogicalWords() {
@@ -77,17 +73,15 @@
     /**
      * Get Metaresult
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getMetaresult() {
+    public function getMetaresult() {
       return $this->metaresult;
     }
 
     /**
      * Set Results
      *
-     * @access  public
      * @param   mixed[] results
      */
     public function setResults($results) {
@@ -97,7 +91,6 @@
     /**
      * Get Results
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getResults() {
@@ -107,23 +100,21 @@
     /**
      * Adds an entry to the result entries.
      *
-     * @access  public
      * @param   &mixed array raw form of result data
      */
     public function addResult($result) {
       $res= array();
       foreach (array_keys($result) as $idx) {
-        $res[$this->_csvdef[$idx]]= &$result[$idx];
+        $res[$this->_csvdef[$idx]]= $result[$idx];
       }
       
-      if ($entry= &HtdigEntry::fromArray($res))
-        $this->results[]= &$entry;
+      if ($entry= HtdigEntry::fromArray($res))
+        $this->results[]= $entry;
     }
     
     /**
      * Rewinds the result pointer to the first result.
      *
-     * @access  public
      */
     public function rewindResults() {
       reset($this->results);
@@ -133,11 +124,10 @@
      * Fetch the next result object. Returns FALSE when there
      * are no more result objects left.
      *
-     * @access  public
      * @return  &mixed
      */
-    public function &getNextResult() {
-      $result= &current($this->results);
+    public function getNextResult() {
+      $result= current($this->results);
       next($this->results);
       return $result;
     }
@@ -145,7 +135,6 @@
     /**
      * Returns the string representation of this object.
      *
-     * @access  public
      * @return  string 
      */
     public function toString() {

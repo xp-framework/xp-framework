@@ -23,7 +23,6 @@
      * Test deserialization of complex soap-type into an object
      * of the specified class.
      *
-     * @access  public
      */
     #[@test]
     public function testDeserialization() {
@@ -63,7 +62,6 @@
      * knows alot about the result and even violates the
      * access restrictions (_bodyElement).
      *
-     * @access  public
      */
     #[@test]
     public function testSerialization() {
@@ -71,7 +69,7 @@
       $client= new SOAPClient($transport, 'urn://test');
       
       // Re-set transport as constructor created a copy of it!
-      $client->transport= &$transport;
+      $client->transport= $transport;
       
       $client->registerMapping(
         new QName('http://net.xp_framework/soap/types', 'SoapTestType'),
@@ -84,8 +82,8 @@
         // We don't receive a "real" answer, which will cause an exception
       }
       
-      $msg= &$transport->getRequest();
-      $body= &$msg->_bodyElement();
+      $msg= $transport->getRequest();
+      $body= $msg->_bodyElement();
       $this->assertEquals(
         'http://net.xp_framework/soap/types', 
         $body->children[0]->children[0]->attribute['xmlns:ns1']

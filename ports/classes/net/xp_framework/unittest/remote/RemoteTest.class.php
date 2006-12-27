@@ -32,21 +32,18 @@
      * Static initializer. Registers the protocol "mock" with the
      * MockProtocolHandler class.
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() {
-      $hf= &HandlerFactory::getInstance();
+      $hf= HandlerFactory::getInstance();
       $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
     }
     
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
-      $pool= &HandlerInstancePool::getInstance();
+      $pool= HandlerInstancePool::getInstance();
       
       foreach (array(
         REMOTE_SPEC_ONE     => TRUE,    // Cluster machine #1
@@ -54,7 +51,7 @@
         REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
         REMOTE_SPEC_OTHER   => TRUE     // Other machine
       ) as $spec => $avail) {
-        $this->handler[$spec]= &$pool->acquire($spec);
+        $this->handler[$spec]= $pool->acquire($spec);
         $this->handler[$spec]->server['available']= $avail;
       }
     }
@@ -62,7 +59,6 @@
     /**
      * Test handler member is an array of MockProtocolHandlers
      *
-     * @access  public
      */
     #[@test]
     public function mockHandler() {
@@ -74,7 +70,6 @@
     /**
      * Test forName() returns a Remote instance.
      *
-     * @access  public
      */
     #[@test]
     public function forNameSucceeds() {
@@ -85,7 +80,6 @@
      * Test forName() method throws a RemoteException in case connecting
      * to the remote side fails
      *
-     * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
     public function forNameFailsToConnect() {
@@ -96,7 +90,6 @@
      * Test forName() method succeeds for a cluster with one machine 
      * down and one running (either way around)
      *
-     * @access  public
      */
     #[@test]
     public function forNameSucceedsForCluster() {
@@ -108,7 +101,6 @@
      * Test forName() method succeeds for a cluster with all machines
      * down.
      *
-     * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
     public function forNameFailsToConnectCluster() {
@@ -120,7 +112,6 @@
      * Test forName() returns the same Remote instance when invoked
      * twice with the same DSN.
      *
-     * @access  public
      */
     #[@test]
     public function forNameSameInstance() {
@@ -132,7 +123,6 @@
      * Test forName() method throws a RemoteException in case the
      * protocol is unknown.
      *
-     * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
     public function forNameFailsForUnknownProtocol() {
@@ -142,29 +132,27 @@
     /**
      * Test lookup() method
      *
-     * @access  public
      */
     #[@test]
     public function lookup() {
-      $r= &Remote::forName(REMOTE_SPEC_ONE);
+      $r= Remote::forName(REMOTE_SPEC_ONE);
       
       // Bind a person object
       $person= new Person();
-      $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= &$person;
+      $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= $person;
 
       // Lookup the person object
-      $lookup= &$r->lookup('xp/demo/Person');
+      $lookup= $r->lookup('xp/demo/Person');
       $this->assertEquals($person, $lookup);
     }
 
     /**
      * Test lookup() method
      *
-     * @access  public
      */
     #[@test, @expect('remote.NameNotFoundException')]
     public function lookupNonExistantName() {
-      $r= &Remote::forName(REMOTE_SPEC_ONE);
+      $r= Remote::forName(REMOTE_SPEC_ONE);
       $r->lookup('does/not/Exist');
     }
   }

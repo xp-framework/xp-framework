@@ -17,19 +17,17 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   mixed value default NULL
      */
     public function __construct($name, $value= NULL) {
       $this->name= $name;
-      $this->value= &$value;
+      $this->value= $value;
     }
 
     /**
      * Creates a string representation of this image object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

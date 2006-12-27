@@ -20,7 +20,6 @@
     /**
      * Helper method that parses an apidoc comment and returns the matches
      *
-     * @access  protected
      * @param   string comment
      * @return  array<string[]> matches
      * @throws  unittest.AssertionFailedError
@@ -88,7 +87,6 @@
     /**
      * Tests the parseComment() helper
      *
-     * @access  public
      */
     #[@test, @expect('unittest.AssertionFailedError')]
     public function testParseComment() {
@@ -98,7 +96,6 @@
     /**
      * Protected helper method
      *
-     * @access  protected
      * @param   int modifiers
      * @param   string comment
      * @return  bool
@@ -112,7 +109,6 @@
     /**
      * Tests separation of the comment from the "tags part".
      *
-     * @access  public
      */
     #[@test]
     public function commentString() {
@@ -135,7 +131,6 @@
     /**
      * Tests comment is empty when no comment is available in apidoc
      *
-     * @access  public
      */
     #[@test]
     public function noCommentString() {
@@ -153,7 +148,6 @@
     /**
      * Tests parsing of the "access" tag
      *
-     * @access  public
      */
     #[@test]
     public function publicAccess() {
@@ -169,7 +163,6 @@
     /**
      * Tests parsing of the "access" tag
      *
-     * @access  public
      */
     #[@test]
     public function protectedAccess() {
@@ -185,7 +178,6 @@
     /**
      * Tests parsing of the "access" tag
      *
-     * @access  public
      */
     #[@test]
     public function privateAccess() {
@@ -201,7 +193,6 @@
     /**
      * Tests parsing of the "access" tag
      *
-     * @access  public
      */
     #[@test]
     public function staticAccess() {
@@ -218,7 +209,6 @@
     /**
      * Tests parsing of the "param" tag with a scalar parameter
      *
-     * @access  public
      */
     #[@test]
     public function scalarParameter() {
@@ -241,7 +231,6 @@
     /**
      * Tests parsing of the "param" tag with an array parameter
      *
-     * @access  public
      */
     #[@test]
     public function arrayParameter() {
@@ -264,7 +253,6 @@
     /**
      * Tests parsing of the "param" tag with an object parameter
      *
-     * @access  public
      */
     #[@test]
     public function objectParameter() {
@@ -287,7 +275,6 @@
     /**
      * Tests parsing of the "param" tag with a parameter with default value
      *
-     * @access  public
      */
     #[@test]
     public function defaultParameter() {
@@ -311,7 +298,6 @@
     /**
      * Tests parsing of the "param" tag with an generic parameter
      *
-     * @access  public
      */
     #[@test]
     public function genericArrayParameter() {
@@ -335,7 +321,6 @@
     /**
      * Tests parsing of the "param" tag with an generic parameter
      *
-     * @access  public
      */
     #[@test]
     public function genericObjectParameter() {
@@ -359,7 +344,6 @@
     /**
      * Tests parsing of the "throws" tag
      *
-     * @access  public
      */
     #[@test]
     public function throwsList() {
@@ -378,7 +362,6 @@
      /**
      * Tests parsing of the "return" tag
      *
-     * @access  public
      */
     #[@test]
     public function returnType() {

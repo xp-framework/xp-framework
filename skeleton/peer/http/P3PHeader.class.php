@@ -80,7 +80,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string policyref
      */
     public function __construct($policyref) {
@@ -91,7 +90,6 @@
     /**
      * Helper method
      *
-     * @access  private
      * @param   string name
      * @param   string value
      */
@@ -108,7 +106,6 @@
      * represented in compact policies using tokens composed 
      * by a three letter code.
      *
-     * @access  public
      * @param   string access one of the P3PC_ACCESS_* constants
      */
     public function setCompactAccess($access) {
@@ -122,7 +119,6 @@
      * providing a single "DSP" token in the P3P-compact policy 
      * field.
      *
-     * @access  public
      * @param   bool disputes
      */
     public function setCompactDisputes($disputes) {
@@ -137,7 +133,6 @@
      * Note: If NULL is passed as value for remedies, the REMEDIES
      * element will be removed
      *
-     * @access  public
      * @param   string remedies one of the P3PC_REMEDIES_* constants
      */
     public function setCompactRemedies($remedies) {
@@ -151,7 +146,6 @@
      * NON-IDENTIFIABLE element is present in every statement within the 
      * policy)
      *
-     * @access  public
      * @param   bool non_identifiable
      */
     public function setCompactNonIdentifiable($non_identifiable) {
@@ -174,7 +168,6 @@
      * Note: If NULL is passed as value for purpose, the PURPOSE
      * element will be removed
      *
-     * @access  public
      * @param   string purpose one of the P3PC_PURPOSE_* constants
      * @param   string creq default '' one of the P3PC_CREQ_* constants
      */
@@ -194,7 +187,6 @@
      * Note: If NULL is passed as value for recipient, the RECIPIENT
      * element will be removed
      *
-     * @access  public
      * @param   string recipient one of the P3PC_RECIPIENT_* constants
      * @param   string creq default '' one of the P3PC_CREQ_* constants
      */
@@ -210,7 +202,6 @@
      * Note: If NULL is passed as value for retention, the RETENTION
      * element will be removed
      *
-     * @access  public
      * @param   string retention one of the P3PC_RETENTION_* constants
      */
     public function setCompactRetention($retention) {
@@ -224,7 +215,6 @@
      * Note: If NULL is passed as value for categories, the CATEGORIES
      * element will be removed
      *
-     * @access  public
      * @param   string categories one of the P3PC_CATEGORIES_* constants
      */
     public function setCompactCategories($categories) {
@@ -235,7 +225,6 @@
      * Set compact test. The presence of the TEST element is signaled 
      * by the TST token.
      *
-     * @access  public
      * @param   bool test
      */
     public function setCompactTest($test) {
@@ -245,7 +234,6 @@
     /**
      * Set Policyref
      *
-     * @access  public
      * @param   string policyref
      */
     public function setPolicyref($policyref) {
@@ -255,7 +243,6 @@
     /**
      * Get Policyref
      *
-     * @access  public
      * @return  string
      */
     public function getPolicyref() {
@@ -265,7 +252,6 @@
     /**
      * Get header value representation
      *
-     * @access  public
      * @return  string value
      */
     public function getValueRepresentation() {

@@ -26,18 +26,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &lang.Object stream
      */
-    public function __construct(&$stream) {
-      $this->stream= &$stream;
+    public function __construct($stream) {
+      $this->stream= $stream;
       
     }
 
     /**
      * Read status line
      *
-     * @access  private
      * @return  bool success
      */    
     public function _readstatus() {
@@ -66,7 +64,6 @@
     /**
      * Read head if necessary
      *
-     * @access  protected
      * @return  bool success
      */
     public function _readhead() {
@@ -100,7 +97,6 @@
     /**
      * Read data
      *
-     * @access  public
      * @param   int size default 8192
      * @param   bool binary default FALSE
      * @return  string buf or FALSE to indicate EOF
@@ -157,7 +153,6 @@
     /**
      * Closes the stream if it's at EOF
      *
-     * @access  protected
      * @return  boolean 
      */
     public function closeStream() {
@@ -182,7 +177,6 @@
      *   }
      * </pre>
      *
-     * @access  public
      * @return  toString
      */
     public function toString() {
@@ -205,7 +199,6 @@
     /**
      * Get HTTP statuscode
      *
-     * @access  public
      * @return  int status code
      */
     public function getStatusCode() {
@@ -215,7 +208,6 @@
     /**
      * Get HTTP message
      *
-     * @access  public
      * @return  string
      */
     public function getMessage() {
@@ -225,7 +217,6 @@
     /**
      * Get response headers as an associative array
      *
-     * @access  public
      * @return  array headers
      */
     public function getHeaders() {
@@ -236,7 +227,6 @@
      * Get response header by name
      * Note: The lookup is performed case-insensitive
      *
-     * @access  public
      * @return  string value or NULL if this header does not exist
      */
     public function getHeader($name) {

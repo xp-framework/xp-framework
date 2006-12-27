@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int id
      */ 
     public function __construct($id) {
@@ -28,14 +27,13 @@
     /**
      * Draw function
      *
-     * @access  public
      * @param   &resource hdl an image resource
      * @param   &img.Color col
      * @param   string text
      * @param   int x
      * @param   int y
      */
-    public function drawtext(&$hdl, &$col, $text, $x, $y) {
+    public function drawtext($hdl, $col, $text, $x, $y) {
       return imagestring(
         $hdl,
         $this->id,

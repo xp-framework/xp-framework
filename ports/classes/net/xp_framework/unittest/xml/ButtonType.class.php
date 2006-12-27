@@ -20,7 +20,6 @@
     /**
      * Set ID
      *
-     * @access  public
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
@@ -31,7 +30,6 @@
     /**
      * Get ID
      *
-     * @access  public
      * @return  string id
      */
     #[@xmlfactory(element= '@id')]
@@ -42,7 +40,6 @@
     /**
      * Set caption
      *
-     * @access  public
      * @param   string caption
      */
     #[@xmlmapping(element= '.')]
@@ -53,7 +50,6 @@
     /**
      * Get caption
      *
-     * @access  public
      * @param   string caption
      */
     #[@xmlfactory(element= '.')]

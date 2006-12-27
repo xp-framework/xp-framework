@@ -38,29 +38,27 @@
     /**
      * Add a test
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @return  &unittest.TestCase
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
-    public function &addTest(&$test) {
+    public function addTest($test) {
       if (!is('unittest.TestCase', $test)) {
         throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
       }
-      $this->tests[]= &$test;
+      $this->tests[]= $test;
       return $test;
     }
 
     /**
      * Add a test class
      *
-     * @access  public
      * @param   &lang.XPClass<unittest.TestCase> class
      * @return  lang.reflect.Method[] ignored test methods
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase class
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
      */
-    public function addTestClass(&$class, $arguments= array()) {
+    public function addTestClass($class, $arguments= array()) {
       if (!$class->isSubclassOf('unittest.TestCase')) {
         throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
       }
@@ -70,12 +68,12 @@
         if (!$methods[$i]->hasAnnotation('test')) continue;
 
         if ($methods[$i]->hasAnnotation('ignore')) {
-          $ignored[]= &$methods[$i];
+          $ignored[]= $methods[$i];
           continue;
         }
 
         // Add test method
-        $this->addTest(call_user_func_array(array(&$class, 'newInstance'), array_merge(
+        $this->addTest(call_user_func_array(array($class, 'newInstance'), array_merge(
           (array)$methods[$i]->getName(TRUE),
           $arguments
         )));
@@ -91,7 +89,6 @@
     /**
      * Returns number of tests in this suite
      *
-     * @access  public
      * @return  int
      */
     public function numTests() {
@@ -101,7 +98,6 @@
     /**
      * Remove all tests
      *
-     * @access  public
      */
     public function clearTests() {
       $this->tests= array();
@@ -110,22 +106,20 @@
     /**
      * Returns test at a given position
      *
-     * @access  public
      * @param   int pos
      * @return  &unittest.TestCase or NULL if none was found
      */
-    public function &testAt($pos) {
+    public function testAt($pos) {
       if (isset($this->tests[$pos])) return $this->tests[$pos]; else return NULL;
     }
     
     /**
      * Run a single test
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @return  &unittest.TestResult
      */
-    public function &runTest(&$test) {
+    public function runTest($test) {
       $result= new TestResult();
       $test->run($result);
       return $result;
@@ -134,10 +128,9 @@
     /**
      * Run this test suite
      *
-     * @access  public
      * @return  &unittest.TestResult
      */
-    public function &run() {
+    public function run() {
       $result= new TestResult();
       for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
         $this->tests[$i]->run($result);

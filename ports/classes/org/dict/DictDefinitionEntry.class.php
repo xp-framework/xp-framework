@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string database
      * @param   string definition
      */
@@ -30,7 +29,6 @@
     /**
      * Get Database
      *
-     * @access  public
      * @return  string
      */
     public function getDatabase() {
@@ -40,7 +38,6 @@
     /**
      * Get Definition
      *
-     * @access  public
      * @return  string
      */
     public function getDefinition() {

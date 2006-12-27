@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->doc= new Tree();
@@ -32,14 +31,12 @@
     /**
      * Create XML from a DBTable
      *
-     * @model   static
-     * @access  public
      * @param   &rdbms.DBTable table
      * @param   string dbhost
      * @param   string database
      * @return  &rdbms.util.DBXmlGenerator object
      */    
-    public static function &createFromTable(&$table, $dbhost, $database) {
+    public static function createFromTable($table, $dbhost, $database) {
       if (!is('DBTable', $table)) {
         throw(new IllegalArgumentException('Argument table is not a DBTable object'));
       }
@@ -48,14 +45,14 @@
       $g->doc->root->setAttribute('created_at', date('r'));
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       
-      $t= &$g->doc->root->addChild(new Node('table', NULL, array(
+      $t= $g->doc->root->addChild(new Node('table', NULL, array(
         'name'     => $table->name,
         'dbhost'   => $dbhost,
         'database' => $database
       )));
       
       // Attributes
-      if ($attr= &$table->getFirstAttribute()) do {
+      if ($attr= $table->getFirstAttribute()) do {
         $t->addChild(new Node('attribute', NULL, array(
           'name'     => trim($attr->getName()),
           'type'     => $attr->getTypeString(),
@@ -63,11 +60,11 @@
           'typename' => $attr->typeName(),
           'nullable' => $attr->isNullable() ? 'true' : 'false',
         )));
-      } while ($attr= &$table->getNextAttribute());
+      } while ($attr= $table->getNextAttribute());
 
       // Attributes
-      if ($index= &$table->getFirstIndex()) do {
-        $n= &$t->addChild(new Node('index', NULL, array(
+      if ($index= $table->getFirstIndex()) do {
+        $n= $t->addChild(new Node('index', NULL, array(
           'name'    => trim($index->getName()),
           'unique'  => $index->isUnique() ? 'true' : 'false',
           'primary' => $index->isPrimaryKey() ? 'true' : 'false',
@@ -75,7 +72,7 @@
         foreach ($index->getKeys() as $key) {
           $n->addChild(new Node('key', $key));
         }
-      } while ($index= &$table->getNextIndex());
+      } while ($index= $table->getNextIndex());
       
       return $g;
     }
@@ -83,7 +80,6 @@
     /**
      * Get XML source
      *
-     * @access  public
      * @return  string xml representation
      */    
     public function getSource() {

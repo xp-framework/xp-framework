@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -42,7 +41,6 @@
     /**
      * Retrieve transaction state
      *
-     * @access  public
      */
     public function getState() { 
       return $this->db->transtate($this->name);
@@ -51,7 +49,6 @@
     /**
      * Rollback this transaction
      *
-     * @access  public
      */
     public function rollback() { 
       return $this->db->rollback($this->name);
@@ -60,7 +57,6 @@
     /**
      * Commit this transaction
      *
-     * @access  public
      */
     public function commit() { 
       return $this->db->commit($this->name);

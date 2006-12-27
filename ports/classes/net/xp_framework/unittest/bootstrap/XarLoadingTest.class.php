@@ -20,7 +20,6 @@
     /**
      * Sets up test case
      *
-     * @access  public
      */
     public function setUp() {
       $this->sandbox= new SandboxSourceRunner();
@@ -36,7 +35,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function load() {
@@ -49,7 +47,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function loadFromArchive() {
@@ -62,7 +59,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function loadFromArchiveWithArchiveDependency() {
@@ -78,7 +74,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function loadFromArchiveWithNonarchiveDependency() {
@@ -91,7 +86,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function registeredClassLoader() {

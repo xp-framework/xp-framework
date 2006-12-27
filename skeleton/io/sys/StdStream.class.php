@@ -22,12 +22,10 @@
      *   $stdout->write('Hello');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   resource handle one of STDIN | STDOUT | STDERR
      * @return  &io.File
      */
-    public static function &get($handle) {
+    public static function get($handle) {
       static $f= array();
       
       if (!isset($f[$handle])) {

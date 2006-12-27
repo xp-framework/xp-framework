@@ -17,7 +17,6 @@
     /**
      * Retrieves fullViewableName
      *
-     * @access  public
      * @return  string 
      */
     public function getFullViewableName() {
@@ -27,7 +26,6 @@
     /**
      * Sets fullViewableName
      *
-     * @access  public
      * @param   string fullViewableName
      */
     public function setFullViewableName($fullViewableName) {
@@ -37,7 +35,6 @@
     /**
      * Retrieves specialEncoding
      *
-     * @access  public
      * @return  string 
      */
     public function getSpecialEncoding() {
@@ -47,7 +44,6 @@
     /**
      * Sets specialEncoding
      *
-     * @access  public
      * @param   string specialEncoding
      */
     public function setSpecialEncoding($specialEncoding) {

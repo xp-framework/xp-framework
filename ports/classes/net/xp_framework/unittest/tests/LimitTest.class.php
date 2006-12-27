@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates a new test suite.
      *
-     * @access  public
      */
     public function setUp() {
       $this->suite= new TestSuite();
@@ -32,22 +31,20 @@
     /**
      * Tests running the test that times out
      *
-     * @access  public
      */    
     #[@test]
     public function timeouts() {
-      $r= &$this->suite->runTest(new SimpleTestCase('timeouts'));
+      $r= $this->suite->runTest(new SimpleTestCase('timeouts'));
       $this->assertEquals(1, $r->failureCount());
     }    
 
     /**
      * Tests running the test that doesn't timeout
      *
-     * @access  public
      */    
     #[@test]
     public function noTimeout() {
-      $r= &$this->suite->runTest(new SimpleTestCase('noTimeout'));
+      $r= $this->suite->runTest(new SimpleTestCase('noTimeout'));
       $this->assertEquals(1, $r->successCount());
     }    
   }

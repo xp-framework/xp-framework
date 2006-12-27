@@ -23,7 +23,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string file
      * @param   string class
      * @param   string method
@@ -44,7 +43,6 @@
     /**
      * Create string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -90,11 +88,10 @@
     /**
      * Compares this stacktrace element to another object
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('lang.StackTraceElement', $cmp) && $this->toString() == $cmp->toString();
     }
   }

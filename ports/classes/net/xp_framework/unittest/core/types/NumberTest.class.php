@@ -27,12 +27,11 @@
     /**
      * Tests a given type
      *
-     * @access  protected
      * @param   &lang.types.Number number
      * @param   int int
      * @param   float float
      */
-    public function testType(&$number, $int, $float) {
+    public function testType($number, $int, $float) {
       $this->assertEquals($int, $number->intValue(), 'intValue') &&
       $this->assertEquals($float, $number->floatValue(), 'floatValue') &&
       $this->assertEquals($number, clone($number), 'clone');
@@ -42,7 +41,6 @@
      * Tests the Long class
      *
      * @see     xp://lang.types.Long
-     * @access  public
      */
     #[@test]
     public function longType() {
@@ -53,7 +51,6 @@
      * Tests the Byte class
      *
      * @see     xp://lang.types.Byte
-     * @access  public
      */
     #[@test]
     public function byteType() {
@@ -64,7 +61,6 @@
      * Tests the Short class
      *
      * @see     xp://lang.types.Short
-     * @access  public
      */
     #[@test]
     public function shortType() {
@@ -75,7 +71,6 @@
      * Tests the Integer class
      *
      * @see     xp://lang.types.Integer
-     * @access  public
      */
     #[@test]
     public function IntegerType() {
@@ -86,7 +81,6 @@
      * Tests the Double class
      *
      * @see     xp://lang.types.Double
-     * @access  public
      */
     #[@test]
     public function doubleType() {
@@ -97,7 +91,6 @@
      * Tests the Float class
      *
      * @see     xp://lang.types.Float
-     * @access  public
      */
     #[@test]
     public function floatType() {

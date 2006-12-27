@@ -14,8 +14,6 @@
     /**
      * Return boolean from string
      *
-     * @model   static
-     * @access  public
      * @param   string s
      * @return  bool
      * @throws  lang.IllegalArgumentException
@@ -39,8 +37,6 @@
     /**
      * Return string from boolean
      *
-     * @model   static
-     * @access  public
      * @param   bool bool
      * @return  string
      */

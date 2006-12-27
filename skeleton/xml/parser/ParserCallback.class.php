@@ -16,7 +16,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      * @param   array attrs
@@ -26,7 +25,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      */
@@ -35,7 +33,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string cdata
      */
@@ -44,7 +41,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string data
      */

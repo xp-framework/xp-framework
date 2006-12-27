@@ -15,8 +15,6 @@
     /**
      * Get name
      *
-     * @model   abstract
-     * @access  public
      * @return  string
      */
     public function getTagName() { }
@@ -24,8 +22,6 @@
     /**
      * Get attributes
      *
-     * @model   abstract
-     * @access  public
      * @return  array
      */
     public function getTagAttributes() { }

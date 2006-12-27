@@ -15,7 +15,6 @@
    * PHP itself and will also rely on the API docs being consistent and 
    * correct.
    *
-   * @model    abstract
    * @see      xp://lang.reflect.Method
    * @see      xp://lang.reflect.Constructor
    * @purpose  Reflection
@@ -29,11 +28,10 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   &mixed ref
      * @param   string name
      */    
-    public function __construct(&$ref, $name) {
+    public function __construct($ref, $name) {
       parent::__construct();
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
@@ -44,7 +42,6 @@
      * Get method's name. If the optional parameter "asDeclared" is set to TRUE,
      * the name will be parsed from the sourcecode, thus preserving case.
      *
-     * @access  public
      * @param   bool asDeclared default FALSE
      * @return  string
      */
@@ -58,7 +55,6 @@
     /**
      * Retrieve this method's modifiers
      *
-     * @access  public
      * @return  int
      */    
     public function getModifiers() {
@@ -69,7 +65,6 @@
     /**
      * Retrieve this method's modifiers as an array of strings
      *
-     * @access  public
      * @return  string[]
      */    
     public function getModifierNames() {
@@ -90,7 +85,6 @@
     /**
      * Retrieve this method's arguments
      *
-     * @access  public
      * @return  lang.reflect.Argument[]
      */
     public function getArguments() {
@@ -101,11 +95,10 @@
     /**
      * Retrieve one of this method's argument by its position
      *
-     * @access  public
      * @param   int pos
      * @return  &lang.reflect.Argument
      */
-    public function &getArgument($pos) {
+    public function getArgument($pos) {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
       if (!isset($details[DETAIL_ARGUMENTS][$pos])) return NULL;
       return $details[DETAIL_ARGUMENTS][$pos];
@@ -114,7 +107,6 @@
     /**
      * Retrieve how many arguments this method accepts (including optional ones)
      *
-     * @access  public
      * @return  int
      */
     public function numArguments() {
@@ -125,7 +117,6 @@
     /**
      * Retrieve return type
      *
-     * @access  public
      * @return  string
      */
     public function getReturnType() {
@@ -136,9 +127,9 @@
     /**
      * Retrieve whether this method returns a reference
      *
-     * @access  public
      * @return  string
      */
+    #[@deprecated]
     public function returnsReference() {
       return $this->_reflect->returnsReference();
     }
@@ -146,7 +137,6 @@
     /**
      * Retrieve exception names
      *
-     * @access  public
      * @return  string[]
      */
     public function getExceptionNames() {
@@ -157,7 +147,6 @@
     /**
      * Retrieve exception types
      *
-     * @access  public
      * @return  lang.XPClass[]
      */
     public function getExceptionTypes() {
@@ -172,10 +161,9 @@
      * Returns the XPClass object representing the class or interface 
      * that declares the method represented by this Method object.
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &getDeclaringClass() {
+    public function getDeclaringClass() {
       $class= $this->_ref;
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[1][$this->name])) return new XPClass($class);
@@ -188,7 +176,6 @@
      * Retrieves the api doc comment for this method. Returns NULL if
      * no documentation is present.
      *
-     * @access  public
      * @return  string
      */
     public function getComment() {
@@ -199,7 +186,6 @@
     /**
      * Check whether an annotation exists
      *
-     * @access  public
      * @param   string name
      * @param   string key default NULL
      * @return  bool
@@ -216,7 +202,6 @@
     /**
      * Retrieve annotation by name
      *
-     * @access  public
      * @param   string name
      * @param   string key default NULL
      * @return  mixed
@@ -242,7 +227,6 @@
     /**
      * Retrieve whether a method has annotations
      *
-     * @access  public
      * @return  bool
      */
     public function hasAnnotations() {
@@ -253,7 +237,6 @@
     /**
      * Retrieve all of a method's annotations
      *
-     * @access  public
      * @return  array annotations
      */
     public function getAnnotations() {
@@ -270,7 +253,6 @@
      *   public open(string $mode) throws io.FileNotFoundException, io.IOException
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

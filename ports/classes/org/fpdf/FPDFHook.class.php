@@ -15,11 +15,10 @@
     /**
      * Gets called when a page is finalized
      *
-     * @access  public
      * @param   &org.fpdf.FPDF pdf
      * @param   int page the number of the page
      */
-    public function onEndPage(&$pdf, $page);
+    public function onEndPage($pdf, $page);
   
   }
 ?>

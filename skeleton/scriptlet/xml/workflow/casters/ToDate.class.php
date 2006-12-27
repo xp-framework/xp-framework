@@ -17,7 +17,6 @@
      * Cast a given value
      *
      * @see     xp://scriptlet.xml.workflow.casters.ParamCaster
-     * @access  public
      * @param   array value
      * @return  array value
      */
@@ -25,12 +24,12 @@
       $return= array();
       foreach ($value as $k => $v) {
         try {
-          $date= &DateParser::parse($v);
+          $date= DateParser::parse($v);
         } catch (FormatException $e) {
           return $e->getMessage();
         }
         
-        $return[$k]= &$date;
+        $return[$k]= $date;
       }
 
       return $return;

@@ -24,8 +24,6 @@
     /**
      * Translates the given sentence to schwobian.
      *
-     * @model   static
-     * @access  public
      * @param   string sentence
      * @return  string translation
      */  

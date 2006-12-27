@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   string errorcode
      * @param   mixed actual default NULL
@@ -32,7 +31,6 @@
     /**
      * Set errorcode
      *
-     * @access  public
      * @param   string errorcode
      */
     public function setErrorCode($errorcode) {
@@ -42,7 +40,6 @@
     /**
      * Get errorcode
      *
-     * @access  public
      * @return  string
      */
     public function getErrorCode() {
@@ -52,7 +49,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {
@@ -68,7 +64,6 @@
     /**
      * Retrieve string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

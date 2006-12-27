@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array params
      */
     public function __construct($params) {
@@ -26,7 +25,7 @@
         'xsi:type'    => 'hash:Map'
       ));
       foreach ($params as $key => $value) {
-        $item= &$this->item->addChild(new SOAPNode('item'));
+        $item= $this->item->addChild(new SOAPNode('item'));
         $this->item->_recurse($item, array('key' => $key));
         $this->item->_recurse($item, array('value' => $value));
       }
@@ -35,7 +34,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  mixed
      */
     public function toString() {
@@ -45,7 +43,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() {

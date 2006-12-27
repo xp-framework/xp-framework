@@ -21,17 +21,15 @@
     /**
      * Return the caster
      *
-     * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function &caster() {
+    public function caster() {
       return new ToInteger();
     }
 
     /**
      * Test positive and negative numbers
      *
-     * @access  public
      */
     #[@test]
     public function wholeNumbers() {
@@ -43,7 +41,6 @@
     /**
      * Test empty input
      *
-     * @access  public
      */
     #[@test]
     public function emptyInput() {

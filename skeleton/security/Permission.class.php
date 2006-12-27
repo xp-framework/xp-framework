@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name, $actions) {
@@ -31,7 +30,6 @@
     /**
      * Get this permission's name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -41,7 +39,6 @@
     /**
      * Get this permission's actions
      *
-     * @access  public
      * @return  string[]
      */
     public function getActions() {
@@ -57,7 +54,6 @@
      * permission io.FilePermission "/baz/example", "read,write";
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

@@ -35,7 +35,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string body default ''
      * @param   string contenttype default ''
      * @param   string encoding default ''
@@ -64,7 +63,6 @@
     /**
      * Returns whether this part is an attachment
      *
-     * @access  public
      * @return  bool TRUE if this part is an attachment
      */
     public function isAttachment() {
@@ -74,7 +72,6 @@
     /**
      * Returns whether this part is an inline
      *
-     * @access  public
      * @return  bool TRUE if this part is an inline
      */
     public function isInline() {
@@ -87,7 +84,6 @@
     /**
      * Get part filename
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -97,7 +93,6 @@
     /**
      * Set part filename
      *
-     * @access  public
      * @param   string filename
      */
     public function setFilename($filename) {
@@ -107,7 +102,6 @@
     /**
      * Get part disposition
      *
-     * @access  public
      * @return  string
      */
     public function getDisposition() {
@@ -117,7 +111,6 @@
     /**
      * Set part disposition
      *
-     * @access  public
      * @param   string disposition
      */
     public function setDisposition($disposition) {
@@ -127,7 +120,6 @@
     /**
      * Get part name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -137,7 +129,6 @@
     /**
      * Set part name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -147,7 +138,6 @@
     /**
      * Get part encoding
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {
@@ -157,7 +147,6 @@
     /**
      * Set part encoding
      *
-     * @access  public
      * @param   string encoding
      */
     public function setEncoding($encoding) {
@@ -167,7 +156,6 @@
     /**
      * Get part contenttype
      *
-     * @access  public
      * @return  string
      */
     public function getContenttype() {
@@ -177,7 +165,6 @@
     /**
      * Set part contenttype
      *
-     * @access  public
      * @param   string contenttype
      */
     public function setContenttype($contenttype) {
@@ -189,7 +176,6 @@
      * does not yet have a content-id, generateContentId() will
      * be used to create one.
      *
-     * @access  public
      * @return  string id
      */
     public function getContentId() {
@@ -204,7 +190,6 @@
      * is used to reference this part within other mime-parts
      * and thus must be unique.
      *
-     * @access  public
      * @param   string id
      */    
     public function setContentId($id) {
@@ -214,7 +199,6 @@
     /**
      * Generate a unique id for this mimepart.
      *
-     * @access  public
      */
     public function generateContentId() {
       $this->id= uniqid(time(), TRUE);
@@ -223,7 +207,6 @@
     /**
      * Set part body
      *
-     * @access  public
      * @param   string body
      * @param   bool encoded default FALSE
      */
@@ -234,7 +217,6 @@
     /**
      * Get part body.
      *
-     * @access  public
      * @param   decode default FALSE
      * @return  string
      */
@@ -253,7 +235,6 @@
     /**
      * Set headers from string
      *
-     * @access  public
      * @param   string str
      */
     public function setHeaderString($str) {
@@ -278,7 +259,6 @@
     /**
      * Return headers as string
      *
-     * @access  public
      * @return  string headers
      */
     public function getHeaderString() {

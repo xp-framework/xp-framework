@@ -22,17 +22,15 @@
     /**
      * Return the caster
      *
-     * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function &caster() {
+    public function caster() {
       return new ToEmailAddress();
     }
 
     /**
      * Test numerous valid email addresses
      *
-     * @access  public
      */
     #[@test]
     public function validEmailAdresses() {
@@ -44,7 +42,6 @@
     /**
      * Test input without an @ sign
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringWithoutAt() {
@@ -54,7 +51,6 @@
     /**
      * Test empty input
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function emptyInput() {

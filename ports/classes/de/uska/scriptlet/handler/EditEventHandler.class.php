@@ -20,7 +20,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       $this->setWrapper(new EditEventWrapper());
@@ -30,26 +29,24 @@
     /**
      * Get identifier.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    public function identifierFor(&$request, &$context) {
+    public function identifierFor($request, $context) {
       return $this->name.'.'.$request->getParam('event_id', 'new');
     }
 
     /**
      * Setup handler
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function setup(&$request, &$context) {
+    public function setup($request, $context) {
       if (
-        $request->hasParam('event_id', 'new') && ($event= &Event::getByEvent_id($request->getParam('event_id')))
+        $request->hasParam('event_id', 'new') && ($event= Event::getByEvent_id($request->getParam('event_id')))
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
         $this->setFormValue('event_type', $event->getEvent_type_id());
@@ -57,13 +54,13 @@
         $this->setFormValue('name', $event->getName());
         $this->setFormValue('description', $event->getDescription());
 
-        $tdate= &$event->getTarget_date();
+        $tdate= $event->getTarget_date();
         if ($tdate) {
           $this->setFormValue('target_date', $tdate->toString('d.m.Y'));
           $this->setFormValue('target_time', $tdate->toString('H:i'));
         }
 
-        $ddate= &$event->getDeadline();
+        $ddate= $event->getDeadline();
         if ($ddate) {
           $this->setFormValue('deadline_date', $ddate->toString('d.m.Y'));
           $this->setFormValue('deadline_time', $ddate->toString('H:i'));
@@ -77,7 +74,7 @@
       } else {
       
         // New event, set some default values...
-        $date= &Date::now();
+        $date= Date::now();
         $this->setFormValue('target_date', $date->toString('d.m.Y'));
         $this->setFormValue('target_time', '18:30');
         $this->setFormValue('guests', 1);
@@ -86,12 +83,12 @@
       }
       
       // Select teams
-      $pm= &PropertyManager::getInstance();
-      $prop= &$pm->getProperties('product');
-      $cm= &ConnectionManager::getInstance();
+      $pm= PropertyManager::getInstance();
+      $prop= $pm->getProperties('product');
+      $cm= ConnectionManager::getInstance();
       
       try {
-        $db= &$cm->getByHost('uska', 0);
+        $db= $cm->getByHost('uska', 0);
         $teams= $db->select('
             team_id,
             name
@@ -112,17 +109,16 @@
     /**
      * Handle submitted data. Either create an event or update an existing one.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData($request, $context) {
       $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
           try {
-            $event= &Event::getByEvent_id($this->wrapper->getEvent_id());
+            $event= Event::getByEvent_id($this->wrapper->getEvent_id());
           } catch (SQLException $e) {
             throw($e);
           }
@@ -141,8 +137,8 @@
       $event->setChangedby($context->user->getUsername());
       $event->setLastchange(Date::now());
       
-      $targetdate= &$this->wrapper->getTarget_date();
-      $deadline= &$this->wrapper->getDeadline_date();
+      $targetdate= $this->wrapper->getTarget_date();
+      $deadline= $this->wrapper->getDeadline_date();
       
       list($th, $tm)= preg_split('/[:\.\-]/', $this->wrapper->getTarget_time(), 2);
       $targetdate= new Date(Date::mktime(
@@ -167,7 +163,7 @@
       }
       
       // Check order of dates. Now < deadline < target_date
-      with ($now= &Date::now()); {
+      with ($now= Date::now()); {
         if ($now->isAfter($targetdate)) {
           $this->addError('order', 'target_date');
           $sane= FALSE;

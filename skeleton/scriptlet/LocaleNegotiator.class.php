@@ -63,7 +63,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string languages
      * @param   string charset
      */
@@ -76,12 +75,11 @@
     /**
      * Retrieve locale
      *
-     * @access  public
      * @param   string[] supported
      * @param   string default default NULL
      * @return  &util.Locale
      */
-    public function &getLocale($supported, $default= NULL) {
+    public function getLocale($supported, $default= NULL) {
       $chosen= FALSE;
       foreach ($this->languages as $lang => $q) {
         if (
@@ -95,7 +93,6 @@
     /**
      * Retrieve charset
      *
-     * @access  public
      * @param   string[] supported
      * @param   string default default NULL
      * @return  string charset or default if none matches
@@ -117,7 +114,6 @@
      * Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
      * </pre>
      *
-     * @access  private
      * @param   string str
      * @return  array values
      */
@@ -142,7 +138,6 @@
      * Private helper that searches an array using strncasecmp as comparator
      *
      * @see     php://strncasecmp
-     * @access  private
      * @param   string value
      * @param   string[] array
      * @param   int len default -1

@@ -52,7 +52,6 @@
     /**
      * Initializes a generic 'composite' object
      *
-     * @access  public
      */
     public function initialize() {
       $type= $this->getNodeType();
@@ -90,7 +89,6 @@
     /**
      * Return the type of this DiaComposite
      *
-     * @access  public
      * @return  int
      */
     public function getNodeType() {
@@ -100,7 +98,6 @@
     /**
      * Set the type of this DiaComposite
      *
-     * @access  public
      * @param   string type
      */
     #[@fromDia(xpath= '@type', value= 'string')]
@@ -111,7 +108,6 @@
     /**
      * Returns the value of the object
      *
-     * @access  public
      * @return  string
      */
     public function getValue() {
@@ -121,7 +117,6 @@
     /**
      * Sets the value of the object
      *
-     * @access  public
      * @param   string value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="value"]/dia:string', value= 'string')]
@@ -132,7 +127,6 @@
     /**
      * Returns the type of the object
      *
-     * @access  public
      * @return  string
      */
     public function getType() {
@@ -142,7 +136,6 @@
     /**
      * Sets the type of the object
      *
-     * @access  public
      * @param   string type
      */
     #[@fromDia(xpath= 'dia:attribute[@name="type"]/dia:string', value= 'string')]
@@ -155,11 +148,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       if (isset($this->type)) {
         $node->setAttribute('type', $this->type);
       } elseif (!is('org.dia.DiaRole', $this)) {

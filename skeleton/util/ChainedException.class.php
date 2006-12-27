@@ -18,39 +18,35 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   &lang.Throwable cause
      */
-    public function __construct($message, &$cause) {
+    public function __construct($message, $cause) {
       parent::__construct($message);
-      $this->cause= &$cause;
+      $this->cause= $cause;
     }
 
     /**
      * Set cause
      *
-     * @access  public
      * @param   &lang.Throwable cause
      */
-    public function setCause(&$cause) {
-      $this->cause= &$cause;
+    public function setCause($cause) {
+      $this->cause= $cause;
     }
 
     /**
      * Get cause
      *
-     * @access  public
      * @return  &lang.Throwable
      */
-    public function &getCause() {
+    public function getCause() {
       return $this->cause;
     }
     
     /**
      * Return string representation of this exception
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -61,7 +57,7 @@
       }
       if (!$this->cause) return $s;
       
-      $loop= &$this->cause;
+      $loop= $this->cause;
       while ($loop) {
 
         // String of cause

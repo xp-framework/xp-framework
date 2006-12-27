@@ -37,13 +37,11 @@
     /**
      * Iterate over class methods with @xmlfactory annotation
      *
-     * @model   static
-     * @access  protected
      * @param   &lang.Object instance
      * @param   &lang.XPClass class
      * @param   &xml.Node node
      */
-    public static function recurse(&$instance, &$class, &$node) {
+    public static function recurse($instance, $class, $node) {
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlfactory', 'element')) continue;
         
@@ -74,16 +72,16 @@
         //
         // - For objects, add a new node and invoke the recurse() method
         //   on it.
-        $result= &$method->invoke($instance);
+        $result= $method->invoke($instance);
         if (is_scalar($result) || NULL === $result) {
           $node->addChild(new Node($element, $result));
         } else if (is_array($result)) {
-          $child= &$node->addChild(new Node($element));
+          $child= $node->addChild(new Node($element));
           foreach ($result as $key => $val) {
             $child->addChild(new Node($key, $val));
           }
         } else if (is('lang.Collection', $result)) {
-          $elementClass= &$result->getElementClass();
+          $elementClass= $result->getElementClass();
           foreach ($result->values() as $value) {
             Marshaller::recurse($value, $elementClass, $node->addChild(new Node($element)));
           }
@@ -96,14 +94,12 @@
     /**
      * Marshal an object to xml
      *
-     * @model   static
-     * @access  public
      * @param   &lang.Object instance
      * @param   xml.QName qname default NULL
      * @return  string xml
      */
-    public static function marshal(&$instance, $qname= NULL) {
-      $class= &$instance->getClass();
+    public static function marshal($instance, $qname= NULL) {
+      $class= $instance->getClass();
 
       // Create XML tree and root node. Use the information provided by the
       // qname argument if existant, use the class` non-qualified (and 

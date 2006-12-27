@@ -46,7 +46,7 @@
     /**
      *
      */
-    public function &getInstance() {
+    public function getInstance() {
       static $Instance= NULL;
 
       if (!$Instance) {
@@ -58,14 +58,13 @@
     /**
      * Turns any number of given classnames into a 'dia' diagram
      *
-     * @model   static
      * @param   array classnames An array containing fully qualified class names
      * @param   int recurse default 0 How many levels of recursion
      * @param   bool depend default FALSE Include dependencies
      * @return  &org.dia.DiaDiagram
      */
-    public static function &marshal($classnames, $recurse= 0, $depend= FALSE) {
-      $I= &DiaMarshaller::getInstance();
+    public static function marshal($classnames, $recurse= 0, $depend= FALSE) {
+      $I= DiaMarshaller::getInstance();
       // initialize RootDoc
       $I->_root= new RootDoc();
 
@@ -73,7 +72,7 @@
       $I->_dia= new DiaDiagram();
       $I->_dia->initialize();
       $Layers= $I->_dia->getChildByType('DiaLayer');
-      $I->_layer= &$Layers[0]; 
+      $I->_layer= $Layers[0]; 
 
       /*
       method 1:
@@ -108,7 +107,7 @@
       // generate and add classes to DiaDiagram
       foreach (array_keys($I->_classes) as $classname) {
         try {
-          $Dia_class= &$I->_genClass($I->_classes[$classname]);
+          $Dia_class= $I->_genClass($I->_classes[$classname]);
         } catch (IllegalArgumentException $e) {
           $e->printStackTrace();
           exit(-1);
@@ -175,7 +174,7 @@
       }
       // get ClassDoc
       try {
-        $Classdoc= &$this->_root->classNamed($classname);
+        $Classdoc= $this->_root->classNamed($classname);
       } catch (IllegalArgumentException $e) {
         Console::writeLine("Class not found: $classname");
         exit(-1);
@@ -183,12 +182,12 @@
         die('Unexpected exception: '.$e->toString());
       }
       // add classname to $this->_classes
-      $this->_classes[$classname]= &$Classdoc;
+      $this->_classes[$classname]= $Classdoc;
 
       // add dependencies
       if ($depend and $recurse >=0) {
         while ($Classdoc->usedClasses->hasNext()) {
-          $Dependency= &$Classdoc->usedClasses->next();
+          $Dependency= $Classdoc->usedClasses->next();
           // add dependency definition 
           $this->_deps[$classname][]= $Dependency->qualifiedName();
           // add dependency class
@@ -200,7 +199,7 @@
 
       // add implemenations
       while ($Classdoc->interfaces->hasNext() and $recurse >=0 ) {
-        $Interface= &$Classdoc->interfaces->next();
+        $Interface= $Classdoc->interfaces->next();
         // add interface definition
         $this->_imps[$classname][]= $Interface->qualifiedName();
         // add interface class
@@ -210,7 +209,7 @@
       }
 
       // recurse
-      if ($recurse > 0 and NULL !== ($Superdoc= &$Classdoc->superclass)) {
+      if ($recurse > 0 and NULL !== ($Superdoc= $Classdoc->superclass)) {
         // add generalization definition
         $this->_gens[$classname]= $Superdoc->qualifiedName();
         // recurse parent class, only if not already processed
@@ -228,21 +227,21 @@
      * @return  &org.dia.DiaUMLClass
      * @throws  lang.IllegalArgumentException If argument is not usable
      */
-    public function &_genClass(&$classdoc) {
+    public function _genClass($classdoc) {
       // accept only ClassDoc
       if (!is('ClassDoc', $classdoc)) {
         throw(new IllegalArgumentException('No ClassDoc given!'));
       }
-      $ClassDoc= &$classdoc;
+      $ClassDoc= $classdoc;
         
       // get DiaUMLClass
       $UMLClass= new DiaUMLClass();
-      $DiaClass= &$UMLClass->getClass();
+      $DiaClass= $UMLClass->getClass();
       $DiaMethods= $DiaClass->getMethods();
 
       // loop over methods (annotations)
       for ($i= 0, $s= sizeof($DiaMethods); $i < $s; $i++) {
-        $Method= &$DiaMethods[$i];
+        $Method= $DiaMethods[$i];
         // Console::writeLine('Method: '.$Method->getName().' Annotations: '.xp::stringOf($Method->getAnnotations()));
         // skip methods that don't have the appropriate annotation
         if (!$Method->hasAnnotation('fromClass')) continue;
@@ -312,7 +311,7 @@
      * @param   string from Fully qualified classname of the depended class
      * @return  &org.dia.DiaUMLDependecy
      */
-    public function &_genDependency($from, $to) {
+    public function _genDependency($from, $to) {
       $Dia_dep= new DiaUMLDependency();
       $Dia_dep->beginAt($this->_getObjectId($from));
       $Dia_dep->endAt($this->_getObjectId($to));
@@ -326,7 +325,7 @@
      * @param   string to Fully qualified classname of the interface class
      * @return  &org.dia.DiaUMLRealizes
      */
-    public function &_genImplemenation($from, $to) {
+    public function _genImplemenation($from, $to) {
       $Dia_imp= new DiaUMLRealizes();
       $Dia_imp->beginAt($this->_getObjectId($from));
       $Dia_imp->endAt($this->_getObjectId($to));
@@ -340,7 +339,7 @@
      * @param   string to Fully qualified classname of the parent class
      * @return  &org.dia.DiaUMLGeneralization
      */
-    public function &_genGeneralization($from, $to) {
+    public function _genGeneralization($from, $to) {
       $Dia_gen= new DiaUMLGeneralization();
       $Dia_gen->beginAt($this->_getObjectId($from));
       $Dia_gen->endAt($this->_getObjectId($to));

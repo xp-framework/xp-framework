@@ -64,12 +64,11 @@
     /**
      * Sets path for text domain
      *
-     * @access  public
      * @param   string domain
      * @param   string directory
      * @return  &org.gnu.GetText
      */
-    public function &bind($domain, $directory) {
+    public function bind($domain, $directory) {
       static $g= array();
       
       $idx= $domain.'@'.$directory;
@@ -85,7 +84,6 @@
     /**
      * Set language
      *
-     * @access  public
      * @param   string lang
      */
     public function setLanguage($lang) {

@@ -58,21 +58,19 @@
     /**
      * Start a doclet
      *
-     * @model   static
-     * @access  public
      * @param   &Doclet doclet
      * @param   &util.cmd.ParamString params
      * @return  bool
      * @throws  lang.Exception in case doclet setup fails
      */
-    public static function start(&$doclet, &$params) {
+    public static function start($doclet, $params) {
       $classes= array();
       $root= new RootDoc();
       
       // Separate options from classes
       $valid= $doclet->validOptions();
       for ($i= 1; $i < $params->count; $i++) {
-        $option= &$params->list[$i];
+        $option= $params->list[$i];
         
         if (0 == strncmp($option, '--', 2)) {        // Long: --foo / --foo=bar
           $p= strpos($option, '=');
@@ -100,7 +98,7 @@
       
       // Set up class iterator
       try {
-        $root->classes= &$doclet->iteratorFor($root, $classes);
+        $root->classes= $doclet->iteratorFor($root, $classes);
       } catch (Exception $e) {
         throw($e);
       }
@@ -113,7 +111,6 @@
      * Returns an option by a given name or the specified default value
      * if the option does not exist.
      *
-     * @access  public
      * @param   string name
      * @param   string default default NULL
      * @return  string
@@ -125,7 +122,6 @@
     /**
      * Finds a class by a given class name
      *
-     * @access  protected
      * @param   string classname
      * @return  string filename
      */
@@ -141,12 +137,11 @@
     /**
      * Parses a class file and returns a classdoc element
      *
-     * @access  public
      * @param   string classname fully qualified class name
      * @return  &ClassDoc
      * @throws  lang.IllegalArgumentException if class could not be found or parsed
      */
-    public function &classNamed($classname) {
+    public function classNamed($classname) {
       static $cache= array();
       static $map= array('uses' => T_USES, 'implements' => T_IMPLEMENTS, 'define' => T_DEFINE);
 
@@ -261,7 +256,7 @@
                 $classname
               )));
 
-              $doc->superclass= &$this->classNamed($lookup);
+              $doc->superclass= $this->classNamed($lookup);
               break;
 
             case ST_CLASS.'{':
@@ -328,7 +323,7 @@
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;
               }
-              $doc->methods[]= &$method;
+              $doc->methods[]= $method;
               $comment= $annotations= NULL;
               $state= ST_FUNCTION;
               break;
@@ -419,7 +414,7 @@
         }
       }
       
-      return $cache[$classname]= &$doc;
+      return $cache[$classname]= $doc;
     }
   }
 ?>

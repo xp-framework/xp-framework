@@ -28,7 +28,6 @@
     /**
      * Perform a Propfind request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -40,7 +39,6 @@
     /**
      * Perform a Proppatch request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -52,7 +50,6 @@
     /**
      * Perform a mkCol request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -64,7 +61,6 @@
     /**
      * Perform a lock request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -76,7 +72,6 @@
     /**
      * Perform a unlock request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -88,7 +83,6 @@
     /**
      * Perform a copy request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -100,7 +94,6 @@
     /**
      * Perform a move request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -112,7 +105,6 @@
     /**
      * Perform a delete request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -124,7 +116,6 @@
     /**
      * Perform a VersionControl request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
@@ -136,7 +127,6 @@
     /**
      * Perform a report request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object

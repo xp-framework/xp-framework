@@ -22,8 +22,6 @@
     /**
      * Encode number
      *
-     * @model   static
-     * @access  public
      * @param   int number
      * @return  string
      */
@@ -42,8 +40,6 @@
     /**
      * Decode base57 encoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  int
      */

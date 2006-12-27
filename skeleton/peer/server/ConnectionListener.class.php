@@ -13,7 +13,6 @@
    * Connection listener
    *
    * @deprecated Implement peer.protocol.ServerProtocol instead!
-   * @model    abstract
    * @see      xp://peer.server.Server#notify
    * @purpose  Abstract base class for listeners
    */
@@ -29,10 +28,9 @@
      * printf(">>> ConnectionListener::connected() @%d\n", getmypid());
      * </code>
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function connected(&$event) {
+    public function connected($event) {
     }
     
     /**
@@ -50,10 +48,9 @@
      *   }                                                      
      * </code>
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function data(&$event) { 
+    public function data($event) { 
     }
     
     /**
@@ -64,10 +61,9 @@
      * printf(">>> ConnectionListener::disconnected() @%d\n", getmypid());
      * </code>
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function disconnected(&$event) { 
+    public function disconnected($event) { 
     }
     
     /**
@@ -79,10 +75,9 @@
      * $event->data->printStackTrace();
      * </code>
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function error(&$event) { 
+    public function error($event) { 
     }
   
   }

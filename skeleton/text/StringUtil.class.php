@@ -7,7 +7,6 @@
   /**
    * String utility functions
    *
-   * @model    static
    * @purpose  purpose
    */
   class StringUtil extends Object {
@@ -17,14 +16,12 @@
      * of a specified position. The resulting string is copied to the 
      * parameter "string" and also returned as result.
      *
-     * @model   static
-     * @access  public
      * @param   &string string
      * @param   int pos
      * @param   int len default 1
      * @return  string
      */
-    public static function delete(&$string, $pos, $len= 1) {
+    public static function delete($string, $pos, $len= 1) {
       $string= substr($string, 0, $pos).substr($string, $pos+ 1);
       return $string;
     }
@@ -34,14 +31,12 @@
      * resulting string is copied to the parameter "string" and also 
      * returned as result.
      *
-     * @model   static
-     * @access  public
      * @param   &string string
      * @param   int pos
      * @param   char char
      * @return  string
      */
-    public static function insert(&$string, $pos, $char) {
+    public static function insert($string, $pos, $char) {
       $string= substr($string, 0, $pos).$char.substr($string, $pos);
       return $string;
     }
@@ -51,8 +46,6 @@
      * exception in a situation in which a length of less than or equal zero
      * was supplied.
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @param   int length
      * @return  array parts

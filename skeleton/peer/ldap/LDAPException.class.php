@@ -80,7 +80,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   int errorcode
      */
@@ -92,7 +91,6 @@
     /**
      * Get errorcode
      *
-     * @access  public
      * @return  int
      */
     public function getErrorCode() {
@@ -102,7 +100,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

@@ -24,12 +24,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.cmd.ParamString paramstring
      * @param   string gladefile location of the .glade-file
      * @param   string mainwin default 'window1'
      */
-    public function __construct(&$p, $gladefile, $mainwin= 'window1') {
+    public function __construct($p, $gladefile, $mainwin= 'window1') {
       if (!$this->glade= new GladeXML($gladefile)) {
         throw(new GuiException('Cannot read glade file '.$gladefile));
       }
@@ -40,12 +39,11 @@
     /**
      * Returns a widget from the glade file
      *
-     * @access  protected
      * @param   string name
      * @return  &php.GtkWidget
      */
-    public function &widget($name) {
-      if (!$this->glade || !$w= &$this->glade->get_widget($name)) {
+    public function widget($name) {
+      if (!$this->glade || !$w= $this->glade->get_widget($name)) {
         throw(new WidgetNotFoundException($name));
       } 
       return $w;
@@ -54,10 +52,9 @@
     /**
      * Creates the main window
      *
-     * @access  protected
      */
     public function create() {
-      $this->window= &$this->widget($this->mainwin);
+      $this->window= $this->widget($this->mainwin);
     }
   }
 ?>

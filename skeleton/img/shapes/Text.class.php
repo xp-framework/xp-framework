@@ -22,15 +22,14 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &fonts.Font col color
      * @param   string text
      * @param   int x
      * @param   int y
      */ 
-    public function __construct(&$col, &$font, $text, $x, $y) {
-      $this->col= &$col;
-      $this->font= &$font;
+    public function __construct($col, $font, $text, $x, $y) {
+      $this->col= $col;
+      $this->font= $font;
       $this->text= $text;
       $this->x= $x;
       $this->y= $y;
@@ -39,11 +38,10 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
+    public function draw($image) {
       return $this->font->drawtext(
         $image->handle, 
         $this->col, 

@@ -21,24 +21,22 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   float value
      * @param   &mixed colors either an array of two colors, the second
      *          representing the shadow, or one color, for both lid and shadow
      */
-    public function __construct($value, &$colors) {
+    public function __construct($value, $colors) {
       $this->value= $value;
       if (!is_array($colors)) {
         $this->colors= array($colors, $colors);
       } else {
-        $this->colors= &$colors;
+        $this->colors= $colors;
       }
     }
 
     /**
      * Set Value
      *
-     * @access  public
      * @param   int value
      */
     public function setValue($value) {
@@ -48,7 +46,6 @@
     /**
      * Get Value
      *
-     * @access  public
      * @return  int
      */
     public function getValue() {
@@ -58,7 +55,6 @@
     /**
      * Set Caption
      *
-     * @access  public
      * @param   string caption
      */
     public function setCaption($caption) {
@@ -68,7 +64,6 @@
     /**
      * Get Caption
      *
-     * @access  public
      * @return  string
      */
     public function getCaption() {

@@ -18,12 +18,11 @@
     /**
      * Checks the type of given object.
      *
-     * @access  private
      * @param   string type
      * @param   &mixed object
      * @throws  lang.IllegalArgumentException
      */
-    public function _assertType($type, &$object) {
+    public function _assertType($type, $object) {
       if ($type != xp::typeOf($object))
         throw (new IllegalArgumentException('Object not of expected type '.$type.', but '.xp::typeOf($object).' with value '.var_export($object, 1)));
     }
@@ -31,12 +30,11 @@
     /**
      * Checks all entries in an array for correct type
      *
-     * @access  private
      * @param   string type
      * @param   &array array
      * @throws  lang.IllegalArgumentException
      */
-    public function _assertSubtype($type, &$array) {
+    public function _assertSubtype($type, $array) {
       foreach (array_keys($array) as $key) {
         if ($type != xp::typeOf($array[$key]))
           throw (new IllegalArgumentException('Object (in array) not of expected type '.$type.', but '.xp::typeOf($array[$key]).' with value '.var_export($array[$key], 1)));
@@ -46,7 +44,6 @@
     /**
      * Echoes a given string.
      *
-     * @access  public
      * @param   string inputString
      * @return  string
      */
@@ -59,7 +56,6 @@
     /**
      * Echoes a given string array.
      *
-     * @access  public
      * @param   string[] inputStringArray
      * @return  string[]
      * @throws  lang.IllegalArgumentException
@@ -74,7 +70,6 @@
     /**
      * Echoes an integer
      *
-     * @access  public
      * @param   int inputInteger
      * @return  int
      */
@@ -87,7 +82,6 @@
     /**
      * Echoes an array of integers
      *
-     * @access  public
      * @param   int[] inputIntegerArray
      * @return  int[]
      * @throws  lang.IllegalArgumentException
@@ -102,7 +96,6 @@
     /**
      * Echoes a float
      *
-     * @access  public
      * @param   float inputFloat
      * @return  float
      */
@@ -115,7 +108,6 @@
     /**
      * Echoes an array of floats
      *
-     * @access  public
      * @param   float[] inputFloatArray
      * @return  float[]
      * @throws  lang.IllegalArgumentException
@@ -130,7 +122,6 @@
     /**
      * Echoes a struct.
      *
-     * @access  public
      * @param   mixed[] inputStruct
      * @return  mixed[]
      * @throws  lang.IllegalArgumentException
@@ -147,7 +138,6 @@
     /**
      * Echoes an array of structs
      *
-     * @access  public
      * @param   mixed[] inputStructArray
      * @return  mixed[]
      * @throws  lang.MethodNotImplementedException
@@ -166,7 +156,6 @@
     /**
      * Echoes a void.
      *
-     * @access  public
      * @return  NULL
      */
     #[@webmethod]
@@ -177,7 +166,6 @@
     /**
      * Echoes a base64 string
      *
-     * @access  public
      * @param   string inputBase64
      * @return  string
      * @throws  lang.MethodNotImplementedException
@@ -191,7 +179,6 @@
     /**
      * Echoes a hexbinary.
      *
-     * @access  public
      * @param   string  inputHexBinary
      * @return  string
      * @throws  lang.MethodNotImplementedException
@@ -205,7 +192,6 @@
     /**
      * Echoes a date.
      *
-     * @access  public
      * @param   &util.Date inputDate
      * @return  &util.Date
      * @throws  lang.IllegalArgumentException
@@ -219,7 +205,6 @@
     /**
      * Echoes a decimal.
      *
-     * @access  public
      * @param   float inputDecimal
      * @return  float
      */
@@ -232,7 +217,6 @@
     /**
      * Echoes a boolean
      *
-     * @access  public
      * @param   boolean inputBoolean
      * @return  boolean
      */

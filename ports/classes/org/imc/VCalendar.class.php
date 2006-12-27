@@ -109,7 +109,6 @@
     /**
      * Set UID
      *
-     * @access  public
      * @param   string uid
      */
     public function setUID($uid) {
@@ -119,7 +118,6 @@
     /**
      * Get UID
      *
-     * @access  public
      * @return  string uid
      */    
     public function getUID() {
@@ -129,7 +127,6 @@
     /**
      * Set Method
      *
-     * @access  public
      * @param   string method
      */
     public function setMethod($method) {
@@ -139,7 +136,6 @@
     /**
      * Get Method
      *
-     * @access  public
      * @return  string
      */
     public function getMethod() {
@@ -149,27 +145,24 @@
     /**
      * Add Event
      *
-     * @access  public
      * @param   org.imc.VEvent event
      */
-    public function addEvent(&$event) {
-      $this->events[]= &$event;
+    public function addEvent($event) {
+      $this->events[]= $event;
     }
 
     /**
      * Get Events
      *
-     * @access  public
      * @return  &org.imc.VEvent[]
      */
-    public function &getEvents() {
+    public function getEvents() {
       return $this->events;
     }
       
     /**
      * Parser callback
      *
-     * @access  public
      * @param   array keys
      * @param   mixed value
      * @throws  lang.FormatException
@@ -201,7 +194,7 @@
               break;
               
             case 'END':
-              $this->events[]= &$event;
+              $this->events[]= $event;
               break;
             
             case 'DTSTAMP':     // DTSTAMP:20030220T101358Z
@@ -262,7 +255,7 @@
               break;
             
             case 'END':
-              $this->timezone= &$timezone;
+              $this->timezone= $timezone;
               break;
               
             case 'TZID':
@@ -323,16 +316,14 @@
      *   var_dump($cal);
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public static function &fromStream(&$stream) {
+    public static function fromStream($stream) {
       $cal= new VCalendar();
       
       $p= new VFormatParser(VCAL_ID);
-      $p->setDefaultHandler(array(&$cal, 'addProperty'));
+      $p->setDefaultHandler(array($cal, 'addProperty'));
       
       try {
         $p->parse($stream);
@@ -346,7 +337,6 @@
     /**
      * Export function helper
      *
-     * @access  private
      * @param   string key
      * @param   mixed value
      * @return  string exported
@@ -375,7 +365,6 @@
      *   $f->close();
      * </code>
      *
-     * @access  public
      * @return  string
      */
     public function export() {
@@ -403,7 +392,6 @@
     /**
      * Returns the VCalendar version of this implementation
      *
-     * @access  public
      * @return  string version
      */
     public function getVersion() {

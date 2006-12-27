@@ -20,11 +20,10 @@
     /**
      * Retrieve SOAP message from request
      *
-     * @access  public
      * @return  &webservices.soap.SOAPMessage message object
      */
-    public function &getMessage() {
-      $m= &SOAPMessage::fromString($this->getData());
+    public function getMessage() {
+      $m= SOAPMessage::fromString($this->getData());
       list(
         $class, 
         $method

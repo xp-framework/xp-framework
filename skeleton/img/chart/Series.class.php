@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   float[] values default array()
      */
@@ -30,7 +29,6 @@
     /**
      * Adds a value to this series
      *
-     * @access  public
      * @param   float f
      */
     public function add($f) {

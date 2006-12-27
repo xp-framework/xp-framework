@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string rootName default 'document'
      */
     public function __construct($rootName= 'document') {
@@ -42,7 +41,6 @@
     /**
      * Retrieve XML representation
      *
-     * @access  public
      * @param   bool indent default TRUE whether to indent
      * @return  string
      */
@@ -56,11 +54,10 @@
     /**
      * Add a child to this tree
      *
-     * @access  public
      * @param   &xml.Node child 
      * @return  &xml.Node the added child
      */   
-    public function &addChild(&$child) {
+    public function addChild($child) {
       return $this->root->addChild($child);
     }
 
@@ -71,14 +68,12 @@
      *   $tree= &Tree::fromString('<document>...</document>');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      */
-    public static function &fromString($string, $c= __CLASS__) {
+    public static function fromString($string, $c= __CLASS__) {
       $parser= new XMLParser();
       $tree= new $c();
       try {
@@ -99,15 +94,13 @@
      *   $tree= &Tree::fromFile(new File('foo.xml');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @param   string c default __CLASS__ class name
      * @return  &xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      * @throws  io.IOException in case reading the file fails
      */ 
-    public static function &fromFile(&$file, $c= __CLASS__) {
+    public static function fromFile($file, $c= __CLASS__) {
       $parser= new XMLParser();
       $tree= new $c();
       
@@ -131,7 +124,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      * @param   string attrs
@@ -142,28 +134,27 @@
 
       $element= new $this->nodeType($name, NULL, $attrs);
       if (!isset($this->_cnt)) {
-        $this->root= &$element;
-        $this->_objs[1]= &$element;
+        $this->root= $element;
+        $this->_objs[1]= $element;
         $this->_cnt= 1;
       } else {
         $this->_cnt++;
-        $this->_objs[$this->_cnt]= &$element;
+        $this->_objs[$this->_cnt]= $element;
       }
     }
    
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      * @see     xp://xml.parser.XMLParser
      */
     public function onEndElement($parser, $name) {
       if ($this->_cnt > 1) {
-        $node= &$this->_objs[$this->_cnt];
+        $node= $this->_objs[$this->_cnt];
         $node->content= $this->_cdata;
-        $parent= &$this->_objs[$this->_cnt- 1];
+        $parent= $this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
         $this->_cdata= '';
       }
@@ -173,7 +164,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string cdata
      * @see     xp://xml.parser.XMLParser
@@ -185,7 +175,6 @@
     /**
      * Callback function for XMLParser
      *
-     * @access  public
      * @param   resource parser
      * @param   string data
      * @see     xp://xml.parser.XMLParser

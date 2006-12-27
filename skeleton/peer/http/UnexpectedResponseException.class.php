@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   int statuscode
      */
@@ -29,7 +28,6 @@
     /**
      * Set statuscode
      *
-     * @access  public
      * @param   int statuscode
      */
     public function setStatusCode($statuscode) {
@@ -39,7 +37,6 @@
     /**
      * Get statuscode
      *
-     * @access  public
      * @return  int
      */
     public function getStatusCode() {
@@ -49,7 +46,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

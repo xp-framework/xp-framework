@@ -53,7 +53,6 @@
     /**
      * Initializes the attribute with default values, depending on $type
      *
-     * @access  public
      */
     public function initialize() {
       // determine type from value if type is not set
@@ -89,7 +88,6 @@
     /**
      * Return the name of this DiaAttribute
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -99,7 +97,6 @@
     /**
      * Set the name of this DiaAttribute
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -109,11 +106,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       if (isset($this->name))
         $node->setAttribute('name', $this->name);
       return $node;

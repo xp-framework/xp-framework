@@ -15,7 +15,6 @@
     /**
      * Initialize Protocol
      *
-     * @access  public
      * @return  bool
      */
     public function initialize();
@@ -23,36 +22,32 @@
     /**
      * Handle client connect
      *
-     * @access  public
      * @param   &peer.Socket socket
      */
-    public function handleConnect(&$socket);
+    public function handleConnect($socket);
 
     /**
      * Handle client disconnect
      *
-     * @access  public
      * @param   &peer.Socket socket
      */
-    public function handleDisconnect(&$socket);
+    public function handleDisconnect($socket);
   
     /**
      * Handle client data
      *
-     * @access  public
      * @param   &peer.Socket socket
      * @return  mixed
      */
-    public function handleData(&$socket);
+    public function handleData($socket);
 
     /**
      * Handle I/O error
      *
-     * @access  public
      * @param   &peer.Socket socket
      * @param   &lang.Exception e
      */
-    public function handleError(&$socket, &$e);
+    public function handleError($socket, $e);
   
   }
 ?>

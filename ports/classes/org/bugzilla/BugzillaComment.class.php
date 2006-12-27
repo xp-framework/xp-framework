@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int bug_id,     The ID of the bug related to this comment
      * @param   int user_id,    The bugzilla user id
      * @param   string comment, The comment
@@ -38,7 +37,6 @@
     /**
      * Set Bug_id
      *
-     * @access  public
      * @param   int bug_id
      */
     public function setBug_id($bug_id) {
@@ -48,7 +46,6 @@
     /**
      * Get Bug_id
      *
-     * @access  public
      * @return  int bug_id
      */
     public function getBug_id() {
@@ -58,7 +55,6 @@
     /**
      * Set User_id
      *
-     * @access  public
      * @param   int user_id
      */
     public function setUser_id($user_id) {
@@ -68,7 +64,6 @@
     /**
      * Get User_id
      *
-     * @access  public
      * @return  int user_id
      */
     public function getUser_id() {
@@ -78,7 +73,6 @@
     /**
      * Set Comment
      *
-     * @access  public
      * @param   string comment
      */
     public function setComment($comment) {
@@ -88,7 +82,6 @@
     /**
      * Get Comment
      *
-     * @access  public
      * @return  string
      */
     public function getComment() {
@@ -98,7 +91,6 @@
     /**
      * Add a comment
      *
-     * @access  public
      * @throws  lang.IllegalArgumentException
      * @throws  rdbms.SQLException
      * @return  bool

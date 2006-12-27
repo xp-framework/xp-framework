@@ -18,7 +18,6 @@
      * Cast a given value
      *
      * @see     xp://scriptlet.xml.workflow.casters.ParamCaster
-     * @access  public
      * @param   array value
      * @return  array value
      */

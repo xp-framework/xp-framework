@@ -44,13 +44,13 @@
     /**
      * Read from a file
      *
-     * @model   static
-     * @access  public
+
+
      * @param   &io.File file
      * @return  &img.util.IptcData
      * @throws  img.ImagingException in case extracting data fails
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       getimagesize($file->getURI(), $info);
       if (!($info['APP13'])) {
         throw(new ImagingException(
@@ -86,7 +86,7 @@
     /**
      * Set Title
      *
-     * @access  public
+
      * @param   string title
      */
     public function setTitle($title) {
@@ -96,7 +96,7 @@
     /**
      * Get Title
      *
-     * @access  public
+
      * @return  string
      */
     public function getTitle() {
@@ -107,7 +107,7 @@
     /**
      * Set Urgency
      *
-     * @access  public
+
      * @param   string urgency
      */
     public function setUrgency($urgency) {
@@ -117,7 +117,7 @@
     /**
      * Get Urgency
      *
-     * @access  public
+
      * @return  string
      */
     public function getUrgency() {
@@ -128,7 +128,7 @@
     /**
      * Set Category
      *
-     * @access  public
+
      * @param   string category
      */
     public function setCategory($category) {
@@ -138,7 +138,7 @@
     /**
      * Get Category
      *
-     * @access  public
+
      * @return  string
      */
     public function getCategory() {
@@ -149,7 +149,7 @@
     /**
      * Set Keywords
      *
-     * @access  public
+
      * @param   string keywords
      */
     public function setKeywords($keywords) {
@@ -159,7 +159,7 @@
     /**
      * Get Keywords
      *
-     * @access  public
+
      * @return  string
      */
     public function getKeywords() {
@@ -170,7 +170,7 @@
     /**
      * Set DateCreated
      *
-     * @access  public
+
      * @param   string dateCreated
      */
     public function setDateCreated($dateCreated) {
@@ -180,7 +180,7 @@
     /**
      * Get DateCreated
      *
-     * @access  public
+
      * @return  string
      */
     public function getDateCreated() {
@@ -191,7 +191,7 @@
     /**
      * Set Author
      *
-     * @access  public
+
      * @param   string author
      */
     public function setAuthor($author) {
@@ -201,7 +201,7 @@
     /**
      * Get Author
      *
-     * @access  public
+
      * @return  string
      */
     public function getAuthor() {
@@ -212,7 +212,7 @@
     /**
      * Set AuthorPosition
      *
-     * @access  public
+
      * @param   string authorPosition
      */
     public function setAuthorPosition($authorPosition) {
@@ -222,7 +222,7 @@
     /**
      * Get AuthorPosition
      *
-     * @access  public
+
      * @return  string
      */
     public function getAuthorPosition() {
@@ -233,7 +233,7 @@
     /**
      * Set City
      *
-     * @access  public
+
      * @param   string city
      */
     public function setCity($city) {
@@ -243,7 +243,7 @@
     /**
      * Get City
      *
-     * @access  public
+
      * @return  string
      */
     public function getCity() {
@@ -254,7 +254,7 @@
     /**
      * Set State
      *
-     * @access  public
+
      * @param   string state
      */
     public function setState($state) {
@@ -264,7 +264,7 @@
     /**
      * Get State
      *
-     * @access  public
+
      * @return  string
      */
     public function getState() {
@@ -275,7 +275,7 @@
     /**
      * Set Country
      *
-     * @access  public
+
      * @param   string country
      */
     public function setCountry($country) {
@@ -285,7 +285,7 @@
     /**
      * Get Country
      *
-     * @access  public
+
      * @return  string
      */
     public function getCountry() {
@@ -296,7 +296,7 @@
     /**
      * Set Headline
      *
-     * @access  public
+
      * @param   string headline
      */
     public function setHeadline($headline) {
@@ -306,7 +306,7 @@
     /**
      * Get Headline
      *
-     * @access  public
+
      * @return  string
      */
     public function getHeadline() {
@@ -317,7 +317,7 @@
     /**
      * Set Credit
      *
-     * @access  public
+
      * @param   string credit
      */
     public function setCredit($credit) {
@@ -327,7 +327,7 @@
     /**
      * Get Credit
      *
-     * @access  public
+
      * @return  string
      */
     public function getCredit() {
@@ -338,7 +338,7 @@
     /**
      * Set Source
      *
-     * @access  public
+
      * @param   string source
      */
     public function setSource($source) {
@@ -348,7 +348,7 @@
     /**
      * Get Source
      *
-     * @access  public
+
      * @return  string
      */
     public function getSource() {
@@ -359,7 +359,7 @@
     /**
      * Set CopyrightNotice
      *
-     * @access  public
+
      * @param   string copyrightNotice
      */
     public function setCopyrightNotice($copyrightNotice) {
@@ -369,7 +369,7 @@
     /**
      * Get CopyrightNotice
      *
-     * @access  public
+
      * @return  string
      */
     public function getCopyrightNotice() {
@@ -380,7 +380,7 @@
     /**
      * Set Caption
      *
-     * @access  public
+
      * @param   string caption
      */
     public function setCaption($caption) {
@@ -390,7 +390,7 @@
     /**
      * Get Caption
      *
-     * @access  public
+
      * @return  string
      */
     public function getCaption() {
@@ -401,7 +401,7 @@
     /**
      * Set Writer
      *
-     * @access  public
+
      * @param   string writer
      */
     public function setWriter($writer) {
@@ -411,7 +411,7 @@
     /**
      * Get Writer
      *
-     * @access  public
+
      * @return  string
      */
     public function getWriter() {
@@ -422,7 +422,7 @@
     /**
      * Set SupplementalCategories
      *
-     * @access  public
+
      * @param   string supplementalCategories
      */
     public function setSupplementalCategories($supplementalCategories) {
@@ -432,7 +432,7 @@
     /**
      * Get SupplementalCategories
      *
-     * @access  public
+
      * @return  string
      */
     public function getSupplementalCategories() {
@@ -443,7 +443,7 @@
     /**
      * Set SpecialInstructions
      *
-     * @access  public
+
      * @param   string specialInstructions
      */
     public function setSpecialInstructions($specialInstructions) {
@@ -453,7 +453,7 @@
     /**
      * Get SpecialInstructions
      *
-     * @access  public
+
      * @return  string
      */
     public function getSpecialInstructions() {
@@ -464,7 +464,7 @@
     /**
      * Set OriginalTransmissionReference
      *
-     * @access  public
+
      * @param   string originalTransmissionReference
      */
     public function setOriginalTransmissionReference($originalTransmissionReference) {
@@ -474,7 +474,7 @@
     /**
      * Get OriginalTransmissionReference
      *
-     * @access  public
+
      * @return  string
      */
     public function getOriginalTransmissionReference() {
@@ -484,7 +484,7 @@
     /**
      * Retrieve a string representation
      *
-     * @access  public
+
      * @return  string
      */
     public function toString() {

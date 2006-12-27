@@ -20,14 +20,13 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   &lang.Exception cause 
      * @param   array prerequisites default array()
      * @param   string code
      */
-    public function __construct($message, &$cause, $prerequisites= array()) {
-      $this->cause= &$cause;
+    public function __construct($message, $cause, $prerequisites= array()) {
+      $this->cause= $cause;
       $this->prerequisites= $prerequisites;
       parent::__construct($message);
     }
@@ -35,7 +34,6 @@
     /**
      * Get Trace
      *
-     * @access  public
      * @return  string
      */
     public function getStackTrace() {

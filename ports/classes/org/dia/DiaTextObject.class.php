@@ -35,7 +35,6 @@
     /**
      * Returns a unique name of this TextObject
      *
-     * @access  public
      * @return  string
      */
     public function getName() {

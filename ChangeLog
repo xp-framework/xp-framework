@@ -5,6 +5,22 @@ $Id$
 Version ?.?.?, released ????-??-??
 ----------------------------------
 
+Version 5.1.0, released 2006-12-27
+----------------------------------
+- Implemented RFC #0103: Coding standards adjustements for XP5
+  (friebe)
+- Implemented RFC #0102: XP Class Runner
+  (friebe)
+- Implemented RFC #0088: Streams API
+  (friebe)
+- Updates SQLite class to use StatementFormatter
+  (kiesel)
+- Added webservices.soap.types.SOAPDouble class
+  (kiesel)
+- Fixed Java Webstart example to work with URLs containing query string
+  arguments
+  (friebe)
+
 Version 5.0.0, released 2006-12-21
 ----------------------------------
 - fix reflection for classes from .xars

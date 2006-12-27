@@ -16,12 +16,11 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       static $modes= array(
         0 => 'color',
         1 => 'gray'
@@ -34,8 +33,8 @@
         throw(new IllegalAccessException('Malformed query string'));
       }
 
-      if ($shot= &$this->getEntryFor($name, 'de.thekid.dialog.SingleShot')) {
-        $s= &$response->addFormResult(Node::fromObject($shot, 'selected'));
+      if ($shot= $this->getEntryFor($name, 'de.thekid.dialog.SingleShot')) {
+        $s= $response->addFormResult(Node::fromObject($shot, 'selected'));
         $s->setAttribute('mode', $modes[$mode]);
         $s->setAttribute('page', $this->getDisplayPageFor($name));
       }

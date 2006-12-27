@@ -16,16 +16,15 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       $name= $request->getQueryString();
 
-      if ($album= &$this->getAlbumFor($name)) {
-        $child= &$response->addFormResult(new Node('album', NULL, array(
+      if ($album= $this->getAlbumFor($name)) {
+        $child= $response->addFormResult(new Node('album', NULL, array(
           'name'         => $album->getName(),
           'title'        => $album->getTitle(),
           'num_images'   => $album->numImages(),
@@ -40,7 +39,7 @@
         // Check if an album is inside a collection
         if (FALSE === ($p= strpos($name, '/'))) return; 
 
-        $parent= &$this->getEntryFor(substr($name, 0, $p));
+        $parent= $this->getEntryFor(substr($name, 0, $p));
         $child->setAttribute('page', $this->getDisplayPageFor($parent->getName()));
         $child->addChild(new Node('collection', NULL, array(
           'name'         => $parent->getName(),

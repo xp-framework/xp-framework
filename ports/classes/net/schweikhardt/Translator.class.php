@@ -14,8 +14,6 @@
     /**
      * Translates the given sentence
      *
-     * @model   static
-     * @access  public
      * @param   string sentence
      * @return  string translation
      */  

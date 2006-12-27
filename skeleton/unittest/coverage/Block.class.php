@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   unittest.coverage.Expression[] expressions
      * @param   int start the first line
      * @param   int end the last line
@@ -30,18 +29,17 @@
       $this->code= $code;
       $this->start= $start;
       $this->end= $end;
-      $this->expressions= &Collection::forClass('Fragment');
+      $this->expressions= Collection::forClass('Fragment');
       $this->expressions->addAll($expressions);
     }
     
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @access  public
      * @param   &lang.Object block
      * @return  bool
      */
-    public function equals(&$block) {
+    public function equals($block) {
       return (
         is('Block', $block) && 
         $this->start == $block->start &&
@@ -54,7 +52,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

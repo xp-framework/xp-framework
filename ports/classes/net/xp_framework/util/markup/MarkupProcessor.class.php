@@ -16,7 +16,6 @@
      * Initializes the processor. Returns an empty string in this default
      * implementation.
      *
-     * @access  public
      * @return  string
      */
     public function initialize() {
@@ -27,7 +26,6 @@
      * Process a token. Returns an empty string in this default
      * implementation.
      *
-     * @access  public
      * @param   string token
      * @return  string
      */
@@ -39,7 +37,6 @@
      * Finalizes the processor. Returns an empty string in this default
      * implementation.
      *
-     * @access  public
      * @return  string
      */
     public function finalize() {

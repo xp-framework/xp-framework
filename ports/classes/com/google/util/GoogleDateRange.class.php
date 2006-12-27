@@ -49,13 +49,11 @@
     /**
      * Returns a date range for the given start and end dates
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date start
      * @param   &util.Date end
      * @return  &com.google.util.GoogleDateRange
      */
-    public static function &forDates(&$start, &$end) {
+    public static function forDates($start, $end) {
       $range= new GoogleDateRange();
       $range->setStart($start);
       $range->setEnd($end);
@@ -65,40 +63,36 @@
     /**
      * Set Start
      *
-     * @access  public
      * @param   &util.Date start
      */
-    public function setStart(&$start) {
-      $this->start= &$start;
+    public function setStart($start) {
+      $this->start= $start;
     }
 
     /**
      * Get Start
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getStart() {
+    public function getStart() {
       return $this->start;
     }
 
     /**
      * Set End
      *
-     * @access  public
      * @param   &util.Date end
      */
-    public function setEnd(&$end) {
-      $this->end= &$end;
+    public function setEnd($end) {
+      $this->end= $end;
     }
 
     /**
      * Get End
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getEnd() {
+    public function getEnd() {
       return $this->end;
     }
     
@@ -110,12 +104,10 @@
      *
      * Note: Returns zero (0) on failure.
      *
-     * @model   static
-     * @access  protected
      * @param   &util.Date date
      * @return  int
      */
-    public static function dateToJulian(&$date) {
+    public static function dateToJulian($date) {
       with ($iyear= $date->getYear(), $imonth= $date->getMonth(), $iday= $date->getDay()); {
       
         // Check for invalid dates
@@ -162,7 +154,6 @@
      *   daterange:2452122-2452234
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

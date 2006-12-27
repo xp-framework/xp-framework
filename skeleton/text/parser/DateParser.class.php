@@ -33,8 +33,6 @@
      * Get "fully qualified" year. For one and two digit years, returns
      * the current century *plus* the given number.
      *
-     * @model   static
-     * @access  public
      * @param   int year
      * @return  int
      */
@@ -48,13 +46,11 @@
     /**
      * Parse a date
      *
-     * @model   static
-     * @access  public
      * @param   string s
      * @return  &util.Date
      * @throws  lang.FormatException in case the date could not be parsed
      */
-    public static function &parse($s) {
+    public static function parse($s) {
       if (empty($s)) {
       
         // Border case
@@ -87,10 +83,10 @@
           try {
             if (
               ($tz= new TimeZone($matches[7])) &&
-              ($lc= &TimeZone::getLocal())
+              ($lc= TimeZone::getLocal())
             ) {
             
-              $date= &$lc->convertDate(new Date($stamp), $tz);
+              $date= $lc->convertDate(new Date($stamp), $tz);
               $stamp= $date->getTime();
             }
           } catch (IllegalArgumentException $e) {

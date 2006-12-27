@@ -56,12 +56,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &mixed ref either a class name or an object
      */
-    public function __construct(&$ref) {
+    public function __construct($ref) {
       parent::__construct();
-      $this->_objref= &$ref;
+      $this->_objref= $ref;
       $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
       $this->_reflect= new ReflectionClass($ref);
     }
@@ -69,7 +68,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -79,11 +77,10 @@
     /**
      * Return whether an object equals this class
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return (is('XPClass', $cmp) 
         ? 0 == strcmp($this->getName(), $cmp->getName())
         : FALSE
@@ -93,7 +90,6 @@
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -103,7 +99,6 @@
     /**
      * Retrieves the fully qualified class name for this class.
      * 
-     * @access  public
      * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
      */
     public function getName() {
@@ -134,11 +129,10 @@
      *   }
      * </code>
      *
-     * @access  public
      * @param   mixed* args
      * @return  &lang.Object 
      */
-    public function &newInstance() {
+    public function newInstance() {
       $args= func_get_args();
       return $this->_reflect->newInstanceArgs($args);
     }
@@ -147,7 +141,6 @@
      * Helper function that returns this class' methods, excluding the
      * constructor (and inherited constructors) and the destructor.
      *
-     * @access  private
      * @return  string[] method names
      */
     public function _methods() {
@@ -169,7 +162,6 @@
     /**
      * Gets class methods for this class
      *
-     * @access  public
      * @return  lang.reflect.Method[]
      */
     public function getMethods() {
@@ -184,12 +176,11 @@
      * Gets a method by a specified name. Returns NULL if the specified 
      * method does not exist.
      *
-     * @access  public
      * @param   string name
      * @return  &lang.Method
      * @see     xp://lang.reflect.Method
      */
-    public function &getMethod($name) {
+    public function getMethod($name) {
       if (!$this->hasMethod($name)) return NULL;
 
       $m= new Method($this->_objref, $name); 
@@ -203,7 +194,6 @@
      * hasMethod('toString') will provide the same result as 
      * hasMethod('tostring')
      *
-     * @access  public
      * @param   string method the method's name
      * @return  bool TRUE if method exists
      */
@@ -214,7 +204,6 @@
     /**
      * Retrieve if a constructor exists
      *
-     * @access  public
      * @return  bool
      */
     public function hasConstructor() {
@@ -225,11 +214,10 @@
      * Retrieves this class' constructor. Returns NULL if no constructor
      * exists.
      *
-     * @access  public
      * @return  &lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
      */
-    public function &getConstructor() {
+    public function getConstructor() {
       if ($this->hasConstructor()) {
         return new Constructor($this->_objref); 
       }
@@ -239,7 +227,6 @@
     /**
      * Retrieve a list of all member variables
      *
-     * @access  public
      * @return  lang.reflect.Field[] array of field objects
      */
     public function getFields() {
@@ -258,11 +245,10 @@
      * Retrieve a field by a specified name. Returns NULL if the specified
      * field does not exist
      *
-     * @access  public
      * @param   string name
      * @return  &lang.reflect.Field
      */
-    public function &getField($name) {
+    public function getField($name) {
       if (!$this->hasField($name)) return NULL;
 
       $v= (is_object($this->_objref) 
@@ -275,7 +261,6 @@
     /**
      * Checks whether this class has a field named "$field" or not.
      *
-     * @access  public
      * @param   string field the fields's name
      * @return  bool TRUE if field exists
      */
@@ -290,10 +275,9 @@
      * Retrieve the parent class's class object. Returns NULL if there
      * is no parent class.
      *
-     * @access  public
      * @return  &lang.XPClass class object
      */
-    public function &getParentclass() {
+    public function getParentclass() {
       $parent= $this->_reflect->getParentClass();
       if (!$parent) return NULL;
       return new XPClass($parent->getName());
@@ -302,7 +286,6 @@
     /**
      * Tests whether this class is a subclass of a specified class.
      *
-     * @access  public
      * @param   string name class name
      * @return  bool
      */
@@ -325,18 +308,16 @@
      *   var_dump($class->isInstance(new Object()));    // FALSE
      * </code>
      *
-     * @access  public
      * @param   &lang.Object obj
      * @return  bool
      */
-    public function isInstance(&$obj) {
+    public function isInstance($obj) {
       return is($this->name, $obj);
     }
     
     /**
      * Determines if this XPClass object represents an interface type.
      *
-     * @access  public
      * @return  bool
      */
     public function isInterface() {
@@ -346,7 +327,6 @@
     /**
      * Retrieve interfaces this class implements
      *
-     * @access  public
      * @return  lang.XPClass[]
      */
     public function getInterfaces() {
@@ -360,7 +340,6 @@
     /**
      * Check whether an annotation exists
      *
-     * @access  public
      * @param   string name
      * @param   string key default NULL
      * @return  bool
@@ -377,7 +356,6 @@
     /**
      * Retrieve annotation by name
      *
-     * @access  public
      * @param   string name
      * @param   string key default NULL
      * @return  mixed
@@ -403,7 +381,6 @@
     /**
      * Retrieve whether a method has annotations
      *
-     * @access  public
      * @return  bool
      */
     public function hasAnnotations() {
@@ -414,7 +391,6 @@
     /**
      * Retrieve all of a method's annotations
      *
-     * @access  public
      * @return  array annotations
      */
     public function getAnnotations() {
@@ -425,23 +401,20 @@
     /**
      * Retrieve the class loader a class was loaded with
      *
-     * @access  public
      * @return  &lang.ClassLoader
      */
-    public function &getClassLoader() {
+    public function getClassLoader() {
       return XPClass::_classLoaderFor($this->name);
     }
     
     /**
      * Fetch a class' classloader by its name
      *
-     * @model   static
-     * @access  protected
      * @param   string name fqcn of class
      * @return  &lang.ClassLoader
      */
-    public static function &_classLoaderFor($name) {
-      if (!($cl= &xp::registry('classloader.'.$name))) {
+    public static function _classLoaderFor($name) {
+      if (!($cl= xp::registry('classloader.'.$name))) {
         return ClassLoader::getDefault();
       }
 
@@ -450,11 +423,11 @@
       // instance through the instanceFor() method.
       if (is_string($cl)) {
         list($className, $argument)= sscanf($cl, '%[^:]://%s');
-        $class= &XPClass::forName($className);
-        $method= &$class->getMethod('instanceFor');
+        $class= XPClass::forName($className);
+        $method= $class->getMethod('instanceFor');
 
         $dummy= NULL;
-        $cl= &$method->invoke($dummy, array($argument));
+        $cl= $method->invoke($dummy, array($argument));
         
         // Replace the "symbolic" representation of the classloader with a reference
         // to an instance.
@@ -468,8 +441,6 @@
      * Retrieve details for a specified class. Note: Results from this 
      * method are cached!
      *
-     * @model   static
-     * @access  public
      * @param   string class fully qualified class name
      * @return  array or NULL to indicate no details are available
      */
@@ -480,7 +451,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      $cl= &XPClass::_classLoaderFor($class);
+      $cl= XPClass::_classLoaderFor($class);
       if (!($bytes= $cl->loadClassBytes($class))) return NULL;
 
       $details[$class]= array(array(), array());
@@ -601,8 +572,6 @@
      * Retrieve details for a specified class and method. Note: Results 
      * from this method are cached!
      *
-     * @model   static
-     * @access  public
      * @param   string class unqualified class name
      * @param   string method
      * @return  array
@@ -619,8 +588,6 @@
      * Retrieve details for a specified class and field. Note: Results 
      * from this method are cached!
      *
-     * @model   static
-     * @access  public
      * @param   string class unqualified class name
      * @param   string method
      * @return  array
@@ -637,14 +604,12 @@
      * Returns the XPClass object associated with the class with the given 
      * string name. Uses the default classloader if none is specified.
      *
-     * @model   static
-     * @access  public
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
      * @param   lang.ClassLoader classloader default NULL
      * @return  &lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function &forName($name, $classloader= NULL) {
+    public static function forName($name, $classloader= NULL) {
       if (NULL === $classloader) {
         $fname= strtr('.', '/', $name).'.class.php';
 
@@ -654,9 +619,9 @@
           }
           
           if (is_file($path)) {
-            $cl= &ArchiveClassLoader::instanceFor($path);
+            $cl= ArchiveClassLoader::instanceFor($path);
             if ($cl->providesClass($name)) {
-              $classloader= &$cl;
+              $classloader= $cl;
               break;
             }
           }
@@ -664,7 +629,7 @@
       }
     
       // Last-chance fallback
-      if (NULL === $classloader) $classloader= &ClassLoader::getDefault();
+      if (NULL === $classloader) $classloader= ClassLoader::getDefault();
 
       return $classloader->loadClass($name);
     }
@@ -673,11 +638,9 @@
      * Returns an array containing class objects representing all the 
      * public classes
      *
-     * @model   static
-     * @access  public
      * @return  &lang.XPClass[] class objects
      */
-    public static function &getClasses() {
+    public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
         if (xp::registry('class.'.$name)) $ret[]= new XPClass($name);

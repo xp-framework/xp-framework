@@ -30,7 +30,6 @@
     /**
      * Set Identifier
      *
-     * @access  public
      * @param   string identifier
      */
     public function setIdentifier($identifier) {
@@ -40,7 +39,6 @@
     /**
      * Get Identifier
      *
-     * @access  public
      * @return  string
      */
     public function getIdentifier() {
@@ -50,7 +48,6 @@
     /**
      * Set Version
      *
-     * @access  public
      * @param   int version
      */
     public function setVersion($version) {
@@ -60,7 +57,6 @@
     /**
      * Get Version
      *
-     * @access  public
      * @return  int
      */
     public function getVersion() {
@@ -70,7 +66,6 @@
     /**
      * Set Length
      *
-     * @access  public
      * @param   int length
      */
     public function setLength($length) {
@@ -80,7 +75,6 @@
     /**
      * Get Length
      *
-     * @access  public
      * @return  int
      */
     public function getLength() {
@@ -90,7 +84,6 @@
     /**
      * Set Time
      *
-     * @access  public
      * @param   int time
      */
     public function setTime($time) {
@@ -100,7 +93,6 @@
     /**
      * Get Time
      *
-     * @access  public
      * @return  int
      */
     public function getTime() {
@@ -110,7 +102,6 @@
     /**
      * Set Lang
      *
-     * @access  public
      * @param   int lang
      */
     public function setLang($lang) {
@@ -120,7 +111,6 @@
     /**
      * Get Lang
      *
-     * @access  public
      * @return  int
      */
     public function getLang() {
@@ -130,7 +120,6 @@
     /**
      * Set Guid1
      *
-     * @access  public
      * @param   string guid1
      */
     public function setGuid1($guid1) {
@@ -140,7 +129,6 @@
     /**
      * Get Guid1
      *
-     * @access  public
      * @return  string
      */
     public function getGuid1() {
@@ -150,7 +138,6 @@
     /**
      * Set Guid2
      *
-     * @access  public
      * @param   string guid2
      */
     public function setGuid2($guid2) {
@@ -160,7 +147,6 @@
     /**
      * Get Guid2
      *
-     * @access  public
      * @return  string
      */
     public function getGuid2() {
@@ -170,7 +156,6 @@
     /**
      * Set Section
      *
-     * @access  public
      * @param   mixed[] section
      */
     public function setSection($section) {
@@ -180,7 +165,6 @@
     /**
      * Get Section
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getSection() {
@@ -190,7 +174,6 @@
     /**
      * Set Content_offset
      *
-     * @access  public
      * @param   int content_offset
      */
     public function setContent_offset($content_offset) {
@@ -200,7 +183,6 @@
     /**
      * Get Content_offset
      *
-     * @access  public
      * @return  int
      */
     public function getContent_offset() {

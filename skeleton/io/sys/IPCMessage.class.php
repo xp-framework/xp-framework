@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   string message
      * @param   int messagetype
      */      
@@ -30,7 +29,6 @@
     /**
      * Set Message
      *
-     * @access  public
      * @param   string message
      */
     public function setMessage($message) {
@@ -40,7 +38,6 @@
     /**
      * Get Message
      *
-     * @access  public
      * @return  string
      */
     public function getMessage() {
@@ -50,7 +47,6 @@
     /**
      * Set Type
      *
-     * @access  public
      * @param   mixed type
      */
     public function setType($type) {
@@ -60,7 +56,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  mixed
      */
     public function getType() {

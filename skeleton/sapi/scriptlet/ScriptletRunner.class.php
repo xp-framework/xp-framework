@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int flags default 0
      */
     public function __construct($flags= 0x0000) {
@@ -34,13 +33,12 @@
     /**
      * Handle exception from scriptlet
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &lang.Exception e
      */
-    public function except(&$response, &$e) {
-      $class= &$this->getClass();
-      $loader= &$class->getClassLoader();
+    public function except($response, $e) {
+      $class= $this->getClass();
+      $loader= $class->getClassLoader();
       
       $response->setContent(str_replace(
         '<xp:value-of select="reason"/>',
@@ -55,15 +53,14 @@
     /**
      * Run the given scriptlet
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptlet scriptlet
      */
-    public function run(&$scriptlet) {
+    public function run($scriptlet) {
       try {
         $scriptlet->init();
-        $response= &$scriptlet->process();
+        $response= $scriptlet->process();
       } catch (HttpScriptletException $e) {
-        $response= &$e->getResponse();
+        $response= $e->getResponse();
         $this->except($response, $e);
       }
 

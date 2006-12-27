@@ -21,7 +21,6 @@
     /**
      * Initializes this object with default values
      *
-     * @access  public
      */
     public function initialize() {
       $this->set('hguides', new DiaAttribute('hguides'));
@@ -31,10 +30,9 @@
     /**
      * Returns the horizontal guides object
      *
-     * @access  public
      * @return  &org.dia.DiaAttribute
      */
-    public function &getHorizontalGuides() {
+    public function getHorizontalGuides() {
       return $this->getChild('hguides');
     }
 
@@ -51,10 +49,9 @@
     /**
      * Returns the vertical guides object
      *
-     * @access  public
      * @return  &org.dia.DiaAttribute
      */
-    public function &getVerticalGuides() {
+    public function getVerticalGuides() {
       return $this->getChild('vguides');
     }
 

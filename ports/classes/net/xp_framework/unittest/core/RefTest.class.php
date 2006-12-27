@@ -16,12 +16,11 @@
     /**
      * Helper method that asserts to objects are references to each other
      *
-     * @access  protected
      * @param   &lang.Object a
      * @param   &lang.Object b
      * @throws  unittest.AssertionFailedError
      */
-    public function assertReference(&$a, &$b) {
+    public function assertReference($a, $b) {
       $this->assertEquals($a->__id, $b->__id);
       $a->__id= 'R:'.$a->__id;
       $this->assertEquals($a->__id, $b->__id);
@@ -30,7 +29,6 @@
     /**
      * Tests deref($o) is the same object as $o
      *
-     * @access  public
      */
     #[@test]
     public function deref() {
@@ -41,7 +39,6 @@
     /**
      * Tests deref(ref($o)) is the same object as $o
      *
-     * @access  public
      */
     #[@test]
     public function derefOfRef() {
@@ -52,12 +49,11 @@
     /**
      * Tests ObjectReference class
      *
-     * @access  public
      */
     #[@test]
     public function objectReference() {
       $object= new Object();
-      $ref= &newinstance('lang.Object', array(ref($object)), '{
+      $ref= newinstance('lang.Object', array(ref($object)), '{
         var $object= NULL;
         
         function __construct(&$object) {

@@ -37,7 +37,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string version
      * @param   string href default NULL
      * @param   int initialHeapSize default 0
@@ -53,7 +52,6 @@
     /**
      * Set version
      *
-     * @access  public
      * @param   string version
      */
     public function setVersion($version) {
@@ -63,7 +61,6 @@
     /**
      * Get version
      *
-     * @access  public
      * @return  string
      */
     public function getVersion() {
@@ -73,7 +70,6 @@
     /**
      * Set Href
      *
-     * @access  public
      * @param   string href
      */
     public function setHref($href) {
@@ -83,7 +79,6 @@
     /**
      * Get Href
      *
-     * @access  public
      * @return  string
      */
     public function getHref() {
@@ -93,7 +88,6 @@
     /**
      * Set InitialHeapSize
      *
-     * @access  public
      * @param   int initialHeapSize
      */
     public function setInitialHeapSize($initialHeapSize) {
@@ -103,7 +97,6 @@
     /**
      * Get InitialHeapSize
      *
-     * @access  public
      * @return  int
      */
     public function getInitialHeapSize() {
@@ -113,7 +106,6 @@
     /**
      * Set MaxHeapSize
      *
-     * @access  public
      * @param   int maxHeapSize
      */
     public function setMaxHeapSize($maxHeapSize) {
@@ -123,7 +115,6 @@
     /**
      * Get MaxHeapSize
      *
-     * @access  public
      * @return  int
      */
     public function getMaxHeapSize() {
@@ -133,7 +124,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getTagName() { 
@@ -143,7 +133,6 @@
     /**
      * Get attributes
      *
-     * @access  public
      * @return  array
      */
     public function getTagAttributes() { 

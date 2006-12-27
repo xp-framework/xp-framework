@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @throws  lang.IllegalStateException if sapi does not support forking
      */
     public function __construct() {
@@ -39,7 +38,6 @@
     /**
      * Set Executable
      *
-     * @access  public
      * @param   string executable
      */
     public function setExecutable($executable) {
@@ -49,7 +47,6 @@
     /**
      * Get Executable
      *
-     * @access  public
      * @return  string
      */
     public function getExecutable() {
@@ -59,7 +56,6 @@
     /**
      * Set Settings
      *
-     * @access  public
      * @param   string key
      * @param   string value
      */
@@ -70,7 +66,6 @@
     /**
      * Retrieve a single setting
      *
-     * @access  public
      * @param   string key
      * @return  string
      */
@@ -81,7 +76,6 @@
     /**
      * Get Settings
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getSettings() {
@@ -91,7 +85,6 @@
     /**
      * Set Source
      *
-     * @access  public
      * @param   string source
      */
     public function setSource($source) {
@@ -101,7 +94,6 @@
     /**
      * Get Source
      *
-     * @access  public
      * @return  string
      */
     public function getSource() {
@@ -111,7 +103,6 @@
     /**
      * Set Stdout
      *
-     * @access  public
      * @param   string stdout
      */
     public function setStdout($stdout) {
@@ -121,7 +112,6 @@
     /**
      * Get Stdout
      *
-     * @access  public
      * @return  string
      */
     public function getStdout() {
@@ -131,7 +121,6 @@
     /**
      * Set Stderr
      *
-     * @access  public
      * @param   string stderr
      */
     public function setStderr($stderr) {
@@ -141,7 +130,6 @@
     /**
      * Get Stderr
      *
-     * @access  public
      * @return  string
      */
     public function getStderr() {
@@ -151,7 +139,6 @@
     /**
      * Set Exitcode
      *
-     * @access  public
      * @param   string exitcode
      */
     public function setExitcode($exitcode) {
@@ -161,7 +148,6 @@
     /**
      * Get Exitcode
      *
-     * @access  public
      * @return  string
      */
     public function getExitcode() {
@@ -171,7 +157,6 @@
     /**
      * Run the sourcecode in a sandbox
      *
-     * @access  public
      * @param   string source
      * @return  int exitcode
      */

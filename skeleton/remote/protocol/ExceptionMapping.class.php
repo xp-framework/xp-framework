@@ -17,15 +17,14 @@
     /**
      * Returns a value for the given serialized string
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function valueOf($serializer, $serialized, $context= array()) {
       try {
-        $class= &XPClass::forName($serializer->exceptionName($serialized->consumeString()));
+        $class= XPClass::forName($serializer->exceptionName($serialized->consumeString()));
       } catch (ClassNotFoundException $e) {
         throw($e);
       }
@@ -35,14 +34,14 @@
       $data= array();
       for ($i= 0; $i < $size; $i++) {
         $member= $serializer->valueOf($serialized, $context);
-        $data[$member]= &$serializer->valueOf($serialized, $context);
+        $data[$member]= $serializer->valueOf($serialized, $context);
       }
       $serialized->offset++; // Closing "}"
       
-      $instance= &$class->newInstance($data['message']);
+      $instance= $class->newInstance($data['message']);
       unset($data['message']);
       foreach (array_keys($data) as $name) {
-        $instance->{$name}= &$data[$name];
+        $instance->{$name}= $data[$name];
       }
 
       return $instance;
@@ -51,14 +50,13 @@
     /**
      * Returns an on-the-wire representation of the given value
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &lang.Object value
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    public function representationOf(&$serializer, &$value, $context= array()) {
-      $trace= &$value->getStackTrace();
+    public function representationOf($serializer, $value, $context= array()) {
+      $trace= $value->getStackTrace();
       
       if (FALSE !== ($token= array_search($value->getClassName(), $serializer->exceptions, TRUE))) {
       
@@ -85,10 +83,9 @@
     /**
      * Return XPClass object of class supported by this mapping
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &handledClass() {
+    public function handledClass() {
       return XPClass::forName('lang.Throwable');
     }
   } 

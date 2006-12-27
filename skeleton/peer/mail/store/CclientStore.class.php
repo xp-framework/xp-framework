@@ -20,7 +20,6 @@
     /**
      * Return last errors/alerts
      *
-     * @access  private
      * @return  string
      */
     public function _errors() {
@@ -34,21 +33,19 @@
     /**
      * Protected method to check whether this DSN is supported
      *
-     * @access  protected
      * @param   &peer.URL u
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function _supports(&$u, &$attr) {
+    public function _supports($u, $attr) {
       throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
     }
     
     /**
      * Connect to store using a DSN
      *
-     * @access  public
      * @param   string dsn
      * @return  bool success
      * @see     php://imap_open
@@ -92,7 +89,6 @@
     /**
      * Disconnect from store
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { 
@@ -104,7 +100,6 @@
     /**
      * Returns whether the connection is open
      *
-     * @access  public
      * @return  bool
      */
     public function isConnected() {
@@ -114,7 +109,6 @@
     /**
      * Delete all messages marked for deletion
      *
-     * @access  public
      * @return  bool success
      * @throws  peer.mail.MessagingException
      */    
@@ -132,12 +126,11 @@
     /**
      * Get a folder. Note: Results from this method are cached.
      *
-     * @access  public
      * @param   string name
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
-    public function &getFolder($name) { 
+    public function getFolder($name) { 
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
         if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
           trigger_error('Folder: '.$name, E_USER_NOTICE);
@@ -150,7 +143,7 @@
         $folder= new MailFolder($this, $name);
         $this->cache->put(SKEY_FOLDER.$name, $folder);
       } else {
-        $folder= &$this->cache->get(SKEY_FOLDER.$name);
+        $folder= $this->cache->get(SKEY_FOLDER.$name);
       }
       
       return $folder;
@@ -159,15 +152,14 @@
     /**
      * Get all folders. Note: Results from this method are cached.
      *
-     * @access  public
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
-    public function &getFolders() {
-      if (NULL === ($f= &$this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
+    public function getFolders() {
+      if (NULL === ($f= $this->cache->get(SKEY_LIST.SKEY_FOLDER))) {
       
         // Retrieve list and cache it
-        if (0 == ($s= sizeof($list= &imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
+        if (0 == ($s= sizeof($list= imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
           throw(new MessagingException(
             'Retrieving folder list failed',
             $this->_errors()
@@ -193,14 +185,13 @@
     /**
      * Proxy method for MailFolder: Open a folder
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   bool readonly default FALSE
      * @return  bool success
      * @throws  peer.mail.MessagingException in case opening the folder failed
      * @throws  lang.IllegalAccessException in case there is already a folder open
      */
-    public function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder($f, $readonly= FALSE) {
     
       // Is it already open?
       if ($this->currentfolder === $f->name) return TRUE;
@@ -235,11 +226,10 @@
     /**
      * Proxy method for MailFolder: Close a folder
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    public function closeFolder(&$f) { 
+    public function closeFolder($f) { 
       $this->currentfolder= NULL;
       return TRUE;
     }
@@ -247,13 +237,12 @@
     /**
      * Proxy method for MailFolder: Get a message part
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   string uid
      * @param   string part
      * @return  string
      */
-    public function getMessagePart(&$f, $uid, $part) {
+    public function getMessagePart($f, $uid, $part) {
       return imap_fetchbody(
         $this->_hdl[0], 
         $uid, 
@@ -265,13 +254,12 @@
     /**
      * Proxy method for MailFolder: Get message structure
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   string uid
      * @see     php://imap_fetchstructure
      * @return  &object
      */
-    public function &getMessageStruct(&$f, $uid) {
+    public function getMessageStruct($f, $uid) {
       return imap_fetchstructure(
         $this->_hdl[0], 
         $uid,
@@ -282,12 +270,11 @@
     /**
      * Proxy method for MailFolder: Delete a message
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function deleteMessage(&$f, &$msg) {
+    public function deleteMessage($f, $msg) {
       if (FALSE === imap_delete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
         throw(new MessagingException(
@@ -303,12 +290,11 @@
     /**
      * Proxy method for MailFolder: Undelete a message
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function undeleteMessage(&$f, &$msg) {
+    public function undeleteMessage($f, $msg) {
       if (FALSE === imap_undelete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
         throw(new MessagingException(
@@ -324,12 +310,11 @@
     /**
      * Proxy method for MailFolder: Move message to other folder
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function moveMessage(&$f, $msg) {
+    public function moveMessage($f, $msg) {
       if (FALSE === imap_mail_move($this->_hdl[0], $msg->uid, $f->name, CP_UID)) {
         throw (new MessagingException('Can not move mail'));
       }
@@ -340,20 +325,19 @@
     /**
      * Proxy method for MailFolder: Get messages in a folder
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      * @throws  peer.mail.MessagingException
      */
-    public function &getMessages(&$f) {
+    public function getMessages($f) {
       if (1 == func_num_args()) {
         $count= $this->getMessageCount($f, 'messages');
         $msgnums= range(1, $count);
       } else {
         $msgnums= array();
         for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-          $arg= &func_get_arg($i);
+          $arg= func_get_arg($i);
           $msgnums= array_merge($msgnums, $arg);
         }
       }
@@ -363,15 +347,15 @@
       // Check cache
       $seq= '';
       foreach ($msgnums as $msgnum) {
-        if (NULL === ($msg= &$this->cache->get(SKEY_LIST.SKEY_MESSAGE.$f->name.'.'.$msgnum))) {
+        if (NULL === ($msg= $this->cache->get(SKEY_LIST.SKEY_MESSAGE.$f->name.'.'.$msgnum))) {
           $seq.= ','.$msgnum;
         } else {
-          $messages[]= &$msg;
+          $messages[]= $msg;
         }
       }
       
       if (!empty($seq)) {
-        if (FALSE === ($list= &imap_fetch_overview($this->_hdl[0], substr($seq, 1)))) {
+        if (FALSE === ($list= imap_fetch_overview($this->_hdl[0], substr($seq, 1)))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
           throw(new MessagingException(
             'Reading messages {'.$seq.'} failed',
@@ -385,7 +369,7 @@
           
           $m= new $class($list[$i]->uid);
           $m->size= $list[$i]->size;
-          $m->folder= &$f;
+          $m->folder= $f;
           $m->body= NULL;   // Indicate this needs to be fetched
 
           // Flags
@@ -403,7 +387,7 @@
           // Cache it
           $this->cache->put(SKEY_LIST.SKEY_MESSAGE.$f->name.'.'.$list[$i]->msgno, $m);
 
-          $messages[]= &$m;
+          $messages[]= $m;
         }
       }
       
@@ -414,12 +398,11 @@
      * Proxy method for MailFolder: Get number of messages in this folder
      * Note: The results from this method are cached.
      *
-     * @access  public
      * @param   &peer.mail.MailFolder f
      * @param   string attr one of "messages", "recent" or "unseen"
      * @return  int status
      */
-    public function getMessageCount(&$f, $attr) {
+    public function getMessageCount($f, $attr) {
       if (NULL === ($info= $this->cache->get(SKEY_INFO.SKEY_FOLDER.$f->name))) {
         if (FALSE === ($info= imap_status(
           $this->_hdl[0], 

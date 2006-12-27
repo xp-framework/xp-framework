@@ -47,18 +47,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      */
-    public function __construct(&$stream) {
-      $this->stream= &$stream;
+    public function __construct($stream) {
+      $this->stream= $stream;
       
     }
     
     /**
      * Initialize this writer
      *
-     * @access  public
      * @param   string mode default STREAM_MODE_WRITE
      * @return  bool success
      */
@@ -69,11 +67,10 @@
     /**
      * Write an entry
      *
-     * @access  public
      * @param   &peer.ldap.LDAPEntry entry
      * @throws  lang.IllegalArgumentException in case the parameter is not an LDAPEntry object
      */
-    public function write(&$entry) {
+    public function write($entry) {
       if (!is('LDAPEntry', $entry)) {
         throw(new IllegalArgumentException(
           'Parameter entry is expected to be a peer.ldap.LDAPEntry object (given: '.xp::typeOf($entry).')'

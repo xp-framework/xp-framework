@@ -20,7 +20,6 @@
     /**
      * Test simple add operations on a usual date.
      *
-     * @access  public
      */
     #[@test]
     public function testSimpleAddition() {
@@ -55,7 +54,6 @@
     /**
      * Test basic add operations with negative values.
      *
-     * @access  public
      */
     #[@test]
     public function testSimpleSubstraction() {
@@ -90,7 +88,6 @@
     /**
      * Check leap year handling
      *
-     * @access  public
      */
     #[@test]
     public function testLeapYear() {
@@ -110,7 +107,6 @@
     /**
      * Check non-leap year handling
      *
-     * @access  public
      */
     #[@test]
     public function testNonLeapYear() {
@@ -130,7 +126,6 @@
     /**
      * Tests the compare method
      *
-     * @access  public
      */
     #[@test]
     public function comparison() {
@@ -142,7 +137,6 @@
     /**
      * Tests using the compare method as a usort() callback
      *
-     * @access  public
      * @see     php://usort
      */
     #[@test]

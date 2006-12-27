@@ -34,7 +34,6 @@
    *   $verified= UnixCrypt::matches($crypted, $entered);
    * </code>
    *
-   * @model    static
    * @see      php://crypt
    * @purpose  One-way string encryption (hashing)
    */
@@ -65,8 +64,6 @@
      *
      * If ommitted, the salt is generated and the system default is used.
      *
-     * @model   static
-     * @access  public
      * @param   string original
      * @param   string salt default NULL
      * @return  string crypted
@@ -78,8 +75,6 @@
     /**
      * Check if an entered string matches the crypt
      *
-     * @model   static
-     * @access  public
      * @param   string encrypted
      * @param   string entered
      * @return  bool

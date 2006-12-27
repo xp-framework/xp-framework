@@ -19,21 +19,18 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   
     /**
      * Create message from request
      *
-     * @model   abstract
-     * @access  public
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &getMessage() {
+    public function getMessage() {
       // Override this. You must set the 'class' and 'method' members of
       // the respective RpcMessage class.
     }
@@ -41,7 +38,6 @@
     /**
      * Determine encoding.
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {

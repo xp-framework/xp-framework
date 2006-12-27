@@ -29,7 +29,6 @@
     /**
      * Set Current
      *
-     * @access  public
      * @param   int current
      */
     public function setCurrent($current) {
@@ -39,7 +38,6 @@
     /**
      * Get Current
      *
-     * @access  public
      * @return  int
      */
     public function getCurrent() {
@@ -49,7 +47,6 @@
     /**
      * Set DocId
      *
-     * @access  public
      * @param   string docId
      */
     public function setDocId($docId) {
@@ -59,7 +56,6 @@
     /**
      * Get DocId
      *
-     * @access  public
      * @return  string
      */
     public function getDocId() {
@@ -69,7 +65,6 @@
     /**
      * Set Stars
      *
-     * @access  public
      * @param   int stars
      */
     public function setStars($stars) {
@@ -81,7 +76,6 @@
      *
      * (Needed because htdigs result field name is nstars)
      *
-     * @access  public
      * @param   int stars
      */
     public function setNstars($stars) {
@@ -91,7 +85,6 @@
     /**
      * Get Stars
      *
-     * @access  public
      * @return  int
      */
     public function getStars() {
@@ -101,7 +94,6 @@
     /**
      * Set Score
      *
-     * @access  public
      * @param   int score
      */
     public function setScore($score) {
@@ -111,7 +103,6 @@
     /**
      * Get Score
      *
-     * @access  public
      * @return  int
      */
     public function getScore() {
@@ -121,7 +112,6 @@
     /**
      * Set Url
      *
-     * @access  public
      * @param   string url
      */
     public function setUrl($url) {
@@ -131,7 +121,6 @@
     /**
      * Get Url
      *
-     * @access  public
      * @return  string
      */
     public function getUrl() {
@@ -141,7 +130,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -151,7 +139,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -161,7 +148,6 @@
     /**
      * Set Excerpt
      *
-     * @access  public
      * @param   string excerpt
      */
     public function setExcerpt($excerpt) {
@@ -171,7 +157,6 @@
     /**
      * Get Excerpt
      *
-     * @access  public
      * @return  string
      */
     public function getExcerpt() {
@@ -181,7 +166,6 @@
     /**
      * Set Metadescription
      *
-     * @access  public
      * @param   string metadescription
      */
     public function setMetadescription($metadesc) {
@@ -191,7 +175,6 @@
     /**
      * Get Metadescription
      *
-     * @access  public
      * @return  string
      */
     public function getMetadescription() {
@@ -201,40 +184,37 @@
     /**
      * Set Modified
      *
-     * @access  public
      * @param   &lang.Object modified
      */
-    public function setModified(&$modified) {
+    public function setModified($modified) {
       if (is('util.Date', $modified)) {
-        $this->modified= &$modified;
+        $this->modified= $modified;
         return;
       }
       
       try {
-        $d= &DateParser::parse(urldecode($modified));
+        $d= DateParser::parse(urldecode($modified));
       } catch (FormatException $e) {
       
         // Date could not be parsed, so default to now.
-        $this->modified= &Date::now();
+        $this->modified= Date::now();
       }
       
-      $this->modified= &$d;
+      $this->modified= $d;
     }
 
     /**
      * Get Modified
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getModified() {
+    public function getModified() {
       return $this->modified;
     }
 
     /**
      * Set Size
      *
-     * @access  public
      * @param   int size
      */
     public function setSize($size) {
@@ -244,7 +224,6 @@
     /**
      * Get Size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {
@@ -254,7 +233,6 @@
     /**
      * Set Hopcount
      *
-     * @access  public
      * @param   int hopcount
      */
     public function setHopcount($hopcount) {
@@ -264,7 +242,6 @@
     /**
      * Get Hopcount
      *
-     * @access  public
      * @return  int
      */
     public function getHopcount() {
@@ -274,7 +251,6 @@
     /**
      * Set Percent
      *
-     * @access  public
      * @param   int percent
      */
     public function setPercent($percent) {
@@ -284,7 +260,6 @@
     /**
      * Get Percent
      *
-     * @access  public
      * @return  int
      */
     public function getPercent() {
@@ -294,20 +269,18 @@
     /**
      * Create a HtdigEntry from an array
      *
-     * @model   static
-     * @access  public
      * @param   &mixed array
      * @return  &org.htdig.HtdigResult
      * @throws  lang.IllegalArgumentException when array is malformed
      */
-    public static function &fromArray(&$arr) {
+    public static function fromArray($arr) {
       $entry= new HtdigEntry();
       
       foreach (array_keys($arr) as $key) {
         if (!method_exists($entry, 'set'.$key))
           throw (new IllegalArgumentException('The given array is malformed. Its key '.$key.' is not associated with a function.'));
           
-        call_user_func(array(&$entry, 'set'.$key), $arr[$key]);
+        call_user_func(array($entry, 'set'.$key), $arr[$key]);
       }
       
       return $entry;
@@ -316,7 +289,6 @@
     /**
      * Returns the string representation of this object.
      *
-     * @access  public
      * @return  string 
      */
     public function toString() {

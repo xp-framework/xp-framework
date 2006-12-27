@@ -26,7 +26,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string realm
      * @param   string nonce
      * @param   string qop
@@ -40,7 +39,6 @@
     /**
      * Helper method for encoding strings
      *
-     * @access  protected
      * @param   string value
      * @return  string
      */    
@@ -54,7 +52,6 @@
     /**
      * Retrieve response string
      *
-     * @access  public
      * @return  string
      */
     public function getString() {
@@ -139,7 +136,6 @@
     /**
      * Set Qop
      *
-     * @access  public
      * @param   string qop
      */
     public function setQop($qop) {
@@ -149,7 +145,6 @@
     /**
      * Get Qop
      *
-     * @access  public
      * @return  string
      */
     public function getQop() {
@@ -159,7 +154,6 @@
     /**
      * Set User
      *
-     * @access  public
      * @param   string user
      */
     public function setUser($user) {
@@ -169,7 +163,6 @@
     /**
      * Get User
      *
-     * @access  public
      * @return  string
      */
     public function getUser() {
@@ -179,7 +172,6 @@
     /**
      * Set Pass
      *
-     * @access  public
      * @param   string pass
      */
     public function setPass($pass) {
@@ -189,7 +181,6 @@
     /**
      * Get Pass
      *
-     * @access  public
      * @return  string
      */
     public function getPass() {
@@ -199,7 +190,6 @@
     /**
      * Set Authzid
      *
-     * @access  public
      * @param   string authzid
      */
     public function setAuthzid($authzid) {
@@ -209,7 +199,6 @@
     /**
      * Get Authzid
      *
-     * @access  public
      * @return  string
      */
     public function getAuthzid() {
@@ -219,7 +208,6 @@
     /**
      * Set Nonce
      *
-     * @access  public
      * @param   string nonce
      */
     public function setNonce($nonce) {
@@ -229,7 +217,6 @@
     /**
      * Get Nonce
      *
-     * @access  public
      * @return  string
      */
     public function getNonce() {
@@ -239,7 +226,6 @@
     /**
      * Set Ncount
      *
-     * @access  public
      * @param   int ncount
      */
     public function setNcount($ncount) {
@@ -249,7 +235,6 @@
     /**
      * Get Ncount
      *
-     * @access  public
      * @return  int
      */
     public function getNcount() {
@@ -259,7 +244,6 @@
     /**
      * Set DigestUri
      *
-     * @access  public
      * @param   string digestUri
      */
     public function setDigestUri($digestUri) {
@@ -269,7 +253,6 @@
     /**
      * Get DigestUri
      *
-     * @access  public
      * @return  string
      */
     public function getDigestUri() {
@@ -279,7 +262,6 @@
     /**
      * Set Charset
      *
-     * @access  public
      * @param   string charset
      */
     public function setCharset($charset) {
@@ -289,7 +271,6 @@
     /**
      * Get Charset
      *
-     * @access  public
      * @return  string
      */
     public function getCharset() {

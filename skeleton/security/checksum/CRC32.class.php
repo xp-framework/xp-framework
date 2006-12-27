@@ -18,24 +18,20 @@
     /**
      * Create a new checksum from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.checksum.CRC32
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       return new CRC32(crc32($str));
     }
 
     /**
      * Create a new checksum from a file object
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &security.checksum.CRC32
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());

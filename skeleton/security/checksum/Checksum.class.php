@@ -38,7 +38,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed value
      */
     public function __construct($value) {
@@ -49,28 +48,23 @@
      * Create a new checksum from a string. Override this
      * method in child classes!
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.checksum.Checksum
      */
-    public static function &fromString($str) { }
+    public static function fromString($str) { }
 
     /**
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &security.checksum.Checksum
      */
-    public static function &fromFile(&$file) { }
+    public static function fromFile($file) { }
     
     /**
      * Retrieve the checksum's value
      *
-     * @access  public
      * @return  mixed value
      */
     public function getValue() {
@@ -80,11 +74,10 @@
     /**
      * Verify this checksum against another checksum
      *
-     * @access  public
      * @param   &security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
-    public function verify(&$sum) {
+    public function verify($sum) {
       return $this->value === $sum->value;
     }
   }

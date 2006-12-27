@@ -21,17 +21,15 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      */
-    public function __construct(&$stream) {
-      $this->stream= &deref($stream);
+    public function __construct($stream) {
+      $this->stream= deref($stream);
     }
 
     /**
      * Read an image.
      *
-     * @access  protected
      * @return  resource
      * @throws  img.ImagingException
      */    
@@ -50,7 +48,6 @@
     /**
      * Retrieve an image resource
      *
-     * @access  public
      * @return  resource
      * @throws  img.ImagingException
      */

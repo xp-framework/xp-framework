@@ -26,7 +26,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string database
      * @param   string mailinglist
      */
@@ -38,17 +37,15 @@
     /**
      * Set connection,
      *
-     * @access  public
      * @param   &rdbms.mysql.MysqlConnection db
      */
-    public function setConnection(&$db) {
-      $this->db= &$db;
+    public function setConnection($db) {
+      $this->db= $db;
     }
   
     /**
      * Check whether address is subscribed
      *
-     * @access  public
      * @param   string address
      * @return  bool
      */
@@ -71,11 +68,10 @@
     /**
      * Get list of subscribers
      *
-     * @access  public
      * @return  string[]
      */
     public function getSubscribers() {
-      $q= &$this->db->query('
+      $q= $this->db->query('
         select
           address
         from
@@ -93,7 +89,6 @@
     /**
      * Add subscriber
      *
-     * @access  public
      * @param   string address
      */
     public function addSubscriber($address) {
@@ -116,7 +111,6 @@
     /**
      * Remove subscriber
      *
-     * @access  public
      * @param   string address
      * @return  int
      */
@@ -137,7 +131,6 @@
     /**
      * Modify address
      *
-     * @access  public
      * @param   string from
      * @param   string to
      * @return  int count
@@ -162,7 +155,6 @@
     /**
      * Write log information
      *
-     * @access  protected
      * @param   string addr
      * @param   string from
      * @param   string action

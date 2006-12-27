@@ -101,7 +101,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string last
      * @param   string first
      * @param   string middle default ''
@@ -122,7 +121,6 @@
      * Get Name. If a portion is specified, only this portion is returned,
      * else the whole array.
      *
-     * @access  public
      * @param   string portion default '' either last, first, middle, title or initial
      * @return  mixed
      */
@@ -133,7 +131,6 @@
     /**
      * Set Address
      *
-     * @access  public
      * @param   string type one of the VCARD_ADR_* constants
      * @param   string street
      * @param   string zip
@@ -168,7 +165,6 @@
      * Get Address. If a portion is specified, only this portion is returned,
      * else the whole array.
      *
-     * @access  public
      * @param   string type one of the VCARD_ADR_* constants
      * @param   string portion default '' either street, zip, city, province, country, pobox or suffix
      * @return  mixed
@@ -180,7 +176,6 @@
     /**
      * Add an email
      *
-     * @access  public
      * @param   string type one of the VCARD_EMAIL_* constants
      * @param   string email
      */
@@ -191,7 +186,6 @@
     /**
      * Get Email
      *
-     * @access  public
      * @param   string type one of the VCARD_EMAIL_* constants
      * @return  string[] emails
      */
@@ -202,7 +196,6 @@
     /**
      * Set Phone
      *
-     * @access  public
      * @param   mixed[] phone
      */
     public function setPhone($phone) {
@@ -212,7 +205,6 @@
     /**
      * Get Phone
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getPhone() {
@@ -222,7 +214,6 @@
     /**
      * Set Organization
      *
-     * @access  public
      * @param   mixed[] organization
      */
     public function setOrganization($organization) {
@@ -232,7 +223,6 @@
     /**
      * Get Organization
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getOrganization() {
@@ -242,7 +232,6 @@
     /**
      * Set Logo
      *
-     * @access  public
      * @param   mixed[] logo
      */
     public function setLogo($logo) {
@@ -252,7 +241,6 @@
     /**
      * Get Logo
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getLogo() {
@@ -262,27 +250,24 @@
     /**
      * Set Birthday
      *
-     * @access  public
      * @param   &util.Date birthday
      */
-    public function setBirthday(&$birthday) {
-      $this->birthday= &$birthday;
+    public function setBirthday($birthday) {
+      $this->birthday= $birthday;
     }
 
     /**
      * Get Birthday
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getBirthday() {
+    public function getBirthday() {
       return $this->birthday;
     }
 
     /**
      * Set Fullname
      *
-     * @access  public
      * @param   string fullname
      */
     public function setFullname($fullname) {
@@ -292,7 +277,6 @@
     /**
      * Get Fullname
      *
-     * @access  public
      * @return  string
      */
     public function getFullname() {
@@ -302,7 +286,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -312,7 +295,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -322,7 +304,6 @@
     /**
      * Set Url
      *
-     * @access  public
      * @param   string url
      */
     public function setUrl($url) {
@@ -332,7 +313,6 @@
     /**
      * Get Url
      *
-     * @access  public
      * @return  string
      */
     public function getUrl() {
@@ -342,7 +322,6 @@
     /**
      * Set Nick
      *
-     * @access  public
      * @param   string nick
      */
     public function setNick($nick) {
@@ -352,7 +331,6 @@
     /**
      * Get Nick
      *
-     * @access  public
      * @return  string
      */
     public function getNick() {
@@ -362,7 +340,6 @@
     /**
      * Parser callback
      *
-     * @access  public
      * @param   array keys
      * @param   mixed value
      * @throws  lang.FormatException
@@ -469,16 +446,14 @@
      *   var_dump($vcard);
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   &io.Stream stream
      * @return  &org.imc.VCard
      */
-    public static function &fromStream(&$stream) {
+    public static function fromStream($stream) {
       $card= new VCard();
       
       $p= new VFormatParser(VCARD_ID);
-      $p->setDefaultHandler(array(&$card, 'addProperty'));
+      $p->setDefaultHandler(array($card, 'addProperty'));
       
       try {
         $p->parse($stream);
@@ -492,7 +467,6 @@
     /**
      * Private helper function for export
      *
-     * @access  private
      * @param   string key
      * @param   mixed values
      * @return  string
@@ -515,7 +489,6 @@
      *   $f->close();
      * </code>
      *
-     * @access  public
      * @return  string
      */
     public function export() {

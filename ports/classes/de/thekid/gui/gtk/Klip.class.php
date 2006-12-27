@@ -36,11 +36,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.cmd.ParamString p
      * @param   &util.Properties prop
      */
-    public function __construct(&$p, &$prop) {
+    public function __construct($p, $prop) {
       parent::__construct($p, dirname($p->value(0)).'/../ui/klip.glade', 'main');
 
       // Initialize visited hashmap to an empty set
@@ -50,9 +49,9 @@
       $this->conn= new HttpConnection($prop->readString('settings', 'url'));
       
       // Set refresh interval, defaulting to 60 seconds
-      $timer= &Gtk::timeout_add(
+      $timer= Gtk::timeout_add(
         $prop->readString('settings', 'refresh', 60) * 1000,
-        array(&$this, 'onRefresh')
+        array($this, 'onRefresh')
       );
 
       // Set up XSL processor
@@ -62,15 +61,14 @@
         dirname($p->value(0)),
         $p->value('skin', 's', $prop->readString('settings', 'skin', 'default'))
       ));
-      $this->proc->setSchemeHandler(array('get_all' => array(&$this, 'onScheme')));
+      $this->proc->setSchemeHandler(array('get_all' => array($this, 'onScheme')));
       
-      $this->prop= &$prop;
+      $this->prop= $prop;
     }
     
     /**
      * Initialize application
      *
-     * @access  public
      */
     public function init() {
       parent::init();
@@ -82,17 +80,17 @@
 
       // Set up GtkHTML
       $this->view= new GtkHtml();
-      $this->view->connect_url_request(array(&$this, 'onURLRequest'));
-      $this->view->connect('link-clicked', array(&$this, 'onLinkClicked'));
-      $this->view->connect('title-changed', array(&$this, 'onTitleChanged'));
-      with ($stream= &$this->view->begin()); {
+      $this->view->connect_url_request(array($this, 'onURLRequest'));
+      $this->view->connect('link-clicked', array($this, 'onLinkClicked'));
+      $this->view->connect('title-changed', array($this, 'onTitleChanged'));
+      with ($stream= $this->view->begin()); {
         $this->streamWrite($stream, '<html></html>');
         $this->view->end($stream, GTK_HTML_STREAM_OK);
       }
 
       // Add the GTKHtml widget to the viewport container and
       // connect the "external" scrollbar
-      with ($viewport= &$this->widget('viewport'), $scroll= &$this->widget('scroll')); {
+      with ($viewport= $this->widget('viewport'), $scroll= $this->widget('scroll')); {
         $viewport->add($this->view);
         $scroll->set_adjustment($viewport->get_vadjustment());
       }
@@ -108,19 +106,18 @@
     /**
      * Scheme handler
      *
-     * @access  protected
      * @param   &resource proc
      * @param   string scheme
      * @param   string rest
      * @return  string
      */
-    public function onScheme(&$proc, $scheme, $rest) {
+    public function onScheme($proc, $scheme, $rest) {
       switch ($scheme) {
         case 'rdf':
           $this->cat->debug('Retrieving', $scheme.'('.$rest.')');
           $c= new HttpConnection(substr($rest, 1));
           try {
-            if ($response= &$c->get()) {
+            if ($response= $c->get()) {
               $this->cat->debug('Response headers:', $response->getHeaders());
               $src= '';
               while ($buf= $response->readData(0x2000, $binary= TRUE)) {
@@ -128,7 +125,7 @@
               }
               
               // Parse into a RDFNewsFeed object and create XML strings
-              if ($rdf= &RDFNewsFeed::fromString($src)) {
+              if ($rdf= RDFNewsFeed::fromString($src)) {
                 $s= sizeof($rdf->items);
                 $xml= $rdf->getDeclaration().sprintf('<items count="%d">', $s);
                 for ($i= 0; $i < $s; $i++) {
@@ -164,11 +161,10 @@
     /**
      * Callback for when a link is clicked
      *
-     * @access  protected
      * @param   &php.gtk.GtkWidget widget
      * @param   string url
      */
-    public function onLinkClicked(&$widget, $url) {
+    public function onLinkClicked($widget, $url) {
       $this->cat->debug('Clicked:', $url, 'in widget', $widget);
       $this->visited->put($url, TRUE);
 
@@ -191,22 +187,20 @@
     /**
      * Callback for when the title changes
      *
-     * @access  protected
      * @param   &php.gtk.GtkWidget widget
      * @param   string title
      */
-    public function onTitleChanged(&$widget, $title) {
+    public function onTitleChanged($widget, $title) {
       $this->window->set_title('Klip: '.$title);
     }
     
     /**
      * Callback for when a URL is requested
      *
-     * @access  protected
      * @param   string uri
      * @param   &php.gtk.GtkHTMLStream stream
      */
-    public function onURLRequest($uri, &$stream) {
+    public function onURLRequest($uri, $stream) {
       $this->cat->debug('Requested:', $uri, $stream);
       
       $url= new URL($uri);
@@ -229,7 +223,7 @@
           $c= new HttpConnection($url);
           $this->cat->debug('Loading HTTP element', $url);
           try {
-            if ($response= &$c->get()) {
+            if ($response= $c->get()) {
               $this->cat->debug('Response headers:', $response->getHeaders());
               while ($buf= $response->readData(0x2000, $binary= TRUE)) {
                 $this->streamWrite($stream, $buf);
@@ -250,20 +244,18 @@
      * Helper method that writes to a given stream, calculating the length 
      * if omitted.
      *
-     * @access  private
      * @param   php.gtk.GtkHTMLStream stream
      * @param   string str
      * @param   int len default -1
      * @return  mixed
      */
-    public function streamWrite(&$stream, $str, $len= -1) {
+    public function streamWrite($stream, $str, $len= -1) {
       return $this->view->write($stream, $str, (-1 == $len ? strlen($str) : $len));
     }
     
     /**
      * Refresh view - run processor on previously downloaded information
      *
-     * @access  protected
      */
     public function refreshView() {
       try {
@@ -275,7 +267,7 @@
       }
       
       // Update GtkHTML view
-      with ($html= $this->proc->output(), $stream= &$this->view->begin()); {
+      with ($html= $this->proc->output(), $stream= $this->view->begin()); {
         $this->cat->debug('Writing to', $this->view, 'html', strlen($html), 'bytes');
         $this->streamWrite($stream, $html);
         $this->view->end($stream, GTK_HTML_STREAM_OK);
@@ -287,18 +279,17 @@
      * the interval timer, thus always returning TRUE to keep the timer
      * going...
      *
-     * @access  protected
      * @param   &php.gtk.GtkWidget widget
      * @return  bool
      */
-    public function onRefresh(&$widget) {
+    public function onRefresh($widget) {
       
       // Retrieve klip. Prepend header to make encoding default to iso-8859-1,
       // map some known characters (Klip looks like XML but actually isn't 
       // conform - the KlipFolio parser seems to ignore this...) and strip off
       // junk after document element
       try {
-        if ($response= &$this->conn->get()) {
+        if ($response= $this->conn->get()) {
           $klipsrc= XML_HEADER;
           while ($buf= $response->readData()) {
             $klipsrc.= strtr($buf, array(

@@ -25,7 +25,6 @@
     /**
      * Construct
      *
-     * @access  public
      * @param   int min
      * @param   int max
      */
@@ -37,7 +36,6 @@
     /**
      * Check a given value
      *
-     * @access  public
      * @param   array value
      * @return  string error or NULL on success
      */

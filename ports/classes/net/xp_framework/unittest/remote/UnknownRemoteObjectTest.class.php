@@ -22,7 +22,6 @@
      * Assert toString() invocation works when given an "empty" 
      * UnknownRemoteObject (one without members)
      *
-     * @access  public
      */
     #[@test]
     public function noMemberstoStringInvocation() {
@@ -36,7 +35,6 @@
      * Assert toString() invocation works when given an UnknownRemoteObject
      * with exactly one member.
      *
-     * @access  public
      */
     #[@test]
     public function oneMemberToStringInvocation() {
@@ -50,7 +48,6 @@
      * Assert toString() invocation works when given an UnknownRemoteObject
      * with more than one member.
      *
-     * @access  public
      */
     #[@test]
     public function multipleMembersToStringInvocation() {
@@ -71,7 +68,6 @@
     /**
      * Assert read access to a member fails
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function readMember() {
@@ -82,7 +78,6 @@
     /**
      * Assert write access to a member fails
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function writeMember() {
@@ -93,7 +88,6 @@
     /**
      * Assert method call fails
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function invokeMethod() {

@@ -24,8 +24,6 @@
      /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */  
     public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
@@ -34,17 +32,15 @@
     /**
      * Setup function
      *
-     * @access  public
      */
     public function setUp() {
-      $this->conn= &DriverManager::getConnection('mock://mock/MOCKDB');
+      $this->conn= DriverManager::getConnection('mock://mock/MOCKDB');
       $this->assertEquals(0, $this->conn->flags & DB_AUTOCONNECT);
     }
     
     /**
      * Tear down function
      *
-     * @access  public
      */
     public function tearDown() {
       $this->conn->close();
@@ -53,14 +49,13 @@
     /**
      * Asserts a query works
      *
-     * @access  protected
      * @throws  unittest.AssertionFailedError
      */
     public function assertQuery() {
       $version= '$Revision$';
       $this->conn->setResultSet(new MockResultSet(array(array('version' => $version))));
       if (
-        ($r= &$this->conn->query('select %s as version', $version)) &&
+        ($r= $this->conn->query('select %s as version', $version)) &&
         ($this->assertSubclass($r, 'rdbms.ResultSet')) && 
         ($field= $r->next('version'))
       ) $this->assertEquals($field, $version);
@@ -69,7 +64,6 @@
     /**
      * Test database connect
      *
-     * @access  public
      */
     #[@test]
     public function connect() {
@@ -80,7 +74,6 @@
     /**
      * Test database connect throws an SQLConnectException in case it fails
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLConnectException')]
     public function connectFailure() {
@@ -91,7 +84,6 @@
     /**
      * Test database select
      *
-     * @access  public
      */
     #[@test]
     public function select() {
@@ -103,7 +95,6 @@
      * Test an SQLStateException is thrown if a query is performed on a
      * not yet connect()ed connection object.
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function queryOnUnConnected() {
@@ -114,7 +105,6 @@
      * Test an SQLStateException is thrown if a query is performed on a
      * disconnect()ed connection object.
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function queryOnDisConnected() {
@@ -129,7 +119,6 @@
      * has been lost.
      *
      * @see     rfc://0058
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLConnectionClosedException')]
     public function connectionLost() {
@@ -143,7 +132,6 @@
      * Test an SQLStateException is thrown if a query is performed on a
      * connection thas is not connected due to connect() failure.
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function queryOnFailedConnection() {
@@ -158,7 +146,6 @@
     /**
      * Test an SQLStatementFailedException is thrown when a query fails.
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLStatementFailedException')]
     public function statementFailed() {

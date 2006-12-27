@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   io.collections.IOCollection[] collections
      * @throws  lang.IllegalArgumentException if collections is an empty array
      */
@@ -48,7 +47,6 @@
     /**
      * Open this collection
      *
-     * @access  public
      */
     public function open() { 
       $this->collections[0]->open();
@@ -57,7 +55,6 @@
     /**
      * Rewind this collection (reset internal pointer to beginning of list)
      *
-     * @access  public
      */
     public function rewind() {
       do {
@@ -69,12 +66,11 @@
      * Retrieve next element in collection. Return NULL if no more entries
      * are available
      *
-     * @access  public
      * @return  &io.collection.IOElement
      */
-    public function &next() {
+    public function next() {
       do { 
-        if (NULL !== ($element= &$this->collections[$this->_current]->next())) return $element;
+        if (NULL !== ($element= $this->collections[$this->_current]->next())) return $element;
         
         // End of current collection, close it and continue with next collection
         // In case the end of collections has been reached, return NULL
@@ -90,7 +86,6 @@
     /**
      * Close this collection
      *
-     * @access  public
      */
     public function close() { 
       do {

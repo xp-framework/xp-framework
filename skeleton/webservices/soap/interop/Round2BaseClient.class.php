@@ -22,34 +22,32 @@
      * a function has been called and what the deserialized
      * result was.
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setInputOutputTrace(&$cat) {
-      $this->_iotrace= &$cat;
+    public function setInputOutputTrace($cat) {
+      $this->_iotrace= $cat;
     }
 
     /**
      * Invoke given method with given argument and
      * check whether the result matches the argument.
      *
-     * @access  protected
      * @param   string method
      * @param   &webservices.soap.Parameter argument
      * @return  boolean
      * @throws  webservices.soap.SOAPFaultException
      */
-    public function identity($method, &$argument) {
+    public function identity($method, $argument) {
       try {
-        $result= &$this->invoke($method, $argument);
+        $result= $this->invoke($method, $argument);
       } catch (SOAPFaultException $e) {
         throw($e);
       }
       
       if (is('webservices.soap.Parameter', $argument)) 
-        $cmp= &$argument->value;
+        $cmp= $argument->value;
       else 
-        $cmp= &$argument;
+        $cmp= $argument;
       
       if ($this->_iotrace) {
         $this->_iotrace->info('Method', $method, 'called with:', xp::typeOf($cmp), $cmp, var_export($cmp, 1));
@@ -66,7 +64,6 @@
     /**
      * echoString
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoString() {
@@ -76,7 +73,6 @@
     /**
      * echoStringArray
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoStringArray() {
@@ -89,7 +85,6 @@
     /**
      * echoInteger
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoInteger() {
@@ -99,7 +94,6 @@
     /**
      * echoIntegerArray
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoIntegerArray() {
@@ -109,7 +103,6 @@
     /**
      * echoFloat
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoFloat() {
@@ -119,7 +112,6 @@
     /**
      * echoFloatArray
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoFloatArray() {
@@ -129,7 +121,6 @@
     /**
      * echoStruct
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoStruct() {
@@ -145,7 +136,6 @@
     /**
      * echoStructArray
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoStructArray() {
@@ -160,7 +150,6 @@
     /**
      * echoVoid
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoVoid() {
@@ -170,7 +159,6 @@
     /**
      * echoBase64
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoBase64() {
@@ -182,7 +170,6 @@
     /**
      * echoHexBinary
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoHexBinary() {
@@ -194,7 +181,6 @@
     /**
      * echoDate
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoDate() {
@@ -204,7 +190,6 @@
     /**
      * echoDecimal
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoDecimal() {
@@ -214,7 +199,6 @@
     /**
      * echoBoolean
      *
-     * @access  public
      * @return  boolean match
      */
     public function echoBoolean() {

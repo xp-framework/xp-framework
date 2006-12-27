@@ -28,13 +28,12 @@
     /**
      * Set Client
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    public function setClient(&$client) {
-      $this->_client= &$client;
+    public function setClient($client) {
+      $this->_client= $client;
       for ($i= 0; $i < $this->photos->size(); $i++) {
-        $p= &$this->photos->get($i);
+        $p= $this->photos->get($i);
         $p->setClient($client);
       }
     }
@@ -42,20 +41,18 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
-      $this->photos= &Collection::forClass('com.flickr.FlickrPhoto');
+      $this->photos= Collection::forClass('com.flickr.FlickrPhoto');
     }
     
     /**
      * Set Photos
      *
-     * @access  public
      * @param   &lang.Object photos
      */
     #[@xmlmapping(element= 'photo', class= 'com.flickr.FlickrPhoto')]
-    public function addPhoto(&$photo) {
+    public function addPhoto($photo) {
       $this->photos->add($photo);
       return $photo;
     }
@@ -63,17 +60,15 @@
     /**
      * Get Photos
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getPhotos() {
+    public function getPhotos() {
       return $this->photos;
     }
 
     /**
      * Set Page
      *
-     * @access  public
      * @param   mixed page
      */
     #[@xmlmapping(element= '@page')]
@@ -84,7 +79,6 @@
     /**
      * Get Page
      *
-     * @access  public
      * @return  mixed
      */
     public function getPage() {
@@ -94,7 +88,6 @@
     /**
      * Set Pages
      *
-     * @access  public
      * @param   mixed pages
      */
     #[@xmlmapping(element= '@pages')]
@@ -105,7 +98,6 @@
     /**
      * Get Pages
      *
-     * @access  public
      * @return  mixed
      */
     public function getPages() {
@@ -115,7 +107,6 @@
     /**
      * Set PerPage
      *
-     * @access  public
      * @param   mixed perPage
      */
     #[@xmlmapping(element= '@perpage')]
@@ -126,7 +117,6 @@
     /**
      * Get PerPage
      *
-     * @access  public
      * @return  mixed
      */
     public function getPerPage() {
@@ -136,7 +126,6 @@
     /**
      * Set Total
      *
-     * @access  public
      * @param   mixed total
      */
     #[@xmlmapping(element= '@total')]
@@ -147,7 +136,6 @@
     /**
      * Get Total
      *
-     * @access  public
      * @return  mixed
      */
     public function getTotal() {

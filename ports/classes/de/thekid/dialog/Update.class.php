@@ -22,7 +22,6 @@
     /**
      * Set albumName
      *
-     * @access  public
      * @param   string albumName
      */
     public function setAlbumName($albumName) {
@@ -32,7 +31,6 @@
     /**
      * Get albumName
      *
-     * @access  public
      * @return  string
      */
     public function getAlbumName() {
@@ -42,7 +40,6 @@
     /**
      * Set title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -52,7 +49,6 @@
     /**
      * Get title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -62,7 +58,6 @@
     /**
      * Set description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -72,7 +67,6 @@
     /**
      * Get description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -82,20 +76,18 @@
     /**
      * Set date
      *
-     * @access  public
      * @param   &util.Date date
      */
-    public function setDate(&$date) {
-      $this->date= &$date;
+    public function setDate($date) {
+      $this->date= $date;
     }
 
     /**
      * Get date
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
 

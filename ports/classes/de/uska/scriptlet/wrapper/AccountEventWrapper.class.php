@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -44,7 +43,6 @@
     /**
      * Returns the value of the parameter event_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_id() {
@@ -54,7 +52,6 @@
     /**
      * Returns the value of the parameter points
      *
-     * @access  public
      * @return  int[]
      */
     public function getPoints() {

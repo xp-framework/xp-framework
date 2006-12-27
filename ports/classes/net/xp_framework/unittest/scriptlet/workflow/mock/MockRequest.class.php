@@ -20,7 +20,6 @@
     /**
      * Setup method.
      *
-     * @access  public
      * @param   string package
      * @param   string functionality
      * @param   string stateName
@@ -36,7 +35,7 @@
       // WorkflowScriptletRequest::initialize() and be able to load
       // and instantiate it.
       $stateName= 'Mock·'.($i++).$stateName;
-      $class= &$classloader->defineClass(
+      $class= $classloader->defineClass(
         'net.xp_framework.unittest.scriptlet.workflow.mock.state.'.$stateName.'State', 
         'class '.$stateName.'State extends AbstractState '.$functionality
       );

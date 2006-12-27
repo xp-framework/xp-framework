@@ -37,10 +37,9 @@
     /**
      * Set data and parse for properties
      *
-     * @access public
      * @param  string data The data
      */
-    public function setData(&$data) {
+    public function setData($data) {
       static $trans;
       parent::setData($data);
 
@@ -80,7 +79,6 @@
     /**
      * Retrieve base url of request
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -90,7 +88,6 @@
     /**
      * Add a property
      *
-     * @access  public
      * @param   org.webdav.WebdavProperty property The property object
      */
     public function addProperty($property, $remove= FALSE) {
@@ -100,10 +97,9 @@
     /**
      * Get all properties
      *
-     * @access  public
      * @return  &org.webdav.WebdavProperty[]
      */
-    public function &getProperties($remove= FALSE) {
+    public function getProperties($remove= FALSE) {
       return $this->properties[$remove];
     }
   }

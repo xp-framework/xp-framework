@@ -35,7 +35,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string lang 2-letter abbreviation of language
      * @param   string country 2-letter abbreviation of country
      * @param   string variant default ''
@@ -62,11 +61,9 @@
     /**
      * Get default locale
      *
-     * @model   static
-     * @access  public
      * @return  &util.Locale
      */
-    public static function &getDefault() {
+    public static function getDefault() {
       return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
@@ -76,12 +73,10 @@
     /**
      * Set default locale for this script
      *
-     * @model   static
-     * @access  public
      * @param   &util.Locale locale
      * @throws  lang.IllegalArgumentException in case the locale is not available
      */
-    public static function setDefault(&$locale) {
+    public static function setDefault($locale) {
       if (FALSE === setlocale(LC_ALL, $locale->toString())) {
         throw(new IllegalArgumentException(sprintf(
           'Locale [lang=%s,country=%s,variant=%s] not available',
@@ -95,7 +90,6 @@
     /**
      * Get Language
      *
-     * @access  public
      * @return  string
      */
     public function getLanguage() {
@@ -105,7 +99,6 @@
     /**
      * Get Country
      *
-     * @access  public
      * @return  string
      */
     public function getCountry() {
@@ -115,7 +108,6 @@
     /**
      * Get Variant
      *
-     * @access  public
      * @return  string
      */
     public function getVariant() {
@@ -125,7 +117,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -143,7 +134,6 @@
      * de_DE.ISO8859-1
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

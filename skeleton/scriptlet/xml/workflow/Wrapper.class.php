@@ -32,12 +32,11 @@
      * Set up this handler. Called when the handler has not yet been
      * registered to the session.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.workflow.Handler handler
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function setup(&$request, &$handler, &$context) {
+    public function setup($request, $handler, $context) {
       foreach ($this->paraminfo as $name => $definitions) {
         
         // Pre-fill form value if a default is defined and the request
@@ -61,24 +60,23 @@
     /**
      * Retrieve a checker instance
      *
-     * @access  protected
      * @param   array defines
      * @return  &lang.Object
      */
-    public function &checkerInstanceFor($defines) {
+    public function checkerInstanceFor($defines) {
       static $class= array();
 
       if (!$defines) return NULL;
 
       $name= array_shift($defines);
       try {
-        if (!isset($class[$name])) $class[$name]= &XPClass::forName($name);
+        if (!isset($class[$name])) $class[$name]= XPClass::forName($name);
       } catch (ClassNotFoundException $e) {
         unset($class[$name]);
         return NULL;
       }
 
-      return call_user_func_array(array(&$class[$name], 'newInstance'), $defines);
+      return call_user_func_array(array($class[$name], 'newInstance'), $defines);
     }
     
     /**
@@ -115,7 +113,6 @@
      *   );
      * </code>
      *
-     * @access  protected
      * @param   string name
      * @param   int occurrence default OCCURRENCE_UNDEFINED
      * @param   mixed default default NULL
@@ -149,7 +146,6 @@
     /**
      * Retrieve parameter names
      *
-     * @access  public
      * @return  string[]
      */
     public function getParamNames() {
@@ -159,7 +155,6 @@
     /**
      * Retrieve parameter info
      *
-     * @access  public
      * @param   string name
      * @param   string type one of of the PARAM_* constants
      * @return  mixed
@@ -171,7 +166,6 @@
     /**
      * Retrieve a value by its name
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL
      * @return  mixed value
@@ -183,7 +177,6 @@
     /**
      * Set a value by its name
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      */
@@ -194,11 +187,10 @@
     /**
      * Load request values from request data
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.workflow.Handler handler
      */
-    public function load(&$request, &$handler) { 
+    public function load($request, $handler) { 
       foreach ($this->paraminfo as $name => $definitions) {
 
         // Retrieve the parameter's value from the request (or from the
@@ -240,7 +232,7 @@
           //
           // Pre- and postchecks return an error code or NULL if they are content
           if ($definitions[PARAM_PRECHECK]) {
-            if (NULL !== ($code= call_user_func(array(&$definitions[PARAM_PRECHECK], 'check'), $value))) {
+            if (NULL !== ($code= call_user_func(array($definitions[PARAM_PRECHECK], 'check'), $value))) {
               $handler->addError($definitions[PARAM_PRECHECK]->getClassName().'.'.$code, $name);
               continue;
             }
@@ -251,7 +243,7 @@
           // type indicates an error and will be used as informational data
           // for the form error (an exception message, for instance).
           if ($definitions[PARAM_CASTER]) {
-            if (!is_array($value= call_user_func(array(&$definitions[PARAM_CASTER], 'castValue'), $value))) {
+            if (!is_array($value= call_user_func(array($definitions[PARAM_CASTER], 'castValue'), $value))) {
               $handler->addError($definitions[PARAM_CASTER]->getClassName().'.invalidcast', $name, $value);
               continue;
             }
@@ -260,7 +252,7 @@
           // Now, run the postcheck. The postcheck receives the already casted
           // values.
           if ($definitions[PARAM_POSTCHECK]) {
-            if (NULL !== ($code= call_user_func(array(&$definitions[PARAM_POSTCHECK], 'check'), $value))) {
+            if (NULL !== ($code= call_user_func(array($definitions[PARAM_POSTCHECK], 'check'), $value))) {
               $handler->addError($definitions[PARAM_POSTCHECK]->getClassName().'.'.$code, $name);
               continue;
             }

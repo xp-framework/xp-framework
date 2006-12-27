@@ -49,7 +49,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string inquiryUrl
      * @param   string publishUrl
      * @param   int version default 2
@@ -63,7 +62,6 @@
     /**
      * Set Version
      *
-     * @access  public
      * @param   int version
      */
     public function setVersion($version) {
@@ -73,7 +71,6 @@
     /**
      * Get Version
      *
-     * @access  public
      * @return  int
      */
     public function getVersion() {
@@ -83,7 +80,6 @@
     /**
      * Invoke a command
      *
-     * @access  public
      * @param   &webservices.uddi.UDDICommand
      * @return  &lang.Object
      * @throws  lang.IllegalArgumentException in case an illegal command was passed
@@ -91,11 +87,11 @@
      * @throws  webservices.soap.SOAPFaultException in case a SOAP fault was returned
      * @throws  xml.XMLFormatException in case the XML returned was not well-formed
      */
-    public function invoke(&$command) {
+    public function invoke($command) {
       if (is('webservices.uddi.InquiryCommand', $command)) {
-        $c= &$this->conn['inquiry'];
+        $c= $this->conn['inquiry'];
       } else if (is('webservices.uddi.PublishCommand', $command)) {
-        $c= &$this->conn['publish'];
+        $c= $this->conn['publish'];
       } else {
         throw(new IllegalArgumentException(
           'Unknown command type "'.xp::typeOf($command).'"'
@@ -108,7 +104,7 @@
         $m->root= new Node('soap:Envelope', NULL, array(
           'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
         ));
-        $body= &$m->root->addChild(new Node('soap:Body'));
+        $body= $m->root->addChild(new Node('soap:Body'));
         $command->marshalTo($body->addChild(new Node('command', NULL, array(
           'xmlns'      => UDDIConstants::namespaceFor($this->version),
           'generic'    => UDDIConstants::versionIdFor($this->version)
@@ -127,7 +123,7 @@
       // Send it
       try {
         $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
-        $response= &$c->request->send();
+        $response= $c->request->send();
       } catch (IOException $e) {
         throw ($e);
       }
@@ -140,7 +136,7 @@
         while ($buf= $response->readData()) $xml.= $buf;
         $this->cat && $this->cat->debug('<<<', $xml);
 
-        if ($answer= &SOAPMessage::fromString($xml)) {
+        if ($answer= SOAPMessage::fromString($xml)) {
           if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
             @list($type, $charset)= explode('; charset=', $content_type);
             if (!empty($charset)) $answer->setEncoding($charset);
@@ -162,11 +158,10 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
   } 

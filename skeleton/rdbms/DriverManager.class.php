@@ -33,11 +33,9 @@
     /**
      * Gets an instance
      *
-     * @model   static
-     * @access  public
      * @return  &rdbms.DriverManager
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new DriverManager();
@@ -54,26 +52,22 @@
      *   $conn= &DriverManager::getConnection('mydb://...');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   string name identifier
      * @param   &lang.XPClass class
      */
-    public static function register($name, &$class) {
-      $i= &DriverManager::getInstance();
-      $i->drivers[$name]= &$class;
+    public static function register($name, $class) {
+      $i= DriverManager::getInstance();
+      $i->drivers[$name]= $class;
     }
     
     /**
      * Get a connection by a DSN string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &rdbms.DBConnection
      * @throws  rdbms.DriverNotSupportedException
      */
-    public static function &getConnection($str) {
+    public static function getConnection($str) {
       static $builtin= array(
         'sybase'   => 'rdbms.sybase.SybaseConnection',
         'mysql'    => 'rdbms.mysql.MySQLConnection',
@@ -84,12 +78,12 @@
       
       $dsn= new DSN($str);
       $id= $dsn->getDriver();
-      $i= &DriverManager::getInstance();
+      $i= DriverManager::getInstance();
       
       // Lookup driver by identifier. If it's one
       if (!isset($i->drivers[$id])) {
         try {
-          $i->drivers[$id]= &XPClass::forName($builtin[$id]);
+          $i->drivers[$id]= XPClass::forName($builtin[$id]);
         } catch (ClassNotFoundException $e) {
           throw(new DriverNotSupportedException(
             'No driver registered for '.$id.': '.$e->getMessage()

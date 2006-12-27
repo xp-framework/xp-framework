@@ -29,11 +29,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   GtkWindow window a valid window object
      * @param   string baseDir default '.' base directory for pixmaps
      */      
-    public function __construct(&$window, $baseDir= '.') {
+    public function __construct($window, $baseDir= '.') {
       $this->setWindowRef($window);
       $this->setBase($baseDir);
       $this->setTransparentColor(new GdkColor(0, 0, 0));
@@ -43,17 +42,15 @@
     /**
      * Sets window reference
      *
-     * @access  public
      * @param   GtkWindow window a valid window object
      */
-    public function setWindowRef(&$window) {
-      $this->windowRef= &$window;
+    public function setWindowRef($window) {
+      $this->windowRef= $window;
     }
     
     /**
      * Sets basedir for pixmaps
      *
-     * @access  public
      * @param   string base base directory
      */
     public function setBase($base) {
@@ -63,21 +60,19 @@
     /**
      * Sets transparent color
      *
-     * @access  public
      * @param   GdkColor color the color to be transparent
      */
-    public function setTransparentColor(&$color) {
-      $this->transparentColor= &$color;
+    public function setTransparentColor($color) {
+      $this->transparentColor= $color;
     }
     
     /**
      * Loads a pixmap into a container
      *
-     * @access  private
      * @param   &array container
      * @param   string name
      */
-    public function _load(&$container, $name) {
+    public function _load($container, $name) {
       list(
         $container['p:'.$name],
         $container['m:'.$name]
@@ -91,12 +86,11 @@
     /**
      * Loads one or more pixmaps
      *
-     * @access  public
      * @param   mixed names Either a string or an array of strings containinig the 
      *          names of the pixmaps to be loaded (w/o trailing .xpm!)
      * @return  &array pixmaps
      */
-    public function &load($names) {
+    public function load($names) {
       $container= array();
       if (is_string($names)) $names= array($names);
       foreach ($names as $name) {

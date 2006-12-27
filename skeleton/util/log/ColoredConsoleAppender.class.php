@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string cerror default '01;31' color for errors
      * @param   string cwarn default '00;31' color for warnings
      * @param   string cinfo default '00;30' color for information
@@ -52,7 +51,6 @@
     /**
      * Appends log data to STDERR
      *
-     * @access public
      * @param  mixed args variables
      */
     public function append() {

@@ -43,7 +43,6 @@
     /**
      * Create a message
      *
-     * @access  public
      */
     public function create($reqmsg= NULL) { }
     
@@ -54,17 +53,14 @@
      *   $msg= &XmlRpcMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &webservices.xmlrpc.XmlRpcMessage
      */
-    public static function &fromString($string) { }
+    public static function fromString($string) { }
     
     /**
      * Set encoding
      *
-     * @access  public
      * @param   string encoding
      */
     public function setEncoding($encoding) { }
@@ -72,7 +68,6 @@
     /**
      * Retrieve encoding
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {
@@ -82,7 +77,6 @@
     /**
      * Retrieve Content-type for requests.
      *
-     * @access  public
      * @return  string
      */
     public function getContentType() { return 'text/xml'; }
@@ -90,15 +84,14 @@
     /**
      * Set the data for the message.
      *
-     * @access  public
      * @param   &mixed arr
      */
     public function setData($arr) {
       $encoder= new XmlRpcEncoder();
 
-      $params= &$this->tree->root->addChild(new Node('params'));
+      $params= $this->tree->root->addChild(new Node('params'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
-        $n= &$params->addChild(new Node('param'));
+        $n= $params->addChild(new Node('param'));
         $n->addChild($encoder->encode($arr[$idx]));
       }
     }
@@ -107,7 +100,6 @@
      * Retrieve string representation of message as used in the
      * protocol.
      *
-     * @access  public
      * @return  string
      */
     public function serializeData() {
@@ -117,10 +109,9 @@
     /**
      * Return the data from the message.
      *
-     * @access  public
      * @return  &mixed
      */
-    public function &getData() {
+    public function getData() {
       $ret= array();
       foreach (array_keys($this->tree->root->children) as $idx) {
         if ('params' != $this->tree->root->children[$idx]->getName())
@@ -129,7 +120,7 @@
         // Process params node
         $decoder= new XmlRpcDecoder();
         foreach (array_keys($this->tree->root->children[$idx]->children) as $params) {
-          $ret[]= &$decoder->decode($this->tree->root->children[$idx]->children[$params]->children[0]);
+          $ret[]= $decoder->decode($this->tree->root->children[$idx]->children[$params]->children[0]);
         }
         
         return $ret;
@@ -142,7 +133,6 @@
      * Set a fault for this message. This overwrites any previously set
      * return values.
      *
-     * @access  public
      * @param   int faultcode
      * @param   string faultstring
      */
@@ -159,10 +149,9 @@
     /**
      * Retrieve the fault if there is one.
      *
-     * @access  public
      * @return  &webservices.xmlrpc.XmlRpcFault or NULL if no fault exists
      */
-    public function &getFault() {
+    public function getFault() {
 
       // First check whether the fault-node exists
       if (
@@ -173,7 +162,7 @@
       }
       
       $decoder= new XmlRpcDecoder();
-      $data= &$decoder->decode($this->tree->root->children[0]->children[0]);
+      $data= $decoder->decode($this->tree->root->children[0]->children[0]);
       $f= new XmlRpcFault($data['faultCode'], $data['faultString']);
       return $f;
     }
@@ -181,7 +170,6 @@
     /**
      * Set Class
      *
-     * @access  public
      * @param   string class
      */
     public function setHandlerClass($class) {
@@ -191,7 +179,6 @@
     /**
      * Get Class
      *
-     * @access  public
      * @return  string
      */
     public function getHandlerClass() {
@@ -201,7 +188,6 @@
     /**
      * Set Method
      *
-     * @access  public
      * @param   string method
      */
     public function setMethod($method) {
@@ -211,7 +197,6 @@
     /**
      * Get Method
      *
-     * @access  public
      * @return  string
      */
     public function getMethod() {

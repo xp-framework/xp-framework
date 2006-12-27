@@ -41,13 +41,11 @@
     /**
      * Read from a file
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &img.util.ExifData
      * @throws  img.ImagingException in case extracting data fails
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       if (!($info= exif_read_data($file->getURI()))) {
         throw(new ImagingException(
           'Cannot get EXIF information from '.$file->getURI()
@@ -95,7 +93,6 @@
     /**
      * Set Height
      *
-     * @access  public
      * @param   int height
      */
     public function setHeight($height) {
@@ -105,7 +102,6 @@
     /**
      * Get Height
      *
-     * @access  public
      * @return  int
      */
     public function getHeight() {
@@ -115,7 +111,6 @@
     /**
      * Set Width
      *
-     * @access  public
      * @param   int width
      */
     public function setWidth($width) {
@@ -125,7 +120,6 @@
     /**
      * Get Width
      *
-     * @access  public
      * @return  int
      */
     public function getWidth() {
@@ -135,7 +129,6 @@
     /**
      * Set Make
      *
-     * @access  public
      * @param   string make
      */
     public function setMake($make) {
@@ -145,7 +138,6 @@
     /**
      * Get Make
      *
-     * @access  public
      * @return  string
      */
     public function getMake() {
@@ -155,7 +147,6 @@
     /**
      * Set Model
      *
-     * @access  public
      * @param   string model
      */
     public function setModel($model) {
@@ -165,7 +156,6 @@
     /**
      * Get Model
      *
-     * @access  public
      * @return  string
      */
     public function getModel() {
@@ -175,7 +165,6 @@
     /**
      * Set Flash
      *
-     * @access  public
      * @param   int flash
      */
     public function setFlash($flash) {
@@ -185,7 +174,6 @@
     /**
      * Get Flash
      *
-     * @access  public
      * @return  int
      */
     public function getFlash() {
@@ -195,7 +183,6 @@
     /**
      * Set Orientation
      *
-     * @access  public
      * @param   int orientation
      */
     public function setOrientation($orientation) {
@@ -205,7 +192,6 @@
     /**
      * Get Orientation
      *
-     * @access  public
      * @return  int
      */
     public function getOrientation() {
@@ -215,7 +201,6 @@
     /**
      * Set FileName
      *
-     * @access  public
      * @param   string fileName
      */
     public function setFileName($fileName) {
@@ -225,7 +210,6 @@
     /**
      * Get FileName
      *
-     * @access  public
      * @return  string
      */
     public function getFileName() {
@@ -235,7 +219,6 @@
     /**
      * Set FileSize
      *
-     * @access  public
      * @param   int fileSize
      */
     public function setFileSize($fileSize) {
@@ -245,7 +228,6 @@
     /**
      * Get FileSize
      *
-     * @access  public
      * @return  int
      */
     public function getFileSize() {
@@ -255,7 +237,6 @@
     /**
      * Set MimeType
      *
-     * @access  public
      * @param   string mimeType
      */
     public function setMimeType($mimeType) {
@@ -265,7 +246,6 @@
     /**
      * Get MimeType
      *
-     * @access  public
      * @return  string
      */
     public function getMimeType() {
@@ -275,20 +255,18 @@
     /**
      * Set DateTime
      *
-     * @access  public
      * @param   &util.Date dateTime
      */
-    public function setDateTime(&$dateTime) {
-      $this->dateTime= &$dateTime;
+    public function setDateTime($dateTime) {
+      $this->dateTime= $dateTime;
     }
 
     /**
      * Get DateTime
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDateTime() {
+    public function getDateTime() {
       return $this->dateTime;
     }
     
@@ -296,7 +274,6 @@
      * Retrieve whether the flash was used.
      *
      * @see     http://jalbum.net/forum/thread.jspa?forumID=4&threadID=830&messageID=4438
-     * @access  public
      * @return  bool
      */
     public function flashUsed() {
@@ -307,7 +284,6 @@
      * Returns whether picture is horizontal
      *
      * @see     http://sylvana.net/jpegcrop/exif_orientation.html
-     * @access  public
      * @return  bool
      */
     public function isHorizontal() {
@@ -318,7 +294,6 @@
      * Returns whether picture is vertical
      *
      * @see     http://sylvana.net/jpegcrop/exif_orientation.html
-     * @access  public
      * @return  bool
      */
     public function isVertical() {
@@ -345,7 +320,6 @@
      *   +---------------------------------+-----------------+
      *</pre>
      *
-     * @access  public
      * @return  string
      */
     public function getOrientationString() {
@@ -366,7 +340,6 @@
      * Get degree of rotation (one of 0, 90, 180 or 270)
      *
      * @see     http://sylvana.net/jpegcrop/exif_orientation.html
-     * @access  public
      * @return  int
      */
     public function getRotationDegree() {
@@ -382,7 +355,6 @@
     /**
      * Set ApertureFNumber
      *
-     * @access  public
      * @param   string apertureFNumber
      */
     public function setApertureFNumber($apertureFNumber) {
@@ -392,7 +364,6 @@
     /**
      * Get ApertureFNumber
      *
-     * @access  public
      * @return  string
      */
     public function getApertureFNumber() {
@@ -402,7 +373,6 @@
     /**
      * Set Software
      *
-     * @access  public
      * @param   string software
      */
     public function setSoftware($software) {
@@ -412,7 +382,6 @@
     /**
      * Get Software
      *
-     * @access  public
      * @return  string
      */
     public function getSoftware() {
@@ -422,7 +391,6 @@
     /**
      * Set ExposureTime
      *
-     * @access  public
      * @param   string exposureTime
      */
     public function setExposureTime($exposureTime) {
@@ -432,7 +400,6 @@
     /**
      * Get ExposureTime
      *
-     * @access  public
      * @return  string
      */
     public function getExposureTime() {
@@ -442,7 +409,6 @@
     /**
      * Set ExposureProgram
      *
-     * @access  public
      * @param   int exposureProgram
      */
     public function setExposureProgram($exposureProgram) {
@@ -452,7 +418,6 @@
     /**
      * Get ExposureProgram
      *
-     * @access  public
      * @return  int
      */
     public function getExposureProgram() {
@@ -462,7 +427,6 @@
     /**
      * Get String describing exposureProgram value.
      *
-     * @access  public
      * @return  string
      */
     public function getExposureProgramString() {
@@ -487,7 +451,6 @@
     /**
      * Set MeteringMode
      *
-     * @access  public
      * @param   int meteringMode
      */
     public function setMeteringMode($meteringMode) {
@@ -497,7 +460,6 @@
     /**
      * Get MeteringMode
      *
-     * @access  public
      * @return  int
      */
     public function getMeteringMode() {
@@ -507,7 +469,6 @@
     /**
      * Get string describing meteringMode value.
      *
-     * @access  public
      * @return  string
      */
     public function getMeteringModeString() {
@@ -531,7 +492,6 @@
     /**
      * Set Whitebalance
      *
-     * @access  public
      * @param   int whitebalance
      */
     public function setWhitebalance($whitebalance) {
@@ -542,7 +502,6 @@
      * Get Whitebalance.
      * Values are 0 = auto white balance, 1 = manual white balance.
      *
-     * @access  public
      * @return  int
      */
     public function getWhitebalance() {
@@ -552,7 +511,6 @@
     /**
      * Set IsoSpeedRatings
      *
-     * @access  public
      * @param   int isoSpeedRatings
      */
     public function setIsoSpeedRatings($isoSpeedRatings) {
@@ -562,7 +520,6 @@
     /**
      * Get IsoSpeedRatings
      *
-     * @access  public
      * @return  int
      */
     public function getIsoSpeedRatings() {
@@ -572,10 +529,9 @@
     /**
      * Get Thumbnail
      *
-     * @access  public
      * @return  &img.Image  
      */
-    public function &getThumbnail() {
+    public function getThumbnail() {
       $s= new Stream();
       $s->open(STREAM_MODE_WRITE);
       $s->write(exif_thumbnail($this->getFilename()));
@@ -586,7 +542,6 @@
     /**
      * Retrieve a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

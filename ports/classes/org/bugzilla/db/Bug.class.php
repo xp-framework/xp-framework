@@ -46,11 +46,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &Bug::getPeer()); {
+      with ($peer= Bug::getPeer()); {
         $peer->setTable('bugs');
         $peer->setConnection('bugzilla');
         $peer->setIdentity('bug_id');
@@ -91,225 +89,207 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int bug_id
      * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_id($bug_id) {
-      $peer= &Bug::getPeer();
+    public function getByBug_id($bug_id) {
+      $peer= Bug::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "alias"
      *
-     * @access  static
      * @param   string alias
      * @return  &org.bugzilla.db.Bug object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByAlias($alias) {
-      $peer= &Bug::getPeer();
+    public function getByAlias($alias) {
+      $peer= Bug::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('alias', $alias, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "assigned_to"
      *
-     * @access  static
      * @param   int assigned_to
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByAssigned_to($assigned_to) {
-      $peer= &Bug::getPeer();
+    public function getByAssigned_to($assigned_to) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('assigned_to', $assigned_to, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "creation_ts"
      *
-     * @access  static
      * @param   util.Date creation_ts
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByCreation_ts($creation_ts) {
-      $peer= &Bug::getPeer();
+    public function getByCreation_ts($creation_ts) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('creation_ts', $creation_ts, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "delta_ts"
      *
-     * @access  static
      * @param   util.Date delta_ts
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByDelta_ts($delta_ts) {
-      $peer= &Bug::getPeer();
+    public function getByDelta_ts($delta_ts) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('delta_ts', $delta_ts, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "bug_severity"
      *
-     * @access  static
      * @param   string bug_severity
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_severity($bug_severity) {
-      $peer= &Bug::getPeer();
+    public function getByBug_severity($bug_severity) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('bug_severity', $bug_severity, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "bug_status"
      *
-     * @access  static
      * @param   string bug_status
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_status($bug_status) {
-      $peer= &Bug::getPeer();
+    public function getByBug_status($bug_status) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('bug_status', $bug_status, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "op_sys"
      *
-     * @access  static
      * @param   string op_sys
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByOp_sys($op_sys) {
-      $peer= &Bug::getPeer();
+    public function getByOp_sys($op_sys) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('op_sys', $op_sys, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "priority"
      *
-     * @access  static
      * @param   string priority
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByPriority($priority) {
-      $peer= &Bug::getPeer();
+    public function getByPriority($priority) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('priority', $priority, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "reporter"
      *
-     * @access  static
      * @param   int reporter
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByReporter($reporter) {
-      $peer= &Bug::getPeer();
+    public function getByReporter($reporter) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('reporter', $reporter, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "version"
      *
-     * @access  static
      * @param   string version
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByVersion($version) {
-      $peer= &Bug::getPeer();
+    public function getByVersion($version) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('version', $version, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "resolution"
      *
-     * @access  static
      * @param   string resolution
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByResolution($resolution) {
-      $peer= &Bug::getPeer();
+    public function getByResolution($resolution) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('resolution', $resolution, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "votes"
      *
-     * @access  static
      * @param   int votes
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByVotes($votes) {
-      $peer= &Bug::getPeer();
+    public function getByVotes($votes) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('votes', $votes, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "product_id"
      *
-     * @access  static
      * @param   string product_id
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByProduct_id($product_id) {
-      $peer= &Bug::getPeer();
+    public function getByProduct_id($product_id) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('product_id', $product_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "component_id"
      *
-     * @access  static
      * @param   string component_id
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByComponent_id($component_id) {
-      $peer= &Bug::getPeer();
+    public function getByComponent_id($component_id) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('component_id', $component_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "short_desc"
      *
-     * @access  static
      * @param   string short_desc
      * @return  &org.bugzilla.db.Bug[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByShort_desc($short_desc) {
-      $peer= &Bug::getPeer();
+    public function getByShort_desc($short_desc) {
+      $peer= Bug::getPeer();
       return $peer->doSelect(new Criteria(array('short_desc', $short_desc, EQUAL)));
     }
 
     /**
      * Retrieves bug_id
      *
-     * @access  public
      * @return  int
      */
     public function getBug_id() {
@@ -319,7 +299,6 @@
     /**
      * Sets bug_id
      *
-     * @access  public
      * @param   int bug_id
      * @return  int the previous value
      */
@@ -330,7 +309,6 @@
     /**
      * Retrieves assigned_to
      *
-     * @access  public
      * @return  int
      */
     public function getAssigned_to() {
@@ -340,7 +318,6 @@
     /**
      * Sets assigned_to
      *
-     * @access  public
      * @param   int assigned_to
      * @return  int the previous value
      */
@@ -351,7 +328,6 @@
     /**
      * Retrieves bug_file_loc
      *
-     * @access  public
      * @return  string
      */
     public function getBug_file_loc() {
@@ -361,7 +337,6 @@
     /**
      * Sets bug_file_loc
      *
-     * @access  public
      * @param   string bug_file_loc
      * @return  string the previous value
      */
@@ -372,7 +347,6 @@
     /**
      * Retrieves bug_severity
      *
-     * @access  public
      * @return  string
      */
     public function getBug_severity() {
@@ -382,7 +356,6 @@
     /**
      * Sets bug_severity
      *
-     * @access  public
      * @param   string bug_severity
      * @return  string the previous value
      */
@@ -393,7 +366,6 @@
     /**
      * Retrieves bug_status
      *
-     * @access  public
      * @return  string
      */
     public function getBug_status() {
@@ -403,7 +375,6 @@
     /**
      * Sets bug_status
      *
-     * @access  public
      * @param   string bug_status
      * @return  string the previous value
      */
@@ -414,49 +385,44 @@
     /**
      * Retrieves creation_ts
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getCreation_ts() {
+    public function getCreation_ts() {
       return $this->creation_ts;
     }
       
     /**
      * Sets creation_ts
      *
-     * @access  public
      * @param   &util.Date creation_ts
      * @return  &util.Date the previous value
      */
-    public function &setCreation_ts(&$creation_ts) {
+    public function setCreation_ts($creation_ts) {
       return $this->_change('creation_ts', $creation_ts);
     }
 
     /**
      * Retrieves delta_ts
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDelta_ts() {
+    public function getDelta_ts() {
       return $this->delta_ts;
     }
       
     /**
      * Sets delta_ts
      *
-     * @access  public
      * @param   &util.Date delta_ts
      * @return  &util.Date the previous value
      */
-    public function &setDelta_ts(&$delta_ts) {
+    public function setDelta_ts($delta_ts) {
       return $this->_change('delta_ts', $delta_ts);
     }
 
     /**
      * Retrieves short_desc
      *
-     * @access  public
      * @return  string
      */
     public function getShort_desc() {
@@ -466,7 +432,6 @@
     /**
      * Sets short_desc
      *
-     * @access  public
      * @param   string short_desc
      * @return  string the previous value
      */
@@ -477,7 +442,6 @@
     /**
      * Retrieves op_sys
      *
-     * @access  public
      * @return  string
      */
     public function getOp_sys() {
@@ -487,7 +451,6 @@
     /**
      * Sets op_sys
      *
-     * @access  public
      * @param   string op_sys
      * @return  string the previous value
      */
@@ -498,7 +461,6 @@
     /**
      * Retrieves priority
      *
-     * @access  public
      * @return  string
      */
     public function getPriority() {
@@ -508,7 +470,6 @@
     /**
      * Sets priority
      *
-     * @access  public
      * @param   string priority
      * @return  string the previous value
      */
@@ -519,7 +480,6 @@
     /**
      * Retrieves rep_platform
      *
-     * @access  public
      * @return  string
      */
     public function getRep_platform() {
@@ -529,7 +489,6 @@
     /**
      * Sets rep_platform
      *
-     * @access  public
      * @param   string rep_platform
      * @return  string the previous value
      */
@@ -540,7 +499,6 @@
     /**
      * Retrieves reporter
      *
-     * @access  public
      * @return  int
      */
     public function getReporter() {
@@ -550,7 +508,6 @@
     /**
      * Sets reporter
      *
-     * @access  public
      * @param   int reporter
      * @return  int the previous value
      */
@@ -561,7 +518,6 @@
     /**
      * Retrieves version
      *
-     * @access  public
      * @return  string
      */
     public function getVersion() {
@@ -571,7 +527,6 @@
     /**
      * Sets version
      *
-     * @access  public
      * @param   string version
      * @return  string the previous value
      */
@@ -582,7 +537,6 @@
     /**
      * Retrieves resolution
      *
-     * @access  public
      * @return  string
      */
     public function getResolution() {
@@ -592,7 +546,6 @@
     /**
      * Sets resolution
      *
-     * @access  public
      * @param   string resolution
      * @return  string the previous value
      */
@@ -603,7 +556,6 @@
     /**
      * Retrieves target_milestone
      *
-     * @access  public
      * @return  string
      */
     public function getTarget_milestone() {
@@ -613,7 +565,6 @@
     /**
      * Sets target_milestone
      *
-     * @access  public
      * @param   string target_milestone
      * @return  string the previous value
      */
@@ -624,7 +575,6 @@
     /**
      * Retrieves qa_contact
      *
-     * @access  public
      * @return  int
      */
     public function getQa_contact() {
@@ -634,7 +584,6 @@
     /**
      * Sets qa_contact
      *
-     * @access  public
      * @param   int qa_contact
      * @return  int the previous value
      */
@@ -645,7 +594,6 @@
     /**
      * Retrieves status_whiteboard
      *
-     * @access  public
      * @return  string
      */
     public function getStatus_whiteboard() {
@@ -655,7 +603,6 @@
     /**
      * Sets status_whiteboard
      *
-     * @access  public
      * @param   string status_whiteboard
      * @return  string the previous value
      */
@@ -666,7 +613,6 @@
     /**
      * Retrieves votes
      *
-     * @access  public
      * @return  int
      */
     public function getVotes() {
@@ -676,7 +622,6 @@
     /**
      * Sets votes
      *
-     * @access  public
      * @param   int votes
      * @return  int the previous value
      */
@@ -687,7 +632,6 @@
     /**
      * Retrieves keywords
      *
-     * @access  public
      * @return  string
      */
     public function getKeywords() {
@@ -697,7 +641,6 @@
     /**
      * Sets keywords
      *
-     * @access  public
      * @param   string keywords
      * @return  string the previous value
      */
@@ -708,28 +651,25 @@
     /**
      * Retrieves lastdiffed
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getLastdiffed() {
+    public function getLastdiffed() {
       return $this->lastdiffed;
     }
       
     /**
      * Sets lastdiffed
      *
-     * @access  public
      * @param   &util.Date lastdiffed
      * @return  &util.Date the previous value
      */
-    public function &setLastdiffed(&$lastdiffed) {
+    public function setLastdiffed($lastdiffed) {
       return $this->_change('lastdiffed', $lastdiffed);
     }
 
     /**
      * Retrieves everconfirmed
      *
-     * @access  public
      * @return  int
      */
     public function getEverconfirmed() {
@@ -739,7 +679,6 @@
     /**
      * Sets everconfirmed
      *
-     * @access  public
      * @param   int everconfirmed
      * @return  int the previous value
      */
@@ -750,7 +689,6 @@
     /**
      * Retrieves reporter_accessible
      *
-     * @access  public
      * @return  int
      */
     public function getReporter_accessible() {
@@ -760,7 +698,6 @@
     /**
      * Sets reporter_accessible
      *
-     * @access  public
      * @param   int reporter_accessible
      * @return  int the previous value
      */
@@ -771,7 +708,6 @@
     /**
      * Retrieves cclist_accessible
      *
-     * @access  public
      * @return  int
      */
     public function getCclist_accessible() {
@@ -781,7 +717,6 @@
     /**
      * Sets cclist_accessible
      *
-     * @access  public
      * @param   int cclist_accessible
      * @return  int the previous value
      */
@@ -792,7 +727,6 @@
     /**
      * Retrieves estimated_time
      *
-     * @access  public
      * @return  string
      */
     public function getEstimated_time() {
@@ -802,7 +736,6 @@
     /**
      * Sets estimated_time
      *
-     * @access  public
      * @param   string estimated_time
      * @return  string the previous value
      */
@@ -813,7 +746,6 @@
     /**
      * Retrieves remaining_time
      *
-     * @access  public
      * @return  string
      */
     public function getRemaining_time() {
@@ -823,7 +755,6 @@
     /**
      * Sets remaining_time
      *
-     * @access  public
      * @param   string remaining_time
      * @return  string the previous value
      */
@@ -834,7 +765,6 @@
     /**
      * Retrieves alias
      *
-     * @access  public
      * @return  string
      */
     public function getAlias() {
@@ -844,7 +774,6 @@
     /**
      * Sets alias
      *
-     * @access  public
      * @param   string alias
      * @return  string the previous value
      */
@@ -855,7 +784,6 @@
     /**
      * Retrieves product_id
      *
-     * @access  public
      * @return  string
      */
     public function getProduct_id() {
@@ -865,7 +793,6 @@
     /**
      * Sets product_id
      *
-     * @access  public
      * @param   string product_id
      * @return  string the previous value
      */
@@ -876,7 +803,6 @@
     /**
      * Retrieves component_id
      *
-     * @access  public
      * @return  string
      */
     public function getComponent_id() {
@@ -886,7 +812,6 @@
     /**
      * Sets component_id
      *
-     * @access  public
      * @param   string component_id
      * @return  string the previous value
      */

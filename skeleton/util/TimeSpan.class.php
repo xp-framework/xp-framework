@@ -18,7 +18,6 @@
     /**
      * Contructor
      *
-     * @access  public
      * @param   int secs - an amount of seconds, absolute value is used
      * @throws  lang.IllegalArgumentException in case the value given is not numeric
      */
@@ -35,7 +34,6 @@
     /**
      * returns this span of time in seconds
      *
-     * @access  public
      * @return  int
      */
     public function getSeconds() {
@@ -46,7 +44,6 @@
      * returns the amount of 'whole' seconds in this 
      * span of time
      *
-     * @access  public
      * @return  int
      */
     public function getWholeSeconds() {
@@ -61,7 +58,6 @@
      * returns an amount of minutes less than or equal
      * to this span of time
      *
-     * @access  public
      * @return  int
      */
     public function getMinutes() {
@@ -72,7 +68,6 @@
      * returns a float value representing this span of time
      * in minutes
      *
-     * @access  public
      * @return  float
      */
     public function getMinutesFloat() {
@@ -83,7 +78,6 @@
      * returns the amount of 'whole' minutes in this 
      * span of time
      *
-     * @access  public
      * @return  int
      */
     public function getWholeMinutes() {
@@ -96,7 +90,6 @@
     /**
      * adds an amount of minutes to this span of time
      *
-     * @access  public
      * @param   int mins
      */
     public function addMinutes($mins) {
@@ -107,7 +100,6 @@
      * returns an amount of hours less than or equal
      * to this span of time
      *
-     * @access  public
      * @return  int
      */
     public function getHours() {
@@ -118,7 +110,6 @@
      * returns a float value representing this span of time
      * in hours
      *
-     * @access  public
      * @return  float
      */
     public function getHoursFloat() {
@@ -129,7 +120,6 @@
      * returns the amount of 'whole' hours in this 
      * span of time
      *
-     * @access  public
      * @return  int
      */
     public function getWholeHours() {
@@ -141,7 +131,6 @@
     /**
      * adds an amount of Hours to this span of time
      *
-     * @access  public
      * @param   int hours
      */
     public function addHours($hours) {
@@ -152,7 +141,6 @@
      * returns an amount of days less than or equal
      * to this span of time
      *
-     * @access  public
      * @return  int
      */
     public function getDays() {
@@ -163,7 +151,6 @@
      * returns a float value representing this span of time
      * in days
      *
-     * @access  public
      * @return  float
      */
     public function getDaysFloat() {
@@ -174,7 +161,6 @@
      * returns the amount of 'whole' days in this 
      * span of time
      *
-     * @access  public
      * @return  int
      */
     public function getWholeDays() {
@@ -184,7 +170,6 @@
     /**
      * adds an amount of Days to this span of time
      *
-     * @access  public
      * @param   int days
      */
     public function addDays($days) {
@@ -209,7 +194,6 @@
      * %e   - 'whole' days
      * </pre>
      *
-     * @access  public
      * @param   string format
      * @return  string the formatted timespan
      */
@@ -266,7 +250,6 @@
     /**
      * creates a string representation
      *
-     * @access  public
      * @see     xp://util.TimeSpan#format
      * @param   string format, defaults to '%ed, %yh, %jm, %ws'
      * @return  string

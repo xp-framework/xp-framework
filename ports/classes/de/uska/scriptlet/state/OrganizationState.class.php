@@ -16,11 +16,10 @@
     /**
      * Retrieve parent category's ID
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  int
      */
-    public function getParentCategory(&$request) {
+    public function getParentCategory($request) {
       switch ($request->getQueryString()) {
         case 'application': return 3;
         case 'imprint': return 5;
@@ -37,7 +36,7 @@
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &rdbms.ResultSet
      */
-    public function &getEntries(&$db, &$request) {
+    public function getEntries($db, $request) {
       return $db->query('
         select 
           entry.id as id,

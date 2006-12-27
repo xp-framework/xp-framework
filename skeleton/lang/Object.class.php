@@ -18,7 +18,6 @@
     /**
      * Constructor wrapper 
      * 
-     * @access  private
      */
     public function __construct() {
       $this->__id= microtime();
@@ -27,7 +26,6 @@
     /**
      * Cloning handler
      *
-     * @access  public
      */
     public function __clone() {
       $this->__id= microtime();
@@ -36,7 +34,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -47,11 +44,10 @@
     /**
      * Indicates whether some other object is "equal to" this one.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return $this === $cmp;
     }
     
@@ -59,7 +55,6 @@
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
      * 
-     * @access  public
      * @return  string fully qualified class name
      */
     public function getClassName() {
@@ -69,11 +64,10 @@
     /**
      * Returns the runtime class of an object.
      *
-     * @access  public
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    public function &getClass() {
+    public function getClass() {
       $c= new XPClass($this);
       return $c;
     }
@@ -96,7 +90,6 @@
      *   }
      * </xmp>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

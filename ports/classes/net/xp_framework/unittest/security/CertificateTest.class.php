@@ -19,7 +19,6 @@
     /**
      * Set up this testcase
      *
-     * @access  public
      */
     public function setUp() {
       if (!extension_loaded('openssl')) {
@@ -34,7 +33,6 @@
     /**
      * Test an X.509 certificate
      *
-     * @access  public
      */
     #[@test]
     public function testX509Certificate() {
@@ -42,7 +40,7 @@
       $eissuer= '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#';
       $ehash= 'f2473bfa';
       try {
-        $x509= &X509Certificate::fromString(<<<EOC
+        $x509= X509Certificate::fromString(<<<EOC
 -----BEGIN CERTIFICATE-----
 MIICtDCCAh2gAwIBAwIBADANBgkqhkiG9w0BAQQFADCBnzELMAkGA1UEBhMCREUx
 GjAYBgNVBAgUEUJhZGVuLVf8cnR0ZW1iZXJnMRIwEAYDVQQHEwlLYXJsc3J1aGUx
@@ -66,8 +64,8 @@ EOC
         return $this->fail($e->getClassName(), $e->getMessage(), 'fromstring');
       }
 
-      $subject= &$x509->getSubjectDN();
-      $issuer= &$x509->getIssuerDN();
+      $subject= $x509->getSubjectDN();
+      $issuer= $x509->getIssuerDN();
       $this->assertMatches($subject->getName(), $esubject, 'subject');
       $this->assertMatches($issuer->getName(), $eissuer, 'issuer');
       $this->assertEquals($x509->getHash(), $ehash, 'hash');

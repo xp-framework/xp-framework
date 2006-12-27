@@ -37,31 +37,28 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.collections.IOCollection collection
      * @param   &io.collections.iterate.Filter filter
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    public function __construct(&$collection, &$filter, $recursive= FALSE) {
+    public function __construct($collection, $filter, $recursive= FALSE) {
       parent::__construct($collection, $recursive);
-      $this->filter= &$filter;
+      $this->filter= $filter;
     }
     
     /**
      * Whether to accept a specific element
      *
-     * @access  protected
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function acceptElement(&$element) {
+    public function acceptElement($element) {
       return $this->filter->accept($element);
     }
     
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

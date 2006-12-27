@@ -17,33 +17,30 @@
     /**
      * Initialize this protocol handler
      *
-     * @access  public
      * @param   &peer.URL proxy
      * @throws  remote.RemoteException
      */
-    public function initialize(&$proxy);
+    public function initialize($proxy);
     
     /**
      * Look up an object by its name
      *
-     * @access  public
      * @param   string name
      * @param   &lang.Object
      * @throws  remote.RemoteException
      */
-    public function &lookup($name);
+    public function lookup($name);
 
     /**
      * Invoke a method on a given object id with given method name
      * and given arguments
      *
-     * @access  public
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
      * @return  &mixed
      * @throws  remote.RemoteException
      */
-    public function &invoke($oid, $method, $args);
+    public function invoke($oid, $method, $args);
   }
 ?>

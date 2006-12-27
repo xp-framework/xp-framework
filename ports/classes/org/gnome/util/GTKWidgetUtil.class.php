@@ -7,7 +7,6 @@
   /**
    * Widget utility class
    *
-   * @model static
    */
   class GTKWidgetUtil extends Object {
   
@@ -22,26 +21,25 @@
      *   ));
      * </pre>
      *
-     * @access  public
      * @param   &GtkWidget widget
      * @param   array signals an associative array
      * @see     php-gtk://GtkObject%3A%3Aconnect
      * @see     php-gtk://GtkObject%3A%3Aconnect_after
      */
-    public function connect(&$widget, $signals) {
+    public function connect($widget, $signals) {
       foreach (array_keys($signals) as $key) {
         list($mode, $signal)= explode(':', $key);
         
         switch (sizeof($signals[$key])) {
           case 1:                           // 'function'
           case 2:                           // array(&$this, 'function')
-            $handler= &$signals[$key]; 
+            $handler= $signals[$key]; 
             $val= NULL; 
             break;
             
           case 3:                           // array(&$this, 'function', &$custom)
-            $handler= array(&$signals[$key][0], &$signals[$key][1]);
-            $val= &$signals[$key][2];  
+            $handler= array($signals[$key][0], $signals[$key][1]);
+            $val= $signals[$key][2];  
             break;
         }
         
@@ -59,17 +57,16 @@
     /**
      * Connects a list of signals to a widget's children 
      *
-     * @access  public
      * @param   &GtkWidget widget
      * @see     #connect
      */
-    public function connectChildren(&$widget, $signals) {
+    public function connectChildren($widget, $signals) {
       foreach ($widget->children() as $child) {
         GTKWidgetUtil::connect($child, $signals);
       }
     }
     
-    public function setChildrenSensitive(&$widget, $sensitivity) {
+    public function setChildrenSensitive($widget, $sensitivity) {
       foreach ($widget->children() as $child) {
         if (!isset($sensitivity[$name= $child->get_name()])) continue;
         $child->set_sensitive($sensitivity[$name]);

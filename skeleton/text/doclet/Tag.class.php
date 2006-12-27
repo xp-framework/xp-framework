@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string text
      */
@@ -34,7 +33,6 @@
     /**
      * Return the name of this tag.
      *
-     * @access  public
      * @return  string
      */
     public function name() {
@@ -44,7 +42,6 @@
     /**
      * Return the text of this tag, that is, portion beyond tag name.
      *
-     * @access  public
      * @return  string
      */
     public function text() {

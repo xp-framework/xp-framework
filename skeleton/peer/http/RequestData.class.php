@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string buf
      */
     public function __construct($buf) {
@@ -28,7 +27,6 @@
     /**
      * Retrieve data
      *
-     * @access  public
      * @return  string
      */
     public function getData() {

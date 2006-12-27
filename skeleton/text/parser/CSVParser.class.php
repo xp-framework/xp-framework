@@ -25,12 +25,11 @@
     /**
      * Tokenizes a string according to our needs.
      *
-     * @access  private
      * @param   &string string string to take token of
      * @param   string delim delimiter
      * @return  string token
      */
-    public function _strtok(&$string, $delim) {
+    public function _strtok($string, $delim) {
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
@@ -51,16 +50,15 @@
      * Sets the input stream. This stream must support
      * isOpen(), open(), eof(), readLine().
      *
-     * @access  public
      * @param   Stream stream
      */    
-    public function setInputStream(&$stream) {
+    public function setInputStream($stream) {
       try {
         if (!$stream->isOpen()) $stream->open();
       } catch (IOException $e) {
         throw ($e);
       }
-      $this->stream= &$stream;
+      $this->stream= $stream;
     }
     
     /**
@@ -69,7 +67,6 @@
      * as delimiter. It only makes sense to call this before any
      * line was read.
      *
-     * @access  public
      * @param   string delimiter delimiter to set
      */
     public function setColDelimiter($delim) {
@@ -83,7 +80,6 @@
      * is in a certain range of chars).
      * Afterwards the stream is rewinded to the former position.
      *
-     * @access  public
      * @return  string guesseddelimiter
      */
     public function guessDelimiter() {
@@ -113,7 +109,6 @@
      * an header record is available, so this has to be decided by
      * the calling program (or user).
      *
-     * @access  public
      * @return  bool hasHeader TRUE, if header is available
      */
     public function hasHeader() {
@@ -125,7 +120,6 @@
      * If not existColumn return FALSE, otherwise the index
      * of the column.
      *
-     * @access  public
      * @param   string columnname
      * @return  int columnindex
      */    
@@ -139,10 +133,9 @@
      * exactly one record in the buffer.
      * This function affects the member buffer.
      *
-     * @access  private
      * @return  string buffer
      */    
-    public function &_getNextRecord() {
+    public function _getNextRecord() {
       try {
         if ($this->stream->eof()) return FALSE;
 
@@ -164,7 +157,6 @@
      * quotedness of the data, and de-escapes any escaped chars.
      * It also removes the parsed cell from the internal buffer.
      *
-     * @access  private
      * @return  string buffer
      */
     public function _parseColumn() {
@@ -197,7 +189,6 @@
     /**
      * Read the record and save the result as the header record.
      *
-     * @access  public
      */    
     public function getHeaderRecord() {
       $this->colName= $this->getNextRecord();
@@ -207,7 +198,6 @@
      * Manually set the header information to be able to supply
      * additional information and get nicer output (non-enumerated)
      *
-     * @access  public
      * @param   array headers
      */    
     public function setHeaderRecord($headers) {
@@ -217,7 +207,6 @@
     /**
      * Retrieves the name of a column if one is available
      *
-     * @access  public
      * @param   int number
      * @return  string name or FALSE if none is available
      */
@@ -234,7 +223,6 @@
      * record supposes. When no header was available, the
      * fields are enumerated.
      *
-     * @access  public
      * @return  array data
      * @throws  io.IOException if stream operation failed
      */    

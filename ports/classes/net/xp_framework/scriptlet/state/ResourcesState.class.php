@@ -16,7 +16,6 @@
     /**
      * Retrieve parent category's ID
      *
-     * @access  public
      * @return  int
      */
     public function getParentCategory() {
@@ -26,12 +25,11 @@
     /**
      * Retrieve entries
      *
-     * @access  protected
      * @param   &rdbms.DBConnection db
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &rdbms.ResultSet
      */
-    public function &getEntries(&$db, &$request) { 
+    public function getEntries($db, $request) { 
       return $db->query('
         select 
           entry.id as id,

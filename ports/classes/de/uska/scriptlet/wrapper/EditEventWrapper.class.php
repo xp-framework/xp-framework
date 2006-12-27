@@ -26,7 +26,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -130,7 +129,6 @@
     /**
      * Returns the value of the parameter event_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_id() {
@@ -140,7 +138,6 @@
     /**
      * Returns the value of the parameter team
      *
-     * @access  public
      * @return  int
      */
     public function getTeam() {
@@ -150,7 +147,6 @@
     /**
      * Returns the value of the parameter event_type
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_type() {
@@ -160,7 +156,6 @@
     /**
      * Returns the value of the parameter name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -170,7 +165,6 @@
     /**
      * Returns the value of the parameter description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -180,7 +174,6 @@
     /**
      * Returns the value of the parameter target_date
      *
-     * @access  public
      * @return  string
      */
     public function getTarget_date() {
@@ -190,7 +183,6 @@
     /**
      * Returns the value of the parameter target_time
      *
-     * @access  public
      * @return  string
      */
     public function getTarget_time() {
@@ -200,7 +192,6 @@
     /**
      * Returns the value of the parameter deadline_date
      *
-     * @access  public
      * @return  string
      */
     public function getDeadline_date() {
@@ -210,7 +201,6 @@
     /**
      * Returns the value of the parameter deadline_time
      *
-     * @access  public
      * @return  string
      */
     public function getDeadline_time() {
@@ -220,7 +210,6 @@
     /**
      * Returns the value of the parameter max
      *
-     * @access  public
      * @return  int
      */
     public function getMax() {
@@ -230,7 +219,6 @@
     /**
      * Returns the value of the parameter req
      *
-     * @access  public
      * @return  int
      */
     public function getReq() {
@@ -240,7 +228,6 @@
     /**
      * Returns the value of the parameter guests
      *
-     * @access  public
      * @return  boolean
      */
     public function getGuests() {

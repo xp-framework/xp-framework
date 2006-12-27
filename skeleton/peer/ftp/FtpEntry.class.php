@@ -27,7 +27,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -43,7 +42,6 @@
      *   rw-r--r--  # 644
      * </pre>
      *
-     * @access  public
      * @param   mixed perm
      * @throws  lang.IllegalArgumentException
      */
@@ -66,7 +64,6 @@
     /**
      * Get Permissions
      *
-     * @access  public
      * @return  int
      */
     public function getPermissions() {
@@ -76,7 +73,6 @@
     /**
      * Set Numlinks
      *
-     * @access  public
      * @param   int numlinks
      */
     public function setNumlinks($numlinks) {
@@ -86,7 +82,6 @@
     /**
      * Get Numlinks
      *
-     * @access  public
      * @return  int
      */
     public function getNumlinks() {
@@ -96,7 +91,6 @@
     /**
      * Set User
      *
-     * @access  public
      * @param   string user
      */
     public function setUser($user) {
@@ -106,7 +100,6 @@
     /**
      * Get User
      *
-     * @access  public
      * @return  string
      */
     public function getUser() {
@@ -116,7 +109,6 @@
     /**
      * Set Group
      *
-     * @access  public
      * @param   string group
      */
     public function setGroup($group) {
@@ -126,7 +118,6 @@
     /**
      * Get Group
      *
-     * @access  public
      * @return  string
      */
     public function getGroup() {
@@ -136,7 +127,6 @@
     /**
      * Set Size
      *
-     * @access  public
      * @param   int size
      */
     public function setSize($size) {
@@ -146,7 +136,6 @@
     /**
      * Get Size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {
@@ -156,27 +145,24 @@
     /**
      * Set Date
      *
-     * @access  public
      * @param   &util.Date date
      */
-    public function setDate(&$date) {
-      $this->date= &$date;
+    public function setDate($date) {
+      $this->date= $date;
     }
 
     /**
      * Get Date
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
 
     /**
      * Set Name
      *
-     * @access  public
      * @param   mixed name
      */
     public function setName($name) {
@@ -186,7 +172,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -196,7 +181,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

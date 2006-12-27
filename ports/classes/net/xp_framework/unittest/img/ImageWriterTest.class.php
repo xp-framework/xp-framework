@@ -27,17 +27,17 @@
     /**
      * Setup this test. Creates a 1x1 pixel image filled with white.
      *
-     * @access  public
      */
     public function setUp() {
-      $this->image= &Image::create(1, 1);
+      if (!extension_loaded('gd')) throw new PrerequisitesNotMetError('GD extension not available');
+
+      $this->image= Image::create(1, 1);
       $this->image->fill($this->image->allocate(new Color('#ffffff')));
     }
   
     /**
      * Tears down this test
      *
-     * @access  public
      */
     public function tearDown() {
       delete($this->image);
@@ -47,7 +47,6 @@
      * Writes the image to a GIF
      *
      * @see     xp://img.io.GifStreamWriter
-     * @access  public
      */
     #[@test]
     public function writeGif() {
@@ -60,7 +59,6 @@
      * Writes the image to a JPEG
      *
      * @see     xp://img.io.GifStreamWriter
-     * @access  public
      */
     #[@test]
     public function writeJpeg() {
@@ -73,7 +71,6 @@
      * Writes the image to a GIF
      *
      * @see     xp://img.io.GifStreamWriter
-     * @access  public
      */
     #[@test]
     public function writePng() {

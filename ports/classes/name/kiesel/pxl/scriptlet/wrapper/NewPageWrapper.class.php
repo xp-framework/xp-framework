@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -70,7 +69,6 @@
     /**
      * Returns the value of the parameter name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -80,7 +78,6 @@
     /**
      * Returns the value of the parameter description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -90,7 +87,6 @@
     /**
      * Returns the value of the parameter file
      *
-     * @access  public
      * @return  string
      */
     public function getFile() {
@@ -100,7 +96,6 @@
     /**
      * Returns the value of the parameter online
      *
-     * @access  public
      * @return  boolean
      */
     public function getOnline() {
@@ -110,7 +105,6 @@
     /**
      * Returns the value of the parameter tags
      *
-     * @access  public
      * @return  string
      */
     public function getTags() {

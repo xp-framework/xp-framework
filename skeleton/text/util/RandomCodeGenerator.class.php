@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int length default 16
      */
     public function __construct($length= 16) {
@@ -31,7 +30,6 @@
     /**
      * Generate
      *
-     * @access  public
      * @return  string
      */
     public function generate() {

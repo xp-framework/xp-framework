@@ -18,23 +18,21 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.DateFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('DateFormat');
     }  
 
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      * @throws  lang.FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       switch (gettype($argument)) {
         case 'string':
           if (-1 == ($u= strtotime($argument))) {

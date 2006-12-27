@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string data
      */
     public function setResponse($data) {
@@ -32,10 +31,9 @@
     /**
      * Send request
      *
-     * @access  public
      * @return  &peer.http.HttpResponse response object
      */
-    public function &send($timeout= 60) {
+    public function send($timeout= 60) {
       return new HttpResponse(new DummySocket($this->_response));
     }
   }

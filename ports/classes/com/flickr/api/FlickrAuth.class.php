@@ -19,7 +19,6 @@
     /**
      * Set Frob
      *
-     * @access  public
      * @param   string frob
      */
     public function setFrobValue($frob) {
@@ -29,7 +28,6 @@
     /**
      * Get Frob
      *
-     * @access  public
      * @return  string
      */
     public function getFrobValue() {
@@ -39,7 +37,6 @@
     /**
      * Set Token
      *
-     * @access  public
      * @param   string token
      */
     public function setTokenValue($token) {
@@ -49,7 +46,6 @@
     /**
      * Get Token
      *
-     * @access  public
      * @return  string
      */
     public function getTokenValue() {
@@ -59,10 +55,9 @@
     /**
      * Get FROB
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.Client client
      */
-    public function getFrob(&$client) {
+    public function getFrob($client) {
       $res= $client->invoke('flickr.auth.getFrob', array(
         'perms' => 'read'
       ));
@@ -72,11 +67,10 @@
     /**
      * Get FROB URL
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.Client client
      * @return  string url
      */
-    public function getFrobURL(&$client) {
+    public function getFrobURL($client) {
       $arguments= array(
         'frob'  => $this->getFrobValue(),
         'perms' => 'read'
@@ -92,11 +86,10 @@
     /**
      * Get token
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.Client client
      * @return  mixed
      */
-    public function getToken(&$client) {
+    public function getToken($client) {
       $res= $client->invoke('flickr.auth.getToken', array(
         'frob'  => $this->getFrobValue()
       ));

@@ -22,13 +22,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.ResultSet rs
      * @param   string identifier
      * @see     xp://rdbms.Peer#iteratorFor
      */
-    public function __construct(&$rs, $identifier) {
-      $this->_rs= &$rs;
+    public function __construct($rs, $identifier) {
+      $this->_rs= $rs;
       $this->_identifier= $identifier;
     }
   
@@ -37,7 +36,6 @@
      * returns true if next would return an element rather than throwing 
      * an exception.)
      *
-     * @access  public
      * @return  bool
      */
     public function hasNext() {
@@ -47,20 +45,19 @@
       // pointer every time we call it.
       if ($this->_record) return TRUE;
 
-      $this->_record= &$this->_rs->next();
+      $this->_record= $this->_rs->next();
       return !empty($this->_record);
     }
     
     /**
      * Returns the next element in the iteration.
      *
-     * @access  public
      * @return  &rdbms.DataSet
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    public function &next() {
+    public function next() {
       if (NULL === $this->_record) {
-        $this->_record= &$this->_rs->next();
+        $this->_record= $this->_rs->next();
         // Fall through
       }
       if (FALSE === $this->_record) {

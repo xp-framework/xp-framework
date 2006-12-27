@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string method
      * @param   string destination
      * @param   bool applyFilters default TRUE
@@ -33,7 +32,6 @@
     /**
      * Set method
      *
-     * @access  public
      * @param   string method
      */
     public function setMethod($method) {
@@ -43,7 +41,6 @@
     /**
      * Get method
      *
-     * @access  public
      * @return  string
      */
     public function getMethod() {
@@ -53,7 +50,6 @@
     /**
      * Set destination
      *
-     * @access  public
      * @param   string destination
      */
     public function setDestination($destination) {
@@ -63,7 +59,6 @@
     /**
      * Get destination
      *
-     * @access  public
      * @return  string
      */
     public function getDestination() {
@@ -73,7 +68,6 @@
     /**
      * Set whether to apply filters on this target
      *
-     * @access  public
      * @param   bool applyFilters
      */
     public function setApplyFilters($applyFilters) {
@@ -83,7 +77,6 @@
     /**
      * Get whether to apply filters on this target
      *
-     * @access  public
      * @return  bool
      */
     public function getApplyFilters() {

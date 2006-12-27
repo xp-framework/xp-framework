@@ -18,29 +18,26 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
  
     /**
      * Send WDDX message
      *
-     * @access  public
      * @param   &webservices.wddx.WddxMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function &send(&$message) { }
+    public function send($message) { }
     
     /**
      * Retrieve a WDDX message.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &webservices.wddx.WddxMessage
      */
-    public function &retrieve(&$response) { }
+    public function retrieve($response) { }
   } 
 ?>

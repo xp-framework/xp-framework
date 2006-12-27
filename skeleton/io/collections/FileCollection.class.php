@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string uri
      */
     public function __construct($uri) {
@@ -32,7 +31,6 @@
     /**
      * Returns this element's URI
      *
-     * @access  public
      * @return  string
      */
     public function getURI() {
@@ -42,7 +40,6 @@
     /**
      * Open this collection
      *
-     * @access  public
      */
     public function open() { 
       $this->_hd= opendir($this->uri);
@@ -51,7 +48,6 @@
     /**
      * Rewind this collection (reset internal pointer to beginning of list)
      *
-     * @access  public
      */
     public function rewind() { 
       rewinddir($this->_hd);
@@ -61,10 +57,9 @@
      * Retrieve next element in collection. Return NULL if no more entries
      * are available
      *
-     * @access  public
      * @return  &io.collection.IOElement
      */
-    public function &next() { 
+    public function next() { 
       do {
         if (FALSE === ($entry= readdir($this->_hd))) return NULL;
       } while ('.' == $entry || '..' == $entry);
@@ -81,7 +76,6 @@
     /**
      * Close this collection
      *
-     * @access  public
      */
     public function close() { 
       closedir($this->_hd);
@@ -90,7 +84,6 @@
     /**
      * Retrieve this element's size in bytes
      *
-     * @access  public
      * @return  int
      */
     public function getSize() { 
@@ -100,37 +93,33 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &createdAt() {
+    public function createdAt() {
       return new Date(filectime($this->uri));
     }
 
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &lastAccessed() {
+    public function lastAccessed() {
       return new Date(fileatime($this->uri));
     }
 
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &lastModified() {
+    public function lastModified() {
       return new Date(filemtime($this->uri));
     }
 
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() { 

@@ -31,7 +31,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -41,7 +40,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -51,7 +49,6 @@
     /**
      * Set ReturnType
      *
-     * @access  public
      * @param   string returnType
      */
     public function setReturnType($returnType) {
@@ -61,7 +58,6 @@
     /**
      * Get ReturnType
      *
-     * @access  public
      * @return  string
      */
     public function getReturnType() {
@@ -71,47 +67,42 @@
     /**
      * Set ParameterTypes
      *
-     * @access  public
      * @param   lang.ArrayList<string> parameterTypes
      */
-    public function setParameterTypes(&$parameterTypes) {
-      $this->parameterTypes= &$parameterTypes;
+    public function setParameterTypes($parameterTypes) {
+      $this->parameterTypes= $parameterTypes;
     }
 
     /**
      * Get ParameterTypes
      *
-     * @access  public
      * @return  lang.ArrayList<string>
      */
-    public function &getParameterTypes() {
+    public function getParameterTypes() {
       return $this->parameterTypes;
     }
 
     /**
      * Set Roles
      *
-     * @access  public
      * @param   lang.ArrayList<string> roles
      */
-    public function setRoles(&$roles) {
-      $this->roles= &$roles;
+    public function setRoles($roles) {
+      $this->roles= $roles;
     }
 
     /**
      * Get Roles
      *
-     * @access  public
      * @return  lang.ArrayList<string>
      */
-    public function &getRoles() {
+    public function getRoles() {
       return $this->roles;
     }
 
     /**
      * Set TransactionType
      *
-     * @access  public
      * @param   int transactionType
      */
     public function setTransactionType($transactionType) {
@@ -121,7 +112,6 @@
     /**
      * Get TransactionType
      *
-     * @access  public
      * @return  int
      */
     public function getTransactionType() {
@@ -131,7 +121,6 @@
     /**
      * Returns a string representation of a type argument
      *
-     * @access  protected
      * @param   mixed arg
      * @return  string
      */
@@ -142,7 +131,6 @@
     /**
      * Retrieve a set of classes used in this interface
      *
-     * @access  public
      * @return  remote.ClassReference[]
      */
     public function classSet() {
@@ -158,7 +146,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -179,7 +166,7 @@
         $this->roles->values ? '@Security(roles= ['.implode(', ', $this->roles->values).']) ' : '',
         $this->typeString($this->returnType),
         $this->name,
-        implode(', ', array_map(array(&$this, 'typeString'), $this->parameterTypes->values))
+        implode(', ', array_map(array($this, 'typeString'), $this->parameterTypes->values))
       );
     }
   }

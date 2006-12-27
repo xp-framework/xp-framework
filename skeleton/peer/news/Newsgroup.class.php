@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   string name
      * @param   string lastmessage
      * @param   string firstmessage
@@ -36,7 +35,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -46,7 +44,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -56,7 +53,6 @@
     /**
      * Set Last
      *
-     * @access  public
      * @param   int last
      */
     public function setLast($last) {
@@ -66,7 +62,6 @@
     /**
      * Get Last
      *
-     * @access  public
      * @return  int
      */
     public function getLast() {
@@ -76,7 +71,6 @@
     /**
      * Set First
      *
-     * @access  public
      * @param   int first
      */
     public function setFirst($first) {
@@ -86,7 +80,6 @@
     /**
      * Get First
      *
-     * @access  public
      * @return  int
      */
     public function getFirst() {
@@ -96,7 +89,6 @@
     /**
      * Set Flags
      *
-     * @access  public
      * @param   string flags
      */
     public function setFlags($flags) {
@@ -106,7 +98,6 @@
     /**
      * Get Flags
      *
-     * @access  public
      * @return  string
      */
     public function getFlags() {

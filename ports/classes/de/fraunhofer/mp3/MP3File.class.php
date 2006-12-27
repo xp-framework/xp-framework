@@ -17,23 +17,21 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
-      $this->file= &$file;
+    public function __construct($file) {
+      $this->file= $file;
       
     }
     
     /**
      * Extract ID3 Tags
      *
-     * @access  public
      * @param   int version default ID3_VERSION_UNKNOWN ID3 Version
      * @return  &de.fraunhofer.mp3.ID3Tag tag object or NULL if no tag exists
      * @see     http://www.id3.org/
      */
-    public function &getID3Tag($version= ID3_VERSION_UNKNOWN) {
+    public function getID3Tag($version= ID3_VERSION_UNKNOWN) {
       try {
         $this->file->open(FILE_MODE_READ);
         

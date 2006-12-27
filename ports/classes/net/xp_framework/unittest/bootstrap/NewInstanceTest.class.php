@@ -21,11 +21,10 @@
     /**
      * Test creating an instance of the util.log.Traceable interface
      *
-     * @access  public
      */
     #[@test]
     public function newTraceable() {
-      $appender= &newinstance('util.log.Traceable', array(), '{
+      $appender= newinstance('util.log.Traceable', array(), '{
         function setTrace($cat) {
           // Intentionally empty
         }
@@ -37,11 +36,10 @@
     /**
      * Test creating an instance of the util.log.LogAppender class
      *
-     * @access  public
      */
     #[@test]
     public function newLogAppender() {
-      $appender= &newinstance('util.log.LogAppender', array(), '{
+      $appender= newinstance('util.log.LogAppender', array(), '{
         function append() { 
           // Intentionally empty
         }
@@ -53,11 +51,10 @@
     /**
      * Test arguments are passed constructor
      *
-     * @access  public
      */
     #[@test]
     public function argumentsArePassedToConstructor() {
-      $appender= &newinstance('util.log.LogAppender', array('[PREFIX]', 1), '{
+      $appender= newinstance('util.log.LogAppender', array('[PREFIX]', 1), '{
         var $prefix, $severity;
 
         function __construct($prefix, $severity) {
@@ -78,7 +75,6 @@
      * in a sandbox and will assert a given fatal error is raised
      *
      * @see     xp://net.xp_framework.unittest.bootstrap.SandboxSourceRunner
-     * @access  protected
      * @param   string message
      * @param   string expr
      * @throws  unittest.PrerequisitesNotMetError in case the sandbox runner cannot be setup
@@ -108,7 +104,6 @@
      * Test failing to implement a method of the interface passed to
      * newinstance() will result in an error.
      *
-     * @access  public
      */
     #[@test]
     public function interfaceMethodNotImplemented() {
@@ -122,7 +117,6 @@
      * Test passing a non-existant class to newinstance() will result in 
      * an error
      *
-     * @access  public
      */
     #[@test]
     public function nonExistantClass() {
@@ -135,7 +129,6 @@
     /**
      * Test syntax errors in passed string will result in an error.
      *
-     * @access  public
      */
     #[@test]
     public function syntaxError() {

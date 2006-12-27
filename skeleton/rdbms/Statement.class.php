@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string format
      * @param   mixed* args
      */
@@ -43,7 +42,6 @@
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -53,18 +51,17 @@
     /**
      * Executes an SQL SELECT statement
      *
-     * @access  package
      * @param   &rdbms.DBConnection conn
      * @param   &rdbms.Peer peer
      * @return  &rdbms.ResultSet
      */
-    public function &executeSelect(&$conn, &$peer) {
+    public function executeSelect($conn, $peer) {
       $this->arguments[0]= preg_replace(
         '/object\(([^\)]+)\)/i', 
         '$1.'.implode(', $1.', array_keys($peer->types)),
         $this->arguments[0]
       );
-      return $conn->query(call_user_func_array(array(&$conn, 'prepare'), $this->arguments));
+      return $conn->query(call_user_func_array(array($conn, 'prepare'), $this->arguments));
     }
 
   } 

@@ -146,8 +146,6 @@
     /**
      * Get the name of a code
      *
-     * @model   static
-     * @access  public
      * @param   int code
      * @return  string name or NULL in case the code is unknown
      */

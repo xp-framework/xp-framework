@@ -53,7 +53,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string endpoint default 'http://api.google.com/search/beta2'
      */
     public function __construct($endpoint= 'http://api.google.com/search/beta2') {
@@ -79,7 +78,6 @@
     /**
      * Invokes the method "doGetCachedPage"
      *
-     * @access  public
      * @param   string key
      * @param   string url
      * @return  webservices.soap.types.SOAPBase64Binary
@@ -98,7 +96,6 @@
     /**
      * Invokes the method "doSpellingSuggestion"
      *
-     * @access  public
      * @param   string key
      * @param   string phrase
      * @return  string
@@ -117,7 +114,6 @@
     /**
      * Invokes the method "doGoogleSearch"
      *
-     * @access  public
      * @param   string key
      * @param   string q
      * @param   int start
@@ -134,7 +130,7 @@
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      * @see     http://www.google.com/apis/reference.html#searchrequest Search Parameters 
      */
-    public function &doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
+    public function doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
       return $this->invoke(
         'doGoogleSearch',
         new Parameter('key', $key),

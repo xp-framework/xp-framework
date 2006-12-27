@@ -17,7 +17,6 @@
     /**
      * Retrieve an image resource
      *
-     * @access  public
      * @return  resource
      * @throws  img.ImagingException
      */

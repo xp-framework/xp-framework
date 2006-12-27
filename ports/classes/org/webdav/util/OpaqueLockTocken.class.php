@@ -36,24 +36,21 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &org.ietf.UUID uuid
      */
-    public function __construct(&$uuid) {
-      $this->uuid= &$uuid;
+    public function __construct($uuid) {
+      $this->uuid= $uuid;
       
     }
     
     /**
      * Create a LockTocken from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &util.webdav.LockTocken
      * @throws  lang.FormatException in case the string is not a valid opaquelocktoken
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       list($prefix, $uuidstr)= explode(':', $str, 2);
       if (
         (LOCKTOKEN_PREFIX !== $prefix) ||
@@ -74,7 +71,6 @@
      * opaquelocktoken:faabe080-e080-1aab-a85d-066e72288282
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

@@ -16,7 +16,6 @@
     /**
      * EchoString method
      *
-     * @access  public
      * @param   string arg1
      * @return  string
      */
@@ -25,7 +24,6 @@
     /**
      * EchoInt method
      *
-     * @access  public
      * @param   integer arg1
      * @return  integer
      */
@@ -34,7 +32,6 @@
     /**
      * EchoDouble method
      *
-     * @access  public
      * @param   double arg1
      * @return  double
      */
@@ -43,7 +40,6 @@
     /**
      * EchoBool method
      *
-     * @access  public
      * @param   boolean arg1
      * @return  boolean
      */
@@ -52,7 +48,6 @@
     /**
      * EchoNull method
      *
-     * @access  public
      * @param   java.lang.Object arg1
      * @return  java.lang.Object
      */
@@ -61,7 +56,6 @@
     /**
      * EchoDate method
      *
-     * @access  public
      * @param   util.Date arg1
      * @return  util.Date
      */
@@ -70,7 +64,6 @@
     /**
      * EchoHash method
      *
-     * @access  public
      * @param   array<mixed, mixed> arg1
      * @return  array<mixed, mixed>
      */
@@ -79,7 +72,6 @@
     /**
      * EchoArrayList method
      *
-     * @access  public
      * @param   lang.types.ArrayList arg1
      * @return  lang.types.ArrayList
      */

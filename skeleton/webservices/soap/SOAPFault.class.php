@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string faultcode
      * @param   string faultstring
      * @param   string faultactor default NULL
@@ -42,7 +41,6 @@
     /**
      * Set Faultcode
      *
-     * @access  public
      * @param   string faultcode
      */
     public function setFaultcode($faultcode) {
@@ -52,7 +50,6 @@
     /**
      * Get Faultcode
      *
-     * @access  public
      * @return  string
      */
     public function getFaultcode() {
@@ -62,7 +59,6 @@
     /**
      * Set Faultstring
      *
-     * @access  public
      * @param   string faultstring
      */
     public function setFaultstring($faultstring) {
@@ -72,7 +68,6 @@
     /**
      * Get Faultstring
      *
-     * @access  public
      * @return  string
      */
     public function getFaultstring() {
@@ -82,7 +77,6 @@
     /**
      * Set Faultactor
      *
-     * @access  public
      * @param   string faultactor
      */
     public function setFaultactor($faultactor) {
@@ -92,7 +86,6 @@
     /**
      * Get Faultactor
      *
-     * @access  public
      * @return  string
      */
     public function getFaultactor() {
@@ -102,7 +95,6 @@
     /**
      * Set Detail
      *
-     * @access  public
      * @param   mixed detail
      */
     public function setDetail($detail) {
@@ -112,7 +104,6 @@
     /**
      * Get Detail
      *
-     * @access  public
      * @return  mixed
      */
     public function getDetail() {

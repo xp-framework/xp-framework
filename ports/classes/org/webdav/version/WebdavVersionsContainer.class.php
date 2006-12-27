@@ -17,7 +17,6 @@
     /**
      * Construct
      *
-     * @access  public
      * @param   org.webdav.version.Webdav*Version
      */
     public function __construct($version= NULL) {
@@ -27,17 +26,15 @@
     /**
      * Add a version to the container
      *
-     * @access  public
      * @param   org.webdav.version.Webdav*Version
      */
-    public function addVersion(&$version) {
+    public function addVersion($version) {
       $this->versions[]= $version;
     }
     
     /**
      * Get all versions
      *
-     * @access  public
      * @return  array versions
      */
     public function getVersions() {
@@ -47,10 +44,9 @@
     /**
      * Returns the last added version object
      *
-     * @access  public
      * @return  &org.webdav.version.Webdav*Version
      */
-    public function &getLatestVersion() {
+    public function getLatestVersion() {
       return end($this->versions);
     }
   

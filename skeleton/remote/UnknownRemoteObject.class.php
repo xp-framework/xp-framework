@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   array<string, mixed> members default array()
      */
@@ -32,7 +31,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -59,7 +57,6 @@
     /**
      * Member set interceptor
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      * @return  bool TRUE on success
@@ -72,7 +69,6 @@
     /**
      * Member get interceptor
      *
-     * @access  public
      * @param   string name
      * @param   &mixed value
      * @return  bool TRUE on success
@@ -85,7 +81,6 @@
     /**
      * Method call interceptor
      *
-     * @access  public
      * @param   string name
      * @param   mixed[] args
      * @param   &mixed return

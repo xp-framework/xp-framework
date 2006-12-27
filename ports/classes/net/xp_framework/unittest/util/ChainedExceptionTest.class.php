@@ -20,7 +20,6 @@
     /**
      * Tests a ChainedException without a cause
      *
-     * @access  public
      */
     #[@test]
     public function withoutCause() {
@@ -33,7 +32,6 @@
     /**
      * Tests a ChainedException with a cause
      *
-     * @access  public
      */
     #[@test]
     public function withCause() {
@@ -47,7 +45,6 @@
     /**
      * Tests number of common elements is reported in  toString() output
      *
-     * @access  public
      */
     #[@test]
     public function commonElements() {
@@ -58,7 +55,6 @@
     /**
      * Tests number of common elements is reported in  toString() output
      *
-     * @access  public
      */
     #[@test]
     public function chainedCommonElements() {

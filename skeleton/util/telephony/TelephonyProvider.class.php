@@ -63,24 +63,22 @@
     /**
      * Set a LogCategory for tracing communication
      *
-     * @access  public
      * @param   &util.log.LogCategory cat a LogCategory object to which communication
      *          information will be passed to or NULL to stop tracing
      * @return  &util.log.LogCategory
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
-    public function &setTrace(&$cat) {
+    public function setTrace($cat) {
       if (NULL !== $cat && !is('LogCategory', $cat)) {
         throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
       }
       
-      $this->cat= &$cat;
+      $this->cat= $cat;
     }
     
     /**
      * Trace function
      *
-     * @access  protected
      * @param   mixed* arguments
      */
     public function trace() {
@@ -93,59 +91,49 @@
     /**
      * Connect and initiate the communication
      *
-     * @model   abstract
-     * @access  public
      */
     public function connect() { }
 
     /**
      * Close connection and end the communication
      *
-     * @access  public
      */
     public function close() { }
     
     /**
      * Retrieve an address
      *
-     * @access  public  
      * @param   string number
      * @return  &util.telephony.TelephonyAddress 
      */
-    public function &getAddress($number) { 
+    public function getAddress($number) { 
       return new TelephonyAddress($number);
     }
     
     /**
      * Create a call
      *
-     * @model   abstract
-     * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    public function &createCall(&$terminal, &$destination) { }
+    public function createCall($terminal, $destination) { }
     
     /**
      * Get terminal
      *
-     * @model   abstract
-     * @access  public
      * @param   &util.telephony.TelephonyAddress address
      * @return  &util.telephony.TelephonyTerminal
      */
-    public function &getTerminal(&$address) { }
+    public function getTerminal($address) { }
     
     /**
      * Release terminal
      *
-     * @model   abstract
-     * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
-    public function releaseTerminal(&$terminal) { }
+    public function releaseTerminal($terminal) { }
 
   } 
 ?>

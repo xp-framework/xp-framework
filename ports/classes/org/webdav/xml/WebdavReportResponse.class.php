@@ -49,11 +49,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
-    public function __construct(&$request, &$response) {
+    public function __construct($request, $response) {
       $this->setStatus(WEBDAV_MULTISTATUS);
       $this->setRootNode(new Node(
         'D:multistatus',
@@ -65,18 +64,17 @@
     /**
      * Apply an WebdavObject
      *
-     * @access  private
      * @param   &org.webdav.version.WebdavVersionContainer container
      */
-    public function addWebdavVersionContainer(&$container) {
+    public function addWebdavVersionContainer($container) {
 
       foreach ($container->getVersions() as $version) {
 
         $res= new Node('D:response');
         $res->addChild(new Node('D:href', $version->getHref()));
-        $propstat= &$res->addChild(new Node('D:propstat'));
+        $propstat= $res->addChild(new Node('D:propstat'));
 
-        with ($props= &$propstat->addChild(new Node('D:prop'))); {
+        with ($props= $propstat->addChild(new Node('D:prop'))); {
           $props->addChild(new Node('D:version-name', $version->getVersionNumber()));
           $props->addChild(new Node('D:creator-displayname', $version->getCreatorName()));
           $props->addChild(new Node('D:getcontentlength', $version->getContentLength()));

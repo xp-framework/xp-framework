@@ -16,7 +16,6 @@
     /**
      * Test assertTrue()
      *
-     * @access  public
      */    
     #[@test]
     public function trueIsTrue() {
@@ -26,7 +25,6 @@
     /**
      * Test assertTrue()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function falseIsNotTrue() {
@@ -36,7 +34,6 @@
     /**
      * Test assertFalse()
      *
-     * @access  public
      */    
     #[@test]
     public function falseIsFalse() {
@@ -46,7 +43,6 @@
     /**
      * Test assertFalse()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function trueIsNotFalse() {
@@ -56,7 +52,6 @@
     /**
      * Test assertNull()
      *
-     * @access  public
      */    
     #[@test]
     public function NullIsNull() {
@@ -66,7 +61,6 @@
     /**
      * Test assertNull()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function falseIsNotNull() {
@@ -76,7 +70,6 @@
     /**
      * Test assertNull()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function zeroIsNotNull() {
@@ -86,7 +79,6 @@
     /**
      * Test assertNull()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function emptyStringIsNotNull() {
@@ -96,7 +88,6 @@
     /**
      * Test assertNull()
      *
-     * @access  public
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function emptyArrayIsNotNull() {
@@ -107,14 +98,13 @@
      * Test assertEquals() and assertNotEquals() invoke equals() methods 
      * on objects.
      *
-     * @access  public
      */    
     #[@test]
     public function equalsMethodIsInvoked() {
-      $instance= &newinstance('lang.Object', array(), '{
-         var $equalsInvoked= 0;
+      $instance= newinstance('lang.Object', array(), '{
+         public $equalsInvoked= 0;
 
-        function equals(&$other) {
+        function equals($other) {
           $r= (
             is(get_class($this), $other) && 
             $this->equalsInvoked == $other->equalsInvoked
@@ -137,7 +127,6 @@
     /**
      * Test assertEquals() for integers
      *
-     * @access  public
      */    
     #[@test]
     public function integersAreEqual() {
@@ -149,7 +138,6 @@
     /**
      * Test assertEquals() for strings
      *
-     * @access  public
      */    
     #[@test]
     public function stringsAreEqual() {
@@ -161,7 +149,6 @@
     /**
      * Test assertEquals() for arrays
      *
-     * @access  public
      */    
     #[@test]
     public function arraysAreEqual() {
@@ -177,7 +164,6 @@
     /**
      * Test assertEquals() for hashes
      *
-     * @access  public
      */    
     #[@test]
     public function hashesAreEqual() {
@@ -193,7 +179,6 @@
     /**
      * Test hash order is not relevant
      *
-     * @access  public
      */    
     #[@test]
     public function hashesOrderNotRelevant() {
@@ -205,7 +190,6 @@
     /**
      * Test assertEquals() for text.String objects
      *
-     * @access  public
      */    
     #[@test]
     public function stringObjectsAreEqual() {
@@ -217,7 +201,6 @@
     /**
      * Test assertNotEquals() for integers
      *
-     * @access  public
      */    
     #[@test]
     public function integersAreNotEqual() {
@@ -230,7 +213,6 @@
     /**
      * Test assertNotEquals() for strings
      *
-     * @access  public
      */    
     #[@test]
     public function stringsAreNotEqual() {
@@ -242,7 +224,6 @@
     /**
      * Test assertNotEquals() for arrays
      *
-     * @access  public
      */    
     #[@test]
     public function arraysAreNotEqual() {

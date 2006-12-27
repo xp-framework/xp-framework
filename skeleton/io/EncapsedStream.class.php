@@ -22,18 +22,17 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream super parent stream
      * @param   int offset offset where encapsed stream starts in parent stream
      * @param   int size
      * @throws  lang.IllegalStateException when stream is not yet opened
      */
-    public function __construct(&$super, $offset, $size) {
+    public function __construct($super, $offset, $size) {
       if (!$super->isOpen()) throw(new IllegalStateException(
         'Super-stream must be opened in EncapsedStream'
       ));
       
-      $this->_super= &$super;
+      $this->_super= $super;
       $this->_offset= $offset;
       $this->_size= $size;
     }
@@ -42,7 +41,6 @@
      * Prepares the stream for the next operation (eg. moves the
      * pointer to the correct position).
      *
-     * @access  protected
      */
     public function _prepare() {
       $this->_super->seek($this->_offset + $this->offset);
@@ -55,7 +53,6 @@
      * Should be used internally to correctly calculate the offset
      * for subsequent reads.
      *
-     * @access  protected
      * @param   mixed arg
      * @return  mixed arg
      */
@@ -67,7 +64,6 @@
     /**
      * Open the stream. For EncapsedStream only reading is supported
      *
-     * @access  public
      * @param   string mode default STREAM_MODE_READ one of the STREAM_MODE_* constants
      */
     public function open($mode= STREAM_MODE_READ) {
@@ -79,7 +75,6 @@
     /**
      * Returns whether this stream is open
      *
-     * @access  public
      * @return  bool TRUE, when the stream is open
      */
     public function isOpen() {
@@ -89,7 +84,6 @@
     /**
      * Retrieve the stream's size in bytes
      *
-     * @access  public
      * @return  int size streamsize in bytes
      */
     public function size() {
@@ -99,7 +93,6 @@
     /**
      * Truncate the stream to the specified length
      *
-     * @access  public
      * @param   int size default 0
      * @return  bool
      */
@@ -116,7 +109,6 @@
      * Reading ends when length - 1 bytes have been read, on a newline (which is 
      * included in the return value), or on EOF (whichever comes first). 
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
@@ -128,7 +120,6 @@
     /**
      * Read one char
      *
-     * @access  public
      * @return  char the character read
      */
     public function readChar() {
@@ -142,7 +133,6 @@
      * This function is identical to readLine except that trailing CR and LF characters
      * will be included in its return value
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
@@ -154,7 +144,6 @@
     /**
      * Read (binary-safe)
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      */
@@ -166,7 +155,6 @@
     /**
      * Write. No supported in EncapsedStream
      *
-     * @access  public
      * @param   string string data to write
      * @return  int number of bytes written
      */
@@ -177,7 +165,6 @@
     /**
      * Write a line and append a LF (\n) character. Not supported in EncapsedStream
      *
-     * @access  public
      * @param   string string default '' data to write
      * @return  int number of bytes written
      */
@@ -188,7 +175,6 @@
     /**
      * Returns whether the stream pointer is at the end of the stream
      *
-     * @access  public
      * @return  bool TRUE when the end of the stream is reached
      */
     public function eof() {
@@ -201,7 +187,6 @@
      * is not considered an error.
      *
      * @see     php://fseek
-     * @access  public
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
      * @return  bool success
@@ -219,7 +204,6 @@
     /**
      * Retrieve stream pointer position
      *
-     * @access  public
      * @return  int position
      */
     public function tell() {
@@ -230,7 +214,6 @@
     /**
      * Close this stream
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {

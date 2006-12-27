@@ -30,26 +30,24 @@
     /**
      * Generate documentation here.
      *
-     * @access  public
      * @param   &text.doclet.RootDoc root
      * @return  bool TRUE on success
      */ 
-    public function start(&$root) {
+    public function start($root) {
       return TRUE;
     }
 
     /**
      * Get class iterator
      *
-     * @access  public
      * @param   &text.doclet.RootDoc root
      * @param   string[] classnames passed via parameters
      * @return  &text.doclet.ClassIterator
      * @throws  lang.Exception in case the iterator cannot be created.
      */ 
-    public function &iteratorFor(&$root, $classes) {
+    public function iteratorFor($root, $classes) {
       $iterator= new ClassIterator($classes);
-      $iterator->root= &$root;
+      $iterator->root= $root;
       return $iterator;
     }
     
@@ -68,7 +66,6 @@
      *
      * Returns an empty array in this default implementation.
      *
-     * @access  public
      * @return  array
      */
     public function validOptions() {

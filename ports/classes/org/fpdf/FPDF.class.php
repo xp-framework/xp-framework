@@ -131,7 +131,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string orientation default FPDF_PORTRAIT
      * @param   string unit default FPDF_UNIT_MM
      * @param   string format default FPDF_FORMAT_A4
@@ -174,25 +173,23 @@
     /**
      * Add a hook
      *
-     * @access  public
      * @param   string event one of the PFDF_EVENT_* constants
      * @param   &org.fpdf.FPDFHook hook
      * @return  &org.fpdf.FPDFHook the hook added
      */
-    public function &addHook($event, &$hook) {
+    public function addHook($event, $hook) {
       if (!isset($this->_hooks[$event])) $this->_hooks[$event]= array();
 
-      $this->_hooks[$event][]= &$hook;
+      $this->_hooks[$event][]= $hook;
       return $hook;
     }
 
     /**
      * Load fonts
      *
-     * @access  public
      * @param   &util.Properties prop
      */
-    public function loadFonts(&$prop) {
+    public function loadFonts($prop) {
       $section= $prop->getFirstSection();
       do {
         $f= new FPDFFont($section);
@@ -204,7 +201,6 @@
     /**
      * Retrieve scale factor for a specified unit
      *
-     * @access  public
      * @param   string unit on of the FPDF_UNIT_* constants
      * @return  float
      */
@@ -222,7 +218,6 @@
     /**
      * Retrieve page dimensions for a specified format
      *
-     * @access  public
      * @param   string format on of the FPDF_FORMAT_* constants
      * @return  float[2]
      */
@@ -241,7 +236,6 @@
     /**
      * Set page format
      *
-     * @access  public
      * @param   string format on of the FPDF_FORMAT_* constants
      */ 
     public function setPageFormat($format) {
@@ -253,7 +247,6 @@
     /**
      * Set orientation
      *
-     * @access  public
      * @param   string orientation one of FPDF_PORTRAIT or FPDF_LANDSCAPE
      */
     public function setOrientation($orientation) {
@@ -278,7 +271,6 @@
     /**
      * Set left, top and right margins
      *
-     * @access  public
      * @param   float left
      * @param   float top
      * @param   float right default -1 Default value is the left one. 
@@ -292,7 +284,6 @@
     /**
      * Set left margin
      *
-     * @access  public
      * @param   float margin
      */
     public function setLeftMargin($margin) {
@@ -303,7 +294,6 @@
     /**
      * Set top margin
      *
-     * @access  public
      * @param   float margin
      */
     public function setTopMargin($margin) {
@@ -313,7 +303,6 @@
     /**
      * Set right margin
      *
-     * @access  public
      * @param   float margin
      */
     public function setRightMargin($margin) {
@@ -323,7 +312,6 @@
     /**
      * Set auto page break mode and triggering margin
      *
-     * @access  public
      * @param   int auto
      * @param   int margin default 0
      */
@@ -336,7 +324,6 @@
     /**
      * Set display mode in viewer
      *
-     * @access  public
      * @param   mixed zoom either one of the FPDF_ZOOM_* constants or a number indicating the zooming factor to use.
      * @param   string layout default FPDF_LAYOUT_CONTINUOUS
      */
@@ -353,7 +340,6 @@
      * function gzcompress() is available.
      *
      * @see     php://gzcompress
-     * @access  public
      * @param   bool compress
      * @throws  lang.MethodNotImplementedException
      */
@@ -367,7 +353,6 @@
     /**
      * Sets title of document
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -377,7 +362,6 @@
     /**
      * Sets subject of document
      *
-     * @access  public
      * @param   string subject
      */
     public function setSubject($subject) {
@@ -387,7 +371,6 @@
     /**
      * Sets author of document
      *
-     * @access  public
      * @param   string author
      */
     public function setAuthor($author) {
@@ -400,7 +383,6 @@
      *   'keyword1 keyword2 ...'
      * </pre>
      *
-     * @access  public
      * @param   string keywords
      */
     public function setKeywords($keywords) {
@@ -411,7 +393,6 @@
      * Defines the creator of the document. This is typically the name 
      * of the application that generates the PDF.
      *
-     * @access  public
      * @param   string creator
      */
     public function setCreator($creator) {
@@ -425,7 +406,6 @@
      *
      * Note: no page is created by this method.
      *
-     * @access  public
      */
     public function open() {
       $this->_begindoc();
@@ -438,7 +418,6 @@
      * If the document contains no page, addPage() is called to prevent 
      * from getting an invalid document.
      *
-     * @access  public
      */
     public function close() {
       if (0 == $this->page) $this->addPage();
@@ -450,7 +429,6 @@
      * Start a new page with an optional orientation, which, if 
      * omitted, defaults to orientation given to constructor
      *
-     * @access  public
      * @param   string orientation default NULL
      */
     public function addPage($orientation= NULL) {
@@ -482,7 +460,6 @@
     /**
      * Get current page number
      *
-     * @access  public
      * @return  int
      */
     public function pageNumber() {
@@ -492,7 +469,6 @@
     /**
      * Return a color specification
      *
-     * @access  private
      * @param   int r
      * @param   int g
      * @param   int b
@@ -516,7 +492,6 @@
     /**
      * Set color for all stroking operations
      *
-     * @access  public
      * @param   int r
      * @param   int g default -1
      * @param   int b default -1
@@ -529,7 +504,6 @@
     /**
      * Set color for all filling operations
      *
-     * @access  public
      * @param   int r
      * @param   int g default -1
      * @param   int b default -1
@@ -543,7 +517,6 @@
     /**
      * Set color for text
      *
-     * @access  public
      * @param   int r
      * @param   int g default -1
      * @param   int b default -1
@@ -556,7 +529,6 @@
     /**
      * Get width of a string in the current font
      *
-     * @access  public
      * @param   string s
      * @return  float
      */
@@ -572,7 +544,6 @@
     /**
      * Set line width
      *
-     * @access  public
      * @param   int width
      */
     public function setLineWidth($width) {
@@ -583,7 +554,6 @@
     /**
      * Renders a line
      *
-     * @access  private
      * @param   int x1
      * @param   int y1
      * @param   int x2
@@ -597,7 +567,6 @@
     /**
      * Draw a line
      *
-     * @access  public
      * @param   int x1
      * @param   int y1
      * @param   int x2
@@ -610,7 +579,6 @@
     /**
      * Renders a rectangle
      *
-     * @access  private
      * @param   int x
      * @param   int y
      * @param   int w width
@@ -630,7 +598,6 @@
     /**
      * Draw a rectangle
      *
-     * @access  public
      * @param   int x
      * @param   int y
      * @param   int w width
@@ -644,10 +611,9 @@
     /**
      * Add a font to this PDF
      *
-     * @access  public
      * @param   &org.pdf.FPDFFont font
      */
-    public function addFont(&$font) {
+    public function addFont($font) {
       if (isset($this->fonts[$font->family.$font->style])) return 1;
       
       // Diff?
@@ -662,19 +628,18 @@
       }
       
       $font->index= sizeof($this->fonts)+ 1;
-      $this->fonts[$font->family.$font->style]= &$font;
+      $this->fonts[$font->family.$font->style]= $font;
     }
     
     /**
      * Retrieve a font by name and optionally style. Returns NULL if font 
      * wasn't found
      *
-     * @access  public
      * @param   string family
      * @param   string style default ''
      * @return  &org.pdf.FPDFFont
      */
-    public function &getFontByName($family, $style= '') {
+    public function getFontByName($family, $style= '') {
       if (!isset($this->fonts[$idx= strtolower($family).strtoupper($style)])) {
         return NULL;
       }
@@ -685,23 +650,21 @@
     /**
      * Get font
      *
-     * @access  public
      * @return  &org.pdf.FPDFFont
      */
-    public function &getFont() {
+    public function getFont() {
       return $this->CurrentFont;
     }
 
     /**
      * Set font
      *
-     * @access  public
      * @param   &org.pdf.FPDFFont font
      * @param   float size default 0 Font size in points. 
      * @throws  lang.IllegalArgumentException
      * @return  bool TRUE if the font was changed
      */
-    public function setFont(&$font, $size= 0) {
+    public function setFont($font, $size= 0) {
       if (!is('FPDFFont', $font)) {
         throw(new IllegalArgumentException('Font is not a org.pdf.FPDFFont'));
       }
@@ -721,7 +684,7 @@
       $this->FontStyle= $font->style;
       $this->FontSizePt= $size;
       $this->FontSize= round($size / $this->k, 2);
-      $this->CurrentFont= &$font;
+      $this->CurrentFont= $font;
       
       if ($this->page > 0) $this->_out('BT /F'.$this->CurrentFont->index.' '.$this->FontSize.' Tf ET');
       return TRUE;
@@ -730,7 +693,6 @@
     /**
      * Set font size in points
      *
-     * @access  public
      * @param   int size
      * @return  bool TRUE if the font size was changed
      */
@@ -748,7 +710,6 @@
      * link is a clickable area which directs to another place within the 
      * document. 
      *
-     * @access  public
      * @return  int
      * @see     xp://org.fpdf.FPDF#setLink
      */
@@ -766,7 +727,6 @@
      *   $pdf->setLink($pdf->addLink(), 0, 1);
      * </code>
      *
-     * @access  public
      * @param   int link The link identifier returned by addLink().
      * @param   float y default 0 Ordinate of target position; -1 indicates the current position. The default value is 0 (top of page).
      * @param   int page default -1 Number of target page; -1 indicates the current page. This is the default value.
@@ -784,7 +744,6 @@
      * this method can be useful for instance to define a clickable 
      * area inside an image.
      *
-     * @access  public
      * @param   int x
      * @param   int y
      * @param   int w width
@@ -804,7 +763,6 @@
     /**
      * Renders text
      *
-     * @access  private
      * @param   int x Abscissa of the origin.
      * @param   int y Ordinate of the origin.
      * @param   string text
@@ -827,7 +785,6 @@
      * MultiCell() or Write() which are the standard methods to print 
      * text.
      *
-     * @access  public
      * @param   int x Abscissa of the origin.
      * @param   int y Ordinate of the origin.
      * @param   string text
@@ -839,7 +796,6 @@
     /**
      * Accept automatic page break or not
      *
-     * @access  public
      * @return  bool
      */
     public function getAcceptPageBreak() {
@@ -859,7 +815,6 @@
      * The parameter ln indicates where the current position should go 
      * after the call.
      *
-     * @access  public
      * @param   float w Cell width. If 0, the cell extends up to the right margin.
      * @param   float h default 0 Cell height. Default value: 0.
      * @param   string text default '' String to print.
@@ -975,7 +930,6 @@
      * Text can be aligned, centered or justified. The cell block can be 
      * framed and the background painted.
      *
-     * @access  public
      * @param   int w
      * @param   int h default 5
      * @param   string txt
@@ -1075,7 +1029,6 @@
      *
      * It is possible to put a link on the text.
      *
-     * @access  public
      * @param   float h Line height.
      * @param   string txt String to print.
      * @param   mixed link default '' URL or identifier returned by addLink().
@@ -1188,7 +1141,6 @@
     /**
      * Put an image on the page
      *
-     * @access  public
      * @param   string file
      * @param   int x
      * @param   int y
@@ -1257,7 +1209,6 @@
     /**
      * Line feed; default value is last cell height
      *
-     * @access  public
      * @param   int h default -1
      */
     public function lineFeed($h= -1) {
@@ -1268,7 +1219,6 @@
     /**
      * Get x position
      *
-     * @access  public
      * @return  int
      */
     public function getX() {
@@ -1279,7 +1229,6 @@
      * Set x position. Negative values calculate the x position relative
      * to the width.
      *
-     * @access  public
      * @param   int x
      */
     public function setX($x) {
@@ -1289,7 +1238,6 @@
     /**
      * Get y position
      *
-     * @access  public
      * @return  int
      */
     public function getY() {
@@ -1300,7 +1248,6 @@
      * Set y position and reset x. Negative values calculate the y 
      * position relative to the height.
      *
-     * @access  public
      * @param   int y
      */
     public function setY($y) {
@@ -1311,7 +1258,6 @@
     /**
      * Set x and y positions
      *
-     * @access  public
      * @param   int x
      * @param   int y
      */
@@ -1324,7 +1270,6 @@
      * Retrieve current buffer. The method first calls close() if 
      * necessary to terminate the document.
      *
-     * @access  public
      * @return  string
      */
     public function getBuffer() {
@@ -1335,7 +1280,6 @@
     /**
      * Start document
      *
-     * @access  public
      */
     public function _begindoc() {
       $this->state= 1;
@@ -1345,7 +1289,6 @@
     /**
      * Terminate document
      *
-     * @access  public
      */
     public function _enddoc() {
       $nb= $this->page;
@@ -1430,7 +1373,7 @@
 
       // Font objects
       foreach (array_keys($this->fonts) as $key) {
-        with ($font= &$this->fonts[$key]); {
+        with ($font= $this->fonts[$key]); {
           $this->_newobj();
           $font->n= $this->n;
           $this->_out('<</Type /Font');
@@ -1631,7 +1574,6 @@
     /**
      * Begin a page
      *
-     * @access  private
      * @param   string orientation
      */
     public function _beginpage($orientation) {
@@ -1677,7 +1619,6 @@
     /**
      * End of page contents
      *
-     * @access  private
      */
     public function _endpage() {
       for ($i= 0, $s= sizeof($this->_hooks[PFDF_EVENT_ENDPAGE]); $i < $s; $i++) {
@@ -1689,7 +1630,6 @@
     /**
      * Begin a new object
      *
-     * @access  private
      */
     public function _newobj() {
       $this->n++;
@@ -1700,7 +1640,6 @@
     /**
      * Underline text
      *
-     * @access  private
      * @param   int x
      * @param   int y
      * @param   string txt
@@ -1716,7 +1655,6 @@
     /**
      * Extract info from a JPEG file
      *
-     * @access  private
      * @param   string file
      * @throws  lang.IllegalArgumentException in case image is not a JPEG file
      */
@@ -1760,7 +1698,6 @@
     /**
      * Extract info from a PNG file
      *
-     * @access  private
      * @param   string file
      * @throws  lang.IllegalArgumentException in case the file is corrupt
      */
@@ -1869,7 +1806,6 @@
     /**
      * Read a 4-byte integer from file
      *
-     * @access  private
      * @param   resource f
      * @return  int
      */
@@ -1885,7 +1821,6 @@
     /**
      * Escape a string (add \ before \, ( and ))
      *
-     * @access  private
      * @param   string s
      * @return  string
      */
@@ -1896,7 +1831,6 @@
     /**
      * Output a string
      *
-     * @access  private
      * @param   string s
      */
     public function _out($s) {

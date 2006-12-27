@@ -17,23 +17,21 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.ChoiceFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('ChoiceFormat');
     }  
   
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      * @throws  lang.FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       foreach (explode('|', $fmt) as $choice) {
         list($cmp, $val)= explode(':', $choice);
         if ($argument == $cmp) {

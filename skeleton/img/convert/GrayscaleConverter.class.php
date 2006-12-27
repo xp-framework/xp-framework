@@ -36,12 +36,11 @@
     /**
      * Convert an image.
      *
-     * @access  public
      * @param   &img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */
-    public function convert(&$image) {
+    public function convert($image) {
     
       // Create temporary variable as local variable access is faster 
       // than member variable access.

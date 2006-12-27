@@ -37,7 +37,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename
      */
     public function __construct($filename) {
@@ -48,24 +47,20 @@
     /**
      * Create a property file from an io.File object
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &util.Properties
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       return new Properties($file->getURI());
     }
 
     /**
      * Create a property file from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &util.Properties
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
@@ -97,7 +92,6 @@
     /**
      * Retrieves the file name containing the properties
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -107,7 +101,6 @@
     /**
      * Create the property file
      *
-     * @access  public
      * @throws  io.IOException if the property file could not be created
      */
     public function create() {
@@ -119,7 +112,6 @@
     /**
      * Returns whether the property file exists
      *
-     * @access  public
      * @return  bool
      */
     public function exists() {
@@ -129,7 +121,6 @@
     /**
      * Helper method that loads the data from the file if needed
      *
-     * @access  private
      * @param   bool force default FALSE
      * @throws  io.IOException
      */
@@ -143,7 +134,6 @@
     /**
      * Reload all data from the file
      *
-     * @access  public
      */
     public function reset() {
       return $this->_load(TRUE);
@@ -152,7 +142,6 @@
     /**
      * Save properties to the file
      *
-     * @access  public
      * @throws  io.IOException if the property file could not be written
      */
     public function save() {
@@ -191,7 +180,6 @@
      * Get the first configuration section
      *
      * @see     xp://util.Properties#getNextSection
-     * @access  public
      * @return  string the first section's name
      */
     public function getFirstSection() {
@@ -211,7 +199,6 @@
      * </code>
      *
      * @see     xp://util.Properties#getFirstSection
-     * @access  public
      * @return  mixed string section or FALSE if this was the last section
      */
     public function getNextSection() {
@@ -224,7 +211,6 @@
     /**
      * Read an entire section into an array
      *
-     * @access  public
      * @param   string name
      * @param   mixed[] default default array() what to return in case the section does not exist
      * @return  array
@@ -240,7 +226,6 @@
     /**
      * Read a value as string
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   string default default '' what to return in case the section or key does not exist
@@ -257,7 +242,6 @@
     /**
      * Read a value as array
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   mixed[] default default NULL what to return in case the section or key does not exist
@@ -274,13 +258,12 @@
     /**
      * Read a value as hash
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   util.Hashmap default default NULL what to return in case the section or key does not exist
      * @return  &util.Hashmap
      */
-    public function &readHash($section, $key, $default= NULL) {
+    public function readHash($section, $key, $default= NULL) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       
@@ -300,7 +283,6 @@
     /**
      * Read a value as range
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   int[] default default NULL what to return in case the section or key does not exist
@@ -317,7 +299,6 @@
     /**
      * Read a value as integer
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   int default default 0 what to return in case the section or key does not exist
@@ -334,7 +315,6 @@
     /**
      * Read a value as float
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   float default default 0.0 what to return in case the section or key does not exist
@@ -351,7 +331,6 @@
     /**
      * Read a value as boolean
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   bool default default FALSE what to return in case the section or key does not exist
@@ -366,7 +345,6 @@
     /**
      * Returns whether a section exists
      *
-     * @access  public
      * @param   string name
      * @return  bool
      */
@@ -378,7 +356,6 @@
     /**
      * Add a section
      *
-     * @access  public
      * @param   string name
      * @param   bool overwrite default FALSE whether to overwrite existing sections
      * @return  string name
@@ -392,7 +369,6 @@
     /**
      * Add a string (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   string value
@@ -406,7 +382,6 @@
     /**
      * Add a string (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   int value
@@ -420,7 +395,6 @@
     /**
      * Add a float (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   float value
@@ -434,7 +408,6 @@
     /**
      * Add a boolean (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   bool value
@@ -448,7 +421,6 @@
     /**
      * Add an array string (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   array value
@@ -462,7 +434,6 @@
     /**
      * Add a hashmap (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   mixed value either a util.Hashmap or an array
@@ -471,7 +442,7 @@
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       if (is('Hashmap', $value)) {
-        $this->_data[$section][$key]= &$value;
+        $this->_data[$section][$key]= $value;
       } else {
         $this->_data[$section][$key]= new Hashmap($value);
       }
@@ -480,7 +451,6 @@
     /**
      * Add a comment (and the section, if necessary)
      *
-     * @access  public
      * @param   string section
      * @param   string key
      * @param   string value

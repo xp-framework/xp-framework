@@ -24,11 +24,10 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
       if (2 != sscanf($request->getData(), '%[^/]/%s', $collection, $fqcn)) {
         $response->addFormError('illegalaccess');
         return;
@@ -40,7 +39,7 @@
       $classname= substr($fqcn, $p+ 1);
       
       // Add "breadcrumb" navigation to formresult
-      with ($n= &$response->addFormResult(new Node('breadcrumb'))); {
+      with ($n= $response->addFormResult(new Node('breadcrumb'))); {
         $n->addChild(new Node('current', NULL, array(
           'collection' => $collection,
           'package'    => $package,
@@ -66,8 +65,8 @@
 
       // Add to formresult
       with (
-        $n= &$response->addFormResult(new Node('apidoc')),
-        $comments= &$n->addChild(new Node('comments'))
+        $n= $response->addFormResult(new Node('apidoc')),
+        $comments= $n->addChild(new Node('comments'))
       ); {
       
         // File comments
@@ -78,7 +77,7 @@
         ));
         
         // Class comments
-        $class= &$comments->addChild(new Node('class', NULL, array(
+        $class= $comments->addChild(new Node('class', NULL, array(
           'name'            => $apidoc['comments']['class']->name,
           'extends'         => $apidoc['comments']['class']->extends,
           'model'           => $apidoc['comments']['class']->model,
@@ -101,7 +100,7 @@
         
         // Method comments
         foreach ($apidoc['comments']['function'] as $name => $comment) {
-          $method= &$comments->addChild(new Node('method', NULL, array(
+          $method= $comments->addChild(new Node('method', NULL, array(
             'name'            => $name,
             'access'          => $comment->access,
             'model'           => $comment->model

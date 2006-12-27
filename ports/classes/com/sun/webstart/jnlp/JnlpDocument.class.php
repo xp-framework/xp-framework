@@ -34,7 +34,6 @@
     /**
      * Create a new JNLP document 
      *
-     * @access  public
      * @param   string codebase
      * @param   string href
      * @param   string spec default JNLP_SPEC_1_PLUS
@@ -44,22 +43,21 @@
       $this->root->setAttribute('spec', $spec);
       $this->root->setAttribute('codebase', $codebase);
       $this->root->setAttribute('href', $href);
-      $this->_nodes['information']= &$this->root->addChild(new Node('information'));
-      $this->_nodes['security']= &$this->root->addChild(new Node('security'));
-      $this->_nodes['resources']= &$this->root->addChild(new Node('resources'));
-      $this->_nodes['application-desc']= &$this->root->addChild(new Node('application-desc'));
+      $this->_nodes['information']= $this->root->addChild(new Node('information'));
+      $this->_nodes['security']= $this->root->addChild(new Node('security'));
+      $this->_nodes['resources']= $this->root->addChild(new Node('resources'));
+      $this->_nodes['application-desc']= $this->root->addChild(new Node('application-desc'));
     }
 
     /**
      * Find first node within a given base (one-level search, no recursion)
      * whose (tag) name matches the specified name.
      *
-     * @access  protected
      * @param   &xml.Node base
      * @param   string name
      * @return  &xml.Node
      */
-    public function &findFirst(&$base, $name) {
+    public function findFirst($base, $name) {
       for ($i= 0, $s= sizeof($base->children); $i < $s; $i++) {
         if ($name == $base->children[$i]->getName()) return $base->children[$i];
       }
@@ -69,13 +67,12 @@
     /**
      * Extract information from nodesets
      *
-     * @access  protected
      * @throws  lang.FormatException in case extraction fails
      */
     public function extract() {
 
       // Extract information
-      with ($this->_nodes['information']= &$this->findFirst($this->root, 'information')); {
+      with ($this->_nodes['information']= $this->findFirst($this->root, 'information')); {
         $this->information= new JnlpInformation();
         for ($i= 0, $s= sizeof($this->_nodes['information']->children); $i < $s; $i++) {
           $name= $this->_nodes['information']->children[$i]->getName();
@@ -122,12 +119,12 @@
       }
       
       // Extract security (TBI)
-      $this->_nodes['security']= &$this->findFirst($this->root, 'security');
+      $this->_nodes['security']= $this->findFirst($this->root, 'security');
 
       // Extract resources
-      with ($this->_nodes['resources']= &$this->findFirst($this->root, 'resources')); {
+      with ($this->_nodes['resources']= $this->findFirst($this->root, 'resources')); {
         for ($i= 0, $s= sizeof($this->_nodes['resources']->children); $i < $s; $i++) {
-          $node= &$this->_nodes['resources']->children[$i];
+          $node= $this->_nodes['resources']->children[$i];
           switch ($name= $node->getName()) {
             case 'j2se':    // The Java2 version required
               $this->resources[]= new JnlpJ2seResource(
@@ -174,7 +171,7 @@
       }
 
       // Extract application description
-      with ($this->_nodes['application-desc']= &$this->findFirst($this->root, 'application-desc')); {
+      with ($this->_nodes['application-desc']= $this->findFirst($this->root, 'application-desc')); {
         $this->appdesc= new JnlpApplicationDesc();
         $this->appdesc->setMain_class($this->_nodes['application-desc']->getAttribute('main-class'));
         
@@ -187,13 +184,11 @@
     /**
      * Create a new JNLP document from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &com.sun.webstart.JnlpDocument
      */
-    public static function &fromString($str) {
-      if ($j= &parent::fromString($str, __CLASS__)) {
+    public static function fromString($str) {
+      if ($j= parent::fromString($str, __CLASS__)) {
         $j->extract();
       }
       return $j;
@@ -202,13 +197,11 @@
     /**
      * Create a new JNLP document from a file
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &com.sun.webstart.JnlpDocument
      */
-    public static function &fromFile(&$file) {
-      if ($j= &parent::fromFile($file, __CLASS__)) {
+    public static function fromFile($file) {
+      if ($j= parent::fromFile($file, __CLASS__)) {
         $j->extract();
       }
       return $j;
@@ -217,7 +210,6 @@
     /**
      * Sets the codebase
      *
-     * @access  public
      * @param   string codebase
      */
     public function setCodebase($codebase) {
@@ -227,7 +219,6 @@
     /**
      * Returns the codebase
      *
-     * @access  public
      * @return  string
      */
     public function getCodebase() {
@@ -237,7 +228,6 @@
     /**
      * Sets the spec
      *
-     * @access  public
      * @param   string spec
      */
     public function setSpec($spec) {
@@ -247,7 +237,6 @@
     /**
      * Returns the spec
      *
-     * @access  public
      * @return  string
      */
     public function getSpec() {
@@ -257,7 +246,6 @@
     /**
      * Sets the href
      *
-     * @access  public
      * @param   string href
      */
     public function setHref($href) {
@@ -267,7 +255,6 @@
     /**
      * Returns the href
      *
-     * @access  public
      * @return  string
      */
     public function getHref() {
@@ -277,12 +264,11 @@
     /**
      * Add a resource
      *
-     * @access  public
      * @param   &com.sun.webstart.JnlpResource resource
      * @return  &com.sun.webstart.JnlpResource the added resource
      */
-    public function &addResource(&$resource) {
-      $this->resources[]= &$resource;
+    public function addResource($resource) {
+      $this->resources[]= $resource;
       $this->_nodes['resources']->addChild(new Node(
         $resource->getTagName(), 
         NULL,
@@ -294,7 +280,6 @@
     /**
      * Get all resources
      *
-     * @access  public
      * @return  com.sun.webstart.JnlpResource[]
      */
     public function getResources() {
@@ -304,21 +289,19 @@
     /**
      * Get information
      *
-     * @access  public
      * @return  &com.sun.webstart.JnlpInformation
      */
-    public function &getInformation() {
+    public function getInformation() {
       return $this->information;
     }
 
     /**
      * Set information
      *
-     * @access  public
      * @param   &com.sun.webstart.JnlpInformation i
      */
-    public function setInformation(&$i) {
-      $this->information= &$i;
+    public function setInformation($i) {
+      $this->information= $i;
       $this->_nodes['information']->addChild(new Node('title', $i->getTitle()));
       $this->_nodes['information']->addChild(new Node('vendor', $i->getVendor()));
       foreach ($i->description as $kind => $descr) {
@@ -336,10 +319,9 @@
     /**
      * Get application description
      *
-     * @access  public
      * @return  &com.sun.webstart.JnlpApplicationDesc
      */
-    public function &getApplicationDesc() {
+    public function getApplicationDesc() {
       return $this->appdesc;
     }
   }

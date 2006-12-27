@@ -22,11 +22,9 @@
     /**
      * Return the ConnectionManager's instance
      * 
-     * @model   static
-     * @access  public
      * @return  &rdbms.ConnectionManager
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ConnectionManager();
@@ -45,16 +43,15 @@
      * dsn="sybase://timm:binford@gurke/CAFFEINE?autoconnect=1"
      * </pre>
      *
-     * @access  public
      * @param   &util.Properties properties
      * @return  bool
      * @throws  rdbms.DriverNotSupportedException
      */
-    public function configure(&$properties) {
+    public function configure($properties) {
       $section= $properties->getFirstSection();
       if ($section) do {
         try {
-          $conn= &DriverManager::getConnection($properties->readString($section, 'dsn'));
+          $conn= DriverManager::getConnection($properties->readString($section, 'dsn'));
         } catch (DriverNotSupportedException $e) {
           throw($e);
         }
@@ -74,7 +71,6 @@
      * Retrieves all registered connections as an array of DBConnection
      * objects.
      *
-     * @access  public
      * @return  rdbms.DBConnection[]
      */
     public function getConnections() {
@@ -89,12 +85,12 @@
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    public function &register(&$conn, $hostAlias= NULL, $userAlias= NULL) {
+    public function register($conn, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       
       if (!isset($this->pool[$user.'@'.$host])) {
-        $this->pool[$user.'@'.$host]= &$conn;
+        $this->pool[$user.'@'.$host]= $conn;
       }
       
       return $conn;
@@ -108,7 +104,7 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
-    public function &get($host, $user) {
+    public function get($host, $user) {
       if (!isset($this->pool[$user.'@'.$host])) {
         throw(new ConnectionNotRegisteredException(
           'No connections registered for '.$user.'@'.$host
@@ -125,11 +121,11 @@
      * @return  &rdbms.DBConnection
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
-    public function &getByHost($hostName, $num= -1) {
+    public function getByHost($hostName, $num= -1) {
       $results= array();
       foreach (array_keys($this->pool) as $id) {
         list ($user, $host)= explode('@', $id);
-        if ($hostName == $host) $results[]= &$this->pool[$id];
+        if ($hostName == $host) $results[]= $this->pool[$id];
       }
       if (sizeof($results) < 1) {
         throw(new ConnectionNotRegisteredException(

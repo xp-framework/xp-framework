@@ -16,28 +16,25 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &webservices.soap.SOAPFault fault
      */
-    public function __construct(&$fault) {
+    public function __construct($fault) {
       parent::__construct($fault->faultstring);
-      $this->fault= &$fault;
+      $this->fault= $fault;
     }
 
     /**
      * Get Fault
      *
-     * @access  public
      * @return  &webservices.soap.SOAPFault
      */
-    public function &getFault() {
+    public function getFault() {
       return $this->fault;
     }
 
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

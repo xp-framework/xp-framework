@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed arg
      */
     public function __construct($arg) {
@@ -31,7 +30,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  string ISO 8601 conform date (1977-12-14T11:55:0)
      */
     public function toString() {
@@ -41,7 +39,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() {

@@ -21,17 +21,15 @@
     /**
      * Set rootdoc
      *
-     * @access  public
      * @param   &RootDoc root
      */
-    public function setRoot(&$root) {
-      $this->root= &$root;
+    public function setRoot($root) {
+      $this->root= $root;
     }
     
     /**
      * Returns the non-qualified name of this Doc item
      *
-     * @access  public
      * @return  string
      */
     public function name() {
@@ -41,7 +39,6 @@
     /**
      * Return the full unprocessed text of the comment.
      *
-     * @access  public
      * @return  string
      */
     public function getRawCommentText() {
@@ -51,13 +48,12 @@
     /**
      * Helper method which parses the raw doc comment
      *
-     * @access  protected
      * @param   int what
      * @return  array
      */
     public function parseDetail($what) {
       if (!isset($this->detail)) {
-        $tm= &TagletManager::getInstance();
+        $tm= TagletManager::getInstance();
 
         $stripped= preg_replace('/[\r\n\s\t]+\* ?/', "\n", trim($this->rawComment, "/*\n\r\t "));
         $tagstart= FALSE === ($p= strpos($stripped, "\n@")) ? strlen($stripped)+ 1 : $p;
@@ -70,8 +66,8 @@
         if ($t= strtok(trim(substr($stripped, $tagstart)), '@')) do {
           list($kind, $rest)= explode(' ', trim($t), 2);
           
-          if ($tag= &$tm->make($this, $kind, trim($rest))) {
-            $this->detail['tags'][$kind][]= &$tag;
+          if ($tag= $tm->make($this, $kind, trim($rest))) {
+            $this->detail['tags'][$kind][]= $tag;
           }
         } while ($t= strtok('@'));
       }
@@ -81,7 +77,6 @@
     /**
      * Return the text of the comment for this doc item.
      *
-     * @access  public
      * @return  string
      */
     public function commentText() {
@@ -92,7 +87,6 @@
      * Return tags. If the parameter "kind" is non-null, will return
      * tags only of the specified kind, otherwise all.
      *
-     * @access  public
      * @param   string kind default NULL kind of tags, e.g. "param"
      * @return  Tag[]
      */

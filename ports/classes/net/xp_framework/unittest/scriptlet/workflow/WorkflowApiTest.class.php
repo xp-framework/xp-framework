@@ -23,7 +23,6 @@
     /**
      * Setup method.
      *
-     * @access  public
      */
     public function setUp() {
       $this->scriptlet= new AbstractXMLScriptlet(ClassLoader::getDefault());
@@ -33,7 +32,6 @@
     /**
      * Teardown method.
      *
-     * @access  public
      */
     public function tearDown() {
       $this->scriptlet->finalize();
@@ -42,11 +40,10 @@
     /**
      * Teardown method.
      *
-     * @access  protected
      * @param   &net.xp_framework.unittest.scriptlet.mock.MockRequest
      * @return  &net.xp_framework.unittest.scriptlet.mock.MockResponse
      */
-    public function &process(&$request) {
+    public function process($request) {
       $request->initialize();
       $response= new MockResponse();
       $this->scriptlet->processWorkflow($request, $response);
@@ -56,7 +53,6 @@
     /**
      * Tests that a state's setup() and process() methods are called.
      *
-     * @access  public
      */
     #[@test]
     public function setupAndProcessCalled() {

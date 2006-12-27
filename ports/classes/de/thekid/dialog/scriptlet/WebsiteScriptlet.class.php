@@ -20,21 +20,19 @@
     /**
      * Set our own processor object
      *
-     * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    public function &_processor() {
+    public function _processor() {
       return new DomXSLProcessor();
     }
 
     /**
      * Sets the responses XSL stylesheet
      *
-     * @access  protected
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    public function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s/%s.xsl',
         $request->getProduct(),

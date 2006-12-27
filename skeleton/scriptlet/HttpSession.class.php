@@ -59,7 +59,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       ini_set('session.use_cookies', 0);
@@ -69,7 +68,6 @@
     /**
      * Initializes the session
      *
-     * @access  public
      * @param   string id session id
      * @return  bool
      */
@@ -97,7 +95,6 @@
     /**
      * Returns if this session is valid
      *
-     * @access  public
      * @return  bool valid
      */
     public function isValid() {
@@ -107,7 +104,6 @@
     /**
      * Returns if this session is a new session
      *
-     * @access  public
      * @return  bool new
      */
     public function isNew() {
@@ -117,7 +113,6 @@
     /**
      * Returns this session's Id
      *
-     * @access  public
      * @return  string id
      */
     public function getId() {
@@ -128,7 +123,6 @@
      * Retrieves the time when this session was created, as Unix-
      * timestamp
      *
-     * @access  public
      * @return  int Unix-timestamp
      * @throws  lang.IllegalStateException when session is invalid
      */
@@ -141,7 +135,6 @@
      * Resets the session and deletes all variables. The number of deleted
      * session variables is being returned
      *
-     * @access  public
      * @return  int
      * @throws  lang.IllegalStateException when session is invalid
      */
@@ -157,12 +150,11 @@
      * Registers a variable. If another variable is already registered
      * under the specified name, it is replaced
      *
-     * @access  public
      * @param   string name
      * @param   mixed& value Any data type
      * @throws  lang.IllegalStateException when session is invalid
      */
-    public function putValue($name, &$value) {
+    public function putValue($name, $value) {
       if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       $_SESSION[$name]= serialize($value);
     }
@@ -171,13 +163,12 @@
      * Retrieves a value previously registered with the specified name
      * or the default value in case this name does not exist
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL 
      * @return  &mixed value
      * @throws  lang.IllegalStateException when session is invalid
      */
-    public function &getValue($name, $default= NULL) {
+    public function getValue($name, $default= NULL) {
       if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       if (isset($_SESSION[$name])) return unserialize($_SESSION[$name]); else return $default;
     }
@@ -185,7 +176,6 @@
     /**
      * Checks whether a value by specified name exists
      *
-     * @access  public
      * @param   string name 
      * @return  bool TRUE if the value exists, FALSE otherwiese
      */
@@ -197,7 +187,6 @@
      * Removes a value from the session. If no value is found for
      * the specified name, nothing happens
      *
-     * @access  public
      * @param   name The name of the value to delete
      */
     public function removeValue($name) {
@@ -210,11 +199,10 @@
     /**
      * Return an array of all names registered in this session
      *
-     * @access  public
      * @return  &string[] names
      * @throws  lang.IllegalStateException when session is invalid
      */
-    public function &getValueNames() {
+    public function getValueNames() {
       if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
       $names= array_keys($_SESSION);
       unset($names[array_search(SESS_CREATE, $names)]);
@@ -224,7 +212,6 @@
     /**
      * Invalidates a session and deletes all values
      *
-     * @access  public
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function invalidate() {

@@ -51,7 +51,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string package
      */
     public function __construct($package) {
@@ -62,49 +61,45 @@
     /**
      * Create a request object.
      *
-     * @access  protected
      * @return  &webservices.soap.rpc.SoapRpcRequest
      */
-    public function &_request() {
+    public function _request() {
       return new SoapRpcRequest();
     }
 
     /**
      * Create a response object.
      *
-     * @access  protected
      * @return  &webservices.soap.rpc.SoapRpcResponse
      */
-    public function &_response() {
+    public function _response() {
       return new SoapRpcResponse();
     }
     
     /**
      * Create message object.
      *
-     * @access  protected
      * @return  &webservices.soap.SOAPMessage
      */
-    public function &_message() {
+    public function _message() {
       return new SOAPMessage();
     }    
 
     /**
      * Calls the handler that the action reflects to
      *
-     * @access  protected
      * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
      * @return  &mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */
-    public function &callReflectHandler(&$msg) {
+    public function callReflectHandler($msg) {
       try {
-        $r= &parent::callReflectHandler($msg);
+        $r= parent::callReflectHandler($msg);
       } catch (Throwable $e) {
         throw($e);   // catch/rethrow because of PHP4 limitations
       }
-      return array(&$r);
+      return array($r);
     }   
   }
 ?>

@@ -6,8 +6,7 @@
 
   uses(
     'util.Date',
-    'util.TimeSpan',
-    'util.Comparator'
+    'util.TimeSpan'
   );
   
   /**
@@ -17,18 +16,16 @@
    * @test    xp://util.DateUtil
    * @purpose Utils to calculate with Date objects
    */
-  class DateUtil extends Object implements Comparator {
+  class DateUtil extends Object {
 
     /**
      * Returns a Date object which represents the date at
      * the given date at midnight.
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &getMidnight(&$date) {
+    public static function getMidnight($date) {
       $d= new Date(Date::mktime (
         0,
         0,
@@ -43,12 +40,10 @@
     /**
      * Gets the last day of the month
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &getLastOfMonth(&$date) {
+    public static function getLastOfMonth($date) {
       $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
@@ -63,12 +58,10 @@
     /**
      * Gets the first day of the month
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &getFirstOfMonth(&$date) {
+    public static function getFirstOfMonth($date) {
       $d= new Date(Date::mktime (
         $date->getHours(),
         $date->getMinutes(),
@@ -83,13 +76,11 @@
     /**
      * Adds a positive or negative amount of months
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addMonths(&$date, $count= 1) {
+    public static function addMonths($date, $count= 1) {
       $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
@@ -104,26 +95,22 @@
     /**
      * Adds a positive or negative amount of weeks
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addWeeks(&$date, $count= 1) {
+    public static function addWeeks($date, $count= 1) {
       return DateUtil::addDays($date, $count * 7);
     }
     
     /**
      * Adds a positive or negative amount of days
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date 
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addDays(&$date, $count= 1) {
+    public static function addDays($date, $count= 1) {
       $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
@@ -138,13 +125,11 @@
     /**
      * Adds a positive or negative amount of hours
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date 
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addHours(&$date, $count= 1) {
+    public static function addHours($date, $count= 1) {
       $d= new Date(Date::mktime(
         $date->getHours() + $count,
         $date->getMinutes(),
@@ -159,13 +144,11 @@
     /**
      * Adds a positive or negative amount of minutes
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date 
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addMinutes(&$date, $count= 1) {
+    public static function addMinutes($date, $count= 1) {
       $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes() + $count,
@@ -180,13 +163,11 @@
     /**
      * Adds a positive or negative amount of seconds
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date 
      * @param   int count default 1
      * @return  &util.Date
      */
-    public static function &addSeconds(&$date, $count= 1) {
+    public static function addSeconds($date, $count= 1) {
       $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
@@ -202,13 +183,11 @@
      * returns a TimeSpan representing the difference 
      * between the two given Date objects
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date d1
      * @param   &util.Date d2
      * @return  &util.TimeSpan
      */
-    public static function &timeSpanBetween(&$d1, &$d2) {
+    public static function timeSpanBetween($d1, $d2) {
       $t= new TimeSpan($d1->getTime()-$d2->getTime());
       return $t;
     }
@@ -224,13 +203,11 @@
      *   usort($datelist, array('DateUtil', 'compare'))
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date a
      * @param   &util.Date b
      * @return  int
      */
-    public static function compare(&$a, &$b) {
+    public static function compare($a, $b) {
       return $b->compareTo($a);
     }
 

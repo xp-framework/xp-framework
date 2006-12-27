@@ -64,7 +64,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host the host the NSCA server is running on
      * @param   int port
      * @param   int version default NSCA_VERSION_3
@@ -85,7 +84,6 @@
     /**
      * Set Version
      *
-     * @access  public
      * @param   int version
      */
     public function setVersion($version) {
@@ -95,7 +93,6 @@
     /**
      * Get Version
      *
-     * @access  public
      * @return  int
      */
     public function getVersion() {
@@ -105,7 +102,6 @@
     /**
      * Set Cryptmethod
      *
-     * @access  public
      * @param   int cryptmethod
      */
     public function setCryptmethod($cryptmethod) {
@@ -115,7 +111,6 @@
     /**
      * Get Cryptmethod
      *
-     * @access  public
      * @return  int
      */
     public function getCryptmethod() {
@@ -125,7 +120,6 @@
     /**
      * Connects to the NSCA server
      *
-     * @access  public
      * @return  bool
      */
     public function connect() {
@@ -140,7 +134,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -173,7 +166,6 @@
     /**
      * Closes the communication socket to the NSCA server
      *
-     * @access  public
      * @return  bool 
      */
     public function close() {
@@ -183,12 +175,11 @@
     /**
      * Helper method which packs the message 
      *
-     * @access  private
      * @param   string crc
      * @param   &org.nagios.nsca.NscaMessage message
      * @return  string packed data
      */
-    public function pack($crc, &$message) {
+    public function pack($crc, $message) {
       return pack(
         'nxxNa4na64a128a512xx',
         $this->version,
@@ -204,7 +195,6 @@
     /**
      * Helper method which encrypts data
      *
-     * @access  public
      * @param   string data
      * @return  string encrypted data
      * @throws  lang.MethodNotImplementedException in case the encryption method is not supported
@@ -232,19 +222,18 @@
     /**
      * Send a NSCA message to the server
      *
-     * @access  public
      * @param   &org.nagios.nsca.NscaMessage message
      * @return  bool
      * @throws  lang.IllegalStateException
      */
-    public function send(&$message) {
+    public function send($message) {
       if (!$this->sock->isConnected()) {
         throw(new IllegalStateException('Not connected'));
       }
       
       // Calculate CRC32 checksum, then build the final packet with the sig
       // and encrypt it using defined crypt method
-      $crc= &CRC32::fromString($this->pack(0, $message));      
+      $crc= CRC32::fromString($this->pack(0, $message));      
       $data= $this->encrypt($this->pack($crc->getValue(), $message));
       
       // Finally, send data to the socket

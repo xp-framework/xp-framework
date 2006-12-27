@@ -41,7 +41,6 @@
     /**
      * Constructor. Initializes the default mappings
      *
-     * @access  public
      */
     public function __construct() {
       $this->mapping('T', $m= new DateMapping());
@@ -70,12 +69,11 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @access  public
      * @param   &mixed var
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    public function representationOf(&$var, $ctx= array()) {
+    public function representationOf($var, $ctx= array()) {
       switch (gettype($var)) {
         case 'NULL':    return 'N;';
         case 'boolean': return 'b:'.($var ? 1 : 0).';';
@@ -89,7 +87,7 @@
           }
           return $s.'}';
         case 'object': {
-          if (FALSE !== ($m= &$this->mappingFor($var))) {
+          if (FALSE !== ($m= $this->mappingFor($var))) {
             return $m->representationOf($this, $var, $ctx);
           }
           
@@ -113,11 +111,10 @@
     /**
      * Fetch best fitted mapper for the given object
      *
-     * @access  protected
      * @param   &lang.Object var
      * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
-    public function &mappingFor(&$var) {
+    public function mappingFor($var) {
       if (!is('lang.Generic', $var)) return FALSE;
       
       // Check the mapping-cache for an entry for this object's class
@@ -129,7 +126,7 @@
       // tree of the object's class to the class being handled by the mapping.
       $cinfo= array();
       foreach (array_keys($this->mappings) as $token) {
-        $class= &$this->mappings[$token]->handledClass();
+        $class= $this->mappings[$token]->handledClass();
         if (!is($class->getName(), $var)) continue;
 
         $distance= 0;
@@ -137,10 +134,10 @@
 
           // Check for direct match
           if ($class->getName() != $var->getClassName()) $distance++;
-        } while (0 < $distance && NULL !== ($class= &$class->getParentclass()));
+        } while (0 < $distance && NULL !== ($class= $class->getParentclass()));
 
         // Register distance to object's class in cinfo
-        $cinfo[$distance]= &$this->mappings[$token];
+        $cinfo[$distance]= $this->mappings[$token];
 
         if (isset($cinfo[0])) break;
       }
@@ -151,29 +148,28 @@
       ksort($cinfo, SORT_NUMERIC);
       
       // First class is best class
-      $handlerClass= &$cinfo[key($cinfo)];
+      $handlerClass= $cinfo[key($cinfo)];
 
       // Remember this, so we can take shortcut next time
-      $this->_classMapping[$var->getClassName()]= &$cinfo[key($cinfo)];
+      $this->_classMapping[$var->getClassName()]= $cinfo[key($cinfo)];
       return $this->_classMapping[$var->getClassName()];
     }
 
     /**
      * Register or retrieve a mapping for a token
      *
-     * @access  public
      * @param   string token
      * @param   &remote.protocol.SerializerMapping mapping
      * @return  &remote.protocol.SerializerMapping mapping
      * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
-    public function &mapping($token, &$mapping) {
+    public function mapping($token, $mapping) {
       if (NULL !== $mapping) {
         if (!is('SerializerMapping', $mapping)) throw(new IllegalArgumentException(
           'Given argument is not a SerializerMapping ('.xp::typeOf($mapping).')'
         ));
 
-        $this->mappings[$token]= &$mapping;
+        $this->mappings[$token]= $mapping;
         $this->_classMapping= array();
       }
       
@@ -183,7 +179,6 @@
     /**
      * Register or retrieve a mapping for a token
      *
-     * @access  public
      * @param   string token
      * @param   string exception fully qualified class name
      * @return  string 
@@ -196,7 +191,6 @@
     /**
      * Register or retrieve a mapping for a package
      *
-     * @access  public
      * @param   string token
      * @param   string class fully qualified class name
      * @return  string fully qualified class name
@@ -209,14 +203,13 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @access  public
      * @param   &remote.protocol.SerializedData serialized
      * @param   array context default array()
      * @return  &mixed
      * @throws  lang.ClassNotFoundException if a class cannot be found
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
-    public function &valueOf(&$serialized, $context= array()) {
+    public function valueOf($serialized, $context= array()) {
       static $types= NULL;
       
       if (!$types) $types= array(
@@ -268,7 +261,7 @@
           $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
             $key= $this->valueOf($serialized, $context);
-            $a[$key]= &$this->valueOf($serialized, $context);
+            $a[$key]= $this->valueOf($serialized, $context);
           }
           $serialized->offset++;  // Closing "}"
           return $a;
@@ -280,7 +273,7 @@
           $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
             $member= $this->valueOf($serialized, $context);
-            $instance->{$member}= &$this->valueOf($serialized, $context);
+            $instance->{$member}= $this->valueOf($serialized, $context);
           }
           $serialized->offset++; // Closing "}"
           return $instance;
@@ -289,26 +282,26 @@
         case 'O': {     // generic objects
           $name= $serialized->consumeString();
           try {
-            $class= &XPClass::forName($this->packageMapping($name));
+            $class= XPClass::forName($this->packageMapping($name));
           } catch (ClassNotFoundException $e) {
             $instance= new UnknownRemoteObject($name);
             $size= $serialized->consumeSize();
             $serialized->offset++;  // Opening "{"
             for ($i= 0; $i < $size; $i++) {
               $member= $this->valueOf($serialized, $context);
-              $members[$member]= &$this->valueOf($serialized, $context);
+              $members[$member]= $this->valueOf($serialized, $context);
             }
             $serialized->offset++; // Closing "}"
             $instance->__members= $members;
             return $instance;
           }
 
-          $instance= &$class->newInstance();
+          $instance= $class->newInstance();
           $size= $serialized->consumeSize();
           $serialized->offset++;  // Opening "{"
           for ($i= 0; $i < $size; $i++) {
             $member= $this->valueOf($serialized, $context);
-            $instance->{$member}= &$this->valueOf($serialized, $context);
+            $instance->{$member}= $this->valueOf($serialized, $context);
           }
           $serialized->offset++; // Closing "}"
           return $instance;
@@ -328,7 +321,7 @@
         }
 
         default: {      // default, check if we have a mapping
-          if (!($mapping= &$this->mapping($token, $m= NULL))) {
+          if (!($mapping= $this->mapping($token, $m= NULL))) {
             throw(new FormatException(
               'Cannot deserialize unknown type "'.$token.'" ('.$serialized->toString().')'
             ));

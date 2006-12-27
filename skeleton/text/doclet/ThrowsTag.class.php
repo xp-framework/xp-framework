@@ -19,13 +19,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &ClassDoc exception
      * @param   string label
      */
-    public function __construct(&$exception, $label) {
+    public function __construct($exception, $label) {
       parent::__construct('throws', $label);
-      $this->exception= &$exception;
+      $this->exception= $exception;
     }
   }
 ?>

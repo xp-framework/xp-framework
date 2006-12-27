@@ -18,28 +18,25 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   io.collections.iterate.IterationFilter filter
      */
-    public function __construct(&$filter) {
+    public function __construct($filter) {
       $this->filter= $filter;
     }
   
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       return !$this->filter->accept($element);
     }
 
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

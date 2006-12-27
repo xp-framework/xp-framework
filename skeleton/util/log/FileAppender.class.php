@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename default 'php://stderr' filename to log to
      */
     public function __construct($filename= 'php://stderr') {
@@ -30,7 +29,6 @@
     /**
      * Appends log data to the file
      *
-     * @access  public
      * @param   mixed* args variables
      */
     public function append() {

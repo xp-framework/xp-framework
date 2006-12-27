@@ -20,11 +20,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &Team::getPeer()); {
+      with ($peer= Team::getPeer()); {
         $peer->setTable('uska.team');
         $peer->setConnection('uskadb');
         $peer->setIdentity('team_id');
@@ -39,30 +37,27 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int team_id
      * @return  &de.uska.db.Team object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByTeam_id($team_id) {
-      $peer= &Team::getPeer();
+    public function getByTeam_id($team_id) {
+      $peer= Team::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL))));
     }
 
     /**
      * Retrieves team_id
      *
-     * @access  public
      * @return  int
      */
     public function getTeam_id() {
@@ -72,7 +67,6 @@
     /**
      * Sets team_id
      *
-     * @access  public
      * @param   int team_id
      * @return  int the previous value
      */
@@ -83,7 +77,6 @@
     /**
      * Retrieves name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -93,7 +86,6 @@
     /**
      * Sets name
      *
-     * @access  public
      * @param   string name
      * @return  string the previous value
      */

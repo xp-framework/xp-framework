@@ -17,12 +17,10 @@
     /**
      * Create a new checksum from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.checksum.CRC16
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       $sum= 0xFFFF;
       for ($x= 0, $s= strlen ($str); $x < $s; $x++) {
         $sum= $sum ^ ord($str{$x});
@@ -39,12 +37,10 @@
     /**
      * Create a new checksum from a file object
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &security.checksum.CRC16
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());

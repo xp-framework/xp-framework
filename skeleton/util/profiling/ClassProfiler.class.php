@@ -23,7 +23,6 @@
     /**
      * Construct a profiler, overload this class
      *
-     * @access  public
      */
     public function __construct() {
       $this->_profilee= NULL;
@@ -32,17 +31,15 @@
     /**
      * Attach a profilee
      *
-     * @access  public
      * @param   &Object obj
      */    
-    public function attachProfilee(&$obj) {
+    public function attachProfilee($obj) {
       $this->_profilee= $obj;
     }
 
     /**
      * The "proxy" function
      *
-     * @access  public
      * @param   string method
      * @param   mixed params
      * @param   &mixed return
@@ -58,7 +55,7 @@
         $this->calls[$method]= 0;
       
       // Execute the function
-      $return= call_user_func_array (array (&$this->_profilee, $method), $params);
+      $return= call_user_func_array (array ($this->_profilee, $method), $params);
 
       $t->stop();
       $this->timer[$method]+= $t->elapsedTime();
@@ -70,7 +67,6 @@
     /**
      * Get a property
      *
-     * @access  public
      * @param   string propname
      * @param   &mixed propvalue
      * @return  boolean success
@@ -79,14 +75,13 @@
       if (!isset ($this->_profilee->{$propname}))
         return FALSE;
         
-      $propvalue= &$this->_profilee->{$propname};
+      $propvalue= $this->_profilee->{$propname};
       return $propvalue;        
     }
     
     /**
      * Set a property
      *
-     * @access  public
      * @param   string propname
      * @param   &mixed propvalue
      * @return  bool success
@@ -99,7 +94,6 @@
     /**
      * Gets all method names for called methods
      *
-     * @access  public
      * @return  array names
      */
     public function getCalledFunction() {
@@ -109,7 +103,6 @@
     /**
      * Retrieve the profiling results for a given function
      *
-     * @access  public
      * @param   string method
      * @return  float time
      */
@@ -120,7 +113,6 @@
     /**
      * Retrieve the call counter for a given function
      *
-     * @access  public
      * @param   string method
      * @return  int calls
      */
@@ -132,7 +124,6 @@
      * Creates a string representation for this class and
      * its profiling information.
      *
-     * @access  public
      * @return  string representation
      */
     public function toString() {

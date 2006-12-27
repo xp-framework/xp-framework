@@ -22,12 +22,11 @@
      * Helper method that asserts a given element is an IOElement
      * and that its URI equals the expected URI.
      *
-     * @access  protected
      * @param   string uri
      * @param   &io.collections.IOElement element
      * @throws  unittest.AssertionFailedError
      */
-    public function assertElement($uri, &$element) {
+    public function assertElement($uri, $element) {
       $this->assertSubClass($element, 'io.collections.IOElement') &&
       $this->assertEquals($uri, $element->getURI());
     }
@@ -35,12 +34,11 @@
     /**
      * Returns a collection 
      *
-     * @access  public
      * @param   string name
      * @param   io.collections.IOElement[] elements
      * @return  &io.collections.IOCollection
      */
-    public function &newCollection($name, $elements) {
+    public function newCollection($name, $elements) {
       $c= new MockCollection($name);
       foreach ($elements as $element) {
         $c->addElement($element);
@@ -51,11 +49,10 @@
     /**
      * Returns an empty collection.
      *
-     * @access  public
      * @param   string name
      * @return  &io.collections.IOCollection
      */
-    public function &emptyCollection($name) {
+    public function emptyCollection($name) {
       return $this->newCollection($name, array());
     }
 
@@ -63,7 +60,6 @@
      * Test CollectionComposite's constructor throws an exception when 
      * passed an empty list
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function constructorThrowsExceptionForEmptyList() {
@@ -73,7 +69,6 @@
     /**
      * Test next() returns NULL when no elements are left
      *
-     * @access  public
      */
     #[@test]
     public function nextReturnsNullForOneEmptyCollection() {
@@ -86,7 +81,6 @@
     /**
      * Test next() returns NULL when no elements are left
      *
-     * @access  public
      */
     #[@test]
     public function nextReturnsNullForTwoEmptyCollections() {
@@ -102,7 +96,6 @@
     /**
      * Test next() returns elements from all collections
      *
-     * @access  public
      */
     #[@test]
     public function elementsFromAllCollections() {

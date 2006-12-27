@@ -23,12 +23,11 @@
     /**
      * Set up the context.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      */
-    public function setup(&$request) {
-      $cm= &ConnectionManager::getInstance();
-      $db= &$cm->getByHost('uska', 0);
+    public function setup($request) {
+      $cm= ConnectionManager::getInstance();
+      $db= $cm->getByHost('uska', 0);
       
       $this->eventtypes= array();
       try {
@@ -46,16 +45,15 @@
     /**
      * Process the context.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    public function process(&$request) {
+    public function process($request) {
       if ($this->user) {
         $cookie= $request->getCookie('uska-user');
         if (!is('scriptlet.Cookie', $cookie) || !$this->user->getUsername() == $cookie->getValue()) {
-          $log= &Logger::getInstance();
-          $cat= &$log->getCategory();
+          $log= Logger::getInstance();
+          $cat= $log->getCategory();
           
           $cat->warn('User', $this->user->getUsername(), 'has exposed his session id to user', $cookie);
           $cat->warn('Destroying session', $request->getSessionId());
@@ -81,10 +79,9 @@
     /**
      * Insert status information to result tree
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function insertStatus(&$response) {
+    public function insertStatus($response) {
       if (isset($this->_forwardTo)) {
 
         // Forward to same page without session (session hijacking)
@@ -93,11 +90,11 @@
       }
       
       if ($this->user) {
-        $n= &$response->addFormResult(Node::fromObject($this->user, 'user'));
+        $n= $response->addFormResult(Node::fromObject($this->user, 'user'));
         $n->addChild(Node::fromArray(array_keys($this->permissions), 'permissions'));
       }
       
-      $enode= &$response->addFormResult(new node('eventtypes'));
+      $enode= $response->addFormResult(new node('eventtypes'));
       foreach ($this->eventtypes as $id => $desc) {
         $enode->addChild(new Node('type', $desc['name'], array(
           'id' => $id,
@@ -109,29 +106,26 @@
     /**
      * Set user.
      *
-     * @access  public
      * @param   &de.uska.db.Player user
      */
-    public function setUser(&$user) {
-      $this->user= &$user;
+    public function setUser($user) {
+      $this->user= $user;
       $this->setChanged();
     }
     
     /**
      * Set permissions
      *
-     * @access  public
      * @param   &array perms
      */
-    public function setPermissions(&$perm) {
-      $this->permissions= &$perm;
+    public function setPermissions($perm) {
+      $this->permissions= $perm;
       $this->setChanged();
     }
     
     /**
      * Check whether user has a certain permission
      *
-     * @access  public
      * @param   string name
      * @return  bool
      */

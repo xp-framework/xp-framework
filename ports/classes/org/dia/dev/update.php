@@ -12,7 +12,7 @@
     'org.dia.UpdateVisitor'
   );
 
-  $P= &new ParamString();
+  $P= new ParamString();
   if (!$P->exists('classes') or !$P->exists('diagram')) {
     die('Parameters "--classes=ful.qal.class[,oth.qual.class,...]" and "--diagram=file.dia" are required!');
   } else {
@@ -33,23 +33,23 @@
         Console::writeLine('Using default "depend=TRUE"...');
       }
 
-      $Dia= &DiaMarshaller::marshal($classes, $recurse, $depend);
+      $Dia= DiaMarshaller::marshal($classes, $recurse, $depend);
       $Dia->saveTo($file, FALSE);
     } else { // else: update diagram
       Console::writeLine('Diagram file found: updating classes...');
       // initialize objects
-      try (); {
+      try {
         // Visitor checks if the given classes exist
-        $Visitor= &new UpdateVisitor($classes, TRUE, TRUE);
-      } if (catch('Exception', $e)) {
+        $Visitor= new UpdateVisitor($classes, TRUE, TRUE);
+      } catch (Exception $e) {
         $e->printStackTrace();
         exit(-1);
       }
 
       Console::writeLine('Parsing XML diagram file...');
-      try (); {
-        $Dia= &DiaUnmarshaller::unmarshal($file);
-      } if (catch('Exception', $e)) {
+      try {
+        $Dia= DiaUnmarshaller::unmarshal($file);
+      } catch (Exception $e) {
         $e->printStackTrace();
         exit(-1);
       }

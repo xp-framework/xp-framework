@@ -33,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string encoding default ''
      */
     public function __construct($encoding= '') {
@@ -43,17 +42,15 @@
     /**
      * Set callback
      *
-     * @access  public
      * @param   &xml.parser.ParserCallback callback
      */
-    public function setCallback(&$callback) {
-      $this->callback= &$callback;
+    public function setCallback($callback) {
+      $this->callback= $callback;
     }
 
     /**
      * Set Encoding
      *
-     * @access  public
      * @param   string encoding
      */
     public function setEncoding($encoding) {
@@ -63,7 +60,6 @@
     /**
      * Get Encoding
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {
@@ -73,7 +69,6 @@
     /**
      * Parse XML data
      *
-     * @access  public
      * @param   string data
      * @param   string source default NULL optional source identifier, will show up in exception
      * @return  bool

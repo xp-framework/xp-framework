@@ -21,16 +21,15 @@
      * Convert an image. Returns TRUE when successfull, FALSE if image is
      * not a truecolor image.
      *
-     * @access  public
      * @param   &img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */
-    public function convert(&$image) { 
+    public function convert($image) { 
       if (!imageistruecolor($image->handle)) return FALSE;
       
       try {
-        $tmp= &Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
+        $tmp= Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
         $tmp->copyFrom($image);
         imagetruecolortopalette(
           $image->handle, 

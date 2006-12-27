@@ -23,12 +23,11 @@
      * Constructor
      *
      * @see     php://imagetruecolortopalette
-     * @access  public
      * @param   &io.Stream stream
      * @param   bool dither default FALSE indicates if the image should be dithered
      * @param   int ncolors default 256 maximum # of colors retained in the palette
      */
-    public function __construct(&$stream, $dither= FALSE, $ncolors= 256) {
+    public function __construct($stream, $dither= FALSE, $ncolors= 256) {
       parent::__construct($stream);
       $this->dither= $dither;
       $this->ncolors= $ncolors;
@@ -38,7 +37,6 @@
      * Output an image. If the image is true-color, it will be converted
      * to a paletted image first using imagetruecolortopalette().
      *
-     * @access  protected
      * @param   resource handle
      * @return  bool
      */    

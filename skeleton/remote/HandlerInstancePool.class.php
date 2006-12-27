@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  protected
      */
     public function __construct() {
       $this->pool= new HashTable();
@@ -33,7 +32,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -47,11 +45,9 @@
     /**
      * Retrieve the HandlerInstancePool instance
      *
-     * @model   static
-     * @access  public
      * @return  &remote.HandlerInstancePool
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
       
       if (!isset($instance)) $instance= new HandlerInstancePool();
@@ -61,12 +57,11 @@
     /**
      * Pool a handler instance
      *
-     * @access  public
      * @param   &peer.URL url
      * @param   &remote.protocol.ProtocolHandler instance
      * @return  &remote.protocol.ProtocolHandler the pooled instance
      */
-    public function &pool(&$url, &$instance) {
+    public function pool($url, $instance) {
       $this->pool->put($url, $instance);
       return $instance;
     }
@@ -74,24 +69,23 @@
     /**
      * Acquire a handler instance
      *
-     * @access  public
      * @param   string key
      * @return  &remote.protocol.ProtocolHandler
      * @throws  remote.protocol.UnknownProtocolException
      */
-    public function &acquire($key, $initialize= FALSE) {
+    public function acquire($key, $initialize= FALSE) {
       $url= new URL($key);
       if ($this->pool->containsKey($url)) {
-        $instance= &$this->pool->get($url);
+        $instance= $this->pool->get($url);
       } else {
         sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
         try {
-          $class= &HandlerFactory::handlerFor($type);
+          $class= HandlerFactory::handlerFor($type);
         } catch (Exception $e) {
           throw($e);
         }
 
-        $instance= &$this->pool($url, $class->newInstance($option));
+        $instance= $this->pool($url, $class->newInstance($option));
       }
 
       $initialize && $instance->initialize($url);

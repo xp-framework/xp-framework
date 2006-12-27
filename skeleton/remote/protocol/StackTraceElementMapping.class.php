@@ -17,13 +17,12 @@
     /**
      * Returns a value for the given serialized string
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function valueOf($serializer, $serialized, $context= array()) {
       $size= $serialized->consumeSize();
       $details= array();
       $serialized->offset++;  // Opening "{"
@@ -47,13 +46,12 @@
     /**
      * Returns an on-the-wire representation of the given value
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &lang.Object value
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    public function representationOf(&$serializer, &$value, $context= array()) {
+    public function representationOf($serializer, $value, $context= array()) {
       return 't:4:{'.
         's:4:"file";'.$serializer->representationOf($value->file).
         's:5:"class";'.$serializer->representationOf($value->class).
@@ -65,10 +63,9 @@
     /**
      * Return XPClass object of class supported by this mapping
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &handledClass() {
+    public function handledClass() {
       return XPClass::forName('lang.StackTraceElement');
     }
   } 

@@ -17,17 +17,15 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Steram stream
      */
-    public function __construct(&$stream) {
-      $this->stream= &$stream;
+    public function __construct($stream) {
+      $this->stream= $stream;
     }
     
     /**
      * Parse configuration stream
      *
-     * @access  protected
      */
     public function _parseFile() {
       try {
@@ -52,7 +50,6 @@
     /**
      * Read key
      *
-     * @access  protected 
      * @return  string
      */
     public function _readKey() {
@@ -69,7 +66,6 @@
     /**
      * Read value
      *
-     * @access  protected
      * @return  string
      */
     public function _readValue() {
@@ -84,7 +80,6 @@
     /**
      * Fetch value for a given key
      *
-     * @access  public
      * @param   string key
      * @return  string value
      */

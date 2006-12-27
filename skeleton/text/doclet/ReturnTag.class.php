@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string type
      * @param   string label
      */

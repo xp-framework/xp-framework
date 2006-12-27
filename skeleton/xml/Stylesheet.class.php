@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string version default XSL_VERSION_1_0
      */
     public function __construct($version= XSL_VERSION_1_0) {
@@ -49,13 +48,12 @@
      * Note: Output encoding is set to document encoding if not 
      * specified otherwise!
      *
-     * @access  public
      * @param   string method
      * @param   bool indent default TRUE
      * @param   string encoding default NULL
      */
     public function setOutputMethod($method, $indent= TRUE, $encoding= NULL) {
-      with ($n= &$this->root->addChild(new Node('xsl:output'))); {
+      with ($n= $this->root->addChild(new Node('xsl:output'))); {
         $n->setAttribute('method', $method);
         $n->setAttribute('encoding', $encoding ? $encoding : $this->getEncoding());
         $n->setAttribute('indent', $indent ? 'yes' : 'no');
@@ -65,12 +63,11 @@
     /**
      * Add an import
      *
-     * @access  public
      * @param   string import
      * @return  &xml.Node the added node
      */
-    public function &addImport($import) {
-      with ($n= &$this->root->addChild(new Node('xsl:import'))); {
+    public function addImport($import) {
+      with ($n= $this->root->addChild(new Node('xsl:import'))); {
         $n->setAttribute('href', $import);
       }
       return $n;
@@ -79,12 +76,11 @@
     /**
      * Add an include
      *
-     * @access  public
      * @param   string include
      * @return  &xml.Node the added node
      */
-    public function &addInclude($include) {
-      with ($n= &$this->root->addChild(new Node('xsl:include'))); {
+    public function addInclude($include) {
+      with ($n= $this->root->addChild(new Node('xsl:include'))); {
         $n->setAttribute('href', $include);
       }
       return $n;
@@ -93,12 +89,11 @@
     /**
      * Add a parameter
      *
-     * @access  public
      * @param   string import
      * @return  &xml.Node the added node
      */
-    public function &addParam($name) {
-      with ($n= &$this->root->addChild(new Node('xsl:param'))); {
+    public function addParam($name) {
+      with ($n= $this->root->addChild(new Node('xsl:param'))); {
         $n->setAttribute('name', $name);
       }
       return $n;
@@ -107,12 +102,11 @@
     /**
      * Add a variable
      *
-     * @access  public
      * @param   string import
      * @return  &xml.Node the added node
      */
-    public function &addVariable($name) {
-      with ($n= &$this->root->addChild(new Node('xsl:variable'))); {
+    public function addVariable($name) {
+      with ($n= $this->root->addChild(new Node('xsl:variable'))); {
         $n->setAttribute('name', $name);
       }
       return $n;
@@ -121,12 +115,10 @@
     /**
      * Construct a stylesheet from a string
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &xml.Stylesheet
      */
-    public static function &fromString($string) {
+    public static function fromString($string) {
       return parent::fromString($string, __CLASS__);
     }
 
@@ -134,12 +126,10 @@
     /**
      * Construct a stylesheet from a file
      *
-     * @model   static
-     * @access  public
      * @param   &xml.File file
      * @return  &xml.Stylesheet
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       return parent::fromFile($file, __CLASS__);
     }
   }

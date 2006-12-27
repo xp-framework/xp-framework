@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string package
      */
     public function __construct($package) {
@@ -34,49 +33,41 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
     
     /**
      * Create a request object.
      *
-     * @model   abstract
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcRequest
      */
-    public function &_request() {}
+    public function _request() {}
 
     /**
      * Create a response object.
      *
-     * @model   abstract
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcResponse
      */
-    public function &_response() {}
+    public function _response() {}
 
     /**
      * Create a message object.
      *
-     * @model   abstract
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &_message() {}
+    public function _message() {}
 
     /**
      * Handle GET requests. XML-RPC requests are only sent via HTTP POST,
      * so GET isn't supported.
      *
-     * @access  public
      * @param   &scriptlet.rpc.AbstractRpcRequest request
      * @param   &scriptlet.rpc.AbstractRpcResponse response
      */
-    public function doGet(&$request, &$response) {
+    public function doGet($request, $response) {
       throw(new IllegalAccessException('GET is not supported'));
     }
 
@@ -85,7 +76,6 @@
      * the stack trace elements' string representation is XML-safe (unsafe 
      * characters are replaced with the character ¿ (ASCII #191)).
      *
-     * @access  protected
      * @param   lang.StackTraceElement[] elements
      * @return  string[]
      */
@@ -102,11 +92,10 @@
      * Handle POST requests. The POST data carries the XML-RPC
      * request.
      *
-     * @access  public
      * @param   &webservices.xmlrpc.rpc.XmlRpcRequest request
      * @param   &webservices.xmlrpc.rpc.XmlRpcResponse response
      */
-    public function doPost(&$request, &$response) {
+    public function doPost($request, $response) {
       $this->cat && $response->setTrace($this->cat);
       $this->cat && $request->setTrace($this->cat);
       
@@ -114,15 +103,15 @@
       try {
 
         // Get message
-        $msg= &$request->getMessage();
+        $msg= $request->getMessage();
         $msg->setEncoding($request->getEncoding());
 
         // Create answer
-        $answer= &$this->_message();
+        $answer= $this->_message();
         $answer->create($msg);
 
         // Call handler
-        $return= &$this->callReflectHandler($msg);
+        $return= $this->callReflectHandler($msg);
 
       } catch (ServiceException $e) {
       
@@ -157,13 +146,12 @@
     /**
      * Calls the handler that the action reflects to
      *
-     * @access  protected
      * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
      * @return  &mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */
-    public function &callReflectHandler(&$msg) {
+    public function callReflectHandler($msg) {
     
       // Check on valid params
       if (0 == strlen($msg->getMethod())) {
@@ -172,7 +160,7 @@
 
       // Create message from request data
       try {
-        $class= &XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
+        $class= XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
       } catch (ClassNotFoundException $e) {
         throw($e);
       }
@@ -184,7 +172,7 @@
         ));
       }
 
-      with ($method= &$class->getMethod($msg->getMethod())); {
+      with ($method= $class->getMethod($msg->getMethod())); {
 
         // Check if this method is a webmethod
         if (!$method->hasAnnotation('webmethod')) {
@@ -192,7 +180,7 @@
         }
         
         // Create instance and invoke method
-        $inst= &$class->newInstance();
+        $inst= $class->newInstance();
         if ($this->cat && is('util.log.Traceable', $inst)) $inst->setTrace($this->cat);
         return $method->invoke($inst, $msg->getData());
       }

@@ -22,7 +22,6 @@
      *
      * The size of the given coordinate-array must be zero or two!
      *
-     * @access  public
      * @param   array coords
      * @return  bool
      */
@@ -36,11 +35,10 @@
     /**   
      * Return XML representation of DiaComposite
      *    
-     * @access  public 
      * @return  &xml.Node 
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       if (isset($this->value)) {
         $node->setAttribute('val', implode(',', $this->value));
       } else {

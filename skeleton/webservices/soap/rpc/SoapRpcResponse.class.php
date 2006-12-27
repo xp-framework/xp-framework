@@ -16,7 +16,6 @@
     /**
      * Make sure a fault is passed as "500 Internal Server Error"
      *
-     * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
     public function process() {

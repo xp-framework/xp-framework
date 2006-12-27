@@ -21,13 +21,12 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      * @return  boolean
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       parent::process($request, $response, $context);
       
       $eventid= $request->getParam('event_id', 0);
@@ -37,9 +36,9 @@
       if (!$eventid && !$teamid) return TRUE;
       
       try {
-        $eventid && $event= &Event::getByEvent_id($eventid);
+        $eventid && $event= Event::getByEvent_id($eventid);
         
-        $query= &$this->db->query('
+        $query= $this->db->query('
           select
             p.player_id,
             p.firstname,
@@ -73,13 +72,13 @@
         $eventarr= (array)$event;
         unset($eventarr['description']);
 
-        $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
+        $node= $response->addFormResult(Node::fromArray($eventarr, 'event'));
         $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));
       }
       
-      $n= &$response->addFormResult(new Node('attendeeinfo'));
-      while ($query && $record= &$query->next()) {
-        $t= &$n->addChild(new Node('player', NULL, $record));
+      $n= $response->addFormResult(new Node('attendeeinfo'));
+      while ($query && $record= $query->next()) {
+        $t= $n->addChild(new Node('player', NULL, $record));
       }
     }
   }

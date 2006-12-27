@@ -34,11 +34,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &peer.URL url object
      */
-    public function __construct(&$url) {
-      $this->url= &$url;
+    public function __construct($url) {
+      $this->url= $url;
       if ($url->getUser() && $url->getPassword()) {
         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
       }
@@ -48,7 +47,6 @@
     /**
      * Set request method
      *
-     * @access  public
      * @param   string method request method, e.g. HTTP_GET
      */
     public function setMethod($method) {
@@ -58,12 +56,11 @@
     /**
      * Set request parameters
      *
-     * @access  public
      * @param   mixed p either a string, a PostData object or an associative array
      */
     public function setParameters($p) {
       if (is('RequestData', $p)) {
-        $this->parameters= &$p;
+        $this->parameters= $p;
       } else if (is_string($p)) {
         parse_str($p, $this->parameters); 
       } else {
@@ -74,7 +71,6 @@
     /**
      * Set header
      *
-     * @access  public
      * @param   string k header name
      * @param   string v header value
      */
@@ -85,7 +81,6 @@
     /**
      * Add headers
      *
-     * @access  public
      * @param   array headers
      */
     public function addHeaders($headers) {
@@ -97,7 +92,6 @@
     /**
      * Get request string
      *
-     * @access  public
      * @return  string
      */
     public function getRequestString() {
@@ -152,10 +146,9 @@
     /**
      * Send request
      *
-     * @access  public
      * @return  &peer.http.HttpResponse response object
      */
-    public function &send($timeout= 60, $connecttimeout= 2.0) {
+    public function send($timeout= 60, $connecttimeout= 2.0) {
       $s= new Socket($this->url->getHost(), $this->url->getPort(80));
       $s->setTimeout($timeout);
       

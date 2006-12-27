@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string base
      */
     public function __construct($base) {
@@ -44,19 +43,18 @@
       
       $this->propStorage= new DBAFilePropertyStorage($this->base.'../Webdav.props');
       
-      $l= &Logger::getInstance();
-      $this->c= &$l->getCategory();
+      $l= Logger::getInstance();
+      $this->c= $l->getCategory();
     }
     
     /**
      * Private helper function
      *
-     * @access  private
      * @param   string path
      * @param   int maxdepth
      * @throws  lang.ElementNotFoundException
      */
-    public function _recurse(&$request, &$response, $path, $maxdepth) {
+    public function _recurse($request, $response, $path, $maxdepth) {
       $path= rtrim($path, '/');
       $realpath= $this->base.$path;
 
@@ -134,7 +132,6 @@
     /**
      * Move a file
      *
-     * @access  public
      * @param   string filename
      * @param   string destination
      * @param   bool overwrite
@@ -179,7 +176,7 @@
       $dst= substr($destination, strlen($this->base));
       
       // Move/copy properties also
-      $properties= &$this->propStorage->getProperties($src);
+      $properties= $this->propStorage->getProperties($src);
       if (!empty($properties)) {
         if (!$docopy) $this->propStorage->setProperties($src, NULL);
         $this->propStorage->setProperties($dst, $properties);
@@ -190,7 +187,6 @@
     /**
      * Copy a file
      *
-     * @access  public
      * @param   string filename
      * @param   string destination
      * @param   bool overwrite
@@ -205,7 +201,6 @@
     /**
      * Make a directory ("collection")
      *
-     * @access  public
      * @param   string colname
      * @return  bool success
      * @throws  org.webdav.OperationFailedException
@@ -234,7 +229,6 @@
     /**
      * Delete a file
      *
-     * @access  public
      * @param   string filename
      * @return  bool success
      * @throws  lang.ElementNotFoundException
@@ -269,7 +263,7 @@
       // Delete backup versions
       if ($this->propStorage->hasProperty($filename, 'D:version')) {
         $prop= $this->propStorage->getProperty($filename, 'D:version');
-        $container= &$prop->value;
+        $container= $prop->value;
   
         foreach ($container->getVersions() as $v) {
           $this->delete($v->getHref());
@@ -285,7 +279,6 @@
     /**
      * Put a file
      *
-     * @access  public
      * @param   string filename
      * @param   mixed data
      * @param   string resourcetype, default NULL
@@ -293,7 +286,7 @@
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    public function put($filename, &$data, $resourcetype= NULL) {
+    public function put($filename, $data, $resourcetype= NULL) {
       
       $uri= $this->base.$filename;
       if (is_dir($uri)) {
@@ -305,13 +298,13 @@
       
       // Check if VersionControl is activated
       if (($prop= $this->propStorage->getProperty($filename, 'D:version')) !== NULL) {
-        $container= &$prop->value;
+        $container= $prop->value;
         
-        $newVersion= &WebdavVersionUtil::getNextVersion($container->getLatestVersion(), $f);
+        $newVersion= WebdavVersionUtil::getNextVersion($container->getLatestVersion(), $f);
         $container->addVersion($newVersion);
         
         // Re-Add modified container to property
-        $prop->value= &$container;
+        $prop->value= $container;
 
         // Save property
         $this->propStorage->setProperty($filename, $prop);
@@ -346,13 +339,12 @@
     /**
      * Get a file
      *
-     * @access  public
      * @param   string filename
      * @return  &org.webdav.WebdavObject
      * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationNotAllowedException
      */
-    public function &get($filename, $token= NULL) {
+    public function get($filename, $token= NULL) {
     
       $this->c->debug('FILENAME', $filename);
       $this->c->debug('TOKEN', $token);
@@ -434,7 +426,7 @@
       $contentType= '';
       
       $this->c->debug(get_class($this), '::get ', $this->base.filename);
-      $eProps= &$this->propStorage->getProperties($f->uri);
+      $eProps= $this->propStorage->getProperties($f->uri);
       if (!empty($eProps['getcontenttype']))
         $contentType= $eProps['getcontenttype'][0];
       if (empty($contentType))
@@ -463,13 +455,12 @@
     /**
      * Patch properties
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavPropPatchRequest request
      * @param   &org.webdav.xml.WebdavPropPatchResponse response
      * @throws  org.webdav.OperationFailedException
      * @throws  lang.ElementNotFoundException
      */
-    public function proppatch(&$request, &$response) {
+    public function proppatch($request, $response) {
       $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
         throw(new ElementNotFoundException($realpath.' not found'));
@@ -511,12 +502,11 @@
     /**
      * do unlocking
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavScriptletRequest response
      * @param   &org.webdav.xml.WebdavScripltetResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
-    public function &unlock(&$request, &$response) {
+    public function unlock($request, $response) {
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
@@ -528,12 +518,11 @@
     /**
      * do locking
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
-    public function &lock(&$request, &$response) {
+    public function lock($request, $response) {
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
@@ -545,11 +534,10 @@
     /**
      * Find properties
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatusResponse response
      */
-    public function &propfind(&$request, &$response, $useragent= 0) {
+    public function propfind($request, $response, $useragent= 0) {
       try {
         $this->_recurse(
           $request,
@@ -565,12 +553,11 @@
     /**
      * Start Version-Control of file
      *
-     * @access  public
      * @param   string path
      * @param   &io.File file
      * @throws  lang.ElementNotFoundException 
      */
-    public function &VersionControl($path, &$file) {
+    public function VersionControl($path, $file) {
       $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
@@ -595,12 +582,11 @@
     /**
      * Report version status
      *
-     * @access  public  
      * @param   &org.webdav.xml.WebdavPropFindRequest
      * @param   &org.webdav.xml.WebdavMultistatusResponse
      * @throws  lang.ElementNotFoundException
      */
-    public function &report(&$request, &$response) {
+    public function report($request, $response) {
       $realpath= $this->base.$request->getPath();
 
       if (!file_exists($realpath)) {
@@ -612,14 +598,13 @@
     /**
      * Move a file
      *
-     * @access  public
      * @param   string filename
      * @param   string destination
      * @return  bool created
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    public function &backup($filename, $destination) {
+    public function backup($filename, $destination) {
 
       // Securitychecks (../etc/passwd)
       $uri= $this->_normalizePath($this->base.$filename);

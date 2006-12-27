@@ -18,13 +18,11 @@
      * Helper method that returns an xml.Node object for a specified
      * text.
      *
-     * @model   static
-     * @access  protected
      * @param   string name
      * @param   string string
      * @return  &xml.Node
      */
-    public static function &markupNodeFor($name, $string) {
+    public static function markupNodeFor($name, $string) {
       static $builder= NULL;
       
       if (!$builder) $builder= new MarkupBuilder();

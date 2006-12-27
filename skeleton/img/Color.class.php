@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed a string containing the hexadecimal format or
      *          three ints (red, green blue)
      */
@@ -41,7 +40,6 @@
     /**
      * Set RGB values from hexadecimal string
      *
-     * @access  public
      * @param   string h a string in the format RRGGBB (may contain a leading "#")
      */
     public function fromHex($h) {
@@ -54,7 +52,6 @@
     /**
      * Get RGB value as hexidecimal string (e.g. #990000)
      *
-     * @access  public
      * @return  string HTML-style color
      */
     public function toHex() {
@@ -64,7 +61,6 @@
     /**
      * Returns a string representation of this color
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

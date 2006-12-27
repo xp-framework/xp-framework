@@ -31,11 +31,10 @@
      *
      * </code>
      *
-     * @access  public
      * @return  &InternetAddress[]
      * @throws  lang.FormatException in case the string is malformed
      */
-    public function &parse($str) {
+    public function parse($str) {
       $result= array();
       $st= new StringTokenizer($str, ',');
       
@@ -45,7 +44,7 @@
         // No " in this string, so this contains one address
         if (FALSE === ($pos= strpos($tok, '"'))) {
           try {
-            $result[]= &InternetAddress::fromString($tok);
+            $result[]= InternetAddress::fromString($tok);
           } catch (FormatException $e) {
             throw($e);
           }
@@ -70,7 +69,7 @@
         }
 
         try {
-          $result[]= &InternetAddress::fromString($tok);
+          $result[]= InternetAddress::fromString($tok);
         } catch (FormatException $e) {
           throw($e);
         }

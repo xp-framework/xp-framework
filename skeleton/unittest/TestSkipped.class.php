@@ -19,21 +19,19 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @param   &mixed reason
      * @param   float elapsed
      */
-    public function __construct(&$test, &$reason, $elapsed) {
-      $this->test= &$test;
-      $this->reason= &$reason;
+    public function __construct($test, $reason, $elapsed) {
+      $this->test= $test;
+      $this->reason= $reason;
       $this->elapsed= $elapsed;
     }
 
     /**
      * Return a string representation of this class
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

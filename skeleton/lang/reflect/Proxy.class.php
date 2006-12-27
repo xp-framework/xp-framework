@@ -22,12 +22,11 @@
     /**
      * Constructor
      *
-     * @access  protected
      * @param   &lang.reflect.InvocationHandler handler
      */
-    public function __construct(&$handler) {
+    public function __construct($handler) {
       parent::__construct();
-      $this->_h= &$handler;
+      $this->_h= $handler;
     }
     
     /**
@@ -36,14 +35,12 @@
      * specified class loader and will implement all of the supplied 
      * interfaces (also loaded by the classloader).
      *
-     * @model   static
-     * @access  public
      * @param   &lang.ClassLoader classloader
      * @param   lang.XPClass[] interfaces names of the interfaces to implement
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public static function &getProxyClass(&$classloader, $interfaces) {
+    public static function getProxyClass($classloader, $interfaces) {
       static $num= 0;
       static $cache= array();
       
@@ -65,7 +62,7 @@
       $bytes= substr($bytes, 0, -2)." {\n";
 
       for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
-        $if= &$interfaces[$j];
+        $if= $interfaces[$j];
         
         // Verify that the Class object actually represents an interface
         if (!$if->isInterface()) {
@@ -98,7 +95,7 @@
 
             // Create method
             $bytes.= (
-              'function '.($methods[$i]->returnsReference() ? '&' : '').$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
+              'function '.$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
               'switch (func_num_args()) {'.implode("\n", $cases).
               ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
               '}'."\n"
@@ -106,7 +103,7 @@
           } else {
             $signature= $args= '';
             foreach ($methods[$i]->getArguments() as $argument) {
-              $signature.= ', '.($argument->isPassedByReference() ? '&' : '').'$'.$argument->getName();
+              $signature.= ', $'.$argument->getName();
               $args.= ', $'.$argument->getName();
               $argument->isOptional() && $signature.= '= '.$argument->getDefault();
             }
@@ -115,7 +112,7 @@
 
             // Create method
             $bytes.= (
-              'function '.($methods[$i]->returnsReference() ? '&' : '').$methods[$i]->getName().'('.$signature.') { '.
+              'function '.$methods[$i]->getName().'('.$signature.') { '.
               'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.$args.')); '.
               '}'."\n"
             );
@@ -126,13 +123,13 @@
 
       // Define the generated class
       try {
-        $class= &$classloader->defineClass($name, $bytes);
+        $class= $classloader->defineClass($name, $bytes);
       } catch (FormatException $e) {
         throw(new IllegalArgumentException($e->getMessage()));
       }
 
       // Update cache and return XPClass object
-      $cache[$key]= &$class;
+      $cache[$key]= $class;
       return $class;
     }
   
@@ -141,18 +138,16 @@
      * that dispatches method invocations to the specified invocation
      * handler.
      *
-     * @model   static
-     * @access  public
      * @param   &lang.ClassLoader classloader
      * @param   lang.XPClass[] interfaces
      * @param   &lang.reflect.InvocationHandler handler
      * @return  &lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public static function &newProxyInstance(&$classloader, $interfaces, &$handler) {
-      if (!($class= &Proxy::getProxyClass($classloader, $interfaces))) return $class;
-      $instance= &$class->newInstance($dummy= NULL);
-      $instance->_h= &$handler;
+    public static function newProxyInstance($classloader, $interfaces, $handler) {
+      if (!($class= Proxy::getProxyClass($classloader, $interfaces))) return $class;
+      $instance= $class->newInstance($dummy= NULL);
+      $instance->_h= $handler;
       return $instance;
     }
   }

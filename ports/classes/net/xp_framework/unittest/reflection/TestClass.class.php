@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed in default NULL
      */
     public function __construct($in= NULL) {
@@ -32,8 +31,6 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() {
       TestClass::initializerCalled(TRUE);
@@ -42,8 +39,6 @@
     /**
      * Static variables simulation
      *
-     * @model   static
-     * @access  public
      * @param   bool value default NULL
      * @return  bool
      */
@@ -56,27 +51,24 @@
     /**
      * Retrieve date
      *
-     * @access  public
      * @return  &util.Date
      */    
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
 
     /**
      * Set date
      *
-     * @access  public
      * @param   &util.Date date
      */    
-    public function setDate(&$date) {
-      $this->date= &$date;
+    public function setDate($date) {
+      $this->date= $date;
     }
     
     /**
      * Retrieve current date as UN*X timestamp
      *
-     * @access  public
      * @return  int
      */
     #[@webmethod, @security(roles= array('admin', 'god'))]
@@ -87,11 +79,10 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      * @throws  lang.IllegalStateException
      */
-    public function setTrace(&$cat) {
+    public function setTrace($cat) {
       throw(new IllegalStateException('Not debuggable yet'));
     }
 
@@ -99,7 +90,6 @@
     /**
      * Retrieve map as a PHP hashmap
      *
-     * @access  public
      * @return  array<string, &lang.Object>
      */
     public function getMap() {
@@ -109,11 +99,10 @@
     /**
      * Retrieve values
      *
-     * @access  public
      * @return  &lang.Collection<lang.Object>
      */
-    public function &mapValues() {
-      $c= &Collection::forClass('lang.Object');
+    public function mapValues() {
+      $c= Collection::forClass('lang.Object');
       $c->addAll(array_values($this->map));
       return $c;
     }

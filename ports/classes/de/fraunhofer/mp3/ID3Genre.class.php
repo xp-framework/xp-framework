@@ -164,7 +164,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int id
      */
     public function __construct($id) {
@@ -176,7 +175,6 @@
      * Create a string representation - returns 'ID_GENRE_UNKNOWN' when 
      * genre id is unknown
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

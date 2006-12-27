@@ -22,7 +22,6 @@
     /**
      * Setup function
      *
-     * @access  public
      */
     public function setUp() {
       $this->lc= new LDAPClient('ldap.openldap.org');
@@ -48,7 +47,6 @@
     /**
      * Tear down this test case.
      *
-     * @access  public
      */
     public function tearDown() {
       $this->lc->close();
@@ -57,17 +55,16 @@
     /**
      * Test LDAP search
      *
-     * @access  public
      */
     #[@test]
     public function testSearch() {
-      $res= &$this->lc->search(
+      $res= $this->lc->search(
         'ou=People,dc=OpenLDAP,dc=Org', 
         '(objectClass=*)'
       );
       $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
       $this->assertInteger($res->numEntries());
-      $entry= &$res->getFirstEntry();
+      $entry= $res->getFirstEntry();
       $this->assertClass($entry, 'peer.ldap.LDAPEntry');
       return $entry;
     }

@@ -18,10 +18,9 @@
     /**
      * Retrieves a list of elements
      *
-     * @access  public
      * @return  &peer.ftp.server.storage.StorageEntry[]
      */
-    public function &elements();
+    public function elements();
   
   }
 ?>

@@ -23,10 +23,9 @@
     /**
      * Callback for Destroyable class
      *
-     * @access  public
      * @param   &lang.Object object
      */
-    public function onDestruction(&$object) {
+    public function onDestruction($object) {
       $this->destroyed[$object->hashCode()]++;
     }
     
@@ -34,7 +33,6 @@
      * Setup method. Creates the destroyable member and sets its 
      * callback to this test.
      *
-     * @access  public
      */
     public function setUp() {
       $this->destroyable= new Destroyable();
@@ -45,7 +43,6 @@
     /**
      * Tests delete() function calls destructor
      *
-     * @access  public
      */
     #[@test]
     public function deleteCallsDestructor() {

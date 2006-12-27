@@ -22,29 +22,26 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
-      $this->sizes= &Collection::forClass('com.flickr.FlickrPhotoSize');
+      $this->sizes= Collection::forClass('com.flickr.FlickrPhotoSize');
     }
     
     /**
      * Set Client
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    public function setClient(&$client) {
+    public function setClient($client) {
     }
       
     /**
      * Add new size
      *
-     * @access  public
      * @param   &lang.Object size
      */
     #[@xmlmapping(element= 'size', class= 'com.flickr.FlickrPhotoSize')]
-    public function addSize(&$size) {
+    public function addSize($size) {
       $this->sizes->add($size);
       return $size;
     }

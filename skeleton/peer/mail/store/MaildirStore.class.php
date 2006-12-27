@@ -30,7 +30,6 @@
     /**
      * Constructs a MaildirStore object. 
      *
-     * @access public
      */
     public function __construct($cache= NULL) {
       parent::__construct($cache);
@@ -40,7 +39,6 @@
      * Opens a Maildir store. If no parameter is given, this opens
      * the users default mailbox located in $HOME/Maildir/.
      *
-     * @access  public
      * @param   string folder default NULL
      * @return  boolean success
      */    
@@ -65,7 +63,6 @@
     /**
      * Returns the non-global foldername.
      *
-     * @access  private
      * @param   string folder
      * @return  string realfolder
      */
@@ -80,7 +77,6 @@
     /**
      * Closes currently open mailstore.
      *
-     * @access  public
      * @return  bool
      */
     public function close() {
@@ -91,11 +87,10 @@
      * Opens a subfolder of the current folder and returns
      * an object of that mailbox.
      *
-     * @access  public
      * @param   string foldername
      * @return  &peer.mail.MailFolder folder;
      */    
-    public function &getFolder($name) {
+    public function getFolder($name) {
       $f= new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
       if (!$f->exists())
         throw (new MessagingException (
@@ -109,10 +104,9 @@
     /**
      * Returns a list of all subfolders in current folder.
      *
-     * @access  public
      * @return  &array* folders array of peer.mail.MailFolder objects
      */
-    public function &getFolders() {
+    public function getFolders() {
       $f= array();
       while ($entry= $this->_folder->getEntry()) {
         if (is_dir ($this->_folder->getURI().DIRECTORY_SEPARATOR.$entry)) {
@@ -131,14 +125,13 @@
     /**
      * Opens a folder.
      *
-     * @access  public
      * @param   &peer.mail.MailFolder folder
      * @param   boolean readonly default FALSE
      * @return  boolean success
      * @throws  lang.IllegalAccessException if another folder is still open
      * @throws  io.IOException if folder cannot be opened
      */
-    public function openFolder(&$f, $readonly= FALSE) {
+    public function openFolder($f, $readonly= FALSE) {
       // Is it already open?
       if ($this->currentfolder === $f->name)
         return TRUE;
@@ -159,7 +152,7 @@
         throw ($e);
       }
       
-      $this->_folder= &$nf;
+      $this->_folder= $nf;
       
       $this->currentfolder= $f->name;
       return TRUE;
@@ -168,12 +161,11 @@
     /**
      * Closes an open folder.
      *
-     * @access  public
      * @param   &peer.mail.MailFolder folder
      * @return  boolean success
      * @throws  lang.IllegalArgumentException if folder is not opened folder
      */    
-    public function closeFolder(&$f) {
+    public function closeFolder($f) {
       // Is it already open?
       if ($this->currentfolder !== $f->name)
         throw (new IllegalArgumentException (
@@ -190,12 +182,11 @@
      * Gets the count of messages with speciefied attribute
      * or all messages when no attribute was specified
      *
-     * @access  public
      * @param   &peer.mail.Mailfolder f
      * @param   int attr default 0xFFFF
      * @return  int count
      */    
-    public function getMessageCount(&$f, $attr= 0xFFFF) {
+    public function getMessageCount($f, $attr= 0xFFFF) {
       $this->openFolder ($f);
       $f= new Folder ($f->name.DIRECTORY_SEPARATOR.'cur');
       if (!$f->exists())
@@ -219,12 +210,11 @@
      * Returns the URI to a specific message in a Maildir. This is the
      * absolute path to that file.
      *
-     * @access  private
      * @param   &peer.mail.MailFolder folder
      * @param   int number
      * @return  string uri
      */    
-    public function _getMessageURI(&$f, $nr) {
+    public function _getMessageURI($f, $nr) {
       $this->_folder->rewind();
 
       while (FALSE !== ($entry= $this->_folder->getEntry()) && $nr <= $i++) {
@@ -237,7 +227,6 @@
     /**
      * Returns the flags of the specified message given in the filename.
      *
-     * @access private
      * @param string filename
      * @return int flags
      */    
@@ -263,12 +252,11 @@
      * sets the body as a plain text (thus does not parse any
      * MIME-Information and returns the created Message object.
      *
-     * @access  private
      * @param   string filename
      * @return  &peer.mail.Message
      * @throws  io.IOException if file cannot be read
      */    
-    public function &_readMessageRaw($filename) {
+    public function _readMessageRaw($filename) {
       $header= '';
       $body= '';
       try {
@@ -297,12 +285,11 @@
      * Returns an array of messages specified by the numbers in the
      * argument
      *
-     * @access  public 
      * @param   &peer.mail.MailFolder folder
      * @param   mixed* msgnums
      * @return  array messages
      */    
-    public function getMessages(&$f) {
+    public function getMessages($f) {
       $this->openFolder ($f);
       if (1 == func_num_args()) {
         $count= $this->getMessageCount ();
@@ -310,7 +297,7 @@
       } else {
         $msgnums= array();
         for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-          $arg= &func_get_arg($i);
+          $arg= func_get_arg($i);
           $msgnums= array_merge($msgnums, $arg);
         }
       }
@@ -321,14 +308,14 @@
         $flags= $this->_getMailFlags($filename);
         
         try {
-          $msg= &$this->_readMessageRaw($filename);
+          $msg= $this->_readMessageRaw($filename);
         } catch (IOException $e) {
         
           // Ignore any errors
           continue;
         }
         
-        $messages[]= &$msg;
+        $messages[]= $msg;
       }
       
       return $messages;

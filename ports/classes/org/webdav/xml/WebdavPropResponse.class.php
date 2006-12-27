@@ -48,12 +48,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      * @param   &org.webdav.WebdavObject o
      */
-    public function __construct(&$request, &$response, &$o) {
+    public function __construct($request, $response, $o) {
       $this->setStatus(WEBDAV_MULTISTATUS);
       $this->setRootNode(new Node('D:multistatus'));
     }
@@ -61,26 +60,25 @@
     /**
      * Apply an WebdavObject
      *
-     * @access  private
      * @param   &org.webdav.WebdavObject o
      * @param   &org.webdav.xml.WebdavPropFindRequest request     
      */
-    public function addWebdavObject(&$o) {
+    public function addWebdavObject($o) {
 
       // Get the property lists
-      $reqprops= &$request->getProperties();    // properties requested
-      $propsList= &$o->getProperties();         // properties available
+      $reqprops= $request->getProperties();    // properties requested
+      $propsList= $o->getProperties();         // properties available
       
       // Create the result nodes (for found and not found properties)
       $found_stat= new Node('D:propstat');
-      $found_props= &$found_stat->addChild(new Node('D:prop'));
+      $found_props= $found_stat->addChild(new Node('D:prop'));
       $notfound_stat= new Node('D:propstat');
-      $notfound_props= &$notfound_stat->addChild(new Node('D:prop'));
+      $notfound_props= $notfound_stat->addChild(new Node('D:prop'));
       
       $stdprops= array();
       
       // Always add the Resource type
-      $rt= &$found_props->addChild(new Node('D:resourcetype'));
+      $rt= $found_props->addChild(new Node('D:resourcetype'));
 
       // Content type/length via resourceType
       if (NULL !== $o->resourceType) {
@@ -93,24 +91,24 @@
         WEBDAV_COLLECTION != $o->resourceType and  
         (empty($reqprops) or !empty($reqprops['supportedlock']))
       ){
-        $lock= &$found_props->addChild(new Node('D:supportedlock'));
-        $l1= &$lock->addChild(new Node('D:lockentry'));
-        $l2= &$l1->addChild(new Node('D:lockscope'));
+        $lock= $found_props->addChild(new Node('D:supportedlock'));
+        $l1= $lock->addChild(new Node('D:lockentry'));
+        $l2= $l1->addChild(new Node('D:lockscope'));
         $l2->addChild(new Node('D:exclusive'));
-        $l2= &$l1->addChild(new Node('D:locktype'));
+        $l2= $l1->addChild(new Node('D:locktype'));
         $l2->addChild(new Node('D:write'));
-        $l1= &$lock->addChild(new Node('D:lockentry'));
-        $l2= &$l1->addChild(new Node('D:lockscope'));
+        $l1= $lock->addChild(new Node('D:lockentry'));
+        $l2= $l1->addChild(new Node('D:lockscope'));
         $l2->addChild(new Node('D:shared'));
-        $l2= &$l1->addChild(new Node('D:locktype'));
+        $l2= $l1->addChild(new Node('D:locktype'));
         $l2->addChild(new Node('D:write'));
         $stdprops[]= 'supportedlock';
       }
 
       // lock discovery
       if ((empty($reqprops) or !empty($reqprops['lockdiscovery']))) {
-        $lkif= &$found_props->addChild(new Node('D:lockdiscovery'));
-        $lockinfos= &$o->getLockInfo();
+        $lkif= $found_props->addChild(new Node('D:lockdiscovery'));
+        $lockinfos= $o->getLockInfo();
 
         if ($lockinfos) {
           for ($t= 0; $t<sizeof($lockinfos); $t++) {
@@ -118,16 +116,16 @@
 
             if (empty($lockinfo['type']) or empty($lockinfo['scope'])) continue;
 
-            $ak= &$lkif->addChild(new Node('D:activelock'));
-            $l= &$ak->addChild(new Node('D:locktype'));
+            $ak= $lkif->addChild(new Node('D:activelock'));
+            $l= $ak->addChild(new Node('D:locktype'));
             $l->addChild(new Node('D:'.$lockinfo['type']));
-            $l= &$ak->addChild(new Node('D:lockscope'));
+            $l= $ak->addChild(new Node('D:lockscope'));
             $l->addChild(new Node('D:'.$lockinfo['scope']));
-            $l= &$ak->addChild(new Node('D:owner', $lockinfo['owner']));
-            $l= &$ak->addChild(new Node('D:timeout', $lockinfo['timeout']));
-            $l= &$ak->addChild(new Node('D:locktoken'));
+            $l= $ak->addChild(new Node('D:owner', $lockinfo['owner']));
+            $l= $ak->addChild(new Node('D:timeout', $lockinfo['timeout']));
+            $l= $ak->addChild(new Node('D:locktoken'));
             $l->addChild(new Node('D:href', $lockinfo['token']));
-            $l= &$ak->addChild(new Node('D:depth', $lockinfo['depth']));
+            $l= $ak->addChild(new Node('D:depth', $lockinfo['depth']));
             $stdprops[]= 'lockdiscovery';
           }
         }
@@ -152,9 +150,9 @@
           if (!empty($nsprefix)) $name= $nsprefix.':'.$name;
         }
         if ($found) {
-          $n= &$found_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
+          $n= $found_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
         } else {
-          $n= &$notfound_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
+          $n= $notfound_props->addChild(new Node($name, $this->encode($property->toString()), $attr));
         }
       }
 

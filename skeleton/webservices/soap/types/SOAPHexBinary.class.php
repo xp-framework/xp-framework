@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string string
      * @param   bool encoded default FALSE
      */
@@ -37,7 +36,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  string 
      */
     public function toString() {
@@ -47,7 +45,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() {
@@ -57,11 +54,10 @@
     /**
      * Indicates whether the compared binary equals this one.
      *
-     * @access  public
      * @param   &webservices.soap.types.SOAPHexBinary cmp
      * @return  bool TRUE if both binaries are equal
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('webservices.soap.types.SOAPHexBinary', $cmp) && (0 === strcmp($this->string, $cmp->string));
     }    
   }

@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host hostname or IP address
      * @param   int port
      * @param   resource socket default NULL

@@ -23,14 +23,12 @@
     /**
      * Unmarshall a XML diagram file into an object structure (DiaDiagram)
      *
-     * @model   static
-     * @access  public
      * @param   string filename The diagram filename (.dia)
      * @return  &org.dia.DiaDiagram
      */
-    public static function &unmarshal($diagram) {
+    public static function unmarshal($diagram) {
       // suck in XML document
-      if (!($dom= &domxml_open_file($diagram, DOMXML_LOAD_PARSING, $error))) {
+      if (!($dom= domxml_open_file($diagram, DOMXML_LOAD_PARSING, $error))) {
         throw(new XMLFormatException(xp::stringOf($error)));
       }
       // initialize XPath
@@ -40,7 +38,7 @@
       $XPath->registerNamespace('dia', 'http://www.lysator.liu.se/~alla/dia/');
       // new (unused): $XPath->registerNamespace('dia', 'http://www.gnome.org/projects/dia/');
       // go
-      $Dia= &DiaUnmarshaller::recurse($XPath, $dom->document_element(), 'org.dia.DiaDiagram');
+      $Dia= DiaUnmarshaller::recurse($XPath, $dom->document_element(), 'org.dia.DiaDiagram');
       Console::writeLine('DiaUnmarshaller used up '.round(memory_get_usage()/1024, 2).' Kb of memory.');
       return $Dia;
     }
@@ -48,28 +46,26 @@
     /**
      * Process XML with the annotated methods of the given class
      *
-     * @model   static
-     * @access  public
      * @param   &xml.XPath XPath Instance of xml.XPath
      * @param   &php.DomNode Context The XML node to recurse from
      * @param   string classname Fully qualified class name
      */
-    public static function &recurse(&$XPath, &$Context, $classname) {
+    public static function recurse($XPath, $Context, $classname) {
       if (DIA_UNM_DEBUG) Console::writeLine('recurse: '.$Context->tagname()."-> $classname");
 
       try {
-        $Class= &XPClass::forName($classname);
+        $Class= XPClass::forName($classname);
       } catch (Exception $e) {
         $e->printStackTrace();
         exit(-1);
       }
-      $Instance= &$Class->newInstance(); 
+      $Instance= $Class->newInstance(); 
       if (DIA_UNM_DEBUG) Console::writeLine('Instance: '.$Instance->getClassName());
 
       // loop over class methods with annotation 'fromDia'
       $methods= $Class->getMethods();
       foreach (array_keys($methods) as $key) {
-        $Method= &$methods[$key];
+        $Method= $methods[$key];
         if (!$Method->hasAnnotation('fromDia', 'xpath')) continue;
         $name= $Method->getName();
         $xpath= $Method->getAnnotation('fromDia', 'xpath');
@@ -78,7 +74,7 @@
 
         // continue if this fails: some expressions don't work on WRONG nodes...
         try {
-          $result= &$XPath->query($xpath, $Context);
+          $result= $XPath->query($xpath, $Context);
         } catch (Exception $e) {
           if (DIA_UNM_DEBUG) $e->printStackTrace();
           $nodename= $Context->tagname();
@@ -96,7 +92,7 @@
 
         // loop over nodeset
         foreach (array_keys($result->nodeset) as $key) {
-          $Node= &$result->nodeset[$key];
+          $Node= $result->nodeset[$key];
           
           // key 'value' (simple value)
           if ($Method->hasAnnotation('fromDia', 'value')) {
@@ -189,7 +185,7 @@
             if (DIA_UNM_DEBUG) Console::writeLine("  + Class: $classname");
 
             // recurse with given classname
-            $Obj= &DiaUnmarshaller::recurse($XPath, $Node, $classname);
+            $Obj= DiaUnmarshaller::recurse($XPath, $Node, $classname);
             // hand results over to the method
             $Method->invoke($Instance, array($Obj));
           }

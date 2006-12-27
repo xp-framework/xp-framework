@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string initial default ''
      */
     public function __construct($initial= '') {
@@ -42,7 +41,6 @@
     /**
      * Retrieve string's length
      *
-     * @access  public
      * @return  int
      */
     public function length() {
@@ -52,7 +50,6 @@
     /**
      * Set Buffer
      *
-     * @access  public
      * @param   string buffer
      */
     public function setBuffer($buffer) {
@@ -62,7 +59,6 @@
     /**
      * Get Buffer
      *
-     * @access  public
      * @return  string
      */
     public function getBuffer() {
@@ -74,7 +70,6 @@
      * at 0 and ends at length() - 1. Use -1 as value for the pos argument
      * to retrieve the last character in this string.
      *
-     * @access  public
      * @param   int pos
      * @return  string character
      * @throws  lang.IndexOutOfBoundsException
@@ -92,14 +87,13 @@
     /**
      * Compares two strings lexicographically.
      *
-     * @access  public
      * @param   &text.String string
      * @param   bool cs default TRUE whether to compare case-sensitively
      * @return  int
      * @see     php://strcmp for case-sensitive comparison
      * @see     php://strcasecmp for case-insensitive comparison
      */
-    public function compareTo(&$string, $cs= TRUE) {
+    public function compareTo($string, $cs= TRUE) {
       return ($cs 
         ? strcmp($string->buffer, $this->buffer) 
         : strcasecmp($string->buffer, $this->buffer)
@@ -109,7 +103,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -119,11 +112,10 @@
     /**
      * Returns true if this string equals another string
      *
-     * @access  public
      * @param   &lang.Object value
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return (
         is('String', $cmp) && 
         ($this->buffer === $cmp->buffer)
@@ -133,7 +125,6 @@
     /**
      * Returns true if the specified string matches this string.
      *
-     * @access  public
      * @param   string str
      * @return  bool
      */
@@ -148,14 +139,13 @@
      * Compares two strings lexicographically using a "natural order" 
      * algorithm
      *
-     * @access  public
      * @param   &text.String string
      * @param   bool cs default TRUE whether to compare case-sensitively
      * @return  int
      * @see     php://strnatcmp for case-sensitive comparison
      * @see     php://strnatcasecmp for case-insensitive comparison
      */
-    public function compareToNat(&$string, $cs= TRUE) {
+    public function compareToNat($string, $cs= TRUE) {
       return ($cs 
         ? strnatcmp($string->buffer, $this->buffer) 
         : strnatcasecmp($string->buffer, $this->buffer)
@@ -166,7 +156,6 @@
      * Tests if this string starts with the specified prefix beginning 
      * a specified index.
      *
-     * @access  public
      * @param   string prefix
      * @param   int offset default 0 where to begin looking in the string
      * @return  bool
@@ -178,7 +167,6 @@
     /**
      * Tests if this string ends with the specified suffix.
      *
-     * @access  public
      * @param   string suffix
      * @return  bool
      */
@@ -190,7 +178,6 @@
      * Returns the index within this string of the first occurrence of the 
      * specified substring
      *
-     * @access  public
      * @param   string substr
      * @param   int offset default 0 the index to start the search from
      * @return  int the index of the first occurrence of the substring or FALSE
@@ -204,7 +191,6 @@
      * Returns the index within this string of the last occurrence of the 
      * specified substring
      *
-     * @access  public
      * @param   string substr
      * @return  int the index of the first occurrence of the substring or FALSE
      * @see     php://strrpos
@@ -216,7 +202,6 @@
     /**
      * Returns whether the specified substring is contained in this string
      *
-     * @access  public
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  bool
@@ -240,7 +225,6 @@
      *   }
      * </code>
      *
-     * @access  public
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  string or FALSE if substr is not found
@@ -257,13 +241,12 @@
      * Find first occurrence of a string.  Returns part of haystack string 
      * from the first occurrence of needle to the end of haystack. 
      *
-     * @access  public
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
      * @return  &text.String or NULL if substr is not found
      * @see     php://strstr
      */
-    public function &substringAfter($substr, $cs= TRUE) {
+    public function substringAfter($substr, $cs= TRUE) {
       if (FALSE === ($s= ($cs 
         ? strstr($this->buffer, $substr)
         : stristr($this->buffer, $substr)
@@ -275,20 +258,18 @@
     /**
      * Returns a new string that is a substring of this string.
      *
-     * @access  public
      * @param   int begin
      * @param   int end default -1
      * @return  &text.String
      * @see     php://substr
      */
-    public function &substring($begin, $end= -1) {
+    public function substring($begin, $end= -1) {
       return new String(substr($this->buffer, $begin, $end));
     }
 
     /**
      * Returns a new string that is a substring of this string.
      *
-     * @access  public
      * @param   int begin
      * @param   int end default -1
      * @return  string
@@ -302,11 +283,10 @@
      * Concatenates the specified string to the end of this string
      * and returns a new string containing the result.
      *
-     * @access  public
      * @param   &text.String string
      * @return  &text.String a new string
      */
-    public function &concat(&$string) {
+    public function concat($string) {
       return new String($this->buffer.$string->buffer);
     }
     
@@ -314,17 +294,15 @@
      * Concatenates the specified string to the end of this string,
      * changing this string.
      *
-     * @access  public
      * @param   &text.String string
      */
-    public function append(&$string) {
+    public function append($string) {
       $this->buffer.= $string->buffer;
     }
     
     /**
      * Replaces search value(s) with replacement value(s) in this string
      *
-     * @access  public
      * @param   mixed search
      * @param   mixed replace
      * @see     php://str_replace
@@ -336,7 +314,6 @@
     /**
      * Replaces pairs in this this string
      *
-     * @access  public
      * @param   array pairs an associative array, where keys are replaced by values
      * @see     php://strtr
      */
@@ -348,7 +325,6 @@
      * Delete a specified amount of characters from this string as
      * of a specified position.
      *
-     * @access  public
      * @param   int pos
      * @param   int len default 1
      */
@@ -359,7 +335,6 @@
     /**
      * Insert a substring into this string at a specified position. 
      *
-     * @access  public
      * @param   int pos
      * @param   string substring
      */
@@ -370,7 +345,6 @@
     /**
      * Tells whether or not this string matches the given regular expression.
      *
-     * @access  public
      * @param   string regex
      * @return  bool
      * @see     php://preg_match
@@ -382,13 +356,12 @@
     /**
      * Split this string into portions delimited by separator
      *
-     * @access  public
      * @param   string separator
      * @param   int limit default 0
      * @return  &text.String[]
      * @see     php://explode
      */
-    public function &explode($separator, $limit= 0) {
+    public function explode($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? explode($separator, $this->buffer) 
@@ -405,13 +378,12 @@
     /**
      * Split this string into portions delimited by separator regex
      *
-     * @access  public
      * @param   string separator
      * @param   int limit default 0
      * @return  &text.String[]
      * @see     php://preg_split
      */
-    public function &split($separator, $limit= 0) {
+    public function split($separator, $limit= 0) {
       for (
         $a= ($limit 
           ? preg_split($separator, $this->buffer) 
@@ -428,7 +400,6 @@
     /**
      * Pad this string to a certain length with another string
      *
-     * @access  public
      * @param   int length
      * @param   string str default ' '
      * @param   int type default STR_PAD_RIGHT
@@ -452,7 +423,6 @@
      *   <li>"\x0B" (ASCII 11 (0x0B)), a vertical tab. </li>
      * </ul>
      *
-     * @access  public
      * @param   string charlist default NULL
      * @see     php://trim
      */
@@ -467,7 +437,6 @@
     /**
      * Strip whitespace from the beginning of this string.
      *
-     * @access  public
      * @param   string charlist default NULL
      * @see     php://ltrim
      * @see     xp://text.String#trim
@@ -483,7 +452,6 @@
     /**
      * Strip whitespace from the end of this string.
      *
-     * @access  public
      * @param   string charlist default NULL
      * @see     php://ltrim
      * @see     xp://text.String#trim
@@ -500,11 +468,10 @@
      * Converts all of the characters in this string to upper case using 
      * the rules of the current locale.
      *
-     * @access  public
      * @see     php://strtoupper
      * @return  &text.String this string
      */
-    public function &toUpperCase() {
+    public function toUpperCase() {
       $this->buffer= strtoupper($this->buffer);
       return $this;
     }
@@ -513,11 +480,10 @@
      * Converts all of the characters in this string to lower case using 
      * the rules of the current locale.
      *
-     * @access  public
      * @see     php://strtolower
      * @return  &text.String this string
      */
-    public function &toLowerCase() {
+    public function toLowerCase() {
       $this->buffer= strtolower($this->buffer);
       return $this;
     }
@@ -525,7 +491,6 @@
     /**
      * Parses input from this string according to a format
      *
-     * @access  public
      * @param   string format
      * @return  array
      * @see     php://sscanf
@@ -546,7 +511,6 @@
      *   $a= $s->toArray(',');      // array('Friebe', 'Timm')
      * </code>
      *
-     * @access  public
      * @param   string delim default ''
      * @return  string[]
      */
@@ -570,12 +534,10 @@
      *   $s= &String::fromArray(array(1, 2, 3), ',');   // "1,2,3"
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   string delim default ''
      * @return  &text.String string
      */
-    public static function &fromArray($arr, $delim= '') {
+    public static function fromArray($arr, $delim= '') {
       return new String(implode($delim, $arr));
     }
     
@@ -583,12 +545,10 @@
      * Returns the string representation of the given argument. Calls the
      * toString() method on objects and implode() on arrays.
      *
-     * @model   static
-     * @access  public
      * @param   mixed arg
      * @return  &text.String string
      */
-    public static function &valueOf($arg) {
+    public static function valueOf($arg) {
       if (is('Generic', $arg)) {
         return new String($arg->toString());
       } else if (is_array($arg)) {
@@ -601,7 +561,6 @@
      * Returns a string representation of this string.
      *
      * @see     xp://text.String#getBuffer
-     * @access  public
      * @return  string
      */
     public function toString() {

@@ -20,7 +20,6 @@
     /**
      * Setup text fixture
      *
-     * @access  public
      */
     public function setUp() {
       $this->decoder= new JsonDecoder();
@@ -29,7 +28,6 @@
     /**
      * Test string encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeString() {
@@ -40,7 +38,6 @@
     /**
      * Test integer encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeInt() {
@@ -51,7 +48,6 @@
     /**
      * Test float encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeFloat() {
@@ -62,7 +58,6 @@
     /**
      * Test boolean and NULL encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeBooleanAndNull() {
@@ -74,7 +69,6 @@
     /**
      * Test string encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeArray() {
@@ -97,7 +91,6 @@
     /**
      * Test string encoding
      *
-     * @access  public
      */
     #[@test]
     public function encodeHashmap() {
@@ -110,7 +103,6 @@
     /**
      * Test array decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeArray() {
@@ -123,7 +115,6 @@
     /**
      * Test string decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeString() {
@@ -162,7 +153,6 @@
     /**
      * Test number decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeNumber() {
@@ -191,7 +181,6 @@
     /**
      * Test string array decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeStringArray() {
@@ -204,7 +193,6 @@
     /**
      * Test object decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeHashmap() {
@@ -217,7 +205,6 @@
     /**
      * Test object array decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeObjectArray() {
@@ -230,7 +217,6 @@
     /**
      * Test nested object decoding
      *
-     * @access  public
      */
     #[@test]
     public function decodeNestedObject() {
@@ -243,7 +229,6 @@
     /**
      * Decoding non-json data should result in an exception
      *
-     * @access  public
      */
     #[@test,@expect('webservices.json.JsonException')]
     public function decodeInvalidData() {
@@ -253,7 +238,6 @@
     /**
      * Test encoding of object
      *
-     * @access  public
      */
     #[@test]
     public function encodeObject() {
@@ -270,7 +254,6 @@
     /**
      * Test decoding of object
      *
-     * @access  public
      */
     #[@test]
     public function decodeObject() {

@@ -15,7 +15,6 @@
     /**
      * Overloaded method.
      *
-     * @access  public
      */
     #[@overloaded(signatures= array(
     #  array('string'),

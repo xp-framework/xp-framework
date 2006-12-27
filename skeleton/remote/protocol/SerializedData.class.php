@@ -18,18 +18,16 @@
     /**
      * Constructor
      * 
-     * @access  public
      * @param   string buffer
      */
     public function __construct($buffer) {
-      $this->buffer= &$buffer;
+      $this->buffer= $buffer;
       $this->offset= 0;
     }
     
     /**
      * Consume a string ([length]:"[string]")
      * 
-     * @access  public
      * @return  string
      */
     public function consumeString() {
@@ -47,7 +45,6 @@
     /**
      * Consume everything up to the next ";" and return it
      * 
-     * @access  public
      * @param   string stop
      * @return  string
      */     
@@ -64,7 +61,6 @@
     /**
      * Consume everything up to the next ":" character and return it
      * 
-     * @access  public
      * @param   string stop
      * @return  string
      */     

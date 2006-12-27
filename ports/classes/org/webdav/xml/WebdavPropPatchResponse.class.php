@@ -42,7 +42,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      */
@@ -52,13 +51,12 @@
         NULL,
         array('xmlns:D' => 'DAV:')
       ));
-      $this->hrefNode= &$this->addChild(new Node('D:href'));
+      $this->hrefNode= $this->addChild(new Node('D:href'));
     }
     
     /**
      * Sets the href attribute for the response
      *
-     * @access public
      * @param  string href The href
      */
     public function setHref($href) {
@@ -68,7 +66,6 @@
     /**
      * Create Answer
      *
-     * @access  private
      * @param   string status
      * @param   string property
      * @param   string namespace default DAV:
@@ -76,8 +73,8 @@
      */
     public function addProperty($property, $status= HTTP_OK) {
       if (!isset($this->statusNode[$status])) {
-        $this->propstatNode[$status]= &$this->addChild(new Node('D:propstat'));
-        $this->propNode[$status]= &$this->propstatNode[$status]->addChild(new Node('D:prop'));
+        $this->propstatNode[$status]= $this->addChild(new Node('D:propstat'));
+        $this->propNode[$status]= $this->propstatNode[$status]->addChild(new Node('D:prop'));
       }
 
       $name= $property->getName();
@@ -99,7 +96,6 @@
     /**
      * Process response and add the status codes
      *
-     * @access public
      */    
     public function process() {
       foreach (array_keys($this->propstatNode) as $status) {

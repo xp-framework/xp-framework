@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array dn
      */
     public function __construct($dn) {
@@ -33,7 +32,6 @@
      * /C=DE/ST=Germany/L=Karlsruhe/O=Foo/OU=Bar/CN=Foo, Baz Bar/EMAIL=mail@example.com
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -47,7 +45,6 @@
     /**
      * Get country name
      *
-     * @access  public
      * @return  string
      */
     public function getCountryName() {
@@ -57,7 +54,6 @@
     /**
      * Get state or province name
      *
-     * @access  public
      * @return  string
      */
     public function getStateOrProvinceName() {
@@ -67,7 +63,6 @@
     /**
      * Get locality name
      *
-     * @access  public
      * @return  string
      */
     public function getLocalityName() {
@@ -77,7 +72,6 @@
     /**
      * Get organization name
      *
-     * @access  public
      * @return  string
      */
     public function getOrganizationName() {
@@ -87,7 +81,6 @@
     /**
      * Get organizational unit name
      *
-     * @access  public
      * @return  string
      */
     public function getOrganizationalUnitName() {
@@ -97,7 +90,6 @@
     /**
      * Get common name
      *
-     * @access  public
      * @return  string
      */
     public function getCommonName() {
@@ -107,7 +99,6 @@
     /**
      * Get email address
      *
-     * @access  public
      * @return  string
      */
     public function getEmailAddress() {

@@ -20,10 +20,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &mixed arg
      */    
-    public function __construct(&$arg) {
+    public function __construct($arg) {
       if (is_object($arg)) {
         $this->date= new Date (VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;
@@ -35,7 +34,6 @@
     /**
      * Create a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -45,7 +43,6 @@
     /**
      * Export this VDate
      *
-     * @access  public
      * @return  string
      */
     public function export() {

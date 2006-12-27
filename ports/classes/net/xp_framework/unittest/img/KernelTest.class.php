@@ -17,7 +17,6 @@
     /**
      * Tests creating a kernel from an array
      *
-     * @access  public
      */
     #[@test]
     public function fromArray() {
@@ -34,7 +33,6 @@
     /**
      * Tests creating a kernel from a string
      *
-     * @access  public
      */
     #[@test]
     public function fromString() {
@@ -52,7 +50,6 @@
     /**
      * Tests creating a kernel from an array of size 0
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function wrongArraySize() {
@@ -63,7 +60,6 @@
      * Tests creating a kernel from an array where one row has more
      * than three values.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function wrongRowSizeInArray() {
@@ -78,7 +74,6 @@
     /**
      * Tests creating a kernel from a string with illegal syntax
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function illegalStringSyntax() {
@@ -89,7 +84,6 @@
      * Tests creating a kernel from a string with where one row has 
      * less than three values.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function wrongRowSizeInString() {

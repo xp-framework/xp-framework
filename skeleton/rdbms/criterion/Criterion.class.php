@@ -17,12 +17,11 @@
     /**
      * Returns the fragment SQL
      *
-     * @access  public
      * @param   &rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql(&$conn, $types);
+    public function asSql($conn, $types);
   }
 ?>

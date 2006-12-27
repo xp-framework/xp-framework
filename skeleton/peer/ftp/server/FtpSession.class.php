@@ -42,7 +42,6 @@
      * The default representation type is ASCII Non-print. This 
      * implementation supports ASCII (A) and BINARY (I)
      *
-     * @access  protected
      * @return  string
      */
     public function typeName() {
@@ -56,7 +55,6 @@
     /**
      * Set Username
      *
-     * @access  public
      * @param   string username
      */
     public function setUsername($username) {
@@ -66,7 +64,6 @@
     /**
      * Get Username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -76,7 +73,6 @@
     /**
      * Set Authenticated
      *
-     * @access  public
      * @param   bool authenticated
      */
     public function setAuthenticated($authenticated) {
@@ -86,7 +82,6 @@
     /**
      * Retrieve whether this session is authenticated
      *
-     * @access  public
      * @return  bool
      */
     public function isAuthenticated() {
@@ -96,7 +91,6 @@
     /**
      * Set Type
      *
-     * @access  public
      * @param   int type
      */
     public function setType($type) {
@@ -106,7 +100,6 @@
     /**
      * Set temporary variable
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      */
@@ -117,7 +110,6 @@
     /**
      * Get value of a temporary variable
      *
-     * @access  public
      * @param   string name
      * @return  mixed value
      */    
@@ -128,7 +120,6 @@
     /**
      * Remove a temporary variable
      *
-     * @access  public
      * @param   string name
      */    
     public function removeTempVar($name) {
@@ -138,7 +129,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  int
      */
     public function getType() {

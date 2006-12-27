@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int handle default 0
      */
     public function __construct($handle= 0) {
@@ -30,7 +29,6 @@
     /**
      * Initializes this connection with default values
      *
-     * @access  public
      */
     public function initialize() {
       if (!isset($this->handle)) $this->handle= 0;
@@ -41,7 +39,6 @@
     /**
      * Returns the handle of the connection
      *
-     * @access  public
      * @return  int
      */
     public function getHandle() {
@@ -53,7 +50,6 @@
      * start of the line and handle=1 is the end, but this depends on the
      * according UML object (dependency, generalization, ...)
      *
-     * @access  public
      * @param   int handle
      */
     #[@fromDia(xpath= '@handle', value= 'int')]
@@ -64,7 +60,6 @@
     /**
      * Returns the ID of the connected object
      *
-     * @access  public
      * @return  string
      */
     public function getTo() {
@@ -74,7 +69,6 @@
     /**
      * Sets the ID of the object the connection is attached to
      *
-     * @access  public
      * @param   string to
      */
     #[@fromDia(xpath= '@to', value= 'string')]
@@ -86,7 +80,6 @@
      * Returns the connection point number where this connection is attached to
      * the object
      *
-     * @access  public
      * @return  int
      */
     public function getConnection() {
@@ -98,7 +91,6 @@
      * sequentially numbered starting from top-left, always going from left to
      * right.
      *
-     * @access  public
      * @param   int conn
      */
     #[@fromDia(xpath= '@connection', value= 'int')]
@@ -109,11 +101,10 @@
     /**
      * Returns the XML representation of this object
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $Node= &parent::getNode();
+    public function getNode() {
+      $Node= parent::getNode();
       $Node->setAttribute('handle', $this->handle);
       $Node->setAttribute('to', $this->to);
       $Node->setAttribute('connection', $this->conn);

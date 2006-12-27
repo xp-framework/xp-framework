@@ -57,7 +57,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string identifier
      * @param   string format 
      * @param   string dateformat
@@ -76,7 +75,6 @@
      * Sets the flags (what should be logged). Note that you also
      * need to add an appender for a category you want to log.
      *
-     * @access  public
      * @param   int flags bitfield with flags (LOGGER_FLAG_*)
      */
     public function setFlags($flags) {
@@ -86,7 +84,6 @@
     /**
      * Gets flags
      *
-     * @access  public
      * @return  int flags
      */
     public function getFlags() {
@@ -96,7 +93,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      */
     public function callAppenders() {
       $args= func_get_args();
@@ -114,7 +110,7 @@
         if (!($flag & $appflag)) continue;
         foreach (array_keys($this->_appenders[$appflag]) as $idx) {
           call_user_func_array(
-            array(&$this->_appenders[$appflag][$idx], 'append'),
+            array($this->_appenders[$appflag][$idx], 'append'),
             $args
           );
         }
@@ -124,7 +120,6 @@
     /**
      * Retrieves whether this log category has appenders
      *
-     * @access  public
      * @return  bool
      */
     public function hasAppenders() {
@@ -134,7 +129,6 @@
     /**
      * Finalize
      *
-     * @access  public
      */
     public function finalize() {
       foreach ($this->_appenders as $flags => $appenders) {
@@ -149,13 +143,12 @@
      * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
      * types.
      *
-     * @access  public
      * @param   &util.log.LogAppender appender The appender object
      * @param   int flag default LOGGER_FLAG_ALL
      * @return  &util.log.LogAppender the appender added
      */
-    public function &addAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
-      $this->_appenders[$flag][]= &$appender;
+    public function addAppender($appender, $flag= LOGGER_FLAG_ALL) {
+      $this->_appenders[$flag][]= $appender;
       return $appender;
     }
     
@@ -163,11 +156,10 @@
      * Remove the specified appender from the given log categories. For usage
      * of log category flags, see addAppender().
      * 
-     * @access  public
      * @param   &util.log.LogAppender appender
      * @param   int flag default LOGGER_FLAG_ALL
      */
-    public function removeAppender(&$appender, $flag= LOGGER_FLAG_ALL) {
+    public function removeAppender($appender, $flag= LOGGER_FLAG_ALL) {
       foreach (array_keys($this->_appenders) as $f) {
         if (!($f & $flag)) continue;
         
@@ -195,14 +187,13 @@
      *
      * Note: This also applies to warn(), error() and debug().
      *
-     * @access  public
      * @param   mixed* args
      */
     public function info() {
       $args= func_get_args();
       array_unshift($args, LOGGER_FLAG_INFO);
       call_user_func_array(
-        array(&$this, 'callAppenders'),
+        array($this, 'callAppenders'),
         $args
       );
     }
@@ -215,7 +206,6 @@
      * Note: This also applies to warnf(), errorf() and debugf().
      *
      * @see     php://sprintf
-     * @access  public
      * @param   string format 
      * @param   mixed* args
      */
@@ -230,14 +220,13 @@
     /**
      * Appends a log of type warn
      *
-     * @access  public
      * @param   mixed* args
      */
     public function warn() {
       $args= func_get_args();
       array_unshift($args, LOGGER_FLAG_WARN);
       call_user_func_array(
-        array(&$this, 'callAppenders'),
+        array($this, 'callAppenders'),
         $args
       );
     }
@@ -245,7 +234,6 @@
     /**
      * Appends a log of type info in printf-style
      *
-     * @access  public
      * @param   string format 
      * @param   mixed* args
      */
@@ -260,14 +248,13 @@
     /**
      * Appends a log of type error
      *
-     * @access  public
      * @param   mixed* args
      */
     public function error() {
       $args= func_get_args();
       array_unshift($args, LOGGER_FLAG_ERROR);
       call_user_func_array(
-        array(&$this, 'callAppenders'),
+        array($this, 'callAppenders'),
         $args
       );
     }
@@ -275,7 +262,6 @@
     /**
      * Appends a log of type info in printf-style
      *
-     * @access  public
      * @param   string format 
      * @param   mixed* args
      */
@@ -290,14 +276,13 @@
     /**
      * Appends a log of type debug
      *
-     * @access  public
      * @param   mixed* args
      */
     public function debug() {
       $args= func_get_args();
       array_unshift($args, LOGGER_FLAG_DEBUG);
       call_user_func_array(
-        array(&$this, 'callAppenders'),
+        array($this, 'callAppenders'),
         $args
       );
     }
@@ -305,7 +290,6 @@
     /**
      * Appends a log of type info in printf-style
      *
-     * @access  public
      * @param   string format format string
      * @param   mixed* args
      */
@@ -320,7 +304,6 @@
     /**
      * Appends a separator (a "line" consisting of 72 dashes)
      *
-     * @access  public
      */
     public function mark() {
       $this->callAppenders(

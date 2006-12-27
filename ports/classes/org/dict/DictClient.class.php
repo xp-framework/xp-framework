@@ -56,7 +56,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string info default ''
      */
     public function __construct($info= '') {
@@ -66,7 +65,6 @@
     /**
      * Private helper method
      *
-     * @access  private
      * @param   string fmt or FALSE to indicate not to write any data
      * @param   string* args arguments for sprintf-string fmt
      * @param   mixed expect int for one possible returncode, int[] for multiple or FALSE to indicate not to read any data
@@ -121,7 +119,6 @@
      * <<< 250 ok
      * </pre>
      *
-     * @access  public
      * @param   string server
      * @param   int port default 2628
      * @return  bool success
@@ -148,7 +145,6 @@
      * <<< 221 bye [d/m/c = 0/0/0; 87.000r 0.000u 0.000s]
      * </pre>
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException
      */
@@ -190,13 +186,12 @@
      * <<< 552 no match [d/m/c = 0/0/107; 0.000r 0.000u 0.000s]
      * </pre>
      *
-     * @access  public
      * @param   string word
      * @param   strind db default '*'
      * @return  &org.dict.DictDefinitionEntry[]
      * @throws  io.IOException
      */
-    public function &getDefinition($word, $db= '*') {
+    public function getDefinition($word, $db= '*') {
       $def= array();
       try {
         $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(150, 552));
@@ -238,7 +233,6 @@
      * <<< 250 ok [d/m/c = 0/81/955839; 0.000r 0.000u 0.000s]
      * </pre>
      *
-     * @access  public
      * @param   string word
      * @param   string strategy default DICT_STRATEGY_SUBSTRING one of the DICT_STRATEGY_* constants
      * @param   strind db default '*'
@@ -268,7 +262,6 @@
      * <<< 250 ok
      * </pre>
      *
-     * @access  public
      * @return  mixed
      * @throws  io.IOException
      */
@@ -298,7 +291,6 @@
      * <<< 250 ok
      * </pre>
      *
-     * @access  public
      * @return  mixed
      * @throws  io.IOException
      */
@@ -321,7 +313,6 @@
      * <<< 250 ok
      * </pre>
      *
-     * @access  public
      * @return  mixed
      * @throws  io.IOException
      */
@@ -355,7 +346,6 @@
      * <<< 250 ok
      * </pre>
      *
-     * @access  public
      * @return  mixed
      * @throws  io.IOException
      */
@@ -371,7 +361,6 @@
      * <<< 210 status [d/m/c = 0/167/2380096; 211.000r 0.000u 0.000s]
      * </pre>
      *
-     * @access  public
      * @return  mixed
      * @throws  io.IOException
      */
@@ -382,11 +371,10 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
   } 

@@ -52,7 +52,6 @@
     /**
      * register an Lock-request
      *
-     * @access  public
      * @param   string name
      */
     public function registerLock(
@@ -79,20 +78,18 @@
     /**
      * Get all properties
      *
-     * @access  public
      * @return  &string[] properties
      */
-    public function &getProperties() {
+    public function getProperties() {
       return $this->properties;
     }
 
     /**
      * Set data and parse for properties
      *
-     * @access public
      * @param  string data The data
      */
-    public function setData(&$data) {    
+    public function setData($data) {    
       parent::setData($data);
       
       // locktype

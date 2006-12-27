@@ -19,23 +19,21 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.NumberFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('NumberFormat');
     }  
   
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      * @throws  lang.FormatException
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (!is_numeric($argument)) {
         throw(new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number'));
       }

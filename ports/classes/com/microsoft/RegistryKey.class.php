@@ -65,19 +65,17 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name e.g. HKEY_CURRENT_USER\Environment\TMP
      */    
     public function __construct($name) {
       
       $this->name= $name;
-      $this->_sh= &WshShell::getInstance();
+      $this->_sh= WshShell::getInstance();
     }
     
     /**
      * Get this key's name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -87,7 +85,6 @@
     /**
      * Checks whether this key exists
      *
-     * @access  public
      * @return  bool
      */
     public function exists() {
@@ -100,7 +97,6 @@
     /**
      * Deletes this key
      *
-     * @access  public
      * @return  bool
      * @throws  com.microsoft.RegistryException
      */
@@ -114,11 +110,10 @@
     /**
      * Read this key's value
      *
-     * @access  public
      * @return  &mixed   
      * @throws  com.microsoft.RegistryException
      */
-    public function &getValue() {
+    public function getValue() {
       if (NULL === ($v= $this->_sh->regRead($this->name))) {
         throw(new RegistryException('Could not read key "'.$this->name.'"'));  
       }
@@ -128,7 +123,6 @@
     /**
      * Set this key's value. Creates the key if necessary.
      *
-     * @access  public
      * @param   mixed val
      * @param   string type default REG_SZ
      * @return  bool

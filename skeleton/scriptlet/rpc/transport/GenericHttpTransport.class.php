@@ -19,7 +19,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string url
      * @param   array headers
      */
@@ -31,7 +30,6 @@
     /**
      * Create a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -41,21 +39,19 @@
     /**
      * Sets the message class which will retrieve the answer
      *
-     * @access  public
      * @param   &lang.XPClass c
      */
-    public function setMessageClass(&$c) {
-      $this->messageClass= &$c;
+    public function setMessageClass($c) {
+      $this->messageClass= $c;
     }    
 
     /**
      * Send RPC message
      *
-     * @access  public
      * @param   &scriptlet.rpc.AbstractRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function &send(&$message) {
+    public function send($message) {
       
       if (!is('scriptlet.rpc.AbstractRpcMessage', $message)) throw(new IllegalArgumentException(
         'parameter "message" must be a scriptlet.rpc.AbstractRpcMessage'
@@ -72,7 +68,7 @@
       
       try {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= &$this->_conn->request->send($this->_conn->getTimeout());
+        $res= $this->_conn->request->send($this->_conn->getTimeout());
       } catch (IOException $e) {
         throw ($e);
       }
@@ -83,11 +79,10 @@
     /**
      * Retrieve a RPC message.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &retrieve(&$response) {
+    public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
       try {
@@ -104,8 +99,8 @@
             while ($buf= $response->readData()) $xml.= $buf;
 
             $this->cat && $this->cat->debug('<<<', $xml);
-            $m= &$this->messageClass->getMethod('fromString');
-            $answer= &$m->invoke(NULL, array($xml));
+            $m= $this->messageClass->getMethod('fromString');
+            $answer= $m->invoke(NULL, array($xml));
             if ($answer) {
 
               // Check encoding

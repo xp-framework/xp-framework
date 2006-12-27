@@ -22,7 +22,6 @@
      * Ensures an IllegalArgumentException is thrown in case we have 
      * multiple output arguments
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function testMultipleOutputArguments() {
@@ -55,7 +54,6 @@
      * Ensures no exception is thrown in case we have 
      * no output arguments
      *
-     * @access  public
      */
     #[@test]
     public function testNoOutputArguments() {
@@ -84,7 +82,6 @@
      * Ensures no exception is thrown in case we have 
      * one output arguments
      *
-     * @access  public
      */
     #[@test]
     public function testOneOutputArguments() {

@@ -64,7 +64,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   string caption default 'Message'
      * @param   int style default MB_DEFAULT
@@ -86,8 +85,6 @@
     /**
      * Public static method
      *
-     * @model   static
-     * @access  public
      * @param   string message
      * @param   string caption default 'Message'
      * @param   int style default MB_DEFAULT
@@ -107,16 +104,15 @@
     /**
      * Initialize
      *
-     * @access  public
      */
     public function init() {
       $this->window->set_default_size(320, 140);
       
       // Message
-      $this->label= &$this->widget('label');
+      $this->label= $this->widget('label');
       
       // Icon
-      $this->icon= &$this->widget('icon');
+      $this->icon= $this->widget('icon');
       $loader= new GTKPixmapLoader($this->window->window, dirname(__FILE__));
       try {
         $this->pixmaps= $loader->load(array(
@@ -138,7 +134,6 @@
     /**
      * Run this
      *
-     * @access  public
      */
     public function run() {
       static $map= array(
@@ -178,10 +173,9 @@
     /**
      * Callback for buttons
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onButtonClicked(&$widget) {
+    public function onButtonClicked($widget) {
       $this->pressed= constant('MB_'.$widget->get_name());
       $this->close();
     }
@@ -189,7 +183,6 @@
     /**
      * Show this messagebpx
      *
-     * @access  public
      * @return  int
      */
     public function show() {

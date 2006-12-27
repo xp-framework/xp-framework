@@ -18,12 +18,11 @@
     /**
      * Constructor.
      *
-     * @access  protected
      * @param   string argument
      */
     public function __construct($arg) {
-      $log= &Logger::getInstance();
-      $this->cat= &$log->getCategory($arg);
+      $log= Logger::getInstance();
+      $this->cat= $log->getCategory($arg);
       $this->messagecodes= array_merge(
         range(3612,3615),
         range(6201,6299),
@@ -35,7 +34,6 @@
     /**
      * Sybase message callback.
      *
-     * @access  magic
      * @param   int msgnumber
      * @param   int severity
      * @param   int state
@@ -60,30 +58,27 @@
     /**
      * Retrieves an instance.
      *
-     * @model   static
-     * @access  public
      * @param   mixed argument
      * @return  &rdbms.sybase.SybaseShowplanObserver
      */
-    public static function &instanceFor($arg) {
+    public static function instanceFor($arg) {
       return new SybaseShowplanObserver($arg);
     }
     
     /**
      * Update the observer. Process new message.
      *
-     * @access  public
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    public function update(&$obs, $arg= NULL) {
+    public function update($obs, $arg= NULL) {
       if (!is('rdbms.DBEvent', $arg)) return;
       
       // Passthrough event to appropriate function, if existant
       if (method_exists($this, 'on'.$arg->getName())) {
         call_user_func_array(
-          array(&$this, 'on'.$arg->getName()),
-          array(&$obs, &$arg)
+          array($this, 'on'.$arg->getName()),
+          array($obs, $arg)
         );
       }
     }
@@ -91,14 +86,13 @@
     /**
      * Process connect events.
      *
-     * @access  protected
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    public function onConnect(&$obs, &$arg) {
+    public function onConnect($obs, $arg) {
       if (0 <= version_compare(phpversion(), '4.3.5')) {
         ini_set('sybct.min_server_severity', 0);
-        sybase_set_message_handler(array(&$this, '_msghandler'), $obs->handle);
+        sybase_set_message_handler(array($this, '_msghandler'), $obs->handle);
       } else {
         $this->cat->warn($this->getClassName().': Unsupported PHP version detected (requires 4.3.5)');
       }
@@ -112,11 +106,10 @@
     /**
      * Process query event.
      *
-     * @access  protected
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    public function onQuery(&$obs, &$arg) {
+    public function onQuery($obs, $arg) {
       
       // Add query to cache
       $this->queries[]= $arg->getArgument();
@@ -125,11 +118,10 @@
     /**
      * Process end of query event.
      *
-     * @access  protected
      * @param   &mixed observable
      * @param   &mixed dbevent
      */
-    public function onQueryEnd(&$obs, &$arg) {
+    public function onQueryEnd($obs, $arg) {
       $this->cat->info($this->getClassName().'::onQueryEnd() Query was:', (sizeof($this->queries) == 1 ? $this->queries[0] : $this->queries));
 
       $showplan= '';

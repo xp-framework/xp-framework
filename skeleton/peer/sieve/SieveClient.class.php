@@ -76,7 +76,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host
      * @param   int port default 2000
      */  
@@ -87,7 +86,6 @@
     /**
      * Connect to sieve server
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case connecting failed
      * @throws  lang.FormatException in case the response cannot be parsed
@@ -143,7 +141,6 @@
     /**
      * Wrapper that sends a command to the remote host.
      *
-     * @access  protected  
      * @param   string format
      * @param   mixed* args
      * @return  bool success
@@ -161,7 +158,6 @@
      *
      * Stops reading at one of the terminals "OK", "NO" or "BYE".
      *
-     * @access  protected  
      * @param   bool discard default FALSE
      * @param   bool error default TRUE
      * @return  string[]
@@ -197,7 +193,6 @@
     /**
      * Return server implementation
      *
-     * @access  public
      * @return  string
      */
     public function getImplementation() {
@@ -208,7 +203,6 @@
      * Retrieve supported modules. Return value is an array of modules
      * reported by the server consisting of the SIEVE_MOD_* constants.
      *
-     * @access  public
      * @return  string[] 
      */
     public function getSupportedModules() {
@@ -218,7 +212,6 @@
     /**
      * Check whether a specified module is supported
      *
-     * @access  public
      * @param   string method one of the SIEVE_MOD_* constants
      * @return  bool
      */
@@ -231,7 +224,6 @@
      * array of supported methods reported by the server consisting
      * of the SIEVE_SASL_* constants.
      *
-     * @access  public
      * @return  string[] 
      */
     public function getAuthenticationMethods() {
@@ -241,7 +233,6 @@
     /**
      * Checks whether a specied authentication is available.
      *
-     * @access  public
      * @param   string method one of the SIEVE_SASL_* constants
      * @return  bool
      */
@@ -260,7 +251,6 @@
      *   <li>CRAM-MD5</li>
      * </ul>
      *
-     * @access  public
      * @param   string method one of the SIEVE_SASL_* constants
      * @param   string user
      * @param   string pass
@@ -308,8 +298,8 @@
           $str= base64_decode($this->_sock->readLine());
           $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $str);
           try {
-            $challenge= &DigestChallenge::fromString($str);
-            $response= &$challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
+            $challenge= DigestChallenge::fromString($str);
+            $response= $challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
           } catch (FormatException $e) {
             throw($e);
           }
@@ -363,16 +353,15 @@
     /**
      * Retrieve a list of scripts stored on the server
      *
-     * @access  public
      * @return  peer.sieve.SieveScript[] scripts
      */
     public function getScripts() {
       $r= array();
       foreach ($this->getScriptNames() as $name => $info) {
-        with ($s= &$this->getScript($name)); {
+        with ($s= $this->getScript($name)); {
           $s->setActive('ACTIVE' == $info);         // Only one at a time
         }
-        $r[]= &$s;
+        $r[]= $s;
       }
       return $r;
     }
@@ -380,7 +369,6 @@
     /**
      * Retrieve a list of scripts names.
      *
-     * @access  public
      * @return  array
      */
     public function getScriptNames() {
@@ -401,11 +389,10 @@
     /**
      * Retrieve a script by its name
      *
-     * @access  public
      * @param   string name
      * @return  &peer.sieve.SieveScript script
      */
-    public function &getScript($name) {
+    public function getScript($name) {
       $this->_sendcmd('GETSCRIPT "%s"', $name);
       if (!($r= $this->_response())) return $r;
       
@@ -426,7 +413,6 @@
     /**
      * Delete a script from the server
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */
@@ -438,11 +424,10 @@
     /**
      * Upload a script to the server
      *
-     * @access  public
      * @param   &peer.sieve.SieveScript script
      * @return  bool success
      */
-    public function putScript(&$script) {
+    public function putScript($script) {
       $this->_sendcmd('PUTSCRIPT "%s" {%d+}', $script->getName(), $script->getLength());
       $this->_sendcmd($script->getCode());
       return $this->_response(TRUE);
@@ -464,7 +449,6 @@
      * If the script name is the empty string (i.e. "") then any active 
      * script is disabled.
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */
@@ -476,11 +460,10 @@
     /**
      * Check whether there is enough space for a script to be uploaded
      *
-     * @access  public
      * @param   &peer.sieve.SieveScript script
      * @return  bool success
      */
-    public function hasSpaceFor(&$script) {
+    public function hasSpaceFor($script) {
       $this->_sendcmd('HAVESPACE "%s" %d', $script->getName(), $script->getLength());
       return $this->_response(TRUE, FALSE);
     }
@@ -488,7 +471,6 @@
     /**
      * Close connection
      *
-     * @access  public
      */
     public function close() {
       try {
@@ -504,11 +486,10 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) { 
-      $this->cat= &$cat;
+    public function setTrace($cat) { 
+      $this->cat= $cat;
     }
 
   } 

@@ -19,7 +19,6 @@
     /**
      * Helper method to encode a string
      *
-     * @access  private
      * @param   string str string to be encoded
      * @return  string
      */
@@ -32,7 +31,6 @@
     /**
      * Set environment.
      *
-     * @access  public
      * @param   array env
      */
     public function setEnvironment($env) {
@@ -42,7 +40,6 @@
     /**
      * Get request string
      *
-     * @access  public
      * @return  string
      */
     public function getRequestString() {

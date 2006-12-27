@@ -12,7 +12,6 @@
    *   $str= QuotedPrintable::decode($b);
    * </code>
    *
-   * @model    static
    * @see      rfc://2045#6.7
    * @purpose  Quoted Printable encoder / decoder
    */
@@ -31,8 +30,6 @@
      *
      * This is why "64" is added to the first array in this function.
      *
-     * @model   static
-     * @access  public
      * @return  int[]
      */
     public static function getCharsToEncode() {
@@ -48,8 +45,6 @@
     /**
      * Encode string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @param   string charset default 'iso-8859-1'
      * @return  string
@@ -65,8 +60,6 @@
     /**
      * Decode QuotedPrintable encoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */

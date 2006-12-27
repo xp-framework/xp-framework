@@ -18,11 +18,10 @@
     /**
      * Encode given data into XML-RPC format
      *
-     * @access  public
      * @param   mixed data
      * @return  &xml.Node
      */
-    public function &encode($data) {
+    public function encode($data) {
       return $this->_marshall($data);
     }
 
@@ -37,12 +36,11 @@
      * XP objects are encoded as structs, having their FQDN stored in the member
      * __xp_class.
      *
-     * @access  protected
      * @param   &xml.Node node
      * @param   mixed data
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
-    public function &_marshall($data) {
+    public function _marshall($data) {
       $value= new Node('value');
       
       if (is('Generic', $data)) {
@@ -71,9 +69,9 @@
           break;
         
         case 'array':
-          $struct= &$value->addChild(new Node('struct'));
+          $struct= $value->addChild(new Node('struct'));
           if (sizeof($data)) foreach (array_keys($data) as $idx) {
-            $member= &$struct->addChild(new Node('member'));
+            $member= $struct->addChild(new Node('member'));
             $member->addChild(new Node('name', $idx));
             $member->addChild($this->_marshall($data[$idx]));
           }

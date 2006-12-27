@@ -14,7 +14,6 @@
     /**
      * Dummy method
      *
-     * @access  public
      * @return  string
      */
     #[@webmethod]
@@ -25,7 +24,6 @@
     /**
      * Non-web-invokeable method.
      *
-     * @access  public
      * @return  bool
      */    
     public function methodExistsButIsNotAWebmethod() {
@@ -35,7 +33,6 @@
     /**
      * Dummy method
      *
-     * @access  public
      * @return  string
      */
     #[@webmethod]
@@ -47,7 +44,6 @@
      * Method which checks for the types it receives in a hardcoded
      * manner
      *
-     * @access  public
      * @param   string string
      * @param   int int
      * @param   array array
@@ -72,7 +68,6 @@
     /**
      * Method which returns what it gets
      *
-     * @access  public
      * @param   mixed
      * @return  mixed
      */

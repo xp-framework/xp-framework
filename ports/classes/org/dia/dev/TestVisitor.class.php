@@ -14,7 +14,7 @@
     public
       $depth= 0;
 
-    public function visit(&$Object) {
+    public function visit($Object) {
       if (is('org.dia.DiaObject', $Object))
         Console::writeLine("DiaObject: ".$Object->getName());
       if (is('org.dia.DiaComposite', $Object)) {

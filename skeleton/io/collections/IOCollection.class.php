@@ -16,14 +16,12 @@
     /**
      * Open this collection
      *
-     * @access  public
      */
     public function open();
 
     /**
      * Rewind this collection (reset internal pointer to beginning of list)
      *
-     * @access  public
      */
     public function rewind();
   
@@ -31,15 +29,13 @@
      * Retrieve next element in collection. Return NULL if no more entries
      * are available
      *
-     * @access  public
      * @return  &io.collection.IOElement
      */
-    public function &next();
+    public function next();
 
     /**
      * Close this collection
      *
-     * @access  public
      */
     public function close();
 

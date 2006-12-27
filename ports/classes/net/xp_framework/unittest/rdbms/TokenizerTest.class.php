@@ -22,20 +22,18 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
       parent::__construct($name);
-      $this->conn['sybase']= &DriverManager::getConnection('sybase://localhost:1999/');
-      $this->conn['mysql']= &DriverManager::getConnection('mysql://localhost/');
-      $this->conn['pgsql']= &DriverManager::getConnection('pgsql://localhost/');
+      $this->conn['sybase']= DriverManager::getConnection('sybase://localhost:1999/');
+      $this->conn['mysql']= DriverManager::getConnection('mysql://localhost/');
+      $this->conn['pgsql']= DriverManager::getConnection('pgsql://localhost/');
     }
       
     /**
      * Test percent token
      *
-     * @access  public
      */
     #[@test]
     public function testPercentToken() {
@@ -49,7 +47,6 @@
     /**
      * Test unknown token
      *
-     * @access  public
      */
     #[@test]
     public function testUnknownToken() {
@@ -63,7 +60,6 @@
     /**
      * Test integer token
      *
-     * @access  public
      */
     #[@test]
     public function testIntegerToken() {
@@ -77,7 +73,6 @@
     /**
      * Test float token
      *
-     * @access  public
      */
     #[@test]
     public function testFloatToken() {
@@ -91,7 +86,6 @@
     /**
      * Test string token
      *
-     * @access  public
      */
     #[@test]
     public function testStringToken() {
@@ -112,7 +106,6 @@
     /**
      * Test backslash escaping
      *
-     * @access  public
      */
     #[@test]
     public function testBackslash() {
@@ -133,7 +126,6 @@
     /**
      * Test array of integer token
      *
-     * @access  public
      */
     #[@test]
     public function testIntegerArrayToken() {
@@ -154,7 +146,6 @@
     /**
      * Test leading token
      *
-     * @access  public
      */
     #[@test]
     public function testLeadingToken() {
@@ -168,7 +159,6 @@
     /**
      * Test random argument access
      *
-     * @access  public
      */
     #[@test]
     public function testRandomAccess() {
@@ -182,7 +172,6 @@
     /**
      * Test passing null values
      *
-     * @access  public
      */
     #[@test]
     public function testPassNullValues() {
@@ -197,7 +186,6 @@
      * Test accessing non-passed values (eg. values with a higher
      * ordinal than available).
      *
-     * @access  public
      */
     #[@test]
     public function testAccessNonexistant() {
@@ -211,7 +199,6 @@
     /**
      * Test percent char within a string
      *
-     * @access  public
      */
     #[@test]
     public function testPercentWithinString() {
@@ -232,7 +219,6 @@
      * Test huge numbers in %d token
      *
      * @see     bug://1
-     * @access  public
      */
     #[@test]
     public function testHugeIntegerNumber() {
@@ -264,7 +250,6 @@
      * Test huge numbers in %f token
      *
      * @see     bug://1
-     * @access  public
      */
     #[@test]
     public function testHugeFloatNumber() {
@@ -295,7 +280,6 @@
     /**
      * Tests empty string in %d token
      *
-     * @access  public
      */
     #[@test]
     public function testEmptyStringAsNumber() {
@@ -311,7 +295,6 @@
     /**
      * Tests dash ("-") in %d token
      *
-     * @access  public
      */
     #[@test]
     public function testDashAsNumber() {
@@ -327,7 +310,6 @@
     /**
      * Tests dot (".") in %d token
      *
-     * @access  public
      */
     #[@test]
     public function testDotAsNumber() {
@@ -343,7 +325,6 @@
      /**
      * Tests plus ("+") in %d token
      *
-     * @access  public
      */
     #[@test]
     public function testPlusAsNumber() {

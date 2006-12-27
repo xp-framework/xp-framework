@@ -30,7 +30,6 @@
      * Instantiates an UpdateVisitor with a list of classnames and two
      * options to add missing or update all existing classes in the diagram
      *
-     * @access  public
      * @param   string[] classnames List of fully qualified class names
      * @param   bool add default FALSE Add classes that don't exist in the diagram
      * @param   bool update default FALSE Update all classes found in the diagram
@@ -59,13 +58,13 @@
       // check given classnames and create ClassDoc for each class
       foreach ($classnames as $name) {
         try {
-          $Classdoc= &$this->RootDoc->classNamed($name);
+          $Classdoc= $this->RootDoc->classNamed($name);
         } catch (IllegalArgumentException $e) {
           $e->printStackTrace();
           Console::writeLine("Class '$name' could not be found or parsed!");
           exit(-1);
         }
-        $this->classdocs[$Classdoc->qualifiedName()]= &$Classdoc;
+        $this->classdocs[$Classdoc->qualifiedName()]= $Classdoc;
       }
 
       if (UDT_VIS_DEBUG) Console::writeLine('UpdateVisitor: classes='.sizeof($classnames).' add='.$add.' update='.$update);
@@ -74,7 +73,6 @@
     /**
      * Finalizes the visitor: adds missing classes and prints summary
      *
-     * @access  public
      */
     public function finalize() {
       // classes that are missing in the diagram
@@ -84,7 +82,7 @@
       if ($this->add) {
         foreach ($tobe_added as $classname) {
           try {
-            $ClassDoc= &$this->RootDoc->classNamed($classname);
+            $ClassDoc= $this->RootDoc->classNamed($classname);
           } catch (IllegalArgumentException $e) {
             Console::writeLine("Class '$classname' could not be found or parsed!");
             exit(-1);
@@ -109,13 +107,12 @@
      * Visitor method: visits the DiaDiagram object structure and processes all
      * DiaUMLClass objects
      *
-     * @access  public
      * @param   &org.dia.DiaComponent Comp
      */
-    public function visit(&$Comp) {
+    public function visit($Comp) {
       // save reference to 
       if (is('org.dia.DiaDiagram', $Comp)) {
-        $this->Dia= &$Comp;
+        $this->Dia= $Comp;
       }
 
       // only process DiaUMLClass components
@@ -128,7 +125,7 @@
         if (!isset($this->classdocs[$name]) and $this->update) {
           // update: create ClassDoc and add it to $this->classdocs
           try {
-            $ClassDoc= &$this->RootDoc->classNamed($name);
+            $ClassDoc= $this->RootDoc->classNamed($name);
           } catch (IllegalArgumentException $e) {
             $e->printStackTrace();
             Console::writeLine("Class '$name' could not be found or parsed!");
@@ -138,7 +135,7 @@
             Console::writeLine('Caught unknown exception!');
             exit(-1);
           }
-          $this->classdocs[$name]= &$ClassDoc;
+          $this->classdocs[$name]= $ClassDoc;
         }
 
         // update the UMLClass in the diagram
@@ -162,11 +159,10 @@
      * Updates the given UMLClass of the diagram according to the given
      * ClassDoc
      *
-     * @access  private
      * @param   &org.dia.DiaUMLClass Class
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    public function _updateClass(&$Class, &$ClassDoc) {
+    public function _updateClass($Class, $ClassDoc) {
       if (UDT_VIS_DEBUG) Console::writeLine('* Updating class '.$ClassDoc->qualifiedName().'...');
       /*
       ClassDoc vs. DiaUMLClass...
@@ -181,12 +177,12 @@
       $attributes= $ClassDoc->fields;
       $meths= $ClassDoc->methods;
       foreach (array_keys($meths) as $key) {
-        $methods[$meths[$key]->name()]= &$meths[$key];
+        $methods[$meths[$key]->name()]= $meths[$key];
       }
 
       if (UDT_VIS_DEBUG) Console::writeLine('  Class has '.sizeof($attributes).' attributes...');
       // loop over UMLClass attributes (delete)
-      $Attributes_node= &$Class->getChild('attributes');
+      $Attributes_node= $Class->getChild('attributes');
       $dia_attributes= $Attributes_node->getChildByType('org.dia.DiaUMLAttribute');
       foreach (array_keys($dia_attributes) as $key) {
         $name= $dia_attributes[$key]->getName();
@@ -195,7 +191,7 @@
           if (UDT_VIS_DEBUG) Console::writeLine("Attribute '$name': deleted...");
           continue;
         }
-        $uml_attributes[$name]= &$dia_attributes[$key];
+        $uml_attributes[$name]= $dia_attributes[$key];
       }
 
       // loop over class attributes (update/add)
@@ -246,7 +242,7 @@
 
       if (UDT_VIS_DEBUG) Console::writeLine('  Class has '.sizeof($methods).' methods...');
       // loop over UMLClass methods (delete)
-      $Operations_node= &$Class->getChild('operations');
+      $Operations_node= $Class->getChild('operations');
       $dia_operations= $Operations_node->getChildByType('org.dia.DiaUMLMethod');
       foreach (array_keys($dia_operations) as $key ) {
         $name= $dia_operations[$key]->getName();
@@ -255,7 +251,7 @@
           if (UDT_VIS_DEBUG) Console::writeLine("  => Method '$name': deleted...");
           continue;
         }
-        $uml_methods[$name]= &$dia_operations[$key];
+        $uml_methods[$name]= $dia_operations[$key];
       }
 
       // loop over class methods (update/add)
@@ -264,7 +260,7 @@
           // dia method exists: check for update
           if (UDT_VIS_DEBUG) Console::writeLine("  => Updating existing method '$name'...");
           // ==> flags
-          $Method= &$uml_methods[$name];
+          $Method= $uml_methods[$name];
 
           // update return type
           $return_tags= $methods[$name]->tags('return');
@@ -302,7 +298,7 @@
           }
 
           // ==> parameters
-          $Params_node= &$Method->getChild('parameters');
+          $Params_node= $Method->getChild('parameters');
           $Params= $Params_node->getChildren();
           if (UDT_VIS_DEBUG) Console::writeLine("Params: ".xp::stringOf(array_keys($Params)));
           if (UDT_VIS_DEBUG) Console::writeLine("Args: ".xp::stringOf(array_keys($methods[$name]->arguments)));
@@ -367,7 +363,7 @@
 
           // create method parameters
           // WEIRD: if the following is renamed to $Params it doesn't work anymore!
-          $Params_node= &$Method->getChild('parameters');
+          $Params_node= $Method->getChild('parameters');
           // loop over arguments
           foreach (array_keys($methods[$name]->arguments) as $param_name) {
             if (UDT_VIS_DEBUG) Console::writeLine("    -> Adding parameter '$param_name'...");
@@ -400,17 +396,16 @@
     /**
      * Adds the given class to the 'Background' layer of the diagram
      *
-     * @access  private
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    public function _addClass(&$ClassDoc) {
+    public function _addClass($ClassDoc) {
       // check for DiaDiagram instance
       if (!isset($this->Dia)) {
         Console::writeLine('DiaDiagram object not defined!');
         exit(-1);
       }
       // get background layer
-      $Layer= &$this->Dia->getLayer('Background');
+      $Layer= $this->Dia->getLayer('Background');
 
       // create new (empty) UMLClass and update it
       $Class= new DiaUMLClass();

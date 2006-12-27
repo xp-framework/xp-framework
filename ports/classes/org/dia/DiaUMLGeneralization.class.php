@@ -17,7 +17,6 @@
     /**
      * Constructor of an UML generalization
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Generalization', 1);

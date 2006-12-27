@@ -21,7 +21,6 @@
     /**
      * Returns the PHP extension needed for this processor test to work
      *
-     * @access  protected
      * @return  string
      */
     public function neededExtension() { 
@@ -31,17 +30,15 @@
     /**
      * Returns the XSL processor instance to be used
      *
-     * @access  protected
      * @return  &xml.IXSLProcessor
      */
-    public function &processorInstance() {
+    public function processorInstance() {
       return new DomXSLProcessor();
     }
 
     /**
      * Returns the XSL processor's default output charset
      *
-     * @access  protected
      * @return  string
      */
     public function processorCharset() { 

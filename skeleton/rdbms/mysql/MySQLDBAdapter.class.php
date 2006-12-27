@@ -17,10 +17,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &Object conn database connection
      */
-    public function __construct(&$conn) {
+    public function __construct($conn) {
       $this->map= array(
         'varchar'    => DB_ATTRTYPE_VARCHAR,
         'int'        => DB_ATTRTYPE_INT,
@@ -38,13 +37,12 @@
     /**
      * Get databases
      *
-     * @access  public
      * @return  string[] databases
      */
     public function getDatabases() {
       $dbs= array();
       try {
-        $q= &$this->conn->query('show databases');
+        $q= $this->conn->query('show databases');
         while ($name= $q->next('name')) {
           $dbs[]= $name;
         }
@@ -58,16 +56,15 @@
     /**
      * Get tables by database
      *
-     * @access  public
      * @param   string database
      * @return  rdbms.DBTable[] array of DBTable objects
      */
     public function getTables($database) {
       $t= array();
       try {
-        $q= &$this->conn->query('show tables');
+        $q= $this->conn->query('show tables');
         while ($table= $q->next()) {
-          $t[]= &$this->getTable($table[key($table)]);
+          $t[]= $this->getTable($table[key($table)]);
         }
       } catch (SQLException $e) {
         throw($e);
@@ -79,7 +76,6 @@
     /**
      * Get table by name
      *
-     * @access  public
      * @param   string table
      * @return  rdbms.DBTable a DBTable object
      */
@@ -101,7 +97,7 @@
         // | changedby   | varchar(16)  |      |     |                     |                |
         // +-------------+--------------+------+-----+---------------------+----------------+
         // 8 rows in set (0.00 sec)
-        $q= &$this->conn->query('describe %c', $table);
+        $q= $this->conn->query('describe %c', $table);
         while ($record= $q->next()) {
           preg_match('#^([a-z]+)(\(([0-9]+)\))?#', $record['Type'], $regs);
           
@@ -125,10 +121,10 @@
         // | contract |          1 | contract_id   |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
         // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
         // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
-        $q= &$this->conn->query('show keys from %c', $table);
+        $q= $this->conn->query('show keys from %c', $table);
         while ($record= $q->next()) {
           if ($record['Key_name'] != $key) {
-            $index= &$t->addIndex(new DBIndex(
+            $index= $t->addIndex(new DBIndex(
               $record['Key_name'],
               array()
             ));

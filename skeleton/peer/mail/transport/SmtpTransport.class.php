@@ -61,7 +61,6 @@
     /**
      * Private helper method
      *
-     * @access  private
      * @param   string fmt or FALSE to indicate not to write any data
      * @param   string* args arguments for sprintf-string fmt
      * @param   mixed expect int for one possible returncode, int[] for multiple
@@ -104,7 +103,6 @@
     /**
      * Say hello (HELO or EHLO, dependant on SMTP variant)
      *
-     * @access  protected
      * @return  bool success
      */
     public function _hello() {
@@ -142,7 +140,6 @@
     /**
      * Log in using AUTH PLAIN or AUTH LOGIN
      *
-     * @access  protected
      * @return  bool success
      * @throws  lang.IllegalArgumentException in case authentication method is not supported
      */
@@ -174,7 +171,6 @@
     /**
      * Parse DSN
      *
-     * @access  private
      * @param   string dsn
      * @return  bool success
      */
@@ -223,7 +219,6 @@
      *   esmtp://user:pass@smtp.example.com:25/?auth=login
      * </pre>
      *
-     * @access  public
      * @param   string dsn default NULL if omitted, 'smtp://localhost:25' will be assumed
      */
     public function connect($dsn= NULL) { 
@@ -245,7 +240,6 @@
     /**
      * Close connection
      *
-     * @access  public
      */
     public function close() {
       if (NULL === $this->_sock) return;
@@ -262,12 +256,11 @@
     /**
      * Send a message
      *
-     * @access  public
      * @param   &peer.mail.Message message the Message object to send
      * @return  bool TRUE in case of success
      * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
-    public function send(&$message) {
+    public function send($message) {
       try {
         $this->_sockcmd(
           'MAIL FROM: %s', 
@@ -276,7 +269,7 @@
         );
 
         // List all recipients, hide BCC
-        foreach (array(TO, CC, BCC) as $type) while ($r= &$message->getRecipient($type)) {
+        foreach (array(TO, CC, BCC) as $type) while ($r= $message->getRecipient($type)) {
           $this->_sockcmd(
             'RCPT TO: %s', 
             $r->localpart.'@'.$r->domain, 

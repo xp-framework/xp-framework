@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string[] classes
      */
     public function __construct($classes= array()) {
@@ -30,7 +29,6 @@
     /**
      * Rewinds this iterator
      *
-     * @access  public
      */
     public function rewind() {
       reset($this->classes);
@@ -41,7 +39,6 @@
      * returns true if next would return an element rather than throwing 
      * an exception.)
      *
-     * @access  public
      * @return  bool
      */
     public function hasNext() {
@@ -51,11 +48,10 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @access  public
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    public function &next() {
+    public function next() {
       if (is_null($this->_key)) {
         throw(new NoSuchElementException('No more elements'));
       }

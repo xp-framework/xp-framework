@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates a new test suite.
      *
-     * @access  public
      */
     public function setUp() {
       $this->suite= new TestSuite();
@@ -32,7 +31,6 @@
     /**
      * Tests a test suite is initially empty
      *
-     * @access  public
      */    
     #[@test]
     public function initallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests adding a test
      *
-     * @access  public
      */    
     #[@test]
     public function addingATest() {
@@ -53,7 +50,6 @@
     /**
      * Tests adding a test
      *
-     * @access  public
      */    
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addNonTest() {
@@ -63,7 +59,6 @@
     /**
      * Tests adding a test class
      *
-     * @access  public
      */    
     #[@test]
     public function addingATestClass() {
@@ -77,7 +72,6 @@
     /**
      * Tests adding a test class
      *
-     * @access  public
      */    
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingANonTestClass() {
@@ -87,7 +81,6 @@
     /**
      * Tests clearing tests
      *
-     * @access  public
      */    
     #[@test]
     public function clearingTests() {
@@ -100,11 +93,10 @@
     /**
      * Tests running a single test
      *
-     * @access  public
      */    
     #[@test]
     public function runningASingleSucceedingTest() {
-      $r= &$this->suite->runTest(new SimpleTestCase('succeeds'));
+      $r= $this->suite->runTest(new SimpleTestCase('succeeds'));
       $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&
       $this->assertEquals(1, $r->successCount(), 'successCount') &&
@@ -115,11 +107,10 @@
     /**
      * Tests running a single test
      *
-     * @access  public
      */    
     #[@test]
     public function runningASingleFailingTest() {
-      $r= &$this->suite->runTest(new SimpleTestCase('fails'));
+      $r= $this->suite->runTest(new SimpleTestCase('fails'));
       $this->assertClass($r, 'unittest.TestResult') &&
       $this->assertEquals(1, $r->runCount(), 'runCount') &&
       $this->assertEquals(0, $r->successCount(), 'successCount') &&

@@ -23,7 +23,6 @@
     /**
      * Set name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -33,7 +32,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -43,7 +41,6 @@
     /**
      * Set title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -53,7 +50,6 @@
     /**
      * Get title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -63,20 +59,18 @@
     /**
      * Set createdAt
      *
-     * @access  public
      * @param   &lang.Object createdAt
      */
-    public function setCreatedAt(&$createdAt) {
-      $this->createdAt= &$createdAt;
+    public function setCreatedAt($createdAt) {
+      $this->createdAt= $createdAt;
     }
 
     /**
      * Get createdAt
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getCreatedAt() {
+    public function getCreatedAt() {
       return $this->createdAt;
     }
 
@@ -84,17 +78,15 @@
      * Get date
      *
      * @see     xp://de.thekid.dialog.IEntry
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->createdAt;
     }
 
     /**
      * Set description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -104,7 +96,6 @@
     /**
      * Get description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -114,12 +105,11 @@
     /**
      * Add an element to entries
      *
-     * @access  public
      * @param   &de.thekid.dialog.IEntry entry
      * @return  &de.thekid.dialog.IEntry the added entry
      */
-    public function &addEntry(&$entry) {
-      $this->entries[]= &$entry;
+    public function addEntry($entry) {
+      $this->entries[]= $entry;
       return $entry;
     }
 
@@ -127,11 +117,10 @@
      * Get one entry element by position. Returns NULL if the element 
      * can not be found.
      *
-     * @access  public
      * @param   int i
      * @return  &de.thekid.dialog.IEntry
      */
-    public function &entryAt($i) {
+    public function entryAt($i) {
       if (!isset($this->entries[$i])) return NULL;
       return $this->entries[$i];
     }
@@ -139,7 +128,6 @@
     /**
      * Get number of entries
      *
-     * @access  public
      * @return  int
      */
     public function numEntries() {

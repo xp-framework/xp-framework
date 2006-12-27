@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   int articleId
      */
     public function __construct($articleId, $messageId) {
@@ -30,7 +29,6 @@
     /**
      * Set ArticleId
      *
-     * @access  public
      * @param   string articleId
      */
     public function setArticleId($articleId) {
@@ -40,7 +38,6 @@
     /**
      * Get ArticleId
      *
-     * @access  public
      * @return  string
      */
     public function getArticleId() {
@@ -50,7 +47,6 @@
     /**
      * Set MessageId
      *
-     * @access  public
      * @param   int messageId
      */
     public function setMessageId($messageId) {
@@ -60,7 +56,6 @@
     /**
      * Get MessageId
      *
-     * @access  public
      * @return  int
      */
     public function getMessageId() {
@@ -70,7 +65,6 @@
     /**
      * Set Header
      *
-     * @access  public
      * @param   mixed[] header
      */
     public function setHeader($name, $value) {
@@ -80,7 +74,6 @@
     /**
      * Get Headers
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getHeaders() {
@@ -90,7 +83,6 @@
     /**
      * Get Headers
      *
-     * @access  public
      * @param   string name
      * @return  string value
      */
@@ -101,7 +93,6 @@
     /**
      * Set Body
      *
-     * @access  public
      * @param   string body
      */
     public function setBody($body) {
@@ -111,7 +102,6 @@
     /**
      * Get Body
      *
-     * @access  public
      * @return  string
      */
     public function getBody() {
@@ -122,7 +112,6 @@
     /**
      * Retrieve a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

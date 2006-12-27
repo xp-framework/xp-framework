@@ -42,8 +42,6 @@
     /**
      * Retrieves color representation
      *
-     * @model   static
-     * @access  public
      * @param   int code
      * @return  string color representation
      */

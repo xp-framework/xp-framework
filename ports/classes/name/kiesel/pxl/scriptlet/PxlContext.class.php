@@ -20,7 +20,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -32,22 +31,20 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setup(&$request) {
+    public function setup($request) {
       return TRUE;
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function insertStatus(&$response) {
+    public function insertStatus($response) {
       $this->user && $response->addFormResult(Node::fromArray($this->user, 'user'));
     }    
   }

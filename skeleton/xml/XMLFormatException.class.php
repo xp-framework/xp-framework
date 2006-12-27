@@ -46,7 +46,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   int type default XML_ERROR_SYNTAX
      * @param   string filename default NULL
@@ -70,7 +69,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {
@@ -94,7 +92,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  int
      */
     public function getType() {
@@ -104,7 +101,6 @@
     /**
      * Get Type's name
      *
-     * @access  public
      * @return  string
      */
     public function getTypeName() {
@@ -138,7 +134,6 @@
     /**
      * Get filename
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -148,7 +143,6 @@
     /**
      * Get line number
      *
-     * @access  public
      * @return  int
      */
     public function getLineNumber() {
@@ -158,7 +152,6 @@
     /**
      * Get Column
      *
-     * @access  public
      * @return  int
      */
     public function getColumn() {

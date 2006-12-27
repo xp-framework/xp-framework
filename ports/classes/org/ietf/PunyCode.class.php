@@ -38,11 +38,10 @@
     /**
      * Return valid ASCII characters for Punycode
      *
-     * @access  private
      * @return  &string
      * @see rfc://3492
      */
-    public function &getASCII() {
+    public function getASCII() {
       static $ascii;
       $ascii =
         "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n".
@@ -59,7 +58,6 @@
     /**
      * Bias adaptation function 
      *
-     * @access  private
      * @param   int delta
      * @param   int numpoints
      * @param   bool firsttime
@@ -83,7 +81,6 @@
      * point (for use in representing integers) in the range 0 to
      * base-1, or base if cp is does not represent a value.
      *
-     * @access priveate
      * @param  int cp
      * @return int
      * @see rfc://3492#5
@@ -99,7 +96,6 @@
      *    0..25 map to ASCII a..z or A..Z 
      *   26..35 map to ASCII 0..9         
      *
-     * @access priveate
      * @param  int d
      * @param  bool flag
      * @return int
@@ -111,7 +107,6 @@
     /**
      * Encoding digits.
      *
-     * @access priveate
      * @param  int  d
      * @param  bool flag
      * @return int
@@ -129,7 +124,6 @@
      * (uppercase).  The behavior is undefined if bcp is not a
      * basic code point.
      *
-     * @access private
      * @param  int bcp
      * @return int
      */
@@ -140,7 +134,6 @@
     /**
      * Decode Punycode string and return TRUE on success.
      *
-     * @access public
      * @param  string input  The punycode string
      * @param  &string result The result ASCII string
      * @param  &array flags  The flags for each character (see _flagged() function)
@@ -148,7 +141,7 @@
      * @throws lang.IllegalArgumentException in case $input is not a punycode string
      * @throws lang.SystemException in case there's an interger overflow
      */
-    public function decode($input, &$result, &$flags) {
+    public function decode($input, $result, $flags) {
       $in_len= strlen($input);
       $n= PUNYCODE_INITIAL_N;
       $out= $i= 0;
@@ -245,7 +238,6 @@
     /**
      * Encode ASCII string to Punycode string and return TRUE on success.
      *
-     * @access public
      * @param  string input  The ASCII string 
      * @param  &string result The result punycode string
      * @param  array flags  The flags for each character (see _flagged() function)
@@ -253,7 +245,7 @@
      * @throws lang.IllegalArgumentException in case $input is not a punycode string
      * @throws lang.SystemException in case there's an interger overflow
      */
-    public function encode($input, &$result, $flags) {
+    public function encode($input, $result, $flags) {
       $in_len= strlen($input);
       $n = PUNYCODE_INITIAL_N;
       $delta = $out = 0;
@@ -336,7 +328,6 @@
     /**
      * Decode Punycode string and return TRUE on success.
      *
-     * @access  static
      * @param   string str The Punycode string
      * @return  bool
      * @throws  lang.Exception from _decode()
@@ -361,7 +352,6 @@
     /**
      * Encode ASCII string to Punycode string and return TRUE on success.
      *
-     * @access  static
      * @param   string str The ASCII string
      * @return  bool
      * @throws  lang.Exception from _encode()

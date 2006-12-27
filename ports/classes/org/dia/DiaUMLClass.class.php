@@ -66,7 +66,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Class', 1);
@@ -78,7 +77,6 @@
     /**
      * Initialize this UMLClass object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // add default values
@@ -157,7 +155,6 @@
     /** 
      * Returns the name of the class
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -168,7 +165,6 @@
      * Sets the name of the UML class (overwrites method from DiaCompound due
      * to additional annotation!)
      *
-     * @access  public
      * @param   string name
      */
     #[
@@ -182,7 +178,6 @@
     /**
      * Sets the stereotype of the UML class
      *
-     * @access  public
      * @param   string stereotype
      */
     #[
@@ -218,7 +213,6 @@
     /**
      * Sets the comment of the UML class
      *
-     * @access  public
      * @param   string comment
      */
     #[
@@ -235,7 +229,6 @@
      * Evaluates 'in_array(\'abstract\', $ClassDoc->tags(\'model\'))'
      * ($ClassDoc->parseDetail('tags') && isset($ClassDoc->tags['model'][0]) && $ClassDoc->tags['model'][0]->text() === 'abstract'); 
      *
-     * @access  public
      * @param   bool abstract
      */
     #[
@@ -251,7 +244,6 @@
     /**
      * Sets the 'suppress_attributes' attribute of the UML class
      *
-     * @access  public
      * @param   bool suppress
      */
     #[@fromDia(xpath= 'dia:attribute[@name="suppress_attributes"]/dia:boolean/@val', value= 'boolean')]
@@ -262,7 +254,6 @@
     /**
      * Sets the 'suppress_operations' attribute of the UML class
      *
-     * @access  public
      * @param   bool suppress
      */
     #[@fromDia(xpath= 'dia:attribute[@name="suppress_operations"]/dia:boolean/@val', value= 'boolean')]
@@ -273,7 +264,6 @@
     /**
      * Sets the 'visible_attributes' attribute of the UML class
      *
-     * @access  public
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_attributes"]/dia:boolean/@val', value= 'boolean')]
@@ -284,7 +274,6 @@
     /**
      * Sets the 'visible_operations' attribute of the UML class
      *
-     * @access  public
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_operations"]/dia:boolean/@val', value= 'boolean')]
@@ -295,7 +284,6 @@
     /**
      * Sets the 'visible_comments' attribute of the UML class
      *
-     * @access  public
      * @param   bool visible
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visible_comments"]/dia:boolean/@val', value= 'boolean')]
@@ -306,7 +294,6 @@
     /**
      * Sets the 'wrap_operatoins' attribute of the UML class
      *
-     * @access  public
      * @param   bool wrap
      */
     #[@fromDia(xpath= 'dia:attribute[@name="wrap_operations"]/dia:boolean/@val', value= 'boolean')]
@@ -317,7 +304,6 @@
     /**
      * Sets the 'wrap_after_char' attribute of the UML class
      *
-     * @access  public
      * @param   int char
      */
     #[@fromDia(xpath= 'dia:attribute[@name="wrap_after_char"]/dia:int/@val', value= 'int')]
@@ -328,7 +314,6 @@
     /**
      * Sets the 'comment_line_length' attribute of the UML class
      *
-     * @access  public
      * @param   int length
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_line_length"]/dia:int/@val', value= 'int')]
@@ -339,7 +324,6 @@
     /**
      * Sets the 'comment_tagging' attribute of the UML class
      *
-     * @access  public
      * @param   bool tagging
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_tagging"]/dia:boolean/@val', value= 'boolean')]
@@ -350,7 +334,6 @@
     /**
      * Sets the 'normal_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="normal_font"]/dia:font', value= 'font')]
@@ -361,7 +344,6 @@
     /**
      * Sets the 'abstract_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_font"]/dia:font', value= 'font')]
@@ -372,7 +354,6 @@
     /**
      * Sets the 'polymorphic_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font"]/dia:font', value= 'font')]
@@ -383,7 +364,6 @@
     /**
      * Sets the 'classname_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="classname_font"]/dia:font', value= 'font')]
@@ -394,7 +374,6 @@
     /**
      * Sets the 'abstract_classname_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font"]/dia:font', value= 'font')]
@@ -405,7 +384,6 @@
     /**
      * Sets the 'comment_font' attribute of the UML class
      *
-     * @access  public
      * @param   array font
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_font"]/dia:font', value= 'font')]
@@ -416,7 +394,6 @@
     /**
      * Sets the 'normal_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="normal_font_height"]/dia:real/@val', value= 'real')]
@@ -427,7 +404,6 @@
     /**
      * Sets the 'abstract_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_font_height"]/dia:real/@val', value= 'real')]
@@ -438,7 +414,6 @@
     /**
      * Sets the 'polymorphic_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="polymorphic_font_height"]/dia:real/@val', value= 'real')]
@@ -449,7 +424,6 @@
     /**
      * Sets the 'classname_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="classname_font_height"]/dia:real/@val', value= 'real')]
@@ -460,7 +434,6 @@
     /**
      * Sets the 'abstract_classname_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract_classname_font_height"]/dia:real/@val', value= 'real')]
@@ -471,7 +444,6 @@
     /**
      * Sets the 'comment_font_height' attribute of the UML Class
      *
-     * @access  public
      * @param   float height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment_font_height"]/dia:real/@val', value= 'real')]
@@ -482,7 +454,6 @@
     /**
      * Sets the 'template' attribute of the UML class
      *
-     * @access  public
      * @param   bool template
      */
     #[@fromDia(xpath= 'dia:attribute[@name="template"]/dia:boolean/@val', value= 'boolean')]
@@ -495,44 +466,40 @@
     /**
      * Adds an UML attribute to the UML class
      *
-     * @access  public
      * @param   &org.dia.DiaUMLAttribute Attribute
      */
     // TODO? fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')
     #[@fromDia(xpath= 'dia:attribute[@name="attributes"]/*', class= 'org.dia.DiaUMLAttribute')]
     public function addUMLAttribute($Attribute) {
-      $Attributes= &$this->getChild('attributes');
+      $Attributes= $this->getChild('attributes');
       $Attributes->set($Attribute->getName(), $Attribute);
     }
 
     /**
      * Adds an UML method to the UML class
      * 
-     * @access  public
      * @param   &org.dia.DiaUMLMethod Method
      */
     #[@fromDia(xpath= 'dia:attribute[@name="operations"]/*', class= 'org.dia.DiaUMLMethod')]
     public function addUMLMethod($Method) {
-      $Operations= &$this->getChild('operations');
+      $Operations= $this->getChild('operations');
       $Operations->set($Method->getName(), $Method);
     }
 
     /**
      * Adds an UML formal parameter to the UML class
      *
-     * @access  public
      * @param   &org.dia.DiaUMLFormalParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="templates"]/*', class= 'org.dia.DiaUMLFormalParameter')]
     public function addTemplate($Parameter) {
-      $Templates= &$this->getChild('templates');
+      $Templates= $this->getChild('templates');
       $Templates->set($Parameter->getName(), $Parameter);
     }
 
     /**
      * Adds a 'dia:childnode' link to the parent object
      *
-     * @access  public
      * @param   &org.dia.DiaChildnode Childnode
      */
     #[@fromDia(xpath= 'dia:childnode', class= 'org.dia.DiaChildnode')]
@@ -545,12 +512,11 @@
      *
      * $field= array($name => $value)
      *
-     * @access  public
      * @param   array field
      */
     #[@fromClass(type = 'attribute')]
     public function addAttribute($field) {
-      $Attributes= &$this->getChild('attributes');
+      $Attributes= $this->getChild('attributes');
 
       // create new UMLAttribute
       list($name, $value)= each($field);
@@ -579,12 +545,11 @@
     /**
      * Adds a method to the UML class
      * 
-     * @access  public
      * @param   &text.doclet.MethodDoc Method
      */
     #[@fromClass(type = 'method')]
-    public function addMethod(&$Method) {
-      $Operations= &$this->getChild('operations');
+    public function addMethod($Method) {
+      $Operations= $this->getChild('operations');
 
       // create new UMLMethod
       $Oper= new DiaUMLMethod();
@@ -621,7 +586,7 @@
       // TODO? stereotype, inheritance_type, class_scope... (@access?)
 
       // get parameters 'attribute'
-      $Params= &$Oper->getChild('parameters');
+      $Params= $Oper->getChild('parameters');
 
       // loop over arguments
       foreach (array_keys($Method->arguments) as $name) {

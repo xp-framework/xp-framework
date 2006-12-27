@@ -15,10 +15,9 @@
     /**
      * Renders a chart
      *
-     * @access  public
      * @param   &img.chart.Chart chart
      * @return  &mixed
      */
-    public function &render(&$chart);
+    public function render($chart);
   }
 ?>

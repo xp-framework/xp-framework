@@ -14,7 +14,6 @@
     /**
      * Constructor of an UML realization
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Association', 1);
@@ -23,7 +22,6 @@
     /**
      * Initializes the object with default values
      * 
-     * @access  public
      */
     public function initialize() {
       $this->setName('__noname__');
@@ -48,7 +46,6 @@
     /**
      * Returns the direction of the association (0= none, 1= A-to-B, 2= B-to-A)
      *
-     * @access  public
      * @return  int
      */
     public function getDirection() {
@@ -59,7 +56,6 @@
      * Set the direction of the Association, either none (0) from A to B (1) or
      * from B to A (2)
      *
-     * @access  public
      * @param   int dir
      */
     #[@fromDia(xpath= 'dia:attribute[@name="direction"]/dia:enum/@val', value= 'int')]
@@ -70,46 +66,42 @@
     /**
      * Returns the left side (Role) of the association
      *
-     * @access  public
      * @return  &org.dia.DiaRole
      */
-    public function &getRoleA() {
-      $Ends= &$this->getChild('ends');
+    public function getRoleA() {
+      $Ends= $this->getChild('ends');
       return $Ends->getChild('A');
     }
 
     /**
      * Sets the left side (Role) of the association
      *
-     * @access  public
      * @param   &org.dia.DiaRole Role
      */
     #[@fromDia(xpath= 'dia:attribute[@name="ends"]/dia:composite[position()=1]', class= 'org.dia.DiaRole')]
-    public function setRoleA(&$Role) {
-      $Ends= &$this->getChild('ends');
+    public function setRoleA($Role) {
+      $Ends= $this->getChild('ends');
       $Ends->set('A', $Role);
     }
 
     /**
      * Returns the left side (Role) of the association
      *
-     * @access  public
      * @return  &org.dia.DiaRole
      */
-    public function &getRoleB() {
-      $Ends= &$this->getChild('ends');
+    public function getRoleB() {
+      $Ends= $this->getChild('ends');
       return $Ends->getChild('B');
     }
 
     /**
      * Set the right side (Role) of the association
      *
-     * @access  public
      * @param   &org.dia.DiaRole Role
      */
     #[@fromDia(xpath= 'dia:attribute[@name="ends"]/dia:composite[position()=2]', class= 'org.dia.DiaRole')]
-    public function setRoleB(&$Role) {
-      $Ends= &$this->getChild('ends');
+    public function setRoleB($Role) {
+      $Ends= $this->getChild('ends');
       $Ends->set('B', $Role);
     }
 

@@ -17,7 +17,6 @@
     /**
      * Tests the is() core function will recognize xp::null as null
      *
-     * @access  public
      */
     #[@test]
     public function xpNullIsNull() {
@@ -27,7 +26,6 @@
     /**
      * Ensures is() works with short class names
      *
-     * @access  public
      */
     #[@test]
     public function shortClassName() {
@@ -37,7 +35,6 @@
     /**
      * Ensures is() works with undefined class names
      *
-     * @access  public
      */
     #[@test]
     public function undefinedClassName() {
@@ -48,7 +45,6 @@
     /**
      * Ensures is() works with fully qualified class names
      *
-     * @access  public
      */
     #[@test]
     public function fullyQualifiedClassName() {
@@ -58,17 +54,16 @@
     /**
      * Ensures is() works for interfaces
      *
-     * @access  public
      */
     #[@test]
     public function interfaces() {
-      $cl= &ClassLoader::getDefault();
+      $cl= ClassLoader::getDefault();
       $cl->defineClass(
         'DestructionCallbackImpl', 
         'lang.Object',
         array('net.xp_framework.unittest.core.DestructionCallback'),
         '{
-          function onDestruction(&$object) { 
+          function onDestruction($object) { 
             // ... Implementation here
           }
         }'

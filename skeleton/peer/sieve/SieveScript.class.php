@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string code
      */
@@ -31,7 +30,6 @@
     /**
      * Set Active
      *
-     * @access  public
      * @param   bool active
      */
     public function setActive($active) {
@@ -41,7 +39,6 @@
     /**
      * Get Active
      *
-     * @access  public
      * @return  bool
      */
     public function isActive() {
@@ -51,7 +48,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -61,7 +57,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -71,7 +66,6 @@
     /**
      * Set Code
      *
-     * @access  public
      * @param   string code
      */
     public function setCode($code) {
@@ -81,7 +75,6 @@
     /**
      * Get Code
      *
-     * @access  public
      * @return  string
      */
     public function getCode() {
@@ -91,7 +84,6 @@
     /**
      * Get length of code
      *
-     * @access  public
      * @return  int
      */
     public function getLength() {

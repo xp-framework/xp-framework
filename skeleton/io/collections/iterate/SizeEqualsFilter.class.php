@@ -16,11 +16,10 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       return $element->getSize() == $this->size;
     }
   }

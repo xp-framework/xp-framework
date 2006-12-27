@@ -21,8 +21,6 @@
      * Static initializer block. Resets (global) ticks declaration to zero 
      * so they will not interfere with ours.
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() {
       declare(ticks= 0);
@@ -31,17 +29,15 @@
     /**
      * Setup method. Sets up tick handling
      *
-     * @access  public
      */
     public function setUp() {
-      set_error_handler(array(&$this, 'tick'));
+      set_error_handler(array($this, 'tick'));
       register_tick_function('trigger_error', NULL, E_USER_NOTICE);
     }
     
     /**
      * Teardown method. Unregisters tick handling.
      *
-     * @access  public
      */
     public function tearDown() {
       unregister_tick_function('trigger_error');
@@ -51,7 +47,6 @@
     /**
      * Tick handler
      *
-     * @access  protected
      * @param   int level
      * @param   string message
      * @param   string file
@@ -77,7 +72,6 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string file
      * @param   array<int, int> frequencies keys are line numbers, values are frequency
      */
@@ -104,7 +98,6 @@
      *   <li>One for the closing curly bracket }</li>
      * </ol>
      *
-     * @access  public
      */
     #[@test]
     public function mostBasicForm() {
@@ -122,7 +115,6 @@
      * Tests an if / else statement where the condition in if() 
      * evaluates to true (thus the first block getting executed).
      *
-     * @access  public
      */
     #[@test]
     public function ifCondition() {
@@ -149,7 +141,6 @@
      * Tests an if statement without the optional block (e.g. if (1) return;
      * instead of if (1) { return; }).
      *
-     * @access  public
      */
     #[@test]
     public function ifConditionWithoutBlock() {
@@ -172,7 +163,6 @@
      * Tests an if / else statement where the condition in if() 
      * evaluates to false (thus the second block getting executed).
      *
-     * @access  public
      */
     #[@test]
     public function elseCondition() {
@@ -197,7 +187,6 @@
     /**
      * Tests a for loop
      *
-     * @access  public
      */
     #[@test]
     public function forLoop() {
@@ -222,7 +211,6 @@
     /**
      * Tests a for loop that is not executed
      *
-     * @access  public
      */
     #[@test]
     public function notExecutedforLoop() {
@@ -246,7 +234,6 @@
     /**
      * Tests a while loop
      *
-     * @access  public
      */
     #[@test]
     public function whileLoop() {
@@ -273,7 +260,6 @@
     /**
      * Tests a while loop that is not executed
      *
-     * @access  public
      */
     #[@test]
     public function notExecutedWhileLoop() {
@@ -297,7 +283,6 @@
     /**
      * Tests a multi-line assignment via ternary operator
      *
-     * @access  public
      */
     #[@test]
     public function multiLineStatement() {
@@ -322,7 +307,6 @@
      * in this method because only the code within the declare-
      * block is "tick"ed.
      *
-     * @access  protected
      * @param   string who
      * @return  string
      */
@@ -334,7 +318,6 @@
     /**
      * Tests a method call
      *
-     * @access  public
      */
     #[@test]
     public function methodCall() {
@@ -354,7 +337,6 @@
     /**
      * Tests a switch statement where the case that is matched is empty.
      *
-     * @access  public
      */
     #[@test]
     public function switchStatementWithEmptyCase() {
@@ -376,7 +358,6 @@
     /**
      * Tests a switch statement
      *
-     * @access  public
      */
     #[@test]
     public function switchStatement() {
@@ -401,7 +382,6 @@
      * Tests eval()
      *
      * @see     php://eval
-     * @access  public
      */
     #[@test]
     public function evaluation() {
@@ -422,7 +402,6 @@
      * Helper method for returnStatement() test. A return statement
      * does not create a tick, whereas the assignment will!
      *
-     * @access  protected
      * @return  int the line creating a tick within this method
      */
     public function tickedReturnSomething() {
@@ -436,7 +415,6 @@
      * Tests return
      *
      * @see     php://eval
-     * @access  public
      */
     #[@test]
     public function returnStatement() {
@@ -455,7 +433,6 @@
      * a block) is related to "tick"s.
      *
      * @see     php://eval
-     * @access  public
      */
     #[@test]
     public function evaluationOfMultiLineCode() {
@@ -480,7 +457,6 @@
      * Tests run-time-created function
      *
      * @see     php://create_function
-     * @access  public
      */
     #[@test]
     public function runtimeCreatedFunction() {
@@ -505,7 +481,6 @@
     /**
      * Tests multiple statements per line
      *
-     * @access  public
      */
     #[@test]
     public function multipleStatements() {
@@ -531,7 +506,6 @@
      * Tests a code block declared inline (by simply opening curly braces
      * and closing them again) will trigger a tick.
      *
-     * @access  public
      */
     #[@test]
     public function codeBlock() {
@@ -551,7 +525,6 @@
     /**
      * Tests nested code blocks
      *
-     * @access  public
      */
     #[@test]
     public function nestedCodeBlocks() {
@@ -582,7 +555,6 @@
      * Tests exceptions. The "if (catch(...))" line produces a tick because
      * of the closing } (see the codeBlock() test).
      *
-     * @access  public
      */
     #[@test]
     public function exception() {
@@ -613,7 +585,6 @@
      * Tests define.
      *
      * @see     php://define
-     * @access  public
      */
     #[@test]
     public function definition() {

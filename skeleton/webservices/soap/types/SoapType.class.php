@@ -19,7 +19,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  string 
      */
     public function toString() { 
@@ -29,7 +28,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() { 
@@ -40,7 +38,6 @@
      * Returns this type's name or FALSE if there's no 
      * special name
      *
-     * @access  public
      * @return  string
      */    
     public function getItemName() { 

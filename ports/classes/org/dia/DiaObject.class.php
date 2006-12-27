@@ -69,7 +69,6 @@
      * Initializes generic objects with default values. Child classes should
      * overwrite this method with their own initialization.
      *
-     * @access  public
      */
     public function initialize() {
       switch ($type= $this->getNodeType()) {
@@ -89,7 +88,6 @@
     /**
      * Return the type of this node
      *
-     * @access  publicg
      * @return  string
      */
     public function getNodeType() {
@@ -99,7 +97,6 @@
     /**
      * Set the type of this node
      *
-     * @access  publicg
      * @param   string type
      */
     #[@fromDia(xpath= '@type', value= 'string')]
@@ -110,7 +107,6 @@
     /**
      * Return the version of this Object
      *
-     * @access  publicg
      * @return  string
      */
     public function getVersion() {
@@ -120,7 +116,6 @@
     /**
      * Set the version string of this object
      *
-     * @access  publicg
      * @param   string version
      */
     #[@fromDia(xpath= '@version', value= 'string')]
@@ -131,7 +126,6 @@
     /**
      * Return the ID of this object
      *
-     * @access  publicg
      * @return  string
      */
     public function getId() {
@@ -141,7 +135,6 @@
     /**
      * Set the ID of this object
      *
-     * @access  publicg
      * @param   string id
      */
     #[@fromDia(xpath= '@id', value= 'string')]
@@ -152,7 +145,6 @@
     /**
      * Set the object position (x,y)
      *
-     * @access  publicg
      * @param   array position The X and Y coordinates within the diagram
      */
     #[@fromDia(xpath= 'dia:attribute[@name="obj_pos"]/dia:point/@val', value= 'array')]
@@ -163,7 +155,6 @@
     /**
      * Set the object bounding box coordinates 
      *
-     * @access  publicg
      * @param   array bbox The X and Y coordinates from the topleft and bottomright corners
      */
     #[@fromDia(xpath= 'dia:attribute[@name="obj_bb"]/dia:rectangle/@val', value= 'arrayarray')]
@@ -174,7 +165,6 @@
     /**
      * Set the object element corner coordinates
      *
-     * @access  publicg
      * @param   array corner
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_corner"]/dia:point/@val', value= 'array')]
@@ -185,7 +175,6 @@
     /**
      * Set the object element width 
      *
-     * @access  publicg
      * @param   string width
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_width"]/dia:real/@val', value= 'string')]
@@ -196,7 +185,6 @@
     /**
      * Set the object element height
      *
-     * @access  publicg
      * @param   string height
      */
     #[@fromDia(xpath= 'dia:attribute[@name="elem_height"]/dia:real/@val', value= 'string')]
@@ -207,7 +195,6 @@
     /**
      * Set the object line color
      *
-     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="line_color"]/dia:color/@val', value= 'string')]
@@ -223,7 +210,6 @@
     /**
      * Set the object fill color
      *
-     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="fill_color"]/dia:color/@val', value= 'string')]
@@ -238,7 +224,6 @@
     /**
      * Set the object text color
      *
-     * @access  publicg
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text_color"]/dia:color/@val', value= 'string')]
@@ -253,7 +238,6 @@
     /**
      * Return the stereotype of the object
      *
-     * @access  publicg
      * @return  string
      */
     public function getStereotype() {
@@ -263,7 +247,6 @@
     /**
      * Sets the stereotype of the object
      *
-     * @access  publicg
      * @param   string stereotype
      */
     #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
@@ -274,11 +257,10 @@
     /**
      * Return the text of the object
      *
-     * @access  publicg
      * @return  &org.dia.DiaText
      */
-    public function &getText() {
-      $Text_node= &$this->getChild('text');
+    public function getText() {
+      $Text_node= $this->getChild('text');
       if (!isset($Text_node)) return NULL;
       // 'text' node may only have one child!
       $children= $Text_node->getChildren();
@@ -288,16 +270,15 @@
     /**
      * Sets the text of the object
      *
-     * @access  publicg
      * @param   &org.dia.DiaText Text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text"]/*', class= 'org.dia.DiaText')]
-    public function setText(&$Text) {
+    public function setText($Text) {
       // TODO
-      $Text_node= &$this->getChild('text');
+      $Text_node= $this->getChild('text');
       if (!isset($Text_node)) {
         $this->set('text', new DiaAttribute('text'));
-        $Text_node= &$this->getChild('text');
+        $Text_node= $this->getChild('text');
       }
       $Text_node->set($Text->getName(), $Text);
     }
@@ -307,11 +288,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  publicg
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       if (isset($this->type))
         $node->setAttribute('type', $this->type);
       if (isset($this->version))

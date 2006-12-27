@@ -27,7 +27,6 @@
      * </pre>
      *
      * @param   &peer.mail.MimePart* parts
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
@@ -44,7 +43,6 @@
      *
      * Also sets the charset to an empty string.
      *
-     * @access  public
      * @param   string b the new boundary
      */
     public function setBoundary($b) {
@@ -57,7 +55,6 @@
     /**
      * Get Boundary
      *
-     * @access  public
      * @return  string
      */
     public function getBoundary() {
@@ -68,7 +65,6 @@
      * Sets content-type and updates the header. The boundary will be appended
      * to the content-type header.
      *
-     * @access  public
      * @param   string content-type
      */
     public function setContenttype($c) {
@@ -78,29 +74,27 @@
     /**
      * Add a Mime Part
      *
-     * @access  public
      * @param   &peer.mail.MimePart part
      * @return  &peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    public function &addPart(&$part) {
+    public function addPart($part) {
       if (!is('MimePart', $part)) {
         throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
       }
-      $this->parts[]= &$part;
+      $this->parts[]= $part;
       return $part;
     }
 
     /**
      * Get a part
      *
-     * @access  public
      * @param   int id default -1
      * @return  &peer.mail.MimePart part
      */
-    public function &getPart($id= -1) {
+    public function getPart($id= -1) {
 
       // Iterative use
       if (-1 == $id) $id= $this->_ofs++;
@@ -118,7 +112,6 @@
      * Get message body.
      *
      * @see     xp://peer.mail.Message#getBody
-     * @access  public
      * @return  string
      */
     public function getBody() {

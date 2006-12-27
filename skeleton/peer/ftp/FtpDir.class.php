@@ -20,7 +20,6 @@
     /**
      * Check if directory exists
      *
-     * @access  public
      * @return  bool
      */
     public function exists() {
@@ -30,10 +29,9 @@
     /**
      * Get entries (iterative function)
      *
-     * @access  public
      * @return  &peer.ftp.FtpEntry FALSE to indicate EOL
      */
-    public function &getEntry() {
+    public function getEntry() {
       if (NULL === $this->entries) {
 
         // Retrieve entries
@@ -54,7 +52,7 @@
       // reference, ".."
       do {        
         try {
-          $entry= &$this->connection->parser->entryFrom($this->entries[$this->_offset]);
+          $entry= $this->connection->parser->entryFrom($this->entries[$this->_offset]);
         } catch (Exception $e) {
           throw(new SocketException(sprintf(
             'During listing of #%d (%s): %s',
@@ -73,7 +71,7 @@
       } while ('.' == $entry->getName() || '..' == $entry->getName());
       
       // Inject connection and return
-      $entry->connection= &$this->connection;
+      $entry->connection= $this->connection;
       return $entry;
     }
   }

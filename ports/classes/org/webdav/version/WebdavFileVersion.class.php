@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename
      */   
     public function __construct($filename) {
@@ -32,7 +31,6 @@
     /**
      * Set the Filename
      *
-     * @access  public
      * @param   string filename
      */
     public function setFilename($filename) {
@@ -42,7 +40,6 @@
     /**
      * Get the Filename
      *
-     * @access  public
      * @return  string filename
      */
     public function getFilename() {
@@ -52,7 +49,6 @@
     /**
      * Set the versionnumber
      *
-     * @access  public
      * @param   float versnr
      */
     public function setVersionNumber($versnr) {
@@ -62,7 +58,6 @@
     /**
      * Get the versionnumber
      *
-     * @access  public
      * @return  float versnr
      */
     public function getVersionNumber() {
@@ -72,7 +67,6 @@
     /**
      * Set the Href
      *
-     * @access  public
      * @param   string href
      */
     public function setHref($href) {
@@ -82,7 +76,6 @@
     /**
      * Get the Href
      *
-     * @access  public
      * @return  string href
      */
     public function getHref() {
@@ -92,7 +85,6 @@
     /**
      * Set the versionname (e.g. test_1.0.txt)
      *
-     * @access  public
      * @param   string versionname
      */
     public function setVersionName($versname) {
@@ -102,7 +94,6 @@
     /**
      * Get the versionname
      *
-     * @access  public
      * @return  string versionname
      */
     public function getVersionName() {
@@ -112,7 +103,6 @@
     /**
      * Set the name of the creator
      *
-     * @access  public
      * @param   string creator, default NULL
      */
     public function setCreatorName($creator= NULL) {
@@ -122,7 +112,6 @@
     /**
      * Get the name of the creator
      *
-     * @access  public
      * @return  string creatorname
      */
     public function getCreatorName() {
@@ -132,7 +121,6 @@
     /**
      * Set the conentlength
      *
-     * @access  public
      * @param   int length
      */
     public function setContentLength($length) {
@@ -142,7 +130,6 @@
     /**
      * Get the contentlength
      *
-     * @access  public
      * @return  int contentlength
      */
     public function getContentLength() {
@@ -152,27 +139,24 @@
     /**
      * Set date of last modification
      *
-     * @access  public
      * @param   &util.Date date
      */
-    public function setLastModified(&$date) {
-      $this->lastmodified= &$date;
+    public function setLastModified($date) {
+      $this->lastmodified= $date;
     }
     
     /**
      * Get the date of last modification
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getLastModified() {
+    public function getLastModified() {
       return $this->lastmodified;
     }
     
     /**
      * Set the location (e.g. /dav/versions/test_1.0.txt )
      *
-     * @access  public
      * @param   string location
      */
     public function setLocation($loc) {
@@ -182,7 +166,6 @@
     /**
      * Get the location
      *
-     * @access  public
      * @return  string location
      */
     public function getLocation() {

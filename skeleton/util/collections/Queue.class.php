@@ -43,12 +43,11 @@
     /**
      * Puts an item into the queue. Returns the element that was added.
      *
-     * @access  public
      * @param   &lang.Object object
      * @return  &lang.Object object
      */
-    public function &put(&$object) {
-      $this->_elements[]= &$object;
+    public function put($object) {
+      $this->_elements[]= $object;
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
     }
@@ -56,16 +55,15 @@
     /**
      * Gets an item from the front of the queue.
      *
-     * @access  public
      * @return  &lang.Object
      * @throws  util.NoSuchElementException
      */    
-    public function &get() {
+    public function get() {
       if (empty($this->_elements)) {
         throw(new NoSuchElementException('Queue is empty'));
       }
 
-      $e= &$this->_elements[0];
+      $e= $this->_elements[0];
       $this->_hash-= HashProvider::hashOf($e->hashCode());
       $this->_elements= array_slice($this->_elements, 1);
       return $e;
@@ -77,10 +75,9 @@
      *
      * Returns NULL in case the queue is empty.
      *
-     * @access  public
      * @return  &lang.Object object
      */        
-    public function &peek() {
+    public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
   
@@ -88,7 +85,6 @@
      * Returns true if the queue is empty. This is effectively the same
      * as testing size() for 0.
      *
-     * @access  public
      * @return  bool
      */
     public function isEmpty() {
@@ -98,7 +94,6 @@
     /**
      * Returns the size of the queue.
      *
-     * @access  public
      * @return  int
      */
     public function size() {
@@ -109,11 +104,10 @@
      * Sees if an object is in the queue and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @access  public
      * @param   &lang.Object object
      * @return  int position
      */
-    public function search(&$object) {
+    public function search($object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
 
@@ -121,11 +115,10 @@
      * Remove an object from the queue. Returns TRUE in case the element
      * was deleted, FALSE otherwise.
      *
-     * @access  public
      * @return  &lang.Object
      * @return  bool
      */
-    public function remove(&$object) {
+    public function remove($object) {
       if (-1 == ($pos= $this->search($object))) return FALSE;
       
       $this->_hash-= HashProvider::hashOf($this->_elements[$pos]->hashCode());
@@ -137,12 +130,11 @@
     /**
      * Retrieves an element by its index.
      *
-     * @access  public
      * @param   int index
      * @return  &lang.Object
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function &elementAt($index) {
+    public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
         throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
       }
@@ -152,7 +144,6 @@
     /**
      * Returns a hashcode for this queue
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -162,11 +153,10 @@
     /**
      * Returns true if this queue equals another queue.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return (
         is('util.collections.Queue', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())

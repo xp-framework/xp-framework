@@ -20,7 +20,6 @@
     /**
      * Initializes this Paper object
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -41,7 +40,6 @@
     /**
      * Returns the top margin of the paper
      *
-     * @access  public
      * @return  float
      */
     public function getTopMargin() {
@@ -51,7 +49,6 @@
     /**
      * Sets the top margin of the Paper
      *
-     * @access  public
      * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="tmargin"]/dia:real/@val', value= 'real')]
@@ -62,7 +59,6 @@
     /**
      * Returns the bottom margin of the paper
      *
-     * @access  public
      * @return  float
      */
     public function getBottomMargin() {
@@ -72,7 +68,6 @@
     /**
      * Sets the bottom margin of the Paper
      *
-     * @access  public
      * @param   float bmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="bmargin"]/dia:real/@val', value= 'real')]
@@ -83,7 +78,6 @@
     /**
      * Returns the left margin of the paper
      *
-     * @access  public
      * @return  float
      */
     public function getLeftMargin() {
@@ -93,7 +87,6 @@
     /**
      * Sets the left margin of the Paper
      *
-     * @access  public
      * @param   float lmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="lmargin"]/dia:real/@val', value= 'real')]
@@ -104,7 +97,6 @@
     /**
      * Returns the right margin of the paper
      *
-     * @access  public
      * @return  float
      */
     public function getRightMargin() {
@@ -114,7 +106,6 @@
     /**
      * Sets the right margin of the Paper
      *
-     * @access  public
      * @param   float rmargin
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="rmargin"]/dia:real/@val', value= 'real')]
@@ -126,7 +117,6 @@
      * Returns TRUE if the paper has 'portrait' orientation, FALSE means
      * 'landscape'
      *
-     * @access  public
      * @return  boole
      */
     public function getPortrait() {
@@ -136,7 +126,6 @@
     /**
      * Sets the 'is_portrait' attribute of the Paper object
      *
-     * @access  public
      * @param   bool portrait
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="is_portrait"]/dia:boolean/@val', value= 'boolean')]
@@ -147,7 +136,6 @@
     /**
      * Returns the scaling of the paper
      *
-     * @access  public
      * @return  float
      */
     public function getScaling() {
@@ -157,7 +145,6 @@
     /**
      * Sets the 'scaling' of the Paper object
      *
-     * @access  public
      * @param   float scaling
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="scaling"]/dia:real/@val', value= 'real')]
@@ -169,7 +156,6 @@
      * Returns TRUE if the paper is to be fittet onto a fixed numer of
      * horizontal and vertical sheets
      *
-     * @access  public
      * @return  bool
      */
     public function getFitTo() {
@@ -189,7 +175,6 @@
     /**
      * Returns the number of sheets the diagram should be fit to horizontally
      *
-     * @access  public
      * @return  int
      */
     public function getFitWidth() {
@@ -200,7 +185,6 @@
      * Sets the 'fitwidth' of this Paper object: specifies on how many sheets
      * (horizontal) the diagram should be fitted if 'fitto' is TRUE
      *
-     * @access  public
      * @param   int width
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitwidth"]/dia:int/@val', value= 'int')]
@@ -211,7 +195,6 @@
     /**
      * Returns the number of sheets the diagram should be fit to vertically
      *
-     * @access  public
      * @return  int
      */
     public function getFitHeight() {
@@ -222,7 +205,6 @@
      * Sets the 'fitheight' of this Paper object: specifies on how many sheets
      * (vertical) the diagram should be fitted if 'fitto' is TRUE
      *
-     * @access  public
      * @param   int height
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="fitheight"]/dia:int/@val', value= 'int')]

@@ -7,7 +7,6 @@
   /**
    * Base class for XML documents
    *
-   * @access public
    */
   class XML extends Object {
     public 
@@ -17,7 +16,6 @@
     /**
      * Set encoding
      *
-     * @access  public
      * @param   string e encoding
      */
     public function setEncoding($e) {
@@ -27,7 +25,6 @@
     /**
      * Retrieve encoding
      *
-     * @access  public
      * @return  string encoding
      */
     public function getEncoding() {
@@ -37,7 +34,6 @@
     /**
      * Returns XML declaration
      *
-     * @access  public
      * @return  string declaration
      */
     public function getDeclaration() {

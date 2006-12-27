@@ -18,12 +18,11 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
-      for ($c= &$this->getClass(), $m= $c->getMethods(), $i= 0, $s= sizeof($m); $i < $s; $i++) {
+      for ($c= $this->getClass(), $m= $c->getMethods(), $i= 0, $s= sizeof($m); $i < $s; $i++) {
         $m[$i]->hasAnnotation('handles') && (
-          $this->nodeHandlers[$m[$i]->getAnnotation('handles')]= &$m[$i]
+          $this->nodeHandlers[$m[$i]->getAnnotation('handles')]= $m[$i]
         );
       }
     }
@@ -31,12 +30,11 @@
     /**
      * Handler for albums
      *
-     * @access  public
      * @param   &de.thekid.dialog.Album album
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.Album')]
-    public function &albumNode(&$album) {
+    public function albumNode($album) {
       $child= new Node('entry', NULL, array(
         'name'          => $album->getName(),
         'title'         => $album->getTitle(),
@@ -53,12 +51,11 @@
     /**
      * Handler for updates
      *
-     * @access  public
      * @param   &de.thekid.dialog.Update update
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.Update')]
-    public function &updateNode(&$update) {
+    public function updateNode($update) {
       $child= new Node('entry', NULL, array(
         'album'         => $update->getAlbumName(),
         'title'         => $update->getTitle()
@@ -72,12 +69,11 @@
     /**
      * Handler for single shots
      *
-     * @access  public
      * @param   &de.thekid.dialog.SingleShot shot
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.SingleShot')]
-    public function &shotNode(&$shot) {
+    public function shotNode($shot) {
       $child= new Node('entry', NULL, array(
         'name'      => $shot->getName(),
         'filename'  => $shot->getFileName(),
@@ -92,12 +88,11 @@
     /**
      * Handler for entry collections
      *
-     * @access  public
      * @param   &de.thekid.dialog.EntryCollection collection
      * @return  &xml.Node node
      */
     #[@handles('de.thekid.dialog.EntryCollection')]
-    public function &collectionNode(&$collection) {
+    public function collectionNode($collection) {
       $numEntries= $collection->numEntries();
       $node= new Node('entry', NULL, array(
         'name'          => $collection->getName(),
@@ -108,12 +103,12 @@
       $node->addChild(Node::fromObject($collection->createdAt, 'created'));
       
       for ($i= 0; $i < $numEntries; $i++) {
-        $entry= &$collection->entryAt($i);
+        $entry= $collection->entryAt($i);
         if (!isset($this->nodeHandlers[$entry->getClassName()])) {
           throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
         }
         
-        $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
+        $child= $node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
         $child->setAttribute('type', $entry->getClassName());
       }
       
@@ -123,16 +118,15 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       $name= $request->getQueryString();
 
-      if ($collection= &$this->getEntryFor($name)) {
-        $child= &$response->addFormResult(new Node('collection', NULL, array(
+      if ($collection= $this->getEntryFor($name)) {
+        $child= $response->addFormResult(new Node('collection', NULL, array(
           'name'         => $collection->getName(),
           'title'        => $collection->getTitle(),
           'page'         => $this->getDisplayPageFor($name)
@@ -141,13 +135,13 @@
         $child->addChild(Node::fromObject($collection->createdAt, 'created'));
       	
         // Add entries from collection 
-        $node= &$response->addFormResult(new Node('entries'));
+        $node= $response->addFormResult(new Node('entries'));
         foreach ($collection->entries as $entry) {
           if (!isset($this->nodeHandlers[$entry->getClassName()])) {
             throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
           }
 
-          $child= &$node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
+          $child= $node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
           $child->setAttribute('type', $entry->getClassName());
         }
       }

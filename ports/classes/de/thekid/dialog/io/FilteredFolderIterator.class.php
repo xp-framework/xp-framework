@@ -32,13 +32,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Folder folder
      * @param   string pattern regular expression
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    public function __construct(&$folder, $pattern, $recursive= FALSE) {
-      $this->folders= array(&$folder);
+    public function __construct($folder, $pattern, $recursive= FALSE) {
+      $this->folders= array($folder);
       $this->pattern= $pattern;
       $this->recursive= $recursive;
     }
@@ -48,7 +47,6 @@
      * returns true if next would return an element rather than throwing
      * an exception.)
      *
-     * @access  public
      * @return  bool
      */
     public function hasNext() {
@@ -69,7 +67,6 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @access  public
      * @return  string the fully qualified name of the element
      * @throws  util.NoSuchElementException when there are no more elements
      */

@@ -20,8 +20,6 @@
     /**
      * Encode string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */
@@ -32,8 +30,6 @@
     /**
      * Decode base64 encoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */

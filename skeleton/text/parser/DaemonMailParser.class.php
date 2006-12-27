@@ -58,24 +58,22 @@
     /**
      * Set handler for the event that a header is found
      *
-     * @access  public
      * @param   string element
      * @param   function func
      */
     public function addHeaderFound($header, $func) {
-      $this->_hcb[]= array($header, NULL, &$func);
+      $this->_hcb[]= array($header, NULL, $func);
     }
 
     /**
      * Set handler for the event that a header matches a specified regular expression
      *
-     * @access  public
      * @param   string element
      * @param   string regex
      * @param   function func
      */
     public function addHeaderMatch($header, $regex, $func) {
-      $this->_hcb[]= array($header, $regex, &$func);
+      $this->_hcb[]= array($header, $regex, $func);
     }
     
     /**
@@ -93,11 +91,10 @@
      *   Last-Attempt-Date: Mon, 17 Feb 2003 04:08:27 -0500 (EST)    
      * </pre>
      *
-     * @access  private
      * @param   string str
      * @param   &text.parser.DaemonMessage daemonmessage
      */
-    public function _parseDeliveryStatus($str, &$daemonmessage) {
+    public function _parseDeliveryStatus($str, $daemonmessage) {
       $l= strtok(chop($str), "\n");
       $r= array();
       do {
@@ -142,13 +139,12 @@
     /**
      * Parse a stream
      *
-     * @access  public 
      * @param   &peer.mail.Message message
      * @return  bool success
      * @throws  lang.FormatException
      * @throws  lang.IllegalArgumentException
      */
-    public function parse(&$message) {
+    public function parse($message) {
       static $magic= array(
         '550'                    => DAEMON_GENERIC,
         '5.5.0'                  => DAEMON_GENERIC,
@@ -186,10 +182,10 @@
       // Set up daemon mail object
       $daemonmessage= new DaemonMessage();
       $daemonmessage->setFrom($message->getFrom());
-      $daemonmessage->date= &$message->date;
+      $daemonmessage->date= $message->date;
       $daemonmessage->headers= $message->headers;
       $daemonmessage->subject= $message->subject;
-      $daemonmessage->to= &$message->to;
+      $daemonmessage->to= $message->to;
       
       // Is there a header named "X-Failed-Recipients"?
       if (NULL !== ($rcpt= $message->getHeader('X-Failed-Recipients'))) {
@@ -309,7 +305,7 @@
         $body= NULL;
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
-        while ($part= &$message->getPart()) {
+        while ($part= $message->getPart()) {
           
           switch (strtolower($part->getContentType())) {
             case 'message/delivery-status':
@@ -454,7 +450,7 @@
                 (NULL == $defines[1]) ||
                 (preg_match($defines[1], $v, $regs))
               ) {
-                call_user_func_array($defines[2], array(&$daemonmessage, $v, $regs));
+                call_user_func_array($defines[2], array($daemonmessage, $v, $regs));
               }
             }
             break;

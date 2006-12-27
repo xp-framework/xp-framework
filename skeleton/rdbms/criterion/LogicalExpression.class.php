@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.criterion.Criterion[] criterions
      * @param   string op one of the LOGICAL_* constants
      */
@@ -34,13 +33,12 @@
     /**
      * Returns the fragment SQL
      *
-     * @access  public
      * @param   &rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql(&$conn, $types) { 
+    public function asSql($conn, $types) { 
       $sql= '';
       for ($i= 0, $s= sizeof($this->criterions); $i < $s; $i++) {
         $sql.= $this->criterions[$i]->asSql($conn, $types).' '.$this->op.' ';

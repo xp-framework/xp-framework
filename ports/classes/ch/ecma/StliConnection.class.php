@@ -55,19 +55,17 @@
      *   // [...]
      * </code>
      *
-     * @access  public
      * @param   &peer.Socket sock
      * @param   int version default STLI_VERSION_2
      */
-    public function __construct(&$sock, $version= STLI_VERSION_2) {
-      $this->sock= &$sock;
+    public function __construct($sock, $version= STLI_VERSION_2) {
+      $this->sock= $sock;
       $this->version= $version;
     }
     
     /**
      * Writes data to the socket.
      *
-     * @access  protected
      * @param   string buf
      */
     public function _write($buf) {
@@ -78,7 +76,6 @@
     /**
      * Reads data from the socket
      *
-     * @access  protected
      * @return  string
      */
     public function _read() {
@@ -91,7 +88,6 @@
      * Set the protocol version. This can only be done *prior* to connecting to
      * the server!
      *
-     * @access  public
      * @param   int version
      * @throws  lang.IllegalStateException in case already having connected
      */
@@ -105,7 +101,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      */
     public function _sockcmd() {
       $args= func_get_args();
@@ -121,7 +116,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      */
     public function _expect($expect, $have) {
       if ($expect !== $have) {
@@ -137,7 +131,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      */
     public function _expectf($expect, $have) {
       $res= sscanf($have, $expect);
@@ -157,7 +150,6 @@
     /**
      * Connect and initiate the communication
      *
-     * @access  public
      * @return  mixed the return code of the socket's connect method
      * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
@@ -174,7 +166,6 @@
     /**
      * Close connection and end the communication
      *
-     * @access  public
      * @return  mixed the return code of the socket's close method
      * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
@@ -190,12 +181,11 @@
     /**
      * Create a call
      *
-     * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @param   &util.telephony.TelephonyAddress destination
      * @return  &util.telephony.TelephonyCall a call object
      */
-    public function &createCall(&$terminal, &$destination) {
+    public function createCall($terminal, $destination) {
       if (FALSE === $this->_expect(
         STLI_MAKECALL_RESPONSE,
         $this->_sockcmd('MakeCall %s %s', 
@@ -215,23 +205,21 @@
     /**
      * Get terminal
      *
-     * @access  public
      * @param   &util.telephony.TelephonyAddress address
      * @return  &util.telephony.TelephonyTerminal
      */
-    public function &getTerminal(&$address) {
+    public function getTerminal($address) {
       return new TelephonyTerminal($address);
     }
 
     /**
      * Observe a terminal
      *
-     * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @param   bool status TRUE to start observing, FALSE top stop
      * @return  bool success
      */
-    public function observeTerminal(&$terminal, $status) {
+    public function observeTerminal($terminal, $status) {
       if ($status) {
         $success= $this->_expect(
           STLI_MON_START_RESPONSE,
@@ -251,11 +239,10 @@
     /**
      * Release terminal
      *
-     * @access  public
      * @param   &util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
-    public function releaseTerminal(&$terminal) {
+    public function releaseTerminal($terminal) {
       return TRUE;
     }
   }

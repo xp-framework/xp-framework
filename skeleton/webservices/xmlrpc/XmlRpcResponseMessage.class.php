@@ -18,7 +18,6 @@
     /**
      * Create a response message for the given request
      *
-     * @access  public
      * @param   webservices.xmlrpc.XmlRpcRequestMessage reqmsg
      */
     public function create($reqmsg= NULL) {
@@ -32,14 +31,12 @@
      *   $msg= &XmlRpcResponseMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &webservices.xmlrpc.XmlRpcResponse Message
      */
-    public static function &fromString($string) {
+    public static function fromString($string) {
       $msg= new XmlRpcResponseMessage();
-      $msg->tree= &Tree::fromString($string);
+      $msg->tree= Tree::fromString($string);
 
       // Set class and method members from XML structure
       $target= $msg->tree->root->children[0]->getContent();
@@ -51,24 +48,22 @@
     /**
      * Set the data for the message.
      *
-     * @access  public
      * @param   &mixed arr
      */
     public function setData($value) {
       $encoder= new XmlRpcEncoder();
 
-      $params= &$this->tree->root->addChild(new Node('params'));
-      $param= &$params->addChild(new Node('param'));
+      $params= $this->tree->root->addChild(new Node('params'));
+      $param= $params->addChild(new Node('param'));
       $param->addChild($encoder->encode($value));
     }
     
     /**
      * Return the data from the message.
      *
-     * @access  public
      * @return  &mixed
      */
-    public function &getData() {
+    public function getData() {
       $ret= array();
       
       if (

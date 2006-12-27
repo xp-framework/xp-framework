@@ -11,7 +11,6 @@
     /**
      * Constructor of an UML realization
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Implements', 0);
@@ -20,7 +19,6 @@
     /**
      * Initialize this UMLImplementation with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -44,7 +42,6 @@
     /**
      * Returns the text of the connection (interface being implemented)
      * 
-     * @access  public
      * @return  string
      */
     public function getText() {
@@ -54,7 +51,6 @@
     /** 
      * Sets the text for the Implements connection
      *
-     * @access  public
      * @param   string text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text"]/dia:string', value= 'string')]
@@ -65,7 +61,6 @@
     /**
      * Returns the point of the text position
      *
-     * @access  public
      * @return  array
      */
     public function getTextPosition() {
@@ -75,7 +70,6 @@
     /**
      * Sets the text position point
      *
-     * @access  public
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text_pos"]/dia:point/@val', value= 'array')]
@@ -86,7 +80,6 @@
     /**
      * Returns the diameter of the circle at the end of the connection
      *
-     * @access  public
      * @return  float
      */
     public function getDiameter() {
@@ -96,7 +89,6 @@
     /**
      * Sets the diameter of the Implements circle
      *
-     * @access  public
      * @param   float diameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="diameter"]/dia:real/@val', value= 'real')]
@@ -107,7 +99,6 @@
     /**
      * Returns the two endpoints of the connection
      *
-     * @access  public
      * @return  array[]
      */
     public function getEndPoints() {
@@ -118,35 +109,32 @@
     /**
      * Adds an endpoint to the Implements connection
      *
-     * @access  public
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="conn_endpoints"]/dia:point/@val', value= 'array')]
     public function addEndPoint($point) {
-      $Conns= &$this->getChild('conn_endpoints');
+      $Conns= $this->getChild('conn_endpoints');
       $Conns->addChild(new DiaPoint($point));
     }
     
     /**
      * Returns the connection to the object
      *
-     * @access  public
      * @return  &org.dia.DiaConnection
      */
-    public function &getConnection() {
-      $Conns= &$this->getChild('connections');
+    public function getConnection() {
+      $Conns= $this->getChild('connections');
       return $Conns->getChild('connection');
     }
 
     /**
      * Sets the connection of the Implements line
      *
-     * @access  public
      * @param   &org.dia.DiaConnection Conn
      */
     #[@fromDia(xpath= 'dia:attribute[@name="connetions"]/dia:connection', class= 'org.dia.DiaConnection')]
-    public function setConnection(&$Conn) {
-      $Conns= &$this->getChild('connections');
+    public function setConnection($Conn) {
+      $Conns= $this->getChild('connections');
       $Conns->set('connection', $Conn);
     }
 
@@ -157,7 +145,7 @@
      * @param   int connpoint default 0 The connection point of the object
      */
     public function beginAt($id, $connpoint= 0) {
-      $Conns= &$this->getChild('connections');
+      $Conns= $this->getChild('connections');
       $Conns->set('connection', new DiaConnection("0, $id, $connpoint"));
     }
 

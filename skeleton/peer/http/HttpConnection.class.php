@@ -52,7 +52,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed url a string or a peer.URL object
      */
     public function __construct($url) {
@@ -64,17 +63,15 @@
     /**
      * Create the request object
      *
-     * @access  protected
      * @param   &peer.URL object
      */
-    public function _createRequest(&$url) {
-      $this->request= &HttpRequestFactory::factory($url);
+    public function _createRequest($url) {
+      $this->request= HttpRequestFactory::factory($url);
     }
 
     /**
      * Set connect timeout
      *
-     * @access  public
      * @param   float timeout
      */
     public function setConnectTimeout($timeout) {
@@ -84,7 +81,6 @@
     /**
      * Get timeout
      *
-     * @access  public
      * @return  float
      */
     public function getConnectTimeout() {
@@ -94,7 +90,6 @@
     /**
      * Set timeout
      *
-     * @access  public
      * @param   int timeout
      */
     public function setTimeout($timeout) {
@@ -104,7 +99,6 @@
     /**
      * Get timeout
      *
-     * @access  public
      * @return  int
      */
     public function getTimeout() {
@@ -114,7 +108,6 @@
     /**
      * Perform any request
      *
-     * @access  public
      * @param   string method request method, e.g. HTTP_GET
      * @param   mixed arg
      * @param   array headers default array()
@@ -122,7 +115,7 @@
      * @throws  io.IOException
      * @throws  lang.IllegalAccessException
      */
-    public function &request($method, $arg, $headers= array()) {
+    public function request($method, $arg, $headers= array()) {
       if (!$this->request) throw(new IllegalAccessException(
         'No request object returned from HttpRequestFactory::factory'
       ));
@@ -132,7 +125,7 @@
       $this->request->addHeaders($headers);
       
       try {
-        $this->response= &$this->request->send($this->_timeout, $this->_ctimeout);
+        $this->response= $this->request->send($this->_timeout, $this->_ctimeout);
       } catch (Exception $e) {
         throw($e);
       }
@@ -143,48 +136,44 @@
     /**
      * Perform a GET request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function &get($arg= NULL, $headers= array()) {
+    public function get($arg= NULL, $headers= array()) {
       return $this->request(HTTP_GET, $arg, $headers);
     }
     
     /**
      * Perform a HEAD request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function &head($arg= NULL, $headers= array()) {
+    public function head($arg= NULL, $headers= array()) {
       return $this->request(HTTP_HEAD, $arg, $headers);
     }
     
     /**
      * Perform a POST request
      *
-     * @access  public
      * @param   mixed arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function &post($arg= NULL, $headers= array()) {
+    public function post($arg= NULL, $headers= array()) {
       return $this->request(HTTP_POST, $arg, $headers);
     }
     
     /**
      * Perform a Put request
      *
-     * @access  public
      * @param   string arg default NULL
      * @param   array headers default array()
      * @return  &peer.http.HttpResponse response object
      */
-    public function &put($arg= NULL, $headers= array()) {
+    public function put($arg= NULL, $headers= array()) {
       return $this->request(HTTP_PUT, new RequestData($arg), $headers);
     }
   }

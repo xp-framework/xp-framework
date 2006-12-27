@@ -23,7 +23,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed arg either a string or float[3][3]
      * @throws  lang.IllegalArgumentException in case the given argument is invalid
      */
@@ -55,7 +54,6 @@
     /**
      * Retrieve matrix
      *
-     * @access  public
      * @return  float[3][3]
      */
     public function getMatrix() {

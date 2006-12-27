@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int double
      */  
     function __construct($double) {
@@ -27,7 +26,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  string 
      */    
     function toString() {
@@ -37,7 +35,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     function getType() {

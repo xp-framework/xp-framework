@@ -52,17 +52,16 @@
     /**
      * Gets an instance of this object by hostname
      *
-     * @access  static
      * @param   string hostname
      * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    public function &getByHost_name($host_name) {
-      $cm= &ConnectionManager::getInstance();  
+    public function getByHost_name($host_name) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
-        $q= &$db->query('
+        $db= $cm->getByHost('nagios', 0);
+        $q= $db->query('
           select
             host_name,
             service_description,
@@ -117,18 +116,17 @@
     /**
      * Gets an instance of this object by hostname and service
      *
-     * @access  static
      * @param   string hostname
      * @param   string servicedescription
      * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    public function &getByHostService($host_name, $service) {
-      $cm= &ConnectionManager::getInstance();  
+    public function getByHostService($host_name, $service) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
-        $q= &$db->query('
+        $db= $cm->getByHost('nagios', 0);
+        $q= $db->query('
           select
             host_name,
             service_description,
@@ -185,17 +183,16 @@
     /**
      * Gets an instance of this object by service status
      *
-     * @access  static
      * @param   string status
      * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    public function &getByService_status($service_status) {
-      $cm= &ConnectionManager::getInstance();  
+    public function getByService_status($service_status) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
-        $q= &$db->query('
+        $db= $cm->getByHost('nagios', 0);
+        $q= $db->query('
           select
             host_name,
             service_description,
@@ -250,16 +247,15 @@
     /**
      * Gets an instance of this object with service status of not OK
      *
-     * @access  static
      * @return  &org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
-    public function &getByNotOk() {
-      $cm= &ConnectionManager::getInstance();  
+    public function getByNotOk() {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
-        $q= &$db->query('
+        $db= $cm->getByHost('nagios', 0);
+        $q= $db->query('
           select
             host_name,
             service_description,
@@ -314,7 +310,6 @@
     /**
      * Retrieves host_name
      *
-     * @access  public
      * @return  string
      */
     public function getHost_name() {
@@ -324,7 +319,6 @@
     /**
      * Sets host_name
      *
-     * @access  public
      * @param   string host_name
      * @return  string previous value
      */
@@ -335,7 +329,6 @@
     /**
      * Retrieves service_description
      *
-     * @access  public
      * @return  string
      */
     public function getService_description() {
@@ -345,7 +338,6 @@
     /**
      * Sets service_description
      *
-     * @access  public
      * @param   string service_description
      * @return  string previous value
      */
@@ -356,7 +348,6 @@
     /**
      * Retrieves service_status
      *
-     * @access  public
      * @return  string
      */
     public function getService_status() {
@@ -366,7 +357,6 @@
     /**
      * Sets service_status
      *
-     * @access  public
      * @param   string service_status
      * @return  string previous value
      */
@@ -377,7 +367,6 @@
     /**
      * Retrieves last_update
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLast_update() {
@@ -387,7 +376,6 @@
     /**
      * Sets last_update
      *
-     * @access  public
      * @param   util.Date last_update
      * @return  util.Date previous value
      */
@@ -398,7 +386,6 @@
     /**
      * Retrieves current_attempt
      *
-     * @access  public
      * @return  int
      */
     public function getCurrent_attempt() {
@@ -408,7 +395,6 @@
     /**
      * Sets current_attempt
      *
-     * @access  public
      * @param   int current_attempt
      * @return  int previous value
      */
@@ -419,7 +405,6 @@
     /**
      * Retrieves max_attempts
      *
-     * @access  public
      * @return  int
      */
     public function getMax_attempts() {
@@ -429,7 +414,6 @@
     /**
      * Sets max_attempts
      *
-     * @access  public
      * @param   int max_attempts
      * @return  int previous value
      */
@@ -440,7 +424,6 @@
     /**
      * Retrieves state_type
      *
-     * @access  public
      * @return  string
      */
     public function getState_type() {
@@ -450,7 +433,6 @@
     /**
      * Sets state_type
      *
-     * @access  public
      * @param   string state_type
      * @return  string previous value
      */
@@ -461,7 +443,6 @@
     /**
      * Retrieves last_check
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLast_check() {
@@ -471,7 +452,6 @@
     /**
      * Sets last_check
      *
-     * @access  public
      * @param   util.Date last_check
      * @return  util.Date previous value
      */
@@ -482,7 +462,6 @@
     /**
      * Retrieves next_check
      *
-     * @access  public
      * @return  util.Date
      */
     public function getNext_check() {
@@ -492,7 +471,6 @@
     /**
      * Sets next_check
      *
-     * @access  public
      * @param   util.Date next_check
      * @return  util.Date previous value
      */
@@ -503,7 +481,6 @@
     /**
      * Retrieves should_be_scheduled
      *
-     * @access  public
      * @return  int
      */
     public function getShould_be_scheduled() {
@@ -513,7 +490,6 @@
     /**
      * Sets should_be_scheduled
      *
-     * @access  public
      * @param   int should_be_scheduled
      * @return  int previous value
      */
@@ -524,7 +500,6 @@
     /**
      * Retrieves check_type
      *
-     * @access  public
      * @return  string
      */
     public function getCheck_type() {
@@ -534,7 +509,6 @@
     /**
      * Sets check_type
      *
-     * @access  public
      * @param   string check_type
      * @return  string previous value
      */
@@ -545,7 +519,6 @@
     /**
      * Retrieves checks_enabled
      *
-     * @access  public
      * @return  int
      */
     public function getChecks_enabled() {
@@ -555,7 +528,6 @@
     /**
      * Sets checks_enabled
      *
-     * @access  public
      * @param   int checks_enabled
      * @return  int previous value
      */
@@ -566,7 +538,6 @@
     /**
      * Retrieves accept_passive_checks
      *
-     * @access  public
      * @return  int
      */
     public function getAccept_passive_checks() {
@@ -576,7 +547,6 @@
     /**
      * Sets accept_passive_checks
      *
-     * @access  public
      * @param   int accept_passive_checks
      * @return  int previous value
      */
@@ -587,7 +557,6 @@
     /**
      * Retrieves event_handler_enabled
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_handler_enabled() {
@@ -597,7 +566,6 @@
     /**
      * Sets event_handler_enabled
      *
-     * @access  public
      * @param   int event_handler_enabled
      * @return  int previous value
      */
@@ -608,7 +576,6 @@
     /**
      * Retrieves last_state_change
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLast_state_change() {
@@ -618,7 +585,6 @@
     /**
      * Sets last_state_change
      *
-     * @access  public
      * @param   util.Date last_state_change
      * @return  util.Date previous value
      */
@@ -629,7 +595,6 @@
     /**
      * Retrieves problem_acknowledged
      *
-     * @access  public
      * @return  int
      */
     public function getProblem_acknowledged() {
@@ -639,7 +604,6 @@
     /**
      * Sets problem_acknowledged
      *
-     * @access  public
      * @param   int problem_acknowledged
      * @return  int previous value
      */
@@ -650,7 +614,6 @@
     /**
      * Retrieves last_hard_state
      *
-     * @access  public
      * @return  string
      */
     public function getLast_hard_state() {
@@ -660,7 +623,6 @@
     /**
      * Sets last_hard_state
      *
-     * @access  public
      * @param   string last_hard_state
      * @return  string previous value
      */
@@ -671,7 +633,6 @@
     /**
      * Retrieves time_ok
      *
-     * @access  public
      * @return  int
      */
     public function getTime_ok() {
@@ -681,7 +642,6 @@
     /**
      * Sets time_ok
      *
-     * @access  public
      * @param   int time_ok
      * @return  int previous value
      */
@@ -692,7 +652,6 @@
     /**
      * Retrieves time_warning
      *
-     * @access  public
      * @return  int
      */
     public function getTime_warning() {
@@ -702,7 +661,6 @@
     /**
      * Sets time_warning
      *
-     * @access  public
      * @param   int time_warning
      * @return  int previous value
      */
@@ -713,7 +671,6 @@
     /**
      * Retrieves time_unknown
      *
-     * @access  public
      * @return  int
      */
     public function getTime_unknown() {
@@ -723,7 +680,6 @@
     /**
      * Sets time_unknown
      *
-     * @access  public
      * @param   int time_unknown
      * @return  int previous value
      */
@@ -734,7 +690,6 @@
     /**
      * Retrieves time_critical
      *
-     * @access  public
      * @return  int
      */
     public function getTime_critical() {
@@ -744,7 +699,6 @@
     /**
      * Sets time_critical
      *
-     * @access  public
      * @param   int time_critical
      * @return  int previous value
      */
@@ -755,7 +709,6 @@
     /**
      * Retrieves last_notification
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLast_notification() {
@@ -765,7 +718,6 @@
     /**
      * Sets last_notification
      *
-     * @access  public
      * @param   util.Date last_notification
      * @return  util.Date previous value
      */
@@ -776,7 +728,6 @@
     /**
      * Retrieves current_notification
      *
-     * @access  public
      * @return  int
      */
     public function getCurrent_notification() {
@@ -786,7 +737,6 @@
     /**
      * Sets current_notification
      *
-     * @access  public
      * @param   int current_notification
      * @return  int previous value
      */
@@ -797,7 +747,6 @@
     /**
      * Retrieves notifications_enabled
      *
-     * @access  public
      * @return  int
      */
     public function getNotifications_enabled() {
@@ -807,7 +756,6 @@
     /**
      * Sets notifications_enabled
      *
-     * @access  public
      * @param   int notifications_enabled
      * @return  int previous value
      */
@@ -818,7 +766,6 @@
     /**
      * Retrieves latency
      *
-     * @access  public
      * @return  int
      */
     public function getLatency() {
@@ -828,7 +775,6 @@
     /**
      * Sets latency
      *
-     * @access  public
      * @param   int latency
      * @return  int previous value
      */
@@ -839,7 +785,6 @@
     /**
      * Retrieves execution_time
      *
-     * @access  public
      * @return  int
      */
     public function getExecution_time() {
@@ -849,7 +794,6 @@
     /**
      * Sets execution_time
      *
-     * @access  public
      * @param   int execution_time
      * @return  int previous value
      */
@@ -860,7 +804,6 @@
     /**
      * Retrieves plugin_output
      *
-     * @access  public
      * @return  string
      */
     public function getPlugin_output() {
@@ -870,7 +813,6 @@
     /**
      * Sets plugin_output
      *
-     * @access  public
      * @param   string plugin_output
      * @return  string previous value
      */
@@ -881,7 +823,6 @@
     /**
      * Retrieves flap_detection_enabled
      *
-     * @access  public
      * @return  int
      */
     public function getFlap_detection_enabled() {
@@ -891,7 +832,6 @@
     /**
      * Sets flap_detection_enabled
      *
-     * @access  public
      * @param   int flap_detection_enabled
      * @return  int previous value
      */
@@ -902,7 +842,6 @@
     /**
      * Retrieves is_flapping
      *
-     * @access  public
      * @return  int
      */
     public function getIs_flapping() {
@@ -912,7 +851,6 @@
     /**
      * Sets is_flapping
      *
-     * @access  public
      * @param   int is_flapping
      * @return  int previous value
      */
@@ -923,7 +861,6 @@
     /**
      * Retrieves percent_state_change
      *
-     * @access  public
      * @return  string
      */
     public function getPercent_state_change() {
@@ -933,7 +870,6 @@
     /**
      * Sets percent_state_change
      *
-     * @access  public
      * @param   string percent_state_change
      * @return  string previous value
      */
@@ -944,7 +880,6 @@
     /**
      * Retrieves scheduled_downtime_depth
      *
-     * @access  public
      * @return  int
      */
     public function getScheduled_downtime_depth() {
@@ -954,7 +889,6 @@
     /**
      * Sets scheduled_downtime_depth
      *
-     * @access  public
      * @param   int scheduled_downtime_depth
      * @return  int previous value
      */
@@ -965,7 +899,6 @@
     /**
      * Retrieves failure_prediction_enabled
      *
-     * @access  public
      * @return  int
      */
     public function getFailure_prediction_enabled() {
@@ -975,7 +908,6 @@
     /**
      * Sets failure_prediction_enabled
      *
-     * @access  public
      * @param   int failure_prediction_enabled
      * @return  int previous value
      */
@@ -986,7 +918,6 @@
     /**
      * Retrieves process_performance_data
      *
-     * @access  public
      * @return  int
      */
     public function getProcess_performance_data() {
@@ -996,7 +927,6 @@
     /**
      * Sets process_performance_data
      *
-     * @access  public
      * @param   int process_performance_data
      * @return  int previous value
      */
@@ -1007,7 +937,6 @@
     /**
      * Retrieves obsess_over_service
      *
-     * @access  public
      * @return  int
      */
     public function getObsess_over_service() {
@@ -1017,7 +946,6 @@
     /**
      * Sets obsess_over_service
      *
-     * @access  public
      * @param   int obsess_over_service
      * @return  int previous value
      */
@@ -1028,15 +956,14 @@
     /**
      * Update this object in the database
      *
-     * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function update() {
-      $cm= &ConnectionManager::getInstance();  
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
+        $db= $cm->getByHost('nagios', 0);
         $db->update(
           'nagios.servicestatus set %c where ',
           $this->_updated($db),
@@ -1052,15 +979,14 @@
     /**
      * Write this object to the database
      *
-     * @access  public
      * @return  boolean success
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function insert() {
-      $cm= &ConnectionManager::getInstance();  
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost('nagios', 0);
+        $db= $cm->getByHost('nagios', 0);
         $db->insert('nagios.servicestatus (%c)', $this->_inserted($db));
 
       } catch (SQLException $e) {

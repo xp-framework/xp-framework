@@ -16,7 +16,6 @@
     /**
      * Encode data into string
      *
-     * @access  public
      * @param   mixed data
      * @return  string
      */
@@ -25,7 +24,6 @@
     /**
      * Decode string into data
      *
-     * @access  public
      * @param   string string
      * @return  mixed
      */

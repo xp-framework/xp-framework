@@ -22,16 +22,14 @@
      * Setup method. Creates logger member for easier access to the
      * Logger instance
      *
-     * @access  public
      */
     public function setUp() {
-      $this->logger= &Logger::getInstance();
+      $this->logger= Logger::getInstance();
     }
     
     /**
      * Teardown method. Finalizes the logger.
      *
-     * @access  public
      */
     public function tearDown() {
       $this->logger->finalize();
@@ -40,7 +38,6 @@
     /**
      * Ensure Logger is a singleton
      *
-     * @access  public
      */
     #[@test]
     public function loggerIsASingleton() {
@@ -50,11 +47,10 @@
     /**
      * Test a default category exists (but has no appenders)
      *
-     * @access  public
      */
     #[@test]
     public function defaultCategory() {
-      with ($cat= &$this->logger->getCategory()); {
+      with ($cat= $this->logger->getCategory()); {
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertFalse($cat->hasAppenders());
       }
@@ -63,7 +59,6 @@
     /**
      * Test Logger is configurable
      *
-     * @access  public
      */
     #[@test]
     public function isConfigurable() {
@@ -73,7 +68,6 @@
     /**
      * Test configuring the logger
      *
-     * @access  public
      */
     #[@test]
     public function configure() {
@@ -86,7 +80,7 @@ appender.util.log.FileAppender.flags="LOGGER_FLAG_ERROR|LOGGER_FLAG_WARN"
 __
       ));
       
-      with ($cat= &$this->logger->getCategory('sql')); {
+      with ($cat= $this->logger->getCategory('sql')); {
         $this->assertFalse($cat === $this->logger->getCategory());
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertTrue($cat->hasAppenders());

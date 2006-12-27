@@ -44,7 +44,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -55,16 +54,14 @@
      * Retrieve remote instance for a given DSN. Invoking this method
      * twice with the same dsn will result in the same instance.
      *
-     * @model   static
-     * @access  public
      * @param   string dsn
      * @return  &remote.Remote
      * @throws  remote.RemoteException in case of setup failure
      */
-    public static function &forName($dsn) {
+    public static function forName($dsn) {
       static $instances= array();
       
-      $pool= &HandlerInstancePool::getInstance();
+      $pool= HandlerInstancePool::getInstance();
       $list= explode(',', $dsn);
       shuffle($list);
       foreach ($list as $key) {
@@ -74,7 +71,7 @@
         $e= $instance= NULL;
         try {
           $instance= new Remote();
-          $instance->_handler= &$pool->acquire($key, TRUE);
+          $instance->_handler= $pool->acquire($key, TRUE);
         } catch (RemoteException $e) {
           continue;   // try next
         } catch (Exception $e) {
@@ -83,7 +80,7 @@
         }
 
         // Success, cache instance and return
-        $instances[$key]= &$instance;
+        $instances[$key]= $instance;
         return $instance;
       }
 
@@ -94,26 +91,24 @@
     /**
      * Look up an object by its name
      *
-     * @access  public
      * @param   string name
      * @return  &lang.Object
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
-    public function &lookup($name) {
+    public function lookup($name) {
       return $this->_handler->lookup($name);
     }
 
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   &remote.UserTransaction tran
      * @return  &remote.UserTransaction
      */
-    public function &begin(&$tran) {
+    public function begin($tran) {
       $this->_handler->begin($tran);
-      $tran->_handler= &$this->_handler;
+      $tran->_handler= $this->_handler;
       return $tran;
     }
   }

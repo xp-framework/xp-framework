@@ -18,7 +18,6 @@
     /**
      * Read head if necessary
      *
-     * @access  protected
      * @return  bool success
      */
     public function _readhead() {
@@ -56,7 +55,6 @@
     /**
      * Read data
      *
-     * @access  public
      * @param   int size default 8192
      * @param   bool binary default FALSE
      * @return  string buf or FALSE to indicate EOF

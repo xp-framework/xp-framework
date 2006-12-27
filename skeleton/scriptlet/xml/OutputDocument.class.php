@@ -50,7 +50,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
@@ -60,9 +59,9 @@
         'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema', 
         'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
       ));
-      $this->root= &$this->formresult;
-      $this->formvalues= &$this->formresult->addChild(new Node('formvalues'));
-      $this->formerrors= &$this->formresult->addChild(new Node('formerrors'));
+      $this->root= $this->formresult;
+      $this->formvalues= $this->formresult->addChild(new Node('formvalues'));
+      $this->formerrors= $this->formresult->addChild(new Node('formerrors'));
     }
 
   }

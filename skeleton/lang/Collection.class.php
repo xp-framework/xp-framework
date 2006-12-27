@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  protected
      * @param   string class
      */
     public function __construct($class) {
@@ -43,13 +42,11 @@
     /**
      * Returns a new Collection object for a specified class
      *
-     * @model   static
-     * @access  public
      * @param   string class the fully qualified class name
      * @return  &lang.Collection
      * @throws  lang.ClassNotFoundException
      */
-    public static function &forClass($class) {
+    public static function forClass($class) {
       if (!class_exists(xp::reflect($class))) {
         throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
       }
@@ -60,7 +57,6 @@
     /**
      * Returns the number of elements in this list.
      *
-     * @access  public
      * @return  int
      */
     public function size() {
@@ -70,7 +66,6 @@
     /**
      * Returns the element's class name
      *
-     * @access  public
      * @return  string
      */
     public function getElementClassName() {
@@ -80,17 +75,15 @@
     /**
      * Returns the element's class name
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &getElementClass() {
+    public function getElementClass() {
       return XPClass::forName($this->class);
     }
     
     /**
      * Tests if this list has no elements.
      *
-     * @access  public
      * @return  bool
      */
     public function isEmpty() {
@@ -100,12 +93,11 @@
     /**
      * Adds an element to this list
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  &lang.Object the added element
      * @throws  lang.IllegalArgumentException
      */
-    public function &add(&$element) {
+    public function add($element) {
       if (!is($this->_name, $element)) {
         throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
@@ -113,19 +105,18 @@
           xp::typeOf($element)
         )));
       }
-      $this->list[]= &$element;
+      $this->list[]= $element;
       return $element;
     }
 
     /**
      * Adds an element to the beginning of this list
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  &lang.Object the prepended element
      * @throws  lang.IllegalArgumentException
      */
-    public function &prepend(&$element) {
+    public function prepend($element) {
       if (!is($this->_name, $element)) {
         throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
@@ -140,7 +131,6 @@
     /**
      * Adds an array of elements to this list
      *
-     * @access  public
      * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
@@ -156,14 +146,13 @@
             xp::typeOf($array[$i])
           )));
         }
-        $this->list[]= &$array[$i];
+        $this->list[]= $array[$i];
       }
     }
 
     /**
      * Prepend an array of elements to this list
      *
-     * @access  public
      * @param   lang.Object[] array
      * @throws  lang.IllegalArgumentException
      */
@@ -187,25 +176,23 @@
      * Replaces the element at the specified position in this list with 
      * the specified element.
      *
-     * @access  public
      * @param   int index
      * @param   &lang.Object element
      * @return  &lang.Object the element previously at the specified position.
      */
-    public function &set($index, &$element) {
-      $orig= &$this->list[$index];
-      $this->list[$index]= &$element;
+    public function set($index, $element) {
+      $orig= $this->list[$index];
+      $this->list[$index]= $element;
       return $orig;
     }
         
     /**
      * Returns the element at the specified position in this list.
      *
-     * @access  public
      * @param   int index
      * @return  &lang.Object
      */
-    public function &get($index) {
+    public function get($index) {
       return $this->list[$index];
     }
     
@@ -214,12 +201,11 @@
      * Shifts any subsequent elements to the left (subtracts one 
      * from their indices).
      *
-     * @access  public
      * @param   int index
      * @return  &lang.Object the element that was removed from the list
      */
-    public function &remove($index) {
-      $element= &$this->list[$index];
+    public function remove($index) {
+      $element= $this->list[$index];
       unset($this->list[$index]);
       $this->list= array_values($this->list);
       return $element;
@@ -229,7 +215,6 @@
      * Removes all of the elements from this list. The list will be empty 
      * after this call returns.
      *
-     * @access  public
      */
     public function clear() {
       $this->list= array();
@@ -238,7 +223,6 @@
     /**
      * Returns an array of this list's elements
      *
-     * @access  public
      * @return  lang.Object[]
      */
     public function values() {
@@ -248,11 +232,10 @@
     /**
      * Checks if a value exists in this array
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  bool
      */
-    public function contains(&$element) {
+    public function contains($element) {
       for ($i= 0, $s= sizeof($this->list); $i < $s; $i++) {
         if ($this->list[$i]->equals($element)) return TRUE;
       }
@@ -262,11 +245,10 @@
     /**
      * Searches for the first occurence of the given argument
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf(&$element) {
+    public function indexOf($element) {
     
       // Note: array_search() does NOT work for objects:
       //
@@ -285,11 +267,10 @@
     /**
      * Searches for the last occurence of the given argument
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  int offset where the element was found or FALSE
      */
-    public function lastIndexOf(&$element) {
+    public function lastIndexOf($element) {
       for ($i= sizeof($this->list)- 1; $i > -1; $i--) {
         if ($this->list[$i]->equals($element)) return $i;
       }
@@ -299,7 +280,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -313,11 +293,10 @@
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @access  public
      * @param   &lang.Object collection
      * @return  bool
      */
-    public function equals(&$collection) {
+    public function equals($collection) {
       if (
         !is('Collection', $collection) || 
         $this->size != $collection->size

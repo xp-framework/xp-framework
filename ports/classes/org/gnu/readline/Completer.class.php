@@ -16,7 +16,6 @@
     /**
      * Completion function
      *
-     * @access  public
      * @param   string str
      * @param   int offset
      * @param   int length

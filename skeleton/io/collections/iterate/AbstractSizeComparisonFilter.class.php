@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int size the size to compare to in bytes
      */
     public function __construct($size) {
@@ -28,17 +27,14 @@
     /**
      * Accepts an element
      *
-     * @model   abstract
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) { }
+    public function accept($element) { }
 
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

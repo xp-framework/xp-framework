@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -30,7 +29,6 @@
     /**
      * Get header name
      *
-     * @access  public
      * @return  string name
      */
     public function getName() {
@@ -40,8 +38,6 @@
     /**
      * Get header value
      *
-     * @model   final
-     * @access  public
      * @return  string value
      */
     public function getValue() {
@@ -51,7 +47,6 @@
     /**
      * Get header value representation
      *
-     * @access  public
      * @return  string value
      */
     public function getValueRepresentation() {
@@ -61,7 +56,6 @@
     /**
      * Create string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -71,12 +65,10 @@
     /**
      * Create a header from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &peer.Header header object
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       list($k, $v)= explode(': ', $str, 2);
       return new Header($k, $v);
     }

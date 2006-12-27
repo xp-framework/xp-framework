@@ -40,7 +40,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array data Daten aus unpack
      * @param   int offset Offset innerhalb des Archivs
      */

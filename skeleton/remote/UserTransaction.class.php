@@ -17,7 +17,6 @@
     /**
      * Commit this transaction
      *
-     * @access  public
      */
     public function commit() {
       $this->_handler->commit($this);
@@ -26,7 +25,6 @@
     /**
      * Rollback this transaction
      *
-     * @access  public
      */
     public function rollback() {
       $this->_handler->rollback($this);

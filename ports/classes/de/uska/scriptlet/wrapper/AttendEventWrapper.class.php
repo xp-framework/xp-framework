@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -86,7 +85,6 @@
     /**
      * Returns the value of the parameter event_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_id() {
@@ -96,7 +94,6 @@
     /**
      * Returns the value of the parameter player_id
      *
-     * @access  public
      * @return  int
      */
     public function getPlayer_id() {
@@ -106,7 +103,6 @@
     /**
      * Returns the value of the parameter firstname
      *
-     * @access  public
      * @return  string
      */
     public function getFirstname() {
@@ -116,7 +112,6 @@
     /**
      * Returns the value of the parameter lastname
      *
-     * @access  public
      * @return  string
      */
     public function getLastname() {
@@ -126,7 +121,6 @@
     /**
      * Returns the value of the parameter attend
      *
-     * @access  public
      * @return  int
      */
     public function getAttend() {
@@ -136,7 +130,6 @@
     /**
      * Returns the value of the parameter needs_seat
      *
-     * @access  public
      * @return  boolean
      */
     public function getNeeds_seat() {
@@ -146,7 +139,6 @@
     /**
      * Returns the value of the parameter offers_seats
      *
-     * @access  public
      * @return  int
      */
     public function getOffers_seats() {

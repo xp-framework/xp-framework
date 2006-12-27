@@ -22,7 +22,6 @@
     /**
      * Setup testcase
      *
-     * @access  public
      */
     public function setUp() {
       $this->serializer= new Serializer();
@@ -31,7 +30,6 @@
     /**
      * Test serialization of NULL
      *
-     * @access  public
      */
     #[@test]
     public function representationOfNull() {
@@ -41,7 +39,6 @@
     /**
      * Test serialization of Shorts
      *
-     * @access  public
      */
     #[@test]
     public function representationOfShorts() {
@@ -52,7 +49,6 @@
     /**
      * Test serialization of longs
      *
-     * @access  public
      */
     #[@test]
     public function representationOfBytes() {
@@ -63,7 +59,6 @@
     /**
      * Test serialization of booleans
      *
-     * @access  public
      */
     #[@test]
     public function representationOfBooleans() {
@@ -74,7 +69,6 @@
     /**
      * Test serialization of integers
      *
-     * @access  public
      */
     #[@test]
     public function representationOfIntegers() {
@@ -85,7 +79,6 @@
     /**
      * Test serialization of longs
      *
-     * @access  public
      */
     #[@test]
     public function representationOfLongs() {
@@ -96,7 +89,6 @@
     /**
      * Test serialization of floats
      *
-     * @access  public
      */
     #[@test]
     public function representationOfFloats() {
@@ -107,7 +99,6 @@
     /**
      * Test serialization of doubles
      *
-     * @access  public
      */
     #[@test]
     public function representationOfDoubles() {
@@ -118,7 +109,6 @@
     /**
      * Test serialization of the string "Hello World"
      *
-     * @access  public
      */
     #[@test]
     public function representationOfString() {
@@ -129,7 +119,6 @@
      * Test serialization of an array containing three integers 
      * (1, 2 and 5)
      *
-     * @access  public
      */
     #[@test]
     public function representationOfIntegerArray() {
@@ -143,7 +132,6 @@
      * Test serialization of an array containing two strings 
      * ("More" and "Power")
      *
-     * @access  public
      */
     #[@test]
     public function representationOfStringArray() {
@@ -156,7 +144,6 @@
     /**
      * Test serialization of a date object
      *
-     * @access  public
      */
     #[@test]
     public function representationOfDate() {
@@ -166,7 +153,6 @@
     /**
      * Test serialization of a hashmap
      *
-     * @access  public
      */
     #[@test]
     public function representationOfHashmap() {
@@ -183,7 +169,6 @@
     /**
      * Test serialization of a hashmap with mixed values
      *
-     * @access  public
      */
     #[@test]
     public function representationOfMixedHashmap() {
@@ -200,7 +185,6 @@
     /**
      * Test serialization of a generic value object
      *
-     * @access  public
      * @see     xp://Person
      */
     #[@test]
@@ -214,7 +198,6 @@
     /**
      * Test deserialization of an integer
      *
-     * @access  public
      */
     #[@test]
     public function valueOfInt() {
@@ -227,7 +210,6 @@
     /**
      * Test deserialization of a byte
      *
-     * @access  public
      */
     #[@test]
     public function valueOfByte() {
@@ -240,7 +222,6 @@
     /**
      * Test deserialization of a long
      *
-     * @access  public
      */
     #[@test]
     public function valueOfLong() {
@@ -253,7 +234,6 @@
     /**
      * Test deserialization of a float
      *
-     * @access  public
      */
     #[@test]
     public function valueOfFloat() {
@@ -266,7 +246,6 @@
     /**
      * Test deserialization of a double
      *
-     * @access  public
      */
     #[@test]
     public function valueOfDouble() {
@@ -279,7 +258,6 @@
     /**
      * Test deserialization of an integer
      *
-     * @access  public
      * @see     xp://Person
      */
     #[@test]
@@ -293,7 +271,6 @@
     /**
      * Test deserialization of a date
      *
-     * @access  public
      */
     #[@test]
     public function valueOfDates() {
@@ -306,12 +283,11 @@
     /**
      * Test deserialization of an arraylist
      *
-     * @access  public
      * @see     xp://Person
      */
     #[@test]
     public function valueOfArrayList() {
-      $return= &$this->serializer->valueOf(
+      $return= $this->serializer->valueOf(
         new SerializedData('A:2:{O:6:"Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
       ));
       $this->assertClass($return, 'lang.types.ArrayList');
@@ -323,7 +299,6 @@
     /**
      * Test deserialization of an encapsed arraylist
      *
-     * @access  public
      */
     #[@test]
     public function arrayList() {
@@ -344,11 +319,10 @@
     /**
      * Test deserialization of a classreference
      *
-     * @access  public
      */
     #[@test]
     public function genericClass() {
-      $class= &$this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+      $class= $this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
       $this->assertTrue(is('remote.ClassReference', $class));
       $this->assertEquals("net.xp_framework.easc.reflect.MethodDescription", $class->referencedName());
     }
@@ -356,13 +330,12 @@
     /**
      * Test deserialization of a package-mapped classreference
      *
-     * @access  public
      */
     #[@test]
     public function genericPackageMappedClass() {
       $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
       
-      $class= &$this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+      $class= $this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
       $this->assertTrue(is('remote.ClassReference', $class));
       $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
     }
@@ -371,35 +344,29 @@
      * Check serialization through custom class mappings. Check that the serialization
      * is always carried through by the best matching serializer mapping.
      *
-     * @access  public
      */
     #[@test]
     public function bestMapping() {
-      $cl= &ClassLoader::getDefault();
-      $fooClass= &$cl->defineClass('net.xp_framework.unittest.remote.FooClass', 'class FooClass extends Object { }');
-      $barClass= &$cl->defineClass('net.xp_framework.unittest.remote.BarClass', 'class BarClass extends FooClass { }');
-      
-      $fooHandler= &$cl->defineClass('net.xp_framework.unittest.remote.FooHandler', 'class FooHandler extends Object implements SerializerMapping {
-        function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
-        function representationOf(&$serializer, &$value, $context= array()) { return "FOO:"; }
-        function &valueOf(&$serializer, &$serialized, $context= array()) { return NULL; }
-      }');
-      
-      $barHandler= &$cl->defineClass('net.xp_framework.unittest.remote.BarHandler', 'class BarHandler extends Object implements SerializerMapping {
-        function &handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.BarClass"); }
-        function representationOf(&$serializer, &$value, $context= array()) { return "BAR:"; }
-        function &valueOf(&$serializer, &$serialized, $context= array()) { return NULL; }
-      }');
-      
+      $cl= ClassLoader::getDefault();
+      $fooClass= $cl->defineClass('net.xp_framework.unittest.remote.FooClass', 'class FooClass extends Object { }');
+      $barClass= $cl->defineClass('net.xp_framework.unittest.remote.BarClass', 'class BarClass extends FooClass { }');
       
       // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
-      $this->serializer->mapping('FOO', $fooHandler->newInstance());
+      $this->serializer->mapping('FOO', newinstance('remote.protocol.SerializerMapping', array(), '{
+        function handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
+        function representationOf($serializer, $value, $context= array()) { return "FOO:"; }
+        public function valueOf($serializer, $serialized, $context= array()) { return NULL; }
+      }'));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new BarClass()));
       
       // Add more concrete mapping for BAR. Foo must still be serialized with FOO, but the BarClass-object
       // has a better matching mapping.
-      $this->serializer->mapping('BAR', $barHandler->newInstance());
+      $this->serializer->mapping('BAR', newinstance('remote.protocol.SerializerMapping', array(), '{
+        function handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.BarClass"); }
+        function representationOf($serializer, $value, $context= array()) { return "BAR:"; }
+        function valueOf($serializer, $serialized, $context= array()) { return NULL; }
+      }'));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
       $this->assertEquals('BAR:', $this->serializer->representationOf(new BarClass()));
     }

@@ -19,35 +19,32 @@
     /**
      * Setup method. .
      *
-     * @access  public
      */
     public function setUp() {
-      $this->class= &XPClass::forName('net.xp_framework.unittest.core.AnnotatedClass');
+      $this->class= XPClass::forName('net.xp_framework.unittest.core.AnnotatedClass');
     }
 
     /**
      * Helper method to return whether a specified annotation exists
      *
-     * @access  protected
      * @param   string method
      * @param   string annotation
      * @return  bool
      */
     public function annotationExists($method, $annotation) {
-      $method= &$this->class->getMethod($method);
+      $method= $this->class->getMethod($method);
       return $method->hasAnnotation($annotation);
     }
 
     /**
      * Helper method to get an annotation of a specified method
      *
-     * @access  protected
      * @param   string method
      * @param   string annotation
      * @return  mixed annotation value
      */
     public function methodAnnotation($method, $annotation) {
-      $method= &$this->class->getMethod($method);
+      $method= $this->class->getMethod($method);
       return $method->getAnnotation($annotation);
     }
 
@@ -55,7 +52,6 @@
      * Tests method with a simple annotation without a value exists
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simple
-     * @access  public
      */
     #[@test]
     public function simpleAnnotationExists() {
@@ -67,7 +63,6 @@
      * any value.,
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simple
-     * @access  public
      */
     #[@test]
     public function simpleAnnotationValue() {
@@ -78,7 +73,6 @@
      * Tests method with multiple annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiple
-     * @access  public
      */
     #[@test]
     public function multipleAnnotationsExist() {
@@ -91,11 +85,10 @@
      * Tests method with multiple annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiple
-     * @access  public
      */
     #[@test]
     public function multipleAnnotationsReturnedAsList() {
-      $method= &$this->class->getMethod('multiple');
+      $method= $this->class->getMethod('multiple');
       $this->assertEquals(
         array('one' => NULL, 'two' => NULL, 'three' => NULL),
         $method->getAnnotations()
@@ -107,7 +100,6 @@
      * annotation.
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#stringValue
-     * @access  public
      */
     #[@test]
     public function stringAnnotationValue() {
@@ -119,7 +111,6 @@
      * annotation.
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#keyValuePair
-     * @access  public
      */
     #[@test]
     public function keyValuePairAnnotationValue() {
@@ -130,11 +121,10 @@
      * Tests unittest annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#testMethod
-     * @access  public
      */
     #[@test]
     public function testMethod() {
-      $m= &$this->class->getMethod('testMethod');
+      $m= $this->class->getMethod('testMethod');
       $this->assertTrue($m->hasAnnotation('test'));
       $this->assertTrue($m->hasAnnotation('ignore'));
       $this->assertEquals(0.1, $m->getAnnotation('limit', 'time'));
@@ -150,7 +140,6 @@
      * annotation.
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#keyValuePairs
-     * @access  public
      */
     #[@test]
     public function keyValuePairsAnnotationValue() {
@@ -164,7 +153,6 @@
      * Tests multi-line annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiLine
-     * @access  public
      */
     #[@test]
     public function multiLineAnnotation() {
@@ -178,7 +166,6 @@
      * Tests simple xpath annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simpleXPath
-     * @access  public
      */
     #[@test]
     public function simpleXPathAnnotation() {
@@ -191,7 +178,6 @@
      * Tests complex xpath annotations
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#complexXPath
-     * @access  public
      */
     #[@test]
     public function complexXPathAnnotation() {

@@ -14,7 +14,6 @@
    * The System class contains several useful class fields and methods. 
    * It cannot be instantiated.
    * 
-   * @access  static
    */
   class System extends Object {
   
@@ -23,7 +22,6 @@
      * variable by name, and, if it fails, tries the given
      * alternatives in the sequence they are specified
      *
-     * @access  private
      * @param   string* args
      * @return  string environment variable by name
      */
@@ -52,8 +50,6 @@
      * path.separator    Path separator (":" on UNIX)
      * </pre>
      *
-     * @model   static
-     * @access  public
      * @param   string name
      * @return  mixed
      */
@@ -124,7 +120,6 @@
     /**
      * Sets an environment variable
      *
-     * @access  public
      * @param   string name
      * @param   mixed var
      * @return  bool success
@@ -137,7 +132,6 @@
      * Returns the contents of an environment variable, or in case it does
      * not exist, FALSE.
      *
-     * @access  public
      * @param   string name
      * @return  mixed var
      */
@@ -151,8 +145,6 @@
      * uses '/tmp' as location on Un*x systems, c:\ on Windows.
      * 
      * @see     php://tempnam
-     * @model   static
-     * @access  public
      * @return  string
      */
     public static function tempDir() {

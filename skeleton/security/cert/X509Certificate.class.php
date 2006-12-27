@@ -79,7 +79,6 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   array _info
      * @param   resource _res
      */
@@ -91,7 +90,6 @@
     /**
      * Checks validity
      *
-     * @access  public
      * @param   util.Date date default NULL (date to check against, defaulting to now)
      * @return  bool TRUE if this certificate is valid for the given date
      */
@@ -106,47 +104,42 @@
     /**
      * Gets the notBefore date from the validity period of the certificate.
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getNotBefore() {
+    public function getNotBefore() {
       return new Date($this->_info['validFrom_time_t']);
     }
     
     /**
      * Gets the notAfter date from the validity period of the certificate.
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getNotAfter() {
+    public function getNotAfter() {
       return new Date($this->_info['validTo_time_t']);
     }
     
     /**
      * Gets the issuer DN (distinguished name)
      *
-     * @access  public
      * @return  &security.Principal
      */
-    public function &getIssuerDN() {
+    public function getIssuerDN() {
       return new Principal($this->_info['issuer']);
     }
     
     /**
      * Gets the subject DN (distinguished name)
      *
-     * @access  public
      * @return  &security.Principal
      */
-    public function &getSubjectDN() {
+    public function getSubjectDN() {
       return new Principal($this->_info['subject']);
     }
     
     /**
      * Retrieve certificate's version
      *
-     * @access  public
      * @return  int version
      */
     public function getVersion() {
@@ -156,7 +149,6 @@
     /**
      * Retrieve certificate's serial number
      *
-     * @access  public
      * @return  int serial number
      */
     public function getSerialNumber() {
@@ -166,7 +158,6 @@
     /**
      * Get certificate'shash
      *
-     * @access  public
      * @return  string hash
      */
     public function getHash() {
@@ -176,7 +167,6 @@
     /**
      * Gets a boolean array representing bits of the KeyUsage extension
      *
-     * @access  public
      * @return  array<string, bool>
      */
     public function getKeyUsage() {
@@ -190,7 +180,6 @@
     /**
      * Export this certificate
      *
-     * @access  public
      * @return  string cert
      * @throws  security.cert.CertificateException
      */
@@ -207,13 +196,11 @@
     /**
      * Create a X.509 Certificate from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.cert.X509Certificate
      * @throws  security.cert.CertificateException
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       if (!is_resource($_res= openssl_x509_read($str))) {
         throw(new CertificateException(
           'Could not read certificate', OpenSslUtil::getErrors()
@@ -232,11 +219,10 @@
      * Check whether the given private key corresponds
      * to this certificate.
      *
-     * @access  public
      * @param   &security.crypto.PrivateKey privatekey
      * @return  bool
      */
-    public function checkPrivateKey(&$privatekey) {
+    public function checkPrivateKey($privatekey) {
       return openssl_x509_check_private_key($this->_res, $privatekey->getHandle());
     }
     
@@ -244,17 +230,15 @@
      * Retrieve the public key associated with this
      * certificate
      *
-     * @access  public
      * @return  &security.crypto.PublicKey
      */
-    public function &getPublicKey() {
+    public function getPublicKey() {
       return PublicKey::fromString($this->export());
     }
   
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       if (is_resource($this->_res)) openssl_x509_free($this->_res);

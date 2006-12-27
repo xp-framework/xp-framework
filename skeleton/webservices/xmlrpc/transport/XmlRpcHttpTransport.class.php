@@ -23,7 +23,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string url
      * @param   array headers
      */
@@ -35,7 +34,6 @@
     /**
      * Create a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -45,11 +43,10 @@
     /**
      * Send XML-RPC message
      *
-     * @access  public
      * @param   &webservices.xmlrpc.XmlRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function &send(&$message) {
+    public function send($message) {
       
       if (!is('webservices.xmlrpc.XmlRpcMessage', $message)) throw(new IllegalArgumentException(
         'parameter "message" must be a webservices.xmlrpc.XmlRpcMessage'
@@ -66,7 +63,7 @@
       
       try {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= &$this->_conn->request->send($this->_conn->getTimeout());
+        $res= $this->_conn->request->send($this->_conn->getTimeout());
       } catch (IOException $e) {
         throw ($e);
       }
@@ -77,11 +74,10 @@
     /**
      * Retrieve a XML-RPC message.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  &webservices.xmlrpc.XmlRpcMessage
      */
-    public function &retrieve(&$response) {
+    public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
 
       try {
@@ -98,7 +94,7 @@
             while ($buf= $response->readData()) $xml.= $buf;
 
             $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= &XmlRpcResponseMessage::fromString($xml)) {
+            if ($answer= XmlRpcResponseMessage::fromString($xml)) {
 
               // Check encoding
               if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {

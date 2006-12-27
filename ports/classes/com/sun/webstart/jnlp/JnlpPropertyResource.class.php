@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -37,7 +36,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -47,7 +45,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -57,7 +54,6 @@
     /**
      * Set Value
      *
-     * @access  public
      * @param   string value
      */
     public function setValue($value) {
@@ -67,7 +63,6 @@
     /**
      * Get Value
      *
-     * @access  public
      * @return  string
      */
     public function getValue() {
@@ -77,7 +72,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getTagName() { 
@@ -87,7 +81,6 @@
     /**
      * Get attributes
      *
-     * @access  public
      * @return  array
      */
     public function getTagAttributes() { 

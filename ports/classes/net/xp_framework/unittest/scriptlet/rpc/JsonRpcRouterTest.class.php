@@ -21,7 +21,6 @@
     /**
      * Setup test fixture
      *
-     * @access  public
      */
     public function setUp() {
       xp::gc();
@@ -33,12 +32,11 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function basicPostRequest() {
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(200, $response->statusCode);
       $this->assertEquals(
@@ -51,43 +49,40 @@
     /**
      * Tests echo method
      *
-     * @access  public
      */
     #[@test]
     public function basicEchoTest() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.passBackMethod", "params" : [ "string" , 1 , { "object" : "object" } , [ 1, 2, 3, 4, 5 ] ] , "id" : 1 }');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(200, $response->statusCode);
       $str= $response->getContent();
       
-      $decoder= &JsonFactory::create();
+      $decoder= JsonFactory::create();
       $data= $decoder->decode($str);
     }    
 
     /**
      * Test
      *
-     * @access  public
      */
     #[@test,@expect('scriptlet.HttpScriptletException')]
     public function basicGetRequest() {
       $this->router->setMockMethod(HTTP_GET);
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
     }
     
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingClass() {
       $this->router->setMockData('{ "method" : "ClassDoesNotExist.getImplementationName", "params" : [ ], "id" : 1 }');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -95,13 +90,12 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingMethod() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.methodDoesNotExist", "params" : [ ], "id" : 1 }');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -109,13 +103,12 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonWebmethodMethod() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.methodExistsButIsNotAWebmethod", "params" : [ ], "id" : 1 }');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -123,19 +116,18 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callFailingMethod() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.giveMeFault", "params" : [ ], "id" : 1 }');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertEquals(500, $response->statusCode);
 
       // Check for correct fault code
-      $message= &JsonResponseMessage::fromString($response->getContent());
-      $fault= &$message->getFault();
+      $message= JsonResponseMessage::fromString($response->getContent());
+      $fault= $message->getFault();
       $this->assertEquals(403, $fault->getFaultcode());
     }
     
@@ -143,17 +135,16 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function multipleParameters() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.checkMultipleParameters", "params" : [ "Lalala", 1, [ 12, "Egypt", false, -31 ], { "lowerBound" : 18, "upperBound" : 139 } ], "id" : 12 }');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertIn($response->headers, 'Content-type: application/json; charset=iso-8859-1');
       $this->assertEquals(200, $response->statusCode);
       
-      $msg= &JsonResponseMessage::fromString($response->getContent());
+      $msg= JsonResponseMessage::fromString($response->getContent());
       $data= $msg->getData();
       $this->assertEquals('Lalala', $data[0]);
       $this->assertEquals(1, $data[1]);

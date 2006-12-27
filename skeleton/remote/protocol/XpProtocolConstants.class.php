@@ -36,8 +36,6 @@
     /**
      * Fetch name of message constant by its value
      *
-     * @model   static
-     * @access  public
      * @param   int id
      * @return  string
      */
@@ -62,8 +60,6 @@
     /**
      * Fetch name of transaction constant by its value
      *
-     * @model   static
-     * @access  public
      * @param   int id
      * @return  string
      */

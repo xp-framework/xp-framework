@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string uri
      */
@@ -37,7 +36,6 @@
     /**
      * Setup function
      *
-     * @access  public
      */
     public function setUp() {
       $this->dc= new DictClient();
@@ -55,7 +53,6 @@
     /**
      * Tear down this test case.
      *
-     * @access  public
      */
     public function tearDown() {
       $this->dc->close();
@@ -64,7 +61,6 @@
     /**
      * Test getting a definition
      *
-     * @access  public
      */
     #[@test]
     public function testDefinition() {

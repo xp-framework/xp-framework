@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
@@ -29,14 +28,13 @@
     /**
      * Handle submitted data.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
-      $pm= &PropertyManager::getInstance();
-      $prop= &$pm->getProperties('site');
+    public function handleSubmittedData($request, $context) {
+      $pm= PropertyManager::getInstance();
+      $prop= $pm->getProperties('site');
       
       $user= $prop->readSection('user::'.$this->wrapper->getUsername());
       if (md5($this->wrapper->getPassword()) != $user['password'])
@@ -49,12 +47,11 @@
     /**
      * Finalize this handler
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) {
+    public function finalize($request, $response, $context) {
       $return= $request->session->getValue('authreturn');
 
       if ($return) {

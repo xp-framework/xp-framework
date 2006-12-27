@@ -35,19 +35,17 @@
     /**
      * Constructor
      * 
-     * @access  public
      * @param   &lang.archive.Archive archive
      */
-    public function __construct(&$archive) {
+    public function __construct($archive) {
       parent::__construct();
-      $this->archive= &$archive;
+      $this->archive= $archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
     }
 
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -61,7 +59,6 @@
     /**
      * Load class bytes
      *
-     * @access  public
      * @param   string name fully qualified class name
      * @return  string
      */
@@ -72,12 +69,11 @@
     /**
      * Load the class by the specified name
      *
-     * @access  public
      * @param   string class fully qualified class name io.File
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    public function &loadClass($class) {
+    public function loadClass($class) {
       $name= xp::reflect($class);
 
       if (!class_exists($name)) {
@@ -107,7 +103,6 @@
     /**
      * Loads a resource.
      *
-     * @access  public
      * @param   string string name of resource
      * @return  string
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
@@ -123,13 +118,12 @@
     /**
      * Retrieve a stream to the resource
      *
-     * @access  public
      * @param   string string name of resource
      * @return  &io.Stream
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    public function &getResourceAsStream($string) {
-      if (FALSE !== ($s= &$this->archive->getStream($string))) {
+    public function getResourceAsStream($string) {
+      if (FALSE !== ($s= $this->archive->getStream($string))) {
         return $s;
       }
     
@@ -139,7 +133,6 @@
     /**
      * Checks whether this loader can provide the requested class
      *
-     * @access  public
      * @param   string class
      * @return  bool
      */
@@ -150,12 +143,10 @@
     /**
      * Fetch instance of classloader by the path to the archive
      *
-     * @model   static
-     * @access  public
      * @param   string path
      * @return  &lang.archive.ArchiveClassLoader
      */
-    public static function &instanceFor($path) {
+    public static function instanceFor($path) {
       static $pool= array();
       
       if (isset($pool[$path])) {

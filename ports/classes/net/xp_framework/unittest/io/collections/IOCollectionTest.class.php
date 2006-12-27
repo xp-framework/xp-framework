@@ -17,7 +17,6 @@
     /**
      * Test next() returns NULL when no elements are left
      *
-     * @access  public
      */
     #[@test]
     public function nextReturnsNull() {
@@ -30,12 +29,11 @@
     /**
      * Test next() returns IOElements
      *
-     * @access  public
      */
     #[@test]
     public function nextReturnsIOElements() {
       $this->fixture->open();
-      for ($i= 0; $e= &$this->fixture->next(); $i++) {
+      for ($i= 0; $e= $this->fixture->next(); $i++) {
         $this->assertTrue(is('io.collections.IOElement', $e));
       }
       $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
@@ -45,7 +43,6 @@
     /**
      * Test next() returns NULL after iterating over all elements
      *
-     * @access  public
      */
     #[@test]
     public function nextReturnsNullAfterIteration() {
@@ -60,7 +57,6 @@
     /**
      * Test consecutive iteration works
      *
-     * @access  public
      */
     #[@test]
     public function consecutiveIteration() {
@@ -79,7 +75,6 @@
     /**
      * Test consecutive iteration works
      *
-     * @access  public
      */
     #[@test]
     public function consecutiveIterationWithRewind() {

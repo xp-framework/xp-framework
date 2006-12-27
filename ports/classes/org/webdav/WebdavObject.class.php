@@ -27,7 +27,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string href
      * @param   string resourceType
      * @param   string contentLength default 0
@@ -59,7 +58,6 @@
     /**
      * Set href
      *
-     * @access  public 
      * @param   string href
      */
     public function setHref($href) {
@@ -69,7 +67,6 @@
     /**
      * get Href
      *
-     * @access  public 
      * @return  string href
      */
     public function getHref() {
@@ -79,7 +76,6 @@
     /**
      * Set the Resourcetype
      *
-     * @access  public
      * @param   string resourcetype
      */
     public function setResourceType($restype) {
@@ -89,7 +85,6 @@
     /**
      * Get the Resourcetype
      *
-     * @access  public
      * @return  string Resourcetype
      */
     public function getResourceType() {
@@ -100,7 +95,6 @@
     /**
      * Set the Contentlength
      *
-     * @access  public
      * @param   string contentlength
      */
     public function setContentLength($contentlength) {
@@ -110,7 +104,6 @@
     /**
      * Get the contentlength
      *
-     * @access  public
      * @return  string contentlength
      */
     public function getContentLength() {
@@ -120,7 +113,6 @@
     /**
      * Set contenttype
      *
-     * @access  public
      * @param   string type
      */
     public function setContentType($type) {
@@ -130,7 +122,6 @@
     /**
      * Get the contenttype
      *
-     * @access  public
      * @return  string contenttype
      */
     public function getContentType() {
@@ -140,17 +131,15 @@
     /**
      * Set the creation date
      *
-     * @access  public
      * @param   &util.Date date
      */
     public function setCreationDate($date) {
-      $this->creationDate= &$data;
+      $this->creationDate= $data;
     }
     
     /**
      * Get the creation date
      *
-     * @access  public
      * @return  &util.Date date
      */
     public function getCreationDate() {
@@ -160,17 +149,15 @@
     /**
      * Set the last modified Date
      *
-     * @access  public
      * @param   &util.Date date
      */
     public function setModifiedDate($date) {
-      $this->modifiedDate= &$date;
+      $this->modifiedDate= $date;
     }
     
     /**
      * Get the last modified date
      *
-     * @access  public
      * @return  &util.Date date
      */
     public function getModifiedDate() {
@@ -180,7 +167,6 @@
     /**
      * Set properties
      *
-     * @access  public
      * @param   array properties
      */
     public function setProperties($properties) {
@@ -190,7 +176,6 @@
     /**
      * Get the properties
      *
-     * @access  public
      * @return  array properties
      */
     public function getProperty() {
@@ -200,7 +185,6 @@
     /**
      * Add Well Known Properties
      *
-     * @access  private
      */
     public function _calcProperties() {
       $etag= md5($this->href);
@@ -246,17 +230,15 @@
     /**
      * Set data
      *
-     * @access  public 
      * @param   &string data
      */
-    public function setData(&$data) {
-      $this->_data= &$data;
+    public function setData($data) {
+      $this->_data= $data;
     }
     
     /**
      * Set encoding
      *
-     * @access  public 
      * @param   &string data
      */
     public function setEncoding($data) {
@@ -266,27 +248,24 @@
     /**
      * Get data
      *
-     * @access  public
      * @return  &string data
      */
-    public function &getData() {
+    public function getData() {
       return $this->_data;
     }
 
     /**
      * Get the Lockinfo
      *
-     * @access  public
      * @return  array lockinfo
      */
-    public function &getLockInfo() {
+    public function getLockInfo() {
       return $this->_lockinfo;
     }
     
     /**
      * Set an Lockinfo
      *
-     * @access  public
      * @param   sting locktype
      * @param   string lockscope
      * @param   string owner
@@ -294,7 +273,7 @@
      * @param   string token
      * @param   string depth
      */
-    public function &addLockInfo($locktype, $lockscope, $owner, $timeout, $token, $depth) {
+    public function addLockInfo($locktype, $lockscope, $owner, $timeout, $token, $depth) {
       $this->_lockinfo[]= array(
         'owner'   => $owner,
         'type'    => $locktype,
@@ -308,20 +287,18 @@
     /**
      * Add Property
      *
-     * @access  public
      * @param   string propname
      */      
-    public function &addProperty($property) {
+    public function addProperty($property) {
       $this->properties[$property->getName()]= $property;
     }
     
     /**
      * Get Properties
      *
-     * @access  public
      * @return  array properties
      */
-    public function &getProperties() {
+    public function getProperties() {
       $this->_calcProperties();
       return $this->properties;
     }

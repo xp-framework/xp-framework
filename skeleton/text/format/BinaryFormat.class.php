@@ -18,22 +18,20 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.BinaryFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('BinaryFormat');
     }  
   
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (!is_scalar($argument)) {
         throw(new FormatException('Argument with type '.gettype($argument).' is not scalar'));
       }

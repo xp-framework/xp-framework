@@ -19,11 +19,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       // TODO: the value should always be 'boolean'!
       if (isset($this->value)) {
         if (xp::typeOf($this->value) === 'boolean') {

@@ -49,14 +49,13 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   peer.mail.store.StoreCache cache default NULL
      */ 
     public function __construct($cache= NULL) {
       if (NULL === $cache) {
         $this->cache= new StoreCache();
       } else {
-        $this->cache= &$cache;
+        $this->cache= $cache;
       }
       
     }
@@ -64,7 +63,6 @@
     /**
      * Connect to store
      *
-     * @access  abstract
      * @param   string dsn
      * @return  bool success
      */
@@ -73,7 +71,6 @@
     /**
      * Disconnect from store
      *
-     * @access  abstract
      * @return  bool success
      */
     public function close() { }
@@ -81,57 +78,51 @@
     /**
      * Get a folder
      *
-     * @access  abstract
      * @param   string name
      * @return  &peer.mail.MailFolder
      */
-    public function &getFolder($name) { }
+    public function getFolder($name) { }
     
     /**
      * Get all folders
      *
-     * @access  abstract
      * @return  &peer.mail.MailFolder[]
      */
-    public function &getFolders() { }
+    public function getFolders() { }
 
     /**
      * Open a folder
      *
-     * @access  abstract
      * @param   &peer.mail.MailFolder f
      * @param   bool readonly default FALSE
      * @return  bool success
      */
-    public function openFolder(&$f, $readonly= FALSE) { }
+    public function openFolder($f, $readonly= FALSE) { }
     
     /**
      * Close a folder
      *
-     * @access  abstract
      * @param   &peer.mail.MailFolder f
      * @return  bool success
      */
-    public function closeFolder(&$f) { }
+    public function closeFolder($f) { }
     
     /**
      * Get messages in a folder
      *
-     * @access  abstract
      * @param   &peer.mail.MailFolder f
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    public function &getMessages(&$f) { }
+    public function getMessages($f) { }
 
     /**
      * Get number of messages in this folder
      *
-     * @access  abstract
      * @param   &peer.mail.MailFolder f
      * @param   string attr one of "message", "recent" or "unseen"
      * @return  int
      */
-    public function getMessageCount(&$f, $attr) { }
+    public function getMessageCount($f, $attr) { }
   }
 ?>

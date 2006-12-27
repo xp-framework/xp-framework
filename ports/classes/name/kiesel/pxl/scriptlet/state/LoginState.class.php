@@ -21,7 +21,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       $this->addHandler(new LoginHandler());
@@ -30,11 +29,10 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setup(&$request, &$response, &$context) {
+    public function setup($request, $response, $context) {
       parent::setup($request, $response, $context);
     }
   }

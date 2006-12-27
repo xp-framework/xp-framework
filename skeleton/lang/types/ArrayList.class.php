@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed[] values default array()
      */
     public function __construct($values= array()) {
@@ -26,7 +25,6 @@
     /**
      * Helper method to compare two arrays recursively
      *
-     * @access  protected
      * @param   array a1
      * @param   array a2
      * @return  bool
@@ -57,18 +55,16 @@
     /**
      * Checks whether a given object is equal to this arraylist
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('ArrayList', $cmp) && $this->arrayequals($this->values, $cmp->values);
     }
     
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

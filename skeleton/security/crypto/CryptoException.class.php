@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   string[] errors default array()
      */
@@ -29,7 +28,6 @@
     /**
      * Returns errors
      *
-     * @access  public
      * @return  string[] errors
      */
     public function getErrors() {
@@ -39,7 +37,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

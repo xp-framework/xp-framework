@@ -20,7 +20,6 @@
     /**
      * Setup test fixture
      *
-     * @access  public
      */
     public function setUp() {
       xp::gc();
@@ -37,35 +36,32 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function basicPostRequest() {
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
       $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
       
-      $msg= &XmlRpcResponseMessage::fromString($response->getContent());
+      $msg= XmlRpcResponseMessage::fromString($response->getContent());
       $this->assertEquals('net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler', $msg->getData());
     }
 
     /**
      * Test
      *
-     * @access  public
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
     public function basicGetRequest() {
       $this->router->setMockMethod(HTTP_GET);
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
     }
     
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingClass() {
@@ -77,7 +73,7 @@
       ');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -85,7 +81,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingMethod() {
@@ -97,7 +92,7 @@
       ');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -105,7 +100,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonWebmethodMethod() {
@@ -117,7 +111,7 @@
       ');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -125,7 +119,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callFailingMethod() {
@@ -137,19 +130,18 @@
       ');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertEquals(500, $response->statusCode);
 
       // Check for correct fault code
-      $message= &XmlRpcResponseMessage::fromString($response->getContent());
-      $fault= &$message->getFault();
+      $message= XmlRpcResponseMessage::fromString($response->getContent());
+      $fault= $message->getFault();
       $this->assertEquals(403, $fault->getFaultcode());
     }
     
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function multipleParameters() {
@@ -198,11 +190,11 @@
       ');
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
       $this->assertEquals(200, $response->statusCode);
       
-      $msg= &XmlRpcResponseMessage::fromString($response->getContent());
+      $msg= XmlRpcResponseMessage::fromString($response->getContent());
       $data= $msg->getData();
       $this->assertEquals('Lalala', $data[0]);
       $this->assertEquals(1, $data[1]);

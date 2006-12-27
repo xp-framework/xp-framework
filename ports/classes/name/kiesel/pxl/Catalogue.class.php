@@ -25,37 +25,34 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function __construct() {
-      $this->entries= &Collection::forClass('name.kiesel.pxl.CatalogueEntry');
+      $this->entries= Collection::forClass('name.kiesel.pxl.CatalogueEntry');
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setStorage(&$storage) {
-      $this->storage= &$storage;
+    public function setStorage($storage) {
+      $this->storage= $storage;
     }    
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function &create(&$storage) {
+    public function create($storage) {
       $data= $storage->load('catalogue');
       if (!$data) return NULL;
       
-      $c= &Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Catalogue');
+      $c= Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Catalogue');
       $c && $c->setStorage($storage);
       return $c;
     }
@@ -63,7 +60,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -74,7 +70,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */    
@@ -86,7 +81,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */

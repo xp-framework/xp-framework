@@ -50,13 +50,12 @@
      * sha1      SHA-1 Digest         
      * </pre>
      *
-     * @access  public
      * @param   string algorithm default "md5"
      * @param   int type default OPENSSL_KEYTYPE_RSA
      * @param   int bits default 1024
      * @return  &security.KeyPair
      */
-    public function &generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
+    public function generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
       if (FALSE === ($res= openssl_pkey_new(array(
         'digest_alg'        => $algorithm,
         'private_key_type'  => $type,
@@ -74,7 +73,6 @@
     /**
      * Export this keypair
      *
-     * @access  public
      * @param   string passphrase default NULL
      * @return  string key
      */
@@ -90,10 +88,9 @@
     /**
      * Retrieves the private key associated with this keypair
      *
-     * @access  public
      * @return  &security.crypto.PrivateKey
      */
-    public function &getPrivateKey() {
+    public function getPrivateKey() {
       return new PrivateKey(openssl_pkey_get_private($this->export(NULL)));
     }
   }

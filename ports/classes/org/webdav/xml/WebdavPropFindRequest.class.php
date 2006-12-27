@@ -48,16 +48,15 @@
     /**
      * Set data and parse for properties
      *
-     * @access public
      * @param  string data The data
      */
-    public function setData(&$data) {
+    public function setData($data) {
       parent::setData($data);
       
       // Set properties
       if (
         !$this->getNode('/propfind/allprop') &&
-        ($propfind= &$this->getNode('/propfind/prop'))
+        ($propfind= $this->getNode('/propfind/prop'))
       ) {
         foreach ($propfind->children as $node) {
           $name= $node->getName();
@@ -80,7 +79,6 @@
     /**
      * Return Depth header field
      *
-     * @access public
      * @return string
      */
     public function getDepth() {
@@ -95,7 +93,6 @@
     /**
      * Retrieve base uri of request
      *
-     * @access  public
      * @return  string
      */
     public function getWebroot() {
@@ -105,7 +102,6 @@
     /**
      * Add a property
      *
-     * @access  public
      * @param   org.webdav.WebdavProperty property The property object
      */
     public function addProperty($property) {
@@ -115,10 +111,9 @@
     /**
      * Get all properties
      *
-     * @access  public
      * @return  &org.webdav.WebdavProperty[]
      */
-    public function &getProperties() {
+    public function getProperties() {
       return $this->properties;
     }
   }

@@ -29,7 +29,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string user
      * @param   string pass
      */
@@ -42,7 +41,6 @@
     /**
      * Returns the username
      *
-     * @access  public
      * @return  string
      */    
     public function getUser() {
@@ -52,7 +50,6 @@
     /**
      * Returns the password
      *
-     * @access  public
      * @return  string
      */    
     public function getPassword() {
@@ -63,7 +60,6 @@
      * Returns a BasicAuthorization object from header value; returns
      * FALSE on error.
      *
-     * @access  public
      * @param   stirng value The header value
      * @return  peer.http.BasicAuthorization
      */    
@@ -76,7 +72,6 @@
     /**
      * Get header value representation
      *
-     * @access  public
      * @return  string value
      */
     public function getValueRepresentation() {

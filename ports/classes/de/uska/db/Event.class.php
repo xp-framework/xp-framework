@@ -30,11 +30,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &Event::getPeer()); {
+      with ($peer= Event::getPeer()); {
         $peer->setTable('uska.event');
         $peer->setConnection('uskadb');
         $peer->setIdentity('event_id');
@@ -59,69 +57,63 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int event_id
      * @return  &de.uska.db.Event object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByEvent_id($event_id) {
-      $peer= &Event::getPeer();
+    public function getByEvent_id($event_id) {
+      $peer= Event::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "target_date"
      *
-     * @access  static
      * @param   util.Date target_date
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByTarget_date($target_date) {
-      $peer= &Event::getPeer();
+    public function getByTarget_date($target_date) {
+      $peer= Event::getPeer();
       return $peer->doSelect(new Criteria(array('target_date', $target_date, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "team_id"
      *
-     * @access  static
      * @param   int team_id
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByTeam_id($team_id) {
-      $peer= &Event::getPeer();
+    public function getByTeam_id($team_id) {
+      $peer= Event::getPeer();
       return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "event_type_id"
      *
-     * @access  static
      * @param   int event_type_id
      * @return  &de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByEvent_type_id($event_type_id) {
-      $peer= &Event::getPeer();
+    public function getByEvent_type_id($event_type_id) {
+      $peer= Event::getPeer();
       return $peer->doSelect(new Criteria(array('event_type_id', $event_type_id, EQUAL)));
     }
 
     /**
      * Retrieves event_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_id() {
@@ -131,7 +123,6 @@
     /**
      * Sets event_id
      *
-     * @access  public
      * @param   int event_id
      * @return  int the previous value
      */
@@ -142,7 +133,6 @@
     /**
      * Retrieves team_id
      *
-     * @access  public
      * @return  int
      */
     public function getTeam_id() {
@@ -152,7 +142,6 @@
     /**
      * Sets team_id
      *
-     * @access  public
      * @param   int team_id
      * @return  int the previous value
      */
@@ -163,7 +152,6 @@
     /**
      * Retrieves name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -173,7 +161,6 @@
     /**
      * Sets name
      *
-     * @access  public
      * @param   string name
      * @return  string the previous value
      */
@@ -184,7 +171,6 @@
     /**
      * Retrieves description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -194,7 +180,6 @@
     /**
      * Sets description
      *
-     * @access  public
      * @param   string description
      * @return  string the previous value
      */
@@ -205,7 +190,6 @@
     /**
      * Retrieves target_date
      *
-     * @access  public
      * @return  util.Date
      */
     public function getTarget_date() {
@@ -215,7 +199,6 @@
     /**
      * Sets target_date
      *
-     * @access  public
      * @param   util.Date target_date
      * @return  util.Date the previous value
      */
@@ -226,7 +209,6 @@
     /**
      * Retrieves deadline
      *
-     * @access  public
      * @return  util.Date
      */
     public function getDeadline() {
@@ -236,7 +218,6 @@
     /**
      * Sets deadline
      *
-     * @access  public
      * @param   util.Date deadline
      * @return  util.Date the previous value
      */
@@ -247,7 +228,6 @@
     /**
      * Retrieves max_attendees
      *
-     * @access  public
      * @return  int
      */
     public function getMax_attendees() {
@@ -257,7 +237,6 @@
     /**
      * Sets max_attendees
      *
-     * @access  public
      * @param   int max_attendees
      * @return  int the previous value
      */
@@ -268,7 +247,6 @@
     /**
      * Retrieves req_attendees
      *
-     * @access  public
      * @return  int
      */
     public function getReq_attendees() {
@@ -278,7 +256,6 @@
     /**
      * Sets req_attendees
      *
-     * @access  public
      * @param   int req_attendees
      * @return  int the previous value
      */
@@ -289,7 +266,6 @@
     /**
      * Retrieves allow_guests
      *
-     * @access  public
      * @return  int
      */
     public function getAllow_guests() {
@@ -299,7 +275,6 @@
     /**
      * Sets allow_guests
      *
-     * @access  public
      * @param   int allow_guests
      * @return  int the previous value
      */
@@ -310,7 +285,6 @@
     /**
      * Retrieves event_type_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_type_id() {
@@ -320,7 +294,6 @@
     /**
      * Sets event_type_id
      *
-     * @access  public
      * @param   int event_type_id
      * @return  int the previous value
      */
@@ -331,7 +304,6 @@
     /**
      * Retrieves changedby
      *
-     * @access  public
      * @return  string
      */
     public function getChangedby() {
@@ -341,7 +313,6 @@
     /**
      * Sets changedby
      *
-     * @access  public
      * @param   string changedby
      * @return  string the previous value
      */
@@ -352,7 +323,6 @@
     /**
      * Retrieves lastchange
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLastchange() {
@@ -362,7 +332,6 @@
     /**
      * Sets lastchange
      *
-     * @access  public
      * @param   util.Date lastchange
      * @return  util.Date the previous value
      */

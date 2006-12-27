@@ -22,13 +22,12 @@
      * Processes a method invocation on a proxy instance and returns
      * the result.
      *
-     * @access  public
      * @param   lang.reflect.Proxy proxy
      * @param   string method the method name
      * @param   mixed* args an array of arguments
      * @return  mixed
      */
-    public function invoke(&$proxy, $method, $args);
+    public function invoke($proxy, $method, $args);
   
   }
 ?>

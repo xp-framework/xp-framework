@@ -19,7 +19,6 @@
     /**
      * Appends log data to the buffer
      *
-     * @access public
      * @param  mixed* args variables
      */
     public function append() {
@@ -32,7 +31,6 @@
     /**
      * Get buffer's contents
      *
-     * @access  public
      * @return  string
      */
     public function getBuffer() {
@@ -42,7 +40,6 @@
     /**
      * Clears the buffers content.
      *
-     * @access  public
      */
     public function clear() {
       $this->buffer= '';

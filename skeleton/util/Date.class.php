@@ -43,7 +43,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
@@ -66,7 +65,6 @@
      * Get local time zones' offset from GMT (Greenwich main time). 
      * Caches the result.
      *
-     * @access  protected
      * @return  int offset in seconds
      */
     public function _getGMTOffset() {
@@ -79,8 +77,6 @@
     /**
      * Returns whether a year is a leap year
      *
-     * @model   static
-     * @access  protected
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */
@@ -91,8 +87,6 @@
     /**
      * Overflow-safe replacement for PHP's strtotime() function.
      *
-     * @model   static
-     * @access  protected
      * @param   string in
      * @return  int
      */
@@ -142,8 +136,6 @@
      * Overflow-safe replacement for PHP's mktime() function. Uses the builtin
      * function in case the year is between 1971 and 2037.
      *
-     * @model   static
-     * @access  public
      * @see     php://mktime
      * @param   int hour default 0
      * @param   int minute default 0
@@ -223,8 +215,6 @@
      * builtin function when 0 <= stamp <= LONG_MAX, the userland 
      * implementation otherwise.
      *
-     * @model   static
-     * @access  protected
      * @see     php://getdate
      * @param   int stamp
      * @return  array
@@ -344,22 +334,19 @@
     /**
      * Indicates whether the date to compare equals this date.
      *
-     * @access  public
      * @param   &util.Date cmp
      * @return  bool TRUE if dates are equal
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
     }    
     
     /**
      * Static method to get current date/time
      *
-     * @model   static
-     * @access  public
      * @return  &util.Date
      */
-    public static function &now() {
+    public static function now() {
       $d= new Date(NULL);
       return $d;
     }
@@ -372,13 +359,11 @@
      *   $d= &Date::fromString('2003-02-01');
      * </code>
      *
-     * @access  public
-     * @model   static
      * @see     php://strtotime
      * @param   string str
      * @return  &util.Date
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       $d= new Date($str);
       return $d;
     }
@@ -386,7 +371,6 @@
     /**
      * Private helper function which sets all of the public member variables
      *
-     * @access  private
      * @param   int utime Unix-Timestamp
      */
     public function _utime($utime) {
@@ -398,40 +382,36 @@
     /**
      * Compare this date to another date
      *
-     * @access  public
      * @param   &util.Date date A date object
      * @return  int equal: 0, date before $this: < 0, date after $this: > 0
      */
-    public function compareTo(&$date) {
+    public function compareTo($date) {
       return $date->getTime()- $this->getTime();
     }
     
     /**
      * Checks whether this date is before a given date
      *
-     * @access  public
      * @param   &util.Date date
      * @return  bool
      */
-    public function isBefore(&$date) {
+    public function isBefore($date) {
       return $this->getTime() < $date->getTime();
     }
 
     /**
      * Checks whether this date is after a given date
      *
-     * @access  public
      * @param   &util.Date date
      * @return  bool
      */
-    public function isAfter(&$date) {
+    public function isAfter($date) {
       return $this->getTime() > $date->getTime();
     }
     
     /**
      * Retrieve Unix-Timestamp for this date
      *
-     * @access  public
      * @return  int Unix-Timestamp
      */
     public function getTime() {
@@ -441,7 +421,6 @@
     /**
      * Get seconds
      *
-     * @access  public
      * @return  int
      */
     public function getSeconds() {
@@ -451,7 +430,6 @@
     /**
      * Get minutes
      *
-     * @access  public
      * @return  int
      */
     public function getMinutes() {
@@ -461,7 +439,6 @@
     /**
      * Get hours
      *
-     * @access  public
      * @return  int
      */
     public function getHours() {
@@ -471,7 +448,6 @@
     /**
      * Get day
      *
-     * @access  public
      * @return  int
      */
     public function getDay() {
@@ -481,7 +457,6 @@
     /**
      * Get month
      *
-     * @access  public
      * @return  int
      */
     public function getMonth() {
@@ -491,7 +466,6 @@
     /**
      * Get year
      *
-     * @access  public
      * @return  int
      */
     public function getYear() {
@@ -501,7 +475,6 @@
     /**
      * Get day of year
      *
-     * @access  public
      * @return  int
      */
     public function getDayOfYear() {
@@ -511,7 +484,6 @@
     /**
      * Get day of week
      *
-     * @access  public
      * @return  int
      */
     public function getDayOfWeek() {
@@ -521,7 +493,6 @@
     /**
      * Create a string representation
      *
-     * @access  public
      * @see     php://date
      * @param   string format default 'r' format-string
      * @return  string the formatted date
@@ -604,7 +575,6 @@
     /**
      * Format date
      *
-     * @access  public
      * @see     php://strftime
      * @param   string format default '%c' format-string
      * @return  string the formatted date

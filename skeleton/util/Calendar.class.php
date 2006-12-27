@@ -16,7 +16,6 @@
   /**
    * Calendar class
    *
-   * @model    static
    * @test     xp://net.xp_framework.unittest.DateTest
    * @purpose  Utility functions for date calculations
    */
@@ -28,13 +27,11 @@
      * This is the last Sunday of March for Europe, the first Sunday of 
      * April in the U.S.
      *
-     * @model   static
-     * @access  public
      * @param   int year default -1 Year, defaults to current year
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  &util.Date
      */
-    public static function &dstBegin($year= -1, $method= CAL_DST_EU) {
+    public static function dstBegin($year= -1, $method= CAL_DST_EU) {
       if (-1 == $year) $year= date('Y');
       $i= 0;
       $ofs= ($method == CAL_DST_US) ? 1 : -1;
@@ -51,12 +48,10 @@
      * Calculates end of DST (daylight savings time)
      * This is the last Sunday of October
      *
-     * @model   static
-     * @access  public
      * @param   int year default -1 Year, defaults to current year
      * @return  &util.Date
      */
-    public static function &dstEnd($year= -1) {
+    public static function dstEnd($year= -1) {
       if (-1 == $year) $year= date('Y');
       $i= 0;
       do {
@@ -70,13 +65,11 @@
     /**
      * Retrieve whether a given date object is in daylight savings time.
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  bool
      */
-    public static function inDst(&$date, $method= CAL_DST_EU) {
+    public static function inDst($date, $method= CAL_DST_EU) {
       return (
         $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
         $date->isBefore(Calendar::dstEnd($date->getYear()))
@@ -94,13 +87,12 @@
      *   $holidays[gmmktime(...)]= TRUE;
      * </code>
      *
-     * @access  public
      * @param   &util.Date start
      * @param   &util.Date end
      * @param   array holidays default array() holidays to be included in calculation
      * @return  int number of workdays
      */
-    public function workdays(&$start, &$end, $holidays= array()) {
+    public function workdays($start, $end, $holidays= array()) {
       $s= $start->getTime();
       $e= $end->getTime();
 
@@ -120,12 +112,10 @@
     /**
      * Return midnight of a given date
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &midnight(&$date) {
+    public static function midnight($date) {
       $d= new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
       return $d;
     }
@@ -134,12 +124,10 @@
      * Return beginning of month for a given date. E.g., given a date
      * 2003-06-08, the function will return 2003-06-01 00:00:00.
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &monthBegin(&$date) {
+    public static function monthBegin($date) {
       $d= new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
       return $d;
     }
@@ -148,12 +136,10 @@
      * Return end of month for a given date. E.g., given a date
      * 2003-06-08, the function will return 2003-06-30 23:59:59.
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */
-    public static function &monthEnd(&$date) {
+    public static function monthEnd($date) {
       $d= new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
       return $d;
     }
@@ -161,8 +147,6 @@
     /**
      * Helper method for Calendar::week
      *
-     * @model   static
-     * @access  private
      * @param   int stamp
      * @param   int year
      * @return  int
@@ -175,13 +159,11 @@
     /**
      * Returns calendar week for a day
      *
-     * @model   static
-     * @access  public
      * @param   &util.Date date
      * @return  int calendar week
      * @see     http://www.salesianer.de/util/kalwoch.html 
      */
-    public static function week(&$date) {
+    public static function week($date) {
       $d= $date->getTime();
       $y= $date->year + 1;
       do {
@@ -195,13 +177,11 @@
     /**
      * Get first of advent for given year
      *
-     * @model   static
-     * @access  public
      * @param   int year default -1 year, defaults to this year
      * @return  &util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
-    public static function &advent($year= -1) {
+    public static function advent($year= -1) {
       if (-1 == $year) $year= date('Y');
      
       $s= mktime(0, 0, 0, 11, 26, $year);
@@ -216,15 +196,13 @@
     /**
      * Get easter date for given year
      *
-     * @model   static
-     * @access  public
      * @param   int year default -1 Year, defaults to this year
      * @return  &util.Date date for Easter date
      * @see     http://www.koenigsmuenster.de/rsk/epakte.htm
      * @see     http://www.salesianer.de/util/kalfaq.html
      * @see     php://easter-date#user_contrib
      */
-    public static function &easter($year= -1) {
+    public static function easter($year= -1) {
       if (-1 == $year) $year= date('Y');
       
       $g = $year % 19;
@@ -243,8 +221,6 @@
     /**
      * Returns whether a year is a leap year
      *
-     * @model   static
-     * @access  protected
      * @param   int year
      * @return  bool TRUE if the given year is a leap year
      */

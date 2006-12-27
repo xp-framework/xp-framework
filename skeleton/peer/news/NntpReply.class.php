@@ -55,7 +55,6 @@
      * All codes beginning with 1 are 
      * informational responses
      *
-     * @access  public
      * @param   int statuscode
      * @return  bool
      */
@@ -68,7 +67,6 @@
      * completion.All codes beginning with 2 are 
      * positive completion responses
      *
-     * @access  public
      * @param   int statuscode
      * @return  bool
      */
@@ -81,7 +79,6 @@
      * intermediate.All codes beginning with 3 are 
      * positive intermediate responses
      *
-     * @access  public
      * @param   int statuscode
      * @return  bool
      */
@@ -94,7 +91,6 @@
      * transient.All codes beginning with 4 are 
      * negative transient responses
      *
-     * @access  public
      * @param   int statuscode
      * @return  bool
      */
@@ -107,7 +103,6 @@
      * permanent.All codes beginning with 5 are 
      * negative permanent responses
      *
-     * @access  public
      * @param   int statuscode
      * @return  bool
      */

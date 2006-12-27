@@ -39,7 +39,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename The filename to parse
      */
     public function __construct($filename) {
@@ -50,17 +49,15 @@
     /**
      * Sets a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory log
      */
-    public function setTrace(&$log) {
-      $this->log= &$log;
+    public function setTrace($log) {
+      $this->log= $log;
     }    
     
     /**
      * Parses the file.
      *
-     * @access  public
      * @return  bool success
      * @throws  lang.Exception in case the file could not be read
      */
@@ -84,7 +81,7 @@
           // No active 'workspace' => continue
           if (empty($currentSpace)) continue;
 
-          $s= &$currentSpace[sizeof($currentSpace)- 1];
+          $s= $currentSpace[sizeof($currentSpace)- 1];
           
           switch ($token) {
             case '{':
@@ -166,13 +163,13 @@
                 $f->braces= 0;
                 
                 if (!empty($currentClass)) {
-                  $c= &$currentClass[sizeof($currentClass)- 1];
-                  $c->functions[]= &$f;
+                  $c= $currentClass[sizeof($currentClass)- 1];
+                  $c->functions[]= $f;
                 } else {
-                  $this->functions[]= &$f;
+                  $this->functions[]= $f;
                 }
                 
-                $currentSpace[]= &$f;
+                $currentSpace[]= $f;
                 
                 $mode= PHPPARSER_MODE_UNDEF;
                 break;
@@ -195,9 +192,9 @@
                 $c->braces= 0;
                 $c->functions= array();
                 
-                $this->classes[]= &$c;
-                $currentClass[]= &$c;
-                $currentSpace[]= &$c;
+                $this->classes[]= $c;
+                $currentClass[]= $c;
+                $currentSpace[]= $c;
                 
                 $mode= PHPPARSER_MODE_UNDEF;
                 break;
@@ -214,7 +211,7 @@
                 $this->log && $this->log->info ('extends', $data, 'at line', $lineno);
                 
                 // Get last found class from stack
-                $c= &$currentClass[sizeof($currentClass) - 1];
+                $c= $currentClass[sizeof($currentClass) - 1];
                 $c->extends= $data;
                 $mode= PHPPARSER_MODE_UNDEF;
                 break;

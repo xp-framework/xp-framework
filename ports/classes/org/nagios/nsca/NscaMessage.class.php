@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host
      * @param   string service
      * @param   int status one of NSCA_* constants
@@ -42,8 +41,6 @@
     /**
      * Retrieve a status' name
      *
-     * @model   static
-     * @access  public
      * @param   int status
      * @return  string name
      */
@@ -60,7 +57,6 @@
     /**
      * Set Host
      *
-     * @access  public
      * @param   string host
      */
     public function setHost($host) {
@@ -70,7 +66,6 @@
     /**
      * Get Host
      *
-     * @access  public
      * @return  string
      */
     public function getHost() {
@@ -80,7 +75,6 @@
     /**
      * Set Service
      *
-     * @access  public
      * @param   string service
      */
     public function setService($service) {
@@ -90,7 +84,6 @@
     /**
      * Get Service
      *
-     * @access  public
      * @return  string
      */
     public function getService() {
@@ -100,7 +93,6 @@
     /**
      * Set Status
      *
-     * @access  public
      * @param   int status one of NSCA_* constants
      */
     public function setStatus($status) {
@@ -110,7 +102,6 @@
     /**
      * Get Status
      *
-     * @access  public
      * @return  int one of NSCA_* constants
      */
     public function getStatus() {
@@ -120,7 +111,6 @@
     /**
      * Set Information
      *
-     * @access  public
      * @param   string information
      */
     public function setInformation($information) {
@@ -130,7 +120,6 @@
     /**
      * Get Information
      *
-     * @access  public
      * @return  string
      */
     public function getInformation() {

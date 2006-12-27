@@ -106,7 +106,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int System V IPC keys default NULL
      */  
     public function __construct($key= NULL) {
@@ -118,7 +117,6 @@
     /**
      * Put a message into queue
      *
-     * @access  public
      * @param   io.sys.IPCMessage msg
      * @param   bool serialize default TRUE
      * @param   bool blocking default TRUE
@@ -133,7 +131,6 @@
     /**
      * Get a message from queue
      *
-     * @access  public
      * @param   int desired messagetype
      * @param   int flags
      * @param   int maxsize default IPC_MSG_MAXSIZE
@@ -163,7 +160,6 @@
     /**
      * Remove a message queue
      *
-     * @access  public
      * @throws  io.IOException
      */    
     public function removeQueue() {
@@ -180,7 +176,6 @@
     /**
      * Get OwnerUID
      *
-     * @access  public
      * @return  int
      */
     public function getOwnerUID() {
@@ -191,7 +186,6 @@
     /**
      * Get OwnerGID
      *
-     * @access  public
      * @return  int
      */
     public function getOwnerGID() {
@@ -202,7 +196,6 @@
     /**
      * Get Permissions
      *
-     * @access  public
      * @return  int
      */
     public function getPermissions() {
@@ -213,7 +206,6 @@
     /**
      * Get SentTime
      *
-     * @access  public
      * @return  int
      */
     public function getSentTime() {
@@ -224,7 +216,6 @@
     /**
      * Get ReceivedTime
      *
-     * @access  public
      * @return  int
      */
     public function getReceivedTime() {
@@ -235,7 +226,6 @@
     /**
      * Get ChangedTime
      *
-     * @access  public
      * @return  int
      */
     public function getChangedTime() {
@@ -246,7 +236,6 @@
     /**
      * Get Quantity
      *
-     * @access  public
      * @return  int
      */
     public function getQuantity() {
@@ -257,7 +246,6 @@
     /**
      * Get Size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {
@@ -268,7 +256,6 @@
     /**
      * Get SentPID
      *
-     * @access  public
      * @return  int
      */
     public function getSentPID() {
@@ -279,7 +266,6 @@
     /**
      * Get ReceivedPID
      *
-     * @access  public
      * @return  int
      */
     public function getReceivedPID() {
@@ -290,7 +276,6 @@
     /**
      * Get IPC message key
      *
-     * @access  public
      * @return  int
      */
     public function getKey() {

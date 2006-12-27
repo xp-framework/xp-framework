@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string[] name
      * @param   string[] qualifiers default array()
      * @param   int maxRows default 0
@@ -43,11 +42,10 @@
     /**
      * Marshal command to a specified node
      *
-     * @access  public
      * @param   &xml.Node node
      * @see     xp://webservices.uddi.UDDICommand#marshalTo
      */
-    public function marshalTo(&$node) {
+    public function marshalTo($node) {
       $node->setName('find_business');
       
       // Add maxRows if non-zero
@@ -55,7 +53,7 @@
 
       // Add find qualifiers if existant
       if (!empty($this->findQualifiers)) {
-        $q= &$node->addChild(new Node('findQualifiers'));
+        $q= $node->addChild(new Node('findQualifiers'));
         foreach ($this->findQualifiers as $findQualifier) {
           $q->addChild(new Node('findQualifier', $findQualifier));
         }
@@ -70,19 +68,18 @@
     /**
      * Unmarshal return value from a specified node
      *
-     * @access  public
      * @param   &xml.Node node
      * @return  &webservices.uddi.BusinessList
      * @see     xp://webservices.uddi.UDDICommand#unmarshalFrom
      * @throws  lang.FormatException in case of an unexpected response
      */
-    public function &unmarshalFrom(&$node) {
+    public function unmarshalFrom($node) {
       if (0 != strcasecmp($node->name, 'businessList')) {
         throw(new FormatException('Expected "businessList", got "'.$node->name.'"'));
       }
       
       // Create business list object from XML representation
-      with ($list= new BusinessList(), $children= &$node->children[0]->children); {
+      with ($list= new BusinessList(), $children= $node->children[0]->children); {
         $list->setOperator($node->getAttribute('operator'));
         $list->setTruncated(0 == strcasecmp('true', $node->getAttribute('truncated')));
         
@@ -100,7 +97,7 @@
                 break;
             }
           }
-          $list->items[]= &$b;
+          $list->items[]= $b;
         }
       }
       

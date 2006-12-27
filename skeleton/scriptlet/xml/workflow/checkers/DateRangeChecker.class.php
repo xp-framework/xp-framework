@@ -37,35 +37,33 @@
      *   <li>Anything parseable by DateParser</li>
      * </ul>
      *
-     * @access  public
      * @param   string min
      * @param   string max
      */
     public function __construct($min, $max) {
-      $this->minValue= &$this->parseDate($min, TRUE);
-      $this->maxValue= &$this->parseDate($max, FALSE);
+      $this->minValue= $this->parseDate($min, TRUE);
+      $this->maxValue= $this->parseDate($max, FALSE);
     }
     
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string input
      * @param   bool lower whether this is the lower boundary
      * @return  &util.Date
      */
-    public function &parseDate($input, $lower) {
+    public function parseDate($input, $lower) {
       switch ($input) {
         case '__NOW__': 
           if ($lower) {
-            $r= &DateUtil::getMidnight(new Date('now'));
+            $r= DateUtil::getMidnight(new Date('now'));
           } else {
-            $r= &DateUtil::getMidnight(new Date('tomorrow'));
+            $r= DateUtil::getMidnight(new Date('tomorrow'));
           }
           break;
 
         case '__FUTURE__': 
-          $r= &Date::now(); 
+          $r= Date::now(); 
           break;
 
         case '__UNLIMITED__': 
@@ -73,7 +71,7 @@
           break;
         
         default:
-          $r= &DateParser::parse($input);
+          $r= DateParser::parse($input);
       }
       
       return $r;
@@ -82,7 +80,6 @@
     /**
      * Check a given value
      *
-     * @access  public
      * @param   array value
      * @return  string error or NULL on success
      */

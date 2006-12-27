@@ -29,8 +29,6 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */  
     public static function __static() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
@@ -39,43 +37,39 @@
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
-      $cm= &ConnectionManager::getInstance();
+      $cm= ConnectionManager::getInstance();
       $cm->register(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 'jobs');
     }
     
     /**
      * Helper methods
      *
-     * @access  protected
      * @return  &net.xp_framework.unittest.rdbms.mock.MockConnection
      */
-    public function &getConnection() {
-      $cm= &ConnectionManager::getInstance();
+    public function getConnection() {
+      $cm= ConnectionManager::getInstance();
       return $cm->getByHost('jobs', 0);
     }
     
     /**
      * Helper method
      *
-     * @access  protected
      * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet r
      */
-    public function setResults(&$r) {
-      $conn= &$this->getConnection();
+    public function setResults($r) {
+      $conn= $this->getConnection();
       $conn->setResultSet($r);
     }
     
     /**
      * Tests the getPeer() method
      *
-     * @access  public
      */
     #[@test]
     public function peerObject() {
-      $peer= &Job::getPeer();
+      $peer= Job::getPeer();
       $this->assertClass($peer, 'rdbms.Peer');
       $this->assertEquals('job', strtolower($peer->identifier));
       $this->assertEquals('jobs', $peer->connection);
@@ -94,11 +88,10 @@
     /**
      * Tests the getByJob_id() method
      *
-     * @access  public
      */
     #[@test]
     public function getByJob_id() {
-      $now= &Date::now();
+      $now= Date::now();
       $this->setResults(new MockResultSet(array(
         0 => array(   // First row
           'job_id'      => 1,
@@ -108,7 +101,7 @@
         )
       )));
       
-      $job= &Job::getByJob_id(1);
+      $job= Job::getByJob_id(1);
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(1, $job->getJob_id());
       $this->assertEquals('Unit tester', $job->getTitle());
@@ -119,7 +112,6 @@
     /**
      * Tests the isNew() method when creating a job object by means of new()
      *
-     * @access  public
      */
     #[@test]
     public function newObject() {
@@ -130,7 +122,6 @@
     /**
      * Tests the isNew() method when fetching the object by getByJob_id()
      *
-     * @access  public
      */
     #[@test]
     public function existingObject() {
@@ -143,14 +134,13 @@
         )
       )));
       
-      $job= &Job::getByJob_id(1);
+      $job= Job::getByJob_id(1);
       $this->assertFalse($job->isNew());
     }
 
     /**
      * Tests the isNew() method after saving an object
      *
-     * @access  public
      */
     #[@test]
     public function noLongerNewAfterSave() {
@@ -167,7 +157,6 @@
     /**
      * Tests that getByJob_id() method returns NULL if nothing is found
      *
-     * @access  public
      */
     #[@test]
     public function noResultsDuringGetByJob_id() {
@@ -179,11 +168,10 @@
      * Tests that getByJob_id() method will throw an exception if the SQL
      * query fails
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLException')]
     public function failedQueryInGetByJob_id() {
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->makeQueryFail(1, 'Select failed');
 
       Job::getByJob_id(IRRELEVANT_NUMBER);
@@ -193,11 +181,10 @@
      * Tests that the insert() method will return the identity value
      *
      * @see     xp://rdbms.DataSet#insert
-     * @access  public
      */
     #[@test]
     public function insertReturnsIdentity() {
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->setIdentityValue(14121977);
 
       $j= new Job();
@@ -213,11 +200,10 @@
      * Tests that the save() method will return the identity value
      *
      * @see     xp://rdbms.DataSet#insert
-     * @access  public
      */
     #[@test]
     public function saveReturnsIdentityForInserts() {
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->setIdentityValue(14121977);
 
       $j= new Job();
@@ -233,7 +219,6 @@
      * Tests that the save() method will return the identity value
      *
      * @see     xp://rdbms.DataSet#insert
-     * @access  public
      */
     #[@test]
     public function saveReturnsIdentityForUpdates() {
@@ -246,7 +231,7 @@
         )
       )));
       
-      $job= &Job::getByJob_id(1);
+      $job= Job::getByJob_id(1);
       $id= $job->save();
       $this->assertEquals(1, $id);
     }
@@ -256,11 +241,10 @@
      * and that it is set to its initial value before.
      *
      * @see     xp://rdbms.DataSet#insert
-     * @access  public
      */
     #[@test]
     public function identityFieldIsSet() {
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->setIdentityValue(14121977);
 
       $j= new Job();
@@ -279,11 +263,10 @@
      * SQL query fails
      *
      * @see     xp://rdbms.DataSet#insert
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLException')]
     public function failedQueryInInsert() {
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->makeQueryFail(1205, 'Deadlock');
 
       $j= new Job();
@@ -297,7 +280,6 @@
     /**
      * Tests that the doSelect() will return an array of objects
      *
-     * @access  public
      */
     #[@test]
     public function oneResultForDoSelect() {
@@ -310,7 +292,7 @@
         )
       )));
     
-      $peer= &Job::getPeer();
+      $peer= Job::getPeer();
       $jobs= $peer->doSelect(new Criteria(array('title', 'Unit tester', EQUAL)));
 
       $this->assertArray($jobs);
@@ -321,13 +303,12 @@
     /**
      * Tests that the doSelect() will return an empty array if nothing is found
      *
-     * @access  public
      */
     #[@test]
     public function noResultForDoSelect() {
       $this->setResults(new MockResultSet());
     
-      $peer= &Job::getPeer();
+      $peer= Job::getPeer();
       $jobs= $peer->doSelect(new Criteria(array('job_id', IRRELEVANT_NUMBER, EQUAL)));
 
       $this->assertArray($jobs);
@@ -337,7 +318,6 @@
     /**
      * Tests that the doSelect() will return an array of objects
      *
-     * @access  public
      */
     #[@test]
     public function multipleResultForDoSelect() {
@@ -356,7 +336,7 @@
         )
       )));
     
-      $peer= &Job::getPeer();
+      $peer= Job::getPeer();
       $jobs= $peer->doSelect(new Criteria(array('job_id', 10, LESS_THAN)));
 
       $this->assertArray($jobs);
@@ -370,7 +350,6 @@
     /**
      * Tests the iteratorFor() method with criteria
      *
-     * @access  public
      */
     #[@test]
     public function iterateOverCriteria() {
@@ -389,8 +368,8 @@
         )
       )));
 
-      $peer= &Job::getPeer();
-      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $peer= Job::getPeer();
+      $iterator= $peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
 
       $this->assertClass($iterator, 'rdbms.ResultIterator');
       
@@ -399,13 +378,13 @@
       $this->assertTrue($iterator->hasNext());
       $this->assertTrue($iterator->hasNext());
       
-      $job= &$iterator->next();
+      $job= $iterator->next();
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(654, $job->getJob_id());
 
       $this->assertTrue($iterator->hasNext());
 
-      $job= &$iterator->next();
+      $job= $iterator->next();
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(329, $job->getJob_id());
 
@@ -416,7 +395,6 @@
      * Tests that ResultIterator::next() can be called without previously having
      * called hasMext()
      *
-     * @access  public
      */
     #[@test]
     public function nextCallWithoutHasNext() {
@@ -435,10 +413,10 @@
         )
       )));
 
-      $peer= &Job::getPeer();
-      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $peer= Job::getPeer();
+      $iterator= $peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
 
-      $job= &$iterator->next();
+      $job= $iterator->next();
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(654, $job->getJob_id());
 
@@ -449,13 +427,12 @@
      * Tests that ResultIterator::next() will throw an exception in case it
      * is called on an empty resultset.
      *
-     * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
     public function nextCallOnEmptyResultSet() {
       $this->setResults(new MockResultSet());
-      $peer= &Job::getPeer();
-      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $peer= Job::getPeer();
+      $iterator= $peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
       $iterator->next();
     }
 
@@ -463,7 +440,6 @@
      * Tests that ResultIterator::next() will throw an exception in case it
      * has iterated past the end of a resultset.
      *
-     * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
     public function nextCallPastEndOfResultSet() {
@@ -476,8 +452,8 @@
         )
       )));
 
-      $peer= &Job::getPeer();
-      $iterator= &$peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
+      $peer= Job::getPeer();
+      $iterator= $peer->iteratorFor(new Criteria(array('expire_at', NULL, EQUAL)));
       $iterator->next();
       $iterator->next();
     }
@@ -485,7 +461,6 @@
     /**
      * Tests the iteratorFor() method with statement
      *
-     * @access  public
      */
     #[@test]
     public function iterateOverStatement() {
@@ -498,13 +473,13 @@
         )
       )));
 
-      $peer= &Job::getPeer();
-      $iterator= &$peer->iteratorFor(new Statement('select object(j) from job j where 1 = 1'));
+      $peer= Job::getPeer();
+      $iterator= $peer->iteratorFor(new Statement('select object(j) from job j where 1 = 1'));
       $this->assertClass($iterator, 'rdbms.ResultIterator');
 
       $this->assertTrue($iterator->hasNext());
 
-      $job= &$iterator->next();
+      $job= $iterator->next();
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(654, $job->getJob_id());
       $this->assertEquals('Java Unit tester', $job->getTitle());
@@ -515,7 +490,6 @@
     /**
      * Tests that update doesn't do anything when the object is unchanged
      *
-     * @access  public
      */
     #[@test]
     public function updateUnchangedObject() {
@@ -529,11 +503,11 @@
           'expire_at'   => NULL
         )
       )));
-      $job= &Job::getByJob_id(1);
+      $job= Job::getByJob_id(1);
 
       // Second, update the job. Make the next query fail on this 
       // connection to ensure that nothing is actually done.
-      $mock= &$this->getConnection();
+      $mock= $this->getConnection();
       $mock->makeQueryFail(1326, 'Syntax error');
       $job->update();
 

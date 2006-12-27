@@ -17,7 +17,6 @@
     /**
      * Returns a list of all beans
      *
-     * @access  public
      * @return  remote.reflect.BeanDescription[]
      */
     public function beans() {
@@ -27,7 +26,6 @@
     /**
      * Returns number of beans
      *
-     * @access  public
      * @return  int
      */
     public function size() {
@@ -37,11 +35,10 @@
     /**
      * Retrieve a single bean
      *
-     * @access  public
      * @param   string name
      * @return  &remote.reflect.BeanDescription or NULL if nothing is found
      */
-    public function &bean($name) {
+    public function bean($name) {
       if (!isset($this->beans[$name])) {
         return xp::null();
       }

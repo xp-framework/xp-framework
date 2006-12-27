@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       
@@ -47,7 +46,6 @@
     /**
      * Sets the unique tz-identifier (unique for this icalendar)
      *
-     * @access  public
      * @param   string id
      */    
     public function setTzid($id) {
@@ -57,7 +55,6 @@
     /**
      * Returns the tz-identifier
      *
-     * @access  public
      * @return  string id
      */    
     public function getTzid() {
@@ -66,47 +63,42 @@
     /**
      * Sets the Timezone url
      *
-     * @access  public
      * @param   &peer.URL url
      */    
-    public function setTZUrl(&$url) {
-      $this->tzurl= &$url;
+    public function setTZUrl($url) {
+      $this->tzurl= $url;
     }
 
     /**
      * Gets the Timezone url
      *
-     * @access  public
      * @return  &peer.URL url
      */    
-    public function &getTZUrl() {
+    public function getTZUrl() {
       return $this->tzurl;
     }
 
     /**
      * Sets the last modification time
      *
-     * @access  public
      * @param   &util.Date date
      */    
-    public function setLastMod(&$date) {
-      $this->lastmod= &$date;
+    public function setLastMod($date) {
+      $this->lastmod= $date;
     }
 
     /**
      * Gets the last modification time
      *
-     * @access  public
      * @return  &util.Date date
      */    
-    public function &getLastMod() {
+    public function getLastMod() {
       return $this->lastmod;
     }
 
     /**
      * Export function helper
      *
-     * @access  private
      * @param   string key
      * @param   mixed value
      * @return  string exported
@@ -136,7 +128,6 @@
      * Return a string representation of this object suitable
      * for inclusion in an VCalendar
      *
-     * @access  public
      * @return  string representation
      */    
     public function export() {

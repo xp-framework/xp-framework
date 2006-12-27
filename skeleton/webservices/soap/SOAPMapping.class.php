@@ -23,12 +23,11 @@
     /**
      * Register a new mapping.
      *
-     * @access  public
      * @param   &xml.QName qname
      * @param   &lang.XPClass class
      * @throws  lang.IllegalArgumentException
      */
-    public function registerMapping(&$qname, &$class) {
+    public function registerMapping($qname, $class) {
       if (!is('xml.QName', $qname)) {
         throw(new IllegalArgumentException(
           'Argument class is not an xml.QName (given: '.xp::typeOf($qname).')'
@@ -41,8 +40,8 @@
         ));
       }
       
-      $this->_classes[$class->getName()]= &$class;
-      $this->_qnames[$qname->toString()]= &$qname;
+      $this->_classes[$class->getName()]= $class;
+      $this->_qnames[$qname->toString()]= $qname;
       $this->_q2c[$qname->toString()]= $class->getName();
       $this->_c2q[$class->getName()]= $qname->toString();
     }
@@ -50,11 +49,10 @@
     /**
      * Fetch a qname for a class.
      *
-     * @access  public
      * @param   &lang.XPClass class
      * @return  &mixed xml.QName or NULL if no mapping exists
      */
-    public function &qnameFor(&$class) {
+    public function qnameFor($class) {
       if (!is('lang.XPClass', $class) || !isset($this->_c2q[$class->getName()])) return NULL;
       return $this->_qnames[$this->_c2q[$class->getName()]];
     }
@@ -62,11 +60,10 @@
     /**
      * Fetch a class for a qname
      *
-     * @access  public
      * @param   &xml.QName qname
      * @return  &mixed lang.XPClass or NULL if no mapping exists
      */
-    public function &classFor(&$qname) {
+    public function classFor($qname) {
       if (!is('xml.QName', $qname) || !isset($this->_q2c[$qname->toString()])) return NULL;
       return $this->_classes[$this->_q2c[$qname->toString()]];
     }

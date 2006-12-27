@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string pattern a Perl-compatible regular expression
      */
     public function __construct($pattern) {
@@ -30,11 +29,10 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       return (bool)preg_match($this->pattern, $element->getURI());
     }
   

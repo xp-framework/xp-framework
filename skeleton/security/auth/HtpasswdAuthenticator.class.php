@@ -24,18 +24,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
-      $this->_file= &$file;
+    public function __construct($file) {
+      $this->_file= $file;
     }
     
     /**
      * Lookup crypted password. Returns the crypt as a string on
      * success and NULL on failure.
      *
-     * @access  private
      * @param   string username
      * @return  string
      * @throws  security.auth.AuthenticatorException
@@ -65,7 +63,6 @@
     /**
      * Authenticate a user
      *
-     * @access  public
      * @param   string user
      * @param   string pass
      * @return  bool

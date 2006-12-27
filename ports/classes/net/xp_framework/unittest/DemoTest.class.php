@@ -16,7 +16,6 @@
     /**
      * A test that always succeeds
      *
-     * @access  public
      */
     #[@test]
     public function alwaysSucceeds() {
@@ -26,7 +25,6 @@
     /**
      * A test that is ignored
      *
-     * @access  public
      */
     #[@test, @ignore('Ignored')]
     public function ignored() {
@@ -36,7 +34,6 @@
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
       if (0 == strcasecmp('alwaysSkipped', $this->name)) {
@@ -47,7 +44,6 @@
     /**
      * A test that is skipped due to not met prerequisites.
      *
-     * @access  public
      */
     #[@test]
     public function alwaysSkipped() {
@@ -57,7 +53,6 @@
     /**
      * A test that always fails because of a failed assertion
      *
-     * @access  public
      */
     #[@test]
     public function alwaysFails() {
@@ -68,7 +63,6 @@
      * A test that always fails because the expected exception was not
      * thrown.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectedExceptionNotThrown() {
@@ -78,7 +72,6 @@
     /**
      * A test that timeouts
      *
-     * @access  public
      */
     #[@test, @limit(time= 0.1)]
     public function timeouts() {

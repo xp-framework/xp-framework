@@ -20,7 +20,6 @@
     /**
      * Retrieve a set of classes used in this interface
      *
-     * @access  public
      * @return  remote.ClassReference[]
      */
     public function classSet() {
@@ -36,7 +35,6 @@
     /**
      * Get ClassName
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -46,7 +44,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

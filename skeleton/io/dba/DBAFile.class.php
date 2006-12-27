@@ -68,7 +68,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename
      * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
@@ -81,7 +80,6 @@
     /**
      * Get Filename
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -91,7 +89,6 @@
     /**
      * Get Handler
      *
-     * @access  public
      * @return  string
      */
     public function getHandler() {
@@ -101,7 +98,6 @@
     /**
      * Open this DBA file
      *
-     * @access  public
      * @param   string mode default DBO_CREATE
      * @return  bool
      * @throws  io.IOException in case opening the file fails
@@ -123,11 +119,10 @@
     /**
      * Returns an iterator over the keys of this DBA file
      *
-     * @access  public
      * @return  &io.dba.DBAIterator
      * @see     xp://io.dba.DBAIterator
      */
-    public function &iterator() {
+    public function iterator() {
       return new DBAIterator($this->_fd);
     }
     
@@ -137,7 +132,6 @@
      * Note: Do not use this for databases containing large amounts 
      * of keys, use the iterator() method instead.
      *
-     * @access  public
      * @return  string[] keys
      * @throws  io.IOException in case fetching the keys fails
      * @see     xp://io.dba.DBAFile#iterator
@@ -159,7 +153,6 @@
      * database. Fails if an entry with the same key already 
      * exists. 
      *
-     * @access  public
      * @param   string key
      * @param   string value
      * @return  bool TRUE if the key was inserted, FALSE otherwise
@@ -182,7 +175,6 @@
      * Replaces or inserts the entry described with key and value 
      * into the database.
      *
-     * @access  public
      * @param   string key
      * @param   string value
      * @return  bool success
@@ -199,7 +191,6 @@
     /**
      * Removes a specified key from this database
      *
-     * @access  public
      * @param   string key
      * @return  bool success
      * @throws  io.IOException in case writing failed
@@ -214,7 +205,6 @@
     /**
      * Checks for existance of a key
      *
-     * @access  public
      * @param   string key
      * @return  bool TRUE if the specified key exists
      */
@@ -226,7 +216,6 @@
      * Fetches the value associated with a specified key from this 
      * database. Returns FALSE in case the key cannot be found.
      *
-     * @access  public
      * @param   string key
      * @return  bool success
      * @throws  io.IOException in case reading failed
@@ -243,7 +232,6 @@
      * Synchronizes the database specified by handle. This will 
      * probably trigger a physical write to disk, if supported.
      *
-     * @access  public
      * @param   bool optimize default FALSE whether to optimize
      * @return  bool success
      * @throws  io.IOException in case saving and/or optimizing failed
@@ -261,7 +249,6 @@
     /**
      * Close this database
      *
-     * @access  public
      * @return  bool
      */
     public function close() {

@@ -17,11 +17,10 @@
     /**
      * Convert an image. Note: This changes the given image!
      *
-     * @access  public
      * @param   &img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */
-    public function convert(&$image);
+    public function convert($image);
   }
 ?>

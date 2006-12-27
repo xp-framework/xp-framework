@@ -16,11 +16,10 @@
     /**
      * Returns group for a given album image.
      *
-     * @access  public
      * @param   &de.thekid.dialog.AlbumImage
      * @return  string unique group identifier
      */
-    public function groupFor(&$image) { 
+    public function groupFor($image) { 
       return $image->exifData->dateTime->toString('Y-m-d');
     }
   

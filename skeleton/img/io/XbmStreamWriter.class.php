@@ -21,11 +21,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      * @param   int foreground default 0
      */
-    public function __construct(&$stream, $foreground= 0) {
+    public function __construct($stream, $foreground= 0) {
       parent::__construct($stream);
       $this->foreground= $foreground;
     }
@@ -33,7 +32,6 @@
     /**
      * Output an image
      *
-     * @access  protected
      * @param   resource handle
      * @return  bool
      */    

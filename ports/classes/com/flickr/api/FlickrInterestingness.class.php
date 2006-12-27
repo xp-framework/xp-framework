@@ -19,14 +19,13 @@
     /**
      * Fetch list of interesting photos
      *
-     * @access  public
      * @param   util.Date date default NULL
      * @param   string extras default NULL
      * @param   int perPage default 100
      * @param   int page default 1
      * @return  &com.flickr.FlickrPhotoCollection
      */
-    public function &getList($date= NULL, $extras= NULL, $perPage= 100, $page= 1) {
+    public function getList($date= NULL, $extras= NULL, $perPage= 100, $page= 1) {
       $arguments= array(
         'per_page'  => $perPage,
         'page'      => $page

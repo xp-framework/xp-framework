@@ -22,30 +22,27 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
  
     /**
      * Send XML-RPC message
      *
-     * @access  public
      * @param   &webservices.xmlrpc.XmlRpcMessage message
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function &send(&$message) { }
+    public function send($message) { }
     
     /**
      * Retrieve a XML-RPC message.
      *
-     * @access  public
      * @param   &webservices.xmlrpc.XmlRpcResponse response
      * @return  &webservices.xmlrpc.XmlRpcMessage
      */
-    public function &retrieve(&$response) { }    
+    public function retrieve($response) { }    
 
   } 
 ?>

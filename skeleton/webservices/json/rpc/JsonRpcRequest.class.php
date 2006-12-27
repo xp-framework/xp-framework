@@ -19,12 +19,11 @@
     /**
      * Retrieve Json message from request
      *
-     * @access  public
      * @return  &webservices.xmlrpc.XmlRpcMessage message object
      */
-    public function &getMessage() {
+    public function getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
-      $m= &JsonRequestMessage::fromString($this->getData());
+      $m= JsonRequestMessage::fromString($this->getData());
       return $m;
     }
   }

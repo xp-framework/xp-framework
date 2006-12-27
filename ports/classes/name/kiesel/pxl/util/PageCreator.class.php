@@ -32,12 +32,11 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function __construct(&$storage, $title, $pictures) {
-      $this->storage= &$storage;
+    public function __construct($storage, $title, $pictures) {
+      $this->storage= $storage;
       $this->title= $title;
       $this->picturefiles= $pictures;
     }
@@ -45,24 +44,22 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setDate(&$date) {
+    public function setDate($date) {
       $this->date= $date;
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function addPage() {
       try {
-        $c= &Catalogue::create($this->storage);
+        $c= Catalogue::create($this->storage);
       } catch (FileNotFoundException $e) {
         $c= new Catalogue();
         $c->setStorage($this->storage);

@@ -32,7 +32,6 @@
      * as value for the parameter "host", you must enclose the IP in 
      * square brackets.
      *
-     * @access  public
      * @param   string host hostname or IP address
      * @param   int port
      * @param   resource socket default NULL
@@ -48,7 +47,6 @@
      * any PHP error/warning is returned - but since there's no function like
      * flasterror() we must rely on this
      *
-     * @access  public
      * @return  string error
      */  
     public function getLastError() {
@@ -59,7 +57,6 @@
     /**
      * Returns whether a connection has been established
      *
-     * @access  public
      * @return  bool connected
      */
     public function isConnected() {
@@ -69,7 +66,6 @@
     /**
      * Connect
      *
-     * @access  public
      * @param   float timeout default 2.0
      * @see     php://fsockopen
      * @return  bool success
@@ -102,7 +98,6 @@
     /**
      * Close socket
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {    
@@ -114,7 +109,6 @@
     /**
      * Set timeout
      *
-     * @access  public
      * @param   mixed _timeout
      */
     public function setTimeout($timeout) {
@@ -129,7 +123,6 @@
     /**
      * Get timeout
      *
-     * @access  public
      * @return  mixed
      */
     public function getTimeout() {
@@ -139,7 +132,6 @@
     /**
      * Set socket blocking
      *
-     * @access  public
      * @param   bool blocking
      * @return  bool success TRUE to indicate the call succeeded
      * @throws  peer.SocketException
@@ -156,7 +148,6 @@
     /**
      * Returns whether there is data that can be read
      *
-     * @access  public
      * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
      * @return  bool there is data that can be read
      * @throws  peer.SocketException in case of failure
@@ -187,7 +178,6 @@
     /**
      * Read data from a socket
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -208,7 +198,6 @@
     /**
      * Read line from a socket
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -229,7 +218,6 @@
     /**
      * Read data from a socket (binary-safe)
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -245,7 +233,6 @@
     /**
      * Checks if EOF was reached
      *
-     * @access  public
      * @return  bool EOF erhalten
      */
     public function eof() {
@@ -255,7 +242,6 @@
     /**
      * Write a string to the socket
      *
-     * @access  public
      * @param   string str
      * @return  int bytes written
      * @throws  peer.SocketException in case of an error
@@ -271,7 +257,6 @@
     /**
      * Retrieve socket handle
      *
-     * @access  public
      * @return  resource
      */
     public function getHandle() {
@@ -281,7 +266,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       if ($this->isConnected()) $this->close();

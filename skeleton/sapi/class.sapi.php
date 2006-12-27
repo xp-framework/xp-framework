@@ -8,7 +8,7 @@
   // {{{ void runnable(void)
   //     Syntax: class Test extends Object { ... } runnable();
   function runnable() {
-    $p= &new ParamString();
+    $p= new ParamString();
     $class= xp::reflect(basename($p->value(0), '.class.php'));
 
     $target= array($class, 'main');

@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  protected
      * @param   string identifier
      */
     public function __construct($identifier) {
@@ -44,7 +43,6 @@
     /**
      * Set Identifier
      *
-     * @access  public
      * @param   string identifier
      */
     public function setIdentifier($identifier) {
@@ -54,7 +52,6 @@
     /**
      * Set Table
      *
-     * @access  public
      * @param   string table
      */
     public function setTable($table) {
@@ -64,7 +61,6 @@
     /**
      * Set Connection
      *
-     * @access  public
      * @param   string connection
      */
     public function setConnection($connection) {
@@ -74,7 +70,6 @@
     /**
      * Set Identity
      *
-     * @access  public
      * @param   string identity
      */
     public function setIdentity($identity) {
@@ -84,7 +79,6 @@
     /**
      * Set Sequence
      *
-     * @access  public
      * @param   string sequence
      */
     public function setSequence($sequence) {
@@ -94,7 +88,6 @@
     /**
      * Set Types
      *
-     * @access  public
      * @param   mixed[] types
      */
     public function setTypes($types) {
@@ -104,7 +97,6 @@
     /**
      * Set Primary
      *
-     * @access  public
      * @param   mixed[] primary
      */
     public function setPrimary($primary) {
@@ -114,11 +106,10 @@
     /**
      * Retrieve an instance by a given identifier
      *
-     * @access  protected
      * @param   string identifier
      * @return  &rdbms.Peer
      */
-    public function &getInstance($identifier) {
+    public function getInstance($identifier) {
       static $instance= array();
       
       if (!isset($instance[$identifier])) {
@@ -130,35 +121,32 @@
     /**
      * Retrieve an instance by a given XP class name
      *
-     * @access  protected
      * @param   string fully qualified class name
      * @return  &rdbms.Peer
      */
-    public function &forName($classname) {
+    public function forName($classname) {
       return Peer::getInstance(xp::reflect($classname));
     }
 
     /**
      * Retrieve an instance by a given instance
      *
-     * @access  protected
      * @param   &lang.Object instance
      * @return  &rdbms.Peer
      */
-    public function &forInstance(&$instance) {
+    public function forInstance($instance) {
       return Peer::getInstance(get_class($instance));
     }
     
     /**
      * Begins a transaction
      *
-     * @access  public
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    public function &begin(&$transaction) {
-      $cm= &ConnectionManager::getInstance();
-      $db= &$cm->getByHost($this->connection, 0);
+    public function begin($transaction) {
+      $cm= ConnectionManager::getInstance();
+      $db= $cm->getByHost($this->connection, 0);
 
       return $db->begin($transaction);
     }
@@ -166,7 +154,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -183,17 +170,15 @@
     /**
      * Retrieve a number of objects from the database
      *
-     * @model   final
-     * @access  public
      * @param   &rdbms.Criteria criteria
      * @param   int max default 0
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function doSelect(&$criteria, $max= 0) {
-      $cm= &ConnectionManager::getInstance();  
+    public function doSelect($criteria, $max= 0) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
+        $q= $criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
       } catch (SQLException $e) {
         throw($e);
       }
@@ -209,12 +194,11 @@
     /**
      * Returns a DataSet object for given associative array
      *
-     * @access  public
      * @param   array record
      * @return  &rdbms.DataSet
      * @throws  lang.IllegalArgumentException
      */    
-    public function &objectFor($record) {
+    public function objectFor($record) {
       if (array_keys($this->types) != array_keys($record)) {
         throw(new IllegalArgumentException(
           'Record not compatible with '.$this->identifier.' class'
@@ -226,15 +210,14 @@
     /**
      * Returns an iterator for a select statement
      *
-     * @access  public
      * @param   &rdbms.Criteria criteria
      * @return  &rdbms.ResultIterator
      * @see     xp://rdbms.ResultIterator
      */
-    public function &iteratorFor(&$criteria) {
-      $cm= &ConnectionManager::getInstance();  
+    public function iteratorFor($criteria) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $q= &$criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
+        $q= $criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
       } catch (SQLException $e) {
         throw($e);
       }
@@ -245,8 +228,6 @@
     /**
      * Retrieve a number of objects from the database
      *
-     * @model   final
-     * @access  public
      * @param   &rdbms.Peer peer
      * @param   &rdbms.Criteria join
      * @param   &rdbms.Criteria criteria
@@ -254,10 +235,10 @@
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function doJoin(&$peer, &$join, &$criteria, $max= 0) {
-      $cm= &ConnectionManager::getInstance();  
+    public function doJoin($peer, $join, $criteria, $max= 0) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost($this->connection, 0);
+        $db= $cm->getByHost($this->connection, 0);
         
         $columns= $map= $qualified= array();
         foreach (array_keys($this->types) as $colunn) {
@@ -271,7 +252,7 @@
         }
         
         $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
-        $q= &$db->query(
+        $q= $db->query(
           'select %c from %c %c, %c %c%c%c',
           $columns,
           $this->table,
@@ -291,7 +272,7 @@
         
         $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
         $o->{$peer->identifier}= new $peer->identifier(array_slice($record, sizeof($this->types)));
-        $r[]= &$o;
+        $r[]= $o;
       }
       return $r;
     }
@@ -299,17 +280,15 @@
     /**
      * Inserts this object into the database
      *
-     * @model   final
-     * @access  public
      * @param   array values
      * @return  mixed identity value or NULL if not applicable
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doInsert($values) {
       $id= NULL;
-      $cm= &ConnectionManager::getInstance();
+      $cm= ConnectionManager::getInstance();
       try {
-        $db= &$cm->getByHost($this->connection, 0);
+        $db= $cm->getByHost($this->connection, 0);
 
         // Build the insert command
         $sql= $db->prepare(
@@ -337,17 +316,15 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @model   final
-     * @access  public
      * @param   array values
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function doUpdate($values, &$criteria) {
-      $cm= &ConnectionManager::getInstance();  
+    public function doUpdate($values, $criteria) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost($this->connection, 0);
+        $db= $cm->getByHost($this->connection, 0);
 
         // Build the update command
         $sql= '';
@@ -372,16 +349,14 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @model   final
-     * @access  public
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doDelete(&$criteria) {
-      $cm= &ConnectionManager::getInstance();  
+    public function doDelete($criteria) {
+      $cm= ConnectionManager::getInstance();  
       try {
-        $db= &$cm->getByHost($this->connection, 0);
+        $db= $cm->getByHost($this->connection, 0);
 
         // Send it
         $affected= $db->delete(

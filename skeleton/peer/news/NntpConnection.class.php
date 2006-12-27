@@ -47,11 +47,10 @@
     /**
      * Constructor
      *
-     * @access  private
      * @param   &peer.URL url
      */
-    public function __construct(&$url) {
-      $this->url= &$url;
+    public function __construct($url) {
+      $this->url= $url;
       $this->_sock= new Socket(
         $this->url->getHost(),
         $this->url->getPort(119)
@@ -61,17 +60,15 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
     
     /**
      * Wrapper that sends a command to the remote host.
      *
-     * @access  protected  
      * @param   string format
      * @param   mixed* args
      * @return  bool success
@@ -103,7 +100,6 @@
     /**
      * Get status response
      *
-     * @access  private
      * @return  string status
      */
     public function _readResponse() {
@@ -120,7 +116,6 @@
     /**
      * Get data
      *
-     * @access  private
      * @return  string status
      */
     public function _readData() {
@@ -136,7 +131,6 @@
     /**
      * Connect
      *
-     * @access  public  
      * @param   float timeout default 2.0
      * @return  bool success
      * @throws  peer.ConnectException in case there's an error during connecting
@@ -161,7 +155,6 @@
     /**
      * Disconnect
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case there's an error during disconnecting
      */
@@ -179,7 +172,6 @@
     /**
      * Authenticate
      *
-     * @access  public
      * @param   string authmode
      * @return  bool success
      * @throws  peer.AuthenticationException in case authentication failed
@@ -222,7 +214,6 @@
     /**
      * Select a group
      *
-     * @access  public
      * @param   string groupname
      * @return  success
      */
@@ -237,10 +228,9 @@
     /**
      * Get groups
      *
-     * @access  public
      * @return  &peer.news.Newsgroup[]
      */
-    public function &getGroups() {
+    public function getGroups() {
       $status= $this->_sendcmd('LIST');
       if (!NntpReply::isPositiveCompletion($status))
         throw(new IOException('Could not get groups'));
@@ -256,12 +246,11 @@
     /**
      * Get Article
      *
-     * @access  public
      * @param   mixed Id eighter a messageId or an articleId
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    public function &getArticle($id= NULL) {
+    public function getArticle($id= NULL) {
       $status= $this->_sendcmd('ARTICLE', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
         throw(new IOException('Could not get article'));
@@ -293,7 +282,6 @@
     /**
      * Get a list of all articles in a newsgroup
      *
-     * @access  public
      * @return  array articleId
      * @throws  io.IOException in case article list could not be retrieved
      */
@@ -310,7 +298,6 @@
     /**
      * Retrieve body of an article
      *
-     * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL 
      * @return  string body
      * @throws  io.IOException in case body could not be retrieved
@@ -328,7 +315,6 @@
     /**
      * Retrieve header of an article
      *
-     * @access  public  
      * @param   mixed Id eighter a messageId or an articleId default NULL
      * @return  array headers
      * @throws  io.IOException in case headers could not be retrieved
@@ -350,11 +336,10 @@
     /**
      * Retrieve next article
      *
-     * @access  public
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    public function &getNextArticle() {
+    public function getNextArticle() {
       $status= $this->_sendcmd('NEXT');
       if (!NntpReply::isPositiveCompletion($status)) 
         throw(new IOException('Could not get next article'));
@@ -365,11 +350,10 @@
     /**
      * Retrieve last article
      *
-     * @access  public
      * @return  &peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
-    public function &getLastArticle() {
+    public function getLastArticle() {
       $status= $this->_sendcmd('LAST');
       if (!NntpReply::isPositiveCompletion($status)) 
         throw(new IOException('Could not get last article'));
@@ -380,7 +364,6 @@
     /**
      * Get format of xover command
      *
-     * @access  public
      * @return  array fields
      * @throws  io.IOException in case format could not be retrieved
      */    
@@ -399,11 +382,10 @@
     /**
      * Get a list of articles in a given range
      *
-     * @access  public
      * @param   string range default NULL
      * @return  &int[] articleId
      */
-    public function &getOverview($range= NULL) {
+    public function getOverview($range= NULL) {
       $status= $this->_sendcmd('XOVER', $range);
       if (!NntpReply::isPositiveCompletion($status))
         throw(new IOException('Could not get overview'));
@@ -418,12 +400,11 @@
      * Get all articles which are newer
      * than the given date
      *
-     * @access  public
      * @param   &util.Date date
      * @param   string newsgroup
      * @return  array messageId
      */ 
-    public function newNews(&$date, $newsgroup) {
+    public function newNews($date, $newsgroup) {
       $status= $this->_sendcmd(
         'NEWNEWS',
         $newsgroup,
@@ -441,11 +422,10 @@
      * Get all groups which are newer
      * than the given date
      *
-     * @access  public
      * @param   &util.Date date
      * @return  array &peer.news.Newsgroup
      */
-    public function newGroups(&$date) {
+    public function newGroups($date) {
       $status= $this->_sendcmd(
         'NEWGROUPS',
         $date->format('%y%m%d %H%M%S')
@@ -464,7 +444,6 @@
     /**
      * Return current response
      *
-     * @access  public
      * @return  string response
      */
     public function getResponse() {
@@ -474,7 +453,6 @@
     /**
      * Return current statuscode
      *
-     * @access  public
      * @return  int statuscode
      */
     public function getStatus() {

@@ -20,7 +20,6 @@
     /**
      * Set Id
      *
-     * @access  public
      * @param   int id
      */
     #[@xmlmapping(element= '@id')]
@@ -31,7 +30,6 @@
     /**
      * Get Id
      *
-     * @access  public
      * @return  int
      */
     #[@xmlfactory(element= '@id')]
@@ -42,7 +40,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     #[@xmlmapping(element= '@name')]
@@ -53,7 +50,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     #[@xmlfactory(element= '@name')]
@@ -64,7 +60,6 @@
     /**
      * Set Path
      *
-     * @access  public
      * @param   string path
      */
     #[@xmlmapping(element= '@path')]
@@ -75,7 +70,6 @@
     /**
      * Get Path
      *
-     * @access  public
      * @return  string
      */
     #[@xmlfactory(element= '@path')]

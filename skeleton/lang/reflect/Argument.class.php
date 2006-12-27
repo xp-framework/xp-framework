@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string type default 'mixed'
      * @param   bool optional default FALSE
@@ -36,7 +35,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -46,7 +44,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  string
      */
     public function getType() {
@@ -56,9 +53,9 @@
     /**
      * Returns whether this argument is passed by reference
      *
-     * @access  public
      * @return  string
      */
+    #[@deprecated]
     public function isPassedByReference() {
       return '&' == $this->type{0};
     }
@@ -66,7 +63,6 @@
     /**
      * Retrieve whether this argument is optional
      *
-     * @access  public
      * @return  bool
      */
     public function isOptional() {
@@ -77,7 +73,6 @@
      * Get default value as a string ("NULL" for NULL). Returns FALSE if
      * no default value is set.
      *
-     * @access  public
      * @return  string
      */
     public function getDefault() {

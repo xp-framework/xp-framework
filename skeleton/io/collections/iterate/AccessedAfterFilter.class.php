@@ -16,12 +16,11 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) { 
-      return ($cmp= &$element->lastAccessed()) && $cmp->isAfter($this->date);
+    public function accept($element) { 
+      return ($cmp= $element->lastAccessed()) && $cmp->isAfter($this->date);
     }
   }
 ?>

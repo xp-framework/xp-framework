@@ -26,7 +26,6 @@
     /**
      * Retrieves documentFiltering
      *
-     * @access  public
      * @return  bool 
      */
     public function getDocumentFiltering() {
@@ -36,7 +35,6 @@
     /**
      * Sets documentFiltering
      *
-     * @access  public
      * @param   bool documentFiltering
      */
     public function setDocumentFiltering($documentFiltering) {
@@ -46,7 +44,6 @@
     /**
      * Retrieves searchComments
      *
-     * @access  public
      * @return  string 
      */
     public function getSearchComments() {
@@ -56,7 +53,6 @@
     /**
      * Sets searchComments
      *
-     * @access  public
      * @param   string searchComments
      */
     public function setSearchComments($searchComments) {
@@ -66,7 +62,6 @@
     /**
      * Retrieves estimatedTotalResultsCount
      *
-     * @access  public
      * @return  int 
      */
     public function getEstimatedTotalResultsCount() {
@@ -76,7 +71,6 @@
     /**
      * Sets estimatedTotalResultsCount
      *
-     * @access  public
      * @param   int estimatedTotalResultsCount
      */
     public function setEstimatedTotalResultsCount($estimatedTotalResultsCount) {
@@ -86,7 +80,6 @@
     /**
      * Retrieves estimateIsExact
      *
-     * @access  public
      * @return  bool 
      */
     public function getEstimateIsExact() {
@@ -96,7 +89,6 @@
     /**
      * Sets estimateIsExact
      *
-     * @access  public
      * @param   bool estimateIsExact
      */
     public function setEstimateIsExact($estimateIsExact) {
@@ -106,7 +98,6 @@
     /**
      * Retrieves resultElements
      *
-     * @access  public
      * @return  com.google.soap.search.ResultElement[]
      */
     public function getResultElements() {
@@ -116,7 +107,6 @@
     /**
      * Retrieves number of resultElements
      *
-     * @access  public
      * @return  int
      */
     public function numResultElements() {
@@ -126,7 +116,6 @@
     /**
      * Retrieves whether there is at least one result element
      *
-     * @access  public
      * @return  bool
      */
     public function hasResultElements() {
@@ -137,11 +126,10 @@
      * Retrieves resultElement at a given position. Returns NULL if the
      * position specified is out of range.
      *
-     * @access  public
      * @param   int pos
      * @return  &com.google.soap.search.ResultElement
      */
-    public function &getResultElement($pos) {
+    public function getResultElement($pos) {
       if (!isset($this->resultElements[$pos])) return NULL;
       return $this->resultElements[$pos];
     }
@@ -149,7 +137,6 @@
     /**
      * Sets resultElements
      *
-     * @access  public
      * @param   mixed resultElements (typens:ResultElementArray)
      */
     public function setResultElements($resultElements) {
@@ -159,7 +146,6 @@
     /**
      * Retrieves searchQuery
      *
-     * @access  public
      * @return  string 
      */
     public function getSearchQuery() {
@@ -169,7 +155,6 @@
     /**
      * Sets searchQuery
      *
-     * @access  public
      * @param   string searchQuery
      */
     public function setSearchQuery($searchQuery) {
@@ -179,7 +164,6 @@
     /**
      * Retrieves startIndex
      *
-     * @access  public
      * @return  int 
      */
     public function getStartIndex() {
@@ -189,7 +173,6 @@
     /**
      * Sets startIndex
      *
-     * @access  public
      * @param   int startIndex
      */
     public function setStartIndex($startIndex) {
@@ -199,7 +182,6 @@
     /**
      * Retrieves endIndex
      *
-     * @access  public
      * @return  int 
      */
     public function getEndIndex() {
@@ -209,7 +191,6 @@
     /**
      * Sets endIndex
      *
-     * @access  public
      * @param   int endIndex
      */
     public function setEndIndex($endIndex) {
@@ -219,7 +200,6 @@
     /**
      * Retrieves searchTips
      *
-     * @access  public
      * @return  string 
      */
     public function getSearchTips() {
@@ -229,7 +209,6 @@
     /**
      * Sets searchTips
      *
-     * @access  public
      * @param   string searchTips
      */
     public function setSearchTips($searchTips) {
@@ -239,7 +218,6 @@
     /**
      * Retrieves directoryCategories
      *
-     * @access  public
      * @return  com.google.soap.search.DirectoryCategory[]
      */
     public function getDirectoryCategories() {
@@ -249,7 +227,6 @@
     /**
      * Retrieves number of directoryCategories
      *
-     * @access  public
      * @return  int
      */
     public function numDirectoryCategories() {
@@ -259,7 +236,6 @@
     /**
      * Retrieves whether there is at least one directory category
      *
-     * @access  public
      * @return  bool
      */
     public function hasDirectoryCategories() {
@@ -270,11 +246,10 @@
      * Retrieves directoryCategoriy at a given position. Returns NULL if the
      * position specified is out of range.
      *
-     * @access  public
      * @param   int pos
      * @return  &com.google.soap.search.DirectoryCategory
      */
-    public function &getDirectoryCategory($pos) {
+    public function getDirectoryCategory($pos) {
       if (!isset($this->directoryCategories[$pos])) return NULL;
       return $this->directoryCategories[$pos];
     }
@@ -282,7 +257,6 @@
     /**
      * Sets directoryCategories
      *
-     * @access  public
      * @param   com.google.soap.search.DirectoryCategory[] directoryCategories
      */
     public function setDirectoryCategories($directoryCategories) {
@@ -292,7 +266,6 @@
     /**
      * Retrieves searchTime
      *
-     * @access  public
      * @return  float 
      */
     public function getSearchTime() {
@@ -302,7 +275,6 @@
     /**
      * Sets searchTime
      *
-     * @access  public
      * @param   float searchTime
      */
     public function setSearchTime($searchTime) {
@@ -312,7 +284,6 @@
     /**
      * Create string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

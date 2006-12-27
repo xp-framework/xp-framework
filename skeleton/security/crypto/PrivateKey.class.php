@@ -16,14 +16,12 @@
     /**
      * Create private key from its string representation
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @param   string passphrase default NULL
      * @return  &security.crypto.PrivateKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    public static function &fromString($str, $passphrase= NULL) {
+    public static function fromString($str, $passphrase= NULL) {
       if (!is_resource($_hdl= openssl_pkey_get_private($str, $passphrase))) {
         throw(new CryptoException(
           'Could not read private key', OpenSslUtil::getErrors()
@@ -37,7 +35,6 @@
     /**
      * Signs the data using this private key
      *
-     * @access  public
      * @param   string data
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -61,7 +58,6 @@
      * method.
      *
      * @see     php://openssl_private_encrypt
-     * @access  public
      * @param   string data
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -80,7 +76,6 @@
      * Decrypt data using this private key. Only data encrypted with
      * the public key matching this key will be decryptable.
      *
-     * @access  public
      * @param   string data
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -98,7 +93,6 @@
     /**
      * Export this key into its string representation
      *
-     * @access  public
      * @param   string passphrase default NULL
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -117,7 +111,6 @@
      * Unseal data sealed with the public key matching this key. This method
      * also needs the hash-key created by the seal() method.
      *
-     * @access  public
      * @param   string data
      * @param   string key
      * @return  string

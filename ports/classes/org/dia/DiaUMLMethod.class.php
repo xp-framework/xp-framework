@@ -16,7 +16,6 @@
     /**
      * Initialize this UMLMethod object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -39,7 +38,6 @@
     /**
      * Returns the stereotype of the UMLMethod
      *
-     * @access  public
      * @return  string
      */
     public function getStereotype() {
@@ -49,7 +47,6 @@
     /**
      * Sets the 'stereotype' of the UML method
      *
-     * @access  public
      * @param   string stereotype
      */
     #[@fromDia(xpath= 'dia:attribute[@name="stereotype"]/dia:string', value= 'string')]
@@ -60,7 +57,6 @@
     /**
      * Returns the comment of the UMLMethod
      *
-     * @access  public
      * @return  string
      */
     public function getComment() {
@@ -70,7 +66,6 @@
     /**
      * Sets the 'comment' of the UML method
      *
-     * @access  public
      * @param   string comment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
@@ -81,7 +76,6 @@
     /**
      * Returns the visibility of the UMLMethod
      *
-     * @access  public
      * @return  int
      */
     public function getVisibility() {
@@ -91,7 +85,6 @@
     /**
      * Sets the 'visibility' of the UML method
      *
-     * @access  public
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'enum')]
@@ -102,7 +95,6 @@
     /**
      * Returns TRUE if the UMLMethod is abstract
      *
-     * @access  public
      * @return  bool
      */
     public function getAbstract() {
@@ -112,7 +104,6 @@
     /**
      * Sets the 'abstract' attribute of the UML method
      *
-     * @access  public
      * @param   bool abstract
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
@@ -123,7 +114,6 @@
     /**
      * Returns TRUE if the UMLMethod is in class scope (static)
      *
-     * @access  public
      * @return  bool
      */
     public function getClassScope() {
@@ -133,7 +123,6 @@
     /**
      * Sets the 'class_scope' attribute of the UML method
      *
-     * @access  public
      * @param   bool class_scope
      */
     #[@fromDia(xpath= 'dia:attribute[@name="class_scope"]/dia:boolean/@val', value= 'boolean')]
@@ -144,7 +133,6 @@
     /**
      * Returns the inheritance type of the UMLMethod
      *
-     * @access  public
      * @return  int
      */
     public function getInheritanceType() {
@@ -154,7 +142,6 @@
     /**
      * Sets the 'inheritance_type' of the UML method
      *
-     * @access  public
      * @param   int inheritance_type
      */
     #[@fromDia(xpath= 'dia:attribute[@name="inheritance_type"]/dia:enum/@val', value= 'enum')]
@@ -165,7 +152,6 @@
     /**
      * Return TRUE if the UMLMethods 'query' flag is set
      *
-     * @access  public
      * @return  bool
      */
     public function getQuery() {
@@ -175,7 +161,6 @@
     /**
      * Sets the 'query' attribute of the UML method
      *
-     * @access  public
      * @param   bool query
      */
     #[@fromDia(xpath= 'dia:attribute[@name="query"]/dia:boolean/@val', value= 'boolean')]
@@ -186,18 +171,16 @@
     /**
      * Returns a list of DiaUMLMethodParameter objects
      *
-     * @access  public
      * @return  org.dia.DiaUMLMethodParameter[]
      */
     public function getParameters() {
-      $Parameters= &$this->getChild('parameters');
+      $Parameters= $this->getChild('parameters');
       return $Parameters->getChildren();
     }
 
     /**
      * Adds an UMLMethodParameter to the UML method
      *
-     * @access  public
      * @param   &org.dia.DiaUMLMethodParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="parameters"]/dia:composite[@type="umlparameter"]', class= 'org.dia.DiaUMLMethodParameter')]
@@ -207,7 +190,7 @@
           'Passed parameter is no "org.dia.DiaUMLMethodParameter"!'
         ));
       }
-      $Parameters= &$this->getChild('parameters');
+      $Parameters= $this->getChild('parameters');
       $Parameters->set($Parameter->getName(), $Parameter);
     }
  }

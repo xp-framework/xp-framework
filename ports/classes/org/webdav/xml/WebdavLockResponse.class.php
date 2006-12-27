@@ -38,7 +38,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->setRootNode(new Node(
@@ -51,25 +50,24 @@
     /**
      * Add a webdav object
      *
-     * @access  public
      * @param   &org.webdav.WebdavObject object   The webdav object
      * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
      */
-    public function addLock(&$lock) {
-      $lockdiscovery= &$this->addChild(new Node('D:lockdiscovery'));
-      $activelock= &$lockdiscovery->addChild(new Node('D:activelock'));
+    public function addLock($lock) {
+      $lockdiscovery= $this->addChild(new Node('D:lockdiscovery'));
+      $activelock= $lockdiscovery->addChild(new Node('D:activelock'));
       
-      $locktype= &$activelock->addChild(new Node('D:locktype'));
+      $locktype= $activelock->addChild(new Node('D:locktype'));
       $locktype->addChild(new Node('D:'.$lock->getLockType()));
       
-      $lockscope= &$activelock->addChild(new Node('D:lockscope'));
+      $lockscope= $activelock->addChild(new Node('D:lockscope'));
       $lockscope->addChild(new Node('D:'.$lock->getLockScope()));
       
       $activelock->addChild(new Node('D:depth', $lock->getDepth()));
       $activelock->addChild(new Node('D:owner', $lock->getOwner()));
       $activelock->addChild(new Node('D:timeout', 'Second-'.$lock->getTimeout()));
       
-      $locktoken= &$activelock->addChild(new Node('D:locktoken'));
+      $locktoken= $activelock->addChild(new Node('D:locktoken'));
       $locktoken->addChild(new Node('D:href', $lock->getLockToken()));
 
       $this->setHeader('Lock-Token', '<'.$lock->getLockToken().'>');

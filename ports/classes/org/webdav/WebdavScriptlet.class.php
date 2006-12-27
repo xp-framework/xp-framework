@@ -132,7 +132,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array impl (associative array of pathmatch => org.webdav.impl.DavImpl)
      */  
     public function __construct($impl) {
@@ -141,17 +140,17 @@
       foreach (array_keys($impl) as $pattern) {
         $path= rtrim($pattern, '/').'/';
         if (isset($impl[$pattern]['impl']))
-          $this->impl[$path]= &$impl[$pattern]['impl'];
+          $this->impl[$path]= $impl[$pattern]['impl'];
         else
-          $this->impl[$path]= &$impl[$pattern];
+          $this->impl[$path]= $impl[$pattern];
         if (isset($impl[$pattern]['auth'])) {
-          $this->auth[$path]= &$impl[$pattern]['auth'];
+          $this->auth[$path]= $impl[$pattern]['auth'];
         }
         if (isset($impl[$pattern]['backend'])) {
-          $this->backend[$path]= &$impl[$pattern]['backend'];
+          $this->backend[$path]= $impl[$pattern]['backend'];
         }
         if (isset($impl[$pattern]['mapping'])) {
-          $this->mapping[$path]= &$impl[$pattern]['mapping'];
+          $this->mapping[$path]= $impl[$pattern]['mapping'];
         }
         if (isset($impl[$pattern]['user'])) {
           $this->user[$path]= $impl[$pattern]['user'];
@@ -162,10 +161,9 @@
     /**
      * Returns a Webdav request object depending on the REQUEST_METHOD
      *
-     * @access private
      * @return org.webdav.WebdavScriptletRequest
      */
-    public function &_request() {
+    public function _request() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavPropFindRequest();
@@ -181,10 +179,9 @@
     /**
      * Returns a Webdav response object depending on the REQUEST_METHOD
      *
-     * @access private
      * @return org.webdav.WebdavResponse
      */
-    public function &_response() {
+    public function _response() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavMultistatusResponse($this->map);
@@ -209,7 +206,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doOptions(&$request, &$response) {
+    public function doOptions($request, $response) {
       $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
       $response->setHeader('Allow', implode(', ', array_keys($this->methods)));
       $response->setHeader('DAV', '1,2,<http://apache.org/dav/propset/fs/1>');
@@ -225,9 +222,9 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doDelete(&$request, &$response) {
+    public function doDelete($request, $response) {
       try {
-        $object= &$this->handlingImpl->delete($request->getPath());
+        $object= $this->handlingImpl->delete($request->getPath());
       } catch (ElementNotFoundException $e) {
       
         // Element not found
@@ -255,9 +252,9 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doGet(&$request, &$response) {
+    public function doGet($request, $response) {
       try {
-        $object= &$this->handlingImpl->get($request->getPath());
+        $object= $this->handlingImpl->get($request->getPath());
       } catch (ElementNotFoundException $e) {
 
         // Element not found
@@ -298,7 +295,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doPost(&$request, &$response) {
+    public function doPost($request, $response) {
       throw(new MethodNotImplementedException($this->getName().'::post not implemented'));
     }
 
@@ -312,9 +309,9 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doHead(&$request, &$response) {
+    public function doHead($request, $response) {
       try {
-        $object= &$this->handlingImpl->get($request->getPath());
+        $object= $this->handlingImpl->get($request->getPath());
       } catch (ElementNotFoundException $e) {
       
         // Element not found
@@ -346,7 +343,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doPut(&$request, &$response) {
+    public function doPut($request, $response) {
       try {
         $created= $this->handlingImpl->put(
           $request->getPath(),
@@ -382,7 +379,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doMkCol(&$request, &$response) {
+    public function doMkCol($request, $response) {
       try {
         $created= $this->handlingImpl->mkcol($request->getPath());
       } catch (OperationFailedException $e) {
@@ -406,7 +403,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doMove(&$request, &$response) {
+    public function doMove($request, $response) {
       try {
         $created= $this->handlingImpl->move(
           $request->getPath(),
@@ -440,7 +437,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doCopy(&$request, &$response) {
+    public function doCopy($request, $response) {
       try {
         $created= $this->handlingImpl->copy(
           $request->getPath(),
@@ -487,7 +484,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doLock(&$request, &$response) {
+    public function doLock($request, $response) {
       try {
         $this->handlingImpl->lock(
           $request,
@@ -517,7 +514,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doUnlock(&$request, &$response) {
+    public function doUnlock($request, $response) {
       try {
         $this->handlingImpl->unlock(
           $request,
@@ -560,7 +557,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doPropFind(&$request, &$response) {
+    public function doPropFind($request, $response) {
       try {
         $this->handlingImpl->propfind(
           $request,
@@ -603,7 +600,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doPropPatch(&$request, &$response) {
+    public function doPropPatch($request, $response) {
       try {
         $this->handlingImpl->proppatch(
           $request,
@@ -641,7 +638,7 @@
         throw(new HttpScriptletException($e->message));
       } 
       
-      $rootURL= &$request->getRootURL();
+      $rootURL= $request->getRootURL();
       $response->setHref($rootURL->getPath().$request->getPath());
       $response->setStatus(HTTP_CREATED);
     }
@@ -649,11 +646,10 @@
     /**
      * Do a Version-Control Request
      *
-     * @access  public 
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response  
      */
-    public function doVersionControl(&$request, &$response) {
+    public function doVersionControl($request, $response) {
       try {
         $this->handlingImpl->versionControl(
           $request->getPath(),
@@ -678,11 +674,10 @@
     /**
      * Do a REPORT Request
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response  
      */
-    public function doReport(&$request, &$response) {
+    public function doReport($request, $response) {
       try {
         $this->handlingImpl->report($request, $response);
       } catch (ElementNotFoundException $e) {
@@ -713,7 +708,7 @@
      * @param   &scriptlet.HttpScriptletResponse response
      * @throws  lang.Exception to indicate failure
      */
-    public function doNotFound(&$request, &$response) {
+    public function doNotFound($request, $response) {
       $response->setStatus(HTTP_NOT_FOUND);
       
       return FALSE;
@@ -728,7 +723,7 @@
      * @return  bool processed
      * @throws  lang.Exception to indicate failure
      */
-    public function doAuthorizationRequest(&$request, &$response) {
+    public function doAuthorizationRequest($request, $response) {
       $response->setStatus(HTTP_AUTHORIZATION_REQUIRED);
       $response->setHeader('WWW-Authenticate',  'Basic realm="WebDAV Authorization"');
       
@@ -744,7 +739,7 @@
      * @return  bool processed
      * @throws  lang.Exception to indicate failure
      */
-    public function doAuthorizationDeny(&$request, &$response) {
+    public function doAuthorizationDeny($request, $response) {
       $response->setStatus(HTTP_FORBIDDEN);
       
       return TRUE;
@@ -754,12 +749,11 @@
     /**
      * Handle methods
      *
-     * @access  private
      * @return  string class method (one of doGet, doPost, doHead)
      * @param   string method Request-Method
      * @see     rfc://2518#8 Description of methods
      */
-    public function handleMethod(&$request) {
+    public function handleMethod($request) {
       // Check if we recognize this method
       if (!isset($this->methods[$request->method])) {
         throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
@@ -784,7 +778,7 @@
           strlen($pattern)
         )));
         
-        $this->handlingImpl= &$this->impl[$pattern];
+        $this->handlingImpl= $this->impl[$pattern];
         
         // Set absolute Uri
         $request->setAbsoluteURI($this->handlingImpl->base.$request->getPath());
@@ -814,16 +808,16 @@
 
       // Check for authorization handler
       if (isset($this->auth[$rootURL->getPath()])) {
-        $this->handlingAuth= &$this->auth[$rootURL->getPath()];
-        $auth= &BasicAuthorization::fromValue($request->getHeader('Authorization'));
+        $this->handlingAuth= $this->auth[$rootURL->getPath()];
+        $auth= BasicAuthorization::fromValue($request->getHeader('Authorization'));
         
         // Can not get username/password from Authorization header
         if (!$auth) return 'doAuthorizationRequest';
         
         // Use an own User object if you want to save more than username and password
         if ($this->user[$rootURL->getPath()]) {          
-          $c= &XPClass::forName($this->user[$pattern]);
-          with ($user= &$c->newInstance()); {
+          $c= XPClass::forName($this->user[$pattern]);
+          with ($user= $c->newInstance()); {
             $user->setUsername($auth->getUser());
             $user->setUserPassword($auth->getPassword());            
           }

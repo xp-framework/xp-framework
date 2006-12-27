@@ -41,13 +41,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &img.Color col color
      * @param   int[] points
      * @param   bool fill default FALSE
      */ 
-    public function __construct(&$col, $points, $fill= FALSE) {
-      $this->col= &$col;
+    public function __construct($col, $points, $fill= FALSE) {
+      $this->col= $col;
       $this->points= $points;
       $this->fill= $fill;
       
@@ -56,11 +55,10 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
+    public function draw($image) {
       if ($this->fill) return imagefilledpolygon(
         $image->handle,
         $this->points,

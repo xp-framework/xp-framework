@@ -16,18 +16,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.telephony.TelephonyAddress address
      */
-    public function __construct(&$address) {
+    public function __construct($address) {
       
-      $this->address= &$address;
+      $this->address= $address;
     }
     
     /**
      * Retrieve the terminal's phone number
      *
-     * @access  public
      * @return  string number
      */
     public function getAttachedNumber() {
@@ -37,7 +35,6 @@
     /**
      * Set Observed
      *
-     * @access  public
      * @param   bool observed
      */
     public function setObserved($observed) {
@@ -47,7 +44,6 @@
     /**
      * Get Observed state
      *
-     * @access  public
      * @return  bool
      */
     public function isObserved() {

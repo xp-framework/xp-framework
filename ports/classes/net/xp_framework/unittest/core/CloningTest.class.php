@@ -16,7 +16,6 @@
     /**
      * Tests cloning of xp::null() which shouldn't work
      *
-     * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
     public function cloningOfNulls() {
@@ -26,7 +25,6 @@
     /**
      * Tests cloning of non-objects which shouldn't work
      *
-     * @access  public
      */
     #[@test, @expect('lang.CloneNotSupportedException'), @ignore('E_NOTICE in PHP5')]
     public function cloningOfNonObjects() {
@@ -36,7 +34,6 @@
     /**
      * Tests cloning of an object without a __clone interceptor
      *
-     * @access  public
      */
     #[@test]
     public function cloneOfObject() {
@@ -47,11 +44,10 @@
     /**
      * Tests cloning of an object with a __clone interceptor
      *
-     * @access  public
      */
     #[@test]
     public function cloneInterceptorCalled() {
-      $original= &newinstance('lang.Object', array(), '{
+      $original= newinstance('lang.Object', array(), '{
         var $cloned= FALSE;
 
         function __clone() {
@@ -68,7 +64,6 @@
      * Tests cloning of an object whose __clone interceptor throws a 
      * CloneNotSupportedException
      *
-     * @access  public
      */
     #[@test, @expect('lang.CloneNotSupportedException')]
     public function cloneInterceptorThrowsException() {

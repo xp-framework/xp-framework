@@ -17,7 +17,6 @@
     /**
      * Sets the image resource that is to be written
      *
-     * @access  public
      * @param   resource handle
      * @throws  img.ImagingException
      */

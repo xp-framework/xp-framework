@@ -22,7 +22,6 @@
     /**
      * Create a new 'dia:childnode' node
      *
-     * @access  public
      * @param   string parent default 'O0' The first character is always a capital 'o', not zero!
      */
     public function __construct($parent= 'O0') {
@@ -32,7 +31,6 @@
     /**
      * Returns the parent object ID
      *
-     * @access  public
      * @return  string
      */
     public function getParentId() {
@@ -42,7 +40,6 @@
     /**
      * Set the parent object ID
      *
-     * @access  public
      * @param   string parent
      */
     #[@fromDia(xpath= 'attribute::parent', value= 'string')]
@@ -53,10 +50,9 @@
     /**
      * Return the XML representation of this node
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
+    public function getNode() {
       $Node= new Node($this->node_name);
       $Node->setAttribute('parent', $this->parent);
       return $Node;
@@ -65,22 +61,21 @@
     /**
      * Accept a Visitor
      *
-     * @access  public
      * @param   &util.Visitor Visitor
      */
-    public function accept(&$Visitor) {
+    public function accept($Visitor) {
       $Visitor->visit($this);
     }
 
     /**
      * DiaChildnode is a 'leaf' element which has no children
      */
-    public function addChild(&$Comp) { }
+    public function addChild($Comp) { }
 
     /**
      * DiaChildnode is a 'leaf' element which has no children
      */
-    public function remChild(&$Comp) { }
+    public function remChild($Comp) { }
 
     /**
      * DiaChildnode is a 'leaf' element which has no children

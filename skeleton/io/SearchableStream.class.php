@@ -22,7 +22,6 @@
      * the given token. The delimiter itself is returned
      * as part of the token
      *
-     * @access  public
      * @param   string lim delimiters to use
      * @return  string tokenizes token
      */
@@ -44,7 +43,6 @@
     /**
      * Tokenizes a string by a complex delimiter (multiple characters).
      *
-     * @access  public
      * @param   string* delimiters
      * @return  string token
      */
@@ -73,7 +71,6 @@
      * Returns the offset of the searched string within the stream 
      * or FALSE if the string was not found.
      *
-     * @access  public
      * @param   string string to search
      * @return  int offset
      */    

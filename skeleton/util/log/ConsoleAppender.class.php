@@ -21,7 +21,6 @@
     /**
      * Appends log data to STDERR
      *
-     * @access public
      * @param  mixed args variables
      */
     public function append() {

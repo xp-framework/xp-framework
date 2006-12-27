@@ -17,7 +17,6 @@
      * Returns whether we need an authentication. Always returns
      * TRUE in this implementation.
      *
-     * @access  public
      * @return  bool
      */
     public function requiresAuthentication() {

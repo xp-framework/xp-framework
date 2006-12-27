@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string addr
      * @param   int port
      * @param   int count default 10 number of children to fork
@@ -43,17 +42,15 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
     /**
      * Signal handler
      *
-     * @access  protected
      * @param   int sig
      */
     public function handleSignal($sig) {
@@ -68,10 +65,9 @@
     /**
      * Terminate child processes
      *
-     * @access  private
      * @param   array children
      */
-    public function _killChildren(&$children) {
+    public function _killChildren($children) {
       foreach ($children as $pid => $i) {
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
@@ -86,12 +82,11 @@
     /**
      * Handle a forked child
      *
-     * @access  protected
      */
     public function handleChild() {
       
       // Install child signal handler
-      pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
+      pcntl_signal(SIGINT, array($this, 'handleSignal'));
 
       // Handle initialization of protocol. This is called once for 
       // every new child created
@@ -111,7 +106,7 @@
           
           // There is data on the socket.
           // Handle it!
-          $m= &$this->socket->accept();
+          $m= $this->socket->accept();
         } catch (IOException $e) {
           $this->cat && $this->cat->warn('Child', getmypid(), 'in accept ~', $e);
           return;
@@ -143,7 +138,6 @@
     /**
      * Service
      *
-     * @access  public
      */
     public function service() {
       if (!$this->socket->isConnected()) return FALSE;
@@ -172,8 +166,8 @@
         // process id of the process we are running in) will cleanly shut
         // down this server. If this server is run within a thread (which
         // is recommended), a $thread->stop() will accomplish this.
-        pcntl_signal(SIGINT, array(&$this, 'handleSignal'));
-        pcntl_signal(SIGHUP, array(&$this, 'handleSignal'));
+        pcntl_signal(SIGINT, array($this, 'handleSignal'));
+        pcntl_signal(SIGHUP, array($this, 'handleSignal'));
         
         // Wait until we are supposed to terminate. This condition variable
         // is set to TRUE by the signal handler. Sleep a second to decrease

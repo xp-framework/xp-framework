@@ -33,12 +33,10 @@
     /**
      * Retrieve content of a DomElement
      *
-     * @model   static
-     * @access  protected
      * @param   &php.DomElement element
      * @return  string
      */
-    public static function contentOf(&$element) {
+    public static function contentOf($element) {
       switch ($element->type) {
         case 1:   // Nodeset
           return empty($element->nodeset) ? NULL : utf8_decode($element->nodeset[0]->get_content());
@@ -60,8 +58,6 @@
     /**
      * Recursively unmarshal
      *
-     * @model   static
-     * @access  protected
      * @param   &xml.XPath xpath
      * @param   &php.DomElement context
      * @param   string classname
@@ -69,20 +65,20 @@
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
-    public static function &recurse(&$xpath, &$context, $classname) {
+    public static function recurse($xpath, $context, $classname) {
       try {
-        $class= &XPClass::forName($classname);
+        $class= XPClass::forName($classname);
       } catch (ClassNotFoundException $e) {
         throw($e);
       }
 
-      $instance= &$class->newInstance();
+      $instance= $class->newInstance();
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlmapping', 'element')) continue;
 
         // Perform XPath query
         try {
-          $result= &$xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
+          $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
         } catch (XPathException $e) {
           throw($e);
         }
@@ -119,7 +115,7 @@
               $xpath, 
               $node, 
               call_user_func_array(
-                array(&$instance, $method->getAnnotation('xmlmapping', 'factory')), 
+                array($instance, $method->getAnnotation('xmlmapping', 'factory')), 
                 $factoryArgs
               )
             ));
@@ -156,15 +152,13 @@
     /**
      * Unmarshal XML to an object
      *
-     * @model   static
-     * @access  public
      * @param   string xml
      * @param   string classname
      * @return  &lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
      */
-    public static function &unmarshal($xml, $classname) {
+    public static function unmarshal($xml, $classname) {
       try {
         $doc= new DOMDocument();
         $doc->loadXML($xml);

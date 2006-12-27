@@ -22,13 +22,12 @@
      * - mbox:///usr/home/foo/Mail
      * </pre>
      *
-     * @access  protected
      * @param   &peer.URL u
      * @param   &array attr
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function _supports(&$u, &$attr) {
+    public function _supports($u, $attr) {
       switch (strtolower($u->getScheme())) {
         case 'mbox': 
           $attr['mbx']= '/'.$u->getHost().$u->getPath();
@@ -45,12 +44,11 @@
     /**
      * Get a folder. Note: Results from this method are cached.
      *
-     * @access  public
      * @param   string name
      * @return  &peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */  
-    public function &getFolder() {
+    public function getFolder() {
       return parent::getFolder('*');
     }
   }

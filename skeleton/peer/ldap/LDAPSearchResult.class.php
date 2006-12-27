@@ -22,10 +22,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array result returnvalue of ldap_get_entries()
      */
-    public function __construct(&$hdl, $res) {
+    public function __construct($hdl, $res) {
       $this->data= ldap_get_entries($hdl, $res);
       $this->size= $this->data['count'];
       ldap_free_result($res);
@@ -34,7 +33,6 @@
     /**
      * Returns number of found elements
      *
-     * @access  public
      * @return  int
      */
     public function numEntries() {
@@ -44,22 +42,20 @@
     /**
      * Gets first entry
      *
-     * @access  public
      * @return  &mixed entry or FALSE if there is no such entry
      */
-    public function &getFirstEntry() {
+    public function getFirstEntry() {
       return $this->getEntry($this->_offset= 0);
     }
     
     /**
      * Get a search entry by offset
      *
-     * @access  public
      * @param   int offset
      * @return  &mixed entry or FALSE if none exists by this offset
      * @throws  lang.IllegalStateException in case no search has been performed before
      */
-    public function &getEntry($offset) {
+    public function getEntry($offset) {
       if (NULL == $this->data) {
         throw(new IllegalStateException('Please perform a search first'));
       }
@@ -76,10 +72,9 @@
      *   }
      * </code>
      *
-     * @access  public
      * @return  &mixed entry or FALSE if there are none more
      */
-    public function &getNextEntry() {
+    public function getNextEntry() {
       return $this->getEntry(++$this->_offset);
     }
 

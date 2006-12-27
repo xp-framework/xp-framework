@@ -20,11 +20,10 @@
     /**
      * Process this state
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
 
       try {
 
@@ -32,7 +31,7 @@
         $f= new File($request->getEnvValue('DOCUMENT_ROOT').'/../log/servicetests.xml');
         if (!(
           $f->exists() &&
-          $tree= &Tree::fromString(FileUtil::getContents($f))
+          $tree= Tree::fromString(FileUtil::getContents($f))
         )) {
           
           $response->addFormError($this->getClassName(), 'not-available', 'servicetests');

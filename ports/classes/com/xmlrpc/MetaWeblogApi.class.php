@@ -44,7 +44,6 @@
      * Note: blogid is only needed if the blog is hosted by blogger.com, 
      * in which case it is the unique blog id
      *
-     * @access  public
      * @param   string url for the weblog you want to access
      * @param   string username for the weblog
      * @param   string password for the weblog
@@ -60,7 +59,6 @@
     /**
      * Add a new post to the Blog
      *
-     * @access  public
      * @param   string title of the post
      * @param   string link
      * @param   string description it is the body of the post
@@ -85,7 +83,6 @@
     /**
      * Edit a post
      *
-     * @access  public
      * @param   int postid the id of the post you want to edit
      * @param   string title of the post
      * @param   string link
@@ -112,7 +109,6 @@
     /**
      * Get a post
      *
-     * @access  public
      * @param   int postid
      * @return  array if posting
      */  
@@ -128,11 +124,10 @@
     /**
      * Add a file to the Blog
      *
-     * @access  public
      * @param   &io.File file
      * @return  array url of the file
      */  
-    public function newMediaObject(&$file) {
+    public function newMediaObject($file) {
       return $this->invoke(
         'metaWeblog.newMediaObject',
         $this->blogid,
@@ -149,7 +144,6 @@
     /**
      * Get all categories of the blog
      *
-     * @access  public
      * @return  array categories
      */  
     public function getCategories() {
@@ -164,7 +158,6 @@
     /**
      * Get recent post of the blog
      *
-     * @access  public
      * @param   int number of posts to get
      * @return  array categories
      */  

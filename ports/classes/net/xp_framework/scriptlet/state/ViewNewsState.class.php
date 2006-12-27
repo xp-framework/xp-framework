@@ -21,17 +21,16 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
-      $cm= &ConnectionManager::getInstance();
+    public function process($request, $response) {
+      $cm= ConnectionManager::getInstance();
       
       // Fetch entry
       try {
-        $db= &$cm->getByHost('news', 0);
-        $q= &$db->query('
+        $db= $cm->getByHost('news', 0);
+        $q= $db->query('
           select 
             entry.id as id,
             entry.title as title,
@@ -58,7 +57,7 @@
       }
       
       // Add entry to the formresult
-      with ($entry= &$response->addFormResult(new Node('entry'))); {
+      with ($entry= $response->addFormResult(new Node('entry'))); {
         $entry->setAttribute('id', $record['id']);
         $entry->addChild(new Node('title', $record['title']));
         $entry->addChild(new Node('author', $record['author']));
@@ -68,7 +67,7 @@
         
         // Fetch comments
         try {
-          $q= &$db->query('
+          $q= $db->query('
             select 
               comment.id as id,
               comment.title as title,
@@ -90,9 +89,9 @@
         }
       
         // Add comments to the entry node
-        $comments= &$entry->addChild(new Node('comments'));
+        $comments= $entry->addChild(new Node('comments'));
         while ($record= $q->next()) {
-          with ($comment= &$comments->addChild(new Node('comment'))); {
+          with ($comment= $comments->addChild(new Node('comment'))); {
             $comment->setAttribute('id', $record['id']);
             $comment->addChild(new Node('title', $record['title']));
             $comment->addChild(new Node('author', $record['author']));

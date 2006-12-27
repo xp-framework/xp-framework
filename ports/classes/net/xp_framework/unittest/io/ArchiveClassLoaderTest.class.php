@@ -27,11 +27,10 @@
     /**
      * Returns class bytes as a stream
      *
-     * @access  protected
      * @param   string bytes
      * @return  &io.Stream
      */
-    public function &classStream($bytes) {
+    public function classStream($bytes) {
       $cstr= new Stream();
       $cstr->open(STREAM_MODE_WRITE);
       $cstr->write('<?php '.$bytes.' ?>');
@@ -43,7 +42,6 @@
     /**
      * Creates a unique class name for the running test case
      *
-     * @access  protected
      * @param   string prefix default ''
      * @return  string
      * @throws  lang.IllegalStateException in case the generated class name already exists!
@@ -59,7 +57,6 @@
     /**
      * Sets up test case
      *
-     * @access  public
      */
     public function setUp() {
       try {
@@ -99,24 +96,22 @@
     /**
      * Test loadClass() method
      *
-     * @access  public
      */
     #[@test]
     public function loadClass() {
-      $class= &$this->classloader->loadClass($this->classname);
+      $class= $this->classloader->loadClass($this->classname);
       $class && $this->assertEquals($class->getName(), $this->classname);
     }
     
     /**
      * Test class implements the interface from the archive
      *
-     * @access  public
      */
     #[@test]
     public function classImplementsArchivedInterface() {
       if (
-        $class= &$this->classloader->loadClass($this->classname) &&
-        $interface= &$this->classloader->loadClass($this->interfacename)
+        $class= $this->classloader->loadClass($this->classname) &&
+        $interface= $this->classloader->loadClass($this->interfacename)
       ) {
         $interfaces= new HashSet();
         $interfaces->addAll($class->getInterfaces());
@@ -127,13 +122,12 @@
     /**
      * Test class implements the interface from the archive
      *
-     * @access  public
      */
     #[@test]
     public function classImplementsComparatorInterface() {
       if (
-        $class= &$this->classloader->loadClass($this->classname) &&
-        $interface= &XPClass::forName('util.Comparator')
+        $class= $this->classloader->loadClass($this->classname) &&
+        $interface= XPClass::forName('util.Comparator')
       ) {
         $interfaces= new HashSet();
         $interfaces->addAll($class->getInterfaces());

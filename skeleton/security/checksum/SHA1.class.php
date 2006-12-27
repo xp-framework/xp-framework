@@ -18,24 +18,20 @@
     /**
      * Create a new checksum from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.checksum.SHA1
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       return new SHA1(sha1($str));
     }
 
     /**
      * Create a new checksum from a file object
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &security.checksum.SHA1
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       return new SHA1(sha1_file($file->uri));
     }
   }

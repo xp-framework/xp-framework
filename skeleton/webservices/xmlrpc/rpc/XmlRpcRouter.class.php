@@ -52,30 +52,27 @@
     /**
      * Create a request object.
      *
-     * @access  protected
      * @return  &webservices.xmlrpc.rpc.XmlRpcRequest
      */
-    public function &_request() {
+    public function _request() {
       return new XmlRpcRequest();
     }
 
     /**
      * Create a response object.
      *
-     * @access  protected
      * @return  &webservices.xmlrpc.rpc.XmlRpcResponse
      */
-    public function &_response() {
+    public function _response() {
       return new XmlRpcResponse();
     }
     
     /**
      * Create a message object.
      *
-     * @access  protected
      * @return  &webservices.xmlrpc.XmlRpcResponseMessage
      */
-    public function &_message() {
+    public function _message() {
       return new XmlRpcResponseMessage();
     }
   }

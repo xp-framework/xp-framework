@@ -23,7 +23,6 @@
     /**
      * Construct
      *
-     * @access  public
      * @param   int minWords
      */
     public function __construct($minWords) {
@@ -33,7 +32,6 @@
     /**
      * Check a given value
      *
-     * @access  public
      * @param   array value
      * @return  string error or NULL on success
      */

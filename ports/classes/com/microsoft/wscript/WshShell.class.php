@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  private
      */    
     public function __construct() {
       parent::__construct('WScript.Shell');
@@ -28,11 +27,9 @@
     /**
      * Retrieves instance of this object
      *
-     * @model   static
-     * @access  public
      * @return  &com.microsoft.wscript.WshShell
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
       
       if (!$instance) $instance= new WshShell();

@@ -16,7 +16,6 @@
     /**
      * Basics: Tests nothing is caught when nothing is thrown
      *
-     * @access  public
      */
     #[@test]
     public function noException() {
@@ -30,7 +29,6 @@
     /**
      * Basics: Tests thrown exception is caught
      *
-     * @access  public
      */
     #[@test]
     public function thrownExceptionCaught() {
@@ -49,7 +47,6 @@
      * Basics: Tests thrown exception is caught in the correct catch
      * block.
      *
-     * @access  public
      */
     #[@test]
     public function multipleCatches() {

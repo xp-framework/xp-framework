@@ -20,13 +20,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   img.Image an image object
      * @param   img.ImgStyle a style object
      */
-    public function __construct(&$i, &$s) {
-      $this->image= &$i;
-      $this->style= &$s;
+    public function __construct($i, $s) {
+      $this->image= $i;
+      $this->style= $s;
       
     }
   }

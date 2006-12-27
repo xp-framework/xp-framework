@@ -28,7 +28,6 @@
      * implementation, nevertheless, it is a good idea to call 
      * parent::initialize() if you override this method.
      *
-     * @access  public
      */
     public function initialize() {
     }
@@ -36,17 +35,15 @@
     /**
      * Retrieves the session or NULL if none exists
      *
-     * @access  public
      * @return  &scriptlet.HttpSession session object
      */
-    public function &getSession() {
+    public function getSession() {
       return $this->session;
     }
 
     /**
      * Returns whether a session exists
      *
-     * @access  public
      * @return  bool
      */
     public function hasSession() {
@@ -56,18 +53,16 @@
     /**
      * Sets session
      *
-     * @access  public
      * @param   &scriptlet.HttpSession session
      */
-    public function setSession(&$s) {
-      $this->session= &$s;
+    public function setSession($s) {
+      $this->session= $s;
     }
 
     /**
      * Returns environment value or the value of default if the 
      * specified environment value cannot be found
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL
      * @return  string
@@ -79,7 +74,6 @@
     /**
      * Retrieve all cookies
      *
-     * @access  public
      * @return  peer.http.Cookie[]
      */
     public function getCookies() {
@@ -101,7 +95,6 @@
      *   }
      * </code>
      *
-     * @access  public
      * @param   string name
      * @return  bool
      */
@@ -112,11 +105,10 @@
     /**
      * Retrieve cookie by it's name
      *
-     * @access  public
      * @param   mixed default default NULL the default value if cookie is non-existant
      * @return  &peer.http.Cookie
      */
-    public function &getCookie($name, $default= NULL) {
+    public function getCookie($name, $default= NULL) {
       if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
     }
 
@@ -125,7 +117,6 @@
      * Typical request headers are: Accept, Accept-Charset, Accept-Encoding,
      * Accept-Language, Connection, Host, Keep-Alive, Referer, User-Agent
      *
-     * @access  public
      * @param   string name Header
      * @param   mixed default default NULL the default value if header is non-existant
      * @return  string Header value
@@ -139,7 +130,6 @@
      * Returns a request variable by its name or NULL if there is no such
      * request variable
      *
-     * @access  public
      * @param   string name Parameter name
      * @param   mixed default default NULL the default value if parameter is non-existant
      * @return  string Parameter value
@@ -152,7 +142,6 @@
     /**
      * Returns whether the specified request variable is set
      *
-     * @access  public
      * @param   string name Parameter name
      * @return  bool
      */
@@ -163,7 +152,6 @@
     /**
      * Sets a request parameter
      *
-     * @access  public
      * @param   string name Parameter name
      * @param   mixed value
      */
@@ -174,17 +162,15 @@
     /**
      * Sets request's URI
      *
-     * @access  public
      * @param   peer.URL uri a uri representated by peer.URL
      */
-    public function setURI(&$uri) {
-      $this->uri= &$uri;
+    public function setURI($uri) {
+      $this->uri= $uri;
     }
     
     /**
      * Retrieves the requests absolute URI as an URL object
      *
-     * @access  public
      * @return  string
      */
     #[@deprecated]
@@ -195,17 +181,15 @@
     /**
      * Retrieves the requests absolute URI as an URL object
      *
-     * @access  public
      * @return  peer.URL
      */
-    public function &getURL() {
+    public function getURL() {
       return $this->uri;
     }
     
     /**
      * Retrieves session id from request parameters
      *
-     * @access  public
      * @return  string session's id
      */
     public function getSessionId() {
@@ -215,17 +199,15 @@
     /**
      * Sets request parameters
      *
-     * @access  public
      * @param   &array params
      */
-    public function setParams(&$params) {
-      $this->params= &$params;
+    public function setParams($params) {
+      $this->params= $params;
     }
 
     /**
      * Gets all request parameters
      *
-     * @access  public
      * @return  array params
      */
     public function getParams() {
@@ -235,12 +217,11 @@
     /**
      * Sets request data.
      *
-     * @access  public
      * @param   &string data
      * @see     xp://scriptlet.HttpScriptlet#_handleMethod
      */
-    public function setData(&$data) {
-      $this->data= &$data;
+    public function setData($data) {
+      $this->data= $data;
     }
     
     /**
@@ -251,10 +232,9 @@
      * This is especially useful for the SOAP implementation where the
      * entire request body resembles the SOAP message (no parameters).
      *
-     * @access  public
      * @return  &string data
      */
-    public function &getData() {
+    public function getData() {
       if (NULL === $this->data) {
         $fd= fopen('php://input', 'r');
         $this->data= '';
@@ -270,7 +250,6 @@
      * Returns the query string from its environment variable 
      * QUERY_STRING, decoding it if necessary.
      *
-     * @access  public
      * @return  string
      */
     public function getQueryString() {
@@ -280,7 +259,6 @@
     /**
      * Retrieve request content type
      *
-     * @access  public
      * @return  string
      */
     public function getContentType() {
@@ -290,7 +268,6 @@
     /**
      * Returns whether this request contains multipart data (file uploads)
      *
-     * @access  public
      * @return  bool
      */
     public function isMultiPart() {

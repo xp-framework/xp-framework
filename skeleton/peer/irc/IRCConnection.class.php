@@ -55,44 +55,40 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &peer.irc.IRCUser user
      * @param   string server
      * @param   int port default 6667
      */
-    public function __construct(&$user, $server, $port= 6667) {
-      $this->user= &$user;
+    public function __construct($user, $server, $port= 6667) {
+      $this->user= $user;
       $this->sock= new Socket($server, $port);
     }
     
     /**
      * Adds a listener
      *
-     * @access  public
      * @see     xp://peer.irc.IRCConnectionListener
      * @param   &peer.irc.IRCConnectionListener listener
      * @return  &peer.irc.IRCConnectionListener the listener added
      */
-    public function &addListener(&$listener) {
-      $this->listeners[]= &$listener;
+    public function addListener($listener) {
+      $this->listeners[]= $listener;
       return $listener;
     }
     
     /**
      * Set a logger category for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   
     /**
      * Opens connection to the IRC server. Also sets the socket to 
      * blocking mode.
      *
-     * @access  public
      * @see     xp://peer.Socket#connect
      * @see     xp://peer.Socket#setBlocking
      * @throws  peer.SocketException in case connecting fails
@@ -106,7 +102,6 @@
     /**
      * Notify all listeners
      *
-     * @access  protected
      * @param   string event
      * @param   mixed* parameters
      */
@@ -121,14 +116,13 @@
           $function, 
           var_export(array_slice($a, 1), 1)
         );
-        call_user_func_array(array(&$this->listeners[$i], $function), $a);
+        call_user_func_array(array($this->listeners[$i], $function), $a);
       }
     }
     
     /**
      * Process a single line of read data
      *
-     * @access  public
      * @param   string r the data
      * @return  bool TRUE when line was successfully processed
      */
@@ -243,7 +237,6 @@
     /**
      * Set nickname and update this user's nickname.
      *
-     * @access  public
      * @param   string nick
      * @return  bool success TRUE in case the command could be sent
      * @throws  lang.IllegalStateException in case the socket is not connected
@@ -260,7 +253,6 @@
     /**
      * Join a channel
      *
-     * @access  public
      * @param   string channel without leading #
      * @param   string keyword default NULL
      * @return  bool success TRUE in case the command could be sent
@@ -278,7 +270,6 @@
     /**
      * Leave a channel
      *
-     * @access  public
      * @param   string channel without leading #
      * @return  bool success TRUE in case the command could be sent
      * @throws  lang.IllegalStateException in case the socket is not connected
@@ -295,7 +286,6 @@
     /**
      * Wrapper around writeln() that sends a PRIVMSG
      *
-     * @access  public
      * @param   string dest either a nick or a channel (beginning with "#")
      * @param   string format
      * @param   mixed* format_arguments
@@ -309,7 +299,6 @@
     /**
      * Wrapper around writeln() that sends a PRIVMSG with an ACTION
      *
-     * @access  public
      * @param   string dest either a nick or a channel (beginning with "#")
      * @param   string format
      * @param   mixed* format_arguments
@@ -324,7 +313,6 @@
      * The main loop in which the socket is polled for data, notifying
      * the attached listeners of events.
      *
-     * @access  public
      * @throws  lang.IllegalStateException in case the socket is not connected
      * @throws  io.IOException in case registration failed
      */
@@ -369,7 +357,6 @@
     /**
      * Close the communication socket. Issues a QUIT before 
      *
-     * @access  public
      * @see     xp://peer.Socket#close
      * @return  bool success
      */
@@ -387,7 +374,6 @@
      * Directly read a line off the socket. The returned line has any 
      * trailing CRLF trimmed off.
      *
-     * @access  public
      * @see     xp://peer.Socket#readLine
      * @return  string or FALSE to indicate failure
      */    
@@ -417,7 +403,6 @@
      * string that can be written e.g. as a PRIVMSG (including the PRIVMSG
      * command and destination). This limit is not checked upon.
      *
-     * @access  public
      * @see     xp://peer.Socket#write
      * @param   string format
      * @param   mixed* formatargs

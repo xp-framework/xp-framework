@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string dn default NULL "distinct name"
      */
     public function __construct($dn= NULL, $attrs= array()) {
@@ -32,11 +31,10 @@
     /**
      * Decode entries (recursively, if needed)
      *
-     * @access  private
      * @param   &mixed v
      * @return  string decoded entry
      */
-    public function _decode(&$v) {
+    public function _decode($v) {
       if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
         $v[$i]= $this->_decode($v[$i]);
         return $v;
@@ -48,19 +46,17 @@
      * Creates an LDAP from the raw return data of PHP's ldap_* functions
      * Also performs decoding on the attributes.
      *
-     * @model   static
-     * @access  public
      * @param   &mixed data return value from ldap_* functions
      * @return  &peer.ldap.LDAPEntry object
      */
-    public static function &fromData(&$data) {
+    public static function fromData($data) {
       $e= new LDAPEntry($data['dn']);
       unset($data['dn']);
       foreach (array_keys($data) as $key) {
         if ('count' == $key || is_int($key)) continue;
         
         if (is_array($data[$key])) {
-          $e->attributes[$key]= array_map(array(&$e, '_decode'), $data[$key]);
+          $e->attributes[$key]= array_map(array($e, '_decode'), $data[$key]);
         } else {
           $e->attributes[$key]= $e->_decode($data[$key]);
         }
@@ -73,7 +69,6 @@
     /**
      * Set this entry's DN (distinct name)
      *
-     * @access  public
      * @param   string dn
      */
     public function setDN($dn) {
@@ -83,7 +78,6 @@
     /**
      * Retrieve this entry's DN (distinct name)
      *
-     * @access  public
      * @return  string DN
      */
     public function getDN() {
@@ -93,7 +87,6 @@
     /**
      * Set attribute
      *
-     * @access  public
      * @param   string key
      * @param   mixed value
      */
@@ -108,7 +101,6 @@
      *
      * Note: If the value does not exist, NULL is returned
      *
-     * @access  public
      * @param   string key
      * @param   int idx default -1
      * @return  mixed attribute
@@ -123,7 +115,6 @@
     /**
      * Retrieve all attributes
      *
-     * @access  public
      * @return  array
      */
     public function getAttributes() {
@@ -133,7 +124,6 @@
     /**
      * Retrieve a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

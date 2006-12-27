@@ -20,7 +20,6 @@
     /**
      * Test basic write operations.
      *
-     * @access  public
      */
     #[@test]
     public function testWrite() {
@@ -34,7 +33,6 @@
     /**
      * Test read operation
      *
-     * @access  public
      */
     #[@test]
     public function testRead() {
@@ -63,7 +61,6 @@
     /**
      * Test overwriting parts of the stream
      *
-     * @access  public
      */
     #[@test]
     public function testOverwrite() {
@@ -81,7 +78,6 @@
     /**
      * Test seeking
      *
-     * @access  public
      */
     #[@test]
     public function testSeekTell() {
@@ -98,7 +94,6 @@
     /**
      * Test truncating
      *
-     * @access  public
      */
     #[@test]
     public function testTruncate() {
@@ -120,7 +115,6 @@
      * Test that the file pointer is rewound when a stream is closed
      * and reopened
      *
-     * @access  public
      */
     #[@test]
     public function positionAfterReOpen() {

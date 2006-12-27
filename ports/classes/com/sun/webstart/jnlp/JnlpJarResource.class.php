@@ -30,7 +30,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string href
      * @param   string version default NULL
      */
@@ -42,7 +41,6 @@
     /**
      * Set Href
      *
-     * @access  public
      * @param   string href
      */
     public function setHref($href) {
@@ -52,7 +50,6 @@
     /**
      * Get Href
      *
-     * @access  public
      * @return  string
      */
     public function getHref() {
@@ -62,7 +59,6 @@
     /**
      * Get JAR location
      *
-     * @access  public
      * @return  string
      */
     public function getLocation() {
@@ -72,7 +68,6 @@
     /**
      * Set Version
      *
-     * @access  public
      * @param   string version
      */
     public function setVersion($version) {
@@ -82,7 +77,6 @@
     /**
      * Get Version
      *
-     * @access  public
      * @return  string
      */
     public function getVersion() {
@@ -92,7 +86,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getTagName() { 
@@ -102,7 +95,6 @@
     /**
      * Get attributes
      *
-     * @access  public
      * @return  array
      */
     public function getTagAttributes() { 

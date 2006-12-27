@@ -21,12 +21,11 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       // FIXME: Put into ini-file?
       static $types= array(
         'training'    => 1,
@@ -82,7 +81,7 @@
         throw($e);
       }
       
-      $events= &$response->addFormResult(new Node('events', NULL, array(
+      $events= $response->addFormResult(new Node('events', NULL, array(
         'team'  => intval($team),
         'type'  => ($type ? $type : '0'),
         'all'   => intval($all),
@@ -94,14 +93,14 @@
         $description= $record['description'];
         unset($record['description']);
         
-        $n= &$events->addChild(Node::fromArray($record, 'event'));
+        $n= $events->addChild(Node::fromArray($record, 'event'));
         $n->addChild(FormresultHelper::markupNodeFor('description', $description));
       }
       
       // Create context date
       $date= NULL;
       if ($year && $month) {
-        $date= &Date::fromString(sprintf('%d-%d-%d',
+        $date= Date::fromString(sprintf('%d-%d-%d',
           $year,
           $month,
           $day ? $day : 1

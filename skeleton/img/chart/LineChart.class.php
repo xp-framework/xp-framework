@@ -21,7 +21,6 @@
     /**
      * Helper method which returns the largest value from all series
      *
-     * @access  public
      * @return  float
      */
     public function max() {
@@ -39,7 +38,6 @@
     /**
      * Helper method which returns the smallest value from all series
      *
-     * @access  public
      * @return  float
      */
     public function min() {
@@ -58,7 +56,6 @@
      * Set range. Pass RANGE_AUTO to upper, lower and/or step to have 
      * this value calculated automatically (default behaviour).
      *
-     * @access  public
      * @param   float lower
      * @param   float upper
      * @param   float step
@@ -70,7 +67,6 @@
     /**
      * Get range
      *
-     * @access  public
      * @param   float[] the lower and upper range and the range setp, in this order
      */
     public function getRange() {
@@ -81,7 +77,6 @@
      * Set distance between the bars. Pass the DISTANCE_AUTO constant to
      * have it calculated automatically.
      *
-     * @access  public
      * @param   int distance
      */
     public function setDistance($distance) {
@@ -91,7 +86,6 @@
     /**
      * Get distance between the bars
      *
-     * @access  public
      * @return  int
      */
     public function getDistance() {
@@ -101,7 +95,6 @@
     /**
      * Set flag to accumulate series
      *
-     * @access public
      * @return bool
      */
     public function getAccumulated() {
@@ -111,7 +104,6 @@
     /**
      * Returns flag to accumulate series
      *
-     * @access public
      * @param bool bool The flag
      */
     public function setAccumulated($bool) {

@@ -22,7 +22,6 @@
     /**
      * Sets up the tests
      *
-     * @access  public
      */
     public function setUp() {
       if (!isset($_SERVER['_'])) throw(new PrerequisitesNotMetError(
@@ -35,7 +34,6 @@
     /**
      * Run XP script and check exitcode
      *
-     * @access  public
      * @param   int code expected exitcode
      * @param   string source sourcecode to execute
      */
@@ -46,7 +44,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function emptyBootstrap() {
@@ -56,7 +53,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function useOfExistingFile() {
@@ -66,7 +62,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function useOfNonexistingFile() {
@@ -76,7 +71,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function recursiveInclusion() {
@@ -91,7 +85,6 @@
     /**
      * Test broken behaviour described in Bug #19
      *
-     * @access  public
      */
     #[@test]
     public function recursiveInclusionWithTicks() {

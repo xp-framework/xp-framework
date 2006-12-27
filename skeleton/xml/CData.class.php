@@ -29,7 +29,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string cdata
      */
     public function __construct($cdata) {

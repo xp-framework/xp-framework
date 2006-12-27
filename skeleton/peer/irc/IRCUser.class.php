@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string nick
      * @param   string realname default NULL (defaults to nickname)
      * @param   string username default NULL (defaults to current username)
@@ -37,7 +36,6 @@
     /**
      * Set Nick
      *
-     * @access  public
      * @param   string nick
      */
     public function setNick($nick) {
@@ -47,7 +45,6 @@
     /**
      * Get Nick
      *
-     * @access  public
      * @return  string
      */
     public function getNick() {
@@ -57,7 +54,6 @@
     /**
      * Set Username
      *
-     * @access  public
      * @param   string username
      */
     public function setUsername($username) {
@@ -67,7 +63,6 @@
     /**
      * Get Username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -77,7 +72,6 @@
     /**
      * Set Hostname
      *
-     * @access  public
      * @param   string hostname
      */
     public function setHostname($hostname) {
@@ -87,7 +81,6 @@
     /**
      * Get Hostname
      *
-     * @access  public
      * @return  string
      */
     public function getHostname() {
@@ -97,7 +90,6 @@
     /**
      * Set Realname
      *
-     * @access  public
      * @param   string realname
      */
     public function setRealname($realname) {
@@ -107,7 +99,6 @@
     /**
      * Get Realname
      *
-     * @access  public
      * @return  string
      */
     public function getRealname() {

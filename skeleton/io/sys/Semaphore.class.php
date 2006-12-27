@@ -34,15 +34,13 @@
      * Note: A second call to this function with the same key will actually return
      * the same semaphore
      *
-     * @model   static
-     * @access  public
      * @param   int key
      * @param   int maxAquire default 1
      * @param   int permissions default 0666
      * @return  &io.sys.Semaphore a semaphore
      * @throws  io.IOException
      */
-    public static function &get($key, $maxAquire= 1, $permissions= 0666) {
+    public static function get($key, $maxAquire= 1, $permissions= 0666) {
       static $semaphores= array();
       
       if (!isset($semaphores[$key])) {
@@ -54,7 +52,7 @@
           throw(new IOException('Could not get semaphore '.$key));
         }
         
-        $semaphores[$key]= &$s;
+        $semaphores[$key]= $s;
       }
       
       return $semaphores[$key];
@@ -66,7 +64,6 @@
      * block forever if acquiring the semaphore would cause its max_acquire value to 
      * be exceeded. 
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException
      */
@@ -81,7 +78,6 @@
      * Release a semaphore
      * After releasing the semaphore, acquire() may be called to re-acquire it. 
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException
      * @see     xp://io.sys.Semaphore#acquire
@@ -97,7 +93,6 @@
      * Remove a semaphore
      * After removing the semaphore, it is no more accessible.
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException
      */

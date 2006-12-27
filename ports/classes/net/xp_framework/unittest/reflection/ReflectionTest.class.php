@@ -22,17 +22,15 @@
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
-      $this->class= &XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
+      $this->class= XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
     }
  
     /**
      * Tests the getName() method
      *
      * @see     xp://lang.XPClass#getName
-     * @access  public
      */
     #[@test]
     public function name() {
@@ -46,11 +44,10 @@
      * Tests instanciation
      *
      * @see     xp://lang.XPClass#newInstance
-     * @access  public
      */
     #[@test]
     public function instanciation() {
-      $instance= &$this->class->newInstance(1);
+      $instance= $this->class->newInstance(1);
       $this->assertObject($instance);
       $this->assertClass($instance, 'net.xp_framework.unittest.reflection.TestClass');
       $this->assertTrue($this->class->isInstance($instance));
@@ -60,7 +57,6 @@
      * Tests subclass
      *
      * @see     xp://lang.XPClass#isSubclassOf
-     * @access  public
      */
     #[@test]
     public function subClass() {
@@ -73,11 +69,10 @@
      * Tests the parent class
      *
      * @see     xp://lang.XPClass#getParentClass
-     * @access  public
      */
     #[@test]
     public function parentClass() {
-      $parent= &$this->class->getParentClass();
+      $parent= $this->class->getParentClass();
       $this->assertClass($parent, 'lang.XPClass');
       $this->assertEquals('lang.Object', $parent->getName());
       $this->assertNull($parent->getParentClass());
@@ -88,7 +83,6 @@
      *
      * @see     xp://lang.XPClass#isInterface
      * @see     xp://lang.XPClass#getInterfaces
-     * @access  public
      */
     #[@test]
     public function interfaces() {
@@ -106,12 +100,11 @@
      *
      * @see     xp://lang.XPClass#hasConstructor
      * @see     xp://lang.XPClass#getConstructor
-     * @access  public
      */
     #[@test]
     public function constructor() {
       $this->assertTrue($this->class->hasConstructor());
-      if ($constructor= &$this->class->getConstructor()) {
+      if ($constructor= $this->class->getConstructor()) {
         $this->assertClass($constructor, 'lang.reflect.Constructor');
       }
     }
@@ -120,11 +113,10 @@
      * Tests the field reflection
      *
      * @see     xp://lang.XPClass#getFields
-     * @access  public
      */
     #[@test]
     public function fields() {
-      $fields= &$this->class->getFields();
+      $fields= $this->class->getFields();
       $this->assertArray($fields);
       foreach ($fields as $field) {
         $this->assertClass($field, 'lang.reflect.Field');
@@ -136,12 +128,11 @@
      *
      * @see     xp://lang.XPClass#getField
      * @see     xp://lang.XPClass#hasField
-     * @access  public
      */
     #[@test]
     public function dateField() {
       $this->assertTrue($this->class->hasField('date'));
-      if ($field= &$this->class->getField('date')) {
+      if ($field= $this->class->getField('date')) {
         $this->assertClass($field, 'lang.reflect.Field');
         $this->assertEquals('date', $field->getName());
         $this->assertEquals('util.Date', $field->getType());
@@ -153,11 +144,10 @@
      * Tests retrieving the "date" field's value
      *
      * @see     xp://lang.reflect.Field#get
-     * @access  public
      */
     #[@test]
     public function dateFieldValue() {
-      if ($field= &$this->class->getField('date')) {
+      if ($field= $this->class->getField('date')) {
         $this->assertClass($field->get($this->class->newInstance()), 'util.Date');
       }
     }
@@ -166,11 +156,10 @@
      * Tests retrieving the "date" field's value on a wrong object
      *
      * @see     xp://lang.reflect.Field#get
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function dateFieldValueOnWrongObject() {
-      if ($field= &$this->class->getField('date')) {
+      if ($field= $this->class->getField('date')) {
         $field->get(new Object());
       }
     }
@@ -179,11 +168,10 @@
      * Tests the method reflection
      *
      * @see     xp://lang.XPClass#getMethods
-     * @access  public
      */
     #[@test]
     public function methods() {
-      $methods= &$this->class->getMethods();
+      $methods= $this->class->getMethods();
       $this->assertArray($methods);
       foreach ($methods as $method) {
         $this->assertClass($method, 'lang.reflect.Method');
@@ -195,17 +183,15 @@
      *
      * @see     xp://lang.XPClass#getMethod
      * @see     xp://lang.XPClass#hasMethod
-     * @access  public
      */
     #[@test]
     public function getDateMethod() {
       $this->assertTrue($this->class->hasMethod('getDate'));
-      if ($method= &$this->class->getMethod('getDate')) {
+      if ($method= $this->class->getMethod('getDate')) {
         $this->assertClass($method, 'lang.reflect.Method');
         $this->assertEquals('getDate', $method->getName(TRUE));
         $this->assertTrue($this->class->equals($method->getDeclaringClass()));
         $this->assertEquals('util.Date', $method->getReturnType());
-        $this->assertTrue($method->returnsReference());
       }
     }
 
@@ -215,13 +201,12 @@
      * @see     xp://lang.reflect.Routine#numArguments
      * @see     xp://lang.reflect.Routine#getArgument
      * @see     xp://lang.reflect.Argument
-     * @access  public
      */
     #[@test]
     public function setDateMethodArguments() {
-      if ($method= &$this->class->getMethod('setDate')) {
+      if ($method= $this->class->getMethod('setDate')) {
         $this->assertEquals(1, $method->numArguments());
-        if ($argument= &$method->getArgument(0)) {
+        if ($argument= $method->getArgument(0)) {
           $this->assertClass($argument, 'lang.reflect.Argument');
           $this->assertEquals('date', $argument->getName());
           $this->assertEquals('util.Date', $argument->getType());
@@ -236,11 +221,10 @@
      * IllegalStateException.
      *
      * @see     xp://lang.reflect.Method#invoke
-     * @access  public
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function invokeSetTrace() {
-      if ($method= &$this->class->getMethod('setTrace')) {
+      if ($method= $this->class->getMethod('setTrace')) {
         $method->invoke($this->class->newInstance(), array(NULL));
       }
     }
@@ -249,11 +233,10 @@
      * Tests invoking the setTrace() method on a wrong object
      *
      * @see     xp://lang.reflect.Method#invoke
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function invokeSetTraceOnWrongObject() {
-      if ($method= &$this->class->getMethod('setTrace')) {
+      if ($method= $this->class->getMethod('setTrace')) {
         $method->invoke(new Object(), array(NULL));
       }
     }
@@ -263,7 +246,6 @@
      *
      * @see     xp://lang.XPClass#getAnnotations
      * @see     xp://lang.XPClass#hasAnnotations
-     * @access  public
      */
     #[@test]
     public function annotations() {
@@ -277,7 +259,6 @@
      *
      * @see     xp://lang.XPClass#getAnnotation
      * @see     xp://lang.XPClass#hasAnnotation
-     * @access  public
      */
     #[@test]
     public function testAnnotation() {
@@ -289,11 +270,10 @@
      * Tests dynamic class loading via forName()
      *
      * @see     xp://lang.XPClass#forName
-     * @access  public
      */
     #[@test]
     public function forName() {
-      $class= &XPClass::forName('util.Date');
+      $class= XPClass::forName('util.Date');
       $this->assertClass($class, 'lang.XPClass');
       $this->assertEquals('util.Date', $class->getName());
     }
@@ -304,22 +284,20 @@
      *
      * @see     xp://lang.ClassNotFoundException
      * @see     xp://lang.XPClass#forName
-     * @access  public
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function nonExistantforName() {
-      $class= &XPClass::forName('class.does.not.Exist');
+      $class= XPClass::forName('class.does.not.Exist');
     }
     
     /**
      * Tests generic return value
      *
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#getMap
-     * @access  public
      */
     #[@test]
     public function genericReturnValue() {
-      $method= &$this->class->getMethod('getMap');
+      $method= $this->class->getMethod('getMap');
       $this->assertEquals('array<string, &lang.Object>', $method->getReturnType());
     }
   }

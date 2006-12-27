@@ -56,21 +56,19 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   mixed url either a string or a peer.URL object
      */
     public function __construct($url) {
-      if (!is('URL', $url)) $this->url= new URL($url); else $this->url= &$url;
+      if (!is('URL', $url)) $this->url= new URL($url); else $this->url= $url;
     }
     
     /**
      * Get a Connection
      *
-     * @access  public
      * @param   string uri
      * @return  &peer.webdav.WebdavConnection
      */
-    public function &getConnection($uri= NULL) {
+    public function getConnection($uri= NULL) {
       $url= new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
       return new WebdavConnection($url);
     }
@@ -78,7 +76,6 @@
     /**
      * Helper Method to set the path
      *
-     * @access  public
      * @param   string path
      */
     public function setPath($path) {
@@ -88,15 +85,14 @@
     /**
      * Do a Head Request to check if file exists
      *
-     * @access  public  
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function exists($uri) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->head();
+        $c= $this->getConnection($uri);
+        $response= $c->head();
       } catch (Exception $e) {
         throw($e);
       }
@@ -106,17 +102,16 @@
     /**
      * Do a Propfind on Webdav server
      *
-     * @access  public
      * @param   string uri, filename or directory
      * @param   string xml, The XML of the Propfind Request (e.g. to select properties)  
      * @param   int depth, default 1
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    public function &read($uri= NULL, $xml= NULL, $depth= '1') {     
+    public function read($uri= NULL, $xml= NULL, $depth= '1') {     
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->propfind(
+        $c= $this->getConnection($uri);
+        $response= $c->propfind(
           $xml,
           array(
             new Header('Depth', $depth)
@@ -131,13 +126,12 @@
     /**
      * Do a Put on Webdav server
      *
-     * @access  public
      * @param   &io.File file
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    public function &put(&$file, $uri= NULL) {  
+    public function put($file, $uri= NULL) {  
       // If no uri or filename is specified, take the original filename  
       if ($uri === NULL) $uri= $file->getFilename();
             
@@ -146,8 +140,8 @@
       
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->put(
+        $c= $this->getConnection($uri);
+        $response= $c->put(
           $file->read($file->size()),
           array(
             new Header('Content-Type', MimeType::getByFilename($uri))
@@ -162,15 +156,14 @@
     /**
      * Do a Get on Webdav server
      *
-     * @access  public
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    public function &get($uri= NULL) {    
+    public function get($uri= NULL) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->get();
+        $c= $this->getConnection($uri);
+        $response= $c->get();
       } catch (Exception $e) {
         throw($e);
       }
@@ -180,16 +173,15 @@
     /**
      * Do a Proppatch request
      *
-     * @access  public
      * @param   string xml, The XML Representation of the Properties
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
-    public function &proppatch($xml, $uri= NULL) {          
+    public function proppatch($xml, $uri= NULL) {          
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->proppatch($xml);
+        $c= $this->getConnection($uri);
+        $response= $c->proppatch($xml);
       } catch (Exception $e) {
         throw($e);
       }
@@ -199,15 +191,14 @@
     /**
      * Do a MkCol Request
      *
-     * @access  public
      * @param   string uri, The uri of the new collection
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function mkcol($uri) {        
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->mkcol();
+        $c= $this->getConnection($uri);
+        $response= $c->mkcol();
       } catch (Exception $e) {
         throw($e);
       }
@@ -217,7 +208,6 @@
     /**
      * Do a Copy Request
      *
-     * @access  public
      * @param   string source
      * @param   string destination
      * @param   bool overwrite, default FALSE
@@ -227,8 +217,8 @@
      */
     public function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
       try {
-        $c= &$this->getConnection($source);
-        $response= &$c->copy(
+        $c= $this->getConnection($source);
+        $response= $c->copy(
           NULL,
           array(
             new Header('Overwrite', $overwrite ? 'T' : 'F'),
@@ -245,7 +235,6 @@
     /**
      * Do a Move Request
      *
-     * @access  public 
      * @param   string source
      * @param   string destination
      * @param   bool overwrite, default FALSE
@@ -254,8 +243,8 @@
      */
     public function move($source, $destination, $overwrite= FALSE) {   
       try {
-        $c= &$this->getConnection($source);
-        $response= &$c->move(
+        $c= $this->getConnection($source);
+        $response= $c->move(
           NULL,
           array(
             new Header('Overwrite', $overwrite ? 'T' : 'F'),
@@ -271,7 +260,6 @@
     /**
      * Do a Lock Request
      *
-     * @access  public  
      * @param   string uri The uri of the collection or file
      * @param   string xml, The XML of the lockrequest
      * @return  &peer.http.HttpResponse response object
@@ -279,8 +267,8 @@
      */
     public function lock($uri, $xml) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->lock(
+        $c= $this->getConnection($uri);
+        $response= $c->lock(
           $xml,
           array(
             new Header('Timeout', 'Infinity'),
@@ -297,7 +285,6 @@
     /**
      * Do a Unlock Request
      *
-     * @access  public
      * @param   string uri, filename or directory
      * @param   string locktoken
      * @return  &peer.http.HttpResponse response object
@@ -305,8 +292,8 @@
      */
     public function unlock($uri, $locktoken) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->unlock(
+        $c= $this->getConnection($uri);
+        $response= $c->unlock(
           NULL,
           array(
             new Header('Lock-Token', $locktoken)
@@ -321,15 +308,14 @@
     /**
      * Do a Delete Request
      *
-     * @access  public  
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function delete($uri) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->delete();
+        $c= $this->getConnection($uri);
+        $response= $c->delete();
       } catch (Exception $e) {
         throw($e);
       }
@@ -339,15 +325,14 @@
     /**
      * Activate VersionControl on a file
      *
-     * @access  public  
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function version($uri) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->version();
+        $c= $this->getConnection($uri);
+        $response= $c->version();
       } catch (Exception $e) {
         throw($e);
       }
@@ -357,15 +342,14 @@
     /**
      * Do a Report Request
      *
-     * @access  public  
      * @param   string uri, filename or directory
      * @return  &peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function report($uri) {    
       try {
-        $c= &$this->getConnection($uri);
-        $response= &$c->report();
+        $c= $this->getConnection($uri);
+        $response= $c->report();
       } catch (Exception $e) {
         throw($e);
       }

@@ -28,7 +28,6 @@
     /**
      * Set name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -38,7 +37,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -48,7 +46,6 @@
     /**
      * Set fileName
      *
-     * @access  public
      * @param   string fileName
      */
     public function setFileName($fileName) {
@@ -58,7 +55,6 @@
     /**
      * Get fileName
      *
-     * @access  public
      * @return  string
      */
     public function getFileName() {
@@ -68,7 +64,6 @@
     /**
      * Set title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -78,7 +73,6 @@
     /**
      * Get title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -88,7 +82,6 @@
     /**
      * Set description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -98,7 +91,6 @@
     /**
      * Get description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -108,40 +100,36 @@
     /**
      * Set date
      *
-     * @access  public
      * @param   &util.Date date
      */
-    public function setDate(&$date) {
-      $this->date= &$date;
+    public function setDate($date) {
+      $this->date= $date;
     }
 
     /**
      * Get date
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
 
     /**
      * Set image
      *
-     * @access  public
      * @param   &de.thekid.dialog.AlbumImage image
      */
-    public function setImage(&$image) {
-      $this->image= &$image;
+    public function setImage($image) {
+      $this->image= $image;
     }
 
     /**
      * Get image
      *
-     * @access  public
      * @return  &de.thekid.dialog.AlbumImage
      */
-    public function &getImage() {
+    public function getImage() {
       return $this->image;
     }
 

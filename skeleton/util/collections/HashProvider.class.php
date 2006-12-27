@@ -32,22 +32,18 @@
     /**
      * Static initializer. Sets DJBX33A as default hashing implementation.
      * 
-     * @model   static
-     * @access  public
      */
     public static function __static() {
-      $self= &HashProvider::getInstance();
+      $self= HashProvider::getInstance();
       $self->setImplementation(new DJBX33AHashImplementation());
     }
     
     /**
      * Retrieve sole instance of this object
      *
-     * @model   static
-     * @access  public
      * @return  &util.collections.HashProvider
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
 
       if (!isset($instance)) {
@@ -63,39 +59,35 @@
     /**
      * Returns hash for a given string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  int
      */
     public static function hashOf($str) {
-      $self= &HashProvider::getInstance();
+      $self= HashProvider::getInstance();
       return $self->impl->hashOf($str);
     }
 
     /**
      * Set hashing implementation
      * 
-     * @access  public
      * @param   &util.collections.HashImplementation impl
      * @throws  lang.IllegalArgumentException when impl is not a HashImplementation
      */
-    public function setImplementation(&$impl) {
+    public function setImplementation($impl) {
       if (!is('util.collections.HashImplementation', $impl)) {
         throw(new IllegalArgumentException(
           'Implementation is not a HashImplementation, '.xp::typeOf($impl).' given'
         ));
       }
-      $this->impl= &$impl;
+      $this->impl= $impl;
     }
 
     /**
      * Get hashing implementation
      * 
-     * @access  public
      * @return  &util.collections.HashImplementation
      */
-    public function &getImplementation() {
+    public function getImplementation() {
       return $this->impl;
     }
   }

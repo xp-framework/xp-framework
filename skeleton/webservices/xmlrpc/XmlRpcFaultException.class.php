@@ -18,28 +18,25 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &webservices.xmlrpc.XmlRpcFault fault
      */
-    public function __construct(&$fault) {
+    public function __construct($fault) {
       parent::__construct($fault->faultString);
-      $this->fault= &$fault;
+      $this->fault= $fault;
     }
 
     /**
      * Get Fault
      *
-     * @access  public
      * @return  &webservices.xmlrpc.XmlRpcFault
      */
-    public function &getFault() {
+    public function getFault() {
       return $this->fault;
     }
     
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

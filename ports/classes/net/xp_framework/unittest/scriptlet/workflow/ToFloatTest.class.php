@@ -21,17 +21,15 @@
     /**
      * Return the caster
      *
-     * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function &caster() {
+    public function caster() {
       return new ToFloat();
     }
 
     /**
      * Test whole numbers
      *
-     * @access  public
      */
     #[@test]
     public function wholeNumbers() {
@@ -43,7 +41,6 @@
     /**
      * Test fractional numbers
      *
-     * @access  public
      */
     #[@test]
     public function fractionalNumbers() {
@@ -55,7 +52,6 @@
     /**
      * Test empty input
      *
-     * @access  public
      */
     #[@test]
     public function emptyInput() {

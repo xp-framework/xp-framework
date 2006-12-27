@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Dec 20 12:48:40 CET 2006
-@status: discussion, ends Wed Dec 27 12:00:00 CET 2006
+@status: implemented, Wed Dec 27 15:30:55 CET 2006
 @category: <infrastructure>
 
 Scope of Change

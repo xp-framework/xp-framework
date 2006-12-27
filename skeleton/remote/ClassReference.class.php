@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string classname
      */
     public function __construct($classname) {
@@ -27,7 +26,6 @@
     /**
      * Retrieved referenced class name
      *
-     * @access  public
      * @return  string
      */
     public function referencedName() {
@@ -37,18 +35,16 @@
     /**
      * Retrieved referenced class name
      *
-     * @access  public
      * @param   lang.ClassLoader cl default NULL
      * @return  &lang.XPClass
      */
-    public function &referencedClass($cl= NULL) {
+    public function referencedClass($cl= NULL) {
       return XPClass::forName($this->classname, $cl);
     }
 
     /**
      * Returns the hash code for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {

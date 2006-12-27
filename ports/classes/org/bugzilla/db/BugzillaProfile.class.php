@@ -27,11 +27,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugzillaProfile::getPeer()); {
+      with ($peer= BugzillaProfile::getPeer()); {
         $peer->setTable('profiles');
         $peer->setConnection('bugzilla');
         $peer->setIdentity('userid');
@@ -52,56 +50,51 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int userid
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByUserid($userid) {
-      $peer= &BugzillaProfile::getPeer();
+    public function getByUserid($userid) {
+      $peer= BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('userid', $userid, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "login_name"
      *
-     * @access  static
      * @param   string login_name
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByLogin_name($login_name) {
-      $peer= &BugzillaProfile::getPeer();
+    public function getByLogin_name($login_name) {
+      $peer= BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('login_name', $login_name, EQUAL))));
     }
     
     /**
      * Gets an instance of this object by person_id
      *
-     * @access  static
      * @param   int person_id
      * @return  &org.bugzilla.db.BugzillaProfile object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByPerson_id($person_id) {
-      $peer= &BugzillaProfile::getPeer();
+    public function getByPerson_id($person_id) {
+      $peer= BugzillaProfile::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('person_id', $person_id, EQUAL))));
     }
 
     /**
      * Retrieves userid
      *
-     * @access  public
      * @return  int
      */
     public function getUserid() {
@@ -111,7 +104,6 @@
     /**
      * Sets userid
      *
-     * @access  public
      * @param   int userid
      * @return  int the previous value
      */
@@ -122,7 +114,6 @@
     /**
      * Retrieves login_name
      *
-     * @access  public
      * @return  string
      */
     public function getLogin_name() {
@@ -132,7 +123,6 @@
     /**
      * Sets login_name
      *
-     * @access  public
      * @param   string login_name
      * @return  string the previous value
      */
@@ -143,7 +133,6 @@
     /**
      * Retrieves cryptpassword
      *
-     * @access  public
      * @return  string
      */
     public function getCryptpassword() {
@@ -153,7 +142,6 @@
     /**
      * Sets cryptpassword
      *
-     * @access  public
      * @param   string cryptpassword
      * @return  string the previous value
      */
@@ -164,7 +152,6 @@
     /**
      * Retrieves realname
      *
-     * @access  public
      * @return  string
      */
     public function getRealname() {
@@ -174,7 +161,6 @@
     /**
      * Sets realname
      *
-     * @access  public
      * @param   string realname
      * @return  string the previous value
      */
@@ -185,7 +171,6 @@
     /**
      * Retrieves disabledtext
      *
-     * @access  public
      * @return  string
      */
     public function getDisabledtext() {
@@ -195,7 +180,6 @@
     /**
      * Sets disabledtext
      *
-     * @access  public
      * @param   string disabledtext
      * @return  string the previous value
      */
@@ -206,7 +190,6 @@
     /**
      * Retrieves mybugslink
      *
-     * @access  public
      * @return  int
      */
     public function getMybugslink() {
@@ -216,7 +199,6 @@
     /**
      * Sets mybugslink
      *
-     * @access  public
      * @param   int mybugslink
      * @return  int the previous value
      */
@@ -227,7 +209,6 @@
     /**
      * Retrieves person_id
      *
-     * @access  public
      * @return  int
      */
     public function getPerson_id() {
@@ -237,7 +218,6 @@
     /**
      * Sets person_id
      *
-     * @access  public
      * @param   int person_id
      * @return  int the previous value
      */
@@ -248,28 +228,25 @@
     /**
      * Retrieves refreshed_when
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getRefreshed_when() {
+    public function getRefreshed_when() {
       return $this->refreshed_when;
     }
       
     /**
      * Sets refreshed_when
      *
-     * @access  public
      * @param   &util.Date refreshed_when
      * @return  &util.Date the previous value
      */
-    public function &setRefreshed_when(&$refreshed_when) {
+    public function setRefreshed_when($refreshed_when) {
       return $this->_change('refreshed_when', $refreshed_when);
     }
 
    /**
      * Set Extern_id
      *
-     * @access  public
      * @param   string extern_id
      * @return  string the previous value
      */
@@ -280,7 +257,6 @@
     /**
      * Get Extern_id
      *
-     * @access  public
      * @return  string
      */
     public function getExtern_id() {

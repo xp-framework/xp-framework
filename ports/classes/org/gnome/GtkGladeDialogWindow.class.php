@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string gladefile
      * @param   string windowname
      */
@@ -29,17 +28,15 @@
     /**
      * Creates the main window
      *
-     * @access  protected
      */
     public function create() {
       parent::create();
-      $this->window->connect('delete-event', array(&$this, 'destroy'));
+      $this->window->connect('delete-event', array($this, 'destroy'));
     }
     
     /**
      * Changes this dialog's modal state
      *
-     * @access  public
      * @param   bool modal
      */
     public function setModal($modal) {
@@ -49,7 +46,6 @@
     /**
      * Show this dialog window
      *
-     * @access  public
      * @return  bool
      */
     public function show() {
@@ -69,7 +65,6 @@
     /**
      * Close (hide) this window
      *
-     * @access  public
      */
     public function close() {
       $this->window->hide_all();
@@ -79,7 +74,6 @@
     /**
      * Callback for when the window is about to be destroyed.
      *
-     * @access  public
      */       
     public function destroy() {
       $this->close();

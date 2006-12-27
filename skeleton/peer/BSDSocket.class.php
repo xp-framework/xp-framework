@@ -27,7 +27,6 @@
     /**
      * Set Domain
      *
-     * @access  public
      * @param   int domain one of AF_INET or AF_UNIX
      * @throws  lang.IllegalStateException if socket is already connected
      */
@@ -41,7 +40,6 @@
     /**
      * Get Domain
      *
-     * @access  public
      * @return  int
      */
     public function getDomain() {
@@ -51,7 +49,6 @@
     /**
      * Set Type
      *
-     * @access  public
      * @param   int type one of SOCK_STREAM, SOCK_DGRAM, SOCK_RAW, SOCK_SEQPACKET or SOCK_RDM
      * @throws  lang.IllegalStateException if socket is already connected
      */
@@ -65,7 +62,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  int
      */
     public function getType() {
@@ -75,7 +71,6 @@
     /**
      * Set Protocol
      *
-     * @access  public
      * @see     php://getprotobyname
      * @param   int protocol one of SOL_TCP or SOL_UDP
      * @throws  lang.IllegalStateException if socket is already connected
@@ -90,7 +85,6 @@
     /**
      * Get Protocol
      *
-     * @access  public
      * @return  int
      */
     public function getProtocol() {
@@ -100,7 +94,6 @@
     /**
      * Get last error
      *
-     * @access  public
      * @return  string error
      */  
     public function getLastError() {
@@ -110,7 +103,6 @@
     /**
      * Set socket option
      *
-     * @access  public
      * @param   int level
      * @param   int name
      * @param   mixed value
@@ -127,7 +119,6 @@
     /**
      * Connect
      *
-     * @access  public
      * @return  bool success
      * @throws  peer.ConnectException
      */
@@ -192,7 +183,6 @@
     /**
      * Close socket
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -204,7 +194,6 @@
     /**
      * Set socket blocking
      *
-     * @access  public
      * @param   bool blocking
      * @return  bool success
      * @throws  peer.SocketException
@@ -229,7 +218,6 @@
     /**
      * Returns whether there is data that can be read
      *
-     * @access  public
      * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
      * @return  bool there is data that can be read
      * @throws  peer.SocketException in case of failure
@@ -243,7 +231,7 @@
       }
       
       if (FALSE === ($n= socket_select(
-        $r= array(&$this->_sock),             // Read
+        $r= array($this->_sock),             // Read
         $w= NULL,                             // Write
         $e= NULL,                             // Except
         $tv_sec,
@@ -258,7 +246,6 @@
     /**
      * Returns whether eof has been reached
      *
-     * @access  public
      * @return  bool
      */
     public function eof() {
@@ -268,7 +255,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      * @param   int maxLen
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
      * @return  string data
@@ -288,7 +274,6 @@
     /**
      * Read data from a socket
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -300,7 +285,6 @@
     /**
      * Read data from a socket
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -312,7 +296,6 @@
     /**
      * Read data from a socket (binary-safe)
      *
-     * @access  public
      * @param   int maxLen maximum bytes to read
      * @return  string data
      * @throws  peer.SocketException
@@ -324,7 +307,6 @@
     /**
      * Write a string to the socket
      *
-     * @access  public
      * @param   string str
      * @return  int bytes written
      * @throws  peer.SocketException

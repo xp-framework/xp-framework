@@ -31,7 +31,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   resource fd
      * @see     xp://io.dba.DBAFile#iterator
      */
@@ -45,7 +44,6 @@
      * returns true if next would return an element rather than throwing 
      * an exception.)
      *
-     * @access  public
      * @return  bool
      */
     public function hasNext() {
@@ -60,11 +58,10 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @access  public
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    public function &next() {
+    public function next() {
       if (!is_string($this->_key)) {
         throw(new NoSuchElementException('No more elements'));
       }

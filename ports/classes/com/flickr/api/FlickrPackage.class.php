@@ -17,11 +17,10 @@
     /**
      * Sets the client for this package
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    public function setClient(&$client) {
-      $this->client= &$client;
+    public function setClient($client) {
+      $this->client= $client;
     }    
   }
 ?>

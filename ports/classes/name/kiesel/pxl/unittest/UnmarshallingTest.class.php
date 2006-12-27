@@ -25,7 +25,6 @@
      * expected and actual strings.
      *
      * @see     xp://unittest.TestCase#assertEquals
-     * @access  public
      * @param   string expect
      * @param   string actual
      * @return  bool
@@ -40,7 +39,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -52,11 +50,10 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function loadCatalogue() {
-      $catalogue= &Catalogue::create(new MemoryContainer(
+      $catalogue= Catalogue::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <catalogue>
           <entry id="1" name="foo" path="bar"/>
@@ -70,7 +67,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function saveCatalogue() {
@@ -108,11 +104,10 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function loadPage() {
-      $page= &Page::create(new MemoryContainer(
+      $page= Page::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <page>
           <description>
@@ -135,13 +130,12 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     #[@test]
     public function loadPicture() {
-      $picture= &Picture::create(new MemoryContainer(
+      $picture= Picture::create(new MemoryContainer(
         '<?xml version="1.0"?>
         <picture>
           <name>Foobar</name>

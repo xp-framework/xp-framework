@@ -51,7 +51,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   int type
      * @param   bool identity default FALSE
@@ -82,7 +81,6 @@
     /**
      * Returns whether this attribute is an identity field
      *
-     * @access  public
      * @return  bool
      */
     public function isIdentity() {
@@ -92,7 +90,6 @@
     /**
      * Returns whether this attribute is nullable
      *
-     * @access  public
      * @return  bool
      */
     public function isNullable() {
@@ -102,7 +99,6 @@
     /**
      * Returns this attribute's name
      *
-     * @access  public
      * @return  bool
      */
     public function getName() {
@@ -113,7 +109,6 @@
      * Returns a textual representation of the type, e.g. 
      * DB_ATTRTYPE_VARCHAR
      *
-     * @access  public
      * @return  string type
      */
     public function getTypeString() {
@@ -153,7 +148,6 @@
     /**
      * Return this attribute's type name (for XP)
      *
-     * @access  public
      * @return  string type or FALSE if unknown
      */
     public function typeName() {

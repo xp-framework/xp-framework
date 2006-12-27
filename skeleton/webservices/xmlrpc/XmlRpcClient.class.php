@@ -43,27 +43,24 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   &webservices.xmlrpc.transport.XmlRpcTransport transport
      */
-    public function __construct(&$transport) {
-      $this->transport= &$transport;
+    public function __construct($transport) {
+      $this->transport= $transport;
     }
     
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace($cat) {
       $this->transport->setTrace($cat);
     }
     
     /**
      * Invoke a method on a XML-RPC server
      *
-     * @access  public
      * @param   string method
      * @param   mixed vars
      * @return  mixed answer
@@ -81,10 +78,10 @@
       $this->message->setData($args);
       
       // Send
-      if (FALSE == ($response= &$this->transport->send($this->message))) return FALSE;
+      if (FALSE == ($response= $this->transport->send($this->message))) return FALSE;
       
       // Retrieve response
-      if (FALSE == ($this->answer= &$this->transport->retrieve($response))) return FALSE;
+      if (FALSE == ($this->answer= $this->transport->retrieve($response))) return FALSE;
       
       $data= $this->answer->getData();
       return $data;

@@ -23,30 +23,27 @@
     /**
      * Create a request object.
      *
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcRequest
      */
-    public function &_request() {
+    public function _request() {
       return new JsonRpcRequest();
     }
 
     /**
      * Create a response object.
      *
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcResponse
      */
-    public function &_response() {
+    public function _response() {
       return new JsonRpcResponse();
     }
     
     /**
      * Create a message object.
      *
-     * @access  protected
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &_message() {
+    public function _message() {
       return new JsonResponseMessage();
     }
   }

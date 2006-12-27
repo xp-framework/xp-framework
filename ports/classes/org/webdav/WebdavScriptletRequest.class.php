@@ -23,7 +23,6 @@
     /**
      * Decode string in the right encoding (currently UTF-8 is used)
      *
-     * @access public
      * @param  string string The string which should be encoded
      * @return string
      */    
@@ -34,27 +33,24 @@
     /**
      * Set user
      *
-     * @access  public
      * @param   string user
      */
-    public function setUser(&$user) {
-      $this->user= &$user;
+    public function setUser($user) {
+      $this->user= $user;
     }
 
     /**
      * Get user
      *
-     * @access  public
      * @return  &string
      */
-    public function &getUser() {
+    public function getUser() {
       return $this->user;
     }
 
     /**
      * Set the path
      * 
-     * @access public
      * @param  string path The path
      */
     public function setPath($path) {
@@ -65,7 +61,6 @@
      * Retrieve path part of the request URI (e.g.
      * http://webdav.host.com/fs/file.txt -> file.txt)
      *
-     * @access  public
      * @return  string
      */
     public function getPath() {
@@ -77,7 +72,6 @@
      * without the complete path. This contains only the URL where the WebDav
      * service is connected to.
      *
-     * @access private
      * @param  string uri The URL object
      */
     public function setRootURL($url) {
@@ -87,7 +81,6 @@
     /**
      * Returns URI to Webdav resource
      *
-     * @access public
      * @return peer.URL
      */
     public function getRootURL() {
@@ -102,7 +95,6 @@
      *   "/Test%20Folder/file.txt" -> "/Test Folder/file.txt"
      * </pre>
      *
-     * @access  private
      * @param   string path The path
      * @return  string
      * @see org.webdav.WebdavScriptletResponse#encodePath
@@ -117,7 +109,6 @@
      * Convert absolute URL to relative path:
      *   "http://webdav.host.com/fs/dir/file.txt" -> "dir/file.txt"
      *
-     * @access  public
      * @param   string url
      * @return  string
      */
@@ -132,7 +123,6 @@
     /**
      * Set the absolute Uri of requested directory
      *
-     * @access  public 
      * @param   string uri (e.g. /path/to/resource/directory/test.txt => /path/to/resource/directory/)
      */
     public function setAbsoluteURI($uri) {
@@ -142,7 +132,6 @@
     /**
      * Retrieve the absolute Uri of requested directory
      *
-     * @access  public 
      * @return  string uri
      */
     public function getAbsoluteURI() {
@@ -152,10 +141,9 @@
     /**
      * Set request's data and try to parse the request body (if available)
      *
-     * @access private
      * @param  string data The request's data
      */
-    public function setData(&$data) {
+    public function setData($data) {
       parent::setData($data);
       
       try {
@@ -169,14 +157,13 @@
     /**
      * Search for specific node using simple path string (e.g. "/propfind/set")
      *
-     * @access public
      * @param  string path The path string
      * @return &xml.Node
      */
-    public function &getNode($path) {
+    public function getNode($path) {
 
       if (!$this->tree || $this->tree->root === NULL) return NULL;
-      $node= &$this->tree->root;
+      $node= $this->tree->root;
       $parts= explode('/', $path);
       array_shift($parts);
       if (array_shift($parts) != $node->getName()) return NULL;
@@ -186,7 +173,7 @@
         for ($i= 0, $s= sizeof($node->children); $i<$s; $i++) {
           if ($name != $node->children[$i]->getName()) continue;
           
-          $node= &$node->children[$i];
+          $node= $node->children[$i];
           $found= TRUE;
           break;
         }
@@ -198,7 +185,6 @@
     /**
      * Returns the given Namespaceprefix
      *
-     * @access  public
      * @return  string prefix; (e.g. skunk), default "D"
      */
     public function getNamespacePrefix() {

@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string package
      * @param   string base default ''
      */
@@ -33,33 +32,30 @@
     /**
      * Create the request object
      *
-     * @access  protected
      * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
      */
-    public function &_request() {
+    public function _request() {
       return new WorkflowScriptletRequest($this->package);
     }
     
     /**
      * Retrieve context class
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException
      */
-    public function &getContextClass(&$request) {
+    public function getContextClass($request) {
       return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
     }
 
     /**
      * Decide whether a session is needed
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
-    public function needsSession(&$request) {
+    public function needsSession($request) {
       return ($request->state && (
         $request->state->hasHandlers() || 
         $request->state->requiresAuthentication()
@@ -70,11 +66,10 @@
      * Decide whether a context is needed. Returns FALSE in this default
      * implementation.
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
-    public function wantsContext(&$request) {
+    public function wantsContext($request) {
       return FALSE;
     }
     
@@ -85,12 +80,11 @@
      * Return FALSE from this method to indicate no further 
      * processing is to be done
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @return  bool
      */
-    public function processWorkflow(&$request, &$response) {
+    public function processWorkflow($request, $response) {
 
       // Context initialization
       $context= NULL;
@@ -99,7 +93,7 @@
         // Set up context. The context contains - so to say - the "autoglobals",
         // in other words, the omnipresent data such as the user
         try {
-          $class= &$this->getContextClass($request);;
+          $class= $this->getContextClass($request);;
         } catch (ClassNotFoundException $e) {
           throw(new HttpScriptletException($e->getMessage()));
           return FALSE;
@@ -108,8 +102,8 @@
         // Get context from session. If it is not available there, set up the 
         // context and store it to the session.
         $cidx= $class->getName();
-        if (!($context= &$request->session->getValue($cidx))) {
-          $context= &$class->newInstance();
+        if (!($context= $request->session->getValue($cidx))) {
+          $context= $class->newInstance();
 
           try {
             $context->setup($request);
@@ -172,11 +166,10 @@
     /**
      * Process request
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    public function processRequest(&$request, &$response) {
+    public function processRequest($request, $response) {
       if (FALSE === $this->processWorkflow($request, $response)) {
       
         // The processWorkflow() method indicates no further processing

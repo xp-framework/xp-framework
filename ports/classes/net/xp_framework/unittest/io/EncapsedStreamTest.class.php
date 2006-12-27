@@ -24,7 +24,6 @@
     /**
      * Sets up test case
      *
-     * @access  public
      */
     public function setUp() {
       $this->stream= new Stream();
@@ -39,7 +38,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function testInvalidConstruct() {
@@ -49,7 +47,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testOpen() {
@@ -59,7 +56,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testRead() {
@@ -69,7 +65,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testGets() {
@@ -79,7 +74,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testSeek() {
@@ -90,7 +84,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testEof() {
@@ -103,7 +96,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function testReadline() {

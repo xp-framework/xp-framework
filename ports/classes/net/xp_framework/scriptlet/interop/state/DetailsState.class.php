@@ -21,11 +21,10 @@
     /**
      * Process this state
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
 
       $service= $request->getParam('service', NULL);
       $method=  $request->getParam('method',  NULL);
@@ -57,7 +56,7 @@
       }
       
       // Append result overview to the result tree
-      $n= &$response->addFormResult(new Node(
+      $n= $response->addFormResult(new Node(
         'detail', 
         $contents, 
         array(

@@ -30,7 +30,6 @@
     /**
      * Setup test environment
      *
-     * @access  public
      */
     public function setUp() {
       if (!extension_loaded('openssl')) {
@@ -44,8 +43,8 @@
       if ($this->cert && $this->publickey && $this->privatekey) return;
       
       // Generate private & public key, using a self-signed certificate
-      $keypair= &Keypair::generate();
-      $privatekey= &$keypair->getPrivateKey();
+      $keypair= Keypair::generate();
+      $privatekey= $keypair->getPrivateKey();
       
       $csr= new CSR(new Principal(array(
         'C'     => 'DE',
@@ -57,17 +56,16 @@
         'EMAIL' => 'unittest@xp-framework.net'
       )), $keypair);
       
-      $cert= &$csr->sign($keypair);
-      $publickey= &$cert->getPublicKey();
-      $this->cert= &$cert;
-      $this->publickey= &$publickey;
-      $this->privatekey= &$privatekey;
+      $cert= $csr->sign($keypair);
+      $publickey= $cert->getPublicKey();
+      $this->cert= $cert;
+      $this->publickey= $publickey;
+      $this->privatekey= $privatekey;
     }
     
     /**
      * Test validity of generated keys/certificate
      *
-     * @access  public
      */
     #[@test]
     public function generateKeys() {
@@ -77,7 +75,6 @@
     /**
      * Test creation of signatures
      *
-     * @access  public
      */
     #[@test]
     public function testSignature() {
@@ -90,7 +87,6 @@
     /**
      * Test public key encryption
      *
-     * @access  public
      */
     #[@test]
     public function testEncryptionWithPublickey() {
@@ -102,7 +98,6 @@
     /**
      * Test private key encryption
      *
-     * @access  public
      */
     #[@test]
     public function testEncryptionWithPrivatekey() {
@@ -114,7 +109,6 @@
     /**
      * Test seals.
      *
-     * @access  public
      */
     #[@test]
     public function testSeals() {

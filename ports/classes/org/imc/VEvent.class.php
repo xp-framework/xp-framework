@@ -26,67 +26,60 @@
     /**
      * Set Date
      *
-     * @access  public
      * @param   &util.Date date
      */
-    public function setDate(&$date) {
-      $this->date= &$date;
+    public function setDate($date) {
+      $this->date= $date;
     }
 
     /**
      * Get Date
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
 
     /**
      * Set Starts
      *
-     * @access  public
      * @param   &util.Date starts
      */
-    public function setStarts(&$starts) {
-      $this->starts= &$starts;
+    public function setStarts($starts) {
+      $this->starts= $starts;
     }
 
     /**
      * Get Starts
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getStarts() {
+    public function getStarts() {
       return $this->starts;
     }
 
     /**
      * Set Ends
      *
-     * @access  public
      * @param   &util.Date ends
      */
-    public function setEnds(&$ends) {
-      $this->ends= &$ends;
+    public function setEnds($ends) {
+      $this->ends= $ends;
     }
 
     /**
      * Get Ends
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getEnds() {
+    public function getEnds() {
       return $this->ends;
     }
 
     /**
      * Set Summary
      *
-     * @access  public
      * @param   string summary
      */
     public function setSummary($summary) {
@@ -96,7 +89,6 @@
     /**
      * Get Summary
      *
-     * @access  public
      * @return  string
      */
     public function getSummary() {
@@ -106,7 +98,6 @@
     /**
      * Set Location
      *
-     * @access  public
      * @param   string location
      */
     public function setLocation($location) {
@@ -116,7 +107,6 @@
     /**
      * Get Location
      *
-     * @access  public
      * @return  string
      */
     public function getLocation() {
@@ -126,7 +116,6 @@
     /**
      * Set Description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -136,7 +125,6 @@
     /**
      * Get Description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -146,7 +134,6 @@
     /**
      * Add attendee
      *
-     * @access  public
      * @param   mixed[] attendee
      */
     public function addAttendee($attendee) {
@@ -156,7 +143,6 @@
     /**
      * Get attendees
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getAttendees() {
@@ -166,7 +152,6 @@
     /**
      * Set Organizer
      *
-     * @access  public
      * @param   string organizer
      */
     public function setOrganizer($organizer) {
@@ -176,7 +161,6 @@
     /**
      * Get Organizer
      *
-     * @access  public
      * @return  string
      */
     public function getOrganizer() {
@@ -186,7 +170,6 @@
     /**
      * Export function helper
      *
-     * @access  private
      * @param   string key
      * @param   mixed value
      * @return  string exported
@@ -215,7 +198,6 @@
     /**
      * Returns the string representation of this event
      *
-     * @access  public
      * @return  string event
      */    
     public function export() {

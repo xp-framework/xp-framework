@@ -39,7 +39,6 @@
      *   $n= &new Node('article', '', array('id' => 42));
      * </code>
      *
-     * @access  public
      * @param   string name
      * @param   string content default NULL
      * @param   array attribute default array() attributes
@@ -59,13 +58,11 @@
      *   $n= &Node::fromArray($array, 'elements');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   array arr
      * @param   string name default 'array'
      * @return  &xml.Node
      */
-    public static function &fromArray($a, $name= 'array') {
+    public static function fromArray($a, $name= 'array') {
       $n= new Node($name);
       $sname= rtrim($name, 's');
       foreach (array_keys($a) as $field) {
@@ -90,18 +87,16 @@
      *   $n= &Node::fromObject($object);
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   object obj
      * @param   string name default NULL
      * @return  &xml.Node
      */
-    public static function &fromObject($obj, $name= NULL) {
+    public static function fromObject($obj, $name= NULL) {
       if (!method_exists($obj, '__sleep')) {
         $vars= get_object_vars($obj);
       } else {
         $vars= array();
-        foreach ($obj->__sleep() as $var) $vars[$var]= &$obj->{$var};
+        foreach ($obj->__sleep() as $var) $vars[$var]= $obj->{$var};
       }
       return Node::fromArray(
         $vars, 
@@ -112,7 +107,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -122,7 +116,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -132,7 +125,6 @@
     /**
      * Set content
      *
-     * @access  public
      * @param   string content
      * @throws  xml.XMLFormatException in case content contains illegal characters
      */
@@ -153,7 +145,6 @@
     /**
      * Get content (all CDATA)
      *
-     * @access  public
      * @return  string content
      */
     public function getContent() {
@@ -163,7 +154,6 @@
     /**
      * Set an attribute
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -175,7 +165,6 @@
      * Retrieve an attribute by its name. Returns the default value if the
      * attribute is non-existant
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL
      * @return  string
@@ -187,7 +176,6 @@
     /**
      * Checks whether a specific attribute is existant
      *
-     * @access  public
      * @param   string name
      * @return  bool
      */
@@ -232,7 +220,6 @@
      *   2002-12-27T13:10:00</dc:date></item>
      * </pre>
      *
-     * @access  public
      * @param   int indent default INDENT_WRAPPED
      * @param   string inset default ''
      * @return  string XML
@@ -312,19 +299,18 @@
     /**
      * Add a child node
      *
-     * @access  public
      * @param   &xml.Node child
      * @return  &xml.Node added child
      * @throws  lang.IllegalArgumentException
      */
-    public function &addChild(&$child) {
+    public function addChild($child) {
       if (!is('Node', $child)) {
         throw(new IllegalArgumentException(
           'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
         ));
       }
 
-      $this->children[]= &$child;
+      $this->children[]= $child;
       return $child;
     }
   }

@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string key
      */
     public function __construct($key) {
@@ -30,7 +29,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -41,7 +39,6 @@
     /**
      * Set Description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -51,7 +48,6 @@
     /**
      * Get Description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -61,7 +57,6 @@
     /**
      * Retrieve whether this item has a description
      *
-     * @access  public
      * @return  bool
      */
     public function hasDescription() {
@@ -71,7 +66,6 @@
     /**
      * Set BusinessKey
      *
-     * @access  public
      * @param   string businessKey
      */
     public function setBusinessKey($businessKey) {
@@ -81,7 +75,6 @@
     /**
      * Get BusinessKey
      *
-     * @access  public
      * @return  string
      */
     public function getBusinessKey() {

@@ -24,7 +24,6 @@
     /**
      * Retrieves summary
      *
-     * @access  public
      * @return  string 
      */
     public function getSummary() {
@@ -34,7 +33,6 @@
     /**
      * Sets summary
      *
-     * @access  public
      * @param   string summary
      */
     public function setSummary($summary) {
@@ -44,7 +42,6 @@
     /**
      * Retrieves URL
      *
-     * @access  public
      * @return  string 
      */
     public function getURL() {
@@ -54,7 +51,6 @@
     /**
      * Sets URL
      *
-     * @access  public
      * @param   string URL
      */
     public function setURL($URL) {
@@ -64,7 +60,6 @@
     /**
      * Retrieves snippet
      *
-     * @access  public
      * @return  string 
      */
     public function getSnippet() {
@@ -74,7 +69,6 @@
     /**
      * Sets snippet
      *
-     * @access  public
      * @param   string snippet
      */
     public function setSnippet($snippet) {
@@ -84,7 +78,6 @@
     /**
      * Retrieves title
      *
-     * @access  public
      * @return  string 
      */
     public function getTitle() {
@@ -94,7 +87,6 @@
     /**
      * Sets title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -104,7 +96,6 @@
     /**
      * Retrieves cachedSize
      *
-     * @access  public
      * @return  string 
      */
     public function getCachedSize() {
@@ -114,7 +105,6 @@
     /**
      * Sets cachedSize
      *
-     * @access  public
      * @param   string cachedSize
      */
     public function setCachedSize($cachedSize) {
@@ -124,7 +114,6 @@
     /**
      * Retrieves relatedInformationPresent
      *
-     * @access  public
      * @return  bool 
      */
     public function getRelatedInformationPresent() {
@@ -134,7 +123,6 @@
     /**
      * Sets relatedInformationPresent
      *
-     * @access  public
      * @param   bool relatedInformationPresent
      */
     public function setRelatedInformationPresent($relatedInformationPresent) {
@@ -144,7 +132,6 @@
     /**
      * Retrieves hostName
      *
-     * @access  public
      * @return  string 
      */
     public function getHostName() {
@@ -154,7 +141,6 @@
     /**
      * Sets hostName
      *
-     * @access  public
      * @param   string hostName
      */
     public function setHostName($hostName) {
@@ -164,7 +150,6 @@
     /**
      * Retrieves directoryCategory
      *
-     * @access  public
      * @return  mixed (typens:DirectoryCategory) 
      */
     public function getDirectoryCategory() {
@@ -174,7 +159,6 @@
     /**
      * Sets directoryCategory
      *
-     * @access  public
      * @param   mixed directoryCategory (typens:DirectoryCategory)
      */
     public function setDirectoryCategory($directoryCategory) {
@@ -184,7 +168,6 @@
     /**
      * Retrieves directoryTitle
      *
-     * @access  public
      * @return  string 
      */
     public function getDirectoryTitle() {
@@ -194,7 +177,6 @@
     /**
      * Sets directoryTitle
      *
-     * @access  public
      * @param   string directoryTitle
      */
     public function setDirectoryTitle($directoryTitle) {

@@ -18,7 +18,6 @@
      * that the error reporting level is set to E_ALL (which is done
      * in lang.base.php).
      *
-     * @access  public
      */
     public function setUp() {
       $this->assertEquals(E_ALL, error_reporting(), 'Error reporting level not E_ALL');
@@ -29,7 +28,6 @@
     /**
      * Teardown method. Clears the xp error registry.
      *
-     * @access  public
      */
     public function tearDown() {
       xp::gc();
@@ -38,7 +36,6 @@
     /**
      * Tests that PHP errormessages get appended to the xp error registry
      *
-     * @access  public
      */
     #[@test]
     public function errorsGetAppendedToRegistry() {
@@ -49,7 +46,6 @@
     /**
      * Tests xp::errorAt() finds errors have occured in this file
      *
-     * @access  public
      */
     #[@test]
     public function errorAtFile() {
@@ -61,7 +57,6 @@
      * Tests xp::errorAt() finds errors have occured in this file *and*
      * and at the specified line.
      *
-     * @access  public
      */
     #[@test]
     public function errorAtFileAndLine() {
@@ -72,7 +67,6 @@
     /**
      * Tests that PHP errormessages get appended to the xp error registry
      *
-     * @access  public
      */
     #[@test]
     public function errorsAppearInStackTrace() {

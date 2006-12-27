@@ -46,7 +46,6 @@
      *   <li>GREATER_EQUAL</li>
      * </ul>
      *
-     * @access  public
      * @param   string field
      * @param   mixed value
      * @param   string op default EQUAL
@@ -58,7 +57,7 @@
       );
 
       $this->field= $field;
-      $this->value= &$value;
+      $this->value= $value;
 
       // Automatically convert '= NULL' to 'is NULL', former is not valid ANSI-SQL
       if (NULL === $value && isset($nullMapping[$op])) {
@@ -70,13 +69,12 @@
     /**
      * Returns the fragment SQL
      *
-     * @access  public
      * @param   &rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql(&$conn, $types) { 
+    public function asSql($conn, $types) { 
       if (!isset($types[$this->field])) {
         throw(new SQLStateException('Field "'.$this->field.'" unknown'));
       }

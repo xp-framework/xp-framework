@@ -17,7 +17,6 @@
     /**
      * Test correct ISBN
      *
-     * @access  public
      * @see     http://isbntools.com/default.html#ij
      */
     #[@test]
@@ -28,7 +27,6 @@
     /**
      * Test ISBN of "Softwaretest mit JUnit" book
      *
-     * @access  public
      * @see     http://www.amazon.de/exec/obidos/ISBN=3898643255
      */
     #[@test]
@@ -39,7 +37,6 @@
     /**
      * Test 13-digit ISBN
      *
-     * @access  public
      * @see     http://www.isbn.org/standards/home/isbn/transition.asp
      */
     #[@test]
@@ -50,7 +47,6 @@
     /**
      * Test ISBN with invalid checksum (is: 3, should be: 7)
      *
-     * @access  public
      */
     #[@test]
     public function verifyInvalidChecksum() {
@@ -60,7 +56,6 @@
     /**
      * Test ISBN::toString()
      *
-     * @access  public
      */
     #[@test]
     public function testStringRepresentation() {

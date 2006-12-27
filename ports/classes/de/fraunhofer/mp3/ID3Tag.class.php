@@ -46,7 +46,6 @@
     /**
      * Create a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -84,13 +83,11 @@
     /**
      * Creates an ID3 Tag from a string
      *
-     * @model   static
-     * @access  public
      * @param   &string buf
      * @param   string version one of the ID3_VERSION_* constants
      * @return  &de.fraunhofer.mp3.ID3Tag a tag
      */
-    public static function &fromString(&$buf, $version) {
+    public static function fromString($buf, $version) {
       $tag= new ID3Tag();
       
       switch ($version) {

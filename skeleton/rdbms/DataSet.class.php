@@ -92,14 +92,13 @@
      * array is passed to the constructor, the keys being the member
      * variables and the values the member's values.
      *
-     * @access  public
      * @param   array params default NULL
      */
     public function __construct($params= NULL) {
       if (is_array($params)) {
         foreach (array_keys($params) as $key) {
           $k= substr(strrchr('#'.$key, '#'), 1);
-          $this->{$k}= &$params[$key];
+          $this->{$k}= $params[$key];
         }
         $this->_new= FALSE;
       }
@@ -108,24 +107,21 @@
     /**
      * Retrieve associated peer
      *
-     * @model   abstract
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() { }
+    public function getPeer() { }
 
     /**
      * Changes a value by a specified key and returns the previous value.
      *
-     * @access  protected
      * @param   string key
      * @param   &mixed value
      * @return  &mixed previous value
      */
-    public function &_change($key, &$value) {
-      $this->_changed[$key]= &$value;
-      $previous= &$this->{$key};
-      $this->{$key}= &$value;
+    public function _change($key, $value) {
+      $this->_changed[$key]= $value;
+      $previous= $this->{$key};
+      $this->{$key}= $value;
       return $previous;
     }
     
@@ -133,7 +129,6 @@
      * Returns an array of fields that were changed suitable for passing
      * to Peer::doInsert() and Peer::doUpdate()
      *
-     * @access  public
      * @return  array
      */
     public function changes() {
@@ -143,7 +138,6 @@
     /**
      * Returns whether this record is new
      *
-     * @access  public
      * @return  bool
      */    
     public function isNew() {
@@ -168,11 +162,10 @@
      * Note: Keys with a leading "_" will be omitted from the list, they
      * indicate "protected" members.
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
-      $peer= &$this->getPeer();
+      $peer= $this->getPeer();
             
       // Retrieve types from peer and figure out the maximum length 
       // of a key which will be used for the key "column". The minimum
@@ -203,13 +196,11 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @model   final
-     * @access  public
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException in case an error occurs
      */  
     public function doInsert() {
-      $peer= &$this->getPeer();
+      $peer= $this->getPeer();
       if ($id= $peer->doInsert($this->_changed)) {
       
         // Set identity value if requested. We do not use the _change()
@@ -224,14 +215,12 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @model   final
-     * @access  public
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doUpdate(&$criteria) {
-      $peer= &$this->getPeer();
+    public function doUpdate($criteria) {
+      $peer= $this->getPeer();
       $affected= $peer->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
@@ -240,14 +229,12 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @model   final
-     * @access  public
      * @param   &rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doDelete(&$criteria) {
-      $peer= &$this->getPeer();
+    public function doDelete($criteria) {
+      $peer= $this->getPeer();
       $affected= $peer->doDelete($criteria);
       $this->_changed= array();
       return $affected;
@@ -256,7 +243,6 @@
     /**
      * Insert this dataset (create a new row in the table).
      *
-     * @access  public
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
@@ -274,14 +260,13 @@
      * Update this dataset (change an existing row in the table). 
      * Updates the record by using the primary key(s) as criteria.
      *
-     * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
     public function update() {
       if (empty($this->_changed)) return 0;
 
-      $peer= &$this->getPeer();
+      $peer= $this->getPeer();
       if (empty($peer->primary)) {
         throw(new SQLStateException('No primary key'));
       }
@@ -299,12 +284,11 @@
      * created by new DataSetName()) and updates if it has been retrieved by
      * the database (by means of doSelect(), getBy...() or iterators).
      *
-     * @access  public
      * @return  mixed identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
     public function save() {
-      $peer= &$this->getPeer();
+      $peer= $this->getPeer();
       
       try {
         $this->_new ? $this->insert() : $this->update();
@@ -320,12 +304,11 @@
      * Does nothing in this default implementation and may be overridden 
      * in subclasses where it makes sense.
      *
-     * @access  public
      * @return  int affected rows
      * @throws  rdbms.SQLException
      */
     public function delete() { 
-      $peer= &$this->getPeer();
+      $peer= $this->getPeer();
       if (empty($peer->primary)) {
         throw(new SQLStateException('No primary key'));
       }

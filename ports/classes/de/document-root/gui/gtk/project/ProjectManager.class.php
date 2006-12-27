@@ -28,16 +28,15 @@
     /**
      * Constructor
      *
-     * @access  public
      */
-    function __construct(&$p, $base) {
-      $pm= &PropertyManager::getInstance();
+    function __construct($p, $base) {
+      $pm= PropertyManager::getInstance();
       
-      $l= &Logger::getInstance();
-      $this->log= &$l->getCategory ($this->getClassName());
+      $l= Logger::getInstance();
+      $this->log= $l->getCategory ($this->getClassName());
 
       try {
-        $this->prop= &$pm->getProperties('prj');
+        $this->prop= $pm->getProperties('prj');
       } catch(IOException $e) {
         // Ignore exception, but take it off the stack
       }
@@ -55,7 +54,6 @@
      * there are new objects, the old ones destroyed. This reference will then
      * automatically point to the object replacing the old one.
      *
-     * @access  protected
      * @param   string idx
      * @param   string cidx
      * @param   string fidx
@@ -78,7 +76,6 @@
      * Check whether a given reference has already been created
      * for the node.
      *
-     * @access  protected
      * @param   string reference
      * @return  bool
      */
@@ -90,11 +87,10 @@
      * Retrieve the node object associated to the
      * reference.
      *
-     * @access  protected
      * @param   string ref
      * @return  &GtkCTreeItem
      */
-    function &_getNode($ref) {
+    function _getNode($ref) {
       return $this->hash[$ref];
     }
     
@@ -102,7 +98,6 @@
      * Supply application defined information associated
      * to a given reference.
      *
-     * @access  protected
      * @param   string reference
      * @param   mixed data
      */
@@ -113,7 +108,6 @@
     /**
      * Retrieve given data for a reference
      *
-     * @access  protected
      * @param   string reference
      * @return  mixed 
      */
@@ -125,7 +119,6 @@
      * Check whether the object referenced for the given argument
      * is still known.
      *
-     * @access  protected
      * @param   string reference
      * @return  bool
      */
@@ -152,7 +145,6 @@
     /**
      * Initializes all windows
      *
-     * @access  public
      */    
     function init() {
       parent::init();
@@ -163,21 +155,21 @@
       $this->window->set_default_size (600, 400);
       
       // Setup filedialog
-      $this->dialog= &new FileDialog();
+      $this->dialog= new FileDialog();
       
       // Init ClassTree
-      $this->tree= &$this->widget ('classTree');
-      $this->tree->connect ('select_row', array (&$this, 'onTreeSelectRow'));
-      $this->tree->connect ('unselect_row', array (&$this, 'onTreeUnselectRow'));
-      $this->tree->connect ('button_press_event', array (&$this, 'onTreeClick'));
+      $this->tree= $this->widget ('classTree');
+      $this->tree->connect ('select_row', array ($this, 'onTreeSelectRow'));
+      $this->tree->connect ('unselect_row', array ($this, 'onTreeUnselectRow'));
+      $this->tree->connect ('button_press_event', array ($this, 'onTreeClick'));
       $this->tree->set_line_style (GTK_CTREE_LINES_DOTTED);
 
       // Init Statusbar
-      $this->statusbar= &$this->widget ('statusbar');
+      $this->statusbar= $this->widget ('statusbar');
       
       // Load pixmaps
-      $l= &new GtkPixmapLoader ($this->window->window, $this->base.'/ui/xpm/');
-      $this->pixmap= &$l->load (array (
+      $l= new GtkPixmapLoader ($this->window->window, $this->base.'/ui/xpm/');
+      $this->pixmap= $l->load (array (
         'sv_class',
         'sv_scalar', 
         'sv_session',
@@ -197,7 +189,7 @@
       
       // Check every 60 seconds
       $timeout= $this->prop->readInteger ('main', 'autocheck', 60);
-      $this->timer= gtk::timeout_add (1000 * $timeout, array (&$this, 'onAutoUpdate'));
+      $this->timer= gtk::timeout_add (1000 * $timeout, array ($this, 'onAutoUpdate'));
     }
     
     function onAutoUpdate() {
@@ -210,7 +202,6 @@
     /**
      * Retrieve the realpath
      *
-     * @access  public
      * @param   string path
      * @return  string
      */    
@@ -224,17 +215,17 @@
       return $cache[$path];
     }
     
-    function onTreeSelectRow(&$widget, $row, &$data, &$event) {
-      $node= &$this->tree->node_nth ($row);
-      $this->_selectedNode= &$node;
+    function onTreeSelectRow($widget, $row, $data, $event) {
+      $node= $this->tree->node_nth ($row);
+      $this->_selectedNode= $node;
     }
     
-    function onTreeUnselectRow(&$widget, $row, &$data, &$event) {
+    function onTreeUnselectRow($widget, $row, $data, $event) {
       if (isset ($this->_selectedRow))
         unset ($this->_selectedNode);
     }
     
-    function onTreeClick(&$clist, &$event) {
+    function onTreeClick($clist, $event) {
     
       // Check for right-click
       if (3 == $event->button)
@@ -248,16 +239,16 @@
       return TRUE;
     }
     
-    function onTreeRightClick(&$clist, &$event) {
-      $this->menu= &new ProjectManagerPopupMenu();
+    function onTreeRightClick($clist, $event) {
+      $this->menu= new ProjectManagerPopupMenu();
       $this->menu->setParent($this);
-      $this->menu->addMenuItem ('Add file...', array (&$this->menu, 'addFile'));
-      $this->menu->addMenuItem ('Reparse files', array (&$this->menu, 'reparse'));
+      $this->menu->addMenuItem ('Add file...', array ($this->menu, 'addFile'));
+      $this->menu->addMenuItem ('Reparse files', array ($this->menu, 'reparse'));
       
       if (isset ($this->_selectedNode)) {
         $this->menu->addSeparator();
-        $this->menu->addMenuItem('Open', array (&$this, 'onFileOpenCtx'));
-        $this->menu->addMenuItem('cvs diff', array(&$this, 'onCvsDiff'));
+        $this->menu->addMenuItem('Open', array ($this, 'onFileOpenCtx'));
+        $this->menu->addMenuItem('cvs diff', array($this, 'onCvsDiff'));
       }
 
       $this->menu->show(MENU_WANT_LEFTCLICK);
@@ -297,10 +288,10 @@
           return FALSE;
       }
       
-      $parser= &new ParserManager($filename);
+      $parser= new ParserManager($filename);
       $parser->parse();
 
-      $this->files[$filename]= &$parser;
+      $this->files[$filename]= $parser;
 
       $this->statusbar->push (1, 'Added file '.$parser->filename);
       $this->log && $this->log->info ('Added file '.$parser->filename);
@@ -377,9 +368,9 @@
       return TRUE;
     }
     
-    function &_addNode(&$parent, $label, $ref, $pixmap= 'sv_session') {
+    function _addNode($parent, $label, $ref, $pixmap= 'sv_session') {
       $this->log && $this->log->info('Added ref', $ref);
-      $node= &$this->tree->insert_node (
+      $node= $this->tree->insert_node (
         $parent,
         NULL,
         $label,
@@ -393,10 +384,10 @@
       );
       
       $this->tree->node_set_row_data($node, $ref);
-      $this->hash[$ref]= &$node;
+      $this->hash[$ref]= $node;
 
       // $style= gtk::widget_get_default_style();
-      $style= &new GtkStyle();
+      $style= new GtkStyle();
       $style->fg[GTK_STATE_NORMAL]= new GdkColor ('#cccccc');
       $this->tree->node_set_cell_style ($node, 1, $style);
       $this->tree->node_set_cell_style ($node, 2, $style);
@@ -404,10 +395,10 @@
       return $node;
     }
     
-    function &getNode($name) {
+    function getNode($name) {
       if (!isset($this->nodes[$name])) {
         $this->log && $this->log->debug('Adding node', $name);
-        $this->nodes[$name]= &$this->tree->insert_node(
+        $this->nodes[$name]= $this->tree->insert_node(
           $this->nodes['root'],
           NULL,
           array($name),
@@ -429,7 +420,7 @@
       // $this->tree->clear();
       
       if (empty($this->nodes['root'])) {
-        $this->nodes['root']= &$this->tree->insert_node (
+        $this->nodes['root']= $this->tree->insert_node (
           NULL,
           NULL,
           array('Workspace'),
@@ -444,7 +435,7 @@
       }
       
       if (empty($this->nodes['core'])) {
-        $this->nodes['core']= &$this->tree->insert_node(
+        $this->nodes['core']= $this->tree->insert_node(
           $this->nodes['root'],
           NULL,
           array('Core classes'),
@@ -459,7 +450,7 @@
       }
 
       if (empty($this->nodes['framework'])) {
-        $this->nodes['framework']= &$this->tree->insert_node(
+        $this->nodes['framework']= $this->tree->insert_node(
           $this->nodes['root'],
           NULL,
           array('Framework classes'),
@@ -474,7 +465,7 @@
       }
       
       foreach (array_keys ($this->files) as $idx) {
-        $file= &$this->files[$idx];
+        $file= $this->files[$idx];
 
         $classification= $this->classifyFile($file->filename);
         
@@ -484,10 +475,10 @@
           continue;
           
         foreach (array_keys ($file->classes) as $cIdx) {
-          $c= &$file->classes[$cIdx];
+          $c= $file->classes[$cIdx];
           
           if (!$this->_nodeExists($this->_getRef($idx, $cIdx))) {
-            $classNode= &$this->_addNode (
+            $classNode= $this->_addNode (
               $this->getNode($classification),
               array ($c->name),
               $this->_getRef($idx, $cIdx),
@@ -500,9 +491,9 @@
             'line' => $c->line
           ));
           
-          $classNode= &$this->_getNode($this->_getRef($idx, $cIdx));
+          $classNode= $this->_getNode($this->_getRef($idx, $cIdx));
           foreach (array_keys ($c->functions) as $fIdx) {
-            $f= &$c->functions[$fIdx];
+            $f= $c->functions[$fIdx];
 
             $this->_setRefInfo($this->_getRef($idx, $cIdx, $fIdx), array(
               'file' => $file->filename,
@@ -524,10 +515,10 @@
       
       // Now add global functions
       foreach (array_keys ($this->files) as $idx) {
-        $file= &$this->files[$idx];
+        $file= $this->files[$idx];
         
         foreach (array_keys ($file->functions) as $fIdx) {
-          $f= &$file->functions[$fIdx];
+          $f= $file->functions[$fIdx];
           
           $this->_setRefInfo($this->_getRef($idx, NULL, $fIdx), array(
             'file' => $file->filename,
@@ -569,12 +560,11 @@
     /**
      * Open the file at the specified line in your editor
      *
-     * @access  public
      * @param   &GtkMenuItem
      * @param   &GdkEvent
      */    
     function onFileOpenCtx() {
-      $n= &$this->tree->node_get_row_data ($this->_selectedNode);
+      $n= $this->tree->node_get_row_data ($this->_selectedNode);
       $cmd= $this->prop->readString (
         'editor',
         'cmdline',
@@ -597,11 +587,10 @@
     /**
      * Execute 'cvs diff' command on selected file.
      *
-     * @access  public
      */
     function onCvsDiff() {
-      $n= &$this->tree->node_get_row_data($this->_selectedNode);
-      $d= &$this->_getRefInfo($n);
+      $n= $this->tree->node_get_row_data($this->_selectedNode);
+      $d= $this->_getRefInfo($n);
       
       $tmpFile= System::tempDir().DIRECTORY_SEPARATOR.md5($d['file']).'.diff';
       $cmd= sprintf('cvs diff -u %s', basename($d['file']));

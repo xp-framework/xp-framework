@@ -31,10 +31,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.cmd.ParamString p
      */
-    public function __construct(&$p) {
+    public function __construct($p) {
       if (!$p->exists(1)) {
         printf(
           "Usage: gtkphp %1\$s protocol://user:password@server\n".
@@ -67,7 +66,6 @@
     /**
      * Initialize application
      *
-     * @access  public
      */
     public function init() {
       parent::init();
@@ -80,26 +78,26 @@
       
       // Connect buttons
       GTKWidgetUtil::connect($this->widget('button_receive'), array(
-        ':clicked'  => array(&$this, 'onReceiveButtonClicked')
+        ':clicked'  => array($this, 'onReceiveButtonClicked')
       ));
       GTKWidgetUtil::connect($this->widget('button_expunge'), array(
-        ':clicked'  => array(&$this, 'onExpungeButtonClicked')
+        ':clicked'  => array($this, 'onExpungeButtonClicked')
       ));
       
       // Set up additional widgets we need to access via name
-      $this->statusbar= &$this->widget('statusbar');
-      $this->menu= &$this->widget('menu1');
+      $this->statusbar= $this->widget('statusbar');
+      $this->menu= $this->widget('menu1');
       GTKWidgetUtil::connectChildren($this->menu, array(
-        ':activate'             => array(&$this, 'onMenuItemActivated'),
+        ':activate'             => array($this, 'onMenuItemActivated'),
       ));
       
-      $this->tree= &$this->widget('ctree_messages');
+      $this->tree= $this->widget('ctree_messages');
       $this->tree->set_row_height(18);
       $this->tree->set_line_style(GTK_CTREE_LINES_NONE);
       $this->tree->set_expander_style(GTK_CTREE_EXPANDER_TRIANGLE);
       GTKWidgetUtil::connect($this->tree, array(
-        ':click_column'         => array(&$this, 'onListColumnClicked'),
-        ':button_press_event'   => array(&$this, 'onListButtonPressed'),
+        ':click_column'         => array($this, 'onListColumnClicked'),
+        ':button_press_event'   => array($this, 'onListButtonPressed'),
       ));
       
       // Load art
@@ -115,13 +113,12 @@
     /**
      * Callback for "delete"
      *
-     * @access  protected
      * @param   int[] selection
      */
     public function onDeleteMenuItemActivated($selection) {
       $this->tree->freeze();
       foreach (array_values($this->tree->selection) as $idx) {
-        $msg= &$this->tree->node_get_row_data($idx);
+        $msg= $this->tree->node_get_row_data($idx);
         
         try {
           $msg->folder->deleteMessage($msg);
@@ -148,13 +145,12 @@
     /**
      * Callback for "undelete"
      *
-     * @access  protected
      * @param   int[] selection
      */
     public function onUndeleteMenuItemActivated($selection) {
       $this->tree->freeze();
       foreach (array_values($this->tree->selection) as $idx) {
-        $msg= &$this->tree->node_get_row_data($idx);
+        $msg= $this->tree->node_get_row_data($idx);
         
         try {
           $msg->folder->undeleteMessage($msg);
@@ -181,12 +177,11 @@
     /**
      * Callback for _all_ menu items in popup menu
      *
-     * @access  protected
      * @param   &php.GtkWidget item
      */
-    public function onMenuItemActivated(&$item) {
+    public function onMenuItemActivated($item) {
       return call_user_func(
-        array(&$this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
+        array($this, sprintf('on%sMenuItemActivated', ucfirst($item->get_name()))),
         $this->tree->selection
       );
     }
@@ -194,11 +189,10 @@
     /**
      * Callback for mouse clicks in the list
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      * @param   &php.GdkEvent event
      */
-    public function onListButtonPressed(&$widget, &$event) {
+    public function onListButtonPressed($widget, $event) {
       if (3 != $event->button || empty($widget->selection)) return;
       
       // Show context menu
@@ -214,11 +208,10 @@
     /**
      * Callback for column clicks
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      * @param   int column
      */
-    public function onListColumnClicked(&$widget, $column) {
+    public function onListColumnClicked($widget, $column) {
       $this->cat->debug('Column', $column, 'clicked, sorting...');
       $widget->set_sort_column($column);
       $widget->sort();
@@ -228,7 +221,6 @@
      * Set statusbar text and waits for the GUI to process
      * whatever events are still pending.
      *
-     * @access  protected
      * @param   string fmt
      * @param   mixed* args
      */
@@ -244,10 +236,9 @@
     /**
      * Add a message to the list
      *
-     * @access  protected
      * @param   &peer.mail.Message msg
      */
-    public function addMessage(&$msg) {
+    public function addMessage($msg) {
       static $style= NULL;
 
       // Set up child row style
@@ -257,7 +248,7 @@
         $style->fg[GTK_STATE_NORMAL]= $style->fg[GTK_STATE_INSENSITIVE];
       }
       
-      $node= &$this->tree->insert_node(
+      $node= $this->tree->insert_node(
         NULL, 
         NULL, 
         array(
@@ -308,7 +299,7 @@
             continue;
           }
           
-          $child= &$this->tree->insert_node(
+          $child= $this->tree->insert_node(
             $node,
             NULL,
             array(
@@ -334,7 +325,7 @@
       
       // Add headers
       foreach ($msg->headers as $key => $val) {
-        $child= &$this->tree->insert_node(
+        $child= $this->tree->insert_node(
           $node,
           NULL,
           array(
@@ -366,10 +357,9 @@
     /**
      * Callback for when expunge button is clicked
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onExpungeButtonClicked(&$widget) {
+    public function onExpungeButtonClicked($widget) {
       try {
         $this->stor->expunge();
       } catch (Exception $e) {
@@ -388,13 +378,12 @@
     /**
      * Callback for when receive button is clicked
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onReceiveButtonClicked(&$widget) {
+    public function onReceiveButtonClicked($widget) {
 
       // Set receive button unsensitive
-      $r= &$this->widget('button_receive');
+      $r= $this->widget('button_receive');
       $r->set_sensitive(FALSE);
       
       // Freeze list
@@ -416,11 +405,11 @@
         }
         
         $this->setStatusText('Getting folder contents for '.$mbox);
-        if ($f= &$this->stor->getFolder($mbox)) {
+        if ($f= $this->stor->getFolder($mbox)) {
           $f->open();
           
           $this->tree->clear();
-          while ($msg= &$f->getMessage()) {
+          while ($msg= $f->getMessage()) {
             $this->setStatusText('Retrieving message %s', $msg->uid);
             $this->addMessage($msg);
           }
@@ -441,7 +430,7 @@
       $r->set_sensitive(TRUE);
       
       // Set expunge button sensitive
-      $e= &$this->widget('button_expunge');
+      $e= $this->widget('button_expunge');
       $e->set_sensitive(TRUE);
       
       // Unfreeze list
@@ -454,7 +443,6 @@
     /**
      * Close application
      *
-     * @access  public
      */
     public function done() {
       if ($this->stor->isConnected()) {

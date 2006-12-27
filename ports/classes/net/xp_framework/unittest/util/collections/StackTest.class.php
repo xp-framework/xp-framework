@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates the Stack member
      *
-     * @access  public
      */
     public function setUp() {
       $this->stack= new Stack();
@@ -32,7 +31,6 @@
     /**
      * Tests the Stack is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests Stack equals its clone
      *
-     * @access  public
      */
     #[@test]
     public function equalsClone() {
@@ -53,7 +50,6 @@
     /**
      * Tests push()
      *
-     * @access  public
      */
     #[@test]
     public function push() {
@@ -65,7 +61,6 @@
     /**
      * Tests pop()
      *
-     * @access  public
      */
     #[@test]
     public function pop() {
@@ -78,7 +73,6 @@
     /**
      * Tests peek()
      *
-     * @access  public
      */
     #[@test]
     public function peek() {
@@ -91,7 +85,6 @@
     /**
      * Tests search()
      *
-     * @access  public
      */
     #[@test]
     public function search() {
@@ -104,7 +97,6 @@
     /**
      * Tests elementAt()
      *
-     * @access  public
      */
     #[@test]
     public function elementAt() {
@@ -120,7 +112,6 @@
     /**
      * Tests elementAt() when given an illegal offset
      *
-     * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtIllegalOffset() {

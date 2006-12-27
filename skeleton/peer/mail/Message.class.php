@@ -94,7 +94,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int uid default -1
      */
     public function __construct($uid= -1) {
@@ -106,7 +105,6 @@
     /**
      * Set Mime version
      *
-     * @access  public
      * @param   string mimeversion
      */
     public function setMimeVersion($mimeversion) {
@@ -116,7 +114,6 @@
     /**
      * Get Mime version
      *
-     * @access  public
      * @return  string
      */
     public function getMimeVersion() {
@@ -126,7 +123,6 @@
     /**
      * Set Returnpath
      *
-     * @access  public
      * @param   string returnpath
      */
     public function setReturnPath($returnpath) {
@@ -136,7 +132,6 @@
     /**
      * Get Returnpath
      *
-     * @access  public
      * @return  string
      */
     public function getReturnPath() {
@@ -208,7 +203,6 @@
      * }
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -227,7 +221,6 @@
     /**
      * Sets message size
      *
-     * @access  public
      * @param   int size
      */
     public function setSize($size) {
@@ -237,7 +230,6 @@
     /**
      * Retrieve message size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {
@@ -247,7 +239,6 @@
     /**
      * Sets message-id
      *
-     * @access  public
      * @param   string message_id
      */
     public function setMessageId($message_id) {
@@ -257,7 +248,6 @@
     /**
      * Retrieve message-id
      *
-     * @access  public
      * @return  string
      */
     public function getMessageId() {
@@ -267,54 +257,49 @@
     /**
      * Sets message date
      *
-     * @access  public
      * @param   mixed arg
      */
-    public function setDate(&$arg) {
-      if (is('Date', $arg)) $this->date= &$arg; else $this->date= new Date($arg);
+    public function setDate($arg) {
+      if (is('Date', $arg)) $this->date= $arg; else $this->date= new Date($arg);
     }
     
     /**
      * Retrieve message date
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->date;
     }
   
     /**
      * Add recipient
      *
-     * @access  public
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress adr address to add
      */
-    public function addRecipient($type, &$adr) {
-      $m= &$this->$type;
-      $m[]= &$adr;
+    public function addRecipient($type, $adr) {
+      $m= $this->$type;
+      $m[]= $adr;
     }
     
     /**
      * Add recipients
      *
-     * @access  public
      * @param   string type one of the constants TO, CC, BCC
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    public function addRecipients($type, &$adr) {
+    public function addRecipients($type, $adr) {
       $this->$type= array_merge($this->$type, $adr);
     }
 
     /**
      * Get recipients
      *
-     * @access  public
      * @param   string type one of the constants TO, CC, BCC
      * @return  &peer.mail.InternetAddress[] adr recipients of type
      */
-    public function &getRecipients($type) {
+    public function getRecipients($type) {
       return $this->$type;
     }
     
@@ -326,15 +311,14 @@
      *   }
      * </code>
      *
-     * @access  public
      * @param   string type one of the constants TO, CC, BCC
      * @return  &peer.mail.InternetAddress[] adr recipients of type
      */
-    public function &getRecipient($type) {
+    public function getRecipient($type) {
       static $ofs= array();
       
       if (!isset($ofs[$type])) $ofs[$type]= 0;
-      $l= &$this->$type;
+      $l= $this->$type;
       if (!isset($l[$ofs[$type]])) {
         unset($ofs[$type]);
         return FALSE;
@@ -345,27 +329,24 @@
     /**
      * Set from
      *
-     * @access  public
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
-    public function setFrom(&$adr) {
-      $this->from= &$adr;
+    public function setFrom($adr) {
+      $this->from= $adr;
     }
 
     /**
      * Get recipients
      *
-     * @access  public
      * @return  &peer.mail.InternetAddress[] adr addresses to add
      */
-    public function &getFrom() {
+    public function getFrom() {
       return $this->from;
     }
     
     /**
      * Private helper function
      *
-     * @access  private
      * @param   string header
      * @param   string value
      * @param   mixed add default FALSE
@@ -391,7 +372,6 @@
      *   $mail->setHeader('X-Binford', '6100 (more power)');
      * </code>
      *
-     * @access  public
      * @param   string header
      * @param   string value
      * @throws  lang.IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
@@ -407,7 +387,6 @@
      * $mail->getHeader('Content-type') and $mail->getHeader('Content-Type')
      * will yield the same result.
      *
-     * @access  public
      * @param   string header a header name to look for
      * @return  string value header value or NULL to indicate the header doesn't exist
      */
@@ -425,7 +404,6 @@
      * has'nt been fetched yet, it'll be retrieved from the storage underlying
      * the folder.
      *
-     * @access  public
      * @return  string
      */
     public function getBody() {
@@ -435,13 +413,12 @@
       ) return $this->body;
       
       // We have a folder and the body is NULL (indicating we haven't fetched this message)
-      return ($this->body= &$this->folder->getMessagePart($this->uid, '1'));
+      return ($this->body= $this->folder->getMessagePart($this->uid, '1'));
     }
 
     /**
      * Set message body
      *
-     * @access  public
      * @param   string body
      */
     public function setBody($body) {
@@ -451,7 +428,6 @@
     /**
      * Get message subject
      *
-     * @access  public
      * @return  string
      */
     public function getSubject() {
@@ -461,7 +437,6 @@
     /**
      * Set message subject
      *
-     * @access  public
      * @param   string subject
      */
     public function setSubject($subject) {
@@ -471,7 +446,6 @@
     /**
      * Get message encoding
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {
@@ -481,7 +455,6 @@
     /**
      * Set message encoding
      *
-     * @access  public
      * @param   string encoding
      */
     public function setEncoding($encoding) {
@@ -491,7 +464,6 @@
     /**
      * Get message charset
      *
-     * @access  public
      * @return  string
      */
     public function getCharset() {
@@ -501,7 +473,6 @@
     /**
      * Set message charset
      *
-     * @access  public
      * @param   string charset
      */
     public function setCharset($charset) {
@@ -511,7 +482,6 @@
     /**
      * Get message contenttype
      *
-     * @access  public
      * @return  string
      */
     public function getContenttype() {
@@ -521,7 +491,6 @@
     /**
      * Set message contenttype
      *
-     * @access  public
      * @param   string contenttype
      */
     public function setContenttype($contenttype) {
@@ -531,7 +500,6 @@
     /**
      * Set headers from string
      *
-     * @access  public
      * @param   string str
      */
     public function setHeaderString($str) {
@@ -609,7 +577,6 @@
      * Returns the header representation of the content-type. This includes
      * adding a charset information if one is set.
      *
-     * @access  private
      * @return  string header
      */
     public function _getContenttypeHeaderString() {
@@ -622,12 +589,11 @@
     /**
      * Build representation of address list
      *
-     * @access  protected
      * @param   string t header token
      * @param   &peer.mail.InternetAddress[] addrs
      * @return  string
      */
-    public function _astr($t, &$addrs) {
+    public function _astr($t, $addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
         if (!is('InternetAddress', $addrs[$i])) continue; // Ignore!
@@ -639,7 +605,6 @@
     /**
      * Check if a string needs to be encoded and encode it if necessary
      *
-     * @access  protected
      * @param   string str
      * @return  string
      */
@@ -660,7 +625,6 @@
     /**
      * Return headers as string
      *
-     * @access  public
      * @return  string headers
      */
     public function getHeaderString() {

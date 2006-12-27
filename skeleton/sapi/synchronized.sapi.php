@@ -41,6 +41,6 @@
     // Bails out
   }
   shmop_write($shm, getmypid(), 0x0);
-  $_SERVER['sync']= &$shm;
+  $_SERVER['sync']= $shm;
   register_shutdown_function('__unlock');
 ?>

@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   resource handle
      */
     public function __construct($result) {
@@ -33,7 +32,6 @@
     /**
      * Seek
      *
-     * @access  public
      * @param   int offset
      * @return  bool success
      * @throws  rdbms.SQLException
@@ -50,7 +48,6 @@
      * the fields contents if a field is specified or FALSE to indicate
      * no more rows are available.
      *
-     * @access  public
      * @param   string field default NULL
      * @return  mixed
      */
@@ -67,7 +64,7 @@
           case 'date':
           case 'time':
           case 'timestamp':
-            $row[$key]= &Date::fromString($row[$key]);
+            $row[$key]= Date::fromString($row[$key]);
             break;
 
           case 'bool':
@@ -94,7 +91,6 @@
     /**
      * Close resultset and free result memory
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { 

@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name table's name
      */
     public function __construct($name) {
@@ -31,35 +30,32 @@
     /**
      * Get a table by it's name
      *
-     * @access  static
      * @param   &rdbms.DBAdapter and adapter
      * @param   string name
      * @return  &rdbms.DBTable a table object
      */
-    public function &getByName(&$adapter, $name) {
+    public function getByName($adapter, $name) {
       return $adapter->getTable($name);
     }
 
     /**
      * Get tables by database
      *
-     * @access  static
      * @param   &rdbms.DBAdapter and adapter
      * @param   string database
      * @return  &rdbms.DBTable[] an array of table objects
      */
-    public function &getByDatabase(&$adapter, $database) {
+    public function getByDatabase($adapter, $database) {
       return $adapter->getTables($database);
     }
 
     /**
      * Get first attribute - Iterator function
      *
-     * @access  public
      * @return  &rdbms.DBAttribute an attribute
      * @see     getNextAttribute
      */
-    public function &getFirstAttribute() {
+    public function getFirstAttribute() {
       reset($this->attributes);
       return current($this->attributes);
     }
@@ -76,45 +72,41 @@
      *   } while ($attr= $table->getNextAttribute());
      * </code>
      *
-     * @access  public
      * @return  &rdbms.DBAttribute an attribute or FALSE if none more exist
      */
-    public function &getNextAttribute() {
+    public function getNextAttribute() {
       return next($this->attributes);
     }
 
     /**
      * Add an attribute
      *
-     * @access  public
      * @param   &rdbms.DBAttribute attr the attribute to add
      * @return  &rdbms.DBAttribute the added attribute
      */
-    public function &addAttribute(&$attr) {
-      $this->attributes[]= &$attr;
+    public function addAttribute($attr) {
+      $this->attributes[]= $attr;
       return $attr;
     }
 
     /**
      * Add an index
      *
-     * @access  public
      * @param   &rdbms.DBIndex index the index to add
      * @return  &rdbms.DBIndex the added index
      */
-    public function &addIndex(&$index) {
-      $this->indexes[]= &$index;
+    public function addIndex($index) {
+      $this->indexes[]= $index;
       return $index;
     }
 
     /**
      * Get first index - Iterator function
      *
-     * @access  public
      * @return  &rdbms.DBIndex an index
      * @see     getNextIndex
      */
-    public function &getFirstIndex() {
+    public function getFirstIndex() {
       reset($this->indexes);
       return current($this->indexes);
     }
@@ -122,18 +114,16 @@
     /**
      * Get next index - Iterator function
      *
-     * @access  public
      * @return  &rdbms.DBIndex an index or FALSE to indicate there are none left
      * @see     getNextIndex
      */
-    public function &getNextIndex() {
+    public function getNextIndex() {
       return next($this->indexes);
     }
 
     /**
      * Check to see if there is an attribute of this table with the name specified
      *
-     * @access  public
      * @param   string name the attribute's name to search for
      * @return  bool TRUE if this attribute exists
      */

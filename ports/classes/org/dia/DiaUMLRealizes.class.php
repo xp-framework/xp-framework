@@ -14,7 +14,6 @@
     /**
      * Constructor of an UML realization
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Realizes', 1);

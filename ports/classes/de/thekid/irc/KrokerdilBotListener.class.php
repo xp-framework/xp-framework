@@ -41,11 +41,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.Properties config
      */
-    public function __construct(&$config) {
-      $this->config= &$config;
+    public function __construct($config) {
+      $this->config= $config;
       $this->reloadConfiguration();
       $this->tstart= time();
       $this->mode= MOOD_AWAKE;
@@ -61,15 +60,14 @@
       // Set up quote client
       $this->quote= new Socket('ausredenkalender.informatik.uni-bremen.de', 17);
       
-      $l= &Logger::getInstance();
-      $this->cat= &$l->getCategory();
+      $l= Logger::getInstance();
+      $this->cat= $l->getCategory();
       $this->dictc->setTrace($this->cat);
     }
     
     /**
      * Reload Bot configuration
      *
-     * @access  protected
      */
     public function reloadConfiguration() {
       $this->config->reset();
@@ -115,7 +113,7 @@
           $f= new File($base.'karma.list');
           if ($f->exists()) {
             $karma= unserialize(FileUtil::getContents($f));
-            if ($karma) $this->karma= &$karma;
+            if ($karma) $this->karma= $karma;
           }
         } catch (IOException $e) {
         
@@ -128,7 +126,6 @@
     /**
      * Save current karma configuration to disk.
      *
-     * @access  public
      */
     public function storeConfiguration() {
     
@@ -152,7 +149,6 @@
      * Sends to a target, constructing it from a random element within a specified
      * list.
      *
-     * @access  private
      * @param   &peer.irc.IRCConnection connection
      * @param   string target
      * @param   string list list identifier
@@ -160,7 +156,7 @@
      * @param   string message
      * @return  bool success
      */
-    public function sendRandomMessage(&$connection, $target, $list, $nick, $message) {
+    public function sendRandomMessage($connection, $target, $list, $nick, $message) {
       $format= $this->lists[$list][rand(0, sizeof($this->lists[$list])- 1)];
       if (empty($format)) return;
       
@@ -187,13 +183,12 @@
     /**
      * Helper method for privileged actions.
      *
-     * @access  protected
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string password
      * @return  bool
      */
-    public function doPrivileged(&$connection, $nick, $password) {
+    public function doPrivileged($connection, $nick, $password) {
       if ($this->config->readString('control', 'password') == $password) return TRUE;
       
       $connection->sendMessage($nick, 'Nice try, but >%s< is incorrect', $password);
@@ -203,7 +198,6 @@
     /**
      * Helper method to set karma for a nick. Also handles karma floods
      *
-     * @access  protected
      * @param   string nick
      * @param   int delta
      * @param   string reason default NULL
@@ -243,14 +237,13 @@
     /**
      * Callback for mode changes
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the mode change
      * @param   string target what the mode setting is for (e.g. +k #channel, +i user)
      * @param   string mode the mode including a + or - as its first letter
      * @param   string params additional parameters
      */
-    public function onModeChanges(&$connection, $nick, $target, $mode, $params) { 
+    public function onModeChanges($connection, $nick, $target, $mode, $params) { 
       if (strcasecmp($params, $connection->user->getNick()) != 0) return;
 
       $delta= ('-' == $mode[0] ? -10 : 10);
@@ -278,12 +271,11 @@
     /**
      * Callback for nick changes
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick the old nick
      * @param   string new the new nick
      */
-    public function onNickChanges(&$connection, $nick, $new) {
+    public function onNickChanges($connection, $nick, $new) {
       $this->cat && $this->cat->debug('Moving karma from', $nick, 'to', $new);
       $this->setKarma($new, $this->karma[$nick]);
       unset($this->karma[$nick]);
@@ -293,7 +285,6 @@
      * Checks whether a given message contains a swear and returns it if 
      * found, NULL otherwise.
      *
-     * @access  protected
      * @param   string message
      * @return  string swear
      */
@@ -312,13 +303,12 @@
     /**
      * Callback for private messages (for default mood).
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
      */
-    public function handlePrivateMessageDefault(&$connection, $nick, $target, $message) {
+    public function handlePrivateMessageDefault($connection, $nick, $target, $message) {
 
       // Commands
       if (sscanf($message, "!%s %[^\r]", $command, $params)) {
@@ -803,13 +793,12 @@
     /**
      * Callback for private messages in Sleeping mood
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
      */
-    public function handlePrivateMessageSleeping(&$connection, $nick, $target, $message) {
+    public function handlePrivateMessageSleeping($connection, $nick, $target, $message) {
     
       // Auto-Wakeup after the specified period of time
       if (time() > $this->registry['wakeup']) {
@@ -853,11 +842,10 @@
     /**
      * Perform falling asleep.
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   int time time to sleep
      */
-    public function doSleep(&$connection, $time) {
+    public function doSleep($connection, $time) {
       if ($this->mode == MODE_SLEEP) return;
       
       $this->cat && $this->cat->debugf('Going to sleep for %d seconds', $time);
@@ -882,10 +870,9 @@
     /**
      * Perform wakeup.
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      */
-    public function doWakeup(&$connection) {
+    public function doWakeup($connection) {
       if ($this->mode == MODE_AWAKE) return;
       
       $this->cat && $this->cat->debug('The bot is waking up again. Scheduled wake time was',
@@ -911,13 +898,12 @@
     /**
      * Callback for private messages
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
      */
-    public function onPrivateMessage(&$connection, $nick, $target, $message) {
+    public function onPrivateMessage($connection, $nick, $target, $message) {
       switch ($this->mode) {
         case MODE_AWAKE:
         default:
@@ -933,15 +919,14 @@
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
      */
-    public function onEndOfMOTD(&$connection, $server, $target, $data) {
+    public function onEndOfMOTD($connection, $server, $target, $data) {
       if ($this->config->hasSection('autojoin')) {
-        $hash= &$this->config->readHash('autojoin', 'channels');
+        $hash= $this->config->readHash('autojoin', 'channels');
         foreach ($hash->keys() as $channel) {
           
           if (is_numeric($channel)) {
@@ -958,13 +943,12 @@
     /**
      * Callback for invitations
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick sending the invitation
      * @param   string who who is invited
      * @param   string channel invitation is for
      */
-    public function onInvite(&$connection, $nick, $who, $channel) {
+    public function onInvite($connection, $nick, $who, $channel) {
       if ($this->config->readBool('invitations', 'follow', FALSE)) {
         $connection->join($channel);
         $this->setKarma($nick, 5, '@@invite');
@@ -974,14 +958,13 @@
     /**
      * Callback for kicks
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel the channel the user was kicked from
      * @param   string nick that initiated the kick
      * @param   string who who was kicked
      * @param   string reason what reason the user was kicked for
      */
-    public function onKicks(&$connection, $channel, $nick, $who, $reason) {
+    public function onKicks($connection, $channel, $nick, $who, $reason) {
       if (strcasecmp($who, $connection->user->getNick()) == 0) {
         $connection->join($channel);
         $connection->sendMessage($nick, 'He! "%s" ist KEIN Grund', $reason);
@@ -996,12 +979,11 @@
     /**
      * Callback for joins
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
-    public function onJoins(&$connection, $channel, $nick) {
+    public function onJoins($connection, $channel, $nick) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $connection->writeln('NOTICE %s :%s is back!', $channel, $nick);
         $this->channels[$channel]= TRUE;
@@ -1015,13 +997,12 @@
     /**
      * Callback for parts
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string channel which channel was part
      * @param   string nick who part
      * @param   string message the part message, if any
      */
-    public function onParts(&$connection, $channel, $nick, $message) {
+    public function onParts($connection, $channel, $nick, $message) {
       if (strcasecmp($nick, $connection->user->getNick()) == 0) {
         $this->channels[$channel]= FALSE;
       }
@@ -1034,13 +1015,12 @@
      * Callback for actions. Actions are when somebody writes /me ...
      * in their IRC window.
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick who initiated the action
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
      */
-    public function onAction(&$connection, $nick, $target, $params) {
+    public function onAction($connection, $nick, $target, $params) {
       if (MODE_AWAKE != $this->mode) return;
       
       if (10 == rand(0, 20)) {
@@ -1058,24 +1038,22 @@
     /**
      * Callback for CTCP VERSION
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string nick nick requesting version
      * @param   string target where version was requested
      * @param   string params additional parameters
      */
-    public function onVersion(&$connection, $nick, $target, $params) {
+    public function onVersion($connection, $nick, $target, $params) {
       $connection->writeln('NOTICE %s :%sVERSION Krokerdil $Revision$%s', $nick, "\1", "\1");
     }
     
     /**
      * Callback for PING
      *
-     * @access  public
      * @param   &peer.irc.IRCConnection connection
      * @param   string data
      */
-    public function onPings(&$connection, $data) {
+    public function onPings($connection, $data) {
     
       // Automatically store configuration every hour
       if (time() > $this->registry['laststore'] + 3600) {

@@ -72,7 +72,6 @@
     /**
      * Constructor
      *
-     * @access public
      */
     public function __construct() {
       parent::__construct('rdf:RDF');
@@ -88,7 +87,6 @@
     /**
      * Sets the channel element
      *
-     * @access  public
      * @param   string title
      * @param   string link
      * @param   string description default ''
@@ -108,7 +106,7 @@
       $publisher= '', 
       $rights= ''
     ) {
-      if (NULL === $date) $date= &Date::now();
+      if (NULL === $date) $date= Date::now();
       
       $this->channel->title= $title;
       $this->channel->link= $link;
@@ -119,7 +117,7 @@
       $this->channel->publisher= $publisher;
       $this->channel->copyright= $rights;
      
-      $node= &Node::fromArray(array(
+      $node= Node::fromArray(array(
         'title'         => $title,
         'link'          => $link,
         'description'   => $description,
@@ -129,18 +127,17 @@
         'dc:publisher'  => $publisher,
         'dc:rights'     => $rights
       ), 'channel');
-      $items= &$node->addChild(new Node('items'));
+      $items= $node->addChild(new Node('items'));
 
-      $this->channel->node= &$node;
-      $this->channel->sequence= &$items->addChild(new Node('rdf:Seq'));
+      $this->channel->node= $node;
+      $this->channel->sequence= $items->addChild(new Node('rdf:Seq'));
 
-      $this->root->children[0]= &$node;
+      $this->root->children[0]= $node;
     }
     
     /**
      * Set the channel image
      *
-     * @access  public
      * @param   string title
      * @param   string url
      * @param   string link default ''
@@ -150,50 +147,45 @@
       $this->image->url= $url;
       $this->image->title= $title;
 
-      $node= &Node::fromArray(array(
+      $node= Node::fromArray(array(
         'title'         => $title,
         'url'           => $url,
         'link'          => $link
       ), 'image');
-      if (!isset($this->image->node)) $node= &$this->root->addChild($node);
-      $this->image->node= &$node;
+      if (!isset($this->image->node)) $node= $this->root->addChild($node);
+      $this->image->node= $node;
     }
     
     /**
      * Create a RDF from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &xml.rdf.RDFNewsfeed
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       return parent::fromString($str, __CLASS__);
     }
 
     /**
      * Create a RDF from a file
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &xml.rdf.RDFNewsfeed
      */
-    public static function &fromFile($file) {
+    public static function fromFile($file) {
       return parent::fromFile($file, __CLASS__);
     }
     
     /**
      * Adds an item
      *
-     * @access  public
      * @param   string title
      * @param   string link
      * @param   string description default ''
      * @param   string util.Date default NULL date defaulting to current date/time
      * @return  object the added item
      */
-    public function &addItem($title, $link, $description= '', $date= NULL) {
+    public function addItem($title, $link, $description= '', $date= NULL) {
       if (NULL === $date) {
         $date= isset($this->channel->date) ? $this->channel->date : new Date(time());
       }
@@ -203,15 +195,15 @@
       $item->link= $link;
       $item->description= $description;
       
-      $node= &Node::fromArray(array(
+      $node= Node::fromArray(array(
         'title'         => $title,
         'link'          => $link,
         'description'   => $description,
         'dc:date'       => $date->toString('Y-m-d\TH:i:s')
       ), 'item');
       $node->setAttribute('rdf:about', $link);
-      $item->node= &$this->root->addChild($node);
-      $this->items[]= &$item;
+      $item->node= $this->root->addChild($node);
+      $this->items[]= $item;
       $this->channel->sequence->addChild(new Node('rdf:li', NULL, array('rdf:resource' => $link)));
       
       return $item;
@@ -220,7 +212,6 @@
     /**
      * Private helper
      *
-     * @access  private
      * @return  string path, e.g. /rdf:rdf/item/rc:summary/
      */
     public function _pathname() {
@@ -234,7 +225,6 @@
     /**
      * Callback for XML parser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      * @param   string attrs
@@ -254,18 +244,18 @@
 
         case '/rdf:rdf/channel/': 
         case '/rss/channel/':
-          $this->channel->node= &$this->_objs[$this->_cnt];
+          $this->channel->node= $this->_objs[$this->_cnt];
           break;
           
         case '/rdf:rdf/image/': 
         case '/rss/image/':
-          $this->image->node= &$this->_objs[$this->_cnt];
+          $this->image->node= $this->_objs[$this->_cnt];
           break;
           
         case '/rdf:rdf/item/': 
         case '/rss/channel/item/':
           $this->items[]= new stdClass();
-          $this->items[sizeof($this->items)- 1]->node= &$this->_objs[$this->_cnt];
+          $this->items[sizeof($this->items)- 1]->node= $this->_objs[$this->_cnt];
           break;
       }
     }          
@@ -273,7 +263,6 @@
     /**
      * Callback for XML parser
      *
-     * @access  public
      * @param   resource parser
      * @param   string name
      * @see     xp://xml.parser.XMLParser

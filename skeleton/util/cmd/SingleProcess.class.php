@@ -31,7 +31,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string lockfileName default NULL the lockfile's name,
      *          defaulting to <<program_name>>.lck
      */
@@ -43,7 +42,6 @@
     /**
      * Lock this application
      *
-     * @access  public
      * @return  bool success
      */
     public function lock() {
@@ -61,7 +59,6 @@
     /**
      * Unlock the application
      *
-     * @access  public
      * @return  bool Success
      */
     public function unlock() {

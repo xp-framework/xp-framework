@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Dec 18 11:57:41 CET 2006
-@status: discussion, ends Wed Dec 27 12:00:00 CET 2006
+@status: implemented, Wed Dec 27 16:25:08 CET 2006
 @category: util.cmd
 
 Scope of Change

@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -46,7 +45,6 @@
     /**
      * Returns the value of the parameter username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -56,7 +54,6 @@
     /**
      * Returns the value of the parameter password
      *
-     * @access  public
      * @return  string
      */
     public function getPassword() {

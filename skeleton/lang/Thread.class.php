@@ -64,7 +64,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name= '') {
@@ -75,7 +74,6 @@
     /**
      * Returns whether this thread is running
      *
-     * @access  public
      * @return  bool
      */
     public function isRunning() {
@@ -85,7 +83,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -95,7 +92,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -106,8 +102,6 @@
      * Causes the currently executing thread to sleep (temporarily cease 
      * execution) for the specified number of milliseconds. 
      *
-     * @model   static
-     * @access  public
      * @param   int millis
      */
     public static function sleep($millis) {
@@ -117,7 +111,6 @@
     /**
      * Starts thread execution
      *
-     * @access  public
      * @throws  lang.IllegalThreadStateException if this thread is already running
      * @throws  lang.SystemException if the thread cannot be started
      */
@@ -147,7 +140,6 @@
      * Join this thread. The optional parameter wait may be set to FALSE to
      * return immediately if this thread hasn't terminated yet.
      *
-     * @access  public
      * @param   bool wait default TRUE
      * @return  int status
      * @see     php://pcntl_waitpid
@@ -162,7 +154,6 @@
     /**
      * Stop this thread
      *
-     * @access  public
      * @param   int signal default SIGINT
      * @throws  lang.IllegalThreadStateException
      */
@@ -178,7 +169,6 @@
     /**
      * Returns thread id or -1 if this thread is not running
      *
-     * @access  public
      * @return  int
      */
     public function getId() {
@@ -188,7 +178,6 @@
     /**
      * Returns thread's parent id
      *
-     * @access  public
      * @return  int
      */
     public function getParentId() {
@@ -198,7 +187,6 @@
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -208,8 +196,6 @@
     /**
      * Subclasses of Thread should override this method.
      *
-     * @model   abstract
-     * @access  public
      */
     public function run() { }
   }

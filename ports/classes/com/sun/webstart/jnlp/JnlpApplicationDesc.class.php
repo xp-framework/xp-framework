@@ -18,7 +18,6 @@
     /**
      * Set Main_class
      *
-     * @access  public
      * @param   string main_class
      */
     public function setMain_class($main_class) {
@@ -28,7 +27,6 @@
     /**
      * Get Main_class
      *
-     * @access  public
      * @return  string
      */
     public function getMain_class() {
@@ -38,7 +36,6 @@
     /**
      * Add an arguments
      *
-     * @access  public
      * @param   string argument
      */
     public function addArgument($argument) {
@@ -48,7 +45,6 @@
     /**
      * Set Arguments
      *
-     * @access  public
      * @param   string[] arguments
      */
     public function setArguments($arguments) {
@@ -58,7 +54,6 @@
     /**
      * Get Arguments
      *
-     * @access  public
      * @return  string[]
      */
     public function getArguments() {

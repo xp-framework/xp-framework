@@ -17,13 +17,12 @@
     /**
      * Create tag from text
      *
-     * @access  public
      * @param   &text.doclet.Doc holder
      * @param   string kind
      * @param   string text
      * @return  &text.doclet.Tag
      */ 
-    public function &tagFrom(&$holder, $kind, $text) {
+    public function tagFrom($holder, $kind, $text) {
       list($type, $label)= explode(' ', $text, 2);
       return new ReturnTag($type, $label);
     }

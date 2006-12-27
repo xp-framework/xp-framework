@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates the set member
      *
-     * @access  public
      */
     public function setUp() {
       $this->set= new HashSet();
@@ -32,7 +31,6 @@
     /**
      * Tests the set is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests set equals its clone
      *
-     * @access  public
      */
     #[@test]
     public function equalsClone() {
@@ -53,7 +50,6 @@
     /**
      * Tests set equals another set with the same contents
      *
-     * @access  public
      */
     #[@test]
     public function equalsOtherSetWithSameContents() {
@@ -66,7 +62,6 @@
     /**
      * Tests set does not equal set with different contents
      *
-     * @access  public
      */
     #[@test]
     public function doesNotEqualSetWithDifferentContents() {
@@ -79,7 +74,6 @@
     /**
      * Tests add()
      *
-     * @access  public
      */
     #[@test]
     public function add() {
@@ -91,7 +85,6 @@
     /**
      * Tests addAll()
      *
-     * @access  public
      */
     #[@test]
     public function addAll() {
@@ -104,7 +97,6 @@
     /**
      * Tests addAll() uniques the array given
      *
-     * @access  public
      */
     #[@test]
     public function addAllUniques() {
@@ -118,7 +110,6 @@
      * Tests addAll() returns TRUE if the set changed as a result if the
      * call, FALSE otherwise.
      *
-     * @access  public
      */
     #[@test]
     public function addAllReturnsWhetherSetHasChanged() {
@@ -132,7 +123,6 @@
     /**
      * Tests contains() method
      *
-     * @access  public
      */
     #[@test]
     public function contains() {
@@ -145,7 +135,6 @@
      * Tests add() returns TRUE if the set did not already contain the
      * given element, FALSE otherwise
      *
-     * @access  public
      */
     #[@test]
     public function addSameValueTwice() {
@@ -157,7 +146,6 @@
     /**
      * Tests remove()
      *
-     * @access  public
      */
     #[@test]
     public function remove() {
@@ -170,7 +158,6 @@
      * Tests remove() returns FALSE when given object cannot be 
      * contained in the set (because the set is empty)
      *
-     * @access  public
      */
     #[@test]
     public function removeOnEmptySet() {
@@ -181,7 +168,6 @@
      * Tests remove() returns FALSE when given object is not contained
      * in the set.
      *
-     * @access  public
      */
     #[@test]
     public function removeNonExistantObject() {
@@ -192,7 +178,6 @@
     /**
      * Tests clear() method
      *
-     * @access  public
      */
     #[@test]
     public function clear() {
@@ -204,19 +189,17 @@
     /**
      * Tests toArray() method
      *
-     * @access  public
      */
     #[@test]
     public function toArray() {
       $color= new String('red');
       $this->set->add($color);
-      $this->assertEquals(array(&$color), $this->set->toArray());
+      $this->assertEquals(array($color), $this->set->toArray());
     }
 
     /**
      * Tests toArray() method
      *
-     * @access  public
      */
     #[@test]
     public function toArrayOnEmptySet() {
@@ -226,7 +209,6 @@
     /**
      * Tests toString() method
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentation() {
@@ -241,7 +223,6 @@
     /**
      * Tests toString() method on an empty set
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentationOfEmptySet() {

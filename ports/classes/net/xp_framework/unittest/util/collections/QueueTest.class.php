@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates the queue member
      *
-     * @access  public
      */
     public function setUp() {
       $this->queue= new Queue();
@@ -32,7 +31,6 @@
     /**
      * Tests the queue is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests queue equals its clone
      *
-     * @access  public
      */
     #[@test]
     public function equalsClone() {
@@ -53,7 +50,6 @@
     /**
      * Tests put()
      *
-     * @access  public
      */
     #[@test]
     public function put() {
@@ -65,7 +61,6 @@
     /**
      * Tests get()
      *
-     * @access  public
      */
     #[@test]
     public function get() {
@@ -79,7 +74,6 @@
      * Tests get() throws an exception when there are no more elements
      * in the queue,
      *
-     * @access  public
      */
     #[@test, @expect('util.NoSuchElementException')]
     public function exceptionOnNoMoreElements() {
@@ -89,7 +83,6 @@
     /**
      * Tests peek()
      *
-     * @access  public
      */
     #[@test]
     public function peek() {
@@ -103,7 +96,6 @@
      * Tests peek() returns NULL when there are no more elements
      * in the queue.
      *
-     * @access  public
      */
     #[@test]
     public function peekReturnsNullOnNoMoreElements() {
@@ -113,7 +105,6 @@
     /**
      * Tests remove()
      *
-     * @access  public
      */
     #[@test]
     public function remove() {
@@ -126,7 +117,6 @@
     /**
      * Tests remove() returns TRUE when the element was deleted, FALSE otherwise
      *
-     * @access  public
      */
     #[@test]
     public function removeReturnsWhetherDeleted() {
@@ -142,7 +132,6 @@
     /**
      * Tests elementAt()
      *
-     * @access  public
      */
     #[@test]
     public function elementAt() {
@@ -174,7 +163,6 @@
      *   }
      * </code>
      *
-     * @access  public
      */
     #[@test]
     public function iterativeUse() {
@@ -188,7 +176,7 @@
       // Retrieve
       $i= 0;
       while (!$this->queue->isEmpty()) {
-        $element= &$this->queue->get();
+        $element= $this->queue->get();
 
         if (!$input[$i]->equals($element)) {
           $this->fail('Not equal at offset #'.$i, $element, $input[$i]);
@@ -202,7 +190,6 @@
      * Tests elementAt() throws an exception in case an illegal offset
      * is specified.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtIllegalOffset() {
@@ -213,7 +200,6 @@
      * Tests elementAt() throws an exception in case an out-of-bound
      * offset is specified.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtOffsetOutOfBounds() {
@@ -225,7 +211,6 @@
      * Tests elementAt() throws an exception in case the list is
      * empty.
      *
-     * @access  public
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function elementAtEmptyList() {

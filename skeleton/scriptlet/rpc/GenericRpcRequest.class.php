@@ -24,27 +24,24 @@
     /**
      * Set callback object.
      *
-     * @access  public
      * @param   &mixed object
      */
-    public function setCallback(&$object) {
-      $this->_cb= &$object;
+    public function setCallback($object) {
+      $this->_cb= $object;
     }
     
     /**
      * Create message from request
      *
-     * @access  public
      * @return  &scriptlet.rpc.AbstractRpcMessage
      */
-    public function &getMessage() {
+    public function getMessage() {
       return $this->_cb->getMessage($this);
     }
     
     /**
      * Determine encoding.
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {

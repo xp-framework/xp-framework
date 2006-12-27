@@ -18,16 +18,15 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function process(&$request, &$response) {
-      $pm= &PropertyManager::getInstance();
-      $prop= &$pm->getProperties('site');
+    public function process($request, $response) {
+      $pm= PropertyManager::getInstance();
+      $prop= $pm->getProperties('site');
       
       $response->addFormResult(Node::fromArray($prop->readSection('site'), 'config'));
-      $c= &$this->_getCatalogue();
+      $c= $this->_getCatalogue();
       
       // Position defaults to last entry
       $position= $c->entries->size()- 1;
@@ -41,18 +40,18 @@
         $position= $index- 1;
       }
       
-      $entry= &$c->entries->get($position);
+      $entry= $c->entries->get($position);
       if (!$entry) return;
-      $page= &$this->_getPage($entry->getPath());
+      $page= $this->_getPage($entry->getPath());
       
       $response->addFormResult(Node::fromObject($entry, 'current'));
       if ($position > 0) {
-        $prev= &$c->entries->get($position- 1);
+        $prev= $c->entries->get($position- 1);
         $response->addFormResult(Node::fromObject($prev, 'prev'));
       }
       
       if ($position < $c->entries->size()- 1) {
-        $next= &$c->entries->get($position+ 1);
+        $next= $c->entries->get($position+ 1);
         $response->addFormResult(Node::fromObject($next, 'next'));
       }
       

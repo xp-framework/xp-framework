@@ -23,7 +23,6 @@
     /**
      * Setup this testcase
      *
-     * @access  public
      */
     public function setUp() {
       $this->fixture= new WindowsFtpListParser();
@@ -32,11 +31,10 @@
     /**
      * Test directory
      *
-     * @access  public
      */
     #[@test]
     public function directory() {
-      $e= &$this->fixture->entryFrom('01-04-06  04:51PM       <DIR>          _db_import');
+      $e= $this->fixture->entryFrom('01-04-06  04:51PM       <DIR>          _db_import');
 
       $this->assertSubclass($e, 'peer.ftp.FtpDir') &&
       $this->assertEquals('_db_import', $e->getName()) &&
@@ -51,11 +49,10 @@
     /**
      * Test file
      *
-     * @access  public
      */
     #[@test]
     public function regularFile() {
-      $e= &$this->fixture->entryFrom('11-08-06  10:04AM                   27 info.txt');
+      $e= $this->fixture->entryFrom('11-08-06  10:04AM                   27 info.txt');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
       $this->assertEquals('info.txt', $e->getName()) &&

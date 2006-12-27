@@ -18,7 +18,6 @@
     /**
      * Set Id
      *
-     * @access  public
      * @param   mixed id
      */
     public function setId($id) {
@@ -28,7 +27,6 @@
     /**
      * Get Id
      *
-     * @access  public
      * @return  mixed
      */
     public function getId() {
@@ -38,7 +36,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   mixed name
      */
     public function setName($name) {
@@ -48,7 +45,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  mixed
      */
     public function getName() {
@@ -58,11 +54,10 @@
     /**
      * Checks whether a given object is equal to this person.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('Person', $cmp) && $cmp->name == $this->name && $cmp->id == $this->id;
     }
   }

@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string isbn
      * @throws  lang.IllegalArgumentException in case the ISBN is invalid
      */
@@ -38,7 +37,6 @@
     /**
      * Get Number
      *
-     * @access  public
      * @return  string
      */
     public function getNumber() {
@@ -48,8 +46,6 @@
     /**
      * Verify an ISBN number
      *
-     * @model   static
-     * @access  public
      * @param   string isbn
      * @return  bool TRUE if the number is valid
      */
@@ -83,7 +79,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

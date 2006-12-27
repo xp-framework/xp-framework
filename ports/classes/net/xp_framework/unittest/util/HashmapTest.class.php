@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates the map member
      *
-     * @access  public
      */
     public function setUp() {
       $this->map= new Hashmap();
@@ -32,7 +31,6 @@
     /**
      * Tests the map is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests map equals its clone
      *
-     * @access  public
      */
     #[@test]
     public function equalsClone() {
@@ -53,7 +50,6 @@
     /**
      * Tests map equals another map with the same contents
      *
-     * @access  public
      */
     #[@test]
     public function equalsOtherMapWithSameContents() {
@@ -66,7 +62,6 @@
     /**
      * Tests map does not equal map with different contents
      *
-     * @access  public
      */
     #[@test]
     public function doesNotEqualMapWithDifferentContents() {
@@ -79,7 +74,6 @@
     /**
      * Tests put()
      *
-     * @access  public
      */
     #[@test]
     public function put() {
@@ -91,7 +85,6 @@
     /**
      * Tests get()
      *
-     * @access  public
      */
     #[@test]
     public function get() {
@@ -102,7 +95,6 @@
     /**
      * Tests remove()
      *
-     * @access  public
      */
     #[@test]
     public function remove() {
@@ -114,7 +106,6 @@
     /**
      * Tests get() returns NULL if the list is empty
      *
-     * @access  public
      */
     #[@test]
     public function getReturnsNullOnEmptyList() {
@@ -125,7 +116,6 @@
     /**
      * Tests containsKey() method
      *
-     * @access  public
      */
     #[@test]
     public function containsKey() {
@@ -137,7 +127,6 @@
     /**
      * Helper method for merge* test methods
      *
-     * @access  protected
      * @param   bool recursive default FALSE Merge hashmaps recursively
      * @param   array<mixed, mixed> toMerge
      * @param   array<mixed, mixed> expect
@@ -153,7 +142,6 @@
     /**
      * Tests merge() method
      *
-     * @access  public
      */
     #[@test]
     public function merge() {
@@ -167,7 +155,6 @@
     /**
      * Tests merge() method, using recursive behaviour.
      *
-     * @access  public
      */
     #[@test]
     public function mergeRecursive() {
@@ -181,7 +168,6 @@
     /**
      * Tests merge() method when given anything besides an array or a Hashmap
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]    
     public function mergeWithIllegalArgument() {
@@ -191,7 +177,6 @@
     /**
      * Tests swap() method
      *
-     * @access  public
      */
     #[@test]
     public function swap() {
@@ -208,7 +193,6 @@
     /**
      * Tests swap() method
      *
-     * @access  public
      */
     #[@test]
     public function swapNonExistantKeys() {
@@ -222,7 +206,6 @@
     /**
      * Tests flip() method
      *
-     * @access  public
      */
     #[@test]
     public function flip() {
@@ -239,7 +222,6 @@
     /**
      * Tests clear() method
      *
-     * @access  public
      */
     #[@test]
     public function clear() {
@@ -251,7 +233,6 @@
     /**
      * Tests containsValue() method
      *
-     * @access  public
      */
     #[@test]
     public function containsValue() {
@@ -263,7 +244,6 @@
     /**
      * Tests values() method
      *
-     * @access  public
      */
     #[@test]
     public function keys() {
@@ -275,7 +255,6 @@
     /**
      * Tests values() method
      *
-     * @access  public
      */
     #[@test]
     public function values() {
@@ -287,7 +266,6 @@
     /**
      * Tests filter() method
      *
-     * @access  public
      */
     #[@test]
     public function filter() {
@@ -302,7 +280,6 @@
     /**
      * Tests sort() method
      *
-     * @access  public
      */
     #[@test]
     public function sort() {
@@ -319,7 +296,6 @@
     /**
      * Tests rsort() method
      *
-     * @access  public
      */
     #[@test]
     public function rsort() {
@@ -336,7 +312,6 @@
     /**
      * Tests usort() method
      *
-     * @access  public
      */
     #[@test]
     public function usort() {
@@ -345,7 +320,7 @@
       $this->map->put('eins', 'one');
 
       $this->map->usort(newinstance('util.Comparator', array(), '{
-        static function compare(&$a, &$b) { 
+        function compare($a, $b) { 
           return strcasecmp($a, $b); 
         }
       }'));

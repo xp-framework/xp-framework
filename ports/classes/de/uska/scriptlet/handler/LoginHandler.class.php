@@ -22,29 +22,27 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
       $this->setWrapper(new LoginWrapper());
       
-      $log= &Logger::getInstance();
-      $this->cat= &$log->getCategory();
+      $log= Logger::getInstance();
+      $this->cat= $log->getCategory();
     }
     
     /**
      * Handle submitted data
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      */
-    public function handleSubmittedData(&$request, &$context) {
-      $cm= &ConnectionManager::getInstance();
-      $wrapper= &$this->getWrapper();
+    public function handleSubmittedData($request, $context) {
+      $cm= ConnectionManager::getInstance();
+      $wrapper= $this->getWrapper();
       
       try {
-        $player= &Player::getByUsername($wrapper->getUsername());
+        $player= Player::getByUsername($wrapper->getUsername());
       } catch (SQLException $e) {
         throw($e);
       }
@@ -67,7 +65,7 @@
       $context->setUser($player);
       
       try {
-        $db= &$cm->getByHost('uska', 0);
+        $db= $cm->getByHost('uska', 0);
         $perms= $db->select('
             p.name
           from
@@ -91,12 +89,11 @@
     /**
      * Finalize this handler
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) {
+    public function finalize($request, $response, $context) {
 
       // Set a cookie
       $response->setCookie(new Cookie('uska-user', $context->user->getUsername()));

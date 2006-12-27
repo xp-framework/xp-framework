@@ -25,13 +25,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &peer.mail.store.MailStore store
      * @param   string name default ''
      */  
-    public function __construct(&$store, $name= '') {
+    public function __construct($store, $name= '') {
       $this->name= $name;
-      $this->store= &$store;
+      $this->store= $store;
       
     }
   
@@ -51,7 +50,6 @@
      * </pre>
      *
      * @see     xp://peer.mail.store.StoreCache#toString
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -70,7 +68,6 @@
     /**
      * Open this folder
      *
-     * @access  public
      * @param   bool readonly default FALSE
      * @return  bool success
      */
@@ -82,7 +79,6 @@
     /**
      * Close this folder
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { 
@@ -103,11 +99,10 @@
      *   $f->getMessages(3, 7, range(10, 14));
      * </code>
      *
-     * @access  public
      * @param   mixed* msgnums
      * @return  &peer.mail.Message[]
      */
-    public function &getMessages() { 
+    public function getMessages() { 
       $args= func_get_args();
       array_unshift($args, $this);
       return call_user_func_array(array($this->store, 'getMessages'), $args);
@@ -116,7 +111,6 @@
     /**
      * Rewind this folder (set the iterator offset for getMessage() to 0)
      *
-     * @access  public
      */
     public function rewind() {
       $this->_ofs= 0;
@@ -125,33 +119,30 @@
     /**
      * Delete a message
      *
-     * @access  public
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function deleteMessage(&$msg) {
+    public function deleteMessage($msg) {
       return $this->store->deleteMessage($this, $msg);
     }
 
     /**
      * Undelete a message
      *
-     * @access  public
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function undeleteMessage(&$msg) {
+    public function undeleteMessage($msg) {
       return $this->store->undeleteMessage($this, $msg);
     }
     
     /**
      * Move a message
      *
-     * @access  public
      * @param   &peer.mail.Message msg
      * @return  bool success
      */
-    public function moveMessage(&$msg) {
+    public function moveMessage($msg) {
       return $this->store->moveMessage($this, $msg);
     }
     
@@ -167,42 +158,38 @@
      *   $f->close();                          
      * </code>
      *
-     * @access  public
      * @return  &peer.mail.Message or FALSE to indicate we reached the last mail
      */
-    public function &getMessage() {
+    public function getMessage() {
       $this->_ofs++;
-      $ret= &$this->store->getMessages($this, $this->_ofs);
+      $ret= $this->store->getMessages($this, $this->_ofs);
       return $ret[0];
     }
 
     /**
      * Get a message part
      *
-     * @access  public
      * @param   string uid
      * @param   string part
      * @return  &int
      */
-    public function &getMessagePart($uid, $part) { 
+    public function getMessagePart($uid, $part) { 
       return $this->store->getMessagePart($this, $uid, $part);
     }
 
     /**
      * Get a message structure
      *
-     * @access  public
      * @param   string uid
      * @return  &object
      */
-    public function &getMessageStruct($uid) { 
+    public function getMessageStruct($uid) { 
       return $this->store->getMessageStruct($this, $uid);
     }
 
     /**
      * Get number of messages in this folder
      *
-     * @access  public
      * @return  int
      */
     public function getMessageCount() {
@@ -212,7 +199,6 @@
     /**
      * Get number of new messages in this folder
      *
-     * @access  public
      * @return  int
      */
     public function getNewMessageCount() {
@@ -222,7 +208,6 @@
     /**
      * Get number of unread messages in this folder
      *
-     * @access  public
      * @return  intGet number of messages in this folder
      */
     public function getUnreadMessageCount() {

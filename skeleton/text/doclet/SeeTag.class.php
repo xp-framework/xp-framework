@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string text
      * @param   string scheme

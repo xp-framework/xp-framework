@@ -45,11 +45,10 @@
      * Pushes an item onto the top of the stack. Returns the element that 
      * was added.
      *
-     * @access  public
      * @param   &lang.Object object
      * @return  &lang.Object object
      */
-    public function &push(&$object) {
+    public function push($object) {
       array_unshift($this->_elements, $object);
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
@@ -58,11 +57,10 @@
     /**
      * Gets an item from the top of the stack
      *
-     * @access  public
      * @return  &lang.Object
      * @throws  util.NoSuchElementException
      */    
-    public function &pop() {
+    public function pop() {
       if (empty($this->_elements)) {
         throw(new NoSuchElementException('Stack is empty'));
       }
@@ -77,10 +75,9 @@
      *
      * Returns NULL in case the stack is empty.
      *
-     * @access  public
      * @return  &lang.Object object
      */        
-    public function &peek() {
+    public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
   
@@ -88,7 +85,6 @@
      * Returns true if the stack is empty. This is effectively the same
      * as testing size() for 0.
      *
-     * @access  public
      * @return  bool
      */
     public function isEmpty() {
@@ -98,7 +94,6 @@
     /**
      * Returns the size of the stack.
      *
-     * @access  public
      * @return  int
      */
     public function size() {
@@ -109,23 +104,21 @@
      * Sees if an object is in the stack and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @access  public
      * @param   &lang.Object object
      * @return  int position
      */
-    public function search(&$object) {
+    public function search($object) {
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
     
     /**
      * Retrieves an element by its index.
      *
-     * @access  public
      * @param   int index
      * @return  &lang.Object
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function &elementAt($index) {
+    public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
         throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
       }
@@ -135,7 +128,6 @@
     /**
      * Returns a hashcode for this queue
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -145,11 +137,10 @@
     /**
      * Returns true if this queue equals another queue.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return (
         is('util.collections.Stack', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())

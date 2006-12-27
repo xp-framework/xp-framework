@@ -30,8 +30,6 @@
     /**
      * Retrieve namespace for a specified version
      *
-     * @model   static
-     * @access  public
      * @param   int version
      * @return  string namespace
      */  
@@ -42,8 +40,6 @@
     /**
      * Retrieve version identifier for a specified version
      *
-     * @model   static
-     * @access  public
      * @param   int version
      * @return  string version identifier, e.g. "1.0"
      */  

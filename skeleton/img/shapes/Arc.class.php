@@ -33,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &img.Color col color
      * @param   int cx x center of circle
      * @param   int cy y center of circle
@@ -47,8 +46,8 @@
      *          IMG_ARC_NOFILL
      *          IMG_ARC_EDGED
      */ 
-    public function __construct(&$col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
-      $this->col= &$col;
+    public function __construct($col, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= FALSE) {
+      $this->col= $col;
       $this->cx= $cx;
       $this->cy= $cy;
       $this->w= $w;
@@ -61,11 +60,10 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
+    public function draw($image) {
       if (FALSE !== $this->fill) return imagefilledarc(
         $image->handle,
         $this->cx,

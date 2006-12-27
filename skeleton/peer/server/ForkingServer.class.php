@@ -18,7 +18,6 @@
     /**
      * Service
      *
-     * @access  public
      */
     public function service() {
       if (!$this->socket->isConnected()) return FALSE;
@@ -26,7 +25,7 @@
       $tcp= getprotobyname('tcp');
       while (!$this->terminate) {
         try {
-          $m= &$this->socket->accept();
+          $m= $this->socket->accept();
         } catch (IOException $e) {
           $this->shutdown();
           break;

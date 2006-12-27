@@ -24,11 +24,10 @@
     /**
      * Set callback object.
      *
-     * @access  public
      * @param   &mixed object
      */
-    public function setCallback(&$object) {
-      $this->_cb= &$object;
+    public function setCallback($object) {
+      $this->_cb= $object;
     }
   
     /**
@@ -38,7 +37,6 @@
      * GenericRpcResponse delegates this to the callback object
      * (usually the Router).
      *
-     * @access  public
      * @see     scriptlet.HttpScriptletResponse#process
      */
     public function process() {

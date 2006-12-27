@@ -42,13 +42,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &webservices.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
-    public function __construct(&$transport, $action, $targetNamespace= NULL) {
-      $this->transport= &$transport;
+    public function __construct($transport, $action, $targetNamespace= NULL) {
+      $this->transport= $transport;
       $this->action= $action;
       $this->targetNamespace= $targetNamespace;
       $this->mapping= new SOAPMapping();
@@ -57,7 +56,6 @@
     /**
      * Set TargetNamespace
      *
-     * @access  public
      * @param   string targetNamespace
      */
     public function setTargetNamespace($targetNamespace= NULL) {
@@ -67,7 +65,6 @@
     /**
      * Set encoding
      *
-     * @access  public
      * @param   string encoding either utf-8 oder iso-8859-1
      */
     public function setEncoding($encoding) {
@@ -77,40 +74,36 @@
     /**
      * Set trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
+    public function setTrace($cat) {
       $this->transport->setTrace($cat);
     }
     
     /**
      * Register mapping for a qname to a class object
      *
-     * @access  public
      * @param   &xml.QName qname
      * @param   &lang.XPClass class
      */
-    public function registerMapping(&$qname, &$class) {
+    public function registerMapping($qname, $class) {
       $this->mapping->registerMapping($qname, $class);
     }
     
     /**
      * Add a header
      *
-     * @access  public
      * @param   &webservices.soap.SOAPHeader header
      * @return  &webservices.soap.SOAPHeader the header added
      */
-    public function &addHeader(&$header) {
-      $this->headers[]= &$header;
+    public function addHeader($header) {
+      $this->headers[]= $header;
       return $header;
     }
     
     /**
      * Invoke method call
      *
-     * @access  public
      * @param   string method name
      * @param   mixed vars
      * @return  mixed answer
@@ -131,10 +124,10 @@
       $message->setData($args);
 
       // Send
-      if (FALSE == ($response= &$this->transport->send($message))) return FALSE;
+      if (FALSE == ($response= $this->transport->send($message))) return FALSE;
       
       // Response
-      if (FALSE == ($answer= &$this->transport->retrieve($response))) return FALSE;
+      if (FALSE == ($answer= $this->transport->retrieve($response))) return FALSE;
       
       $answer->setMapping($this->mapping);
       $data= $answer->getData();

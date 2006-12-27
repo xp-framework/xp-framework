@@ -21,7 +21,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -32,7 +31,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -43,11 +41,10 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       
     }
   }

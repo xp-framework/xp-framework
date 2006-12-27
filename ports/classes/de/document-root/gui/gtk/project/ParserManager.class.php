@@ -28,7 +28,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string filename
      */
     public function __construct($file) {
@@ -39,7 +38,6 @@
      * Check whether the file has been modified since last
      * parsing and thus reparsing is necessary.
      *
-     * @access  public
      * @return  bool
      */
     public function needsReparsing() {
@@ -53,7 +51,6 @@
     /**
      * Get the time of the last parsing.
      *
-     * @access  public
      * @return  int
      */
     public function getLastChange() {
@@ -63,7 +60,6 @@
     /**
      * Reparse the file.
      *
-     * @access  public
      */
     public function parse() {
       
@@ -82,21 +78,21 @@
       // Use function names as array keys
       $this->functions= array();
       foreach (array_keys($parser->functions) as $idx) {
-        $f= &$parser->functions[$idx];
-        $this->functions[$f->name]= &$f;
+        $f= $parser->functions[$idx];
+        $this->functions[$f->name]= $f;
       }
       
       // Use class- and function-names as array_keys
       foreach (array_keys($parser->classes) as $idx) {
-        $c= &$parser->classes[$idx];
+        $c= $parser->classes[$idx];
         
         // Intentional copy
         $this->classes[$c->name]= $c;
         $this->classes[$c->name]->functions= array();
         
         foreach (array_keys($c->functions) as $fidx) {
-          $f= &$c->functions[$fidx];
-          $this->classes[$c->name]->functions[$f->name]= &$f;
+          $f= $c->functions[$fidx];
+          $this->classes[$c->name]->functions[$f->name]= $f;
         }
       }
       

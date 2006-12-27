@@ -15,11 +15,10 @@
     /**
      * Update method
      *
-     * @access  public
      * @param   &util.Observable obs
      * @param   mixed arg default NULL
      */
-    public function update(&$obs, $arg= NULL);
+    public function update($obs, $arg= NULL);
   
   }
 ?>

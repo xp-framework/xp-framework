@@ -29,7 +29,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string filename
      */
     public function __construct($filename) {
@@ -39,7 +38,6 @@
     /**
      * Check whether a given element exists
      *
-     * @access  public
      * @param   string id the element's id
      * @return  bool TRUE when the element exists
      */
@@ -58,7 +56,6 @@
      *   $a->close();
      * </code>
      *
-     * @access  public
      * @return  string id or FALSE to indicate the pointer is at the end of the list
      */
     public function getEntry() {
@@ -70,7 +67,6 @@
     /**
      * Rewind archive
      *
-     * @access  public
      */
     public function rewind() {
       reset($this->_index);
@@ -79,11 +75,10 @@
     /**
      * Extract a file's contents
      *
-     * @access  public
      * @param   string id
      * @return  &string content
      */
-    public function &extract($id) {
+    public function extract($id) {
       if (!$this->contains($id)) {
         return FALSE;
       }
@@ -103,11 +98,10 @@
     /**
      * Fetches a stream to the file in the archive
      *
-     * @access  public
      * @param   string id
      * @return  &io.Stream
      */
-    public function &getStream($id) {
+    public function getStream($id) {
       if (!$this->contains($id)) {
         return FALSE;
       }
@@ -122,8 +116,8 @@
       // Load the class only at runtime to keep hardcoded dependencies to
       // external (ie. != "lang.") classes at a minimum to not affect
       // core startup time.
-      $class= &XPClass::forName('io.EnclosedStream');
-      $s= &$class->newInstance($this->file, $pos, $this->_index[$id][2]);
+      $class= XPClass::forName('io.EnclosedStream');
+      $s= $class->newInstance($this->file, $pos, $this->_index[$id][2]);
       return $s;
     }
     
@@ -133,7 +127,6 @@
      * Note: this light-weight implementation of an ArchiveReader
      * only supports opening the archive in ARCHIVE_READ mode.
      *
-     * @access  public
      * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
      * @return  bool success
      */
@@ -177,7 +170,6 @@
     /**
      * Close this archive
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -187,7 +179,6 @@
     /**
      * Checks whether this archive is open
      *
-     * @access  public
      * @return  bool TRUE when the archive file is open
      */
     public function isOpen() {
@@ -197,7 +188,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

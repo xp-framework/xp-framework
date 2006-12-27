@@ -34,7 +34,6 @@
     /**
      * Execute a SVN command
      *
-     * @access  private
      * @param   int svnCmd Command to execute
      * @return  array output
      * @throws  org.tigris.subversion.SVNInterfaceException if svn fails
@@ -44,8 +43,8 @@
       $cmdLine= $this->_SVN.' '.$svnCmd;
       foreach ($params as $param) $cmdLine.='  '.$param;
       try {
-        $l= &Logger::getInstance();
-        $c= &$l->getCategory();
+        $l= Logger::getInstance();
+        $c= $l->getCategory();
         $c->debug('SVN execute:', $cmdLine);
         $output= System::exec($cmdLine, '2>&1', FALSE);
       } catch (SystemException $e) {
@@ -63,7 +62,6 @@
      * - lock status (broken)
      * - the filename
      *
-     * @access public
      * @param string line The line to parse
      * @return mixed[]
      */
@@ -79,7 +77,6 @@
      * Returns one of the SVN_* status constants, indicated by passed
      * char.
      *
-     * @access public
      * @param string char The status character
      * @return int
      */

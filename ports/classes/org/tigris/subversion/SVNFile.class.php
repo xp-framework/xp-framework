@@ -24,7 +24,6 @@
     /**
      * Construct a new CVS Interface object
      *
-     * @access  public
      * @param   string filename
      * @throws  io.FileNotFoundException if filename is not a file
      */
@@ -39,7 +38,6 @@
     /**
      * Update a file or directory
      *
-     * @access  public
      * @return  stdclass[] objects
      */
     public function update() {
@@ -65,7 +63,6 @@
     /**
      * Commit the file (needs write access to repository)
      *
-     * @access  public
      * @param   string comment
      */
     public function commit($comment) {
@@ -78,7 +75,7 @@
         throw($e);
       }
 
-      $return= &$this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->filename));
+      $return= $this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->filename));
       
       $f->unlink();
       return $return;
@@ -88,7 +85,6 @@
      * Removes a file from the repository. To complete this action, you
      * have to call commit. Use this with caution.
      *
-     * @access  public
      * @return  bool success
      */
     public function delete() {
@@ -100,7 +96,6 @@
      * that the directory also already exists in SVN, otherwise
      * an error will be thrown.
      *
-     * @access  public
      * @return  bool success
      */    
     public function add() {
@@ -114,7 +109,6 @@
      * Specify both params to diff two SVN-revisions against each other.
      * You can also use SVN-Tags here.
      *
-     * @access  public
      * @param   string revision_from
      * @param   string revision_to
      * @return  array diff lines from the diff
@@ -132,7 +126,6 @@
     /**
      * Move file (supports only moving in current directory)
      *
-     * @access  public
      * @param   string target
      * @return  bool
      */

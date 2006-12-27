@@ -21,7 +21,6 @@
     /**
      * Set Operator
      *
-     * @access  public
      * @param   string operator
      */
     public function setOperator($operator) {
@@ -31,7 +30,6 @@
     /**
      * Get Operator
      *
-     * @access  public
      * @return  string
      */
     public function getOperator() {
@@ -41,7 +39,6 @@
     /**
      * Set truncated
      *
-     * @access  public
      * @param   bool truncated
      */
     public function setTruncated($truncated) {
@@ -51,7 +48,6 @@
     /**
      * Retrieve if the list is truncated
      *
-     * @access  public
      * @return  bool
      */
     public function isTruncated() {
@@ -61,7 +57,6 @@
     /**
      * Returns number of items in this list
      *
-     * @access  public
      * @return  int
      */
     public function numItems() {
@@ -71,18 +66,16 @@
     /**
      * Retrieve the business item at a specified position
      *
-     * @access  public
      * @param   int pos the position, starting from 0 to numItems() - 1
      * @return  &webservices.uddi.Business or NULL if there is no such item
      */
-    public function &itemAt($pos) {
+    public function itemAt($pos) {
       if (isset($this->items[$pos])) return $this->items[$pos]; else return NULL;
     }
 
     /**
      * Create a string representation of this list
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

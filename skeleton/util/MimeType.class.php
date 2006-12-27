@@ -88,8 +88,6 @@
     /**
      * Get mime type by filename (guess)
      *
-     * @model   static
-     * @access  public
      * @param   string name
      * @param   string default default MIME_APPLICATION_OCTET_STREAM
      * @return  string type

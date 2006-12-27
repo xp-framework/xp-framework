@@ -18,11 +18,10 @@
     /**
      * Parse raw listing entry.
      *
-     * @access  public
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    public function &entryFrom($raw) {
+    public function entryFrom($raw) {
       sscanf(
         $raw, 
         '%s %d %s %s %d %s %d %[^ ] %[^$]',
@@ -48,7 +47,7 @@
       // Check for "recent" file which are specified "HH:MM" instead
       // of year for the last 6 month (as specified in coreutils/src/ls.c)
       if (strstr($date, ':')) {
-        $now= &Date::now();
+        $now= Date::now();
         if ($d->getMonth() > $now->getMonth()) $d->year--;
       }
 

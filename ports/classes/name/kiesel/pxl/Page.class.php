@@ -28,19 +28,17 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function __construct() {
-      $this->pictures= &Collection::forClass('name.kiesel.pxl.Picture');
+      $this->pictures= Collection::forClass('name.kiesel.pxl.Picture');
     }
 
 
     /**
      * Get Description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -50,36 +48,33 @@
     /**
      * Get Comments
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getComments() {
+    public function getComments() {
       return $this->comments;
     }
 
     /**
      * Get Trackbacks
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getTrackbacks() {
+    public function getTrackbacks() {
       return $this->trackbacks;
     }
 
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function &create(&$storage) {
+    public function create($storage) {
       $data= $storage->load('page');
       if (!$data) return NULL;
       
-      $page= &Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Page', array(
-        'storage' => &$storage
+      $page= Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Page', array(
+        'storage' => $storage
       ));
       $page && $page->setStorage($storage);
       return $page;
@@ -88,7 +83,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -99,18 +93,16 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setStorage(&$storage) {
-      $this->storage= &$storage;
+    public function setStorage($storage) {
+      $this->storage= $storage;
     }    
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -122,7 +114,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -134,7 +125,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -146,7 +136,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     #[@xmlmapping(element= 'title')]
@@ -157,7 +146,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     #[@xmlfactory(element= 'title')]
@@ -168,19 +156,17 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     #[@xmlmapping(element= 'picture', class= 'name.kiesel.pxl.Picture')]
-    public function addPicture(&$p) {
+    public function addPicture($p) {
       $this->pictures->add($p);
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -192,7 +178,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -201,7 +186,7 @@
       $n->addChild(new Node('description', new PCData($this->description)));
       
       for ($i= 0; $i < $this->pictures->size(); $i++) {
-        $p= &$this->pictures->get($i);
+        $p= $this->pictures->get($i);
         $n->addChild($p->toXml());
       }
       

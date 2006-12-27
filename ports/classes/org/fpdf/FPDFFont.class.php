@@ -30,7 +30,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -41,7 +40,6 @@
     /**
      * Check whether this font is underlined
      *
-     * @access  public
      * @return  bool
      */
     public function isUnderline() {
@@ -51,7 +49,6 @@
     /**
      * Check whether this font is bold
      *
-     * @access  public
      * @return  bool
      */
     public function isBold() {
@@ -61,7 +58,6 @@
     /**
      * Check whether this font is italic
      *
-     * @access  public
      * @return  bool
      */
     public function isItalic() {
@@ -71,10 +67,9 @@
     /**
      * Load this font's properties from a .ini-file
      *
-     * @access  public
      * @param   &util.Properties p
      */
-    public function configure(&$p) {
+    public function configure($p) {
       if (NULL == $this->name) throw(new IllegalStateException('no name defined'));
       
       $this->cw= $p->readArray($this->name, 'cw', array());
@@ -96,7 +91,6 @@
     /**
      * Return the width of a specified character
      *
-     * @access  public
      * @param   char c
      * @return  int
      */

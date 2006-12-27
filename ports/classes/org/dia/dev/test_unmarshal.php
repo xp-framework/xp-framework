@@ -9,12 +9,12 @@
 
   // TODO: => unittest!
 
-  $Param= &new ParamString();
+  $Param= new ParamString();
   $diagram= $Param->value(1);
   
-  try (); {
-    $Dia= &DiaUnmarshaller::unmarshal($diagram);
-  } if (catch('Exception', $e)) {
+  try {
+    $Dia= DiaUnmarshaller::unmarshal($diagram);
+  } catch (Exception $e) {
     $e->printStackTrace();
     exit(-1);
   }

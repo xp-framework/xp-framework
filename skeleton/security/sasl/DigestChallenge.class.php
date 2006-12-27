@@ -47,13 +47,11 @@
      *   algorithm=md5-sess    
      * </pre>
      *
-     * @model   static
-     * @access  public
      * @param   string s
      * @return  &security.sasl.DigestChallenge
      * @throws  lang.FormatException
      */
-    public static function &fromString($s) {
+    public static function fromString($s) {
       with ($challenge= new DigestChallenge()); {
         $s.= ',';
         while ($p= strpos($s, '=')) {
@@ -114,7 +112,6 @@
     /**
      * Returns the challenge response
      *
-     * @access  public
      * @param   string qop
      * @param   string user
      * @param   string pass
@@ -122,7 +119,7 @@
      * @return  &security.sasl.DigestResponse
      * @throws  lang.FormatException
      */
-    public function &responseFor($qop, $user, $pass, $authzid= NULL) {
+    public function responseFor($qop, $user, $pass, $authzid= NULL) {
       if (!$this->hasQop($qop)) {
         throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
       }
@@ -145,7 +142,6 @@
     /**
      * Set Maxbuf
      *
-     * @access  public
      * @param   int maxbuf
      */
     public function setMaxbuf($maxbuf) {
@@ -155,7 +151,6 @@
     /**
      * Get Maxbuf
      *
-     * @access  public
      * @return  int
      */
     public function getMaxbuf() {
@@ -165,7 +160,6 @@
     /**
      * Set Realm
      *
-     * @access  public
      * @param   string realm
      */
     public function setRealm($realm) {
@@ -190,7 +184,6 @@
      * user or client must choose one as the realm for which to supply to
      * username and password.
      *
-     * @access  public
      * @return  string
      */
     public function getRealm() {
@@ -200,7 +193,6 @@
     /**
      * Set Domain
      *
-     * @access  public
      * @param   string domain
      */
     public function setDomain($domain) {
@@ -210,7 +202,6 @@
     /**
      * Get Domain
      *
-     * @access  public
      * @return  string
      */
     public function getDomain() {
@@ -220,7 +211,6 @@
     /**
      * Set Nonce
      *
-     * @access  public
      * @param   string nonce
      */
     public function setNonce($nonce) {
@@ -230,7 +220,6 @@
     /**
      * Get Nonce
      *
-     * @access  public
      * @return  string
      */
     public function getNonce() {
@@ -240,7 +229,6 @@
     /**
      * Set Qop
      *
-     * @access  public
      * @param   mixed[] qop
      */
     public function setQop($qop) {
@@ -253,7 +241,6 @@
      * authentication with integrity protection; the value "auth-conf"
      * indicates authentication with integrity protection and encryption.
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getQop() {
@@ -263,7 +250,6 @@
     /**
      * Check whether a specified qop is present
      *
-     * @access  public
      * @param   string qop one of the DC_QOP_* constants
      * @return  bool
      */
@@ -274,7 +260,6 @@
     /**
      * Set Cipher
      *
-     * @access  public
      * @param   mixed[] cipher
      */
     public function setCipher($cipher) {
@@ -284,7 +269,6 @@
     /**
      * Get Cipher
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getCipher() {
@@ -294,7 +278,6 @@
     /**
      * Check whether a specified cipher value exists
      *
-     * @access  public
      * @param   string cipher one of the DC_CPIHER_* constants
      * @return  bool
      */
@@ -305,7 +288,6 @@
     /**
      * Set Charset
      *
-     * @access  public
      * @param   string charset
      */
     public function setCharset($charset) {
@@ -323,7 +305,6 @@
      * This directive may appear at most once; if multiple instances are
      * present, the client should abort the authentication exchange.
      *
-     * @access  public
      * @return  string
      */
     public function getCharset() {
@@ -333,7 +314,6 @@
     /**
      * Set Algorithm
      *
-     * @access  public
      * @param   string algorithm
      */
     public function setAlgorithm($algorithm) {
@@ -343,7 +323,6 @@
     /**
      * Get Algorithm
      *
-     * @access  public
      * @return  string
      */
     public function getAlgorithm() {
@@ -353,7 +332,6 @@
     /**
      * Set Stale
      *
-     * @access  public
      * @param   bool stale
      */
     public function setStale($stale) {
@@ -363,7 +341,6 @@
     /**
      * Get Stale
      *
-     * @access  public
      * @return  bool
      */
     public function getStale() {
@@ -373,7 +350,6 @@
     /**
      * Set Opaque
      *
-     * @access  public
      * @param   string opaque
      */
     public function setOpaque($opaque) {
@@ -383,7 +359,6 @@
     /**
      * Get Opaque
      *
-     * @access  public
      * @return  string
      */
     public function getOpaque() {

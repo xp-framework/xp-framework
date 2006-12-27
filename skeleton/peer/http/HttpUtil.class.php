@@ -38,19 +38,17 @@
      * Fetch an URL's content. Follows redirects up until the defined 
      * constant REDIRECT_LIMIT times.
      *
-     * @model   static
-     * @access  public
      * @param   &peer.http.HttpConnection connection
      * @param   array params default array()
      * @param   array headers default array()
      * @return  string
      * @throws  peer.http.UnexpectedResponseException
      */
-    public static function get(&$connection, $params= array(), $headers= array()) {
+    public static function get($connection, $params= array(), $headers= array()) {
       $redirected= 0;
       do {
         try {
-          $response= &$connection->get($params, $headers);
+          $response= $connection->get($params, $headers);
         } catch (Exception $e) {
           throw(new UnexpectedResponseException(
             $e->getMessage(),
@@ -82,7 +80,7 @@
               ));
             }
             $redirected++;
-            $connection->request= &HttpRequestFactory::factory(new URL($loc));
+            $connection->request= HttpRequestFactory::factory(new URL($loc));
             break;
 
           default:              // Any other code

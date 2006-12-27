@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -34,7 +33,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -44,7 +42,6 @@
     /**
      * Fail this test case
      *
-     * @access  public
      * @param   string reason
      * @param   mixed actual
      * @param   mixed expect
@@ -62,7 +59,6 @@
     /**
      * Assert that a value's type is boolean
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notbool'
      * @return  bool
@@ -77,7 +73,6 @@
     /**
      * Assert that a value's type is float
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notfloat'
      * @return  bool
@@ -92,7 +87,6 @@
     /**
      * Assert that a value's type is integer
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notinteger'
      * @return  bool
@@ -107,7 +101,6 @@
     /**
      * Assert that a value's type is string
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notstring'
      * @return  bool
@@ -122,7 +115,6 @@
     /**
      * Assert that a value's type is null
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notnull'
      * @return  bool
@@ -137,7 +129,6 @@
     /**
      * Assert that a value is an array
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notarray'
      * @return  bool
@@ -152,12 +143,11 @@
     /**
      * Assert that a value is an object
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notobject'
      * @return  bool
      */
-    public function assertObject(&$var, $error= 'notobject') {
+    public function assertObject($var, $error= 'notobject') {
       if (!is_object($var)) {
         return $this->fail($error, 'object', xp::typeOf($var));
       }
@@ -167,7 +157,6 @@
     /**
      * Assert that a value is empty
      *
-     * @access  public
      * @param   mixed var
      * @return  bool
      * @param   string error default 'notempty'
@@ -183,7 +172,6 @@
     /**
      * Assert that a value is not empty
      *
-     * @access  public
      * @param   mixed var
      * @return  bool
      * @param   string error default 'empty'
@@ -199,12 +187,11 @@
     /**
      * Compare two values
      *
-     * @access  public
      * @param   &mixed a
      * @param   &mixed b
      * @return  bool
      */
-    public function _compare(&$a, &$b) {
+    public function _compare($a, $b) {
       if (is_array($a)) {
         if (!is_array($b) || sizeof($a) != sizeof($b)) return FALSE;
 
@@ -220,7 +207,6 @@
     /**
      * Assert that two values are equal
      *
-     * @access  public
      * @param   mixed expected
      * @param   mixed actual
      * @param   string error default 'notequal'
@@ -236,7 +222,6 @@
     /**
      * Assert that two values are not equal
      *
-     * @access  public
      * @param   mixed expected
      * @param   mixed actual
      * @param   string error default 'equal'
@@ -252,7 +237,6 @@
     /**
      * Assert that a value is true
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'nottrue'
      * @return  bool
@@ -267,7 +251,6 @@
     /**
      * Assert that a value is false
      *
-     * @access  public
      * @param   mixed var
      * @param   string error default 'notfalse'
      * @return  bool
@@ -282,7 +265,6 @@
     /**
      * Assert that a value matches a given pattern
      *
-     * @access  public
      * @param   mixed var
      * @param   string pattern
      * @param   string error default 'nomatches'
@@ -299,7 +281,6 @@
     /**
      * Assert that a string contains a substring
      *
-     * @access  public
      * @param   mixed var
      * @param   string needle
      * @param   string error default 'notcontained'
@@ -315,13 +296,12 @@
     /**
      * Assert that a given object is of a specified class
      *
-     * @access  public
      * @param   &lang.Object var
      * @param   string name
      * @param   string error default 'notequal'
      * @return  bool
      */
-    public function assertClass(&$var, $name, $error= 'notequal') {
+    public function assertClass($var, $name, $error= 'notequal') {
       if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
@@ -334,13 +314,12 @@
     /**
      * Assert that a given object is a subclass of a specified class
      *
-     * @access  public
      * @param   &lang.Object var
      * @param   string name
      * @param   string error default 'notsubclass'
      * @return  bool
      */
-    public function assertSubclass(&$var, $name, $error= 'notsubclass') {
+    public function assertSubclass($var, $name, $error= 'notsubclass') {
       if (!is('Generic', $var)) {
         return $this->fail($error, $pattern, $var);
       }
@@ -353,7 +332,6 @@
     /**
      * Assert that a value is contained in a list
      *
-     * @access  public
      * @param   array list
      * @param   mixed var
      * @param   string error default 'notinlist'
@@ -361,7 +339,7 @@
      */
     public function assertIn($list, $var, $error= 'notinlist') {
       if (is('Generic', $var)) {
-        $result= array_filter($list, array(&$var, 'equals'));
+        $result= array_filter($list, array($var, 'equals'));
         $contained= !empty($result);
       } else {
         $contained= in_array($var, $list, TRUE);
@@ -378,7 +356,6 @@
      * PrerequisitesNotMetError to indicate this case should be
      * skipped.
      *
-     * @access  public
      * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() { }
@@ -386,21 +363,19 @@
     /**
      * Tear down this test case. Overwrite in subclasses.
      *
-     * @access  public
      */
     public function tearDown() { }
     
     /**
      * Run this test case.
      *
-     * @access  public
      * @param   &unittest.TestResult result
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    public function run(&$result) {
-      $class= &$this->getClass();
-      $method= &$class->getMethod($this->name);
+    public function run($result) {
+      $class= $this->getClass();
+      $method= $class->getMethod($this->name);
 
       if (!$method) {
         throw(new MethodNotImplementedException(
@@ -412,7 +387,7 @@
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
         try {
-          $expected= &XPClass::forName($method->getAnnotation('expect'));
+          $expected= XPClass::forName($method->getAnnotation('expect'));
         } catch (Exception $e) {
           throw($e);
         }

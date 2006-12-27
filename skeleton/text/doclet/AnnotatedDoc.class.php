@@ -23,7 +23,6 @@
     /**
      * Parse annotations from string
      *
-     * @access  protected
      * @throws  lang.FormatException in case the annotations cannot be parsed
      */    
     public function parse() {
@@ -49,7 +48,6 @@
     /**
      * Retrieves a list of all annotations
      *
-     * @access  public
      * @return  array
      */ 
     public function annotations() {

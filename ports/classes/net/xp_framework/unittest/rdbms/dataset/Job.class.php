@@ -21,11 +21,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &Job::getPeer()); {
+      with ($peer= Job::getPeer()); {
         $peer->setTable('JOBS.job');
         $peer->setConnection('jobs');
         $peer->setIdentity('job_id');
@@ -42,30 +40,27 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int job_id
      * @return  &de.schlund.db.job.Job object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByJob_id($job_id) {
-      $peer= &Job::getPeer();
+    public function getByJob_id($job_id) {
+      $peer= Job::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('job_id', $job_id, EQUAL))));
     }
 
     /**
      * Retrieves job_id
      *
-     * @access  public
      * @return  int
      */
     public function getJob_id() {
@@ -75,7 +70,6 @@
     /**
      * Sets job_id
      *
-     * @access  public
      * @param   int job_id
      * @return  int the previous value
      */
@@ -86,7 +80,6 @@
     /**
      * Retrieves title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -96,7 +89,6 @@
     /**
      * Sets title
      *
-     * @access  public
      * @param   string title
      * @return  string the previous value
      */
@@ -107,7 +99,6 @@
     /**
      * Retrieves valid_from
      *
-     * @access  public
      * @return  util.Date
      */
     public function getValid_from() {
@@ -117,7 +108,6 @@
     /**
      * Sets valid_from
      *
-     * @access  public
      * @param   util.Date valid_from
      * @return  util.Date the previous value
      */
@@ -128,7 +118,6 @@
     /**
      * Retrieves expire_at
      *
-     * @access  public
      * @return  util.Date
      */
     public function getExpire_at() {
@@ -138,7 +127,6 @@
     /**
      * Sets expire_at
      *
-     * @access  public
      * @param   util.Date expire_at
      * @return  util.Date the previous value
      */

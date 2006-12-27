@@ -35,7 +35,6 @@
     /**
      * Retrieve markup for specified text
      *
-     * @access  public
      * @param   string text
      * @return  string
      */

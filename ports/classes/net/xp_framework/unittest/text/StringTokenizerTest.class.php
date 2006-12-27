@@ -20,7 +20,6 @@
     /**
      * Test string tokenizing
      *
-     * @access  public
      */
     #[@test]
     public function testSimpleString() {
@@ -37,7 +36,6 @@
     /**
      * Test string tokenizing
      *
-     * @access  public
      */
     #[@test]
     public function testSimpleStringWithDelims() {
@@ -59,7 +57,6 @@
     /**
      * Test string tokenizing
      *
-     * @access  public
      */
     #[@test]
     public function repetetiveDelimiters() {
@@ -73,7 +70,6 @@
     /**
      * Test string tokenizing
      *
-     * @access  public
      */
     #[@test]
     public function repetetiveDelimitersWithDelims() {

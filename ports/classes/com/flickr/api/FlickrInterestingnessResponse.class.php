@@ -21,20 +21,18 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
-      $this->photos= &Collection::forClass('com.flickr.FlickrPhoto');
+      $this->photos= Collection::forClass('com.flickr.FlickrPhoto');
     }
     
     /**
      * Add a photo
      *
-     * @access  public
      * @param   &com.flickr.FlickrPhoto photo
      */
     #[@xmlmapping(element= 'photo', class= 'com.flickr.FlickrPhoto')]
-    public function addPhoto(&$photo) {
+    public function addPhoto($photo) {
       $this->photos->add($photo);
     }
   }

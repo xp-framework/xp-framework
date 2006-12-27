@@ -35,7 +35,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string username from simpy
      * @param   string password from simpy
      */
@@ -50,7 +49,6 @@
     /**
      * Do Simpy-Request
      *
-     * @access  private
      * @param   string url of simpy-request
      * @param   array param of simply-request
      * @return  string
@@ -72,7 +70,6 @@
     /**
      * Get list of users most popular tags and counts
      *
-     * @access  public
      * @return  string
      */  
     public function getTags() {
@@ -84,7 +81,6 @@
     /**
      * Get list of users links and counts
      *
-     * @access  public  
      * @param   string q query-string for notes
      * @param   &util.Date date date only show links on this date
      * @param   &util.Date afterDate show links after this date
@@ -105,7 +101,6 @@
     /**
      * Get list of users topics, meta-data, number of new links since last login
      *
-     * @access  public
      * @return  string
      */  
     public function getTopics() {
@@ -117,7 +112,6 @@
     /**
      * Get list of users notes in reverse chronological order by add date or by rank
      *
-     * @access  public
      * @param   string q query-string for notes
      * @return  string
      */  

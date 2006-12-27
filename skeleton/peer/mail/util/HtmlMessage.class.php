@@ -29,16 +29,15 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct(-1);
       
       // Construct multipart and set content type accordingly
-      with ($multi= &$this->addPart(new MultiPart())); {
-        $this->text= &$multi->addPart(new MimePart('', 'text/plain'));
+      with ($multi= $this->addPart(new MultiPart())); {
+        $this->text= $multi->addPart(new MimePart('', 'text/plain'));
         $this->text->setDisposition(MIME_DISPOSITION_INLINE);
-        $this->html= &$multi->addPart(new MimePart('', 'text/html'));
+        $this->html= $multi->addPart(new MimePart('', 'text/html'));
         $this->html->setDisposition(MIME_DISPOSITION_INLINE);
       }
       $this->setContentType('multipart/related; type="multipart/alternative"');
@@ -50,13 +49,12 @@
     /**
      * Add an image
      *
-     * @access  protected
      * @param   string data raw image data
      * @param   string contentType  
      * @return  string content id
      */
     public function addImage($data, $contentType) {
-      with ($image= &$this->addPart(new MimePart())); {
+      with ($image= $this->addPart(new MimePart())); {
         $image->setDisposition(MIME_DISPOSITION_INLINE);
         $image->setEncoding(MIME_ENC_BASE64);
         $image->setFilename(NULL);
@@ -73,26 +71,24 @@
     /**
      * Register an image loader for a specified scheme
      *
-     * @access  public
      * @param   string scheme
      * @param   &peer.mail.util.ImageLoader loader
      * @return  &peer.mail.util.ImageLoader
      */
-    public function &registerLoader($scheme, &$loader) {
-      $this->_loaders[$scheme]= &$loader;
+    public function registerLoader($scheme, $loader) {
+      $this->_loaders[$scheme]= $loader;
       return $loader;
     }
     
     /**
      * Loads an image from a given URL
      *
-     * @access  protected
      * @param   &peer.URL source
      * @return  string content id
      * @throws  lang.MethodNotImplementedException in case no loader is present
      * @throws  lang.Throwable
      */
-    public function loadImage(&$source) {
+    public function loadImage($source) {
       $scheme= $source->getScheme('file');
       if (!isset($this->_loaders[$scheme])) {
         throw(new MethodNotImplementedException(
@@ -115,7 +111,6 @@
      * as necessary and rewriting the image tags contained within the
      * HTML sourcecode to reference the MIME parts created.
      *
-     * @access  public
      * @throws  lang.Throwable
      */
     public function prepare() {
@@ -167,7 +162,6 @@
     /**
      * Return headers as string
      *
-     * @access  public
      * @return  string headers
      * @throws  lang.Throwable if prepare() fails
      */

@@ -23,7 +23,6 @@
     /**
      * Set JndiName
      *
-     * @access  public
      * @param   string jndiName
      */
     public function setJndiName($jndiName) {
@@ -33,7 +32,6 @@
     /**
      * Get JndiName
      *
-     * @access  public
      * @return  string
      */
     public function getJndiName() {
@@ -43,27 +41,24 @@
     /**
      * Set Interfaces
      *
-     * @access  public
      * @param   lang.ArrayList<remote.reflect.InterfaceDescription> interfaces
      */
-    public function setInterfaces(&$interfaces) {
-      $this->interfaces= &$interfaces;
+    public function setInterfaces($interfaces) {
+      $this->interfaces= $interfaces;
     }
 
     /**
      * Get Interfaces
      *
-     * @access  public
      * @return  lang.ArrayList<remote.reflect.InterfaceDescription>
      */
-    public function &getInterfaces() {
+    public function getInterfaces() {
       return $this->interfaces;
     }
     
     /**
      * Return a unique list of all classes used in this bean's interfaces
      *
-     * @access  public
      * @return  remote.ClassReference[]
      */
     public function classSet() {
@@ -77,7 +72,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

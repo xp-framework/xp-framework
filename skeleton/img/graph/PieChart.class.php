@@ -26,7 +26,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int perspective default 0
      * @param   int shadow default 10 
      * @param   int fill default IMG_ARC_PIE one of IMG_ARC_* constants
@@ -40,24 +39,22 @@
     /**
      * Add a pie slice to the data
      *
-     * @access  public
      * @param   string key
      * @param   &img.graph.PieSlice a slice object
      * @return  &img.graph.PieSlice the slice object put in
      */
-    public function &add(&$slice) {
-      $this->slices[]= &$slice;
+    public function add($slice) {
+      $this->slices[]= $slice;
       return $slice;
     }
 
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
+    public function draw($image) {
       $arc= new Arc(
         NULL,
         $image->getWidth() / 2, 
@@ -75,7 +72,7 @@
         $arc->s= 0;
 
         foreach (array_keys($this->slices) as $key) {
-          $arc->col= &$this->slices[$key]->colors[$i != $y];
+          $arc->col= $this->slices[$key]->colors[$i != $y];
           $arc->e= $arc->s+ $this->slices[$key]->value * 3.6;
 
           $offset= 2 * M_PI - deg2rad($arc->s + $this->slices[$key]->value * 1.8);

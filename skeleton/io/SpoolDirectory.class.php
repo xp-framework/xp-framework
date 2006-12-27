@@ -37,7 +37,6 @@
     /**
      * Opens all neccessary directorys and creates them if nonexistant
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException if there are permission problems
      */    
@@ -65,12 +64,11 @@
      * unique id). If the abstract is omitted, a id
      * generator will be used.
      *
-     * @access  public
      * @param   string abstract default NULL
      * @return  &io.File opened spool file
      * @throws  io.IOException if file could not be created
      */    
-    public function &createSpoolEntry($abstract= NULL) {
+    public function createSpoolEntry($abstract= NULL) {
       if (NULL === $abstract)
         $abstract= date ('Y-m-d-H-i-s'.md5 (microtime()));
       else
@@ -89,12 +87,11 @@
     /**
      * Enqueues the spoolentry into the todo-queue. 
      *
-     * @access  public
      * @param   io.File Spoolfile
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    public function enqueueSpoolEntry(&$f) {
+    public function enqueueSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
@@ -108,11 +105,10 @@
     /**
      * Retrieves the next spool entry.
      *
-     * @access  public
      * @return  &io.File spoolfile next spoolfile. Its opened in read/write mode.
      * @throws  io.IOException if an error occurs
      */    
-    public function &getNextSpoolEntry() {
+    public function getNextSpoolEntry() {
       try {
         if (FALSE !== ($entry= $this->_hTodo->getEntry())) {
           $f= new File ($this->_hTodo->getURI().DIRECTORY_SEPARATOR.$entry);
@@ -128,12 +124,11 @@
     /**
      * Mark the given spool entry as done.
      *
-     * @access  public
      * @param   io.File spoolfile
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */
-    public function finishSpoolEntry(&$f) {
+    public function finishSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hDone->getURI().DIRECTORY_SEPARATOR.$f->getFileName());
@@ -147,12 +142,11 @@
     /**
      * Mark the given spool entry as failed.
      *
-     * @access  public
      * @param   io.File spoolfile
      * @return  bool success
      * @throws  io.IOException if file could not be closed and moved.
      */    
-    public function failSpoolEntry(&$f) {
+    public function failSpoolEntry($f) {
       try {
         $f->close();
         $f->move ($this->_hError->getURI().DIRECTORY_SEPARATOR.$f->getFileName());

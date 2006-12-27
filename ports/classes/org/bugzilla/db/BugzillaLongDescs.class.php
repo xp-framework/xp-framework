@@ -22,11 +22,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugzillaLongDescs::getPeer()); {
+      with ($peer= BugzillaLongDescs::getPeer()); {
         $peer->setTable('longdescs');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array(''));
@@ -42,56 +40,51 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "bug_id"
      *
-     * @access  static
      * @param   int bug_id
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_id($bug_id) {
-      $peer= &BugzillaLongDescs::getPeer();
+    public function getByBug_id($bug_id) {
+      $peer= BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "who"
      *
-     * @access  static
      * @param   int who
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByWho($who) {
-      $peer= &BugzillaLongDescs::getPeer();
+    public function getByWho($who) {
+      $peer= BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('who', $who, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "bug_when"
      *
-     * @access  static
      * @param   util.Date bug_when
      * @return  &BugzillaLongDescs[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_when($bug_when) {
-      $peer= &BugzillaLongDescs::getPeer();
+    public function getByBug_when($bug_when) {
+      $peer= BugzillaLongDescs::getPeer();
       return $peer->doSelect(new Criteria(array('bug_when', $bug_when, EQUAL)));
     }
 
     /**
      * Retrieves bug_id
      *
-     * @access  public
      * @return  int
      */
     public function getBug_id() {
@@ -101,7 +94,6 @@
     /**
      * Sets bug_id
      *
-     * @access  public
      * @param   int bug_id
      * @return  int the previous value
      */
@@ -112,7 +104,6 @@
     /**
      * Retrieves who
      *
-     * @access  public
      * @return  int
      */
     public function getWho() {
@@ -122,7 +113,6 @@
     /**
      * Sets who
      *
-     * @access  public
      * @param   int who
      * @return  int the previous value
      */
@@ -133,7 +123,6 @@
     /**
      * Retrieves bug_when
      *
-     * @access  public
      * @return  util.Date
      */
     public function getBug_when() {
@@ -143,7 +132,6 @@
     /**
      * Sets bug_when
      *
-     * @access  public
      * @param   util.Date bug_when
      * @return  util.Date the previous value
      */
@@ -154,7 +142,6 @@
     /**
      * Retrieves thetext
      *
-     * @access  public
      * @return  string
      */
     public function getThetext() {
@@ -164,7 +151,6 @@
     /**
      * Sets thetext
      *
-     * @access  public
      * @param   string thetext
      * @return  string the previous value
      */

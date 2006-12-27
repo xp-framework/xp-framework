@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   string user
      * @param   string pass default ''
@@ -34,7 +33,6 @@
     /**
      * Get User
      *
-     * @access  public
      * @return  string
      */
     public function getUser() {
@@ -44,7 +42,6 @@
     /**
      * Get Pass
      *
-     * @access  public
      * @return  string
      */
     public function getPass() {

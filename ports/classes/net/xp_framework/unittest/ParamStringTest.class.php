@@ -20,7 +20,6 @@
     /**
      * Test short option without value ("flag")
      *
-     * @access  public
      */
     #[@test]
     public function testShortFlag() {
@@ -33,7 +32,6 @@
     /**
      * Test short option with value
      *
-     * @access  public
      */
     #[@test]
     public function testShortValue() {
@@ -46,7 +44,6 @@
     /**
      * Test long option without value ("flag")
      *
-     * @access  public
      */
     #[@test]
     public function testLongFlag() {
@@ -59,7 +56,6 @@
     /**
      * Test Long option with value
      *
-     * @access  public
      */
     #[@test]
     public function testLongValue() {
@@ -72,7 +68,6 @@
     /**
      * Test long option with whitespace in value
      *
-     * @access  public
      */
     #[@test]
     public function whitespaceInParameter() {

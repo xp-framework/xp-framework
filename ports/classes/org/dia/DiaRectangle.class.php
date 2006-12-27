@@ -22,7 +22,6 @@
      *
      * The corners-array must contain two arrays with two integer values!
      *
-     * @access  public
      * @param   array corners default array()
      * @return  bool
      */
@@ -40,11 +39,10 @@
     /**   
      * Return XML representation of DiaComposite
      *    
-     * @access  public 
      * @return  &xml.Node 
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       if (
         is_array($this->value) and 
         sizeof($this->value) === 2 and

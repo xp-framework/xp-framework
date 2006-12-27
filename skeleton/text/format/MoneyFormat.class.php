@@ -18,22 +18,20 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.MoneyFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('MoneyFormat');
     }  
   
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       if (!function_exists('money_format')) {
         throw(new FormatException('money_format requires PHP >= 4.3.0'));
       }

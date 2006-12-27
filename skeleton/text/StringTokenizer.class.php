@@ -41,7 +41,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string str
      * @param   string delimiter default ' '
      * @param   bool returnDelims default FALSE
@@ -55,7 +54,6 @@
     /**
      * Tests if there are more tokens available
      *
-     * @access  public
      * @return  bool more tokens
      */
     public function hasMoreTokens() {
@@ -65,7 +63,6 @@
     /**
      * Returns the next token from this tokenizer's string
      *
-     * @access  public
      * @param   bool delimiters default NULL
      * @return  string next token
      */

@@ -26,14 +26,13 @@
      * - imaps://localhost:995/?novalidate-cert=1
      * </pre>
      *
-     * @access  protected
      * @param   peer.URL u
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function _supports(&$u, &$attr) {
+    public function _supports($u, $attr) {
       switch (strtolower($u->getScheme())) {
         case 'imap': 
           $attr['proto']= 'imap'; 

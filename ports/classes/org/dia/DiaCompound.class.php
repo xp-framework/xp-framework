@@ -32,19 +32,18 @@
      * @param   &org.dia.DiaComponent Component
      * @throws  lang.IllegalArgumentException
      */
-    public function set($name, &$Component) {
+    public function set($name, $Component) {
       if (!is('org.dia.DiaComponent', $Component)) {
         $name= xp::typeOf($Component);
         if (is_object($Component)) $name= $Component->getClassName();
         throw(new IllegalArgumentException("Wrong object type: $name"));
       }
-      $this->_children[$name]= &$Component;
+      $this->_children[$name]= $Component;
     }
 
     /**
      * Creates a new 'boolean' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   bool boolean
      */
@@ -55,7 +54,6 @@
     /**
      * Creates a new 'int' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   int int
      */
@@ -66,7 +64,6 @@
     /**
      * Creates a new 'real' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   float real
      */
@@ -77,7 +74,6 @@
     /**
      * Creates a new 'string' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   string string
      */
@@ -88,7 +84,6 @@
     /**
      * Creates a new 'enum' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   int enum
      */
@@ -99,7 +94,6 @@
     /**
      * Creates a new 'point' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   array point
      */
@@ -110,7 +104,6 @@
     /**
      * Creates a new 'rectangle' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   array points
      */
@@ -121,7 +114,6 @@
     /**
      * Creates a new 'color' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   string color
      */
@@ -132,7 +124,6 @@
     /**
      * Creates a new 'font' node and assigns it to $name
      *
-     * @access  public
      * @param   string name
      * @param   array font
      */
@@ -143,11 +134,10 @@
     /**
      * Returns DiaComponent child by the given name of the component
      *
-     * @access  public
      * @param   string name
      * @return  &org.dia.DiaComponent
      */
-    public function &getChild($name) {
+    public function getChild($name) {
       return $this->_children[$name];
     }
 
@@ -158,15 +148,14 @@
      * @return  mixed
      */
     public function getChildValue($name) {
-      if (NULL === ($Child= &$this->getChild($name))) return NULL;
-      if (NULL === ($Value= &$Child->getChild('value'))) return NULL;
+      if (NULL === ($Child= $this->getChild($name))) return NULL;
+      if (NULL === ($Value= $Child->getChild('value'))) return NULL;
       return $Value->getValue();
     }
 
     /**
      * Returns all DiaComponent children of given object-type
      *
-     * @access  public
      * @param   string type The object type
      * @return  org.dia.DiaComponent[]
      */
@@ -174,7 +163,7 @@
       $objs= array();
       foreach (array_keys($this->_children) as $key) {
         if (is($type, $this->_children[$key])) {
-          $objs[]= &$this->_children[$key];
+          $objs[]= $this->_children[$key];
         }
       }
       return $objs;
@@ -185,8 +174,8 @@
      * childByName: getName() attribute, layer(, font)
      * USE getChild($name)!
      */
-    public function &getChildAttributeByName($name) {
-      $attrs= &$this->getChildByType('org.dia.DiaAttribute');
+    public function getChildAttributeByName($name) {
+      $attrs= $this->getChildByType('org.dia.DiaAttribute');
       foreach (array_keys($attrs) as $key) {
         if ($attrs[$key]->getName() === $name) {
           return $attrs[$key];
@@ -200,7 +189,6 @@
     /**
      * Return the name of the object
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -210,7 +198,6 @@
     /**
      * Set the name of the object
      *
-     * @access  public
      * @param   string name
      */
     #[@fromDia(xpath= 'dia:attribute[@name="name"]/dia:string', value= 'string')]
@@ -223,10 +210,9 @@
     /**
      * Returns XML representation of this DiaCompound
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
+    public function getNode() {
       $node= new Node($this->node_name);
       $children= $this->getChildren();
       foreach (array_keys($children) as $key) {
@@ -243,12 +229,11 @@
     /**
      * Accepts a Visitor object
      * 
-     * @access  public
      * @param   &lang.Visitor Visitor
      */
-    public function accept(&$Visitor) {
+    public function accept($Visitor) {
       $Visitor->visit($this);
-      $children= &$this->getChildren();
+      $children= $this->getChildren();
       foreach (array_keys($children) as $key) {
         if (!is_object($children[$key])) {
           Console::writeLine("NON-object: $key=".xp::typeOf($children[$key]));
@@ -264,29 +249,27 @@
     /**
      * Adds a child component
      *
-     * @access  public
      * @param   &org.dia.DiaComponent Comp
      * @throws  lang.IllegalArgumentException
      */
-    public function addChild(&$Comp) {
+    public function addChild($Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
         throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
       // TODO: what if child exists?
       if (method_exists($Comp, 'getName')) {
-        $this->_children[$Comp->getName()]= &$Comp;
+        $this->_children[$Comp->getName()]= $Comp;
       } else {
-        $this->_children[]= &$Comp;
+        $this->_children[]= $Comp;
       }
     }
 
     /**
      * Removes the given child component if it exists
      *
-     * @access  public
      * @param   &org.dia.DiaComponent Comp
      * @return  bool
      */
-    public function remChild(&$Comp) {
+    public function remChild($Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
         throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
       // TODO: how do we uniquely identify components?
@@ -302,7 +285,6 @@
     /**
      * Returns an array with all child components
      *
-     * @access  public
      * @return  &org.dia.DiaComponent[]
      */
     public function getChildren() {

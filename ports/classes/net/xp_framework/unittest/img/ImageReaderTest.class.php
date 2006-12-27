@@ -21,12 +21,19 @@
    * @purpose  Test case
    */
   class ImageReaderTest extends TestCase {
-    
+
+    /**
+     * Setup this test.
+     *
+     */
+    public function setUp() {
+      if (!extension_loaded('gd')) throw new PrerequisitesNotMetError('GD extension not available');
+    }
+        
     /**
      * Reads the image from a GIF
      *
      * @see     xp://img.io.GifStreamReader
-     * @access  public
      */
     #[@test]
     public function readGif() {
@@ -39,7 +46,6 @@
      * Reads the image from a JPEG
      *
      * @see     xp://img.io.GifStreamReader
-     * @access  public
      */
     #[@test]
     public function readJpeg() {
@@ -52,7 +58,6 @@
      * Reads the image from a GIF
      *
      * @see     xp://img.io.GifStreamReader
-     * @access  public
      */
     #[@test]
     public function readPng() {
@@ -64,7 +69,6 @@
     /**
      * Reads the image from a stream containing no data
      *
-     * @access  public
      */
     #[@test, @expect('img.ImagingException')]
     public function readEmptyData() {
@@ -76,7 +80,6 @@
     /**
      * Reads the image from a stream containing malformed dat
      *
-     * @access  public
      */
     #[@test, @expect('img.ImagingException')]
     public function readMalformedData() {

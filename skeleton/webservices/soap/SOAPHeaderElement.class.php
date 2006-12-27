@@ -25,13 +25,11 @@
      * Create a SOAPHeaderElement object out of the XML representation
      * it has in a SOAP message.
      *
-     * @model   static
-     * @access  public
      * @param   &xml.Node node
      * @param   &array ns current namespaces from SOAP message
      * @return  &webservices.soap.SOAPHeaderElement
      */
-    public static function &fromNode(&$node, $ns, $encoding) {
+    public static function fromNode($node, $ns, $encoding) {
       $header= new SOAPHeaderElement();
       $header->name= $node->getName();
       $header->mustUnderstand= (bool)$node->getAttribute($ns[XMLNS_SOAPENV].':mustUnderstand');
@@ -46,11 +44,10 @@
      * Retrieve XML representation of this header for use in a SOAP
      * message.
      *
-     * @access  public
      * @param   &array ns list of namespaces
      * @return  &xml.Node
      */
-    public function &getNode($ns) {
+    public function getNode($ns) {
       $attr= array();
       if ($this->mustUnderstand) $attr[$ns[XMLNS_SOAPENV].':mustUnderstand']= 1;
       if ($this->actor) $attr[$ns[XMLNS_SOAPENV].':actor']= $this->actor;
@@ -62,7 +59,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -72,7 +68,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -82,7 +77,6 @@
     /**
      * Set MustUnderstand
      *
-     * @access  public
      * @param   bool mustUnderstand
      */
     public function setMustUnderstand($mustUnderstand) {
@@ -92,7 +86,6 @@
     /**
      * Get MustUnderstand
      *
-     * @access  public
      * @return  bool
      */
     public function getMustUnderstand() {
@@ -102,7 +95,6 @@
     /**
      * Set Actor
      *
-     * @access  public
      * @param   string actor
      */
     public function setActor($actor) {
@@ -112,7 +104,6 @@
     /**
      * Get Actor
      *
-     * @access  public
      * @return  string
      */
     public function getActor() {
@@ -122,7 +113,6 @@
     /**
      * Set EncodingStyle
      *
-     * @access  public
      * @param   string encodingStyle
      */
     public function setEncodingStyle($encodingStyle) {
@@ -132,7 +122,6 @@
     /**
      * Get EncodingStyle
      *
-     * @access  public
      * @return  string
      */
     public function getEncodingStyle() {
@@ -142,27 +131,24 @@
     /**
      * Set Value
      *
-     * @access  public
      * @param   &lang.Object value
      */
-    public function setValue(&$value) {
-      $this->value= &$value;
+    public function setValue($value) {
+      $this->value= $value;
     }
 
     /**
      * Get Value
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getValue() {
+    public function getValue() {
       return $this->value;
     }
 
     /**
      * Build string representation of this header.
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

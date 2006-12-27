@@ -31,7 +31,6 @@
     /**
      * Retreive implementation's capabilites
      *
-     * @access  public
      * @return  int capabilities
      */
     public function getCapabilities() {
@@ -41,7 +40,6 @@
     /**
      * Make some magic with the path
      *
-     * @access  private
      * @param   string path The path
      * @return  string
      */
@@ -57,114 +55,105 @@
     /**
      * Move a file
      *
-     * @access  abstract
      * @param   string filename
      * @param   string destination
      * @param   bool overwrite
      * @return  bool created
      * @throws  lang.MethodNotImplementedException
      */
-    public function &move($filename, $destination, $overwrite) {
+    public function move($filename, $destination, $overwrite) {
       throw(new MethodNotImplementedException($this->getName().'::move not implemented'));
     }
 
     /**
      * Copy a file
      *
-     * @access  abstract
      * @param   string filename
      * @param   string destination
      * @param   bool overwrite
      * @return  bool created
      * @throws  lang.MethodNotImplementedException
      */
-    public function &copy($filename, $destination, $overwrite) {
+    public function copy($filename, $destination, $overwrite) {
       throw(new MethodNotImplementedException($this->getName().'::copy not implemented'));
     }
 
     /**
      * Make a directory
      *
-     * @access  abstract
      * @param   string colname
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    public function &mkcol($colname) {
+    public function mkcol($colname) {
       throw(new MethodNotImplementedException($this->getName().'::mkcol not implemented'));
     }
 
     /**
      * Delete a file
      *
-     * @access  abstract
      * @param   string filename
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
-    public function &delete($filename) {
+    public function delete($filename) {
       throw(new MethodNotImplementedException($this->getName().'::delete not implemented'));
     }
 
     /**
      * Put a file
      *
-     * @access  abstract
      * @param   string filename
      * @param   &string data
      * @return  bool new
      * @throws  lang.MethodNotImplementedException
      */
-    public function &put($filename, &$data) {
+    public function put($filename, $data) {
       throw(new MethodNotImplementedException($this->getName().'::put not implemented'));
     }
     
     /**
      * Get a file
      *
-     * @access  abstract
      * @param   string filename
      * @return  string &org.webdav.WebdavObject
      * @throws  lang.MethodNotImplementedException
      */
-    public function &get($filename) {
+    public function get($filename) {
       throw(new MethodNotImplementedException($this->getName().'::get not implemented'));
     }
 
     /**
      * Find properties
      *
-     * @access  abstract
      * @param   &org.webdav.xml.WebdavPropFindRequest request
      * @param   &org.webdav.xml.WebdavMultistatus response
      * @return  &org.webdav.xml.WebdavMultistatus response
      * @throws  lang.MethodNotImplementedException
      */
-    public function &propfind(&$request, &$response) {
+    public function propfind($request, $response) {
       throw(new MethodNotImplementedException($this->getName().'::propfind not implemented'));
     }
 
     /**
      * Patch properties
      *
-     * @access  abstract
      * @param   &org.webdav.xml.WebdavPropPatcRequest request
      * @throws  lang.MethodNotImplementedException
      */
-    public function &proppatch(&$request) {
+    public function proppatch($request) {
       throw(new MethodNotImplementedException($this->getName().'::proppatch not implemented'));
     }
     
     /**
      * Lock a File
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest       request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
-    public function &lock(&$request, &$response) {
+    public function lock($request, $response) {
       preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
       try {
         $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
@@ -177,12 +166,11 @@
     /**
      * Unlock a File
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest       request
      * @param   &org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
-    public function &unlock(&$request, &$response) {
+    public function unlock($request, $response) {
       try {
         
         // Remove < and > from beginning and end of the header 
@@ -207,12 +195,11 @@
     /**
      * Retrieve lock information
      *
-     * @access  public
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    public function &getLockInfo($uri) {
-      $lock= &$this->propStorage->getLock($uri);
+    public function getLockInfo($uri) {
+      $lock= $this->propStorage->getLock($uri);
       
       // There's not current lock
       if ($lock === NULL) return NULL;
@@ -231,13 +218,12 @@
     /**
      * Set lock for URI
      *
-     * @access  public
      * @param   &org.webdav.WebdavLock lock   The lock object
      * @param   string[]               tokens Optional lock-tokens to overwrite lock
      * @return  &org.webdav.WebdavLock
      * @throws  org.webdav.OperationNotAllowedException
      */
-    public function &setLockInfo(&$lock, $tokens= array()) { 
+    public function setLockInfo($lock, $tokens= array()) { 
       $lockinfo= $this->getLockInfo($lock->getURI());
 
       // There's already lock
@@ -272,12 +258,11 @@
     /**
      * Start Version-Control of file
      *
-     * @access  public
      * @param   string filename
      * @return  bool
      * @throws  lang.ElementNotFoundException
      */
-    public function VersionControl($path, &$version) {
+    public function VersionControl($path, $version) {
 
       try { 
         $props= array();
@@ -314,12 +299,11 @@
     /**
      * Report version status
      *
-     * @access  public
      * @param   &org.webdav.xml.WebdavLockRequest
      * @param   &org.webdav.xml.WebdavScriptletResponse
      * @return  bool success
      */
-    public function &report(&$request, $response) {
+    public function report($request, $response) {
     
       try {
         $prop= $this->propStorage->getProperty(

@@ -17,7 +17,6 @@
     /**
      * Setup method. Ensures overload extension is enabled.
      *
-     * @access  public
      */
     public function setUp() {
     }
@@ -25,7 +24,6 @@
     /**
      * Tests the is() core function will recognize xp::null as null
      *
-     * @access  public
      */
     #[@test]
     public function isNull() {
@@ -35,7 +33,6 @@
     /**
      * Tests the is() core function will not recognize xp::null as an object
      *
-     * @access  public
      */
     #[@test]
     public function isNotAnObject() {
@@ -54,7 +51,6 @@
      *   if (!($c= &constructorOf($class))) { ... }
      * </code>
      *
-     * @access  public
      */
     #[@test, @ignore('Does no longer work with PHP5')]
     public function isFalse() {
@@ -64,7 +60,6 @@
     /**
      * Tests the xp::typeOf() function's return value for xp::nulls
      *
-     * @access  public
      */
     #[@test]
     public function typeOf() {
@@ -74,7 +69,6 @@
     /**
      * Tests the xp::stringOf() function's return value for xp::nulls
      *
-     * @access  public
      */
     #[@test]
     public function stringOf() {
@@ -85,7 +79,6 @@
      * Tests creating new instances of xp::null will fail. The correct
      * way to retrieve an xp::null is to call xp:null()
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function newInstance() {
@@ -95,7 +88,6 @@
     /**
      * Tests cloning xp::null will result in a NPE
      *
-     * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
     public function cloneNull() {
@@ -105,33 +97,30 @@
     /**
      * Tests member invocation on xp::null will result in a NPE
      *
-     * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
     public function methodInvocation() {
-      $null= &xp::null();
+      $null= xp::null();
       $null->method();
     }
 
     /**
      * Tests member read access on xp::null will result in a NPE
      *
-     * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
     public function memberReadAccess() {
-      $null= &xp::null();
+      $null= xp::null();
       $i= $null->member;
     }
     
     /**
      * Tests member write access on xp::null will result in a NPE
      *
-     * @access  public
      */
     #[@test, @expect('lang.NullPointerException')]
     public function memberWriteccess() {
-      $null= &xp::null();
+      $null= xp::null();
       $null->member= $i;
     }
   }

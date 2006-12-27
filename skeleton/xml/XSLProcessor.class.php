@@ -48,7 +48,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->processor= xslt_create();
@@ -57,7 +56,6 @@
     /**
      * Error handler callback
      *
-     * @access  private
      * @param   resource parser
      * @param   int num
      * @param   int level
@@ -83,7 +81,6 @@
     /**
      * Retrieve messages generate during processing.
      *
-     * @access  public
      * @return  string[]
      */
     public function getMessages() {
@@ -93,7 +90,6 @@
     /**
      * Set a scheme handler
      *
-     * @access  public
      * @param   mixed callback
      * @see     php://xslt_set_scheme_handlers
      */
@@ -104,7 +100,6 @@
     /**
      * Set base directory
      *
-     * @access  public
      * @param   string dir
      */
     public function setBase($dir) {
@@ -114,7 +109,6 @@
     /**
      * Get base
      *
-     * @access  public
      * @return  string
      */
     public function getBase() {
@@ -124,7 +118,6 @@
     /**
      * Set XSL file
      *
-     * @access  public
      * @param   string file file name
      * @throws  io.FileNotFoundException
      */
@@ -138,7 +131,6 @@
     /**
      * Set XSL buffer
      *
-     * @access  public
      * @param   string xsl the XSL as a string
      */
     public function setXSLBuf($xsl) {
@@ -148,7 +140,6 @@
     /**
      * Set XML file
      *
-     * @access  public
      * @param   string file file name
      */
     public function setXMLFile($file) {
@@ -158,7 +149,6 @@
     /**
      * Set XML buffer
      *
-     * @access  public
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
@@ -168,7 +158,6 @@
     /**
      * Set XSL transformation parameters
      *
-     * @access  public
      * @param   array params associative array { param_name => param_value }
      */
     public function setParams($params) {
@@ -178,7 +167,6 @@
     /**
      * Retrieve XSL transformation parameter
      *
-     * @access  public
      * @param   string name
      * @return  string value
      */
@@ -189,7 +177,6 @@
     /**
      * Set XSL transformation parameter
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -200,15 +187,14 @@
     /**
      * Run the XSL transformation
      *
-     * @access  public
      * @return  bool success
      * @throws  xml.TransformerException
      */
     public function run($buffers= array()) {
-      if (NULL != $this->buffer[1]) $buffers['/_xml']= &$this->buffer[1];
-      if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= &$this->stylesheet[1];
+      if (NULL != $this->buffer[1]) $buffers['/_xml']= $this->buffer[1];
+      if (NULL != $this->stylesheet[1]) $buffers['/_xsl']= $this->stylesheet[1];
       
-      xslt_set_error_handler($this->processor, array(&$this, '_traperror'));
+      xslt_set_error_handler($this->processor, array($this, '_traperror'));
       $this->output= xslt_process(
         $this->processor, 
         $this->buffer[0],
@@ -229,7 +215,6 @@
     /**
      * Retrieve the transformation's result
      *
-     * @access  public
      * @return  string
      */
     public function output() {
@@ -239,7 +224,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       if ($this->processor) {

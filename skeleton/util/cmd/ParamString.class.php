@@ -22,7 +22,6 @@
     /**
      * Constructor
      * 
-     * @access  public
      * @param   array list default NULL the argv array. If omitted, $_SERVER['argv'] is used
      */
     public function __construct($list= NULL) {
@@ -32,7 +31,6 @@
     /**
      * Set the parameter string
      * 
-     * @access  public
      * @param   array params
      */  
     public function setParams($params) {
@@ -45,7 +43,6 @@
     /**
      * Private helper function that iterates through the parameter array
      * 
-     * @access  private
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @return  mixed position on which the parameter is placed or FALSE if nonexistant
@@ -71,7 +68,6 @@
      * Checks whether a parameter is set
      * 
      * @see     xp://util.Properties#value
-     * @access  public
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @return  boolean
@@ -98,7 +94,6 @@
      *   // ...
      * </code>
      * 
-     * @access  public
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
      * @param   string default default NULL A default value if parameter does not exist

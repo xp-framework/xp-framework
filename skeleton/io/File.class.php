@@ -38,7 +38,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed file either a filename or a resource (as returned from fopen)
      */
     public function __construct($file) {
@@ -53,7 +52,6 @@
     /**
      * Retrieve internal file handle
      *
-     * @access  public
      * @return  resource
      */
     public function getHandle() {
@@ -63,7 +61,6 @@
     /**
      * Returns the URI of the file
      *
-     * @access public
      * @return string uri
      */
     public function getURI() {
@@ -73,7 +70,6 @@
     /**
      * Returns the filename of the file
      *
-     * @access public
      * @return string filename
      */
     public function getFileName() {
@@ -83,7 +79,6 @@
     /**
      * Get Path
      *
-     * @access  public
      * @return  string
      */
     public function getPath() {
@@ -93,7 +88,6 @@
     /**
      * Get Extension
      *
-     * @access  public
      * @return  string
      */
     public function getExtension() {
@@ -103,7 +97,6 @@
     /**
      * Set this file's URI
      *
-     * @access  private
      * @param   string uri
      */
     public function setURI($uri) {
@@ -131,7 +124,6 @@
     /**
      * Open the file
      *
-     * @access  public
      * @param   string mode one of the FILE_MODE_* constants
      * @return  bool TRUE if file could be opened
      * @throws  io.FileNotFoundException in case the file is not found
@@ -154,7 +146,6 @@
     /**
      * Returns whether this file is open
      *
-     * @access  public
      * @return  bool TRUE, if the file is open
      */
     public function isOpen() {
@@ -164,7 +155,6 @@
     /**
      * Returns whether this file eixtss
      *
-     * @access  public
      * @return  bool TRUE in case the file exists
      */
     public function exists() {
@@ -174,7 +164,6 @@
     /**
      * Retrieve the file's size in bytes
      *
-     * @access  public
      * @return  int size filesize in bytes
      * @throws  io.IOException in case of an error
      */
@@ -187,7 +176,6 @@
     /**
      * Truncate the file to the specified length
      *
-     * @access  public
      * @param   bool TRUE if method succeeded
      * @throws  io.IOException in case of an error
      */
@@ -208,7 +196,6 @@
      * performance of such applications; USENET news spools are a common example. 
      * On such filesystems this function will be useless. 
      *
-     * @access  public
      * @return  int The date the file was last accessed as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -221,7 +208,6 @@
     /**
      * Retrieve last modification time
      *
-     * @access  public
      * @return  int The date the file was last modified as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -234,7 +220,6 @@
     /**
      * Set last modification time
      *
-     * @access  public
      * @param   int time default -1 Unix-timestamp
      * @return  bool success
      * @throws  io.IOException in case of an error
@@ -250,7 +235,6 @@
     /**
      * Retrieve when the file was created
      *
-     * @access  public
      * @return  int The date the file was created as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -268,7 +252,6 @@
      * Reading ends when length - 1 bytes have been read, on a newline (which is 
      * included in the return value), or on EOF (whichever comes first). 
      *
-     * @access  public
      * @param   int bytes default 4096 Max. amount of bytes to be read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -280,7 +263,6 @@
     /**
      * Read one char
      *
-     * @access  public
      * @return  char the character read
      * @throws  io.IOException in case of an error
      */
@@ -297,7 +279,6 @@
      * This function is identical to readLine except that trailing CR and LF characters
      * will be included in its return value
      *
-     * @access  public
      * @param   int bytes default 4096 Max. amount of bytes to read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -312,7 +293,6 @@
     /**
      * Read (binary-safe)
      *
-     * @access  public
      * @param   int bytes default 4096 Max. amount of bytes to read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -327,7 +307,6 @@
     /**
      * Write
      *
-     * @access  public
      * @param   string string data to write
      * @return  int number of bytes written
      * @throws  io.IOException in case of an error
@@ -342,7 +321,6 @@
     /**
      * Write a line and append a LF (\n) character
      *
-     * @access  public
      * @param   string string data default '' to write
      * @return  int number of bytes written
      * @throws  io.IOException in case of an error
@@ -361,7 +339,6 @@
      * Use isOpen() to check if the file is open
      *
      * @see     php://feof
-     * @access  public
      * @return  bool TRUE when the end of the file is reached
      * @throws  io.IOException in case of an error (e.g., the file's not been opened)
      */
@@ -379,7 +356,6 @@
      * 
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
-     * @access  public
      * @return  bool TRUE if rewind suceeded
      * @throws  io.IOException in case of an error
      */
@@ -393,7 +369,6 @@
     /**
      * Move file pointer to a new position
      *
-     * @access  public
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
      * @see     php://fseek
@@ -410,7 +385,6 @@
     /**
      * Retrieve file pointer position
      *
-     * @access  public
      * @return  int position
      * @throws  io.IOException in case of an error
      */
@@ -436,7 +410,6 @@
      * The optional second argument is set to TRUE if the lock would block (EWOULDBLOCK 
      * errno condition).
      *
-     * @access  private
      * @param   int op operation (one of the predefined LOCK_* constants)
      * @throws  io.IOException in case of an error
      * @return  bool success
@@ -465,7 +438,6 @@
     /**
      * Acquire a shared lock (reader)
      *
-     * @access  public
      * @param   bool block default FALSE
      * @see     xp://io.File#_lock
      * @return  bool success
@@ -477,7 +449,6 @@
     /**
      * Acquire an exclusive lock (writer)
      *
-     * @access  public
      * @param   bool block default FALSE
      * @see     xp://io.File#_lock
      * @return  bool success
@@ -489,7 +460,6 @@
     /**
      * Release a lock (shared or exclusive)
      *
-     * @access  public
      * @see     xp://io.File#_lock
      * @return  bool success
      */
@@ -500,7 +470,6 @@
     /**
      * Close this file
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException if close fails
      */
@@ -519,7 +488,6 @@
      * Warning: Open files cannot be deleted. Use the close() method to
      * close the file first
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
@@ -541,7 +509,6 @@
      * Warning: Open files cannot be moved. Use the close() method to
      * close the file first
      *
-     * @access  public
      * @param   string target where to move the file to
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
@@ -566,7 +533,6 @@
      * Warning: Open files cannot be copied. Use the close() method to
      * close the file first
      *
-     * @access  public
      * @param   string target where to copy the file to
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
@@ -587,7 +553,6 @@
      * Change permissions for the file
      *
      * @see     php://chmod
-     * @access  public
      * @param   mixed mode
      * @return  bool success
      */
@@ -599,7 +564,6 @@
      * Get permission mask of the file
      *
      * @see     php://stat
-     * @access  public
      * @return  int
      */
     public function getPermissions() {
@@ -610,7 +574,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

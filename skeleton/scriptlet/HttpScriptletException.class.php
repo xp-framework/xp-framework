@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   int statusCode default HTTP_INTERNAL_SERVER_ERROR
      */
@@ -41,17 +40,15 @@
     /**
      * Retrieve response
      *
-     * @access  public
      * @return  &scriptlet.HttpScriptletResponse response object
      */
-    public function &getResponse() {
+    public function getResponse() {
       return $this->response;
     }
 
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {
@@ -66,7 +63,6 @@
     /**
      * Create the response object
      *
-     * @access  protected
      * @param   int statusCode
      */
     public function _response($statusCode) {

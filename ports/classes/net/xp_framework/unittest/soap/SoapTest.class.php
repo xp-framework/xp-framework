@@ -19,7 +19,6 @@
     /**
      * Test serialization
      *
-     * @access  public
      */
     #[@test]
     public function testSerialization() {
@@ -94,11 +93,10 @@
     /**
      * Test deserialization of SOAP header
      *
-     * @access  public
      */
     #[@test]
     public function testHeader() {
-      $msg= &SOAPMessage::fromString('
+      $msg= SOAPMessage::fromString('
         <SOAP-ENV:Envelope
           xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string url
      * @param   array headers default array
      */
@@ -31,10 +30,9 @@
     /**
      * Retrieve connection
      *
-     * @access  public
      * @return  &peer.http.HttpConnection
      */
-    public function &getConnection() {
+    public function getConnection() {
       return $this->_conn;
     }
   }

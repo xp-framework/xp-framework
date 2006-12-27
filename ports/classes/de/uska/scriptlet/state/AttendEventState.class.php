@@ -18,7 +18,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -27,11 +26,10 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setup(&$request, &$response, &$context) {
+    public function setup($request, $response, $context) {
       $this->addHandler(new AttendEventHandler());
       parent::setup($request, $response, $context);
     }

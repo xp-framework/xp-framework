@@ -25,7 +25,6 @@
     /**
      * Setup method. Creates the buffer member
      *
-     * @access  public
      */
     public function setUp() {
       $this->buffer= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
@@ -34,7 +33,6 @@
     /**
      * Tests the buffer is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -44,7 +42,6 @@
     /**
      * Tests the getSize() method
      *
-     * @access  public
      */
     #[@test]
     public function getSize() {
@@ -54,7 +51,6 @@
     /**
      * Tests the add() method
      *
-     * @access  public
      */
     #[@test]
     public function add() {
@@ -65,7 +61,6 @@
     /**
      * Tests the add() method returns the victim
      *
-     * @access  public
      */
     #[@test]
     public function addReturnsVictim() {
@@ -74,7 +69,7 @@
       // elements to the LRUBuffer. Nothing should be deleted from it
       // during this loop.
       for ($i= 0, $s= $this->buffer->getSize(); $i < $s; $i++) {
-        if (NULL === ($victim= &$this->buffer->add(new String('item #'.$i)))) continue;
+        if (NULL === ($victim= $this->buffer->add(new String('item #'.$i)))) continue;
         
         return $this->fail(
           'Victim '.xp::stringOf($victim).' when inserting item #'.($i + 1).'/'.$s, 
@@ -94,7 +89,6 @@
     /**
      * Add a specified number of strings to the buffer.
      *
-     * @access  protected
      * @param   int num
      */
     public function addElements($num) {
@@ -106,7 +100,6 @@
     /**
      * Tests the buffer does not grow beyond the set limit
      *
-     * @access  public
      */
     #[@test]
     public function bufferDoesNotGrowBeyondSize() {
@@ -117,7 +110,6 @@
     /**
      * Tests the update() method
      *
-     * @access  public
      */
     #[@test]
     public function update() {
@@ -139,7 +131,6 @@
     /**
      * Tests the setSize() method
      *
-     * @access  public
      */
     #[@test]
     public function setSize() {
@@ -150,7 +141,6 @@
     /**
      * Tests the setSize() method when passed an argument <= zero
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function illegalSize() {

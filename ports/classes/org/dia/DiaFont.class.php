@@ -22,7 +22,6 @@
     /**
      * Creates new instance of DiaFont
      *
-     * @access  public
      * @param   array font default NULL
      */
     public function __construct($font= NULL) {
@@ -44,7 +43,6 @@
     /**
      * Get the font family of this DiaFont
      *
-     * @access  public
      * @return  string
      */
     public function getFamily() {
@@ -54,7 +52,6 @@
     /**
      * Set the font family of this DiaFont
      *
-     * @access  public
      * @param   string family
      */
     #[@fromDia(xpath= '@family', value= 'string')]
@@ -65,7 +62,6 @@
     /**
      * Get the font style of this DiaFont
      *
-     * @access  public
      * @return  int
      */
     public function getStyle() {
@@ -75,7 +71,6 @@
     /**
      * Set the font style of this DiaFont
      *
-     * @access  public
      * @param   int style
      */
     #[@fromDia(xpath= '@style', value= 'int')]
@@ -86,7 +81,6 @@
     /**
      * Get the font name of this DiaFont
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -96,7 +90,6 @@
     /**
      * Set the font name of this DiaFont
      *
-     * @access  public
      * @param   string name
      */
     #[@fromDia(xpath = '@name', value= 'string')]
@@ -107,11 +100,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $Node= &parent::getNode();
+    public function getNode() {
+      $Node= parent::getNode();
       $Node->setAttribute('family', $this->family);
       $Node->setAttribute('style', $this->style);
       $Node->setAttribute('name', $this->name);

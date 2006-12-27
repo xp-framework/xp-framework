@@ -20,7 +20,6 @@
     /**
      * Set ClassName
      *
-     * @access  public
      * @param   string className
      */
     public function setClassName($className) {
@@ -30,7 +29,6 @@
     /**
      * Get ClassName
      *
-     * @access  public
      * @return  string
      */
     public function getClassName() {
@@ -40,27 +38,24 @@
     /**
      * Set Methods
      *
-     * @access  public
      * @param   lang.ArrayList<remote.reflect.MethodDescription> methods
      */
-    public function setMethods(&$methods) {
-      $this->methods= &$methods;
+    public function setMethods($methods) {
+      $this->methods= $methods;
     }
 
     /**
      * Get Methods
      *
-     * @access  public
      * @return  lang.ArrayList<remote.reflect.MethodDescription>
      */
-    public function &getMethods() {
+    public function getMethods() {
       return $this->methods;
     }
 
     /**
      * Retrieve a set of classes used in this interface
      *
-     * @access  public
      * @return  remote.ClassReference[]
      */
     public function classSet() {
@@ -74,7 +69,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

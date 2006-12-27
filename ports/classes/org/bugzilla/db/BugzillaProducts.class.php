@@ -27,11 +27,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugzillaProducts::getPeer()); {
+      with ($peer= BugzillaProducts::getPeer()); {
         $peer->setTable('products');
         $peer->setConnection('bugzilla');
         $peer->setIdentity('id');
@@ -53,43 +51,39 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   string id
      * @return  &org.bugzilla.db.BugzillaProducts object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getById($id) {
-      $peer= &BugzillaProducts::getPeer();
+    public function getById($id) {
+      $peer= BugzillaProducts::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('id', $id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "name"
      *
-     * @access  static
      * @param   string name
      * @return  &org.bugzilla.db.BugzillaProducts object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByName($name) {
-      $peer= &BugzillaProducts::getPeer();
+    public function getByName($name) {
+      $peer= BugzillaProducts::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('name', $name, EQUAL))));
     }
 
     /**
      * Retrieves name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -99,7 +93,6 @@
     /**
      * Sets name
      *
-     * @access  public
      * @param   string name
      * @return  string the previous value
      */
@@ -110,7 +103,6 @@
     /**
      * Retrieves description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -120,7 +112,6 @@
     /**
      * Sets description
      *
-     * @access  public
      * @param   string description
      * @return  string the previous value
      */
@@ -131,7 +122,6 @@
     /**
      * Retrieves milestoneurl
      *
-     * @access  public
      * @return  string
      */
     public function getMilestoneurl() {
@@ -141,7 +131,6 @@
     /**
      * Sets milestoneurl
      *
-     * @access  public
      * @param   string milestoneurl
      * @return  string the previous value
      */
@@ -152,7 +141,6 @@
     /**
      * Retrieves disallownew
      *
-     * @access  public
      * @return  int
      */
     public function getDisallownew() {
@@ -162,7 +150,6 @@
     /**
      * Sets disallownew
      *
-     * @access  public
      * @param   int disallownew
      * @return  int the previous value
      */
@@ -173,7 +160,6 @@
     /**
      * Retrieves votesperuser
      *
-     * @access  public
      * @return  string
      */
     public function getVotesperuser() {
@@ -183,7 +169,6 @@
     /**
      * Sets votesperuser
      *
-     * @access  public
      * @param   string votesperuser
      * @return  string the previous value
      */
@@ -194,7 +179,6 @@
     /**
      * Retrieves maxvotesperbug
      *
-     * @access  public
      * @return  string
      */
     public function getMaxvotesperbug() {
@@ -204,7 +188,6 @@
     /**
      * Sets maxvotesperbug
      *
-     * @access  public
      * @param   string maxvotesperbug
      * @return  string the previous value
      */
@@ -215,7 +198,6 @@
     /**
      * Retrieves votestoconfirm
      *
-     * @access  public
      * @return  string
      */
     public function getVotestoconfirm() {
@@ -225,7 +207,6 @@
     /**
      * Sets votestoconfirm
      *
-     * @access  public
      * @param   string votestoconfirm
      * @return  string the previous value
      */
@@ -236,7 +217,6 @@
     /**
      * Retrieves defaultmilestone
      *
-     * @access  public
      * @return  string
      */
     public function getDefaultmilestone() {
@@ -246,7 +226,6 @@
     /**
      * Sets defaultmilestone
      *
-     * @access  public
      * @param   string defaultmilestone
      * @return  string the previous value
      */
@@ -257,7 +236,6 @@
     /**
      * Retrieves id
      *
-     * @access  public
      * @return  string
      */
     public function getId() {
@@ -267,7 +245,6 @@
     /**
      * Sets id
      *
-     * @access  public
      * @param   string id
      * @return  string the previous value
      */

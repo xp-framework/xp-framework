@@ -18,10 +18,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &mixed ref
      */    
-    public function __construct(&$ref) {
+    public function __construct($ref) {
       parent::__construct($ref, '__construct');
     }
     
@@ -38,11 +37,10 @@
      *   var_dump($constructor->newInstance());
      * </code>
      *
-     * @access  public
      * @param   mixed* args
      * @return  &lang.Object
      */
-    public function &newInstance() {
+    public function newInstance() {
       $paramstr= '';
       $args= func_get_args();
       for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
@@ -55,7 +53,6 @@
     /**
      * Retrieve return type
      *
-     * @access  public
      * @return  string
      */
     public function getReturnType() {

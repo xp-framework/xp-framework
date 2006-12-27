@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
     public function __construct() {
       $this->registerParamInfo(
@@ -104,7 +103,6 @@
     /**
      * Returns the value of the parameter player_id
      *
-     * @access  public
      * @return  int
      */
     public function getPlayer_id() {
@@ -114,7 +112,6 @@
     /**
      * Returns the value of the parameter firstname
      *
-     * @access  public
      * @return  string
      */
     public function getFirstname() {
@@ -124,7 +121,6 @@
     /**
      * Returns the value of the parameter lastname
      *
-     * @access  public
      * @return  string
      */
     public function getLastname() {
@@ -134,7 +130,6 @@
     /**
      * Returns the value of the parameter username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -144,7 +139,6 @@
     /**
      * Returns the value of the parameter password
      *
-     * @access  public
      * @return  string
      */
     public function getPassword() {
@@ -154,7 +148,6 @@
     /**
      * Returns the value of the parameter email
      *
-     * @access  public
      * @return  string
      */
     public function getEmail() {
@@ -164,7 +157,6 @@
     /**
      * Returns the value of the parameter team_id
      *
-     * @access  public
      * @return  int
      */
     public function getTeam_id() {
@@ -174,7 +166,6 @@
     /**
      * Returns the value of the parameter position
      *
-     * @access  public
      * @return  int
      */
     public function getPosition() {
@@ -184,7 +175,6 @@
     /**
      * Returns the value of the parameter mailinglist
      *
-     * @access  public
      * @return  int[]
      */
     public function getMailinglist() {

@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name, $type, $size, $uri) {
@@ -34,20 +33,18 @@
     /**
      * Set File
      *
-     * @access  public
      * @param   &io.File file
      */
-    public function setFile(&$file) {
-      $this->file= &$file;
+    public function setFile($file) {
+      $this->file= $file;
     }
 
     /**
      * Get File
      *
-     * @access  public
      * @return  &io.File
      */
-    public function &getFile() {
+    public function getFile() {
       return $this->file;
     }
 
@@ -56,7 +53,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -66,7 +62,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -76,7 +71,6 @@
     /**
      * Set Type
      *
-     * @access  public
      * @param   string type
      */
     public function setType($type) {
@@ -86,7 +80,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  string
      */
     public function getType() {
@@ -96,7 +89,6 @@
     /**
      * Set Size
      *
-     * @access  public
      * @param   int size
      */
     public function setSize($size) {
@@ -106,7 +98,6 @@
     /**
      * Get Size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {

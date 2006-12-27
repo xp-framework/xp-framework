@@ -25,7 +25,6 @@
     /**
      * Retrieve current microtime
      *
-     * @access  public
      * @return  float microtime
      */
     public function microtime() {
@@ -36,7 +35,6 @@
     /**
      * Start the timer
      *
-     * @access  public
      */
     public function start() {
       $this->start= $this->microtime();
@@ -45,7 +43,6 @@
     /**
      * Stop the timer
      *
-     * @access  public
      */
     public function stop() {
       $this->stop= $this->microtime();
@@ -54,7 +51,6 @@
     /**
      * Retrieve elapsed time
      *
-     * @access  public
      * @return  float seconds elapsed
      */
     public function elapsedTime() {

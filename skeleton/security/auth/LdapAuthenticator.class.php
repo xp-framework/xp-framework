@@ -23,19 +23,17 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &peer.ldap.LDAPClient lc
      * @param   string basedn
      */
-    public function __construct(&$lc, $basedn) {
-      $this->lc= &$lc;
+    public function __construct($lc, $basedn) {
+      $this->lc= $lc;
       $this->basedn= $basedn;
     }
   
     /**
      * Authenticate a user
      *
-     * @access  public
      * @param   string user
      * @param   string pass
      * @return  bool

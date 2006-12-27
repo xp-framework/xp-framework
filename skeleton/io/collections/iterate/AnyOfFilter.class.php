@@ -27,11 +27,10 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       for ($i= 0; $i < $this->_size; $i++) {
       
         // The first filter that accepts the element => we accept the element

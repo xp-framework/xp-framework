@@ -16,9 +16,8 @@
     /**
      * Create method
      *
-     * @access  public
      * @return  &net.xp_framework.beans.stateless.Roundtrip
      */
-    public function &create();
+    public function create();
   }
 ?>

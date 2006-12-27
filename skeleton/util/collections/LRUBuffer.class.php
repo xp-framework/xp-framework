@@ -23,7 +23,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int size
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
@@ -34,7 +33,6 @@
     /**
      * Retrieve current microtime
      *
-     * @access  public
      * @return  float microtime
      */
     public function microtime() {
@@ -52,21 +50,20 @@
      *   $deleted= &$buf->add($key);
      * </code>
      *
-     * @access  public
      * @param   &lang.Object element
      * @return  &lang.Object victim
      */
-    public function &add(&$element) {
+    public function add($element) {
       $h= $element->hashCode();
       $this->_access[$h]= $this->microtime();
-      $this->_elements[$h]= &$element;
+      $this->_elements[$h]= $element;
 
       // Check if this buffer's size has been exceeded
       if (sizeof($this->_access) <= $this->size) return NULL;
       
       // Find the position of the smallest value and delete it
       $p= array_search(min($this->_access), $this->_access, TRUE);
-      $victim= &$this->_elements[$p];
+      $victim= $this->_elements[$p];
 
       unset($this->_access[$p]);
       unset($this->_elements[$p]);
@@ -77,17 +74,15 @@
     /**
      * Update an element
      *
-     * @access  public
      * @param   &lang.Object element
      */
-    public function update(&$element) {
+    public function update($element) {
       $this->_access[$element->hashCode()]= $this->microtime();
     }
     
     /**
      * Get number of elements currently contained in this buffer
      *
-     * @access  public
      * @return  int
      */
     public function numElements() {
@@ -97,7 +92,6 @@
     /**
      * Set size
      *
-     * @access  public
      * @param   int size
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
@@ -112,7 +106,6 @@
     /**
      * Get size
      *
-     * @access  public
      * @return  int
      */
     public function getSize() {

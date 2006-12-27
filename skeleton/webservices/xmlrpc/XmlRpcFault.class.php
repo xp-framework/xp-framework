@@ -18,7 +18,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   int code
      * @param   string string
      */
@@ -30,7 +29,6 @@
     /**
      * Set FaultCode
      *
-     * @access  public
      * @param   int faultCode
      */
     public function setFaultCode($faultCode) {
@@ -40,7 +38,6 @@
     /**
      * Get FaultCode
      *
-     * @access  public
      * @return  int
      */
     public function getFaultCode() {
@@ -50,7 +47,6 @@
     /**
      * Set FaultString
      *
-     * @access  public
      * @param   string faultString
      */
     public function setFaultString($faultString) {
@@ -60,7 +56,6 @@
     /**
      * Get FaultString
      *
-     * @access  public
      * @return  string
      */
     public function getFaultString() {

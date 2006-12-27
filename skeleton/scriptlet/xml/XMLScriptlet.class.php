@@ -54,32 +54,29 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string base default ''
      */
     public function __construct($base= '') {
-      $this->processor= &$this->_processor();
+      $this->processor= $this->_processor();
       $this->processor->setBase($base);
     }
     
     /**
      * Set our own processor object
      *
-     * @access  protected
      * @return  &xml.XSLProcessor
      */
-    public function &_processor() {
+    public function _processor() {
       return new XSLProcessor();
     }
     
     /**
      * Set our own response object
      *
-     * @access  protected
      * @return  &scriptlet.xml.XMLScriptletResponse
      * @see     xp://scriptlet.HttpScriptlet#_response
      */
-    public function &_response() {
+    public function _response() {
       $response= new XMLScriptletResponse();
       $response->setProcessor($this->processor);
       return $response;
@@ -88,11 +85,10 @@
     /**
      * Set our own request object
      *
-     * @access  protected
      * @return  &scriptlet.xml.XMLScriptletRequest
      * @see     xp://scriptlet.HttpScriptlet#_request
      */
-    public function &_request() {
+    public function _request() {
       return new XMLScriptletRequest();
     }
     
@@ -101,12 +97,11 @@
      * "PRODUCT" is not set - which it will be if the RewriteRule has
      * taken control).
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @return  string class method (one of doGet, doPost, doHead)
      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
      */
-    public function handleMethod(&$request) {
+    public function handleMethod($request) {
       if (!$request->getEnvValue('PRODUCT')) {
         return 'doCreate';
       }
@@ -117,14 +112,13 @@
     /**
      * Helper method for doCreate() and doCreateSession()
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   string sessionId default NULL
      * @return  bool
      */
-    public function doRedirect(&$request, &$response, $sessionId= NULL) {
-      $uri= &$request->getURL();
+    public function doRedirect($request, $response, $sessionId= NULL) {
+      $uri= $request->getURL();
 
       // Get product, language and statename from the environment if 
       // necessary. Their default values are "site" (product), 
@@ -161,35 +155,32 @@
      * DEF_LANG as values for $pr and $ll_LL. If these aren't set, "site" and
      * "en_US" are assumed as default values.
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @return  bool
      */
-    public function doCreate(&$request, &$response) {
+    public function doCreate($request, $response) {
       return $this->doRedirect($request, $response);
     }
 
     /**
      * Creates a session. 
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      */
-    public function doCreateSession(&$request, &$response) {
+    public function doCreateSession($request, $response) {
       return $this->doRedirect($request, $response, $request->session->getId());
     }
 
     /**
      * Sets the responses XSL stylesheet
      *
-     * @access  protected
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    public function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s/%s/%s.xsl',
         $request->getProduct(),
@@ -201,11 +192,10 @@
     /**
      * Process request
      *
-     * @access  protected
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      */
-    public function processRequest(&$request, &$response) {
+    public function processRequest($request, $response) {
 
       // Define special parameters
       $response->setParam('state',   $request->getStateName());
@@ -233,28 +223,26 @@
      * When overriding this method, please make sure you include all your 
      * sourcecode _before_ you call <pre>parent::doGet()</pre>
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
-    public function doGet(&$request, &$response) {
+    public function doGet($request, $response) {
       return $this->processRequest($request, $response);
     }
     
     /**
      * Simply call doGet
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doPost
      */
-    public function doPost(&$request, &$response) {
+    public function doPost($request, $response) {
       return $this->processRequest($request, $response);
     }
   }

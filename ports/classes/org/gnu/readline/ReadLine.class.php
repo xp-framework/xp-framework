@@ -46,7 +46,6 @@
    *   } implements(__FILE__, 'org.gnu.readline.Completer');
    * </code>
    *
-   * @model    static
    * @ext      readline
    * @purpose  Readline functionality
    */
@@ -55,29 +54,27 @@
     /**
      * Wrapper for missing static variables
      *
-     * @access  private
      * @param   string name
      * @param   mixed* arg
      * @return  &mixed arg
      */
-    public function &registry() {
+    public function registry() {
       static $static= array();
       
       switch (func_num_args()) {
         case 1: return $static[func_get_arg(0)];
-        case 2: $static[func_get_arg(0)]= &func_get_arg(1); break;
+        case 2: $static[func_get_arg(0)]= func_get_arg(1); break;
       }
     }
   
     /**
      * Defines a completer
      *
-     * @access  public
      * @param   &org.gnu.readline.ReadLineCompleter completer
      * @return  bool success
      * @throws  lang.IllegalArgumentException
      */
-    public function setCompleter(&$completer) {
+    public function setCompleter($completer) {
       if (!is('org.gnu.readline.Completer', $completer)) {
         throw(new IllegalArgumentException(
           'Argument is expected to implement org.gnu.readline.Completer'
@@ -90,7 +87,6 @@
     /**
      * Read a line
      *
-     * @access  public
      * @param   string prompt default ''
      * @param   bool add default TRUE whether to add the read line to the history
      * @return  string line or FALSE if ^D was pressed
@@ -105,7 +101,6 @@
     /**
      * Get an internal readline variable
      *
-     * @access  public
      * @param   const name e.g. RL_LIBRARY_VERSION
      * @return  string
      */
@@ -116,7 +111,6 @@
     /**
      * Add an item to the history
      *
-     * @access  public
      * @param   string l
      * @return  bool success
      */
@@ -127,7 +121,6 @@
     /**
      * Clear the history
      *
-     * @access  public
      * @return  bool success
      */
     public function clearHistory() {
@@ -137,7 +130,6 @@
     /**
      * Retrieve the history
      *
-     * @access  public
      * @return  string[]
      */
     public function getHistory() {
@@ -147,12 +139,11 @@
     /**
      * Load readline history from a file
      *
-     * @access  public
      * @param   &io.File file
      * @return  bool success
      * @throws  io.IOException
      */
-    public function readHistoryFile(&$file) {
+    public function readHistoryFile($file) {
       if (FALSE === readline_read_history($file->getURI())) {
         throw(new IOException('Could not read history from '.$file->getURI()));
       }
@@ -162,12 +153,11 @@
     /**
      * Save readline history to a file
      *
-     * @access  public
      * @param   &io.File file
      * @return  bool success
      * @throws  io.IOException
      */
-    public function writeHistoryFile(&$file) {
+    public function writeHistoryFile($file) {
       if (FALSE === readline_write_history($file->getURI())) {
         throw(new IOException('Could not write history to '.$file->getURI()));
       }

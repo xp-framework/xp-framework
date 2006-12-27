@@ -31,7 +31,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->interfaces= new ClassIterator();
@@ -41,13 +40,12 @@
     /**
      * Set rootdoc
      *
-     * @access  public
      * @param   &RootDoc root
      */
-    public function setRoot(&$root) {
+    public function setRoot($root) {
       parent::setRoot($root);
-      $this->interfaces->root= &$root;
-      $this->usedClasses->root= &$root;    
+      $this->interfaces->root= $root;
+      $this->usedClasses->root= $root;    
     }
     
     /**
@@ -60,7 +58,6 @@
      *   <li>ORDINARY_CLASS</li>
      * </ul>
      *
-     * @access  public
      * @return  string
      */
     public function classType() {
@@ -72,12 +69,12 @@
 
       if ($this->type) return $this->type;    // Already known
 
-      $cmp= &$this;
+      $cmp= $this;
       do {
         if (isset($map[$cmp->qualifiedName])) {
           return $this->type= $map[$cmp->qualifiedName];
         }
-      } while ($cmp= &$cmp->superclass);
+      } while ($cmp= $cmp->superclass);
 
       return $this->type= ORDINARY_CLASS;
     }
@@ -85,7 +82,6 @@
     /**
      * Returns whether this class is an exception class.
      *
-     * @access  public
      * @return  bool
      */
     public function isException() {
@@ -95,7 +91,6 @@
     /**
      * Returns whether this class is an error class.
      *
-     * @access  public
      * @return  bool
      */
     public function isError() {
@@ -105,7 +100,6 @@
     /**
      * Returns whether this class is an interface.
      *
-     * @access  public
      * @return  bool
      */
     public function isInterface() {
@@ -115,14 +109,13 @@
     /**
      * Returns whether this class is a subclass of a given class.
      *
-     * @access  public
      * @return  bool
      */
-    public function subclassOf(&$classdoc) {
-      $cmp= &$this;
+    public function subclassOf($classdoc) {
+      $cmp= $this;
       do {
         if ($cmp->qualifiedName == $classdoc->qualifiedName) return TRUE;
-      } while ($cmp= &$cmp->superclass);
+      } while ($cmp= $cmp->superclass);
 
       return FALSE;
     }
@@ -131,7 +124,6 @@
      * Get the fully qualified name of this program element. For example, 
      * for the class util.Date, return "util.Date". 
      *
-     * @access  public
      * @return  string
      */
     public function qualifiedName() {
@@ -141,7 +133,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -151,7 +142,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {

@@ -13,8 +13,8 @@
   
     // {{{ internal string fault(&lang.Throwable exception, string code)
     //     Convert an exception to XML
-    function fault(&$exception, $code) {
-      $answer= &new XmlRpcMessage();
+    function fault($exception, $code) {
+      $answer= new XmlRpcMessage();
       $answer->create('Server', 'Error');
 
       $answer->setFault($code, $exception->toString());
@@ -39,7 +39,7 @@
       }
 
       // Check for uncaught exceptions
-      if ($exceptions= &xp::registry('exceptions')) {
+      if ($exceptions= xp::registry('exceptions')) {
         return sapi·xmlrpc·service::fault(
           $exceptions[key($exceptions)],
           'xp.uncaughtexception'

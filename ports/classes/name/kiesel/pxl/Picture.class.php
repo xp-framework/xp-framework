@@ -24,18 +24,16 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function setStorage(&$storage) {
-      $this->storage= &$storage;
+    public function setStorage($storage) {
+      $this->storage= $storage;
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -46,15 +44,14 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function &create(&$storage) {
+    public function create($storage) {
       $data= $storage->load('picture');
       if (!$data) return NULL;
       
-      $c= &Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Picture');
+      $c= Unmarshaller::unmarshal($data, 'name.kiesel.pxl.Picture');
       $c->setStorage($storage);
       return $c;
     }
@@ -62,7 +59,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     #[@xmlmapping(element= 'name')]
@@ -73,7 +69,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     #[@xmlmapping(element= 'name')]
@@ -84,22 +79,20 @@
     /**
      * Set Date
      *
-     * @access  public
      * @param   &lang.Object date
      */
     #[@xmlmapping(element= 'date')]
-    public function setDate(&$date) {
-      $this->date= &Date::fromString($date);
+    public function setDate($date) {
+      $this->date= Date::fromString($date);
     }
 
     /**
      * Get Date
      *
-     * @access  public
      * @return  &lang.Object
      */
     #[@xmlfactory(element= 'date')]
-    public function &serializeDate() {
+    public function serializeDate() {
       if (!$this->date) return NULL;
       return $this->date->toString('Y-m-d H:i:s');
     }
@@ -107,7 +100,6 @@
     /**
      * Set Author
      *
-     * @access  public
      * @param   string author
      */
     #[@xmlmapping(element= 'author')]
@@ -118,7 +110,6 @@
     /**
      * Get Author
      *
-     * @access  public
      * @return  string
      */
     #[@xmlfactory(element= 'author')]
@@ -129,36 +120,33 @@
     /**
      * Set Filename
      *
-     * @access  public
      * @param   &lang.Object filename
      */
     #[@xmlmapping(element= 'filename')]
-    public function setFilename(&$filename) {
-      $this->filename= &$filename;
+    public function setFilename($filename) {
+      $this->filename= $filename;
     }
 
     /**
      * Get Filename
      *
-     * @access  public
      * @return  &lang.Object
      */
     #[@xmlfactory(element= 'filename')]
-    public function &getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
 
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function toXml() {
       $filename= $this->storage->getBase().'/'.$this->getFilename();
       try {
-        $exif= &ExifData::fromFile(new File($filename));
+        $exif= ExifData::fromFile(new File($filename));
       } catch (ImagingException $e) {
         $exif= NULL;
       }

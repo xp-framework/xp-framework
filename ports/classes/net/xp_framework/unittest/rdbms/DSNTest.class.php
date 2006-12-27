@@ -19,7 +19,6 @@
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
       $this->dsn['sybase']= new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
@@ -30,7 +29,6 @@
     /**
      * Tests the toString() method returns passwords replaced by stars.
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentationWithPassword() {
@@ -43,7 +41,6 @@
     /**
      * Tests the toString() method does not mangle DSNs without passwords
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentationWithoutPassword() {
@@ -56,7 +53,6 @@
     /**
      * Tests the getFlags() method on a DSN without flags
      *
-     * @access  public
      */
     #[@test]
     public function noFlags() {
@@ -66,7 +62,6 @@
     /**
      * Tests the getFlags() method on a DSN with flags
      *
-     * @access  public
      */
     #[@test]
     public function definedFlags() {
@@ -76,7 +71,6 @@
     /**
      * Tests the getProperty() method
      *
-     * @access  public
      */
     #[@test]
     public function stringPropertyValue() {
@@ -86,7 +80,6 @@
     /**
      * Tests the getProperty() method
      *
-     * @access  public
      */
     #[@test]
     public function arrayPropertyValue() {

@@ -23,7 +23,6 @@
     /**
      * Set Label
      *
-     * @access  public
      * @param   string label
      */
     #[@xmlmapping(element= '@label')]
@@ -34,7 +33,6 @@
     /**
      * Get Label
      *
-     * @access  public
      * @return  string
      */
     public function getLabel() {
@@ -44,7 +42,6 @@
     /**
      * Set Width
      *
-     * @access  public
      * @param   int width
      */
     #[@xmlmapping(element= '@width', type= 'int')]
@@ -55,7 +52,6 @@
     /**
      * Get Width
      *
-     * @access  public
      * @return  int
      */
     public function getWidth() {
@@ -65,7 +61,6 @@
     /**
      * Set Height
      *
-     * @access  public
      * @param   int height
      */
     #[@xmlmapping(element= '@height', type= 'int')]
@@ -76,7 +71,6 @@
     /**
      * Get Height
      *
-     * @access  public
      * @return  int
      */
     public function getHeight() {
@@ -86,49 +80,44 @@
     /**
      * Set Url
      *
-     * @access  public
      * @param   &lang.Object url
      */
     #[@xmlmapping(element= '@url')]
-    public function setUrl(&$url) {
+    public function setUrl($url) {
       $this->url= new URL($url);
     }
 
     /**
      * Get Url
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getUrl() {
+    public function getUrl() {
       return $this->url;
     }
 
     /**
      * Set Source
      *
-     * @access  public
      * @param   &lang.Object source
      */
     #[@xmlmapping(element= '@source')]
-    public function setSource(&$source) {
+    public function setSource($source) {
       $this->source= new URL($source);
     }
 
     /**
      * Get Source
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getSource() {
+    public function getSource() {
       return $this->source;
     }
 
     /**
      * Builds the string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

@@ -39,7 +39,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string identifier, e.g. "VCARD"
      */
     public function __construct($identifier) {
@@ -49,22 +48,20 @@
     /**
      * Set default handler
      *
-     * @access  public
      * @param   function func
      */
     public function setDefaultHandler($func) {
-      $this->handlers[NULL]= &$func;
+      $this->handlers[NULL]= $func;
     }
     
     /**
      * Set handler for an element
      *
-     * @access  public
      * @param   string element
      * @param   function func
      */
     public function setHandler($element, $func) {
-      $this->handlers[$element]= &$func;
+      $this->handlers[$element]= $func;
     }
     
     /**
@@ -76,8 +73,6 @@
      *  n.\N\NViele Grüsse\NAndrea \N
      * </pre>
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */
@@ -97,8 +92,6 @@
      * 20030220T101358Z
      * </pre>
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  int
      */
@@ -110,12 +103,11 @@
     /**
      * Parse a stream
      *
-     * @access  public 
      * @param   &io.Stream stream
      * @return  bool success
      * @throws  lang.FormatException
      */
-    public function parse(&$stream) {
+    public function parse($stream) {
       $stream->open(STREAM_MODE_READ);
       if (!($result= $this->_checkHeader($l= $stream->readLine()))) {
         $stream->close();
@@ -192,7 +184,6 @@
     /**
      * Parse a key->value pair
      *
-     * @access  private
      * @param   string key
      * @param   string value
      * @return  bool success
@@ -210,7 +201,7 @@
           $val->{$pname}= $pvalue;
         }
         
-        $value= &$val;
+        $value= $val;
       } else {
         $kargs= array(strtoupper($key));
       }
@@ -253,7 +244,6 @@
     /**
      * Check for a valid header
      *
-     * @access  private
      * @param   string l Line where header is supposedly located
      * @return  bool valid
      */
@@ -267,7 +257,6 @@
     /**
      * Check for a valid footer
      *
-     * @access  private
      * @param   string l Line where footer is supposedly located
      * @return  bool valid
      */

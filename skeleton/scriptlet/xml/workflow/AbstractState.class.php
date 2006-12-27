@@ -24,19 +24,17 @@
     /**
      * Add a handler
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.Handler handler
      * @return  &scriptlet.xml.workflow.Handler the added handler
      */
-    public function &addHandler(&$handler) {
-      $this->handlers[]= &$handler;
+    public function addHandler($handler) {
+      $this->handlers[]= $handler;
       return $handler;
     }
     
     /**
      * Retrieve whether handlers are existant for this state
      *
-     * @access  public
      * @return  bool
      */
     public function hasHandlers() {
@@ -48,12 +46,11 @@
      * about the handler's wrapper, if existant and IFormResultAggregate'd)
      * to the formresult
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.Handler handler the handler to add
      * @param   &xml.Node node the node to add the handler representation to
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      */
-    public function addHandlerToFormresult(&$handler, &$node, &$request) {
+    public function addHandlerToFormresult($handler, $node, $request) {
       $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
       foreach (array_keys($handler->values[HVAL_FORMPARAM]) as $key) {
 
@@ -68,9 +65,9 @@
       // Add wrapper parameter representation if the handler has a wrapper
       // and this wrapper implements the IFormResultAggregate interface
       if ($handler->hasWrapper() && is('IFormResultAggregate', $handler->wrapper)) {
-        $wrapper= &$node->addChild(new Node('wrapper'));
+        $wrapper= $node->addChild(new Node('wrapper'));
         foreach (array_keys($handler->wrapper->paraminfo) as $name) {
-          $param= &$wrapper->addChild(new Node('param', NULL, array(
+          $param= $wrapper->addChild(new Node('param', NULL, array(
             'name'       => $name,
             'type'       => $handler->wrapper->paraminfo[$name]['type'],
             'occurrence' => $handler->wrapper->paraminfo[$name]['occurrence'],
@@ -90,15 +87,14 @@
     /**
      * Set up this state
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function setup(&$request, &$response, &$context) {
+    public function setup($request, $response, $context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
       
-      with ($h= &$response->addFormResult(new Node('handlers'))); {
+      with ($h= $response->addFormResult(new Node('handlers'))); {
         for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
           with ($name= $this->handlers[$i]->getName()); {
             $this->handlers[$i]->identifier= sprintf(
@@ -106,7 +102,7 @@
               $request->getStateName(),
               $this->handlers[$i]->identifierFor($request, $context)
             );
-            $node= &$h->addChild(new Node('handler', NULL, array(
+            $node= $h->addChild(new Node('handler', NULL, array(
               'id'   => $this->handlers[$i]->identifier,
               'name' => $name
             )));
@@ -220,19 +216,17 @@
     /**
      * Process this state. Does nothing in this default implementation.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
     }
     
     /**
      * Retrieve whether authentication is needed. Returns FALSE in this 
      * default implementation.
      *
-     * @access  public
      * @return  bool
      */
     public function requiresAuthentication() {
@@ -242,12 +236,11 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      * @see     xp://util.log.Traceable
      */
-    public function setTrace(&$cat) { 
-      $this->cat= &$cat;
+    public function setTrace($cat) { 
+      $this->cat= $cat;
     }
 
   } 

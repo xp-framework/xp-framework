@@ -34,7 +34,6 @@
     /**
      * Setup method
      *
-     * @access  public
      */    
     public function setUp() {
       $this->entry= new LDAPEntry($this->dn, $this->attributes);
@@ -43,7 +42,6 @@
     /**
      * Tests getDN() method
      *
-     * @access public 
      */
     #[@test]
     public function getDN() {
@@ -53,7 +51,6 @@
     /**
      * Tests getAttributes() method
      *
-     * @access public 
      */
     #[@test]
     public function getAttributes() {
@@ -63,7 +60,6 @@
     /**
      * Tests getAttribute() method for the "cn" attribute
      *
-     * @access public 
      */
     #[@test]
     public function cnAttribute() {
@@ -73,7 +69,6 @@
     /**
      * Tests getAttribute() method for the "cn" attribute
      *
-     * @access public 
      */
     #[@test]
     public function firstCnAttribute() {
@@ -83,7 +78,6 @@
     /**
      * Tests getAttribute() method for a non-existant attribute
      *
-     * @access public 
      */
     #[@test]
     public function nonExistantAttribute() {
@@ -94,7 +88,6 @@
      * Tests getAttribute() method for the objectClass attribute (which
      * has multiple values).
      *
-     * @access public 
      */
     #[@test]
     public function objectClassAttribute() {
@@ -107,11 +100,10 @@
     /**
      * Tests static fromData() method
      *
-     * @access public 
      */
     #[@test]
     public function fromData() {
-      $cmp= &LDAPEntry::fromData($data= array(
+      $cmp= LDAPEntry::fromData($data= array(
         'objectclass' => array(
           'count' => 3,
           0 => 'top',

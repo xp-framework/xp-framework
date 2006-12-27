@@ -15,7 +15,6 @@
     /**
      * Retrieve hash code for a given string
      *
-     * @access  public
      * @param   string str
      * @return  int hashcode
      */

@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string path
      */
     public function __construct($path) {
@@ -32,7 +31,6 @@
      * to the desired directory before doing so and changing it back
      * after finishing.
      *
-     * @access  protected
      * @param   string cvsCmd
      * @return  string[]
      */
@@ -48,7 +46,6 @@
     /**
      * Update a directory
      *
-     * @access  public
      * @param   bool recursive default FALSE
      * @param   bool sim default FALSE whether to simulate
      * @return  stdclass[] objects

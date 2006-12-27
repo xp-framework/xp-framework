@@ -30,7 +30,7 @@
   require('lang.base.php');
   uses('io.Folder', 'util.Properties', 'util.cmd.ParamString');
 
-  function writeFontDef($fromFile, &$p) {
+  function writeFontDef($fromFile, $p) {
     global $core_names;
 
     include($fromFile);
@@ -107,10 +107,10 @@
   printf("===> Start for %s [allfiles %s]\n", $base, $pattern);
   
   $prop= new Properties($propertyFile);
-  if (!$prop->exists()) { try(); {
+  if (!$prop->exists()) { try {
     printf("---> Creating configfile %s\n", $propertyFile);
     $prop->create();
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit;
   }}
@@ -126,9 +126,9 @@
   $d->close();
   
   // Property-File schreiben
-  try(); {
+  try {
     $prop->save();
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
   }
   delete($prop);

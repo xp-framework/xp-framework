@@ -40,12 +40,11 @@
     /**
      * Add a permission
      *
-     * @access  public
      * @param   &security.Permission p
      * @return  &security.Permission the added permission
      */
-    public function &addPermission(&$p) {
-      $this->permissions[]= &$p;
+    public function addPermission($p) {
+      $this->permissions[]= $p;
       return $p;
     }
     
@@ -66,12 +65,10 @@
      * </code>
      *
      * @see     http://java.sun.com/j2se/1.4.1/docs/guide/security/PolicyFiles.html
-     * @model   static
-     * @access  public
      * @param   &io.Stream stream
      * @return  &security.Policy policy
      */
-    public static function &fromFile(&$stream) {
+    public static function fromFile($stream) {
       static $errors= array(
         PF_ST_EPARSE    => 'Parse error', 
         PF_ST_EGRANT    => 'Grant syntax error',
@@ -184,7 +181,7 @@
               }
               
               try {
-                $permission= &XPClass::forName($class);
+                $permission= XPClass::forName($class);
               } catch (ClassNotFoundException $e) {
                 $state= PF_ST_EREFLECT;
                 $message= $e->message;

@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string path
      */
     public function __construct($path) {
@@ -33,7 +32,6 @@
     /**
      * Update a directory
      *
-     * @access  public
      * @param   bool recursive default FALSE
      * @return  stdclass[] objects
      * @throws  org.cvshome.CVSInterfaceException
@@ -68,7 +66,6 @@
     /**
      * Commit the file (needs write access to repository)
      *
-     * @access  public
      * @param   string comment
      */
     public function commit($comment) {
@@ -81,7 +78,7 @@
         throw($e);
       }
 
-      $return= &$this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->path));
+      $return= $this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->path));
       
       $f->unlink();
       return $return;
@@ -91,7 +88,6 @@
      * Removes a directory from the repository. To complete this action,
      * you have to call commit. Use this with caution.
      *
-     * @access  public
      * @return  bool success
      */
     public function delete() {
@@ -101,7 +97,6 @@
     /**
      * Adds directory to a repository. Please note, that commit is required.
      *
-     * @access  public
      * @return  bool success
      */    
     public function add() {

@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   string sql default NULL the SQL query string sent
      * @param   int errorcode default -1
@@ -33,7 +32,6 @@
     /**
      * Get SQL
      *
-     * @access  public
      * @return  string
      */
     public function getSql() {
@@ -43,7 +41,6 @@
     /**
      * Get errorcode
      *
-     * @access  public
      * @return  int
      */
     public function getErrorcode() {
@@ -53,7 +50,6 @@
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

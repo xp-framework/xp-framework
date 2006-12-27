@@ -45,7 +45,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed url a string or a peer.URL object
      * @param   array env environment
      */
@@ -57,10 +56,9 @@
     /**
      * Create the request object
      *
-     * @access  protected
      * @param   &mixed url a string or a peer.URL object
      */
-    public function _createRequest(&$url) {
+    public function _createRequest($url) {
       $this->request= new AjpRequest($url);
     }  
   }

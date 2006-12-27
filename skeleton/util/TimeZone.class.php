@@ -27,7 +27,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string offset
      * @param   string timezone name default ''
      */
@@ -39,7 +38,6 @@
     /**
      * Gets the name of the timezone
      *
-     * @access  public
      * @return  string name
      */
     public function getName() {
@@ -49,7 +47,6 @@
     /**
      * Retrieves the offset of the timezone
      *
-     * @access  public
      * @return  string offset
      */    
     public function getOffset() {
@@ -59,7 +56,6 @@
     /**
      * Get the offset string by timezone name
      *
-     * @access  public
      * @param   string string
      * @return  string
      */
@@ -121,13 +117,11 @@
     /**
      * Returns a TimeZone object by a time zone name.
      *
-     * @model   static
-     * @access  public
      * @param   string abbrev
      * @return  &util.TimeZone
      * @throws  lang.IllegalArgumentException if timezone is unknown
      */    
-    public static function &getByName($abbrev) {
+    public static function getByName($abbrev) {
       if (FALSE === ($offset= TimeZone::getOffsetByTimeZoneString($abbrev))) {
         throw (new IllegalArgumentException (
           'Unknown time zone abbreviation: '.$abbrev
@@ -141,18 +135,15 @@
     /**
      * Get a timezone object for the machines local timezone.
      *
-     * @model   static
-     * @access  public
      * @return  &util.TimeZone
      */
-    public static function &getLocal() {
+    public static function getLocal() {
       return TimeZone::getByName(date('T'));
     }
 
     /**
      * Retrieves the timezone offset to UTC/GMT
      *
-     * @access  public
      * @return  int offset
      */    
     public function getOffsetInSeconds() {
@@ -164,12 +155,11 @@
      * Converts a date from one timezone to a date of this
      * timezone.
      *
-     * @access  public
      * @param   &util.Date date
      * @param   &util.TimeZone tz
      * @return  &util.Date
      */
-    public function &convertDate(&$date, &$tz) {
+    public function convertDate($date, $tz) {
       return new Date ($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
     }
 
@@ -177,11 +167,10 @@
      * Converts a date in the machines local timezone to a date in this
      * timezone.
      *
-     * @access  public
      * @param   &util.Date date
      * @return  &util.Date
      */    
-    public function &convertLocalDate(&$date) {
+    public function convertLocalDate($date) {
       return $this->convertDate($date, TimeZone::getLocal());
     }
   }

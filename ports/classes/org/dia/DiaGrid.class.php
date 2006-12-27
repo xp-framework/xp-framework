@@ -20,7 +20,6 @@
     /**
      * Initialize this Grid object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -34,7 +33,6 @@
     /**
      * Returns the horizontal grid spacing
      *
-     * @access  public
      * @return  real
      */
     public function getWidthX() {
@@ -44,7 +42,6 @@
     /**
      * Sets the horizontal grid spacing
      *
-     * @access  public
      * @param   real width
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="width_x"]/dia:real/@val', value= 'real')]
@@ -55,7 +52,6 @@
     /**
      * Returns the vertical grid spacing
      *
-     * @access  public
      * @return  real
      */
     public function getWidthY() {
@@ -65,7 +61,6 @@
     /**
      * Sets the vertical grid spacing
      *
-     * @access  public
      * @param   real height
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="width_y"]/dia:real/@val', value= 'real')]
@@ -76,7 +71,6 @@
     /**
      * Returns the horizontal stepping of visible grid lines
      *
-     * @access  public
      * @return  real
      */
     public function getVisibleX() {
@@ -86,7 +80,6 @@
     /**
      * Sets the horizontal stepping of visible grid lines (show every line: 1)
      *
-     * @access  public
      * @param   int visible
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="visible_x"]/dia:int/@val', value= 'int')]
@@ -97,7 +90,6 @@
     /**
      * Returns the vertical stepping of visible grid lines
      *
-     * @access  public
      * @return  real
      */
     public function getVisibleY() {
@@ -107,7 +99,6 @@
     /**
      * Sets the vertical stepping of visible grid lines (show every line: 1)
      *
-     * @access  public
      * @param   int visible
      */
     #[@fromDia(xpath= 'dia:composite/dia:attribute[@name="visible_y"]/dia:int/@val', value= 'int')]
@@ -118,7 +109,6 @@
     /**
      * Returns the grid color object
      *
-     * @access  public
      * @return  &org.dia.DiaComposite
      */
     public function getGridColor() {
@@ -128,11 +118,10 @@
     /**
      * Sets the color of the grid (why is this a composite???? TODO!)
      *
-     * @access  public
      * @param   &org.dia.DiaComposite Color
      */
     #[@fromDia(xpath= 'dia:composite/dia:composite[@type="color"]', class= 'org.dia.DiaComposite')]
-    public function setGridColor(&$Color) {
+    public function setGridColor($Color) {
       $this->set('color', $Color);
     }
 

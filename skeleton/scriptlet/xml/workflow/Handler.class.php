@@ -33,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->name= strtolower(get_class($this));
@@ -42,7 +41,6 @@
     /**
      * Creates a string representation of this handler
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -65,27 +63,24 @@
     /**
      * Set Wrapper
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.Wrapper wrapper
      */
-    public function setWrapper(&$wrapper) {
-      $this->wrapper= &$wrapper;
+    public function setWrapper($wrapper) {
+      $this->wrapper= $wrapper;
     }
 
     /**
      * Get Wrapper
      *
-     * @access  public
      * @return  &scriptlet.xml.workflow.Wrapper
      */
-    public function &getWrapper() {
+    public function getWrapper() {
       return $this->wrapper;
     }
 
     /**
      * Check whether a wrapper is present
      *
-     * @access  public
      * @return  bool
      */
     public function hasWrapper() {
@@ -95,7 +90,6 @@
     /**
      * Set a value by a specified name
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      */
@@ -106,7 +100,6 @@
     /**
      * Set a form value by a specified name
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      */
@@ -117,7 +110,6 @@
     /**
      * Return all values
      *
-     * @access  public
      * @return  array
      */
     public function getValues() {
@@ -127,7 +119,6 @@
     /**
      * Return all form values
      *
-     * @access  public
      * @return  array
      */
     public function getFormValues() {
@@ -137,7 +128,6 @@
     /**
      * Retrieve a value by its name
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL
      * @return  mixed value
@@ -152,7 +142,6 @@
     /**
      * Retrieve a form value by its name
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL
      * @return  mixed value
@@ -167,7 +156,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -178,19 +166,17 @@
      * Get identifier. Returns name in this default implementation.
      * Overwrite in subclasses.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    public function identifierFor(&$request, &$context) {
+    public function identifierFor($request, $context) {
       return $this->name;
     }
 
     /**
      * Add an error
      *
-     * @access  public
      * @param   string code
      * @param   string field default '*'
      * @param   mixed info default NULL
@@ -203,7 +189,6 @@
     /**
      * Check whether errors occured
      *
-     * @access  public
      * @return  bool
      */
     public function errorsOccured() {
@@ -215,12 +200,11 @@
      * default implementation in case the request has a parameter named
      * __handler whose value contains this handler's name.
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    public function isActive(&$request, &$context) {
+    public function isActive($request, $context) {
       return ($request->getParam('__handler') == $this->identifier);
     }
 
@@ -230,57 +214,52 @@
      *
      * Return TRUE to indicate success, FALSE to signal failure.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    public function setup(&$request, &$context) { 
+    public function setup($request, $context) { 
       return TRUE;
     }
 
     /**
      * Retrieve whether this handler needs data 
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      * @return  bool
      */
-    public function needsData(&$request, &$context) {
+    public function needsData($request, $context) {
       return TRUE;
     }  
 
     /**
      * Handle error condition
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      */
-    public function handleErrorCondition(&$request, &$context) {
+    public function handleErrorCondition($request, $context) {
       return FALSE;
     }
 
     /**
      * Handle submitted data
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.Context context
      */
-    public function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData($request, $context) {
       return FALSE;
     }
     
     /**
      * Finalize this handler
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) { }
+    public function finalize($request, $response, $context) { }
   }
 ?>

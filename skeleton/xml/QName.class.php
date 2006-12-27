@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string namespace
      * @param   string localpart
      * @param   string prefix default NULL
@@ -42,7 +41,6 @@
     /**
      * Returns a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

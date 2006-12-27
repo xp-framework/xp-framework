@@ -18,7 +18,6 @@
     /**
      * Initializes the processor.
      *
-     * @access  public
      * @return  string
      */
     public function initialize() {
@@ -29,7 +28,6 @@
     /**
      * Process a token
      *
-     * @access  public
      * @param   string token
      * @return  string
      */
@@ -41,7 +39,6 @@
     /**
      * Finalizes the processor.
      *
-     * @access  public
      * @return  string
      */    
     public function finalize() {

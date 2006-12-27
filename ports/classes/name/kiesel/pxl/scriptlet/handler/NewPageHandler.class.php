@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
@@ -30,12 +29,11 @@
     /**
      * Setup handler.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function setup(&$request, &$context) {
+    public function setup($request, $context) {
     
       // TODO: Add code that is required to initially setup the handler
       //       Set values with Handler::setFormValue() to make them accessible in the frontend.
@@ -46,16 +44,15 @@
     /**
      * Handle submitted data.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
+    public function handleSubmittedData($request, $context) {
     
       $s= new FilesystemContainer($request->getEnvValue('DOCUMENT_ROOT').'/pages');
-      $filedata= &$this->wrapper->getFile();
-      $file= &$filedata->getFile();
+      $filedata= $this->wrapper->getFile();
+      $file= $filedata->getFile();
       
       $pc= new PageCreator(
         $s,
@@ -72,12 +69,11 @@
     /**
      * Finalize this handler
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) {
+    public function finalize($request, $response, $context) {
 
       // TODO: Add code that is executed after success and on every reload of the handler.
       //       Many handlers don't need this, so remove the complete function.

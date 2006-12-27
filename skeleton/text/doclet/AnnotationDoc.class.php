@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   mixed value
      */

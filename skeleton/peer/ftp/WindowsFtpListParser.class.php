@@ -18,11 +18,10 @@
     /**
      * Parse raw listing entry.
      *
-     * @access  public
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    public function &entryFrom($raw) {
+    public function entryFrom($raw) {
       preg_match(
         '/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +(<DIR>)?([0-9]+)? +(.+)/',
         $raw,

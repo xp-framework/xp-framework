@@ -19,8 +19,8 @@
   );
 
   // create new empty diagram:
-  $Dia= &new DiaDiagram();
-  $BgLayer= &$Dia->getChild('Background');
+  $Dia= new DiaDiagram();
+  $BgLayer= $Dia->getChild('Background');
   $BgLayer->addObject(new DiaText());
 
   Console::writeLine($Dia->getSource());

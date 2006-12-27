@@ -17,12 +17,12 @@
 
       // Check for fatal errors
       if (FALSE !== ($p= strpos($buf, EPREPEND_IDENTIFIER))) {
-        $e= &new Error(str_replace(EPREPEND_IDENTIFIER, '', substr($buf, $p)));
+        $e= new Error(str_replace(EPREPEND_IDENTIFIER, '', substr($buf, $p)));
         return '[sapi::gtk] Uncaught error: '.$e->toString();
       }
 
       // Check for uncaught exceptions
-      if ($exceptions= &xp::registry('exceptions')) {
+      if ($exceptions= xp::registry('exceptions')) {
         return '[sapi::gtk] Uncaught exception: '.$exceptions[key($exceptions)]->toString();
       }
 
@@ -35,7 +35,7 @@
   
   // {{{ void run (&org.gnome.GtkApplication app)
   //     Runs a GTK app
-  function run(&$app) {
+  function run($app) {
     try {
       $app->init();
     } catch(GuiException $e) {

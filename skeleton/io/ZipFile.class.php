@@ -19,7 +19,6 @@
     /**
      * Open the file
      *
-     * @access  public
      * @param   string mode one of the FILE_MODE_* constants
      * @throws  io.FileNotFoundException in case the file is not found
      * @throws  io.IOException in case the file cannot be opened (e.g., lacking permissions)
@@ -44,7 +43,6 @@
      * Reading ends when length - 1 bytes have been read, on a newline (which is 
      * included in the return value), or on EOF (whichever comes first). 
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -56,7 +54,6 @@
     /**
      * Read one char
      *
-     * @access  public
      * @return  char the character read
      * @throws  io.IOException in case of an error
      */
@@ -73,7 +70,6 @@
      * This function is identical to readLine except that trailing CR and LF characters
      * will be included in its return value
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -88,7 +84,6 @@
     /**
      * Read (binary-safe)
      *
-     * @access  public
      * @param   int bytes default 4096 Max. ammount of bytes to be read
      * @return  string Data read
      * @throws  io.IOException in case of an error
@@ -103,7 +98,6 @@
     /**
      * Write
      *
-     * @access  public
      * @param   string string data to write
      * @return  bool success
      * @throws  io.IOException in case of an error
@@ -118,7 +112,6 @@
     /**
      * Write a line and append a LF (\n) character
      *
-     * @access  public
      * @param   string string data to write
      * @return  bool success
      * @throws  io.IOException in case of an error
@@ -137,7 +130,6 @@
      * Use isOpen() to check if the file is open
      *
      * @see     php://feof
-     * @access  public
      * @return  bool TRUE when the end of the file is reached
      * @throws  io.IOException in case of an error (e.g., the file's not been opened)
      */
@@ -155,7 +147,6 @@
      * 
      * This function is identical to a call of $f->seek(0, SEEK_SET)
      *
-     * @access  public
      * @throws  io.IOException in case of an error
      */
     public function rewind() {
@@ -168,7 +159,6 @@
     /**
      * Move file pointer to a new position
      *
-     * @access  public
      * @param   int position default 0 The new position
      * @param   int mode default SEEK_SET 
      * @see     php://gzseek
@@ -185,7 +175,6 @@
     /**
      * Retrieve file pointer position
      *
-     * @access  public
      * @throws  io.IOException in case of an error
      * @return  int position
      */
@@ -200,7 +189,6 @@
     /**
      * Close this file
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {

@@ -27,26 +27,25 @@
     /**
      * Returns a value for the given serialized string
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &remote.protocol.SerializedData serialized
      * @param   array<string, mixed> context default array()
      * @return  &mixed
      */
-    public function &valueOf(&$serializer, &$serialized, $context= array()) {
+    public function valueOf($serializer, $serialized, $context= array()) {
       $oid= $serialized->consumeSize();
       $serialized->offset++;    // '{'
       $interface= $serializer->valueOf($serialized, $context);
       $serialized->offset++;    // '}'
       try {
-        $iclass= &XPClass::forName($interface);
+        $iclass= XPClass::forName($interface);
       } catch (ClassNotFoundException $e) {
         throw($e);
       }
 
-      $cl= &ClassLoader::getDefault();      
+      $cl= ClassLoader::getDefault();      
       try {
-        $instance= &Proxy::newProxyInstance(
+        $instance= Proxy::newProxyInstance(
           $cl, 
           array($iclass), 
           RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
@@ -61,13 +60,12 @@
     /**
      * Returns an on-the-wire representation of the given value
      *
-     * @access  public
      * @param   &server.protocol.Serializer serializer
      * @param   &lang.Object value
      * @param   array<string, mixed> context default array()
      * @return  string
      */
-    public function representationOf(&$serializer, &$var, $context= array()) {
+    public function representationOf($serializer, $var, $context= array()) {
       static $oid=  0;
       
       // Check if we've serialized this object before by looking it up
@@ -83,9 +81,9 @@
       $eoid= $context[RIH_OIDS_KEY]->get($var->hashCode());
       
       // Find home interface
-      $class= &$var->getClass();
+      $class= $var->getClass();
       
-      foreach (($interfaces= &$class->getInterfaces()) as $interface) {
+      foreach (($interfaces= $class->getInterfaces()) as $interface) {
         if ($interface->isSubclassOf('remote.beans.BeanInterface')) {
           return 'I:'.$eoid.':{'.$serializer->representationOf($interface->getName(), $context).'}';
         }
@@ -97,10 +95,9 @@
     /**
      * Return XPClass object of class supported by this mapping
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &handledClass() {
+    public function handledClass() {
       return XPClass::forName('lang.reflect.Proxy');
     }
   } 

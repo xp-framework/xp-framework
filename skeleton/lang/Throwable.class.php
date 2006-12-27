@@ -22,7 +22,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      */
     public function __construct($message) {
@@ -75,7 +74,6 @@
      * Adds new stacktrace elements to the internal list of stacktrace
      * elements, each for one error.
      *
-     * @access  protected
      * @param   string file
      * @param   string class
      * @param   string function
@@ -101,7 +99,6 @@
     /**
      * Return an array of stack trace elements
      *
-     * @access  public
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */
@@ -114,7 +111,6 @@
      *
      * @see     xp://lang.Throwable#toString
      * @param   resource fd default STDERR
-     * @access  public
      */
     public function printStackTrace($fd= STDERR) {
       fputs($fd, $this->toString());
@@ -130,7 +126,6 @@
      *
      * May be overriden by subclasses
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {
@@ -158,7 +153,6 @@
      * Usually not overridden by subclasses unless stacktrace format 
      * should differ - otherwise overwrite compoundMessage() instead!.
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -172,7 +166,6 @@
     /**
      * Returns a hashcode for this object
      *
-     * @access  public
      * @return  string
      */
     function hashCode() {
@@ -182,11 +175,10 @@
     /**
      * Indicates whether some other object is "equal to" this one.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    function equals(&$cmp) {
+    function equals($cmp) {
       return $this === $cmp;
     }
     
@@ -194,7 +186,6 @@
      * Returns the fully qualified class name for this class 
      * (e.g. "io.File")
      * 
-     * @access  public
      * @return  string fully qualified class name
      */
     function getClassName() {
@@ -204,11 +195,10 @@
     /**
      * Returns the runtime class of an object.
      *
-     * @access  public
      * @return  &lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    function &getClass() {
+    function getClass() {
       $c= new XPClass($this);
       return $c;
     }

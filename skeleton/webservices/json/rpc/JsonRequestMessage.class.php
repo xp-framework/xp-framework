@@ -17,13 +17,11 @@
     /**
      * Create message from string representation
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &webservices.json.rpc.JsonRequestMessage
      */
-    public static function &fromString($string) {
-      $decoder= &JsonFactory::create();
+    public static function fromString($string) {
+      $decoder= JsonFactory::create();
 
       $msg= new JsonRequestMessage();
       $data= $decoder->decode($string);
@@ -41,7 +39,6 @@
     /**
      * Create new message
      *
-     * @access  public
      * @param   string method
      * @param   int id
      */
@@ -53,7 +50,6 @@
     /**
      * Set the data for the message
      *
-     * @access  public
      * @param   mixed data
      */
     public function setData($data) {
@@ -67,10 +63,9 @@
     /**
      * Get data
      *
-     * @access  public 
      * @return  mixed
      */
-    public function &getData() {
+    public function getData() {
       return $this->data['params'];
     }    
   }

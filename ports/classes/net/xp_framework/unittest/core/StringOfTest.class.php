@@ -19,10 +19,9 @@
      *   TestString(6) { String }
      * </pre>
      *
-     * @access  protected
      * @return  &lang.Object
      */
-    public function &testStringInstance() {
+    public function testStringInstance() {
       return newinstance('lang.Object', array(), '{
         function toString() {
           return "TestString(6) { String }";
@@ -33,7 +32,6 @@
     /**
      * Tests string argument
      *
-     * @access  public
      */
     #[@test]
     public function stringArgument() {
@@ -43,7 +41,6 @@
     /**
      * Tests boolean argument
      *
-     * @access  public
      */
     #[@test]
     public function booleanArgument() {
@@ -54,7 +51,6 @@
     /**
      * Tests null argument
      *
-     * @access  public
      */
     #[@test]
     public function nullArgument() {
@@ -65,7 +61,6 @@
      * Tests xp::null() argument
      *
      * @see     xp://net.xp_framework.unittest.core.NullTest
-     * @access  public
      */
     #[@test]
     public function xpNullArgument() {
@@ -76,7 +71,6 @@
      * Tests numbers
      *
      * @see     xp://net.xp_framework.unittest.core.NullTest
-     * @access  public
      */
     #[@test]
     public function numericArgument() {
@@ -89,7 +83,6 @@
     /**
      * Tests an object argument
      *
-     * @access  public
      */
     #[@test]
     public function objectArgument() {
@@ -99,7 +92,6 @@
     /**
      * Tests simple array
      *
-     * @access  public
      */
     #[@test]
     public function simpleArrayArgument() {
@@ -112,7 +104,6 @@
     /**
      * Tests array of arrays
      *
-     * @access  public
      */
     #[@test]
     public function arrayOfArraysArgument() {
@@ -125,7 +116,6 @@
     /**
      * Tests simple array
      *
-     * @access  public
      */
     #[@test]
     public function hashmapArgument() {
@@ -142,7 +132,6 @@
     /**
      * Tests stdClass and Directory builtin classes in PHP
      *
-     * @access  public
      */
     #[@test]
     public function builtinObjectsArgument() {
@@ -153,7 +142,6 @@
     /**
      * Tests resource
      *
-     * @access  public
      */
     #[@test]
     public function resourceArgument() {
@@ -165,7 +153,6 @@
     /**
      * Tests recursion within an array
      *
-     * @access  public
      */
     #[@test]
     public function arrayRecursion() {
@@ -192,13 +179,12 @@ __
     /**
      * Tests recursion within an array
      *
-     * @access  public
      */
     #[@test]
     public function objectRecursion() {
       $o= new StdClass();
       $o->child= new StdClass();
-      $o->child->parent= &$o;
+      $o->child->parent= $o;
       $this->assertEquals(<<<__
 php.stdClass {
   child => php.stdClass {
@@ -221,11 +207,10 @@ __
      *   echo xp::stringOf(new MaliciousRecursionGenerator());
      * </code>
      *
-     * @access  public
      */
     #[@test]
     public function toStringRecursion() {
-      $test= &newinstance('lang.Object', array(), '{
+      $test= newinstance('lang.Object', array(), '{
         function toString() {
           return xp::stringOf($this);
         }
@@ -239,7 +224,6 @@ __
     /**
      * Test repeated xp::stringOf invokations on the same object
      *
-     * @access  public
      */
     #[@test]
     public function repeatedCalls() {

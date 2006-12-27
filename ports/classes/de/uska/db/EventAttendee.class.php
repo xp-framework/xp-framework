@@ -25,11 +25,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &EventAttendee::getPeer()); {
+      with ($peer= EventAttendee::getPeer()); {
         $peer->setTable('uska.event_attendee');
         $peer->setConnection('uskadb');
         $peer->setPrimary(array('event_id', 'player_id'));
@@ -48,24 +46,22 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "event_id_2"
      *
-     * @access  static
      * @param   int event_id
      * @param   int player_id
      * @return  &de.uska.db.EventAttendee object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByEvent_idPlayer_id($event_id, $player_id) {
-      $peer= &EventAttendee::getPeer();
+    public function getByEvent_idPlayer_id($event_id, $player_id) {
+      $peer= EventAttendee::getPeer();
       return array_shift($peer->doSelect(new Criteria(
         array('event_id', $event_id, EQUAL),
         array('player_id', $player_id, EQUAL)
@@ -75,33 +71,30 @@
     /**
      * Gets an instance of this object by index "event_id"
      *
-     * @access  static
      * @param   int event_id
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByEvent_id($event_id) {
-      $peer= &EventAttendee::getPeer();
+    public function getByEvent_id($event_id) {
+      $peer= EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "player_id"
      *
-     * @access  static
      * @param   int player_id
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByPlayer_id($player_id) {
-      $peer= &EventAttendee::getPeer();
+    public function getByPlayer_id($player_id) {
+      $peer= EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL)));
     }
 
     /**
      * Retrieves event_id
      *
-     * @access  public
      * @return  int
      */
     public function getEvent_id() {
@@ -111,7 +104,6 @@
     /**
      * Sets event_id
      *
-     * @access  public
      * @param   int event_id
      * @return  int the previous value
      */
@@ -122,7 +114,6 @@
     /**
      * Retrieves player_id
      *
-     * @access  public
      * @return  int
      */
     public function getPlayer_id() {
@@ -132,7 +123,6 @@
     /**
      * Sets player_id
      *
-     * @access  public
      * @param   int player_id
      * @return  int the previous value
      */
@@ -143,7 +133,6 @@
     /**
      * Retrieves attend
      *
-     * @access  public
      * @return  int
      */
     public function getAttend() {
@@ -153,7 +142,6 @@
     /**
      * Sets attend
      *
-     * @access  public
      * @param   int attend
      * @return  int the previous value
      */
@@ -164,7 +152,6 @@
     /**
      * Retrieves offers_seats
      *
-     * @access  public
      * @return  int
      */
     public function getOffers_seats() {
@@ -174,7 +161,6 @@
     /**
      * Sets offers_seats
      *
-     * @access  public
      * @param   int offers_seats
      * @return  int the previous value
      */
@@ -185,7 +171,6 @@
     /**
      * Retrieves needs_driver
      *
-     * @access  public
      * @return  int
      */
     public function getNeeds_driver() {
@@ -195,7 +180,6 @@
     /**
      * Sets needs_driver
      *
-     * @access  public
      * @param   int needs_driver
      * @return  int the previous value
      */
@@ -206,7 +190,6 @@
     /**
      * Retrieves lastchange
      *
-     * @access  public
      * @return  util.Date
      */
     public function getLastchange() {
@@ -216,7 +199,6 @@
     /**
      * Sets lastchange
      *
-     * @access  public
      * @param   util.Date lastchange
      * @return  util.Date the previous value
      */
@@ -227,7 +209,6 @@
     /**
      * Retrieves changedby
      *
-     * @access  public
      * @return  string
      */
     public function getChangedby() {
@@ -237,7 +218,6 @@
     /**
      * Sets changedby
      *
-     * @access  public
      * @param   string changedby
      * @return  string the previous value
      */

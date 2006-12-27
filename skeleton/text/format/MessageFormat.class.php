@@ -60,7 +60,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string f default NULL format string
      */
     public function __construct($f= NULL) {
@@ -79,34 +78,31 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.MessageFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('MessageFormat');
     }
   
     /**
      * Set a format handler for a special type
      *
-     * @access  public
      * @param   string alias
      * @param   &text.format.PrintfFormat formatter
      * @return  &text.format.PrintfFormat formatter
      * @throws  lang.IllegalArgumentException 
      */
-    public function &setFormatter($alias, &$formatter) {
+    public function setFormatter($alias, $formatter) {
       if (!is('IFormat', $formatter)) {
         throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
       }
-      $this->formatters[$alias]= &$formatter;
+      $this->formatters[$alias]= $formatter;
       return $this->formatters[$alias];
     }
     
     /**
      * Check whether a given formatter exists
      *
-     * @access  public
      * @param   string alias
      * @return  bool true in case the specified formatter exists, false otherwise
      */
@@ -117,18 +113,17 @@
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       static $instance;
       static $level= 0;
       
       if (FALSE === ($p= strpos($fmt, '{'))) return $fmt;
       if (!isset($instance)) {
-        $instance= &MessageFormat::getInstance();
+        $instance= MessageFormat::getInstance();
       }
       if (!is_array($argument)) $argument= array($argument);
       $level++;

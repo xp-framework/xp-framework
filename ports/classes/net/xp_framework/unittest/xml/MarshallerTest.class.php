@@ -23,7 +23,6 @@
      * expected and actual strings.
      *
      * @see     xp://unittest.TestCase#assertEquals
-     * @access  public
      * @param   string expect
      * @param   string actual
      * @return  bool
@@ -38,7 +37,6 @@
     /**
      * Tests the dialog's id member gets serialized as an id attribute
      *
-     * @access  public
      */
     #[@test]
     public function idAttribute() {
@@ -56,7 +54,6 @@
     /**
      * Tests the dialog's caption member gets serialized as a node
      *
-     * @access  public
      */
     #[@test]
     public function captionNode() {
@@ -74,18 +71,17 @@
     /**
      * Tests the dialog's buttons member gets serialized as a nodeset
      *
-     * @access  public
      */
     #[@test]
     public function buttonsNodeSet() {
       $dialog= new DialogType();
       $dialog->setCaption('Really delete the file "Ü"?');
 
-      with ($ok= &$dialog->addButton(new ButtonType())); {
+      with ($ok= $dialog->addButton(new ButtonType())); {
         $ok->setId('ok');
         $ok->setCaption('Yes, go ahead');
       }
-      with ($cancel= &$dialog->addButton(new ButtonType())); {
+      with ($cancel= $dialog->addButton(new ButtonType())); {
         $cancel->setId('cancel');
         $cancel->setCaption('No, please don\'t!');
       }
@@ -103,7 +99,6 @@
     /**
      * Tests for a new dialog without any members set
      *
-     * @access  public
      */
     #[@test]
     public function emptyMembers() {

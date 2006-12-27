@@ -38,7 +38,6 @@
     /**
      * Initialize this request object
      *
-     * @access  public
      */
     public function initialize() {
       parent::initialize();
@@ -51,7 +50,6 @@
     /**
      * Set Page
      *
-     * @access  public
      * @param   string page
      */
     public function setPage($page) {
@@ -61,7 +59,6 @@
     /**
      * Get Page
      *
-     * @access  public
      * @return  string
      */
     public function getPage() {
@@ -71,7 +68,6 @@
     /**
      * Gets state
      *
-     * @access  public
      * @return  string stateName
      */
     public function getStateName() {
@@ -81,7 +77,6 @@
     /**
      * Sets state
      *
-     * @access  public
      * @param   string stateName
      */
     public function setStateName($stateName) {
@@ -91,7 +86,6 @@
     /**
      * Gets product
      *
-     * @access  public
      * @return  string product
      */
     public function getProduct() {
@@ -101,7 +95,6 @@
     /**
      * Sets product
      *
-     * @access  public
      * @param   string product
      */
     public function setProduct($product) {
@@ -111,7 +104,6 @@
     /**
      * Gets language
      *
-     * @access  public
      * @return  string language
      */
     public function getLanguage() {
@@ -121,7 +113,6 @@
     /**
      * Sets Language
      *
-     * @access  public
      * @param   string language
      */
     public function setLanguage($language) {
@@ -131,7 +122,6 @@
     /**
      * Get session's Id
      *
-     * @access  public
      * @return  string session id
      */
     public function getSessionId() {

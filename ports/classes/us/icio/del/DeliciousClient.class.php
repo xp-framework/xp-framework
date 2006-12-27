@@ -41,7 +41,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string username from del.icio.us
      * @param   string password from del.icio.us
      */
@@ -56,7 +55,6 @@
     /**
      * Do del.icio.us-Request
      *
-     * @access  private
      * @param   string url of del.icio.us-request
      * @param   array param of del.icio.us-request
      * @return  string
@@ -78,7 +76,6 @@
     /**
      * Returns a list of dates with the number of posts at each date 
      *
-     * @access  public
      * @param   string tag filter by this tag
      * @return  string
      */  
@@ -94,7 +91,6 @@
     /**
      * Returns a list of tags the user has used
      *
-     * @access  public
      * @return  string
      */  
     public function getTags() {
@@ -106,7 +102,6 @@
     /**
      * Returns a list of posts on a given date, filtered by tag 
      *
-     * @access  public
      * @param   string tag filter by this tag
      * @param   &util.Date filter by this date - defaults to the most recent date
      * @return  string 
@@ -124,7 +119,6 @@
     /**
      * Returns a list of most recent posts
      *
-     * @access  public
      * @param   string tag filter by this tag
      * @param   string count - defaults to 15, max is 100
      * @return  string
@@ -142,7 +136,6 @@
     /**
      * Returns all posts
      *
-     * @access  public
      * @param   string tag filter by this tag
      * @return  string
      */
@@ -158,7 +151,6 @@
     /**
      * Returns the last update time for the user
      *
-     * @access  public
      * @return  string
      */
     public function getLastUpdateTime() {
@@ -170,7 +162,6 @@
     /**
      * Makes a post to delicious
      *
-     * @access  public
      * @param   string url url for post
      * @param   string description description for post
      * @param   string extended extended for post
@@ -194,7 +185,6 @@
     /**
      * Deletes a post from delicious
      *
-     * @access  public
      * @param   string url url for post
      * @return  string
      */
@@ -210,7 +200,6 @@
     /**
      * Renames a tag
      *
-     * @access  public
      * @param   string old old tag
      * @param   string new new tag
      * @return  string
@@ -228,7 +217,6 @@
     /**
      * Retrieves all bundles
      *
-     * @access  public
      * @return  string
      */
     public function getAllBundles() {
@@ -240,7 +228,6 @@
     /**
      * Assigns a set of tags to a single bundle, wipes away previous settings for bundle
      *
-     * @access  public
      * @param   string bundle bundle name
      * @param   string tags space-separated list of tags
      * @return  string
@@ -258,7 +245,6 @@
     /**
      * Deletes a bundle
      *
-     * @access  public
      * @param   string bundle bundle name
      * @return  string
      */

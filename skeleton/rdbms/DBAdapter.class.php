@@ -18,18 +18,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.DBConnection conn a database connection
      */
-    public function __construct(&$conn) {
-      $this->conn= &$conn;
+    public function __construct($conn) {
+      $this->conn= $conn;
       
     }
 
     /**
      * Get a table
      *
-     * @access  abstract
      * @param   string name
      */    
     public function getTable($name) {}
@@ -37,7 +35,6 @@
     /**
      * Get tables
      *
-     * @access  abstract
      * @param   string database
      */    
     public function getTables($database) {}
@@ -45,7 +42,6 @@
     /**
      * Get databaases
      *
-     * @access  abstract
      * @param   string name
      */    
     public function getDatabases() {}

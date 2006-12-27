@@ -54,44 +54,40 @@
     /**
      * Add a series of data
      *
-     * @access  public
      * @param   &img.graph.Series series
      * @return  &img.graph.Series
      */
-    public function &add(&$series) {
-      $this->series[]= &$series;
+    public function add($series) {
+      $this->series[]= $series;
       return $series;
     }
     
     /**
      * Sets chart's background color
      *
-     * @access  public
      * @param   &img.Color color
      */
-    public function setBackgroundColor(&$color) {
+    public function setBackgroundColor($color) {
       $this->setColor('background', $color);
     }
     
     /**
      * Set a color for a specified key
      *
-     * @access  public
      * @param   string key
      * @param   &img.Color color
      */
-    public function setColor($key, &$color) {
-      $this->colors[$key]= &$color;
+    public function setColor($key, $color) {
+      $this->colors[$key]= $color;
     }
     
     /**
      * Returns a color by a name
      *
-     * @access  public
      * @param   string key
      * @return  &img.Color
      */
-    public function &getColor($key) {
+    public function getColor($key) {
       if (!isset($this->colors[$key])) return new Color($this->theme[$key]);
       return $this->colors[$key];
     }
@@ -99,7 +95,6 @@
     /**
      * Sets series labels
      *
-     * @access public
      * @param string[] labels The series labels
      */
     public function setLabels($labels) {
@@ -109,7 +104,6 @@
     /**
      * Returns labels for series as array
      *
-     * @access public
      * @return string[]
      */
     public function getLabels() {
@@ -119,7 +113,6 @@
     /**
      * Sets grid on or off
      +
-     * @access public
      * @param bool gridlines Draw grid lines
      */
     public function setGridLines($gridlines) {
@@ -129,7 +122,6 @@
     /**
      * Returns if grid should be drawn or not
      *
-     * @access public
      * @return bool
      */
     public function getGridLines() {
@@ -139,7 +131,6 @@
     /**
      * Set flag to display a legend
      * 
-     * @access public
      * @param bool bool The flag
      */
     public function setDisplayLegend($bool) {
@@ -149,7 +140,6 @@
     /**
      * Returns the flag to display a legend
      *
-     * @access public
      * @return bool
      */
     public function getDisplayLegend() {
@@ -159,7 +149,6 @@
     /**
      * Set flag to display values
      *
-     * @access public
      * @return bool
      */
     public function getDisplayValues() {
@@ -169,7 +158,6 @@
     /**
      * Returns flag to display values
      *
-     * @access public
      * @param bool bool The flag
      */
     public function setDisplayValues($bool) {
@@ -179,7 +167,6 @@
     /**
      * Returns the number of elements in the longest series
      *
-     * @access  public
      * @return  int
      */
     public function count() {
@@ -193,7 +180,6 @@
     /**
      * Returns the number of series
      *
-     * @access public
      * @return int
      */
     public function seriesCount() {
@@ -203,7 +189,6 @@
     /**
      * Helper method which returns the largest value from all series
      *
-     * @access  public
      * @return  float
      */
     public function max() {
@@ -217,7 +202,6 @@
     /**
      * Helper method which returns the smallest value from all series
      *
-     * @access  public
      * @return  float
      */
     public function min() {

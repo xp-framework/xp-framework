@@ -19,7 +19,6 @@
     /**
      * Output an image
      *
-     * @access  protected
      * @param   resource handle
      * @return  bool
      */    

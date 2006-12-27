@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed input default NULL a string or a file object
      */
     public function __construct($input= NULL) {
@@ -44,7 +43,6 @@
      * Sets style for keywords
      * Keywords are: string, comment, keyword, default, html, variable
      *
-     * @access  public
      * @param   string what one of the keywords listed above
      * @param   string style anything which will work within style="??????"
      */
@@ -56,7 +54,6 @@
     /**
      * Sets style for strings
      *
-     * @access  public
      * @param   string style
      * @see     #setStyle
      */
@@ -67,7 +64,6 @@
     /**
      * Sets style for comments
      *
-     * @access  public
      * @param   string style
      * @see     #setStyle
      */
@@ -78,7 +74,6 @@
     /**
      * Sets style for keywords
      *
-     * @access  public
      * @param   string style
      * @see     #setStyle
      */
@@ -89,7 +84,6 @@
     /**
      * Sets default Style
      *
-     * @access  public
      * @param   string Style
      * @see     #setStyle
      */
@@ -100,7 +94,6 @@
     /**
      * Sets style for HTML 
      *
-     * @access  public
      * @param   string style
      * @see     #setStyle
      */
@@ -112,7 +105,6 @@
      * Sets sourcecode string to higlight. Will require the leading
      * <?php and an ?> at the end.
      *
-     * @access  public
      * @param   string source 
      */
     public function setSource($source) {
@@ -122,11 +114,10 @@
     /**
      * Sets file to highlight
      *
-     * @access  public
      * @param   io.File file
      * @throws  io.IOException
      */    
-    public function setFile(&$file) {
+    public function setFile($file) {
       $file->open(FILE_MODE_READ);
       $this->source= $file->read($file->size());
       $file->close();
@@ -137,7 +128,6 @@
      * is replaced by &#160;. The deprecated <font>-Tag is replaced
      * by 
      *
-     * @access  public
      * @return  string highlighted source
      */
     public function getHighlight() {

@@ -35,7 +35,6 @@
     /**
      * Adds a chunk
      *
-     * @access  public
      * @param   string chunk
      */
     public function addChunk($chunk) {
@@ -45,7 +44,6 @@
     /**
      * Get's the ith chunk.
      *
-     * @access  public
      * @param   int i
      * @return  string
      */
@@ -56,7 +54,6 @@
     /**
      * Set Identifier
      *
-     * @access  public
      * @param   string identifier
      */
     public function setIdentifier($identifier) {
@@ -66,7 +63,6 @@
     /**
      * Get Identifier
      *
-     * @access  public
      * @return  string
      */
     public function getIdentifier() {
@@ -76,7 +72,6 @@
     /**
      * Set Version
      *
-     * @access  public
      * @param   int version
      */
     public function setVersion($version) {
@@ -86,7 +81,6 @@
     /**
      * Get Version
      *
-     * @access  public
      * @return  int
      */
     public function getVersion() {
@@ -96,7 +90,6 @@
     /**
      * Set Length
      *
-     * @access  public
      * @param   int length
      */
     public function setLength($length) {
@@ -106,7 +99,6 @@
     /**
      * Get Length
      *
-     * @access  public
      * @return  int
      */
     public function getLength() {
@@ -116,7 +108,6 @@
     /**
      * Set Chunk_size
      *
-     * @access  public
      * @param   int chunk_size
      */
     public function setChunk_size($chunk_size) {
@@ -126,7 +117,6 @@
     /**
      * Get Chunk_size
      *
-     * @access  public
      * @return  int
      */
     public function getChunk_size() {
@@ -136,7 +126,6 @@
     /**
      * Set Density
      *
-     * @access  public
      * @param   int density
      */
     public function setDensity($density) {
@@ -146,7 +135,6 @@
     /**
      * Get Density
      *
-     * @access  public
      * @return  int
      */
     public function getDensity() {
@@ -156,7 +144,6 @@
     /**
      * Set Depth
      *
-     * @access  public
      * @param   int depth
      */
     public function setDepth($depth) {
@@ -166,7 +153,6 @@
     /**
      * Get Depth
      *
-     * @access  public
      * @return  int
      */
     public function getDepth() {
@@ -176,7 +162,6 @@
     /**
      * Set Rootindex_chunk
      *
-     * @access  public
      * @param   int rootindex_chunk
      */
     public function setRootindex_chunk($rootindex_chunk) {
@@ -186,7 +171,6 @@
     /**
      * Get Rootindex_chunk
      *
-     * @access  public
      * @return  int
      */
     public function getRootindex_chunk() {
@@ -196,7 +180,6 @@
     /**
      * Set First_pmgl
      *
-     * @access  public
      * @param   int first_pmgl
      */
     public function setFirst_pmgl($first_pmgl) {
@@ -206,7 +189,6 @@
     /**
      * Get First_pmgl
      *
-     * @access  public
      * @return  int
      */
     public function getFirst_pmgl() {
@@ -216,7 +198,6 @@
     /**
      * Set Last_pmgl
      *
-     * @access  public
      * @param   int last_pmgl
      */
     public function setLast_pmgl($last_pmgl) {
@@ -226,7 +207,6 @@
     /**
      * Get Last_pmgl
      *
-     * @access  public
      * @return  int
      */
     public function getLast_pmgl() {
@@ -236,7 +216,6 @@
     /**
      * Set Num_chunks
      *
-     * @access  public
      * @param   int num_chunks
      */
     public function setNum_chunks($num_chunks) {
@@ -246,7 +225,6 @@
     /**
      * Get Num_chunks
      *
-     * @access  public
      * @return  int
      */
     public function getNum_chunks() {
@@ -256,7 +234,6 @@
     /**
      * Set Lang
      *
-     * @access  public
      * @param   int lang
      */
     public function setLang($lang) {
@@ -266,7 +243,6 @@
     /**
      * Get Lang
      *
-     * @access  public
      * @return  int
      */
     public function getLang() {
@@ -276,7 +252,6 @@
     /**
      * Set Guid
      *
-     * @access  public
      * @param   string guid
      */
     public function setGuid($guid) {
@@ -286,7 +261,6 @@
     /**
      * Get Guid
      *
-     * @access  public
      * @return  string
      */
     public function getGuid() {
@@ -296,7 +270,6 @@
     /**
      * Set Ext
      *
-     * @access  public
      * @param   mixed[] ext
      */
     public function setExt($ext) {
@@ -306,7 +279,6 @@
     /**
      * Get Ext
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getExt() {

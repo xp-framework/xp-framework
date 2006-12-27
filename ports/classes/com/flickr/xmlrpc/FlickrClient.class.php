@@ -27,7 +27,6 @@
     /**
      * Set ApiKey
      *
-     * @access  public
      * @param   string apiKey
      */
     public function setApiKey($apiKey) {
@@ -37,7 +36,6 @@
     /**
      * Get ApiKey
      *
-     * @access  public
      * @return  string
      */
     public function getApiKey() {
@@ -47,7 +45,6 @@
     /**
      * Set SharedKey
      *
-     * @access  public
      * @param   string sharedKey
      */
     public function setSharedKey($sharedKey) {
@@ -57,7 +54,6 @@
     /**
      * Get SharedKey
      *
-     * @access  public
      * @return  string
      */
     public function getSharedKey() {
@@ -67,7 +63,6 @@
     /**
      * Calculates the signature for the given argument array
      *
-     * @access  public
      * @param   mixed<string,string> arguments[]
      * @return  mixed<string,string>
      */
@@ -86,23 +81,21 @@
     /**
      * Unserializes xml data
      *
-     * @access  public
      * @param   string xml
      * @return  mixed
      */
     public function unserialize($xml) {
-      $tree= &Tree::fromString('<?xml version="1.0" encoding="utf-8"?><data>'.$xml.'</data>');
+      $tree= Tree::fromString('<?xml version="1.0" encoding="utf-8"?><data>'.$xml.'</data>');
       return $this->_recurse($tree->root);
     }    
     
     /**
      * Recurses the tree
      *
-     * @access  protected
      * @param   &xml.Node node
      * @return  mixed
      */
-    public function _recurse(&$node) {
+    public function _recurse($node) {
       if (sizeof($node->children)) {
         $ret= array();
         foreach ($node->children as $index => $value) {
@@ -127,7 +120,6 @@
     /**
      * Invoke a method on Flickr
      *
-     * @access  public
      * @param   mixed*
      * @return  mixed
      */
@@ -153,7 +145,6 @@
      * Invoke a method on Flickr, the response is being deserialized
      * into the given expected class.
      *
-     * @access  public
      * @param   string method
      * @param   mixed args[]
      * @param   string expect
@@ -171,7 +162,7 @@
         throw($e);
       }
       
-      $return= &Unmarshaller::unmarshal($res[0], $expect);
+      $return= Unmarshaller::unmarshal($res[0], $expect);
       $return->setClient($this);
       return $return;
     }
@@ -179,10 +170,9 @@
     /**
      * Fetch interestingness package
      *
-     * @access  public
      * @return  &com.flickr.api.FlickrInterestingness
      */
-    public function &getInterestingnessInterface() {
+    public function getInterestingnessInterface() {
       $if= new FlickrInterestingness();
       $if->setClient($this);
       return $if;

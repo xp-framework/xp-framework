@@ -37,7 +37,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name cookie name
      * @param   string value default ''
      * @param   mixed expires default 0 the UNIX timestamp on which this cookie expires de
@@ -62,7 +61,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -72,7 +70,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -82,7 +79,6 @@
     /**
      * Set Value
      *
-     * @access  public
      * @param   string value
      */
     public function setValue($value) {
@@ -92,7 +88,6 @@
     /**
      * Get Value
      *
-     * @access  public
      * @return  string
      */
     public function getValue() {
@@ -102,7 +97,6 @@
     /**
      * Set Secure
      *
-     * @access  public
      * @param   bool secure
      */
     public function setSecure($secure) {
@@ -114,7 +108,6 @@
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
      *
-     * @access  public
      * @return  bool
      */
     public function getSecure() {
@@ -124,7 +117,6 @@
     /**
      * Set Domain
      *
-     * @access  public
      * @param   string domain
      */
     public function setDomain($domain) {
@@ -136,7 +128,6 @@
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
      *
-     * @access  public
      * @return  string
      */
     public function getDomain() {
@@ -146,7 +137,6 @@
     /**
      * Set Path
      *
-     * @access  public
      * @param   string path
      */
     public function setPath($path) {
@@ -158,7 +148,6 @@
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
      *
-     * @access  public
      * @return  string
      */
     public function getPath() {
@@ -168,7 +157,6 @@
     /**
      * Set Expires
      *
-     * @access  public
      * @param   int expires
      */
     public function setExpires($expires) {
@@ -183,7 +171,6 @@
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
      *
-     * @access  public
      * @return  int
      */
     public function getExpires() {
@@ -193,7 +180,6 @@
     /**
      * Get header value representation
      *
-     * @access  public
      * @return  string value
      */
     public function getHeaderValue() {
@@ -210,7 +196,6 @@
     /**
      * Create string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

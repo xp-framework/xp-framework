@@ -34,7 +34,6 @@
      * is needed and not send a body.
      *
      * @see     scriptlet.HttpScriptlet#doCreateSession
-     * @access  public
      * @param   string target an absolute URI
      */
     public function sendRedirect($location) {
@@ -48,7 +47,6 @@
      *
      * @see     http://httpd.apache.org/docs/howto/auth.html
      * @see     rfc://2617
-     * @access  public
      * @param   string realm default 'Restricted area'
      */
     public function sendBasicAuthenticate($realm= 'Restricted area') {
@@ -66,7 +64,6 @@
      *   $response->setHeader('X-Binford', '6100 (more power)');
      * </code>
      *
-     * @access  public
      * @param   string name header name
      * @param   string value header value
      */
@@ -77,7 +74,6 @@
     /**
      * Sets the length of the content body in the response. 
      *
-     * @access  public
      * @param   int len
      */
     public function setContentLength($len) {
@@ -90,7 +86,6 @@
      * type may include a character encoding specification, for example, 
      * text/html; charset=UTF-8.
      *
-     * @access  public
      * @param   string type
      */
     public function setContentType($type) {
@@ -106,17 +101,15 @@
      *   $response->setCookie(new Cookie('lastvisit', date('Y-m-d')));
      * </code>
      *
-     * @access  public
      * @param   &scriptlet.Cookie cookie
      */
-    public function setCookie(&$cookie) {
+    public function setCookie($cookie) {
       $this->headers[]= 'Set-Cookie: '.$cookie->getHeaderValue();
     }
     
     /**
      * Sets status code
      *
-     * @access  public
      * @param   int sc statuscode
      * @see     rfc://2616#10
      */
@@ -129,7 +122,6 @@
      * to the client. In that case, one cannot trigger sending
      * of any header again.
      *
-     * @access  public
      * @return  bool
      */
     public function headersSent() {
@@ -142,7 +134,6 @@
      * 
      * Headers spanning multiple lines will be transformed to confirm
      *
-     * @access  public
      * @throws  lang.IllegalStateException if headers have already been sent
      */  
     public function sendHeaders() {
@@ -179,7 +170,6 @@
      * for relocates).
      *
      * @see     scriptlet.xml.XMLScriptletResponse#process
-     * @access  public
      */    
     public function process() {
     }
@@ -188,7 +178,6 @@
      * Sends content to STDOUT (which, on a webserver, is equivalent
      * to "send data to client").
      *
-     * @access  public
      */
     public function sendContent() {
       echo $this->getContent();
@@ -197,7 +186,6 @@
     /**
      * Adds content to this response
      *
-     * @access  public
      * @param   string s string to add to the content
      */
     public function write($s) {
@@ -207,7 +195,6 @@
     /**
      * Sets content
      *
-     * @access  public
      * @param   string content Content
      */
     public function setContent($content) {
@@ -217,7 +204,6 @@
     /**
      * Returns content
      *
-     * @access  public
      * @return  string Content
      */
     public function getContent() {

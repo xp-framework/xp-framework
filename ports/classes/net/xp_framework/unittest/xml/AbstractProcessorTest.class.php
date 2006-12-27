@@ -22,7 +22,6 @@
      * expected and actual strings.
      *
      * @see     xp://unittest.TestCase#assertEquals
-     * @access  protected
      * @param   string expect
      * @param   string actual
      * @throws  unittest.AssertionFailedError
@@ -37,8 +36,6 @@
     /**
      * Returns the PHP extension needed for this processor test to work
      *
-     * @model   abstract
-     * @access  protected
      * @return  string
      */
     public function neededExtension() { }
@@ -46,17 +43,13 @@
     /**
      * Returns the XSL processor instance to be used
      *
-     * @model   abstract
-     * @access  protected
      * @return  &xml.IXSLProcessor
      */
-    public function &processorInstance() { }
+    public function processorInstance() { }
 
     /**
      * Returns the XSL processor's default output charset
      *
-     * @model   abstract
-     * @access  protected
      * @return  string
      */
     public function processorCharset() { }
@@ -64,21 +57,19 @@
     /**
      * Tests 
      *
-     * @access  public
      * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() {
       if (!extension_loaded($ext= $this->neededExtension())) {
         throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
       }
-      $this->processor= &$this->processorInstance();
+      $this->processor= $this->processorInstance();
       $this->xmlDeclaration= '<?xml version="1.0" encoding="'.$this->processorCharset().'"?>';
     }
 
     /**
      * Tests the setParam() and getParam() methods
      *
-     * @access  public
      */
     #[@test]
     public function paramAccessors() {
@@ -89,7 +80,6 @@
     /**
      * Tests the setBase() and getBase() methods
      *
-     * @access  public
      */
     #[@test]
     public function baseAccessors() {
@@ -101,7 +91,6 @@
     /**
      * Tests the setBase() adds trailing DIRECTORY_SEPARATOR
      *
-     * @access  public
      */
     #[@test]
     public function setBaseAddsTrailingDirectorySeparator() {
@@ -113,7 +102,6 @@
     /**
      * Tests the setParams() methods
      *
-     * @access  public
      */
     #[@test]
     public function setParams() {
@@ -130,7 +118,6 @@
     /**
      * Tests a transformation that will result in an empty result
      *
-     * @access  public
      */
     #[@test]
     public function transformationWithEmptyResult() {
@@ -147,7 +134,6 @@
     /**
      * Tests a transformation
      *
-     * @access  public
      */
     #[@test]
     public function transformationWithResult() {
@@ -167,7 +153,6 @@
     /**
      * Tests a transformation with parameters
      *
-     * @access  public
      */
     #[@test]
     public function transformationWithParameter() {
@@ -189,7 +174,6 @@
     /**
      * Tests a transformation with parameters
      *
-     * @access  public
      */
     #[@test]
     public function transformationWithParameters() {
@@ -215,7 +199,6 @@
     /**
      * Tests a transformation with malformed XML
      *
-     * @access  public
      */
     #[@test, @expect('xml.TransformerException')]
     public function malformedXML() {
@@ -227,7 +210,6 @@
     /**
      * Tests a transformation with malformed XSL
      *
-     * @access  public
      */
     #[@test, @expect('xml.TransformerException')]
     public function malformedXSL() {

@@ -17,8 +17,6 @@
     /**
      * Calculate HMAC_MD5 for given string (and key, if specified)
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @param   string key default NULL
      * @return  string
@@ -40,24 +38,22 @@
     /**
      * Create a new checksum from a string
      *
-     * @access  public
      * @param   string str
      * @param   string key default NULL
      * @return  &security.checksum.HMAC_MD5
      */
-    public function &fromString($str, $key= NULL) {
+    public function fromString($str, $key= NULL) {
       return new HMAC_MD5(HMAC_MD5::hash($str, $key));
     }
 
     /**
      * Create a new checksum from a file object
      *
-     * @access  public
      * @param   &io.File file
      * @param   string key default NULL
      * @return  &security.checksum.HMAC_MD5
      */
-    public function &fromFile(&$file, $key= NULL) {
+    public function fromFile($file, $key= NULL) {
       try {
         $file->open(FILE_MODE_READ);
         $str= $file->read($file->size());

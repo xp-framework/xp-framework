@@ -34,7 +34,6 @@
     /**
      * Embed the given arguments into the format string.
      *
-     * @access  public
      * @param   string fmt
      * @param   mixed[] args
      * @return  string
@@ -88,7 +87,6 @@
     /**
      * Prepare a value for insertion with a given type.
      *
-     * @access  public
      * @param   string type
      * @param   mixed var
      * @return  string
@@ -125,7 +123,6 @@
     /**
      * Set date format
      *
-     * @access  public
      * @param   string format
      */
     public function setDateFormat($format) {
@@ -135,7 +132,6 @@
     /**
      * Set date format
      *
-     * @access  public
      * @param   array<String,String> rules
      */
     public function setEscapeRules($rules) {
@@ -145,7 +141,6 @@
     /**
      * Sets the escaping character.
      *
-     * @access  public
      * @param   string escape
      */
     public function setEscape($escape) {
@@ -155,7 +150,6 @@
     /**
      * Format a number
      *
-     * @access  public
      * @param   mixed arg
      * @return  string
      */

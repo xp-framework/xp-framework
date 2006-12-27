@@ -32,7 +32,6 @@
     /**
      * Returns an array of valid options
      *
-     * @access  public
      * @return  array
      */
     public function validOptions() {
@@ -50,16 +49,16 @@
      * Run Doclet
      *
      */
-    public function start(&$root) {  
+    public function start($root) {  
       // test hasNext()?
 
       while ($root->classes->hasNext()) {
-        $ClassDoc= &$root->classes->next();
+        $ClassDoc= $root->classes->next();
         $classnames[]= $ClassDoc->qualifiedName();
       }
 
       // generate diagram via DiaMarshaller
-      $Dia= &DiaMarshaller::marshal(
+      $Dia= DiaMarshaller::marshal(
         $classnames, 
         $root->option('recurse', 0), 
         $root->option('depend', FALSE)

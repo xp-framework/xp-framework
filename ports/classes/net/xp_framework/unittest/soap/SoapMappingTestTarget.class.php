@@ -19,7 +19,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string string default ''
      * @param   integer integer default 0
      */
@@ -31,7 +30,6 @@
     /**
      * Set String
      *
-     * @access  public
      * @param   string string
      */
     public function setString($string) {
@@ -41,7 +39,6 @@
     /**
      * Get String
      *
-     * @access  public
      * @return  string
      */
     public function getString() {
@@ -51,7 +48,6 @@
     /**
      * Set Integer
      *
-     * @access  public
      * @param   int integer
      */
     public function setInteger($integer) {
@@ -61,7 +57,6 @@
     /**
      * Get Integer
      *
-     * @access  public
      * @return  int
      */
     public function getInteger() {

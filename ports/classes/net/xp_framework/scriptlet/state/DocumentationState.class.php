@@ -19,11 +19,10 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
     }
   }
 ?>

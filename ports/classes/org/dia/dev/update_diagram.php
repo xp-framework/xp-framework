@@ -10,7 +10,7 @@
     'org.dia.UpdateVisitor'
   );
 
-  $P= &new ParamString();
+  $P= new ParamString();
   $diagram= $P->value(1);
   if (!file_exists($diagram)) {
     Console::writeLine("You need to specify an existing dia diagram file as first parameter!");
@@ -18,17 +18,17 @@
   }
 
   // parse diagram
-  try (); {
-    $Dia= &DiaUnmarshaller::unmarshal($diagram);
-  } if (catch('Exception', $e)) {
+  try {
+    $Dia= DiaUnmarshaller::unmarshal($diagram);
+  } catch (Exception $e) {
     $e->printStackTrace();
     exit(-1);
   }
 
   // visitor that updates all existing classes in the diagram
-  try (); {
-    $V= &new UpdateVisitor(array(), FALSE, TRUE);
-  } if (catch('Exception', $e)) {
+  try {
+    $V= new UpdateVisitor(array(), FALSE, TRUE);
+  } catch (Exception $e) {
     $e->printStackTrace();
     exit(-1);
   }

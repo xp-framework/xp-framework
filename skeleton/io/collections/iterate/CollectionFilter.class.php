@@ -16,18 +16,16 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       return is('io.collections.IOCollection', $element);
     }
 
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

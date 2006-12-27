@@ -28,8 +28,6 @@
     /**
      * Encode string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */
@@ -56,8 +54,6 @@
     /**
      * Decode uuencoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */

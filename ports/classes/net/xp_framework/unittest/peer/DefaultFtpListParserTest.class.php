@@ -23,7 +23,6 @@
     /**
      * Setup this testcase
      *
-     * @access  public
      */
     public function setUp() {
       $this->fixture= new DefaultFtpListParser();
@@ -32,11 +31,10 @@
     /**
      * Test directory
      *
-     * @access  public
      */
     #[@test]
     public function dotDirectory() {
-      $e= &$this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .');
+      $e= $this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .');
 
       $this->assertSubclass($e, 'peer.ftp.FtpDir') &&
       $this->assertEquals('.', $e->getName()) &&
@@ -51,11 +49,10 @@
     /**
      * Test file
      *
-     * @access  public
      */
     #[@test]
     public function regularFile() {
-      $e= &$this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html');
+      $e= $this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 write.html');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
       $this->assertEquals('write.html', $e->getName()) &&
@@ -70,11 +67,10 @@
     /**
      * Test file
      *
-     * @access  public
      */
     #[@test]
     public function whitespaceInFileName() {
-      $e= &$this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 answer me.html');
+      $e= $this->fixture->entryFrom('-rw----r-- 1 p159995 ftpusers 415 May 23 2000 answer me.html');
 
       $this->assertSubclass($e, 'peer.ftp.FtpEntry') &&
       $this->assertEquals('answer me.html', $e->getName()) &&

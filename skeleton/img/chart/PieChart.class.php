@@ -20,7 +20,6 @@
     /**
      * Helper method which returns the sum from all values
      *
-     * @access  public
      * @return  float
      */
     public function sum() {
@@ -34,7 +33,6 @@
     /**
      * Sets inset for the specified item
      *
-     * @access public
      * @param int item The item index
      */
     public function setValueInset($item, $inset= 10) {
@@ -44,7 +42,6 @@
     /**
      * Returns the inset for the specified item
      *
-     * @access public
      * @param int item The item index
      * @return int
      */

@@ -18,22 +18,20 @@
     /**
      * Get an instance
      *
-     * @access  public
      * @return  &text.format.PrintfFormat
      */
-    public function &getInstance() {
+    public function getInstance() {
       return parent::getInstance('PrintfFormat');
     }  
   
     /**
      * Apply format to argument
      *
-     * @access  public
      * @param   mixed fmt
      * @param   &mixed argument
      * @return  string
      */
-    public function apply($fmt, &$argument) {
+    public function apply($fmt, $argument) {
       switch (gettype($argument)) {
         case 'array':
           return vsprintf($fmt, array_values($argument));

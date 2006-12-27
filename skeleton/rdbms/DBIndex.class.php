@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string[] keys an array of keys this index is composed of
      */
@@ -31,7 +30,6 @@
     /**
      * Return whether this is the primary key
      *
-     * @access  public
      * @return  bool TRUE when this key is the primary key
      */
     public function isPrimaryKey() {
@@ -41,7 +39,6 @@
     /**
      * Return whether this index is unique
      *
-     * @access  public
      * @return  bool TRUE when this is a unique index
      */
     public function isUnique() {
@@ -51,7 +48,6 @@
     /**
      * Return this index' name
      *
-     * @access  public
      * @return  string name
      */
     public function getName() {
@@ -61,7 +57,6 @@
     /**
      * Returns all keys
      *
-     * @access  public
      * @return  string[] keys
      */
     public function getKeys() {

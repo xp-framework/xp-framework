@@ -28,7 +28,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -38,7 +37,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -48,7 +46,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -58,7 +55,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -68,20 +64,18 @@
     /**
      * Set CreatedAt
      *
-     * @access  public
      * @param   &util.Date createdAt
      */
-    public function setCreatedAt(&$createdAt) {
-      $this->createdAt= &$createdAt;
+    public function setCreatedAt($createdAt) {
+      $this->createdAt= $createdAt;
     }
 
     /**
      * Get CreatedAt
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getCreatedAt() {
+    public function getCreatedAt() {
       return $this->createdAt;
     }
     
@@ -89,17 +83,15 @@
      * Get date
      *
      * @see     xp://de.thekid.dialog.IEntry
-     * @access  public
      * @return  &util.Date
      */
-    public function &getDate() {
+    public function getDate() {
       return $this->createdAt;
     }
 
     /**
      * Set Description
      *
-     * @access  public
      * @param   string description
      */
     public function setDescription($description) {
@@ -109,7 +101,6 @@
     /**
      * Get Description
      *
-     * @access  public
      * @return  string
      */
     public function getDescription() {
@@ -119,12 +110,11 @@
     /**
      * Add an element to highlights
      *
-     * @access  public
      * @param   &de.thekid.dialog.AlbumImage highlight
      * @return  &de.thekid.dialog.AlbumImage the added highlight
      */
-    public function &addHighlight(&$highlight) {
-      $this->highlights[]= &$highlight;
+    public function addHighlight($highlight) {
+      $this->highlights[]= $highlight;
       return $highlight;
     }
 
@@ -132,11 +122,10 @@
      * Get one highlight element by position. Returns NULL if the element 
      * can not be found.
      *
-     * @access  public
      * @param   int i
      * @return  &de.thekid.dialog.AlbumImage
      */
-    public function &highlightAt($i) {
+    public function highlightAt($i) {
       if (!isset($this->highlights[$i])) return NULL;
       return $this->highlights[$i];
     }
@@ -144,7 +133,6 @@
     /**
      * Get number of highlights
      *
-     * @access  public
      * @return  int
      */
     public function numHighlights() {
@@ -154,12 +142,11 @@
     /**
      * Add an element to chapters
      *
-     * @access  public
      * @param   &de.thekid.dialog.AlbumChapter chapter
      * @return  &de.thekid.dialog.AlbumChapter the added chapter
      */
-    public function &addChapter(&$chapter) {
-      $this->chapters[]= &$chapter;
+    public function addChapter($chapter) {
+      $this->chapters[]= $chapter;
       return $chapter;
     }
 
@@ -167,11 +154,10 @@
      * Get one chapter element by position. Returns NULL if the element 
      * can not be found.
      *
-     * @access  public
      * @param   int i
      * @return  &de.thekid.dialog.AlbumChapter
      */
-    public function &chapterAt($i) {
+    public function chapterAt($i) {
       if (!isset($this->chapters[$i])) return NULL;
       return $this->chapters[$i];
     }
@@ -179,7 +165,6 @@
     /**
      * Get number of chapters
      *
-     * @access  public
      * @return  int
      */
     public function numChapters() {
@@ -189,7 +174,6 @@
     /**
      * Get number of images (highlights excluded)
      *
-     * @access  public
      * @return  int
      */
     public function numImages() {
@@ -203,7 +187,6 @@
     /**
      * Retrieve a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

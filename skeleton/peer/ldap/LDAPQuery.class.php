@@ -28,7 +28,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string base
      * @param   mixed[] args
      */
@@ -43,7 +42,6 @@
      * Format the query as requested by the format identifiers. Values are escaped
      * approriately, so they're safe to use in the query.
      *
-     * @access  protected
      * @param   mixed[] args
      * @return  string filter
      */
@@ -100,7 +98,6 @@
     /**
      * Prepare a query statement.
      *
-     * @access  public
      * @param   mixed[] args
      * @return  string
      */
@@ -112,7 +109,6 @@
     /**
      * Set Filter
      *
-     * @access  public
      * @param   string filter
      */
     public function setFilter() {
@@ -123,7 +119,6 @@
     /**
      * Get Filter
      *
-     * @access  public
      * @return  string
      */
     public function getFilter() {
@@ -133,7 +128,6 @@
     /**
      * Set Scope
      *
-     * @access  public
      * @param   int scope
      */
     public function setScope($scope) {
@@ -143,7 +137,6 @@
     /**
      * Get Scope
      *
-     * @access  public
      * @return  string
      */
     public function getScope() {
@@ -153,7 +146,6 @@
     /**
      * Set Base
      *
-     * @access  public
      * @param   mixed[] args
      */
     public function setBase() {
@@ -164,7 +156,6 @@
     /**
      * Get Base
      *
-     * @access  public
      * @return  string
      */
     public function getBase() {
@@ -174,7 +165,6 @@
     /**
      * Checks whether query has a base specified.
      *
-     * @access  public
      * @return  bool 
      */
     public function hasBase() {
@@ -184,7 +174,6 @@
     /**
      * Set Attrs
      *
-     * @access  public
      * @param   mixed[] attrs
      */
     public function setAttrs($attrs) {
@@ -194,7 +183,6 @@
     /**
      * Get Attrs
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getAttrs() {
@@ -206,7 +194,6 @@
      * attrs-array is empty, this returns FALSE. If one element is
      * in it at least, it returns TRUE.
      *
-     * @access  public
      * @return  bool attrsonly
      */
     public function getAttrsOnly() {
@@ -216,7 +203,6 @@
     /**
      * Set Sizelimit
      *
-     * @access  public
      * @param   int sizelimit
      */
     public function setSizelimit($sizelimit) {
@@ -226,7 +212,6 @@
     /**
      * Get Sizelimit
      *
-     * @access  public
      * @return  int
      */
     public function getSizelimit() {
@@ -236,7 +221,6 @@
     /**
      * Set Timelimit
      *
-     * @access  public
      * @param   int timelimit
      */
     public function setTimelimit($timelimit) {
@@ -246,7 +230,6 @@
     /**
      * Get Timelimit
      *
-     * @access  public
      * @return  int
      */
     public function getTimelimit() {
@@ -259,7 +242,6 @@
      * place at all.
      *
      * @see     php://ldap_sort
-     * @access  public
      * @param   string[] sort array of fields to sort with
      */
     public function setSort($sort) {
@@ -269,7 +251,6 @@
     /**
      * Get sort
      *
-     * @access  public
      * @return  array sort
      */
     public function getSort() {
@@ -279,7 +260,6 @@
     /**
      * Set Deref
      *
-     * @access  public
      * @param   bool deref
      */
     public function setDeref($deref) {
@@ -289,7 +269,6 @@
     /**
      * Get Deref
      *
-     * @access  public
      * @return  bool
      */
     public function getDeref() {
@@ -299,7 +278,6 @@
     /**
      * Return a nice string representation of this object.
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

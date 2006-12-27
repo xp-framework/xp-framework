@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string value default NULL
      */
@@ -33,7 +32,6 @@
     /**
      * Set Name
      *
-     * @access  public
      * @param   string name The name
      */
     public function setName($name) {
@@ -43,7 +41,6 @@
     /**
      * Get Name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -53,7 +50,6 @@
     /**
      * Set Value
      *
-     * @access  public
      * @param   mixed value The value
      */
     public function setValue($value) {
@@ -63,7 +59,6 @@
     /**
      * Get Value
      *
-     * @access  public
      * @return  mixed
      */
     public function getValue() {
@@ -73,7 +68,6 @@
     /**
      * Set namespace name (e.g. http://apache.org/dav/props/)
      *
-     * @access  public
      * @param   string namespace Namespace
      */
     public function setNamespaceName($namespace) {
@@ -83,7 +77,6 @@
     /**
      * Get Namespace
      *
-     * @access  public
      * @return  string
      */
     public function getNamespaceName() {
@@ -93,7 +86,6 @@
     /**
      * Set namespace prefix (e.g. ns1)
      *
-     * @access public
      * @param  string prefix The namespace prefix
      */
     public function setNamespacePrefix($prefix) {
@@ -103,7 +95,6 @@
     /**
      * Get namespace prefix
      *
-     * @access public
      * @return string
      */
     public function getNamespacePrefix() {
@@ -113,7 +104,6 @@
     /**
      * Set Protected
      *
-     * @access  public
      * @param   bool protected
      */
     public function setProtected($protected) {
@@ -123,7 +113,6 @@
     /**
      * Get Protected
      *
-     * @access  public
      * @return  bool
      */
     public function getProtected() {
@@ -133,7 +122,6 @@
     /**
      * Return property's attributes
      *
-     * @access  public
      * @return  array[]
      */
     public function getAttributes() {
@@ -143,7 +131,6 @@
     /**
      * Convert value to valid string
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

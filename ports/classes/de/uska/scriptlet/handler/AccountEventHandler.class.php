@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct();
@@ -29,33 +28,31 @@
     /**
      * Retrieve identifier.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  string
      */
-    public function identifierFor(&$request, &$context) {
+    public function identifierFor($request, $context) {
       return $this->name.'#'.$request->getParam('event_id');
     }
     
     /**
      * Setup handler.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function setup(&$request, &$context) {
+    public function setup($request, $context) {
       if (!$context->hasPermission('edit_points')) return FALSE;
-      $cm= &ConnectionManager::getInstance();
+      $cm= ConnectionManager::getInstance();
       
       $event_id= $request->getParam('event_id');
       
       try {
-        $db= &$cm->getByHost('uska', 0);
+        $db= $cm->getByHost('uska', 0);
         
-        $query= &$db->query('
+        $query= $db->query('
           select
             p.player_id,
             p.firstname,
@@ -94,17 +91,16 @@
     /**
      * Handle submitted data.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
-      $cm= &ConnectionManager::getInstance();
+    public function handleSubmittedData($request, $context) {
+      $cm= ConnectionManager::getInstance();
       try {
-        $db= &$cm->getByHost('uska', 0);
+        $db= $cm->getByHost('uska', 0);
         
-        $transaction= &$db->begin(new Transaction('updpoints'));
+        $transaction= $db->begin(new Transaction('updpoints'));
         
         $submitted= $request->getParam('points');
         foreach ($this->getValue('players') as $p) {
@@ -144,12 +140,11 @@
     /**
      * In case of success, redirect the user to the event's point page.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) {
+    public function finalize($request, $response, $context) {
       $response->forwardTo('event/viewpoints', 'event_id='.$this->getValue('event_id'));
     }
   }

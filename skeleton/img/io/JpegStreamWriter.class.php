@@ -21,11 +21,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      * @param   int quality default 75
      */
-    public function __construct(&$stream, $quality= 75) {
+    public function __construct($stream, $quality= 75) {
       parent::__construct($stream);
       $this->quality= $quality;
     }
@@ -33,7 +32,6 @@
     /**
      * Output an image
      *
-     * @access  protected
      * @param   resource handle
      * @return  bool
      */    

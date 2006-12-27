@@ -26,7 +26,6 @@
     /**
      * Simple constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->initialize();
@@ -36,8 +35,6 @@
      * Returns the next ID for an element (auto increment) with leading 'O'
      * (capital 'o' not zero!)
      * 
-     * @model   static
-     * @access  public
      * @return  int
      */
     public static function getId() {
@@ -49,7 +46,6 @@
     /**
      * Initialize this DiaDiagram with DiaData and DiaLayer
      *
-     * @access  public
      */
     public function initialize() {
       $this->set('data', new DiaData());
@@ -59,7 +55,6 @@
     /**
      * Returns the namespace with the given prefix
      *
-     * @access  public
      * @return  string uri The namespace URI
      */
     public function getNamespace($prefix) {
@@ -69,7 +64,6 @@
     /**
      * Add namespace declaration to root node
      *
-     * @access  public
      * @param   array namespace Example: array($prefix => $url)
      */
     #[@fromDia(xpath= 'namespace::dia', value= 'namespace')]
@@ -81,33 +75,30 @@
     /**
      * Returns the DiaData object
      *
-     * @access  public
      * @return  &org.dia.DiaData
      */
-    public function &getData() {
+    public function getData() {
       return $this->getChild('data');
     }
 
     /**
      * Sets the DiaData object of the diagram
      *
-     * @access  public
      * @param   &org.dia.DiaData Data
      */
     #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
-    public function setData(&$Data) {
+    public function setData($Data) {
       $this->set('data', $Data);
     }
 
     /**
      * Returns the DiaLayer object with the given name
      *
-     * @access  public
      * @param   string name default 'Background'
      * @return  &org.dia.DiaLayer
      */
-    public function &getLayer($name= 'Background') {
-      $Child= &$this->getChild($name);
+    public function getLayer($name= 'Background') {
+      $Child= $this->getChild($name);
       if (!is('org.dia.DiaLayer', $Child))
         throw(new IllegalArgumentException("The object with name='$name' is no DiaLayer!"));
       return $Child;
@@ -116,31 +107,28 @@
     /**
      * Adds a DiaLayer object to the diagram
      *
-     * @access  public
      * @param   &org.dia.DiaLayer Layer
      */
     #[@fromDia(xpath= 'dia:layer', class= 'org.dia.DiaLayer')]
-    public function addLayer(&$Layer) {
+    public function addLayer($Layer) {
       $this->set($Layer->getName(), $Layer);
     }
 
     /**
      * Returns the full XML source of the 'dia' diagram
      *
-     * @access  public
      * @return  string XML representation of the DIAgramm
      */
     public function getSource($indent= INDENT_DEFAULT) {
-      $Node= &$this->getNode();
+      $Node= $this->getNode();
       $Tree= new Tree();
-      $Tree->root= &$Node;
+      $Tree->root= $Node;
       return $Tree->getDeclaration()."\n".$Tree->getSource($indent);
     }
 
     /**
      * Writes the XML representation of this DiaDiagram to the given filename
      *
-     * @access  public
      * @param   string filename Filename to save the DIAgramm to
      * @param   boolean zip default TRUE Gzip the DIAgram file?
      */
@@ -170,11 +158,10 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
-      $node= &parent::getNode();
+    public function getNode() {
+      $node= parent::getNode();
       foreach (array_keys($this->ns) as $prefix) {
         $node->setAttribute('xmlns:'.$prefix, $this->ns[$prefix]);
       }

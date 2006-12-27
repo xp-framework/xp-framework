@@ -23,7 +23,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @return  string root
      */
     public function __construct($root) {
@@ -33,7 +32,6 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string uri
      * @return  string
      */
@@ -69,7 +67,6 @@
     /**
      * Sets base
      *
-     * @access  public
      * @param   int clientId
      * @param   string uri
      * @return  string new base
@@ -89,7 +86,6 @@
     /**
      * Retrieves base
      *
-     * @access  public
      * @param   int clientId
      * @return  string
      */
@@ -102,13 +98,12 @@
      * Creates a new StorageElement or StorageCollection (depending on
      * type)
      *
-     * @access public
      * @param string clientId
      * @param string uri
      * @param int type
      * @return &peer.ftp.server.storage.StorageEntry
      */
-    public function &createEntry($clientId, $uri, $type) {
+    public function createEntry($clientId, $uri, $type) {
       $path= substr($this->realname($clientId, $uri), strlen($this->root));
       switch ($type) {
         case ST_ELEMENT:
@@ -123,12 +118,11 @@
     /**
      * Creates a new StorageEntry and return it
      *
-     * @access  public
      * @param   string uri
      * @param   int type one of the ST_* constants
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    public function &create($clientId, $uri, $type) {
+    public function create($clientId, $uri, $type) {
       $path= $this->realname($clientId, $uri);
 
       switch ($type) {
@@ -151,11 +145,10 @@
      * Looks up a element. Returns a StorageCollection, a StorageElement 
      * or NULL in case it nothing is found.
      *
-     * @access  public
      * @param   string uri
      * @return  &peer.ftp.server.storage.StorageEntry
      */
-    public function &lookup($clientId, $uri) {
+    public function lookup($clientId, $uri) {
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
       
       return $this->createEntry($clientId, $uri, is_dir($path) ? ST_COLLECTION : ST_ELEMENT);

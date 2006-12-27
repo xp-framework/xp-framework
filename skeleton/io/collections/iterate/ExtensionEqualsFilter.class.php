@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string extension the file extension to compare to
      */
     public function __construct($extension) {
@@ -28,18 +27,16 @@
     /**
      * Accepts an element
      *
-     * @access  public
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function accept(&$element) {
+    public function accept($element) {
       return $this->extension == substr($element->getURI(), -1 * strlen($this->extension));
     }
 
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

@@ -49,7 +49,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct(
@@ -61,13 +60,12 @@
     /**
      * Translates a text
      *
-     * @access  public
      * @param   string sourcedata The text to be translated.
      * @param   string src_lang Source language
      * @param   string target_lang Target language
      * @return  &string Translated text
      */
-    public function &translate($sourcedata, $src_lang, $target_lang) {
+    public function translate($sourcedata, $src_lang, $target_lang) {
       $translated= $this->invoke(
         'BabelFish',
         new Parameter('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),

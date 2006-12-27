@@ -24,7 +24,6 @@
    * </quote>
    * 
    * @ext      sem
-   * @model    static
    * @purpose  Provide a static class for getting System V IPC keys
    */
   class Ftok extends Object {
@@ -39,7 +38,6 @@
      *   $yetAnotherKey= Ftok::get(1, $_SERVER['PHP_SELF']);
      * </code>
      *
-     * @model   static
      * @param   int id default 1
      * @param   string path default __FILE__
      * @return  int key

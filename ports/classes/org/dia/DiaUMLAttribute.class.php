@@ -19,7 +19,6 @@
     /**
      * Initialize this UMLAttribute object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values and flags
@@ -35,7 +34,6 @@
     /**
      * Returns the comment of this attribute
      *
-     * @access  public
      * @return  string
      */
     public function getComment() {
@@ -45,7 +43,6 @@
     /**
      * Sets the comment of this class attribute
      *
-     * @access  public
      * @param   string comment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
@@ -56,7 +53,6 @@
     /**
      * Returns the visibility of this attribute
      *
-     * @access  public
      * @return  int
      */
     public function getVisibility() {
@@ -66,7 +62,6 @@
     /**
      * Sets the visibility of this class attribute
      *
-     * @access  public
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'enum')]
@@ -77,7 +72,6 @@
     /**
      * Returns TRUE if this is an abstract attribute
      *
-     * @access  public
      * @return  bool
      */
     public function getAbstract() {
@@ -87,7 +81,6 @@
     /**
      * Sets the 'abstract' flag of this class attribute
      *
-     * @access  public
      * @param   bool abstract
      */
     #[@fromDia(xpath= 'dia:attribute[@name="abstract"]/dia:boolean/@val', value= 'boolean')]
@@ -98,7 +91,6 @@
     /**
      * Returns TRUE if this attribute has 'class_scope' set
      *
-     * @access  public
      * @return  bool
      */
     public function getClassScope() {
@@ -108,7 +100,6 @@
     /**
      * Sets the 'class_scope' flag of this class attribute
      *
-     * @access  public
      * @param   bool class_scope
      */
     #[@fromDia(xpath= 'dia:attribute[@name="class_scope"]/dia:boolean/@val', value= 'boolean')]

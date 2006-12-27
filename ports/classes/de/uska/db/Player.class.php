@@ -31,11 +31,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &Player::getPeer()); {
+      with ($peer= Player::getPeer()); {
         $peer->setTable('uska.player');
         $peer->setConnection('uska');
         $peer->setIdentity('player_id');
@@ -61,69 +59,63 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int player_id
      * @return  &de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByPlayer_id($player_id) {
-      $peer= &Player::getPeer();
+    public function getByPlayer_id($player_id) {
+      $peer= Player::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "username"
      *
-     * @access  static
      * @param   string username
      * @return  &de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByUsername($username) {
-      $peer= &Player::getPeer();
+    public function getByUsername($username) {
+      $peer= Player::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('username', $username, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "created_by"
      *
-     * @access  static
      * @param   int created_by
      * @return  &de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByCreated_by($created_by) {
-      $peer= &Player::getPeer();
+    public function getByCreated_by($created_by) {
+      $peer= Player::getPeer();
       return $peer->doSelect(new Criteria(array('created_by', $created_by, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "team_id"
      *
-     * @access  static
      * @param   int team_id
      * @return  &de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByTeam_id($team_id) {
-      $peer= &Player::getPeer();
+    public function getByTeam_id($team_id) {
+      $peer= Player::getPeer();
       return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
 
     /**
      * Retrieves player_id
      *
-     * @access  public
      * @return  int
      */
     public function getPlayer_id() {
@@ -133,7 +125,6 @@
     /**
      * Sets player_id
      *
-     * @access  public
      * @param   int player_id
      * @return  int the previous value
      */
@@ -144,7 +135,6 @@
     /**
      * Retrieves player_type_id
      *
-     * @access  public
      * @return  int
      */
     public function getPlayer_type_id() {
@@ -154,7 +144,6 @@
     /**
      * Sets player_type_id
      *
-     * @access  public
      * @param   int player_type_id
      * @return  int the previous value
      */
@@ -165,7 +154,6 @@
     /**
      * Retrieves bz_id
      *
-     * @access  public
      * @return  int
      */
     public function getBz_id() {
@@ -175,7 +163,6 @@
     /**
      * Sets bz_id
      *
-     * @access  public
      * @param   int bz_id
      * @return  int the previous value
      */
@@ -186,7 +173,6 @@
     /**
      * Retrieves firstname
      *
-     * @access  public
      * @return  string
      */
     public function getFirstname() {
@@ -196,7 +182,6 @@
     /**
      * Sets firstname
      *
-     * @access  public
      * @param   string firstname
      * @return  string the previous value
      */
@@ -207,7 +192,6 @@
     /**
      * Retrieves lastname
      *
-     * @access  public
      * @return  string
      */
     public function getLastname() {
@@ -217,7 +201,6 @@
     /**
      * Sets lastname
      *
-     * @access  public
      * @param   string lastname
      * @return  string the previous value
      */
@@ -228,7 +211,6 @@
     /**
      * Retrieves username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -238,7 +220,6 @@
     /**
      * Sets username
      *
-     * @access  public
      * @param   string username
      * @return  string the previous value
      */
@@ -249,7 +230,6 @@
     /**
      * Retrieves password
      *
-     * @access  public
      * @return  string
      */
     public function getPassword() {
@@ -259,7 +239,6 @@
     /**
      * Sets password
      *
-     * @access  public
      * @param   string password
      * @return  string the previous value
      */
@@ -270,7 +249,6 @@
     /**
      * Retrieves email
      *
-     * @access  public
      * @return  string
      */
     public function getEmail() {
@@ -280,7 +258,6 @@
     /**
      * Sets email
      *
-     * @access  public
      * @param   string email
      * @return  string the previous value
      */
@@ -291,7 +268,6 @@
     /**
      * Retrieves position
      *
-     * @access  public
      * @return  int
      */
     public function getPosition() {
@@ -301,7 +277,6 @@
     /**
      * Sets position
      *
-     * @access  public
      * @param   int position
      * @return  int the previous value
      */
@@ -312,7 +287,6 @@
     /**
      * Retrieves created_by
      *
-     * @access  public
      * @return  int
      */
     public function getCreated_by() {
@@ -322,7 +296,6 @@
     /**
      * Sets created_by
      *
-     * @access  public
      * @param   int created_by
      * @return  int the previous value
      */
@@ -333,28 +306,25 @@
     /**
      * Retrieves lastchange
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getLastchange() {
+    public function getLastchange() {
       return $this->lastchange;
     }
       
     /**
      * Sets lastchange
      *
-     * @access  public
      * @param   &util.Date lastchange
      * @return  &util.Date the previous value
      */
-    public function &setLastchange(&$lastchange) {
+    public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
 
     /**
      * Retrieves changedby
      *
-     * @access  public
      * @return  string
      */
     public function getChangedby() {
@@ -364,7 +334,6 @@
     /**
      * Sets changedby
      *
-     * @access  public
      * @param   string changedby
      * @return  string the previous value
      */
@@ -375,7 +344,6 @@
     /**
      * Retrieves team_id
      *
-     * @access  public
      * @return  int
      */
     public function getTeam_id() {
@@ -385,7 +353,6 @@
     /**
      * Sets team_id
      *
-     * @access  public
      * @param   int team_id
      * @return  int the previous value
      */

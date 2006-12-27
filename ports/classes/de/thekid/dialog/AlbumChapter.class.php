@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -28,7 +27,6 @@
     /**
      * Set name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -38,7 +36,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -48,22 +45,20 @@
     /**
      * Add an element to images
      *
-     * @access  public
      * @param   &de.thekid.dialog.AlbumImage image
      */
-    public function addImage(&$image) {
-      $this->images[]= &$image;
+    public function addImage($image) {
+      $this->images[]= $image;
     }
 
     /**
      * Get one image element by position. Returns NULL if the element 
      * can not be found.
      *
-     * @access  public
      * @param   int i
      * @return  &de.thekid.dialog.AlbumImage
      */
-    public function &imageAt($i) {
+    public function imageAt($i) {
       if (!isset($this->images[$i])) return NULL;
       return $this->images[$i];
     }
@@ -71,7 +66,6 @@
     /**
      * Get number of images
      *
-     * @access  public
      * @return  int
      */
     public function numImages() {
@@ -81,7 +75,6 @@
     /**
      * Retrieve a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

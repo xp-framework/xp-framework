@@ -43,13 +43,12 @@
      *   var_dump($method->invoke($obj= NULL));
      * </code>
      *
-     * @access  public
      * @param   &lang.Object obj
      * @param   mixed[] args default array()
      * @return  &mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    public function &invoke(&$obj, $args= array()) {
+    public function invoke($obj, $args= array()) {
       if (NULL !== $obj) {
         if (!is(xp::nameOf($this->_ref), $obj)) {
           throw(new IllegalArgumentException(sprintf(

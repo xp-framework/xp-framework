@@ -19,11 +19,10 @@
     /**
      * Initialize this protocol handler
      *
-     * @access  public
      * @param   &peer.URL proxy
      * @throws  io.IOException in case connecting fails
      */
-    public function initialize(&$proxy) {
+    public function initialize($proxy) {
       if (!$this->server['available']) {
         throw(new IOException('Cannot connect to '.$proxy->getHost()));
       }
@@ -36,13 +35,12 @@
     /**
      * Look up an object by its name
      *
-     * @access  public
      * @param   string name
      * @param   &lang.Object
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
-    public function &lookup($name) {
+    public function lookup($name) {
       if (!isset($this->server['ctx'][$name])) {
         throw(new NameNotFoundException($name.' not bound'));
       }
@@ -53,44 +51,40 @@
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   UserTransaction tran
      * @param   bool
      */
-    public function begin(&$tran) {
+    public function begin($tran) {
     }
 
     /**
      * Rollback a transaction
      *
-     * @access  public
      * @param   UserTransaction tran
      * @param   bool
      */
-    public function rollback(&$tran) {
+    public function rollback($tran) {
     }
 
     /**
      * Commit a transaction
      *
-     * @access  public
      * @param   UserTransaction tran
      * @param   bool
      */
-    public function commit(&$tran) {
+    public function commit($tran) {
     }
 
     /**
      * Invoke a method on a given object id with given method name
      * and given arguments
      *
-     * @access  public
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
      * @return  &mixed
      */
-    public function &invoke($oid, $method, $args) {
+    public function invoke($oid, $method, $args) {
     }
 
   } 

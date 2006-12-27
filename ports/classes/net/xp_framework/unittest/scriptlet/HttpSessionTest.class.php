@@ -17,7 +17,6 @@
     /**
      * Helper method to create the testing session object.
      *
-     * @access  protected
      * @return  scriptlet.HttpSession
      */
     public function _session() {
@@ -27,7 +26,6 @@
     /**
      * Setup testcase environment for next testcase
      *
-     * @access  protected
      */
     public function setUp() {
       $this->session= $this->_session();
@@ -37,7 +35,6 @@
      * Cleanup last testcase run. Invalidate old sessions and
      * remove environment leftovers
      *
-     * @access  protected
      */
     public function tearDown() {
       if (is('scriptlet.HttpSession', $this->session) && $this->session->isValid()) {
@@ -48,7 +45,6 @@
     /**
      * Test session creation
      *
-     * @access  public
      */
     #[@test]
     public function testCreate() {
@@ -59,7 +55,6 @@
     /**
      * Test isNew() method
      *
-     * @access  public
      */
     #[@test]
     public function testNew() {
@@ -70,7 +65,6 @@
     /**
      * Test reattaching of sessions
      *
-     * @access  public
      */
     #[@test]
     public function testReattach() {
@@ -84,7 +78,6 @@
     /**
      * Test invalidating of session
      *
-     * @access  public
      */
     #[@test]
     public function testInvalidate() {
@@ -98,7 +91,6 @@
     /**
      * Test fetching of registered session keys
      *
-     * @access  public
      */
     #[@test]
     public function testValueNames() {
@@ -115,7 +107,6 @@
     /**
      * Test fetching of registered session keys
      *
-     * @access  public
      */
     #[@test]
     public function putDoesNotOverwriteValue() {
@@ -130,7 +121,6 @@
     /**
      * Test resetting of sessions
      *
-     * @access  public
      */
     #[@test]
     public function testReset() {
@@ -146,7 +136,6 @@
      * Test session fixation protection (users may not pass
      * arbitrary names as session ids)
      *
-     * @access  public
      */
     #[@test]
     public function testIllegalConstruct() {
@@ -156,7 +145,6 @@
     /**
      * Test access protection on invalid sessions
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function testIllegalSessionAccess() {

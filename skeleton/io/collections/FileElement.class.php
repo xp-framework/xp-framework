@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string uri
      */
     public function __construct($uri) {
@@ -29,7 +28,6 @@
     /**
      * Returns this element's URI
      *
-     * @access  public
      * @return  string
      */
     public function getURI() { 
@@ -39,7 +37,6 @@
     /**
      * Retrieve this element's size in bytes
      *
-     * @access  public
      * @return  int
      */
     public function getSize() { 
@@ -49,37 +46,33 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &createdAt() {
+    public function createdAt() {
       return new Date(filectime($this->uri));
     }
 
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &lastAccessed() {
+    public function lastAccessed() {
       return new Date(fileatime($this->uri));
     }
 
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &lastModified() {
+    public function lastModified() {
       return new Date(filemtime($this->uri));
     }
     
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() { 

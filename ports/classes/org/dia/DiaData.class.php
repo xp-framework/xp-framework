@@ -25,7 +25,6 @@
     /**
      * Constructor: simply calls 'initialize()'
      *
-     * @access  public
      */
     public function __construct() {
       $this->initialize();
@@ -34,7 +33,6 @@
     /**
      * Initialize this Data object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -55,7 +53,6 @@
     /**
      * Returns the background color
      *
-     * @access  public
      * @return  string
      */
     public function getBackgroundColor() {
@@ -65,7 +62,6 @@
     /**
      * Set the background color of the diagram
      *
-     * @access  public
      * @param   string color Example: '#FFFFFF'
      */
     #[@fromDia(xpath= 'dia:attribute[@name="background"]/dia:color/@val', value= 'string')] 
@@ -76,7 +72,6 @@
     /**
      * Returns the pagebreak color
      *
-     * @access  public
      * @return  string
      */
     public function getPagebreakColor() {
@@ -86,7 +81,6 @@
     /**
      * Set the pagebreak color of the diagram
      *
-     * @access public
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="pagebreak"]/dia:color/@val', value= 'string')]
@@ -97,7 +91,6 @@
     /**
      * Returns the grid color
      *
-     * @access  public
      * @return  string
      */
     public function getGridColor() {
@@ -107,7 +100,6 @@
     /**
      * Set the grid color
      *
-     * @access  public
      * @param   string color
      */
     #[@fromDia(xpath= 'dia:attribute[@name="color"]/dia:color/@val', value= 'string')]
@@ -118,66 +110,60 @@
     /**
      * Returns the DiaPaper object
      *
-     * @access  public
      * @return  &org.dia.DiaPaper
      */
-    public function &getPaper() {
+    public function getPaper() {
       return $this->getChild('paper');
     }
 
     /**
      * Set the Paper node
      *
-     * @access  public
      * @param   &org.dia.DiaPaper Paper
      */
     #[@fromDia(xpath= 'dia:attribute[@name="paper"]', class= 'org.dia.DiaPaper')]
-    public function setPaper(&$Paper) {
-      $Paper_node= &$this->getChild('paper');
+    public function setPaper($Paper) {
+      $Paper_node= $this->getChild('paper');
       $Paper_node->set('paper', $Paper);
     }
 
     /**
      * Returns the DiaGrid object   
      *
-     * @access  public
      * @return  &org.dia.DiaGrid
      */
-    public function &getGrid() {
+    public function getGrid() {
       return $this->getChild('grid');
     }
 
     /**
      * Set the Grid node
      *
-     * @access  public
      * @param   &org.dia.DiaGrid Grid
      */
     #[@fromDia(xpath= 'dia:attribute[@name="grid"]', class= 'org.dia.DiaGrid')]
-    public function setGrid(&$Grid) {
-      $Grid_node= &$this->getChild('grid');
+    public function setGrid($Grid) {
+      $Grid_node= $this->getChild('grid');
       $Grid_node->set('grid', $Grid);
     }
 
     /**
      * Returns the DiaGuides object
      *
-     * @access  public
      * @return  &org.dia.DiaGuides
      */
-    public function &getGuides() {
+    public function getGuides() {
       return $this->getChild('guides');
     }
 
     /**
      * Set the Guides node
      *
-     * @access  public
      * @param   &org.dia.DiaGuides Guides
      */
     #[@fromDia(xpath= 'dia:attribute[@name="guides"]', class= 'org.dia.DiaGuides')]
-    public function setGuides(&$Guides) {
-      $Guides_node= &$this->getChild('guides');
+    public function setGuides($Guides) {
+      $Guides_node= $this->getChild('guides');
       $Guides_node->set('guides', $Guides);
     }
 

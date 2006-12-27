@@ -22,48 +22,43 @@
     /**
      * Retrieve entries
      *
-     * @model   abstract
-     * @access  protected
      * @param   &rdbms.DBConnection db
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &rdbms.ResultSet
      */
-    public function &getEntries(&$db, &$request) { }
+    public function getEntries($db, $request) { }
     
     /**
      * Return date
      *
-     * @access  protected
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @return  &util.Date
      */
-    public function &getContextMonth(&$request) {
+    public function getContextMonth($request) {
       return Date::now();
     }
     
     /**
      * Retrieve parent category's ID
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  int
      */
-    public function getParentCategory(&$request) {
+    public function getParentCategory($request) {
       return 0;
     }
     
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
 
       // Retrieve date information
-      $contextDate= &$this->getContextMonth($request);
-      $month= &$response->addFormResult(new Node('month', NULL, array(
+      $contextDate= $this->getContextMonth($request);
+      $month= $response->addFormResult(new Node('month', NULL, array(
         'num'   => $contextDate->getMonth(),    // Month number, e.g. 4 = April
         'year'  => $contextDate->getYear(),     // Year
         'days'  => $contextDate->toString('t'), // Number of days in the given month
@@ -72,13 +67,13 @@
         )) + 6) % 7
       )));
 
-      $cm= &ConnectionManager::getInstance();
+      $cm= ConnectionManager::getInstance();
       try {
-        $db= &$cm->getByHost('uskanews', 0);
+        $db= $cm->getByHost('uskanews', 0);
         
         // Add all categories to the formresult
-        $n= &$response->addFormResult(new Node('categories'));
-        $q= &$db->query(
+        $n= $response->addFormResult(new Node('categories'));
+        $q= $db->query(
           'select categoryid, category_name from serendipity_category where parentid= %d',
           $this->getParentCategory($request)
         );
@@ -89,7 +84,7 @@
         }
         
         // Fill in all days for which an entry exists
-        $q= &$db->query('
+        $q= $db->query('
           select 
             dayofmonth(from_unixtime(entry.timestamp)) as day, 
             count(*) as numentries
@@ -112,15 +107,15 @@
         // and returns the corresponding entries). For perfomance reasons, it
         // does a join on entries and categories (which have a 1:n 
         // relationship, so the returned results are not unique)
-        $q= &$this->getEntries($db, $request);
+        $q= $this->getEntries($db, $request);
       } catch (SQLException $e) {
         throw($e);
       }
       
-      $n= &$response->addFormResult(new Node('entries'));
+      $n= $response->addFormResult(new Node('entries'));
       while ($record= $q->next()) {
         if (!isset($entry[$record['id']])) {
-          $entry[$record['id']]= &$n->addChild(new Node('entry', NULL, array('id' => $record['id'])));
+          $entry[$record['id']]= $n->addChild(new Node('entry', NULL, array('id' => $record['id'])));
           $entry[$record['id']]->addChild(new Node('title', $record['title']));
           $entry[$record['id']]->addChild(new Node('author', $record['author']));
           $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));

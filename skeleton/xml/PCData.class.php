@@ -33,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string pcdata
      */
     public function __construct($pcdata) {

@@ -18,6 +18,6 @@
      * @param peer.ftp.server.storage.StorageEntry entry
      * @return bool
      */
-    public function check(&$session, &$entry);
+    public function check($session, $entry);
   }
 ?>

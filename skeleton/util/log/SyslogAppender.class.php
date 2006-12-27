@@ -18,7 +18,6 @@
     /**
      * Destructor.
      *
-     * @access  protected
      */
     public function __destruct() {
       $this->finalize();
@@ -27,7 +26,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string identifier default NULL if omitted, defaults to script's filename
      * @param   int facility default LOG_USER
      * @see     php://openlog for valid facility values
@@ -43,7 +41,6 @@
     /**
      * Appends log data to the syslog
      *
-     * @access  public
      * @param   mixed args variables
      */
     public function append() {
@@ -58,7 +55,6 @@
      * Finalize this appender - is called when the logger shuts down
      * at the end of the request.
      *
-     * @access  public 
      */
     public function finalize() {
       closelog();

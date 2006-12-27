@@ -22,22 +22,21 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      * @return  boolean
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       parent::process($request, $response, $context);
       
       $eventid= intval($request->getQueryString());
       if (!$eventid) return FALSE;
       
       try {
-        $event= &Event::getByEvent_id($eventid);
+        $event= Event::getByEvent_id($eventid);
         
-        $event && $query= &$this->db->query('
+        $event && $query= $this->db->query('
           select
             p.player_id,
             p.firstname,
@@ -85,17 +84,17 @@
       // the description member (which needs markup processing)
       $eventarr= (array)$event;
       unset($eventarr['description']);
-      $deadline= &$event->getDeadline();
-      $target= &$event->getTarget_date();
+      $deadline= $event->getDeadline();
+      $target= $event->getTarget_date();
       $attendeesCount= 0;
       
       $n= new Node('attendeeinfo');
-      while ($query && $record= &$query->next()) {
-        $t= &$n->addChild(new Node('player', NULL, $record));
+      while ($query && $record= $query->next()) {
+        $t= $n->addChild(new Node('player', NULL, $record));
         
         // For guests, select creator
         if (2 == $record['player_type_id']) {
-          $creator= &Player::getByPlayer_id($record['created_by']);
+          $creator= Player::getByPlayer_id($record['created_by']);
           $t->addChild(Node::fromObject($creator, 'creator'));
         }
         
@@ -110,7 +109,7 @@
         (!$event->getMax_Attendees() || $attendeesCount < $event->getMax_attendees())
       );
       
-      $node= &$response->addFormResult(Node::fromArray($eventarr, 'event'));
+      $node= $response->addFormResult(Node::fromArray($eventarr, 'event'));
       $node->addChild(FormresultHelper::markupNodeFor('description', $event->getDescription()));
       $node->addChild($n);
     }

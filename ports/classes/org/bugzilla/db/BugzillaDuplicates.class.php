@@ -20,11 +20,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugzillaDuplicates::getPeer()); {
+      with ($peer= BugzillaDuplicates::getPeer()); {
         $peer->setTable('duplicates');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array('dupe'));
@@ -38,30 +36,27 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      *
-     * @access  static
      * @param   int dupe
      * @return  &Duplicates object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByDupe($dupe) {
-      $peer= &BugzillaDuplicates::getPeer();
+    public function getByDupe($dupe) {
+      $peer= BugzillaDuplicates::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('dupe', $dupe, EQUAL))));
     }
 
     /**
      * Retrieves dupe_of
      *
-     * @access  public
      * @return  int
      */
     public function getDupe_of() {
@@ -71,7 +66,6 @@
     /**
      * Sets dupe_of
      *
-     * @access  public
      * @param   int dupe_of
      * @return  int the previous value
      */
@@ -82,7 +76,6 @@
     /**
      * Retrieves dupe
      *
-     * @access  public
      * @return  int
      */
     public function getDupe() {
@@ -92,7 +85,6 @@
     /**
      * Sets dupe
      *
-     * @access  public
      * @param   int dupe
      * @return  int the previous value
      */

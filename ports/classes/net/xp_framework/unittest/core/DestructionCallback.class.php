@@ -15,10 +15,9 @@
     /**
      * Callback for Destroyable class
      *
-     * @access  public
      * @param   &lang.Object object
      */
-    public function onDestruction(&$object);
+    public function onDestruction($object);
   
   }
 ?>

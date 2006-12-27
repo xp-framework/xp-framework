@@ -19,7 +19,6 @@
     /**
      * Read an image
      *
-     * @access  protected
      * @return  resource
      * @throws  img.ImagingException
      */    

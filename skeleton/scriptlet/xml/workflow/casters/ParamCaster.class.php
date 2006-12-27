@@ -14,8 +14,6 @@
     /**
      * Cast a given value
      *
-     * @model   abstract
-     * @access  public
      * @param   array value
      * @return  array value
      */

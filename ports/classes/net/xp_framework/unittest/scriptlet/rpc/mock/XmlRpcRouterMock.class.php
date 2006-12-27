@@ -21,10 +21,9 @@
     /**
      * Set the request from the environment.
      *
-     * @access  protected
      * @param   &scriptlet.HttpRequest request
      */
-    public function _setupRequest(&$request) {
+    public function _setupRequest($request) {
       $request->headers= array_change_key_case($this->headers, CASE_LOWER);
       $request->method= $this->method;
       $request->setParams(array_change_key_case($this->params, CASE_LOWER));
@@ -34,11 +33,10 @@
     /**
      * Handle method.
      *
-     * @access  public
      * @param   &scriptlet.HttpRequest request
      * @return  string
      */
-    public function handleMethod(&$request) {
+    public function handleMethod($request) {
       switch ($request->method) {
         case HTTP_POST:
           $request->setData($this->data);
@@ -65,7 +63,6 @@
     /**
      * Get Params
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getParams() {
@@ -75,7 +72,6 @@
     /**
      * Set Headers
      *
-     * @access  public
      * @param   mixed[] headers
      */
     public function setMockHeaders($h) {
@@ -85,7 +81,6 @@
     /**
      * Set method
      *
-     * @access  public
      * @param   string m
      */
     public function setMockMethod($m) {
@@ -95,7 +90,6 @@
     /**
      * Set Params
      *
-     * @access  public
      * @param   mixed[] params
      */
     public function setMockParams($p) {
@@ -105,7 +99,6 @@
     /**
      * Set Data
      *
-     * @access  public
      * @param   string data
      */
     public function setMockData($data) {

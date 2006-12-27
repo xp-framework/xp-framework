@@ -34,7 +34,6 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string xml
      * @return  php.DOMDocument
      */
@@ -57,7 +56,6 @@
      *   <li>An xml.Tree object</li>
      * </ul>
      *
-     * @access  public
      * @param   mixed arg
      * @throws  lang.IllegalArgumentException
      * @throws  xml.XMLFormatException in case the argument is a string and not valid XML
@@ -84,7 +82,6 @@
     /**
      * Execute xpath query and return results
      *
-     * @access  public
      * @param   string xpath
      * @param   php.DomNode node default NULL
      * @return  php.DOMNodeList

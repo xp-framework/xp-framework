@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string dirname the directory's name
      */
     public function __construct($dirname= NULL) {
@@ -45,7 +44,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       $this->close();
@@ -54,7 +52,6 @@
     /**
      * Close directory
      *
-     * @access  public
      */
     public function close() {
       if (FALSE != $this->_hdir) $this->_hdir->close();
@@ -64,7 +61,6 @@
     /**
      * Set URI
      *
-     * @access  private
      * @param   string uri the complete path name
      */
     public function setURI($uri) {
@@ -86,7 +82,6 @@
     /**
      * Get URI
      *
-     * @access public
      * @return uri of this folder
      */    
     public function getURI() {
@@ -96,7 +91,6 @@
     /**
      * Create this directory, recursively, if needed.
      *
-     * @access  public
      * @param   int permissions default 0700
      * @return  bool TRUE in case the creation succeeded or the directory already exists
      * @throws  io.IOException in case of an error
@@ -124,7 +118,6 @@
      * Delete this folder and all its subentries recursively
      * Warning: Stops at the first element that can't be deleted!
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case one of the entries could'nt be deleted
      */
@@ -165,7 +158,6 @@
      * Warning: Open directories cannot be moved. Use the close() method to
      * close the directory first
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the directory is still open
@@ -183,7 +175,6 @@
     /**
      * Returns whether this directory exists
      *
-     * @access  public
      * @return  bool TRUE in case the directory exists
      */
     public function exists() {
@@ -193,7 +184,6 @@
     /**
      * Read through the contents of the directory, ommitting the entries "." and ".."
      *
-     * @access  public
      * @return  string entry directory entry (w/o path!), FALSE, if no more entries are left
      * @throws  io.IOException in case an error occurs
      */
@@ -216,7 +206,6 @@
     /**
      * Rewinds the directory to the beginning.
      *
-     * @access  public
      * @throws  io.IOException in case an error occurs
      */
     public function rewind() {
@@ -229,7 +218,6 @@
     /**
      * Retrieve when the folder was created
      *
-     * @access  public
      * @return  int The date the file was created as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -251,7 +239,6 @@
      * performance of such applications; USENET news spools are a common example. 
      * On such filesystems this function will be useless. 
      *
-     * @access  public
      * @return  int The date the file was last accessed as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -265,7 +252,6 @@
     /**
      * Retrieve last modification time
      *
-     * @access  public
      * @return  int The date the file was last modified as a unix-timestamp
      * @throws  io.IOException in case of an error
      */
@@ -279,7 +265,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -293,7 +278,6 @@
     /**
      * Return if the folder was already opened
      *
-     * @access  public
      * @return  bool
      */
     public function isOpen() {

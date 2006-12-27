@@ -16,12 +16,11 @@
     /**
      * Apply this filter on a given image. Note: This changes the given image!
      *
-     * @access  public
      * @param   &img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */
-    public function applyOn(&$image) {
+    public function applyOn($image) {
       $clone= clone $image;
 
       // Create local variables for faster access

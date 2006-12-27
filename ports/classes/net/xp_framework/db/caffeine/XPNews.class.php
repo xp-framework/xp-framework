@@ -30,11 +30,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() {
-      with ($peer= &XPNews::getPeer()); {
+      with ($peer= XPNews::getPeer()); {
         $peer->setTable('CAFFEINE..news');
         $peer->setConnection('caffeine');
         $peer->setIdentity('news_id');
@@ -55,38 +53,33 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
 
     /**
      * Gets an instance of this object by unique index "news_news_i_640032591"
      *
-     * @model   static
-     * @access  public
      * @param   int news_id
      * @return  &net.xp_framework.db.caffeine.XPNews object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public static function &getByNews_id($news_id) {
-      $peer= &XPNews::getPeer();
+    public static function getByNews_id($news_id) {
+      $peer= XPNews::getPeer();
       return array_shift($peer->doSelect(new Criteria(array('news_id', $news_id, EQUAL))));
     }
 
     /**
      * Gets an array of instances of this object by bz_id
      *
-     * @model   static
-     * @access  public
      * @param   int bz_id
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByBz_id($bz_id) {
-      $peer= &XPNews::getPeer();
+      $peer= XPNews::getPeer();
       return $peer->doSelect(new Criteria(array('bz_id', $bz_id, EQUAL)));
     }
 
@@ -94,14 +87,12 @@
      * Gets an array of instances of this object descendingly ordered by created_at
      * (newest first)
      *
-     * @model   static
-     * @access  public
      * @param   int max default 0 maximum number of rows to get)
      * @return  net.xp_framework.db.caffeine.XPNews[] objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByDateOrdered($max= 0) {
-      $peer= &XPNews::getPeer();
+      $peer= XPNews::getPeer();
       with ($c= new Criteria()); {
         $c->add('bz_id', 500, EQUAL);
         $c->addOrderBy('created_at', DESCENDING);
@@ -113,7 +104,6 @@
     /**
      * Retrieves news_id
      *
-     * @access  public
      * @return  int
      */
     public function getNews_id() {
@@ -123,7 +113,6 @@
     /**
      * Sets news_id
      *
-     * @access  public
      * @param   int news_id
      * @return  int previous value
      */
@@ -134,7 +123,6 @@
     /**
      * Retrieves caption
      *
-     * @access  public
      * @return  string
      */
     public function getCaption() {
@@ -144,7 +132,6 @@
     /**
      * Sets caption
      *
-     * @access  public
      * @param   string caption
      * @return  string previous value
      */
@@ -155,7 +142,6 @@
     /**
      * Retrieves link
      *
-     * @access  public
      * @return  string
      */
     public function getLink() {
@@ -165,7 +151,6 @@
     /**
      * Sets link
      *
-     * @access  public
      * @param   string link
      * @return  string previous value
      * @return  previous previous value
@@ -177,7 +162,6 @@
     /**
      * Retrieves body
      *
-     * @access  public
      * @return  string
      */
     public function getBody() {
@@ -187,7 +171,6 @@
     /**
      * Sets body
      *
-     * @access  public
      * @param   string body
      * @return  string previous value
      */
@@ -198,49 +181,44 @@
     /**
      * Retrieves created_at
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getCreated_at() {
+    public function getCreated_at() {
       return $this->created_at;
     }
       
     /**
      * Sets created_at
      *
-     * @access  public
      * @param   &util.Date created_at
      * @return  &util.Date previous value
      */
-    public function &setCreated_at(&$created_at) {
+    public function setCreated_at($created_at) {
       return $this->_change('created_at', $created_at);
     }
       
     /**
      * Retrieves lastchange
      *
-     * @access  public
      * @return  &util.Date
      */
-    public function &getLastchange() {
+    public function getLastchange() {
       return $this->lastchange;
     }
       
     /**
      * Sets lastchange
      *
-     * @access  public
      * @param   &util.Date lastchange
      * @return  &util.Date previous value
      */
-    public function &setLastchange(&$lastchange) {
+    public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
     }
       
     /**
      * Retrieves changedby
      *
-     * @access  public
      * @return  string
      */
     public function getChangedby() {
@@ -250,7 +228,6 @@
     /**
      * Sets changedby
      *
-     * @access  public
      * @param   string changedby
      * @return  string previous value
      */
@@ -261,7 +238,6 @@
     /**
      * Retrieves bz_id
      *
-     * @access  public
      * @return  int
      */
     public function getBz_id() {
@@ -271,7 +247,6 @@
     /**
      * Sets bz_id
      *
-     * @access  public
      * @param   int bz_id
      * @return  int previous value
      */

@@ -26,7 +26,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string str
      */
     public function __construct($str) {
@@ -36,7 +35,6 @@
     /**
      * Create a nice string representation
      *
-     * @access  public
      * @return  string
      * @see     xp://lang.Object#toString
      */
@@ -67,7 +65,6 @@
     /**
      * Retrieve scheme
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string scheme or default if none is set
      */
@@ -78,7 +75,6 @@
     /**
      * Retrieve host
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
@@ -89,7 +85,6 @@
     /**
      * Retrieve path
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string path or default if none is set
      */
@@ -100,7 +95,6 @@
     /**
      * Retrieve user
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string user or default if none is set
      */
@@ -111,7 +105,6 @@
     /**
      * Retrieve password
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string password or default if none is set
      */
@@ -122,7 +115,6 @@
     /**
      * Retrieve query
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string query or default if none is set
      */
@@ -133,7 +125,6 @@
     /**
      * Retrieve fragment
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string fragment or default if none is set
      */
@@ -144,7 +135,6 @@
     /**
      * Retrieve port
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  int port or default if none is set
      */
@@ -155,7 +145,6 @@
     /**
      * Retrieve parameter by a specified name
      *
-     * @access  public
      * @param   string name
      * @param   mixed default default NULL  
      * @return  string url-decoded parameter value or default if none is set
@@ -167,7 +156,6 @@
     /**
      * Retrieve parameters
      *
-     * @access  public
      * @return  array params
      */
     public function getParams() {
@@ -177,7 +165,6 @@
     /**
      * Add a parameter
      *
-     * @access  public
      * @param   string key
      * @param   string value
      */
@@ -196,7 +183,6 @@
      * Add parameters from an associative array. The key is taken as
      * parameter name and the value as parameter value.
      *
-     * @access  public
      * @param   array hash
      */
     public function addParams($hash) {
@@ -217,7 +203,6 @@
     /**
      * Retrieve whether parameters exist
      *
-     * @access  public
      * @return  bool
      */
     public function hasParams() {
@@ -227,7 +212,6 @@
     /**
      * Get full URL
      *
-     * @access  public
      * @return  string
      */
     public function getURL() {
@@ -250,7 +234,6 @@
     /**
      * Set full URL
      *
-     * @access  public
      * @param   string str URL
      */
     public function setURL($str) {
@@ -268,7 +251,6 @@
     /**
      * Returns a hashcode for this URL
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -278,11 +260,10 @@
     /**
      * Returns whether a given object is equal to this.
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return is('peer.URL', $cmp) && $this->getURL() == $cmp->getURL();
     }
   }

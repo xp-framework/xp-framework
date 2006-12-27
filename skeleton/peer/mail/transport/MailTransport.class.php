@@ -29,7 +29,6 @@
     /**
      * Connect to this transport
      *
-     * @access  public
      * @param   string dsn default NULL additional parameters for sendmail
      * @return  bool success
      */
@@ -41,7 +40,6 @@
     /**
      * Close connection
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { 
@@ -51,11 +49,10 @@
     /**
      * Send a message
      *
-     * @access  public
      * @param   &peer.mail.Message message the Message object to send
      * @return  bool success
      */
-    public function send(&$message) { 
+    public function send($message) { 
     
       // Sanity check: Is this a message?
       if (!is('Message', $message)) {

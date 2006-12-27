@@ -21,7 +21,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int width
      * @param   int height
      */
@@ -33,12 +32,11 @@
     /**
      * Prepare/calculate common values
      *
-     * @access private
      * @param  &img.chart.Chart chart The chart
      * @param  int font The font size
      * @return mixed[]
      */
-    public function _prepare(&$chart, $font) {
+    public function _prepare($chart, $font) {
       list($lower, $upper, $step)= $chart->getRange();
       RANGE_AUTO == $lower && $lower= $chart->min();
       RANGE_AUTO == $upper && $upper= $chart->max();
@@ -87,12 +85,11 @@
      * Returns an array containing the allocated colors for the passed
      * image.
      *
-     * @access private
      * @param  &img.Image img The image
      * @param  string[] c The colors
      * @return &img.Color[]
      */
-    public function &_colors(&$img, $c) {
+    public function _colors($img, $c) {
       $colors= array();
       if (!is_array($c)) $c= array($c);
       foreach ($c as $color) $colors[]= $img->allocate($color);
@@ -102,12 +99,11 @@
     /**
      * Renders the skelton of a chart (e.g. axis)
      *
-     * @access private
      * @param  mixed[] params The axis parameters
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    public function &_renderAxis($params, &$img) {
+    public function _renderAxis($params, $img) {
       $count= $params['count'];
       $distance= $params['distance'];
       $lower= $params['lower'];
@@ -216,12 +212,11 @@
     /**
      * Renders the legend box
      *
-     * @access private
      * @param  mixed[] params The axis parameters
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    public function _renderLegend($params, &$img) {
+    public function _renderLegend($params, $img) {
       $labels= $params['labels'];
       $font= $params['font'];
       $fontw= $params['fontWidth'];
@@ -286,11 +281,10 @@
     /**
      * Method to render bar charts
      *
-     * @access  protected
      * @param   img.chart.BarChart bc
      * @return  &img.Image
      */
-    public function &renderBarChart(&$bc) {
+    public function renderBarChart($bc) {
  
       // Create local variables for faster access
       list(
@@ -315,7 +309,7 @@
       }
 
       // Create image
-      with ($img= &Image::create($this->width, $this->height)); {
+      with ($img= Image::create($this->width, $this->height)); {
         $colors= $this->_colors($img, $bc->getColor('sample'));
         $this->_renderAxis(array(
           'count'           => $count,
@@ -412,11 +406,10 @@
     /**
      * Method to render line charts
      *
-     * @access  protected
      * @param   img.chart.LineChart bc
      * @return  &img.Image
      */
-    public function &renderLineChart($lc) {
+    public function renderLineChart($lc) {
  
       // Create local variables for faster access
       list(
@@ -440,7 +433,7 @@
       }
 
       // Create image
-      with ($img= &Image::create($this->width, $this->height)); {
+      with ($img= Image::create($this->width, $this->height)); {
         $colors= $this->_colors($img, $lc->getColor('sample'));
         $this->_renderAxis(array(
           'count'           => $count,
@@ -539,11 +532,10 @@
     /**
      * Method to render pie charts
      *
-     * @access  protected
      * @param   img.chart.PieChart bc
      * @return  &img.Image
      */
-    public function &renderPieChart($pc) {
+    public function renderPieChart($pc) {
  
       // Create local variables for faster access
       $border= 50;
@@ -558,7 +550,7 @@
       $fonth= imagefontheight($font);
 
       // Create image
-      with ($img= &Image::create($this->width, $this->height)); {
+      with ($img= Image::create($this->width, $this->height)); {
         $colors= $this->_colors($img, $pc->getColor('sample'));
         $axisColor= $img->allocate($pc->getColor('axis'));
 
@@ -614,12 +606,11 @@
     /**
      * Renders a chart
      *
-     * @access  public
      * @param   &img.chart.Chart chart
      * @return  &img.Image
      * @throws  lang.IllegalArgumentException if chart is not renderable
      */
-    public function &render(&$chart) { 
+    public function render($chart) { 
     
       // Method overloading by delegation
       if (!is('Chart', $chart) || !method_exists($this, $method= 'render'.get_class($chart))) {

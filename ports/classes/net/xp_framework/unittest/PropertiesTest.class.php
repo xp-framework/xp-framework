@@ -22,21 +22,19 @@
     /**
      * Test construction.
      *
-     * @access  public
      */
     #[@test]
     public function testFromString() {
-      $p= &Properties::fromString('');
+      $p= Properties::fromString('');
     }
     
     /**
      * Test simple reading of values.
      *
-     * @access  public
      */
     #[@test]
     public function basicTest() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 string="value1"
 int=2
@@ -51,11 +49,10 @@ bool=0
     /**
      * Test string reading
      *
-     * @access  public
      */
     #[@test]
     public function readString() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 string1=string
 string2="string"
@@ -68,11 +65,10 @@ string2="string"
     /**
      * Test simple reading of arrays
      *
-     * @access  public
      */
     #[@test]
     public function readArray() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 array="foo|bar|baz"
       ');
@@ -82,11 +78,10 @@ array="foo|bar|baz"
     /**
      * Test simple reading of hashes
      *
-     * @access  public
      */
     #[@test]
     public function readHash() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 hash="foo:bar|bar:foo"
       ');
@@ -99,11 +94,10 @@ hash="foo:bar|bar:foo"
     /**
      * Test simple reading of range
      *
-     * @access  public
      */
     #[@test]
     public function readRange() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 range="1..5"
       ');
@@ -116,11 +110,10 @@ range="1..5"
     /**
      * Test simple reading of integer
      *
-     * @access  public
      */
     #[@test]
     public function readInteger() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 int1=1
 int2=0
@@ -134,11 +127,10 @@ int3=-5
     /**
      * Test simple reading of float
      *
-     * @access  public
      */
     #[@test]
     public function readFloat() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 float1=1
 float2=0
@@ -154,11 +146,10 @@ float4=-5.0
     /**
      * Tests reading of a boolean
      *
-     * @access  public
      */
     #[@test]
     public function readBool() {
-     $p= &Properties::fromString('
+     $p= Properties::fromString('
 [section]
 bool1=1
 bool5=0
@@ -170,11 +161,10 @@ bool5=0
     /**
      * Test simple reading of section
      *
-     * @access  public
      */
     #[@test]
     public function hasSection() {
-      $p= &Properties::fromString('
+      $p= Properties::fromString('
 [section]
 foo=bar
       ');
@@ -186,11 +176,10 @@ foo=bar
     /**
      * Test iterating over sections
      *
-     * @access  public
      */
     #[@test]
     public function iterateSections() {
-     $p= &Properties::fromString('
+     $p= Properties::fromString('
 [section]
 foo=bar
 

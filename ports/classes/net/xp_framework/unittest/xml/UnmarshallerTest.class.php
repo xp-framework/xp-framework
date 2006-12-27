@@ -21,11 +21,10 @@
     /**
      * Tests the id attribute gets unserialized as the dialog's id member
      *
-     * @access  public
      */
     #[@test]
     public function idAttribute() {
-      $dialog= &Unmarshaller::unmarshal('
+      $dialog= Unmarshaller::unmarshal('
         <dialogtype id="file.open">
           <caption/>
         </dialogtype>',
@@ -38,11 +37,10 @@
     /**
      * Tests the caption node gets unserialized as the dialog's caption member
      *
-     * @access  public
      */
     #[@test]
     public function captionNode() {
-      $dialog= &Unmarshaller::unmarshal('
+      $dialog= Unmarshaller::unmarshal('
         <dialogtype id="">
           <caption>Open a file &gt; Choose</caption>
         </dialogtype>',
@@ -55,11 +53,10 @@
     /**
      * Tests the buttons get unserialized to a button collection
      *
-     * @access  public
      */
     #[@test]
     public function buttonsNodeSet() {
-      $dialog= &Unmarshaller::unmarshal('
+      $dialog= Unmarshaller::unmarshal('
         <dialogtype id="">
           <caption>Really delete the file &quot;Ü&quot;?</caption>
           <button id="ok">Yes, go ahead</button>
@@ -71,7 +68,7 @@
       $this->assertTrue($dialog->hasButtons()) &&
       $this->assertEquals(2, $dialog->numButtons()) &&
 
-      with ($ok= &$dialog->buttonAt(0), $cancel= &$dialog->buttonAt(1)); {
+      with ($ok= $dialog->buttonAt(0), $cancel= $dialog->buttonAt(1)); {
         $this->assertClass($ok, 'net.xp_framework.unittest.xml.ButtonType') &&
         $this->assertClass($cancel, 'net.xp_framework.unittest.xml.ButtonType') &&
         $this->assertEquals('ok', $ok->getId()) &&

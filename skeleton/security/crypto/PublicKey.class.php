@@ -16,13 +16,11 @@
     /**
      * Create from certificate string representation.
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &security.crypto.PublicKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
-    public static function &fromString($string) {
+    public static function fromString($string) {
       if (!is_resource($_hdl= openssl_pkey_get_public($string))) {
         throw(new CryptoException(
           'Could not read public key', OpenSslUtil::getErrors()
@@ -39,7 +37,6 @@
      * using the private key matching this one, verification will
      * fail.
      *
-     * @access  public
      * @param   string data
      * @param   string signature
      * @return  bool TRUE if data + signature are valid
@@ -64,7 +61,6 @@
      * method.
      *
      * @see     php://openssl_public_encrypt
-     * @access  public
      * @param   string data
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -83,7 +79,6 @@
      * Decrypt data using this public key. Only data encrypted with
      * the private key matching this key will be decryptable.
      *
-     * @access  public
      * @param   string data
      * @return  string
      * @throws  security.crypto.CryptoException if the operation fails
@@ -103,7 +98,6 @@
      * the first one being the encoded data, the second a key that has to
      * be passed to the recipient, too.
      *
-     * @access  public
      * @param   string data
      * @return  array<string,string>[1] first element is data, second is the key
      * @throws  security.crypto.CryptoException if the operation fails

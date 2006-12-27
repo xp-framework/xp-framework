@@ -17,17 +17,15 @@
     /**
      * Set Callback
      *
-     * @access  public
      * @param   &net.xp_framework.unittest.core.DestructionCallback callback
      */
-    public function setCallback(&$callback) {
-      $this->callback= &$callback;
+    public function setCallback($callback) {
+      $this->callback= $callback;
     }
   
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       $this->callback->onDestruction($this);

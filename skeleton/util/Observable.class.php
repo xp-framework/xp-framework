@@ -69,21 +69,19 @@
     /**
      * Add an observer
      *
-     * @access  public
      * @param   &util.Observer observer a class implementing the util.Observer interface
      * @throws  lang.IllegalArgumentException in case the argument is not an observer
      */
-    public function addObserver(&$observer) {
+    public function addObserver($observer) {
       if (!is('util.Observer', $observer)) {
         throw(new IllegalArgumentException('Passed argument is not an util.Observer'));
       }
-      $this->_obs[]= &$observer;
+      $this->_obs[]= $observer;
     }
     
     /**
      * Notify observers
      *
-     * @access  public
      * @param   mixed arg default NULL
      */
     public function notifyObservers($arg= NULL) {
@@ -100,7 +98,6 @@
     /**
      * Sets changed flag
      *
-     * @access  protected
      */
     public function setChanged() {
       $this->_changed= TRUE;
@@ -109,7 +106,6 @@
     /**
      * Clears changed flag
      *
-     * @access  protected
      */
     public function clearChanged() {
       $this->_changed= FALSE;
@@ -118,7 +114,6 @@
     /**
      * Checks whether changed flag is set
      *
-     * @access  public
      * @return  bool
      */
     public function hasChanged() {

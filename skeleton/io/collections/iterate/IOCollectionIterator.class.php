@@ -35,12 +35,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.collections.IOCollection collection
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
-    public function __construct(&$collection, $recursive= FALSE) {
-      $this->collections= array(&$collection);
+    public function __construct($collection, $recursive= FALSE) {
+      $this->collections= array($collection);
       $this->collections[0]->open();
       $this->recursive= $recursive;
     }
@@ -49,11 +48,10 @@
      * Whether to accept a specific element. Always returns TRUE in this
      * implementation - overwrite in subclasses...
      *
-     * @access  protected
      * @param   &io.collections.IOElement element
      * @return  bool
      */
-    public function acceptElement(&$element) {
+    public function acceptElement($element) {
       return TRUE;
     }
     
@@ -62,7 +60,6 @@
      * returns true if next would return an element rather than throwing
      * an exception.)
      *
-     * @access  public
      * @return  bool
      */
     public function hasNext() {
@@ -71,7 +68,7 @@
       do {
         // End of collection, pop off stack and continue if there are more, 
         // returning otherwise
-        $this->_element= &$this->collections[0]->next();
+        $this->_element= $this->collections[0]->next();
         if (NULL === $this->_element) {
           $this->collections[0]->close();
           array_shift($this->collections);
@@ -95,11 +92,10 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @access  public
      * @return  &io.collections.IOElement
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    public function &next() {
+    public function next() {
       if (!$this->hasNext()) {
         throw(new NoSuchElementException('No more  entries'));
       }
@@ -112,7 +108,6 @@
     /**
      * Creates a string representation of this iterator
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

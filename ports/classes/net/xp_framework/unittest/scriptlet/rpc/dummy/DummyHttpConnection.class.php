@@ -19,10 +19,9 @@
     /**
      * Create request
      *
-     * @access  protected
      * @param   &peer.URL url
      */
-    public function _createRequest(&$url) {
+    public function _createRequest($url) {
       $this->request= new DummyHttpRequest($url);
     }
   }

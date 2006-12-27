@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string endpoint
      */
@@ -37,14 +36,13 @@
     /**
      * Setup method
      *
-     * @access  public
      * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() {
       try {
-        $remote= &Remote::forName('xp://'.$this->endpoint.'/');
-        $remote && $home= &$remote->lookup('xp/demo/Roundtrip');
-        $home && $this->instance= &$home->create();
+        $remote= Remote::forName('xp://'.$this->endpoint.'/');
+        $remote && $home= $remote->lookup('xp/demo/Roundtrip');
+        $home && $this->instance= $home->create();
       } catch (Exception $e) {
         throw(new PrerequisitesNotMetError(
           'Make sure xp/demo/Roundtrip is deployed @ '.$this->endpoint, 
@@ -56,7 +54,6 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string method
      * @param   mixed value
      * @throws  unittest.AssertionFailedError
@@ -68,7 +65,6 @@
     /**
      * Test echoString() method
      *
-     * @access  public
      */
     #[@test]
     public function echoString() {
@@ -78,7 +74,6 @@
     /**
      * Test echoInt() method
      *
-     * @access  public
      */
     #[@test]
     public function echoInt() {
@@ -90,7 +85,6 @@
     /**
      * Test echoDouble() method
      *
-     * @access  public
      */
     #[@test]
     public function echoDouble() {
@@ -102,7 +96,6 @@
     /**
      * Test echoBool() method
      *
-     * @access  public
      */
     #[@test]
     public function echoBool() {
@@ -113,7 +106,6 @@
     /**
      * Test echoNull() method
      *
-     * @access  public
      */
     #[@test]
     public function echoNull() {
@@ -123,7 +115,6 @@
     /**
      * Test echoDate() method
      *
-     * @access  public
      */
     #[@test]
     public function echoDate() {
@@ -133,7 +124,6 @@
     /**
      * Test echoInt() method
      *
-     * @access  public
      */
     #[@test]
     public function echoHash() {
@@ -146,7 +136,6 @@
     /**
      * Test echoArray() method
      *
-     * @access  public
      */
     #[@test]
     public function echoArray() {
@@ -157,7 +146,6 @@
      * Test passing a string to the echoArray() method, this should throw
      * a RemoteException.
      *
-     * @access  public
      */
     #[@test, @expect('remote.RemoteException')]
     public function incorrectArgumentsToArrayMethod() {

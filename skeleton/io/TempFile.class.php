@@ -41,7 +41,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string prefix default "tmp"
      */
     public function __construct($prefix= 'tmp') {

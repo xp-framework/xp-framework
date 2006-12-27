@@ -19,11 +19,10 @@
      * Decode XML node-set into the data structures
      * they represent
      *
-     * @access  public
      * @param   &xml.Node node
      * @return  &mixed
      */
-    public function &decode(&$node) {
+    public function decode($node) {
       return $this->_unmarshall($node);
     }
   
@@ -31,14 +30,13 @@
     /**
      * Recursively deserialize data for the given node.
      *
-     * @access  protected
      * @param   &xml.Node node
      * @return  &mixed
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException
      */
-    public function &_unmarshall(&$node) {
+    public function _unmarshall($node) {
       if (!is('xml.Node', $node->children[0]))
         throw(new XMLFormatException('Tried to access nonexistant node.'));
         
@@ -47,9 +45,9 @@
           $ret= array();
           foreach (array_keys($node->children[0]->children) as $idx) {
             $data= array();
-            $data[$node->children[0]->children[$idx]->children[0]->getName()]= &$node->children[0]->children[$idx]->children[0];
-            $data[$node->children[0]->children[$idx]->children[1]->getName()]= &$node->children[0]->children[$idx]->children[1];
-            $ret[$data['name']->getContent()]= &$this->_unmarshall($data['value']);
+            $data[$node->children[0]->children[$idx]->children[0]->getName()]= $node->children[0]->children[$idx]->children[0];
+            $data[$node->children[0]->children[$idx]->children[1]->getName()]= $node->children[0]->children[$idx]->children[1];
+            $ret[$data['name']->getContent()]= $this->_unmarshall($data['value']);
             unset($data);
           }
           
@@ -66,7 +64,7 @@
             
             // Cast the object to the class
             unset($ret['__xp_class']);
-            $ret= &cast($ret, xp::reflect($cname));
+            $ret= cast($ret, xp::reflect($cname));
           }
           
           return $ret;
@@ -75,7 +73,7 @@
         case 'array':
           $ret= array();
           foreach (array_keys($node->children[0]->children[0]->children) as $idx) {
-            $ret[]= &$this->_unmarshall($node->children[0]->children[0]->children[$idx]);
+            $ret[]= $this->_unmarshall($node->children[0]->children[0]->children[$idx]);
           }
           return $ret;
           break;
@@ -98,7 +96,7 @@
           return $s;
         
         case 'dateTime.iso8601':
-          $d= &Date::fromString($node->children[0]->getContent());
+          $d= Date::fromString($node->children[0]->getContent());
           return $d;
           
         default:

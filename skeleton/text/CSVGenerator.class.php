@@ -34,14 +34,13 @@
      * Set the output stream. The stream must be writeable. If the
      * stream is not open, it will be opened.
      *
-     * @access  public
      * @param   stream stream
      * @return  bool success
      */    
-    public function setOutputStream(&$stream) {
+    public function setOutputStream($stream) {
       try {
         if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
-        $this->stream= &$stream;
+        $this->stream= $stream;
       } catch (Exception $e) {
         throw ($e);
       }
@@ -51,7 +50,6 @@
     /**
      * Sets another column delimiter (standard is pipe "|").
      *
-     * @access  public
      * @param   char delim
      */
     public function setColDelimiter($delim) {
@@ -64,7 +62,6 @@
      * if we want to generate files for other oses as unix, we need to change the delimiter
      * e.g. windows: "\r\n"
      *
-     * @access public 
      * @param  string delim 
      */
     public function setLineDelimiter($delim) {
@@ -76,7 +73,6 @@
      * used to write the records, so be sure they are named exactly
      * as the data.
      *
-     * @access  public
      * @param   array header
      */    
     public function setHeader($array) {
@@ -87,7 +83,6 @@
     /**
      * Returns whether we have header information available
      *
-     * @access  private
      * @return  bool hasHeader
      */    
     public function _hasHeader() {
@@ -97,7 +92,6 @@
     /**
      * Writes the header line.
      *
-     * @access  private
      */    
     public function _writeHeader() {
       $this->stream->write(
@@ -112,7 +106,6 @@
      * Write a single column into the stream. This function takes
      * care of quotedness and escaping.
      *
-     * @access  private
      * @param   string data
      */    
     public function _writeColumn($data= '') {
@@ -138,7 +131,6 @@
     /**
      * Writes a record into the stream.
      *
-     * @access  public
      * @param   array data
      * @throws  lang.Exception e if any error occurs
      */    

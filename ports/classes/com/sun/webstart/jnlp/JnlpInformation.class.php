@@ -26,7 +26,6 @@
     /**
      * Set OfflineAllowed
      *
-     * @access  public
      * @param   bool offlineAllowed
      */
     public function setOfflineAllowed($offlineAllowed) {
@@ -36,7 +35,6 @@
     /**
      * Get OfflineAllowed
      *
-     * @access  public
      * @return  bool
      */
     public function getOfflineAllowed() {
@@ -46,7 +44,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     public function setTitle($title) {
@@ -56,7 +53,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -66,7 +62,6 @@
     /**
      * Set Vendor
      *
-     * @access  public
      * @param   string vendor
      */
     public function setVendor($vendor) {
@@ -76,7 +71,6 @@
     /**
      * Get Vendor
      *
-     * @access  public
      * @return  string
      */
     public function getVendor() {
@@ -86,7 +80,6 @@
     /**
      * Set Homepage
      *
-     * @access  public
      * @param   string homepage
      */
     public function setHomepage($homepage) {
@@ -96,7 +89,6 @@
     /**
      * Get Homepage
      *
-     * @access  public
      * @return  string
      */
     public function getHomepage() {
@@ -106,7 +98,6 @@
     /**
      * Set Icon
      *
-     * @access  public
      * @param   string icon
      */
     public function setIcon($icon) {
@@ -116,7 +107,6 @@
     /**
      * Get Icon
      *
-     * @access  public
      * @return  string
      */
     public function getIcon() {
@@ -126,7 +116,6 @@
     /**
      * Set default description
      *
-     * @access  public
      * @param   string description
      * @param   string type default JNLP_DESCR_DEFAULT one of the JNLP_DESCR_* constants
      */
@@ -137,7 +126,6 @@
     /**
      * Get default description
      *
-     * @access  public
      * @param   string type default JNLP_DESCR_DEFAULT one of the JNLP_DESCR_* constants
      * @return  string
      */

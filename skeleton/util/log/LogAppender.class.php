@@ -15,8 +15,6 @@
     /**
      * Append data
      *
-     * @model   abstract
-     * @access  public
      * @param   mixed* args
      */ 
     public function append() { }
@@ -25,14 +23,12 @@
      * Finalize this appender. This method is called when the logger
      * is shut down. Does nothing in this default implementation.
      *
-     * @access  public
      */   
     public function finalize() { }
     
     /**
      * Retrieve a readable representation of a variable
      *
-     * @access  protected
      * @param   mixed var
      * @return  string
      */

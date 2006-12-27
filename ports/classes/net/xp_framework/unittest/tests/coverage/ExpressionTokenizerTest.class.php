@@ -21,7 +21,6 @@
      * Retrieve fragments for a given piece of code
      *
      * @see     xp://net.xp_framework.unittest.tests.coverage.PHPCodeFragmentizer
-     * @access  protected
      * @param   string code
      * @return  unittest.coverage.Fragment[] expressions
      */
@@ -32,7 +31,6 @@
     /**
      * Assert method
      *
-     * @access  protected
      * @param   unittest.coverage.Fragment[] expected
      * @param   string code
      * @throws  unittest.AssertionFailedError
@@ -57,7 +55,6 @@
     /**
      * Tests empty input will result in an empty array of expressions.
      *
-     * @access  public
      */
     #[@test]
     public function emptyInput() {
@@ -67,7 +64,6 @@
     /**
      * Tests a single expression
      *
-     * @access  public
      */
     #[@test]
     public function singleExpression() {
@@ -80,7 +76,6 @@
      * Tests expression still gets returned even if we have a missing 
      * trailing semicolon (;)
      *
-     * @access  public
      */
     #[@test]
     public function missingTrailingSemicolon() {
@@ -92,7 +87,6 @@
     /**
      * Tests multiple expressions on one line
      *
-     * @access  public
      */
     #[@test]
     public function multipleExpressionsPerLine() {
@@ -105,7 +99,6 @@
     /**
      * Tests an expression spanning multiple lines
      *
-     * @access  public
      */
     #[@test]
     public function multilineLineExpression() {
@@ -125,7 +118,6 @@
     /**
      * Tests two expressions, each on a line by itself
      *
-     * @access  public
      */
     #[@test]
     public function twoExpressions() {
@@ -142,7 +134,6 @@
      * Tests a string containing an expression doesn't get torn apart 
      * into expressions.
      *
-     * @access  public
      */
     #[@test]
     public function stringsContainingExpressions() {
@@ -154,7 +145,6 @@
     /**
      * Tests a single block
      *
-     * @access  public
      */
     #[@test]
     public function singleBlock() {
@@ -166,7 +156,6 @@
     /**
      * Tests a string offset ($string{SCALAR})
      *
-     * @access  public
      */
     #[@test]
     public function scalarStringOffset() {
@@ -178,7 +167,6 @@
     /**
      * Tests a string offset ($string{EXPRESSION})
      *
-     * @access  public
      */
     #[@test]
     public function dynamicStringOffset() {
@@ -190,7 +178,6 @@
     /**
      * Tests an if block
      *
-     * @access  public
      */
     #[@test]
     public function ifBlock() {
@@ -202,7 +189,6 @@
     /**
      * Tests an if / else block
      *
-     * @access  public
      */
     #[@test]
     public function ifElseBlock() {
@@ -221,7 +207,6 @@
     /**
      * Tests nested blocks
      *
-     * @access  public
      */
     #[@test]
     public function nestedBlocks() {
@@ -233,7 +218,6 @@
     /**
      * Tests C++ style comments
      *
-     * @access  public
      */
     #[@test]
     public function cPlusPlusComment() {
@@ -246,7 +230,6 @@
     /**
      * Tests apidoc style comments
      *
-     * @access  public
      */
     #[@test]
     public function apiDocComment() {
@@ -260,7 +243,6 @@
     /**
      * Tests apidoc style comments
      *
-     * @access  public
      */
     #[@test]
     public function methodWithApiDocComment() {
@@ -280,7 +262,6 @@
     /**
      * Tests a class declaration
      *
-     * @access  public
      */
     #[@test]
     public function hereDoc() {
@@ -293,7 +274,6 @@
     /**
      * Tests a class declaration
      *
-     * @access  public
      */
     #[@test]
     public function classDeclaration() {

@@ -25,13 +25,11 @@
     /**
      * Retrieve an ImageInfo object from a file
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &img.util.ImageInfo
      * @throws  img.ImagingException in case extracting information from image file fails
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
         throw(new ImagingException(
           'Cannot load image information from '.$file->getURI()
@@ -53,7 +51,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -78,7 +75,6 @@
     /**
      * Set Width
      *
-     * @access  public
      * @param   int width
      */
     public function setWidth($width) {
@@ -88,7 +84,6 @@
     /**
      * Get Width
      *
-     * @access  public
      * @return  int
      */
     public function getWidth() {
@@ -98,7 +93,6 @@
     /**
      * Set Height
      *
-     * @access  public
      * @param   int height
      */
     public function setHeight($height) {
@@ -108,7 +102,6 @@
     /**
      * Get Height
      *
-     * @access  public
      * @return  int
      */
     public function getHeight() {
@@ -118,7 +111,6 @@
     /**
      * Set Type
      *
-     * @access  public
      * @param   int type
      */
     public function setType($type) {
@@ -128,7 +120,6 @@
     /**
      * Get Type
      *
-     * @access  public
      * @return  int
      */
     public function getType() {
@@ -138,7 +129,6 @@
     /**
      * Set Bits
      *
-     * @access  public
      * @param   int bits
      */
     public function setBits($bits) {
@@ -148,7 +138,6 @@
     /**
      * Get Bits
      *
-     * @access  public
      * @return  int
      */
     public function getBits() {
@@ -158,7 +147,6 @@
     /**
      * Set Channels
      *
-     * @access  public
      * @param   int channels
      */
     public function setChannels($channels) {
@@ -168,7 +156,6 @@
     /**
      * Get Channels
      *
-     * @access  public
      * @return  int
      */
     public function getChannels() {
@@ -178,7 +165,6 @@
     /**
      * Set Mime
      *
-     * @access  public
      * @param   string mime
      */
     public function setMime($mime) {
@@ -188,7 +174,6 @@
     /**
      * Get Mime
      *
-     * @access  public
      * @return  string
      */
     public function getMime() {
@@ -199,7 +184,6 @@
      * Retrieve whether a specified segment is available
      *
      * @see     http://www.ozhiker.com/electronics/pjmt/jpeg_info/app_segments.html
-     * @access  public
      * @param   string id the segment's name
      * @return  bool
      */    
@@ -210,7 +194,6 @@
     /**
      * Retrieve all segment names
      *
-     * @access  public
      * @return  string[]
      */    
     public function getSegmentNames() {
@@ -220,7 +203,6 @@
     /**
      * Retrieve segment data for a specified segment.
      *
-     * @access  public
      * @param   string id the segment's name
      * @return  bool
      * @throws  img.ImagingException when the specified segment is not available

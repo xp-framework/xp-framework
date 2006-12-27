@@ -24,11 +24,10 @@
     /**
      * Get type name by content
      *
-     * @access  private
      * @param   &mixed content
      * @return  string typename, e.g. "xsd:string"
      */
-    public function _typeName(&$content) {
+    public function _typeName($content) {
       static $tmap= array(      // Mapping PHP-typename => SOAP-typename
         'double'        => 'float',
         'integer'       => 'int'
@@ -42,11 +41,10 @@
     /**
      * Format content
      *
-     * @access  private
      * @param   &mixed content
      * @return  &mixed content, formatted, if necessary
      */
-    public function &_contentFormat(&$content) {
+    public function _contentFormat($content) {
       if (is_bool($content)) {
         return $content ? 'true' : 'false';
       }
@@ -56,12 +54,11 @@
     /**
      * Get content in iso-8859-1 encoding (the default).
      *
-     * @access  public
      * @param   string encoding
      * @param   &mixed namespaces
      * @return  &mixed data
      */
-    public function &getContent($encoding, &$namespaces) {
+    public function getContent($encoding, $namespaces) {
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
       
@@ -117,12 +114,11 @@
     /**
      * Marshaller
      *
-     * @access  private
      * @param   &webservices.soap.SOAPNode child
      * @param   mixed value
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    public function _marshall(&$child, $value, &$mapping) {
+    public function _marshall($child, $value, $mapping) {
       static $ns= 0;
       
       if (is_scalar($value)) {          // Scalar
@@ -174,7 +170,7 @@
         // A node
         if (isset($value->item)) {
           $child->attribute= $value->item->attribute;
-          $child->children= &array_merge($child->children, $value->item->children);
+          $child->children= array_merge($child->children, $value->item->children);
         }
         return;
       }
@@ -217,12 +213,11 @@
     /**
      * Recurse an array
      *
-     * @access  protected
      * @param   &xml.Node e element to add array to
      * @param   array a
      * @param   &webservices.soap.SOAPMapping mapping
      */
-    public function _recurse(&$e, $a, &$mapping) {
+    public function _recurse($e, $a, $mapping) {
       foreach (array_keys($a) as $field) {
         if ('_' == $field{0}) continue;
         $this->_marshall(
@@ -241,14 +236,12 @@
      *   $n= &Node::fromArray($array, 'elements');
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   array arr
      * @param   string name default 'array'
      * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    public static function &fromArray($arr, $name= 'array', $mapping) {
+    public static function fromArray($arr, $name= 'array', $mapping) {
       $n= new SOAPNode($name);
       $n->_recurse($n, $arr, $mapping);
       return $n;  
@@ -263,14 +256,12 @@
      *   $n= &Node::fromObject($object);
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   object obj
      * @param   string name default NULL
      * @param   &webservices.soap.SOAPMapping mapping
      * @return  &xml.Node
      */
-    public static function &fromObject($obj, $name= NULL, $mapping) {
+    public static function fromObject($obj, $name= NULL, $mapping) {
       return SOAPNode::fromArray(
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name,

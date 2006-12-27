@@ -35,11 +35,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &scriptlet.HttpSession storage
      * @param   string name default 'semaphore'
      */
-    public function __construct(&$storage, $name= 'semaphore') {
+    public function __construct($storage, $name= 'semaphore') {
       if (!is('scriptlet.HttpSession', $storage))
         throw(new IllegalArgumentException('Given argument is not a HttpSession'));
       
@@ -49,8 +48,6 @@
     /**
      * Set the semaphore to lock.
      *
-     * @model   abstract
-     * @access  public
      * @return  bool succeed
      */
     public function lock() {
@@ -64,8 +61,6 @@
     /**
      * Remove the semaphore to unlock.
      *
-     * @model   abstract
-     * @access  public
      * @return  bool succeed
      */
     public function unlock() {
@@ -79,8 +74,6 @@
      * Retrieve the creation time of the semaphore
      * as UNIX-timestamp
      *
-     * @model   abstract
-     * @access  public
      * @return  int utime
      */
     public function getCreatedAt() {

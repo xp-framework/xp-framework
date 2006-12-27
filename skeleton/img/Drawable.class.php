@@ -15,11 +15,10 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image);
+    public function draw($image);
   
   }
 ?>

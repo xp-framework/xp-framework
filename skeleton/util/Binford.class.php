@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int power default 6100
      * @throws  lang.IllegalArgumentException in case power contains an illegal value
      */
@@ -30,7 +29,6 @@
     /**
      * Set the power
      *
-     * @access  public
      * @param   int p power
      * @throws  lang.IllegalArgumentException in case the parameter p contains an illegal value
      */
@@ -44,7 +42,6 @@
     /**
      * Retrieve the power
      *
-     * @access  public
      * @return  int power
      */
     public function getPoweredBy() {
@@ -54,7 +51,6 @@
     /**
      * Retrieve string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -69,10 +65,9 @@
      *   X-Binford: 6100 (more power)
      * </pre>
      *
-     * @access  public
      * @return  &peer.Header
      */
-    public function &getHeader() {
+    public function getHeader() {
       return new Header('X-Binford', $this->poweredBy.' (more power)');
     }
   }

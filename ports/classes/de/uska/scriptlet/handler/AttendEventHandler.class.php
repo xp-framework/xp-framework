@@ -22,7 +22,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       $this->setWrapper(new AttendEventWrapper());
@@ -32,24 +31,22 @@
     /**
      * Retrieve identifier.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  string
      */
-    public function identifierFor(&$request, &$context) {
+    public function identifierFor($request, $context) {
       return $this->name.'.'.$request->getParam('event_id');
     }
     
     /**
      * Setup handler
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function setup(&$request, &$context) {
+    public function setup($request, $context) {
       $this->setFormValue('offers_seats', 0);
       if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
       
@@ -64,11 +61,11 @@
       }
       
       // Check if we're updating or inserting later
-      $attendee= &EventAttendee::getByEvent_idPlayer_id($request->getParam('event_id'), $player_id);
+      $attendee= EventAttendee::getByEvent_idPlayer_id($request->getParam('event_id'), $player_id);
       if ($player_id == $context->user->getPlayer_id()) {
-        $player= &$context->user;
+        $player= $context->user;
       } else {
-        $player= &Player::getByPlayer_id($player_id);
+        $player= Player::getByPlayer_id($player_id);
       }
       
       if ($attendee) {
@@ -84,9 +81,9 @@
       
       // Check that this event is still in the future. If not, only admins may change
       // the attending status
-      $event= &Event::getByEvent_id($request->getParam('event_id'));
-      $deadline_date= &$event->getDeadline();
-      $target_date= &$event->getTarget_date();
+      $event= Event::getByEvent_id($request->getParam('event_id'));
+      $deadline_date= $event->getDeadline();
+      $target_date= $event->getTarget_date();
       if ((($daedline_date && $deadline_date->isBefore(Date::now())) || $target_date->isBefore(Date::now())) && !$context->hasPermission('create_event')) {
         $this->addError('date_expired', '*');
         return FALSE;
@@ -101,13 +98,12 @@
     /**
      * Handle submitted data. Either create an event or update an existing one.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
-      $cm= &ConnectionManager::getInstance();
+    public function handleSubmittedData($request, $context) {
+      $cm= ConnectionManager::getInstance();
       
       // Either user requires a driver or he can offer seats - not both.
       if ($this->wrapper->getNeeds_seat() && $this->wrapper->getOffers_seats() > 0) {
@@ -127,13 +123,13 @@
       
       $attendee= $this->wrapper->getPlayer_id();
       try {
-        $db= &$cm->getByHost('uskadb', 0);
-        $transaction= &$db->begin(new Transaction('attend'));
+        $db= $cm->getByHost('uskadb', 0);
+        $transaction= $db->begin(new Transaction('attend'));
         
         // Check if this is a guest attendee
         if ('addguest' == $this->getValue('mode')) {
 
-          $event= &Event::getByEvent_id($this->wrapper->getEvent_id());
+          $event= Event::getByEvent_id($this->wrapper->getEvent_id());
           
           // Prevent adding guests to events without such.
           if (!$event->getAllow_guests()) {
@@ -157,7 +153,7 @@
         }
         
         $newAttend= FALSE;
-        $eventattend= &EventAttendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
+        $eventattend= EventAttendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
         if (!is('de.uska.db.EventAttendee', $eventattend)) {
           $eventattend= new EventAttendee();
           $eventattend->setEvent_id($this->wrapper->getEvent_id());
@@ -178,7 +174,7 @@
         }
         
         // Check on current number of attendees
-        $event= &Event::getByEvent_id($this->wrapper->getEvent_id());
+        $event= Event::getByEvent_id($this->wrapper->getEvent_id());
         $count= array_shift($db->select('
           count(*) as attendees
           from
@@ -211,12 +207,11 @@
     /**
      * In case of success, redirect the user to the event's page.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function finalize(&$request, &$response, &$context) {
+    public function finalize($request, $response, $context) {
       $response->forwardTo('event/view', $this->getValue('event_id'));
     }
   }

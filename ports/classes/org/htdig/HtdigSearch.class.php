@@ -86,7 +86,6 @@
     /**
      * Set Config
      *
-     * @access  public
      * @param   string config
      */
     public function setConfig($config) {
@@ -96,7 +95,6 @@
     /**
      * Get Config
      *
-     * @access  public
      * @return  string
      */
     public function getConfig() {
@@ -106,7 +104,6 @@
     /**
      * Set Params
      *
-     * @access  public
      * @param   mixed[] params
      */
     public function setParams($params) {
@@ -116,7 +113,6 @@
     /**
      * Get Params
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getParams() {
@@ -126,7 +122,6 @@
     /**
      * Set a single param
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -137,7 +132,6 @@
     /**
      * Get a single param
      *
-     * @access  public
      * @param   string name
      * @return  string value or NULL if isset
      */
@@ -151,7 +145,6 @@
     /**
      * Set Words
      *
-     * @access  public
      * @param   mixed[] words
      */
     public function setWords($words) {
@@ -161,7 +154,6 @@
     /**
      * Get Words
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getWords() {
@@ -171,7 +163,6 @@
     /**
      * Set Excludes
      *
-     * @access  public
      * @param   mixed[] excludes
      */
     public function setExcludes($excludes) {
@@ -181,7 +172,6 @@
     /**
      * Get Excludes
      *
-     * @access  public
      * @return  mixed[]
      */
     public function getExcludes() {
@@ -191,7 +181,6 @@
     /**
      * Set Algorithm
      *
-     * @access  public
      * @param   string algorithm
      */
     public function setAlgorithms($algorithm) {
@@ -201,7 +190,6 @@
     /**
      * Get Algorithm
      *
-     * @access  public
      * @return  string
      */
     public function getAlgorithms() {
@@ -211,7 +199,6 @@
     /**
      * Set Sort
      *
-     * @access  public
      * @param   mixed sort
      */
     public function setSort($sort) {
@@ -221,7 +208,6 @@
     /**
      * Get Sort
      *
-     * @access  public
      * @return  mixed
      */
     public function getSort() {
@@ -231,7 +217,6 @@
     /**
      * Set Maxresults
      *
-     * @access  public
      * @param   int maxresults
      */
     public function setMaxresults($maxresults) {
@@ -241,7 +226,6 @@
     /**
      * Get Maxresults
      *
-     * @access  public
      * @return  int
      */
     public function getMaxresults() {
@@ -251,7 +235,6 @@
     /**
      * Set Method
      *
-     * @access  public
      * @param   mixed method
      */
     public function setMethod($method) {
@@ -261,7 +244,6 @@
     /**
      * Get Method
      *
-     * @access  public
      * @return  mixed
      */
     public function getMethod() {
@@ -271,7 +253,6 @@
     /**
      * Build the query string for the search.
      *
-     * @access  protected
      * @return  string query
      */
     public function _getWordString() {
@@ -290,7 +271,6 @@
     /**
      * Build query string.
      *
-     * @access  protected
      * @return  string query
      */
     public function _getQuery() {
@@ -329,7 +309,6 @@
     /**
      * Set Executable
      *
-     * @access  public
      * @param   string executable
      */
     public function setExecutable($executable) {
@@ -339,7 +318,6 @@
     /**
      * Get Executable
      *
-     * @access  public
      * @return  string
      */
     public function getExecutable() {
@@ -349,14 +327,13 @@
     /**
      * Invoke the search.
      *
-     * @access  public
      * @return  &org.htdig.HtdigResultset
      * @throws  io.IOException in case the invocation of htdig failed
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
-    public function &invoke() {
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory();
+    public function invoke() {
+      $log= Logger::getInstance();
+      $cat= $log->getCategory();
 
       try {
         $cmdline= sprintf('%s -v %s %s',

@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string text
      * @param   int start the first line
      * @param   int end the last line
@@ -34,11 +33,10 @@
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @access  public
      * @param   &lang.Object expr
      * @return  bool
      */
-    public function equals(&$expr) {
+    public function equals($expr) {
       return (
         is('Comment', $expr) && 
         $this->text == $expr->text &&
@@ -50,7 +48,6 @@
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

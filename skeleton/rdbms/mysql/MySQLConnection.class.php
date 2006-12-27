@@ -27,7 +27,6 @@
     /**
      * Set Timeout
      *
-     * @access  public
      * @param   int timeout
      */
     public function setTimeout($timeout) {
@@ -39,10 +38,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.DSN dsn
      */
-    public function __construct(&$dsn) { 
+    public function __construct($dsn) { 
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter();
       $this->formatter->setEscape('"');
@@ -56,7 +54,6 @@
     /**
      * Connect
      *
-     * @access  public  
      * @param   bool reconnect default FALSE
      * @return  bool success
      * @throws  rdbms.SQLConnectException
@@ -108,7 +105,6 @@
     /**
      * Disconnect
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { 
@@ -122,7 +118,6 @@
     /**
      * Select database
      *
-     * @access  public
      * @param   string db name of database to select
      * @return  bool success
      * @throws  rdbms.SQLStatementFailedException
@@ -141,7 +136,6 @@
     /**
      * Prepare an SQL statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  string
      */
@@ -153,7 +147,6 @@
     /**
      * Retrieve identity
      *
-     * @access  public
      * @return  mixed identity value
      */
     public function identity() { 
@@ -165,7 +158,6 @@
     /**
      * Execute an insert statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -173,7 +165,7 @@
     public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -184,7 +176,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -192,7 +183,7 @@
     public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -202,7 +193,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -210,7 +200,7 @@
     public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -220,7 +210,6 @@
     /**
      * Execute a select statement and return all rows as an array
      *
-     * @access  public
      * @param   mixed* args
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
@@ -228,7 +217,7 @@
     public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -240,14 +229,13 @@
     /**
      * Execute any statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    public function &query() { 
+    public function query() { 
       $args= func_get_args();
-      $sql= call_user_func_array(array(&$this, 'prepare'), $args);
+      $sql= call_user_func_array(array($this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
@@ -304,20 +292,18 @@
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   &rdbms.Transaction transaction
      * @return  &rdbms.Transaction
      */
-    public function &begin(&$transaction) {
+    public function begin($transaction) {
       if (!$this->query('begin')) return FALSE;
-      $transaction->db= &$this;
+      $transaction->db= $this;
       return $transaction;
     }
     
     /**
      * Rollback a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */
@@ -328,7 +314,6 @@
     /**
      * Commit a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */

@@ -23,16 +23,14 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
-      $this->buttons= &Collection::forClass('net.xp_framework.unittest.xml.ButtonType');
+      $this->buttons= Collection::forClass('net.xp_framework.unittest.xml.ButtonType');
     }
 
     /**
      * Set ID
      *
-     * @access  public
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
@@ -43,7 +41,6 @@
     /**
      * Get ID
      *
-     * @access  public
      * @return  string id
      */
     #[@xmlfactory(element= '@id')]
@@ -54,7 +51,6 @@
     /**
      * Set caption
      *
-     * @access  public
      * @param   string caption
      */
     #[@xmlmapping(element= 'caption')]
@@ -65,7 +61,6 @@
     /**
      * Get caption
      *
-     * @access  public
      * @param   string caption
      */
     #[@xmlfactory(element= 'caption')]
@@ -76,12 +71,11 @@
     /**
      * Add a button
      *
-     * @access  public
      * @param   &net.xp_framework.unittest.xml.ButtonType button
      * @return  &net.xp_framework.unittest.xml.ButtonType the added button
      */
     #[@xmlmapping(element= 'button', class= 'net.xp_framework.unittest.xml.ButtonType')]
-    public function &addButton(&$button) {
+    public function addButton($button) {
       $this->buttons->add($button);
       return $button;
     }
@@ -89,7 +83,6 @@
     /**
      * Returns number of buttons
      *
-     * @access  public
      * @return  int
      */
     public function numButtons() {
@@ -99,18 +92,16 @@
     /**
      * Returns button at a given position
      *
-     * @access  public
      * @param   int
      * @return  &net.xp_framework.unittest.xml.ButtonType 
      */
-    public function &buttonAt($offset) {
+    public function buttonAt($offset) {
       return $this->buttons->get($offset);
     }
 
     /**
      * Returns whether buttons exist
      *
-     * @access  public
      * @return  int
      */
     public function hasButtons() {
@@ -120,7 +111,6 @@
     /**
      * Retrieve this dialog's buttons
      *
-     * @access  public
      * @return  &lang.Collection<net.xp_framework.unittest.xml.ButtonType>
      */
     #[@xmlfactory(element= 'button')]

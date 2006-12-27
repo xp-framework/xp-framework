@@ -19,7 +19,6 @@
     /**
      * Test construction
      *
-     * @access  public
      */
     #[@test]
     public function createAddress() {
@@ -29,7 +28,6 @@
     /**
      * Test fromString
      *
-     * @access  public
      */
     #[@test]
     public function testFromString() {
@@ -41,7 +39,7 @@
         '=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>'
       );
       foreach ($strings as $string) {
-        $address= &InternetAddress::fromString($string);
+        $address= InternetAddress::fromString($string);
         $this->assertEquals('kiesel', $address->localpart);
         $this->assertEquals('example.com', $address->domain);
       }
@@ -50,7 +48,6 @@
     /**
      * Test toString
      *
-     * @access  public
      */
     #[@test]
     public function testToString() {

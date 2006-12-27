@@ -25,18 +25,17 @@
     /**
      * Setup method 
      *
-     * @access  public
      */
     public function setUp() {
-      $this->handler= &newinstance('lang.reflect.InvocationHandler', array(), '{
+      $this->handler= newinstance('lang.reflect.InvocationHandler', array(), '{
         var $invocations= array();
 
-        function invoke(&$proxy, $method, $args) { 
+        function invoke($proxy, $method, $args) { 
           $this->invocations[$method."_".sizeof($args)]= $args;
         }
       }');
-      $this->iteratorClass= &XPClass::forName('util.XPIterator');
-      $this->observerClass= &XPClass::forName('util.Observer');
+      $this->iteratorClass= XPClass::forName('util.XPIterator');
+      $this->observerClass= XPClass::forName('util.Observer');
     }
 
     /**
@@ -44,11 +43,10 @@
      * interfaces, using the default classloader and the handler defined
      * in setUp()
      *
-     * @access  protected
      * @param   lang.XPClass[] interfaces
      * @return  &lang.reflect.Proxy
      */
-    public function &proxyInstanceFor($interfaces) {
+    public function proxyInstanceFor($interfaces) {
       return Proxy::newProxyInstance(
         ClassLoader::getDefault(),
         $interfaces, 
@@ -61,11 +59,10 @@
      * interfaces, using the default classloader and the handler defined
      * in setUp()
      *
-     * @access  protected
      * @param   lang.XPClass[] interfaces
      * @return  &lang.XPClass
      */
-    public function &proxyClassFor($interfaces) {
+    public function proxyClassFor($interfaces) {
       return Proxy::getProxyClass(
         ClassLoader::getDefault(),
         $interfaces,
@@ -77,11 +74,10 @@
      * Tests Proxy classes are prefixed to make them unique. The prefix
      * is a constant defined in the Proxy class.
      *
-     * @access  public
      */
     #[@test]
     public function proxyClassNamesGetPrefixed() {
-      $class= &$this->proxyClassFor(array($this->iteratorClass));
+      $class= $this->proxyClassFor(array($this->iteratorClass));
       $this->assertEquals(PROXY_PREFIX, substr($class->getName(), 0, strlen(PROXY_PREFIX)));
     }
 
@@ -89,13 +85,12 @@
      * Tests calling getProxyClass() twice with the same interface list
      * will result in the same proxy class
      *
-     * @access  public
      */
     #[@test]
     public function classesEqualForSameInterfaceList() {
-      $c1= &$this->proxyClassFor(array($this->iteratorClass));
-      $c2= &$this->proxyClassFor(array($this->iteratorClass));
-      $c3= &$this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
+      $c1= $this->proxyClassFor(array($this->iteratorClass));
+      $c2= $this->proxyClassFor(array($this->iteratorClass));
+      $c3= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
 
       $this->assertEquals($c1, $c2);
       $this->assertNotEquals($c1, $c3);
@@ -104,11 +99,10 @@
     /**
      * Tests Proxy implements the interface(s) passed
      *
-     * @access  public
      */
     #[@test]
     public function iteratorInterfaceIsImplemented() {
-      $class= &$this->proxyClassFor(array($this->iteratorClass));
+      $class= $this->proxyClassFor(array($this->iteratorClass));
       $interfaces= $class->getInterfaces();
       $this->assertEquals(2, sizeof($interfaces));
       $this->assertEquals($this->iteratorClass, $interfaces[0]);
@@ -117,11 +111,10 @@
     /**
      * Tests Proxy implements the interface(s) passed
      *
-     * @access  public
      */
     #[@test]
     public function allInterfacesAreImplemented() {
-      $class= &$this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
+      $class= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
       $interfaces= $class->getInterfaces();
       $this->assertEquals(3, sizeof($interfaces));
       $this->assertIn($interfaces, $this->iteratorClass);
@@ -131,7 +124,6 @@
     /**
      * Tests Proxy implements all Iterator methods
      *
-     * @access  public
      */
     #[@test]
     public function iteratorMethods() {
@@ -141,7 +133,7 @@
         'hasnext', 'next'                                             // util.XPIterator
       );
       
-      $class= &$this->proxyClassFor(array($this->iteratorClass));
+      $class= $this->proxyClassFor(array($this->iteratorClass));
       $methods= $class->getMethods();
 
       $this->assertEquals(sizeof($expected), sizeof($methods));
@@ -156,11 +148,10 @@
     /**
      * Tests util.Iterator::next() invocation without arguments
      *
-     * @access  public
      */
     #[@test]
     public function iteratorNextInvoked() {
-      $proxy= &$this->proxyInstanceFor(array($this->iteratorClass));
+      $proxy= $this->proxyInstanceFor(array($this->iteratorClass));
       $proxy->next();
       $this->assertEquals(array(), $this->handler->invocations['next_0']);
     }
@@ -168,7 +159,6 @@
     /**
      * Tests proxies can not be created for classes, only for interfaces
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotCreateProxiesForClasses() {
@@ -179,12 +169,11 @@
      * Check that implementing two interfaces that declare a common
      * method does not issue a fatal error.
      *
-     * @access  public
      */
     #[@test]
     public function allowDoubledInterfaceMethod() {
-      $cl= &ClassLoader::getDefault();
-      $newIteratorClass= &$cl->defineClass('util.NewIterator', 'interface NewIterator extends XPIterator {}');
+      $cl= ClassLoader::getDefault();
+      $newIteratorClass= $cl->defineClass('util.NewIterator', 'interface NewIterator extends XPIterator {}');
       
       $this->proxyInstanceFor(array(
         XPClass::forName('util.XPIterator'),
@@ -195,11 +184,10 @@
     /**
      * Check that overloaded methods are correctly built.
      *
-     * @access  public
      */
     #[@test]
     public function overloadedMethod() {
-      $proxy= &$this->proxyInstanceFor(array(XPClass::forName('net.xp_framework.unittest.reflection.OverloadedInterface')));
+      $proxy= $this->proxyInstanceFor(array(XPClass::forName('net.xp_framework.unittest.reflection.OverloadedInterface')));
       $proxy->overloaded('foo');
       $proxy->overloaded('foo', 'bar');
       $this->assertEquals(array('foo'), $this->handler->invocations['overloaded_1']);

@@ -19,7 +19,6 @@
     /**
      * Always succeeds
      *
-     * @access  public
      */
     #[@test]
     public function succeeds() {
@@ -29,7 +28,6 @@
     /**
      * Always fails
      *
-     * @access  public
      */
     #[@test]
     public function fails() {
@@ -39,7 +37,6 @@
     /**
      * A test that timeouts
      *
-     * @access  public
      */
     #[@test, @limit(time= 0.010)]
     public function timeouts() {
@@ -53,7 +50,6 @@
     /**
      * A test that does not timeout
      *
-     * @access  public
      */
     #[@test, @limit(time= 1.0)]
     public function noTimeout() {

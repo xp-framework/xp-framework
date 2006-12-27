@@ -40,7 +40,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host
      * @param   int port default 2401
      */  
@@ -51,7 +50,6 @@
     /**
      * Connect to CVS pserver
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case connecting failed
      */  
@@ -62,7 +60,6 @@
     /**
      * Wrapper that sends a command to the remote host.
      *
-     * @access  protected  
      * @param   string format
      * @param   mixed* args
      * @return  bool success
@@ -77,7 +74,6 @@
     /**
      * Wrapper that reads a line and checks for expected output
      *
-     * @access  public
      * @param   string expect one of the CVSR_EXPECT_* constants
      * @param   string data default ''
      * @return  mixed
@@ -139,7 +135,6 @@
     /**
      * Negotiate
      *
-     * @access  protected
      * @return  bool success
      * @see     http://www.loria.fr/~molli/cvs/doc/cvsclient_5.html#SEC13
      */
@@ -182,7 +177,6 @@
     /**
      * Authenticate ourselves
      *
-     * @access  public
      * @param   string cvsroot
      * @param   string user
      * @param   string pass default ''
@@ -246,7 +240,6 @@
     /**
      * Return the version of CVS running as server.
      *
-     * @access  public
      * @return  string
      */
     public function version() {
@@ -259,7 +252,6 @@
     /**
      * Close connection
      *
-     * @access  public
      */
     public function close() {
       try {
@@ -274,11 +266,10 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) { 
-      $this->cat= &$cat;
+    public function setTrace($cat) { 
+      $this->cat= $cat;
     }
 
   } 

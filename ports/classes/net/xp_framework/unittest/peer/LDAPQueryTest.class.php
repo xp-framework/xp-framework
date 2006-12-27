@@ -20,7 +20,6 @@
     /**
      * Test general functionality with tokenizer
      *
-     * @access  public
      */
     #[@test]
     public function testTokenizer() {
@@ -39,7 +38,6 @@
     /**
      * Test various replacement rules in the tokenizer.
      *
-     * @access  public
      */
     #[@test]
     public function testTokenizerReplacements() {
@@ -60,7 +58,6 @@
     /**
      * Test date tokens.
      *
-     * @access  public
      */
     #[@test]
     public function testDateToken() {
@@ -74,7 +71,6 @@
     /**
      * Test NULL tokens
      *
-     * @access  public
      */
     #[@test]
     public function testNullTokens() {
@@ -88,7 +84,6 @@
      * Test for argument checks (only scalars or objects may be
      * passed).
      *
-     * @access public 
      */
     #[@test, @expect('IllegalArgumentException')]
     public function testNonScalarInput() {

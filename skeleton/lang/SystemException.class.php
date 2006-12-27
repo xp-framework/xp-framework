@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message the error-message
      * @param   int code the error-code
      */

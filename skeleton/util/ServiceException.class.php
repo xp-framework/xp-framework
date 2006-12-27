@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed faultcode faultcode (can be int or string)
      * @param   string message
      * @param   lang.Throwable default NULL cause causing exception
@@ -38,7 +37,6 @@
     /**
      * Set Faultcode
      *
-     * @access  public
      * @param   mixed faultcode
      */
     public function setFaultcode($faultcode) {
@@ -48,7 +46,6 @@
     /**
      * Get Faultcode
      *
-     * @access  public
      * @return  mixed
      */
     public function getFaultcode() {
@@ -58,7 +55,6 @@
     /**
      * Retrieve stacktrace from cause if set or from self otherwise.
      *
-     * @access  public
      * @return  lang.StackTraceElement[] array of stack trace elements
      * @see     xp://lang.StackTraceElement
      */

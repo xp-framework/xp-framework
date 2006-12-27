@@ -22,8 +22,6 @@
     /**
      * Retrieve expressions from a given piece of code
      *
-     * @model   static
-     * @access  public
      * @param   string code
      * @return  unittest.coverage.Fragment[] expressions
      */
@@ -31,12 +29,12 @@
       static $delim= array(')', ';', ',', '=', '+', '-', '*', '/', '%');
       
       $tokens= token_get_all(trim($code));
-      $expressions= &Collection::forClass('Fragment');
+      $expressions= Collection::forClass('Fragment');
       $expression= '';
       $line= 1 + substr_count($tokens[0][1], "\n");
       $last= 1;
       $level= 0;
-      $collections= array(&$expressions);
+      $collections= array($expressions);
       $blocks= array();
       
       // Iterate over tokens, starting from the T_OPEN_TAG and ending 
@@ -79,8 +77,8 @@
             break;
           
           case '{':           // SOB
-            $blocks[$level]= &$collections[$level]->add(new Block(trim($expression), array(), $line, -1));
-            $collections[++$level]= &$blocks[$level- 1]->expressions;
+            $blocks[$level]= $collections[$level]->add(new Block(trim($expression), array(), $line, -1));
+            $collections[++$level]= $blocks[$level- 1]->expressions;
             $expression= '';
             $last= -1;
             break;

@@ -23,8 +23,6 @@
      *   <li>ext - tests that PHP extension is available via extension_loaded()</li>
      * </ul>
      *
-     * @model   abstract
-     * @access  protected
      * @return  string
      */
     public function driverName() { }
@@ -32,7 +30,6 @@
     /**
      * Tests driver is available in current PHP setup
      *
-     * @access  public
      */
     #[@test]
     public function driverAvailable() {

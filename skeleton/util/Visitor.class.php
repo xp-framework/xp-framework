@@ -16,9 +16,8 @@
      * Visits the given Component. Work on the visited objects
      * is up to implementation :)
      *
-     * @access  public
      * @param   &util.Component Component
      */
-    public function visit(&$Component);
+    public function visit($Component);
   }
 ?>

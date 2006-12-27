@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   resource handle
      */
     public function __construct($handle) {
@@ -30,7 +29,6 @@
     /**
      * Retrieves the handle for the key.
      *
-     * @access  public
      * @return  resource
      */
     public function getHandle() {
@@ -40,18 +38,14 @@
     /**
      * Create a key from its string representation
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &security.crypto.CryptoKey
      */
-    public static function &fromString($string) { }
+    public static function fromString($string) { }
     
     /**
      * Encrypt data using this key
      *
-     * @model   abstract
-     * @access  public
      * @param   string data
      * @return  string
      */
@@ -60,8 +54,6 @@
     /**
      * Decrypt data using this key
      *
-     * @model   abstract
-     * @access  public
      * @param   string data
      * @return  string 
      */

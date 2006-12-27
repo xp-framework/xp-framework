@@ -35,12 +35,11 @@
      *   new Criteria(array('domainname', 'xp-framework.net', EQUAL));
      * </code>
      *
-     * @access  public
      * @param   rdbms.criterion.Criterion condition default NULL
      */
     public function __construct($criterion= NULL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
-        $this->conditions[]= &$criterion;
+        $this->conditions[]= $criterion;
       } else if (is_array($criterion)) {
         $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
         for ($i= 1, $n= func_num_args(); $i < $n; $i++) {
@@ -69,12 +68,11 @@
      *   }
      * </code>
      *
-     * @access  public
      * @param   rdbms.criterion.Criterion criterion
      */
     public function add($criterion, $value= NULL, $comparison= EQUAL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
-        $this->conditions[]= &$criterion;
+        $this->conditions[]= $criterion;
       } else {
         $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
       }
@@ -96,7 +94,6 @@
      *   <li>DESCENDING</li>
      * </ul>
      *
-     * @access  public
      * @param   string column
      * @param   string order default ASCENDING
      */
@@ -107,7 +104,6 @@
     /**
      * Add group by
      *
-     * @access  public
      * @param   string column
      */
     public function addGroupBy($column) {
@@ -117,7 +113,6 @@
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -131,13 +126,12 @@
     /**
      * Export SQL
      *
-     * @access  public
      * @param   &rdbms.DBConnection db
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function toSQL(&$db, $types) {
+    public function toSQL($db, $types) {
       $sql= '';
       
       // Process conditions
@@ -172,12 +166,11 @@
     /**
      * Executes an SQL SELECT statement
      *
-     * @access  package
      * @param   &rdbms.DBConnection conn
      * @param   &rdbms.Peer peer
      * @return  &rdbms.ResultSet
      */
-    public function executeSelect(&$conn, &$peer) {
+    public function executeSelect($conn, $peer) {
       return $conn->query(
         'select %c from %c%c', 
         array_keys($peer->types),

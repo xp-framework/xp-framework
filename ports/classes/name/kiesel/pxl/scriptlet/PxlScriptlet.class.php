@@ -20,10 +20,9 @@
     /**
      * Set our own processor object
      *
-     * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    public function &_processor() {
+    public function _processor() {
       $p= new DomXSLProcessor();
       return $p;
     }
@@ -31,22 +30,20 @@
     /**
      * Returns whether we need a context
      *
-     * @access  
      * @param   
      * @return  
      */
-    public function wantsContext(&$request) {
+    public function wantsContext($request) {
       return $this->needsSession($request) || $request->hasSession();
     }
 
     /**
      * Sets the responses XSL stylesheet
      *
-     * @access  protected
      * @param   &scriptlet.scriptlet.XMLScriptletRequest request
      * @param   &scriptlet.scriptlet.XMLScriptletResponse response
      */
-    public function _setStylesheet(&$request, &$response) {
+    public function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
         '%s/%s.xsl',
         $request->getProduct(),

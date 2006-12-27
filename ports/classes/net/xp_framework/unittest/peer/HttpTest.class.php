@@ -37,7 +37,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string uri
      */
@@ -49,7 +48,6 @@
     /**
      * Setup function
      *
-     * @access  public
      * @throws  rdbms.DriverNotSupportedException
      */
     public function setUp() {
@@ -59,14 +57,13 @@
     /**
      * Private helper method
      *
-     * @access  private
      * @param   string method
      * @param   bool expectingData
      * @return  array data
      */
     public function _testRequest($method, $expectingData) {
       try {
-        $response= &$this->conn->request($method, array(
+        $response= $this->conn->request($method, array(
           'a'   => 'b',
           'b'   => 'c'
         ));
@@ -102,7 +99,6 @@
     /**
      * Test get method
      *
-     * @access  public
      */
     #[@test]
     public function testGet() {
@@ -112,7 +108,6 @@
     /**
      * Test post method
      *
-     * @access  public
      */
     #[@test]
     public function testPost() {
@@ -122,7 +117,6 @@
     /**
      * Test head method
      *
-     * @access  public
      */
     #[@test]
     public function testHead() {

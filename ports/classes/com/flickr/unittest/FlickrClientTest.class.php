@@ -21,7 +21,6 @@
     /**
      * Setup method. Creates client member
      *
-     * @access  public
      */
     public function setUp() {
       $this->client= new FlickrClient(new XmlRpcHttpTransport(FLICKR_XMLRPC_ENDPOINT));
@@ -30,7 +29,6 @@
     /**
      * Test deserialization of a scalar
      *
-     * @access  public
      */
     #[@test]
     public function unserializeScalar() {
@@ -43,7 +41,6 @@
     /**
      * Test deserialization of a hash
      *
-     * @access  public
      */
     #[@test]
     public function unserializeArray() {
@@ -56,7 +53,6 @@
     /**
      * Test deserialization of a complex (hash of hashes)
      *
-     * @access  public
      */
     #[@test]
     public function unserializeComplex() {
@@ -69,7 +65,6 @@
     /**
      * Test deserialization of attributes
      *
-     * @access  public
      */
     #[@test]
     public function unserializeAttributes() {

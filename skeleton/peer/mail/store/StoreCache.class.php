@@ -34,7 +34,6 @@
      * }
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -54,7 +53,6 @@
     /**
      * Remove a key from cache
      *
-     * @access  public
      * @param   string key
      */
     public function remove($key) {
@@ -64,7 +62,6 @@
     /**
      * Expunge cache
      *
-     * @access  public
      */    
     public function expunge() {
       unset($this->data);
@@ -74,29 +71,26 @@
     /**
      * Get a value from cache by key
      *
-     * @access  public
      * @param   string key
      * @return  &mixed value or NULL to indicate the value doesn't exist
      */    
-    public function &get($key) {
+    public function get($key) {
       if (isset($this->data[$key])) return $this->data[$key]; else return NULL;
     }
   
     /**
      * Insert into / update in cache
      *
-     * @access  public
      * @param   string key
      * @param   &mixed val
      */
-    public function put($key, &$val) {
-      $this->data[$key]= &$val;
+    public function put($key, $val) {
+      $this->data[$key]= $val;
     }
     
     /**
      * Check whether cache has a value by key
      *
-     * @access  public
      * @param   string key
      * @return  bool TRUE if a value exists
      */

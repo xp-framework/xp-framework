@@ -24,7 +24,6 @@
     /**
      * Construct a new CVS Interface object
      *
-     * @access  public
      * @param   string filename
      * @throws  io.FileNotFoundException if filename is not a file
      */
@@ -41,7 +40,6 @@
      * to the desired directory before doing so and changing it back
      * after finishing.
      *
-     * @access  protected
      * @param   string cvsCmd
      * @return  string[]
      */
@@ -57,7 +55,6 @@
     /**
      * Update a file or directory
      *
-     * @access  public
      * @param   bool sim default FALSE whether to simulate
      * @return  stdclass[] objects
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC152
@@ -93,10 +90,9 @@
      *   $result->tags['STABLE']= '1.15';
      * </cde>
      *
-     * @access  public
      * @return  &stdclass status
      */
-    public function &getStatus() {
+    public function getStatus() {
       try {
         $output= $this->_execute ('status -v');
       } catch (CVSInterfaceException $e) {
@@ -153,7 +149,6 @@
     /**
      * Commit the file (needs write access to repository)
      *
-     * @access  public
      * @param   string comment
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC124
      */
@@ -167,7 +162,7 @@
         throw($e);
       }
 
-      $return= &$this->_execute(sprintf ('commit -F %s', $f->getURI()));
+      $return= $this->_execute(sprintf ('commit -F %s', $f->getURI()));
       
       // It seems CVS automatically removes the tmp-file after
       // reading it, so we don't need to do so (gives error).
@@ -179,7 +174,6 @@
      * To complete this action, you have to call commit. Use this with
      * caution.
      *
-     * @access  public
      * @return  bool success
      */
     public function remove() {
@@ -198,7 +192,6 @@
      * that the directory also already exists in CVS, otherwise
      * an error will be thrown.
      *
-     * @access  public
      * @return  bool success
      */    
     public function add() {
@@ -212,7 +205,6 @@
      * Specify both params to diff two CVS-revisions against each other.
      * You can also use CVS-Tags here.
      *
-     * @access  public
      * @param   string revision_from
      * @param   string revision_to
      * @return  array diff lines from the diff
@@ -230,7 +222,6 @@
     /**
      * Tags a file in repository. 
      *
-     * @access  public
      * @param   string tag
      * @return  bool success
      */    
@@ -248,11 +239,10 @@
      * parser will fail to correctly identify log-entries if any
      * log-line contains a line of 28 '-'.
      *
-     * @access  public
      * @return  &array logs
      * @see     http://www.cvshome.org/docs/manual/cvs_16.html#SEC142
      */
-    public function &getLog() {
+    public function getLog() {
       $output= $this->_execute ('log');
       $divider= str_repeat ('-', 28);
       $log= array();
@@ -302,7 +292,6 @@
      * Retrieves the data of the file at a specific revision.
      * If no revision is given, this fetches HEAD.
      *
-     * @access  public
      * @param   string revision default NULL 
      * @return  string contents
      */    

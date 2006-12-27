@@ -30,7 +30,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -47,10 +46,9 @@
     /**
      * Private helper function
      *
-     * @access  private
      * @return  &mixed data
      */
-    public function &_get() {
+    public function _get() {
       $h= shm_attach($this->spot);
       $data= shm_get_var($h, $this->name);
       shm_detach($h);
@@ -62,7 +60,6 @@
      * Returns whether this segment is empty (i.e., has not been written or was
      * previously removed)
      *
-     * @access  public
      * @return  bool TRUE if this segment is empty
      */
     public function isEmpty() {
@@ -72,11 +69,10 @@
     /**
      * Get this segment's contents
      *
-     * @access  public
      * @return  &mixed data
      * @throws  io.IOException in case an error occurs
      */
-    public function &get() {
+    public function get() {
       if (FALSE === ($data= $this->_get())) {
         throw(new IOException('Could not read segment '.$this->name));
       }
@@ -87,13 +83,12 @@
     /**
      * Put this segment's contents
      *
-     * @access  public
      * @param   &mixed data
      * @param   int permissions default 0666 permissions
      * @return  bool success
      * @throws  io.IOException in case an error occurs
      */
-    public function put(&$val, $permissions= 0666) {
+    public function put($val, $permissions= 0666) {
       $v= array($val);
       $h= shm_attach($this->spot, (strlen(serialize($v)) + 44) * 2, $permissions);
       $ret= shm_put_var($h, $this->name, $v);
@@ -108,7 +103,6 @@
     /**
      * Remove this segment's contents
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException in case an error occurs
      */

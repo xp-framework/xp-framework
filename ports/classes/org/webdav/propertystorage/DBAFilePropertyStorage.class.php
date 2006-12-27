@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string filename
      * @param   string handler one of DBH_* handler constants
      * @see     php://dba#dba.requirements Handler decriptions
@@ -37,7 +36,6 @@
     /**
      * Set all properties for specific uri
      *
-     * @access  public
      * @param   string uri The URI
      * @param   org.webdav.WebdavProperty[] properties
      */
@@ -55,7 +53,6 @@
     /**
      * Read all properties for specific uri
      *
-     * @access  public
      * @param   string uri The URI
      * @return  org.webdav.WebdavProperty[]
      */
@@ -72,11 +69,10 @@
     /**
      * Sets a property for a specific URI
      *
-     * @access  public
      * @param   string uri The URI
      * @param   &org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
      */
-    public function setProperty($uri, &$property) {
+    public function setProperty($uri, $property) {
       $name= $property->getName();
       $prefix= $property->getNameSpacePrefix();
       $properties= $this->getProperties($uri);
@@ -91,12 +87,11 @@
     /**
      * Retrieve property for specific URI
      *
-     * @access  public
      * @param   string uri  The URI
      * @param   string name The property's name
      * @return  &org.webdav.WebdavProperty
      */
-    public function &getProperty($uri, $name) {
+    public function getProperty($uri, $name) {
       $properties= $this->getProperties($uri);
       return isset($properties[$name]) ? $properties[$name] : NULL;
     }
@@ -104,7 +99,6 @@
     /**
      * Check if property is available
      *
-     * @access  public
      * @param   string uri  The URI
      * @param   string name The property's name
      * @return  bool
@@ -117,11 +111,10 @@
     /**
      * Sets a Lock for a specific URI
      *
-     * @access public
      * @param  string uri The URI
      * @param  org.webdav.WebdavLock The WebDav lock
      */
-    public function setLock($uri, &$lock) {
+    public function setLock($uri, $lock) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_WRITE);
       $ret= $this->store($uri, serialize($lock));
@@ -132,11 +125,10 @@
     /**
      * Retrieve lock for specific URI
      *
-     * @access  public
      * @param   string uri  The URI
      * @return  &org.webdav.WebdavLock
      */
-    public function &getLock($uri) {
+    public function getLock($uri) {
       $uri= 'LOCK:'.$uri;
       $this->open(DBO_READ);
       $lock= $this->lookup($uri) ? unserialize($this->fetch($uri)) : NULL;
@@ -147,7 +139,6 @@
     /**
      * Deletes a Lock for a specific URI
      *
-     * @access public
      * @param  string uri The URI
      */
     public function removeLock($uri) {

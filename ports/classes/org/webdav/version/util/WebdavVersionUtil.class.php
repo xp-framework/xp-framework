@@ -16,14 +16,13 @@
     /**
      * Creates new version object relating on latest version
      *
-     * @access  public
      * @param   &org.webdav.version.Webdav*Version
      * @param   &io.File file
      * @return  &org.webdav.version.Webdav*Version
      */
-    public function &getNextVersion(&$actVersion, &$file) {
+    public function getNextVersion($actVersion, $file) {
       // Load same type of version as before
-      $obj= &XPClass::forName(XP::typeOf($actVersion));
+      $obj= XPClass::forName(XP::typeOf($actVersion));
       
       // Get name of file, without extension    
       $fname= basename($actVersion->getFilename(), '.'.$file->getExtension());
@@ -32,7 +31,7 @@
       $dir= substr(dirname($actVersion->getHref()), 12);
       
       // Create new version object 
-      with ($version= &$obj->newInstance($actVersion->getFilename())); {
+      with ($version= $obj->newInstance($actVersion->getFilename())); {
         $version->setVersionNumber($actVersion->getVersionNumber()+0.1);
         $version->setHref('../versions/'.$dir.'/'.$fname.'['.$version->getVersionNumber().'].'.$file->getExtension());
         $version->setVersionName($fname.'['.$version->getVersionNumber().'].'.$file->getExtension());

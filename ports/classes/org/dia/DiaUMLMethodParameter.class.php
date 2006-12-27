@@ -20,7 +20,6 @@
     /**
      * Initialize this UMLMethodParameter with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -36,7 +35,6 @@
     /**
      * Sets the 'value' of the UML method parameter
      *
-     * @access  public
      * @param   string value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="value"]/dia:string', value= 'string')]
@@ -47,7 +45,6 @@
     /**
      * Sets the 'comment' of the UML method parameter
      *
-     * @access  public
      * @param   string comment
      */
     #[@fromDia(xpath= 'dia:attribute[@name="comment"]/dia:string', value= 'string')]
@@ -58,7 +55,6 @@
     /**
      * Sets the 'kind' of the UML method parameter
      *
-     * @access  public
      * @param   int kind
      */
     #[@fromDia(xpath= 'dia:attribute[@name="kind"]/dia:enum/@val', value= 'enum')]

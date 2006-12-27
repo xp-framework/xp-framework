@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string number
      */
     public function __construct($number) {
@@ -27,7 +26,6 @@
     /**
      * Set Number
      *
-     * @access  public
      * @param   string number
      */
     public function setNumber($number) {
@@ -37,7 +35,6 @@
     /**
      * Get Number
      *
-     * @access  public
      * @return  string
      */
     public function getNumber() {

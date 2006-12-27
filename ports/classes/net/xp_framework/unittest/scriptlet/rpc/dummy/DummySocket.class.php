@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string string
      */
     public function __construct($string) {
@@ -28,7 +27,6 @@
     /**
      * Returns whether this socket is connected
      *
-     * @access  public
      * @return  bool
      */
     public function isConnected() {
@@ -38,7 +36,6 @@
     /**
      * Connect
      *
-     * @access  public
      * @param   float timeout default 2.0
      * @return  bool
      */
@@ -50,7 +47,6 @@
     /**
      * Close
      *
-     * @access  public
      * @return  bool
      */
     public function close() {
@@ -61,7 +57,6 @@
     /**
      * Set timeout
      *
-     * @access  public
      * @param   float timeout default 2.0
      */
     public function setTimeout($timeout= 2.0) {
@@ -71,7 +66,6 @@
     /**
      * Set blocking (NOOP)
      *
-     * @access  public
      * @param   bool blockMode
      */
     public function setBlocking($blockMode) {}
@@ -79,7 +73,6 @@
     /**
      * Check whether data is available
      *
-     * @access  public
      * @return  bool
      */
     public function canRead() {
@@ -89,7 +82,6 @@
     /**
      * Read
      *
-     * @access  public
      * @param   int len default 4096
      * @return  string
      */
@@ -101,7 +93,6 @@
     /**
      * Read a line
      *
-     * @access  public
      * @param   int len
      * @return  string
      */
@@ -112,7 +103,6 @@
     /**
      * Read binary (NOOP)
      *
-     * @access  public
      * @return  string
      */
     public function readBinary() {}
@@ -120,7 +110,6 @@
     /**
      * Returns whether we're at the end of the data
      *
-     * @access  public
      * @return  bool
      */
     public function eof() {

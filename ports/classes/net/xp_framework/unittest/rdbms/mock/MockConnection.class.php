@@ -26,10 +26,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.DSN dsn
      */
-    public function __construct(&$dsn) { 
+    public function __construct($dsn) { 
       parent::__construct($dsn);
       $this->resultSet= new MockResultSet();
     }
@@ -37,28 +36,25 @@
     /**
      * Mock: Set ResultSet
      *
-     * @access  public
      * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
      */
-    public function setResultSet(&$resultSet) {
+    public function setResultSet($resultSet) {
       $this->queryError= array();
-      $this->resultSet= &$resultSet;
+      $this->resultSet= $resultSet;
     }
 
     /**
      * Mock: Get ResultSet
      *
-     * @access  public
      * @return  &net.xp_framework.unittest.rdbms.mock.MockResultSet
      */
-    public function &getResultSet() {
+    public function getResultSet() {
       return $this->resultSet;
     }
 
     /**
      * Mock: Make next query fail
      *
-     * @access  public
      * @param   int errNo
      * @param   int errMsg
      */
@@ -69,7 +65,6 @@
     /**
      * Mock: Let server disconnect. This will make query() thrown
      *
-     * @access  public
      */
     public function letServerDisconnect() {
       $this->queryError= array(2013);
@@ -78,7 +73,6 @@
     /**
      * Mock: Make connect fail
      *
-     * @access  public
      * @param   int errMsg
      */
     public function makeConnectFail($errMsg) {
@@ -88,7 +82,6 @@
     /**
      * Mock: Set IdentityValue
      *
-     * @access  public
      * @param   mixed identityValue
      */
     public function setIdentityValue($identityValue) {
@@ -98,7 +91,6 @@
     /**
      * Mock: Get IdentityValue
      *
-     * @access  public
      * @return  mixed
      */
     public function getIdentityValue() {
@@ -108,7 +100,6 @@
     /**
      * Mock: Set AffectedRows
      *
-     * @access  public
      * @param   int affectedRows
      */
     public function setAffectedRows($affectedRows) {
@@ -118,7 +109,6 @@
     /**
      * Mock: Get AffectedRows
      *
-     * @access  public
      * @return  int
      */
     public function getAffectedRows() {
@@ -128,7 +118,6 @@
     /**
      * Connect
      *
-     * @access  public  
      * @param   bool reconnect default FALSE
      * @return  bool success
      * @throws  rdbms.SQLConnectException
@@ -147,7 +136,6 @@
     /**
      * Disconnect
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -158,7 +146,6 @@
     /**
      * Select database
      *
-     * @access  public
      * @param   string db name of database to select
      * @return  bool success
      */
@@ -169,7 +156,6 @@
     /**
      * Protected helper methid
      *
-     * @access  protected
      * @param   array args
      * @return  string
      */
@@ -223,7 +209,6 @@
     /**
      * Prepare an SQL statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  string
      */
@@ -235,14 +220,13 @@
     /**
      * Execute an insert statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  bool success
      */
     public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -252,7 +236,6 @@
     /**
      * Retrieve identity
      *
-     * @access  public
      * @return  mixed identity value
      */
     public function identity() { 
@@ -262,14 +245,13 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      */
     public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -279,14 +261,13 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      */
     public function delete() {
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -296,14 +277,13 @@
     /**
      * Execute a select statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  array rowsets
      */
     public function select() { 
       $args= func_get_args();
       $args[0]= 'select '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -315,11 +295,10 @@
     /**
      * Execute any statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  &rdbms.ResultSet
      */
-    public function &query() { 
+    public function query() { 
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
@@ -366,19 +345,17 @@
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    public function &begin(&$transaction) {
-      $transaction->db= &$this;
+    public function begin($transaction) {
+      $transaction->db= $this;
       return $transaction;
     }
     
     /**
      * Retrieve transaction state
      *
-     * @access  public
      * @param   string name
      * @return  mixed state
      */
@@ -387,7 +364,6 @@
     /**
      * Rollback a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */
@@ -396,7 +372,6 @@
     /**
      * Commit a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */

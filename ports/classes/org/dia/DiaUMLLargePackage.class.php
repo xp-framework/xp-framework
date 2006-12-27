@@ -16,7 +16,6 @@
     /**
      * Constructor of an UML realization
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - LargePackage', 0);
@@ -25,7 +24,6 @@
     /**
      * Initializes the Note with default values
      *
-     * @access  public
      */
     public function initialize() {
       $this->setPosition(array(0, 0));

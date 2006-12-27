@@ -38,7 +38,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string addr
      * @param   int port
      */
@@ -49,7 +48,6 @@
     /**
      * Initialize the server
      *
-     * @access  public
      */
     public function init() {
       $this->socket->create();
@@ -60,7 +58,6 @@
     /**
      * Shutdown the server
      *
-     * @access  public
      */
     public function shutdown() {
       $this->server->terminate= TRUE;
@@ -72,17 +69,16 @@
      * Add a connection listener. Provided for BC reasons.
      *
      * @deprecated Use setProtocol() instead!
-     * @access  public
      * @param   &peer.server.ConnectionListener listener
      * @return  &peer.server.ConnectionListener the added listener
      */
-    public function &addListener(&$listener) {
+    public function addListener($listener) {
       if (!$this->protocol) {
-        $c= &XPClass::forName('peer.server.protocol.ListenerWrapperProtocol');
-        $this->protocol= &$c->newInstance();
+        $c= XPClass::forName('peer.server.protocol.ListenerWrapperProtocol');
+        $this->protocol= $c->newInstance();
       }
 
-      $listener->server= &$this;
+      $listener->server= $this;
       $this->protocol->addListener($listener);
       return $listener;
     }
@@ -90,20 +86,18 @@
     /**
      * Sets this server's protocol
      *
-     * @access  public
      * @param   &peer.server.ServerProtocol protocol
      * @return  &peer.server.ServerProtocol protocol
      */
-    public function &setProtocol(&$protocol) {
-      $protocol->server= &$this;
-      $this->protocol= &$protocol;
+    public function setProtocol($protocol) {
+      $protocol->server= $this;
+      $this->protocol= $protocol;
       return $protocol;
     }
 
     /**
      * Set TCP_NODELAY
      *
-     * @access  public
      * @param   bool tcpnodelay
      */
     public function setTcpnodelay($tcpnodelay) {
@@ -113,7 +107,6 @@
     /**
      * Get TCP_NODELAY
      *
-     * @access  public
      * @return  bool
      */
     public function getTcpnodelay() {
@@ -123,7 +116,6 @@
     /**
      * Service
      *
-     * @access  public
      */
     public function service() {
       if (!$this->socket->isConnected()) return FALSE;
@@ -165,13 +157,13 @@
           // In case the accept() call fails, break out of the loop and terminate
           // the server - this really should not happen!
           if ($handle === $accepting) {
-            if (!($m= &$this->socket->accept())) {
+            if (!($m= $this->socket->accept())) {
               throw(new SocketException('Call to accept() failed'));
             }
             
             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
             $this->protocol->handleConnect($m);
-            $handles[(int)$m->getHandle()]= &$m;
+            $handles[(int)$m->getHandle()]= $m;
             continue;
           }
           

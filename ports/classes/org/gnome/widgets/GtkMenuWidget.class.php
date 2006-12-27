@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       $this->menu= new GtkMenu();
@@ -29,12 +28,11 @@
     /**
      * Add a new menu entry
      *
-     * @access  public
      * @param   string menustring
      * @param   string callback
      * @return  &GtkMenuItem
      */    
-    public function &addMenuItem($string, $callback) {
+    public function addMenuItem($string, $callback) {
       $item= new GtkMenuItem ($string);
       $this->menu->append ($item);
       $item->connect ('button_press_event', $callback);
@@ -44,11 +42,10 @@
     /**
      * Add a menu separator
      *
-     * @access  public
      * @return  &GtkMenuItem
      */
-    public function &addSeparator() {
-      $s= &$this->addMenuItem ('', NULL);
+    public function addSeparator() {
+      $s= $this->addMenuItem ('', NULL);
       $s->set_sensitive (FALSE);
       return $s;
     }    
@@ -56,7 +53,6 @@
     /**
      * Shows the popup menu
      *
-     * @access  public
      * @param   int button which button to click
      * @param   int time events time
      */    

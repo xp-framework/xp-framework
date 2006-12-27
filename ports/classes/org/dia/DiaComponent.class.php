@@ -21,10 +21,9 @@
     /**
      * Return the XML representation of this object including the child objects
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode();
+    public function getNode();
 
   }
 ?>

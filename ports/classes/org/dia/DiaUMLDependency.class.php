@@ -14,7 +14,6 @@
     /**
      * Constructor of an UML dependency
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('UML - Dependency', 1);
@@ -23,7 +22,6 @@
     /**
      * Initialize this UMLDependency with default values
      *
-     * @access  public
      */
     public function initialize() {
       parent::initialize();

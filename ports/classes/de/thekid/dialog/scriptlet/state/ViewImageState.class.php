@@ -16,20 +16,19 @@
     /**
      * Process this state.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      * @param   &scriptlet.xml.workflow.Context context
      */
-    public function process(&$request, &$response, &$context) {
+    public function process($request, $response, $context) {
       if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $name, $type, $chapter, $id)) {
         throw(new IllegalAccessException('Malformed query string'));
       }
       
-      if ($album= &$this->getAlbumFor($name)) {
+      if ($album= $this->getAlbumFor($name)) {
 
         // Add formresult information about the album
-        $child= &$response->addFormResult(new Node('album', NULL, array(
+        $child= $response->addFormResult(new Node('album', NULL, array(
           'name'  => $album->getName(),
           'title' => $album->getTitle(),
           'page'  => $this->getDisplayPageFor($name)
@@ -52,7 +51,7 @@
         $next= $prev= NULL;
         switch ($type) {
           case 'h': {
-            $selected= &$response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
+            $selected= $response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
             if ($id < $album->numHighlights() - 1) {
               $next= sprintf('h,0,%d', $id+ 1);
             } else if (($album->numChapters() > 0) && ($album->chapters[0]->numImages() > 0)) {
@@ -65,7 +64,7 @@
           }
 
           case 'i': {
-            $selected= &$response->addFormResult(Node::fromObject($album->chapters[$chapter]->imageAt($id), 'selected'));
+            $selected= $response->addFormResult(Node::fromObject($album->chapters[$chapter]->imageAt($id), 'selected'));
             if ($id < $album->chapters[$chapter]->numImages() - 1) {
               $next= sprintf('i,%d,%d', $chapter, $id+ 1);
             } elseif ($chapter < $album->numChapters() - 1) {
@@ -90,7 +89,7 @@
         // Check if an album is inside a collection
         if (FALSE === ($p= strpos($name, '/'))) return; 
 
-        $parent= &$this->getEntryFor(substr($name, 0, $p));
+        $parent= $this->getEntryFor(substr($name, 0, $p));
         $child->setAttribute('page', $this->getDisplayPageFor($parent->getName()));
         $child->addChild(new Node('collection', NULL, array(
           'name'         => $parent->getName(),

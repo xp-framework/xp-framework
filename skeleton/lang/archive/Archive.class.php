@@ -57,23 +57,21 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.File file
      */
-    public function __construct(&$file) {
-      $this->file= &$file;
+    public function __construct($file) {
+      $this->file= $file;
       
     }
     
     /**
      * Add a file
      *
-     * @access  public
      * @param   &io.File file
      * @param   string id the id under which this entry will be located
      * @return  bool success
      */
-    public function add(&$file, $id) {
+    public function add($file, $id) {
       try {
         $file->open(FILE_MODE_READ);
         $data= $file->read($file->size());
@@ -94,7 +92,6 @@
     /**
      * Add a file by its bytes
      *
-     * @access  public
      * @param   string id the id under which this entry will be located
      * @param   string path
      * @param   string filename
@@ -113,7 +110,6 @@
     /**
      * Create CCA archive
      *
-     * @access  public
      * @return  bool success
      */
     public function create() {
@@ -158,7 +154,6 @@
     /**
      * Check whether a given element exists
      *
-     * @access  public
      * @param   string id the element's id
      * @return  bool TRUE when the element exists
      */
@@ -177,7 +172,6 @@
      *   $a->close();
      * </code>
      *
-     * @access  public
      * @return  string id or FALSE to indicate the pointer is at the end of the list
      */
     public function getEntry() {
@@ -189,7 +183,6 @@
     /**
      * Rewind archive
      *
-     * @access  public
      */
     public function rewind() {
       reset($this->_index);
@@ -198,12 +191,11 @@
     /**
      * Extract a file's contents
      *
-     * @access  public
      * @param   string id
      * @return  &string content
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
-    public function &extract($id) {
+    public function extract($id) {
       if (!$this->contains($id)) {
         throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
       }
@@ -229,12 +221,11 @@
     /**
      * Fetches a stream to the file in the archive
      *
-     * @access  public
      * @param   string id
      * @return  &io.Stream
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
-    public function &getStream($id) {
+    public function getStream($id) {
       if (!$this->contains($id)) {
         throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
       }
@@ -246,15 +237,14 @@
         $this->_index[$id][3]
       );
       
-      $class= &XPClass::forName('io.EnclosedStream');
-      $s= &$class->newInstance($this->file, $pos, $this->_index[$id][2]);
+      $class= XPClass::forName('io.EnclosedStream');
+      $s= $class->newInstance($this->file, $pos, $this->_index[$id][2]);
       return $s;
     }
     
     /**
      * Open this archive
      *
-     * @access  public
      * @param   int mode default ARCHIVE_READ one of ARCHIVE_READ | ARCHIVE_CREATE
      * @return  bool success
      * @throws  lang.IllegalArgumentException in case an illegal mode was specified
@@ -310,7 +300,6 @@
     /**
      * Close this archive
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -320,7 +309,6 @@
     /**
      * Checks whether this archive is open
      *
-     * @access  public
      * @return  bool TRUE when the archive file is open
      */
     public function isOpen() {
@@ -330,7 +318,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -346,7 +333,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       if ($this->isOpen()) $this->close();

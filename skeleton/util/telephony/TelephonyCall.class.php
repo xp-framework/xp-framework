@@ -16,20 +16,18 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.telephony.TelephonyAddress origin
      * @param   &util.telephony.TelephonyAddress destination
      */
-    public function __construct(&$origin, &$destination) {
-      $this->origin= &$origin;
-      $this->destination= &$destination;
+    public function __construct($origin, $destination) {
+      $this->origin= $origin;
+      $this->destination= $destination;
       
     }
     
     /**
      * Retrieve the origin's phone number
      *
-     * @access  public
      * @return  string number
      */
     public function getOriginNumber() {
@@ -39,7 +37,6 @@
     /**
      * Retrieve the destination's phone number
      *
-     * @access  public
      * @return  string number
      */
     public function getDestinationNumber() {

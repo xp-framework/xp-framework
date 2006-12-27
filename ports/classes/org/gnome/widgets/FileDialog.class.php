@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string dir default '.'
      * @param   string filter default '.*'
      */
@@ -47,10 +46,9 @@
     /**
      * Callback for OK and cancel buttons
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onClose(&$widget) {
+    public function onClose($widget) {
       $this->success= ('button_ok' == $widget->get_name());
       $this->close();
     }
@@ -58,10 +56,9 @@
     /**
      * Callback for up button
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onUpDirClicked(&$widget) {
+    public function onUpDirClicked($widget) {
       $this->setDirectory(substr($this->dir, 0, strrpos(
         substr($this->dir, 0, -1), 
         DIRECTORY_SEPARATOR
@@ -72,20 +69,18 @@
     /**
      * Callback for home button
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onHomeClicked(&$widget) {
+    public function onHomeClicked($widget) {
       $this->setDirectory(System::getProperty('user.home'));
     }
 
     /**
      * Callback for favorites buttons
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onFavoriteClicked(&$widget) {
+    public function onFavoriteClicked($widget) {
       $d= strtr(substr($widget->get_name(), 11), array(
         'HOME'  => System::getProperty('user.home'),
         'TMP'   => System::getProperty('os.tempdir'),
@@ -98,20 +93,18 @@
     /**
      * Callback for refresh button
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onRefreshClicked(&$widget) {
+    public function onRefreshClicked($widget) {
       $this->setDirectory($this->dir);
     }
     
     /**
      * Callback for history buttons
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      */
-    public function onPNClicked(&$widget) {
+    public function onPNClicked($widget) {
       $this->cat->debug($widget->get_name(), $this->history, $this->history_offset);
       $this->history_offset+= ('button_prev' == $widget->get_name()) ? -1 : 1;
       $this->cat->debug($widget->get_name(), $this->history_offset, $this->history[$this->history_offset]);
@@ -121,13 +114,12 @@
     /**
      * Callback for when a row in the file list is selected
      *
-     * @access  protected
      * @param   &php.GtkWidget widget
      * @param   int row
      * @param   mixed data
      * @param   php.GtkEvent event
      */
-    public function onEntrySelected(&$widget, $row, $data, $event) {
+    public function onEntrySelected($widget, $row, $data, $event) {
       $filetype= $widget->get_text($row, 1);
       $entry= $widget->get_pixtext($row, 0);
       
@@ -154,22 +146,21 @@
     /**
      * Initialize application
      *
-     * @access  public
      */
     public function init() {
       $this->window->set_default_size(400, 420);
       
       // File list
-      $this->files= &$this->widget('clist_files');
+      $this->files= $this->widget('clist_files');
       $this->files->set_row_height(26);
       $this->files->set_sort_column(1); // Sort by type
       $this->connect($this->files, 'select_row', 'onEntrySelected');
       
       // Location
-      $this->location= &$this->widget('entry_location');
+      $this->location= $this->widget('entry_location');
       
       // Combo
-      $this->combo= &$this->widget('combo_dir');
+      $this->combo= $this->widget('combo_dir');
       
       // Buttons
       foreach (array(
@@ -189,15 +180,15 @@
       }
       
       // Favorites
-      $this->favorites= &$this->widget('bar_favorites');
+      $this->favorites= $this->widget('bar_favorites');
       $this->favorites->set_button_relief(GTK_RELIEF_NONE);
-      $view= &$this->widget('view_favorites');
+      $view= $this->widget('view_favorites');
       $style= Gtk::widget_get_default_style();
       $style->base[GTK_STATE_NORMAL]= $style->mid[GTK_STATE_NORMAL];
       $view->set_style($style);
       
       GTKWidgetUtil::connectChildren($this->widget('bar_favorites'), array(
-        ':clicked' => array(&$this, 'onFavoriteClicked')
+        ':clicked' => array($this, 'onFavoriteClicked')
       ));
       
       // History
@@ -232,7 +223,6 @@
     /**
      * Run this dialog
      *
-     * @access  public
      */
     public function run() {
       $this->success= FALSE;
@@ -242,7 +232,6 @@
     /**
      * Format file size into a string
      *
-     * @access  private
      * @param   int s size
      * @return  string formatted output
      */
@@ -256,7 +245,6 @@
     /**
      * Set Filename
      *
-     * @access  public
      * @param   string filename
      */
     public function setFilename($filename) {
@@ -266,7 +254,6 @@
     /**
      * Get Filename
      *
-     * @access  public
      * @return  string
      */
     public function getFilename() {
@@ -276,7 +263,6 @@
     /**
      * Set Filter
      *
-     * @access  public
      * @param   string filter
      */
     public function setFilter($filter) {
@@ -286,7 +272,6 @@
     /**
      * Get Filter
      *
-     * @access  public
      * @return  string
      */
     public function getFilter() {
@@ -296,7 +281,6 @@
     /**
      * Get Dir
      *
-     * @access  public
      * @return  string
      */
     public function getDirectory() {
@@ -306,7 +290,6 @@
     /**
      * Set directory to show
      *
-     * @access  public
      * @param   string directory
      * @param   bool update_offset default TRUE
      */
@@ -334,7 +317,6 @@
     /**
      * Read the selected directory's content
      *
-     * @access  protected
      */  
     public function readFiles() {
       $f= new Folder($this->dir);
@@ -410,7 +392,6 @@
     /**
      * Show this dialog
      *
-     * @access  public
      * @return  bool TRUE in case a file was selected and OK pressed
      */
     public function show() {

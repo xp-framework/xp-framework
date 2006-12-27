@@ -37,12 +37,11 @@
     /**
      * Test IOCollectionIterator
      *
-     * @access  public
      */
     #[@test]
     public function iteration() {
       for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
-        $e= &$it->next();
+        $e= $it->next();
         $this->assertTrue(is('io.collections.IOElement', $e));
       }
       $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
@@ -51,12 +50,11 @@
     /**
      * Test IOCollectionIterator
      *
-     * @access  public
      */
     #[@test]
     public function recursiveIteration() {
       for ($it= new IOCollectionIterator($this->fixture, TRUE), $i= 0; $it->hasNext(); $i++) {
-        $e= &$it->next();
+        $e= $it->next();
         $this->assertTrue(is('io.collections.IOElement', $e));
       }
       $this->assertEquals($this->total, $i);
@@ -65,18 +63,17 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   io.collections.iterate.Filter filter
      * @param   bool recursive default FALSE
      * @return  string[] an array of the elements' URIs
      */
-    public function filterFixtureWith(&$filter, $recursive= FALSE) {
+    public function filterFixtureWith($filter, $recursive= FALSE) {
       $elements= array();
       for (
         $it= new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);
         $it->hasNext(); 
       ) {
-        $e= &$it->next();
+        $e= $it->next();
         $this->assertTrue(is('io.collections.IOElement', $e));
         $elements[]= $e->getURI();
       }
@@ -86,7 +83,6 @@
     /**
      * Test FilteredIOCollectionIterator
      *
-     * @access  public
      */
     #[@test]
     public function filteredIteration() {
@@ -99,7 +95,6 @@
     /**
      * Test FilteredIOCollectionIterator
      *
-     * @access  public
      */
     #[@test]
     public function filteredRecursiveIteration() {
@@ -113,7 +108,6 @@
      * Test NameMatchesFilter
      *
      * @see     xp://io.collections.iterate.NameMatchesFilter
-     * @access  public
      */
     #[@test]
     public function nameMatches() {
@@ -127,7 +121,6 @@
      * Test NameMatchesFilter
      *
      * @see     xp://io.collections.iterate.NameMatchesFilter
-     * @access  public
      */
     #[@test]
     public function nameMatchesRecursive() {
@@ -141,7 +134,6 @@
      * Test NameEqualsFilter
      *
      * @see     xp://io.collections.iterate.NameMatchesFilter
-     * @access  public
      */
     #[@test]
     public function nameEquals() {
@@ -155,7 +147,6 @@
      * Test NameEqualsFilter
      *
      * @see     xp://io.collections.iterate.NameMatchesFilter
-     * @access  public
      */
     #[@test]
     public function nameEqualsRecursive() {
@@ -169,7 +160,6 @@
      * Test extensionEqualsFilter
      *
      * @see     xp://io.collections.iterate.extensionMatchesFilter
-     * @access  public
      */
     #[@test]
     public function extensionEquals() {
@@ -183,7 +173,6 @@
      * Test extensionEqualsFilter
      *
      * @see     xp://io.collections.iterate.extensionMatchesFilter
-     * @access  public
      */
     #[@test]
     public function extensionEqualsRecursive() {
@@ -197,7 +186,6 @@
      * Test SizeEqualsFilter
      *
      * @see     xp://io.collections.iterate.SizeEqualsFilter
-     * @access  public
      */
     #[@test]
     public function zeroBytes() {
@@ -211,7 +199,6 @@
      * Test SizeBiggerThanFilter
      *
      * @see     xp://io.collections.iterate.SizeBiggerThanFilter
-     * @access  public
      */
     #[@test]
     public function bigFiles() {
@@ -225,7 +212,6 @@
      * Test SizeBiggerThanFilter
      *
      * @see     xp://io.collections.iterate.SizeBiggerThanFilter
-     * @access  public
      */
     #[@test]
     public function smallFiles() {
@@ -239,7 +225,6 @@
      * Test AccessedAfterFilter
      *
      * @see     xp://io.collections.iterate.AccessedAfterFilter
-     * @access  public
      */
     #[@test]
     public function accessedAfter() {
@@ -253,7 +238,6 @@
      * Test AccessedBeforeFilter
      *
      * @see     xp://io.collections.iterate.AccessedBeforeFilter
-     * @access  public
      */
     #[@test]
     public function accessedBefore() {
@@ -267,7 +251,6 @@
      * Test ModifiedAfterFilter
      *
      * @see     xp://io.collections.iterate.ModifiedAfterFilter
-     * @access  public
      */
     #[@test]
     public function modifiedAfter() {
@@ -281,7 +264,6 @@
      * Test ModifiedBeforeFilter
      *
      * @see     xp://io.collections.iterate.ModifiedBeforeFilter
-     * @access  public
      */
     #[@test]
     public function modifiedBefore() {
@@ -295,7 +277,6 @@
      * Test CreatedAfterFilter
      *
      * @see     xp://io.collections.iterate.CreatedAfterFilter
-     * @access  public
      */
     #[@test]
     public function createdAfter() {
@@ -309,7 +290,6 @@
      * Test CreatedBeforeFilter
      *
      * @see     xp://io.collections.iterate.CreatedBeforeFilter
-     * @access  public
      */
     #[@test]
     public function createdBefore() {
@@ -323,7 +303,6 @@
      * Test AllOfFilter
      *
      * @see     xp://io.collections.iterate.AllOfFilter
-     * @access  public
      */
     #[@test]
     public function allOf() {
@@ -340,7 +319,6 @@
      * Test AnyOfFilter
      *
      * @see     xp://io.collections.iterate.AnyOfFilter
-     * @access  public
      */
     #[@test]
     public function anyOf() {

@@ -250,7 +250,6 @@
     /**
      * Creates a PhoneNumber object
      *
-     * @access  public
      * @param   array defaults array with default values (may be omitted)
      */      
     public function __construct($params= NULL) {
@@ -262,7 +261,6 @@
      * converts any alphabetical char into a corresponding number, to
      * allow phone strings like '0700-NEEDGIRL'.
      *
-     * @access  private
      * @param   string phonestring
      * @return  string phonestring
      */
@@ -297,13 +295,12 @@
      * a list of allowed national area codes the division is absolutely
      * neccessary.
      *
-     * @access  public
      * @param   string phonenumber
      * @return  &TelephonyAddress obj
      * @throws  lang.FormatException if number is malformed
      * @throws  lang.IllegalStateException in case no default number has been set
      */
-    public function &parseNumber($number) {
+    public function parseNumber($number) {
       // Check current state
       if (
         NULL === $this->defaultCountryCode ||

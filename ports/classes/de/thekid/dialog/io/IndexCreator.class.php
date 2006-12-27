@@ -30,7 +30,6 @@
     /**
      * Set entriesPerPage
      *
-     * @access  public
      * @param   int entriesPerPage
      */
     public function setEntriesPerPage($entriesPerPage) {
@@ -40,7 +39,6 @@
     /**
      * Get entriesPerPage
      *
-     * @access  public
      * @return  int
      */
     public function getEntriesPerPage() {
@@ -50,21 +48,18 @@
     /**
      * Returns a IndexCreator for a given folder
      *
-     * @model   static
-     * @access  public
      * @param   &io.Folder folder
      * @return  &de.thekid.dialog.io.IndexCreator
      */
-    public static function &forFolder(&$folder) {
+    public static function forFolder($folder) {
       $i= new IndexCreator();
-      $i->folder= &$folder;
+      $i->folder= $folder;
       return $i;
     }
     
     /**
      * Regenerate
      *
-     * @access  public
      * @return  bool success
      * @throws  io.IOException
      */
@@ -74,13 +69,13 @@
         $entry= $i->next();
         $file= new File($entry);
         try {
-          $data= &unserialize(FileUtil::getContents($file));
+          $data= unserialize(FileUtil::getContents($file));
         } catch (IOException $e) {
           $e->printStackTrace();
           exit(-1);
         }
 
-        $date= &$data->getDate();
+        $date= $data->getDate();
         $this->cat && $this->cat->debugf(
           '---> %s "%s" @ %s', 
           xp::typeOf($data),
@@ -140,11 +135,10 @@
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
   } 

@@ -94,7 +94,6 @@
      * ----=_Part_10424693873e22d20b43b490.00112051
      * </pre>
      *
-     * @access  public
      */
     public function __construct($uid= -1) {
       $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
@@ -105,18 +104,17 @@
     /**
      * Add a Mime Part
      *
-     * @access  public
      * @param   &peer.mail.MimePart part
      * @return  &peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
-    public function &addPart(&$part) {
+    public function addPart($part) {
       if (!is('MimePart', $part)) {
         throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));
       }
-      $this->parts[]= &$part;
+      $this->parts[]= $part;
       return $part;
     }
     
@@ -124,7 +122,6 @@
      * Set boundary and updates Content-Type header. Note: A boundary is generated 
      * upon instanciation, so this is usually not needed!
      *
-     * @access  public
      * @param   string b the new boundary
      */
     public function setBoundary($b) {
@@ -134,7 +131,6 @@
     /**
      * Get boundary
      *
-     * @access  public
      * @return  string
      */
     public function getBoundary() {
@@ -144,7 +140,6 @@
     /**
      * Return headers as string
      *
-     * @access  public
      * @return  string headers
      */
     public function getHeaderString() {
@@ -162,7 +157,6 @@
     /**
      * Private helper method
      *
-     * @access  private
      * @param   array parameters
      * @param   string val
      * @return  mixed value or FALSE if not found
@@ -182,12 +176,11 @@
     /**
      * Private helper method
      *
-     * @access  private
      * @param   &peer.mail.MimePart[] parts
      * @param   &array p structure parts as retrieved from cclient lib
      * @param   string id default '' part id
      */
-    public function _recurseparts(&$parts, &$p, $id= '') {
+    public function _recurseparts($parts, $p, $id= '') {
       static $types= array(
         'text',
         'multipart',
@@ -242,19 +235,18 @@
           $part->body= $this->folder->getMessagePart($this->uid, $pid);
         }
         
-        $part->folder= &$this->folder;
-        $parts[]= &$part;
+        $part->folder= $this->folder;
+        $parts[]= $part;
       }
     }
     
     /**
      * Get a part
      *
-     * @access  public
      * @param   int id default -1
      * @return  &peer.mail.MimePart part
      */
-    public function &getPart($id= -1) {
+    public function getPart($id= -1) {
       $this->_parts();
       
       // Iterative use
@@ -272,13 +264,12 @@
     /**
      * Get structure from folder
      *
-     * @access  private
      * @return  bool got parts
      */    
     public function _parts() {
       if ((NULL === $this->folder) || (!empty($this->parts))) return FALSE;
       
-      $struct= &$this->folder->getMessageStruct($this->uid);
+      $struct= $this->folder->getMessageStruct($this->uid);
       if (!$struct->parts) {
         return FALSE;
       }
@@ -291,7 +282,6 @@
      * boundary information if one is set and a charset
      * information if one is set.
      *
-     * @access  private
      * @return  string header
      */
     public function _getContenttypeHeaderString() {
@@ -308,7 +298,6 @@
      * Get message body.
      *
      * @see     xp://peer.mail.Message#getBody
-     * @access  public
      * @return  string
      */
     public function getBody() {

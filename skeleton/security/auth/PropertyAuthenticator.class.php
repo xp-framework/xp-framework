@@ -18,18 +18,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &util.Properties users
      */    
-    public function __construct(&$prop) {
-      $this->users= &$prop;
+    public function __construct($prop) {
+      $this->users= $prop;
 
     }
     
     /**
      * Authenticate a user
      *
-     * @access  public
      * @param   string user
      * @param   string pass
      * @return  bool

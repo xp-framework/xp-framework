@@ -55,7 +55,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int statusCode
      * @param   string language
      * @param   string message default ''
@@ -75,7 +74,6 @@
     /**
      * Retrieve contents of errordocument
      *
-     * @access  public
      * @return  string content
      */
     public function getContent() {

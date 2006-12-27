@@ -23,7 +23,6 @@
     /**
      * Initialize this UMLConnection with default values
      * 
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -51,7 +50,6 @@
     /**
      * Returns the connection points of the connection
      *
-     * @access  public
      * @return  org.dia.DiaConnection[]
      */
     public function getConnections() {
@@ -63,12 +61,11 @@
     /**
      * Add either the 'begin' or 'end' connection
      *
-     * @access  public
      * @param   &org.dia.DiaConnection Conn
      */
     #[@fromDia(xpath= 'dia:connections/dia:connection', class= 'org.dia.DiaConnection')]
-    public function addConnection(&$Conn) {
-      $Conns= &$this->getChild('connections');
+    public function addConnection($Conn) {
+      $Conns= $this->getChild('connections');
       $Conns->set($this->conn_assoc[$Conn->getHandle()], $Conn);
     }
 
@@ -76,53 +73,48 @@
     /**
      * Returns all corner points of the connection
      *
-     * @access  public
      * @return  org.dia.DiaPoint[]
      */
     public function getOrthPoints() {
-      $Points= &$this->getChild('orth_points');
+      $Points= $this->getChild('orth_points');
       return $Points->getChildren();
     }
 
     /**
      * Adds a connection corner point
      *
-     * @access  public
      * @param   array point
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_points"]/dia:point/@val', value= 'array')]
     public function addOrthPoint($point) {
-      $Points= &$this->getChild('orth_points');
+      $Points= $this->getChild('orth_points');
       $Points->addChild(new DiaPoint($point));
     }
 
     /**
      * Return all direction indicators of the connection
      *
-     * @access  public
      * @return  org.dia.DiaEnum[]
      */
     public function getOrthOrients() {
-      $Orient= &$this->getChild('orth_orient');
+      $Orient= $this->getChild('orth_orient');
       return $Orient->getChildren();
     }
 
     /**
      * Adds a connection direction indicator for corner points
      *
-     * @access  public
      * @param   int direction
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_orient"]/dia:enum/@val', value= 'int')]
     public function addOrthOrient($direction) {
-      $Orient= &$this->getChild('orth_orient');
+      $Orient= $this->getChild('orth_orient');
       $Orient->addChild(new DiaEnum($direction));
     }
 
     /** 
      * Get the autorouting flag of the connection
      *
-     * @access  public
      * @return  bool
      */
     public function getOrthAutoroute() {
@@ -132,7 +124,6 @@
     /**
      * Sets the autorouting flag for the connection
      *
-     * @access  public
      * @param   bool autoroute
      */
     #[@fromDia(xpath= 'dia:attribute[@name="orth_autoroute"]/dia:boolean/@val', value= 'boolean')]
@@ -149,7 +140,7 @@
      * @param   int connpoint default 0
      */
     public function beginAt($id, $connpoint= 0) {
-      $Conns= &$this->getChild('connections');
+      $Conns= $this->getChild('connections');
       $Conn= new DiaConnection(0);
       $Conn->setTo($id);
       $Conn->setConnection($connpoint);
@@ -165,7 +156,7 @@
      * @param   int connpoint default 0
      */
     public function endAt($id, $connpoint= 0) {
-      $Conns= &$this->getChild('connections');
+      $Conns= $this->getChild('connections');
       $Conn= new DiaConnection(1);
       $Conn->setTo($id);
       $Conn->setConnection($connpoint);

@@ -38,27 +38,24 @@
     /**
      * Set the recipient the message was destined for
      *
-     * @access  public
      * @param   &peer.mail.InternetAddress r
      */
-    public function setFailedRecipient(&$r) {
-      $this->failed= &$r;
+    public function setFailedRecipient($r) {
+      $this->failed= $r;
     }
     
     /**
      * Get the recipient the message was destined for
      *
-     * @access  public
      * @return  &peer.mail.InternetAddress
      */
-    public function &getFailedRecipient() {
+    public function getFailedRecipient() {
       return $this->failed;
     }
     
     /**
      * Set the reason the message failed for
      *
-     * @access  public
      * @param   string reason
      */
     public function setReason($reason) {
@@ -68,7 +65,6 @@
     /**
      * Get the reason the message failed for
      *
-     * @access  public
      * @return  string
      */
     public function getReason() {

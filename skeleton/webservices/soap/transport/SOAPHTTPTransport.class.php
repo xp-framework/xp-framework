@@ -33,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string url
      * @param   array headers default array()
      * @param   int actiontype
@@ -51,7 +50,6 @@
      * Set the timeout for the request.
      * Note: this is the read-timeout.
      *
-     * @access  public
      * @param   int timeout
      */
     public function setTimeout($timeout) {
@@ -67,7 +65,6 @@
      *   $transport->setHeader('X-Binford', '6100 (more power)');
      * </code>
      *
-     * @access  public
      * @param   string name header name
      * @param   string value header value
      */
@@ -79,7 +76,6 @@
      * Retrieve the current timeout setting.
      * Note: this is the read-timeout.
      *
-     * @access  public
      * @return  int
      */
     public function getTimeout() {
@@ -89,7 +85,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       delete($this->_conn);
@@ -98,7 +93,6 @@
     /**
      * Create a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -108,12 +102,11 @@
     /**
      * Send the message
      *
-     * @access  public
      * @param   &webservices.soap.SOAPMessage message
      * @return  &peer.http.HttpResponse
      * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
-    public function &send(&$message) {
+    public function send($message) {
     
       // Sanity checks
       if (!is('SOAPMessage', $message)) throw(new IllegalArgumentException(
@@ -159,7 +152,7 @@
       $this->_conn->request->addHeaders($this->_headers);
       try {
         $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= &$this->_conn->request->send($this->_conn->getTimeout());
+        $res= $this->_conn->request->send($this->_conn->getTimeout());
       } catch (IOException $e) {
         throw ($e);
       }
@@ -170,7 +163,6 @@
     /**
      * Retrieve the answer
      *
-     * @access  public
      * @param   &peer.http.HttpResponse response
      * @return  &webservices.soap.SOAPMessage
      * @throws  io.IOException in case the data cannot be read
@@ -178,7 +170,7 @@
      * @throws  lang.IllegalAccessException in case authorization is required
      * @throws  lang.IllegalStateException in case an unexpected HTTP status code is returned
      */
-    public function &retrieve(&$response) {
+    public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
       try {
@@ -195,7 +187,7 @@
             while ($buf= $response->readData()) $xml.= $buf;
 
             $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= &SOAPMessage::fromString($xml)) {
+            if ($answer= SOAPMessage::fromString($xml)) {
 
               // Check encoding
               if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {

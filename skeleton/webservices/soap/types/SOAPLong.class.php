@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   int long
      */  
     public function __construct($long) {
@@ -29,7 +28,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  string 
      */    
     public function toString() {
@@ -39,7 +37,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() {

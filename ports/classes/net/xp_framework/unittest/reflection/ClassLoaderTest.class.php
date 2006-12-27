@@ -19,13 +19,12 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string name
      * @param   &lang.XPClass class
      * @return  bool
      * @throws  unittest.AssertionFailedError
      */
-    public function assertXPClass($name, &$class) {
+    public function assertXPClass($name, $class) {
       return (
         $this->assertClass($class, 'lang.XPClass') &&
         $this->assertEquals($name, $class->getName()) &&
@@ -36,17 +35,15 @@
     /**
      * Setup method
      *
-     * @access  public
      */
     public function setUp() {
-      $this->classLoader= &ClassLoader::getDefault();
+      $this->classLoader= ClassLoader::getDefault();
       $this->assertXPClass('lang.ClassLoader', $this->classLoader->getClass());
     }
  
     /**
      * Loads a class that has been loaded before
      *
-     * @access  public
      */
     #[@test]
     public function loadClass() {
@@ -56,7 +53,6 @@
     /**
      * Tests the findClass() method
      *
-     * @access  public
      */
     #[@test]
     public function findThisClass() {
@@ -66,7 +62,6 @@
     /**
      * Tests the findClass() method
      *
-     * @access  public
      */
     #[@test]
     public function findNullClass() {
@@ -77,7 +72,6 @@
      * Loads a class that has *not* been loaded before. Makes sure the
      * static initializer is called.
      *
-     * @access  public
      */
     #[@test]
     public function initializerCalled() {
@@ -86,7 +80,7 @@
         return $this->fail('Class "'.$name.'" may not exist!');
       }
 
-      $class= &$this->classLoader->loadClass($name);
+      $class= $this->classLoader->loadClass($name);
       $this->assertXPClass($name, $class);
       $this->assertTrue(LoaderTestClass::initializerCalled());
     }
@@ -95,7 +89,6 @@
      * Tests the loadClass() method throws a ClassNotFoundException when given
      * a name of a class that cannot be found. 
      *
-     * @access  public
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function loadNonExistantClass() {
@@ -105,7 +98,6 @@
     /**
      * Tests the defineClass() method
      *
-     * @access  public
      */
     #[@test]
     public function defineClass() {
@@ -114,7 +106,7 @@
         return $this->fail('Class "'.$name.'" may not exist!');
       }
       
-      $class= &$this->classLoader->defineClass($name, 'class RuntimeDefinedClass extends Object {
+      $class= $this->classLoader->defineClass($name, 'class RuntimeDefinedClass extends Object {
         function __static() { RuntimeDefinedClass::initializerCalled(TRUE); }
         function initializerCalled($value= NULL) { 
           static $called; 
@@ -129,16 +121,15 @@
     /**
      * Tests defineClass() with a given interface
      *
-     * @access  public
      */
     #[@test]
     public function defineClassImplements() {
       $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
-      $class= &$this->classLoader->defineClass(
+      $class= $this->classLoader->defineClass(
         $name, 
         'lang.Object',
         array('util.log.Traceable'),
-        '{ function setTrace(&$cat) { } }'
+        '{ function setTrace($cat) { } }'
       );
 
       $this->assertTrue(is('util.log.Traceable', $class->newInstance()));
@@ -150,7 +141,6 @@
      * Tests the defineClass() method for the situtation where the bytes 
      * argument failed to actually declare the class.
      *
-     * @access  public
      */
     #[@test, @expect('lang.FormatException')]
     public function defineIllegalClass() {

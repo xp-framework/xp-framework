@@ -34,7 +34,6 @@
     /**
      * Execute a CVS command
      *
-     * @access  private
      * @param   int cvsCmd Command to execute
      * @return  array output
      * @throws  org.cvshome.CVSInterfaceException if cvs fails
@@ -70,7 +69,6 @@
      * Login must be without "-d"
      * E.g: setCVSRoot ('/home/cvs/', ':ext:alex@php3.de')
      *
-     * @access  public
      * @param   string cvsroot
      * @param   string login
      */
@@ -85,7 +83,6 @@
     /**
      * Returns the internal statuscode from the cvs status string
      *
-     * @access  public
      * @param   string statusString
      * @return  int statusCode
      * @throws  org.cvshome.CVSInterfaceException
@@ -107,7 +104,6 @@
     /**
      * Returns the internal statuscode from the cvs status code
      *
-     * @access  public
      * @param   char statusCode
      * @return  int statusCode
      * @throws  org.cvshome.CVSInterfaceException

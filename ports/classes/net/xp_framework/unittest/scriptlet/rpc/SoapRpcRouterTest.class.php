@@ -20,7 +20,6 @@
     /**
      * Setup test fixture
      *
-     * @access  public
      */
     public function setUp() {
       xp::gc();
@@ -50,12 +49,11 @@
     /**
      * Test post request
      *
-     * @access  public
      */
     #[@test]
     public function basicPostRequest() {
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
       $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
     }
@@ -63,19 +61,17 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
     public function basicGetRequest() {
       $this->router->setMockMethod(HTTP_GET);
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
     }
     
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingClass() {
@@ -85,7 +81,7 @@
       ));
       
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -93,7 +89,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonexistingMethod() {
@@ -102,7 +97,7 @@
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
       ));
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -110,7 +105,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callNonWebmethodMethod() {
@@ -119,7 +113,7 @@
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
       ));
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       
       $this->assertEquals(500, $response->statusCode);
     }
@@ -127,7 +121,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function callFailingMethod() {
@@ -136,11 +129,11 @@
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
       ));
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       $this->assertEquals(500, $response->statusCode);
       
-      $message= &SOAPMessage::fromString($response->getContent());
-      $fault= &$message->getFault();
+      $message= SOAPMessage::fromString($response->getContent());
+      $fault= $message->getFault();
       $this->assertEquals(403, $fault->getFaultCode());
       $this->assertEquals('This is a intentionally caused exception.', $fault->getFaultString());
     }
@@ -148,7 +141,6 @@
     /**
      * Test
      *
-     * @access  public
      */
     #[@test]
     public function multipleParameters() {
@@ -185,10 +177,10 @@
 </SOAP-ENV:Envelope>
       ');
       $this->router->init();
-      $response= &$this->router->process();
+      $response= $this->router->process();
       if (!$this->assertEquals(200, $response->statusCode)) return;
 
-      $msg= &SOAPMessage::fromString($response->getContent());
+      $msg= SOAPMessage::fromString($response->getContent());
       $data= array_shift($msg->getData());
       
       $this->assertEquals('Lalala', $data[0]) &&

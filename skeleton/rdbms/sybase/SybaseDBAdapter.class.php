@@ -19,10 +19,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &Object conn database connection
      */
-    public function __construct(&$conn) {
+    public function __construct($conn) {
       $this->map= array(
         'binary'        => DB_ATTRTYPE_BINARY, 
         'bit'           => DB_ATTRTYPE_BIT,      
@@ -59,13 +58,12 @@
     /**
      * Get databases
      *
-     * @access  public
      * @return  string[] databases
      */
     public function getDatabases() {
       $dbs= array();
       try {
-        $q= &$this->conn->query('select name from master..sysdatabases');
+        $q= $this->conn->query('select name from master..sysdatabases');
         while ($name= $q->next('name')) {
           $dbs[]= $name;
         }
@@ -79,7 +77,6 @@
     /**
      * Creates temporary table needed for fetching table indexes
      *
-     * @access  protected
      */
     public function prepareTemporaryIndexesTable() {
       $this->conn->query('create table #indexes (
@@ -93,7 +90,6 @@
     /**
      * Get indexes for a given table. Expects a temporary table to exist.
      *
-     * @access  protected
      * @param   string table thee table's name
      * @return  &rdbms.DBTable
      */    
@@ -101,7 +97,7 @@
       $t= new DBTable($table);
       
       // Get the table's attributes
-      $q= &$this->conn->query('
+      $q= $this->conn->query('
         select 
           c.name, 
           t.name as type, 
@@ -137,7 +133,7 @@
       // This query is taken in part from sp_help (part of core sps from
       // SQL Server/11.0.3.3 ESD#6/P-FREE/Linux Intel/Linux 2.2.14 
       // i686/1/OPT/Fri Mar 17 15:45:30 CET 2000)
-      $q= &$this->conn->query('
+      $q= $this->conn->query('
         declare @i int
         declare @id int
         declare @last int
@@ -193,7 +189,7 @@
       $keys= NULL;
       while ($record= $q->next()) {
         if ($keys != $record['keys']) {
-          $index= &$t->addIndex(new DBIndex(
+          $index= $t->addIndex(new DBIndex(
             $record['name'],
             explode(',', $record['keys'])
           ));
@@ -209,7 +205,6 @@
     /**
      * Drops temporary created by prepareTemporaryIndexesTable()
      *
-     * @access  protected
      */
     public function dropTemporaryIndexesTable() {
       $this->conn->query('drop table #indexes');
@@ -218,7 +213,6 @@
     /**
      * Get tables by database
      *
-     * @access  public
      * @param   string database
      * @return  rdbms.DBTable[] array of DBTable objects
      */
@@ -228,12 +222,12 @@
         $this->prepareTemporaryIndexesTable();
         
         // Get all tables
-        $q= &$this->conn->query(
+        $q= $this->conn->query(
           'select o.name from %c..sysobjects o where o.type = "U"  -- User table',
           $database
         );
         if ($q) while ($record= $q->next()) {
-          $t[]= &$this->dbTableObjectFor($record['name']);
+          $t[]= $this->dbTableObjectFor($record['name']);
         }
         
       } catch (SQLException $e) {
@@ -249,14 +243,13 @@
     /**
      * Get table by name
      *
-     * @access  public
      * @param   string table
      * @return  rdbms.DBTable a DBTable object
      */
     public function getTable($table) {
       try {
         $this->prepareTemporaryIndexesTable();
-        $t= &$this->dbTableObjectFor($table);
+        $t= $this->dbTableObjectFor($table);
       } catch (SQLException $e) {
         delete($t);
       } finally(); {

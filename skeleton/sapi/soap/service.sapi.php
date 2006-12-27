@@ -13,8 +13,8 @@
   
     // {{{ internal string fault(&lang.Throwable exception, string code)
     //     Convert an exception to XML
-    function fault(&$exception, $code) {
-      $answer= &new SOAPMessage();
+    function fault($exception, $code) {
+      $answer= new SOAPMessage();
       $answer->create();
 
       foreach ($exception->getStackTrace() as $element) {
@@ -48,7 +48,7 @@
       }
 
       // Check for uncaught exceptions
-      if ($exceptions= &xp::registry('exceptions')) {
+      if ($exceptions= xp::registry('exceptions')) {
         return sapi·soap·service::fault(
           $exceptions[key($exceptions)],
           'xp.uncaughtexception'

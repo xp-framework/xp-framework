@@ -16,7 +16,6 @@
     /**
      * Set changed flag
      *
-     * @access  public
      * @param   bool changed default TRUE
      */
     public function setChanged($changed= TRUE) {
@@ -26,7 +25,6 @@
     /**
      * Get changed flag
      *
-     * @access  public
      * @return  bool
      */
     public function getChanged() {
@@ -38,24 +36,22 @@
      *
      * Does nothing in this default implementation.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    public function setup(&$request) { }
+    public function setup($request) { }
 
     /**
      * Process the context.
      *
      * Does nothing in this default implementation.
      *
-     * @access  public
      * @param   &scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
-    public function process(&$request) { }
+    public function process($request) { }
     
     /**
      * Sleep function. Returns an array of the names of those member 
@@ -63,7 +59,6 @@
      * implementation, it returns all public members (members whose names
      * do not begin with an underscore).
      *
-     * @access  protected
      * @return  string[]
      */
     public function __sleep() {
@@ -76,9 +71,8 @@
     /**
      * Insert formresult nodes.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function insertStatus(&$response) { }
+    public function insertStatus($response) { }
   }
 ?>

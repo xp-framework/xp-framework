@@ -20,11 +20,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugzillaCcList::getPeer()); {
+      with ($peer= BugzillaCcList::getPeer()); {
         $peer->setTable('cc');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array('bug_id', 'who'));
@@ -38,43 +36,39 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "bug_id"
      *
-     * @access  static
      * @param   int bug_id
      * @return  &BugzillaCcList object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_id($bug_id) {
-      $peer= &BugzillaCcList::getPeer();
+    public function getByBug_id($bug_id) {
+      $peer= BugzillaCcList::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "who"
      *
-     * @access  static
      * @param   int who
      * @return  &BugzillaCcList[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByWho($who) {
-      $peer= &BugzillaCcList::getPeer();
+    public function getByWho($who) {
+      $peer= BugzillaCcList::getPeer();
       return $peer->doSelect(new Criteria(array('who', $who, EQUAL)));
     }
 
     /**
      * Retrieves bug_id
      *
-     * @access  public
      * @return  int
      */
     public function getBug_id() {
@@ -84,7 +78,6 @@
     /**
      * Sets bug_id
      *
-     * @access  public
      * @param   int bug_id
      * @return  int the previous value
      */
@@ -95,7 +88,6 @@
     /**
      * Retrieves who
      *
-     * @access  public
      * @return  int
      */
     public function getWho() {
@@ -105,7 +97,6 @@
     /**
      * Sets who
      *
-     * @access  public
      * @param   int who
      * @return  int the previous value
      */

@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string package
      */
     public function __construct($package) {
@@ -30,7 +29,6 @@
     /**
      * Initialize this request object - overridden from base class.
      *
-     * @access  public
      * @see     xp://scriptlet.xml.XMLScriptletRequest#initialize
      */
     public function initialize() {
@@ -38,13 +36,13 @@
       if ($this->stateName) {
         $name= implode('', array_map('ucfirst', array_reverse(explode('/', $this->stateName))));
         try {
-          $class= &XPClass::forName($this->package.'.'.('state.'.$name.'State'));
+          $class= XPClass::forName($this->package.'.'.('state.'.$name.'State'));
         } catch (ClassNotFoundException $e) {
-          $this->state= &xp::null();
+          $this->state= xp::null();
           throw($e);
         }
 
-        $this->state= &$class->newInstance();
+        $this->state= $class->newInstance();
       }
     }
   }

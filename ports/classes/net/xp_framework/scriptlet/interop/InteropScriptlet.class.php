@@ -20,10 +20,9 @@
     /**
      * Set our own processor object
      *
-     * @access  protected
      * @return  &.xml.XSLProcessor
      */
-    public function &_processor() {
+    public function _processor() {
       return new DomXSLProcessor();
     }
   }

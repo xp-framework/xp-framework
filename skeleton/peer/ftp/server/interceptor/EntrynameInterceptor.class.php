@@ -19,7 +19,6 @@
     /**
      * Constructor
      *
-     * @access public
      * @param string regexp Regular expression to match entry name
      */
     public function __construct($regexp) {
@@ -30,7 +29,6 @@
      * Checks if the entry name is valid (ends with special filename
      * extension (e.g. .gif, .jpg)
      *
-     * @access private
      * @param string name The entry name
      * @return bool
      */
@@ -41,12 +39,11 @@
     /**
      * Invoked when an entry is created
      * 
-     * @access public
      * @param &peer.ftp.server.FtpSession
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    public function onCreate(&$session, &$entry) {
+    public function onCreate($session, $entry) {
       if (is('peer.ftp.server.storage.StorageCollection', $entry)) return;
     
       if (!$this->validFilename($entry->getFilename())) {
@@ -57,12 +54,11 @@
     /**
      * Invoked when an entry is renamed
      * 
-     * @access public
      * @param &peer.ftp.server.FtpSession
      * @param &peer.ftp.server.storage.StorageEntry
      * @return bool
      */
-    public function onRename(&$session, &$entry) {
+    public function onRename($session, $entry) {
       if (is('peer.ftp.server.storage.StorageCollection', $entry)) return;
 
       if (!$this->validFilename($entry->getFilename())) {

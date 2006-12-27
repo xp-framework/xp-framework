@@ -64,18 +64,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      */  
-    public function __construct(&$stream) {
-      $this->stream= &$stream;
+    public function __construct($stream) {
+      $this->stream= $stream;
       
     }
 
     /**
      * Create a GUID from an array
      *
-     * @access  private
      * @param   array g
      * @return  string guid
      */
@@ -87,13 +85,12 @@
      * Retrieve a substring and set the pointer to after the 
      * substring's length,
      *
-     * @access  private
      * @param   string str
      * @param   &int p
      * @param   int len
      * @return  string str
      */
-    public function _substr($str, &$p, $len) {
+    public function _substr($str, $p, $len) {
       $str= substr($str, ++$p, $len);
       $p+= $len;
       return $str;
@@ -103,12 +100,11 @@
      * Get an int encoded within a string and set the pointer to
      * after the position
      *
-     * @access  private
      * @param   string str
      * @param   &int p
      * @return  int
      */
-    public function _int($str, &$p) {
+    public function _int($str, $p) {
       $r= 0;
       while (ord($str{$p}) & 0x80) {
         $r= ($r << 7) | (ord($str{$p++}) & 0x7F);
@@ -120,7 +116,6 @@
     /**
      * Read directory
      *
-     * @access  private
      * @param   int length
      * @return  array entries
      */
@@ -157,7 +152,6 @@
     /**
      * Open file
      *
-     * @access  public
      * @return  bool success
      */
     public function open() {
@@ -167,7 +161,6 @@
     /**
      * Close file
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -177,11 +170,10 @@
     /**
      * Retrieve CHM header; extracts it if necessary
      *
-     * @access  public
      * @return  &com.microsoft.format.chm.CHMHeader
      * @throws  lang.FormatException if the identifier is not correct
      */
-    public function &getHeader() {
+    public function getHeader() {
       if (!empty($this->header)) {
         $this->stream->seek($this->_headeroffset, SEEK_SET);
         return $this->header;
@@ -231,11 +223,10 @@
     /**
      * Retrieve CHM directory; extracts it if necessary
      *
-     * @access  public
      * @return  &com.microsoft.format.chm.CHMDirectory
      * @throws  lang.FormatException if the identifier is not correct
      */ 
-    public function &getDirectory() {
+    public function getDirectory() {
       $this->getHeader();       // We need this so the file pointer position is correct
       if (!empty($this->directory)) {
         $this->stream->seek($this->_diroffset, SEEK_SET);

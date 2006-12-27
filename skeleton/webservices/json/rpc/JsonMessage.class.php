@@ -26,18 +26,14 @@
     /**
      * Create message from string representation
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &webservices.json.rpc.JsonMessage
      */
-    public static function &fromString($string) { }
+    public static function fromString($string) { }
     
     /**
      * Create message 
      *
-     * @model   abstract
-     * @access  public
      * @param   webservices.json.rpc.JsonMessage msg
      */
     public function create() { }
@@ -45,7 +41,6 @@
     /**
      * Retrieve content type for request
      *
-     * @access  public
      * @return  string
      */
     public function getContentType() {
@@ -55,7 +50,6 @@
     /**
      * Set Method
      *
-     * @access  public
      * @param   string method
      */
     public function setMethod($method) {
@@ -65,7 +59,6 @@
     /**
      * Get Method
      *
-     * @access  public
      * @return  string
      */
     public function getMethod() {
@@ -75,7 +68,6 @@
     /**
      * Set Encoding
      *
-     * @access  public
      * @param   string encoding
      */
     public function setEncoding($encoding) {
@@ -85,7 +77,6 @@
     /**
      * Get Encoding
      *
-     * @access  public
      * @return  string
      */
     public function getEncoding() {
@@ -95,7 +86,6 @@
     /**
      * Set Data
      *
-     * @access  public
      * @param   &lang.Object data
      */
     public function setData($data) { }
@@ -103,28 +93,25 @@
     /**
      * Get Data
      *
-     * @access  public
      * @return  &lang.Object
      */
-    public function &getData() {
+    public function getData() {
       return $this->data;
     }
     
     /**
      * Retrieve serialized representation
      *
-     * @access  public
      * @return  string
      */
     public function serializeData() {
-      $decoder= &JsonFactory::create();
+      $decoder= JsonFactory::create();
       return $decoder->encode($this->data);
     }
     
     /**
      * Set Class
      *
-     * @access  public
      * @param   string class
      */
     public function setHandlerClass($class) {
@@ -134,7 +121,6 @@
     /**
      * Get Class
      *
-     * @access  public
      * @return  string
      */
     public function getHandlerClass() {
@@ -144,7 +130,6 @@
     /**
      * Set fault
      *
-     * @access  public
      * @param   string faultCode
      * @param   string faultString
      */
@@ -162,10 +147,9 @@
     /**
      * Get fault
      *
-     * @access  public
      * @return  &scriptlet.rpc.RpcFault
      */
-    public function &getFault() {
+    public function getFault() {
       if (empty($this->data['error'])) return NULL;
       return new RpcFault(
         $this->data['error']['faultCode'],
@@ -176,7 +160,6 @@
     /**
      * Set Id
      *
-     * @access  public
      * @param   string id
      */
     public function setId($id) {
@@ -186,7 +169,6 @@
     /**
      * Get Id
      *
-     * @access  public
      * @return  string
      */
     public function getId() {

@@ -21,17 +21,15 @@
     /**
      * Return the caster
      *
-     * @access  protected
      * @return  &scriptlet.xml.workflow.casters.ParamCaster
      */
-    public function &caster() {
+    public function caster() {
       return new ToDate();
     }
 
     /**
      * Test european date format (DD.MM.YYYY)
      *
-     * @access  public
      */
     #[@test]
     public function europeanDateFormat() {
@@ -41,7 +39,6 @@
     /**
      * Test US date format (YYYY-MM-DD)
      *
-     * @access  public
      */
     #[@test]
     public function usDateFormat() {
@@ -51,7 +48,6 @@
     /**
      * Test empty input
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function emptyInput() {

@@ -17,7 +17,6 @@
     /**
      * Returns driver name
      *
-     * @access  protected
      * @return  string
      */
     public function driverName() {

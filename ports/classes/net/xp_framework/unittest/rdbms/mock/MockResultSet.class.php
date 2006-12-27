@@ -18,7 +18,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array<string, mixed>[] data
      */
     public function __construct($data= array()) {
@@ -28,7 +27,6 @@
     /**
      * Seek
      *
-     * @access  public
      * @param   int offset
      * @return  bool success
      * @throws  rdbms.SQLException
@@ -46,7 +44,6 @@
      * the fields contents if a field is specified or FALSE to indicate
      * no more rows are available.
      *
-     * @access  public
      * @param   string field default NULL
      * @return  mixed
      */
@@ -63,7 +60,6 @@
     /**
      * Close resultset and free result memory
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {

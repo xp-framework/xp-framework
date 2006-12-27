@@ -29,11 +29,10 @@
     /**
      * Parse raw listing entry.
      *
-     * @access  public
      * @param   string raw a single line
      * @return  &peer.ftp.FtpEntry
      */
-    public function &entryFrom($raw);
+    public function entryFrom($raw);
   
   }
 ?>

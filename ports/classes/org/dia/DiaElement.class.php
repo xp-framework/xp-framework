@@ -21,7 +21,6 @@
     /**
      * Create new DiaElement instance
      *
-     * @access  public
      * @param   mixed value
      */
     public function __construct($value= NULL) {
@@ -31,7 +30,6 @@
     /**
      * Get value of this DiaElement
      *
-     * @access  public
      * @return  mixed
      */
     public function getValue() {
@@ -41,7 +39,6 @@
     /**
      * Set the value of this DiaElement
      *
-     * @access  public
      * @param   mixed value
      */
     // TODO: xpath will probably not work as expected!
@@ -55,10 +52,9 @@
     /**
      * Return the XML represenation of this DiaElement
      *
-     * @access  public
      * @return  &xml.Node
      */
-    public function &getNode() {
+    public function getNode() {
       $node= new Node($this->node_name);
       return $node;
     }
@@ -66,10 +62,9 @@
     /**
      * Accept a Visitor
      *
-     * @access  public
      * @param   &util.Visitor
      */
-    public function accept(&$Visitor) {
+    public function accept($Visitor) {
       $Visitor->visit($this);
     }
 
@@ -77,13 +72,13 @@
      * DiaElement and its child-classes are 'leaf' elements which have no
      * children
      */
-    public function addChild(&$Comp) { }
+    public function addChild($Comp) { }
 
     /**
      * DiaElement and its child-classes are 'leaf' elements which have no
      * children
      */
-    public function remChild(&$Comp) { }
+    public function remChild($Comp) { }
 
     /**
      * DiaElement and its child-classes are 'leaf' elements which have no

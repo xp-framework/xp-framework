@@ -16,7 +16,6 @@
    * Server thread wich does all of the accept()ing on the sockets.
    *
    * @purpose   Thread
-   * @model     Singleton
    */
   class FtpThread extends Thread implements Traceable {
     public
@@ -34,7 +33,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('server');
@@ -43,73 +41,65 @@
     /**
      * Set server
      *
-     * @access  public
      * @param   &peer.server.Server server
      */
-    public function setServer(&$server) {
-      $this->server= &$server;
+    public function setServer($server) {
+      $this->server= $server;
     }
     
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) { 
-      $this->cat= &$cat;
+    public function setTrace($cat) { 
+      $this->cat= $cat;
     }
     
     /**
      * Set an AuthenticationHandler
      *
-     * @access  public
      * @param   &lang.reflect.InvokationHandler handler
      */
-    public function setAuthenticatorHandler(&$handler) {
-      $this->authenticatorHandler= &$handler;
+    public function setAuthenticatorHandler($handler) {
+      $this->authenticatorHandler= $handler;
     }
     
 
     /**
      * Set a StorageHandler
      *
-     * @access  public
      * @param   &lang.reflect.InvokationHandler handler
      */
-    public function setStorageHandler(&$handler) {
-      $this->storageHandler= &$handler;
+    public function setStorageHandler($handler) {
+      $this->storageHandler= $handler;
     }
 
     /**
      * Adds an conditional interceptor
      *
-     * @access public
      * @param peer.ftp.server.interceptor.InterceptorCondition Condition
      * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
-    public function addInterceptorFor($conditions, &$interceptor) {
+    public function addInterceptorFor($conditions, $interceptor) {
       $this->interceptors[]= array($conditions, $interceptor);
     }
     
     /**
      * Adds a new interceptor
      *
-     * @access public
      * @param peer.ftp.server.interceptor.StorageActionInterceptor Interceptor
      */
-    public function addInterceptor(&$interceptor) {
+    public function addInterceptor($interceptor) {
       $this->addInterceptorFor(array(), $interceptor);
     }
     
     /**
      * Retrieve an instance of this thread
      *
-     * @model   static
-     * @access  protected
      * @return  &peer.ftp.server.FtpThread
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance= NULL;
 
       if (!$instance) $instance= new FtpThread();
@@ -119,7 +109,6 @@
     /**
      * Set ProcessOwner
      *
-     * @access  public
      * @param   String processOwner
      */
     public function setProcessOwner($processOwner) {
@@ -129,7 +118,6 @@
     /**
      * Get ProcessOwner
      *
-     * @access  public
      * @return  String
      */
     public function getProcessOwner() {
@@ -139,7 +127,6 @@
     /**
      * Set ProcessGroup
      *
-     * @access  public
      * @param   String processGroup
      */
     public function setProcessGroup($processGroup) {
@@ -149,7 +136,6 @@
     /**
      * Get ProcessGroup
      *
-     * @access  public
      * @return  String
      */
     public function getProcessGroup() {
@@ -161,17 +147,16 @@
      * so that the class is loaded within the thread's process space
      * and will be recompiled whenever the thread is restarted.
      *
-     * @access  public
      * @throws  lang.Exception in case initializing the server fails
      * @throws  lang.SystemException in case setuid fails
      */
     public function run() {
       try {
-        with ($class= &XPClass::forName(LISTENER_CLASS), $cl= &ClassLoader::getDefault()); {
+        with ($class= XPClass::forName(LISTENER_CLASS), $cl= ClassLoader::getDefault()); {
         
           // Add listener
-          $this->server->addListener($listener= &$class->newInstance(
-            $storage= &Proxy::newProxyInstance(
+          $this->server->addListener($listener= $class->newInstance(
+            $storage= Proxy::newProxyInstance(
               $cl,
               array(XPClass::forName('peer.ftp.server.storage.Storage')),
               $this->storageHandler

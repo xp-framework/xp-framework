@@ -31,25 +31,23 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
       parent::__construct($name);
-      $this->conn= &DriverManager::getConnection('sybase://localhost:1999/');
-      $this->peer= &Job::getPeer();
+      $this->conn= DriverManager::getConnection('sybase://localhost:1999/');
+      $this->peer= Job::getPeer();
     }
     
     /**
      * Helper method that will call toSQL() on the passed criteria and
      * compare the resulting string to the expected string.
      *
-     * @access  protected
      * @param   string sql
      * @param   &rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
-    public function assertSql($sql, &$criteria) {
+    public function assertSql($sql, $criteria) {
       $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
     }
       
@@ -57,7 +55,6 @@
      * Test that an "empty" criteria object will return an empty where 
      * statetement
      *
-     * @access  public
      */
     #[@test]
     public function emptyCriteria() {
@@ -67,7 +64,6 @@
     /**
      * Tests a criteria object with one equality comparison
      *
-     * @access  public
      */
     #[@test]
     public function simpleCriteria() {
@@ -78,7 +74,6 @@
      * Tests Criteria::toSQL() will throw an exception when using a non-
      * existant field
      *
-     * @access  public
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function nonExistantFieldCausesException() {
@@ -89,7 +84,6 @@
     /**
      * Tests a more complex criteria object
      *
-     * @access  public
      */
     #[@test]
     public function complexCriteria() {
@@ -111,11 +105,10 @@
      *
      * @see     xp://rdbms.criterion.Property
      * @see     xp://rdbms.criterion.Restrictions
-     * @access  public
      */
     #[@test]
     public function restrictionsFactory() {
-      $job_id= &Property::forName('job_id');
+      $job_id= Property::forName('job_id');
       $c= new Criteria(Restrictions::anyOf(
         Restrictions::not($job_id->in(array(1, 2, 3))),
         Restrictions::allOf(
@@ -133,7 +126,6 @@
     /**
      * Tests Criteria constructor for varargs support
      *
-     * @access  public
      */
     #[@test]
     public function constructorAcceptsVarArgArrays() {

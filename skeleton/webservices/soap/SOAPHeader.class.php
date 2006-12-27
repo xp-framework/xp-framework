@@ -16,10 +16,9 @@
      * Retrieve XML representation of this header for use in a SOAP
      * message.
      *
-     * @access  public
      * @param   array<string, string> ns list of namespaces
      * @return  &xml.Node
      */
-    public function &getNode($ns);
+    public function getNode($ns);
   }
 ?>

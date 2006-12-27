@@ -18,24 +18,20 @@
     /**
      * Create a new checksum from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &security.checksum.MD5
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       return new MD5(md5($str));
     }
 
     /**
      * Create a new checksum from a file object
      *
-     * @model   static
-     * @access  public
      * @param   &io.File file
      * @return  &security.checksum.MD5
      */
-    public static function &fromFile(&$file) {
+    public static function fromFile($file) {
       return new MD5(md5_file($file->uri));
     }
   }

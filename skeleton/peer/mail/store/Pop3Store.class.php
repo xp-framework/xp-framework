@@ -23,14 +23,13 @@
      * - pop3://user@localhost:111
      * </pre>
      *
-     * @access  protected
      * @param   peer.URL
      * @param   &array attr
      * @param   &int port
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    public function _supports($u, &$attr) {
+    public function _supports($u, $attr) {
       switch (strtolower($u->getScheme())) {
         case 'pop3': 
           $attr['proto']= 'pop3'; 

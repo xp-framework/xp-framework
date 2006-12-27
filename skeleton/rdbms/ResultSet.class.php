@@ -30,7 +30,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   resource handle
      * @param   array fields
      */
@@ -42,8 +41,6 @@
     /**
      * Seek to a specified position within the resultset
      * 
-     * @model   abstract
-     * @access  public
      * @param   int offset
      * @return  bool success
      * @throws  rdbms.SQLException
@@ -55,8 +52,6 @@
      * the fields contents if a field is specified or FALSE to indicate
      * no more rows are available.
      *
-     * @model   abstract
-     * @access  public
      * @param   string field default NULL
      * @return  mixed
      */
@@ -65,7 +60,6 @@
     /**
      * Close resultset and free result memory
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { }

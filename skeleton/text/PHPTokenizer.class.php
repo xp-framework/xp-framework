@@ -27,7 +27,6 @@
     /**
      * Set tokens
      *
-     * @access  public
      * @param   string str a string containing all of the tokens
      */
     public function setTokenString($str) {
@@ -39,7 +38,6 @@
     /**
      * Set tokens
      *
-     * @access  public
      * @param   array tokens
      */
     public function setTokens($tokens) {
@@ -51,7 +49,6 @@
     /**
      * Gets a token's name
      *
-     * @access  public
      * @param   int tok Token constant, e.g. T_WHITESPACE
      * @return  string name
      */
@@ -83,7 +80,6 @@
      * and boolean FALSE as its third parameter
      *
      * @see     xp://text.PHPTokenizer#applyRules
-     * @access  public
      * @param   string name rule name
      * @param   array match list of tokens to match
      * @param   mixed callback either a string or array(&$obj, 'function') syntax
@@ -101,7 +97,6 @@
     /**
      * Return a token by position
      *
-     * @access  public
      * @param   int i offset
      * @return  array tokendata (type, cdata)
      */
@@ -115,7 +110,6 @@
     /**
      * Get first token
      *
-     * @access  public
      * @return  array first token
      */
     public function getFirstToken() {
@@ -125,7 +119,6 @@
     /**
      * Get next token
      *
-     * @access  public
      * @return  array next token from current offset or FALSE when no more tokens exist
      */
     public function getNextToken() {
@@ -136,7 +129,6 @@
     /**
      * Apply rules on all tokens
      *
-     * @access  public
      * @param   util.log.LogCategory CAT default NULL a log category to print debug to
      * @return  bool success
      */
@@ -155,8 +147,8 @@
         do {
           $CAT && $CAT->debugf('[%04x:%-18s] >>> %s "%s"', $i, $name, $this->getTokenName($token), $cdata);
           
-          $rule= &$this->rules[$name];
-          $expect= &$rule['match'][$rule['expect']];
+          $rule= $this->rules[$name];
+          $expect= $rule['match'][$rule['expect']];
           $s= sizeof($rule['match']);
           $f= FALSE;
 

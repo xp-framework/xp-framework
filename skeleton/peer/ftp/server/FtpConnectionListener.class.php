@@ -41,36 +41,33 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &peer.ftp.server.Storage storage
      * @param   &peer.ftp.server.Authenticator authenticator
      */
-    public function __construct(&$storage, &$authenticator) {
-      $this->storage= &$storage;
-      $this->authenticator= &$authenticator;
+    public function __construct($storage, $authenticator) {
+      $this->storage= $storage;
+      $this->authenticator= $authenticator;
     }
 
     /**
      * Set a trace for debugging
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) { 
-      $this->cat= &$cat;
+    public function setTrace($cat) { 
+      $this->cat= $cat;
     }
     
     /**
      * Check all interceptors
      *
-     * @access private
      * @param peer.server.ConnectionEvent event The connection event
      * @param perr.server.ftp.server.StorageEntry entry The storage entry
      * @param string params The parameter string from request
      * @param string method Interceptor method to invoke
      * @return bool
      */
-    public function checkInterceptors(&$event, &$entry, $method) {
+    public function checkInterceptors($event, $entry, $method) {
       if (!$this->interceptors) return TRUE;
     
       // Check each interceptors an it's conditions
@@ -98,17 +95,16 @@
     /**
      * Open the datasocket
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @return  &peer.BSDSocket
      */
-    public function &openDatasock(&$event) {
+    public function openDatasock($event) {
       if (is('ServerSocket', $this->datasock[$event->stream->hashCode()])) {
 
         // Open socket in passive mode
         $this->cat && $this->cat->debug('+++ Opening passive connection');
         try {
-          $socket= &$this->datasock[$event->stream->hashCode()]->accept();
+          $socket= $this->datasock[$event->stream->hashCode()]->accept();
         } catch (SocketException $e) {
           $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
           return FALSE;        
@@ -117,7 +113,7 @@
       
         // Open socket in active mode
         $this->cat && $this->cat->debug('+++ Opening active connection');
-        with ($socket= &$this->datasock[$event->stream->hashCode()]); {
+        with ($socket= $this->datasock[$event->stream->hashCode()]); {
           try {
             $socket->connect();
           } catch (SocketException $e) {
@@ -133,7 +129,6 @@
     /**
      * Returns end of line identifier depending on the given type
      *
-     * @access  protected
      * @param   char type
      * @return  string
      */
@@ -144,7 +139,6 @@
     /**
      * Write an answer message to the socket
      *
-     * @access  protected
      * @param   &peer.Socket sock
      * @param   int code
      * @param   string text
@@ -152,7 +146,7 @@
      * @return  int number of bytes written
      * @throws  io.IOException
      */
-    public function answer(&$sock, $code, $text, $lines= NULL) {
+    public function answer($sock, $code, $text, $lines= NULL) {
       if (is_array($lines)) {
         $answer= $code.'-'.$text.":\r\n  ".implode("\n  ", $lines)."\r\n".$code." End\r\n";
       } else {
@@ -165,11 +159,10 @@
     /**
      * Callback for the "USER" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onUser(&$event, $params) {
+    public function onUser($event, $params) {
       $this->sessions[$event->stream->hashCode()]->setUsername($params);
       $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
       $this->answer($event->stream, 331, 'Password required for '.$params);
@@ -178,11 +171,10 @@
     /**
      * Callback for the "PASS" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onPass(&$event, $params) {
+    public function onPass($event, $params) {
       with ($user= $this->sessions[$event->stream->hashCode()]->getUsername()); {
         try {
           $r= $this->authenticator->authenticate($user, $params);
@@ -206,11 +198,10 @@
      * account information, except to allow any transfer in progress 
      * to be completed. A USER command may be expected to follow.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onRein(&$event, $params) {
+    public function onRein($event, $params) {
       delete($this->datasock[$event->stream->hashCode()]);
       $this->sessions[$event->stream->hashCode()]->setAuthenticated(FALSE);
     }
@@ -218,11 +209,10 @@
     /**
      * Callback for the "PWD" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onPwd(&$event, $params) {
+    public function onPwd($event, $params) {
       $this->answer($event->stream, 257, '"'.$this->storage->getBase($event->stream->hashCode()).'" is current directory');
     }
 
@@ -231,11 +221,10 @@
      * directory or dataset without altering his login or account 
      * information.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onCwd(&$event, $params) {
+    public function onCwd($event, $params) {
       try {
         $pwd= $this->storage->setBase($event->stream->hashCode(), $params);
       } catch (Exception $e) {
@@ -248,11 +237,10 @@
     /**
      * Change to the parent directory
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onCdup(&$event, $params) {
+    public function onCdup($event, $params) {
       try {
         $pwd= $this->storage->setBase(
           $event->stream->hashCode(),
@@ -270,11 +258,10 @@
      * features that the server supports beyond those described in 
      * RFC 959.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onFeat(&$event, $params) {
+    public function onFeat($event, $params) {
       $this->answer($event->stream, 211, 'Features', array('MDTM', 'SIZE'));
     }
 
@@ -282,11 +269,10 @@
      * HELP: This command causes the server to send a list of supported 
      * commands and other helpful information.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onHelp(&$event, $params) {
+    public function onHelp($event, $params) {
       $methods= array();
       $i= 0;
       foreach (get_class_methods($this) as $name) {
@@ -302,11 +288,10 @@
      * SITE: This allows you to enter a command that is specific to the 
      * current FTP site.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onSite(&$event, $params) {
+    public function onSite($event, $params) {
       $method= 'onSite'.strtolower(strtok($params, ' '));
 
       // Check if method is implemented and answer with code 550 in case
@@ -322,25 +307,23 @@
     /**
      * SITE HELP
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onSiteHelp(&$event, $params) {
+    public function onSiteHelp($event, $params) {
       return $this->onHelp($event, $params);
     }
 
     /**
      * SITE CHMOD
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onSiteChmod(&$event, $params) {
+    public function onSiteChmod($event, $params) {
       list($permissions, $uri)= explode(' ', trim($params), 2);
       $this->cat->warn($permissions);
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $uri))) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $uri))) {
         $this->answer($event->stream, 550, $uri.': No such file or directory');
         return;
       }
@@ -354,11 +337,10 @@
     /**
      * Callback for the "SYST" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onSyst(&$event, $params) {
+    public function onSyst($event, $params) {
       $this->answer($event->stream, 215, 'UNIX Type: L8');
     }
 
@@ -367,18 +349,16 @@
      * entered commands. It specifies no action other than that the 
      * server send an OK reply.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */    
-    public function onNoop(&$event, $params) {
+    public function onNoop($event, $params) {
       $this->answer($event->stream, 200, 'OK');
     }
 
     /**
      * Helper method
      *
-     * @access  protected
      * @param   int bits
      * @return  string
      */
@@ -393,7 +373,6 @@
     /**
      * Create a string representation from integer permissions
      *
-     * @access  protected
      * @param   int permissions
      * @return  string
      */
@@ -410,12 +389,11 @@
      * LIST: This command causes a list of file names and file details 
      * to be sent from the FTP site to the client.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onList(&$event, $params) {
-      if (!$socket= &$this->openDatasock($event)) return;
+    public function onList($event, $params) {
+      if (!$socket= $this->openDatasock($event)) return;
             
       // Remove all -options
       if (($parts= sscanf($params, '-%s %s')) && $parts[0]) {
@@ -423,7 +401,7 @@
         $params= $parts[1];
       }
       
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         $socket->close();
         delete($socket);
@@ -472,14 +450,13 @@
      * NLST: This command causes a list of file names (with no other 
      * information) to be sent from the FTP site to the client.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onNlst(&$event, $params) {
-      if (!$socket= &$this->openDatasock($event)) return;
+    public function onNlst($event, $params) {
+      if (!$socket= $this->openDatasock($event)) return;
       
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         $socket->close();
         return;
@@ -518,12 +495,11 @@
      * MDTM: This command can be used to determine when a file in the 
      * server was last modified.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onMdtm(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+    public function onMdtm($event, $params) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -540,12 +516,11 @@
      * which would be transmitted over the data connection should that 
      * file be transmitted. 
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onSize(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+    public function onSize($event, $params) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -562,18 +537,17 @@
      * subdirectory of the current working directory (if pathname is 
      * relative).
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onMkd(&$event, $params) {
+    public function onMkd($event, $params) {
       if ($this->storage->lookup($event->stream->hashCode(), $params)) {
         $this->answer($event->stream, 550, $params.': already exists');
         return;
       }
       
       // Invoke interceptor
-      $entry= &$this->storage->createEntry($event->stream->hashCode(), $params, ST_COLLECTION);
+      $entry= $this->storage->createEntry($event->stream->hashCode(), $params, ST_COLLECTION);
       if (!$this->checkInterceptors($event, $entry, 'onCreate')) return;
 
       // Create the element
@@ -592,12 +566,11 @@
      * subdirectory of the current working directory (if pathname is 
      * relative).
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onRmd(&$event, $params) {
-      if (!($element= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+    public function onRmd($event, $params) {
+      if (!($element= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': no such file or directory');
         return;
       }
@@ -620,14 +593,13 @@
      * file specified in pathname to the client. The status and contents 
      * of the file at the server site are unaffected.
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onRetr(&$event, $params) {
-      if (!$socket= &$this->openDatasock($event)) return;
+    public function onRetr($event, $params) {
+      if (!$socket= $this->openDatasock($event)) return;
     
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         $socket->close();
         return;
@@ -669,24 +641,23 @@
     /**
      * Callback for the "STOR" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onStor(&$event, $params) {
-      if (!$socket= &$this->openDatasock($event)) return;
+    public function onStor($event, $params) {
+      if (!$socket= $this->openDatasock($event)) return;
       
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
 
         // Invoke interceptor
-        $entry= &$this->storage->createEntry($event->stream->hashCode(), $params, ST_ELEMENT);
+        $entry= $this->storage->createEntry($event->stream->hashCode(), $params, ST_ELEMENT);
         if (!$this->checkInterceptors($event, $entry, 'onCreate')) {
           $socket->close();
           return;
         }
 
         try {
-          $entry= &$this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
+          $entry= $this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
         } catch (Exception $e) {
           $this->answer($event->stream, 550, $params.': '.$e->getMessage());
           $socket->close();
@@ -721,12 +692,11 @@
     /**
      * Callback for the "DELE" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onDele(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+    public function onDele($event, $params) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -751,12 +721,11 @@
     /**
      * Rename a file from filename
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onRnfr(&$event, $params) {
-      if (!($entry= &$this->storage->lookup($event->stream->hashCode(), $params))) {
+    public function onRnfr($event, $params) {
+      if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
@@ -769,12 +738,11 @@
     /**
      * Rename a file into filename
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onRnto(&$event, $params) {
-      if (!$entry= &$this->sessions[$event->stream->hashCode()]->getTempVar('rnfr')) {
+    public function onRnto($event, $params) {
+      if (!$entry= $this->sessions[$event->stream->hashCode()]->getTempVar('rnfr')) {
         $this->answer($event->stream, 503, 'Bad sequence of commands');
         return;
       }
@@ -798,11 +766,10 @@
     /**
      * Callback for the "TYPE" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onType(&$event, $params) {
+    public function onType($event, $params) {
       switch ($params= strtoupper($params)) {
         case TYPE_ASCII:
         case TYPE_BINARY:
@@ -818,11 +785,10 @@
     /**
      * Callback for the "STRU" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onStru(&$event, $params) {
+    public function onStru($event, $params) {
       switch ($params= strtoupper($params)) {
         case STRU_FILE:
           $this->answer($event->stream, 200, 'Structure set to '.$params);
@@ -841,11 +807,10 @@
     /**
      * Callback for the "MODE" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onMode(&$event, $params) {
+    public function onMode($event, $params) {
       switch ($params= strtoupper($params)) {
         case MODE_STREAM:
           $this->answer($event->stream, 200, 'Mode set to '.$params);
@@ -864,11 +829,10 @@
     /**
      * Callback for the "QUIT" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onQuit(&$event, $params) {
+    public function onQuit($event, $params) {
       $this->answer($event->stream, 221, 'Goodbye');
       $event->stream->close();
       
@@ -879,11 +843,10 @@
     /**
      * Callback for the "PORT" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onPort(&$event, $params) {
+    public function onPort($event, $params) {
       $this->mode[$event->stream->hashCode()]= DATA_ACTIVE;
       $octets= sscanf($params, '%d,%d,%d,%d,%d,%d');
       $host= sprintf('%s.%s.%s.%s', $octets[0], $octets[1], $octets[2], $octets[3]);
@@ -899,11 +862,10 @@
     /**
      * Callback for the "OPTS" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onOpts(&$event, $params) {
+    public function onOpts($event, $params) {
       if (2 != sscanf($params, '%s %s', $option, $value)) {
         $this->answer($event->stream, 501, 'OPTS: Invalid numer of arguments');
         return;
@@ -916,11 +878,10 @@
     /**
      * Callback for the "PASV" command
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      * @param   string params
      */
-    public function onPasv(&$event, $params) {
+    public function onPasv($event, $params) {
       $this->mode[$event->stream->hashCode()]= DATA_PASSIVE;
 
       if ($this->datasock[$event->stream->hashCode()]) {
@@ -946,10 +907,9 @@
     /**
      * Method to be triggered when a client connects
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function connected(&$event) {
+    public function connected($event) {
       $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
 
       // Create a new session object for this client
@@ -960,10 +920,9 @@
     /**
      * Method to be triggered when a client has sent data
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function data(&$event) {
+    public function data($event) {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
       
       $this->cat && $this->cat->debug('>>> ', addcslashes($event->data, "\0..\17"));
@@ -998,10 +957,9 @@
     /**
      * Method to be triggered when a client disconnects
      *
-     * @access  public
      * @param   &peer.server.ConnectionEvent event
      */
-    public function disconnected(&$event) {
+    public function disconnected($event) {
       $this->cat && $this->cat->debugf('Client %s disconnected', $event->stream->host);
       
       // Kill associated session

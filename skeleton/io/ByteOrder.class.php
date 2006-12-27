@@ -30,8 +30,6 @@
      *   var_dump(ByteOrder::nameOf(ByteOrder::nativeOrder()));
      * </code>
      *
-     * @model   static
-     * @access  public
      * @param   int order
      * @return  string name
      */
@@ -46,8 +44,6 @@
     /**
      * Retrieves this system's native byte order
      *
-     * @model   static
-     * @access  public
      * @return  int either BIG_ENDIAN or LITTLE_ENDIAN
      * @throws  lang.FormatException in case the byte order cannot be determined
      */
@@ -63,8 +59,6 @@
     /**
      * Returns the network byte order.
      *
-     * @model   static
-     * @access  public
      * @return  int network byte order
      * @see     http://www.hyperdictionary.com/computing/network+byte+order
      */

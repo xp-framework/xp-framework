@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      */
     public function __construct() {
     
@@ -51,11 +50,10 @@
     /**
      * Create a string representation of a given value
      *
-     * @access  protected
      * @param   &mixed value
      * @return  string
      */
-    public function stringOf(&$value) {
+    public function stringOf($value) {
       if (is('Proxy', $value)) {
         $s= 'Proxy<';
         $c= get_class($value);
@@ -71,10 +69,9 @@
     /**
      * Initialize this protocol handler
      *
-     * @access  public
      * @param   &peer.URL proxy
      */
-    public function initialize(&$proxy) {
+    public function initialize($proxy) {
       sscanf(
         $proxy->getParam('version', '1.0'), 
         '%d.%d', 
@@ -112,7 +109,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -122,11 +118,10 @@
     /**
      * Look up an object by its name
      *
-     * @access  public
      * @param   string name
      * @param   &lang.Object
      */
-    public function &lookup($name) {
+    public function lookup($name) {
       $this->cat && $this->cat->infof(
         '>>> %s(%s:%d) LOOKUP %s',
         $this->getClassName(),
@@ -134,7 +129,7 @@
         $this->_sock->port,
         $name
       );
-      $r= &$this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
+      $r= $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
       return $r;
     }
@@ -142,11 +137,10 @@
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   &remote.UserTransaction tran
      * @param   bool
      */
-    public function begin(&$tran) {
+    public function begin($tran) {
       $this->cat && $this->cat->infof(
         '>>> %s(%s:%d) BEGIN %s',
         $this->getClassName(),
@@ -154,7 +148,7 @@
         $this->_sock->port,
         $this->stringOf($tran)
       );
-      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
+      $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
       return $r;
     }
@@ -162,11 +156,10 @@
     /**
      * Rollback a transaction
      *
-     * @access  public
      * @param   &remote.UserTransaction tran
      * @param   bool
      */
-    public function rollback(&$tran) {
+    public function rollback($tran) {
       $this->cat && $this->cat->infof(
         '>>> %s(%s:%d) ROLLBACK %s',
         $this->getClassName(),
@@ -174,7 +167,7 @@
         $this->_sock->port,
         $this->stringOf($tran)
       );
-      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
+      $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
       return $r;
     }
@@ -182,11 +175,10 @@
     /**
      * Commit a transaction
      *
-     * @access  public
      * @param   &remote.UserTransaction tran
      * @param   bool
      */
-    public function commit(&$tran) {
+    public function commit($tran) {
       $this->cat && $this->cat->infof(
         '>>> %s(%s:%d) COMMIT %s',
         $this->getClassName(),
@@ -194,7 +186,7 @@
         $this->_sock->port,
         $this->stringOf($tran)
       );
-      $r= &$this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
+      $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
       return $r;
     }
@@ -203,13 +195,12 @@
      * Invoke a method on a given object id with given method name
      * and given arguments
      *
-     * @access  public
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
      * @return  &mixed
      */
-    public function &invoke($oid, $method, $args) {
+    public function invoke($oid, $method, $args) {
       $this->cat && $this->cat->infof(
         '>>> %s(%s:%d) %d::%s(%s)',
         $this->getClassName(),
@@ -219,7 +210,7 @@
         $method,
         $this->stringOf($args)
       );
-      $r= &$this->sendPacket(
+      $r= $this->sendPacket(
         REMOTE_MSG_CALL, 
         pack('NN', 0, $oid),
         array(
@@ -234,14 +225,13 @@
     /**
      * Sends a packet, reads and evaluates the response
      *
-     * @access  protected
      * @param   int type
      * @param   string data default ''
      * @return  &mixed
      * @throws  remote.RemoteException for server errors
      * @throws  lang.Error for unrecoverable errors
      */
-    public function &sendPacket($type, $data= '', $bytes= array()) {
+    public function sendPacket($type, $data= '', $bytes= array()) {
       $bsize= sizeof($bytes);
       
       // Calculate packet length
@@ -282,18 +272,18 @@
       }
 
       // Perform actions based on response type
-      $ctx= array('handler' => &$this);
+      $ctx= array('handler' => $this);
       try {
         switch ($header['type']) {
           case REMOTE_MSG_VALUE:
-            $data= &ByteCountedString::readFrom($this->_sock);
+            $data= ByteCountedString::readFrom($this->_sock);
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             return $this->serializer->valueOf(new SerializedData($data), $ctx);
 
           case REMOTE_MSG_EXCEPTION:
-            $data= &ByteCountedString::readFrom($this->_sock);
+            $data= ByteCountedString::readFrom($this->_sock);
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
-            $reference= &$this->serializer->valueOf(new SerializedData($data), $ctx);
+            $reference= $this->serializer->valueOf(new SerializedData($data), $ctx);
             if (is('RemoteException', $reference)) {
               throw($reference);
             } else if (is('ExceptionReference', $reference)) {
@@ -309,7 +299,7 @@
             throw(new RemoteException($message, new Error($message)));
 
           default:
-            $data= &$this->readBytes($header['length']);   // Read all left-over bytes
+            $data= $this->readBytes($header['length']);   // Read all left-over bytes
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             $this->_sock->close();
             throw(new Error('Unknown message type'));
@@ -322,7 +312,6 @@
     /**
      * Read a specified number of bytes
      *
-     * @access  protected
      * @param   int num
      * @return  string 
      */
@@ -338,11 +327,10 @@
     /**
      * Set trace
      *
-     * @access  public
      * @param   &util.log.LogCategory cat
      */
-    public function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
   } 

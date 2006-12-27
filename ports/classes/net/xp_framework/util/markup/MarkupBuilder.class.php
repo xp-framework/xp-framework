@@ -23,11 +23,10 @@
     /**
      * Push a processor onto stack
      *
-     * @access  protected
      * @param   &net.xp_framework.util.markup.MarkupProcessor proc
      * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
-    public function &pushProcessor(&$proc) {
+    public function pushProcessor($proc) {
       array_unshift($this->stack, $proc);
       return $proc;
     }
@@ -35,10 +34,9 @@
     /**
      * Pop processor off stack
      *
-     * @access  protected
      * @return  &net.xp_framework.util.markup.MarkupProcessor
      */
-    public function &popProcessor() {
+    public function popProcessor() {
       array_shift($this->stack);
       return $this->stack[0];
     }
@@ -46,7 +44,6 @@
     /**
      * Retrieve markup for specified text
      *
-     * @access  public
      * @param   string text
      * @return  string
      */
@@ -63,7 +60,7 @@
         $processors['code']= new CodeProcessor();
       }
       
-      $processor= &$this->pushProcessor($processors['default']);
+      $processor= $this->pushProcessor($processors['default']);
 
       $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';      
@@ -78,7 +75,7 @@
             $lookup= strtolower($tag);
 
             if (isset($state[$lookup])) {
-              $processor= &$this->pushProcessor($processors[$state[$lookup]]);
+              $processor= $this->pushProcessor($processors[$state[$lookup]]);
               $out.= $processor->initialize();
             } else {
               $out.= '<'.$tag.'>';
@@ -94,7 +91,7 @@
 
             if (isset($state[$lookup])) {
               $out.= $processor->finalize();
-              $processor= &$this->popProcessor();
+              $processor= $this->popProcessor();
             } else {
               $out.= '<'.$tag.'>';
             }

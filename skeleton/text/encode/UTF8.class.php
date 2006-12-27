@@ -12,7 +12,6 @@
    *   $str= UTF8::decode($b);
    * </code>
    *
-   * @model    static
    * @see      rfc://2045#6.8
    * @purpose  UTF encoder / decoder
    */
@@ -21,8 +20,6 @@
     /**
      * Encode string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */
@@ -33,8 +30,6 @@
     /**
      * Decode utf8 encoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */

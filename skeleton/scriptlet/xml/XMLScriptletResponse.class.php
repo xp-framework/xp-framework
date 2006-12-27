@@ -37,38 +37,34 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   xml.XSLProcessor processor
      */
     public function __construct($processor= NULL) {
-      $this->processor= &$processor;
+      $this->processor= $processor;
       $this->document= new OutputDocument();
     }
 
     /**
      * Set Processor
      *
-     * @access  public
      * @param   &xml.IXSLProcessor processor
      */
-    public function setProcessor(&$processor) {
-      $this->processor= &$processor;
+    public function setProcessor($processor) {
+      $this->processor= $processor;
     }
 
     /**
      * Get Processor
      *
-     * @access  public
      * @return  &xml.IXSLProcessor processor
      */
-    public function &getProcessor() {
+    public function getProcessor() {
       return $this->processor;
     }
 
     /**
      * Set whether this document needs to be processed
      *
-     * @access  public
      * @param   bool processed
      */
     public function setProcessed($processed) {
@@ -78,7 +74,6 @@
     /**
      * Overwritten method from parent class
      *
-     * @access  public
      * @param   string s string to add to the content
      * @throws  lang.IllegalAccessException in case processing is requested
      */
@@ -92,7 +87,6 @@
     /**
      * Overwritten method from parent class
      *
-     * @access  public
      * @param   string content Content
      * @throws  lang.IllegalAccessException
      */
@@ -127,18 +121,17 @@
      *   </param>
      * </xmp>     
      *
-     * @access  public
      * @param   string name name
      * @param   &mixed val
      */
-    public function addFormValue($name, &$val) {
+    public function addFormValue($name, $val) {
       if (!is_array($val)) $val= array($val);
 
       foreach (array_keys($val) as $k) {
         if (is_array($val[$k])) {
-          $c= &Node::fromArray($val[$k], 'param');
+          $c= Node::fromArray($val[$k], 'param');
         } else if (is_object($val[$k])) {
-          $c= &Node::fromObject($val[$k], 'param');
+          $c= Node::fromObject($val[$k], 'param');
         } else {
           $c= new Node('param', $val[$k]);
         }
@@ -158,7 +151,6 @@
      *   />                                                 
      * </xmp>
      *
-     * @access  public
      * @param   string checker The class checking the input
      * @param   string type The error type
      * @param   string field default '*' The form field corresponding
@@ -167,9 +159,9 @@
      */
     public function addFormError($checker, $type, $field= '*', $info= NULL) {
       if (is_array($info)) {
-        $c= &Node::fromArray($info, 'error');
+        $c= Node::fromArray($info, 'error');
       } else if (is_object($info)) {
-        $c= &Node::fromObject($info, 'error');
+        $c= Node::fromObject($info, 'error');
       } else {
         $c= new Node('error', $info);
       }
@@ -188,12 +180,11 @@
      * here since there is no special specification what do with
      * nodes besides formvalues and formerrors
      *
-     * @access  public
      * @param   xml.Node node
      * @return  &xml.Node added node
      * @throws  lang.IllegalArgumentException
      */
-    public function &addFormResult(&$node) {
+    public function addFormResult($node) {
       if (
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
@@ -206,7 +197,6 @@
     /**
      * Sets the absolute path to the XSL stylesheet
      *
-     * @access  public
      * @param   string stylesheet
      * @param   int type default XSLT_FILE
      */
@@ -217,7 +207,6 @@
     /**
      * Retrieves whether a stylesheet has been set
      *
-     * @access  public
      * @return  bool
      */
     public function hasStylesheet() {
@@ -227,7 +216,6 @@
     /**
      * Sets an XSL parameter
      *
-     * @access  public
      * @param   string name
      * @param   string value
      */
@@ -238,7 +226,6 @@
     /**
      * Retrieves an XSL parameter by its name
      *
-     * @access  public
      * @param   string name
      * @return  string value
      */
@@ -249,7 +236,6 @@
     /**
      * Forward to another state (optionally with query string and fraction)
      *
-     * @access  public
      * @param   string state
      * @param   string query default NULL the query string without the leading "?"
      * @param   string fraction default NULL the fraction without the leading "#"
@@ -317,7 +303,7 @@
         throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
       }
       
-      $this->content= &$this->processor->output();
+      $this->content= $this->processor->output();
       
       return TRUE;
     }
@@ -325,7 +311,6 @@
     /**
      * Destructor
      *
-     * @access  public
      */
     public function __destruct() {
       delete($this->document);

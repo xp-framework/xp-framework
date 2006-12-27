@@ -25,11 +25,9 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() { 
-      with ($peer= &BugsActivity::getPeer()); {
+      with ($peer= BugsActivity::getPeer()); {
         $peer->setTable('bugs_activity');
         $peer->setConnection('bugzilla');
         $peer->setPrimary(array(''));
@@ -48,56 +46,51 @@
     /**
      * Retrieve associated peer
      *
-     * @access  public
      * @return  &rdbms.Peer
      */
-    public function &getPeer() {
+    public function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "bug_id"
      *
-     * @access  static
      * @param   int bug_id
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_id($bug_id) {
-      $peer= &BugsActivity::getPeer();
+    public function getByBug_id($bug_id) {
+      $peer= BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('bug_id', $bug_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "bug_when"
      *
-     * @access  static
      * @param   util.Date bug_when
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByBug_when($bug_when) {
-      $peer= &BugsActivity::getPeer();
+    public function getByBug_when($bug_when) {
+      $peer= BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('bug_when', $bug_when, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "fieldid"
      *
-     * @access  static
      * @param   int fieldid
      * @return  &BugsActivity[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function &getByFieldid($fieldid) {
-      $peer= &BugsActivity::getPeer();
+    public function getByFieldid($fieldid) {
+      $peer= BugsActivity::getPeer();
       return $peer->doSelect(new Criteria(array('fieldid', $fieldid, EQUAL)));
     }
 
     /**
      * Retrieves bug_id
      *
-     * @access  public
      * @return  int
      */
     public function getBug_id() {
@@ -107,7 +100,6 @@
     /**
      * Sets bug_id
      *
-     * @access  public
      * @param   int bug_id
      * @return  int the previous value
      */
@@ -118,7 +110,6 @@
     /**
      * Retrieves who
      *
-     * @access  public
      * @return  int
      */
     public function getWho() {
@@ -128,7 +119,6 @@
     /**
      * Sets who
      *
-     * @access  public
      * @param   int who
      * @return  int the previous value
      */
@@ -139,7 +129,6 @@
     /**
      * Retrieves bug_when
      *
-     * @access  public
      * @return  util.Date
      */
     public function getBug_when() {
@@ -149,7 +138,6 @@
     /**
      * Sets bug_when
      *
-     * @access  public
      * @param   util.Date bug_when
      * @return  util.Date the previous value
      */
@@ -160,7 +148,6 @@
     /**
      * Retrieves fieldid
      *
-     * @access  public
      * @return  int
      */
     public function getFieldid() {
@@ -170,7 +157,6 @@
     /**
      * Sets fieldid
      *
-     * @access  public
      * @param   int fieldid
      * @return  int the previous value
      */
@@ -181,7 +167,6 @@
     /**
      * Retrieves added
      *
-     * @access  public
      * @return  string
      */
     public function getAdded() {
@@ -191,7 +176,6 @@
     /**
      * Sets added
      *
-     * @access  public
      * @param   string added
      * @return  string the previous value
      */
@@ -202,7 +186,6 @@
     /**
      * Retrieves removed
      *
-     * @access  public
      * @return  string
      */
     public function getRemoved() {
@@ -212,7 +195,6 @@
     /**
      * Sets removed
      *
-     * @access  public
      * @param   string removed
      * @return  string the previous value
      */
@@ -223,7 +205,6 @@
     /**
      * Retrieves attach_id
      *
-     * @access  public
      * @return  int
      */
     public function getAttach_id() {
@@ -233,7 +214,6 @@
     /**
      * Sets attach_id
      *
-     * @access  public
      * @param   int attach_id
      * @return  int the previous value
      */

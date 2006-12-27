@@ -66,7 +66,6 @@
      *   <li>timeout: 4 (seconds)</li>
      * </ul>
      *
-     * @access  public
      * @param   string dsn
      */
     public function __construct($dsn) {
@@ -76,7 +75,6 @@
     /**
      * Private helper function
      *
-     * @access  private
      * @param   string dsn
      */
     public function _dsn($dsn) {
@@ -94,7 +92,6 @@
     /**
      * Setup directory list parser
      *
-     * @access  protected
      */
     public function setupListParser() {
       if ('Windows_NT' == ftp_systype($this->handle)) {
@@ -107,7 +104,6 @@
     /**
      * Connect (and log in, if necessary)
      *
-     * @access  public  
      * @return  bool success
      * @throws  peer.ConnectException in case there's an error during connecting
      * @throws  peer.AuthenticationException when authentication fails
@@ -155,7 +151,6 @@
     /**
      * Disconnect
      *
-     * @access  public
      * @return  bool success
      */
     public function close() {
@@ -165,12 +160,11 @@
     /**
      * Get a directory object
      *
-     * @access  public
      * @param   string dir default NULL directory name, defaults to working directory
      * @return  &peer.ftp.FtpDir
      * @throws  peer.SocketException
      */
-    public function &getDir($dir= NULL) {
+    public function getDir($dir= NULL) {
       if (NULL === $dir) {
         if (FALSE === ($dir= ftp_pwd($this->handle))) {
           throw(new SocketException('Cannot retrieve current directory'));
@@ -178,19 +172,18 @@
       }
         
       $f= new FtpDir($dir);
-      $f->connection= &$this;
+      $f->connection= $this;
       return $f;
     }
     
     /**
      * Set working directory
      *
-     * @access  public
      * @param   &peer.ftp.FtpDir f
      * @throws  peer.SocketException
      * @return  bool success
      */
-    public function setDir(&$f) {
+    public function setDir($f) {
       if (FALSE === ftp_chdir($this->handle, $f->name)) {
         throw(new SocketException('Cannot change directory to '.$f->name));
       }
@@ -200,25 +193,23 @@
     /**
      * Create a directory
      *
-     * @access  public
      * @param   &peer.ftp.FtpDir f
      * @return  bool success
      */
-    public function makeDir(&$f) {
+    public function makeDir($f) {
       return ftp_mkdir($this->handle, $f->name);
     }
     
     /**
      * Upload a file
      *
-     * @access  public
      * @param   &mixed arg either a filename or an open File object
      * @param   string remote default NULL remote filename, will default to basename of arg
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
      * @throws  peer.SocketException
      */
-    public function put(&$arg, $remote= NULL, $mode= FTP_ASCII) {
+    public function put($arg, $remote= NULL, $mode= FTP_ASCII) {
       if (is('File', $arg)) {
         $local= $arg->_fd;
         if (empty($remote)) $remote= basename ($arg->getUri());
@@ -241,14 +232,13 @@
     /**
      * Download a file
      *
-     * @access  public
      * @param   string remote remote filename
      * @param   &mixed arg either a filename or an open File object
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
      * @throws  peer.SocketException
      */
-    public function get($remote, &$arg, $mode= FTP_ASCII) {
+    public function get($remote, $arg, $mode= FTP_ASCII) {
       if (is('File', $arg)) {
         $local= $arg->_fd;
         $f= 'ftp_fget';
@@ -269,7 +259,6 @@
     /**
      * Deletes a file.
      *
-     * @access  public
      * @param   string filename
      * @return  bool success
      */
@@ -280,7 +269,6 @@
     /**
      * Renames a file in this directory.
      *
-     * @access  public
      * @param   string source
      * @param   string target
      * @return  bool success
@@ -297,7 +285,6 @@
      * Enables or disables the passive ftp mode. Call this after the inital
      * login.
      *
-     * @access  public
      * @param   bool enable enable or disable passive mode
      * @return  bool success
      * @throws  peer.SocketException

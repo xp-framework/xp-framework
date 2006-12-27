@@ -17,7 +17,6 @@
     /**
      * Authenticate a user
      *
-     * @access  public
      * @param   string user
      * @param   string pass
      * @return  bool

@@ -23,7 +23,6 @@
     /**
      * Setup method. Creates the map member
      *
-     * @access  public
      */
     public function setUp() {
       $this->map= new HashTable();
@@ -32,7 +31,6 @@
     /**
      * Tests the map is initially empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -42,7 +40,6 @@
     /**
      * Tests map equals its clone
      *
-     * @access  public
      */
     #[@test]
     public function equalsClone() {
@@ -53,7 +50,6 @@
     /**
      * Tests map equals another map with the same contents
      *
-     * @access  public
      */
     #[@test]
     public function equalsOtherMapWithSameContents() {
@@ -66,7 +62,6 @@
     /**
      * Tests map does not equal map with different contents
      *
-     * @access  public
      */
     #[@test]
     public function doesNotEqualMapWithDifferentContents() {
@@ -79,7 +74,6 @@
     /**
      * Tests put()
      *
-     * @access  public
      */
     #[@test]
     public function put() {
@@ -91,7 +85,6 @@
     /**
      * Tests put() returns previous value
      *
-     * @access  public
      */
     #[@test]
     public function putReturnsPreviousValue() {
@@ -104,7 +97,6 @@
     /**
      * Tests get()
      *
-     * @access  public
      */
     #[@test]
     public function get() {
@@ -115,7 +107,6 @@
     /**
      * Tests get() returns NULL if the list is empty
      *
-     * @access  public
      */
     #[@test]
     public function getReturnsNullOnEmptyList() {
@@ -126,7 +117,6 @@
     /**
      * Tests remove()
      *
-     * @access  public
      */
     #[@test]
     public function remove() {
@@ -138,7 +128,6 @@
     /**
      * Tests remove() returns previous value
      *
-     * @access  public
      */
     #[@test]
     public function removeReturnsPreviousValue() {
@@ -149,7 +138,6 @@
     /**
      * Tests containsKey() method
      *
-     * @access  public
      */
     #[@test]
     public function containsKey() {
@@ -161,7 +149,6 @@
     /**
      * Tests clear() method
      *
-     * @access  public
      */
     #[@test]
     public function clear() {
@@ -173,7 +160,6 @@
     /**
      * Tests containsValue() method
      *
-     * @access  public
      */
     #[@test]
     public function containsValue() {
@@ -185,7 +171,6 @@
     /**
      * Tests keys() method
      *
-     * @access  public
      */
     #[@test]
     public function keys() {
@@ -196,7 +181,6 @@
     /**
      * Tests toString() method
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentation() {
@@ -211,7 +195,6 @@
     /**
      * Tests toString() method on an empty map
      *
-     * @access  public
      */
     #[@test]
     public function stringRepresentationOfEmptyMap() {

@@ -18,29 +18,26 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string message
      * @param   &rdbms.DSN dsn
      */
-    public function __construct($message, &$dsn) {
+    public function __construct($message, $dsn) {
       parent::__construct($message);
-      $this->dsn= &$dsn;
+      $this->dsn= $dsn;
     }
 
     /**
      * Get DSN used for connect
      *
-     * @access  public
      * @return  &rdbms.DSN
      */
-    public function &getDsn() {
+    public function getDsn() {
       return $this->dsn;
     }
 
     /**
      * Return compound message of this exception.
      *
-     * @access  public
      * @return  string
      */
     public function compoundMessage() {

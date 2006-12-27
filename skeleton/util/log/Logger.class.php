@@ -75,7 +75,6 @@
    * appender.util.log.FileAppender.param.filename="/var/log/xp/subscribe_%Y-%m-%d.log"
    * </pre>
    *
-   * @model    singleton
    * @test     xp://net.xp_framework.unittest.logging.LoggerTest
    * @purpose  Singleton logger
    */
@@ -96,11 +95,10 @@
     /**
      * Get a category
      *
-     * @access  public
      * @param   string name default LOG_DEFINES_DEFAULT
      * @return  &util.log.LogCategory
      */ 
-    public function &getCategory($name= LOG_DEFINES_DEFAULT) {
+    public function getCategory($name= LOG_DEFINES_DEFAULT) {
       if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
       return $this->category[$name];
     }
@@ -108,10 +106,9 @@
     /**
      * Configure this logger
      *
-     * @access  public
      * @param   &util.Properties prop instance of a Properties object
      */
-    public function configure(&$prop) {
+    public function configure($prop) {
       $class= array();
       
       // Read default properties
@@ -125,12 +122,12 @@
       $section= $prop->getFirstSection();
       do {
         try {
-          $catclass= &XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
+          $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
         } catch (ClassNotFoundException $e) {
           throw($e);
         }
 
-        $this->category[$section]= &$catclass->newInstance(
+        $this->category[$section]= $catclass->newInstance(
           $this->defaultIdentifier,
           $prop->readString($section, 'format', $this->defaultFormat),
           $prop->readString($section, 'date.format', $this->defaultDateformat),
@@ -148,7 +145,7 @@
         foreach ($appenders as $appender) {
           if (!isset($class[$appender])) {
             try {
-              $class[$appender]= &XPClass::forName($appender);
+              $class[$appender]= XPClass::forName($appender);
             } catch (ClassNotFoundException $e) {
               throw($e);
             }
@@ -161,7 +158,7 @@
             foreach ($arrflags as $f) { if (defined ($f)) $flags |= constant ($f); }
           }
           
-          $a= &$this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
+          $a= $this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
           $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
           
           // Params
@@ -181,7 +178,6 @@
     /**
      * Tells all categories to finalize themselves
      *
-     * @access  public
      */
     public function finalize() {
       if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
@@ -193,11 +189,9 @@
     /**
      * Returns an instance of this class
      *
-     * @model   static
-     * @access  public
      * @return  &util.log.Logger a logger object
      */
-    public static function &getInstance() {
+    public static function getInstance() {
       static $instance;
   
       if (!isset($instance)) {

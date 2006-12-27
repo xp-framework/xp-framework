@@ -25,42 +25,38 @@
     /**
      * Mark a test as succeeded
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @param   float elapsed
      */
-    public function setSucceeded(&$test, $elapsed) {
+    public function setSucceeded($test, $elapsed) {
       $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
     }
     
     /**
      * Mark a test as failed
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */
-    public function setFailed(&$test, $reason, $elapsed) {
+    public function setFailed($test, $reason, $elapsed) {
       $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
     }
 
     /**
      * Mark a test as been skipped
      *
-     * @access  public
      * @param   &unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */
-    public function setSkipped(&$test, $reason, $elapsed) {
+    public function setSkipped($test, $reason, $elapsed) {
       $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
     }
 
     /**
      * Get number of succeeded tests
      *
-     * @access  public
      * @return  int
      */
     public function successCount() {
@@ -70,7 +66,6 @@
     /**
      * Get number of failed tests
      *
-     * @access  public
      * @return  int
      */
     public function failureCount() {
@@ -80,7 +75,6 @@
     /**
      * Get number of skipped tests
      *
-     * @access  public
      * @return  int
      */
     public function skipCount() {
@@ -90,7 +84,6 @@
     /**
      * Get number of run tests (excluding skipped)
      *
-     * @access  public
      * @return  int
      */
     public function runCount() {
@@ -100,7 +93,6 @@
     /**
      * Get number of total tests
      *
-     * @access  public
      * @return  int
      */
     public function count() {
@@ -110,7 +102,6 @@
     /**
      * Create a nice string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

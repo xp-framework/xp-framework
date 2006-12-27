@@ -19,7 +19,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       parent::__construct('wddxPacket');
@@ -29,34 +28,30 @@
     /**
      * Create a WddxMessage object from an XML document.
      *
-     * @model   static
-     * @access  public
      * @param   string string
      * @return  &webservices.wddx.WddxMessage
      */
-    public static function &fromString($string) {
+    public static function fromString($string) {
       return parent::fromString($string, 'WddxMessage');
     }    
     
     /**
      * Sets the comment in a Wddx packet
      *
-     * @access  public
      * @param   string comment
      */
     public function create($comment= NULL) {
-      $h= &$this->root->addChild(new Node('header'));
+      $h= $this->root->addChild(new Node('header'));
       if ($comment) $h->addChild(new Node('comment', $comment));
     }
     
     /**
      * Set data for the message
      *
-     * @access  public
      * @param   &mixed[] arr
      */
-    public function setData(&$arr) {
-      $d= &$this->root->addChild(new Node('data'));
+    public function setData($arr) {
+      $d= $this->root->addChild(new Node('data'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
         $this->_marshall($d, $arr[$idx]);
       }
@@ -65,12 +60,11 @@
     /**
      * Marshall method to serialize data into the Wddx message.
      *
-     * @access  protected
      * @param   &xml.Node node
      * @param   &mixed data
      * @throws  lang.IllegalArgumentException if passed data could not be serialized
      */
-    public function _marshall(&$node, &$data) {
+    public function _marshall($node, $data) {
     
       switch (xp::typeOf($data)) {
         case 'NULL':
@@ -93,7 +87,7 @@
           break;
         
         case 'array':
-          $s= &$node->addChild(new Node('struct'));
+          $s= $node->addChild(new Node('struct'));
           foreach (array_keys($data) as $idx) {
             $this->_marshall($s->addChild(new Node('var', NULL, array(
               'name'  => $idx
@@ -108,7 +102,7 @@
           break;
         
         case 'lang.Collection':
-          $a= &$node->addChild(new Node('array', NULL, array(
+          $a= $node->addChild(new Node('array', NULL, array(
             'length'  => sizeof($data)
           )));
           foreach (array_keys($data) as $idx) {
@@ -124,11 +118,10 @@
     /**
      * Retrieve data from wddx message.
      *
-     * @access  public
      * @return  &mixed[]
      * @throws  lang.IllegalStateException if no payload data could be found in the message
      */
-    public function &getData() {
+    public function getData() {
       $ret= array();
       foreach (array_keys($this->root->children) as $idx) {
         if ('header' == $this->root->children[$idx]->getName())
@@ -137,7 +130,7 @@
         // Process params node
         foreach (array_keys($this->root->children[$idx]->children) as $params) {
           try {
-            $ret[]= &$this->_unmarshall($this->root->children[$idx]->children[$params]);
+            $ret[]= $this->_unmarshall($this->root->children[$idx]->children[$params]);
           } catch (Exception $e) {
             throw($e);
           }
@@ -152,12 +145,11 @@
     /**
      * Umarshall method for deserialize data from wddx message
      *
-     * @access  protected
      * @param   &xml.Node node
      * @return  &mixed[]
      * @throws  lang.IllegalArgumentException if document is not well-formed
      */
-    public function &_unmarshall(&$node) {
+    public function _unmarshall($node) {
       switch ($node->getName()) {
         case 'null': return NULL;
         case 'boolean': return ($node->getContent() == 'true' ? TRUE : FALSE);
@@ -180,14 +172,14 @@
         case 'array':
           $arr= array();
           foreach (array_keys($node->children) as $idx) {
-            $arr[]= &$this->_unmarshall($node->children[$idx]);
+            $arr[]= $this->_unmarshall($node->children[$idx]);
           }
           return $arr;
         
         case 'struct':
           $struct= array();
           foreach (array_keys($node->children) as $idx) {
-            $struct[$node->children[$idx]->getAttribute('name')]= &$this->_unmarshall($node->children[$idx]);
+            $struct[$node->children[$idx]->getAttribute('name')]= $this->_unmarshall($node->children[$idx]);
           }
           return $struct;
       }

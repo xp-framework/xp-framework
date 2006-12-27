@@ -67,10 +67,9 @@
      * Create a request object. Override this method to define
      * your own request object
      *
-     * @access  protected
      * @return  &scriptlet.HttpScriptletRequest
      */
-    public function &_request() {
+    public function _request() {
       return new HttpScriptletRequest();
     }
     
@@ -78,10 +77,9 @@
      * Create a session object. Override this method to define
      * your own session object
      *
-     * @access  protected
      * @return  &scriptlet.HttpSession
      */
-    public function &_session() {
+    public function _session() {
       return new HttpSession();
     }
     
@@ -89,20 +87,18 @@
      * Create a response object. Override this method to define
      * your own response object
      *
-     * @access  protected
      * @return  &scriptlet.HttpScriptletResponse
      */
-    public function &_response() {
+    public function _response() {
       return new HttpScriptletResponse();
     }
     
     /**
      * Initialize session
      *
-     * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request
      */
-    public function handleSessionInitialization(&$request) {
+    public function handleSessionInitialization($request) {
       $request->session->initialize($request->getSessionId());
     }
 
@@ -113,12 +109,11 @@
      * This function must return TRUE if the scriptlet is supposed to 
      * continue processing the request.
      *
-     * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
-    public function handleInvalidSession(&$request, &$response) {
+    public function handleInvalidSession($request, $response) {
       return $request->session->initialize(NULL);
     }
 
@@ -130,12 +125,11 @@
      * This function must return TRUE if the scriptlet is supposed to 
      * continue processing the request.
      *
-     * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
-    public function handleSessionInitializationError(&$request, &$response) {
+    public function handleSessionInitializationError($request, $response) {
       return FALSE;
     }
     
@@ -143,11 +137,10 @@
      * Decide whether a session is needed. Returns FALSE in this
      * implementation.
      *
-     * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request
      * @return  bool
      */
-    public function needsSession(&$request) {
+    public function needsSession($request) {
       return FALSE;
     }
     
@@ -162,11 +155,10 @@
      * of your source is executed
      *
      * @see     rfc://2616
-     * @access  protected
      * @param   &scriptlet.HttpScriptletRequest request
      * @return  string class method (one of doGet, doPost, doHead)
      */
-    public function handleMethod(&$request) {
+    public function handleMethod($request) {
       switch ($request->method) {
         case HTTP_POST:
           $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
@@ -216,26 +208,24 @@
      *   }
      * </code>
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    public function doGet(&$request, &$response) {
+    public function doGet($request, $response) {
     }
     
     /**
      * Receives an HTTP POST request from the <pre>process()</pre> method
      * and handles it.
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    public function doPost(&$request, &$response) {
+    public function doPost($request, $response) {
     }
     
     /**
@@ -252,13 +242,12 @@
      * often used for testing hypertext links for validity, accessibility,
      * and recent modification.
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    public function doHead(&$request, &$response) {
+    public function doHead($request, $response) {
     }
     
     /**
@@ -281,14 +270,13 @@
      *   8 fraction        #test
      * </pre>
      *
-     * @access  protected
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request 
      * @param   &scriptlet.HttpScriptletResponse response 
      * @throws  lang.Exception to indicate failure
      */
-    public function doCreateSession(&$request, &$response) {
-      $uri= &$request->getURL();
+    public function doCreateSession($request, $response) {
+      $uri= $request->getURL();
       $response->sendRedirect(sprintf(
         $this->sessionURIFormat,
         $uri->getScheme(),
@@ -310,7 +298,6 @@
      * In this method, you can set up "global" requirements such as a 
      * configuration manager.
      *
-     * @access  public
      */
     public function init() { }
     
@@ -319,17 +306,15 @@
      * headers and data has been sent and allows you to handle things such
      * as cleaning up resources or closing database connections.
      *
-     * @access  public
      */
     public function finalize() { }
     
     /**
      * Set the request from the environment.
      *
-     * @access  protected
      * @param   &scriptlet.HttpRequest request
      */
-    public function _setupRequest(&$request) {
+    public function _setupRequest($request) {
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= getenv('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
@@ -345,12 +330,11 @@
      * it to on of the do* -methods of the scriptlet. It will also
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
-     * @access  public
      * @return  &scriptlet.HttpScriptletResponse the response object
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
-    public function &process() {
-      $request= &$this->_request();
+    public function process() {
+      $request= $this->_request();
       $this->_setupRequest($request);
 
       // Check if this method can be handled. In case it can't, throw a
@@ -411,11 +395,11 @@
       // else than FALSE, the response processor. Exceptions thrown from any of
       // the two methods will result in a HttpScriptletException with the HTTP
       // status code 500 ("Internal Server Error") being thrown.
-      $response= &$this->_response();
+      $response= $this->_response();
       try {
         $r= call_user_func_array(
-          array(&$this, $method), 
-          array(&$request, &$response)
+          array($this, $method), 
+          array($request, $response)
         );
         
         if (FALSE !== $r && !is(NULL, $r)) {

@@ -24,8 +24,6 @@
      * otherwise all HTML is stripped (using strip_tags) and then 
      * escaped.
      *
-     * @model   static
-     * @access  protected
      * @param   string name
      * @param   string string
      * @return  &xml.Node

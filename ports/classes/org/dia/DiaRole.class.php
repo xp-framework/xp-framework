@@ -20,7 +20,6 @@
     /**
      * Initializes this Role object with default values
      *
-     * @access  public
      */
     public function initialize() {
       // default values
@@ -34,7 +33,6 @@
     /**
      * Sets the Role name
      *
-     * @access  public
      * @param   string name
      */
     #[@fromDia(xpath= 'dia:attribute[@name="role"]/dia:string', value= 'string')]
@@ -45,7 +43,6 @@
     /**
      * Sets 'multiplicity' string of the role
      *
-     * @access  public
      * @param   string multi
      */
     #[@fromDia(xpath= 'dia:attribute[@name="multiplicity"]/dia:string', value= 'string')]
@@ -56,7 +53,6 @@
     /**
      * Show an arrow for this Role?
      *
-     * @access  public
      * @param   bool arrow
      */
     #[@fromDia(xpath= 'dia:attribute[@name="arrow"]/dia:boolean/@val', value= 'boolean')]
@@ -67,7 +63,6 @@
     /**
      * Marks this side of the Role as aggregate or composite
      *
-     * @access  public
      * @param   int value
      */
     #[@fromDia(xpath= 'dia:attribute[@name="aggregate"]/dia:enum/@val', value= 'int')]
@@ -78,7 +73,6 @@
     /**
      * Sets the 'visbility' of this Role object
      *
-     * @access  public
      * @param   int visibility
      */
     #[@fromDia(xpath= 'dia:attribute[@name="visibility"]/dia:enum/@val', value= 'int')]

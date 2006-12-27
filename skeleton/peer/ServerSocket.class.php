@@ -42,7 +42,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string host
      * @param   int port
      * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
@@ -60,7 +59,6 @@
      * Connect. Overwritten method from BSDSocket that will always throw
      * an exception because connect() doesn't make sense here!
      *
-     * @access  public
      * @return  bool success
      * @throws  lang.IllegalAccessException
      */
@@ -71,7 +69,6 @@
     /**
      * Create
      *
-     * @access  public
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
@@ -89,7 +86,6 @@
     /**
      * Bind
      *
-     * @access  public
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
@@ -118,7 +114,6 @@
      * succeed. 
      * </quote>
      *
-     * @access  public
      * @param   int backlog default 10
      * @return  bool success
      * @throws  peer.SocketException in case of an error
@@ -147,11 +142,10 @@
      *
      * Note: If this socket has been made non-blocking, FALSE will be returned.
      *
-     * @access  public
      * @return  &mixed a peer.BSDSocket object or FALSE
      * @throws  peer.SocketException in case of an error
      */
-    public function &accept() {
+    public function accept() {
       if (0 > ($msgsock= socket_accept($this->_sock))) {
         throw(new SocketException(sprintf(
           'Accept failed',

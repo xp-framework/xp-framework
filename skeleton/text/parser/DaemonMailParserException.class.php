@@ -16,7 +16,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      * @param   string errormessage
      * @param   peer.mail.Message sourceMessage default NULL
      */

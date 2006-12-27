@@ -16,11 +16,9 @@
     /**
      * Retrieves an instance.
      *
-     * @model   static
-     * @access  public
      * @param   mixed argument
      * @return  &rdbms.DBObserver
      */
-    public static function &instanceFor($arg);
+    public static function instanceFor($arg);
   }
 ?>

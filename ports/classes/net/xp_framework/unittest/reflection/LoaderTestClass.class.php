@@ -15,8 +15,6 @@
     /**
      * Static initializer
      *
-     * @model   static
-     * @access  public
      */
     public static function __static() {
       LoaderTestClass::initializerCalled(TRUE);
@@ -25,8 +23,6 @@
     /**
      * Static variables simulation
      *
-     * @model   static
-     * @access  public
      * @param   bool value default NULL
      * @return  bool
      */

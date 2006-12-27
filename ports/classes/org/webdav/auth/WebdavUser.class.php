@@ -17,7 +17,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string username
      * @param   string password
      */
@@ -29,7 +28,6 @@
     /**
      * Set username
      *
-     * @access  public
      * @param   string username The username
      */
     public function setUsername($username) {
@@ -39,7 +37,6 @@
     /**
      * Get username
      *
-     * @access  public
      * @return  string
      */
     public function getUsername() {
@@ -49,7 +46,6 @@
     /**
      * Set password
      *
-     * @access  public
      * @param   string password The password
      */
     public function setPassword($password) {
@@ -59,7 +55,6 @@
     /**
      * Get password
      *
-     * @access  public
      * @return  string
      */
     public function getPassword() {

@@ -21,19 +21,16 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &io.Stream stream
      */
-    public function __construct(&$stream) {
-      $this->stream= &deref($stream);
+    public function __construct($stream) {
+      $this->stream= deref($stream);
     }
 
     /**
      * Output an image. Abstract method, overwrite in child
      * classes!
      *
-     * @model   abstract
-     * @access  protected
      * @param   resource handle
      * @return  bool
      */    
@@ -42,7 +39,6 @@
     /**
      * Callback function for ob_start
      *
-     * @access  private
      * @param   string data
      */
     public function writeToStream($data) {
@@ -52,7 +48,6 @@
     /**
      * Sets the image resource that is to be written
      *
-     * @access  public
      * @param   resource handle
      * @throws  img.ImagingException
      */
@@ -62,7 +57,7 @@
         
         // Use output buffering with a callback method to capture the 
         // image(gd|jpeg|png|...) functions' output.
-        ob_start(array(&$this, 'writeToStream'));
+        ob_start(array($this, 'writeToStream'));
         $r= $this->output($handle);
         ob_end_clean();
         

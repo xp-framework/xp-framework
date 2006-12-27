@@ -37,7 +37,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @throws  lang.FormatException if byte order (big / little endian) cannot be determined
      */  
     public function __construct() {
@@ -56,7 +55,6 @@
     /**
      * Set version
      *
-     * @access  public
      * @param   int version
      */
     public function setVersion($version) {
@@ -66,7 +64,6 @@
     /**
      * Retrieve version
      *
-     * @access  public
      * @return  int version
      */
     public function getVersion() {
@@ -76,7 +73,6 @@
     /**
      * Prepend binary data
      *
-     * @access  private
      * @param   string d
      */
     public function _prepend($d) {
@@ -90,7 +86,6 @@
     /**
      * Prepend binary data
      *
-     * @access  private
      * @param   string d
      */
     public function _append($d) {
@@ -104,7 +99,6 @@
     /**
      * Writes BOF record
      *
-     * @access  private
      * @param   int type one of the BOF_TYPE_* constants
      */
     public function _bof($type) {
@@ -117,7 +111,6 @@
     /**
      * Writes EOF record
      *
-     * @access  private
      */
     public function _eof() {
       $this->_append(pack('vv', 0x000A, 0x0000));
@@ -126,7 +119,6 @@
     /**
      * Insert continue records
      *
-     * @access  private
      * @param   string data
      * @return  string data
      */
@@ -142,13 +134,12 @@
     /**
      * Write to a stream
      *
-     * @access  public
      * @see     xp://io.Stream#write
      * @param   &io.Stream stream
      * @return  &io.Stream stream passed in
      * @throws  io.IOException
      */
-    public function &write(&$stream) {
+    public function write($stream) {
       $stream->open(FILE_MODE_WRITE);
       $stream->write($this->_data);
       $stream->close();

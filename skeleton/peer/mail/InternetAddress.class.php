@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed mail
      * @param   string personal default ''
      */
@@ -40,7 +39,6 @@
     /**
      * Retrieve hashcode
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -50,11 +48,10 @@
     /**
      * Retrieve whether another object is equal to this
      *
-     * @access  public
      * @param   &lang.Object cmp
      * @return  bool
      */
-    public function equals(&$cmp) {
+    public function equals($cmp) {
       return (
         is('InternetAddress', $cmp) and 
         $this->personal.$this->localpart.$this->domain === $cmp->personal.$cmp->localpart.$cmp->domain
@@ -74,13 +71,11 @@
      *   =?iso-8859-1?Q?Timm_Friebe?= <friebe@example.com>
      * </pre>
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &peer.mail.InternetAddress address object
      * @throws  lang.FormatException in case the string could not be parsed into an address
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       static $matches= array(
         '/^=\?([^\?])+\?([QB])\?([^\?]+)\?= <([^ @]+@[0-9a-z.-]+)>$/i' => 3,
         '/^<?([^ @]+@[0-9a-z.-]+)>?$/i'                                => 0,
@@ -124,7 +119,6 @@
      * - Empty personal:     <friebe@example.com>  
      * </pre>
      *
-     * @access  public
      * @param   string charset default 'iso-8859-1'
      * @return  string
      */

@@ -30,7 +30,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &img.Color col color
      * @param   int x1 x coordinate of upper left corner
      * @param   int y1 y coordinate of upper left corner
@@ -38,8 +37,8 @@
      * @param   int y2 y coordinate of bottom right corner
      * @param   bool fill default FALSE
      */ 
-    public function __construct(&$col, $x1, $y1, $x2, $y2, $fill= FALSE) {
-      $this->col= &$col;
+    public function __construct($col, $x1, $y1, $x2, $y2, $fill= FALSE) {
+      $this->col= $col;
       $this->x1= $x1;
       $this->y1= $y1;
       $this->x2= $x2;
@@ -51,11 +50,10 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
+    public function draw($image) {
       if ($this->fill) return imagefilledrectangle(
         $image->handle,
         $this->x1,

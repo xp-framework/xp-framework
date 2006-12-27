@@ -23,7 +23,6 @@
      * The path argument is optional and lets you define where to search for
      * classes (it will be prefixed to the class name)
      *
-     * @access  public
      * @param   string path default '' classpath
      */
     public function __construct($path= '') {
@@ -33,7 +32,6 @@
     /**
      * Creates a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {
@@ -47,7 +45,6 @@
     /**
      * Load class bytes
      *
-     * @access  public
      * @param   string name fully qualified class name
      * @return  string
      */
@@ -58,11 +55,9 @@
     /**
      * Retrieve the default class loader
      *
-     * @model   static
-     * @access  public
      * @return  &lang.ClassLoader
      */
-    public static function &getDefault() {
+    public static function getDefault() {
       static $instance= NULL;
       
       if (!$instance) $instance= new ClassLoader();
@@ -72,7 +67,6 @@
     /**
      * Find a class by the specified name (but do not load it)
      *
-     * @access  public
      * @param   string class fully qualified class name io.File
      * @return  string filename, FALSE if not found
      */
@@ -90,12 +84,11 @@
     /**
      * Load the class by the specified name
      *
-     * @access  public
      * @param   string class fully qualified class name io.File
      * @return  &lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    public function &loadClass($class) {
+    public function loadClass($class) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
@@ -114,13 +107,12 @@
     /**
      * Define a class with a given name
      *
-     * @access  protected
      * @param   string class fully qualified class name
      * @param   string bytes sourcecode of the class
      * @return  &lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
-    public function &_defineClassFromBytes($class, $bytes) {
+    public function _defineClassFromBytes($class, $bytes) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
@@ -142,7 +134,6 @@
     /**
      * Define a class with a given name
      *
-     * @access  public
      * @param   string class fully qualified class name
      * @param   string parent either sourcecode of the class or FQCN of parent
      * @param   string[] interfaces default NULL FQCNs of implemented interfaces
@@ -151,7 +142,7 @@
      * @throws  lang.FormatException in case the class cannot be defined
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */
-    public function &defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
+    public function defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
       
       // If invoked with less than four arguments, old behaviour will be executed
       if (NULL === $bytes) {
@@ -198,7 +189,6 @@
     /**
      * Loads a resource.
      *
-     * @access  public
      * @param   string filename name of resource
      * @return  string
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
@@ -215,12 +205,11 @@
     /**
      * Retrieve a stream to the resource
      *
-     * @access  public
      * @param   string filename name of resource
      * @return  &io.File
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    public function &getResourceAsStream($filename) {
+    public function getResourceAsStream($filename) {
       foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return new File($filename);

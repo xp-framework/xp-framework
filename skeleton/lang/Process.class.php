@@ -34,7 +34,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string command
      * @param   mixed* arguments
      * @throws  io.IOException in case the command could not be executed
@@ -65,37 +64,33 @@
     /**
      * Get error stream
      *
-     * @access  public
      * @return  &io.File STDERR
      */
-    public function &getErrorStream() {
+    public function getErrorStream() {
       return $this->err;
     }
 
     /**
      * Get input stream
      *
-     * @access  public
      * @return  &io.File STDIN
      */
-    public function &getInputStream() {
+    public function getInputStream() {
       return $this->in;
     }
     
     /**
      * Get output stream
      *
-     * @access  public
      * @return  &io.File STDOUT
      */
-    public function &getOutputStream() {
+    public function getOutputStream() {
       return $this->out;
     }
     
     /**
      * Returns the exit value for the process
      *
-     * @access  public
      * @return  int
      */
     public function exitValue() {
@@ -105,7 +100,6 @@
     /**
      * Close this process
      *
-     * @access  public
      * @return  int exit value of process
      */
     public function close() {

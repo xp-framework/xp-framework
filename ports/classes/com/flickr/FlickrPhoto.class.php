@@ -28,17 +28,15 @@
     /**
      * Set Client
      *
-     * @access  public
      * @param   &com.flickr.xmlrpc.FlickrClient client
      */
-    public function setClient(&$client) {
-      $this->_client= &$client;
+    public function setClient($client) {
+      $this->_client= $client;
     }
 
     /**
      * Set Id
      *
-     * @access  public
      * @param   string id
      */
     #[@xmlmapping(element= '@id')]
@@ -49,7 +47,6 @@
     /**
      * Get Id
      *
-     * @access  public
      * @return  string
      */
     public function getId() {
@@ -59,7 +56,6 @@
     /**
      * Set Owner
      *
-     * @access  public
      * @param   string owner
      */
     #[@xmlmapping(element= '@owner')]
@@ -70,7 +66,6 @@
     /**
      * Get Owner
      *
-     * @access  public
      * @return  string
      */
     public function getOwner() {
@@ -80,7 +75,6 @@
     /**
      * Set Secret
      *
-     * @access  public
      * @param   string secret
      */
     #[@xmlmapping(element= '@secret')]
@@ -91,7 +85,6 @@
     /**
      * Get Secret
      *
-     * @access  public
      * @return  string
      */
     public function getSecret() {
@@ -101,7 +94,6 @@
     /**
      * Set Server
      *
-     * @access  public
      * @param   string server
      */
     #[@xmlmapping(element= '@server')]
@@ -112,7 +104,6 @@
     /**
      * Get Server
      *
-     * @access  public
      * @return  string
      */
     public function getServer() {
@@ -122,7 +113,6 @@
     /**
      * Set Title
      *
-     * @access  public
      * @param   string title
      */
     #[@xmlmapping(element= '@title')]
@@ -133,7 +123,6 @@
     /**
      * Get Title
      *
-     * @access  public
      * @return  string
      */
     public function getTitle() {
@@ -143,7 +132,6 @@
     /**
      * Set IsPublic
      *
-     * @access  public
      * @param   bool isPublic
      */
     #[@xmlmapping(element= '@isPublic', type= 'boolean')]
@@ -154,7 +142,6 @@
     /**
      * Get IsPublic
      *
-     * @access  public
      * @return  bool
      */
     public function getIsPublic() {
@@ -164,7 +151,6 @@
     /**
      * Set IsFriend
      *
-     * @access  public
      * @param   bool isFriend
      */
     #[@xmlmapping(element= '@isFriend', type= 'boolean')]
@@ -175,7 +161,6 @@
     /**
      * Get IsFriend
      *
-     * @access  public
      * @return  bool
      */
     public function getIsFriend() {
@@ -185,7 +170,6 @@
     /**
      * Set IsFamily
      *
-     * @access  public
      * @param   bool isFamily
      */
     #[@xmlmapping(element= '@isFamily', type= 'boolean')]
@@ -196,7 +180,6 @@
     /**
      * Get IsFamily
      *
-     * @access  public
      * @return  bool
      */
     public function getIsFamily() {
@@ -206,10 +189,9 @@
     /**
      * Calculate URL for this photo
      *
-     * @access  public
      * @return  &peer.URL
      */
-    public function &getURL() {
+    public function getURL() {
       $url= new URL(sprintf('http://static.flickr.com/%s/%s_%s_b.jpg',
         $this->getServer(),
         $this->getId(),
@@ -221,7 +203,6 @@
     /**
      * Fetch available sizes of this picture
      *
-     * @access  public
      * @return  com.flickr.FlicksPhotoSizes
      */
     public function getSizes() {
@@ -235,7 +216,6 @@
     /**
      * Builds the string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

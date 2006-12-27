@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &img.Color[] col colors, the first for the "lid", the second for the shadow
      * @param   int cx x center of circle
      * @param   int cy y center of circle
@@ -43,8 +42,8 @@
      *          IMG_ARC_EDGED
      * @param   int shadow default 10 
      */ 
-    public function __construct(&$colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
-      $this->colors= &$colors;
+    public function __construct($colors, $cx, $cy, $w, $h, $s= 0, $e= 360, $fill= IMG_ARC_PIE, $shadow= 10) {
+      $this->colors= $colors;
       $this->shadow= $shadow;
       parent::__construct($colors[0], $cx, $cy, $w, $h, $s, $e, $fill);
     }
@@ -52,19 +51,18 @@
     /**
      * Draws this object onto an image
      *
-     * @access  public
      * @param   &img.Image image
      * @return  mixed
      */
-    public function draw(&$image) {
-      $this->col= &$this->colors[1];
+    public function draw($image) {
+      $this->col= $this->colors[1];
       $cy= $this->cy;
       for ($i= 1; $i < $this->shadow; $i++) {
         $this->cy= $cy+ $i;
         parent::draw($image);
       }
       $this->cy= $cy;
-      $this->col= &$this->colors[0];
+      $this->col= $this->colors[0];
       parent::draw($image);
     }
 

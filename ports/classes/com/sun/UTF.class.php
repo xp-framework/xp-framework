@@ -17,8 +17,6 @@
     /**
      * Encode string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */
@@ -36,8 +34,6 @@
     /**
      * Decode encoded data
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  string
      */

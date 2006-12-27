@@ -23,17 +23,15 @@
     /**
      * Add a connection listener
      *
-     * @access  public
      * @param   &peer.server.ConnectionListener listener
      */
-    public function addListener(&$listener) {      
-      $this->listeners[]= &$listener;
+    public function addListener($listener) {      
+      $this->listeners[]= $listener;
     }
     
     /**
      * Initialize Protocol
      *
-     * @access  public
      * @return  bool
      */
     public function initialize() { }
@@ -41,10 +39,9 @@
     /**
      * Notify listeners
      *
-     * @access  protected
      * @param   &peer.server.ConnectionEvent event
      */
-    public function notify(&$event) {
+    public function notify($event) {
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
         $this->listeners[$i]->{$event->type}($event);
       }
@@ -53,31 +50,28 @@
     /**
      * Handle client connect
      *
-     * @access  public
      * @param   &peer.Socket
      */
-    public function handleConnect(&$socket) {
+    public function handleConnect($socket) {
       $this->notify(new ConnectionEvent(EVENT_CONNECTED, $socket));
     }
 
     /**
      * Handle client disconnect
      *
-     * @access  public
      * @param   &peer.Socket
      */
-    public function handleDisconnect(&$socket) {
+    public function handleDisconnect($socket) {
        $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
      }
   
     /**
      * Handle client data
      *
-     * @access  public
      * @param   &peer.Socket
      * @return  mixed
      */
-    public function handleData(&$socket) { 
+    public function handleData($socket) { 
       try {
         if (NULL === ($data= $socket->readBinary())) throw(new IOException('EOF'));
       } catch (IOException $e) {
@@ -90,11 +84,10 @@
     /**
      * Handle I/O error
      *
-     * @access  public
      * @param   &peer.Socket
      * @param   &lang.Exception e
      */
-    public function handleError(&$socket, &$e) {
+    public function handleError($socket, $e) {
       $this->notify(new ConnectionEvent(EVENT_ERROR, $socket, $e));
     }
 

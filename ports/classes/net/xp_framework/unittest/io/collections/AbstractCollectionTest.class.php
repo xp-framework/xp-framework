@@ -25,12 +25,11 @@
     /**
      * Adds an element to the given collection and increases the size counter
      *
-     * @access  protected
      * @return  &io.collection.IOCollection c
      * @return  &io.collection.IOElement e
      * @return  &io.collection.IOElement
      */
-    public function &addElement(&$c, &$e) {
+    public function addElement($c, $e) {
       $c->addElement($e);
       $this->total++;
       with ($key= $c->getURI()); {
@@ -42,7 +41,6 @@
     /**
      * Setup method 
      *
-     * @access  public
      */
     public function setUp() {
       $this->fixture= new MockCollection('.');
@@ -77,7 +75,7 @@
         Date::fromString('Dec 10  2003')  // created
       ));
 
-      with ($sub= &$this->addElement($this->fixture, new MockCollection('sub'))); {
+      with ($sub= $this->addElement($this->fixture, new MockCollection('sub'))); {
         $this->addElement($sub, new MockElement(
           'sub/IMG_6100.jpg', 
           531718, 
@@ -93,7 +91,7 @@
           Date::fromString('Mar 13  2006')  // created
         ));
 
-        with ($sec= &$this->addElement($this->fixture, new MockCollection('sub/sec'))); {
+        with ($sec= $this->addElement($this->fixture, new MockCollection('sub/sec'))); {
           $this->addElement($sec, new MockElement(
             'sub/sec/lang.base.php', 
             16739, 

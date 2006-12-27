@@ -19,11 +19,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   array params
      */
     public function __construct($params) {
-      $this->_vector= &$params;
+      $this->_vector= $params;
       $this->item= new SOAPNode('vec', NULL, array(
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'vec:Vector'
@@ -33,7 +32,6 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @access  public
      * @return  mixed
      */
     public function toString() {
@@ -43,7 +41,6 @@
     /**
      * Returns this type's name
      *
-     * @access  public
      * @return  string
      */
     public function getType() {

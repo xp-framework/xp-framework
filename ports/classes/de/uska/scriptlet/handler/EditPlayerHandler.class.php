@@ -21,7 +21,6 @@
     /**
      * Constructor.
      *
-     * @access  public
      */
     public function __construct() {
       $this->setWrapper(new EditPlayerWrapper());
@@ -31,27 +30,25 @@
     /**
      * Get identifier.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.Context context
      * @return  string
      */
-    public function identifierFor(&$request, &$context) {
+    public function identifierFor($request, $context) {
       return $this->name.'.'.$request->getParam('player_id', 'new');
     }
     
     /**
      * Setup handler
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function setup(&$request, &$context) {
+    public function setup($request, $context) {
       if (
         $request->hasParam('player_id') && 
-        ($player= &Player::getByPlayer_id($request->getParam('player_id')))
+        ($player= Player::getByPlayer_id($request->getParam('player_id')))
       ) {
       
         // Check for admin permission, if not editing himself
@@ -79,12 +76,12 @@
       }
       
       // Select teams
-      $pm= &PropertyManager::getInstance();
-      $prop= &$pm->getProperties('product');
-      $cm= &ConnectionManager::getInstance();
+      $pm= PropertyManager::getInstance();
+      $prop= $pm->getProperties('product');
+      $cm= ConnectionManager::getInstance();
       
       try {
-        $db= &$cm->getByHost('uska', 0);
+        $db= $cm->getByHost('uska', 0);
         $teams= $db->select('
             team_id,
             name
@@ -132,19 +129,18 @@
     /**
      * Handle submitted data. Either create an event or update an existing one.
      *
-     * @access  public
      * @param   &scriptlet.xml.XMLScriptletRequest request
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData(&$request, &$context) {
-      $log= &Logger::getInstance();
-      $cat= &$log->getCategory();
+    public function handleSubmittedData($request, $context) {
+      $log= Logger::getInstance();
+      $cat= $log->getCategory();
       
       switch ($this->getValue('mode')) {
         case 'update':
           try {
-            $player= &Player::getByPlayer_id($this->wrapper->getPlayer_id());
+            $player= Player::getByPlayer_id($this->wrapper->getPlayer_id());
           } catch (SQLException $e) {
             throw($e);
           }
@@ -175,7 +171,7 @@
       }
       
       // update email, remember old one for ezmlm updates
-      $email= &$this->wrapper->getEmail();
+      $email= $this->wrapper->getEmail();
       $oldemail= NULL;
       if ($player->getEmail() != $email->localpart.'@'.$email->domain) $oldemail= $player->getEmail();
       $player->setEmail($email->localpart.'@'.$email->domain);
@@ -191,11 +187,11 @@
       
       // Now insert or update...
       try {
-        $peer= &Player::getPeer();
-        $transaction= &$peer->begin(new Transaction('editplayer'));
+        $peer= Player::getPeer();
+        $transaction= $peer->begin(new Transaction('editplayer'));
         
-        $cm= &ConnectionManager::getInstance();
-        $db= &$cm->getByHost($peer->connection, 0);
+        $cm= ConnectionManager::getInstance();
+        $db= $cm->getByHost($peer->connection, 0);
         
         if ($this->getValue('mode') == 'update') {
           $player->update();

@@ -37,7 +37,6 @@
     /**
      * Encode PHP data into 
      *
-     * @access  public
      * @param   mixed data
      * @return  string
      * @throws  webservices.json.JsonException if the data could not be serialized
@@ -80,7 +79,7 @@
               $vars= array(
                 'constructor' => '__construct()'
               );
-              foreach ($data->__sleep() as $var) $vars[$var]= &$data->{$var};
+              foreach ($data->__sleep() as $var) $vars[$var]= $data->{$var};
             }
             
             // __xpclass__ is an addition to the spec, I added to be able to pass the FQCN
@@ -132,7 +131,6 @@
     /**
      * Decode a string into a PHP data structure
      *
-     * @access  public
      * @param   string string
      * @return  mixed
      */
@@ -160,7 +158,6 @@
     /**
      * Decode an string into array structure
      *
-     * @access  protected
      * @return  array
      */
     public function _decodeArray() {
@@ -188,7 +185,6 @@
     /**
      * Decode string into object structure
      *
-     * @access  protected
      * @return  &stdclass
      */
     public function _decodeObject() {
@@ -220,8 +216,8 @@
 
       // Introspect array to check if this is actually an object
       if (!empty($array['__jsonclass__']) && !empty($array['__xpclass__'])) {
-        $class= &XPClass::forName($array['__xpclass__']);
-        $inst= &$class->newInstance();
+        $class= XPClass::forName($array['__xpclass__']);
+        $inst= $class->newInstance();
         
         foreach ($array as $key => $value) {
           if (in_array($key, array('__jsonclass__', '__xpclass__'))) continue;
@@ -237,7 +233,6 @@
     /**
      * Fetch next token from stream
      *
-     * @access  protected
      * @return  int
      */
     public function _getNextToken() {
@@ -301,7 +296,6 @@
     /**
      * Fetch token value
      *
-     * @access  protected
      * @return  mixed
      */
     public function _getTokenValue() {
@@ -312,7 +306,6 @@
      * Trim string, that is eat up all whitespace
      * (but not from within string)
      *
-     * @access  protected
      */
     public function _trim() {
       $str= $this->stream->read(10);
@@ -322,7 +315,6 @@
     /**
      * Decode string from wire
      *
-     * @access  protected
      * @return  string
      * @throws  webservices.json.JsonException if the string could not be parsed
      */
@@ -386,7 +378,6 @@
     /**
      * Decode number from wire
      *
-     * @access  protected
      * @return  mixed
      */
     public function _readNumber() {
@@ -408,7 +399,6 @@
      * Checks whether an array is a numerically indexed array
      * (a vector) or a key/value hashmap.
      *
-     * @access  protected
      * @param   array data
      * @return  bool
      */

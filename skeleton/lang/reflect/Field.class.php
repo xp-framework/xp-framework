@@ -19,12 +19,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &mixed ref
      * @param   string name
      * @param   string type default NULL
      */    
-    public function __construct(&$ref, $name, $type= NULL) {
+    public function __construct($ref, $name, $type= NULL) {
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
       $this->type= $type;
@@ -33,7 +32,6 @@
     /**
      * Get field's name.
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -43,7 +41,6 @@
     /**
      * Gets field type
      *
-     * @access  public
      * @return  string
      */
     public function getType() {
@@ -58,10 +55,9 @@
      * Returns the XPClass object representing the class or interface 
      * that declares the field represented by this Field object.
      *
-     * @access  public
      * @return  &lang.XPClass
      */
-    public function &getDeclaringClass() {
+    public function getDeclaringClass() {
       $class= $this->_ref;
       while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
         if (isset($details[0][$this->name])) return new XPClass($class);
@@ -74,12 +70,11 @@
      * Returns the value of the field represented by this Field, on the 
      * specified object.
      *
-     * @access  public
      * @param   &lang.Object instance
      * @return  &mixed  
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
-    public function &get(&$instance) {
+    public function get($instance) {
       if (!is(xp::nameOf($this->_ref), $instance)) {
         throw(new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
@@ -94,7 +89,6 @@
     /**
      * Creates a string representation of this field
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

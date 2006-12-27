@@ -20,18 +20,17 @@
      * Process this state. Redirects to known targets or invokes the 
      * search if the lookup fails.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   &scriptlet.xml.XMLScriptletResponse response
      */
-    public function process(&$request, &$response) {
+    public function process($request, $response) {
       with ($query= $request->getParam('q', $request->getData()), $uri= $request->getURI()); {
         $target= 'search?q='.$query;
         
         // Use cache directory
         $query= basename($query);
         $folder= new Folder('../build/cache/');
-        while ($entry= &$folder->getEntry()) {
+        while ($entry= $folder->getEntry()) {
           $fn= $folder->getURI().$entry.DIRECTORY_SEPARATOR;
 
           if (!is_dir($fn)) continue;

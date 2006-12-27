@@ -33,11 +33,10 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.DSN dsn
      */
-    public function __construct(&$dsn) { 
-      $this->dsn= &$dsn;
+    public function __construct($dsn) { 
+      $this->dsn= $dsn;
       $this->flags= $dsn->getFlags();
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
@@ -50,8 +49,8 @@
       // Add observers
       foreach (array_keys($obs) as $observer) {
         try {
-          $class= &XPClass::forName($observer);
-          $inst= &call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
+          $class= XPClass::forName($observer);
+          $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
         } catch (ClassNotFoundException $e) {
           throw ($e);
         }
@@ -68,7 +67,6 @@
      *   sybase-ct link #50
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function hashCode() {
@@ -78,7 +76,6 @@
     /**
      * Set Timeout
      *
-     * @access  public
      * @param   int timeout
      */
     public function setTimeout($timeout) {
@@ -88,7 +85,6 @@
     /**
      * Get Timeout
      *
-     * @access  public
      * @return  int
      */
     public function getTimeout() {
@@ -98,7 +94,6 @@
     /**
      * Set a flag
      *
-     * @access  public
      * @param   int flag
      */
     public function setFlag($flag) { 
@@ -108,7 +103,6 @@
     /**
      * Connect
      *
-     * @access  public
      * @return  bool success
      */
     public function connect() { 
@@ -122,7 +116,6 @@
     /**
      * Checks whether changed flag is set
      *
-     * @access  public
      * @return  bool
      */
     public function hasChanged() {
@@ -132,7 +125,6 @@
     /**
      * Disconnect
      *
-     * @access  public
      * @return  bool success
      */
     public function close() { }
@@ -140,7 +132,6 @@
     /**
      * Select database
      *
-     * @access  public
      * @param   string db name of database to select
      * @return  bool success
      */
@@ -149,7 +140,6 @@
     /**
      * Prepare an SQL statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  string
      */
@@ -158,7 +148,6 @@
     /**
      * Execute an insert statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  bool success
      */
@@ -167,7 +156,6 @@
     /**
      * Retrieve identity
      *
-     * @access  public
      * @return  mixed identity value
      */
     public function identity() { }
@@ -175,7 +163,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      */
@@ -184,7 +171,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      */
@@ -193,7 +179,6 @@
     /**
      * Execute a select statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  array rowsets
      */
@@ -202,25 +187,22 @@
     /**
      * Execute any statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  &rdbms.ResultSet
      */
-    public function &query() { }
+    public function query() { }
     
     /**
      * Begin a transaction
      *
-     * @access  public
      * @param   &rdbms.DBTransaction transaction
      * @return  &rdbms.DBTransaction
      */
-    public function &begin(&$transaction) { }
+    public function begin($transaction) { }
     
     /**
      * Retrieve transaction state
      *
-     * @access  public
      * @param   string name
      * @return  mixed state
      */
@@ -229,7 +211,6 @@
     /**
      * Rollback a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */
@@ -238,7 +219,6 @@
     /**
      * Commit a transaction
      *
-     * @access  public
      * @param   string name
      * @return  bool success
      */

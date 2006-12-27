@@ -20,7 +20,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      */
     public function __construct($name) {
@@ -30,7 +29,6 @@
     /**
      * Set name
      *
-     * @access  public
      * @param   string name
      */
     public function setName($name) {
@@ -40,7 +38,6 @@
     /**
      * Get name
      *
-     * @access  public
      * @return  string
      */
     public function getName() {
@@ -50,27 +47,24 @@
     /**
      * Set exifData
      *
-     * @access  public
      * @param   &img.util.ExifData exifData
      */
-    public function setExifData(&$exifData) {
-      $this->exifData= &$exifData;
+    public function setExifData($exifData) {
+      $this->exifData= $exifData;
     }
 
     /**
      * Get exifData
      *
-     * @access  public
      * @return  &img.util.ExifData
      */
-    public function &getExifData() {
+    public function getExifData() {
       return $this->exifData;
     }
     
     /**
      * Retrieve a string representation
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

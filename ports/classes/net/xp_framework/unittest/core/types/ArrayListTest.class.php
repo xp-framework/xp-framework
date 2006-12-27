@@ -19,7 +19,6 @@
     /**
      * Setup method. .
      *
-     * @access  public
      */
     public function setUp() {
       $this->list= new ArrayList();
@@ -28,7 +27,6 @@
     /**
      * Ensures a newly created ArrayList is empty
      *
-     * @access  public
      */
     #[@test]
     public function initiallyEmpty() {
@@ -39,7 +37,6 @@
      * Ensures a newly created ArrayList is equal to another newly 
      * created ArrayList
      *
-     * @access  public
      */
     #[@test]
     public function newListsAreEqual() {

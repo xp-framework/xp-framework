@@ -28,7 +28,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   io.File file File-Objekt
      */  
     public function __construct($file) {
@@ -39,14 +38,13 @@
     /**
      * Öffnen
      *
-     * @access  public
      * @param   mixed args Argumente für die open()-Method des Datei-Objekts
      * @return  bool Das Ergebnis der open()-Method des Datei-Objekts
      */
     public function open() {
       $args= func_get_args();
       return call_user_func_array(
-        array(&$this->file, 'open'), 
+        array($this->file, 'open'), 
         $args
       );
     }
@@ -54,7 +52,6 @@
     /**
      * Schließen
      *
-     * @access  public
      * @return  bool Das Ergebnis der close()-Method des Datei-Objekts
      */
     public function close() {
@@ -64,7 +61,6 @@
     /**
      * Holt sich den nächsten Eintrag aus dem Archiv
      *
-     * @access  public
      * @return  io.TarArchiveEntry Eintrag 
      */
     public function getEntry() {
@@ -99,7 +95,6 @@
     /**
      * Inhalt einer Datei zurückgeben
      *
-     * @access  public
      * @param   io.TarArchiveEntry e TarArchvieEntry-Objekt
      * @return  string content
      */

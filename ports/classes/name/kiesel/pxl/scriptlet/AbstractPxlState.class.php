@@ -25,7 +25,6 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
@@ -37,13 +36,12 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function _getCatalogue() {
       if (NULL === $this->catalogue) {
-        $this->catalogue= &Catalogue::create(new FilesystemContainer($this->_getDataPath()));
+        $this->catalogue= Catalogue::create(new FilesystemContainer($this->_getDataPath()));
       }
       
       return $this->catalogue;
@@ -52,12 +50,11 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
     public function _getPage($path) {
-      $page= &Page::create(new FilesystemContainer($this->_getDataPath($path)));
+      $page= Page::create(new FilesystemContainer($this->_getDataPath($path)));
       return $page;
     }
     
@@ -65,19 +62,18 @@
      * Setup this state. Redirects to login form in case the state 
      * needs an authenticated user.
      *
-     * @access  public
      * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
      * @param   &scriptlet.xml.Context context
      */
-    public function setup(&$request, &$response, &$context) {
+    public function setup($request, $response, $context) {
     
       // Automatically handle authentication if state indicates so
       if ($this->requiresAuthentication()) {
         if (!$context->user) {
 
           // Store return point in session
-          $uri= &$request->getURI();
+          $uri= $request->getURI();
           $request->session->putValue('authreturn', $uri);
 
           // Send redirect

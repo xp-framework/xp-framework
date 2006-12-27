@@ -24,7 +24,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string email the email address to send log entries to
      * @param   string prefix
      * @param   bool sync default TRUE
@@ -38,7 +37,6 @@
     /**
      * Destructor
      *
-     * @access  protected
      */
     public function __destruct() {
       $this->finalize();
@@ -47,7 +45,6 @@
     /**
      * Sends log data to the specified email address
      *
-     * @access  public
      * @param   mixed args variables
      */
     public function append() {
@@ -70,7 +67,6 @@
      * Finalize this appender - is called when the logger shuts down
      * at the end of the request.
      *
-     * @access  public 
      */
     public function finalize() {
       if ($this->sync || 0 == sizeof($this->_data)) return;

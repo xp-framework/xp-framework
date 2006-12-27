@@ -24,10 +24,9 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   &rdbms.DSN dsn
      */
-    public function __construct(&$dsn) { 
+    public function __construct($dsn) { 
       parent::__construct($dsn);
             
       $this->shadow= $this->dsn->getValue('shadow', FALSE);
@@ -36,7 +35,6 @@
     /**
      * Retrieve identity
      *
-     * @access  public
      * @return  mixed identity value
      */
     public function identity() {
@@ -46,7 +44,6 @@
     /**
      * Execute an insert statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -54,7 +51,7 @@
     public function insert() { 
       $args= func_get_args();
       $args[0]= 'insert '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -65,7 +62,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -73,7 +69,7 @@
     public function update() {
       $args= func_get_args();
       $args[0]= 'update '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -83,7 +79,6 @@
     /**
      * Execute an update statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
@@ -91,7 +86,7 @@
     public function delete() { 
       $args= func_get_args();
       $args[0]= 'delete '.$args[0];
-      if (!($r= &call_user_func_array(array(&$this, 'query'), $args))) {
+      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
         return FALSE;
       }
       
@@ -101,17 +96,16 @@
     /**
      * Execute any statement
      *
-     * @access  public
      * @param   mixed* args
      * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    public function &query() {
+    public function query() {
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
       try {
-        $res= &parent::query($sql);
+        $res= parent::query($sql);
       } catch (SQLException $e) {
         throw($e);
       }

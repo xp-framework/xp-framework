@@ -50,12 +50,10 @@
     /**
      * Create a new UUID
      *
-     * @model   static
-     * @access  public
      * @return  &org.ietf.UUID
      * @see     http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt section 4.1.4
      */
-    public static function &create() {
+    public static function create() {
     
       // Get timestamp and convert it to UTC (based Oct 15, 1582).
       list($usec, $sec) = explode(' ', microtime());
@@ -87,13 +85,11 @@
     /**
      * Create a UUID from a string
      *
-     * @model   static
-     * @access  public
      * @param   string str
      * @return  &org.ietf.UUID
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
-    public static function &fromString($str) {
+    public static function fromString($str) {
       $uuid= new UUID();
       $a= array();
       if (11 != sscanf(
@@ -125,7 +121,6 @@
      *   c71a4a80-4a80-171a-8fb7-000401000800
      * </pre>
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

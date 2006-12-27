@@ -32,7 +32,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string str
      */
     public function __construct($str) {
@@ -53,7 +52,6 @@
     /**
      * Retrieve flags
      *
-     * @access  public
      * @return  int flags
      */
     public function getFlags() {
@@ -63,7 +61,6 @@
     /**
      * Get a property by its name
      *
-     * @access  public
      * @param   string name
      * @param   string defaullt default NULL
      * @return  string property or the default value if the property does not exist
@@ -75,7 +72,6 @@
     /**
      * Retrieve value of a given parameter
      *
-     * @access  public
      * @param   string key
      * @param   string defaullt default NULL
      * @return  string value
@@ -91,7 +87,6 @@
     /**
      * Retrieve driver
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string driver or default if none is set
      */
@@ -102,7 +97,6 @@
     /**
      * Retrieve host
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
@@ -113,7 +107,6 @@
     /**
      * Retrieve port
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string host or default if none is set
      */
@@ -124,7 +117,6 @@
     /**
      * Retrieve database
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string databse or default if none is set
      */
@@ -135,7 +127,6 @@
     /**
      * Retrieve user
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string user or default if none is set
      */
@@ -146,7 +137,6 @@
     /**
      * Retrieve password
      *
-     * @access  public
      * @param   mixed default default NULL  
      * @return  string password or default if none is set
      */
@@ -157,7 +147,6 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
     public function toString() {

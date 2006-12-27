@@ -20,14 +20,13 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string type
      * @param   &peer.Socket stream
      * @param   mixed data default NULL
      */
-    public function __construct($type, &$stream, $data= NULL) {
+    public function __construct($type, $stream, $data= NULL) {
       $this->type= $type;
-      $this->stream= &$stream;
+      $this->stream= $stream;
       $this->data= $data;
       
     }
