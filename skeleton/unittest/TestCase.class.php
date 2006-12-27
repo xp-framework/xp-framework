@@ -191,7 +191,7 @@
      * @param   &mixed b
      * @return  bool
      */
-    public function _compare($a, $b) {
+    protected function _compare($a, $b) {
       if (is_array($a)) {
         if (!is_array($b) || sizeof($a) != sizeof($b)) return FALSE;
 

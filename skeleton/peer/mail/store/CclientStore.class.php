@@ -22,7 +22,7 @@
      *
      * @return  string
      */
-    public function _errors() {
+    protected function _errors() {
       return sprintf(
         'Alerts {%s} | Errors {%s}',
         @implode(', ', imap_alerts()),

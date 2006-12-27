@@ -362,7 +362,7 @@
      * @param   int bits
      * @return  string
      */
-    public function _rwx($bits) {
+    protected function _rwx($bits) {
       return (
         (($bits & 4) ? 'r' : '-').
         (($bits & 2) ? 'w' : '-').

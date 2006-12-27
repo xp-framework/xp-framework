@@ -74,7 +74,7 @@
      * @return  bool success
      * @throws  peer.ProtocolException in case the command is too long
      */
-    public function _sendcmd() {
+    protected function _sendcmd() {
       if (!$this->_sock->isConnected()) return FALSE;
 
       $a= func_get_args();
@@ -102,7 +102,7 @@
      *
      * @return  string status
      */
-    public function _readResponse() {
+    protected function _readResponse() {
       if (!($line= $this->_sock->readLine())) return FALSE;
       $this->cat && $this->cat->debug('<<<', $line);
       
@@ -118,7 +118,7 @@
      *
      * @return  string status
      */
-    public function _readData() {
+    protected function _readData() {
       if ($this->_sock->eof()) return FALSE;
 
       $line= $this->_sock->readLine();

@@ -324,7 +324,7 @@
      * @param   &mixed v
      * @return  string encoded entry
      */
-    public function _encode($v) {
+    protected function _encode($v) {
       if (is_array($v)) {
         foreach (array_keys($v) as $i) $v[$i]= $this->_encode($v[$i]);
         return $v;

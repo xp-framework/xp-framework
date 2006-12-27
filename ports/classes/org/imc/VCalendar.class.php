@@ -341,7 +341,7 @@
      * @param   mixed value
      * @return  string exported
      */    
-    public function _export($key, $value) {
+    protected function _export($key, $value) {
       if (is('Date', $value)) {
         // Convert date into string
         $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';

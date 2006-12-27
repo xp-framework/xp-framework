@@ -352,7 +352,7 @@
      * @param   mixed add default FALSE
      * @return  bool TRUE if operation was successfull
      */
-    public function _setHeader($header, $value, $add= FALSE) {
+    protected function _setHeader($header, $value, $add= FALSE) {
       static $notallowed= array(HEADER_FROM, HEADER_TO, HEADER_CC, HEADER_BCC);
       
       if (in_array(ucfirst($header), $notallowed)) return FALSE;
@@ -579,7 +579,7 @@
      *
      * @return  string header
      */
-    public function _getContenttypeHeaderString() {
+    protected function _getContenttypeHeaderString() {
       return $this->contenttype.(empty($this->charset) 
         ? '' 
         : ";\n\tcharset=\"".$this->charset.'"'

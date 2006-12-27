@@ -235,7 +235,7 @@
      * @param   int s size
      * @return  string formatted output
      */
-    public function _size($s) {
+    protected function _size($s) {
       if ($s < 1024) return sprintf('%d Bytes', $s);
       if ($s < 1048576) return sprintf('%0.2f KB', $s / 1024);
       if ($s < 1073741824) return sprintf('%0.2f MB', $s / 1048576);

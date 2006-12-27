@@ -72,7 +72,7 @@
      * @throws  io.IOException
      * @throws  lang.IllegalStateException in case of not being connected
      */
-    public function _sockcmd() {
+    protected function _sockcmd() {
       if (NULL === $this->_sock) {
         throw(new IllegalStateException('Not connected'));
       }

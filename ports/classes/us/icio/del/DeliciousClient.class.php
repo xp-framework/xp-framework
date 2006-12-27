@@ -59,7 +59,7 @@
      * @param   array param of del.icio.us-request
      * @return  string
      */
-    public function _doRequest($url, $param= array()) {
+    protected function _doRequest($url, $param= array()) {
       try {
          $buf= HttpUtil::get(
            new HttpConnection($url),

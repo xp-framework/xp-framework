@@ -36,7 +36,7 @@
      * @param  int font The font size
      * @return mixed[]
      */
-    public function _prepare($chart, $font) {
+    protected function _prepare($chart, $font) {
       list($lower, $upper, $step)= $chart->getRange();
       RANGE_AUTO == $lower && $lower= $chart->min();
       RANGE_AUTO == $upper && $upper= $chart->max();
@@ -89,7 +89,7 @@
      * @param  string[] c The colors
      * @return &img.Color[]
      */
-    public function _colors($img, $c) {
+    protected function _colors($img, $c) {
       $colors= array();
       if (!is_array($c)) $c= array($c);
       foreach ($c as $color) $colors[]= $img->allocate($color);
@@ -103,7 +103,7 @@
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    public function _renderAxis($params, $img) {
+    protected function _renderAxis($params, $img) {
       $count= $params['count'];
       $distance= $params['distance'];
       $lower= $params['lower'];
@@ -216,7 +216,7 @@
      * @param  &img.Image img The image
      * @return &img.Image
      */
-    public function _renderLegend($params, $img) {
+    protected function _renderLegend($params, $img) {
       $labels= $params['labels'];
       $font= $params['font'];
       $fontw= $params['fontWidth'];

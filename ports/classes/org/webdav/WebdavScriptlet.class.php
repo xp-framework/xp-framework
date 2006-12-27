@@ -163,7 +163,7 @@
      *
      * @return org.webdav.WebdavScriptletRequest
      */
-    public function _request() {
+    protected function _request() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavPropFindRequest();
@@ -181,7 +181,7 @@
      *
      * @return org.webdav.WebdavResponse
      */
-    public function _response() {
+    protected function _response() {
       switch (getenv('REQUEST_METHOD')) {
         case WEBDAV_METHOD_PROPFIND:
           return new WebdavMultistatusResponse($this->map);

@@ -22,7 +22,7 @@
      * @param   string str string to be encoded
      * @return  string
      */
-    public function _encode($str) {
+    protected function _encode($str) {
       if (NULL === $str) return '\xff\xff';
       $l= strlen($str);
       return chr(($l >> 8) & 0xFF).chr($l & 0xff).$str;

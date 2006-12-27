@@ -85,7 +85,7 @@
      *
      * @return  bool hasHeader
      */    
-    public function _hasHeader() {
+    protected function _hasHeader() {
       return (isset ($this->colName) && !empty ($this->colName));
     }
 
@@ -93,7 +93,7 @@
      * Writes the header line.
      *
      */    
-    public function _writeHeader() {
+    protected function _writeHeader() {
       $this->stream->write(
         implode ($this->colDelim, array_values ($this->colName))
       );
@@ -108,7 +108,7 @@
      *
      * @param   string data
      */    
-    public function _writeColumn($data= '') {
+    protected function _writeColumn($data= '') {
       if (!$this->delimWritten) $this->stream->write ($this->colDelim);
       $this->delimWritten= FALSE;
 

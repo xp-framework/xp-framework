@@ -475,7 +475,7 @@
      * @param   string[2] identifiers
      * @return  string
      */    
-    public function _colorspec($r, $g, $b, $identifiers) {
+    protected function _colorspec($r, $g, $b, $identifiers) {
 
       // Border case: Black or no green
       if (($r == 0 and $g == 0 and $b == 0) or $g == -1) {
@@ -560,7 +560,7 @@
      * @param   int y2
      * @return  string
      */
-    public function _renderline($x1, $y1, $x2, $y2) {
+    protected function _renderline($x1, $y1, $x2, $y2) {
       return $x1.' -'.$y1.' m '.$x2.' -'.$y2.' l S';
     }
 
@@ -586,7 +586,7 @@
      * @param   int style bitfield of FPDF_RECT_* constants
      * @return  string
      */
-    public function _renderrect($x, $y, $w, $h, $style= NULL) {
+    protected function _renderrect($x, $y, $w, $h, $style= NULL) {
       static $ops= array(
         FPDF_RECT_DRAW       => 'S',
         FPDF_RECT_FILL       => 'f',
@@ -768,7 +768,7 @@
      * @param   string text
      * @return  string
      */
-    public function _rendertext($x, $y, $text) {
+    protected function _rendertext($x, $y, $text) {
       $text= $this->_escape($text);
       $s= 'BT '.$x.' -'.$y.' Td ('.$text.') Tj ET';
       if ($this->underline and $text != '') {
@@ -1281,7 +1281,7 @@
      * Start document
      *
      */
-    public function _begindoc() {
+    protected function _begindoc() {
       $this->state= 1;
       $this->_out('%PDF-1.3');
     }
@@ -1290,7 +1290,7 @@
      * Terminate document
      *
      */
-    public function _enddoc() {
+    protected function _enddoc() {
       $nb= $this->page;
 
       if ($this->DefOrientation == FPDF_PORTRAIT) {
@@ -1576,7 +1576,7 @@
      *
      * @param   string orientation
      */
-    public function _beginpage($orientation) {
+    protected function _beginpage($orientation) {
       $this->page++;
       $this->pages[$this->page]='';
       $this->state= 2;
@@ -1620,7 +1620,7 @@
      * End of page contents
      *
      */
-    public function _endpage() {
+    protected function _endpage() {
       for ($i= 0, $s= sizeof($this->_hooks[PFDF_EVENT_ENDPAGE]); $i < $s; $i++) {
         $this->_hooks[PFDF_EVENT_ENDPAGE][$i]->onEndPage($this, $this->page);
       }
@@ -1631,7 +1631,7 @@
      * Begin a new object
      *
      */
-    public function _newobj() {
+    protected function _newobj() {
       $this->n++;
       $this->offsets[$this->n]= strlen($this->buffer);
       $this->_out($this->n.' 0 obj');
@@ -1645,7 +1645,7 @@
      * @param   string txt
      * @return  string
      */
-    public function _renderunderline($x, $y, $txt) {
+    protected function _renderunderline($x, $y, $txt) {
       $up= $this->CurrentFont->up;
       $ut= $this->CurrentFont->ut;
       $w= $this->getStringWidth($txt)+ $this->ws * substr_count($txt, ' ');
@@ -1658,7 +1658,7 @@
      * @param   string file
      * @throws  lang.IllegalArgumentException in case image is not a JPEG file
      */
-    public function _parsejpg($file) {
+    protected function _parsejpg($file) {
       if (FALSE === ($a= getimagesize($file))) {
         throw(new IllegalArgumentException(
           'Missing or incorrect image file: '.$file
@@ -1701,7 +1701,7 @@
      * @param   string file
      * @throws  lang.IllegalArgumentException in case the file is corrupt
      */
-    public function _parsepng($file) {
+    protected function _parsepng($file) {
       $f= fopen($file, 'rb');
       if (!$f) {
         throw(new IllegalArgumentException('Cannot open image file: '.$file));
@@ -1809,7 +1809,7 @@
      * @param   resource f
      * @return  int
      */
-    public function _freadint($f) {
+    protected function _freadint($f) {
       return (
         (ord(fread($f, 1)) << 24) + 
         (ord(fread($f, 1)) << 16) + 
@@ -1824,7 +1824,7 @@
      * @param   string s
      * @return  string
      */
-    public function _escape($s) {
+    protected function _escape($s) {
       return str_replace(')','\\)',str_replace('(','\\(',str_replace('\\','\\\\', $s)));
     }
 
@@ -1833,7 +1833,7 @@
      *
      * @param   string s
      */
-    public function _out($s) {
+    protected function _out($s) {
       if (2 == $this->state) {
         $this->pages[$this->page].= $s."\n"; 
       } else {

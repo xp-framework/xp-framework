@@ -214,7 +214,7 @@
      *
      * @return  string path, e.g. /rdf:rdf/item/rc:summary/
      */
-    public function _pathname() {
+    protected function _pathname() {
       $path= '';
       for ($i= $this->_cnt; $i> 0; $i--) {
         $path= strtolower($this->_objs[$i]->name).'/'.$path;

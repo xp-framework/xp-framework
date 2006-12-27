@@ -163,7 +163,7 @@
       return $r;
     }
     
-    public function _parseProperties($str) {
+    protected function _parseProperties($str) {
       $arr= array();
       $key= $val= ''; $tok= strtok ($str, ";:=");
       while ($tok) {
@@ -188,7 +188,7 @@
      * @param   string value
      * @return  bool success
      */
-    public function _parse($key, $value) {
+    protected function _parse($key, $value) {
      
       // Property params
       if (FALSE !== ($i= strpos($key, ';'))) {
@@ -247,7 +247,7 @@
      * @param   string l Line where header is supposedly located
      * @return  bool valid
      */
-    public function _checkHeader($l) {
+    protected function _checkHeader($l) {
       return (strcasecmp(
         'BEGIN:'.$this->identifier,
         substr($l, 0, strlen($this->identifier)+ 6)
@@ -260,7 +260,7 @@
      * @param   string l Line where footer is supposedly located
      * @return  bool valid
      */
-    public function _checkFooter($l) {
+    protected function _checkFooter($l) {
       return (strcasecmp(
         'END:'.$this->identifier,
         substr($l, 0, strlen($this->identifier)+ 4)

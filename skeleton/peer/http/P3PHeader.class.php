@@ -93,7 +93,7 @@
      * @param   string name
      * @param   string value
      */
-    public function _setCompact($name, $value) {
+    protected function _setCompact($name, $value) {
       if ($value) {
         $this->compact[$name]= $value;
       } else {

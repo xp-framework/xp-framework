@@ -124,7 +124,7 @@
      * @param   bool force default FALSE
      * @throws  io.IOException
      */
-    public function _load($force= FALSE) {
+    protected function _load($force= FALSE) {
       if (!$force && NULL != $this->_data) return;
       if (FALSE === ($this->_data= parse_ini_file($this->_file, 1))) {
         throw(new IOException('The file "'.$this->_file.'" could not be read'));

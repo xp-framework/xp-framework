@@ -186,7 +186,7 @@
      * Add Well Known Properties
      *
      */
-    public function _calcProperties() {
+    protected function _calcProperties() {
       $etag= md5($this->href);
       $etag= sprintf(
         '%s-%s-%s',

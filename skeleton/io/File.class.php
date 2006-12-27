@@ -415,7 +415,7 @@
      * @return  bool success
      * @see     php://flock
      */
-    public function _lock($mode) {
+    protected function _lock($mode) {
       if (FALSE === flock($this->_fd, $mode)) {
         $os= '';
         foreach (array(

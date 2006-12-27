@@ -43,7 +43,7 @@
      * @param   string path The path
      * @return  string
      */
-    public function _normalizePath($path) {      
+    protected function _normalizePath($path) {      
       $p= preg_replace('#//#', '/', $path);
       $p= preg_replace('#/\./#', '/', $p);
       $p= preg_replace('#[^/]+/\.\./#', '', $p);

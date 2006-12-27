@@ -38,7 +38,7 @@
      *
      * @return  bool success
      */    
-    public function _readstatus() {
+    protected function _readstatus() {
       try {
         $str= $this->stream->read();
       } catch (SocketException $e) {

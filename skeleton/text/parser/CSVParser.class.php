@@ -29,7 +29,7 @@
      * @param   string delim delimiter
      * @return  string token
      */
-    public function _strtok($string, $delim) {
+    protected function _strtok($string, $delim) {
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
@@ -135,7 +135,7 @@
      *
      * @return  string buffer
      */    
-    public function _getNextRecord() {
+    protected function _getNextRecord() {
       try {
         if ($this->stream->eof()) return FALSE;
 
@@ -159,7 +159,7 @@
      *
      * @return  string buffer
      */
-    public function _parseColumn() {
+    protected function _parseColumn() {
       if (empty($this->buffer)) return FALSE;
 
       $tok= $this->_strtok($this->buffer, $this->colDelim);

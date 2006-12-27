@@ -471,7 +471,7 @@
      * @param   mixed values
      * @return  string
      */
-    public function _export($key, $values) {
+    protected function _export($key, $values) {
       $value= is_array($values) ? implode(';', $values) : $values;
       if (0 == strlen($value)) return '';
       

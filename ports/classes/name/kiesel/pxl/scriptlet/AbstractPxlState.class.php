@@ -28,7 +28,7 @@
      * @param   
      * @return  
      */
-    public function _getDataPath($path) {
+    protected function _getDataPath($path) {
       $path= $_SERVER['DOCUMENT_ROOT'].'/pages/'.$path;
       return realpath($path);
     }    
@@ -39,7 +39,7 @@
      * @param   
      * @return  
      */
-    public function _getCatalogue() {
+    protected function _getCatalogue() {
       if (NULL === $this->catalogue) {
         $this->catalogue= Catalogue::create(new FilesystemContainer($this->_getDataPath()));
       }
@@ -53,7 +53,7 @@
      * @param   
      * @return  
      */
-    public function _getPage($path) {
+    protected function _getPage($path) {
       $page= Page::create(new FilesystemContainer($this->_getDataPath($path)));
       return $page;
     }

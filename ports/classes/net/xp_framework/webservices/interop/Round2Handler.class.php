@@ -22,7 +22,7 @@
      * @param   &mixed object
      * @throws  lang.IllegalArgumentException
      */
-    public function _assertType($type, $object) {
+    protected function _assertType($type, $object) {
       if ($type != xp::typeOf($object))
         throw (new IllegalArgumentException('Object not of expected type '.$type.', but '.xp::typeOf($object).' with value '.var_export($object, 1)));
     }
@@ -34,7 +34,7 @@
      * @param   &array array
      * @throws  lang.IllegalArgumentException
      */
-    public function _assertSubtype($type, $array) {
+    protected function _assertSubtype($type, $array) {
       foreach (array_keys($array) as $key) {
         if ($type != xp::typeOf($array[$key]))
           throw (new IllegalArgumentException('Object (in array) not of expected type '.$type.', but '.xp::typeOf($array[$key]).' with value '.var_export($array[$key], 1)));

@@ -117,7 +117,7 @@
      * @param   string str
      * @return  array values
      */
-    public function _parse($str) {
+    protected function _parse($str) {
       $values= array();
       if ($t= strtok($str, ', ')) do {
         if (FALSE === ($p= strpos($t, ';'))) {
@@ -143,7 +143,7 @@
      * @param   int len default -1
      * @return  string found or FALSE to indicate it wasn't found
      */
-    public function _find($value, $array, $len= -1) {
+    protected function _find($value, $array, $len= -1) {
       if (-1 == $len) $len= strlen($value);
       foreach ($array as $cmp) {
         if (0 == strncasecmp($value, $cmp, $len)) return $cmp;

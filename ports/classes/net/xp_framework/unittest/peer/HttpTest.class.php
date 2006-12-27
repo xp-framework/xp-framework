@@ -61,7 +61,7 @@
      * @param   bool expectingData
      * @return  array data
      */
-    public function _testRequest($method, $expectingData) {
+    protected function _testRequest($method, $expectingData) {
       try {
         $response= $this->conn->request($method, array(
           'a'   => 'b',

@@ -54,7 +54,7 @@
      * @param   int maxdepth
      * @throws  lang.ElementNotFoundException
      */
-    public function _recurse($request, $response, $path, $maxdepth) {
+    protected function _recurse($request, $response, $path, $maxdepth) {
       $path= rtrim($path, '/');
       $realpath= $this->base.$path;
 

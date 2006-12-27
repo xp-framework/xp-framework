@@ -259,7 +259,7 @@
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
      * @return  string data
      */
-    public function _read($maxLen, $type, $chop= FALSE) {
+    protected function _read($maxLen, $type, $chop= FALSE) {
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
         throw(new SocketException('Read failed: '.$this->getLastError()));
       }

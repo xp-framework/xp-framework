@@ -25,7 +25,7 @@
      * @param   string* args
      * @return  string environment variable by name
      */
-    public function _env() {
+    protected function _env() {
       foreach (func_get_args() as $a) {
         if ($e= getenv($a)) return $e;
       }

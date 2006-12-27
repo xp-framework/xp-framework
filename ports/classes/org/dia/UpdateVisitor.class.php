@@ -162,7 +162,7 @@
      * @param   &org.dia.DiaUMLClass Class
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    public function _updateClass($Class, $ClassDoc) {
+    protected function _updateClass($Class, $ClassDoc) {
       if (UDT_VIS_DEBUG) Console::writeLine('* Updating class '.$ClassDoc->qualifiedName().'...');
       /*
       ClassDoc vs. DiaUMLClass...
@@ -398,7 +398,7 @@
      *
      * @param   &text.doclet.ClassDoc ClassDoc
      */
-    public function _addClass($ClassDoc) {
+    protected function _addClass($ClassDoc) {
       // check for DiaDiagram instance
       if (!isset($this->Dia)) {
         Console::writeLine('DiaDiagram object not defined!');

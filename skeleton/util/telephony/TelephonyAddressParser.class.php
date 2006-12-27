@@ -264,7 +264,7 @@
      * @param   string phonestring
      * @return  string phonestring
      */
-    public function _prepare($string) {
+    protected function _prepare($string) {
       static $letters= array(
         '/a|b|c/',
         '/d|e|f/',

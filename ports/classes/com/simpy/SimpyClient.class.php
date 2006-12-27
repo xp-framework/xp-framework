@@ -53,7 +53,7 @@
      * @param   array param of simply-request
      * @return  string
      */
-    public function _doRequest($url, $param= array()) {
+    protected function _doRequest($url, $param= array()) {
       try {
         $buf= HttpUtil::get(
           new HttpConnection($url),

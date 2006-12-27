@@ -48,7 +48,7 @@
      *
      * @return  &mixed data
      */
-    public function _get() {
+    protected function _get() {
       $h= shm_attach($this->spot);
       $data= shm_get_var($h, $this->name);
       shm_detach($h);

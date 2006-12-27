@@ -31,7 +31,6 @@
    *
    */
   class DiaMarshaller extends Object {
-
     public
       $_root= NULL,
       $_dia= NULL,
@@ -46,7 +45,7 @@
     /**
      *
      */
-    public function getInstance() {
+    public static function getInstance() {
       static $Instance= NULL;
 
       if (!$Instance) {
@@ -165,7 +164,7 @@
      * @param   int recurse The level of recursion
      * @param   bool depend Include dependencies (uses())
      */
-    public function _recurse($classname, $recurse, $depend) {
+    protected function _recurse($classname, $recurse, $depend) {
       if (isset($this->_classes[$classname])) {
         Console::writeLine("skipping $classname...");
         return;
@@ -227,7 +226,7 @@
      * @return  &org.dia.DiaUMLClass
      * @throws  lang.IllegalArgumentException If argument is not usable
      */
-    public function _genClass($classdoc) {
+    protected function _genClass($classdoc) {
       // accept only ClassDoc
       if (!is('ClassDoc', $classdoc)) {
         throw(new IllegalArgumentException('No ClassDoc given!'));
@@ -311,7 +310,7 @@
      * @param   string from Fully qualified classname of the depended class
      * @return  &org.dia.DiaUMLDependecy
      */
-    public function _genDependency($from, $to) {
+    protected function _genDependency($from, $to) {
       $Dia_dep= new DiaUMLDependency();
       $Dia_dep->beginAt($this->_getObjectId($from));
       $Dia_dep->endAt($this->_getObjectId($to));
@@ -325,7 +324,7 @@
      * @param   string to Fully qualified classname of the interface class
      * @return  &org.dia.DiaUMLRealizes
      */
-    public function _genImplemenation($from, $to) {
+    protected function _genImplemenation($from, $to) {
       $Dia_imp= new DiaUMLRealizes();
       $Dia_imp->beginAt($this->_getObjectId($from));
       $Dia_imp->endAt($this->_getObjectId($to));
@@ -339,7 +338,7 @@
      * @param   string to Fully qualified classname of the parent class
      * @return  &org.dia.DiaUMLGeneralization
      */
-    public function _genGeneralization($from, $to) {
+    protected function _genGeneralization($from, $to) {
       $Dia_gen= new DiaUMLGeneralization();
       $Dia_gen->beginAt($this->_getObjectId($from));
       $Dia_gen->endAt($this->_getObjectId($to));
@@ -352,7 +351,7 @@
      * @param   string classname Fully qualified classname (i.e. 'util.Date')
      * @return  string
      */
-    public function _getObjectId($classname) {
+    protected function _getObjectId($classname) {
       if (isset($this->_class_ids[$classname])) {
         return $this->_class_ids[$classname];
       }

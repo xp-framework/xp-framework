@@ -98,7 +98,7 @@
       );
     }
 
-    public function _rwx($bits) {
+    protected function _rwx($bits) {
       $str= '';
       $str.= ($bits & 4) ? 'r' : '-';
       $str.= ($bits & 2) ? 'w' : '-';

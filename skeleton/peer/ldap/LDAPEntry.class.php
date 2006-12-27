@@ -34,7 +34,7 @@
      * @param   &mixed v
      * @return  string decoded entry
      */
-    public function _decode($v) {
+    protected function _decode($v) {
       if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
         $v[$i]= $this->_decode($v[$i]);
         return $v;

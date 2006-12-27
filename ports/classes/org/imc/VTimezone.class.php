@@ -30,7 +30,6 @@
      *
      */
     public function __construct() {
-      
       $this->daylight= $this->standard= array (
         'dtstart'       => NULL,    // Mandatory
         'tzoffsetto'    => NULL,    // Mandatory
@@ -103,7 +102,7 @@
      * @param   mixed value
      * @return  string exported
      */    
-    public function _export($key, $value) {
+    protected function _export($key, $value) {
 
       // Never add empty fields
       if (NULL === $value)

@@ -64,7 +64,7 @@
      * @return  int
      * @see rfc://3492#6.1
      */
-    public function _adapt($delta, $numpoints, $firsttime) {
+    protected function _adapt($delta, $numpoints, $firsttime) {
       $delta = $firsttime ? (int)($delta / PUNYCODE_DAMP) : $delta >> 1;
       // delta >> 1 is a faster way of doing delta / 2
       $delta += (int)($delta / $numpoints);
@@ -85,7 +85,7 @@
      * @return int
      * @see rfc://3492#5
      */
-    public function _decode_digit($cp) {
+    protected function _decode_digit($cp) {
       return
         $cp - 48 < 10 ? $cp - 22 :  ($cp - 65 < 26 ? $cp - 65 :
         $cp - 97 < 26 ? $cp - 97 :  PUNYCODE_BASE);
@@ -100,7 +100,7 @@
      * @param  bool flag
      * @return int
      */
-    public function _encode_digit($d, $flag) {
+    protected function _encode_digit($d, $flag) {
       return $d + 22 + 75 * ($d < 26) - (($flag != 0) << 5);
     }
 
@@ -112,7 +112,7 @@
      * @return int
      * @see rfc://3492#5
      */
-    public function _encode_basic($bcp, $flag) {
+    protected function _encode_basic($bcp, $flag) {
       $bcp= $bcp;
       $bcp -= ($bcp - 97 < 26) << 5;
       return $bcp + ((!$flag && ($bcp - 65 < 26)) << 5);
@@ -127,7 +127,7 @@
      * @param  int bcp
      * @return int
      */
-    public function _flagged($bcp) {
+    protected function _flagged($bcp) {
       return ord($bcp) - 65 < 26;
     }
 

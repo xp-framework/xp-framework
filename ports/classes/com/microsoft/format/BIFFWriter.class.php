@@ -75,7 +75,7 @@
      *
      * @param   string d
      */
-    public function _prepend($d) {
+    protected function _prepend($d) {
       if (strlen($d) > $this->_limit) {
         $d= $this->_cont($d);
       }
@@ -88,7 +88,7 @@
      *
      * @param   string d
      */
-    public function _append($d) {
+    protected function _append($d) {
       if (strlen($d) > $this->_limit) {
         $d= $this->_addCont($d);
       }
@@ -101,7 +101,7 @@
      *
      * @param   int type one of the BOF_TYPE_* constants
      */
-    public function _bof($type) {
+    protected function _bof($type) {
       $this->_prepend(
         pack('vv', 0x0809, 0x0008).
         pack('vvvv', $this->version, $type, 0x096C, 0x07C9)
@@ -112,7 +112,7 @@
      * Writes EOF record
      *
      */
-    public function _eof() {
+    protected function _eof() {
       $this->_append(pack('vv', 0x000A, 0x0000));
     }
     
@@ -122,7 +122,7 @@
      * @param   string data
      * @return  string data
      */
-    public function _cont($d) {
+    protected function _cont($d) {
       $h= pack('vv', 0x003C, $this->_limit);
       $t= substr($d, 0, 2).pack('v', $this->_limit- 4).substr($d, 4, $this->_limit- 4);
       for ($i= $this->_limit, $len= strlen($d); $i < $len; $i+= $this->_limit) {

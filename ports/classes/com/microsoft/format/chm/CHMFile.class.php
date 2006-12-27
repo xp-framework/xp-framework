@@ -77,7 +77,7 @@
      * @param   array g
      * @return  string guid
      */
-    public function _guid($g) {
+    protected function _guid($g) {
       return vsprintf('{%08X-%04X-%04X-%02X%02X-%02X%02X-%02X%02X-%02X%02X}', $g);
     }
 
@@ -90,7 +90,7 @@
      * @param   int len
      * @return  string str
      */
-    public function _substr($str, $p, $len) {
+    protected function _substr($str, $p, $len) {
       $str= substr($str, ++$p, $len);
       $p+= $len;
       return $str;
@@ -104,7 +104,7 @@
      * @param   &int p
      * @return  int
      */
-    public function _int($str, $p) {
+    protected function _int($str, $p) {
       $r= 0;
       while (ord($str{$p}) & 0x80) {
         $r= ($r << 7) | (ord($str{$p++}) & 0x7F);
@@ -119,7 +119,7 @@
      * @param   int length
      * @return  array entries
      */
-    public function _dir($length, $qref, $format) {
+    protected function _dir($length, $qref, $format) {
       $str= $this->stream->read($length- $qref);
       $pos= 0;
       $max= strlen($str);

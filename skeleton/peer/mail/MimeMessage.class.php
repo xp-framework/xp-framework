@@ -161,7 +161,7 @@
      * @param   string val
      * @return  mixed value or FALSE if not found
      */
-    public function _lookupattr($parameters, $val) {
+    protected function _lookupattr($parameters, $val) {
       if (!is_array($parameters)) return FALSE;
       
       for ($i= 0, $s= sizeof($parameters); $i < $s; $i++) {
@@ -180,7 +180,7 @@
      * @param   &array p structure parts as retrieved from cclient lib
      * @param   string id default '' part id
      */
-    public function _recurseparts($parts, $p, $id= '') {
+    protected function _recurseparts($parts, $p, $id= '') {
       static $types= array(
         'text',
         'multipart',
@@ -266,7 +266,7 @@
      *
      * @return  bool got parts
      */    
-    public function _parts() {
+    protected function _parts() {
       if ((NULL === $this->folder) || (!empty($this->parts))) return FALSE;
       
       $struct= $this->folder->getMessageStruct($this->uid);
@@ -284,7 +284,7 @@
      *
      * @return  string header
      */
-    public function _getContenttypeHeaderString() {
+    protected function _getContenttypeHeaderString() {
       return $this->contenttype.(empty ($this->boundary)
         ? ''
         : '; boundary="'.$this->getBoundary().'"'

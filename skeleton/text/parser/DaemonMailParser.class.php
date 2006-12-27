@@ -94,7 +94,7 @@
      * @param   string str
      * @param   &text.parser.DaemonMessage daemonmessage
      */
-    public function _parseDeliveryStatus($str, $daemonmessage) {
+    protected function _parseDeliveryStatus($str, $daemonmessage) {
       $l= strtok(chop($str), "\n");
       $r= array();
       do {
