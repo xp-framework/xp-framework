@@ -11,35 +11,38 @@
   );
 
   /**
-   * Handler factory implementation
+   * Handler factory implementation. Registers the default protocol "xp" with this
+   * factory.
    *
    * @see      xp://remote.protocol.XpProtocolHandler
    * @purpose  Factory
    */
   class HandlerFactory extends Object {
+    protected static 
+      $instance     = NULL;
+
     public
       $handlers= array();
 
+    static function __static() {
+      self::$instance= new self();
+      self::$instance->register('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
+    }
+
     /**
-     * Static initializer. Registers the default protocol "xp" with this
-     * factory.
+     * Constructor.
      *
      */
-    public static function __static() {
-      $self= HandlerFactory::getInstance();
-      $self->register('xp', XPClass::forName('remote.protocol.XpProtocolHandler'));
+    protected function __construct() {
     }
     
     /**
      * Retrieve the HandlerFactory instance
-     *
+     * 
      * @return  &remote.HandlerFactory
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!isset($instance)) $instance= new HandlerFactory();
-      return $instance;
+      return self::$instance;
     }
 
     /**
@@ -62,7 +65,7 @@
      * @throws  remote.protocol.UnknownProtocolException
      */
     public static function handlerFor($type) {
-      $self= HandlerFactory::getInstance();
+      $self= self::getInstance();
       if (!isset($self->handlers[$type])) {
         throw(new UnknownProtocolException($type));
       }
