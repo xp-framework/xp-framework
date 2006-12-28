@@ -12,6 +12,9 @@
    * @purpose  Comparator
    */
   class Collator extends Object implements Comparator {
+    protected static 
+      $instance     = array();
+
     public
       $locale = '';
      
@@ -30,14 +33,12 @@
      * @param   &util.Locale locale
      * @return  &text.Collator
      */
-    public function getInstance($locale) {
-      static $instance= array();
-      
+    public static function getInstance($locale) {
       $id= $locale->hashCode();
-      if (!isset($instance[$id])) {
-        $instance[$id]= new Collator($locale->toString());
+      if (!isset(self::$instance[$id])) {
+        self::$instance[$id]= new self($locale->toString());
       }
-      return $instance[$id];
+      return self::$instance[$id];
     } 
 
     /**
