@@ -15,10 +15,10 @@
    *
    * Example:
    * <code>
-   *   try(); {
-   *     $remote= &Remote::forName('xp://localhost:6448/');
-   *     $remote && $calculator= &$remote->lookup($jndiName);
-   *   } if (catch('RemoteException', $e)) {
+   *   try {
+   *     $remote= Remote::forName('xp://localhost:6448/');
+   *     $calculator= $remote->lookup($jndiName);
+   *   } catch (RemoteException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -30,7 +30,7 @@
    * To use clustering and fail-over, supply a comma-separated list of
    * remote names as follows:
    * <code>
-   *   $remote= &Remote::forName('xp://remote1,xp://remote2');
+   *   $remote= Remote::forName('xp://remote1,xp://remote2');
    * </code>
    * 
    * @test     xp://net.xp_framework.unittest.remote.RemoteTest
@@ -70,7 +70,7 @@
         // No instance yet, so get it
         $e= $instance= NULL;
         try {
-          $instance= new Remote();
+          $instance= new self();
           $instance->_handler= $pool->acquire($key, TRUE);
         } catch (RemoteException $e) {
           continue;   // try next
@@ -85,7 +85,7 @@
       }
 
       // No more active hosts
-      throw($e);
+      throw $e;
     }
     
     /**
