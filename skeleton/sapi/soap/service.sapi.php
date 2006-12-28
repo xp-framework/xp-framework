@@ -47,18 +47,19 @@
         );
       }
 
-      // Check for uncaught exceptions
-      if ($exceptions= xp::registry('exceptions')) {
-        return sapi新oap新ervice::fault(
-          $exceptions[key($exceptions)],
-          'xp.uncaughtexception'
-        );
-      }
-
       return $buf;
     }
     // }}}
     
+    // {{{ internal void except(Exception e)
+    //     Exception handler
+    function except($e) {
+      self::fault(
+        $e instanceof XPException ? $e : new XPException($e->getMessage()), 
+        HTTP_INTERNAL_SERVER_ERROR
+      );
+    }
+    // }}}
   }
   // }}}
   
@@ -66,5 +67,6 @@
   ini_set('display_errors', 1);
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
 
+  set_exception_handler(array('sapi新oap新ervice', 'except'));
   ob_start(array('sapi新oap新ervice', 'output'));
 ?>

@@ -21,15 +21,16 @@
         return '[sapi::gtk] Uncaught error: '.$e->toString();
       }
 
-      // Check for uncaught exceptions
-      if ($exceptions= xp::registry('exceptions')) {
-        return '[sapi::gtk] Uncaught exception: '.$exceptions[key($exceptions)]->toString();
-      }
-
       return $buf;
     }
     // }}}
-    
+
+    // {{{ internal void except(Exception e)
+    //     Exception handler
+    function except($e) {
+      echo '[sapi::gtk] Uncaught exception: '.xp::stringOf($e);
+    }    
+    // }}}
   }
   // }}}
   
@@ -38,7 +39,7 @@
   function run($app) {
     try {
       $app->init();
-    } catch(GuiException $e) {
+    } catch (GuiException $e) {
       xp::error('Error initializing '.$app->getClassName().': '.$e->toString());
       // Bails out
     }
@@ -53,5 +54,6 @@
   }
 
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
+  set_exception_handler(array('sapi·gtk', 'except'));
   ob_start(array('sapi·gtk', 'output'));
 ?>

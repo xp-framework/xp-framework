@@ -38,18 +38,19 @@
         );
       }
 
-      // Check for uncaught exceptions
-      if ($exceptions= xp::registry('exceptions')) {
-        return sapi·xmlrpc·service::fault(
-          $exceptions[key($exceptions)],
-          'xp.uncaughtexception'
-        );
-      }
-
       return $buf;
     }
     // }}}
     
+    // {{{ internal void except(Exception e)
+    //     Exception handler
+    function except($e) {
+      self::fault(
+        $e instanceof XPException ? $e : new XPException($e->getMessage()), 
+        xp.'uncaughtexception'
+      );
+    }
+    // }}}
   }
   // }}}
   
@@ -57,5 +58,6 @@
   ini_set('display_errors', 1);
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
 
+  set_exception_handler(array('sapi·xmlrpc·service', 'except'));
   ob_start(array('sapi·xmlrpc·service', 'output'));
 ?>
