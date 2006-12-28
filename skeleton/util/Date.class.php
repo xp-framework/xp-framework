@@ -48,7 +48,7 @@
      */
     public function __construct($in= NULL) {
       if (is_string($in)) {
-        $this->_utime(Date::_strtotime($in));
+        $this->_utime(self::_strtotime($in));
       } else if (is_int($in) || is_float($in)) {
         $this->_utime($in);
       } else if (is_null($in)) {
@@ -112,19 +112,19 @@
       // European date format (dd.mm.yyyy hh:mm:ss). At least two values
       // need to be found
       if (2 < sscanf($in, '%d.%d.%d %d:%d:%d', $d, $m, $y, $h, $i, $s)) {
-        return Date::mktime($h, $i, $s, $m, $d, $y);
+        return self::mktime($h, $i, $s, $m, $d, $y);
       }
 
       // "2006-05-04 11:59:00"
       if (2 < sscanf($in, '%4d-%02d-%02d %02d:%02d:%02d', $y, $m, $d, $h, $i, $s)) {
-        return Date::mktime($h, $i, $s, $m, $d, $y);
+        return self::mktime($h, $i, $s, $m, $d, $y);
       }
       
       // "Dec 31 2070 11:59PM"
       if (2 < sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M', $n, $d, $y, $h, $i, $m)) {
         ($m == 'A' && $h == 12) && $h= 0;
         ($m == 'A') || ($m == 'P' && $h == 12) || $h+= 12;
-        return Date::mktime($h, $i, 0, $month_names[$n], $d, $y);
+        return self::mktime($h, $i, 0, $month_names[$n], $d, $y);
       }
       
       // FIXME: Support more formats
@@ -171,11 +171,11 @@
 
         // Add number of years times number of days per year to days
         for ($y= 1970; $y < $year; $y++) {
-          $days+= Date::_isLeapYear($y) ? 366 : 365;
+          $days+= self::_isLeapYear($y) ? 366 : 365;
         }
         
         // Add number of days per month
-        $days+= array_sum(array_slice($month_table[Date::_isLeapYear($year)], 1, $month- 1));
+        $days+= array_sum(array_slice($month_table[self::_isLeapYear($year)], 1, $month- 1));
         
         // Add day
         $days+= $day- 1;
@@ -186,9 +186,9 @@
       
         // Add number of years times number of days per year to days
         for ($y= 1969; $y > $year; $y--) {
-          $days+= Date::_isLeapYear($y) ? 366 : 365;
+          $days+= self::_isLeapYear($y) ? 366 : 365;
         }
-        $leap= Date::_isLeapYear($year);
+        $leap= self::_isLeapYear($year);
         
         // Add number of days per month
         $days+= array_sum(array_slice($month_table[$leap], $month + 1, 12));
@@ -238,7 +238,7 @@
         // Look for year
         for ($year= 1970; --$year >= 0; ) {
           $last= $stamp;
-          $leap= Date::_isLeapYear($year);
+          $leap= self::_isLeapYear($year);
           $stamp+= $leap ? 31622400 : 31536000;
           if ($stamp >= 0) {
             $result['year']= $year;
@@ -276,7 +276,7 @@
         for ($year= 1970; ; $year++) {
           $last= $stamp;
 
-          $leap= Date::_isLeapYear($year);
+          $leap= self::_isLeapYear($year);
           if (0 >= ($stamp-= $leap ? 31622400 : 31536000)) {
             $result['year']= $year;
             break;
@@ -347,16 +347,15 @@
      * @return  &util.Date
      */
     public static function now() {
-      $d= new Date(NULL);
-      return $d;
+      return new self(NULL);
     }
     
     /**
      * Create a date from a string
      *
      * <code>
-     *   $d= &Date::fromString('yesterday');
-     *   $d= &Date::fromString('2003-02-01');
+     *   $d= Date::fromString('yesterday');
+     *   $d= Date::fromString('2003-02-01');
      * </code>
      *
      * @see     php://strtotime
@@ -364,8 +363,7 @@
      * @return  &util.Date
      */
     public static function fromString($str) {
-      $d= new Date($str);
-      return $d;
+      return new self($str);
     }
     
     /**
@@ -506,7 +504,7 @@
       if (1971 < $this->year && $this->year < 2038) return date($format, $this->_utime);
       
       $return= '';
-      $gmt= Date::_getGMTOffset();
+      $gmt= self::_getGMTOffset();
       for ($i= 0, $s= strlen($format); $i < $s; $i++) {
         switch ($format{$i}) {
           case 'a': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
@@ -629,7 +627,7 @@
             $yday= $this->yday;
             $wday= $this->wday;
             for (;;) {
-              $len= (Date::_isLeapYear($year) ? 366 : 365);
+              $len= (self::_isLeapYear($year) ? 366 : 365);
               
               // What day does the ISO year begin on?
               $bot= (($yday + 11 - $wday) % 7) - 3;
@@ -642,7 +640,7 @@
               if ($yday >= $top) { $year++; $w= 1; break; }
               if ($yday >= $bot) { $w= 1 + (($yday - $bot) / 7); break; }
               --$year;
-              $yday+= (Date::_isLeapYear($year) ? 366 : 365);
+              $yday+= (self::_isLeapYear($year) ? 366 : 365);
             }
             
             switch ($token{0}) {
