@@ -11,7 +11,7 @@
    *
    * <code>
    *   // Retrieve Peer object for the specified dataset class
-   *   $peer= &Peer::forName('net.xp_framework.db.caffeine.XPNews');
+   *   $peer= Peer::forName('net.xp_framework.db.caffeine.XPNews');
    *   
    *   // select * from news where news_id < 100
    *   $news= $peer->doSelect(new Criteria(array('news_id', 100, LESS_THAN)));
@@ -22,6 +22,9 @@
    * @purpose  Part of DataSet model
    */
   class Peer extends Object {
+    protected static 
+      $instance   = array();
+
     public
       $identifier = '',
       $table      = '',
@@ -36,7 +39,7 @@
      *
      * @param   string identifier
      */
-    public function __construct($identifier) {
+    protected function __construct($identifier) {
       $this->identifier= $identifier;
     }
 
@@ -110,12 +113,10 @@
      * @return  &rdbms.Peer
      */
     public function getInstance($identifier) {
-      static $instance= array();
-      
-      if (!isset($instance[$identifier])) {
-        $instance[$identifier]= new Peer($identifier);
+      if (!isset(self::$instance[$identifier])) {
+        self::$instance[$identifier]= new self($identifier);
       }
-      return $instance[$identifier];
+      return self::$instance[$identifier];
     }
       
     /**
@@ -125,7 +126,7 @@
      * @return  &rdbms.Peer
      */
     public function forName($classname) {
-      return Peer::getInstance(xp::reflect($classname));
+      return self::getInstance(xp::reflect($classname));
     }
 
     /**
@@ -135,7 +136,7 @@
      * @return  &rdbms.Peer
      */
     public function forInstance($instance) {
-      return Peer::getInstance(get_class($instance));
+      return self::getInstance(get_class($instance));
     }
     
     /**
@@ -145,10 +146,7 @@
      * @return  &rdbms.Transaction
      */
     public function begin($transaction) {
-      $cm= ConnectionManager::getInstance();
-      $db= $cm->getByHost($this->connection, 0);
-
-      return $db->begin($transaction);
+      return ConnectionManager::getInstance()->getByHost($this->connection, 0)->begin($transaction);
     }
     
     /**
@@ -176,13 +174,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doSelect($criteria, $max= 0) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $q= $criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
-      } catch (SQLException $e) {
-        throw($e);
-      }
-      
+      $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
@@ -200,9 +192,9 @@
      */    
     public function objectFor($record) {
       if (array_keys($this->types) != array_keys($record)) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Record not compatible with '.$this->identifier.' class'
-        ));
+        );
       }
       return new $this->identifier($record);
     }
@@ -215,14 +207,10 @@
      * @see     xp://rdbms.ResultIterator
      */
     public function iteratorFor($criteria) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $q= $criteria->executeSelect($cm->getByHost($this->connection, 0), $this);
-      } catch (SQLException $e) {
-        throw($e);
-      }
-      
-      return new ResultIterator($q, $this->identifier);
+      return new ResultIterator(
+        $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
+        $this->identifier
+      );
     }
 
     /**
@@ -236,35 +224,30 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doJoin($peer, $join, $criteria, $max= 0) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost($this->connection, 0);
-        
-        $columns= $map= $qualified= array();
-        foreach (array_keys($this->types) as $colunn) {
-          $columns[]= $this->identifier.'.'.$colunn;
-          $map[$colunn]= $map[$this->identifier.'.'.$colunn]= '%c';
-          $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
-        }
-        foreach (array_keys($peer->types) as $colunn) {
-          $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
-          $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn];
-        }
-        
-        $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
-        $q= $db->query(
-          'select %c from %c %c, %c %c%c%c',
-          $columns,
-          $this->table,
-          $this->identifier,
-          $peer->table,
-          $peer->identifier,
-          $join->toSQL($db, $map),
-          $where ? ' and '.substr($where, 7) : ''
-        );
-      } catch (SQLException $e) {
-        throw($e);
+      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+
+      $columns= $map= $qualified= array();
+      foreach (array_keys($this->types) as $colunn) {
+        $columns[]= $this->identifier.'.'.$colunn;
+        $map[$colunn]= $map[$this->identifier.'.'.$colunn]= '%c';
+        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
       }
+      foreach (array_keys($peer->types) as $colunn) {
+        $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
+        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn];
+      }
+
+      $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
+      $q= $db->query(
+        'select %c from %c %c, %c %c%c%c',
+        $columns,
+        $this->table,
+        $this->identifier,
+        $peer->table,
+        $peer->identifier,
+        $join->toSQL($db, $map),
+        $where ? ' and '.substr($where, 7) : ''
+      );
       
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
@@ -286,28 +269,23 @@
      */
     public function doInsert($values) {
       $id= NULL;
-      $cm= ConnectionManager::getInstance();
-      try {
-        $db= $cm->getByHost($this->connection, 0);
+      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
 
-        // Build the insert command
-        $sql= $db->prepare(
-          'into %c (%c) values (',
-          $this->table,
-          array_keys($values)
-        );
-        foreach (array_keys($values) as $key) {
-          $sql.= $db->prepare($this->types[$key], $values[$key]).', ';
-        }
-        
-        // Send it
-        if ($db->insert(substr($sql, 0, -2).')')) {
+      // Build the insert command
+      $sql= $db->prepare(
+        'into %c (%c) values (',
+        $this->table,
+        array_keys($values)
+      );
+      foreach (array_keys($values) as $key) {
+        $sql.= $db->prepare($this->types[$key], $values[$key]).', ';
+      }
 
-          // Fetch identity value if applicable.
-          $this->identity && $id= $db->identity($this->sequence);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      // Send it
+      if ($db->insert(substr($sql, 0, -2).')')) {
+
+        // Fetch identity value if applicable.
+        $this->identity && $id= $db->identity($this->sequence);
       }
 
       return $id;
@@ -322,28 +300,21 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doUpdate($values, $criteria) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost($this->connection, 0);
+      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
 
-        // Build the update command
-        $sql= '';
-        foreach (array_keys($values) as $key) {
-          $sql.= $db->prepare('%c = '.$this->types[$key], $key, $values[$key]).', ';
-        }
-
-        // Send it
-        $affected= $db->update(
-          '%c set %c%c',
-          $this->table,
-          substr($sql, 0, -2),
-          $criteria->toSQL($db, $this->types)
-        );
-      } catch (SQLException $e) {
-        throw($e);
+      // Build the update command
+      $sql= '';
+      foreach (array_keys($values) as $key) {
+        $sql.= $db->prepare('%c = '.$this->types[$key], $key, $values[$key]).', ';
       }
 
-      return $affected;
+      // Send it
+      return $db->update(
+        '%c set %c%c',
+        $this->table,
+        substr($sql, 0, -2),
+        $criteria->toSQL($db, $this->types)
+      );
     }
 
     /**
@@ -354,21 +325,14 @@
      * @throws  rdbms.SQLException in case an error occurs
      */  
     public function doDelete($criteria) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost($this->connection, 0);
+      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
 
-        // Send it
-        $affected= $db->delete(
-          'from %c%c',
-          $this->table,
-          $criteria->toSQL($db, $this->types)
-        );
-      } catch (SQLException $e) {
-        throw($e);
-      }
-
-      return $affected;
+      // Send it
+      return $db->delete(
+        'from %c%c',
+        $this->table,
+        $criteria->toSQL($db, $this->types)
+      );
     }
   }
 ?>
