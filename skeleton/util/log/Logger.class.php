@@ -79,6 +79,9 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object implements Configurable {
+    protected static 
+      $instance     = NULL;
+    
     public 
       $category     = array();
     
@@ -91,6 +94,30 @@
   
     public
       $_finalized   = FALSE;
+
+    static function __static() {
+      self::$instance= new self();
+      self::$instance->defaultIdentifier= getmypid();
+      self::$instance->defaultFormat= '[%1$s %2$s %3$5s]';
+      self::$instance->defaultDateformat= 'H:i:s';
+      self::$instance->defaultFlags= LOGGER_FLAG_ALL;
+      self::$instance->defaultAppenders= array();
+      
+      // Create an empty LogCategory
+      self::$instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
+        self::$instance->defaultIdentifier,
+        self::$instance->defaultFormat,
+        self::$instance->defaultDateformat,
+        self::$instance->defaultFlags
+      );
+    }
+
+    /**
+     * Constructor.
+     *
+     */
+    protected function __construct() {
+    }
 
     /**
      * Get a category
@@ -192,27 +219,7 @@
      * @return  &util.log.Logger a logger object
      */
     public static function getInstance() {
-      static $instance;
-  
-      if (!isset($instance)) {
-        $instance= new Logger();
-        $instance->defaultIdentifier= getmypid();
-        $instance->defaultFormat= '[%1$s %2$s %3$5s]';
-        $instance->defaultDateformat= 'H:i:s';
-        $instance->defaultFlags= LOGGER_FLAG_ALL;
-        $instance->defaultAppenders= array();
-        
-        // Create an empty LogCategory
-        $instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
-          $instance->defaultIdentifier,
-          $instance->defaultFormat,
-          $instance->defaultDateformat,
-          $instance->defaultFlags
-        );
-
-      }
-      return $instance;
+      return self::$instance;
     }
-
   } 
 ?>

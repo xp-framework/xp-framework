@@ -16,19 +16,30 @@
    * @purpose  Hold connections to databases
    */
   class ConnectionManager extends Object implements Configurable {
+    protected static 
+      $instance     = NULL;
+
     public 
       $pool= array();
-    
+
+    static function __static() {
+      self::$instance= new self();
+    }
+
+    /**
+     * Constructor.
+     *
+     */
+    protected function __construct() {
+    }
+
     /**
      * Return the ConnectionManager's instance
      * 
      * @return  &rdbms.ConnectionManager
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new ConnectionManager();
-      return $instance;
+      return self::$instance;
     }
     
     /**
