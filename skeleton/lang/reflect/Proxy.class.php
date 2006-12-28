@@ -144,10 +144,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public static function newProxyInstance($classloader, $interfaces, $handler) {
-      if (!($class= Proxy::getProxyClass($classloader, $interfaces))) return $class;
-      $instance= $class->newInstance($dummy= NULL);
-      $instance->_h= $handler;
-      return $instance;
+      return self::getProxyClass($classloader, $interfaces)->newInstance($handler);
     }
   }
 ?>
