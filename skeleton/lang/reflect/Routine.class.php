@@ -57,8 +57,7 @@
      * @return  int
      */    
     public function getModifiers() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return $details[DETAIL_MODIFIERS];
+      return $this->_reflect->getModifiers();
     }
 
     /**

@@ -17,7 +17,6 @@
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
   
-  define('DETAIL_MODIFIERS',      0);
   define('DETAIL_ARGUMENTS',      1);
   define('DETAIL_RETURNS',        2);
   define('DETAIL_THROWS',         3);
@@ -79,10 +78,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return (is('XPClass', $cmp) 
-        ? 0 == strcmp($this->getName(), $cmp->getName())
-        : FALSE
-      );
+      return $cmp instanceof XPClass && $this->getName() == $cmp->getName();
     }
     
     /**
@@ -136,26 +132,18 @@
     }
     
     /**
-     * Helper function that returns this class' methods, excluding the
-     * constructor (and inherited constructors) and the destructor.
+     * Helper function that returns this class' methods.
      *
-     * @return  string[] method names
+     * @param   
+     * @return  array<string, string>
      */
-    protected function _methods() {
-      $methods= array_flip(get_class_methods($this->_objref));
-
-      // Well-known methods
-      unset($methods['__construct']);
-      unset($methods['__destruct']);
-
-      // "Inherited" constructors
-      $c= is_object($this->_objref) ? get_class($this->_objref) : $this->_objref;
-      do {
-        unset($methods[$c]);
-      } while ($c= get_parent_class($c));
-
-      return array_keys($methods);
-    }
+    protected function _methods($filter= array()) {
+      $r= array();
+      foreach ($this->_reflect->getMethods() as $m) {
+        in_array($name= strtolower($m->getName()), $filter) || $r[$name]= $m->getName();
+      }
+      return $r;
+   }
     
     /**
      * Gets class methods for this class
@@ -164,7 +152,7 @@
      */
     public function getMethods() {
       $m= array();
-      foreach ($this->_methods() as $method) {
+      foreach ($this->_methods(array('__construct', '__destruct')) as $method) {
         $m[]= new Method($this->_objref, $method);
       }
       return $m;
@@ -179,10 +167,10 @@
      * @see     xp://lang.reflect.Method
      */
     public function getMethod($name) {
-      if (!$this->hasMethod($name)) return NULL;
-
-      $m= new Method($this->_objref, $name); 
-      return $m;
+      if ($this->hasMethod($name)) {
+        return new Method($this->_objref, $name);
+      }
+      return NULL;
     }
     
     /**
@@ -196,7 +184,7 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return in_array($method, $this->_methods());
+      return in_array(strtolower($method), array_keys($this->_methods(array('__construct', '__destruct'))));
     }
     
     /**
@@ -205,7 +193,7 @@
      * @return  bool
      */
     public function hasConstructor() {
-      return in_array('__construct', get_class_methods($this->_objref));
+      return in_array('__construct', array_keys($this->_methods()));
     }
     
     /**
@@ -509,7 +497,6 @@
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
             $details[$class][1][$m]= array(
-              DETAIL_MODIFIERS    => 0,
               DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => 'void',
               DETAIL_THROWS       => array(),
@@ -532,11 +519,6 @@
             $comment= NULL;
             foreach ($matches as $match) {
               switch ($match[1]) {
-                case 'access':
-                case 'model':
-                  $details[$class][1][$m][DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
-                  break;
-
                 case 'param':
                   $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
                     isset($match[3]) ? $match[3] : 'param',
