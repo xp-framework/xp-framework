@@ -17,8 +17,7 @@
    * Uses DJBX33A as default hashing implementation. To change the hashing
    * implementation to be used, use the following:
    * <code>
-   *   $provider= &HashProvider::getInstance();
-   *   $provider->setImplementation(new MyHashImplementation());
+   *   HashProvider::getInstance()->setImplementation(new MyHashImplementation());
    * </code>
    * 
    * @see      xp://util.collections.DJBX33AHashImplementation
@@ -26,16 +25,22 @@
    * @purpose  Hashing
    */
   class HashProvider extends Object {
+    protected static
+      $instance = NULL;
+
     public
-      $impl= NULL;
+      $impl     = NULL;
+
+    static function __static() {
+      self::$instance= new self();
+      self::$instance->setImplementation(new DJBX33AHashImplementation());
+    }
 
     /**
-     * Static initializer. Sets DJBX33A as default hashing implementation.
-     * 
+     * Constructor
+     *
      */
-    public static function __static() {
-      $self= HashProvider::getInstance();
-      $self->setImplementation(new DJBX33AHashImplementation());
+    protected function __construct() {
     }
     
     /**
@@ -44,16 +49,7 @@
      * @return  &util.collections.HashProvider
      */
     public static function getInstance() {
-      static $instance= NULL;
-
-      if (!isset($instance)) {
-        $instance= new HashProvider();
-
-        // No need to set the impl member, this block is only ever 
-        // executed from the static initializer, which sets this 
-        // member to the default hashing implementation.
-      }
-      return $instance; 
+      return self::$instance;
     }
     
     /**
@@ -63,8 +59,7 @@
      * @return  int
      */
     public static function hashOf($str) {
-      $self= HashProvider::getInstance();
-      return $self->impl->hashOf($str);
+      return self::getInstance()->impl->hashOf($str);
     }
 
     /**
