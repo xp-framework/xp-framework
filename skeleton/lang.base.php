@@ -501,9 +501,6 @@
   
   // Registry initialization
   xp::$registry['null']= new null();
-  xp::$registry['errors']= array();
-  xp::$registry['class.xp']= '<xp>';
-  xp::$registry['class.null']= '<null>';
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'XpXarLoader');
