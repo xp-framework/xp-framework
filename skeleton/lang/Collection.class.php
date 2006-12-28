@@ -50,8 +50,7 @@
       if (!class_exists(xp::reflect($class))) {
         throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
       }
-      $c= new Collection($class);
-      return $c;
+      return new self($class);
     }
     
     /**
