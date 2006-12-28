@@ -94,14 +94,13 @@
       if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-          throw(new ClassNotFoundException('Class "'.$qname.'" not found'));
+          throw new ClassNotFoundException('Class "'.$qname.'" not found');
         }
-        xp::registry('class.'.$name, $qname);
+        xp::$registry['class.'.$name]= $qname;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      $c= new XPClass($name);
-      return $c;
+      return new XPClass($name);
     }
 
     /**
@@ -118,17 +117,16 @@
       if (!class_exists($name) && !interface_exists($name)) {
         $qname= $this->classpath.$class;
         if (FALSE === eval($bytes)) {
-          throw(new FormatException('Cannot define class "'.$qname.'"'));
+          throw new FormatException('Cannot define class "'.$qname.'"');
         }
         if (!class_exists($name) && !interface_exists($name)) {
-          throw(new FormatException('Class "'.$qname.'" not defined'));
+          throw new FormatException('Class "'.$qname.'" not defined');
         }
-        xp::registry('class.'.$name, $qname);
+        xp::$registry['class.'.$name]= $qname;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
 
-      $c= new XPClass($name);
-      return $c;
+      return new XPClass($name);
     }
     
     /**
@@ -171,19 +169,18 @@
         $newBytes.= ' '.$bytes;
 
         if (FALSE === eval($newBytes)) {
-          throw(new FormatException('Cannot define class "'.$qname.'"'));
+          throw new FormatException('Cannot define class "'.$qname.'"');
         }
         
         if (!class_exists($name)) {
-          throw(new FormatException('Class "'.$qname.'" not defined'));
+          throw new FormatException('Class "'.$qname.'" not defined');
         }
         
-        xp::registry('class.'.$name, $qname);
+        xp::$registry['class.'.$name]= $qname;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
       
-      $c= new XPClass($name);
-      return $c;
+      return new XPClass($name);
     }
     
     /**
