@@ -33,7 +33,7 @@
       $this->__id= microtime();
       $this->message= $message;
       
-      $errors= xp::registry('errors');
+      $errors= xp::$registry['errors'];
       foreach (debug_backtrace() as $no => $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
 
@@ -65,9 +65,6 @@
           $list
         );
       }
-      
-      // Store remaining errors back to xp::registry()
-      xp::registry('errors', $errors);
     }
     
     /**

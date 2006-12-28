@@ -6,7 +6,13 @@
 
   // {{{ final class xp
   class xp {
-  
+    public static $registry= array(
+      'errors'     => array(),
+      'sapi'       => array(),
+      'class.xp'   => '<xp>',
+      'class.null' => '<null>',
+    );
+
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     static function nameOf($name) {
@@ -74,21 +80,21 @@
     // {{{ public void gc()
     //     Runs the garbage collector
     static function gc() {
-      xp::registry('errors', array());
+      xp::$registry['errors']= array();
     }
     // }}}
 
     // {{{ public <null> null()
     //     Runs a fatal-error safe version of NULL
     static function null() {
-      return xp::registry('null');
+      return xp::$registry['null'];
     }
     // }}}
 
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     static function errorAt($file, $line= -1) {
-      $errors= xp::registry('errors');
+      $errors= xp::$registry['errors'];
       
       // If no line is given, check for an error in the file
       if ($line < 0) return !empty($errors[$file]);
@@ -116,22 +122,19 @@
         
         xp::error('Cannot open SAPI '.$name.' (include_path='.ini_get('include_path').')');
       }
-      xp::registry('sapi', $a);
+      xp::$registry['sapi']= $a;
     }
     // }}}
     
     // {{{ internal mixed registry(mixed args*)
     //     Stores static data
     static function registry() {
-      static $registry= array();
-      static $nullref= NULL;
-      
       switch (func_num_args()) {
-        case 0: return $registry;
-        case 1: return @$registry[func_get_arg(0)];
-        case 2: $registry[func_get_arg(0)]= func_get_arg(1); break;
+        case 0: return xp::$registry;
+        case 1: return @xp::$registry[func_get_arg(0)];
+        case 2: xp::$registry[func_get_arg(0)]= func_get_arg(1); break;
       }
-      return $nullref;
+      return NULL;
     }
     // }}}
     
@@ -158,7 +161,7 @@
     // {{{ public object __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
-      if (NULL !== xp::registry('null')) {
+      if (NULL !== xp::$registry['null']) {
         throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
       }
     }
@@ -275,9 +278,7 @@
   function __error($code, $msg, $file, $line) {
     if (0 == error_reporting() || is_null($file)) return;
 
-    $errors= xp::registry('errors');
-    @$errors[$file][$line][$msg]++;
-    xp::registry('errors', $errors);
+    @xp::$registry['errors'][$file][$line][$msg]++;
   }
   // }}}
 
@@ -329,7 +330,7 @@
             continue;
           }
           
-          xp::registry('classloader.'.$str, 'lang.archive.ArchiveClassLoader://'.$path);
+          xp::$registry['classloader.'.$str]= 'lang.archive.ArchiveClassLoader://'.$path;
           break;
         }
       }
@@ -341,7 +342,7 @@
       // Register class name and call static initializer if available and if it has not been
       // done before (through an ArchiveClassLoader)
       if (NULL === xp::registry('class.'.$class)) {
-        xp::registry('class.'.$class, $str);
+        xp::$registry['class.'.$class]= $str;
         is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
       }
     }
@@ -353,11 +354,11 @@
   function raise($classname, $message) {
     try {
       $class= XPClass::forName($classname);
-    } catch(ClassNotFoundException $e) {
+    } catch (ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
     
-    throw($class->newInstance($message));
+    throw $class->newInstance($message);
   }
   // }}}
 
@@ -458,7 +459,7 @@
     }
 
     $name= $class.'·'.(++$u);
-    xp::registry('class.'.$name, $name);
+    xp::$registry['class.'.$name]= $name;
     
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
@@ -499,10 +500,10 @@
   set_error_handler('__error');
   
   // Registry initialization
-  xp::registry('null', new null());
-  xp::registry('errors', array());
-  xp::registry('class.xp', '<xp>');
-  xp::registry('class.null', '<null>');
+  xp::$registry['null']= new null();
+  xp::$registry['errors']= array();
+  xp::$registry['class.xp']= '<xp>';
+  xp::$registry['class.null']= '<null>';
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'XpXarLoader');

@@ -91,8 +91,8 @@
           throw(new FormatException('Cannot define class "'.$class.'"'));
         }
 
-        xp::registry('class.'.$name, $class);
-        xp::registry('classloader.'.$class, $this);
+        xp::$registry['class.'.$name]= $class;
+        xp::$registry['classloader.'.$class]= $this;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 

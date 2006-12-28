@@ -432,7 +432,7 @@
         
         // Replace the "symbolic" representation of the classloader with a reference
         // to an instance.
-        xp::registry('classloader.'.$name, $cl);
+        xp::$registry['classloader.'.$name]= $cl;
       }
       
       return $cl;

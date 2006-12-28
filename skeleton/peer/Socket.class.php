@@ -50,7 +50,7 @@
      * @return  string error
      */  
     public function getLastError() {
-      $e= xp::registry('errors');
+      $e= xp::$registry['errors'];
       return isset($e[__FILE__]) ? key(end($e[__FILE__])) : 'unknown error';
     }
     
