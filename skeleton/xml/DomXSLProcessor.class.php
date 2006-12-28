@@ -15,13 +15,13 @@
    * 
    * Usage example [Transform two files]
    * <code>
-   *   $proc= &new DomXSLProcessor();
+   *   $proc= new DomXSLProcessor();
    *   $proc->setXSLFile('test.xsl');
    *   $proc->setXMLFile('test.xml');
    *   
-   *   try(); {
+   *   try {
    *     $proc->run();
-   *   } if (catch('TransformerException', $e)) {
+   *   } catch(TransformerException $e) {
    *     $e->printStackTrace();
    *     exit();
    *   }
@@ -29,29 +29,20 @@
    *   var_dump($proc->output());
    * </code>
    *
-   * @purpose  Transform XML/XSLT using PHPs domXSL functions
-   * @ext      dom
+   * @purpose  Transform XML/XSLT using PHPs XSLT functions
+   * @ext      xslt
    */
   class DomXSLProcessor extends Object implements IXSLProcessor {
     public 
       $processor    = NULL,
-      $stylesheet   = array(),
+      $stylesheet   = NULL,
       $document     = NULL,
       $params       = array(),
       $output       = '';
 
     public
-      $_base        = '',
-      $_errors      = array();
+      $_base        = '';
       
-    /**
-     * Constructor
-     *
-     */
-    public function __construct() {
-      $this->processor= NULL;
-    }
-
     /**
      * Set base directory
      *
@@ -87,6 +78,10 @@
      * @throws  io.FileNotFoundException
      */
     public function setXSLFile($file) {
+      if (!file_exists($this->_base.$file)) {
+        throw(new FileNotFoundException($this->_base.$file.' not found'));
+      }
+      
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
     }
@@ -107,6 +102,10 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
+      if (!file_exists($this->_base.$file)) {
+        throw(new FileNotFoundException($this->_base.$file.' not found'));
+      }
+      
       $this->document= new DOMDocument();
       $this->document->load($file);
     }
@@ -156,7 +155,7 @@
      * @return  string[]
      */
     public function getMessages() {
-      return $this->_errors;
+      return libxml_get_last_error();
     }
 
     /**
@@ -166,17 +165,36 @@
      * @throws  xml.TransformerException
      */
     public function run() {
-      $cwd= FALSE;
-
+      $this->_checkErrors();
+      
       $this->processor= new XSLTProcessor();
       $this->processor->importStyleSheet($this->stylesheet);
       $this->processor->setParameter('', $this->params);
       
       // Start transformation
-      $result= NULL;
-      $this->output= $this->processor->transformToXML($this->document);
+      $result= $this->processor->transformToXML($this->document);
+      
+      if (!$this->output) $this->_checkErrors();
+      $this->output= $result;
       
       return TRUE;
+    }
+    
+    /**
+     * Check for XML/XSLT errors and throw exceptions accordingly
+     *
+     * @throws  xml.TransformerException in case an XML error has occurred
+     */
+    protected function _checkErrors() {
+      if ($error= libxml_get_last_error()) {
+        throw(new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
+          $error->code,
+          trim($error->message),
+          (strlen($error->file) ? $error->file : '<buffer>' ),
+          $error->line,
+          $error->column
+        )));
+      }
     }
 
     /**
