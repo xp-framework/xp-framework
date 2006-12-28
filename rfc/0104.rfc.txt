@@ -1,0 +1,92 @@
+RFC 0104: PHP callback from XSLT
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Thu Dec 28 19:36:40 CET 2006
+@status: draft
+@category: xml
+
+Scope of Change
+---------------
+Enable callbacks to PHP functions from within XSL through the
+php:function() callback supplied by PHP 5.
+
+Rationale
+---------
+Sometimes complex functionality can be (more) easily calculated with
+PHP rather than with XSL. Even more, sometimes results depend on huge
+amount of information that would need to be transferred into XML to
+be available in the XSL transformation.
+
+Having callbacks eases complex calculations and circumvents the need to
+have large data serialized (bloated) into XML.
+
+Functionality
+-------------
+PHP 5 provides the XSLTProcessor::registerPHPFunctions() method. This
+method can be used parameterless or with an array of method names
+which the processor restricts the stylesheet in the usage.
+
+XP provides methods to stylesheets through callbacks with a defined
+annotation @xmlcallback:
+
+<?php
+  class SomeCallbackFacade extends Object {
+
+    public function helperMethod() {
+      // ...
+    }
+    
+    /**
+     * Perform calculation
+     *
+     * @return    string
+     */
+    #[@xmlcallback]
+    public function doCalculation() {
+      // ...
+      return $string;
+    }
+  }
+?>
+
+The XSL processor will inspect the callback class and determine that
+the method SomeCallbackFacade::doCalculation() is to be provided,
+while SomeCallbackFacade::helperMethod() is not.
+
+The callback can be registered through the addCallback() method:
+<?php
+  $proc= new DomXSLProcessor();
+  $proc->addCallback(XPClass::forName('net.xp_framework.xsl.SomeCallbackFacade'));
+
+  // ...
+  
+?>
+
+Security considerations
+-----------------------
+As every callable method must be explicitely annotated fine grained control
+over methods that can be called is achieved and thus good security.
+
+Speed impact
+------------
+When not using the callback, there's no impact. When using it, there's a negative
+impact through the context switch from XSL to PHP which is believed to be more
+than equalized by the advantage of faster calculations in PHP and the removal of
+lots of XML nodes in the tree.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+- kiesel, Thu Dec 28 19:52:56 CET 2006
+  We could also just allow every PHP method to be called, simplifying this
+  callback issue. But, then we have no control over what is called.
+
+<EOF>
