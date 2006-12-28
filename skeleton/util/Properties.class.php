@@ -250,7 +250,7 @@
     public function readArray($section, $key, $default= array()) {
       $this->_load();
       return isset($this->_data[$section][$key])
-        ? explode('|', $this->_data[$section][$key])
+        ? '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key])
         : $default
       ;
     }

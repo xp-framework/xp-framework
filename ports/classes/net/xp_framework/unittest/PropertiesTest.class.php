@@ -74,6 +74,23 @@ array="foo|bar|baz"
       ');
       $this->assertEquals(array('foo', 'bar', 'baz'), $p->readArray('section', 'array'));
     }
+
+    /**
+     * Test that an empty key (e.g. values="" or values=" ") will become an empty array.
+     *
+     */
+    #[@test]
+    public function readEmptyArray() {
+      $p= Properties::fromString('
+[section]
+empty=""
+spaces=" "
+unquoted= 
+      ');
+      $this->assertEquals(array(), $p->readArray('section', 'empty'));
+      $this->assertEquals(array(), $p->readArray('section', 'spaces'));
+      $this->assertEquals(array(), $p->readArray('section', 'unquoted'));
+    }
     
     /**
      * Test simple reading of hashes
