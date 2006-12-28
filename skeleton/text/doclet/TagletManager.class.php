@@ -19,32 +19,38 @@
    * @purpose  purpose
    */
   class TagletManager extends Object {
+    protected static
+      $instance = NULL;
+
     public
-      $taglets= array();
+      $taglets  = array();
       
-    /**
-     * Static initializer. Registers builtin taglets
-     *
-     */
-    public static function __static() {
-      with ($self= TagletManager::getInstance()); {
-        $self->taglets['see']= new SeeTaglet();
-        $self->taglets['param']= new ParamTaglet();
-        $self->taglets['return']= new ReturnTaglet();
-        $self->taglets['throws']= new ThrowsTaglet();
-        $self->taglets['model']= new ModelTaglet;
+    static function __static() {
+      with (self::$instance= new self()); {
+        self::$instance->taglets['see']= new SeeTaglet();
+        self::$instance->taglets['param']= new ParamTaglet();
+        self::$instance->taglets['return']= new ReturnTaglet();
+        self::$instance->taglets['throws']= new ThrowsTaglet();
+        self::$instance->taglets['model']= new ModelTaglet;
         
         // Simple taglets
         $s= new SimpleTaglet();
-        $self->taglets['purpose']= $s;
-        $self->taglets['access']= $s;
-        $self->taglets['deprecated']= $s;
-        $self->taglets['experimental']= $s;
-        $self->taglets['platform']= $s;
-        $self->taglets['test']= $s;
-        $self->taglets['doc']= $s;
-        $self->taglets['ext']= $s;
+        self::$instance->taglets['purpose']= $s;
+        self::$instance->taglets['access']= $s;
+        self::$instance->taglets['deprecated']= $s;
+        self::$instance->taglets['experimental']= $s;
+        self::$instance->taglets['platform']= $s;
+        self::$instance->taglets['test']= $s;
+        self::$instance->taglets['doc']= $s;
+        self::$instance->taglets['ext']= $s;
       }
+    }
+
+    /**
+     * Constructor
+     * 
+     */
+    protected function __construct() {
     }
 
     /**
@@ -53,10 +59,7 @@
      * @return  &text.doclet.TagletManager
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new TagletManager();
-      return $instance;
+      return self::$instance;
     }
     
     /**
@@ -79,7 +82,7 @@
      */
     public function make($holder, $kind, $text) {
       if (!isset($this->taglets[$kind])) {
-        throw(new IllegalArgumentException('Unknown taglet kind "'.$kind.'"'));
+        throw new IllegalArgumentException('Unknown taglet kind "'.$kind.'"');
       }
       
       return $this->taglets[$kind]->tagFrom($holder, $kind, $text);
