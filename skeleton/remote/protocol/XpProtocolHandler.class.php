@@ -56,10 +56,8 @@
     protected function stringOf($value) {
       if (is('Proxy', $value)) {
         $s= 'Proxy<';
-        $c= get_class($value);
-        $implements= xp::registry('implements');
-        foreach (array_keys($implements[$c]) as $iface) {
-          $s.= xp::nameOf($iface).', ';
+        foreach ($value->getClass()->getInterfaces() as $iface) {
+          $s.= $iface->getName().', ';
         }
         return substr($s, 0, -2).'>';
       }
