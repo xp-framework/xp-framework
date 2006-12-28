@@ -13,11 +13,11 @@
    * <code>
    *   uses('rdbms.DriverManager');
    *
-   *   $conn= &DriverManager::getConnection('sybase://user:pass@server');
-   *   try(); {
+   *   $conn= DriverManager::getConnection('sybase://user:pass@server');
+   *   try {
    *     $conn->connect();
-   *     $r= &$conn->query('select @@version as version');
-   *   } if (catch('SQLException', $e)) {
+   *     $r= $conn->query('select @@version as version');
+   *   } catch (SQLException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -27,8 +27,22 @@
    * @purpose  Manager
    */
   class DriverManager extends Object {
+    protected static 
+      $instance     = NULL;
+
     public
       $drivers  = array();
+
+    static function __static() {
+      self::$instance= new self();
+    }
+    
+    /**
+     * Constructor.
+     *
+     */
+    protected function __construct() {
+    }
       
     /**
      * Gets an instance
@@ -36,10 +50,7 @@
      * @return  &rdbms.DriverManager
      */
     public static function getInstance() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new DriverManager();
-      return $instance;
+      return self::$instance;
     }
   
     /**
@@ -56,8 +67,7 @@
      * @param   &lang.XPClass class
      */
     public static function register($name, $class) {
-      $i= DriverManager::getInstance();
-      $i->drivers[$name]= $class;
+      self::$instance->drivers[$name]= $class;
     }
     
     /**
@@ -78,20 +88,19 @@
       
       $dsn= new DSN($str);
       $id= $dsn->getDriver();
-      $i= DriverManager::getInstance();
       
-      // Lookup driver by identifier. If it's one
-      if (!isset($i->drivers[$id])) {
+      // Lookup driver by identifier.
+      if (!isset(self::$instance->drivers[$id])) {
         try {
-          $i->drivers[$id]= XPClass::forName($builtin[$id]);
+          self::$instance->drivers[$id]= XPClass::forName($builtin[$id]);
         } catch (ClassNotFoundException $e) {
-          throw(new DriverNotSupportedException(
+          throw new DriverNotSupportedException(
             'No driver registered for '.$id.': '.$e->getMessage()
-          ));
+          );
         }
       }
       
-      return $i->drivers[$id]->newInstance($dsn);
+      return self::$instance->drivers[$id]->newInstance($dsn);
     }
   }
 ?>
