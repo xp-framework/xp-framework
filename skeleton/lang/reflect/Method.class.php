@@ -21,24 +21,21 @@
      *
      * Example:
      * <code>
-     *   $class= &XPClass::forName('lang.Object');
-     *   $method= &$class->getMethod('toString');
+     *   $method= XPClass::forName('lang.Object')->getMethod('toString');
      *
      *   var_dump($method->invoke(new Object()));
      * </code>
      *
      * Example (passing arguments)
      * <code>
-     *   $class= &XPClass::forName('text.String');
-     *   $method= &$class->getMethod('matches');
+     *   $method= XPClass::forName('text.String')->getMethod('matches');
      *
      *   var_dump($method->invoke(new String('Hello'), array('/^H/')));
      * </code>
      *
      * Example (static invokation):
      * <code>
-     *   $class= &XPClass::forName('util.log.Logger');
-     *   $method= &$class->getMethod('getInstance');
+     *   $method= XPClass::forName'util.log.Logger')->getMethod('getInstance');
      *
      *   var_dump($method->invoke($obj= NULL));
      * </code>
@@ -51,19 +48,19 @@
     public function invoke($obj, $args= array()) {
       if (NULL !== $obj) {
         if (!is(xp::nameOf($this->_ref), $obj)) {
-          throw(new IllegalArgumentException(sprintf(
+          throw new IllegalArgumentException(sprintf(
             'Passed argument is not a %s class (%s)',
             xp::nameOf($this->_ref),
             xp::typeOf($obj)
-          )));
+          ));
         }
       }
+
       try {
         if (!is_array($args)) $args= (array)$args;
-        $result= $this->_reflect->invokeArgs($obj, $args);
-        return $result;
-      } catch(ReflectionException $e) {
-        throw(new XPException($e->getMessage()));
+        return $this->_reflect->invokeArgs($obj, $args);
+      } catch (ReflectionException $e) {
+        throw new XPException($e->getMessage());
       }
     }
   }

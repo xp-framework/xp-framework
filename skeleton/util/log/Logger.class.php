@@ -39,21 +39,18 @@
    *
    * Example [Setting up a logger]:
    * <code>
-   *   $l= &Logger::getInstance();
-   *   $cat= &$l->getCategory();
+   *   $cat= Logger::getInstance()->getCategory();
    *   $cat->addAppender(new FileAppender('php://stderr'));
    * </code>
    *
    * Example [Configuring a logger]:
    * <code>
-   *   $log= &Logger::getInstance();
-   *   $log->configure(new Properties('etc/log.ini'));
+   *   Logger::getInstance()->configure(new Properties('etc/log.ini'));
    * </code>
    *
    * Example [Usage somewhere later on]:
    * <code>
-   *   $l= &Logger::getInstance();
-   *   $cat= &$l->getCategory();
+   *   $cat= Logger::getInstance()->getCategory();
    * </code>
    *
    * Property file sample:

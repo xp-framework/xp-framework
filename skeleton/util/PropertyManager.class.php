@@ -11,12 +11,10 @@
    * 
    * Usage:
    * <code>
-   *   $pm= &PropertyManager::getInstance();
-   *   $pm->configure('etc');
+   *   PropertyManager::getInstance()->configure('etc');
    *
    *   // ... later on ...
-   *   $pm= &PropertyManager::getInstance();
-   *   $prop= &$pm->getProperties('database');
+   *   $prop= PropertyManager::getInstance()->getProperties('database');
    *  
    *   // $prop is now a util.Property object with the properties
    *   // from etc/database.ini

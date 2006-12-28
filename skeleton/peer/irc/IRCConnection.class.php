@@ -20,23 +20,22 @@
    *   uses(
    *     'peer.irc.IRCConnection', 
    *     'util.log.Logger',
-   *     'util.log.FileAppender',
+   *     'util.log.ConsoleAppender',
    *     'KrokerdilBotListener'
    *   );
    *   
-   *   $c= &new IRCConnection(new IRCUser('KrokerdilBot'), 'irc.xxx.net');
+   *   $c= new IRCConnection(new IRCUser('KrokerdilBot'), 'irc.xxx.net');
    *   
-   *   $l= &Logger::getInstance();
-   *   $cat= &$l->getCategory();
-   *   $cat->addAppender(new FileAppender('php://stderr'));
+   *   $cat= Logger::getInstance()->getCategory();
+   *   $cat->addAppender(new ConsoleAppender());
    *   $c->setTrace($cat);
    *   
    *   $c->addListener(new KrokerdilBotListener());
-   *   try(); {
+   *   try {
    *     $c->open();
    *     $c->run();
    *     $c->close();
-   *   } if (catch('Exception', $e)) {
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *   }
    * </code>
