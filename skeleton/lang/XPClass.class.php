@@ -33,12 +33,12 @@
    *
    * Do not construct this class publicly, instead use either the
    * $o->getClass() syntax or the static method 
-   * $class= &XPClass::forName('fully.qualified.Name')
+   * $class= XPClass::forName('fully.qualified.Name')
    *
    * To retrieve the fully qualified name of a class, use this:
    * <code>
    *   $o= new File();
-   *   $c= &$o->getClass();
+   *   $c= $o->getClass();
    *   echo 'The class name for $o is '.$c->getName();
    * </code>
    *
@@ -111,8 +111,8 @@
      * Example:
      * <code>
      *   try(); {
-     *     $c= &XPClass::forName($name) &&
-     *     $o= &$c->newInstance();
+     *     $c= XPClass::forName($name) &&
+     *     $o= $c->newInstance();
      *   } if (catch('ClassNotFoundException', $e)) {
      *     // handle it!
      *   }
@@ -121,8 +121,8 @@
      * Example (passing arguments):
      * <code>
      *   try(); {
-     *     $c= &XPClass::forName('peer.Socket') &&
-     *     $o= &$c->newInstance('localhost', 6100);
+     *     $c= XPClass::forName('peer.Socket') &&
+     *     $o= $c->newInstance('localhost', 6100);
      *   } if (catch('ClassNotFoundException', $e)) {
      *     // handle it!
      *   }
@@ -281,7 +281,7 @@
     public function getParentclass() {
       $parent= $this->_reflect->getParentClass();
       if (!$parent) return NULL;
-      return new XPClass($parent->getName());
+      return new self($parent->getName());
     }
     
     /**
@@ -302,7 +302,7 @@
      *
      * <code>
      *   uses('io.File', 'io.TempFile');
-     *   $class= &XPClass::forName('io.File');
+     *   $class= XPClass::forName('io.File');
      * 
      *   var_dump($class->isInstance(new TempFile()));  // TRUE
      *   var_dump($class->isInstance(new File()));      // TRUE
@@ -333,7 +333,7 @@
     public function getInterfaces() {
       $r= array();
       foreach ($this->_reflect->getInterfaces() as $iface) {
-        $r[]= new XPClass($iface->getName());
+        $r[]= new self($iface->getName());
       }
       return $r;
     }
@@ -346,7 +346,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForClass($this->name);
+      $details= self::detailsForClass($this->name);
 
       return $details && ($key 
         ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
@@ -363,7 +363,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForClass($this->name);
+      $details= self::detailsForClass($this->name);
 
       if (!$details || !($key 
         ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
@@ -385,7 +385,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      $details= XPClass::detailsForClass($this->name);
+      $details= self::detailsForClass($this->name);
       return $details ? !empty($details['class'][DETAIL_ANNOTATIONS]) : FALSE;
     }
 
@@ -395,7 +395,7 @@
      * @return  array annotations
      */
     public function getAnnotations() {
-      $details= XPClass::detailsForClass($this->name);
+      $details= self::detailsForClass($this->name);
       return $details ? $details['class'][DETAIL_ANNOTATIONS] : array();
     }
     
@@ -405,7 +405,7 @@
      * @return  &lang.ClassLoader
      */
     public function getClassLoader() {
-      return XPClass::_classLoaderFor($this->name);
+      return self::_classLoaderFor($this->name);
     }
     
     /**
@@ -424,7 +424,7 @@
       // instance through the instanceFor() method.
       if (is_string($cl)) {
         list($className, $argument)= sscanf($cl, '%[^:]://%s');
-        $class= XPClass::forName($className);
+        $class= self::forName($className);
         $method= $class->getMethod('instanceFor');
 
         $dummy= NULL;
@@ -578,7 +578,7 @@
      * @return  array
      */
     public static function detailsForMethod($class, $method) {
-      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
+      while ($details= self::detailsForClass(xp::nameOf($class))) {
         if (isset($details[1][$method])) return $details[1][$method];
         $class= get_parent_class($class);
       }
@@ -594,7 +594,7 @@
      * @return  array
      */
     public static function detailsForField($class, $field) {
-      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
+      while ($details= self::detailsForClass(xp::nameOf($class))) {
         if (isset($details[0][$field])) return $details[0][$field];
         $class= get_parent_class($class);
       }
@@ -644,7 +644,7 @@
     public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (xp::registry('class.'.$name)) $ret[]= new XPClass($name);
+        if (xp::registry('class.'.$name)) $ret[]= new self($name);
       }
       return $ret;
     }
