@@ -70,7 +70,7 @@
           break;
 
         case 'os.tempdir':
-          $prop[$name]= System::tempDir();
+          $prop[$name]= self::tempDir();
           break;
         
         case 'host.name': 
@@ -82,7 +82,7 @@
             );
             break;
           }
-          $prop[$name]= System::_env('HOSTNAME', 'COMPUTERNAME');
+          $prop[$name]= self::_env('HOSTNAME', 'COMPUTERNAME');
           break;
 
         case 'host.arch':
@@ -91,7 +91,7 @@
             $prop[$name]= $uname['machine'];
             break;
           }
-          $prop[$name]= System::_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
+          $prop[$name]= self::_env('HOSTTYPE', 'PROCESSOR_ARCHITECTURE');
           break;
           
         case 'user.home': 
@@ -100,7 +100,7 @@
             $prop[$name]= $pwuid['dir'];
             break;
           }
-          $prop[$name]= str_replace('\\', DIRECTORY_SEPARATOR, System::_env('HOME', 'HOMEPATH'));
+          $prop[$name]= str_replace('\\', DIRECTORY_SEPARATOR, self::_env('HOME', 'HOMEPATH'));
           break;
           
         case 'user.name': 
