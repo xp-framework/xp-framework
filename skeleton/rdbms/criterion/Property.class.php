@@ -12,8 +12,11 @@
    * @purpose  Factory
    */
   class Property extends Object {
+    protected static 
+      $instance = array();
+
     public 
-      $name= '';
+      $name     = '';
 
     /**
      * Constructor
@@ -31,12 +34,10 @@
      * @return  &rdbms.criterion.Property
      */
     public static function forName($name) {
-      static $instances= array();
-      
-      if (!isset($instances[$name])) {
-        $instances[$name]= new Property($name);
+      if (!isset(self::$instances[$name])) {
+        self::$instances[$name]= new self($name);
       }
-      return $instances[$name];
+      return self::$instances[$name];
     }
 
     /**
