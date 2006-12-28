@@ -16,7 +16,7 @@ Version 5.1.0, released 2006-12-27
 - Updated SQLite class to use StatementFormatter
   (kiesel)
 - Added webservices.soap.types.SOAPDouble class
-  (kiesel)
+  (strobel)
 - Fixed Java Webstart example to work with URLs containing query string
   arguments
   (friebe)
