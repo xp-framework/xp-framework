@@ -208,7 +208,7 @@
       static $archives= array();
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
-        $current= $archives[$archive];
+        $current= &$archives[$archive];
 
         // Bootstrap loading, only to be used for core classes.
         $current['handle']= fopen($archive, 'rb');
