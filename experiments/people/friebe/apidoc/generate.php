@@ -110,10 +110,13 @@
       $n= new Node('fields');
       $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
 
-      foreach ($classdoc->fields as $name => $value) {
-        $n->addChild(new Node('field', $value, array(
-          'name'  => $name
+      foreach ($classdoc->fields as $field) {
+        $f= $n->addChild(new Node('field', NULL, array(
+          'name'   => $field->name(),
+          'access' => $field->getAccess(),
         )));
+        $f->addChild(new Node('constant', $field->constantValue()));
+        $f->addChild(Node::fromArray($field->getModifiers(), 'modifiers'));
       }
       
       return $n;

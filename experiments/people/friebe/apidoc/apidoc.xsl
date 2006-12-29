@@ -233,8 +233,14 @@
           <ul>
             <xsl:for-each select="fields[not(@from)]/field">
               <li>
-                <a name="{@name}"><b><xsl:value-of select="@name"/></b></a>
-                <xsl:if test="string(.) != ''"><tt>= <xsl:value-of select="."/></tt></xsl:if>
+                <a name="{@name}"><b>
+                  <xsl:for-each select="modifiers/*">
+                    <xsl:value-of select="name()"/>
+                    <xsl:text> </xsl:text>
+                  </xsl:for-each>
+                  <xsl:value-of select="@name"/>
+                </b></a>
+                <xsl:if test="string(constant) != ''"><tt>= <xsl:value-of select="constant"/></tt></xsl:if>
               </li>
             </xsl:for-each>
           </ul>
