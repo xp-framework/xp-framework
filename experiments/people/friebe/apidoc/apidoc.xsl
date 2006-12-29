@@ -128,7 +128,13 @@
         padding-right: 20px;
       }
     </style>
-    <h1><xsl:value-of select="concat(@type, ' ', @name)"/></h1>
+    <h1>
+      <xsl:for-each select="modifiers/*">
+        <xsl:value-of select="name()"/>
+        <xsl:text> </xsl:text>
+      </xsl:for-each>
+      <xsl:value-of select="concat(@type, ' ', @name)"/>
+    </h1>
 
     <!-- Deprecation note -->
     <xsl:if test="deprecated">
@@ -144,6 +150,7 @@
       </fieldset>
     </xsl:if>
 
+    <!-- Unittests -->
     <xsl:if test="count(test) &gt; 0">
       <fieldset class="hint">
         <p>
@@ -157,6 +164,25 @@
       </fieldset>
     </xsl:if>
     
+    <!-- Final -->
+    <xsl:if test="modifiers/final">
+      <fieldset class="hint">
+        <p>
+          This class is declared as final - it cannot be overwritten!<br/>
+          &#160;<br/>
+        </p>
+      </fieldset>
+    </xsl:if>
+
+    <!-- Abstract -->
+    <xsl:if test="modifiers/abstract">
+      <fieldset class="hint">
+        <p>
+          This class is declared as abstract - it must be overwritten!<br/>
+          &#160;<br/>
+        </p>
+      </fieldset>
+    </xsl:if>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
     <p class="comment">

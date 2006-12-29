@@ -124,6 +124,8 @@
         'name'    => $classdoc->qualifiedName(),
         'type'    => $classdoc->classType()
       ));
+
+      $n->addChild(Node::fromArray($classdoc->getModifiers(), 'modifiers'));
       
       // Apidoc
       $n->addChild(new Node('comment', $classdoc->commentText()));
