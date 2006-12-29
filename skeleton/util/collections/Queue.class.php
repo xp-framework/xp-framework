@@ -18,7 +18,7 @@
    *   uses('util.collections.Queue', 'text.String');
    *   
    *   // Fill queue
-   *   with ($q= &new Queue()); {
+   *   with ($q= new Queue()); {
    *     $q->put(new String('One'));
    *     $q->put(new String('Two'));
    *     $q->put(new String('Three'));
