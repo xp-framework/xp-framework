@@ -12,7 +12,7 @@
    * Usage code snippet:
    * <code>
    *   // ...
-   *   for ($i= &$hash->iterator(); $i->hasNext(); ) {
+   *   for ($i= $hash->iterator(); $i->hasNext(); ) {
    *     $key= $i->next();
    *     var_dump($key, $hash->get($key));
    *   }
