@@ -336,14 +336,6 @@
               $state= ST_CLASS_VAR;
               break;
            
-            case ST_VARIABLE_VALUE.',':
-              $state= ST_CLASS_VAR;
-              break;
-
-            case ST_VARIABLE_VALUE.';':
-              $state= ST_CLASS_BODY;
-              break;
-              
             // Before member declaration (e.g. public static $..., protected function ...)
             case ST_CLASS_BODY.T_PUBLIC:
             case ST_CLASS_BODY.T_PRIVATE:
