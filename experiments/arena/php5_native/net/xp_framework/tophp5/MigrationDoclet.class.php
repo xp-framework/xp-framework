@@ -234,6 +234,15 @@
             case ST_CLASS_BODY.T_VAR:
               $t[1]= 'public';                  // Make all members public
               break;
+            
+            case ST_CLASS_BODY.T_COMMENT:
+              $t[1]= preg_replace(array(
+                  '/ +\* @access[^\r\n]+[\r\n]/', '/ +\* @model[^\r\n]+[\r\n]/',
+                ), array(
+                  '', '',
+                ), $t[1]);
+              $t[1]= str_replace('&', '', $t[1]);
+              break;
 
             case ST_CLASS_BODY.T_FUNCTION:
               $function= NULL;
@@ -260,6 +269,10 @@
               $t[1]= 'public '.($static ? 'static ' : '').$t[1];           // Make all methods public
               array_unshift($states, ST_FUNCTION);
               break;
+          
+            case ST_FUNCTION.'&':
+              $t= '';
+              break;
 
             case ST_INITIAL.T_FUNCTION:
               array_unshift($states, ST_FUNCTION);
@@ -267,7 +280,7 @@
             
             case ST_FUNCTION_BODY.'&':
               // Convert &new to new
-              if (T_NEW == $tokens[$i+ 1][0]) $t= '';
+              $t= '';
               break;
             
             case ST_FUNCTION.'{':
