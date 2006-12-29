@@ -29,7 +29,6 @@
   define('ST_DEFINE_VALUE',       'definevalue');
   
   define('T_USES',                0x1000);
-  define('T_IMPLEMENTS',          0x1001);
   define('T_DEFINE',              0x1002);
   
   /**
