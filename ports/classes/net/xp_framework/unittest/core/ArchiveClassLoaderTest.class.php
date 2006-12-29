@@ -7,15 +7,15 @@
   uses(
     'unittest.TestCase',
     'util.collections.HashSet',
-    'io.cca.ArchiveClassLoader',
-    'io.cca.Archive',
-    'io.Stream'
+    'lang.archive.ArchiveClassLoader',
+    'lang.archive.Archive',
+    'io.TempFile'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://io.cca.ArchiveClassLoader
+   * @see      xp://lang.archive.ArchiveClassLoader
    * @purpose  purpose
    */
   class ArchiveClassLoaderTest extends TestCase {
@@ -63,34 +63,45 @@
         $this->classname= $this->testClassName();
         $this->interfacename= $this->testClassName('I');
       } catch (IllegalStateException $e) {
-        throw(new PrerequisitesNotMetError($e->getMessage()));
+        throw new PrerequisitesNotMetError($e->getMessage());
       }
 
       // Create an archive
-      $archive= new Archive(new Stream());
+      $archive= new Archive($this->tempfile= new TempFile($this->name));
       $archive->open(ARCHIVE_CREATE);
       $archive->add(
         $this->classStream(
-          'class '.$this->classname.' extends Object { 
-            function compare($a, $b) {
+          'uses("util.Comparator", "'.$this->interfacename.'");
+           class '.$this->classname.' extends Object implements '.$this->interfacename.', Comparator { 
+            public function compare($a, $b) {
               return strcmp($a, $b);
             }
-          } implements(__FILE__, "'.$this->interfacename.'", "util.Comparator");
+          }
         '), 
-        $this->classname
+        $this->classname.'.class.php'
       );
       $archive->add(
         $this->classStream(
-          'class '.$this->interfacename.' extends Interface { 
+          'interface '.$this->interfacename.' {
         
           }
         '), 
-        $this->interfacename
+        $this->interfacename.'.class.php'
       );
       $archive->create();
+      fputs(STDERR, $this->name.' '.xp::typeOf($archive->file)."\n");
       
       // Setup classloader
       $this->classloader= new ArchiveClassLoader($archive);
+    }
+    
+    /**
+     * Tears down test case
+     *
+     */
+    public function tearDown() {
+      $this->tempfile->close();
+      $this->tempfile->unlink();
     }
 
     /**
@@ -99,8 +110,7 @@
      */
     #[@test]
     public function loadClass() {
-      $class= $this->classloader->loadClass($this->classname);
-      $class && $this->assertEquals($class->getName(), $this->classname);
+      $this->assertEquals($this->classloader->loadClass($this->classname)->getName(), $this->classname);
     }
     
     /**
@@ -109,14 +119,12 @@
      */
     #[@test]
     public function classImplementsArchivedInterface() {
-      if (
-        $class= $this->classloader->loadClass($this->classname) &&
-        $interface= $this->classloader->loadClass($this->interfacename)
-      ) {
-        $interfaces= new HashSet();
-        $interfaces->addAll($class->getInterfaces());
-        $this->assertTrue($interfaces->contains($interface));
-      }
+      $class= $this->classloader->loadClass($this->classname);
+      $interface= $this->classloader->loadClass($this->interfacename);
+
+      $interfaces= new HashSet();
+      $interfaces->addAll($class->getInterfaces());
+      $this->assertTrue($interfaces->contains($interface));
     }
 
     /**
@@ -125,14 +133,11 @@
      */
     #[@test]
     public function classImplementsComparatorInterface() {
-      if (
-        $class= $this->classloader->loadClass($this->classname) &&
-        $interface= XPClass::forName('util.Comparator')
-      ) {
-        $interfaces= new HashSet();
-        $interfaces->addAll($class->getInterfaces());
-        $this->assertTrue($interfaces->contains($interface));
-      }
+      $class= $this->classloader->loadClass($this->classname);
+      $interface= XPClass::forName('util.Comparator');
+      $interfaces= new HashSet();
+      $interfaces->addAll($class->getInterfaces());
+      $this->assertTrue($interfaces->contains($interface));
     }
   }
 ?>
