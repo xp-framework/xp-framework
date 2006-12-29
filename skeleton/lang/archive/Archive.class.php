@@ -61,7 +61,15 @@
      */
     public function __construct($file) {
       $this->file= $file;
-      
+    }
+    
+    /**
+     * Get URI
+     *
+     * @return  string uri
+     */
+    public function getURI() {
+      return $this->file->getURI();
     }
     
     /**
@@ -197,7 +205,7 @@
      */
     public function extract($id) {
       if (!$this->contains($id)) {
-        throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
+        throw new ElementNotFoundException('Element "'.$id.'" not contained in this archive');
       }
 
       // Calculate starting position      
@@ -211,8 +219,8 @@
         $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
         $this->file->seek($pos, SEEK_SET);
         $data= $this->file->read($this->_index[$id][2]);
-      } catch (Exception $e) {
-        throw($e);
+      } catch (XPException $e) {
+        throw new ElementNotFoundException('Element "'.$id.'" cannot be read: '.$e->getMessage());
       }
       
       return $data;
