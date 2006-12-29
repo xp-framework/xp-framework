@@ -62,7 +62,7 @@
      */
     public function classType() {
       static $map= array(
-        'lang.Exception' => EXCEPTION_CLASS,
+        'lang.XPException' => EXCEPTION_CLASS,
         'lang.Error'     => ERROR_CLASS,
         'lang.Interface' => INTERFACE_CLASS
       );

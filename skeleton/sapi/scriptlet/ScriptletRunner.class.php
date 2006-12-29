@@ -34,7 +34,7 @@
      * Handle exception from scriptlet
      *
      * @param   &scriptlet.xml.XMLScriptletResponse response
-     * @param   &lang.Exception e
+     * @param   &lang.XPException e
      */
     public function except($response, $e) {
       $class= $this->getClass();

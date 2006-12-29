@@ -287,7 +287,7 @@
             } else if (is('ExceptionReference', $reference)) {
               throw(new RemoteException($reference->getMessage(), $reference));
             } else {
-              throw(new RemoteException('lang.Exception', new XPException($this->stringOf($reference))));
+              throw(new RemoteException('lang.XPException', new XPException($this->stringOf($reference))));
             }
 
           case REMOTE_MSG_ERROR:

@@ -59,7 +59,7 @@
      * Parses the file.
      *
      * @return  bool success
-     * @throws  lang.Exception in case the file could not be read
+     * @throws  lang.XPException in case the file could not be read
      */
     public function parse() {
       try {

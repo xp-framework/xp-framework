@@ -19,7 +19,7 @@
      *
      * @param   string message
      * @param   string method
-     * @see     xp://lang.Exception#construct
+     * @see     xp://lang.XPException#construct
      */
     public function __construct($message, $method) {
       parent::__construct($message);

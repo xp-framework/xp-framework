@@ -226,7 +226,7 @@
      * @return  bool processed
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
     public function doGet($request, $response) {
@@ -239,7 +239,7 @@
      * @return  bool processed
      * @param   &scriptlet.xml.XMLScriptletRequest request 
      * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doPost
      */
     public function doPost($request, $response) {

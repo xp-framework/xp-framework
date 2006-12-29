@@ -61,7 +61,7 @@
      * @param   &Doclet doclet
      * @param   &util.cmd.ParamString params
      * @return  bool
-     * @throws  lang.Exception in case doclet setup fails
+     * @throws  lang.XPException in case doclet setup fails
      */
     public static function start($doclet, $params) {
       $classes= array();

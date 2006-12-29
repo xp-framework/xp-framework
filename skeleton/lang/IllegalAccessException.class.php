@@ -8,7 +8,7 @@
    * An IllegalAccessException is thrown when an object is accessed 
    * in a way for which no permissions exist.
    *
-   * @see      xp://lang.Exception
+   * @see      xp://lang.XPException
    * @purpose  Exception
    */
   class IllegalAccessException extends XPException {

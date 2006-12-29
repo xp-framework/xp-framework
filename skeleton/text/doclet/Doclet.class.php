@@ -43,7 +43,7 @@
      * @param   &text.doclet.RootDoc root
      * @param   string[] classnames passed via parameters
      * @return  &text.doclet.ClassIterator
-     * @throws  lang.Exception in case the iterator cannot be created.
+     * @throws  lang.XPException in case the iterator cannot be created.
      */ 
     public function iteratorFor($root, $classes) {
       $iterator= new ClassIterator($classes);

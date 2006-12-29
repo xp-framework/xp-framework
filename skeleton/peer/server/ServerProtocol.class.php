@@ -45,7 +45,7 @@
      * Handle I/O error
      *
      * @param   &peer.Socket socket
-     * @param   &lang.Exception e
+     * @param   &lang.XPException e
      */
     public function handleError($socket, $e);
   

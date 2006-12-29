@@ -132,7 +132,7 @@
      * Writes a record into the stream.
      *
      * @param   array data
-     * @throws  lang.Exception e if any error occurs
+     * @throws  lang.XPException e if any error occurs
      */    
     public function writeRecord($data) {
       if ($this->_hasHeader() && !$this->headerWritten)

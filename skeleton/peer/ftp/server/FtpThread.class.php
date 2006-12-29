@@ -147,7 +147,7 @@
      * so that the class is loaded within the thread's process space
      * and will be recompiled whenever the thread is restarted.
      *
-     * @throws  lang.Exception in case initializing the server fails
+     * @throws  lang.XPException in case initializing the server fails
      * @throws  lang.SystemException in case setuid fails
      */
     public function run() {

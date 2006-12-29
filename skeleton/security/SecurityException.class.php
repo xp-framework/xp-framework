@@ -8,7 +8,7 @@
    * SecurityException
    *
    * @purpose  Indicate a security violation has occured
-   * @see      xp://lang.Exception
+   * @see      xp://lang.XPException
    */
   class SecurityException extends XPException {
   

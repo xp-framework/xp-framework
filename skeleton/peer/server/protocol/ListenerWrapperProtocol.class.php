@@ -85,7 +85,7 @@
      * Handle I/O error
      *
      * @param   &peer.Socket
-     * @param   &lang.Exception e
+     * @param   &lang.XPException e
      */
     public function handleError($socket, $e) {
       $this->notify(new ConnectionEvent(EVENT_ERROR, $socket, $e));
