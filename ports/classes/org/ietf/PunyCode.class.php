@@ -38,7 +38,7 @@
     /**
      * Return valid ASCII characters for Punycode
      *
-     * @return  &string
+     * @return  string
      * @see rfc://3492
      */
     public function getASCII() {
@@ -330,20 +330,16 @@
      *
      * @param   string str The Punycode string
      * @return  bool
-     * @throws  lang.Exception from _decode()
+     * @throws  lang.XPException from _decode()
      */
     public function decodeString($str, $charset= 'ISO-8859-1') {
-      try {
-        $out= '';
-        $flags= array();
-        $p= new PunyCode();
-        $p->decode($str, $out, $flags);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $out= '';
+      $flags= array();
+      $p= new PunyCode();
+      $p->decode($str, $out, $flags);
       if ($charset != 'UCS-4') {
         if (($out= iconv('UCS-4', $charset, $out)) === FALSE) {
-          throw(new XPException('Can not convert string to requested encoding('.$charset.')'));
+          throw new XPException('Can not convert string to requested encoding('.$charset.')');
         }
       }
       return $out;
@@ -354,20 +350,15 @@
      *
      * @param   string str The ASCII string
      * @return  bool
-     * @throws  lang.Exception from _encode()
+     * @throws  lang.XPException from _encode()
      */
     public function encodeString($str) {
-      try {
-        $out= '';
-        $flags= array_fill(0, strlen($str)+ 1, FALSE);
-        array_pop($flags);
-        $p= new PunyCode();
-        $p->encode($str, $out, $flags);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $out= '';
+      $flags= array_fill(0, strlen($str)+ 1, FALSE);
+      array_pop($flags);
+      $p= new PunyCode();
+      $p->encode($str, $out, $flags);
       return $out;
     }
-
   }
 ?>
