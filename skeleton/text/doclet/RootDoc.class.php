@@ -260,7 +260,9 @@
               $doc->qualifiedName= $classname;
               $doc->rawComment= $comment;
               $doc->annotations= $annotations;
+              $doc->modifiers= $modifiers;
               $comment= $annotations= NULL;
+              $modifiers= array();
               $state= ST_CLASS;
               break;
 
@@ -335,12 +337,17 @@
               $state= ST_CLASS_BODY;
               break;
               
+            // Before member declaration (e.g. public static $..., protected function ...)
             case ST_CLASS_BODY.T_PUBLIC:
             case ST_CLASS_BODY.T_PRIVATE:
             case ST_CLASS_BODY.T_PROTECTED:
             case ST_CLASS_BODY.T_STATIC:
             case ST_CLASS_BODY.T_FINAL:
             case ST_CLASS_BODY.T_ABSTRACT:
+            
+            // Before class declaration (e.g. abstract class ...)
+            case ST_INITIAL.T_FINAL:
+            case ST_INITIAL.T_ABSTRACT:
               $modifiers[$t[1]]= TRUE;
               break;
             

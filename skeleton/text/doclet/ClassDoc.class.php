@@ -26,8 +26,9 @@
       $usedClasses    = NULL,
       $superclass     = NULL,
       $type           = NULL,
-      $qualifiedName  = '';
-    
+      $qualifiedName  = '',
+      $modifiers      = array();
+
     /**
      * Constructor
      *
@@ -63,8 +64,8 @@
     public function classType() {
       static $map= array(
         'lang.XPException' => EXCEPTION_CLASS,
-        'lang.Error'     => ERROR_CLASS,
-        'lang.Interface' => INTERFACE_CLASS
+        'lang.Error'       => ERROR_CLASS,
+        'lang.Interface'   => INTERFACE_CLASS
       );
 
       if ($this->type) return $this->type;    // Already known
@@ -139,6 +140,16 @@
       return $this->getClassName().'<'.$this->classType().' '.$this->qualifiedName.'>';
     }
 
+    /**
+     * Returns modifiers as a hashmap (modifier names as keys for easy
+     * O(1) lookup).
+     *
+     * @return  array<string, TRUE> 
+     */
+    public function getModifiers() {
+      return $this->modifiers;
+    }
+    
     /**
      * Returns a hashcode for this object
      *
