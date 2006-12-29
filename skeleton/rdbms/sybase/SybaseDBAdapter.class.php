@@ -222,8 +222,21 @@
         $this->prepareTemporaryIndexesTable();
         
         // Get all tables
-        $q= $this->conn->query(
-          'select o.name from %c..sysobjects o where o.type = "U"  -- User table',
+        $q= $this->conn->query('
+          select 
+            o.name 
+          from 
+            %c..sysobjects o 
+          where 
+            o.type = "U"          -- User table
+            and o.name not in (   -- Replication tables
+              "rs_threads", 
+              "rs_lastcommit", 
+              "ticket_detail", 
+              "ticket_hist", 
+              "ticket_result"
+            )
+          ',
           $database
         );
         if ($q) while ($record= $q->next()) {
