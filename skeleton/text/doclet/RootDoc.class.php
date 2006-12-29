@@ -358,7 +358,9 @@
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;
                 $method->modifiers= $modifiers;
-                $doc->methods[]= $method;
+                
+                // Omit static initializer, it's not a real function
+                if ('__static' != $method->name) $doc->methods[]= $method;
               }
               $comment= $annotations= NULL;
               $modifiers= array();
