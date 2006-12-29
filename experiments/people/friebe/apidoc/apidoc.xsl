@@ -289,7 +289,10 @@
         &#160;
       </p>
       <h4>
-        <xsl:value-of select="@access"/>
+        <xsl:for-each select="modifiers/*">
+          <xsl:value-of select="name()"/>
+          <xsl:text> </xsl:text>
+        </xsl:for-each>
         <xsl:text> </xsl:text>
         <a>
           <xsl:if test="contains(@return, '.')"><xsl:attribute name="href">
