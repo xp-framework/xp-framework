@@ -4,17 +4,18 @@
  * $Id$ 
  */
 
+  uses('util.XPIterator');
+
   /**
    * Iterates on all classes using an IOCollectionIterator
    *
    * @purpose  Iterator  
    */
-  class AllClassesIterator extends Object {
+  class AllClassesIterator extends Object implements XPIterator {
     var
       $aggregate = NULL,
       $classpath = '',
-      $root      = NULL,
-      $stop      = FALSE;
+      $root      = NULL;
   
     /**
      * Constructor
@@ -23,8 +24,8 @@
      * @param   &io.collections.iterate.IOCollectionIterator aggregate
      * @param   string classpath
      */
-    function __construct(&$aggregate, $classpath) {
-      $this->aggregate= &$aggregate;
+    function __construct($aggregate, $classpath) {
+      $this->aggregate= $aggregate;
       $this->classpath= array_flip(array_map('realpath', explode(PATH_SEPARATOR, $classpath)));
     }
 
@@ -48,7 +49,7 @@
         $path= substr($path, 0, $pos); 
       }
 
-      throw(new IllegalArgumentException('Cannot infer classname from '.$element->toString()));
+      throw new IllegalArgumentException('Cannot infer classname from '.$element->toString());
     }
     
   
@@ -61,7 +62,7 @@
      * @return  bool
      */
     function hasNext() {
-      return $this->stop ? FALSE : $this->aggregate->hasNext();
+      return $this->aggregate->hasNext();
     }
     
     /**
@@ -71,16 +72,8 @@
      * @return  &mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
-    function &next() {
-      try(); {
-        $classname= $this->classNameForElement($this->aggregate->next());
-      } if (catch('Exception', $e)) {
-        $this->stop= TRUE;
-        return throw($e);
-      }
-      
-      return $this->root->classNamed($classname);
+    function next() {
+      return $this->root->classNamed($this->classNameForElement($this->aggregate->next()));
     }
-
-  } implements(__FILE__, 'util.Iterator');
+  }
 ?>
