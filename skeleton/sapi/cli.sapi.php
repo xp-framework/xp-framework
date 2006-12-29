@@ -28,7 +28,7 @@
     // {{{ internal void except(Exception e)
     //     Exception handler
     function except($e) {
-      echo '[sapi::cli] Uncaught exception: '.xp::stringOf($e);
+      fputs(STDERR, 'Uncaught exception: '.xp::stringOf($e));
     }    
     // }}}
   }
