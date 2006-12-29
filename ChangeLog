@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Made CLI sapi print uncaught exceptions to STDERR
+  (friebe)
 - Made Doclet API parse XP5 syntax
   (friebe)
 - Exclude replication tables from SybaseDBAdapter::getTables()
