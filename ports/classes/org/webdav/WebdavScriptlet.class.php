@@ -498,7 +498,6 @@
      * Handle UNLOCK
      *
      * @see     rfc://2518#8.11
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -583,7 +582,6 @@
      * and handles it.
      *
      * @see     rfc://2518#8.2
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -691,7 +689,6 @@
      * Errorhandler not-found impl
      *
      * @see     rfc://2518#8.2
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -706,7 +703,6 @@
     /**
      * Called when a authorization is required
      *
-     * @access  private
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  bool processed
@@ -722,7 +718,6 @@
     /**
      * Called when user hasn't permissions to do something
      *
-     * @access  private
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  bool processed
