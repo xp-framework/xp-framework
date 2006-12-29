@@ -204,7 +204,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doOptions($request, $response) {
       $response->setHeader('MS-Author-Via', 'DAV');         // MS-clients want this
@@ -220,7 +220,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doDelete($request, $response) {
       try {
@@ -250,7 +250,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doGet($request, $response) {
       try {
@@ -293,7 +293,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doPost($request, $response) {
       throw(new MethodNotImplementedException($this->getName().'::post not implemented'));
@@ -307,7 +307,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doHead($request, $response) {
       try {
@@ -341,7 +341,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doPut($request, $response) {
       try {
@@ -377,7 +377,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doMkCol($request, $response) {
       try {
@@ -401,7 +401,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doMove($request, $response) {
       try {
@@ -435,7 +435,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doCopy($request, $response) {
       try {
@@ -482,7 +482,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doLock($request, $response) {
       try {
@@ -512,7 +512,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doUnlock($request, $response) {
       try {
@@ -555,7 +555,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doPropFind($request, $response) {
       try {
@@ -598,7 +598,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doPropPatch($request, $response) {
       try {
@@ -706,7 +706,7 @@
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doNotFound($request, $response) {
       $response->setStatus(HTTP_NOT_FOUND);
@@ -721,7 +721,7 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  bool processed
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doAuthorizationRequest($request, $response) {
       $response->setStatus(HTTP_AUTHORIZATION_REQUIRED);
@@ -737,7 +737,7 @@
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
      * @return  bool processed
-     * @throws  lang.Exception to indicate failure
+     * @throws  lang.XPException to indicate failure
      */
     public function doAuthorizationDeny($request, $response) {
       $response->setStatus(HTTP_FORBIDDEN);
