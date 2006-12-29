@@ -97,11 +97,7 @@
       }
       
       // Set up class iterator
-      try {
-        $root->classes= $doclet->iteratorFor($root, $classes);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $root->classes= $doclet->iteratorFor($root, $classes);
 
       // Start the doclet
       return $doclet->start($root);
@@ -135,6 +131,29 @@
     }
     
     /**
+     * Qualifies a class name by looking at known or used classes.
+     *
+     * @param   text.doclet.Doc doc
+     * @param   string name
+     * @return  string qualified name
+     */
+    public function qualifyName($doc, $name) {
+      if (!($lookup= xp::registry('class.'.$name))) {
+        foreach (array_keys($doc->usedClasses->classes) as $class) {
+          if (xp::reflect($class) == $name) return $class;
+        }
+      }
+
+      // Nothing found!
+      if (!$lookup && !$lookup= xp::nameOf($name)) throw(new IllegalStateException(sprintf(
+        'Could not find class %s',
+        xp::stringOf($name)
+      )));
+      
+      return $lookup;
+    }
+    
+    /**
      * Parses a class file and returns a classdoc element
      *
      * @param   string classname fully qualified class name
@@ -143,23 +162,28 @@
      */
     public function classNamed($classname) {
       static $cache= array();
-      static $map= array('uses' => T_USES, 'implements' => T_IMPLEMENTS, 'define' => T_DEFINE);
+      static $map= array('uses' => T_USES, 'define' => T_DEFINE);
 
       // Check cache
       if (isset($cache[$classname])) return $cache[$classname];
+      
+      // Check for php namespace - in this case, we have a builtin class. These
+      // classes will not be documented for the moment.
+      if ('php.' == substr($classname, 0, 4)) return NULL;
 
       // Find class
       if (!($filename= $this->findClass($classname))) {
-        throw(new IllegalArgumentException('Could not find '.xp::stringOf($classname)));
+        throw new IllegalArgumentException('Could not find '.xp::stringOf($classname));
       }
       
       // Tokenize contents
       if (!($tokens= token_get_all(file_get_contents($filename)))) {
-        throw(new IllegalArgumentException('Could not parse "'.$filename.'"'));
+        throw new IllegalArgumentException('Could not parse "'.$filename.'"');
       }
 
       with ($doc= new ClassDoc(), $doc->setRoot($this)); {
         $annotations= $comment= NULL;
+        $modifiers= array();
         $state= ST_INITIAL;          
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           $t= $tokens[$i];
@@ -172,13 +196,13 @@
           // }
 
           switch ($state.$t[0]) {
+            case ST_INITIAL.T_DOC_COMMENT:
+            case ST_CLASS_BODY.T_DOC_COMMENT:
+              $comment= $t[1];
+              break;
+
             case ST_INITIAL.T_COMMENT:
             case ST_CLASS_BODY.T_COMMENT:
-              if (0 == strncmp($t[1], '/**', 3)) {
-                $comment= $t[1];
-                break;
-              }
-
               if (strncmp('#[@', $t[1], 3) == 0) {
                 $annotations= substr($t[1], 2);
               } else if (strncmp('#', $t[1], 1) == 0) {
@@ -226,6 +250,10 @@
               $state= ST_INITIAL;
               break;
 
+            case ST_INITIAL.T_INTERFACE:
+              $doc->type= INTERFACE_CLASS;
+              // Fall-through intended
+
             case ST_INITIAL.T_CLASS:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
@@ -239,27 +267,20 @@
 
             case ST_CLASS.T_EXTENDS:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
-              $search= strtolower($tokens[$i][1]);
-        
-              if (!($lookup= xp::registry('class.'.$search))) {
-                foreach (array_keys($doc->usedClasses->classes) as $class) {
-                  if (($cmp= xp::reflect($class)) != $search) continue;
-                  $lookup= $class;
-                  break;
-                }
-              }
-              
-              // Nothing found!
-              if (!$lookup) throw(new IllegalStateException(sprintf(
-                'Could not find class %s extended by %s',
-                xp::stringOf($tokens[$i][1]),
-                $classname
-              )));
 
-              $doc->superclass= $this->classNamed($lookup);
+              $doc->superclass= $this->classNamed($this->qualifyName($doc, $tokens[$i][1]));
+              break;
+
+            case ST_CLASS.T_IMPLEMENTS:
+              $state= ST_IMPLEMENTS;
+              break;
+            
+            case ST_IMPLEMENTS.T_STRING:
+              $doc->interfaces->classes[$this->qualifyName($doc, $t[1])]= TRUE;
               break;
 
             case ST_CLASS.'{':
+            case ST_IMPLEMENTS.'{':
               $state= ST_CLASS_BODY;
               break;
 
@@ -315,6 +336,15 @@
               $state= ST_CLASS_BODY;
               break;
               
+            case ST_CLASS_BODY.T_PUBLIC:
+            case ST_CLASS_BODY.T_PRIVATE:
+            case ST_CLASS_BODY.T_PROTECTED:
+            case ST_CLASS_BODY.T_STATIC:
+            case ST_CLASS_BODY.T_FINAL:
+            case ST_CLASS_BODY.T_ABSTRACT:
+              $modifiers[$t[1]]= TRUE;
+              break;
+            
             case ST_CLASS_BODY.T_FUNCTION:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
@@ -322,9 +352,11 @@
                 $method->name= $tokens[$i][1];
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;
+                $method->modifiers= $modifiers;
+                $doc->methods[]= $method;
               }
-              $doc->methods[]= $method;
               $comment= $annotations= NULL;
+              $modifiers= array();
               $state= ST_FUNCTION;
               break;
 
@@ -396,18 +428,6 @@
               break;        
 
             case ST_CLASS_BODY.'}':
-              $state= ST_INITIAL;
-              break;
-
-            case ST_INITIAL.T_IMPLEMENTS:
-              $state= ST_IMPLEMENTS;
-              break;
-
-            case ST_IMPLEMENTS.T_CONSTANT_ENCAPSED_STRING:
-              $doc->interfaces->classes[trim($t[1], '"\'')]= NULL;
-              break;
-
-            case ST_IMPLEMENTS.')':
               $state= ST_INITIAL;
               break;
           }
