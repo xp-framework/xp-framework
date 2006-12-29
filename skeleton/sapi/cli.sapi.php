@@ -13,7 +13,7 @@
 
     // {{{ internal string output(string buf)
     //     Output handler
-    function output($buf) {
+    static function output($buf) {
 
       // Check for fatal errors
       if (FALSE !== ($p= strpos($buf, EPREPEND_IDENTIFIER))) {
@@ -27,7 +27,7 @@
     
     // {{{ internal void except(Exception e)
     //     Exception handler
-    function except($e) {
+    static function except($e) {
       fputs(STDERR, 'Uncaught exception: '.xp::stringOf($e));
     }    
     // }}}

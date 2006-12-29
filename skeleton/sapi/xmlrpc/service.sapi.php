@@ -13,7 +13,7 @@
   
     // {{{ internal string fault(&lang.Throwable exception, string code)
     //     Convert an exception to XML
-    function fault($exception, $code) {
+    static function fault($exception, $code) {
       $answer= new XmlRpcMessage();
       $answer->create('Server', 'Error');
 
@@ -28,7 +28,7 @@
 
     // {{{ internal string output(string buf)
     //     Output handler
-    function output($buf) {
+    static function output($buf) {
 
       // Check for fatal errors
       if (FALSE !== ($p= strpos($buf, EPREPEND_IDENTIFIER))) {
@@ -44,7 +44,7 @@
     
     // {{{ internal void except(Exception e)
     //     Exception handler
-    function except($e) {
+    static function except($e) {
       self::fault(
         $e instanceof XPException ? $e : new XPException($e->getMessage()), 
         xp.'uncaughtexception'
