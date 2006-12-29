@@ -80,7 +80,12 @@
      */
     public function make($holder, $kind, $text) {
       if (!isset($this->taglets[$kind])) {
-        throw new IllegalArgumentException('Unknown taglet kind "'.$kind.'"');
+        throw new IllegalArgumentException(sprintf(
+          'Unknown taglet kind "%s" in %s named "%s"',
+          $kind,
+          $holder->getClassName(),
+          $holder->name()
+        ));
       }
       
       return $this->taglets[$kind]->tagFrom($holder, $kind, $text);
