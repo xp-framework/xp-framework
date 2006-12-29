@@ -31,12 +31,10 @@
         self::$instance->taglets['param']= new ParamTaglet();
         self::$instance->taglets['return']= new ReturnTaglet();
         self::$instance->taglets['throws']= new ThrowsTaglet();
-        self::$instance->taglets['model']= new ModelTaglet;
         
         // Simple taglets
         $s= new SimpleTaglet();
         self::$instance->taglets['purpose']= $s;
-        self::$instance->taglets['access']= $s;
         self::$instance->taglets['deprecated']= $s;
         self::$instance->taglets['experimental']= $s;
         self::$instance->taglets['platform']= $s;

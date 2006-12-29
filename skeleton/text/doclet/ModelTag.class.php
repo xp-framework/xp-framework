@@ -12,6 +12,7 @@
    * @see      xp://Tag
    * @purpose  Tag
    */
+  #[@deprecated]
   class ModelTag extends Tag {
 
   }
