@@ -5,8 +5,8 @@
  */
 
   uses (
-    'de.document-root.org.gnome.project.ProjectManagerPopupMenu',
-    'de.document-root.org.gnome.project.ParserManager',
+    'de.document-root.gui.gtk.project.ProjectManagerPopupMenu',
+    'de.document-root.gui.gtk.project.ParserManager',
     'org.gnome.GtkGladeApplication',
     'lang.System'
   );
