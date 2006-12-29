@@ -11,15 +11,15 @@
    * 
    * Usage:
    * <code>
-   *   $l= &new ArchiveClassLoader(new Archive(new File('soap.xar')));
-   *   try(); {
-   *     $class= &$l->loadClass($argv[1]);
-   *   } if (catch('ClassNotFoundException', $e)) {
+   *   $l= new ArchiveClassLoader(new Archive(new File('soap.xar')));
+   *   try {
+   *     $class= $l->loadClass($argv[1]);
+   *   } catch (ClassNotFoundException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
    * 
-   *   $obj= &$class->newInstance();
+   *   $obj= $class->newInstance();
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
@@ -39,8 +39,16 @@
      */
     public function __construct($archive) {
       parent::__construct();
+      
       $this->archive= $archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
+      
+      // Add this XAR to the include-path (if not already in there), 
+      // so further lookups will succeed.
+      ini_set('include_path', implode(PATH_SEPARATOR, array_unique(array_merge(
+        explode(PATH_SEPARATOR, ini_get('include_path')), 
+        array($this->archive->getURI())
+      ))));
     }
 
     /**
@@ -76,7 +84,7 @@
     public function loadClass($class) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name)) {
+      if (!class_exists($name) && !interface_exists($name)) {
         try {
           $src= $this->loadClassBytes($class);
         } catch (Exception $e) {
