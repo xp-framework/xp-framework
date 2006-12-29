@@ -24,44 +24,51 @@ have large data serialized (bloated) into XML.
 
 Functionality
 -------------
-PHP 5 provides the XSLTProcessor::registerPHPFunctions() method. This
-method can be used parameterless or with an array of method names
-which the processor restricts the stylesheet in the usage.
-
-XP provides methods to stylesheets through callbacks with a defined
-annotation @xmlcallback:
-
+The DomXSLProcessor will have a method registerInstance() where a
+PHP object instance can be registered under a defined name:
 <?php
-  class SomeCallbackFacade extends Object {
-
-    public function helperMethod() {
-      // ...
-    }
-    
-    /**
-     * Perform calculation
-     *
-     * @return    string
-     */
-    #[@xslmethod]
-    public function doCalculation() {
-      // ...
-      return $string;
-    }
-  }
-?>
-
-The XSL processor will inspect the callback class and determine that
-the method SomeCallbackFacade::doCalculation() is to be provided,
-while SomeCallbackFacade::helperMethod() is not.
-
-The callback can be registered through the addCallback() method:
-<?php
-  $proc= new DomXSLProcessor();
-  $proc->addCallback(XPClass::forName('net.xp_framework.xsl.SomeCallbackFacade'));
-
+  $myContext= new WebsiteContext();
   // ...
   
+  $processor= new DomXSLProcessor();
+  $processor->registerInstance('context', $myContext);
+  // ...
+?>
+
+From within XSL one can call the an invoke method which takes
+define name, method name and method arguments and invokes the
+given method in a non-static context:
+
+<pre>
+  <?xml version="1.0" encoding="iso-8859-1"?>
+  <xsl:stylesheet version="1.0"
+   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+   xmlns:php="http://php.net/xsl"
+  >
+    <xsl:template match="/">
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'context', 'hasPermission', 'view')"/>
+    </xsl:template>
+  </xsl:stylesheet>
+</pre>
+
+This invokation translates into the PHP function call on a method hasPermission() with the
+argument "view" on the object formerly registered as "context". The method _must_ have
+the annotation @xslmethod:
+
+<php
+  class WebsiteContext extends Object {
+    
+    /**
+     * XSL callback function
+     *
+     * @param   string permission
+     * @return  bool
+     /*
+    #[@xslmethod]
+    public function hasPermission($permission) {
+      return TRUE;
+    }
+  }
 ?>
 
 Security considerations
@@ -97,5 +104,14 @@ Comments
 - kiesel, Fri Dec 29 11:34:53 CET 2006
   I don't like the word callback, so the annotation's name was changed to
   "xslmethod".
+
+- kiesel, Fri Dec 29 14:26:38 CET 2006
+  Changed RFC to simplify using existing objects within XSL, does not longer
+  use special facades.
+  Patch was updated.
+
+- kiesel, Fri Dec 29 14:27:49 CET 2006
+  Now, through callback functions there can be all kinds of exceptions. Should
+  they be caught and re-wrapped in a TransformerException?
 
 <EOF>

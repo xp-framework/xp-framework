@@ -1,53 +1,257 @@
-Index: xml/DomXSLProcessor.class.php
+Index: skeleton/xml/DomXSLProcessor.class.php
 ===================================================================
---- xml/DomXSLProcessor.class.php	(revision 9011)
-+++ xml/DomXSLProcessor.class.php	(working copy)
-@@ -41,6 +41,7 @@
+--- skeleton/xml/DomXSLProcessor.class.php	(revision 9011)
++++ skeleton/xml/DomXSLProcessor.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'xml.TransformerException',
+     'io.FileNotFoundException',
+-    'xml.IXSLProcessor'
++    'xml.IXSLProcessor',
++    'xml.XSLCallback'
+   );
+   
+   /**
+@@ -41,6 +42,7 @@
        $output       = '';
  
      public
-+      $_callbacks   = array(),
++      $_instances   = array(),
        $_base        = '';
        
      /**
-@@ -171,6 +172,10 @@
+@@ -157,6 +159,17 @@
+     public function getMessages() {
+       return libxml_get_last_error();
+     }
++    
++    /**
++     * Register object instance under defined name
++     * for access from XSL callbacks.
++     *
++     * @param   string name
++     * @param   lang.Object instance
++     */
++    function registerInstance($name, $instance) {
++      $this->_instances[$name]= $instance;
++    }
+ 
+     /**
+      * Run the XSL transformation
+@@ -171,12 +184,25 @@
        $this->processor->importStyleSheet($this->stylesheet);
        $this->processor->setParameter('', $this->params);
        
-+      if (sizeof($this->_callbacks)) {
-+        $this->processor->registerPHPFunctions(array_keys($this->_callbacks));
-+      } 
++      // If we have registered instances, register them in XSLCallback
++      if (sizeof($this->_instances)) {
++        $cb= XSLCallback::getInstance();
++        foreach ($this->_instances as $name => $instance) {
++          $cb->registerInstance($name, $instance);
++        }
++      }
++
++      $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
 +      
        // Start transformation
        $result= $this->processor->transformToXML($this->document);
        
-@@ -205,5 +210,29 @@
-     public function output() {
-       return $this->output;
+       if (!$this->output) $this->_checkErrors();
+       $this->output= $result;
+       
++      // Perform cleanup when necessary (free singleton for further use)
++      sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
++      
+       return TRUE;
+     }
+     
+Index: skeleton/xml/XSLCallback.class.php
+===================================================================
+--- skeleton/xml/XSLCallback.class.php	(revision 0)
++++ skeleton/xml/XSLCallback.class.php	(revision 0)
+@@ -0,0 +1,86 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * XSL callback class.
++   *
++   * @ext      dom
++   * @see      php://xslt_registerphpfunctions
++   * @purpose  Provide PHP callback functions on object instances
++   */
++  class XSLCallback extends Object {
++    private
++      $instances  = array();  
++
++    private static      
++      $instance   = NULL;
++      
++    static function __static() {
++      self::$instance= new self();
++    }
++    
++    /**
++     * Retrieve instance
++     *
++     * @return  xml.XSLCallback
++     */
++    public static function getInstance() {
++      return self::$instance;
++    }
++    
++    /**
++     * Register new instance
++     *
++     * @param   string name
++     * @param   lang.Object instance
++     */
++    public function registerInstance($name, $instance) {
++      $this->instances[$name]= $instance;
++    }
++    
++    /**
++     * Remove all registered instances
++     *
++     */
++    public function clearInstances() {
++      $this->instances= array();
++    }
++    
++    /**
++     * Invoke method on a registered instance.
++     *
++     * @param   string instancename
++     * @param   string methodname
++     * @param   mixed* method arguments
++     * @return  mixed
++     * @throws  lang.IllegalArgumentException if the instance is not known
++     * @throws  lang.IllegalArgumentException if the given method does not exist or is not xsl-accessible
++     */
++    public static function invoke() {
++      $args= func_get_args();
++      if (sizeof($args) < 2) throw (new IllegalArgumentException(
++        'Cannot call XSL callback with less than 2 arguments.'
++      ));
++      
++      $name= array_shift($args);
++      $method= array_shift($args);
++
++      if (!isset(self::getInstance()->instances[$name])) throw (new IllegalArgumentException(
++        'No such registered XSL callback instance: "'.$name.'"'
++      ));
++      $instance= self::getInstance()->instances[$name];
++      
++      if (
++        !$instance->getClass()->hasMethod($method) ||
++        !$instance->getClass()->getMethod($method)->hasAnnotation('xslmethod')
++      ) throw (new IllegalArgumentException(
++        'Instance '.$name.' does not have (xsl-accessible) method '.$method
++      ));
++      
++      return $instance->getClass()->getMethod($method)->invoke($instance, $args);
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/XSLCallback.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/xml/DomXslProcessorTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/DomXslProcessorTest.class.php	(revision 8993)
++++ ports/classes/net/xp_framework/unittest/xml/DomXslProcessorTest.class.php	(working copy)
+@@ -24,7 +24,7 @@
+      * @return  string
+      */
+     public function neededExtension() { 
+-      return 'domxml';
++      return 'dom';
+     }
+   
+     /**
+@@ -44,5 +44,80 @@
+     public function processorCharset() { 
+       return 'utf-8';
      }
 +    
-+    /**
-+     * Add a new xsl callback
-+     *
-+     * @param   lang.XPClass class
-+     */
-+    function addCallback($class) {
-+      foreach ($class->getMethods() as $m) {
-+        if (!$m->hasAnnotation('xslmethod')) continue;
-+        
-+        // Add method
-+        $this->_callbacks[xp::reflect($class->getName()).'::'.$m->getName()]= TRUE;
-+      }
++    public function nonXslMethod() {
++      return '@@ILLEGAL@@';
++    }
++    
++    #[@xslmethod]
++    public function XslMethod() {
++      return '@@SUCCESS@@';
 +    }
 +    
 +    /**
-+     * Reset callbacks
++     * Test 
 +     *
-+     * @param   
-+     * @return  
 +     */
-+    function clearCallbacks() {
-+      $this->_callbacks= array();
++    #[@test]
++    public function callXslHook() {
++      $this->processor->registerInstance('proc', $this);
++      $this->processor->setXMLBuf('<document/>');
++      $this->processor->setXslBuf('<?xml version="1.0"?>
++        <xsl:stylesheet
++         version="1.0"
++         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++         xmlns:php="http://php.net/xsl"
++        >
++          <xsl:template match="/">
++            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'proc\', \'XslMethod\')"/>
++          </xsl:template>
++        </xsl:stylesheet>
++      ');
++      $this->processor->run();
 +    }
++    
++    /**
++     * Test
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function callNonXslHook() {
++      $this->processor->registerInstance('proc', $this);
++      $this->processor->setXMLBuf('<document/>');
++      $this->processor->setXslBuf('<?xml version="1.0"?>
++        <xsl:stylesheet
++         version="1.0"
++         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++         xmlns:php="http://php.net/xsl"
++        >
++          <xsl:template match="/">
++            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'proc\', \'nonXslMethod\')"/>
++          </xsl:template>
++        </xsl:stylesheet>
++      ');
++      $this->processor->run();
++    }
++    
++    /**
++     * Test
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function callNonRegisteredInstance() {
++      $this->processor->setXMLBuf('<document/>');
++      $this->processor->setXslBuf('<?xml version="1.0"?>
++        <xsl:stylesheet
++         version="1.0"
++         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++         xmlns:php="http://php.net/xsl"
++        >
++          <xsl:template match="/">
++            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'notregistered\')"/>
++          </xsl:template>
++        </xsl:stylesheet>
++      ');
++      $this->processor->run();
++    }
++    
    }
  ?>
