@@ -22,6 +22,9 @@ SVN version: 9007
   (kiesel)
 - Added webservices.soap.types.SOAPDouble class
   (strobel)
+- Fixed util.Properties to return an empty array from readArray()
+  for an empty string such as values=""
+  (friebe)
 - Fixed Java Webstart example to work with URLs containing query string
   arguments
   (friebe)
