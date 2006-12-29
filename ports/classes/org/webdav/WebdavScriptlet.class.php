@@ -200,7 +200,6 @@
      * Handle OPTIONS
      *
      * @see     xp://scriptlet.scriptlet.HttpScriptlet#doGet
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -216,7 +215,6 @@
      * Handle DELETE
      *
      * @see     rfc://2518#8.6
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -231,7 +229,7 @@
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {
+      } catch (XPException $e) {
       
         // Not allowd
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
@@ -246,7 +244,6 @@
      * Handle GET
      *
      * @see     rfc://2518#8.4
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -270,7 +267,7 @@
         // Conflict       
         $response->setStatus(WEBDAV_LOCKED);       
         return FALSE;
-      } catch (Exception $e) {      
+      } catch (XPException $e) {      
       
         // Conflict        
         $response->setStatus(HTTP_CONFLICT);        
@@ -289,7 +286,6 @@
      * Handle POST
      *
      * @see     rfc://2518#8.5
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -303,7 +299,6 @@
      * Handle HEAD
      *
      * @see     rfc://2518#8.4
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -318,7 +313,7 @@
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {
+      } catch (XPException $e) {
 
         // Conflict
         $response->setStatus(HTTP_CONFLICT);
@@ -337,7 +332,6 @@
      * Handle PUT
      *
      * @see     rfc://2518#8.7
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -373,7 +367,6 @@
      * </quote>
      *
      * @see     rfc://2518#8.3
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -397,7 +390,6 @@
      * Handle MOVE
      *
      * @see     rfc://2518#8.9
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -431,7 +423,6 @@
      * Handle COPY
      *
      * @see     rfc://2518#8.8
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -478,7 +469,6 @@
      * </quote>
      *
      * @see     rfc://2518#8.10
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -495,7 +485,7 @@
         $response->setStatus(HTTP_PRECONDITION_FAILED);
         $response->setContent($e->toString());        
         return FALSE; 
-      } catch (Exception $e) {
+      } catch (XPException $e) {
 
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
@@ -531,7 +521,7 @@
         $response->setStatus(WEBDAV_PRECONDFAILED);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {
+      } catch (XPException $e) {
 
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
@@ -551,7 +541,6 @@
      * </pre>
      *
      * @see     rfc://2518#8.1
-     * @access  private
      * @return  bool processed
      * @param   &scriptlet.HttpScriptletRequest request
      * @param   &scriptlet.HttpScriptletResponse response
@@ -580,7 +569,7 @@
         $response->setStatus(HTTP_BAD_REQUEST);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
         throw(new HttpScriptletException($e->message));
@@ -632,7 +621,7 @@
         $response->setContent($e->toString());
         return FALSE;
 
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
         throw(new HttpScriptletException($e->message));
@@ -661,7 +650,7 @@
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {        
+      } catch (XPException $e) {        
         
         // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
@@ -686,7 +675,7 @@
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
-      } catch (Exception $e) {        
+      } catch (XPException $e) {        
         
         // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
