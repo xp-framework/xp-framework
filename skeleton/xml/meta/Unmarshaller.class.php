@@ -13,9 +13,9 @@
    * <code>
    *   // [...load $xml from a file or a stream...]
    *
-   *   try(); {
-   *     $t= &Unmarshaller::unmarshal($xml, 'com.1and1.qf.xml.types.TransmissionType');
-   *   } if (catch('Exception', $e)) {
+   *   try {
+   *     $t= Unmarshaller::unmarshal($xml, 'com.1and1.qf.xml.types.TransmissionType');
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -66,22 +66,14 @@
      * @throws  xml.XPathException
      */
     protected static function recurse($xpath, $context, $classname) {
-      try {
-        $class= XPClass::forName($classname);
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
-
+      $class= XPClass::forName($classname);
       $instance= $class->newInstance();
+
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlmapping', 'element')) continue;
 
         // Perform XPath query
-        try {
-          $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
-        } catch (XPathException $e) {
-          throw($e);
-        }
+        $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
 
         // Iterate over results, invoking the method for each node.
         foreach ($result as $node) {

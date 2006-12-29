@@ -17,9 +17,9 @@
    * <code>
    *   // [...create transmission object...]
    *
-   *   try(); {
+   *   try {
    *     $xml= Marshaller::marshal($transmission);
-   *   } if (catch('Exception', $e)) {
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
