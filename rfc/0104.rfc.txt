@@ -43,7 +43,7 @@ annotation @xmlcallback:
      *
      * @return    string
      */
-    #[@xmlcallback]
+    #[@xslmethod]
     public function doCalculation() {
       // ...
       return $string;
@@ -82,6 +82,7 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0104.diff
 
 Comments
 --------
@@ -92,4 +93,9 @@ Comments
 - friebe, Fri Dec 29 11:18:39     2006
   Why is the annotation named "xml"callback while it actually is a callback
   from the XSL processor - shouldn't it be called "xsl"callback?
+
+- kiesel, Fri Dec 29 11:34:53 CET 2006
+  I don't like the word callback, so the annotation's name was changed to
+  "xslmethod".
+
 <EOF>

@@ -1,0 +1,53 @@
+Index: xml/DomXSLProcessor.class.php
+===================================================================
+--- xml/DomXSLProcessor.class.php	(revision 9011)
++++ xml/DomXSLProcessor.class.php	(working copy)
+@@ -41,6 +41,7 @@
+       $output       = '';
+ 
+     public
++      $_callbacks   = array(),
+       $_base        = '';
+       
+     /**
+@@ -171,6 +172,10 @@
+       $this->processor->importStyleSheet($this->stylesheet);
+       $this->processor->setParameter('', $this->params);
+       
++      if (sizeof($this->_callbacks)) {
++        $this->processor->registerPHPFunctions(array_keys($this->_callbacks));
++      } 
++      
+       // Start transformation
+       $result= $this->processor->transformToXML($this->document);
+       
+@@ -205,5 +210,29 @@
+     public function output() {
+       return $this->output;
+     }
++    
++    /**
++     * Add a new xsl callback
++     *
++     * @param   lang.XPClass class
++     */
++    function addCallback($class) {
++      foreach ($class->getMethods() as $m) {
++        if (!$m->hasAnnotation('xslmethod')) continue;
++        
++        // Add method
++        $this->_callbacks[xp::reflect($class->getName()).'::'.$m->getName()]= TRUE;
++      }
++    }
++    
++    /**
++     * Reset callbacks
++     *
++     * @param   
++     * @return  
++     */
++    function clearCallbacks() {
++      $this->_callbacks= array();
++    }
+   }
+ ?>
