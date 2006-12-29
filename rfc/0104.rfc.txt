@@ -89,4 +89,7 @@ Comments
   We could also just allow every PHP method to be called, simplifying this
   callback issue. But, then we have no control over what is called.
 
+- friebe, Fri Dec 29 11:18:39     2006
+  Why is the annotation named "xml"callback while it actually is a callback
+  from the XSL processor - shouldn't it be called "xsl"callback?
 <EOF>
