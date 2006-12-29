@@ -291,6 +291,7 @@
               // Fall-through intended
 
             case ST_CLASS_VAR.T_VARIABLE;
+              unset($field);
               $field= new FieldDoc();
               $field->name= $t[1];
               $field->modifiers= $modifiers;
@@ -315,7 +316,7 @@
             case ST_VARIABLE_VALUE.T_DNUMBER:
             case ST_VARIABLE_VALUE.T_STRING:
               $field->constantValue= $t[1];
-              $doc->fields[]= $field;
+              $state= ST_CLASS_VAR;
               break;
 
             case ST_VARIABLE_VALUE.T_ARRAY:
@@ -332,7 +333,7 @@
               } while (++$i < $s);
 
               $field->constantValue= $t[1];
-              $doc->fields[]= $field;
+              $state= ST_CLASS_VAR;
               break;
            
             case ST_VARIABLE_VALUE.',':
