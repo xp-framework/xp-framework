@@ -12,7 +12,7 @@ public class PHPCompiledScript extends CompiledScript {
      * protected constructor to prevent users from
      * creating instances directly
      */
-    public PHPCompiledScript(ScriptEngine eng) {
+    protected PHPCompiledScript(ScriptEngine eng) {
         MyEngine = eng;
     }
 
@@ -21,6 +21,13 @@ public class PHPCompiledScript extends CompiledScript {
      */
     public ScriptEngine getEngine() {
         return MyEngine;
+    }
+
+    /**
+     * set the ScriptEngine that created this object
+     */
+    ScriptEngine setEngine(ScriptEngine eng) {
+        return MyEngine = eng;
     }
 
     /**

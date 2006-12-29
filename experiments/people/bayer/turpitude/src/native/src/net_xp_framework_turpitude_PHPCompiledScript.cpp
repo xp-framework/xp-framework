@@ -24,7 +24,7 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
     zend_first_try {
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
-        
+
         zend_fcall_info_cache fci_cache;
         zend_fcall_info fci;
          
@@ -40,6 +40,14 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
         fci_cache.initialized = 1;
         fci_cache.function_handler = (zend_function*)compiled_op_array;
         compiled_op_array->type = ZEND_USER_FUNCTION;
+
+        //test
+        zval *new_variable;
+        MAKE_STD_ZVAL(new_variable);
+        ZVAL_LONG(new_variable, 10);
+        fci.param_count = 1;
+        zval** param = &new_variable;
+        fci.params = &param;
 
         zend_call_function(&fci, &fci_cache TSRMLS_CC);
        

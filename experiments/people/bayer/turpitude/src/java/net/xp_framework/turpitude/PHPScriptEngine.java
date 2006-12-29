@@ -93,7 +93,6 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
      */
     public Object eval(String str, ScriptContext ctx) throws ScriptException,
                                                              NullPointerException {
-        str = removePHPTag(str);
         CompiledScript sc = compile(str);
         return sc.eval(ctx);
     }
@@ -111,10 +110,13 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
      */
      public CompiledScript compile(String script) throws ScriptException,
                                                          NullPointerException {
+        script = removePHPTag(script);
         Object o = compilePHP(script);
-        if (!(o instanceof CompiledScript)) {
+        if (!(o instanceof PHPCompiledScript)) {
             throw (new ScriptException("compile did not return a CompiledScript" + o));
         }
+        PHPCompiledScript ret = (PHPCompiledScript)o;
+        ret.setEngine(this);
         return (CompiledScript)o;
      }
 
