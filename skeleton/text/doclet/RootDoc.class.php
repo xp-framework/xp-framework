@@ -8,6 +8,7 @@
     'util.cmd.ParamString',
     'text.doclet.ClassIterator',
     'text.doclet.ClassDoc',
+    'text.doclet.FieldDoc',
     'text.doclet.MethodDoc'
   );
   
@@ -285,12 +286,14 @@
               $state= ST_CLASS_BODY;
               break;
 
-            case ST_CLASS_BODY.T_VAR:
+            case ST_CLASS_BODY.T_VARIABLE;
               $state= ST_CLASS_VAR;
-              break;
+              // Fall-through intended
 
             case ST_CLASS_VAR.T_VARIABLE;
-              $var= $t[1];
+              $field= new FieldDoc();
+              $field->name= $t[1];
+              $field->modifiers= $modifiers;
               break;
 
             case ST_CLASS_VAR.'=':
@@ -298,19 +301,21 @@
               break;
 
             case ST_CLASS_VAR.',':
-              $doc->fields[$var]= NULL;
+              $doc->fields[]= $field;
               break;
 
             case ST_CLASS_VAR.';':
-              $doc->fields[$var]= NULL;
+              $doc->fields[]= $field;
               $state= ST_CLASS_BODY;
+              $modifiers= array();
               break;
 
             case ST_VARIABLE_VALUE.T_CONSTANT_ENCAPSED_STRING:
             case ST_VARIABLE_VALUE.T_LNUMBER:
             case ST_VARIABLE_VALUE.T_DNUMBER:
             case ST_VARIABLE_VALUE.T_STRING:
-              $doc->fields[$var]= $t[1];
+              $field->constantValue= $t[1];
+              $doc->fields[]= $field;
               break;
 
             case ST_VARIABLE_VALUE.T_ARRAY:
@@ -326,7 +331,8 @@
                 }
               } while (++$i < $s);
 
-              $doc->fields[$var]= $src;
+              $field->constantValue= $t[1];
+              $doc->fields[]= $field;
               break;
            
             case ST_VARIABLE_VALUE.',':
