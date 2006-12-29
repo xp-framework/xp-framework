@@ -34,6 +34,15 @@
     public function __construct($filename) {
       $this->file= $filename;
     }
+
+    /**
+     * Get URI
+     *
+     * @return  string uri
+     */
+    public function getURI() {
+      return $this->file;
+    }
     
     /**
      * Check whether a given element exists
