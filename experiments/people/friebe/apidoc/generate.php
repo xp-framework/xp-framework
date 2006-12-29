@@ -29,9 +29,9 @@
     }
     
     function annotationNode($list) {
-      $n= &new Node('annotations');
+      $n= new Node('annotations');
       foreach ($list as $annotation) {
-        $a= &$n->addChild(new Node('annotation', NULL, array('name' => $annotation->name())));
+        $a= $n->addChild(new Node('annotation', NULL, array('name' => $annotation->name())));
         if (is_array($annotation->value)) {
           $a->addChild(Node::fromArray($annotation->value, 'value'));
         } else if (is_scalar($annotation->value)) {
@@ -45,8 +45,8 @@
       return $n;
     }
     
-    function classReferenceNode(&$classdoc) {
-      $n= &new Node('link', NULL, array(
+    function classReferenceNode($classdoc) {
+      $n= new Node('link', NULL, array(
         'rel'     => 'class',
         'href'    => $classdoc->qualifiedName(),
       ));
@@ -54,17 +54,19 @@
       return $n;
     }
     
-    function methodsNode(&$classdoc, $inherited= FALSE) {
-      $n= &new Node('methods');
+    function methodsNode($classdoc, $inherited= FALSE) {
+      $n= new Node('methods');
       $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
 
       foreach ($classdoc->methods as $method) {
-        $m= &$n->addChild(new Node('method', NULL, array(
+        $m= $n->addChild(new Node('method', NULL, array(
           'name'   => $method->name(),
-          'access' => $this->tagAttribute($method->tags('access'), 0, 'text'),
+          'access' => $method->getAccess(),
           'return' => $this->tagAttribute($method->tags('return'), 0, 'type')
         )));
         
+        $m->addChild(Node::fromArray($method->getModifiers(), 'modifiers'));
+
         // Apidoc
         $m->addChild(new Node('comment', $method->commentText()));
         foreach ($method->tags('see') as $ref) {
@@ -90,7 +92,7 @@
           $param['$'.$tag->name]= $tag;
         }
         foreach ($method->arguments as $name => $default) {
-          $a= &$m->addChild(new Node('argument', NULL, array('name' => $name)));
+          $a= $m->addChild(new Node('argument', NULL, array('name' => $name)));
           $a->addChild(new Node('default', $default));
           if (isset($param[$name])) {
             $a->setAttribute('type', $param[$name]->type);
@@ -104,8 +106,8 @@
       return $n;
     }
 
-    function fieldsNode(&$classdoc, $inherited= FALSE) {
-      $n= &new Node('fields');
+    function fieldsNode($classdoc, $inherited= FALSE) {
+      $n= new Node('fields');
       $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
 
       foreach ($classdoc->fields as $name => $value) {
@@ -117,8 +119,8 @@
       return $n;
     }
 
-    function classNode(&$classdoc) {
-      $n= &new Node('class', NULL, array(
+    function classNode($classdoc) {
+      $n= new Node('class', NULL, array(
         'name'    => $classdoc->qualifiedName(),
         'type'    => $classdoc->classType()
       ));
@@ -148,14 +150,14 @@
       }
 
       // Superclasses
-      $extends= &$n->addChild(new Node('extends'));
+      $extends= $n->addChild(new Node('extends'));
       $doc= $classdoc;
       while ($doc= $doc->superclass) {
         $extends->addChild($this->classReferenceNode($doc));
       }
       
       // Interfaces
-      $interfaces= &$n->addChild(new Node('implements'));
+      $interfaces= $n->addChild(new Node('implements'));
       for ($classdoc->interfaces->rewind(); $classdoc->interfaces->hasNext(); ) {
         $interfaces->addChild($this->classReferenceNode($classdoc->interfaces->next()));
       }
@@ -172,16 +174,16 @@
       return $n;
     }
     
-    function marshalClassDoc(&$classdoc) {
+    function marshalClassDoc($classdoc) {
       static $done= array();
       
       if (isset($done[$classdoc->hashCode()])) return;    // Already been there
 
-      $out= &new File($this->build->getURI().$classdoc->qualifiedName().'.xml');
+      $out= new File($this->build->getURI().$classdoc->qualifiedName().'.xml');
       Console::writeLine('- ', $classdoc->toString());
 
       // Create XML tree
-      $tree= &new Tree('doc');
+      $tree= new Tree('doc');
       $tree->addChild($this->classNode($classdoc));
 
       // Write to file
@@ -195,29 +197,28 @@
       delete($tree);
     }
 
-    function start(&$root) {
-      $this->build= &new Folder($root->option('build', 'build'));
+    function start($root) {
+      $this->build= new Folder($root->option('build', 'build'));
       $this->build->exists() || $this->build->create();
       
       while ($root->classes->hasNext()) {
-        $doc= &$root->classes->next();
-        $doc && $this->marshalClassDoc($doc);
+        $this->marshalClassDoc($root->classes->next());
         xp::gc();
       }
     }
 
-    function &iteratorFor(&$root, $classes) {
+    function iteratorFor($root, $classes) {
       $collections= array();
       foreach (explode(PATH_SEPARATOR, $root->option('scan')) as $path) {
-        $scan= &new Folder($path);
+        $scan= new Folder($path);
         if (!$scan->exists()) {
-          return throw(new IllegalArgumentException($scan->getURI().' does not exist!'));
+          throw new IllegalArgumentException($scan->getURI().' does not exist!');
         }
      
-        $collections[]= &new FileCollection($scan->getURI());
+        $collections[]= new FileCollection($scan->getURI());
       }
 
-      $iterator= &new AllClassesIterator(
+      $iterator= new AllClassesIterator(
         new FilteredIOCollectionIterator(
           new CollectionComposite($collections), 
           new ExtensionEqualsFilter('class.php'),
@@ -225,7 +226,7 @@
         ),
         ini_get('include_path')
       );
-      $iterator->root= &$root;
+      $iterator->root= $root;
       return $iterator;
     }
     
