@@ -420,6 +420,10 @@
               $state= ST_FUNCTION;
               break;
 
+            case ST_FUNCTION.';':   // Interface and abstract methods have no body
+              $state= ST_CLASS_BODY;
+              break;        
+
             case ST_FUNCTION.'{':       
               $brackets= 0;
               do {
