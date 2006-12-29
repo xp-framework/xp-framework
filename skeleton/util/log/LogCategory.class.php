@@ -18,8 +18,7 @@
    *
    * Basic example:
    * <code>
-   *   $l= &Logger::getInstance();
-   *   $cat= &$l->getCategory();
+   *   $cat= Logger::getInstance()->getCategory();
    *   $cat->addAppender(new ConsoleAppender());
    *
    *   // ...
@@ -28,9 +27,9 @@
    *   // ...
    *   $cat->debugf('Processing %d rows took %.3f seconds', $rows, $delta);
    *
-   *   try(); {
+   *   try {
    *     // ...
-   *   } if (catch('SocketException', $e)) {
+   *   } catch (SocketException $e) {
    *     $cat->warn('Caught', $e);
    *   }
    * </code>
