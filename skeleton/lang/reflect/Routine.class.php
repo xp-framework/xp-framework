@@ -246,8 +246,8 @@
      * Retrieve string representation. Examples:
      *
      * <pre>
-     *   public &lang.XPClass getclass()
-     *   public static &util.Date now()
+     *   public lang.XPClass getClass()
+     *   public static util.Date now()
      *   public open(string $mode) throws io.FileNotFoundException, io.IOException
      * </pre>
      *
