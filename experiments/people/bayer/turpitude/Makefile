@@ -35,7 +35,7 @@ context: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ContextSample
 
 exec: jar lib
-	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/phpinfo.php
+	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php
 	
 classes: $(JSRC)
 	$(JCC)  -d classes -cp $(CPATH) $(JSRC)

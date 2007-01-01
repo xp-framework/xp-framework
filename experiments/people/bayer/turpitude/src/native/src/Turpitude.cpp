@@ -4,6 +4,8 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
     if (NULL == val)
         return NULL;
 
+    TSRMLS_FETCH();
+
     jclass cls = NULL;
     jobject obj = NULL;
     jmethodID mid = NULL;
@@ -32,6 +34,10 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             break;
         case IS_OBJECT:
             printf("IS_OBJECT\n");
+            zend_object_value* zo = &(val->value.obj);
+            printf("TRALALA %d\n", zo->handle);
+            HashTable* tbl = zo->handlers->get_properties(val TSRMLS_CC);
+
             break;
         case IS_CONSTANT:
         case IS_STRING:

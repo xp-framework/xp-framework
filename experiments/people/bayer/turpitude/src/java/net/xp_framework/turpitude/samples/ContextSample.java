@@ -50,9 +50,8 @@ public class ContextSample {
 
     private static String getSource() {
         StringBuffer src = new StringBuffer();
-        src.append("<?php");
-        src.append("$a = func_get_args();");
-        src.append("var_dump($a);");
+        src.append("<?php ");
+        src.append("var_dump($turpitude);");
         src.append("?>"); 
         return src.toString();
     }

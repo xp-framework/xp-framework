@@ -8,6 +8,7 @@ import java.io.IOException;
 public class PHPScriptEngine extends AbstractScriptEngine implements Compilable {
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
+    private String TurpitudeVarName = "turpitude"; //turpitude variable name
 
     /**
      * Constructor
@@ -28,9 +29,26 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
                     shutDown();
                 }
         });
-
     }
-    
+   
+    /**
+     * set the turpitude variable name
+     * the turpitude context inside the script will be accessible
+     * via this name.
+     */
+    public void setVarName(String newname) {
+        TurpitudeVarName = newname;
+    }
+
+    /**
+     * get the turpitude variable name
+     * the turpitude context inside the script will be accessible
+     * via this name.
+     */
+    public String getVarName() {
+        return TurpitudeVarName;
+    }
+
     /**
      * helper method, extracts a String from a reader
      */
@@ -63,8 +81,9 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
     /**
      * parses the php tags from a string
      * e.g. &lt;?php
+     * also prepends some necessary code
      */
-    private String removePHPTag(String in) {
+    private String preparePHPCode(String in) {
         String out = "";
 
         if (in.substring(0, 5).equals("<?php")) {
@@ -74,8 +93,18 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
         } else {
             out = in;
         }
-       
-        return out;
+        StringBuffer sb = new StringBuffer();
+        sb.append("$");
+        sb.append(getVarName());
+        sb.append(" = func_get_args();");
+        sb.append("$");
+        sb.append(getVarName());
+        sb.append("= $");
+        sb.append(getVarName());
+        sb.append("[0];\n");
+        sb.append(out);
+
+        return sb.toString();
     }
 
     /**
@@ -110,7 +139,7 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
      */
      public CompiledScript compile(String script) throws ScriptException,
                                                          NullPointerException {
-        script = removePHPTag(script);
+        script = preparePHPCode(script);
         Object o = compilePHP(script);
         if (!(o instanceof PHPCompiledScript)) {
             throw (new ScriptException("compile did not return a CompiledScript" + o));
