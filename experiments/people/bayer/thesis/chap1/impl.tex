@@ -98,19 +98,30 @@ Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ull
 die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
 \emph{zend\_opcode\_array} "ubersetzt und dieser sp"ater ohnehin seperat ausgef"uhrt werden muss, wurde an dieser Stelle dem
 geplanten Projektablauf vorgegriffen, und das Interface \emph{Compilable} gleich mitimplementiert. Im Rahmen dieses Schrittes
-wurde die Klasse \emph{PHPCompiledScript} wie geplant realisiert. Diese enth"alt die native Methode \emph{execute}, con welcher
+wurde die Klasse \emph{PHPCompiledScript} wie geplant realisiert. Diese enth"alt die native Methode \emph{execute}, von welcher
 der von der PHPScriptEngine erzeugte und in einen im PHPCompiledScript enhaltenen ByteBuffer geschriebene Opcode letztendlich
-ausgef"uhrt wird. 
+ausgef"uhrt wird. Hierzu sollte urspr"unglich die Zend-API Methode \emph{execute()} verwandt werden, allerdings fuehrte jeglicher
+Aufruf dieser Methode ausschliesslich zu Abst"urzen und Speicherfehlzugriffen, "uber deren Ursachen nur Vermutungen angestellt
+werden k"onnen. Schlussendlich gelang es trotz aller Hindernisse Zend-Opcode fehlerfrei auszuf"uhren: die Zend-API Methode
+\emph{zend\_call\_function()} l"asst sich zur Ausf"uhrung jeglichen Opcodes missbrauchen, es ist lediglich notwendig einige
+Typfelder des Opcode-Arrays mit "'falschen"' Informationen zu f"ullen. Zus"atzlich l"ost dieser Ansatz ein weiteres Problem:
+Jede Funktion hat einen R"uckgabewert, aber im Gegensatz zu zend\_eval\_string wird dieser nicht direkt der Methode "ubergeben,
+sondern in einem C-Struct des Types \emph{zend\_fcall\_info} gespeichert und l"asst sich von dort erstens m"uhelos auslesen, und
+weiterhin beeiflusst er das Ausf"uhrverhalten von zend\_call\_function nicht im Geringsten. Allerdings ergaben sich aus dieser 
+Art und Weise Zend-Opcode auszuf"uhren auch einige Abweichungen zu einem "'Standard-PHP"':
 
+Es war nicht mehr m"oglich Kommandozeilenparameter an das so ausgef"uhrte Script zu "ubergeben. Das ist vernachl"assigbar, da
+JSR223 diese Art der Daten"ubergabe nicht vorsieht. Weiterhin erhielt der ansonsten innerhalb eines gew"ohnlichen Scriptes nutzlose
+PHP-Befehl \emph{return} pl"otzlich einen Sinn: das Script beendete sich und der R"uckgabewert wurde mit der zur"uckgegebenen
+Variablen bef"ullt. Getreu dem Motto "'It's not a bug, it's a feature"' wurde dies allerdings nicht als st"orend empfunden, da
+der normale \emph{exit}-Befehl sich weiterhin wie gewohnt verhielt, und so nur zus"atzliche Funktionalit"at verf"ugbar wurde.
+
+Der n"achste Schritt war nun die "Ubergabe von Parametern aus Java an den Interpreter. Idealerweise sollten die zu "ubergebenen
+Objekte nicht nur hin- und herkopiert werden, sondern sie sollten als Repr"asentation innerhalb der PHP-Umgebung verf"ugbar sein.
+Dies bringt den Vorteil mit sich, dass nicht nur die Daten der Objekte, sondern auch deren Funktionalit"at dem PHP-Entwickler zur
+Verf"ugung steht.
 
 TODO:
-zend\_eval\_string nicht der weg - compile\_string. Deswegen: gleich mal Compilable implementiert, PHPCompiledScript
-angelegt
-
-compile tut, execute segfaultet. Loesung: function call?
-function call funktioniert, allerdungs nur mittels Hack...
-ErrorCBCalled eingef"uehrt um exit von Fehlern unterscheiden zu k"onnen
-Exceptions eingebaut
 
 ini file -> wie?
 Segfaults: --enable-debug, C-Frontend schreiben
