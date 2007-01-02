@@ -74,8 +74,9 @@
     public function parentClass() {
       $parent= $this->class->getParentClass();
       $this->assertClass($parent, 'lang.XPClass');
-      $this->assertEquals('lang.Object', $parent->getName());
-      $this->assertNull($parent->getParentClass());
+      $this->assertEquals('net.xp_framework.unittest.reflection.AbstractTestClass', $parent->getName());
+      $this->assertEquals('lang.Object', $parent->getParentClass()->getName());
+      $this->assertNull($parent->getParentClass()->getParentClass());
     }
 
     /**
@@ -231,6 +232,28 @@
     #[@test]
     public function staticMethod() {
       $this->assertMethodModifiers(MODIFIER_STATIC | MODIFIER_PUBLIC, 'fromMap');
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function abstractMethod() {
+    
+      // AbstractTestClass declares the method abstract (and therefore does not
+      // implement it)
+      $this->assertEquals(
+        MODIFIER_PUBLIC | MODIFIER_ABSTRACT, 
+        $this->class->getParentClass()->getMethod('getDate')->getModifiers()
+      );
+
+      // TestClass implements the method
+      $this->assertMethodModifiers(
+        MODIFIER_PUBLIC, 
+        'getDate'
+      );
     }
     
     /**

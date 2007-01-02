@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'util.log.Traceable');
+  uses(
+    'util.Date', 
+    'util.log.Traceable', 
+    'net.xp_framework.unittest.reflection.AbstractTestClass'
+  );
 
   /**
    * Test class
@@ -13,11 +17,15 @@
    * @purpose  Test class
    */
   #[@test('Annotation')]
-  class TestClass extends Object implements Traceable {
+  class TestClass extends AbstractTestClass implements Traceable {
     public
       #[@type('util.Date')]
       $date= NULL,
       $map = array();
+
+    static function __static() {
+      TestClass::initializerCalled(TRUE);
+    }
 
     /**
      * Constructor
@@ -26,14 +34,6 @@
      */
     public function __construct($in= NULL) {
       $this->date= new Date($in);
-    }
-    
-    /**
-     * Static initializer
-     *
-     */
-    public static function __static() {
-      TestClass::initializerCalled(TRUE);
     }
     
     /**
@@ -51,7 +51,7 @@
     /**
      * Retrieve date
      *
-     * @return  &util.Date
+     * @return  util.Date
      */    
     public function getDate() {
       return $this->date;
@@ -60,7 +60,7 @@
     /**
      * Set date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */    
     public function setDate($date) {
       $this->date= $date;
@@ -79,33 +79,70 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      * @throws  lang.IllegalStateException
      */
     public function setTrace($cat) {
-      throw(new IllegalStateException('Not debuggable yet'));
+      throw new IllegalStateException('Not debuggable yet');
     }
-
       
     /**
      * Retrieve map as a PHP hashmap
      *
-     * @return  array<string, &lang.Object>
+     * @return  array<string, lang.Object>
      */
     public function getMap() {
       return $this->map;
     }
     
     /**
+     * Clear map
+     *
+     */
+    protected function clearMap() {
+      $this->map= array();
+    }
+
+    /**
+     * Initialite map to default values
+     *
+     */
+    private function defaultMap() {
+      $this->map= array(
+        'binford' => 61
+      );
+    }
+
+    /**
+     * Initialize map to default values
+     *
+     * @param   array<string, lang.Object> map
+     */
+    final public function setMap($map) {
+      $this->map= $map;
+    }
+
+    /**
+     * Create a new instance statically
+     *
+     * @param   array<string, lang.Object> map
+     * @return  net.xp_framework.unittest.reflection.TestClass
+     */
+    public static function fromMap($map) {
+      $self= new self();
+      $self->setMap($map);
+      return $self;
+    }
+    
+    /**
      * Retrieve values
      *
-     * @return  &lang.Collection<lang.Object>
+     * @return  lang.Collection<lang.Object>
      */
     public function mapValues() {
       $c= Collection::forClass('lang.Object');
       $c->addAll(array_values($this->map));
       return $c;
     }
-
   } 
 ?>
