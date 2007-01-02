@@ -104,9 +104,7 @@
     #[@test]
     public function constructor() {
       $this->assertTrue($this->class->hasConstructor());
-      if ($constructor= $this->class->getConstructor()) {
-        $this->assertClass($constructor, 'lang.reflect.Constructor');
-      }
+      $this->assertClass($this->class->getConstructor(), 'lang.reflect.Constructor');
     }
 
     /**
@@ -132,7 +130,7 @@
     #[@test]
     public function dateField() {
       $this->assertTrue($this->class->hasField('date'));
-      if ($field= $this->class->getField('date')) {
+      with ($field= $this->class->getField('date')); {
         $this->assertClass($field, 'lang.reflect.Field');
         $this->assertEquals('date', $field->getName());
         $this->assertEquals('util.Date', $field->getType());
@@ -147,9 +145,7 @@
      */
     #[@test]
     public function dateFieldValue() {
-      if ($field= $this->class->getField('date')) {
-        $this->assertClass($field->get($this->class->newInstance()), 'util.Date');
-      }
+      $this->assertClass($this->class->getField('date')->get($this->class->newInstance()), 'util.Date');
     }
 
     /**
@@ -159,9 +155,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function dateFieldValueOnWrongObject() {
-      if ($field= $this->class->getField('date')) {
-        $field->get(new Object());
-      }
+      $this->class->getField('date')->get(new Object());
     }
     
     /**
@@ -179,6 +173,67 @@
     }
     
     /**
+     * Helper method
+     *
+     * @param   int modifiers
+     * @param   string method
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertMethodModifiers($modifiers, $method) {
+      $this->assertEquals($modifiers, $this->class->getMethod($method)->getModifiers());
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function publicMethod() {
+      $this->assertMethodModifiers(MODIFIER_PUBLIC, 'getMap');
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function privateMethod() {
+      $this->assertMethodModifiers(MODIFIER_PRIVATE, 'defaultMap');
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function protectedMethod() {
+      $this->assertMethodModifiers(MODIFIER_PROTECTED, 'clearMap');
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function finalMethod() {
+      $this->assertMethodModifiers(MODIFIER_FINAL | MODIFIER_PUBLIC, 'setMap');
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getMethod
+     */
+    #[@test]
+    public function staticMethod() {
+      $this->assertMethodModifiers(MODIFIER_STATIC | MODIFIER_PUBLIC, 'fromMap');
+    }
+    
+    /**
      * Tests the method reflection for the getDate() method
      *
      * @see     xp://lang.XPClass#getMethod
@@ -187,7 +242,7 @@
     #[@test]
     public function getDateMethod() {
       $this->assertTrue($this->class->hasMethod('getDate'));
-      if ($method= $this->class->getMethod('getDate')) {
+      with ($method= $this->class->getMethod('getDate')); {
         $this->assertClass($method, 'lang.reflect.Method');
         $this->assertEquals('getDate', $method->getName(TRUE));
         $this->assertTrue($this->class->equals($method->getDeclaringClass()));
@@ -204,13 +259,12 @@
      */
     #[@test]
     public function setDateMethodArguments() {
-      if ($method= $this->class->getMethod('setDate')) {
+      with ($method= $this->class->getMethod('setDate')); {
         $this->assertEquals(1, $method->numArguments());
         if ($argument= $method->getArgument(0)) {
           $this->assertClass($argument, 'lang.reflect.Argument');
           $this->assertEquals('date', $argument->getName());
           $this->assertEquals('util.Date', $argument->getType());
-          $this->assertTrue($argument->isPassedByReference());
         }
         $this->assertNull($method->getArgument(1));
       }
@@ -224,9 +278,7 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function invokeSetTrace() {
-      if ($method= $this->class->getMethod('setTrace')) {
-        $method->invoke($this->class->newInstance(), array(NULL));
-      }
+      $this->class->getMethod('setTrace')->invoke($this->class->newInstance(), array(NULL));
     }
 
     /**
@@ -236,9 +288,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function invokeSetTraceOnWrongObject() {
-      if ($method= $this->class->getMethod('setTrace')) {
-        $method->invoke(new Object(), array(NULL));
-      }
+      $this->class->getMethod('setTrace')->invoke(new Object(), array(NULL));
     }
     
     /**
@@ -297,8 +347,7 @@
      */
     #[@test]
     public function genericReturnValue() {
-      $method= $this->class->getMethod('getMap');
-      $this->assertEquals('array<string, &lang.Object>', $method->getReturnType());
+      $this->assertEquals('array<string, lang.Object>', $this->class->getMethod('getMap')->getReturnType());
     }
   }
 ?>
