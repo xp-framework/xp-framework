@@ -66,15 +66,16 @@
       // to be called.
       //
       // == List of fn_flags we don't want to return from this method ==
-      // #define ZEND_ACC_IMPLICIT_PUBLIC     0x1000
-      // #define ZEND_ACC_CTOR                0x2000
-      // #define ZEND_ACC_DTOR                0x4000
-      // #define ZEND_ACC_CLONE               0x8000
-      // #define ZEND_ACC_ALLOW_STATIC        0x10000
-      // #define ZEND_ACC_SHADOW              0x20000
-      // #define ZEND_ACC_DEPRECATED          0x40000
+      // #define ZEND_ACC_IMPLEMENTED_ABSTRACT  0x08
+      // #define ZEND_ACC_IMPLICIT_PUBLIC       0x1000
+      // #define ZEND_ACC_CTOR                  0x2000
+      // #define ZEND_ACC_DTOR                  0x4000
+      // #define ZEND_ACC_CLONE                 0x8000
+      // #define ZEND_ACC_ALLOW_STATIC          0x10000
+      // #define ZEND_ACC_SHADOW                0x20000
+      // #define ZEND_ACC_DEPRECATED            0x40000
       // ==
-      return $this->_reflect->getModifiers() & ~0x7f000;
+      return $this->_reflect->getModifiers() & ~0x7f008;
     }
 
     /**
