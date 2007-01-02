@@ -15,6 +15,7 @@
    * PHP itself and will also rely on the API docs being consistent and 
    * correct.
    *
+   * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @see      xp://lang.reflect.Method
    * @see      xp://lang.reflect.Constructor
    * @purpose  Reflection
@@ -57,7 +58,23 @@
      * @return  int
      */    
     public function getModifiers() {
-      return $this->_reflect->getModifiers();
+    
+      // Note: ReflectionMethod::getModifiers() returns whatever PHP reflection 
+      // returns, but the numeric value changed since 5.0.0 as the zend_function
+      // struct's fn_flags now contains not only ZEND_ACC_(PPP, STATIC, FINAL,
+      // ABSTRACT) but also some internal information about how this method needs
+      // to be called.
+      //
+      // == List of fn_flags we don't want to return from this method ==
+      // #define ZEND_ACC_IMPLICIT_PUBLIC     0x1000
+      // #define ZEND_ACC_CTOR                0x2000
+      // #define ZEND_ACC_DTOR                0x4000
+      // #define ZEND_ACC_CLONE               0x8000
+      // #define ZEND_ACC_ALLOW_STATIC        0x10000
+      // #define ZEND_ACC_SHADOW              0x20000
+      // #define ZEND_ACC_DEPRECATED          0x40000
+      // ==
+      return $this->_reflect->getModifiers() & ~0x7f000;
     }
 
     /**
