@@ -12,6 +12,9 @@ SVN version: ????
   (friebe)
 - Exclude replication tables from SybaseDBAdapter::getTables()
   (friebe)
+- Implemented RFC #0104: Add XSLCallback class and provide support 
+  for calling PHP functions from within XSL
+  (kiesel)
 
 Version 5.1.0, released 2006-12-28
 ----------------------------------

@@ -7,7 +7,8 @@
   uses(
     'xml.TransformerException',
     'io.FileNotFoundException',
-    'xml.IXSLProcessor'
+    'xml.IXSLProcessor',
+    'xml.XSLCallback'
   );
   
   /**
@@ -41,6 +42,7 @@
       $output       = '';
 
     public
+      $_instances   = array(),
       $_base        = '';
       
     /**
@@ -157,6 +159,17 @@
     public function getMessages() {
       return libxml_get_last_error();
     }
+    
+    /**
+     * Register object instance under defined name
+     * for access from XSL callbacks.
+     *
+     * @param   string name
+     * @param   lang.Object instance
+     */
+    function registerInstance($name, $instance) {
+      $this->_instances[$name]= $instance;
+    }
 
     /**
      * Run the XSL transformation
@@ -171,11 +184,24 @@
       $this->processor->importStyleSheet($this->stylesheet);
       $this->processor->setParameter('', $this->params);
       
+      // If we have registered instances, register them in XSLCallback
+      if (sizeof($this->_instances)) {
+        $cb= XSLCallback::getInstance();
+        foreach ($this->_instances as $name => $instance) {
+          $cb->registerInstance($name, $instance);
+        }
+      }
+
+      $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
+      
       // Start transformation
       $result= $this->processor->transformToXML($this->document);
       
       if (!$this->output) $this->_checkErrors();
       $this->output= $result;
+      
+      // Perform cleanup when necessary (free singleton for further use)
+      sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
       
       return TRUE;
     }

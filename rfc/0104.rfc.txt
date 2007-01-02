@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Dec 28 19:36:40 CET 2006
-@status: discussion, ends Tue Jan 02 12:00:00 CET 2007
+@status: implemented, Tue Jan  2 14:56:57 CET 2007
 @category: xml
 
 Scope of Change
