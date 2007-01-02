@@ -12,6 +12,7 @@
     Console::writeLinef('Class "%s" could not be found', $p->value(1));
     exit();
   }
+  $showDeclaring= $p->exists('showdeclaring', 'd');
 
   try {
     $class= XPClass::forName($p->value(1));
@@ -28,7 +29,9 @@
     Console::writeLine('  ', $class->getConstructor()->toString());
   }
   foreach ($class->getMethods() as $method) {
-    Console::writeLine('  ', $method->toString());
+    Console::write('  ', $method->toString());
+    $showDeclaring && Console::write(' declared in '.$method->getDeclaringClass()->toString());
+    Console::writeLine();
   }
   Console::writeLine('}');
   // }}}
