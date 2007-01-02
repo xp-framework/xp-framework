@@ -82,7 +82,7 @@
         $path= substr($path, 0, $pos); 
       }
       
-      throw new IllegalArgumentException('Cannot load class from '.$class->toString());
+      throw new IllegalArgumentException('Cannot load class from '.$file->toString());
     }
 
     /**
