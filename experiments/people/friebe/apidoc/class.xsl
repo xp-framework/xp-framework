@@ -365,7 +365,7 @@
         <ul>
           <xsl:for-each select="exception">
             <li>
-              <a href="?{@class}"><xsl:value-of select="@class"/></a>
+              <a href="?class:{@class}"><xsl:value-of select="@class"/></a>
             </li>
           </xsl:for-each>
         </ul>
@@ -400,7 +400,7 @@
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'xp']">
-    <a href="?{@href}"><xsl:value-of select="@href"/></a>
+    <a href="?class:{@href}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'php']">
