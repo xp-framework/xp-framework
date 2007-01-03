@@ -21,7 +21,7 @@ Complete documentation.
 
 Functionality
 -------------
-The file will be called "package-info.php" and thus resemble the convention
+The file will be called "package-info.xp" and thus resemble the convention
 used in JavaDoc >= 1.5.0.
 
 Example:
@@ -83,6 +83,8 @@ Related documents
 - http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#packagecomment
   Package Comment Files
 
+- http://xp-framework.net/rfc/contrib/rfc0105.diff
+  Diff for text.doclet which supports package-info.xp parsing
 
 Comments
 --------
