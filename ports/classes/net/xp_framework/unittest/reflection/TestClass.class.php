@@ -20,11 +20,20 @@
   class TestClass extends AbstractTestClass implements Traceable {
     public
       #[@type('util.Date')]
-      $date= NULL,
-      $map = array();
+      $date   = NULL,
+      $map    = array();
+    
+    protected
+      $size   = 0;
+    
+    private
+      $factor = 5;
+    
+    public static
+      $initializerCalled= FALSE;
 
     static function __static() {
-      TestClass::initializerCalled(TRUE);
+      self::$initializerCalled= TRUE;
     }
 
     /**
@@ -37,15 +46,12 @@
     }
     
     /**
-     * Static variables simulation
+     * Returns whether static initializer was called
      *
-     * @param   bool value default NULL
      * @return  bool
      */
-    public static function initializerCalled($value= NULL) {
-      static $called;
-      if (NULL !== $value) $called= $value;
-      return $called;
+    public static function initializerCalled() {
+      return self::$initializerCalled;
     }
     
     /**
