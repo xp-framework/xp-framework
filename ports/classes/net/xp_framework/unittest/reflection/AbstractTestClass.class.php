@@ -11,12 +11,21 @@
    * @purpose  Test class
    */
   abstract class AbstractTestClass extends Object {
-
+    protected
+      $inherited= NULL;
+    
     /**
      * Retrieve date
      *
      * @return  util.Date
      */    
     abstract public function getDate();
+
+    /**
+     * NOOP.
+     *
+     */    
+    public function clearDate() {
+    }
   } 
 ?>
