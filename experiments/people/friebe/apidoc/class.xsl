@@ -157,7 +157,7 @@
           This class' functionality is verified by the following tests:<br/>
           <xsl:for-each select="test">
             <xsl:variable name="class" select="substring-after(@href, 'xp://')"/>
-            <a class="class" href="?{$class}"><xsl:value-of select="$class"/></a>
+            <a class="class" href="?class:{$class}"><xsl:value-of select="$class"/></a>
             <xsl:if test="position() != last()">, </xsl:if>
           </xsl:for-each>
         </p>
@@ -193,7 +193,7 @@
     <p>
       <a><xsl:value-of select="@name"/></a>
       <xsl:for-each select="extends/link">
-        &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
+        &#xbb; <a href="?class:{@href}"><xsl:value-of select="@href"/></a>
       </xsl:for-each>
     </p>
 
@@ -201,7 +201,7 @@
       <h2>Implemented Interfaces</h2>
       <p>
         <xsl:for-each select="implements/link">
-          <a href="?{@href}"><xsl:value-of select="@href"/></a>
+          <a href="?class:{@href}"><xsl:value-of select="@href"/></a>
           <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>
       </p>
@@ -253,11 +253,11 @@
       <!-- Inherited fields -->
       <xsl:for-each select="fields[@from]">
         <xsl:if test="count(field) &gt; 0">
-          <h3>Fields inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+          <h3>Fields inherited from <a href="?class:{@from}"><xsl:value-of select="@from"/></a></h3>
 
           <p>
             <xsl:for-each select="field">
-              <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/></a>
+              <a href="?class:{../@from}#{@name}"><xsl:value-of select="@name"/></a>
               <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
           </p>
@@ -298,11 +298,11 @@
       <!-- Inherited methods -->
       <xsl:for-each select="methods[@from]">
         <xsl:if test="count(method) &gt; 0">
-          <h3>Methods inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+          <h3>Methods inherited from <a href="?class:{@from}"><xsl:value-of select="@from"/></a></h3>
 
           <p>
             <xsl:for-each select="method">
-              <a href="?{../@from}#{@name}"><xsl:value-of select="@name"/>()</a>
+              <a href="?class:{../@from}#{@name}"><xsl:value-of select="@name"/>()</a>
               <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
           </p>
