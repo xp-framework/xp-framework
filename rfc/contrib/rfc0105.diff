@@ -1,0 +1,129 @@
+Index: ClassDoc.class.php
+===================================================================
+--- ClassDoc.class.php	(revision 9104)
++++ ClassDoc.class.php	(working copy)
+@@ -137,7 +137,7 @@
+      * @return  text.doclet.PackageDoc
+      */
+     public function containingPackage() {
+-      return new PackageDoc(substr($this->qualifiedName, 0, strrpos($this->qualifiedName, '.')));
++      return $this->root->packageNamed(substr($this->qualifiedName, 0, strrpos($this->qualifiedName, '.')));
+     }
+     
+     /**
+Index: RootDoc.class.php
+===================================================================
+--- RootDoc.class.php	(revision 9102)
++++ RootDoc.class.php	(working copy)
+@@ -31,6 +31,7 @@
+   define('ST_DEFINE_VALUE',       'definevalue');
+   
+   define('T_USES',                0x1000);
++  define('T_PACKAGE',             0x1001);
+   define('T_DEFINE',              0x1002);
+   
+   /**
+@@ -115,6 +116,21 @@
+     public function option($name, $default= NULL) {
+       return isset($this->options[$name]) ? $this->options[$name] : $default;
+     }
++
++    /**
++     * Finds a package info file by a given class name
++     *
++     * @param   string package
++     * @return  string filename
++     */
++    public function findPackage($package) {
++      $filename= str_replace('.', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.'package-info.xp';
++      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
++        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
++        return $dir.DIRECTORY_SEPARATOR.$filename;
++      }
++      return NULL;
++    }
+     
+     /**
+      * Finds a class by a given class name
+@@ -130,7 +146,7 @@
+       }
+       return NULL;
+     }
+-    
++
+     /**
+      * Qualifies a class name by looking at known or used classes.
+      *
+@@ -153,6 +169,72 @@
+       
+       return $lookup;
+     }
++
++    /**
++     * Parses a package descroption file and returns a packagedoc element
++     *
++     * @param   
++     * @return  
++     */
++    public function packageNamed($package) {
++      static $cache= array();
++      static $map= array('package' => T_PACKAGE);
++
++      if (isset($cache[$package])) return $cache[$package];
++
++      with ($doc= new PackageDoc($package), $doc->setRoot($this)); {
++
++        // Find package-info file. If we cannot find one, ignore it!
++        if ($filename= $this->findPackage($package)) {
++
++          // Tokenize contents
++          if (!($c= file_get_contents($filename))) {
++            throw new IllegalArgumentException('Could not parse "'.$filename.'"');
++          }
++
++          $tokens= token_get_all('<?php '.$c.' ?>');
++          $annotations= $comment= NULL;
++          $name= '';
++          $state= ST_INITIAL;          
++          for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
++            $t= $tokens[$i];
++            if (is_array($t) && isset($map[$t[1]])) $t[0]= $map[$t[1]];
++
++            switch ($state.$t[0]) {
++              case ST_INITIAL.T_DOC_COMMENT:
++                $comment= $t[1];
++                break;
++            
++              case ST_INITIAL.T_PACKAGE:
++                $state= ST_CLASS;
++                break;
++              
++              case ST_CLASS.T_STRING:
++                $name.= $t[1];
++                break;
++
++              case ST_CLASS.'.':    // Package separator
++                $name.= '.';
++                break;
++              
++              case ST_CLASS.'{':
++                $doc->name= $name;
++                $doc->rawComment= $comment;
++                $doc->annotations= $annotations;
++                $comment= $annotations= NULL;
++                $name= '';
++                $state= ST_CLASSBODY;
++                break;
++              
++              case ST_CLASSBODY.'}':
++                $state= ST_INITIAL;
++                break;
++            }
++          }
++        }
++      }      
++      return $cache[$package]= $doc;
++    }
+     
+     /**
+      * Parses a class file and returns a classdoc element
