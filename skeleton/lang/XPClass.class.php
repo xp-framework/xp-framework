@@ -7,16 +7,10 @@
   uses(
     'lang.reflect.Method',
     'lang.reflect.Field',
-    'lang.reflect.Constructor'
+    'lang.reflect.Constructor',
+    'lang.reflect.Modifiers'
   );
 
-  define('MODIFIER_STATIC',       1);
-  define('MODIFIER_ABSTRACT',     2);
-  define('MODIFIER_FINAL',        4);
-  define('MODIFIER_PUBLIC',     256);
-  define('MODIFIER_PROTECTED',  512);
-  define('MODIFIER_PRIVATE',   1024);
-  
   define('DETAIL_ARGUMENTS',      1);
   define('DETAIL_RETURNS',        2);
   define('DETAIL_THROWS',         3);
@@ -217,12 +211,18 @@
      */
     public function getFields() {
       $f= array();
-      foreach ((is_object($this->_objref) 
+      $v= (is_object($this->_objref) 
         ? get_object_vars($this->_objref) 
         : get_class_vars($this->_objref)
-      ) as $field => $value) {
-        if ('__id' == $field) continue;
-        $f[]= new Field($this->_objref, $field, isset($value) ? gettype($value) : NULL);
+      );
+      foreach ($this->_reflect->getProperties() as $p) {
+        if ('__id' == ($name= $p->getName())) continue;
+        
+        $f[]= new Field(
+          $this->_objref, 
+          $name,
+          isset($v[$name]) ? gettype($v[$name]) : NULL
+        );
       }
       return $f;
     }
@@ -251,10 +251,7 @@
      * @return  bool TRUE if field exists
      */
     public function hasField($field) {
-      return '__id' == $field ? FALSE : array_key_exists($field, is_object($this->_objref) 
-        ? get_object_vars($this->_objref) 
-        : get_class_vars($this->_objref)
-      );
+      return '__id' == $field ? FALSE : $this->_reflect->hasProperty($field);
     }
 
     /**
