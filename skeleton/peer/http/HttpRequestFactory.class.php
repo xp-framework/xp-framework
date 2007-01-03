@@ -25,7 +25,7 @@
      * @return  &lang.Object a request object
      * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
-    public function factory($url) {
+    public static function factory($url) {
       switch ($url->getScheme()) {
         case 'http':
           return new HttpRequest($url);
