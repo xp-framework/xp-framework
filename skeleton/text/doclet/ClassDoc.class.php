@@ -130,6 +130,15 @@
     public function qualifiedName() {
       return $this->qualifiedName;
     }
+
+    /**
+     * Returns the package this class is contained in
+     *
+     * @return  text.doclet.PackageDoc
+     */
+    public function containingPackage() {
+      return new PackageDoc(substr($this->qualifiedName, 0, strrpos($this->qualifiedName, '.')));
+    }
     
     /**
      * Returns a string representation of this object
