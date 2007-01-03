@@ -23,7 +23,9 @@
   class Routine extends Object {
     public
       $_ref     = NULL,
-      $name     = '',
+      $name     = '';
+    
+    protected
       $_reflect = NULL;
 
     /**
@@ -55,6 +57,7 @@
     /**
      * Retrieve this method's modifiers
      *
+     * @see     xp://lang.reflect.Modifiers
      * @return  int
      */    
     public function getModifiers() {
@@ -78,26 +81,6 @@
       return $this->_reflect->getModifiers() & ~0x7f008;
     }
 
-    /**
-     * Retrieve this method's modifiers as an array of strings
-     *
-     * @return  string[]
-     */    
-    public function getModifierNames() {
-      $m= $this->getModifiers();
-      $names= array();
-      if ($m & MODIFIER_ABSTRACT) $names[]= 'abstract';
-      if ($m & MODIFIER_FINAL) $names[]= 'final';
-      switch ($m & (MODIFIER_PUBLIC | MODIFIER_PROTECTED | MODIFIER_PRIVATE)) {
-        case MODIFIER_PRIVATE: $names[]= 'private'; break;
-        case MODIFIER_PROTECTED: $names[]= 'protected'; break;
-        case MODIFIER_PUBLIC:
-        default: $names[]= 'public'; break;
-      }
-      if ($m & MODIFIER_STATIC) $names[]= 'static';
-      return $names;
-    }
-    
     /**
      * Retrieve this method's arguments
      *
@@ -180,12 +163,7 @@
      * @return  &lang.XPClass
      */
     public function getDeclaringClass() {
-      $class= $this->_ref;
-      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[1][$this->name])) return new XPClass($class);
-        $class= get_parent_class($class);
-      }
-      return xp::null();
+      return new XPClass($this->_reflect->getDeclaringClass()->getName());
     }
     
     /**
@@ -287,7 +265,7 @@
       }
       return sprintf(
         '%s %s %s(%s)%s',
-        implode(' ', $this->getModifierNames()),
+        Modifiers::stringOf($this->getModifiers()),
         $this->getReturnType(),
         $this->getName(),
         substr($args, 2),
