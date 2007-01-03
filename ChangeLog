@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Added lang.reflect.Field::getModifiers()
+  (friebe)
+- Added lang.reflect.Modifiers utility class
+  (friebe)
 - Made CLI sapi print uncaught exceptions to STDERR
   (friebe)
 - Made Doclet API parse XP5 syntax
