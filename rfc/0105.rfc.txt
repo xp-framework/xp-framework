@@ -83,7 +83,11 @@ Related documents
 - http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#packagecomment
   Package Comment Files
 
+
 Comments
 --------
+- friebe, Wed Jan  3 16:25:57 CET 2007
+  Because the file actually does not contain valid PHP sourcecode, I'd
+  prefer to call the file "package-info.xp"...
 
 <EOF>
