@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Show class' apidoc comment in xpcli --help|-?
+  (friebe)
+- Added lang.XPClass::getComment()
+  (friebe)
 - Added lang.reflect.Field::getModifiers()
   (friebe)
 - Added lang.reflect.Modifiers utility class
