@@ -22,6 +22,15 @@
     }
 
     /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->name.'>';
+    }
+
+    /**
      * Returns a hashcode for this object
      *
      * @return  string
