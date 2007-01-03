@@ -25,6 +25,13 @@
      * @param   lang.XPClass class
      */
     public static function showUsage(XPClass $class) {
+
+      // Description
+      if (NULL !== ($comment= $class->getComment())) {
+        Console::writeLine($comment);
+        Console::writeLine(str_repeat('=', 72));
+      }
+
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('arg')) continue;
 
