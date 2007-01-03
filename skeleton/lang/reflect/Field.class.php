@@ -16,6 +16,9 @@
       $name   = '',
       $type   = NULL;
 
+    protected
+      $_reflect = NULL;
+
     /**
      * Constructor
      *
@@ -27,6 +30,7 @@
       $this->_ref= is_object($ref) ? get_class($ref) : $ref;
       $this->name= $name;
       $this->type= $type;
+      $this->_reflect= new ReflectionProperty($this->_ref, $this->name);
     }
 
     /**
@@ -58,12 +62,7 @@
      * @return  &lang.XPClass
      */
     public function getDeclaringClass() {
-      $class= $this->_ref;
-      while ($details= XPClass::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[0][$this->name])) return new XPClass($class);
-        $class= get_parent_class($class);
-      }
-      return xp::null();
+      return new XPClass($this->_reflect->getDeclaringClass()->getName());
     }
     
     /**
@@ -85,6 +84,16 @@
 
       return $instance->{$this->name};
     }
+
+    /**
+     * Retrieve this field's modifiers
+     *
+     * @see     xp://lang.reflect.Modifiers
+     * @return  int
+     */    
+    public function getModifiers() {
+      return $this->_reflect->getModifiers();
+    }
     
     /**
      * Creates a string representation of this field
@@ -92,7 +101,7 @@
      * @return  string
      */
     public function toString() {
-      return ('_' == $this->name{0} ? 'protected ' : 'public ').$this->getType().' $'.$this->name;
+      return Modifiers::stringOf($this->getModifiers()).' '.$this->getType().' $'.$this->name;
     }
   }
 ?>
