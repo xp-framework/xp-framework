@@ -123,6 +123,83 @@
     }
 
     /**
+     * Tests field's declaring class
+     *
+     * @see     xp://lang.reflect.Field#getDeclaringClass
+     */
+    #[@test]
+    public function declaredField() {
+      $this->assertEquals(
+        $this->class,
+        $this->class->getField('map')->getDeclaringClass()
+      );
+    }
+
+    /**
+     * Tests field's declaring class
+     *
+     * @see     xp://lang.reflect.Field#getDeclaringClass
+     */
+    #[@test]
+    public function inheritedField() {
+      $this->assertEquals(
+        $this->class->getParentClass(),
+        $this->class->getField('inherited')->getDeclaringClass()
+      );
+    }
+
+    /**
+     * Helper method
+     *
+     * @param   int modifiers
+     * @param   string field
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertFieldModifiers($modifiers, $fields) {
+      $this->assertEquals($modifiers, $this->class->getField($fields)->getModifiers());
+    }
+
+    /**
+     * Tests field modifiers
+     *
+     * @see     xp://lang.reflect.Field#getModifiers
+     */
+    #[@test]
+    public function publicField() {
+      $this->assertFieldModifiers(MODIFIER_PUBLIC, 'date');
+    }
+
+    /**
+     * Tests field modifiers
+     *
+     * @see     xp://lang.reflect.Field#getModifiers
+     */
+    #[@test]
+    public function protectedField() {
+      $this->assertFieldModifiers(MODIFIER_PROTECTED, 'size');
+    }
+
+    /**
+     * Tests field modifiers
+     *
+     * @see     xp://lang.reflect.Field#getModifiers
+     */
+    #[@test]
+    public function privateField() {
+      $this->assertFieldModifiers(MODIFIER_PRIVATE, 'factor');
+    }
+
+    /**
+     * Tests field modifiers
+     *
+     * @see     xp://lang.reflect.Field#getModifiers
+     */
+    #[@test]
+    public function staticField() {
+      $this->assertFieldModifiers(MODIFIER_PUBLIC | MODIFIER_STATIC, 'initializerCalled');
+    }
+
+    /**
      * Tests the field reflection for the "date" field
      *
      * @see     xp://lang.XPClass#getField
@@ -182,6 +259,32 @@
      */
     protected function assertMethodModifiers($modifiers, $method) {
       $this->assertEquals($modifiers, $this->class->getMethod($method)->getModifiers());
+    }
+
+    /**
+     * Tests method's declaring class
+     *
+     * @see     xp://lang.reflect.Method#getDeclaringClass
+     */
+    #[@test]
+    public function declaredMethod() {
+      $this->assertEquals(
+        $this->class,
+        $this->class->getMethod('setDate')->getDeclaringClass()
+      );
+    }
+
+    /**
+     * Tests method's declaring class
+     *
+     * @see     xp://lang.reflect.Method#getDeclaringClass
+     */
+    #[@test]
+    public function inheritedMethod() {
+      $this->assertEquals(
+        $this->class->getParentClass(),
+        $this->class->getMethod('clearDate')->getDeclaringClass()
+      );
     }
 
     /**
