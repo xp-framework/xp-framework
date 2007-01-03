@@ -86,6 +86,7 @@
       
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
+      strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
     }
     
     /**
@@ -96,6 +97,7 @@
     public function setXSLBuf($xsl) {
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->loadXML($xsl);
+      strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
     }
 
     /**
