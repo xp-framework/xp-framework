@@ -370,21 +370,45 @@
           </xsl:for-each>
         </ul>
       </xsl:if>
+
+      <xsl:if test="count(see) &gt; 0">
+        <h4>See also</h4>
+
+        <ul>
+          <xsl:for-each select="see">
+            <li>
+              <xsl:apply-templates select="."/>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
       
       <hr/>
     </xsl:for-each>
   </xsl:template>
   
-  <xsl:template match="see[@scheme = 'xp']">
+  <xsl:template match="see[@scheme = 'xp']" mode="short">
     <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
   </xsl:template>
 
-  <xsl:template match="see[@scheme = 'php']">
+  <xsl:template match="see[@scheme = 'php']" mode="short">
     <a href="http://php3.de/{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
   </xsl:template>
 
-  <xsl:template match="see[@scheme = 'http']">
+  <xsl:template match="see[@scheme = 'http']" mode="short">
     <a href="http://{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'xp']">
+    <a href="?{@href}"><xsl:value-of select="@href"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'php']">
+    <a href="http://php3.de/{@href}"><xsl:value-of select="@href"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'http']">
+    <a href="http://{@href}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
   <xsl:template match="/">
@@ -426,7 +450,7 @@
           <h3>See also</h3>
           
           <xsl:for-each select="doc/class/see">
-            <xsl:apply-templates select="."/>
+            <xsl:apply-templates select="." mode="short"/>
             <br/>
           </xsl:for-each>
         </xsl:if>
