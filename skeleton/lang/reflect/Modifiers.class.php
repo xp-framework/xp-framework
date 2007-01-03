@@ -23,6 +23,66 @@
   class Modifiers extends Object {
 
     /**
+     * Returns TRUE when the given modifiers include the public modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isPublic($m) {
+      return 0 === $m || MODIFIER_PUBLIC == ($m & MODIFIER_PUBLIC);
+    }
+
+    /**
+     * Returns TRUE when the given modifiers include the private modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isPrivate($m) {
+      return MODIFIER_PRIVATE == ($m & MODIFIER_PRIVATE);
+    }
+
+    /**
+     * Returns TRUE when the given modifiers include the protected modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isProtected($m) {
+      return MODIFIER_PROTECTED == ($m & MODIFIER_PROTECTED);
+    }
+
+    /**
+     * Returns TRUE when the given modifiers include the abstract modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isAbstract($m) {
+      return MODIFIER_ABSTRACT == ($m & MODIFIER_ABSTRACT);
+    }
+
+    /**
+     * Returns TRUE when the given modifiers include the final modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isFinal($m) {
+      return MODIFIER_FINAL == ($m & MODIFIER_FINAL);
+    }
+
+    /**
+     * Returns TRUE when the given modifiers include the static modifier.
+     *
+     * @param   int m modifiers bitfield
+     * @return  bool
+     */
+    public static function isStatic($m) {
+      return MODIFIER_STATIC == ($m & MODIFIER_STATIC);
+    }
+
+    /**
      * Retrieves modifier names as an array. The order in which the 
      * modifiers are returned is the following:
      *
@@ -31,7 +91,7 @@
      * </pre>
      * [access] is one on public, private or protected.
      *
-     * @param   int m modifier bitfield
+     * @param   int m modifiers bitfield
      * @return  string[]
      */
     public static function namesOf($m) {
@@ -50,7 +110,7 @@
     /**
      * Retrieves modifier names as a string
      *
-     * @param   int m modifier bitfield
+     * @param   int m modifiers bitfield
      * @return  string
      */
     public static function stringOf($m) {
