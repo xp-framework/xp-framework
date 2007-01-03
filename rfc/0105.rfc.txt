@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Jan  3 16:10:16 CET 2007
-@status: draft
+@status: discussion, ends Thu Jan  4 18:00:00 CET 2007
 @category: text.doclet
 
 Scope of Change
