@@ -7,6 +7,7 @@
   /**
    * Represents a class field
    *
+   * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @see      xp://lang.XPClass
    * @purpose  Reflection
    */
