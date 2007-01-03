@@ -24,7 +24,7 @@
      * @return  string
      */
     public function neededExtension() { 
-      return 'domxml';
+      return 'dom';
     }
   
     /**
@@ -44,5 +44,80 @@
     public function processorCharset() { 
       return 'utf-8';
     }
+    
+    public function nonXslMethod() {
+      return '@@ILLEGAL@@';
+    }
+    
+    #[@xslmethod]
+    public function XslMethod() {
+      return '@@SUCCESS@@';
+    }
+    
+    /**
+     * Test 
+     *
+     */
+    #[@test]
+    public function callXslHook() {
+      $this->processor->registerInstance('proc', $this);
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXslBuf('<?xml version="1.0"?>
+        <xsl:stylesheet
+         version="1.0"
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+         xmlns:php="http://php.net/xsl"
+        >
+          <xsl:template match="/">
+            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'proc\', \'XslMethod\')"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function callNonXslHook() {
+      $this->processor->registerInstance('proc', $this);
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXslBuf('<?xml version="1.0"?>
+        <xsl:stylesheet
+         version="1.0"
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+         xmlns:php="http://php.net/xsl"
+        >
+          <xsl:template match="/">
+            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'proc\', \'nonXslMethod\')"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function callNonRegisteredInstance() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXslBuf('<?xml version="1.0"?>
+        <xsl:stylesheet
+         version="1.0"
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+         xmlns:php="http://php.net/xsl"
+        >
+          <xsl:template match="/">
+            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'notregistered\')"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+    
   }
 ?>
