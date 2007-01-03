@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fix addRecipient() method in peer.mail.Message
+  (kiesel)
 - Make xml.DomXSLProcessor::setBase() work again
   (kiesel)
 - Show class' apidoc comment in xpcli --help|-?

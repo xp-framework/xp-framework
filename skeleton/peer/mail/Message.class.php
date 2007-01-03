@@ -279,8 +279,7 @@
      * @param   &peer.mail.InternetAddress adr address to add
      */
     public function addRecipient($type, $adr) {
-      $m= $this->$type;
-      $m[]= $adr;
+      $this->{$type}[]= $adr;
     }
     
     /**
@@ -290,7 +289,7 @@
      * @param   &peer.mail.InternetAddress[] adr addresses to add
      */
     public function addRecipients($type, $adr) {
-      $this->$type= array_merge($this->$type, $adr);
+      $this->{$type}= array_merge($this->{$type}, $adr);
     }
 
     /**
@@ -300,7 +299,7 @@
      * @return  &peer.mail.InternetAddress[] adr recipients of type
      */
     public function getRecipients($type) {
-      return $this->$type;
+      return $this->{$type};
     }
     
     /**
