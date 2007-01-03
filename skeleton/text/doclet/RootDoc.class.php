@@ -9,6 +9,7 @@
     'text.doclet.ClassIterator',
     'text.doclet.ClassDoc',
     'text.doclet.FieldDoc',
+    'text.doclet.PackageDoc',
     'text.doclet.MethodDoc'
   );
   
