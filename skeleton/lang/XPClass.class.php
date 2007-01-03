@@ -321,6 +321,17 @@
     }
 
     /**
+     * Retrieves the api doc comment for this class. Returns NULL if
+     * no documentation is present.
+     *
+     * @return  string
+     */
+    public function getComment() {
+      if (!($details= self::detailsForClass($this->name))) return NULL;
+      return $details['class'][DETAIL_COMMENT];
+    }
+
+    /**
      * Check whether an annotation exists
      *
      * @param   string name
@@ -445,12 +456,10 @@
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case T_DOC_COMMENT:
+            $comment= $tokens[$i][1];
+            break;
+
           case T_COMMENT:
-            // Apidoc comment
-            if (strncmp('/**', $tokens[$i][1], 3) == 0) {
-              $comment= $tokens[$i][1];
-              break;
-            }
 
             // Annotations
             if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
@@ -470,8 +479,13 @@
             break;
 
           case T_CLASS:
+          case T_INTERFACE:
             $details[$class]['class']= array(
-              DETAIL_COMMENT      => $comment,
+              DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
+                $comment, 
+                4,                              // "/**\n"
+                strpos($comment, '* @')- 2      // position of first details token
+              ))),
               DETAIL_ANNOTATIONS  => $annotations
             );
             $annotations= array();
@@ -497,11 +511,11 @@
               DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => 'void',
               DETAIL_THROWS       => array(),
-              DETAIL_COMMENT      => preg_replace('/\n     \* ?/', "\n", "\n".substr(
+              DETAIL_COMMENT      => trim(preg_replace('/\n     \* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
-              )),
+              ))),
               DETAIL_ANNOTATIONS  => $annotations,
               DETAIL_NAME         => $tokens[$i][1]
             );
