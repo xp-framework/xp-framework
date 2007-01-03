@@ -280,7 +280,7 @@
             
             case ST_FUNCTION_BODY.'&':
               // Convert &new to new
-              $t= '';
+              if ($tokens[$i+ 1][0] != T_WHITESPACE) $t= '';
               break;
             
             case ST_FUNCTION.'{':
