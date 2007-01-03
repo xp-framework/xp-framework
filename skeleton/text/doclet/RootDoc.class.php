@@ -48,7 +48,7 @@
    *   RootDoc::start(new TreeDoclet(), new ParamString());
    * </code>
    *
-   * @see      xp://Doclet
+   * @see      xp://text.doclet.Doclet
    * @purpose  Entry point
    */
   class RootDoc extends Object {
@@ -59,8 +59,8 @@
     /**
      * Start a doclet
      *
-     * @param   &Doclet doclet
-     * @param   &util.cmd.ParamString params
+     * @param   text.doclet.Doclet doclet
+     * @param   util.cmd.ParamString params
      * @return  bool
      * @throws  lang.XPException in case doclet setup fails
      */
@@ -158,7 +158,7 @@
      * Parses a class file and returns a classdoc element
      *
      * @param   string classname fully qualified class name
-     * @return  &ClassDoc
+     * @return  text.doclet.ClassDoc
      * @throws  lang.IllegalArgumentException if class could not be found or parsed
      */
     public function classNamed($classname) {
