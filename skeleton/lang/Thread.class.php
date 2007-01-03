@@ -20,12 +20,12 @@
    *       $ticks    = 0,
    *       $timeout  = 0;
    *       
-   *     function __construct($timeout) {
+   *     public function __construct($timeout) {
    *       $this->timeout= $timeout;
    *       parent::__construct('timer.'.$timeout);
    *     }
    *       
-   *     function run() {
+   *     public function run() {
    *       while ($this->ticks < $this->timeout) {
    *         Thread::sleep(1000);
    *         $this->ticks++;
@@ -35,9 +35,9 @@
    *     }
    *   }
    *   
-   *   $t[0]= &new TimerThread(5);
+   *   $t[0]= new TimerThread(5);
    *   $t[0]->start();
-   *   $t[1]= &new TimerThread(2);
+   *   $t[1]= new TimerThread(2);
    *   $t[1]->start();
    *   var_dump($t);
    *   for ($i= 0; $i < 3; $i++) {
@@ -68,7 +68,6 @@
      */
     public function __construct($name= '') {
       $this->name= $name;
-      
     }
     
     /**

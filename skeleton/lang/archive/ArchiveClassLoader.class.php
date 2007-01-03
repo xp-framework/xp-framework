@@ -35,7 +35,7 @@
     /**
      * Constructor
      * 
-     * @param   &lang.archive.Archive archive
+     * @param   lang.archive.Archive archive
      */
     public function __construct($archive) {
       parent::__construct();
@@ -78,7 +78,7 @@
      * Load the class by the specified name
      *
      * @param   string class fully qualified class name io.File
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
@@ -127,7 +127,7 @@
      * Retrieve a stream to the resource
      *
      * @param   string string name of resource
-     * @return  &io.Stream
+     * @return  io.Stream
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
@@ -152,7 +152,7 @@
      * Fetch instance of classloader by the path to the archive
      *
      * @param   string path
-     * @return  &lang.archive.ArchiveClassLoader
+     * @return  lang.archive.ArchiveClassLoader
      */
     public static function instanceFor($path) {
       static $pool= array();

@@ -11,8 +11,8 @@
    *
    * Usage example (Creating):
    * <code>
-   *   $a= &new Archive(new File('soap.xar'));
-   *   try(); {
+   *   $a= new Archive(new File('soap.xar'));
+   *   try {
    *     $a->open(ARCHIVE_CREATE);
    *     $a->add(
    *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'),
@@ -23,21 +23,21 @@
    *       'webservices.soap.SOAPClient'
    *     );
    *     $a->create();
-   *   } if (catch('Exception', $e)) {
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *   }
    * </code>
    *
    * Usage example (Extracting):
    * <code>
-   *   $a= &new Archive(new File('soap.xar'));
-   *   try(); {
+   *   $a= new Archive(new File('soap.xar'));
+   *   try {
    *     $a->open(ARCHIVE_READ);
    *     $c= array(
    *       'webservices.soap.SOAPMessage' => $a->extract('webservices.soap.SOAPMessage'),
    *       'webservices.soap.SOAPClient'  => $a->extract('webservices.soap.SOAPClient')
    *     );
-   *   } if (catch('Exception', $e)) {
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *   }
    *   var_dump($c);
@@ -57,7 +57,7 @@
     /**
      * Constructor
      *
-     * @param   &io.File file
+     * @param   io.File file
      */
     public function __construct($file) {
       $this->file= $file;
@@ -75,7 +75,7 @@
     /**
      * Add a file
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @param   string id the id under which this entry will be located
      * @return  bool success
      */
@@ -172,7 +172,7 @@
     /**
      * Get entry (iterative use)
      * <code>
-     *   $a= &new Archive(new File('port.xar'));
+     *   $a= new Archive(new File('port.xar'));
      *   $a->open(ARCHIVE_READ);
      *   while ($id= $a->getEntry()) {
      *     var_dump($id);
@@ -200,7 +200,7 @@
      * Extract a file's contents
      *
      * @param   string id
-     * @return  &string content
+     * @return  string content
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
     public function extract($id) {
@@ -230,7 +230,7 @@
      * Fetches a stream to the file in the archive
      *
      * @param   string id
-     * @return  &io.Stream
+     * @return  io.Stream
      * @throws  lang.ElementNotFoundException in case the specified id does not exist
      */
     public function getStream($id) {

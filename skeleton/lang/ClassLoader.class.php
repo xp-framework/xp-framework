@@ -55,7 +55,7 @@
     /**
      * Retrieve the default class loader
      *
-     * @return  &lang.ClassLoader
+     * @return  lang.ClassLoader
      */
     public static function getDefault() {
       static $instance= NULL;
@@ -85,7 +85,7 @@
      * Load the class by the specified name
      *
      * @param   string class fully qualified class name io.File
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
@@ -108,7 +108,7 @@
      *
      * @param   string class fully qualified class name
      * @param   string bytes sourcecode of the class
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      */
     protected function _defineClassFromBytes($class, $bytes) {
@@ -136,7 +136,7 @@
      * @param   string parent either sourcecode of the class or FQCN of parent
      * @param   string[] interfaces default NULL FQCNs of implemented interfaces
      * @param   string bytes default NULL inner sourcecode of class (containing {}) 
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */

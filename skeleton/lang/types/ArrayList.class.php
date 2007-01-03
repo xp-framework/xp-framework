@@ -55,7 +55,7 @@
     /**
      * Checks whether a given object is equal to this arraylist
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool
      */
     public function equals($cmp) {

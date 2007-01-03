@@ -23,7 +23,7 @@
     /**
      * Constructor
      *
-     * @param   &mixed ref
+     * @param   mixed ref
      * @param   string name
      * @param   string type default NULL
      */    
@@ -60,7 +60,7 @@
      * Returns the XPClass object representing the class or interface 
      * that declares the field represented by this Field object.
      *
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     public function getDeclaringClass() {
       return new XPClass($this->_reflect->getDeclaringClass()->getName());
@@ -70,8 +70,8 @@
      * Returns the value of the field represented by this Field, on the 
      * specified object.
      *
-     * @param   &lang.Object instance
-     * @return  &mixed  
+     * @param   lang.Object instance
+     * @return  mixed  
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     public function get($instance) {

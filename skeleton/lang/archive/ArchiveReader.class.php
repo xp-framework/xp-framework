@@ -57,7 +57,7 @@
     /**
      * Get entry (iterative use)
      * <code>
-     *   $a= &new Archive(new File('port.xar'));
+     *   $a= new Archive(new File('port.xar'));
      *   $a->open(ARCHIVE_READ);
      *   while ($id= $a->getEntry()) {
      *     var_dump($id);
@@ -85,7 +85,7 @@
      * Extract a file's contents
      *
      * @param   string id
-     * @return  &string content
+     * @return  string content
      */
     public function extract($id) {
       if (!$this->contains($id)) {
@@ -108,7 +108,7 @@
      * Fetches a stream to the file in the archive
      *
      * @param   string id
-     * @return  &io.Stream
+     * @return  io.Stream
      */
     public function getStream($id) {
       if (!$this->contains($id)) {

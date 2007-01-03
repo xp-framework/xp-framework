@@ -87,7 +87,7 @@
     /**
      * Compares this stacktrace element to another object
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool
      */
     public function equals($cmp) {

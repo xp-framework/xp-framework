@@ -11,7 +11,7 @@
    *
    * Example (get uptime information on a *NIX system)
    * <code>
-   *   $p= &new Process('uptime');
+   *   $p= new Process('uptime');
    *   $uptime= $p->out->readLine();
    *   $p->close();
    *
@@ -64,7 +64,7 @@
     /**
      * Get error stream
      *
-     * @return  &io.File STDERR
+     * @return  io.File STDERR
      */
     public function getErrorStream() {
       return $this->err;
@@ -73,7 +73,7 @@
     /**
      * Get input stream
      *
-     * @return  &io.File STDIN
+     * @return  io.File STDIN
      */
     public function getInputStream() {
       return $this->in;
@@ -82,7 +82,7 @@
     /**
      * Get output stream
      *
-     * @return  &io.File STDOUT
+     * @return  io.File STDOUT
      */
     public function getOutputStream() {
       return $this->out;

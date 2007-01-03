@@ -10,7 +10,7 @@
    * Represents a collection of objects of the same class (or subclass)
    *
    * <code>
-   *   $coll= &Collection::forClass('rdbms.DBConnection');
+   *   $coll= Collection::forClass('rdbms.DBConnection');
    *
    *   $coll->add(new SybaseConnection(...));       // Works
    *   $coll->add(new MySQLConnection(...));        // Works, too
@@ -43,7 +43,7 @@
      * Returns a new Collection object for a specified class
      *
      * @param   string class the fully qualified class name
-     * @return  &lang.Collection
+     * @return  lang.Collection
      * @throws  lang.ClassNotFoundException
      */
     public static function forClass($class) {
@@ -74,7 +74,7 @@
     /**
      * Returns the element's class name
      *
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     public function getElementClass() {
       return XPClass::forName($this->class);
@@ -92,8 +92,8 @@
     /**
      * Adds an element to this list
      *
-     * @param   &lang.Object element
-     * @return  &lang.Object the added element
+     * @param   lang.Object element
+     * @return  lang.Object the added element
      * @throws  lang.IllegalArgumentException
      */
     public function add($element) {
@@ -111,8 +111,8 @@
     /**
      * Adds an element to the beginning of this list
      *
-     * @param   &lang.Object element
-     * @return  &lang.Object the prepended element
+     * @param   lang.Object element
+     * @return  lang.Object the prepended element
      * @throws  lang.IllegalArgumentException
      */
     public function prepend($element) {
@@ -176,8 +176,8 @@
      * the specified element.
      *
      * @param   int index
-     * @param   &lang.Object element
-     * @return  &lang.Object the element previously at the specified position.
+     * @param   lang.Object element
+     * @return  lang.Object the element previously at the specified position.
      */
     public function set($index, $element) {
       $orig= $this->list[$index];
@@ -189,7 +189,7 @@
      * Returns the element at the specified position in this list.
      *
      * @param   int index
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function get($index) {
       return $this->list[$index];
@@ -201,7 +201,7 @@
      * from their indices).
      *
      * @param   int index
-     * @return  &lang.Object the element that was removed from the list
+     * @return  lang.Object the element that was removed from the list
      */
     public function remove($index) {
       $element= $this->list[$index];
@@ -231,7 +231,7 @@
     /**
      * Checks if a value exists in this array
      *
-     * @param   &lang.Object element
+     * @param   lang.Object element
      * @return  bool
      */
     public function contains($element) {
@@ -244,7 +244,7 @@
     /**
      * Searches for the first occurence of the given argument
      *
-     * @param   &lang.Object element
+     * @param   lang.Object element
      * @return  int offset where the element was found or FALSE
      */
     public function indexOf($element) {
@@ -266,7 +266,7 @@
     /**
      * Searches for the last occurence of the given argument
      *
-     * @param   &lang.Object element
+     * @param   lang.Object element
      * @return  int offset where the element was found or FALSE
      */
     public function lastIndexOf($element) {
@@ -292,7 +292,7 @@
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @param   &lang.Object collection
+     * @param   lang.Object collection
      * @return  bool
      */
     public function equals($collection) {

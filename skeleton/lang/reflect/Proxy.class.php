@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &lang.reflect.InvocationHandler handler
+     * @param   lang.reflect.InvocationHandler handler
      */
     public function __construct($handler) {
       $this->_h= $handler;
@@ -34,9 +34,9 @@
      * specified class loader and will implement all of the supplied 
      * interfaces (also loaded by the classloader).
      *
-     * @param   &lang.ClassLoader classloader
+     * @param   lang.ClassLoader classloader
      * @param   lang.XPClass[] interfaces names of the interfaces to implement
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
     public static function getProxyClass($classloader, $interfaces) {
@@ -137,10 +137,10 @@
      * that dispatches method invocations to the specified invocation
      * handler.
      *
-     * @param   &lang.ClassLoader classloader
+     * @param   lang.ClassLoader classloader
      * @param   lang.XPClass[] interfaces
-     * @param   &lang.reflect.InvocationHandler handler
-     * @return  &lang.XPClass
+     * @param   lang.reflect.InvocationHandler handler
+     * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
     public static function newProxyInstance($classloader, $interfaces, $handler) {

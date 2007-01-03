@@ -40,9 +40,9 @@
      *   var_dump($method->invoke($obj= NULL));
      * </code>
      *
-     * @param   &lang.Object obj
+     * @param   lang.Object obj
      * @param   mixed[] args default array()
-     * @return  &mixed
+     * @return  mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     public function invoke($obj, $args= array()) {

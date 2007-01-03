@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &mixed ref
+     * @param   mixed ref
      */    
     public function __construct($ref) {
       parent::__construct($ref, '__construct');
@@ -31,14 +31,13 @@
      *
      * Example:
      * <code>
-     *   $class= &XPClass::forName('lang.Object');
-     *   $constructor= &$class->getConstructor();
+     *   $constructor= XPClass::forName('utl.Binford')->getConstructor();
      *
      *   var_dump($constructor->newInstance());
      * </code>
      *
      * @param   mixed* args
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function newInstance() {
       $paramstr= '';

@@ -22,7 +22,7 @@
     /**
      * Indicates whether some other object is "equal to" this one.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals($cmp);
@@ -38,7 +38,7 @@
     /**
      * Returns the runtime class of an object.
      *
-     * @return  &lang.XPClass runtime class
+     * @return  lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
     public function getClass();

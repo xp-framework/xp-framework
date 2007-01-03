@@ -31,7 +31,7 @@
     /**
      * Constructor
      *
-     * @param   &mixed ref
+     * @param   mixed ref
      * @param   string name
      */    
     public function __construct($ref, $name) {
@@ -95,7 +95,7 @@
      * Retrieve one of this method's argument by its position
      *
      * @param   int pos
-     * @return  &lang.reflect.Argument
+     * @return  lang.reflect.Argument
      */
     public function getArgument($pos) {
       if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
@@ -160,7 +160,7 @@
      * Returns the XPClass object representing the class or interface 
      * that declares the method represented by this Method object.
      *
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     public function getDeclaringClass() {
       return new XPClass($this->_reflect->getDeclaringClass()->getName());

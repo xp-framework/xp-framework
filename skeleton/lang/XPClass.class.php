@@ -48,7 +48,7 @@
     /**
      * Constructor
      *
-     * @param   &mixed ref either a class name or an object
+     * @param   mixed ref either a class name or an object
      */
     public function __construct($ref) {
       $this->_objref= $ref;
@@ -68,7 +68,7 @@
     /**
      * Return whether an object equals this class
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool
      */
     public function equals($cmp) {
@@ -116,7 +116,7 @@
      * </code>
      *
      * @param   mixed* args
-     * @return  &lang.Object 
+     * @return  lang.Object 
      */
     public function newInstance() {
       if (!$this->hasConstructor()) return $this->_reflect->newInstance();
@@ -157,7 +157,7 @@
      * method does not exist.
      *
      * @param   string name
-     * @return  &lang.Method
+     * @return  lang.Method
      * @see     xp://lang.reflect.Method
      */
     public function getMethod($name) {
@@ -194,7 +194,7 @@
      * Retrieves this class' constructor. Returns NULL if no constructor
      * exists.
      *
-     * @return  &lang.reflect.Constructor
+     * @return  lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
      */
     public function getConstructor() {
@@ -232,7 +232,7 @@
      * field does not exist
      *
      * @param   string name
-     * @return  &lang.reflect.Field
+     * @return  lang.reflect.Field
      */
     public function getField($name) {
       if (!$this->hasField($name)) return NULL;
@@ -258,7 +258,7 @@
      * Retrieve the parent class's class object. Returns NULL if there
      * is no parent class.
      *
-     * @return  &lang.XPClass class object
+     * @return  lang.XPClass class object
      */
     public function getParentclass() {
       $parent= $this->_reflect->getParentClass();
@@ -291,7 +291,7 @@
      *   var_dump($class->isInstance(new Object()));    // FALSE
      * </code>
      *
-     * @param   &lang.Object obj
+     * @param   lang.Object obj
      * @return  bool
      */
     public function isInstance($obj) {
@@ -395,7 +395,7 @@
     /**
      * Retrieve the class loader a class was loaded with
      *
-     * @return  &lang.ClassLoader
+     * @return  lang.ClassLoader
      */
     public function getClassLoader() {
       return self::_classLoaderFor($this->name);
@@ -405,7 +405,7 @@
      * Fetch a class' classloader by its name
      *
      * @param   string name fqcn of class
-     * @return  &lang.ClassLoader
+     * @return  lang.ClassLoader
      */
     protected static function _classLoaderFor($name) {
       if (!($cl= xp::registry('classloader.'.$name))) {
@@ -597,7 +597,7 @@
      *
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
      * @param   lang.ClassLoader classloader default NULL
-     * @return  &lang.XPClass class object
+     * @return  lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
     public static function forName($name, $classloader= NULL) {
@@ -629,7 +629,7 @@
      * Returns an array containing class objects representing all the 
      * public classes
      *
-     * @return  &lang.XPClass[] class objects
+     * @return  lang.XPClass[] class objects
      */
     public static function getClasses() {
       $ret= array();
