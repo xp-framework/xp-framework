@@ -12,6 +12,7 @@
     'io.FileUtil',
     'xml.Tree',
     'text.doclet.Doclet',
+    'util.collections.HashSet',
     'io.collections.CollectionComposite', 
     'io.collections.FileCollection', 
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -125,6 +126,7 @@
     function classNode($classdoc) {
       $n= new Node('class', NULL, array(
         'name'    => $classdoc->qualifiedName(),
+        'package' => $classdoc->containingPackage()->name(),
         'type'    => $classdoc->classType()
       ));
 
@@ -206,9 +208,45 @@
       $this->build= new Folder($root->option('build', 'build'));
       $this->build->exists() || $this->build->create();
       
+      $packages= array();
       while ($root->classes->hasNext()) {
-        $this->marshalClassDoc($root->classes->next());
+        $class= $root->classes->next();
+        
+        // Add packages
+        $hash= $class->containingPackage()->hashCode();
+        if (!isset($packages[$hash])) {
+          $packages[$hash]= array(
+            'name'    => $class->containingPackage()->name(),
+            'classes' => array()
+          );
+        }
+        $packages[$hash]['classes'][$class->name()]= $class->classType();
+        
+        // Marshal class
+        $this->marshalClassDoc($class);
         xp::gc();
+      }
+      
+      // Marshal packages
+      foreach ($packages as $package) {
+        $tree= new Tree('doc');
+        $p= $tree->addChild(new Node('package', NULL, array('name' => $package['name'])));
+        foreach ($package['classes'] as $name => $type) {
+          $p->addChild(new Node('class', NULL, array(
+            'name' => $name,
+            'type' => $type
+          )));
+        }
+
+        // Write to file
+        $out= new File($this->build->getURI().$package['name'].'.xml');
+        FileUtil::setContents(
+          $out,
+          $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
+        );
+
+        delete($out);
+        delete($tree);
       }
     }
 

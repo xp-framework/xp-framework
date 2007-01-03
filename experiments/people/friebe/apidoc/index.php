@@ -14,15 +14,15 @@
       
       $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
       $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
-
-      if (0 != sscanf($request->getQueryString(), '%[^<[]', $class) && $class) {
-        if (!file_exists($xml= $builddir.basename($class).'.xml')) {
-          return throw(new HttpScriptletException(htmlspecialchars($class).' does not exist!', HTTP_NOT_FOUND));
+      
+      if (0 != sscanf($request->getQueryString(), '%[^:]:%[^<[]', $type, $arg) && $arg) {
+        if (!file_exists($xml= $builddir.basename($arg).'.xml')) {
+          return throw(new HttpScriptletException(htmlspecialchars($arg).' does not exist!', HTTP_NOT_FOUND));
         }
         
         $proc= &new DomXSLProcessor();
         $proc->setXMLFile($xml);
-        $proc->setXSLFile($basedir.'apidoc.xsl');
+        $proc->setXSLFile($basedir.$type.'.xsl');
         $proc->run();
         $response->write($proc->output());
         return;
@@ -33,8 +33,13 @@
       $c->open();
       $response->write('<dir>');
       while (NULL !== ($element= &$c->next())) {
-        $class= basename($element->getURI());
-        $response->write('<li><a href="?'.basename($class, '.xml').'">'.$class.'</a></li>');
+        $package= basename(basename($element->getURI()), '.xml');
+        
+        // HACK
+        $indicator= substr($package, strrpos($package, '.')+ 1, 1);
+        if (strtolower($indicator) != $indicator) continue;
+        
+        $response->write('<li><a href="?package:'.$package.'">'.$package.'</a></li>');
       }
       $response->write('</dir>');
       $c->close();

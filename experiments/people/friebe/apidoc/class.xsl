@@ -60,7 +60,7 @@
       <a>
         <xsl:if test="contains($type, '.')">
           <xsl:attribute name="href">
-            <xsl:value-of select="concat('?', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
+            <xsl:value-of select="concat('?class:', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
           </xsl:attribute>
         </xsl:if>
         
@@ -388,7 +388,7 @@
   </xsl:template>
   
   <xsl:template match="see[@scheme = 'xp']" mode="short">
-    <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+    <a href="?class:{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'php']" mode="short">
@@ -438,6 +438,9 @@
         
       </td>
       <td id="context">
+        <h3>Navigation</h3>
+        <a href="?package:{doc/class/@package}"><xsl:value-of select="doc/class/@package"/></a><br/>
+
         <h3>Jump to</h3>
         <a href="#__constants">Constants</a><br/>
         <a href="#__fields">Fields</a><br/>
