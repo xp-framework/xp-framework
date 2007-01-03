@@ -54,7 +54,7 @@
     /**
      * Return the TagletManager's instance
      * 
-     * @return  &text.doclet.TagletManager
+     * @return  text.doclet.TagletManager
      */
     public static function getInstance() {
       return self::$instance;
@@ -64,7 +64,7 @@
      * Add a new tag
      *
      * @param   string kind
-     * @param   &text.doclet.Taglet taglet
+     * @param   text.doclet.Taglet taglet
      */
     public function addCustomTag($kind, $taglet) {
       $this->taglets[$kind]= $taglet;
@@ -73,10 +73,10 @@
     /**
      * Factory method
      *
-     * @param   &text.doclet.Doc holder
+     * @param   text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &text.doclet.Tag
+     * @return  text.doclet.Tag
      */
     public function make($holder, $kind, $text) {
       if (!isset($this->taglets[$kind])) {

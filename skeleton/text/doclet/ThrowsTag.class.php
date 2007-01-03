@@ -19,7 +19,7 @@
     /**
      * Constructor
      *
-     * @param   &ClassDoc exception
+     * @param   text.doclet.ClassDoc exception
      * @param   string label
      */
     public function __construct($exception, $label) {

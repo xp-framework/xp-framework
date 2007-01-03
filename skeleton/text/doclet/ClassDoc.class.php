@@ -41,7 +41,7 @@
     /**
      * Set rootdoc
      *
-     * @param   &RootDoc root
+     * @param   text.doclet.RootDoc root
      */
     public function setRoot($root) {
       parent::setRoot($root);

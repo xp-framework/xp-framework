@@ -17,15 +17,14 @@
     /**
      * Create tag from text
      *
-     * @param   &text.doclet.Doc holder
+     * @param   text.doclet.Doc holder
      * @param   string kind
      * @param   string text
-     * @return  &text.doclet.Tag
+     * @return  text.doclet.Tag
      */ 
     public function tagFrom($holder, $kind, $text) {
       list($class, $condition)= explode(' ', $text);
       return new ThrowsTag($holder->root->classNamed($class), $condition);
     }
-
   } 
 ?>

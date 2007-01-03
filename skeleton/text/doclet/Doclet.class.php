@@ -13,10 +13,9 @@
    * <code>
    *   class NameListDoclet extends Doclet {
    * 
-   *     function start(&$root) {
+   *     function start($root) {
    *       while ($root->classes->hasNext()) {
-   *         $classdoc= &$root->classes->next();
-   *         echo $classdoc->qualifiedName(), "\n";
+   *         echo $root->classes->next()->qualifiedName(), "\n";
    *       }
    *     }
    *   }
@@ -30,7 +29,7 @@
     /**
      * Generate documentation here.
      *
-     * @param   &text.doclet.RootDoc root
+     * @param   text.doclet.RootDoc root
      * @return  bool TRUE on success
      */ 
     public function start($root) {
@@ -40,9 +39,9 @@
     /**
      * Get class iterator
      *
-     * @param   &text.doclet.RootDoc root
+     * @param   text.doclet.RootDoc root
      * @param   string[] classnames passed via parameters
-     * @return  &text.doclet.ClassIterator
+     * @return  text.doclet.ClassIterator
      * @throws  lang.XPException in case the iterator cannot be created.
      */ 
     public function iteratorFor($root, $classes) {

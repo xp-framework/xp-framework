@@ -7,7 +7,12 @@
   uses('text.doclet.TagletManager');
 
   /**
+   * Base class for all other Doc classes
    *
+   * @see      xp://text.doclet.ClassDoc
+   * @see      xp://text.doclet.FieldDoc
+   * @see      xp://text.doclet.PackageDoc
+   * @see      xp://text.doclet.MethodDoc
    * @see      http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
    * @purpose  Base class
    */
@@ -21,7 +26,7 @@
     /**
      * Set rootdoc
      *
-     * @param   &RootDoc root
+     * @param   text.doclet.RootDoc root
      */
     public function setRoot($root) {
       $this->root= $root;
@@ -88,7 +93,7 @@
      * tags only of the specified kind, otherwise all.
      *
      * @param   string kind default NULL kind of tags, e.g. "param"
-     * @return  Tag[]
+     * @return  text.doclet.Tag[]
      */
     public function tags($kind= NULL) {
       $tags= $this->parseDetail('tags');
