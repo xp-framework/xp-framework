@@ -86,6 +86,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0105.diff
   Diff for text.doclet which supports package-info.xp parsing
 
+- http://xp-framework.net/rfc/contrib/rfc0105-new-apidoc-screenshot.png
+  Screenshot of how the new apidocs might look like when viewing packages
+
 Comments
 --------
 - friebe, Wed Jan  3 16:25:57 CET 2007
