@@ -1,0 +1,89 @@
+RFC 0105: Package-Info
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Jan  3 16:10:16 CET 2007
+@status: draft
+@category: text.doclet
+
+Scope of Change
+---------------
+For the apidoc generator to embed documentation about a package (e.g.,
+lang, lang.reflect, webservices.json, ...) special package-info files
+will be added to skeleton.
+
+
+Rationale
+---------
+Complete documentation.
+
+
+Functionality
+-------------
+The file will be called "package-info.php" and thus resemble the convention
+used in JavaDoc >= 1.5.0.
+
+Example:
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * The reflection package offers runtime access to class details.
+   *
+   * Common use-cases
+   *
+   * Instantiating a class by its name:
+   * <code>
+   *   $now= XPClass::forName('util.Date')->newInstance();
+   * </Code>
+   *
+   * Invoking a method by its name:
+   * <code>
+   *   $c= XPClass::forName('util.Binford');
+   *   $c->getMethod('setPoweredBy')->invoke($c->newInstance(), array(6100));
+   * </code>
+   *
+   * Retrieving annotations:
+   * <code>
+   *   $s= $service->getClass()->getMethod($invoked)->getAnnotation('security');
+   *   if (!in_array($role, $s['roles'])) {
+   *     throw new IllegalAccessException('Access denied to '.$invoked);
+   *   }
+   * </code>
+   *
+   * @see      xp://lang.XPClass
+   * @purpose  Reflection
+   */
+  package lang.reflect {
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#packagecomment
+  Package Comment Files
+
+Comments
+--------
+
+<EOF>
