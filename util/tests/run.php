@@ -10,15 +10,15 @@
     'util.Properties'
   );
   
-  // {{{ proto void addTestClass(&unittest.TestSuite suite, &lang.XPClass class [, array arguments])
+  // {{{ proto void addTestClass(unittest.TestSuite suite, lang.XPClass class [, array arguments])
   //     Adds a test
-  function addTestClass(&$suite, &$class, $arguments= array()) {
+  function addTestClass($suite, $class, $arguments= array()) {
     try {
       $ignored= $suite->addTestClass($class, $arguments);
-    } catch(NoSuchElementException $e) {
+    } catch (NoSuchElementException $e) {
       Console::writeLine('*** Warning: ', $e->getMessage());
       exit(-4);
-    } catch(IllegalArgumentException $e) {
+    } catch (IllegalArgumentException $e) {
       Console::writeLine('*** Error: ', $e->getMessage());
       exit(-3);
     }
@@ -35,7 +35,7 @@
   // }}}
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLinef(<<<__
 Console-based test runner for XP unit tests
@@ -84,7 +84,7 @@ __
 
     $tests[]= array($name, explode(',', $p->value('arguments', 'a', '')));
   } else {                          // Property-file based
-    $config= &new Properties($p->value(1));
+    $config= new Properties($p->value(1));
 
     Console::writeLinef('===> Using configuration from %s', $p->value(1));
     if ($p->exists(2)) {
@@ -112,12 +112,11 @@ __
   Console::writeLine('===> Setting up suite');
   $suite= new TestSuite();
   foreach ($tests as $test) {
-    $class= &XPClass::forName($test[0]);
-    addTestClass($suite, $class, $test[1]);
+    addTestClass($suite, XPClass::forName($test[0]), $test[1]);
   }
 
   Console::writeLine('===> Running test suite');
-  $result= &$suite->run();
+  $result= $suite->run();
   Console::write($result->toString());
   // }}}
 ?>
