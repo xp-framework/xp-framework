@@ -3,6 +3,7 @@ package net.xp_framework.turpitude.samples;
 import javax.script.*;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import net.xp_framework.turpitude.PHPObject;
 import net.xp_framework.turpitude.PHPEvalException;
 import net.xp_framework.turpitude.PHPCompileException;
 
@@ -49,6 +50,8 @@ public class ScriptExec {
             System.out.println("done evaluating, return value " + retval);
         else 
             System.out.println("done evaluating, return value " + retval.getClass() + " : " + retval);
+        if (retval instanceof PHPObject)
+            ((PHPObject)retval).dump();
     }
 
     public static void echoUsage() {

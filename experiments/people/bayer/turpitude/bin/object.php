@@ -1,15 +1,27 @@
 <?php
   class Test {
-    var $stringvar = "stringval",
-        $arrayvar = array(),
-        $hashvar = array(),
-        $longvar = 1337;
+    public    $stringvar = "stringval";
+    public    $arrayvar = array();
+    public    $hashvar = array();
+    public    $objvar = NULL;
+    public    $nullval = NULL;
+    public    $longvar = 1337;
+    protected $protected = "protectedvar";
+    private   $private = "privatevar";
 
-    function Test() {
+    function __construct() {
       $this->arrayvar = array(1,2,3,4);
       $this->hashvar = array("fruit" => "apple", "planet" => "mars");
     }
+
+    function setObj($o) {
+      $this->objvar = $o;
+    }
   }
 
-  return new Test();
+  $a = new Test();
+  $b = new Test();
+  $a->setObj($b);
+
+  return $a;
 ?>
