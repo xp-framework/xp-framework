@@ -45,7 +45,7 @@
       return DBXmlGenerator::createFromTable(
         $t, 
         'localhost',
-        'MIGRAENE'
+        'FOOBAR'
       )->doc;
     }
 
@@ -97,7 +97,7 @@
      */
     #[@test]
     public function correctDatabaseNameSet() {
-      $this->assertEquals('MIGRAENE', $this->xpath->query('string(/document/table/@database)'));
+      $this->assertEquals('FOOBAR', $this->xpath->query('string(/document/table/@database)'));
     }
 
     /**
@@ -120,7 +120,6 @@
         $this->xpath->query('string(/document/table/attribute[3]/@typename)'));
       $this->assertEquals('int', 
         $this->xpath->query('string(/document/table/attribute[2]/@typename)'));
-
     }    
 
     /**
@@ -214,7 +213,7 @@
     }
 
     /**
-     * Checks whether identity is set wrong
+     * Checks whether nullable is set wrong
      *
      */
     #[@test, @expect('unittest.AssertionFailedError')]
@@ -224,7 +223,7 @@
     }
 
     /**
-     * Checks whether nullable is set correctly
+     * Checks whether dbhost is set correctly
      *
      */
     #[@test]
