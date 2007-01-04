@@ -33,7 +33,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -42,21 +42,21 @@
     /**
      * Create a request object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcRequest
+     * @return  scriptlet.rpc.AbstractRpcRequest
      */
     protected function _request() {}
 
     /**
      * Create a response object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcResponse
+     * @return  scriptlet.rpc.AbstractRpcResponse
      */
     protected function _response() {}
 
     /**
      * Create a message object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     protected function _message() {}
 
@@ -64,8 +64,8 @@
      * Handle GET requests. XML-RPC requests are only sent via HTTP POST,
      * so GET isn't supported.
      *
-     * @param   &scriptlet.rpc.AbstractRpcRequest request
-     * @param   &scriptlet.rpc.AbstractRpcResponse response
+     * @param   scriptlet.rpc.AbstractRpcRequest request
+     * @param   scriptlet.rpc.AbstractRpcResponse response
      */
     public function doGet($request, $response) {
       throw(new IllegalAccessException('GET is not supported'));
@@ -92,8 +92,8 @@
      * Handle POST requests. The POST data carries the XML-RPC
      * request.
      *
-     * @param   &webservices.xmlrpc.rpc.XmlRpcRequest request
-     * @param   &webservices.xmlrpc.rpc.XmlRpcResponse response
+     * @param   scriptlet.rpc.AbstractRpcRequest request
+     * @param   scriptlet.rpc.AbstractRpcResponse response
      */
     public function doPost($request, $response) {
       $this->cat && $response->setTrace($this->cat);
@@ -125,7 +125,7 @@
         );
         $hasFault= TRUE;
         
-      } catch (Exception $e) {
+      } catch (XPException $e) {
       
         $answer->setFault(
           HTTP_INTERNAL_SERVER_ERROR,
@@ -146,8 +146,8 @@
     /**
      * Calls the handler that the action reflects to
      *
-     * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
-     * @return  &mixed result of method call
+     * @param   scriptlet.rpc.AbstractRpcMessage message object (from request)
+     * @return  mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */

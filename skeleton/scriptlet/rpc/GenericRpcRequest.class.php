@@ -24,7 +24,7 @@
     /**
      * Set callback object.
      *
-     * @param   &mixed object
+     * @param   mixed object
      */
     public function setCallback($object) {
       $this->_cb= $object;
@@ -33,7 +33,7 @@
     /**
      * Create message from request
      *
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     public function getMessage() {
       return $this->_cb->getMessage($this);

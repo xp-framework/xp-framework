@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &scriptlet.rpc.RpcFault fault
+     * @param   scriptlet.rpc.RpcFault fault
      */
     public function __construct($fault) {
       parent::__construct($fault->faultString);
@@ -28,7 +28,7 @@
     /**
      * Get Fault
      *
-     * @return  &scriptlet.rpc.RpcFault
+     * @return  scriptlet.rpc.RpcFault
      */
     public function getFault() {
       return $this->fault;

@@ -19,7 +19,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -28,7 +28,7 @@
     /**
      * Create message from request
      *
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     public function getMessage() {
       // Override this. You must set the 'class' and 'method' members of

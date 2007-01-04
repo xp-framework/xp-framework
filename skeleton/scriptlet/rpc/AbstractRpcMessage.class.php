@@ -17,7 +17,7 @@
      * Create message from string
      *
      * @param   string string
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     public static function fromString($string);
     
@@ -51,14 +51,14 @@
     /**
      * Set Data
      *
-     * @param   &lang.Object data
+     * @param   lang.Object data
      */
     public function setData($data);
 
     /**
      * Get Data
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function getData();
     
@@ -107,7 +107,7 @@
     /**
      * Get fault
      *
-     * @return  &scriptlet.rpc.RpcFault
+     * @return  scriptlet.rpc.RpcFault
      */
     public function getFault();        
   }
