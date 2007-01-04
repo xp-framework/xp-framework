@@ -122,7 +122,7 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
                             // convert member object
                             jobject mo = zval_to_jobject(env, member);
                             // key string
-                            jstring keystr env->NewStringUTF(prop_name);
+                            jstring keystr = env->NewStringUTF(prop_name);
                             // set property in PHPObject
                             env->CallVoidMethod(obj, setPropID, keystr, mo);
                         }
