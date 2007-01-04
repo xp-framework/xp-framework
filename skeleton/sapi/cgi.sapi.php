@@ -7,20 +7,30 @@
   // {{{ proto array getallheaders(void)
   //     See php://getallheaders
   if (!function_exists('getallheaders')) { function getallheaders() {
+    $cookie= '';
     foreach ($_COOKIE as $k => $v) {
-      $cookie= '&'.$k.'='.$v;
+      $cookie.= '&'.$k.'='.$v;
     }
-    return array(
-      'Accept'           => $_ENV['HTTP_ACCEPT'],
-      'Accept-Charset'   => $_ENV['HTTP_ACCEPT_CHARSET'],
-      'Accept-Encoding'  => $_ENV['HTTP_ACCEPT_ENCODING'],
-      'Accept-Language'  => $_ENV['HTTP_ACCEPT_LANGUAGE'],
-      'Connection'       => $_ENV['HTTP_KEEP_ALIVE'],
+    
+    // Provide certain headers in Apache-style
+    $headers= array(
+      'Accept'           => @$_ENV['HTTP_ACCEPT'],
+      'Accept-Charset'   => @$_ENV['HTTP_ACCEPT_CHARSET'],
+      'Accept-Encoding'  => @$_ENV['HTTP_ACCEPT_ENCODING'],
+      'Accept-Language'  => @$_ENV['HTTP_ACCEPT_LANGUAGE'],
+      'Connection'       => @$_ENV['HTTP_KEEP_ALIVE'],
       'Cookie'           => substr($cookie, 1),
-      'Host'             => $_ENV['HTTP_HOST'],
-      'Referer'          => $_ENV['HTTP_REFERER'],
-      'User-Agent'       => $_ENV['HTTP_USER_AGENT'],
+      'Host'             => @$_ENV['HTTP_HOST'],
+      'Referer'          => @$_ENV['HTTP_REFERER'],
+      'User-Agent'       => @$_ENV['HTTP_USER_AGENT'],
     );
+    
+    // Provide them in standard naming (remove HTTP_ at the beginning)
+    foreach ($_ENV as $header => $value) {
+      if (0 === strncmp('HTTP_', $header, 5)) $headers[substr($header, 5)]= $value;
+    }
+    
+    return $headers;
   }}
   // }}}
   

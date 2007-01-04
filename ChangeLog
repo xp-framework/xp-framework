@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Make arbitrary request headers available in CGI sapi
+  (kiesel)
 - Implement more stream wrapper functions in XpXarLoader, providing a
   more complete stream wrapper support (file_exists now works)
   (kiesel)
