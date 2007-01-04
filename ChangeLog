@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+Version 5.1.1, released 2007-01-04
+----------------------------------
+SVN version: 9114
+
 - Make arbitrary request headers available in CGI sapi
   (kiesel)
 - Implement more stream wrapper functions in XpXarLoader, providing a
