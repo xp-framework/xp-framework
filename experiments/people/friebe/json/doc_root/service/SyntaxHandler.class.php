@@ -14,12 +14,11 @@
     /**
      * Returns highlighted html
      *
-     * @access  public
      * @param   string code
      * @return  string
      */
     #[@webmethod]
-    function highlight($code) {
+    public function highlight($code) {
       return @highlight_string($code, TRUE);
     }
   }
