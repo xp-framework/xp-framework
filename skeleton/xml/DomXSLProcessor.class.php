@@ -86,7 +86,6 @@
       
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
-      strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
     }
     
     /**
