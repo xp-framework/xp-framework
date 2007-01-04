@@ -145,11 +145,7 @@
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        try {
-          $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-        } catch (ClassNotFoundException $e) {
-          throw($e);
-        }
+        $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
 
         $this->category[$section]= $catclass->newInstance(
           $this->defaultIdentifier,
@@ -168,11 +164,7 @@
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
           if (!isset($class[$appender])) {
-            try {
-              $class[$appender]= XPClass::forName($appender);
-            } catch (ClassNotFoundException $e) {
-              throw($e);
-            }
+            $class[$appender]= XPClass::forName($appender);
           }
           
           // Read flags string, evaluate it
