@@ -32,7 +32,7 @@
   define('IMAGE_FOLDER',      dirname(__FILE__).'/../doc_root/albums/');
   
   // {{{ main
-  $param= &new ParamString();
+  $param= new ParamString();
   if (!$param->exists(1) || $param->exists('help', '?')) {
     Console::writeLine(<<<__
 Imports a directory of directories of images into a collection of albums
@@ -50,7 +50,7 @@ __
   }
 
   // Check origin folder
-  $origin= &new Folder($param->value(1));
+  $origin= new Folder($param->value(1));
   if (!$origin->exists()) {
     Console::writeLinef(
       'The specified folder "%s" does not exist', 
@@ -63,10 +63,10 @@ __
   $name= preg_replace('/[^a-z0-9-]/i', '_', $origin->dirname);
   
   // Create destination folder if it doesn't exist yet
-  $destination= &new Folder(IMAGE_FOLDER.$name);
-  try(); {
+  $destination= new Folder(IMAGE_FOLDER.$name);
+  try {
     $destination->exists() || $destination->create(0755);
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -74,25 +74,24 @@ __
   Console::writeLine('===> Starting import at ', date('r'));
   
   // Set up processor
-  $processor= &new ImageProcessor();
+  $processor= new ImageProcessor();
   $processor->addFilter(new SharpenFilter());
   
   // Check if debugging output is wanted
   $cat= NULL;
   if ($param->exists('debug')) {
-    $l= &Logger::getInstance();
-    $cat= &$l->getCategory();
+    $cat= Logger::getInstance()->getCategory();
     $cat->addAppender(new ConsoleAppender());
     $processor->setTrace($cat);
   }
 
   // Check if collection already exists
-  $serialized= &new File(DATA_FOLDER.$name.'.dat');
+  $serialized= new File(DATA_FOLDER.$name.'.dat');
   if ($serialized->exists()) {
     Console::writeLine('---> Found existing collection');
-    try(); {
+    try {
       $collection= unserialize(FileUtil::getContents($serialized));
-    } if (catch('IOException', $e)) {
+    } catch (IOException $e) {
       $e->printStackTrace();
       exit(-1);
     }
@@ -106,17 +105,17 @@ __
     Console::writeLine('---> Creating new collection...');
 
     // Create collection
-    $collection= &new EntryCollection();
+    $collection= new EntryCollection();
     $collection->setName($name);
     $collection->setTitle($param->value('title', 't', $origin->dirname));
     $collection->setCreatedAt(new Date($param->value('date', 'D', $origin->createdAt())));
   }
   
   // Create subfolder where album entries will be stored in
-  $subfolder= &new Folder(DATA_FOLDER.$name);
-  try(); {
+  $subfolder= new Folder(DATA_FOLDER.$name);
+  try {
     $subfolder->exists() || $subfolder->create(0755);
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -127,7 +126,7 @@ __
   }
 
   // Find all albums
-  $strategy= &new GroupByHourStrategy();
+  $strategy= new GroupByHourStrategy();
   while ($entry= $origin->getEntry()) {
     $qualified= $origin->getURI().$entry.DIRECTORY_SEPARATOR;
     if (!is_dir($qualified)) continue;
@@ -136,7 +135,7 @@ __
     $albumname= preg_replace('/[^a-z0-9-]/i', '_', $entry);
     Console::writeLine('     >> Creating album "', $entry, '" (name= "', $albumname, '")');
 
-    $album= &$collection->addEntry(new Album());
+    $album= $collection->addEntry(new Album());
     $album->setName($name.'/'.$albumname);
 
     // Read the title title.txt if existant, use the directory name otherwise
@@ -152,28 +151,28 @@ __
     }
 
     // Point processor at new destination
-    $albumDestination= &new Folder($destination->getURI().$albumname);
-    try(); {
+    $albumDestination= new Folder($destination->getURI().$albumname);
+    try {
       $albumDestination->exists() || $albumDestination->create(0755);
-    } if (catch('IOException', $e)) {
+    } catch (IOException $e) {
       $e->printStackTrace();
       exit(-1);
     }
     $processor->setOutputFolder($albumDestination);
 
     // Check to see if there is a "highlights" folder
-    $highlights= &new Folder($qualified.HIGHLIGHTS_FOLDER);
+    $highlights= new Folder($qualified.HIGHLIGHTS_FOLDER);
     if ($highlights->exists()) {
-      for ($i= &new FilteredFolderIterator($highlights, FOLDER_FILTER); $i->hasNext(); ) {
-        try(); {
-          $highlight= &$processor->albumImageFor($i->next());
-        } if (catch('ImagingException', $e)) {
+      for ($i= new FilteredFolderIterator($highlights, FOLDER_FILTER); $i->hasNext(); ) {
+        try {
+          $highlight= $processor->albumImageFor($i->next());
+        } catch (ImagingException $e) {
           $e->printStackTrace();
           exit(-2);
         }
 
         if (!$highlight->exifData->dateTime) {
-          $highlight->exifData->dateTime= &$album->getDate();
+          $highlight->exifData->dateTime= $album->getDate();
         }
 
         $album->addHighlight($highlight);
@@ -184,19 +183,19 @@ __
     $needsHighlights= HIGHLIGHTS_MAX - $album->numHighlights();
     
     $images= array();
-    for ($i= &new FilteredFolderIterator(new Folder($qualified), FOLDER_FILTER); $i->hasNext(); ) {
-      try(); {
-        $image= &$processor->albumImageFor($i->next());
-      } if (catch('ImagingException', $e)) {
+    for ($i= new FilteredFolderIterator(new Folder($qualified), FOLDER_FILTER); $i->hasNext(); ) {
+      try {
+        $image= $processor->albumImageFor($i->next());
+      } catch (ImagingException $e) {
         $e->printStackTrace();
         exit(-2);
       }
 
       if (!$image->exifData->dateTime) {
-        $image->exifData->dateTime= &$album->getDate();
+        $image->exifData->dateTime= $album->getDate();
       }
 
-      $images[]= &$image;
+      $images[]= $image;
       Console::writeLine('     >> Added image ', $image->getName(), ' to album ', $albumname);
 
       // Check if more highlights are needed
@@ -209,7 +208,7 @@ __
     
     // Sort images by their creation date (from EXIF data)
     usort($images, create_function(
-      '&$a, &$b', 
+      '$a, $b', 
       'return $b->exifData->dateTime->compareTo($a->exifData->dateTime);'
     ));
 
@@ -221,7 +220,7 @@ __
     for ($i= 0, $s= sizeof($images); $i < $s; $i++) {
       $key= $strategy->groupFor($images[$i]);
       if (!isset($chapter[$key])) {
-        $chapter[$key]= &$album->addChapter(new AlbumChapter($key));
+        $chapter[$key]= $album->addChapter(new AlbumChapter($key));
       }
 
       $chapter[$key]->addImage($images[$i]);
@@ -231,10 +230,10 @@ __
     $base= dirname($serialized->getURI()).DIRECTORY_SEPARATOR.$album->getName();
     Console::writeLine('---> Saving album "', $albumname);
     $cat && $cat->debug($album);
-    try(); {
+    try {
       FileUtil::setContents(new File($base.'.dat'), serialize($album));
       FileUtil::setContents(new File($base.'.idx'), serialize($name));
-    } if (catch('IOException', $e)) {
+    } catch (IOException $e) {
       $e->printStackTrace();
       exit(-1);
     }
@@ -243,22 +242,22 @@ __
 
   // Sort entries by their creation date
   usort($collection->entries, create_function(
-    '&$a, &$b', 
-    '$date= &$b->getDate(); return $date->compareTo($a->getDate());'
+    '$a, $b', 
+    '$date= $b->getDate(); return $date->compareTo($a->getDate());'
   ));
 
 
   // Store collection
   Console::writeLine('---> Saving collection to ', $serialized->getURI());
-  try(); {
+  try {
     FileUtil::setContents($serialized, serialize($collection));
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }
   
   // Regenerate indexes
-  $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));
+  $index= IndexCreator::forFolder(new Folder(DATA_FOLDER));
   $index->setEntriesPerPage(ENTRIES_PER_PAGE);
   $index->setTrace($cat);
   $index->regenerate();

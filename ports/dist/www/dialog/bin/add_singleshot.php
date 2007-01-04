@@ -25,7 +25,7 @@
   define('IMAGE_FOLDER',      dirname(__FILE__).'/../doc_root/shots/');
   
   // {{{ main
-  $param= &new ParamString();
+  $param= new ParamString();
   if (!$param->exists(1) || $param->exists('help', '?')) {
     Console::writeLine(<<<__
 Imports a directory of images into an album
@@ -44,7 +44,7 @@ __
   }
 
   // Check origin file
-  $origin= &new File($param->value(1));
+  $origin= new File($param->value(1));
   if (!$origin->exists()) {
     Console::writeLinef(
       'The specified file "%s" does not exist', 
@@ -58,10 +58,10 @@ __
   $name= preg_replace('/[^a-z0-9-]/i', '_', $filename);
   
   // Create destination folder if it doesn't exist yet
-  $destination= &new Folder(IMAGE_FOLDER);
-  try(); {
+  $destination= new Folder(IMAGE_FOLDER);
+  try {
     $destination->exists() || $destination->create(0755);
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -69,20 +69,19 @@ __
   Console::writeLine('===> Starting import at ', date('r'));
 
   // Set up processor
-  $processor= &new ShotProcessor();
+  $processor= new ShotProcessor();
   $processor->addFilter(new SharpenFilter());
   $processor->setOutputFolder($destination);
   
   // Check if debugging output is wanted
   $cat= NULL;
   if ($param->exists('debug')) {
-    $l= &Logger::getInstance();
-    $cat= &$l->getCategory();
+    $cat= Logger::getInstance()->getCategory();
     $cat->addAppender(new ConsoleAppender());
     $processor->setTrace($cat);
   }
   
-  with ($shot= &new SingleShot()); {
+  with ($shot= new SingleShot()); {
     $shot->setName($name);
     $shot->setFileName($origin->getFilename());
     $shot->setTitle($param->value('title', 't', $origin->filename));
@@ -96,32 +95,32 @@ __
       $shot->setDescription($param->value('desc', 'E', ''));
     }
 
-    try(); {
-      $image= &$processor->albumImageFor($origin->getURI());
-    } if (catch('ImagingException', $e)) {
+    try {
+      $image= $processor->albumImageFor($origin->getURI());
+    } catch (ImagingException $e) {
       $e->printStackTrace();
       exit(-2);
     }
 
     if (!$image->exifData->dateTime) {
-      $image->exifData->dateTime= &$shot->getDate();
+      $image->exifData->dateTime= $shot->getDate();
     }
     
     $shot->setImage($image);
   }
 
   // Save shot
-  $serialized= &new File(DATA_FOLDER.$name.'.dat');
+  $serialized= new File(DATA_FOLDER.$name.'.dat');
   $cat && $cat->debug($shot);
-  try(); {
+  try {
     FileUtil::setContents($serialized, serialize($shot));
-  } if (catch('IOException', $e)) {
+  } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
   }
 
   // Regenerate indexes
-  $index= &IndexCreator::forFolder(new Folder(DATA_FOLDER));
+  $index= IndexCreator::forFolder(new Folder(DATA_FOLDER));
   $index->setEntriesPerPage(ENTRIES_PER_PAGE);
   $index->setTrace($cat);
   $index->regenerate();
