@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implement more stream wrapper functions in XpXarLoader, providing a
+  more complete stream wrapper support (file_exists now works)
+  (kiesel)
 - Fix addRecipient() method in peer.mail.Message
   (kiesel)
 - Make xml.DomXSLProcessor::setBase() work again

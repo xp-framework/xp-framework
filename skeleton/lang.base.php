@@ -114,7 +114,7 @@
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($path.DIRECTORY_SEPARATOR.$filename);
             continue(2);
-          } else if (is_file($path) && XpXarLoader::stream_provides_file('xar://'.$path.'?'.$filename)) {
+          } else if (is_file($path) && file_exists('xar://'.$path.'?'.$filename)) {
             require_once('xar://'.$path.'?'.$filename);
             continue(2);
           }
@@ -161,7 +161,7 @@
     // {{{ public object __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
-      if (NULL !== xp::$registry['null']) {
+      if (NULL !== @xp::$registry['null']) {
         throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
       }
     }
@@ -260,14 +260,28 @@
     }
     // }}}
     
-    // {{{ static bool stream_provides_file(string path)
-    //     Check whether file lives in archive. This method must be provided as PHP only supports
-    //     file_exists() on streams with PHP 5
-    public static function stream_provides_file($path) {
-      list($archive, $filename)= sscanf($path, 'xar://%[^?]?%[^$]');
-      
-      $current= XpXarLoader::acquire($archive, $filename);
-      return isset($current['index'][$filename]);
+    // {{{ <string,int> stream_stat()
+    //     Retrieve status of stream
+    public function stream_stat() {
+      $current= XpXarLoader::acquire($this->archive);
+      return array(
+        'size'  => $current['index'][$this->filename][0]
+      );
+    }
+    // }}}
+    
+    // {{{ <string,int> url_stat(string path)
+    //     Retrieve status of url
+    function url_stat($path) {
+      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
+      $this->archive= $archive;
+      $this->filename= $file;
+      $current= XpXarLoader::acquire($this->archive);
+
+      if (!isset($current['index'][$this->filename])) return FALSE;
+      return array(
+        'size'  => $current['index'][$this->filename][0]
+      );
     }
     // }}}
   }
@@ -322,7 +336,7 @@
           }
           
           break;
-        } else if (is_file($path) && XpXarLoader::stream_provides_file($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
