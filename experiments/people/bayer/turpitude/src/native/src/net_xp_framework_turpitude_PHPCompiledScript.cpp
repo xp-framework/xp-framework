@@ -41,14 +41,13 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
         fci_cache.function_handler = (zend_function*)compiled_op_array;
         compiled_op_array->type = ZEND_USER_FUNCTION;
 
-        //test
-        zval *new_variable;
-        MAKE_STD_ZVAL(new_variable);
-        ZVAL_LONG(new_variable, 10);
+        // generate the context and inject it as a function parameter
+        zval* turpitude_context = generateTurpitudeContext(env, ctx);
         fci.param_count = 1;
-        zval** param = &new_variable;
+        zval** param = &turpitude_context;
         fci.params = &param;
 
+        // use zend_call_function to execute the script
         zend_call_function(&fci, &fci_cache TSRMLS_CC);
        
         zend_llist_destroy(&global_vars);

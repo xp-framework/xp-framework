@@ -23,6 +23,7 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 }
 
 jobject zval_to_jobject(JNIEnv* env, zval* val);
+zval* generateTurpitudeContext(JNIEnv* env, jobject ctx);
 
 
 #endif

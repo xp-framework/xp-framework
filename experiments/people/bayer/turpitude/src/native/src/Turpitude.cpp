@@ -1,5 +1,39 @@
 #include <Turpitude.h>
 
+zval* generateTurpitudeContext(JNIEnv* env, jobject ctx) {
+    zval* context;
+    MAKE_STD_ZVAL(context);
+    ZVAL_LONG(context, 10);
+
+    // create class entry
+    zend_class_entry* ce;
+    ce = (zend_class_entry*)emalloc(sizeof(zend_class_entry));
+    ce->type = ZEND_USER_CLASS;
+    ce->name = "TurpitudeContext";
+    ce->name_length = strlen(ce->name);
+    ce->parent = NULL;
+    ce->refcount = 1;
+    ce->constants_updated = 1;
+    ce->ce_flags = 0;
+    ce->interfaces = NULL;
+    ce->num_interfaces = 0;
+    ce->filename = "turpitude generated";
+    ce->line_start = 1;
+    ce->line_end = 1;
+    ce->doc_comment = NULL;
+    ce->doc_comment_len = 0;
+
+
+    //zend_object_std_init(ce);
+    // how to create a class entry?
+
+    return context;
+}
+
+
+/**
+ * copies the contents of a zval into a jobject
+ */
 jobject zval_to_jobject(JNIEnv* env, zval* val) {
     if (NULL == val)
         return NULL;
@@ -77,6 +111,10 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             // get class entry and object value
             zend_class_entry* ce = Z_OBJCE_P(val);
             zend_object_value* zo = &(val->value.obj);
+
+            // ############ remove
+            printf("=====> %s\n", ce->doc_comment);
+            // ############ remove
 
             // allocate class and object
             jstring phpclassname = env->NewStringUTF(ce->name);
