@@ -64,7 +64,7 @@ div#search {
 }
 
 div#search input {
-  height: 13px;
+  height: 15px;
 }
 /* }}} */
 
@@ -102,7 +102,13 @@ div#menu li a {
   font-weight: bold;
   text-decoration: none;
 
-  background: #dff4dd url(image/bg_topmenu.gif) repeat-x top left;
+  border-right: 1px solid;
+  border-top: 1px solid white;
+  border-left: 1px solid white;
+}
+
+div#menu ul li#select a {
+  background: #dff4dd url(image/bg_topmenu_w.gif) repeat-x top left;
   border-right: 1px solid;
   border-top: 1px solid white;
   border-left: 1px solid white;
@@ -202,6 +208,7 @@ div#footer {
   border-top: 1px solid;
   font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
   text-align: right;
+  padding-right: 10px;
 }
 
 div#footer a {
