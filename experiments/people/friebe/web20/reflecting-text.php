@@ -14,13 +14,13 @@
   );
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLine(<<<__
 Creates "Web 2.0"-style reflecting text
 
 Usage:
-$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-b bgcolor] [-o output-file]
+$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-b bgcolor] [-o output-file] [-p percent]
 
 Parameters:
   * Font is a TrueType[TM] font file (default: c:\\windows\\fonts\\trebuc.ttf)
@@ -28,6 +28,7 @@ Parameters:
   * Color (font color) is a hex color - as in HTML (default: #990000)
   * BgColor (background color) is a hex color - as in HTML (default: #ffffff)
   * Output-file is the filename to output to (default: out.png)
+  * Percent is how strong reflection should be (default: 60)
 __
     );
     exit(1);
@@ -38,19 +39,20 @@ __
   $size= $p->value('size', 's', 30);
   $color= $p->value('color', 'c', '#990000');
   $bgcolor= $p->value('bg', 'b', '#ffffff');
+  $percent= $p->value('percent', 'p', 60);
   
   // First, calculate boundaries
   // Note: There should probably be a TrueTypeFont::calculateDimensions()
   // method or something - we'll need an RFC for this:)
-  $font= &new TrueTypeFont($name, $size, 0);
+  $font= new TrueTypeFont($name, $size, 0);
   $boundaries= imagettfbbox($font->size, $font->angle, $font->name, $text);
   $padding= 10;
   $width= abs($boundaries[4] - $boundaries[0]);
   $height= abs($boundaries[5] - $boundaries[1]);
   
   // Create an image
-  $img= &Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
-  $bg= &new Color($bgcolor);
+  $img= Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
+  $bg= new Color($bgcolor);
   $img->fill($img->allocate($bg), 0, 0);
   
   // Draw text onto it
@@ -65,7 +67,7 @@ __
 
   // Flip text
   for (
-    $i= 0, $transparent= 0, $step= 100 / $font->size; 
+    $i= 0, $transparent= 0, $step= (40 + $percent) / $font->size; 
     $i <= $font->size; 
     $i++
   ) {
@@ -86,7 +88,7 @@ __
   }
 
   // Save
-  $out= &new File($p->value('out', 'o', 'out.png'));
+  $out= new File($p->value('out', 'o', 'out.png'));
   $img->saveTo(new PngStreamWriter($out));
   Console::writeLine('Results written to ', $out->getURI());
   // }}}
