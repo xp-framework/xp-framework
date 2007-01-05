@@ -20,7 +20,7 @@
 Creates "Web 2.0"-style reflecting text
 
 Usage:
-$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-b bgcolor] [-o output-file] [-p percent]
+$ php reflecting-text.php "Text" [-f font] [-s size] [-c color] [-b bgcolor] [-o output-file] [-p percent] [-h hover]
 
 Parameters:
   * Font is a TrueType[TM] font file (default: c:\\windows\\fonts\\trebuc.ttf)
@@ -29,6 +29,7 @@ Parameters:
   * BgColor (background color) is a hex color - as in HTML (default: #ffffff)
   * Output-file is the filename to output to (default: out.png)
   * Percent is how strong reflection should be (default: 60)
+  * Hover is how high the text will hover over the shadow (default: 0)
 __
     );
     exit(1);
@@ -40,7 +41,8 @@ __
   $color= $p->value('color', 'c', '#990000');
   $bgcolor= $p->value('bg', 'b', '#ffffff');
   $percent= $p->value('percent', 'p', 60);
-  
+  $hover= $p->value('hover', 'h', 0);
+
   // First, calculate boundaries
   // Note: There should probably be a TrueTypeFont::calculateDimensions()
   // method or something - we'll need an RFC for this:)
@@ -48,7 +50,7 @@ __
   $boundaries= imagettfbbox($font->size, $font->angle, $font->name, $text);
   $padding= 10;
   $width= abs($boundaries[4] - $boundaries[0]);
-  $height= abs($boundaries[5] - $boundaries[1]);
+  $height= abs($boundaries[5] - $boundaries[1]) + $hover;
   
   // Create an image
   $img= Image::create($width+ $padding * 2, $height * 2 + $padding * 2, IMG_TRUECOLOR);
@@ -71,7 +73,7 @@ __
     $i <= $font->size; 
     $i++
   ) {
-    $y= $baseline + $font->size - $i+ 1;
+    $y= $baseline + $font->size + $hover +- $i+ 1;
     $img->copyFrom(
       $img, 
       $padding,                      // dst_x
@@ -86,7 +88,7 @@ __
     $img->draw(new Line($img->allocate($bg, floor($transparent)), $padding, $y, $padding+ $width, $y));
     $transparent= min($transparent+ $step, 127);
   }
-
+  
   // Save
   $out= new File($p->value('out', 'o', 'out.png'));
   $img->saveTo(new PngStreamWriter($out));
