@@ -89,10 +89,20 @@ reproduzieren.
 Obwohl der Versuch zend\_eval\_string zu nutzen fehlschlug konnten einige geschriebene Komponenten f"ur weitere
 Ans"atze weiterverwandt werden, insbesondere die Funktionen \emph{zval\_to\_jobject} zur Konvertierung des Zend-Engine
 Datentypes \emph{zval} in den JNI-Datentyp \emph{jobject}, und \emph{java\_throw}, die dass werfen von Java-Exceptions
-aus dem nativen Teil heraus vereinfacht. Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen, die
+aus dem nativen Teil heraus vereinfacht. 
+Das Entwickeln der Funktion \emph{zval\_to\_jobject} erwies sich aufgrund der fehlenden Dokumentation der Zend-Engine als
+unerwartet kompliziert, insbesondere das Auslesen von Objekten aus zvals erfordert intimes Wissen "uber Zend-Engine Interna.
+So werden beispielsweise Eigenschaften, \emph{Properties} genannt, analog zu den Elementen von Arrays intern 
+in einer \emph{Hashtable} gespeichert, wobei die Schl"ussel-Namen den Namen der Eigenschaft darstellen. Allerdings wird
+dieser Schl"ussel im Falle von privaten und gesch"utzten (\emph{protected}) Eigenschaften gesondert kodiert, in diesem
+Falle beginnt er mit einem Nullbyte ($\backslash$0), gefolgt vom Namen der Objektklasse und einem weiteren Nullbyte und dem eigentlichen
+Namen des Properties. Verst"andlicherweise sorgt diese Kodierung in C, wo das Nullbyte als Endzeichen f"ur Strings verwandt wird,
+f"ur einige Probleme.
+Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen die
 Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten sind. PHP-Skripte werden "ublicherweise
 innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
 Die PHPScriptEngine filtert diese Zeichen automatisch aus dem Quelltextstrom.
+
 
 Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ullen wurde nach einer Alternative gesucht, und
 die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
