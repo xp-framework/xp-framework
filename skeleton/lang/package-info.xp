@@ -1,0 +1,75 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The lang package contains the core classes of the XP framework.
+ *
+ * Basics
+ * ======
+ * This includes the Object class from which all other classes extend 
+ * and the Throwable class from which all exceptions and errors extend.
+ * Both of these classes implement the Generic interface.
+ *
+ * Methods available in all objects and defined via the Generic
+ * interface are:
+ * <ul>
+ *   <li>public string hashCode()</li>
+ *   <li>public bool equals(lang.Object cmp)</li>
+ *   <li>public string getClassName()</li>
+ *   <li>public lang.XPClass getClass()</li>
+ *   <li>public string toString()</li>
+ * </pre>
+ *
+ * Note: getClassName() is not only a shorthand for getClass()->getName() 
+ * but also significantly faster than the latter.
+ *
+ * Classes and reflection
+ * ======================
+ * Every object has an XPClass instance associated with it, providing
+ * reflective information about the runtime class. This includes a fully
+ * qualified class name (e.g. "util.Date"), annotations support, class
+ * fields,  methods, constructors and their modifiers as well as methods 
+ * to dynamically access these.
+ *
+ * Class loading
+ * =============
+ * The lang package contains the default classloader class which takes 
+ * care of loading classes from the file system. Loading classes from 
+ * archive files (xars) is supported by the lang.archive package.
+ *
+ * Process control
+ * ===============
+ * The Process and Thread classes implement process execution and 
+ * control. They are complemented with the System class which provides
+ * information about the underlying operating system.
+ *
+ * Classes loaded per default
+ * ==========================
+ * These classes are guaranteed to be loaded at any given time:
+ * 
+ * lang.Generic, lang.Object, lang.StackTraceElement, lang.Throwable, 
+ * lang.Error, lang.XPException, lang.reflect.Argument, 
+ * lang.reflect.Routine, lang.reflect.Method, lang.reflect.Field, 
+ * lang.reflect.Constructor, lang.reflect.Modifiers, lang.XPClass
+ * lang.ClassLoader, lang.archive.ArchiveReader, 
+ * lang.archive.ArchiveClassLoader.
+ *
+ * These exceptions are guaranteed to be loaded at any given time:
+ *
+ * lang.NullPointerException, lang.IllegalAccessException, 
+ * lang.IllegalArgumentException, lang.IllegalStateException, 
+ * lang.FormatException, lang.ClassNotFoundException.
+ * 
+ * @see      http://xp-framework.info/xml/xp.en_US/news/view?11
+ * @see      xp://lang.Throwable
+ * @see      xp://lang.Object
+ * @see      xp://lang.Generic
+ * @see      xp://lang.XPClass
+ * @see      xp://lang.Process
+ * @purpose  Core
+ */
+package lang {
+}

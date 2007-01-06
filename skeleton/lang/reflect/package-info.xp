@@ -1,0 +1,76 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The reflection package offers runtime access to class details. Most 
+ * of the classes are supplements to lang.XPClass, instances of which
+ * can be retrieved either by $object->getClass(), XPClass::forName()
+ * or by ClassLoader methods.
+ *
+ * Common use-cases
+ * ================
+ * Instantiating a class by its name:
+ * <code>
+ *   $now= XPClass::forName('util.Date')->newInstance();
+ * </Code>
+ *
+ * Invoking a method by its name:
+ * <code>
+ *   $c= XPClass::forName('util.Binford');
+ *   $c->getMethod('setPoweredBy')->invoke($c->newInstance(), array(6100));
+ * </code>
+ *
+ * Retrieving annotations:
+ * <code>
+ *   $s= $service->getClass()->getMethod($invoked)->getAnnotation('security');
+ *   if (!in_array($role, $s['roles'])) {
+ *     throw new IllegalAccessException('Access denied to '.$invoked);
+ *   }
+ * </code>
+ *
+ * Dynamic Proxies
+ * ===============
+ * The proxy class serves the purpose of dynamically creating instances
+ * of interfaces. Use cases are remote method invocations, deferred 
+ * initialization or debugging.
+ *
+ * Around-Invoke:
+ * <code>
+ *  // Exchange the following:
+ *  $account= new Account();
+ *
+ *  // ...with this:
+ *  $account= Proxy::newProxyInstance(
+ *    ClassLoader::getDefault(),
+ *    array(XPClass::forName('com.acme.banking.IAccount')),
+ *    newinstance('lang.reflect.InvocationHandler', array(new Account()), '{
+ *      public function __construct($wrapped) {
+ *        $this->wrapped= $wrapped;
+ *      }
+ *
+ *      public function invoke($proxy, $method, $args) {
+ *        if ("transfer" == $method && $args[0] > 1000000) {
+ *          throw new IllegalAccessException("Too much money");
+ *        }
+ *        return call_user_func_array(array($this->wrapped, $method), $args);
+ *      }
+ *    }')
+ *  );
+ *
+ *  $account->transfer(50);
+ *  $account->transfer(1000001);   // *BLAM*
+ * </code>
+ *
+ * @see      http://xp-framework.net/rfc/0030
+ * @see      xp://lang.Generic#getClass
+ * @see      xp://lang.XPClass#forName
+ * @see      xp://lang.ClassLoader#loadClass
+ * @see      xp://lang.ClassLoader#defineClass
+ * @see      xp://lang.reflect.Proxy
+ * @purpose  Reflection
+ */
+package lang.reflect {
+}

@@ -1,0 +1,19 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The archive package adds support for loading classes from archives,
+ * so-called "xar"s.
+ *
+ * This is supported natively by the uses() statement.
+ *
+ * @see      http://xp-framework.info/xml/xp.en_US/news/view?119
+ * @see      http://xp-framework.info/xml/xp.en_US/news/view?122
+ * @see      http://xp-framework.net/rfc/0074
+ * @purpose  Class archive
+ */
+package lang.archive {
+}
