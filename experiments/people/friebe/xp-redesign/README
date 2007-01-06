@@ -1,0 +1,73 @@
+XP Websites
+========================================================================
+$Id$
+
+
+Sitemap
+-------
+* Technology (planet-xp.net)
+  - Technologies
+    Environment (XP Update, IDE integration, xpcli, xpunit)
+    J2EE integration (EASC)
+    Lucene integration
+    Peking
+    Scheduler (Quartz port)
+    Framework
+    Installer
+    O/R mapping generator
+    
+  - Downloads
+    Environment
+    Framework (->)
+    Portage (->)
+    SVN checkout
+
+  - Showcases
+    Web 2.0 (Prototype.js, JSON & XP)
+    XML marshalling
+
+  - Community
+    Futurama (RFCs, strategy documentation, language)
+    Bugs
+    Technology blogs
+    Mailing list
+  
+  - Reference
+    Licence
+    Idea / History
+    Documentation guidelines
+    Credits
+
+
+* Framework (xp-framework.net)
+  - Use cases
+    User documentation on how to solve common tasks
+
+  - Skeleton classes
+    class apidocs
+    package info
+    RFCs by package (->)
+
+  - Framework news
+  
+  - Developers
+    Unittests
+    Coding standards
+    Best practices (performance, readability, design patterns)
+
+
+* Portage (xp-forge.net)
+  - Ports classes
+    Apidocs
+    Package info
+
+  - Selected ports' homepages (subdomains of xp-forge.net)
+    News
+    Download
+
+  - Experiments
+
+  - Examples
+    Code snippets
+
+<EOF>
