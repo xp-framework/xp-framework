@@ -7,7 +7,7 @@ Sitemap
 -------
 * Technology (planet-xp.net)
   - Technologies
-    Environment (XP Update, IDE integration, xpcli, xpunit)
+    Environment (XP Update, IDE integration, xpcli, xpunit, xar)
     J2EE integration (EASC)
     Lucene integration
     Peking
@@ -41,7 +41,14 @@ Sitemap
 
 * Framework (xp-framework.net)
   - Use cases
-    User documentation on how to solve common tasks
+    User documentation on how to solve common tasks, webservices,
+    cli, J2EE integration, database access, O/R mapping, XML,
+    imaging, GUIs, I/O, ...
+
+  - Core functionality
+    newinstance(), raise(), uses(), ...
+    SAPIs
+    Annotations
 
   - Skeleton classes
     class apidocs
@@ -49,11 +56,15 @@ Sitemap
     RFCs by package (->)
 
   - Framework news
+    RFCs (->)
+    New packages
+    New classes
   
   - Developers
     Unittests
     Coding standards
     Best practices (performance, readability, design patterns)
+    Further reading (Extreme programming, Unicode, language design, ...)
 
 
 * Portage (xp-forge.net)
