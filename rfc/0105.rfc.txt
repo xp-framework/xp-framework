@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Jan  3 16:10:16 CET 2007
-@status: discussion, ends Thu Jan  4 18:00:00 CET 2007
+@status: implemented, Sat Jan  6 17:06:27     2007
 @category: text.doclet
 
 Scope of Change
@@ -94,5 +94,10 @@ Comments
 - friebe, Wed Jan  3 16:25:57 CET 2007
   Because the file actually does not contain valid PHP sourcecode, I'd
   prefer to call the file "package-info.xp"...
+
+- friebe, Sat Jan  6 17:06:35     2007
+  Added package-info.xp files to the lang package and its subpackages,
+  lang.reflect, lang.archive and lang.types.
+  Other packages will be done while we're going:)
 
 <EOF>
