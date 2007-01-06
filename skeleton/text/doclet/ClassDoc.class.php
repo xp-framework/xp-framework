@@ -137,7 +137,7 @@
      * @return  text.doclet.PackageDoc
      */
     public function containingPackage() {
-      return new PackageDoc(substr($this->qualifiedName, 0, strrpos($this->qualifiedName, '.')));
+      return $this->root->packageNamed(substr($this->qualifiedName, 0, strrpos($this->qualifiedName, '.')));
     }
     
     /**
