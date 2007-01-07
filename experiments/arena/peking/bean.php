@@ -66,18 +66,18 @@ __
     foreach ($class->getMethods() as $method) {
       if (!$method->hasAnnotation('remote')) continue;
 
-      $rstr->write("    /**\n     * @access  public\n");
+      $rstr->write("    /**\n");
       foreach ($method->getArguments() as $argument) {
         $rstr->write('     * @param  '.$argument->getType().' '.$argument->getName()."\n");
       }
       $rstr->write('     * @return '.$method->getReturnType()."\n");
       $rstr->write("     */\n");
-      $rstr->write('    function '.$method->getName(TRUE).'(');
+      $rstr->write('    public function '.$method->getName(TRUE).'(');
       $args= '';
       foreach ($method->getArguments() as $argument) {
         $args.= '$'.$argument->getName().', ';
       }
-      $rstr->write(rtrim($args, ', ').") {}\n");
+      $rstr->write(rtrim($args, ', ').");\n");
     }
     $rstr->write("  }\n?>");
     $rstr->close();
@@ -88,9 +88,8 @@ __
     $istr->open(STREAM_MODE_WRITE);
     $implementation= $short.'Impl';
     $istr->write("<?php\n");
-    $istr->write("  uses('".$package.$short."');\n");
-    $istr->write('  class '.$implementation.' extends '.$short." {\n");
-    $istr->write('  } implements("'.$short.'.class.php", \''.$package.$interface."');\n?>");
+    $istr->write("  uses('".$package.$short.'\', \''.$package.$interface."');\n");
+    $istr->write('  class '.$implementation.' extends '.$short.' implements '.$interface." {}\n");
     $istr->close();
   }
 
