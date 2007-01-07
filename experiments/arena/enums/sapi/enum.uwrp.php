@@ -13,17 +13,6 @@
       $buffer     = '',
       $offset     = 0;
 
-    function &registry($enum, $value= NULL) {
-      static $e= array();
-
-      if (is_array($value)) {
-        $e[$enum]= $value;
-      } elseif (is_int($value)) {
-        return $e[$enum][$value];
-      }
-      return $e[$enum];
-    }
-
     function stream_open($path, $mode, $options, &$open) {
       $url= parse_url($path);
       
@@ -69,21 +58,22 @@
             $state= ENUM_PARSER_ST_BODY;
             
             // static initializer
-            $this->buffer.= 'function __static() { uwrp·enum::registry(__CLASS__, array(';
+            $this->buffer.= 'public static $registry= array();';
+            $this->buffer.= 'static function __static() { self::$registry= array(';
             foreach (array_keys($members) as $ordinal => $member) {
               define($member, $ordinal, 0);
               $this->buffer.= '  '.$member.' => new '.$class.'(\''.$member.'\', '.xp::stringOf($members[$member]).'),';
             }
-            $this->buffer.= ')); } ';
+            $this->buffer.= '); } ';
             
             // size() method
-            $this->buffer.= 'function size() { return '.(sizeof($members)+ 1).'; } ';
+            $this->buffer.= 'public static function size() { return '.(sizeof($members)+ 1).'; } ';
             
             // values() method
-            $this->buffer.= 'function values() { return uwrp·enum::registry(__CLASS__); } ';
+            $this->buffer.= 'public static function values() { return self::$registry; } ';
             
             // valueOf() method
-            $this->buffer.= 'function valueOf($ordinal) { return uwrp·enum::registry(__CLASS__, $ordinal); }';
+            $this->buffer.= 'public static function valueOf($ordinal) { return self::$registry[$ordinal]; }';
             
             // Add closing bracket if necessary
             $this->buffer.= $bracket;
@@ -94,7 +84,7 @@
         }
       }
       
-      // DEBUG var_dump($this->buffer);
+      // DEBUG echo $this->buffer;
       return TRUE;
     }  
 

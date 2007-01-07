@@ -15,10 +15,9 @@
     /**
      * Returns color of this coin
      *
-     * @access  public
      * @return  string color
      */
-    function color() {
+    public function color() {
       switch ($this->ordinal) {
         case penny: return 'copper';
         case nickel: return 'nickel';
