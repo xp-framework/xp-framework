@@ -1,0 +1,93 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The peer package contains the rudimentary networking classes other
+ * subpackages are built on top of.
+ *
+ * Using sockets
+ * =============
+ * Example (read banner message from a SMTP server):
+ * <code>
+ *   $s= new Socket('smtp.example.com', 25);
+ *   $s->connect();
+ *   $banner= $s->readLine();
+ *   $s->write("QUIT\n");
+ *   $s->close();
+ * </code>
+ *
+ * Example (write data to a local UNIX socket):
+ * <code>
+ *   $s= new BSDSocket('/var/run/log.sock', 0);
+ *   $s->setDomain(AF_UNIX);
+ *   $s->setType(SOCK_DGRAM);
+ *   $s->setProtocol(0);
+ *  
+ *   $s->connect();
+ *   $s->write("[info] Log entry\n");
+ *   $s->close();
+ * </code>
+ *
+ * Example (UDP listener):
+ * <code>
+ *   $s= new ServerSocket('0.0.0.0', 6666, AF_INET, SOCK_DGRAM, SOL_UDP);
+ *   $s->create();
+ *   $s->bind(TRUE);
+ *   $handle= $socket->getHandle();
+ *
+ *   // Main loop
+ *   while (1) {
+ *     socket_recvfrom($handle, $message, 0xFFFF, 0, $host, $port);
+ *     Console::writeLinef(
+ *       '%s: Got message "%s" from remote host %s:%d',
+ *       date('r'),
+ *       addcslashes($message, "\0..\37!@\177..\377"),
+ *       $host,
+ *       $port
+ *     );
+ *   }
+ * </code>
+ *
+ * Exception inheritance
+ * =====================
+ * All exceptions in the peer package extend from peer.SocketException,
+ * which in turn extends io.IOException.
+ *
+ * Protocols implemented
+ * =====================
+ * The following protocols are implemented in subpackages:
+ * <ul>
+ *   <li>FTP   - File Transfer Protocol</li>
+ *   <li>HTTP  - HyperText Transfer Protocol</li>
+ *   <li>IRC   - Internet Relay Chat</li>
+ *   <li>LDAP  - Lighweight Directory Access Protocol</li>
+ *   <li>SMTP  - Simple Mail Transfer Protocol</li>
+ *   <li>ESMTP - Extended Simple Mail Transfer Protocol</li>
+ *   <li>POP3  - Post Office Protocol</li>
+ *   <li>IMAP  - Internet Message Access Protocol</li>
+ *   <li>NNTP  - Network News Transfer Protocol</li>
+ * </ul>
+ * Some of the above implementations require the use of PHP extensions.
+ * This is noted in the package information of the respective packages.
+ *
+ * Additional APIs
+ * ===============
+ * The peer.server package contains the basics for writing standalone 
+ * daemons.
+ * 
+ * The peer.sieve package contains a Sieve client. Sieve is a mail 
+ * filtering language.
+ *
+ * The peer.webdav client contains a Webdav client.
+ *
+ * @see      http://sieve.info/
+ * @see      php://network
+ * @see      php://sockets
+ * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ  
+ * @purpose  Networking / Protocols
+ */
+package lang {
+}
