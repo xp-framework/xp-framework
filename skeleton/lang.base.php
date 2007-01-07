@@ -319,11 +319,7 @@
         }
         $str= substr($str, strrpos($str, '/')+ 1);
         $class= xp::reflect($str);
-        
-        continue;
-      }
-      
-      foreach ($include as $path) {
+      } else foreach ($include as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path)) {
