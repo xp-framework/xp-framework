@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fix static initializer not being called for classes loaded via 
+  uses wrapper 
+  (friebe)
+- Implemented RFC #0105: Package-Info
+  (friebe)
+
 Version 5.1.1, released 2007-01-04
 ----------------------------------
 SVN version: 9114
