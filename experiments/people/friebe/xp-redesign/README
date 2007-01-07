@@ -7,14 +7,10 @@ Sitemap
 -------
 * Technology (planet-xp.net)
   - Technologies
-    Environment (XP Update, IDE integration, xpcli, xpunit, xar)
-    J2EE integration (EASC)
-    Lucene integration
-    Peking
-    Scheduler (Quartz port)
-    Framework
-    Installer
-    O/R mapping generator
+    Environment (xppkg, xpcli, xpunit, xar)
+    Framework (->)
+    Core (->)
+    Infrastructure ports (->)
     
   - Downloads
     Environment
@@ -75,6 +71,19 @@ Sitemap
   - Selected ports' homepages (subdomains of xp-forge.net)
     News
     Download
+    Bugs / Feature requests (->)
+
+  - Infrastructure ports:
+    IDE integration (nedit, ...)
+    J2EE integration (EASC)
+    Peking
+    (mfi) Lucene integration
+    (mfi) Installer
+    (mfi) O/R mapping generator
+    (mfi) FTP daemon
+    (mfi) UDP daemon / trigger
+    (new) Scheduler (Quartz port)
+    (new) Workflows Foundation
 
   - Experiments
 
