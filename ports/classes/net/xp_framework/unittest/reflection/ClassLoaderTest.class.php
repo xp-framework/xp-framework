@@ -130,7 +130,7 @@
       if (class_exists(xp::reflect($name))) {
         return $this->fail('Class "'.$name.'" may not exist!');
       }
-      
+
       $class= $cl->defineClass($name, 'class RuntimeDefinedClass2 extends Object {
         public static $initializerCalled= FALSE;
         
@@ -185,7 +185,7 @@
           self::$initializerCalled= TRUE; 
         }
       }');
-      $this->assertXPClass($name, $class);
+      $this->assertXPClass($cl->classpath.$name, $class);
       $this->assertTrue(RuntimeDefinedClass4::$initializerCalled);
     }
     
