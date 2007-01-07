@@ -10,6 +10,64 @@
 
   <xsl:output method="html" encoding="iso-8859-1"/>
 
+  <func:function name="func:first-sentence">
+    <xsl:param name="comment"/>
+    
+    <func:result>
+      <xsl:value-of select="exsl:node-set(str:tokenize($comment, '.&#10;'))"/>
+    </func:result>
+  </func:function>
+  
+  <func:function name="func:ltrim">
+    <xsl:param name="text"/>
+    <xsl:param name="chars"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="contains(substring($text, 1, 1), $chars)">
+          <xsl:value-of select="func:ltrim(substring($text, 2, string-length($text)), $chars)"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$text"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>
+  
+  <func:function name="func:cutstring">
+    <xsl:param name="text"/>
+    <xsl:param name="maxlength"/>
+    
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="string-length($text) &lt;= $maxlength">
+          <xsl:value-of select="$text"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <span title="{$text}">
+            <xsl:value-of select="substring($text, 1, $maxlength)"/>
+            <b>[...]</b>
+          </span>
+        </xsl:otherwise>
+      </xsl:choose>
+    </func:result>
+  </func:function>
+  
+  <func:function name="func:typelink">
+    <xsl:param name="type"/>
+    
+    <func:result>
+      <a>
+        <xsl:if test="contains($type, '.')">
+          <xsl:attribute name="href">
+            <xsl:value-of select="concat('?class:', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
+          </xsl:attribute>
+        </xsl:if>
+        
+        <xsl:value-of select="$type"/>
+      </a>
+    </func:result>
+  </func:function>
 
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
@@ -31,6 +89,10 @@
         list-style-image: url(image/li.gif);
         line-height: 18px;
       }
+      code {
+        display: block;
+        white-space: pre;
+      }
       a.class {
         background: url(image/arrow.png);
         background-position: right center; 
@@ -41,6 +103,13 @@
     <h1>
       <xsl:value-of select="@name"/>
     </h1>
+
+    <h2>Purpose: <xsl:value-of select="purpose"/></h2>
+    <p class="comment">
+      <xsl:value-of select="comment" disable-output-escaping="yes"/>
+    </p>
+
+    <h2>Package contents</h2>
 
     <a name="__interfaces"/>
     <xsl:if test="count(class[@type = 'interface'])">
@@ -99,6 +168,30 @@
     </xsl:if>
   </xsl:template>
   
+  <xsl:template match="see[@scheme = 'xp']" mode="short">
+    <a href="?class:{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'php']" mode="short">
+    <a href="http://php3.de/{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'http']" mode="short">
+    <a href="http://{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'xp']">
+    <a href="?class:{@href}"><xsl:value-of select="@href"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'php']">
+    <a href="http://php3.de/{@href}"><xsl:value-of select="@href"/></a>
+  </xsl:template>
+
+  <xsl:template match="see[@scheme = 'http']">
+    <a href="http://{@href}"><xsl:value-of select="@href"/></a>
+  </xsl:template>
+
   <xsl:template match="/">
     <div id="search">
       <form action="/search">
@@ -131,6 +224,15 @@
         <a href="#__fields">Classes</a><br/>
         <a href="#__methods">Exceptions</a><br/>
         <a href="#__methods">Errors</a><br/>
+
+        <xsl:if test="count(doc/package/see) &gt; 0">
+          <h3>See also</h3>
+          
+          <xsl:for-each select="doc/package/see">
+            <xsl:apply-templates select="." mode="short"/>
+            <br/>
+          </xsl:for-each>
+        </xsl:if>
       </td>
     </tr></table>
     <div id="footer">

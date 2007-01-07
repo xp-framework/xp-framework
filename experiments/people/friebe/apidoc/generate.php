@@ -213,13 +213,13 @@
         $class= $root->classes->next();
         
         // Add packages
-        $hash= $class->containingPackage()->hashCode();
+        $package= $class->containingPackage();
+        $hash= $package->hashCode();
+
         if (!isset($packages[$hash])) {
-          $packages[$hash]= array(
-            'name'    => $class->containingPackage()->name(),
-            'classes' => array()
-          );
+          $packages[$hash]= array('info' => $package);
         }
+
         $packages[$hash]['classes'][$class->name()]= $class->classType();
         
         // Marshal class
@@ -229,8 +229,26 @@
       
       // Marshal packages
       foreach ($packages as $package) {
+        Console::writeLine('- ', $package['info']->toString());
+
         $tree= new Tree('doc');
-        $p= $tree->addChild(new Node('package', NULL, array('name' => $package['name'])));
+        $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
+        $p->addChild(new Node('comment', $package['info']->commentText()));
+
+        $p->addChild(new Node('purpose', $this->tagAttribute($package['info']->tags('purpose'), 0, 'text')));
+        foreach ($package['info']->tags('see') as $ref) {
+          $p->addChild(new Node('see', $ref->text, array(
+            'scheme' => $ref->scheme,
+            'href'   => $ref->urn
+          )));
+        }
+        foreach ($package['info']->tags('test') as $ref) {
+          $p->addChild(new Node('test', NULL, array('href' => $ref->text)));
+        }
+        if ($package['info']->tags('deprecated')) {
+          $p->addChild(new Node('deprecated', $this->tagAttribute($package['info']->tags('deprecated'), 0, 'text')));
+        }
+
         foreach ($package['classes'] as $name => $type) {
           $p->addChild(new Node('class', NULL, array(
             'name' => $name,
@@ -239,7 +257,7 @@
         }
 
         // Write to file
-        $out= new File($this->build->getURI().$package['name'].'.xml');
+        $out= new File($this->build->getURI().$package['info']->name().'.xml');
         FileUtil::setContents(
           $out,
           $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
