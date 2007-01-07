@@ -118,6 +118,78 @@
     }
     
     /**
+     * Tests the defineClass() method with a package-scope
+     * ClassLoader (the defined class must be in the package
+     * provided by the ClassLoader).
+     *
+     */
+    #[@test]
+    public function defineClassWithPrefix() {
+      $cl= new ClassLoader('net.xp_framework.unittest.reflection.subpackage');
+      $name= 'RuntimeDefinedClass2';
+      if (class_exists(xp::reflect($name))) {
+        return $this->fail('Class "'.$name.'" may not exist!');
+      }
+      
+      $class= $cl->defineClass($name, 'class RuntimeDefinedClass2 extends Object {
+        public static $initializerCalled= FALSE;
+        
+        static function __static() { 
+          self::$initializerCalled= TRUE; 
+        }
+      }');
+      $this->assertXPClass($cl->classpath.$name, $class);
+      $this->assertTrue(RuntimeDefinedClass2::$initializerCalled);
+    }
+    
+    /**
+     * Test defineClass() method with the new signature
+     *
+     */
+    #[@test]
+    public function defineClassNG() {
+      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClass3';
+      if (class_exists(xp::reflect($name))) {
+        return $this->fail('Class "'.$name.'" may not exist!');
+      }
+      
+      $class= $this->classLoader->defineClass($name, 'lang.Object', NULL, '{
+        public static $initializerCalled= FALSE;
+        
+        static function __static() { 
+          self::$initializerCalled= TRUE; 
+        }
+      }');
+      $this->assertXPClass($name, $class);
+      $this->assertTrue(RuntimeDefinedClass3::$initializerCalled);
+    }
+    
+    /**
+     * Test defineClass() method with the new signature and a package-
+     * scope ClassLoader (the defined class must be in the package
+     * provided by the ClassLoader).
+     *
+     */
+    #[@test]
+    public function defineClassNGWithPrefix() {
+      $cl= new ClassLoader('net.xp_framework.unittest.reflection.subpackage');
+      $name= 'RuntimeDefinedClass4';
+      if (class_exists(xp::reflect($name))) {
+        return $this->fail('Class "'.$name.'" may not exist!');
+      }
+      
+      $class= $cl->defineClass($name, 'lang.Object', NULL, '{
+        public static $initializerCalled= FALSE;
+        
+        static function __static() { 
+          self::$initializerCalled= TRUE; 
+        }
+      }');
+      $this->assertXPClass($name, $class);
+      $this->assertTrue(RuntimeDefinedClass4::$initializerCalled);
+    }
+    
+    /**
      * Tests defineClass() with a given interface
      *
      */
