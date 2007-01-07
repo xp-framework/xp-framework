@@ -1,5 +1,35 @@
 #include <Turpitude.h>
 
+void htdebug(HashTable* ht) {
+    printf("HTDEBUG: \n");
+    zval** hashval;
+    HashPosition pos;
+    // reset and iterate on HashTable
+    zend_hash_internal_pointer_reset_ex(ht, &pos);
+    while (zend_hash_get_current_data_ex(ht, (void **) &hashval, &pos) == SUCCESS) {
+        char* key_name;
+        ulong num_key;
+        uint  str_len;
+
+        printf("key: ");
+        // extract current key
+        switch (zend_hash_get_current_key_ex(ht, &key_name, &str_len, &num_key, 0, &pos)) {
+            case HASH_KEY_IS_STRING:
+                printf("string: %s\n", key_name);
+            break;
+            case HASH_KEY_IS_LONG:
+                printf("long: %d\n", num_key);
+            break;
+        }
+        //efree(key_name);
+        //printf("val - type: %d", Z_TYPE_P(*hashval));
+        //printf("\n");
+        // value object
+        // insert pair into hashmap
+        zend_hash_move_forward_ex(ht, &pos);
+    }
+}
+
 zval* generateTurpitudeContext(JNIEnv* env, jobject ctx) {
     zval* context;
     MAKE_STD_ZVAL(context);
@@ -23,6 +53,8 @@ zval* generateTurpitudeContext(JNIEnv* env, jobject ctx) {
     ce->doc_comment = NULL;
     ce->doc_comment_len = 0;
 
+
+    //zend_hash_update - add class to global class directory?
 
     //zend_object_std_init(ce);
     // how to create a class entry?
@@ -113,7 +145,13 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             zend_object_value* zo = &(val->value.obj);
 
             // ############ remove
-            printf("=====> %s\n", ce->doc_comment);
+            printf("=====> \n");
+            htdebug(&(ce->function_table));
+            htdebug(&(ce->default_properties));
+            htdebug(&(ce->properties_info));
+            htdebug(&(ce->default_static_members));
+            htdebug(ce->static_members);
+            htdebug(&(ce->constants_table));
             // ############ remove
 
             // allocate class and object
