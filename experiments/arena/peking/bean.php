@@ -8,14 +8,14 @@
   
   // {{{ void addClass(io.cca.Archive package, io.Stream name, string name
   //     Adds specified class to package using the classloader
-  function addClass(&$package, &$stream, $name) {
+  function addClass($package, $stream, $name) {
     Console::writeLine('---> Adding ', $name);
     $package->add($stream, strtr($name, '.', '/'). '.class.php');
   }
   // }}}
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLine(<<<__
 Packages a bean class for deployment
@@ -34,11 +34,11 @@ __
   }
   
   $classname= $p->value(1);
-  $cl= &ClassLoader::getDefault();
+  $cl= ClassLoader::getDefault();
 
   // Load bean class
-  try(); {
-    $class= &$cl->loadClass($classname);
+  try {
+    $class= $cl->loadClass($classname);
     if (!$class->hasAnnotation('bean')) {
       Console::writeLine('*** ', $classname, ' is not a bean!');
       exit(-2);
@@ -46,7 +46,7 @@ __
 
     $type= $class->getAnnotation('bean', 'type');
     $name= $class->getAnnotation('bean', 'name');
-  } if (catch('ClassNotFoundException', $e)) {
+  } catch(ClassNotFoundException $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -57,7 +57,7 @@ __
   $short= substr($classname, $pos+ 1);
   
   // Generate remote interface
-  with ($rstr= &new Stream()); {
+  with ($rstr= new Stream()); {
     $rstr->open(STREAM_MODE_WRITE);
     $interface= basename($name);
     $rstr->write("<?php\n");
@@ -84,7 +84,7 @@ __
   }
   
   // Generate bean implementation
-  with ($istr= &new Stream()); {
+  with ($istr= new Stream()); {
     $istr->open(STREAM_MODE_WRITE);
     $implementation= $short.'Impl';
     $istr->write("<?php\n");
@@ -95,7 +95,7 @@ __
   }
 
   // Create meta information  
-  $meta= &new Stream();
+  $meta= new Stream();
   $meta->open(STREAM_MODE_WRITE);
   $meta->write("[bean]\n");
   $meta->write('class="'.$package.$implementation.'"'."\n");
@@ -104,9 +104,9 @@ __
   $meta->close();
   
   // Package it
-  $a= &new Archive(new File($p->value('output', 'o', $classname.'.xar')));
+  $a= new Archive(new File($p->value('output', 'o', $classname.'.xar')));
   Console::writeLine('===> Packaging ', $classname, ' into ', $a->toString());
-  try(); {
+  try {
     $a->open(ARCHIVE_CREATE);
     
     // Add meta information
@@ -118,7 +118,7 @@ __
     addClass($a, $istr, $package.$implementation);
 
     $a->create();
-  } if (catch('Exception', $e)) {
+  } catch(XPException $e) {
     $e->printStackTrace();
     exit(-1);
   }

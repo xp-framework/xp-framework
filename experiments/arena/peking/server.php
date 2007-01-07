@@ -13,11 +13,11 @@
     'remote.server.ScannerThread'
   );
   
-  $p= &new ParamString();
+  $p= new ParamString();
   
   // Set up loggin
-  $log= &Logger::getInstance();
-  $cat= &$log->getCategory();
+  $log= Logger::getInstance();
+  $cat= $log->getCategory();
   $cat->addAppender(new ColoredConsoleAppender());
   
   // {{{ main
@@ -25,16 +25,16 @@
   
   // Preforking or normal server ? 
   if ($p->exists('fork', 'f')) {
-    $thread= &new ScannerThread(new FileSystemScanner(dirname(__FILE__).'/deploy'));
+    $thread= new ScannerThread(new FileSystemScanner(dirname(__FILE__).'/deploy'));
     $thread->setTrace($cat);
     $thread->setScanPeriod(5);
 
-    $server= &new PreforkingServer($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
+    $server= new PreforkingServer($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
     $server->setProtocol(new EascProtocol(
       new SharedMemoryScanner()
     ));
   } else {
-    $server= &new Server($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
+    $server= new Server($p->value(1, NULL, 'localhost'), $p->value(2, NULL, 6448));
     $server->setProtocol(new EascProtocol(
       new FileSystemScanner(dirname(__FILE__).'/deploy')
     )); 

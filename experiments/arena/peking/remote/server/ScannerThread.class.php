@@ -6,7 +6,8 @@
  
   uses(
     'lang.Thread',
-    'io.sys.ShmSegment'
+    'io.sys.ShmSegment',
+    'util.log.Traceable'
   );
 
   /**
@@ -14,41 +15,38 @@
    *
    * @purpose  Thread
    */
-  class ScannerThread extends Thread {
-    var
+  class ScannerThread extends Thread implements Traceable {
+    public
       $scanner    = NULL,
       $period     = 60;
 
     /**
      * Constructor
      *
-     * @access  public
-     * @param   &remote.server.deploy.scan.DeploymentScanner scanner
+     * @param   remote.server.deploy.scan.DeploymentScanner scanner
      */
-    function __construct(&$scanner) {
+    public function __construct($scanner) {
       parent::__construct('scanner');
-      $this->scanner= &$scanner;
+      $this->scanner= $scanner;
       
-      $this->storage= &new ShmSegment(0x3c872747);
+      $this->storage= new ShmSegment(0x3c872747);
     }
 
     /**
      * Set a trace for debugging
      *
-     * @access  public
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
-    function setTrace(&$cat) {
-      $this->cat= &$cat;
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
     /**
      * Distribute deployments
      *
-     * @access  public
      * @param   remote.server.deploy.Deployable[] deployments
      */
-    function distribute($deployments) {
+    public function distribute($deployments) {
       if (!$this->storage->isEmpty()) $this->storage->remove();
       $this->storage->put($deployments);
     }
@@ -57,13 +55,12 @@
     /**
      * Set scan period
      *
-     * @access  public
      * @param   int period
      * @throws  lang.IllegalArgumentException
      */
-    function setScanPeriod($period) {
+    public function setScanPeriod($period) {
       if ($period <= 0) {
-        return throw(new IllegalArgumentException('ScanPeriod must be > 0; have: ', $period));
+        throw(new IllegalArgumentException('ScanPeriod must be > 0; have: ', $period));
       }
 
       $this->period= $period;
@@ -72,9 +69,8 @@
     /**
      * Periodically scan for deployments
      *
-     * @access  public
      */
-    function run() {
+    public function run() {
       $initial= TRUE;
       do {
         $changed= $this->scanner->scanDeployments();
@@ -94,5 +90,5 @@
       } while (1);
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  } 
 ?>

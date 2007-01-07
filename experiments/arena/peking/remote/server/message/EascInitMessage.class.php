@@ -18,11 +18,10 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function handle(&$listener, $data) {
+    public function handle($listener, $data) {
       $this->setValue($b= TRUE);
     }
   }

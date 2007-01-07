@@ -4,14 +4,16 @@
  * $Id$ 
  */
 
+  uses('remote.server.deploy.Deployable');
+
   /**
    * Deployment
    *
    * @see      xp://remote.server.deploy.Deployable
    * @purpose  Deployment
    */
-  class Deployment extends Object {
-    var
+  class Deployment extends Object implements Deployable {
+    public
       $origin           = '',
       $classloader      = NULL,
       $implementation   = '',
@@ -21,100 +23,90 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string origin
      */
-    function __construct($origin) {
+    public function __construct($origin) {
       $this->origin= $origin;
     }
 
     /**
      * Set Classloader
      *
-     * @access  public
-     * @param   &lang.Object classloader
+     * @param   lang.Object classloader
      */
-    function setClassloader(&$classloader) {
-      $this->classloader= &$classloader;
+    public function setClassloader($classloader) {
+      $this->classloader= $classloader;
     }
 
     /**
      * Get Classloader
      *
-     * @access  public
-     * @return  &lang.Object
+     * @return  lang.Object
      */
-    function &getClassloader() {
+    public function getClassloader() {
       return $this->classloader;
     }
 
     /**
      * Set Implementation
      *
-     * @access  public
      * @param   string implementation
      */
-    function setImplementation($implementation) {
+    public function setImplementation($implementation) {
       $this->implementation= $implementation;
     }
 
     /**
      * Get Implementation
      *
-     * @access  public
      * @return  string
      */
-    function getImplementation() {
+    public function getImplementation() {
       return $this->implementation;
     }
 
     /**
      * Set Interface
      *
-     * @access  public
      * @param   string interface
      */
-    function setInterface($interface) {
+    public function setInterface($interface) {
       $this->interface= $interface;
     }
 
     /**
      * Get Interface
      *
-     * @access  public
      * @return  string
      */
-    function getInterface() {
+    public function getInterface() {
       return $this->interface;
     }
 
     /**
      * Set DirectoryName
      *
-     * @access  public
      * @param   string directoryName
      */
-    function setDirectoryName($directoryName) {
+    public function setDirectoryName($directoryName) {
       $this->directoryName= $directoryName;
     }
 
     /**
      * Get DirectoryName
      *
-     * @access  public
      * @return  string
      */
-    function getDirectoryName() {
+    public function getDirectoryName() {
       return $this->directoryName;
     }
 
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(origin= %s) {\n".
         "  [classloader   ] %s\n".
@@ -131,5 +123,5 @@
       );
     }
 
-  } implements(__FILE__, 'remote.server.deploy.Deployable');
+  } 
 ?>

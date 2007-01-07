@@ -25,11 +25,10 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function &forType($type) {
+    public function forType($type) {
       static 
         $handlers=      NULL;
       
@@ -43,8 +42,8 @@
         );
       }
       
-      $class= &XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]));
-      $inst= &$class->newInstance();
+      $class= XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]));
+      $inst= $class->newInstance();
       $inst->setType($type);
       
       return $inst;

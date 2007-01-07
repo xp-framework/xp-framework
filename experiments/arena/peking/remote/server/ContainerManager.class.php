@@ -10,25 +10,23 @@
    * @purpose  Manage beancontainer
    */
   class ContainerManager extends Object {
-    var
+    public
       $containers= array();
     
     /**
      * Constructor
      *
-     * @access  public
      */
-    function __construct() { }
+    public function __construct() { }
     
     /**
      * Register
      *
-     * @access  public
-     * @param   &remote.server.BeanContainer container
+     * @param   remote.server.BeanContainer container
      * @return  int
      */
-    function register(&$container) {
-      $this->containers[]= &$container;
+    public function register($container) {
+      $this->containers[]= $container;
       $container->setContainerID(sizeof($this->containers)- 1);
       return sizeof($this->containers)- 1;
     }
@@ -36,11 +34,10 @@
     /**
      * Get a  beancontainer
      *
-     * @access  public
      * @param   int oid
      * @return mixed
      */
-    function getContainerByOID($oid) {
+    public function getContainerByOID($oid) {
 
       // TDB
     }

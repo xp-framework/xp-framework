@@ -8,12 +8,12 @@
   uses('remote.Remote');
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   try(); {
-    $r= &Remote::forName('xp://'.$p->value(1));
-    $r && $bean= &$r->lookup('xp/test/TestRunner');
-    $bean && $results= $bean->runTestClass($p->value(2));
-  } if (catch('Exception', $e)) {
+    $r= Remote::forName('xp://'.$p->value(1));
+    $bean= $r->lookup('xp/test/TestRunner');
+    $results= $bean->runTestClass($p->value(2));
+  } catch(XPException $e) {
     Console::writeLine('*** ', $p->value(2).'@'.$p->value(1), ' ~ ', $e->toString());
     exit(-1);
   }

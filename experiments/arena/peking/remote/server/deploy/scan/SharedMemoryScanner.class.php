@@ -6,7 +6,8 @@
 
   uses(
     'remote.server.deploy.Deployment',
-    'io.sys.ShmSegment'
+    'io.sys.ShmSegment',
+    'remote.server.deploy.scan.DeploymentScanner'
   );
 
   /**
@@ -14,24 +15,22 @@
    *
    * @purpose  Interface
    */
-  class SharedMemoryScanner extends Object {
+  class SharedMemoryScanner extends Object implements DeploymentScanner {
 
     /**
      * Constructor
      *
-     * @access  public
      */
-    function __construct() {
-      $this->storage= &new ShmSegment(0x3c872747);
+    public function __construct() {
+      $this->storage= new ShmSegment(0x3c872747);
     }
   
     /**
      * Scan if deployments changed
      *
-     * @access  public
      * @return  bool 
      */
-    function scanDeployments() {
+    public function scanDeployments() {
       if ($this->storage->isEmpty()) return FALSE;
       return TRUE;
     }
@@ -39,11 +38,10 @@
     /**
      * Get a list of deployments
      *
-     * @access  public
      * @return  remote.server.deploy.Deployable[]
      */
-    function &getDeployments() {
+    public function getDeployments() {
       return $this->storage->get();
     }
-  } implements(__FILE__, 'remote.server.deploy.scan.DeploymentScanner');
+  } 
 ?>

@@ -12,27 +12,25 @@
    * @purpose  Hold instances of deployed beans
    */
   class InstancePool extends Object {
-    var
+    public
       $_pool    = NULL,
       $_h2id    = NULL;
 
     /**
      * Constructor
      *
-     * @access  public
      */
-    function __construct() {
-      $this->_pool= &new Hashmap();
+    public function __construct() {
+      $this->_pool= new Hashmap();
     }
       
     /**
      * Register a new instance
      *
-     * @access  public
-     * @param   &lang.Object object
+     * @param   lang.Object object
      * @return  bool
      */
-    function registerInstance(&$object) {
+    public function registerInstance($object) {
       $this->_pool->putref($object->hashCode(), $object);
       return TRUE;
     }
@@ -40,11 +38,10 @@
     /**
      * Fetch
      *
-     * @access  public
      * @param   string hashcode
      * @return  mixed
      */
-    function fetch($hashCode) {
+    public function fetch($hashCode) {
       return $this->_pool->get($hashCode);
     }    
   }

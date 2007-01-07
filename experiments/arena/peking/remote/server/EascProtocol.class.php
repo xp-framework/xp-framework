@@ -5,11 +5,12 @@
  */
 
   uses(
-    'remote.protocol.ByteCountedString', 
+    'remote.protocol.ByteCountedString',
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
     'remote.server.ServerHandler',
-    'io.sys.ShmSegment'
+    'io.sys.ShmSegment',
+    'peer.server.ServerProtocol'
   );
   
   /**
@@ -19,8 +20,8 @@
    * @see      reference
    * @purpose  purpose
    */
-  class EascProtocol extends Object {
-    var
+  class EascProtocol extends Object implements ServerProtocol {
+    public
       $serializer  = NULL,
       $context     = NULL,
       $scanner     = NULL;
@@ -28,21 +29,20 @@
     /**
      * Initialize protocol
      *
-     * @access  public
      * @return  bool
      */
-    function initialize() {
+    public function initialize() {
       if ($this->scanner->scanDeployments()) {
-        try(); {
+        try {
           foreach ($this->scanner->getDeployments() as $deployment) {
-            try(); {
+            try {
               $this->deployer->deployBean($deployment);
-            } if (catch('DeployException', $e)) {
+            } catch (DeployException $e) {
               // Fall through
             }
           }
-        } if (catch('Exception', $e)) {
-          return throw($e);
+        } catch (Exception $e) {
+          throw($e);
         }
       }
       return TRUE; 
@@ -51,28 +51,26 @@
     /**
      * Constructor
      *
-     * @access  public
-     * @param   &remote.server.deploy.scan.FileSystemScanner scanner
+     * @param   remote.server.deploy.scan.FileSystemScanner scanner
      */
-    function __construct($scanner) {
-      $this->serializer= &new Serializer();
+    public function __construct($scanner) {
+      $this->serializer= new Serializer();
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
-      $this->context[RIH_OBJECTS_KEY]= &new HashMap();
-      $this->context[RIH_OIDS_KEY]= &new HashMap();
-      $this->scanner= &$scanner;
+      $this->context[RIH_OBJECTS_KEY]= new HashMap();
+      $this->context[RIH_OIDS_KEY]= new HashMap();
+      $this->scanner= $scanner;
 
-      $this->deployer= &new Deployer();
+      $this->deployer= new Deployer();
     }      
 
     /**
      * Write answer
      *
-     * @access  public
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int type
      * @param   mixed data
      */
-    function answer(&$stream, $type, $data) {
+    public function answer($stream, $type, $data) {
       $length= strlen($data);
       $packet= pack(
         'Nc4Na*', 
@@ -90,12 +88,11 @@
     /**
      * Write answer
      *
-     * @access  public
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int type
-     * @param   &remote.protocol.ByteCountedString[] bcs
+     * @param   remote.protocol.ByteCountedString[] bcs
      */
-    function answerWithBytes(&$stream, $type, &$bcs) {
+    public function answerWithBytes($stream, $type, $bcs) {
       $header= pack(
         'Nc4Na*', 
         0x3c872747, 
@@ -116,11 +113,10 @@
     /**
      * Write answer
      *
-     * @access  public
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   mixed value
      */
-    function answerWithValue(&$stream, $value) {
+    public function answerWithValue($stream, $value) {
       $this->answerWithBytes(
         $stream, 
         0x0005 /* REMOTE_MSG_VALUE */, 
@@ -131,11 +127,10 @@
     /**
      * Write answer
      *
-     * @access  public
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   lang.Exception exception
      */
-    function answerWithException(&$stream, $e) {
+    public function answerWithException($stream, $e) {
       $this->answerWithBytes(
         $stream, 
         0x0006 /* REMOTE_MSG_EXCEPTION */, 
@@ -146,11 +141,10 @@
     /**
      * Write answer
      *
-     * @access  public
-     * @param   &io.Stream stream
-     * @param   &remote.server.message.EascMessage message
+     * @param   io.Stream stream
+     * @param   remote.server.message.EascMessage message
      */
-    function answerWithMessage(&$stream, &$m) {
+    public function answerWithMessage($stream, $m) {
       $this->answerWithBytes(
         $stream,
         $m->getType(),
@@ -158,7 +152,7 @@
       );
     }
 
-    function readBytes(&$sock, $num) {
+    public function readBytes($sock, $num) {
       $return= '';
       while (strlen($return) < $num) {
         if (0 == strlen($buf= $sock->readBinary($num - strlen($return)))) return;
@@ -170,27 +164,24 @@
     /**
      * Handle client connect
      *
-     * @access  public
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      */
-    function handleConnect(&$socket) { }
+    public function handleConnect($socket) { }
 
     /**
      * Handle client disconnect
      *
-     * @access  public
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      */
-    function handleDisconnect(&$socket) { }
+    public function handleDisconnect($socket) { }
   
     /**
      * Handle client data
      *
-     * @access  public
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      * @return  mixed
      */
-    function handleData(&$socket) {
+    public function handleData($socket) {
       $header= unpack(
         'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
         $this->readBytes($socket, 12)
@@ -201,7 +192,7 @@
         return NULL;
       }
       
-      $impl= &new ServerHandler();
+      $impl= new ServerHandler();
       $impl->setSerializer($this->serializer);
       return $impl->handle($socket, $this, $header['type'], $this->readBytes($socket, $header['length']));
     }
@@ -209,11 +200,10 @@
     /**
      * Handle I/O error
      *
-     * @access  public
-     * @param   &peer.Socket socket
-     * @param   &lang.Exception e
+     * @param   peer.Socket socket
+     * @param   lang.Exception e
      */
-    function handleError(&$socket, &$e) { }
+    public function handleError($socket, $e) { }
 
-  } implements(__FILE__, 'peer.server.ServerProtocol');
+  } 
 ?>

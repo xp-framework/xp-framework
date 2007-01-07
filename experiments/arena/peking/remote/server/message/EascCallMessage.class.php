@@ -21,24 +21,23 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function handle(&$listener, $data) {
+    public function handle($listener, $data) {
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));
-      $p= &$listener->context[RIH_OBJECTS_KEY]->get($oid['oid']);
+      $p= $listener->context[RIH_OBJECTS_KEY]->get($oid['oid']);
 
       $offset= 8;
       $method= $this->readString($data, $offset);
       
       $offset+= 2;  // ?
       $args= $listener->serializer->valueOf(new SerializedData($this->readString($data, $offset)), $l, $listener->context);
-      try(); {
-        $result= call_user_func_array(array(&$p, $method), $args->values);
+      try {
+        $result= call_user_func_array(array($p, $method), $args->values);
         $this->setValue($result);
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
     }
   }

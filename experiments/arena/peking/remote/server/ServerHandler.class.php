@@ -20,22 +20,20 @@
     /**
      * Set serializer
      *
-     * @access  public
-     * @param   &remote.protocol.Serializer serializer
+     * @param   remote.protocol.Serializer serializer
      */
-    function setSerializer(&$serializer) {
-      $this->serializer= &$serializer;
+    public function setSerializer($serializer) {
+      $this->serializer= $serializer;
     }  
   
     /**
      * Extract a string out of packed data
      *
-     * @access  public
      * @param   string data
-     * @param   &int offset
+     * @param   int offset
      * @return  string
      */
-    function readString($data, &$offset) {
+    public function readString($data, $offset) {
       $string= '';
       do {
         $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
@@ -49,13 +47,12 @@
     /**
      * Write response
      *
-     * @access  public
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int type
      * @param   string buffer
      */
-    function writeResponse(&$stream, $type, $buffer) {
-      $bcs= &new ByteCountedString($buffer);
+    public function writeResponse($stream, $type, $buffer) {
+      $bcs= new ByteCountedString($buffer);
       
       $header= pack(
         'Nc4Na*',
@@ -75,22 +72,21 @@
     /**
      * Handle incoming data
      *
-     * @access  public
-     * @param   &peer.Socket socket
-     * @param   &peer.server.ServerProtocol protocol
+     * @param   peer.Socket socket
+     * @param   peer.server.ServerProtocol protocol
      * @param   int type
      * @param   string data
      */
-    function handle(&$socket, &$protocol, $type, $data) {
-      try(); {
-        $handler= &EascMessageFactory::forType($type);
+    public function handle($socket, $protocol, $type, $data) {
+      try {
+        $handler= EascMessageFactory::forType($type);
         $handler->handle($protocol, $data);
 
-        $response= &EascMessageFactory::forType(REMOTE_MSG_VALUE);
+        $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($handler->getValue());
 
-      } if (catch('Exception', $e)) {
-        $response= &EascMessageFactory::forType(REMOTE_MSG_VALUE);
+      } catch (Exception $e) {
+        $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($e);
       }
 

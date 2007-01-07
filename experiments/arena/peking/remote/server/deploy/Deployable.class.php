@@ -11,7 +11,7 @@
    * @see      xp://remote.server.deploy.IncompleteDeployment
    * @purpose  Interface
    */
-  class Deployable extends Interface {
+  interface Deployable {
   
   }
 ?>

@@ -19,38 +19,36 @@
     /**
      * Get instance for class
      *
-     * @access  public
-     * @param   &lang.XPClass class
-     * @return  &remote.server.BeanContainer
+     * @param   lang.XPClass class
+     * @return  remote.server.BeanContainer
      */
-    function &forClass(&$class) {
-      $bc= &new StatelessSessionBeanContainer();
-      $bc->instancePool= &Collection::forClass($class->getName());
+    public function forClass($class) {
+      $bc= new StatelessSessionBeanContainer();
+      $bc->instancePool= Collection::forClass($class->getName());
       return $bc;
     }
 
     /**
      * Invoke a method
      *
-     * @access  public
-     * @param   &lang.Object proxy
+     * @param   lang.Object proxy
      * @param   string method
      * @param   mixed args
      * @return  mixed
      */
-    function invoke(&$proxy, $method, $args) {
-      $class= &$this->instancePool->getElementClass();
+    public function invoke($proxy, $method, $args) {
+      $class= $this->instancePool->getElementClass();
 
       if ($this->instancePool->isEmpty()) {
-        $instance= &$class->newInstance();
+        $instance= $class->newInstance();
         $this->instancePool->add($instance);
       } else {
-        $instance= &$this->instancePool->get(0);
+        $instance= $this->instancePool->get(0);
       }
 
-      $m= &$class->getMethod($method);
-      $l= &Logger::getInstance();
-      $this->cat= &$l->getCategory();
+      $m= $class->getMethod($method);
+      $l= Logger::getInstance();
+      $this->cat= $l->getCategory();
       $this->cat && $this->cat->debug('BeanContainer::invoke() ', $m->toString(), '(', $args, ')');
 
       return $m->invoke($instance, $args);

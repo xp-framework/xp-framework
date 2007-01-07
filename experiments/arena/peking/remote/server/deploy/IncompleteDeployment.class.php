@@ -4,38 +4,38 @@
  * $Id$ 
  */
 
+  uses('remote.server.deploy.Deployable');
+
   /**
    * Incomplete deployment
    *
    * @see      xp://remote.server.deploy.Deployable
    * @purpose  Deployment
    */
-  class IncompleteDeployment extends Object {
-    var
+  class IncompleteDeployment extends Object implements Deployable {
+    public
       $origin = '',
       $cause  = NULL;
     
     /**
      * Constructor
      *
-     * @access  public
      * @param   string origin
-     * @param   &lang.Throwable cause
+     * @param   lang.Throwable cause
      */
-    function __construct($origin, &$cause) {
+    public function __construct($origin, $cause) {
       $this->origin= $origin;
-      $this->cause= &$cause;
+      $this->cause= $cause;
     }
 
     /**
      * Creates a string representation of this object
      *
-     * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'(origin= '.$this->origin.') caused by '.$this->cause->toString();
     }
 
-  } implements(__FILE__, 'remote.server.deploy.Deployable');
+  } 
 ?>

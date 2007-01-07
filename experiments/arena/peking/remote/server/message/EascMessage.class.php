@@ -12,58 +12,53 @@
    * @purpose  purpose
    */
   class EascMessage extends Object {
-    var
+    public
       $type   = NULL,
       $value  = NULL;
 
     /**
      * Set Type
      *
-     * @access  public
-     * @param   &lang.Object type
+     * @param   lang.Object type
      */
-    function setType(&$type) {
-      $this->type= &$type;
+    public function setType($type) {
+      $this->type= $type;
     }
 
     /**
      * Get Type
      *
-     * @access  public
-     * @return  &lang.Object
+     * @return  lang.Object
      */
-    function &getType() {
+    public function getType() {
       return $this->type;
     }
 
     /**
      * Set Value
      *
-     * @access  public
-     * @param   &lang.Object value
+     * @param   lang.Object value
      */
-    function setValue(&$value) {
-      $this->value= &$value;
+    public function setValue($value) {
+      $this->value= $value;
     }
 
     /**
      * Get Value
      *
-     * @access  public
-     * @return  &lang.Object
+     * @return  lang.Object
      */
-    function &getValue() {
+    public function getValue() {
       return $this->value;
     }
     
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function readString($data, &$offset) {
+    public function readString($data, $offset) {
       $string= '';
       do {
         $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
@@ -77,10 +72,9 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function handle(&$listener, $data) { }
+    public function handle($listener, $data) { }
   }
 ?>

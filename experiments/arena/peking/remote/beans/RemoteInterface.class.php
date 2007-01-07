@@ -11,7 +11,7 @@
    *
    * @purpose  Remote Interface
    */
-  class RemoteInterface extends BeanInterface {
+  interface RemoteInterface extends BeanInterface {
   
   }
 ?>

@@ -21,15 +21,14 @@
     /**
      * (Insert method's description here)
      *
-     * @access  
      * @param   
      * @return  
      */
-    function handle(&$listener, $data) {
+    public function handle($listener, $data) {
       $offset= 0;
       $name= $this->readString($data, $offset);
 
-      $directory= &NamingDirectory::getInstance();
+      $directory= NamingDirectory::getInstance();
       $this->setValue($directory->lookup($name));
     }
   }

@@ -9,7 +9,7 @@
    *
    * @purpose  Base interface
    */
-  class BeanInterface extends Interface {
+  interface BeanInterface {
   
   }
 ?>

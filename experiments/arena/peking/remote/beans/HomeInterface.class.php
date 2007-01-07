@@ -11,14 +11,13 @@
    *
    * @purpose  Home Interface
    */
-  class HomeInterface extends BeanInterface {
+  interface HomeInterface extends BeanInterface {
   
     /**
      * Create method
      *
-     * @access  public
-     * @return  &remote.beans.Bean
+     * @return  remote.beans.Bean
      */
-    function &create() { }
+    public function create();
   }
 ?>

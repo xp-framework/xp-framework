@@ -11,23 +11,21 @@
    *
    * @purpose  Interface
    */
-  class DeploymentScanner extends Interface {
+  interface DeploymentScanner {
   
     /**
      * Scan if deployments changed
      *
-     * @access  public
      * @return  bool 
      */
-    function scanDeployments() { }
+    public function scanDeployments();
 
     /**
      * Get a list of deployments
      *
-     * @access  public
      * @return  remote.server.deploy.Deployable[]
      */
-    function getDeployments() { }
+    public function getDeployments();
 
   }
 ?>

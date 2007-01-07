@@ -17,17 +17,16 @@
     /**
      * Runs a test
      *
-     * @access  public
      * @param   string classname
      * @return  mixed results
      */ 
     #[@remote]
-    function runTestClass($classname) {
-      $suite= &new TestSuite();
-      try(); {
+    public function runTestClass($classname) {
+      $suite= new TestSuite();
+      try {
         $suite->addTestClass(XPClass::forName($classname));
-      } if (catch('Exception', $e)) {
-        return throw($e);
+      } catch (Exception $e) {
+        throw($e);
       }
 
       return $suite->run();
