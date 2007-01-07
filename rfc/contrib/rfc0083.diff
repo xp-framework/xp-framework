@@ -1,0 +1,149 @@
+Index: lang/ClassLoader.class.php
+===================================================================
+--- lang/ClassLoader.class.php	(revision 9143)
++++ lang/ClassLoader.class.php	(working copy)
+@@ -116,9 +116,15 @@
+ 
+       if (!class_exists($name) && !interface_exists($name)) {
+         $qname= $this->classpath.$class;
+-        if (FALSE === eval($bytes)) {
++        
++        // Load InlineLoader
++        XPClass::forName('lang.InlineLoader');
++        InlineLoader::setClassBytes($qname, $bytes);
++        if (FALSE === include('inline://'.$qname)) {
+           throw new FormatException('Cannot define class "'.$qname.'"');
+         }
++        InlineLoader::removeClassBytes($qname);
++        
+         if (!class_exists($name) && !interface_exists($name)) {
+           throw new FormatException('Class "'.$qname.'" not defined');
+         }
+@@ -167,17 +173,8 @@
+         }
+         
+         $newBytes.= ' '.$bytes;
+-
+-        if (FALSE === eval($newBytes)) {
+-          throw new FormatException('Cannot define class "'.$qname.'"');
+-        }
+         
+-        if (!class_exists($name)) {
+-          throw new FormatException('Class "'.$qname.'" not defined');
+-        }
+-        
+-        xp::$registry['class.'.$name]= $qname;
+-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
++        return $this->_defineClassFromBytes($qname, $newBytes);
+       }
+       
+       return new XPClass($name);
+Index: lang/InlineLoader.class.php
+===================================================================
+--- lang/InlineLoader.class.php	(revision 0)
++++ lang/InlineLoader.class.php	(revision 0)
+@@ -0,0 +1,104 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Inline memory loader to define classes at runtime
++   *
++   * @see      xp://lang.ClassLoader::defineClass
++   * @purpose  Inline loading of classes
++   */
++  class InlineLoader extends Object {
++    protected
++      $position = 0,
++      $current  = '';
++    
++    protected static
++      $bytes    = array();
++    
++    public static function __static() {
++      stream_wrapper_register('inline', 'InlineLoader');
++    }
++    
++    /**
++     * Register new class' bytes
++     *
++     * @param   string fqcn
++     * @param   string bytes
++     */
++    public static function setClassBytes($fqcn, $bytes) {
++      self::$bytes[$fqcn]= '<?php '.$bytes.' ?>';
++    }
++    
++    /**
++     * Remove class' bytes after loading
++     *
++     * @param   string fqcn
++     */
++    public static function removeClassBytes($fqcn) {
++      unset(self::$bytes[$fqcn]);  
++    }
++    
++    /**
++     * Stream wrapper method stream_open
++     *
++     * @param   string path
++     * @param   int mode
++     * @param   int options
++     * @param   string opened_path
++     * @return  bool
++     */
++    public function stream_open($path, $mode, $options, $opened_path) {
++      list($name)= sscanf($path, 'inline://%s');
++      $this->current= $name;
++      return isset(self::$bytes[$this->current]);
++    }
++    
++    /**
++     * Stream wrapper method stream_read
++     *
++     * @param   int count
++     * @return  string
++     */
++    public function stream_read($count) {
++      $bytes= substr(self::$bytes[$this->current], $this->position, $count);
++      $this->position+= strlen($bytes);
++      return $bytes;
++    }
++    
++    /**
++     * Stream wrapper method stream_eof
++     *
++     * @return  bool
++     */
++    public function stream_eof() {
++      return $this->position >= strlen(self::$bytes[$this->current]);
++    }
++    
++    /**
++     * Stream wrapper method stream_stat
++     *
++     * @return  <string,string>
++     */
++    public function stream_stat() {
++      return array(
++        'size'  => strlen(self::$bytes[$this->current])
++      );
++    }
++    
++    /**
++     * Stream wrapper method url_stat
++     *
++     * @param   string path
++     * @return  <string,string>
++     */
++    public function url_stat($path) {
++      list($name)= sscanf($path, 'inline://%s');
++      return array(
++        'size'  => strlen(self::$bytes[$name])
++      );
++    }
++  }
++?>

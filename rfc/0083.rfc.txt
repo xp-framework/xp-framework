@@ -4,7 +4,7 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
 @authors: kiesel
 @created: Tue Oct 17 11:44:17 CEST 2006
-@status: draft
+@status: discussion, ends at Sun Jan  14 15:00:00 CET 2007
 @category: <core>
 
 Scope of Change
@@ -38,7 +38,45 @@ n/a
 
 Speed impact
 ------------
-n/a
+The new execution model is around 3-4 times slower than the
+previous!
+This insight has been made through the following simple benchmark
+script:
+
+Benchmark script:
+<?php
+  require('lang.base.php');
+  
+  $cl= ClassLoader::getDefault();
+  for ($i= 0; $i < 100000; $i++) {
+    $cl->defineClass(
+      'net.xp_framework.runtime.DefinedClass'.$i,
+      'class DefinedClass'.$i.' extends Object {}'
+    );
+  }
+
+?>
+
+Old execution speed:
+ak@boost ~/devel/xp.public/trunk $ time php test.php 
+
+real    0m7.850s
+user    0m7.300s
+sys     0m0.550s
+
+New execution speed:
+ak@boost ~/devel/xp.public/trunk $ time php test.php 
+
+real    0m25.181s
+user    0m22.090s
+sys     0m3.080s
+
+The slow execution is probably due to many additional PHP userland function
+calls and string manipulations. However, defining a class is usually not
+a task that happens nearly that often as in the provided benchmark script.
+
+The developer community has to decide whether the useful additional debugging
+information outweights the speed loss.
 
 Dependencies
 ------------
@@ -46,6 +84,7 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0083.diff
 
 Comments
 --------
