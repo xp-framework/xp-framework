@@ -110,7 +110,7 @@
      * Retrieve an instance by a given identifier
      *
      * @param   string identifier
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
     public static function getInstance($identifier) {
       if (!isset(self::$instance[$identifier])) {
@@ -123,7 +123,7 @@
      * Retrieve an instance by a given XP class name
      *
      * @param   string fully qualified class name
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
     public static function forName($classname) {
       return self::getInstance(xp::reflect($classname));
@@ -132,8 +132,8 @@
     /**
      * Retrieve an instance by a given instance
      *
-     * @param   &lang.Object instance
-     * @return  &rdbms.Peer
+     * @param   lang.Object instance
+     * @return  rdbms.Peer
      */
     public static function forInstance($instance) {
       return self::getInstance(get_class($instance));
@@ -142,8 +142,8 @@
     /**
      * Begins a transaction
      *
-     * @param   &rdbms.Transaction transaction
-     * @return  &rdbms.Transaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     public function begin($transaction) {
       return ConnectionManager::getInstance()->getByHost($this->connection, 0)->begin($transaction);
@@ -168,7 +168,7 @@
     /**
      * Retrieve a number of objects from the database
      *
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @param   int max default 0
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
@@ -187,7 +187,7 @@
      * Returns a DataSet object for given associative array
      *
      * @param   array record
-     * @return  &rdbms.DataSet
+     * @return  rdbms.DataSet
      * @throws  lang.IllegalArgumentException
      */    
     public function objectFor($record) {
@@ -202,8 +202,8 @@
     /**
      * Returns an iterator for a select statement
      *
-     * @param   &rdbms.Criteria criteria
-     * @return  &rdbms.ResultIterator
+     * @param   rdbms.Criteria criteria
+     * @return  rdbms.ResultIterator
      * @see     xp://rdbms.ResultIterator
      */
     public function iteratorFor($criteria) {
@@ -216,9 +216,9 @@
     /**
      * Retrieve a number of objects from the database
      *
-     * @param   &rdbms.Peer peer
-     * @param   &rdbms.Criteria join
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Peer peer
+     * @param   rdbms.Criteria join
+     * @param   rdbms.Criteria criteria
      * @param   int max default 0
      * @return  rdbms.DataSet[]
      * @throws  rdbms.SQLException in case an error occurs
@@ -295,7 +295,7 @@
      * Update this object in the database by specified criteria
      *
      * @param   array values
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */
@@ -320,7 +320,7 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
