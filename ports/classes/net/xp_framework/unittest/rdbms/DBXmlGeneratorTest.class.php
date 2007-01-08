@@ -193,32 +193,12 @@
     }
 
     /**
-     * Checks whether identity is set wrong
-     *
-     */
-    #[@test, @expect('unittest.AssertionFailedError')]
-    public function identitySetWrong() {
-      $this->assertEquals('false', 
-        $this->xpath->query('string(/document/table/attribute[1]/@identity)'));
-    }
-
-    /**
      * Checks whether nullable is set correctly
      *
      */
     #[@test]
     public function nullableSet() {
       $this->assertEquals('false', 
-        $this->xpath->query('string(/document/table/attribute[1]/@nullable)'));
-    }
-
-    /**
-     * Checks whether nullable is set wrong
-     *
-     */
-    #[@test, @expect('unittest.AssertionFailedError')]
-    public function nullableSetWrong() {
-      $this->assertEquals('true', 
         $this->xpath->query('string(/document/table/attribute[1]/@nullable)'));
     }
 
