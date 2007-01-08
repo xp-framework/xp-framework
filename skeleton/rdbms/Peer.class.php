@@ -112,7 +112,7 @@
      * @param   string identifier
      * @return  &rdbms.Peer
      */
-    public function getInstance($identifier) {
+    public static function getInstance($identifier) {
       if (!isset(self::$instance[$identifier])) {
         self::$instance[$identifier]= new self($identifier);
       }
@@ -125,7 +125,7 @@
      * @param   string fully qualified class name
      * @return  &rdbms.Peer
      */
-    public function forName($classname) {
+    public static function forName($classname) {
       return self::getInstance(xp::reflect($classname));
     }
 
@@ -135,7 +135,7 @@
      * @param   &lang.Object instance
      * @return  &rdbms.Peer
      */
-    public function forInstance($instance) {
+    public static function forInstance($instance) {
       return self::getInstance(get_class($instance));
     }
     
