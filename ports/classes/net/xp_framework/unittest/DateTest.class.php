@@ -21,29 +21,17 @@
       $nowDate  = NULL,
       $refDate  = NULL;
     
-    public
-      $origTZ   = '';
-
     /**
      * Set up this test
      *
      */
     public function setUp() {
-      $this->origTZ= getenv('TZ');
-      putenv('TZ=GMT');
+      date_default_timezone_set('GMT');
       
       $this->nowTime= time();
       $this->nowDate= new Date($this->nowTime);
       $this->refDate= Date::fromString('1977-12-14 11:55');
     }
-    
-    /**
-     * Bring down testcase
-     *
-     */
-    public function tearDown() {
-      putenv('TZ='.$this->origTZ);
-    }    
     
     /**
      * Test date class
