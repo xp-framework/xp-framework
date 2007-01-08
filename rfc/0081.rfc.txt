@@ -30,27 +30,26 @@ Interface lang.Runnable declaration
    *
    * @purpose  Interface
    */
-  class Runnable extends Interface {
+  interface Runnable {
   
     /**
      * Runs this object
      *
-     * @access  public
      */
-    function run() { }
+    public function run();
   }
 ?>
 
 Shutdown hooks
 ~~~~~~~~~~~~~~
 <?php
-  System::addShutdownHook(newinstance('lang.Runnable', array(&$transaction), '{
-    var $transaction= NULL;
+  System::addShutdownHook(newinstance('lang.Runnable', array($transaction), '{
+    private $transaction= NULL;
 
-    function __construct(&$transaction) {
-      $this->transaction= &$transaction;
+    public function __construct($transaction) {
+      $this->transaction= $transaction;
     }
-    function run() { 
+    public function run() { 
       $this->transaction->isOpen() && $this->transaction->rollback(); 
     }
   }'));
@@ -60,10 +59,10 @@ Example
 ~~~~~~~
 <?php
   class Processor extends Object {
-    var $finalizer= NULL;
+    private $finalizer= NULL;
     
-    function __construct(&$finalizer) {
-      $this->finalizer= &$finalizer;
+    function __construct($finalizer) {
+      $this->finalizer= $finalizer;
     }
     
     function doWork($payload) {
@@ -71,19 +70,19 @@ Example
     }
     
     function process($payload) {
-      try(); {
+      try {
         $this->doWork($payload);
-      } if (catch('Exception', $e)) {
+      } catch (Throwable $e) {
         $e->printStackTrace();
       } finally(); {
         $this->finalizer->run();
-        if ($e) return throw($e);
+        if ($e) throw($e);
       }
     }
   }
   
-  $p= &new Processor(newinstance('lang.Runnable', array(), '{
-    function run() { Console::writeLine('Done!'); }
+  $p= new Processor(newinstance('lang.Runnable', array(), '{
+    public function run() { Console::writeLine('Done!'); }
   }'));
   $p->process($payload);
 ?>
