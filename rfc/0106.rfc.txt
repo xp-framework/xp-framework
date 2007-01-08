@@ -114,6 +114,9 @@ Related documents
 - http://www.php.net/~helly/php/ext/spl/interfaceIteratorAggregate.html
   Zend-Engine internal interface IteratorAggregate
 
+- http://xp-framework.net/rfc/contrib/rfc0106.diff
+  Implementing patch (apply in xp/trunk)
+
 Comments
 --------
 - friebe, Mon Jan  8 19:09:55     2007
