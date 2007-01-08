@@ -21,10 +21,9 @@ Get rid of another case where catch-all is needed.
 Functionality
 -------------
 <?php
-  $m= &$class->getMethod('doSelect');
-  try(); {
-    $r= $m->invoke($class->newInstance(), $args);
-  } if (catch('MethodInvocationException', $e)) {
+  try {
+    $r= $class->getMethod('doSelect')->invoke($class->newInstance(), $args);
+  } catch (MethodInvocationException $e) {
     Console::writeLine($m->getName(), ' invocation failed, cause: ', $e->cause->toString());
   }
 ?>
@@ -57,5 +56,7 @@ Related documents
 
 Comments
 --------
+- friebe, Mon Jan  8 19:28:42     2007
+  Maybe InvocationException (withoud "Method") would be better?
 
 <EOF>
