@@ -23,8 +23,7 @@ Functionality
 Current
 ~~~~~~~
 <?php
-  $peer= &News::getPeer();
-  $entries= $peer->doSelect(new Criteria(Restrictions::allOf(
+  $entries= News::getPeer()->doSelect(new Criteria(Restrictions::allOf(
     Restrictions::like('title', 'Hello%'),
     Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
   ));
@@ -34,14 +33,60 @@ New
 ~~~
 <?php
   // Idea #1
-  $peer= &News::getPeer();
-  $entries= $peer->doSelect(new TodaysHelloNewsFinder());
+  $entries= News::getPeer()->doSelect(new TodaysHelloNewsFinder());
   
   // Idea #2
-  $finder= &new TodaysHelloNewsFinder();
+  $finder= new TodaysHelloNewsFinder();
   $entries= $finder->find(News::getPeer());
 ?>
 
+Finder class (idea #1)
+~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class TodaysHelloNewsFinder extends Finder {
+  
+    public function criteria() {
+      return new Criteria(Restrictions::allOf(
+        Restrictions::like('title', 'Hello%'),
+        Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
+      );
+    }
+  }
+  
+  abstract class Finder extends Object implements SQLExpression {
+
+    public function executeSelect($conn, $peer) {
+      if (!($c= $this->criteria() instanceof SQLExpression) {
+        throw new SQLStatementFailedException(sprintf(
+          '%s::criteria() failed to return an SQLExpression (returned %s)',
+          $this->getClassName(),
+          xp::typeOf($c)
+        ));
+      }
+      return $c->executeSelect($conn, $peer);
+    }
+    
+    public abstract function criteria();
+  }
+?>
+
+Finder class (idea #2)
+~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class TodaysHelloNewsFinder implements Finder {
+  
+    public function find($peer) {
+      return $peer->doSelect(new Criteria(Restrictions::allOf(
+        Restrictions::like('title', 'Hello%'),
+        Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
+      ));
+    }
+  }
+  
+  interface Finder {
+    public function find($peer);
+  }
+?>
 
 Security considerations
 -----------------------
