@@ -55,7 +55,7 @@
       $buffer     = '',
       $offset     = 0;
 
-    // {{{ bool verify(lang.Object object, string method, array<string, mixed> arguments)
+    // {{{ void verify(lang.Object object, string method, array<string, mixed> arguments)
     //     Verifies method arguments
     public static function verify($object, $method, $arguments) {
       foreach (array_keys($arguments) as $token) {
@@ -80,8 +80,6 @@
           $object->__types[$token]
         ));
       }
-      
-      return TRUE;
     }
     // }}}
 
@@ -177,11 +175,11 @@
           case GENERIC_PARSER_ST_METHOD_DECL.'{':
             $this->buffer.= '{';
             if (!empty($arguments)) {
-              $this->buffer.= ' if (!uwrp·generic::verify($this, \''.$method.'\', array(';
+              $this->buffer.= ' uwrp·generic::verify($this, \''.$method.'\', array(';
               foreach ($arguments as $name => $token) {
                 $this->buffer.= "'".$token."' => ".$name.', ';
               }
-              $this->buffer.= '))) return;';
+              $this->buffer.= '));';
             }
             $state= GENERIC_PARSER_ST_BODY;
             break;
