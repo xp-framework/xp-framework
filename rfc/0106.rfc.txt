@@ -1,0 +1,107 @@
+RFC 0106: Overload array access / foreach iteration in ArrayList
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Jan  8 18:35:00     2007
+@status: draft
+@category: lang.types
+
+Scope of Change
+---------------
+The lang.types.ArrayList class will be changed to support array access
+(read/write) and foreach() iteration.
+
+
+Rationale
+---------
+Easier access to Arraylist's values.
+
+
+Functionality
+-------------
+The ArrayList class will implement the "magic" interfaces ArrayAccess 
+and IteratorAggregate (provided with the Zend Engine).
+
+
+ArrayAccess implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  // ...
+  public function offsetGet($offset) {
+    if (!array_key_exists($offset, $this->values)) {
+      raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+    }
+    return $this->values[$offset];
+  }
+
+  public function offsetSet($offset, $value) {
+    if (is_int($offset)) {
+      if ($offset < 0 || $offset > sizeof($this->values)) {
+        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+      }
+      $this->values[$offset]= $value;
+    } else if (NULL === $offset) {
+      $this->values[]= $value;
+    } else {
+      throw new IllegalArgumentException('Incorrect type '.$t.' for index');
+    }
+  }
+
+  public function offsetExists($offset) {
+    return array_key_exists($offset, $this->values);
+  }
+
+  public function offsetUnset($offset) {
+    unset($this->values[$offset]);
+  }
+  // ...
+?>
+
+IteratorAggregate implementation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  // ...
+  protected static
+    $iterate = NULL;
+
+  static function __static() {
+    self::$iterate= newinstance('Iterator', array(), '{
+      private $i= 0, $v;
+      public function on($v) { $self= new self(); $self->v= $v; return $self; }
+      public function current() { return $this->v[$this->i]; }
+      public function key() { return $this->i; }
+      public function next() { $this->i++; }
+      public function rewind() { $this->i= 0; }
+      public function valid() { return $this->i < sizeof($this->v); }
+    }');
+  }
+
+  public function getIterator() {
+    return self::$iterate->on($this->values);
+  }
+  // ...
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower (more methods, extra implementation checks)
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
