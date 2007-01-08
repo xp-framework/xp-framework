@@ -22,8 +22,9 @@
   // {{{ GeneratorDoclet
   //     Specialized doclet
   class GeneratorDoclet extends Doclet {
-    var
-      $build= NULL;
+    protected
+      $build    = NULL,
+      $packages = array();
 
     function tagAttribute($tags, $which, $attribute= 'text') {
       return isset($tags[$which]) ? $tags[$which]->{$attribute} : NULL;
@@ -189,6 +190,16 @@
       $out= new File($this->build->getURI().$classdoc->qualifiedName().'.xml');
       Console::writeLine('- ', $classdoc->toString());
 
+      // Add contained package
+      $package= $classdoc->containingPackage();
+      $hash= $package->hashCode();
+
+      if (!isset($this->packages[$hash])) {
+        $this->packages[$hash]= array('info' => $package);
+      }
+
+      $this->packages[$hash]['classes'][$classdoc->name()]= $classdoc->classType();
+
       // Create XML tree
       $tree= new Tree('doc');
       $tree->addChild($this->classNode($classdoc));
@@ -203,37 +214,39 @@
       delete($out);
       delete($tree);
     }
+    
+    function markup($text) {
+      return new PCData('<p>'.preg_replace(array(
+        "#\n\n#",
+        "#<code>(.*)</code>(<br/>)?#msU",
+        "#\n([^\n]+)\n[=]{3,}\n#",
+        "#\n([^\n]+)\n[-]{3,}\n#",
+      ), array(
+        '<br/><br/>'."\n",
+        '</p><pre class="code">\1</pre><p>',
+        '</p><h1>$1</h1><p>'."\n",
+        '</p><h2>$1</h2><p>'."\n",
+      ), $text).'</p>');
+    }
 
     function start($root) {
       $this->build= new Folder($root->option('build', 'build'));
       $this->build->exists() || $this->build->create();
       
-      $packages= array();
+      // Marshal classes
+      $this->packages= array();
       while ($root->classes->hasNext()) {
-        $class= $root->classes->next();
-        
-        // Add packages
-        $package= $class->containingPackage();
-        $hash= $package->hashCode();
-
-        if (!isset($packages[$hash])) {
-          $packages[$hash]= array('info' => $package);
-        }
-
-        $packages[$hash]['classes'][$class->name()]= $class->classType();
-        
-        // Marshal class
-        $this->marshalClassDoc($class);
+        $this->marshalClassDoc($root->classes->next());
         xp::gc();
       }
       
       // Marshal packages
-      foreach ($packages as $package) {
+      foreach ($this->packages as $package) {
         Console::writeLine('- ', $package['info']->toString());
 
         $tree= new Tree('doc');
         $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
-        $p->addChild(new Node('comment', $package['info']->commentText()));
+        $p->addChild(new Node('comment', $this->markup($package['info']->commentText())));
 
         $p->addChild(new Node('purpose', $this->tagAttribute($package['info']->tags('purpose'), 0, 'text')));
         foreach ($package['info']->tags('see') as $ref) {
