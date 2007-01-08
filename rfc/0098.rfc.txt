@@ -23,16 +23,15 @@ Functionality
 The filter interface
 ~~~~~~~~~~~~~~~~~~~~
 <?php
-  class Filter extends Interface {
+  interface Filter {
   
     /**
      * Returns whether to accept the given object.
      *
-     * @access  public
-     * @param   &lang.Object subject
+     * @param   lang.Object subject
      * @return  bool
      */
-    function accept(&$subject) { }
+    function accept($subject) { }
   
   }
 ?>
