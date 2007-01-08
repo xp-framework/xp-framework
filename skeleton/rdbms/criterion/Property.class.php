@@ -13,10 +13,10 @@
    */
   class Property extends Object {
     protected static 
-      $instance = array();
+      $instances = array();
 
     public 
-      $name     = '';
+      $name      = '';
 
     /**
      * Constructor
