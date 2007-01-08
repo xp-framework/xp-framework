@@ -175,6 +175,10 @@ blockquote {
 }
 /* }}} */
 
+.comment h1 {
+  font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+  margin-bottom: 1px;
+}
 
 /* {{{ Syntax */
 pre.code {
