@@ -29,9 +29,9 @@
    *
    * 1) Retrieve a news object
    * <code>
-   *   try(); {
-   *     $news= &News::getByNewsId($id);
-   *   } if (catch('SQLException', $e)) {
+   *   try {
+   *     $news= News::getByNewsId($id);
+   *   } catch (SQLException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -41,16 +41,16 @@
    *
    * 2) Create a new entry
    * <code>
-   *   with ($n= &new News()); {
+   *   with ($n= new News()); {
    *     $n->setCategoryId($cat);
    *     $n->setTitle('Welcome');
    *     $n->setBody(NULL);
    *     $n->setAuthor('Timm');
    *     $n->setCreatedAt(Date::now());
    *
-   *     try(); {
+   *     try {
    *       $n->insert();
-   *     } if (catch('SQLException', $e)) {
+   *     } catch (SQLException $e) {
    *       $e->printStackTrace();
    *       exit(-1);
    *     }
@@ -61,13 +61,13 @@
    *
    * 3) Modify a news object
    * <code>
-   *   try(); {
-   *     if ($news= &News::getByNewsId($id)) {
+   *   try {
+   *     with ($news= News::getByNewsId($id)); {
    *       $news->setCaption('Good news, everyone!');
    *       $news->setAuthor('Hubert Farnsworth');
    *       $news->update();
    *     }
-   *   } if (catch('SQLException', $e)) {
+   *   } catch (SQLException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -75,14 +75,12 @@
    *   echo $news->toString();
    * </code>
    *
-   * Note: Fields are created as public members (aka "implicit public").
-   *
    * @test     xp://net.xp_framework.unittest.rdbms.DataSetTest
    * @see      xp://rdbms.Peer
    * @see      xp://rdbms.ConnectionManager
    * @purpose  Base class
    */
-  class DataSet extends Object {
+  abstract class DataSet extends Object {
     public
       $_new         = TRUE,
       $_changed     = array();
@@ -107,16 +105,16 @@
     /**
      * Retrieve associated peer
      *
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
-    public function getPeer() { }
+    public static abstract function getPeer();
 
     /**
      * Changes a value by a specified key and returns the previous value.
      *
      * @param   string key
-     * @param   &mixed value
-     * @return  &mixed previous value
+     * @param   mixed value
+     * @return  mixed previous value
      */
     protected function _change($key, $value) {
       $this->_changed[$key]= $value;
@@ -215,7 +213,7 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
@@ -229,7 +227,7 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
