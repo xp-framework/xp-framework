@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.criterion.Criterion[] criterions
+     * @param   rdbms.criterion.Criterion[] criterions
      * @param   string op one of the LOGICAL_* constants
      */
     public function __construct($criterions, $op) {
@@ -33,7 +33,7 @@
     /**
      * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection conn
+     * @param   rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException

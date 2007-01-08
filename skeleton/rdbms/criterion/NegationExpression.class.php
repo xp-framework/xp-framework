@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.criterion.Criterion criterion
+     * @param   rdbms.criterion.Criterion criterion
      */
     public function __construct($criterion) {
       $this->criterion= $criterion;
@@ -27,7 +27,7 @@
     /**
      * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection conn
+     * @param   rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
@@ -35,6 +35,5 @@
     public function asSql($conn, $types) { 
       return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $types));
     }
-
   } 
 ?>
