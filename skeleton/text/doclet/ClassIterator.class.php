@@ -15,7 +15,7 @@
     public
       $classes = array(),
       $root    = NULL,
-      $_key    = NULL;
+      $_cur    = NULL;
     
     /**
      * Constructor
@@ -42,7 +42,12 @@
      * @return  bool
      */
     public function hasNext() {
-      return !is_null($this->_key= key($this->classes));
+      if (NULL !== $this->_cur) return TRUE;
+      while (NULL !== ($name= key($this->classes))) {
+        if (NULL !== ($this->_cur= $this->root->classNamed($name))) return TRUE;
+        next($this->classes);
+      }
+      return FALSE;
     }
     
     /**
@@ -52,11 +57,13 @@
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {
-      if (is_null($this->_key)) {
-        throw(new NoSuchElementException('No more elements'));
+      if (NULL === $this->_cur) {
+        throw new NoSuchElementException('No more elements');
       }
+      $return= $this->_cur;
       next($this->classes);
-      return $this->root->classNamed($this->_key);
+      $this->_cur= NULL;
+      return $return;
     }
 
   } 
