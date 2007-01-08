@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Made rdbms.DataSet class abstract
+  (friebe)
 - Fix static initializer not being called for classes loaded via 
   uses wrapper 
   (friebe)
