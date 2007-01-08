@@ -10,16 +10,15 @@
    * @purpose  Generics demonstration
    */
   class GenericMap<K, V> extends Object {
-    var
+    protected
       $elements= array();
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   array<K, V> initial default array()
      */
-    function __construct($initial= array()) {
+    public function __construct($initial= array()) {
       foreach ($initial as $key => $value) {
         $this->put($key, $value);
       }
@@ -30,10 +29,10 @@
      *
      * @access  public
      * @param   K key
-     * @param   &V value
+     * @param   V value
      */
-    function put(K $key, V &$value) {
-      $this->elements[$key]= &$value;
+    public function put(K $key, V $value) {
+      $this->elements[$key]= $value;
     }
 
     /**
@@ -41,9 +40,9 @@
      *
      * @access  public
      * @param   K key
-     * @return  &V value associated with the key
+     * @return  V value associated with the key
      */
-    function &get(K $key) {
+    public function get(K $key) {
       return $this->elements[$key];
     }
   }

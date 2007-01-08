@@ -20,63 +20,58 @@
     /**
      * Assertion helper
      *
-     * @access  protected
      * @param   array<string, string> types
-     * @param   &lang.Object object
+     * @param   lang.Object object
      * @throws  util.profiling.AssertionFailedError
      */
-    function assertGenericTypes($types, &$object) {
+    protected function assertGenericTypes($types, $object) {
       return $this->assertEquals($types, $object->__types);
     }
 
     /**
-     * Tests create() calls Object constructor
+     * Tests create() sets an __id member
      *
-     * @access  public
      */
     #[@test]
-    function objectConstructorCalled() {
-      $hash= &create('GenericMap<int, String>');
+    public function idMemberIsset() {
+      $hash= create('GenericMap<int, text.String>');
       $this->assertNotEmpty($hash->__id);
     }
 
     /**
      * Tests generics cannot be constructed directly (by means of new).
      *
-     * @access  public
      */
     #[@test, @expect('InstantiationException')]
-    function cannotBeConstructedDirectly() {
+    public function cannotBeConstructedDirectly() {
       new GenericMap();
     }
 
     /**
      * Tests create()
      *
-     * @access  public
      */
     #[@test]
-    function createFunction() {
-      $hash= &create('GenericMap<int, String>');
+    public function createFunction() {
+      $hash= create('GenericMap<int, text.String>');
 
       $this->assertGenericTypes(array(
         'K' => 'int',
-        'V' => 'String'
+        'V' => 'text.String'
       ), $hash);
     }
 
     /**
      * Tests create() with arguments
      *
-     * @access  public
      */
     #[@test]
-    function createFunctionWithArguments() {
-      $hash= &create('GenericMap<int, String>', array(1 => new String('one')));
+    public function createFunctionWithArguments() {
+      $hash= create('GenericMap<int, text.String>', array(1 => new String('one')));
 
       $this->assertGenericTypes(array(
         'K' => 'int',
-        'V' => 'String'
+        'V' => 'text.String'
       ), $hash);
       $this->assertEquals(new String('one'), $hash->get(1));
     }
@@ -84,31 +79,28 @@
     /**
      * Tests create() when passed not enough components
      *
-     * @access  public
      */
     #[@test, @expect('InstantiationException')]
-    function notEnoughComponents() {
+    public function notEnoughComponents() {
       create('GenericMap<int>');
     }
 
     /**
      * Tests create() when passed too many components
      *
-     * @access  public
      */
     #[@test, @expect('InstantiationException')]
-    function tooManyComponents() {
+    public function tooManyComponents() {
       create('GenericMap<int, int, int>');
     }
 
     /**
      * Tests type hinting
      *
-     * @access  public
      */
     #[@test]
-    function correctTypes() {
-      $hash= &create('GenericMap<int, String>');
+    public function correctTypes() {
+      $hash= create('GenericMap<int, text.String>');
       $hash->put(1, new String('one'));
       $this->assertEquals(new String('one'), $hash->get(1));
     }
@@ -116,22 +108,20 @@
     /**
      * Tests type hinting
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function wrongTypes() {
-      $hash= &create('GenericMap<int, String>');
+    public function wrongTypes() {
+      $hash= create('GenericMap<int, text.String>');
       $hash->put(1, new Object());    // value should be a String
     }
 
     /**
      * Tests type hinting
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function wrongType() {
-      $hash= &create('GenericMap<int, String>');
+    public function wrongType() {
+      $hash= create('GenericMap<int, text.String>');
       $hash->get('string');           // key should be an int
     }
   }

@@ -9,6 +9,6 @@
    *
    * @purpose  Exception
    */
-  class InstantiationException extends Exception {
+  class InstantiationException extends XPException {
   }
 ?>

@@ -13,30 +13,33 @@
   define('GENERIC_PARSER_ST_METHOD_DECL', 'method');
   define('GENERIC_PARSER_ST_METHOD_ARGS', 'method.args');
 
-  // {{{ &lang.Object create(string spec)
+  // {{{ lang.Object create(string spec)
   //     Creates a generic object
-  function &create($spec) {
+  function create($spec) {
     sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
     $components= explode(',', $types);
     $class= xp::reflect($classname);
-    $tokens= uwrp·generic::tokens($class);
+    $tokens= uwrp·generic::$tokens[$class];
     
     // Sanity check components and tokens
     if (sizeof($tokens) != sizeof($components)) {
-      return throw(new InstantiationException('Incorrect number of component types'));
+      throw new InstantiationException('Incorrect number of component types');
     }
     
     // Instanciate without invoking the constructor
-    $instance= unserialize('O:'.strlen($class).':"'.$class.'":0:{}');
+    $__id= microtime();
+    $instance= unserialize('O:'.strlen($class).':"'.$class.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
 
     // Pass types
     foreach ($components as $i => $type) {
       $instance->__types[$tokens[$i]]= trim($type);
     }
     
-    // Call constructor
-    $a= func_get_args();
-    call_user_func_array(array(&$instance, 'Object'), array_slice($a, 1));
+    // Call constructor if available
+    if (is_callable(array($instance, '__construct·'))) {
+      $a= func_get_args();
+      call_user_func_array(array($instance, '__construct·'), array_slice($a, 1));
+    }
     
     return $instance;
   }
@@ -44,24 +47,17 @@
 
   // {{{ final class uwrp·generic
   //     Stream wrapper
-  class uwrp·generic {
-    var
+  final class uwrp·generic {
+    public static
+      $tokens     = array();
+
+    protected
       $buffer     = '',
       $offset     = 0;
 
-    // {{{ string[] tokens(string classname, string[] tokens= NULL)
-    //     Stores class / token mapping data
-    function tokens($classname, $tokens= NULL) {
-      static $registry= array();
-      
-      if (!isset($tokens)) return $registry[$classname];
-      $registry[$classname]= $tokens;
-    }
-    // }}}
-    
-    // {{{ bool verify(&lang.Object object, string method, array<string, mixed> arguments)
+    // {{{ bool verify(lang.Object object, string method, array<string, mixed> arguments)
     //     Verifies method arguments
-    function verify(&$object, $method, $arguments) {
+    public static function verify($object, $method, $arguments) {
       foreach (array_keys($arguments) as $token) {
         switch ($object->__types[$token]) {
           case 'int': $r= is_int($arguments[$token]); break;
@@ -75,14 +71,14 @@
 
         if ($r) continue;
         
-        return throw(new IllegalArgumentException(sprintf(
+        throw new IllegalArgumentException(sprintf(
           'Type mismatch for %s in %s::%s() (was: %s, expecting: %s)',
           $token,
           $object->getClassName(),
           $method,
           xp::typeOf($arguments[$token]),
           $object->__types[$token]
-        )));
+        ));
       }
       
       return TRUE;
@@ -128,9 +124,9 @@
             
           case GENERIC_PARSER_ST_DECL.'{':
             $this->buffer.= (
-              "{\n    var \$__types= array();".
-              "\n    function ".$class."() {".
-              "\n      throw(new InstantiationException('Cannot be instantiated directly'));".
+              "{\n    public \$__types= array();".
+              "\n    public function __construct() {".
+              "\n      throw new InstantiationException('Cannot be instantiated directly');".
               "\n    }"
             );
             $state= GENERIC_PARSER_ST_BODY;
@@ -143,6 +139,7 @@
 
           case GENERIC_PARSER_ST_METHOD_DECL.T_STRING:
             $method= $tokens[$i][1];
+            if ('__construct' == $method) $method= '__construct·';
             $this->buffer.= $method;
             break;
 
@@ -182,7 +179,7 @@
             if (!empty($arguments)) {
               $this->buffer.= ' if (!uwrp·generic::verify($this, \''.$method.'\', array(';
               foreach ($arguments as $name => $token) {
-                $this->buffer.= "'".$token."' => &".$name.', ';
+                $this->buffer.= "'".$token."' => ".$name.', ';
               }
               $this->buffer.= '))) return;';
             }
@@ -199,7 +196,7 @@
         }
       }
       
-      uwrp·generic::tokens(xp::reflect($url['host']), array_keys($generics));
+      uwrp·generic::$tokens[xp::reflect($url['host'])]= array_keys($generics);
       // DEBUG var_dump($url['host'], $generics, $this->buffer);
       return TRUE;
     }  
