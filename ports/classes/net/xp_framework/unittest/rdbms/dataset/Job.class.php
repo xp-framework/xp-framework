@@ -18,12 +18,8 @@
       $valid_from         = NULL,
       $expire_at          = NULL;
 
-    /**
-     * Static initializer
-     *
-     */
-    public static function __static() { 
-      with ($peer= Job::getPeer()); {
+    static function __static() { 
+      with ($peer= self::getPeer()); {
         $peer->setTable('JOBS.job');
         $peer->setConnection('jobs');
         $peer->setIdentity('job_id');
@@ -40,9 +36,9 @@
     /**
      * Retrieve associated peer
      *
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
-    public function getPeer() {
+    public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -50,12 +46,11 @@
      * Gets an instance of this object by index "PRIMARY"
      *
      * @param   int job_id
-     * @return  &de.schlund.db.job.Job object
+     * @return  net.xp_framework.unittest.rdbms.dataset.Job object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByJob_id($job_id) {
-      $peer= Job::getPeer();
-      return array_shift($peer->doSelect(new Criteria(array('job_id', $job_id, EQUAL))));
+    public static function getByJob_id($job_id) {
+      return array_shift(self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL))));
     }
 
     /**
