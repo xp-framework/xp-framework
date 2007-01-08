@@ -96,8 +96,8 @@
     /**
      * Process query event.
      *
-     * @param   &mixed observable
-     * @param   &mixed dbevent
+     * @param   mixed observable
+     * @param   mixed dbevent
      */
     public function onQuery($obs, $arg) {
       
@@ -108,8 +108,8 @@
     /**
      * Process end of query event.
      *
-     * @param   &mixed observable
-     * @param   &mixed dbevent
+     * @param   mixed observable
+     * @param   mixed dbevent
      */
     public function onQueryEnd($obs, $arg) {
       $this->cat->info($this->getClassName().'::onQueryEnd() Query was:', (sizeof($this->queries) == 1 ? $this->queries[0] : $this->queries));
