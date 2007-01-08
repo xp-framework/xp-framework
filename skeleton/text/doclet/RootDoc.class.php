@@ -218,6 +218,9 @@
                 break;
               
               case ST_CLASS.'{':
+                if ($name !== $package) {
+                  throw new IllegalArgumentException('Package "'.$package.'" contains package "'.$name.'"');
+                }
                 $doc->name= $name;
                 $doc->rawComment= $comment;
                 $doc->annotations= $annotations;
