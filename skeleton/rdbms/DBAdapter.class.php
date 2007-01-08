@@ -9,41 +9,43 @@
   /**
    * Abstract base class for a database adapter for DBTable operations
    * 
-   * @see   rdbms.DBAdapter
+   * @see      xp://rdbms.DBTable
+   * @purpose  RDBMS reflection
    */  
-  class DBAdapter extends Object {
+  abstract class DBAdapter extends Object {
     public
       $conn=  NULL;
       
     /**
      * Constructor
      *
-     * @param   &rdbms.DBConnection conn a database connection
+     * @param   rdbms.DBConnection conn a database connection
      */
     public function __construct($conn) {
       $this->conn= $conn;
-      
     }
 
     /**
-     * Get a table
+     * Get a table in the current database
      *
      * @param   string name
+     * @return  rdbms.DBTable
      */    
-    public function getTable($name) {}
+    public abstract function getTable($name);
 
     /**
-     * Get tables
+     * Get all tables in the specified database
      *
      * @param   string database
+     * @return  rdbms.DBTable[]
      */    
-    public function getTables($database) {}
+    public abstract function getTables($database);
     
     /**
      * Get databaases
      *
-     * @param   string name
+     * @return  string[]
      */    
-    public function getDatabases() {}
+    public abstract function getDatabases();
   }
 ?>
