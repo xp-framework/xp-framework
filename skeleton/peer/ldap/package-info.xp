@@ -88,5 +88,5 @@
  * @ext      ldap
  * @purpose  LDAP access
  */
-package lang {
+package peer.ldap {
 }

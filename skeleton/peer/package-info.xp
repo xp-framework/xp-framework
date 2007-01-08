@@ -89,5 +89,5 @@
  * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ  
  * @purpose  Networking / Protocols
  */
-package lang {
+package peer {
 }
