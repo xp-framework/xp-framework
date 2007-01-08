@@ -26,6 +26,12 @@ and IteratorAggregate (provided with the Zend Engine).
 
 ArrayAccess implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+The ArrayAccess interface requires implementing the following methods:
+offsetGet(), offsetSet(), offsetExists() and offsetUnset().
+
+Because the ArrayList class represents a strictly "numeric" array (a
+list of elements that is zero-indexed and without gaps), we will need
+to take special precautions in offsetSet().
 <?php
   // ...
   public function offsetGet($offset) {
@@ -60,6 +66,8 @@ ArrayAccess implementation
 
 IteratorAggregate implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We will define an "inner" class for iteration to not introduce new 
+dependencies:
 <?php
   // ...
   protected static
@@ -100,8 +108,16 @@ n/a
 
 Related documents
 -----------------
+- http://www.php.net/~helly/php/ext/spl/interfaceArrayAccess.html
+  Zend-Engine internal interface ArrayAccess
+
+- http://www.php.net/~helly/php/ext/spl/interfaceIteratorAggregate.html
+  Zend-Engine internal interface IteratorAggregate
 
 Comments
 --------
+- friebe, Mon Jan  8 19:09:55     2007
+  The ArrayAccess and IteratorAggregate interfaces are part of the Zend
+  Engine, not of SPL!
 
 <EOF>
