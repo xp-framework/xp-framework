@@ -69,6 +69,13 @@
     </func:result>
   </func:function>
 
+  <xsl:template match="comment/*">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:copy-of select="."/>
+    </xsl:copy>
+  </xsl:template>
+
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
     <style type="text/css">
@@ -105,9 +112,9 @@
     </h1>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-    <p class="comment">
-      <xsl:value-of select="comment" disable-output-escaping="yes"/>
-    </p>
+    <div class="comment">
+      <xsl:apply-templates select="comment"/>
+    </div>
 
     <h2>Package contents</h2>
 
@@ -193,6 +200,7 @@
   </xsl:template>
 
   <xsl:template match="/">
+    <html><head><link rel="stylesheet" href="style.css"/></head><body>
     <div id="search">
       <form action="/search">
         <label for="query"><u>S</u>earch XP website for </label>
@@ -241,7 +249,8 @@
       
       <br/>
       
-      (c) 2001-2006 the XP team
+      (c) 2001-2007 the XP team
     </div>
+    </body></html>
   </xsl:template>
 </xsl:stylesheet>

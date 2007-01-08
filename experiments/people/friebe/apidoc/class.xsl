@@ -412,6 +412,7 @@
   </xsl:template>
 
   <xsl:template match="/">
+    <html><head><link rel="stylesheet" href="style.css"/></head><body>
     <div id="search">
       <form action="/search">
         <label for="query"><u>S</u>earch XP website for </label>
@@ -465,7 +466,8 @@
       
       <br/>
       
-      (c) 2001-2006 the XP team
+      (c) 2001-2007 the XP team
     </div>
+    </body></html>
   </xsl:template>
 </xsl:stylesheet>
