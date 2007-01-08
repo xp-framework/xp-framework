@@ -71,8 +71,8 @@ Generic classes are not instantiated by new but by a function called
 create().
 
 <?php
-  $hash= &create('GenericHash<int, Object>');
-  $hash= &create('GenericHash<int, Object>', $arg1, $arg2);
+  $hash= create('GenericHash<int, lang.Object>');
+  $hash= create('GenericHash<int, lang.Object>', $arg1, $arg2);
 ?>
 
 
@@ -100,7 +100,7 @@ The following:
 will become:
 <?php 
   class SortedList extends Object {
-    var $__types= array();
+    public $__types= array();
   }
 ?>
 
@@ -124,10 +124,10 @@ The following:
 will become:
 <?php 
   class SortedList extends Object {
-    var $__types= array();
+    public $__types= array();
 
     function add($element) { 
-      if (!uwrp·generic::verify($this, 'add', array('E' => &$element))) return;
+      uwrp·generic::verify($this, 'add', array('E' => $element));
       // ...
     }
   }
@@ -144,8 +144,8 @@ contain the name of the class to be instanciated and the component types.
 
 Example:
 <?php
-  $list= &create('SortedList<String>');         // #1
-  $hash= &create('IdentityMap<int, Object>');   // #2
+  $list= create('SortedList<text.String>');         // #1
+  $hash= create('IdentityMap<int, lang.Object>');   // #2
 ?>
 #1: Here, "SortedList" is the class name and "String" the component type.
 #2: Here, "IdentityMap" is the class name and "int" and "Object" are the
@@ -153,8 +153,8 @@ Example:
 
 An instance of the class is created without invoking the constructor.
 The runtime types are deferred and assigned to the created instance's
-__types member. For #1, the member would contain { "E" => "String" },
-for #2, it would be { "K" => "int", "V" => "Object" }.
+__types member. For #1, the member would contain { "E" => "text.String" },
+for #2, it would be { "K" => "int", "V" => "lang.Object" }.
 
 After creation, the constructor is called if existant.
 
