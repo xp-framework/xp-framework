@@ -38,6 +38,9 @@ New
   // Idea #2
   $finder= new TodaysHelloNewsFinder();
   $entries= $finder->find(News::getPeer());
+  
+  // Idea #3 (like idea #2, but Finder is a singleton)
+  $entries= TodaysHelloNewsFinder::getInstance()->find(News::getPeer());
 ?>
 
 Finder class (idea #1)
