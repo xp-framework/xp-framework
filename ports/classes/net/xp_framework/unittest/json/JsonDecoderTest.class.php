@@ -257,13 +257,17 @@
      */
     #[@test]
     public function decodeObject() {
-      $o= new Object();
-      $o->__id= '<bogusid>';
-      $o->prop= 'prop';
+      $o= newinstance('lang.Object', array(), '{
+        public $prop= 1;
+        
+        public function equals($cmp) {
+          return $cmp instanceof self && $cmp->prop == $this->prop;
+        }
+      }');
 
       $this->assertEquals(
         $o,
-        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "lang.Object" , "__id" : "<bogusid>" , "prop" : "prop" }')
+        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.$o->getClassName().'" , "prop" : 1 }')
       );
     }
   }
