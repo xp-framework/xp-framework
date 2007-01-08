@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase');
+  uses('unittest.TestCase', 'util.log.Traceable');
 
   /**
    * Test the XP default classloader
