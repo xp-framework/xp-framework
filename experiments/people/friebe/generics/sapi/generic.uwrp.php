@@ -9,6 +9,7 @@
   define('GENERIC_PARSER_ST_INITIAL',     'initial');
   define('GENERIC_PARSER_ST_DECL',        'decl');
   define('GENERIC_PARSER_ST_GENERICS',    'generics');
+  define('GENERIC_PARSER_ST_USES',        'uses');
   define('GENERIC_PARSER_ST_BODY',        'body');
   define('GENERIC_PARSER_ST_METHOD_DECL', 'method');
   define('GENERIC_PARSER_ST_METHOD_ARGS', 'method.args');
@@ -93,11 +94,36 @@
       $tokens= token_get_all(file_get_contents($file));
       $state= GENERIC_PARSER_ST_INITIAL;
       $bracket= '';
+      $generics= array();
+      $type= $ctype= NULL;
       $this->buffer= '';
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($state.$tokens[$i][0]) {
+          case GENERIC_PARSER_ST_INITIAL.T_STRING:
+            if ('uses' == $tokens[$i][1]) {
+              $state= GENERIC_PARSER_ST_USES;
+            }
+            break;
+
+          case GENERIC_PARSER_ST_USES.T_CONSTANT_ENCAPSED_STRING:
+            uses(trim($tokens[$i][1], "'"));
+            break;
+
+          case GENERIC_PARSER_ST_USES.'(':
+          case GENERIC_PARSER_ST_USES.')':
+          case GENERIC_PARSER_ST_USES.',':
+          case GENERIC_PARSER_ST_USES.T_WHITESPACE:
+            // Intentionally empty
+            break;
+
+          case GENERIC_PARSER_ST_USES.';':
+            $state= GENERIC_PARSER_ST_INITIAL;
+            break;
+            
           case GENERIC_PARSER_ST_INITIAL.T_CLASS:
-            $this->buffer.= 'class';
+          case GENERIC_PARSER_ST_INITIAL.T_INTERFACE:
+            $ctype= $tokens[$i][1];
+            $this->buffer.= $tokens[$i][1];
             $class= $tokens[$i+ 2][1];
             $state= GENERIC_PARSER_ST_DECL;
             break;
@@ -119,14 +145,31 @@
           case GENERIC_PARSER_ST_GENERICS.'>':
             $state= GENERIC_PARSER_ST_DECL;
             break;
+
+          case GENERIC_PARSER_ST_DECL.T_IMPLEMENTS:
+            if (empty($generics)) {
+
+              // Class is not generic and implements a generic interface
+              $ctype= 'ordinary';
+              $interface= $tokens[$i+ 2][1];
+            }
+            $this->buffer.= 'implements';
+            break;
             
           case GENERIC_PARSER_ST_DECL.'{':
-            $this->buffer.= (
-              "{\n    public \$__types= array();".
-              "\n    public function __construct() {".
-              "\n      throw new InstantiationException('Cannot be instantiated directly');".
-              "\n    }"
-            );
+            $this->buffer.= '{';
+            if ('class' == $ctype) {
+              $this->buffer.= (
+                "\n    public \$__types= array();".
+                "\n    public function __construct() {".
+                "\n      throw new InstantiationException('Cannot be instantiated directly');".
+                "\n    }"
+              );
+            } else if ('ordinary' == $ctype) {
+              if (sizeof($generics) != sizeof(uwrp·generic::$tokens[$interface])) {
+                throw new Error('Generic interface '.$interface.' not correctly implemented');
+              }
+            }
             $state= GENERIC_PARSER_ST_BODY;
             break;
 
@@ -137,7 +180,7 @@
 
           case GENERIC_PARSER_ST_METHOD_DECL.T_STRING:
             $method= $tokens[$i][1];
-            if ('__construct' == $method) $method= '__construct·';
+            if ('class' == $ctype && '__construct' == $method) $method= '__construct·';
             $this->buffer.= $method;
             break;
 
@@ -174,7 +217,7 @@
             
           case GENERIC_PARSER_ST_METHOD_DECL.'{':
             $this->buffer.= '{';
-            if (!empty($arguments)) {
+            if ('class' == $ctype && !empty($arguments)) {
               $this->buffer.= ' uwrp·generic::verify($this, \''.$method.'\', array(';
               foreach ($arguments as $name => $token) {
                 $this->buffer.= "'".$token."' => ".$name.', ';
@@ -195,7 +238,12 @@
       }
       
       uwrp·generic::$tokens[xp::reflect($url['host'])]= array_keys($generics);
-      // DEBUG var_dump($url['host'], $generics, $this->buffer);
+      
+      // echo '== ', $url['host'], ' ==', "\n";
+      // var_dump($generics);
+      // echo $this->buffer;
+      // echo str_repeat('-', 72), "\n";
+      
       return TRUE;
     }  
     // }}}
