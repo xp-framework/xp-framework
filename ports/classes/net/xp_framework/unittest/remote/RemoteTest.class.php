@@ -28,14 +28,11 @@
     public
       $handler= array();
 
-    /**
-     * Static initializer. Registers the protocol "mock" with the
-     * MockProtocolHandler class.
-     *
-     */
-    public static function __static() {
-      $hf= HandlerFactory::getInstance();
-      $hf->register('mock', XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler'));
+    static function __static() {
+      HandlerFactory::getInstance()->register(
+        'mock', 
+        XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler')
+      );
     }
     
     /**
