@@ -1,0 +1,129 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The util package provides utility classes for common use-cases and
+ * base interfaces that are used by other packages.
+ *
+ * Date support
+ * ============
+ * The Date class represents date and time and is used throughout the
+ * framework whenever dates and encountered. It supports dates that
+ * exceed values that can be represented with the UN*X timestamp.
+ *
+ * Creating date objects:
+ * <code>
+ *   // Get current date and time
+ *   $d= Date::now();
+ *
+ *   // Create a date object from a UN*X timestamp
+ *   $d= new Date($stamp);
+ *
+ *   // Create a date object from a string
+ *   $d= new Date('1977-12-14 11:55AM');
+ *   $d= new Date('14.12.1977 11:55');
+ * </code>
+ *
+ * Date comparison:
+ * <code>
+ *   Date::now()->isAfter(new Date('14.12.1977 11:55'));        // TRUE
+ *   Date::now()->isBefore(DateUtil::addDays(Date::now(), 1));  // TRUE
+ * </code>
+ * 
+ * Date calculation:
+ * <code>
+ *   $tomorrow= DateUtil::addDays(Date::now(), 1);
+ *   $yesterday= DateUtil::addDays(Date::now(), -1);
+ *   $days= DateUtil::timespanBetween($tomorrow, $yesterday)->getDays();
+ * </code>
+ *
+ * Properties
+ * ==========
+ * The Properties class represents the "ini" file format and offers read-
+ * and write access.
+ *
+ * File format example:
+ * <pre>
+ *   [section]
+ *   key1=1
+ *   key2="value"
+ *   key3="value|value|value"
+ *   key4="a:value|b:value"
+ *   ; comment
+ *
+ *   [section2]
+ *   quoting=on
+ * </pre>
+ *
+ * Reading the above file:
+ * <code>
+ *   $p= new Properties();
+ *   $key1= $p->readInteger('section', 'key');
+ *   $key2= $p->readString('section', 'key2');
+ *   $key3= $p->readArray('section', 'key3');
+ *   $key4= $p->readHash('section', 'key4');
+ *   $quoting= $p->readBool('section2', 'quoting');
+ * </code>
+ *
+ * Classes that read configuration values from Properties objects may
+ * choose to implement the Configurable interface.
+ *
+ * Iteration
+ * =========
+ * The XPIterator interface defines the general contract of an iterator
+ * over elements of a collection.
+ *
+ * Implementing classes can be found in the rdbms and io.collections 
+ * packages, for example.
+ *
+ * Chained exceptions
+ * ==================
+ * Not all exceptions in the framework have a cause. Exceptions that 
+ * choose to have a cause may extend the util.ChainedException class.
+ *
+ * Example (abbreviated):
+ * <code>
+ *   class NewsFinder extends Finder {
+ *     public function findByPK($pk) {
+ *       try {
+ *         $r= $this->conn->query('select * from news where news_id= %d', $pk)->next();
+ *       } catch (SQLException $e) {
+ *         throw new FinderException('Error while finding news id #'.$pk, $e);
+ *       }
+ *       if (FALSE === $r) {
+ *         throw new FinderException('News id #'.$pk.' does not exist', new ElementNotFoundException($pk));
+ *       }
+ *       return $r;
+ *     }
+ *   }
+ *
+ *   $news= new NewsFinder();
+ *   try {
+ *     $news->findBbyPK(10250);
+ *   } catch (FinderException $e) {
+ *     Console::writeLine('*** ', $e->getMessage(), ' caused by: ', $e->getCause()->toString());
+ *   }
+ * </code>
+ *
+ * Design patterns
+ * ===============
+ * The util package contains the following design pattern implementations:
+ * <ul>
+ *   <li>Observer/Observable</li>
+ *   <li>Visitor/Component</li>
+ * </ul>
+ *
+ * @see      xp://util.Date
+ * @see      xp://util.Properties
+ * @see      xp://util.XPIterator
+ * @see      xp://util.ChainedException
+ * @see      http://xp-framework.net/rfc/0086
+ * @see      xp://util.Observer
+ * @see      xp://util.Visitor
+ * @purpose  Core
+ */
+package util {
+}
