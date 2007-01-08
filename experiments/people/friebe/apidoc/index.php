@@ -10,8 +10,6 @@
   class DocumentationScriptlet extends HttpScriptlet {
   
     function doGet(&$request, &$response) {
-      $response->write('<html><head><link rel="stylesheet" href="style.css"/></head><body>');
-      
       $basedir= dirname(__FILE__).DIRECTORY_SEPARATOR;
       $builddir= $basedir.'build'.DIRECTORY_SEPARATOR;
       
@@ -28,6 +26,7 @@
         return;
       }
 
+      $response->write('<html><head><link rel="stylesheet" href="style.css"/></head><body>');
       $response->write('<h1>'.basename($builddir).'</h1>');
       $c= &new FileCollection($builddir);
       $c->open();
