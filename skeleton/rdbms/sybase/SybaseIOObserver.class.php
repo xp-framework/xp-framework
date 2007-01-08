@@ -7,13 +7,15 @@
   uses('util.log.Logger', 'rdbms.DBObserver');
 
   /**
-   * Observer class to observe a SybaseConnections IO
-   * performance.
+   * Observer class to observe a SybaseConnections IO performance.
    *
    * @ext      sybase
    * @purpose  Observe SybaseConnection
    */
   class SybaseIOObserver extends Object implements DBObserver {
+    protected
+      $messages = array();
+      $queries  = array();
 
     /**
      * Constrcutor.
@@ -21,8 +23,7 @@
      * @param   string argument
      */
     public function __construct($arg) {
-      $log= Logger::getInstance();
-      $this->cat= $log->getCategory($arg);
+      $this->cat= Logger::getInstance()->getCategory($arg);
     }
 
     /**
@@ -53,7 +54,7 @@
      * Retrieves an instance.
      *
      * @param   mixed argument
-     * @return  &rdbms.sybase.SybaseIOObserver
+     * @return  rdbms.sybase.SybaseIOObserver
      */
     public static function instanceFor($arg) {
       return new SybaseIOObserver($arg);
@@ -62,8 +63,8 @@
     /**
      * Update the observer. Process new message.
      *
-     * @param   &mixed observable
-     * @param   &mixed dbevent
+     * @param   mixed observable
+     * @param   mixed dbevent
      */
     public function update($obs, $arg= NULL) {
       if (!is('rdbms.DBEvent', $arg)) return;
@@ -80,17 +81,12 @@
     /**
      * Process connect events.
      *
-     * @param   &mixed observable
-     * @param   &mixed dbevent
+     * @param   mixed observable
+     * @param   mixed dbevent
      */
     public function onConnect($obs, $arg) {
-      if (0 <= version_compare(phpversion(), '4.3.5')) {
-        ini_set('sybct.min_server_severity', 0);
-        sybase_set_message_handler(array($this, '_msghandler'), $obs->handle);
-      } else {
-        $this->cat->warn($this->getClassName().': Unsupported PHP version detected (requires 4.3.5)');
-      }
-      
+      ini_set('sybct.min_server_severity', 0);
+      sybase_set_message_handler(array($this, '_msghandler'), $obs->handle);
       sybase_query('set statistics io on', $obs->handle);
       
       // Reset query- and message-cache
