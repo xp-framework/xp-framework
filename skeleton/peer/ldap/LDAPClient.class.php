@@ -23,19 +23,19 @@
    *   xp::sapi('cli');
    *   uses('peer.ldap.LDAPClient');
    *   
-   *   $l= &new LDAPClient('ldap.openldap.org');
-   *   try(); {
+   *   $l= new LDAPClient('ldap.openldap.org');
+   *   try {
    *     $l->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
    *     $l->connect();
    *     $l->bind();
-   *     $res= &$l->search(
+   *     $res= $l->search(
    *       'ou=People,dc=OpenLDAP,dc=Org', 
    *       '(objectClass=*)'
    *     );
-   *   } if (catch('ConnectException', $e)) {
+   *   } catch (ConnectException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
-   *   } if (catch('LDAPException', $e)) {
+   *   } catch (LDAPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
