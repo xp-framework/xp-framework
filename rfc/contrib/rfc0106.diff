@@ -251,27 +251,27 @@ Index: ports/classes/net/xp_framework/unittest/core/types/ArrayListTest.class.ph
 +    }
 +
 +    /**
-+     * Tests writing with a negative key that would create a "hole" in the array
++     * Tests writing with a key that would create a gap in the array
 +     *
 +     */
 +    #[@test, @expect('lang.IndexOutOfBoundsException')]
-+    public function keyWhichCreatesHole() {
++    public function keyWhichCreatesGap() {
 +      $c= new ArrayList();
 +      $c[1]= 4;
 +    }
 +
 +    /**
-+     * Tests writing with a negative key that would create a "hole" in the array
++     * Tests writing with a key that would create a gap in the array
 +     *
 +     */
 +    #[@test, @expect('lang.IndexOutOfBoundsException')]
-+    public function keyWhichCreatesHole2() {
++    public function keyWhichCreatesGap2() {
 +      $c= new ArrayList(array(1, 2, 3));
-+      $c[4]= 4;
++      $c[4]= 4;   // $c[3] would work, appending a new element
 +    }
 +
 +    /**
-+     * Tests writing with a key
++     * Tests writing with a negative key
 +     *
 +     */
 +    #[@test, @expect('lang.IndexOutOfBoundsException')]
