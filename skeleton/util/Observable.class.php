@@ -11,14 +11,13 @@
    *
    * TextObserver class:
    * <code>
-   *   class TextObserver extends Object {
+   *   class TextObserver extends Object implements Observer {
    *
-   *     function update(&$obs, $arg= NULL) {
+   *     function update($obs, $arg= NULL) {
    *       echo __CLASS__, ' was notified of update in value, is now ';
    *       var_dump($obs->getValue());
    *     }
-   *
-   *   } implements(__FILE__, 'util.Observer');
+   *   }
    * </code>
    *
    * ObservableValue class:
@@ -27,7 +26,7 @@
    *
    *   class ObservableValue extends Observable {
    *     var
-   *       $n    = 0;
+   *       $n= 0;
    *     
    *     function __construct($n) {
    *       $this->n= $n;
@@ -49,7 +48,7 @@
    * <code>
    *   uses('de.thekid.util.TextObserver', 'de.thekid.util.ObservableValue');
    *
-   *   $value= &new ObservableValue(3);
+   *   $value= new ObservableValue(3);
    *   $value->addObserver(new TextObserver());
    *   $value->setValue(5);
    * </code>

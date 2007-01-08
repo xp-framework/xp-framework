@@ -7,7 +7,7 @@
   /**
    * Observer interface
    *
-   * @see      &util.Observable
+   * @see      xp://util.Observable
    * @purpose  Interface
    */
   interface Observer {
@@ -15,7 +15,7 @@
     /**
      * Update method
      *
-     * @param   &util.Observable obs
+     * @param   util.Observable obs
      * @param   mixed arg default NULL
      */
     public function update($obs, $arg= NULL);
