@@ -1,0 +1,307 @@
+Index: skeleton/lang/types/ArrayList.class.php
+===================================================================
+--- skeleton/lang/types/ArrayList.class.php	(revision 9159)
++++ skeleton/lang/types/ArrayList.class.php	(working copy)
+@@ -9,9 +9,24 @@
+    *
+    * @purpose  Wrapper
+    */
+-  class ArrayList extends Object {
++  class ArrayList extends Object implements ArrayAccess, IteratorAggregate {
++    protected static
++      $iterate = NULL;
++
+     public
+-      $values=  NULL;
++      $values  =  NULL;
++
++    static function __static() {
++      self::$iterate= newinstance('Iterator', array(), '{
++        private $i= 0, $v;
++        public function on($v) { $self= new self(); $self->v= $v; return $self; }
++        public function current() { return $this->v[$this->i]; }
++        public function key() { return $this->i; }
++        public function next() { $this->i++; }
++        public function rewind() { $this->i= 0; }
++        public function valid() { return $this->i < sizeof($this->v); }
++      }');
++    }
+     
+     /**
+      * Constructor
+@@ -19,10 +34,73 @@
+      * @param   mixed[] values default array()
+      */
+     public function __construct($values= array()) {
+-      $this->values= $values;
++      $this->values= array_values($values);
+     }
+     
+     /**
++     * Returns an iterator for use in foreach()
++     *
++     * @see     php://language.oop5.iterations
++     * @return  php.Iterator
++     */
++    public function getIterator() {
++      return self::$iterate->on($this->values);
++    }
++
++    /**
++     * = list[] overloading
++     *
++     * @param   int offset
++     * @return  mixed
++     * @throws  lang.IndexOutOfBoundsException if key does not exist
++     */
++    public function offsetGet($offset) {
++      if (!array_key_exists($offset, $this->values)) {
++        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
++      }
++      return $this->values[$offset];
++    }
++
++    /**
++     * list[]= overloading
++     *
++     * @param   int offset
++     * @param   mixed value
++     * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
++     */
++    public function offsetSet($offset, $value) {
++      if (is_int($offset)) {
++        if ($offset < 0 || $offset > sizeof($this->values)) {
++          raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
++        }
++        $this->values[$offset]= $value;
++      } else if (NULL === $offset) {
++        $this->values[]= $value;
++      } else {
++        throw new IllegalArgumentException('Incorrect type '.$t.' for index');
++      }
++    }
++
++    /**
++     * isset() overloading
++     *
++     * @param   int offset
++     * @return  bool
++     */
++    public function offsetExists($offset) {
++      return array_key_exists($offset, $this->values);
++    }
++
++    /**
++     * unset() overloading
++     *
++     * @param   int offset
++     */
++    public function offsetUnset($offset) {
++      unset($this->values[$offset]);
++    }
++    
++    /**
+      * Helper method to compare two arrays recursively
+      *
+      * @param   array a1
+@@ -59,7 +137,7 @@
+      * @return  bool
+      */
+     public function equals($cmp) {
+-      return is('ArrayList', $cmp) && $this->arrayequals($this->values, $cmp->values);
++      return $cmp instanceof self && $this->arrayequals($this->values, $cmp->values);
+     }
+     
+     /**
+Index: ports/classes/net/xp_framework/unittest/core/types/ArrayListTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/ArrayListTest.class.php	(revision 9159)
++++ ports/classes/net/xp_framework/unittest/core/types/ArrayListTest.class.php	(working copy)
+@@ -17,20 +17,13 @@
+       $list = NULL;
+ 
+     /**
+-     * Setup method. .
+-     *
+-     */
+-    public function setUp() {
+-      $this->list= new ArrayList();
+-    }
+-
+-    /**
+      * Ensures a newly created ArrayList is empty
+      *
+      */
+     #[@test]
+     public function initiallyEmpty() {
+-      $this->assertEquals(0, sizeof($this->list->values));
++      $empty= new ArrayList();
++      $this->assertEquals(0, sizeof($empty->values));
+     }
+ 
+     /**
+@@ -40,7 +33,163 @@
+      */
+     #[@test]
+     public function newListsAreEqual() {
+-      $this->assertEquals($this->list, new ArrayList());
++      $this->assertEquals(new ArrayList(), new ArrayList());
+     }
++
++    /**
++     * Tests ArrayList is usable in foreach()
++     *
++     */
++    #[@test]
++    public function isUsableInForeach() {
++      $values= array(1, 2, 3);
++      foreach (new ArrayList($values) as $i => $value) {
++        $this->assertEquals($values[$i], $value);
++      }
++      $this->assertEquals(sizeof($values)- 1, $i);
++    }
++
++    /**
++     * Tests ArrayList is usable in foreach() - nested
++     *
++     */
++    #[@test]
++    public function isUsableInNestedForeach() {
++      $values= array(
++        new ArrayList(array(1, 2, 3)),
++        new ArrayList(array(4, 5, 6)),
++      );
++      $r= '';
++      foreach (new ArrayList($values) as $i => $value) {
++        foreach ($value as $j => $v) {
++         
++          $r.= $i.'.'.$j.':'.$v.', ';
++        }
++      }
++      $this->assertEquals(
++        '0.0:1, 0.1:2, 0.2:3, 1.0:4, 1.1:5, 1.2:6', 
++        substr($r, 0, -2)
++      );
++    }
++
++    /**
++     * Tests array access operator is overloaded for reading
++     *
++     */
++    #[@test]
++    public function readElement() {
++      $c= new ArrayList(array(1, 2, 3));
++      $this->assertEquals(1, $c[0]);
++      $this->assertEquals(2, $c[1]);
++      $this->assertEquals(3, $c[2]);
++    }
++
++    /**
++     * Tests reading non-existant element
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function readNonExistantElement() {
++      $c= new ArrayList();
++      $c[0];
++    }
++
++    /**
++     * Tests array access operator is overloaded for writing
++     *
++     */
++    #[@test]
++    public function writeElement() {
++      $c= new ArrayList(array(1, 2, 3));
++      $c[0]= 4;
++      $this->assertEquals(4, $c[0]);
++    }
++
++    /**
++     * Tests array access operator is overloaded for adding
++     *
++     */
++    #[@test]
++    public function addElement() {
++      $c= new ArrayList();
++      $c[]= 4;
++      $this->assertEquals(4, $c[0]);
++    }
++
++    /**
++     * Tests adding by supplying the next larger number
++     *
++     */
++    #[@test]
++    public function addBySupplyingNextLargerNumber() {
++      $c1= new ArrayList();
++      $c1[0]= 4;
++      $c2= new ArrayList(array(1, 2, 3));
++      $c2[3]= 4;
++    }
++
++    /**
++     * Tests writing with a key of incorrect type
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function keyOfIncorrectType() {
++      $c= new ArrayList(array(1, 2, 3));
++      $c['foo']= 4;
++    }
++
++    /**
++     * Tests writing with a negative key that would create a "hole" in the array
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function keyWhichCreatesHole() {
++      $c= new ArrayList();
++      $c[1]= 4;
++    }
++
++    /**
++     * Tests writing with a negative key that would create a "hole" in the array
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function keyWhichCreatesHole2() {
++      $c= new ArrayList(array(1, 2, 3));
++      $c[4]= 4;
++    }
++
++    /**
++     * Tests writing with a key
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function negativeKey() {
++      $c= new ArrayList();
++      $c[-1]= 4;
++    }
++
++    /**
++     * Tests array access operator is overloaded for isset()
++     *
++     */
++    #[@test]
++    public function testElement() {
++      $c= new ArrayList(array(1, 2, 3));
++      $this->assertTrue(isset($c[0]));
++      $this->assertFalse(isset($c[3]));
++      $this->assertFalse(isset($c[-1]));
++    }
++
++    /**
++     * Tests array access operator is overloaded for unset()
++     *
++     */
++    #[@test]
++    public function removeElement() {
++      $c= new ArrayList(array(1, 2, 3));
++      $this->assertTrue(isset($c[0]));
++      unset($c[0]);
++      $this->assertFalse(isset($c[0]));
++    }
+   }
+ ?>
