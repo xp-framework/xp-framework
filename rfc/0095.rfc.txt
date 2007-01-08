@@ -23,7 +23,7 @@ Functionality
 Current
 ~~~~~~~
 <?php
-  $class= &XPClass::forName('some.annotated.Class');
+  $class= XPClass::forName('some.annotated.Class');
   foreach ($class->getMethods() as $m) {
     if (!$m->hasAnnotation('inject')) continue;
     
@@ -35,9 +35,8 @@ Current
 New
 ~~~
 <?php
-  $class= &XPClass::forName('some.annotated.Class');
-  $inject= &Annotation::forName('inject');
-  foreach ($inject->decoratedMethods($class) as $m) {
+  $class= XPClass::forName('some.annotated.Class');
+  foreach (Annotation::forName('inject')->decoratedMethods($class) as $m) {
     $value= $inject->annotationValue($m)
     // ...
   }
@@ -50,14 +49,14 @@ Annotations can be declared as interfaces.
 unittest.Expect declaration:
 <?php
   #[@target(METHOD)]
-  class Expect extends Annotation {
+  interface Expect extends Annotation {
 
     /**
      * Expected exception class
      * 
      * @return  string
      */
-    function value() { }
+    function value();
   }
 ?>
 
@@ -67,7 +66,7 @@ unittest.Expect example:
   
     #[@expect('lang.IllegalArgumentException')]
     function blam() {
-      throw(new IllegalArgumentException());
+      throw new IllegalArgumentException();
     }
   }
 ?>
