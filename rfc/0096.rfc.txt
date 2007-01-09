@@ -37,7 +37,7 @@ Related documents
 - javax.persistence package:
   http://java.sun.com/javaee/5/docs/api/javax/persistence/ManyToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToMany.html
-  
+  http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html  
 
 Comments
 --------
