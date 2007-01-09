@@ -15,7 +15,7 @@
  * Instantiating a class by its name:
  * <code>
  *   $now= XPClass::forName('util.Date')->newInstance();
- * </Code>
+ * </code>
  *
  * Invoking a method by its name:
  * <code>
