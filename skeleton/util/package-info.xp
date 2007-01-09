@@ -96,7 +96,10 @@
  *         throw new FinderException('Error while finding news id #'.$pk, $e);
  *       }
  *       if (FALSE === $r) {
- *         throw new FinderException('News id #'.$pk.' does not exist', new ElementNotFoundException($pk));
+ *         throw new FinderException(
+ *           'News id #'.$pk.' does not exist', 
+ *           new ElementNotFoundException($pk)
+ *         );
  *       }
  *       return $r;
  *     }
