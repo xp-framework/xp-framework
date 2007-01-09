@@ -226,10 +226,10 @@
                 $doc->annotations= $annotations;
                 $comment= $annotations= NULL;
                 $name= '';
-                $state= ST_CLASSBODY;
+                $state= ST_CLASS_BODY;
                 break;
               
-              case ST_CLASSBODY.'}':
+              case ST_CLASS_BODY.'}':
                 $state= ST_INITIAL;
                 break;
             }
