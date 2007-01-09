@@ -27,7 +27,7 @@
     protected function parseDetail($rawComment) {
       $tm= TagletManager::getInstance();
 
-      $stripped= preg_replace('/[\r\n\s\t]+\* ?/', "\n", trim($rawComment, "/*\n\r\t "));
+      $stripped= preg_replace('/[\r\n][\s\t]+\* ?/', "\n", trim($rawComment, "/*\n\r\t "));
       $tagstart= FALSE === ($p= strpos($stripped, "\n@")) ? strlen($stripped)+ 1 : $p;
 
       $this->detail= array(
@@ -161,7 +161,7 @@
      * Test a comment with inline code
      *
      */
-    #[@test, @ignore('Newline added before *BLAM*')]
+    #[@test]
     public function commentWithInlineCommentedCode() {
       $detail= $this->parseDetail('
         /**
