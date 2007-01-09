@@ -21,7 +21,7 @@
  *   <li>public string getClassName()</li>
  *   <li>public lang.XPClass getClass()</li>
  *   <li>public string toString()</li>
- * </pre>
+ * </ul>
  *
  * Note: getClassName() is not only a shorthand for getClass()->getName() 
  * but also significantly faster than the latter.
