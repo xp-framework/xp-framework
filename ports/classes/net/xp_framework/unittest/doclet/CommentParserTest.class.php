@@ -130,5 +130,55 @@
         $this->assertEquals('number of matches', $ret[0]->text);
       }
     }
+
+    /**
+     * Test a comment with inline code
+     *
+     */
+    #[@test]
+    public function commentWithInlineCode() {
+      $detail= $this->parseDetail('
+        /**
+         * Example:
+         * <code>
+         *   $b= new Binford();
+         *   echo $b->getClass()->getName();
+         * </code>
+         * 
+         */
+      ');
+      $this->assertEquals(
+        'Example:'."\n".
+        '<code>'."\n".
+        '  $b= new Binford();'."\n".
+        '  echo $b->getClass()->getName();'."\n".
+        '</code>',
+        $detail->get('text')
+      );
+    }
+
+    /**
+     * Test a comment with inline code
+     *
+     */
+    #[@test, @ignore('Newline added before *BLAM*')]
+    public function commentWithInlineCommentedCode() {
+      $detail= $this->parseDetail('
+        /**
+         * Example:
+         * <code>
+         *   $b= new Binford(73);   // *BLAM*
+         * </code>
+         * 
+         */
+      ');
+      $this->assertEquals(
+        'Example:'."\n".
+        '<code>'."\n".
+        '  $b= new Binford(73);   // *BLAM*'."\n".
+        '</code>',
+        $detail->get('text')
+      );
+    }
   }
 ?>
