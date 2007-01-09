@@ -61,7 +61,7 @@
  *  );
  *
  *  $account->transfer(50);
- *  $account->transfer(1000001);   // *BLAM*
+ *  $account->transfer(1000001);   // BLAM
  * </code>
  *
  * @see      http://xp-framework.net/rfc/0030
