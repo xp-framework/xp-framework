@@ -14,6 +14,7 @@
    * @see      xp://text.doclet.PackageDoc
    * @see      xp://text.doclet.MethodDoc
    * @see      http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
+   * @test     xp://net.xp_framework.unittest.doclet.CommentParserTest
    * @purpose  Base class
    */
   class Doc extends Object {
@@ -60,7 +61,7 @@
       if (!isset($this->detail)) {
         $tm= TagletManager::getInstance();
 
-        $stripped= preg_replace('/[\r\n\s\t]+\* ?/', "\n", trim($this->rawComment, "/*\n\r\t "));
+        $stripped= preg_replace('/[\r\n][\s\t]+\* ?/', "\n", trim($this->rawComment, "/*\n\r\t "));
         $tagstart= FALSE === ($p= strpos($stripped, "\n@")) ? strlen($stripped)+ 1 : $p;
         
         $this->detail= array(
