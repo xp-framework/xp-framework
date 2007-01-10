@@ -64,7 +64,7 @@
     /**
      * Set our own processor object
      *
-     * @return  &xml.XSLProcessor
+     * @return  xml.IXSLProcessor
      */
     protected function _processor() {
       return new XSLProcessor();
@@ -73,7 +73,7 @@
     /**
      * Set our own response object
      *
-     * @return  &scriptlet.xml.XMLScriptletResponse
+     * @return  scriptlet.xml.XMLScriptletResponse
      * @see     xp://scriptlet.HttpScriptlet#_response
      */
     protected function _response() {
@@ -85,7 +85,7 @@
     /**
      * Set our own request object
      *
-     * @return  &scriptlet.xml.XMLScriptletRequest
+     * @return  scriptlet.xml.XMLScriptletRequest
      * @see     xp://scriptlet.HttpScriptlet#_request
      */
     protected function _request() {
@@ -97,7 +97,7 @@
      * "PRODUCT" is not set - which it will be if the RewriteRule has
      * taken control).
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletRequest request
      * @return  string class method (one of doGet, doPost, doHead)
      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
      */
@@ -112,8 +112,8 @@
     /**
      * Helper method for doCreate() and doCreateSession()
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
      * @param   string sessionId default NULL
      * @return  bool
      */
@@ -155,8 +155,8 @@
      * DEF_LANG as values for $pr and $ll_LL. If these aren't set, "site" and
      * "en_US" are assumed as default values.
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
      * @return  bool
      */
     public function doCreate($request, $response) {
@@ -167,8 +167,8 @@
      * Creates a session. 
      *
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      */
     public function doCreateSession($request, $response) {
       return $this->doRedirect($request, $response, $request->session->getId());
@@ -177,8 +177,8 @@
     /**
      * Sets the responses XSL stylesheet
      *
-     * @param   &scriptlet.scriptlet.XMLScriptletRequest request
-     * @param   &scriptlet.scriptlet.XMLScriptletResponse response
+     * @param   scriptlet.scriptlet.XMLScriptletRequest request
+     * @param   scriptlet.scriptlet.XMLScriptletResponse response
      */
     protected function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
@@ -192,8 +192,8 @@
     /**
      * Process request
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.XMLScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
      */
     public function processRequest($request, $response) {
 
@@ -224,8 +224,8 @@
      * sourcecode _before_ you call <pre>parent::doGet()</pre>
      *
      * @return  bool processed
-     * @param   &scriptlet.xml.XMLScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.XMLScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doGet
      */
@@ -237,8 +237,8 @@
      * Simply call doGet
      *
      * @return  bool processed
-     * @param   &scriptlet.xml.XMLScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.XMLScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      * @see     xp://scriptlet.HttpScriptlet#doPost
      */
