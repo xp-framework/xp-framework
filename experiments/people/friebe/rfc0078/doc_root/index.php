@@ -16,8 +16,7 @@
   
   // {{{ main
   scriptlet::run(newinstance('scriptlet.xml.workflow.WorkflowXMLScriptlet', array('classes'), '{
-    function &processorInstance() { return new DomXSLProcessor(); }
-    function &routerFor(&$request) { return new DelegatingRouter(new ClassRouter(), array(
+    protected function routerFor($request) { return new DelegatingRouter(new ClassRouter(), array(
       "static" => new StaticRouter(),
       "news"   => new MethodRouter()
     )); }
