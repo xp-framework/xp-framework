@@ -33,6 +33,7 @@
    * @purpose  Transform XML/XSLT using PHPs builtin XSL functions
    * @ext      xslt
    * @see      http://www.gingerall.com - Sablotron
+   * @deprecated Use DomXSLProcessor instead - Sablotron is unsupported in PHP5
    */
   class XSLProcessor extends XML implements IXSLProcessor {
     public 
