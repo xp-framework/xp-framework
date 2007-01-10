@@ -30,39 +30,6 @@ void htdebug(HashTable* ht) {
     }
 }
 
-zval* generateTurpitudeContext(JNIEnv* env, jobject ctx) {
-    zval* context;
-    MAKE_STD_ZVAL(context);
-    ZVAL_LONG(context, 10);
-
-    // create class entry
-    zend_class_entry* ce;
-    ce = (zend_class_entry*)emalloc(sizeof(zend_class_entry));
-    ce->type = ZEND_USER_CLASS;
-    ce->name = "TurpitudeContext";
-    ce->name_length = strlen(ce->name);
-    ce->parent = NULL;
-    ce->refcount = 1;
-    ce->constants_updated = 1;
-    ce->ce_flags = 0;
-    ce->interfaces = NULL;
-    ce->num_interfaces = 0;
-    ce->filename = "turpitude generated";
-    ce->line_start = 1;
-    ce->line_end = 1;
-    ce->doc_comment = NULL;
-    ce->doc_comment_len = 0;
-
-
-    //zend_hash_update - add class to global class directory?
-
-    //zend_object_std_init(ce);
-    // how to create a class entry?
-
-    return context;
-}
-
-
 /**
  * copies the contents of a zval into a jobject
  */
@@ -144,16 +111,6 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             zend_class_entry* ce = Z_OBJCE_P(val);
             zend_object_value* zo = &(val->value.obj);
 
-            // ############ remove
-            printf("=====> \n");
-            htdebug(&(ce->function_table));
-            htdebug(&(ce->default_properties));
-            htdebug(&(ce->properties_info));
-            htdebug(&(ce->default_static_members));
-            htdebug(ce->static_members);
-            htdebug(&(ce->constants_table));
-            // ############ remove
-
             // allocate class and object
             jstring phpclassname = env->NewStringUTF(ce->name);
             cls = env->FindClass("net/xp_framework/turpitude/PHPObject");
@@ -223,4 +180,10 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
 
     return obj;
 }
+
+#if ZEND_DEBUG
+ZEND_API void _zval_ptr_dtor_wrapper(zval **zval_ptr) {
+    zval_ptr_dtor(zval_ptr);
+}
+#endif
 

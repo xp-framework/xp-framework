@@ -13,6 +13,8 @@
 #include <jni.h>
 #include <string>
 #include "turpitude_sapi.h"
+#include "turpitude_env.h"
+#include "turpitude_jobj.h"
 
 
 /* utility functions */
@@ -23,7 +25,6 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 }
 
 jobject zval_to_jobject(JNIEnv* env, zval* val);
-zval* generateTurpitudeContext(JNIEnv* env, jobject ctx);
 
 
 #endif

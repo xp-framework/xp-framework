@@ -1,10 +1,10 @@
 #include <net_xp_framework_turpitude_PHPScriptEngine.h>
 #include <Turpitude.h>
 
-typedef struct {
-    JNIEnv* env;
-    jobject object;
-} turpitude_context;
+//typedef struct {
+//    JNIEnv* env;
+//    jobject object;
+//} turpitude_context;
 
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jobject jc) {

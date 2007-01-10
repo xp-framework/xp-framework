@@ -36,16 +36,19 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
 
         fci.retval_ptr_ptr = &retval_ptr;
         fci.no_separation = 1;
+        fci.param_count = 0;
 
         fci_cache.initialized = 1;
         fci_cache.function_handler = (zend_function*)compiled_op_array;
         compiled_op_array->type = ZEND_USER_FUNCTION;
 
         // generate the context and inject it as a function parameter
-        zval* turpitude_context = generateTurpitudeContext(env, ctx);
-        fci.param_count = 1;
-        zval** param = &turpitude_context;
-        fci.params = &param;
+        make_turpitude_environment(env, ctx);
+
+        // We could inject parameters to be retrieved by func_getargs() here...
+        //zval** param = ;
+        //fci.param_count = ;
+        //fci.params = &param;
 
         // use zend_call_function to execute the script
         zend_call_function(&fci, &fci_cache TSRMLS_CC);

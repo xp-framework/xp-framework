@@ -8,7 +8,7 @@ import java.io.IOException;
 public class PHPScriptEngine extends AbstractScriptEngine implements Compilable {
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
-    private String TurpitudeVarName = "turpitude"; //turpitude variable name
+    private String TurpitudeVarName = "TURP_ENV"; //turpitude variable name
 
     /**
      * Constructor
@@ -94,14 +94,9 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
             out = in;
         }
         StringBuffer sb = new StringBuffer();
-        sb.append("$");
+        sb.append("$_SERVER[\"");
         sb.append(getVarName());
-        sb.append(" = func_get_args();");
-        sb.append("$");
-        sb.append(getVarName());
-        sb.append("= $");
-        sb.append(getVarName());
-        sb.append("[0];\n");
+        sb.append("\"] = new TurpitudeEnvironment();");
         sb.append(out);
 
         return sb.toString();

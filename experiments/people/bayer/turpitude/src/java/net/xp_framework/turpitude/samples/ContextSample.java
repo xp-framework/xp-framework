@@ -50,8 +50,13 @@ public class ContextSample {
 
     private static String getSource() {
         StringBuffer src = new StringBuffer();
-        src.append("<?php ");
-        src.append("var_dump($turpitude);");
+        src.append("<?php \n");
+        //src.append("var_dump($_SERVER);\n");
+        src.append("$turpenv = $_SERVER[\"TURP_ENV\"]; \n");
+        //src.append("var_dump($turpenv);\n");
+        //src.append("$turpenv->lala();\n");
+        src.append("$irgendwas = $turpenv->findClass(\"java/lang/String\");\n");
+        src.append("var_dump($irgendwas);");
         src.append("?>"); 
         return src.toString();
     }
