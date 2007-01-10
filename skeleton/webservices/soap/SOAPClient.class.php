@@ -17,10 +17,10 @@
    *
    * Example:
    * <code>
-   *   $s= &new SOAPClient(new SOAPHTTPTransport('<URL>'), '<URN>');
-   *   try(); {
-   *     $return= $s->invoke('<METHOD>', <PARAMETERS>);
-   *   } if (catch('Exception', $e)) {
+   *   $s= new SOAPClient(new SOAPHTTPTransport($url), $urn);
+   *   try {
+   *     $return= $s->invoke($methods, $paramaters);
+   *   } catch (XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
