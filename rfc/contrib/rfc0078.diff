@@ -1,0 +1,620 @@
+Index: WorkflowXMLScriptlet.class.php
+===================================================================
+--- WorkflowXMLScriptlet.class.php	(revision 0)
++++ WorkflowXMLScriptlet.class.php	(revision 0)
+@@ -0,0 +1,177 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'scriptlet.xml.XMLScriptlet', 
++    'scriptlet.xml.workflow.routing.ClassRouter'
++  );
++
++  /**
++   * Workflow model scriptlet implementation
++   *
++   * @purpose  Base class
++   */
++  class WorkflowXMLScriptlet extends XMLScriptlet {
++    public
++      $package  = NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   string package
++     * @param   string base default ''
++     */
++    function __construct($package, $base= '') {
++      parent::__construct($base);
++      $this->package= rtrim($package, '.');
++    }
++    
++    /**
++     * Create the router object. Returns a ClassRouter in this implementation
++     * which resembles the previously hardcoded behaviour.
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request
++     * @return  scriptlet.xml.workflow.routing.Router
++     */
++    protected function routerFor($request) {
++      return new ClassRouter();
++    }
++
++    /**
++     * Retrieve context class
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request
++     * @return  lang.XPClass
++     * @throws  lang.ClassNotFoundException
++     */
++    protected function getContextClass($request) {
++      return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
++    }
++
++    /**
++     * Decide whether a session is needed
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request
++     * @return  bool
++     */
++    public function needsSession($request) {
++      return ($request->state && (
++        $request->state->hasHandlers() || 
++        $request->state->requiresAuthentication()
++      ));
++    }
++    
++    /**
++     * Decide whether a context is needed. Returns FALSE in this default
++     * implementation.
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request
++     * @return  bool
++     */
++    protected function wantsContext($request) {
++      return FALSE;
++    }
++    
++    /**
++     * Process workflow. Calls the state's setup() and process() 
++     * methods in this order. May NOT be overwritten by subclasses.
++     *
++     * Return FALSE from this method to indicate no further 
++     * processing is to be done
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @return  bool
++     */
++    protected function processWorkflow($request, $response) {
++
++      // Context initialization
++      $context= NULL;
++      if ($this->wantsContext($request) && $request->hasSession()) {
++      
++        // Set up context. The context contains - so to say - the "autoglobals",
++        // in other words, the omnipresent data such as, for example, the user
++        try {
++          $class= $this->getContextClass($request);
++        } catch (ClassNotFoundException $e) {
++          throw new HttpScriptletException($e->getMessage());
++        }
++      
++        // Get context from session. If it is not available there, set up the 
++        // context and store it to the session.
++        $cidx= $class->getName();
++        if (!($context= $request->session->getValue($cidx))) {
++          $context= $class->newInstance();
++
++          try {
++            $context->setup($request);
++          } catch (IllegalStateException $e) {
++            throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR);
++          } catch (IllegalArgumentException $e) {
++            throw new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE);
++          } catch (IllegalAccessException $e) {
++            throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN);
++          }
++          $request->session->putValue($cidx, $context);
++        }
++
++        // Run context's process() method.
++        try {
++          $context->process($request);
++        } catch (IllegalStateException $e) {
++          throw new HttpSessionInvalidException($e->getMessage(), HTTP_BAD_REQUEST);
++        } catch (IllegalAccessException $e) {
++          throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN);
++        }
++
++        delete($class);
++      }
++      
++      // Routing
++      try {
++        $route= $this->routerFor($request)->route($this->package.'.state.', $request, $response, $context);
++        $route->dispatch($request, $response, $context);
++      } catch (ClassNotFoundException $e) {
++        throw new HttpScriptletException($e->getMessage(), HTTP_METHOD_NOT_ALLOWED);
++      } catch (IllegalStateException $e) {
++        throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR);
++      } catch (IllegalArgumentException $e) {
++        throw new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE);
++      } catch (IllegalAccessException $e) {
++        throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN);
++      }
++      
++      // If dispatching returns FALSE, the context's insertStatus() method 
++      // will  not be called. This, for example, is useful when a state wants 
++      // to send a redirect.
++      if (FALSE === $r) return FALSE;
++      
++      // If there is no context, we're finished
++      if (!$context) return;
++
++      // Tell context to insert form elements. Then store it, if necessary
++      $context->insertStatus($response);
++      $context->getChanged() && $request->session->putValue($cidx, $context);
++    }
++
++    /**
++     * Process request
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     */
++    public function processRequest($request, $response) {
++      if (FALSE === $this->processWorkflow($request, $response)) {
++      
++        // The processWorkflow() method indicates no further processing
++        // is to be done. Pass result "up".
++        return FALSE;
++      }
++
++      return parent::processRequest($request, $response);
++    }
++  }
++?>
+
+Property changes on: WorkflowXMLScriptlet.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/ClassRouter.class.php
+===================================================================
+--- routing/ClassRouter.class.php	(revision 0)
++++ routing/ClassRouter.class.php	(revision 0)
+@@ -0,0 +1,42 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.StateRoute', 'scriptlet.xml.workflow.routing.Router');
++
++  /**
++   * The class router is a router implementation that will route requests
++   * to state classes by the following conventions:
++   *
++   * <pre>
++   *   State name  Class name                    
++   *   ----------- ------------------------------
++   *   /static     [package.]StaticState
++   *   /news/view  [package.]ViewNewsState
++   * </pre>
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.StateRoute
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Router implementation
++   */
++  class ClassRouter extends Object implements Router {
++  
++    /**
++     * Route a request
++     *
++     * @access  public
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     * @throws  lang.ClassNotFoundException in case the state class cannot be found
++     */
++    public function route($package, $request, $response, $context) {
++      $className= $package.implode('', array_map('ucfirst', array_reverse(explode('/', $request->getStateName())))).'State';
++      return new StateRoute(XPClass::forName($className)->newInstance());
++    }
++  }
++?>
+
+Property changes on: routing/ClassRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/StaticRouter.class.php
+===================================================================
+--- routing/StaticRouter.class.php	(revision 0)
++++ routing/StaticRouter.class.php	(revision 0)
+@@ -0,0 +1,41 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.StateRoute', 'scriptlet.xml.workflow.routing.Router');
++
++  /**
++   * The class router is a router implementation that will route requests
++   * to state classes by the following conventions:
++   *
++   * <pre>
++   *   State name  Class name                    
++   *   ----------- ------------------------------
++   *   /static     [package.]StaticState
++   *   /news/view  [package.]NewsState
++   * </pre>
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.StateRoute
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Router implementation
++   */
++  class StaticRouter extends Object {
++  
++    /**
++     * Route a request
++     *
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     * @throws  lang.ClassNotFoundException in case the state class cannot be found
++     */
++    public function route($package, $request, $response, $context) {
++      $className= $package.ucfirst(strtok($request->getStateName(), '/')).'State';
++      return new StateRoute(XPClass::forName($className)->newInstance());
++    }
++  }
++?>
+
+Property changes on: routing/StaticRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/Route.class.php
+===================================================================
+--- routing/Route.class.php	(revision 0)
++++ routing/Route.class.php	(revision 0)
+@@ -0,0 +1,25 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Route
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Interface
++   */
++  interface Route {
++    
++    /**
++     * Dispatch this route
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  mixed
++     */
++    public function dispatch($request, $response, $context);
++  }
++?>
+
+Property changes on: routing/Route.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/MethodRoute.class.php
+===================================================================
+--- routing/MethodRoute.class.php	(revision 0)
++++ routing/MethodRoute.class.php	(revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.Route');
++
++  /**
++   * Method route
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.MethodRouter
++   * @see      xp://scriptlet.xml.workflow.routing.Route
++   * @purpose  Route implementation
++   */
++  class MethodRoute extends Object {
++    protected
++      $state  = NULL,
++      $method = NULL;
++      
++    /**
++     * Constructor
++     *
++     * @param   scriptlet.xml.workflow.AbstractState state
++     * @param   lang.reflect.Method method
++     */
++    public function __construct($state, $method) {
++      $this->state= $state;
++      $this->method= $method;
++    }
++    
++    /**
++     * Dispatch this route
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  mixed
++     */
++    public function dispatch($request, $response, $context) {
++      $request->state= $this->state;
++      $this->state->setup($request, $response, $context);
++      return $this->method->invoke($this->state, array($request, $response, $context));
++    }
++  } 
++?>
+
+Property changes on: routing/MethodRoute.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/StateRoute.class.php
+===================================================================
+--- routing/StateRoute.class.php	(revision 0)
++++ routing/StateRoute.class.php	(revision 0)
+@@ -0,0 +1,44 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.Route');
++
++  /**
++   * State route
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.StaticRouter
++   * @see      xp://scriptlet.xml.workflow.routing.ClassRouter
++   * @see      xp://scriptlet.xml.workflow.routing.Route
++   * @purpose  Route implementation
++   */
++  class StateRoute extends Object {
++    protected
++      $state= NULL;
++      
++    /**
++     * Constructor
++     *
++     * @param   scriptlet.xml.workflow.AbstractState state
++     */
++    public function __construct($state) {
++      $this->state= $state;
++    }
++    
++    /**
++     * Dispatch this route
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  mixed
++     */
++    public function dispatch($request, $response, $context) {
++      $request->state= $this->state;
++      $this->state->setup($request, $response, $context);
++      return $this->state->process($request, $response, $context);
++    }
++  }
++?>
+
+Property changes on: routing/StateRoute.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/Router.class.php
+===================================================================
+--- routing/Router.class.php	(revision 0)
++++ routing/Router.class.php	(revision 0)
+@@ -0,0 +1,28 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.Route');
++
++  /**
++   * A router is a mechanism to route requests to states.
++   *
++   * @see      xp://scriptlet.xml.workflow.WorkflowXMLScriptlet#routerFor
++   * @purpose  Interface
++   */
++  interface Router {
++  
++    /**
++     * Route a request
++     *
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     */
++    public function route($package, $request, $response, $context);
++  }
++?>
+
+Property changes on: routing/Router.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/MethodRouter.class.php
+===================================================================
+--- routing/MethodRouter.class.php	(revision 0)
++++ routing/MethodRouter.class.php	(revision 0)
+@@ -0,0 +1,54 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.MethodRoute', 'scriptlet.xml.workflow.routing.Router');
++
++  /**
++   * The class router is a router implementation that will route requests
++   * to state classes' methods by the following conventions:
++   *
++   * <pre>
++   *   State name  Class name                    
++   *   ----------- -------------------------------
++   *   /static     [package.]StaticState::index()
++   *   /news/view  [package.]NewsState::view()
++   * </pre>
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.MethodRoute
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Router implementation
++   */
++  class MethodRouter extends Object implements Router {
++  
++    /**
++     * Route a request
++     *
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     * @throws  lang.ClassNotFoundException in case the state class cannot be found
++     * @throws  lang.IllegalArgumentException in case the operation cannot be found
++     * @throws  lang.IllegalAccessException in case the operation is not publicly accessible
++     */
++    public function route($package, $request, $response, $context) {
++      1 == sscanf($request->getStateName(), '%[^/]/%s', $name, $method) && $method= 'index';
++      $class= XPClass::forName($package.ucfirst($name).'State');
++      
++      // Check if method exists
++      if (!($m= $class->getMethod($method))) {
++        return throw new IllegalArgumentException($class->getName().' does not support a '.$method.' operation');
++      }
++      
++      // Check if method is public
++      if (!($m->getModifiers() & MODIFIER_PUBLIC)) {
++        return throw new IllegalAccessException($class->getName().'::'.$method.' is not a public operation');
++      }
++
++      return new MethodRoute($class->newInstance(), $m);
++    }
++?>
+
+Property changes on: routing/MethodRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/DelegatingRouter.class.php
+===================================================================
+--- routing/DelegatingRouter.class.php	(revision 0)
++++ routing/DelegatingRouter.class.php	(revision 0)
+@@ -0,0 +1,64 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.Router');
++
++  /**
++   * The class router is a router implementation that will delegate 
++   * requests to different routing based on rules.
++   *
++   * Example (use ClassRouter as default, map static/* to StaticRouter, 
++   * news/* to MethodRouter).
++   * <code>
++   *   new DelegatingRouter(new ClassRouter(), array(
++   *     'static' => new StaticRouter(),
++   *     'news'   => new MethodRouter()
++   *   ));
++   * </code>
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Router implementation
++   */
++  class DelegatingRouter extends Object implements Router {
++    protected
++      $rules= array();
++      
++    /**
++     * Constructor.
++     *
++     * @access  public
++     * @param   scriptlet.xml.workflow.routing.Router default router
++     * @param   array<string, scriptlet.xml.workflow.Router> rules default array()
++     */
++    public function __construct($default, $rules= array()) {
++      $this->rules[0]= $default;
++      foreach (array_keys($rules) as $fragment) {
++        $this->rules[$fragment]= $rules[$fragment];
++      }
++    }
++  
++    /**
++     * Route a request
++     *
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     */
++    public function route($package, $request, $response, $context) {
++      $stateName= $request->getStateName();
++      foreach (array_filter(array_keys($this->rules)) as $pattern) {
++        if (0 == strncmp($pattern, $stateName, strlen($pattern))) {
++          return $this->rules[$pattern]->route($package, $request, $response, $context);
++        }
++      }
++      
++      // Apply default route
++      return $this->rules[0]->route($package, $request, $response, $context);
++    }
++  }
++?>
+
+Property changes on: routing/DelegatingRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
