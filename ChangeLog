@@ -6,12 +6,21 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+Version 5.1.2, released 2007-01-10
+----------------------------------
+SVN version: 9224
+
 - Made rdbms.DataSet class abstract
   (friebe)
 - Fix static initializer not being called for classes loaded via 
   uses wrapper 
   (friebe)
 - Implemented RFC #0105: Package-Info
+  (friebe)
+- Fix setBase() when working with in-memory stylesheets
+  (clang)
+- Fix "Static function DataSet::getPeer() should not be abstract"
+  in rdbms.DataSet
   (friebe)
 
 Version 5.1.1, released 2007-01-04
