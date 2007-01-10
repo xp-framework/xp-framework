@@ -62,7 +62,7 @@
         'code'  => 'code'
       );
 
-      $processor= $this->pushProcessor($processors['default']);
+      $processor= $this->pushProcessor(self::$processors['default']);
 
       $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';      
@@ -77,7 +77,7 @@
             $lookup= strtolower($tag);
 
             if (isset($state[$lookup])) {
-              $processor= $this->pushProcessor($processors[$state[$lookup]]);
+              $processor= $this->pushProcessor(self::$processors[$state[$lookup]]);
               $out.= $processor->initialize();
             } else {
               $out.= '<'.$tag.'>';
