@@ -5,7 +5,7 @@
  */
  
   uses(
-    'xml.XSLProcessor',
+    'xml.DomXSLProcessor',
     'scriptlet.HttpScriptlet',
     'scriptlet.xml.XMLScriptletResponse',
     'scriptlet.xml.XMLScriptletRequest'
@@ -67,7 +67,7 @@
      * @return  xml.IXSLProcessor
      */
     protected function _processor() {
-      return new XSLProcessor();
+      return new DomXSLProcessor();
     }
     
     /**
