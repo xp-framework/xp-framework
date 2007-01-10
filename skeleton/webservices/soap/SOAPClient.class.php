@@ -42,7 +42,7 @@
     /**
      * Constructor
      *
-     * @param   &webservices.soap.transport.SOAPTransport transport a SOAP transport
+     * @param   webservices.soap.transport.SOAPTransport transport a SOAP transport
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
@@ -74,7 +74,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->transport->setTrace($cat);
@@ -83,8 +83,8 @@
     /**
      * Register mapping for a qname to a class object
      *
-     * @param   &xml.QName qname
-     * @param   &lang.XPClass class
+     * @param   xml.QName qname
+     * @param   lang.XPClass class
      */
     public function registerMapping($qname, $class) {
       $this->mapping->registerMapping($qname, $class);
@@ -93,8 +93,8 @@
     /**
      * Add a header
      *
-     * @param   &webservices.soap.SOAPHeader header
-     * @return  &webservices.soap.SOAPHeader the header added
+     * @param   webservices.soap.SOAPHeader header
+     * @return  webservices.soap.SOAPHeader the header added
      */
     public function addHeader($header) {
       $this->headers[]= $header;
@@ -111,9 +111,9 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
-      if (!is('SOAPTransport', $this->transport)) throw(new IllegalArgumentException(
+      if (!is('SOAPTransport', $this->transport)) throw new IllegalArgumentException(
         'Transport must be a webservices.soap.transport.SOAPTransport'
-      ));
+      );
       
       $args= func_get_args();
       
@@ -135,9 +135,9 @@
       if (sizeof($data) == 1) return $data[0];
       if (sizeof($data) == 0) return NULL;
 
-      throw(new IllegalArgumentException(
+      throw new IllegalArgumentException(
         'Multiple return values not supported (have '.sizeof($data).')'
-      ));
+      );
     }
   } 
 ?>
