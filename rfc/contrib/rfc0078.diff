@@ -482,14 +482,14 @@ Index: routing/MethodRouter.class.php
 ===================================================================
 --- routing/MethodRouter.class.php	(revision 0)
 +++ routing/MethodRouter.class.php	(revision 0)
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,55 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
 +
-+  uses('scriptlet.xml.workflow.MethodRoute', 'scriptlet.xml.workflow.routing.Router');
++  uses('scriptlet.xml.workflow.routing.MethodRoute', 'scriptlet.xml.workflow.routing.Router');
 +
 +  /**
 +   * The class router is a router implementation that will route requests
@@ -526,16 +526,17 @@ Index: routing/MethodRouter.class.php
 +      
 +      // Check if method exists
 +      if (!($m= $class->getMethod($method))) {
-+        return throw new IllegalArgumentException($class->getName().' does not support a '.$method.' operation');
++        throw new IllegalArgumentException($class->getName().' does not support a '.$method.' operation');
 +      }
 +      
 +      // Check if method is public
-+      if (!($m->getModifiers() & MODIFIER_PUBLIC)) {
-+        return throw new IllegalAccessException($class->getName().'::'.$method.' is not a public operation');
++      if (!Modifiers::isPublic($m->getModifiers())) {
++        throw new IllegalAccessException($class->getName().'::'.$method.' is not a public operation');
 +      }
 +
 +      return new MethodRoute($class->newInstance(), $m);
 +    }
++  }
 +?>
 
 Property changes on: routing/MethodRouter.class.php
