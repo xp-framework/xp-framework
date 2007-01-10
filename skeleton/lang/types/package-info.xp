@@ -35,8 +35,8 @@
  * @see      http://xp-framework.info/xml/xp.en_US/news/view?52
  * @see      http://xp-framework.info/xml/xp.en_US/news/view?54
  * @see      http://xp-framework.net/rfc/0038
- * @see      xp://lang.reflect.Number
- * @see      xp://lang.reflect.ArrayList
+ * @see      xp://lang.types.Number
+ * @see      xp://lang.types.ArrayList
  * @purpose  Type wrappers
  */
 package lang.types {
