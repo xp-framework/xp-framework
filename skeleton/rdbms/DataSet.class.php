@@ -107,7 +107,7 @@
      *
      * @return  rdbms.Peer
      */
-    public static abstract function getPeer();
+    public static function getPeer() { }
 
     /**
      * Changes a value by a specified key and returns the previous value.
