@@ -7,10 +7,10 @@
   xp::sapi('scriptlet.production');
   uses(
     'scriptlet.xml.workflow.WorkflowXMLScriptlet', 
-    'scriptlet.xml.workflow.MethodRouter', 
-    'scriptlet.xml.workflow.StaticRouter', 
-    'scriptlet.xml.workflow.ClassRouter', 
-    'scriptlet.xml.workflow.DelegatingRouter', 
+    'scriptlet.xml.workflow.routing.MethodRouter', 
+    'scriptlet.xml.workflow.routing.StaticRouter', 
+    'scriptlet.xml.workflow.routing.ClassRouter', 
+    'scriptlet.xml.workflow.routing.DelegatingRouter', 
     'xml.DomXSLProcessor'
   );
   
