@@ -175,16 +175,39 @@ blockquote {
 }
 /* }}} */
 
-.comment h1 {
+.apidoc {
+  font: 13px "Trebuchet MS", "Arial", sans-serif;
+}
+.apidoc h1 {
   font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+  margin-bottom: 3px;
+  color: #41a139;
+  border-bottom: 1px solid #41a139;
+}
+.apidoc h2 {
+  font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+  color: black;
   margin-bottom: 1px;
+}
+.apidoc h3 {
+  font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+  color: black;
+  margin-bottom: 1px;
+}
+.apidoc p {
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 /* {{{ Syntax */
-pre.code {
+pre {
   font: 12px "Courier New", courier;
-  margin-bottom: 0px;
-  margin-top: 0px;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  padding-bottom: 1em;
+  border: 1px solid #cccccc;
+  border-left: 3px solid #cccccc;
+  white-space: pre;
 }
 pre.code .keyword {
   color: #990000;
@@ -194,6 +217,13 @@ pre.code .variable {
   color: #000099;
   font-weight: bold;
 }
+pre.code .modifier {
+  color: #444444;
+  font-weight: bold;
+}
+pre.code .number {
+  color: #bc7c00;
+}
 pre.code .bracket {
   color: #a90000;
 }
@@ -201,7 +231,7 @@ pre.code .string {
   color: #0000a9;
 }
 pre.code .comment {
-  color: #a9a9a9;
+  color: #888888;
 }
 /* }}} */
 
