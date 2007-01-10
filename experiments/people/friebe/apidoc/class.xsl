@@ -69,6 +69,13 @@
     </func:result>
   </func:function>
 
+  <xsl:template match="comment//*">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:apply-templates/>
+    </xsl:copy>
+  </xsl:template>
+
   <xsl:template match="class">
     <style type="text/css">
       h2 { margin-top: 30px; }
@@ -185,9 +192,9 @@
     </xsl:if>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-    <p class="comment">
-      <xsl:value-of select="comment" disable-output-escaping="yes"/>
-    </p>
+    <div class="apidoc">
+      <xsl:apply-templates select="comment"/>
+    </div>
 
     <h2>Inheritance</h2>
     <p>
@@ -342,9 +349,9 @@
         </xsl:for-each>
         <xsl:text>)</xsl:text>
       </h4>
-      <p class="comment">
-        <xsl:value-of select="comment" disable-output-escaping="yes"/>
-      </p>
+      <div class="apidoc">
+        <xsl:apply-templates select="comment"/>
+      </div>
       
       <xsl:if test="count(argument) &gt; 0">
         <h4>Arguments:</h4>

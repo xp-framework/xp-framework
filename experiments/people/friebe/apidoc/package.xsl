@@ -69,10 +69,10 @@
     </func:result>
   </func:function>
 
-  <xsl:template match="comment/*">
+  <xsl:template match="comment//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:copy-of select="."/>
+      <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
 
@@ -112,7 +112,7 @@
     </h1>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-    <div class="comment">
+    <div class="apidoc">
       <xsl:apply-templates select="comment"/>
     </div>
 

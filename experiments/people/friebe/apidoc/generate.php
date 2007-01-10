@@ -12,6 +12,7 @@
     'io.FileUtil',
     'xml.Tree',
     'text.doclet.Doclet',
+    'text.doclet.markup.MarkupBuilder',
     'util.collections.HashSet',
     'io.collections.CollectionComposite', 
     'io.collections.FileCollection', 
@@ -24,6 +25,7 @@
   class GeneratorDoclet extends Doclet {
     protected
       $build    = NULL,
+      $markup   = NULL,
       $packages = array();
 
     function tagAttribute($tags, $which, $attribute= 'text') {
@@ -70,7 +72,7 @@
         $m->addChild(Node::fromArray($method->getModifiers(), 'modifiers'));
 
         // Apidoc
-        $m->addChild(new Node('comment', $method->commentText()));
+        $m->addChild(new Node('comment', $this->markup($method->commentText())));
         foreach ($method->tags('see') as $ref) {
           $m->addChild(new Node('see', $ref->text, array(
             'scheme' => $ref->scheme,
@@ -134,7 +136,7 @@
       $n->addChild(Node::fromArray($classdoc->getModifiers(), 'modifiers'));
       
       // Apidoc
-      $n->addChild(new Node('comment', $classdoc->commentText()));
+      $n->addChild(new Node('comment', $this->markup($classdoc->commentText())));
       $n->addChild(new Node('purpose', $this->tagAttribute($classdoc->tags('purpose'), 0, 'text')));
       foreach ($classdoc->tags('see') as $ref) {
         $n->addChild(new Node('see', $ref->text, array(
@@ -215,23 +217,15 @@
       delete($tree);
     }
     
-    function markup($text) {
-      return new PCData('<p>'.preg_replace(array(
-        "#\n\n#",
-        "#<code>(.*)</code>(<br/>)?#msU",
-        "#\n([^\n]+)\n[=]{3,}\n#",
-        "#\n([^\n]+)\n[-]{3,}\n#",
-      ), array(
-        '<br/><br/>'."\n",
-        '</p><pre class="code">\1</pre><p>',
-        '</p><h1>$1</h1><p>'."\n",
-        '</p><h2>$1</h2><p>'."\n",
-      ), $text).'</p>');
+    function markup($comment) {
+      return new PCData('<p>'.$this->markup->markupFor($comment).'</p>');
     }
 
     function start($root) {
       $this->build= new Folder($root->option('build', 'build'));
       $this->build->exists() || $this->build->create();
+      
+      $this->markup= new MarkupBuilder();
       
       // Marshal classes
       $this->packages= array();
