@@ -1,0 +1,68 @@
+RFC 0107: More information about table fields in rdbms.Peer
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Jan 11 18:48:43 CET 2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The rdbms.Peer's "types" field will be changed from array<string, string>
+to array<string, string[]> in order to be able to contain more information.
+
+
+Rationale
+---------
+Some type information is lost after classes are generated, i.e. the exact
+type in the database (the Peer object only knows the SQL token, %s, %d, 
+etc.)
+
+
+Functionality
+-------------
+Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
+<?php
+  // Old
+  $peer->setTypes(array(
+    'job_id'              => '%d',
+    'title'               => '%s',
+    'valid_from'          => '%s',
+    'expire_at'           => '%s'
+  ));
+
+  // New
+  $peer->setTypes(array(
+    'job_id'      => array('%d', FieldType::NUMERIC, FALSE, TRUE),
+    'title'       => array('%s', FieldType::VARCHAR, FALSE),
+    'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
+    'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
+  ));
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower.
+
+
+Dependencies
+------------
+New FieldType class for the field type enumeration.
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0107.diff
+  Implementing patch
+
+Comments
+--------
+
+<EOF>

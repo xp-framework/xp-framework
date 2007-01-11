@@ -1,0 +1,214 @@
+Index: skeleton/rdbms/FieldType.class.php
+===================================================================
+--- skeleton/rdbms/FieldType.class.php	(revision 0)
++++ skeleton/rdbms/FieldType.class.php	(revision 0)
+@@ -0,0 +1,42 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Field type constants
++   *
++   * @purpose  Enumeration
++   */
++  class FieldType extends Object {
++    const BINARY =         0x0000;             
++    const BIT =            0x0001;               
++    const CHAR =           0x0002;              
++    const DATETIME =       0x0003;            
++    const DATETIMN =       0x0004;            
++    const DECIMAL =        0x0005;             
++    const DECIMALN =       0x0006;            
++    const FLOAT =          0x0007;             
++    const FLOATN =         0x0008;            
++    const IMAGE =          0x0009;             
++    const INT =            0x000A;               
++    const INTN =           0x000B;              
++    const MONEY =          0x000C;             
++    const MONEYN =         0x000D;            
++    const NCHAR =          0x000E;             
++    const NUMERIC =        0x000F;             
++    const NUMERICN =       0x0010;            
++    const NVARCHAR =       0x0011;            
++    const REAL =           0x0012;              
++    const SMALLDATETIME =  0x0013;         
++    const SMALLINT =       0x0014;         
++    const SMALLMONEY =     0x0015;       
++    const SYSNAME =        0x0016;          
++    const TEXT =           0x0017;           
++    const TIMESTAMP =      0x0018;        
++    const TINYINT =        0x0019;          
++    const VARBINARY =      0x001A;        
++    const VARCHAR =        0x001B;          
++  }
++?>
+
+Property changes on: skeleton/rdbms/FieldType.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/Peer.class.php
+===================================================================
+--- skeleton/rdbms/Peer.class.php	(revision 9225)
++++ skeleton/rdbms/Peer.class.php	(working copy)
+@@ -198,6 +198,15 @@
+       }
+       return new $this->identifier($record);
+     }
++
++    /**
++     * Returns a new DataSet object.
++     *
++     * @return  rdbms.DataSet
++     */    
++    public function newObject($record) {
++      return new $this->identifier();
++    }
+     
+     /**
+      * Returns an iterator for a select statement
+@@ -230,11 +239,11 @@
+       foreach (array_keys($this->types) as $colunn) {
+         $columns[]= $this->identifier.'.'.$colunn;
+         $map[$colunn]= $map[$this->identifier.'.'.$colunn]= '%c';
+-        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
++        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn][0];
+       }
+       foreach (array_keys($peer->types) as $colunn) {
+         $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
+-        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn];
++        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn][0];
+       }
+ 
+       $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
+@@ -278,7 +287,7 @@
+         array_keys($values)
+       );
+       foreach (array_keys($values) as $key) {
+-        $sql.= $db->prepare($this->types[$key], $values[$key]).', ';
++        $sql.= $db->prepare($this->types[$key][0], $values[$key]).', ';
+       }
+ 
+       // Send it
+@@ -305,7 +314,7 @@
+       // Build the update command
+       $sql= '';
+       foreach (array_keys($values) as $key) {
+-        $sql.= $db->prepare('%c = '.$this->types[$key], $key, $values[$key]).', ';
++        $sql.= $db->prepare('%c = '.$this->types[$key][0], $key, $values[$key]).', ';
+       }
+ 
+       // Send it
+Index: skeleton/rdbms/DataSet.class.php
+===================================================================
+--- skeleton/rdbms/DataSet.class.php	(revision 9243)
++++ skeleton/rdbms/DataSet.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'rdbms.ConnectionManager',
+     'rdbms.Peer',
+-    'rdbms.Criteria'
++    'rdbms.Criteria',
++    'rdbms.FieldType'
+   );
+ 
+   /**
+@@ -124,6 +125,34 @@
+     }
+     
+     /**
++     * Sets a field's value by the field's name and returns the previous value.
++     *
++     * @param   string field name
++     * @param   mixed value
++     * @return  mixed previous value
++     * @throws  lang.IllegalArgumentException in case the field does not exist
++     */
++    public function set($field, $value) {
++      if (!isset(Peer::forInstance($this)->types[$field])) {
++        throw new IllegalArgumentException('Field "'.$field.'" does not exist for DataSet '.$this->getClassName());
++      }
++      return $this->_change($field, $value);
++    }
++
++    /**
++     * Gets a field's value by the field's name
++     *
++     * @param   string field name
++     * @throws  lang.IllegalArgumentException in case the field does not exist
++     */
++    public function get($field) {
++      if (!isset(Peer::forInstance($this)->types[$field])) {
++        throw new IllegalArgumentException('Field "'.$field.'" does not exist for DataSet '.$this->getClassName());
++      }
++      return $this->{$field};
++    }
++    
++    /**
+      * Returns an array of fields that were changed suitable for passing
+      * to Peer::doInsert() and Peer::doUpdate()
+      *
+Index: skeleton/rdbms/criterion/BetweenExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(revision 9225)
++++ skeleton/rdbms/criterion/BetweenExpression.class.php	(working copy)
+@@ -44,7 +44,7 @@
+       }
+ 
+       return $this->field.' between '.$conn->prepare(
+-        $types[$this->field].' and '.$types[$this->field],
++        $types[$this->field][0].' and '.$types[$this->field][0],
+         $this->lo,
+         $this->hi
+       );
+Index: skeleton/rdbms/criterion/SimpleExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(revision 9225)
++++ skeleton/rdbms/criterion/SimpleExpression.class.php	(working copy)
+@@ -80,7 +80,7 @@
+       }
+ 
+       return $this->field.' '.$conn->prepare(
+-        str_replace('?', $types[$this->field], $this->op), 
++        str_replace('?', $types[$this->field][0], $this->op), 
+         $this->value
+       );      
+     }
+Index: ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(revision 9225)
++++ ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(working copy)
+@@ -80,8 +80,8 @@
+         $peer->primary
+       );
+       $this->assertEquals(
+-        array('job_id' => '%d', 'title' => '%s', 'valid_from' => '%s', 'expire_at' => '%s'),
+-        $peer->types
++        array('job_id', 'title', 'valid_from', 'expire_at'),
++        array_keys($peer->types)
+       );
+     }
+     
+Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(revision 9225)
++++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(working copy)
+@@ -25,10 +25,10 @@
+         $peer->setIdentity('job_id');
+         $peer->setPrimary(array('job_id'));
+         $peer->setTypes(array(
+-          'job_id'              => '%d',
+-          'title'               => '%s',
+-          'valid_from'          => '%s',
+-          'expire_at'           => '%s'
++          'job_id'      => array('%d', FieldType::NUMERIC, FALSE, TRUE),
++          'title'       => array('%s', FieldType::VARCHAR, FALSE),
++          'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
++          'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
+         ));
+       }
+     }  
