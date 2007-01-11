@@ -2,7 +2,7 @@ Index: WorkflowXMLScriptlet.class.php
 ===================================================================
 --- WorkflowXMLScriptlet.class.php	(revision 0)
 +++ WorkflowXMLScriptlet.class.php	(revision 0)
-@@ -0,0 +1,177 @@
+@@ -0,0 +1,178 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -63,7 +63,8 @@ Index: WorkflowXMLScriptlet.class.php
 +     * @return  bool
 +     */
 +    public function needsSession($request) {
-+      return ($request->state && (
++      return TRUE;
++      ($request->state && (
 +        $request->state->hasHandlers() || 
 +        $request->state->requiresAuthentication()
 +      ));
@@ -267,7 +268,7 @@ Index: routing/StaticRouter.class.php
 +   * @see      xp://scriptlet.xml.workflow.routing.Router
 +   * @purpose  Router implementation
 +   */
-+  class StaticRouter extends Object {
++  class StaticRouter extends Object implements Router {
 +  
 +    /**
 +     * Route a request
@@ -347,7 +348,7 @@ Index: routing/MethodRoute.class.php
 +   * @see      xp://scriptlet.xml.workflow.routing.Route
 +   * @purpose  Route implementation
 +   */
-+  class MethodRoute extends Object {
++  class MethodRoute extends Object implements Route {
 +    protected
 +      $state  = NULL,
 +      $method = NULL;
@@ -544,6 +545,131 @@ ___________________________________________________________________
 Name: svn:keywords
    + Id
 
+Index: routing/FacadeRoute.class.php
+===================================================================
+--- routing/FacadeRoute.class.php	(revision 0)
++++ routing/FacadeRoute.class.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.Route');
++
++  /**
++   * Facade route
++   *
++   * @see      xp://scriptlet.xml.workflow.routing.FacadeRouter
++   * @see      xp://scriptlet.xml.workflow.routing.Route
++   * @purpose  Route implementation
++   */
++  class FacadeRoute extends Object implements Route {
++    protected
++      $facade    = NULL,
++      $operation = '';
++     
++    const
++      COLLECTION  = 0x0001,
++      ENTITY      = 0x0002;
++
++    /**
++     * Constructor
++     *
++     * @param   scriptlet.xml.workflow.facade.Facade facade
++     * @param   string operation
++     */
++    public function __construct($facade, $operation) {
++      $this->facade= $facade;
++      $this->operation= $operation;
++    }
++    
++    /**
++     * Dispatch this route
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  mixed
++     */
++    public function dispatch($request, $response, $context) {
++      static $operations= array(
++        'list'    => self::COLLECTION,
++        'search'  => self::COLLECTION,
++        'view'    => self::ENTITY,
++        'edit'    => self::ENTITY,
++        'delete'  => self::ENTITY,
++        'add'     => self::ENTITY,
++      );
++
++      $this->facade->{'do'.$this->operation}($request, $response, $context);
++    }
++  } 
++?>
+
+Property changes on: routing/FacadeRoute.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: routing/FacadeRouter.class.php
+===================================================================
+--- routing/FacadeRouter.class.php	(revision 0)
++++ routing/FacadeRouter.class.php	(revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('scriptlet.xml.workflow.routing.FacadeRoute', 'scriptlet.xml.workflow.routing.Router');
++
++  /**
++   * The facade router is a router implementation that will route requests
++   * to facades.
++   *
++   * <pre>
++   *   State name    Class name           Operation         
++   *   ------------- -------------------- ----------
++   *   /news         [package.]NewsFacade list
++   *   /news/list    [package.]NewsFacade list
++   *   /news/search  [package.]NewsFacade search
++   *   /news/view    [package.]NewsFacade view
++   *   /news/edit    [package.]NewsFacade edit
++   *   /news/add     [package.]NewsFacade add
++   *   /news/delete  [package.]NewsFacade delete
++   * </pre>
++   *
++   * @see      xp://scriptlet.xml.workflow.facade.Facade
++   * @see      xp://scriptlet.xml.workflow.routing.Router
++   * @purpose  Router implementation
++   */
++  class FacadeRouter extends Object implements Router {
++  
++    /**
++     * Route a request
++     *
++     * @param   string package
++     * @param   scriptlet.xml.XMLScriptletRequest
++     * @param   scriptlet.xml.XMLScriptletResponse
++     * @param   scriptlet.xml.workflow.Context
++     * @return  scriptlet.xml.workflow.routing.Route
++     * @throws  lang.ClassNotFoundException in case the state class cannot be found
++     */
++    public function route($package, $request, $response, $context) {
++      1 == sscanf($request->getStateName(), '%[^/]/%s', $name, $operation) && $operation= 'list';
++      return new FacadeRoute(XPClass::forName($package.ucfirst($name).'Facade')->newInstance(), $operation);
++    }
++  }
++?>
+
+Property changes on: routing/FacadeRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
 Index: routing/DelegatingRouter.class.php
 ===================================================================
 --- routing/DelegatingRouter.class.php	(revision 0)
@@ -615,6 +741,666 @@ Index: routing/DelegatingRouter.class.php
 +?>
 
 Property changes on: routing/DelegatingRouter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/DataSetFacade.class.php
+===================================================================
+--- facade/DataSetFacade.class.php	(revision 0)
++++ facade/DataSetFacade.class.php	(revision 0)
+@@ -0,0 +1,129 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'scriptlet.xml.workflow.facade.Facade', 
++    'scriptlet.xml.workflow.AbstractState',
++    'scriptlet.xml.workflow.facade.dataset.EditDataSetHandler',
++    'scriptlet.xml.workflow.facade.dataset.CreateDataSetHandler',
++    'scriptlet.xml.workflow.facade.dataset.DeleteDataSetHandler'
++  );
++
++  /**
++   * This facade works with rdbms.DataSet subclasses.
++   *
++   * @purpose  Facade implementation
++   */
++  class DataSetFacade extends AbstractState implements Facade {
++
++    /**
++     * Helper method
++     *
++     * @return  rdbms.Peer
++     */
++    protected function getPeer() {
++      return XPClass::forName($this->getClass()->getAnnotation('dataset'))->getMethod('getPeer')->invoke(NULL);
++    }
++    
++    /**
++     * Helper method
++     *
++     * @param   rdbms.Peer peer
++     * @param   rdbms.DataSet entity
++     * @return  xml.Node
++     */
++    protected function marshalEntity(Peer $peer, DataSet $entity) {
++      $e= new Node('entity');
++
++      // Primary Key
++      $id= '';
++      foreach ($peer->primary as $field) {
++        $id= '&'.$field.'='.$entity->{$field};
++      }
++      $e->setAttribute('id', substr($id, 1));
++
++      // Fields
++      foreach (array_keys($peer->types) as $field) {
++        $value= $entity->get($field);
++
++        $f= $e->addChild(new Node('field', NULL, array(
++          'name'      => $field,
++          'xsi:type'  => 'xsd:'.gettype($value)
++        )));
++
++        if (is_scalar($value)) {
++          $f->setContent($value);
++        } else if (is_null($value)) {
++          // Intentionally empty
++        } else if (is_array($value)) {
++          $f->children= Node::fromArray($value)->children;
++        } else if (is_object($value)) {
++          $f->children= Node::fromObject($value)->children;
++        }
++      }
++      
++      return $e;
++    }
++    
++    /**
++     * List operation
++     *
++     * @param   
++     * @return  
++     */
++    public function doList($request, $response, $context) {
++      $this->setup($request, $response, $context);
++      $peer= $this->getPeer();
++      $n= $response->addFormResult(new Node('collection', NULL, array(
++        'class' => $peer->identifier
++      )));
++      
++      // Field information
++      $r= $n->addChild(new Node('fields'));
++      foreach (array_keys($peer->types) as $field) {
++        $r->addChild(new Node('field', $field));
++      }
++
++      // Entity list
++      for ($iterator= $peer->iteratorFor(new Criteria()); $iterator->hasNext(); ) {
++        $n->addChild($this->marshalEntity($peer, $iterator->next()));
++      }
++    }
++
++    /**
++     * Edit operation
++     *
++     * @param   
++     * @return  
++     */
++    public function doEdit($request, $response, $context) {
++      $this->addHandler(new EditDataSetHandler(new DataSetWrapper($this->getPeer())));
++      $this->setup($request, $response, $context);
++    }
++
++    /**
++     * New operation
++     *
++     * @param   
++     * @return  
++     */
++    public function doNew($request, $response, $context) {
++      $this->addHandler(new CreateDataSetHandler(new DataSetWrapper($this->getPeer())));
++      $this->setup($request, $response, $context);
++    }
++
++    /**
++     * Delete operation
++     *
++     * @param   
++     * @return  
++     */
++    public function doDelete($request, $response, $context) {
++      $this->addHandler(new DeleteDataSetHandler(new DataSetWrapper($this->getPeer(), TRUE)));
++      $this->setup($request, $response, $context);
++    }
++  }
++?>
+
+Property changes on: facade/DataSetFacade.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/DataSetWrapper.class.php
+===================================================================
+--- facade/dataset/DataSetWrapper.class.php	(revision 0)
++++ facade/dataset/DataSetWrapper.class.php	(revision 0)
+@@ -0,0 +1,83 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'scriptlet.xml.workflow.Wrapper', 
++    'scriptlet.xml.workflow.IFormresultAggregate',
++    'scriptlet.xml.workflow.facade.dataset.FieldTypeMap'
++  );
++
++  /**
++   * Wrapper implementation for DataSets.
++   *
++   * @see      xp://rdbms.DataSet
++   * @see      xp://scriptlet.xml.workflow.facade.DataSetFacade
++   * @purpose  Generic Wrapper
++   */
++  class DataSetWrapper extends Wrapper implements IFormresultAggregate {
++    protected
++      $peer   = NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   rdbms.Peer peer
++     * @param   bool view default FALSE
++     */
++    public function __construct($peer, $view= FALSE) {
++      $this->setPeer($peer, $view);
++    }
++  
++    /**
++     * Set Peer.
++     *
++     * @param   rdbms.Peer peer
++     * @param   bool view
++     */
++    public function setPeer($peer, $view) {
++      $this->peer= $peer;
++      
++      // Register param info by looking at the peer instance's types
++      foreach ($peer->types as $name => $defines) {
++        if ($defines[3]) continue;    // Omit identity fields
++        
++        // XXX FIXME XXX not nice
++        if ($view) {
++          $this->registerParamInfo(
++            $name,
++            OCCURRENCE_OPTIONAL,
++            $default= NULL,
++            $caster= NULL,
++            $precheck= NULL, 
++            $postcheck= NULL,
++            FieldTypeMap::typeOf($defines[1]),
++            $values= array()
++          );
++        } else {
++          $this->registerParamInfo(
++            $name,
++            $defines[2] ? OCCURRENCE_OPTIONAL : OCCURRENCE_UNDEFINED,
++            $default= NULL,
++            FieldTypeMap::casterFor($defines[1]),
++            $precheck= NULL, 
++            $postcheck= NULL,
++            FieldTypeMap::typeOf($defines[1]),
++            $values= array()
++          );
++        }
++      }
++    }
++
++    /**
++     * Get Peer
++     *
++     * @return  rdbms.Peer
++     */
++    public function getPeer() {
++      return $this->peer;
++    }
++  }
++?>
+
+Property changes on: facade/dataset/DataSetWrapper.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/DeleteDataSetHandler.class.php
+===================================================================
+--- facade/dataset/DeleteDataSetHandler.class.php	(revision 0)
++++ facade/dataset/DeleteDataSetHandler.class.php	(revision 0)
+@@ -0,0 +1,48 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'rdbms.Criteria',
++    'scriptlet.xml.workflow.facade.dataset.DataSetHandler'
++  );
++  
++  /**
++   * Handler for deleting DataSets
++   *
++   * @see      xp://scriptlet.xml.workflow.facade.DataSetFacade
++   * @purpose  Generic Handler
++   */
++  class DeleteDataSetHandler extends DataSetHandler {
++
++    /**
++     * Retrieve the entity by its primary
++     *
++     * @param   rdbms.Peer
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  rdbms.DataSet
++     */
++    protected function getEntity($peer, $request, $context) {
++      $criteria= new Criteria();
++      foreach ($peer->primary as $field) {
++        $criteria->add($field, $request->getParam($field), EQUAL);
++      }
++
++      return $peer->iteratorFor($criteria)->next();
++    }
++    
++    /**
++     * Handle the entity that has been worked on
++     *
++     * @param   rdbms.DataSet
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     */
++    protected function handleSubmittedEntity($entity, $request, $context) {
++      $entity->delete();
++    }
++  }
++?>
+
+Property changes on: facade/dataset/DeleteDataSetHandler.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/CreateDataSetHandler.class.php
+===================================================================
+--- facade/dataset/CreateDataSetHandler.class.php	(revision 0)
++++ facade/dataset/CreateDataSetHandler.class.php	(revision 0)
+@@ -0,0 +1,47 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'rdbms.Criteria',
++    'scriptlet.xml.workflow.facade.dataset.DataSetHandler'
++  );
++  
++  /**
++   * Handler for creating DataSets
++   *
++   * @see      xp://scriptlet.xml.workflow.facade.DataSetFacade
++   * @purpose  Generic Handler
++   */
++  class CreateDataSetHandler extends DataSetHandler {
++
++    /**
++     * Retrieve the entity by its primary
++     *
++     * @param   rdbms.Peer
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  rdbms.DataSet
++     */
++    protected function getEntity($peer, $request, $context) {
++      return $peer->newObject();
++    }
++    
++    /**
++     * Handle the entity that has been worked on
++     *
++     * @param   rdbms.DataSet
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     */
++    protected function handleSubmittedEntity($entity, $request, $context) {
++      foreach ($this->wrapper->getParamNames() as $field) {
++        $entity->set($field, $this->wrapper->getValue($field));
++      }
++
++      $entity->insert();
++    }
++  }
++?>
+
+Property changes on: facade/dataset/CreateDataSetHandler.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/EditDataSetHandler.class.php
+===================================================================
+--- facade/dataset/EditDataSetHandler.class.php	(revision 0)
++++ facade/dataset/EditDataSetHandler.class.php	(revision 0)
+@@ -0,0 +1,52 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'rdbms.Criteria',
++    'scriptlet.xml.workflow.facade.dataset.DataSetHandler'
++  );
++  
++  /**
++   * Handler for editing DataSets
++   *
++   * @see      xp://scriptlet.xml.workflow.facade.DataSetFacade
++   * @purpose  Generic Handler
++   */
++  class EditDataSetHandler extends DataSetHandler {
++
++    /**
++     * Retrieve the entity by its primary
++     *
++     * @param   rdbms.Peer
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  rdbms.DataSet
++     */
++    protected function getEntity($peer, $request, $context) {
++      $criteria= new Criteria();
++      foreach ($peer->primary as $field) {
++        $criteria->add($field, $request->getParam($field), EQUAL);
++      }
++
++      return $peer->iteratorFor($criteria)->next();
++    }
++    
++    /**
++     * Handle the entity that has been worked on
++     *
++     * @param   rdbms.DataSet
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     */
++    protected function handleSubmittedEntity($entity, $request, $context) {
++      foreach ($this->wrapper->getParamNames() as $field) {
++        $entity->set($field, $this->wrapper->getValue($field));
++      }
++
++      $entity->update();
++    }
++  }
++?>
+
+Property changes on: facade/dataset/EditDataSetHandler.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/DataSetHandler.class.php
+===================================================================
+--- facade/dataset/DataSetHandler.class.php	(revision 0)
++++ facade/dataset/DataSetHandler.class.php	(revision 0)
+@@ -0,0 +1,109 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'scriptlet.xml.workflow.Handler',
++    'scriptlet.xml.workflow.facade.dataset.DataSetWrapper'
++  );
++  
++  /**
++   * Handler for DataSet modifications (new, edit, delete).
++   *
++   * @see      xp://scriptlet.xml.workflow.facade.DataSetFacade
++   * @purpose  Base class
++   */
++  abstract class DataSetHandler extends Handler {
++
++    /**
++     * Constructor
++     *
++     * @param   
++     */
++    public function __construct($wrapper) {
++      parent::__construct();
++      $this->setWrapper($wrapper);
++    }
++
++    /**
++     * Get identifier.
++     *
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
++     * @param   scriptlet.xml.Context context
++     * @return  string
++     */
++    public function identifierFor($request, $context) {
++      return get_class($this).'#'.$request->getQueryString();
++    }
++    
++    /**
++     * Retrieve the entity to work on
++     *
++     * @param   rdbms.Peer
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  rdbms.DataSet
++     */
++    protected abstract function getEntity($peer, $request, $context);
++
++    /**
++     * Handle the entity that has been worked on
++     *
++     * @param   rdbms.DataSet
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     */
++    protected abstract function handleSubmittedEntity($entity, $request, $context);
++    
++    /**
++     * Setup
++     *
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  bool
++     */
++    public function setup($request, $context) {
++      $peer= $this->wrapper->getPeer();
++      $entity= $this->getEntity($peer, $request, $context);
++      
++      // Set formvalues
++      foreach (array_keys($peer->types) as $field) {
++        $this->setFormValue($field, $entity->get($field));
++      }
++      
++      // Save for usage in handleSubmittedData()
++      $this->setValue('entity', $entity);
++      return TRUE;
++    }
++    
++    /**
++     * Handle submitted data.
++     *
++     * @param   scriptlet.xml.XMLScriptletRequest request
++     * @param   scriptlet.xml.workflow.Context context
++     * @return  boolean
++     */
++    public function handleSubmittedData($request, $context) {
++
++      // Modify the entity. If an error occurs, add an error to this handler.
++      //
++      // Error type
++      // ==========
++      // * SQL statement fails: 'sql+stmt:[ERROR-CODE]' 
++      // * Other SQL error: 'sql+generic:[EXCEPTION-CLASS-NAME]'
++      try {
++        $this->handleSubmittedEntity($this->getValue('entity'), $request, $context);
++      } catch (SQLStatementFailedException $e) {
++        $this->addError('sql+stmt:'.$e->getErrorcode(), '*', $e->getMessage());
++        return FALSE;
++      } catch (SQLException $e) {
++        $this->addError('sql+generic:'.$e->getClassName(), '*', $e->getMessage());
++        return FALSE;
++      }
++      
++      return TRUE;
++    }
++  }
++?>
+
+Property changes on: facade/dataset/DataSetHandler.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/dataset/FieldTypeMap.class.php
+===================================================================
+--- facade/dataset/FieldTypeMap.class.php	(revision 0)
++++ facade/dataset/FieldTypeMap.class.php	(revision 0)
+@@ -0,0 +1,89 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('rdbms.FieldType');
++
++  /**
++   * (Insert class' description here)
++   *
++   * @ext      extension
++   * @see      reference
++   * @purpose  purpose
++   */
++  class FieldTypeMap extends Object {
++  
++    public static function typeOf($fieldType) {
++      static $types= array(
++        FieldType::BINARY        => 'core:string',   
++        FieldType::BIT           => 'core:number',     
++        FieldType::CHAR          => 'core:string',    
++        FieldType::DATETIME      => 'core:date',  
++        FieldType::DATETIMN      => 'core:date',  
++        FieldType::DECIMAL       => 'core:number',   
++        FieldType::DECIMALN      => 'core:number',  
++        FieldType::FLOAT         => 'core:number',   
++        FieldType::FLOATN        => 'core:number',   
++        FieldType::IMAGE         => 'core:string',   
++        FieldType::INT           => 'core:number',     
++        FieldType::INTN          => 'core:number',    
++        FieldType::MONEY         => 'core:string',   
++        FieldType::MONEYN        => 'core:string',   
++        FieldType::NCHAR         => 'core:string',   
++        FieldType::NUMERIC       => 'core:number',   
++        FieldType::NUMERICN      => 'core:number',  
++        FieldType::NVARCHAR      => 'core:string',  
++        FieldType::REAL          => 'core:number',    
++        FieldType::SMALLDATETIME => 'core:date',
++        FieldType::SMALLINT      => 'core:number',  
++        FieldType::SMALLMONEY    => 'core:string',
++        FieldType::SYSNAME       => 'core:string',   
++        FieldType::TEXT          => 'core:text',    
++        FieldType::TIMESTAMP     => 'core:string', 
++        FieldType::TINYINT       => 'core:number',   
++        FieldType::VARBINARY     => 'core:string', 
++        FieldType::VARCHAR       => 'core:string', 
++      );
++      
++      return $types[$fieldType];
++    }
++    
++    public static function casterFor($fieldType) {
++      static $casters= array(
++        FieldType::BINARY        => NULL,   
++        FieldType::BIT           => NULL,     
++        FieldType::CHAR          => NULL,    
++        FieldType::DATETIME      => array('scriptlet.xml.workflow.casters.ToDate'),  
++        FieldType::DATETIMN      => array('scriptlet.xml.workflow.casters.ToDate'),  
++        FieldType::DECIMAL       => array('scriptlet.xml.workflow.casters.ToFloat'),   
++        FieldType::DECIMALN      => array('scriptlet.xml.workflow.casters.ToFloat'),  
++        FieldType::FLOAT         => array('scriptlet.xml.workflow.casters.ToFloat'),
++        FieldType::FLOATN        => NULL,   
++        FieldType::IMAGE         => NULL,   
++        FieldType::INT           => array('scriptlet.xml.workflow.casters.ToInteger'),     
++        FieldType::INTN          => array('scriptlet.xml.workflow.casters.ToInteger'),    
++        FieldType::MONEY         => NULL,   
++        FieldType::MONEYN        => NULL,   
++        FieldType::NCHAR         => NULL,   
++        FieldType::NUMERIC       => array('scriptlet.xml.workflow.casters.ToInteger'),   
++        FieldType::NUMERICN      => array('scriptlet.xml.workflow.casters.ToInteger'),  
++        FieldType::NVARCHAR      => NULL,  
++        FieldType::REAL          => array('scriptlet.xml.workflow.casters.ToFloat'),    
++        FieldType::SMALLDATETIME => array('scriptlet.xml.workflow.casters.ToDate'),
++        FieldType::SMALLINT      => array('scriptlet.xml.workflow.casters.ToInteger'),  
++        FieldType::SMALLMONEY    => NULL,
++        FieldType::SYSNAME       => NULL,   
++        FieldType::TEXT          => NULL,    
++        FieldType::TIMESTAMP     => NULL, 
++        FieldType::TINYINT       => array('scriptlet.xml.workflow.casters.ToInteger'),
++        FieldType::VARBINARY     => NULL, 
++        FieldType::VARCHAR       => NULL, 
++      );
++
++      return $casters[$fieldType];
++    }
++  
++  }
++?>
+
+Property changes on: facade/dataset/FieldTypeMap.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: facade/Facade.class.php
+===================================================================
+--- facade/Facade.class.php	(revision 0)
++++ facade/Facade.class.php	(revision 0)
+@@ -0,0 +1,15 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Facade
++   *
++   * @purpose  Interface
++   */
++  interface Facade {
++
++  }
++?>
+
+Property changes on: facade/Facade.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
