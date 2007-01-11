@@ -160,12 +160,17 @@ None, filters are an optional addition.
 
 Dependencies
 ------------
-- RFC #0096
-  Foreign key relations (for EntityManagementFacade DB backing)
-
+- RFC #0107
+  More information about table fields in rdbms.Peer
 
 Related documents
 -----------------
+
+Enhancements
+~~~~~~~~~~~~
+- RFC #0096
+  Foreign key relations (for EntityManagementFacade DB backing)
+  Would make the editor work for more than only one table
 
 Filters
 ~~~~~~~
