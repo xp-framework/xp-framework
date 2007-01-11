@@ -27,6 +27,8 @@
           $date= DateParser::parse($v);
         } catch (FormatException $e) {
           return $e->getMessage();
+        } catch (IllegalArgumentException $e) {
+          return $e->getMessage();
         }
         
         $return[$k]= $date;
