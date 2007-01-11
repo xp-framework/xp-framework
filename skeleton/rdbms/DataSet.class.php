@@ -294,7 +294,7 @@
         throw($e);
       }
 
-      return $this->{$peer->identity};
+      return $peer->identity ? $this->{$peer->identity} : NULL;
     }
 
     /**
