@@ -40,30 +40,30 @@
       }
 
       $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
-      try {
-        $cl= $deployment->getClassLoader();
-        $org= ini_get('include_path');
-        ini_set('include_path', $org.PATH_SEPARATOR.$cl->archive->file->getURI());
-        
-        $impl= $cl->loadClass($deployment->getImplementation());
-        $interface= $cl->loadClass($deployment->getInterface());
-        
-        $directoryName= $deployment->getDirectoryName();
-        
-        // Fetch naming directory
-        $directory= NamingDirectory::getInstance();
-        
-        // Create beanContainer
-        // T.B.D Check which kind of bean container
-        // has to be created
-        $beanContainer= StatelessSessionBeanContainer::forClass($impl);
-        
-        // Create invocation handler
-        $invocationHandler= new ContainerInvocationHandler();
-        $invocationHandler->setContainer($beanContainer);
-      } catch (Exception $e) {
-        throw($e);
-      }
+
+      // Put bean's xar file into include_path - uses() within the beans will be able to resolve
+      // references to other classes inside the xar.
+      // This is a necessary HACK atm.
+      $cl= $deployment->getClassLoader();
+      $org= ini_get('include_path');
+      ini_set('include_path', $org.PATH_SEPARATOR.$cl->archive->file->getURI());
+
+      $impl= $cl->loadClass($deployment->getImplementation());
+      $interface= $cl->loadClass($deployment->getInterface());
+
+      $directoryName= $deployment->getDirectoryName();
+
+      // Fetch naming directory
+      $directory= NamingDirectory::getInstance();
+
+      // Create beanContainer
+      // T.B.D Check which kind of bean container
+      // has to be created
+      $beanContainer= StatelessSessionBeanContainer::forClass($impl);
+
+      // Create invocation handler
+      $invocationHandler= new ContainerInvocationHandler();
+      $invocationHandler->setContainer($beanContainer);
 
       // Now bind into directory
       $directory->bind($directoryName, Proxy::newProxyInstance(
@@ -71,8 +71,10 @@
         array($interface),
         $invocationHandler
       ));
-     
+      
       $this->cat && $this->cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
+
+      // Leave xar in include_path - classes might load some dependencies at runtime
       return $beanContainer;
     }
     
