@@ -749,7 +749,7 @@ Index: facade/DataSetFacade.class.php
 ===================================================================
 --- facade/DataSetFacade.class.php	(revision 0)
 +++ facade/DataSetFacade.class.php	(revision 0)
-@@ -0,0 +1,129 @@
+@@ -0,0 +1,142 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -765,11 +765,20 @@ Index: facade/DataSetFacade.class.php
 +  );
 +
 +  /**
-+   * This facade works with rdbms.DataSet subclasses.
++   * This facade works with rdbms.DataSet subclasses. This class forms 
++   * the base for facade subclasses.
++   *
++   * Example of the most simple use-case:
++   * <code>
++   *  #[@dataset('net.xp_framework.db.caffeine.News')]
++   *  class NewsManagementFacade extends DataSetFacade {
++   *  
++   *  }
++   * </code>
 +   *
 +   * @purpose  Facade implementation
 +   */
-+  class DataSetFacade extends AbstractState implements Facade {
++  abstract class DataSetFacade extends AbstractState implements Facade {
 +
 +    /**
 +     * Helper method
@@ -823,8 +832,9 @@ Index: facade/DataSetFacade.class.php
 +    /**
 +     * List operation
 +     *
-+     * @param   
-+     * @return  
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.workflow.Context context
 +     */
 +    public function doList($request, $response, $context) {
 +      $this->setup($request, $response, $context);
@@ -848,33 +858,36 @@ Index: facade/DataSetFacade.class.php
 +    /**
 +     * Edit operation
 +     *
-+     * @param   
-+     * @return  
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.workflow.Context context
 +     */
 +    public function doEdit($request, $response, $context) {
-+      $this->addHandler(new EditDataSetHandler(new DataSetWrapper($this->getPeer())));
++      $this->addHandler(new EditDataSetHandler($this->getPeer()));
 +      $this->setup($request, $response, $context);
 +    }
 +
 +    /**
 +     * New operation
 +     *
-+     * @param   
-+     * @return  
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.workflow.Context context
 +     */
 +    public function doNew($request, $response, $context) {
-+      $this->addHandler(new CreateDataSetHandler(new DataSetWrapper($this->getPeer())));
++      $this->addHandler(new CreateDataSetHandler($this->getPeer()));
 +      $this->setup($request, $response, $context);
 +    }
 +
 +    /**
 +     * Delete operation
 +     *
-+     * @param   
-+     * @return  
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.workflow.Context context
 +     */
 +    public function doDelete($request, $response, $context) {
-+      $this->addHandler(new DeleteDataSetHandler(new DataSetWrapper($this->getPeer(), TRUE)));
++      $this->addHandler(new DeleteDataSetHandler($this->getPeer()));
 +      $this->setup($request, $response, $context);
 +    }
 +  }
@@ -889,7 +902,7 @@ Index: facade/dataset/DataSetWrapper.class.php
 ===================================================================
 --- facade/dataset/DataSetWrapper.class.php	(revision 0)
 +++ facade/dataset/DataSetWrapper.class.php	(revision 0)
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,78 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -917,50 +930,45 @@ Index: facade/dataset/DataSetWrapper.class.php
 +     * Constructor
 +     *
 +     * @param   rdbms.Peer peer
-+     * @param   bool view default FALSE
 +     */
-+    public function __construct($peer, $view= FALSE) {
-+      $this->setPeer($peer, $view);
++    public function __construct($peer) {
++      $this->setPeer($peer);
 +    }
 +  
 +    /**
 +     * Set Peer.
 +     *
 +     * @param   rdbms.Peer peer
-+     * @param   bool view
 +     */
-+    public function setPeer($peer, $view) {
++    public function setPeer($peer) {
 +      $this->peer= $peer;
 +      
 +      // Register param info by looking at the peer instance's types
++      // Omit identity fields, they should not be editable
 +      foreach ($peer->types as $name => $defines) {
-+        if ($defines[3]) continue;    // Omit identity fields
-+        
-+        // XXX FIXME XXX not nice
-+        if ($view) {
-+          $this->registerParamInfo(
-+            $name,
-+            OCCURRENCE_OPTIONAL,
-+            $default= NULL,
-+            $caster= NULL,
-+            $precheck= NULL, 
-+            $postcheck= NULL,
-+            FieldTypeMap::typeOf($defines[1]),
-+            $values= array()
-+          );
-+        } else {
-+          $this->registerParamInfo(
-+            $name,
-+            $defines[2] ? OCCURRENCE_OPTIONAL : OCCURRENCE_UNDEFINED,
-+            $default= NULL,
-+            FieldTypeMap::casterFor($defines[1]),
-+            $precheck= NULL, 
-+            $postcheck= NULL,
-+            FieldTypeMap::typeOf($defines[1]),
-+            $values= array()
-+          );
-+        }
++        if ($defines[3]) continue;
++
++        $this->registerParamInfo(
++          $name,
++          $defines[2] ? OCCURRENCE_OPTIONAL : OCCURRENCE_UNDEFINED,
++          $default= NULL,
++          $this->casterFor($defines[1]),
++          $precheck= NULL, 
++          $postcheck= NULL,
++          FieldTypeMap::typeOf($defines[1]),
++          $values= array()
++        );
 +      }
++    }
++    
++    /**
++     * Retrieve the caster for a given field type
++     *
++     * @param   int fieldType
++     * @return  array caster or NULL if none should be used
++     */
++    protected function casterFor($fieldType) {
++      return FieldTypeMap::casterFor($fieldType);
 +    }
 +
 +    /**
@@ -983,7 +991,7 @@ Index: facade/dataset/DeleteDataSetHandler.class.php
 ===================================================================
 --- facade/dataset/DeleteDataSetHandler.class.php	(revision 0)
 +++ facade/dataset/DeleteDataSetHandler.class.php	(revision 0)
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,62 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1002,6 +1010,20 @@ Index: facade/dataset/DeleteDataSetHandler.class.php
 +   * @purpose  Generic Handler
 +   */
 +  class DeleteDataSetHandler extends DataSetHandler {
++
++    /**
++     * Return the wrapper for a given Peer instance
++     *
++     * @param   rdbms.Peer
++     * @return  scriptlet.xml.workflow.facade.dataset.DataSetWrapper
++     */
++    protected function wrapperFor($peer) {
++      return newinstance('DataSetWrapper', array($peer), '{
++        protected function casterFor($fieldType) {
++          return NULL;  // No value casting - the entry will be deleted anyway
++        }
++      }');
++    }
 +
 +    /**
 +     * Retrieve the entity by its primary
@@ -1121,7 +1143,7 @@ Index: facade/dataset/EditDataSetHandler.class.php
 +  class EditDataSetHandler extends DataSetHandler {
 +
 +    /**
-+     * Retrieve the entity by its primary
++     * Retrieve the entity by its primary key
 +     *
 +     * @param   rdbms.Peer
 +     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
@@ -1163,7 +1185,7 @@ Index: facade/dataset/DataSetHandler.class.php
 ===================================================================
 --- facade/dataset/DataSetHandler.class.php	(revision 0)
 +++ facade/dataset/DataSetHandler.class.php	(revision 0)
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,146 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1186,11 +1208,11 @@ Index: facade/dataset/DataSetHandler.class.php
 +    /**
 +     * Constructor
 +     *
-+     * @param   
++     * @param   rdbms.Peer peer
 +     */
-+    public function __construct($wrapper) {
++    public function __construct($peer) {
 +      parent::__construct();
-+      $this->setWrapper($wrapper);
++      $this->setWrapper($this->wrapperFor($peer));
 +    }
 +
 +    /**
@@ -1202,6 +1224,16 @@ Index: facade/dataset/DataSetHandler.class.php
 +     */
 +    public function identifierFor($request, $context) {
 +      return get_class($this).'#'.$request->getQueryString();
++    }
++    
++    /**
++     * Return the wrapper for a given Peer instance
++     *
++     * @param   rdbms.Peer
++     * @return  scriptlet.xml.workflow.facade.dataset.DataSetWrapper
++     */
++    protected function wrapperFor($peer) {
++      return new DataSetWrapper($peer);
 +    }
 +    
 +    /**
@@ -1224,7 +1256,20 @@ Index: facade/dataset/DataSetHandler.class.php
 +    protected abstract function handleSubmittedEntity($entity, $request, $context);
 +    
 +    /**
-+     * Setup
++     * Setup the wrapper. Calls the implementing class' getEntity() method
++     * to retrieve the DataSet instance to work on.
++     *
++     * The following exceptions from the getEntity() are handled and added as
++     * formresult error
++     * <pre>
++     *   Exception                      Error type
++     *   ------------------------------ --------------------------------
++     *   SQLStatementFailedException    sql+stmt:[ERROR-CODE]
++     *   SQLException                   sql+generic:[EXCEPTION-NAME]
++     *   NoSuchElementException         notfound
++     *   IllegalAccessException         access
++     * </pre>
++     * The field is set to '*' and the exception message is passed as detail.
 +     *
 +     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
 +     * @param   scriptlet.xml.Context context
@@ -1232,7 +1277,18 @@ Index: facade/dataset/DataSetHandler.class.php
 +     */
 +    public function setup($request, $context) {
 +      $peer= $this->wrapper->getPeer();
-+      $entity= $this->getEntity($peer, $request, $context);
++
++      try {
++        $entity= $this->getEntity($peer, $request, $context);
++      } catch (SQLStatementFailedException $e) {
++        return $this->addError('sql+stmt:'.$e->getErrorcode(), '*', $e->getMessage());
++      } catch (SQLException $e) {
++        return $this->addError('sql+generic:'.$e->getClassName(), '*', $e->getMessage());
++      } catch (NoSuchElementException $e) {
++        return $this->addError('notfound', '*', $e->getMessage());
++      } catch (IllegalAccessException $e) {
++        return $this->addError('access', '*', $e->getMessage());
++      }
 +      
 +      // Set formvalues
 +      foreach (array_keys($peer->types) as $field) {
@@ -1247,6 +1303,16 @@ Index: facade/dataset/DataSetHandler.class.php
 +    /**
 +     * Handle submitted data.
 +     *
++     * The following exceptions from the getEntity() are handled and added as
++     * formresult error
++     * <pre>
++     *   Exception                      Error type
++     *   ------------------------------ --------------------------------
++     *   SQLStatementFailedException    sql+stmt:[ERROR-CODE]
++     *   SQLException                   sql+generic:[EXCEPTION-NAME]
++     * </pre>
++     * The field is set to '*' and the exception message is passed as detail.
++     *
 +     * @param   scriptlet.xml.XMLScriptletRequest request
 +     * @param   scriptlet.xml.workflow.Context context
 +     * @return  boolean
@@ -1254,19 +1320,12 @@ Index: facade/dataset/DataSetHandler.class.php
 +    public function handleSubmittedData($request, $context) {
 +
 +      // Modify the entity. If an error occurs, add an error to this handler.
-+      //
-+      // Error type
-+      // ==========
-+      // * SQL statement fails: 'sql+stmt:[ERROR-CODE]' 
-+      // * Other SQL error: 'sql+generic:[EXCEPTION-CLASS-NAME]'
 +      try {
 +        $this->handleSubmittedEntity($this->getValue('entity'), $request, $context);
 +      } catch (SQLStatementFailedException $e) {
-+        $this->addError('sql+stmt:'.$e->getErrorcode(), '*', $e->getMessage());
-+        return FALSE;
++        return $this->addError('sql+stmt:'.$e->getErrorcode(), '*', $e->getMessage());
 +      } catch (SQLException $e) {
-+        $this->addError('sql+generic:'.$e->getClassName(), '*', $e->getMessage());
-+        return FALSE;
++        return $this->addError('sql+generic:'.$e->getClassName(), '*', $e->getMessage());
 +      }
 +      
 +      return TRUE;
@@ -1283,7 +1342,7 @@ Index: facade/dataset/FieldTypeMap.class.php
 ===================================================================
 --- facade/dataset/FieldTypeMap.class.php	(revision 0)
 +++ facade/dataset/FieldTypeMap.class.php	(revision 0)
-@@ -0,0 +1,89 @@
+@@ -0,0 +1,100 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1293,14 +1352,19 @@ Index: facade/dataset/FieldTypeMap.class.php
 +  uses('rdbms.FieldType');
 +
 +  /**
-+   * (Insert class' description here)
++   * Maps rdbms field types to input types and casters.
 +   *
-+   * @ext      extension
-+   * @see      reference
-+   * @purpose  purpose
++   * @see      xp://rdbms.FieldType
++   * @purpose  Utility class
 +   */
 +  class FieldTypeMap extends Object {
 +  
++    /**
++     * Map field type to input type
++     *
++     * @param   int fieldType of one of FieldType's class constants
++     * @return  string input type
++     */
 +    public static function typeOf($fieldType) {
 +      static $types= array(
 +        FieldType::BINARY        => 'core:string',   
@@ -1336,6 +1400,12 @@ Index: facade/dataset/FieldTypeMap.class.php
 +      return $types[$fieldType];
 +    }
 +    
++    /**
++     * Map field type to caster spec
++     *
++     * @param   int fieldType of one of FieldType's class constants
++     * @return  mixed[] caster
++     */
 +    public static function casterFor($fieldType) {
 +      static $casters= array(
 +        FieldType::BINARY        => NULL,   
