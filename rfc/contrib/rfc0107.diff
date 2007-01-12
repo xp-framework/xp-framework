@@ -53,7 +53,7 @@ Name: svn:keywords
 
 Index: skeleton/rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(revision 9225)
+--- skeleton/rdbms/Peer.class.php	(revision 9251)
 +++ skeleton/rdbms/Peer.class.php	(working copy)
 @@ -198,6 +198,15 @@
        }
@@ -65,7 +65,7 @@ Index: skeleton/rdbms/Peer.class.php
 +     *
 +     * @return  rdbms.DataSet
 +     */    
-+    public function newObject($record) {
++    public function newObject() {
 +      return new $this->identifier();
 +    }
      
@@ -105,7 +105,7 @@ Index: skeleton/rdbms/Peer.class.php
        // Send it
 Index: skeleton/rdbms/DataSet.class.php
 ===================================================================
---- skeleton/rdbms/DataSet.class.php	(revision 9243)
+--- skeleton/rdbms/DataSet.class.php	(revision 9251)
 +++ skeleton/rdbms/DataSet.class.php	(working copy)
 @@ -7,7 +7,8 @@
    uses(
@@ -154,7 +154,7 @@ Index: skeleton/rdbms/DataSet.class.php
       *
 Index: skeleton/rdbms/criterion/BetweenExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/BetweenExpression.class.php	(revision 9225)
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(revision 9251)
 +++ skeleton/rdbms/criterion/BetweenExpression.class.php	(working copy)
 @@ -44,7 +44,7 @@
        }
@@ -167,7 +167,7 @@ Index: skeleton/rdbms/criterion/BetweenExpression.class.php
        );
 Index: skeleton/rdbms/criterion/SimpleExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/SimpleExpression.class.php	(revision 9225)
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(revision 9251)
 +++ skeleton/rdbms/criterion/SimpleExpression.class.php	(working copy)
 @@ -80,7 +80,7 @@
        }
@@ -180,7 +180,7 @@ Index: skeleton/rdbms/criterion/SimpleExpression.class.php
      }
 Index: ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(revision 9225)
+--- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(revision 9251)
 +++ ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(working copy)
 @@ -80,8 +80,8 @@
          $peer->primary
@@ -195,7 +195,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php
      
 Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(revision 9225)
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(revision 9251)
 +++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(working copy)
 @@ -25,10 +25,10 @@
          $peer->setIdentity('job_id');
