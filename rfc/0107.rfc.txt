@@ -177,6 +177,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0107.diff
   Implementing patch
 
+- http://xp-framework.net/rfc/contrib/rfc0107-dbgenerator.diff
+  DB Generator patch (generates PHP5 source including the new functionality)
+
 
 Comments
 --------
