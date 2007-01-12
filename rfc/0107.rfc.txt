@@ -41,10 +41,10 @@ Comparison: Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
 
   // New
   $peer->setTypes(array(
-    'job_id'      => array('%d', FieldType::NUMERIC, FALSE, TRUE),
-    'title'       => array('%s', FieldType::VARCHAR, FALSE, FALSE),
-    'valid_from'  => array('%s', FieldType::VARCHAR, TRUE, FALSE),
-    'expire_at'   => array('%s', FieldType::DATETIME, FALSE, FALSE),
+    'job_id'      => array('%d', FieldType::NUMERIC, FALSE),
+    'title'       => array('%s', FieldType::VARCHAR, FALSE),
+    'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
+    'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
   ));
 ?>
 
@@ -55,7 +55,6 @@ The array contains the following fields:
   0      SQL token (one of %d, %s, %f)
   1      Field type (one of the rdbms.FieldType enumeration's constants)
   2      Whether the field is nullable (boolean)
-  3      Whether this field is the identity (boolean)
 </pre>
 
 
