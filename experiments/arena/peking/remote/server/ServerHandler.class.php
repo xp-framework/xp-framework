@@ -33,7 +33,7 @@
      * @param   int offset
      * @return  string
      */
-    public function readString($data, $offset) {
+    public function readString($data, &$offset) {
       $string= '';
       do {
         $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
@@ -85,7 +85,7 @@
         $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($handler->getValue());
 
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($e);
       }

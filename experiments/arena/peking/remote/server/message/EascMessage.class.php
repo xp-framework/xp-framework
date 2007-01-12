@@ -58,7 +58,7 @@
      * @param   
      * @return  
      */
-    public function readString($data, $offset) {
+    public function readString($data, &$offset) {
       $string= '';
       do {
         $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
