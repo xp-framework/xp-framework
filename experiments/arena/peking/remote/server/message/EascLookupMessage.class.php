@@ -24,9 +24,9 @@
      * @param   
      * @return  
      */
-    public function handle($listener, $data) {
+    public function handle($protocol, $data) {
       $offset= 0;
-      $name= $this->readString($data, $offset);
+      $name= $protocol->readString($data, $offset);
 
       $directory= NamingDirectory::getInstance();
       $this->setValue($directory->lookup($name));

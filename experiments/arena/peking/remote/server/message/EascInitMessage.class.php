@@ -21,7 +21,7 @@
      * @param   
      * @return  
      */
-    public function handle($listener, $data) {
+    public function handle($protocol, $data) {
       $this->setValue($b= TRUE);
     }
   }

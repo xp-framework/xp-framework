@@ -27,49 +27,6 @@
     }  
   
     /**
-     * Extract a string out of packed data
-     *
-     * @param   string data
-     * @param   int offset
-     * @return  string
-     */
-    public function readString($data, &$offset) {
-      $string= '';
-      do {
-        $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
-        $string.= substr($data, $offset+ 3, $ctl['length']);
-        $offset+= $ctl['length']+ 1;
-      } while ($ctl['next']);
-
-      return utf8_decode($string);
-    }
-    
-    /**
-     * Write response
-     *
-     * @param   io.Stream stream
-     * @param   int type
-     * @param   string buffer
-     */
-    public function writeResponse($stream, $type, $buffer) {
-      $bcs= new ByteCountedString($buffer);
-      
-      $header= pack(
-        'Nc4Na*',
-        DEFAULT_PROTOCOL_MAGIC_NUMBER,
-        1,  // versionMajor
-        0,  // versionMinor
-        $type,
-        FALSE,
-        strlen($buffer)
-      );
-      
-      $stream->write($header);
-      $stream->write($buffer);
-      $stream->flush();
-    }
-
-    /**
      * Handle incoming data
      *
      * @param   peer.Socket socket
@@ -91,7 +48,6 @@
       }
 
       $protocol->answerWithMessage($socket, $response);
-      return;
     }
   }
 ?>

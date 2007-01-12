@@ -124,7 +124,7 @@
      * Write answer
      *
      * @param   io.Stream stream
-     * @param   lang.Exception exception
+     * @param   lang.XPException exception
      */
     public function answerWithException($stream, $e) {
       $this->answerWithBytes(
@@ -156,6 +156,24 @@
       }
       return $return;
     }
+    
+    /**
+     * Extract a string out of packed data
+     *
+     * @param   string data
+     * @param   &int offset
+     * @return  string
+     */
+    public function readString($data, &$offset) {
+      $string= '';
+      do {
+        $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
+        $string.= substr($data, $offset+ 3, $ctl['length']);
+        $offset+= $ctl['length']+ 1;
+      } while ($ctl['next']);
+
+      return utf8_decode($string);
+    }    
     
     /**
      * Handle client connect
@@ -190,6 +208,7 @@
       
       $impl= new ServerHandler();
       $impl->setSerializer($this->serializer);
+      
       return $impl->handle($socket, $this, $header['type'], $this->readBytes($socket, $header['length']));
     }
     

@@ -24,15 +24,15 @@
      * @param   
      * @return  
      */
-    public function handle($listener, $data) {
+    public function handle($protocol, $data) {
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));
-      $p= $listener->context[RIH_OBJECTS_KEY]->get($oid['oid']);
+      $p= $protocol->context[RIH_OBJECTS_KEY]->get($oid['oid']);
 
       $offset= 8;
-      $method= $this->readString($data, $offset);
+      $method= $protocol->readString($data, $offset);
       
       $offset+= 2;  // ?
-      $args= $listener->serializer->valueOf(new SerializedData($this->readString($data, $offset)), $listener->context);
+      $args= $protocol->serializer->valueOf(new SerializedData($protocol->readString($data, $offset)), $protocol->context);
       $this->setValue(call_user_func_array(array($p, $method), $args->values));
     }
   }

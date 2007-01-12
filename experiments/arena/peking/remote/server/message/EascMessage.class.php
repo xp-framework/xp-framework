@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class EascMessage extends Object {
+  abstract class EascMessage extends Object {
     public
       $type   = NULL,
       $value  = NULL;
@@ -58,23 +58,6 @@
      * @param   
      * @return  
      */
-    public function readString($data, &$offset) {
-      $string= '';
-      do {
-        $ctl= unpack('nlength/cnext', substr($data, $offset, 4));
-        $string.= substr($data, $offset+ 3, $ctl['length']);
-        $offset+= $ctl['length']+ 1;
-      } while ($ctl['next']);
-
-      return utf8_decode($string);
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function handle($listener, $data) { }
+    public function handle($protocol, $data) { }
   }
 ?>

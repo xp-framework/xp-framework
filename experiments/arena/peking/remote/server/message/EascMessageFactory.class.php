@@ -28,7 +28,7 @@
      * @param   
      * @return  
      */
-    public function forType($type) {
+    public static function forType($type) {
       static 
         $handlers=      NULL;
       
