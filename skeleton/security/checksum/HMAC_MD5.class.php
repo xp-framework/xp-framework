@@ -40,9 +40,9 @@
      *
      * @param   string str
      * @param   string key default NULL
-     * @return  &security.checksum.HMAC_MD5
+     * @return  security.checksum.HMAC_MD5
      */
-    public function fromString($str, $key= NULL) {
+    public static function fromString($str, $key= NULL) {
       return new HMAC_MD5(HMAC_MD5::hash($str, $key));
     }
 
@@ -51,9 +51,9 @@
      *
      * @param   &io.File file
      * @param   string key default NULL
-     * @return  &security.checksum.HMAC_MD5
+     * @return  security.checksum.HMAC_MD5
      */
-    public function fromFile($file, $key= NULL) {
+    public static function fromFile($file, $key= NULL) {
       try {
         $file->open(FILE_MODE_READ);
         $str= $file->read($file->size());

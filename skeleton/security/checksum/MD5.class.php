@@ -19,7 +19,7 @@
      * Create a new checksum from a string
      *
      * @param   string str
-     * @return  &security.checksum.MD5
+     * @return  security.checksum.MD5
      */
     public static function fromString($str) {
       return new MD5(md5($str));
@@ -28,8 +28,8 @@
     /**
      * Create a new checksum from a file object
      *
-     * @param   &io.File file
-     * @return  &security.checksum.MD5
+     * @param   io.File file
+     * @return  security.checksum.MD5
      */
     public static function fromFile($file) {
       return new MD5(md5_file($file->uri));

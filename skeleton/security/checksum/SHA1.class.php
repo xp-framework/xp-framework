@@ -19,7 +19,7 @@
      * Create a new checksum from a string
      *
      * @param   string str
-     * @return  &security.checksum.SHA1
+     * @return  security.checksum.SHA1
      */
     public static function fromString($str) {
       return new SHA1(sha1($str));
@@ -28,8 +28,8 @@
     /**
      * Create a new checksum from a file object
      *
-     * @param   &io.File file
-     * @return  &security.checksum.SHA1
+     * @param   io.File file
+     * @return  security.checksum.SHA1
      */
     public static function fromFile($file) {
       return new SHA1(sha1_file($file->uri));

@@ -19,7 +19,7 @@
      * Create a new checksum from a string
      *
      * @param   string str
-     * @return  &security.checksum.CRC32
+     * @return  security.checksum.CRC32
      */
     public static function fromString($str) {
       return new CRC32(crc32($str));
@@ -28,8 +28,8 @@
     /**
      * Create a new checksum from a file object
      *
-     * @param   &io.File file
-     * @return  &security.checksum.CRC32
+     * @param   io.File file
+     * @return  security.checksum.CRC32
      */
     public static function fromFile($file) {
       try {
