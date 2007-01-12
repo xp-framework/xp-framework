@@ -6,6 +6,7 @@
 
   uses(
     'remote.server.message.EascMessage',
+    'remote.server.RemoteObjectMap',
     'remote.protocol.SerializedData'
   );
 
@@ -35,7 +36,7 @@
      */
     public function handle($protocol, $data) {
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));
-      $p= $protocol->context[RIH_OBJECTS_KEY]->get($oid['oid']);
+      $p= $protocol->context[RemoteObjectMap::CTX_KEY]->getByOid($oid['oid']);
 
       $offset= 8;
       $method= $protocol->readString($data, $offset);

@@ -9,6 +9,7 @@
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
     'remote.server.ServerHandler',
+    'remote.server.RemoteObjectMap',
     'io.sys.ShmSegment',
     'peer.server.ServerProtocol'
   );
@@ -34,8 +35,7 @@
     public function __construct($scanner) {
       $this->serializer= new Serializer();
       $this->serializer->mapping('I', new RemoteInterfaceMapping());
-      $this->context[RIH_OBJECTS_KEY]= new HashMap();
-      $this->context[RIH_OIDS_KEY]= new HashMap();
+      $this->context[RemoteObjectMap::CTX_KEY]= new RemoteObjectMap();
       $this->scanner= $scanner;
 
       $this->deployer= new Deployer();
