@@ -27,6 +27,21 @@
       $scanner     = NULL;
 
     /**
+     * Constructor
+     *
+     * @param   remote.server.deploy.scan.FileSystemScanner scanner
+     */
+    public function __construct($scanner) {
+      $this->serializer= new Serializer();
+      $this->serializer->mapping('I', new RemoteInterfaceMapping());
+      $this->context[RIH_OBJECTS_KEY]= new HashMap();
+      $this->context[RIH_OIDS_KEY]= new HashMap();
+      $this->scanner= $scanner;
+
+      $this->deployer= new Deployer();
+    }
+
+    /**
      * Initialize protocol
      *
      * @return  bool
@@ -45,28 +60,13 @@
     }
 
     /**
-     * Constructor
-     *
-     * @param   remote.server.deploy.scan.FileSystemScanner scanner
-     */
-    public function __construct($scanner) {
-      $this->serializer= new Serializer();
-      $this->serializer->mapping('I', new RemoteInterfaceMapping());
-      $this->context[RIH_OBJECTS_KEY]= new HashMap();
-      $this->context[RIH_OIDS_KEY]= new HashMap();
-      $this->scanner= $scanner;
-
-      $this->deployer= new Deployer();
-    }      
-
-    /**
      * Write answer
      *
      * @param   io.Stream stream
      * @param   int type
      * @param   mixed data
      */
-    public function answer($stream, $type, $data) {
+    protected function answer($stream, $type, $data) {
       $length= strlen($data);
       $packet= pack(
         'Nc4Na*', 
@@ -88,7 +88,7 @@
      * @param   int type
      * @param   remote.protocol.ByteCountedString[] bcs
      */
-    public function answerWithBytes($stream, $type, $bcs) {
+    protected function answerWithBytes($stream, $type, $bcs) {
       $header= pack(
         'Nc4Na*', 
         0x3c872747, 
@@ -110,34 +110,6 @@
      * Write answer
      *
      * @param   io.Stream stream
-     * @param   mixed value
-     */
-    public function answerWithValue($stream, $value) {
-      $this->answerWithBytes(
-        $stream, 
-        0x0005 /* REMOTE_MSG_VALUE */, 
-        new ByteCountedString($this->serializer->representationOf($value, $this->context))
-      );
-    }
-
-    /**
-     * Write answer
-     *
-     * @param   io.Stream stream
-     * @param   lang.XPException exception
-     */
-    public function answerWithException($stream, $e) {
-      $this->answerWithBytes(
-        $stream, 
-        0x0006 /* REMOTE_MSG_EXCEPTION */, 
-        new ByteCountedString($this->serializer->representationOf($e, $this->context))
-      );
-    }
-    
-    /**
-     * Write answer
-     *
-     * @param   io.Stream stream
      * @param   remote.server.message.EascMessage message
      */
     public function answerWithMessage($stream, $m) {
@@ -148,7 +120,14 @@
       );
     }
 
-    public function readBytes($sock, $num) {
+    /**
+     * Read bytes from socket
+     *
+     * @param   peer.Socket sock
+     * @param   int num
+     * @return  string
+     */
+    protected function readBytes($sock, $num) {
       $return= '';
       while (strlen($return) < $num) {
         if (0 == strlen($buf= $sock->readBinary($num - strlen($return)))) return;
