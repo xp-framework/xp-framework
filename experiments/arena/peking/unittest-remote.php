@@ -9,11 +9,11 @@
 
   // {{{ main
   $p= new ParamString();
-  try(); {
+  try {
     $r= Remote::forName('xp://'.$p->value(1));
     $bean= $r->lookup('xp/test/TestRunner');
     $results= $bean->runTestClass($p->value(2));
-  } catch(XPException $e) {
+  } catch (XPException $e) {
     Console::writeLine('*** ', $p->value(2).'@'.$p->value(1), ' ~ ', $e->toString());
     exit(-1);
   }
