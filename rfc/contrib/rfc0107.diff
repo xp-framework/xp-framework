@@ -205,7 +205,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php
 -          'title'               => '%s',
 -          'valid_from'          => '%s',
 -          'expire_at'           => '%s'
-+          'job_id'      => array('%d', FieldType::NUMERIC, FALSE, TRUE),
++          'job_id'      => array('%d', FieldType::NUMERIC, FALSE),
 +          'title'       => array('%s', FieldType::VARCHAR, FALSE),
 +          'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
 +          'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
