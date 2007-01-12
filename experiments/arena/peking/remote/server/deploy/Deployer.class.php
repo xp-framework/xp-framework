@@ -31,7 +31,6 @@
      * @param   remote.server.deploy.Deployable deployment
      */
     public function deployBean($deployment) {
-    
       if (is('IncompleteDeployment', $deployment)) {
         throw(new DeployException(
           'Incomplete deployment originating from '.$deployment->origin, 
@@ -57,9 +56,9 @@
       $directory= NamingDirectory::getInstance();
 
       // Create beanContainer
-      // T.B.D Check which kind of bean container
-      // has to be created
+      // TBI: Check which kind of bean container has to be created
       $beanContainer= StatelessSessionBeanContainer::forClass($impl);
+      $this->cat && $beanContainer->setTrace($this->cat);
 
       // Create invocation handler
       $invocationHandler= new ContainerInvocationHandler();
@@ -85,20 +84,6 @@
      */
     public function setTrace($cat) { 
       $this->cat= $cat;
-    }
-
-    /**
-     * Throw DeployException
-     *
-     * @param   string msg
-     * @return  bool
-     * @throws  remote.server.deploy.DeployException
-     */
-    public function _deployException($msg) {
-      $log= Logger::getInstance();
-      $this->cat && $this->cat= $log->getCategory($this->getClassName());
-      $this->cat && $this->cat->warn($this->getClassName(), $msg);
-      throw(new DeployException($msg));
     }
   } 
 ?>

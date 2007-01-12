@@ -22,7 +22,7 @@
      * @param   lang.XPClass class
      * @return  remote.server.BeanContainer
      */
-    public function forClass($class) {
+    public static function forClass($class) {
       $bc= new StatelessSessionBeanContainer();
       $bc->instancePool= Collection::forClass($class->getName());
       return $bc;
@@ -47,8 +47,6 @@
       }
 
       $m= $class->getMethod($method);
-      $l= Logger::getInstance();
-      $this->cat= $l->getCategory();
       $this->cat && $this->cat->debug('BeanContainer::invoke() ', $m->toString(), '(', $args, ')');
 
       return $m->invoke($instance, $args);

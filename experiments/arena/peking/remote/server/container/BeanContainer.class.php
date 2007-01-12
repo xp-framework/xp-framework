@@ -4,16 +4,28 @@
  * $Id$ 
  */
 
-  uses('lang.Collection');
+  uses('lang.Collection', 'util.log.Traceable');
 
   /**
    * Bean container
    *
    * @purpose  abstract baseclass
    */
-  class BeanContainer extends Object {
+  abstract class BeanContainer extends Object implements Traceable {
     public
       $instancePool = NULL;
+    
+    protected
+      $cat  = NULL;
+
+    /**
+     * Set trace
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
 
     /**
      * Get instance for class
@@ -21,7 +33,7 @@
      * @param   lang.XPClass class
      * @return  remote.server.BeanContainer
      */
-    public function forClass($class) {
+    public static function forClass($class) {
       $bc= new BeanContainer();
       $bc->instancePool= Collection::forClass($class->getName());
       return $bc;
@@ -35,6 +47,6 @@
      * @param   mixed args
      * @return  mixed
      */
-    public function invoke($proxy, $method, $args) { }
+    public abstract function invoke($proxy, $method, $args);
   }
 ?>
