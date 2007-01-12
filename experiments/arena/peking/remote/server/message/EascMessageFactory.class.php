@@ -42,8 +42,7 @@
         );
       }
       
-      $class= XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]));
-      $inst= $class->newInstance();
+      $inst= XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]))->newInstance();
       $inst->setType($type);
       
       return $inst;

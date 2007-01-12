@@ -32,13 +32,8 @@
       $method= $this->readString($data, $offset);
       
       $offset+= 2;  // ?
-      $args= $listener->serializer->valueOf(new SerializedData($this->readString($data, $offset)), $l, $listener->context);
-      try {
-        $result= call_user_func_array(array($p, $method), $args->values);
-        $this->setValue($result);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $args= $listener->serializer->valueOf(new SerializedData($this->readString($data, $offset)), $listener->context);
+      $this->setValue(call_user_func_array(array($p, $method), $args->values));
     }
   }
 ?>

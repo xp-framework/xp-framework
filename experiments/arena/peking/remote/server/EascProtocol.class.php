@@ -33,16 +33,12 @@
      */
     public function initialize() {
       if ($this->scanner->scanDeployments()) {
-        try {
-          foreach ($this->scanner->getDeployments() as $deployment) {
-            try {
-              $this->deployer->deployBean($deployment);
-            } catch (DeployException $e) {
-              // Fall through
-            }
+        foreach ($this->scanner->getDeployments() as $deployment) {
+          try {
+            $this->deployer->deployBean($deployment);
+          } catch (DeployException $e) {
+            // Fall through
           }
-        } catch (Exception $e) {
-          throw($e);
         }
       }
       return TRUE; 
