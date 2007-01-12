@@ -19,6 +19,15 @@
   class EascCallMessage extends EascMessage {
 
     /**
+     * Get type of message
+     *
+     * @return  int
+     */
+    public function getType() {
+      return REMOTE_MSG_CALL;
+    }
+    
+    /**
      * (Insert method's description here)
      *
      * @param   

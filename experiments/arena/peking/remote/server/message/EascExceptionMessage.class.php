@@ -14,17 +14,14 @@
    * @purpose  purpose
    */
   class EascExceptionMessage extends EascMessage {
-  
+
     /**
-     * (Insert method's description here)
+     * Get type of message
      *
-     * @param   
-     * @return  
+     * @return  int
      */
-    /*function getValue() {
-      // Truncate exception value
-      $this->value->trace= array();
-      return $this->value;
-    }*/
+    public function getType() {
+      return REMOTE_MSG_EXCEPTION;
+    }
   }
 ?>

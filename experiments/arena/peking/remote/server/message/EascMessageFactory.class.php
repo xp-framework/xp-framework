@@ -29,23 +29,15 @@
      * @return  
      */
     public static function forType($type) {
-      static 
-        $handlers=      NULL;
+      $handlers= array(
+        REMOTE_MSG_INIT       => 'Init',
+        REMOTE_MSG_LOOKUP     => 'Lookup',
+        REMOTE_MSG_CALL       => 'Call',
+        REMOTE_MSG_VALUE      => 'Value',
+        REMOTE_MSG_EXCEPTION  => 'Exception'
+      );
       
-      if (NULL === $handlers) {
-        $handlers= array(
-          REMOTE_MSG_INIT       => 'Init',
-          REMOTE_MSG_LOOKUP     => 'Lookup',
-          REMOTE_MSG_CALL       => 'Call',
-          REMOTE_MSG_VALUE      => 'Value',
-          REMOTE_MSG_EXCEPTION  => 'Exception'
-        );
-      }
-      
-      $inst= XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]))->newInstance();
-      $inst->setType($type);
-      
-      return $inst;
+      return XPClass::forName(sprintf('remote.server.message.Easc%sMessage', $handlers[$type]))->newInstance();
     }
   }
 ?>

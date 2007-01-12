@@ -13,26 +13,14 @@
    */
   abstract class EascMessage extends Object {
     public
-      $type   = NULL,
       $value  = NULL;
-
+    
     /**
-     * Set Type
+     * Get type of message
      *
-     * @param   lang.Object type
+     * @return  int
      */
-    public function setType($type) {
-      $this->type= $type;
-    }
-
-    /**
-     * Get Type
-     *
-     * @return  lang.Object
-     */
-    public function getType() {
-      return $this->type;
-    }
+    public abstract function getType();    
 
     /**
      * Set Value
