@@ -37,22 +37,14 @@
       $serialized->offset++;    // '{'
       $interface= $serializer->valueOf($serialized, $context);
       $serialized->offset++;    // '}'
-      try {
-        $iclass= XPClass::forName($interface);
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
+      $iclass= XPClass::forName($interface);
 
       $cl= ClassLoader::getDefault();      
-      try {
-        $instance= Proxy::newProxyInstance(
-          $cl, 
-          array($iclass), 
-          RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
-        );
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
+      $instance= Proxy::newProxyInstance(
+        $cl, 
+        array($iclass), 
+        RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
+      );
 
       return $instance;
     }
