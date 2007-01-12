@@ -14,7 +14,9 @@
 #include <string>
 #include "turpitude_sapi.h"
 #include "turpitude_env.h"
-#include "turpitude_jobj.h"
+#include "turpitude_jclass.h"
+#include "turpitude_jmethod.h"
+#include "turpitude_zend_utils.h"
 
 
 /* utility functions */

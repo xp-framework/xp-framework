@@ -42,8 +42,10 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
         fci_cache.function_handler = (zend_function*)compiled_op_array;
         compiled_op_array->type = ZEND_USER_FUNCTION;
 
-        // generate the context and inject it as a function parameter
+        // generate turpitude classes
         make_turpitude_environment(env, ctx);
+        make_turpitude_jclass();
+        make_turpitude_jmethod();
 
         // We could inject parameters to be retrieved by func_getargs() here...
         //zval** param = ;

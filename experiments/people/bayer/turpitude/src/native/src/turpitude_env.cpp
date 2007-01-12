@@ -4,8 +4,7 @@
 zend_object_handlers turpitude_env_handlers;
 zend_class_entry* turpitude_env_class_entry;
 zend_object_value turpitude_env_object_value;
-JNIEnv* turpitude_jenv;
-jobject turpitude_current_script_context;
+
 
 typedef struct tupitude_environment_object {
     zend_object     std;
@@ -15,64 +14,30 @@ typedef struct tupitude_environment_object {
 
 //####################### method handlers ##################################3
 
-void turpitude_env_method_findClass(INTERNAL_FUNCTION_PARAMETERS) {
-    printf("findclass!!!\n");
-
-    zval ***xargv, ***argv;
-    int i = 0, xargc, argc = ZEND_NUM_ARGS();
-    HashPosition pos;
-    zval **param;
-
-    // method name
-    argv = (zval ***) safe_emalloc(sizeof(zval **), argc, 0);
-    if (zend_get_parameters_array_ex(argc, argv) == FAILURE) {
-        php_error(E_ERROR, "Couldn't fetch arguments into array.");
-    }
-    char* method_name = Z_STRVAL_P(*argv[0]);
-
-    // method parameters
-    xargc = zend_hash_num_elements(Z_ARRVAL_PP(argv[1]));
-    xargv = (zval***) safe_emalloc(sizeof(zval **), xargc, 0);
-    // iterate on argument HashTable
-    zend_hash_internal_pointer_reset_ex(Z_ARRVAL_PP(argv[1]), &pos);
-    while (zend_hash_get_current_data_ex(Z_ARRVAL_PP(argv[1]), (void **) &param, &pos) == SUCCESS) {
-        xargv[i++] = param; 
-        zend_hash_move_forward_ex(Z_ARRVAL_PP(argv[1]), &pos);
-    }
-
+void turpitude_env_method_findClass(int xargc, zval*** xargv, zval* return_value) {
     // check param count
     if (xargc != 1) 
         php_error(E_ERROR, "invalid number of arguments to method findClass.");
 
     if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
-        php_error(E_ERROR, "invalid type for param 1 in method findClass, should be IS_STRING.");
+        php_error(E_ERROR, "invalid type for param 1 in method findClass, should be IS_STRING, see JNI documentation for format.");
     
-    printf("class: %s\n", Z_STRVAL_P(*xargv[0]));
-
-    // housekeeping
-    efree(argv);
-    efree(xargv);
+    make_turpitude_jclass_instance(Z_STRVAL_P(*xargv[0]), return_value);
 }
 
-//####################### helpers ##################################3
-
-static void make_lambda(zend_internal_function* f, void (*handler)(INTERNAL_FUNCTION_PARAMETERS)) {
-    memset(f, 0, sizeof*f);
-    f->type = ZEND_INTERNAL_FUNCTION;
-    f->handler = handler;
-}
+//####################### parameter pointers ##################################3
 
 static
-    ZEND_BEGIN_ARG_INFO(arginfo_zero, 0)
+    ZEND_BEGIN_ARG_INFO(turpitude_env_arginfo_zero, 0)
     ZEND_END_ARG_INFO();
 
 static
-    ZEND_BEGIN_ARG_INFO(arginfo_get, 0)
+    ZEND_BEGIN_ARG_INFO(turpitude_env_arginfo_get, 0)
     ZEND_ARG_INFO(0, index)
     ZEND_END_ARG_INFO();
 
 
-static ZEND_BEGIN_ARG_INFO(arginfo_set, 0)
+static ZEND_BEGIN_ARG_INFO(turpitude_env_arginfo_set, 0)
      ZEND_ARG_INFO(0, index)
      ZEND_ARG_INFO(0, newval)
      ZEND_END_ARG_INFO();
@@ -97,7 +62,6 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
         php_error(E_ERROR, "Couldn't fetch arguments into array.");
     }
     char* method_name = Z_STRVAL_P(*argv[0]);
-    printf("method: %s, %d params\n", method_name, argc);
 
     // method parameters
     xargc = zend_hash_num_elements(Z_ARRVAL_PP(argv[1]));
@@ -112,7 +76,7 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
     bool method_valid = false;
 
     if (strcmp(Z_STRVAL_P(*argv[0]), "findClass") == 0) {
-        turpitude_env_method_findClass(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+        turpitude_env_method_findClass(xargc, xargv, return_value);
         method_valid = true;
     }
 
@@ -156,12 +120,12 @@ void turpitude_env_destruct(INTERNAL_FUNCTION_PARAMETERS) {
 }
 
 int turpitude_env_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC) {
-    printf("__cast called\n");
+    //printf("__cast called\n");
     return FAILURE;
 }
 
 zend_object_iterator* turpitude_env_get_iterator(zend_class_entry *ce, zval *object, int by_ref TSRMLS_DC) {
-    printf("get_iterator called\n");
+    //printf("get_iterator called\n");
     return NULL;
 }
 
@@ -202,25 +166,22 @@ zend_object_value turpitude_env_create_object(zend_class_entry *class_type TSRML
 
 function_entry turpitude_env_class_functions[] = {
     ZEND_FENTRY(__construct, turpitude_env_construct, NULL, 0) 
-    ZEND_FENTRY(__call, turpitude_env_call, arginfo_set, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__tostring, turpitude_env_tostring, arginfo_zero, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__get, turpitude_env_get, arginfo_get, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__set, turpitude_env_set, arginfo_set, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__sleep, turpitude_env_sleep, arginfo_zero, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__wakeup, turpitude_env_wakeup, arginfo_zero, ZEND_ACC_PUBLIC)
-    ZEND_FENTRY(__destruct, turpitude_env_destruct, arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__call, turpitude_env_call, turpitude_env_arginfo_set, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__tostring, turpitude_env_tostring, turpitude_env_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__get, turpitude_env_get, turpitude_env_arginfo_get, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__set, turpitude_env_set, turpitude_env_arginfo_set, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__sleep, turpitude_env_sleep, turpitude_env_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__wakeup, turpitude_env_wakeup, turpitude_env_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(__destruct, turpitude_env_destruct, turpitude_env_arginfo_zero, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
 //####################### API ##################################3
 
 /**
- * creates the Turpitude Class
+ * creates the Turpitude Class and injects it into the interpreter
  */
 void make_turpitude_environment(JNIEnv* env, jobject ctx) {
-    //MAKE_STD_ZVAL(context);
-    //ZVAL_LONG(context, 10);
-    
     turpitude_jenv = env;
     turpitude_current_script_context = ctx;
 
