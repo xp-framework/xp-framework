@@ -1,4 +1,4 @@
-RFC 0107: More information about table fields in rdbms.Peer
+RFC 0107: Generic acccess to rdbms.Peer/rdbms.DataSet
 ========================================================================
 $Id$
 
@@ -9,20 +9,27 @@ $Id$
 
 Scope of Change
 ---------------
-The rdbms.Peer's "types" field will be changed from array<string, string>
-to array<string, string[]> in order to be able to contain more information.
+The Peer / DataSet classes will be changed to be able to access them in
+a generic way.
 
 
 Rationale
 ---------
-Some type information is lost after classes are generated, i.e. the exact
-type in the database (the Peer object only knows the SQL token, %s, %d, 
-etc.)
+Required for RFC #0078
 
 
 Functionality
 -------------
-Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
+
+Field information
+~~~~~~~~~~~~~~~~~
+Some type information is lost after classes are generated, i.e. the exact
+type in the database (the Peer object only knows the SQL token, %s, %d, 
+etc.). Thus, the rdbms.Peer's "types" field will be changed from 
+array<string, string> to array<string, string[]> in order to be able to 
+contain more information.
+
+Comparison: Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
 <?php
   // Old
   $peer->setTypes(array(
@@ -35,12 +42,121 @@ Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
   // New
   $peer->setTypes(array(
     'job_id'      => array('%d', FieldType::NUMERIC, FALSE, TRUE),
-    'title'       => array('%s', FieldType::VARCHAR, FALSE),
-    'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
-    'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
+    'title'       => array('%s', FieldType::VARCHAR, FALSE, FALSE),
+    'valid_from'  => array('%s', FieldType::VARCHAR, TRUE, FALSE),
+    'expire_at'   => array('%s', FieldType::DATETIME, FALSE, FALSE),
   ));
 ?>
 
+The array contains the following fields:
+<pre>
+  Offset Contents
+  ------ ---------------------------------------------------------------
+  0      SQL token (one of %d, %s, %f)
+  1      Field type (one of the rdbms.FieldType enumeration's constants)
+  2      Whether the field is nullable (boolean)
+  3      Whether this field is the identity (boolean)
+</pre>
+
+
+Fieldtype constants
+~~~~~~~~~~~~~~~~~~~
+<?php
+  const BINARY =         0x0000;             
+  const BIT =            0x0001;               
+  const CHAR =           0x0002;              
+  const DATETIME =       0x0003;            
+  const DATETIMN =       0x0004;            
+  const DECIMAL =        0x0005;             
+  const DECIMALN =       0x0006;            
+  const FLOAT =          0x0007;             
+  const FLOATN =         0x0008;            
+  const IMAGE =          0x0009;             
+  const INT =            0x000A;               
+  const INTN =           0x000B;              
+  const MONEY =          0x000C;             
+  const MONEYN =         0x000D;            
+  const NCHAR =          0x000E;             
+  const NUMERIC =        0x000F;             
+  const NUMERICN =       0x0010;            
+  const NVARCHAR =       0x0011;            
+  const REAL =           0x0012;              
+  const SMALLDATETIME =  0x0013;         
+  const SMALLINT =       0x0014;         
+  const SMALLMONEY =     0x0015;       
+  const SYSNAME =        0x0016;          
+  const TEXT =           0x0017;           
+  const TIMESTAMP =      0x0018;        
+  const TINYINT =        0x0019;          
+  const VARBINARY =      0x001A;        
+  const VARCHAR =        0x001B;          
+?>
+
+Generic set/get methods
+~~~~~~~~~~~~~~~~~~~~~~~
+The following two methods will be added to the DataSet class:
+<?php
+  /**
+   * Sets a field's value by the field's name and returns the previous value.
+   *
+   * @param   string field name
+   * @param   mixed value
+   * @return  mixed previous value
+   * @throws  lang.IllegalArgumentException in case the field does not exist
+   */
+  public function set($field, $value) {
+    // ...
+  }
+
+  /**
+   * Gets a field's value by the field's name
+   *
+   * @param   string field name
+   * @throws  lang.IllegalArgumentException in case the field does not exist
+   */
+  public function get($field) {
+    // ...
+  }
+?>
+
+This will make dynamic method calls (whether by evaluation brackets or 
+reflection) obsolete:
+<?php
+  // Old #1
+  $id= $dataset->{'get'.$peer->identity}();
+  $dataset->{'set'.$field}($value);
+
+  // Old #2
+  $id= $dataset->getClass()->getMethod('get'.$peer->identity)->invoke($dataset);
+  $dataset->getClass()->getMethod('set'.$field)->invoke($dataset, array($value));
+  
+  // New
+  $id= $dataset->get($peer->identity);
+?>
+
+New DataSet instance creation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A new method rdbms.Peer class will be added to the rdbms.Peer class to 
+complement the objectFor(array<string, mixed>) method:
+<?php
+  /**
+   * Returns a new DataSet object.
+   *
+   * @return  rdbms.DataSet
+   */    
+  public function newObject() {
+    // ...
+  }
+?>
+
+This is a shorthand for the following:
+<?php
+  // Old
+  $ds= XPClass::forName($peer->identifier)->newInstance();
+  
+  // New
+  $ds= $peer->newObject();
+?>
 
 Security considerations
 -----------------------
@@ -62,7 +178,11 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0107.diff
   Implementing patch
 
+
 Comments
 --------
+- friebe, Fri Jan 12 15:42:38 CET 2007
+  By choosing an array for field information, we can extend field 
+  information easily by adding new elements.
 
 <EOF>
