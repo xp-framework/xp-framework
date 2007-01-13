@@ -230,7 +230,10 @@
                   </xsl:if>
                 </td>
                 <td valign="top">
-                  <xsl:value-of select="/formresult/formvalues/param[@name = $name]"/>
+                  <xsl:value-of select="func:stringOf(
+                    /formresult/formvalues/param[@name = $name],
+                    @type
+                  )"/>
                 </td>
               </tr>
             </xsl:for-each>

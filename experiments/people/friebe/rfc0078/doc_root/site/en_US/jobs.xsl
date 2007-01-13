@@ -38,13 +38,17 @@
   <xsl:template match="/">
     <html>
       <head>
-        <title>Location Editor</title>
+        <title><xsl:value-of select="$__state"/> Editor</title>
+        <link rel="stylesheet" type="text/css" href="/style.css"/>
       </head>
       <body>
+        <h1>
+          <xsl:value-of select="$__state"/>
+        </h1>
         <a href="{$__state}/new?">
           NEW
         </a>
-        <table border="1">
+        <table class="facade" cellspacing="0" cellpadding="2" id="{/formresult/collection/@class}">
           <tr>
             <xsl:for-each select="/formresult/collection/fields/field">
               <xsl:variable name="field" select="string(.)"/>
@@ -55,7 +59,7 @@
             <th>(Actions)</th>
           </tr>
           <xsl:for-each select="/formresult/collection/entity">
-            <tr>
+            <tr class="seq{position() mod 2}">
               <xsl:for-each select="field">
                 <td>
                   <xsl:apply-templates select="."/>
