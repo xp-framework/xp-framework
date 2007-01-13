@@ -42,40 +42,42 @@
         <link rel="stylesheet" type="text/css" href="/style.css"/>
       </head>
       <body>
-        <h1>
-          <xsl:value-of select="$__state"/>
-        </h1>
-        <a href="{$__state}/new?">
-          NEW
-        </a>
-        <table class="facade" cellspacing="0" cellpadding="2" id="{/formresult/collection/@class}">
-          <tr>
-            <xsl:for-each select="/formresult/collection/fields/field">
-              <xsl:variable name="field" select="string(.)"/>
-              <th id="{$field}">
-                <xsl:value-of select="$field"/>
-              </th>
-            </xsl:for-each>
-            <th>(Actions)</th>
-          </tr>
-          <xsl:for-each select="/formresult/collection/entity">
-            <tr class="seq{position() mod 2}">
-              <xsl:for-each select="field">
-                <td>
-                  <xsl:apply-templates select="."/>
-                </td>
+        <div id="main">
+          <h1>
+            <xsl:value-of select="$__state"/>
+          </h1>
+          <a href="{$__state}/new?">
+            NEW
+          </a>
+          <table class="facade" cellspacing="0" cellpadding="2" id="{/formresult/collection/@class}">
+            <tr>
+              <xsl:for-each select="/formresult/collection/fields/field">
+                <xsl:variable name="field" select="string(.)"/>
+                <th id="{$field}">
+                  <xsl:value-of select="$field"/>
+                </th>
               </xsl:for-each>
-              <td>
-                <a href="{$__state}/edit?{@id}">
-                  EDIT
-                </a> |
-                <a href="{$__state}/delete?{@id}">
-                  DELETE
-                </a>
-              </td>
+              <th>(Actions)</th>
             </tr>
-          </xsl:for-each>
-        </table>
+            <xsl:for-each select="/formresult/collection/entity">
+              <tr class="seq{position() mod 2}">
+                <xsl:for-each select="field">
+                  <td>
+                    <xsl:apply-templates select="."/>
+                  </td>
+                </xsl:for-each>
+                <td>
+                  <a href="{$__state}/edit?{@id}">
+                    EDIT
+                  </a> |
+                  <a href="{$__state}/delete?{@id}">
+                    DELETE
+                  </a>
+                </td>
+              </tr>
+            </xsl:for-each>
+          </table>
+        </div>
       </body>
     </html>
   </xsl:template>

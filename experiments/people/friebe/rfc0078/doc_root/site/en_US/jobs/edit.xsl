@@ -23,12 +23,14 @@
         <link rel="stylesheet" type="text/css" href="/style.css"/>
       </head>
       <body>
-        <h1>
-          <xsl:value-of select="$__state"/>
-        </h1>
-        <xsl:call-template name="realize-form">
-          <xsl:with-param name="handler" select="/formresult/handlers/handler[1]"/>
-        </xsl:call-template>
+        <div id="main">
+          <h1>
+            <xsl:value-of select="$__state"/>
+          </h1>
+          <xsl:call-template name="realize-form">
+            <xsl:with-param name="handler" select="/formresult/handlers/handler[1]"/>
+          </xsl:call-template>
+        </div>
       </body>
     </html>
   </xsl:template>
