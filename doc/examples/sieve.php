@@ -31,7 +31,7 @@
         $f= new File($p->value('file'));
         $script= new SieveScript($p->value('file'));
         $script->setCode(FileUtil::getContents($f));
-      } if (catch ('IOException', $e)) {
+      } catch (IOException $e) {
         $e->printStackTrace();
         exit(-1);
       }
@@ -47,7 +47,7 @@
           $f= new File($script->getName());
           Console::writeLinef('===> Saving %s in %s', $script->getName(), $f->getURI());
           FileUtil::setContents($f, $script->getCode());
-        } if (catch ('IOException', $e)) {
+        } catch (IOException $e) {
           $e->printStackTrace();
           exit(-1);
         }
