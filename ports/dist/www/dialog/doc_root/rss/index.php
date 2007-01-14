@@ -18,7 +18,7 @@
   
   // {{{ function getEntryFor($name)
   function getEntryFor($name) {
-    $entry= &unserialize(FileUtil::getContents(new File(DATALOCATION.$name.'.dat')));
+    $entry= unserialize(FileUtil::getContents(new File(DATALOCATION.$name.'.dat')));
     return $entry;
   }
   // }}}
@@ -30,8 +30,8 @@
   }
   // }}}
   
-  // {{{ function urlFor(&$item)
-  function urlFor(&$item) {
+  // {{{ function urlFor($item)
+  function urlFor($item) {
     $base= sprintf('http://%s/xml/%s.%s', $_SERVER['HTTP_HOST'], $_SERVER['DEF_PROD'], $_SERVER['DEF_LANG']);
     switch (get_class($item)) {
       case 'album':
@@ -50,7 +50,7 @@
   // }}}
   
   // {{{ function addAlbumItem(rdf, item)
-  function addAlbumItem(&$rdf, &$item) {
+  function addAlbumItem($rdf, $item) {
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
@@ -61,7 +61,7 @@
   // }}}
   
   // {{{ function addUpdateItem(rdf, item)
-  function addUpdateItem(&$rdf, &$item) {
+  function addUpdateItem($rdf, $item) {
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
@@ -72,7 +72,7 @@
   // }}}
   
   // {{{ function addSingleShotItem(rdf, item)
-  function addSingleShotItem(&$rdf, &$item) {
+  function addSingleShotItem($rdf, $item) {
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
@@ -83,7 +83,7 @@
   // }}}
 
   // {{{ function addEntryCollectionItem(rdf, item)
-  function addEntryCollectionItem(&$rdf, &$item) {
+  function addEntryCollectionItem($rdf, $item) {
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
@@ -94,16 +94,16 @@
   // }}}
   
   // {{{ main
-  $pm= &PropertyManager::getInstance();
+  $pm= PropertyManager::getInstance();
   $pm->configure(dirname(__FILE__).'/../../etc');
-  $prop= &$pm->getProperties('dialog');
+  $prop= $pm->getProperties('dialog');
 
-  define('DATALOCATION',  $prop->readString('data', 'location', dirname(__FILE__).'/../../data/'));
+  define('DATALOCATION', $prop->readString('data', 'location', dirname(__FILE__).'/../../data/'));
   
   // Load index of first two pages
   $index= array();
   $index[0]= getIndexFor(0);
-  $index[0] && $entries= $index[0]['entries'];
+  $entries= $index[0]['entries'];
 
   try {
     $index[1]= getIndexFor(1);
@@ -112,11 +112,11 @@
   }
 
   // Find date of newest entry
-  $lastChange= &Date::now();
-  $entry= &getEntryFor(current($index[0]['entries']));
-  $lastChange= &$entry->getDate();
+  $lastChange= Date::now();
+  $entry= getEntryFor(current($index[0]['entries']));
+  $lastChange= $entry->getDate();
   
-  $rdf= &new RDFNewsFeed();
+  $rdf= new RDFNewsFeed();
   $rdf->setChannel(
     $prop->readString('general', 'title', 'Dialog'),
     'http://'.$_SERVER['HTTP_HOST'].'/',
@@ -129,13 +129,13 @@
   );
   
   foreach (array_reverse($entries) as $name) {
-    $entry= &getEntryFor($name);
+    $entry= getEntryFor($name);
 
     switch (get_class($entry)) {
-      case 'album': addAlbumItem($rdf, $entry); break;
-      case 'update': addUpdateItem($rdf, $entry); break;
-      case 'singleshot': addSingleShotItem($rdf, $entry); break;
-      case 'entrycollection': addEntryCollectionItem($rdf, $entry); break;
+      case 'Album': addAlbumItem($rdf, $entry); break;
+      case 'Update': addUpdateItem($rdf, $entry); break;
+      case 'SingleShot': addSingleShotItem($rdf, $entry); break;
+      case 'EntryCollection': addEntryCollectionItem($rdf, $entry); break;
       default: break;
     }
   }
