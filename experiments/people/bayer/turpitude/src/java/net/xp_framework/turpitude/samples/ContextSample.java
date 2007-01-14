@@ -55,8 +55,10 @@ public class ContextSample {
         src.append("$turpenv = $_SERVER[\"TURP_ENV\"]; \n");
         //src.append("var_dump($turpenv);\n");
         //src.append("$turpenv->lala();\n");
-        src.append("$irgendwas = $turpenv->findClass(\"java/lang/String\");\n");
-        src.append("var_dump($irgendwas);");
+        src.append("$class = $turpenv->findClass(\"java/util/Date\");\n");
+        src.append("var_dump($class);");
+        src.append("$method = $class->findMethod('<init>', '()V');");
+        src.append("var_dump($method);");
         src.append("?>"); 
         return src.toString();
     }
