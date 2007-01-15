@@ -13,5 +13,13 @@
 #include <jni.h>
 #include <string>
 
+typedef struct turpitude_javaobject_object {
+    zend_object     std;
+    jclass          java_class;
+    jobject         java_object; 
+};
+
+void make_turpitude_jobject();
+void make_turpitude_jobject_instance(jclass cls, zval* turpcls, jobject obj, zval* dest);
 
 #endif

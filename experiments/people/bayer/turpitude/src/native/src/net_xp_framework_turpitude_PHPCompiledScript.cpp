@@ -46,6 +46,7 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
         make_turpitude_environment(env, ctx);
         make_turpitude_jclass();
         make_turpitude_jmethod();
+        make_turpitude_jobject();
 
         // We could inject parameters to be retrieved by func_getargs() here...
         //zval** param = ;

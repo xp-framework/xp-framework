@@ -5,11 +5,6 @@ zend_object_handlers turpitude_jmethod_handlers;
 zend_class_entry* turpitude_jmethod_class_entry;
 zend_object_value turpitude_jmethod_object_value;
 
-typedef struct tupitude_javamethod_object {
-    zend_object     std;
-    jclass          java_class;
-    jmethodID       java_method; 
-};
 
 //####################### method handlers ##################################3
 
@@ -120,7 +115,7 @@ zend_object_iterator* turpitude_jmethod_get_iterator(zend_class_entry *ce, zval 
 }
 
 void turpitude_jmethod_free_object(void *object TSRMLS_DC) {
-    tupitude_javamethod_object* intern = (tupitude_javamethod_object*)object;
+    turpitude_javamethod_object* intern = (turpitude_javamethod_object*)object;
     zend_hash_destroy(intern->std.properties);
     FREE_HASHTABLE(intern->std.properties);
     efree(object);
@@ -132,11 +127,11 @@ void turpitude_jmethod_destroy_object(void* object, zend_object_handle handle TS
 
 zend_object_value turpitude_jmethod_create_object(zend_class_entry *class_type TSRMLS_DC) {
     zend_object_value obj;
-    tupitude_javamethod_object* intern;
+    turpitude_javamethod_object* intern;
     zval tmp;
 
-    intern = (tupitude_javamethod_object*)emalloc(sizeof(tupitude_javamethod_object));
-    memset(intern, 0, sizeof(tupitude_javamethod_object));
+    intern = (turpitude_javamethod_object*)emalloc(sizeof(turpitude_javamethod_object));
+    memset(intern, 0, sizeof(turpitude_javamethod_object));
     intern->std.ce = class_type;
 
     ALLOC_HASHTABLE(intern->std.properties);
@@ -169,7 +164,7 @@ function_entry turpitude_jmethod_class_functions[] = {
 //####################### API ##################################3
 
 /**
- * creates the Turpitude JavaClass and injects it into the interpreter
+ * creates the TurpitudeJavaMethod class and injects it into the interpreter
  */
 void make_turpitude_jmethod() {
     // create class entry
@@ -199,11 +194,9 @@ void make_turpitude_jmethod() {
 void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* dest) {
     if (!dest)
         ALLOC_ZVAL(dest);
-   
-    printf("lala 0\n");
+  
     // use JNIEnv to find the desired java class
     jmethodID mid = turpitude_jenv->GetMethodID(cls, name, sig);
-    printf("lala 1\n");
     if (mid == NULL) {
         int str_len = 100+strlen(name)+strlen(sig);
         char* errmsg = (char*)malloc(str_len);
@@ -214,24 +207,23 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
 
     // instantiate JavaClass object
     Z_TYPE_P(dest) = IS_OBJECT;
-    printf("lala 2\n");
     object_init_ex(dest, turpitude_jmethod_class_entry);
-    printf("lala 3\n");
     dest->refcount = 1;
-    printf("lala 4\n");
     dest->is_ref = 1;
 
     // assign jclass and methodid to object
-    tupitude_javamethod_object* intern = (tupitude_javamethod_object*)zend_object_store_get_object(dest TSRMLS_CC);
+    turpitude_javamethod_object* intern = (turpitude_javamethod_object*)zend_object_store_get_object(dest TSRMLS_CC);
     intern->java_class = cls;
     intern->java_method = mid;
 
-    printf("lala 5\n");
     // copy method name and signature to name and add it as a property
     zval* methodname;
     MAKE_STD_ZVAL(methodname);
     ZVAL_STRING(methodname, name, 1);
     zend_hash_update(Z_OBJPROP_P(dest), "MethodName", sizeof("MethodName"), (void **) &methodname, sizeof(zval *), NULL);
-    printf("lala 6\n");
+    zval* signature;
+    MAKE_STD_ZVAL(signature);
+    ZVAL_STRING(signature, sig, 1);
+    zend_hash_update(Z_OBJPROP_P(dest), "Signature", sizeof("Signature"), (void **) &signature, sizeof(zval *), NULL);
 }
 

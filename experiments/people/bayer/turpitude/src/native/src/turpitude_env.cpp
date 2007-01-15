@@ -5,13 +5,6 @@ zend_object_handlers turpitude_env_handlers;
 zend_class_entry* turpitude_env_class_entry;
 zend_object_value turpitude_env_object_value;
 
-
-typedef struct tupitude_environment_object {
-    zend_object     std;
-    jobject         script_context;
-    JNIEnv*         java_env;
-};
-
 //####################### method handlers ##################################3
 
 void turpitude_env_method_findClass(int xargc, zval*** xargv, zval* return_value) {
@@ -130,7 +123,7 @@ zend_object_iterator* turpitude_env_get_iterator(zend_class_entry *ce, zval *obj
 }
 
 void turpitude_env_free_object(void *object TSRMLS_DC) {
-    tupitude_environment_object* intern = (tupitude_environment_object*)object;
+    turpitude_environment_object* intern = (turpitude_environment_object*)object;
     zend_hash_destroy(intern->std.properties);
     FREE_HASHTABLE(intern->std.properties);
     efree(object);
@@ -142,11 +135,11 @@ void turpitude_env_destroy_object(void* object, zend_object_handle handle TSRMLS
 
 zend_object_value turpitude_env_create_object(zend_class_entry *class_type TSRMLS_DC) {
     zend_object_value obj;
-    tupitude_environment_object* intern;
+    turpitude_environment_object* intern;
     zval tmp;
 
-    intern = (tupitude_environment_object*)emalloc(sizeof(tupitude_environment_object));
-    memset(intern, 0, sizeof(tupitude_environment_object));
+    intern = (turpitude_environment_object*)emalloc(sizeof(turpitude_environment_object));
+    memset(intern, 0, sizeof(turpitude_environment_object));
     intern->std.ce = class_type;
 
     ALLOC_HASHTABLE(intern->std.properties);

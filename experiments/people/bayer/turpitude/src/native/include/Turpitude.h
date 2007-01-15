@@ -16,6 +16,7 @@
 #include "turpitude_env.h"
 #include "turpitude_jclass.h"
 #include "turpitude_jmethod.h"
+#include "turpitude_jobj.h"
 #include "turpitude_zend_utils.h"
 
 
@@ -27,6 +28,7 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 }
 
 jobject zval_to_jobject(JNIEnv* env, zval* val);
+jvalue zval_to_jvalue(JNIEnv* env, zval* val);
 
 
 #endif

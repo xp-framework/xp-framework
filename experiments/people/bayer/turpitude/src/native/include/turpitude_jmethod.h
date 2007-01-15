@@ -13,6 +13,12 @@
 #include <jni.h>
 #include <string>
 
+typedef struct turpitude_javamethod_object {
+    zend_object     std;
+    jclass          java_class;
+    jmethodID       java_method; 
+};
+
 void make_turpitude_jmethod();
 void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* dest);
 

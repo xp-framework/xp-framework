@@ -13,6 +13,12 @@
 #include <jni.h>
 #include <string>
 
+typedef struct turpitude_environment_object {
+    zend_object     std;
+    jobject         script_context;
+    JNIEnv*         java_env;
+};
+
 void make_turpitude_environment(JNIEnv* env, jobject ctx);
 
 

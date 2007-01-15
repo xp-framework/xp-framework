@@ -5,13 +5,8 @@ zend_object_handlers turpitude_jclass_handlers;
 zend_class_entry* turpitude_jclass_class_entry;
 zend_object_value turpitude_jclass_object_value;
 
-typedef struct tupitude_javaclass_object {
-    zend_object     std;
-    jclass          java_class;
-};
-
 //####################### method handlers ##################################3
-void turpitude_jclass_method_findMethod(tupitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+void turpitude_jclass_method_findMethod(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
     // check param count
     if (xargc != 2) 
         php_error(E_ERROR, "invalid number of arguments to method findClass.");
@@ -24,6 +19,55 @@ void turpitude_jclass_method_findMethod(tupitude_javaclass_object* cls, int xarg
         php_error(E_ERROR, "invalid type for param 2 (signature) in method findClass, should be IS_STRING, see JNI documentation for format.");
 
     make_turpitude_jmethod_instance(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]), return_value);
+}
+
+void turpitude_jclass_method_findConstructor(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc != 1) 
+        php_error(E_ERROR, "invalid number of arguments to method findConstructor.");
+
+    // check param format
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 1 (signature) in method findConstructor, should be IS_STRING, see JNI documentation for format.");
+
+    make_turpitude_jmethod_instance(cls->java_class, "<init>", Z_STRVAL_P(*xargv[0]), return_value);
+}
+
+void turpitude_jclass_method_create(turpitude_javaclass_object* cls, zval* turpcls, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 1) 
+        php_error(E_ERROR, "invalid number of arguments to method create.");
+
+    // check constructor validity
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT)
+        php_error(E_ERROR, "invalid type for param 1 (constructor) in method create, should be IS_OBJECT.");
+
+    zval* constrval = *xargv[0];
+    zend_object_value obj = constrval->value.obj;
+    zend_class_entry* constrce = Z_OBJCE_P(constrval);
+
+    if (strcmp(constrce->name, "TurpitudeJavaMethod") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (constructor) in method create, should be TurpitudeJavaMethod.");
+
+    // get jmethodID
+    turpitude_javamethod_object* method = (turpitude_javamethod_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+
+
+    // create java object
+    jobject jobj;
+    if (xargc > 1) {
+        // build jvalue array
+        jvalue args[xargc-1];
+        for (int i=0; i < xargc-1; i++) {
+            args[i] = zval_to_jvalue(turpitude_jenv, *xargv[i+1]);
+        }
+        jobj = turpitude_jenv->NewObjectA(cls->java_class, method->java_method, args);
+    } else {
+        jobj = turpitude_jenv->NewObject(cls->java_class, method->java_method);
+    }
+
+    make_turpitude_jobject_instance(cls->java_class, turpcls, jobj, return_value);
+
 }
 
 //####################### helpers ##################################3
@@ -73,14 +117,24 @@ void turpitude_jclass_call(INTERNAL_FUNCTION_PARAMETERS) {
         zend_hash_move_forward_ex(Z_ARRVAL_PP(argv[1]), &pos);
     }
 
-    // this pointer
+    // this and class pointer 
     zval* myval = getThis();
-    tupitude_javaclass_object* cls = (tupitude_javaclass_object*)&(myval->value.obj);
+    turpitude_javaclass_object* cls = (turpitude_javaclass_object*)zend_object_store_get_object(myval TSRMLS_CC);
 
     bool method_valid = false;
     
     if (strcmp(Z_STRVAL_P(*argv[0]), "findMethod") == 0) {
         turpitude_jclass_method_findMethod(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
+
+    if (strcmp(Z_STRVAL_P(*argv[0]), "findConstructor") == 0) {
+        turpitude_jclass_method_findConstructor(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
+
+    if (strcmp(Z_STRVAL_P(*argv[0]), "create") == 0) {
+        turpitude_jclass_method_create(cls, myval, xargc, xargv, return_value);
         method_valid = true;
     }
 
@@ -134,7 +188,7 @@ zend_object_iterator* turpitude_jclass_get_iterator(zend_class_entry *ce, zval *
 }
 
 void turpitude_jclass_free_object(void *object TSRMLS_DC) {
-    tupitude_javaclass_object* intern = (tupitude_javaclass_object*)object;
+    turpitude_javaclass_object* intern = (turpitude_javaclass_object*)object;
     zend_hash_destroy(intern->std.properties);
     FREE_HASHTABLE(intern->std.properties);
     efree(object);
@@ -146,11 +200,11 @@ void turpitude_jclass_destroy_object(void* object, zend_object_handle handle TSR
 
 zend_object_value turpitude_jclass_create_object(zend_class_entry *class_type TSRMLS_DC) {
     zend_object_value obj;
-    tupitude_javaclass_object* intern;
+    turpitude_javaclass_object* intern;
     zval tmp;
 
-    intern = (tupitude_javaclass_object*)emalloc(sizeof(tupitude_javaclass_object));
-    memset(intern, 0, sizeof(tupitude_javaclass_object));
+    intern = (turpitude_javaclass_object*)emalloc(sizeof(turpitude_javaclass_object));
+    memset(intern, 0, sizeof(turpitude_javaclass_object));
     intern->std.ce = class_type;
 
     ALLOC_HASHTABLE(intern->std.properties);
@@ -230,7 +284,7 @@ void make_turpitude_jclass_instance(char* classname, zval* dest) {
     dest->is_ref = 1;
 
     // assign jclass to object
-    tupitude_javaclass_object* intern = (tupitude_javaclass_object*)zend_object_store_get_object(dest TSRMLS_CC);
+    turpitude_javaclass_object* intern = (turpitude_javaclass_object*)zend_object_store_get_object(dest TSRMLS_CC);
     intern->java_class = cls;
 
     // copy classname to name and add it as a property

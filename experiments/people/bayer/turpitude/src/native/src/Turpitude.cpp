@@ -31,6 +31,39 @@ void htdebug(HashTable* ht) {
 }
 
 /**
+ * copies the contents of a zval into a jvalue
+ */
+jvalue zval_to_jvalue(JNIEnv* env, zval* val) {
+    jvalue ret;
+    if (NULL == val) {
+        ret.l = NULL;
+        return ret;
+    }
+
+    switch (Z_TYPE_P(val)) {
+        case IS_LONG: 
+            ret.j = val->value.lval;
+            break; 
+        case IS_DOUBLE:
+            ret.d = val->value.dval;
+            break; 
+        case IS_BOOL: 
+            ret.z = (val->value.lval)?true:false;
+            break; 
+        case IS_ARRAY: 
+        case IS_OBJECT: 
+        case IS_CONSTANT:
+        case IS_STRING: 
+            ret.l = zval_to_jobject(env, val);
+            break; 
+        default:
+            ret.l = NULL;
+    }
+
+    return ret;
+}
+
+/**
  * copies the contents of a zval into a jobject
  */
 jobject zval_to_jobject(JNIEnv* env, zval* val) {
