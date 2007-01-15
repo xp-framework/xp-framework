@@ -161,30 +161,26 @@
      * @return  int exitcode
      */
     public function run($source) {
-      try {
-        $cmdline= $this->getExecutable();
-        foreach ($this->settings as $key => $value) {
-          $cmdline.= sprintf(' -d%s=%s', $key, $value);
-        }
-        
-        $p= new Process($cmdline);
-        $p->in->write('<?php '.$source.'?>');
-        $p->in->close();
-        
-        while (!$p->out->eof()) {
-          $l= trim($p->out->readLine());
-          if (!empty($l)) $this->stdout[]= $l;
-        }
-        
-        while (!$p->err->eof()) {
-          $l= trim($p->err->readLine());
-          if (!empty($l)) $this->stderr[]= $l;
-        }
-
-        $p->close();
-      } catch (Exception $e) {
-        throw($e);
+      $cmdline= $this->getExecutable();
+      foreach ($this->settings as $key => $value) {
+        $cmdline.= sprintf(' -d%s=%s', $key, $value);
       }
+
+      $p= new Process($cmdline);
+      $p->in->write('<?php '.$source.'?>');
+      $p->in->close();
+
+      while (!$p->out->eof()) {
+        $l= trim($p->out->readLine());
+        if (!empty($l)) $this->stdout[]= $l;
+      }
+
+      while (!$p->err->eof()) {
+        $l= trim($p->err->readLine());
+        if (!empty($l)) $this->stderr[]= $l;
+      }
+
+      $p->close();
       
       return $this->exitcode= $p->exitValue();
     }

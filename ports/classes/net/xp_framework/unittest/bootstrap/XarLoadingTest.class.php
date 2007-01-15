@@ -91,10 +91,10 @@
     public function registeredClassLoader() {
       $this->assertEquals(0, $this->sandbox->run('
         require("lang.base.php");
-        $xpclass= &XPClass::forName("net.xp_framework.unittest.bootstrap.F");
+        $xpclass= XPClass::forName("net.xp_framework.unittest.bootstrap.F");
         is("lang.archive.ArchiveClassLoader", $xpclass->getClassLoader()) || xp::error("Incorrect classloader for class loaded from archive");
         
-        $xpclass= &XPClass::forName("net.xp_framework.unittest.bootstrap.C");
+        $xpclass= XPClass::forName("net.xp_framework.unittest.bootstrap.C");
         !is("lang.archive.ArchiveClassLoader", $xpclass->getClassLoader()) || xp::error("Incorrect classloader for class not loaded from archive");
       '));
     }
