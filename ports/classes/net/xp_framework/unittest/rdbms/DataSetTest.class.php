@@ -80,8 +80,8 @@
         $peer->primary
       );
       $this->assertEquals(
-        array('job_id' => '%d', 'title' => '%s', 'valid_from' => '%s', 'expire_at' => '%s'),
-        $peer->types
+        array('job_id', 'title', 'valid_from', 'expire_at'),
+        array_keys($peer->types)
       );
     }
     
