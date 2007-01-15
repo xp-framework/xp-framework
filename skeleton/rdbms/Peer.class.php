@@ -198,6 +198,15 @@
       }
       return new $this->identifier($record);
     }
+
+    /**
+     * Returns a new DataSet object.
+     *
+     * @return  rdbms.DataSet
+     */    
+    public function newObject() {
+      return new $this->identifier();
+    }
     
     /**
      * Returns an iterator for a select statement
@@ -230,11 +239,11 @@
       foreach (array_keys($this->types) as $colunn) {
         $columns[]= $this->identifier.'.'.$colunn;
         $map[$colunn]= $map[$this->identifier.'.'.$colunn]= '%c';
-        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn];
+        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn][0];
       }
       foreach (array_keys($peer->types) as $colunn) {
         $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
-        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn];
+        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn][0];
       }
 
       $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
@@ -278,7 +287,7 @@
         array_keys($values)
       );
       foreach (array_keys($values) as $key) {
-        $sql.= $db->prepare($this->types[$key], $values[$key]).', ';
+        $sql.= $db->prepare($this->types[$key][0], $values[$key]).', ';
       }
 
       // Send it
@@ -305,7 +314,7 @@
       // Build the update command
       $sql= '';
       foreach (array_keys($values) as $key) {
-        $sql.= $db->prepare('%c = '.$this->types[$key], $key, $values[$key]).', ';
+        $sql.= $db->prepare('%c = '.$this->types[$key][0], $key, $values[$key]).', ';
       }
 
       // Send it
