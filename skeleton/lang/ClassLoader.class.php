@@ -115,14 +115,19 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
-        $qname= $this->classpath.$class;
-        if (FALSE === eval($bytes)) {
-          throw new FormatException('Cannot define class "'.$qname.'"');
+        
+        // Load InlineLoader
+        XPClass::forName('lang.InlineLoader');
+        InlineLoader::setClassBytes($class, $bytes);
+        if (FALSE === include('inline://'.$class)) {
+          throw new FormatException('Cannot define class "'.$class.'"');
         }
+        InlineLoader::removeClassBytes($class);
+        
         if (!class_exists($name) && !interface_exists($name)) {
-          throw new FormatException('Class "'.$qname.'" not defined');
+          throw new FormatException('Class "'.$class.'" not defined');
         }
-        xp::$registry['class.'.$name]= $qname;
+        xp::$registry['class.'.$name]= $class;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }      
 
@@ -144,7 +149,7 @@
       
       // If invoked with less than four arguments, old behaviour will be executed
       if (NULL === $bytes) {
-        return $this->_defineClassFromBytes($class, $parent);
+        return $this->_defineClassFromBytes($this->classpath.$class, $parent);
       }
       
       $name= xp::reflect($class);
@@ -167,17 +172,8 @@
         }
         
         $newBytes.= ' '.$bytes;
-
-        if (FALSE === eval($newBytes)) {
-          throw new FormatException('Cannot define class "'.$qname.'"');
-        }
         
-        if (!class_exists($name)) {
-          throw new FormatException('Class "'.$qname.'" not defined');
-        }
-        
-        xp::$registry['class.'.$name]= $qname;
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+        return $this->_defineClassFromBytes($qname, $newBytes);
       }
       
       return new XPClass($name);
