@@ -80,7 +80,7 @@
       }
 
       return $this->field.' '.$conn->prepare(
-        str_replace('?', $types[$this->field], $this->op), 
+        str_replace('?', $types[$this->field][0], $this->op), 
         $this->value
       );      
     }

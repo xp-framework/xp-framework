@@ -44,7 +44,7 @@
       }
 
       return $this->field.' between '.$conn->prepare(
-        $types[$this->field].' and '.$types[$this->field],
+        $types[$this->field][0].' and '.$types[$this->field][0],
         $this->lo,
         $this->hi
       );
