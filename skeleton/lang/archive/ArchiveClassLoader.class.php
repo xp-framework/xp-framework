@@ -85,18 +85,16 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
-        try {
-          $src= $this->loadClassBytes($class);
-        } catch (Exception $e) {
-          throw(new ClassNotFoundException(sprintf(
+        if (FALSE === $this->providesClass($class)) {
+          throw new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
             $class,
             $e->getMessage()
-          )));
+          ));
         }
 
-        if (FALSE === eval('?>'.$src)) {
-          throw(new FormatException('Cannot define class "'.$class.'"'));
+        if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').'.class.php')) {
+          throw new FormatException('Cannot define class "'.$class.'"');
         }
 
         xp::$registry['class.'.$name]= $class;
@@ -104,8 +102,7 @@
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
-      $c= new XPClass($name);
-      return $c;
+      return new XPClass($name);
     }
     
     /**
