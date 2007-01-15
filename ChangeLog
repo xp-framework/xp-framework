@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implement RFC #0107 (Generic acccess to rdbms.Peer/rdbms.DataSet)
+  (friebe)
 - Use stream wrapper loading for loadClass() in class
   lang.archive.ArchiveClassLoader
   (kiesel)
