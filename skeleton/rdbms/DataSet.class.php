@@ -7,7 +7,8 @@
   uses(
     'rdbms.ConnectionManager',
     'rdbms.Peer',
-    'rdbms.Criteria'
+    'rdbms.Criteria',
+    'rdbms.FieldType'
   );
 
   /**
@@ -121,6 +122,34 @@
       $previous= $this->{$key};
       $this->{$key}= $value;
       return $previous;
+    }
+    
+    /**
+     * Sets a field's value by the field's name and returns the previous value.
+     *
+     * @param   string field name
+     * @param   mixed value
+     * @return  mixed previous value
+     * @throws  lang.IllegalArgumentException in case the field does not exist
+     */
+    public function set($field, $value) {
+      if (!isset(Peer::forInstance($this)->types[$field])) {
+        throw new IllegalArgumentException('Field "'.$field.'" does not exist for DataSet '.$this->getClassName());
+      }
+      return $this->_change($field, $value);
+    }
+
+    /**
+     * Gets a field's value by the field's name
+     *
+     * @param   string field name
+     * @throws  lang.IllegalArgumentException in case the field does not exist
+     */
+    public function get($field) {
+      if (!isset(Peer::forInstance($this)->types[$field])) {
+        throw new IllegalArgumentException('Field "'.$field.'" does not exist for DataSet '.$this->getClassName());
+      }
+      return $this->{$field};
     }
     
     /**
