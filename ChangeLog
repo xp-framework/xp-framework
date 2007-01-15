@@ -6,7 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
-
+- Implemented RFC #0083: Define classes through stream wrappers
+  (kiesel)
 - Deprecated xml.XSLProcessor - use xml.DomXSLProcessor instead
   Sablotron was removed from ext in PHP5 (in Version 5.0.0 Beta 1
   on 29-Jun-2003, ChangeLog states: "Completely Overhauled XML 
@@ -17,6 +18,7 @@ SVN version: ????
 - Changed xml.XMLScriptlet to use xml.DomXSLProcessor
   (friebe)
 
+>>>>>>> .r9281
 Version 5.1.2, released 2007-01-10
 ----------------------------------
 SVN version: 9224

@@ -4,7 +4,7 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
 @authors: kiesel
 @created: Tue Oct 17 11:44:17 CEST 2006
-@status: discussion, ends at Sun Jan  14 15:00:00 CET 2007
+@status: implemented, Mon Jan 15 18:46:35 CET 2007
 @category: <core>
 
 Scope of Change
@@ -88,5 +88,8 @@ Related documents
 
 Comments
 --------
+- kiesel, Mon Jan 15 18:48:16 CET 2007
+  Since no objections have been filed, the RFC has been accepted.
+
 
 <EOF>
