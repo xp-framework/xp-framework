@@ -25,10 +25,10 @@
         $peer->setIdentity('job_id');
         $peer->setPrimary(array('job_id'));
         $peer->setTypes(array(
-          'job_id'              => '%d',
-          'title'               => '%s',
-          'valid_from'          => '%s',
-          'expire_at'           => '%s'
+          'job_id'      => array('%d', FieldType::NUMERIC, FALSE),
+          'title'       => array('%s', FieldType::VARCHAR, FALSE),
+          'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
+          'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
         ));
       }
     }  
