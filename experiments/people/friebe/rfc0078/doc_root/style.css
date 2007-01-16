@@ -14,7 +14,7 @@ body {
 div#top, div#main, div#footer {
   text-align: left;
   background-color: white;
-  width: 700px;
+  width: 90%;
   padding: 10px;
   margin: 0px auto;
 }
