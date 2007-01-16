@@ -7,11 +7,9 @@
   uses('remote.server.message.EascMessage');
 
   /**
-   * (Insert class' description here)
+   * EASC exception message
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Exception message
    */
   class EascExceptionMessage extends EascMessage {
 
