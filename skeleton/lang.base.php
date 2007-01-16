@@ -41,7 +41,7 @@
         return $arg ? 'true' : 'false';
       } else if (is_null($arg)) {
         return 'null';
-      } else if (is_a($arg, 'null')) {
+      } else if ($arg instanceof null) {
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
@@ -394,7 +394,7 @@
       case 'string':
       case 'bool':
       case 'null':
-        if (is_a($var, 'Object')) $var= $var->toString();
+        if ($var instanceof Object) $var= $var->toString();
         settype($var, $type);
         break;
 
@@ -426,7 +426,7 @@
     $p= get_class($object);
     if (is_null($class) && 'null' == $p) return TRUE;
     $class= xp::reflect($class);
-    return @is_a($object, $class);
+    return $object instanceof $class;
   }
   // }}}
 
