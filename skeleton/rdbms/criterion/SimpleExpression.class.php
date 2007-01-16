@@ -65,6 +65,21 @@
       }
       $this->op= $op;
     }
+    
+    /**
+     * Creates a string representation of this expression.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s({%s %s} %% %s)',
+        $this->getClassName(),
+        $this->field,
+        $this->op,
+        xp::stringOf($this->value)
+      );
+    }
   
     /**
      * Returns the fragment SQL
