@@ -21,6 +21,9 @@
     public
       $_map   = NULL,
       $_cat   = NULL;
+    
+    protected static
+      $instance = NULL;
 
     /**
      * (Insert method's description here)
@@ -34,6 +37,10 @@
       $log= Logger::getInstance();
       $this->_cat= $log->getCategory($this->getClassName());
     }
+    
+    static function __static() {
+      self::$instance= new NamingDirectory();
+    }
       
     /**
      * (Insert method's description here)
@@ -41,14 +48,8 @@
      * @param   
      * @return  
      */
-    public function getInstance() {
-      static $instance= NULL;
-      
-      if (NULL === $instance) {
-        $instance= new NamingDirectory();
-      }
-      
-      return $instance;
+    public static function getInstance() {
+      return self::$instance;
     }
     
     /**
