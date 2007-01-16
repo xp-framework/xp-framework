@@ -62,7 +62,7 @@ __
     $interface= basename($name);
     $rstr->write("<?php\n");
     $rstr->write("  uses('remote.beans.BeanInterface');\n");
-    $rstr->write('  class '.$interface." extends BeanInterface {\n");
+    $rstr->write('  interface '.$interface." extends BeanInterface {\n");
     foreach ($class->getMethods() as $method) {
       if (!$method->hasAnnotation('remote')) continue;
 
