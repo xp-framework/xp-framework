@@ -10,11 +10,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * EASC lookup message
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Lookup message
    */
   class EascLookupMessage extends EascMessage {
 
@@ -28,10 +26,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handle message
      *
-     * @param   
-     * @return  
+     * @param   remote.server.EASCProtocol protocol
+     * @return  mixed data
      */
     public function handle($protocol, $data) {
       $offset= 0;

@@ -14,19 +14,17 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Factory class for EASC message classes
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Create EASC message
    */
   class EascMessageFactory extends Object {
   
     /**
-     * (Insert method's description here)
+     * Factory method
      *
-     * @param   
-     * @return  
+     * @param   int type
+     * @return  lang.XPClass
      */
     public static function forType($type) {
       $handlers= array(

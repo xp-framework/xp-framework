@@ -11,11 +11,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Naming Directory. Provides lookup methods
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Naming directory
    */
   class NamingDirectory extends Object {
     protected
@@ -26,10 +24,8 @@
       $instance = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
      */
     protected function __construct() {
       $this->map= new Hashmap();
@@ -42,20 +38,19 @@
     }
       
     /**
-     * (Insert method's description here)
+     * Get instance
      *
-     * @param   
-     * @return  
+     * @return  remote.server.naming.NamingDirectory
      */
     public static function getInstance() {
       return self::$instance;
     }
     
     /**
-     * (Insert method's description here)
+     * Bind a name with an object
      *
-     * @param   
-     * @return  
+     * @param   string name
+     * @param   lang.Object object
      */
     public function bind($name, $object) {
       $this->cat->info($this->getClassName(), 'binding new naming entry', $name);
@@ -63,10 +58,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Look up object by its bound name
      *
-     * @param   
-     * @return  
+     * @param   string name
+     * @return  lang.Object
+     * @throws  remote.NameNotFoundException if name has not been bound
      */
     public function lookup($name) {
       if (!$this->map->containsKey($name)) throw new NameNotFoundException(

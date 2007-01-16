@@ -5,11 +5,9 @@
  */
 
   /**
-   * (Insert class' description here)
+   * EASC server base message
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  EASC message
    */
   abstract class EascMessage extends Object {
     public
@@ -41,10 +39,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handle message
      *
-     * @param   
-     * @return  
+     * @param   remote.server.EASCProtocol protocol
+     * @return  mixed data
      */
     public function handle($protocol, $data) { }
   }

@@ -11,11 +11,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * EASC call message
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Call message
    */
   class EascCallMessage extends EascMessage {
 
@@ -29,10 +27,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Handle message
      *
-     * @param   
-     * @return  
+     * @param   remote.server.EASCProtocol protocol
+     * @return  mixed data
      */
     public function handle($protocol, $data) {
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));

@@ -7,11 +7,9 @@
   uses('remote.server.message.EascMessage');
 
   /**
-   * (Insert class' description here)
+   * EASC Init message
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Init message
    */
   class EascInitMessage extends EascMessage {
 
@@ -25,10 +23,10 @@
     }
   
     /**
-     * (Insert method's description here)
+     * Handle message
      *
-     * @param   
-     * @return  
+     * @param   remote.server.EASCProtocol protocol
+     * @return  mixed data
      */
     public function handle($protocol, $data) {
       $this->setValue($b= TRUE);
