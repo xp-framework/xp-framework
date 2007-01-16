@@ -216,6 +216,34 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     intern->java_class = cls;
     intern->java_method = mid;
 
+    // find return type
+    char* sp = sig;
+    char c;
+    while (c = *sp) {
+        if (c == ')') {
+            c = *++sp;
+            break;
+        }
+        sp++;
+    }
+    turpitude_javamethod_return_type rt;
+    switch (c) {
+        case 'Z': rt = JAVA_BOOLEAN;  break;  
+        case 'B': rt = JAVA_BYTE;     break;  
+        case 'C': rt = JAVA_CHAR;     break;  
+        case 'S': rt = JAVA_SHORT;    break;  
+        case 'I': rt = JAVA_INT;      break;  
+        case 'J': rt = JAVA_LONG;     break;  
+        case 'F': rt = JAVA_FLOAT;    break;  
+        case 'D': rt = JAVA_DOUBLE;   break;  
+        case 'V': rt = JAVA_VOID;     break;
+        case 'L': rt = JAVA_OBJECT;   break;
+        default:
+        // none of the above - throw an error
+        php_error(E_ERROR, "unable to determine method return type.");
+    }
+    intern->return_type = rt;
+
     // copy method name and signature to name and add it as a property
     zval* methodname;
     MAKE_STD_ZVAL(methodname);

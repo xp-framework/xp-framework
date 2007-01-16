@@ -8,6 +8,108 @@ zend_object_value turpitude_jobject_object_value;
 
 //####################### method handlers ##################################3
 
+void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 1) 
+        php_error(E_ERROR, "invalid number of arguments to method javaInvoke.");
+
+    // check constructor validity
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT)
+        php_error(E_ERROR, "invalid type for param 1 (method) in method javaInvoke, should be IS_OBJECT.");
+
+    zval* methodval = *xargv[0];
+    zend_object_value obj = methodval->value.obj;
+    zend_class_entry* methodce = Z_OBJCE_P(methodval);
+
+    if (strcmp(methodce->name, "TurpitudeJavaMethod") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (method) in method create, should be TurpitudeJavaMethod.");
+
+    // get jmethod
+    turpitude_javamethod_object* method = (turpitude_javamethod_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+
+    // call java method
+    // there might be a better way to do this, but it's far too late
+    // it's an awful lot of ifs, isn't it?
+    jvalue retval;
+    if (xargc > 1) {
+        // we need to build the jvalue array
+        jvalue args[xargc-1];
+        for (int i=0; i < xargc-1; i++) {
+            args[i] = zval_to_jvalue(turpitude_jenv, *xargv[i+1]);
+        }
+        switch (method->return_type) {
+            case JAVA_VOID: 
+                turpitude_jenv->CallVoidMethodA(jobj->java_object, method->java_method, args); 
+                break;
+            case JAVA_OBJECT:
+                retval.l = turpitude_jenv->CallObjectMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_BOOLEAN:
+                retval.z = turpitude_jenv->CallBooleanMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_BYTE:
+                retval.b = turpitude_jenv->CallByteMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_CHAR:
+                retval.c = turpitude_jenv->CallCharMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_SHORT:
+                retval.s = turpitude_jenv->CallShortMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_INT:
+                retval.i = turpitude_jenv->CallIntMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_LONG:
+                retval.j = turpitude_jenv->CallLongMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_FLOAT:
+                retval.f = turpitude_jenv->CallFloatMethodA(jobj->java_object, method->java_method, args);
+                break;
+            case JAVA_DOUBLE:
+                retval.d = turpitude_jenv->CallDoubleMethodA(jobj->java_object, method->java_method, args);
+                break;
+        };
+    } else {
+        // no parameters given - just call the method
+        switch (method->return_type) {
+            case JAVA_VOID: 
+                turpitude_jenv->CallVoidMethod(jobj->java_object, method->java_method); 
+                break;
+            case JAVA_OBJECT:
+                retval.l = turpitude_jenv->CallObjectMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_BOOLEAN:
+                retval.z = turpitude_jenv->CallBooleanMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_BYTE:
+                retval.b = turpitude_jenv->CallByteMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_CHAR:
+                retval.c = turpitude_jenv->CallCharMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_SHORT:
+                retval.s = turpitude_jenv->CallShortMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_INT:
+                retval.i = turpitude_jenv->CallIntMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_LONG:
+                retval.j = turpitude_jenv->CallLongMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_FLOAT:
+                retval.f = turpitude_jenv->CallFloatMethod(jobj->java_object, method->java_method);
+                break;
+            case JAVA_DOUBLE:
+                retval.d = turpitude_jenv->CallDoubleMethod(jobj->java_object, method->java_method);
+                break;
+        };
+    }
+
+    //TODO: retval to zval
+
+}
+
+
 //####################### helpers ##################################3
 
 static
@@ -44,7 +146,6 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
         php_error(E_ERROR, "Couldn't fetch arguments into array.");
     }
     char* method_name = Z_STRVAL_P(*argv[0]);
-    printf("method: %s, %d params\n", method_name, argc);
 
     // method parameters
     xargc = zend_hash_num_elements(Z_ARRVAL_PP(argv[1]));
@@ -56,19 +157,24 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
         zend_hash_move_forward_ex(Z_ARRVAL_PP(argv[1]), &pos);
     }
 
+    // extract jobject from this pointer
+    zval* myval = getThis();
+    turpitude_javaobject_object* jobj = (turpitude_javaobject_object*)zend_object_store_get_object(myval TSRMLS_CC);
+
     bool method_valid = false;
-    
-    /*
-    if (strcmp(Z_STRVAL_P(*argv[0]), "findClass") == 0) {
-        turpitude_jobject_method_findClass(xargc, xargv);
+ 
+    // java invoke method
+    if (strcmp(Z_STRVAL_P(*argv[0]), "javaInvoke") == 0) {
+        turpitude_jobject_method_javainvoke(jobj, xargc, xargv, return_value);
         method_valid = true;
     }
-    */
+    
 
+    // error handling
     char* errmsg = (char*)emalloc(100 + strlen(method_name));
     memset(errmsg, 0, 99 + strlen(method_name));
     if (!method_valid) { 
-        sprintf(errmsg, "Call to invalid method %s() on object of class TurpitudeJavaMethod.", method_name);
+        sprintf(errmsg, "Call to invalid method %s() on object of class TurpitudeJavaObject.", method_name);
         php_error(E_ERROR, errmsg);
     }
 
