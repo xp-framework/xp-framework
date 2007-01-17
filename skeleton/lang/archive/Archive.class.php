@@ -80,13 +80,10 @@
      * @return  bool success
      */
     public function add($file, $id) {
-      try {
-        $file->open(FILE_MODE_READ);
-        $data= $file->read($file->size());
-        $file->close();
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $file->open(FILE_MODE_READ);
+      $data= $file->read($file->size());
+      $file->close();
+
       $this->_index[$id]= array(
         $file->filename,
         $file->path,
@@ -121,41 +118,36 @@
      * @return  bool success
      */
     public function create() {
-      try {
-        $this->file->truncate();
+      $this->file->truncate();
+      $this->file->write(pack(
+        'a3c1i1a248', 
+        'CCA',
+        $this->version,
+        sizeof(array_keys($this->_index)),
+        "\0"                  // Reserved for future use
+      ));
+
+      // Write index
+      $offset= 0;
+      foreach (array_keys($this->_index) as $id) {
         $this->file->write(pack(
-          'a3c1i1a248', 
-          'CCA',
-          $this->version,
-          sizeof(array_keys($this->_index)),
-          "\0"                  // Reserved for future use
+          'a80a80a80i1i1a8',
+          $id,
+          $this->_index[$id][0],
+          $this->_index[$id][1],
+          $this->_index[$id][2],
+          $offset,
+          "\0"                   // Reserved for future use
         ));
-        
-        // Write index
-        $offset= 0;
-        foreach (array_keys($this->_index) as $id) {
-          $this->file->write(pack(
-            'a80a80a80i1i1a8',
-            $id,
-            $this->_index[$id][0],
-            $this->_index[$id][1],
-            $this->_index[$id][2],
-            $offset,
-            "\0"                   // Reserved for future use
-          ));
-          $offset+= $this->_index[$id][2];
-        }
-        
-        // Write files
-        foreach (array_keys($this->_index) as $id) {
-          $this->file->write($this->_index[$id][4]);
-        }
-        
-        $this->file->close();
-      } catch (Exception $e) {
-        throw($e);
+        $offset+= $this->_index[$id][2];
       }
-      
+
+      // Write files
+      foreach (array_keys($this->_index) as $id) {
+        $this->file->write($this->_index[$id][4]);
+      }
+
+      $this->file->close();
       return TRUE;
     }
     
@@ -261,21 +253,17 @@
     public function open($mode) {
       switch ($mode) {
         case ARCHIVE_READ:      // Load
-          try {
-            $this->file->open(FILE_MODE_READ);
-            
-            // Read header
-            $header= $this->file->read(ARCHIVE_HEADER_SIZE);
-            $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
-            
-            // Check header integrity
-            if ('CCA' !== $data['id']) throw(new FormatException(sprintf(
-              'Header malformed: "CCA" expected, have "%s"', 
-              substr($header, 0, 3)
-            )));
-          } catch (Exception $e) {
-            throw($e);
-          }
+          $this->file->open(FILE_MODE_READ);
+
+          // Read header
+          $header= $this->file->read(ARCHIVE_HEADER_SIZE);
+          $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
+
+          // Check header integrity
+          if ('CCA' !== $data['id']) throw new FormatException(sprintf(
+            'Header malformed: "CCA" expected, have "%s"', 
+            substr($header, 0, 3)
+          ));
           
           // Copy information
           $this->version = $data['version'];
