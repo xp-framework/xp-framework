@@ -50,11 +50,29 @@
     }
     
     /**
+     * Creates a new instance.
+     *
+     * Fluent interface:
+     * <code>
+     *   $c= Criteria::newInstance()
+     *     ->add('bz_id', 500, EQUAL)
+     *     ->add('author', array(1549, 1552), IN)
+     *     ->addOrderBy('created_at', DESCENDING)
+     *   ;
+     * </code>
+     *
+     * @param   rdbms.Criteria
+     */
+    public static function newInstance() {
+      return new self();
+    }
+    
+    /**
      * Add a condition
      *
      * Example:
      * <code>
-     *   with ($c= &new Criteria()); {
+     *   with ($c= new Criteria()); {
      *     $c->add(Restrictions::equal('bz_id', 500));
      *     $c->add(Restrictions::in('author', array(1549, 1552)));
      *   }
@@ -62,13 +80,14 @@
      *
      * Alternative API example:
      * <code>
-     *   with ($c= &new Criteria()); {
+     *   with ($c= new Criteria()); {
      *     $c->add('bz_id', 500, EQUAL);
      *     $c->add('author', array(1549, 1552), IN);
      *   }
      * </code>
      *
      * @param   rdbms.criterion.Criterion criterion
+     * @return  rdbms.Criteria this object
      */
     public function add($criterion, $value= NULL, $comparison= EQUAL) {
       if (is('rdbms.criterion.Criterion', $criterion)) {
@@ -76,13 +95,14 @@
       } else {
         $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
       }
+      return $this;
     }
 
     /**
      * Add order by
      *
      * <code>
-     *   with ($c= &new Criteria()); {
+     *   with ($c= new Criteria()); {
      *     $c->add(Restriction::equal('bz_id', 500));
      *     $c->addOrderBy('created_at', DESCENDING);
      *   }
@@ -96,9 +116,11 @@
      *
      * @param   string column
      * @param   string order default ASCENDING
+     * @return  rdbms.Criteria this object
      */
     public function addOrderBy($column, $order= ASCENDING) {
       $this->orderings[]= array($column, $order);
+      return $this;
     }
 
     /**
