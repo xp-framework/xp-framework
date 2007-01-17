@@ -45,7 +45,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceOf Generic && !isset($protect[$arg->hashCode()])) {
+      } else if ($arg instanceof Generic && !isset($protect[$arg->hashCode()])) {
         $protect[$arg->hashCode()]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->hashCode()]);
@@ -424,7 +424,7 @@
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, $object) {
     $p= get_class($object);
-    if (is_null($class) && 'null' == $p) return TRUE;
+    if (is_null($class)) $class= 'null';
     $class= xp::reflect($class);
     return $object instanceof $class;
   }
