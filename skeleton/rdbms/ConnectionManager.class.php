@@ -61,11 +61,7 @@
     public function configure($properties) {
       $section= $properties->getFirstSection();
       if ($section) do {
-        try {
-          $conn= DriverManager::getConnection($properties->readString($section, 'dsn'));
-        } catch (DriverNotSupportedException $e) {
-          throw($e);
-        }
+        $conn= DriverManager::getConnection($properties->readString($section, 'dsn'));
 
         if (FALSE !== ($p= strpos($section, '.'))) {
           $this->register($conn, substr($section, 0, $p), substr($section, $p+ 1));
