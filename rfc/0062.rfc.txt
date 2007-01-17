@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Jun 26 10:14:18 CEST 2006
-@status: discussion, ends at Sun Jul 02 09:49:03     2006
+@status: implemented, 2006-06-30 09:54:29
 @category: remote
 
 Scope of Change
