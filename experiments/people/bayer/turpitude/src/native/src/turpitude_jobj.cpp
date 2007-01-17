@@ -106,7 +106,7 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
     }
 
     //TODO: retval to zval
-
+    jvalue_to_zval(turpitude_jenv, retval, method->return_type, return_value);
 }
 
 

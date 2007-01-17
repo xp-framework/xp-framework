@@ -277,6 +277,12 @@ void make_turpitude_jclass_instance(char* classname, zval* dest) {
         php_error(E_ERROR, errmsg);
     }
 
+    make_turpitude_jclass_instance(cls, classname, dest);
+}
+
+void make_turpitude_jclass_instance(jclass cls, char* classname, zval* dest) {
+    if (!dest)
+        ALLOC_ZVAL(dest);
     // instantiate JavaClass object
     Z_TYPE_P(dest) = IS_OBJECT;
     object_init_ex(dest, turpitude_jclass_class_entry);
@@ -292,6 +298,5 @@ void make_turpitude_jclass_instance(char* classname, zval* dest) {
     MAKE_STD_ZVAL(name);
     ZVAL_STRING(name, classname, 1);
     zend_hash_update(Z_OBJPROP_P(dest), "ClassName", sizeof("ClassName"), (void **) &name, sizeof(zval *), NULL);
-    
 }
 

@@ -1,33 +1,113 @@
 #include <Turpitude.h>
 
-void htdebug(HashTable* ht) {
-    printf("HTDEBUG: \n");
-    zval** hashval;
-    HashPosition pos;
-    // reset and iterate on HashTable
-    zend_hash_internal_pointer_reset_ex(ht, &pos);
-    while (zend_hash_get_current_data_ex(ht, (void **) &hashval, &pos) == SUCCESS) {
-        char* key_name;
-        ulong num_key;
-        uint  str_len;
+/**
+ * returns the jclass obj is an instance of
+ * if dest != NULL it will point to the JNI-formatted classname
+ */
+jclass get_java_class(JNIEnv* env, jobject obj, char** dest) {
+    // Class and Object classes
+    jclass ocls = env->FindClass("java/lang/Object");
+    jclass ccls = env->FindClass("java/lang/Class");
 
-        printf("key: ");
-        // extract current key
-        switch (zend_hash_get_current_key_ex(ht, &key_name, &str_len, &num_key, 0, &pos)) {
-            case HASH_KEY_IS_STRING:
-                printf("string: %s\n", key_name);
-            break;
-            case HASH_KEY_IS_LONG:
-                printf("long: %d\n", num_key);
-            break;
-        }
-        //efree(key_name);
-        //printf("val - type: %d", Z_TYPE_P(*hashval));
-        //printf("\n");
-        // value object
-        // insert pair into hashmap
-        zend_hash_move_forward_ex(ht, &pos);
+    // getClass and getName jmethodIDs
+    jmethodID gcid = env->GetMethodID(ocls, "getClass", "()Ljava/lang/Class;");
+    if (gcid == NULL) {
+        java_throw(env, "java/lang/NoSuchMethodException", "unable to find method getClass on java/lang/Object.");
+        return NULL;
     }
+    jmethodID cnid = env->GetMethodID(ccls, "getName", "()Ljava/lang/String;");
+    if (cnid == NULL) {
+        java_throw(env, "java/lang/NoSuchMethodException", "unable to find method getName on java/lang/Class.");
+        return NULL;
+    }
+
+    // call getClass 
+    jobject clsobj = env->CallObjectMethod(obj, gcid);
+    if (clsobj == NULL) {
+        java_throw(env, "java/lang/ClassNotFoundException", "unable to find Class");
+        return NULL;
+    }
+    // call getName on class
+    jstring namestr = (jstring)env->CallObjectMethod(clsobj, cnid); 
+
+    // copy classname string, replace '.' with '/'
+    int str_len = env->GetStringLength(namestr)+1;
+    char* classname = (char*)emalloc(env->GetStringLength(namestr)+1);
+    strncpy(classname, env->GetStringUTFChars(namestr, false), str_len);
+    char* cnp = classname;
+    char c;
+    while (c = *++cnp) if (c == '.') *cnp = '/';
+
+    if (dest != NULL) *dest = classname;
+
+    return (jclass)clsobj;
+}
+
+/**
+ * converts a jvalue to a zval
+ * uses dest if dest != null, creates a new zval otherwise
+ */
+zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_javamethod_return_type type, zval* dest) {
+    // initialize return value
+    zval* retval;
+    if (dest != NULL)
+        retval = dest;
+    else
+        MAKE_STD_ZVAL(retval);
+
+    switch (type) {
+        // long types
+        case JAVA_LONG:
+            ZVAL_LONG(retval, val.j);
+            break;
+        case JAVA_INT:
+            ZVAL_LONG(retval, val.i);
+            break;
+        case JAVA_SHORT:
+            ZVAL_LONG(retval, val.s);
+            break;
+        case JAVA_CHAR:
+            ZVAL_LONG(retval, val.c);
+            break;
+        case JAVA_BYTE:
+            ZVAL_LONG(retval, val.b);
+            break;
+        // boolean
+        case JAVA_BOOLEAN:
+            ZVAL_BOOL(retval, val.z);
+            break;
+        // real numbers
+        case JAVA_FLOAT:
+            ZVAL_DOUBLE(retval, val.f);
+            break;
+        case JAVA_DOUBLE:
+            ZVAL_DOUBLE(retval, val.d);
+            break;
+        // objects
+        case JAVA_OBJECT:
+            char* classname;
+            jclass cls = get_java_class(env, val.l, &classname);
+            // ###### check for special objects
+            // Strings
+            if (strcmp(classname, "java/lang/String") == 0) {
+                // copy string value
+                int str_len = env->GetStringLength((jstring)val.l)+1;
+                char* str_val = (char*)emalloc(str_len);
+                strncpy(str_val, env->GetStringUTFChars((jstring)val.l, 0), str_len);
+                ZVAL_STRING(retval, str_val, 0);
+                break;
+            }
+            zval* turpcls;
+            MAKE_STD_ZVAL(turpcls);
+            make_turpitude_jclass_instance(cls, classname, turpcls);
+            make_turpitude_jobject_instance(cls, turpcls, val.l, retval);
+            break;
+        default:
+            // probably void
+            ZVAL_NULL(retval);
+    }
+
+    return retval;
 }
 
 /**

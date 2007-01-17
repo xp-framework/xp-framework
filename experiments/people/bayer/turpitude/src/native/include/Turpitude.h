@@ -29,6 +29,7 @@ static void java_throw(JNIEnv* env, const char* classname, const char* message) 
 
 jobject zval_to_jobject(JNIEnv* env, zval* val);
 jvalue zval_to_jvalue(JNIEnv* env, zval* val);
+zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_javamethod_return_type type, zval* dest);
 
 
 #endif

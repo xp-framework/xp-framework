@@ -20,5 +20,6 @@ typedef struct turpitude_javaclass_object {
 
 void make_turpitude_jclass();
 void make_turpitude_jclass_instance(char* classname, zval* dest);
+void make_turpitude_jclass_instance(jclass cls, char* classname, zval* dest);
 
 #endif

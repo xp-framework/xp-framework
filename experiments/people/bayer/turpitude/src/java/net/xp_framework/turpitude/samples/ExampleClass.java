@@ -1,5 +1,7 @@
 package net.xp_framework.turpitude.samples;
 
+import java.util.Date;
+
 public class ExampleClass {
     int intval = 0;
     String stringval = "";
@@ -43,6 +45,14 @@ public class ExampleClass {
         System.out.println("ExampleClass: setValues(int, String) called: " + i + " " + s);
         intval = i;
         stringval = s;
+    }
+
+    /**
+     * returns a Date instance
+     */
+    public Date getDate() {
+        System.out.println("ExampleClass: getDate()");
+        return new Date();
     }
 
     public String toString() {
