@@ -9,7 +9,7 @@
  * Protocol) access.
  *
  * Example (LDAP search)
- * ===================== 
+ * =====================
  * <code>
  *   $l= new LDAPClient('ldap.openldap.org');
  *   $l->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);
