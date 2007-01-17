@@ -23,12 +23,7 @@
     #[@remote]
     public function runTestClass($classname) {
       $suite= new TestSuite();
-      try {
-        $suite->addTestClass(XPClass::forName($classname));
-      } catch (Exception $e) {
-        throw($e);
-      }
-
+      $suite->addTestClass(XPClass::forName($classname));
       return $suite->run();
     }
   }
