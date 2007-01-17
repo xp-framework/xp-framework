@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('unittest.TestCase');
+  uses(
+    'unittest.TestCase',
+    'net.xp_framework.unittest.core.DestructionCallback'
+  );
 
   /**
    * Tests the is() core functionality
@@ -21,6 +24,7 @@
     #[@test]
     public function xpNullIsNull() {
       $this->assertTrue(is(NULL, xp::null()));
+      $this->assertFalse(is(NULL, 1));
     }
 
     /**
