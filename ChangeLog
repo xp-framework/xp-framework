@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+Version 5.2.0, released 2007-01-17
+----------------------------------
+SVN version: 9322
+
 - Replace deprecated is_a() with instanceof operator in core
   (kiesel)
 - Made rdbms.Criteria usable in a fluent interface way
