@@ -263,7 +263,7 @@
         if ($max && $i > $max) break;
         
         $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
-        $o->{$peer->identifier}= new $peer->identifier(array_slice($record, sizeof($this->types)));
+        $o->{strtolower($peer->identifier)}= new $peer->identifier(array_slice($record, sizeof($this->types)));
         $r[]= $o;
       }
       return $r;
