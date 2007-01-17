@@ -53,7 +53,7 @@
      *
      * @param   int sig
      */
-    protected function handleSignal($sig) {
+    public function handleSignal($sig) {
       $this->cat && $this->cat->debugf('Received signal %d in pid %d', $sig, getmypid());
       
       switch ($sig) {
