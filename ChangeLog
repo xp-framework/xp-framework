@@ -6,7 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
-- Implement RFC #0107 (Generic acccess to rdbms.Peer/rdbms.DataSet)
+- Made rdbms.Criteria usable in a fluent interface way
+  (e.g. $c= Criteria::newInstance()->add('bz_id', 500, EQUAL)->add(...);
+  (friebe)
+- Implemented RFC #0107 (Generic acccess to rdbms.Peer/rdbms.DataSet)
   (friebe)
 - Use stream wrapper loading for loadClass() in class
   lang.archive.ArchiveClassLoader
