@@ -79,12 +79,7 @@
         $instance= $this->pool->get($url);
       } else {
         sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
-        try {
-          $class= HandlerFactory::handlerFor($type);
-        } catch (Exception $e) {
-          throw($e);
-        }
-
+        $class= HandlerFactory::handlerFor($type);
         $instance= $this->pool($url, $class->newInstance($option));
       }
 

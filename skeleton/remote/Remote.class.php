@@ -74,7 +74,7 @@
           $instance->_handler= $pool->acquire($key, TRUE);
         } catch (RemoteException $e) {
           continue;   // try next
-        } catch (Exception $e) {
+        } catch (XPException $e) {
           $e= new RemoteException($e->getMessage(), $e);
           continue;   // try next
         }
