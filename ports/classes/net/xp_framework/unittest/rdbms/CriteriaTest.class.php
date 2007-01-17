@@ -134,5 +134,41 @@
         new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))
       );
     }
+
+    /**
+     * Tests rdbms.Criteria's fluent interface 
+     *
+     * @see     xp://rdbms.Criteria#newInstance
+     */
+    #[@test]
+    public function newInstance() {
+      $this->assertClass(Criteria::newInstance(), 'rdbms.Criteria');
+    }
+
+    /**
+     * Tests rdbms.Criteria's fluent interface 
+     *
+     * @see     xp://rdbms.Criteria#add
+     */
+    #[@test]
+    public function addReturnsThis() {
+      $this->assertClass(
+        Criteria::newInstance()->add('job_id', 1, EQUAL), 
+        'rdbms.Criteria'
+      );
+    }
+
+    /**
+     * Tests rdbms.Criteria's fluent interface 
+     *
+     * @see     xp://rdbms.Criteria#addOrderBy
+     */
+    #[@test]
+    public function addOrderByReturnsThis() {
+      $this->assertClass(
+        Criteria::newInstance()->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
+        'rdbms.Criteria'
+      );
+    }
   }
 ?>
