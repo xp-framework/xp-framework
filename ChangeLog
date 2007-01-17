@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Replace deprecated is_a() with instanceof operator in core
+  (kiesel)
 - Made rdbms.Criteria usable in a fluent interface way
   (e.g. $c= Criteria::newInstance()->add('bz_id', 500, EQUAL)->add(...);
   (friebe)
