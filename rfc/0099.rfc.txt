@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Dec 17 19:21:50     2006
-@status: draft
+@status: discussion, ends Mon Jan 22 16:00:00 CET 2007
 @category: rdbms
 
 Scope of Change
@@ -27,67 +27,44 @@ Current
     Restrictions::like('title', 'Hello%'),
     Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
   ));
+  $iterator= News::getPeer()->iteratorFor(new Criteria());
+  $entity= News::getByNews_id(1);
 ?>
 
 New
 ~~~
 <?php
-  // Idea #1
-  $entries= News::getPeer()->doSelect(new TodaysHelloNewsFinder());
-  
-  // Idea #2
-  $finder= new TodaysHelloNewsFinder();
-  $entries= $finder->find(News::getPeer());
-  
-  // Idea #3 (like idea #2, but Finder is a singleton)
-  $entries= TodaysHelloNewsFinder::getInstance()->find(News::getPeer());
+  $nf= new NewsFinder();
+  $entries= $nf->findAll($nf->todaysHelloNews());
+  $iterator= $nf->iterate($nf->all());
+  $entity= $nf->find($nf->byPrimary(1));
 ?>
 
-Finder class (idea #1)
-~~~~~~~~~~~~~~~~~~~~~~
+Finder class
+~~~~~~~~~~~~
 <?php
-  class TodaysHelloNewsFinder extends Finder {
+  class NewsFinder extends Finder {
+    public function getPeer() {
+      return News::getPeer();
+    }
   
-    public function criteria() {
+    #[@finder(kind= ENTITY)]
+    public function byPrimary($pk) {
+      return new Criteria(array('news_id', $pk, EQUAL));
+    }
+  
+    #[@finder(kind= COLLECTION)]
+    public function allNews() {
+      return new Criteria();
+    }
+
+    #[@finder(kind= COLLECTION)]
+    public function todaysHelloNews() {
       return new Criteria(Restrictions::allOf(
         Restrictions::like('title', 'Hello%'),
         Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
       );
     }
-  }
-  
-  abstract class Finder extends Object implements SQLExpression {
-
-    public function executeSelect($conn, $peer) {
-      if (!($c= $this->criteria() instanceof SQLExpression) {
-        throw new SQLStatementFailedException(sprintf(
-          '%s::criteria() failed to return an SQLExpression (returned %s)',
-          $this->getClassName(),
-          xp::typeOf($c)
-        ));
-      }
-      return $c->executeSelect($conn, $peer);
-    }
-    
-    public abstract function criteria();
-  }
-?>
-
-Finder class (idea #2)
-~~~~~~~~~~~~~~~~~~~~~~
-<?php
-  class TodaysHelloNewsFinder implements Finder {
-  
-    public function find($peer) {
-      return $peer->doSelect(new Criteria(Restrictions::allOf(
-        Restrictions::like('title', 'Hello%'),
-        Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
-      ));
-    }
-  }
-  
-  interface Finder {
-    public function find($peer);
   }
 ?>
 
@@ -108,6 +85,9 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0099.diff
+  Implementing patch
+
 
 Comments
 --------
