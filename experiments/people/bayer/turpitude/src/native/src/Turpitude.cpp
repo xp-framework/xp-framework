@@ -208,7 +208,6 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
                         keyObject = env->NewObject(keyClass, keyConstructor, num_key);
                     break;
                 }
-                //efree(key_name);
 
                 // value object
                 jobject valObject = zval_to_jobject(env, *hashval);
@@ -223,6 +222,16 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             // get class entry and object value
             zend_class_entry* ce = Z_OBJCE_P(val);
             zend_object_value* zo = &(val->value.obj);
+
+            // check for special objects
+            if (strcmp(ce->name, "TurpitudeJavaObject") == 0) {
+                turpitude_javaobject_object* object = (turpitude_javaobject_object*)zend_object_store_get_object(val TSRMLS_CC);
+                return object->java_object;
+            }
+            if (strcmp(ce->name, "TurpitudeJavaClass") == 0) {
+                turpitude_javaclass_object* myclass = (turpitude_javaclass_object*)zend_object_store_get_object(val TSRMLS_CC);
+                return myclass->java_class;
+            }
 
             // allocate class and object
             jstring phpclassname = env->NewStringUTF(ce->name);

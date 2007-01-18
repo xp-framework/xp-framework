@@ -4,12 +4,12 @@ import javax.script.*;
 import net.xp_framework.turpitude.PHPEvalException;
 import net.xp_framework.turpitude.PHPCompileException;
 
-public class ContextSample {
+public class ExceptionSample {
 
    /**
     * default constructor
     */
-    public ContextSample() {
+    public ExceptionSample() {
     }
 
     /**
@@ -52,16 +52,14 @@ public class ContextSample {
         StringBuffer src = new StringBuffer();
         src.append("<?php \n");
         src.append("$turpenv = $_SERVER[\"TURP_ENV\"]; \n");
-        src.append("$class = $turpenv->findClass(\"net/xp_framework/turpitude/samples/ExampleClass\");\n");
-        src.append("$constructor = $class->findConstructor('(ILjava/lang/String;)V');");
-        src.append("$instance = $class->create($constructor, 1337, 'eleet');");
-        src.append("$method = $class->findMethod('setValues', '(ILjava/lang/String;)V');");
-        src.append("$instance->javaInvoke($method, 1338, 'eleeter');");
-        src.append("$method = $class->findMethod('toString', '()Ljava/lang/String;');");
-        src.append("$result = $instance->javaInvoke($method);");
-        src.append("echo $result.\"\\n\";");
-        src.append("$result = $instance->getDate('()Ljava/util/Date;');");
-        src.append("return $result;");
+        src.append("echo \"before\n\";");
+        src.append("$class = $turpenv->findClass('java/lang/Exception');");
+        src.append("$constructor = $class->findConstructor('(Ljava/lang/String;)V');");
+        src.append("$instance = $class->create($constructor, 'Test');");
+        src.append("$turpenv->throw($instance);");
+        //src.append("$turpenv->throwNew('java/lang/IllegalArgumentException', 'Test');");
+        //src.append("$turpenv->throwNew('non/existent/Exception', 'Test');");
+        src.append("echo \"after\n\";");
         src.append("?>"); 
         return src.toString();
     }
@@ -70,7 +68,7 @@ public class ContextSample {
      * entry point
      */
     public static void main(String[] argv) {
-        ContextSample cs = new ContextSample();
+        ExceptionSample cs = new ExceptionSample();
         cs.exec();
     }
  

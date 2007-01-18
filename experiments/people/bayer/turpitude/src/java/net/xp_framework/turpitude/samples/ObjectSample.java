@@ -4,12 +4,12 @@ import javax.script.*;
 import net.xp_framework.turpitude.PHPEvalException;
 import net.xp_framework.turpitude.PHPCompileException;
 
-public class ContextSample {
+public class ObjectSample {
 
    /**
     * default constructor
     */
-    public ContextSample() {
+    public ObjectSample() {
     }
 
     /**
@@ -70,7 +70,7 @@ public class ContextSample {
      * entry point
      */
     public static void main(String[] argv) {
-        ContextSample cs = new ContextSample();
+        ObjectSample cs = new ObjectSample();
         cs.exec();
     }
  

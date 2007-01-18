@@ -112,6 +112,8 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
 
 //####################### helpers ##################################3
 
+
+
 static
     ZEND_BEGIN_ARG_INFO(turpitude_jobject_arginfo_zero, 0)
     ZEND_END_ARG_INFO();
@@ -167,8 +169,16 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
     if (strcmp(Z_STRVAL_P(*argv[0]), "javaInvoke") == 0) {
         turpitude_jobject_method_javainvoke(jobj, xargc, xargv, return_value);
         method_valid = true;
+    } else {
+        // first parameter might be a method signature
+        if (Z_TYPE_P(*argv[0]) == IS_STRING) {
+            zval* methodval;
+            // try to convert *xargv[0] into a TurpitudeJavaMethod, store it into *xargv[0]
+            make_turpitude_jmethod_instance(jobj->java_class, method_name, Z_STRVAL_P(*xargv[0]), *xargv[0]);
+            turpitude_jobject_method_javainvoke(jobj, xargc, xargv, return_value);
+            method_valid = true;
+        } 
     }
-    
 
     // error handling
     char* errmsg = (char*)emalloc(100 + strlen(method_name));

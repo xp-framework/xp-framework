@@ -18,6 +18,41 @@ void turpitude_env_method_findClass(int xargc, zval*** xargv, zval* return_value
     make_turpitude_jclass_instance(Z_STRVAL_P(*xargv[0]), return_value);
 }
 
+void turpitude_env_method_throw_new(int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc != 2) 
+        php_error(E_ERROR, "invalid number of arguments to method throwNew.");
+
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 1 (exception) in method throwNew, should be IS_STRING, see JNI documentation for format.");
+    
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 2 (message) in method throwNew, should be IS_STRING");
+   
+    ZVAL_NULL(return_value);
+    java_throw(turpitude_jenv, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+}
+
+void turpitude_env_method_throw(int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc != 1) 
+        php_error(E_ERROR, "invalid number of arguments to method throw.");
+
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT) 
+        php_error(E_ERROR, "invalid type for param 1 (exception) in method throw, should be IS_OBJECT.");
+
+    zend_class_entry* ce = Z_OBJCE_P(*xargv[0]);
+    if (strcmp(ce->name, "TurpitudeJavaObject") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (exception) in method throw, should be TurpitudeJavaObject.");
+
+    turpitude_javaobject_object* jobj = (turpitude_javaobject_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+    jclass throwable = turpitude_jenv->FindClass("java/lang/Throwable");
+    if (!turpitude_jenv->IsInstanceOf(jobj->java_object, throwable))
+        php_error(E_ERROR, "invalid type for param 1 (exception) in method throw, should be an instance of java/lang/Throwable.");
+
+    turpitude_jenv->Throw((jthrowable)jobj->java_object);
+}
+
 //####################### parameter pointers ##################################3
 
 static
@@ -70,6 +105,14 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
 
     if (strcmp(Z_STRVAL_P(*argv[0]), "findClass") == 0) {
         turpitude_env_method_findClass(xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "throwNew") == 0) {
+        turpitude_env_method_throw_new(xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "throw") == 0) {
+        turpitude_env_method_throw(xargc, xargv, return_value);
         method_valid = true;
     }
 
