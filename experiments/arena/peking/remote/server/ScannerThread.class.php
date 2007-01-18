@@ -19,6 +19,9 @@
     public
       $scanner    = NULL,
       $period     = 60;
+      
+    protected
+      $terminate  = FALSE;
 
     /**
      * Constructor
