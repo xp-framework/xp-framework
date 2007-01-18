@@ -65,9 +65,9 @@
     /**
      * Terminate child processes
      *
-     * @param   array children
+     * @param   &array children
      */
-    protected function _killChildren($children) {
+    protected function _killChildren(&$children) {
       foreach ($children as $pid => $i) {
         $this->cat && $this->cat->infof('Server #%d: Terminating child #%d with pid %d', getmypid(), $i, $pid);
         posix_kill($pid, SIGINT);
