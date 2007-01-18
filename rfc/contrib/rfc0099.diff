@@ -1,0 +1,430 @@
+Index: finder/FinderException.class.php
+===================================================================
+--- finder/FinderException.class.php	(revision 0)
++++ finder/FinderException.class.php	(revision 0)
+@@ -0,0 +1,21 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('util.ChainedException');
++
++  /**
++   * Indicates an exception occured while using the Finder API. All
++   * methods will wrap exceptions into an instance of this class or
++   * a subclass of it. The causing exception is available via the 
++   * getCause() method.
++   *
++   * @see      xp://util.ChainedException
++   * @purpose  Chained exception
++   */
++  class FinderException extends ChainedException {
++  
++  }
++?>
+
+Property changes on: finder/FinderException.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: finder/Finder.class.php
+===================================================================
+--- finder/Finder.class.php	(revision 0)
++++ finder/Finder.class.php	(revision 0)
+@@ -0,0 +1,215 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  define('ENTITY',     '<? extends DataSet>');
++  define('COLLECTION', '<? extends DataSet>[]');
++
++  uses(
++    'rdbms.finder.FinderException',
++    'rdbms.finder.FinderMethod',
++    'rdbms.finder.NoSuchEntityException',
++    'lang.MethodNotImplementedException'
++  );
++
++  /**
++   * A finder is a collection of criteria for a given rdbms.Peer object.
++   *
++   * Declaration:
++   * <code>
++   *   class JobFinder extends Finder {
++   *     public function getPeer() {
++   *       return Job::getPeer();
++   *     }
++   *
++   *     #[@finder(kind= ENTITY)]
++   *     public function byPrimary($pk) {
++   *       return new Criteria(array('job_id', $pk, EQUAL));
++   *     }
++   *
++   *     #[@finder(kind= COLLECTION)]
++   *     public function expiredJobs() {
++   *       return new Criteria(array('expire_at', Date::now(), GREATER_EQUAL));
++   *     }
++   *   }
++   * </code>
++   *
++   * Finding single entities:
++   * <code>
++   *   $jf= new JobFinder();
++   *   $job= $jf->find($jf->byPrimary(10));
++   * </code>
++   *
++   * Reflective use:
++   * <code>
++   *   $jf= new JobFinder();
++   *
++   *   Console::writeLine($jf->getClassName(), ' provides the following list methods:');
++   *   foreach ($jf->collectionMethods() as $m) {
++   *     Console::writeLine('- ', $m->getName());
++   *   }
++   * </code>
++   *
++   * Finding a collection of entities:
++   * <code>
++   *   // Hardcoded version
++   *   $jf->findAll($jf->expiredJobs(10));
++   *
++   *   // Generic access version
++   *   $jf->findAll($jf->method('expiredJobs')->invoke(array(10)));
++   * </code>
++   *
++   * Iterating on a collection of entities:
++   * <code>
++   *   for ($iterator= $jf->iterate($jf->expiredJobs(10)); $iterator->hasNext(); ) {
++   *     Console::writeLine($iterator->next());
++   *   }
++   * </code>
++   *
++   * @purpose  Base class for all finder
++   */
++  abstract class Finder extends Object {
++  
++    /**
++     * Returns the associated peer objects
++     *
++     * @return  rdbms.Peer
++     */
++    public abstract function getPeer();
++    
++    /**
++     * Helper methods for *Methods() methods.
++     *
++     * @param   string kind
++     * @return  rdbms.finder.FinderMethod[]
++     */
++    protected function finderMethods($kind) {
++      $r= array();
++      foreach ($this->getClass()->getMethods() as $m) {
++        if (
++          $m->hasAnnotation('finder') &&
++          (NULL === $kind || $kind == $m->getAnnotation('finder', 'kind'))
++        ) $r[]= new FinderMethod($this, $m);
++      }
++      return $r;
++    }
++
++    /**
++     * Returns all finder methods
++     *
++     * @see     xp://rdbms.finder.Finder#entityMethods
++     * @see     xp://rdbms.finder.Finder#collectionMethods
++     * @return  rdbms.finder.FinderMethod[]
++     */
++    public function allMethods() {
++      return $this->finderMethods(NULL);
++    }
++
++    /**
++     * Returns all finder methods that return a single entity
++     *
++     * @return  rdbms.finder.FinderMethod[]
++     */
++    public function entityMethods() {
++      return $this->finderMethods(ENTITY);
++    }
++
++    /**
++     * Returns all finder methods that return a colleciton of entities
++     *
++     * @return  rdbms.finder.FinderMethod[]
++     */
++    public function collectionMethods() {
++      return $this->finderMethods(COLLECTION);
++    }
++
++    /**
++     * Retrieve a single finder method. Returns the all() method if the 
++     * name argument is NULL
++     *
++     * @param   string name
++     * @return  rdbms.finder.FinderMethod in case the method does not exist or is no finder
++     * @throws  rdbms.finder.FinderException
++     */
++    public function method($name) {
++      NULL === $name && $name= 'all';
++
++      if (!($m= $this->getClass()->getMethod($name))) {
++        throw new FinderException('No such finder', new MethodNotImplementedException($name));
++      }
++      if (!$m->hasAnnotation('finder')) {
++        throw new FinderException('Not a finder', new IllegalArgumentException($m->getName()));
++      }
++      
++      return new FinderMethod($this, $m);
++    }
++    
++    /**
++     * Returns an empty criteria object
++     *
++     * @return  rdbms.Criteria
++     */
++    #[@finder(kind= COLLECTION)]
++    public function all() {
++      return new Criteria();
++    }
++    
++    /**
++     * Find a single entity by specified criteria.
++     *
++     * @param   rdbms.Criteria
++     * @return  rdbms.DataSet
++     * @throws  rdbms.finder.NoSuchEntityException
++     * @throws  rdbms.finder.FinderException
++     */
++    public function find($criteria) {
++      $list= $this->findAll($criteria);
++
++      switch ($s= sizeof($list)) {
++        case 1: return $list[0];            // OK, we expect exactly one element
++
++        case 0: throw new NoSuchEntityException(
++          'Entity does not exist', 
++          new IllegalStateException('No results for '.$criteria->toString())
++        );
++
++        default: throw new FinderException(
++          'Query returned more than one result ('.$s.')', 
++          new IllegalStateException('')
++        );
++      }
++    }
++
++    /**
++     * Find a list of entities by specified criteria..
++     *
++     * @param   rdbms.Criteria
++     * @return  rdbms.DataSet[]
++     * @throws  rdbms.finder.FinderException
++     */
++    public function findAll($criteria) {
++      try {
++        return $this->getPeer()->doSelect($criteria);
++      } catch (SQLException $e) {
++        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
++      }
++    }
++
++    /**
++     * Iterate on a list of entities by specified criteria..
++     *
++     * @param   rdbms.Criteria
++     * @return  rdbms.ResultIterator
++     * @throws  rdbms.finder.FinderException
++     */
++    public function iterate($criteria) {
++      try {
++        return $this->getPeer()->iteratorFor($criteria);
++      } catch (SQLException $e) {
++        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
++      }
++    }
++  }
++?>
+
+Property changes on: finder/Finder.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: finder/FinderMethod.class.php
+===================================================================
+--- finder/FinderMethod.class.php	(revision 0)
++++ finder/FinderMethod.class.php	(revision 0)
+@@ -0,0 +1,84 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Represents a finder method. Finder methods are methods inside
++   * a rdbms.finder.Finder subclass that are decorated with the
++   * "finder" annotation.
++   *
++   * There are two kinds of finder methods
++   * <ol>
++   *   <li>Those that return a single entity, finder(kind= ENTITIY)</li>
++   *   <li>Those that return a collection fo entities, finder(kind= COLLECTION)</li>
++   * </ol>
++   *
++   * @see      xp://rdbms.finder.Finder
++   * @purpose  Method wrapper
++   */
++  class FinderMethod extends Object {
++    protected
++      $finder= NULL, 
++      $method= NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   rdbms.finder.Finder finder
++     * @param   lang.reflect.Method method
++     */
++    function __construct($finder, $method) {
++      $this->finder= $finder;
++      $this->method= $method;
++    }
++    
++    /**
++     * Gets this method's kind
++     *
++     * @return  string kind one of ENTITY | COLLECTION
++     */
++    function getKind() {
++      return current($this->method->getAnnotation('finder'));
++    }
++ 
++    /**
++     * Returns this method's name
++     *
++     * @return  string method name
++     */
++    function getName() {
++      return $this->method->getName();
++    }
++   
++    /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    function toString() {
++      return sprintf(
++        '%s(%s %s::%s())',
++        $this->getClassName(),
++        $this->getKind(),
++        $this->finder->getClassName(),
++        $this->method->getName()
++      );
++    }
++  
++    /**
++     * Invokes this method
++     *
++     * @param   mixed[] args default array()
++     * @return  mixed
++     */
++    function invoke($args= array()) {
++      try {
++        return $this->method->invoke($this->finder, $args);
++      } catch (Throwable $e) {
++        throw new FinderException($this->method->getName().' invocation failed', $e);
++      }
++    }
++  }
++?>
+
+Property changes on: finder/FinderMethod.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: finder/FinderAdapter.class.php
+===================================================================
+--- finder/FinderAdapter.class.php	(revision 0)
++++ finder/FinderAdapter.class.php	(revision 0)
+@@ -0,0 +1,37 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('rdbms.finder.Finder');
++
++  /**
++   * Adapter that makes rdbms.Peer objects usable as finders.
++   *
++   * @see      xp://rdbms.Peer
++   * @purpose  Finder / Peer Adapter
++   */
++  class FinderAdapter extends Finder {
++    protected 
++      $peer= NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   rdbms.Peer peer
++     */
++    public function __construct($peer) {
++      $this->peer= $peer;
++    }
++
++    /**
++     * Retrieve this finder's peer object
++     *
++     * @return  rdbms.Peer
++     */
++    public function getPeer() {
++      return $this->peer;
++    }
++  }
++?>
+
+Property changes on: finder/FinderAdapter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: finder/NoSuchEntityException.class.php
+===================================================================
+--- finder/NoSuchEntityException.class.php	(revision 0)
++++ finder/NoSuchEntityException.class.php	(revision 0)
+@@ -0,0 +1,18 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('rdbms.finder.FinderException');
++
++  /**
++   * Indicates a specific entity could not be found
++   *
++   * @see      xp://rdbms.finder.FinderException#find
++   * @purpose  Chained exception
++   */
++  class NoSuchEntityException extends FinderException {
++  
++  }
++?>
+
+Property changes on: finder/NoSuchEntityException.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
