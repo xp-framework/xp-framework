@@ -73,7 +73,7 @@
      */
     public function run() {
       $initial= TRUE;
-      do {
+      while (!$this->terminate) {
         $changed= $this->scanner->scanDeployments();
         if ($changed) {
           $this->distribute($deployments= $this->scanner->getDeployments());
@@ -88,7 +88,7 @@
         }
         
         Thread::sleep($this->period * 1000);
-      } while (1);
+      }
     }
   } 
 ?>
