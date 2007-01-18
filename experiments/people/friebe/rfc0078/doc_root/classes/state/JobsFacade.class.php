@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('scriptlet.xml.workflow.facade.DataSetFacade');
+  uses(
+    'scriptlet.xml.workflow.facade.DataSetFacade',
+    'classes.db.JobFinder'
+  );
 
   /**
    * Job editor
@@ -13,5 +16,9 @@
    */
   #[@facade(datasource= 'classes.db.Job')]
   class JobsFacade extends DataSetFacade {
+  
+    protected function getFinder() {
+      return new JobFinder();
+    }
   }
 ?>
