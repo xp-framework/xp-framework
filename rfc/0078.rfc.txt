@@ -163,6 +163,9 @@ Dependencies
 - RFC #0107
   More information about table fields in rdbms.Peer
 
+- RFC #0099
+  Finder API
+
 Related documents
 -----------------
 
