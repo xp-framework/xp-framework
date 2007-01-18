@@ -30,6 +30,7 @@
       $this->scanner= $scanner;
       
       $this->storage= new ShmSegment(0x3c872747);
+      if (!$this->storage->isEmpty()) $this->storage->remove();
     }
 
     /**
@@ -89,6 +90,5 @@
         Thread::sleep($this->period * 1000);
       } while (1);
     }
-
   } 
 ?>
