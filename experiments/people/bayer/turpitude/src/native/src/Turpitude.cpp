@@ -47,7 +47,7 @@ jclass get_java_class(JNIEnv* env, jobject obj, char** dest) {
  * converts a jvalue to a zval
  * uses dest if dest != null, creates a new zval otherwise
  */
-zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_javamethod_return_type type, zval* dest) {
+zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* dest) {
     // initialize return value
     zval* retval;
     if (dest != NULL)

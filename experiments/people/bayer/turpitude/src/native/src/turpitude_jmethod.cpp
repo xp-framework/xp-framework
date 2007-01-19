@@ -191,18 +191,19 @@ void make_turpitude_jmethod() {
     turpitude_jmethod_class_entry->create_object = turpitude_jmethod_create_object;
 }
 
-void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* dest) {
+void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* dest, bool is_static) {
     if (!dest)
         ALLOC_ZVAL(dest);
   
     // use JNIEnv to find the desired java class
-    jmethodID mid = turpitude_jenv->GetMethodID(cls, name, sig);
+    jmethodID mid;
+    if (is_static) 
+        mid = turpitude_jenv->GetStaticMethodID(cls, name, sig);
+    else 
+        mid = turpitude_jenv->GetMethodID(cls, name, sig);
+
     if (mid == NULL) {
-        int str_len = 100+strlen(name)+strlen(sig);
-        char* errmsg = (char*)malloc(str_len);
-        memset(errmsg, 0, str_len);
-        sprintf(errmsg, "unable to find java method %s with signature %s", name, sig);
-        php_error(E_ERROR, errmsg);
+        php_error(E_ERROR, "unable to find java method %s with signature %s", name, sig);
     }
 
     // instantiate JavaClass object
@@ -226,7 +227,7 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
         }
         sp++;
     }
-    turpitude_javamethod_return_type rt;
+    turpitude_java_type rt;
     switch (c) {
         case 'Z': rt = JAVA_BOOLEAN;  break;  
         case 'B': rt = JAVA_BYTE;     break;  
@@ -244,6 +245,8 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     }
     intern->return_type = rt;
 
+    intern->is_static = is_static;
+
     // copy method name and signature to name and add it as a property
     zval* methodname;
     MAKE_STD_ZVAL(methodname);
@@ -253,5 +256,9 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     MAKE_STD_ZVAL(signature);
     ZVAL_STRING(signature, sig, 1);
     zend_hash_update(Z_OBJPROP_P(dest), "Signature", sizeof("Signature"), (void **) &signature, sizeof(zval *), NULL);
+    zval* isstatic;
+    MAKE_STD_ZVAL(isstatic);
+    ZVAL_BOOL(isstatic, isstatic);
+    zend_hash_update(Z_OBJPROP_P(dest), "isStatic", sizeof("isStatic"), (void **) &isstatic, sizeof(zval *), NULL);
 }
 

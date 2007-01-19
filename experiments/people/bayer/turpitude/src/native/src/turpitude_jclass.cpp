@@ -18,7 +18,22 @@ void turpitude_jclass_method_findMethod(turpitude_javaclass_object* cls, int xar
     if (Z_TYPE_P(*xargv[1]) != IS_STRING) 
         php_error(E_ERROR, "invalid type for param 2 (signature) in method findClass, should be IS_STRING, see JNI documentation for format.");
 
-    make_turpitude_jmethod_instance(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]), return_value);
+    make_turpitude_jmethod_instance(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]), return_value, false);
+}
+
+void turpitude_jclass_method_findStaticMethod(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc != 2) 
+        php_error(E_ERROR, "invalid number of arguments to method findClass.");
+
+    // check param format
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 1 (methodname) in method findClass, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 2 (signature) in method findClass, should be IS_STRING, see JNI documentation for format.");
+
+    make_turpitude_jmethod_instance(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]), return_value, true);
 }
 
 void turpitude_jclass_method_findConstructor(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
@@ -31,6 +46,109 @@ void turpitude_jclass_method_findConstructor(turpitude_javaclass_object* cls, in
         php_error(E_ERROR, "invalid type for param 1 (signature) in method findConstructor, should be IS_STRING, see JNI documentation for format.");
 
     make_turpitude_jmethod_instance(cls->java_class, "<init>", Z_STRVAL_P(*xargv[0]), return_value);
+}
+
+void turpitude_jclass_method_invokestatic(turpitude_javaclass_object* jclass, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 1) 
+        php_error(E_ERROR, "invalid number of arguments to method invokeStatic.");
+
+    // check constructor validity
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT)
+        php_error(E_ERROR, "invalid type for param 1 (method) in method invokeStatic, should be IS_OBJECT.");
+
+    zval* methodval = *xargv[0];
+    zend_object_value obj = methodval->value.obj;
+    zend_class_entry* methodce = Z_OBJCE_P(methodval);
+
+    if (strcmp(methodce->name, "TurpitudeJavaMethod") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (method) in method invokeStatic, should be TurpitudeJavaMethod.");
+
+    // get jmethod
+    turpitude_javamethod_object* method = (turpitude_javamethod_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+
+    if (!method->is_static)
+        php_error(E_ERROR, "tried to call nonstatic method statically");
+
+    // call java method
+    // there might be a better way to do this...
+    // it's an awful lot of ifs, isn't it?
+    jvalue retval;
+    if (xargc > 1) {
+        // we need to build the jvalue array
+        jvalue args[xargc-1];
+        for (int i=0; i < xargc-1; i++) {
+            args[i] = zval_to_jvalue(turpitude_jenv, *xargv[i+1]);
+        }
+        switch (method->return_type) {
+            case JAVA_VOID: 
+                turpitude_jenv->CallStaticVoidMethodA(jclass->java_class, method->java_method, args); 
+                break;
+            case JAVA_OBJECT:
+                retval.l = turpitude_jenv->CallStaticObjectMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_BOOLEAN:
+                retval.z = turpitude_jenv->CallStaticBooleanMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_BYTE:
+                retval.b = turpitude_jenv->CallStaticByteMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_CHAR:
+                retval.c = turpitude_jenv->CallStaticCharMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_SHORT:
+                retval.s = turpitude_jenv->CallStaticShortMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_INT:
+                retval.i = turpitude_jenv->CallStaticIntMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_LONG:
+                retval.j = turpitude_jenv->CallStaticLongMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_FLOAT:
+                retval.f = turpitude_jenv->CallStaticFloatMethodA(jclass->java_class, method->java_method, args);
+                break;
+            case JAVA_DOUBLE:
+                retval.d = turpitude_jenv->CallStaticDoubleMethodA(jclass->java_class, method->java_method, args);
+                break;
+        };
+    } else {
+        // no parameters given - just call the method
+        switch (method->return_type) {
+            case JAVA_VOID: 
+                turpitude_jenv->CallStaticVoidMethod(jclass->java_class, method->java_method); 
+                break;
+            case JAVA_OBJECT:
+                retval.l = turpitude_jenv->CallStaticObjectMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_BOOLEAN:
+                retval.z = turpitude_jenv->CallStaticBooleanMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_BYTE:
+                retval.b = turpitude_jenv->CallStaticByteMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_CHAR:
+                retval.c = turpitude_jenv->CallStaticCharMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_SHORT:
+                retval.s = turpitude_jenv->CallStaticShortMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_INT:
+                retval.i = turpitude_jenv->CallStaticIntMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_LONG:
+                retval.j = turpitude_jenv->CallStaticLongMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_FLOAT:
+                retval.f = turpitude_jenv->CallStaticFloatMethod(jclass->java_class, method->java_method);
+                break;
+            case JAVA_DOUBLE:
+                retval.d = turpitude_jenv->CallStaticDoubleMethod(jclass->java_class, method->java_method);
+                break;
+        };
+    }
+
+    jvalue_to_zval(turpitude_jenv, retval, method->return_type, return_value);
 }
 
 void turpitude_jclass_method_create(turpitude_javaclass_object* cls, zval* turpcls, int xargc, zval*** xargv, zval* return_value) {
@@ -128,8 +246,18 @@ void turpitude_jclass_call(INTERNAL_FUNCTION_PARAMETERS) {
         method_valid = true;
     }
 
+    if (strcmp(Z_STRVAL_P(*argv[0]), "findStaticMethod") == 0) {
+        turpitude_jclass_method_findStaticMethod(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
+
     if (strcmp(Z_STRVAL_P(*argv[0]), "findConstructor") == 0) {
         turpitude_jclass_method_findConstructor(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
+
+    if (strcmp(Z_STRVAL_P(*argv[0]), "invokeStatic") == 0) {
+        turpitude_jclass_method_invokestatic(cls, xargc, xargv, return_value);
         method_valid = true;
     }
 
@@ -271,10 +399,7 @@ void make_turpitude_jclass_instance(char* classname, zval* dest) {
     // use JNIEnv to find the desired java class
     jclass cls = turpitude_jenv->FindClass(classname);
     if (cls == NULL) {
-        char* errmsg = (char*)malloc(100+strlen(classname));
-        memset(errmsg, 0, 100+strlen(classname));
-        sprintf(errmsg, "unable to find java class %s", classname);
-        php_error(E_ERROR, errmsg);
+        php_error(E_ERROR, "unable to find java class %s", classname);
     }
 
     make_turpitude_jclass_instance(cls, classname, dest);

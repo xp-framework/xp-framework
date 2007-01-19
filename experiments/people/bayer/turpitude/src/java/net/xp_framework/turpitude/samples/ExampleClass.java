@@ -3,8 +3,16 @@ package net.xp_framework.turpitude.samples;
 import java.util.Date;
 
 public class ExampleClass {
-    int intval = 0;
-    String stringval = "";
+    public int intval = 0;
+    public String stringval = "";
+    private String privateString = "not to be touched!";
+
+    /** 
+     * useless static method
+     */
+    public static String staticMethod(int i) {
+        return "Static method : " + i;
+    }
 
    /**
     * default constructor

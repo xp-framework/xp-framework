@@ -28,7 +28,7 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
     turpitude_javamethod_object* method = (turpitude_javamethod_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
 
     // call java method
-    // there might be a better way to do this, but it's far too late
+    // there might be a better way to do this...
     // it's an awful lot of ifs, isn't it?
     jvalue retval;
     if (xargc > 1) {
@@ -105,10 +105,115 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
         };
     }
 
-    //TODO: retval to zval
     jvalue_to_zval(turpitude_jenv, retval, method->return_type, return_value);
 }
 
+void turpitude_jobject_method_javaget(turpitude_javaobject_object* jobj, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 2) 
+        php_error(E_ERROR, "invalid number of arguments to method javaGet.");
+
+    // check parameter validity
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (membername) in method javaGet, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (signature) in method javaGet, should be IS_STRING.");
+
+    jfieldID fid = turpitude_jenv->GetFieldID(jobj->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+    if (fid == NULL) 
+        php_error(E_ERROR, "unable to find member %s with signature %s", Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+   
+    turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[1])); 
+
+    jvalue retval;
+    switch (type) {
+        case JAVA_OBJECT:
+            retval.l = turpitude_jenv->GetObjectField(jobj->java_object, fid);
+            break;
+        case JAVA_BOOLEAN:
+            retval.z = turpitude_jenv->GetBooleanField(jobj->java_object, fid);
+            break;
+        case JAVA_BYTE:
+            retval.b = turpitude_jenv->GetByteField(jobj->java_object, fid);
+            break;
+        case JAVA_CHAR:
+            retval.c = turpitude_jenv->GetCharField(jobj->java_object, fid);
+            break;
+        case JAVA_SHORT:
+            retval.s = turpitude_jenv->GetShortField(jobj->java_object, fid);
+            break;
+        case JAVA_INT:
+            retval.i = turpitude_jenv->GetIntField(jobj->java_object, fid);
+            break;
+        case JAVA_LONG:
+            retval.j = turpitude_jenv->GetLongField(jobj->java_object, fid);
+            break;
+        case JAVA_FLOAT:
+            retval.f = turpitude_jenv->GetFloatField(jobj->java_object, fid);
+            break;
+        case JAVA_DOUBLE:
+            retval.d = turpitude_jenv->GetDoubleField(jobj->java_object, fid);
+            break;
+    };
+
+    if (type == JAVA_UNKNOWN) {
+        ZVAL_NULL(return_value);
+    } else {
+        jvalue_to_zval(turpitude_jenv, retval, type, return_value);
+    }
+}
+
+void turpitude_jobject_method_javaset(turpitude_javaobject_object* jobj, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 3) 
+        php_error(E_ERROR, "invalid number of arguments to method javaGet.");
+
+    // check parameter validity
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (membername) in method javaGet, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (signature) in method javaGet, should be IS_STRING.");
+
+    jfieldID fid = turpitude_jenv->GetFieldID(jobj->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+    if (fid == NULL) 
+        php_error(E_ERROR, "unable to find member %s with signature %s", Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+   
+    turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[1])); 
+
+
+    switch (type) {
+        case JAVA_OBJECT:
+            turpitude_jenv->SetObjectField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).l);
+            break;
+        case JAVA_BOOLEAN:
+            turpitude_jenv->SetBooleanField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).z);
+            break;
+        case JAVA_BYTE:
+            turpitude_jenv->SetByteField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_CHAR:
+            turpitude_jenv->SetCharField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_SHORT:
+            turpitude_jenv->SetShortField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_INT:
+            turpitude_jenv->SetIntField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_LONG:
+            turpitude_jenv->SetLongField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_FLOAT:
+            turpitude_jenv->SetFloatField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).f);
+        case JAVA_DOUBLE:
+            turpitude_jenv->SetDoubleField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).d);
+            break;
+    };
+
+    ZVAL_NULL(return_value);
+}
 
 //####################### helpers ##################################3
 
@@ -136,7 +241,8 @@ void turpitude_jobject_construct(INTERNAL_FUNCTION_PARAMETERS) {
 
 void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
     //printf("__call called:\n");
-    
+
+
     zval ***xargv, ***argv;
     int i = 0, xargc, argc = ZEND_NUM_ARGS();
     HashPosition pos;
@@ -169,7 +275,16 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
     if (strcmp(Z_STRVAL_P(*argv[0]), "javaInvoke") == 0) {
         turpitude_jobject_method_javainvoke(jobj, xargc, xargv, return_value);
         method_valid = true;
+    } else if (strcmp(Z_STRVAL_P(*argv[0]), "javaGet") == 0) {
+        turpitude_jobject_method_javaget(jobj, xargc, xargv, return_value);
+        method_valid = true;
+    } else if (strcmp(Z_STRVAL_P(*argv[0]), "javaSet") == 0) {
+        turpitude_jobject_method_javaset(jobj, xargc, xargv, return_value);
+        method_valid = true;
     } else {
+        //still, at least one parameter must be given
+        if (xargc <= 0) 
+            php_error(E_ERROR, "can't call method, at least provide the signature");
         // first parameter might be a method signature
         if (Z_TYPE_P(*argv[0]) == IS_STRING) {
             zval* methodval;
@@ -177,7 +292,9 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
             make_turpitude_jmethod_instance(jobj->java_class, method_name, Z_STRVAL_P(*xargv[0]), *xargv[0]);
             turpitude_jobject_method_javainvoke(jobj, xargc, xargv, return_value);
             method_valid = true;
-        } 
+        } else {
+            php_error(E_ERROR, "please provide a signature as first parameter");
+        }
     }
 
     // error handling
@@ -221,12 +338,12 @@ void turpitude_jobject_destruct(INTERNAL_FUNCTION_PARAMETERS) {
 }
 
 int turpitude_jobject_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC) {
-    printf("__cast called\n");
+    //printf("__cast called\n");
     return FAILURE;
 }
 
 zend_object_iterator* turpitude_jobject_get_iterator(zend_class_entry *ce, zval *object, int by_ref TSRMLS_DC) {
-    printf("get_iterator called\n");
+    //printf("get_iterator called\n");
     return NULL;
 }
 

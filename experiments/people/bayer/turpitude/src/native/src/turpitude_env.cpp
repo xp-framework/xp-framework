@@ -53,6 +53,54 @@ void turpitude_env_method_throw(int xargc, zval*** xargv, zval* return_value) {
     turpitude_jenv->Throw((jthrowable)jobj->java_object);
 }
 
+void turpitude_env_method_instanceof(int xargc, zval*** xargv, zval* return_value) {
+    if (xargc != 2) 
+        php_error(E_ERROR, "invalid number of arguments to method instanceOf.");
+
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT) 
+        php_error(E_ERROR, "invalid type for param 1 (object in method throw, should be IS_OBJECT.");
+
+    zend_class_entry* ce = Z_OBJCE_P(*xargv[0]);
+    if (strcmp(ce->name, "TurpitudeJavaObject") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (object) in method throw, should be TurpitudeJavaObject.");
+
+    turpitude_javaobject_object* jobj = (turpitude_javaobject_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+
+    jclass clazz = NULL;
+    if (Z_TYPE_P(*xargv[1]) == IS_STRING) 
+        clazz = turpitude_jenv->FindClass(Z_STRVAL_P(*xargv[1]));
+    else if (Z_TYPE_P(*xargv[1]) == IS_OBJECT) {
+        zend_class_entry* cce = Z_OBJCE_P(*xargv[1]);
+        if (strcmp(ce->name, "TurpitudeJavaClass") != 0) {
+            turpitude_javaclass_object* co = (turpitude_javaclass_object*)zend_object_store_get_object(*xargv[1] TSRMLS_CC);
+            clazz = co->java_class;
+        }
+    }
+
+    if (clazz == NULL)
+        php_error(E_ERROR, "invalid type for param 2 (class) in method instanceOf, should be IS_STRING or an object of class TurpitudeJavaClass");
+
+    if (turpitude_jenv->IsInstanceOf(jobj->java_object, clazz)) {
+        ZVAL_BOOL(return_value, true);
+    } else {
+        ZVAL_BOOL(return_value, false);
+    }
+}
+
+void turpitude_env_method_exceptionoccurred(int xargc, zval*** xargv, zval* return_value) {
+    jobject exc = NULL;
+    if (exc = turpitude_jenv->ExceptionOccurred()) {
+        char* classname;
+        jclass cls = get_java_class(turpitude_jenv, exc, &classname);
+        zval* turpcls;
+        MAKE_STD_ZVAL(turpcls);
+        make_turpitude_jclass_instance(cls, classname, turpcls);
+        make_turpitude_jobject_instance(cls, turpcls, exc, return_value);
+    } else {
+        ZVAL_NULL(return_value);
+    }
+}
+
 //####################### parameter pointers ##################################3
 
 static
@@ -113,6 +161,18 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
     }
     if (strcmp(Z_STRVAL_P(*argv[0]), "throw") == 0) {
         turpitude_env_method_throw(xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "instanceOf") == 0) {
+        turpitude_env_method_instanceof(xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "exceptionOccurred") == 0) {
+        turpitude_env_method_exceptionoccurred(xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "exceptionClear") == 0) {
+        turpitude_jenv->ExceptionClear();
         method_valid = true;
     }
 
