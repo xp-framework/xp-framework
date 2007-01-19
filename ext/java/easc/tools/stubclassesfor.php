@@ -16,30 +16,25 @@
   
   // {{{ string processInterface(remote.reflect.BeanDescription description, string purpose, string language [, bool showXml= FALSE])
   //     Transforms a bean description and returns the sourcecode
-  function processInterface(&$description, $purpose, $language, $showXml= FALSE) {
-    $node= &Node::fromObject($description, 'description');
+  function processInterface($description, $purpose, $language, $showXml= FALSE) {
+    $node= Node::fromObject($description, 'description');
     $node->setAttribute('purpose', $purpose);
 
-    $proc= &new DomXSLProcessor();
+    $proc= new DomXSLProcessor();
     $proc->setXSLFile(dirname(__FILE__).DIRECTORY_SEPARATOR.$language.'.xsl');
     $proc->setXMLBuf($node->getSource(INDENT_NONE));
     
     $showXml && Console::writeLine($purpose, ' => ', $node->getSource(INDENT_DEFAULT));
 
-    try(); {
-      $proc->run();
-    } if (catch('xml.TransformerException', $e)) {
-      return throw($e);
-    }
-    
+    $proc->run();
     return $proc->output();
   }
   // }}}
 
   // {{{ string processClass(remote.reflect.ClassWrapper wrapper, string language [, bool showXml= FALSE])
   //     Transforms a bean description and returns the sourcecode
-  function processClass(&$wrapper, $language, $showXml= FALSE) {
-    $node= &Node::fromObject($wrapper, 'class');
+  function processClass($wrapper, $language, $showXml= FALSE) {
+    $node= Node::fromObject($wrapper, 'class');
     $node->setAttribute('name', $wrapper->getName());
     foreach ($wrapper->fields as $name => $type) {
       $node->addChild(new Node('field', NULL, array(
@@ -48,18 +43,13 @@
       )));
     }
 
-    $proc= &new DomXSLProcessor();
+    $proc= new DomXSLProcessor();
     $proc->setXSLFile(dirname(__FILE__).DIRECTORY_SEPARATOR.$language.'.xsl');
     $proc->setXMLBuf($node->getSource(INDENT_NONE));
     
     $showXml && Console::writeLine($wrapper->getName(), ' => ', $node->getSource(INDENT_DEFAULT));
 
-    try(); {
-      $proc->run();
-    } if (catch('xml.TransformerException', $e)) {
-      return throw($e);
-    }
-    
+    $proc->run();
     return $proc->output();
   }
   // }}}
@@ -67,7 +57,7 @@
   // {{{ void writeTo(string path, string classname, string source)
   //     Writes the sourcecode to the classname
   function writeTo($path, $classname, $source) {
-    $file= &new File(
+    $file= new File(
       rtrim($path, DIRECTORY_SEPARATOR).
       DIRECTORY_SEPARATOR.
       strtr($classname, '.', DIRECTORY_SEPARATOR).'.class.php'
@@ -76,30 +66,26 @@
       Console::writeLine('---> Class ', $classname, ' already exists, skipping');
     } else {
       Console::writeLine('---> Generating ', $classname);
-      try(); {
-        $dir= &new Folder($file->getPath());
-        if (!$dir->exists()) $dir->create();
+      $dir= new Folder($file->getPath());
+      if (!$dir->exists()) $dir->create();
 
-        $file->open(FILE_MODE_WRITE);
-        $file->write($source);
-        $file->close();
-      } if (catch('io.IOException', $e)) {
-        return throw($e);
-      }
+      $file->open(FILE_MODE_WRITE);
+      $file->write($source);
+      $file->close();
     }
     
     Console::writeLine('     >> ', str_replace(dirname(__FILE__), '.', $file->getURI()));
   }
   // }}}
   
-  // {{{ void createClasses(string jndi, &remote.Remote remote, &remote.reflect.ClassReference[] set)
-  //     Create classes
-  function classSetOf($jndi, &$remote, &$references) {
-    $set= &new HashSet();
+  // {{{ remote.reflect.ClassReference[] classSetOf(string jndi, remote.Remote remote, remote.reflect.ClassReference[] set)
+  //     Returns a unique, flat set of classes
+  function classSetOf($jndi, $remote, $references) {
+    $set= new HashSet();
     foreach ($references as $classref) {
-      try(); {
-        $class= &$remote->lookup('Class:'.$jndi.':'.$classref->referencedName());
-      } if (catch('Exception', $e)) {
+      try {
+        $class= $remote->lookup('Class:'.$jndi.':'.$classref->referencedName());
+      } catch (Throwable $e) {
         Console::writeLine('*** ', $classref->referencedName(), ' ~ ', $e->toString());
         xp::gc();
         continue;
@@ -114,7 +100,7 @@
   // }}}
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || $p->exists('help', '?')) {
     Console::writeLine(<<<__
 Generates stub classes by using the ESDL service
@@ -144,10 +130,10 @@ __
   }
   
   $jndi= $p->value(2);
-  try(); {
-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
-    $remote && $description= &$remote->lookup('Services:'.$jndi);
-  } if (catch('Exception', $e)) {
+  try {
+    $remote= Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
+    $description= $remote->lookup('Services:'.$jndi);
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -163,14 +149,14 @@ __
   // If class names are passed, process them
   if ($p->exists('classes')) {
     foreach (explode(',', $p->value('classes', 'c', '')) as $name) {
-      try(); {
-        $class= &$remote->lookup('Class:'.$jndi.':'.$name);
-        $class && writeTo(
+      try {
+        $class= $remote->lookup('Class:'.$jndi.':'.$name);
+        writeTo(
           $path, 
           $class->getName(), 
           processClass($class, 'xp', $showXml)
         );
-      } if (catch('Exception', $e)) {
+      } catch (Throwable $e) {
         $e->printStackTrace();
         continue;
       }
@@ -185,13 +171,13 @@ __
       $classwrapper->getName() == $description->interfaces->values[REMOTE_INTERFACE]->getClassName()
     )) continue;
 
-    try(); {
+    try {
       writeTo(
         $path, 
         $classwrapper->getName(), 
         processClass($classwrapper, 'xp', $showXml)
       );
-    } if (catch('Exception', $e)) {
+    } catch (Throwable $e) {
       $e->printStackTrace();
       continue;
     }
