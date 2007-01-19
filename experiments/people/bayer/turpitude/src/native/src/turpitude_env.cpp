@@ -101,6 +101,15 @@ void turpitude_env_method_exceptionoccurred(int xargc, zval*** xargv, zval* retu
     }
 }
 
+void turpitude_env_method_getscriptcontext(zval* return_value) {
+    char* classname;
+    jclass cls = get_java_class(turpitude_jenv, turpitude_current_script_context, &classname);
+    zval* turpcls;
+    MAKE_STD_ZVAL(turpcls);
+    make_turpitude_jclass_instance(cls, classname, turpcls);
+    make_turpitude_jobject_instance(cls, turpcls, turpitude_current_script_context, return_value);
+}
+
 //####################### parameter pointers ##################################3
 
 static
@@ -173,6 +182,10 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
     }
     if (strcmp(Z_STRVAL_P(*argv[0]), "exceptionClear") == 0) {
         turpitude_jenv->ExceptionClear();
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "getScriptContext") == 0) {
+        turpitude_env_method_getscriptcontext(return_value);
         method_valid = true;
     }
 

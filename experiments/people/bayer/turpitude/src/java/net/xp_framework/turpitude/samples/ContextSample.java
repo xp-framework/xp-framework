@@ -26,6 +26,10 @@ public class ContextSample {
         ScriptContext ctx = eng.getContext();
         ctx.setAttribute("string", "stringval", ScriptContext.ENGINE_SCOPE);
 
+        StringBuffer sb = new StringBuffer();
+        sb.append("before Script\n");
+        ctx.setAttribute("buffer", sb, ScriptContext.ENGINE_SCOPE);
+
         Object retval;
         try {
             retval = eng.eval(getSource());
@@ -46,22 +50,21 @@ public class ContextSample {
             System.out.println("done evaluating, return value " + retval);
         else 
             System.out.println("done evaluating, return value " + retval.getClass() + " : " + retval);
+
+        sb.append("after Script\n");
+        System.out.println("Buffer val: \n" + sb.toString());
     }
 
     private static String getSource() {
         StringBuffer src = new StringBuffer();
         src.append("<?php \n");
         src.append("$turpenv = $_SERVER[\"TURP_ENV\"]; \n");
-        src.append("$class = $turpenv->findClass(\"net/xp_framework/turpitude/samples/ExampleClass\");\n");
-        src.append("$constructor = $class->findConstructor('(ILjava/lang/String;)V');");
-        src.append("$instance = $class->create($constructor, 1337, 'eleet');");
-        src.append("$method = $class->findMethod('setValues', '(ILjava/lang/String;)V');");
-        src.append("$instance->javaInvoke($method, 1338, 'eleeter');");
-        src.append("$method = $class->findMethod('toString', '()Ljava/lang/String;');");
-        src.append("$result = $instance->javaInvoke($method);");
-        src.append("echo $result.\"\\n\";");
-        src.append("$result = $instance->getDate('()Ljava/util/Date;');");
-        src.append("return $result;");
+        src.append("$ctx = $turpenv->getScriptContext();");
+        src.append("var_dump($ctx);");
+        src.append("$attr = $ctx->getAttribute('(Ljava/lang/String;)Ljava/lang/Object;', 'string');");
+        src.append("var_dump($attr);");
+        src.append("$buffer = $ctx->getAttribute('(Ljava/lang/String;)Ljava/lang/Object;', 'buffer');");
+        src.append("$buffer->append('(Ljava/lang/String;)Ljava/lang/StringBuffer;', 'Script Value\n');");
         src.append("?>"); 
         return src.toString();
     }
