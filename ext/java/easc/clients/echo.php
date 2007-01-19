@@ -15,7 +15,7 @@
   );
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || !$p->exists(2)) {
     Console::writeLine(<<<__
 EASC echo bean demo application
@@ -57,10 +57,10 @@ __
   $cat= NULL;
   if ($p->exists('verbose')) {
     $l= &Logger::getInstance();
-    $cat= &$l->getCategory();
+    $cat= $l->getCategory();
     $cat->addAppender(new ColoredConsoleAppender());
     $pool= &HandlerInstancePool::getInstance();
-    $handler= &$pool->acquire($url);
+    $handler= $pool->acquire($url);
     $handler->setTrace($cat);
     
     if ($levels= $p->value('verbose')) {
@@ -71,11 +71,11 @@ __
     }
   }
   
-  try(); {
+  try {
     $remote= &Remote::forName($url);
-    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Roundtrip'));
-    $home && $instance= &$home->create();
-  } if (catch('Exception', $e)) {
+    $remote && $home= $remote->lookup($p->value('jndi', 'j', 'xp/demo/Roundtrip'));
+    $home && $instance= $home->create();
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }
@@ -120,7 +120,7 @@ __
       break;
 
     case 'array':
-      $value= &new ArrayList(array(1, 2, 3));
+      $value= new ArrayList(array(1, 2, 3));
       $method= 'echoArray';
       break;
 
@@ -130,7 +130,7 @@ __
   }
   
   Console::writeLine('===> Invoking ', $method, '(', xp::stringOf($value), ')');
-  $t= &new Timer(); 
+  $t= new Timer(); 
   $t->start(); {
     $return= $instance->$method($value);
   } $t->stop();

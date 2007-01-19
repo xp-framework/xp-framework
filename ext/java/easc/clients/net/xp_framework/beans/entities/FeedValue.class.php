@@ -10,7 +10,7 @@
    * @purpose  Demo class  
    */
   class FeedValue extends Object {
-    var
+    public
       $feed_id,
       $title,
       $url,
@@ -20,10 +20,9 @@
     /**
      * Returns a string representation of this object
      *
-     * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         "%s(pk= %s){\n".
         "  [feed_id]    %s\n".

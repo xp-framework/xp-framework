@@ -8,7 +8,7 @@
   uses('remote.Remote', 'util.cmd.ParamString');
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
 EASC calculator demo application
@@ -30,11 +30,10 @@ __
     exit(1);
   }
   
-  try(); {
-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
-    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/Calculator'));
-    $home && $calculator= &$home->create();
-  } if (catch('Exception', $e)) {
+  try {
+    $remote= Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
+    $calculator= $remote->lookup($p->value('jndi', 'j', 'xp/demo/Calculator'))->create();
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }

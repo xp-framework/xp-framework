@@ -13,7 +13,7 @@
   );
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
 EASC iterator bean demo application. Iterates on $argv of this program.
@@ -35,16 +35,15 @@ __
     exit(1);
   }
   
-  try(); {
-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
-    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/demo/IteratorDemo'));
-    $home && $instance= &$home->create();
-  } if (catch('Exception', $e)) {
+  try {
+    $remote= Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
+    $instance= $remote->lookup($p->value('jndi', 'j', 'xp/demo/IteratorDemo'))->create();
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }
 
-  $iterator= &$instance->iterateOn(new ArrayList($argv));
+  $iterator= $instance->iterateOn(new ArrayList($argv));
   while ($iterator->hasNext()) {
     Console::writeLine('* ', xp::stringOf($iterator->next()));
   }

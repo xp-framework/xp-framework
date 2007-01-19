@@ -9,7 +9,7 @@
   
   // {{{ bool equals(lang.Object object, lang.Object compare)
   //     Compares two objects.
-  function equals(&$object, &$compare) {
+  function equals($object, $compare) {
     return (
       (NULL === $object && NULL === $compare) ||
       $object->equals($compare)
@@ -18,7 +18,7 @@
   // }}}
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
 EASC entity bean demo application
@@ -56,17 +56,17 @@ __
     exit(1);
   }
   
-  try(); {
+  try {
     $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6448).'/');
-    $remote && $home= &$remote->lookup($p->value('jndi', 'j', 'xp/planet/Feed'));
-  } if (catch('Exception', $e)) {
+    $remote && $home= $remote->lookup($p->value('jndi', 'j', 'xp/planet/Feed'));
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }
 
   switch ($p->value(2, NULL, 'list')) {
     case 'get':
-      $feed= &$home->findByPrimaryKey(new Long($p->value(3)));
+      $feed= $home->findByPrimaryKey(new Long($p->value(3)));
       Console::writeLine(xp::stringOf($feed->getFeedValue()));
       break;
     
@@ -75,20 +75,20 @@ __
         Console::writeLine('*** Not enough parameters');
         exit(1);
       }
-      with ($value= &new FeedValue()); {
-        $value->feed_id= &new Long(-1);
+      with ($value= new FeedValue()); {
+        $value->feed_id= new Long(-1);
         $value->title= $p->value(3);
         $value->url= $p->value(4);
-        $value->bz_id= &new Long($p->value(5, NULL, 500));
+        $value->bz_id= new Long($p->value(5, NULL, 500));
         $value->lastchange= &Date::now();
         
-        $instance= &$home->create($value);
+        $instance= $home->create($value);
         Console::writeLine(xp::stringOf($instance->getFeedValue()));
       }
       break;
     
     case 'deactivate':
-      $feed= &$home->findByPrimaryKey(new Long($p->value(3)));
+      $feed= $home->findByPrimaryKey(new Long($p->value(3)));
       if (equals(new Long(30000), $feed->getBz_id())) {
         Console::write('(Already deactivated): ');
       } else {
@@ -100,7 +100,7 @@ __
       break;
 
     case 'activate':
-      $feed= &$home->findByPrimaryKey(new Long($p->value(3)));
+      $feed= $home->findByPrimaryKey(new Long($p->value(3)));
       if (equals(new Long(500), $feed->getBz_id())) {
         Console::write('(Already activated): ');
       } else {
@@ -112,7 +112,7 @@ __
     
     case 'list':
     default:
-      $list= &$home->findAll();
+      $list= $home->findAll();
       foreach ($list->values as $i => $feed) {
         Console::writeLinef('%3d] %s', $i, xp::stringOf($feed->getFeedValue()));
       }

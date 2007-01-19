@@ -11,37 +11,34 @@
    *
    * @purpose  Demo class  
    */
-  class Calculator extends Interface {
+  interface Calculator {
   
     /**
      * Adds the two given arguments
      *
-     * @access  public
      * @param   mixed a
      * @param   mixed b
      * @return  mixed
      */
-    function add($a, $b) { }
+    public function add($a, $b);
 
     /**
      * Subtracts the two given arguments
      *
-     * @access  public
      * @param   mixed a
      * @param   mixed b
      * @return  mixed
      */
-    function subtract($a, $b) { }
+    public function subtract($a, $b);
 
     /**
      * Multiplies the two given arguments
      *
-     * @access  public
      * @param   mixed a
      * @param   mixed b
      * @return  mixed
      */
-    function multiply($a, $b) { }
+    public function multiply($a, $b);
   
   }
 ?>

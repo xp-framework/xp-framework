@@ -11,78 +11,72 @@
    *
    * @purpose  Demo class  
    */
-  class Feed extends Interface {
+  interface Feed {
 
     /**
      * Set Bz_id
      *
-     * @access  public
      * @param   int bz_id
      */
-    function setBz_id($bz_id) { }
+    public function setBz_id($bz_id);
 
     /**
      * Get Bz_id
      *
-     * @access  public
      * @return  int
      */
-    function getBz_id() { }
+    public function getBz_id();
 
     /**
      * Gets value object
      *
-     * @access  public
-     * @return  &net.xp_framework.beans.entities.FeedValue
+     * @return  net.xp_framework.beans.entities.FeedValue
      */  
-    function &getFeedValue() { }
+    public function getFeedValue();
     
     /**
      * Gets feed's id (primary key)
      *
-     * @access  public
-     * @return  java.lang.Long
+     * @return  lang.types.Long
      */
-    function getFeed_id() { }
+    public function getFeed_id();
 
     /**
      * Sets the feed's id
      *
      * @access public
-     * @param  java.lang.Long feed_id
+     * @param  lang.types.Long feed_id
      */
-    function setFeed_id($feed_id) { }
+    public function setFeed_id($feed_id);
 
     /**
      * Sets feed's title
      *
-     * @access  public
-     * @return  java.lang.String
+     * @return  string
      */
-    function getTitle() { }
+    public function getTitle();
 
     /**
      * Gets feed's title
      *
      * @access public
-     * @param  java.lang.String title
+     * @param  string title
      */
-    function setTitle($title) { }
+    public function setTitle($title);
 
     /**
      * Sets feed's url
      *
-     * @access  public
-     * @return  java.lang.String
+     * @return  string
      */
-    function getUrl() { }
+    public function getUrl();
 
     /**
      * Gets feed's url
      *
      * @access public
-     * @param  java.lang.String url
+     * @param  string url
      */
-    function setUrl($url) { }
+    public function setUrl($url);
   }
 ?>

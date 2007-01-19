@@ -8,7 +8,7 @@
   uses('remote.Remote', 'util.cmd.ParamString');
   
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1)) {
     Console::writeLine(<<<__
 ESDL demo application
@@ -32,15 +32,15 @@ __
     exit(1);
   }
   
-  try(); {
-    $remote= &Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
-  } if (catch('Exception', $e)) {
+  try {
+    $remote= Remote::forName('xp://'.$p->value(1).':'.$p->value('port', 'p', 6449).'/');
+  } catch (Throwable $e) {
     $e->printStackTrace();
     exit(-1);
   }
 
   if ($p->exists('bean')) {
-    $bean= &$remote->lookup('Services:'.$p->value('bean'));
+    $bean= $remote->lookup('Services:'.$p->value('bean'));
     Console::writeLine(xp::stringOf($bean));
     
     if ($p->exists('classlist')) {
@@ -48,21 +48,21 @@ __
       $jndi= $bean->getJndiName();
       foreach ($bean->classSet() as $classref) {
         if (!$cl->findClass($classref->referencedName())) {
-          try(); {
-            $class= &$remote->lookup('Class:'.$jndi.':'.$classref->referencedName());
-          } if (catch('Exception', $e)) {
+          try {
+            $class= $remote->lookup('Class:'.$jndi.':'.$classref->referencedName());
+          } catch (Throwable $e) {
             $e->printStackTrace();
             continue;
           }
         } else {
-          $class= &$cl->loadClass($classref->referencedName());
+          $class= $cl->loadClass($classref->referencedName());
         }
         Console::writeLine(xp::stringOf($class));
         xp::gc();
       }
     }
   } else {
-    $services= &$remote->lookup('Services');
+    $services= $remote->lookup('Services');
     Console::writeLinef('# Beans found= %d', $services->size());
     foreach ($services->beans() as $description) {
       Console::writeLine(xp::stringOf($description));

@@ -9,15 +9,14 @@
    *
    * @purpose  EASC Client stub
    */
-  class RoundtripHome extends Interface {
+  interface RoundtripHome {
 
     /**
      * Create method
      *
-     * @access  public
      * @return  net.xp_framework.beans.stateless.Roundtrip
      */
-    function create() { }
+    public function create();
 
   }
 ?>

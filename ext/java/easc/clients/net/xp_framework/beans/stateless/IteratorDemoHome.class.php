@@ -9,15 +9,14 @@
    *
    * @purpose  EASC Client stub
    */
-  class IteratorDemoHome extends Interface {
+  interface IteratorDemoHome {
 
     /**
      * Create method
      *
-     * @access  public
      * @return  net.xp_framework.beans.stateless.IteratorDemo
      */
-    function create() { }
+    public function create();
 
   }
 ?>

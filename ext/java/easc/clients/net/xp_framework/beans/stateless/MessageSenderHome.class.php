@@ -9,15 +9,14 @@
    *
    * @purpose  Demo class  
    */
-  class MessageSenderHome extends Interface {
+  interface MessageSenderHome {
   
     /**
      * Create method
      *
-     * @access  public
-     * @return  &net.xp_framework.beans.stateless.MessageSender
+     * @return  net.xp_framework.beans.stateless.MessageSender
      */
-    function &create() { }
+    public function create();
   
   }
 ?>

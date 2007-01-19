@@ -9,22 +9,20 @@
    *
    * @purpose  EASC Client stub
    */
-  class RemoteIterator extends Interface {
+  interface RemoteIterator {
 
     /**
      * hasNext()
      *
-     * @access  public
      * @return  bool
      */
-    function hasNext() { }
+    public function hasNext();
     
     /**
      * Next
      *
-     * @access  public
      * @return  &lang.Object
      */
-    function &next() { }
+    public function next();
   }
 ?>

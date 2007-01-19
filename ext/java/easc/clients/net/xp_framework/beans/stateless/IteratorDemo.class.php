@@ -9,15 +9,14 @@
    *
    * @purpose  EASC Client stub
    */
-  class IteratorDemo extends Interface {
+  interface IteratorDemo {
 
     /**
      * iterateOn method
      *
-     * @access  public
      * @param   lang.Object[] arg1
      * @return  mixed
      */
-    function iterateOn($arg1) { }
+    public function iterateOn($arg1);
   }
 ?>

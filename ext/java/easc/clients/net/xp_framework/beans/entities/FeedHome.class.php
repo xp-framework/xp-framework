@@ -11,33 +11,30 @@
    *
    * @purpose  Demo class  
    */
-  class FeedHome extends Interface {
+  interface FeedHome {
 
     /**
      * Create method
      *
-     * @access  public
-     * @param   &net.xp_framework.beans.entities.FeedValue data
-     * @return  &net.xp_framework.beans.entities.Feed
+     * @param   net.xp_framework.beans.entities.FeedValue data
+     * @return  net.xp_framework.beans.entities.Feed
      */  
-    function &create(&$data) { }
+    public function create($data);
   
     /**
      * Finder method
      *
-     * @access  public
-     * @param   &wrapper.Long primaryKey
-     * @return  &net.xp_framework.beans.entities.Feed
+     * @param   lang.types.Long primaryKey
+     * @return  net.xp_framework.beans.entities.Feed
      */
-    function &findByPrimaryKey(&$primaryKey) { }
+    public function findByPrimaryKey($primaryKey);
 
     /**
      * Finder method
      *
-     * @access  public
-     * @return  &net.xp_framework.beans.entities.Feed[]
+     * @return  net.xp_framework.beans.entities.Feed[]
      */
-    function &findAll() { }
+    public function findAll();
   
   }
 ?>

@@ -9,15 +9,14 @@
    *
    * @purpose  Demo class  
    */
-  class CalculatorHome extends Interface {
+  interface CalculatorHome {
   
     /**
      * Create method
      *
-     * @access  public
-     * @return  &net.xp_framework.beans.stateless.Calculator
+     * @return  net.xp_framework.beans.stateless.Calculator
      */
-    function &create() { }
+    public function create();
   
   }
 ?>

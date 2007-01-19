@@ -9,15 +9,14 @@
    *
    * @purpose  EASC Client stub
    */
-  class RemoteIteratorHome extends Interface {
+  interface RemoteIteratorHome {
 
     /**
      * Create method
      *
-     * @access  public
      * @param   lang.types.ArrayList arg1
-     * @return  &net.xp_framework.beans.stateful.RemoteIterator
+     * @return  net.xp_framework.beans.stateful.RemoteIterator
      */
-    function &create($arg1) { }
+    public function create($arg1);
   }
 ?>
