@@ -24,6 +24,8 @@
    * @purpose  Deployer
    */
   class Deployer extends Object implements Traceable {
+    protected
+      $cat      = NULL;
   
     /**
      * Deploy
