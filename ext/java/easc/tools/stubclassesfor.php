@@ -107,7 +107,7 @@ Generates stub classes by using the ESDL service
 
 Usage
 -----
-$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x] [-c classlist]
+$ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x] [-c classlist] [-l language]
   
   * hostname is the host name (or IP) that your JBoss + XP-MBean server 
     is running on. The feed entity bean (from the easc/beans directory) 
@@ -124,6 +124,8 @@ $ php stubclassesfor.php <hostname> <jndiname> [-p <port>] [-o <outputpath>] [-x
     to SKELETON_PATH, that is, where lang.base.php resides.
   
   * The "-x" switch shows the XML before it is transformed
+  
+  * language is one of "xp", "xp5" and defaults to "xp5"
 __
     );
     exit(1);
@@ -145,6 +147,7 @@ __
 
   $path= $p->value('output', 'o', SKELETON_PATH);
   $showXml= $p->exists('xml');
+  $language= $p->value('language', 'l', 'xp5');
   
   // If class names are passed, process them
   if ($p->exists('classes')) {
@@ -154,7 +157,7 @@ __
         writeTo(
           $path, 
           $class->getName(), 
-          processClass($class, 'xp', $showXml)
+          processClass($class, $language, $showXml)
         );
       } catch (Throwable $e) {
         $e->printStackTrace();
@@ -187,12 +190,12 @@ __
   writeTo(
     $path, 
     $description->interfaces->values[HOME_INTERFACE]->getClassName(), 
-    processInterface($description, 'home', 'xp', $showXml)
+    processInterface($description, 'home', $language, $showXml)
   );
   writeTo(
     $path, 
     $description->interfaces->values[REMOTE_INTERFACE]->getClassName(), 
-    processInterface($description, 'remote', 'xp', $showXml)
+    processInterface($description, 'remote', $language, $showXml)
   );
   // }}}
 ?>
