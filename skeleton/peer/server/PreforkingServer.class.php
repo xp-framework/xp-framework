@@ -112,6 +112,13 @@
           return;
         }
         
+        // Sanity check
+        if (!($m instanceof Socket)) {
+          $this->cat && $this->cat->warn('Accepted socket type error ', xp::typeOf($m));
+          return;
+        }
+        
+        $tcp= getprotobyname('tcp');        
         $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
         $this->protocol->handleConnect($m);
 
@@ -132,6 +139,8 @@
           'Child', getmypid(), 
           'requests=', $requests, 'max= ', $this->maxrequests
         );
+        
+        delete($m);
       }
     }
 
@@ -144,7 +153,6 @@
 
       $children= array();
       $i= 0;
-      $tcp= getprotobyname('tcp');
       while (!$this->terminate && (sizeof($children) <= $this->count)) {
         $this->cat && $this->cat->debugf('Server #%d: Forking child %d', getmypid(), $i);
         $pid= pcntl_fork();
