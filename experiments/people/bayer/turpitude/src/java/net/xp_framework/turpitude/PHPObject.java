@@ -15,6 +15,7 @@ public class PHPObject {
 
     private String ClassName = "";
     private HashMap<String, Object> Properties = new HashMap<String, Object>();
+    private transient java.nio.ByteBuffer ZValptr;
 
     /**
      * default constructor.

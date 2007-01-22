@@ -60,6 +60,6 @@ turpitude.jar: classes
 	cd ./classes && $(JARBIN) -cvfm ../turpitude.jar META-INF/MANIFEST.MF META-INF/services/javax.script.ScriptEngineFactory net
 
 turpitude.so:
-	$(CC) $(CCFLAGS) $(INCLUDES) $(PHP_INCLUDES) -shared -o libturpitude.so $(PHP_HOME)/libs/libphp5.so $(SRC) 
+	$(CC) $(CCFLAGS) $(INCLUDES) $(PHP_INCLUDES) -shared -o libturpitude.so  $(PHP_HOME)/libs/libphp5.so $(SRC) 
 	
 

@@ -218,7 +218,8 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             }
             break; }
         case IS_OBJECT: {
-            //printf("IS_OBJECT\n");
+            // serialize
+
             // get class entry and object value
             zend_class_entry* ce = Z_OBJCE_P(val);
             zend_object_value* zo = &(val->value.obj);
@@ -238,6 +239,16 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
             cls = env->FindClass("net/xp_framework/turpitude/PHPObject");
             mid = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;)V");
             obj = env->NewObject(cls, mid, env->NewStringUTF(ce->name));
+
+            // save zval ptr for later use
+            jfieldID zvalptrField = env->GetFieldID(cls, "ZValptr", "Ljava/nio/ByteBuffer;");
+            if (NULL == zvalptrField) 
+                java_throw(env, "javax/script/ScriptException", "unable find fieldID (ZValptr)");
+            env->SetObjectField(
+                obj,
+                zvalptrField,
+                env->NewDirectByteBuffer(val, sizeof(zval*))
+            );
 
             // find methodID of PHPObject.setProperty
             jmethodID setPropID = env->GetMethodID(cls, "setProperty", "(Ljava/lang/String;Ljava/lang/Object;)V");
