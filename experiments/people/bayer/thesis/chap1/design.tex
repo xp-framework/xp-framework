@@ -51,6 +51,10 @@ Weiterhin implementiert die PHPScriptEngine die beiden in \emph{javax.script} en
 \emph{Invocable}, deren Funktionalit"at zur Erff"ullung einiger der Use-Cases ben"otigt wird. F"ur die Methoden aus
 Compilable wird noch eine weitere Klasse - \emph{PHPCompiledScript} - erstellt, welche direkt von der abstrakten
 Klasse \emph{javax.script.CompiledScript} erbt.
+Der Standard schrwibt zwar vor dass die ScriptEngine das Interface Invocable implementiert, allerdings ergibt das aus Sicht
+des Autors nur wenig Sinn - auf welchem Script sollen Methoden und Funktionen aufgerufen werden? Auf dem zuletzt ausgef"uhrten?
+Was wenn noch kein Script ausgef"uhrt wurde? Aus diesem Grund wird auch das PHPCompiledScript dieses Interface implementieren,
+und Aufrufe der Interfacemethoden bei der PHPScriptEngine werden an das zuletzt "ubersetzte Script weitergeleitet.
 
 Die Kommunikation zwischen Java und PHP findet "uber zwei unterschiedliche Kan"ale statt:
 
@@ -89,7 +93,7 @@ das aufgetretene Problem implementationsspezifisch ist. Die beiden anderen neuen
 \label{fig:jsr223exceptions}
 \end{figure}
 
-\subsection{Native}
+\subsection{Native/PHP}
 \label{sec:chap1:design:native}
 
 Der native Teil der Implementation teilt sich wiederum auf in JNI-Methoden, f"ur welche die Headerdateien automatisch aus
@@ -102,6 +106,8 @@ prozeduraler Art und Weise implementiert.
 TODO: JNI Methoden
 TODO: sapi methoden
 
+Um die Implementation in PHP nutzen zu k"onnen muss auch hier eine Schnittstelle geschaffen werden. Leider schreibt
+die Spezifikation hier keine API vor deswegen... TODO: fertig machen, alle Klassen und Methoden 
 
 
 

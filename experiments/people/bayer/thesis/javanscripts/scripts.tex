@@ -9,6 +9,9 @@ werden soll und es wird ein simpler Prototyp entwickelt, um die Machbarkeit zu e
 mit der einzusetztenden Technologie zu erlangen. Schlussendlich wird das Projekt in kleinere, "ubersichtlichere
 Teile unterteilt und ein Zeitrahmen f"ur die einzelnen Schritte festgelegt.
 
+\section{Use-Cases und Herangehensweisen}
+\label{sec:javanscripts:ucs}
+TODO: besserer Titel
 Beim Erweitern von Java um die F"ahigkeit Skriptsprachen auszuf"uhren exisiteren zwei wesentliche Anwendungsf"alle:
 \begin{description}
 \item[Java Objekte in Skriptsprachen:]
@@ -252,6 +255,16 @@ zu verwirklichen, da das Laden der mitgelieferten php5.so sowohl und FreeBSD, al
 verschiedensten Java Versionen zum Absturz der Java Virtual Machine f"uhrte. Die Tatsache dass die Referenzimplementation nicht
 im Quelltext verf"ugbar ist verhinderte gleichzeitig die Neu"ubersetzung oder eine effektive Fehlersuche, weiterhin bedeutete
 dies eine sehr mangelhafte Kontrolle "uber die benutzte PHP-Version.
+
+Weiterhin existiert neben der Referenzimplementation eine PHP-Extension namens \emph{php/Java bridge} \cite{BRIDGEHP}, die das Erzeugen von 
+Java-Objekten und das Aufrufen derer Methoden aus PHP heraus erlaubt. 
+Allerdings fehlt dieser Extension erstens die M"oglichkeit aus Java heraus gezielt PHP-Funktionen und -Methoden aufzurufen, 
+ausserdem verwendet sie nicht das JNI zur Kommunikation zwischen den beiden Sprachen, sondern nutzt ein spezielles XML-Protokoll
+um jeglichen Aufruf und jeden Parameter zu serialisieren und "uber lokale Sockets an die JVM zu senden. 
+Diese Herangehensweise leidet unter "ahnlichen Problemen wie alle Plattform-agnostischen Protokolle zum Aufruf entfernter Methoden 
+im allgemeinen, und XML-basierter Protokolle wie beispielsweise SOAP und XML-RPC im speziellen, siehe hierzu
+\ref{sec:background:soap}.
+
 Aus diesen und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementation f"ur PHP zu entwickeln.
 
 \section{Projektbeschreibung}
