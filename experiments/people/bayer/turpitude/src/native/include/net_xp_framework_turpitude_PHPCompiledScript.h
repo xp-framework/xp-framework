@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_execute
   (JNIEnv *, jobject, jobject);
 
+/*
+ * Class:     net_xp_framework_turpitude_PHPCompiledScript
+ * Method:    nativeInvokeFunction
+ * Signature: (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nativeInvokeFunction
+  (JNIEnv *, jobject, jstring, jobjectArray);
+
 #ifdef __cplusplus
 }
 #endif

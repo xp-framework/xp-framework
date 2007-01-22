@@ -40,6 +40,9 @@ exceptions: turpitude.jar lib
 context: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ContextSample
 
+invoke: turpitude.jar lib
+	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.InvocableSample
+
 exec: jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php
 	
@@ -51,15 +54,15 @@ jarrun: jar lib
 
 jar: turpitude.jar
 
-lib: turpitude.so
+lib: libturpitude.so
 
 headers: classes
-	$(JAVAH) -classpath $(CPATH) -d ./src/native/include net.xp_framework.turpitude.PHPScriptEngine
+	$(JAVAH) -classpath $(CPATH) -d ./src/native/include net.xp_framework.turpitude.PHPScriptEngine net.xp_framework.turpitude.PHPCompiledScript
 
 turpitude.jar: classes
 	cd ./classes && $(JARBIN) -cvfm ../turpitude.jar META-INF/MANIFEST.MF META-INF/services/javax.script.ScriptEngineFactory net
 
-turpitude.so:
+libturpitude.so: $(SRC)
 	$(CC) $(CCFLAGS) $(INCLUDES) $(PHP_INCLUDES) -shared -o libturpitude.so  $(PHP_HOME)/libs/libphp5.so $(SRC) 
 	
 

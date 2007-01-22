@@ -5,7 +5,7 @@ import javax.script.*;
 import java.io.Reader;
 import java.io.IOException;
 
-public class PHPScriptEngine extends AbstractScriptEngine implements Compilable {
+public class PHPScriptEngine extends AbstractScriptEngine implements Compilable, Invocable {
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
     private String TurpitudeVarName = "TURP_ENV"; //turpitude variable name
@@ -169,6 +169,34 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable 
      */
     void setScriptEngineFactory(ScriptEngineFactory fac) {
         MyFactory = fac;
+    }
+
+    /**
+     * @see javax.script.Invocable
+     */
+    public Object invokeMethod(Object thiz, String name, Object... args) {
+        return null;
+    }
+
+    /**
+     * @see javax.script.Invocable
+     */
+    public Object invokeFunction(String name, Object... args) {
+        return null;
+    }
+
+    /**
+     * @see javax.script.Invocable
+     */
+    public <T> T getInterface(Object thiz, Class<T> clasz) {
+        return null;
+    }
+
+    /**
+     * @see javax.script.Invocable
+     */
+    public <T> T getInterface(Class<T> clasz) {
+        return null;
     }
 
     /**

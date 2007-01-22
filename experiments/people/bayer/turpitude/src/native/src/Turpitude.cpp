@@ -43,6 +43,25 @@ jclass get_java_class(JNIEnv* env, jobject obj, char** dest) {
     return (jclass)clsobj;
 }
 
+void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval) {
+    char* classname;
+    jclass cls = get_java_class(env, obj, &classname);
+    // ###### check for special objects
+    // Strings
+    if (strcmp(classname, "java/lang/String") == 0) {
+        // copy string value
+        int str_len = env->GetStringLength((jstring)obj)+1;
+        char* str_val = (char*)emalloc(str_len);
+        strncpy(str_val, env->GetStringUTFChars((jstring)obj, 0), str_len);
+        ZVAL_STRING(retval, str_val, 0);
+        return;
+    }
+    zval* turpcls;
+    MAKE_STD_ZVAL(turpcls);
+    make_turpitude_jclass_instance(cls, classname, turpcls);
+    make_turpitude_jobject_instance(cls, turpcls, obj, retval);
+}
+
 /**
  * converts a jvalue to a zval
  * uses dest if dest != null, creates a new zval otherwise
@@ -85,22 +104,7 @@ zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* de
             break;
         // objects
         case JAVA_OBJECT:
-            char* classname;
-            jclass cls = get_java_class(env, val.l, &classname);
-            // ###### check for special objects
-            // Strings
-            if (strcmp(classname, "java/lang/String") == 0) {
-                // copy string value
-                int str_len = env->GetStringLength((jstring)val.l)+1;
-                char* str_val = (char*)emalloc(str_len);
-                strncpy(str_val, env->GetStringUTFChars((jstring)val.l, 0), str_len);
-                ZVAL_STRING(retval, str_val, 0);
-                break;
-            }
-            zval* turpcls;
-            MAKE_STD_ZVAL(turpcls);
-            make_turpitude_jclass_instance(cls, classname, turpcls);
-            make_turpitude_jobject_instance(cls, turpcls, val.l, retval);
+            jobject_to_zval(env, val.l, retval);
             break;
         default:
             // probably void
