@@ -155,16 +155,16 @@
     public function all() {
       return new Criteria();
     }
-    
+ 
     /**
-     * Find a single entity by specified criteria.
+     * Get a single entity by specified criteria.
      *
      * @param   rdbms.Criteria
      * @return  rdbms.DataSet
      * @throws  rdbms.finder.NoSuchEntityException
      * @throws  rdbms.finder.FinderException
      */
-    public function find($criteria) {
+    public function get($criteria) {
       $list= $this->findAll($criteria);
 
       switch ($s= sizeof($list)) {
@@ -174,6 +174,46 @@
           'Entity does not exist', 
           new IllegalStateException('No results for '.$criteria->toString())
         );
+
+        default: throw new FinderException(
+          'Query returned more than one result ('.$s.')', 
+          new IllegalStateException('')
+        );
+      }
+    }
+
+    /**
+     * Get a list of entities by specified criteria..
+     *
+     * @param   rdbms.Criteria
+     * @return  rdbms.DataSet[]
+     * @throws  rdbms.finder.NoSuchEntityException
+     * @throws  rdbms.finder.FinderException
+     */
+    public function getAll($criteria) {
+      $list= $this->findAll($criteria);
+      if (empty($list)) throw new NoSuchEntityException(
+        'Entity does not exist', 
+        new IllegalStateException('No results for '.$criteria->toString())
+      );
+
+      return $list;
+    }
+   
+    /**
+     * Find a single entity by specified criteria. Returns NULL if 
+     * nothing can be found.
+     *
+     * @param   rdbms.Criteria
+     * @return  rdbms.DataSet
+     * @throws  rdbms.finder.FinderException
+     */
+    public function find($criteria) {
+      $list= $this->findAll($criteria);
+
+      switch ($s= sizeof($list)) {
+        case 1: return $list[0];            // OK, we expect either one element...
+        case 0: return NULL;                // ...or none.
 
         default: throw new FinderException(
           'Query returned more than one result ('.$s.')', 
