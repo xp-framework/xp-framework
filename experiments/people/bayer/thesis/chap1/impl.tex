@@ -103,7 +103,6 @@ Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten
 innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
 Die PHPScriptEngine filtert diese Zeichen automatisch aus dem Quelltextstrom.
 
-
 Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ullen wurde nach einer Alternative gesucht, und
 die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
 \emph{zend\_opcode\_array} "ubersetzt und dieser sp"ater ohnehin seperat ausgef"uhrt werden muss, wurde an dieser Stelle dem
@@ -129,16 +128,32 @@ der normale \emph{exit}-Befehl sich weiterhin wie gewohnt verhielt, und so nur z
 Der n"achste Schritt war nun die "Ubergabe von Parametern aus Java an den Interpreter. Idealerweise sollten die zu "ubergebenen
 Objekte nicht nur hin- und herkopiert werden, sondern sie sollten als Repr"asentation innerhalb der PHP-Umgebung verf"ugbar sein.
 Dies bringt den Vorteil mit sich, dass nicht nur die Daten der Objekte, sondern auch deren Funktionalit"at dem PHP-Entwickler zur
-Verf"ugung steht.
+Verf"ugung steht. Ausserdem sollte es dem Anwender m"oglich sein Java-Objekte aus PHP heraus zu erzeugen und Methoden auf diesen
+Aufuzrufen.
 
-TODO:
+Um dies zu erreichen war es n"otig Klassen "'von Aussen"', also ohne PHP-Quelltext zu nutzen, in den Interpreter zu injizieren,
+und Aufrufe auf Objekte dieser Klassen auf C-Ebene abzuhandeln, da nur so auf JNI-Funktionalit"at zugegriffen werden konnte. 
+Leider existiert auch zu dieser Seite der Zend-Engine keinerleit Dokumentation, und so musste viel ausprobiert werden um
+herauszufinden wie dies zu bewerkstelligen w"are. Schliesslich wurde die Zend-Makro \emph{INIT\_OVERLOADED\_CLASS\_ENTRY} entdeckt,
+und nach vielen weiteren Versuchen wurde auch die Bedeutung der einzelnen Paramteter herausgefunden.
 
-ini file -> wie?
-Segfaults: --enable-debug, C-Frontend schreiben
-phpinfo() segfaultet, muss weiter erforscht werden.
+Um der Zend-Engine eine Klasse unterzuschieben muss zun"achst ein C-Struct definiert werden das neben einem Struct von Typ
+\emph{zend\_object} namens \emph{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jeden Instanz der Klasse
+vorgehalten. Weiterhin wird ein Array vom Typ \emph{function\_entry[]} ben"otigt, welches die Callbacks - im wesentlichen Funktionspointer
+auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Besonders erw"ahnenswert sind hier die Funktionen f"ur 
+\emph{\_\_call}, \emph{\_\_get} und \emph{\_\_set}, \emph{\_\_call} wird bei jedem Methodenaufruf aufgerufen, und erh"alt neben dem
+Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit PHP-Methoden direkt in C zu implementieren. 
+\emph{\_\_get} und \emph{\_\_set} werden bei jedem lesenden beziehungsweise schreibenden Zugriff auf ein nicht gefundenes Attribut des
+Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Auf diese Art und Weise konnten die in 
+\ref{sec:chap1:design:native} geforderten Klassen und deren Methoden implementiert werden.
 
+TODO: besonderheiten der einzelnen Klassen
 
+TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
 
+TODO: Context
+
+TODO: Invocable
 
 
 % ********** End of chapter **********

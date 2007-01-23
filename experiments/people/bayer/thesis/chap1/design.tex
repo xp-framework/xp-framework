@@ -103,13 +103,75 @@ haupts"achlich Funktionspointer auf R"uckruffunktionen enth"alt, welche vom PHP-
 kaum m"oglich ist dieses Konstrukt sinnvoll in eine objektorientierte Architektur einzuf"ugen, wird auf eine solche
 vollst"andig verzichtet. Das sapi\_module\_struct und die dazugeh"origen Funktionen werden in traditioneller,
 prozeduraler Art und Weise implementiert.
-TODO: JNI Methoden
-TODO: sapi methoden
+
+Die zu implementierenden SAPI-Funktionen ergeben sich aus den Anforderungen der Zend-API und sollen an dieser Stelle nur
+sehr kurz erl"aeutert werden: die Funktionen \emph{turpitude\_read\_cookies}, \emph{turpitude\_flush}, \emph{turpitude\_send\_headers},
+\emph{turpitude\_send\_header} und \emph{turpitude\_log\_message} k"onnen leer, beziehungsweise auf triviale Art und Weise
+implementiert werden, da sie f"ur den geplanten Einsatz der PHP-Umgebung keine Relevanz haben.
+\emph{turpitude\_startup} und \emph{turpitude\_register\_variables} leiten den Aufruf einfach an die entsprechenden
+Zend-API Funktionen \emph{php\_module\_startup} respektive \emph{php\_import\_environment\_variables} weiter, lediglich
+die Funktion \emph{turpitude\_error\_cb}, welche die R"uckruffunktion f"ur PHP-Laufzeitfehler darstellt bedarf einer
+komplizierteren Implementation, das sie den Fehler als Java-Exception weitergeben soll.
+
+Die JNI-Methoden ergeben sich aus dem Java-Quelltext, da sie Implementierungen von in Java als \emph{native} deklarierten 
+Methoden darstellen, und werden sich haupts"achlich mit dem Ausf"uhren von PHP-Quelltext beziehungsweise von PHP-Anweisungen
+besch"aftigen. Ausnahmen bilden lediglich die Methoden \emph{startUp()} und \emph{shutDown()} der PHPScriptEngine, welche
+sich mit der Initialisierung beziehungsweise der kontrollierten Dekonstruktion der PHP-Laufzeitunmgebung und er Turpitude-spezifischen
+Klassen.
 
 Um die Implementation in PHP nutzen zu k"onnen muss auch hier eine Schnittstelle geschaffen werden. Leider schreibt
-die Spezifikation hier keine API vor deswegen... TODO: fertig machen, alle Klassen und Methoden 
+die Spezifikation keine API f"ur die Skriptseite vor, was zu einer Nichtaustauschbarkeit der Implementation f"uhren kann.
+Nichtsdestotrotz werden auf PHP-Seite folgende Klassen eingef"uhrt, welche im Wesentlichen JNI-Funktionen abbilden, und
+in vielen F"allen auch die JNI-Syntax, zum Beispiel f"ur Java-Methoden, verwenden:
 
+\textbf{TurrpitudeEnvironment} - bietet neben der Methode \emph{getScriptContext()}, die den JSR223 ScriptContext zur"uckgibt,
+auch Schnittstellen an um grundlegende Java-Funktionalit"at aus PHP heraus anzusprechen:
+\emph{FindClass()} erzeugt die Repr"asentation einer Java-Klasse in PHP, \emph{instanceOf()} "uberpr"uft, ob ein Java-Objekt 
+Instanz einer bestimmten Java-Klasse ist. Weiterhin werden mit \emph{throw()}, \emph{throwNew()}, \emph{exceptionOccurred()} und 
+\emph{exceptionClear()} Methoden angeboten um Java-Exceptions zu werfen und zu fangen. TurrpitudeEnvironment implementiert
+das \emph{Singleton-Entwurfsmuster}, kann also nicht mehrfach existieren, und wird zus"atzlich unter einem konfigurierbaren
+Namen in das PHP-Superglobal \emph{\$\_SERVER} eingef"uhrt, welches laut dem PHP-Manual \cite{PHPMAN} SAPI-Informationen "uber die
+Laufzeitumgebung enthalten soll.
 
+\textbf{TurpitudeJavaClass} - PHP-Repr"asentation einer Java-Klasse, wird mittels \emph{TurrpitudeEnvironment::findClass()} erzeugt.
+Bietet mit \emph{findMethod()}, \emph{findStaticMethod()} und \emph{findConstructor()} M"oglichkeiten um gew"ohnliche Methoden, statische
+Methoden und Konstruktoren der repr"asentierten Java-Klasse zu erzeugen. Weiterhin k"onnen mittels der Methode \emph{create()} Instanzen
+der Klasse erzeugt werden, und mittels der Methode \emph{invokeStatic()} k"onnen statische Methoden der Klasse aufgerufen werden.
+Enth"alt als Attribut den JNI-Formatierten Klassennamen. 
+
+\textbf{TurpitudeJavaMethod} - bildet eine Java-Methode in PHP ab. TurpitudeJavaMethod bietet selbst keine Methoden an und wird nur
+als Parameter f"ur \emph{TurpitudeJavaClass::create()} und beim Methodenaufruf auf Objekten und Klassen ben"otigt.
+Als Attribute werden der Methodenname, deren Signatur sowie ein Indikator ob die Methode statisch aufgerufen werden kann vorgehalten.
+
+\textbf{TurpitudeJavaObject} - repr"asentiert ein Java-Objekt, wird mittels \emph{TurpitudeJavaClass::create()} erzeugt. Neben Methoden
+die den sowohl lesenden als auch schreibenden Zugriff auf Attribute der Java-Klasse erlauben (\emph{javaGet()} und \emph{javaSet()}) k"onnen
+auch direkt Methoden der des Objektes mittels \emph{javaInvoke} aufgerufen werden. Falls m"oglich soll der Methodenaufruf aber
+intuitiv nach folgendem Schema erlaubt werden:
+\begin{lstlisting}[caption=angestrebte Syntax zum Aufruf von Java-Methoden in PHP]
+$object->method($param1, $param2, ...);
+\end{lstlisting}
+R"uckgabewerte von Methodenaufrufen werden entweder als skalare Typen in PHP oder wieder als TurpitudeJavaObject-Objekte abgebildet.
+eine Besonderheit bilden allerdings Java-Arrays: Diese k"onnten zwar als einfache Java-Objekte abgebildet werden, allerdings w"urde das 
+nur den Zugriff auf allen Java-Arrays gemeinsame Attribute wie beispielsweise \emph{length} erlauben. Folglich muss eine weitere
+Klasse eingef"uhrt werden, um diesen Fall abzudecken:
+
+\textbf{TurpitudeJavaArray} - erlaubt den direkten Zugriff auf Elemente eines Java-Arrays in PHP. Allerdings werden keine neuen Eintr"age
+erzeugt werden k"onnen, da Java-Arrays - anders als PHP-Arrays - nicht als HashMap, sondern als "'echte"' Arrays im Speicher abgebildet
+sind, und eine Erweiterung dieses Bereiches nicht ohne weiteres m"oglich ist.
+
+Ein typischer Ablauf eines PHP-Skriptes, welches auf Java-Objekte und Methoden zugreift, soll wie in Abbildung \ref{fig:phpseq} aufgezeigt 
+aussehen:
+Das TurrpitudeEnvironment besteht "uber die komplette Laufzeit des Skriptes. Der Anwender erzeugt mittels \emph{findClass()} eine
+TurpitudeJavaClass, ruft auf dieser die Methode \emph{findConstructor()} auf, welche ihm eine TurpitudeJavaMethod zurueckgibt. Diese wiederum 
+kann der Anwender der TurpitudeJavaClass beim Aufruf von \emph{create()} "ubergeben, um schlussendlich eine Instanz der Klasse zu erzeugen.
+Um nun auf dem Java-Objekt eine eine Methode aufzurufen muss diese zun"achst wieder per \emph{findMethod()} erzeugt werden, um dann der
+Methode \emph{javaInvoke()} zusammen mit den geforderten Parametern "ubergeben zu werden.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{chap1/img/phpseq.png}
+\caption{Ablauf eines PHP-Skriptes mit Zugriff auf Java-Objekte}
+\label{fig:phpseq}
+\end{figure}
 
 
 

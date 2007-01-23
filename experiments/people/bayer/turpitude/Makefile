@@ -17,7 +17,7 @@ CC= gcc
 CCFLAGS = -fpic -lstdc++
 LIBPATH = LD_LIBRARY_PATH=.:$(PHP_HOME)/libs
 
-all: turpitude.jar
+all: jar lib
 
 version:
 	$(JBIN) -version

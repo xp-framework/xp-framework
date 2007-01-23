@@ -6,9 +6,21 @@
 TODO:
 was sollte gemacht werden? was wurde gemacht? wie wurde es gemacht?
 wurde das Ziel erreicht?
-Benutzung Turpitude (Appendix?)
+Benutzung Turpitude \ref{sec:app1}
+Turpitude nicht benutzen um non-trustworthy code auszufuehren, aber das sollte man
+sowieso nicht machen...
 
-
-
+Schmerzen mit Zend:
+\begin{lstlisting}[caption=lustiges Beispiel f"ur Zend-Code]
+typedef struct _zend_llist_element {
+    struct _zend_llist_element *next;
+    struct _zend_llist_element *prev;
+    char data[1]; /* Needs to always be last in the struct */
+} zend_llist_element;
+...
+zend_llist_element *le;
+...
+opline_ptr = (zend_op *)le->data;
+\end{lstlisting}
 
 % ********** End of chapter **********
