@@ -290,9 +290,7 @@ function_entry turpitude_env_class_functions[] = {
 /**
  * creates the Turpitude Class and injects it into the interpreter
  */
-void make_turpitude_environment(JNIEnv* env, jobject ctx) {
-    turpitude_jenv = env;
-    turpitude_current_script_context = ctx;
+void make_turpitude_environment() {
 
     // create class entry
     zend_class_entry* parent;

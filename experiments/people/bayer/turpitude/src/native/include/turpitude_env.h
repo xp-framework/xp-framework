@@ -19,7 +19,7 @@ typedef struct turpitude_environment_object {
     JNIEnv*         java_env;
 };
 
-void make_turpitude_environment(JNIEnv* env, jobject ctx);
+void make_turpitude_environment();
 
 
 #endif

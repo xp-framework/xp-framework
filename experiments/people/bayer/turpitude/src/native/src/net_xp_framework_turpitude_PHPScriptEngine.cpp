@@ -20,6 +20,11 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
     if (SUCCESS != php_request_startup(TSRMLS_C)) 
         java_throw(env, "javax/script/ScriptException", "unable to start up request - php_request_startup()");
 
+    // initialize Turpitude classes
+    make_turpitude_environment();
+    make_turpitude_jclass();
+    make_turpitude_jmethod();
+    make_turpitude_jobject();
 }
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jobject) {
