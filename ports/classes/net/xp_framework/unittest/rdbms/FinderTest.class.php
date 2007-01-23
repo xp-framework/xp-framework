@@ -185,9 +185,9 @@
      * Tests find(byPrimary()) for the situation when nothing is returned.
      *
      */
-    #[@test, @expect('rdbms.finder.NoSuchEntityException')]
+    #[@test]
     public function findByNonExistantPrimary() {
-      $this->fixture->find($this->fixture->byPrimary(0));
+      $this->assertNull($this->fixture->find($this->fixture->byPrimary(0)));
     }
 
     /**
@@ -196,7 +196,7 @@
      *
      */
     #[@test, @expect('rdbms.finder.FinderException')]
-    public function unexpectedResults() {
+    public function findUnexpectedResults() {
       $this->getConnection()->setResultSet(new MockResultSet(array(
         0 => array(   // First row
           'job_id'      => 1,
@@ -212,6 +212,57 @@
         )
       )));
       $this->fixture->find($this->fixture->byPrimary(1));
+    }
+
+    /**
+     * Tests find(byPrimary())
+     *
+     */
+    #[@test]
+    public function getByExistingPrimary() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $entity= $this->fixture->get($this->fixture->byPrimary(1));
+      $this->assertClass($entity, 'net.xp_framework.unittest.rdbms.dataset.Job');
+    }
+
+    /**
+     * Tests find(byPrimary()) for the situation when nothing is returned.
+     *
+     */
+    #[@test, @expect('rdbms.finder.NoSuchEntityException')]
+    public function getByNonExistantPrimary() {
+      $this->fixture->get($this->fixture->byPrimary(0));
+    }
+
+    /**
+     * Tests find(byPrimary()) for the situation when more than one result
+     * is returned.
+     *
+     */
+    #[@test, @expect('rdbms.finder.FinderException')]
+    public function getUnexpectedResults() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(   // Second row
+          'job_id'      => 2,
+          'title'       => $this->getName().' #2',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $this->fixture->get($this->fixture->byPrimary(1));
     }
 
     /**
@@ -236,6 +287,39 @@
       )));
       $collection= $this->fixture->findAll($this->fixture->newestJobs());
       $this->assertEquals(2, sizeof($collection));
+    }
+
+    /**
+     * Tests getAll(newestJobs())
+     *
+     */
+    #[@test]
+    public function getNewestJobs() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(   // Second row
+          'job_id'      => 2,
+          'title'       => $this->getName().' #2',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $collection= $this->fixture->getAll($this->fixture->newestJobs());
+      $this->assertEquals(2, sizeof($collection));
+    }
+
+    /**
+     * Tests getAll(newestJobs())
+     *
+     */
+    #[@test, @expect('rdbms.finder.NoSuchEntityException')]
+    public function getNothingFound() {
+      $this->fixture->getAll($this->fixture->newestJobs());
     }
 
     /**
