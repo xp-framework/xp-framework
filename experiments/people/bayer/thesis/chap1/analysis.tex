@@ -6,6 +6,31 @@ einer Java-Anwendung - erf"ullt wurde, welche Technologien heirzu benutzt, aber 
 Die Anforderung war m"oglichst grosse Teile des XP-Frameworks innerhalb von Java auszuf"uhren.
 Vom vollen Umfang des XP-Frameworks ausgenommen waren lediglich die Komponenten welche eine Kommunikation
 nach aussen erlaubten, so zum Beispiel die Datenbankkonnektivit"at, da diese Funktionen sp"ater vom Application Server
-bereitgestellt werden sollten. Idealerweise sollte die verwendete PHP Version leicht austauschbar sein.
+bereitgestellt werden sollten. Idealerweise sollte die verwendete PHP Version leicht austauschbar sein. Eine weitere
+Anforderung war die Interaktion von Java nach PHP und umgekehrt m"oglichst einfach zu gestalten, Java-Objekte sollen
+in PHP erzeug- und zugreifbar sein.
 
+Wichtige Use-Cases f"ur diesen Teil des Projektes sind:
+\begin{enumerate}
+\item Test, ob die PHP-ScriptEngine verf"ugbar ist. Durch einfache Ausgabe auf der Konsole soll schnell ermittelbar sein, welche
+    ScriptEngines geladen und einsatzbereit sind. Dies dient haupts"chlich der "Uberpr"ufung, ob die aktuelle Java-Umgebung
+    richtig konfiguriert ist.
+\item Test, ob die PHP-ScriptEngine funktioniert. Es soll ein einfaches PHP-Skript ausgef"uhrt werden, um dem Anwender
+    die korrekte Funktionsweise der ScriptEngine vorzuf"uhren und zu pr"ufen ob die nativen Teile der Implementation
+    ordnungsgem"a\ss funktionieren.
+\item Ausf"uhren beliebiger PHP-Skripte. Es soll dem Anwender m"oglich sein, ohne selbst Java-Quelltext zu schreiben, beliebige
+    PHP-Skripte auszuf"uhren.
+\item "Ubersetzen eines beliebigen Skriptes. Gem"a\ss des in \emph{javax.script} vorhandenen Interfaces \emph{Compilable} soll 
+    ein beliebiges Skript "ubersetzt und mehrfach ausgef"uhrt werden k"onnen.
+\item Aufrufen von Methoden in "ubersetzten Skripten. Das zu entwickelnde Softwaresystem soll das Aufrufen von Funktionen und
+    Methoden in "ubersetzten Skripten erlauben. Hierzu soll das Interface \emph{javax.script.Invocable} unterst"utzt werden.
+\item "Ubergabe von Daten mittels des Kontextes. Der Anwender soll Daten mittels des Engine-Kontextes "ubergeben und in PHP
+    weiterverwenden k"onnen. Genauso soll es m"oglich sein Daten aus PHP heraus an die JVM zur"uckzu"ubergeben.
+    Zur"uckgegebene Objekte
+\item Setzen von php.ini Parametern. Dem Anwender soll die M"oglichkeit geboten werden eine alternative php.ini Datei zu verwenden,
+    um das Laufzeitverhalten von PHP wie gewohnt zu beeinflussen.
+\item Erzeugen von Java-Objekten in PHP. Dem Anwender soll erm"oglicht werden Java-Objekte zu erzeugen, auf deren
+    Attribute zuzugreifen und deren Methoden aufzurufen. Java-Objekte sollen in PHP m"oglichst nicht nur als Kopien zug"anglich sein,
+    sondern sollen viel mehr echte Referenzen sein.
+\end{enumerate}
 % ********** End of chapter **********

@@ -31,7 +31,8 @@ Engine: Mozilla Rhino
 #
 \end{lstlisting}
 
-Im Folgenden wurde die Klasse \emph{PHPScriptEngineFactory} erstellt, welche gem"a\ss \ref{sec:chap1:design:java} 
+Im Folgenden wurde die Klasse \emph{PHPScriptEngineFactory} erstellt, welche wie in Kapitel
+\ref{sec:chap1:design:java} beschrieben
 das Interface \emph{ScriptEngineFactory} implementiert, hierbei erw"ahnenswert sind die Methoden 
 \emph{getProgram()} und \emph{getMethodCallSyntax()}, erstere erstellt aus als Strings vorliegenden
 einzelnen Anweisungen ein ausf"uhrbares PHP-Programm, zweitere erzeugt aus den "ubergebenen Parametern
@@ -146,12 +147,17 @@ Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit 
 \emph{\_\_get} und \emph{\_\_set} werden bei jedem lesenden beziehungsweise schreibenden Zugriff auf ein nicht gefundenes Attribut des
 Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Auf diese Art und Weise konnten die in 
 \ref{sec:chap1:design:native} geforderten Klassen und deren Methoden implementiert werden.
-
-TODO: besonderheiten der einzelnen Klassen
+Um allerdings "uberhaupt JNI-Funktionen nutzen zu k"onnen musste zun"achst die startUp-Funktion erweitert werden: beim Aufruf dieser
+wird der JNI-Evironment Pointer als globale Variable gespeichert.
 
 TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
 
-TODO: Context
+Zuerst wurde die Klasse \emph{TurpitudeEnvironment} implementiert. 
+
+TODO: besonderheiten der einzelnen Klassen
+
+
+TODO: Context - CompiledScript::compile - ctx speichern
 
 TODO: Invocable
 
