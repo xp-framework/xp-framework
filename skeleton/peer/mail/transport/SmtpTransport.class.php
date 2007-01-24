@@ -79,7 +79,7 @@
       
         // Write
         $this->trace('>>>', $cmd);
-        if (FALSE === $this->_sock->write($cmd."\n")) return FALSE;
+        if (FALSE === $this->_sock->write($cmd."\r\n")) return FALSE;
 
         // Expecting data?
         if (FALSE === $expect[0]) return '';
