@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fixed peer.mail.store.ImapStore::_supports() method
+  (kiesel)
+  
 - Implemented RFC #0099 - New rdbms.finder API
   (friebe)
 

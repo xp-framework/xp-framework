@@ -35,11 +35,10 @@
      *
      * @param   &peer.URL u
      * @param   &array attr
-     * @param   &int port
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    protected function _supports($u, $attr) {
+    protected function _supports($u, &$attr) {
       throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
     }
     
