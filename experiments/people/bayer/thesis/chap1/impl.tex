@@ -145,14 +145,80 @@ auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Besond
 \emph{\_\_call}, \emph{\_\_get} und \emph{\_\_set}, \emph{\_\_call} wird bei jedem Methodenaufruf aufgerufen, und erh"alt neben dem
 Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit PHP-Methoden direkt in C zu implementieren. 
 \emph{\_\_get} und \emph{\_\_set} werden bei jedem lesenden beziehungsweise schreibenden Zugriff auf ein nicht gefundenes Attribut des
-Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Auf diese Art und Weise konnten die in 
-\ref{sec:chap1:design:native} geforderten Klassen und deren Methoden implementiert werden.
+Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Weiterhin gibt es noch die beiden Funktionen
+\emph{\_\_construct} und \emph{\_\_destruct}, die beim erzeugen beziehungsweise zerst"oren des Objektes aufgerufen werden,
+die Funktionen \emph{\_\_sleep} und \emph{\_\_wakeup}, die beim serialisieren beziehungsweise deserialisieren des Objektes zum
+Einsatz kommen, sowie die Funktion \emph{\_\_cast}, die das Casten des Objektes auf einen anderen Datentyp implementieren soll.
+Diese Funktionspointer werden zusammen mit dem Klassennamen an das Makro "ubergeben, um so einen sogenannten \emph{zend\_class\_entry}
+zu erzeugen, der f"ur jede Klasse ein mal global gespeichert wird.
+Auf diese Art und Weise konnten die in 
+\ref{sec:chap1:design:native} geforderten Klassen und deren Methoden implementiert werden. Alle Callback-Methoden haben keinen (\emph{void})
+als R"uckgabewert und m"ussen die Argumente entgegenehmen, die im Zend-API Makro \emph{INTERNAL\_FUNCTION\_PARAMETERS} definiert werden.
+Es enth"ahlt unter anderem einen Pointer auf den R"uckgabewert (\emph{return\_value}), einen Pointer auf das Objekt (\emph{this}), vor
+allem aber ein Array der beim Aufruf der PHP-Methode "ubergebenen Argumente (\emph{argv}) und einen Ganzzahlenwert, der die Anzahl
+der Argumente enth"alt (\emph{argc}).
 Um allerdings "uberhaupt JNI-Funktionen nutzen zu k"onnen musste zun"achst die startUp-Funktion erweitert werden: beim Aufruf dieser
-wird der JNI-Evironment Pointer als globale Variable gespeichert.
+wird der JNI-Evironment Pointer als globale Variable gespeichert, auch werden hier die Funktionen aufgerufen, die die Turpitude-Klassen
+in die PHP-Umgebung injizieren.
+
+Als erstes wurde die Klasse \emph{TurpitudeEnvironment} implementiert. Das Objekt-Struct enth"alt neben dem zend\_object noch pointer
+auf den aktuellen ScripContext sowie die JNI-Umgebung. Eigene, f"ur PHP lesbare Attribute besitzt die Klasse nicht, also mussten
+nur die geforderten Methoden umgesetzt werden. Zuvor wurde allerdings getestet, ob das injizieren der Klasse funktioniert hat, und die
+ScriptEngine wurde derart angepasst, dass jedem Aufruf eines PHP-Skriptes eine Zeile vorangestellt wird, die eine Instanz der Klasse
+erzeugt und in das PHP-Superglobal \emph{\$\_SERVER} eingef"ugt wird. Superglobals sind eine Besonderheit von PHP, normale globale
+Variablen m"uessen im Scope einer Funktion oder Methode mittels des Schl"usselwortes \emph{global} bekannt gemacht werden, Superglobals
+hingegen sind immer und von "uberall erreichbar. Der Name, unter dem das TurpitudeEnvironment dort eingef"ugt wird ist in der ScriptEngine
+mittels der Methoden \emph{setVarName()} und \emph{getVarName()} konfigurierbar. Ein \emph{var\_dump(\$\_SERVER)} zeigte, dass das
+injizieren und initialisieren der Klasse funktioniert hatte.
+\begin{lstlisting}[caption=TurpitudeEnvironment in \$\_SERVER einf"ugen]
+$_SERVER["TURP_ENV"] = new TurpitudeEnvironment();
+\end{lstlisting}
+In allen Turpitude-Klassen wird hierzu in der Callback-Methoda \emph{\_\_call} der 
+Methodenname ausgelesen, der sich in \emph{argv} and der Stelle [0] befindet. Ausserdem wird stets ein Pointer auf die zweite Stelle
+von \emph{argv}, sowie ein Integer der um eins kleiner ist als \emph{argc}, an die die eigentlichen
+Methoden implementierenden Funktionen "ubergeben, zusammen mit \emph{return\_value} und eventuell dem dem Objekt-eigenen C-Struct.
+Danach wird in jeder \emph{\_\_call}-Funktion mittels \emph{strcmp} der Name der aufgerufenen Methode mit den Namen der zu implementierenden 
+Methoden verglichen, und falls eine "Ubereinstimmung gefunden wurde wird die jeweilige Funktion aufgerufen. Wird keine "Ubereinstimmung
+gefunden wird mittels des Makros \emph{php\_error} ein PHP-Laufzeitfehler erzeugt. Da diese Fehler von Turpitude von der Funktion
+\emph{turpitude\_error\_cb} als \emph{PHPEvalException} an die JVM weitergeleitet werden stellen sie ein probates Mittel zum Abbruch
+der PHP-Programmausf"uhrung dar, und k"onnen gefahrlos eingesetzt werden.
+
+Die erste Methode des TurpitudeEnvironment, die implementiert wurde war \emph{findClass()}. In der zugeh"origen C-Funktion wird zun"achst 
+lediglich "uberpr"uft, ob die Anzahl der Parameter stimmt, und ob der "ubergebene Parameter vom Typ \emph{String} ist. Dann wird die
+zur Klasse \emph{TurpitudeJavaClass} geh"orende Funktion \emph{make\_turpitude\_jclass\_instance} aufgerufen, die eine TurpitudeJavaClass
+zur"uckgibt. Um eine Instanz dieser
+Klasse erzeugen zu k"onnen musste diese allerdings zun"achst dem Interpreter bekannt gemacht werden, dies geschah analog zum Bekanntmachen
+von TurpitudeEnvironment. Die Funktion \emph{make\_turpitude\_jclass\_instance} selbst erwartet drei Argumente, eine \emph{jclass} der zu
+repr"asentierenden Klasse, deren Klassennamen und einen Pointer auf den zval, der das Objekt enthalten soll. Da die TurpitudeJavaClass 
+tats"achlich Attribute (den Klassennamen) enthalten soll, muss die Zend-HashTable initialisiert werden, die diese Attribute enthalten soll.
+Dies geschieht mittels der Zend-Funktion \emph{object\_init\_ex}, die neben einem zval-Pointer den class\_entry entgegennimmt.
+Nachdem im entsprechenden \emph{object\_struct} die jclass gesetzt wurde konnte schlussendlich "uber die Funktion \emph{zend\_hash\_update} 
+der Klassenname in die HashTable eingef"ugt werden. Ein var\_dump einer solchen Klasse sah nun wie folgt aus:
+\begin{lstlisting}[caption=Dump einer TurpitudeJavaClass]
+object(TurpitudeJavaClass)#4 (1) {
+  ["ClassName"]=>
+    string(16) "java/lang/String"
+}
+\end{lstlisting}
+Um aus Klassen Objekte erzeugen zu k"onnen muss ein Konstruktor aufgerufen werden. Konstruktoren werden im JNI wie ganz normale Methoden
+behandelt, nur dass der Methodenname stets \emph{$<$init$>$} ist. Um mittels JNI eine Methode aufrufen zu k"onnen muss diese zuerst in
+Form einer Variablen des Types \emph{jmethodID} vorhanden sein, die wiederum mit der JNI-Umgebung und einer \emph{jclass} erzeugt werden kann.
+Hierzu muss neben dem Methodennamen allerdings auch die Signatur der aufzufindenden Methode angegeben werden, und zwar in einer speziellen
+Syntax. Diese zu erl"autern w"urde an dieser Stelle den Rahmen sprengen, deswegen hier nur der Verweis auf die JNI-Dokumentation, zu finden
+unter \cite{JNIHP}.
+Um eine jmethodID f"ur den PHP-Anwender hantierbar zu machen wurde die Klasse TurpitudeJavaMethod eingef"uhrt, wieder analog zu den
+vorherigen Klassen. Eine TurpitudeJavaMethod hat weder Attribute noch eigene Methoden, sie wird ausschliesslich als Parameter in Methoden
+anderer Klassen ben"otigt. Erzeugt wird ein solches Objekt mit der Methode \emph{findMethod()} der Klasse TurpitudeJavaClass, die zwei 
+String-Argumente erwartet: den Methodennamen und die JNI-kodierte Methodensignatur. Die Validit"at dieser beiden Argumente wird nicht explizit
+gepr"uft, wird keine entsprechende Methode gefunden wird ein PHP-Fehler erzeugt. Die TurpitudeJavaClass wird durch die Funktion
+\emph{make\_turpitude\_jmethod\_instance} erzeugt, und speichert neben ihrem Namen und ihrer Signatur noch einen Indikator der anzeigt
+ob sie statisch aufgerufen werden kann. Ausserdem wird im object\_struct die jclass und der im enum \emph{turpitude\_java\_type} definierte
+Typ des R"uckgabewertes gespeichert. Dieser wird durch parsen der Signatur ermittelt und wird sp"ater beim Aufruf der Methode ben"otigt.
+Neben der Methode \emph{findMethod()} wurde in der TurpitudeJavaClass noch die Methoden \emph{findStaticMethod()} f"ur statisch
+aufrufbare Methoden und \emph{findConstructor()}, die dem Anwender die "Ubergabe von $<$init$>$ erspart, definiert.
+
 
 TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
-
-Zuerst wurde die Klasse \emph{TurpitudeEnvironment} implementiert. 
 
 TODO: besonderheiten der einzelnen Klassen
 
