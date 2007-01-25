@@ -223,12 +223,15 @@ aufrufbare Methoden und \emph{findConstructor()}, die dem Anwender die "Ubergabe
 Derart erstellte Konstruktoren konnten nun zur Erzeugung von Java-Objekten genutzt werden. Diese sollten in PHP durch die Klasse
 \emph{TurpitudeJavaObject} dargestellt werden, und so musste diese zun"achst dem Interpreter auf be"ahrte Weise bekanntgemacht werden.
 Neben dem \emph{jobject}, welches das Java-Objekt auf C-Ebene repr"asentiert wird im object\_struct des TurpitudeJavaObject noch die \emph{jclass}
-mitgespeichert, was sp"ater klassenspezifische Operationen erleichtern soll. Das Objekt selbst wird schon im im call-Handler der TurpitudeJavaClass 
+mitgespeichert, was sp"ater klassenspezifische Operationen erleichtern soll. Das Objekt selbst wird schon im call-Handler der TurpitudeJavaClass 
 erzeugt, und zwar mittels der JNI-Funktion \emph{NewObject}, falls der Konstruktor keine Argumente erfordert, und er Funktion \emph{NewObjectA} falls
 er Argumente erwartet. Alle JNI-Funktionen mit dem Suffix "'A"' am Ende erwarten die an die Java-Methode weiterzureichenden Argumente als Array
 des Types \emph{jvalue}, einem Union aller JNI-Typen. Um ein solches Array f"ullen zu k"onnen wurde die Funktion \emph{zval\_to\_jvalue} geschrieben,
-die "uber den Typen des zval ermittelt welches Attribut des jvalue bef"ullt werden soll. Leider enth"alt ein jvalue keinerleit Typinformation "uber den
-gespeicherten Wert, was sp"ater bei der R"uckumwandlung eines jvalue in einen zval zu Problemen f"uhren sollte.
+die "uber den Typen des zval ermittelt welches Attribut des jvalue bef"ullt werden soll. Leider enth"alt ein jvalue keinerlei Typinformation "uber den
+gespeicherten Wert, was sp"ater bei der R"uckumwandlung eines jvalue in einen zval zu Problemen f"uhren k"onnte. Im Gegensatz zur oben beschriebenen 
+Funktion \emph{zval\_to\_jobject} wandelt \emph{zval\_to\_jvalue} scalare PHP-Typen nicht in deren Objekt"aquivalente in Java, sondern in die
+entsprechenden simplen Java-Typen um. Somit k"onnen auch Konstruktoren (und sp"ater auch Methoden) aufgerufen werden die solche Typen als Argumente
+verlangen, ohne sich auf das Autoboxing der JVM verlassen zu m"ussen.
 Um aus einem jobject eine Instanz der Klasse
 TurpitudeJavaObject zu konstruieren wird es, zusammen mit der zugeh"origen Klasse - sowohl die jclass als auch die TurpitudeJavaClass - an die Funktion 
 \emph{make\_turpitude\_jobject\_instance} "ubergeben, in der die eigentliche Instanz angelegt und die Turpitude-Klasse als Attribut "'Class"' hinzugef"ugt wird. 
@@ -242,7 +245,46 @@ object(TurpitudeJavaObject)#6 (1) {
   }
 }
 \end{lstlisting}
+Nun konnte endlich der Aufruf von Java-Methoden implementiert werden. Der call-Handler des TurpitudeJavaObjects "uberpr"uft zuerst, ob es sich bei der
+aufgerufenen Methode um \emph{javaInvoke} handelt. Ist dies der Fall wird die Methode des Java-Objektes aufgerufen, die im ersten Parameter "ubergeben 
+wurde. Danach wird - "ahnlich wie bei Konstruktoren - unterschieden, ob neben der aufzurufenden Methode noch andere Argumente "ubergeben wurden, in diesem
+Fall wird - wieder wie bei Konstruktoren - ein Array aus jvalues erstellt und je nach Typ des R"uckgabewertes der Methode die entsprechende JNI-Funktion
+(Call$<$type$>$MethodA) aufgerufen. Wurden ausser der Methode keine weiteren Parameter mit"ubergeben, wird eine entsprechende Funktion der Signatur
+Call$<$type$>$Method (ohne A) aufgerufen. Der R"uckgabewert der aufgerufenen JNI-Funktion wird in einem jvalue gespeichert, der zusammen mit dem
+Typen des R"uckgabewertes der Funktion \emph{jvalue\_to\_zval} "ubergeben wird, die letztendlich den zval erzeugt, der an PHP zur"uckgegeben wird.
+Im Zuge der Implementation von Methodenaufrufen bei Objekten wurde auch gleich der Aufruf statischer Methoden bei Klassen implementiert, dieser funktioniert exakt 
+gleich, nur dass JNI-Funktionen der Signatur CallStatic$<$Type$>$Method(A) aufgerufen werden m"ussen.
 
+Da das erzeugen m"ussen von Methoden bevor man sie aufrufen kann doch eher m"uhsam erscheint wurde call-Handler noch derart erweitert, dass wenn keine der
+explizit definierten Methoden aufgerufen wurde nicht einfach ein Fehler erzeugt wird, sondern es wird versucht eine Methode gleichen Namens zu finden und diese
+aufzurufen. Dazu muss der Anwender allerdings als erstes Argument die Methodensignatur angeben, da es das JNI leider erm"oglicht alle Methoden eines Namens
+zu finden, um dann eventuell anhand der weiteren Argumente die richtige Methode zu finden. Ist der erste Parameter also ein String wird versucht eine
+Methode zu finden die den Namen der in PHP aufgerufenen Methode tr"agt, und die den "ubergebenen String als Signatur hat. Ist dies der Fall wird einfach 
+eine Instanz von TurpitudeJavaMethod erzeugt und an Stelle des Signaturstrings in das Argumentenarray geschrieben. Nun muss nur noch die Funktion aufgerufen
+werden die auch die mittels \emph{javaInvoke} aufgerufenen Methoden abhandelt. Folglich kann die Java-Methode \emph{toString()} der Klasse \emph{java.util.Date}
+auf diese beiden Arten aufgerufen werden:
+\begin{lstlisting}[caption=Zwei Arten die gleiche Methode aufzurufen]
+$method = $class->findMethod('toString', '()Ljava/lang/String;');
+$string = $date->javaInvoke($method);
+oder
+$string = $date->toString('()Ljava/lang/String;');
+\end{lstlisting}
+Weiterhin sollte es dem Anwender erm"oglicht werden, auf Attribute eines Objektes zuzugreifen. Auch Attribute m"ussen mit dem JNI erst erzeugt werden, allerdings
+wurde hier auf eine eigene PHP-Klasse verzichtet, sondern es wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: \emph{javaGet()} und
+\emph{javaSet()}. \emph{javaGet()} erwartet analog zu Methoden zwei Argumente, den Namen des Attributes und dessen Signatur, beides als Strings, letzteres wieder
+JNI-kodiert. Wie bei Methodensignaturen auch wird der Feldsignaturstring geparst, um sp"ater dem R"uckgabewert den richtigen Typen zuweisen zu k"onnen, aber auch
+weil auch um ein Attribut eines Java-Objektes auszulesen die richtige JNI-Funktion aufgerufen werden muss. Diese Funktionen haben die Signatur
+Get$<$Type$>$Field, und erwarten alle das Objekt dessen Attribut ausgelesen werden soll, sowie eine sogenannte \emph{jfieldID}, die zuvor mittels der Funktion
+\emph{GetFieldID} generiert werden muss. Wie bei Methodenaufrufen der R"uckgabewert wird hier der Wert des Attributes in einem jvalue gespeichert, der wieder
+in einen zval umgewandelt wird. \emph{javaSet()} erwartet neben den Argumenten die auch \emph{javaGet()} erwartet noch den Wert auf den das Attribut gesetzt werden
+soll, daf"ur gibt diese Methode nat"urlich keinen Wert zur"uck. Auch \emph{javaSet()} entscheidet anhand der Signatur welche JNI-Funktion zum Setzen des
+Attributes aufgerufen werden soll, welche die Signatur Set$<$Type$>$Field haben, und versucht ebenfalls anhand des "ubergebenen Attributnamens und -Signatur die
+entsprechende jfieldID zu finden.
+
+Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder 
+Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das lesen beziehungsweise schreiben von Attributen auch auf nicht-"offentlichen
+Methoden und Attributen funktioniert, einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
+ausgehen k"onnen sollte, dass ein Anwender wenigstens in groben Z"ugen weiss was er tut. 
 
 TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
 

@@ -15,4 +15,6 @@ count:
 clean:
 	cd $(OUTPUT_DIR) && rm -f *
 
+count:
+	find ./ -name \*.tex -exec cat {} \; |grep -v % |wc
 
