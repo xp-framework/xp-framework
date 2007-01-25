@@ -25,13 +25,13 @@ Featureset
 The following features will be included in the first release:
 <pre>
   * EJB3-style stateless session beans
+  * Resource injection (rbms connections, logger categories, properties)
   * Hot deployment
 </pre>
 
 The following features will not be included in the basic version:
 <pre>
   * Authentication and protection
-  * (Resource management (rbms connections))
   * Other bean types
   * Messaging
   * Transactions
@@ -58,14 +58,61 @@ Example:
   class RoundtripBean extends Object {
   
     #[@remote]
-    function echoString($str) {
+    public function echoString($str) {
       return $str;
+    }
+
+    #[@inject(type= 'util.log.LogCategory', name= 'search')[
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   }
 ?>
 
 The bean class does not need to implement any interfaces or extend any
 classes other than lang.Object.
+
+The @inject annotation
+~~~~~~~~~~~~~~~~~~~~~~
+This annotation marks methods as resource injectors.
+
+<pre>
+* Resources are one of the following: database connections, logger 
+  categories, properties.
+
+* Resources are configured by property objects:
+  - The property manager's lookup path is set to "etc/" per default
+    and may be set via xpcli -c <path>
+  - The connection manager is configured by database.ini
+  - The logger is configured by log.ini
+</pre>
+
+1) Injecting database connections
+<?php
+  #[@inject(type= 'rdbms.DBConnection', name= 'news')]  
+  function setConnection($conn) { }
+?>
+  This method will receive a DBConnection instance (via 
+  ConnectionManager::getInstance()->getByHost('news', 0))
+
+
+2) Injecting logger categories
+<?php
+  #[@inject(type= 'util.log.LogCategory', name= 'default')]  
+  function setTrace($cat) { }
+?>
+  This method will receive a LogCategory instance (via 
+  Logger::getInstance()->getCategory('default'))
+
+
+3) Injecting properties
+<?php
+  #[@inject(type= 'util.Properties', name= 'app')]  
+  function setApplicationConfig($conf) { }
+?>
+  This method will receive a LogCategory instance (via 
+  PropertyManager::getInstance()->getProperties('app'))
+
 
 Packaging
 ~~~~~~~~~
@@ -99,9 +146,9 @@ The XAR contains the following:
 * The bean class' implementation
   A class that extends the bean class and implements the remote interface
 <?php
-  class RoundtripBeanImpl extends RoundtripBean {
+  class RoundtripBeanImpl extends RoundtripBean implements Roundtrip {
    
-  } implements(__FILE__, 'net.xp_framework.beans.stateless.Roundtrip');
+  }
 ?>
   
 
@@ -120,7 +167,6 @@ The server will support a set of configuration files stored in a "etc"
 directory. Additionally, resource configurations for database connections, ldap
 clients etc will reside in "etc/env". The server will hold the configured
 resources globally for all beans.
-
 
 
 Security considerations
@@ -146,7 +192,6 @@ Related documents
 
 - https://glassfish.dev.java.net/
   Glassfish: Open Source Java EE 5 Application Server
-
 Comments
 --------
 - friebe, Wed Aug 23 18:09:21 CEST 2006
@@ -159,6 +204,7 @@ Comments
   to support classes in XARs using other classes from the archive.
   This functionality is verified by the ArchiveClassLoaderTest
   unittest.
+
 - gelli, Mo Dez 11 17:20:58 CET 2006
   Added some info concerning the resources management and deployment
   of beans and libraries.
