@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0069 - EASC server in php
+  (gelli)
 - Implemented RFC #0076 - Transfer exception cause, on the PHP server 
   side (previously only implemented in PHP client and Java server)
   (friebe)
