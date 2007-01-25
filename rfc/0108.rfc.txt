@@ -1,0 +1,57 @@
+RFC 0108: Make XAR files runnable by XPCLI
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu Jan 25 17:28:06 CET 2007
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+There will be an optional means to embed information in a XAR archive so
+that tools like XPCLI can directly run these classes. 
+
+
+Rationale
+---------
+Deploy applications in a single file.
+
+
+Functionality
+-------------
+A file called META-INF/manifest.ini will be added to the XAR archives.
+
+Example:
+<pre>
+  [runnable]
+  main-class="remote.server.impl.ApplicationServer"
+
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://java.sun.com/docs/books/tutorial/deployment/jar/manifestindex.html
+  http://java.sun.com/docs/books/tutorial/deployment/jar/appman.html
+  How Java does this.
+
+Comments
+--------
+
+<EOF>
