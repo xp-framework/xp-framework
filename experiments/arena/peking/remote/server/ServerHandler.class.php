@@ -42,8 +42,8 @@
         $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
         $response->setValue($handler->getValue());
 
-      } catch (XPException $e) {
-        $response= EascMessageFactory::forType(REMOTE_MSG_VALUE);
+      } catch (Throwable $e) {
+        $response= EascMessageFactory::forType(REMOTE_MSG_EXCEPTION);
         $response->setValue($e);
       }
 
