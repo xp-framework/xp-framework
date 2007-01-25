@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, gelli
 @created: Mon Aug 14 17:50:46 CEST 2006
-@status: discussion, ends at Thu Jan 25 15:00:00 CET 2007
+@status: implemented, Thu Jan 25 15:44:56 CET 2007
 @category: remote
 
 Scope of Change
