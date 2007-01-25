@@ -1,0 +1,84 @@
+Index: /usr/home/thekid/devel/xp.public/trunk/skeleton/util/cmd/Runner.class.php
+===================================================================
+--- /usr/home/thekid/devel/xp.public/trunk/skeleton/util/cmd/Runner.class.php	(revision 9375)
++++ /usr/home/thekid/devel/xp.public/trunk/skeleton/util/cmd/Runner.class.php	(working copy)
+@@ -8,6 +8,8 @@
+     'io.streams.StringWriter', 
+     'io.streams.ConsoleOutputStream',
+     'util.log.Logger',
++    'lang.archive.ArchiveClassLoader',
++    'lang.archive.Archive',
+     'util.PropertyManager',
+     'rdbms.ConnectionManager'
+   );
+@@ -22,15 +24,22 @@
+    *
+    * Options includes one of the following:
+    * <pre>
+-   * --config | -c:
++   * --config | -c [path]:
+    *   Set the path with which the PropertyManager is configured with. The
+    *   PropertyManager is used for dependency injection. If a file called
+    *   log.ini exists in this path, the Logger will be configured with. If
+    *   a database.ini is present there, the ConnectionManager will be #
+    *   configured with it.
+-   * 
+    * </pre>
+    *
++   * Running from XARs:
++   * <pre>
++   * $ xpcli -x [xarfile.xar] [classoptions]
++   * </pre>
++   *
++   * The xarfile is examined for a a file called META-INF/manifest.ini
++   * which contains a main-class property in its "runnable" section.
++   *
+    * @see      xp://util.cmd.Command
+    * @purpose  Runner
+    */
+@@ -126,10 +135,12 @@
+       // Separate runner options from class options
+       $map= array();
+       $options= array(
+-        'config'  => 'etc'
++        'config'  => 'etc',
++        'xar'     => NULL,
+       );
+       $valid= array(
+         'config'  => 1,
++        'xar'     => 1,
+       );
+       foreach ($valid as $key => $val) {
+         $valid[$key{0}]= $val;
+@@ -159,12 +170,29 @@
+             }
+           }
+         } else {
+-          unset($params->list[-1]);
+           $classname= $option;
+-          $classparams= new ParamString(array_slice($params->list, $i+ 1));
+           break;
+         }
++        if ($options['xar']) {
++          try {
++            $cl= new ArchiveClassLoader(new Archive(new File($options['xar'])));
++            $p= Properties::fromString($cl->getResource('META-INF/manifest.ini'));
++          } catch (ElementNotFoundException $e) {
++            Console::writeLine('*** The archive "', $options['xar'], '" does not contain a manifest');
++            return 1;
++          }
++          if (!$p->hasSection('runnable')) {
++            Console::writeLine('*** The archive "', $options['xar'], '" is not runnable');
++            return 1;
++          }
++          $classname= $p->readString('runnable', 'main-class');
++          break;
++        }
+       }
++      
++      // Separate arguments
++      unset($params->list[-1]);
++      $classparams= new ParamString(array_slice($params->list, $i+ 1));
+ 
+       // Sanity check
+       if (!$classname) {
