@@ -59,22 +59,22 @@
       
         // German date format
         $stamp= Date::mktime(
-          isset($matches[5]) ? $matches[5] : 0, 
-          isset($matches[6]) ? $matches[6] : 0, 
-          isset($matches[7]) ? $matches[7] : 0, 
-          $matches[2], 
-          $matches[1], 
-          isset($matches[4]) ? DateParser::yearFor($matches[4]) : date('Y')
+          isset($matches[5]) ? intval($matches[5]) : 0, 
+          isset($matches[6]) ? intval($matches[6]) : 0, 
+          isset($matches[7]) ? intval($matches[7]) : 0, 
+          intval($matches[2]), 
+          intval($matches[1]), 
+          isset($matches[4]) ? DateParser::yearFor($matches[4]) : intval(date('Y'))
         );
       } else if (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
       
         // Generalized date format
         $stamp= Date::mktime(
-          $matches[4],
-          $matches[5],
-          (isset($matches[6]) ? $matches[6] : 0),
-          $matches[2],
-          $matches[3],
+          intval($matches[4]),
+          intval($matches[5]),
+          (isset($matches[6]) ? intval($matches[6]) : 0),
+          intval($matches[2]),
+          intval($matches[3]),
           DateParser::yearFor($matches[1])
         );
         
@@ -105,7 +105,7 @@
         // I would consider this a bug in PHP (the function should return FALSE
         // or at least raise a warning), but for now, we will have to live 
         // with it.
-        if (-1 === ($stamp= strtotime(strtolower($s)))) {
+        if (FALSE === ($stamp= strtotime(strtolower($s)))) {
           throw(new FormatException('Could not parse "'.$s.'"'));
         }
       }
