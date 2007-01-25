@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, gelli
 @created: Mon Aug 14 17:50:46 CEST 2006
-@status: discussion, ends at Fri Dec 08 12:00:00 CET 2006
+@status: discussion, ends at Thu Jan 25 15:00:00 CET 2007
 @category: remote
 
 Scope of Change
@@ -122,7 +122,7 @@ the latter of which can then be deployed in the server.
 
 The XAR contains the following:
 
-* A property file
+* A property file (META-INF/bean.properties)
   Contains the bean class' name, type, remote interface and the name to 
   which to bind it to.
 <pre>
@@ -150,7 +150,38 @@ The XAR contains the following:
    
   }
 ?>
+
+* Additional resources required by the bean. These can be retrieved
+  by the classloader's getResource() method.
   
+* The following special property files, optional:
+  - etc/log.ini
+    If present, the logger will be configured with this file
+
+  - etc/database.ini
+    If present, the connection manager will be configured with this file
+  
+
+Logger configuration example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  [default]
+  appenders="util.log.FileAppender"
+  appender.util.log.FileAppender.params="filename"
+  appender.util.log.FileAppender.param.filename="/var/log/xp/bean-%Y-%m-%d.log"
+</pre>
+
+
+Database configuration example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  [vod]
+  dsn="mysql://user:password@localhost/VOD?autoconnect=1"
+  
+  [changeblog]
+  dsn="mysql://serendipity:********@localhost/serendipity?autoconnect=1"
+</pre>
+
 
 Deployment
 ~~~~~~~~~~
