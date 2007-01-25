@@ -13,12 +13,44 @@
   );
 
   /**
-   * Command runner
+   * Runs util.cmd.Command subclasses on the command line.
    *
+   * Usage:
+   * <pre>
+   * $ xpcli [options] fully.qualified.class.Name [classoptions]
+   * </pre>
+   *
+   * Options includes one of the following:
+   * <pre>
+   * --config | -c:
+   *   Set the path with which the PropertyManager is configured with. The
+   *   PropertyManager is used for dependency injection. If a file called
+   *   log.ini exists in this path, the Logger will be configured with. If
+   *   a database.ini is present there, the ConnectionManager will be #
+   *   configured with it.
+   * 
+   * </pre>
+   *
+   * @see      xp://util.cmd.Command
    * @purpose  Runner
    */
   class Runner extends Object {
   
+    /**
+     * Converts api-doc "markup" to plain text w/ ASCII "art"
+     *
+     * @param   string markup
+     * @return  string text
+     */
+    protected static function textOf($markup) {
+      $line= str_repeat('=', 72);
+      return strip_tags(preg_replace(array(
+        '#<pre>#', '#</pre>#', '#<li>#',
+      ), array(
+        $line, $line, '* ',
+      ), $markup));
+    }
+    
     /**
      * Show usage
      *
@@ -28,7 +60,7 @@
 
       // Description
       if (NULL !== ($comment= $class->getComment())) {
-        Console::writeLine($comment);
+        Console::writeLine(self::textOf($comment));
         Console::writeLine(str_repeat('=', 72));
       }
 
@@ -84,6 +116,12 @@
      */
     public static function main(array $args) {
       $params= new ParamString($args);
+      
+      // No arguments given - show our own usage
+      if ($params->count <= 1) {
+        Console::writeLine(self::textOf(XPClass::forName(__CLASS__)->getComment()));
+        return 1;
+      }
 
       // Separate runner options from class options
       $map= array();
