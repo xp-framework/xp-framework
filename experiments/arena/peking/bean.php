@@ -21,13 +21,16 @@
 Packages a bean class for deployment
 
 Usage:
-$ php package.php <class-name> [ -o <package-file>]
+$ php package.php <class-name> [ -o <package-file>] [-a file:file:...]
 
 * class-name is the fully-qualified class name of the bean
   to package
 
 * package-file is the package's filename and defaults to the
   class name + ".xar"
+
+* files are additional files to pack into the archive, seperated
+  by the path separator (":" on Un*x, ";" on Windows)
 __
     );
     exit(1);
@@ -110,6 +113,12 @@ __
     
     // Add meta information
     $a->add($meta, 'META-INF/bean.properties');
+    
+    // Add additional files
+    foreach (explode(PATH_SEPARATOR, $p->value('add', 'a', '')) as $filename) {
+      $a->add(new File($filename), $filename);
+      Console::writeLine('---> ', $filename);
+    }
     
     // Add: Bean class, remote interface, and home interface
     addClass($a, new File($cl->findClass($class->getName())), $class->getName());
