@@ -59,7 +59,7 @@
      * @param   string string
      * @return  string
      */
-    public function getOffsetByTimeZoneString($string) {
+    public static function getOffsetByTimeZoneString($string) {
       static $tz= array (
         // East of Greenwich
         'IDLE'=> '+1200',             // International Date Line East
@@ -160,7 +160,7 @@
      * @return  &util.Date
      */
     public function convertDate($date, $tz) {
-      return new Date ($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
+      return new Date($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
     }
 
     /**
