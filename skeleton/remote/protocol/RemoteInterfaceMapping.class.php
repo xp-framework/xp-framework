@@ -7,12 +7,9 @@
   uses(
     'lang.reflect.Proxy',
     'remote.RemoteInvocationHandler',
-    'remote.protocol.SerializerMapping'
+    'remote.protocol.SerializerMapping',
+    'remote.server.RemoteObjectMap'
   );
-
-  // Defines for context keys
-  define('RIH_OBJECTS_KEY',       'objects');
-  define('RIH_OIDS_KEY',          'oids');
 
   /**
    * Maps serialized representation of remote interface to a Proxy 
@@ -37,16 +34,12 @@
       $serialized->offset++;    // '{'
       $interface= $serializer->valueOf($serialized, $context);
       $serialized->offset++;    // '}'
-      $iclass= XPClass::forName($interface);
 
-      $cl= ClassLoader::getDefault();      
-      $instance= Proxy::newProxyInstance(
-        $cl, 
-        array($iclass), 
+      return Proxy::newProxyInstance(
+        ClassLoader::getDefault(), 
+        array(XPClass::forName($interface)), 
         RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
       );
-
-      return $instance;
     }
 
     /**
@@ -58,30 +51,18 @@
      * @return  string
      */
     public function representationOf($serializer, $var, $context= array()) {
-      static $oid=  0;
-      
-      // Check if we've serialized this object before by looking it up
-      // through the hashCode() method. If not, remember that we did for
-      // the next run.
-      if (!$context[RIH_OIDS_KEY]->containsKey($var->hashCode())) {
-        $context[RIH_OBJECTS_KEY]->putref($oid, $var);
-        $context[RIH_OIDS_KEY]->put($var->hashCode(), $oid);
-        $oid++;
-      }
-      
-      // Fetch the stored "external" OID
-      $eoid= $context[RIH_OIDS_KEY]->get($var->hashCode());
+
+      // Fetch OID for the given object      
+      $oid= $context[RemoteObjectMap::CTX_KEY]->oidFor($var);
       
       // Find home interface
-      $class= $var->getClass();
-      
-      foreach (($interfaces= $class->getInterfaces()) as $interface) {
+      foreach (($interfaces= $var->getClass()->getInterfaces()) as $interface) {
         if ($interface->isSubclassOf('remote.beans.BeanInterface')) {
-          return 'I:'.$eoid.':{'.$serializer->representationOf($interface->getName(), $context).'}';
+          return 'I:'.$oid.':{'.$serializer->representationOf($interface->getName(), $context).'}';
         }
       }
       
-      throw(new IllegalArgumentException('Not a BeanInterface: '.$class->toString()));
+      throw(new IllegalArgumentException('Not a BeanInterface: '.$var->getClassName()));
     }
     
     /**
