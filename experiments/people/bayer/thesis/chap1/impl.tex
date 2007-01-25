@@ -281,19 +281,33 @@ soll, daf"ur gibt diese Methode nat"urlich keinen Wert zur"uck. Auch \emph{javaS
 Attributes aufgerufen werden soll, welche die Signatur Set$<$Type$>$Field haben, und versucht ebenfalls anhand des "ubergebenen Attributnamens und -Signatur die
 entsprechende jfieldID zu finden.
 
-Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder 
+Nachdem man nun Klassen konstruieren, deren Methoden aufrufen und auf deren Attribute zugreiffen konnte wurden die M"oglichkeiten der Fehlerbehandlung
+verbessert. Java arbeitet haupts"achlich mit Exceptions, und auch die Turpitude-intern erzeugten Fehler treten in der JVM als Exceptions auf. Folglich mussten dem
+Anwender Werkzeuge zur Hand gegeben werden, geworfene Exceptions in PHP zu fangen und zu behandeln, und selbst Java-Exceptions zu erzeugen. Das Werfen von
+Exceptions kann der Anwender mittels der Methoden \emph{throw} und \emph{throwNew} des TurpitudeEnvironment bewerkstelligen. Mit \emph{throw} k"onnen Instanzen
+der Klasse \emph{java.lang.Throwable} geworfen werden, die der Anwender zuvor wie oben beschrieben erzeugt hat. \emph{throwNew} hingegen erwartet zwei Parameter,
+zum einen den Namen der zu werfenden Exception, zum anderen die Nachricht, die die Exception enthalten soll. Will der Anwender also komplizierte Exceptions mit
+werfen, die zus"atzlich zur eigentlichen Nachricht noch zus"atzlich Information tragen soll wird er \emph{throw} nutzen, f"ur den gro\ss teil der F"alle 
+hingegen reicht \emph{throwNew} v"ollig aus. Um Exceptions auch fangen zu k"onnen wurde die Methode \emph{exceptionOccurred} eingef"uhrt, die die gleichnamige
+JNI-Funktion aufruft, und die zuletzt geworfene und noch nicht gefangene Exception zur"uckgibt. Wird keine solche Exception gefunden wird NULL zur"uckgegeben,
+derart gefundene Exceptions verbleiben allerdings in diesem Status. Um erfolgreich behandelte Exceptions aus diesem Zustand zu entfernen wurde die Methode
+\emph{exceptionClear} implementiert, die ebenfalls keine Parameter entgegennimmt, und ebenfalls die gleichnamige JNI-Funktion aufruft.
+Schlussendlich wurde dem TurpitudeEnvironment noch die Methode \emph{instanceOf} hinzugef"ugt die den Java-Operator \emph{instanceof} nachbildet.
+Diese Methode erwartet zwei Argumente, zum einen das zu testende Objekt, und zum anderen die Klasse von der der Anwender wissen will ob das Objekt eine Instanz
+dieser ist.
+
+
+TODO: besonderheiten der einzelnen Klassen
+
+
+Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder falschen Types sein.
 Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das lesen beziehungsweise schreiben von Attributen auch auf nicht-"offentlichen
 Methoden und Attributen funktioniert, einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
 ausgehen k"onnen sollte, dass ein Anwender wenigstens in groben Z"ugen weiss was er tut. 
-
-TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
-
-TODO: besonderheiten der einzelnen Klassen
 
 
 TODO: Context - CompiledScript::compile - ctx speichern
 
 TODO: Invocable
-
 
 % ********** End of chapter **********
