@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0076 - Transfer exception cause, on the PHP server 
+  side (previously only implemented in PHP client and Java server)
+  (friebe)
 - Fixed peer.mail.store.ImapStore::_supports() method
   (kiesel)
 - Fixed peer.mail.transport.SmtpTransport class
