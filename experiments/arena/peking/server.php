@@ -50,7 +50,7 @@
   $p->exists('fork', 'f') && $thread->start();
   $server->service();
 
-  $p->exists('fork', 'f') && $thread->stop();
+  $p->exists('fork', 'f') && $thread->stop(SIGTERM);
   $server->shutdown();
   // }}}
 ?>
