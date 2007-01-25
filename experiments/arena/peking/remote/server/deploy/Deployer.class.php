@@ -10,7 +10,6 @@
     'remote.server.container.StatelessSessionBeanContainer',
     'remote.server.naming.NamingDirectory',
     'remote.server.ContainerInvocationHandler',
-    'remote.reflect.InterfaceUtil',
     'util.log.Traceable'
   );
 
