@@ -177,6 +177,7 @@ In allen Turpitude-Klassen wird hierzu in der Callback-Methoda \emph{\_\_call} d
 Methodenname ausgelesen, der sich in \emph{argv} and der Stelle [0] befindet. Ausserdem wird stets ein Pointer auf die zweite Stelle
 von \emph{argv}, sowie ein Integer der um eins kleiner ist als \emph{argc}, an die die eigentlichen
 Methoden implementierenden Funktionen "ubergeben, zusammen mit \emph{return\_value} und eventuell dem dem Objekt-eigenen C-Struct.
+Diese PHP-Methoden implementierenden Funktionen werden im weiteren Verlauf auch \emph{Handler} genannt.
 Danach wird in jeder \emph{\_\_call}-Funktion mittels \emph{strcmp} der Name der aufgerufenen Methode mit den Namen der zu implementierenden 
 Methoden verglichen, und falls eine "Ubereinstimmung gefunden wurde wird die jeweilige Funktion aufgerufen. Wird keine "Ubereinstimmung
 gefunden wird mittels des Makros \emph{php\_error} ein PHP-Laufzeitfehler erzeugt. Da diese Fehler von Turpitude von der Funktion
@@ -214,8 +215,33 @@ gepr"uft, wird keine entsprechende Methode gefunden wird ein PHP-Fehler erzeugt.
 \emph{make\_turpitude\_jmethod\_instance} erzeugt, und speichert neben ihrem Namen und ihrer Signatur noch einen Indikator der anzeigt
 ob sie statisch aufgerufen werden kann. Ausserdem wird im object\_struct die jclass und der im enum \emph{turpitude\_java\_type} definierte
 Typ des R"uckgabewertes gespeichert. Dieser wird durch parsen der Signatur ermittelt und wird sp"ater beim Aufruf der Methode ben"otigt.
+Neben den einfachen Java-Datentypen wie \emph{int}, \emph{boolean} und \emph{double} werden noch \emph{void} und vor allem \emph{Object} unterschieden,
+wobei der eigentliche Typ des Objektes keine Rolle spielt.
 Neben der Methode \emph{findMethod()} wurde in der TurpitudeJavaClass noch die Methoden \emph{findStaticMethod()} f"ur statisch
-aufrufbare Methoden und \emph{findConstructor()}, die dem Anwender die "Ubergabe von $<$init$>$ erspart, definiert.
+aufrufbare Methoden und \emph{findConstructor()}, die dem Anwender die "Ubergabe von "'$<$init$>$"' als Methodenname erspart, definiert.
+
+Derart erstellte Konstruktoren konnten nun zur Erzeugung von Java-Objekten genutzt werden. Diese sollten in PHP durch die Klasse
+\emph{TurpitudeJavaObject} dargestellt werden, und so musste diese zun"achst dem Interpreter auf be"ahrte Weise bekanntgemacht werden.
+Neben dem \emph{jobject}, welches das Java-Objekt auf C-Ebene repr"asentiert wird im object\_struct des TurpitudeJavaObject noch die \emph{jclass}
+mitgespeichert, was sp"ater klassenspezifische Operationen erleichtern soll. Das Objekt selbst wird schon im im call-Handler der TurpitudeJavaClass 
+erzeugt, und zwar mittels der JNI-Funktion \emph{NewObject}, falls der Konstruktor keine Argumente erfordert, und er Funktion \emph{NewObjectA} falls
+er Argumente erwartet. Alle JNI-Funktionen mit dem Suffix "'A"' am Ende erwarten die an die Java-Methode weiterzureichenden Argumente als Array
+des Types \emph{jvalue}, einem Union aller JNI-Typen. Um ein solches Array f"ullen zu k"onnen wurde die Funktion \emph{zval\_to\_jvalue} geschrieben,
+die "uber den Typen des zval ermittelt welches Attribut des jvalue bef"ullt werden soll. Leider enth"alt ein jvalue keinerleit Typinformation "uber den
+gespeicherten Wert, was sp"ater bei der R"uckumwandlung eines jvalue in einen zval zu Problemen f"uhren sollte.
+Um aus einem jobject eine Instanz der Klasse
+TurpitudeJavaObject zu konstruieren wird es, zusammen mit der zugeh"origen Klasse - sowohl die jclass als auch die TurpitudeJavaClass - an die Funktion 
+\emph{make\_turpitude\_jobject\_instance} "ubergeben, in der die eigentliche Instanz angelegt und die Turpitude-Klasse als Attribut "'Class"' hinzugef"ugt wird. 
+Eine so erzeugte Repr"asentation eines Java-Objektes vom Typ java.util.Date sieht f"ur den PHP-Anwender wie folgt aus:
+\begin{lstlisting}[caption=Dump eines TurpitudeJavaObject]
+object(TurpitudeJavaObject)#6 (1) {
+  ["Class"]=>
+  object(TurpitudeJavaClass)#4 (1) {
+    ["ClassName"]=>
+    string(14) "java/util/Date"
+  }
+}
+\end{lstlisting}
 
 
 TODO: Werte"ubergabe (zvaltojvalue, jvaluetozval...)
