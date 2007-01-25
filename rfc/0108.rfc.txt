@@ -26,7 +26,6 @@ Example:
 <pre>
   [runnable]
   main-class="remote.server.impl.ApplicationServer"
-
 </pre>
 
 
@@ -51,7 +50,21 @@ Related documents
   http://java.sun.com/docs/books/tutorial/deployment/jar/appman.html
   How Java does this.
 
+- http://xp-framework.net/rfc/contrib/rfc0108.diff
+  Implementing patch
+
+
 Comments
 --------
+- friebe, Thu Jan 25 17:33:12 CET 2007
+  The manifest could also more information, some ideas:
+  [archive]
+  vendor="XP Team"
+  company=""
+  product="EASC server"
+  checksum="md5://..."
+
+  This does not need to be decided now, however. Once we have implemented 
+  this RFC the manifests' content definition can be easily extended.
 
 <EOF>
