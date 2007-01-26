@@ -347,7 +347,7 @@
    * @purpose  Specialized SOAP type
    */
   class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
-    var</xsl:text>
+    public</xsl:text>
     <xsl:for-each select="xsd:all/xsd:element">
       $<xsl:value-of select="@name"/>
       <xsl:if test="position() &lt; last()">,</xsl:if>
@@ -427,7 +427,7 @@
    * @purpose  Specialized SOAP type
    */
   class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
-    var</xsl:text>
+    public</xsl:text>
     <xsl:for-each select="xsd:sequence/xsd:element">
       $<xsl:value-of select="@name"/>
       <xsl:if test="position() &lt; last()">,</xsl:if>
