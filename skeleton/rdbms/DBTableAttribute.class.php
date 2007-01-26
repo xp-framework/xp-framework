@@ -32,6 +32,7 @@
   define('DB_ATTRTYPE_TINYINT',        0x0019);          
   define('DB_ATTRTYPE_VARBINARY',      0x001A);        
   define('DB_ATTRTYPE_VARCHAR',        0x001B);          
+  define('DB_ATTRTYPE_ENUM',           0x001C);          
   
   /**
    * Represents a table's attribute

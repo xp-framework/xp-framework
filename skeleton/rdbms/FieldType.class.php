@@ -38,5 +38,6 @@
     const TINYINT =        0x0019;          
     const VARBINARY =      0x001A;        
     const VARCHAR =        0x001B;          
+    const ENUM =           0x001C;          
   }
 ?>
