@@ -64,7 +64,7 @@
       } else if (is_string($p)) {
         parse_str($p, $this->parameters); 
       } else {
-        $this->parameters= array_merge($this->url->getParams(), $p);
+        $this->parameters= array_merge($this->url->getParams(), (array)$p);
       }
     }
     
