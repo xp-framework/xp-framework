@@ -67,4 +67,9 @@ Comments
   This does not need to be decided now, however. Once we have implemented 
   this RFC the manifests' content definition can be easily extended.
 
+- ohinckel, Fr 26. Jan 08:11:48 CET 2007
+  When adding such information to archives, it should also be possible to
+  extract/display them easily. This could be an enhancement for the xar
+  utility.
+
 <EOF>
