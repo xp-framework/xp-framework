@@ -8,6 +8,7 @@
  version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:exsl="http://exslt.org/common"
  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
@@ -227,8 +228,8 @@
     <xsl:param name="type"/>
 
     <xsl:choose>
-      <xsl:when test="$typemap/mapping[@for = $type]">
-        <xsl:value-of select="$typemap/mapping[@for = $type]"/>
+      <xsl:when test="exsl:node-set($typemap)/mapping[@for = $type]">
+        <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = $type]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>mixed (</xsl:text>
@@ -313,8 +314,8 @@
     <xsl:param name="node" select="/.."/>
 
     <xsl:choose>
-      <xsl:when test="$typemap/mapping[@for = $node/@type]">
-        <xsl:value-of select="$typemap/mapping[@for = $node/@type]"/>
+      <xsl:when test="exsl:node-set($typemap)/mapping[@for = $node/@type]">
+        <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = $node/@type]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>mixed (</xsl:text>
@@ -360,14 +361,13 @@
     /**
      * Retrieves ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
      *
-     * @access  public
      * @return  ]]></xsl:text>
       <xsl:call-template name="xpdoc:argument">
         <xsl:with-param name="type" select="@type"/>
       </xsl:call-template>
       <xsl:text>
      */
-    function get</xsl:text>
+    public function get</xsl:text>
       <xsl:call-template name="ucfirst">
         <xsl:with-param name="string" select="@name"/>
       </xsl:call-template>
@@ -381,7 +381,6 @@
     /**
      * Sets ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
      *
-     * @access  public
      * @param   ]]></xsl:text>
       <xsl:call-template name="xpdoc:argument">
         <xsl:with-param name="type" select="@type"/>
@@ -389,7 +388,7 @@
       <xsl:value-of select="@name"/>
       <xsl:text>
      */
-    function set</xsl:text>
+    public function set</xsl:text>
       <xsl:call-template name="ucfirst">
         <xsl:with-param name="string" select="@name"/>
       </xsl:call-template>
@@ -442,14 +441,13 @@
     /**
      * Retrieves ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
      *
-     * @access  public
      * @return  ]]></xsl:text>
       <xsl:call-template name="xpdoc:argument">
         <xsl:with-param name="type" select="@type"/>
       </xsl:call-template>
       <xsl:text>
      */
-    function get</xsl:text>
+    public function get</xsl:text>
       <xsl:call-template name="ucfirst">
         <xsl:with-param name="string" select="@name"/>
       </xsl:call-template>
@@ -463,7 +461,6 @@
     /**
      * Sets ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
      *
-     * @access  public
      * @param   ]]></xsl:text>
       <xsl:call-template name="xpdoc:argument">
         <xsl:with-param name="type" select="@type"/>
@@ -471,7 +468,7 @@
       <xsl:value-of select="@name"/>
       <xsl:text>
      */
-    function set</xsl:text>
+    public function set</xsl:text>
       <xsl:call-template name="ucfirst">
         <xsl:with-param name="string" select="@name"/>
       </xsl:call-template>
@@ -515,7 +512,6 @@
     /**
      * Invokes the method "]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA["
      *
-     * @access  public
 ]]></xsl:text>
       <xsl:call-template name="xpdoc:arguments">
         <xsl:with-param name="for" select="wsdl:input/@message"/>
@@ -528,7 +524,7 @@
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.FormatException in case not-well-formed XML is returned
      */
-    function ]]></xsl:text>
+    public function ]]></xsl:text>
       <xsl:call-template name="lcfirst">
         <xsl:with-param name="string" select="@name"/>
       </xsl:call-template>
@@ -599,12 +595,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string endpoint default ']]></xsl:text>
     <xsl:value-of select="wsdl:service/wsdl:port/soap:address/@location"/>
     <xsl:text><![CDATA['
      */
-    function __construct($endpoint= ']]></xsl:text>
+    public function __construct($endpoint= ']]></xsl:text>
     <xsl:value-of select="wsdl:service/wsdl:port/soap:address/@location"/>
     <xsl:text><![CDATA[') {
       parent::__construct(
