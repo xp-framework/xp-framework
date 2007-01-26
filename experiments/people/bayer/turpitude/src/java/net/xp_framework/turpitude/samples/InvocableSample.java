@@ -28,9 +28,15 @@ public class InvocableSample {
         Object retval;
         try {
             CompiledScript script = comp.compile(getSource());
-            retval = script.eval();
+            script.eval();
             Invocable inv = (Invocable)script;
-            retval = inv.invokeFunction("useless", "Test");
+            Object phpobj = inv.invokeFunction("useless", "Function Value");
+            printRetval(phpobj);
+            retval = inv.invokeMethod(phpobj, "bar", "Method Value");
+            printRetval(retval);
+            //inv.invokeFunction("non", "existant", "function");
+            //inv.invokeMethod("non", "existant", "object");
+            //inv.invokeMethod(phpobj, "non", "existant", "object");
         } catch(PHPCompileException e) {
             System.out.println("Compile Error:");
             e.printStackTrace();
@@ -48,25 +54,33 @@ public class InvocableSample {
             e.printStackTrace();
             return;
         }
+
+    }
+
+    private static void printRetval(Object retval) {
         if (null == retval)
             System.out.println("done evaluating, return value " + retval);
         else 
             System.out.println("done evaluating, return value " + retval.getClass() + " : " + retval);
-
     }
 
     private static String getSource() {
         StringBuffer src = new StringBuffer();
         src.append("<?php \n");
         src.append("function useless($i) {");
-        src.append("    return 'useless called: '.$i;");
+        src.append("    return new foo($i);");
         src.append("}");
-        src.append("");
+        src.append(" ");
         src.append("class foo {");
-        src.append("  funtion bar($i) {");
-        src.append("    return 'foo::bar::'.$i;");
+        src.append("  var $val = '';");
+        src.append("  function __construct($i) {");
+        src.append("    $this->val = $i;");
+        src.append("  }");
+        src.append("  function bar($i) {");
+        src.append("    return 'foo::bar::'.$i.' ('.$this->val.')';");
         src.append("  }");
         src.append("}");
+        src.append(" ");
         src.append("?>"); 
         return src.toString();
     }

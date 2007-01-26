@@ -253,6 +253,7 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
                 zvalptrField,
                 env->NewDirectByteBuffer(val, sizeof(zval*))
             );
+            //printf("ASDSADFASDF %p\n", val);
 
             // find methodID of PHPObject.setProperty
             jmethodID setPropID = env->GetMethodID(cls, "setProperty", "(Ljava/lang/String;Ljava/lang/Object;)V");

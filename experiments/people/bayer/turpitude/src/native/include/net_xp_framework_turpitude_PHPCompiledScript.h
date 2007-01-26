@@ -23,6 +23,14 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nativeInvokeFunction
   (JNIEnv *, jobject, jstring, jobjectArray);
 
+/*
+ * Class:     net_xp_framework_turpitude_PHPCompiledScript
+ * Method:    nativeInvokeMethod
+ * Signature: (Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;
+ */
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nativeInvokeMethod
+  (JNIEnv *, jobject, jobject, jstring, jobjectArray);
+
 #ifdef __cplusplus
 }
 #endif

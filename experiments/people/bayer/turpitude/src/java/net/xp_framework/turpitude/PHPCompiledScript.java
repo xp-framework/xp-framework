@@ -41,7 +41,11 @@ public class PHPCompiledScript extends CompiledScript implements Invocable {
      * @see javax.script.Invocable
      */
     public Object invokeMethod(Object thiz, String name, Object... args) {
-        return null;
+        // check parameter validity
+        if (thiz == null || !(thiz instanceof PHPObject))
+            throw new IllegalArgumentException("invalid value for parameter thiz: " + thiz);
+        
+        return nativeInvokeMethod(thiz, name, args);
     }
 
     /**
@@ -74,5 +78,10 @@ public class PHPCompiledScript extends CompiledScript implements Invocable {
      * native mthod, called by invokeFunction
      */
     private native Object nativeInvokeFunction(String name, Object... args);
+
+    /**
+     * native mthod, called by invokeMethod
+     */
+    private native Object nativeInvokeMethod(Object thiz, String name, Object... args);
 
 }
