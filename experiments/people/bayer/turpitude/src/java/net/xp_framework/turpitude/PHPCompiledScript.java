@@ -2,6 +2,7 @@ package net.xp_framework.turpitude;
 
 import javax.script.*;
 import java.nio.ByteBuffer;
+import java.lang.reflect.Proxy;
 
 public class PHPCompiledScript extends CompiledScript implements Invocable {
    
@@ -56,17 +57,40 @@ public class PHPCompiledScript extends CompiledScript implements Invocable {
     }
 
     /**
+     * returns an instance of clasz using java.lang.reflect.Proxy, using thiz as implementing object.
+     * no checks whatsoever are performed whether thiz actually implements clasz
      * @see javax.script.Invocable
      */
-    public <T> T getInterface(Object thiz, Class<T> clasz) {
-        return null;
+    public <T> T getInterface(Object thiz, Class<T> clasz) throws IllegalArgumentException {
+        if (!(thiz instanceof PHPObject)) 
+            throw new IllegalArgumentException("thiz not instance of PHPObject");
+
+        PHPInvocationHandler handler = new PHPInvocationHandler(this, PHPObject.class.cast(thiz));
+        T t = clasz.cast(
+            Proxy.newProxyInstance(
+                clasz.getClassLoader(),
+                new Class[] { clasz },
+                handler
+            )
+        );
+        return t;
     }
 
     /**
+     * returns an instance of clasz using java.lang.reflect.Proxy.
+     * tries to instantiate an instance using the equivalent of new clasz.getSimpleName();
      * @see javax.script.Invocable
      */
-    public <T> T getInterface(Class<T> clasz) {
-        return null;
+    public <T> T getInterface(Class<T> clasz) throws IllegalArgumentException {
+        PHPObject phpobj = null;
+        try {
+            phpobj = PHPObject.class.cast(
+                createInstance(clasz.getSimpleName())
+            );
+        } catch(Throwable e) {
+            throw new IllegalArgumentException("unable to create instance of " + clasz.getName(), e);
+        }
+        return getInterface(phpobj, clasz);
     }
 
     /**
@@ -83,5 +107,10 @@ public class PHPCompiledScript extends CompiledScript implements Invocable {
      * native mthod, called by invokeMethod
      */
     private native Object nativeInvokeMethod(Object thiz, String name, Object... args);
+
+    /**
+     * native mthod, called by getInterface
+     */
+    private native Object createInstance(String classname);
 
 }

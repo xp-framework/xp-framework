@@ -9,6 +9,7 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
     private String TurpitudeVarName = "TURP_ENV"; //turpitude variable name
+    private PHPCompiledScript lastScript = null; //last compiled script
 
     /**
      * Constructor
@@ -141,6 +142,7 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
         }
         PHPCompiledScript ret = (PHPCompiledScript)o;
         ret.setEngine(this);
+        lastScript = ret;
         return (CompiledScript)o;
      }
 
@@ -174,29 +176,42 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
     /**
      * @see javax.script.Invocable
      */
-    public Object invokeMethod(Object thiz, String name, Object... args) {
-        return null;
+    public Object invokeMethod(Object thiz, String name, Object... args) throws IllegalArgumentException,
+                                                                                ScriptException,
+                                                                                NullPointerException,
+                                                                                NoSuchMethodException {
+        if (lastScript == null)
+            throw new NullPointerException("no previously compiled script found");
+        return lastScript.invokeMethod(thiz, name, args);
     }
 
     /**
      * @see javax.script.Invocable
      */
-    public Object invokeFunction(String name, Object... args) {
-        return null;
+    public Object invokeFunction(String name, Object... args) throws ScriptException,
+                                                                     NullPointerException,
+                                                                     NoSuchMethodException {
+        if (lastScript == null)
+            throw new NullPointerException("no previously compiled script found");
+        return lastScript.invokeFunction(name, args);
     }
 
     /**
      * @see javax.script.Invocable
      */
-    public <T> T getInterface(Object thiz, Class<T> clasz) {
-        return null;
+    public <T> T getInterface(Object thiz, Class<T> clasz) throws IllegalArgumentException {
+        if (lastScript == null)
+            throw new IllegalArgumentException("no previously compiled script found");
+        return lastScript.getInterface(thiz, clasz);
     }
 
     /**
      * @see javax.script.Invocable
      */
-    public <T> T getInterface(Class<T> clasz) {
-        return null;
+    public <T> T getInterface(Class<T> clasz) throws IllegalArgumentException {
+        if (lastScript == null)
+            throw new IllegalArgumentException("no previously compiled script found");
+        return lastScript.getInterface(clasz);
     }
 
     /**

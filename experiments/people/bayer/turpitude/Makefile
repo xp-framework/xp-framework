@@ -47,7 +47,7 @@ exec: jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php
 	
 classes: $(JSRC)
-	$(JCC)  -d classes -cp $(CPATH) $(JSRC)
+	$(JCC) -Xlint:unchecked  -d classes -cp $(CPATH) $(JSRC)
 
 jarrun: jar lib
 	$(JBIN) -jar turpitude.jar

@@ -21,5 +21,6 @@ static void make_lambda(zend_internal_function* f, void (*handler)(INTERNAL_FUNC
 
 extern JNIEnv* turpitude_jenv;
 extern jobject turpitude_current_script_context;
+zval* make_php_class_instance(JNIEnv* env, char* classname);
 
 #endif

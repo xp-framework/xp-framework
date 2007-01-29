@@ -36,32 +36,24 @@ public class InvocableSample {
             printRetval(retval);
             //inv.invokeFunction("non", "existant", "function");
             //inv.invokeMethod("non", "existant", "object");
-            //inv.invokeMethod(phpobj, "non", "existant", "object");
-        } catch(PHPCompileException e) {
-            System.out.println("Compile Error:");
+            //inv.invokeMethod(phpobj, "non existant", "method");
+            ExampleInterface exint = inv.getInterface(ExampleInterface.class);
+            retval = exint.bar("interface call");
+            printRetval(retval);
+            exint = inv.getInterface(phpobj, ExampleInterface.class);
+            retval = exint.bar("interface call");
+            printRetval(retval);
+        } catch(Throwable e) {
             e.printStackTrace();
-            return;
-        } catch(PHPEvalException e) {
-            System.out.println("Eval Error:");
-            e.printStackTrace();
-            return;
-        } catch(ScriptException e) {
-            System.out.println("ScriptException caught:");
-            e.printStackTrace();
-            return;
-        } catch(NoSuchMethodException e) {
-            System.out.println("Method not found:");
-            e.printStackTrace();
-            return;
         }
 
     }
 
     private static void printRetval(Object retval) {
         if (null == retval)
-            System.out.println("done evaluating, return value " + retval);
+            System.out.println("return value " + retval);
         else 
-            System.out.println("done evaluating, return value " + retval.getClass() + " : " + retval);
+            System.out.println("return value " + retval.getClass() + " : " + retval);
     }
 
     private static String getSource() {
@@ -78,6 +70,12 @@ public class InvocableSample {
         src.append("  }");
         src.append("  function bar($i) {");
         src.append("    return 'foo::bar::'.$i.' ('.$this->val.')';");
+        src.append("  }");
+        src.append("}");
+        src.append(" ");
+        src.append("class ExampleInterface { ");
+        src.append("  function bar($i) {");
+        src.append("    return 'ExampleInterface::bar::'.$i;");
         src.append("  }");
         src.append("}");
         src.append(" ");

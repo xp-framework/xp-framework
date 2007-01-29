@@ -202,4 +202,25 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
     return zval_to_jobject(env, retval_ptr);
 }
 
+JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_createInstance(JNIEnv* env, jobject self, jstring name) {
+    int str_len = env->GetStringLength(name)+1;
+    char* classname = (char*)emalloc(env->GetStringLength(name)+1);
+    strncpy(classname, env->GetStringUTFChars(name, false), str_len);
+
+    zval* retval = NULL;
+    zend_first_try {
+        retval = make_php_class_instance(env, classname);
+    } zend_catch {
+        if (ErrorCBCalled)
+            java_throw(env, "net/xp_framework/turpitude/PHPEvalException", LastError.data());
+    } zend_end_try();
+
+    if (retval == NULL) {
+        java_throw(env, "java/lang/IllegalArgumentException", "unable to create instance");
+    }
+
+    efree(classname);
+    
+    return zval_to_jobject(env, retval);
+}
 
