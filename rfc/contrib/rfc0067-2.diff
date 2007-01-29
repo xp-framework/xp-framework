@@ -1,17 +1,115 @@
-Index: HandlerInstancePool.class.php
+Index: ports/classes/net/xp_framework/unittest/remote/RemoteTest.class.php
 ===================================================================
---- HandlerInstancePool.class.php	(revision 50518)
-+++ HandlerInstancePool.class.php	(working copy)
-@@ -90,6 +90,12 @@
-         $instance= &$this->pool($url, $class->newInstance($option));
+--- ports/classes/net/xp_framework/unittest/remote/RemoteTest.class.php	(revision 9388)
++++ ports/classes/net/xp_framework/unittest/remote/RemoteTest.class.php	(working copy)
+@@ -127,6 +127,24 @@
+     }
+ 
+     /**
++     * Test forName() with and without parameters in DSN string to return
++     * always the same handler object (required to make transactions work)
++     *
++     * @access public
++     */
++    #[@test]
++    public function forNameEqualsWithDifferentQueryString() {
++      $remote1= &Remote::forName(REMOTE_SPEC_ONE);
++      
++      // HACK: Reset initialization status to FALSE otherwise it will be
++      // initialized again and we get "Already initialized" exception
++      $this->handler[REMOTE_SPEC_ONE]->server['initialized']= FALSE;
++      
++      $remote2= &Remote::forName(REMOTE_SPEC_ONE.'?log=default');
++      $this->assertEquals($remote1->_handler, $remote2->_handler);
++    }
++ 
++    /**
+      * Test lookup() method
+      *
+      */
+Index: ports/classes/net/xp_framework/unittest/remote/MockProtocolHandler.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/remote/MockProtocolHandler.class.php	(revision 9388)
++++ ports/classes/net/xp_framework/unittest/remote/MockProtocolHandler.class.php	(working copy)
+@@ -87,5 +87,13 @@
+     public function invoke($oid, $method, $args) {
+     }
+ 
++    /**
++     * Set trace
++     *
++     * @accessp public
++     * @param util.log.LogCategory cat
++     */
++    public function setTrace($cat) {
++    }
+   } 
+ ?>
+Index: skeleton/remote/HandlerInstancePool.class.php
+===================================================================
+--- skeleton/remote/HandlerInstancePool.class.php	(revision 9388)
++++ skeleton/remote/HandlerInstancePool.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'remote.HandlerFactory',
+     'util.collections.HashTable',
+-    'peer.URL'
++    'peer.URL',
++    'util.log.Logger'
+   );
+ 
+   /**
+@@ -75,14 +76,20 @@
+      */
+     public function acquire($key, $initialize= FALSE) {
+       $url= new URL($key);
+-      if ($this->pool->containsKey($url)) {
+-        $instance= $this->pool->get($url);
++      $key= new URL($url->getScheme().'://'.$url->getHost());
++      if ($this->pool->containsKey($key)) {
++        $instance= $this->pool->get($key);
+       } else {
+         sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
+         $class= HandlerFactory::handlerFor($type);
+-        $instance= $this->pool($url, $class->newInstance($option));
++        $instance= $this->pool($key, $class->newInstance($option));
        }
  
 +      // Add logger
 +      if (NULL !== ($cat= $url->getParam('log'))) {
-+        $l= &Logger::getInstance();
-+        $instance->setTrace($l->getCategory($cat));
++        $instance->setTrace(Logger::getInstance()->getCategory($cat));
 +      }
 +
        $initialize && $instance->initialize($url);
        return $instance;
      }
+Index: skeleton/remote/protocol/ProtocolHandler.class.php
+===================================================================
+--- skeleton/remote/protocol/ProtocolHandler.class.php	(revision 9388)
++++ skeleton/remote/protocol/ProtocolHandler.class.php	(working copy)
+@@ -42,5 +42,12 @@
+      * @throws  remote.RemoteException
+      */
+     public function invoke($oid, $method, $args);
++    
++    /**
++     * Set trace
++     *
++     * @param   util.log.LogCategory cat
++     */
++    public function setTrace($cat);
+   }
+ ?>
+Index: skeleton/remote/protocol/XpProtocolHandler.class.php
+===================================================================
+--- skeleton/remote/protocol/XpProtocolHandler.class.php	(revision 9388)
++++ skeleton/remote/protocol/XpProtocolHandler.class.php	(working copy)
+@@ -21,7 +21,7 @@
+    * @see      xp://remote.protocol.ProtocolHandler
+    * @purpose  Protocol Handler
+    */
+-  class XpProtocolHandler extends Object implements ProtocolHandler, Traceable {
++  class XpProtocolHandler extends Object implements ProtocolHandler {
+     public
+       $versionMajor   = 0,
+       $versionMinor   = 0,
