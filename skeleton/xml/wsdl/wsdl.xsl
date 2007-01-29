@@ -30,6 +30,7 @@
    !-->
   <xsl:variable name="typemap">
     <mapping for="xsd:string">string</mapping>
+    <mapping for="string">string</mapping>
     <mapping for="xsd:long">xml.soap.types.SOAPLong</mapping>
     <mapping for="xsd:int">int</mapping>
     <mapping for="xsd:float">float</mapping>
@@ -346,7 +347,11 @@
    *
    * @purpose  Specialized SOAP type
    */
-  class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
+  class ]]></xsl:text>
+  <xsl:call-template name="ucfirst">
+    <xsl:with-param name="string" select="concat($prefix, @name)"/>
+  </xsl:call-template>
+  <xsl:text> extends Object {
     public</xsl:text>
     <xsl:for-each select="xsd:all/xsd:element">
       $<xsl:value-of select="@name"/>
@@ -426,7 +431,11 @@
    *
    * @purpose  Specialized SOAP type
    */
-  class ]]></xsl:text><xsl:value-of select="concat($prefix, @name)"/><xsl:text> extends Object {
+  class ]]></xsl:text>
+  <xsl:call-template name="ucfirst">
+    <xsl:with-param name="string" select="concat($prefix, @name)"/>
+  </xsl:call-template>
+  <xsl:text> extends Object {
     public</xsl:text>
     <xsl:for-each select="xsd:sequence/xsd:element">
       $<xsl:value-of select="@name"/>
@@ -616,7 +625,10 @@
       <xsl:value-of select="@name"/>
       <xsl:text>'), 
         XPClass::forName('</xsl:text>
-      <xsl:value-of select="concat($collection, '.', @name)"/>
+      <xsl:value-of select="concat($collection, '.')"/>
+      <xsl:call-template name="ucfirst">
+        <xsl:with-param name="string" select="concat($prefix, @name)"/>
+      </xsl:call-template>
       <xsl:text>')
       );</xsl:text>
     </xsl:for-each>
