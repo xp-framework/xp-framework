@@ -103,6 +103,7 @@ Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen die
 Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten sind. PHP-Skripte werden "ublicherweise
 innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
 Die PHPScriptEngine filtert diese Zeichen automatisch aus dem Quelltextstrom.
+TODO: zend\_first\_try weil php-errors zu Exceptions
 
 Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ullen wurde nach einer Alternative gesucht, und
 die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
@@ -253,7 +254,8 @@ Fall wird - wieder wie bei Konstruktoren - ein Array aus jvalues erstellt und je
 Call$<$type$>$Method (ohne A) aufgerufen. Der R"uckgabewert der aufgerufenen JNI-Funktion wird in einem jvalue gespeichert, der zusammen mit dem
 Typen des R"uckgabewertes der Funktion \emph{jvalue\_to\_zval} "ubergeben wird, die letztendlich den zval erzeugt, der an PHP zur"uckgegeben wird.
 Im Zuge der Implementation von Methodenaufrufen bei Objekten wurde auch gleich der Aufruf statischer Methoden bei Klassen implementiert, dieser funktioniert exakt 
-gleich, nur dass JNI-Funktionen der Signatur CallStatic$<$Type$>$Method(A) aufgerufen werden m"ussen.
+gleich, nur dass JNI-Funktionen der Signatur CallStatic$<$Type$>$Method(A) aufgerufen werden m"ussen. Zu diesem Zweck wurde die TurpitudeJavaClass um die Methode
+\emph{invokeStatic} erweitert.
 
 Da das erzeugen m"ussen von Methoden bevor man sie aufrufen kann doch eher m"uhsam erscheint wurde call-Handler noch derart erweitert, dass wenn keine der
 explizit definierten Methoden aufgerufen wurde nicht einfach ein Fehler erzeugt wird, sondern es wird versucht eine Methode gleichen Namens zu finden und diese
@@ -296,17 +298,18 @@ Schlussendlich wurde dem TurpitudeEnvironment noch die Methode \emph{instanceOf}
 Diese Methode erwartet zwei Argumente, zum einen das zu testende Objekt, und zum anderen die Klasse von der der Anwender wissen will ob das Objekt eine Instanz
 dieser ist.
 
-
-TODO: besonderheiten der einzelnen Klassen
-
-
 Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder falschen Types sein.
 Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das lesen beziehungsweise schreiben von Attributen auch auf nicht-"offentlichen
 Methoden und Attributen funktioniert, einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
 ausgehen k"onnen sollte, dass ein Anwender wenigstens in groben Z"ugen weiss was er tut. 
 
-
-TODO: Context - CompiledScript::compile - ctx speichern
+Mit der geleisteten Vorarbeit war es nun einfach die Anforderungen des JSR nach einem ScripContext umzusetzen. Die von der PHPScriptEngine erweiterte Klasse
+AbstactScriptEngine bringt eine Kontextimplementation namens SimpleContext mit. Dieser Kontext wird beim Aufruf der nativen Methode \emph{exec} des PHPCompiledScripts
+als jobject "ubergeben und global gespeichert. An diesen Kontext kommt der Anwender in PHP "uber die Methode \emph{getScriptContext} des TurpitudeEnvironment. Im 
+entsprechenden Handler wird die Klasse des ScripContext ermittelt, damit eine TurpitudeJavaClass erstellt, und mit dem Kontext-jobject zu einer Instanz von
+TurpitudeJavaObject vereinigt. Somit kann der Anwender einfach die entsprechenden Java-Methoden dieses Objektes aufrufen, um an die im Kontext enthaltenen Daten zu
+gelangen. Getestet wurde das mit einem Programm das einen java.util.StringBuffer erzeugt, in den Kontext einsetzt, und dann ein PHP-Skript ausf"uhrt, das diesem
+StringBuffer einen Text anh"angt. Nachdem das Skript ausgef"uhrt wurde enth"alt der StringBuffer sowohl die per Java, als auch die in PHP angeh"angten Zeichen.
 
 TODO: Invocable
 
