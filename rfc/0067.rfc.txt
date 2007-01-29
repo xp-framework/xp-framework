@@ -182,7 +182,23 @@ Comments
   $remote= &Remote::forName('xp://jboss01.example.com/?log=default') &&
   $remote->invokeThisFunction($args);
 ?>
-  The patch is really small and adds convenient way to enable debugging:
+
+- ohinckel, Mon 29. Jan 11:03:37 CET 2007
+  Implementing patch to specify log in DSN string (apply this in trunk
+  directory):
   http://xp-framework.net/rfc/contrib/rfc0067-2.diff
+  
+  Changes included:
+  * remote implements Traceable from XpProtocolHandler since setTrace()
+    is now a required function of the ProtocolHandler interface
+  * changed HandlerInstancePool's aquire() function to
+    - reuse protocol handlers with same scheme and host in DSN strings
+      and ignore query string
+    - set trace if log=... parameter was specified in DSN
+  * added setTrace() function to MockProtocolHandler because interface
+    contains this function now
+  * added test forNameEqualsWithDifferentQueryString() to RemoteTest which
+    tests if we get the same handler back when using a DSN with and
+    without log=... parameter
 
 <EOF>
