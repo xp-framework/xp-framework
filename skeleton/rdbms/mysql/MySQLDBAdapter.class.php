@@ -30,6 +30,7 @@
         'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
         'mediumtext' => DB_ATTRTYPE_TEXT,
         'text'       => DB_ATTRTYPE_TEXT,
+        'enum'       => DB_ATTRTYPE_ENUM,
       );
       parent::__construct($conn);
     }
@@ -100,7 +101,7 @@
         $q= $this->conn->query('describe %c', $table);
         while ($record= $q->next()) {
           preg_match('#^([a-z]+)(\(([0-9]+)\))?#', $record['Type'], $regs);
-          
+
           $t->addAttribute(new DBTableAttribute(
             $record['Field'], 
             $this->map[$regs[1]],

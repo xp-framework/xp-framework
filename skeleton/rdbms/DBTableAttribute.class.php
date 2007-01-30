@@ -141,7 +141,8 @@
         'DB_ATTRTYPE_TIMESTAMP', 
         'DB_ATTRTYPE_TINYINT',   
         'DB_ATTRTYPE_VARBINARY', 
-        'DB_ATTRTYPE_VARCHAR'
+        'DB_ATTRTYPE_VARCHAR',
+        'DB_ATTRTYPE_ENUM'
       );
       return $map[$this->type];
     }
@@ -170,6 +171,7 @@
         case DB_ATTRTYPE_TEXT:
         case DB_ATTRTYPE_VARBINARY:
         case DB_ATTRTYPE_VARCHAR:
+        case DB_ATTRTYPE_ENUM:
           return 'string';
           
         case DB_ATTRTYPE_DECIMAL:
