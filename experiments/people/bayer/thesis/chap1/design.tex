@@ -46,7 +46,6 @@ Da alle Arrays in PHP assoziativer Natur sind werden sie als untypisierte java.u
 sind vom Typ java.lang.Object, zur"uckgegeben. Einzig f"ur PHP-Objekte wird eine gesonderte Java-Klasse ben"otigt: \emph{PHPObject} enth"alt neben
 der Klassennamen auch alle Eigenschaften eines PHP-Objektes. Diese werden in einer HashMap gespeichert, mit dem Namen der Eigenschaft
 als Schl"ussel.
-
 \begin{floatingtable}{
 \label{tab:javatophp}
 \begin{tabular}{|l|l|}
@@ -68,57 +67,36 @@ jclass & TurpitudeJavaClass\\
 \end{tabular}}
 \caption{\textsc{Java nach PHP}}
 \end{floatingtable}
-
 Leider h"alt sich die JSR223-Spezifikation zu vielen Fragen sehr bedeckt, so wird beispielsweise zur Typkonversion nur lapidar auf 
 "'Implementationsdetails"' verwiesen. Da der Datenaustausch zwischen PHP und Java allerdings einen nicht unwesentlichen Bestandteil
-einer JSR223-Implemenation darstellt, muss wohl oder "ubel eine Konvention gefunden werden. Die Tabellen \ref{tab:javatophp}
-
-\begin{floatingtable}[r]{
-\label{tab:zvaltojvalue}
-\begin{tabular}{|l|l|}
-\hline
-PHP-Typ & Java-Typ\\
-\hline\hline
-long & jlong \\
-double & jdouble \\
-bool & jboolean \\
-array & HashTable \\
-object & PHPObject \\
-constant & jstring \\
-string & jstring \\
-TurpitudeJavaClass & jclass \\
-TurpitudeJavaObject & jobject \\
-\hline
-\end{tabular}}
-\caption{\textsc{PHP nach Java, Methodenaufrufe}}
-\end{floatingtable}
-
-\begin{floatingtable}[l]{
-\label{tab:zvaltojobject}
-\begin{tabular}{|l|l|}
-\hline
-PHP-Typ & Java-Typ\\
-\hline\hline
-long & java.lang.Long \\
-double & java.lang.Double \\
-bool & java.lang.Boolean \\
-array & HashTable \\
-object & PHPObject \\
-constant & jstring \\
-string & jstring \\
-TurpitudeJavaClass & jclass \\
-TurpitudeJavaObject & jobject \\
-\hline
-\end{tabular}}
-\caption{\textsc{PHP nach Java, Werter"uckgabe}}
-\end{floatingtable}
-
+einer JSR223-Implemenation darstellt, muss wohl oder "ubel eine Konvention gefunden werden. Die Tabellen \ref{tab:javatophp} und \ref{tab:phptojava}
 erl"autern diese Konvetion, sowohl von Java nach PHP als auch umgekehrt. Weiterhin wird bei der Typkonversion von PHP nach Java zwischen 
 Methodenaufrufen und Werter"uckgaben unterschieden. Bei Methodenaufrufen wird versucht in simple Datantypen wie \emph{int} und \emph{double}
 umzuwandeln, weil der Standard oft aber verlangt dass Objekte zur"uckgegeben werden wird bei der R"uckgabe von Werten in den entsprechenden
 Objektyp wie \emph{java.lang.Boolean} konvertiert. Einige Java-Klassen und PHP-Objekte werden speziell konvertiert, so wird beispielsweise
 der java.lang.String nicht zu einem TurpitudeJavaObject, sondern zu einem String in PHP, diese F"alle sind gesondert aufgef"uhrt. Die
 Tabellen enthalten auch Verweise auf spezielle PHP-Klassen, die sp"ater im Kapitel \ref{sec:chap1:design:native} erl"autert werden.
+
+\begin{table}
+\label{tab:phptojava}
+\caption{\textsc{PHP nach Java, Methodenaufruf und Werter"uckgabe}}
+\begin{tabular}[tbh]{|l|l|l|}
+\hline
+PHP-Typ & Methodenaufruf & Werter"uckgabe\\
+\hline\hline
+long & jlong & java.lang.Long \\
+double & jdouble & java.lang.Double \\
+bool & jboolean  & java.lang.Boolean \\
+array & java.util.HashTable & java.util.HashTable \\
+object & PHPObject & PHPObject\\
+constant & jstring & jstring\\
+string & jstring & jstring \\
+TurpitudeJavaClass & jclass & jstring\\
+TurpitudeJavaObject & jobject & jobject\\
+\hline
+\end{tabular}
+\end{table}
+
 
 Die Eingabe von Daten aus Java heraus in ein PHP-Skript geschieht - gem"a\ss der JSR223-Spezifikation - mittels des Kontextes der
 ScriptEngine. Hierzu wird dieser - zusammen mit einigen Umgebungsvariablen und -Informationen - in eine globale Variable injiziert,

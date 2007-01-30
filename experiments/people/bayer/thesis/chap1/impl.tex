@@ -36,8 +36,12 @@ Im Folgenden wurde die Klasse \emph{PHPScriptEngineFactory} erstellt, welche wie
 das Interface \emph{ScriptEngineFactory} implementiert, hierbei erw"ahnenswert sind die Methoden 
 \emph{getProgram()} und \emph{getMethodCallSyntax()}, erstere erstellt aus als Strings vorliegenden
 einzelnen Anweisungen ein ausf"uhrbares PHP-Programm, zweitere erzeugt aus den "ubergebenen Parametern
-einen der PHP-Syntax entsprechenden Methodenaufruf. Wurde nun die EngineList ausgef"uhrt stellte sich heraus,
-dass der ScriptEngineManager die neue ScriptEngine schon erkannte:
+einen der PHP-Syntax entsprechenden Methodenaufruf. Weiterhin enth"alt sie neben den weiter unten
+beschriebenen nativen Methoden \emph{startUp()} und \emph{shutDown()} die Methode \emph{read()}, die
+aus einem "ubergebenen java.io.Reader eine Zeichenkette erstellt, die dann als Sourcecode verwendet
+werden kann. Auf diese Weise kann der Anwender beispielsweise leicht seinen PHP-Quelltext in Dateien
+verwalten, ohne jedesmal eigens einen Java-String erzeugen zu m"ussen.
+Wurde nun die EngineList ausgef"uhrt stellte sich heraus, dass der ScriptEngineManager die neue ScriptEngine schon erkannte:
 \begin{lstlisting}[caption=Neue ScriptEngine]
 # make list
 found 2 available ScriptEngines:
@@ -100,7 +104,9 @@ Falle beginnt er mit einem Nullbyte ($\backslash$0), gefolgt vom Namen der Objek
 Namen des Properties. Verst"andlicherweise sorgt diese Kodierung in C, wo das Nullbyte als Endzeichen f"ur Strings verwandt wird,
 f"ur einige Probleme. "Uber die Beweggr"unde der Zend-Entwickler diese Kodierung w"ahlten kann nur spekuliert werden, aber 
 die Vermutung liegt nahe, dass mit einem Nullbyte beginnende Strings in internen Funktionen, da sie f"ur C-Stringfunktionen die L"ange 0 haben,
-als ung"ultig behandelt werden, und so einfach nirgendwo auftauchen.
+als ung"ultig behandelt werden, und so einfach nirgendwo auftauchen. Da die Java-Klasse \emph{PHPObject}, die laut Design an die JVM
+zur"uckgegeben werden sollte wenn ein PHP-Objekt als R"uckgabewert auftaucht, allerdings alle
+Attribute des jeweiligen PHP-Objektes enthalten sollte, mussten diese kodierten Attributnamen "'entwirrt"' werden.
 Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen die
 Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten sind. PHP-Skripte werden "ublicherweise
 innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
@@ -327,6 +333,87 @@ TurpitudeJavaObject vereinigt. Somit kann der Anwender einfach die entsprechende
 gelangen. Getestet wurde das mit einem Programm das einen java.util.StringBuffer erzeugt, in den Kontext einsetzt, und dann ein PHP-Skript ausf"uhrt, das diesem
 StringBuffer einen Text anh"angt. Nachdem das Skript ausgef"uhrt wurde enth"alt der StringBuffer sowohl die per Java, als auch die in PHP angeh"angten Zeichen.
 
-TODO: Invocable
+Bis zu diesem Zeitpunkt konnte die Java-Applikation, die das PHP-Skript einbettet, dieses nur ausf"uhren, es konnten keine gezielten Aufrufe von Funktionen und Methoden
+abgesetzt werden, obwohl diese F"ahigkeit eine Bilbiothek wie Turpitude erst wirklich interessant macht. Deswegen wurde das JSR223-Interface \emph{javax.script.Invocable}
+implementiert, das genau an diesem Punkt ansetzt und Abhilfe schaffen soll. Leider zeigte sich auch hier dass die JSR223-Spezifikation an einigen Stellen
+etwas undurchdacht wirkt: laut Spezifikation zollte die jeweilige ScriptEngine das Interface implementieren. Nun implementiert die PHPScriptEngine aber schon
+das Interface \emph{javax.script.Compilable}, es ist also nicht eindeutig auf welchem Skript die Aufrufe durchgef"uhrt werden sollen, und die Spezifikation schweigt
+sich zu diesem Thema ebenfalls aus. Um dieses Problem zu l"osen wurde zun"achst das PHPCompiledScript derart abgewandelt, dass dieses \emph{Invocable} implementiert,
+weil der Kontext hier eindeutig ist. Der PHPScriptEngine wurde ein weiteres Attribut \emph{lastScript} hinzugef"ugt, in welchem das zuletzt "ubersetzte 
+PHP-Script gespeichert wird. Dieses Attribut wird bei jedem Aufruf der Methode \emph{compile} gesetzt, womit sind auch ausgef"uhrte Skripte abgedeckt werden.
+Die Invocable-Methoden der PHPScriptEngine leiten nun einfach alle Aufrufe an die entsprechenden Methoden des \emph{lastScript} weiter.
+
+\emph{javax.script.Invocable} beinhaltet vier Methoden, von denen jeweils zwei sehr "ahnlich sind. Die Methode \emph{invokeFunction} ruft sogenannte \emph{top-level functions}
+des Skriptes auf, also im globalen Scope definierte Funktionen. Da die in der nativen Methode \emph{execute}, die wie oben beschrieben beim Ausf"uhren 
+eines "ubersetzten Skriptes aufgerufen wird, benutzte Zend-API Funktion \emph{zend\_call\_function} ein auszuf"uhrendes Op-Array erwartet, und da das Finden des
+richtigen Abschnittes im Op-Array des PHPCompiledScripts sehr viel Aufwand bedeutet h"atte wurd ein anderer Weg gew"ahlt: die Funktion \emph{call\_user\_function}, die
+direkt eine im PHP-Skript vorhandene Funktion aufruft. Damit dies allerdings funktionieren kann muss zun"achst in den sogenannten \emph{Executor Globals}, erreichbar
+"uber das Makro \emph{EG}, das Feld \emph{active\_op\_array}, welches das gerade Aktive Op-Array enthalten soll, auf das im PHPCompiledScript gespeicherte
+Op-Array gesetzt werden.
+Um den R"uckgabewert einer Funktion an die Java-Applikation weiterreichen zu k"onnen wurde noch ein zval initiert, und ein Pointer auf dessen Pointer wurde in den 
+\emph{Executor Globals} an die Stelle \emph{return\_value\_ptr\_ptr} geschrieben. Nach dem erfolgreichen Ausf"uhren der Funktion enth"alt dieser zval den R"uckgabewert,
+und konnte folglich wie alle anderen R"uckgabewerte behandelt und an die JVM zur"uckgegeben werden.
+Um die von Java aus als Array von Objekten "ubergebenen Funktionsargumente an die PHP-Funktion weiterleiten zu k"onnen wird Speicher f"ur ein Array
+von zval-Pointern reserviert, und dieses Array wird mittels der Funktion \emph{jobject\_to\_zval} gef"ullt. Das so erstellte Array wird schlussendlich der die PHP-Funktion
+aufrufenden Zend-API Funktion \emph{call\_user\_function} "ubergeben, zusammen mit einem den Funktionsnamen enthaltenden zval vom Typ String, der zu nutzenden 
+Funktionstabelle und dem Pointer auf den R"uckgabewert. Gibt \emph{call\_user\_function} nun ein \emph{FAILURE} zur"uck ist ein Fehler aufgetreten, und es wird
+eine Java-Exception geworfen, ansonsten hat das Aufrufen funktioniert.
+Ganz "ahnlich wurde die Invocable-Methode \emph{invokeMethod} implementiert, allerdings musste zun"achst das PHPObject noch um ein Feld erweitert werden, welches
+eine Referenz auf den entsprechenden zval innerhalb des PHP-Interpreters h"alt. Hierzu wurde - ganz "ahnlich zum Speichern des Op-Arrays im PHPCompiledScript -
+ein java.nio.ByteBuffer verwendet, in welchen einfach der zval-Pointer gespeichert wird. Beim Aufrufen einer Methode wird dieser Zeiger nun ausgelesen und
+der Funktion \emph{call\_user\_function} als zweiter Parameter "ubergeben. Da so stets die richtige Methode der richtigen Instanz aufgerufen wurde
+beschreibt dieser Parameter offensichtlich das Objekt, auf dem die Funktion aufgerufen werden sollte. Anonsten verl"auft ein Methodenaufruf analog
+zu einem Funktionsaufruf.
+
+F"ur den Java-Entwickler stellt sich das Aufrufen von Funktionen und Methoden also wie folgt dar:
+\begin{lstlisting}[caption=Aufrufen von PHP-Funktionen und -Methoden]
+Invocable inv = (Invocable)engine.compile(/* PHP-Source */);
+Object phpobj = inv.invokeFunction("foo", "function call");
+Object retval = inv.invokeMethod(phpobj, "bar", "method call");
+\end{lstlisting}
+Zun"achst muss nat"urlich PHP-Quelltext zu einem PHPCompiledScript "ubersetzt, und dieses dann auf Invocable gecastet werden. Dann wird die PHP-Funktion "'foo"'
+aufgerufen, und ihr ein String als einziges Argument "ubergeben. Diese Funktion gibt in diesem Fall ein PHPObject zur"uck, auf welchem in der letzten Zeile
+die Methode "'bar"', wieder mit einem String als einzigem Argument, aufgerufen wird.
+
+Unter Zuhilfename von \emph{invokeMethod} konnten schliesslich die anderen beiden Methoden des Interfaces \emph{Invocable} implementiert werden, die beide
+den Namen \emph{getInterface} tragen. Beiden Varianten dieser Methode wird eine Java-Klasse oder -Interface "ubergeben, und zur"uckgegeben werden muss eine 
+Instanz dieser Klasse, deren Methoden in der Skriptsprache Implementiert sind. Der Unterschied zwischen beiden Methoden ist, dass einer von beiden 
+zus"atzlich ein Objekt "ubergeben werden kann, welches als Implementierendes Objekt genutzt werden soll. Dies macht im Falle von Turpitude nur Sinn, wenn das 
+"ubergebene Objekt ein PHPObject ist, von dem der Anwender weiss, dass es das geforderte Java-Interface implementiert. Letztere Methode wurde zuerst implementiert,
+da hierzu schon alle Vorraussetzungen geschaffen waren, und keine einzige Zeile C-Code mehr geschrieben werden musste. Als erstes wird in der Methode gepr"uft, ob
+das "ubergebene Objekt wirklich eine Instanz von PHPObject ist. Danach wird eine Instanz der Klasse \emph{java.lang.reflect.Proxy} erzeugt, die innerhalb Javas
+als ganz normale Instanz der "ubergebenen Klasse auftritt, intern aber alle Methodenaufrufe an einen sogenannten \emph{InvocationHandler} weiterreicht.
+Ein InvocationHandler ist ein Interface, welches in diesem Falle von der Klasse \emph{PHPInvocationHandler} implementiert wird, die im Konstruktor
+ein PHPCompiledScript, in dessen Kontext die Methodenaufrufe stattfinden sollen, und ein PHPObject auf dem die Methodenaufrufe durchgef"uhrt werden sollen erwartet.
+Die eigentlichen Methodenaufrufe werden s"amtlich durch die oben beschriebene Methode \emph{invokeMethod} des PHPCompiledScripts erledigt.
+Die Implementation der Variante von \emph{getInterface} die kein Objekt mitbringt stellte allerdings ein Problem dar - wie sollte ein das Java-Interface implementierendes
+PHP-Objekt gefunden werden? Auch hier schweigt sich die JSR223 Spezifikation leider aus, so wurde nach einigem "Uberlegen entschlossen einzig auf den Namen der Klasse zu
+pr"ufen. So wurde dem PHPCompiledScript eine weitere native Methode namens \emph{createInstance} hinzugef"ugt, die als einziges Argument den 
+Klassennamen in Form eines Strings erwartet. Sie sollte versuchen eine PHP-Klasse des "ubergebenen Namens zu finden, und eine Instanz dieser Klasse neu zu erzeugen.
+Da Invocable hierzu keine Parameter"ubergabe vorsah, konnten auf diese Weise nur PHP-Objekte erzeugt werden, die einen Konstruktor ohne Argumente besitzen, ist 
+dies nicht der Fall wird ein Laufzeitfehler erzeugt. Zur Implementation dieser Methode wurde die Zend-Funktion \emph{zend\_lookup\_class} gefunden, die zu einem
+Klassennamen einen \emph{zend\_class\_entry} zur"uckgibt. Mit diesem Klasseneintrag kann mittels der schon vorher genutzten Funktion \emph{object\_init\_ex}
+eine Instanz der Klasse erzeugt werden, die dann an die JVM als PHPObject zur"uckgegeben wird. Wird auf diese Weise ein PHPObject gefunden, wird mit diesem
+als zweitem Argument einfach die schon fertige Variante der Interfacemethode aufgerufen. Da PHP keine Punkte in Klassennamen erlaubt, und zumindest in
+Version 5 keine Namespaces kennt, wurde beschlossen den sogenannten \emph{SimpleName}, den Namen wie er in der Quelltextdatei vorkommt also, der zu findenden Klasse 
+zu benutzen. Abbildung \ref{fig:javaseq} soll den Ablauf eines solchen Aufrufes einer in PHP implementierten Methode darstellen. 
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{chap1/img/javaseq.png}
+\caption{Ablauf eines in PHP implementierten Java-Methodenaufrufes}
+\label{fig:javaseq}
+\end{figure}
+
+Eigentlich w"aren zu diesem Zeitpunkt alle Anforderungen an die Bilbiothek erf"ullt, in vielen Bereichen sogar "ubererf"ullt gewesen, aber da w"ahrend
+der Entwicklung festgestellt wurde, dass auch ausserhalb von 1\&1 erhebliches Interesse an Turpitude besteht wurde beschlossen einige Erweiterungen vorzunehmen,
+um Entwicklern ohne intimes Wissen "uber die Bibliothek das Entwickeln mit Turpitude zu vereinfachen.
+Zum einen mussten einige Randbedingungen beim Aufrufen von Java-Methoden abgefangen werden, die sonst zu unerwarteten Ergebnisen f"uhren konnten, zum
+anderen sollten Java-Arrays in PHP nicht nur als TurpitudeJavaObject dargestellt werden, sondern es sollte ein intuitiverer Umgang mit ihnen erm"oglicht werden.
+
+TODO: Arrays in Java
+
+TODO: Paramcount bei Methodenaufrufen
+
+TODO: getInterface :: check return types
 
 % ********** End of chapter **********
