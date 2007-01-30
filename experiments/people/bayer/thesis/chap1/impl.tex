@@ -98,12 +98,13 @@ in einer \emph{Hashtable} gespeichert, wobei die Schl"ussel-Namen den Namen der 
 dieser Schl"ussel im Falle von privaten und gesch"utzten (\emph{protected}) Eigenschaften gesondert kodiert, in diesem
 Falle beginnt er mit einem Nullbyte ($\backslash$0), gefolgt vom Namen der Objektklasse und einem weiteren Nullbyte und dem eigentlichen
 Namen des Properties. Verst"andlicherweise sorgt diese Kodierung in C, wo das Nullbyte als Endzeichen f"ur Strings verwandt wird,
-f"ur einige Probleme.
+f"ur einige Probleme. "Uber die Beweggr"unde der Zend-Entwickler diese Kodierung w"ahlten kann nur spekuliert werden, aber 
+die Vermutung liegt nahe, dass mit einem Nullbyte beginnende Strings in internen Funktionen, da sie f"ur C-Stringfunktionen die L"ange 0 haben,
+als ung"ultig behandelt werden, und so einfach nirgendwo auftauchen.
 Ein weiteres Problem das gel"ost wurde war, dass alle Zend-API Funktionen die
 Quelltexte interpretieren erwarten, dass keine PHP-Tags mehr in diesem enthalten sind. PHP-Skripte werden "ublicherweise
 innerhalb der Zeichenfolge "'$<$?php"' und "'?$>$"' eingeschlossen, um sie von den umgebenden Inhalten (meist HTML) abzugrenzen.
 Die PHPScriptEngine filtert diese Zeichen automatisch aus dem Quelltextstrom.
-TODO: zend\_first\_try weil php-errors zu Exceptions
 
 Da zend\_eval\_string offensichtlich ungeeignet war die Anforderungen zu erf"ullen wurde nach einer Alternative gesucht, und
 die Funktion \emph{compile\_string} gefunden. Da diese - wie bereits der Name andeutet - den Quelltext lediglich in einen
@@ -183,7 +184,22 @@ Danach wird in jeder \emph{\_\_call}-Funktion mittels \emph{strcmp} der Name der
 Methoden verglichen, und falls eine "Ubereinstimmung gefunden wurde wird die jeweilige Funktion aufgerufen. Wird keine "Ubereinstimmung
 gefunden wird mittels des Makros \emph{php\_error} ein PHP-Laufzeitfehler erzeugt. Da diese Fehler von Turpitude von der Funktion
 \emph{turpitude\_error\_cb} als \emph{PHPEvalException} an die JVM weitergeleitet werden stellen sie ein probates Mittel zum Abbruch
-der PHP-Programmausf"uhrung dar, und k"onnen gefahrlos eingesetzt werden.
+der PHP-Programmausf"uhrung dar, und k"onnen gefahrlos eingesetzt werden. 
+Diese Gefahrlosigkeit r"uhrt daher, dass Turpitude alle Aufrufe von Zend-Funktionen durch einen speziellen Try-Catch Block einschliesst:
+\begin{lstlisting}[caption=Zend Try-Catch Block]
+zend_first_try {
+    // Aufrufe
+} zend_catch {
+    // Fehlerbehandlung
+} zend_end_try();
+\end{lstlisting}
+Ohne diese Zeilen w"urden schwerwiegende PHP-Fehler einen sofortigen Abbruch des laufenden Prozesses durch den C-Systemaufruf
+\emph{\_exit} mit dem Fehlercode 255 zur Folge haben, was in diesem Falle nicht nur den PHP-Interpreter, sondern auch die gesamte 
+einbettende Java Virtual Machine beenden w"urde. Im Catch-Block findet die Fehlerbehandlung statt, im Normalfall wird hier eine
+Java-Exception, mit dem Text der PHP-Fehlermeldung, geworfen und der Interpreter beendet. Leider f"uhren auch einige PHP-Funktionen
+(genauer: alle Funktionen die die Zend-Funktion \emph{zend\_bailout} aufrufen)
+zu einem Sprung in den Catch-Block, weswegen in der oben beschriebenen Funktion \emph{turpitude\_error\_cb} eine globale Variable
+gesetzt werden muss, die anzeigt, ob ein echter Fehler aufgetreten ist.
 
 Die erste Methode des TurpitudeEnvironment, die implementiert wurde war \emph{findClass()}. In der zugeh"origen C-Funktion wird zun"achst 
 lediglich "uberpr"uft, ob die Anzahl der Parameter stimmt, und ob der "ubergebene Parameter vom Typ \emph{String} ist. Dann wird die
