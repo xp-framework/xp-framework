@@ -21,12 +21,32 @@
       $location     = '',
       $description  = '',
       $attendee     = array(),
-      $organizer    = '';
+      $organizer    = '',
+      $uid          = '',
+      $priority     = '';
+
+    /**
+     * Set UID for Event
+     *
+     * @param string uid
+     */
+     public function setUID($uid) {
+       $this->uid= $uid;     
+     }
+
+    /**
+     * Get UID for Event
+     *
+     * @return string uid   
+     */
+     public function getUID() {
+       return $this->uid;     
+     }
 
     /**
      * Set Date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setDate($date) {
       $this->date= $date;
@@ -35,7 +55,7 @@
     /**
      * Get Date
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getDate() {
       return $this->date;
@@ -44,7 +64,7 @@
     /**
      * Set Starts
      *
-     * @param   &util.Date starts
+     * @param   util.Date starts
      */
     public function setStarts($starts) {
       $this->starts= $starts;
@@ -53,7 +73,7 @@
     /**
      * Get Starts
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getStarts() {
       return $this->starts;
@@ -62,7 +82,7 @@
     /**
      * Set Ends
      *
-     * @param   &util.Date ends
+     * @param   util.Date ends
      */
     public function setEnds($ends) {
       $this->ends= $ends;
@@ -71,7 +91,7 @@
     /**
      * Get Ends
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getEnds() {
       return $this->ends;
@@ -166,6 +186,24 @@
     public function getOrganizer() {
       return $this->organizer;
     }
+    
+    /**
+     * Set Priority
+     *
+     * @param string priority
+     */
+     public function setPriority($priority) {
+       $this->priority= $priority;     
+     }
+
+    /**
+     * Get Priority for Event
+     *
+     * @return string
+     */
+     public function getPriority() {
+       return $this->priority;     
+     }    
 
     /**
      * Export function helper
@@ -175,24 +213,24 @@
      * @return  string exported
      */    
     protected function _export($key, $value) {
-      if (is('Date', $value)) {
-        // Convert date into string
-        $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
-      } else if (is_object ($value)) {
-        foreach (get_object_vars ($value) as $pkey => $pvalue) {
+      if ($value instanceof Date) {   // Convert date into string
+        $representation= $value->format('%Y%m%dT%H%M%SZ');
+      } else if (is_object($value)) {
+        foreach (get_object_vars($value) as $pkey => $pvalue) {
           if ('_value' == $pkey) continue;
           
           // Append parameters
-          $key.= ';'.strtoupper ($pkey).'='.$pvalue;
+          $key.= ';'.strtoupper($pkey).'='.$pvalue;
         }
-        $value= $value->_value;
+        $representation= $value->_value;
+      } else {                        // Escape string, encode it to UTF8    
+        $representation= strtr(utf8_encode($value), array (
+          ','   => '\,',
+          "\n"  => '\n'
+        ));
       }
 
-      // Escape string, encode it to UTF8    
-      return ($key.':'.strtr(utf8_encode ($value), array (
-        ','   => '\,',
-        "\n"  => '\n'
-      ))."\n");
+      return $key.':'.$representation."\r\n";
     }
     
     /**
@@ -201,33 +239,33 @@
      * @return  string event
      */    
     public function export() {
-      $ret = $this->_export ('BEGIN',       'VEVENT');
-      $ret.= $this->_export ('LOCATION',    $this->getLocation());
-      $ret.= $this->_export ('DTSTAMP',     $this->getDate());
-      $ret.= $this->_export ('DTSTART',     $this->getStarts());
-      $ret.= $this->_export ('DTEND',       $this->getEnds());
-      $ret.= $this->_export ('DESCRIPTION', $this->getDescription());
-      $ret.= $this->_export ('SUMMARY',     $this->getSummary());
-      $ret.= $this->_export ('ORGANIZER',   $this->getOrganizer());
+      $ret = $this->_export('BEGIN',       'VEVENT');
+      $ret.= $this->_export('LOCATION',    $this->getLocation());
+      $ret.= $this->_export('UID',         $this->getUID());
+      $ret.= $this->_export('DTSTAMP',     $this->getDate());
+      $ret.= $this->_export('DTSTART',     $this->getStarts());
+      $ret.= $this->_export('DTEND',       $this->getEnds());
+      $ret.= $this->_export('DESCRIPTION', $this->getDescription());
+      $ret.= $this->_export('SUMMARY',     $this->getSummary());
+      $ret.= $this->_export('ORGANIZER',   $this->getOrganizer());
+      $ret.= $this->_export('PRIORITY',    $this->getPriority());
       
       // Append all attendees
       foreach ($this->getAttendees() as $a) {
-        $ret.= $this->_export ('ATTENDEE', $a);
+        $ret.= $this->_export('ATTENDEE', $a);
       }
       
       // Append alarm if existant
-      if (isset ($this->alarm)) {
-        // TODO: Encapsulate this into an own class
-        $ret.= $this->_export ('BEGIN',       'VALARM');
-        $ret.= $this->_export ('ACTION',      $this->alarm['action']);
-        $ret.= $this->_export ('DESCRIPTION', $this->alarm['description']);
-        $ret.= $this->_export ('TRIGGER',     $this->alarm['trigger']);
-        $ret.= $this->_export ('END',         'VALARM');
+      // TODO: Encapsulate this into an own class
+      if (isset($this->alarm)) {
+        $ret.= $this->_export('BEGIN',       'VALARM');
+        $ret.= $this->_export('ACTION',      $this->alarm['action']);
+        $ret.= $this->_export('DESCRIPTION', $this->alarm['description']);
+        $ret.= $this->_export('TRIGGER',     $this->alarm['trigger']);
+        $ret.= $this->_export('END',         'VALARM');
       }
       
-      $ret.= $this->_export ('END',         'VEVENT');
-      
-      return $ret;
+      return $ret.$this->_export ('END', 'VEVENT');
     }
   }
 ?>

@@ -29,7 +29,7 @@
      * Constructor
      *
      */
-    public function __construct() {
+    public function __construct($tzid= '') {
       $this->daylight= $this->standard= array (
         'dtstart'       => NULL,    // Mandatory
         'tzoffsetto'    => NULL,    // Mandatory
@@ -40,6 +40,7 @@
         'tzname'        => NULL,
         'x-prop'        => NULL,
       );
+      $this->setTzid($tzid);
     }
 
     /**
@@ -62,7 +63,7 @@
     /**
      * Sets the Timezone url
      *
-     * @param   &peer.URL url
+     * @param   peer.URL url
      */    
     public function setTZUrl($url) {
       $this->tzurl= $url;
@@ -71,7 +72,7 @@
     /**
      * Gets the Timezone url
      *
-     * @return  &peer.URL url
+     * @return  peer.URL url
      */    
     public function getTZUrl() {
       return $this->tzurl;
@@ -80,7 +81,7 @@
     /**
      * Sets the last modification time
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */    
     public function setLastMod($date) {
       $this->lastmod= $date;
@@ -89,7 +90,7 @@
     /**
      * Gets the last modification time
      *
-     * @return  &util.Date date
+     * @return  util.Date date
      */    
     public function getLastMod() {
       return $this->lastmod;
@@ -119,7 +120,7 @@
       // Escape string, encode it to UTF8    
       return ($key.':'.strtr(utf8_encode ($value), array (
         ','   => '\,',
-        "\n"  => '\n'
+        "\n"  => '\r\n'
       ))."\n");
     }
     

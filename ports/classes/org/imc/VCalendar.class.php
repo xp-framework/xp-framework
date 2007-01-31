@@ -103,7 +103,9 @@
   class VCalendar extends Object {
     public
       $uid      = '',
+      $version  = '2.0',
       $method   = '',
+      $timezone = NULL,
       $events   = array();
 
     /**
@@ -122,6 +124,24 @@
      */    
     public function getUID() {
       return $this->uid;
+    }
+
+    /**
+     * Set Timezone
+     *
+     * @param   org.imc.VTimezone timezone
+     */
+    public function setTimezone($timezone) {
+      $this->timezone= $timezone;
+    }
+    
+    /**
+     * Get Timezone
+     *
+     * @return  org.imc.VTimezone
+     */    
+    public function getTimezone() {
+      return $this->timezone;
     }
 
     /**
@@ -154,10 +174,37 @@
     /**
      * Get Events
      *
-     * @return  &org.imc.VEvent[]
+     * @return  org.imc.VEvent[]
      */
     public function getEvents() {
       return $this->events;
+    }
+
+    /**
+     * Get number of events
+     *
+     * @return  int
+     */
+    public function numEvents() {
+      return sizeof($this->events);
+    }
+
+    /**
+     * Set the VCalendar version (if not used, 2.0 is the default)
+     *
+     * @param   string version
+     */
+    public function setVersion($version) {
+      $this->version= $version;
+    }
+    
+    /**
+     * Returns the VCalendar version of this implementation
+     *
+     * @return  string version
+     */
+    public function getVersion() {
+      return $this->version;
     }
       
     /**
@@ -305,32 +352,28 @@
     /**
      * Creata a vCalendar from a stream
      *
+     * Example:
      * <code>
-     *   try(); {
-     *     $cal= &VCalendar::fromStream(new File('/tmp/test.ics'));
-     *   } if (catch('Exception', $e)) {
-     *     $e->printStackTrace();
+     *   try {
+     *     $cal= VCalendar::fromStream(new File('/tmp/test.ics'));
+     *   } catch (FormatException $e) {
+     *     $e->printStackTrace();   // File format error
      *     exit(-1);
      *   }
      *   
      *   var_dump($cal);
      * </code>
      *
-     * @param   &io.Stream stream
-     * @return  &org.imc.VCard
+     * @param   io.Stream stream
+     * @return  org.imc.VCalendar
      */
     public static function fromStream($stream) {
-      $cal= new VCalendar();
+      $cal= new self();
       
       $p= new VFormatParser(VCAL_ID);
       $p->setDefaultHandler(array($cal, 'addProperty'));
-      
-      try {
-        $p->parse($stream);
-      } catch (Exception $e) {
-        throw($e);
-      }
-      
+      $p->parse($stream);
+
       return $cal;
     }
     
@@ -342,16 +385,16 @@
      * @return  string exported
      */    
     protected function _export($key, $value) {
-      if (is('Date', $value)) {
-        // Convert date into string
-        $value= $value->toString ('Ymd').'T'.$value->toString ('His').'Z';
+      if ($value instanceof Date) {   // Convert date into string
+        $representation= $value->format('%Y%m%dT%H%M%SZ');
+      } else {                        // Escape string, encode it to UTF8    
+        $representation= strtr(utf8_encode($value), array (
+          ','   => '\,',
+          "\n"  => '\n'
+        ));
       }
 
-      // Escape string, encode it to UTF8    
-      return ($key.':'.strtr(utf8_encode ($value), array (
-        ','   => '\,',
-        "\n"  => '\n'
-      ))."\n");
+      return $key.':'.$representation."\r\n";
     }
     
     /**
@@ -370,32 +413,23 @@
     public function export() {
 
       // First construct the calendar itself
-      $ret = $this->_export ('BEGIN',     VCAL_ID);
-      $ret.= $this->_export ('CALSCALE',  'GREGORIAN');
-      $ret.= $this->_export ('PRODID',    '-//XP//XP Framework Calendar//EN');
-      $ret.= $this->_export ('VERSION',   $this->getVersion());
-      $ret.= $this->_export ('METHOD',    $this->getMethod());
+      $ret = $this->_export('BEGIN',    VCAL_ID);
+      $ret.= $this->_export('CALSCALE', 'GREGORIAN');
+      $ret.= $this->_export('PRODID',   '-//XP//XP Framework Calendar//EN');
+      $ret.= $this->_export('VERSION',  $this->getVersion());
+      $ret.= $this->_export('METHOD',   $this->getMethod());
+      $ret.= $this->_export('UID',      $this->getUID());
 
       // Export timezone
-      $ret.= $this->timezone->export ();
+      $this->timezone && $ret.= $this->timezone->export();
       
       // Enter all contained elements
-      foreach (array_keys ($this->events) as $idx) {
+      foreach (array_keys($this->events) as $idx) {
         $ret.= $this->events[$idx]->export();
       }
       
       // Close the calendar
-      $ret.= $this->_export ('END',       'VCALENDAR');
-      return $ret;
-    }
-    
-    /**
-     * Returns the VCalendar version of this implementation
-     *
-     * @return  string version
-     */
-    public function getVersion() {
-      return '2.0';
+      return $ret.$this->_export('END', 'VCALENDAR');
     }
   }
 ?>

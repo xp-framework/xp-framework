@@ -20,14 +20,14 @@
     /**
      * Constructor
      *
-     * @param   &mixed arg
+     * @param   mixed arg
      */    
     public function __construct($arg) {
       if (is_object($arg)) {
-        $this->date= new Date (VFormatParser::decodeDate($arg->_value));
+        $this->date= new Date(VFormatParser::decodeDate($arg->_value));
         $this->timezone= $arg->tzid;
       } else {
-        $this->date= new Date (VFormatParser::decodeDate($arg));
+        $this->date= new Date(VFormatParser::decodeDate($arg));
       }
     }
     
@@ -37,7 +37,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->date->toString ('Ymd').'T'.$this->date->toString ('His').'Z';
+      return $this->date->format('%Y%m%dT%H%M%SZ')
     }
     
     /**
