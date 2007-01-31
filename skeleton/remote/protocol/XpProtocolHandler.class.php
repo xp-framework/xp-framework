@@ -11,8 +11,7 @@
     'remote.protocol.Serializer',
     'remote.protocol.RemoteInterfaceMapping',
     'remote.protocol.XpProtocolConstants',
-    'remote.protocol.ProtocolHandler',
-    'util.log.Traceable'
+    'remote.protocol.ProtocolHandler'
   );
 
   /**
@@ -21,7 +20,7 @@
    * @see      xp://remote.protocol.ProtocolHandler
    * @purpose  Protocol Handler
    */
-  class XpProtocolHandler extends Object implements ProtocolHandler, Traceable {
+  class XpProtocolHandler extends Object implements ProtocolHandler {
     public
       $versionMajor   = 0,
       $versionMinor   = 0,
@@ -50,7 +49,7 @@
     /**
      * Create a string representation of a given value
      *
-     * @param   &mixed value
+     * @param   mixed value
      * @return  string
      */
     protected function stringOf($value) {
@@ -67,7 +66,7 @@
     /**
      * Initialize this protocol handler
      *
-     * @param   &peer.URL proxy
+     * @param   peer.URL proxy
      */
     public function initialize($proxy) {
       sscanf(
@@ -117,7 +116,7 @@
      * Look up an object by its name
      *
      * @param   string name
-     * @param   &lang.Object
+     * @param   lang.Object
      */
     public function lookup($name) {
       $this->cat && $this->cat->infof(
@@ -135,7 +134,7 @@
     /**
      * Begin a transaction
      *
-     * @param   &remote.UserTransaction tran
+     * @param   remote.UserTransaction tran
      * @param   bool
      */
     public function begin($tran) {
@@ -154,7 +153,7 @@
     /**
      * Rollback a transaction
      *
-     * @param   &remote.UserTransaction tran
+     * @param   remote.UserTransaction tran
      * @param   bool
      */
     public function rollback($tran) {
@@ -173,7 +172,7 @@
     /**
      * Commit a transaction
      *
-     * @param   &remote.UserTransaction tran
+     * @param   remote.UserTransaction tran
      * @param   bool
      */
     public function commit($tran) {
@@ -196,7 +195,7 @@
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
-     * @return  &mixed
+     * @return  mixed
      */
     public function invoke($oid, $method, $args) {
       $this->cat && $this->cat->infof(
@@ -225,7 +224,7 @@
      *
      * @param   int type
      * @param   string data default ''
-     * @return  &mixed
+     * @return  mixed
      * @throws  remote.RemoteException for server errors
      * @throws  lang.Error for unrecoverable errors
      */
@@ -325,11 +324,10 @@
     /**
      * Set trace
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
     }
-
   } 
 ?>

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.URL', 'remote.RemoteException');
+  uses('peer.URL', 'remote.RemoteException', 'util.log.Traceable');
 
   /**
    * Protocol handler interface
@@ -12,12 +12,12 @@
    * @see      xp://remote.HandlerFactory
    * @purpose  Interface
    */
-  interface ProtocolHandler {
+  interface ProtocolHandler extends Traceable {
 
     /**
      * Initialize this protocol handler
      *
-     * @param   &peer.URL proxy
+     * @param   peer.URL proxy
      * @throws  remote.RemoteException
      */
     public function initialize($proxy);
@@ -26,7 +26,7 @@
      * Look up an object by its name
      *
      * @param   string name
-     * @param   &lang.Object
+     * @param   lang.Object
      * @throws  remote.RemoteException
      */
     public function lookup($name);
@@ -38,9 +38,10 @@
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
-     * @return  &mixed
+     * @return  mixed
      * @throws  remote.RemoteException
      */
     public function invoke($oid, $method, $args);
+
   }
 ?>

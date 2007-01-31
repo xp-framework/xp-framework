@@ -7,7 +7,8 @@
   uses(
     'remote.HandlerFactory',
     'util.collections.HashTable',
-    'peer.URL'
+    'peer.URL',
+    'util.log.Logger'
   );
 
   /**
@@ -75,12 +76,18 @@
      */
     public function acquire($key, $initialize= FALSE) {
       $url= new URL($key);
-      if ($this->pool->containsKey($url)) {
-        $instance= $this->pool->get($url);
+      $key= new URL($url->getScheme().'://'.$url->getHost());
+      if ($this->pool->containsKey($key)) {
+        $instance= $this->pool->get($key);
       } else {
         sscanf($url->getScheme(), '%[^+]+%s', $type, $option);
         $class= HandlerFactory::handlerFor($type);
-        $instance= $this->pool($url, $class->newInstance($option));
+        $instance= $this->pool($key, $class->newInstance($option));
+      }
+
+      // Add logger
+      if (NULL !== ($cat= $url->getParam('log'))) {
+        $instance->setTrace(Logger::getInstance()->getCategory($cat));
       }
 
       $initialize && $instance->initialize($url);
