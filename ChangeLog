@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Made VCalendar API in the org.imc-package work with Microsoft Outlook
+  (doebele)
 - Add ability to use log=<category> in the Remote DSN for logging
   in the same it is done in database connection DSNs
   (hinckel)
