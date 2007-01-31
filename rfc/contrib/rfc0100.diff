@@ -1,0 +1,35 @@
+Index: lang.base.php
+===================================================================
+--- lang.base.php	(revision 9396)
++++ lang.base.php	(working copy)
+@@ -288,7 +288,7 @@
+   // }}}
+ 
+   // {{{ internal void __error(int code, string msg, string file, int line)
+-  //     Error callback
++  //     Error callback for E_ALL
+   function __error($code, $msg, $file, $line) {
+     if (0 == error_reporting() || is_null($file)) return;
+ 
+@@ -296,6 +296,13 @@
+   }
+   // }}}
+ 
++  // {{{ internal void __recoverable(int code, string msg, string file, int line)
++  //     Error callback for E_RECOVERABLE_ERROR
++  function __recoverable($code, $msg, $file, $line) {
++    throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
++  }
++  // }}}
++
+   // {{{ void uses (string* args)
+   //     Uses one or more classes
+   function uses() {
+@@ -507,6 +514,7 @@
+   define('LONG_MIN', -LONG_MAX - 1);
+ 
+   // Hooks
++  set_error_handler('__recoverable', E_RECOVERABLE_ERROR);
+   set_error_handler('__error');
+   
+   // Registry initialization
