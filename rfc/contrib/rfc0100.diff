@@ -1,35 +1,116 @@
-Index: lang.base.php
+Index: skeleton/lang.base.php
 ===================================================================
---- lang.base.php	(revision 9396)
-+++ lang.base.php	(working copy)
-@@ -288,7 +288,7 @@
-   // }}}
- 
-   // {{{ internal void __error(int code, string msg, string file, int line)
--  //     Error callback
-+  //     Error callback for E_ALL
+--- skeleton/lang.base.php	(revision 9404)
++++ skeleton/lang.base.php	(working copy)
+@@ -292,7 +292,11 @@
    function __error($code, $msg, $file, $line) {
      if (0 == error_reporting() || is_null($file)) return;
  
-@@ -296,6 +296,13 @@
+-    @xp::$registry['errors'][$file][$line][$msg]++;
++    if (E_RECOVERABLE_ERROR == $code) {
++      throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
++    } else {
++      @xp::$registry['errors'][$file][$line][$msg]++;
++    }
    }
    // }}}
  
-+  // {{{ internal void __recoverable(int code, string msg, string file, int line)
-+  //     Error callback for E_RECOVERABLE_ERROR
-+  function __recoverable($code, $msg, $file, $line) {
-+    throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
-+  }
-+  // }}}
+Index: ports/classes/net/xp_framework/unittest/core/TypeHintsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/TypeHintsTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/TypeHintsTest.class.php	(revision 0)
+@@ -0,0 +1,88 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
 +
-   // {{{ void uses (string* args)
-   //     Uses one or more classes
-   function uses() {
-@@ -507,6 +514,7 @@
-   define('LONG_MIN', -LONG_MAX - 1);
- 
-   // Hooks
-+  set_error_handler('__recoverable', E_RECOVERABLE_ERROR);
-   set_error_handler('__error');
-   
-   // Registry initialization
++  uses('unittest.TestCase');
++  
++  /**
++   * Test type hints. Uses a simple inline declared class with the 
++   * following methods:
++   *
++   * <code>
++   *   passObject(Generic $o)
++   *   passNullable(Generic $o= NULL)
++   * </code>
++   *
++   * Both of these static methods simply return the value passed to 
++   * them.
++   *
++   * @purpose  Testcase
++   */
++  class TypeHintsTest extends TestCase {
++  
++    static function __static() {
++      ClassLoader::getDefault()->defineClass('TypeHintedClass', 'lang.Object', array(), '{
++        public static function passObject(Generic $o) { return $o; }
++        public static function passNullable(Generic $o= NULL) { return $o; }
++      }');
++    }
++
++    /**
++     * Tests passing an object to passObject()
++     *
++     */
++    #[@test]
++    public function passObject() {
++      $o= new Object();
++      $this->assertEquals($o, TypeHintedClass::passObject($o));
++    }
++
++    /**
++     * Tests passing a primitive to passObject() raises an exception.
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function passPrimitive() {
++      TypeHintedClass::passObject(1);
++    }
++
++    /**
++     * Tests passing NULL to passObject() raises an exception.
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function passNull() {
++      TypeHintedClass::passObject(NULL);
++    }
++
++    /**
++     * Tests passing an object to passNullable()
++     *
++     */
++    #[@test]
++    public function passObjectNullable() {
++      $o= new Object();
++      $this->assertEquals($o, TypeHintedClass::passNullable($o));
++    }
++
++    /**
++     * Tests passing a primitive to passNullable() raises an exception.
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function passPrimitiveNullable() {
++      TypeHintedClass::passNullable(1);
++    }
++
++    /**
++     * Tests passing NULL to passNullable() does not raise an exception
++     *
++     */
++    #[@test]
++    public function passNullNullable() {
++      $this->assertEquals(NULL, TypeHintedClass::passNullable(NULL));
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/TypeHintsTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
