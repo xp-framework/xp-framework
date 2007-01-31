@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Changed lang.reflect.Argument::isOptional() to also work when no 
+  apidoc comment exists.
+  (friebe)
 - Added support for ENUM type to MySQLDBAdapter
   (friebe, doebele)
 - Implemented RFC #0069 - EASC server in php
