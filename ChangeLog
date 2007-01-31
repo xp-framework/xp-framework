@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Add ability to use log=<category> in the Remote DSN for logging
+  in the same it is done in database connection DSNs
+  (hinckel)
 - Changed lang.reflect.Argument::isOptional() to also work when no 
   apidoc comment exists.
   (friebe)
