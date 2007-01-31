@@ -76,7 +76,7 @@
      * @return  string
      */
     public function getDefault() {
-      return $this->optional ? $this->default : FALSE;
+      return $this->optional ? var_export($this->default, TRUE) : FALSE;
     }
   }
 ?>

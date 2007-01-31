@@ -67,7 +67,7 @@
               isset($match[3]) ? $match[3] : 'param',
               $match[2],
               isset($match[4]),
-              isset($match[4]) ? $match[5] : NULL
+              isset($match[4]) ? eval('return '.$match[5].';') : NULL
             );
             break;
 

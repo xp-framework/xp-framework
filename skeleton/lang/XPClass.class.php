@@ -521,7 +521,7 @@
             );
             $matches= NULL;
             preg_match_all(
-              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/',
+              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
               $comment, 
               $matches, 
               PREG_SET_ORDER
@@ -531,12 +531,7 @@
             foreach ($matches as $match) {
               switch ($match[1]) {
                 case 'param':
-                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= new Argument(
-                    isset($match[3]) ? $match[3] : 'param',
-                    $match[2],
-                    isset($match[4]),
-                    isset($match[4]) ? $match[5] : NULL
-                  );
+                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= $match[2];
                   break;
 
                 case 'return':

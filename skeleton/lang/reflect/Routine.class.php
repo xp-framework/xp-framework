@@ -80,15 +80,26 @@
       // ==
       return $this->_reflect->getModifiers() & ~0x7f008;
     }
-
+    
     /**
      * Retrieve this method's arguments
      *
      * @return  lang.reflect.Argument[]
      */
     public function getArguments() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return $details[DETAIL_ARGUMENTS];
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $r= array();
+
+      foreach ($this->_reflect->getParameters() as $pos => $param) {
+        $optional= $param->isOptional();
+        $r[]= new Argument(
+          $param->getName(),
+          @$details[DETAIL_ARGUMENTS][$pos],
+          $optional,
+          $optional ? $param->getDefaultValue() : NULL
+        );
+      }
+      return $r;
     }
 
     /**
@@ -98,9 +109,17 @@
      * @return  lang.reflect.Argument
      */
     public function getArgument($pos) {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      if (!isset($details[DETAIL_ARGUMENTS][$pos])) return NULL;
-      return $details[DETAIL_ARGUMENTS][$pos];
+      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $param= $this->_reflect->getParameters();
+      if (!isset($param[$pos])) return NULL;
+
+      $optional= $param[$pos]->isOptional();
+      return new Argument(
+        $param[$pos]->getName(),
+        @$details[DETAIL_ARGUMENTS][$pos],
+        $optional,
+        $optional ? $param[$pos]->getDefaultValue() : NULL
+      );
     }
 
     /**
@@ -109,8 +128,7 @@
      * @return  int
      */
     public function numArguments() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return sizeof($details[DETAIL_ARGUMENTS]);
+      return $this->_reflect->getNumberOfParameters();
     }
 
     /**
