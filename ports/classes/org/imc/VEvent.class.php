@@ -23,7 +23,8 @@
       $attendee     = array(),
       $organizer    = '',
       $uid          = '',
-      $priority     = '';
+      $priority     = '',
+      $sequence     = '';
 
     /**
      * Set UID for Event
@@ -41,6 +42,24 @@
      */
      public function getUID() {
        return $this->uid;     
+     }
+
+    /**
+     * Set Sequence for Event
+     *
+     * @param integer sequence
+     */
+     public function setSequence($uid) {
+       $this->sequence= $sequence;     
+     }
+
+    /**
+     * Get Sequence for Event
+     *
+     * @return integer sequence   
+     */
+     public function getSequence() {
+       return $this->sequence;     
      }
 
     /**
@@ -242,6 +261,7 @@
       $ret = $this->_export('BEGIN',       'VEVENT');
       $ret.= $this->_export('LOCATION',    $this->getLocation());
       $ret.= $this->_export('UID',         $this->getUID());
+      $ret.= $this->_export('SEQUENCE',    $this->getSequence());
       $ret.= $this->_export('DTSTAMP',     $this->getDate());
       $ret.= $this->_export('DTSTART',     $this->getStarts());
       $ret.= $this->_export('DTEND',       $this->getEnds());
