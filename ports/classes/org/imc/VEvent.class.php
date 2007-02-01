@@ -49,7 +49,7 @@
      *
      * @param integer sequence
      */
-     public function setSequence($uid) {
+     public function setSequence($sequence) {
        $this->sequence= $sequence;     
      }
 
