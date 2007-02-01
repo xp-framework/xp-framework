@@ -18,10 +18,9 @@
      * Ensures lang.Object does not have a constructor
      *
      */
-    #[@test, @ignore('Changed with PHP5')]
+    #[@test]
     public function noConstructor() {
-      $c= XPClass::forName('lang.Object');
-      $this->assertFalse($c->hasConstructor());
+      $this->assertFalse(XPClass::forName('lang.Object')->hasConstructor());
     }
 
     /**
@@ -30,18 +29,19 @@
      */
     #[@test]
     public function baseClass() {
-      $c= XPClass::forName('lang.Object');
-      $this->assertNull($c->getParentClass());
+      $this->assertNull(XPClass::forName('lang.Object')->getParentClass());
     }
 
     /**
-     * Ensures lang.Object does not implement any interfaces
+     * Ensures lang.Object implements the lang.Generic interface
      *
      */
     #[@test]
-    public function noInterfaces() {
-      $c= XPClass::forName('lang.Object');
-      $this->assertEquals(1, sizeof($c->getInterfaces()));
+    public function genericInterface() {
+      $interfaces= XPClass::forName('lang.Object')->getInterfaces();
+      $this->assertEquals(1, sizeof($interfaces));
+      $this->assertClass($interfaces[0], 'lang.XPClass');
+      $this->assertEquals('lang.Generic', $interfaces[0]->getName());
     }
 
     /**
