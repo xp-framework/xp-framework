@@ -24,6 +24,7 @@
       $organizer    = '',
       $uid          = '',
       $priority     = '',
+      $categories   = '',
       $sequence     = '';
 
     /**
@@ -61,6 +62,24 @@
      public function getSequence() {
        return $this->sequence;     
      }
+     
+    /**
+     * Set Category for Event
+     *
+     * @param string categories
+     */
+     public function setCategories($categories) {
+       $this->categories= $categories;     
+     }
+
+    /**
+     * Get Category for Event
+     *
+     * @return string categories
+     */
+     public function getCategories() {
+       return $this->categories;     
+     }     
 
     /**
      * Set Date
@@ -261,12 +280,13 @@
       $ret = $this->_export('BEGIN',       'VEVENT');
       $ret.= $this->_export('LOCATION',    $this->getLocation());
       $ret.= $this->_export('UID',         $this->getUID());
-      $ret.= $this->_export('SEQUENCE',    $this->getSequence());
+      ($this->sequence != '') && $ret.= $this->_export('SEQUENCE',    $this->getSequence());
       $ret.= $this->_export('DTSTAMP',     $this->getDate());
       $ret.= $this->_export('DTSTART',     $this->getStarts());
       $ret.= $this->_export('DTEND',       $this->getEnds());
       $ret.= $this->_export('DESCRIPTION', $this->getDescription());
       $ret.= $this->_export('SUMMARY',     $this->getSummary());
+      ($this->categories != '') && $ret.= $this->_export('CATEGORIES',  $this->getCategories());
       $ret.= $this->_export('ORGANIZER',   $this->getOrganizer());
       $ret.= $this->_export('PRIORITY',    $this->getPriority());
       
