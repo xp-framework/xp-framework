@@ -116,8 +116,10 @@ __
     
     // Add additional files
     foreach (explode(PATH_SEPARATOR, $p->value('add', 'a', '')) as $filename) {
-      $a->add(new File($filename), $filename);
       Console::writeLine('---> ', $filename);
+
+      $f= new File($filename);
+      $f->exists() && $a->add($f, $filename);
     }
     
     // Add: Bean class, remote interface, and home interface
