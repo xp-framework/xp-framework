@@ -43,6 +43,9 @@ jclass get_java_class(JNIEnv* env, jobject obj, char** dest) {
     return (jclass)clsobj;
 }
 
+/**
+ * converts a jobject into a TurpitudeJavaObject
+ */
 void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval) {
     char* classname;
     jclass cls = get_java_class(env, obj, &classname);
@@ -60,6 +63,13 @@ void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval) {
     MAKE_STD_ZVAL(turpcls);
     make_turpitude_jclass_instance(cls, classname, turpcls);
     make_turpitude_jobject_instance(cls, turpcls, obj, retval);
+}
+
+/**
+ * converts a jobject into a TurpitudeJavaArray
+ */
+void jarray_to_zval(JNIEnv* env, jobject obj, turpitude_java_type type, zval* retval) {
+    make_turpitude_jarray_instance(obj, type, retval);
 }
 
 /**
@@ -109,6 +119,10 @@ zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* de
         default:
             // probably void
             ZVAL_NULL(retval);
+    }
+    // check for array
+    if (turpitude_is_java_array(type)) {
+        jarray_to_zval(env, val.l, type, retval);
     }
 
     return retval;

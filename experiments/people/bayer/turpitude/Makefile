@@ -34,6 +34,9 @@ compiledscript: turpitude.jar lib
 objects: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ObjectSample
 
+arrays: turpitude.jar lib
+	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ArraySample
+
 exceptions: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ExceptionSample
 

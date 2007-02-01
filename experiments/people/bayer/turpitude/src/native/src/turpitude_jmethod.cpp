@@ -220,6 +220,7 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     // find return type
     char* sp = sig;
     char c;
+    // move string pointer to start of return type
     while (c = *sp) {
         if (c == ')') {
             c = *++sp;
@@ -227,7 +228,8 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
         }
         sp++;
     }
-    turpitude_java_type rt;
+    turpitude_java_type rt = get_java_field_type(sp);
+    /*
     switch (c) {
         case 'Z': rt = JAVA_BOOLEAN;  break;  
         case 'B': rt = JAVA_BYTE;     break;  
@@ -243,6 +245,7 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
         // none of the above - throw an error
         php_error(E_ERROR, "unable to determine method return type.");
     }
+    */
     intern->return_type = rt;
 
     intern->is_static = is_static;

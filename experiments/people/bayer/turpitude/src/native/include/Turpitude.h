@@ -19,6 +19,7 @@
 #include "turpitude_jclass.h"
 #include "turpitude_jmethod.h"
 #include "turpitude_jobj.h"
+#include "turpitude_jarray.h"
 #include "turpitude_zend_utils.h"
 
 /* utility functions */
@@ -32,6 +33,7 @@ jobject zval_to_jobject(JNIEnv* env, zval* val);
 jvalue zval_to_jvalue(JNIEnv* env, zval* val);
 zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* dest);
 void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval);
+void jarray_to_zval(JNIEnv* env, jobject obj, turpitude_java_type type, zval* retval);
 jclass get_java_class(JNIEnv* env, jobject obj, char** dest);
 
 

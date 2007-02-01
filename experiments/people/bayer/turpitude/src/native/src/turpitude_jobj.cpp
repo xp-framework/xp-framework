@@ -37,6 +37,7 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
         for (int i=0; i < xargc-1; i++) {
             args[i] = zval_to_jvalue(turpitude_jenv, *xargv[i+1]);
         }
+        // non-array methods
         switch (method->return_type) {
             case JAVA_VOID: 
                 turpitude_jenv->CallVoidMethodA(jobj->java_object, method->java_method, args); 
@@ -71,6 +72,7 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
         };
     } else {
         // no parameters given - just call the method
+        // non-array methods
         switch (method->return_type) {
             case JAVA_VOID: 
                 turpitude_jenv->CallVoidMethod(jobj->java_object, method->java_method); 
@@ -103,6 +105,11 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
                 retval.d = turpitude_jenv->CallDoubleMethod(jobj->java_object, method->java_method);
                 break;
         };
+        // might still be an array method:
+        //if ((method->return_type & JAVA_ARRAY) == JAVA_ARRAY) {
+        if (turpitude_is_java_array(method->return_type)) {
+            retval.l = turpitude_jenv->CallObjectMethod(jobj->java_object, method->java_method);
+        }
     }
 
     jvalue_to_zval(turpitude_jenv, retval, method->return_type, return_value);

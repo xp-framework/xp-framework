@@ -25,6 +25,7 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
     make_turpitude_jclass();
     make_turpitude_jmethod();
     make_turpitude_jobject();
+    make_turpitude_jarray();
 }
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jobject) {

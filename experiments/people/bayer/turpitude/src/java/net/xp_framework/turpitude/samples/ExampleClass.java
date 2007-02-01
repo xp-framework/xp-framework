@@ -6,6 +6,7 @@ public class ExampleClass {
     public int intval = 0;
     public String stringval = "";
     private String privateString = "not to be touched!";
+    private int[] IntArray = {1, 11, 21, 1211, 111221, 312211};
 
     /** 
      * useless static method
@@ -68,7 +69,12 @@ public class ExampleClass {
         System.out.println("ExampleClass: toString(): " + retval);
         return retval;
     }
-    
+
+    public int[] getIntArray() {
+        System.out.println("ExampleClass: getIntArray()");
+        int[] rv = {1, 11, 21, 1211, 111221, 312211};
+        return rv;
+    }
 
 }
 
