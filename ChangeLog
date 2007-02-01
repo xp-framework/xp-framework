@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Make xpcli show self-usage if invoked without any arguments
+  (friebe)
 - Implemented RFC #0100 - IllegalArgumentException for Type hints
   (friebe)
 - Made VCalendar API in the org.imc-package work with Microsoft Outlook
