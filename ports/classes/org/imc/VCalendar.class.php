@@ -17,6 +17,7 @@
   // Methods
   define('VCAL_METHOD_REQUEST', 'REQUEST');
   define('VCAL_METHOD_PUBLISH', 'PUBLISH');
+  define('VCAL_METHOD_CANCEL',  'CANCEL');
 
   /**
    * VCalendar
