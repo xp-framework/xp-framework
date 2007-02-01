@@ -292,7 +292,11 @@
   function __error($code, $msg, $file, $line) {
     if (0 == error_reporting() || is_null($file)) return;
 
-    @xp::$registry['errors'][$file][$line][$msg]++;
+    if (E_RECOVERABLE_ERROR == $code) {
+      throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
+    } else {
+      @xp::$registry['errors'][$file][$line][$msg]++;
+    }
   }
   // }}}
 
