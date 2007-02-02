@@ -14,42 +14,73 @@
    */
   class MockConnection extends DBConnection {
     public
-      $affectedRows   = 1,
-      $identityValue  = 1,
-      $resultSet      = NULL,
-      $queryError     = array(),
-      $connectError   = NULL;
+      $affectedRows     = 1,
+      $identityValue    = 1,
+      $resultSets       = NULL,
+      $queryError       = array(),
+      $connectError     = NULL,
+      $currentResultSet = 0;
 
     public
-      $_connected     = FALSE;
+      $_connected       = FALSE;
 
     /**
      * Constructor
      *
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($dsn) { 
       parent::__construct($dsn);
-      $this->resultSet= new MockResultSet();
+      $this->clearResultSets();
     }
 
     /**
-     * Mock: Set ResultSet
+     * Mock: Set ResultSet as only result set
      *
-     * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
+     * @param   net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
      */
     public function setResultSet($resultSet) {
       $this->queryError= array();
-      $this->resultSet= $resultSet;
+      $this->resultSets= array($resultSet);
+      $this->currentResultSet= 0;
+    }
+
+    /**
+     * Mock: Clear ResultSets
+     *
+     * Example:
+     * <code>
+     *   $conn->clearResultSets()->addResultSet(...)->addResultSet(...);
+     * </code>
+     *
+     * @return  net.xp_framework.unittest.rdbms.mock.MockConnection this
+     */
+    public function clearResultSets() {
+      $this->queryError= array();
+      $this->resultSets= array();
+      $this->currentResultSet= 0;
+      return $this;
+    }
+
+    /**
+     * Mock: Add ResultSet
+     *
+     * @param   net.xp_framework.unittest.rdbms.mock.MockResultSet resultSet
+     * @return  net.xp_framework.unittest.rdbms.mock.MockConnection this
+     */
+    public function addResultSet($resultSet) {
+      $this->queryError= array();
+      $this->resultSets[]= $resultSet;
+      return $this;
     }
 
     /**
      * Mock: Get ResultSet
      *
-     * @return  &net.xp_framework.unittest.rdbms.mock.MockResultSet
+     * @return  net.xp_framework.unittest.rdbms.mock.MockResultSet
      */
-    public function getResultSet() {
-      return $this->resultSet;
+    public function getResultSets() {
+      return $this->resultSets;
     }
 
     /**
@@ -127,7 +158,7 @@
       
       if ($this->connectError) {
         $this->_connected= FALSE;
-        throw(new SQLConnectException($this->connectError, $this->dsn));
+        throw new SQLConnectException($this->connectError, $this->dsn);
       }
       $this->_connected= TRUE;
       return TRUE;
@@ -296,7 +327,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.ResultSet
+     * @return  rdbms.ResultSet
      */
     public function query() { 
       $args= func_get_args();
@@ -316,7 +347,11 @@
 
       switch (sizeof($this->queryError)) {
         case 0: {
-          return $this->resultSet;
+          if ($this->currentResultSet >= sizeof($this->resultSets)) {
+            return new MockResultSet();   // Empty
+          }
+          
+          return $this->resultSets[$this->currentResultSet++];
         }
 
         case 1: {   // letServerDisconnect() sets this
@@ -338,15 +373,13 @@
           ));
         }
       }
-      
-      return $this->resultSet;
     }
     
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.DBTransaction transaction
-     * @return  &rdbms.DBTransaction
+     * @param   rdbms.DBTransaction transaction
+     * @return  rdbms.DBTransaction
      */
     public function begin($transaction) {
       $transaction->db= $this;
