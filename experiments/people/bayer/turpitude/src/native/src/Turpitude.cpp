@@ -68,8 +68,8 @@ void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval) {
 /**
  * converts a jobject into a TurpitudeJavaArray
  */
-void jarray_to_zval(JNIEnv* env, jobject obj, turpitude_java_type type, zval* retval) {
-    make_turpitude_jarray_instance(obj, type, retval);
+void jarray_to_zval(JNIEnv* env, jarray arr, turpitude_java_type type, zval* retval) {
+    make_turpitude_jarray_instance(arr, type, retval);
 }
 
 /**
@@ -122,7 +122,7 @@ zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* de
     }
     // check for array
     if (turpitude_is_java_array(type)) {
-        jarray_to_zval(env, val.l, type, retval);
+        jarray_to_zval(env, (jarray)val.l, type, retval);
     }
 
     return retval;

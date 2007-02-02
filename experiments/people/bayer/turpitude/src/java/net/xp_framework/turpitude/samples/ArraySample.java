@@ -55,7 +55,16 @@ public class ArraySample {
         src.append("$instance = $class->create($constr);");
         src.append("$method = $class->findMethod('getIntArray', '()[I');");
         src.append("$retval = $instance->javaInvoke($method);");
-        src.append("var_dump($retval);");
+        src.append("$len = $retval->getLength();");
+        src.append("var_dump($len);");
+        src.append("$val = $retval->get(2);");
+        src.append("var_dump($val);");
+        src.append("$method = $class->findMethod('getStringArray', '()[Ljava/lang/String;');");
+        src.append("$retval = $instance->javaInvoke($method);");
+        src.append("$len = $retval->getLength();");
+        src.append("var_dump($len);");
+        src.append("$val = $retval->get(2);");
+        src.append("var_dump($val);");
         src.append("?>"); 
         return src.toString();
     }

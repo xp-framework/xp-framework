@@ -8,6 +8,82 @@ zend_object_value turpitude_jarray_object_value;
 
 //####################### method handlers ##################################3
 
+void turpitude_jarray_method_getLength(turpitude_javaarray_object* arr, zval* return_value) {
+    ZVAL_LONG(return_value, arr->array_length);
+}
+
+void turpitude_jarray_method_get(turpitude_javaarray_object* arr, int xargc, zval*** xargv, zval* return_value) {
+    // check numargs
+    if (xargc != 1) 
+        php_error(E_ERROR, "invalid number of arguments for method get: %d", xargc);
+    // extract index
+    if (Z_TYPE_P(*xargv[0]) != IS_LONG)
+        php_error(E_ERROR, "invalid type for argument 1 of method get, should be IS_LONG");
+
+    int idx = (*xargv[0])->value.lval;
+
+    // check for bounds
+    if (idx < 0 || idx >= arr->array_length)
+        php_error(E_ERROR, "index out of bounds (0 <= index <= %d, index = %d", arr->array_length, idx);
+
+    // extract element
+    jboolean is_copy;
+    switch (arr->type) {
+        case JAVA_OBJECT_ARRAY: {
+            printf("luasdf\n");
+            break; }
+        case JAVA_BOOLEAN_ARRAY: {
+            jbooleanArray booleanarr = (jbooleanArray)(arr->java_array);
+            jboolean* elements = turpitude_jenv->GetBooleanArrayElements(booleanarr, &is_copy);
+            ZVAL_BOOL(return_value, elements[idx]);
+            turpitude_jenv->ReleaseBooleanArrayElements(booleanarr, elements, JNI_ABORT);
+            break; }
+        case JAVA_BYTE_ARRAY: {
+            jbyteArray bytearr = (jbyteArray)(arr->java_array);
+            jbyte* elements = turpitude_jenv->GetByteArrayElements(bytearr, &is_copy);
+            ZVAL_LONG(return_value, elements[idx]);
+            turpitude_jenv->ReleaseByteArrayElements(bytearr, elements, JNI_ABORT);
+            break; }
+        case JAVA_CHAR_ARRAY: {
+            jcharArray chararr = (jcharArray)(arr->java_array);
+            jchar* elements = turpitude_jenv->GetCharArrayElements(chararr, &is_copy);
+            ZVAL_LONG(return_value, elements[idx]);
+            turpitude_jenv->ReleaseCharArrayElements(chararr, elements, JNI_ABORT);
+            break; }
+        case JAVA_SHORT_ARRAY: {
+            jshortArray shortarr = (jshortArray)(arr->java_array);
+            jshort* elements = turpitude_jenv->GetShortArrayElements(shortarr, &is_copy);
+            ZVAL_LONG(return_value, elements[idx]);
+            turpitude_jenv->ReleaseShortArrayElements(shortarr, elements, JNI_ABORT);
+            break; }
+        case JAVA_INT_ARRAY: {
+            jintArray intarr = (jintArray)(arr->java_array);
+            jint* elements = turpitude_jenv->GetIntArrayElements(intarr, &is_copy);
+            ZVAL_LONG(return_value, elements[idx]);
+            turpitude_jenv->ReleaseIntArrayElements(intarr, elements, JNI_ABORT);
+            break; }
+        case JAVA_LONG_ARRAY: {
+            jlongArray longarr = (jlongArray)(arr->java_array);
+            jlong* elements = turpitude_jenv->GetLongArrayElements(longarr, &is_copy);
+            ZVAL_LONG(return_value, elements[idx]);
+            turpitude_jenv->ReleaseLongArrayElements(longarr, elements, JNI_ABORT);
+            break; }
+        case JAVA_FLOAT_ARRAY: {
+            jfloatArray floatarr = (jfloatArray)(arr->java_array);
+            jfloat* elements = turpitude_jenv->GetFloatArrayElements(floatarr, &is_copy);
+            ZVAL_DOUBLE(return_value, elements[idx]);
+            turpitude_jenv->ReleaseFloatArrayElements(floatarr, elements, JNI_ABORT);
+            break; }
+        case JAVA_DOUBLE_ARRAY: {
+            jdoubleArray doublearr = (jdoubleArray)(arr->java_array);
+            jdouble* elements = turpitude_jenv->GetDoubleArrayElements(doublearr, &is_copy);
+            ZVAL_DOUBLE(return_value, elements[idx]);
+            turpitude_jenv->ReleaseDoubleArrayElements(doublearr, elements, JNI_ABORT);
+            break; }
+        default:
+            php_error(E_ERROR, "unable to determine array type: %d", arr->type);
+    }
+}
 
 //####################### helpers ##################################3
 
@@ -61,37 +137,19 @@ void turpitude_jarray_call(INTERNAL_FUNCTION_PARAMETERS) {
 
     // extract jarray from this pointer
     zval* myval = getThis();
-    turpitude_javaobject_object* jobj = (turpitude_javaobject_object*)zend_object_store_get_object(myval TSRMLS_CC);
+    turpitude_javaarray_object* jarr = (turpitude_javaarray_object*)zend_object_store_get_object(myval TSRMLS_CC);
 
     bool method_valid = false;
 
-    /*
-    // java invoke method
-    if (strcmp(Z_STRVAL_P(*argv[0]), "javaInvoke") == 0) {
-        turpitude_jarray_method_javainvoke(jobj, xargc, xargv, return_value);
+    if (strcmp(Z_STRVAL_P(*argv[0]), "getLength") == 0) {
+        turpitude_jarray_method_getLength(jarr, return_value);
         method_valid = true;
-    } else if (strcmp(Z_STRVAL_P(*argv[0]), "javaGet") == 0) {
-        turpitude_jarray_method_javaget(jobj, xargc, xargv, return_value);
-        method_valid = true;
-    } else if (strcmp(Z_STRVAL_P(*argv[0]), "javaSet") == 0) {
-        turpitude_jarray_method_javaset(jobj, xargc, xargv, return_value);
-        method_valid = true;
-    } else {
-        //still, at least one parameter must be given
-        if (xargc <= 0) 
-            php_error(E_ERROR, "can't call method, at least provide the signature");
-        // first parameter might be a method signature
-        if (Z_TYPE_P(*argv[0]) == IS_STRING) {
-            zval* methodval;
-            // try to convert *xargv[0] into a TurpitudeJavaMethod, store it into *xargv[0]
-            make_turpitude_jmethod_instance(jobj->java_class, method_name, Z_STRVAL_P(*xargv[0]), *xargv[0]);
-            turpitude_jarray_method_javainvoke(jobj, xargc, xargv, return_value);
-            method_valid = true;
-        } else {
-            php_error(E_ERROR, "please provide a signature as first parameter");
-        }
     }
-    */
+    if (strcmp(Z_STRVAL_P(*argv[0]), "get") == 0) {
+        turpitude_jarray_method_get(jarr, xargc, xargv, return_value);
+        method_valid = true;
+    }
+    
 
     // error handling
     char* errmsg = (char*)emalloc(100 + strlen(method_name));
@@ -220,9 +278,12 @@ void make_turpitude_jarray() {
     turpitude_jarray_class_entry->create_object = turpitude_jarray_create_object;
 }
 
-void make_turpitude_jarray_instance(jobject array, turpitude_java_type type, zval* dest) {
+void make_turpitude_jarray_instance(jarray array, turpitude_java_type type, zval* dest) {
     if (!dest)
         ALLOC_ZVAL(dest);
+
+    if (!turpitude_is_java_array(type))
+        php_error(E_ERROR, "object doesn't seem to be an array");
 
     // instantiate JavaObject object
     Z_TYPE_P(dest) = IS_OBJECT;
@@ -231,14 +292,20 @@ void make_turpitude_jarray_instance(jobject array, turpitude_java_type type, zva
     dest->is_ref = 1;
 
     // length
-    printf("array!\n");
+    int array_len = turpitude_jenv->GetArrayLength(array);
+    if (array_len < 0) 
+        php_error(E_ERROR, "invalid array length: %d", array_len);
 
-    // assign jclass and jarray to object
-    //turpitude_javaobject_object* intern = (turpitude_javaobject_object*)zend_object_store_get_object(dest TSRMLS_CC);
-    //intern->java_class = cls;
-    //intern->java_object = obj;
+    // assign jarray to object
+    turpitude_javaarray_object* intern = (turpitude_javaarray_object*)zend_object_store_get_object(dest TSRMLS_CC);
+    intern->java_array = array;
+    intern->array_length = array_len;
+    intern->type = type;
 
-    // add class reference as a property
-    //zend_hash_update(Z_OBJPROP_P(dest), "Class", sizeof("Class"), (void **) &turpcls, sizeof(zval *), NULL);
+    // add array length as a property
+    zval* length;
+    MAKE_STD_ZVAL(length);
+    ZVAL_LONG(length, array_len);
+    zend_hash_update(Z_OBJPROP_P(dest), "length", sizeof("length"), (void **) &length, sizeof(zval *), NULL);
 }
 

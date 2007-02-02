@@ -261,7 +261,7 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     zend_hash_update(Z_OBJPROP_P(dest), "Signature", sizeof("Signature"), (void **) &signature, sizeof(zval *), NULL);
     zval* isstatic;
     MAKE_STD_ZVAL(isstatic);
-    ZVAL_BOOL(isstatic, isstatic);
+    ZVAL_BOOL(isstatic, is_static);
     zend_hash_update(Z_OBJPROP_P(dest), "isStatic", sizeof("isStatic"), (void **) &isstatic, sizeof(zval *), NULL);
 }
 

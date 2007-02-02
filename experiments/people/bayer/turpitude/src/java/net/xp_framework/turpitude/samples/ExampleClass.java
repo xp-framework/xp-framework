@@ -7,6 +7,7 @@ public class ExampleClass {
     public String stringval = "";
     private String privateString = "not to be touched!";
     private int[] IntArray = {1, 11, 21, 1211, 111221, 312211};
+    private static String[] StringArray = {"first", "second", "third", "fourth", "fifth"};
 
     /** 
      * useless static method
@@ -74,6 +75,11 @@ public class ExampleClass {
         System.out.println("ExampleClass: getIntArray()");
         int[] rv = {1, 11, 21, 1211, 111221, 312211};
         return rv;
+    }
+
+    public String[] getStringArray() {
+        System.out.println("ExampleClass: getStringArray()");
+        return ExampleClass.StringArray;
     }
 
 }

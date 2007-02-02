@@ -15,11 +15,12 @@
 
 typedef struct turpitude_javaarray_object {
     zend_object         std;
-    jobject             java_array; 
+    jarray              java_array; 
     turpitude_java_type type;
+    int                 array_length;
 };
 
 void make_turpitude_jarray();
-void make_turpitude_jarray_instance(jobject array, turpitude_java_type type, zval* dest);
+void make_turpitude_jarray_instance(jarray array, turpitude_java_type type, zval* dest);
 
 #endif

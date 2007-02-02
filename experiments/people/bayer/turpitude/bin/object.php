@@ -23,5 +23,11 @@
   $b = new Test();
   $a->setObj($b);
 
+  $turpenv = $_SERVER['TURP_ENV'];
+  $class = $turpenv->findClass('java/util/Date');
+  $constr = $class->findConstructor('()V');
+  $obj = $class->create($constr);
+  var_dump($obj);
+
   return $a;
 ?>
