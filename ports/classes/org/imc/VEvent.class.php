@@ -6,6 +6,13 @@
  
   uses('util.Date');
 
+  define('VCAL_CLASS_PUBLIC',        'PUBLIC');
+  define('VCAL_CLASS_PRIVATE',       'PRIVATE');
+  define('VCAL_CLASS_CONFINDENTIAL', 'CONFIDENTIAL');
+
+  define('VCAL_TRANSP_OPAQUE',       'OPAQUE');
+  define('VCAL_TRANSP_TRANSPARENT',  'TRANSPARENT');   
+
   /**
    * VEvent
    * 
@@ -23,8 +30,10 @@
       $attendee     = array(),
       $organizer    = '',
       $uid          = '',
-      $priority     = '',
+      $priority     = 9,
       $categories   = '',
+      $class        = '',
+      $transparency = VCAL_TRANSP_OPAQUE,
       $sequence     = '';
 
     /**
@@ -116,6 +125,42 @@
     public function getStarts() {
       return $this->starts;
     }
+    
+    /**
+     * Set Class type
+     *
+     * @param   string ctype one of the VCAL_CLASS_* constants
+     */
+    public function setClasstype($ctype) {
+      $this->ctype= $ctype;
+    }
+
+    /**
+     * Get Class
+     *
+     * @return  string 
+     */
+    public function getClasstype() {
+      return $this->ctype;
+    }
+
+    /**
+     * Set Time Transparency
+     *
+     * @param   string transp
+     */
+    public function setTransparency($transparency) {
+      $this->transparency= $transparency;
+    }
+
+    /**
+     * Get Time Transparency
+     *
+     * @return  string 
+     */
+    public function getTransparency() {
+      return $this->transparency;
+    }
 
     /**
      * Set Ends
@@ -192,10 +237,19 @@
     /**
      * Add attendee
      *
-     * @param   mixed[] attendee
+     * @param   mixed attendee
      */
     public function addAttendee($attendee) {
       $this->attendee[]= $attendee;
+    }
+
+    /**
+     * Set attendees
+     *
+     * @param   mixed[] attendees
+     */
+    public function setAttendees($attendees) {
+      $this->attendee[]= $attendees;
     }
 
     /**
@@ -205,6 +259,15 @@
      */
     public function getAttendees() {
       return $this->attendee;
+    }
+
+    /**
+     * Get number of attendees
+     *
+     * @return  int
+     */
+    public function numAttendees() {
+      return sizeof($this->attendee);
     }
 
     /**
@@ -248,9 +311,12 @@
      *
      * @param   string key
      * @param   mixed value
+     * @param   bool empty default TRUE whether to export empty elements
      * @return  string exported
      */    
-    protected function _export($key, $value) {
+    protected function _export($key, $value, $empty= TRUE) {
+      if (!$empty && '' == $value) return '';
+      
       if ($value instanceof Date) {   // Convert date into string
         $representation= $value->format('%Y%m%dT%H%M%SZ');
       } else if (is_object($value)) {
@@ -277,18 +343,22 @@
      * @return  string event
      */    
     public function export() {
-      $ret = $this->_export('BEGIN',       'VEVENT');
-      $ret.= $this->_export('LOCATION',    $this->getLocation());
-      $ret.= $this->_export('UID',         $this->getUID());
-      ($this->sequence != '') && $ret.= $this->_export('SEQUENCE',    $this->getSequence());
-      $ret.= $this->_export('DTSTAMP',     $this->getDate());
-      $ret.= $this->_export('DTSTART',     $this->getStarts());
-      $ret.= $this->_export('DTEND',       $this->getEnds());
-      $ret.= $this->_export('DESCRIPTION', $this->getDescription());
-      $ret.= $this->_export('SUMMARY',     $this->getSummary());
-      ($this->categories != '') && $ret.= $this->_export('CATEGORIES',  $this->getCategories());
-      $ret.= $this->_export('ORGANIZER',   $this->getOrganizer());
-      $ret.= $this->_export('PRIORITY',    $this->getPriority());
+      $ret= (
+        $this->_export('BEGIN',       'VEVENT').
+        $this->_export('LOCATION',    $this->getLocation()).
+        $this->_export('UID',         $this->getUID()).
+        $this->_export('SEQUENCE',    $this->getSequence(), FALSE).
+        $this->_export('DTSTAMP',     $this->getDate()).
+        $this->_export('DTSTART',     $this->getStarts()).
+        $this->_export('DTEND',       $this->getEnds()).
+        $this->_export('DESCRIPTION', $this->getDescription()).
+        $this->_export('SUMMARY',     $this->getSummary()).
+        $this->_export('CATEGORIES',  $this->getCategories(), FALSE).
+        $this->_export('CLASS',       $this->getClasstype(), FALSE).
+        $this->_export('TRANSP',      $this->getTransp()).
+        $this->_export('ORGANIZER',   $this->getOrganizer(), FALSE).
+        $this->_export('PRIORITY',    $this->getPriority())
+      );
       
       // Append all attendees
       foreach ($this->getAttendees() as $a) {
@@ -298,11 +368,13 @@
       // Append alarm if existant
       // TODO: Encapsulate this into an own class
       if (isset($this->alarm)) {
-        $ret.= $this->_export('BEGIN',       'VALARM');
-        $ret.= $this->_export('ACTION',      $this->alarm['action']);
-        $ret.= $this->_export('DESCRIPTION', $this->alarm['description']);
-        $ret.= $this->_export('TRIGGER',     $this->alarm['trigger']);
-        $ret.= $this->_export('END',         'VALARM');
+        $ret.= (
+          $this->_export('BEGIN',       'VALARM').
+          $this->_export('ACTION',      $this->alarm['action']).
+          $this->_export('DESCRIPTION', $this->alarm['description']).
+          $this->_export('TRIGGER',     $this->alarm['trigger']).
+          $this->_export('END',         'VALARM')
+        );
       }
       
       return $ret.$this->_export ('END', 'VEVENT');
