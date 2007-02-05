@@ -21,11 +21,16 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
         java_throw(env, "javax/script/ScriptException", "unable to start up request - php_request_startup()");
 
     // initialize Turpitude classes
+    zend_first_try {
+
     make_turpitude_environment();
-    make_turpitude_jclass();
-    make_turpitude_jmethod();
-    make_turpitude_jobject();
-    make_turpitude_jarray();
+        make_turpitude_jclass();
+        make_turpitude_jmethod();
+        make_turpitude_jobject();
+        make_turpitude_jarray();
+    } zend_catch {
+        java_throw(env, "net/xp_framework/turpitude/PHPScriptException", LastError.data());
+    } zend_end_try();
 }
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown(JNIEnv *, jobject) {

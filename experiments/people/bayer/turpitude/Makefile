@@ -3,6 +3,7 @@
 ################################################
 JAVA_HOME = /home/nsn/jdk1.6.0
 PHP_HOME = /home/nsn/devel/php/php-5.2.0
+#PHP_HOME = /home/nsn/devel/php/php-hax
 ############################################
 JCC = $(JAVA_HOME)/bin/javac
 JBIN = $(JAVA_HOME)/bin/java

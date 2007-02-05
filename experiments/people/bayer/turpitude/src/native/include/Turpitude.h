@@ -10,6 +10,7 @@
 #include <zend_errors.h>
 #include <zend_compile.h>
 #include <zend_execute.h>
+#include <zend_interfaces.h>
 
 #include <jni.h>
 #include <string>
@@ -20,6 +21,7 @@
 #include "turpitude_jmethod.h"
 #include "turpitude_jobj.h"
 #include "turpitude_jarray.h"
+#include "turpitude_jarray_iterator.h"
 #include "turpitude_zend_utils.h"
 
 /* utility functions */

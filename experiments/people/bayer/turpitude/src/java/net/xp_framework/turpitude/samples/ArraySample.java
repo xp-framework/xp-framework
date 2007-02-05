@@ -56,15 +56,21 @@ public class ArraySample {
         src.append("$method = $class->findMethod('getIntArray', '()[I');");
         src.append("$retval = $instance->javaInvoke($method);");
         src.append("$len = $retval->getLength();");
-        src.append("var_dump($len);");
         src.append("$val = $retval->get(2);");
-        src.append("var_dump($val);");
+        src.append("$retval->set(2, 1337);");
+        src.append("$val = $retval->get(2);");
         src.append("$method = $class->findMethod('getStringArray', '()[Ljava/lang/String;');");
         src.append("$retval = $instance->javaInvoke($method);");
         src.append("$len = $retval->getLength();");
-        src.append("var_dump($len);");
         src.append("$val = $retval->get(2);");
-        src.append("var_dump($val);");
+        src.append("$retval->set(2, 'test');");
+        src.append("$val = $retval->get(2);");
+        src.append("$retval[0] = 'frist';");
+        src.append("var_dump($retval[0]);");
+        src.append("$iterator = $retval->getIterator();");
+        //src.append("foreach($retval as $row) {");
+        //src.append("  var_dump($row);");
+        //src.append("}");
         src.append("?>"); 
         return src.toString();
     }
