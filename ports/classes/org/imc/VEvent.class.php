@@ -355,7 +355,7 @@
         $this->_export('SUMMARY',     $this->getSummary()).
         $this->_export('CATEGORIES',  $this->getCategories(), FALSE).
         $this->_export('CLASS',       $this->getClasstype(), FALSE).
-        $this->_export('TRANSP',      $this->getTransp()).
+        $this->_export('TRANSP',      $this->getTransparency()).
         $this->_export('ORGANIZER',   $this->getOrganizer(), FALSE).
         $this->_export('PRIORITY',    $this->getPriority())
       );
