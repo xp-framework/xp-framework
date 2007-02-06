@@ -149,7 +149,9 @@ und nach vielen weiteren Versuchen wurde auch die Bedeutung der einzelnen Paramt
 Um der Zend-Engine eine Klasse unterzuschieben muss zun"achst ein C-Struct definiert werden das neben einem Struct von Typ
 \emph{zend\_object} namens \emph{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jeden Instanz der Klasse
 vorgehalten. Weiterhin wird ein Array vom Typ \emph{function\_entry[]} ben"otigt, welches die Callbacks - im wesentlichen Funktionspointer
-auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Besonders erw"ahnenswert sind hier die Funktionen f"ur 
+auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Im Gegensatz zu im Userland - in PHP also - implementierte
+Methoden werden diese \emph{built-in functions} genannt.
+Besonders erw"ahnenswert sind hier die Funktionen f"ur 
 \emph{\_\_call}, \emph{\_\_get} und \emph{\_\_set}, \emph{\_\_call} wird bei jedem Methodenaufruf aufgerufen, und erh"alt neben dem
 Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit PHP-Methoden direkt in C zu implementieren. 
 \emph{\_\_get} und \emph{\_\_set} werden bei jedem lesenden beziehungsweise schreibenden Zugriff auf ein nicht gefundenes Attribut des
@@ -405,12 +407,36 @@ zu benutzen. Abbildung \ref{fig:javaseq} soll den Ablauf eines solchen Aufrufes 
 \end{figure}
 
 Eigentlich w"aren zu diesem Zeitpunkt alle Anforderungen an die Bilbiothek erf"ullt, in vielen Bereichen sogar "ubererf"ullt gewesen, aber da w"ahrend
-der Entwicklung festgestellt wurde, dass auch ausserhalb von 1\&1 erhebliches Interesse an Turpitude besteht wurde beschlossen einige Erweiterungen vorzunehmen,
-um Entwicklern ohne intimes Wissen "uber die Bibliothek das Entwickeln mit Turpitude zu vereinfachen.
+der Entwicklung festgestellt wurde, dass sowohl innerhalb als auch auch ausserhalb von 1\&1 erhebliches Interesse an Turpitude besteht wurde beschlossen 
+einige Erweiterungen vorzunehmen, um Entwicklern ohne intimes Wissen "uber die Bibliothek das Entwickeln mit Turpitude zu vereinfachen.
 Zum einen mussten einige Randbedingungen beim Aufrufen von Java-Methoden abgefangen werden, die sonst zu unerwarteten Ergebnisen f"uhren konnten, zum
 anderen sollten Java-Arrays in PHP nicht nur als TurpitudeJavaObject dargestellt werden, sondern es sollte ein intuitiverer Umgang mit ihnen erm"oglicht werden.
 
-TODO: Arrays in Java
+Um Java-Arrays angemessen repr"asentieren zu k"onnen musste 
+allerdings zun"achst eine neue Klasse eingef"uhrt werden, das \emph{TurpitudeJavaArray}. Nach bew"ahrtem Muster wurden dieser Klasse drei Methoden
+gegeben, zum einen \emph{getLength}, die die L"ange des Arrays zur"uckgibt, und zum anderen \emph{get} und \emph{set}, um auf Elemente des Arrays zuzugreifen.
+F"ur den Zugriff auf Java-Arrays bietet das Java Native Interface Funktionen an, die den Inhalt des Arrays in einen zusammenh"angenden Speicherbereich kopieren, die
+dann in C ausgelesen und ver"andert werden k"onnen. Diese "Anderungen k"onnen beim Freigeben der Speicherbereiche entweder verworfen oder gespeichert werden. Da diese
+Funktionen allerdings - wie fast alle JNI-Funktionen - f"ur jeden Typ andere sind, musste das oben beschriebene Parsen von JNI-Typstrings derart erweitert werden,
+dass nicht nur Arrays sondern auch die verschiedenen Typen von Arrays erkannt werden.
+Arrays in PHP sind eigentlich HashMaps, sie k"onnen also nicht nur numerische Werte, sondern jeglichen skalaren Typen als Index haben, folglich mussten
+f"ur alle Zugriffe auf das \emph{TurpitudeJavaArray} Tests eingebaut werden die nur numerische Indices zulassen.
+Somit konnte zwar von PHP aus auf Java-Arrays zugegriffen werden,
+allerdings eben nur mit den beschriebenen Methoden. Ein PHP-Anwender jedoch ist gewohnt mit dem Klammern-Operator [\emph{index}] auf Arrays arbeiten zu k"onnen.
+Damit auf eine Klasse in PHP wie auf ein Array zugegriffen werden kann bietet die Zend-Engine die M"oglichkeit das interne Interface \emph{ArrayAccess} zu
+implementieren, welches auf C-Ebene unter dem Symbol \emph{zend\_ce\_arrayaccess} verf"ugbar ist. Dieses Interface enth"alt die Methoden \emph{offsetGet} und
+\emph{offsetSet} um auf Arrays zuzugreifen, \emph{offsetUnset} um Zeilen aus dem Array zu l"oschen und \emph{offsetExists} um anzuzeigen ob zu einem
+bestimmten Schl"usselwert ein Eintrag vorhanden ist. Die zu implementierenden Methoden wurden als \emph{built-in functions} in das bei der Initialisierung der
+Klasse "ubergebene Funktionsarray eingetragen. Die Implementierung von \emph{offsetUnset} erwies sich als trivial, da aus einem Java-Array keine
+Zeilen gel"oscht werden k"onnen, es wird also lediglich ein PHP-Laufzeitfehler geworfen. Aufrufe von \emph{offsetGet} und \emph{offsetSet} werden lediglich
+an die bereits implementierten Methoden \emph{get} und \emph{set} weitergereicht. 
+\begin{lstlisting}[caption=Zugriff auf ein Java-Array]
+$array = $instance->getStringArray('()[Ljava/lang/String;');
+$length = $array->getLength();
+$val = $array->get(0);
+$array[0] = 'Wert';
+\end{lstlisting}
+TODO: Arrays in Java, arrayaccess, iterator
 
 TODO: Paramcount bei Methodenaufrufen
 
