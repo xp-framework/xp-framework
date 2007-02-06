@@ -22,5 +22,6 @@ typedef struct turpitude_javaarray_object {
 
 void make_turpitude_jarray();
 void make_turpitude_jarray_instance(jarray array, turpitude_java_type type, zval* dest);
+void turpitude_jarray_get(turpitude_javaarray_object* arr, int idx, zval* return_value);
 
 #endif

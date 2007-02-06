@@ -68,9 +68,19 @@ public class ArraySample {
         src.append("$retval[0] = 'frist';");
         src.append("var_dump($retval[0]);");
         src.append("$iterator = $retval->getIterator();");
-        //src.append("foreach($retval as $row) {");
-        //src.append("  var_dump($row);");
-        //src.append("}");
+        src.append("while ($iterator->valid()) {");
+        src.append("    $row = $iterator->current();");
+        src.append("    var_dump($row);");
+        src.append("    $iterator->next();");
+        src.append("}");
+        src.append("$iterator->rewind();");
+        src.append("try {");
+          src.append("foreach($retval as $row) {");
+          src.append("  var_dump($row);");
+          src.append("}");
+        src.append("} catch(Exception $e) {");
+        src.append("  die($e);");
+        src.append("}");
         src.append("?>"); 
         return src.toString();
     }

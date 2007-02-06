@@ -415,10 +415,14 @@ anderen sollten Java-Arrays in PHP nicht nur als TurpitudeJavaObject dargestellt
 Um Java-Arrays angemessen repr"asentieren zu k"onnen musste 
 allerdings zun"achst eine neue Klasse eingef"uhrt werden, das \emph{TurpitudeJavaArray}. Nach bew"ahrtem Muster wurden dieser Klasse drei Methoden
 gegeben, zum einen \emph{getLength}, die die L"ange des Arrays zur"uckgibt, und zum anderen \emph{get} und \emph{set}, um auf Elemente des Arrays zuzugreifen.
-F"ur den Zugriff auf Java-Arrays bietet das Java Native Interface Funktionen an, die den Inhalt des Arrays in einen zusammenh"angenden Speicherbereich kopieren, die
-dann in C ausgelesen und ver"andert werden k"onnen. Diese "Anderungen k"onnen beim Freigeben der Speicherbereiche entweder verworfen oder gespeichert werden. Da diese
+F"ur den Zugriff auf Java-Arrays bietet das Java Native Interface Funktionen an, die den Inhalt des Arrays in einen zusammenh"angenden Speicherbereich kopieren,
+diese Funktionen haben die Signatur \emph{Get$<$Type$>$ArrayElements}. Diese Speicherbereiche k"onnen  dann in C ausgelesen und ver"andert werden. 
+Diese "Anderungen k"onnen beim Freigeben der Speicherbereiche entweder verworfen oder gespeichert werden. Da diese
 Funktionen allerdings - wie fast alle JNI-Funktionen - f"ur jeden Typ andere sind, musste das oben beschriebene Parsen von JNI-Typstrings derart erweitert werden,
-dass nicht nur Arrays sondern auch die verschiedenen Typen von Arrays erkannt werden.
+dass nicht nur Arrays sondern auch die verschiedenen Typen von Arrays erkannt werden. Das Freigeben der Speicherbereiche geschieht mittels der
+Funktionen \emph{Release$<$Type$>$ArrayElements}, deren letzter Parameter angibt ob die "Anderungen "ubernommen oder verworfen werden sollen.
+Eine Ausname zu dieser Regel bilden Arrays von Objekten, auf deren Elemente direkt mittels der Funktionen \emph{GetObjectArrayElement} und
+\emph{SetObjectArrayElement} zugegriffen werden kann.
 Arrays in PHP sind eigentlich HashMaps, sie k"onnen also nicht nur numerische Werte, sondern jeglichen skalaren Typen als Index haben, folglich mussten
 f"ur alle Zugriffe auf das \emph{TurpitudeJavaArray} Tests eingebaut werden die nur numerische Indices zulassen.
 Somit konnte zwar von PHP aus auf Java-Arrays zugegriffen werden,
@@ -436,7 +440,28 @@ $length = $array->getLength();
 $val = $array->get(0);
 $array[0] = 'Wert';
 \end{lstlisting}
-TODO: Arrays in Java, arrayaccess, iterator
+Um dem PHP-Anwender den Umgang mit Java-Arrays weiter zu vereinfachen wurde beschlossen ein weiteres PHP-interne Interface zu implementieren, \emph{IteratorAggregate}.
+Dieses Interface beschreibt eine einzige Methode, \emph{getIterator}, allerdings muss sie ein Objekt zur"uckgeben, das das PHP-Interface \emph{Iterator} implementiert.
+Ist dies der Fall kann der Anwender nicht nur mittels der \emph{Iterator}-Methoden auf dem Array arbeiten, sondern auch mit dem \emph{foreach}-Operator. Nachdem
+das \emph{TurpitudeJavaArray} so ver"aendert wurde dass es zus"atzlich das Interface \emph{IteratorAggregate}, auf C-Ebene unter dem Symbol \emph{zend\_ce\_aggregate}
+zu finden, implementiert wurde also eine weitere Klasse eingef"uhrt, der \emph{TurpitudeJavaArrayIterator}. Ein \emph{Iterator} muss folgende Methoden implementieren:
+\emph{rewind}, \emph{valid}, \emph{key}, \emph{current} und \emph{next}, die alle keinerlei Argumente erwarten, und deren Funktionalit"at sich aus den Namen erschliessen 
+sollte. Intern h"alt der \emph{TurpitudeJavaArrayIterator} neben dem \emph{TurpitudeJavaArray} "uber welces er iterieren soll noch einen Integer vor, der den
+gerade aktuellen Index in das Array speichert. \emph{rewind} setzt diesen Index auf 0 zur"uck, w"ahrend ein Aufruf von \emph{next} ihn um eins erh"oht. \emph{valid} gibt
+genau dann \emph{true} zur"uck wenn der Index gr"o\ss er als 0 und kleiner als die Anzahl der Elemente des Arrays ist. \emph{key} gibt den aktuellen Index, \emph{current}
+das aktuelle Array-Element zur"uck, wozu einfach die \emph{get}-Methode des entsprechenden Arrays aufgerufen wird. Hiernach konnte also in PHP folgenderma\ss en "uber Java-Arrays
+iteriert werden:
+\begin{lstlisting}[caption=Iterieren "uber ein Java-Array]
+$iterator = $array->getIterator();
+while ($iterator->valid()) {
+    $row = $iterator->current();
+    $ley = $iterator->key();
+    printf("key: %d, val: %s\n", $key, $row);
+    $iterator->next();
+}
+\end{lstlisting}
+
+TODO: Arrays in Java, iterator
 
 TODO: Paramcount bei Methodenaufrufen
 

@@ -14,11 +14,12 @@
 #include <string>
 
 typedef struct turpitude_javaarray_iterator_object {
-    zend_object         std;
-    jarray              java_array; 
+    zend_object                   std;
+    turpitude_javaarray_object*   java_array; 
+    int                           index;
 };
 
 void make_turpitude_jarray_iterator();
-void make_turpitude_jarray_iterator_instance(jarray array, zval* dest);
+void make_turpitude_jarray_iterator_instance(turpitude_javaarray_object* array, zval* dest);
 
 #endif

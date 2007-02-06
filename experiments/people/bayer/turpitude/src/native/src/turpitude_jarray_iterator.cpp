@@ -29,54 +29,12 @@ static ZEND_BEGIN_ARG_INFO(turpitude_jarray_iterator_arginfo_set, 0)
 void turpitude_jarray_iterator_construct(INTERNAL_FUNCTION_PARAMETERS) {
 }
 
-void turpitude_jarray_iterator_call(INTERNAL_FUNCTION_PARAMETERS) {
-    //printf("__call called:\n");
-
-
-    zval ***xargv, ***argv;
-    int i = 0, xargc, argc = ZEND_NUM_ARGS();
-    HashPosition pos;
-    zval **param;
-
-    // method name
-    argv = (zval ***) safe_emalloc(sizeof(zval **), argc, 0);
-    if (zend_get_parameters_array_ex(argc, argv) == FAILURE) {
-        php_error(E_ERROR, "Couldn't fetch arguments into array.");
-    }
-    char* method_name = Z_STRVAL_P(*argv[0]);
-
-    // method parameters
-    xargc = zend_hash_num_elements(Z_ARRVAL_PP(argv[1]));
-    xargv = (zval***) safe_emalloc(sizeof(zval **), xargc, 0);
-    // iterate on argument HashTable
-    zend_hash_internal_pointer_reset_ex(Z_ARRVAL_PP(argv[1]), &pos);
-    while (zend_hash_get_current_data_ex(Z_ARRVAL_PP(argv[1]), (void **) &param, &pos) == SUCCESS) {
-        xargv[i++] = param; 
-        zend_hash_move_forward_ex(Z_ARRVAL_PP(argv[1]), &pos);
-    }
-
-    // extract jarray from this pointer
-    zval* myval = getThis();
-    turpitude_javaarray_iterator_object* jarr = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(myval TSRMLS_CC);
-
-    bool method_valid = false;
-
-    // error handling
-    char* errmsg = (char*)emalloc(100 + strlen(method_name));
-    memset(errmsg, 0, 99 + strlen(method_name));
-    if (!method_valid) { 
-        sprintf(errmsg, "Call to invalid method %s() on object of class TurpitudeJavaObject.", method_name);
-        php_error(E_ERROR, errmsg);
-    }
-
-    // housekeeping
-    efree(errmsg);
-    efree(argv);
-    efree(xargv);
-}
-
 void turpitude_jarray_iterator_tostring(INTERNAL_FUNCTION_PARAMETERS) {
     //printf("__tostring called\n");
+}
+
+void turpitude_jarray_iterator_call(INTERNAL_FUNCTION_PARAMETERS) {
+    php_error(E_ERROR, "call to invalid method on instance of TurpitudeJavaArrayIterator");
 }
 
 void turpitude_jarray_iterator_get(INTERNAL_FUNCTION_PARAMETERS) {
@@ -146,16 +104,58 @@ zend_object_value turpitude_jarray_iterator_create_object(zend_class_entry *clas
     return obj;
 }
 
+void turpitude_jarray_iterator_rewind(INTERNAL_FUNCTION_PARAMETERS) {
+    zval *thiz = getThis();
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(thiz TSRMLS_CC);
+    it->index = 0;
+}
+
+void turpitude_jarray_iterator_valid(INTERNAL_FUNCTION_PARAMETERS) {
+    zval *thiz = getThis();
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(thiz TSRMLS_CC);
+
+    ZVAL_BOOL(return_value, !(it->index < 0 || it->index >= it->java_array->array_length));
+}
+
+void turpitude_jarray_iterator_key(INTERNAL_FUNCTION_PARAMETERS) {
+    zval *thiz = getThis();
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(thiz TSRMLS_CC);
+
+    ZVAL_LONG(return_value, it->index);
+}
+
+void turpitude_jarray_iterator_current(INTERNAL_FUNCTION_PARAMETERS) {
+    zval *thiz = getThis();
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(thiz TSRMLS_CC);
+
+    turpitude_jarray_get(it->java_array, it->index, return_value);
+}
+
+void turpitude_jarray_iterator_next(INTERNAL_FUNCTION_PARAMETERS) {
+    zval *thiz = getThis();
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(thiz TSRMLS_CC);
+
+    it->index++;
+}
+
 function_entry turpitude_jarray_iterator_class_functions[] = {
     ZEND_FENTRY(__construct, turpitude_jarray_iterator_construct, NULL, ZEND_ACC_PRIVATE) 
-    ZEND_FENTRY(__call, turpitude_jarray_iterator_call, turpitude_jarray_iterator_arginfo_set, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__tostring, turpitude_jarray_iterator_tostring, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__get, turpitude_jarray_iterator_get, turpitude_jarray_iterator_arginfo_get, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__set, turpitude_jarray_iterator_set, turpitude_jarray_iterator_arginfo_set, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__sleep, turpitude_jarray_iterator_sleep, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__wakeup, turpitude_jarray_iterator_wakeup, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
     ZEND_FENTRY(__destruct, turpitude_jarray_iterator_destruct, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
-    //ZEND_FENTRY(offsetUnset, turpitude_jarray_iterator_offsetUnset, turpitude_jarray_iterator_arginfo_get, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(rewind, turpitude_jarray_iterator_rewind, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(valid, turpitude_jarray_iterator_valid, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(key, turpitude_jarray_iterator_key, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(current, turpitude_jarray_iterator_current, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
+    ZEND_FENTRY(next, turpitude_jarray_iterator_next, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
 
@@ -190,11 +190,10 @@ void make_turpitude_jarray_iterator() {
     turpitude_jarray_iterator_class_entry->create_object = turpitude_jarray_iterator_create_object;
 
     // arrays can be accessed as arrays and can be iterated on
-    //zend_class_implements(turpitude_jarray_iterator_class_entry TSRMLS_CC, 2, zend_ce_arrayaccess, zend_ce_aggregate);
-    zend_class_implements(turpitude_jarray_iterator_class_entry TSRMLS_CC, 1, zend_ce_arrayaccess, zend_ce_aggregate);
+    zend_class_implements(turpitude_jarray_iterator_class_entry TSRMLS_CC, 1, zend_ce_iterator);
 }
 
-void make_turpitude_jarray_iterator_instance(jarray array, zval* dest) {
+void make_turpitude_jarray_iterator_instance(turpitude_javaarray_object* array, zval* dest) {
     if (!dest)
         ALLOC_ZVAL(dest);
 
@@ -204,14 +203,10 @@ void make_turpitude_jarray_iterator_instance(jarray array, zval* dest) {
     dest->refcount = 1;
     dest->is_ref = 1;
 
-    // length
-    int array_len = turpitude_jenv->GetArrayLength(array);
-    if (array_len < 0) 
-        php_error(E_ERROR, "invalid array length: %d", array_len);
-
     // assign jarray to object
     turpitude_javaarray_iterator_object* intern = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(dest TSRMLS_CC);
     intern->java_array = array;
 
+    intern->index = 0;
 }
 
