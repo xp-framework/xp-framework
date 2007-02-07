@@ -25,12 +25,14 @@
         'int'        => DB_ATTRTYPE_INT,
         'bigint'     => DB_ATTRTYPE_NUMERIC,
         'mediumint'  => DB_ATTRTYPE_SMALLINT,
+        'smallint'   => DB_ATTRTYPE_SMALLINT,
         'tinyint'    => DB_ATTRTYPE_TINYINT,
         'datetime'   => DB_ATTRTYPE_DATETIME,
         'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
         'mediumtext' => DB_ATTRTYPE_TEXT,
         'text'       => DB_ATTRTYPE_TEXT,
         'enum'       => DB_ATTRTYPE_ENUM,
+        'decimal'    => DB_ATTRTYPE_DECIMAL
       );
       parent::__construct($conn);
     }
@@ -100,7 +102,7 @@
         // 8 rows in set (0.00 sec)
         $q= $this->conn->query('describe %c', $table);
         while ($record= $q->next()) {
-          preg_match('#^([a-z]+)(\(([0-9]+)\))?#', $record['Type'], $regs);
+          preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
 
           $t->addAttribute(new DBTableAttribute(
             $record['Field'], 
