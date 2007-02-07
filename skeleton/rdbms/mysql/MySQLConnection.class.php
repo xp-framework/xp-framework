@@ -253,7 +253,7 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       if ($this->flags & DB_UNBUFFERED) {
-        $result= mysql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+        $result= mysql_unbuffered_query($sql, $this->handle);
       } else {
         $result= mysql_query($sql, $this->handle);
       }
