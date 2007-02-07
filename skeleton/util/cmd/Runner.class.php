@@ -188,11 +188,11 @@
       $pm= PropertyManager::getInstance();
       $pm->configure($options['config']);
 
-      $cm= ConnectionManager::getInstance();
-      $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
-
       $l= Logger::getInstance();
       $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
+
+      $cm= ConnectionManager::getInstance();
+      $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
 
       $instance= $class->newInstance();
       $instance->out= new StringWriter(new ConsoleOutputStream(STDOUT));
