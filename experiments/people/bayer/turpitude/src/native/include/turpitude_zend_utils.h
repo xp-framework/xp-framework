@@ -23,5 +23,6 @@ extern JNIEnv* turpitude_jenv;
 extern jobject turpitude_current_script_context;
 zval* make_php_class_instance(JNIEnv* env, char* classname);
 void print_HashTable(HashTable* ht);
+void print_zval(zval* val);
 
 #endif

@@ -251,6 +251,11 @@ jobject zval_to_jobject(JNIEnv* env, zval* val) {
                 turpitude_javaclass_object* myclass = (turpitude_javaclass_object*)zend_object_store_get_object(val TSRMLS_CC);
                 return myclass->java_class;
             }
+            if (strcmp(ce->name, "TurpitudeJavaArray") == 0) {
+                turpitude_javaarray_object* myarray = (turpitude_javaarray_object*)zend_object_store_get_object(val TSRMLS_CC);
+                return myarray->java_array;
+            }
+
 
             // allocate class and object
             jstring phpclassname = env->NewStringUTF(ce->name);

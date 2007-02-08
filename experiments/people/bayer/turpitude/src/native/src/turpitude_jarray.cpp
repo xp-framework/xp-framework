@@ -409,7 +409,7 @@ void make_turpitude_jarray_instance(jarray array, turpitude_java_type type, zval
     zend_hash_update(Z_OBJPROP_P(dest), "length", sizeof("length"), (void **) &length, sizeof(zval *), NULL);
 }
 
-void turpitude_jarray_get(turpitude_javaarray_object* arr, int idx, zval* return_value) {
+void turpitude_jarray_get(turpitude_javaarray_object* arr, unsigned long idx, zval* return_value) {
     // check for bounds
     if (idx < 0 || idx >= arr->array_length)
         php_error(E_ERROR, "index out of bounds (0 <= index <= %d, index = %d", arr->array_length, idx);

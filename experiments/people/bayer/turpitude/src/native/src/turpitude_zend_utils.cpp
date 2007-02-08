@@ -48,3 +48,29 @@ void print_HashTable(HashTable* ht) {
     }
 }
 
+void print_zval(zval* val) {
+    switch (Z_TYPE_P(val)) {
+        case IS_LONG: 
+            printf("zval: IS_LONG %d\n",val->value.lval);
+            break; 
+        case IS_DOUBLE:
+            printf("zval: IS_DOUBLE %f\n",val->value.dval);
+            break; 
+        case IS_BOOL: 
+            printf("zval: IS_BOOL %b\n",(val->value.lval)?true:false);
+            break; 
+        case IS_ARRAY: 
+            printf("zval: IS_ARRAY \n");
+            break; 
+        case IS_OBJECT: 
+            printf("zval: IS_OBJECT \n");
+            break; 
+        case IS_CONSTANT:
+        case IS_STRING: 
+            printf("zval: IS_STRING %s \n", val->value.str.val);
+            break; 
+        default:
+            printf("zval: UNKNOWN \n");
+    }
+}
+

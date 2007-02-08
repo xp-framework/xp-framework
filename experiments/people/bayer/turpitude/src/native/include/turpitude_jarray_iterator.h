@@ -16,7 +16,7 @@
 typedef struct turpitude_javaarray_iterator_object {
     zend_object                   std;
     turpitude_javaarray_object*   java_array; 
-    int                           index;
+    unsigned long                 index;
 };
 
 void make_turpitude_jarray_iterator();

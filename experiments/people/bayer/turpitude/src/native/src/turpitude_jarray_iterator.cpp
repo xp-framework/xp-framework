@@ -5,8 +5,6 @@ zend_object_handlers turpitude_jarray_iterator_handlers;
 zend_class_entry* turpitude_jarray_iterator_class_entry;
 zend_object_value turpitude_javaarray_iterator_object_value;
 
-//####################### method handlers ##################################3
-
 //####################### helpers ##################################3
 
 static
@@ -62,11 +60,6 @@ void turpitude_jarray_iterator_destruct(INTERNAL_FUNCTION_PARAMETERS) {
 int turpitude_jarray_iterator_cast(zval *readobj, zval *writeobj, int type TSRMLS_DC) {
     //printf("__cast called\n");
     return FAILURE;
-}
-
-zend_object_iterator* turpitude_jarray_iterator_get_iterator(zend_class_entry *ce, zval *object, int by_ref TSRMLS_DC) {
-    //printf("get_iterator called\n");
-    return NULL;
 }
 
 void turpitude_jarray_iterator_free_object(void *object TSRMLS_DC) {
@@ -143,6 +136,71 @@ void turpitude_jarray_iterator_next(INTERNAL_FUNCTION_PARAMETERS) {
     it->index++;
 }
 
+//####################### zend_object_iterator funcs ##################################3
+
+static void turpitude_iter_dtor(zend_object_iterator* iter TSRMLS_DC) {
+    iter->data = NULL;
+    efree(iter);
+}
+
+static int turpitude_iter_valid(zend_object_iterator *iter TSRMLS_DC) {
+    // extract iterator from this pointer
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)iter->data;
+
+    return (it->index < 0 || it->index >= it->java_array->array_length)?FAILURE:SUCCESS;
+}
+
+static void turpitude_iter_get(zend_object_iterator *iter, zval ***data TSRMLS_DC) {
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)iter->data;
+    zval* dataptr = NULL;
+    MAKE_STD_ZVAL(dataptr);
+    turpitude_jarray_get(it->java_array, it->index, dataptr);
+    *data = &dataptr;
+}
+
+static int turpitude_iter_get_key(zend_object_iterator *iter, char** str_key, uint* str_key_len, ulong* int_key TSRMLS_DC) {
+    printf("iter get key\n");
+    //turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)iter->data;
+    //printf("iter get key\n");
+    //*str_key = NULL;
+    //*str_key_len = 0;
+    //*int_key = it->index;
+    printf("iter get key %d\n", *int_key);
+    return HASH_KEY_IS_LONG;
+}
+
+static void turpitude_iter_move_forwards(zend_object_iterator* iter TSRMLS_DC) {
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)iter->data;
+    it->index++;
+}
+
+static void turpitude_iter_rewind(zend_object_iterator *iter TSRMLS_DC) {
+    turpitude_javaarray_iterator_object* it = (turpitude_javaarray_iterator_object*)iter->data;
+    it->index = 0;
+}
+
+static zend_object_iterator_funcs turpitude_iter_funcs = {
+    turpitude_iter_dtor,
+    turpitude_iter_valid,
+    turpitude_iter_get,
+    //turpitude_iter_get_key,
+    NULL,
+    turpitude_iter_move_forwards,
+    turpitude_iter_rewind
+};
+
+zend_object_iterator* turpitude_jarray_iterator_get_iterator(zend_class_entry *ce, zval *object, int by_ref TSRMLS_DC) {
+    //printf("get_iterator called\n");
+    zend_object_iterator* it = (zend_object_iterator*)emalloc(sizeof(zend_object_iterator));
+
+    turpitude_javaarray_iterator_object* arrayit = (turpitude_javaarray_iterator_object*)zend_object_store_get_object(object TSRMLS_CC);
+
+    it->data = arrayit;
+    it->funcs = &turpitude_iter_funcs;
+
+    return it;
+}
+
 function_entry turpitude_jarray_iterator_class_functions[] = {
     ZEND_FENTRY(__construct, turpitude_jarray_iterator_construct, NULL, ZEND_ACC_PRIVATE) 
     ZEND_FENTRY(__tostring, turpitude_jarray_iterator_tostring, turpitude_jarray_iterator_arginfo_zero, ZEND_ACC_PUBLIC)
@@ -174,7 +232,6 @@ void make_turpitude_jarray_iterator() {
     make_lambda(&get, turpitude_jarray_iterator_get);
     make_lambda(&set, turpitude_jarray_iterator_set);
 
-    //zend_hash_init_ex(&(ce.function_table), 0, NULL, ZEND_FUNCTION_DTOR, 1, 0);
     INIT_OVERLOADED_CLASS_ENTRY(ce, 
                                 "TurpitudeJavaArrayIterator", 
                                 turpitude_jarray_iterator_class_functions, 
