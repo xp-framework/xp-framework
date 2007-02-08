@@ -22,11 +22,13 @@
     public function __construct($conn) {
       $this->map= array(
         'varchar'    => DB_ATTRTYPE_VARCHAR,
+        'char'       => DB_ATTRTYPE_CHAR,
         'int'        => DB_ATTRTYPE_INT,
         'bigint'     => DB_ATTRTYPE_NUMERIC,
         'mediumint'  => DB_ATTRTYPE_SMALLINT,
         'smallint'   => DB_ATTRTYPE_SMALLINT,
         'tinyint'    => DB_ATTRTYPE_TINYINT,
+        'date'       => DB_ATTRTYPE_DATE,
         'datetime'   => DB_ATTRTYPE_DATETIME,
         'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
         'mediumtext' => DB_ATTRTYPE_TEXT,
