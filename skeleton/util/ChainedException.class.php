@@ -70,7 +70,7 @@
 
         // Output uncommon elements only and one line how many common elements exist!
         for ($i= 0; $i < $cc; $i++) {
-          $s.= $this->cause->trace[$i]->toString(); 
+          $s.= xp::stringOf($this->cause->trace[$i]); 
         }
         if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
         
