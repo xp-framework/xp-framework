@@ -33,6 +33,7 @@
   define('DB_ATTRTYPE_VARBINARY',      0x001A);        
   define('DB_ATTRTYPE_VARCHAR',        0x001B);          
   define('DB_ATTRTYPE_ENUM',           0x001C);          
+  define('DB_ATTRTYPE_DATE',           0x001D);
   
   /**
    * Represents a table's attribute
@@ -142,7 +143,8 @@
         'DB_ATTRTYPE_TINYINT',   
         'DB_ATTRTYPE_VARBINARY', 
         'DB_ATTRTYPE_VARCHAR',
-        'DB_ATTRTYPE_ENUM'
+        'DB_ATTRTYPE_ENUM',
+        'DB_ATTRTYPE_DATE'
       );
       return $map[$this->type];
     }
@@ -161,6 +163,7 @@
         case DB_ATTRTYPE_DATETIMN:  
         case DB_ATTRTYPE_TIMESTAMP:
         case DB_ATTRTYPE_SMALLDATETIME:
+        case DB_ATTRTYPE_DATE:
           return 'util.Date';
           
         case DB_ATTRTYPE_BINARY:
