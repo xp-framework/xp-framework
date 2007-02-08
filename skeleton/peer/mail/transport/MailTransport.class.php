@@ -77,7 +77,7 @@
       
       // Copy message and unset To / Subject. PHPs mail() function will add them
       // to the mail twice, otherwise
-      $tmp= $message;
+      $tmp= clone $message;
       unset($tmp->to);
       unset($tmp->subject);
       
