@@ -287,6 +287,7 @@
     public function getOrganizer() {
       return $this->organizer;
     }
+
     
     /**
      * Set Priority
@@ -333,8 +334,14 @@
           "\n"  => '\n'
         ));
       }
-
-      return $key.':'.$representation."\r\n";
+      
+      if ((!is_object($value)) && !($value instanceof Date) && strstr($value, '=')) {
+      
+        return $key.';'.$representation."\r\n";
+      
+      } else {
+          return $key.':'.$representation."\r\n";
+      }
     }
     
     /**
@@ -350,7 +357,7 @@
         $this->_export('SEQUENCE',    $this->getSequence(), FALSE).
         $this->_export('DTSTAMP',     $this->getDate()).
         $this->_export('DTSTART',     $this->getStarts()).
-        $this->_export('DTEND',       $this->getEnds()).
+        $this->_export('DTEND',       $this->getEnds(), FALSE).
         $this->_export('DESCRIPTION', $this->getDescription()).
         $this->_export('SUMMARY',     $this->getSummary()).
         $this->_export('CATEGORIES',  $this->getCategories(), FALSE).
