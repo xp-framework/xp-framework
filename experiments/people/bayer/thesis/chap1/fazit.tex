@@ -1,18 +1,43 @@
 % ********** Chapter 1 **********
-
 \section{Fazit}
 \label{sec:chap1:fazit}
 
-TODO:
-was sollte gemacht werden? was wurde gemacht? wie wurde es gemacht?
-wurde das Ziel erreicht?
-Benutzung Turpitude \ref{sec:app1}
-Turpitude nicht benutzen um non-trustworthy code auszufuehren, aber das sollte man
-sowieso nicht machen...
-ini-parameter: php-ini-path per evironment setzen, interface unnoetig
+Im Laufe dieses Kapitels wurde eine m"achtige Bibliothek entwickelt, die nicht nur das Ausf"uhren von
+PHP-Skripten aus einer Java-Laufzeitumgebung heraus erm"oglicht, sondern viel weiter geht und die beiden
+Programmiersprachen eng miteinander verbindet. Dem PHP-Entwickler wird die M"oglichkeit geboten den
+vollen Funktionsumfang von Java inklusive aller verf"ugbaren Java-Bibliotheken zu nutzen, Objekte zu erzeugen,
+auf deren Felder und Methoden zuzugreifen und diese auf intuitive und einfache Weise in PHP zu nutzen.
+Der Java-Entwickler kann PHP-Skripte nicht nur ausf"uhren und ihnen Daten "ubergeben und von ihnen erzeugte
+Daten zur"uckzuerhalten, er kann nicht nur gezielt Funktionen und Methoden innerhalb eines PHP-Skriptes
+aufrufen, sondern er kann sogar Java-Interfaces direkt in PHP implementieren, oder bereits bestehende PHP-Klassen
+in ein Java-Interface wrappen und transparent mit ihnen wie mit jedem anderen Java-Objekt umgehen.
 
-Schmerzen mit Zend:
-\begin{lstlisting}[caption=lustiges Beispiel f"ur Zend-Code]
+Dieser Funktionsumfang macht Turpitude einzigartig. Es existieren zwar zwei "'Konkurrenzprodukte"' auf dem
+Markt - die JSR223-Implementation von Zend und die PHP/Java-Bridge \cite{BRIDGEHP} - allerdings implementieren
+beide weder den vollen Umfang des JSR223, noch halten sie die aktuelle Spezifikation ein. Weiterhin ist die
+Zend-Implementation nicht Quelloffen, sprich es ist einem Anwender nicht m"oglich ein eigenes PHP in Java
+zu benutzen, mit allen Extensions die er braucht, und es ist ebenfalls unm"oglich sie auf nicht explizit
+unterst"utzten Plattformen einzusetzen. Die PHP/Java-Bridge ist zwar im Quelltext verf"ugbar, aber sie
+benutzt eine TCP-Verbindung um mit einer laufenden Java-Umgebung zu kommunizieren. Diese Kommunikation
+ist basiert ausserdem noch auf XML, die Nachteile einer solchen Kommunikation wurden in Kapitel \ref{sec:background}
+hinl"anglich beschrieben.
+
+Somit wurden alle am Anfang des Kapitels gesteckten Ziele nicht nur erreicht sondern in vielen F"allen sogar
+"ubererf"ullt.
+
+Die Implementation der Bibliothek selbst wurde haupts"achlich durch zwei Faktoren erschwert:\\
+Zum einen ist die JSR223-Spezifikation in vielen Detailfragen nur "au\ss erst ungenau und erscheint ausserdem
+in einigen Bereichen etwas undurchdacht. Dies lies sich allerdings in den meisten F"allen durch eine
+angemessene Portion Pragmatismus sehr schnell und zur Zufriedenheit Aller l"osen. Deutlich mehr Zeit
+kostete die Mangelhafte Dokumentation der Zend-Engine. Viele Probleme konnten nur durch langwieriges
+Ausprobieren und das Lesen des Zend-Quelltextes gel"ost werden, was oft zu unn"otigen Verz"ogerungen 
+des Projektes f"uhrte. Abgesehen von den veralteten und nicht gepflegten Dokumentationsbruchst"ucken
+auf der PHP-Seite \cite{PHPHP} war die einzig wirklich hilfreiche "'Dokumentation"' die, die durch das Programm
+\emph{LXR} (siehe \cite{LXRHP}) erzeugt wird und unter \cite{PHPLXR} verf"ugbar ist. Der Quelltext
+von PHP selbst stellt weitere Herausforderungen, so ist er nur sehr unzureichend kommentiert, und verwendet
+einige eher "'interesante"' Konzepte. Das verdeutlichen am Besten einige Beispiele, zum einen die 
+Implementierung einer verketteten Liste:
+\begin{lstlisting}[caption=Verkettete Liste im Zend-Code]
 typedef struct _zend_llist_element {
     struct _zend_llist_element *next;
     struct _zend_llist_element *prev;
@@ -23,17 +48,40 @@ zend_llist_element *le;
 ...
 opline_ptr = (zend_op *)le->data;
 \end{lstlisting}
-
+Hier wird genau ein Byte Speicher reserviert, es werden allerdings Pointer an diese Stelle geschrieben,
+die mindestens vier Bytes lang sind - ein Voidpointer w"are vielleicht passender gewesen.
+Zum anderen noch ein Ausschnitt aus der de-serialisierungsroutine. Hier wurden zwar Kommentare
+verwendet, allerdings zeugen sie an dieser Stelle nicht unbedingt von einer guten Organisation:
 \begin{lstlisting}[caption=lustiges Beispiel f"ur Zend-Code]
 yy13:   ++YYCURSOR;
     goto yy14;
 yy14:
 {
     /* this is the case where we have less data than planned */
-    php_error_docref(NULL TSRMLS_CC, E_NOTICE, "Unexpected end of serialized data");
+    php_error_docref(
+        NULL TSRMLS_CC, 
+        E_NOTICE, 
+        "Unexpected end of serialized data");
     return 0; /* not sure if it should be 0 or 1 here? */
 }
- 
 \end{lstlisting}
+
+
+TODO:
+was sollte gemacht werden? was wurde gemacht? wie wurde es gemacht?
+wurde das Ziel erreicht?
+Benutzung Turpitude \ref{sec:app1}
+Turpitude nicht benutzen um non-trustworthy code auszufuehren, aber das sollte man
+sowieso nicht machen...
+ini-parameter: php-ini-path per evironment setzen, interface unnoetig
+
+Schmerzen mit Zend:
+
+
+Im Laufe der Implementation wurde deutlich dass eine - im Gegensatz zur urspr"unglichen Planung - vollst"andige
+Implementation des JSR223 dem Unternehmen und der Abteilung viele Vorteile bringen w"urde, weswegen
+deutlich mehr Zeit in die Entwicklung der Bibliothek investiert als eigentlich geplant. Dies f"uhrte nun
+dazu dass f"ur den Rest der Aufgabe deutlich weniger Zeit zur Verf"ugung stand, weswegen dort an
+Umfang gek"urzt werden musste.
 
 % ********** End of chapter **********

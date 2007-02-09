@@ -99,7 +99,6 @@ TurpitudeJavaArray & jarray & jarray\\
 \end{tabular}
 \end{table}
 
-
 Die Eingabe von Daten aus Java heraus in ein PHP-Skript geschieht - gem"a\ss der JSR223-Spezifikation - mittels des Kontextes der
 ScriptEngine. Hierzu wird dieser - zusammen mit einigen Umgebungsvariablen und -Informationen - in eine globale Variable injiziert,
 deren Name sich in der ScriptEngine setzen l"asst. Im Unterschied zu den oben beschriebenen R"uckgabewerten stellen die Kontext-Objekte
@@ -191,7 +190,28 @@ Klasse eingef"uhrt werden, um diesen Fall abzudecken:
 
 \textbf{TurpitudeJavaArray} - erlaubt den direkten Zugriff auf Elemente eines Java-Arrays in PHP. Allerdings werden keine neuen Eintr"age
 erzeugt werden k"onnen, da Java-Arrays - anders als PHP-Arrays - nicht als HashMap, sondern als "'echte"' Arrays im Speicher abgebildet
-sind, und eine Erweiterung dieses Bereiches nicht ohne weiteres m"oglich ist.
+sind, und eine Erweiterung dieses Bereiches nicht ohne weiteres m"oglich ist. Der Zugriff auf diese Arrays soll nicht nur "uber 
+Funktionen wie \emph{get()} und \emph{set()}, sondern auch "uber den Klammern-Operator [ ] m"oglich sein, um den Anwender einen
+intuitiven Umgang mit ihnen zu bieten. Ausserdem soll das iterieren "uber Java-Arrays sowohl "uber die objektorientierte, in PHP5
+enthaltene Schnittstelle \emph{Iterator}, als auch "uber den normalen PHP-Operator \emph{foreach} m"oglich sein. Das
+\emph{TurpitudeJavaArray} implementiert das PHP-Interface \emph{IteratorAggregate}.
+
+\textbf{TurpitudeJavaArrayIterator} - erlaubt das Iterieren "uber Java-Arrays in PHP. Der \emph{TurpitudeJavaArrayIterator} implementiert
+das PHP-Interface \emph{Iterator} um das objektorientierte Iterieren "uber Java-Arrays zu erm"oglichen. Intern wird die aktuelle
+Position im Array in einer einfachen Z"ahlvariable gespeichert, wird diese gr"o\ss er oder gleich der L"ange des Java-Arrays wird der
+Iterator "'invalid"' und muss mittels \emph{rewind()} zur"uckgesetzt werden. \emph{next()} setzt diesen Z"ahler um eins hoch, die Methoden
+\emph{current()} und \emph{key()} liefern das aktuelle Element beziehungsweise die aktuelle Position.
+
+Der Zusammenhang zwischen Java-Arrays, den Turpitude-Klassen und PHP-Interfaces ist in der Abbilding \ref{fig:javaarrays} dargestellt.
+Das von Java bereitgestellte Array wird in PHP als \emph{TurpitudeJavaArray} dargestellt, wird bei diesem die Methode
+\emph{getIterator()} aufgerufen wird ein \emph{TurpitudeJavaArrayIterator} erzeugt, der intern eine Referenz auf das \emph{TurpitudeJavaArray}
+vorh"alt. 
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{chap1/img/javaarrays.png}
+\caption{Java-Arrays in PHP}
+\label{fig:javaarrays}
+\end{figure}
 
 Ein typischer Ablauf eines PHP-Skriptes, welches auf Java-Objekte und Methoden zugreift, soll wie in Abbildung \ref{fig:phpseq} aufgezeigt 
 aussehen:
