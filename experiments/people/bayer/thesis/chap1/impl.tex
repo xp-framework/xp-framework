@@ -460,11 +460,20 @@ while ($iterator->valid()) {
     $iterator->next();
 }
 \end{lstlisting}
-
-TODO: Arrays in Java, iterator
-
-TODO: Paramcount bei Methodenaufrufen
-
-TODO: getInterface :: check return types
+Laut Zend-Dokumentation sollte es eigentlich so sein, dass man "uber alle Objekte die entweder \emph{Iterator} oder \emph{IteratorAggregate} implementieren zus"atzlich mit
+dem \emph{foreach}-Operator itererieren k"onnen sollte. Dies stimmt wohl auch f"ur im Userland geschriebene Klassen, allerdings verursachte der Versuch auf diese Weise
+"uber \emph{TurpitudeJavaArray} oder \emph{TurpitudeJavaArrayIterator} Objekte lediglich Abst"urze und Fehlermeldungen. Nach langem lesen von Zend-Quelltext
+wurde entdeckt, dass jeder \emph{zend\_class\_entry} ein Feld enth"alt, in dem ein Pointer auf eine Funktion gespeichert wird, die wiederum einen Pointer auf ein Struct vom Typ
+\emph{zend\_object\_iterator} zur"uckgeben muss. Solch ein Struct besteht im Wesentlichen aus einem Voidpointer (\emph{void*}), in dem Daten gespeichert werden k"onnen, und
+einem Pointer auf ein weiteres Struct, welches die Iteratorfunktionen enthalten muss. Folglich m"ussen interne Klassen nicht nur die Methoden implementieren mit denen der
+Benutzer umgeht, sondern zus"atzlich noch Funktionen die die Zend-Engine benutzt um mit \emph{foreach} "uber die Objekte zu iterieren. Nachdem sowohl die interne
+\emph{get\_iterator} Funktion als auch die internen Iteratorfunktionen, die fast eins-zu-eins Kopien der bereits implementierten Iteratormethoden sind - geschrieben waren
+konnte nun auch mit dem \emph{foreach}-Operator auf Java-Arrays zugegriffen werden:
+\begin{lstlisting}[caption=Java-Array und foreach]
+$iterator = $array->getIterator();
+foreach ($iterator as $key => $val) {
+    printf("key: %d, val: %s\n", $key, $row);
+}
+\end{lstlisting}
 
 % ********** End of chapter **********
