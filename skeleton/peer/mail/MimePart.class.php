@@ -215,6 +215,24 @@
     }
   
     /**
+     * Set Charset
+     *
+     * @param   string charset
+     */
+    public function setCharset($charset) {
+      $this->charset= $charset;
+    }
+
+    /**
+     * Get Charset
+     *
+     * @return  string
+     */
+    public function getCharset() {
+      return $this->charset;
+    }
+
+    /**
      * Get part body.
      *
      * @param   decode default FALSE
