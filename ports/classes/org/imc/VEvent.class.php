@@ -125,7 +125,7 @@
     public function getStarts() {
       return $this->starts;
     }
-    
+
     /**
      * Set Class type
      *
@@ -288,7 +288,6 @@
       return $this->organizer;
     }
 
-    
     /**
      * Set Priority
      *
@@ -323,7 +322,7 @@
       } else if (is_object($value)) {
         foreach (get_object_vars($value) as $pkey => $pvalue) {
           if ('_value' == $pkey) continue;
-          
+
           // Append parameters
           $key.= ';'.strtoupper($pkey).'='.$pvalue;
         }
@@ -334,8 +333,8 @@
           "\n"  => '\n'
         ));
       }
-      
-      if ((!is_object($value)) && !($value instanceof Date) && strstr($value, '=')) {
+
+      if ((!is_object($value)) && strstr($value, '=')) {
       
         return $key.';'.$representation."\r\n";
       
@@ -343,7 +342,7 @@
           return $key.':'.$representation."\r\n";
       }
     }
-    
+
     /**
      * Returns the string representation of this event
      *
