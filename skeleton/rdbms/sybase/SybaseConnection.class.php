@@ -90,7 +90,7 @@
         throw(new SQLStatementFailedException(
           'Cannot select database: '.trim(sybase_get_last_message()),
           'use '.$db,
-          array_pop(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
+          current(sybase_fetch_row(sybase_query('select @@error', $this->handle)))
         ));
       }
       return TRUE;
@@ -251,7 +251,7 @@
         throw(new SQLStatementFailedException(
           'Statement failed: '.trim(sybase_get_last_message()), 
           $sql,
-          array_pop(sybase_fetch_row($error))
+          current(sybase_fetch_row($error))
         ));
       }
       

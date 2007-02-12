@@ -86,7 +86,7 @@
       // - See: http://bugs.mysql.com/bug.php?id=10214
       // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
       // "modes is a list of different modes separated by comma (,) characters."
-      $modes= array_flip(explode(',', array_pop(mysql_fetch_row(mysql_query(
+      $modes= array_flip(explode(',', current(mysql_fetch_row(mysql_query(
         'show variables like "sql_mode"', 
         $this->handle
       )))));
