@@ -13,8 +13,6 @@
   
   define('DATA_PASSIVE',    0x0001);
   define('DATA_ACTIVE',     0x0002);
-  define('TYPE_ASCII',      'A');
-  define('TYPE_BINARY',     'I');
   define('STRU_FILE',       'F');
   define('STRU_RECORD',     'R');
   define('STRU_PAGE',       'P');
@@ -69,6 +67,7 @@
      */
     public function checkInterceptors($event, $entry, $method) {
       if (!$this->interceptors) return TRUE;
+      
     
       // Check each interceptors an it's conditions
       foreach ($this->interceptors as $intercept) {
@@ -84,7 +83,7 @@
             $this->sessions[$event->stream->hashCode()],
             $entry
           );
-        } catch (Exception $e) {
+        } catch (XPException $e) {
           $this->answer($event->stream, 550, 'Intercepted: '.$e->getMessage());
           return FALSE;
         }
