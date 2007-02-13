@@ -13,13 +13,6 @@
   interface StorageEntry {
 
     /**
-     * Constructor
-     *
-     * @return  string uri
-     */
-    public function __construct($uri);
-
-    /**
      * Deletes an entry
      *
      * @return  bool TRUE to indicate success
