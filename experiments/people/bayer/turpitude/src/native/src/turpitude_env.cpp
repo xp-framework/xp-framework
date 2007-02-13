@@ -34,6 +34,8 @@ void turpitude_env_method_throw_new(int xargc, zval*** xargv, zval* return_value
 }
 
 void turpitude_env_method_throw(int xargc, zval*** xargv, zval* return_value) {
+    TSRMLS_FETCH();
+
     // check param count
     if (xargc != 1) 
         php_error(E_ERROR, "invalid number of arguments to method throw.");
@@ -54,6 +56,8 @@ void turpitude_env_method_throw(int xargc, zval*** xargv, zval* return_value) {
 }
 
 void turpitude_env_method_instanceof(int xargc, zval*** xargv, zval* return_value) {
+    TSRMLS_FETCH();
+
     if (xargc != 2) 
         php_error(E_ERROR, "invalid number of arguments to method instanceOf.");
 
@@ -291,6 +295,7 @@ function_entry turpitude_env_class_functions[] = {
  * creates the Turpitude Class and injects it into the interpreter
  */
 void make_turpitude_environment() {
+    TSRMLS_FETCH();
 
     // create class entry
     zend_class_entry* parent;

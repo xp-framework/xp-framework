@@ -349,6 +349,8 @@ function_entry turpitude_jarray_class_functions[] = {
  * creates the TurpitudeJavaArray class and injects it into the interpreter
  */
 void make_turpitude_jarray() {
+    TSRMLS_FETCH();
+
     // create class entry
     zend_class_entry* parent;
     zend_class_entry ce;
@@ -379,6 +381,8 @@ void make_turpitude_jarray() {
 }
 
 void make_turpitude_jarray_instance(jarray array, turpitude_java_type type, zval* dest) {
+    TSRMLS_FETCH();
+
     if (!dest)
         ALLOC_ZVAL(dest);
 

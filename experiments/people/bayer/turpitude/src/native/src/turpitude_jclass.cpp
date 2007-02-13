@@ -49,6 +49,8 @@ void turpitude_jclass_method_findConstructor(turpitude_javaclass_object* cls, in
 }
 
 void turpitude_jclass_method_invokestatic(turpitude_javaclass_object* jclass, int xargc, zval*** xargv, zval* return_value) {
+     TSRMLS_FETCH();
+
     // check param count
     if (xargc < 1) 
         php_error(E_ERROR, "invalid number of arguments to method invokeStatic.");
@@ -152,6 +154,8 @@ void turpitude_jclass_method_invokestatic(turpitude_javaclass_object* jclass, in
 }
 
 void turpitude_jclass_method_create(turpitude_javaclass_object* cls, zval* turpcls, int xargc, zval*** xargv, zval* return_value) {
+    TSRMLS_FETCH();
+
     // check param count
     if (xargc < 1) 
         php_error(E_ERROR, "invalid number of arguments to method create.");
@@ -368,6 +372,8 @@ function_entry turpitude_jclass_class_functions[] = {
  * creates the Turpitude JavaClass and injects it into the interpreter
  */
 void make_turpitude_jclass() {
+    TSRMLS_FETCH();
+
     // create class entry
     zend_class_entry* parent;
     zend_class_entry ce;
@@ -393,6 +399,8 @@ void make_turpitude_jclass() {
 }
 
 void make_turpitude_jclass_instance(char* classname, zval* dest) {
+    TSRMLS_FETCH();
+
     if (!dest)
         ALLOC_ZVAL(dest);
     

@@ -8,6 +8,8 @@
 
 
 JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(JNIEnv* env, jobject jc) {
+    TSRMLS_FETCH();
+
     //make sure php info outputs plain text
     turpitude_sapi_module.phpinfo_as_text= 1;
     //start up sapi

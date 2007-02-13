@@ -4,6 +4,8 @@ JNIEnv* turpitude_jenv;
 jobject turpitude_current_script_context;
 
 zval* make_php_class_instance(JNIEnv* env, char* classname) {
+    TSRMLS_FETCH();
+
     zend_class_entry **pce;
 
     if (zend_lookup_class(classname, strlen(classname), &pce TSRMLS_CC) == FAILURE) {

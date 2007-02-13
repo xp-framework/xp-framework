@@ -43,6 +43,8 @@ zval* getZvalPtr(JNIEnv* env, jobject self) {
 
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_execute(JNIEnv* env, jobject self, jobject ctx) {
+    TSRMLS_FETCH();
+
     zend_op_array* compiled_op_array = getOpArrayPtr(env, self);
 
     zval* retval_ptr = NULL;
@@ -90,6 +92,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
 }
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nativeInvokeFunction(JNIEnv* env, jobject thiz, jstring name, jobjectArray args) {
+    TSRMLS_FETCH();
+
     zend_op_array* compiled_op_array = getOpArrayPtr(env, thiz);
 
     const char* methodName= env->GetStringUTFChars(name, 0);
@@ -146,6 +150,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
 }
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nativeInvokeMethod(JNIEnv* env, jobject thiz, jobject phpobj, jstring name, jobjectArray args) {
+    TSRMLS_FETCH();
+
     zend_op_array* compiled_op_array = getOpArrayPtr(env, thiz);
     zval* objectptr = getZvalPtr(env, phpobj);
 
@@ -203,6 +209,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
 }
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_createInstance(JNIEnv* env, jobject self, jstring name) {
+    TSRMLS_FETCH();
+
     int str_len = env->GetStringLength(name)+1;
     char* classname = (char*)emalloc(env->GetStringLength(name)+1);
     strncpy(classname, env->GetStringUTFChars(name, false), str_len);

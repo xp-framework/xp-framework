@@ -167,6 +167,8 @@ function_entry turpitude_jmethod_class_functions[] = {
  * creates the TurpitudeJavaMethod class and injects it into the interpreter
  */
 void make_turpitude_jmethod() {
+    TSRMLS_FETCH();
+
     // create class entry
     zend_class_entry* parent;
     zend_class_entry ce;
@@ -192,6 +194,8 @@ void make_turpitude_jmethod() {
 }
 
 void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* dest, bool is_static) {
+    TSRMLS_FETCH();
+
     if (!dest)
         ALLOC_ZVAL(dest);
   

@@ -9,6 +9,8 @@ zend_object_value turpitude_jobject_object_value;
 //####################### method handlers ##################################3
 
 void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int xargc, zval*** xargv, zval* return_value) {
+    TSRMLS_FETCH();
+
     // check param count
     if (xargc < 1) 
         php_error(E_ERROR, "invalid number of arguments to method javaInvoke.");
@@ -407,6 +409,8 @@ function_entry turpitude_jobject_class_functions[] = {
  * creates the TurpitudeJavaObject class and injects it into the interpreter
  */
 void make_turpitude_jobject() {
+    TSRMLS_FETCH();
+
     // create class entry
     zend_class_entry* parent;
     zend_class_entry ce;
@@ -432,6 +436,8 @@ void make_turpitude_jobject() {
 }
 
 void make_turpitude_jobject_instance(jclass cls, zval* turpcls, jobject obj, zval* dest) {
+    TSRMLS_FETCH();
+
     if (!dest)
         ALLOC_ZVAL(dest);
 
