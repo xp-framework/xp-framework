@@ -77,5 +77,45 @@
         $this->assertEquals('No, please don\'t!', $cancel->getCaption());
       }
     }
+    
+    /**
+     * Test pass attribute when used with scalar results, e.g.
+     *
+     * #[@xmlmapping(element= 'flags', pass= array(count(.)))]
+     */
+    #[@test]
+    public function usingPassWithScalars() {
+      $dialog= Unmarshaller::unmarshal('
+        <dialogtype id="">
+          <flags>ON_TOP|MODAL</flags>
+        </dialogtype>', 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType') &&
+      $this->assertEquals(array('ON_TOP', 'MODAL'), $dialog->getFlags());
+    }
+    
+    /**
+     * Test pass attribute when used with nodeset results, e.g.
+     *
+     * #[@xmlmapping(element= 'option', pass= array('@name'))]
+     */
+    #[@test]
+    public function usingPassWithNodes() {
+      $dialog= Unmarshaller::unmarshal('
+        <dialogtype id="">
+          <options>
+            <option name="width" value="100"/>
+            <option name="height" value="100"/>
+          </options>
+        </dialogtype>', 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType') &&
+      $this->assertEquals(array(
+        'width' => '100',
+        'height' => '100'
+      ), $dialog->getOptions());
+    }
   }
 ?>

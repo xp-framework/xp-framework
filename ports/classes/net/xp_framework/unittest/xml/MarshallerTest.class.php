@@ -46,6 +46,8 @@
       $this->assertXmlEquals('
         <dialogtype id="file.open">
           <caption/>
+          <flags/>
+          <options/>
         </dialogtype>', 
         Marshaller::marshal($dialog)
       );
@@ -63,6 +65,8 @@
       $this->assertXmlEquals('
         <dialogtype id="">
           <caption>Open a file &gt; Choose</caption>
+          <flags/>
+          <options/>
         </dialogtype>', 
         Marshaller::marshal($dialog)
       );
@@ -91,6 +95,8 @@
           <caption>Really delete the file &quot;Ü&quot;?</caption>
           <button id="ok">Yes, go ahead</button>
           <button id="cancel">No, please don\'t!</button>
+          <flags/>
+          <options/>
         </dialogtype>', 
         Marshaller::marshal($dialog)
       );
@@ -106,6 +112,8 @@
       $this->assertXmlEquals('
         <dialogtype id="">
           <caption/>
+          <flags/>
+          <options/>
         </dialogtype>', 
         Marshaller::marshal($dialog)
       );

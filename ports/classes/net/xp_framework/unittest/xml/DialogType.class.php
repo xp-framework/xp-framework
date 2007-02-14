@@ -18,7 +18,9 @@
     public
       $id       = '',
       $caption  = '',
-      $buttons  = NULL;
+      $buttons  = NULL,
+      $flags    = array(),
+      $options  = array();
 
     /**
      * Constructor
@@ -116,6 +118,44 @@
     #[@xmlfactory(element= 'button')]
     public function getButtons() {
       return $this->buttons;
+    }
+    
+    /**
+     * Set flags
+     *
+     */
+    #[@xmlmapping(element= 'flags', pass= array('substring-before(., "|")', 'substring-after(., "|")'))]
+    public function setFlags($flag1, $flag2) {
+      $this->flags= array($flag1, $flag2);
+    }
+    
+    /**
+     * Get flags
+     *
+     * @return array
+     */
+    #[@xmlfactory(element= 'flags')]
+    public function getFlags() {
+      return $this->flags;
+    }
+    
+    /**
+     * Set options
+     *
+     */
+    #[@xmlmapping(element= 'options/option', pass= array('@name', '@value'))]
+    public function setOptions($name, $value) {
+      $this->options[$name]= $value;
+    }
+    
+    /**
+     * Get options
+     *
+     * @return array
+     */
+    #[@xmlfactory(element= 'options')]
+    public function getOptions() {
+      return $this->options;
     }
   }
 ?>
