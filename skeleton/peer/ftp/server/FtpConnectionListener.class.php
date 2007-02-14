@@ -225,8 +225,14 @@
      */
     public function onCwd($event, $params) {
       try {
+        if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
+          $this->answer($event->stream, 550, $params.': No such file or directory');
+          return;
+        }
+
+        if (!$this->checkInterceptors($event, $entry, 'onRead')) return;
         $pwd= $this->storage->setBase($event->stream->hashCode(), $params);
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 450, $e->getMessage());
         return;
       }
@@ -245,7 +251,7 @@
           $event->stream->hashCode(),
           dirname($this->storage->getBase($event->stream->hashCode()))
         );
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $e->getMessage());
         return;
       }
@@ -552,7 +558,7 @@
       // Create the element
       try {
         $this->storage->create($event->stream->hashCode(), $params, ST_COLLECTION);
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
@@ -580,7 +586,7 @@
       // Delete the element
       try {
         $element->delete();
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
         return;
       }
@@ -628,7 +634,7 @@
           if (!$socket->write($buf)) break;
         }
         $entry->close();
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
       } finally(); {
         $socket->close();
@@ -657,7 +663,7 @@
 
         try {
           $entry= $this->storage->create($event->stream->hashCode(), $params, ST_ELEMENT);
-        } catch (Exception $e) {
+        } catch (XPException $e) {
           $this->answer($event->stream, 550, $params.': '.$e->getMessage());
           $socket->close();
           return;
@@ -679,7 +685,7 @@
           $entry->write($buf);
         }
         $entry->close();
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
       } finally(); {
         $socket->close();
@@ -752,7 +758,7 @@
       try {
         $entry->rename($params);
         $this->cat->debug($params);
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '. $e->getMessage());
         return;
       }
@@ -946,7 +952,7 @@
       
       try {
         $this->{$method}($event, $params);
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         $this->cat && $this->cat->warn('*** ', $e->toString());
         // Fall through
       }
