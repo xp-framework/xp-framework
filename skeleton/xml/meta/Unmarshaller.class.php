@@ -37,21 +37,22 @@
      * @return  string
      */
     protected static function contentOf($element) {
-      switch ($element->type) {
-        case 1:   // Nodeset
-          return empty($element->nodeset) ? NULL : utf8_decode($element->nodeset[0]->get_content());
-          break;
+      if (xp::typeOf($element) == 'php.DOMNodeList') {
+          return $element->length ? utf8_decode($element->item(0)->textContent) : NULL;
+      
+      } else switch ($element->nodeType) {
+        case 1:   // DOMElement
+          return utf8_decode($element->textContent);
 
-        case 3:   // Text
-          return utf8_decode($element->content);
-
-        case 2:   // Attribute
-        case 4:   // String
+        case 2:   // DOMAttr
           return utf8_decode($element->value);
-          break;
+        
+        case 3:   // DOMText
+        case 4:   // DOMCharacterData
+          return utf8_decode($element->data);
 
         default:
-          return NULL;
+          return is_scalar($element) ? $element : NULL;
       }
     }
 
