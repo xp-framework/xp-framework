@@ -85,7 +85,7 @@
      * passed).
      *
      */
-    #[@test, @expect('IllegalArgumentException')]
+    #[@test, @expect('lang.IllegalArgumentException')]
     public function testNonScalarInput() {
       $q= new LDAPQuery('c=DE', '(%d)', array(1,2));
     }
