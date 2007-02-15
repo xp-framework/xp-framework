@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Adapt xml.meta.Unmarshaller::contentOf() to new DOM API of PHP5 to handle
+  "pass" attribute in "xmlmapping" annotation correctly
+  (hinckel, strobel)
 - Fix unbuffered queries on MySQLConnections
   (gelli)
 - Fix copy and unset of duplicate subjects in MailTransport
