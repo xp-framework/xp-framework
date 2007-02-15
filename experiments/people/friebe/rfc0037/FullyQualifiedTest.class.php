@@ -22,12 +22,11 @@
     /**
      * Tests that util.Date and info.binford6100.Date can coexist
      *
-     * @access  public
      */
     #[@test]
-    function dateClassesCanCoexist() {
-      $bd= &new info·binford6100·Date();
-      $ud= &new Date();
+    public function dateClassesCanCoexist() {
+      $bd= new info·binford6100·Date();
+      $ud= new Date();
 
       $this->assertEquals('info.binford6100.Date', $bd->getClassName());
       $this->assertEquals('util.Date', $ud->getClassName());
@@ -38,12 +37,11 @@
      * objects for the util.Date and info.binford6100.Date
      * classes.
      *
-     * @access  public
      */
     #[@test]
-    function classObjectsAreNotEqual() {
-      $bc= &XPClass::forName('info.binford6100.Date');
-      $uc= &XPClass::forName('util.Date');
+    public function classObjectsAreNotEqual() {
+      $bc= XPClass::forName('info.binford6100.Date');
+      $uc= XPClass::forName('util.Date');
       $this->assertNotEquals($bc, $uc);
     }
 
@@ -51,13 +49,12 @@
      * Tests that XPClass::forName() loads fully qualified classes 
      * correctly.
      *
-     * @access  public
      */
     #[@test]
-    function dynamicallyLoaded() {
-      $class= &XPClass::forName('de.thekid.List');
+    public function dynamicallyLoaded() {
+      $class= XPClass::forName('de.thekid.List');
       $this->assertEquals('de.thekid.List', $class->getName());
-      $instance= &$class->newInstance();
+      $instance= $class->newInstance();
       $this->assertEquals('de.thekid.List@{}', $instance->toString());
     }
 
@@ -65,14 +62,14 @@
      * Tests that XPClass::forName() loads fully qualified classes 
      * correctly.
      *
-     * @access  public
      */
     #[@test]
-    function interfaceImplemented() {
-      $class= &XPClass::forName('de.thekid.util.ObjectComparator');
+    public function interfaceImplemented() {
+      $class= XPClass::forName('de.thekid.util.ObjectComparator');
       $interfaces= $class->getInterfaces();
-      $this->assertEquals(1, sizeof($interfaces)) &&
-      $this->assertEquals('de.thekid.util.Comparator', $interfaces[0]->getName());
+      $this->assertEquals(2, sizeof($interfaces));
+      $this->assertEquals('lang.Generic', $interfaces[0]->getName());
+      $this->assertEquals('de.thekid.util.Comparator', $interfaces[1]->getName());
     }
   }
 ?>

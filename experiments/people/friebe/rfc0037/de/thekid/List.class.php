@@ -10,7 +10,7 @@
 
   class de·thekid·List extends Object {
   
-    function toString() {
+    public function toString() {
       return $this->getClassName().'@{}';
     }
   }

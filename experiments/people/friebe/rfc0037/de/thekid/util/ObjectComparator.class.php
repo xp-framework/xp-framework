@@ -6,24 +6,25 @@
 
   $package= 'de.thekid.util';
   
+  uses('de.thekid.util.Comparator');
+  
   /**
    * Object comparator
    *
    * @purpose  Comparator implementation
    */
-  class de·thekid·util·ObjectComparator extends Object {
+  class de·thekid·util·ObjectComparator extends Object implements de·thekid·util·Comparator {
   
     /**
      * Compare two objects
      *
-     * @access  public
      * @param   mixed a
      * @param   mixed b
      * @return  bool
      */
-    function compare($a, $b) { 
+    public function compare($a, $b) { 
       return $a->equals($b);
     }
   
-  } implements('de·thekid·util·ObjectComparator', 'de.thekid.util.Comparator');
+  }
 ?>

@@ -11,17 +11,16 @@
    *
    * @purpose  Interface
    */
-  class de·thekid·util·Comparator extends Interface {
+  interface de·thekid·util·Comparator {
   
     /**
      * Compare two objects
      *
-     * @access  public
      * @param   mixed a
      * @param   mixed b
      * @return  bool
      */
-    function compare($a, $b) { }
+    public function compare($a, $b);
   
   }
 ?>
