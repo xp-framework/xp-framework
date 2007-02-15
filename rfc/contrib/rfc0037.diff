@@ -1,0 +1,60 @@
+Index: lang.base.php
+===================================================================
+--- lang.base.php	(revision 9459)
++++ lang.base.php	(working copy)
+@@ -306,8 +306,10 @@
+     $include= explode(PATH_SEPARATOR, ini_get('include_path'));
+ 
+     foreach (func_get_args() as $str) {
+-      if (class_exists($class= xp::reflect($str)) || interface_exists($class)) continue;
++      if (in_array($str, xp::$registry)) continue;
+ 
++      $class= xp::reflect($str);
++      $package= NULL;
+       if ($p= strpos($str, '+xp://')) {
+         $type= substr($str, 0, $p);
+         
+@@ -349,8 +351,9 @@
+         }
+       }
+       
+-      if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
+-        xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
++      $package && $class= strtr($package, '.', '·').'·'.$class;
++      if (!class_exists($class) && !interface_exists($class)) {
++        xp::error(xp::stringOf(new Error($str.' does not declare '.$class.' (include_path='.ini_get('include_path').')')));
+       }
+ 
+       // Register class name and call static initializer if available and if it has not been
+Index: lang/ClassLoader.class.php
+===================================================================
+--- lang/ClassLoader.class.php	(revision 9459)
++++ lang/ClassLoader.class.php	(working copy)
+@@ -89,13 +89,22 @@
+      * @throws  lang.ClassNotFoundException in case the class can not be found
+      */
+     public function loadClass($class) {
++      $qname= $this->classpath.$class;
++
++      if (FALSE !== ($name= array_search($qname, xp::$registry))) {
++        return new XPClass(substr($name, 6));
++      }
++
+       $name= xp::reflect($class);
++      $package= NULL;
++      
++      if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
++        throw new ClassNotFoundException('Class "'.$qname.'" not found');
++      }
+ 
+-      if (!class_exists($name) && !interface_exists($name)) {
+-        $qname= $this->classpath.$class;
+-        if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+-          throw new ClassNotFoundException('Class "'.$qname.'" not found');
+-        }
++      $package && $name= strtr($package, '.', '·').'·'.$name;
++
++      if (NULL === xp::registry('class.'.$name)) {
+         xp::$registry['class.'.$name]= $qname;
+         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+       }
