@@ -18,14 +18,14 @@ Avoid name clashes.
 
 Functionality
 -------------
-A class declares being within a package by calling package().
+A class declares being within a package by setting the variable $package.
 
 Example (Declaration)
 ~~~~~~~~~~~~~~~~~~~~~
 <?php
   uses('util.Date');
 
-  package(__FILE__, 'info.binford6100');
+  $package= 'info.binford6100';
 
   class info·binford6100·Date extends Date {
   
@@ -59,17 +59,8 @@ Notes
   name, non-fully-qualified classes can only be referenced by their non-
   qualified name
 
-- The implements() syntax will change for fully qualified classes but 
-  will be backwards-compatible for non-fully qualified ones:
-  
-  // Works only in non-fully qualified classes
-  implements(__FILE__, 'util.log.Traceable');
-  
-  // Works in fully qualified classes:
-  implements('info·binford6100·TraceableObject', 'util.log.Traceable');
-  
-  // ...and in non-fully qualified ones:
-  implements('TraceableObject', 'util.log.Traceable');
+- XPClass::forName() can no longer support unqualified class names. What
+  does XPClass::forName('Date') return for the above example?
 </pre>
 
 Security considerations
@@ -86,12 +77,16 @@ the two cases:
 
 Dependencies
 ------------
-n/a
+- This will change the version number to 5.4.0
+
 
 Related documents
 -----------------
-- http://xp-framework.net/downloads/rfc0037.diff
+- http://xp-framework.net/rfc/contrib/rfc0085.diff
   Patch implementing this RFC
+
+- http://experiments.xp-framework.net/?people,friebe,rfc0037
+  Experiment
 
 Comments
 --------
