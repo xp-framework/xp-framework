@@ -4,20 +4,15 @@
  * $Id: startup.php 5797 2005-09-21 11:41:41Z friebe $
  */
 
-  function _microtime() {
-    list($usec, $sec) = explode(' ', microtime()); 
-    return (float)$usec + (float)$sec;
-  }
-
-  $startup_start= _microtime();
+  $startup_start= microtime(TRUE);
   require($argv[1].'/lang.base.php');
-  $startup_stop= _microtime();
+  $startup_stop= microtime(TRUE);
 
   $core_classes= XPClass::getClasses();
   
-  $load_start= _microtime();
+  $load_start= microtime(TRUE);
   uses('util.Binford', 'util.Date', 'util.Hashmap');
-  $load_stop= _microtime();
+  $load_stop= microtime(TRUE);
   
   printf("Startup time: %.3f seconds\n", $startup_stop - $startup_start);
   foreach ($core_classes as $i => $class) {
