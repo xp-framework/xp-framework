@@ -12,9 +12,13 @@ Scope of Change
 Classes can be optionally declared with their fully qualified name. Class 
 loading and reflection semantics will not change, though.
 
+
 Rationale
 ---------
-Avoid name clashes.
+Avoid name clashes. Especially useful for supporting classes that never 
+appear in a new statement or any other place their full name needs to be
+typed, like remote interfaces.
+
 
 Functionality
 -------------
