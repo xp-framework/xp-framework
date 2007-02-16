@@ -5,6 +5,8 @@
  */
 
   uses(
+    'util.Date',
+    'util.DateUtil',
     'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
     'peer.SocketException',
@@ -433,6 +435,7 @@
         $elements= array($entry);
       }
       
+      $before6Months= DateUtil::addMonths(Date::now(), -6)->getTime();
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
         $buf= sprintf(
           '%s  %2d %s  %s  %8d %s %s',
@@ -441,7 +444,10 @@
           $elements[$i]->getOwner(),
           $elements[$i]->getGroup(),
           $elements[$i]->getSize(),
-          date('M d H:i', $elements[$i]->getModifiedStamp()),
+          date(
+            $elements[$i]->getModifiedStamp() < $before6Months ? 'M d  Y' : 'M d H:i',
+            $elements[$i]->getModifiedStamp()
+          ),
           $elements[$i]->getName()
         );
         $this->cat && $this->cat->debug('    ', $buf);
