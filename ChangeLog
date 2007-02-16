@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fix FTP directory listing in FtpConnectionListener to display centure
+  correctly
+  (hinckel)
 - Adapt xml.meta.Unmarshaller::contentOf() to new DOM API of PHP5 to handle
   "pass" attribute in "xmlmapping" annotation correctly
   (hinckel, strobel)
