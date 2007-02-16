@@ -41,8 +41,8 @@
     /**
      * Constructor
      *
-     * @param   &peer.ftp.server.Storage storage
-     * @param   &peer.ftp.server.Authenticator authenticator
+     * @param   peer.ftp.server.Storage storage
+     * @param   peer.ftp.server.Authenticator authenticator
      */
     public function __construct($storage, $authenticator) {
       $this->storage= $storage;
@@ -52,7 +52,7 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) { 
       $this->cat= $cat;
@@ -61,15 +61,14 @@
     /**
      * Check all interceptors
      *
-     * @param peer.server.ConnectionEvent event The connection event
-     * @param perr.server.ftp.server.StorageEntry entry The storage entry
-     * @param string params The parameter string from request
-     * @param string method Interceptor method to invoke
+     * @param  peer.server.ConnectionEvent event The connection event
+     * @param  peer.server.ftp.server.StorageEntry entry The storage entry
+     * @param  string params The parameter string from request
+     * @param  string method Interceptor method to invoke
      * @return bool
      */
     public function checkInterceptors($event, $entry, $method) {
       if (!$this->interceptors) return TRUE;
-      
     
       // Check each interceptors an it's conditions
       foreach ($this->interceptors as $intercept) {
@@ -96,10 +95,17 @@
     /**
      * Open the datasocket
      *
-     * @param   &peer.server.ConnectionEvent event
-     * @return  &peer.BSDSocket
+     * @param   peer.server.ConnectionEvent event
+     * @return  peer.BSDSocket
      */
     public function openDatasock($event) {
+
+      // Client has neither sent a "PORT" nor "PASV" before calling LIST
+      if (!isset($this->datasock[$event->stream->hashCode()])) {
+        $this->answer($event->stream, 425, 'Unable to build data connection: Invalid argument');
+        return NULL;        
+      }
+
       if (is('ServerSocket', $this->datasock[$event->stream->hashCode()])) {
 
         // Open socket in passive mode
@@ -108,7 +114,7 @@
           $socket= $this->datasock[$event->stream->hashCode()]->accept();
         } catch (SocketException $e) {
           $this->answer($event->stream, 425, 'Cannot open passive connection '.$e->getMessage());
-          return FALSE;        
+          return NULL;        
         }
       } else {
       
@@ -119,7 +125,7 @@
             $socket->connect();
           } catch (SocketException $e) {
             $this->answer($event->stream, 425, 'Cannot open active connection '.$e->getMessage());
-            return FALSE;        
+            return NULL;        
           }
         }
       }
@@ -140,7 +146,7 @@
     /**
      * Write an answer message to the socket
      *
-     * @param   &peer.Socket sock
+     * @param   peer.Socket sock
      * @param   int code
      * @param   string text
      * @param   array lines default NULL lines of a multiline response
@@ -160,7 +166,7 @@
     /**
      * Callback for the "USER" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onUser($event, $params) {
@@ -172,7 +178,7 @@
     /**
      * Callback for the "PASS" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onPass($event, $params) {
@@ -199,7 +205,7 @@
      * account information, except to allow any transfer in progress 
      * to be completed. A USER command may be expected to follow.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onRein($event, $params) {
@@ -210,7 +216,7 @@
     /**
      * Callback for the "PWD" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onPwd($event, $params) {
@@ -222,7 +228,7 @@
      * directory or dataset without altering his login or account 
      * information.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onCwd($event, $params) {
@@ -244,7 +250,7 @@
     /**
      * Change to the parent directory
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onCdup($event, $params) {
@@ -265,7 +271,7 @@
      * features that the server supports beyond those described in 
      * RFC 959.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onFeat($event, $params) {
@@ -276,7 +282,7 @@
      * HELP: This command causes the server to send a list of supported 
      * commands and other helpful information.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onHelp($event, $params) {
@@ -295,7 +301,7 @@
      * SITE: This allows you to enter a command that is specific to the 
      * current FTP site.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onSite($event, $params) {
@@ -314,7 +320,7 @@
     /**
      * SITE HELP
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onSiteHelp($event, $params) {
@@ -324,7 +330,7 @@
     /**
      * SITE CHMOD
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onSiteChmod($event, $params) {
@@ -344,7 +350,7 @@
     /**
      * Callback for the "SYST" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onSyst($event, $params) {
@@ -356,7 +362,7 @@
      * entered commands. It specifies no action other than that the 
      * server send an OK reply.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */    
     public function onNoop($event, $params) {
@@ -396,7 +402,7 @@
      * LIST: This command causes a list of file names and file details 
      * to be sent from the FTP site to the client.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onList($event, $params) {
@@ -461,7 +467,7 @@
      * NLST: This command causes a list of file names (with no other 
      * information) to be sent from the FTP site to the client.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onNlst($event, $params) {
@@ -506,7 +512,7 @@
      * MDTM: This command can be used to determine when a file in the 
      * server was last modified.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onMdtm($event, $params) {
@@ -527,7 +533,7 @@
      * which would be transmitted over the data connection should that 
      * file be transmitted. 
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onSize($event, $params) {
@@ -548,7 +554,7 @@
      * subdirectory of the current working directory (if pathname is 
      * relative).
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onMkd($event, $params) {
@@ -577,7 +583,7 @@
      * subdirectory of the current working directory (if pathname is 
      * relative).
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onRmd($event, $params) {
@@ -604,7 +610,7 @@
      * file specified in pathname to the client. The status and contents 
      * of the file at the server site are unaffected.
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onRetr($event, $params) {
@@ -652,7 +658,7 @@
     /**
      * Callback for the "STOR" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onStor($event, $params) {
@@ -703,7 +709,7 @@
     /**
      * Callback for the "DELE" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onDele($event, $params) {
@@ -732,7 +738,7 @@
     /**
      * Rename a file from filename
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onRnfr($event, $params) {
@@ -749,7 +755,7 @@
     /**
      * Rename a file into filename
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onRnto($event, $params) {
@@ -777,7 +783,7 @@
     /**
      * Callback for the "TYPE" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onType($event, $params) {
@@ -796,7 +802,7 @@
     /**
      * Callback for the "STRU" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onStru($event, $params) {
@@ -818,7 +824,7 @@
     /**
      * Callback for the "MODE" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onMode($event, $params) {
@@ -840,7 +846,7 @@
     /**
      * Callback for the "QUIT" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onQuit($event, $params) {
@@ -854,7 +860,7 @@
     /**
      * Callback for the "PORT" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onPort($event, $params) {
@@ -873,7 +879,7 @@
     /**
      * Callback for the "OPTS" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onOpts($event, $params) {
@@ -889,7 +895,7 @@
     /**
      * Callback for the "PASV" command
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      * @param   string params
      */
     public function onPasv($event, $params) {
@@ -918,7 +924,7 @@
     /**
      * Method to be triggered when a client connects
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function connected($event) {
       $this->cat && $this->cat->debugf('===> Client %s connected', $event->stream->host);
@@ -931,7 +937,7 @@
     /**
      * Method to be triggered when a client has sent data
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function data($event) {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');
@@ -968,7 +974,7 @@
     /**
      * Method to be triggered when a client disconnects
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function disconnected($event) {
       $this->cat && $this->cat->debugf('Client %s disconnected', $event->stream->host);
