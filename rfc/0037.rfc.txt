@@ -119,4 +119,7 @@ Comments
 - friebe, Mon Feb 20 13:05:21 CET 2006
   New patch available at above location. Also passes all tests.
 
+- friebe, Fri Feb 16 12:06:31 CET 2007
+  Migrated to PHP5, rewrote parts of this RFC
+
 <EOF>
