@@ -19,16 +19,10 @@
    *
    * Usage [retrieve directory listing]:
    * <code>
-   *   $c= &new FtpConnection('ftp://user:pass@example.com');
-   *   try(); {
+   *   $c= new FtpConnection('ftp://user:pass@example.com');
    *     $c->connect();
-   *     $d= &$c->getDir();
+   *     $d= $c->getDir();
    *     var_dump($d);
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     $c->close();
-   *     exit();
-   *   }
    *   
    *   while ($entry= $d->getEntry()) {
    *     var_dump($entry);
@@ -279,6 +273,19 @@
         $src, 
         $target
       );
+    }
+    
+    /**
+     * Sends a raw command directly to the FTP-Server.
+     *
+     * Please note, that the function does not parse whether the 
+     * command was successful or not.
+     *
+     * @param   string command
+     * @return  array ServerResponse
+     */
+    public function quote($command) {
+      return ftp_raw($this->handle, $command);
     }
     
     /**
