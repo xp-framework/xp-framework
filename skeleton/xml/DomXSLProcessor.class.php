@@ -197,10 +197,15 @@
       
       // Start transformation
       $result= $this->processor->transformToXML($this->document);
-      
-      if (!$this->output) $this->_checkErrors();
       $this->output= $result;
-      
+
+      if (FALSE === $this->output) {
+        $this->_checkErrors();
+        
+        // Fallthrough
+        throw new TransformerException('Unknown transformation error occurred.');
+      }
+
       // Perform cleanup when necessary (free singleton for further use)
       sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
       
@@ -214,13 +219,13 @@
      */
     protected function _checkErrors() {
       if ($error= libxml_get_last_error()) {
-        throw(new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
+        throw new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
           $error->code,
           trim($error->message),
           (strlen($error->file) ? $error->file : '<buffer>' ),
           $error->line,
           $error->column
-        )));
+        ));
       }
     }
 
