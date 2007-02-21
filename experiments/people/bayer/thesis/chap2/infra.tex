@@ -1,0 +1,16 @@
+\section{Infrastruktur}
+\label{sec:chap2:infra}
+
+Bevor mit der Bearbeitung der Aufgabe begonnen werden konnte musste zun"achst die n"otige Infrastruktur
+geschaffen werden, allem voran die Auswahl des zu verwendenden Application Servers. Diese Wahl war leicht
+zu treffen, der bei 1\&1 ausschlie\ss lich eingesetzten Application Server ist JBoss \cite{JBOSSHP}.
+Folglich wurde ein JBoss in der Version 4.0.5 installiert, wobei darauf zu achten war dass der
+nicht standardm"a\ss ig mitinstallierte Deployer f"ur EJB 3.0 Applikationen zus"atzlich ausgew"ahlt wurde.
+Direkt nach der Installation konnte der Application Server problemlos gestartet werden.
+
+Nun wurde f"ur das Projekt eine Verzeichnisstruktur aufgebaut wie Sun sie f"ur EJB-Projekte vorschl"agt, mit
+eigenen Unterverzeichnissen f"ur die Quelltexte (src/), ben"otigte Bibliotheken (lib/), zus"atzliche 
+Deploymentdeskriotoren (dd/) und die beim Buildprozess erzeugten Dateien (build/).
+Da es sich um ein reines Java-Projekt handelte wurde als Buildsystem Apache Ant \cite{ANTHP} gew"ahlt.
+
+
