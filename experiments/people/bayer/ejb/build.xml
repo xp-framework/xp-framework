@@ -1,0 +1,75 @@
+<project name="phpejb" default="all" basedir=".">
+
+  <property name="src.dir" value="${basedir}/src"/>
+  <property name="build.dir"   value="${basedir}/build"/>
+  <property name="jboss.dir" value="/home/nsn/jboss-4.0.5.GA/"/>
+
+  <target name="all">
+    <antcall target="package-ejb" />
+    <antcall target="assemble-app" />
+  </target>
+
+  <!-- The build classpath -->
+  <path id="build.classpath">
+    <fileset dir="${basedir}/lib/">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="execute.classpath">
+    <pathelement location="${build.dir}/classes"/>
+    <fileset dir="${jboss.dir}client/">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="prepare">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.dir}/classes"/>
+    <mkdir dir="${build.dir}/jar"/>
+  </target>
+
+  <target name="compile" depends="prepare">
+    <javac destdir="${build.dir}/classes"
+      classpathref="build.classpath"
+      debug="on">
+      <src path="${src.dir}"/>
+    </javac>
+  </target>
+
+  <target name="package-ejb" depends="compile">
+    <jar jarfile="${build.dir}/jar/phpejb.ejb3">
+      <fileset dir="${build.dir}/classes">
+        <include name="ejbtest/**"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="assemble-app" depends="compile">
+    <jar jarfile="${build.dir}/phpejb.ear">
+      <metainf dir="dd/ear">
+        <include name="application.xml"/>
+      </metainf>
+
+      <fileset dir="${build.dir}/jar"
+        includes="*.ejb3,*.war"/>
+    </jar>
+
+  </target>
+
+  <target name="deploy" depends="assemble-app">
+    <copy file="${build.dir}/phpejb.ear" todir="${jboss.dir}/server/default/deploy"/>
+  </target>
+
+  <target name="test" depends="compile">
+    <property name="myclasspath" refid="execute.classpath"/>
+    <!-- <echo message="Classpath = ${myclasspath}"/> -->
+
+    <java classname="ejbtest.HelloWorldClient" classpathref="execute.classpath"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+  </target>
+
+</project>
