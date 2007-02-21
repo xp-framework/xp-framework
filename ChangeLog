@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Improve DomXSLProcessor's error handling
+  (kiesel)
 - Fix FTP directory listing in FtpConnectionListener to display centure
   correctly
   (hinckel)
