@@ -32,15 +32,15 @@
   <target name="compile" depends="prepare">
     <javac destdir="${build.dir}/classes"
       classpathref="build.classpath"
-      debug="on">
-      <src path="${src.dir}"/>
-    </javac>
+      includes="**/**"
+      srcdir="${src.dir}"
+      debug="on"/>
   </target>
 
   <target name="package-ejb" depends="compile">
     <jar jarfile="${build.dir}/jar/phpejb.ejb3">
       <fileset dir="${build.dir}/classes">
-        <include name="ejbtest/**"/>
+        <include name="ejbtest/**/**"/>
       </fileset>
     </jar>
   </target>
@@ -61,12 +61,14 @@
     <copy file="${build.dir}/phpejb.ear" todir="${jboss.dir}/server/default/deploy"/>
   </target>
 
+  <!--
   <target name="test" depends="compile">
     <property name="myclasspath" refid="execute.classpath"/>
-    <!-- <echo message="Classpath = ${myclasspath}"/> -->
+    <echo message="Classpath = ${myclasspath}"/> 
 
     <java classname="ejbtest.HelloWorldClient" classpathref="execute.classpath"/>
   </target>
+  -->
 
   <target name="clean">
     <delete dir="${build.dir}" />
