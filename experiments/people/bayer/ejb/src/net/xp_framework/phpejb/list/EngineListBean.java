@@ -1,4 +1,4 @@
-package net.xp_framework.ejbtest.list;
+package net.xp_framework.phpejb.list;
 
 import javax.ejb.Stateless;
 import javax.script.*;

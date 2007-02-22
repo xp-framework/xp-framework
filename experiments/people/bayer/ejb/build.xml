@@ -40,7 +40,7 @@
   <target name="package-ejb" depends="compile">
     <jar jarfile="${build.dir}/jar/phpejb.ejb3">
       <fileset dir="${build.dir}/classes">
-        <include name="ejbtest/**/**"/>
+        <include name="**/**"/>
       </fileset>
     </jar>
   </target>
@@ -61,14 +61,9 @@
     <copy file="${build.dir}/phpejb.ear" todir="${jboss.dir}/server/default/deploy"/>
   </target>
 
-  <!--
   <target name="test" depends="compile">
-    <property name="myclasspath" refid="execute.classpath"/>
-    <echo message="Classpath = ${myclasspath}"/> 
-
-    <java classname="ejbtest.HelloWorldClient" classpathref="execute.classpath"/>
+    <java classname="net.xp_framework.phpejb.client.TestClient" classpathref="execute.classpath"/>
   </target>
-  -->
 
   <target name="clean">
     <delete dir="${build.dir}" />

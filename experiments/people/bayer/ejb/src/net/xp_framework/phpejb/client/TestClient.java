@@ -1,9 +1,12 @@
-package ejbtest;
+package net.xp_framework.phpejb.client;
 
 import javax.naming.directory.InitialDirContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Hashtable;
+import net.xp_framework.phpejb.list.EngineList;
+import java.util.ListIterator;
+import java.util.List;
 
 public class TestClient {
 
@@ -14,8 +17,15 @@ public class TestClient {
             env.put(InitialContext.PROVIDER_URL, "jnp://localhost:1099");
             env.put(InitialContext.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
             InitialContext ctx = new InitialContext(env);
-            EngineList list = (EngineList)ctx.lookup("/HelloWorldBean/remote");
-	    System.out.println(hw.sayHello("wurst"));
+
+            // EngineList
+            EngineList list = (EngineList)ctx.lookup("phpejb/EngineListBean/remote");
+            List<String> lst = list.getList();
+            ListIterator<String> it = lst.listIterator();
+            while (it.hasNext()) {
+                System.out.println("engine: "+it.next());
+            }
+
         } catch (NamingException e) {
             e.printStackTrace();
             return;
@@ -23,7 +33,7 @@ public class TestClient {
     }
 
     public static void main(String[] argv) {
-        HelloWorldClient c = new HelloWorldClient();
+        TestClient c = new TestClient();
         c.run();
     }
 
