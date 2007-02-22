@@ -10,7 +10,73 @@ Direkt nach der Installation konnte der Application Server problemlos gestartet 
 
 Nun wurde f"ur das Projekt eine Verzeichnisstruktur aufgebaut wie Sun sie f"ur EJB-Projekte vorschl"agt, mit
 eigenen Unterverzeichnissen f"ur die Quelltexte (src/), ben"otigte Bibliotheken (lib/), zus"atzliche 
-Deploymentdeskriotoren (dd/) und die beim Buildprozess erzeugten Dateien (build/).
-Da es sich um ein reines Java-Projekt handelte wurde als Buildsystem Apache Ant \cite{ANTHP} gew"ahlt.
+Deploymentdeskriptoren (dd/) und die beim Buildprozess erzeugten Dateien (build/).
+Da es sich um ein reines Java-Projekt handelte wurde als Buildsystem Apache Ant \cite{ANTHP} und nicht
+wie f"ur Turpitude selbst Make gew"ahlt. Ant benutzt die XML-Datei "'build.xml"' wie make das "'Makefile"'
+benutzt, dessen Wurzelknoten "'project"' heissen muss. Darunter werden die einzelnen Targets angelegt, die
+wiederum anderen Targets als Abh"angigkeiten haben k"onnen. Als Name f"ur das Projekt wurde "'phpejb"' gew"ahlt,
+die ben"otigten Klassen liegen im Package \emph{net.xp\_framework.phpejb}. Bevor mit der Programmierung
+begonnen werden konnte mussten jedoch Targets f"ur das "Ubersetzen, Packen und Deployen der Anwendung angelegt,
+sowie am Anfang der build.xml einige Konfigurationsparameter gesetzt werden.
+Das "Ubersetzen geschieht im Target \emph{compile} und bereitete keine Schwierigkeiten. Die so erzeugten
+.class-Dateien werden im Target \emph{package-ejb} in ein JAR gepackt, das den Namen \emph{phpejb.ejb3} tr"agt,
+damit der JBoss erkennen kann welchen Deploy-Mechanismus er verwenden muss. Dieses JAR wird zusammen mit 
+dem Deploymentdeskriptor \emph{application.xml} - in dem lediglich beschrieben wird welche Module enthalten sind - zu
+dem \emph{Enterprise Archive} \emph{phpejb.ear} zusammengepackt, dies geschieht im Target \emph{assemble-app}.
+Ein weiteres Target namens \emph{deploy} kopiert dieses in das Verzeichnis in dem der JBoss die auszubringenden
+Applikationen erwartet. Schlussendlich wurde noch das Target \emph{clean}, das die w"ahrend des
+Buildprozess erzeugten Dateien l"oscht, sowie das Target \emph{all} angelegt, welches als erstes Target in der
+build.xml steht und deswegen ausgef"uhrt wird wenn Ant ohne Parameter aufgerufen wird, und die n"otigen Schritte
+enth"alt die zur Erzeugung der \emph{phpejb.ear} n"otig sind. Somit waren die Grundlagen f"ur die weitere
+Entwicklung gelegt, und es konnte ein zwar leeres, aber dennoch valides .ear erzeugt werden.
+
+\subsection{Beispielanwendung}
+\label{sec:chap2:infra:example}
+
+Um erste Erfahrungen mit einer EJB 3.0 Anwendung zu sammeln sollte nun ein einfacher Service entwickelt werden.
+Damit diese Arbeit auch sp"ater von Nutzen ist wurde beschlossen einen Service zu schreiben der das Verhalten
+der in \ref{sec:chap1:impl} vorgestellten Anwendung \emph{EngineList} nachempfindet, und eine Liste der zur Verf"ugung 
+stehenden JSR 223 Implementationen zur"uckgibt.
+
+Zu jedem EJB Service geh"ort ein beschreibendes Interface, das Interface f"ur diesen Service ist denkbar einfach,
+enth"alt es doch nur eine Methode, \emph{getList()}. Durch die Annotation \emph{@Remote} wird angegeben, dass dieses
+Interface auch von remote aufgerufen werden kann.
+\begin{lstlisting}[caption=Testservice Interface]
+@Remote
+public interface EngineList {
+    public List<String> getList();
+}
+\end{lstlisting}
+Zu diesem Interface musste nun eine implementierende Klasse geschrieben werden, da der Service von remote aufgerufen
+werden soll muss keine lokale Implementation vorhanden sein, ein Remote-Bean kann sowohl lokal als auch remote
+aufgerufen werden. Die simpelste EJB ist die Stateless Session Bean, und die Annotation \emph{@Stateless} gibt an
+dass es sich bei dieser Bean um eine solche handelt.
+\begin{lstlisting}[caption=Testservice Bean]
+@Stateless
+public class EngineListBean implements EngineList {
+    public List<String> getList() {
+    ...
+    }
+}
+\end{lstlisting}
+Die einfachste Methode einen EJB-Service zu testen ist einen Client zu schreiben, der in einer anderen JVM
+ausgef"uhrt wird als der Application-Server, ein solcher Test zeigt nicht nur ob der Service funktioniert,
+sondern auch ob das Deployment funktioniert hat, und der Service von aussen "uber JNDI aufgefunden und angesprochen
+werden kann. Ein solcher JNDI-Lookup geschieht immer "uber einen Kontext, welcher die n"otigen Service-Provider
+kennt. Der Lookup resultiert in einem Stub-Objekt, welches Aufrufe "uber die Netzverbindung an den Application-Server
+weiterleitet.
+\begin{lstlisting}[caption=Testservice Client]
+InitialContext ctx = new InitialContext(env);
+EngineList list = 
+    (EngineList)ctx.lookup("phpejb/EngineListBean/remote");
+List<String> lst = list.getList();
+\end{lstlisting}
+Der Aufruf ergab als einzige innerhalb des JBoss verf"ugbare JSR 223 Implementation die standardm"a\ss ig in Java 6
+enthaltene Javascript Engine Rhino von Mozilla. Nun mussten der den JBoss ausf"uhrenden JVM die n"otigen Parameter
+mitgegeben werden, damit Turpitude innerhalb des Application Servers verf"ugbar wird (siehe auch \ref{sec:app1:exec}). 
+Hierzu wurde ein Shell-Skript geschrieben, das die ben"otigten Umgebungsvariablen (LD\_LIBRARY\_PATH, JAVA\_HOME) setzt, 
+und dann das eigentliche JBoss-Startskript \emph{run.sh} mit den n"otigen Parametern ausf"uhrt. 
+Als dies getan war erschien Turpitude in der Liste der verf"ugbaren ScriptEngines, und es konnte mit der eigenlichen
+Aufgabe begonnen werden.
 
 

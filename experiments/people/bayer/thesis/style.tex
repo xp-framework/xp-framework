@@ -21,12 +21,13 @@
 \usepackage{a4,ngerman,longtable,color,german}
 \usepackage[latin1]{inputenc}
 \usepackage{listings}
+\usepackage{nomencl}
 \lstset{language=C++, frame=single, basicstyle=\small,
         captionpos=bl, caption=\lstname}
 
 % *************** Enable index generation ***************
 \makeindex
-
+%\makenomenclature
 % *************** Add reference to page number at which bibliography entry is cited ***************
 \usepackage{citeref}
 \renewcommand{\bibitempages}[1]{\newblock {\scriptsize [\mbox{zitiert auf S.\ }#1]}}
