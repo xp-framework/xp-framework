@@ -5,7 +5,7 @@
       printf("    %s: %d\n", $name, $i);        
       usleep(rand(1, 4) * 100000);      
     }
-    printf("### THREAD-%d: DONE ###\n", $name);    
+    printf("### THREAD-%s: DONE ###\n", $name);    
     
     return $name;
   }
