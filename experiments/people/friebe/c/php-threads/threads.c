@@ -192,15 +192,11 @@ static void* php_threads_run(void *arg)
 	    fprintf(stderr, "***BAILED!");
 	} zend_end_try();
 
-    if (retval) {
-        zval_ptr_dtor(&retval);
-    }
-
     /* Shutdown engine */
 	php_request_shutdown(TSRMLS_C);
     
     tsrm_set_interpreter_context(prior_context); 
-    pthread_exit(NULL);
+    pthread_exit(retval);
 }
 
 /* {{{ PHP_MINIT_FUNCTION
@@ -429,14 +425,12 @@ fprintf(stderr, "---> Joining thread %s\n", ptr->name);
 		RETURN_FALSE;
 	}
 
-#if 0
 	if (status) {
 		*return_value = *(zval*)status;
 		zval_copy_ctor(return_value);
 		INIT_PZVAL(return_value);
 		zval_ptr_dtor((zval*)&status);
 	}
-#endif
 }
 /* }}} */
 
