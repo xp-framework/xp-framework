@@ -64,7 +64,6 @@ typedef struct _php_thread_event {
 typedef struct {
 	char* name;
     int name_len;
-	php_thread_event* start;
 	pthread_t* thread;
     void* context;
     zend_class_entry* scope;

@@ -92,17 +92,6 @@ static void php_threads_init_globals(zend_threads_globals *threads_globals)
 */
 /* }}} */
 
-static void _free_thread(zend_rsrc_list_entry *rsrc TSRMLS_DC)
-{
-    php_thread_ptr* ptr= (php_thread_ptr*) rsrc->ptr;
-	efree(ptr->name);
-    if (ptr->thread) efree(ptr->thread);	
-	if (ptr->context) {
-        tsrm_set_interpreter_context(NULL);
-        tsrm_free_interpreter_context(ptr->context);
-    }
-}
-
 static php_thread_event* create_event(void)
 {
 	php_thread_event* e= (php_thread_event*) malloc(sizeof(php_thread_event));
@@ -143,15 +132,27 @@ static int set_event(php_thread_event* e)
 	return r;
 }
 
+static void _free_thread(zend_rsrc_list_entry *rsrc TSRMLS_DC)
+{
+    php_thread_ptr* ptr= (php_thread_ptr*) rsrc->ptr;
+    if (ptr->thread) {
+        efree(ptr->thread);	
+    }
+	if (ptr->context) {
+        tsrm_set_interpreter_context(NULL);
+        tsrm_free_interpreter_context(ptr->context);
+    }
+    if (ptr->name) {
+        efree(ptr->name);
+    }
+}
+
 static void* php_threads_run(void *arg)
 {
     zval *retval= NULL;
     php_thread_ptr* ptr= (php_thread_ptr*)arg;    
     void *prior_context= tsrm_set_interpreter_context(ptr->context); 
     TSRMLS_FETCH();
-
-    /* Notify startup */
-    set_event(ptr->start);
 
     /* Startup engine */
 	SG(headers_sent)= 1;
@@ -181,7 +182,7 @@ static void* php_threads_run(void *arg)
 	php_request_shutdown(TSRMLS_C);
     
     tsrm_set_interpreter_context(prior_context); 
-    pthread_exit(retval);
+    pthread_exit(NULL);
 }
 
 /* {{{ PHP_MINIT_FUNCTION
@@ -264,11 +265,12 @@ PHP_FUNCTION(thread_new)
 PHP_FUNCTION(thread_start)
 {
 	zval **resource;
+	zval **arguments;
     zval *callable;
     php_thread_ptr* ptr= NULL;
     int r;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz", resource, &callable) == FAILURE) {
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz|a", resource, &callable, &arguments) == FAILURE) {
 		return;
 	}
 
@@ -341,23 +343,19 @@ PHP_FUNCTION(thread_start)
         }
     }
 
-fprintf(stderr, "Starting thread %s (%s)\n", ptr->name, ptr->callable->common.function_name);
+fprintf(stderr, "---> Starting thread %s (%s)\n", ptr->name, ptr->callable->common.function_name);
 
-    /* Create start event */
-    ptr->start= create_event();
+    ptr->context= tsrm_new_interpreter_context();
 
     /* Create thread */
     r= pthread_create(ptr->thread, NULL, php_threads_run, (void*) ptr);
 	if (r) {
+        tsrm_free_interpreter_context(ptr->context);
 		zend_error(E_WARNING, "Could not create thread: pthread_create() returns %d", r);
 		RETURN_FALSE;
 	}
 
-    ptr->context= tsrm_new_interpreter_context();
-
-	/* Wait until thread has started */
-	wait_event(ptr->start);
-	release_event(ptr->start);
+fprintf(stderr, "     Started thread %p %s (%s)\n", ptr->thread, ptr->name, ptr->callable->common.function_name);
     
 	RETURN_TRUE;
 }
