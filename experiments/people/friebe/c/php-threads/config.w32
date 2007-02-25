@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+// If your extension references something external, use ARG_WITH
+// ARG_WITH("threads", "for threads support", "no");
+
+// Otherwise, use ARG_ENABLE
+// ARG_ENABLE("threads", "enable threads support", "no");
+
+if (PHP_THREADS != "no") {
+	EXTENSION("threads", "threads.c");
+}
+
