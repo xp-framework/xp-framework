@@ -421,7 +421,7 @@ PHP_FUNCTION(thread_join)
 	}
 	ZEND_FETCH_RESOURCE(ptr, php_thread_ptr *, resource, -1, "Thread", le_threads);
 
-fprintf(stderr, "Joining thread %s\n", ptr->name);
+fprintf(stderr, "---> Joining thread %s\n", ptr->name);
 
 	r= pthread_join(*ptr->thread, (void **)&status);
 	if (r) {
