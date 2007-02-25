@@ -69,6 +69,8 @@ typedef struct {
     zend_class_entry* scope;
     zval* object;
     zend_function* callable;
+    zval ***arguments;
+    int argument_count;
 } php_thread_ptr;
 
 

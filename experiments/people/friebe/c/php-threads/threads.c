@@ -166,7 +166,25 @@ static void* php_threads_run(void *arg)
 		EG(active_op_array)= (zend_op_array *) ptr->callable;
         EG(scope)= ptr->scope;
         EG(This)= ptr->object;
-
+		ALLOC_HASHTABLE(EG(active_symbol_table));
+		zend_hash_init(EG(active_symbol_table), 0, NULL, ZVAL_PTR_DTOR, 0);
+        
+        /* Arguments */
+        if (ptr->arguments) {
+            int i= 0;
+            zval* param;
+            
+            for (i= 0; i < ptr->argument_count; i++) {
+			    ALLOC_ZVAL(param);
+			    *param = **(ptr->arguments[i]);
+			    INIT_PZVAL(param);
+                
+                zend_ptr_stack_push(&EG(argument_stack), param);
+            }
+            
+            zend_ptr_stack_2_push(&EG(argument_stack), (void *) (long) ptr->argument_count, NULL);
+        }
+        
 		zend_execute(EG(active_op_array) TSRMLS_CC);
         
         EG(active_op_array)= NULL;
@@ -265,7 +283,7 @@ PHP_FUNCTION(thread_new)
 PHP_FUNCTION(thread_start)
 {
 	zval **resource;
-	zval **arguments;
+	zval *arguments= NULL;
     zval *callable;
     php_thread_ptr* ptr= NULL;
     int r;
@@ -346,6 +364,33 @@ PHP_FUNCTION(thread_start)
 fprintf(stderr, "---> Starting thread %s (%s)\n", ptr->name, ptr->callable->common.function_name);
 
     ptr->context= tsrm_new_interpreter_context();
+    
+    /* Pass arguments across scope */
+    if (arguments) {
+        void *prior_context= tsrm_set_interpreter_context(ptr->context); 
+        HashPosition pos;
+        zval **tmp;
+        zval *param;
+        int i;
+        
+        ptr->argument_count= zend_hash_num_elements(Z_ARRVAL_P(arguments));
+        ptr->arguments= safe_emalloc(sizeof(zval**),  ptr->argument_count, 0);
+	    for (zend_hash_internal_pointer_reset_ex(Z_ARRVAL_P(arguments), &pos), i = 0;
+		    (zend_hash_get_current_data_ex(Z_ARRVAL_P(arguments), (void**)&tmp, &pos) == SUCCESS) && (i < ptr->argument_count);
+		    zend_hash_move_forward_ex(Z_ARRVAL_P(arguments), &pos), i++) {
+
+		    ptr->arguments[i] = emalloc(sizeof(zval*));
+            MAKE_STD_ZVAL(*ptr->arguments[i]);
+		    **ptr->arguments[i]= **tmp;
+            zval_copy_ctor(*ptr->arguments[i]);
+            (*ptr->arguments[i])->refcount= 1;
+            (*ptr->arguments[i])->is_ref= 0;
+            
+	    }
+        tsrm_set_interpreter_context(prior_context); 
+    } else {
+        ptr->arguments= NULL;
+    }
 
     /* Create thread */
     r= pthread_create(ptr->thread, NULL, php_threads_run, (void*) ptr);
