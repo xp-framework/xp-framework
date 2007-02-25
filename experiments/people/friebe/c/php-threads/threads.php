@@ -6,6 +6,8 @@
       usleep(rand(1, 4) * 100000);      
     }
     printf("### THREAD-%d: DONE ###\n", $name);    
+    
+    return $name;
   }
  
   $t= thread_new('#1');
