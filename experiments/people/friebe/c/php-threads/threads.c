@@ -425,12 +425,15 @@ fprintf(stderr, "---> Joining thread %s\n", ptr->name);
 		RETURN_FALSE;
 	}
 
+    /* Return copy of whatever thread returns */
 	if (status) {
 		*return_value = *(zval*)status;
 		zval_copy_ctor(return_value);
 		INIT_PZVAL(return_value);
 		zval_ptr_dtor((zval*)&status);
-	}
+	} else {
+        RETURN_NULL();
+    }
 }
 /* }}} */
 
