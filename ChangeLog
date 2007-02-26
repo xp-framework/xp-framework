@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Changed various classes to use type hints instead of manual instanceof/
+  IllegalArgumentException code
+  (friebe)
 - Improve DomXSLProcessor's error handling
   (kiesel)
 - Fix FTP directory listing in FtpConnectionListener to display centure
