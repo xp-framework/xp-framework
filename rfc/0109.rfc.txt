@@ -23,11 +23,81 @@ Functionality
 1) Invocation chain
 ~~~~~~~~~~~~~~~~~~~
 
+Example: Prerequisites-check:
+<?php
+  class Account extends Object {
+  
+    public function transfer($amount) {
+      // TBI
+    }
+  }
+
+  class SecurityInterceptor extends Object implements InvocationInterceptor {
+    protected $level;
+
+    public function __construct($level) {
+      $this->level= $level;
+    }
+  
+    public function invoke(InvocationChain $chain) {
+      if (
+        'transfer' == $chain->method->getName() && 
+        $chain->parameters[0] > 10000 &&
+        $this->level < 4
+      ) {
+        throw new IllegalAccessException(sprintf(
+          'Clearance level IV needed to transfer %d EUR', 
+          $chain->parameters[0]
+        );
+        
+        return $chain->proceed();
+      }
+    }
+  }
+
+  $account= new Account();
+  
+  // Use invocation chain to invoke transfer() instead of calling it directly
+  $chain= new InvocationChain();
+  $chain->addInterceptor(new SecurityInterceptor(3));
+  
+  // Will throw an exception because of unmet prerequisites
+  $result= $chain->invoke(
+    $account, 
+    $account->getClass()->getMethod('transfer'), 
+    array(120000)
+  );
+?>
+
+Example: Logging:
+<?php
+  class LoggingInterceptor extends Object implements InvocationInterceptor {
+    protected $cat;
+
+    public function __construct($cat) {
+      $this->cat= $cat;
+    }
+  
+    public function invoke(InvocationChain $chain) {
+      $this->cat->debug('Invoking', $chain->method, '(', $chain->parameters, ')');
+      try {
+        $result= $chain->proceed();
+      } catch (Throwable $e) {
+        $this->cat->warn($e);
+        throw $e;
+      }
+      $this->cat->info('Result', $result);
+      return $result;
+    }
+  }
+?>
 
 
 2) Lazy initialization
 ~~~~~~~~~~~~~~~~~~~~~~
-
+The util.AbstractDeferredInvokationHandler class will be moved to util.invoke
+and be renamed to AbstractDeferredInvocationHandler (invocation is spelled with
+a "c", while invoke is spelled with a "k").
 
 
 Security considerations
@@ -50,6 +120,11 @@ Related documents
 - http://www.google.com/search?q=InvocationChain
   Other InvocationChain implementations
 
+- RFC #0029: util.AbstractDeferredInvokationHandler
+  This will be deprecated and moved to util.invoke
+
+- http://javaspecialists.co.za/archive/newsletter.do?issue=005&locale=en_US
+  Dynamic Proxies - Short Tutorial
 
 Comments
 --------
