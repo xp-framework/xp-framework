@@ -1,0 +1,57 @@
+RFC 0109: Invocation utilities package
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Feb 26 10:54:08 CET 2007
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+A new package util.invoke will be added.
+
+
+Rationale
+---------
+Method invocation utilities.
+
+
+Functionality
+-------------
+
+1) Invocation chain
+~~~~~~~~~~~~~~~~~~~
+
+
+
+2) Lazy initialization
+~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://www.google.com/search?q=InvocationChain
+  Other InvocationChain implementations
+
+
+Comments
+--------
+
+<EOF>
