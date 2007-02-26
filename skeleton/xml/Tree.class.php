@@ -54,10 +54,11 @@
     /**
      * Add a child to this tree
      *
-     * @param   &xml.Node child 
-     * @return  &xml.Node the added child
+     * @param   xml.Node child 
+     * @return  xml.Node the added child
+     * @throws  lang.IllegalArgumentException in case the given argument is not a Node
      */   
-    public function addChild($child) {
+    public function addChild(Node $child) {
       return $this->root->addChild($child);
     }
 
@@ -65,25 +66,22 @@
      * Construct an XML tree from a string.
      *
      * <code>
-     *   $tree= &Tree::fromString('<document>...</document>');
+     *   $tree= Tree::fromString('<document>...</document>');
      * </code>
      *
      * @param   string string
      * @param   string c default __CLASS__ class name
-     * @return  &xml.Tree
+     * @return  xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      */
     public static function fromString($string, $c= __CLASS__) {
       $parser= new XMLParser();
       $tree= new $c();
-      try {
-        $parser->setCallback($tree);
-        $parser->parse($string, 1);
-        delete($parser);
-      } catch (XMLFormatException $e) {
-        throw($e);
-      }
-      
+
+      $parser->setCallback($tree);
+      $parser->parse($string, 1);
+
+      delete($parser);
       return $tree;
     }
     
@@ -91,12 +89,12 @@
      * Construct an XML tree from a file.
      *
      * <code>
-     *   $tree= &Tree::fromFile(new File('foo.xml');
+     *   $tree= Tree::fromFile(new File('foo.xml');
      * </code>
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @param   string c default __CLASS__ class name
-     * @return  &xml.Tree
+     * @return  xml.Tree
      * @throws  xml.XMLFormatException in case of a parser error
      * @throws  io.IOException in case reading the file fails
      */ 
@@ -104,19 +102,14 @@
       $parser= new XMLParser();
       $tree= new $c();
       
-      try {
-        $parser->setCallback($tree);
-        $parser->dataSource= $file->uri;
-        $file->open(FILE_MODE_READ);
-        $string= $file->read($file->size());
-        $file->close();
-        $parser->parse($string);
-        delete($parser);
-      } catch (XMLFormatException $e) {
-        throw($e);
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $parser->setCallback($tree);
+      $parser->dataSource= $file->uri;
+      $file->open(FILE_MODE_READ);
+      $string= $file->read($file->size());
+      $file->close();
+      $parser->parse($string);
+
+      delete($parser);
       
       return $tree;
     }
@@ -181,6 +174,5 @@
      */
     public function onDefault($parser, $data) {
     }
-
   } 
 ?>
