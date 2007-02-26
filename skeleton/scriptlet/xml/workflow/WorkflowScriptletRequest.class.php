@@ -38,8 +38,10 @@
         try {
           $class= XPClass::forName($this->package.'.'.('state.'.$name.'State'));
         } catch (ClassNotFoundException $e) {
-          $this->state= xp::null();
-          throw($e);
+          throw new HttpScriptletException(
+            $e->getMessage(),
+            HTTP_NOT_FOUND
+          );
         }
 
         $this->state= $class->newInstance();
