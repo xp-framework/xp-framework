@@ -57,7 +57,7 @@
 
   </target>
 
-  <target name="deploy" depends="assemble-app">
+  <target name="deploy" depends="package-ejb, assemble-app">
     <copy file="${build.dir}/phpejb.ear" todir="${jboss.dir}/server/default/deploy"/>
   </target>
 

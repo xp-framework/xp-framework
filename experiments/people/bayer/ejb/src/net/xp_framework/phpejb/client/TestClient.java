@@ -4,9 +4,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.Hashtable;
-import net.xp_framework.phpejb.list.EngineList;
 import java.util.ListIterator;
 import java.util.List;
+import javax.script.ScriptException;
+import net.xp_framework.phpejb.list.EngineList;
+import net.xp_framework.phpejb.slsb.SLHelloWorld;
 
 public class TestClient {
 
@@ -25,8 +27,11 @@ public class TestClient {
             while (it.hasNext()) {
                 System.out.println("engine: "+it.next());
             }
+            // Statless
+            SLHelloWorld slhw = (SLHelloWorld)ctx.lookup("phpejb/SLHelloWorldBean/remote");
+            System.out.println(slhw.sayHello("TestClient"));
 
-        } catch (NamingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
