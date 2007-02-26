@@ -187,8 +187,8 @@
     /**
      * Compare two values
      *
-     * @param   &mixed a
-     * @param   &mixed b
+     * @param   mixed a
+     * @param   mixed b
      * @return  bool
      */
     protected function _compare($a, $b) {
@@ -296,7 +296,7 @@
     /**
      * Assert that a given object is of a specified class
      *
-     * @param   &lang.Object var
+     * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notequal'
      * @return  bool
@@ -314,7 +314,7 @@
     /**
      * Assert that a given object is a subclass of a specified class
      *
-     * @param   &lang.Object var
+     * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notsubclass'
      * @return  bool
@@ -369,13 +369,12 @@
     /**
      * Run this test case.
      *
-     * @param   &unittest.TestResult result
+     * @param   unittest.TestResult result
      * @return  bool success
      * @throws  lang.MethodNotImplementedException
      */
     public function run($result) {
-      $class= $this->getClass();
-      $method= $class->getMethod($this->name);
+      $method= $this->getClass()->getMethod($this->name);
 
       if (!$method) {
         throw(new MethodNotImplementedException(
@@ -456,6 +455,25 @@
         : $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
       );
       return $r;
+    }
+    
+    /**
+     * Creates a string representation of this testcase
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->name.'>';
+    }
+
+    /**
+     * Returns whether an object is equal to this testcase
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->name == $cmp->name;
     }
   }
 ?>
