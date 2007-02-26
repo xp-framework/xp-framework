@@ -18,13 +18,13 @@
    *
    * Usage example: Creating an empty image:
    * <code>
-   *   $palette_image= &Image::create(640, 480);
-   *   $truecolor_image= &Image::create(640, 480, IMG_TRUECOLOR);
+   *   $palette_image= Image::create(640, 480);
+   *   $truecolor_image= Image::create(640, 480, IMG_TRUECOLOR);
    * </code>
    *
    * Usage example: Loading an image from a file:
    * <code>
-   *   $image= &Image::loadFrom(new JpegStreamReader(new File('picture.jpg')));
+   *   $image= Image::loadFrom(new JpegStreamReader(new File('picture.jpg')));
    * </code>
    *
    * @ext gd
@@ -78,7 +78,7 @@
      * @param   int h height
      * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
      * @param   string class default __CLASS__ class to create, defaulting to "Image"
-     * @return  &img.Image
+     * @return  img.Image
      * @throws  img.ImagingException in case the image could not be created
      */
     public static function create($w, $h, $type= IMG_PALETTE, $class= __CLASS__) {
@@ -104,8 +104,8 @@
     /**
      * Loads an image from a reader
      *
-     * @param   &img.io.ImageReader reader
-     * @return  &img.Image
+     * @param   img.io.ImageReader reader
+     * @return  img.Image
      */
     public static function loadFrom($reader) {
       return new Image($reader->getResource());
@@ -114,7 +114,7 @@
     /**
      * Saves an image to a writer
      *
-     * @param   &img.io.ImageWriter writer
+     * @param   img.io.ImageWriter writer
      */
     public function saveTo($writer) {
       $writer->setResource($this->handle);
@@ -123,32 +123,22 @@
     /**
      * Convert this image using a given converter
      *
-     * @param   &img.convert.ImageConverter converter
+     * @param   img.convert.ImageConverter converter
      * @return  bool
      * @throws  lang.IllegalArgumentException if converter is not a img.convert.ImageConverter
      */
-    public function convertTo($converter) {
-      if (!is('img.convert.ImageConverter', $converter)) {
-        throw(new IllegalArgumentException(
-          'Given argument is not a img.convert.ImageConverter object ('.xp::typeOf($converter).')'
-        ));
-      }
+    public function convertTo(ImageConverter $converter) {
       return $converter->convert($this);
     }
     
     /**
      * Apply a given filter to this image
      *
-     * @param   &img.filter.ImageFilter filter
+     * @param   img.filter.ImageFilter filter
      * @return  bool
      * @throws  lang.IllegalArgumentException if filter is not a img.filter.ImageFilter
      */
-    public function apply($filter) {
-      if (!is('img.filter.ImageFilter', $filter)) {
-        throw(new IllegalArgumentException(
-          'Given argument is not a img.filter.ImageFilter object ('.xp::typeOf($filter).')'
-        ));
-      }
+    public function apply(ImageFilter $filter) {
       return $filter->applyOn($this);
     }
 
@@ -182,7 +172,7 @@
     /**
      * Copies an area from another image into this image
      *
-     * @param   &img.Image img Image object
+     * @param   img.Image img Image object
      * @param   int dst_x default 0 x coordinate within this image
      * @param   int dst_y default 0 y coordinate within this image
      * @param   int src_x default 0 x coordinate within the source image
@@ -216,7 +206,7 @@
      * Copies an area from another image into this image, resizing it if necessary
      *
      * @see     php://imagecopyresized
-     * @param   &img.Image img Image object
+     * @param   img.Image img Image object
      * @param   int dst_x default 0 x coordinate within this image
      * @param   int dst_y default 0 y coordinate within this image
      * @param   int src_x default 0 x coordinate within the source image
@@ -256,7 +246,7 @@
      * Copies an area from another image into this image, resizing it if necessary.
      *
      * @see     php://imagecopyresampled
-     * @param   &img.Image img Image object
+     * @param   img.Image img Image object
      * @param   int dst_x default 0 x coordinate within this image
      * @param   int dst_y default 0 y coordinate within this image
      * @param   int src_x default 0 x coordinate within the source image
@@ -298,7 +288,7 @@
      * no action is taken, when 100 this function behaves identically to copy()
      *
      * @see     xp://img.Image#copyFrom
-     * @param   &img.Image img Image object
+     * @param   img.Image img Image object
      * @param   int pct default 50 percentage of merge
      * @param   int dst_x default 0 x coordinate within this image
      * @param   int dst_y default 0 y coordinate within this image
@@ -334,9 +324,9 @@
     /**
      * Allocate a color
      *
-     * @param   &img.Color color
+     * @param   img.Color color
      * @param   int alpha default -1 alpha value (0= opaque - 127= transparent)
-     * @return  &img.Color color the color put in
+     * @return  img.Color color the color put in
      */
     public function allocate($color, $alpha= -1) {
       if ($alpha > -1) {
@@ -363,14 +353,11 @@
      * Sets a style
      *
      * @see     xp://img.ImgStyle
-     * @param   &img.ImgStyle style
-     * @return  &img.ImgStyle the new style object
+     * @param   img.ImgStyle style
+     * @return  img.ImgStyle the new style object
      * @throws  lang.IllegalArgumentException if style is not an ImgStyle object
      */
-    public function setStyle($style) {
-      if (!is('ImgStyle', $style)) {
-        throw(new IllegalArgumentException('style parameter is not an ImgStyle object'));
-      }
+    public function setStyle(ImgStyle $style) {
       imagesetstyle($this->handle, $style->getPixels());
       return $style;
     }
@@ -379,14 +366,11 @@
      * Sets a brush
      *
      * @see     xp://img.ImgBrush
-     * @param   &img.ImgBrush brush
-     * @return  &img.ImgBrush the new style object
+     * @param   img.ImgBrush brush
+     * @return  img.ImgBrush the new style object
      * @throws  lang.IllegalArgumentException if style is not an ImgBrush object
      */
-    public function setBrush($brush) {
-      if (!is('ImgBrush', $brush)) {
-        throw(new IllegalArgumentException('brush parameter is not an ImgBrush object'));
-      }
+    public function setBrush(ImgBrush $brush) {
       if (NULL !== $brush->style) {
         imagesetstyle($this->handle, $brush->style->getPixels());
       }
@@ -399,7 +383,7 @@
      *
      * @param   int x
      * @param   int y
-     * @return  &img.Color color object
+     * @return  img.Color color object
      */
     public function colorAt($x, $y) {
       if (FALSE === ($idx= imagecolorat($this->handle, $x, $y))) return NULL;
@@ -439,7 +423,7 @@
      * Fills the image with a specified color at the coordinates
      * defined by x and y
      *
-     * @param   &mixed col (either an img.Color[] consisting of the flood color and the
+     * @param   mixed col (either an img.Color[] consisting of the flood color and the
      *          border color) or a simple img.Color defining the flood color
      * @param   int x default 0
      * @param   int y default 0
@@ -475,7 +459,7 @@
      * color, any regions of the image in that color that were drawn previously
      * will be transparent.
      *
-     * @param   &img.Color color
+     * @param   img.Color color
      */
     public function setTransparency($col) {
       imagecolortransparent($this->handle, $col->handle);
@@ -484,7 +468,7 @@
     /**
      * Retrieve the color which is defined as transparent
      *
-     * @return  &img.Color color
+     * @return  img.Color color
      */
     public function getTransparency() {
       if (-1 == ($t= imagecolortransparent($this->handle))) return NULL;
