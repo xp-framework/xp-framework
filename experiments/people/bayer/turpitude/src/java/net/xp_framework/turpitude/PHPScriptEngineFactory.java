@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class PHPScriptEngineFactory implements ScriptEngineFactory {
+
+    private static PHPScriptEngine MyEngine = null;
     
     /**
      * default constructor
@@ -145,7 +147,12 @@ public class PHPScriptEngineFactory implements ScriptEngineFactory {
      * @return An instance of PHPScriptEngine
      */
     public ScriptEngine getScriptEngine() {
-        PHPScriptEngine eng = new PHPScriptEngine(this);
-        return eng;
+        if (MyEngine == null) {
+            synchronized (PHPScriptEngineFactory.class) {
+                if (MyEngine == null) 
+                    MyEngine = new PHPScriptEngine(this);
+            }
+        }
+        return MyEngine;
     }
 }

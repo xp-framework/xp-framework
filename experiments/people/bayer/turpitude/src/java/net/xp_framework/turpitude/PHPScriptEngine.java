@@ -31,6 +31,18 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
                 }
         });
     }
+
+    /**
+     * finalize method to shut down script engine whenever this objects
+     * is destroyed
+     */
+    protected void finalize() throws Throwable {
+        try {
+            shutDown();
+        } finally {
+            super.finalize();
+        }
+    }
    
     /**
      * set the turpitude variable name
