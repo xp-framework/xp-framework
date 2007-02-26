@@ -20,12 +20,11 @@
    *     'net.xp_framework.unittest.rdbms.DBTest'
    *   );
    *   
-   *   $suite= &new TestSuite();
+   *   $suite= new TestSuite();
    *   $suite->addTest(new DBTest('testConnect'));
    *   $suite->addTest(new DBTest('testSelect'));
    *   
-   *   $result= &$suite->run();
-   *   echo $result->toString();
+   *   echo $suite->run()->toString();
    * </code>
    *
    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
@@ -38,14 +37,11 @@
     /**
      * Add a test
      *
-     * @param   &unittest.TestCase test
-     * @return  &unittest.TestCase
+     * @param   unittest.TestCase test
+     * @return  unittest.TestCase
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
      */
-    public function addTest($test) {
-      if (!is('unittest.TestCase', $test)) {
-        throw(new IllegalArgumentException('Given argument is not a TestCase ('.xp::typeOf($test).')'));
-      }
+    public function addTest(TestCase $test) {
       $this->tests[]= $test;
       return $test;
     }
@@ -53,7 +49,7 @@
     /**
      * Add a test class
      *
-     * @param   &lang.XPClass<unittest.TestCase> class
+     * @param   lang.XPClass<unittest.TestCase> class
      * @return  lang.reflect.Method[] ignored test methods
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase class
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
@@ -107,7 +103,7 @@
      * Returns test at a given position
      *
      * @param   int pos
-     * @return  &unittest.TestCase or NULL if none was found
+     * @return  unittest.TestCase or NULL if none was found
      */
     public function testAt($pos) {
       if (isset($this->tests[$pos])) return $this->tests[$pos]; else return NULL;
@@ -128,7 +124,7 @@
     /**
      * Run this test suite
      *
-     * @return  &unittest.TestResult
+     * @return  unittest.TestResult
      */
     public function run() {
       $result= new TestResult();
