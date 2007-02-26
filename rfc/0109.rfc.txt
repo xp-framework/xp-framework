@@ -100,6 +100,53 @@ and be renamed to AbstractDeferredInvocationHandler (invocation is spelled with
 a "c", while invoke is spelled with a "k").
 
 
+3) Caller
+~~~~~~~~~
+Finding out a method's caller:
+
+<?php
+  class Account extends Object {
+  
+    public function deposit($amount) {
+      $this->cat->debug('Called from', InvocationContext::getCaller());
+
+      // TBI
+    }
+
+    public function withdraw($amount) {
+      $this->cat->debug('Called from', InvocationContext::getCaller());
+
+      // TBI
+    }
+  }
+  
+  class MonetaryTransaction extends Object {
+  
+    public function transfer(Account $origin, Account $destination, $amount) {
+      $origin->withdraw($amount);
+      $destination->deposit($amount);
+    }
+  }
+  
+  $t= new MonetaryTransaction();
+  $t->transfer(Account::getByAccountNumber(1), Account::getByAccountNumber(2), 100);
+?>
+
+This will print somthing like:
+<pre>
+  [15:55:19 29540 debug] Called from util.invoke.Call@{
+    [instance  ] com.example.banking.MonetaryTransaction{}
+    [class     ] lang.XPClass<com.example.banking.MonetaryTransaction>
+    [method    ] public transfer($origin, $destination, $amount)
+    [arguments ] [
+      0 => com.example.banking.Account<#1>
+      1 => com.example.banking.Account<#2>
+      2 => 100
+    ]
+  }
+</pre>
+
+
 Security considerations
 -----------------------
 n/a
@@ -129,6 +176,8 @@ Related documents
 - http://video.google.com/videoplay?docid=8566923311315412414
   Aspect Oriented Programming
 
+- http://javaspecialists.co.za/archive/newsletter.do?issue=087&locale=en_US
+  sun.reflect.Reflection
 
 Comments
 --------
