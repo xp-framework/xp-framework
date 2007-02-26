@@ -126,6 +126,10 @@ Related documents
 - http://javaspecialists.co.za/archive/newsletter.do?issue=005&locale=en_US
   Dynamic Proxies - Short Tutorial
 
+- http://video.google.com/videoplay?docid=8566923311315412414
+  Aspect Oriented Programming
+
+
 Comments
 --------
 
