@@ -34,14 +34,14 @@
      * Constructor
      *
      * <code>
-     *   $n= &new Node('document');
-     *   $n= &new Node('text', 'Hello World');
-     *   $n= &new Node('article', '', array('id' => 42));
+     *   $n= new Node('document');
+     *   $n= new Node('text', 'Hello World');
+     *   $n= new Node('article', '', array('id' => 42));
      * </code>
      *
      * @param   string name
      * @param   string content default NULL
-     * @param   array attribute default array() attributes
+     * @param   array<string, string> attribute default array() attributes
      * @throws  lang.IllegalArgumentException
      */
     public function __construct($name, $content= NULL, $attribute= array()) {
@@ -55,24 +55,24 @@
      *
      * Usage example:
      * <code>
-     *   $n= &Node::fromArray($array, 'elements');
+     *   $n= Node::fromArray($array, 'elements');
      * </code>
      *
      * @param   array arr
      * @param   string name default 'array'
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public static function fromArray($a, $name= 'array') {
-      $n= new Node($name);
+      $n= new self($name);
       $sname= rtrim($name, 's');
       foreach (array_keys($a) as $field) {
         $nname= is_numeric($field) || '' == $field ? $sname : $field;
         if (is_array($a[$field])) {
-          $n->addChild(Node::fromArray($a[$field], $nname));
+          $n->addChild(self::fromArray($a[$field], $nname));
         } else if (is_object($a[$field])) {
-          $n->addChild(Node::fromObject($a[$field], $nname));
+          $n->addChild(self::fromObject($a[$field], $nname));
         } else {
-          $n->addChild(new Node($nname, $a[$field]));
+          $n->addChild(new self($nname, $a[$field]));
         }
       }
       return $n;  
@@ -84,12 +84,12 @@
      *
      * Usage example:
      * <code>
-     *   $n= &Node::fromObject($object);
+     *   $n= Node::fromObject($object);
      * </code>
      *
      * @param   object obj
      * @param   string name default NULL
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public static function fromObject($obj, $name= NULL) {
       if (!method_exists($obj, '__sleep')) {
@@ -98,10 +98,8 @@
         $vars= array();
         foreach ($obj->__sleep() as $var) $vars[$var]= $obj->{$var};
       }
-      return Node::fromArray(
-        $vars, 
-        (NULL === $name) ? get_class($obj) : $name
-      );
+
+      return self::fromArray($vars, (NULL === $name) ? get_class($obj) : $name);
     }
 
     /**
@@ -299,17 +297,11 @@
     /**
      * Add a child node
      *
-     * @param   &xml.Node child
-     * @return  &xml.Node added child
-     * @throws  lang.IllegalArgumentException
+     * @param   xml.Node child
+     * @return  xml.Node added child
+     * @throws  lang.IllegalArgumentException in case the given argument is not a Node
      */
-    public function addChild($child) {
-      if (!is('Node', $child)) {
-        throw(new IllegalArgumentException(
-          'Parameter child must be an xml.Node (given: '.xp::typeOf($child).')'
-        ));
-      }
-
+    public function addChild(Node $child) {
       $this->children[]= $child;
       return $child;
     }
