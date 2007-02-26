@@ -1,0 +1,54 @@
+\section{Stateless Session Beans}
+\label{sec:chap2:slsb}
+
+Die simpelste EJB ist die Stateless Session Bean, weswegen sie als erstes umgesetzt werden sollte.
+Stateless Session Beans haben - wie der Name bereits vermuten l"a\ss t keinen eigenen Zustand, sie
+k"onnen also keine Informationen "uber mehrere Anfragen hinweg vorhalten.
+
+\subsection{Interface}
+\label{sec:chap2:slsb:if}
+Wie f"ur jede EJB muss auch f"ur die Stateless Session Bean zun"achst ein Interface definiert werden.
+Das Interface f"ur diese Beispielanwendung ist denkbar einfach, es besteht lediglich aus einer einzigen
+Methode, welche einen Namen als String entgegennimmt und einen String zur"uckgibt, der eine
+Grussbotschaft enth"alt. 
+\begin{lstlisting}[caption=Stateless Hello World Interface]
+public interface SLHelloWorld {
+    public String sayHello(String s);
+}
+\end{lstlisting}
+
+\subsection{PHP-Implementation}
+\label{sec:chap2:slsb:impl}
+
+Die Implementation des Bean-Interfaces besteht aus zwei Teilen, zum einen dem Java-Teil, der die
+ScriptEngine instantiiert, den PHP-Quelltext laedt und "ubersetzt und die entsprechenden PHP-Funktionen
+aufruft, und zum anderen den PHP-Teil, der die eigentliche Interface-Implementierung enth"alt.
+\begin{lstlisting}[caption=Java-Teil]
+public String sayHello(String s) {
+...
+    ScriptEngineManager mgr = new ScriptEngineManager();
+    ScriptEngine eng = mgr.getEngineByName("turpitude");
+    Compilable comp = (Compilable)eng;
+    CompiledScript script = comp.compile(/* Source */);
+    Invocable inv = (Invocable)script;
+    SLHelloWorld hw = 
+        inv.getInterface(SLHelloWorld.class);
+...
+    return hw.sayHello(s);
+}
+\end{lstlisting}
+Nat"urlich bietet Turpitude viele M"oglichkeiten die n"otige Funktionalit"at zu implementieren,
+trotzdem wurde die vielleicht komplizierteste Variante gew"ahlt: das Implementieren des EJB-Interfaces in
+PHP und das Aufrufen der PHP-Methoden "uber das \emph{javax.script.Invocable} Interface. Diese Entscheidung 
+wurde vor allem vor dem Hintergrund getroffen, dass die Entwicklung einer PHP-Implementation eines Java-Interfaces
+intuitiver erscheint, als das Entwickeln von PHP-Skripten die sich an eine nicht trivial ersichtliche
+Konvention halten m"ussen um vom Java-Teil aufgerufen werden zu k"onnen.
+\begin{lstlisting}[caption=PHP-Implementierung]
+<?php
+class SLHelloWorld {
+  function sayHello($s) {
+    return 'The PHP-implementation says hello to '.$s;
+  }
+}
+?>
+\end{lstlisting}

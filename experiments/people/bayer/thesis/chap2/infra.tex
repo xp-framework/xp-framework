@@ -78,5 +78,14 @@ Hierzu wurde ein Shell-Skript geschrieben, das die ben"otigten Umgebungsvariable
 und dann das eigentliche JBoss-Startskript \emph{run.sh} mit den n"otigen Parametern ausf"uhrt. 
 Als dies getan war erschien Turpitude in der Liste der verf"ugbaren ScriptEngines, und es konnte mit der eigenlichen
 Aufgabe begonnen werden.
+\begin{lstlisting}[caption=JBoss Startskript]
+#!/bin/sh
+TURP_HOME=<PFAD>
+PHP_HOME=<PFAD>
+export JBOSS_HOME=/home/nsn/jboss-4.0.5.GA
+export JAVA_HOME=/home/nsn/jdk1.6.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PHP_HOME/libs:$TURP_HOME
+./run.sh --classpath=$TURP_HOME/turpitude.jar
+\end{lstlisting}
 
 

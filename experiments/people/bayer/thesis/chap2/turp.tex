@@ -1,0 +1,59 @@
+\section{"Anderungen an Turpitude}
+\label{sec:chap2:turp}
+
+Im Laufe der Entwicklung dieser Beispielanwendungen zeigten sich einige Schwachstellen in
+Turpitude, die aber behoben werden konnten. Die meisten aufgetretenen Probleme r"uhrten daher,
+dass innerhalb eines J2EE Application Servers besondere Bedingungen vorherrschen.
+Dieser Abschnitt soll diese Probleme und ihre Behebung erl"autern.
+
+\subsection{finalize}
+\label{sec:chap2:turp:final}
+
+Eine Besonderheit f"ur eine Klasse wenn sie innerhalb eines Application Servers aufgerufen wird
+ist, dass keine Garantie "uber die Lebenszeit und -Zyklen der Instanzen gegeben wird, ein Objekt kann
+- immer entsprechend der J2EE-Spezifikation - mehrfach oder auch nur einfach benutzt werden, und
+es besteht keine Kontrolle "uber die Laufzeit der ausf"uhrenden JVM.
+Deswegen reichte der in der PHPScriptEngine eingebaut \emph{VMShutdown-Hook} nicht mehr aus um
+den PHP-Interpreter aus dem Speicher zu entfernen und auf C-Ebene belegte Resourcen wieder
+freizugeben. Java kennt zwar keine Destruktoren, aber jede Klasse erbt von \emph{Object} die
+Methode \emph{finalize}, die jedesmal aufgerufen wird wenn das Objekt von der \emph{Garbage Collection}
+aufger"aumt wird. 
+Beim "uberschreiben dieser Methode ist es angebracht einen \emph{try-catch-finally}-Block
+um die ausgef"uhrten Zeilen zu legen, und im finally-Teil \emph{super.finalize()} aufzurufen.
+Jede in \emph{finalize} auftretende Exception unterbricht zwar das aufr"aumen, wird ansonsten
+aber ignoriert.
+Folglich wurde in der PHPScriptEngine die Methode finalize "uberschrieben, und innerhalb dieser
+Methode wird \emph{shutDown} aufgerufen.
+
+\subsection{Mehrfachinstanziierung}
+\label{sec:chap2:turp:multi}
+
+Wird innerhalb eines Java-Threads der PHP-Interpreter mehrfach instanziiert kann es zu Problemen
+kommen: zum einen kann nicht mehr gew"ahrleistet werden dass die Ausf"uhrung des "ubersetzten
+PHP-Quelltextes Fehlerfrei abl"auft, da unter Umst"anden w"ahrend der Ausf"uhrung die sogenannten
+\emph{Executor Globals} (Skriptvariablen, Aufrufstacks und die Zend-Opcodes selbst) ver"andert werden,
+und zum anderen kann der mehrfache Aufruf der \emph{startUp()}-Methode, in der der PHP-Interpreter
+initialisiert wird, zu schweren Fehlern bis hin zu Abst"urzen der JVM f"uhren. Um dies zu verhindern
+wurde die PHPScriptEngineFactory derart angepasst, dass sie eine abge"anderte Version Singleton-Patterns
+implementiert um zu verhindern dass mehrere PHPScriptEngines gleichzeitig existieren. 
+Da der Konstruktor der PHPScriptEngine \emph{protected} ist kann angenommen werden dass die 
+Methode \emph{getScriptEngine()} der PHPScriptEngineFactory die einzige Stelle ist, an der
+ScriptEngine-Instanzen erzeugt werden. So wurde der Factory ein privates, statisches Attribut \emph{MyEngine} 
+hinzugef"ugt, welches die Singleton-Instanz der PHPScriptEngine vorh"alt. Dieses Attribut ist zu Begin
+\emph{NULL}, und wird beim ersten Aufruf von \emph{getScriptEngine()} gesetzt, jeder weitere Aufruf
+dieser Methode gibt nur noch eine Referenz auf diese einzige ScriptEngine zur"uck. Das Erzeugen des
+Singletons wird zus"atzlich durch einen \emph{synchronized}-Bl"ock vor gleichzeitiger
+Mehrfachausf"uhrung gesch"utzt.
+\begin{lstlisting}[caption=Singleton-Erzeugung]
+public ScriptEngine getScriptEngine() {
+    if (MyEngine == null) {
+        synchronized (PHPScriptEngineFactory.class) {
+            if (MyEngine == null)
+                MyEngine = new PHPScriptEngine(this);
+        }
+    }
+    return MyEngine;
+}
+\end{lstlisting}
+
+
