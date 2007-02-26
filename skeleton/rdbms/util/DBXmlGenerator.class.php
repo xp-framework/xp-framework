@@ -25,23 +25,18 @@
      */
     public function __construct() {
       $this->doc= new Tree();
-      
     }
 
     /**
      * Create XML from a DBTable
      *
-     * @param   &rdbms.DBTable table
+     * @param   rdbms.DBTable table
      * @param   string dbhost
      * @param   string database
-     * @return  &rdbms.util.DBXmlGenerator object
+     * @return  rdbms.util.DBXmlGenerator object
      */    
-    public static function createFromTable($table, $dbhost, $database) {
-      if (!is('DBTable', $table)) {
-        throw(new IllegalArgumentException('Argument table is not a DBTable object'));
-      }
-      
-      $g= new DBXmlGenerator();
+    public static function createFromTable(DBTable $table, $dbhost, $database) {
+      $g= new self();
       $g->doc->root->setAttribute('created_at', date('r'));
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       
