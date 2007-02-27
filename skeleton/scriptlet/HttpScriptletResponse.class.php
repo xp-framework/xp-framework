@@ -149,7 +149,7 @@
           header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
       } 
       foreach ($this->headers as $header) {
-        header(strtr($header, array("\r" => '', "\n" => "\n\t")));
+        header(strtr($header, array("\r" => '', "\n" => "\n\t")), FALSE);
       }
     }
 
