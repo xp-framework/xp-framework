@@ -26,19 +26,19 @@
   <!--
    ! Type mapping for what the SOAP API maps automatically
    !
-   ! @see   xp://xml.soap.SOAPClient
+   ! @see   xp://webservices.soap.SOAPClient
    !-->
   <xsl:variable name="typemap">
     <mapping for="xsd:string">string</mapping>
     <mapping for="string">string</mapping>
-    <mapping for="xsd:long">xml.soap.types.SOAPLong</mapping>
+    <mapping for="xsd:long">webservices.soap.types.SOAPLong</mapping>
     <mapping for="xsd:int">int</mapping>
     <mapping for="xsd:float">float</mapping>
     <mapping for="xsd:double">float</mapping>
     <mapping for="xsd:boolean">bool</mapping>
     <mapping for="soapenc:Array">array</mapping>
-    <mapping for="xsd:base64Binary">xml.soap.types.SOAPBase64Binary</mapping>
-    <mapping for="apachesoap:Map">xml.soap.types.SOAPHashmap</mapping>
+    <mapping for="xsd:base64Binary">webservices.soap.types.SOAPBase64Binary</mapping>
+    <mapping for="apachesoap:Map">webservices.soap.types.SOAPHashmap</mapping>
   </xsl:variable>
 
   <!--
@@ -529,7 +529,7 @@
         <xsl:with-param name="for" select="wsdl:output/@message"/>
       </xsl:call-template>
       <xsl:text>
-<![CDATA[     * @throws  xml.soap.SOAPFaultException in case a fault occurs
+<![CDATA[     * @throws  webservices.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.FormatException in case not-well-formed XML is returned
      */
@@ -583,8 +583,8 @@
  * $Id$ 
  */
   uses(
-    'xml.soap.SOAPClient', 
-    'xml.soap.transport.SOAPHTTPTransport'
+    'webservices.soap.SOAPClient', 
+    'webservices.soap.transport.SOAPHTTPTransport'
   );
   
   /**
