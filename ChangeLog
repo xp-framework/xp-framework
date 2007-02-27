@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+Version 5.3.1, released 2007-02-27
+----------------------------------
+SVN version: 9510
+
 - Fixed header handling for multiple headers with same name in scriptlet API 
   (gelli)
 - Changed various classes to use type hints instead of manual instanceof/
