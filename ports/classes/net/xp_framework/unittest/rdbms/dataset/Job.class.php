@@ -50,7 +50,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByJob_id($job_id) {
-      return array_shift(self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**
