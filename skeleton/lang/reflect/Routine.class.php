@@ -257,6 +257,20 @@
     }
     
     /**
+     * Returns whether an object is equal to this routine
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $cmp->name == $this->name &&
+        $cmp->getDeclaringClass()->equals($this->getDeclaringClass())
+      );
+    }
+    
+    /**
      * Retrieve string representation. Examples:
      *
      * <pre>
