@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fixed header handling for multiple headers with same name in scriptlet API 
+  (gelli)
 - Changed various classes to use type hints instead of manual instanceof/
   IllegalArgumentException code
   (friebe)
