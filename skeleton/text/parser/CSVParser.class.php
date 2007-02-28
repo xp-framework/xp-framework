@@ -12,6 +12,7 @@
    *
    * @purpose Interface for parsing CSV-files
    * @see     http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm
+   * @test    xp://net.xp_framework.unittest.text.parser.CSVParserTest
    */
   class CSVParser extends Object {
     public
@@ -29,7 +30,7 @@
      * @param   string delim delimiter
      * @return  string token
      */
-    protected function _strtok($string, $delim) {
+    protected function _strtok(&$string, $delim) {
 
       // Note: don't use builtin strtok, because it does ignore an
       // empty field (two delimiters in a row). We need this information.
