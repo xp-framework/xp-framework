@@ -147,6 +147,44 @@ This will print somthing like:
 </pre>
 
 
+4) Call comparison
+~~~~~~~~~~~~~~~~~~
+Instead of manually comparing class name, method and parameter counts in
+interceptors, one can make use of the PointCut class.
+<?php
+  if (
+    'com.example.banking.Account' == $chain->instance->getClassName() &&
+    'transfer' == $chain->method->getName() && 
+    1 == sizeof($chain->parameters) &&
+    $chain->parameters[0] > 10000 &&
+    $this->level < 4
+  ) {
+    // ...
+  }
+  
+  if (
+    $chain->getCall()->matchedBy(new PointCut('com.example.banking.Account::transfer(1)')) && 
+    $chain->parameters[0] > 10000 && 
+    $this->level < 4
+  ) {
+    // ...
+  }
+?>
+
+Syntax that can be used in forName():
+<pre>
+  [class]::[method]([narguments])
+</pre>
+
+Where:
+- "class" is the fully qualified class name
+
+- "method" name is the method name or the '*' (for any method)
+
+- "narguments" is either a number of arguments or the '*' 
+  (for any given number of parameters)
+
+
 Security considerations
 -----------------------
 n/a
