@@ -140,8 +140,11 @@
     </xsl:for-each>
     <xsl:text>
      * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
-      <xsl:if test="not(@unique= 'true')">[]</xsl:if>
-    <xsl:text> object
+    <xsl:choose>
+      <xsl:when test="not(@unique= 'true')">[] entities</xsl:when>
+      <xsl:otherwise> entity</xsl:otherwise>
+    </xsl:choose>
+    <xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getBy</xsl:text>
@@ -158,27 +161,54 @@
     <xsl:text>) {&#10;</xsl:text>
       <xsl:choose>
         <xsl:when test="count(key) = 1">
-          <xsl:text>      return </xsl:text>
-          <xsl:if test="@unique = 'true'">current(</xsl:if>
-          <xsl:text>self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text>
-          <xsl:value-of select="key"/>
-          <xsl:text>', $</xsl:text>
-          <xsl:value-of select="key"/>
-          <xsl:text>, EQUAL)))</xsl:text><xsl:if test="@unique = 'true'">)</xsl:if><xsl:text>;</xsl:text>
+        
+          <!-- Single key -->
+          <xsl:choose>
+            <xsl:when test="@unique = 'true'">
+              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text>
+              <xsl:value-of select="key"/>
+              <xsl:text>', $</xsl:text>
+              <xsl:value-of select="key"/>
+              <xsl:text>, EQUAL)));&#10;      return $r ? $r[0] : NULL;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>      return self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text>
+              <xsl:value-of select="key"/>
+              <xsl:text>', $</xsl:text>
+              <xsl:value-of select="key"/>
+              <xsl:text>, EQUAL)));</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text>      return </xsl:text>
-          <xsl:if test="@unique = 'true'">current(</xsl:if>
-          <xsl:text>self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
-          <xsl:for-each select="key">
-            <xsl:text>        array('</xsl:text>
-            <xsl:value-of select="."/>
-            <xsl:text>', $</xsl:text>
-            <xsl:value-of select="."/>
-            <xsl:text>, EQUAL)</xsl:text>
-            <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
-          </xsl:for-each>
-          <xsl:text>      ))</xsl:text><xsl:if test="@unique = 'true'">)</xsl:if><xsl:text>;</xsl:text>
+        
+          <!-- Multiple keys -->
+          <xsl:choose>
+            <xsl:when test="@unique = 'true'">
+              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
+              <xsl:for-each select="key">
+                <xsl:text>        array('</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>', $</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>, EQUAL)</xsl:text>
+                <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
+              </xsl:for-each>
+              <xsl:text>      ));&#10;      return $r ? $r[0] : NULL;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>      return self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
+              <xsl:for-each select="key">
+                <xsl:text>        array('</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>', $</xsl:text>
+                <xsl:value-of select="."/>
+                <xsl:text>, EQUAL)</xsl:text>
+                <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
+              </xsl:for-each>
+              <xsl:text>      ));</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
     <xsl:text>&#10;    }&#10;</xsl:text>
