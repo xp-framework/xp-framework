@@ -149,5 +149,14 @@
         $this->chain->invoke($this, $this->target, array())
       );
     }
+
+    /**
+     * Test addInterceptor() throws an exception when passed an illegal argument
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function illegalArgument() {
+      $this->chain->addInterceptor(new Object());
+    }
   }
 ?>
