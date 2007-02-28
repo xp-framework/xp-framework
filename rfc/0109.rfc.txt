@@ -162,7 +162,7 @@ interceptors, one can make use of the PointCutExpression class.
     // ...
   }
   
-  $pc= new PointCutExpression('com.example.banking.Account::transfer(1)');
+  $pc= new PointCutExpression('call:com.example.banking.Account::transfer(1)');
   if (
     $pc->matches($chain->getCall()) && 
     $chain->parameters[0] > 10000 && 
@@ -174,7 +174,8 @@ interceptors, one can make use of the PointCutExpression class.
 
 Syntax that can be used in forName():
 <pre>
-  [class]::[method]([narguments])
+  call:[class]::[method]([narguments])
+  new:[class]([narguments])
 </pre>
 
 Where:
