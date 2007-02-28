@@ -134,7 +134,7 @@ Finding out a method's caller:
 
 This will print somthing like:
 <pre>
-  [15:55:19 29540 debug] Called from util.invoke.Call@{
+  [15:55:19 29540 debug] Called from util.invoke.Invocation@{
     [instance  ] com.example.banking.MonetaryTransaction{}
     [class     ] lang.XPClass<com.example.banking.MonetaryTransaction>
     [method    ] public transfer($origin, $destination, $amount)
@@ -146,9 +146,17 @@ This will print somthing like:
   }
 </pre>
 
+Another example of using the invocation class:
+<?php
+  $repr= $instance->getClass()->getMethod('toString')->invoke($instance);
 
-4) Call comparison
-~~~~~~~~~~~~~~~~~~
+  $i= new Invocation($instance, 'toString');
+  $repr= $i->invoke();  
+?>
+
+
+4) Invocation comparison
+~~~~~~~~~~~~~~~~~~~~~~~~
 Instead of manually comparing class name, method and parameter counts in
 interceptors, one can make use of the PointCutExpression class.
 <?php
@@ -164,7 +172,7 @@ interceptors, one can make use of the PointCutExpression class.
   
   $pc= new PointCutExpression('call:com.example.banking.Account::transfer(1)');
   if (
-    $pc->matches($chain->getCall()) && 
+    $pc->matches($chain->invocation()) && 
     $chain->parameters[0] > 10000 && 
     $this->level < 4
   ) {
