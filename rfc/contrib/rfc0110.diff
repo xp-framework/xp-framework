@@ -1,0 +1,97 @@
+Index: skeleton/remote/protocol/StackTraceElementMapping.class.php
+===================================================================
+--- skeleton/remote/protocol/StackTraceElementMapping.class.php	(revision 9513)
++++ skeleton/remote/protocol/StackTraceElementMapping.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('remote.protocol.SerializerMapping');
++  uses('remote.protocol.SerializerMapping', 'remote.RemoteStackTraceElement');
+ 
+   /**
+    * Mapping for lang.StackTraceElement
+@@ -32,7 +32,7 @@
+       }
+       $serialized->offset++;  // Closing "}"
+       
+-      $value= new StackTraceElement(
++      $value= new RemoteStackTraceElement(
+         $details['file'],
+         $details['class'],
+         $details['method'],
+Index: skeleton/remote/RemoteStackTraceElement.class.php
+===================================================================
+--- skeleton/remote/RemoteStackTraceElement.class.php	(revision 0)
++++ skeleton/remote/RemoteStackTraceElement.class.php	(revision 0)
+@@ -0,0 +1,25 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Represents a stack frame existing on the remote side
++   *
++   * @see      xp://lang.StackTraceElement
++   * @purpose  Specialized StackTraceElement
++   */
++  class RemoteStackTraceElement extends StackTraceElement {
++  
++    /**
++     * Returns qualified class name
++     *
++     * @param   string class unqualified name
++     * @return  string
++     */
++    protected function qualifiedClassName($class) {
++      return $class;
++    }
++  }
++?>
+
+Property changes on: skeleton/remote/RemoteStackTraceElement.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/lang/StackTraceElement.class.php
+===================================================================
+--- skeleton/lang/StackTraceElement.class.php	(revision 9513)
++++ skeleton/lang/StackTraceElement.class.php	(working copy)
+@@ -40,6 +40,16 @@
+     }
+     
+     /**
++     * Returns qualified class name
++     *
++     * @param   string class unqualified name
++     * @return  string
++     */
++    protected function qualifiedClassName($class) {
++      return xp::nameOf($class);
++    }
++    
++    /**
+      * Create string representation
+      *
+      * @return  string
+@@ -51,7 +61,7 @@
+           if (is_array($this->args[$j])) {
+             $args[]= 'array['.sizeof($this->args[$j]).']';
+           } else if (is_object($this->args[$j])) {
+-            $args[]= get_class($this->args[$j]).'{}';
++            $args[]= $this->qualifiedClassName(get_class($this->args[$j])).'{}';
+           } else if (is_string($this->args[$j])) {
+             $display= str_replace('%', '%%', addcslashes(substr($this->args[$j], 0, min(
+               (FALSE === $p= strpos($this->args[$j], "\n")) ? 0x40 : $p, 
+@@ -75,7 +85,7 @@
+       }
+       return sprintf(
+         "  at %s::%s(%s) [line %d of %s] %s\n",
+-        isset($this->class) ? xp::nameOf($this->class) : '<main>',
++        isset($this->class) ? $this->qualifiedClassName($this->class) : '<main>',
+         isset($this->method) ? $this->method : '<main>',
+         implode(', ', $args),
+         $this->line,
