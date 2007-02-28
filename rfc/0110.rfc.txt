@@ -20,13 +20,11 @@ Ability to distinguish between local stack frames and remote stack frames.
 
 Functionality
 -------------
+The lang.StackTraceElement class will be extended to provide an overwriteable
+qualifiedClassName() method which will use xp::nameOf() per default.
 
-Class remote.RemoteStackTraceElement:
-<?php
-  class RemoteStackTraceElement extends StackTraceElement {
-  
-  }
-?>
+The remote.RemoteStackTraceElement class will overwrite this method and 
+return the name as-is (it already is qualified).
 
 
 Security considerations
@@ -46,12 +44,12 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/rfc/contrib/rfc0110.diff
+  Implementing patch
 
 
 Comments
 --------
 n/a
-
 
 <EOF>
