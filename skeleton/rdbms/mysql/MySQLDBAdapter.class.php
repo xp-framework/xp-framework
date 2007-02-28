@@ -34,7 +34,8 @@
         'mediumtext' => DB_ATTRTYPE_TEXT,
         'text'       => DB_ATTRTYPE_TEXT,
         'enum'       => DB_ATTRTYPE_ENUM,
-        'decimal'    => DB_ATTRTYPE_DECIMAL
+        'decimal'    => DB_ATTRTYPE_DECIMAL,
+        'float'      => DB_ATTRTYPE_FLOAT
       );
       parent::__construct($conn);
     }
