@@ -85,5 +85,16 @@
     public function illegalJoinPoint() {
       new PointCutExpression('FOO:...');
     }
+
+    /**
+     * Tests 
+     *
+     */
+    #[@test]
+    public function constructJoinPoint() {
+      $expr= new PointCutExpression('new:lang.Object(*)');
+      $this->assertEquals(PointCutExpression::CONSTRUCT, $expr->getJoinpoint());
+      $this->assertTrue($expr->matches(new Invocation($this, 'Object', '__construct', array())));
+    }
   }
 ?>

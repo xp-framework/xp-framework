@@ -29,6 +29,9 @@
       sscanf($expression, '%[^:]:%[^$]', $this->joinpoint, $spec);
       switch ($this->joinpoint) {
         case self::CONSTRUCT:
+          sscanf($spec, '%[^(](%[^)])', $class, $this->narguments);
+          $this->class= XPClass::forName($class);
+          $this->method= $this->class->getConstructor();
           break;
         
         case self::CALL:

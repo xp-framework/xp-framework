@@ -43,10 +43,13 @@
     /**
      * Get this call's method
      *
-     * @return  lang.reflect.Method
+     * @return  lang.reflect.Routine
      */
     public function getCallingMethod() {
-      return $this->getCallingClass()->getMethod($this->method);
+      return ('__construct' == $this->method
+        ? $this->getCallingClass()->getConstructor()
+        : $this->getCallingClass()->getMethod($this->method)
+      );
     }
 
     /**
