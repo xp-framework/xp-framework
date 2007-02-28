@@ -150,7 +150,7 @@ This will print somthing like:
 4) Call comparison
 ~~~~~~~~~~~~~~~~~~
 Instead of manually comparing class name, method and parameter counts in
-interceptors, one can make use of the PointCut class.
+interceptors, one can make use of the PointCutExpression class.
 <?php
   if (
     'com.example.banking.Account' == $chain->instance->getClassName() &&
@@ -162,8 +162,9 @@ interceptors, one can make use of the PointCut class.
     // ...
   }
   
+  $pc= new PointCutExpression('com.example.banking.Account::transfer(1)');
   if (
-    $chain->getCall()->matchedBy(new PointCut('com.example.banking.Account::transfer(1)')) && 
+    $pc->matches($chain->getCall()) && 
     $chain->parameters[0] > 10000 && 
     $this->level < 4
   ) {
