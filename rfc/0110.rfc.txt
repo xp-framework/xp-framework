@@ -1,0 +1,57 @@
+RFC 0110: RemoteStackTraceElement
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Feb 28 14:16:03 CET 2007
+@status: draft
+@category: remote
+
+Scope of Change
+---------------
+Stack trace elements representing stack frames on the remote side will be
+mapped to RemoteStackTraceElement objects instead of StackTraceElements.
+
+
+Rationale
+---------
+Ability to distinguish between local stack frames and remote stack frames.
+
+
+Functionality
+-------------
+
+Class remote.RemoteStackTraceElement:
+<?php
+  class RemoteStackTraceElement extends StackTraceElement {
+  
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
