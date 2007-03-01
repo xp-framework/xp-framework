@@ -25,9 +25,10 @@
         'xsi:type'    => 'hash:Map'
       ));
       foreach ($params as $key => $value) {
-        $item= $this->item->addChild(new SOAPNode('item'));
-        $this->item->_recurse($item, array('key' => $key));
-        $this->item->_recurse($item, array('value' => $value));
+        $this->item->addChild(SOAPNode::fromArray(array(
+          'key'   => $key,
+          'value' => $value
+        ), 'item'));
       }
     }
     
