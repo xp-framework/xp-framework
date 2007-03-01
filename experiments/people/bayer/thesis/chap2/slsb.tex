@@ -42,7 +42,10 @@ trotzdem wurde die vielleicht komplizierteste Variante gew"ahlt: das Implementie
 PHP und das Aufrufen der PHP-Methoden "uber das \emph{javax.script.Invocable} Interface. Diese Entscheidung 
 wurde vor allem vor dem Hintergrund getroffen, dass die Entwicklung einer PHP-Implementation eines Java-Interfaces
 intuitiver erscheint, als das Entwickeln von PHP-Skripten die sich an eine nicht trivial ersichtliche
-Konvention halten m"ussen um vom Java-Teil aufgerufen werden zu k"onnen.
+Konvention halten m"ussen um vom Java-Teil aufgerufen werden zu k"onnen. Ausserdem ist so ein 
+generischer Adapter denkbar der beliebige Java-Interfaces auf passende PHP-Implementationen adaptiert,
+oder zumindest ein Automatismus, der aus einem gegebenen Java-Interface und einer PHP-Implementierung den 
+n"otigen Java-Quelltext automatisch erzeugt.
 \begin{lstlisting}[caption=PHP-Implementierung]
 <?php
 class SLHelloWorld {
@@ -52,3 +55,5 @@ class SLHelloWorld {
 }
 ?>
 \end{lstlisting}
+Der Aufruf des SLHelloWorld-Service unterscheidet sich nicht von dem Aufruf des EngineList-Services, siehe \ref{sec:chap2:infra:example}.
+

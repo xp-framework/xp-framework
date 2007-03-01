@@ -56,4 +56,22 @@ public ScriptEngine getScriptEngine() {
 }
 \end{lstlisting}
 
+\subsection{Parameterlose Methodenaufrufe}
+\label{sec:chap2:turp:params}
+
+Ein besonders hartn"ckiger und schwer zu findender Fehler f"uhrte zu Abst"urzen der JVM beim Aufrufen
+parameterloser Methoden "uber Java-Interfaces, die mittels \emph{Invocable.getInterface} erzeugt wurden.
+Obwohl die InvocationHandler-Methode \emph{invoke} genau wie die Methoden \emph{invokeMethod} und \emph{invokeFunction}
+die Methodenparameter mittels der Signatur \emph{Object... args} "ubergeben, ist args bei parameterlosen Methoden
+bei \emph{invoke} null, w"ahrend bei \emph{invokeMethod} und \emph{invokeFunction} in diesem Fall ein leeres Array 
+"ubergeben wird. Die vom nativen Code aufgerufene JNI-Funktion \emph{GetArrayLength} f"uhrt zu einem Absturz der
+JVM wenn ihr ein Nullpointer "ubergeben wird. Um dies zu verhindern wurde in der \emph{invoke()}-Methode des
+\emph{PHPInvocationHandler}s ein Test eingef"uhrt, ob das Parameterarray null ist. In diesem Fall wird einfach
+ein leeres Object-Array erzeugt und dieses an den nativen Code "ubergeben.
+
+\subsection{Zend Garbage Collection}
+\label{sec:chap2:turp:zendgc}
+
+TODO: PHPObject - zval - ref := 0, finalize()?
+
 
