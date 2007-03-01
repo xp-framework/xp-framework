@@ -2,7 +2,8 @@
 
   <property name="src.dir" value="${basedir}/src"/>
   <property name="build.dir"   value="${basedir}/build"/>
-  <property name="jboss.dir" value="/home/nsn/jboss-4.0.5.GA/"/>
+  <!-- <property name="jboss.dir" value="/home/nsn/jboss-4.0.5.GA/"/> -->
+  <property name="jboss.dir" value="/home/nsn/jboss-5.0.0.Beta1/"/> 
 
   <target name="all">
     <antcall target="package-ejb" />
@@ -11,6 +12,9 @@
 
   <!-- The build classpath -->
   <path id="build.classpath">
+    <fileset dir="${jboss.dir}/client/">
+      <include name="*.jar"/>
+    </fileset>
     <fileset dir="${basedir}/lib/">
       <include name="*.jar"/>
     </fileset>
@@ -21,6 +25,23 @@
     <fileset dir="${jboss.dir}client/">
       <include name="*.jar"/>
     </fileset>
+    <fileset dir="${jboss.dir}lib/">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${jboss.dir}server/default/lib/">
+      <include name="*.jar"/>
+    </fileset>
+    <!--
+    <fileset dir="${basedir}/lib/">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${jboss.dir}client/">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${jboss.dir}lib/">
+      <include name="*.jar"/>
+    </fileset>
+    -->
   </path>
 
   <target name="prepare">
@@ -38,7 +59,8 @@
   </target>
 
   <target name="package-ejb" depends="compile">
-    <jar jarfile="${build.dir}/jar/phpejb.ejb3">
+    <!-- <jar jarfile="${build.dir}/jar/phpejb.ejb3"> -->
+    <jar jarfile="${build.dir}/jar/phpejb.jar"> 
       <fileset dir="${build.dir}/classes">
         <include name="**/**"/>
       </fileset>
@@ -52,7 +74,7 @@
       </metainf>
 
       <fileset dir="${build.dir}/jar"
-        includes="*.ejb3,*.war"/>
+        includes="*.ejb3,*.war,*.jar"/>
     </jar>
 
   </target>
@@ -62,6 +84,8 @@
   </target>
 
   <target name="test" depends="compile">
+    <property name="myclasspath" refid="execute.classpath"/>
+    <!-- <echo message="Classpath = ${myclasspath}"/> -->
     <java classname="net.xp_framework.phpejb.client.TestClient" classpathref="execute.classpath"/>
   </target>
 

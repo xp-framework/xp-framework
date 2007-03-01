@@ -6,7 +6,7 @@
     <description>EJBs written in PHP</description>
 
     <module>
-      <ejb>phpejb.ejb3</ejb>
+      <ejb>phpejb.jar</ejb>
     </module>
 
 </application>

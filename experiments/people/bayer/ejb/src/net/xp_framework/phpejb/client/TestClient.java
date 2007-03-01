@@ -9,6 +9,7 @@ import java.util.List;
 import javax.script.ScriptException;
 import net.xp_framework.phpejb.list.EngineList;
 import net.xp_framework.phpejb.slsb.SLHelloWorld;
+import net.xp_framework.phpejb.sfsb.SFHelloWorld;
 
 public class TestClient {
 
@@ -30,8 +31,12 @@ public class TestClient {
             // Statless
             SLHelloWorld slhw = (SLHelloWorld)ctx.lookup("phpejb/SLHelloWorldBean/remote");
             System.out.println(slhw.sayHello("TestClient"));
+            // Stateful
+            SFHelloWorld sfhw = (SFHelloWorld)ctx.lookup("phpejb/SFHelloWorldBean/remote");
+            sfhw.setName("TestClient");
+            System.out.println(sfhw.sayHello());
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
             return;
         }
