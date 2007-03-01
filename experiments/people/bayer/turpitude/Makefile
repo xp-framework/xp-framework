@@ -1,7 +1,8 @@
 ################################################
 # change these values accorgind to your system #
 ################################################
-JAVA_HOME = /home/nsn/jdk1.6.0
+#JAVA_HOME = /home/nsn/jdk1.6.0
+JAVA_HOME = /usr/lib/jvm/sun-jdk-1.6
 PHP_HOME = /home/nsn/devel/php/php-5.2.0
 #PHP_HOME = /home/nsn/devel/php/php-hax
 ############################################

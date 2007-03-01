@@ -45,7 +45,7 @@ public class PHPCompiledScript extends CompiledScript implements Invocable {
         // check parameter validity
         if (thiz == null || !(thiz instanceof PHPObject))
             throw new IllegalArgumentException("invalid value for parameter thiz: " + thiz);
-        
+
         return nativeInvokeMethod(thiz, name, args);
     }
 

@@ -20,6 +20,9 @@ public class PHPInvocationHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object... args) throws Throwable {
+        // JNI-call GetArrayLength segfaults if array ptr is null
+        if (args == null)
+            args = new Object[0];
         return MyScript.invokeMethod(MyObject, method.getName(), args);
     }
 
