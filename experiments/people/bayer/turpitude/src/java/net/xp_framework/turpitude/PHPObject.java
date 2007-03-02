@@ -43,6 +43,17 @@ public class PHPObject {
         return Properties;
     }
 
+    /**
+     * finalize method to clean up zval reference
+     */
+    protected void finalize() throws Throwable {
+        try {
+            destroy();
+        } finally {
+            super.finalize();
+        }
+    }
+
     public void dump() {
         System.out.println("PHPObject, class = " + getClassName());
         Set<String> keys = Properties.keySet();
@@ -56,8 +67,13 @@ public class PHPObject {
                 System.out.println("  Property " + k + " = " + v.getClass() + " (" + v + ")");
         }
         System.out.println("<<<===");
-       
     }
+
+    /**
+     * native method that cleans up the zval reference
+     */
+    private native void destroy();
+
 
 
 }

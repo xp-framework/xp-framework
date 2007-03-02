@@ -37,6 +37,8 @@ zval* jvalue_to_zval(JNIEnv* env, jvalue val, turpitude_java_type type, zval* de
 void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval);
 void jarray_to_zval(JNIEnv* env, jarray arr, turpitude_java_type type, zval* retval);
 jclass get_java_class(JNIEnv* env, jobject obj, char** dest);
+zend_op_array* getOpArrayPtr(JNIEnv* env, jobject self);
+zval* getZvalPtr(JNIEnv* env, jobject self);
 
 
 #endif

@@ -1,6 +1,6 @@
 #include <net_xp_framework_turpitude_PHPCompiledScript.h>
 #include <Turpitude.h>
-
+/*
 zend_op_array* getOpArrayPtr(JNIEnv* env, jobject self) {
     // find class
     jclass myclass = env->GetObjectClass(self);
@@ -40,7 +40,7 @@ zval* getZvalPtr(JNIEnv* env, jobject self) {
 
     return retval;
 }
-
+*/
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_execute(JNIEnv* env, jobject self, jobject ctx) {
     TSRMLS_FETCH();

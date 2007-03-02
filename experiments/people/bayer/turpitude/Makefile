@@ -62,7 +62,7 @@ jar: turpitude.jar
 lib: libturpitude.so
 
 headers: classes
-	$(JAVAH) -classpath $(CPATH) -d ./src/native/include net.xp_framework.turpitude.PHPScriptEngine net.xp_framework.turpitude.PHPCompiledScript
+	$(JAVAH) -classpath $(CPATH) -d ./src/native/include net.xp_framework.turpitude.PHPScriptEngine net.xp_framework.turpitude.PHPCompiledScript net.xp_framework.turpitude.PHPObject 
 
 turpitude.jar: classes
 	cd ./classes && $(JARBIN) -cvfm ../turpitude.jar META-INF/MANIFEST.MF META-INF/services/javax.script.ScriptEngineFactory net
