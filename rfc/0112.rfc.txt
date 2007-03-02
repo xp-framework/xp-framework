@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Fri Mar  2 15:30:15 CET 2007
-@status: draft
+@status: discussion, ends Mon Mar  5 13:30:00 CET 2007
 @category: scriptlet
 
 Scope of Change
@@ -43,6 +43,8 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0112.diff
+  Implementing patch
 
 Comments
 --------

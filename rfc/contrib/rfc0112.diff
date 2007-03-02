@@ -1,0 +1,73 @@
+Index: skeleton/scriptlet/HttpScriptlet.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptlet.class.php	(revision 9536)
++++ skeleton/scriptlet/HttpScriptlet.class.php	(working copy)
+@@ -358,7 +358,7 @@
+         $request->setSession($this->_session());
+         try {
+           $this->handleSessionInitialization($request);
+-        } catch (Exception $e) {
++        } catch (XPException $e) {
+         
+           // Check if session initialization errors can be handled gracefully
+           // (default: no). If not, throw a HttpSessionInvalidException with
+@@ -401,17 +401,17 @@
+           array($this, $method), 
+           array($request, $response)
+         );
+-        
+         if (FALSE !== $r && !is(NULL, $r)) {
+           $response->process();
+         }
+       } catch (HttpScriptletException $e) {
+-        throw($e);
+-      } catch (Exception $e) {
+-        throw(new HttpScriptletException(
++        throw $e;
++      } catch (XPException $e) {
++        throw new HttpScriptletException(
+           'Request processing failed ['.$method.']: '.$e->getMessage(),
+-          HTTP_INTERNAL_SERVER_ERROR
+-        ));
++          HTTP_INTERNAL_SERVER_ERROR,
++          $e
++        );
+       }
+       
+       // Return it
+Index: skeleton/scriptlet/HttpScriptletException.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptletException.class.php	(revision 9536)
++++ skeleton/scriptlet/HttpScriptletException.class.php	(working copy)
+@@ -4,7 +4,10 @@
+  * $Id$
+  */
+ 
+-  uses('scriptlet.HttpScriptletResponse');
++  uses(
++    'util.ChainedException',
++    'scriptlet.HttpScriptletResponse'
++  );
+ 
+   /**
+    * Defines an exception which is thrown inside an HttpScriptlet
+@@ -20,7 +23,7 @@
+    * @see      xp://scriptlet.HttpScriptlet#process
+    * @purpose  Exception
+    */  
+-  class HttpScriptletException extends XPException {
++  class HttpScriptletException extends ChainedException {
+     public
+       $response     = NULL,
+       $statusCode   = 0;
+@@ -31,8 +34,8 @@
+      * @param   string message
+      * @param   int statusCode default HTTP_INTERNAL_SERVER_ERROR
+      */
+-    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR) {
+-      parent::__construct($message);
++    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR, $cause= NULL) {
++      parent::__construct($message, $cause);
+       $this->statusCode= $statusCode;
+       $this->_response($statusCode);
+     }
