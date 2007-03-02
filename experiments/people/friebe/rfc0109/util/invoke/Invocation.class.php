@@ -5,9 +5,9 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Represents an invocation
    *
-   * @purpose  purpose
+   * @purpose  Value object
    */
   class Invocation extends Object {
     protected

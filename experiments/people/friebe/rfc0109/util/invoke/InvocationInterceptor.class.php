@@ -7,8 +7,9 @@
   uses('util.invoke.InvocationChain');
 
   /**
-   * (Insert class' description here)
+   * Intercepts invocations
    *
+   * @test     xp://tests.InvocationChainTest
    * @purpose  Interface
    */
   interface InvocationInterceptor {

@@ -9,7 +9,7 @@
   /**
    * Handles interceptor invocations
    *
-   * @test     xp://de.schlund.unittest.intranet.search.InvocationChainTest
+   * @test     xp://tests.InvocationChainTest
    * @purpose  Chain
    */
   class InvocationChain extends Object {

@@ -7,10 +7,23 @@
   uses('util.invoke.Invocation');
 
   /**
-   * (Insert class' description here)
+   * Represents an expression describing a pointcut.
    *
-   * @see      reference
-   * @purpose  purpose
+   * Syntax that can be used:
+   * <pre>
+   *   call:[class]::[method]([narguments])
+   *   new:[class]([narguments])
+   * </pre>
+   * 
+   * Where:
+   * <ul>
+   *   <li>"class" is the fully qualified class name</li>
+   *   <li>"method" name is the method name or the '*' (for any method)</li>
+   *   <li>"narguments" is either a number of arguments or the '*' (for any given number of parameters)</li>
+   * </ul>
+   *
+   * @test     xp://tests.PointCutTest
+   * @purpose  Invocation matching
    */
   class PointCutExpression extends Object {
     const
