@@ -69,9 +69,25 @@ JVM wenn ihr ein Nullpointer "ubergeben wird. Um dies zu verhindern wurde in der
 \emph{PHPInvocationHandler}s ein Test eingef"uhrt, ob das Parameterarray null ist. In diesem Fall wird einfach
 ein leeres Object-Array erzeugt und dieses an den nativen Code "ubergeben.
 
-\subsection{Zend Garbage Collection}
+\subsection{Garbage Collection}
 \label{sec:chap2:turp:zendgc}
 
-TODO: PHPObject - zval - ref := 0, finalize()?
+Anders als bei den Testanwendungen aus Kapitel \ref{sec:chap1} in denen die JVM und der in ihr eingebettete PHP-Interpreter
+nur sehr kurz laufen muss innerhalb eines Application Servers darauf geachtet werden, dass reservierter Speicher
+wieder freigegeben wird wenn er nichtmehr ben"otigt wird. Java-Anwendungen k"onnen hierbei auf die Java Garbage Collection
+vertrauen, allerdings besteht Turpitude zu einem Gro\ss teil aus nativem Code. Da bei der Entwicklung der Bibliothek schon
+auf eine saubere Speicherverwaltung geachtet wurde trate in Turpitude-Code selbst keine Speicherlecks auf, und es ist
+davon auszugehen dass auch der PHP-Interpreter weitestgehend frei von solchen Fehlern ist, allerdings verbrauchen auch
+die PHP-Skripte selbst Speicher. Um PHP-Programmierer von der Speicherverwaltung fern zu halten enth"alt die Zend-Engine 
+eine eigene Garbage Collection, und jeder zval hat ein Attribut \emph{refcount}, welches die Anzahl der auf ihn gehaltenen
+Referenzen angibt. In Regelm"a\ss igen Abst"anden wird f"ur jeden zval "uberpr"uft, ob noch Referenzen auf ihn vorhanden sind,
+und ist dies nicht der Fall wird er zerst"ort und der von ihm belegte Speicher somit wieder freigegeben.
+Jeder von Turpitude als PHPObject an die Java-Applikation weitergegebene zval-Pointer z"ahlt ebenfalls als Referenz,
+und wird nun das PHPObject von der Java Garbage Collection aufger"aumt muss daf"ur gesorgt werden, dass der
+Referenzz"ahler wieder um eins herabgesetzt wird.
+Hierzu wurde dem PHPObject ebenfalls eine \emph{finalize()}-Methode hinzugef"ugt, und in dieser wird die ebenfalls neue,
+native Methode \emph{destroy()} aufgerufen, in der schlie\ss lich der im ByteBuffer gespeicherte zval-Pointer
+ausgelesen, und dessen Referenzz"ahler herabgesetzt wird.
+
 
 
