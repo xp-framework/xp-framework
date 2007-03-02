@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('text.regex.MatchResult');
+
   /**
    * Represents a regular expression pattern
    *
@@ -67,7 +69,7 @@
      * Returns how many times a given input is matched.
      *
      * @param   string input
-     * @return  int
+     * @return  text.regex.MatchResult
      * @throws  lang.FormatException
      */  
     public function matches($input) {
@@ -75,7 +77,7 @@
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
         throw new FormatException('Pattern "'.$this->regex.'" not well-formed');
       }
-      return $n;
+      return new MatchResult($n, $m);
     }
     
     /**

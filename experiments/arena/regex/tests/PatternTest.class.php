@@ -22,8 +22,8 @@
      */
     #[@test]
     public function pattern() {
-      $this->assertEquals(1, Pattern::compile('.')->matches('a'));
-      $this->assertEquals(2, Pattern::compile('.')->matches('ab'));
+      $this->assertEquals(1, Pattern::compile('.')->matches('a')->length());
+      $this->assertEquals(2, Pattern::compile('.')->matches('ab')->length());
     }
 
     /**
@@ -32,7 +32,31 @@
      */
     #[@test]
     public function caseInsensitive() {
-      $this->assertEquals(1, Pattern::compile('a', Pattern::CASE_INSENSITIVE)->matches('A'));
+      $this->assertEquals(1, Pattern::compile('a', Pattern::CASE_INSENSITIVE)->matches('A')->length());
+    }
+
+    /**
+     * Tests the MatchResult::groups() method
+     *
+     */
+    #[@test]
+    public function groups() {
+      $this->assertEquals(
+        array(array('Hello')), 
+        Pattern::compile('H[ea]llo')->matches('Hello')->groups()
+      );
+    }
+
+    /**
+     * Tests the MatchResult::group() method
+     *
+     */
+    #[@test]
+    public function group() {
+      $this->assertEquals(
+        array('Hello'), 
+        Pattern::compile('H[ea]llo')->matches('Hello')->group(0)
+      );
     }
 
     /**
