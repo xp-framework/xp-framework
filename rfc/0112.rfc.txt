@@ -1,0 +1,50 @@
+RFC 0112: Make scriptlet errors more verbose
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Fri Mar  2 15:30:15 CET 2007
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+The HttpScriptletException will inherit from util.ChainedException.
+
+Rationale
+---------
+It is difficult to debug scriptlets in case of exceptions, because
+the handleProcess() method in scriptlet.HttpScriptlet catches all
+exceptions and re-throws them as HttpScriptletExceptions.
+While that may be a good thing, the backdraw is the loss of the
+original stacktrace, making error search more difficult.
+
+Functionality
+-------------
+scriptlet.HttpScriptletException will inherit util.ChainedException
+which can take a causing exception as constructor argument. The
+original exception - and with it its stacktrace - will be preserved
+for later inspection.
+
+Security considerations
+-----------------------
+In production systems, stacktraces may not be visible. By using the
+sapis scriptlet.production, one can suppress the printing of all
+stacktrace information (usually, only the message of the exception
+is shown then).
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
