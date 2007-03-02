@@ -1,0 +1,49 @@
+RFC 0111: Clarify ports/dist and util
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Mar  2 12:38:38 CET 2007
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+There will be a clarification on ports/dist and util
+
+
+Rationale
+---------
+Finding a place for the "XP environment" (xpcli, xpunit, ...)
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?people,friebe,xp-redesign/README
+  Material gathering for website navigation / areas
+
+
+Comments
+--------
+
+<EOF>
