@@ -131,7 +131,7 @@ public enum MessageType {
             try {
                 arguments= (Object[])Serializer.valueOf(serialized, new SerializerContext(instance.getClass().getClassLoader()));
             } catch (Exception e) {
-                e.printStackTrace();
+                // DEBUG e.printStackTrace();
                 throw new IOException("Cannot deserialize arguments: " + e.getMessage());
             }
             

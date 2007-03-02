@@ -74,7 +74,7 @@ abstract public class ServerHandler implements Handler {
                     response= MessageType.Value;
                     buffer= Serializer.representationOf(result);
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    // DEBUG t.printStackTrace();
                     try {
                         buffer= Serializer.representationOf(t);
                         response= MessageType.Exception;
