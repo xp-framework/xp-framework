@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.protocol.SerializerMapping');
+  uses('remote.protocol.SerializerMapping', 'remote.RemoteStackTraceElement');
 
   /**
    * Mapping for lang.StackTraceElement
@@ -32,7 +32,7 @@
       }
       $serialized->offset++;  // Closing "}"
       
-      $value= new StackTraceElement(
+      $value= new RemoteStackTraceElement(
         $details['file'],
         $details['class'],
         $details['method'],
