@@ -15,6 +15,10 @@ Classpath befinden. Nachdem allerdings die Klassen aus der Referenzimplementatio
 werden kann wurde ein Makefile erstellt, welches die zur "Ubersetzung und Ausf"uhrung n"otigen Kommandos
 vereinfacht.
 
+\subsection{ScriptEngine}
+\label{sec:chap1:impl:1}
+
+
 Nachdem diese Vorarbeiten geleistet waren konnte mit der eigentlichen Implementation begonnen werden.
 Der erste Schritt war das Abbilden des ersten Use-Cases (verf"ugbare ScriptEngines auflisten), erstens um 
 sicherzustellen dass die Entwicklungsumgebung den Anforderungen gerecht wird, und zweitens um einen ersten
@@ -61,6 +65,9 @@ werden. Die n"otigen Aufrufe der Zend-Funktionen \emph{php\_module\_startup()} u
 werden in der PHPScriptEngine von zwei privaten, nativen Methoden erledigt: \emph{startUp()} und \emph{shutDown()}. 
 Zus"atzlich wurde im Konstructor der PHPScriptEngine ein sogenannter "'ShutdownHook"' eingef"ugt, welcher daf"ur 
 sorgt dass zumindest beim Herunterfahren der Virtual Machine shutDown() aufgerufen wird.
+
+\subsection{Ausf"uhren von Skripten}
+\label{sec:chap1:impl:2}
 
 Nachdem in Java die Grundlagen gelegt waren konnte mit dem Realisieren des nativen Teiles begonnen werden.
 Die l"uckenhafte, an vielen Stellen sogar g"anzlich fehlende Dokumentation der Zend-Engine machte es unm"oglich
@@ -134,6 +141,9 @@ PHP-Befehl \emph{return} pl"otzlich einen Sinn: das Script beendete sich und der
 Variablen bef"ullt. Getreu dem Motto "'It's not a bug, it's a feature"' wurde dies allerdings nicht als st"orend empfunden, da
 der normale \emph{exit}-Befehl sich weiterhin wie gewohnt verhielt, und so nur zus"atzliche Funktionalit"at verf"ugbar wurde.
 
+\subsection{Interne Klassen in PHP}
+\label{sec:chap1:impl:3}
+
 Der n"achste Schritt war nun die "Ubergabe von Parametern aus Java an den Interpreter. Idealerweise sollten die zu "ubergebenen
 Objekte nicht nur hin- und herkopiert werden, sondern sie sollten als Repr"asentation innerhalb der PHP-Umgebung verf"ugbar sein.
 Dies bringt den Vorteil mit sich, dass nicht nur die Daten der Objekte, sondern auch deren Funktionalit"at dem PHP-Entwickler zur
@@ -142,9 +152,12 @@ Aufuzrufen.
 
 Um dies zu erreichen war es n"otig Klassen "'von Aussen"', also ohne PHP-Quelltext zu nutzen, in den Interpreter zu injizieren,
 und Aufrufe auf Objekte dieser Klassen auf C-Ebene abzuhandeln, da nur so auf JNI-Funktionalit"at zugegriffen werden konnte. 
-Leider existiert auch zu dieser Seite der Zend-Engine keinerleit Dokumentation, und so musste viel ausprobiert werden um
+Diese Art von Klasse nennt sich \emph{internal class}, da sie nicht im PHP-Userspace, sondern direkt im Interpreter oder von
+ihm geladenen Bibliotheken implementiert sind.
+Leider existiert auch zu dieser Seite der Zend-Engine keinerlei Dokumentation, und so musste viel ausprobiert werden um
 herauszufinden wie dies zu bewerkstelligen w"are. Schliesslich wurde die Zend-Makro \emph{INIT\_OVERLOADED\_CLASS\_ENTRY} entdeckt,
-und nach vielen weiteren Versuchen wurde auch die Bedeutung der einzelnen Paramteter herausgefunden.
+und nach vielen weiteren Versuchen wurde die Bedeutung des Makros und die restlichen n"otigen Schritte herausgefunden, die n"otig
+sind eine solche interne Klasse zu erstellen:
 
 Um der Zend-Engine eine Klasse unterzuschieben muss zun"achst ein C-Struct definiert werden das neben einem Struct von Typ
 \emph{zend\_object} namens \emph{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jeden Instanz der Klasse
@@ -171,7 +184,10 @@ Um allerdings "uberhaupt JNI-Funktionen nutzen zu k"onnen musste zun"achst die s
 wird der JNI-Evironment Pointer als globale Variable gespeichert, auch werden hier die Funktionen aufgerufen, die die Turpitude-Klassen
 in die PHP-Umgebung injizieren.
 
-Als erstes wurde die Klasse \emph{TurpitudeEnvironment} implementiert. Das Objekt-Struct enth"alt neben dem zend\_object noch pointer
+\subsection{TurpitudeEnvironment}
+\label{sec:chap1:impl:3}
+
+Als erste wurde die Klasse \emph{TurpitudeEnvironment} implementiert. Das Objekt-Struct enth"alt neben dem zend\_object noch pointer
 auf den aktuellen ScripContext sowie die JNI-Umgebung. Eigene, f"ur PHP lesbare Attribute besitzt die Klasse nicht, also mussten
 nur die geforderten Methoden umgesetzt werden. Zuvor wurde allerdings getestet, ob das injizieren der Klasse funktioniert hat, und die
 ScriptEngine wurde derart angepasst, dass jedem Aufruf eines PHP-Skriptes eine Zeile vorangestellt wird, die eine Instanz der Klasse
@@ -209,6 +225,9 @@ Java-Exception, mit dem Text der PHP-Fehlermeldung, geworfen und der Interpreter
 zu einem Sprung in den Catch-Block, weswegen in der oben beschriebenen Funktion \emph{turpitude\_error\_cb} eine globale Variable
 gesetzt werden muss, die anzeigt, ob ein echter Fehler aufgetreten ist.
 
+\subsection{Java-Klassen in PHP}
+\label{sec:chap1:impl:4}
+
 Die erste Methode des TurpitudeEnvironment, die implementiert wurde war \emph{findClass()}. In der zugeh"origen C-Funktion wird zun"achst 
 lediglich "uberpr"uft, ob die Anzahl der Parameter stimmt, und ob der "ubergebene Parameter vom Typ \emph{String} ist. Dann wird die
 zur Klasse \emph{TurpitudeJavaClass} geh"orende Funktion \emph{make\_turpitude\_jclass\_instance} aufgerufen, die eine TurpitudeJavaClass
@@ -245,6 +264,9 @@ wobei der eigentliche Typ des Objektes keine Rolle spielt.
 Neben der Methode \emph{findMethod()} wurde in der TurpitudeJavaClass noch die Methoden \emph{findStaticMethod()} f"ur statisch
 aufrufbare Methoden und \emph{findConstructor()}, die dem Anwender die "Ubergabe von "'$<$init$>$"' als Methodenname erspart, definiert.
 
+\subsection{Java-Objekte in PHP}
+\label{sec:chap1:impl:5}
+
 Derart erstellte Konstruktoren konnten nun zur Erzeugung von Java-Objekten genutzt werden. Diese sollten in PHP durch die Klasse
 \emph{TurpitudeJavaObject} dargestellt werden, und so musste diese zun"achst dem Interpreter auf be"ahrte Weise bekanntgemacht werden.
 Neben dem \emph{jobject}, welches das Java-Objekt auf C-Ebene repr"asentiert wird im object\_struct des TurpitudeJavaObject noch die \emph{jclass}
@@ -270,6 +292,10 @@ object(TurpitudeJavaObject)#6 (1) {
   }
 }
 \end{lstlisting}
+
+\subsection{Java-Methodenaufrufe}
+\label{sec:chap1:impl:6}
+
 Nun konnte endlich der Aufruf von Java-Methoden implementiert werden. Der call-Handler des TurpitudeJavaObjects "uberpr"uft zuerst, ob es sich bei der
 aufgerufenen Methode um \emph{javaInvoke} handelt. Ist dies der Fall wird die Methode des Java-Objektes aufgerufen, die im ersten Parameter "ubergeben 
 wurde. Danach wird - "ahnlich wie bei Konstruktoren - unterschieden, ob neben der aufzurufenden Methode noch andere Argumente "ubergeben wurden, in diesem
@@ -295,6 +321,10 @@ $string = $date->javaInvoke($method);
 oder
 $string = $date->toString('()Ljava/lang/String;');
 \end{lstlisting}
+
+\subsection{Java-Attribute}
+\label{sec:chap1:impl:7}
+
 Weiterhin sollte es dem Anwender erm"oglicht werden, auf Attribute eines Objektes zuzugreifen. Auch Attribute m"ussen mit dem JNI erst erzeugt werden, allerdings
 wurde hier auf eine eigene PHP-Klasse verzichtet, sondern es wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: \emph{javaGet()} und
 \emph{javaSet()}. \emph{javaGet()} erwartet analog zu Methoden zwei Argumente, den Namen des Attributes und dessen Signatur, beides als Strings, letzteres wieder
@@ -306,6 +336,9 @@ in einen zval umgewandelt wird. \emph{javaSet()} erwartet neben den Argumenten d
 soll, daf"ur gibt diese Methode nat"urlich keinen Wert zur"uck. Auch \emph{javaSet()} entscheidet anhand der Signatur welche JNI-Funktion zum Setzen des
 Attributes aufgerufen werden soll, welche die Signatur Set$<$Type$>$Field haben, und versucht ebenfalls anhand des "ubergebenen Attributnamens und -Signatur die
 entsprechende jfieldID zu finden.
+
+\subsection{Exceptions}
+\label{sec:chap1:impl:8}
 
 Nachdem man nun Klassen konstruieren, deren Methoden aufrufen und auf deren Attribute zugreiffen konnte wurden die M"oglichkeiten der Fehlerbehandlung
 verbessert. Java arbeitet haupts"achlich mit Exceptions, und auch die Turpitude-intern erzeugten Fehler treten in der JVM als Exceptions auf. Folglich mussten dem
@@ -327,6 +360,9 @@ Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als au
 Methoden und Attributen funktioniert, einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
 ausgehen k"onnen sollte, dass ein Anwender wenigstens in groben Z"ugen weiss was er tut. 
 
+\subsection{ScriptContext}
+\label{sec:chap1:impl:9}
+
 Mit der geleisteten Vorarbeit war es nun einfach die Anforderungen des JSR nach einem ScripContext umzusetzen. Die von der PHPScriptEngine erweiterte Klasse
 AbstactScriptEngine bringt eine Kontextimplementation namens SimpleContext mit. Dieser Kontext wird beim Aufruf der nativen Methode \emph{exec} des PHPCompiledScripts
 als jobject "ubergeben und global gespeichert. An diesen Kontext kommt der Anwender in PHP "uber die Methode \emph{getScriptContext} des TurpitudeEnvironment. Im 
@@ -334,6 +370,9 @@ entsprechenden Handler wird die Klasse des ScripContext ermittelt, damit eine Tu
 TurpitudeJavaObject vereinigt. Somit kann der Anwender einfach die entsprechenden Java-Methoden dieses Objektes aufrufen, um an die im Kontext enthaltenen Daten zu
 gelangen. Getestet wurde das mit einem Programm das einen java.util.StringBuffer erzeugt, in den Kontext einsetzt, und dann ein PHP-Skript ausf"uhrt, das diesem
 StringBuffer einen Text anh"angt. Nachdem das Skript ausgef"uhrt wurde enth"alt der StringBuffer sowohl die per Java, als auch die in PHP angeh"angten Zeichen.
+
+\subsection{Invocable}
+\label{sec:chap1:impl:10}
 
 Bis zu diesem Zeitpunkt konnte die Java-Applikation, die das PHP-Skript einbettet, dieses nur ausf"uhren, es konnten keine gezielten Aufrufe von Funktionen und Methoden
 abgesetzt werden, obwohl diese F"ahigkeit eine Bilbiothek wie Turpitude erst wirklich interessant macht. Deswegen wurde das JSR223-Interface \emph{javax.script.Invocable}
@@ -406,7 +445,10 @@ zu benutzen. Abbildung \ref{fig:javaseq} soll den Ablauf eines solchen Aufrufes 
 \label{fig:javaseq}
 \end{figure}
 
-Eigentlich w"aren zu diesem Zeitpunkt alle Anforderungen an die Bilbiothek erf"ullt, in vielen Bereichen sogar "ubererf"ullt gewesen, aber da w"ahrend
+\subsection{Java-Arrays in PHP}
+\label{sec:chap1:impl:11}
+
+Eigentlich w"aren zu diesem Zeitpunkt alle Anforderungen an die Bibliothek erf"ullt, in vielen Bereichen sogar "ubererf"ullt gewesen, aber da w"ahrend
 der Entwicklung festgestellt wurde, dass sowohl innerhalb als auch auch ausserhalb von 1\&1 erhebliches Interesse an Turpitude besteht wurde beschlossen 
 einige Erweiterungen vorzunehmen, um Entwicklern ohne intimes Wissen "uber die Bibliothek das Entwickeln mit Turpitude zu vereinfachen.
 Zum einen mussten einige Randbedingungen beim Aufrufen von Java-Methoden abgefangen werden, die sonst zu unerwarteten Ergebnisen f"uhren konnten, zum
