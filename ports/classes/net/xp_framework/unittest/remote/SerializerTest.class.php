@@ -288,7 +288,7 @@
     #[@test]
     public function valueOfArrayList() {
       $return= $this->serializer->valueOf(
-        new SerializedData('A:2:{O:6:"Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
+        new SerializedData('A:2:{O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
       ));
       $this->assertClass($return, 'lang.types.ArrayList');
       $this->assertEquals(2, sizeof($return->values));
