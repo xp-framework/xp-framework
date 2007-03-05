@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.invoke.Invocation');
+  uses('util.invoke.Invocation', 'util.invoke.XPMain');
 
   /**
    * Represents the context a method was invoked from
@@ -30,6 +30,12 @@
    * @purpose  Utility class
    */
   class InvocationContext extends Object {
+    private static 
+      $main= NULL;
+
+    static function __static() {
+      self::$main= new XPMain();
+    }
   
     /**
      * Get the caller
@@ -39,10 +45,17 @@
      */
     public static function getCaller($frame= 2) {
       $t= debug_backtrace();
+      
+      if (isset($t[$frame]['class'])) {
+        $class= XPClass::forName(xp::nameOf($t[$frame]['class']));
+      } else {
+        $class= self::$main;
+      }
+      
       return new Invocation(
         $t[$frame]['object'],
-        $t[$frame]['class'],
-        $t[$frame]['function'],
+        $class,
+        isset($t[$frame]['function']) ? $t[$frame]['function']: 'main',
         $t[$frame]['args']
       );
     }

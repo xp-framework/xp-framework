@@ -20,11 +20,11 @@
      * Constructor
      *
      * @param   lang.Generic instance
-     * @param   string class
+     * @param   lang.XPClass class
      * @param   string method
      * @param   mixed[] arguments
      */
-    public function __construct($instance, $class, $method, $arguments) {
+    public function __construct($instance, XPClass $class, $method, $arguments) {
       $this->instance= $instance;
       $this->class= $class;
       $this->method= $method;
@@ -58,7 +58,7 @@
      * @return  lang.XPClass
      */
     public function getCallingClass() {
-      return new XPClass($this->class);
+      return $this->class;
     }
 
     /**
@@ -86,7 +86,7 @@
         $this->getClassName(),
         xp::stringOf($this->getCallingInstance()),
         $this->getCallingClass()->toString(),
-        $this->getCallingMethod()->toString(),
+        xp::stringOf($this->getCallingMethod()),
         xp::stringOf($this->arguments)
       );
     }

@@ -85,5 +85,18 @@
       $this->assertClass($caller->getCallingMethod(), 'lang.reflect.Constructor');
       // $this->assertEquals(0, $caller->numArguments()); XXX FIXME why is #args= 2? XXX
     }
+
+    /**
+     * Test invocation via lambda function
+     *
+     */
+    #[@test]
+    public function lambdaInvocation() {
+      $inv= create_function('$instance, $method', 'return $instance->{$method}();');
+      $caller= $inv($this, 'invocationTarget');
+      $this->assertSubclass($caller->getCallingClass(), 'lang.Object');
+      $this->assertSubclass($caller->getCallingMethod(), 'lang.reflect.Routine');
+      $this->assertEquals(2, $caller->numArguments());
+    }
   }
 ?>

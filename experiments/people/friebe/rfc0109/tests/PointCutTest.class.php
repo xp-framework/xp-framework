@@ -94,7 +94,9 @@
     public function constructJoinPoint() {
       $expr= new PointCutExpression('new:lang.Object(*)');
       $this->assertEquals(PointCutExpression::CONSTRUCT, $expr->getJoinpoint());
-      $this->assertTrue($expr->matches(new Invocation($this, 'Object', '__construct', array())));
+      
+      $class= XPClass::forName('lang.Object');
+      $this->assertTrue($expr->matches(new Invocation($this, $class, '__construct', array())));
     }
   }
 ?>
