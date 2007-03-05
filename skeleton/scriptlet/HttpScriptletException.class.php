@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('scriptlet.HttpScriptletResponse');
+  uses(
+    'util.ChainedException',
+    'scriptlet.HttpScriptletResponse'
+  );
 
   /**
    * Defines an exception which is thrown inside an HttpScriptlet
@@ -20,7 +23,7 @@
    * @see      xp://scriptlet.HttpScriptlet#process
    * @purpose  Exception
    */  
-  class HttpScriptletException extends XPException {
+  class HttpScriptletException extends ChainedException {
     public
       $response     = NULL,
       $statusCode   = 0;
@@ -31,8 +34,8 @@
      * @param   string message
      * @param   int statusCode default HTTP_INTERNAL_SERVER_ERROR
      */
-    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR) {
-      parent::__construct($message);
+    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR, $cause= NULL) {
+      parent::__construct($message, $cause);
       $this->statusCode= $statusCode;
       $this->_response($statusCode);
     }

@@ -358,7 +358,7 @@
         $request->setSession($this->_session());
         try {
           $this->handleSessionInitialization($request);
-        } catch (Exception $e) {
+        } catch (XPException $e) {
         
           // Check if session initialization errors can be handled gracefully
           // (default: no). If not, throw a HttpSessionInvalidException with
@@ -401,17 +401,17 @@
           array($this, $method), 
           array($request, $response)
         );
-        
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
       } catch (HttpScriptletException $e) {
-        throw($e);
-      } catch (Exception $e) {
-        throw(new HttpScriptletException(
+        throw $e;
+      } catch (XPException $e) {
+        throw new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
-          HTTP_INTERNAL_SERVER_ERROR
-        ));
+          HTTP_INTERNAL_SERVER_ERROR,
+          $e
+        );
       }
       
       // Return it
