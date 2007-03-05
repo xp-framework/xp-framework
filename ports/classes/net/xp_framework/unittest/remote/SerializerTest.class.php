@@ -281,6 +281,33 @@
     }
 
     /**
+     * Test deserialization of an integer
+     *
+     */
+    #[@test]
+    public function valueOfException() {
+      $exception= $this->serializer->valueOf(new SerializedData(
+        'E:46:"java.lang.reflect.UndeclaredThrowableException":3:{'.
+        's:7:"message";s:12:"*** BLAM ***";'.
+        's:5:"trace";a:1:{i:0;t:4:{s:4:"file";s:9:"Test.java";s:5:"class";s:4:"Test";s:6:"method";s:4:"main";s:4:"line";i:10;}}'.
+        's:5:"cause";N;'.
+        '}'
+      ));
+      $this->assertClass($exception, 'remote.ExceptionReference');
+      $this->assertEquals('java.lang.reflect.UndeclaredThrowableException', $exception->referencedClassname);
+      $this->assertEquals('*** BLAM ***', $exception->getMessage());
+      with ($trace= $exception->getStackTrace()); {
+        $this->assertEquals(1, sizeof($trace));
+        $this->assertClass($trace[0], 'remote.RemoteStackTraceElement');
+        $this->assertEquals('Test.java', $trace[0]->file);
+        $this->assertEquals('Test', $trace[0]->class);
+        $this->assertEquals('main', $trace[0]->method);
+        $this->assertEquals(10, $trace[0]->line);
+      }
+      $this->assertNull($exception->getCause());
+    }
+
+    /**
      * Test deserialization of an arraylist
      *
      * @see     xp://Person
