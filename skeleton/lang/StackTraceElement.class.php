@@ -40,6 +40,16 @@
     }
     
     /**
+     * Returns qualified class name
+     *
+     * @param   string class unqualified name
+     * @return  string
+     */
+    protected function qualifiedClassName($class) {
+      return xp::nameOf($class);
+    }
+    
+    /**
      * Create string representation
      *
      * @return  string
@@ -51,7 +61,7 @@
           if (is_array($this->args[$j])) {
             $args[]= 'array['.sizeof($this->args[$j]).']';
           } else if (is_object($this->args[$j])) {
-            $args[]= get_class($this->args[$j]).'{}';
+            $args[]= $this->qualifiedClassName(get_class($this->args[$j])).'{}';
           } else if (is_string($this->args[$j])) {
             $display= str_replace('%', '%%', addcslashes(substr($this->args[$j], 0, min(
               (FALSE === $p= strpos($this->args[$j], "\n")) ? 0x40 : $p, 
@@ -75,7 +85,7 @@
       }
       return sprintf(
         "  at %s::%s(%s) [line %d of %s] %s\n",
-        isset($this->class) ? xp::nameOf($this->class) : '<main>',
+        isset($this->class) ? $this->qualifiedClassName($this->class) : '<main>',
         isset($this->method) ? $this->method : '<main>',
         implode(', ', $args),
         $this->line,
