@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Fri Mar  2 15:30:15 CET 2007
-@status: discussion, ends Mon Mar  5 13:30:00 CET 2007
+@status: implemented, Mon Mar  5 14:48:28 CET 2007
 @category: scriptlet
 
 Scope of Change

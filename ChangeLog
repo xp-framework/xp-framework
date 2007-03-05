@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0112 - HttpScriptletException inherits ChainedException
+  (kiesel)
 - Implemented RFC #0110 - RemoteStackTraceElement
   (friebe)
 
