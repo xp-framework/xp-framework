@@ -1,0 +1,16 @@
+\section{Message Driven Beans}
+\label{sec:chap2:mdb}
+
+Eine Message Driven Beans ist eine EJB die kein eigentliches Service-Interface implementiert,
+und deren Methoden somit nicht direkt aufgerufen werden k"onnen. Vielmehr "'h"ort"' sie auf
+Nachrichten in einer JMS Message Queue und bearbeitet diese.  JMS - der Java Messaging Service - 
+ist ein Teil des Application Servers, und erlaubt das Senden von Nachrichten (Messages) in
+Queues, an welche sich Dienste anh"angen k"onnen um auf diese Nachrichten zu reagieren,
+auf diese Art und Weise wird die Realisierung asynchroner Abl"aufe m"oglich.
+In fr"uheren EJB Versionen mussten diese Queues umst"andlich "uber XML-Dateien konfiguriert werden,
+mit EJB 3.0 werden sie dynamisch erzeugt sobald ein Zuh"orer sich an eine Queue h"angt, oder
+sobald ein Sender eine Nachricht in eine Queue schickt. Das Entwickeln einer Message Driven Bean 
+gestaltet sich denkbar einfach, es muss lediglich das Interface \emph{MessageListener} implementiert
+werden, welches eine einzige Methode \emph{onMessage()} definiert.
+
+
