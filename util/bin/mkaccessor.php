@@ -1,3 +1,4 @@
+#!/usr/local/bin/php
 <?php
 /* This file is part of the XP framework
  *
@@ -62,10 +63,9 @@
     /**
      * Add an element to %2\$ss
      *
-     * @access  public
      * @param   %4\$s%3\$s %2\$s
      */
-    function add%1\$s(%4\$s\$%2\$s) {
+    public function add%1\$s(%4\$s\$%2\$s) {
       \$this->%2\$ss[]= %4\$s\$%2\$s;
     }
 
@@ -73,11 +73,10 @@
      * Get one %2\$s element by position. Returns NULL if the element 
      * can not be found.
      *
-     * @access  public
      * @param   int i
      * @return  %4\$s%3\$s
      */
-    function %4\$s%2\$sAt(\$i) {
+    public function %4\$s%2\$sAt(\$i) {
       if (!isset(\$this->%2\$ss[\$i])) return NULL;
       return \$this->%2\$ss[\$i];
     }
@@ -85,15 +84,14 @@
     /**
      * Get number of %2\$ss
      *
-     * @access  public
      * @return  int
      */
-    function num%1\$ss() {
+    public function num%1\$ss() {
       return sizeof(\$this->%2\$ss);
     }
 
 __
-    , ucfirst($name), $name, $matches[1], strstr($matches[1], '.') ? '&' : '');
+    , ucfirst($name), $name, $matches[1], '');
         continue 2;
         
       default:
@@ -106,20 +104,18 @@ __
     /**
      * Set %2\$s
      *
-     * @access  public
      * @param   %4\$s%3\$s %2\$s
      */
-    function set%1\$s(%4\$s\$%2\$s) {
+    public function set%1\$s(%4\$s\$%2\$s) {
       \$this->%2\$s= %4\$s\$%2\$s;
     }
 
     /**
      * Get %2\$s
      *
-     * @access  public
      * @return  %4\$s%3\$s
      */
-    function %4\$sget%1\$s() {
+    public function %4\$sget%1\$s() {
       return \$this->%2\$s;
     }
 
