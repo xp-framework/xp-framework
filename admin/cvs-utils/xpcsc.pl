@@ -292,11 +292,6 @@ while (@ARGV) {
       }
     }
 
-    # Check for unintentional copies
-    if (!$comment && !$string && $_ =~ /\$([a-zA-Z0-9_]+)\s*=\s*[^&]new/ && 'instance' ne $1) {
-      &warning("The new operator (assigned to $1) should always be prefixed with & to avoid unintentional copies", WCOPY);
-    }
-    
     # Check for direct output statements
     if (!$comment && !$string && $_ =~ /\b(echo|var_dump|print_r)/) {
       &warning("You should not be using direct output statements ($1)", WOUTPUT);
