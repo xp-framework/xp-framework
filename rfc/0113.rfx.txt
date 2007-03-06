@@ -1,0 +1,70 @@
+RFC 0113: Include PHP5 SOAP extension
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel
+@created: Wed Feb  7 11:39:03 CET 2007
+@status: draft
+@category: webservices.soap
+
+Scope of Change
+---------------
+To make XP's SOAP implementation co-exist with the PHP5 SOAP extension,
+the following classes must be renamed:
+  . webservices.soap.SoapHeader
+  . webservices.soap.SoapClient
+  
+as they clash with classes brought in by the extension (which we cannot
+change).
+
+Rationale
+---------
+XP provides its own SOAP support which is enterprise-proven, but is not 
+a feature-complete SOAP implementation. Furthermore, it makes use of 
+class names that PHP5 ext/soap also uses. You must not compile PHP with 
+SOAP and use XP SOAP with the same PHP installation.
+
+Despite of that, it'd be a good addition to provide an interface to let
+the programmer decide which SOAP implementation he wants to use as the
+back-end without having to care about the decision in what he does.
+
+Functionality
+-------------
+In the first step - to clear the way - the above mentioned classes will
+be prefixed with XP.
+
+Second, the SOAP API will follow the Factory Pattern, so new clients will
+not be constructed directly, but instanciated through a factory, or a driver
+manager similar to what the XP framework offers in the rdbms package.
+
+Third, it has become a common practice to derive particular SOAP clients
+from class SOAPClient when generating or writing the client class. Due to 
+the changes mentioned before, this is not possible any more then, because
+the derivation will bind the class to a certain SOAP implementation.
+Instead, clients should become simple objects with a $client member that
+gets inserted on object instantiation through the factory.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+- kiesel, Wed Feb  7 13:12:36 CET 2007
+  Should the SoapClient receive an URL as first parameter instead of a
+  SOAPHTTPTransport in the future? Not like there was ever a need for a
+  different transport that that.
+
+
+<EOF>
