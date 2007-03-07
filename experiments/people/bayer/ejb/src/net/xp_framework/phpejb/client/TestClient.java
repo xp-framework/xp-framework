@@ -10,6 +10,7 @@ import javax.script.ScriptException;
 import net.xp_framework.phpejb.list.EngineList;
 import net.xp_framework.phpejb.slsb.SLHelloWorld;
 import net.xp_framework.phpejb.sfsb.SFHelloWorld;
+import javax.jms.*;
 
 public class TestClient {
 
@@ -28,14 +29,22 @@ public class TestClient {
             while (it.hasNext()) {
                 System.out.println("engine: "+it.next());
             }
-            // Statless
+            // Stateless
             SLHelloWorld slhw = (SLHelloWorld)ctx.lookup("phpejb/SLHelloWorldBean/remote");
             System.out.println(slhw.sayHello("TestClient"));
             // Stateful
             SFHelloWorld sfhw = (SFHelloWorld)ctx.lookup("phpejb/SFHelloWorldBean/remote");
             sfhw.setName("TestClient");
             System.out.println(sfhw.sayHello());
-
+            // Message driven
+            Queue queue = (Queue)ctx.lookup("queue/mdb");
+            QueueConnectionFactory factory = (QueueConnectionFactory)ctx.lookup("ConnectionFactory");
+            QueueConnection cnn = factory.createQueueConnection();
+            QueueSession sess = cnn.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
+            TextMessage msg = sess.createTextMessage("TestClient");
+            QueueSender sender = sess.createSender(queue);
+            sender.send(msg);
+            sess.close();
         } catch (Throwable e) {
             e.printStackTrace();
             return;

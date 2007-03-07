@@ -31,7 +31,11 @@
     <fileset dir="${jboss.dir}server/default/lib/">
       <include name="*.jar"/>
     </fileset>
+    <fileset dir="${jboss.dir}server/default/deployers/jboss-aop-jboss5.deployer/">
+      <include name="*.jar"/>
+    </fileset>
     <!--
+    ./server/default/deployers/jboss-aop-jboss5.deployer/jboss-aop-jdk50.jar
     <fileset dir="${basedir}/lib/">
       <include name="*.jar"/>
     </fileset>
