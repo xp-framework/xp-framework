@@ -62,7 +62,7 @@
      */    
     #[@test]
     public function addingATestClass() {
-      $ignored= $this->suite->addTestClass(XPClass::forName('SimpleTestCase'));
+      $ignored= $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.SimpleTestCase'));
       $this->assertEmpty($ignored);
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
         $this->assertSubclass($this->suite->testAt($i), 'unittest.TestCase');
@@ -75,7 +75,7 @@
      */    
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingANonTestClass() {
-      $this->suite->addTestClass(XPClass::forName('Object'));
+      $this->suite->addTestClass(XPClass::forName('lang.Object'));
     }    
 
     /**
