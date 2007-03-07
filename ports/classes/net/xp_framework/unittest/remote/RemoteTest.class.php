@@ -127,6 +127,24 @@
     }
 
     /**
+     * Test forName() with and without parameters in DSN string to return
+     * always the same handler object (required to make transactions work)
+     *
+     * @access public
+     */
+    #[@test]
+    public function forNameEqualsWithDifferentQueryString() {
+      $remote1= Remote::forName(REMOTE_SPEC_ONE);
+      
+      // HACK: Reset initialization status to FALSE otherwise it will be
+      // initialized again and we get "Already initialized" exception
+      $this->handler[REMOTE_SPEC_ONE]->server['initialized']= FALSE;
+      
+      $remote2= Remote::forName(REMOTE_SPEC_ONE.'?log=default');
+      $this->assertEquals($remote1->_handler, $remote2->_handler);
+    }
+ 
+    /**
      * Test lookup() method
      *
      */
@@ -139,8 +157,7 @@
       $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= $person;
 
       // Lookup the person object
-      $lookup= $r->lookup('xp/demo/Person');
-      $this->assertEquals($person, $lookup);
+      $this->assertEquals($person, $r->lookup('xp/demo/Person'));
     }
 
     /**
@@ -149,8 +166,7 @@
      */
     #[@test, @expect('remote.NameNotFoundException')]
     public function lookupNonExistantName() {
-      $r= Remote::forName(REMOTE_SPEC_ONE);
-      $r->lookup('does/not/Exist');
+      Remote::forName(REMOTE_SPEC_ONE)->lookup('does/not/Exist');
     }
   }
 ?>
