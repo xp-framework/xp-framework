@@ -42,17 +42,16 @@
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       
       $d= $g->doc->root->addChild(new Node('database', NULL, array(
-        'dbhost'   => $dbhost,
         'database' => $database
       )));
       
-      foreach (DBTable::getByDatabase($adapter, $adapter->conn->dsn->getDatabase()) as $t) {
-        $t= $d->addChild(new Node('table', NULL, array(
-          'name' => $table->name,
+      foreach (DBTable::getByDatabase($adapter, $database) as $t) {
+        $tn= $d->addChild(new Node('table', NULL, array(
+          'name' => $t->name,
         )));
 
         if ($constraint= $t->getFirstForeignKeyConstraint()) do {
-          $cn= $t->addChild(new Node('constraint', NULL, array(
+          $cn= $tn->addChild(new Node('constraint', NULL, array(
             'name' => trim($constraint->getName()),
           )));
           $fgn= $cn->addChild(new Node('reference', NULL, array(
@@ -65,7 +64,7 @@
             )));
           }
 
-        } while ($constraint= $table->getNextForeignKeyConstraint());
+        } while ($constraint= $t->getNextForeignKeyConstraint());
       }
       
       return $g;
