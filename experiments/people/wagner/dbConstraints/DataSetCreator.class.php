@@ -5,18 +5,19 @@
  */
 
   uses(
-    'util.cmd.Command',
-    'rdbms.util.DBXmlGenerator', 
-    'rdbms.DBTable',
-    'rdbms.DSN',
-    'rdbms.DriverManager',
-    'util.log.Logger',
-    'util.log.FileAppender',
-    'util.cmd.ParamString',
     'io.File',
     'io.FileUtil',
     'io.Folder',
+    'rdbms.DBTable',
+    'rdbms.DSN',
+    'rdbms.DriverManager',
+    'rdbms.util.DBConstraintXmlGenerator', 
+    'rdbms.util.DBXmlGenerator', 
     'util.Properties',
+    'util.cmd.Command',
+    'util.cmd.ParamString',
+    'util.log.FileAppender',
+    'util.log.Logger',
     'xml.DomXSLProcessor'
   );
 
@@ -44,6 +45,7 @@
     protected 
       $mode= self::GENERATE_XML,
       $xmltarget,
+      $reltarget,
       $dsntemp,
       $prefix,
       $prefixRemove,
@@ -116,6 +118,8 @@
 
       // Create new Folder Object and new Folder(s) if necessary
       $fold=    new Folder($this->xmltarget);
+      $relfold= new Folder($this->reltarget);
+      $fold->exists()    || $fold->create(0755);
       $relfold->exists() || $relfold->create(0755);
 
       $tables= DBTable::getByDatabase($adapter, $adapter->conn->dsn->getDatabase());
@@ -156,6 +160,14 @@
           );
         }
       }
+      
+      $f= new File($relfold->getURI().'constraints.xml');
+      $written= FileUtil::setContents($f, DBConstraintXmlGenerator::createFromDatabase($adapter, $adapter->conn->dsn->getDatabase())->getSource());
+      $this->out->writeLinef(
+        '===> Output written to %s (%.2f kB)', 
+        $f->getURI(),
+        $written / 1024
+      );
     }
     
     /**
@@ -209,6 +221,7 @@
       }
 
       $this->xmltarget    = str_replace('config.ini', 'tables', $ini->getFilename());
+      $this->reltarget    = str_replace('config.ini', 'constraints', $ini->getFilename());
       $this->dsntemp      = $ini->readString('connection', 'dsn');
       $this->prefix       = $ini->readString('prefix', 'value');
       $this->prefixRemove = $ini->readString('prefix', 'remove');
