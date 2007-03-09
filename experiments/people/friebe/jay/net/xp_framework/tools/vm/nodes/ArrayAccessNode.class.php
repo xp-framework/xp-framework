@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ArrayAccessNode extends VNode {
-    var
+    public
       $expression,
       $offset;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed expression
      * @param   mixed offset
      */
-    function __construct($expression, $offset) {
+    public function __construct($expression, $offset) {
       $this->expression= $expression;
       $this->offset= $offset;
     }  

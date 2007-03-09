@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ImportNode extends VNode {
-    var
+    public
       $source,
       $destination;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed source
      * @param   mixed destincation
      */
-    function __construct($source, $destination) {
+    public function __construct($source, $destination) {
       $this->source= $source;
       $this->destination= $destination;
     }  

@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ImportAllNode extends VNode {
-    var
+    public
       $from;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed from
      */
-    function __construct($from) {
+    public function __construct($from) {
       $this->from= $from;
     }  
   }

@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class FunctionCallNode extends VNode {
-    var
+    public
       $name,
       $arguments;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed arguments
      */
-    function __construct($name, $arguments) {
+    public function __construct($name, $arguments) {
       $this->name= $name;
       $this->arguments= $arguments;
     }  

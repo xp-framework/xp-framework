@@ -16,13 +16,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed statements
      * @param   mixed modifiers
      * @param   mixed annotations
      * @param   mixed throws
      */
-    function __construct($statements, $modifiers, $annotations, $throws) {
+    public function __construct($statements, $modifiers, $annotations, $throws) {
       parent::__construct(
         '__destruct', 
         array(), 

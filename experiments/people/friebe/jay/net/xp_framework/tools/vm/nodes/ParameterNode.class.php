@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ParameterNode extends VNode {
-    var
+    public
       $name,
       $type,
       $default,
@@ -21,13 +21,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   string type
      * @param   mixed default
      * @param   bool vararg default FALSE
      */
-    function __construct($name, $type, $default, $vararg= FALSE) {
+    public function __construct($name, $type, $default, $vararg= FALSE) {
       $this->name= $name;
       $this->type= $type;
       $this->default= $default;

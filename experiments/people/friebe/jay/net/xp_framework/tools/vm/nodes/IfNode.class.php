@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class IfNode extends VNode {
-    var
+    public
       $condition,
       $statements,
       $elseif,
@@ -21,13 +21,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed condition
      * @param   mixed statements
      * @param   mixed elseif
      * @param   mixed else
      */
-    function __construct($condition, $statements, $elseif, $else) {
+    public function __construct($condition, $statements, $elseif, $else) {
       $this->condition= $condition;
       $this->statements= $statements;
       $this->elseif= $elseif;

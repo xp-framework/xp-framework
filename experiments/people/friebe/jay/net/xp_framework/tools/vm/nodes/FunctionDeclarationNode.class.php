@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class FunctionDeclarationNode extends VNode {
-    var
+    public
       $name,
       $parameters,
       $statements;
@@ -20,12 +20,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name
      * @param   mixed parameters
      * @param   mixed statements
      */
-    function __construct($name, $parameters, $statements) {
+    public function __construct($name, $parameters, $statements) {
       $this->name= $name;
       $this->parameters= $parameters;
       $this->statements= $statements;

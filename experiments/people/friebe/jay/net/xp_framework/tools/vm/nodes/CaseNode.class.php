@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class CaseNode extends VNode {
-    var
+    public
       $expression,
       $statements;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed expression
      * @param   mixed statements
      */
-    function __construct($expression, $statements) {
+    public function __construct($expression, $statements) {
       $this->expression= $expression;
       $this->statements= $statements;
     }  

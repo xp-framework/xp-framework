@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class WhileNode extends VNode {
-    var
+    public
       $condition,
       $statements;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed condition
      * @param   mixed statements
      */
-    function __construct($condition, $statements) {
+    public function __construct($condition, $statements) {
       $this->condition= $condition;
       $this->statements= $statements;
     }  

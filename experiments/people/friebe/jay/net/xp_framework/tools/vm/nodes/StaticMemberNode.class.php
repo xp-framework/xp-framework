@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class StaticMemberNode extends VNode {
-    var
+    public
       $class,
       $member;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed class
      * @param   mixed member
      */
-    function __construct($class, $member) {
+    public function __construct($class, $member) {
       $this->class= $class;
       $this->member= $member;
     }  

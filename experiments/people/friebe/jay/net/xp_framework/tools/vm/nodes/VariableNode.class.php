@@ -12,27 +12,25 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class VariableNode extends VNode {
-    var
+    public
       $name,
       $offset;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      */
-    function __construct($name) {
+    public function __construct($name) {
       $this->name= $name;
     }
     
     /**
      * Returns a hashcode for this variable
      *
-     * @access  public
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->name;
     }
   }

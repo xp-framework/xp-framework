@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class PropertyDeclarationNode extends VNode {
-    var
+    public
       $name,
       $accessors;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed accessors
      */
-    function __construct($name, $accessors) {
+    public function __construct($name, $accessors) {
       $this->name= $name;
       $this->accessors= $accessors;
     }  

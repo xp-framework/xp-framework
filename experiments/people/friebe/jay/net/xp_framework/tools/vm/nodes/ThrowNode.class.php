@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ThrowNode extends VNode {
-    var
+    public
       $value;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed value
      */
-    function __construct($value) {
+    public function __construct($value) {
       $this->value= $value;
     }  
   }

@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ConstantReferenceNode extends VNode {
-    var
+    public
       $class,
       $name;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   string class
      * @param   string name
      */
-    function __construct($class, $name) {
+    public function __construct($class, $name) {
       $this->class= $class;
       $this->name= $name;
     }  

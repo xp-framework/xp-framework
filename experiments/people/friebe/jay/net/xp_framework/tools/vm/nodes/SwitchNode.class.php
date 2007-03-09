@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class SwitchNode extends VNode {
-    var
+    public
       $condition,
       $cases;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed condition
      * @param   mixed cases
      */
-    function __construct($condition, $cases) {
+    public function __construct($condition, $cases) {
       $this->condition= $condition;
       $this->cases= $cases;
     }  

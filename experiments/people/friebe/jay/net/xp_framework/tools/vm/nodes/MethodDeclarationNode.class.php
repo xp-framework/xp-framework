@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name the method's name
      * @param   mixed parameters
      * @param   mixed return
@@ -25,7 +24,7 @@
      * @param   mixed annotations
      * @param   mixed throws
      */
-    function __construct($name, $parameters, $return, $statements, $modifiers, $annotations, $throws) {
+    public function __construct($name, $parameters, $return, $statements, $modifiers, $annotations, $throws) {
       parent::__construct(
         $name, 
         $parameters, 

@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class EchoNode extends VNode {
-    var
+    public
       $args;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed[] args
      */
-    function __construct($args) {
+    public function __construct($args) {
       $this->args= $args;
     }  
   }

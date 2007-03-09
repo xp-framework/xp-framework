@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class PackageDeclarationNode extends VNode {
-    var
+    public
       $name,
       $statements;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed statements
      */
-    function __construct($name, $statements) {
+    public function __construct($name, $statements) {
       $this->name= $name;
       $this->statements= $statements;
     }  

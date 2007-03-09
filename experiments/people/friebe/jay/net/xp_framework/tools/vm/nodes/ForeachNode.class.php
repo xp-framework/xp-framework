@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ForeachNode extends VNode {
-    var
+    public
       $expression,
       $key,
       $value,
@@ -21,13 +21,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed expression
      * @param   mixed key
      * @param   mixed value
      * @param   mixed statements
      */
-    function __construct($expression, $key, $value, $statements) {
+    public function __construct($expression, $key, $value, $statements) {
       $this->expression= $expression;
       $this->key= $key;
       $this->value= $value;

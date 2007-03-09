@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ArrayDeclarationNode extends VNode {
-    var
+    public
       $elements= array();
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed[] elements
      */
-    function __construct($elements) {
+    public function __construct($elements) {
       $this->elements= $elements;
     }  
   }

@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ExpressionCastNode extends VNode {
-    var
+    public
       $expression,
       $type;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed expression
      * @param   mixed type
      */
-    function __construct($expression, $type) {
+    public function __construct($expression, $type) {
       $this->expression= $expression;
       $this->type= $type;
     }  

@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class InstanceOfNode extends VNode {
-    var
+    public
       $object,
       $type;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed object
      * @param   mixed type
      */
-    function __construct($object, $type) {
+    public function __construct($object, $type) {
       $this->object= $object;
       $this->type= $type;
     }  

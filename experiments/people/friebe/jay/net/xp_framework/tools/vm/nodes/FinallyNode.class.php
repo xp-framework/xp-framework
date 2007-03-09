@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class FinallyNode extends VNode {
-    var
+    public
       $statements;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed statements
      */
-    function __construct($statements) {
+    public function __construct($statements) {
       $this->statements= $statements;
     }  
   }

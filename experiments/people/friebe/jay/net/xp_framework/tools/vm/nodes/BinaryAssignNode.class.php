@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class BinaryAssignNode extends VNode {
-    var
+    public
       $variable,
       $expression,
       $op;
@@ -20,12 +20,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed variable
      * @param   mixed expression
      * @param   string op
      */
-    function __construct($variable, $expression, $op) {
+    public function __construct($variable, $expression, $op) {
       $this->variable= $variable;
       $this->expression= $expression;
       $this->op= $op;

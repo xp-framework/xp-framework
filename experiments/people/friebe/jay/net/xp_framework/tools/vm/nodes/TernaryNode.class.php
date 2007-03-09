@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class TernaryNode extends VNode {
-    var
+    public
       $condition,
       $expression,
       $conditional;
@@ -20,12 +20,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed condition
      * @param   mixed expression
      * @param   mixed conditional
      */
-    function __construct($condition, $expression, $conditional) {
+    public function __construct($condition, $expression, $conditional) {
       $this->condition= $condition;
       $this->expression= $expression;
       $this->conditional= $conditional;

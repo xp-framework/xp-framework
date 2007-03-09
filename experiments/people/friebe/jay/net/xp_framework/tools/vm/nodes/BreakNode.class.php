@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class BreakNode extends VNode {
-    var
+    public
       $expression;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed expression
      */
-    function __construct($expression) {
+    public function __construct($expression) {
       $this->expression= $expression;
     }  
   }

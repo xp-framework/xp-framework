@@ -16,7 +16,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name the operator, e.g. "+", "-", etc.
      * @param   mixed parameters
      * @param   mixed statements
@@ -24,7 +23,7 @@
      * @param   mixed annotations
      * @param   mixed throws
      */
-    function __construct($name, $parameters, $statements, $modifiers, $annotations, $throws) {
+    public function __construct($name, $parameters, $statements, $modifiers, $annotations, $throws) {
       parent::__construct(
         $name, 
         $parameters, 

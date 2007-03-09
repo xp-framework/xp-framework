@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class MemberDeclarationNode extends VNode {
-    var
+    public
       $name,
       $initial;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed initial
      */
-    function __construct($name, $initial) {
+    public function __construct($name, $initial) {
       $this->name= $name;
       $this->initial= $initial;
     }  

@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ObjectReferenceNode extends VNode {
-    var
+    public
       $class,
       $member,
       $chain;
@@ -20,12 +20,11 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed class
      * @param   mixed member
      * @param   mixed chain
      */
-    function __construct($class, $member, $chain) {
+    public function __construct($class, $member, $chain) {
       $this->class= $class;
       $this->member= $member;
       $this->chain= $chain;

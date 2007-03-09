@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ForNode extends VNode {
-    var
+    public
       $init,
       $condition,
       $loop,
@@ -21,13 +21,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed init
      * @param   mixed condition
      * @param   mixed loop
      * @param   mixed statements
      */
-    function __construct($init, $condition, $loop, $statements) {
+    public function __construct($init, $condition, $loop, $statements) {
       $this->init= $init;
       $this->condition= $condition;
       $this->loop= $loop;

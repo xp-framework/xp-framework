@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class MethodCallNode extends VNode {
-    var
+    public
       $class,
       $method,
       $arguments,
@@ -21,13 +21,12 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed class
      * @param   mixed method
      * @param   mixed arguments
      * @param   mixed chain
      */
-    function __construct($class, $method, $arguments, $chain) {
+    public function __construct($class, $method, $arguments, $chain) {
       $this->class= $class;
       $this->method= $method;
       $this->arguments= $arguments;

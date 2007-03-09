@@ -16,14 +16,13 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed parameters
      * @param   mixed statements
      * @param   mixed modifiers
      * @param   mixed annotations
      * @param   mixed throws
      */
-    function __construct($parameters, $statements, $modifiers, $annotations, $throws) {
+    public function __construct($parameters, $statements, $modifiers, $annotations, $throws) {
       parent::__construct(
         '__construct', 
         $parameters, 

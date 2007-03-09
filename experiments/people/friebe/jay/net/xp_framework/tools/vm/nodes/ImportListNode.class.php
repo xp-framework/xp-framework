@@ -12,16 +12,15 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ImportListNode extends VNode {
-    var
+    public
       $list = array();
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed list
      */
-    function __construct($list) {
+    public function __construct($list) {
       $this->list= $list;
     }  
   }

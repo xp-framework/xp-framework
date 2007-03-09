@@ -12,7 +12,7 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class InterfaceDeclarationNode extends VNode {
-    var
+    public
       $name, 
       $extends, 
       $statements, 
@@ -22,14 +22,13 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed[] extends
      * @param   mixed statements
      * @param   mixed modifiers
      * @param   mixed annotations
      */
-    function __construct($name, $extends, $statements, $modifiers, $annotations) {
+    public function __construct($name, $extends, $statements, $modifiers, $annotations) {
       $this->name= $name;
       $this->extends= $extends;
       $this->statements= $statements;

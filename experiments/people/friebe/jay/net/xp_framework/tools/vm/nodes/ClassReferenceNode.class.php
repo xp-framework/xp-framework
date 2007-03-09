@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class ClassReferenceNode extends VNode {
-    var
+    public
       $name,
       $generic;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed name
      * @param   mixed generic
      */
-    function __construct($name, $generic) {
+    public function __construct($name, $generic) {
       $this->name= $name;
       $this->generic= $generic;
     }  

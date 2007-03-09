@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class AnnotationNode extends VNode {
-    var
+    public
       $type,
       $value;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed type
      * @param   mixed value
      */
-    function __construct($type, $value) {
+    public function __construct($type, $value) {
       $this->type= $type;
       $this->value= $value;
     }  

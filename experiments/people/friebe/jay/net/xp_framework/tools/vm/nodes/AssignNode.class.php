@@ -12,18 +12,17 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class AssignNode extends VNode {
-    var
+    public
       $variable,
       $expression;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed variable
      * @param   mixed expression
      */
-    function __construct($variable, $expression) {
+    public function __construct($variable, $expression) {
       $this->variable= $variable;
       $this->expression= $expression;
     }  

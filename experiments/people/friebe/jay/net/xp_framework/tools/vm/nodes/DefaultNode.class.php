@@ -12,17 +12,16 @@
    * @see   xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class DefaultNode extends VNode {
-    var
+    public
       $expression,
       $statements;
       
     /**
      * Constructor
      *
-     * @access  public
      * @param   mixed statements
      */
-    function __construct($statements) {
+    public function __construct($statements) {
       $this->statements= $statements;
     }  
   }
