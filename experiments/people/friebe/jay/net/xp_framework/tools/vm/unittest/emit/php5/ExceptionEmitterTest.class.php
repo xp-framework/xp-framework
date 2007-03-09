@@ -99,7 +99,7 @@
           }
         }; 
         
-        public function openFile($file) {
+        function openFile($file) {
           $f= new main·FileReader($file); 
           try { 
             $f->open(); 
@@ -132,7 +132,7 @@
           }
         }
         
-        public function openFile($file) {
+        function openFile($file) {
           $f= new FileReader($file);
           try {
             $f->open();

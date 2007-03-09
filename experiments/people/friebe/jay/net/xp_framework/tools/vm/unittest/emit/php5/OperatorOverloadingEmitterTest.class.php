@@ -23,7 +23,7 @@
         preg_replace('/\n\s*/', '', 'class main·String extends lang·Object{
           protected $buffer= NULL;
 
-          public function __operatorconcat($a, $b) {
+          function __operatorconcat($a, $b) {
             return new main·String($a->buffer.$b); 
           }
 
@@ -55,19 +55,19 @@
         preg_replace('/\n\s*/', '', 'class main·Integer extends lang·Object{
           protected $value= NULL;
 
-          public function __operatorplus($a, $b) {
+          function __operatorplus($a, $b) {
             return new main·Integer($a->value+$b->value); 
           }
 
-          public function __operatorminus($a, $b) {
+          function __operatorminus($a, $b) {
             return new main·Integer($a->value-$b->value); 
           }
 
-          public function __operatortimes($a, $b) {
+          function __operatortimes($a, $b) {
             return new main·Integer($a->value*$b->value); 
           }
 
-          public function __operatordivide($a, $b) {
+          function __operatordivide($a, $b) {
             return new main·Integer($a->value/$b->value); 
           }
           
