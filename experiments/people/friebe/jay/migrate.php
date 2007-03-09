@@ -10,8 +10,13 @@
     'io.File', 
     'io.Folder', 
     'io.FileUtil', 
+    'net.xp_framework.tools.vm.util.AllClassesIterator',
     'net.xp_framework.tools.vm.util.NameMapping',
-    'net.xp_framework.tools.vm.util.SourceRewriter'
+    'net.xp_framework.tools.vm.util.SourceRewriter',
+    'io.collections.CollectionComposite', 
+    'io.collections.FileCollection', 
+    'io.collections.iterate.FilteredIOCollectionIterator',
+    'io.collections.iterate.ExtensionEqualsFilter'
   );
   
   $help= <<<__
@@ -120,10 +125,34 @@ __;
         }
       }
     }
+
+    public function iteratorFor($root, $classes) {
+      $collections= array();
+      foreach (explode(PATH_SEPARATOR, $root->option('scan')) as $path) {
+        $scan= new Folder($path);
+        if (!$scan->exists()) {
+          throw new IllegalArgumentException($scan->getURI().' does not exist!');
+        }
+     
+        $collections[]= new FileCollection($scan->getURI());
+      }
+
+      $iterator= new AllClassesIterator(
+        new FilteredIOCollectionIterator(
+          new CollectionComposite($collections), 
+          new ExtensionEqualsFilter('class.php'),
+          TRUE
+        ),
+        ini_get('include_path')
+      );
+      $iterator->root= $root;
+      return $iterator;
+    }
     
     function validOptions() {
       return array(
         'debug'   => OPTION_ONLY,
+        'scan'    => HAS_VALUE,
         'output'  => HAS_VALUE
       );
     }

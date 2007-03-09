@@ -3,7 +3,7 @@
 #
 # $Id$
 
-PHP=$(shell grep ^php4= .environment | cut -d '=' -f 2)
+PHP=$(shell grep ^php5= .environment | cut -d '=' -f 2)
 SKELETON_PATH?=../../../../skeleton/
 PORTS_PATH?=../../../../ports/classes/
 
@@ -48,16 +48,10 @@ xpclass: .environment
 	@-$(PHP) migrate.php `echo $(name) | sed -e 's#$(path)##g' | sed -e 's#.class.php$$##g' | tr / .` --output=$(out);
 
 convert-skeleton:  php5-emit/skeleton
-	for i in `find $(SKELETON_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
-	  $(MAKE) xpclass name=$$i path=$(SKELETON_PATH) out=php5-emit/skeleton; \
-	done
+	@-$(PHP) migrate.php --scan=$(SKELETON_PATH) --output=php5-emit/skeleton
 
 convert-ports: php5-emit/ports/classes 
-	for i in `find $(PORTS_PATH) -name '*.class.php' ! -path "*.svn*"` ; do \
-	  $(MAKE) xpclass name=$$i path=$(PORTS_PATH) out=php5-emit/ports/classes; \
-	done
+	@-$(PHP) migrate.php --scan=$(PORTS_PATH) --output=php5-emit/skeleton
 
 convert: convert-skeleton convert-ports
-	cp override/*.xp php5-emit/skeleton/lang/
 	rm php5-emit/skeleton/lang/Object.xp    # Builtin
-	rm php5-emit/skeleton/lang/Interface.xp    # Builtin
