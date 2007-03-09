@@ -60,10 +60,10 @@
     public function abstractMethod() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'abstract class main·Test extends lang·Object{
-          abstract public function sayHello();
+          public abstract function sayHello();
         };'),
         $this->emit('abstract class Test {
-          abstract public void sayHello();
+          public abstract void sayHello();
         }')
       );
     }
