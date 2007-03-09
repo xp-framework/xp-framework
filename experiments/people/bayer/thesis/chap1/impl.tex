@@ -518,4 +518,76 @@ foreach ($iterator as $key => $val) {
 }
 \end{lstlisting}
 
+\subsection{Java-Methodenaufrufe, die 2.}
+\label{sec:chap1:impl:12}
+
+Eigentlich konnten zu diesem Zeitpunkt wie oben beschrieben schon Java-Methoden aus PHP heraus aufgerufen werden, allerdings hatte
+diese Implementation zwei Nachteile: einerseits musste der PHP-Entwickler die genaue JNI-Signatur der Methode kennen, andererseits -
+und dies war der erheblich st"orendere Nachteil - konnten nur Methoden aufgerufen werden die tats"achlich in der Java-Klasse definiert
+sind, auf der \emph{findMethod()} aufgerufen wurde, also keine Methoden die in Oberklassen definiert wurden. Folglich musste der
+PHP-Anwender unter Umst"anden mehrere Java-Klassen in PHP erstellen um unterschiedliche Methoden auf ein und demselben Java-Objekt
+aufzurufen. Zwar mag es unter bestimmten Umst"anden w"unschenswert sein die genaue Methode angeben zu k"onnen die aufgerufen werden
+soll, allerdings will man in den meisten F"allen doch von den Java-Sprechfeatures wie Polymorphismus profitieren. Aus diesem Grund
+wurde beschlossen die Methodenaufrufe "uber \emph{javaInvoke()} nicht zu ver"andern, aber die Methodenaufrufe "'direkt"' auf dem Objekt
+so anzupassen, dass sie sich wie ein normaler Java-Methodenaufruf verhalten. Dies zu verwirklichen w"are mit JNI-Mitteln alleine
+sehr schwer gewesen, weswegen auf die Java Reflection API zur"uckgegriffen werden musste.
+
+Zu diesem Zweck wurde eine neue Java-Klasse erstellt, der \emph{ReflectHelper}, die drei statische Methoden enth"alt:
+\emph{signatureMatchesArguments()}, \emph{findMethod()} und \emph{callMethod()}. 
+\emph{callMethod()} wird vom nativen Code aus aufgerufen, und erwartet als Parameter ein Objekt, einen Methodennamen und ein 
+Array, welches Methodenargumente enth"alt, und versucht dann mit Hilfe der anderen beiden Methoden eine zum Namen und den Argumenten 
+passende Methode auf dem "ubergebenen Java-Objekt zu finden und aufzurufen, und das Ergebnis dieses Aufrufes zur"uckzugeben.
+Um die passende Methode zu finden nutzt sie \emph{findMethod()}, welche aus der Klasse die verf"ugbaren Methoden ausliest, und 
+zun"achst anhand des aufzurufenden Methodennamens, und schliesslich mit Hilfe von \emph{signatureMatchesArguments()} anhand der
+Argumententypen versucht die passende Methode zu finden. Eventuelle beim Aufruf auftretende Exceptions werden von \emph{callMethod()}
+einfach an den Aufrufer weitergeleitet, welcher diese Fehler dann selbst behandeln muss.
+
+Nun musste der native Code des TurpitudeJavaObjects derart angepasst werden, dass jeder Methodenaufruf der nicht die explizit
+definierten Methoden betrifft in einen Aufruf von \emph{callMethod()} umgewandelt wird. Hierzu wurde eine C-Funktion geschrieben,
+in der die zum Aufruf von \emph{callMethod()} n"otigen jclass und jmethodID erzeugt, und die in PHP "ubergebenen Parameter
+in ein Java-Array gewandelt werden. Ist dies geschehen wird \emph{callMethod()} aufgerufen, und das Ergebnis wie bei jedem
+anderen Java-Methodenaufruf auch in einen zval umgewandelt. Diese C-Funktion gibt "'true"' zur"uck wenn die Methode gefunden
+und aufgerufen werden konnte, ansonsten wird "'false"' zur"uckgegeben. Dieser Bool'sche Wert wird dann im \emph{\_\_call}-Callback
+des TurpitudeJavaObjects ausgewertet, und es wird entweder das Ergebnis zur"uckgegeben, oder ein PHP-Laufzeitfehler erzeugt.
+Der eigentliche Aufruf der Java-Methode geschieht "uber die Methode \emph{invoke()} der gefundenen \emph{Method}-Klasse, die neben
+dem Objekt auf dem die Methode aufgerufen werden soll noch die zu "ubergebenden Argumente entgegennimmt.
+
+Nun konnten Java-Methodenaufrufe in PHP auf die "Ubergabe der genauen Signatur verzichten, und es konnten auch Methoden aufgerufen
+werden die in "ubergeordneten Klassen definiert wurden:
+\begin{lstlisting}[caption=Verbesserter Aufruf einer Java-Methode]
+$date = $obj->getDate();
+$string = $date->toString();
+\end{lstlisting}
+Allerdings brachte diese Art des Methodenaufrufes auch Nachteile mit sich, die zum Teil mit der Reflection-API von Java,
+und zum Teil mit Turpitude selbst zusammenh"angen. So werden beispielsweise Methodenargumente immer gem"a\ss  der Tabelle
+\ref{tab:phptojava} konvertiert, was bei simplen Datentypen wie \emph{int} und \emph{float} unter Umst"anden zu Problemen f"uhren
+kann, weil keine passende Methode gefunden wird. Auch ist es so nur m"oglich "offentliche (\emph{public}) Methoden aufzurufen,
+bei privaten Methoden wirf \emph{Method.invoke()} eine Exception.
+In F"allen in denen der Anwender private oder ganz bestimmte Methoden aufrufen will l"a\ss t es sich also leider nicht vermeiden dass 
+der Anwender auf \emph{findMethod()} und \emph{javaInvoke()} zur"uckgreiffen muss. In den allermeisten F"allen bringt diese "Anderung 
+dem PHP-Programmierer aber eine erhebliche Vereinfachung, und rechtfertigt die entstehenden Nachteile, zumal ja in speziellen F"allen
+auf die oben beschriebenen Methoden zur"uckgegriffen werden kann.
+
+\subsection{Erzeugen von Java-Arrays}
+\label{sec:chap1:impl:13}
+
+In \ref{sec:chap1:impl:11} wurde beschrieben, dass Arrays die von Java an PHP "ubergeben werden als spezielles Objekt
+mit speziellen Methoden abgebildet werden. Was allerdings noch fehlte war eine M"oglichkeit Java-Arrays in PHP zu erzeugen,
+beispielsweise um sie als Argument an eine Methode zu "ubergeben. Das JNI bietet mit den Funktionen \emph{New$<$Type$>$Array}
+die M"oglichkeit beliebige Arrays zu erstellen, im Folgenden wird beschrieben wie diese Funktionen durch Turpitude in PHP
+abgebildet und dem Anwender zug"anglich gemacht wurden.
+
+Die Methode um neue Arrays zu erzeugen sollte \emph{newArray()} hei\ss en, und da sie sich keiner Klasse zuordnen lie\ss  
+wurde sie dem TurpitudeEnvironment hinzugef"ugt. Sie erwartet zwei Argumente, zum einen den JNI-kodierten Typen der Arrayelemente 
+als String, und zum anderen die L"ange, die das zu erzeugende Array haben soll. Intern wird das Erzeugen von der Funktion
+\emph{turpitude\_env\_method\_newarray()} "ubernommen, die die selben Parameter entgegennimmt wie die meisten PHP-Methoden
+implementierende Funktionen. Innerhalb dieser Funktion werden zun"achst die Anzahl und Typen der Argumente "uberpr"uft, und 
+mit der Funktion \emph{get\_java\_field\_type()} der Typstring geparst. Anhand des Typs wird entschieden welche JNI-Funktion
+aufgerufen werden soll, wird der Typ nicht erkannt wird ein Laufzeitfehler geworfen. Ein Sonderfall sind Objektarrays, zum einen
+weil hier nocht "uberpr"uft wird ob die Klasse valide ist, und zum anderen weil auch ein Objektarray erzeugt wird wenn es sich beim
+verlangten Typ um ein Array handelt, und somit ein Array von Arrays erstellt werden soll. Trat bis hierhin kein Fehler auf
+wird das Array noch in ein TurpitudeJavaArray verpackt, und an den Anwender zur"uckgegeben.
+
+
+
 % ********** End of chapter **********
