@@ -10,8 +10,7 @@
     'util.profiling.Timer',
     'net.xp_framework.tools.vm.Lexer',
     'net.xp_framework.tools.vm.Parser',
-    'net.xp_framework.tools.vm.emit.Emitter',
-    'net.xp_framework.tools.vm.util.Modifiers'
+    'net.xp_framework.tools.vm.emit.Emitter'
   );
   
   define('PACKAGE_SEPARATOR', '.');

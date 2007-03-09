@@ -5,8 +5,7 @@
  */
  
   uses(
-    'unittest.TestCase',
-    'net.xp_framework.tools.vm.util.Modifiers'
+    'unittest.TestCase'
   );
 
   /**
