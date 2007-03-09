@@ -24,14 +24,14 @@ void turpitude_jclass_method_findMethod(turpitude_javaclass_object* cls, int xar
 void turpitude_jclass_method_findStaticMethod(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
     // check param count
     if (xargc != 2) 
-        php_error(E_ERROR, "invalid number of arguments to method findClass.");
+        php_error(E_ERROR, "invalid number of arguments to method findStaticMethod.");
 
     // check param format
     if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
-        php_error(E_ERROR, "invalid type for param 1 (methodname) in method findClass, should be IS_STRING.");
+        php_error(E_ERROR, "invalid type for param 1 (methodname) in method findStaticMethod, should be IS_STRING.");
 
     if (Z_TYPE_P(*xargv[1]) != IS_STRING) 
-        php_error(E_ERROR, "invalid type for param 2 (signature) in method findClass, should be IS_STRING, see JNI documentation for format.");
+        php_error(E_ERROR, "invalid type for param 2 (signature) in method findStaticMethod, should be IS_STRING, see JNI documentation for format.");
 
     make_turpitude_jmethod_instance(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]), return_value, true);
 }

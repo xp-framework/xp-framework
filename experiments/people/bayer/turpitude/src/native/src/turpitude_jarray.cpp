@@ -376,7 +376,6 @@ void make_turpitude_jarray() {
     turpitude_jarray_class_entry->get_iterator = turpitude_jobject_internal_get_iterator;
 
     // arrays can be accessed as arrays and can be iterated on
-    //zend_class_implements(turpitude_jarray_class_entry TSRMLS_CC, 2, zend_ce_arrayaccess, zend_ce_aggregate);
     zend_class_implements(turpitude_jarray_class_entry TSRMLS_CC, 2, zend_ce_arrayaccess, zend_ce_aggregate);
 }
 

@@ -47,6 +47,11 @@ jclass get_java_class(JNIEnv* env, jobject obj, char** dest) {
  * converts a jobject into a TurpitudeJavaObject
  */
 void jobject_to_zval(JNIEnv* env, jobject obj, zval* retval) {
+    if (obj == NULL) {
+        ZVAL_NULL(retval);
+        return;
+    }
+
     char* classname;
     jclass cls = get_java_class(env, obj, &classname);
     // ###### check for special objects

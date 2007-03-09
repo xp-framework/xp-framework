@@ -71,7 +71,7 @@ public class ObjectSample {
         src.append("$method = $class->findMethod('toString', '()Ljava/lang/String;');");
         src.append("$result = $instance->javaInvoke($method);");
         src.append("echo $result.\"\\n\";");
-        src.append("$result = $instance->getDate('()Ljava/util/Date;');");
+        src.append("$result = $instance->getDate();");
         src.append("$io = $turpenv->instanceOf($instance, 'java/util/Date');");
         src.append("var_dump($io);");
         src.append("$io = $turpenv->instanceOf($instance, $class);");

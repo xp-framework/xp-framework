@@ -80,7 +80,9 @@ public class ArraySample {
         src.append("    var_dump($key);");
         src.append("    $iterator->next();");
         src.append("}");
-        src.append("return $retval;");
+        src.append("$arr = $turpenv->newArray('I', 5);");
+        src.append("var_dump($arr);");
+        src.append("return $arr;");
         src.append("?>"); 
         return src.toString();
     }

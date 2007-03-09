@@ -199,12 +199,14 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
     if (!dest)
         ALLOC_ZVAL(dest);
   
-    // use JNIEnv to find the desired java class
+    // use JNIEnv to find the desired java method id
     jmethodID mid;
     if (is_static) 
         mid = turpitude_jenv->GetStaticMethodID(cls, name, sig);
-    else 
+    else {
         mid = turpitude_jenv->GetMethodID(cls, name, sig);
+    }
+
 
     if (mid == NULL) {
         php_error(E_ERROR, "unable to find java method %s with signature %s", name, sig);
@@ -233,23 +235,7 @@ void make_turpitude_jmethod_instance(jclass cls, char* name, char* sig, zval* de
         sp++;
     }
     turpitude_java_type rt = get_java_field_type(sp);
-    /*
-    switch (c) {
-        case 'Z': rt = JAVA_BOOLEAN;  break;  
-        case 'B': rt = JAVA_BYTE;     break;  
-        case 'C': rt = JAVA_CHAR;     break;  
-        case 'S': rt = JAVA_SHORT;    break;  
-        case 'I': rt = JAVA_INT;      break;  
-        case 'J': rt = JAVA_LONG;     break;  
-        case 'F': rt = JAVA_FLOAT;    break;  
-        case 'D': rt = JAVA_DOUBLE;   break;  
-        case 'V': rt = JAVA_VOID;     break;
-        case 'L': rt = JAVA_OBJECT;   break;
-        default:
-        // none of the above - throw an error
-        php_error(E_ERROR, "unable to determine method return type.");
-    }
-    */
+
     intern->return_type = rt;
 
     intern->is_static = is_static;

@@ -114,6 +114,68 @@ void turpitude_env_method_getscriptcontext(zval* return_value) {
     make_turpitude_jobject_instance(cls, turpcls, turpitude_current_script_context, return_value);
 }
 
+void turpitude_env_method_newarray(int xargc, zval*** xargv, zval* return_value) {
+    TSRMLS_FETCH();
+
+    if (xargc != 2) 
+        php_error(E_ERROR, "invalid number of arguments to method newArray.");
+
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING) 
+        php_error(E_ERROR, "invalid type for param 1 (type) in method newArray, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_LONG) 
+        php_error(E_ERROR, "invalid type for param 2 (length) in method newArray, should be IS_LONG.");
+
+    turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[0]));
+    printf("new array %d %d\n", type, Z_LVAL_P(*xargv[1]));
+
+    jarray arr = NULL;
+    switch (type) {
+        case JAVA_OBJECT:
+            jclass cls = turpitude_jenv->FindClass(Z_STRVAL_P(*xargv[0]));
+            if (cls == NULL)
+                php_error(E_ERROR, "Unable to find class %s", Z_STRVAL_P(*xargv[0]));
+            arr = turpitude_jenv->NewObjectArray(Z_LVAL_P(*xargv[1]), cls, NULL);
+            break;
+        case JAVA_BOOLEAN:
+            arr = turpitude_jenv->NewBooleanArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_BYTE:
+            arr = turpitude_jenv->NewByteArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_CHAR:
+            arr = turpitude_jenv->NewCharArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_SHORT:
+            arr = turpitude_jenv->NewShortArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_INT:
+            arr = turpitude_jenv->NewIntArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_LONG:
+            arr = turpitude_jenv->NewLongArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_FLOAT:
+            arr = turpitude_jenv->NewFloatArray(Z_LVAL_P(*xargv[1]));
+            break;
+        case JAVA_DOUBLE:
+            arr = turpitude_jenv->NewDoubleArray(Z_LVAL_P(*xargv[1]));
+            break;
+        default:
+            // might still be an array of arrays
+            if ((type & JAVA_ARRAY) == JAVA_ARRAY) {
+                jclass cls = turpitude_jenv->FindClass(Z_STRVAL_P(*xargv[0]));
+                if (cls == NULL)
+                    php_error(E_ERROR, "Unable to find class %s", Z_STRVAL_P(*xargv[0]));
+                arr = turpitude_jenv->NewObjectArray(Z_LVAL_P(*xargv[1]), cls, NULL);
+            } else 
+                php_error(E_ERROR, "Unexpected Type: %d (%s)", type, Z_STRVAL_P(*xargv[0]));
+    }
+
+    make_turpitude_jarray_instance(arr, (turpitude_java_type)(type | JAVA_ARRAY), return_value);
+
+}
+
 //####################### parameter pointers ##################################3
 
 static
@@ -190,6 +252,10 @@ void turpitude_env_call(INTERNAL_FUNCTION_PARAMETERS) {
     }
     if (strcmp(Z_STRVAL_P(*argv[0]), "getScriptContext") == 0) {
         turpitude_env_method_getscriptcontext(return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "newArray") == 0) {
+        turpitude_env_method_newarray(xargc, xargv, return_value);
         method_valid = true;
     }
 

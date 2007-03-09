@@ -1,46 +1,5 @@
 #include <net_xp_framework_turpitude_PHPCompiledScript.h>
 #include <Turpitude.h>
-/*
-zend_op_array* getOpArrayPtr(JNIEnv* env, jobject self) {
-    // find class
-    jclass myclass = env->GetObjectClass(self);
-    if (NULL == myclass)
-        java_throw(env, "javax/script/ScriptException", "unable to find class via GetObjectClass");
-    // find ZendOpArrayptr field if
-    jfieldID oparrayField = env->GetFieldID(myclass, "ZendOpArrayptr", "Ljava/nio/ByteBuffer;");
-    if (NULL == oparrayField) 
-        java_throw(env, "javax/script/ScriptException", "unable find fieldID (ZendOpArrayptr)");
-    // retrieve pointer to op_array
-    zend_op_array* compiled_op_array = NULL;
-    compiled_op_array = (zend_op_array*)(
-        env->GetDirectBufferAddress(env->GetObjectField(self, oparrayField))
-    );
-    if (NULL == compiled_op_array)
-        java_throw(env, "javax/script/ScriptException", "ZendOpArrayptr empty");
-
-    return compiled_op_array;
-}
-
-zval* getZvalPtr(JNIEnv* env, jobject self) {
-    // find class
-    jclass myclass = env->GetObjectClass(self);
-    if (NULL == myclass)
-        java_throw(env, "javax/script/ScriptException", "unable to find class via GetObjectClass");
-    // find ZValptr field 
-    jfieldID ZValptrField = env->GetFieldID(myclass, "ZValptr", "Ljava/nio/ByteBuffer;");
-    if (NULL == ZValptrField) 
-        java_throw(env, "javax/script/ScriptException", "unable find fieldID (ZValptr)");
-    // retrieve pointer to op_array
-    zval* retval = NULL;
-    retval = (zval*)(
-        env->GetDirectBufferAddress(env->GetObjectField(self, ZValptrField))
-    );
-    if (NULL == retval)
-        java_throw(env, "javax/script/ScriptException", "ZValptr empty");
-
-    return retval;
-}
-*/
 
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_execute(JNIEnv* env, jobject self, jobject ctx) {
     TSRMLS_FETCH();
@@ -120,6 +79,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
             INIT_PZVAL(*(params[i]));
         }
         
+        // initialize Turpitude globals
+        turpitude_jenv = env;
+
         if (FAILURE == call_user_function_ex(
             CG(function_table), 
             NULL, 
@@ -178,6 +140,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
        
         zval function;
         ZVAL_STRING(&function, estrdup(methodName), 0);
+
+        // initialize Turpitude globals
+        turpitude_jenv = env;
 
         if (FAILURE == call_user_function_ex(
             CG(function_table), 

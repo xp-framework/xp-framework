@@ -117,6 +117,29 @@ void turpitude_jobject_method_javainvoke(turpitude_javaobject_object* jobj, int 
     jvalue_to_zval(turpitude_jenv, retval, method->return_type, return_value);
 }
 
+bool turpitude_jobject_method_call(turpitude_javaobject_object* jobj, char* method_name, int xargc, zval*** xargv, zval* return_value) {
+    // find class and method to call
+    jclass cls = turpitude_jenv->FindClass("net/xp_framework/turpitude/ReflectHelper");
+    jmethodID mid = turpitude_jenv->GetStaticMethodID(cls, "callMethod", "(Ljava/lang/Object;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;");
+
+    // get method_name string
+    jstring mname = turpitude_jenv->NewStringUTF(method_name);
+
+    // assemble arguments array
+    jclass ocls = turpitude_jenv->FindClass("java/lang/Object");
+    jobjectArray args = turpitude_jenv->NewObjectArray(xargc, ocls, NULL);
+    for (int i=0; i < xargc; i++) {
+        turpitude_jenv->SetObjectArrayElement(args, i, zval_to_jobject(turpitude_jenv, *xargv[i]));
+    }
+
+    // call method and convert return value
+    jobject retval = turpitude_jenv->CallStaticObjectMethod(cls, mid, jobj->java_object, mname, args);
+    jobject_to_zval(turpitude_jenv, retval, return_value);
+
+    // TODO: error handling
+    return true;
+}
+
 void turpitude_jobject_method_javaget(turpitude_javaobject_object* jobj, int xargc, zval*** xargv, zval* return_value) {
     // check param count
     if (xargc < 2) 
@@ -291,6 +314,8 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
         turpitude_jobject_method_javaset(jobj, xargc, xargv, return_value);
         method_valid = true;
     } else {
+        method_valid = turpitude_jobject_method_call(jobj, method_name, xargc, xargv, return_value);
+        /*
         //still, at least one parameter must be given
         if (xargc <= 0) 
             php_error(E_ERROR, "can't call method, at least provide the signature");
@@ -304,6 +329,7 @@ void turpitude_jobject_call(INTERNAL_FUNCTION_PARAMETERS) {
         } else {
             php_error(E_ERROR, "please provide a signature as first parameter");
         }
+        */
     }
 
     // error handling
