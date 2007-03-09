@@ -21,21 +21,19 @@
     /**
      * Setup method
      *
-     * @access  public
      */
-    function setUp() {
-      $this->names= &new NameMapping();
-      $this->names->addMapping('date', 'util.Date');
+    public function setUp() {
+      $this->names= new NameMapping();
+      $this->names->addMapping('Date', 'util.Date');
       $this->names->setNamespaceSeparator('.');
     }
 
     /**
      * Primitive type: int / integer
      *
-     * @access  public
      */
     #[@test]
-    function intType() {
+    public function intType() {
       $this->assertEquals('int', $this->names->forType('int'));
       $this->assertEquals('int', $this->names->forType('integer'));
     }
@@ -43,10 +41,9 @@
     /**
      * Primitive type: float / double
      *
-     * @access  public
      */
     #[@test]
-    function floatType() {
+    public function floatType() {
       $this->assertEquals('float', $this->names->forType('float'));
       $this->assertEquals('float', $this->names->forType('double'));
     }
@@ -54,10 +51,9 @@
     /**
      * Primitive type: bool / boolean
      *
-     * @access  public
      */
     #[@test]
-    function boolType() {
+    public function boolType() {
       $this->assertEquals('bool', $this->names->forType('bool'));
       $this->assertEquals('bool', $this->names->forType('boolean'));
     }
@@ -65,10 +61,9 @@
     /**
      * Date type
      *
-     * @access  public
      */
     #[@test]
-    function dateType() {
+    public function dateType() {
       $this->assertEquals('util.Date', $this->names->forType('Date'));
       $this->assertEquals('util.Date', $this->names->forType('util.Date'));
     }
@@ -76,60 +71,54 @@
     /**
      * Typed arrays
      *
-     * @access  public
      */
     #[@test]
-    function untypedArrays() {
+    public function untypedArrays() {
       $this->assertEquals('array', $this->names->forType('array'));
     }
 
     /**
      * Generic arrays
      *
-     * @access  public
      */
     #[@test]
-    function genericArrays() {
+    public function genericArrays() {
       $this->assertEquals('array', $this->names->forType('array<int, string>'));
     }
 
     /**
      * Generic class
      *
-     * @access  public
      */
     #[@test]
-    function genericClass() {
+    public function genericClass() {
       $this->assertEquals('lang.XPClass', $this->names->forType('lang.XPClass<util.Date>'));
     }
 
     /**
      * Typed arrays
      *
-     * @access  public
      */
     #[@test]
-    function primitiveTypedArrays() {
+    public function primitiveTypedArrays() {
       $this->assertEquals('string[]', $this->names->forType('string[]'));
     }
 
     /**
      * Typed arrays
      *
-     * @access  public
      */
     #[@test]
-    function typedArrays() {
+    public function typedArrays() {
       $this->assertEquals('util.Date[]', $this->names->forType('Date[]'));
     }
 
     /**
      * Vararg type
      *
-     * @access  public
      */
     #[@test]
-    function varargType() {
+    public function varargType() {
       $this->assertEquals('mixed...', $this->names->forType('mixed*', TRUE));
     }
   }

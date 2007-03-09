@@ -21,21 +21,19 @@
     /**
      * Setup method
      *
-     * @access  public
      */
-    function setUp() {
-      $this->names= &new NameMapping();
-      $this->names->addMapping('date', 'util.Date');
+    public function setUp() {
+      $this->names= new NameMapping();
+      $this->names->addMapping('Date', 'util.Date');
       $this->names->setNamespaceSeparator('.');
     }
 
     /**
      * Tests special class names ("xp", "parent", "self") stay unqualified
      *
-     * @access  public
      */
     #[@test]
-    function specialClassesStayUnqualified() {
+    public function specialClassesStayUnqualified() {
       foreach (array('xp', 'parent', 'self') as $short) {
         $this->assertEquals(
           $short, 
@@ -47,10 +45,9 @@
     /**
      * Tests net.* does not get prefixed
      *
-     * @access  public
      */
     #[@test]
-    function noPrefixForXpFrameworkClasses() {
+    public function noPrefixForXpFrameworkClasses() {
       $this->assertEquals(
         'net.xp_framework.unittest.DemoTest', 
         $this->names->packagedNameOf('net.xp_framework.unittest.DemoTest')
@@ -60,10 +57,9 @@
     /**
      * Tests com.* does not get prefixed
      *
-     * @access  public
      */
     #[@test]
-    function noPrefixForGoogleContributionClasses() {
+    public function noPrefixForGoogleContributionClasses() {
       $this->assertEquals(
         'com.google.soap.search.GoogleSearchClient', 
         $this->names->packagedNameOf('com.google.soap.search.GoogleSearchClient')
@@ -73,10 +69,9 @@
     /**
      * Tests qualified & packaged name of date class
      *
-     * @access  public
      */
     #[@test]
-    function nameOfDateClass() {
+    public function nameOfDateClass() {
       $this->assertEquals(
         'util.Date', 
         $this->names->packagedNameOf($this->names->qualifiedNameOf('Date'))
@@ -86,10 +81,9 @@
     /**
      * Tests qualified & packaged name of date class
      *
-     * @access  public
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function unknownClass() {
+    public function unknownClass() {
       $this->names->qualifiedNameOf('@@NON_EXISTANT_CLASS@@');
     }
   }

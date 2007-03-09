@@ -239,68 +239,68 @@ name_and_all_keywords:
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement else { 
-          $$= &new IfNode($3, is_array($5) ? $5 : array($5), $elsif= NULL, $6); $$->position= $yyLex->position;
+          $$= new IfNode($3, is_array($5) ? $5 : array($5), $elsif= NULL, $6); $$->position= $yyLex->position;
         }
 	|	T_WHILE '(' expr ')' statement {
-          $$= &new WhileNode($3, is_array($5) ? $5 : array($5)); $$->position= $yyLex->position;
+          $$= new WhileNode($3, is_array($5) ? $5 : array($5)); $$->position= $yyLex->position;
         }
 	|	T_WHILE T_CAST statement {
-          $$= &new WhileNode(new ConstantReferenceNode(NULL, $2), is_array($3) ? $3 : array($3)); $$->position= $yyLex->position;
+          $$= new WhileNode(new ConstantReferenceNode(NULL, $2), is_array($3) ? $3 : array($3)); $$->position= $yyLex->position;
         }
 	|	T_DO statement T_WHILE '(' expr ')' ';' {
-          $$= &new DoWhileNode($5, is_array($2) ? $2 : array($2)); $$->position= $yyLex->position;
+          $$= new DoWhileNode($5, is_array($2) ? $2 : array($2)); $$->position= $yyLex->position;
         }
 	|	T_FOR '(' for_expr ';' for_expr ';' for_expr ')' statement {
-          $$= &new ForNode($3, $5, $7, is_array($9) ? $9 : array($9)); $$->position= $yyLex->position;
+          $$= new ForNode($3, $5, $7, is_array($9) ? $9 : array($9)); $$->position= $yyLex->position;
         }
 	|	T_SWITCH '(' expr ')' switch_case_list {
-          $$= &new SwitchNode($3, $5); $$->position= $yyLex->position;
+          $$= new SwitchNode($3, $5); $$->position= $yyLex->position;
         }
 	|	T_SWITCH T_CAST switch_case_list {  // Ambiguous global constants and class names
-          $$= &new SwitchNode(new ConstantReferenceNode(NULL, $2), $3); $$->position= $yyLex->position;
+          $$= new SwitchNode(new ConstantReferenceNode(NULL, $2), $3); $$->position= $yyLex->position;
         }
 	|	T_BREAK ';'				{ 
-          $$= &new BreakNode(NULL); $$->position= $yyLex->position;
+          $$= new BreakNode(NULL); $$->position= $yyLex->position;
         }
 	|	T_BREAK expr ';' {
-          $$= &new BreakNode($2); $$->position= $yyLex->position;
+          $$= new BreakNode($2); $$->position= $yyLex->position;
         }
 	|	T_CONTINUE ';' {
-          $$= &new ContinueNode(NULL); $$->position= $yyLex->position;
+          $$= new ContinueNode(NULL); $$->position= $yyLex->position;
         }
 	|	T_CONTINUE expr ';' {
-          $$= &new ContinueNode($2); $$->position= $yyLex->position;
+          $$= new ContinueNode($2); $$->position= $yyLex->position;
         }
 	|	T_RETURN ';' { 
-          $$= &new ReturnNode(NULL); $$->position= $yyLex->position;
+          $$= new ReturnNode(NULL); $$->position= $yyLex->position;
         }
 	|	T_RETURN expr_without_variable ';' { 
-          $$= &new ReturnNode($2); $$->position= $yyLex->position;
+          $$= new ReturnNode($2); $$->position= $yyLex->position;
         }
 	|	T_RETURN variable ';' {
-          $$= &new ReturnNode($2); $$->position= $yyLex->position;
+          $$= new ReturnNode($2); $$->position= $yyLex->position;
         }
 	|	T_STATIC static_var_list ';' {
-          $$= &new StaticVariableListNode($2); $$->position= $yyLex->position;
+          $$= new StaticVariableListNode($2); $$->position= $yyLex->position;
         }
 	|	T_ECHO echo_expr_list ';' { 
-          $$= &new EchoNode($2); $$->position= $yyLex->position;
+          $$= new EchoNode($2); $$->position= $yyLex->position;
         }
 	|	expr ';' { 
           // Intentionally empty
         }
 	|	T_FOREACH '(' expr T_AS variable foreach_optional_arg ')' statement {
-          $$= &new ForeachNode($3, $5, $6, is_array($8) ? $8 : array($8)); $$->position= $yyLex->position;
+          $$= new ForeachNode($3, $5, $6, is_array($8) ? $8 : array($8)); $$->position= $yyLex->position;
         }
 	|	';'		/* empty statement */
 	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches optional_finally {
-          $$= &new TryNode($3, new CatchNode($7, $8, $11, $13), $14); $$->position= $yyLex->position;
+          $$= new TryNode($3, new CatchNode($7, $8, $11, $13), $14); $$->position= $yyLex->position;
         }
 	|	T_THROW expr ';' { 
-          $$= &new ThrowNode($2); $$->position= $yyLex->position;
+          $$= new ThrowNode($2); $$->position= $yyLex->position;
         }
 	|	T_IMPORT import_list ';' { 
-          $$= &new ImportListNode($2); $$->position= $yyLex->position;
+          $$= new ImportListNode($2); $$->position= $yyLex->position;
         }
 ;
 
@@ -315,16 +315,16 @@ import_list:
 
 import:
         package_with_star {
-          $$= &new ImportAllNode($1); $$->position= $yyLex->position; 
+          $$= new ImportAllNode($1); $$->position= $yyLex->position; 
         }
 	|	class_name_reference { 
-          $$= &new ImportNode($1, NULL); $$->position= $yyLex->position; 
+          $$= new ImportNode($1, NULL); $$->position= $yyLex->position; 
         }
 	|	class_name_reference T_AS name_and_keywords { 
-          $$= &new ImportNode($1, $3); $$->position= $yyLex->position; 
+          $$= new ImportNode($1, $3); $$->position= $yyLex->position; 
         }
 	|	class_name_reference T_AS variable { 
-          $$= &new ImportNode($1, $3); $$->position= $yyLex->position; 
+          $$= new ImportNode($1, $3); $$->position= $yyLex->position; 
         }
 ;
 
@@ -356,7 +356,7 @@ non_empty_additional_catches:
 
 optional_finally:
 		T_FINALLY '{' inner_statement_list '}' {
-          $$= &new FinallyNode($3); $$->position= $yyLex->position;
+          $$= new FinallyNode($3); $$->position= $yyLex->position;
         }
 	|	/* empty */ { 
           $$= NULL; 
@@ -365,7 +365,7 @@ optional_finally:
 
 additional_catch:
 	T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' {
-      $$= &new CatchNode($3, $4, $7, NULL); $$->position= $yyLex->position;
+      $$= new CatchNode($3, $4, $7, NULL); $$->position= $yyLex->position;
     }
 ;
 
@@ -382,13 +382,13 @@ package_inner_statement:
 		class_declaration_statement
 	|	enum_declaration_statement
 	|	T_IMPORT import_list ';' {
-          $$= &new ImportListNode($2); $$->position= $yyLex->position;
+          $$= new ImportListNode($2); $$->position= $yyLex->position;
         }
 ;
 
 function_declaration_statement:
 		T_FUNCTION T_STRING '(' parameter_list ')' '{' inner_statement_list '}' { 
-          $$= &new FunctionDeclarationNode($2, $4, $7); $$->position= $yyLex->position;
+          $$= new FunctionDeclarationNode($2, $4, $7); $$->position= $yyLex->position;
         }
 ;
 
@@ -399,16 +399,16 @@ optional_annotation_list:
 
 class_declaration_statement:
 		optional_annotation_list class_entry_type name_and_keywords extends_from implements_list '{' class_statement_list '}' {
-          $$= &new ClassDeclarationNode($3, $4, $5, $7, $2, $1); $$->position= $yyLex->position;
+          $$= new ClassDeclarationNode($3, $4, $5, $7, $2, $1); $$->position= $yyLex->position;
         }
 	|	optional_annotation_list interface_entry name_and_keywords interface_extends_list '{' class_statement_list '}' {
-          $$= &new InterfaceDeclarationNode($3, $4, $6, $2, $1); $$->position= $yyLex->position;
+          $$= new InterfaceDeclarationNode($3, $4, $6, $2, $1); $$->position= $yyLex->position;
         }
 ;
 
 package_declaration_statement:
 		T_PACKAGE fully_qualified_class_name '{' package_inner_statement_list '}' {
-          $$= &new PackageDeclarationNode($2, $4); $$->position= $yyLex->position;
+          $$= new PackageDeclarationNode($2, $4); $$->position= $yyLex->position;
         }
 ;
 
@@ -444,7 +444,7 @@ interface_list:
 
 enum_declaration_statement:
 		optional_annotation_list T_ENUM name_and_keywords '{' enum_inner_statement_list '}' {
-          $$= &new EnumDeclarationNode($3, $5, $1); $$->position= $yyLex->position;
+          $$= new EnumDeclarationNode($3, $5, $1); $$->position= $yyLex->position;
         }
 ;
 
@@ -464,13 +464,13 @@ enum_declaration_list:
 
 enum_declaration_list_member:
 		T_STRING {
-          $$= &PNode::create('EnumMember', array($1, NULL));
+          $$= PNode::create('EnumMember', array($1, NULL));
         }
 	|	T_STRING '(' static_scalar ')' {
-          $$= &PNode::create('EnumMember', array($1, $3));
+          $$= PNode::create('EnumMember', array($1, $3));
         }
 	|	T_STRING '{' method_declaration '}' {
-          $$= &PNode::create('EnumMethod', array($1, &$3));
+          $$= PNode::create('EnumMethod', array($1, $3));
         }
 ;
 
@@ -491,10 +491,10 @@ case_list:
           $$= array();
         }
 	|	case_list T_CASE expr case_separator inner_statement_list { 
-          $$[]= &new CaseNode($3, $5);
+          $$[]= new CaseNode($3, $5);
         }
 	|	case_list T_DEFAULT case_separator inner_statement_list {
-          $$[]= &new DefaultNode($4);
+          $$[]= new DefaultNode($4);
         }
 ;
 
@@ -527,10 +527,10 @@ non_empty_parameter_list:
           $$= array(new ParameterNode($2, $1[0], $4, $1[1]));
         }
 	|	non_empty_parameter_list ',' optional_parameter_type T_VARIABLE {
-          $$[]= &new ParameterNode($4, $3[0], NULL, $3[1]);
+          $$[]= new ParameterNode($4, $3[0], NULL, $3[1]);
         }
 	|	non_empty_parameter_list ',' optional_parameter_type T_VARIABLE '=' static_scalar {
-          $$[]= &new ParameterNode($4, $3[0], $6, $3[1]);
+          $$[]= new ParameterNode($4, $3[0], $6, $3[1]);
         }
 ;
 
@@ -563,10 +563,10 @@ non_empty_function_call_parameter_list:
 
 static_var_list:
 		static_var_list ',' T_VARIABLE {
-          $$[]= &new StaticVariableNode($3, NULL);
+          $$[]= new StaticVariableNode($3, NULL);
         }
 	|	static_var_list ',' T_VARIABLE '=' static_scalar {
-          $$[]= &new StaticVariableNode($3, $5);
+          $$[]= new StaticVariableNode($3, $5);
         }
 	|	T_VARIABLE  {
           $$= array(new StaticVariableNode($1, NULL));
@@ -584,38 +584,38 @@ class_statement_list:
 
 class_statement:
 		non_empty_member_modifiers optional_class_type class_variable_declaration ';' {
-          $$= &new MemberDeclarationListNode($1, $2, $3); $$->position= $yyLex->position; 
+          $$= new MemberDeclarationListNode($1, $2, $3); $$->position= $yyLex->position; 
         }
 	|	class_constant_declaration ';' {
-          $$= &PNode::create('ClassConstantDeclarationList', array($1, $2)); 
+          $$= PNode::create('ClassConstantDeclarationList', array($1, $2)); 
         }
 	|	non_empty_member_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
-          $$= &new OperatorDeclarationNode($3, $5, $8, $1, NULL, $7); $$->position= $yyLex->position;
+          $$= new OperatorDeclarationNode($3, $5, $8, $1, NULL, $7); $$->position= $yyLex->position;
         }
 	|	annotation_list non_empty_member_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
-          $$= &new OperatorDeclarationNode($4, $6, $9, $2, $1, $8); $$->position= $yyLex->position;
+          $$= new OperatorDeclarationNode($4, $6, $9, $2, $1, $8); $$->position= $yyLex->position;
         }
     |   method_declaration
 ;
 
 method_declaration:
 	 	non_empty_member_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
-          $$= &new ConstructorDeclarationNode($4, $7, $1, NULL, $6); $$->position= $yyLex->position;
+          $$= new ConstructorDeclarationNode($4, $7, $1, NULL, $6); $$->position= $yyLex->position;
         }
 	|	annotation_list non_empty_member_modifiers T_CONSTRUCT '(' parameter_list ')' throws method_body {
-          $$= &new ConstructorDeclarationNode($5, $8, $2, $1, $7); $$->position= $yyLex->position;
+          $$= new ConstructorDeclarationNode($5, $8, $2, $1, $7); $$->position= $yyLex->position;
         }
 	| 	non_empty_member_modifiers T_DESTRUCT '(' ')' throws method_body {
-          $$= &new DestructorDeclarationNode($6, $1, NULL, $5); $$->position= $yyLex->position;
+          $$= new DestructorDeclarationNode($6, $1, NULL, $5); $$->position= $yyLex->position;
         }
 	|	annotation_list non_empty_member_modifiers T_DESTRUCT '(' ')' throws method_body {
-          $$= &new DestructorDeclarationNode($7, $2, $1, $6); $$->position= $yyLex->position;
+          $$= new DestructorDeclarationNode($7, $2, $1, $6); $$->position= $yyLex->position;
         }
 	|	non_empty_member_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
-          $$= &new MethodDeclarationNode($3, $5, $2, $8, $1, NULL, $7); $$->position= $yyLex->position;
+          $$= new MethodDeclarationNode($3, $5, $2, $8, $1, NULL, $7); $$->position= $yyLex->position;
         }
 	|	annotation_list non_empty_member_modifiers return_type_name T_STRING '(' parameter_list ')' throws method_body {
-          $$= &new MethodDeclarationNode($4, $6, $3, $9, $2, $1, $8); $$->position= $yyLex->position;
+          $$= new MethodDeclarationNode($4, $6, $3, $9, $2, $1, $8); $$->position= $yyLex->position;
         }
 ;
 
@@ -672,13 +672,13 @@ annotation_elements:
 
 annotation:
 		'@' name_and_all_keywords { 
-          $$= &new AnnotationNode($2, new ConstantReferenceNode(NULL, 'NULL')); $$->position= $yyLex->position; 
+          $$= new AnnotationNode($2, new ConstantReferenceNode(NULL, 'NULL')); $$->position= $yyLex->position; 
         }
 	|	'@' name_and_all_keywords '(' common_scalar ')' { 
-          $$= &new AnnotationNode($2, $4); $$->position= $yyLex->position; 
+          $$= new AnnotationNode($2, $4); $$->position= $yyLex->position; 
         }
 	|	'@' name_and_all_keywords '(' annotation_defines ')' { 
-          $$= &new AnnotationNode($2, new ArrayDeclarationNode($4)); $$->position= $yyLex->position; 
+          $$= new AnnotationNode($2, new ArrayDeclarationNode($4)); $$->position= $yyLex->position; 
         }
 ;
 
@@ -732,13 +732,13 @@ class_variable_declaration:
 
 class_variable:
 	|	T_VARIABLE {
-          $$= &new MemberDeclarationNode($1, NULL, NULL); $$->position= $yyLex->position;
+          $$= new MemberDeclarationNode($1, NULL, NULL); $$->position= $yyLex->position;
         }
 	|	T_VARIABLE '=' static_scalar {
-          $$= &new MemberDeclarationNode($1, $3, NULL); $$->position= $yyLex->position;
+          $$= new MemberDeclarationNode($1, $3, NULL); $$->position= $yyLex->position;
         }
     |   T_PROPERTY T_VARIABLE get_or_set get_or_set {
-          $$= &new PropertyDeclarationNode($2, array_merge($3, $4)); $$->position= $yyLex->position;
+          $$= new PropertyDeclarationNode($2, array_merge($3, $4)); $$->position= $yyLex->position;
         }
 ;
 
@@ -756,10 +756,10 @@ get_or_set:
 
 class_constant_declaration:
 		class_constant_declaration ',' T_STRING '=' static_scalar {
-          $$[]= &PNode::create('ClassConstantDeclaration', array($2, &$3));
+          $$[]= PNode::create('ClassConstantDeclaration', array($2, $3));
         }
 	|	T_CONST T_STRING '=' static_scalar	{
-          $$= array(PNode::create('ClassConstantDeclaration', array($2, &$3)));
+          $$= array(PNode::create('ClassConstantDeclaration', array($2, $3)));
         }
 ;
 
@@ -781,160 +781,160 @@ non_empty_for_expr:
 
 expr_without_variable:	
 	 	T_ARRAY '(' array_pair_list ')' { 
-          $$= &new ArrayDeclarationNode($3); $$->position= $yyLex->position; 
+          $$= new ArrayDeclarationNode($3); $$->position= $yyLex->position; 
         }
 	|	T_ARRAY T_CAST { 
-          $$= &new ArrayDeclarationNode($2); $$->position= $yyLex->position; 
+          $$= new ArrayDeclarationNode($2); $$->position= $yyLex->position; 
         }
 	|	T_LIST '(' assignment_list ')' '=' expr {
-          $$= &new ListAssignNode($3, $6); $$->position= $yyLex->position;
+          $$= new ListAssignNode($3, $6); $$->position= $yyLex->position;
         }
 	|	variable '=' expr {
-          $$= &new AssignNode($1, $3); $$->position= $yyLex->position;
+          $$= new AssignNode($1, $3); $$->position= $yyLex->position;
         }
 	|	T_NEW class_name_reference ctor_arguments {
-          $$= &new NewNode($2, $3); $$->position= $yyLex->position;
+          $$= new NewNode($2, $3); $$->position= $yyLex->position;
         }
 	|	T_CLONE expr { 
-          $$= &PNode::create('Clone', array(&$2));
+          $$= PNode::create('Clone', array($2));
         }
 	|	variable T_PLUS_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '+'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '+'); $$->position= $yyLex->position;
         }
 	|	variable T_MINUS_EQUAL expr	{
-          $$= &new BinaryAssignNode($1, $3, '-'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '-'); $$->position= $yyLex->position;
         }
 	|	variable T_MUL_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '*'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '*'); $$->position= $yyLex->position;
         }
 	|	variable T_DIV_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '/'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '/'); $$->position= $yyLex->position;
         }
 	|	variable T_CONCAT_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '~'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '~'); $$->position= $yyLex->position;
         }
 	|	variable T_MOD_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '%'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '%'); $$->position= $yyLex->position;
         }
 	|	variable T_AND_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '&'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '&'); $$->position= $yyLex->position;
         }
 	|	variable T_OR_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '|'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '|'); $$->position= $yyLex->position;
         }
 	|	variable T_XOR_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '^'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '^'); $$->position= $yyLex->position;
         }
 	|	variable T_SL_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '<<'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '<<'); $$->position= $yyLex->position;
         }
 	|	variable T_SR_EQUAL expr {
-          $$= &new BinaryAssignNode($1, $3, '>>'); $$->position= $yyLex->position;
+          $$= new BinaryAssignNode($1, $3, '>>'); $$->position= $yyLex->position;
         }
 	|	variable T_INC {
-          $$= &new PostIncNode($1); $$->position= $yyLex->position;
+          $$= new PostIncNode($1); $$->position= $yyLex->position;
         }
 	|	T_INC variable {
-          $$= &new PreIncNode($2); $$->position= $yyLex->position;
+          $$= new PreIncNode($2); $$->position= $yyLex->position;
         }
 	|	variable T_DEC {
-          $$= &new PostDecNode($1); $$->position= $yyLex->position;
+          $$= new PostDecNode($1); $$->position= $yyLex->position;
         }
 	|	T_DEC variable {
-          $$= &new PreDecNode($2); $$->position= $yyLex->position;
+          $$= new PreDecNode($2); $$->position= $yyLex->position;
         }
 	|	expr T_BOOLEAN_OR expr {
-          $$= &new BooleanOperatorNode($1, $3, '||'); $$->position= $yyLex->position;
+          $$= new BooleanOperatorNode($1, $3, '||'); $$->position= $yyLex->position;
         }
 	|	expr T_BOOLEAN_AND expr {
-          $$= &new BooleanOperatorNode($1, $3, '&&'); $$->position= $yyLex->position;
+          $$= new BooleanOperatorNode($1, $3, '&&'); $$->position= $yyLex->position;
         }
 	|	expr '|' expr {
-          $$= &new BinaryNode($1, $3, '|'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '|'); $$->position= $yyLex->position;
         }
 	|	expr '&' expr {
-          $$= &new BinaryNode($1, $3, '&'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '&'); $$->position= $yyLex->position;
         }
 	|	expr '^' expr {
-          $$= &new BinaryNode($1, $3, '^'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '^'); $$->position= $yyLex->position;
         }
 	|	expr '~' expr {
-          $$= &new BinaryNode($1, $3, '~'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '~'); $$->position= $yyLex->position;
         }
 	|	expr '+' expr {
-          $$= &new BinaryNode($1, $3, '+'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '+'); $$->position= $yyLex->position;
         }
 	|	expr '-' expr {
-          $$= &new BinaryNode($1, $3, '-'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '-'); $$->position= $yyLex->position;
         }
 	|	expr '*' expr {
-          $$= &new BinaryNode($1, $3, '*'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '*'); $$->position= $yyLex->position;
         }
 	|	expr '/' expr {
-          $$= &new BinaryNode($1, $3, '/'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '/'); $$->position= $yyLex->position;
         }
 	|	expr '%' expr {
-          $$= &new BinaryNode($1, $3, '%'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '%'); $$->position= $yyLex->position;
         }
 	| 	expr T_SL expr {
-          $$= &new BinaryNode($1, $3, '<<'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '<<'); $$->position= $yyLex->position;
         }
 	|	expr T_SR expr {
-          $$= &new BinaryNode($1, $3, '>>'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '>>'); $$->position= $yyLex->position;
         }
 	|	'+' expr {
-          $$= &new BinaryNode(NULL, $2, '+'); $$->position= $yyLex->position;
+          $$= new BinaryNode(NULL, $2, '+'); $$->position= $yyLex->position;
         }
 	|	'-' expr {
-          $$= &new BinaryNode(NULL, $2, '-'); $$->position= $yyLex->position;
+          $$= new BinaryNode(NULL, $2, '-'); $$->position= $yyLex->position;
         }
 	|	'!' expr {
-          $$= &new NotNode($2); $$->position= $yyLex->position;
+          $$= new NotNode($2); $$->position= $yyLex->position;
         }
 	|	'~' expr {
-          $$= &PNode::create('Unary', array(&$2, '~'));
+          $$= PNode::create('Unary', array($2, '~'));
         }
 	|	expr T_IS_IDENTICAL expr {
-          $$= &new BinaryNode($1, $3, '==='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '==='); $$->position= $yyLex->position;
         }
 	|	expr T_IS_NOT_IDENTICAL expr {
-          $$= &new BinaryNode($1, $3, '!=='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '!=='); $$->position= $yyLex->position;
         }
 	|	expr T_IS_EQUAL expr {
-          $$= &new BinaryNode($1, $3, '=='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '=='); $$->position= $yyLex->position;
         }
 	|	expr T_IS_NOT_EQUAL expr {
-          $$= &new BinaryNode($1, $3, '!='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '!='); $$->position= $yyLex->position;
         }
 	|	expr '<' expr {
-          $$= &new BinaryNode($1, $3, '<'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '<'); $$->position= $yyLex->position;
         }
 	|	expr T_IS_SMALLER_OR_EQUAL expr {
-          $$= &new BinaryNode($1, $3, '<='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '<='); $$->position= $yyLex->position;
         }
 	|	expr '>' expr {
-          $$= &new BinaryNode($1, $3, '>'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '>'); $$->position= $yyLex->position;
         }
 	|	expr T_IS_GREATER_OR_EQUAL expr {
-          $$= &new BinaryNode($1, $3, '>='); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '>='); $$->position= $yyLex->position;
         }
 	|	expr T_COMPARE_ARROW expr {
-          $$= &new BinaryNode($1, $3, '<=>'); $$->position= $yyLex->position;
+          $$= new BinaryNode($1, $3, '<=>'); $$->position= $yyLex->position;
         }
 	|	expr T_INSTANCEOF class_name_reference { 
-          $$= &new InstanceOfNode($1, $3); $$->position= $yyLex->position;
+          $$= new InstanceOfNode($1, $3); $$->position= $yyLex->position;
         }
 	|	'(' expr ')' { 
-          $$= &new BracketedExpressionNode($2); $$->position= $yyLex->position; 
+          $$= new BracketedExpressionNode($2); $$->position= $yyLex->position; 
         }
 	|	expr '?' expr ':' expr	{
-          $$= &new TernaryNode($1, $3, $5); $$->position= $yyLex->position;
+          $$= new TernaryNode($1, $3, $5); $$->position= $yyLex->position;
         }
 	|   T_CAST expr {
-          $$= &new ExpressionCastNode($2, $1); $$->position= $yyLex->position;
+          $$= new ExpressionCastNode($2, $1); $$->position= $yyLex->position;
         }
 	|	'@' expr { 
-          $$= &new SilencedExpressionNode($2); $$->position= $yyLex->position; 
+          $$= new SilencedExpressionNode($2); $$->position= $yyLex->position; 
         }
 	|	scalar { 
           /* $$= $1; */ 
@@ -943,28 +943,28 @@ expr_without_variable:
 
 function_call:
 		T_STRING '(' function_call_parameter_list ')' {
-          $$= &new FunctionCallNode($1, $3); $$->position= $yyLex->position;
+          $$= new FunctionCallNode($1, $3); $$->position= $yyLex->position;
         }
 	|	T_STRING T_CAST {
-          $$= &new FunctionCallNode($1, array($2)); $$->position= $yyLex->position;
+          $$= new FunctionCallNode($1, array($2)); $$->position= $yyLex->position;
         }
 	|	variable_without_objects '(' function_call_parameter_list ')' {
-          $$= &new FunctionCallNode($1, $3); $$->position= $yyLex->position;
+          $$= new FunctionCallNode($1, $3); $$->position= $yyLex->position;
         }
 	|	variable_without_objects T_CAST {
-          $$= &new FunctionCallNode($1, array($2)); $$->position= $yyLex->position;
+          $$= new FunctionCallNode($1, array($2)); $$->position= $yyLex->position;
         }
 	|	fully_qualified_class_name T_DOUBLE_COLON method_name '(' function_call_parameter_list ')' {
-          $$= &new MethodCallNode($1, new MemberNode($3), $5, NULL); $$->position= $yyLex->position;
+          $$= new MethodCallNode($1, new MemberNode($3), $5, NULL); $$->position= $yyLex->position;
         }
 	|	fully_qualified_class_name T_DOUBLE_COLON method_name T_CAST {
-          $$= &new MethodCallNode($1, new MemberNode($3), array($4), NULL); $$->position= $yyLex->position;
+          $$= new MethodCallNode($1, new MemberNode($3), array($4), NULL); $$->position= $yyLex->position;
         }
 	|   fully_qualified_class_name T_DOUBLE_COLON variable_without_objects '(' function_call_parameter_list ')' {
-          $$= &new MethodCallNode($1, new MemberNode($3), $5, NULL); $$->position= $yyLex->position;
+          $$= new MethodCallNode($1, new MemberNode($3), $5, NULL); $$->position= $yyLex->position;
         }
 	|   fully_qualified_class_name T_DOUBLE_COLON variable_without_objects T_CAST {
-          $$= &new MethodCallNode($1, new MemberNode($3), array($4), NULL); $$->position= $yyLex->position;
+          $$= new MethodCallNode($1, new MemberNode($3), array($4), NULL); $$->position= $yyLex->position;
         }
 ;
 
@@ -980,44 +980,44 @@ fully_qualified_class_name:
 ;
 
 class_name_reference:
-		fully_qualified_class_name			  { $$= &new ClassReferenceNode($1, NULL); $$->position= $yyLex->position; }
-//	|	fully_qualified_class_name '<' T_STRING '>'     { $$= &new ClassReferenceNode($1, $3); $$->position= $yyLex->position; }
+		fully_qualified_class_name			  { $$= new ClassReferenceNode($1, NULL); $$->position= $yyLex->position; }
+//	|	fully_qualified_class_name '<' T_STRING '>'     { $$= new ClassReferenceNode($1, $3); $$->position= $yyLex->position; }
 
 ;
 
 ctor_arguments:
 		'(' function_call_parameter_list ')' variable_properties { 
-          $$= &new NewClassNode($2, NULL, $4); $$->position= $yyLex->position;
+          $$= new NewClassNode($2, NULL, $4); $$->position= $yyLex->position;
         }
 	|	T_CAST variable_properties { 
-          $$= &new NewClassNode(array($1), NULL, $2); $$->position= $yyLex->position;
+          $$= new NewClassNode(array($1), NULL, $2); $$->position= $yyLex->position;
         }
 	|	'(' function_call_parameter_list ')' '{' class_statement_list '}' variable_properties { 
-          $$= &new NewClassNode($2, $5, $7); $$->position= $yyLex->position;
+          $$= new NewClassNode($2, $5, $7); $$->position= $yyLex->position;
         }
 ;
 
 common_scalar:
 		T_LNUMBER {
-          $$= &new LongNumberNode($1); $$->position= $yyLex->position;
+          $$= new LongNumberNode($1); $$->position= $yyLex->position;
         }
 	|	T_DNUMBER { 
-          $$= &new DoubleNumberNode($1); $$->position= $yyLex->position; 
+          $$= new DoubleNumberNode($1); $$->position= $yyLex->position; 
         }
 	|	T_CONSTANT_ENCAPSED_STRING	{ /* $$= $1; */ }
 ;
 
 static_scalar: /* compile-time evaluated scalars */
 		common_scalar				{ /* $$= $1; */ }
-	|	T_STRING 					{ $$= &new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
+	|	T_STRING 					{ $$= new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
 	|	'+' static_scalar			{ $$= $2; }
 	|	'-' static_scalar			{ $$= -1 * $2->value; } 
-	|	T_ARRAY '(' static_array_pair_list ')' { $$= &new ArrayDeclarationNode($3); $$->position= $yyLex->position; }
+	|	T_ARRAY '(' static_array_pair_list ')' { $$= new ArrayDeclarationNode($3); $$->position= $yyLex->position; }
 	|	class_constant 		        { $$ = $1; }
 ;
 
 scalar:
-		T_STRING 				{ $$= &new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
+		T_STRING 				{ $$= new ConstantReferenceNode(NULL, $1); $$->position= $yyLex->position; }
 	|	class_constant			{ /* $$= $1; */ }
 	|	common_scalar			{ /* $$= $1; */ }
 ;
@@ -1076,10 +1076,10 @@ variable:
 		base_variable_with_function_calls T_OBJECT_OPERATOR object_property method_or_not variable_properties {
           if (NULL !== $4) {
             // $this->setDate()
-            $$= &new MethodCallNode($1, $3, $4, $5); $$->position= $yyLex->position;
+            $$= new MethodCallNode($1, $3, $4, $5); $$->position= $yyLex->position;
           } else {
             // $this->date
-            $$= &new ObjectReferenceNode($1, $3, $5); $$->position= $yyLex->position;
+            $$= new ObjectReferenceNode($1, $3, $5); $$->position= $yyLex->position;
           }
 	    }
 	|	base_variable_with_function_calls { 
@@ -1092,7 +1092,7 @@ variable_properties:
           $$[]= $2;
         }
 	|	variable_properties '[' expr ']' { 
-          $$[]= &new ArrayOffsetNode($3);   // $this->getElements()[0]
+          $$[]= new ArrayOffsetNode($3);   // $this->getElements()[0]
         }
 	|	/* empty */ { 
           $$= NULL; 
@@ -1103,10 +1103,10 @@ variable_property:
 		T_OBJECT_OPERATOR object_property method_or_not {
             if (NULL !== $3) {
               // $this->setOrder()->setDate() or $this->order->setDate()
-              $$= &new MethodCallNode(NULL, $2, $3, NULL); $$->position= $yyLex->position;
+              $$= new MethodCallNode(NULL, $2, $3, NULL); $$->position= $yyLex->position;
             } else {
               // $this->setOrder()->date or $this->order->date
-              $$= &new ObjectReferenceNode(NULL, $2, NULL); $$->position= $yyLex->position;
+              $$= new ObjectReferenceNode(NULL, $2, NULL); $$->position= $yyLex->position;
             }
         }
 ;
@@ -1131,7 +1131,7 @@ variable_without_objects:
 
 static_member:
 		fully_qualified_class_name T_DOUBLE_COLON variable_without_objects { 
-          $$= &new StaticMemberNode($1, $3); $$->position= $yyLex->position;
+          $$= new StaticMemberNode($1, $3); $$->position= $yyLex->position;
         }
 ;
 
@@ -1151,10 +1151,10 @@ base_variable:
 	
 reference_variable:
 		reference_variable '[' dim_offset ']' { 
-          $$= &new ArrayAccessNode($1, $3); $$->position= $yyLex->position;
+          $$= new ArrayAccessNode($1, $3); $$->position= $yyLex->position;
         }
 	|	reference_variable '{' expr '}' {
-          $$= &new ArrayAccessNode($1, $3); $$->position= $yyLex->position;
+          $$= new ArrayAccessNode($1, $3); $$->position= $yyLex->position;
         }
 	|	compound_variable { 
           /* $$= $1; */
@@ -1163,7 +1163,7 @@ reference_variable:
 	
 
 compound_variable:
-		T_VARIABLE			{ $$= &new VariableNode($1); $$->position= $yyLex->position; }
+		T_VARIABLE			{ $$= new VariableNode($1); $$->position= $yyLex->position; }
 ;
 
 dim_offset:
@@ -1178,9 +1178,9 @@ object_property:
 ;
 
 object_dim_list:
-		object_dim_list '[' dim_offset ']' { $$= &new ArrayAccessNode($1, $3); $$->position= $yyLex->position; }
-	|	object_dim_list '{' expr '}' { $$= &new ArrayAccessNode($1, $3); $$->position= $yyLex->position; }
-	|	variable_name { $$= &new MemberNode($1); $$->position= $yyLex->position; }
+		object_dim_list '[' dim_offset ']' { $$= new ArrayAccessNode($1, $3); $$->position= $yyLex->position; }
+	|	object_dim_list '{' expr '}' { $$= new ArrayAccessNode($1, $3); $$->position= $yyLex->position; }
+	|	variable_name { $$= new MemberNode($1); $$->position= $yyLex->position; }
 ;
 
 variable_name:
@@ -1244,7 +1244,7 @@ non_empty_array_pair_list:
 
 class_constant:
 		fully_qualified_class_name T_DOUBLE_COLON T_STRING { 
-          $$= &new ConstantReferenceNode($1, $3); $$->position= $yyLex->position;
+          $$= new ConstantReferenceNode($1, $3); $$->position= $yyLex->position;
         }
 ;
 

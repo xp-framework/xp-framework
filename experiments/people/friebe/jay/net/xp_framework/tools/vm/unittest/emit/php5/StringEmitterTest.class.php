@@ -16,10 +16,9 @@
     /**
      * Tests a single-quoted string
      *
-     * @access  public
      */
     #[@test]
-    function singleQuotedString() {
+    public function singleQuotedString() {
       $this->assertSourcecodeEquals(
         'echo \'Hello\';',
         $this->emit('echo \'Hello\';')
@@ -29,10 +28,9 @@
     /**
      * Tests a single-quoted string with escaped single-quote inside
      *
-     * @access  public
      */
     #[@test]
-    function singleQuotedStringWithEscapedSingleQuote() {
+    public function singleQuotedStringWithEscapedSingleQuote() {
       $this->assertSourcecodeEquals(
         'echo \'He\\\'s lazy\';',
         $this->emit('echo \'He\\\'s lazy\';')
@@ -42,10 +40,9 @@
     /**
      * Tests a single-quoted string
      *
-     * @access  public
      */
     #[@test]
-    function doubleQuotedString() {
+    public function doubleQuotedString() {
       $this->assertSourcecodeEquals(
         'echo \'Hello\';',
         $this->emit('echo "Hello";')
@@ -55,10 +52,9 @@
     /**
      * Tests a single-quoted string with escaped double-quotes inside
      *
-     * @access  public
      */
     #[@test]
-    function doubleQuotedStringWithEscapedDoubleQuotes() {
+    public function doubleQuotedStringWithEscapedDoubleQuotes() {
       $this->assertSourcecodeEquals(
         'echo \'"Hello", he said\';',
         $this->emit('echo "\"Hello\", he said";')
@@ -68,10 +64,9 @@
     /**
      * Tests a single-quoted string with single-quote inside
      *
-     * @access  public
      */
     #[@test]
-    function doubleQuotedStringWithSingleQuote() {
+    public function doubleQuotedStringWithSingleQuote() {
       $this->assertSourcecodeEquals(
         'echo \'He\\\'s lazy\';',
         $this->emit('echo "He\'s lazy";')
@@ -81,10 +76,9 @@
     /**
      * Tests a hex-escape (\x[0-9A-Fa-f]{1,2})
      *
-     * @access  public
      */
     #[@test]
-    function hexEscape() {
+    public function hexEscape() {
       foreach (array(
         '\x0'     => chr(0),
         '\x00'    => chr(0),
@@ -103,10 +97,9 @@
     /**
      * Tests an octal escape (\[0-7]{1,3})
      *
-     * @access  public
      */
     #[@test]
-    function octalEscape() {
+    public function octalEscape() {
       foreach (array(
         '\0'      => chr(0),
         '\00'     => chr(0),

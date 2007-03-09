@@ -16,10 +16,9 @@
     /**
      * Tests a cast to int
      *
-     * @access  public
      */
     #[@test]
-    function integerCast() {
+    public function integerCast() {
       $this->assertSourcecodeEquals(
         '$i= (int)$str;',
         $this->emit('$i= (int)$str;')
@@ -29,10 +28,9 @@
     /**
      * Tests a cast to string
      *
-     * @access  public
      */
     #[@test]
-    function stringCast() {
+    public function stringCast() {
       $this->assertSourcecodeEquals(
         '$s= (string)$num;',
         $this->emit('$s= (string)$num;')
@@ -42,10 +40,9 @@
     /**
      * Tests a cast to bool
      *
-     * @access  public
      */
     #[@test]
-    function boolCast() {
+    public function boolCast() {
       $this->assertSourcecodeEquals(
         '$s= (bool)$num;',
         $this->emit('$s= (bool)$num;')
@@ -55,10 +52,9 @@
     /**
      * Tests a cast to double
      *
-     * @access  public
      */
     #[@test]
-    function doubleCast() {
+    public function doubleCast() {
       $this->assertSourcecodeEquals(
         '$s= (double)$num;',
         $this->emit('$s= (double)$num;')
@@ -68,10 +64,9 @@
     /**
      * Tests a cast to array
      *
-     * @access  public
      */
     #[@test]
-    function arrayCast() {
+    public function arrayCast() {
       $this->assertSourcecodeEquals(
         '$s= (array)$num;',
         $this->emit('$s= (array)$num;')
@@ -81,10 +76,9 @@
     /**
      * Tests a cast to string
      *
-     * @access  public
      */
     #[@test]
-    function fqcnCast() {
+    public function fqcnCast() {
       $this->assertSourcecodeEquals(
         '$s= xp::cast(\'lang.Object\', $o->getClass());',
         $this->emit('$s= (lang.Object)$o->getClass();')

@@ -26,10 +26,10 @@
      * @param   string message default ''
      * @throws  unittest.AssertionFailedError
      */
-    function assertTypeError($source, $message= '') {
-      $emitter= &new Php5Emitter();
+    public function assertTypeError($source, $message= '') {
+      $emitter= new Php5Emitter();
       
-      $parser= &new Parser();
+      $parser= new Parser();
       $emitter->setFilename('source declared in '.$this->getName().'()');
       $emitter->emitAll($parser->parse(new Lexer($source), '<'.$this->getName().'>'));
       
@@ -42,10 +42,9 @@
     /**
      * Tests return value incorrectly casted raises an error
      *
-     * @access  public
      */
     #[@test]
-    function returnIncorrectlyCastedValue() {
+    public function returnIncorrectlyCastedValue() {
       $this->assertTypeError('
         class String {
           protected string $buffer= "";
@@ -60,10 +59,9 @@
     /**
      * Tests return value type mismatch raises an error
      *
-     * @access  public
      */
     #[@test]
-    function returnValueTypeMismatch() {
+    public function returnValueTypeMismatch() {
       $this->assertTypeError('
         class Test {
           public string toString() {
@@ -76,10 +74,9 @@
     /**
      * Tests assigning a typed member to an incorrect type raises an error
      *
-     * @access  public
      */
     #[@test]
-    function memberReassign() {
+    public function memberReassign() {
       $this->assertTypeError('
         class Test {
           protected int $id= 0;
@@ -103,10 +100,9 @@
     /**
      * Tests void method returning something raises an error.
      *
-     * @access  public
      */
     #[@test]
-    function voidMethodReturningSomething() {
+    public function voidMethodReturningSomething() {
       $this->assertTypeError('
         class Test {
           public void doIt() {
@@ -119,10 +115,9 @@
     /**
      * Tests argument passed w/ incorrect type raises an error
      *
-     * @access  public
      */
     #[@test]
-    function argumentPassed() {
+    public function argumentPassed() {
       $this->assertTypeError('
         class Test {
           public void sayHello(string $name) {

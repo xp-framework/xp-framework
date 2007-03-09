@@ -16,10 +16,9 @@
     /**
      * Tests an if-statement without else
      *
-     * @access  public
      */
     #[@test]
-    function ifWithoutElse() {
+    public function ifWithoutElse() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'if (1){ 
           echo 1; 
@@ -33,10 +32,9 @@
     /**
      * Tests an if-statement with else
      *
-     * @access  public
      */
     #[@test]
-    function ifWithElse() {
+    public function ifWithElse() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'if (1){ 
           echo 1; 
@@ -54,10 +52,9 @@
     /**
      * Tests an if-statement with multiple elses
      *
-     * @access  public
      */
     #[@test]
-    function ifWithElses() {
+    public function ifWithElses() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'if ($argc==0){ 
           echo 0; 
@@ -79,10 +76,9 @@
     /**
      * Tests an switch-statement with neither cases nor a default
      *
-     * @access  public
      */
     #[@test]
-    function switchWithoutCasesOrDefault() {
+    public function switchWithoutCasesOrDefault() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'switch (TRUE) {
         };'),
@@ -94,10 +90,9 @@
     /**
      * Tests an switch-statement without a default
      *
-     * @access  public
      */
     #[@test]
-    function switchWithoutDefault() {
+    public function switchWithoutDefault() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'switch ($argc) {
           case 0: echo 0; break; ; 
@@ -113,10 +108,9 @@
     /**
      * Tests an switch-statement with a case that uses a block
      *
-     * @access  public
      */
     #[@test]
-    function switchWithCaseUsingBlocks() {
+    public function switchWithCaseUsingBlocks() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'switch ($argc) {
           case 0: {$block= TRUE; }; break; ; 
@@ -134,10 +128,9 @@
     /**
      * Tests an switch-statement with a default
      *
-     * @access  public
      */
     #[@test]
-    function switchWithDefault() {
+    public function switchWithDefault() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'switch ($argc) {
           case 0: echo 0; break; ; 
@@ -155,10 +148,9 @@
     /**
      * Tests a ternary operator
      *
-     * @access  public
      */
     #[@test]
-    function ternary() {
+    public function ternary() {
       $this->assertSourcecodeEquals(
         'echo $argc>1 ? \'OK\' : \'ERR\';',
         $this->emit('echo $argc > 1 ? "OK" : "ERR";')

@@ -17,10 +17,9 @@
     /**
      * Tests the simplest case
      *
-     * @access  public
      */
     #[@test]
-    function methodWithoutArguments() {
+    public function methodWithoutArguments() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
@@ -38,10 +37,9 @@
     /**
      * Tests empty method
      *
-     * @access  public
      */
     #[@test]
-    function emptyMethod() {
+    public function emptyMethod() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
@@ -57,10 +55,9 @@
     /**
      * Tests abstract method
      *
-     * @access  public
      */
     #[@test]
-    function abstractMethod() {
+    public function abstractMethod() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'abstract class main·Test extends lang·Object{
           abstract public function sayHello();
@@ -74,10 +71,9 @@
     /**
      * Tests a method with one string argument 
      *
-     * @access  public
      */
     #[@test]
-    function methodWithOneStringArgument() {
+    public function methodWithOneStringArgument() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($name){
@@ -95,10 +91,9 @@
     /**
      * Tests a method with one string[] argument 
      *
-     * @access  public
      */
     #[@test]
-    function methodWithOneStringArrayArgument() {
+    public function methodWithOneStringArrayArgument() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($names){
@@ -120,10 +115,9 @@
     /**
      * Tests a method call
      *
-     * @access  public
      */
     #[@test]
-    function methodCall() {
+    public function methodCall() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello($names){
@@ -153,10 +147,9 @@
     /**
      * Tests a static method call
      *
-     * @access  public
      */
     #[@test]
-    function staticMethodCall() {
+    public function staticMethodCall() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public static function sayHello($names){
@@ -186,10 +179,9 @@
     /**
      * Tests a method which contains a method-static variable
      *
-     * @access  public
      */
     #[@test]
-    function methodWithStaticVariable() {
+    public function methodWithStaticVariable() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
@@ -210,10 +202,9 @@
     /**
      * Tests a method which contains a vararg argument
      *
-     * @access  public
      */
     #[@test]
-    function methodWithVarArgs() {
+    public function methodWithVarArgs() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
@@ -232,10 +223,9 @@
     /**
      * Tests a method which contains a vararg argument after a regular argument
      *
-     * @access  public
      */
     #[@test]
-    function methodWithArgsAndVarArgs() {
+    public function methodWithArgsAndVarArgs() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sprintf($format){
@@ -254,10 +244,9 @@
     /**
      * Tests a method which contains an arg after a vararg argument
      *
-     * @access  public
      */
     #[@test, @expect('lang.FormatException')]
-    function varArgMustBeLastArg() {
+    public function varArgMustBeLastArg() {
       $this->emit('class Test {
         public string sprintf(string $format, mixed $args..., bool $return= FALSE) {
           return vsprintf($format, $args); 
@@ -268,10 +257,9 @@
     /**
      * Tests a method which contains default arguments
      *
-     * @access  public
      */
     #[@test]
-    function methodWithDefaultArgs() {
+    public function methodWithDefaultArgs() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·XPClass extends lang·Object{
           public static function forName($name, $cl= NULL){

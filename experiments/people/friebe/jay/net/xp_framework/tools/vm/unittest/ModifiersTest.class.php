@@ -19,12 +19,11 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   string expected a space-separated list of names
      * @param   int modifiers a modifier bitfield
      * @throws  unittest.AssertionFailedError
      */
-    function assertModifiers($string, $modifiers) {
+    protected function assertModifiers($string, $modifiers) {
       $names= Modifiers::namesOf($modifiers);
       $expect= explode(' ', $string);
       sort($names);
@@ -35,11 +34,10 @@
     /**
      * Helper method
      *
-     * @access  protected
      * @param   array<string, list> list
      * @throws  unittest.AssertionFailedError
      */
-    function assertModifierList($list) {
+    protected function assertModifierList($list) {
       foreach ($list as $expect => $modifiers) {
         $this->assertModifiers($expect, $modifiers);
       }
@@ -48,10 +46,9 @@
     /**
      * Tests *P*ublic / *P*rivate / *P*rotected
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function pppModifiers() {
+    public function pppModifiers() {
       $this->assertModifierList(array(
         'public'      => MODIFIER_PUBLIC,
         'private'     => MODIFIER_PRIVATE,
@@ -62,20 +59,18 @@
     /**
      * Tests public is the default if no modifier is given
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function publicIsDefault() {
+    public function publicIsDefault() {
       $this->assertModifiers('public', 0);
     }
 
     /**
      * Tests abstract / final / static are public per default
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function publicDefaultForSingleModifiers() {
+    public function publicDefaultForSingleModifiers() {
       $this->assertModifierList(array(
         'public final'       => MODIFIER_FINAL,
         'public abstract'    => MODIFIER_ABSTRACT,
@@ -86,10 +81,9 @@
     /**
      * Tests PPP combined with static
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function pppModifiersWithStatic() {
+    public function pppModifiersWithStatic() {
       $this->assertModifierList(array(
         'public static'      => MODIFIER_PUBLIC | MODIFIER_STATIC,
         'private static'     => MODIFIER_PRIVATE | MODIFIER_STATIC,

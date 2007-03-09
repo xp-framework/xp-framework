@@ -21,12 +21,11 @@
     /**
      * Setup test.
      *
-     * @access  public
      */
-    function setUp() {
-      $this->emitter= &new Php5Emitter();
+    public function setUp() {
+      $this->emitter= new Php5Emitter();
       
-      $parser= &new Parser();
+      $parser= new Parser();
       $this->emitter->emitAll($parser->parse(new Lexer('
         import lang.Object;
         
@@ -64,7 +63,7 @@
         $chained_n= $t->getNow()->toString();
       '), '<setUp>'));
       if ($this->emitter->hasErrors()) {
-        return throw(new PrerequisitesNotMetError('Fixture source contains errors '.xp::stringOf($this->emitter->getErrors())));
+        throw new PrerequisitesNotMetError('Fixture source contains errors '.xp::stringOf($this->emitter->getErrors()));
       }
     }
     
@@ -72,10 +71,9 @@
      * Tests type of NewNode
      *
      * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
-     * @access  public
      */
     #[@test]
-    function typeOfNew() {
+    public function typeOfNew() {
       $this->assertEquals('lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('lang.Object'))));
     }
 
@@ -83,10 +81,9 @@
      * Tests type of NewNode
      *
      * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
-     * @access  public
      */
     #[@test]
-    function typeOfUnqualifiedNew() {
+    public function typeOfUnqualifiedNew() {
       $this->assertEquals('lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('Object'))));
     }
 
@@ -94,10 +91,9 @@
      * Tests type of VariableNode
      *
      * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
-     * @access  public
      */
     #[@test]
-    function typeOfComponentsAssignment() {
+    public function typeOfComponentsAssignment() {
       $this->assertEquals('string[]', $this->emitter->typeOf(new VariableNode('$c')));
     }
 
@@ -105,10 +101,9 @@
      * Tests type of VariableNode
      *
      * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
-     * @access  public
      */
     #[@test]
-    function typeOfVariableAssignedToConstant() {
+    public function typeOfVariableAssignedToConstant() {
       $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$i'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$s'))) &&
       $this->assertEquals('main·Test', $this->emitter->typeOf(new VariableNode('$t')));
@@ -118,10 +113,9 @@
      * Tests type of variables that have been assigned to chained expressions
      *
      * @see     xp://net.xp_framework.tools.vm.nodes.VariableNode
-     * @access  public
      */
     #[@test]
-    function typeOfVariableAssignedToChain() {
+    public function typeOfVariableAssignedToChain() {
       $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$chained_i'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_s'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_n')));

@@ -17,10 +17,9 @@
      * Tests chaining method calls. Note this works without translation
      * in PHP5!
      *
-     * @access  public
      */
     #[@test]
-    function chainedMethodCalls() {
+    public function chainedMethodCalls() {
       $this->assertSourcecodeEquals(
         '$o= new lang·Object(); echo $o->getClass()->getName();',
         $this->emit('$o= new lang.Object(); echo $o->getClass()->getName();')
@@ -31,10 +30,9 @@
      * Tests chaining method calls. Note this needs a wrapper function
      * to work in PHP5!
      *
-     * @access  public
      */
     #[@test]
-    function chainedMethodCallsAfterConstructor() {
+    public function chainedMethodCallsAfterConstructor() {
       $this->assertSourcecodeEquals(
         'echo xp::create(new lang·Object())->getClass()->getName();',
         $this->emit('echo new lang.Object()->getClass()->getName();')
@@ -44,10 +42,9 @@
     /**
      * Tests chaining method calls with array offsets
      *
-     * @access  public
      */
     #[@test]
-    function chainedArrayOffsetAfterMethodCall() {
+    public function chainedArrayOffsetAfterMethodCall() {
       $this->assertSourcecodeEquals(
         'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0];',
         $this->emit('echo new lang.Object()->getClass()->getName()[0];')
@@ -57,10 +54,9 @@
     /**
      * Tests chaining method calls with array offsets
      *
-     * @access  public
      */
     #[@test]
-    function chainedArrayOffsetsAfterMethodCall() {
+    public function chainedArrayOffsetsAfterMethodCall() {
       $this->assertSourcecodeEquals(
         'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0][0];',
         $this->emit('echo new lang.Object()->getClass()->getName()[0][0];')
@@ -70,10 +66,9 @@
     /**
      * Tests chaining method calls after an array offset
      *
-     * @access  public
      */
     #[@test]
-    function chainedMethodCallAfterArrayOffsets() {
+    public function chainedMethodCallAfterArrayOffsets() {
       $this->assertSourcecodeEquals(
         'echo $this->trace[$i]->toString();',
         $this->emit('echo $this->trace[$i]->toString();')
@@ -83,10 +78,9 @@
     /**
      * Tests chaining members and methods, and after the constructor
      *
-     * @access  public
      */
     #[@test]
-    function chainedMethodsAndMembers() {
+    public function chainedMethodsAndMembers() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Long extends lang·Object{
           public $number= NULL;

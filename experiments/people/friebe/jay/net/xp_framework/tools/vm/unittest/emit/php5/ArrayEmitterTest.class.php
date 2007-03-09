@@ -16,10 +16,9 @@
     /**
      * Tests array declaration
      *
-     * @access  public
      */
     #[@test]
-    function numericArrayDeclaration() {
+    public function numericArrayDeclaration() {
       $this->assertSourcecodeEquals(
         '$a= array(0 => 1, 1 => 2, 2 => 3, );',
         $this->emit('$a= array(1, 2, 3);')
@@ -29,10 +28,9 @@
     /**
      * Tests array declaration
      *
-     * @access  public
      */
     #[@test]
-    function associativeArrayDeclaration() {
+    public function associativeArrayDeclaration() {
       $this->assertSourcecodeEquals(
         '$a= array(\'Foo\' => \'Bar\', );',
         $this->emit('$a= array("Foo" => "Bar");')
@@ -42,10 +40,9 @@
     /**
      * Tests array declaration
      *
-     * @access  public
      */
     #[@test]
-    function mixedTypeAssociativeArrayDeclaration() {
+    public function mixedTypeAssociativeArrayDeclaration() {
       $this->assertSourcecodeEquals(
         '$a= array(\'Foo\' => \'Bar\', \'Second\' => 2, 3 => \'Three\', );',
         $this->emit('$a= array("Foo" => "Bar", "Second" => 2, 3 => "Three");')
@@ -55,10 +52,9 @@
     /**
      * Tests array access
      *
-     * @access  public
      */
     #[@test]
-    function arrayAccess() {
+    public function arrayAccess() {
       $this->assertSourcecodeEquals(
         '$a[$key]++;',
         $this->emit('$a[$key]++;')
@@ -68,10 +64,9 @@
     /**
      * Tests array access
      *
-     * @access  public
      */
     #[@test]
-    function nestedArrayAccess() {
+    public function nestedArrayAccess() {
       $this->assertSourcecodeEquals(
         '$a[$key][$subkey]++;',
         $this->emit('$a[$key][$subkey]++;')
@@ -81,10 +76,9 @@
     /**
      * Tests array access
      *
-     * @access  public
      */
     #[@test]
-    function nestedMemberArrayAccess() {
+    public function nestedMemberArrayAccess() {
       $this->assertSourcecodeEquals(
         '$this->a[$key][$subkey]++;',
         $this->emit('$this->a[$key][$subkey]++;')
@@ -94,10 +88,9 @@
     /**
      * Tests array append operator "[]"
      *
-     * @access  public
      */
     #[@test]
-    function arrayAppendOperator() {
+    public function arrayAppendOperator() {
       $this->assertSourcecodeEquals(
         '$a[]= 1;',
         $this->emit('$a[]= 1;')
@@ -107,10 +100,9 @@
     /**
      * Tests array append operator "[]"
      *
-     * @access  public
      */
     #[@test]
-    function arrayAppendOperatorAfterArrayOffset() {
+    public function arrayAppendOperatorAfterArrayOffset() {
       $this->assertSourcecodeEquals(
         '$a[$key][]= 1;',
         $this->emit('$a[$key][]= 1;')
@@ -120,10 +112,9 @@
     /**
      * Tests list assignment
      *
-     * @access  public
      */
     #[@test]
-    function listAssignment() {
+    public function listAssignment() {
       $this->assertSourcecodeEquals(
         'list($o, $t, )= array(0 => 1, 1 => 2, );',
         $this->emit('list($o, $t)= array(1, 2);')

@@ -16,10 +16,9 @@
     /**
      * Tests throw gets wrapped by xp::exception()
      *
-     * @access  public
      */
     #[@test]
-    function throwGetsWrapped() {
+    public function throwGetsWrapped() {
       $this->assertSourcecodeEquals(
         'throw xp::exception(new lang·IllegalArgumentException(\'Blam!\'));',
         $this->emit('throw new lang.IllegalArgumentException("Blam!");')
@@ -29,10 +28,9 @@
     /**
      * Tests try/catch block
      *
-     * @access  public
      */
     #[@test]
-    function tryCatchBlock() {
+    public function tryCatchBlock() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
@@ -53,10 +51,9 @@
     /**
      * Tests try/catch/finally block
      *
-     * @access  public
      */
     #[@test]
-    function tryCatchFinallyBlock() {
+    public function tryCatchFinallyBlock() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
@@ -81,10 +78,9 @@
     /**
      * Tests try/catch/finally block
      *
-     * @access  public
      */
     #[@test]
-    function finallyAfterCatchWithReturn() {
+    public function finallyAfterCatchWithReturn() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·FileReader extends lang·Object{
           protected $_f= NULL;
@@ -103,7 +99,7 @@
           }
         }; 
         
-        function openFile($file) {
+        public function openFile($file) {
           $f= new main·FileReader($file); 
           try { 
             $f->open(); 
@@ -136,7 +132,7 @@
           }
         }
         
-        function openFile($file) {
+        public function openFile($file) {
           $f= new FileReader($file);
           try {
             $f->open();
@@ -154,10 +150,9 @@
     /**
      * Tests exit() gets transformed to a SystemExit exception
      *
-     * @access  public
      */
     #[@test]
-    function systemExit() {
+    public function systemExit() {
       $this->assertSourcecodeEquals(
         'throw xp::exception(new lang·SystemExit(1));',
         $this->emit('exit(1);')
@@ -168,10 +163,9 @@
      * Tests NULL will be wrapped into a xp::$null, which, on invocation
      * will result in an NPE.
      *
-     * @access  public
      */
     #[@test, @ignore('Rewriting NULL to xp::$null causes many side effects')]
-    function nullPointer() {
+    public function nullPointer() {
       $this->assertSourcecodeEquals(
         '$s= xp::$null; $s->invoke();',
         $this->emit('$s= NULL; $s->invoke();')
@@ -181,10 +175,9 @@
     /**
      * Tests try/catch block
      *
-     * @access  public
      */
     #[@test]
-    function multipleCatches() {
+    public function multipleCatches() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 

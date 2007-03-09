@@ -17,10 +17,9 @@
     /**
      * Tests overloading the constructor
      *
-     * @access  public
      */
     #[@test]
-    function overloadedMethod() {
+    public function overloadedMethod() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Date extends lang·Object{
           protected $stamp= 0;
@@ -62,10 +61,9 @@
     /**
      * Tests overloading the constructor
      *
-     * @access  public
      */
     #[@test]
-    function overloadedConstructor() {
+    public function overloadedConstructor() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Date extends lang·Object{
           protected $stamp= 0;

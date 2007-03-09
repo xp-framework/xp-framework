@@ -19,48 +19,41 @@
    * @purpose  Base class
    */
   class AbstractRewriterTest extends TestCase {
-    var
+    protected
       $rewriter= NULL;
 
     /**
      * Setup method
      *
-     * @access  public
      */
-    function setUp() {
-      $names= &new NameMapping();
-      $names->addMapping('date', 'util.Date');
-      $names->addMapping('object', 'lang.Object');
+    public function setUp() {
+      $names= new NameMapping();
+      $names->addMapping('Date', 'util.Date');
+      $names->addMapping('Object', 'lang.Object');
       $names->setNamespaceSeparator('.');
       $names->setCurrentClass(new ClassDoc());
       
       $this->template= '<?php class AbstractRewriterTest extends Object { 
-        function expression() { /* e< */ %1$s /* >e */ }
+        public function expression() { /* e< */ %1$s /* >e */ }
         /* m< */ %2$s /* >m */ }
       } ?>';
 
       $names->current->qualifiedName= $this->getClassName();
-      $m= &new MethodDoc();
+      $m= new MethodDoc();
       $m->name= 'expression';
-      $names->current->methods= array(&$m);
-      $this->rewriter= &new SourceRewriter();
+      $names->current->methods= array($m);
+      $this->rewriter= new SourceRewriter();
       $this->rewriter->setNameMapping($names);
     }
 
     /**
      * Assert an expression is rewritten
      *
-     * @access  protected
      * @param   string expect expected sourcecode after rewriting occurs
      * @param   string original sourcecode
      */
-    function assertExpressionRewritten($expect, $origin) {
-      try(); {
-        $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, $origin, NULL)));
-      } if (catch('Exception', $e)) {
-        return throw($e);
-      }
-      
+    protected function assertExpressionRewritten($expect, $origin) {
+      $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, $origin, NULL)));
       $relevant= substr($out, $p= strpos($out, '/* e< */')+ 9, strpos($out, '/* >e */')- $p- 1);
       $this->assertEquals($expect, $relevant);
     }
@@ -68,17 +61,17 @@
     /**
      * Assert a method is rewritten
      *
-     * @access  protected
      * @param   string expect expected sourcecode after rewriting occurs
      * @param   string method
+     * @param   string modifiers
      * @param   array tags
      * @param   string original sourcecode
      */
-    function assertMethodRewritten($expect, $method, $tags, $origin) {
-      $m= &new MethodDoc();
-      $m->name= ltrim($method, '&');
+    protected function assertMethodRewritten($expect, $modifiers, $method, $tags, $origin) {
+      $m= new MethodDoc();
+      $m->name= $method;
       
-      $tm= &TagletManager::getInstance();
+      $tm= TagletManager::getInstance();
       foreach ($tags as $tag => $values) {
         $kind= ltrim($tag, '@');
         $m->detail['tags'][$kind]= array();
@@ -89,13 +82,8 @@
       
       $this->rewriter->names->current->methods[]= &$m;
 
-      $origin= 'function '.$method.$origin;
-      try(); {
-        $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, NULL, $origin)));
-      } if (catch('Exception', $e)) {
-        return throw($e);
-      }
-
+      $origin= $modifiers.' function '.$method.$origin;
+      $out= $this->rewriter->rewrite(token_get_all(sprintf($this->template, NULL, $origin)));
       $relevant= substr($out, $p= strpos($out, '/* m< */')+ 9, strpos($out, '/* >m */')- $p- 1);
       $this->assertEquals($expect, $relevant);
     }

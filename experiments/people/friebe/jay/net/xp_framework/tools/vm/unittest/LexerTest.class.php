@@ -25,8 +25,8 @@
      * @param   string src
      * @throws  unittest.AssertionFailedError in case an error occurs
      */
-    function assertTokens($tokens, $src) {
-      $l= &new Lexer($src, $this->name);
+    public function assertTokens($tokens, $src) {
+      $l= new Lexer($src, $this->name);
       
       for ($i= 0, $t= strtok($tokens, ', '); $l->advance(); $i++, $t= strtok(', ')) {
         if ('"' == $t{0}) {
@@ -44,11 +44,11 @@
         }
         
         if (($token != $l->token) || ($value !== NULL && $value != $l->value)) {
-          return throw(new AssertionFailedError(
+          throw new AssertionFailedError(
             'At position '.$i.' of <'.$src.'>', 
             array($l->token, $l->value),  // Actual
             array($token, $value)         // Expected
-          ));
+          );
         }
       }
     }
@@ -56,10 +56,9 @@
     /**
      * Tests keywords tokens
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function keyWords() {
+    public function keyWords() {
       $keywords= array(
         'abstract'     => 'T_ABSTRACT',
         'as'           => 'T_AS',
@@ -120,10 +119,9 @@
     /**
      * Tests PHP-style strings with variables which we do not support
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function stringsWithVariables() {
+    public function stringsWithVariables() {
       $strings= array(
         '"$name"',
         '"${name}"',
@@ -137,10 +135,9 @@
     /**
      * Tests PHP4 and PHP5 keywords that we don't regard as keywords
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function phpKeywords() {
+    public function phpKeywords() {
       $deprecated= array(
         'require',
         'include',
@@ -176,10 +173,9 @@
      * Tests PHP4 and PHP5 "magic" constants (__*__) that we don't regard as
      * keywords.
      *
-     * @access  public
-     */
+      */
     #[@test, @ignore('Segfault')]
-    function phpMagicConstants() {
+    public function phpMagicConstants() {
       $deprecated= array(
         '__FILE__',
         '__LINE__',
@@ -197,10 +193,9 @@
     /**
      * Tests operator tokens
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function operatorTokens() {
+    public function operatorTokens() {
       $operators= array(
         '::'        => 'T_DOUBLE_COLON',
         '->'        => 'T_OBJECT_OPERATOR',
@@ -240,10 +235,9 @@
     /**
      * Tests echo and constant string
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function echoAndString() {
+    public function echoAndString() {
       $this->assertTokens(
         'T_ECHO, T_CONSTANT_ENCAPSED_STRING<"Hello">, ";"', 
         'echo "Hello"'
@@ -253,10 +247,9 @@
     /**
      * Tests variable assignment
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function variableAssignment() {
+    public function variableAssignment() {
       $this->assertTokens(
         'T_VARIABLE<$i>, "=", T_LNUMBER<0>, ";"', 
         '$i= 0;'
@@ -282,10 +275,9 @@
     /**
      * Tests class declarations (class, enum, interface)
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function classDeclarations() {
+    public function classDeclarations() {
       $this->assertTokens(
         'T_CLASS, T_STRING<CFoo>, T_EXTENDS, T_STRING<Bar>, "{", "}"', 
         'class CFoo extends Bar { }'
@@ -303,10 +295,9 @@
     /**
      * Tests control flow keywords (if / else / switch)
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function controlFlow() {
+    public function controlFlow() {
       $this->assertTokens(
         'T_IF, "(", T_VARIABLE<$a>, ")", T_VARIABLE<$b>, "=", T_STRING<TRUE>, ";", T_ELSE, T_VARIABLE<$c>, T_INC, ";"', 
         'if ($a) $b= TRUE; else $c++;'
@@ -320,10 +311,9 @@
     /**
      * Tests loop keywords (for, foreach, do, while)
      *
-     * @access  public
-     */
+      */
     #[@test]
-    function loops() {
+    public function loops() {
       $this->assertTokens(
         'T_FOR, "(", T_VARIABLE<$i>, "=", T_LNUMBER<0>, ";", T_VARIABLE<$i>, "<", T_LNUMBER<100>, ";" T_VARIABLE<$i>, T_INC, ")", ";"', 
         'for ($i= 0; $i < 100; $i++);'

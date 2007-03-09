@@ -23,13 +23,12 @@
      * Parses a given string source into an AST and returns the emitted PHP5 
      * sourcecode.
      *
-     * @access  protected
      * @param   string source
      * @return  string
      * @throws  lang.FormatException in case errors occur during emitAll() or parse()
      */
-    function &emit($source) {
-      $parser= &new Parser();
+    protected function emit($source) {
+      $parser= new Parser();
       $nodes= $parser->yyparse(new Lexer($source, '(string)'));
       
       if ($parser->hasErrors()) {
@@ -38,10 +37,10 @@
           $message.= "\n  * ".$error->toString();
         }
         $message.= "\n}";
-        return throw(new FormatException($message));
+        throw new FormatException($message);
       }
       
-      $emitter= &new Php5Emitter();
+      $emitter= new Php5Emitter();
       $emitter->emitAll($nodes);
       
       if ($emitter->hasErrors()) {
@@ -50,7 +49,7 @@
           $message.= "\n  * ".$error->toString();
         }
         $message.= "\n}";
-        return throw(new FormatException($message));
+        throw new FormatException($message);
       }
       
       return $emitter->getResult();
@@ -60,11 +59,10 @@
      * Normalize sourcecode, e.g. replace all whitespace tokens by a 
      * single space, trim others.
      *
-     * @access  protected
      * @param   string source the sourcecode to normalize
      * @return  string the normalized sourcecode
      */
-    function normalizeSourcecode($source) {
+    protected function normalizeSourcecode($source) {
       $tokens= token_get_all($source);
       $return= '';
       foreach ($tokens as $token) {
@@ -79,12 +77,11 @@
     /**
      * Helper method that asserts two sourcecodes are equal
      *
-     * @access  protected
      * @param   string expected Expected code w/o prologue and epilogue
      * @param   string emitted emitted sourcecode returned by emit
      * @throws  unittest.AssertionFailedError
      */
-    function assertSourcecodeEquals($expected, $emitted) {
+    protected function assertSourcecodeEquals($expected, $emitted) {
       if (!is_string($emitted)) return;
 
       $expected= $this->normalizeSourcecode("<?php\n ".$expected.' ?>');

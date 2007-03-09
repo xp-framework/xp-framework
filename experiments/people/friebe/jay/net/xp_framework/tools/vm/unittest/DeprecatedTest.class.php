@@ -20,13 +20,12 @@
     /**
      * Parses a given string source into an AST.
      *
-     * @access  protected
      * @param   string source
      * @return  net.xp_framework.tools.vm.VNode[]
      * @throws  lang.FormatException in case errors occur during parse()
      */
-    function &parse($source) {
-      $parser= &new Parser();
+    protected function parse($source) {
+      $parser= new Parser();
       $nodes= $parser->yyparse(new Lexer($source, '(string)'));
       
       if ($parser->hasErrors()) {
@@ -35,7 +34,7 @@
           $message.= "\n  * ".$error->toString();
         }
         $message.= "\n}";
-        return throw(new FormatException($message));
+        throw new FormatException($message);
       }
       
       return $nodes;
@@ -44,50 +43,45 @@
     /**
      * Tests old foreach: endforeach syntax is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedForeach() {
+    public function deprecatedForeach() {
       $this->parse('foreach ($array as $key => $value): endforeach');
     }
 
     /**
      * Tests old for: endfor syntax is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedFor() {
+    public function deprecatedFor() {
       $this->parse('for ($i= 0; $i < 10; $i++): endfor');
     }
 
     /**
      * Tests old if: endif syntax is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedIf() {
+    public function deprecatedIf() {
       $this->parse('if ($i): endif');
     }
 
     /**
      * Tests old while: endwhile syntax is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedWhile() {
+    public function deprecatedWhile() {
       $this->parse('while ($i): endwhile');
     }
 
     /**
      * Tests old if: endswitch syntax is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedSwitch() {
+    public function deprecatedSwitch() {
       $this->parse('switch ($foo):
         case 1:
         case 2:
@@ -99,10 +93,9 @@
     /**
      * Tests "new Class;" - without (...) - is deprecated
      *
-     * @access  public
-     */
+      */
     #[@test, @expect('lang.FormatException')]
-    function deprecatedConstructorWithoutBraces() {
+    public function deprecatedConstructorWithoutBraces() {
       $this->parse('class Foo { } new Foo;');
     }
   }

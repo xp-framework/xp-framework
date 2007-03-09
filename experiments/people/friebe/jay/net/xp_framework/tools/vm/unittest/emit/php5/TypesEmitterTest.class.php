@@ -16,10 +16,9 @@
     /**
      * Tests 
      *
-     * @access  public
      */
     #[@test]
-    function unassignedVariableCanBecomeAnything() {
+    public function unassignedVariableCanBecomeAnything() {
       foreach (array('NULL', '1', '1.0', 'array()', '"Hello"', 'new lang.Object();') as $init) {
         $this->emit('$x= '.$init.';');
       }
@@ -28,60 +27,54 @@
     /**
      * Tests an untyped argument
      *
-     * @access  public
      */
     #[@test]
-    function untypedArgument() {
+    public function untypedArgument() {
       $this->emit('class Test { public void test($bar) { $bar= 1; } }');
     }
 
     /**
      * Tests a typed argument
      *
-     * @access  public
      */
     #[@test, @expect('lang.FormatException')]
-    function typedArgumentMismatch() {
+    public function typedArgumentMismatch() {
       $this->emit('class Test { public void test(string $bar) { $bar= 1; } }');
     }
 
     /**
      * Tests an untyped member
      *
-     * @access  public
      */
     #[@test]
-    function untypedMember() {
+    public function untypedMember() {
       $this->emit('class Test { private $bar; public void test() { $this->bar= 1; } }');
     }
 
     /**
      * Tests a typed member
      *
-     * @access  public
      */
     #[@test, @expect('lang.FormatException')]
-    function typedMemberMismatch() {
+    public function typedMemberMismatch() {
       $this->emit('class Test { private string $bar; public void test() { $this->bar= 1; } }');
     }
 
     /**
      * Tests binary assignment
      *
-     * @access  public
      */
     #[@test]
-    function binaryAssign() {
+    public function binaryAssign() {
       $this->emit('$product= 0; $product+= 3;');
     }
  
      /**
      * Tests binary assignment
      *
-     * @access  public
      */
     #[@test]
-    function arrayReturn() {
+    public function arrayReturn() {
       $this->emit('class Throwable { public lang.StackTraceElement[] getStackTrace() { return array(); } } ');
     }
  }

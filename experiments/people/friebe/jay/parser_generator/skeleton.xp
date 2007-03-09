@@ -21,22 +21,20 @@
 .    /**
 .     * Retrieves name of a given token
 .     *
-.     * @access  protected
 .     * @param   int token
 .     * @return  string name
 .     */
-.    function yyname($token) {
+.    protected function yyname($token) {
 .      return isset($this->yyName[$token]) ? $this->yyName[$token] : '<unknown>';
 .    }
 .
 .    /**
 .     * Helper method for yyexpecting
 .     *
-.     * @access  protected
 .     * @param   int n
 .     * @return  string[] list of token names.
 .     */
-.    function yysearchtab($n) {
+.    protected function yysearchtab($n) {
 .      if (0 == $n) return array();
 .
 .      for (
@@ -54,11 +52,10 @@
 .    /**
 .     * Computes list of expected tokens on error by tracing the tables.
 .     *
-.     * @access  protected
 .     * @param   int state for which to compute the list.
 .     * @return  string[] list of token names.
 .     */
-.    function yyexpecting($state) {
+.    protected function yyexpecting($state) {
 .      return array_merge($this->yysearchtab($this->yySindex[$state], $this->yyRindex[$state]));
 .    }
 .
@@ -66,11 +63,10 @@
 .     * Parser main method. Maintains a state and a value stack, 
 .     * currently with fixed maximum size.
 .     *
-.     * @access  protected
-.     * @param   &text.parser.generic.AbstractLexer lexer
+.     * @param   text.parser.generic.AbstractLexer lexer
 ..    * @return  mixed result of the last reduction, if any.
 .     */
-.    function yyparse(&$yyLex) {
+.    protected function yyparse($yyLex) {
 .      $this->yyTableCount= sizeof($this->yyTable);
 .      $this->yyNameCount= sizeof($this->yyName);
 .      $yyVal= NULL;
@@ -139,22 +135,22 @@
 .                      }
 .                    } while ($yyTop-- >= 0);
 .
-.                    return throw(new ParseError(E_ERROR, sprintf(
+.                    throw new ParseError(E_ERROR, sprintf(
 .                      'Irrecoverable syntax error at %s, line %d (offset %d)',
 .                      $yyLex->fileName,
 .                      $yyLex->position[0],
 .                      $yyLex->position[1]
-.                    )));
+.                    ));
 .                  }
 .
 .                  case 3: {
 .                    if (0 == $yyToken) {
-.                      return throw(new ParseError(E_ERROR, sprintf(
+.                      throw new ParseError(E_ERROR, sprintf(
 .                        'Irrecoverable syntax error at end-of-file at %s, line %d (offset %d)',
 .                        $yyLex->fileName,
 .                        $yyLex->position[0],
 .                        $yyLex->position[1]
-.                      )));
+.                      ));
 .                    }
 .
 .                    $yyToken = -1;

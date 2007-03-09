@@ -16,70 +16,63 @@
     /**
      * Tests regular member
      *
-     * @access  public
      */
     #[@test]
-    function regularMember() {
+    public function regularMember() {
       $this->assertSourcecodeEquals('$this->key;', $this->emit('$this->key;'));
     }
 
     /**
      * Tests dynamic member without {}
      *
-     * @access  public
      */
     #[@test]
-    function dynamicMember() {
+    public function dynamicMember() {
       $this->assertSourcecodeEquals('$this->$key;', $this->emit('$this->$key;'));
     }
 
     /**
      * Tests dynamic member in {}
      *
-     * @access  public
      */
     #[@test]
-    function dynamicMemberInEvalBrackets() {
+    public function dynamicMemberInEvalBrackets() {
       $this->assertSourcecodeEquals('$this->{$key};', $this->emit('$this->{$key};'));
     }
 
     /**
      * Tests dynamic member in {}
      *
-     * @access  public
      */
     #[@test]
-    function dynamicMemberExpression() {
+    public function dynamicMemberExpression() {
       $this->assertSourcecodeEquals('$this->{substr($key, 1)};', $this->emit('$this->{substr($key, 1)};'));
     }
 
     /**
      * Tests regular method
      *
-     * @access  public
      */
     #[@test]
-    function regularMethod() {
+    public function regularMethod() {
       $this->assertSourcecodeEquals('$this->key();', $this->emit('$this->key();'));
     }
 
     /**
      * Tests dynamic method without {}
      *
-     * @access  public
      */
     #[@test]
-    function dynamicMethod() {
+    public function dynamicMethod() {
       $this->assertSourcecodeEquals('$this->$key();', $this->emit('$this->$key();'));
     }
 
     /**
      * Tests dynamic method in {}
      *
-     * @access  public
      */
     #[@test]
-    function dynamicMethodInEvalBrackets() {
+    public function dynamicMethodInEvalBrackets() {
       $this->assertSourcecodeEquals('$this->{$key}();', $this->emit('$this->{$key}();'));
     }
   }

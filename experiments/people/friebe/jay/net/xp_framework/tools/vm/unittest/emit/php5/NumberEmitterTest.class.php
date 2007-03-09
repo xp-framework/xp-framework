@@ -16,10 +16,9 @@
     /**
      * Tests float numbers
      *
-     * @access  public
      */
     #[@test]
-    function floatNumbers() {
+    public function floatNumbers() {
       foreach (array('1.0', '0.0', '0.5', '-5.0', '+5.0') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.$declared.';',
@@ -31,10 +30,9 @@
     /**
      * Tests int numbers
      *
-     * @access  public
      */
     #[@test]
-    function intNumbers() {
+    public function intNumbers() {
       foreach (array('1', '0', '-5', '+5') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.$declared.';',
@@ -46,10 +44,9 @@
     /**
      * Tests hex numbers
      *
-     * @access  public
      */
     #[@test]
-    function hexNumbers() {
+    public function hexNumbers() {
       foreach (array('0x1', '0x0', '-0x5', '0xFFFF') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.eval('return '.$declared.';').';',
@@ -61,10 +58,9 @@
     /**
      * Tests octal numbers
      *
-     * @access  public
      */
     #[@test]
-    function octalNumbers() {
+    public function octalNumbers() {
       foreach (array('01', '0123') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.eval('return '.$declared.';').';',
@@ -76,10 +72,9 @@
     /**
      * Tests octal numbers
      *
-     * @access  public
      */
     #[@test]
-    function exponentNumbers() {
+    public function exponentNumbers() {
       foreach (array('1e3', '1.2e3', '-1E4', '-1E+4') as $declared) {
         $this->assertSourcecodeEquals(
           '$x= '.$declared.';',

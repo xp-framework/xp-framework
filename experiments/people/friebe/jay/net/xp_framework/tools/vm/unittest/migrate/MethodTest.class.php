@@ -16,105 +16,96 @@
     /**
      * Tests default modifier is "public" and default return type is "void".
      *
-     * @access  public
      */
     #[@test]
-    function defaultModifierAndReturnValue() {
+    public function defaultModifierAndReturnValue() {
       $this->assertMethodRewritten(
         'public void noop() { }', 
-        'noop', array(), '() { }'
+        'public', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests protected modifier
      *
-     * @access  public
      */
     #[@test]
-    function protectedMethod() {
+    public function protectedMethod() {
       $this->assertMethodRewritten(
         'protected void noop() { }', 
-        'noop', array('@access' => array('protected')), '() { }'
+        'protected', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests protected modifier
      *
-     * @access  public
      */
     #[@test]
-    function privateMethod() {
+    public function privateMethod() {
       $this->assertMethodRewritten(
         'private void noop() { }', 
-        'noop', array('@access' => array('private')), '() { }'
+        'private', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests static modifier
      *
-     * @access  public
      */
     #[@test]
-    function staticMethod() {
+    public function staticMethod() {
       $this->assertMethodRewritten(
         'public static void noop() { }', 
-        'noop', array('@model' => array('static')), '() { }'
+        'public static', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests final modifier
      *
-     * @access  public
      */
     #[@test]
-    function finalMethod() {
+    public function finalMethod() {
       $this->assertMethodRewritten(
         'public final void noop() { }', 
-        'noop', array('@model' => array('final')), '() { }'
+        'public final', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests final and static modifier used together
      *
-     * @access  public
      */
     #[@test]
-    function finalStaticMethod() {
+    public function finalStaticMethod() {
       $this->assertMethodRewritten(
         'public final static void noop() { }', 
-        'noop', array('@model' => array('final', 'static')), '() { }'
+        'public final static', 'noop', array(), '() { }'
       );
     }
 
     /**
      * Tests abstract modifier
      *
-     * @access  public
      */
     #[@test]
-    function abstractMethod() {
+    public function abstractMethod() {
       $this->assertMethodRewritten(
         'public abstract void noop();', 
-        'noop', array('@model' => array('abstract')), '() { }'
+        'public abstract', 'noop', array(), '();'
       );
     }
 
     /**
      * Tests abstract modifier
      *
-     * @access  public
      */
     #[@test]
-    function methodsInInterface() {
-      $this->rewriter->names->current->type = INTERFACE_CLASS;
+    public function methodsInInterface() {
       $this->assertMethodRewritten(
         'public void noop();', 
-        'noop', array(), '() { }'
+        'public', 'noop', array(), '();'
       );
     }
   }

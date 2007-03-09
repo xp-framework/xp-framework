@@ -16,17 +16,16 @@
     /**
      * Tests a class annotation
      *
-     * @access  public
      */
     #[@test]
-    function classWithWebserviceAnnotation() {
+    public function classWithWebserviceAnnotation() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __main·Testmeta() { 
+        public function __main·Testmeta() { 
           return array( 
             \'<main>\' => array( \'webservice\' => NULL, ), 
           );
@@ -42,17 +41,16 @@
     /**
      * Tests a method annotation
      *
-     * @access  public
      */
     #[@test]
-    function methodWithTestAnnotation() {
+    public function methodWithTestAnnotation() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __main·Testmeta() { 
+        public function __main·Testmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, ), 
           );
@@ -68,17 +66,16 @@
     /**
      * Tests a method annotation with key/value 
      *
-     * @access  public
      */
     #[@test]
-    function methodWithKeyValueAnnotation() {
+    public function methodWithKeyValueAnnotation() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __main·Testmeta() { 
+        public function __main·Testmeta() { 
           return array( 
             \'sayHello\' => array( \'security\' => array(
               \'roles\' => array(0 => \'admin\', 1 => \'user\', ), 
@@ -96,17 +93,16 @@
     /**
      * Tests a method annotation
      *
-     * @access  public
      */
     #[@test]
-    function methodWithTestAndIgnoreAnnotations() {
+    public function methodWithTestAndIgnoreAnnotations() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
           public function sayHello(){
             echo \'Hello\'; 
           }
         }
-        function __main·Testmeta() { 
+        public function __main·Testmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, \'ignore\' => NULL, ), 
           );

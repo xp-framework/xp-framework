@@ -16,15 +16,14 @@
     /**
      * Tests concat operator (".")
      *
-     * @access  public
      */
     #[@test]
-    function concatOperator() {
+    public function concatOperator() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·String extends lang·Object{
           protected $buffer= NULL;
 
-          function __operatorconcat($a, $b) {
+          public function __operatorconcat($a, $b) {
             return new main·String($a->buffer.$b); 
           }
 
@@ -49,27 +48,26 @@
     /**
      * Tests binary operators "+", "-", "*" and "/"
      *
-     * @access  public
      */
     #[@test]
-    function binaryOperators() {
+    public function binaryOperators() {
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'class main·Integer extends lang·Object{
           protected $value= NULL;
 
-          function __operatorplus($a, $b) {
+          public function __operatorplus($a, $b) {
             return new main·Integer($a->value+$b->value); 
           }
 
-          function __operatorminus($a, $b) {
+          public function __operatorminus($a, $b) {
             return new main·Integer($a->value-$b->value); 
           }
 
-          function __operatortimes($a, $b) {
+          public function __operatortimes($a, $b) {
             return new main·Integer($a->value*$b->value); 
           }
 
-          function __operatordivide($a, $b) {
+          public function __operatordivide($a, $b) {
             return new main·Integer($a->value/$b->value); 
           }
           
