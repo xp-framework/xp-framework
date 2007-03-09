@@ -23,10 +23,10 @@
    * @purpose  Emitter
    */
   class Php5Emitter extends Emitter {
-    var
-      $bytes   = '',
-      $context = array(),
-      $overloadable= array(
+    public
+      $bytes        = '',
+      $context      = array(),
+      $overloadable = array(
         '*' => 'times',
         '+' => 'plus',
         '-' => 'minus',
@@ -38,9 +38,8 @@
     /**
      * Constructor
      *
-     * @access  public
      */
-    function __construct() {
+    public function __construct() {
       static $langImported= FALSE;
       
       $this->context['package']= DEFAULT_PACKAGE;
@@ -74,7 +73,7 @@
      * @param   bool use default TRUE whether to add these classes to uses()
      * @return  int how many files where imported
      */
-    function importAllOf($package, $use= TRUE) {
+    public function importAllOf($package, $use= TRUE) {
       $imported= 0;
       $pdir= DIRECTORY_SEPARATOR.strtr($package, '.', DIRECTORY_SEPARATOR);
       
@@ -101,7 +100,7 @@
      * @param   string type
      * @return  string
      */
-    function typeName($type) {
+    public function typeName($type) {
       static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
 
       if (is_array($type)) return $this->typeName($type[0]).'[]';
@@ -120,7 +119,7 @@
      * @param   bool imports default TRUE whether to look for qualified names in imports
      * @return  string
      */
-    function qualifiedName($class, $imports= TRUE) {
+    public function qualifiedName($class, $imports= TRUE) {
       static $special= array('parent', 'self', 'xp', 'null');
 
       if (in_array($class, $special)) return $class;
@@ -138,7 +137,7 @@
      * @param   bool imports default TRUE whether to look for qualified names in imports
      * @return  string
      */
-    function prefixedClassnameFor($class, $imports= TRUE) {
+    public function prefixedClassnameFor($class, $imports= TRUE) {
       if ($imports && isset($this->context['imports'][$this->context['package']][$class])) {
         return $this->context['imports'][$this->context['package']][$class];
       }
@@ -153,7 +152,7 @@
      * @param   string hash
      * @return  mixed type
      */
-    function setType($hash, $type) {
+    public function setType($hash, $type) {
       $this->context['types'][$hash]= $type;
       // DEBUG Console::writeLine($hash, ' => ', xp::stringOf($type));
     }
@@ -165,7 +164,7 @@
      * @param   string hash
      * @return  mixed type
      */
-    function setContextClass($name) {
+    public function setContextClass($name) {
       $this->context['class']= $name;
       // DEBUG Console::writeLine('* {contextclass= ', $name, '} *');
     }
@@ -174,23 +173,23 @@
      * Retrieves scope for a given node
      *
      * @access  protected
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      * @return  string
      */
-    function scopeFor(&$node) {
+    public function scopeFor($node) {
     
       // $x
-      if (is_a($node, 'VariableNode')) {
+      if ($node instanceof VariableNode) {
         return $this->context['class'].'::'.$this->context['method'].$node->name;
       }
 
       // $a->buffer (typeOf($node) = class, "buffer" == $node->name)
-      if (is_a($node, 'ObjectReferenceNode')) {
+      if ($node instanceof ObjectReferenceNode) {
         return $this->typeOf($node).'::$'.$node->member->name;
       } 
       
       // $r[]= ... ($node->expression= VariableNode($r))
-      if (is_a($node, 'ArrayAccessNode')) {
+      if ($node instanceof ArrayAccessNode) {
         return $this->scopeFor($node->expression);
       } 
 
@@ -202,11 +201,11 @@
      * Retrieves type for a given node
      *
      * @access  protected
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      * @return  string
      */
-    function typeOf(&$node) {
-      if (is_a($node, 'NewNode')) {
+    public function typeOf($node) {
+      if ($node instanceof NewNode) {
         if (!$node->instanciation->chain) return $this->qualifiedName($node->class->name);
         
         $cclass= $this->context['class'];   // Backup
@@ -217,10 +216,10 @@
         $type= $this->context['class'];
         $this->setContextClass($cclass);    // Restore
         return $type;
-      } else if (is_a($node, 'VariableNode')) {
+      } else if ($node instanceof VariableNode) {
         if ('$this' == $node->name) return $this->context['class'];
         return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
-      } else if (is_a($node, 'MethodCallNode')) {
+      } else if ($node instanceof MethodCallNode) {
         $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
           ? $this->qualifiedName($node->class) 
           : $this->typeOf($node->class)
@@ -236,28 +235,28 @@
         $type= $this->context['class'];
         $this->setContextClass($cclass);    // Restore
         return $type;
-      } else if (is_a($node, 'ParameterNode')) {
+      } else if ($node instanceof ParameterNode) {
         return $this->typeName($node->type);
-      } else if (is_a($node, 'BinaryNode')) {
+      } else if ($node instanceof BinaryNode) {
         if (in_array($node->op, array('<', '<=', '>', '>=', '==', '!=', '===', '!=='))) return 'bool';
         $type= $this->typeOf($node->left);
         // TODO: Check operator overloading
         return $type;
-      } else if (is_a($node, 'ObjectReferenceNode')) {
+      } else if ($node instanceof ObjectReferenceNode) {
         $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
           ? $this->qualifiedName($node->class) 
           : $this->typeOf($node->class)
         );
         return $this->context['types'][$ctype.'::$'.$node->member->name];
-      } else if (is_a($node, 'ArrayDeclarationNode')) {
+      } else if ($node instanceof ArrayDeclarationNode) {
         return 'mixed[]';
-      } else if (is_a($node, 'ExpressionCastNode')) {
+      } else if ($node instanceof ExpressionCastNode) {
         return $this->typeName($node->type);
-      } else if (is_int($node) || is_a($node, 'LongNumberNode')) {
+      } else if (is_int($node) || $node instanceof LongNumberNode) {
         return 'integer';
-      } else if (is_float($node) || is_a($node, 'DoubleNumberNode')) {
+      } else if (is_float($node) || $node instanceof DoubleNumberNode) {
         return 'double';
-      } else if (is_a($node, 'VNode')) { 
+      } else if ($node instanceof VNode) { 
         // Intentionally empty
       } else if ('"' == $node{0}) { // Double-quoted string
         return 'string';
@@ -277,11 +276,11 @@
      * Checks whether a given node has an annotation by the specified name
      *
      * @access  protected
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      * @param   string name
      * @return  bool
      */
-    function hasAnnotation(&$node, $name) {
+    public function hasAnnotation($node, $name) {
       foreach ($node->annotations as $annotation) {
         if ($annotation->type == $name) return TRUE;
       }
@@ -292,10 +291,10 @@
      * Returns a method name. Handles overloaded methods
      *
      * @access  protected
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      * @return  string name
      */
-    function methodName(&$node) {
+    public function methodName($node) {
       if (!$this->hasAnnotation($node, 'overloaded')) return $node->name;
 
       $this->context['overloaded'][$this->context['class'].'::'.$node->name]= TRUE;
@@ -313,7 +312,7 @@
      * @param   string class
      * @param   string interface
      */
-    function checkImplementation($class, $interface) {
+    public function checkImplementation($class, $interface) {
       foreach ($this->context['classes'][$interface] as $name => $decl) {
         if (isset($this->context['classes'][$class][$name])) continue;
         
@@ -331,11 +330,11 @@
      * Checks whether a given node is of a given type
      *
      * @access  protected
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      * @param   string type
      * @return  string type
      */
-    function checkedType(&$node, $type) {
+    public function checkedType($node, $type) {
       // Console::writeLine($node->toString().'.TYPE('.$this->typeOf($node).') =? ', $type);
       
       // NULL indicates unknown, so no checks performed!
@@ -372,7 +371,7 @@
      * @param   net.xp_framework.tools.vm.ParameterNode[] parameters
      * @return  string source source to embed inside method declaration
      */
-    function emitParameters($parameters) {
+    public function emitParameters($parameters) {
       $embed= '';
       $this->context['default'][$this->context['class'].'::'.$this->context['method']]= array();
       foreach ($parameters as $i => $param) {
@@ -396,7 +395,7 @@
         if ($param->default) {
           $this->bytes.= '= ';
           $this->emit($param->default);
-          $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= &$param->default;
+          $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= $param->default;
         }
         $this->bytes.= ', ';
       }
@@ -413,7 +412,7 @@
      * @access  protected
      * @param   net.xp_framework.tools.vm.AnnotationNode[] parameters
      */
-    function emitAnnotations($annotations) {
+    public function emitAnnotations($annotations) {
       $list= array();
       foreach ($annotations as $annotation) {
         
@@ -429,15 +428,14 @@
     /**
      * Emits a single node
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emit(&$node) {
+    public function emit($node) {
       
       // Check if we find an array offset somewhere, e.g. $x->getElements()[0]
       // This will need to be translated to xp::wraparray($x->getElements(), 0)
-      if (is_a($node, 'VNode') && isset($node->chain)) foreach ($node->chain as $i => $expr) {
-        if (is_a($expr, 'ArrayOffsetNode')) {
+      if ($node instanceof VNode && isset($node->chain)) foreach ($node->chain as $i => $expr) {
+        if ($expr instanceof ArrayOffsetNode) {
           $this->bytes.= 'xp::wraparray(';
           $node->chain[$i]->first= TRUE;
           break;
@@ -450,10 +448,9 @@
     /**
      * Emits an array of nodes
      *
-     * @access  public
      * @param   net.xp_framework.tools.vm.VNode[] nodes
      */
-    function emitAll($nodes) {
+    public function emitAll($nodes) {
       foreach ($nodes as $node) {
         $this->emit($node);
         $this->bytes.= ";\n  ";
@@ -463,10 +460,9 @@
     /**
      * Emits a block
      *
-     * @access  public
      * @param   net.xp_framework.tools.vm.VNode[] nodes
      */
-    function emitBlock($nodes) { 
+    public function emitBlock($nodes) { 
       $this->bytes.= '{';
       $this->emitAll($nodes);
       $this->bytes.= '}';
@@ -475,10 +471,9 @@
     /**
      * Retrieves result 
      *
-     * @access  public
      * @return  string
      */
-    function getResult() { 
+    public function getResult() { 
       $src= "<?php\n  ";
       if (!empty($this->context['uses'])) {
         $src.= 'uses(\''.implode('\', \'', array_keys($this->context['uses'])).'\');';
@@ -490,39 +485,35 @@
     /**
      * Emits an integer
      *
-     * @access  public
      * @param   int integer
      */
-    function emitInteger($integer) { 
+    public function emitInteger($integer) { 
       $this->bytes.= $integer;
     }
 
     /**
      * Emits a string
      *
-     * @access  public
      * @param   string string
      */
-    function emitString($string) { 
+    public function emitString($string) { 
       $this->bytes.= "'".str_replace("'", "\'", $string)."'";
     }
 
     /**
      * Emits a constant
      *
-     * @access  public
      */
-    function emitConstant($name) {
+    public function emitConstant($name) {
       $this->bytes.= $name;
     }
     
     /**
      * Emits PackageDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitPackageDeclaration(&$node) { 
+    public function emitPackageDeclaration($node) { 
       $this->context['package']= $node->name.PACKAGE_SEPARATOR;
       foreach ($node->statements as $node) {
         $this->emit($node);
@@ -535,10 +526,9 @@
     /**
      * Emits FunctionDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitFunctionDeclaration(&$node) { 
+    public function emitFunctionDeclaration($node) { 
       $this->bytes.= 'function '.$node->name.'(';
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ') {'.$embed;
@@ -549,12 +539,11 @@
     /**
      * Emits native source for a given class, method and signature
      *
-     * @access  public
      * @param   string class
      * @param   string method
      * @param   net.xp_framework.tools.vm.ParameterNode[] parameters
      */
-    function emitNativeSourceFor($class, $method, $parameters) {
+    public function emitNativeSourceFor($class, $method, $parameters) {
       $function= $class.'·'.$method;
       $this->cat && $this->cat->debug('Linking native source for', $class.'::'.$method.'()');
       
@@ -603,10 +592,9 @@
     /**
      * Emits MethodDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitMethodDeclaration(&$node) {
+    public function emitMethodDeclaration($node) {
       $method= $this->methodName($node);
       $this->setType($this->context['class'].'::'.$method, $this->typeName($node->returns));
       $this->context['method']= $method;
@@ -639,10 +627,9 @@
     /**
      * Emits ConstructorDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitConstructorDeclaration(&$node) { 
+    public function emitConstructorDeclaration($node) { 
       $method= $this->methodName($node);
       $this->context['method']= $method;
       $this->setType($this->context['class'].'::'.$method, $this->context['class']);
@@ -665,10 +652,9 @@
     /**
      * Emits DestructorDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitDestructorDeclaration(&$node) { 
+    public function emitDestructorDeclaration($node) { 
       $method= '__destruct';
       $this->context['method']= $method;
       $this->setType($this->context['class'].'::'.$method, $this->context['class']);
@@ -695,7 +681,7 @@
      * @param   string q qualified name
      * @return  array or NULL if the class wasn't found
      */
-    function lookupClass($q) {
+    public function lookupClass($q) {
       if (!isset($this->context['classes'][$q])) {
       
         // Search classpath
@@ -779,10 +765,9 @@
     /**
      * Emits ClassDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitClassDeclaration(&$node) {
+    public function emitClassDeclaration($node) {
       $this->context['properties']= array();
       $this->setContextClass($this->qualifiedName($node->name, FALSE));
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
@@ -851,7 +836,7 @@
         }
         $this->bytes.= ');';
         $this->bytes.= '
-          function __get($name) {
+          public function __get($name) {
             if (!isset(self::$__properties[$name])) die(\'Read of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][0]) {
               throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
@@ -862,7 +847,7 @@
             }
           }
 
-          function __set($name, $value) {
+          public function __set($name, $value) {
             if (!isset(self::$__properties[$name])) die(\'Write of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][1]) {
               throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
@@ -903,10 +888,9 @@
     /**
      * Emits FunctionCalls
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitFunctionCall(&$node) {
+    public function emitFunctionCall($node) {
     
       // Check for mapping - TBD: Use functioncall-mapper-objects?
       if (method_exists($this, $mapped= 'emit'.$node->name.'FunctionCall')) {
@@ -926,10 +910,9 @@
     /**
      * Emits exit() FunctionCalls
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitExitFunctionCall(&$node) {
+    public function emitExitFunctionCall($node) {
       $this->bytes.= 'throw xp::exception(new lang·SystemExit(';
       switch (sizeof($node->arguments)) {
         case 0: break;
@@ -939,7 +922,7 @@
       $this->bytes.= '))';
     }
     
-    function emitMemberName($name) {
+    public function emitMemberName($name) {
       if (is_string($name)) {          // $test->member;
         $this->bytes.= $name;
         return $name;
@@ -957,10 +940,9 @@
     /**
      * Emits Members
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitMember(&$node) {
+    public function emitMember($node) {
       $this->emitMemberName($node->name);
       if (NULL === $node->offset) return;
 
@@ -972,10 +954,9 @@
     /**
      * Emits MethodCalls
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitMethodCall(&$node) {
+    public function emitMethodCall($node) {
       if (is_string($node->class)) {      // Static
         $this->bytes.= $this->qualifiedName($node->class).'::';
         $type= $this->qualifiedName($node->class);
@@ -1039,10 +1020,9 @@
     /**
      * Emits Nots
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitNot(&$node) { 
+    public function emitNot($node) { 
       $this->bytes.= '!';
       $this->emit($node->expression);
     }
@@ -1050,10 +1030,9 @@
     /**
      * Emits ObjectReferences
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitObjectReference(&$node) { 
+    public function emitObjectReference($node) { 
       $node->class && $this->emit($node->class);
       $this->bytes.= '->';
       $this->emit($node->member);
@@ -1069,7 +1048,7 @@
       $this->setContextClass($cclass);    // restore
     }
     
-    function mappedOperator($op) {
+    public function mappedOperator($op) {
       return ('~' == $op{0}) ? '.' : $op;
     }
 
@@ -1084,10 +1063,9 @@
      *
      * XXX Optimization possibility: $i = 1 + 2 can be optimized to $i = 3; XXX
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitBinary(&$node) {
+    public function emitBinary($node) {
       if ($node->left) {
         $type= $this->typeOf($node->left);
 
@@ -1125,10 +1103,9 @@
     /**
      * Emits Variables
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitVariable(&$node) { 
+    public function emitVariable($node) { 
       $this->bytes.= $node->name;
       if (NULL === $node->offset) return;
 
@@ -1140,10 +1117,9 @@
     /**
      * Emits Assigns
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitAssign(&$node) {
+    public function emitAssign($node) {
       $this->emit($node->variable);
       $this->bytes.= '= ';
       $this->emit($node->expression);
@@ -1153,10 +1129,9 @@
     /**
      * Emits BinaryAssigns
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitBinaryAssign(&$node) { 
+    public function emitBinaryAssign($node) { 
       $type= $this->typeOf($node->variable);
       $this->emit($node->variable);
 
@@ -1181,10 +1156,9 @@
     /**
      * Emits Ifs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitIf(&$node) { 
+    public function emitIf($node) { 
       $this->bytes.= 'if (';
       $this->emit($node->condition);
       $this->bytes.= ')';
@@ -1209,15 +1183,14 @@
     /**
      * Emits News
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitNew(&$node) {
+    public function emitNew($node) {
 
       // Check if we find an array offset somewhere, e.g. new ArrayList()->getElements()[0]
       // This will need to be translated to xp::element(new ArrayList(), 0)
       if ($node->instanciation->chain) foreach ($node->instanciation->chain as $i => $expr) {
-        if (is_a($expr, 'ArrayOffsetNode')) {
+        if ($expr instanceof ArrayOffsetNode) {
           $this->bytes.= 'xp::wraparray(';
           $node->instanciation->chain[$i]->first= TRUE;
           break;
@@ -1284,10 +1257,9 @@
     /**
      * Emits ImportLists
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitImportList(&$node) {
+    public function emitImportList($node) {
       foreach ($node->list as $import) { 
         $this->emit($import);
       }
@@ -1296,10 +1268,9 @@
     /**
      * Emits Import
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitImport(&$node) {
+    public function emitImport($node) {
       $source= $node->source->name;
       if (NULL === $this->lookupClass($this->qualifiedName($source, FALSE))) {
         $this->addError(new CompileError(7000, 'Imported class '.$source.' does not exist'));
@@ -1319,20 +1290,18 @@
     /**
      * Emits ImportLists
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitImportAll(&$node) {
+    public function emitImportAll($node) {
       $this->importAllOf($node->from);
     }    
     
     /**
      * Emits Trys
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitTry(&$node) { 
+    public function emitTry($node) { 
       $this->bytes.= "try {\n  ";
       $this->emitAll($node->statements);      
 
@@ -1342,7 +1311,7 @@
       $this->bytes.= $node->firstCatch->variable.'= $__e->cause; ';
       
       foreach ($node->firstCatch->statements as $stmt) {
-        if (is_a($stmt, 'ReturnNode') || is_a($stmt, 'ThrowNode')) {
+        if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
           $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
         }
       
@@ -1367,10 +1336,9 @@
     /**
      * Emits Echos
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitEcho(&$node) {
+    public function emitEcho($node) {
       $this->bytes.= 'echo ';
       foreach ($node->args as $arg) {
         $this->emit($arg);
@@ -1382,10 +1350,9 @@
     /**
      * Emits Returns
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitReturn(&$node) { 
+    public function emitReturn($node) { 
       $this->bytes.= 'return ';
       if (!$node->value) return;
       
@@ -1407,10 +1374,9 @@
     /**
      * Emits Ternarys
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitTernary(&$node) {
+    public function emitTernary($node) {
       $this->emit($node->condition);
       $this->bytes.= ' ? ';
       $this->emit($node->expression);
@@ -1421,10 +1387,9 @@
     /**
      * Emits Fors
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitFor(&$node) {
+    public function emitFor($node) {
       $this->bytes.= 'for (';
       foreach ($node->init as $expr) {
         $this->emit($expr);
@@ -1454,10 +1419,9 @@
     /**
      * Emits PreIncs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitPreInc(&$node) {
+    public function emitPreInc($node) {
       $this->bytes.= '++';
       $this->emit($node->expression);
     }
@@ -1465,10 +1429,9 @@
     /**
      * Emits PostIncs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitPostInc(&$node) {
+    public function emitPostInc($node) {
       $this->emit($node->expression);
       $this->bytes.= '++';
     }
@@ -1476,10 +1439,9 @@
     /**
      * Emits PreDecs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitPreDec(&$node) {
+    public function emitPreDec($node) {
       $this->bytes.= '--';
       $this->emit($node->expression);
     }
@@ -1487,10 +1449,9 @@
     /**
      * Emits PostDecs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitPostDec(&$node) {
+    public function emitPostDec($node) {
       $this->emit($node->expression);
       $this->bytes.= '--';
     }
@@ -1498,17 +1459,16 @@
     /**
      * Emits MemberDeclarationLists
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitMemberDeclarationList(&$node) { 
+    public function emitMemberDeclarationList($node) { 
       $bytes= $this->bytes;
       $this->bytes= '';
 
       $members= FALSE;
       foreach ($node->members as $member) {
         $this->setType($this->context['class'].'::'.$member->name, $this->typeName($node->type));
-        if (is_a($member, 'PropertyDeclarationNode')) {
+        if ($member instanceof PropertyDeclarationNode) {
           $this->context['properties'][]= $member;
         } else {
           $this->bytes.= $member->name.'= ';
@@ -1523,10 +1483,9 @@
     /**
      * Emits OperatorDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitOperatorDeclaration(&$node) {       
+    public function emitOperatorDeclaration($node) {       
       $method= '__operator'.$this->overloadable[$node->name];
       $this->context['method']= $method;
 
@@ -1559,10 +1518,9 @@
     /**
      * Emits Throws
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitThrow(&$node) {       
+    public function emitThrow($node) {       
       $this->bytes.= 'throw xp::exception(';
       $this->emit($node->value);
       $this->bytes.= ')';
@@ -1571,10 +1529,9 @@
     /**
      * Emits InstanceOfs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitInstanceOf(&$node) {
+    public function emitInstanceOf($node) {
       $this->emit($node->object);
       $this->bytes.= ' instanceof ';
       $this->emit($node->type);
@@ -1583,20 +1540,18 @@
     /**
      * Emits ClassReferences
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitClassReference(&$node) {
+    public function emitClassReference($node) {
       $this->bytes.= $this->qualifiedName($node->name);
     }
 
     /**
      * Emits InterfaceDeclarations
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitInterfaceDeclaration(&$node) {
+    public function emitInterfaceDeclaration($node) {
       $this->setContextClass($this->qualifiedName($node->name, FALSE));
       $this->context['classes'][$this->context['class']]= array();
       $this->bytes.= 'interface '.$this->context['class'];
@@ -1624,7 +1579,7 @@
 
       $this->bytes.= '{';
       foreach ($node->statements as $stmt) {
-        if (is_a($stmt, 'MethodDeclarationNode')) {
+        if ($stmt instanceof MethodDeclarationNode) {
           $this->context['classes'][$this->context['class']][$this->methodName($stmt)]= TRUE; // XXX DECL?
         }
       }
@@ -1635,10 +1590,9 @@
     /**
      * Emits Whiles
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitWhile(&$node) { 
+    public function emitWhile($node) { 
       $this->bytes.= 'while (';
       $this->emit($node->condition);
       $this->bytes.= ') {';
@@ -1649,10 +1603,9 @@
     /**
      * Emits Do ... Whiles
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitDoWhile(&$node) {
+    public function emitDoWhile($node) {
       $this->bytes.= 'do {';
       $this->emitAll($node->statements);
       $this->bytes.= '} while (';
@@ -1663,10 +1616,9 @@
     /**
      * Emits Foreachs
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitForeach(&$node) {
+    public function emitForeach($node) {
       $this->bytes.= 'foreach (';
       $this->emit($node->expression);
       $this->bytes.= ' as ';
@@ -1683,10 +1635,9 @@
     /**
      * Emits Switches
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitSwitch(&$node) {
+    public function emitSwitch($node) {
       $this->bytes.= 'switch (';
       $this->emit($node->condition);
       $this->bytes.= ') {';
@@ -1697,10 +1648,9 @@
     /**
      * Emits Cases
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitCase(&$node) {
+    public function emitCase($node) {
       $this->bytes.= 'case ';
       $this->emit($node->expression);
       $this->bytes.= ': ';
@@ -1710,10 +1660,9 @@
     /**
      * Emits Defaults
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitDefault(&$node) { 
+    public function emitDefault($node) { 
       $this->bytes.= 'default: ';
       $this->emitAll($node->statements);
     }
@@ -1721,10 +1670,9 @@
     /**
      * Emits Breaks
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitBreak(&$node) { 
+    public function emitBreak($node) { 
       $this->bytes.= 'break';
       if ($node->expression) {
         $this->bytes.= ' ';
@@ -1735,10 +1683,9 @@
     /**
      * Emits Continues
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitContinue(&$node) {
+    public function emitContinue($node) {
       $this->bytes.= 'continue';
       if ($node->expression) {
         $this->bytes.= ' ';
@@ -1749,10 +1696,9 @@
     /**
      * Emits static variables list
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitStaticVariableList(&$node) {
+    public function emitStaticVariableList($node) {
       $this->bytes.= 'static ';
       foreach ($node->list as $static) {
         $this->emit($static);
@@ -1764,10 +1710,9 @@
     /**
      * Emits static variables
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitStaticVariable(&$node) {
+    public function emitStaticVariable($node) {
       $this->bytes.= $node->name;
       if (NULL !== $node->initial) {
         $this->bytes.= '= ';
@@ -1778,20 +1723,18 @@
     /**
      * Emits constant references
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitConstantReference(&$node) {
+    public function emitConstantReference($node) {
       $this->bytes.= ($node->class ? $node->class.'::' : '').$node->name;
     }
 
     /**
      * Emits constant references
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitBooleanOperator(&$node) {
+    public function emitBooleanOperator($node) {
       $this->emit($node->left);
       $this->bytes.= ' '.$node->op.' ';
       $this->emit($node->right);
@@ -1800,10 +1743,9 @@
     /**
      * Emits array offsets (used for getElements()[0])
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitArrayOffset(&$node) {
+    public function emitArrayOffset($node) {
       $node->first && $this->bytes.= ')->backing';
       $this->bytes.= '[';
       $this->emit($node->expression);
@@ -1813,10 +1755,9 @@
     /**
      * Emits expression casts
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitExpressionCast(&$node) {
+    public function emitExpressionCast($node) {
       static $supported= array('int', 'string', 'bool', 'double', 'array');
       
       if (in_array($node->type, $supported)) {
@@ -1832,10 +1773,9 @@
     /**
      * Emits bracketed expressions ("(" expression ")")
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitBracketedExpression(&$node) {
+    public function emitBracketedExpression($node) {
       $this->bytes.= '(';
       $this->emit($node->expression);
       $this->bytes.= ')';
@@ -1844,10 +1784,9 @@
     /**
      * Emits silenced expressions ("@" expression)
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitSilencedExpression(&$node) {
+    public function emitSilencedExpression($node) {
       $this->bytes.= '@';
       $this->emit($node->expression);
     }
@@ -1855,10 +1794,9 @@
     /**
      * Emits array access
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitArrayAccess(&$node) {
+    public function emitArrayAccess($node) {
       $this->emit($node->expression);
       $this->bytes.= '[';
       $node->offset && $this->emit($node->offset);
@@ -1868,10 +1806,9 @@
     /**
      * Emits static members
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitStaticMember(&$node) {
+    public function emitStaticMember($node) {
       $this->bytes.= $this->qualifiedName($node->class).'::';
       $this->emit($node->member);
     }
@@ -1879,10 +1816,9 @@
     /**
      * Emits list()-assignment
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitListAssign(&$node) {
+    public function emitListAssign($node) {
       $this->bytes.= 'list(';
       foreach ($node->assignments as $expr) {
         $this->emit($expr);
@@ -1895,20 +1831,18 @@
     /**
      * Emits a double number
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitDoubleNumber(&$node) {
+    public function emitDoubleNumber($node) {
       $this->bytes.= $node->value;
     }
 
     /**
      * Emits a long number
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitLongNumber(&$node) {
+    public function emitLongNumber($node) {
       if ('0' == $node->value{0} && strlen($node->value) > 1) {
         $this->bytes.= 'x' == $node->value{1} ? hexdec($node->value) : octdec($node->value);
       } else {
@@ -1919,10 +1853,9 @@
     /**
      * Emits an array declaration
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emitArrayDeclaration(&$node) { 
+    public function emitArrayDeclaration($node) { 
       $this->bytes.= 'array(';
       foreach ($node->elements as $key => $val) {
         $this->emit($key);

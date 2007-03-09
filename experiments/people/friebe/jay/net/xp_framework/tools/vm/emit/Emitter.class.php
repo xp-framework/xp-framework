@@ -6,7 +6,8 @@
  
   uses(
     'net.xp_framework.tools.vm.CompileError', 
-    'net.xp_framework.tools.vm.VNode'
+    'net.xp_framework.tools.vm.VNode',
+    'util.log.Traceable'
   );
   
   /**
@@ -14,8 +15,8 @@
    *
    * @purpose  Abstract base class
    */
-  class Emitter extends Object {
-    var
+  class Emitter extends Object implements Traceable {
+    public
       $cat      = NULL,
       $position = array(),
       $filename = '',
@@ -24,81 +25,73 @@
     /**
      * Emits an array of nodes
      *
-     * @access  public
      * @param   net.xp_framework.tools.vm.VNode[] nodes
      */
-    function emitAll($nodes) {
+    public function emitAll($nodes) {
       foreach ($nodes as $node) $this->emit($node);
     }
 
     /**
      * Set Filename
      *
-     * @access  public
      * @param   string filename
      */
-    function setFilename($filename) {
+    public function setFilename($filename) {
       $this->filename= $filename;
     }
 
     /**
      * Get Filename
      *
-     * @access  public
      * @return  string
      */
-    function getFilename() {
+    public function getFilename() {
       return $this->filename;
     }
     /**
      * Adds an error
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.CompileError error
+     * @param   net.xp_framework.tools.vm.CompileError error
      */
-    function addError(&$error) {
+    public function addError($error) {
       $error->message.= ' at '.$this->filename.' line '.$this->position[0].' (offset '.$this->position[1].')';
-      $this->errors[]= &$error;
+      $this->errors[]= $error;
     }
     
     /**
      * Returns whether errors have occured
      *
-     * @access  public
      * @return  bool
      */
-    function hasErrors() {
+    public function hasErrors() {
       return !empty($this->errors);
     }
 
     /**
      * Returns whether errors have occured
      *
-     * @access  public
      * @return  net.xp_framework.tools.vm.CompileError[]
      */
-    function getErrors() {
+    public function getErrors() {
       return $this->errors;
     }
     
     /**
      * Retrieves result 
      *
-     * @access  public
      * @return  string
      */
-    function getResult() { }
+    public function getResult() { }
 
     /**
      * Emits a single node
      *
-     * @access  public
-     * @param   &net.xp_framework.tools.vm.VNode node
+     * @param   net.xp_framework.tools.vm.VNode node
      */
-    function emit(&$node) {
+    public function emit($node) {
       $this->position= $node->position;
 
-      if (is_a($node, 'VNode')) {
+      if ($node instanceof VNode) {
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
           $this->cat && $this->cat->error('No emitter for', $node);
@@ -169,44 +162,39 @@
     /**
      * Emits a block
      *
-     * @access  public
      * @param   net.xp_framework.tools.vm.VNode[] nodes
      */
-    function emitBlock($nodes) { }
+    public function emitBlock($nodes) { }
 
     /**
      * Emits constants
      *
-     * @access  public
      * @param   string name
      */
-    function emitConstant($name) { }
+    public function emitConstant($name) { }
 
     /**
      * Emits constants
      *
-     * @access  public
      * @param   string string
      */
-    function emitString($string) { }
+    public function emitString($string) { }
 
     /**
      * Emits an integer
      *
-     * @access  public
      * @param   int integer
      */
-    function emitInteger($integer) { }
+    public function emitInteger($integer) { }
     
     /**
      * Set a logger category for debugging
      *
-     * @access  public
      * @param   util.log.LogCategory cat
      */
-    function setTrace($cat) {
+    public function setTrace($cat) {
       $this->cat= $cat;
     }
 
-  } implements(__FILE__, 'util.log.Traceable');
+  }
 ?>
