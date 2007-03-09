@@ -13,7 +13,7 @@
    * @see      xp://net.xp_framework.tools.vm.nodes.VNode
    */ 
   class InvokeableDeclarationNode extends VNode {
-    var
+    public
       $name,
       $parameters,
       $returns,
@@ -25,7 +25,6 @@
     /**
      * Constructor
      *
-     * @access  public
      * @param   string name 
      * @param   mixed parameters
      * @param   mixed returns
@@ -34,7 +33,7 @@
      * @param   mixed annotations
      * @param   mixed thrown
      */
-    function __construct($name, $parameters, $returns, $statements, $modifiers, $annotations, $thrown) {
+    public function __construct($name, $parameters, $returns, $statements, $modifiers, $annotations, $thrown) {
       $this->name= $name;
       $this->parameters= (array)$parameters;
       $this->returns= $returns;

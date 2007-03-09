@@ -15,21 +15,12 @@
   );
   
   $help= <<<__
-Subjective: Migrate PHP4 classes and scripts using XP to PHP
+Subjective: Migrate PHP5 classes and scripts using XP to PHP
 
-* Replace try(); with try
-* Replace if (catch('EXCEPTION_CLASS_NAME', \$e)) with 
-  catch (EXCEPTION_CLASS_NAME \$e)
 * Add correct namespace to new CLASS_NAME
 * Add correct namespace to extends CLASS_NAME
 * Add correct namespace to static CLASS_NAME::METHOD_NAME calls
 * Add package statement around classes
-* Rewrite implements(__FILE__, 'IMPLEMENTED_INTERFACE') to 
-  implements IMPLEMENTED_INTERFACE
-* Replace return throw() with throw()
-* Replace class INTERFFACE_NAME extends Interface with
-  interface INTERFFACE_NAME
-* Remove method body from interface methods
 
 Usage:
 php migrate.php <<fully_qualified_class_name>>
@@ -42,9 +33,9 @@ __;
   class MigrationNameMapping extends NameMapping {
 
     function getMapping($key) {
-      try(); {
+      try {
         $m= parent::getMapping($key);
-      } if (catch('IllegalArgumentException', $e)) {
+      } catch (IllegalArgumentException $e) {
         // DEBUG $e->printStackTrace();
         Console::writeLine('*** ', $e->getMessage());
         return $key;
@@ -83,10 +74,10 @@ __;
     
     function start(&$root) {
       $debug= $root->option('debug');
-      $this->names= &new MigrationNameMapping();
+      $this->names= new MigrationNameMapping();
       $this->names->setNamespaceSeparator(NS_SEPARATOR);
 
-      $this->rewriter= &new SourceRewriter();
+      $this->rewriter= new SourceRewriter();
       $this->rewriter->setNameMapping($this->names);
       
       // Build mapping for built-in-classes
@@ -95,14 +86,14 @@ __;
         if (0 != strncmp('class.', $key, 6)) continue;
         $this->names->addMapping(xp::reflect($key), trim(xp::registry($key), '<>'));
       }
-
+      
       if ($output= $root->option('output')) {
         Console::writeLine('---> Writing to ', $output);
-        $base= &new Folder($output);
+        $base= new Folder($output);
       }
       
       while ($root->classes->hasNext()) {
-        $this->current= &$root->classes->next();
+        $this->current= $root->classes->next();
         $debug && Console::writeLine('---> Processing ', $this->current->qualifiedName());
         
         // Build mapping short names => long names
@@ -111,22 +102,18 @@ __;
 
         // Tokenize file
         $tokens= token_get_all(file_get_contents($root->findClass($this->current->qualifiedName())));
-        try(); {
+        try {
           $out= $this->rewriter->rewrite($tokens, $debug);
-        } if (catch('Exception', $e)) {
+        } catch (Throwable $e) {
           $e->printStackTrace();
           continue;
         }
         
         if ($output) {
-          try(); {
-            $target= &new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), NS_SEPARATOR, DIRECTORY_SEPARATOR).'.xp');
-            $f= &new Folder($target->getPath());
-            $f->exists() || $f->create();
-            FileUtil::setContents($target, $out);
-          } if (catch('IOException', $e)) {
-            return throw($e);
-          }
+          $target= new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), NS_SEPARATOR, DIRECTORY_SEPARATOR).'.xp');
+          $f= new Folder($target->getPath());
+          $f->exists() || $f->create();
+          FileUtil::setContents($target, $out);
           Console::writeLine('---> Wrote ', $target->getURI());
         } else {
           Console::write($out);
@@ -144,7 +131,7 @@ __;
   // }}}
 
   // {{{ main
-  $p= &new ParamString();
+  $p= new ParamString();
   if ($p->exists('help', '?')) {
     Console::writeLine($help);
     exit(1);

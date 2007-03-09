@@ -9,30 +9,28 @@
    *
    */
   class VNode extends Object {
-    var
+    public
       $position= array();
 
     /**
      * Creates a string representation of any
      *
-     * @model   static
-     * @access  public
      * @param   mixed a
      * @param   string indent default ''
      * @return  string
      */
-    function stringOf($a, $indent= '') {
+    public static function stringOf($a, $indent= '') {
       if (is_array($a)) {
         if (is_int(key($a))) {    // Numeric arrays
           $s= "[\n";
           foreach ($a as $v) {
-            $s.= $indent.'  - '.VNode::stringOf($v, $indent.'  ').",\n";
+            $s.= $indent.'  - '.self::stringOf($v, $indent.'  ').",\n";
           }
           return $s.$indent.']';
         } else {                  // Hash maps
           $s= "{\n";
           foreach ($a as $k => $v) {
-           $s.= $indent.'  - '.$k.' => '.VNode::stringOf($v, $indent.'  ').",\n";
+           $s.= $indent.'  - '.$k.' => '.self::stringOf($v, $indent.'  ').",\n";
          }
           return $s.$indent.'}';
         }
@@ -43,7 +41,7 @@
             "%s  [%-20s] %s\n", 
             $indent, 
             $key, 
-            VNode::stringOf($a->{$key}, '  '.$indent)
+            self::stringOf($a->{$key}, '  '.$indent)
           );
         }
         return $s.$indent.'}';
@@ -55,11 +53,10 @@
     /**
      * Creates a string representation of this node
      *
-     * @access  public
      * @return  string
      */
-    function toString() {
-      return VNode::stringOf($this);
+    public function toString() {
+      return self::stringOf($this);
     }
   }
 ?>

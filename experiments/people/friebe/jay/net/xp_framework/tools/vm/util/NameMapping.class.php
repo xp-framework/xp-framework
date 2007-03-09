@@ -22,35 +22,32 @@
     /**
      * Set namespace separator
      *
-     * @access  public
      * @param   string s new value
      */
-    function setNamespaceSeparator($s) {
+    public function setNamespaceSeparator($s) {
       $this->namespaceSeparator= $s;
     }
     
     /**
      * Add a mapping
      *
-     * @access  public
      * @param   string key
      * @param   string value
      */
-    function addMapping($key, $value) {
+    public function addMapping($key, $value) {
       $this->mapping[$key]= $value;
     }
 
     /**
      * Retrieve a mapping
      *
-     * @access  public
      * @param   string key
      * @return  string value
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
-    function getMapping($key) {
+    public function getMapping($key) {
       if (!isset($this->mapping[$key])) {
-        return throw(new IllegalArgumentException('Mapping for "'.$key.'" not found'));
+        throw new IllegalArgumentException('Mapping for "'.$key.'" not found');
       }
       
       return $this->mapping[$key];
@@ -59,34 +56,31 @@
     /**
      * Set current class
      *
-     * @access  public
-     * @param   &text.doclet.ClassDoc c
+     * @param   text.doclet.ClassDoc c
      */
-    function setCurrentClass(&$c) {
-      $this->current= &$c;
+    public function setCurrentClass($c) {
+      $this->current= $c;
     }
     
     /**
      * Retrieves qualified name of a given short name
      *
-     * @access  public
      * @param   string
      * @return  string
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
-    function qualifiedNameOf($short) {
-      $mapped= $this->getMapping(strtolower($short));      
+    public function qualifiedNameOf($short) {
+      $mapped= $this->getMapping($short);      
       return ($this->current && $this->current->qualifiedName() == $mapped ? 'self' : $mapped);
     }
 
     /**
      * Retrieves packaged name of a given qualified name
      *
-     * @access  public
      * @param   string q qualified class name
      * @return  string
      */
-    function packagedNameOf($q) {
+    public function packagedNameOf($q) {
       if (strstr($q, '.')) {
         $packaged= strtr($q, '.', $this->namespaceSeparator);
       } else {
@@ -99,12 +93,11 @@
     /**
      * Retrieves type name
      *
-     * @access  public
      * @param   string type
      * @param   bool arg default FALSE
      * @return  string
      */
-    function forType($type, $arg= FALSE) {
+    public function forType($type, $arg= FALSE) {
       static $map= array( // Migrate gettype() style names to var_dump() style names
         'integer'       => 'int',
         'double'        => 'float',

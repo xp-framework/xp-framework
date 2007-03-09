@@ -10,7 +10,7 @@
    * @purpose  Exception
    */
   class CompileError extends Object {
-    var
+    public 
       $code    = 0,
       $message = '';
 
@@ -21,7 +21,7 @@
      * @param   int code
      * @param   string message
      */
-    function __construct($code, $message) {
+    public function __construct($code, $message) {
       $this->code= $code;
       $this->message= $message;
     }
@@ -32,7 +32,7 @@
      * @access  public
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return $this->getClassName().'('.$this->code.') {"'.$this->message.'"}';
     }
   }
