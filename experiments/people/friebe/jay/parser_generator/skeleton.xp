@@ -66,7 +66,7 @@
 .     * @param   text.parser.generic.AbstractLexer lexer
 ..    * @return  mixed result of the last reduction, if any.
 .     */
-.    protected function yyparse($yyLex) {
+.    public function yyparse($yyLex) {
 .      $this->yyTableCount= sizeof($this->yyTable);
 .      $this->yyNameCount= sizeof($this->yyName);
 .      $yyVal= NULL;

@@ -114,7 +114,7 @@
      * @param   text.parser.generic.AbstractLexer lexer
 .    * @return  mixed result of the last reduction, if any.
      */
-    protected abstract function yyparse($lexer);
+    public abstract function yyparse($lexer);
     
     /**
      * Retrieves name of a given token

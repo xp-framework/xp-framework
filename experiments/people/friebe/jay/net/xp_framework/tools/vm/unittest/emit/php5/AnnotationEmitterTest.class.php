@@ -25,7 +25,7 @@
             echo \'Hello\'; 
           }
         }
-        public function __main톂estmeta() { 
+        function __main톂estmeta() { 
           return array( 
             \'<main>\' => array( \'webservice\' => NULL, ), 
           );
@@ -50,7 +50,7 @@
             echo \'Hello\'; 
           }
         }
-        public function __main톂estmeta() { 
+        function __main톂estmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, ), 
           );
@@ -75,7 +75,7 @@
             echo \'Hello\'; 
           }
         }
-        public function __main톂estmeta() { 
+        function __main톂estmeta() { 
           return array( 
             \'sayHello\' => array( \'security\' => array(
               \'roles\' => array(0 => \'admin\', 1 => \'user\', ), 
@@ -102,7 +102,7 @@
             echo \'Hello\'; 
           }
         }
-        public function __main톂estmeta() { 
+        function __main톂estmeta() { 
           return array( 
             \'sayHello\' => array( \'test\' => NULL, \'ignore\' => NULL, ), 
           );
