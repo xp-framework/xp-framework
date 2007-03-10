@@ -21,7 +21,7 @@
      * Constructor
      *
      * @access  public
-     * @param   &io.collections.iterate.IOCollectionIterator aggregate
+     * @param   io.collections.iterate.IOCollectionIterator aggregate
      * @param   string classpath
      */
     function __construct($aggregate, $classpath) {
@@ -33,11 +33,11 @@
      * Helper method. Infers class name from an IOElement
      *
      * @access  protected
-     * @param   &io.IOElement element
+     * @param   io.IOElement element
      * @return  string
      * @throws  lang.IllegalArgumentException in case class name cannot be inferred
      */
-    function classNameForElement(&$element) {
+    function classNameForElement($element) {
       $uri= realpath($element->getURI());
       $path= dirname($uri);
 
@@ -69,7 +69,7 @@
      * Returns the next element in the iteration.
      *
      * @access  public
-     * @return  &mixed
+     * @return  mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
     function next() {
