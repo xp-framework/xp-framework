@@ -71,6 +71,7 @@
         switch ($this->tokens[$this->pos][0]){
           case TOKEN_T_WHITESPACE:
           case TOKEN_T_COMMENT:
+          case TOKEN_T_DOC_COMMENT:
             $this->pos++;
             continue;
           default: 
