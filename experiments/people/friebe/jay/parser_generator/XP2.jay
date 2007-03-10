@@ -1,7 +1,6 @@
 %{
   uses(
     'net.xp_framework.tools.vm.VNode',
-    'net.xp_framework.tools.vm.PNode',
     'net.xp_framework.tools.vm.nodes.AnnotationNode',
     'net.xp_framework.tools.vm.nodes.ArrayDeclarationNode',
     'net.xp_framework.tools.vm.nodes.ArrayOffsetNode',
@@ -67,6 +66,7 @@
     'net.xp_framework.tools.vm.nodes.TernaryNode',
     'net.xp_framework.tools.vm.nodes.ThrowNode',
     'net.xp_framework.tools.vm.nodes.TryNode',
+    'net.xp_framework.tools.vm.nodes.UnaryNode',
     'net.xp_framework.tools.vm.nodes.VariableNode',
     'net.xp_framework.tools.vm.nodes.MemberNode',
     'net.xp_framework.tools.vm.nodes.WhileNode',
@@ -892,7 +892,7 @@ expr_without_variable:
           $$= new NotNode($2); $$->position= $yyLex->position;
         }
 	|	'~' expr {
-          $$= PNode::create('Unary', array($2, '~'));
+          $$= new UnaryNode($2, '~');
         }
 	|	expr T_IS_IDENTICAL expr {
           $$= new BinaryNode($1, $3, '==='); $$->position= $yyLex->position;
