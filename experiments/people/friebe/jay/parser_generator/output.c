@@ -105,7 +105,7 @@ output_rule_data()
     register int j;
 
 
-    printf("    var $yyLhs= array(%d,", symbol_value[start_symbol]);
+    printf("    protected static $yyLhs= array(%d,", symbol_value[start_symbol]);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -122,7 +122,7 @@ output_rule_data()
         printf("%5d, ", symbol_value[rlhs[i]]);
     }
     outline += 2;
-    printf("\n    );\n    var $yyLen= array(%d,", 2);
+    printf("\n    );\n    protected static $yyLen= array(%d,", 2);
 
     j = 10;
     for (i = 3; i < nrules; i++)
@@ -147,7 +147,7 @@ output_yydefred()
 {
     register int i, j;
 
-    printf("    var $yyDefRed= array(%d,", (defred[0] ? defred[0] - 2 : 0));
+    printf("    protected static $yyDefRed= array(%d,", (defred[0] ? defred[0] - 2 : 0));
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -288,7 +288,7 @@ goto_actions()
     state_count = NEW2(nstates, short);
 
     k = default_goto(start_symbol + 1);
-    printf("    var $yyDgoto= array(%d,", k);
+    printf("    protected static $yyDgoto= array(%d,", k);
     save_column(start_symbol + 1, k);
 
     j = 10;
@@ -612,7 +612,7 @@ output_base()
 {
     register int i, j;
 
-    printf("    var $yySindex = array(%13d,", base[0]);
+    printf("    protected static $yySindex = array(%13d,", base[0]);
 
     j = 10;
     for (i = 1; i < nstates; i++)
@@ -630,7 +630,7 @@ output_base()
     }
 
     outline += 2;
-    printf("\n    );\n    var $yyRindex= array(%13d,", base[nstates]);
+    printf("\n    );\n    protected static $yyRindex= array(%13d,", base[nstates]);
 
     j = 10;
     for (i = nstates + 1; i < 2*nstates; i++)
@@ -648,7 +648,7 @@ output_base()
     }
 
     outline += 2;
-    printf("\n    );\n    var $yyGindex= array(%d,", base[2*nstates]);
+    printf("\n    );\n    protected static $yyGindex= array(%d,", base[2*nstates]);
 
     j = 10;
     for (i = 2*nstates + 1; i < nvectors - 1; i++)
@@ -677,7 +677,7 @@ output_table()
     register int i;
     register int j;
 
-    printf("    var $yyTable = array(%d,", table[0]);
+    printf("    protected static $yyTable = array(%d,", table[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -706,7 +706,7 @@ output_check()
     register int i;
     register int j;
 
-    printf("    var $yyCheck = array(%d,", check[0]);
+    printf("    protected static $yyCheck = array(%d,", check[0]);
 
     j = 10;
     for (i = 1; i <= high; i++)
@@ -867,11 +867,11 @@ output_debug()
     char * prefix = tflag ? "" : "//t";
 
     ++outline;
-    printf("    var $yyFinal= %d;\n",  final_state);
+    printf("    protected static $yyFinal= %d;\n",  final_state);
 
 #ifdef DEBUG
       ++outline;
-      printf( "%svar $yyRule = array(\n", prefix);
+      printf( "%sprotected static $yyRule = array(\n", prefix);
       for (i = 2; i < nrules; ++i)
       {
 	  
@@ -952,7 +952,7 @@ output_debug()
 
 	/* need yyName for yyExpecting() */
 
-      printf("    var $yyName= array(");
+      printf("    protected static $yyName= array(");
       symnam = (char **) MALLOC((max+1)*sizeof(char *));
       if (symnam == 0) no_space();
   
