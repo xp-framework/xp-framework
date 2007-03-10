@@ -190,7 +190,12 @@
       // $r[]= ... ($node->expression= VariableNode($r))
       if ($node instanceof ArrayAccessNode) {
         return $this->scopeFor($node->expression);
-      } 
+      }
+      
+      // self::$instance
+      if ($node instanceof StaticMemberNode) {
+        return $node->class.'::$'.$node->member->name;
+      }
 
       $this->addError(new CompileError(9000, 'Internal compiler error: Cannot associate scope w/ '.xp::stringOf($node)));
       return NULL;
@@ -248,7 +253,9 @@
         );
         return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if ($node instanceof ArrayDeclarationNode) {
-        return 'mixed[]';
+        return array(NULL);                           // array of untyped
+      } else if ($node instanceof ArrayAccessNode) {
+        return $this->typeOf($node->expression);
       } else if ($node instanceof ExpressionCastNode) {
         return $this->typeName($node->type);
       } else if (is_int($node) || $node instanceof LongNumberNode) {
@@ -337,9 +344,10 @@
       // Console::writeLine($node->toString().'.TYPE('.$this->typeOf($node).') =? ', $type);
       
       // NULL indicates unknown, so no checks performed!
-      if (NULL === $type || NULL === ($ntype= $this->typeOf($node))) return $type;  
-
+      if (NULL === $type || NULL === ($ntype= $this->typeName($this->typeOf($node)))) return $type;  
+      
       // Easiest case: Types match exactly
+      $type= $this->typeName($type);
       if ($ntype == $type) return $type;
       
       // Array types
@@ -1052,7 +1060,17 @@
     }
 
     /**
-     * Emits Binarys
+     * Emits Unaries
+     *
+     * @param   net.xp_framework.tools.vm.VNode node
+     */
+    public function emitUnary($node) {
+      $this->bytes.= $this->mappedOperator($node->op);
+      $this->emit($node->expression);
+    }
+
+    /**
+     * Emits Binaries
      *
      * Caution: left can be empty!
      * <pre>
