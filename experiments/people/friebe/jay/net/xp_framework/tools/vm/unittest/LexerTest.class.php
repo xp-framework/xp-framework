@@ -174,7 +174,7 @@
      * keywords.
      *
       */
-    #[@test, @ignore('Segfault')]
+    #[@test]
     public function phpMagicConstants() {
       $deprecated= array(
         '__FILE__',
