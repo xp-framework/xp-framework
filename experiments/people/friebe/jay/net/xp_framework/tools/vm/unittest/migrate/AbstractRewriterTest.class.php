@@ -87,5 +87,35 @@
       $relevant= substr($out, $p= strpos($out, '/* m< */')+ 9, strpos($out, '/* >m */')- $p- 1);
       $this->assertEquals($expect, $relevant);
     }
+
+    /**
+     * Assert a class is rewritten
+     *
+     * @param   string expect expected sourcecode after rewriting occurs
+     * @param   string type class type, one of "interface" or "class"
+     * @param   string name fully qualified class name
+     * @param   string extends default NULL fully qualified class name
+     * @param   string[] implements default array() fully qualified class names
+     */
+    protected function assertClassRewritten($expect, $type, $name, $extends= NULL, $implements= array()) {
+      $this->rewriter->names->current->qualifiedName= $name;
+      
+      if ($extends) {
+        $this->rewriter->names->addMapping(xp::reflect($extends), $extends);
+      }
+      if ($implements) foreach ($implements as $interface) {
+        $this->rewriter->names->addMapping(xp::reflect($interface), $interface);
+      }
+      
+      $out= trim($this->rewriter->rewrite(token_get_all(sprintf(
+        '<?php %s %s%s%s { } ?>',
+        $type,
+        xp::reflect($name),
+        $extends ? ' extends '.xp::reflect($extends) : '',
+        $implements ? ' implements '.implode(', ', array_map(array('xp', 'reflect'), $implements)) : ''
+      ))));
+
+      $this->assertEquals($expect, preg_replace('#[\r\n\s]+#', ' ', $out));
+    }
   }
 ?>
