@@ -10,11 +10,11 @@
    * @purpose  Utility
    */
   class NameMapping extends Object {
-    var
+    public
       $mapping= array(
-        'xp' => 'xp',
-        'parent' => 'parent',
-        'self' => 'self',
+        'xp'      => 'xp',
+        'parent'  => 'parent',
+        'self'    => 'self',
       ),
       $current= NULL,
       $namespaceSeparator= '.';
