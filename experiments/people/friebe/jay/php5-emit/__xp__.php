@@ -272,7 +272,7 @@
   // {{{ Builtin classes
   uses(
     'lang.Error',
-    'lang.Exception',
+    'lang.XPException',
     'lang.XPClass',
     'lang.NullPointerException',
     'lang.IllegalAccessException',
