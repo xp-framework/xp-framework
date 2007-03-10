@@ -11,7 +11,7 @@
     'io.Folder', 
     'io.FileUtil', 
     'net.xp_framework.tools.vm.util.AllClassesIterator',
-    'net.xp_framework.tools.vm.util.NameMapping',
+    'net.xp_framework.tools.vm.util.MigrationNameMapping',
     'net.xp_framework.tools.vm.util.SourceRewriter',
     'io.collections.CollectionComposite', 
     'io.collections.FileCollection', 
@@ -32,23 +32,6 @@ php migrate.php <<fully_qualified_class_name>>
 __;
 
   define('NS_SEPARATOR',         '.');
-  
-  // {{{ MigrationNameMapping
-  //     Same as NameMapping, but
-  class MigrationNameMapping extends NameMapping {
-
-    function getMapping($key) {
-      try {
-        $m= parent::getMapping($key);
-      } catch (IllegalArgumentException $e) {
-        // DEBUG $e->printStackTrace();
-        Console::writeLine('*** ', $e->getMessage());
-        return $key;
-      }
-      
-      return $m;
-    }
-  }
   
   // {{{ MigrationDoclet
   //     Migrates classes
