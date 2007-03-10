@@ -1882,5 +1882,15 @@
       }
       $this->bytes.= ')';
     }
+
+    /**
+     * Emits clone
+     *
+     * @param   net.xp_framework.tools.vm.VNode node
+     */
+    public function emitClone($node) { 
+      $this->bytes.= 'clone ';
+      $this->emit($node->expression);
+    }
   }
 ?>
