@@ -6,7 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'net.xp_framework.tools.vm.util.NameMapping'
+    'net.xp_framework.tools.vm.util.MigrationNameMapping'
   );
 
   /**
@@ -15,7 +15,7 @@
    * @purpose  Unit Test
    */
   class ClassNamesTest extends TestCase {
-    var
+    protected
       $names= NULL;
       
     /**
@@ -23,7 +23,7 @@
      *
      */
     public function setUp() {
-      $this->names= new NameMapping();
+      $this->names= new MigrationNameMapping();
       $this->names->addMapping('Date', 'util.Date');
       $this->names->setNamespaceSeparator('.');
     }
@@ -43,11 +43,11 @@
     }
 
     /**
-     * Tests net.* does not get prefixed
+     * Tests fully qualified names don't get qualified twice
      *
      */
     #[@test]
-    public function noPrefixForXpFrameworkClasses() {
+    public function fullyQualifiedNames() {
       $this->assertEquals(
         'net.xp_framework.unittest.DemoTest', 
         $this->names->packagedNameOf('net.xp_framework.unittest.DemoTest')
@@ -55,15 +55,17 @@
     }
 
     /**
-     * Tests com.* does not get prefixed
+     * Tests PHP5's builtin classes get prefixed with PHP
      *
      */
     #[@test]
-    public function noPrefixForGoogleContributionClasses() {
-      $this->assertEquals(
-        'com.google.soap.search.GoogleSearchClient', 
-        $this->names->packagedNameOf('com.google.soap.search.GoogleSearchClient')
-      );
+    public function php5BuiltinClasses() {
+      foreach (array('stdClass', 'Directory', 'Exception', 'ReflectionClass') as $builtin) {
+        $this->assertEquals(
+          'php.'.$builtin, 
+          $this->names->packagedNameOf($this->names->qualifiedNameOf($builtin))
+        );
+      }
     }
 
     /**
