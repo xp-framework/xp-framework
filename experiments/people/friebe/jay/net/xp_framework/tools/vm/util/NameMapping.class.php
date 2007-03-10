@@ -70,8 +70,18 @@
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
     public function qualifiedNameOf($short) {
-      $mapped= $this->getMapping($short);      
-      return ($this->current && $this->current->qualifiedName() == $mapped ? 'self' : $mapped);
+      $mapped= $this->getMapping($short);
+
+      if ($this->current) {
+        $current= $this->current->qualifiedName();
+        if ($current == $mapped) {
+          return 'self';
+        } else if (substr($current, 0, strrpos($current, '.')) == substr($mapped, 0, strrpos($mapped, '.'))) {
+          return substr($mapped, strrpos($mapped, '.')+ 1);
+        }
+      }
+      
+      return $mapped;
     }
 
     /**
