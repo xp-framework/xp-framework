@@ -101,12 +101,13 @@
             sort($used);
             $uses= '';
             foreach ($used as $classname) {
-              $uses.= 'import '.$classname.";\n";
+              $uses.= '  import '.$classname.";\n";
             }
-            $out= rtrim($out)."\n\n".$uses."\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
+            $out= rtrim($out)."\npackage ".$this->names->packagedNameOf($package)." {\n".$uses."\n  ";
             break;
 
           case ST_INITIAL.T_CLASS:
+          case ST_INITIAL.T_INTERFACE:
             if (!$package) {                              // Class apidoc was missing!
               $qualified= $this->names->current->qualifiedName();
               $package= substr($qualified, 0, strrpos($qualified, '.'));
@@ -114,9 +115,9 @@
               sort($used);
               $uses= '';
               foreach ($used as $classname) {
-                $uses.= 'import '.$classname.";\n";
+                $uses.= '  import '.$classname.";\n";
               }
-              $out= rtrim($out)."\n\n".$uses."\n\npackage ".$this->names->packagedNameOf($package)." {\n\n  ";
+              $out= rtrim($out)."\npackage ".$this->names->packagedNameOf($package)." {\n".$uses."\n  ";
             }
             array_unshift($states, ST_CLASS);
             break;
