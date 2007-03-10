@@ -51,7 +51,7 @@ convert-skeleton:  php5-emit/skeleton
 	@-$(PHP) migrate.php --scan=$(SKELETON_PATH) --output=php5-emit/skeleton
 
 convert-ports: php5-emit/ports/classes 
-	@-$(PHP) migrate.php --scan=$(PORTS_PATH) --output=php5-emit/skeleton
+	@-$(PHP) migrate.php --scan=$(PORTS_PATH) --output=php5-emit/ports/classes
 
 convert: convert-skeleton convert-ports
 	rm php5-emit/skeleton/lang/Object.xp    # Builtin
