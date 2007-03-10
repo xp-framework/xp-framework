@@ -6,7 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'net.xp_framework.tools.vm.util.NameMapping'
+    'net.xp_framework.tools.vm.util.MigrationNameMapping'
   );
 
   /**
@@ -15,7 +15,7 @@
    * @purpose  Unit Test
    */
   class TypeNamesTest extends TestCase {
-    var
+    protected
       $names= NULL;
 
     /**
@@ -23,7 +23,7 @@
      *
      */
     public function setUp() {
-      $this->names= new NameMapping();
+      $this->names= new MigrationNameMapping();
       $this->names->addMapping('Date', 'util.Date');
       $this->names->setNamespaceSeparator('.');
     }
