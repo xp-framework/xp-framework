@@ -695,15 +695,15 @@
           $in= $node.DIRECTORY_SEPARATOR.$filename.'.xp';
           if (!file_exists($in)) continue;
           
-          $t= &new Timer();
+          $t= new Timer();
           $this->cat && $this->cat->info('Compiling', $q);
           
           // Found the file, tokenize, parse and emit it.
           $t->start();
-          $lexer= &new Lexer(file_get_contents($in), $in);
+          $lexer= new Lexer(file_get_contents($in), $in);
           
           // XXX TODO XXX Error handling
-          $parser= &new Parser($lexer);
+          $parser= new Parser($lexer);
           $nodes= $parser->parse($lexer);
 
           $t->stop();          
@@ -711,7 +711,7 @@
           
           // XXX TODO XXX Error handling
           $t->start();
-          $emitter= &new Php5Emitter();
+          $emitter= new Php5Emitter();
           $emitter->setTrace($this->cat);
           $emitter->setFilename($in);
           $emitter->context['classes']= $this->context['classes'];
@@ -1137,7 +1137,7 @@
       // Check for operator overloading
       if (isset($this->context['operators'][$type][$node->op])) {
         $this->bytes.= '= ';
-        $m= &new MethodCallNode(
+        $m= new MethodCallNode(
           $type, 
           new MemberNode('__operator'.$this->overloadable[$node->op]),
           array($node->variable, $node->expression)

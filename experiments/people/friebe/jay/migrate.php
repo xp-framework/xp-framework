@@ -57,7 +57,7 @@ __;
       $mapping = NULL,
       $current = NULL;
 
-    function buildMapping(&$doc) {
+    function buildMapping($doc) {
       $key= strtolower($doc->name());
       if (isset($this->mapping[$key])) return;
       
@@ -77,7 +77,7 @@ __;
       }
     }
     
-    function start(&$root) {
+    function start($root) {
       $debug= $root->option('debug');
       $this->names= new MigrationNameMapping();
       $this->names->setNamespaceSeparator(NS_SEPARATOR);
