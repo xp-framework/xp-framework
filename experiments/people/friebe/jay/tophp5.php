@@ -1,5 +1,6 @@
 <?php
   require('lang.base.php');
+  xp::sapi('cli');
   uses(
     'net.xp_framework.tools.vm.Parser',
     'net.xp_framework.tools.vm.Lexer',
@@ -15,7 +16,7 @@
   define('CLASSPATH', strtr('php5-emit/skeleton/:php5-emit/ports/classes/', '/:', DIRECTORY_SEPARATOR.PATH_SEPARATOR));
   
   // {{{ compile
-  $p= &new ParamString();
+  $p= new ParamString();
   if (!$p->exists(1) || !is_file($in= $p->value(1))) {
     Console::writeLine('- Could not find "'.$in.'"');
     exit(1);
@@ -23,26 +24,20 @@
   
   $cat= NULL;
   if ($p->exists('debug')) {
-    $l= &Logger::getInstance();
-    $cat= &$l->getCategory();
+    $cat= Logger::getInstance()->getCategory();
     $cat->addAppender(new ConsoleAppender(), $p->value('debug', 'd'));
   }
   
-  $lexer= &new Lexer(file_get_contents($in), $in);
-  $out= &new File($p->value('out', 'o', str_replace('.xp', '.php5', $in)));
+  $lexer= new Lexer(file_get_contents($in), $in);
+  $out= new File($p->value('out', 'o', str_replace('.xp', '.php5', $in)));
   
-  $parser= &new Parser();
-  try(); {
-    $nodes= $parser->parse($lexer);
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit(-1);
-  }
+  $parser= new Parser();
+  $nodes= $parser->parse($lexer);
   
   // Dump AST if specified
   $p->exists('ast') && Console::writeLine(VNode::stringOf($nodes));
   
-  $emitter= &new Php5Emitter();
+  $emitter= new Php5Emitter();
   $emitter->setTrace($cat);
   $emitter->setFilename($in);
   $emitter->emitAll($nodes);
@@ -55,12 +50,7 @@
     exit(1);
   }
   
-  try(); {
-    FileUtil::setContents($out, $emitter->getResult());
-  } if (catch('IOException', $e)) {
-    $e->printStackTrace();
-    exit(-1);
-  }
+  FileUtil::setContents($out, $emitter->getResult());
   
   $p->exists('quiet') || Console::writeLine('---> ', $out->getURI());
   exit(0);
