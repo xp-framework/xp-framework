@@ -45,7 +45,7 @@
       $out= '';
       $states= array(ST_INITIAL);
       $skip= FALSE;
-      $brackets= 0;
+      $brackets= array();
 
       // Compile list of classes to be added to uses()
       $used= array();
@@ -60,6 +60,7 @@
         $used[]= strtr($this->names->packagedNameOf($interface->qualifiedName()), NS_SEPARATOR, '.');
       }
 
+      $package= NULL;
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         $t= $tokens[$i];
         if (is_array($t) && isset($map[$t[1]])) $t[0]= $map[$t[1]];
