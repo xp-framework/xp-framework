@@ -34,7 +34,7 @@
          }
           return $s.$indent.'}';
         }
-      } else if (is_a($a, 'VNode')) {
+      } else if ($a instanceof self) {
         $s= $a->getClassName().'@(position= '.implode(', ', $a->position)."){\n";
         foreach (array_keys(get_class_vars(get_class($a))) as $key) {
           if ('_' != $key{0} && 'position' != $key) $s.= sprintf(
