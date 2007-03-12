@@ -162,8 +162,7 @@ sub valueOf {
         }
         my $length= $offset+ 1;
         my $exception = Exception::->new($instance);
-        $exception->throw();
-        return $exception;
+        return wantarray ? ($exception, $length) : $exception;
     } elsif ($kind eq 'I') {
         # Interface. The important thing here is the oid we use to call a method on the looked-up object.
         # We create a fake-class with autoload here
