@@ -4,25 +4,10 @@
 #
 # $Id$
 
-package Datatypes;
+package EASC::Protocol::Datatypes;
+
 use warnings;
 use strict;
-use Data::Dumper;
-
-
-package StoreType;
-
-use constant FIELD_STORE_COMPRESS    => 0x001;
-use constant FIELD_STORE_YES         => 0x002;
-use constant FIELD_STORE_NO          => 0x004;
- 
-use constant FIELD_INDEX_NO          => 0x008;
-use constant FIELD_INDEX_NO_NORMS    => 0x010;
-use constant FIELD_INDEX_TOKENIZED   => 0x020;
-use constant FIELD_INDEX_UNTOKENIZED => 0x040;
-
-
-
 
 package Object;
 
