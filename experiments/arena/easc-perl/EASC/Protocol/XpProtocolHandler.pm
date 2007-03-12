@@ -11,7 +11,7 @@ use warnings;
 use Carp qw(confess);
 
 use EASC::Protocol::Serializer;
-use EASC::ByteCountedString;
+use EASC::Protocol::ByteCountedString;
 
 use IO::Socket;
 
@@ -88,8 +88,8 @@ sub _init {
     my $response;
     if (defined $proxy->{user}) {     # Authentification 
         my $login= [ 
-            EASC::ByteCountedString::->new($proxy->{user}), 
-            EASC::ByteCountedString::->new($proxy->{pass})   
+            EASC::Protocol::ByteCountedString::->new($proxy->{user}), 
+            EASC::Protocol::ByteCountedString::->new($proxy->{pass})   
         ];
         $response = $self->sendPacket(REMOTE_MSG_INIT, "\1", $login);
     } else {                          # no Authentification
@@ -119,7 +119,7 @@ sub toString {
 # 
 sub lookup {
     my ($self, $param) = @_;
-    my $params = [ EASC::ByteCountedString::->new($param) ];
+    my $params = [ EASC::Protocol::ByteCountedString::->new($param) ];
     return $self->sendPacket(REMOTE_MSG_LOOKUP, '',  $params);
 }
 
@@ -174,13 +174,13 @@ sub invoke {
     my $a = 1 if @argz;  # kind of dirty, dunno how to make it better right now
     my $args = \@argz if $a ;
     my $arguments = [];
-    push @$arguments, EASC::ByteCountedString::->new($method);
+    push @$arguments, EASC::Protocol::ByteCountedString::->new($method);
     if ($a && ref($args) eq 'ARRAY') {
-        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf($args));
+        push @$arguments, EASC::Protocol::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf($args));
     } elsif ($a) {
-        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([$args]));
+        push @$arguments, EASC::Protocol::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([$args]));
     } else {
-        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([]));
+        push @$arguments, EASC::Protocol::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([]));
     }
 
     return $self->sendPacket(REMOTE_MSG_CALL, pack('NN', 0, $oid), $arguments);
@@ -231,15 +231,15 @@ sub sendPacket {
     }
 
     if ($r_type == REMOTE_MSG_VALUE) {
-        my $ret = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}),$self);
+        my $ret = EASC::Protocol::Serializer::valueOf(EASC::Protocol::ByteCountedString::readFrom($self->{_sock}),$self);
         #print STDERR "NOTICE|Easc done\n";
         return $ret;
     } elsif ($r_type == REMOTE_MSG_EXCEPTION) {
-        my $reference = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}));
+        my $reference = EASC::Protocol::Serializer::valueOf(EASC::Protocol::ByteCountedString::readFrom($self->{_sock}));
         close $self->{_sock};
         $reference->throw();
     } elsif ($r_type == REMOTE_MSG_ERROR) {
-        my $message = EASC::ByteCountedString::readFrom($self->_sock);
+        my $message = EASC::Protocol::ByteCountedString::readFrom($self->_sock);
         close $self->{_sock};
         confess $message;
     } else {
