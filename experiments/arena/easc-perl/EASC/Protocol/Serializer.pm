@@ -96,7 +96,7 @@ sub representationOf {
 
 sub valueOf {
     my ($serialized, $handler) = @_;
-  
+
     # First char says wat kind of data we have (e.g. i:123;)
     my $kind= substr($serialized, 0, 1);
 
@@ -113,7 +113,7 @@ sub valueOf {
         return wantarray ?  (Long::->new( $value ), length ($value) +3 ) : Long::->new( $value );
     } elsif ($kind eq 'd') {
         my $value =  Double::->new( substr ( $serialized , 2, index ($serialized, ';',2) -2 ));
-        return wantarray ?  ($value , length $value+3) : $value;
+        return wantarray ?  ($value , length ($value) +3) : $value;
     } elsif ($kind eq 'f') {
         my $value =  Float::->new( substr ( $serialized , 2, index ($serialized, ';',2) -2 ));
         return wantarray ?  ($value , length ($value)+3) : $value;
@@ -169,8 +169,8 @@ sub valueOf {
         my $oid = substr ($serialized, 2, index ($serialized, ':',2) -2 );
         my $oidlength = length $oid;
         my $classname = EASC::Protocol::Serializer::valueOf(substr($serialized, $oidlength + 4));
-        my $object = ObjInterface::->new($classname,$oid, $handler );
-        return $object;
+        my $object = ObjInterface::->new($classname, $oid, $handler );
+        return wantarray ? ($object, $classname+ $oidlength+ 1) : $object; 
     } elsif ($kind eq 't') {
         # Stack-trace-element ... needed for Exceptions
         my $size= substr($serialized, 2, index($serialized, ':', 2)- 2);
@@ -182,8 +182,7 @@ sub valueOf {
             ($details->{$detail}, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
             $offset+= $len;
         }
-        my $length= $offset+ 1;
-        return wantarray ? ($details, $length) : $details; 
+        return wantarray ? ($details, $offset+ 1) : $details; 
     } elsif ($kind eq 'O') {
         my $len= substr($serialized, 2, index($serialized, ':', 2)- 2);
         my $instance= {};
@@ -199,7 +198,7 @@ sub valueOf {
         }
         my $length= $offset+ 1;
         my $remoteObject = Object::->new($instance);
-        return $remoteObject;    
+        return wantarray ? ($remoteObject, $length) : $remoteObject; 
     } else {
         die 'Cannot deserialize "', $serialized, '"';
     }
