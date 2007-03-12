@@ -230,18 +230,18 @@ sub sendPacket {
         confess "Magic number mismatch!";
     }
 
-    if ($r_type == REMOTE_MSG_VALUE ) {
+    if ($r_type == REMOTE_MSG_VALUE) {
         my $ret = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}),$self);
         #print STDERR "NOTICE|Easc done\n";
         return $ret;
     } elsif ($r_type == REMOTE_MSG_EXCEPTION) {
         my $reference = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}));
         close $self->{_sock};
-        confess "RemoteException: $reference";
+        $reference->throw();
     } elsif ($r_type == REMOTE_MSG_ERROR) {
         my $message = EASC::ByteCountedString::readFrom($self->_sock);
         close $self->{_sock};
-        return $message;
+        confess $message;
     } else {
         $self->readBytes($r_length);
         close $self->{_sock};
