@@ -126,7 +126,7 @@ use overload '""' => \&value;
 sub new {
   my ($classname, $value) = @_;
   # FIXME quick and dirty
-  $value = -1 unless $value;
+  $value = -1 unless defined $value;
   my $self = {value => int($value)};
   bless($self, $classname);
   return $self;
