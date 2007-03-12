@@ -10,7 +10,7 @@ use strict;
 use warnings;
 use Carp qw(confess);
 
-use EASC::Serializer;
+use EASC::Protocol::Serializer;
 use EASC::ByteCountedString;
 
 use IO::Socket;
@@ -74,23 +74,26 @@ sub _init {
     $self->{port} = $proxy->{port};
     
     # Connect to Socket
-    my $sock = IO::Socket::INET->new(PeerAddr => $self->{host},
-                                     PeerPort => $self->{port},
-				     Proto    => "tcp",
-				     Type     => SOCK_STREAM );
+    my $sock = IO::Socket::INET->new(
+        PeerAddr => $self->{host},
+        PeerPort => $self->{port},
+		Proto    => "tcp",
+		Type     => SOCK_STREAM 
+    );
 
-    #SMELL: die instead of execption-handling
-    $sock or die "Couldnt connect to $self->{host}:$self->{port}. Error: $@\n";
+    # SMELL: die instead of execption-handling
+    $sock or die "Couldn't connect to $self->{host}:$self->{port}. Error: $@\n";
     $self->{_sock} = $sock;
 
     my $response;
-    if (defined $proxy->{user}) { # Authentification 
-      my $login = [ EASC::ByteCountedString::->new($proxy->{user}), 
-                    EASC::ByteCountedString::->new($proxy->{pass})   ];
-      $response = $self->sendPacket(REMOTE_MSG_INIT, "\1", $login);
-    }
-    else { # no Authentification
-      $response = $self->sendPacket(REMOTE_MSG_INIT, "\0");   
+    if (defined $proxy->{user}) {     # Authentification 
+        my $login= [ 
+            EASC::ByteCountedString::->new($proxy->{user}), 
+            EASC::ByteCountedString::->new($proxy->{pass})   
+        ];
+        $response = $self->sendPacket(REMOTE_MSG_INIT, "\1", $login);
+    } else {                          # no Authentification
+        $response = $self->sendPacket(REMOTE_MSG_INIT, "\0");   
     }
     return $response ? $self : undef;
 }
@@ -173,21 +176,14 @@ sub invoke {
     my $arguments = [];
     push @$arguments, EASC::ByteCountedString::->new($method);
     if ($a && ref($args) eq 'ARRAY') {
-      push @$arguments, EASC::ByteCountedString::->new(EASC::Serializer::representationOf($args));
+        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf($args));
+    } elsif ($a) {
+        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([$args]));
+    } else {
+        push @$arguments, EASC::ByteCountedString::->new(EASC::Protocol::Serializer::representationOf([]));
     }
-    elsif ($a) {
-      push @$arguments, EASC::ByteCountedString::->new(EASC::Serializer::representationOf([$args]));
-    }
-    
-    else {
-      push @$arguments, EASC::ByteCountedString::->new(EASC::Serializer::representationOf([]));
-    }
-    return $self->sendPacket(
-     REMOTE_MSG_CALL,
-     pack('NN', 0, $oid), 
-     $arguments
-    );
 
+    return $self->sendPacket(REMOTE_MSG_CALL, pack('NN', 0, $oid), $arguments);
 }
 
 
@@ -206,82 +202,72 @@ sub sendPacket {
     # Calculate packet length
     my $length = length $data;
     foreach (@$bytes) {
-      $length += $_->slength();
+        $length += $_->slength();
     }
     
     # Write packet
-    my $packet = pack (
-     'Nc4Na*',
-     DEFAULT_PROTOCOL_MAGIC_NUMBER,
-     $self->{versionMajor},
-     $self->{versionMinor},
-     $type,
-     0,
-     $length, 
-     $data
+    my $packet= pack(
+        'Nc4Na*',
+        DEFAULT_PROTOCOL_MAGIC_NUMBER,
+        $self->{versionMajor},
+        $self->{versionMinor},
+        $type,
+        0,
+        $length, 
+        $data
     );
     
     # Send it all to socket
     $self->{_sock}->send($packet);
     foreach (@$bytes) {
-      $_->writeTo($self->{_sock});
+        $_->writeTo($self->{_sock});
     }
-   
-    
   
     my ($r_magic, $r_major, $r_minor, $r_type, $r_tran, $r_length) = unpack('Nc4N', $self->readBytes(12));
     #print STDERR "NOTICE|Read answer-header: I'll check magic number and msg_type and read $r_length more bytes\n";
     if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $r_magic) {
-      close $self->{_sock};
-      confess "Magic number mismatch!";
+        close $self->{_sock};
+        confess "Magic number mismatch!";
     }
 
     if ($r_type == REMOTE_MSG_VALUE ) {
-      
-      my $ret = EASC::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}),$self);
-      #print STDERR "NOTICE|Easc done\n";
-      return $ret;
-    }
-    elsif ($r_type == REMOTE_MSG_EXCEPTION) {
-      my $reference = EASC::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}));
-      close $self->{_sock};
-      confess "RemoteException: $reference";
-    }
-    elsif ($r_type == REMOTE_MSG_ERROR) {
-      my $message = EASC::ByteCountedString::readFrom($self->_sock);
-      close $self->{_sock};
-      return $message;
-    }
-    else {
-      $self->readBytes($r_length);
-      close $self->{_sock};
-      confess "Unknown message type";
+        my $ret = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}),$self);
+        #print STDERR "NOTICE|Easc done\n";
+        return $ret;
+    } elsif ($r_type == REMOTE_MSG_EXCEPTION) {
+        my $reference = EASC::Protocol::Serializer::valueOf(EASC::ByteCountedString::readFrom($self->{_sock}));
+        close $self->{_sock};
+        confess "RemoteException: $reference";
+    } elsif ($r_type == REMOTE_MSG_ERROR) {
+        my $message = EASC::ByteCountedString::readFrom($self->_sock);
+        close $self->{_sock};
+        return $message;
+    } else {
+        $self->readBytes($r_length);
+        close $self->{_sock};
+        confess "Unknown message type";
     }
 }
 
 sub readBytes {
-   my ($self, $num) = @_;
+    my ($self, $num) = @_;
+    my $return = '';
 
-   my $return = '';
-
-   while (length $return < $num) {
-     my $buf;
-     $self->{_sock}->recv($buf, $num - length $return);
-     return if (length $buf == 0);
-     $return .= $buf;
-   }
-   return $return;
+    while (length $return < $num) {
+        my $buf;
+        $self->{_sock}->recv($buf, $num - length $return);
+        return if (length $buf == 0);
+        $return .= $buf;
+    }
+    return $return;
 }
 
 sub shutdown {
-  my ($self) = @_;
-  $self->{_socket}->shutdown() if $self->{_socket};
-}
-sub DESTROY {
-
-# Destruktor
+    my ($self) = @_;
+    $self->{_socket}->shutdown() if $self->{_socket};
 }
 
+sub DESTROY { }
 
 1;
 
