@@ -85,4 +85,12 @@ sub testValueOfLongs {
     }
 }
 
+sub testValueOfEmptyData {
+    my $self= shift;
+    
+    eval { EASC::Protocol::Serializer::valueOf(''); };
+    $self->assertEquals(1, $@ =~ /^Cannot deserialize ""/);
+}
+
+
 1;
