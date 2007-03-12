@@ -192,6 +192,113 @@ void turpitude_jclass_method_create(turpitude_javaclass_object* cls, zval* turpc
 
 }
 
+void turpitude_jclass_method_getstatic(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 2) 
+        php_error(E_ERROR, "invalid number of arguments to method getStatic.");
+
+    // check parameter validity
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (membername) in method getStatic, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (signature) in method getStatic, should be IS_STRING.");
+
+    jfieldID fid = turpitude_jenv->GetStaticFieldID(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+    if (fid == NULL) 
+        php_error(E_ERROR, "unable to find static field %s with signature %s", Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+   
+    turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[1])); 
+
+    jvalue retval;
+    switch (type) {
+        case JAVA_OBJECT:
+            retval.l = turpitude_jenv->GetStaticObjectField(cls->java_class, fid);
+            break;
+        case JAVA_BOOLEAN:
+            retval.z = turpitude_jenv->GetStaticBooleanField(cls->java_class, fid);
+            break;
+        case JAVA_BYTE:
+            retval.b = turpitude_jenv->GetStaticByteField(cls->java_class, fid);
+            break;
+        case JAVA_CHAR:
+            retval.c = turpitude_jenv->GetStaticCharField(cls->java_class, fid);
+            break;
+        case JAVA_SHORT:
+            retval.s = turpitude_jenv->GetStaticShortField(cls->java_class, fid);
+            break;
+        case JAVA_INT:
+            retval.i = turpitude_jenv->GetStaticIntField(cls->java_class, fid);
+            break;
+        case JAVA_LONG:
+            retval.j = turpitude_jenv->GetStaticLongField(cls->java_class, fid);
+            break;
+        case JAVA_FLOAT:
+            retval.f = turpitude_jenv->GetStaticFloatField(cls->java_class, fid);
+            break;
+        case JAVA_DOUBLE:
+            retval.d = turpitude_jenv->GetStaticDoubleField(cls->java_class, fid);
+            break;
+    };
+
+    if (type == JAVA_UNKNOWN) {
+        ZVAL_NULL(return_value);
+    } else {
+        jvalue_to_zval(turpitude_jenv, retval, type, return_value);
+    }
+}
+
+void turpitude_jclass_method_setstatic(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+    // check param count
+    if (xargc < 3) 
+        php_error(E_ERROR, "invalid number of arguments to method getStatic.");
+
+    // check parameter validity
+    if (Z_TYPE_P(*xargv[0]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (membername) in method getStatic, should be IS_STRING.");
+
+    if (Z_TYPE_P(*xargv[1]) != IS_STRING)
+        php_error(E_ERROR, "invalid type for param 1 (signature) in method getStatic, should be IS_STRING.");
+
+    jfieldID fid = turpitude_jenv->GetStaticFieldID(cls->java_class, Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+    if (fid == NULL) 
+        php_error(E_ERROR, "unable to find static field %s with signature %s", Z_STRVAL_P(*xargv[0]), Z_STRVAL_P(*xargv[1]));
+   
+    turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[1])); 
+
+    switch (type) {
+        case JAVA_OBJECT:
+            turpitude_jenv->SetStaticObjectField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).l);
+            break;
+        case JAVA_BOOLEAN:
+            turpitude_jenv->SetStaticBooleanField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).z);
+            break;
+        case JAVA_BYTE:
+            turpitude_jenv->SetStaticByteField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_CHAR:
+            turpitude_jenv->SetStaticCharField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_SHORT:
+            turpitude_jenv->SetStaticShortField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_INT:
+            turpitude_jenv->SetStaticIntField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_LONG:
+            turpitude_jenv->SetStaticLongField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).j);
+            break;
+        case JAVA_FLOAT:
+            turpitude_jenv->SetStaticFloatField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).f);
+            break;
+        case JAVA_DOUBLE:
+            turpitude_jenv->SetStaticDoubleField(cls->java_class, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).d);
+            break;
+    };
+
+    ZVAL_NULL(return_value);
+}
+
 //####################### helpers ##################################3
 
 static
@@ -249,22 +356,26 @@ void turpitude_jclass_call(INTERNAL_FUNCTION_PARAMETERS) {
         turpitude_jclass_method_findMethod(cls, xargc, xargv, return_value);
         method_valid = true;
     }
-
     if (strcmp(Z_STRVAL_P(*argv[0]), "findStaticMethod") == 0) {
         turpitude_jclass_method_findStaticMethod(cls, xargc, xargv, return_value);
         method_valid = true;
     }
-
     if (strcmp(Z_STRVAL_P(*argv[0]), "findConstructor") == 0) {
         turpitude_jclass_method_findConstructor(cls, xargc, xargv, return_value);
         method_valid = true;
     }
-
     if (strcmp(Z_STRVAL_P(*argv[0]), "invokeStatic") == 0) {
         turpitude_jclass_method_invokestatic(cls, xargc, xargv, return_value);
         method_valid = true;
     }
-
+    if (strcmp(Z_STRVAL_P(*argv[0]), "getStatic") == 0) {
+        turpitude_jclass_method_getstatic(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "setStatic") == 0) {
+        turpitude_jclass_method_setstatic(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
     if (strcmp(Z_STRVAL_P(*argv[0]), "create") == 0) {
         turpitude_jclass_method_create(cls, myval, xargc, xargv, return_value);
         method_valid = true;

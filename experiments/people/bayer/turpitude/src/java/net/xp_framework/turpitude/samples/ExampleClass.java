@@ -8,6 +8,7 @@ public class ExampleClass {
     private String privateString = "not to be touched!";
     private int[] IntArray = {1, 11, 21, 1211, 111221, 312211};
     private static String[] StringArray = {"first", "second", "third", "fourth", "fifth"};
+    public static int staticInt = 5;
 
     /** 
      * useless static method

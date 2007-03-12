@@ -56,6 +56,9 @@ public class ObjectSample {
         src.append("$method = $class->findStaticMethod('staticMethod', '(I)Ljava/lang/String;');");
         src.append("$retval = $class->invokeStatic($method, 17);");
         src.append("var_dump($retval);");
+        src.append("$class->setStatic('staticInt', 'I', 13);");
+        src.append("$retval = $class->getStatic('staticInt', 'I');");
+        src.append("var_dump($retval);");
         src.append("$constructor = $class->findConstructor('(ILjava/lang/String;)V');");
         src.append("$instance = $class->create($constructor, 1337, 'eleet');");
         src.append("$str = $instance->javaGet('stringval', 'Ljava/lang/String;');");

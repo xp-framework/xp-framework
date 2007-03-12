@@ -214,7 +214,6 @@ void turpitude_jobject_method_javaset(turpitude_javaobject_object* jobj, int xar
    
     turpitude_java_type type = get_java_field_type(Z_STRVAL_P(*xargv[1])); 
 
-
     switch (type) {
         case JAVA_OBJECT:
             turpitude_jenv->SetObjectField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).l);
@@ -239,6 +238,7 @@ void turpitude_jobject_method_javaset(turpitude_javaobject_object* jobj, int xar
             break;
         case JAVA_FLOAT:
             turpitude_jenv->SetFloatField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).f);
+            break;
         case JAVA_DOUBLE:
             turpitude_jenv->SetDoubleField(jobj->java_object, fid, zval_to_jvalue(turpitude_jenv, *xargv[2]).d);
             break;
