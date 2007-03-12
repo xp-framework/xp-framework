@@ -12,79 +12,76 @@ use strict;
 package Object;
 
 sub new {
-  my $classname = shift; 
-  my $self = {};
-  my $value = shift; 
-  %$self = %$value;
-  bless($self, $classname);
+    my $classname = shift; 
+    my $self = {};
+    my $value = shift; 
+    %$self = %$value;
+    bless($self, $classname);
 
-  return $self;
+    return $self;
 }
 
 sub setIdentifier {
-  my ($self, $identifier) = @_;
-  $self->{'identifier'} = $identifier;
+    my ($self, $identifier) = @_;
+    $self->{'identifier'} = $identifier;
 }
 
 sub getIdentifier {
-  my ($self) = @_;
-  return $self->{'identifier'};
+    my ($self) = @_;
+    return $self->{'identifier'};
 }
 
 sub setType {
-  my ($self, $type) = @_; 
-  $self->{'type'} = $type;
+    my ($self, $type) = @_; 
+    $self->{'type'} = $type;
 }
 
 sub getType {
-  my ($self) = @_;
-  return $self->{'type'};
+    my ($self) = @_;
+    return $self->{'type'};
 }
 
 sub setField {
-  my ($self, $key, $value, $options) = @_;
-  
-  my $field = {
-      'value' => $value,
-      'options' => $options
-  };
-  
-  $self->{'fields'}->{$key}= $field;
-  
+    my ($self, $key, $value, $options) = @_;
+
+    my $field = {
+        'value' => $value,
+        'options' => $options
+    };
+
+    $self->{'fields'}->{$key}= $field;
 }
 
 sub getField {
-  my ($self, $key) = @_;
-  
-  return $self->{'fields'}->{$key};
+    my ($self, $key) = @_;
+
+    return $self->{'fields'}->{$key};
 }
 
 package Exception;
 
 sub new {
-  my ($classname, $value)  = @_;
-  my $self = {};
-  %$self = %$value;
-  bless($self, $classname);
+    my ($classname, $value)  = @_;
+    my $self = {};
+    %$self = %$value;
+    bless($self, $classname);
 
-  return $self;
+    return $self;
 }
 
 sub throw {
-  my ($self) = @_;
-  my $trace = "Trace:\n ";
-  
-  foreach my $key (sort { $self->{trace}->{$b} <=> $self->{trace}->{$a} } keys %{$self->{trace}} ) 
-  {
-    foreach my $bugfix ('class','method','file','line') {
-      $self->{trace}->{$key}->{$bugfix} ||= '??';
-    }
-    $trace .= $self->{trace}->{$key}->{class} . ': ' . $self->{trace}->{$key}->{method} . '() at '. $self->{trace}->{$key}->{file} . ':' . $self->{trace}->{$key}->{line} . "\n ";
-  }
-  $self->{classname} ||= '??';
-  $self->{message} ||= '??'; 
-  die $self->{classname} . "\n" . $self->{message} . "\n\n" . $trace . "\n";
+    my ($self) = @_;
+    my $trace = "Trace:\n ";
 
+    foreach my $key (sort { $self->{trace}->{$b} <=> $self->{trace}->{$a} } keys %{$self->{trace}} )  {
+        foreach my $bugfix ('class','method','file','line') {
+            $self->{trace}->{$key}->{$bugfix} ||= '??';
+        }
+        $trace .= $self->{trace}->{$key}->{class} . ': ' . $self->{trace}->{$key}->{method} . '() at '. $self->{trace}->{$key}->{file} . ':' . $self->{trace}->{$key}->{line} . "\n ";
+    }
+    $self->{classname} ||= '??';
+    $self->{message} ||= '??'; 
+    die $self->{classname}."\n".$self->{message}."\n\n".$trace."\n";
 }
 
 package Bool;
@@ -97,10 +94,10 @@ package Bool;
 # 
 use overload '""' => \&value;
 sub new {
-  my ($classname, $value) = @_;
-  my $self = {value => $value ? 1 : 0 };
-  bless($self, $classname);
-  return $self;
+    my ($classname, $value) = @_;
+    my $self = {value => $value ? 1 : 0 };
+    bless($self, $classname);
+    return $self;
 }
 sub value {  return shift->{value} ? 1 : 0; }
 
@@ -109,12 +106,10 @@ package Integer;
 
 use overload '""' => \&value;
 sub new {
-  my ($classname, $value) = @_;
-  # FIXME quick and dirty
-  $value = -1 unless defined $value;
-  my $self = {value => int($value)};
-  bless($self, $classname);
-  return $self;
+    my ($classname, $value) = @_;
+    my $self = {value => int($value)};
+    bless($self, $classname);
+    return $self;
 }
 sub value {  return shift->{value}; }
 
@@ -123,33 +118,32 @@ package Long;
 
 use overload '""' => \&value;
 sub new {
-  my ($classname, $value) = @_;
-  #$value = sprintf("%d", $value);
-  my $self = {value => $value};
-  bless($self, $classname);
-  return $self;
+    my ($classname, $value) = @_;
+    my $self = {value => $value};
+    bless($self, $classname);
+    return $self;
 }
 sub value {  
+    my $value = shift->{value}; 
+    my $number = $value;
 
-  my $value = shift->{value}; 
-  my $number = $value;
-  # Workaround, kinda dirty rounding... 
-  if ($value =~ m/(.*)\.(.*)e([+|-])(.*)/) {
-   my $count = $4 - length($2); 
-   my $zero = ('0' x $count);
-   my $part2 = $2 -1;
-   $number = "$1$part2$zero";
-  }
-  return $number;
+    # Workaround, kinda dirty rounding... 
+    if ($value =~ m/(.*)\.(.*)e([+|-])(.*)/) {
+        my $count = $4 - length($2); 
+        my $zero = ('0' x $count);
+        my $part2 = $2 -1;
+        $number = "$1$part2$zero";
+    }
+    return $number;
 }
 
 package Double;
 use overload '""' => \&value;
 sub new {
-  my ($classname,$value) = @_;
-  my $self = {value => $value};
-  bless($self, $classname);
-  return $self;
+    my ($classname,$value) = @_;
+    my $self = {value => $value};
+    bless($self, $classname);
+    return $self;
 }
 sub value {  return shift->{value}; }
 
@@ -157,10 +151,10 @@ sub value {  return shift->{value}; }
 package Float;
 use overload '""' => \&value;
 sub new {
-  my ($classname ,$value) = @_;
-  my $self = {value => $value};
-  bless($self, $classname);
-  return $self;
+    my ($classname ,$value) = @_;
+    my $self = {value => $value};
+    bless($self, $classname);
+    return $self;
 }
 sub value {  return shift->{value}; }
 
@@ -181,12 +175,12 @@ package ObjInterface;
 # @param handler (XpProtoHandler)
 
 sub new {
-  my ($classname,$objname,$oid, $handler) = @_;
-  
-  my $self = { objname => $objname, oid => $oid, handler => $handler };
+    my ($classname,$objname,$oid, $handler) = @_;
 
-  bless($self, $classname);
-  return $self;
+    my $self = { objname => $objname, oid => $oid, handler => $handler };
+
+    bless($self, $classname);
+    return $self;
 }
 
 # invoke
@@ -203,9 +197,8 @@ sub new {
 # $handler->invoke('123', 'myMethod', 'asdf');
 
 sub invoke {
-  my ($self,$method, @args) = @_;
-  return @args ? $self->{handler}->invoke($self->{oid}, $method, @args) : $self->{handler}->invoke($self->{oid}, $method);
-
+    my ($self,$method, @args) = @_;
+    return @args ? $self->{handler}->invoke($self->{oid}, $method, @args) : $self->{handler}->invoke($self->{oid}, $method);
 }
 
 # AUTOLOAD
@@ -221,11 +214,10 @@ sub invoke {
 # $handler->invoke('123', 'myMethod', 'asdf');
 
 sub AUTOLOAD {
-  my ($self, @args) = @_;
-  my $subname = our $AUTOLOAD; 
-  $subname =~ s/.*:://;
-  return @args ? $self->invoke($subname, @args) : $self->invoke($subname);
-  
+    my ($self, @args) = @_;
+    my $subname = our $AUTOLOAD; 
+    $subname =~ s/.*:://;
+    return @args ? $self->invoke($subname, @args) : $self->invoke($subname);
 }
 sub DESTROY {}
 1;
