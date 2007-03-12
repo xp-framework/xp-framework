@@ -85,6 +85,17 @@ sub testValueOfLongs {
     }
 }
 
+sub testValueOfObject {
+    my $self= shift;
+
+    $p= EASC::Protocol::Serializer::valueOf(
+        'O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}'
+    );
+    $self->assertEquals('net.xp_framework.unittest.remote.Person', $p->{classname});
+    $self->assertEquals(1549, $p->{id}->value());
+    $self->assertEquals('Timm Friebe', $p->{name});
+}
+
 sub testValueOfException {
     my $self= shift;
     
