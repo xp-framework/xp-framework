@@ -110,13 +110,15 @@ sub readFrom {
 
    while ($r_next) {
      # Read the header (3 bytes)
-     ($r_length, $r_next) = unpack('nc', EASC::ByteCountedString::readFully($sock, 3));
+     ($r_length, $r_next) = unpack('nc', EASC::Protocol::ByteCountedString::readFully($sock, 3));
      return unless $r_length;
-     # And read how much the header sais...
-     $s .= EASC::ByteCountedString::readFully($sock, $r_length);
+
+     # And read how much the header says...
+     $s.= EASC::Protocol::ByteCountedString::readFully($sock, $r_length);
    }
-   # print STDERR "Read from Socket: ".length($s). " .... ". $s."\n";
-   return from_utf8({ -string => $s, -charset => 'ISO-8859-1' });
+
+   utf8::decode($s);
+   return $s;
 }
 
 sub DESTROY {
