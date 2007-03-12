@@ -4,7 +4,6 @@
 #
 # $Id$
 
-
 package EASC::Protocol::Serializer;
 
 use strict;
@@ -179,10 +178,10 @@ sub valueOf {
         my $offset= length($size)+ 2+ 2;
         my $details= {};
         for (my $i= 0; $i < $size; $i++) {
-          my ($detail, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
-          $offset+= $len;
-          ($details->{$detail}, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
-          $offset+= $len;
+            my ($detail, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
+            $offset+= $len;
+            ($details->{$detail}, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
+            $offset+= $len;
         }
         my $length= $offset+ 1;
         return wantarray ? ($details, $length) : $details; 
@@ -194,10 +193,10 @@ sub valueOf {
         my $size= substr($serialized, $offset, index($serialized, ':', $offset)- $offset);
         $offset+= length($size)+ 2;
         for (my $i= 1; $i <= $size; $i++) {
-          my ($member, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
-          $offset+= $len;
-          ($instance->{$member}, $len)= EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
-          $offset+= $len;
+            my ($member, $len) = EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
+            $offset+= $len;
+            ($instance->{$member}, $len)= EASC::Protocol::Serializer::valueOf(substr($serialized, $offset));
+            $offset+= $len;
         }
         my $length= $offset+ 1;
         my $remoteObject = Object::->new($instance);
