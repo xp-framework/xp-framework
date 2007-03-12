@@ -20,14 +20,25 @@
   $p= &new ParamString();
   
   // Display help
-  if ($p->exists('help', 'h')) {
-    Console::writeLinef('...');
+  if ($p->exists('help', 'h') || !$p->exists(1)) {
+    Console::writeLine(<<<EOH
+usage: convert.php <source-path> [<trarget-path> [<base-path>]]
+
+  source-path     The path to the XP skeleton SOURCE directory
+  target-path     The path to the XP skeleton TARGET directoy (defaults
+                  to "skeleton2")
+
+  base-path       The path, relative from skeleton directory, to start
+                  with migration (if omitted the complete skeleton
+                  directory will be migrated)
+EOH
+    );
     exit();
   }
  
   $base= realpath($p->value(1));
   $targetdir= $p->value(2, 2, 'skeleton2');
-  $collection= &new FileCollection($base);
+  $collection= &new FileCollection($base.'/'.$p->value(3, 3, ''));
   $collection->open();
   
   $iterator= &new FilteredIOCollectionIterator($collection,
