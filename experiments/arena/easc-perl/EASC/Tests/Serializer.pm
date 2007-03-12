@@ -85,6 +85,26 @@ sub testValueOfLongs {
     }
 }
 
+sub testValueOfException {
+    my $self= shift;
+    
+    $e= EASC::Protocol::Serializer::valueOf(
+        'E:46:"java.lang.reflect.UndeclaredThrowableException":3:{'.
+        's:7:"message";s:12:"*** BLAM ***";'.
+        's:5:"trace";a:1:{i:0;t:4:{s:4:"file";s:9:"Test.java";s:5:"class";s:4:"Test";s:6:"method";s:4:"main";s:4:"line";i:10;}}'.
+        's:5:"cause";N;'.
+        '}'
+    );
+
+    $self->assertEquals('java.lang.reflect.UndeclaredThrowableException', $e->{classname});
+    $self->assertEquals('*** BLAM ***', $e->{message});
+    $self->assertEquals('Test.java', $e->{trace}{'0'}{'file'});
+    $self->assertEquals(10, $e->{trace}{'0'}{'line'}->value());
+    $self->assertEquals('Test', $e->{trace}{'0'}{'class'});
+    $self->assertEquals('main', $e->{trace}{'0'}{'method'});
+    $self->assertEquals(undef, $e->{cause});
+}
+
 sub testValueOfEmptyData {
     my $self= shift;
     
