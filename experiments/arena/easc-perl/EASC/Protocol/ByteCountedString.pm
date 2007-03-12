@@ -5,27 +5,24 @@
 # $Id$
 
 package EASC::Protocol::ByteCountedString; 
+
 use warnings;
 use strict;
-
-# This needs perl 5.8.1 or later to work properly
-use Unicode::MapUTF8 qw(from_utf8);
-use Encode ;
+use utf8;
 use POSIX;
+
 require Exporter;
 
 our $VERSION = 1.0;
-
 our @ISA = qw(Exporter);
 our @EXPORT= qw(&sendTo &readFrom);
 our %EXPORT_TAGS = ( );
 our @EXPORT_OK = qw();
-use vars qw();
 
+use vars qw();
 
 # Size of a chunk to send
 sub BCS_DEFAULT_CHUNK_SIZE { 0xFFFF };
-
 
 # Constructor
 #
@@ -34,14 +31,11 @@ sub BCS_DEFAULT_CHUNK_SIZE { 0xFFFF };
 sub new {
     my ($classname, $string) = @_;
     my $self = {};
-    bless($self, $classname);
-    $string ||= '';
+    bless ($self, $classname);
 
-    if(!Encode::is_utf8($string)){
-      $self->{string}=Encode::decode("iso-8859-1",$string);
-    } else {
-      $self->{string} = $string;
-    }
+    $self->{string}= $string || '';
+    utf8::encode($self->{string});
+    
     return $self;
 }
 
