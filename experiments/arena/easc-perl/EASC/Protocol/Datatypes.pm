@@ -21,43 +21,6 @@ sub new {
     return $self;
 }
 
-sub setIdentifier {
-    my ($self, $identifier) = @_;
-    $self->{'identifier'} = $identifier;
-}
-
-sub getIdentifier {
-    my ($self) = @_;
-    return $self->{'identifier'};
-}
-
-sub setType {
-    my ($self, $type) = @_; 
-    $self->{'type'} = $type;
-}
-
-sub getType {
-    my ($self) = @_;
-    return $self->{'type'};
-}
-
-sub setField {
-    my ($self, $key, $value, $options) = @_;
-
-    my $field = {
-        'value' => $value,
-        'options' => $options
-    };
-
-    $self->{'fields'}->{$key}= $field;
-}
-
-sub getField {
-    my ($self, $key) = @_;
-
-    return $self->{'fields'}->{$key};
-}
-
 package Exception;
 
 sub new {
