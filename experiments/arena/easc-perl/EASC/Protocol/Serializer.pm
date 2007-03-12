@@ -7,22 +7,19 @@
 
 package EASC::Protocol::Serializer;
 
-#use utf8;
 use strict;
 use warnings;
-
-# FIXME: I absolutely dont like this one here!!!
 use EASC::Protocol::Datatypes;
+
 require Exporter;
 
 our $VERSION = 1.0;
-
 our @ISA = qw(Exporter);
 our @EXPORT= qw(&representationOf &valueOf);
 our %EXPORT_TAGS = ( ); 
 our @EXPORT_OK = qw();
-use vars qw();
 
+use vars qw();
 
 # representationOf
 #
@@ -111,25 +108,12 @@ sub representationOf {
 sub valueOf {
   my ($serialized, $handler) = @_;
   
-  # it seems, that we get an utf8 string here, which is not tagged as utf8
-  # so we enforce it. Some string functions don't work properly without that
-  # tag.
-  #if (!wantarray){
-  #  print STDERR "Serialize: Value of (l:".length($serialized).", U8:".Encode::is_utf8($serialized).")".substr($serialized,0,25)."\n";
-  #}
-
-  if (!wantarray and Encode::is_utf8($serialized)) {
-    $serialized = Encode::encode("iso-8859-1", $serialized);
-    #print STDERR "Serialize: and now: iso-code".Encode::is_utf8($serialized)."\n";
-  }
-  
-  # my $handler = shift;
   # First char says wat kind of data we have (e.g. i:123;)
   my $kind = substr($serialized, 0, 1);
+
   # NULL is undef in Perl
   if ($kind eq 'N') {
     return wantarray ? (undef, 2) : undef;
-    
   }
   elsif ($kind eq 'b') {
     my $value = Bool::->new( substr ( $serialized , 2, index ($serialized, ';',2) -2 ) );
