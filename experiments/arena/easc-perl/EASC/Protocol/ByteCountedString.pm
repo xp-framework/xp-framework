@@ -65,17 +65,17 @@ sub writeTo {
     my $offset = 0;
 
     do {
-      my $chunk = $length > $chunksize ? $chunksize : $length;
-       
-      # Pack the header (2 bytes length + 1 to tell if there will be more chunks)
-      my $packet = pack('nc', $chunk, $length - $chunk > 0);
+        my $chunk = $length > $chunksize ? $chunksize : $length;
 
-      # Send it to the socket
-      $sock->send($packet); # header
-      $sock->send(substr($self->{string}, $offset, $chunk)); # string
-    
-      $offset += $chunk;
-      $length -= $chunk;  
+        # Pack the header (2 bytes length + 1 to tell if there will be more chunks)
+        my $packet = pack('nc', $chunk, $length - $chunk > 0);
+
+        # Send it to the socket
+        $sock->send($packet); # header
+        $sock->send(substr($self->{string}, $offset, $chunk)); # string
+
+        $offset += $chunk;
+        $length -= $chunk;  
     } while ($length > 0);
 
     return 1;
@@ -90,12 +90,12 @@ sub readFully {
     my ($sock, $length) = @_;
     my $return = '';
     while (length($return) < $length) {
-     my $buf;
-     $sock->recv($buf, $length - length $return);
-     return unless defined $buf; # We read nothing
-     $return .= $buf;
-   }
-   return $return;
+        my $buf;
+        $sock->recv($buf, $length - length $return);
+        return unless defined $buf; # We read nothing
+        $return .= $buf;
+    }
+    return $return;
 }
 
 # readFrom 
@@ -103,26 +103,24 @@ sub readFully {
 # @param socket to read from
 # @return string it read
 sub readFrom {
-   my ($sock) = @_;
-   my $s = '';
-   my $r_length; 
-   my $r_next = 1;
+    my ($sock) = @_;
+    my $s = '';
+    my $r_length; 
+    my $r_next = 1;
 
-   while ($r_next) {
-     # Read the header (3 bytes)
-     ($r_length, $r_next) = unpack('nc', EASC::Protocol::ByteCountedString::readFully($sock, 3));
-     return unless $r_length;
+    while ($r_next) {
+        # Read the header (3 bytes)
+        ($r_length, $r_next) = unpack('nc', EASC::Protocol::ByteCountedString::readFully($sock, 3));
+        return unless $r_length;
 
-     # And read how much the header says...
-     $s.= EASC::Protocol::ByteCountedString::readFully($sock, $r_length);
-   }
+        # And read how much the header says...
+        $s.= EASC::Protocol::ByteCountedString::readFully($sock, $r_length);
+    }
 
-   utf8::decode($s);
-   return $s;
+    utf8::decode($s);
+    return $s;
 }
 
-sub DESTROY {
-}
-
+sub DESTROY { }
 
 1;
