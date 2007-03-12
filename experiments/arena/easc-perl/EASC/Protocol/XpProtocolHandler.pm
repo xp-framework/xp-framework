@@ -81,10 +81,9 @@ sub _init {
 		Proto    => "tcp",
 		Type     => SOCK_STREAM 
     );
-    $sock->sockopt(Socket::TCP_NODELAY, 1);
 
-    # SMELL: die instead of execption-handling
     $sock or die "Couldn't connect to $self->{host}:$self->{port}. Error: $@\n";
+    $sock->sockopt(Socket::TCP_NODELAY, 1);
     $self->{_sock} = $sock;
 
     my $response;
