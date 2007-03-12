@@ -14,6 +14,7 @@ use EASC::Protocol::Serializer;
 use EASC::Protocol::ByteCountedString;
 
 use IO::Socket;
+use Socket qw(TCP_NODELAY);
 
 require Exporter;
 
@@ -80,6 +81,7 @@ sub _init {
 		Proto    => "tcp",
 		Type     => SOCK_STREAM 
     );
+    $sock->sockopt(Socket::TCP_NODELAY, 1);
 
     # SMELL: die instead of execption-handling
     $sock or die "Couldn't connect to $self->{host}:$self->{port}. Error: $@\n";
