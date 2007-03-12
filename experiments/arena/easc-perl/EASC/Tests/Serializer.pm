@@ -93,13 +93,18 @@ sub testValueOfHash {
     $self->assertEquals(6100, $h->{number}->value());
 }
 
+sub testRepresentationOfArrayList {
+    my $self= shift;
+
+    @list= [ 'key', 'value' ];
+    $self->assertEquals('A:2:{s:3:"key";s:5:"value";}', EASC::Protocol::Serializer::representationOf(@list));
+}
+
+
 sub testValueOfArrayList {
     my $self= shift;
 
-    $l= EASC::Protocol::Serializer::valueOf(
-        'A:2:{s:3:"key";s:5:"value";}'
-    );
-    
+    $l= EASC::Protocol::Serializer::valueOf('A:2:{s:3:"key";s:5:"value";}');
     $self->assertEquals('key', $l->[0]);
     $self->assertEquals('value', $l->[1]);
 }
