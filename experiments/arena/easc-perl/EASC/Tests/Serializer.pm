@@ -85,6 +85,14 @@ sub testValueOfLongs {
     }
 }
 
+sub testValueOfHash {
+    my $self= shift;
+
+    $p= EASC::Protocol::Serializer::valueOf('a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}');
+    $self->assertEquals('value', $p->{key});
+    $self->assertEquals(6100, $p->{number}->value());
+}
+
 sub testValueOfObject {
     my $self= shift;
 
