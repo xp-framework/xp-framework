@@ -4,7 +4,7 @@
 #
 # $Id$
 
-use EASC::Protocol::XpProtocolHandler;
+use EASC::Remote;
 
 sub sizeof {
     my $hash= shift;
@@ -14,15 +14,8 @@ sub sizeof {
 }
 
 # {{{ main
-$proto= EASC::Protocol::XpProtocolHandler::->new({
-    versionMajor => 1,
-    versionMinor => 0,
-    host         => $ARGV[0],
-    port         => 6448,
-});
-
-$runner= $proto->lookup('xp/test/TestRunner');
-$results= $runner->runTestClass($ARGV[1]);
+$remote= EASC::Remote::forName('xp://'.$ARGV[0]);
+$results= $remote->lookup('xp/test/TestRunner')->runTestClass($ARGV[1]);
 
 printf(
     "Results for test run: %d succeeded, %d failed, %d skipped\n%s\n",
