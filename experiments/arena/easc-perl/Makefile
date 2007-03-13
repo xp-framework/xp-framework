@@ -3,10 +3,15 @@
 #
 # $Id$
 
+PERL=perl
+
 run-serializer-test:
-	perl unittest.pl EASC::Tests::Serializer
+	$(PERL) unittest.pl EASC::Tests::Serializer
 
 run-bytecountedstring-test:
-	perl unittest.pl EASC::Tests::ByteCountedString
+	$(PERL) unittest.pl EASC::Tests::ByteCountedString
 
-run-tests:  run-serializer-test run-bytecountedstring-test
+run-remote-test:
+	$(PERL) unittest.pl EASC::Tests::Remote
+
+run-tests:  run-serializer-test run-bytecountedstring-test run-remote-test
