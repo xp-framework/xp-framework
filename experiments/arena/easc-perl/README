@@ -25,6 +25,25 @@ Howto
    e.g. net.xp_framework.unittest.core.ObjectTest
 
 
+Skeleton
+--------
+The entry point class is EASC::Remote. It provides a forName() subroutine
+which takes care of setting up the protocol from the DSN it is passed.
+
+DSN syntax
+<pre>
+  scheme://[user:pass@]host[:port]
+</pre>
+
+Example
+<code>
+  $remote= EASC::Remote::forName('xp://jboss01.example.com');
+  $facade= $remote->lookup('com/acme/1.3/CartFacade')->create();
+  
+  # ...Now perform any remote operations
+  $facade->addItem($item);
+</code>
+
 Credits
 -------
 The XP team would like to thank Marc Kannegieﬂer, Florian Sperber and
