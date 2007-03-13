@@ -8,7 +8,7 @@ package EASC::Protocol::ByteCountedString;
 
 use warnings;
 use strict;
-use utf8;
+use Encode qw(from_to);
 use POSIX;
 
 require Exporter;
@@ -34,7 +34,7 @@ sub new {
     bless ($self, $classname);
 
     $self->{string}= $string || '';
-    utf8::encode($self->{string});
+    from_to($self->{string}, "iso-8859-1", "utf8");
     
     return $self;
 }
@@ -117,7 +117,7 @@ sub readFrom {
         $s.= EASC::Protocol::ByteCountedString::readFully($sock, $r_length);
     }
 
-    utf8::decode($s);
+    from_to($s, "utf8", "iso-8859-1");
     return $s;
 }
 
