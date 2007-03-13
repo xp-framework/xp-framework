@@ -1,4 +1,4 @@
-<document created_at="Mon, 12 Mar 2007 16:54:40 +0100" created_by="ruben">
+<document created_at="Tue, 13 Mar 2007 14:35:50 +0100" created_by="ruben">
   <table
    name="color"
    dbhost="localhost"
@@ -12,21 +12,21 @@
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
-     nullable="false"
+     nullable="true"
     />
     <attribute
      name="name"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
-     nullable="false"
+     nullable="true"
     />
     <attribute
      name="colortype"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
-     nullable="false"
+     nullable="true"
     />
     <index
      name="PRIMARY"

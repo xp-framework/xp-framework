@@ -27,6 +27,6 @@
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
   
-  var_dump(RubentestPerson::getByPerson_id(1));
+  var_dump(RubentestPerson::getByPerson_id(1)->getToilette());
 
 ?>

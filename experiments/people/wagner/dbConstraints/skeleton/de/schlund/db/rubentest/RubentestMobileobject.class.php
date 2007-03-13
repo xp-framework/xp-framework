@@ -4,23 +4,20 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses(
-    'rdbms.DataSet',
-    'de.schlund.db.rubentest.RubentestMappoint'
-  );
+  uses('rdbms.DataSet');
 
   /**
    * Class wrapper for table mobileObject, database Ruben_Test_PS
-   * (Auto-generated on Mon, 12 Mar 2007 16:54:40 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestMobileobject extends DataSet {
     public
-      $object_id          = 0,
-      $coord_x            = 0,
-      $coord_y            = 0,
-      $name               = '';
+      $object_id          = NULL,
+      $coord_x            = NULL,
+      $coord_y            = NULL,
+      $name               = NULL;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -29,10 +26,10 @@
         $peer->setIdentity('object_id');
         $peer->setPrimary(array('object_id'));
         $peer->setTypes(array(
-          'object_id'           => array('%d', FieldType::INT, FALSE),
-          'coord_x'             => array('%d', FieldType::INT, FALSE),
-          'coord_y'             => array('%d', FieldType::INT, FALSE),
-          'name'                => array('%s', FieldType::VARCHAR, FALSE)
+          'object_id'           => array('%d', FieldType::INT, TRUE),
+          'coord_x'             => array('%d', FieldType::INT, TRUE),
+          'coord_y'             => array('%d', FieldType::INT, TRUE),
+          'name'                => array('%s', FieldType::VARCHAR, TRUE)
         ));
       }
     }  
@@ -147,20 +144,6 @@
      */
     public function setName($name) {
       return $this->_change('name', $name);
-    }
-
-    /**
-     * Retrieves the referenced Mappoint
-     *
-     * @return  de.schlund.db.rubentest.RubentestMappoint entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getMappoint() {
-      $r= RubentestMappoint::getPeer()->doSelect(new Criteria(
-        array('coord_x', $this->getCoord_x(), EQUAL),
-        array('coord_y', $this->getCoord_y(), EQUAL)
-      ));
-      return $r ? $r[0] : NULL;
     }
   }
 ?>

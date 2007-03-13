@@ -1,4 +1,4 @@
-<document created_at="Mon, 12 Mar 2007 16:54:40 +0100" created_by="ruben">
+<document created_at="Tue, 13 Mar 2007 14:35:50 +0100" created_by="ruben">
   <table
    name="toilette"
    dbhost="localhost"
@@ -12,7 +12,7 @@
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
-     nullable="false"
+     nullable="true"
     />
     <attribute
      name="person_id"
@@ -35,10 +35,5 @@
     >    
       <key>person_id</key>
     </index>
-    <constraint name="person_on_toilette">    
-      <reference table="person">      
-        <key attribute="person_id" sourceattribute="person_id"/>
-      </reference>
-    </constraint>
   </table>
 </document>

@@ -109,13 +109,8 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses(
-    'rdbms.DataSet'</xsl:text>
-  <xsl:for-each select="/document/table/constraint/reference">
-    <xsl:text>,&#10;    '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>'</xsl:text>
-  </xsl:for-each>
-  <xsl:text>&#10;  );&#10;</xsl:text>
-      <xsl:apply-templates/>
+  uses('rdbms.DataSet');&#10;</xsl:text>
+    <xsl:apply-templates/>
   <xsl:text>?></xsl:text>
   </xsl:template>
   
@@ -324,6 +319,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       $r= </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
           <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
@@ -343,6 +339,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>List() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
           <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
@@ -358,6 +355,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>Iterator() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->iteratorFor(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
           <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
@@ -386,6 +384,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       $r= </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
         <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
@@ -405,6 +404,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>List() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
         <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
@@ -419,6 +419,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>Iterator() {
+      ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->iteratorFor(new Criteria(&#10;</xsl:text>
     <xsl:for-each select="key">
       <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>

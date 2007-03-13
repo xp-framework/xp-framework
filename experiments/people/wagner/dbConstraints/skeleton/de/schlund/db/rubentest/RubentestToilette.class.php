@@ -4,20 +4,17 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses(
-    'rdbms.DataSet',
-    'de.schlund.db.rubentest.RubentestPerson'
-  );
+  uses('rdbms.DataSet');
 
   /**
    * Class wrapper for table toilette, database Ruben_Test_PS
-   * (Auto-generated on Mon, 12 Mar 2007 16:54:40 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestToilette extends DataSet {
     public
-      $toilette_id        = 0,
+      $toilette_id        = NULL,
       $person_id          = NULL;
 
     static function __static() { 
@@ -27,7 +24,7 @@
         $peer->setIdentity('toilette_id');
         $peer->setPrimary(array('toilette_id'));
         $peer->setTypes(array(
-          'toilette_id'         => array('%d', FieldType::INT, FALSE),
+          'toilette_id'         => array('%d', FieldType::INT, TRUE),
           'person_id'           => array('%d', FieldType::INT, TRUE)
         ));
       }
@@ -102,19 +99,6 @@
      */
     public function setPerson_id($person_id) {
       return $this->_change('person_id', $person_id);
-    }
-
-    /**
-     * Retrieves the referenced Person
-     *
-     * @return  de.schlund.db.rubentest.RubentestPerson entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getPerson() {
-      $r= RubentestPerson::getPeer()->doSelect(new Criteria(
-        array('person_id', $this->getPerson_id(), EQUAL)
-      ));
-      return $r ? $r[0] : NULL;
     }
   }
 ?>
