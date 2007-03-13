@@ -8,15 +8,15 @@
 
   /**
    * Class wrapper for table mappoint, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestMappoint extends DataSet {
     public
-      $coord_x            = NULL,
-      $coord_y            = NULL,
-      $texture_id         = NULL;
+      $coord_x            = 0,
+      $coord_y            = 0,
+      $texture_id         = 0;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -24,9 +24,9 @@
         $peer->setConnection('localhost');
         $peer->setPrimary(array('coord_x', 'coord_y'));
         $peer->setTypes(array(
-          'coord_x'             => array('%d', FieldType::INT, TRUE),
-          'coord_y'             => array('%d', FieldType::INT, TRUE),
-          'texture_id'          => array('%d', FieldType::INT, TRUE)
+          'coord_x'             => array('%d', FieldType::INT, FALSE),
+          'coord_y'             => array('%d', FieldType::INT, FALSE),
+          'texture_id'          => array('%d', FieldType::INT, FALSE)
         ));
       }
     }  
@@ -122,6 +122,48 @@
      */
     public function setTexture_id($texture_id) {
       return $this->_change('texture_id', $texture_id);
+    }
+
+    /**
+     * Retrieves the referenced Texture
+     *
+     * @return  de.schlund.db.rubentest.RubentestTexture entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTexture() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
+      $r= RubentestTexture::getPeer()->doSelect(new Criteria(
+        array('texture_id', $this->getTexture_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
+    }
+
+    /**
+     * Retrieves an array of the referencing Mobileobject
+     *
+     * @return  de.schlund.db.rubentest.RubentestMobileobject[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMobileobjectList() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
+      return RubentestMobileobject::getPeer()->doSelect(new Criteria(
+        array('coord_x', $this->getCoord_x(), EQUAL),
+        array('coord_y', $this->getCoord_y(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for the referencing Mobileobject
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestMobileobject>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMobileobjectIterator() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
+      return RubentestMobileobject::getPeer()->iteratorFor(new Criteria(
+        array('coord_x', $this->getCoord_x(), EQUAL),
+        array('coord_y', $this->getCoord_y(), EQUAL)
+      ));
     }
   }
 ?>

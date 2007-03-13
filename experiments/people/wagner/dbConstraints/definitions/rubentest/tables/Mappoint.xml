@@ -1,4 +1,4 @@
-<document created_at="Tue, 13 Mar 2007 14:35:50 +0100" created_by="ruben">
+<document created_at="Tue, 13 Mar 2007 15:06:01 +0100" created_by="ruben">
   <table
    name="mappoint"
    dbhost="localhost"
@@ -12,21 +12,21 @@
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="coord_y"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="texture_id"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <index
      name="PRIMARY"
@@ -43,5 +43,10 @@
     >    
       <key>texture_id</key>
     </index>
+    <constraint name="texture_for_mappoint">    
+      <reference table="texture">      
+        <key attribute="texture_id" sourceattribute="texture_id"/>
+      </reference>
+    </constraint>
   </table>
 </document>

@@ -1,4 +1,4 @@
-<document created_at="Tue, 13 Mar 2007 14:35:50 +0100" created_by="ruben">
+<document created_at="Tue, 13 Mar 2007 15:06:01 +0100" created_by="ruben">
   <table
    name="mobileObject"
    dbhost="localhost"
@@ -12,28 +12,28 @@
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="coord_x"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="coord_y"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="name"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
-     nullable="true"
+     nullable="false"
     />
     <index
      name="PRIMARY"
@@ -50,5 +50,11 @@
       <key>coord_x</key>
       <key>coord_y</key>
     </index>
+    <constraint name="mappoint_for_mob">    
+      <reference table="mappoint">      
+        <key attribute="coord_x" sourceattribute="coord_x"/>
+        <key attribute="coord_y" sourceattribute="coord_y"/>
+      </reference>
+    </constraint>
   </table>
 </document>

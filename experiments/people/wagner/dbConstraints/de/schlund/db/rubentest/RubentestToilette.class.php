@@ -8,13 +8,13 @@
 
   /**
    * Class wrapper for table toilette, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestToilette extends DataSet {
     public
-      $toilette_id        = NULL,
+      $toilette_id        = 0,
       $person_id          = NULL;
 
     static function __static() { 
@@ -24,7 +24,7 @@
         $peer->setIdentity('toilette_id');
         $peer->setPrimary(array('toilette_id'));
         $peer->setTypes(array(
-          'toilette_id'         => array('%d', FieldType::INT, TRUE),
+          'toilette_id'         => array('%d', FieldType::INT, FALSE),
           'person_id'           => array('%d', FieldType::INT, TRUE)
         ));
       }
@@ -99,6 +99,20 @@
      */
     public function setPerson_id($person_id) {
       return $this->_change('person_id', $person_id);
+    }
+
+    /**
+     * Retrieves the referenced Person
+     *
+     * @return  de.schlund.db.rubentest.RubentestPerson entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getPerson() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestPerson');
+      $r= RubentestPerson::getPeer()->doSelect(new Criteria(
+        array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
     }
   }
 ?>

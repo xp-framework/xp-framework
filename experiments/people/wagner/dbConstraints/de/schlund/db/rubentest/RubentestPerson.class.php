@@ -8,14 +8,14 @@
 
   /**
    * Class wrapper for table person, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestPerson extends DataSet {
     public
-      $person_id          = NULL,
-      $name               = NULL;
+      $person_id          = 0,
+      $name               = '';
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -24,8 +24,8 @@
         $peer->setIdentity('person_id');
         $peer->setPrimary(array('person_id'));
         $peer->setTypes(array(
-          'person_id'           => array('%d', FieldType::INT, TRUE),
-          'name'                => array('%s', FieldType::VARCHAR, TRUE)
+          'person_id'           => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
       }
     }  
@@ -87,6 +87,46 @@
      */
     public function setName($name) {
       return $this->_change('name', $name);
+    }
+
+    /**
+     * Retrieves an array of the referencing Job
+     *
+     * @return  de.schlund.db.rubentest.RubentestJob[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getJobList() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestJob');
+      return RubentestJob::getPeer()->doSelect(new Criteria(
+        array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for the referencing Job
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestJob>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getJobIterator() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestJob');
+      return RubentestJob::getPeer()->iteratorFor(new Criteria(
+        array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves the referencing Toilette
+     *
+     * @return  de.schlund.db.rubentest.RubentestToilette entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getToilette() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestToilette');
+      $r= RubentestToilette::getPeer()->doSelect(new Criteria(
+        array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
     }
   }
 ?>

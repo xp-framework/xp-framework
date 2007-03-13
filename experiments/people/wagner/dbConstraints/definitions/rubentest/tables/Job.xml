@@ -1,4 +1,4 @@
-<document created_at="Tue, 13 Mar 2007 14:35:50 +0100" created_by="ruben">
+<document created_at="Tue, 13 Mar 2007 15:06:01 +0100" created_by="ruben">
   <table
    name="job"
    dbhost="localhost"
@@ -12,14 +12,14 @@
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="title"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="valid_from"
@@ -33,14 +33,14 @@
      type="DB_ATTRTYPE_DATETIME"
      identity="false"
      typename="util.Date"
-     nullable="true"
+     nullable="false"
     />
     <attribute
      name="person_id"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
-     nullable="true"
+     nullable="false"
     />
     <index
      name="PRIMARY"
@@ -56,5 +56,10 @@
     >    
       <key>person_id</key>
     </index>
+    <constraint name="person_for_job">    
+      <reference table="person">      
+        <key attribute="person_id" sourceattribute="person_id"/>
+      </reference>
+    </constraint>
   </table>
 </document>

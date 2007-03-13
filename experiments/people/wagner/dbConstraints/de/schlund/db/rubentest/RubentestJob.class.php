@@ -8,17 +8,17 @@
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestJob extends DataSet {
     public
-      $job_id             = NULL,
-      $title              = NULL,
+      $job_id             = 0,
+      $title              = '',
       $valid_from         = NULL,
       $expire_at          = NULL,
-      $person_id          = NULL;
+      $person_id          = 0;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -27,11 +27,11 @@
         $peer->setIdentity('job_id');
         $peer->setPrimary(array('job_id'));
         $peer->setTypes(array(
-          'job_id'              => array('%d', FieldType::INT, TRUE),
-          'title'               => array('%s', FieldType::VARCHAR, TRUE),
+          'job_id'              => array('%d', FieldType::INT, FALSE),
+          'title'               => array('%s', FieldType::VARCHAR, FALSE),
           'valid_from'          => array('%s', FieldType::DATETIME, TRUE),
-          'expire_at'           => array('%s', FieldType::DATETIME, TRUE),
-          'person_id'           => array('%d', FieldType::INT, TRUE)
+          'expire_at'           => array('%s', FieldType::DATETIME, FALSE),
+          'person_id'           => array('%d', FieldType::INT, FALSE)
         ));
       }
     }  
@@ -161,6 +161,20 @@
      */
     public function setPerson_id($person_id) {
       return $this->_change('person_id', $person_id);
+    }
+
+    /**
+     * Retrieves the referenced Person
+     *
+     * @return  de.schlund.db.rubentest.RubentestPerson entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getPerson() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestPerson');
+      $r= RubentestPerson::getPeer()->doSelect(new Criteria(
+        array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
     }
   }
 ?>

@@ -8,15 +8,15 @@
 
   /**
    * Class wrapper for table color, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestColor extends DataSet {
     public
-      $color_id           = NULL,
-      $name               = NULL,
-      $colortype          = NULL;
+      $color_id           = 0,
+      $name               = '',
+      $colortype          = '';
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -25,9 +25,9 @@
         $peer->setIdentity('color_id');
         $peer->setPrimary(array('color_id'));
         $peer->setTypes(array(
-          'color_id'            => array('%d', FieldType::INT, TRUE),
-          'name'                => array('%s', FieldType::VARCHAR, TRUE),
-          'colortype'           => array('%s', FieldType::VARCHAR, TRUE)
+          'color_id'            => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE),
+          'colortype'           => array('%s', FieldType::VARCHAR, FALSE)
         ));
       }
     }  
@@ -119,6 +119,32 @@
      */
     public function setColortype($colortype) {
       return $this->_change('colortype', $colortype);
+    }
+
+    /**
+     * Retrieves an array of the referencing Texture
+     *
+     * @return  de.schlund.db.rubentest.RubentestTexture[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTextureList() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
+      return RubentestTexture::getPeer()->doSelect(new Criteria(
+        array('colortype', $this->getColortype(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for the referencing Texture
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestTexture>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTextureIterator() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
+      return RubentestTexture::getPeer()->iteratorFor(new Criteria(
+        array('colortype', $this->getColortype(), EQUAL)
+      ));
     }
   }
 ?>

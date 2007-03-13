@@ -4,7 +4,7 @@ GEN = de.schlund.db.cmd.DataSetCreator
 DIR = definitions
 PHP = xpcli
 DIRS = $(shell ls -1 $(DIR))
-OUTPUT = ../../skeleton/
+OUTPUT = .
 
 #Generation of Database
 help:

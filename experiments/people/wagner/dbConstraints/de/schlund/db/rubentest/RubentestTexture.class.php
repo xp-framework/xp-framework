@@ -8,15 +8,15 @@
 
   /**
    * Class wrapper for table texture, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 14:35:50 +0100 by ruben)
+   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestTexture extends DataSet {
     public
-      $texture_id         = NULL,
-      $name               = NULL,
-      $colortype          = NULL;
+      $texture_id         = 0,
+      $name               = '',
+      $colortype          = '';
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -25,9 +25,9 @@
         $peer->setIdentity('texture_id');
         $peer->setPrimary(array('texture_id'));
         $peer->setTypes(array(
-          'texture_id'          => array('%d', FieldType::INT, TRUE),
-          'name'                => array('%s', FieldType::VARCHAR, TRUE),
-          'colortype'           => array('%s', FieldType::VARCHAR, TRUE)
+          'texture_id'          => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE),
+          'colortype'           => array('%s', FieldType::VARCHAR, FALSE)
         ));
       }
     }  
@@ -119,6 +119,58 @@
      */
     public function setColortype($colortype) {
       return $this->_change('colortype', $colortype);
+    }
+
+    /**
+     * Retrieves an array of the referenced Color
+     *
+     * @return  de.schlund.db.rubentest.RubentestColor[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getColorList() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestColor');
+      return RubentestColor::getPeer()->doSelect(new Criteria(
+        array('colortype', $this->getColortype(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for the referenced Color
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestColor
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getColorIterator() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestColor');
+      return RubentestColor::getPeer()->iteratorFor(new Criteria(
+        array('colortype', $this->getColortype(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of the referencing Mappoint
+     *
+     * @return  de.schlund.db.rubentest.RubentestMappoint[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMappointList() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
+      return RubentestMappoint::getPeer()->doSelect(new Criteria(
+        array('texture_id', $this->getTexture_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for the referencing Mappoint
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestMappoint>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMappointIterator() {
+      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
+      return RubentestMappoint::getPeer()->iteratorFor(new Criteria(
+        array('texture_id', $this->getTexture_id(), EQUAL)
+      ));
     }
   }
 ?>
