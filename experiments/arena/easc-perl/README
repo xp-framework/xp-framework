@@ -1,0 +1,33 @@
+EASC client implementation in Perl
+========================================================================
+$Id$
+
+
+Requirements
+------------
+Perl 5.8
+
+
+Howto
+-----
+1) run "make run-tests"
+   You should see all tests passing.
+
+2) Have a look at xp-testrunner-client.pl
+   It contains a client for the XP TestRunner bean, see ../peking
+
+3) Open a new shell to ../peking and start the PHP EASC server
+   experiments/arena/peking$ php5 server.php 127.0.0.01
+   
+4) Run the test runner here:
+   perl xp-testrunner-client.pl 127.0.0.01 [TEST_CLASS]
+   TEST_CLASS is the fully qualified class name of any XP unittest,
+   e.g. net.xp_framework.unittest.core.ObjectTest
+
+
+Credits
+-------
+The XP team would like to thank Marc Kannegießer, Florian Sperber and
+Christian Sünkel for their work.
+
+<EOF>
