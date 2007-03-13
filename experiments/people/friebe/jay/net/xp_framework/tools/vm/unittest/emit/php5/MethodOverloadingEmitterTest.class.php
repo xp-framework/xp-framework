@@ -39,7 +39,7 @@
           }
         };'),
         $this->emit('class Date {
-          protected integer $stamp= 0;
+          protected int $stamp= 0;
           
           [@overloaded] public bool isBefore(string $value) {
             return $this->stamp < strtotime($value);
@@ -72,23 +72,23 @@
             $this->stamp= strtotime($in); 
           }
 
-          public function __constructinteger($in){
+          public function __constructint($in){
             $this->stamp= $in; 
           }
 
           public static function main(){
-            xp::spawn(\'main·Date\', \'__constructinteger\', array(1)); 
+            xp::spawn(\'main·Date\', \'__constructint\', array(1)); 
             xp::spawn(\'main·Date\', \'__constructstring\', array(\'1977-12-14\')); 
           }
         };'),
         $this->emit('class main·Date {
-          protected integer $stamp= 0;
+          protected int $stamp= 0;
 
           [@overloaded] public __construct(string $in) {
             $this->stamp= strtotime($in);
           }
 
-          [@overloaded] public __construct(integer $in) {
+          [@overloaded] public __construct(int $in) {
             $this->stamp= $in;
           }
           

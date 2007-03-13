@@ -100,7 +100,7 @@
      * @return  string
      */
     public function typeName($type) {
-      static $primitives= array('integer', 'int', 'string', 'double', 'boolean', 'bool', NULL);
+      static $primitives= array('int', 'string', 'double', 'bool', NULL);
 
       if (is_array($type)) return $this->typeName($type[0]).'[]';
       if (in_array($type, $primitives)) return $type;
@@ -259,7 +259,7 @@
       } else if ($node instanceof ExpressionCastNode) {
         return $this->typeName($node->type);
       } else if (is_int($node) || $node instanceof LongNumberNode) {
-        return 'integer';
+        return 'int';
       } else if (is_float($node) || $node instanceof DoubleNumberNode) {
         return 'double';
       } else if ($node instanceof VNode) { 
@@ -1510,7 +1510,7 @@
         foreach (array('==', '!=', '<=', '>=', '<', '>') as $op) {
           $this->context['operators'][$this->context['class']][$op]= 1;
         }
-        $type= 'integer';   // Returns -1, 0 or 1
+        $type= 'int';   // Returns -1, 0 or 1
       } else {
         $this->context['operators'][$this->context['class']][$node->name]= TRUE;
         $type= $this->context['class'];

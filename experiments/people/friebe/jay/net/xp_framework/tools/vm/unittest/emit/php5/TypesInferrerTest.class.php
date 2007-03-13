@@ -39,7 +39,7 @@
         }
         
         class Test {
-          public integer $integer= 1;
+          public int $integer= 1;
           public Now $now= NULL;
           
           public __construct() {
@@ -104,7 +104,7 @@
      */
     #[@test]
     public function typeOfVariableAssignedToConstant() {
-      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$i'))) &&
+      $this->assertEquals('int', $this->emitter->typeOf(new VariableNode('$i'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$s'))) &&
       $this->assertEquals('main·Test', $this->emitter->typeOf(new VariableNode('$t')));
     }
@@ -116,7 +116,7 @@
      */
     #[@test]
     public function typeOfVariableAssignedToChain() {
-      $this->assertEquals('integer', $this->emitter->typeOf(new VariableNode('$chained_i'))) &&
+      $this->assertEquals('int', $this->emitter->typeOf(new VariableNode('$chained_i'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_s'))) &&
       $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$chained_n')));
     }
