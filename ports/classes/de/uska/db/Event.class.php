@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table event, database uska
-   * (Auto-generated on Sun, 10 Apr 2005 13:37:17 +0200 by alex)
+   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
    *
    * @purpose  Datasource accessor
    */
@@ -27,29 +27,25 @@
       $changedby          = '',
       $lastchange         = NULL;
 
-    /**
-     * Static initializer
-     *
-     */
-    public static function __static() { 
-      with ($peer= Event::getPeer()); {
+    static function __static() { 
+      with ($peer= self::getPeer()); {
         $peer->setTable('uska.event');
-        $peer->setConnection('uskadb');
+        $peer->setConnection('uska');
         $peer->setIdentity('event_id');
         $peer->setPrimary(array('event_id'));
         $peer->setTypes(array(
-          'event_id'            => '%d',
-          'team_id'             => '%d',
-          'name'                => '%s',
-          'description'         => '%s',
-          'target_date'         => '%s',
-          'deadline'            => '%s',
-          'max_attendees'       => '%d',
-          'req_attendees'       => '%d',
-          'allow_guests'        => '%d',
-          'event_type_id'       => '%d',
-          'changedby'           => '%s',
-          'lastchange'          => '%s'
+          'event_id'            => array('%d', FieldType::INT, FALSE),
+          'team_id'             => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE),
+          'description'         => array('%s', FieldType::TEXT, TRUE),
+          'target_date'         => array('%s', FieldType::DATETIME, FALSE),
+          'deadline'            => array('%s', FieldType::DATETIME, TRUE),
+          'max_attendees'       => array('%d', FieldType::INT, TRUE),
+          'req_attendees'       => array('%d', FieldType::INT, TRUE),
+          'allow_guests'        => array('%d', FieldType::INT, TRUE),
+          'event_type_id'       => array('%d', FieldType::INT, FALSE),
+          'changedby'           => array('%s', FieldType::VARCHAR, FALSE),
+          'lastchange'          => array('%s', FieldType::DATETIME, FALSE)
         ));
       }
     }  
@@ -57,58 +53,54 @@
     /**
      * Retrieve associated peer
      *
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
-    public function getPeer() {
+    public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
-     *
+     * 
      * @param   int event_id
-     * @return  &de.uska.db.Event object
+     * @return  de.uska.db.Event object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByEvent_id($event_id) {
-      $peer= Event::getPeer();
-      return array_shift($peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL))));
+    public static function getByEvent_id($event_id) {
+      return current(self::getPeer()->doSelect(new Criteria(array('event_id', $event_id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "target_date"
-     *
+     * 
      * @param   util.Date target_date
-     * @return  &de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByTarget_date($target_date) {
-      $peer= Event::getPeer();
-      return $peer->doSelect(new Criteria(array('target_date', $target_date, EQUAL)));
+    public static function getByTarget_date($target_date) {
+      return self::getPeer()->doSelect(new Criteria(array('target_date', $target_date, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "team_id"
-     *
+     * 
      * @param   int team_id
-     * @return  &de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByTeam_id($team_id) {
-      $peer= Event::getPeer();
-      return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
+    public static function getByTeam_id($team_id) {
+      return self::getPeer()->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "event_type_id"
-     *
+     * 
      * @param   int event_type_id
-     * @return  &de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByEvent_type_id($event_type_id) {
-      $peer= Event::getPeer();
-      return $peer->doSelect(new Criteria(array('event_type_id', $event_type_id, EQUAL)));
+    public static function getByEvent_type_id($event_type_id) {
+      return self::getPeer()->doSelect(new Criteria(array('event_type_id', $event_type_id, EQUAL)));
     }
 
     /**

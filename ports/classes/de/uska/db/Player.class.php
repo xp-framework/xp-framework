@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table player, database uska
-   * (Auto-generated on Sat, 02 Jul 2005 18:44:51 +0200 by alex)
+   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
    *
    * @purpose  Datasource accessor
    */
@@ -16,7 +16,6 @@
     public
       $player_id          = 0,
       $player_type_id     = 0,
-      $bz_id              = 0,
       $firstname          = '',
       $lastname           = '',
       $username           = NULL,
@@ -26,32 +25,29 @@
       $created_by         = NULL,
       $lastchange         = NULL,
       $changedby          = '',
-      $team_id            = 0;
+      $team_id            = 0,
+      $bz_id              = 0;
 
-    /**
-     * Static initializer
-     *
-     */
-    public static function __static() { 
-      with ($peer= Player::getPeer()); {
+    static function __static() { 
+      with ($peer= self::getPeer()); {
         $peer->setTable('uska.player');
         $peer->setConnection('uska');
         $peer->setIdentity('player_id');
         $peer->setPrimary(array('player_id'));
         $peer->setTypes(array(
-          'player_id'           => '%d',
-          'player_type_id'      => '%d',
-          'bz_id'               => '%d',
-          'firstname'           => '%s',
-          'lastname'            => '%s',
-          'username'            => '%s',
-          'password'            => '%s',
-          'email'               => '%s',
-          'position'            => '%d',
-          'created_by'          => '%d',
-          'lastchange'          => '%s',
-          'changedby'           => '%s',
-          'team_id'             => '%d'
+          'player_id'           => array('%d', FieldType::INT, FALSE),
+          'player_type_id'      => array('%d', FieldType::INT, FALSE),
+          'firstname'           => array('%s', FieldType::VARCHAR, FALSE),
+          'lastname'            => array('%s', FieldType::VARCHAR, FALSE),
+          'username'            => array('%s', FieldType::VARCHAR, TRUE),
+          'password'            => array('%s', FieldType::VARCHAR, TRUE),
+          'email'               => array('%s', FieldType::VARCHAR, TRUE),
+          'position'            => array('%d', FieldType::INT, TRUE),
+          'created_by'          => array('%d', FieldType::INT, TRUE),
+          'lastchange'          => array('%s', FieldType::DATETIME, FALSE),
+          'changedby'           => array('%s', FieldType::VARCHAR, FALSE),
+          'team_id'             => array('%d', FieldType::INT, FALSE),
+          'bz_id'               => array('%d', FieldType::INT, FALSE)
         ));
       }
     }  
@@ -59,58 +55,76 @@
     /**
      * Retrieve associated peer
      *
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
-    public function getPeer() {
+    public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
-     *
+     * 
      * @param   int player_id
-     * @return  &de.uska.db.Player object
+     * @return  de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByPlayer_id($player_id) {
-      $peer= Player::getPeer();
-      return array_shift($peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL))));
+    public static function getByPlayer_id($player_id) {
+      return current(self::getPeer()->doSelect(new Criteria(array('player_id', $player_id, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "username"
-     *
+     * 
      * @param   string username
-     * @return  &de.uska.db.Player object
+     * @return  de.uska.db.Player object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByUsername($username) {
-      $peer= Player::getPeer();
-      return array_shift($peer->doSelect(new Criteria(array('username', $username, EQUAL))));
+    public static function getByUsername($username) {
+      return current(self::getPeer()->doSelect(new Criteria(array('username', $username, EQUAL))));
+    }
+
+    /**
+     * Gets an instance of this object by index "email"
+     * 
+     * @param   string email
+     * @return  de.uska.db.Player object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public static function getByEmail($email) {
+      return current(self::getPeer()->doSelect(new Criteria(array('email', $email, EQUAL))));
     }
 
     /**
      * Gets an instance of this object by index "created_by"
-     *
+     * 
      * @param   int created_by
-     * @return  &de.uska.db.Player[] object
+     * @return  de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByCreated_by($created_by) {
-      $peer= Player::getPeer();
-      return $peer->doSelect(new Criteria(array('created_by', $created_by, EQUAL)));
+    public static function getByCreated_by($created_by) {
+      return self::getPeer()->doSelect(new Criteria(array('created_by', $created_by, EQUAL)));
     }
 
     /**
      * Gets an instance of this object by index "team_id"
-     *
+     * 
      * @param   int team_id
-     * @return  &de.uska.db.Player[] object
+     * @return  de.uska.db.Player[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByTeam_id($team_id) {
-      $peer= Player::getPeer();
-      return $peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
+    public static function getByTeam_id($team_id) {
+      return self::getPeer()->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
+    }
+
+    /**
+     * Gets an instance of this object by index "bz_id"
+     * 
+     * @param   int bz_id
+     * @return  de.uska.db.Player[] object
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public static function getByBz_id($bz_id) {
+      return self::getPeer()->doSelect(new Criteria(array('bz_id', $bz_id, EQUAL)));
     }
 
     /**
@@ -149,25 +163,6 @@
      */
     public function setPlayer_type_id($player_type_id) {
       return $this->_change('player_type_id', $player_type_id);
-    }
-
-    /**
-     * Retrieves bz_id
-     *
-     * @return  int
-     */
-    public function getBz_id() {
-      return $this->bz_id;
-    }
-      
-    /**
-     * Sets bz_id
-     *
-     * @param   int bz_id
-     * @return  int the previous value
-     */
-    public function setBz_id($bz_id) {
-      return $this->_change('bz_id', $bz_id);
     }
 
     /**
@@ -306,7 +301,7 @@
     /**
      * Retrieves lastchange
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getLastchange() {
       return $this->lastchange;
@@ -315,8 +310,8 @@
     /**
      * Sets lastchange
      *
-     * @param   &util.Date lastchange
-     * @return  &util.Date the previous value
+     * @param   util.Date lastchange
+     * @return  util.Date the previous value
      */
     public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
@@ -358,6 +353,25 @@
      */
     public function setTeam_id($team_id) {
       return $this->_change('team_id', $team_id);
+    }
+
+    /**
+     * Retrieves bz_id
+     *
+     * @return  int
+     */
+    public function getBz_id() {
+      return $this->bz_id;
+    }
+      
+    /**
+     * Sets bz_id
+     *
+     * @param   int bz_id
+     * @return  int the previous value
+     */
+    public function setBz_id($bz_id) {
+      return $this->_change('bz_id', $bz_id);
     }
   }
 ?>

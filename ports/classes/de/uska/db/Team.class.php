@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table team, database uska
-   * (Auto-generated on Sat, 09 Apr 2005 12:04:04 +0200 by alex)
+   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
    *
    * @purpose  Datasource accessor
    */
@@ -17,19 +17,15 @@
       $team_id            = 0,
       $name               = '';
 
-    /**
-     * Static initializer
-     *
-     */
-    public static function __static() { 
-      with ($peer= Team::getPeer()); {
+    static function __static() { 
+      with ($peer= self::getPeer()); {
         $peer->setTable('uska.team');
-        $peer->setConnection('uskadb');
+        $peer->setConnection('uska');
         $peer->setIdentity('team_id');
         $peer->setPrimary(array('team_id'));
         $peer->setTypes(array(
-          'team_id'             => '%d',
-          'name'                => '%s'
+          'team_id'             => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
       }
     }  
@@ -37,22 +33,21 @@
     /**
      * Retrieve associated peer
      *
-     * @return  &rdbms.Peer
+     * @return  rdbms.Peer
      */
-    public function getPeer() {
+    public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
-     *
+     * 
      * @param   int team_id
-     * @return  &de.uska.db.Team object
+     * @return  de.uska.db.Team object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByTeam_id($team_id) {
-      $peer= Team::getPeer();
-      return array_shift($peer->doSelect(new Criteria(array('team_id', $team_id, EQUAL))));
+    public static function getByTeam_id($team_id) {
+      return current(self::getPeer()->doSelect(new Criteria(array('team_id', $team_id, EQUAL))));
     }
 
     /**

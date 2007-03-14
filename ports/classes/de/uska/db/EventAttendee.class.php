@@ -48,7 +48,7 @@
      *
      * @return  &rdbms.Peer
      */
-    public function getPeer() {
+    public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
   
@@ -60,7 +60,7 @@
      * @return  &de.uska.db.EventAttendee object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByEvent_idPlayer_id($event_id, $player_id) {
+    public static function getByEvent_idPlayer_id($event_id, $player_id) {
       $peer= EventAttendee::getPeer();
       return array_shift($peer->doSelect(new Criteria(
         array('event_id', $event_id, EQUAL),
@@ -75,7 +75,7 @@
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByEvent_id($event_id) {
+    public static function getByEvent_id($event_id) {
       $peer= EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('event_id', $event_id, EQUAL)));
     }
@@ -87,7 +87,7 @@
      * @return  &de.uska.db.EventAttendee[] object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getByPlayer_id($player_id) {
+    public static function getByPlayer_id($player_id) {
       $peer= EventAttendee::getPeer();
       return $peer->doSelect(new Criteria(array('player_id', $player_id, EQUAL)));
     }
