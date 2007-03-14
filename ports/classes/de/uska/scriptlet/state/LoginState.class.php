@@ -36,6 +36,8 @@
       
       if ($request->hasParam('logout')) {
         $context->setUser($n= NULL);
+        $response->setCookie(new Cookie('uska-user', '', time() - 1000));
+        $response->setCookie(new Cookie('uska.loginname', '', time() - 1000));
       
         $uri= $request->getURI();
         $response->sendRedirect(sprintf('%s://%s/xml/uska.de_DE/login',

@@ -33,52 +33,48 @@
       $eventid= intval($request->getQueryString());
       if (!$eventid) return FALSE;
       
-      try {
-        $event= Event::getByEvent_id($eventid);
-        
-        $event && $query= $this->db->query('
-          select
-            p.player_id,
-            p.firstname,
-            p.lastname,
-            p.player_type_id,
-            p.created_by,
-            a.offers_seats,
-            a.needs_driver,
-            a.attend
-          from
-            event as e,
-            player as p left outer join event_attendee as a on p.player_id= a.player_id and a.event_id= e.event_id
-          where p.player_type_id= 1
-            and p.team_id= e.team_id
-            and p.bz_id= 20000
-            and e.event_id= %1$d
-          
-          union select
-            p.player_id,
-            p.firstname,
-            p.lastname,
-            p.player_type_id,
-            p.created_by,
-            a.offers_seats,
-            a.needs_driver,
-            a.attend
-          from
-            event_attendee as a,
-            player as p
-          where p.player_id= a.player_id
-            and p.player_type_id= 2
-            and a.event_id= %1$d
-            and a.attend= 1
-            
-          order by
-            attend desc, player_type_id, lastname, firstname
-          ',
-          $event->getEvent_id()
-        );
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $event= Event::getByEvent_id($eventid);
+
+      $event && $query= $this->db->query('
+        select
+          p.player_id,
+          p.firstname,
+          p.lastname,
+          p.player_type_id,
+          p.created_by,
+          a.offers_seats,
+          a.needs_driver,
+          a.attend
+        from
+          event as e,
+          player as p left outer join event_attendee as a on p.player_id= a.player_id and a.event_id= e.event_id
+        where p.player_type_id= 1
+          and p.team_id= e.team_id
+          and p.bz_id= 20000
+          and e.event_id= %1$d
+
+        union select
+          p.player_id,
+          p.firstname,
+          p.lastname,
+          p.player_type_id,
+          p.created_by,
+          a.offers_seats,
+          a.needs_driver,
+          a.attend
+        from
+          event_attendee as a,
+          player as p
+        where p.player_id= a.player_id
+          and p.player_type_id= 2
+          and a.event_id= %1$d
+          and a.attend= 1
+
+        order by
+          attend desc, player_type_id, lastname, firstname
+        ',
+        $event->getEvent_id()
+      );
       
       // Convert event object into array, so we can add it without
       // the description member (which needs markup processing)

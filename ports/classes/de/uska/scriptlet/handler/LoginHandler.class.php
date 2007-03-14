@@ -27,8 +27,7 @@
       parent::__construct();
       $this->setWrapper(new LoginWrapper());
       
-      $log= Logger::getInstance();
-      $this->cat= $log->getCategory();
+      $this->cat= Logger::getInstance()->getCategory();
     }
     
     /**
@@ -41,11 +40,7 @@
       $cm= ConnectionManager::getInstance();
       $wrapper= $this->getWrapper();
       
-      try {
-        $player= Player::getByUsername($wrapper->getUsername());
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $player= Player::getByUsername($wrapper->getUsername());
       
       if (!is('de.uska.db.Player', $player)) {
         $this->addError('mismatch');
@@ -64,20 +59,16 @@
       
       $context->setUser($player);
       
-      try {
-        $db= $cm->getByHost('uska', 0);
-        $perms= $db->select('
-            p.name
-          from
-            plain_right_matrix as prm,
-            permission as p
-          where p.permission_id= prm.permission_id
-            and prm.player_id= %d',
-          $player->getPlayer_id()
-        );
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $db= $cm->getByHost('uska', 0);
+      $perms= $db->select('
+          p.name
+        from
+          plain_right_matrix as prm,
+          permission as p
+        where p.permission_id= prm.permission_id
+          and prm.player_id= %d',
+        $player->getPlayer_id()
+      );
       
       $cperms= array();
       foreach ($perms as $p) { $cperms[$p['name']]= TRUE; }
@@ -97,6 +88,17 @@
 
       // Set a cookie
       $response->setCookie(new Cookie('uska-user', $context->user->getUsername()));
+      
+      // Remember user if he requests so
+      if ($request->getParam('remember') == 'yes') {
+        $secret= PropertyManager::getInstance()->getProperties('product')->readString('login', 'secret');
+        $response->setCookie(new Cookie(
+          'uska.loginname', 
+          $context->user->getUsername().'|'.md5($context->user->getUsername().$secret),
+          time() + (86400 * 365),  // one year
+          '/'
+        ));
+      }
 
       $return= $request->session->getValue('authreturn');
 

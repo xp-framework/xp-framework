@@ -24,8 +24,7 @@
      *
      */
     public function __construct() {
-      $log= Logger::getInstance();
-      $this->cat= $log->getCategory();
+      $this->cat= Logger::getInstance()->getCategory();
     }
     
     /**
@@ -37,9 +36,18 @@
      * @param   &scriptlet.xml.Context context
      */
     public function setup($request, $response, $context) {
+      $autologin= FALSE;
+    
+      // Login user, if auto-login is enabled through cookie
+      if ($request->hasCookie('uska.loginname')) {
+        list ($username, $hash)= explode('|', $request->getCookie('uska.loginname')->getValue());
+        if ($hash == md5($username.PropertyManager::getInstance()->getProperties('product')->readString('login', 'secret'))) {
+          $autologin= TRUE;
+        }
+      }
     
       // Automatically handle authentication if state indicates so
-      if ($this->requiresAuthentication()) {
+      if ($this->requiresAuthentication() || $autologin) {
         if (!is('de.uska.db.Player', $context->user)) {
 
           // Store return point in session
