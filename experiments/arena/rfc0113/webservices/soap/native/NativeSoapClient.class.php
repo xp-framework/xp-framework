@@ -21,6 +21,7 @@
     public
       $endpoint = '',
       $uri      = '',
+      $wsdl     = FALSE,
       $cat      = NULL;
     
     /**
@@ -29,9 +30,10 @@
      * @param   peer.URL endpoint
      * @param   string uri
      */
-    public function __construct($endpoint, $uri) {
+    public function __construct($endpoint, $uri, $useWsdl= FALSE) {
       $this->endpoint= $endpoint;
       $this->uri= $uri;
+      $this->wsdl= $useWsdl;
       $this->map= array(
         'SOAPLong'  => 'long'
       );
@@ -130,14 +132,8 @@
       $args= func_get_args();
       $method= array_shift($args);
       
-      // Take care of wrapping XP SOAP types into respective ext/soap value objects
-      $args= $this->checkParams($args);
-      
       $options= array(
-        'location'    => $this->endpoint->getURL(),
-        'uri'         => $this->uri,
         'encoding'    => 'iso-8859-1',
-        'use'         => SOAP_RPC,
         'exceptions'  => 0,
         'trace'       => ($this->cat != NULL)
       );
@@ -154,7 +150,20 @@
         $options['classmap']= $this->map;
       }
       
-      $client= new SoapClient(NULL, $options);
+      if ($this->wsdl) {
+        $client= new SoapClient($this->endpoint->getURL(), $options);
+      } else {
+      
+        $options['location']= $this->endpoint->getURL();
+        $options['uri']= $this->uri;
+        $options['use']= SOAP_RPC;
+        
+        $client= new SoapClient(NULL, $options);
+
+        // Take care of wrapping XP SOAP types into respective ext/soap value objects
+        $args= $this->checkParams($args);
+      }
+      
       $result= call_user_func_array(array($client, $method), $args);
       
       $this->cat && $this->cat->debug('>>>',
