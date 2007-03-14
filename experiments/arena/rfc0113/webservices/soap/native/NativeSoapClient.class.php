@@ -55,7 +55,7 @@
      * @return  
      */
     public function registerMapping($qname, $class) {
-      $this->map[$qname->localpart]= $class->getName();
+      $this->map[$qname->localpart]= xp::reflect($class->getName());
     }
     
     /**
@@ -146,7 +146,7 @@
         $options['password']= $this->endpoint->getPassword();
       }
       
-      if (sizeof($this->map)) {
+      if (sizeof($this->map) && !$wsdl) {
         $options['classmap']= $this->map;
       }
       
