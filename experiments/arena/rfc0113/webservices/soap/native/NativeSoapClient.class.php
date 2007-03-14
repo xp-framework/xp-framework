@@ -55,7 +55,7 @@
      * @return  
      */
     public function registerMapping($qname, $class) {
-      $this->map[$qname->toString()]= $class->getName();
+      $this->map[$qname->localpart]= $class->getName();
     }
     
     /**
