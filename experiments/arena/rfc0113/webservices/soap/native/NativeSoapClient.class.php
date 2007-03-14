@@ -7,7 +7,7 @@
   uses(
     'util.log.Traceable',
     'webservices.soap.SOAPFaultException',
-    'webservices.soap.SOAPFault'
+    'webservices.soap.SOAPFault'    
   );
 
   /**
@@ -57,6 +57,44 @@
     }
     
     /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  mixed[]
+     */
+    private function checkParams($args) {
+      foreach ($args as $i => $a) {
+        if ($a instanceof Parameter) {
+
+          // Instanceof testing frenzy begins here.
+          // This is necessary to convert XP Parameter and SOAP*-Types to 
+          // Soap-ext SoapParam and SoapVar
+          switch(TRUE) {
+            case ($a->value instanceof SOAPLong):
+              $args[$i] = new SoapParam(new SoapVar($a->value->long, XSD_LONG), $a->name);
+              break;
+            case ($a->value instanceof SOAPBase64Binary):
+              $args[$i] = new SoapParam(new SoapVar($a->value->encoded, XSD_BASE64BINARY), $a->name);
+              break;
+            case ($a->value instanceof SOAPHexBinary):
+              $args[$i] = new SoapParam(new SoapVar($a->value->encoded, XSD_HEXBINARY), $a->name);
+              break;
+            case ($a->value instanceof SOAPDateTime):
+              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
+              break;
+            /* The following types don't work yet.
+            case ($a->value instanceof SOAPHashMap):
+              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
+              break;
+            case ($a->value instanceof SOAPVector):
+              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
+              break;*/
+          }
+        }
+      }
+    }
+    
+    /**
      * Invoke method call
      *
      * @param   string method name
@@ -66,7 +104,7 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
-      $args= func_get_args();
+      $args= $this->checkParams(func_get_args());
       $method= array_shift($args);
       
       $options= array(
