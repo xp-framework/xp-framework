@@ -57,6 +57,16 @@
               <td><input type="password" name="password" value="{/formresult/formvalues/param[@name= 'password']}" size="20"/></td>
             </tr>
             <tr>
+              <td></td>
+              <td>
+                <input type="hidden" name="remember" value="0"/>
+                <input type="checkbox" name="remember" value="yes"/>Auf diesem Computer automatisch einloggen
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">&#160;</td>
+            </tr>
+            <tr>
               <td>&#160;</td>
               <td><input type="submit" name="submit" value="Anmelden"/></td>
             </tr>

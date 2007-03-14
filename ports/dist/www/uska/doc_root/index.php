@@ -4,7 +4,7 @@
  * $Id$ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development');
+  xp::sapi('scriptlet.development', 'cgi');
   uses(
     'util.PropertyManager',
     'rdbms.ConnectionManager',
@@ -13,19 +13,12 @@
   );
   
   // {{{ main
-  $pm= &PropertyManager::getInstance();
+  $pm= PropertyManager::getInstance();
   $pm->configure('../etc/');
   
-  $log= &Logger::getInstance();
-  $log->configure($pm->getProperties('log'));
-  $cat= &$log->getCategory();
+  Logger::getInstance()->configure($pm->getProperties('log'));
+  ConnectionManager::getInstance()->configure($pm->getProperties('database'));
 
-  $cm= &ConnectionManager::getInstance();
-  $cm->configure($pm->getProperties('database'));
-
-  scriptlet::run(new UskaScriptlet(
-    new ClassLoader('de.uska.scriptlet'), 
-    '../xsl/'
-  ));
+  scriptlet::run(new UskaScriptlet('de.uska.scriptlet', '../xsl/'));
   // }}}  
 ?>
