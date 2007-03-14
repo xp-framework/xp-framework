@@ -21,7 +21,7 @@
     public
       $endpoint = '',
       $uri      = '',
-      $trace    = NULL;
+      $cat      = NULL;
     
     /**
      * Constructor
@@ -57,40 +57,63 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Iterate over all arguments to wrap them into ext/soap
+     * value objects, if needed
      *
-     * @param   
+     * @param   mixed[]
      * @return  mixed[]
      */
     private function checkParams($args) {
       foreach ($args as $i => $a) {
-        if ($a instanceof Parameter) {
-
-          // Instanceof testing frenzy begins here.
-          // This is necessary to convert XP Parameter and SOAP*-Types to 
-          // Soap-ext SoapParam and SoapVar
-          switch(TRUE) {
-            case ($a->value instanceof SOAPLong):
-              $args[$i] = new SoapParam(new SoapVar($a->value->long, XSD_LONG), $a->name);
-              break;
-            case ($a->value instanceof SOAPBase64Binary):
-              $args[$i] = new SoapParam(new SoapVar($a->value->encoded, XSD_BASE64BINARY), $a->name);
-              break;
-            case ($a->value instanceof SOAPHexBinary):
-              $args[$i] = new SoapParam(new SoapVar($a->value->encoded, XSD_HEXBINARY), $a->name);
-              break;
-            case ($a->value instanceof SOAPDateTime):
-              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
-              break;
-            /* The following types don't work yet.
-            case ($a->value instanceof SOAPHashMap):
-              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
-              break;
-            case ($a->value instanceof SOAPVector):
-              $args[$i] = new SoapParam(new SoapVar($a->value->value, XSD_DATETIME), $a->name);
-              break;*/
-          }
+        if ($a instanceof Parameter || $a instanceof SoapType) {
+          $args[$i]= $this->wrapParameter($a);
         }
+      }
+      
+      return $args;
+    }
+    
+
+    /**
+     * Wrap single argument to ext/soap value object
+     *
+     * @param   mixed parameter
+     * @return  mixed
+     * @throws  lang.IllegalArgumentException if parameter type cannot be converted
+     */
+    private function wrapParameter($parameter) {
+    
+      // Instanceof testing frenzy begins here.
+      // This is necessary to convert XP Parameter and SOAP*-Types to 
+      // Soap-ext SoapParam and SoapVar
+      switch (TRUE) {
+        case ($parameter instanceof Parameter):
+          if ($parameter->value instanceof SOAPType) {
+            return new SoapParam($this->wrapParameter($parameter->value), $parameter->name);
+          }
+          
+          return new SoapParam($parameter->value, $parameter->name);
+          
+        case ($parameter instanceof SOAPLong):
+          return new SoapVar($parameter->long, XSD_LONG);
+          
+        case ($parameter instanceof SOAPBase64Binary):
+          return new SoapVar($parameter->encoded, XSD_BASE64BINARY);
+          
+        case ($parameter instanceof SOAPHexBinary):
+          return new SoapVar($parameter->encoded, XSD_HEXBINARY);
+          
+        case ($parameter instanceof SOAPDateTime):
+          return new SoapVar($parameter->value, XSD_DATETIME);
+          
+        case ($parameter instanceof SOAPHashMap):
+          return $parameter->value;
+          
+        // case ($parameter instanceof SOAPVector):
+        //   return new SoapVar($parameter->value, XSD_DATETIME);
+        
+        default:
+          throw new IllegalArgumentException('Cannot serialize '.$parameter->getClassName());
       }
     }
     
@@ -104,8 +127,11 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
-      $args= $this->checkParams(func_get_args());
+      $args= func_get_args();
       $method= array_shift($args);
+      
+      // Take care of wrapping XP SOAP types into respective ext/soap value objects
+      $args= $this->checkParams($args);
       
       $options= array(
         'location'    => $this->endpoint->getURL(),
