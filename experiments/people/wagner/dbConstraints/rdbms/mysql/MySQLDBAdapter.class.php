@@ -223,7 +223,7 @@
         for ($i= 0, $to= count($params); $i < $to; $i++) $params[$i]= substr($params[$i], 1, -1);
         $attributes[]= $params;
       }
-      $constraint->setKeys(array_combine($attributes[1], $attributes[1]));
+      $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
       $constraint->setName($quotstrings[0]);
       $constraint->setSource($quotstrings[1]);
       return $constraint;
