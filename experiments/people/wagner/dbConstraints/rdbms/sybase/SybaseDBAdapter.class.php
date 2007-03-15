@@ -200,6 +200,16 @@
         if ($record['status'] & 2048) $index->primary= TRUE;
       }
       
+      // Get foreign key constraints
+      // in mysql the only way is to parse the creat statement
+      $sp_helpconstraint= $this->conn->query('sp_helpconstraint %s, detail', $this->qualifiedTablename($table, $database));
+      while ($db_constraint= $sp_helpconstraint->next()) {
+        if ('referential constraint' != $db_constraint['type']) continue;
+        if (0 !== strpos($db_constraint['definition'], $table.' ')) continue;
+        var_dump($db_constraint['definition'], $table);
+        $t->addForeignKeyConstraint($this->parseForeignKey($db_constraint));
+      }
+
       return $t;
     }
     
@@ -298,6 +308,109 @@
     private function database($database= NULL) {
       if (NULL !== $database) return $database;
       return $this->conn->query('select db_name() as db')->next('db');
+    }
+
+    /**
+     * get the foreign key object from a db result array
+     *
+     * @param   string[] dbresult array
+     * @return  rdbms.DBForeignKeyConstraint
+     */
+    private function parseForeignKey($db_constraint) {
+        $cstring= $db_constraint['definition'];
+        $bracestrings= $this->subBracerString($cstring);
+        $strings= explode(' ', $cstring);
+        $attributes= array();
+        foreach ($bracestrings as $bracestring) $attributes[]= $this->extractParams($bracestring);
+
+        $constraint= new DBForeignKeyConstraint();
+        $constraint->setSource($strings[5]);
+        $constraint->setName($db_constraint['name']);
+        $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
+        return $constraint;
+    }
+
+    /**
+     * cut bracered strings out of strings
+     *
+     * @param   string parsestring
+     * @return  string[] inner bracers
+     */
+    private function subBracerString(&$string) {
+      $rstring= '';
+      $braceredString= array();
+      $pos= 0;
+      while ($pos < strlen($string)) {
+        switch ($string{$pos}) {
+          case '(':
+          $braceredString[]= $this->parseBracerString($string, $pos);
+          break;
+          
+          default:
+          $rstring.= $string{$pos};
+        }
+        $pos++;
+      }
+      $string= $rstring;
+      return $braceredString;
+    }
+
+    /**
+     * get the text inner bracers
+     *
+     * @param   string parsestring
+     * @param   &int position where the bracered string begins
+     * @return  string inner bracers
+     */
+    private function parseBracerString($string, &$pos) {
+      $braceredString= '';
+      while ($pos++ < strlen($string)) {
+        switch ($string{$pos}) {
+          case ')':
+          return $braceredString;
+          break;
+          
+          case '(':
+          $braceredString.= $string{$pos};
+          $braceredString.= $this->parseBracerString($string, $pos).')';
+          break;
+          
+          default:
+          $braceredString.= $string{$pos};
+        }
+      }
+      return $braceredString;
+    }
+
+    /**
+     * get the single params in a paramstring
+     *
+     * @param   string paramstring
+     * @return  string[] paramstrings
+     */
+    private function extractParams($string) {
+      $paramArray= array();
+      $paramString= '';
+      $pos= 0;
+      while ($pos < strlen($string)) {
+        switch ($string{$pos}) {
+          case ',':
+          $paramArray[]= trim($paramString);
+          $paramString= '';
+          break;
+          
+          case '(':
+          $paramString.= $string{$pos};
+          $paramString.= $this->parseBracerString($string, $pos).')';
+          break;
+
+          default:
+          $paramString.= $string{$pos};
+        }
+        $pos++;
+      }
+      $paramArray[]= trim($paramString);
+      return $paramArray;
     }
   }
 ?>
