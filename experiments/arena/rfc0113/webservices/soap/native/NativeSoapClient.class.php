@@ -31,6 +31,7 @@
      * @param   string uri
      */
     public function __construct($endpoint, $uri, $useWsdl= FALSE) {
+      $endpoint instanceof SOAPHTTPTransport && $endpoint = $endpoint->_conn->request->url;
       $this->endpoint= $endpoint;
       $this->uri= $uri;
       $this->wsdl= $useWsdl;
