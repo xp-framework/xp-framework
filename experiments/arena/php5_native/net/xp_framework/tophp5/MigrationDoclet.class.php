@@ -191,6 +191,7 @@
                 if (')' == $tokens[$j]) break;
                 if (T_WHITESPACE == $tokens[$j][0] && FALSE !== strpos($tokens[$j][1], "\n")) $multiline= TRUE;
                 if (T_CONSTANT_ENCAPSED_STRING != $tokens[$j][0]) continue;
+                if (trim($tokens[$j][1], '\'"') == 'lang.Interface') continue;
                 $usesList[trim($tokens[$j][1], '\'"')]= TRUE;
               }
               
@@ -198,10 +199,14 @@
                 $usesList[$iface]= TRUE;
               }
               
-              $out.= $this->printUses(array_keys($usesList), $multiline);
+              if (sizeof($usesList) > 0) {
+                $out.= $this->printUses(array_keys($usesList), $multiline);
+                $i= $j+ 1;
+              } else {
+                $i= $j+ 2; // Skip uses and newline completely
+              }
               $printedUses= TRUE;
               
-              $i= $j+ 1;
               $t= '';
               break;
             
@@ -301,6 +306,7 @@
 
             case ST_INSTANCE_OF.'[':
             case ST_INSTANCE_OF.']':
+            case ST_INSTANCE_OF.'=':
               $instanceof[$instanceof['op']].= $t;
               break;
 
