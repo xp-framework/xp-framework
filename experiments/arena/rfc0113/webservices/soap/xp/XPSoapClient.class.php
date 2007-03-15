@@ -8,7 +8,7 @@
     'webservices.soap.SOAPMessage',
     'xml.QName',
     'webservices.soap.Parameter',
-    'webservices.soap.SOAPMapping',
+    'webservices.soap.xp.SOAPMapping',
     'util.log.Traceable'
   );
   

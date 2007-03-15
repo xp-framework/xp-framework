@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.SOAPNode', 'webservices.soap.SOAPHeader');
+  uses('webservices.soap.xp.SOAPNode', 'webservices.soap.xp.XPSOAPHeader');
 
   /**
    * Represent a SOAP header element.
@@ -13,7 +13,7 @@
    * @see       http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383497
    * @purpose   Represent SOAP header element.
    */
-  class SOAPHeaderElement extends Object implements SOAPHeader {
+  class SOAPHeaderElement extends Object implements XPSOAPHeader {
     public
       $name=              '',
       $mustUnderstand=    FALSE,

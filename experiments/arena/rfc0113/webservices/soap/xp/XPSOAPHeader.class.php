@@ -10,7 +10,7 @@
    * @see      xp://webservices.soap.SOAPHeaderElement
    * @purpose  Interface
    */
-  interface SOAPHeader {
+  interface XPSOAPHeader {
 
     /**
      * Retrieve XML representation of this header for use in a SOAP

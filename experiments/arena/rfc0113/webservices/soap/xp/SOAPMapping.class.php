@@ -10,7 +10,7 @@
    * Provide a mapping between qnames and XP
    * classes for SOAPClients.
    *
-   * @see      xp://webservices.soap.SOAPClient
+   * @see      xp://webservices.soap.xp.XPSOAPClient
    * @purpose  Mapping for QNames
    */
   class SOAPMapping extends Object {
