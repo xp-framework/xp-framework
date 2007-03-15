@@ -10,7 +10,6 @@
   define('SOAPNATIVE',  'webservices.soap.native.NativeSoapClient');
   define('SOAPXP',      'webservices.soap.xp.XPSoapClient');
 
-                    
   /**
    * (Insert class' description here)
    *
@@ -26,6 +25,9 @@
     protected static
       $instance   = NULL;
       
+    static function __static() {
+      self::$instance= new self();
+    }
     /**
      * (Insert method's description here)
      *
@@ -38,7 +40,7 @@
         $this->drivers[]= 'webservices.soap.native.NativeSoapClient';
       }
     }
-          
+
     /**
      * (Insert method's description here)
      *
@@ -46,11 +48,9 @@
      * @return  
      */
     public static function getInstance() {
-      if (NULL === self::$instance) {
-        self::$instance= new self();
-      }
+      return self::$instance;
     }
-    
+
     /**
      * (Insert method's description here)
      *
@@ -60,7 +60,7 @@
     public function availableDrivers() {
       return $this->drivers;
     }
-    
+
     /**
      * (Insert method's description here)
      *
@@ -69,6 +69,20 @@
      */
     public function driverAvailable($driver) {
       // TBI
+    }
+
+    /**
+     * Select Drivers
+     *
+     * @param   
+     * @throws  lang.IllegalArgumentException
+     */
+    public function switchDriver() {
+      if ($this->usedriver == SOAPXP) {
+        $this->usedriver = SOAPNATIVE;
+      } else {
+        $this->usedriver = SOAPXP;
+      }
     }
 
     /**
@@ -108,7 +122,7 @@
         return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
       }
     }
-    
+
     /**
      * (Insert method's description here)
      *
@@ -118,7 +132,7 @@
     public function instanciate($preferredOrder= array()) {
       // TBI
     }
-    
+
     /**
      * (Insert method's description here)
      *
