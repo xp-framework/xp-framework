@@ -23,7 +23,7 @@
       $uri      = '',
       $wsdl     = FALSE,
       $cat      = NULL;
-    
+
     /**
      * Constructor
      *
@@ -31,15 +31,14 @@
      * @param   string uri
      */
     public function __construct($endpoint, $uri, $useWsdl= FALSE) {
-      $endpoint instanceof SOAPHTTPTransport && $endpoint = $endpoint->_conn->request->url;
-      $this->endpoint= $endpoint;
+      $this->endpoint= new URL($endpoint);
       $this->uri= $uri;
       $this->wsdl= $useWsdl;
       $this->map= array(
         'SOAPLong'  => 'long'
       );
     }
-    
+
     /**
      * Set trace 
      *
@@ -48,7 +47,7 @@
     public function setTrace($cat) {
       $this->cat= $cat;
     }
-    
+
     /**
      * (Insert method's description here)
      *
@@ -58,7 +57,7 @@
     public function registerMapping($qname, $class) {
       $this->map[$qname->localpart]= xp::reflect($class->getName());
     }
-    
+
     /**
      * Iterate over all arguments to wrap them into ext/soap
      * value objects, if needed
@@ -75,7 +74,6 @@
       
       return $args;
     }
-    
 
     /**
      * Wrap single argument to ext/soap value object
@@ -85,7 +83,7 @@
      * @throws  lang.IllegalArgumentException if parameter type cannot be converted
      */
     private function wrapParameter($parameter) {
-    
+
       // Instanceof testing frenzy begins here.
       // This is necessary to convert XP Parameter and SOAP*-Types to 
       // Soap-ext SoapParam and SoapVar
