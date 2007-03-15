@@ -77,6 +77,18 @@
      * @param   
      * @return  
      */
+    public function selectDriver($driver) {
+      if ($usedriver == SOAPXP || $usedriver == SOAPNATIVE) {
+        $usedriver = $driver;
+      }
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function fromWsdl($endpoint, $uri) {
       return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri, TRUE);
     }
