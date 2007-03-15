@@ -46,8 +46,8 @@
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
-    public function __construct($transport, $action, $targetNamespace= NULL) {
-      $this->transport= $transport;
+    public function __construct($url, $action, $targetNamespace= NULL) {
+      $this->transport= new SOAPHTTPTransport($url);
       $this->action= $action;
       $this->targetNamespace= $targetNamespace;
       $this->mapping= new SOAPMapping();
