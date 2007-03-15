@@ -78,8 +78,8 @@
      * @return  
      */
     public function selectDriver($driver) {
-      if ($usedriver == SOAPXP || $usedriver == SOAPNATIVE) {
-        $usedriver = $driver;
+      if ($this->usedriver == SOAPXP || $this->usedriver == SOAPNATIVE) {
+        $this->usedriver = $driver;
       }
     }
 
@@ -100,13 +100,10 @@
      * @return  
      */
     public function fromEndpoint($endpoint, $uri) {
-    
-      // use the XP SoapClient if ext-soap is not loaded or 
-      // SOAPXP is the selected driver. 
-      if (!extension_loaded('soap') || $usedriver = SOAPXP) {
-        return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
+      if (extension_loaded('soap') && $this->usedriver == SOAPNATIVE) {
+        return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri, FALSE);        
       } else {
-        return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri, FALSE);
+        return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
       }
     }
 
