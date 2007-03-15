@@ -387,7 +387,7 @@
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       $r= </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
-        <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+        <xsl:text>        array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
         <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
         <xsl:text>&#10;</xsl:text>
       </xsl:for-each>
@@ -407,7 +407,7 @@
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
-        <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+        <xsl:text>        array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
         <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
         <xsl:text>&#10;</xsl:text>
       </xsl:for-each>
@@ -422,7 +422,7 @@
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->iteratorFor(new Criteria(&#10;</xsl:text>
     <xsl:for-each select="key">
-      <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+      <xsl:text>        array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
       <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
       <xsl:text>&#10;</xsl:text>
     </xsl:for-each>
