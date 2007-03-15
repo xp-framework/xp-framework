@@ -2,7 +2,7 @@ RFC 0113: Include PHP5 SOAP extension
 ========================================================================
 $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
-@authors: kiesel
+@authors: kiesel, rene
 @created: Wed Feb  7 11:39:03 CET 2007
 @status: draft
 @category: webservices.soap
@@ -16,6 +16,26 @@ the following classes must be renamed:
   
 as they clash with classes brought in by the extension (which we cannot
 change).
+
+*Update*
+
+The following classes have been moved:
+
+webservices.soap.SOAPHeaderElement.class.php
+webservices.soap.SOAPMapping.class.php      
+webservices.soap.SOAPNode.class.php         
+webservices.soap.SOAPHeader.class.php     
+webservices.soap.XPSoapClient.class.php     
+
+Now their FQCN looks like this:
+
+webservices.soap.xp.SOAPHeaderElement.class.php
+webservices.soap.xp.SOAPMapping.class.php      
+webservices.soap.xp.SOAPNode.class.php         
+webservices.soap.xp.XPSOAPHeader.class.php     
+webservices.soap.xp.XPSoapClient.class.php
+
+It's probably a good idea to rename XPSOAPHeaderElement for more consitency.
 
 Rationale
 ---------
@@ -44,6 +64,29 @@ the derivation will bind the class to a certain SOAP implementation.
 Instead, clients should become simple objects with a $client member that
 gets inserted on object instantiation through the factory.
 
+I introduced a new class called SoapDriver as a test. The usage is pretty 
+straight forward.
+
+*Update*
+
+For example:
+SoapDriver::getInstance()->fromEndpoint(http://somesoapservice/is/here/, 
+  'urn:someSoapMethod');
+
+This will create an instance of the SoapDriver using the XPSoapClient (which
+is the default driver). The Soapcall itself hasn't changed:
+->invoke($method, $vars).
+
+The method "selectDriver($driver)" will let you change to a different Soap-
+Driver (Right now,SOAPNATIVE and SOAPXP are supported).
+
+You can also use WSDL-Mode:
+
+SoapDriver::getInstance()->fromWsdl(http://somesoapservice/is/here/, 
+'urn:someSoapMethod');
+
+WSDL is only supported by the PHP5-soap-extension and _not by the XPSoapClient.
+
 Security considerations
 -----------------------
 n/a
@@ -58,7 +101,7 @@ n/a
 
 Related documents
 -----------------
-
+http://experiments.xp-framework.net/?arena,rfc0113/
 Comments
 --------
 - kiesel, Wed Feb  7 13:12:36 CET 2007
