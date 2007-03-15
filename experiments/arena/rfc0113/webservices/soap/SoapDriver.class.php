@@ -72,14 +72,16 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Select Drivers
      *
      * @param   
-     * @return  
+     * @throws  lang.IllegalArgumentException
      */
     public function selectDriver($driver) {
       if ($this->usedriver == SOAPXP || $this->usedriver == SOAPNATIVE) {
         $this->usedriver = $driver;
+      } else {
+        throw (new IllegalArgumentException('Driver '.$driver.' is not a valid Driver'));
       }
     }
 
@@ -106,7 +108,6 @@
         return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
       }
     }
-
     
     /**
      * (Insert method's description here)
