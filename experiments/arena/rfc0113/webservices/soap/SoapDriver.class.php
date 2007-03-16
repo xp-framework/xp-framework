@@ -7,9 +7,6 @@
     
 //  uses();
   
-  define('SOAPNATIVE',  'webservices.soap.native.NativeSoapClient');
-  define('SOAPXP',      'webservices.soap.xp.XPSoapClient');
-
   /**
    * (Insert class' description here)
    *
@@ -20,7 +17,7 @@
   class SoapDriver extends Object {
     public
       $drivers    = array(),
-      $usedriver  = SOAPXP;
+      $usedriver  = 'SOAPXP';
       
     protected static
       $instance   = NULL;
@@ -29,35 +26,29 @@
       self::$instance= new self();
     }
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
      */
     public function __construct() {
-      $this->drivers= array(
-        'SOAPXP'  => array(
-          'fqcn'  => 'webservices.soap.xp.XpSoapClient',
-          'wsdl'  => FALSE
-        )
+      $this->drivers['SOAPXP']= array(
+        'fqcn'  => 'webservices.soap.xp.XPSoapClient',
+        'wsdl'  => FALSE
       );
       
-      // $this->drivers['webservices.soap.xp.XpSoapClient']= TRUE;
       if (extension_loaded('soap')) {
         $this->drivers['SOAPNATIVE']= array(
           'fqcn'  => 'webservices.soap.native.NativeSoapClient',
           'wsdl'  => TRUE
         );
-        
-        // $this->drivers['webservices.soap.native.NativeSoapClient']= 'wsdl';
       }
     }
     
     /**
-     * (Insert method's description here)
+     * Registers a new SoapDriver. The new driver must have the 
+     * same contructor and 
      *
-     * @param   
-     * @return  
+     * @param   string fqcn, boolean supportsWsdl
+     * @return  string
      */
     public function registerDriver($fqcn, $supportsWsdl) {
       static $nr= 0;
@@ -71,20 +62,18 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Gets an instance of the class
      *
-     * @param   
-     * @return  
+     * @return  object self::$instance
      */
     public static function getInstance() {
       return self::$instance;
     }
 
     /**
-     * (Insert method's description here)
+     * Shows available, registred drivers
      *
-     * @param   
-     * @return  
+     * @return  drivers[]
      */
     public function availableDrivers() {
       return $this->drivers;
@@ -93,7 +82,7 @@
     /**
      * Select Drivers
      *
-     * @param   
+     * @param   string driver
      * @throws  lang.IllegalArgumentException
      */
     public function selectDriver($driver) {
@@ -104,10 +93,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Create an instance of a SoapDriver in WSDL-Mode.
      *
-     * @param   
-     * @return  
+     * @param   string endpoint, string uri
+     * @return  object 
      */
     public function fromWsdl($endpoint, $uri) {
       // Find first driver that supports WSDL
@@ -129,15 +118,15 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Create an instance of a SoapDriver in WSDL-Mode.
      *
-     * @param   
-     * @return  
+     * @param   string endpoint, string uri
+     * @return  object
      */
     public function fromEndpoint($endpoint, $uri) {
-    if ($this->usedriver == SOAPNATIVE) {}
-      return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri);        
-      return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
+      var_dump($this->drivers[$this->usedriver]['fqcn']);
+      return XPClass::forName($this->drivers[$this->usedriver]['fqcn'])->newInstance($endpoint, $uri);        
+      
     }
   }
 ?>
