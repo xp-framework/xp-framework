@@ -145,7 +145,7 @@
         $options['password']= $this->endpoint->getPassword();
       }
       
-      if (sizeof($this->map) && !$wsdl) {
+      if (sizeof($this->map) && !$this->wsdl) {
         $options['classmap']= $this->map;
       }
       
@@ -158,10 +158,10 @@
         $options['use']= SOAP_RPC;
         
         $client= new SoapClient(NULL, $options);
+      }
 
         // Take care of wrapping XP SOAP types into respective ext/soap value objects
         $args= $this->checkParams($args);
-      }
       
       $result= call_user_func_array(array($client, $method), $args);
       
