@@ -34,9 +34,7 @@
       $this->endpoint= new URL($endpoint);
       $this->uri= $uri;
       $this->wsdl= FALSE;
-      $this->map= array(
-        'SOAPLong'  => 'long'
-      );
+      $this->map= array();
     }
 
     /**
@@ -154,7 +152,7 @@
         $options['password']= $this->endpoint->getPassword();
       }
       
-      if (sizeof($this->map) && !$this->wsdl) {
+      if (sizeof($this->map)) {
         $options['classmap']= $this->map;
       }
       
