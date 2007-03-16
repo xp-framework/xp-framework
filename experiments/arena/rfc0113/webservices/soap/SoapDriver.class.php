@@ -35,12 +35,41 @@
      * @return  
      */
     public function __construct() {
-      $this->drivers[]= 'webservices.soap.xp.XpSoapClient';
+      $this->drivers= array(
+        'SOAPXP'  => array(
+          'fqcn'  => 'webservices.soap.xp.XpSoapClient',
+          'wsdl'  => FALSE
+        )
+      );
+      
+      // $this->drivers['webservices.soap.xp.XpSoapClient']= TRUE;
       if (extension_loaded('soap')) {
-        $this->drivers[]= 'webservices.soap.native.NativeSoapClient';
+        $this->drivers['SOAPNATIVE']= array(
+          'fqcn'  => 'webservices.soap.native.NativeSoapClient',
+          'wsdl'  => TRUE
+        );
+        
+        // $this->drivers['webservices.soap.native.NativeSoapClient']= 'wsdl';
       }
     }
-
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function registerDriver($fqcn, $supportsWsdl) {
+      static $nr= 0;
+      
+      $this->drivers['SOAPRUNTIME'.$nr]= array(
+        'fqcn'  => $fqcn,
+        'wsdl'  => $supportsWsdl
+      );
+      
+      return 'SOAPRUNTIME'.$nr++;
+    }
+    
     /**
      * (Insert method's description here)
      *
@@ -62,41 +91,16 @@
     }
 
     /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function driverAvailable($driver) {
-      // TBI
-    }
-
-    /**
-     * Select Drivers
-     *
-     * @param   
-     * @throws  lang.IllegalArgumentException
-     */
-    public function switchDriver() {
-      if ($this->usedriver == SOAPXP) {
-        $this->usedriver = SOAPNATIVE;
-      } else {
-        $this->usedriver = SOAPXP;
-      }
-    }
-
-    /**
      * Select Drivers
      *
      * @param   
      * @throws  lang.IllegalArgumentException
      */
     public function selectDriver($driver) {
-      if ($this->usedriver == SOAPXP || $this->usedriver == SOAPNATIVE) {
-        $this->usedriver = $driver;
-      } else {
-        throw (new IllegalArgumentException('Driver '.$driver.' is not a valid Driver'));
+      if (!isset($this->drivers[$driver])) {
+        throw new IllegalArgumentException('Driver '.$driver.' is not a valid Driver');
       }
+      $this->usedriver= $driver;
     }
 
     /**
@@ -106,7 +110,22 @@
      * @return  
      */
     public function fromWsdl($endpoint, $uri) {
-      return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri, TRUE);
+      // Find first driver that supports WSDL
+      if ($this->drivers[$this->usedriver]['wsdl']) {
+        $client= XPClass::forName($this->drivers[$this->usedriver]['fqcn'])->newInstance($endpoint);
+        $client->setWsdl(TRUE);
+        return $client;
+      }
+      
+      foreach ($this->drivers as $driver) {
+        if ($driver['wsdl']) {
+          $client= XPClass::forName($driver['fqcn'])->newInstance($endpoint);
+          $client->setWsdl(TRUE);
+          return $client;
+        }
+      }
+      
+      throw new IllegalStateException('No SOAP driver registered with WSDL abilities');
     }
 
     /**
@@ -116,31 +135,9 @@
      * @return  
      */
     public function fromEndpoint($endpoint, $uri) {
-      if (extension_loaded('soap') && $this->usedriver == SOAPNATIVE) {
-        return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri, FALSE);        
-      } else {
-        return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
-      }
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function instanciate($preferredOrder= array()) {
-      // TBI
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public static function forName($url, $uri) {
-      return new NativeSoapClient($url, $uri);
+    if ($this->usedriver == SOAPNATIVE) {}
+      return XPClass::forName(SOAPNATIVE)->newInstance($endpoint, $uri);        
+      return XPClass::forName(SOAPXP)->newInstance($endpoint, $uri);
     }
   }
 ?>
