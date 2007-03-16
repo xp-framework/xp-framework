@@ -124,7 +124,6 @@
      * @return  object
      */
     public function fromEndpoint($endpoint, $uri) {
-      var_dump($this->drivers[$this->usedriver]['fqcn']);
       return XPClass::forName($this->drivers[$this->usedriver]['fqcn'])->newInstance($endpoint, $uri);        
       
     }
