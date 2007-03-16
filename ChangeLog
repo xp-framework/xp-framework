@@ -10,6 +10,9 @@ SVN version: ????
   (kiesel)
 - Implemented RFC #0110 - RemoteStackTraceElement
   (friebe)
+- Fix error "Call to protected method SOAPNode::_recurse()" in class
+  SOAPHashMap
+  (clang, ohinckel)
 
 Version 5.3.1, released 2007-02-27
 ----------------------------------
