@@ -9,7 +9,8 @@
     'xml.QName',
     'webservices.soap.Parameter',
     'webservices.soap.xp.SOAPMapping',
-    'util.log.Traceable'
+    'util.log.Traceable',
+    'webservices.soap.transport.SOAPHTTPTransport'
   );
   
   /**
