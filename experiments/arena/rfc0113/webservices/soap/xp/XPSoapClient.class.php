@@ -46,10 +46,10 @@
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
-    public function __construct($url, $action, $targetNamespace= NULL) {
+    public function __construct($url, $action) {
       $this->transport= new SOAPHTTPTransport($url);
       $this->action= $action;
-      $this->targetNamespace= $targetNamespace;
+      $this->targetNamespace= NULL;
       $this->mapping= new SOAPMapping();
     }
 
@@ -79,7 +79,15 @@
     public function setTrace($cat) {
       $this->transport->setTrace($cat);
     }
-    
+
+    /**
+     * (Insert method's description here)
+     *
+     * @throws lang.MethodNotImplementedException  
+     */
+    public function setWsdl() {
+      throw new MethodNotImplementedException ('XPSoapClient does not support WSDL-Mode');
+    }
     /**
      * Register mapping for a qname to a class object
      *
