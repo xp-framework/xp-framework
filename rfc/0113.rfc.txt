@@ -17,9 +17,7 @@ the following classes must be renamed:
 as they clash with classes brought in by the extension (which we cannot
 change).
 
-*Update*
-
-The following classes have been moved:
+The following classes will be moved from
 
 webservices.soap.SOAPHeaderElement.class.php
 webservices.soap.SOAPMapping.class.php      
@@ -27,15 +25,13 @@ webservices.soap.SOAPNode.class.php
 webservices.soap.SOAPHeader.class.php     
 webservices.soap.XPSoapClient.class.php     
 
-Now their FQCN looks like this:
+into their own subpackage of webservices.soap 
 
 webservices.soap.xp.SOAPHeaderElement.class.php
 webservices.soap.xp.SOAPMapping.class.php      
 webservices.soap.xp.SOAPNode.class.php         
 webservices.soap.xp.XPSOAPHeader.class.php     
 webservices.soap.xp.XPSoapClient.class.php
-
-It's probably a good idea to rename XPSOAPHeaderElement for more consitency.
 
 Rationale
 ---------
@@ -66,8 +62,6 @@ gets inserted on object instantiation through the factory.
 
 I introduced a new class called SoapDriver as a test. The usage is pretty 
 straight forward.
-
-*Update*
 
 For example:
 SoapDriver::getInstance()->fromEndpoint(http://somesoapservice/is/here/, 
@@ -109,5 +103,7 @@ Comments
   SOAPHTTPTransport in the future? Not like there was ever a need for a
   different transport that that.
 
+- rene, Fri Mar 16 13:19:16 CET 2007
+  Should SOAPHeaderElement also be renamed for consistencies sake?
 
 <EOF>
