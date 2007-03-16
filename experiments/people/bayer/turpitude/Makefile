@@ -6,6 +6,7 @@ JAVA_HOME = /usr/lib/jvm/sun-jdk-1.6
 PHP_HOME = /home/nsn/devel/php/php-5.2.0
 #PHP_HOME = /home/nsn/devel/php/php-hax
 ############################################
+PROPS = -Dnet.xp_framework.turpitude.ini.include_path=.:/path/to/xp
 JCC = $(JAVA_HOME)/bin/javac
 JBIN = $(JAVA_HOME)/bin/java
 JARBIN = $(JAVA_HOME)/bin/jar
@@ -47,6 +48,9 @@ context: turpitude.jar lib
 
 invoke: turpitude.jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.InvocableSample
+
+ini: turpitude.jar lib
+	$(LIBPATH) $(JBIN) -Djava.library.path=. $(PROPS) -cp $(CPATH) net.xp_framework.turpitude.samples.IniSample
 
 exec: jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php

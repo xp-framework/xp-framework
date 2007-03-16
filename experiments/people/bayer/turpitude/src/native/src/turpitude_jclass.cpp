@@ -299,6 +299,31 @@ void turpitude_jclass_method_setstatic(turpitude_javaclass_object* cls, int xarg
     ZVAL_NULL(return_value);
 }
 
+void turpitude_jclass_method_iscastable(turpitude_javaclass_object* cls, int xargc, zval*** xargv, zval* return_value) {
+    if (xargc < 1) 
+        php_error(E_ERROR, "invalid number of arguments to method isCastable: %d.", xargc);
+
+    // check object parameter validity
+    if (Z_TYPE_P(*xargv[0]) != IS_OBJECT)
+        php_error(E_ERROR, "invalid type for param 1 (object) in method isCastable, should be IS_OBJECT.");
+
+    zval* methodval = *xargv[0];
+    zend_object_value obj = methodval->value.obj;
+    zend_class_entry* methodce = Z_OBJCE_P(methodval);
+
+    if (strcmp(methodce->name, "TurpitudeJavaObject") != 0)
+        php_error(E_ERROR, "invalid type for param 1 (object) in method isCastable, should be TurpitudeJavaObject.");
+
+    // get object
+    turpitude_javaobject_object* jobj = (turpitude_javaobject_object*)zend_object_store_get_object(*xargv[0] TSRMLS_CC);
+
+    if (turpitude_jenv->IsAssignableFrom(jobj->java_class, cls->java_class)) {
+        ZVAL_BOOL(return_value, true);
+    } else {
+        ZVAL_BOOL(return_value, false);
+    }
+}
+
 //####################### helpers ##################################3
 
 static
@@ -380,6 +405,10 @@ void turpitude_jclass_call(INTERNAL_FUNCTION_PARAMETERS) {
         turpitude_jclass_method_create(cls, myval, xargc, xargv, return_value);
         method_valid = true;
     }
+    if (strcmp(Z_STRVAL_P(*argv[0]), "isCastable") == 0) {
+        turpitude_jclass_method_iscastable(cls, xargc, xargv, return_value);
+        method_valid = true;
+    }
 
     char* errmsg = (char*)emalloc(100 + strlen(method_name));
     memset(errmsg, 0, 99 + strlen(method_name));
@@ -399,13 +428,77 @@ void turpitude_jclass_tostring(INTERNAL_FUNCTION_PARAMETERS) {
 }
 
 void turpitude_jclass_get(INTERNAL_FUNCTION_PARAMETERS) {
-    //printf("__get called\n");
-    //php_error(E_ERROR, "Tried to directly get a property on object of class TurpitudeEnvironment.");
+    int argc = ZEND_NUM_ARGS();
+    if (argc != 1)
+        php_error(E_ERROR, "unexpected number of arguments to __get: %d", argc);
+
+    zval ***argv;
+    argv = (zval ***) safe_emalloc(sizeof(zval **), argc, 0);
+    
+    if (zend_get_parameters_array_ex(argc, argv) == FAILURE) 
+        php_error(E_ERROR, "Couldn't fetch field name.");
+    
+    if (Z_TYPE_P(*argv[0]) != IS_STRING)
+        php_error(E_ERROR, "unexpected type for field name, should be IS_STRING");
+
+    char* field_name = Z_STRVAL_P(*argv[0]);
+
+    // find class and method to call
+    jclass cls = turpitude_jenv->FindClass("net/xp_framework/turpitude/ReflectHelper");
+    jmethodID mid = turpitude_jenv->GetStaticMethodID(cls, "getStaticFieldValue", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Object;");
+
+    // get field_name string
+    jstring fname = turpitude_jenv->NewStringUTF(field_name);
+
+    // extract jobject from this pointer
+    zval* myval = getThis();
+    turpitude_javaclass_object* jcls = (turpitude_javaclass_object*)zend_object_store_get_object(myval TSRMLS_CC);
+
+    // call method to get field value 
+    jobject retval = turpitude_jenv->CallStaticObjectMethod(cls, mid, jcls->java_class, fname);
+    jobject_to_zval(turpitude_jenv, retval, return_value);
+
+    jthrowable exc = NULL;
+    if (exc = turpitude_jenv->ExceptionOccurred())
+        zend_bailout();
+
+    efree(argv);
 }
 
 void turpitude_jclass_set(INTERNAL_FUNCTION_PARAMETERS) {
-    //printf("__set called\n");
-    //php_error(E_ERROR, "Tried to directly set a property on object of class TurpitudeEnvironment.");
+    int argc = ZEND_NUM_ARGS();
+    if (argc != 2)
+        php_error(E_ERROR, "unexpected number of arguments to __set: %d", argc);
+
+    zval ***argv;
+    argv = (zval ***) safe_emalloc(sizeof(zval **), argc, 0);
+    
+    if (zend_get_parameters_array_ex(argc, argv) == FAILURE) 
+        php_error(E_ERROR, "Couldn't fetch field name.");
+    
+    if (Z_TYPE_P(*argv[0]) != IS_STRING)
+        php_error(E_ERROR, "unexpected type for field name, should be IS_STRING");
+
+    char* field_name = Z_STRVAL_P(*argv[0]);
+
+    jclass cls = turpitude_jenv->FindClass("net/xp_framework/turpitude/ReflectHelper");
+    jmethodID mid = turpitude_jenv->GetStaticMethodID(cls, "setStaticFieldValue", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Object;)V");
+
+    // get method_name string
+    jstring fname = turpitude_jenv->NewStringUTF(field_name);
+
+    // extract jobject from this pointer
+    zval* myval = getThis();
+    turpitude_javaclass_object* jcls = (turpitude_javaclass_object*)zend_object_store_get_object(myval TSRMLS_CC);
+
+    // call method 
+    turpitude_jenv->CallStaticObjectMethod(cls, mid, jcls->java_class, fname, zval_to_jobject(turpitude_jenv, *argv[1]));
+
+    jthrowable exc = NULL;
+    if (exc = turpitude_jenv->ExceptionOccurred())
+        zend_bailout();
+
+    efree(argv);
 }
 
 void turpitude_jclass_sleep(INTERNAL_FUNCTION_PARAMETERS) {

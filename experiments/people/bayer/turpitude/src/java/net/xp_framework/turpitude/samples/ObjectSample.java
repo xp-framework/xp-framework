@@ -59,9 +59,15 @@ public class ObjectSample {
         src.append("$class->setStatic('staticInt', 'I', 13);");
         src.append("$retval = $class->getStatic('staticInt', 'I');");
         src.append("var_dump($retval);");
+        src.append("$class->staticString = 'not so static';");
+        src.append("$retval = $class->staticString;");
+        src.append("var_dump($retval);");
         src.append("$constructor = $class->findConstructor('(ILjava/lang/String;)V');");
         src.append("$instance = $class->create($constructor, 1337, 'eleet');");
         src.append("$str = $instance->javaGet('stringval', 'Ljava/lang/String;');");
+        src.append("var_dump($str);");
+        src.append("$instance->stringval = 'unleet';");
+        src.append("$str = $instance->stringval;");
         src.append("var_dump($str);");
         src.append("$instance->javaSet('intval', 'I', 666);");
         src.append("$int = $instance->javaGet('intval', 'I');");
@@ -79,6 +85,10 @@ public class ObjectSample {
         src.append("var_dump($io);");
         src.append("$io = $turpenv->instanceOf($instance, $class);");
         src.append("var_dump($io);");
+        src.append("$io = $class->isCastable($instance);");
+        src.append("var_dump($io);");
+        src.append("$inst = $class->cast($instance);");
+        src.append("var_dump($inst);");
         src.append("return $result;");
         src.append("?>"); 
         return src.toString();

@@ -4,12 +4,16 @@ package net.xp_framework.turpitude;
 import javax.script.*;
 import java.io.Reader;
 import java.io.IOException;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Iterator; 
 
 public class PHPScriptEngine extends AbstractScriptEngine implements Compilable, Invocable {
 
     private ScriptEngineFactory MyFactory = null; //my factory, may be null
     private String TurpitudeVarName = "TURP_ENV"; //turpitude variable name
     private PHPCompiledScript lastScript = null; //last compiled script
+    public static final String PropertyPrefix = "net.xp_framework.turpitude.ini";
 
     /**
      * Constructor
@@ -30,6 +34,25 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
                     shutDown();
                 }
         });
+    }
+
+    /**
+     * reads the php.ini parameters from the system properties and sets them using 
+     * zend_alter_ini_entry
+     */
+    protected void setIniParams() {
+        Properties props = System.getProperties();
+        Set<String> keys = props.stringPropertyNames();
+        Iterator<String> it = keys.iterator();
+        while (it.hasNext()) {
+            String str = it.next();
+            if (str.startsWith(PropertyPrefix)) {
+                // setting php ini parameters
+                String phpkey = str.substring(PropertyPrefix.length()+1);
+                String val = props.getProperty(str);
+                setIniParam(phpkey, val);
+            }
+        }
     }
 
     /**
@@ -240,5 +263,11 @@ public class PHPScriptEngine extends AbstractScriptEngine implements Compilable,
      * calls native php interpreter to eval the sourcecode
      */
     protected native Object compilePHP(String source);
+
+    /**
+     * sets a php.ini parameter to the given value, only has an effect if the engine
+     * was already initialized. Called by setIniParams
+     */
+    protected native void setIniParam(String key, String val);
 
 }

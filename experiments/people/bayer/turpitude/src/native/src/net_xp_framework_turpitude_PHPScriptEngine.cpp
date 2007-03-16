@@ -12,11 +12,17 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_startUp(
 
     //make sure php info outputs plain text
     turpitude_sapi_module.phpinfo_as_text= 1;
+
     //start up sapi
     sapi_startup(&turpitude_sapi_module);
     //start up php backend, check for errors
     if (SUCCESS != php_module_startup(&turpitude_sapi_module, NULL, 0))
         java_throw(env, "javax/script/ScriptException", "Cannot startup SAPI module");
+
+    //call ini callback
+    jclass cls = env->FindClass("net/xp_framework/turpitude/PHPScriptEngine");
+    jmethodID mid = env->GetMethodID(cls, "setIniParams", "()V");
+    env->CallObjectMethod(jc, mid);
 
     // Initialize request 
     if (SUCCESS != php_request_startup(TSRMLS_C)) 
@@ -116,3 +122,16 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compi
     return compiledscript;
 }
 
+JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_setIniParam(JNIEnv *env, jobject thiz, jstring key, jstring val) {
+    TSRMLS_FETCH();
+    //retrieve c strings and lengths, from java string, cast to char* (I won't change them, I promise...)
+    char* keystr = (char*)env->GetStringUTFChars(key, 0);
+    int keylen = strlen(keystr)+1;
+    char* valstr = (char*)env->GetStringUTFChars(val, 0);
+    int vallen = strlen(valstr);
+
+    zend_alter_ini_entry(keystr, keylen, valstr, vallen, PHP_INI_ALL, PHP_INI_STAGE_ACTIVATE);
+
+    env->ReleaseStringUTFChars(key, keystr);
+    env->ReleaseStringUTFChars(val, valstr);
+}

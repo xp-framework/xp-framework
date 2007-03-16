@@ -31,6 +31,14 @@ JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_shutDown
 JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compilePHP
   (JNIEnv *, jobject, jstring);
 
+/*
+ * Class:     net_xp_framework_turpitude_PHPScriptEngine
+ * Method:    setIniParam
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_setIniParam
+  (JNIEnv *, jobject, jstring, jstring);
+
 #ifdef __cplusplus
 }
 #endif
