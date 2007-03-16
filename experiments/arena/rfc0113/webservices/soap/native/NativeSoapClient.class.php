@@ -30,10 +30,10 @@
      * @param   peer.URL endpoint
      * @param   string uri
      */
-    public function __construct($endpoint, $uri, $useWsdl= FALSE) {
+    public function __construct($endpoint, $uri= NULL) {
       $this->endpoint= new URL($endpoint);
       $this->uri= $uri;
-      $this->wsdl= $useWsdl;
+      $this->wsdl= FALSE;
       $this->map= array(
         'SOAPLong'  => 'long'
       );
@@ -46,6 +46,15 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+    }
+    
+    /**
+     * Turns wsdnmpde on or off
+     *
+     * @param   Boolean usewsdl
+     */
+    public function setWsdl($usewsdl) {
+      $this->wsdl= $usewsdl;
     }
 
     /**
