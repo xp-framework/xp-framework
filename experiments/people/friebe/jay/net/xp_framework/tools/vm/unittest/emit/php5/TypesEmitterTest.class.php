@@ -68,8 +68,41 @@
     public function binaryAssign() {
       $this->emit('$product= 0; $product+= 3;');
     }
- 
-     /**
+
+    /**
+     * Tests array assignment via []=
+     *
+     */
+    #[@test]
+    public function arrayAssign() {
+      $this->emit('$args= array(); $args[]= "Hello";');
+    } 
+
+
+    /**
+     * Tests array assignment via [X]=
+     *
+     */
+    #[@test]
+    public function arrayOffsetAssign() {
+      $this->emit('$args= array(); $args[0]= "Hello";');
+    } 
+
+    /**
+     * Tests array offset return [X]
+     *
+     */
+    #[@test]
+    public function arrayOffsetReturn() {
+      $this->emit('class Throwable { 
+        public lang.StackTraceElement elementAt(int $o) { 
+          $a= array();
+          return $a[$o]; 
+        } 
+      }');
+    } 
+
+    /**
      * Tests binary assignment
      *
      */
