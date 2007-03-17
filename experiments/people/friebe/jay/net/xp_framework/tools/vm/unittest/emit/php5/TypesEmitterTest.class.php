@@ -149,12 +149,21 @@
     } 
 
     /**
-     * Tests binary assignment
+     * Tests typed array return
+     *
+     */
+    #[@test]
+    public function typedArrayReturn() {
+      $this->emit('class Throwable { public lang.StackTraceElement[] getStackTrace() { return array(); } } ');
+    }
+
+    /**
+     * Tests array return
      *
      */
     #[@test]
     public function arrayReturn() {
-      $this->emit('class Throwable { public lang.StackTraceElement[] getStackTrace() { return array(); } } ');
+      $this->emit('class List { public mixed[] asArray() { return array(); } } ');
     }
- }
+  }
 ?>
