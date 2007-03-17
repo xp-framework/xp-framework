@@ -255,7 +255,8 @@
       } else if ($node instanceof ArrayDeclarationNode) {
         return array(NULL);                           // array of untyped
       } else if ($node instanceof ArrayAccessNode) {
-        return $this->typeOf($node->expression);
+        $t= $this->typeOf($node->expression);
+        return $t[0];
       } else if ($node instanceof ExpressionCastNode) {
         return $this->typeName($node->type);
       } else if (is_int($node) || $node instanceof LongNumberNode) {
