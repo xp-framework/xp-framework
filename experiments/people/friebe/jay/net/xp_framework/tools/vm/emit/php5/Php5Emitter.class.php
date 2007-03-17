@@ -189,7 +189,7 @@
       
       // $r[]= ... ($node->expression= VariableNode($r))
       if ($node instanceof ArrayAccessNode) {
-        return $this->scopeFor($node->expression);
+        return $this->scopeFor($node->expression).'#'.($node->offset ? $node->offset->value : '');
       }
       
       // self::$instance
