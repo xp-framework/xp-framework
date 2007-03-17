@@ -1,0 +1,9 @@
+$a= array<int>();
+$a[]= 1;
+
+var_dump($a);
+
+$h= array<string, string>();
+$h['hello']= 'world';
+
+var_dump($h);
