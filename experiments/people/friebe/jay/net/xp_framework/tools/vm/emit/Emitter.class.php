@@ -89,9 +89,9 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emit($node) {
-      $this->position= $node->position;
-
       if ($node instanceof VNode) {
+        $this->position= $node->position;
+
         $func= 'emit'.ucfirst(substr(get_class($node), 0, -4));
         if (!method_exists($this, $func)) {
           $this->cat && $this->cat->error('No emitter for', $node);
