@@ -253,7 +253,7 @@
         );
         return $this->context['types'][$ctype.'::$'.$node->member->name];
       } else if ($node instanceof ArrayDeclarationNode) {
-        return array(NULL);                           // array of untyped
+        return array($node->type);
       } else if ($node instanceof ArrayAccessNode) {
         $t= $this->typeOf($node->expression);
         return $t[0];

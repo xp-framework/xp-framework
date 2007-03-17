@@ -83,6 +83,33 @@
      *
      */
     #[@test]
+    public function genericArrayAssign() {
+      $this->emit('$args= array<string>(); $args[]= "Hello";');
+    } 
+
+    /**
+     * Tests array assignment via []=
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function genericArrayAssignTypeMismatch() {
+      $this->emit('$args= array<int>(); $args[]= "Hello";');
+    } 
+
+    /**
+     * Tests array assignment via []=
+     *
+     */
+    #[@test]
+    public function genericHashAssign() {
+      $this->emit('$args= array<int, string>(); $args[]= "Hello";');
+    } 
+
+    /**
+     * Tests array assignment via []=
+     *
+     */
+    #[@test]
     public function stackTraceElementToString() {
       $this->emit('class ThrowableExcerpt {
        public

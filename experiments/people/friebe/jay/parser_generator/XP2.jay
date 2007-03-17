@@ -237,6 +237,29 @@ name_and_all_keywords:
     |   T_CLASS
 ;   
 
+type:
+        name_and_all_keywords
+    |   T_CLASSNAME
+    |   generic_type
+;
+
+generic_type:
+		type generic_type_components { 
+            $$= new GenericTypeNode($1, $2); 
+        }
+;
+
+generic_type_components:
+		'<' generic_type_components_list '>' { $$= $2; }
+;   
+
+generic_type_components_list:
+        type { /* $$= $1; */ }
+    |   generic_type_components_list ',' type { 
+          $$= array_merge($1, array($3)); 
+        }
+;
+
 statement:
 		'{' inner_statement_list '}' { $$= $2; }
 	|	T_IF '(' expr ')' statement else { 
@@ -784,8 +807,11 @@ expr_without_variable:
 	 	T_ARRAY '(' array_pair_list ')' { 
           $$= new ArrayDeclarationNode($3); $$->position= $yyLex->position; 
         }
-	|	T_ARRAY T_CAST { 
+	|	T_ARRAY T_CAST {
           $$= new ArrayDeclarationNode($2); $$->position= $yyLex->position; 
+        }
+	|	T_ARRAY generic_type_components '(' array_pair_list ')' { 
+          $$= new ArrayDeclarationNode($4, $2); $$->position= $yyLex->position; 
         }
 	|	T_LIST '(' assignment_list ')' '=' expr {
           $$= new ListAssignNode($3, $6); $$->position= $yyLex->position;

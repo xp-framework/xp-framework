@@ -13,15 +13,18 @@
    */ 
   class ArrayDeclarationNode extends VNode {
     public
-      $elements= array();
+      $elements = array(),
+      $type     = NULL;
       
     /**
      * Constructor
      *
      * @param   mixed[] elements
+     * @param   mixed type= NULL
      */
-    public function __construct($elements) {
+    public function __construct($elements, $type= NULL) {
       $this->elements= $elements;
+      $this->type= $type;
     }  
   }
 ?>
