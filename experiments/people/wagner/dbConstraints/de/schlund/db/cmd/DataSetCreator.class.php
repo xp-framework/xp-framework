@@ -12,6 +12,7 @@
     'rdbms.DSN',
     'rdbms.DriverManager',
     'rdbms.util.DBConstraintXmlGenerator', 
+    'rdbms.util.DBXMLNamingContext',
     'rdbms.util.DBXmlGenerator', 
     'util.Properties',
     'util.cmd.Command',
