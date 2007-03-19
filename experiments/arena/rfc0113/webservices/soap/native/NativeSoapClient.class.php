@@ -5,16 +5,16 @@
  */
 
   uses(
+    'xml.QName',
     'util.log.Traceable',
     'webservices.soap.SOAPFaultException',
-    'xml.QName',
     'webservices.soap.SOAPFault'    
   );
 
   /**
    * Wrapper for the PHP5 soap extension.
    * 
-   * @see      http://de3.php.net/SOAP
+   * @see      php://soap
    * @purpose  Integration of the PHP5 soap extension into the XP framework
    */
   class NativeSoapClient extends Object implements Traceable {
@@ -23,7 +23,10 @@
       $uri      = '',
       $wsdl     = FALSE,
       $cat      = NULL,
-      $version  = NULL;
+      $version  = NULL,
+      $charset  = 'iso-8859-1',
+      $style    = SOAP_RPC,
+      $encoding = SOAP_ENCODED;
 
     /**
      * Constructor
@@ -49,6 +52,68 @@
     }
 
     /**
+     * Set Charset
+     *
+     * @access  public
+     * @param   string charset
+     */
+    function setCharset($charset) {
+      $this->charset= $charset;
+    }
+
+    /**
+     * Get Charset
+     *
+     * @access  public
+     * @return  string
+     */
+    function getCharset() {
+      return $this->charset;
+    }
+
+    /**
+     * Set Style, can be one of SOAP_RPC (default), 
+     * SOAP_DOCUMENT.
+     *
+     * @access  public
+     * @param   int style
+     */
+    function setStyle($style) {
+      $this->style= $style;
+    }
+
+    /**
+     * Get Style
+     *
+     * @access  public
+     * @return  int
+     */
+    function getStyle() {
+      return $this->style;
+    }
+
+    /**
+     * Set Encoding, can be one of SOAP_ENCODED (default),
+     * SOAP_LITERAL
+     *
+     * @access  public
+     * @param   int encoding
+     */
+    function setEncoding($encoding) {
+      $this->encoding= $encoding;
+    }
+
+    /**
+     * Get Encoding
+     *
+     * @access  public
+     * @return  int
+     */
+    function getEncoding() {
+      return $this->encoding;
+    }
+
+    /**
      * Set trace 
      *
      * @param   util.log.LogCategory cat
@@ -58,12 +123,22 @@
     }
     
     /**
-     * Turns wsdnmpde on or off
+     * Turns WSDL mode on or off
      *
-     * @param   Boolean usewsdl
+     * @param   bool usewsdl
      */
     public function setWsdl($usewsdl) {
       $this->wsdl= $usewsdl;
+    }
+
+    /**
+     * Set Encoding
+     *
+     * @access  public
+     * @param   string encoding
+     */
+    function setEncoding($encoding) {
+      $this->encoding= $encoding;
     }
 
     /**
@@ -82,7 +157,7 @@
      * @param   mixed[]
      * @return  mixed[]
      */
-    private function checkParams($args) {
+    protected function checkParams($args) {
       foreach ($args as $i => $a) {
         if ($a instanceof Parameter || $a instanceof SoapType) {
           $args[$i]= $this->wrapParameter($a);
@@ -99,7 +174,7 @@
      * @return  mixed
      * @throws  lang.IllegalArgumentException if parameter type cannot be converted
      */
-    private function wrapParameter($parameter) {
+    protected function wrapParameter($parameter) {
 
       // Instanceof testing frenzy begins here.
       // This is necessary to convert XP Parameter and SOAP*-Types to 
@@ -141,7 +216,6 @@
      * @param   string method name
      * @param   mixed vars
      * @return  mixed answer
-     * @throws  lang.IllegalArgumentException
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
@@ -149,7 +223,7 @@
       $method= array_shift($args);
       
       $options= array(
-        'encoding'    => 'iso-8859-1',
+        'encoding'    => $this->getCharset(),
         'exceptions'  => 0,
         'trace'       => ($this->cat != NULL)
       );
@@ -174,15 +248,14 @@
       
         $options['location']= $this->endpoint->getURL();
         $options['uri']= $this->uri;
-        $options['use']= SOAP_RPC;
+        $options['style']= $this->getStyle();
+        $options['use']= $this->getEncoding();
         
         $client= new SoapClient(NULL, $options);
       }
 
       // Take care of wrapping XP SOAP types into respective ext/soap value objects
-      $args= $this->checkParams($args);
-      
-      $result= call_user_func_array(array($client, $method), $args);
+      $result= $client->__soapCall($method, $this->checkParams($args));
       
       $this->cat && $this->cat->debug('>>>',
         $client->__getLastRequestHeaders(),
