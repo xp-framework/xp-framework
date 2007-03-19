@@ -92,12 +92,12 @@
     }
     
     /**
-     * Dummy function to set WSDL-mode, which is not supported
+     * Dummy function to set the soap version, which is not supported
      * by the XPSoap-client.
      *
      * @throws lang.MethodNotImplementedException  
      */
-    public function setWsdl() {
+    public function setSoapVersion() {
       throw new MethodNotImplementedException ('XPSoapClient cannot change the soap version');
     }    
     
