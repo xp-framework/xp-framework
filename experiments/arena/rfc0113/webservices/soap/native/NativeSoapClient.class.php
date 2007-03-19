@@ -7,22 +7,23 @@
   uses(
     'util.log.Traceable',
     'webservices.soap.SOAPFaultException',
+    'xml.QName',
     'webservices.soap.SOAPFault'    
   );
 
   /**
-   * (Insert class' description here)
-   *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * Wrapper for the PHP5 soap extension.
+   * 
+   * @see      http://de3.php.net/SOAP
+   * @purpose  Integration of the PHP5 soap extension into the XP framework
    */
   class NativeSoapClient extends Object implements Traceable {
     public
       $endpoint = '',
       $uri      = '',
       $wsdl     = FALSE,
-      $cat      = NULL;
+      $cat      = NULL,
+      $version  = NULL;
 
     /**
      * Constructor
@@ -35,6 +36,16 @@
       $this->uri= $uri;
       $this->wsdl= FALSE;
       $this->map= array();
+    }
+
+    /**
+     * Sets the soap version
+     * SOAP_1_1 and SOAP_1_2 are supported
+     *
+     * @param   string version
+     */
+    public function setSoapVersion($version) {
+      $this->version= $version;
     }
 
     /**
@@ -56,10 +67,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Registers a class map
      *
-     * @param   
-     * @return  
+     * @param   qname object, string class
      */
     public function registerMapping($qname, $class) {
       $this->map[$qname->localpart]= xp::reflect($class->getName());
@@ -155,6 +165,8 @@
       if (sizeof($this->map)) {
         $options['classmap']= $this->map;
       }
+      
+      $this->version && $options['soap_version']= $this->version;
       
       if ($this->wsdl) {
         $client= new SoapClient($this->endpoint->getURL(), $options);
