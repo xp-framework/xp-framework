@@ -132,16 +132,6 @@
     }
 
     /**
-     * Set Encoding
-     *
-     * @access  public
-     * @param   string encoding
-     */
-    function setEncoding($encoding) {
-      $this->encoding= $encoding;
-    }
-
-    /**
      * Registers a class map
      *
      * @param   qname object, string class
