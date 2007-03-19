@@ -29,7 +29,7 @@
     /**
      * Set keys
      *
-     * @param   mixed[] keys
+     * @param   string[] keys
      */
     public function setKeys($keys) {
       $this->keys= $keys;
@@ -38,7 +38,7 @@
     /**
      * Get keys
      *
-     * @return  mixed[]
+     * @return  string[]
      */
     public function getKeys() {
       return $this->keys;
