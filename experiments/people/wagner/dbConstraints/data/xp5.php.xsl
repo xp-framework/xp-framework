@@ -314,7 +314,7 @@
         <xsl:text>
     /**
      * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entity
-     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text> entity
      * @throws  rdbms.SQLException in case an error occurs
@@ -335,7 +335,7 @@
         <xsl:text>
     /**
      * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
-     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>[] entities
      * @throws  rdbms.SQLException in case an error occurs
@@ -352,7 +352,7 @@
 
     /**
      * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
-     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
