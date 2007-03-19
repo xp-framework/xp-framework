@@ -5,11 +5,10 @@
  */
 
   uses(
-    'webservices.soap.SOAPMessage',
     'xml.QName',
-    'webservices.soap.Parameter',
-    'webservices.soap.xp.SOAPMapping',
     'util.log.Traceable',
+    'webservices.soap.SOAPMessage',
+    'webservices.soap.xp.SOAPMapping',
     'webservices.soap.transport.SOAPHTTPTransport'
   );
   
@@ -88,7 +87,7 @@
      * @throws lang.MethodNotImplementedException  
      */
     public function setWsdl() {
-      throw new MethodNotImplementedException ('XPSoapClient does not support WSDL-Mode');
+      throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
     }
     
     /**
@@ -98,7 +97,7 @@
      * @throws lang.MethodNotImplementedException  
      */
     public function setSoapVersion() {
-      throw new MethodNotImplementedException ('XPSoapClient cannot change the soap version');
+      throw new MethodNotImplementedException('XPSoapClient cannot change the soap version');
     }    
     
     /**
