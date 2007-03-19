@@ -4,20 +4,21 @@
  * $Id$ 
  */
     
-    
-//  uses();
-  
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test      xp://webservices.soap.SoapDriverTest
+   * @ext       extension
+   * @see       reference
+   * @purpose   purpose
    */
   class SoapDriver extends Object {
     public
-      $drivers    = array(),
-      $usedriver  = 'SOAPXP';
+      $drivers    = array();
+    
+    const
+      XP          = 'SOAPXP',
+      NATIVE      = 'SOAPNATIVE';
       
     protected static
       $instance   = NULL;
@@ -25,6 +26,7 @@
     static function __static() {
       self::$instance= new self();
     }
+    
     /**
      * Constructor
      *
@@ -47,7 +49,8 @@
      * Registers a new SoapDriver. The new driver must have the 
      * same contructor and 
      *
-     * @param   string fqcn, boolean supportsWsdl
+     * @param   string fqcn
+     * @param   bool supportsWsdl
      * @return  string
      */
     public function registerDriver($fqcn, $supportsWsdl) {
@@ -76,20 +79,7 @@
      * @return  drivers[]
      */
     public function availableDrivers() {
-      return $this->drivers;
-    }
-
-    /**
-     * Select Drivers
-     *
-     * @param   string driver
-     * @throws  lang.IllegalArgumentException
-     */
-    public function selectDriver($driver) {
-      if (!isset($this->drivers[$driver])) {
-        throw new IllegalArgumentException('Driver '.$driver.' is not a valid Driver');
-      }
-      $this->usedriver= $driver;
+      return array_keys($this->drivers);
     }
 
     /**
@@ -98,23 +88,8 @@
      * @param   string endpoint, string uri
      * @return  object 
      */
-    public function fromWsdl($endpoint, $uri) {
-      // Find first driver that supports WSDL
-      if ($this->drivers[$this->usedriver]['wsdl']) {
-        $client= XPClass::forName($this->drivers[$this->usedriver]['fqcn'])->newInstance($endpoint);
-        $client->setWsdl(TRUE);
-        return $client;
-      }
-      
-      foreach ($this->drivers as $driver) {
-        if ($driver['wsdl']) {
-          $client= XPClass::forName($driver['fqcn'])->newInstance($endpoint);
-          $client->setWsdl(TRUE);
-          return $client;
-        }
-      }
-      
-      throw new IllegalStateException('No SOAP driver registered with WSDL abilities');
+    public function fromWsdl($endpoint, $preferred= NULL) {
+      return XPClass::forName($this->drivers[$this->driverName($preferred, TRUE)]['fqcn'])->newInstance($endpoint, '', TRUE);
     }
 
     /**
@@ -123,9 +98,33 @@
      * @param   string endpoint, string uri
      * @return  object
      */
-    public function fromEndpoint($endpoint, $uri) {
-      return XPClass::forName($this->drivers[$this->usedriver]['fqcn'])->newInstance($endpoint, $uri);        
+    public function fromEndpoint($endpoint, $uri, $preferred= NULL) {
+      return XPClass::forName($this->drivers[$this->driverName($preferred)]['fqcn'])->newInstance($endpoint, $uri);        
+    }
+    
+    /**
+     * Fetch driver with given name and requested capabilities.
+     *
+     * @param   string preferred
+     * @param   bool wsdl default FALSE
+     * @return  string
+     * @throws  lang.IllegalStateException if no driver with requested capabilities could be found
+     */
+    public function driverName($preferred, $wsdl= FALSE) {
+      if (
+        isset($this->drivers[$preferred]) &&
+        (!$wsdl || $this->drivers[$preferred]['wsdl'])
+      ) {
+        return $preferred;
+      }
       
+      foreach ($this->drivers as $name => $cap) {
+        if ($wsdl && !$cap['wsdl']) continue;
+        
+        return $name;
+      }
+      
+      throw new IllegalStateException('No SOAP driver registered with WSDL abilities');
     }
   }
 ?>
