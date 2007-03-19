@@ -313,12 +313,13 @@
       <xsl:when test="$isSingle">
         <xsl:text>
     /**
-     * Retrieves the referenced </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text>
+     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entity
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text> entity
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       $r= </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
@@ -333,12 +334,13 @@
       <xsl:otherwise>
         <xsl:text>
     /**
-     * Retrieves an array of the referenced </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text>
+     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>List() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
@@ -349,12 +351,13 @@
         <xsl:text>      ));&#10;    }
 
     /**
-     * Retrieves an iterator for the referenced </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text>
+     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceaattribute" />=><xsl:value-of select="@ttribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(@table)" /><xsl:text>Iterator() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(@table)" /><xsl:text>::getPeer()->iteratorFor(new Criteria(&#10;</xsl:text>
         <xsl:for-each select="key">
@@ -378,12 +381,13 @@
 
         <xsl:text>
     /**
-     * Retrieves the referencing </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text>
+     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entity referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text> entity
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       $r= </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
@@ -398,12 +402,13 @@
       <xsl:otherwise>
         <xsl:text>
     /**
-     * Retrieves an array of the referencing </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text>
+     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>List() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->doSelect(new Criteria(&#10;</xsl:text>
       <xsl:for-each select="key">
@@ -413,12 +418,13 @@
       </xsl:for-each>
         <xsl:text>      ));&#10;    }&#10;
     /**
-     * Retrieves an iterator for the referencing </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text>
+     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
      *
      * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function get</xsl:text><xsl:value-of select="my:ucfirst(../../@name)" /><xsl:text>Iterator() {
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
       ClassLoader::loadclass('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>');
       return </xsl:text><xsl:value-of select="my:prefixedClassName(../../@name)" /><xsl:text>::getPeer()->iteratorFor(new Criteria(&#10;</xsl:text>
     <xsl:for-each select="key">
