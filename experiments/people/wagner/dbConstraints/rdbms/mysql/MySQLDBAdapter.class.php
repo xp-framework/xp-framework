@@ -220,7 +220,7 @@
       }
       foreach ($bracestrings as $bracestring) {
         $params= $this->extractParams($bracestring);
-        for ($i= 0, $to= count($params); $i < $to; $i++) $params[$i]= substr($params[$i], 1, -1);
+        foreach ($params as $i => $param) $params[$i]= substr($param, 1, -1);
         $attributes[]= $params;
       }
       $constraint->setKeys(array_combine($attributes[0], $attributes[1]));

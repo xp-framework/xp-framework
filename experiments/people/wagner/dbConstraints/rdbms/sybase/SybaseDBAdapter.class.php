@@ -92,9 +92,9 @@
      *
      * @param   string table thee table's name
      * @param   string database default NULL if omitted, uses current database
-     * @return  &rdbms.DBTable
+     * @return  rdbms.DBTable
      */    
-    protected function dbTableObjectFor($table, $database=NULL) {
+    protected function dbTableObjectFor($table, $database= NULL) {
       $t= new DBTable($table);
       
       // Get the table's attributes
@@ -206,7 +206,6 @@
       while ($db_constraint= $sp_helpconstraint->next()) {
         if ('referential constraint' != $db_constraint['type']) continue;
         if (0 !== strpos($db_constraint['definition'], $table.' ')) continue;
-        var_dump($db_constraint['definition'], $table);
         $t->addForeignKeyConstraint($this->parseForeignKey($db_constraint));
       }
 
@@ -272,7 +271,7 @@
      * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable a DBTable object
      */
-    public function getTable($table, $database=NULL) {
+    public function getTable($table, $database= NULL) {
       try {
         $this->prepareTemporaryIndexesTable();
         $t= $this->dbTableObjectFor($table, $database);
@@ -317,17 +316,17 @@
      * @return  rdbms.DBForeignKeyConstraint
      */
     private function parseForeignKey($db_constraint) {
-        $cstring= $db_constraint['definition'];
-        $bracestrings= $this->subBracerString($cstring);
-        $strings= explode(' ', $cstring);
-        $attributes= array();
-        foreach ($bracestrings as $bracestring) $attributes[]= $this->extractParams($bracestring);
+      $cstring= $db_constraint['definition'];
+      $bracestrings= $this->subBracerString($cstring);
+      $strings= explode(' ', $cstring);
+      $attributes= array();
+      foreach ($bracestrings as $bracestring) $attributes[]= $this->extractParams($bracestring);
 
-        $constraint= new DBForeignKeyConstraint();
-        $constraint->setSource($strings[5]);
-        $constraint->setName($db_constraint['name']);
-        $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
-        return $constraint;
+      $constraint= new DBForeignKeyConstraint();
+      $constraint->setSource($strings[5]);
+      $constraint->setName($db_constraint['name']);
+      $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
+      return $constraint;
     }
 
     /**
