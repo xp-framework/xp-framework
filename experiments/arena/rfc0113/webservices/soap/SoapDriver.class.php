@@ -5,11 +5,24 @@
  */
     
   /**
-   * (Insert class' description here)
+   *  Example:
+   *  <code>
+   *    $sd= SoapDriver::getInstance();
+   *    client= $sd->fromEndpoint($endpoint, '$urn:SomeThing', XP); 
    *
+   *    registerMapping(
+   *      new QName('http://namespace', 'SoapValue'),
+   *      XPClass::forName('you.wanna.map.to.this.class')
+   *    );
+   *    
+   *    $result= $client->invoke(
+   *      'someSoapFunction',
+   *      new Parameter('foo', new SoapLong($foo))
+   *    );
+   *  </code>
    * @test      xp://webservices.soap.SoapDriverTest
    * @ext       extension
-   * @see       reference
+   * @see       php://soap
    * @purpose   purpose
    */
   class SoapDriver extends Object {
