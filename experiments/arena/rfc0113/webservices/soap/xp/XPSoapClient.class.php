@@ -82,13 +82,25 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Dummy function to set WSDL-mode, which is not supported
+     * by the XPSoap-client.
      *
      * @throws lang.MethodNotImplementedException  
      */
     public function setWsdl() {
       throw new MethodNotImplementedException ('XPSoapClient does not support WSDL-Mode');
     }
+    
+    /**
+     * Dummy function to set WSDL-mode, which is not supported
+     * by the XPSoap-client.
+     *
+     * @throws lang.MethodNotImplementedException  
+     */
+    public function setWsdl() {
+      throw new MethodNotImplementedException ('XPSoapClient cannot change the soap version');
+    }    
+    
     /**
      * Register mapping for a qname to a class object
      *
