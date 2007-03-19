@@ -94,7 +94,7 @@ probably drop most SoapClient related classes as they are probably all included
 by SoapDriver.
 Of course webservices.soap.SoapDriver has to be in the uses().
 
-Your Contructor may look something like this (non-WSDL mode):
+Your Constructor may look something like this (non-WSDL mode):
 
 function __construct($endpoint) {
   parent::__construct(
@@ -114,7 +114,7 @@ function __construct($endpoint) {
   $sd= SoapDriver::getInstance();
   $this->client= $sd->fromEndpoint($endpoint, '$urn:SomeThing', XP); 
 
-  $this->registerMapping(
+  $this->client->registerMapping(
     new QName('http://namespace', 'SoapValue'),
     XPClass::forName('you.wanna.map.to.this.class')
   );
@@ -125,9 +125,13 @@ Build-in constants for the drivers are XP (for the XPSoapClient) and
 NATIVE (for the PHP5 extension). The preferred driver is optional.
 You also won't have to pass the endpoint as an SOAPHTTPTransport-object
 anymore, the class now converts the string automatically.
-The syntax for the classmapping hasn't changed.
+The syntax for the classmapping hasn't changed, except that it calls the
+registerMapping function with $this->client instead of $this (since
+we don't extend SoapDriver anymore).
 
-The invocation of the class hasn't changed:
+The invocation of the class hasn't changed much, either. You only have
+to change the invocation call to $this->client instead of $this (since
+we don't extend SoapDriver anymore).
 
 function checkFooBarStatus($foo) {
   return $this->client->invoke(
