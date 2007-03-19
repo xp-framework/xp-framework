@@ -79,7 +79,95 @@ You can also use WSDL-Mode:
 SoapDriver::getInstance()->fromWsdl(http://somesoapservice/is/here/, 
 'urn:someSoapMethod');
 
-WSDL is only supported by the PHP5-soap-extension and _not by the XPSoapClient.
+WSDL is only supported by the PHP5-soap-extension and _not_ by the XPSoapClient.
+
+
+
+
+How to migrate your classes from the old SoapClient to the new SoapDriver:
+
+First of all:
+Your class must extend Object and not SoapDriver as it used to be with the 
+'old' XPSoapClient.
+As a next step you should change the uses() to the correct ones. You can 
+probably drop most SoapClient related classes as they are probably all included
+by SoapDriver.
+Of course webservices.soap.SoapDriver has to be in the uses().
+
+Your Contructor may look something like this (non-WSDL mode):
+
+function __construct($endpoint) {
+  parent::__construct(
+    new SOAPHTTPTransport($endpoint),
+    'urn:SomeThing'
+  );
+
+  $this->registerMapping(
+    new QName('http://namespace', 'SoapValue'),
+    XPClass::forName('you.wanna.map.to.this.class')
+  );
+}
+
+this now changes to:
+
+function __construct($endpoint) {
+  $sd= SoapDriver::getInstance();
+  $this->client= $sd->fromEndpoint($endpoint, '$urn:SomeThing', XP); 
+
+  $this->registerMapping(
+    new QName('http://namespace', 'SoapValue'),
+    XPClass::forName('you.wanna.map.to.this.class')
+  );
+}
+
+The third parameter of the fromEndpoint() method is the preferred driver.
+Build-in constants for the drivers are XP (for the XPSoapClient) and 
+NATIVE (for the PHP5 extension). The preferred driver is optional.
+You also won't have to pass the endpoint as an SOAPHTTPTransport-object
+anymore, the class now converts the string automatically.
+The syntax for the classmapping hasn't changed.
+
+The invocation of the class hasn't changed:
+
+function checkFooBarStatus($foo) {
+  return $this->client->invoke(
+    'someSoapFunction',
+    new Parameter('foo', new SoapLong($foo))
+  );
+}
+
+So let's go back to the constructor:
+
+Let's say you want to use WSDL all of a sudden:
+
+function __construct($endpoint) {
+  $sd= SoapDriver::getInstance();
+  $this->client= $sd->fromWsdl($endpoint); 
+
+  $this->registerMapping(
+    new QName('http://namespace', 'SoapValue'),
+    XPClass::forName('you.wanna.map.to.this.class')
+  );
+}
+
+Of course the $endpoint string now needs to point to the WSDL-file.
+
+WSDL is right now only supported in the native soap client, so the 
+SoapDriver automatically chooses the native Soap Client (if it's 
+build into your php binaries).
+But since we also included the possibility to register your own Soap
+client as a driver, you can also choose a different preferred driver.
+So if you want to select a different driver the method call looks 
+like this:
+
+$this->client= $sd->fromWsdl($endpoint, '', XP);
+
+We wanted to keep the method signature consistend, that's why the
+second parameter is empty. This may change during rfc-discussion.
+
+In the above example SoapDriver will switch automatically to the
+NATIVE driver, because XPSoap is not capable of WSDL.
+
 
 Security considerations
 -----------------------
