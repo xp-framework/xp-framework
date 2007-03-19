@@ -1,4 +1,4 @@
-<document created_at="Tue, 13 Mar 2007 15:06:01 +0100" created_by="ruben">
+<document created_at="Mon, 19 Mar 2007 13:20:05 +0100" created_by="ruben">
   <table
    name="job"
    dbhost="localhost"
@@ -57,7 +57,7 @@
       <key>person_id</key>
     </index>
     <constraint name="person_for_job">    
-      <reference table="person">      
+      <reference table="person" role="Person">      
         <key attribute="person_id" sourceattribute="person_id"/>
       </reference>
     </constraint>

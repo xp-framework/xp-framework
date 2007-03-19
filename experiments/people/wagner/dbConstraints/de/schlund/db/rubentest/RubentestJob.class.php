@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
+   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -164,7 +164,8 @@
     }
 
     /**
-     * Retrieves the referenced Person
+     * Retrieves the Person entity
+     * referenced by person_id=>person_id
      *
      * @return  de.schlund.db.rubentest.RubentestPerson entity
      * @throws  rdbms.SQLException in case an error occurs

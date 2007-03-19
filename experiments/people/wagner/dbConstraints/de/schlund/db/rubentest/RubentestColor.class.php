@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table color, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
+   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -122,12 +122,13 @@
     }
 
     /**
-     * Retrieves an array of the referencing Texture
+     * Retrieves an array of all Texture entities referencing
+     * this entity by colortype=>colortype
      *
      * @return  de.schlund.db.rubentest.RubentestTexture[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getTextureList() {
+    public function getTextureColortypeList() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
       return RubentestTexture::getPeer()->doSelect(new Criteria(
         array('colortype', $this->getColortype(), EQUAL)
@@ -135,12 +136,13 @@
     }
 
     /**
-     * Retrieves an iterator for the referencing Texture
+     * Retrieves an iterator for all Texture entities referencing
+     * this entity by colortype=>colortype
      *
      * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestTexture>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getTextureIterator() {
+    public function getTextureColortypeIterator() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
       return RubentestTexture::getPeer()->iteratorFor(new Criteria(
         array('colortype', $this->getColortype(), EQUAL)

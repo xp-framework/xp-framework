@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mobileObject, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
+   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -147,12 +147,13 @@
     }
 
     /**
-     * Retrieves the referenced Mappoint
+     * Retrieves the Mappoint entity
+     * referenced by coord_x=>coord_x, coord_y=>coord_y
      *
      * @return  de.schlund.db.rubentest.RubentestMappoint entity
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getMappoint() {
+    public function getCoord_xCoord_y() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
       $r= RubentestMappoint::getPeer()->doSelect(new Criteria(
         array('coord_x', $this->getCoord_x(), EQUAL),

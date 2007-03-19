@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mappoint, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
+   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -125,7 +125,8 @@
     }
 
     /**
-     * Retrieves the referenced Texture
+     * Retrieves the Texture entity
+     * referenced by texture_id=>texture_id
      *
      * @return  de.schlund.db.rubentest.RubentestTexture entity
      * @throws  rdbms.SQLException in case an error occurs
@@ -139,12 +140,13 @@
     }
 
     /**
-     * Retrieves an array of the referencing Mobileobject
+     * Retrieves an array of all Mobileobject entities referencing
+     * this entity by coord_x=>coord_x, coord_y=>coord_y
      *
      * @return  de.schlund.db.rubentest.RubentestMobileobject[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getMobileobjectList() {
+    public function getMobileObjectCoord_xCoord_yList() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
       return RubentestMobileobject::getPeer()->doSelect(new Criteria(
         array('coord_x', $this->getCoord_x(), EQUAL),
@@ -153,12 +155,13 @@
     }
 
     /**
-     * Retrieves an iterator for the referencing Mobileobject
+     * Retrieves an iterator for all Mobileobject entities referencing
+     * this entity by coord_x=>coord_x, coord_y=>coord_y
      *
      * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestMobileobject>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getMobileobjectIterator() {
+    public function getMobileObjectCoord_xCoord_yIterator() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
       return RubentestMobileobject::getPeer()->iteratorFor(new Criteria(
         array('coord_x', $this->getCoord_x(), EQUAL),

@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table person, database Ruben_Test_PS
-   * (Auto-generated on Tue, 13 Mar 2007 15:06:01 +0100 by ruben)
+   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -90,12 +90,13 @@
     }
 
     /**
-     * Retrieves an array of the referencing Job
+     * Retrieves an array of all Job entities referencing
+     * this entity by person_id=>person_id
      *
      * @return  de.schlund.db.rubentest.RubentestJob[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getJobList() {
+    public function getJobPersonList() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestJob');
       return RubentestJob::getPeer()->doSelect(new Criteria(
         array('person_id', $this->getPerson_id(), EQUAL)
@@ -103,12 +104,13 @@
     }
 
     /**
-     * Retrieves an iterator for the referencing Job
+     * Retrieves an iterator for all Job entities referencing
+     * this entity by person_id=>person_id
      *
      * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestJob>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getJobIterator() {
+    public function getJobPersonIterator() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestJob');
       return RubentestJob::getPeer()->iteratorFor(new Criteria(
         array('person_id', $this->getPerson_id(), EQUAL)
@@ -116,12 +118,13 @@
     }
 
     /**
-     * Retrieves the referencing Toilette
+     * Retrieves the Toilette entity referencing
+     * this entity by person_id=>person_id
      *
      * @return  de.schlund.db.rubentest.RubentestToilette entity
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getToilette() {
+    public function getToilettePerson() {
       ClassLoader::loadclass('de.schlund.db.rubentest.RubentestToilette');
       $r= RubentestToilette::getPeer()->doSelect(new Criteria(
         array('person_id', $this->getPerson_id(), EQUAL)

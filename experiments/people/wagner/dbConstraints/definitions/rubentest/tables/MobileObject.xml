@@ -1,4 +1,4 @@
-<document created_at="Tue, 13 Mar 2007 15:06:01 +0100" created_by="ruben">
+<document created_at="Mon, 19 Mar 2007 13:20:05 +0100" created_by="ruben">
   <table
    name="mobileObject"
    dbhost="localhost"
@@ -51,7 +51,7 @@
       <key>coord_y</key>
     </index>
     <constraint name="mappoint_for_mob">    
-      <reference table="mappoint">      
+      <reference table="mappoint" role="Coord_xCoord_y">      
         <key attribute="coord_x" sourceattribute="coord_x"/>
         <key attribute="coord_y" sourceattribute="coord_y"/>
       </reference>
