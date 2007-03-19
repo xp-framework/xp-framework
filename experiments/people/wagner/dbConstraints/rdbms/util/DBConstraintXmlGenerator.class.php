@@ -1,5 +1,3 @@
-
-
 <?php
 /* This class is part of the XP framework
  *
@@ -7,9 +5,10 @@
  */
 
   uses(
+    'lang.System',
     'rdbms.DBTable',
-    'xml.Tree',
-    'lang.System'
+    'rdbms.util.DBXMLNamingContext',
+    'xml.Tree'
   );
   
   /**
@@ -56,6 +55,7 @@
           )));
           $fgn= $cn->addChild(new Node('reference', NULL, array(
             'table' => $constraint->getSource(),
+            'role'  => DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint),
           )));
           foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
             $fgn->addChild(new Node('key', NULL, array(

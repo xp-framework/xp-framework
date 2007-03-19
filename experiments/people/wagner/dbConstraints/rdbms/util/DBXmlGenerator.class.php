@@ -5,9 +5,10 @@
  */
 
   uses(
+    'lang.System',
     'rdbms.DBTable',
-    'xml.Tree',
-    'lang.System'
+    'rdbms.util.DBXMLNamingContext',
+    'xml.Tree'
   );
   
   /**
@@ -76,11 +77,12 @@
         )));
         $fgn= $cn->addChild(new Node('reference', NULL, array(
           'table' => $constraint->getSource(),
+          'role'  => DBXMLNamingContext::foreignKeyConstraintName($table, $constraint),
         )));
         foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
           $fgn->addChild(new Node('key', NULL, array(
             'attribute'       => $attribute,
-            'sourceattribute' => $sourceattribute,
+            'sourceattribute' => $sourceattribute
           )));
         }
         
