@@ -8,7 +8,8 @@ PHP erzeugt werden. Hierzu wurde von \cite{PHPHP} ein PHP in der Version 5.2.0 i
 "ubersetzt, nachdem es mittels des Kommandozeilenparameters "'--enable-embed=shared"' konfiguriert wurde. Die so
 erzeugte \emph{libphp5.so} konnte, zusammen mit den vorhandenen Headerdateien, zur Entwicklung genutzt werden.
 
-Nun musste noch daf"ur gesorgt werden, dass sich die vom JSR 223 verlangten Klassen aus \emph{javax.script} im
+Nun musste noch daf"ur gesorgt werden, dass sich die vom JSR 223 verlangten Klassen aus \ident{javax.script}
+im
 Classpath befinden. Nachdem allerdings die Klassen aus der Referenzimplementation aus den zum Teil in 
 \ref{sec:javanscripts:prototype} beschriebenen Gr"unden nicht in Frage kamen, wurde von \cite{JAVAHP} ein
 \emph{Java Development Toolkit (JDK)} der Version 6 heruntergeladen. Da dieses JDK nicht als System-VM genutzt
@@ -325,17 +326,22 @@ $string = $date->toString('()Ljava/lang/String;');
 \subsection{Java-Attribute}
 \label{sec:chap1:impl:7}
 
-Weiterhin sollte es dem Anwender erm"oglicht werden, auf Attribute eines Objektes zuzugreifen. Auch Attribute m"ussen mit dem JNI erst erzeugt werden, allerdings
-wurde hier auf eine eigene PHP-Klasse verzichtet, sondern es wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: \emph{javaGet()} und
-\emph{javaSet()}. \emph{javaGet()} erwartet analog zu Methoden zwei Argumente, den Namen des Attributes und dessen Signatur, beides als Strings, letzteres wieder
-JNI-kodiert. Wie bei Methodensignaturen auch wird der Feldsignaturstring geparst, um sp"ater dem R"uckgabewert den richtigen Typen zuweisen zu k"onnen, aber auch
-weil auch um ein Attribut eines Java-Objektes auszulesen die richtige JNI-Funktion aufgerufen werden muss. Diese Funktionen haben die Signatur
+Weiterhin sollte es dem Anwender erm"oglicht werden, auf Attribute eines Objektes zuzugreifen. F"ur Attribute m"ussen mit dem JNI - wie bei Klassen und Objekten auch -
+Handler erzeugt werden, allerdings wurde hier auf eine eigene PHP-Klasse verzichtet, sondern es wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: 
+\emph{javaGet()} und \emph{javaSet()}. \emph{javaGet()} erwartet analog zu Methoden zwei Argumente, den Namen des Attributes und dessen Signatur, beides als Strings, 
+letzteres wieder JNI-kodiert. Wie bei Methodensignaturen auch wird der Feldsignaturstring geparst, um sp"ater dem R"uckgabewert den richtigen Typen zuweisen zu k"onnen, 
+aber auch weil auch um ein Attribut eines Java-Objektes auszulesen die richtige JNI-Funktion aufgerufen werden muss. Diese Funktionen haben die Signatur
 Get$<$Type$>$Field, und erwarten alle das Objekt dessen Attribut ausgelesen werden soll, sowie eine sogenannte \emph{jfieldID}, die zuvor mittels der Funktion
 \emph{GetFieldID} generiert werden muss. Wie bei Methodenaufrufen der R"uckgabewert wird hier der Wert des Attributes in einem jvalue gespeichert, der wieder
 in einen zval umgewandelt wird. \emph{javaSet()} erwartet neben den Argumenten die auch \emph{javaGet()} erwartet noch den Wert auf den das Attribut gesetzt werden
 soll, daf"ur gibt diese Methode nat"urlich keinen Wert zur"uck. Auch \emph{javaSet()} entscheidet anhand der Signatur welche JNI-Funktion zum Setzen des
 Attributes aufgerufen werden soll, welche die Signatur Set$<$Type$>$Field haben, und versucht ebenfalls anhand des "ubergebenen Attributnamens und -Signatur die
 entsprechende jfieldID zu finden.
+
+Analog zu Feldern von Instanzen sollte auch auf statische Felder in Java-Klassen zugegriffen werden k"onnen, hierzu wurden in der TurpitudeJavaClass zwei Methoden
+implementiert, \emph{getStatic()} und \emph{setStatic()}. Wie bei nicht-statischen Attributen auch m"ussen zum Setzen beziehungsweise Auslesen je nach Feld-Typ spezielle 
+JNI-Funktionen aufgerufen werden, diese haben die Signatur Get/SetStatic$<$Type$>$Field. Die Umwandlung des zu setzenden Wertes beziehungsweise des R"uckgabewertes
+geschieht analog zu nicht-statischen Attributen.
 
 \subsection{Exceptions}
 \label{sec:chap1:impl:8}
@@ -351,9 +357,6 @@ hingegen reicht \emph{throwNew} v"ollig aus. Um Exceptions auch fangen zu k"onne
 JNI-Funktion aufruft, und die zuletzt geworfene und noch nicht gefangene Exception zur"uckgibt. Wird keine solche Exception gefunden wird NULL zur"uckgegeben,
 derart gefundene Exceptions verbleiben allerdings in diesem Status. Um erfolgreich behandelte Exceptions aus diesem Zustand zu entfernen wurde die Methode
 \emph{exceptionClear} implementiert, die ebenfalls keine Parameter entgegennimmt, und ebenfalls die gleichnamige JNI-Funktion aufruft.
-Schlussendlich wurde dem TurpitudeEnvironment noch die Methode \emph{instanceOf} hinzugef"ugt die den Java-Operator \emph{instanceof} nachbildet.
-Diese Methode erwartet zwei Argumente, zum einen das zu testende Objekt, und zum anderen die Klasse von der der Anwender wissen will ob das Objekt eine Instanz
-dieser ist.
 
 Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder falschen Types sein.
 Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das lesen beziehungsweise schreiben von Attributen auch auf nicht-"offentlichen
@@ -561,12 +564,51 @@ $string = $date->toString();
 Allerdings brachte diese Art des Methodenaufrufes auch Nachteile mit sich, die zum Teil mit der Reflection-API von Java,
 und zum Teil mit Turpitude selbst zusammenh"angen. So werden beispielsweise Methodenargumente immer gem"a\ss  der Tabelle
 \ref{tab:phptojava} konvertiert, was bei simplen Datentypen wie \emph{int} und \emph{float} unter Umst"anden zu Problemen f"uhren
-kann, weil keine passende Methode gefunden wird. Auch ist es so nur m"oglich "offentliche (\emph{public}) Methoden aufzurufen,
+kann, weil keine passende Methode gefunden wird. Beispielsweise f"uhrt folgender Code:
+\begin{lstlisting}[caption=Typkonversionsfehler]
+$date = $obj->setIntval(5);
+\end{lstlisting}
+zu einem Fehler, da der PHP-Wert (5) in einen java.lang.Long konvertiert wird, die Methode aber einen Integer erwartet.
+Auch ist es so nur m"oglich "offentliche (\emph{public}) Methoden aufzurufen,
 bei privaten Methoden wirf \emph{Method.invoke()} eine Exception.
 In F"allen in denen der Anwender private oder ganz bestimmte Methoden aufrufen will l"a\ss t es sich also leider nicht vermeiden dass 
 der Anwender auf \emph{findMethod()} und \emph{javaInvoke()} zur"uckgreiffen muss. In den allermeisten F"allen bringt diese "Anderung 
 dem PHP-Programmierer aber eine erhebliche Vereinfachung, und rechtfertigt die entstehenden Nachteile, zumal ja in speziellen F"allen
 auf die oben beschriebenen Methoden zur"uckgegriffen werden kann.
+
+\subsection{Java-Attribute, die 2.}
+\label{sec:chap1:impl:14}
+
+Nachdem nun der Aufruf von Java-Methoden deutlich vereinfacht wurde, sollte eine "ahnliche Verbesserung beim Zugriff auf Java-Attribute
+entwickelt werden, sprich der direkte Zugriff ohne den Aufruf einer speziellen Methode und vor allem ohne die Notwendigkeit die
+Signatur des Attributes anzugeben. Weiter oben wurde beschrieben dass PHP-Klassen Callbacks f"ur das Setzen und Auslesen von 
+Attributen besitzen, und diese sollten nun im TurpitudeJavaObject und in der TurpitudeJavaClass implementiert werden. Wie schon
+im vorherigen Kapitel sollte hierzu die Java-Reflection API zur Hilfe genommen werden. Die Callbacks \emph{\_\_get} und \emph{\_\_set}
+haben die selben Parameter die alle Methoden einer Zend-internen Klasse erwarten, und somit musste auch hier zun"achst der Feldname
+und der Feld-Wert aus der Parameter-HashMap ausgelesen und zwischengespeichert werden. Der erste Parameter ist immer der Feldname,
+und im Falle von \emph{\_\_set} ist der zu setzende Wert an zweiter Stelle zu finden. Der Pointer auf den R"uckgabewert macht 
+offensichtlich nur bei \emph{\_\_get} Sinn, speichert aber in diesem Fall den ausgelesenen Wert. Beide Callbacks rufen statische Methoden
+des in \ref{sec:chap1:impl:12} beschriebenen \emph{ReflectHelper} auf, \emph{getFieldValue()} und \emph{setFieldValue()}, die beide
+die Methode \emph{getField()} der Klasse des Java-Objektes benutzen um das entsprechende \emph{java.lang.reflect.Field} des Attributes 
+zu finden, um dann auf diesem die Methode \emph{get()} beziehungsweise \emph{set()} aufzurufen. \emph{getField()} geht nach folgendem
+Algorithmus vor: Wenn die Klasse ein Feld mit dem gesuchten Namen definiert wird dieses zur"uckgegeben, ist dies nicht der Fall und die
+Klasse implementiert mindestens ein Interface werden diese Interfaces nach einem passenden Feld durchsucht. Wird auch hier kein Feld
+gefunden wird der Algorithmus rekursiv auf die Vaterklasse angewandt, hat die Klasse keine Vaterklasse wird ein Fehler erzeugt.
+Die involvierten PHP-Variablen, beim
+schreibenden Zugriff der zu schreibende Wert, beim lesenden Zugriff der ausgelesene Wert, werden wie immer nach den Tabellen
+\ref{tab:phptojava} und \ref{tab:javatophp} konvertiert. Treten beim Zugriff Fehler auf, so wird die Ausf"uhrung des PHP-Codes abgebrochen
+und ein entsprechender Fehler als Java-Exception geworfen. Nun konnte auf die Felder eines Java-Objektes wie folgt zugegriffen werden:
+\begin{lstlisting}[caption=Verbesserter Zugriff auf Java-Attribute]
+$obj->stringval = 'wert';
+$str = $obj->stringval;
+\end{lstlisting}
+Im Zuge dieser Verbesserung wurde auch der direkte Zugriff auf statische Attribute von Java-Klassen erm"oglicht, indem die
+Callbacks \emph{\_\_get} und \emph{\_\_set} in der TurpitudeJavaClass entsprechend implementiert wurden, sie unterscheiden sich
+von den Callbacks des TurpitudeJavaObject lediglich darin, dass sie beim ReflectHelper die entsprechenden Methoden
+\emph{getStaticFieldValue()} und \emph{setStaticFieldValue()} aufrufen.
+Diese Methode des Zugriffs auf Java-Attribute hat die selben Nachteile wie der direkte Zugriff auf Java-Methoden, sprich es k"onnen
+wieder nur "offentliche Felder gesetzt und ausgelesen werden, und die Typkonversion kann in manchen F"allen zu Problemen f"uhren, aber
+auch hier "uberwiegen nach Meinung des Autors die Vorteile.
 
 \subsection{Erzeugen von Java-Arrays}
 \label{sec:chap1:impl:13}
@@ -577,8 +619,8 @@ beispielsweise um sie als Argument an eine Methode zu "ubergeben. Das JNI bietet
 die M"oglichkeit beliebige Arrays zu erstellen, im Folgenden wird beschrieben wie diese Funktionen durch Turpitude in PHP
 abgebildet und dem Anwender zug"anglich gemacht wurden.
 
-Die Methode um neue Arrays zu erzeugen sollte \emph{newArray()} hei\ss en, und da sie sich keiner Klasse zuordnen lie\ss  
-wurde sie dem TurpitudeEnvironment hinzugef"ugt. Sie erwartet zwei Argumente, zum einen den JNI-kodierten Typen der Arrayelemente 
+Die Methode um neue Arrays zu erzeugen sollte \emph{newArray()} hei\ss en, und da sie sich keiner Klasse zuordnen lie\ss  wurde 
+sie dem TurpitudeEnvironment hinzugef"ugt. Sie erwartet zwei Argumente, zum einen den JNI-kodierten Typen der Arrayelemente 
 als String, und zum anderen die L"ange, die das zu erzeugende Array haben soll. Intern wird das Erzeugen von der Funktion
 \emph{turpitude\_env\_method\_newarray()} "ubernommen, die die selben Parameter entgegennimmt wie die meisten PHP-Methoden
 implementierende Funktionen. Innerhalb dieser Funktion werden zun"achst die Anzahl und Typen der Argumente "uberpr"uft, und 
@@ -586,8 +628,69 @@ mit der Funktion \emph{get\_java\_field\_type()} der Typstring geparst. Anhand d
 aufgerufen werden soll, wird der Typ nicht erkannt wird ein Laufzeitfehler geworfen. Ein Sonderfall sind Objektarrays, zum einen
 weil hier nocht "uberpr"uft wird ob die Klasse valide ist, und zum anderen weil auch ein Objektarray erzeugt wird wenn es sich beim
 verlangten Typ um ein Array handelt, und somit ein Array von Arrays erstellt werden soll. Trat bis hierhin kein Fehler auf
-wird das Array noch in ein TurpitudeJavaArray verpackt, und an den Anwender zur"uckgegeben.
+wird das Array noch in ein TurpitudeJavaArray verpackt, und an den Anwender zur"uckgegeben, der dann wie gewohnt mit dem Array
+verfahren kann.
 
+\subsection{Java-Helpermethoden}
+\label{sec:chap1:impl:14}
+
+Zur Abrundung der Bibliothek fehlte dem PHP-Teil noch einiges an Funktionalit"at, leider konnten aus zeitlichen Gr"unden nicht alle 
+Features des JNI dem PHP-Entwickler zug"anglich gemacht werden, dennoch wurden dem TurpitudeEnvironment am Ende des Entwicklungszyklus 
+noch einige Methoden hinzugef"ugt. Zun"achst die Methode \emph{instanceOf()}, die den Java-Operator \emph{instanceof} nachbildet.
+Diese Methode erwartet zwei Argumente, zum einen das zu testende Objekt, und zum anderen die Klasse von der der Anwender wissen will 
+ob das "ubergebene Objekt eine Instanz dieser ist. 
+
+Ausserdem wurde die TurpitudeJavaClass um die Methode \emph{isCastable()} erweitert, die true zur"uckgibt wenn das "ubergebene TurpitudeJavaObject
+entweder eine Instanz der Klasse ist, oder wenn sich das Objekt problemlos auf die Java-Klasse casten l"a\ss t, die von der TurpitudeJavaClass
+gekapselt wird. Das Casten von Objekten selbst wurde nicht implementiert, da der Aufruf von Methoden und der Zugriff auf Attribute
+entweder unter Verwendung des genauen Klassennamens, oder aber "uber Reflection geschieht, es also unerheblich ist Instanz welcher Klasse
+das Objekt genau ist.
+
+\subsection{Setzen von PHP.ini Parametern}
+\label{sec:chap1:impl:15}
+
+Als letztes Feature stand nun noch das Setzen von Parametern aus, die normalerweise "uber die Datei "'php.ini"' gesteuert werden.
+Schnell war klar dass die geeignete Zend-API Funktion dies zu erreichen \emph{zend\_alter\_ini\_entry()} war. Diese Funktion erwartet
+als Argumente den Namen des INI-Parameters, dessen L"ange, und den zu setzenden Wert und dessen L"ange. Ausserdem erwartet sie zwei
+weitere Parameter, den "'\emph{modify\_type}"' und die "'\emph{stage}"', deren Bedeutung sich zun"achst nicht ohne weiteres erschlo\ss .
+Naive Versuche mittels dieser Funktion Parameter zu setzen waren erfolglos, und da weder die Funktion noch ihre Parameter dokumentiert
+waren konnte abermals nur durch ausf"uhrliches Studium des Zend-Quelltextes ein Erfolg erzielt werden.
+
+Wie sich herausstellte hat jeder php.ini-Wert eine Bitmaske die anzeigt wann er ver"andert werden darf, und das oben angesprochene Argument
+\emph{stage} wird mit dieser Bitmaske verundet um festzustellen ob eine Ver"anderung zu diesem Zeitpunkt zul"a\ss ig ist.
+Die ersten vier Bits der Bitmaske stehen in dieser Reihenfolge f"ur folgende Zeitpunkte: 
+\begin{enumerate}
+\item \emph{STARTUP} - nach dem Initialisieren des Interpreters
+\item \emph{SHUTDOWN} - vor dem Herunterfahren des Interpreters
+\item \emph{ACTIVATE} - nach dem Starten des sog. Requests 
+      \footnote{an dieser Stelle ist wiedereinmal sehr deutlich zu merken wie sehr PHP an den Konzepten der Web- und CGI-Welt h"angt, in der
+      PHP oftmals als Modul in einem Webserver l"auft, und jeder Seitenzugriff (Request) unabh"angig behandelt werden muss.}
+\item \emph{DEACTIVATE} - vor der Beendigung des Requests, aber nach Ausf"uhrung des Skriptes
+\item \emph{RUNTIME} - zur Laufzeit des PHP-Skriptes
+\end{enumerate}
+Der Paramter \emph{modify\_type} hingegen gibt an wer die "Anderung vornehmen will, und auch hierzu enth"alt jeder php.ini-Wert wieder eine Bitmaske.
+Die Bedeutung der einzelnen Bits stellt sich wie folgt dar:
+\begin{enumerate}
+\item \emph{USER} - Diese Werte kann der PHP-Benutzer, sprich das ausgef"uhrte Skript setzen
+\item \emph{PERDIR} - Diese Werte k"onnen pro Verzeichnis  
+      \footnote{Auch dies ist ein Hinweis auf die CGI-Abstammung von PHP, wo oftmals unterschiedliche Benutzer Skript im gleichen Webserver ausf"uhren,
+      und unabh"angig voneinander php.ini-Werte setzen wollen.}
+      gesetzt werden.
+\item \emph{SYSTEM} - Diese Werte d"urfen nur Systemweit ver"andert werden
+\end{enumerate}
+Nachdem die Bedeutung der beiden Bitmasken klar war funktionierte das Setzen von php.ini-Werten immernoch nicht, was daran lag, dass die L"angenangabe
+des Parameternames mysteri"oserweise um eins g"o\ss er sein mu\ss  als er wirklich ist. Diese L"osung wurde nur durch Zufall gefunden, und der
+Grund hierf"ur konnte nicht ermittelt werden.
+
+Nun musste noch ein Weg gefunden werden der es dem Anwender erlaubt diese Werte auf m"oglichst einfache Weise zu setzen, und es wurde beschlossen dieses
+Ziel "uber Java Systemproperties zu erreichen, da diese beim Start der JVM als Kommandozeilenparameter "ubergeben, oder aber vor dem Start der ScriptEngine 
+programmatisch gesetzt werden k"onnen. Folglich wurde die C-Implementierung der \emph{startUp()}-Methode der PHPScriptEngine derart angepasst, dass vor dem 
+Start des Requests eine Java-Methode aufgerufen wird, die aus den Systemproperties diejenigen ausliest,  die mit einem bestimmten Prefix beginnen, welcher 
+als statisches Feld \emph{PropertyPrefix} in der ScriptEngine gespeichert ist.
+Standardm"a\ss ig ist der Prefix \emph{net.xp\_framework.turpitude.ini}, und die Namen der zu setzenden php.ini-Werte werden mit einem Punkt separiert an diesen
+Pr"afix angeh"angt. Jedes der so gewonnenen Schl"ussel/Wertepaare wird wieder an eine native Methode "ubergeben, die schlie\ss lich \emph{zend\_alter\_ini\_entry()}
+mit den n"otigen Argumenten aufruft, um den Wert zu setzen. Diese Vorgehensweise mag etwas kompliziert erscheinen, aber dadurch dass die php.ini-Werte vor dem
+Start des Requests gesetzt werden, k"onnen alle Werte ver"andert werden, gleich welchen Wert ihr \emph{modify\_type}-Attribut hat.
 
 
 % ********** End of chapter **********

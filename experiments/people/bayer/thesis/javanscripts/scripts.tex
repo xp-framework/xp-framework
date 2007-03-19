@@ -1,17 +1,18 @@
 % ********** Chapter 1 **********
 \chapter{Java und Skriptsprachen}
 \label{sec:javanscripts}
-Dieses Kapitel erl"autert grundlegende Anwendungsf"alle beim erweitern Javas um Skriptsprachenfunktionalit"at,
-und Herangehensweisen diese Use-Cases abzudecken. Weiterhin werden zwei existierende Technologien vorgestellt,
-die das Einbetten von Skriptinterpretern in Java erlauben: das \emph{Bean Scripting Framework} und der 
-\emph{Java Specification Request 233}. Ausserdem wird erl"autert auf welche Weise PHP in Java integriert
-werden soll und es wird ein simpler Prototyp entwickelt, um die Machbarkeit zu erweisen und um erste Erfahrungen 
-mit der einzusetztenden Technologie zu erlangen. Schlussendlich wird das Projekt in kleinere, "ubersichtlichere
-Teile unterteilt und ein Zeitrahmen f"ur die einzelnen Schritte festgelegt.
+In diesem Kapitel soll zun"achst besprochen werden, welche M"oglichkeiten prinzipiell existieren
+um Skriptsprachen wie PHP innerhalb einer Java Virtual Machine auszuf"uhren, und um Daten 
+zwischen den beiden Programmiersprachen auszutauschen. Dann werden zwei Technologien vorgestellt,
+die in diesem Kontext vorrangig benutzt werden, das \emph{Bean Scripting Framework} und der
+\emph{Java Specification Request 233},  und es wird erl"autert welche sich besser f"ur die L"osung 
+der Aufgabe eignet. Ausserdem wird erl"autert auf welche Weise PHP in Java integriert
+werden soll und es wird ein simpler Prototyp entwickelt, um die Machbarkeit zu erweisen und um erste Erfahrungen
+mit der einzusetztenden Technologie zu erlangen. Schlussendlich wird das Projekt in drei Unterprojekte
+unterteilt und ein Zeitrahmen f"ur die einzelnen Schritte festgelegt.
 
-\section{Use-Cases und Herangehensweisen}
+\section{Herangehensweisen}
 \label{sec:javanscripts:ucs}
-TODO: besserer Titel
 Beim Erweitern von Java um die F"ahigkeit Skriptsprachen auszuf"uhren exisiteren zwei wesentliche Anwendungsf"alle:
 \begin{description}
 \item[Java Objekte in Skriptsprachen:]

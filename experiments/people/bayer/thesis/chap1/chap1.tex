@@ -2,17 +2,20 @@
 \chapter{Java und PHP}
 \label{sec:chap1}
 
-In diesem Kapitel soll zun"achst besprochen werden, welche M"oglichkeiten prinzipiell existieren
-im PHP innerhalb einer Java Virtual Machine auszuf"uhren, und um Daten zwischen den beiden
-Programmiersprachen auszutauschen. Dann werden im besonderen die beiden in diesem Kontext
-vorrangig benutzten APIs beschrieben, und erl"autert welche sich besser f"ur die L"osung der
-Aufgabe eignet. Sp"ater wird eine erste Einteilung des Projektes in drei Unterprojekte vorgenommen,
-und eine grobe Zeitplanung erstellt. Der Rest des Kapitels besch"aftigt sich mit Design und 
-Implementierung einer Java-Bibliothek, welche die genannten Anforderung erf"ullt.
+In diesem Kapitel soll eine JSR-223 Implementation f"ur PHP entworfen und erarbeitet werden. Hierzu wird zun"achst
+die Aufgabe analysiert und die Anforderungen die diese stellt er"ortert. Diese Anforderungen werden dann genutzt
+um das Vorgehen bei der Implementierung zu planen, und um eine Architektur zu entwerfen die diese Anforderungen 
+m"oglichst komplett erf"ullt. Schliesslich werden die gewonnenen Erkenntnisse genutzt um die erarbeitete Vorgehensweise
+in die Tat zu setzen und eine Bibliothek zu erstellen, die es dem Anwender erlaubt PHP-Skripte in Java auszuf"uhren,
+Daten an diese Skripte zu senden, aus Java heraus PHP-Funktionen aufzurufen, und aus diesen Skripten heraus 
+Java-Funktionalit"at zu nutzen.
 
 \input{chap1/analysis.tex}
+\clearpage
 \input{chap1/design.tex}
+\clearpage
 \input{chap1/impl.tex}
+\clearpage
 \input{chap1/fazit.tex}
 
 
