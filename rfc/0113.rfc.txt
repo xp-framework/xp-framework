@@ -112,7 +112,7 @@ this now changes to:
 
 function __construct($endpoint) {
   $sd= SoapDriver::getInstance();
-  $this->client= $sd->fromEndpoint($endpoint, '$urn:SomeThing', XP); 
+  $this->client= $sd->fromEndpoint($endpoint, 'urn:SomeThing', XP); 
 
   $this->client->registerMapping(
     new QName('http://namespace', 'SoapValue'),

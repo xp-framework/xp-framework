@@ -8,7 +8,7 @@
    *  Example:
    *  <code>
    *    $sd= SoapDriver::getInstance();
-   *    client= $sd->fromEndpoint($endpoint, '$urn:SomeThing', XP); 
+   *    client= $sd->fromEndpoint($endpoint, 'urn:SomeThing', XP); 
    *
    *    registerMapping(
    *      new QName('http://namespace', 'SoapValue'),
