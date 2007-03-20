@@ -58,19 +58,18 @@
       // Parse DSN
       $u= new URL($dsn);
       
-      
       // DSN supported?
-      if (FALSE === $this->_supports($u, $u->getParams())) return FALSE;
+      if (FALSE === $this->_supports($u, $attr)) return FALSE;
 
       // Read-only?
       if ($u->getParam('open')) $flags ^= OP_HALFOPEN;
       if ($u->getParam('read-only')) $flags |= OP_READONLY;
       
-      $mbx= $u->getParam('mbx') ? $u->getParam('mbx') : sprintf(
+      $mbx= isset($attr['mbx']) ? $attr['mbx'] : sprintf(
         '{%s:%d/%s}',
         $u->getHost(),
-        $u->getPort() ? $u->getPort() : $u->getParam('port'),
-        $u->getParam('proto')
+        $u->getPort($attr['port']),
+        $u->getParam('proto', $attr['proto'])
       );
       
       // Connect
