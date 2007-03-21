@@ -84,6 +84,8 @@ Dependencies
 
 Related documents
 -----------------
+- http://www.odetocode.com/Articles/455.aspx
+  Windows Workflow: The Base Activity Library 
 
 Comments
 --------
