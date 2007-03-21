@@ -1,0 +1,91 @@
+RFC 0114: Generic Workflow API
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: friebe
+@created: Wed Mar 21 14:43:39     2007
+@status: draft
+@category: util.workflow
+
+Scope of Change
+---------------
+
+Rationale
+---------
+
+Functionality
+-------------
+
+<pre>
+                          (*)
+                           |
+                           |
+                .----------------------.
+                | Fetch email address  |
+                | from payload data,   |
+                | lookup if n/a        |
+                '----------------------'
+                           |
+                           |
+                .----------------------.
+                | Send email           |
+                |                      |
+                |                      |
+                '----------------------'
+                           |
+                           |
+                          / \
+                         /   \     No          .-------------.
+                        / OK? \________________| Error       |
+                        \     /                |             |
+                         \   /                 '-------------'
+                          \ /                
+                           | Yes
+                           |
+                           
+</pre>
+
+From scratch
+~~~~~~~~~~~~
+<?php
+  $workflow= new Workflow();
+
+  // Callbacks
+  $workflow->onCompleted()->add(...);
+  $workflow->onTerminated()->add(...);
+  
+  // Path
+  $initial= $workflow->initial();
+  $initial->addActivity(new MethodActivity($class->getMethod('aggregateEmail')));
+  $initial->addActivity(new MethodActivity($class->getMethod('sendEmail')));
+
+  // Branching
+  $initial->addActivity(new IfElseActivity(
+    $workflow->newBranch(new Condition(...))->addActivity(new TerminateActivity()),
+    $workflow->newBranch()->addActivity(new TerminateActivity())
+  ));
+  
+  
+  // Create & run
+  $instance= $workflow->newInstance();
+  $instance->setPayload(...);
+  $instance->start();
+?>
+
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
