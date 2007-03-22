@@ -3,7 +3,7 @@
 
 Obwohl innerhalb der Firma - im Gegensatz zu EJB 2.0 - nur sehr wenig Erfahrung mit der Enterprise Java Bean Specification in der
 neuesten Version 3.0 (siehe \cite{EJBHP}) vorhanden war, wurde beschlossen das Projekt unter Einsatz dieser durchzuf"uhren. 
-Diese Entscheidung fiel nicht nur um Erfahrungen mit dieser neuen Technologie zu sammeln, sonder auch um das Projekt zukunftssicherer 
+Diese Entscheidung fiel nicht nur um Erfahrungen mit dieser neuen Technologie zu sammeln, sondern auch um das Projekt zukunftssicherer 
 zu machen.
 Aus diesem Grund sollem an dieser Stelle kurz die Unterschiede zwischen EJB 2.0 und 3.0 umrissen werden, es wird dabei
 davon ausgegangen, dass der Leser mit den Programmierkonzepten von EJB 2.0 zumindest im Groben vertraut ist.
@@ -15,9 +15,16 @@ sondern f"uhrte auch dazu dass J2EE oft falsch eingesetzt wurde, was wiederum sc
 Man erkannte dass das urspr"unglich vorrangige Ziel von EJB - die Gew"ahrleistung transaktioneller Integrit"at "uber verteilte 
 Applikationen hinweg - von "'Enterprise Applications"' gar nicht ben"otigt wurde.
 Die EJB 3.0 Spezifikation versucht nun sich diesem Komplexit"atsproblem anzunehmen, und aus den Erfahrungen lange eingesetzter
-und erfolgreicher Opensource Projekte wie beispielsweise \emph{Hibernate} \cite{HIBERNATEHP} und \emph{XDoclet} \cite{XDOCLETHP}
-zu lernen. Sie basiert auf Java-Annotationen und POJOs (Plain Old Java Objects), und ist sehr viel leichter zu Verstehen als
-fr"uhere Versionen, ohne jedoch an M"achtigkeit einzub"ussen.
+und erfolgreicher Opensource Projekte wie beispielsweise \emph{Hibernate}
+\footnote{Hibernate ist ein O/R Mapper, eine Middleware die das Abbilden von relationen Datenbanken auf objektorierte
+Datenstrukturen erlaubt, siehe \cite{HIBERNATEHP}}
+und \emph{XDoclet}
+\footnote{XDoclet erm"oglicht das attributorientierte Arbeiten in Java-Versionen vor 5, indem es die annotierten Attribute
+vor dem eigentlichen "ubersetzen mittels eines Pr"aprozessors in Java-Quelltext umwandelt, siehe \cite{XDOCLETHP}}
+zu lernen. Sie basiert auf Java-Annotationen und POJOs
+\footnote{POJO steht f"ur "'Plain Old Java Object"' und bedeutet "'ganz normales Java-Objekt"'. Insbesondere unterscheiden sie sich
+von mit vielf"altigen externen Abh"angigkeiten belasteten Objekttypen.}
+, und ist sehr viel leichter zu Verstehen als fr"uhere Versionen, ohne jedoch an M"achtigkeit einzub"ussen.
 
 Mit Java Annotationen (siehe \cite{JAVAANNOTATIONS}) wurde Java erstmals in der Version 5 mit der M"oglichkeit ausgestattet 
 den Quelltext mit Metadaten zu versehen.
@@ -25,7 +32,10 @@ Durch die Verwendung von Annotationen wird in EJB 3.0 zum einen die Anzahl von b
 und zum anderen werden so Deployment Deskriptoren weitestgehend unn"otig, da f"ur Konfigurationsparameter nun sinnvolle Wertebelegungen
 angenommen werden, und davon abweichende Werte durch Annotationen direkt im Quelltext der Java-Klassen untergebracht werden.
 Weiterhin werden Annotationen verwendet um Abh"angigkeiten zur Umgebung und JNDI-Zugriffe zu spezifizieren und durch
-Dependecy Injection (siehe \cite{DEPINJ}) automatisch aufzul"osen.
+Dependecy Injection
+\footnote{Entwurfsmuster das dazu dient in einem objektorientierten System Abh"angigkeiten zwischen Komponenten oder Objekten 
+zu minimieren, siehe \cite{DEPINJ}}
+automatisch aufzul"osen.
 Ausserdem wurde die Notwendigkeit abgeschafft von EJB-spezifischen Interfaces zu erben oder diese zu implementieren, Session Beans
 ben"otigen kein Home-Interface mehr, Entity Beans sind nun einfach Java-Klassen (POJOs), um Persistenzeigenschaften zu realisieren
 verwendet man die neue \emph{Java Persistence Architecture}, welche bessere M"oglichkeiten zur Abfrage, f"ur Mengenoperationen und

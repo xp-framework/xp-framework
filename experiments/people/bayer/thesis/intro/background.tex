@@ -4,7 +4,7 @@
 
 Dieses Kapitel stellt bereits vorhandene Technologien vor, welche f"ur die L"osung der Aufgabenstellung relevant sind.
 Weiterhin werden Technologien angesprochen, die alternative L"osungen darstellen k"onnten, in diesen F"allen wird kurz
-darauf eingegangen, warum sie keine Verwendung finden. Weiterhin werden Begrifflichkeiten f"ur den weiteren Verlauf
+darauf eingegangen, warum sie keine Verwendung finden. Ausserdem werden Begrifflichkeiten f"ur den weiteren Verlauf
 des Dokumentes eingef"uhrt und erkl"art.
 
 \section{Serviceorientierte Architektur - SOA}
@@ -15,14 +15,23 @@ Gesch"aftsprozesse besser und schneller abbilden zu k"onnen als traditionelle Ar
 einzelne Schritte der Gesch"aftsprozesse nach und bieten standardisierte Schnittstellen "uber welche sie angesprochen
 werden k"onnen. Dienste werden vom einem \emph{service provider} angeboten und von einem \emph{service consumer}
 mittels eines \emph{service request} angesprochen, der Dienst antwortet mittels eines \emph{service response}.
-Die Koppelung mehrerer Dienste wird "uber ein oder mehrere Protokolle wie zum Beispiel \emph{SOAP} (siehe \ref{sec:background:soap})
-oder \emph{RMI} (siehe \ref{sec:background:rmi}), aber auch durch den Einsatz ganzer dienstorientierter Technologien
-wie \emph{CORBA} oder \emph{Enterprise Java Beans} erreicht. 
+Die Koppelung mehrerer Dienste wird "uber ein oder mehrere Protokolle wie zum Beispiel \emph{SOAP}
+\footnote{Simple Object Access Protocol, XML-basiertes Protokoll zum Nachrichtenaustausch "uber Rechnernetzwerke , siehe \ref{sec:background:soap}}
+oder \emph{RMI}
+\footnote{Remote Method Invocation, API zum Aufruf entfernter Methoden, siehe \ref{sec:background:rmi}}, 
+aber auch durch den Einsatz ganzer dienstorientierter Technologien
+wie \emph{CORBA} \footnote{
+Common Object Request Broker Architecture - Objektorientierte, plattformunabh"angige Middleware die Protokolle und Dienste
+spezifiziert, die das erstellen verteilter Anwendungen in heterogenen Umgebungen vereinfachen soll. CORBA wird von
+der Object Management Group entwickelt, siehe \cite{OMGHP}}
+oder \emph{Enterprise Java Beans} (vgl. \ref{sec:background:rmi} und \ref{sec:chap2}) erreicht. 
 Aufgrund der Platformunabh"angigkeit solcher Technologien eigenet sich ein solche Architektur auch besonders vorhandene
-Strukturen miteinander zu verbinden.
+Strukturen miteinander zu verbinden, und die Heterogenit"at verschiedener Systeme zu "uberwinden.
 Ein weiterer wesentlicher Aspekt von SOA ist die Kapselung des Zugriffes
 auf persistente Daten durch einzelne Services, welche als einzige schreibend auf diese Daten zugreiffen k"onnen, was 
 die Gew"ahrleistung der Konsitenz solcher persistenter Daten erheblich vereinfacht. 
+Der Begriff SOA fasst eine Vielzahl von Technologien und Herangehensweisen zusammen, und ihn an dieser Stelle komplett zu 
+erl"autern w"urde den Rahmen des Dokumentes sprengen.
 
 \section{Skriptsprachen}
 \label{sec:background:script}
@@ -42,11 +51,16 @@ bieten Sprachen wie beispielsweise Java auch eine automatisierte Speicherverwalt
 direkt in Maschinencode sondern in Bytecode "ubersetzt welcher dann interpretiert wird, w"ahrend 
 Skriptsprachen wie Python oder Ruby teilweise sehr hohe formale Anspr"uche stellen und sehr robust sind.
 Die klassischen Einsatzgebiete von Skriptsprachen werden heute erweitert durch Webanwendungen und
-\emph{rapid prototyping}, auch werden sie gerne als sogenannte \emph{glue languages} - als 
-verbindender "'Kleber"' zwischen verschiedenen Systemen, Programmen und Programmiersprachen -
+\emph{rapid prototyping}\footnote{
+Das Entwickeln eines Prototyps des zu erstellenden Softwaresystems, ohne die vollen Anspr"uche an Umfang und
+Qualit"at erf"ullen zu wollen.
+}
+, auch werden sie gerne als sogenannte \emph{glue languages}
+- als verbindender "'Kleber"' zwischen verschiedenen Systemen, Programmen und Programmiersprachen -
 eingesetzt. Skriptsprachen sind ausserdem beliebt um Softwaresysteme f"ur weniger versierte Anwender
 leicht erweiterbar zu machen, indem sie eine kontrollierte, leicht erlernbare und trotzdem 
-ausreichend m"achtige Umgebung bieten.
+ausreichend m"achtige Umgebung bieten, in der dieser Anwender der Applikation eigene Funktionalit"at 
+hinzuf"ugen kann.
 Im weiteren Verlauf dieses Dokumentes werden Programme, welche in einer Skriptsprache geschrieben sind 
 auch kurz als "'Skripte"' bezeichnet.
 
@@ -58,6 +72,7 @@ ist eine weit verbreitete und f"ur den allgemeinen Gebrauch bestimmte Open Sourc
 welche speziell f"ur die Webprogrammierung geeignet ist, und in HTML eingebettet werden kann."'
 
 Das heutige PHP entstand aus den urspr"unglich 1994 von \emph{Rasmus Lerdorf} in C geschriebenen und "uber CGI
+\footnote{Common Gateway Interface, Schnittstelle zwischen einem Webserver und einer Programmiersprache, siehe \ref{sec:background:cgi}}
 ausgef"uhrten "'Personal Home Page Tools"'. 1995 wurden diese von Lerdorf erstmals als "'PHP/FI"' ver"offentlicht,
 nachdem er sie mit einem Interpreter f"ur Formulardaten ausgestattet hatte.
 1997 schrieben die beiden israelischen Entwickler \emph{Zeev Suraski} und \emph{Andi Gutmans} den Parser neu und
@@ -70,16 +85,21 @@ von der neu gegr"undeten \emph{Zend Technologies} vertrieben wird. Im Mai 2000 w
 PHP 4 wird bis heute von Zend supported und wird bei 1\&1 noch produktiv eingesetzt, obwohl es noch sehr unter den
 mangelhaften F"ahigkeiten zur Objektorientierung von PHP 3 leidet, so werden weder Kapselung der Daten durch 
 zum Beispiel private Variablen, noch Destruktoren oder Fehlerbehandlung "uber Exceptions unterst"utzt.
-July 2004 wurde PHP 5 zusammen mit der Zend Engine II ver"offentlicht und bot endlich lang erwartete Features wie
+Im July 2004 wurde PHP 5 zusammen mit der Zend Engine II ver"offentlicht und bot endlich lang erwartete Features wie
 robuste Objektorientierung, native SOAP-Unterst"utzung (siehe \ref{sec:background:soap}), 
 Iteratorkonstrukte und Exceptions. Zu diesem Zeitpunkt wird an der n"achsten PHP Version 6 entwickelt, diese
 befindet sich allerdings noch in einem sehr fr"uhen Stadium, so wird noch heftig "uber die Richtung
-debatiert in welche sich PHP in Zukunft bewegen soll.\\
+debatiert in welche sich PHP in Zukunft bewegen soll.  
+
 PHP Quellcode wird - wie bei vielen Skriptsprachen, zum Beispiel Perl - nicht kompiliert sondern zur Laufzeit ausgewertet und interpretiert.
-Die Sprache bietet nur einige wenige Datentypen, welche alle in einer einzigen Art von Variable gespeichert werden 
-(\emph{weak typing}) - sprich Variablen k"onnen zur Laufzeit ihren Typen "aendern, was von vielen als ein weiterer
-Kritikpunkt angesehen wird da es zu Laufzeitfehlern kommen kann die in anderen Sprachen schon von vorneherein 
-ausgeschlossen sind. Ein weiteres Problem ist dass der Sprachumfang von PHP durch Dritte mittels \emph{Extensions}
+Die Sprache bietet nur einige wenige Datentypen, welche alle in einer einzigen Art von Variable gespeichert werden
+(\emph{weak typing}) - sprich Variablen k"onnen zur Laufzeit ihren Typen "aendern
+, was von vielen als ein weiterer Kritikpunkt angesehen wird da es zu Laufzeitfehlern kommen kann die in anderen 
+Sprachen schon von vorneherein durch den Compiler ausgeschlossen sind.
+\footnote{
+siehe hierzu auch den Artikel von Bruce Eckel, zu finden unter \cite{TYPING}
+}
+Ein weiteres Problem ist dass der Sprachumfang von PHP durch Dritte mittels \emph{Extensions}
 genannter Erweiterungen erweitert werden kann und auch wird. Dies muss allerdings zur Kompilierzeit von PHP geschehen, was wiederum
 dazu f"uhrt dass verschiedene PHP-Installationen auch verschiedenen Funktionsumfangs sein k"onnen, und dazu dass
 verschiedene Extensions "'gleichen Typs"' - zum Beispiel die Datenbankerweiterungen zu MySQL und Sybase - nicht
@@ -88,6 +108,17 @@ Der Einsatz von PHP innerhalb von 1\&1 ist historisch vor allem dadurch zu erkl"
 konkurrenzf"ahigen Technologien gab, und sp"ater erstens schon sehr viel in diese Technologie investiert
 worden war und zweitens etwaiige technischen Nachteile von PHP durch im Unternehmen vorhandenes Know-How sehr gut
 ausgeglichen werden konnten.
+
+Dass PHP urspr"unglich als reine Web-Programmiersprache konzipiert wurde ist heute noch deutlich sichtbar, an 
+Variablen und Funktionen, die ohne eine Web-Umgebung keinen Sinn ergeben, aber vor allem in der Zend-Engine selbst,
+wo an vielen Stellen noch zwischen Modul (dem Interpreter) und Request (dem einzelnen Zugriff auf eine URL) unterschieden
+wird. Dies mag auch der Grund daf"ur sein, dass keine dem Application Server vergleichbare Technologie f"ur PHP existiert,
+f"ur PHP ist das Ausf"uhren einer alleinstehenden Applikation eher die Ausnahme als die Regel.
+
+Dennoch erfreut sich PHP heute sehr gro\ss er Beliebtheit, vor allem aufgrund der hohen Anzahl von Webservern,
+die ihren Benutzern die M"oglichkeit bieten mittels PHP dynamische Inhalte zu generieren, und obwohl Perl
+wohl eine "ahnlich hohe Verbreitung hat schreckt gerade viele Einsteiger die komplizierte Syntax dieser Sprache ab.
+
 
 \subsection{Common Gateway Interface - CGI}
 \label{sec:background:cgi}
@@ -125,10 +156,13 @@ Programmierung zu nutzen ohne auf die Vorteile der Objektorientierung zu verzich
 Viele diese Funktionen setzen allerdings vorraus, dass das ausf"uhrende PHP bestimmte Extensions bereitstellt,
 ohne welche beispielsweise das Transformieren von XML mittels XSL, die FTP- und Mailfunktionalit"at oder auch
 der Zugriff auf Datenbanken wie MySQL oder Sybase nicht m"oglich w"aren.
-Eine Portierung des Frameworks nach PHP 5 wird zwar schon l"anger geplant, allerdings gestaltet sich dieses 
+An einer Portierung des Frameworks nach PHP 5 wird zwar schon l"anger gearbeitet, allerdings gestaltet sich dieses 
 aufgrund der ge"anderten Verhaltensweisen der Programmiersprache bez"uglich Referenzen sowie die von den PHP-Entwicklern
 etwas unbedacht eingef"uhrten Exceptions schwierig. Desweiteren werden PHP st"andig neue Standardklassen
 hinzugef"ugt was ob der fehlenden Namensr"aume zu Kollisionen mit Klassen des Frameworks f"uhrt.
+Es existieren fertige, PHP 5 kompatible Versionen aller Basisklassen, zu diesem Zeitpunkt werden neue Anwendungen 
+in PHP 5 entwickelt, viele "altere Applikationen laufen aber weiterhin in PHP 4 und m"ussen auch weiterhin
+gewartet werden.
 
 
 \section{SOAP}
@@ -151,8 +185,13 @@ deutlich - in manchen F"allen um bis zu 125\% - was nicht nur Probleme mit der v
 erhebliche Mengen an Rechenleistung bei der Generierung und Verarbeitung der Nachrichten erfordert. Ein weiterer Kritikpunkt ist
 die mangelhafte und zum Teil sich selbst widersprechende Spezifikation selbst, was unter anderem dazu f"uhrt dass mittels verschiedener
 Software (\emph{tool-chains}) erzeugte SOAP-Services und -Anwendungen nicht ohne h"andisches Eingreiffen des Entwicklers miteinander kommunizieren 
-k"onnen.
-Da der Standard keine Aussagen "uber Transaktionalit"at trifft m"usste solches Verhalten - falls gew"unscht - von jeder Applikation selbst
+k"onnen. Um dieses Manko zu beheben wurde eigens die \emph{Web Services Interopability Group} \footnote{
+Die WS-I wird von vielen Unternehmen unterst"utzt die darauf angewiesen sind dass Web-Services plattform- und programmiersprachen"ubergreifend
+funktionieren, weswegen ihre Vorschl"age mittlerweile von weiten Teilen der Industrie als normgebend angesehen werden.
+siehe \cite{WSIHP}
+}
+gegr"undet, eine Organisation die versucht den Standard zu standardisieren.
+Da die Spezifikation keine Aussagen "uber Transaktionalit"at trifft m"usste solches Verhalten - falls gew"unscht - von jeder Applikation selbst
 definiert und vom Benutzer implementiert werden, was dazu f"uhrt dass es in der Praxis unm"oglich ist Anwendungen mittels SOAP zu
 verwirklichen welche Transaktionen ben"otigen w"urden. Auch existiert kein Standard der es erlaubt dynamisch Daten "uber an einem Ort verf"ugbare
 Dienste zu erlangen. Zu diesem Zweck wird meist ein \emph{WSDL}-Dokument \cite{WSDLSPEC} eingesetzt, allerdings wird auch an diesem
@@ -175,10 +214,28 @@ f"ur eine fortgeschrittenere Technologie entscheiden, nichtsdestotrotz sollte es
 \section{Java Enterprise Edition - Java EE}
 \label{sec:background:jboss}
 \label{sec:background:rmi}
-Java EE \cite{JEEHP} erweitert den Java Standard unter anderem um Funktionsalit"at, die es dem Entwickler erlaubt verteilte, transaktionsbasierte und
-mehrschichtige (\emph{multitier}) Anwendungen zu entwickeln. Hierzu spezifiziert Java EE mehrere Komponenten, wie unter anderem
+Java EE erweitert den Java Standard unter anderem um Funktionsalit"at, die es dem Entwickler erlaubt verteilte, transaktionsbasierte und
+mehrschichtige (\emph{multitier}) Anwendungen zu entwickeln (siehe auch \cite{JEEHP}). Hierzu spezifiziert Java EE mehrere Komponenten, wie unter anderem
 \emph{Enterprise Java Beans (EJBs)}, \emph{Servlets} und \emph{Java Server Pages (JSPs)}, und APIs sowie klare Schnittstellen zwischen
-diesen Komponenten. Die diese Technologien ben"otigen einen sogenannten \emph{Java Application Server} welcher die n"otige Infrastruktur
+diesen Komponenten. EJBs im besonderen sind standardisierte Komponenten innerhalb einer Java EE Architektur, mit denen verschiedene
+Dienste umgesetzt werden, die für die Gesch"aftslogik einer Anwendung notwendig sind. EJBs existieren in verschiedenen Auspr"agungen, die
+verschiedene Klassen von Anwendungsf"allen abdecken sollen:\\
+\begin{description}
+\item{Session Bean} - Session Beans bilden Vorg"ange ab, insbesondere solche die der Nutzer an einem System vornimmt. Session Beans
+    implementieren immer ein Service-Interface "uber dessen Methoden der Benutzer mit dem System interagieren kann. 
+    Man unterscheidet zustandslose (stateless) und zustandsbehaftete (stateful) Session Beans, eine Stateful Session Bean kann -
+    im Gegensatz zu einer zustandslosen Session Bean - Daten "uber mehrere Aufrufe hinweg speichern, wobei diese Daten immer
+    einem bestimmten Nutzer zugewiesen bleiben.
+\item{Message Driven Bean} - Message Driven Beans erm"oglichen eine asynchrone Kommunikation innerhalb eines Java EE Systems, indem
+    sie auf JMS\footnote{Java Message Service, API von Sun zum Austausch von Nachrichten zwischen zwei oder mehr Clients, siehe\cite{JMSHP}}
+    -Nachrichten die in bestimmten Warteschlangen vorgehalten werden reagieren.
+\item{Entity Bean} - Entity Beans bilden die persistenten Daten, beispielsweise Felder einer Datenbank, innerhalb eines Systems ab, und
+    bieten Methoden diese Daten aufzufinden, zu ver"andern und wieder abzuspeichern. In der neuesten EJB-Spezifikation\footnote{
+    EJB 3.0 Specifications, siehe \cite{EJBHP}} nehmen Entity Beans eine weitaus weniger wichtige Bedeutung ein, da die Datenpersistenz nun
+    mittels ganz normaler Java-Objekte (POJOs), deren Persistenzeigenschaften vom sogenannten \emph{EntityManager} gesteuert werden, abgebildet wird.
+    Die Entity Bean als Datentransferobjekt wird somit nicht mehr ben"otigt.
+\end{description}
+Diese Technologien ben"otigen einen sogenannten \emph{Java Application Server} welcher die n"otige Infrastruktur
 f"ur Sicherheit, Transaktionsmanagement, Kommunikation und vielem mehr unabh"angig von Betriebssystem, Netzwerk- und Rechnerarchitektur
 bereitstellt. Der Application Server ist in mehrere Module (sogenannte \emph{Container}) unterteilt welche als Laufzeitumgebungen f"ur einzelne
 Komponenten fungieren - so werden zum Beispiel EJBs im EJB-Container ausgef"uhrt. Zum Aufruf von Methoden entfernter Objekte bietet Java 
@@ -210,13 +267,25 @@ selbst Dienste in PHP zu entwickeln die ihrerseits aus einer J2EE-Umgebung mitte
 \label{fig:easc}
 \end{figure}
 
+\section{php/Java bridge und die Java-Extension}
+\label{sec:background:bridge}
+Die php/Java bridge ist ein XML-basiertes Netzwerkprotokoll das benutzt werden kann um einen PHP-Interpreter mit einer laufenden Java Virtual Machine
+zu verbinden.
+Die Java-Extension ist eine PHP-Extension\footnote{PHP-Erweiterung, siehe \ref{sec:background:php}} die dieses Protokoll benutzt um aus PHP heraus
+in der JVM Objekte zu erzeugen, und die dann Stubs dieser Objekte in PHP verf"ugbar macht, was es dem PHP-Anwender erlaubt auf diesen Objekten
+Methoden aufzurufen. Leider scheidet dieses Protokoll zur Implementation der Aufgabe aus, erstens da es an den selben Nachteilen einer XML-Serialisierung
+krankt wie beispielsweise auch SOAP, aber vor allem da es - "ahnlich wie EASC - den Zugriff von Java auf PHP nicht erm"oglicht. Weiterhin ist die
+Java-Extension nicht mehr Teil des offiziellen PHP-Quelltextes, und wird auch nicht mehr gewartet, so ist es unter anderem nur sehr schwer
+m"oglich die Extension in PHP 5 einzubinden.
+N"aheres zur php/Java bridge findet man unter \cite{BRIDGEHP}.
+
 \section{Java Native Interface - JNI}
 \label{sec:background:JNI}
 
 Java-Programme erreichen ihre Plattformunabh"angigkeit vorrangig dadurch, dass sie eine virtuelle Maschine (\emph{Java Virtual Machine - JVM}) vorraussetzen in welcher sie
 ausgef"uhrt werden. Diese virtuelle Maschine verhindert allerdings auch dass beispielsweise plattformspezifische Funktionen oder vorhandene, nicht in Java
 geschriebene Programmbibliotheken aus Java heraus angesprochen werden k"onnen.
-Um dies zu umgehen bietet Java dem Entwickler mit dem JNI \cite{JNIHP} eine standardisierte M"oglichkeit zur Laufzeit betriebssystemspezifische Bibliotheken 
+Um dies zu umgehen bietet Java dem Entwickler mit dem JNI eine standardisierte M"oglichkeit zur Laufzeit betriebssystemspezifische Bibliotheken 
 (.dll unter Windows, .so unter unixoiden Betriebssystemen) einzubinden und Funktionen beziehungsweise Methoden welche diese bereitstellen aufzurufen. 
 JNI erm"oglicht nicht nur den Aufruf solcher Methoden aus Java heraus, sondern auch Aufrufe von Java Methoden aus der eingebundenen Bibliothek. 
 Native Funktionen werden in einer eigenen .c oder .cpp (C oder C++) Datei implementiert, wobei C++ eine etwas "'sauberere"' Schnittstelle mit dem JNI erlaubt.
@@ -230,6 +299,8 @@ Klassen - wie beispielsweise jene die f"ur die Audioausgabe oder f"ur Dateizugri
 plattformspezifischen Funktionalit"aten in einer sicheren und kontrollierten Art und Weise zuzugreiffen. Leider sichert JNI den Anwender nicht gegen s"amtliche m"oglichen
 Fehler ab: zwar kann beim Aufruf der Bibliotheksfunktionen kein Fehler mehr begangen werden, allerdings k"onnen sich Programmierfehler innerhalb der
 Bibliothek selbst weiterhin negativ auswirken, und zwar nicht nur auf den nativen Teil der Anwendung, sondern unter Umst"anden sogar auf die JVM selbst.
+
+Mehr Informationen zum JNI sind zu finden unter der JNI-Homepage (\cite{JNIHP}), und in dem hervorragenden Buch "'Java Native Interface"' von Sheng Liang (\cite{JNIBOOK}).
 
 
 % ********** End of chapter **********

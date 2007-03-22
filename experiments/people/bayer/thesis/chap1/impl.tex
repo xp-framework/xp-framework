@@ -3,25 +3,27 @@
 \section{Implementation}
 \label{sec:chap1:impl}
 
+Im Folgenden wird beschrieben wie die in den beiden vorherigen Kapiteln \ref{sec:chap1:ana} und \ref{sec:chap1:design}
+gewonnenen Erkenntnisse umgesetzt wurden. Jede in \ref{sec:chap1:ana:ap} gefundene Anforderung wird - soweit sinnvoll
+m"oglich - in einem eigenen Unterkapitel aufgef"uhrt.
+
+\subsection{Infrastruktur und ScriptEngine}
+\label{sec:chap1:impl:1}
+
 Um mit der Implementation beginnen zu k"onnen musste zun"achst ein als dynamisch ladbare Bibliothek verf"ugbares
 PHP erzeugt werden. Hierzu wurde von \cite{PHPHP} ein PHP in der Version 5.2.0 im Quelltext heruntergeladen und 
 "ubersetzt, nachdem es mittels des Kommandozeilenparameters "'--enable-embed=shared"' konfiguriert wurde. Die so
 erzeugte \emph{libphp5.so} konnte, zusammen mit den vorhandenen Headerdateien, zur Entwicklung genutzt werden.
 
-Nun musste noch daf"ur gesorgt werden, dass sich die vom JSR 223 verlangten Klassen aus \ident{javax.script}
-im
+Nun musste noch daf"ur gesorgt werden, dass sich die vom JSR 223 verlangten Klassen aus \ident{javax.script} im
 Classpath befinden. Nachdem allerdings die Klassen aus der Referenzimplementation aus den zum Teil in 
 \ref{sec:javanscripts:prototype} beschriebenen Gr"unden nicht in Frage kamen, wurde von \cite{JAVAHP} ein
 \emph{Java Development Toolkit (JDK)} der Version 6 heruntergeladen. Da dieses JDK nicht als System-VM genutzt
 werden kann wurde ein Makefile erstellt, welches die zur "Ubersetzung und Ausf"uhrung n"otigen Kommandos
 vereinfacht.
 
-\subsection{ScriptEngine}
-\label{sec:chap1:impl:1}
-
-
 Nachdem diese Vorarbeiten geleistet waren konnte mit der eigentlichen Implementation begonnen werden.
-Der erste Schritt war das Abbilden des ersten Use-Cases (verf"ugbare ScriptEngines auflisten), erstens um 
+Der erste Schritt war das Abbilden der ersten Anforderung (verf"ugbare ScriptEngines auflisten), erstens um 
 sicherzustellen dass die Entwicklungsumgebung den Anforderungen gerecht wird, und zweitens um einen ersten
 Eindruck der JSR 223 API zu erhalten. Also wurde im Package \emph{samples} eine Klasse namens
 \emph{EngineList} geschrieben, die einen ScriptEngineManager erzeugt, und mittels der Methode
@@ -67,7 +69,7 @@ werden in der PHPScriptEngine von zwei privaten, nativen Methoden erledigt: \emp
 Zus"atzlich wurde im Konstructor der PHPScriptEngine ein sogenannter "'ShutdownHook"' eingef"ugt, welcher daf"ur 
 sorgt dass zumindest beim Herunterfahren der Virtual Machine shutDown() aufgerufen wird.
 
-\subsection{Ausf"uhren von Skripten}
+\subsection{"Ubersetzen und Ausf"uhren von Skripten}
 \label{sec:chap1:impl:2}
 
 Nachdem in Java die Grundlagen gelegt waren konnte mit dem Realisieren des nativen Teiles begonnen werden.
@@ -142,34 +144,42 @@ PHP-Befehl \emph{return} pl"otzlich einen Sinn: das Script beendete sich und der
 Variablen bef"ullt. Getreu dem Motto "'It's not a bug, it's a feature"' wurde dies allerdings nicht als st"orend empfunden, da
 der normale \emph{exit}-Befehl sich weiterhin wie gewohnt verhielt, und so nur zus"atzliche Funktionalit"at verf"ugbar wurde.
 
-\subsection{Interne Klassen in PHP}
+\subsection{Datenaustausch Java nach PHP}
 \label{sec:chap1:impl:3}
 
-Der n"achste Schritt war nun die "Ubergabe von Parametern aus Java an den Interpreter. Idealerweise sollten die zu "ubergebenen
+Der n"achste Schritt war nun die "Ubergabe von Parametern aus Java an den PHP-Interpreter. Idealerweise sollten die zu "ubergebenen
 Objekte nicht nur hin- und herkopiert werden, sondern sie sollten als Repr"asentation innerhalb der PHP-Umgebung verf"ugbar sein.
 Dies bringt den Vorteil mit sich, dass nicht nur die Daten der Objekte, sondern auch deren Funktionalit"at dem PHP-Entwickler zur
 Verf"ugung steht. Ausserdem sollte es dem Anwender m"oglich sein Java-Objekte aus PHP heraus zu erzeugen und Methoden auf diesen
 Aufuzrufen.
 
 Um dies zu erreichen war es n"otig Klassen "'von Aussen"', also ohne PHP-Quelltext zu nutzen, in den Interpreter zu injizieren,
-und Aufrufe auf Objekte dieser Klassen auf C-Ebene abzuhandeln, da nur so auf JNI-Funktionalit"at zugegriffen werden konnte. 
-Diese Art von Klasse nennt sich \emph{internal class}, da sie nicht im PHP-Userspace, sondern direkt im Interpreter oder von
-ihm geladenen Bibliotheken implementiert sind.
+und Aufrufe auf Objekte dieser Klassen auf C-Ebene abzuhandeln, da nur auf C-Ebene auf JNI-Funktionalit"at zugegriffen werden konnte. 
+Diese Art von Klasse wird von Zend \emph{internal class} genannt, da sie nicht im PHP-Userspace, sondern direkt im Interpreter oder in von
+ihm geladenen Bibliotheken implementiert werden.
 Leider existiert auch zu dieser Seite der Zend-Engine keinerlei Dokumentation, und so musste viel ausprobiert werden um
 herauszufinden wie dies zu bewerkstelligen w"are. Schliesslich wurde die Zend-Makro \emph{INIT\_OVERLOADED\_CLASS\_ENTRY} entdeckt,
-und nach vielen weiteren Versuchen wurde die Bedeutung des Makros und die restlichen n"otigen Schritte herausgefunden, die n"otig
-sind eine solche interne Klasse zu erstellen:
+und nach vielen weiteren Versuchen wurde die Bedeutung des Makros und die restlichen Schritte herausgefunden, die n"otig
+sind um eine solche interne Klasse zu erstellen:
 
 Um der Zend-Engine eine Klasse unterzuschieben muss zun"achst ein C-Struct definiert werden das neben einem Struct von Typ
-\emph{zend\_object} namens \emph{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jeden Instanz der Klasse
+\emph{zend\_object} namens \emph{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jede Instanz der Klasse
 vorgehalten. Weiterhin wird ein Array vom Typ \emph{function\_entry[]} ben"otigt, welches die Callbacks - im wesentlichen Funktionspointer
-auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Im Gegensatz zu im Userland - in PHP also - implementierte
+auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Im Gegensatz zu im Userland - in PHP also - implementierten
 Methoden werden diese \emph{built-in functions} genannt.
 Besonders erw"ahnenswert sind hier die Funktionen f"ur 
 \emph{\_\_call}, \emph{\_\_get} und \emph{\_\_set}, \emph{\_\_call} wird bei jedem Methodenaufruf aufgerufen, und erh"alt neben dem
-Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit PHP-Methoden direkt in C zu implementieren. 
+Funktionsnamen auch alle "ubergebenen Parameter, und bietet so die M"oglichkeit PHP-Methoden direkt in C zu implementieren, ohne f"ur jede
+Methode einen eigenen Eintrag im Funktionspointerarray zu ben"otigen. Allerdings kann es bei solchen mittels \emph{\_\_call} implementierter
+Methoden zu "Uberschneidungen mit "'echten"' Methoden, solchen also die einen Eintrag im Funktionspointerarray haben, kommen. In solchen
+F"allen wird immer zuerst "uberpr"uft ob im Array ein Eintrag passenden Namens existiert, und gegebenenalls diese Methode aufgerufen, bevor
+der Aufruf an  \emph{\_\_call} weitergereicht wird.
 \emph{\_\_get} und \emph{\_\_set} werden bei jedem lesenden beziehungsweise schreibenden Zugriff auf ein nicht gefundenes Attribut des
-Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Weiterhin gibt es noch die beiden Funktionen
+Objektes aufgerufen, und erhalten neben dem neuen Wert auch den Namen des Attributes. Normale Attribute eines Objektes werden in einer
+HashTable gespeichert und auch hier gilt: ist in der HashTable ein Attribut gesuchten Namens vorhanden wird dieses zur"uckgeliefert,
+ansonsten wird je nachdem \emph{\_\_get} oder \emph{\_\_set} aufgerufen.
+
+Weiterhin gibt es noch die beiden Funktionen
 \emph{\_\_construct} und \emph{\_\_destruct}, die beim erzeugen beziehungsweise zerst"oren des Objektes aufgerufen werden,
 die Funktionen \emph{\_\_sleep} und \emph{\_\_wakeup}, die beim serialisieren beziehungsweise deserialisieren des Objektes zum
 Einsatz kommen, sowie die Funktion \emph{\_\_cast}, die das Casten des Objektes auf einen anderen Datentyp implementieren soll.
@@ -181,7 +191,8 @@ als R"uckgabewert und m"ussen die Argumente entgegenehmen, die im Zend-API Makro
 Es enth"ahlt unter anderem einen Pointer auf den R"uckgabewert (\emph{return\_value}), einen Pointer auf das Objekt (\emph{this}), vor
 allem aber ein Array der beim Aufruf der PHP-Methode "ubergebenen Argumente (\emph{argv}) und einen Ganzzahlenwert, der die Anzahl
 der Argumente enth"alt (\emph{argc}).
-Um allerdings "uberhaupt JNI-Funktionen nutzen zu k"onnen musste zun"achst die startUp-Funktion erweitert werden: beim Aufruf dieser
+Um allerdings "uberhaupt JNI-Funktionen nutzen zu k"onnen musste zun"achst die native Implementierung der startUp-Funktion der PHPScriptEngine 
+erweitert werden: beim Aufruf dieser Funktion
 wird der JNI-Evironment Pointer als globale Variable gespeichert, auch werden hier die Funktionen aufgerufen, die die Turpitude-Klassen
 in die PHP-Umgebung injizieren.
 

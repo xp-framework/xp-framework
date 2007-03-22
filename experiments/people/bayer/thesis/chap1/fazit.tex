@@ -20,7 +20,7 @@ zu benutzen, mit allen Extensions die er braucht, und es ist ebenfalls unm"oglic
 unterst"utzten Plattformen einzusetzen. Die PHP/Java-Bridge ist zwar im Quelltext verf"ugbar, aber sie
 benutzt eine TCP-Verbindung um mit einer laufenden Java-Umgebung zu kommunizieren. Diese Kommunikation
 ist basiert ausserdem noch auf XML, die Nachteile einer solchen Kommunikation wurden in Kapitel \ref{sec:background}
-hinl"anglich beschrieben.
+hinl"anglich beschrieben. 
 
 Somit wurden alle am Anfang des Kapitels gesteckten Ziele nicht nur erreicht sondern in vielen F"allen sogar
 "ubererf"ullt.
@@ -66,22 +66,26 @@ yy14:
 }
 \end{lstlisting}
 
+Trotz dieser Probleme konnte ein benutzbares Softwaresystem erstellt werden, auch wenn Turpitude sicherlich
+noch keinen Produktionsstatus erreicht hat, hierzu muss der Quelltext noch hinreichend auf Speicherlecks
+"uberpr"uft werden, da der Einsatz in einem Web- oder Application-Server immer lange Laufzeiten mit sich bringt,
+und Speicherlecks in diesen F"allen besonders gravierend sind. Weiterhin kann an vielen Stellen unn"otig gewordener
+Quelltext entfernt oder "ahnliche Quelltextstellen zu eigenen Funktionen refaktoriert werden. Die Begrenzte Zeit
+dieser Arbeit l"a\ss t solche "'Sch"onheitsoperationen"' aber leider nicht zu.
 
-TODO:
-was sollte gemacht werden? was wurde gemacht? wie wurde es gemacht?
-wurde das Ziel erreicht?
-Benutzung Turpitude \ref{sec:app1}
-Turpitude nicht benutzen um non-trustworthy code auszufuehren, aber das sollte man
-sowieso nicht machen...
-ini-parameter: php-ini-path per evironment setzen, interface unnoetig
-
-Schmerzen mit Zend:
-
+Nach Einsch"atzung des Autors kann Turpitude zu diesem Zeitpunkt aber schon guten Gewissens eingesetzt werden um 
+nicht Unternehmenskritische Anwendungen zu entwickeln, vor allem weil eventuelle qualitative Verbesserungen
+sich nicht mehr auf die Schnittstellen auswirken werden. Es gilt allerdings zu beachten dass die Bibliothek unter
+keinen Umst"anden genutzt werden sollte um nicht-vertrauensw"urdige PHP-Skripte auszuf"uhren, zum einen weil
+nicht alle Grenzf"alle ausgetestet wurden, und zum anderen weil durch den Zugriff auf Java-Klassen die PHP-eigenen
+Schutzmechanismen ausgehebelt werden k"onnten. Ein solcher Einsatz beispielsweise um Kunden auf einem Java-Webserver 
+PHP anzubieten w"are - zumindest zu diesem Zeitpunkt - grob fahrl"assig.
 
 Im Laufe der Implementation wurde deutlich dass eine - im Gegensatz zur urspr"unglichen Planung - vollst"andige
-Implementation des JSR223 dem Unternehmen und der Abteilung viele Vorteile bringen w"urde, weswegen
+Implementation des JSR223 und vor allem der Zugriff auf Java-Funktionalit"at aus dem PHP-Interpreter heraus
+dem Unternehmen und der Abteilung viele Vorteile bringen w"urde, weswegen
 deutlich mehr Zeit in die Entwicklung der Bibliothek investiert als eigentlich geplant. Dies f"uhrte nun
-dazu dass f"ur den Rest der Aufgabe deutlich weniger Zeit zur Verf"ugung stand, weswegen dort an
+dazu dass f"ur den Rest der Aufgabe deutlich weniger Zeit zur Verf"ugung stand, weswegen in diesen Bereichen an
 Umfang gek"urzt werden musste.
 
 % ********** End of chapter **********

@@ -100,14 +100,14 @@ beinhaltet sie alle n"otigen Informationen "uber Architektur und Funktionsweise 
 Teile des Frameworks unter einer Open Source Lizenz im Quelltext verf"ugbar.
 
 Eine BSFEngine muss folgende Methoden implementieren:
-\begin{description}
-    \item[initialize()] - wird zu Begin der Lebenszeit der Skriptengine aufgerufen, um diese zu initialisieren.
-    \item[call()] - zum Aufruf bestimmter Funktionen oder Methoden innerhalb des in der BSFEngine geladenen Skriptes.
-    \item[eval()] - mittels eval wird ein als String "ubergebener Ausdruck ausgewertet und ein R"uckgabewert zur"uckgeliefert.
-    \item[exec()] - mittels exec wird ein komplettes Skript ausgef"uhrt.
-    \item[declareBean()] - mit dieser Methode wird explizit eine Instanz einer bestimmten Klasse innerhalb der BSFEngine erzeugt.
-    \item[undeclareBean()] - wird genutzt, um ein vorher mittels declareBean erzeugtes Objekt aus der Engine zu entfernen.
-\end{description}
+\begin{itemize}
+    \item initialize()  - wird zu Begin der Lebenszeit der Skriptengine aufgerufen, um diese zu initialisieren.
+    \item call()  - zum Aufruf bestimmter Funktionen oder Methoden innerhalb des in der BSFEngine geladenen Skriptes.
+    \item eval()  - mittels eval wird ein als String "ubergebener Ausdruck ausgewertet und ein R"uckgabewert zur"uckgeliefert.
+    \item exec()  - mittels exec wird ein komplettes Skript ausgef"uhrt.
+    \item declareBean()  - mit dieser Methode wird explizit eine Instanz einer bestimmten Klasse innerhalb der BSFEngine erzeugt.
+    \item undeclareBean()  - wird genutzt, um ein vorher mittels declareBean erzeugtes Objekt aus der Engine zu entfernen.
+\end{itemize}
 
 Nachdem dieser Wrapper f"ur die gew"unschte Sprache implementiert ist muss die neue BSFEngine beim BSFManager mittels der
 Methode \emph{registerScriptingEngine()} registriert werden. Fortan k"onnen Skripte dieser Sprache mittels der normalen
@@ -268,27 +268,50 @@ im allgemeinen, und XML-basierter Protokolle wie beispielsweise SOAP und XML-RPC
 
 Aus diesen und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementation f"ur PHP zu entwickeln.
 
-\section{Projektbeschreibung}
+\section{Projektplan}
 \label{sec:javanscripts:project}
 
-Aufgrund dieser Analyse und der Erfahrungen mit dem Protoypen teilt sich das Projekt in drei gro\ss e Teilbereiche:
-TODO: noch lang net fertig!
+Zu diesem Zeitpunkt waren die zur Durchf"uhrung des Projektes n"otigen Vorarbeiten abgeschlossen, alle n"otigen Informationen waren
+gesammelt und die verf"ugbaren Technologien waren evaluiert. Nun sollte ein erster, grober Projektplan erstellt werden, der das Projekt
+in seine Teilbereiche unterteilt.
+Aufgrund dieser Analyse und der Erfahrungen mit dem Protoypen wurde das Projekt in drei gro\ss e Teilbereiche aufgeteilt:
 
-Zuerst muss die Ausf"uhrung von PHP Sourcecode innerhalb einer Java Virtual Machine erm"oglicht werden. Hierzu soll
-mittels einer eigenen Implementation des JSR 223 ein m"oglichst austauschbares PHP verwandt werden. 
-Ziel ist hierbei insbesondere die Ausf"uhrung eines m"oglichst grossen Teils des XP-Frameworks. Als Ergebnis soll am Ende ein einfach
-zu benutzendes Java-Archiv, zusammen mit einigen Funktionstests entstehen, das dann in weiteren Teilprojekten eingesetzt
-werden kann. Fuer diesen Teil des Projektes werden sechs Wochen veranschlagt.
+Zuerst sollte die Ausf"uhrung von PHP Sourcecode innerhalb einer Java Virtual Machine erm"oglicht werden. Hierzu sollte
+mittels einer eigenen Implementation des JSR 223 ein m"oglichst austauschbares PHP verwandt werden k"onnen. 
+Ziel sollte hierbei insbesondere die Ausf"uhrung eines m"oglichst grossen Teils des XP-Frameworks sein. Als Ergebnis sollte 
+am Ende ein einfach zu benutzendes Java-Archiv, zusammen mit einigen Funktionstests entstehen, das dann in weiteren Teilprojekten 
+eingesetzt werden konnte. Fuer diesen Teil des Projektes wurden sechs Wochen veranschlagt.
 
-Im zweiten Teilprojekt soll der Einsatz von PHP innerhalb eines Java Application Servers - beispielsweise JBoss - erforscht
-und vereinfacht werden. Grossen Wert wird hierbei auf ein m"oglichst einfaches Ausbringen (\emph{deployment}) derart 
-entwickelter Anwendungen gelegt. Hierzu soll auch die Notwendigkeit Java-Quelltext zu schreiben auf ein Minumum reduziert, 
-oder wenn m"oglich komplett eliminiert werden. Hierf"ur werden weitere sechs Wochen ausreichen.
+Im zweiten Teilprojekt sollte der Einsatz von PHP innerhalb eines Java Application Servers - beispielsweise JBoss - erforscht
+und vereinfacht werden. Grossen Wert sollte hierbei auf ein m"oglichst einfaches Ausbringen (\emph{deployment}) derart 
+entwickelter Anwendungen gelegt werden. Hierzu sollte auch die Notwendigkeit Java-Quelltext zu schreiben auf ein Minumum reduziert, 
+oder wenn m"oglich komplett eliminiert werden. Hierf"ur wurden weitere zwei Wochen eingeplant.
 
-Schlussendlich soll die restliche Zeit darauf verwandt werden m"oglichst viele Eigenschaften des JavaEE Application Servers
+Vier Wochen sollten darauf verwandt werden m"oglichst viele Eigenschaften des JavaEE Application Servers
 f"ur die ausgef"uhrten PHP-Skripte erreichbar zu machen. Dazu z"ahlen die Persistenzanbindung, beispielsweise mittels Java
 Persistance und besonders die Anbindung an JMI, zum Beispiel als Message Driven Bean.
 
+Schlussendlich sollte die restliche Zeit genutz werden um die Ausarbeitung fertigzuschreiben, und um Dokumentation "uber die
+Bibliothek und das Aufsetzen einer Beispielumgebung zu erstellen. Diese Zeit war auch als Puffer f"ur eventuell auftretende
+Probleme zu verstehen.
+
+Im Laufe der Entwicklung der JSR 223 Implementation wurde jedoch festgestellt, dass zus"atzlich zum reinen Ausf"uhren von PHP-Skripten
+innerhalb einer Java-VM noch einiges weitere an Funktionalit"at zu realisieren war. Zum einen sollte aus dem PHP-Skript heraus das Erzeugen
+von Java-Objekten und der Zugriff auf deren Methoden und Attribute m"oglich sein, und zum anderen sollte auch umgekehrt aus Java heraus ein
+Zugriff auf Funktionen und Methoden innerhalb des ausgef"uhrten PHP-Skriptes erm"oglicht werden.
+
+Aus diesem Grund wurde der Projektplan umgestellt, um der JSR 223-Implementation mehr Zeit einzur"aumen. Hierzu wurden die Forderungen nach
+einem Buildsystem f"ur PHP-EJBs komplett gestrichen, und der JBoss- mit dem eigentlichen EJB-Teil zusammengelegt. Dies lie\ss acht Wochen
+Zeit um die JSR 223 Implementation zu erstellen, und vier Wochen um diese in einem JBoss anzuwenden um Session Beans und Message Driven
+Beans in PHP zu schreiben und auszuf"uhren. 
+
+Abbildung \ref{fig:plan} zeichnet die Unterteilung des urspr"unglichen und des tats"achlichen Projektplanes "uber die Zeit auf.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{javanscripts/img/plan.png}
+\caption{Projektplan}
+\label{fig:plan}
+\end{figure}
 
 
 

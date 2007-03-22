@@ -7,11 +7,14 @@ ausf"uhrt die n"otigen Parameter zu "ubergeben die das Laden von Turpitude zur L
 W"unschenswert hierbei w"are, dass die n"otigen Bibliotheken nur einmal beim Start des Application-Servers
 geladen werden, anstatt jeder installierten Anwendung mitgegeben werden zu m"ussen. Weiterhin muss gew"ahrleistet
 werden dass Fehler in der geladenen nativen Bibliothek und in PHP auftretende Fehler m"oglichst nicht zum Absturz des
-Application-Servers f"uhren. Ein weiteres wichtiges Ziel ist die Entwicklung eines Buildsystems das dem
+Application-Servers f"uhren, um eine Beeintr"achtigung anderer, im selben Container laufender Applikationen ausschlie\ss en 
+zu k"onnen. Ein weiteres Ziel der ursp"unglichen Aufgabenstellung war die Entwicklung eines Buildsystems das dem
 Entwickler das unn"otige Schreiben von sogenanntem "'Boilerplate-Code"', Quelltext also der f"ur jede
-Applikation immer gleich ist, abnimmt, der PHP-Entwickler der EJBs schreiben will soll nach M"oglichkeit
-keinerlei Java-Quelltext schreiben m"ussen. Abbildung \ref{fig:phpejb} zeigt das Schema eines Aufrufs einer
-in PHP implementierten Enterprise Java Bean.
+Applikation immer gleich ist, abnimmt, der PHP-Entwickler der EJBs schreiben will sollte nach M"oglichkeit
+keinerlei Java-Quelltext schreiben m"ussen. Leider kann ein solches Buildsystem wohl aufgrund des kleiner
+gewordenen Zeitrahmens nicht implementiert werden, allerdings soll bei der Entwicklung darauf geachtet werden,
+dass die sp"atere Entwicklung eines solchen Systems m"oglich bleibt.
+Abbildung \ref{fig:phpejb} zeigt das Schema eines Aufrufs einer in PHP implementierten Enterprise Java Bean.
 
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{chap2/img/phpejb.png}
