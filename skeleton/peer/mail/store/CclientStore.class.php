@@ -33,8 +33,8 @@
     /**
      * Protected method to check whether this DSN is supported
      *
-     * @param   &peer.URL u
-     * @param   &array attr
+     * @param   peer.URL u
+     * @param   array attr
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
@@ -125,7 +125,7 @@
      * Get a folder. Note: Results from this method are cached.
      *
      * @param   string name
-     * @return  &peer.mail.MailFolder
+     * @return  peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
     public function getFolder($name) { 
@@ -150,7 +150,7 @@
     /**
      * Get all folders. Note: Results from this method are cached.
      *
-     * @return  &peer.mail.MailFolder
+     * @return  peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */
     public function getFolders() {
@@ -183,7 +183,7 @@
     /**
      * Proxy method for MailFolder: Open a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   bool readonly default FALSE
      * @return  bool success
      * @throws  peer.mail.MessagingException in case opening the folder failed
@@ -209,11 +209,10 @@
         $this->_hdl[1].$f->name, 
         $readonly ? OP_READONLY : 0
       )) {
-        trigger_error('Folder: '.$name, E_USER_NOTICE);
-        throw(new MessagingException(
-          'Opening folder failed',
+        throw new MessagingException(
+          'Opening folder "'.$name.'" failed',
           $this->_errors()
-        ));      
+        );
       }
       
       // Success
@@ -224,7 +223,7 @@
     /**
      * Proxy method for MailFolder: Close a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @return  bool success
      */
     public function closeFolder($f) { 
@@ -235,7 +234,7 @@
     /**
      * Proxy method for MailFolder: Get a message part
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   string uid
      * @param   string part
      * @return  string
@@ -252,10 +251,10 @@
     /**
      * Proxy method for MailFolder: Get message structure
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   string uid
      * @see     php://imap_fetchstructure
-     * @return  &object
+     * @return  object
      */
     public function getMessageStruct($f, $uid) {
       return imap_fetchstructure(
@@ -268,17 +267,16 @@
     /**
      * Proxy method for MailFolder: Delete a message
      *
-     * @param   &peer.mail.MailFolder f
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.MailFolder f
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function deleteMessage($f, $msg) {
       if (FALSE === imap_delete($this->_hdl[0], $msg->uid, FT_UID)) {
-        trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
-        throw(new MessagingException(
-          'Setting flag \Deleted-flag for message failed',
+        throw new MessagingException(
+          'Setting flag \Deleted-flag for message '.$msg->uid.' failed',
           $this->_errors()
-        ));
+        );
       }
       
       $msg->flags |= MAIL_FLAG_DELETED;
@@ -288,8 +286,8 @@
     /**
      * Proxy method for MailFolder: Undelete a message
      *
-     * @param   &peer.mail.MailFolder f
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.MailFolder f
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function undeleteMessage($f, $msg) {
@@ -308,8 +306,8 @@
     /**
      * Proxy method for MailFolder: Move message to other folder
      *
-     * @param   &peer.mail.MailFolder f
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.MailFolder f
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function moveMessage($f, $msg) {
@@ -323,9 +321,9 @@
     /**
      * Proxy method for MailFolder: Get messages in a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   mixed* msgnums
-     * @return  &peer.mail.Message[]
+     * @return  peer.mail.Message[]
      * @throws  peer.mail.MessagingException
      */
     public function getMessages($f) {
@@ -336,7 +334,7 @@
         $msgnums= array();
         for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
           $arg= func_get_arg($i);
-          $msgnums= array_merge($msgnums, $arg);
+          $msgnums= array_merge($msgnums, (array)$arg);
         }
       }
       
@@ -354,11 +352,10 @@
       
       if (!empty($seq)) {
         if (FALSE === ($list= imap_fetch_overview($this->_hdl[0], substr($seq, 1)))) {
-          trigger_error('Folder: '.$f->name, E_USER_NOTICE);
-          throw(new MessagingException(
-            'Reading messages {'.$seq.'} failed',
+          throw new MessagingException(
+            'Reading messages {'.$seq.'} from "'.$f->name.'" failed',
             $this->_errors()
-          ));            
+          );            
         }
 
         for ($i= 0, $s= sizeof($list); $i < $s; $i++) {
@@ -396,7 +393,7 @@
      * Proxy method for MailFolder: Get number of messages in this folder
      * Note: The results from this method are cached.
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   string attr one of "messages", "recent" or "unseen"
      * @return  int status
      */
