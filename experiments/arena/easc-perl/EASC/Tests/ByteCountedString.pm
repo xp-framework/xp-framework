@@ -23,6 +23,14 @@ sub testUsAsciiString {
 sub testUmlautString {
     my $self= shift;
 
+    $bcs= EASC::Protocol::ByteCountedString::->new('Hallöle');
+    $self->assertEquals('HallÃ¶le', $bcs->{string});
+    $self->assertEquals(13, $bcs->slength);
+}
+
+sub testutf8String {
+    my $self= shift;
+
     $bcs= EASC::Protocol::ByteCountedString::->new('Hall�le');
     $self->assertEquals('Hallöle', $bcs->{string});
     $self->assertEquals(11, $bcs->slength);
