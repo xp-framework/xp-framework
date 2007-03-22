@@ -13,9 +13,9 @@ aufrufen, sondern er kann sogar Java-Interfaces direkt in PHP implementieren, od
 in ein Java-Interface wrappen und transparent mit ihnen wie mit jedem anderen Java-Objekt umgehen.
 
 Dieser Funktionsumfang macht Turpitude einzigartig. Es existieren zwar zwei "'Konkurrenzprodukte"' auf dem
-Markt - die JSR223-Implementation von Zend und die PHP/Java-Bridge \cite{BRIDGEHP} - allerdings implementieren
+Markt - die JSR223-Implementierung von Zend und die PHP/Java-Bridge \cite{BRIDGEHP} - allerdings implementieren
 beide weder den vollen Umfang des JSR223, noch halten sie die aktuelle Spezifikation ein. Weiterhin ist die
-Zend-Implementation nicht Quelloffen, sprich es ist einem Anwender nicht m"oglich ein eigenes PHP in Java
+Zend-Implementierung nicht Quelloffen, sprich es ist einem Anwender nicht m"oglich ein eigenes PHP in Java
 zu benutzen, mit allen Extensions die er braucht, und es ist ebenfalls unm"oglich sie auf nicht explizit
 unterst"utzten Plattformen einzusetzen. Die PHP/Java-Bridge ist zwar im Quelltext verf"ugbar, aber sie
 benutzt eine TCP-Verbindung um mit einer laufenden Java-Umgebung zu kommunizieren. Diese Kommunikation
@@ -25,7 +25,7 @@ hinl"anglich beschrieben.
 Somit wurden alle am Anfang des Kapitels gesteckten Ziele nicht nur erreicht sondern in vielen F"allen sogar
 "ubererf"ullt.
 
-Die Implementation der Bibliothek selbst wurde haupts"achlich durch zwei Faktoren erschwert:\\
+Die Implementierung der Bibliothek selbst wurde haupts"achlich durch zwei Faktoren erschwert:\\
 Zum einen ist die JSR223-Spezifikation in vielen Detailfragen nur "au\ss erst ungenau und erscheint ausserdem
 in einigen Bereichen etwas undurchdacht. Dies lies sich allerdings in den meisten F"allen durch eine
 angemessene Portion Pragmatismus sehr schnell und zur Zufriedenheit Aller l"osen. Deutlich mehr Zeit
@@ -81,8 +81,8 @@ nicht alle Grenzf"alle ausgetestet wurden, und zum anderen weil durch den Zugrif
 Schutzmechanismen ausgehebelt werden k"onnten. Ein solcher Einsatz beispielsweise um Kunden auf einem Java-Webserver 
 PHP anzubieten w"are - zumindest zu diesem Zeitpunkt - grob fahrl"assig.
 
-Im Laufe der Implementation wurde deutlich dass eine - im Gegensatz zur urspr"unglichen Planung - vollst"andige
-Implementation des JSR223 und vor allem der Zugriff auf Java-Funktionalit"at aus dem PHP-Interpreter heraus
+Im Laufe der Implementierung wurde deutlich dass eine - im Gegensatz zur urspr"unglichen Planung - vollst"andige
+Implementierung des JSR223 und vor allem der Zugriff auf Java-Funktionalit"at aus dem PHP-Interpreter heraus
 dem Unternehmen und der Abteilung viele Vorteile bringen w"urde, weswegen
 deutlich mehr Zeit in die Entwicklung der Bibliothek investiert als eigentlich geplant. Dies f"uhrte nun
 dazu dass f"ur den Rest der Aufgabe deutlich weniger Zeit zur Verf"ugung stand, weswegen in diesen Bereichen an

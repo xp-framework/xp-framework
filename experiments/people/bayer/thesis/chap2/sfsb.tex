@@ -53,7 +53,7 @@ public interface SFHelloWorld {
 }
 \end{lstlisting}
 
-\subsection{PHP-Implementation}
+\subsection{PHP-Implementierung}
 \label{sec:chap2:sfsb:impl}
 
 Im Gegensatz zum Service-Interface unterscheidet sich die Implementierung der Stateful Session Bean erheblich von der
@@ -77,7 +77,7 @@ enth"alt, letztere nimmt einen solchen String entgegen und stellt daraus den urs
 Damit gew"ahrleistet ist dass die oben angesprochenen Attribute der Java-Klasse nicht versehentlich persistiert werden 
 werden die Referenzen der beiden Objekte auf null gesetzt.
 Die Aufrufe der eigentlichen Service-Methoden werden genau wie bei der Stateless Session Bean mittels des Invocable-Interfaces
-durchgef"uhrt, ihr Implementation in PHP gestaltete sich als trivial
+durchgef"uhrt, ihr Implementierung in PHP gestaltete sich als trivial
 \begin{lstlisting}[caption=PHP-Implementierung]
 <?php
 class SFHelloWorld {

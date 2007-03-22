@@ -19,7 +19,7 @@ Beim Erweitern von Java um die F"ahigkeit Skriptsprachen auszuf"uhren exisiteren
 Hierbei werden Java-Klassen benutzt um das Leistungsverm"ogen einer Skriptsprache zu erweitern. Die Skriptsprache
 soll f"ahig sein Java Objekte zu instanziieren und auf deren "offentliche (public) Methoden und Variablen 
 zuzugreiffen. Beispiele f"ur eine solche Integration von Java und einer Skriptsprache sind \emph{Live Connect} von
-Netscape und propriet"are APIs der Microsoft Java Implementationen.
+Netscape und propriet"are APIs der Microsoft Java Implementierungen.
 \item[Skripte in Java:]
 Java Applikationen soll es m"oglich sein existierende Skripte auszuf"uhren, diesen Skripten Eingabedaten
 zur Verf"ugung zu stellen, deren R"uckgabewerte und innerhalb der Skripte vorhandene Daten auszulesen, 
@@ -33,7 +33,7 @@ F"ur einige Skriptsprachen sind Interpreter erh"altlich die komplett in Java imp
 meist "uber externe Schnittstellen verf"ugen, was es einer Java-Applikation erlaubt dies einzubetten
 und Skripte der entsprechenden Sprache auszuf"uhren. Leider folgen diese Schnittstellen keinem gemeinsamen
 Standard, auch weil zum Entwicklungszeitpunkt dieser Interpreter oftmals kein solcher Standard existierte.
-Beispiele f"ur diese Art der Einbettung sind unter anderem die Javascript-Implementation
+Beispiele f"ur diese Art der Einbettung sind unter anderem die Javascript-Implementierung
 der Mozilla Foundation \emph{Rhino} und \emph{Jacl}, ein vollst"andig in Java geschriebener Interpreter
 f"ur TCL. 
 \item["Ubersetzung von Skriptcode nach Java Sourcecode:]
@@ -86,7 +86,7 @@ eine dieser beiden Technologien ein geeigner Weg w"are dieses Ziel zu erreichen.
 Die aktuelle Version 2.4 des Bean Scripting Frameworks - urspr"unglich von IBM entwickelt und nun Teil des
 Apach Jakarta Projektes \cite{BSFHP} - bietet eine API, welche es einer Java-Applikation erlaubt 
 Skriptsprachen einzubinden und die den derart ausgef"uhrten Skripten den Zugriff auf Java-Objekte der ausf"uhrenden Applikation erm"oglicht.
-F"ur jede auszuf"uhrende Skriptsprache wird eine Implementation des Interfaces \emph{BSFEngine} ben"otigt, welches eine
+F"ur jede auszuf"uhrende Skriptsprache wird eine Implementierung des Interfaces \emph{BSFEngine} ben"otigt, welches eine
 Abstraktion der F"ahigkeiten der Skriptsprache darstellt und so der Applikation ein generisches Zugriffschema
 auf jegliche Skriptsprache bietet. Alle Instanzen von BSFEngines werden von einer einzigen Instanz der Klasse \emph{BSFManager} 
 verwaltet. Zus"atzlich h"alt dieser ein Register von Objekten (die \emph{object registry}) vor, auf welche der Zugriff aus den 
@@ -94,8 +94,8 @@ laufenden Skripten heraus m"oglich sein soll. Der BSFManager h"alt so lange er e
 ihm registrierten BSFEngines vor, was das Anhalten und sp"atere Fortsetzen eines Skriptes erlaubt.
 Das BSF ist in so gut wie allen Jakarta-Produkten wie Ant, Xalan, und Tomcat schon enthalten, so ist es beispielsweise
 m"oglich unter Tomcat JSPs in vom BSF unterst"utzten Skriptsprachen zu formulieren.
-Zu diesem Zeitpunkt existieren BSFEngine-Implementation f"ur eine Vielzahl von Skriptsprachen, darunter Javascript/ECMAScript, 
-Python, Ruby und XSLT, allerdings keine Implementation f"ur PHP. Die Dokumentation des BSF ist sehr knapp gehalten, allerdings
+Zu diesem Zeitpunkt existieren BSFEngine-Implementierung f"ur eine Vielzahl von Skriptsprachen, darunter Javascript/ECMAScript, 
+Python, Ruby und XSLT, allerdings keine Implementierung f"ur PHP. Die Dokumentation des BSF ist sehr knapp gehalten, allerdings
 beinhaltet sie alle n"otigen Informationen "uber Architektur und Funktionsweise des Frameworks, ausserdem sind alle
 Teile des Frameworks unter einer Open Source Lizenz im Quelltext verf"ugbar.
 
@@ -159,9 +159,9 @@ beziehen sich auf Funktionen welche die Skriptengine selbst direkt auf Funktione
 der PHP-Befehl "'\emph{echo}"' direkt einen Aufruf der Java-Methode \emph{System.out.println} bewirken.
 Der zweite grosse Abschnitt besch"aftigt sich mit der \emph{General Scripting API}, einer Sammlung von Interfaces und Klassen, 
 welche es erlauben dass Skriptengines als Komponenten in Java-Anwendungen eingebettet werden k"onnen. Diese API unterteilt sich
-in einen implementationsabh"angigen und einen Implementationsunabh"angigen Teil um eine gro"esstm"ogliche Portabilit"at zwischen
-verschiedenen Implementationen zu erreichen. Hierzu ist es notwendig zur Laufzeit Informationen "uber Skriptengines abfragen
-zu k"onnen, diese \emph{Metainformationen} beschreiben F"ahigkeiten und Funktionsdetails und werden von jeder Implementation bereitgestellt.
+in einen implementationsabh"angigen und einen Implementierungsunabh"angigen Teil um eine gro"esstm"ogliche Portabilit"at zwischen
+verschiedenen Implementierungen zu erreichen. Hierzu ist es notwendig zur Laufzeit Informationen "uber Skriptengines abfragen
+zu k"onnen, diese \emph{Metainformationen} beschreiben F"ahigkeiten und Funktionsdetails und werden von jeder Implementierung bereitgestellt.
 Dieser Mechanismus zum Auffinden und zum Abfragen von ScriptEngineFactories zur Laufzeit wird im Spezifikationsdokument 
 als \emph{discovery mechanism} bezeichnet.
 Die wichtigsten Klassen der General Scripting API sind der \emph{ScriptContext},
@@ -200,7 +200,7 @@ die \emph{ScriptEngine}, die \emph{ScriptEngineFactory} und der \emph{ScriptEngi
     Die Methode \textbf{getInterface()} liefert eine Instanz einer Java-Klasse zur"uck, welche in der ScriptEngine mittels
     Skriptcode implementiert ist.
     \item[ScriptEngineFactory] - Die ScriptEngineFactory kann genutzt werden um eine ben"otigte ScriptEngine zu erstellen,
-    f"ur jede ScriptEngine-Implementation muss eine korrespondierende Implementation der ScriptEngineFactory vorhanden sein.
+    f"ur jede ScriptEngine-Implementierung muss eine korrespondierende Implementierung der ScriptEngineFactory vorhanden sein.
     Hierzu enth"alt sie Methoden um auf die oben beschriebenen Metainformationen zuzugreiffen, zus"atzlich bietet eine ScriptEngineFactory
     die Methoden \textbf{getOutputStatement()}, \textbf{getMethodCallSyntax()} und \textbf{getProgram()} an, mit deren Hilfe
     man Strings erzeugen kann, die von der zugeh"origen ScriptEngine als Skript ausgef"uhrt werden k"onnen.
@@ -222,7 +222,7 @@ Sowohl das Bean Scripting Framework, als auch der JSR 223 erwiesen sich als geei
 erf"ullen. Allerdings bot der JSR 223 aus Sicht des Autors einige Vorteile: 
 Die verf"ugbare Dokumentation ist - ganz im Gegensatz zur Dokumentation des BSF - sehr umfangreich, vor allem geht sie auch
 auf Details wie Methodenaufrufe ein. Die API stellt sich auch etwas kompletter dar, die Interfaces Invocable und Compilable 
-helfen Implementationsunterschiede zu sauber "uberwinden. Auch die Tatsache dass der JSR 223 aller Vorraussicht nach Teil
+helfen Implementierungsunterschiede zu sauber "uberwinden. Auch die Tatsache dass der JSR 223 aller Vorraussicht nach Teil
 des Java Standards werden wird sprach, gepaart mit der Unterst"utzung durch namhafte Firmen wie Sun, IBM und vor allem auch 
 Zend, eher f"ur als gegen diese Technologie. Die Existenz einer Referenzimplementation f"ur PHP erlaubt nicht nur das
 schnelle Entwickeln eines Prototypen, sondern bewies eben auch, dass die Vorgehensweisen welche der JSR 223 vorschl"agt 
@@ -237,7 +237,7 @@ Nachdem die Entscheidung "uber die zu verwendete Technologie getroffen wurde mus
 eine Machbarkeitsstudie mit der von Zend zu Verf"ugung gestellten, und kostenlos herunterladbaren Referenzimplementation
 f"ur PHP durchgef"uhrt. Es sollte ein einfaches PHP Skript ausgef"uhrt werden, welches trotzdem eine gute Absch"atzung
 des Funktionsumfanges des mitgelieferten PHPs erlauben sollte. Um allerdings sicherzustellen, dass zumindest der 
-Implementationsunabh"angige Teil funktioniert wurde ein Programm geschrieben, welches lediglich eine Liste der verf"ugbaren
+Implementierungsunabh"angige Teil funktioniert wurde ein Programm geschrieben, welches lediglich eine Liste der verf"ugbaren
 Skriptengines ausgibt. Hierbei wurde nun festgestellt, dass sich die Referenzimplementation nicht komplett an den Standard
 h"alt - so lautet die Signatur der Methode \emph{getScriptEngineFactories()} des ScriptEngineManagers beispielsweise 
 nicht wie von der Spezifikation verlangt
@@ -249,9 +249,9 @@ sondern
     ScriptEngineFactory[] getScriptEngineFactories()
 \end{lstlisting}
 Dies lies f"ur die weitere Entwicklung unter Zuhilfename der Referenzimplementation schlimmes vermuten.
-Als Test f"ur den Implementationabh"angigen Teil wurde die PHP-Funktion \emph{phpinfo()} ausgew"ahlt, welche
+Als Test f"ur den Implementierungabh"angigen Teil wurde die PHP-Funktion \emph{phpinfo()} ausgew"ahlt, welche
 Text ausgibt, aus dem sich alle geladenen Extensions, sowie alle gesetzten Umgebungsvariablen und 
-PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementation \cite{JSRDL}
+PHP-Versionsinformationen ersehen lassen. Leider war es dem Autor unm"oglich diesen Protoypen mittels der Zend-Implementierung \cite{JSRDL}
 zu verwirklichen, da das Laden der mitgelieferten php5.so sowohl und FreeBSD, als auch unter 64- und 32-Bit Linux mit 
 verschiedensten Java Versionen zum Absturz der Java Virtual Machine f"uhrte. Die Tatsache dass die Referenzimplementation nicht
 im Quelltext verf"ugbar ist verhinderte gleichzeitig die Neu"ubersetzung oder eine effektive Fehlersuche, weiterhin bedeutete
@@ -266,7 +266,7 @@ Diese Herangehensweise leidet unter "ahnlichen Problemen wie alle Plattform-agno
 im allgemeinen, und XML-basierter Protokolle wie beispielsweise SOAP und XML-RPC im speziellen, siehe hierzu
 \ref{sec:background:soap}.
 
-Aus diesen und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementation f"ur PHP zu entwickeln.
+Aus diesen und aus einigen weiteren Gr"unden wurde beschlossen eine eigene JSR 223 Implementierung f"ur PHP zu entwickeln.
 
 \section{Projektplan}
 \label{sec:javanscripts:project}
@@ -277,7 +277,7 @@ in seine Teilbereiche unterteilt.
 Aufgrund dieser Analyse und der Erfahrungen mit dem Protoypen wurde das Projekt in drei gro\ss e Teilbereiche aufgeteilt:
 
 Zuerst sollte die Ausf"uhrung von PHP Sourcecode innerhalb einer Java Virtual Machine erm"oglicht werden. Hierzu sollte
-mittels einer eigenen Implementation des JSR 223 ein m"oglichst austauschbares PHP verwandt werden k"onnen. 
+mittels einer eigenen Implementierung des JSR 223 ein m"oglichst austauschbares PHP verwandt werden k"onnen. 
 Ziel sollte hierbei insbesondere die Ausf"uhrung eines m"oglichst grossen Teils des XP-Frameworks sein. Als Ergebnis sollte 
 am Ende ein einfach zu benutzendes Java-Archiv, zusammen mit einigen Funktionstests entstehen, das dann in weiteren Teilprojekten 
 eingesetzt werden konnte. Fuer diesen Teil des Projektes wurden sechs Wochen veranschlagt.
@@ -295,14 +295,14 @@ Schlussendlich sollte die restliche Zeit genutz werden um die Ausarbeitung ferti
 Bibliothek und das Aufsetzen einer Beispielumgebung zu erstellen. Diese Zeit war auch als Puffer f"ur eventuell auftretende
 Probleme zu verstehen.
 
-Im Laufe der Entwicklung der JSR 223 Implementation wurde jedoch festgestellt, dass zus"atzlich zum reinen Ausf"uhren von PHP-Skripten
+Im Laufe der Entwicklung der JSR 223 Implementierung wurde jedoch festgestellt, dass zus"atzlich zum reinen Ausf"uhren von PHP-Skripten
 innerhalb einer Java-VM noch einiges weitere an Funktionalit"at zu realisieren war. Zum einen sollte aus dem PHP-Skript heraus das Erzeugen
 von Java-Objekten und der Zugriff auf deren Methoden und Attribute m"oglich sein, und zum anderen sollte auch umgekehrt aus Java heraus ein
 Zugriff auf Funktionen und Methoden innerhalb des ausgef"uhrten PHP-Skriptes erm"oglicht werden.
 
-Aus diesem Grund wurde der Projektplan umgestellt, um der JSR 223-Implementation mehr Zeit einzur"aumen. Hierzu wurden die Forderungen nach
+Aus diesem Grund wurde der Projektplan umgestellt, um der JSR 223-Implementierung mehr Zeit einzur"aumen. Hierzu wurden die Forderungen nach
 einem Buildsystem f"ur PHP-EJBs komplett gestrichen, und der JBoss- mit dem eigentlichen EJB-Teil zusammengelegt. Dies lie\ss acht Wochen
-Zeit um die JSR 223 Implementation zu erstellen, und vier Wochen um diese in einem JBoss anzuwenden um Session Beans und Message Driven
+Zeit um die JSR 223 Implementierung zu erstellen, und vier Wochen um diese in einem JBoss anzuwenden um Session Beans und Message Driven
 Beans in PHP zu schreiben und auszuf"uhren. 
 
 Abbildung \ref{fig:plan} zeichnet die Unterteilung des urspr"unglichen und des tats"achlichen Projektplanes "uber die Zeit auf.

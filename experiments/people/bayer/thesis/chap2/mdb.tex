@@ -13,10 +13,10 @@ sobald ein Sender eine Nachricht in eine Queue schickt. Das Entwickeln einer Mes
 gestaltet sich denkbar einfach, es muss lediglich das Interface \emph{MessageListener} implementiert
 werden, welches eine einzige Methode \emph{onMessage()} definiert.
 
-\subsection{Implementation}
+\subsection{Implementierung}
 \label{sec:chap2:mdb:impl}
 
-Die Implementation der Message Driven Bean bereitete keine grossen Probleme, es musste lediglich
+Die Implementierung der Message Driven Bean bereitete keine grossen Probleme, es musste lediglich
 darauf geachtet werden, dass alle Laufzeitfehler die in der \emph{onMessage()}-Methode auftreten
 abgefangen und behandelt werden, da sie aufgrund der asynchronen Natur des Aufrufes nicht an den 
 Client weitergereicht werden k"onnen. Die Bean muss mit \emph{@MessageDriven} annotiert werden.
@@ -36,7 +36,7 @@ public class MDHelloWorld implements MessageListener {
     public void onMessage(Message msg) {
 ...
 \end{lstlisting}
-Der PHP-Teil der Implementation unterscheidet sich kaum von dem der Stateless Session Bean, wieder wird
+Der PHP-Teil der Implementierung unterscheidet sich kaum von dem der Stateless Session Bean, wieder wird
 die PHP-Klasse mittels einer Helper-Funktion instantiiert, weil es aber diesmal kein Service-Interface gibt
 wird die entsprechende Methode der PHP-Klasse von Java aus mit der \emph{invokeMethod()}-Methode des
 \emph{Invocable} Interfaces aufgerufen.

@@ -1,6 +1,6 @@
 % ********** Chapter 1 **********
 
-\section{Implementation}
+\section{Implementierung}
 \label{sec:chap1:impl}
 
 Im Folgenden wird beschrieben wie die in den beiden vorherigen Kapiteln \ref{sec:chap1:ana} und \ref{sec:chap1:design}
@@ -10,7 +10,7 @@ m"oglich - in einem eigenen Unterkapitel aufgef"uhrt.
 \subsection{Infrastruktur und ScriptEngine}
 \label{sec:chap1:impl:1}
 
-Um mit der Implementation beginnen zu k"onnen musste zun"achst ein als dynamisch ladbare Bibliothek verf"ugbares
+Um mit der Implementierung beginnen zu k"onnen musste zun"achst ein als dynamisch ladbare Bibliothek verf"ugbares
 PHP erzeugt werden. Hierzu wurde von \cite{PHPHP} ein PHP in der Version 5.2.0 im Quelltext heruntergeladen und 
 "ubersetzt, nachdem es mittels des Kommandozeilenparameters "'--enable-embed=shared"' konfiguriert wurde. Die so
 erzeugte \emph{libphp5.so} konnte, zusammen mit den vorhandenen Headerdateien, zur Entwicklung genutzt werden.
@@ -22,7 +22,7 @@ Classpath befinden. Nachdem allerdings die Klassen aus der Referenzimplementatio
 werden kann wurde ein Makefile erstellt, welches die zur "Ubersetzung und Ausf"uhrung n"otigen Kommandos
 vereinfacht.
 
-Nachdem diese Vorarbeiten geleistet waren konnte mit der eigentlichen Implementation begonnen werden.
+Nachdem diese Vorarbeiten geleistet waren konnte mit der eigentlichen Implementierung begonnen werden.
 Der erste Schritt war das Abbilden der ersten Anforderung (verf"ugbare ScriptEngines auflisten), erstens um 
 sicherzustellen dass die Entwicklungsumgebung den Anforderungen gerecht wird, und zweitens um einen ersten
 Eindruck der JSR 223 API zu erhalten. Also wurde im Package \emph{samples} eine Klasse namens
@@ -58,7 +58,7 @@ Engine: XP-Framework Turpitude PHP Engine
 \end{lstlisting}
 
 Nachdem dieser Schritt getan war, wurde mit der Erstellung der eigentlichen ScriptEngine begonnen. Deren
-Implementation gestalete sich sehr einfach, da durch das Ableiten der Klasse \emph{AbstactScriptEngine} 
+Implementierung gestalete sich sehr einfach, da durch das Ableiten der Klasse \emph{AbstactScriptEngine} 
 fast alle Varianten der \emph{eval()}-Methode schon vorimplementiert waren, lediglich das Auslesen des
 Skriptquelltextes aus einem "ubergebenen \emph{Reader} musste selbst umgesetzt werden. 
 Da\ss\ PHP urspr"unglich ausschlie\ss lich als CGI ausgef"uhrt wurde merkt man dem Kern der Sprache noch
@@ -315,7 +315,7 @@ Fall wird - wieder wie bei Konstruktoren - ein Array aus jvalues erstellt und je
 (Call$<$type$>$MethodA) aufgerufen. Wurden ausser der Methode keine weiteren Parameter mit"ubergeben, wird eine entsprechende Funktion der Signatur
 Call$<$type$>$Method (ohne A) aufgerufen. Der R"uckgabewert der aufgerufenen JNI-Funktion wird in einem jvalue gespeichert, der zusammen mit dem
 Typen des R"uckgabewertes der Funktion \emph{jvalue\_to\_zval} "ubergeben wird, die letztendlich den zval erzeugt, der an PHP zur"uckgegeben wird.
-Im Zuge der Implementation von Methodenaufrufen bei Objekten wurde auch gleich der Aufruf statischer Methoden bei Klassen implementiert, dieser funktioniert exakt 
+Im Zuge der Implementierung von Methodenaufrufen bei Objekten wurde auch gleich der Aufruf statischer Methoden bei Klassen implementiert, dieser funktioniert exakt 
 gleich, nur dass JNI-Funktionen der Signatur CallStatic$<$Type$>$Method(A) aufgerufen werden m"ussen. Zu diesem Zweck wurde die TurpitudeJavaClass um die Methode
 \emph{invokeStatic} erweitert.
 
@@ -441,12 +441,12 @@ als ganz normale Instanz der "ubergebenen Klasse auftritt, intern aber alle Meth
 Ein InvocationHandler ist ein Interface, welches in diesem Falle von der Klasse \emph{PHPInvocationHandler} implementiert wird, die im Konstruktor
 ein PHPCompiledScript, in dessen Kontext die Methodenaufrufe stattfinden sollen, und ein PHPObject auf dem die Methodenaufrufe durchgef"uhrt werden sollen erwartet.
 Die eigentlichen Methodenaufrufe werden s"amtlich durch die oben beschriebene Methode \emph{invokeMethod} des PHPCompiledScripts erledigt.
-Die Implementation der Variante von \emph{getInterface} die kein Objekt mitbringt stellte allerdings ein Problem dar - wie sollte ein das Java-Interface implementierendes
+Die Implementierung der Variante von \emph{getInterface} die kein Objekt mitbringt stellte allerdings ein Problem dar - wie sollte ein das Java-Interface implementierendes
 PHP-Objekt gefunden werden? Auch hier schweigt sich die JSR223 Spezifikation leider aus, so wurde nach einigem "Uberlegen entschlossen einzig auf den Namen der Klasse zu
 pr"ufen. So wurde dem PHPCompiledScript eine weitere native Methode namens \emph{createInstance} hinzugef"ugt, die als einziges Argument den 
 Klassennamen in Form eines Strings erwartet. Sie sollte versuchen eine PHP-Klasse des "ubergebenen Namens zu finden, und eine Instanz dieser Klasse neu zu erzeugen.
 Da Invocable hierzu keine Parameter"ubergabe vorsah, konnten auf diese Weise nur PHP-Objekte erzeugt werden, die einen Konstruktor ohne Argumente besitzen, ist 
-dies nicht der Fall wird ein Laufzeitfehler erzeugt. Zur Implementation dieser Methode wurde die Zend-Funktion \emph{zend\_lookup\_class} gefunden, die zu einem
+dies nicht der Fall wird ein Laufzeitfehler erzeugt. Zur Implementierung dieser Methode wurde die Zend-Funktion \emph{zend\_lookup\_class} gefunden, die zu einem
 Klassennamen einen \emph{zend\_class\_entry} zur"uckgibt. Mit diesem Klasseneintrag kann mittels der schon vorher genutzten Funktion \emph{object\_init\_ex}
 eine Instanz der Klasse erzeugt werden, die dann an die JVM als PHPObject zur"uckgegeben wird. Wird auf diese Weise ein PHPObject gefunden, wird mit diesem
 als zweitem Argument einfach die schon fertige Variante der Interfacemethode aufgerufen. Da PHP keine Punkte in Klassennamen erlaubt, und zumindest in
@@ -536,7 +536,7 @@ foreach ($iterator as $key => $val) {
 \label{sec:chap1:impl:12}
 
 Eigentlich konnten zu diesem Zeitpunkt wie oben beschrieben schon Java-Methoden aus PHP heraus aufgerufen werden, allerdings hatte
-diese Implementation zwei Nachteile: einerseits musste der PHP-Entwickler die genaue JNI-Signatur der Methode kennen, andererseits -
+diese Implementierung zwei Nachteile: einerseits musste der PHP-Entwickler die genaue JNI-Signatur der Methode kennen, andererseits -
 und dies war der erheblich st"orendere Nachteil - konnten nur Methoden aufgerufen werden die tats"achlich in der Java-Klasse definiert
 sind, auf der \emph{findMethod()} aufgerufen wurde, also keine Methoden die in Oberklassen definiert wurden. Folglich musste der
 PHP-Anwender unter Umst"anden mehrere Java-Klassen in PHP erstellen um unterschiedliche Methoden auf ein und demselben Java-Objekt

@@ -242,7 +242,7 @@ Komponenten fungieren - so werden zum Beispiel EJBs im EJB-Container ausgef"uhrt
 RMI (\textbf{R}emote \textbf{M}ethod \textbf{I}nvocation) an, was entweder "uber ein eigenes Protokoll oder aber "uber IIOP gefahren werden kann.
 RMI ist ein bin"ares Protokoll was den Overhead den es erzeugt klein h"alt, ausserdem bietet es Transaktionssicherheit. RMI eignet sich deswegen besser f"ur 
 komplexe Anwendungen bei denen auch die Antwortzeit eine Rolle spielt. RMI hat sich auch innerhalb der 1\&1 als bevorzugtes Protokoll 
-etabliert um Dienste miteinander zu verkn"upfen, leider existiert keine PHP-Implementation, und die Komplexit"at und die bin"are Natur des
+etabliert um Dienste miteinander zu verkn"upfen, leider existiert keine PHP-Implementierung, und die Komplexit"at und die bin"are Natur des
 Protokolls machen es fast unm"oglich eine solche selbst zu entwickeln.
 
 
@@ -273,7 +273,7 @@ Die php/Java bridge ist ein XML-basiertes Netzwerkprotokoll das benutzt werden k
 zu verbinden.
 Die Java-Extension ist eine PHP-Extension\footnote{PHP-Erweiterung, siehe \ref{sec:background:php}} die dieses Protokoll benutzt um aus PHP heraus
 in der JVM Objekte zu erzeugen, und die dann Stubs dieser Objekte in PHP verf"ugbar macht, was es dem PHP-Anwender erlaubt auf diesen Objekten
-Methoden aufzurufen. Leider scheidet dieses Protokoll zur Implementation der Aufgabe aus, erstens da es an den selben Nachteilen einer XML-Serialisierung
+Methoden aufzurufen. Leider scheidet dieses Protokoll zur Implementierung der Aufgabe aus, erstens da es an den selben Nachteilen einer XML-Serialisierung
 krankt wie beispielsweise auch SOAP, aber vor allem da es - "ahnlich wie EASC - den Zugriff von Java auf PHP nicht erm"oglicht. Weiterhin ist die
 Java-Extension nicht mehr Teil des offiziellen PHP-Quelltextes, und wird auch nicht mehr gewartet, so ist es unter anderem nur sehr schwer
 m"oglich die Extension in PHP 5 einzubinden.

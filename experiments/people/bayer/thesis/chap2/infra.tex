@@ -36,7 +36,7 @@ Entwicklung gelegt, und es konnte ein zwar leeres, aber dennoch valides .ear erz
 Um erste Erfahrungen mit einer EJB 3.0 Anwendung zu sammeln sollte nun ein einfacher Service entwickelt werden.
 Damit diese Arbeit auch sp"ater von Nutzen ist wurde beschlossen einen Service zu schreiben der das Verhalten
 der in \ref{sec:chap1:impl} vorgestellten Anwendung \emph{EngineList} nachempfindet, und eine Liste der zur Verf"ugung 
-stehenden JSR 223 Implementationen zur"uckgibt.
+stehenden JSR 223 Implementierungen zur"uckgibt.
 
 Zu jedem EJB Service geh"ort ein beschreibendes Interface, das Interface f"ur diesen Service ist denkbar einfach,
 enth"alt es doch nur eine Methode, \emph{getList()}. Durch die Annotation \emph{@Remote} wird angegeben, dass dieses
@@ -48,7 +48,7 @@ public interface EngineList {
 }
 \end{lstlisting}
 Zu diesem Interface musste nun eine implementierende Klasse geschrieben werden, da der Service von remote aufgerufen
-werden soll muss keine lokale Implementation vorhanden sein, ein Remote-Bean kann sowohl lokal als auch remote
+werden soll muss keine lokale Implementierung vorhanden sein, ein Remote-Bean kann sowohl lokal als auch remote
 aufgerufen werden. Die simpelste EJB ist die Stateless Session Bean, und die Annotation \emph{@Stateless} gibt an
 dass es sich bei dieser Bean um eine solche handelt.
 \begin{lstlisting}[caption=Testservice Bean]
@@ -71,7 +71,7 @@ EngineList list =
     (EngineList)ctx.lookup("phpejb/EngineListBean/remote");
 List<String> lst = list.getList();
 \end{lstlisting}
-Der Aufruf ergab als einzige innerhalb des JBoss verf"ugbare JSR 223 Implementation die standardm"a\ss ig in Java 6
+Der Aufruf ergab als einzige innerhalb des JBoss verf"ugbare JSR 223 Implementierung die standardm"a\ss ig in Java 6
 enthaltene Javascript Engine Rhino von Mozilla. Nun mussten der den JBoss ausf"uhrenden JVM die n"otigen Parameter
 mitgegeben werden, damit Turpitude innerhalb des Application Servers verf"ugbar wird (siehe auch \ref{sec:app1:exec}). 
 Hierzu wurde ein Shell-Skript geschrieben, das die ben"otigten Umgebungsvariablen (LD\_LIBRARY\_PATH, JAVA\_HOME) setzt, 

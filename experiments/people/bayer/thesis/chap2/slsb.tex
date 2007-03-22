@@ -17,10 +17,10 @@ public interface SLHelloWorld {
 }
 \end{lstlisting}
 
-\subsection{PHP-Implementation}
+\subsection{PHP-Implementierung}
 \label{sec:chap2:slsb:impl}
 
-Die Implementation des Bean-Interfaces besteht aus zwei Teilen, zum einen dem Java-Teil, der die
+Die Implementierung des Bean-Interfaces besteht aus zwei Teilen, zum einen dem Java-Teil, der die
 ScriptEngine instantiiert, den PHP-Quelltext laedt und "ubersetzt und die entsprechenden PHP-Funktionen
 aufruft, und zum anderen den PHP-Teil, der die eigentliche Interface-Implementierung enth"alt.
 \begin{lstlisting}[caption=Java-Teil]
@@ -40,10 +40,10 @@ public String sayHello(String s) {
 Nat"urlich bietet Turpitude viele M"oglichkeiten die n"otige Funktionalit"at zu implementieren,
 trotzdem wurde die vielleicht komplizierteste Variante gew"ahlt: das Implementieren des EJB-Interfaces in
 PHP und das Aufrufen der PHP-Methoden "uber das \emph{javax.script.Invocable} Interface. Diese Entscheidung 
-wurde vor allem vor dem Hintergrund getroffen, dass die Entwicklung einer PHP-Implementation eines Java-Interfaces
+wurde vor allem vor dem Hintergrund getroffen, dass die Entwicklung einer PHP-Implementierung eines Java-Interfaces
 intuitiver erscheint, als das Entwickeln von PHP-Skripten die sich an eine nicht trivial ersichtliche
 Konvention halten m"ussen um vom Java-Teil aufgerufen werden zu k"onnen. Ausserdem ist so ein 
-generischer Adapter denkbar der beliebige Java-Interfaces auf passende PHP-Implementationen adaptiert,
+generischer Adapter denkbar der beliebige Java-Interfaces auf passende PHP-Implementierungen adaptiert,
 oder zumindest ein Automatismus, der aus einem gegebenen Java-Interface und einer PHP-Implementierung den 
 n"otigen Java-Quelltext automatisch erzeugt.
 \begin{lstlisting}[caption=PHP-Implementierung]
