@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fixed peer.mail.store.CclientStore (ext/imap wrapper) implementation 
+  which was broken due to PHP5 BC breaks
+  (friebe)
 - Implemented RFC #0112 - HttpScriptletException inherits ChainedException
   (kiesel)
 - Implemented RFC #0110 - RemoteStackTraceElement
