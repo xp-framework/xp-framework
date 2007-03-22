@@ -25,7 +25,7 @@
     /**
      * Constructor
      *
-     * @param   &peer.mail.store.MailStore store
+     * @param   peer.mail.store.MailStore store
      * @param   string name default ''
      */  
     public function __construct($store, $name= '') {
@@ -100,7 +100,7 @@
      * </code>
      *
      * @param   mixed* msgnums
-     * @return  &peer.mail.Message[]
+     * @return  peer.mail.Message[]
      */
     public function getMessages() { 
       $args= func_get_args();
@@ -119,7 +119,7 @@
     /**
      * Delete a message
      *
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function deleteMessage($msg) {
@@ -129,7 +129,7 @@
     /**
      * Undelete a message
      *
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function undeleteMessage($msg) {
@@ -139,7 +139,7 @@
     /**
      * Move a message
      *
-     * @param   &peer.mail.Message msg
+     * @param   peer.mail.Message msg
      * @return  bool success
      */
     public function moveMessage($msg) {
@@ -158,7 +158,7 @@
      *   $f->close();                          
      * </code>
      *
-     * @return  &peer.mail.Message or FALSE to indicate we reached the last mail
+     * @return  peer.mail.Message or FALSE to indicate we reached the last mail
      */
     public function getMessage() {
       $this->_ofs++;
@@ -171,7 +171,7 @@
      *
      * @param   string uid
      * @param   string part
-     * @return  &int
+     * @return  int
      */
     public function getMessagePart($uid, $part) { 
       return $this->store->getMessagePart($this, $uid, $part);
@@ -181,7 +181,7 @@
      * Get a message structure
      *
      * @param   string uid
-     * @return  &object
+     * @return  object
      */
     public function getMessageStruct($uid) { 
       return $this->store->getMessageStruct($this, $uid);
