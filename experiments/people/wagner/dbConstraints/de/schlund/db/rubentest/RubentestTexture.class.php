@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table texture, database Ruben_Test_PS
-   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
+   * (Auto-generated on Thu, 22 Mar 2007 18:02:07 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -129,8 +129,10 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getColortypeList() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestColor');
-      return RubentestColor::getPeer()->doSelect(new Criteria(
+      return XPClass::forName('de.schlund.db.rubentest.RubentestColor')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
         array('colortype', $this->getColortype(), EQUAL)
       ));
     }
@@ -143,8 +145,10 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getColortypeIterator() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestColor');
-      return RubentestColor::getPeer()->iteratorFor(new Criteria(
+      return XPClass::forName('de.schlund.db.rubentest.RubentestColor')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
         array('colortype', $this->getColortype(), EQUAL)
       ));
     }
@@ -157,9 +161,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMappointTextureList() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
-      return RubentestMappoint::getPeer()->doSelect(new Criteria(
-        array('texture_id', $this->getTexture_id(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestMappoint')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('texture_id', $this->getTexture_id(), EQUAL)
       ));
     }
 
@@ -171,9 +177,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMappointTextureIterator() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
-      return RubentestMappoint::getPeer()->iteratorFor(new Criteria(
-        array('texture_id', $this->getTexture_id(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestMappoint')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('texture_id', $this->getTexture_id(), EQUAL)
       ));
     }
   }

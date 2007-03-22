@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mobileObject, database Ruben_Test_PS
-   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
+   * (Auto-generated on Thu, 22 Mar 2007 18:02:07 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -154,10 +154,12 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getCoord_xCoord_y() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
-      $r= RubentestMappoint::getPeer()->doSelect(new Criteria(
-        array('coord_x', $this->getCoord_x(), EQUAL),
-        array('coord_y', $this->getCoord_y(), EQUAL)
+      $r= XPClass::forName('de.schlund.db.rubentest.RubentestMappoint')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('coord_x', $this->getCoord_x(), EQUAL),
+          array('coord_y', $this->getCoord_y(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }

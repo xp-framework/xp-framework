@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Mon, 19 Mar 2007 13:20:05 +0100 by ruben)
+   * (Auto-generated on Thu, 22 Mar 2007 18:02:07 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -171,9 +171,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getPerson() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestPerson');
-      $r= RubentestPerson::getPeer()->doSelect(new Criteria(
-        array('person_id', $this->getPerson_id(), EQUAL)
+      $r= XPClass::forName('de.schlund.db.rubentest.RubentestPerson')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('person_id', $this->getPerson_id(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }
