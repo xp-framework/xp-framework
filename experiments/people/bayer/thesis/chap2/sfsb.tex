@@ -60,7 +60,7 @@ Im Gegensatz zum Service-Interface unterscheidet sich die Implementierung der St
 Stateless Session Bean. Da der Zustand der Bean nicht im Java-Teil, sondern vom PHP-Code vorgehalten werden sollte
 mussten Lebenszyklus-Methoden implementiert werden.
 
-Zun"achst wurde die mit \emph{@PostConstruct} annotierte Methode \emph{initialize()} geschrieben, in der der Quelltext
+Zun"achst wurde die mit \texttt{@PostConstruct} annotierte Methode \texttt{initialize()} geschrieben, in der der Quelltext
 "ubersetzt und eine Instanz der implementierenden PHP-Klasse erzeugt wird. Dieses Erzeugen geschieht mittels einer
 Art "'friend-Methode"', aber es sind auch beliebige andere Methoden denkbar.
 Sowohl das "ubersetzte Skript als auch das PHPObject der PHP-Klasse werden als Attribute der Bean gespeichert. 
@@ -69,10 +69,10 @@ Gr"unden nicht zur Speicherung des Zustandes genutzt werden: zum einen sollte im
 Automatisierung s"amtliche Funktionalit"at in PHP realisiert werden, und zum anderen kann innerhalb des Bean-Containers
 nicht davon ausgegangen werden, dass die in ByteBuffern gespeicherten Informationen - der Zend-Opcode des "ubersetzten
 Skriptes und vor allem der C-Pointer auf den Zval des PHP-Objektes - beim n"achsten Aufruf einer Bean-Methode noch valide 
-sind. Folglich mussten der Bean zwei weitere Methoden hinzugef"ugt werden, die mit \emph{@PrePassivate} annotierte Methode
-\emph{sleep()}, und die mit \emph{@PostActivate} annotierte Methode \emph{wakeUp()}. Als Methode zur Persistierung des
+sind. Folglich mussten der Bean zwei weitere Methoden hinzugef"ugt werden, die mit \texttt{@PrePassivate} annotierte Methode
+\texttt{sleep()}, und die mit \texttt{@PostActivate} annotierte Methode \texttt{wakeUp()}. Als Methode zur Persistierung des
 PHP-Objektes wurde der PHP-Mechanismus zur Serialisierung von Daten gew"ahlt, hierzu wurden der PHP-Klasse die Methoden
-\emph{ser()} und \emph{unser()} hinzugef"ugt, erstere gibt einen String zur"uck der eine serialisierte Fassung des Objektes
+\texttt{ser()} und \texttt{unser()} hinzugef"ugt, erstere gibt einen String zur"uck der eine serialisierte Fassung des Objektes
 enth"alt, letztere nimmt einen solchen String entgegen und stellt daraus den urspr"unglichen Zustand wieder her.
 Damit gew"ahrleistet ist dass die oben angesprochenen Attribute der Java-Klasse nicht versehentlich persistiert werden 
 werden die Referenzen der beiden Objekte auf null gesetzt.

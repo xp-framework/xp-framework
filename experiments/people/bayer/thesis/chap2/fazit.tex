@@ -17,7 +17,7 @@ es ja auch ausdr"ucklich Ziel dieses Kapitels solche Fehler in der Bibliothek zu
 Ein weiteres Problem das auftrat und dessen analyse sehr viel Zeit verschlang war ein Fehler in der benutzten JBoss-Version, 
 der auftritt wenn man diese in einer Java 6 VM ausf"uhrt:
 Um Daten zwischen Client und Server zu "ubertragen serialisiert JBoss die zu "ubertragenden Objekte. Diese
-werden dann deserialisiert, und auf der anderen Seite mittels der Methode \emph{loadClass()} des Klassenladers.
+werden dann deserialisiert, und auf der anderen Seite mittels der Methode \texttt{loadClass()} des Klassenladers.
 Entgegen der Java Language Specification funktionierte diese Methode bis einschliesslich Java 5 auch mit Objektarrays,
 dies wurde aber mit Version 6 behoben. Da aber JBoss 4.0.5 diese Methode um Zusammenhang mit Objektarrays noch benutzt
 musste w"ahrend der Entwicklung auf den JBoss in der neuesten Version 5 umgestiegen werden, obwohl sich dieser noch

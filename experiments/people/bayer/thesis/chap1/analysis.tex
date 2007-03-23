@@ -63,8 +63,8 @@ Anforderung erf"ullt ist.
     aber nur von \emph{UC.01} gestellt.
     \textbf{Test}: Durch einfache Ausgabe auf der Konsole soll schnell ermittelbar sein, welche ScriptEngines geladen und einsatzbereit sind.
 
-\item "Ubersetzen von PHP-Quelltext. Dem System "ubergebener PHP-Quelltext soll Gem"a\ss des in \ident{javax.script} vorhandenen 
-    Interfaces \ident{Compilable} in eine ausf"uhrbare Form "ubersetzt werden. Das Ergebnis eines solchen "Ubersetzungsvorganges
+\item "Ubersetzen von PHP-Quelltext. Dem System "ubergebener PHP-Quelltext soll Gem"a\ss des in \texttt{javax.script} vorhandenen 
+    Interfaces \texttt{Compilable} in eine ausf"uhrbare Form "ubersetzt werden. Das Ergebnis eines solchen "Ubersetzungsvorganges
     soll mehrfach ausgef"uhrt werden k"onnen.Beim "Ubersetzen auftretende syntaktische oder semantische Fehler sollen dem Anwender 
     als Java-Exception zur"uckgegeben werden.
     Auche diese Anforderung ist eine Vorraussetzung fast aller weiterer Anforderungen, weswegen sie ebenfalls \emph{UC.01} zugeordnet wird.
@@ -98,11 +98,11 @@ Anforderung erf"ullt ist.
 
 \item Weitere Java-Funktionalit"at. Implizit fordert \emph{UC.03} ebenfalls dass das System dem PHP-Anwender erlaubt grundlegende
     Funktionalit"at der Java-Umgebung zu nutzen, so soll er "uberpru"ufen k"onnen ob ein Java-Objekt identisch mit einem anderen ist
-    (\ident(equals()), ob es Instanz einer bestimmten Klasse ist (\ident{instanceof}), oder ob es sicher auf eine andere Klasse castbar ist.
+    (\ident(equals()), ob es Instanz einer bestimmten Klasse ist (\texttt{instanceof}), oder ob es sicher auf eine andere Klasse castbar ist.
     \textbf{Test}: Innerhalb eines PHP-Skriptes sollen auf einem Java-Objekt jeweils die oben genannten Tests durchgef"uhrt werden.
 
 \item Aufrufen von Methoden in "ubersetzten Skripten. Das zu entwickelnde Softwaresystem soll das Aufrufen sowohl von globalen Funktionen,
-    als auch von Objektmethoden in "ubersetzten PHP-Skripten aus Java heraus erlauben, hierzu soll das Interface \ident{javax.script.Invocable} 
+    als auch von Objektmethoden in "ubersetzten PHP-Skripten aus Java heraus erlauben, hierzu soll das Interface \texttt{javax.script.Invocable} 
     implementiert werden. Die "Ubergebenen Funktions- und Methodenargumente sollen wie schon beim Datenaustausch in ihre PHP-Entsprechungen
     umgewandelt werden. Diese Anforderung stellt einen wesentlichen Teil des \emph{UC.04} dar.
     \textbf{Test}: Es soll aus einer Java-Applikation heraus eine PHP-Funktion aufgerufen werden die ein PHP-Objekt zur"uckgibt, welches
@@ -113,7 +113,7 @@ Anforderung erf"ullt ist.
     da diese sowohl zur Laufzeit der Java-Applikation programmatisch als auch vor dem Start der Java-VM beispielsweise "uber die Kommandozeile
     gesetzt werden k"onnen. Die php.ini ist der gew"ohnliche Weg das Laufzeitverhalten des PHP-Interpreters zu ver"andern, somit werden
     die Anforderungen die der  \emph{UC.02} stellt komplett erf"ullt.
-    \textbf{Test}: Es soll der Wert php.ini-Wert \ident{include\_path} "uber die Kommandozeile gesetzt und in einem
+    \textbf{Test}: Es soll der Wert php.ini-Wert \texttt{include\_path} "uber die Kommandozeile gesetzt und in einem
     PHP-Skript ausgelesen werden. 
 
 \end{enumerate}

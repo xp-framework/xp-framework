@@ -55,8 +55,14 @@ einen dritten Parameter, den neuen Wert:
 $int = $instance->javaGet('intval', 'I');
 $instance->javaSet('intval', 'I', 666);
 \end{lstlisting}
-Man beachte allerdings: auf diese Weise lassen sich nur nur "offentliche Attribute lesen
+Man beachte allerdings: auf diese Weise lassen sich nicht nur "offentliche Attribute lesen
 und schreiben, sondern auch private. Auch hier obliegt dem Anwender eine gewisse Sorgfaltspflicht.
+Will der Anwender nur auf "offentliche Attribute zugreiffen kann er dies wie gewohnt bei ganz
+normalen PHP-Objekten tun:
+\begin{lstlisting}[caption=Attribute lesen und schreiben]
+$int = $instance->intval;
+$instance->intval = 666;
+\end{lstlisting}
 Weiterhin lassen sich nat"urlich auch Methoden des Java-Objektes aufrufen, allerdings nicht ohne
 vorher wieder ein TurpitudeJavaMethod-Objekt zu erzeugen, und zwar unter Verwendung der
 Methode \emph{findMethod()}, welche analog zu \emph{findStaticMethod()} funktioniert. Die derart
@@ -69,10 +75,9 @@ $instance->javaInvoke($method, 1338, 'eleeter');
 Allerdings k"onnen Java-Methoden auch mit etwas weniger Aufwand aufgerufen werden:
 jeglicher Methodenaufruf auf einem Objekt der Klasse \emph{TurpitudeJavaObject} wird an die
 JVM weitergeleitet, wenn es sich nicht um einen Aufruf mit dem Namen \emph{javaGet}, \emph{javaSet}
-oder \emph{javaInvoke} handelt. In diesem Fall wird allerdings erwartet, dass der erste Parameter
-die Signatur der gew"unschten Methode enth"alt:
+oder \emph{javaInvoke} handelt.
 \begin{lstlisting}[caption=direkter Methodenaufruf]
-$result = $instance->getDate('()Ljava/util/Date;');
+$result = $instance->getDate();
 \end{lstlisting}
 Das \emph{TurpitudeEnvironment} bietet noch eine weitere n"utzliche Methode an: \emph{instanceOf}.
 Sie funktioniert "ahnlich wie der Java-Operator \emph{instanceof}, allerdings nur

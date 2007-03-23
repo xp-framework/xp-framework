@@ -44,6 +44,13 @@ foreach($iterator as $key => $row) {
   var_dump($row);
 }
 \end{lstlisting}
+Weiterhin ist es m"oglich Java-Arrays direkt zu erzeugen, dazu wird die Methode \emph{newArray()} beim
+\emph{TurpitudeEnvironment} aufgerufen, die zwei Argumente erwartet, den JNI-kodierten Typen
+und die gew"unschte Gr"o\ss e des Arrays:
+\begin{lstlisting}[caption=Erzeugen von Arrays]
+$arr = $turpenv->newArray('I', 5);
+$arr2 = $turpenv->newArray('Ljava/lang/Object;');
+\end{lstlisting}
 
 Der Quelltext dieses Beispieles befindet sich in der Datei \emph{ArraySample.java}, 
 und kann mittels des Befehls \emph{make arrays} ausgef"uhrt werden. Der Quelltext der
