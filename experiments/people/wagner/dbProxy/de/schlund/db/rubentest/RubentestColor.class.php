@@ -8,12 +8,13 @@
 
   /**
    * Class wrapper for table color, database Ruben_Test_PS
-   * (Auto-generated on Tue, 20 Mar 2007 17:22:23 +0100 by ruben)
+   * (Auto-generated on Fri, 23 Mar 2007 10:14:13 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestColor extends DataSet {
-    public
+
+    protected
       $_isLoaded= false,
       $_loadCrit= NULL;
 
@@ -30,7 +31,32 @@
         ));
       }
     }  
-  
+
+    function __get($name) {
+      $this->load();
+      return $this->get($name);
+    }
+
+    function __sleep() {
+      $this->load();
+      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
+    }
+
+    /**
+     * force loading this entity from database
+     *
+     */
+    public function load() {
+      if ($this->_isLoaded) return;
+      $this->_isLoaded= true;
+      $e= self::getPeer()->doSelect($this->_loadCrit);
+      if (!$e) return;
+      foreach (array_keys(self::getPeer()->types) as $p) {
+        if (isset($this->{$p})) continue;
+        $this->{$p}= $e[0]->$p;
+      }
+    }
+
     /**
      * Retrieve associated peer
      *
@@ -40,30 +66,6 @@
       return Peer::forName(__CLASS__);
     }
   
-    function __get($name) {
-      if (!$this->_isLoaded) $this->load();
-      return $this->{'get'.$name}();
-    }
-
-    private function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect(call_user_func_array(array($this, $this->_loadCrit['method']), $this->_loadCrit['param']));
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
-
-    private function loadCritColor_id($color_id) {
-      return new Criteria(array('color_id', $color_id, EQUAL));
-    }
-
-    private function loadCritColortype($colortype) {
-      return new Criteria(array('colortype', $colortype, EQUAL));
-    }
-
     /**
      * Gets an instance of this object by index "PRIMARY"
      * 
@@ -72,7 +74,10 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByColor_id($color_id) {
-      return new self(array('color_id' => $color_id, '_loadCrit' => array('method' => 'loadCritColor_id', 'param' => func_get_args())));
+      return new self(array(
+        'color_id'  => $color_id,
+        '_loadCrit' => new Criteria(array('color_id', $color_id, EQUAL))
+      ));
     }
 
     /**
@@ -83,7 +88,9 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByColortype($colortype) {
-      return new self(array('colortype' => $colortype, '_loadCrit' => array('method' => 'loadCritColortype', 'param' => func_get_args())));
+      $r= self::getPeer()->doSelect(new Criteria(array('colortype', $colortype, EQUAL)));
+      foreach ($r as $e) $e->_isLoaded= true;
+      return $r;
     }
 
     /**
@@ -151,9 +158,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getTextureColortypeList() {
-      uses('de.schlund.db.rubentest.RubentestTexture');
-      return RubentestTexture::getPeer()->doSelect(new Criteria(
-        array('colortype', $this->getColortype(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestTexture')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('colortype', $this->getColortype(), EQUAL)
       ));
     }
 
@@ -165,9 +174,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getTextureColortypeIterator() {
-      uses('de.schlund.db.rubentest.RubentestTexture');
-      return RubentestTexture::getPeer()->iteratorFor(new Criteria(
-        array('colortype', $this->getColortype(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestTexture')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('colortype', $this->getColortype(), EQUAL)
       ));
     }
   }

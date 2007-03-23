@@ -8,16 +8,15 @@
 
   /**
    * Class wrapper for table mobileObject, database Ruben_Test_PS
-   * (Auto-generated on Tue, 20 Mar 2007 17:22:23 +0100 by ruben)
+   * (Auto-generated on Fri, 23 Mar 2007 10:14:13 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestMobileobject extends DataSet {
-    public
-      $object_id          = 0,
-      $coord_x            = 0,
-      $coord_y            = 0,
-      $name               = '';
+
+    protected
+      $_isLoaded= false,
+      $_loadCrit= NULL;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -33,7 +32,32 @@
         ));
       }
     }  
-  
+
+    function __get($name) {
+      $this->load();
+      return $this->get($name);
+    }
+
+    function __sleep() {
+      $this->load();
+      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
+    }
+
+    /**
+     * force loading this entity from database
+     *
+     */
+    public function load() {
+      if ($this->_isLoaded) return;
+      $this->_isLoaded= true;
+      $e= self::getPeer()->doSelect($this->_loadCrit);
+      if (!$e) return;
+      foreach (array_keys(self::getPeer()->types) as $p) {
+        if (isset($this->{$p})) continue;
+        $this->{$p}= $e[0]->$p;
+      }
+    }
+
     /**
      * Retrieve associated peer
      *
@@ -51,8 +75,10 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByObject_id($object_id) {
-      $r= self::getPeer()->doSelect(new Criteria(array('object_id', $object_id, EQUAL)));
-      return $r ? $r[0] : NULL;
+      return new self(array(
+        'object_id'  => $object_id,
+        '_loadCrit' => new Criteria(array('object_id', $object_id, EQUAL))
+      ));
     }
 
     /**
@@ -64,10 +90,12 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByCoord_xCoord_y($coord_x, $coord_y) {
-      return self::getPeer()->doSelect(new Criteria(
+      $r= self::getPeer()->doSelect(new Criteria(
         array('coord_x', $coord_x, EQUAL),
         array('coord_y', $coord_y, EQUAL)
       ));
+      foreach ($r as $e) $e->_isLoaded= true;
+      return $r;
     }
 
     /**
@@ -154,10 +182,12 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getCoord_xCoord_y() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMappoint');
-      $r= RubentestMappoint::getPeer()->doSelect(new Criteria(
-        array('coord_x', $this->getCoord_x(), EQUAL),
-        array('coord_y', $this->getCoord_y(), EQUAL)
+      $r= XPClass::forName('de.schlund.db.rubentest.RubentestMappoint')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('coord_x', $this->getCoord_x(), EQUAL),
+          array('coord_y', $this->getCoord_y(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }

@@ -8,15 +8,15 @@
 
   /**
    * Class wrapper for table mappoint, database Ruben_Test_PS
-   * (Auto-generated on Tue, 20 Mar 2007 17:22:23 +0100 by ruben)
+   * (Auto-generated on Fri, 23 Mar 2007 10:14:13 +0100 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class RubentestMappoint extends DataSet {
-    public
-      $coord_x            = 0,
-      $coord_y            = 0,
-      $texture_id         = 0;
+
+    protected
+      $_isLoaded= false,
+      $_loadCrit= NULL;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -30,7 +30,32 @@
         ));
       }
     }  
-  
+
+    function __get($name) {
+      $this->load();
+      return $this->get($name);
+    }
+
+    function __sleep() {
+      $this->load();
+      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
+    }
+
+    /**
+     * force loading this entity from database
+     *
+     */
+    public function load() {
+      if ($this->_isLoaded) return;
+      $this->_isLoaded= true;
+      $e= self::getPeer()->doSelect($this->_loadCrit);
+      if (!$e) return;
+      foreach (array_keys(self::getPeer()->types) as $p) {
+        if (isset($this->{$p})) continue;
+        $this->{$p}= $e[0]->$p;
+      }
+    }
+
     /**
      * Retrieve associated peer
      *
@@ -49,11 +74,14 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByCoord_xCoord_y($coord_x, $coord_y) {
-      $r= self::getPeer()->doSelect(new Criteria(
-        array('coord_x', $coord_x, EQUAL),
-        array('coord_y', $coord_y, EQUAL)
+      return new self(array(
+        'coord_x'  => $coord_x,
+        'coord_y'  => $coord_y,
+        '_loadCrit' => new Criteria(
+          array('coord_x', $coord_x, EQUAL),
+          array('coord_y', $coord_y, EQUAL)
+        )
       ));
-      return $r ? $r[0] : NULL;
     }
 
     /**
@@ -64,7 +92,9 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTexture_id($texture_id) {
-      return self::getPeer()->doSelect(new Criteria(array('texture_id', $texture_id, EQUAL)));
+      $r= self::getPeer()->doSelect(new Criteria(array('texture_id', $texture_id, EQUAL)));
+      foreach ($r as $e) $e->_isLoaded= true;
+      return $r;
     }
 
     /**
@@ -132,9 +162,11 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getTexture() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestTexture');
-      $r= RubentestTexture::getPeer()->doSelect(new Criteria(
-        array('texture_id', $this->getTexture_id(), EQUAL)
+      $r= XPClass::forName('de.schlund.db.rubentest.RubentestTexture')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('texture_id', $this->getTexture_id(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }
@@ -147,10 +179,12 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMobileObjectCoord_xCoord_yList() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
-      return RubentestMobileobject::getPeer()->doSelect(new Criteria(
-        array('coord_x', $this->getCoord_x(), EQUAL),
-        array('coord_y', $this->getCoord_y(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestMobileobject')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('coord_x', $this->getCoord_x(), EQUAL),
+          array('coord_y', $this->getCoord_y(), EQUAL)
       ));
     }
 
@@ -162,10 +196,12 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMobileObjectCoord_xCoord_yIterator() {
-      ClassLoader::loadclass('de.schlund.db.rubentest.RubentestMobileobject');
-      return RubentestMobileobject::getPeer()->iteratorFor(new Criteria(
-        array('coord_x', $this->getCoord_x(), EQUAL),
-        array('coord_y', $this->getCoord_y(), EQUAL)
+      return XPClass::forName('de.schlund.db.rubentest.RubentestMobileobject')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('coord_x', $this->getCoord_x(), EQUAL),
+          array('coord_y', $this->getCoord_y(), EQUAL)
       ));
     }
   }

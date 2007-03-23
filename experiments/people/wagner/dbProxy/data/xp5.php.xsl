@@ -127,22 +127,11 @@
    *
    * @purpose  Datasource accessor
    */
-  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {&#10;    public&#10;</xsl:text>
-  
-  <!-- Attributes -->
-  <xsl:for-each select="attribute">
-    <xsl:value-of select="concat('      $', @name, substring('                                ', 0, 20 - string-length(@name)))"/>
-    <xsl:choose>
-      <xsl:when test="@nullable = 'true'">= NULL</xsl:when>
-      <xsl:when test="@typename= 'int'">= 0</xsl:when>
-      <xsl:when test="@typename= 'string'">= ''</xsl:when>
-      <xsl:when test="@typename= 'float'">= 0.0</xsl:when>
-      <xsl:when test="@typename= 'bool'">= FALSE</xsl:when>
-      <xsl:when test="@typename= 'util.Date'">= NULL</xsl:when>
-    </xsl:choose>
-    <xsl:if test="position() != last()">,&#10;</xsl:if>
-  </xsl:for-each>
-  <xsl:text>;&#10;</xsl:text>
+  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {
+
+    protected
+      $_isLoaded= false,
+      $_loadCrit= NULL;&#10;</xsl:text>
   
   <!-- Create static initializer -->
   <xsl:text>
@@ -183,10 +172,32 @@
         ));
       }
     }  
-  </xsl:text>
 
-  <!-- Create getPeer() method -->
-  <xsl:text>
+    function __get($name) {
+      $this->load();
+      return $this->get($name);
+    }
+
+    function __sleep() {
+      $this->load();
+      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
+    }
+
+    /**
+     * force loading this entity from database
+     *
+     */
+    public function load() {
+      if ($this->_isLoaded) return;
+      $this->_isLoaded= true;
+      $e= self::getPeer()->doSelect($this->_loadCrit);
+      if (!$e) return;
+      foreach (array_keys(self::getPeer()->types) as $p) {
+        if (isset($this->{$p})) continue;
+        $this->{$p}= $e[0]->$p;
+      }
+    }
+
     /**
      * Retrieve associated peer
      *
@@ -211,9 +222,9 @@
     </xsl:for-each>
     <xsl:text>
      * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
-      <xsl:if test="not(@unique= 'true')">[] entities</xsl:if>
-      <xsl:if test="@unique= 'true'"> entitiy</xsl:if>
-    <xsl:text> object
+      <xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if>
+      <xsl:if test="@unique= 'true'"> entitiy object</xsl:if>
+    <xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getBy</xsl:text>
@@ -224,59 +235,55 @@
     <xsl:if test="position() != last()">, </xsl:if>
     </xsl:for-each>
     <xsl:text>) {&#10;</xsl:text>
+
+
       <xsl:choose>
         <xsl:when test="count(key) = 1">
-        
           <!-- Single key -->
           <xsl:choose>
             <xsl:when test="@unique = 'true'">
-              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text>
-              <xsl:value-of select="key"/>
-              <xsl:text>', $</xsl:text>
-              <xsl:value-of select="key"/>
-              <xsl:text>, EQUAL)));&#10;      return $r ? $r[0] : NULL;</xsl:text>
+              <xsl:text>      return new self(array(&#10;</xsl:text>
+              <xsl:text>        '</xsl:text><xsl:value-of select="key"/><xsl:text>'  => $</xsl:text><xsl:value-of select="key"/><xsl:text>,&#10;</xsl:text>
+              <xsl:text>        '_loadCrit' => new Criteria(array('</xsl:text><xsl:value-of select="key"/><xsl:text>', $</xsl:text><xsl:value-of select="key"/><xsl:text>, EQUAL))&#10;</xsl:text>
+              <xsl:text>      ));&#10;</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>      return self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text>
-              <xsl:value-of select="key"/>
-              <xsl:text>', $</xsl:text>
-              <xsl:value-of select="key"/>
-              <xsl:text>, EQUAL)));</xsl:text>
+              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(array('</xsl:text><xsl:value-of select="key"/><xsl:text>', $</xsl:text><xsl:value-of select="key"/><xsl:text>, EQUAL)));&#10;</xsl:text>
+              <xsl:text>      foreach ($r as $e) $e->_isLoaded= true;&#10;</xsl:text>
+              <xsl:text>      return $r;&#10;</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
+
         </xsl:when>
         <xsl:otherwise>
         
           <!-- Multiple keys -->
           <xsl:choose>
             <xsl:when test="@unique = 'true'">
-              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
+              <xsl:text>      return new self(array(&#10;</xsl:text>
               <xsl:for-each select="key">
-                <xsl:text>        array('</xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text>', $</xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text>, EQUAL)</xsl:text>
-                <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
+                <xsl:text>        '</xsl:text><xsl:value-of select="."/><xsl:text>'  => $</xsl:text><xsl:value-of select="."/><xsl:text>,&#10;</xsl:text>
               </xsl:for-each>
-              <xsl:text>      ));&#10;      return $r ? $r[0] : NULL;</xsl:text>
+              <xsl:text>        '_loadCrit' => new Criteria(&#10;</xsl:text>
+              <xsl:for-each select="key">
+                <xsl:text>          array('</xsl:text><xsl:value-of select="."/><xsl:text>', $</xsl:text><xsl:value-of select="."/><xsl:text>, EQUAL)</xsl:text><xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if><xsl:text>&#10;</xsl:text>
+              </xsl:for-each>
+              <xsl:text>        )&#10;</xsl:text>
+              <xsl:text>      ));&#10;</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-              <xsl:text>      return self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
+              <xsl:text>      $r= self::getPeer()-&gt;doSelect(new Criteria(&#10;</xsl:text>
               <xsl:for-each select="key">
-                <xsl:text>        array('</xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text>', $</xsl:text>
-                <xsl:value-of select="."/>
-                <xsl:text>, EQUAL)</xsl:text>
-                <xsl:if test="position() != last()">,</xsl:if><xsl:text>&#10;</xsl:text>
+                <xsl:text>        array('</xsl:text><xsl:value-of select="."/><xsl:text>', $</xsl:text><xsl:value-of select="."/><xsl:text>, EQUAL)</xsl:text><xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if><xsl:text>&#10;</xsl:text>
               </xsl:for-each>
-              <xsl:text>      ));</xsl:text>
+              <xsl:text>      ));&#10;</xsl:text>
+              <xsl:text>      foreach ($r as $e) $e->_isLoaded= true;&#10;</xsl:text>
+              <xsl:text>      return $r;&#10;</xsl:text>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-    <xsl:text>&#10;    }&#10;</xsl:text>
+    <xsl:text>    }&#10;</xsl:text>
   </xsl:for-each>
 
   <!-- Create getters and setters -->
