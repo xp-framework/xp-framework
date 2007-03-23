@@ -298,7 +298,7 @@
         $msgnums= array();
         for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
           $arg= func_get_arg($i);
-          $msgnums= array_merge($msgnums, $arg);
+          $msgnums= array_merge($msgnums, (array)$arg);
         }
       }
       
