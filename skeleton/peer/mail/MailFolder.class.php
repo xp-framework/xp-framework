@@ -193,7 +193,7 @@
      * @return  int
      */
     public function getMessageCount() {
-      return $this->store->getMessageCount($this, 'message');
+      return $this->store->getMessageCount($this, 'messages');
     }
 
     /**
