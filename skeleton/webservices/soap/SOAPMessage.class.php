@@ -387,7 +387,7 @@
         $faultstring,
         $faultactor,
         $detail
-      ), 'SOAP-ENV:Fault');
+      ), 'SOAP-ENV:Fault', $this->mapping);
       $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
