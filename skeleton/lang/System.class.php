@@ -197,7 +197,7 @@
      * @see     php://exec
      * @see     xp://lang.Process
      */
-    public function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
+    public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
       if (!($pd= popen($cmdLine, 'r'))) throw(new XPException(
