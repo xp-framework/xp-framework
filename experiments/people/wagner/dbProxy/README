@@ -1,0 +1,17 @@
+dba lazy fetching experiment
+========================================================================
+$Id$
+
+==========================
+extends class generator
+and (../)dbConstraint extension
+
+
+==========================
+meaning:
+--------
+
+the entity object is filled at least when a property ist requested that is not knowen yet
+
+
+<EOF>
