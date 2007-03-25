@@ -3,35 +3,36 @@
 \label{sec:background}
 
 Dieses Kapitel stellt bereits vorhandene Technologien vor, welche f"ur die L"osung der Aufgabenstellung relevant sind.
-Weiterhin werden Technologien angesprochen, die alternative L"osungen darstellen k"onnten, in diesen F"allen wird kurz
-darauf eingegangen, warum sie keine Verwendung finden. Ausserdem werden Begrifflichkeiten f"ur den weiteren Verlauf
+Weiterhin werden Technologien angesprochen, die alternative L"osungen darstellen k"onnten. In diesen F"allen wird kurz
+darauf eingegangen, warum sie keine Verwendung finden. Au\ss erdem werden Begrifflichkeiten f"ur den weiteren Verlauf
 des Dokumentes eingef"uhrt und erkl"art.
 
 \section{Serviceorientierte Architektur - SOA}
 \label{sec:background:soa}
-Der Begriff Serviceorientierte Architektur oder englisch Service Oriented Architecture, auch diensteorientierte Architektur,
-beschreibt ein Softwarearchitekturkonzept welches versucht durch lose Koppelung autarker Module - sogenannter Services -
+Der Begriff \emph{Serviceorientierte Architektur} oder englisch \emph{Service Oriented Architecture}, auch \emph{diensteorientierte Architektur},
+beschreibt ein Softwarearchitekturkonzept welches versucht durch lose Kopplung autarker Module - sogenannter Services -
 Gesch"aftsprozesse besser und schneller abbilden zu k"onnen als traditionelle Architekturen. Diese Services bilden
-einzelne Schritte der Gesch"aftsprozesse nach und bieten standardisierte Schnittstellen "uber welche sie angesprochen
-werden k"onnen. Dienste werden vom einem \emph{service provider} angeboten und von einem \emph{service consumer}
-mittels eines \emph{service request} angesprochen, der Dienst antwortet mittels eines \emph{service response}.
+einzelne Schritte der Gesch"aftsprozesse nach und bieten standardisierte Schnittstellen an, "uber welche sie angesprochen
+werden k"onnen. Dienste werden von einem \emph{service provider} angeboten und von einem \emph{service consumer}
+mittels eines \emph{service request} angesprochen; der Dienst antwortet mittels eines \emph{service response}.
 Die Koppelung mehrerer Dienste wird "uber ein oder mehrere Protokolle wie zum Beispiel \emph{SOAP}
-\footnote{Simple Object Access Protocol, XML-basiertes Protokoll zum Nachrichtenaustausch "uber Rechnernetzwerke , siehe \ref{sec:background:soap}}
+\footnote{Simple Object Access Protocol, XML-basiertes Protokoll zum Nachrichtenaustausch "uber Rechnernetzwerke, siehe \ref{sec:background:soap}}
 oder \emph{RMI}
 \footnote{Remote Method Invocation, API zum Aufruf entfernter Methoden, siehe \ref{sec:background:rmi}}, 
 aber auch durch den Einsatz ganzer dienstorientierter Technologien
 wie \emph{CORBA} \footnote{
-Common Object Request Broker Architecture - Objektorientierte, plattformunabh"angige Middleware die Protokolle und Dienste
+Common Object Request Broker Architecture - objektorientierte, plattformunabh"angige Middleware die Protokolle und Dienste
 spezifiziert, die das erstellen verteilter Anwendungen in heterogenen Umgebungen vereinfachen soll. CORBA wird von
 der Object Management Group entwickelt, siehe \cite{OMGHP}}
 oder \emph{Enterprise Java Beans} (vgl. \ref{sec:background:rmi} und \ref{sec:chap2}) erreicht. 
-Aufgrund der Platformunabh"angigkeit solcher Technologien eigenet sich ein solche Architektur auch besonders vorhandene
+Aufgrund der Plattformunabh"angigkeit solcher Technologien eignet sich eine solche Architektur auch besonders um vorhandene
 Strukturen miteinander zu verbinden, und die Heterogenit"at verschiedener Systeme zu "uberwinden.
 Ein weiterer wesentlicher Aspekt von SOA ist die Kapselung des Zugriffes
-auf persistente Daten durch einzelne Services, welche als einzige schreibend auf diese Daten zugreiffen k"onnen, was 
+auf persistente Daten durch einzelne Services, welche als einzige schreibend auf diese Daten zugreifen k"onnen, was 
 die Gew"ahrleistung der Konsitenz solcher persistenter Daten erheblich vereinfacht. 
 Der Begriff SOA fasst eine Vielzahl von Technologien und Herangehensweisen zusammen, und ihn an dieser Stelle komplett zu 
-erl"autern w"urde den Rahmen des Dokumentes sprengen.
+erl"autern w"urde den Rahmen des Dokumentes sprengen, interessierte Leser sollten eines der zahlreichen B"ucher
+zu diesem Thema konsultieren, beispielsweise \cite{SOABOOK} und \cite{SOABOOK2}.
 
 \section{Skriptsprachen}
 \label{sec:background:script}
@@ -39,30 +40,31 @@ erl"autern w"urde den Rahmen des Dokumentes sprengen.
 Als Skriptsprachen bezeichnet man Programmiersprachen, welche urspr"unglich vor allem zur L"osung
 kleinerer Programmieraufgaben entwickelt wurden. Sie stellen im Allgemeinen keine so hohen formalen 
 Anspr"uche an den Programmierer wie "'vollst"andige"' Programmiersprachen, so verzichten sie
-beispielsweise oft auf den Deklarationszwang von Variablen. Weitere Merkmale die h"aufig bei
-Skriptsprachen anzutreffen sind sind unter anderem die dynamische beziehungsweise oft auch komplett 
-fehlende Typisierung von Variablen, die automatische Speicherverwaltung und vor allem das
-"ubersetzungsfreie Ausf"uhren - sprich die Skripte werden "'interpretiert"'. Dies f"uhrt allerdings
-dazu, dass Skriptsprachen oft nicht so effizient sind wie direkt "ubersetzte Programme, und dazu
-dass viele Fehler welche ein Compiler finden beziehungsweise komplett verhindern w"urde erst zur
-Laufzeit und somit m"oglicherweise im Produktivbetrieb auftreten.
-Der "Ubergang zwischen klassischen Programmiersprachen und Skriptsprachen ist heute fliessend, so 
-bieten Sprachen wie beispielsweise Java auch eine automatisierte Speicherverwaltung und werden nicht
-direkt in Maschinencode sondern in Bytecode "ubersetzt welcher dann interpretiert wird, w"ahrend 
+beispielsweise oft auf den Deklarationszwang von Variablen. Weitere, h"aufig bei
+Skriptsprachen anzutreffende Merkmale sind unter anderem die dynamische, beziehungsweise oft auch komplett 
+fehlende Typisierung von Variablen, die automatische Speicherverwaltung, und vor allem das
+"ubersetzungsfreie Ausf"uhren - die Programme werden \emph{interpretiert}. Dies f"uhrt allerdings
+dazu, dass Skriptsprachen oft nicht so effizient sind wie direkt "ubersetzte Programme. Weiterhin
+treten so viele Fehler die ein Compiler finden, beziehungsweise komplett verhindern w"urde erst zur
+Laufzeit und somit m"oglicherweise im Produktivbetrieb auf.
+Der "Ubergang zwischen klassischen Programmiersprachen und Skriptsprachen ist heute jedoch flie\ss end: 
+Sprachen wie beispielsweise Java bieten ebenfalls eine automatisierte Speicherverwaltung und werden nicht
+direkt in Maschinencode sondern in Bytecode "ubersetzt, welcher dann interpretiert wird, w"ahrend 
 Skriptsprachen wie Python oder Ruby teilweise sehr hohe formale Anspr"uche stellen und sehr robust sind.
 Die klassischen Einsatzgebiete von Skriptsprachen werden heute erweitert durch Webanwendungen und
 \emph{rapid prototyping}\footnote{
 Das Entwickeln eines Prototyps des zu erstellenden Softwaresystems, ohne die vollen Anspr"uche an Umfang und
 Qualit"at erf"ullen zu wollen.
-}
-, auch werden sie gerne als sogenannte \emph{glue languages}
+}.
+Sie werden auch gerne als sogenannte \emph{glue languages}
 - als verbindender "'Kleber"' zwischen verschiedenen Systemen, Programmen und Programmiersprachen -
-eingesetzt. Skriptsprachen sind ausserdem beliebt um Softwaresysteme f"ur weniger versierte Anwender
+eingesetzt. Skriptsprachen sind au\ss erdem beliebt um Softwaresysteme f"ur weniger versierte Anwender
 leicht erweiterbar zu machen, indem sie eine kontrollierte, leicht erlernbare und trotzdem 
 ausreichend m"achtige Umgebung bieten, in der dieser Anwender der Applikation eigene Funktionalit"at 
 hinzuf"ugen kann.
 Im weiteren Verlauf dieses Dokumentes werden Programme, welche in einer Skriptsprache geschrieben sind 
-auch kurz als "'Skripte"' bezeichnet.
+auch kurz als \emph{Skripte} bezeichnet. Beispiele weitverbreiteter Skriptsprachen sind das in dieser
+Arbeit behandelte \emph{PHP}, der Klassiker \emph{Perl} sowie die neueren Sprachen \emph{Ruby} und \emph{Python}.
 
 \subsection{PHP}
 \label{sec:background:php}
@@ -72,107 +74,119 @@ ist eine weit verbreitete und f"ur den allgemeinen Gebrauch bestimmte Open Sourc
 welche speziell f"ur die Webprogrammierung geeignet ist, und in HTML eingebettet werden kann."'
 
 Das heutige PHP entstand aus den urspr"unglich 1994 von \emph{Rasmus Lerdorf} in C geschriebenen und "uber CGI
-\footnote{Common Gateway Interface, Schnittstelle zwischen einem Webserver und einer Programmiersprache, siehe \ref{sec:background:cgi}}
+\footnote{Common Gateway Interface, Schnittstelle zwischen einem Webserver und einem externen Programm, siehe \ref{sec:background:cgi}}
 ausgef"uhrten "'Personal Home Page Tools"'. 1995 wurden diese von Lerdorf erstmals als "'PHP/FI"' ver"offentlicht,
 nachdem er sie mit einem Interpreter f"ur Formulardaten ausgestattet hatte.
 1997 schrieben die beiden israelischen Entwickler \emph{Zeev Suraski} und \emph{Andi Gutmans} den Parser neu und
-schufen so die Grundlage f"ur PHP 3, welches 1998 erstmals ver"offentlicht wurde. Diese Version bot auch 
+schufen so die Grundlage f"ur PHP 3, welches 1998 ver"offentlicht wurde. Diese Version bot auch 
 erstmals grundlegende M"oglichkeiten zur objektorientierten Programmierung, allerdings war die gesamte 
 Standardbibliothek noch prozedural angelegt.
 Suraski und Gutmans fingen daraufhin an den Kern von PHP neu zu schreiben, welcher seit 1999 als \emph{Zend Engine}
 von der neu gegr"undeten \emph{Zend Technologies} vertrieben wird. Im Mai 2000 wurde PHP 4 der
 "Offentlichkeit als erstes PHP vorgestellt, welches die Zend Engine in der Version 1.0 nutzte (siehe auch \cite{ZENDENGINE}).
-PHP 4 wird bis heute von Zend supported und wird bei 1\&1 noch produktiv eingesetzt, obwohl es noch sehr unter den
-mangelhaften F"ahigkeiten zur Objektorientierung von PHP 3 leidet, so werden weder Kapselung der Daten durch 
-zum Beispiel private Variablen, noch Destruktoren oder Fehlerbehandlung "uber Exceptions unterst"utzt.
-Im July 2004 wurde PHP 5 zusammen mit der Zend Engine II ver"offentlicht und bot endlich lang erwartete Features wie
+PHP 4 wird bis heute von Zend unterst"utzt und wird bei 1\&1 noch produktiv eingesetzt, obwohl es noch sehr unter den
+mangelhaften F"ahigkeiten zur Objektorientierung von PHP 3 leidet. Es werden weder Kapselung der Daten,  
+zum Beispiel durch private Variablen, noch Destruktoren oder Fehlerbehandlung "uber Exceptions unterst"utzt.
+Im Juli 2004 wurde PHP 5 zusammen mit der Zend Engine II ver"offentlicht und bot lang erwartete Features wie
 robuste Objektorientierung, native SOAP-Unterst"utzung (siehe \ref{sec:background:soap}), 
-Iteratorkonstrukte und Exceptions. Zu diesem Zeitpunkt wird an der n"achsten PHP Version 6 entwickelt, diese
-befindet sich allerdings noch in einem sehr fr"uhen Stadium, so wird noch heftig "uber die Richtung
-debatiert in welche sich PHP in Zukunft bewegen soll.  
+Iteratorkonstrukte und Exceptions. Zu diesem Zeitpunkt wird an der n"achsten PHP Version 6 entwickelt. Diese Version
+befindet sich allerdings noch in einem sehr fr"uhen Stadium, und es wird sowohl Zend-intern als auch "offentlich noch heftig 
+"uber die Richtung debatiert, in die PHP sich in Zukunft bewegen soll.  
 
-PHP Quellcode wird - wie bei vielen Skriptsprachen, zum Beispiel Perl - nicht kompiliert sondern zur Laufzeit ausgewertet und interpretiert.
+PHP Quelltext wird - wie bei vielen Skriptsprachen, zum Beispiel Perl - nicht kompiliert sondern zur Laufzeit ausgewertet und interpretiert.
 Die Sprache bietet nur einige wenige Datentypen, welche alle in einer einzigen Art von Variable gespeichert werden
-(\emph{weak typing}) - sprich Variablen k"onnen zur Laufzeit ihren Typen "aendern
-, was von vielen als ein weiterer Kritikpunkt angesehen wird da es zu Laufzeitfehlern kommen kann die in anderen 
-Sprachen schon von vorneherein durch den Compiler ausgeschlossen sind.
+(\emph{weak typing}) - sprich Variablen k"onnen zur Laufzeit ihren Typ "andern, 
+was von vielen als ein weiterer Kritikpunkt angesehen wird, da es zu Laufzeitfehlern kommen kann die in anderen 
+Sprachen schon von vorneherein durch den Compiler ausgeschlossen sind
 \footnote{
 siehe hierzu auch den Artikel von Bruce Eckel, zu finden unter \cite{TYPING}
-}
-Ein weiteres Problem ist dass der Sprachumfang von PHP durch Dritte mittels \emph{Extensions}
-genannter Erweiterungen erweitert werden kann und auch wird. Dies muss allerdings zur Kompilierzeit von PHP geschehen, was wiederum
-dazu f"uhrt dass verschiedene PHP-Installationen auch verschiedenen Funktionsumfangs sein k"onnen, und dazu dass
-verschiedene Extensions "'gleichen Typs"' - zum Beispiel die Datenbankerweiterungen zu MySQL und Sybase - nicht
+}.
+Dieser Variablentyp wird \emph{zval} genannt, und ist auf C-Ebene ein \texttt{struct}, der neben einem Feld das den aktuell 
+gespeicherten Typ vorh"alt einen \texttt{union} enth"alt, in dem der eigentliche Wert der Variable gespeichert wird.
+Ein weiteres Problem ist, dass der Sprachumfang von PHP durch Dritte mittels \emph{Extensions}
+genannter Erweiterungen erweitert werden kann, und wird. Dies muss allerdings zur Kompilierzeit von PHP geschehen, was wiederum
+dazu f"uhrt, dass verschiedene PHP-Installationen verschiedenen Funktionsumfangs sein k"onnen. 
+Dadruch dass die Extensions meist durch Dritte entwickelt werden kann es vorkommen, dass
+verschiedene gleichartige Extensions - zum Beispiel die Datenbankerweiterungen zu MySQL\footnote{
+Weitverbreitete Open Source Datenbank, siehe \cite{MySQL}} und Sybase\footnote{
+Bei 1\&1 neben MySQL haupts"achlich eingesetzte Datenbank, siehe \cite{SYBASE}} - nicht
 nur unterschiedliche Methodensignaturen, sondern auch unterschiedliches Verhalten "ahnlicher Methoden haben.
-Der Einsatz von PHP innerhalb von 1\&1 ist historisch vor allem dadurch zu erkl"aren, dass es zun"achst keine 
-konkurrenzf"ahigen Technologien gab, und sp"ater erstens schon sehr viel in diese Technologie investiert
-worden war und zweitens etwaiige technischen Nachteile von PHP durch im Unternehmen vorhandenes Know-How sehr gut
+
+Der Einsatz von PHP innerhalb von 1\&1 ist historisch vor allem dadurch zu erkl"aren, dass zun"achst keine 
+konkurrenzf"ahigen Technologien existierten, und sp"ater erstens schon sehr viel in diese Technologie investiert
+worden war und zweitens etwaige technischen Nachteile von PHP durch im Unternehmen vorhandenes Know-How sehr gut
 ausgeglichen werden konnten.
 
-Dass PHP urspr"unglich als reine Web-Programmiersprache konzipiert wurde ist heute noch deutlich sichtbar, an 
-Variablen und Funktionen, die ohne eine Web-Umgebung keinen Sinn ergeben, aber vor allem in der Zend-Engine selbst,
-wo an vielen Stellen noch zwischen Modul (dem Interpreter) und Request (dem einzelnen Zugriff auf eine URL) unterschieden
-wird. Dies mag auch der Grund daf"ur sein, dass keine dem Application Server vergleichbare Technologie f"ur PHP existiert,
-f"ur PHP ist das Ausf"uhren einer alleinstehenden Applikation eher die Ausnahme als die Regel.
+Die Tatsache, dass PHP urspr"unglich als reine Web-Programmiersprache konzipiert wurde ist heute noch deutlich sichtbar, 
+unter anderem an 
+Variablen und Funktionen, die ohne eine Web-Umgebung keinen Sinn ergeben. Vor allem macht sie sich aber in der Zend-Engine selbst,
+bemerkbar, da
+an vielen Stellen noch zwischen Modul (dem Interpreter) und Request (dem einzelnen Zugriff auf eine URL) unterschieden
+wird. Dies mag auch der Grund daf"ur sein, dass keine dem Application Server vergleichbare Technologie f"ur PHP existiert.
+F"ur PHP ist das Ausf"uhren einer alleinstehenden Applikation eher die Ausnahme als die Regel.
 
-Dennoch erfreut sich PHP heute sehr gro\ss er Beliebtheit, vor allem aufgrund der hohen Anzahl von Webservern,
-die ihren Benutzern die M"oglichkeit bieten mittels PHP dynamische Inhalte zu generieren, und obwohl Perl
+Dennoch erfreut sich PHP heute sehr gro\ss er Beliebtheit, wohl vor allem aufgrund der hohen Anzahl von Webservern,
+die ihren Benutzern die M"oglichkeit bieten mittels PHP dynamische Inhalte zu generieren. Obwohl Perl -
+als gr"o\ss ter "'Konkurrent"' zu PHP - 
 wohl eine "ahnlich hohe Verbreitung hat schreckt gerade viele Einsteiger die komplizierte Syntax dieser Sprache ab.
 
 
 \subsection{Common Gateway Interface - CGI}
 \label{sec:background:cgi}
 
-Scriptsprachen im Allgemeinen und PHP im Besonderen sind sehr stark mit dem \emph{Common Gateway Interface} verbunden.
+Skriptsprachen im Allgemeinen und PHP im Besonderen sind sehr stark mit dem \emph{Common Gateway Interface} verbunden.
 CGI erlaubt einem Webserver (zum Beispiel dem \emph{apache.org HTTP Server} \cite{APACHEHP}) externe Programme zu nutzen, um
-neben normalen, statischen Inhalten auch dynamische Inhalte zu generieren. Hierzu wird der Zugriff (engl. \emph{Request}) mittels
+neben statischen Inhalten auch die Generierung dynamischer Inhalte zu erm"oglichen. 
+Hierzu wird der Zugriff (engl. \emph{Request}) mittels
 Umgebungsvariablen formalisiert und an ein externes Programm weitergegeben, welches f"ur jeden Zugriff neu gestartet wird.
-Diese Programme sind oftmals Skriptsprachen, auch weil diese oftmals sehr komfortable Methoden besitzen um Strings zu manipulieren.
+Diese Programme sind oftmals in Skriptsprachen geschrieben, 
+auch weil diese oftmals sehr komfortable Methoden besitzen um Strings zu manipulieren.
 CGI wurde mit \emph{FastCGI} weiterentwickelt, FastCGI-Programme werden nicht f"ur jeden Request neu gestartet, sondern werden
 im Speicher gehalten und nur mit den neu ankommenden Requests versorgt. Einem "ahnlichen Prinzip folgen Server-Module, nur sind
-diese ausf"uhrbaren Programme, sondern Programmbibliotheken und werden direkt in den Webserver geladen.
-PHP wurde haupts"achlich f"ur den Einsatz als CGI-Programm entwickelt, und man merkt der Sprache diese Urspr"unge heute noch sehr
-deutlich an.
-
+diese keine ausf"uhrbaren Programme, sondern Programmbibliotheken und werden direkt in den Webserver geladen.
 
 \section{XP-Framework}
 \label{sec:background:xp}
 
-Das XP-Framework \cite{XPHP} (XP) ist der Hauptgrund warum - trotz der sehr mangelhaften M"oglichkeiten zur 
-Objektorientierung - bei 1\&1 noch haupts"achlich PHP 4 eingesetzt wird. XP ist ein modulares Framework welches
-dem Anwender das Entwickeln jeglicher Anwendung in PHP erleichtern soll, es wird seit 2001 nach streng 
+Das XP-Framework \cite{XPHP} (XP) ist der Hauptgrund weshalb - trotz der sehr mangelhaften M"oglichkeiten zur 
+Objektorientierung - bei 1\&1 PHP 4 noch an vielen Stellen eingesetzt wird. XP ist ein modulares Framework, welches
+dem Anwender die Entwicklung jeglicher Anwendung in PHP erleichtern soll; es wird seit 2001 nach streng 
 objektorientierten Kriterien und mittels eines agilen Prozesses haupts"achlich bei 1\&1 hausintern entwickelt,
 ist aber komplett open source und wird unter der \emph{BSD-Lizenz}
 \footnote{Die BSD-Lizenz ist eine sehr liberale Open Source Lizenz, siehe \cite{BSDLICENCE}}
 vertrieben.
-Eine zentrale Motivation f"ur die Entwicklung des XP-Frameworks war das "uberwinden der angesprochenen
-Defizite von PHP 4, so wurde unter anderem ein eigener Exception-Mechanismus, Methoden zum dynamischen
+Eine zentrale Motivation f"ur die Entwicklung des XP-Frameworks war die "Uberwindung der angesprochenen
+Defizite von PHP 4. Daher wurde unter anderem ein eigener Exception-Mechanismus, Methoden zum dynamischen
 Laden und zur Reflektion von Klassen, OO-Mapping von Datenbankzugriffen, sowie Abl"aufe zur sauberen 
-Trennung von Logik und Pr"asentation entwickelt, desweiteren enth"alt XP "Aquivalente zu so gut wie allen Klassen 
-der Java Foundation Classes.
-Durch saubere, an Javadoc \cite{JAVADOC} angelehnte Dokumentation im Sourcecode wird versucht die mangelnde
+Trennung von Logik und Pr"asentation entwickelt. Desweiteren enth"alt XP "Aquivalente zu sehr vielen Java-Standardklassen.
+Durch sorgf"altige, an Javadoc \cite{JAVADOC} angelehnte Dokumentation im Sourcecode wird versucht die mangelnde
 Typisierung in PHP zu "uberwinden, was M"oglichkeiten zur automatischen Generierung von API-Dokumentation und zum
-Beispiel WSDLs \cite{WSDLSPEC} f"ur SOAP er"offnet.
+Beispiel WSDLs\footnote{
+WSDL ist eine Webservicebeschreibungssprache, siehe \cite{WSDLSPEC}}
+f"ur SOAP er"offnet.
+
 Alles in allem erlaubt das XP-Framework die Vorteile von PHP wie kurze Entwicklungszeiten und einfache 
 Programmierung zu nutzen ohne auf die Vorteile der Objektorientierung zu verzichten.
-Viele diese Funktionen setzen allerdings vorraus, dass das ausf"uhrende PHP bestimmte Extensions bereitstellt,
-ohne welche beispielsweise das Transformieren von XML mittels XSL, die FTP- und Mailfunktionalit"at oder auch
+Viele dieser Funktionen setzen allerdings voraus, dass der ausf"uhrende PHP-Interpreter bestimmte Erweiterungen bereitstellt,
+ohne die beispielsweise das Transformieren von XML mittels XSL, die FTP- und Mailfunktionalit"at oder auch
 der Zugriff auf Datenbanken wie MySQL oder Sybase nicht m"oglich w"aren.
-An einer Portierung des Frameworks nach PHP 5 wird zwar schon l"anger gearbeitet, allerdings gestaltet sich dieses 
-aufgrund der ge"anderten Verhaltensweisen der Programmiersprache bez"uglich Referenzen sowie die von den PHP-Entwicklern
+An einer Portierung des Frameworks nach PHP 5 wird zwar schon l"anger gearbeitet, allerdings gestaltet sich dieses Vorhaben
+aufgrund der ge"anderten Verhaltensweisen der Programmiersprache bez"uglich Referenzen sowie der von den Entwicklern der Zend-Engine
 etwas unbedacht eingef"uhrten Exceptions schwierig. Desweiteren werden PHP st"andig neue Standardklassen
 hinzugef"ugt was ob der fehlenden Namensr"aume zu Kollisionen mit Klassen des Frameworks f"uhrt.
-Es existieren fertige, PHP 5 kompatible Versionen aller Basisklassen, zu diesem Zeitpunkt werden neue Anwendungen 
-in PHP 5 entwickelt, viele "altere Applikationen laufen aber weiterhin in PHP 4 und m"ussen auch weiterhin
+Es existieren fertige, PHP 5 kompatible Versionen aller Basisklassen. Zum Zeitpunkt der Erstellung dieses
+Dokumentes werden neue Anwendungen 
+in PHP 5 entwickelt, viele "altere Applikationen laufen aber weiterhin in PHP 4 und m"ussen daher auch weiterhin
 gewartet werden.
 
 
 \section{SOAP}
 \label{sec:background:soap}
-SOAP (urspr"unglich stehend f"ur \emph{\textbf{S}imple \textbf{O}bject \textbf{A}ccess \textbf{P}rotocol})
-ist ein Protokoll welches den Austausch XML-basierter Nachrichten "uber ein Rechnernetzwerk - "ublicherweise
-mittels HTTP - erlaubt. SOAP-Implementierungen sind heute f"ur fast jede Programmiersprache verf"ugbar, so wird es
-ab PHP Version 5 nativ unterst"utzt, und auch innerhalb des XP-Frameworks stehen entsprechende Klassen zur Verf"ugung.
+SOAP stand urspr"unglich f"ur \emph{\textbf{S}imple \textbf{O}bject \textbf{A}ccess \textbf{P}rotocol},
+heute ist SOAP nur noch ein Eigenname.
+SOAP ist ein Protokoll, welches den Austausch XML-basierter Nachrichten "uber ein Rechnernetzwerk - "ublicherweise
+mittels HTTP - erlaubt. SOAP-Implementierungen sind heute f"ur fast jede Programmiersprache verf"ugbar. SOAP wird
+ab PHP Version 5 inh"arent unterst"utzt; auch innerhalb des XP-Frameworks stehen entsprechende Klassen zur Verf"ugung.
 SOAP entstand aus einer Zusammenarbeit von \emph{Dave Winer} und \emph{Microsoft}, im Jahre 2000 schlossen sich 
 weitere Firmen, darunter IBM, der Entwicklungsgruppe an und reichten den Entwurf zu SOAP 1.1 beim 
 \emph{World Wide Web Consortium} (W3C) zur Weiterentwicklung ein, welches 2003 den aktuellen Standard SOAP 1.2

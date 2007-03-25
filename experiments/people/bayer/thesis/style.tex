@@ -23,6 +23,7 @@
 \usepackage{listings}
 \usepackage[flushmargin,hang]{footmisc}
 \usepackage{nomencl}
+\usepackage{footnpag}
 \lstset{language=C++, frame=single, basicstyle=\small,
         captionpos=bl, caption=\lstname}
 
@@ -31,14 +32,13 @@
 %\makenomenclature
 \renewcommand{\nomname}{Glossar}
 \makeglossary
+
 % *************** Add reference to page number at which bibliography entry is cited ***************
 \usepackage{citeref}
 \renewcommand{\bibitempages}[1]{\newblock {\scriptsize [\mbox{zitiert auf S.\ }#1]}}
 
 % *************** own makros ***************
 
-%\newcommand{\ident}[1]{{\texttt{\large{#1}}}}
-\newcommand{\ident}[1]{\emph{#1}}
 
 % *************** Some colour definitions ***************
 \usepackage{color}
