@@ -318,7 +318,37 @@ plattformspezifischen Funktionalit"aten in einer sicheren und kontrollierten Art
 Fehler ab: zwar kann beim Aufruf der Bibliotheksfunktionen kein Fehler mehr begangen werden, allerdings k"onnen sich Programmierfehler innerhalb der
 Bibliothek selbst weiterhin negativ auswirken, und zwar nicht nur auf den nativen Teil der Anwendung, sondern unter Umst"anden sogar auf die JVM selbst.
 
+\begin{floatingtable}{
+\begin{tabular}[tbh]{|l|l|l|}
+\hline
+Java-Typ & Nativer Typ & Beschreibung \\
+\hline\hline
+boolean & jboolean & unsigned 8 bits \\
+byte & jbyte & signed 8 bits \\
+char & jchar & unsigned 16 bits  \\
+short & jshort & signed 16 bits \\
+int & jint & signed 32 bits  \\
+long & jlong &  signed 64 bits \\
+float & jfloat & 32 bits \\
+double & jdouble & 64 bits \\
+void & void & N/A \\
+\hline
+\end{tabular}}
+\caption{Primitive Java-Datentypen und ihre JNI-"Aquivalente, nach \cite{JNIHP}}
+\end{floatingtable}
+
+JNI definiert f"ur alle primitiven Java-Datentypen ein maschinenab-h"angiges "Aquivalent,
+zum besseren Verst"andnis sp"aterer Kapitel wurden in Tabelle 2.1 alle primiten Java-Typen und ihre JNI-"Aquivalente
+aufgef"uhrt. Komplexe Datentypen (auch: Referenztypen) werden auf C-Ebene als Pointer auf Structs repr"asentiert, die "ahnlich
+wie die Java-Klassen zueinander im Verh"altnis stehen.
+Abbildung \ref{fig:jnitypes} zeigt die wichtigsten komplexen Datentypen, ihre JNI-Repr"asentationen sowie deren Zusammenh"ange.
 Mehr Informationen zum JNI sind unter Anderem auf der JNI-Homepage (\cite{JNIHP}), und in dem Buch "'Java Native Interface"' von Sheng Liang (\cite{JNIBOOK}) zu finden.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{intro/img/jnitypes.png}
+\caption{Komplexe Java-Datentypen und ihre JNI-"Aquivalente - nach \cite{JNIHP}}
+\label{fig:jnitypes}
+\end{figure}
 
 
 % ********** End of chapter **********
