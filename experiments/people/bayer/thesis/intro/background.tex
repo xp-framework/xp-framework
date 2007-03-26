@@ -193,73 +193,75 @@ weitere Firmen, darunter IBM, der Entwicklungsgruppe an und reichten den Entwurf
 ver"offentlichte.
 Eine SOAP Nachricht besteht lediglich aus einem \emph{SOAP-Envelope} welcher wiederum ein (optionales) \emph{Header}-Element
 und ein \emph{Body-Element} enth"aelt und verwendete Namesr"aume festlegt \cite{SOAPSPEC}. Die eigentlichen Nutzdaten sind
-im Body-Element untergebracht und m"ussen vom Empf"anger der Nachricht intepretiert werden, w"ahrend im Header-Element Metadaten
-zur Nachricht enthalten sind, welche ebenfalls von den empfangenden Stationen intepretiert werden m"ussen. Diese sehr schmale
+im Body-Element untergebracht und m"ussen vom Empf"anger der Nachricht interpretiert werden, w"ahrend im Header-Element Metadaten
+zur Nachricht enthalten sind, welche ebenfalls von den empfangenden Stationen interpretiert werden m"ussen. Diese sehr weit gefasste
 Spezifikation erlaubt es sehr flexible Anwendungen zu entwickeln, allerdings bringt SOAP auch einige Nachteile mit sich:\\
 Aufgrund der Verwendung von XML zur Kodierung der zu "ubertragenden Informationen vervielfacht sich das "Ubertragungsvolumen
-deutlich - in manchen F"allen um bis zu 125\% - was nicht nur Probleme mit der verwendeten Bandbreite verursacht, sondern auch
+deutlich was nicht nur Probleme mit der verwendeten Bandbreite verursacht, sondern auch
 erhebliche Mengen an Rechenleistung bei der Generierung und Verarbeitung der Nachrichten erfordert. Ein weiterer Kritikpunkt ist
 die mangelhafte und zum Teil sich selbst widersprechende Spezifikation selbst, was unter anderem dazu f"uhrt dass mittels verschiedener
 Software (\emph{tool-chains}) erzeugte SOAP-Services und -Anwendungen nicht ohne h"andisches Eingreiffen des Entwicklers miteinander kommunizieren 
-k"onnen. Um dieses Manko zu beheben wurde eigens die \emph{Web Services Interopability Group} \footnote{
-Die WS-I wird von vielen Unternehmen unterst"utzt die darauf angewiesen sind dass Web-Services plattform- und programmiersprachen"ubergreifend
-funktionieren, weswegen ihre Vorschl"age mittlerweile von weiten Teilen der Industrie als normgebend angesehen werden.
+k"onnen. Um dieses Manko zu beheben wurde eigens die \emph{Web Services Interoperability Group} \footnote{
+Die WS-I wird von vielen Unternehmen unterst"utzt die darauf angewiesen sind, dass Web-Services plattform- und programmiersprachen"ubergreifend
+funktionieren, weswegen ihre Vorschl"age mittlerweile von weiten Teilen der Industrie als normgebend angesehen werden,
 siehe \cite{WSIHP}
 }
-gegr"undet, eine Organisation die versucht den Standard zu standardisieren.
+gegr"undet, eine Organisation, die versucht den Standard zu standardisieren. Allein Existenz einer solchen Organisation zeugt von der
+Mangelhaftigkeit der urspr"unglichen SOAP-Spezifikation.
 Da die Spezifikation keine Aussagen "uber Transaktionalit"at trifft m"usste solches Verhalten - falls gew"unscht - von jeder Applikation selbst
 definiert und vom Benutzer implementiert werden, was dazu f"uhrt dass es in der Praxis unm"oglich ist Anwendungen mittels SOAP zu
-verwirklichen welche Transaktionen ben"otigen w"urden. Auch existiert kein Standard der es erlaubt dynamisch Daten "uber an einem Ort verf"ugbare
-Dienste zu erlangen. Zu diesem Zweck wird meist ein \emph{WSDL}-Dokument \cite{WSDLSPEC} eingesetzt, allerdings wird auch an diesem
-Standard viel Kritik ge"ubt, so spezifiziert er beispielsweise weder wie ein WSDL-Dokument f"ur einen speziellen Dienst zu beziehen ist,
-noch enth"alt ein solches Dokument Informationen die "uber die Syntaktische Beschreibung des Dienstes hinausgehen.
+verwirklichen welche Transaktionen ben"otigen w"urden. Auch ist nicht standardisiert wie dynamisch Daten "uber bei einem Server verf"ugbare
+Dienste erlangt werden k"onnen. Zu diesem Zweck wird meist ein \emph{WSDL}-Dokument \cite{WSDLSPEC} eingesetzt, allerdings wird auch an diesem
+Standard viel Kritik ge"ubt, er beschreibt beispielsweise weder wie ein \emph{WSDL}-Dokument f"ur einen speziellen Dienst zu beziehen ist,
+noch enth"alt ein solches Dokument Informationen, die "uber die syntaktische Beschreibung des Dienstes hinausgehen.
 Ein weiteres SOAP-spezifisches Problem ist,
-dass kein Mechanismus definiert wird "uber welchen Nachrichten aktiv an einen Anwender "ubermittelt werden k"onenn, we\ss halb dieser
-st"andig "uberpr"ufen muss ob neue Daten f"ur ihn anliegen ("'Polling"').
+dass kein Mechanismus definiert wird, "uber welchen Nachrichten aktiv an einen Teilnehmer "ubermittelt werden k"onnen, weshalb dieser
+st"andig "uberpr"ufen muss, ob neue Daten f"ur ihn vorliegen ("'polling"').
 
 \section{XML-RPC}
 \label{sec:background:xmlrpc}
 XML-RPC (vom englischen \textbf{R}emote \textbf{P}rocedure \textbf{C}all) ist ein Vorg"anger von SOAP, und setzt - wie schon
-aus dem Namen hervorgeht - ebenfalls XML zur Kodierung der zu "ubertragenden Daten ein. Im Gegensatz zu den meisten anderen
+aus dem Namen hervorgeht - ebenfalls XML zur Kodierung der zu "ubertragenden Informationen ein. Im Gegensatz zu den meisten anderen
 Sytemen die den Aufruf entfernter Methoden erlauben ist XML-RPC sehr simpel gehalten und definiert nur einige wenige
-Datentypen. Diese sehr schlanke Spezifikation verhindert zwar dass die zu "ubertragenden Nachrichten wie bei SOAP zu sehr 
+Datentypen. Diese sehr schlanke Spezifikation verhindert zwar, dass die zu "ubertragenden Nachrichten wie bei SOAP zu sehr 
 aufgebl"aht werden, allerdings schr"ankt sie auch die m"ogliche Komplexit"at der zu versendenden Strukturen stark ein.
-XML-RPC eignet sich folglich gut um einfache Dienste anzubieten, f"ur komplexe Anwendungen hingegen w"urde man sich eher 
-f"ur eine fortgeschrittenere Technologie entscheiden, nichtsdestotrotz sollte es an dieser Stelle erw"ahnt werden.
+XML-RPC eignet sich folglich gut um einfache Dienste anzubieten. F"ur komplexe Anwendungen hingegen w"urde man sich eher 
+f"ur eine fortgeschrittenere Technologie entscheiden. Nichtsdestotrotz sollte es an dieser Stelle erw"ahnt werden.
 
 \section{Java Enterprise Edition - Java EE}
 \label{sec:background:jboss}
 \label{sec:background:rmi}
-Java EE erweitert den Java Standard unter anderem um Funktionsalit"at, die es dem Entwickler erlaubt verteilte, transaktionsbasierte und
+Java EE erweitert den Java Standard unter anderem um Funktionalit"at, die es dem Entwickler erlaubt verteilte, transaktionsbasierte und
 mehrschichtige (\emph{multitier}) Anwendungen zu entwickeln (siehe auch \cite{JEEHP}). Hierzu spezifiziert Java EE mehrere Komponenten, wie unter anderem
-\emph{Enterprise Java Beans (EJBs)}, \emph{Servlets} und \emph{Java Server Pages (JSPs)}, und APIs sowie klare Schnittstellen zwischen
+\emph{Enterprise Java Beans (EJBs)}, \emph{Servlets} und \emph{Java Server Pages (JSPs)} und APIs sowie klare Schnittstellen zwischen
 diesen Komponenten. EJBs im besonderen sind standardisierte Komponenten innerhalb einer Java EE Architektur, mit denen verschiedene
-Dienste umgesetzt werden, die für die Gesch"aftslogik einer Anwendung notwendig sind. EJBs existieren in verschiedenen Auspr"agungen, die
-verschiedene Klassen von Anwendungsf"allen abdecken sollen:\\
+Dienste umgesetzt werden, die f"ur die Gesch"aftslogik einer Anwendung notwendig sind. EJBs existieren in verschiedenen Auspr"agungen, die
+verschiedene Klassen von Anwendungsf"allen abdecken:
 \begin{description}
-\item{Session Bean} - Session Beans bilden Vorg"ange ab, insbesondere solche die der Nutzer an einem System vornimmt. Session Beans
-    implementieren immer ein Service-Interface "uber dessen Methoden der Benutzer mit dem System interagieren kann. 
-    Man unterscheidet zustandslose (stateless) und zustandsbehaftete (stateful) Session Beans, eine Stateful Session Bean kann -
-    im Gegensatz zu einer zustandslosen Session Bean - Daten "uber mehrere Aufrufe hinweg speichern, wobei diese Daten immer
-    einem bestimmten Nutzer zugewiesen bleiben.
-\item{Message Driven Bean} - Message Driven Beans erm"oglichen eine asynchrone Kommunikation innerhalb eines Java EE Systems, indem
+\item{\textbf{Session Bean}} - Session Beans bilden Vorg"ange ab, insbesondere solche die der Nutzer an einem System durchf"uhrt. Session Beans
+    implementieren immer ein Service-Interface, "uber dessen Methoden der Benutzer mit dem System interagieren kann. 
+    Man unterscheidet zustandslose (stateless) und zustandsbehaftete (stateful) Session Beans. Eine Stateful Session Bean kann -
+    im Gegensatz zu einer Stateless Session Bean - Daten "uber mehrere Aufrufe hinweg speichern, wobei diese Daten immer
+    einem bestimmten Nutzer zugeordnet bleiben.
+\item{\textbf{Message Driven Bean}} - Message Driven Beans erm"oglichen eine asynchrone Kommunikation innerhalb eines Java EE Systems, indem
     sie auf JMS\footnote{Java Message Service, API von Sun zum Austausch von Nachrichten zwischen zwei oder mehr Clients, siehe\cite{JMSHP}}
-    -Nachrichten die in bestimmten Warteschlangen vorgehalten werden reagieren.
-\item{Entity Bean} - Entity Beans bilden die persistenten Daten, beispielsweise Felder einer Datenbank, innerhalb eines Systems ab, und
+    -Nachrichten, die in bestimmten Warteschlangen vorgehalten werden, reagieren.
+\item{\textbf{Entity Bean}} - Entity Beans bilden die persistenten Daten, beispielsweise Felder einer Datenbank, innerhalb eines Systems ab und
     bieten Methoden diese Daten aufzufinden, zu ver"andern und wieder abzuspeichern. In der neuesten EJB-Spezifikation\footnote{
-    EJB 3.0 Specifications, siehe \cite{EJBHP}} nehmen Entity Beans eine weitaus weniger wichtige Bedeutung ein, da die Datenpersistenz nun
-    mittels ganz normaler Java-Objekte (POJOs), deren Persistenzeigenschaften vom sogenannten \emph{EntityManager} gesteuert werden, abgebildet wird.
+    EJB 3.0 Specifications, siehe \cite{EJBHP}} kommt Entity Beans eine weitaus weniger wichtige Bedeutung zu, da die Datenpersistenz nun
+    mittels ganz normaler Java-Objekte (POJOs), deren Persistenzeigenschaften vom sogenannten \emph{EntityManager} realisiert werden, abgebildet wird.
     Die Entity Bean als Datentransferobjekt wird somit nicht mehr ben"otigt.
 \end{description}
 Diese Technologien ben"otigen einen sogenannten \emph{Java Application Server} welcher die n"otige Infrastruktur
 f"ur Sicherheit, Transaktionsmanagement, Kommunikation und vielem mehr unabh"angig von Betriebssystem, Netzwerk- und Rechnerarchitektur
-bereitstellt. Der Application Server ist in mehrere Module (sogenannte \emph{Container}) unterteilt welche als Laufzeitumgebungen f"ur einzelne
+bereitstellt. Der Application Server ist in mehrere Module (sogenannte \emph{Container}) unterteilt, welche als Laufzeitumgebungen f"ur einzelne
 Komponenten fungieren - so werden zum Beispiel EJBs im EJB-Container ausgef"uhrt. Zum Aufruf von Methoden entfernter Objekte bietet Java 
 RMI (\textbf{R}emote \textbf{M}ethod \textbf{I}nvocation) an, was entweder "uber ein eigenes Protokoll oder aber "uber IIOP gefahren werden kann.
-RMI ist ein bin"ares Protokoll was den Overhead den es erzeugt klein h"alt, ausserdem bietet es Transaktionssicherheit. RMI eignet sich deswegen besser f"ur 
-komplexe Anwendungen bei denen auch die Antwortzeit eine Rolle spielt. RMI hat sich auch innerhalb der 1\&1 als bevorzugtes Protokoll 
-etabliert um Dienste miteinander zu verkn"upfen, leider existiert keine PHP-Implementierung, und die Komplexit"at und die bin"are Natur des
-Protokolls machen es fast unm"oglich eine solche selbst zu entwickeln.
+RMI ist ein bin"ares Protokoll, was den erzeugten Overhead im Vergleich mit SOAP erheblich reduziert.
+Ausserdem bietet RMI Transaktionssicherheit. RMI eignet sich deswegen besser f"ur 
+komplexe Anwendungen, bei denen auch die Antwortzeit eine Rolle spielt. RMI hat sich auch innerhalb der 1\&1 als bevorzugtes Protokoll 
+etabliert um Dienste miteinander zu verkn"upfen. Leider existiert keine PHP-Implementierung, und die Komplexit"at und die bin"are Natur des
+Protokolls machen eine Eigenentwicklung einer solchen Implementierung fast unm"oglich.
 
 
 \section{Enterprise Application Server Connectivity - EASC}
@@ -269,23 +271,23 @@ EASC ist eine haupts"achlich von Christian Gellweiler im Rahmen einer Diplomarbe
 Daten und Anweisungen "uber ein generisches Protokoll erh"alt."' \cite{EASC}\\
 Dieser Proxy kommuniziert mit dem innerhalb des J2EE-Application-Servers ausgef"uhrten sogenannten \emph{EASC Service-MBean} mittels
 eines speziellen Protokolls, welches die Serialisierung und "Ubertragung von Daten und Objekten erlaubt.
-Die Erzeugung der Proxyklassen ("'Stub"') "ubernimmt ein spezielles Programm welches es dem Entwickler erlaubt aus einer in Java geschriebenen
-Remote Interface Klasse des aufzurufenden Enterprise Beans eine "aquivalente PHP Klasse zu erzeugen.
-Wird nun innerhalb von PHP eine Methode des Stubs aufgerufen serialisiert dieser diesen Aufruf und "ubermittelt diesen mittels des EASC-Protokolls
-an das MBean. Das MBean deserialisiert diesn, und t"atigt nun die seinerseits n"otigen RMI Aufrufe.
-Gegenrichtung werden R"uckgabewerte und Fehlermeldungen - wiederum "uber besagtes Protokoll - zur"uckgeliefert.
-EASC erlaubt es also einer komplett in PHP geschriebenen Anwendung auf J2EE-Dienste zuzugreiffen welche andernfalls nur
+Die Erzeugung der Proxyklassen ("'Stub"') "ubernimmt ein spezielles Programm, welches es dem Entwickler erlaubt aus einer in Java geschriebenen
+Remote Interface Klasse des aufzurufenden Enterprise Beans eine "aquivalente PHP-Klasse zu erzeugen.
+Wird innerhalb von PHP eine Methode des Stubs aufgerufen, so serialisiert dieser diesen Aufruf und "ubermittelt diesen mittels des EASC-Protokolls
+an die MBean. Die MBean deserialisiert diesen, und t"atigt die seinerseits n"otigen RMI Aufrufe.
+In der Gegenrichtung werden R"uckgabewerte und Fehlermeldungen - wiederum "uber besagtes Protokoll - zur"uckgeliefert.
+EASC erlaubt es also einer komplett in PHP geschriebenen Anwendung auf J2EE-Dienste zuzugreifen, welche andernfalls nur
 erreichbar w"aren w"urde diese Anwendung selbst in einer solcher Umgebung ausgef"uhrt. Allerdings bietet EASC keine M"oglichkeit
-selbst Dienste in PHP zu entwickeln die ihrerseits aus einer J2EE-Umgebung mittels RMI aufgerufen werden k"onnen.
+selbst Dienste in PHP zu entwickeln, die ihrerseits aus einer J2EE-Umgebung mittels RMI aufgerufen werden k"onnen.
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{intro/img/easc.png}
-\caption{EASC Funktionsweise - nach \cite{EASC}}
+\caption{EASC-Funktionsweise - nach \cite{EASC}}
 \label{fig:easc}
 \end{figure}
 
 \section{php/Java bridge und die Java-Extension}
 \label{sec:background:bridge}
-Die php/Java bridge ist ein XML-basiertes Netzwerkprotokoll das benutzt werden kann um einen PHP-Interpreter mit einer laufenden Java Virtual Machine
+Die php/Java bridge ist ein XML-basiertes Netzwerkprotokoll, das benutzt werden kann um einen PHP-Interpreter mit einer laufenden Java Virtual Machine
 zu verbinden.
 Die Java-Extension ist eine PHP-Extension\footnote{PHP-Erweiterung, siehe \ref{sec:background:php}} die dieses Protokoll benutzt um aus PHP heraus
 in der JVM Objekte zu erzeugen, und die dann Stubs dieser Objekte in PHP verf"ugbar macht, was es dem PHP-Anwender erlaubt auf diesen Objekten
@@ -299,24 +301,24 @@ N"aheres zur php/Java bridge findet man unter \cite{BRIDGEHP}.
 \label{sec:background:JNI}
 
 Java-Programme erreichen ihre Plattformunabh"angigkeit vorrangig dadurch, dass sie eine virtuelle Maschine (\emph{Java Virtual Machine - JVM}) vorraussetzen in welcher sie
-ausgef"uhrt werden. Diese virtuelle Maschine verhindert allerdings auch dass beispielsweise plattformspezifische Funktionen oder vorhandene, nicht in Java
+ausgef"uhrt werden. Diese virtuelle Maschine verhindert allerdings zun"achst, dass beispielsweise plattformspezifische Funktionen oder vorhandene, nicht in Java
 geschriebene Programmbibliotheken aus Java heraus angesprochen werden k"onnen.
 Um dies zu umgehen bietet Java dem Entwickler mit dem JNI eine standardisierte M"oglichkeit zur Laufzeit betriebssystemspezifische Bibliotheken 
-(.dll unter Windows, .so unter unixoiden Betriebssystemen) einzubinden und Funktionen beziehungsweise Methoden welche diese bereitstellen aufzurufen. 
-JNI erm"oglicht nicht nur den Aufruf solcher Methoden aus Java heraus, sondern auch Aufrufe von Java Methoden aus der eingebundenen Bibliothek. 
-Native Funktionen werden in einer eigenen .c oder .cpp (C oder C++) Datei implementiert, wobei C++ eine etwas "'sauberere"' Schnittstelle mit dem JNI erlaubt.
-Um aus Java heraus eine native Methode aufzurufen muss diese im Javaquelltext als \emph{native} deklariert werden. Aus der kompilierten Java-Klasse kann
+(.dll unter Windows, .so unter unixoiden Betriebssystemen) einzubinden und Funktionen beziehungsweise Methoden, welche diese bereitstellen, aufzurufen. 
+JNI erm"oglicht nicht nur den Aufruf solcher Methoden aus Java heraus, sondern auch Aufrufe von Java-Methoden aus der eingebundenen Bibliothek heraus.
+Native Funktionen werden in einer eigenen .c oder .cpp (C oder C++) Datei implementiert, wobei C++ eine etwas sauberere Verbindung mit dem JNI erlaubt.
+Um aus Java heraus eine native Methode aufzurufen, muss diese im Javaquelltext als \texttt{native} deklariert werden. Aus der kompilierten Java-Klasse kann
 mittels des Werkzeuges \emph{javah} eine Headerdatei erstellt werden, die die n"otige Funktionsdeklaration enth"alt. Mit Hilfe dieser Headerdatei kann
 nun die native Programmbilbiothek entwickelt werden.
 In der Java-Anwendung muss vor dem Aufruf der nativen Methode die entsprechende Programmbibliothek mittels \emph{System.loadLibray} geladen werden.
 
-JNI wird unter anderem f"ur performance-kritische Zwecke (zum Beispiel in Grafikanwendungen) eingesetzt, allerdings setzen auch viele im Java Standard enthaltene
-Klassen - wie beispielsweise jene die f"ur die Audioausgabe oder f"ur Dateizugriffe zust"andig sind - JNI Implementierungen vorraus um auf diese
-plattformspezifischen Funktionalit"aten in einer sicheren und kontrollierten Art und Weise zuzugreiffen. Leider sichert JNI den Anwender nicht gegen s"amtliche m"oglichen
+JNI wird unter anderem f"ur performance-kritische Zwecke (zum Beispiel in Grafikanwendungen) eingesetzt. Allerdings setzen auch viele im Java-Standard enthaltene
+Klassen - wie beispielsweise jene, die f"ur die Audioausgabe oder f"ur Dateizugriffe zust"andig sind - JNI Implementierungen vorraus um auf diese
+plattformspezifischen Funktionalit"aten in einer sicheren und kontrollierten Art und Weise zuzugreifen. Leider sichert JNI den Anwender nicht gegen s"amtliche m"oglichen
 Fehler ab: zwar kann beim Aufruf der Bibliotheksfunktionen kein Fehler mehr begangen werden, allerdings k"onnen sich Programmierfehler innerhalb der
 Bibliothek selbst weiterhin negativ auswirken, und zwar nicht nur auf den nativen Teil der Anwendung, sondern unter Umst"anden sogar auf die JVM selbst.
 
-Mehr Informationen zum JNI sind zu finden unter der JNI-Homepage (\cite{JNIHP}), und in dem hervorragenden Buch "'Java Native Interface"' von Sheng Liang (\cite{JNIBOOK}).
+Mehr Informationen zum JNI sind unter Anderem auf der JNI-Homepage (\cite{JNIHP}), und in dem Buch "'Java Native Interface"' von Sheng Liang (\cite{JNIBOOK}) zu finden.
 
 
 % ********** End of chapter **********
