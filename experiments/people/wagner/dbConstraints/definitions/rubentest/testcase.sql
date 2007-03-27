@@ -64,15 +64,27 @@ DROP TABLE IF EXISTS `color`;
 CREATE TABLE `color` (
   `color_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `colortype` varchar(255) NOT NULL,
-  PRIMARY KEY (`color_id`),
-  KEY `colortype` (`colortype`)
+  `colortype_id` int(11) NOT NULL ,
+  PRIMARY KEY (`color_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=5;
 
-INSERT INTO `color` VALUES (1, 'lightgreen', 'green');
-INSERT INTO `color` VALUES (2, 'darkgreen',  'green');
-INSERT INTO `color` VALUES (3, 'lightgray',  'gray');
-INSERT INTO `color` VALUES (4, 'brown',      'brown');
+INSERT INTO `color` VALUES (1, 'lightgreen', 1);
+INSERT INTO `color` VALUES (2, 'darkgreen',  1);
+INSERT INTO `color` VALUES (3, 'lightgray',  2);
+INSERT INTO `color` VALUES (4, 'brown',      3);
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `colortype`;
+CREATE TABLE `colortype` (
+  `colortype_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`colortype_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
+
+INSERT INTO `colortype` VALUES (1, 'green');
+INSERT INTO `colortype` VALUES (2, 'gray');
+INSERT INTO `colortype` VALUES (3, 'brown');
 
 -- --------------------------------------------------------
 
@@ -80,13 +92,13 @@ DROP TABLE IF EXISTS `texture`;
 CREATE TABLE `texture` (
   `texture_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `colortype` varchar(255) NOT NULL,
+  `color_id` int(11) NOT NULL,
   PRIMARY KEY (`texture_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=4;
 
-INSERT INTO `texture` VALUES (1, 'street', 'gray');
-INSERT INTO `texture` VALUES (2, 'gras',   'green');
-INSERT INTO `texture` VALUES (3, 'castle', 'brown');
+INSERT INTO `texture` VALUES (1, 'street', 3);
+INSERT INTO `texture` VALUES (2, 'gras',   2);
+INSERT INTO `texture` VALUES (3, 'castle', 4);
 
 -- --------------------------------------------------------
 
@@ -134,7 +146,12 @@ ALTER TABLE `mappoint`
   ON UPDATE CASCADE;
 
 ALTER TABLE `texture`
-  ADD CONSTRAINT `color_of_texture` FOREIGN KEY (`colortype`) REFERENCES `color` (`colortype`)
+  ADD CONSTRAINT `color_for_texture` FOREIGN KEY (`color_id`) REFERENCES `color` (`color_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE `color`
+  ADD CONSTRAINT `colortype_for_color` FOREIGN KEY (`colortype_id`) REFERENCES `colortype` (`colortype_id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 

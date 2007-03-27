@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table color, database Ruben_Test_PS
-   * (Auto-generated on Thu, 22 Mar 2007 18:02:07 +0100 by ruben)
+   * (Auto-generated on Tue, 27 Mar 2007 18:08:00 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -16,7 +16,7 @@
     public
       $color_id           = 0,
       $name               = '',
-      $colortype          = '';
+      $colortype_id       = 0;
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -27,7 +27,7 @@
         $peer->setTypes(array(
           'color_id'            => array('%d', FieldType::INT, FALSE),
           'name'                => array('%s', FieldType::VARCHAR, FALSE),
-          'colortype'           => array('%s', FieldType::VARCHAR, FALSE)
+          'colortype_id'        => array('%d', FieldType::INT, FALSE)
         ));
       }
     }  
@@ -54,14 +54,14 @@
     }
 
     /**
-     * Gets an instance of this object by index "colortype"
+     * Gets an instance of this object by index "colortype_for_color"
      * 
-     * @param   string colortype
+     * @param   int colortype_id
      * @return  de.schlund.db.rubentest.RubentestColor[] entities object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public static function getByColortype($colortype) {
-      return self::getPeer()->doSelect(new Criteria(array('colortype', $colortype, EQUAL)));
+    public static function getByColortype_id($colortype_id) {
+      return self::getPeer()->doSelect(new Criteria(array('colortype_id', $colortype_id, EQUAL)));
     }
 
     /**
@@ -103,53 +103,70 @@
     }
 
     /**
-     * Retrieves colortype
+     * Retrieves colortype_id
      *
-     * @return  string
+     * @return  int
      */
-    public function getColortype() {
-      return $this->colortype;
+    public function getColortype_id() {
+      return $this->colortype_id;
     }
       
     /**
-     * Sets colortype
+     * Sets colortype_id
      *
-     * @param   string colortype
-     * @return  string the previous value
+     * @param   int colortype_id
+     * @return  int the previous value
      */
-    public function setColortype($colortype) {
-      return $this->_change('colortype', $colortype);
+    public function setColortype_id($colortype_id) {
+      return $this->_change('colortype_id', $colortype_id);
+    }
+
+    /**
+     * Retrieves the Colortype entity
+     * referenced by colortype_id=>colortype_id
+     *
+     * @return  de.schlund.db.rubentest.RubentestColortype entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getColortype() {
+      $r= XPClass::forName('de.schlund.db.rubentest.RubentestColortype')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('colortype_id', $this->getColortype_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
     }
 
     /**
      * Retrieves an array of all Texture entities referencing
-     * this entity by colortype=>colortype
+     * this entity by color_id=>color_id
      *
      * @return  de.schlund.db.rubentest.RubentestTexture[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getTextureColortypeList() {
+    public function getTextureColorList() {
       return XPClass::forName('de.schlund.db.rubentest.RubentestTexture')
         ->getMethod('getPeer')
         ->invoke()
         ->doSelect(new Criteria(
-          array('colortype', $this->getColortype(), EQUAL)
+          array('color_id', $this->getColor_id(), EQUAL)
       ));
     }
 
     /**
      * Retrieves an iterator for all Texture entities referencing
-     * this entity by colortype=>colortype
+     * this entity by color_id=>color_id
      *
      * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestTexture>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getTextureColortypeIterator() {
+    public function getTextureColorIterator() {
       return XPClass::forName('de.schlund.db.rubentest.RubentestTexture')
         ->getMethod('getPeer')
         ->invoke()
         ->iteratorFor(new Criteria(
-          array('colortype', $this->getColortype(), EQUAL)
+          array('color_id', $this->getColor_id(), EQUAL)
       ));
     }
   }
