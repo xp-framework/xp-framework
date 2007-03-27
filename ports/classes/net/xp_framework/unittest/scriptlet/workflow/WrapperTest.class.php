@@ -264,5 +264,20 @@
       ));
       $this->assertFormError('shirt_qty', 'scriptlet.xml.workflow.checkers.IntegerRangeChecker.toosmall');
     }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function multipleMalformedValues() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => '@',
+        'shirt_qty'  => -1
+      ));
+      $this->assertFormError('shirt_size', 'scriptlet.xml.workflow.checkers.OptionChecker.invalidoption');
+      $this->assertFormError('shirt_qty', 'scriptlet.xml.workflow.checkers.IntegerRangeChecker.toosmall');
+    }
   }
 ?>
