@@ -6,7 +6,10 @@
 
   uses(
     'unittest.TestCase',
-    'scriptlet.xml.workflow.Wrapper'
+    'scriptlet.xml.workflow.Wrapper',
+    'scriptlet.xml.workflow.Handler',
+    'scriptlet.xml.workflow.Context',
+    'scriptlet.xml.XMLScriptletRequest'
   );
 
   /**
@@ -79,6 +82,64 @@
         $this->wrapper->setValue('orderdate', $d);
         $this->assertEquals($d, $this->wrapper->getValue('orderdate'));
       }
+    }
+    
+    /**
+     * Helper method to simulate form submission
+     *
+     */
+    protected function loadFromRequest($params= array()) {
+      $r= new XMLScriptletRequest();
+      
+      foreach ($params as $key => $value) {
+        $r->setParam($key, $value);
+      }
+
+      $this->handler= newinstance('Handler', array(), '{}');
+      $this->wrapper->load($r, $this->handler);
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function defaultValueUsedForMissingValue() {
+      $this->loadFromRequest();
+      $this->assertEquals(
+        $this->wrapper->getParamInfo('orderdate', PARAM_DEFAULT), 
+        $this->wrapper->getValue('orderdate')
+      );
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function defaultValueUsedForEmptyValue() {
+      $this->loadFromRequest(array(
+        'orderdate' => ''
+      ));
+      $this->assertEquals(
+        $this->wrapper->getParamInfo('orderdate', PARAM_DEFAULT), 
+        $this->wrapper->getValue('orderdate')
+      );
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function valueUsed() {
+      $this->loadFromRequest(array(
+        'orderdate' => '1977-12-14'
+      ));
+      $this->assertEquals(
+        new Date('1977-12-14'),
+        $this->wrapper->getValue('orderdate')
+      );
     }
   }
 ?>
