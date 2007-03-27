@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Fri, 23 Mar 2007 10:14:13 +0100 by ruben)
+   * (Auto-generated on Tue, 27 Mar 2007 17:55:32 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -86,7 +86,7 @@
      * Gets an instance of this object by index "person_id"
      * 
      * @param   int person_id
-     * @return  de.schlund.db.rubentest.RubentestJob[] entities object
+     * @return  de.schlund.db.rubentest.RubentestJob[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByPerson_id($person_id) {

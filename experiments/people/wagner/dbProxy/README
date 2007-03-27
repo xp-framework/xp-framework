@@ -13,5 +13,8 @@ meaning:
 
 the entity object is filled at least when a property ist requested that is not knowen yet
 
+  $c1= RubentestColor::getByColor_id(1);
+  $c1->getColor_id();    <-- no select, because id has been passed for initalization
+  $c1->getName();        <-- here the select is done because name is not knowen yet
 
 <EOF>

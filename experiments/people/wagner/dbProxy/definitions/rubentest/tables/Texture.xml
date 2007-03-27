@@ -1,4 +1,4 @@
-<document created_at="Fri, 23 Mar 2007 10:14:13 +0100" created_by="ruben">
+<document created_at="Tue, 27 Mar 2007 17:55:32 +0200" created_by="ruben">
   <table
    name="texture"
    dbhost="localhost"
@@ -22,10 +22,10 @@
      nullable="false"
     />
     <attribute
-     name="colortype"
-     type="DB_ATTRTYPE_VARCHAR"
+     name="color_id"
+     type="DB_ATTRTYPE_INT"
      identity="false"
-     typename="string"
+     typename="int"
      nullable="false"
     />
     <index
@@ -36,15 +36,15 @@
       <key>texture_id</key>
     </index>
     <index
-     name="color_of_texture"
+     name="color_for_texture"
      unique="false"
      primary="false"
     >    
-      <key>colortype</key>
+      <key>color_id</key>
     </index>
-    <constraint name="color_of_texture">    
-      <reference table="color" role="Colortype">      
-        <key attribute="colortype" sourceattribute="colortype"/>
+    <constraint name="color_for_texture">    
+      <reference table="color" role="Color">      
+        <key attribute="color_id" sourceattribute="color_id"/>
       </reference>
     </constraint>
   </table>

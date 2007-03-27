@@ -1,14 +1,14 @@
 <document created_at="Tue, 27 Mar 2007 17:55:32 +0200" created_by="ruben">
   <table
-   name="person"
+   name="colortype"
    dbhost="localhost"
    database="Ruben_Test_PS"
    dbtype="mysql"
-   class="RubentestPerson"
+   class="RubentestColortype"
    package="de.schlund.db.rubentest"
   >  
     <attribute
-     name="person_id"
+     name="colortype_id"
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
@@ -26,7 +26,7 @@
      unique="true"
      primary="true"
     >    
-      <key>person_id</key>
+      <key>colortype_id</key>
     </index>
   </table>
 </document>

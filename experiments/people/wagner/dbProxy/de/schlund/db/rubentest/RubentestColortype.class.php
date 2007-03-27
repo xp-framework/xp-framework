@@ -7,12 +7,12 @@
   uses('rdbms.DataSet');
 
   /**
-   * Class wrapper for table person, database Ruben_Test_PS
+   * Class wrapper for table colortype, database Ruben_Test_PS
    * (Auto-generated on Tue, 27 Mar 2007 17:55:32 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class RubentestPerson extends DataSet {
+  class RubentestColortype extends DataSet {
 
     protected
       $_isLoaded= false,
@@ -20,12 +20,12 @@
 
     static function __static() { 
       with ($peer= self::getPeer()); {
-        $peer->setTable('Ruben_Test_PS.person');
+        $peer->setTable('Ruben_Test_PS.colortype');
         $peer->setConnection('localhost');
-        $peer->setIdentity('person_id');
-        $peer->setPrimary(array('person_id'));
+        $peer->setIdentity('colortype_id');
+        $peer->setPrimary(array('colortype_id'));
         $peer->setTypes(array(
-          'person_id'           => array('%d', FieldType::INT, FALSE),
+          'colortype_id'        => array('%d', FieldType::INT, FALSE),
           'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
       }
@@ -68,34 +68,34 @@
     /**
      * Gets an instance of this object by index "PRIMARY"
      * 
-     * @param   int person_id
-     * @return  de.schlund.db.rubentest.RubentestPerson entitiy object
+     * @param   int colortype_id
+     * @return  de.schlund.db.rubentest.RubentestColortype entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public static function getByPerson_id($person_id) {
+    public static function getByColortype_id($colortype_id) {
       return new self(array(
-        'person_id'  => $person_id,
-        '_loadCrit' => new Criteria(array('person_id', $person_id, EQUAL))
+        'colortype_id'  => $colortype_id,
+        '_loadCrit' => new Criteria(array('colortype_id', $colortype_id, EQUAL))
       ));
     }
 
     /**
-     * Retrieves person_id
+     * Retrieves colortype_id
      *
      * @return  int
      */
-    public function getPerson_id() {
-      return $this->person_id;
+    public function getColortype_id() {
+      return $this->colortype_id;
     }
       
     /**
-     * Sets person_id
+     * Sets colortype_id
      *
-     * @param   int person_id
+     * @param   int colortype_id
      * @return  int the previous value
      */
-    public function setPerson_id($person_id) {
-      return $this->_change('person_id', $person_id);
+    public function setColortype_id($colortype_id) {
+      return $this->_change('colortype_id', $colortype_id);
     }
 
     /**
@@ -118,52 +118,35 @@
     }
 
     /**
-     * Retrieves an array of all Job entities referencing
-     * this entity by person_id=>person_id
+     * Retrieves an array of all Color entities referencing
+     * this entity by colortype_id=>colortype_id
      *
-     * @return  de.schlund.db.rubentest.RubentestJob[] entities
+     * @return  de.schlund.db.rubentest.RubentestColor[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getJobPersonList() {
-      return XPClass::forName('de.schlund.db.rubentest.RubentestJob')
+    public function getColorColortypeList() {
+      return XPClass::forName('de.schlund.db.rubentest.RubentestColor')
         ->getMethod('getPeer')
         ->invoke()
         ->doSelect(new Criteria(
-          array('person_id', $this->getPerson_id(), EQUAL)
+          array('colortype_id', $this->getColortype_id(), EQUAL)
       ));
     }
 
     /**
-     * Retrieves an iterator for all Job entities referencing
-     * this entity by person_id=>person_id
+     * Retrieves an iterator for all Color entities referencing
+     * this entity by colortype_id=>colortype_id
      *
-     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestJob>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.RubentestColor>
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function getJobPersonIterator() {
-      return XPClass::forName('de.schlund.db.rubentest.RubentestJob')
+    public function getColorColortypeIterator() {
+      return XPClass::forName('de.schlund.db.rubentest.RubentestColor')
         ->getMethod('getPeer')
         ->invoke()
         ->iteratorFor(new Criteria(
-          array('person_id', $this->getPerson_id(), EQUAL)
+          array('colortype_id', $this->getColortype_id(), EQUAL)
       ));
-    }
-
-    /**
-     * Retrieves the Toilette entity referencing
-     * this entity by person_id=>person_id
-     *
-     * @return  de.schlund.db.rubentest.RubentestToilette entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getToilettePerson() {
-      $r= XPClass::forName('de.schlund.db.rubentest.RubentestToilette')
-        ->getMethod('getPeer')
-        ->invoke()
-        ->doSelect(new Criteria(
-          array('person_id', $this->getPerson_id(), EQUAL)
-      ));
-      return $r ? $r[0] : NULL;
     }
   }
 ?>
