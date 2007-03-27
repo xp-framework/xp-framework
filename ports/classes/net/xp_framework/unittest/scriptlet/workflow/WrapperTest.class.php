@@ -294,7 +294,7 @@
      * Test the load() method
      *
      */
-    #[@test, @ignore('Returns an array with an empty string inside instead of an empty array')]
+    #[@test]
     public function missingValueForMultipleSelection() {
       $this->loadFromRequest(array(
         'orderdate'  => '',
