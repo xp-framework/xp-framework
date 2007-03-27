@@ -31,6 +31,7 @@ Eindruck der JSR 223 API zu erhalten. Also wurde im Package \texttt{samples} ein
 Liste wird dann mittels \texttt{System.out.println()} ausgegeben. 
 Nachdem dem Makefile ein Target namens "'list"' hinzugef"ugt wurde, ergab ein erstes Ausf"uhren dieser Klasse
 zum einen keine Fehler, und zweitens dass dem JDK 6 mit \emph{Mozilla Rhino} bereits eine ScriptEngine beiliegt:
+
 \begin{lstlisting}[caption=erste Tests]
 # make list
 found 1 available ScriptEngines:
@@ -49,6 +50,7 @@ aus einem "ubergebenen java.io.Reader eine Zeichenkette erstellt, die dann als S
 werden kann. Auf diese Weise kann der Anwender beispielsweise leicht seinen PHP-Quelltext in Dateien
 verwalten, ohne jedesmal eigens einen Java-String erzeugen zu m"ussen.
 Wurde nun die EngineList ausgef"uhrt stellte sich heraus, dass der ScriptEngineManager die neue ScriptEngine schon erkannte:
+
 \begin{lstlisting}[caption=Neue ScriptEngine]
 # make list
 found 2 available ScriptEngines:
@@ -89,12 +91,14 @@ Eigehendere Tests unter Zuhilfenahme der \texttt{ScriptExec} Klasse, die ein Skr
 ausliest und an die ScriptEngine weitergibt f"orderten allerdings einen gravierenden Nachteil von zend\_eval\_string
 zutage: Sobald als Parameter "'retval\_ptr"' nicht mehr \texttt{NULL} "ubergeben wird, wird nicht mehr das komplette
 Skript, sondern nur noch die erste Zuweisung innerhalb des Quelltextes ausgef"uhrt. Wurde dieses Skript
+
 \begin{lstlisting}[caption=Testscript f"ur zend\_eval\_string()]
 $var = "Test";
 for ($i=0; $i<10; $i++) {
     printf("Hello %s\n", $var);
 }
 \end{lstlisting}
+
 mit retval\_ptr == NULL ausgef"uhrt, so wurde wie erwartet der Text "'Hello Test"' zehnfach auf der Konsole
 ausgegeben. "Ubergab man allerdings einen Pointer auf ein valides zval-Struct so wurde nichts mehr ausgegeben,
 und jener Struct enthielt als Wert den String "'Test"', und zus"atzlilch gab zend\_eval\_string einen Fehlercode
@@ -165,7 +169,10 @@ sind um eine solche interne Klasse zu erstellen:
 Um der Zend-Engine eine Klasse unterzuschieben muss zun"achst ein C-Struct definiert werden das neben einem Struct von Typ
 \texttt{zend\_object} namens \texttt{std} beliebige weitere Daten enthalten kann. Dieses Struct wird f"ur jede Instanz der Klasse
 vorgehalten. Weiterhin wird ein Array vom Typ \texttt{function\_entry[]} ben"otigt, welches die Callbacks - im wesentlichen Funktionspointer
-auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Im Gegensatz zu im Userland - in PHP also - implementierten
+auf C-Funktionen - f"ur verschiedene Ereignisse auf dem Objekt enthalten. Im Gegensatz zu im Userland\footnote{
+Als Userland bezeichnet man im Allgemeinen den Bereich den der Anwender beeinflussen kann. Bei PHP umfasst er alles, was der Benutzer
+implementieren kann: Klassen, Funktionen, Methoden und Variablen.
+} implementierten
 Methoden werden diese \emph{built-in functions} genannt.
 Besonders erw"ahnenswert sind hier die Funktionen f"ur 
 \texttt{\_\_call}, \texttt{\_\_get} und \texttt{\_\_set}, \texttt{\_\_call} wird bei jedem Methodenaufruf aufgerufen, und erh"alt neben dem
@@ -208,9 +215,11 @@ Variablen m"uessen im Scope einer Funktion oder Methode mittels des Schl"usselwo
 hingegen sind immer und von "uberall erreichbar. Der Name, unter dem das TurpitudeEnvironment dort eingef"ugt wird ist in der ScriptEngine
 mittels der Methoden \texttt{setVarName()} und \texttt{getVarName()} konfigurierbar. Ein \texttt{var\_dump(\$\_SERVER)} zeigte, dass das
 injizieren und initialisieren der Klasse funktioniert hatte.
+
 \begin{lstlisting}[caption=TurpitudeEnvironment in \$\_SERVER einf"ugen]
 $_SERVER["TURP_ENV"] = new TurpitudeEnvironment();
 \end{lstlisting}
+
 In allen Turpitude-Klassen wird hierzu in der Callback-Methoda \texttt{\_\_call} der 
 Methodenname ausgelesen, der sich in \texttt{argv} and der Stelle [0] befindet. Ausserdem wird stets ein Pointer auf die zweite Stelle
 von \texttt{argv}, sowie ein Integer der um eins kleiner ist als \texttt{argc}, an die die eigentlichen
@@ -222,6 +231,7 @@ gefunden wird mittels des Makros \texttt{php\_error} ein PHP-Laufzeitfehler erze
 \texttt{turpitude\_error\_cb} als \texttt{PHPEvalException} an die JVM weitergeleitet werden stellen sie ein probates Mittel zum Abbruch
 der PHP-Programmausf"uhrung dar, und k"onnen gefahrlos eingesetzt werden. 
 Diese Gefahrlosigkeit r"uhrt daher, dass Turpitude alle Aufrufe von Zend-Funktionen durch einen speziellen Try-Catch Block einschliesst:
+
 \begin{lstlisting}[caption=Zend Try-Catch Block]
 zend_first_try {
     // Aufrufe
@@ -229,6 +239,7 @@ zend_first_try {
     // Fehlerbehandlung
 } zend_end_try();
 \end{lstlisting}
+
 Ohne diese Zeilen w"urden schwerwiegende PHP-Fehler einen sofortigen Abbruch des laufenden Prozesses durch den C-Systemaufruf
 \texttt{\_exit} mit dem Fehlercode 255 zur Folge haben, was in diesem Falle nicht nur den PHP-Interpreter, sondern auch die gesamte 
 einbettende Java Virtual Machine beenden w"urde. Im Catch-Block findet die Fehlerbehandlung statt, im Normalfall wird hier eine
@@ -251,12 +262,14 @@ tats"achlich Attribute (den Klassennamen) enthalten soll, muss die Zend-HashTabl
 Dies geschieht mittels der Zend-Funktion \texttt{object\_init\_ex}, die neben einem zval-Pointer den class\_entry entgegennimmt.
 Nachdem im entsprechenden \texttt{object\_struct} die jclass gesetzt wurde konnte schlussendlich "uber die Funktion \texttt{zend\_hash\_update} 
 der Klassenname in die HashTable eingef"ugt werden. Ein var\_dump einer solchen Klasse sah nun wie folgt aus:
+
 \begin{lstlisting}[caption=Dump einer TurpitudeJavaClass]
 object(TurpitudeJavaClass)#4 (1) {
   ["ClassName"]=>
     string(16) "java/lang/String"
 }
 \end{lstlisting}
+
 Um aus Klassen Objekte erzeugen zu k"onnen muss ein Konstruktor aufgerufen werden. Konstruktoren werden im JNI wie ganz normale Methoden
 behandelt, nur dass der Methodenname stets \texttt{$<$init$>$} ist. Um mittels JNI eine Methode aufrufen zu k"onnen muss diese zuerst in
 Form einer Variablen des Types \texttt{jmethodID} vorhanden sein, die wiederum mit der JNI-Umgebung und einer \texttt{jclass} erzeugt werden kann.
@@ -295,6 +308,7 @@ Um aus einem jobject eine Instanz der Klasse
 TurpitudeJavaObject zu konstruieren wird es, zusammen mit der zugeh"origen Klasse - sowohl die jclass als auch die TurpitudeJavaClass - an die Funktion 
 \texttt{make\_turpitude\_jobject\_instance} "ubergeben, in der die eigentliche Instanz angelegt und die Turpitude-Klasse als Attribut "'Class"' hinzugef"ugt wird. 
 Eine so erzeugte Repr"asentation eines Java-Objektes vom Typ java.util.Date sieht f"ur den PHP-Anwender wie folgt aus:
+
 \begin{lstlisting}[caption=Dump eines TurpitudeJavaObject]
 object(TurpitudeJavaObject)#6 (1) {
   ["Class"]=>
@@ -327,6 +341,7 @@ Methode zu finden die den Namen der in PHP aufgerufenen Methode tr"agt, und die 
 eine Instanz von TurpitudeJavaMethod erzeugt und an Stelle des Signaturstrings in das Argumentenarray geschrieben. Nun muss nur noch die Funktion aufgerufen
 werden die auch die mittels \texttt{javaInvoke} aufgerufenen Methoden abhandelt. Folglich kann die Java-Methode \texttt{toString()} der Klasse \texttt{java.util.Date}
 auf diese beiden Arten aufgerufen werden:
+
 \begin{lstlisting}[caption=Zwei Arten die gleiche Methode aufzurufen]
 $method = $class->findMethod('toString', '()Ljava/lang/String;');
 $string = $date->javaInvoke($method);
@@ -421,11 +436,13 @@ beschreibt dieser Parameter offensichtlich das Objekt, auf dem die Funktion aufg
 zu einem Funktionsaufruf.
 
 F"ur den Java-Entwickler stellt sich das Aufrufen von Funktionen und Methoden also wie folgt dar:
+
 \begin{lstlisting}[caption=Aufrufen von PHP-Funktionen und -Methoden]
 Invocable inv = (Invocable)engine.compile(/* PHP-Source */);
 Object phpobj = inv.invokeFunction("foo", "function call");
 Object retval = inv.invokeMethod(phpobj, "bar", "method call");
 \end{lstlisting}
+
 Zun"achst muss nat"urlich PHP-Quelltext zu einem PHPCompiledScript "ubersetzt, und dieses dann auf Invocable gecastet werden. Dann wird die PHP-Funktion "'foo"'
 aufgerufen, und ihr ein String als einziges Argument "ubergeben. Diese Funktion gibt in diesem Fall ein PHPObject zur"uck, auf welchem in der letzten Zeile
 die Methode "'bar"', wieder mit einem String als einzigem Argument, aufgerufen wird.
@@ -490,12 +507,14 @@ bestimmten Schl"usselwert ein Eintrag vorhanden ist. Die zu implementierenden Me
 Klasse "ubergebene Funktionsarray eingetragen. Die Implementierung von \texttt{offsetUnset} erwies sich als trivial, da aus einem Java-Array keine
 Zeilen gel"oscht werden k"onnen, es wird also lediglich ein PHP-Laufzeitfehler geworfen. Aufrufe von \texttt{offsetGet} und \texttt{offsetSet} werden lediglich
 an die bereits implementierten Methoden \texttt{get} und \texttt{set} weitergereicht. 
+
 \begin{lstlisting}[caption=Zugriff auf ein Java-Array]
 $array = $instance->getStringArray('()[Ljava/lang/String;');
 $length = $array->getLength();
 $val = $array->get(0);
 $array[0] = 'Wert';
 \end{lstlisting}
+
 Um dem PHP-Anwender den Umgang mit Java-Arrays weiter zu vereinfachen wurde beschlossen ein weiteres PHP-interne Interface zu implementieren, \texttt{IteratorAggregate}.
 Dieses Interface beschreibt eine einzige Methode, \texttt{getIterator}, allerdings muss sie ein Objekt zur"uckgeben, das das PHP-Interface \texttt{Iterator} implementiert.
 Ist dies der Fall kann der Anwender nicht nur mittels der \texttt{Iterator}-Methoden auf dem Array arbeiten, sondern auch mit dem \texttt{foreach}-Operator. Nachdem
@@ -507,6 +526,7 @@ gerade aktuellen Index in das Array speichert. \texttt{rewind} setzt diesen Inde
 genau dann \texttt{true} zur"uck wenn der Index gr"o\ss er als 0 und kleiner als die Anzahl der Elemente des Arrays ist. \texttt{key} gibt den aktuellen Index, \texttt{current}
 das aktuelle Array-Element zur"uck, wozu einfach die \texttt{get}-Methode des entsprechenden Arrays aufgerufen wird. Hiernach konnte also in PHP folgenderma\ss en "uber Java-Arrays
 iteriert werden:
+
 \begin{lstlisting}[caption=Iterieren "uber ein Java-Array]
 $iterator = $array->getIterator();
 while ($iterator->valid()) {
@@ -516,6 +536,7 @@ while ($iterator->valid()) {
     $iterator->next();
 }
 \end{lstlisting}
+
 Laut Zend-Dokumentation sollte es eigentlich so sein, dass man "uber alle Objekte die entweder \texttt{Iterator} oder \texttt{IteratorAggregate} implementieren zus"atzlich mit
 dem \texttt{foreach}-Operator itererieren k"onnen sollte. Dies stimmt wohl auch f"ur im Userland geschriebene Klassen, allerdings verursachte der Versuch auf diese Weise
 "uber \texttt{TurpitudeJavaArray} oder \texttt{TurpitudeJavaArrayIterator} Objekte lediglich Abst"urze und Fehlermeldungen. Nach langem lesen von Zend-Quelltext
@@ -525,6 +546,7 @@ einem Pointer auf ein weiteres Struct, welches die Iteratorfunktionen enthalten 
 Benutzer umgeht, sondern zus"atzlich noch Funktionen die die Zend-Engine benutzt um mit \texttt{foreach} "uber die Objekte zu iterieren. Nachdem sowohl die interne
 \texttt{get\_iterator} Funktion als auch die internen Iteratorfunktionen, die fast eins-zu-eins Kopien der bereits implementierten Iteratormethoden sind - geschrieben waren
 konnte nun auch mit dem \texttt{foreach}-Operator auf Java-Arrays zugegriffen werden:
+
 \begin{lstlisting}[caption=Java-Array und foreach]
 $iterator = $array->getIterator();
 foreach ($iterator as $key => $val) {
@@ -568,17 +590,21 @@ dem Objekt auf dem die Methode aufgerufen werden soll noch die zu "ubergebenden 
 
 Nun konnten Java-Methodenaufrufe in PHP auf die "Ubergabe der genauen Signatur verzichten, und es konnten auch Methoden aufgerufen
 werden die in "ubergeordneten Klassen definiert wurden:
+
 \begin{lstlisting}[caption=Verbesserter Aufruf einer Java-Methode]
 $date = $obj->getDate();
 $string = $date->toString();
 \end{lstlisting}
+
 Allerdings brachte diese Art des Methodenaufrufes auch Nachteile mit sich, die zum Teil mit der Reflection-API von Java,
 und zum Teil mit Turpitude selbst zusammenh"angen. So werden beispielsweise Methodenargumente immer gem"a\ss  der Tabelle
 \ref{tab:phptojava} konvertiert, was bei simplen Datentypen wie \texttt{int} und \texttt{float} unter Umst"anden zu Problemen f"uhren
 kann, weil keine passende Methode gefunden wird. Beispielsweise f"uhrt folgender Code:
+
 \begin{lstlisting}[caption=Typkonversionsfehler]
 $date = $obj->setIntval(5);
 \end{lstlisting}
+
 zu einem Fehler, da der PHP-Wert (5) in einen java.lang.Long konvertiert wird, die Methode aber einen Integer erwartet.
 Auch ist es so nur m"oglich "offentliche (\texttt{public}) Methoden aufzurufen,
 bei privaten Methoden wirf \texttt{Method.invoke()} eine Exception.
@@ -609,10 +635,12 @@ Die involvierten PHP-Variablen, beim
 schreibenden Zugriff der zu schreibende Wert, beim lesenden Zugriff der ausgelesene Wert, werden wie immer nach den Tabellen
 \ref{tab:phptojava} und \ref{tab:javatophp} konvertiert. Treten beim Zugriff Fehler auf, so wird die Ausf"uhrung des PHP-Codes abgebrochen
 und ein entsprechender Fehler als Java-Exception geworfen. Nun konnte auf die Felder eines Java-Objektes wie folgt zugegriffen werden:
+
 \begin{lstlisting}[caption=Verbesserter Zugriff auf Java-Attribute]
 $obj->stringval = 'wert';
 $str = $obj->stringval;
 \end{lstlisting}
+
 Im Zuge dieser Verbesserung wurde auch der direkte Zugriff auf statische Attribute von Java-Klassen erm"oglicht, indem die
 Callbacks \texttt{\_\_get} und \texttt{\_\_set} in der TurpitudeJavaClass entsprechend implementiert wurden, sie unterscheiden sich
 von den Callbacks des TurpitudeJavaObject lediglich darin, dass sie beim ReflectHelper die entsprechenden Methoden
