@@ -197,6 +197,8 @@
         // handler's values, if it is passed behind the scenes).
         if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_PASSBEHIND) {
           $value= (array)$handler->getValue($name, '');
+        } else if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
+          $value= (array)$request->getParam($name, array());
         } else {
           $value= (array)$request->getParam($name, '');
         }
@@ -261,6 +263,7 @@
         
         // If we get here, the parameter is validated. Copy the value into
         // the values hash which is publicly accessible.
+        reset($value);
         if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
           $this->values[$name]= $value;
         } else if (isset($value[key($value)])) {
