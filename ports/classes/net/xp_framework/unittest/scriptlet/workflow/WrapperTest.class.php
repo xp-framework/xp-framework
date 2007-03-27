@@ -55,6 +55,16 @@
         array('scriptlet.xml.workflow.checkers.NumericChecker'),
         array('scriptlet.xml.workflow.checkers.IntegerRangeChecker', 1, 10)
       );
+      $this->wrapper->registerParamInfo(
+        'notify_me',
+        OCCURRENCE_OPTIONAL | OCCURRENCE_MULTIPLE,
+        array(),
+        NULL,
+        NULL,
+        NULL,
+        'core:string',
+        array('process', 'send')
+      );
     }
     
     /**
@@ -64,7 +74,7 @@
     #[@test]
     public function getParamNames() {
       $this->assertEquals(
-        array('orderdate', 'shirt_size', 'shirt_qty'), 
+        array('orderdate', 'shirt_size', 'shirt_qty', 'notify_me'), 
         $this->wrapper->getParamNames()
       );
     }
@@ -221,7 +231,7 @@
         'orderdate'  => '',
         'shirt_qty'  => 1
       ));
-      $this->assertTrue($this->handler->errorsOccured());
+      $this->assertFormError('shirt_size', 'missing');
     }
 
     /**
@@ -234,7 +244,7 @@
         'orderdate'  => '',
         'shirt_size' => 'S',
       ));
-      $this->assertTrue($this->handler->errorsOccured());
+      $this->assertFormError('shirt_qty', 'missing');
     }
     
     /**
@@ -278,6 +288,69 @@
       ));
       $this->assertFormError('shirt_size', 'scriptlet.xml.workflow.checkers.OptionChecker.invalidoption');
       $this->assertFormError('shirt_qty', 'scriptlet.xml.workflow.checkers.IntegerRangeChecker.toosmall');
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test, @ignore('Returns an array with an empty string inside instead of an empty array')]
+    public function missingValueForMultipleSelection() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(), $this->wrapper->getValue('notify_me'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function emptyValueForMultipleSelection() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array()
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(), $this->wrapper->getValue('notify_me'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function valueForMultipleSelection() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array('send'), $this->wrapper->getValue('notify_me'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function valuesForMultipleSelection() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send', 'process')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array('send', 'process'), $this->wrapper->getValue('notify_me'));
     }
   }
 ?>
