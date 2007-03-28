@@ -206,6 +206,15 @@
     public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
+
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.AnonymousPeer
+     */
+    public static function getAnonymousPeer() {
+      return AnonymousPeer::forName(__CLASS__);
+    }
   </xsl:text>
 
   <!-- Create a static method for indexes -->

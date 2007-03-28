@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Tue, 27 Mar 2007 12:51:35 +0200 by ruben)
+   * (Auto-generated on Wed, 28 Mar 2007 17:23:26 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -66,6 +66,15 @@
      */
     public static function getPeer() {
       return Peer::forName(__CLASS__);
+    }
+
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.AnonymousPeer
+     */
+    public static function getAnonymousPeer() {
+      return AnonymousPeer::forName(__CLASS__);
     }
   
     /**
