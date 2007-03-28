@@ -60,7 +60,7 @@
   $crits['projectionList']= new Criteria();
   $crits['projectionList']->setProjection(
     Projections::projectionList()
-    ->add(Projections::property("person_id"))
+    ->add(Projections::property("person_id", 'id'))
     ->add(Projections::property("name"))
   );
 
