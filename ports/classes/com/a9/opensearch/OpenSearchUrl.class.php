@@ -17,6 +17,17 @@
       $template   = '';
 
     /**
+     * Constructor
+     *
+     * @param   string type default '' content type
+     * @param   string template default ''
+     */
+    public function __construct($type= '', $template= '') {
+      $this->type= $type;
+      $this->template= $template;
+    }
+
+    /**
      * Set type
      *
      * @param   string type
