@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('com.a9.opensearch.OpenSearchUrl');
+  uses('com.a9.opensearch.OpenSearchUrl', 'lang.Collection');
 
   /**
    * XML wrapper type
@@ -113,7 +113,7 @@
      * Add url
      *
      * @param   com.a9.opensearch.OpenSearchUrl url
-     * @return  com.a9.opensearch.OpenSearchUrl the addedc url
+     * @return  com.a9.opensearch.OpenSearchUrl the added url
      */
     #[@xmlmapping(element= 's:Url', class= 'com.a9.opensearch.OpenSearchUrl')]
     public function addUrl($url) {
