@@ -130,7 +130,7 @@
      *
      * @return  string
      */
-    #[@xmlfactory(element= 's:ShortName')]
+    #[@xmlfactory(element= 's:Contact')]
     public function getContact() {
       return $this->contact;
     }
