@@ -527,7 +527,7 @@ Index: ../ports/classes/net/xp_framework/unittest/DateTest.class.php
 -      $this->assertTrue($this->nowDate->isAfter(Date::fromString('yesterday')));
 -      $this->assertTrue($this->nowDate->isBefore(Date::fromString('tomorrow')));
 +      $this->assertEquals($this->nowDate->toString('r'), gmdate('r', $this->nowTime));
-+      $this->assertEquals($this->nowDate->format('%c'), gmstrftime('%c', $this->nowTime));
++      $this->assertEquals($this->nowDate->format('%Y-%m-%d %H:%M:%S'), gmstrftime('%Y-%m-%d %H:%M:%S', $this->nowTime));
 +      $this->assertTrue($this->nowDate->isAfter(DateUtil::addDays($this->nowDate, -1)));
 +      $this->assertTrue($this->nowDate->isBefore(DateUtil::addDays($this->nowDate, 1)));
      }
