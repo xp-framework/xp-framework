@@ -27,6 +27,11 @@
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
   
+  $crits['count']= new Criteria();
+  $crits['count']->setProjection(
+    Projections::count()
+  );
+  
   $crits['average']= new Criteria();
   $crits['average']->setProjection(
     Projections::average("person_id")

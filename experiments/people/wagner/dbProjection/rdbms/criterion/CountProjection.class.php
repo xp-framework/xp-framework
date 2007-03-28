@@ -3,24 +3,24 @@
  *
  * $Id$ 
  */
- uses('rdbms.criterion.Projection');
+ uses('rdbms.criterion.SimpleProjection');
 
   /**
    * belongs to the Criterion API
    *
    */
-  class CountProjection extends Projection {
+  class CountProjection extends SimpleProjection {
     
-    public
-      $field= '';
-
     /**
      * constructor
      *
-     * @param  string fieldname
+     * @param  string fieldname optional default is *
+     * @param  string command form constlist
+     * @param  string alias optional
      */
-    public function __construct($field= '*') {
+    public function __construct($field= '*', $alias= '') {
       $this->field= $field;
+      $this->alias= $alias;
     }
 
     /**
@@ -30,8 +30,10 @@
      * @return  string
      */
     public function toSQL($db) {
-      if ('*' == $this->field) return $db->prepare('count(%c) as count', $this->field);
-      return $db->prepare('count(%c) as count_%c', $this->field, $this->field);
+      $command= ('*' == $this->field)       ? 'count(*)' : $db->prepare('count(%c)', $this->field);
+      $alias=   ('*' == $this->field)       ? 'count'    : $db->prepare('count_%c',  $this->field);
+      $alias=   (0 == strlen($this->alias)) ? $alias     : $db->prepare('%c',        $this->alias);
+      return $command.' as '.$alias;
     }
   }
 ?>

@@ -11,7 +11,7 @@
    */
   class ProjectionList extends Projection {
 
-    public
+    protected
       $projections= array();
 
     /**

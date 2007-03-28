@@ -4,12 +4,8 @@
  * $Id$ 
  */
  uses('rdbms.criterion.CountProjection');
- uses('rdbms.criterion.AverageProjection');
- uses('rdbms.criterion.PropertyProjection');
- uses('rdbms.criterion.MinProjection');
- uses('rdbms.criterion.MaxProjection');
- uses('rdbms.criterion.SumProjection');
  uses('rdbms.criterion.ProjectionList');
+ uses('rdbms.criterion.SimpleProjection');
 
   /**
    * belongs to the Criterion API
@@ -28,63 +24,69 @@
     }
     
     /**
-     * manufactor a new PropertyProjection
+     * manufactor a new CountProjection
      *
-     * @param  string fieldname
-     * @return  rdbms.criterion.PropertyProjection
+     * @param  string fieldname optional default is *
+     * @param  string alias optional
+     * @return  rdbms.criterion.CountProjection
      */
-    public static function property($field) {
-      return new PropertyProjection($field);
+    public static function count($field= '*', $alias= '') {
+      return new CountProjection($field, $alias);
     }
     
     /**
-     * manufactor a new CountProjection
+     * manufactor a new PropertyProjection
      *
      * @param  string fieldname
-     * @return  rdbms.criterion.CountProjection
+     * @param  string alias optional
+     * @return  rdbms.criterion.PropertyProjection
      */
-    public static function count($field) {
-      return new CountProjection($field);
+    public static function property($field, $alias= '') {
+      return new SimpleProjection($field, PROP, $alias);
     }
     
     /**
      * manufactor a new AverageProjection
      *
      * @param  string fieldname
+     * @param  string alias optional
      * @return  rdbms.criterion.AverageProjection
      */
-    public static function average($field) {
-      return new AverageProjection($field);
+    public static function average($field, $alias= '') {
+      return new SimpleProjection($field, AVG, $alias);
     }
     
     /**
      * manufactor a new SumProjection
      *
      * @param  string fieldname
+     * @param  string alias optional
      * @return  rdbms.criterion.SumProjection
      */
-    public static function sum($field) {
-      return new SumProjection($field);
+    public static function sum($field, $alias= '') {
+      return new SimpleProjection($field, SUM, $alias);
     }
     
     /**
      * manufactor a new MaxProjection
      *
      * @param  string fieldname
+     * @param  string alias optional
      * @return  rdbms.criterion.MaxProjection
      */
-    public static function max($field) {
-      return new MaxProjection($field);
+    public static function max($field, $alias= '') {
+      return new SimpleProjection($field, MAX, $alias);
     }
     
     /**
      * manufactor a new MinProjection
      *
      * @param  string fieldname
+     * @param  string alias optional
      * @return  rdbms.criterion.MinProjection
      */
-    public static function min($field) {
-      return new MinProjection($field);
+    public static function min($field, $alias= '') {
+      return new SimpleProjection($field, MIN, $alias);
     }
     
   }
