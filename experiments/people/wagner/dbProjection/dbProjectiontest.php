@@ -46,7 +46,7 @@
   $crits['sum']->setProjection(
     Projections::sum("person_id")
   );
-  
+
   $crits['property']= new Criteria();
   $crits['property']->setProjection(
     Projections::property("name")
@@ -61,8 +61,14 @@
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    $l= RubentestPerson::getPeer()->doSelect($crit);
+    $l= RubentestPerson::getAnonymousPeer()->doSelect($crit, 1);
     var_dump($l);
+  }
+
+  foreach ($crits as $name => $crit) {
+    echo "\n$name:\n";
+    $l= RubentestPerson::getAnonymousPeer()->iteratorFor($crit);
+    var_dump($l->next());
   }
 
 ?>

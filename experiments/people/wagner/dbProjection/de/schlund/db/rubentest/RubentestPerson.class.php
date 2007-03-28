@@ -66,6 +66,15 @@
     }
   
     /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.AnonymousPeer
+     */
+    public static function getAnonymousPeer() {
+      return AnonymousPeer::forName(__CLASS__);
+    }
+  
+    /**
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int person_id
