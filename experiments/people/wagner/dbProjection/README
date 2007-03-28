@@ -1,0 +1,54 @@
+criteria projectiuons experiment
+========================================================================
+$Id$
+
+==========================
+extends class generator
+and (../)dbConstraint extension
+
+
+==========================
+meaning:
+--------
+
+the resultset of a query can be projected to only some propertys or functions like sum, min, max, avg, count
+
+// projection to the function avg
+  $crits['average']= new Criteria();
+  $crits['average']->setProjection(
+    Projections::average("person_id")
+  );
+
+// projection to the function max
+  $crits['max']= new Criteria();
+  $crits['max']->setProjection(
+    Projections::max("person_id")
+  );
+  
+// projection to the function min
+  $crits['min']= new Criteria();
+  $crits['min']->setProjection(
+    Projections::min("person_id")
+  );
+  
+// projection to the function sum
+  $crits['sum']= new Criteria();
+  $crits['sum']->setProjection(
+    Projections::sum("person_id")
+  );
+  
+// projection to the property name
+  $crits['property']= new Criteria();
+  $crits['property']->setProjection(
+    Projections::property("name")
+  );
+  
+// projection to the a set of properties
+  $crits['projectionList']= new Criteria();
+  $crits['projectionList']->setProjection(
+    Projections::projectionList()
+    ->add(Projections::property("person_id"))
+    ->add(Projections::property("name"))
+  );
+
+<EOF>
