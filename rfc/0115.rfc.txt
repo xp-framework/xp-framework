@@ -1,0 +1,55 @@
+RFC 0115: Make Date objects represent an instance in time
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Mar 28 16:33:54     2007
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+The Date class will be changed to also hold the timezone offset, thus
+making it a representation of an instance in time rather than a certain
+date and time.
+
+
+Rationale
+---------
+Problems with timezone conversions.
+
+
+Functionality
+-------------
+
+This statement is now true:
+<?php
+  $this->assertEquals(
+    new Date('01.01.2000 00:00:00', '+0100'),   // Berlin
+    new Date('31.12.1999 23:00:00', '+0000')    // London
+  );
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
