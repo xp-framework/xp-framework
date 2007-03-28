@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('com.a9.opensearch.OpenSearchUrl', 'lang.Collection');
+  uses(
+    'com.a9.opensearch.OpenSearchUrl', 
+    'com.a9.opensearch.OpenSearchImage', 
+    'lang.Collection'
+  );
 
   /**
    * XML wrapper type
@@ -15,11 +19,13 @@
   #[@xmlns(s= 'http://a9.com/-/spec/opensearch/1.1/')]
   class OpenSearchDescription extends Object {
     protected
-      $shortName    = '',
-      $description  = '',
-      $tags         = '',
-      $contact      = '',
-      $urls         = array();
+      $shortName    = NULL,
+      $longName     = NULL,
+      $description  = NULL,
+      $tags         = NULL,
+      $contact      = NULL,
+      $image        = NULL,
+      $urls         = NULL;
 
     /**
      * Constructor
@@ -47,6 +53,26 @@
     #[@xmlfactory(element= 's:ShortName')]
     public function getShortName() {
       return $this->shortName;
+    }
+
+    /**
+     * Set longName
+     *
+     * @param   string longName
+     */
+    #[@xmlmapping(element= 's:LongName')]
+    public function setLongName($longName) {
+      $this->longName= $longName;
+    }
+
+    /**
+     * Get longName
+     *
+     * @return  string
+     */
+    #[@xmlfactory(element= 's:LongName')]
+    public function getLongName() {
+      return $this->longName;
     }
 
     /**
@@ -107,6 +133,26 @@
     #[@xmlfactory(element= 's:ShortName')]
     public function getContact() {
       return $this->contact;
+    }
+
+    /**
+     * Set Image
+     *
+     * @param   com.a9.opensearch.OpenSearchImage image
+     */
+    #[@xmlmapping(element= 's:Image', class= 'com.a9.opensearch.OpenSearchImage')]
+    public function setImage($image) {
+      $this->image= $image;
+    }
+
+    /**
+     * Get Image
+     *
+     * @return  com.a9.opensearch.OpenSearchImage
+     */
+    #[@xmlfactory(element= 's:Image')]
+    public function getImage() {
+      return $this->image;
     }
 
     /**
