@@ -162,35 +162,35 @@
     //     Constructor to avoid magic __call invokation
     public function __construct() {
       if (NULL !== @xp::$registry['null']) {
-        throw(new IllegalAccessException('Cannot create new instances of xp::null()'));
+        throw new IllegalAccessException('Cannot create new instances of xp::null()');
       }
     }
     
     // {{{ public void __clone(void)
     //     Clone interceptor
     public function __clone() {
-      throw(new NullPointerException('Object cloning intercepted.'));
+      throw new NullPointerException('Object cloning intercepted.');
     }
     // }}}
     
     // {{{ magic mixed __call(string name, mixed[] args)
     //     Call proxy
     function __call($name, $args) {
-      throw(new NullPointerException('Method.invokation('.$name.')'));
+      throw new NullPointerException('Method.invokation('.$name.')');
     }
     // }}}
 
     // {{{ magic void __set(string name, mixed value)
     //     Set proxy
     function __set($name, $value) {
-      throw(new NullPointerException('Property.write('.$name.')'));
+      throw new NullPointerException('Property.write('.$name.')');
     }
     // }}}
 
     // {{{ magic mixed __get(string name)
     //     Set proxy
     function __get($name) {
-      throw(new NullPointerException('Property.read('.$name.')'));
+      throw new NullPointerException('Property.read('.$name.')');
     }
     // }}}
   }
