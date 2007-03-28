@@ -70,6 +70,13 @@
       $class= XPClass::forName($classname);
       $instance= $class->newInstance();
 
+      // Namespace handling
+      if ($class->hasAnnotation('xmlns')) {
+        foreach ($class->getAnnotation('xmlns') as $prefix => $url) {
+          $xpath->context->registerNamespace($prefix, $url);
+        }
+      }
+
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlmapping', 'element')) continue;
 
