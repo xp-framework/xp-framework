@@ -9,7 +9,8 @@
     'com.a9.opensearch.OpenSearchImage', 
     'com.a9.opensearch.OpenSearchQuery',
     'com.a9.opensearch.SyndicationRight', 
-    'lang.Collection'
+    'lang.Collection',
+    'lang.types.ArrayList'
   );
 
   /**
@@ -31,7 +32,8 @@
       $image            = NULL,
       $urls             = NULL,
       $queries          = NULL,
-      $syndicationRight = SyndicationRight::IS_OPEN;
+      $syndicationRight = SyndicationRight::IS_OPEN,
+      $languages        = array('*');
 
     /**
      * Constructor
@@ -141,6 +143,35 @@
     #[@xmlfactory(element= 's:SyndicationRight')]
     public function getSyndicationRight() {
       return $this->syndicationRight;
+    }
+
+    /**
+     * Add language
+     *
+     * @param   string language
+     */
+    #[@xmlmapping(element= 's:Language')]
+    public function addLanguage($language) {
+      $this->languages[$language]= TRUE;
+    }
+
+    /**
+     * Set languages
+     *
+     * @return  lang.types.ArrayList<string> languages
+     */
+    public function setLanguages(ArrayList $languages) {
+      $this->languages= array_flip($languages->values);
+    }
+
+    /**
+     * Get languages
+     *
+     * @return  lang.types.ArrayList<string>
+     */
+    #[@xmlfactory(element= 's:Language')]
+    public function getLanguages() {
+      return new ArrayList(array_values($this->languages));
     }
 
     /**
