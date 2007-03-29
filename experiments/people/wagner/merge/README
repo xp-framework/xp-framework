@@ -1,0 +1,15 @@
+dba classmapping experiment
+========================================================================
+$Id$
+
+==========================
+extends class generator
+extends experiment dbConstraints
+extends experiment dbProjection
+extends experiment dbProxy
+
+
+==========================
+a merge from all experiments
+
+<EOF>
