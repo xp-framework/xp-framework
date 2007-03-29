@@ -32,6 +32,9 @@
       $image            = NULL,
       $urls             = NULL,
       $queries          = NULL,
+      $adultContent     = FALSE,
+      $inputEncoding    = NULL,
+      $outputEncoding   = NULL,
       $syndicationRight = SyndicationRight::IS_OPEN,
       $languages        = array('*');
 
@@ -269,7 +272,7 @@
      *
      * @return  lang.Collection<com.a9.opensearch.OpenSearchQuery>
      */
-    #[@xmlfactory(element= 's:query')]
+    #[@xmlfactory(element= 's:Query')]
     public function getQueries() {
       return $this->queries;
     }
@@ -309,6 +312,79 @@
      */
     public function hasQueries() {
       return !$this->queries->isEmpty();
+    }
+
+    /**
+     * Set adultContent
+     *
+     * @param   mixed adultContent either a string or a boolean
+     */
+    #[@xmlmapping(element= 's:AdultContent')]
+    public function setAdultContent($adultContent) {
+      if (is_string($adultContent)) {
+        $this->adultContent= !in_array($adultContent, array('false', '0', 'no'));
+      } else {
+        $this->adultContent= (bool)$adultContent;
+      }
+    }
+
+    /**
+     * Get adultContent
+     *
+     * @return  string
+     */
+    #[@xmlfactory(element= 's:AdultContent')]
+    public function getAdultContent() {
+      return $this->adultContent ? 'true' : 'false';
+    }
+
+    /**
+     * Get adultContent
+     *
+     * @return  bool
+     */
+    public function isAdultContent() {
+      return $this->adultContent;
+    }
+
+    /**
+     * Set inputEncoding
+     *
+     * @param   lang.Object inputEncoding
+     */
+    #[@xmlmapping(element= 's:InputEncoding')]
+    public function setInputEncoding($inputEncoding) {
+      $this->inputEncoding= $inputEncoding;
+    }
+
+    /**
+     * Get inputEncoding
+     *
+     * @return  lang.Object
+     */
+    #[@xmlfactory(element= 's:InputEncoding')]
+    public function getInputEncoding() {
+      return $this->inputEncoding;
+    }
+
+    /**
+     * Set outputEncoding
+     *
+     * @param   lang.Object outputEncoding
+     */
+    #[@xmlmapping(element= 's:OutputEncoding')]
+    public function setOutputEncoding($outputEncoding) {
+      $this->outputEncoding= $outputEncoding;
+    }
+
+    /**
+     * Get outputEncoding
+     *
+     * @return  lang.Object
+     */
+    #[@xmlfactory(element= 's:OutputEncoding')]
+    public function getOutputEncoding() {
+      return $this->outputEncoding;
     }
 
     /**
