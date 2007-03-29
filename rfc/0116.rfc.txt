@@ -34,6 +34,10 @@ Current layout
   +- classes      - Ports classes, separated by TLD
   |
   +- dist         - Projects realized in XP
+  |
+  +- xpi          - XP Installer
+  |
+  +- xpt          - Unittest UI
 </pre>
 
 New layout
@@ -48,7 +52,12 @@ New layout
   +- technologies - Core technologies, e.g. xpinstall, EASC, ...
   |
   +- packages     - Package documentation
+  |
+  +- unittest     - Unittest suite
 </pre>
+
+The "xpt" directory will be replaced by the unittest directory.
+The "xpi" directory will be moved to env/bin/install, see the following:
 
 
 The "technologies" directory
