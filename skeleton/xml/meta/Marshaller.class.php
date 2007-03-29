@@ -42,6 +42,14 @@
      * @param   &xml.Node node
      */
     protected static function recurse($instance, $class, $node) {
+    
+      // Namespace handling
+      if ($class->hasAnnotation('xmlns')) {
+        foreach ($class->getAnnotation('xmlns') as $prefix => $url) {
+          $node->setAttribute('xmlns:'.$prefix, $url);
+        }
+      }
+
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlfactory', 'element')) continue;
         
@@ -85,6 +93,10 @@
           foreach ($result->values() as $value) {
             self::recurse($value, $elementClass, $node->addChild(new Node($element)));
           }
+        } else if (is('lang.types.ArrayList', $result)) {
+          foreach ($result->values as $value) {
+            $node->addChild(new Node($element, $value));
+          }
         } else if (is('lang.Generic', $result)) {
           self::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
         }
@@ -109,6 +121,8 @@
         $prefix= $qname->prefix ? $qname->prefix : $qname->localpart{0};
         $tree->root->setName($prefix.':'.$qname->localpart);
         $tree->root->setAttribute('xmlns:'.$prefix, $qname->namespace);
+      } else if ($class->hasAnnotation('xmlns')) {
+        $tree->root->setName(key($class->getAnnotation('xmlns')).':'.get_class($instance));
       } else {
         $tree->root->setName(strtolower(get_class($instance)));
       }
