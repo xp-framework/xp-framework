@@ -64,15 +64,17 @@
     ->add(Projections::property("name"))
   );
 
+  $crits['plain']= new Criteria();
+
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    $l= RubentestPerson::getAnonymousPeer()->doSelect($crit, 1);
+    $l= RubentestPerson::getPeer()->doSelect($crit, 1);
     var_dump($l);
   }
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    $l= RubentestPerson::getAnonymousPeer()->iteratorFor($crit);
+    $l= RubentestPerson::getPeer()->iteratorFor($crit);
     var_dump($l->next());
   }
 

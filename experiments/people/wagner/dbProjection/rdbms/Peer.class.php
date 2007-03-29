@@ -4,7 +4,11 @@
  * $Id: Peer.class.php 9322 2007-01-17 15:18:22Z kiesel $ 
  */
 
-  uses('rdbms.ResultIterator', 'rdbms.ConnectionManager');
+  uses(
+    'rdbms.ResultIterator',
+    'rdbms.ConnectionManager',
+    'rdbms.Record'
+  );
 
   /**
    * Peer
@@ -170,17 +174,32 @@
      *
      * @param   rdbms.Criteria criteria
      * @param   int max default 0
-     * @return  rdbms.DataSet[]
+     * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doSelect($criteria, $max= 0) {
+      $builder= $criteria->isprojection() ? 'newRecord' : 'newObject';
       $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
       $r= array();
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
-        $r[]= $this->newObject($record);
+        $r[]= $this->$builder($record);
       }
       return $r;
+    }
+
+    /**
+     * Returns an iterator for a select statement
+     *
+     * @param   rdbms.Criteria criteria
+     * @return  rdbms.ResultIterator
+     * @see     xp://rdbms.ResultIterator
+     */
+    public function iteratorFor($criteria) {
+      return new ResultIterator(
+        $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
+        ($criteria->isprojection() ? 'Record' : $this->identifier)
+      );
     }
 
     /**
@@ -210,19 +229,15 @@
     }
     
     /**
-     * Returns an iterator for a select statement
+     * Returns a new Record object.
      *
-     * @param   rdbms.Criteria criteria
-     * @return  rdbms.ResultIterator
-     * @see     xp://rdbms.ResultIterator
-     */
-    public function iteratorFor($criteria) {
-      return new ResultIterator(
-        $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
-        $this->newObject()
-      );
+     * @param   array record optional
+     * @return  rdbms.Record
+     */    
+    public function newRecord($record= array()) {
+      return new Record($record);
     }
-
+    
     /**
      * Retrieve a number of objects from the database
      *
@@ -230,7 +245,7 @@
      * @param   rdbms.Criteria join
      * @param   rdbms.Criteria criteria
      * @param   int max default 0
-     * @return  rdbms.DataSet[]
+     * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doJoin($peer, $join, $criteria, $max= 0) {

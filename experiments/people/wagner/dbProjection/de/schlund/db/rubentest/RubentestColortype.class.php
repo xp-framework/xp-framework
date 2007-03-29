@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table colortype, database Ruben_Test_PS
-   * (Auto-generated on Wed, 28 Mar 2007 17:23:26 +0200 by ruben)
+   * (Auto-generated on Thu, 29 Mar 2007 10:47:53 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -63,15 +63,6 @@
      */
     public static function getPeer() {
       return Peer::forName(__CLASS__);
-    }
-
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.AnonymousPeer
-     */
-    public static function getAnonymousPeer() {
-      return AnonymousPeer::forName(__CLASS__);
     }
   
     /**

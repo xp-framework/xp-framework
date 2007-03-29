@@ -208,8 +208,17 @@
      * @throws  rdbms.SQLStateException
      */
     private function projections($db, $peer) {
-      if (NULL === $this->projection) return array_keys($peer->types);
+      if (!$this->isProjection()) return array_keys($peer->types);
       return $this->projection->toSQL($db);
+    }
+
+    /**
+     * test if the creterion is a projection
+     *
+     * @return  bool
+     */
+    public function isProjection() {
+      return (NULL !== $this->projection);
     }
 
     /**
