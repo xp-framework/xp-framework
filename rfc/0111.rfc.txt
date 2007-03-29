@@ -1,4 +1,4 @@
-RFC 0111: Clarify ports/dist and util
+RFC 0111: Remove "util" and "ext"
 ========================================================================
 $Id$
 
@@ -9,17 +9,62 @@ $Id$
 
 Scope of Change
 ---------------
-There will be a clarification on ports/dist and util
+The "util" and "ext" directories will be removed from the XP SVN. Their 
+contents will be moved to new locations.
 
 
 Rationale
 ---------
-Finding a place for the "XP environment" (xpcli, xpunit, ...)
+* Get rid of a too generic names - "util" and "ext" may be anything...
+* Make ports/ a more important place 
 
 
 Functionality
 -------------
-TODO
+
+Current "util" directory contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+util/bin:
+  cvsdiff.php    lintphp.php       neditlint.sh  wordwrap  xpcli.php
+  findclass.php  migrate_php5.php  nx            xpci      xphelp
+  gtkphp         mkaccessor.php    phphelp       xpci2
+
+util/etc:
+  nedit
+
+util/exe:
+  Makefile  README  errorcb.h  mksingle.php  php2cembed.php  webstart.php
+
+util/tests:
+  cli.ini          imaging.ini  remote.ini    util.ini
+  collections.ini  io.ini       run.php       webservices.ini
+  core.ini         isbn.ini     security.ini  workflow-casters.ini
+  date.ini         ldap.ini     string.ini    xml.ini
+  doclet.ini       logging.ini  types.ini
+  ftp.ini          rdbms.ini    unittest.ini
+</pre>
+
+Current "ext" directory contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+ext/java:
+  easc
+
+ext/panther:
+  Makefile  panther.c  panther.php  rmi.c  rmi.h  tests
+
+ext/sybase_api:
+  Makefile  sybase_api.c  sybase_defines.h  sybase_hash.h  sybase_mm.h
+  README    sybase_api.h  sybase_hash.c     sybase_mm.c    test.c
+
+ext/xp:
+  CREDITS  EXPERIMENTAL  config.m4  php_xp.h  tests  xp.c  xp.php
+</pre>
+
+
+New places
+~~~~~~~~~~
 
 
 Security considerations
@@ -34,13 +79,12 @@ n/a
 
 Dependencies
 ------------
-n/a
+- RFC #0116: Ports infrastructure: Technologies and packages
 
 
 Related documents
 -----------------
-- http://experiments.xp-framework.net/?people,friebe,xp-redesign/README
-  Material gathering for website navigation / areas
+n/a
 
 
 Comments
