@@ -1,0 +1,100 @@
+RFC 0116: Ports infrastructure: Technologies and packages
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Thu Mar 29 13:08:32     2007
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+Two new directories will be added to the ports/ directory: 
+* ports/technologies
+* ports/packages
+
+
+Rationale
+---------
+* Separation from projects realized with help of the XP framework
+  like Dialog from core technologies such as the Lucene-Daemon,
+  Peking or xp-installer.
+
+* Documentation for packages like com.a9.opensearch from ports/classes
+
+
+Functionality
+-------------
+
+Current layout
+~~~~~~~~~~~~~~
+<pre>
+  ports
+  |
+  +- classes      - Ports classes, separated by TLD
+  |
+  +- dist         - Projects realized in XP
+</pre>
+
+New layout
+~~~~~~~~~~
+<pre>
+  ports
+  |
+  +- classes      - Ports classes, separated by TLD
+  |
+  +- dist         - Projects realized in XP
+  | 
+  +- technologies - Core technologies, e.g. xpinstall, EASC, ...
+  |
+  +- packages     - Package documentation
+</pre>
+
+
+The "technologies" directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This directory contains optional core technologies that form the
+development infrastructure and provide value-added services to the
+XP framework.
+
+Layout:
+<pre>
+  ports/technologies
+  |
+  +- env          - Environment
+  |  +- ide         IDE integration (Nedit, ...)
+  |  +- bin         xpcli, xpunit
+  | 
+  +- opt          - Optional technologies
+     +- easc        EASC: JBoss MBean, PHP Clients, Perl, C#, ...
+     +- lucene      Lucene-Integration
+</pre>
+
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- RFC #0084 - Packages cleanup
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
