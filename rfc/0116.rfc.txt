@@ -90,7 +90,9 @@ n/a
 Related documents
 -----------------
 - RFC #0084 - Packages cleanup
-
+- RFC #0111 - Remove util/ and ext/
+- http://experiments.xp-framework.net/?people,friebe,xp-redesign/README
+  Material gathering for website navigation / areas
 
 Comments
 --------
