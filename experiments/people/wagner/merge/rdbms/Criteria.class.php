@@ -213,7 +213,7 @@
     }
 
     /**
-     * test if the creterion is a projection
+     * test if the expression is a projection
      *
      * @return  bool
      */

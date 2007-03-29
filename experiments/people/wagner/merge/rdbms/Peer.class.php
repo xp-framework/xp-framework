@@ -172,7 +172,7 @@
     /**
      * Retrieve a number of objects from the database
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpressin criteria or statement
      * @param   int max default 0
      * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
@@ -191,7 +191,7 @@
     /**
      * Returns an iterator for a select statement
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpressin criteria or statement
      * @return  rdbms.ResultIterator
      * @see     xp://rdbms.ResultIterator
      */
