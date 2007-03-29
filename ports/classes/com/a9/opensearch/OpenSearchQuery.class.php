@@ -8,7 +8,7 @@
    * Represents an open search Query
    *
    * @see      xp://com.a9.opensearch.OpenSearchDescription
-   * @purpose  purpose
+   * @purpose  Wrapper around Query element
    */
   #[@xmlns(s= 'http://a9.com/-/spec/opensearch/1.1/')]
   class OpenSearchQuery extends Object {
