@@ -7,6 +7,7 @@
   uses(
     'com.a9.opensearch.OpenSearchUrl', 
     'com.a9.opensearch.OpenSearchImage', 
+    'com.a9.opensearch.OpenSearchQuery', 
     'lang.Collection'
   );
 
@@ -21,11 +22,13 @@
     protected
       $shortName    = NULL,
       $longName     = NULL,
+      $developer    = NULL,
       $description  = NULL,
       $tags         = NULL,
       $contact      = NULL,
       $image        = NULL,
-      $urls         = NULL;
+      $urls         = NULL,
+      $queries      = NULL;
 
     /**
      * Constructor
@@ -33,6 +36,7 @@
      */
     public function __construct() {
       $this->urls= Collection::forClass('com.a9.opensearch.OpenSearchUrl');
+      $this->queries= Collection::forClass('com.a9.opensearch.OpenSearchQuery');
     }
 
     /**
@@ -73,6 +77,26 @@
     #[@xmlfactory(element= 's:LongName')]
     public function getLongName() {
       return $this->longName;
+    }
+
+    /**
+     * Set developer
+     *
+     * @param   string developer
+     */
+    #[@xmlmapping(element= 's:Developer')]
+    public function setDeveloper($developer) {
+      $this->developer= $developer;
+    }
+
+    /**
+     * Get developer
+     *
+     * @return  string
+     */
+    #[@xmlfactory(element= 's:Developer')]
+    public function getDeveloper() {
+      return $this->developer;
     }
 
     /**
@@ -156,6 +180,63 @@
     }
 
     /**
+     * Set query
+     *
+     * @param   com.a9.opensearch.OpenSearchQuery query
+     */
+    #[@xmlmapping(element= 's:Query', class= 'com.a9.opensearch.OpenSearchQuery')]
+    public function addQuery($query) {
+      $this->queries->add($query);
+    }
+
+    /**
+     * Get query
+     *
+     * @return  lang.Collection<com.a9.opensearch.OpenSearchQuery>
+     */
+    #[@xmlfactory(element= 's:query')]
+    public function getQueries() {
+      return $this->queries;
+    }
+
+    /**
+     * Set queries
+     *
+     * @param   lang.Collection<com.a9.opensearch.OpenSearchQuery> queries
+     */
+    public function setQueries($queries) {
+      $this->queries= $queries;
+    }
+
+    /**
+     * Returns number of queries
+     *
+     * @return  int
+     */
+    public function numQueries() {
+      return $this->queries->size();
+    }
+
+    /**
+     * Returns url at a given position
+     *
+     * @param   int
+     * @return  com.a9.opensearch.OpenSearchQuery
+     */
+    public function queryAt($offset) {
+      return $this->queries->get($offset);
+    }
+
+    /**
+     * Returns whether queries exist
+     *
+     * @return  bool
+     */
+    public function hasQueries() {
+      return !$this->queries->isEmpty();
+    }
+
+    /**
      * Add url
      *
      * @param   com.a9.opensearch.OpenSearchUrl url
@@ -198,7 +279,7 @@
     /**
      * Returns whether urls exist
      *
-     * @return  int
+     * @return  bool
      */
     public function hasUrls() {
       return !$this->urls->isEmpty();
