@@ -132,18 +132,22 @@
      * Add group by
      *
      * @param   string column
+     * @return  rdbms.Criteria this object
      */
     public function addGroupBy($column) {
       $this->groupings[]= $column;
+      return $this;
     }
     
     /**
      * Set projection
      *
      * @param   &rdbms.util.Projection projection
+     * @return  rdbms.Criteria this object
      */
     public function setProjection(Projection $projection) {
       $this->projection= $projection;
+      return $this;
     }
 
     /**
