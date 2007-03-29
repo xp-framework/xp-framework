@@ -14,41 +14,57 @@ meaning:
 the resultset of a query can be projected to only some propertys or functions like sum, min, max, avg, count
 
 // projection to the function avg
+// a Record will be retuned
+// Person::getPeer()->doSelect($crit['average'], 1) would return a Record
   $crits['average']= new Criteria();
   $crits['average']->setProjection(
     Projections::average("person_id")
   );
 
 // projection to the function max
+// a Record will be retuned
+// Person::getPeer()->doSelect($crit['max'], 1) would return a Record
   $crits['max']= new Criteria();
   $crits['max']->setProjection(
     Projections::max("person_id")
   );
   
 // projection to the function min
+// a Record will be retuned
+// Person::getPeer()->doSelect($crit['min'], 1) would return a Record
   $crits['min']= new Criteria();
   $crits['min']->setProjection(
     Projections::min("person_id")
   );
   
 // projection to the function sum
+// a Record will be retuned
+// Person::getPeer()->doSelect($crit['sum'], 1) would return a Record
   $crits['sum']= new Criteria();
   $crits['sum']->setProjection(
     Projections::sum("person_id")
   );
   
 // projection to the property name
+// a Record will be retuned
+// Person::getPeer()->doSelect($crit['property'], 1) would return a Record
   $crits['property']= new Criteria();
   $crits['property']->setProjection(
     Projections::property("name")
   );
   
-// projection to the a set of properties
+// projection to a set of properties
+// Person::getPeer()->doSelect($crit['projectionList'], 1) would return a Record
   $crits['projectionList']= new Criteria();
   $crits['projectionList']->setProjection(
     Projections::projectionList()
     ->add(Projections::property("person_id"))
     ->add(Projections::property("name"))
   );
+
+// no projection
+// Person::getPeer()->doSelect($crit['plain'], 1) would return a Person
+  $crits['plain']= new Criteria();
+
 
 <EOF>
