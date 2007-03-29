@@ -7,7 +7,8 @@
   uses(
     'com.a9.opensearch.OpenSearchUrl', 
     'com.a9.opensearch.OpenSearchImage', 
-    'com.a9.opensearch.OpenSearchQuery', 
+    'com.a9.opensearch.OpenSearchQuery',
+    'com.a9.opensearch.SyndicationRight', 
     'lang.Collection'
   );
 
@@ -20,15 +21,17 @@
   #[@xmlns(s= 'http://a9.com/-/spec/opensearch/1.1/')]
   class OpenSearchDescription extends Object {
     protected
-      $shortName    = NULL,
-      $longName     = NULL,
-      $developer    = NULL,
-      $description  = NULL,
-      $tags         = NULL,
-      $contact      = NULL,
-      $image        = NULL,
-      $urls         = NULL,
-      $queries      = NULL;
+      $shortName        = NULL,
+      $longName         = NULL,
+      $developer        = NULL,
+      $attribution      = NULL,
+      $description      = NULL,
+      $tags             = NULL,
+      $contact          = NULL,
+      $image            = NULL,
+      $urls             = NULL,
+      $queries          = NULL,
+      $syndicationRight = SyndicationRight::IS_OPEN;
 
     /**
      * Constructor
@@ -97,6 +100,47 @@
     #[@xmlfactory(element= 's:Developer')]
     public function getDeveloper() {
       return $this->developer;
+    }
+
+    /**
+     * Set attribution
+     *
+     * @param   string attribution
+     */
+    #[@xmlmapping(element= 's:Attribution')]
+    public function setAttribution($attribution) {
+      $this->attribution= $attribution;
+    }
+
+    /**
+     * Get attribution
+     *
+     * @return  string
+     */
+    #[@xmlfactory(element= 's:Attribution')]
+    public function getAttribution() {
+      return $this->attribution;
+    }
+
+    /**
+     * Set syndicationRight
+     *
+     * @see     xp://com.a9.opensearch.SyndicationRight
+     * @param   string syndicationRight one of the SyndicationRight::* class constants
+     */
+    #[@xmlmapping(element= 's:SyndicationRight')]
+    public function setSyndicationRight($syndicationRight) {
+      $this->syndicationRight= strtolower($syndicationRight);   // Case-insensitive by spec
+    }
+
+    /**
+     * Get syndicationRight
+     *
+     * @return  string
+     */
+    #[@xmlfactory(element= 's:SyndicationRight')]
+    public function getSyndicationRight() {
+      return $this->syndicationRight;
     }
 
     /**
