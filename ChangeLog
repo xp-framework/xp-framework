@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Added support for XML namespaces to xml.meta Marshaller / Unmarshaller
+  (friebe)
 - Fixed peer.mail.store.CclientStore (ext/imap wrapper) implementation 
   which was broken due to PHP5 BC breaks
   (friebe)
