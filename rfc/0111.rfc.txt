@@ -45,6 +45,19 @@ util/tests:
   ftp.ini          rdbms.ini    unittest.ini
 </pre>
 
+New places
+~~~~~~~~~~
+The files that serve as IDE plugins from util/bin will be moved to the 
+new ports/env/ide directory. The xpcli command will be moved to 
+ports/env/bin.
+
+The util/etc/nedit directory will be moved to ports/env/ide.
+
+The util/exe directory will be removed completely.
+
+The util/tests directory will be moved to ports/unittest.
+
+
 Current "ext" directory contents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <pre>
@@ -62,10 +75,13 @@ ext/xp:
   CREDITS  EXPERIMENTAL  config.m4  php_xp.h  tests  xp.c  xp.php
 </pre>
 
-
 New places
 ~~~~~~~~~~
+The directory ext/java/easc will be moved to ports/opt/easc
 
+The ext/panther and ext/xp directories will be removed completely.
+
+The ext/sybase_api directory will be moved to experiments/arena.
 
 Security considerations
 -----------------------
