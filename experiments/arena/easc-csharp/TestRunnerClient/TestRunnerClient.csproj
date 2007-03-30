@@ -31,6 +31,7 @@
     <Reference Include="EASCLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\EASCLibrary\bin\Release\EASCLibrary.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
