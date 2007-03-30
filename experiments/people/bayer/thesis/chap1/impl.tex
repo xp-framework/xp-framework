@@ -255,12 +255,12 @@ gesetzt werden muss, die anzeigt, ob ein echter Fehler aufgetreten ist.
 \subsection{Java-Klassen in PHP}
 \label{sec:chap1:impl:4}
 
-Die erste Methode des TurpitudeEnvironment, die implementiert wurde, war \texttt{findClass()}. In der zugeh"origen C-Funktion wird zun"achst 
+Die erste Methode des TurpitudeEnvironment, die implementiert wurde, tr"agt den Namen \texttt{findClass()}. In der zugeh"origen C-Funktion wird zun"achst 
 lediglich "uberpr"uft, ob die Anzahl der Parameter stimmt, und ob der "ubergebene Parameter vom Typ \texttt{String} ist. Dann wird die
 zur Klasse \texttt{TurpitudeJavaClass} geh"orende Funktion \texttt{make\_turpitude\_jclass\_instance} aufgerufen, die eine TurpitudeJavaClass
 zur"uckgibt. Um eine Instanz dieser
 Klasse erzeugen zu k"onnen, musste diese allerdings zun"achst dem Interpreter bekannt gemacht werden. Dies geschah analog zum Bekanntmachen
-von TurpitudeEnvironment. Die Funktion \texttt{make\_turpitude\_jclass\_instance} selbst erwartet drei Argumente: eine \texttt{jclass} der zu
+von TurpitudeEnvironment. \texttt{make\_turpitude\_jclass\_instance} selbst erwartet drei Argumente: eine \texttt{jclass} der zu
 repr"asentierenden Klasse, deren Klassennamen und einen Pointer auf den zval, der das Objekt enthalten soll. Da die TurpitudeJavaClass 
 tats"achlich Attribute (den Klassennamen) enthalten soll, muss die Zend-HashTable initialisiert werden, die diese Attribute enthalten soll.
 Dies geschieht mittels der Zend-Funktion \texttt{object\_init\_ex}, die neben einem zval-Pointer den class\_entry entgegennimmt.
@@ -359,87 +359,88 @@ $string = $date->toString('()Ljava/lang/String;');
 \subsection{Zugriff auf Java-Attribute in PHP}
 \label{sec:chap1:impl:7}
 
-Weiterhin sollte es dem Anwender erm"oglicht werden, auf Attribute eines Objektes zuzugreifen. F"ur Attribute m"ussen mit dem JNI - wie bei Klassen und Objekten auch -
-Handler erzeugt werden, allerdings wurde hier auf eine eigene PHP-Klasse verzichtet, sondern es wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: 
+Weiterhin sollte es dem Anwender erm"oglicht werden auf Attribute eines Objektes zuzugreifen. F"ur Attribute m"ussen mit dem JNI - wie bei Klassen und Objekten auch -
+Handler erzeugt werden. Allerdings wurde hier auf eine eigene PHP-Klasse verzichtet, stattdessen wurden einfach dem TurpitudeJavaObject zwei weitere Methoden hinzugef"ugt: 
 \texttt{javaGet()} und \texttt{javaSet()}. \texttt{javaGet()} erwartet analog zu Methoden zwei Argumente, den Namen des Attributes und dessen Signatur, beides als Strings, 
 letzteres wieder JNI-kodiert. Wie bei Methodensignaturen auch wird der Feldsignaturstring geparst, um sp"ater dem R"uckgabewert den richtigen Typen zuweisen zu k"onnen, 
-aber auch weil auch um ein Attribut eines Java-Objektes auszulesen die richtige JNI-Funktion aufgerufen werden muss. Diese Funktionen haben die Signatur
+aber auch weil um ein Attribut eines Java-Objektes auszulesen die richtige JNI-Funktion aufgerufen werden muss. Diese Funktionen haben die Signatur
 Get$<$Type$>$Field, und erwarten alle das Objekt dessen Attribut ausgelesen werden soll, sowie eine sogenannte \texttt{jfieldID}, die zuvor mittels der Funktion
 \texttt{GetFieldID} generiert werden muss. Wie bei Methodenaufrufen der R"uckgabewert wird hier der Wert des Attributes in einem jvalue gespeichert, der wieder
 in einen zval umgewandelt wird. \texttt{javaSet()} erwartet neben den Argumenten die auch \texttt{javaGet()} erwartet noch den Wert auf den das Attribut gesetzt werden
 soll, daf"ur gibt diese Methode nat"urlich keinen Wert zur"uck. Auch \texttt{javaSet()} entscheidet anhand der Signatur welche JNI-Funktion zum Setzen des
-Attributes aufgerufen werden soll, welche die Signatur Set$<$Type$>$Field haben, und versucht ebenfalls anhand des "ubergebenen Attributnamens und -Signatur die
-entsprechende jfieldID zu finden.
+Attributes aufgerufen werden soll und versucht ebenfalls anhand des "ubergebenen Attributnamens und -signatur die
+entsprechende jfieldID zu finden. Die entsprechenden JNI-Funktionen haben die Signatur \texttt{Set$<$Type$>$Field}.
 
-Analog zu Feldern von Instanzen sollte auch auf statische Felder in Java-Klassen zugegriffen werden k"onnen, hierzu wurden in der TurpitudeJavaClass zwei Methoden
-implementiert, \texttt{getStatic()} und \texttt{setStatic()}. Wie bei nicht-statischen Attributen auch m"ussen zum Setzen beziehungsweise Auslesen je nach Feld-Typ spezielle 
-JNI-Funktionen aufgerufen werden, diese haben die Signatur Get/SetStatic$<$Type$>$Field. Die Umwandlung des zu setzenden Wertes beziehungsweise des R"uckgabewertes
-geschieht analog zu nicht-statischen Attributen.
+Analog zu Feldern von Instanzen sollte auch auf statische Felder in Java-Klassen zugegriffen werden k"onnen. Hierzu wurden in der \texttt{TurpitudeJavaClass} zwei Methoden
+implementiert, \texttt{getStatic()} und \texttt{setStatic()}. Wie bei nicht-statischen Attributen auch, m"ussen zum Setzen beziehungsweise Auslesen je nach Feld-Typ spezielle 
+JNI-Funktionen aufgerufen werden, diese haben die Signatur \texttt{Get}- beziehungsweise \texttt{SetStatic$<$Type$>$Field}. 
+Die Umwandlung des zu setzenden Wertes beziehungsweise des R"uckgabewertes geschieht analog zu nicht-statischen Attributen.
 
 \subsection{Java-Exceptions in PHP}
 \label{sec:chap1:impl:8}
 
-Nachdem man nun Klassen konstruieren, deren Methoden aufrufen und auf deren Attribute zugreiffen konnte wurden die M"oglichkeiten der Fehlerbehandlung
+Nachdem man nun Klassen konstruieren, deren Methoden aufrufen und auf deren Attribute zugreifen konnte, wurden die M"oglichkeiten der Fehlerbehandlung
 verbessert. Java arbeitet haupts"achlich mit Exceptions, und auch die Turpitude-intern erzeugten Fehler treten in der JVM als Exceptions auf. Folglich mussten dem
 Anwender Werkzeuge zur Hand gegeben werden, geworfene Exceptions in PHP zu fangen und zu behandeln, und selbst Java-Exceptions zu erzeugen. Das Werfen von
 Exceptions kann der Anwender mittels der Methoden \texttt{throw} und \texttt{throwNew} des TurpitudeEnvironment bewerkstelligen. Mit \texttt{throw} k"onnen Instanzen
 der Klasse \texttt{java.lang.Throwable} geworfen werden, die der Anwender zuvor wie oben beschrieben erzeugt hat. \texttt{throwNew} hingegen erwartet zwei Parameter,
-zum einen den Namen der zu werfenden Exception, zum anderen die Nachricht, die die Exception enthalten soll. Will der Anwender also komplizierte Exceptions mit
-werfen, die zus"atzlich zur eigentlichen Nachricht noch zus"atzlich Information tragen soll wird er \texttt{throw} nutzen, f"ur den gro\ss teil der F"alle 
+zum einen den Namen der zu werfenden Exception, zum anderen die Nachricht, die die Exception enthalten soll. Will der Anwender also komplizierte Exceptions
+werfen, die zus"atzlich zur eigentlichen Nachricht noch andere Informationen tragen soll, wird er \texttt{throw} nutzen, f"ur den Gro\ss teil der F"alle 
 hingegen reicht \texttt{throwNew} v"ollig aus. Um Exceptions auch fangen zu k"onnen wurde die Methode \texttt{exceptionOccurred} eingef"uhrt, die die gleichnamige
-JNI-Funktion aufruft, und die zuletzt geworfene und noch nicht gefangene Exception zur"uckgibt. Wird keine solche Exception gefunden wird NULL zur"uckgegeben,
+JNI-Funktion aufruft, und die zuletzt geworfene und noch nicht gefangene Exception zur"uckgibt. Wird keine solche Exception gefunden wird \texttt{null} zur"uckgegeben,
 derart gefundene Exceptions verbleiben allerdings in diesem Status. Um erfolgreich behandelte Exceptions aus diesem Zustand zu entfernen wurde die Methode
 \texttt{exceptionClear} implementiert, die ebenfalls keine Parameter entgegennimmt, und ebenfalls die gleichnamige JNI-Funktion aufruft.
 
-Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder falschen Types sein.
-Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das lesen beziehungsweise schreiben von Attributen auch auf nicht-"offentlichen
-Methoden und Attributen funktioniert, einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
-ausgehen k"onnen sollte, dass ein Anwender wenigstens in groben Z"ugen weiss was er tut. 
+Alle hier beschriebenen Methoden erzeugen PHP-Laufzeitfehler sollte beispielsweise die Anzahl der "ubergebenen Argumente nicht stimmen, oder falschen Typs sein sollte.
+Wichtig ist noch zu bemerken, dass sowohl das Aufrufen von Java-Methoden, als auch das Lesen beziehungsweise Schreiben von Attributen auch auf nicht-"offentlichen
+Methoden und Attributen funktioniert. Einerseits da JNI keinerlei M"oglichkeiten bietet Zugriffsmodifikatoren zu erkennen, andererseits da man eigentlich davon
+ausgehen k"onnen sollte, dass ein Anwender nicht b"oswillig versucht Inkonsistenzen in den von ihm benutzten Java-Objekten zu erzeugen.. 
 
-\subsection{Der JSR223 ScriptContext}
+\subsection{Der JSR 223 ScriptContext}
 \label{sec:chap1:impl:9}
 
-Mit der geleisteten Vorarbeit war es nun einfach die Anforderungen des JSR nach einem ScripContext umzusetzen. Die von der PHPScriptEngine erweiterte Klasse
-AbstactScriptEngine bringt eine Kontextimplementation namens SimpleContext mit. Dieser Kontext wird beim Aufruf der nativen Methode \texttt{exec} des PHPCompiledScripts
+Mit der geleisteten Vorarbeit war es nun einfach die Anforderungen des JSR nach einem ScriptContext umzusetzen. Die von der \texttt{PHPScriptEngine} erweiterte Klasse
+\texttt{AbstactScriptEngine} bringt eine Kontextimplementation namens \texttt{SimpleContext} mit. Dieser Kontext wird beim Aufruf der nativen Methode \texttt{exec} des PHPCompiledScripts
 als jobject "ubergeben und global gespeichert. An diesen Kontext kommt der Anwender in PHP "uber die Methode \texttt{getScriptContext} des TurpitudeEnvironment. Im 
-entsprechenden Handler wird die Klasse des ScripContext ermittelt, damit eine TurpitudeJavaClass erstellt, und mit dem Kontext-jobject zu einer Instanz von
+entsprechenden Handler wird die Klasse des ScriptContext ermittelt, damit eine TurpitudeJavaClass erstellt, und mit dem Kontext-jobject zu einer Instanz von
 TurpitudeJavaObject vereinigt. Somit kann der Anwender einfach die entsprechenden Java-Methoden dieses Objektes aufrufen, um an die im Kontext enthaltenen Daten zu
-gelangen. Getestet wurde das mit einem Programm das einen java.util.StringBuffer erzeugt, in den Kontext einsetzt, und dann ein PHP-Skript ausf"uhrt, das diesem
+gelangen. Getestet wurde dies mit einem Programm das einen java.util.StringBuffer erzeugt, in den Kontext einsetzt, und dann ein PHP-Skript ausf"uhrt, das diesem
 StringBuffer einen Text anh"angt. Nachdem das Skript ausgef"uhrt wurde enth"alt der StringBuffer sowohl die per Java, als auch die in PHP angeh"angten Zeichen.
 
-\subsection{Implementieren des Interface Invocable}
+\subsection{Implementieren des Interfaces Invocable}
 \label{sec:chap1:impl:10}
 
 Bis zu diesem Zeitpunkt konnte die Java-Applikation, die das PHP-Skript einbettet, dieses nur ausf"uhren, es konnten keine gezielten Aufrufe von Funktionen und Methoden
-abgesetzt werden, obwohl diese F"ahigkeit eine Bilbiothek wie Turpitude erst wirklich interessant macht. Deswegen wurde das JSR223-Interface \texttt{javax.script.Invocable}
-implementiert, das genau an diesem Punkt ansetzt und Abhilfe schaffen soll. Leider zeigte sich auch hier dass die JSR223-Spezifikation an einigen Stellen
-etwas undurchdacht wirkt: laut Spezifikation zollte die jeweilige ScriptEngine das Interface implementieren. Nun implementiert die PHPScriptEngine aber schon
+abgesetzt werden, obwohl diese F"ahigkeit eine Bibliothek wie Turpitude erst wirklich interessant macht. Deswegen wurde das f"ur diese Anwendungsf"alle vorgesehne
+JSR 223-Interface \texttt{javax.script.Invocable}
+implementiert, das genau an diesem Punkt ansetzt und Abhilfe schaffen soll. Leider zeigte sich auch hier, dass die JSR 223-Spezifikation an einigen Stellen
+etwas undurchdacht wirkt: laut Spezifikation sollte die jeweilige ScriptEngine das Interface implementieren. Nun implementiert die PHPScriptEngine aber schon
 das Interface \texttt{javax.script.Compilable}, es ist also nicht eindeutig auf welchem Skript die Aufrufe durchgef"uhrt werden sollen, und die Spezifikation schweigt
 sich zu diesem Thema ebenfalls aus. Um dieses Problem zu l"osen wurde zun"achst das PHPCompiledScript derart abgewandelt, dass dieses \texttt{Invocable} implementiert,
-weil der Kontext hier eindeutig ist. Der PHPScriptEngine wurde ein weiteres Attribut \texttt{lastScript} hinzugef"ugt, in welchem das zuletzt "ubersetzte 
-PHP-Script gespeichert wird. Dieses Attribut wird bei jedem Aufruf der Methode \texttt{compile} gesetzt, womit sind auch ausgef"uhrte Skripte abgedeckt werden.
+da der Kontext hier eindeutig ist. Der PHPScriptEngine wurde ein weiteres Attribut \texttt{lastScript} hinzugef"ugt, in welchem das zuletzt "ubersetzte 
+PHP-Script gespeichert wird. Dieses Attribut wird bei jedem Aufruf der Methode \texttt{compile} gesetzt, womit auch ausgef"uhrte Skripte abgedeckt werden.
 Die Invocable-Methoden der PHPScriptEngine leiten nun einfach alle Aufrufe an die entsprechenden Methoden des \texttt{lastScript} weiter.
 
-\texttt{javax.script.Invocable} beinhaltet vier Methoden, von denen jeweils zwei sehr "ahnlich sind. Die Methode \texttt{invokeFunction} ruft sogenannte \texttt{top-level functions}
+\texttt{javax.script.Invocable} beinhaltet vier Methoden, von denen sich jeweils zwei sehr "ahnlich sind. Die Methode \texttt{invokeFunction} ruft sogenannte \texttt{top-level functions}
 des Skriptes auf, also im globalen Scope definierte Funktionen. Da die in der nativen Methode \texttt{execute}, die wie oben beschrieben beim Ausf"uhren 
 eines "ubersetzten Skriptes aufgerufen wird, benutzte Zend-API Funktion \texttt{zend\_call\_function} ein auszuf"uhrendes Op-Array erwartet, und da das Finden des
-richtigen Abschnittes im Op-Array des PHPCompiledScripts sehr viel Aufwand bedeutet h"atte wurd ein anderer Weg gew"ahlt: die Funktion \texttt{call\_user\_function}, die
-direkt eine im PHP-Skript vorhandene Funktion aufruft. Damit dies allerdings funktionieren kann muss zun"achst in den sogenannten \emph{Executor Globals}, erreichbar
-"uber das Makro \texttt{EG}, das Feld \texttt{active\_op\_array}, welches das gerade Aktive Op-Array enthalten soll, auf das im PHPCompiledScript gespeicherte
+richtigen Abschnittes im Op-Array des PHPCompiledScripts sehr viel Aufwand bedeutet h"atte, wurde ein anderer Weg gew"ahlt: die Funktion \texttt{call\_user\_function}, die
+direkt eine im PHP-Skript vorhandene Funktion aufruft. Damit dies allerdings funktionieren kann, muss zun"achst in den sogenannten \emph{Executor Globals}, erreichbar
+"uber das Makro \texttt{EG}, das Feld \texttt{active\_op\_array}, welches das gerade aktive Op-Array enthalten soll, auf das im PHPCompiledScript gespeicherte
 Op-Array gesetzt werden.
 Um den R"uckgabewert einer Funktion an die Java-Applikation weiterreichen zu k"onnen wurde noch ein zval initiert, und ein Pointer auf dessen Pointer wurde in den 
 \emph{Executor Globals} an die Stelle \texttt{return\_value\_ptr\_ptr} geschrieben. Nach dem erfolgreichen Ausf"uhren der Funktion enth"alt dieser zval den R"uckgabewert,
 und konnte folglich wie alle anderen R"uckgabewerte behandelt und an die JVM zur"uckgegeben werden.
 Um die von Java aus als Array von Objekten "ubergebenen Funktionsargumente an die PHP-Funktion weiterleiten zu k"onnen wird Speicher f"ur ein Array
-von zval-Pointern reserviert, und dieses Array wird mittels der Funktion \texttt{jobject\_to\_zval} gef"ullt. Das so erstellte Array wird schlussendlich der die PHP-Funktion
+von zval-Pointern reserviert, und dieses Array mittels der Funktion \texttt{jobject\_to\_zval} gef"ullt. Das so erstellte Array wird schlussendlich der die PHP-Funktion
 aufrufenden Zend-API Funktion \texttt{call\_user\_function} "ubergeben, zusammen mit einem den Funktionsnamen enthaltenden zval vom Typ String, der zu nutzenden 
 Funktionstabelle und dem Pointer auf den R"uckgabewert. Gibt \texttt{call\_user\_function} nun ein \texttt{FAILURE} zur"uck ist ein Fehler aufgetreten, und es wird
 eine Java-Exception geworfen, ansonsten hat das Aufrufen funktioniert.
 Ganz "ahnlich wurde die Invocable-Methode \texttt{invokeMethod} implementiert, allerdings musste zun"achst das PHPObject noch um ein Feld erweitert werden, welches
-eine Referenz auf den entsprechenden zval innerhalb des PHP-Interpreters h"alt. Hierzu wurde - ganz "ahnlich zum Speichern des Op-Arrays im PHPCompiledScript -
-ein java.nio.ByteBuffer verwendet, in welchen einfach der zval-Pointer gespeichert wird. Beim Aufrufen einer Methode wird dieser Zeiger nun ausgelesen und
-der Funktion \texttt{call\_user\_function} als zweiter Parameter "ubergeben. Da so stets die richtige Methode der richtigen Instanz aufgerufen wurde
-beschreibt dieser Parameter offensichtlich das Objekt, auf dem die Funktion aufgerufen werden sollte. Anonsten verl"auft ein Methodenaufruf analog
+eine Referenz auf den entsprechenden zval innerhalb des PHP-Interpreters h"alt. Hierzu wurde - ganz "ahnlich dem Speichern des Op-Arrays im PHPCompiledScript -
+ein \texttt{java.nio.ByteBuffer} verwendet, in welchen einfach der zval-Pointer gespeichert wird. Beim Aufrufen einer Methode wird dieser Zeiger nun ausgelesen und
+der Funktion \texttt{call\_user\_function} als zweiter Parameter "ubergeben. Da so stets die richtige Methode der richtigen Instanz aufgerufen wurde,
+beschreibt dieser Parameter offensichtlich das Objekt, auf dem die Funktion aufgerufen werden sollte. Ansonsten verl"auft ein Methodenaufruf analog
 zu einem Funktionsaufruf.
 
 F"ur den Java-Entwickler stellt sich das Aufrufen von Funktionen und Methoden also wie folgt dar:
@@ -454,27 +455,27 @@ Zun"achst muss nat"urlich PHP-Quelltext zu einem PHPCompiledScript "ubersetzt, u
 aufgerufen, und ihr ein String als einziges Argument "ubergeben. Diese Funktion gibt in diesem Fall ein PHPObject zur"uck, auf welchem in der letzten Zeile
 die Methode "'bar"', wieder mit einem String als einzigem Argument, aufgerufen wird.
 
-Unter Zuhilfename von \texttt{invokeMethod} konnten schliesslich die anderen beiden Methoden des Interfaces \texttt{Invocable} implementiert werden, die beide
+Unter Zuhilfenahme von \texttt{invokeMethod} konnten schlie\ss lich die anderen beiden Methoden des Interfaces \texttt{Invocable} implementiert werden, die beide
 den Namen \texttt{getInterface} tragen. Beiden Varianten dieser Methode wird eine Java-Klasse oder -Interface "ubergeben, und zur"uckgegeben werden muss eine 
-Instanz dieser Klasse, deren Methoden in der Skriptsprache Implementiert sind. Der Unterschied zwischen beiden Methoden ist, dass einer von beiden 
-zus"atzlich ein Objekt "ubergeben werden kann, welches als Implementierendes Objekt genutzt werden soll. Dies macht im Falle von Turpitude nur Sinn, wenn das 
-"ubergebene Objekt ein PHPObject ist, von dem der Anwender weiss, dass es das geforderte Java-Interface implementiert. Letztere Methode wurde zuerst implementiert,
-da hierzu schon alle Vorraussetzungen geschaffen waren, und keine einzige Zeile C-Code mehr geschrieben werden musste. Als erstes wird in der Methode gepr"uft, ob
+Instanz dieser Klasse, deren Methoden in der Skriptsprache implementiert sind. Der Unterschied zwischen beiden Methoden ist, dass einer von beiden 
+zus"atzlich ein Objekt "ubergeben werden kann, welches als implementierendes Objekt genutzt werden soll. Dies macht im Falle von Turpitude nur Sinn, wenn das 
+"ubergebene Objekt ein PHPObject ist, von dem der Anwender wei\ss , dass es das geforderte Java-Interface implementiert. Letztere Methode wurde zuerst implementiert,
+da hierzu schon alle Voraussetzungen geschaffen waren, und keine einzige Zeile C-Code mehr geschrieben werden musste. Als erstes wird in der Methode gepr"uft, ob
 das "ubergebene Objekt wirklich eine Instanz von PHPObject ist. Danach wird eine Instanz der Klasse \texttt{java.lang.reflect.Proxy} erzeugt, die innerhalb Javas
 als ganz normale Instanz der "ubergebenen Klasse auftritt, intern aber alle Methodenaufrufe an einen sogenannten \texttt{InvocationHandler} weiterreicht.
 Ein InvocationHandler ist ein Interface, welches in diesem Falle von der Klasse \texttt{PHPInvocationHandler} implementiert wird, die im Konstruktor
 ein PHPCompiledScript, in dessen Kontext die Methodenaufrufe stattfinden sollen, und ein PHPObject auf dem die Methodenaufrufe durchgef"uhrt werden sollen erwartet.
 Die eigentlichen Methodenaufrufe werden s"amtlich durch die oben beschriebene Methode \texttt{invokeMethod} des PHPCompiledScripts erledigt.
 Die Implementierung der Variante von \texttt{getInterface} die kein Objekt mitbringt stellte allerdings ein Problem dar - wie sollte ein das Java-Interface implementierendes
-PHP-Objekt gefunden werden? Auch hier schweigt sich die JSR223 Spezifikation leider aus, so wurde nach einigem "Uberlegen entschlossen einzig auf den Namen der Klasse zu
-pr"ufen. So wurde dem PHPCompiledScript eine weitere native Methode namens \texttt{createInstance} hinzugef"ugt, die als einziges Argument den 
+PHP-Objekt gefunden werden? Auch hier schweigt sich die JSR 223-Spezifikation leider aus, so wurde nach einigem "Uberlegen entschlossen einzig auf den Namen der Klasse zu
+pr"ufen. Folglich wurde dem PHPCompiledScript eine weitere native Methode namens \texttt{createInstance} hinzugef"ugt, die als einziges Argument den 
 Klassennamen in Form eines Strings erwartet. Sie sollte versuchen eine PHP-Klasse des "ubergebenen Namens zu finden, und eine Instanz dieser Klasse neu zu erzeugen.
 Da Invocable hierzu keine Parameter"ubergabe vorsah, konnten auf diese Weise nur PHP-Objekte erzeugt werden, die einen Konstruktor ohne Argumente besitzen, ist 
 dies nicht der Fall wird ein Laufzeitfehler erzeugt. Zur Implementierung dieser Methode wurde die Zend-Funktion \texttt{zend\_lookup\_class} gefunden, die zu einem
 Klassennamen einen \texttt{zend\_class\_entry} zur"uckgibt. Mit diesem Klasseneintrag kann mittels der schon vorher genutzten Funktion \texttt{object\_init\_ex}
 eine Instanz der Klasse erzeugt werden, die dann an die JVM als PHPObject zur"uckgegeben wird. Wird auf diese Weise ein PHPObject gefunden, wird mit diesem
 als zweitem Argument einfach die schon fertige Variante der Interfacemethode aufgerufen. Da PHP keine Punkte in Klassennamen erlaubt, und zumindest in
-Version 5 keine Namespaces kennt, wurde beschlossen den sogenannten \emph{SimpleName}, den Namen wie er in der Quelltextdatei vorkommt also, der zu findenden Klasse 
+Version 5 keine Namespaces kennt, wurde beschlossen den sogenannten \emph{SimpleName}, den Namen also wie er in der Quelltextdatei vorkommt, der zu findenden Klasse 
 zu benutzen. Abbildung \ref{fig:javaseq} soll den Ablauf eines solchen Aufrufes einer in PHP implementierten Methode darstellen. 
 
 \begin{figure}[h]
@@ -487,27 +488,27 @@ zu benutzen. Abbildung \ref{fig:javaseq} soll den Ablauf eines solchen Aufrufes 
 \label{sec:chap1:impl:11}
 
 Eigentlich w"aren zu diesem Zeitpunkt alle Anforderungen an die Bibliothek erf"ullt, in vielen Bereichen sogar "ubererf"ullt gewesen, aber da w"ahrend
-der Entwicklung festgestellt wurde, dass sowohl innerhalb als auch auch ausserhalb von 1\&1 erhebliches Interesse an Turpitude besteht wurde beschlossen 
+der Entwicklung festgestellt wurde, dass sowohl innerhalb als auch auch au\ss erhalb von 1\&1 erhebliches Interesse an Turpitude besteht, wurde beschlossen 
 einige Erweiterungen vorzunehmen, um Entwicklern ohne intimes Wissen "uber die Bibliothek das Entwickeln mit Turpitude zu vereinfachen.
-Zum einen mussten einige Randbedingungen beim Aufrufen von Java-Methoden abgefangen werden, die sonst zu unerwarteten Ergebnisen f"uhren konnten, zum
-anderen sollten Java-Arrays in PHP nicht nur als TurpitudeJavaObject dargestellt werden, sondern es sollte ein intuitiverer Umgang mit ihnen erm"oglicht werden.
+Zum einen mussten einige Randbedingungen beim Aufrufen von Java-Methoden abgefangen werden, die sonst zu unerwarteten Ergebnissen f"uhren konnten, zum
+anderen sollten Java-Arrays in PHP nicht nur als TurpitudeJavaObject dargestellt, sondern ein intuitiverer Umgang mit ihnen erm"oglicht werden.
 
 Um Java-Arrays angemessen repr"asentieren zu k"onnen musste 
 allerdings zun"achst eine neue Klasse eingef"uhrt werden, das \texttt{TurpitudeJavaArray}. Nach bew"ahrtem Muster wurden dieser Klasse drei Methoden
 gegeben, zum einen \texttt{getLength}, die die L"ange des Arrays zur"uckgibt, und zum anderen \texttt{get} und \texttt{set}, um auf Elemente des Arrays zuzugreifen.
 F"ur den Zugriff auf Java-Arrays bietet das Java Native Interface Funktionen an, die den Inhalt des Arrays in einen zusammenh"angenden Speicherbereich kopieren,
 diese Funktionen haben die Signatur \texttt{Get$<$Type$>$ArrayElements}. Diese Speicherbereiche k"onnen  dann in C ausgelesen und ver"andert werden. 
-Diese "Anderungen k"onnen beim Freigeben der Speicherbereiche entweder verworfen oder gespeichert werden. Da diese
+Derartige "Anderungen k"onnen beim Freigeben der Speicherbereiche entweder verworfen oder gespeichert werden. Da diese
 Funktionen allerdings - wie fast alle JNI-Funktionen - f"ur jeden Typ andere sind, musste das oben beschriebene Parsen von JNI-Typstrings derart erweitert werden,
 dass nicht nur Arrays sondern auch die verschiedenen Typen von Arrays erkannt werden. Das Freigeben der Speicherbereiche geschieht mittels der
-Funktionen \texttt{Release$<$Type$>$ArrayElements}, deren letzter Parameter angibt ob die "Anderungen "ubernommen oder verworfen werden sollen.
-Eine Ausname zu dieser Regel bilden Arrays von Objekten, auf deren Elemente direkt mittels der Funktionen \texttt{GetObjectArrayElement} und
+Funktionen \texttt{Release$<$Type$>$ArrayElements}, deren letzter Parameter angibt, ob die "Anderungen "ubernommen oder verworfen werden sollen.
+Eine Ausnahme zu dieser Regel bilden Arrays von Objekten, auf deren Elemente direkt mittels der Funktionen \texttt{GetObjectArrayElement} und
 \texttt{SetObjectArrayElement} zugegriffen werden kann.
-Arrays in PHP sind eigentlich HashMaps, sie k"onnen also nicht nur numerische Werte, sondern jeglichen skalaren Typen als Index haben, folglich mussten
-f"ur alle Zugriffe auf das \texttt{TurpitudeJavaArray} Tests eingebaut werden die nur numerische Indices zulassen.
+Arrays in PHP sind eigentlich HashMaps, sie k"onnen also nicht nur numerische Werte, sondern jeglichen skalaren Typ als Index haben, folglich mussten
+f"ur alle Zugriffe auf das \texttt{TurpitudeJavaArray} Tests eingebaut werden die nur numerische Indizes zulassen.
 Somit konnte zwar von PHP aus auf Java-Arrays zugegriffen werden,
 allerdings eben nur mit den beschriebenen Methoden. Ein PHP-Anwender jedoch ist gewohnt mit dem Klammern-Operator [\texttt{index}] auf Arrays arbeiten zu k"onnen.
-Damit auf eine Klasse in PHP wie auf ein Array zugegriffen werden kann bietet die Zend-Engine die M"oglichkeit das interne Interface \texttt{ArrayAccess} zu
+Damit auf eine Klasse in PHP wie auf ein Array zugegriffen werden kann, bietet die Zend-Engine die M"oglichkeit das interne Interface \texttt{ArrayAccess} zu
 implementieren, welches auf C-Ebene unter dem Symbol \texttt{zend\_ce\_arrayaccess} verf"ugbar ist. Dieses Interface enth"alt die Methoden \texttt{offsetGet} und
 \texttt{offsetSet} um auf Arrays zuzugreifen, \texttt{offsetUnset} um Zeilen aus dem Array zu l"oschen und \texttt{offsetExists} um anzuzeigen ob zu einem
 bestimmten Schl"usselwert ein Eintrag vorhanden ist. Die zu implementierenden Methoden wurden als \emph{built-in functions} in das bei der Initialisierung der
@@ -522,17 +523,19 @@ $val = $array->get(0);
 $array[0] = 'Wert';
 \end{lstlisting}
 
-Um dem PHP-Anwender den Umgang mit Java-Arrays weiter zu vereinfachen wurde beschlossen ein weiteres PHP-interne Interface zu implementieren, \texttt{IteratorAggregate}.
-Dieses Interface beschreibt eine einzige Methode, \texttt{getIterator}, allerdings muss sie ein Objekt zur"uckgeben, das das PHP-Interface \texttt{Iterator} implementiert.
+Es wurde beschlossen ein weiteres PHP-internes Interface zu implementieren, um dem PHP-Anwender den Umgang mit Java-Arrays weiter zu vereinfachen.
+Dieses Interface tr"agt den Namen \texttt{IteratorAggregate},
+und beschreibt eine einzige Methode, \texttt{getIterator}, allerdings muss sie ein Objekt zur"uckgeben, das das PHP-Interface \texttt{Iterator} implementiert.
 Ist dies der Fall kann der Anwender nicht nur mittels der \texttt{Iterator}-Methoden auf dem Array arbeiten, sondern auch mit dem \texttt{foreach}-Operator. Nachdem
-das \texttt{TurpitudeJavaArray} so ver"aendert wurde dass es zus"atzlich das Interface \texttt{IteratorAggregate}, auf C-Ebene unter dem Symbol \texttt{zend\_ce\_aggregate}
+das \texttt{TurpitudeJavaArray} so ver"andert wurde, dass es zus"atzlich das Interface \texttt{IteratorAggregate}, auf C-Ebene unter dem Symbol \texttt{zend\_ce\_aggregate}
 zu finden, implementiert wurde also eine weitere Klasse eingef"uhrt, der \texttt{TurpitudeJavaArrayIterator}. Ein \texttt{Iterator} muss folgende Methoden implementieren:
-\texttt{rewind}, \texttt{valid}, \texttt{key}, \texttt{current} und \texttt{next}, die alle keinerlei Argumente erwarten, und deren Funktionalit"at sich aus den Namen erschliessen 
-sollte. Intern h"alt der \texttt{TurpitudeJavaArrayIterator} neben dem \texttt{TurpitudeJavaArray} "uber welces er iterieren soll noch einen Integer vor, der den
+\texttt{rewind}, \texttt{valid}, \texttt{key}, \texttt{current} und \texttt{next}, die alle keinerlei Argumente erwarten, und deren Funktionalit"at sich aus den Namen erschlie\ss en 
+sollte. Intern h"alt der \texttt{TurpitudeJavaArrayIterator} neben dem \texttt{TurpitudeJavaArray} "uber welches er iterieren soll noch einen Integer vor, der den
 gerade aktuellen Index in das Array speichert. \texttt{rewind} setzt diesen Index auf 0 zur"uck, w"ahrend ein Aufruf von \texttt{next} ihn um eins erh"oht. \texttt{valid} gibt
 genau dann \texttt{true} zur"uck wenn der Index gr"o\ss er als 0 und kleiner als die Anzahl der Elemente des Arrays ist. \texttt{key} gibt den aktuellen Index, \texttt{current}
 das aktuelle Array-Element zur"uck, wozu einfach die \texttt{get}-Methode des entsprechenden Arrays aufgerufen wird. Hiernach konnte also in PHP folgenderma\ss en "uber Java-Arrays
 iteriert werden:
+\clearpage
 
 \begin{lstlisting}[caption=Iterieren "uber ein Java-Array]
 $iterator = $array->getIterator();
@@ -546,7 +549,7 @@ while ($iterator->valid()) {
 
 Laut Zend-Dokumentation sollte es eigentlich so sein, dass man "uber alle Objekte die entweder \texttt{Iterator} oder \texttt{IteratorAggregate} implementieren zus"atzlich mit
 dem \texttt{foreach}-Operator itererieren k"onnen sollte. Dies stimmt wohl auch f"ur im Userland geschriebene Klassen, allerdings verursachte der Versuch auf diese Weise
-"uber \texttt{TurpitudeJavaArray} oder \texttt{TurpitudeJavaArrayIterator} Objekte lediglich Abst"urze und Fehlermeldungen. Nach langem lesen von Zend-Quelltext
+"uber \texttt{TurpitudeJavaArray} oder \texttt{TurpitudeJavaArrayIterator} Objekte lediglich Abst"urze und Fehlermeldungen. Nach ausf"uhrlichem Lesen von Zend-Quelltext
 wurde entdeckt, dass jeder \texttt{zend\_class\_entry} ein Feld enth"alt, in dem ein Pointer auf eine Funktion gespeichert wird, die wiederum einen Pointer auf ein struct vom Typ
 \texttt{zend\_object\_iterator} zur"uckgeben muss. Solch ein struct besteht im Wesentlichen aus einem Voidpointer (\texttt{void*}), in dem Daten gespeichert werden k"onnen, und
 einem Pointer auf ein weiteres struct, welches die Iteratorfunktionen enthalten muss. Folglich m"ussen interne Klassen nicht nur die Methoden implementieren mit denen der
@@ -565,12 +568,12 @@ foreach ($iterator as $key => $val) {
 \label{sec:chap1:impl:12}
 
 Eigentlich konnten zu diesem Zeitpunkt wie oben beschrieben schon Java-Methoden aus PHP heraus aufgerufen werden, allerdings hatte
-diese Implementierung zwei Nachteile: einerseits musste der PHP-Entwickler die genaue JNI-Signatur der Methode kennen, andererseits -
+diese Implementierung zwei Nachteile: Einerseits musste der PHP-Entwickler die genaue JNI-Signatur der Methode kennen, andererseits -
 und dies war der erheblich st"orendere Nachteil - konnten nur Methoden aufgerufen werden die tats"achlich in der Java-Klasse definiert
 sind, auf der \texttt{findMethod()} aufgerufen wurde, also keine Methoden die in Oberklassen definiert wurden. Folglich musste der
 PHP-Anwender unter Umst"anden mehrere Java-Klassen in PHP erstellen um unterschiedliche Methoden auf ein und demselben Java-Objekt
 aufzurufen. Zwar mag es unter bestimmten Umst"anden w"unschenswert sein die genaue Methode angeben zu k"onnen die aufgerufen werden
-soll, allerdings will man in den meisten F"allen doch von den Java-Sprechfeatures wie Polymorphismus profitieren. Aus diesem Grund
+soll, allerdings will man in den meisten F"allen doch von den Java-Sprachfeatures wie Polymorphismus profitieren. Aus diesem Grund
 wurde beschlossen die Methodenaufrufe "uber \texttt{javaInvoke()} nicht zu ver"andern, aber die Methodenaufrufe "'direkt"' auf dem Objekt
 so anzupassen, dass sie sich wie ein normaler Java-Methodenaufruf verhalten. Dies zu verwirklichen w"are mit JNI-Mitteln alleine
 sehr schwer gewesen, weswegen auf die Java Reflection API zur"uckgegriffen werden musste.
@@ -586,10 +589,10 @@ Argumententypen versucht die passende Methode zu finden. Eventuelle beim Aufruf 
 einfach an den Aufrufer weitergeleitet, welcher diese Fehler dann selbst behandeln muss.
 
 Nun musste der native Code des TurpitudeJavaObjects derart angepasst werden, dass jeder Methodenaufruf der nicht die explizit
-definierten Methoden betrifft in einen Aufruf von \texttt{callMethod()} umgewandelt wird. Hierzu wurde eine C-Funktion geschrieben,
+definierten Methoden betrifft, in einen Aufruf von \texttt{callMethod()} umgewandelt wird. Hierzu wurde eine C-Funktion geschrieben,
 in der die zum Aufruf von \texttt{callMethod()} n"otigen jclass und jmethodID erzeugt, und die in PHP "ubergebenen Parameter
-in ein Java-Array gewandelt werden. Ist dies geschehen wird \texttt{callMethod()} aufgerufen, und das Ergebnis wie bei jedem
-anderen Java-Methodenaufruf auch in einen zval umgewandelt. Diese C-Funktion gibt "'true"' zur"uck wenn die Methode gefunden
+in ein Java-Array gewandelt werden. Ist dies geschehen wird \texttt{callMethod()} aufgerufen, und das Ergebnis, wie bei jedem
+anderen Java-Methodenaufruf auch, in einen zval umgewandelt. Diese C-Funktion gibt "'true"' zur"uck wenn die Methode gefunden
 und aufgerufen werden konnte, ansonsten wird "'false"' zur"uckgegeben. Dieser Bool'sche Wert wird dann im \texttt{\_\_call}-Callback
 des TurpitudeJavaObjects ausgewertet, und es wird entweder das Ergebnis zur"uckgegeben, oder ein PHP-Laufzeitfehler erzeugt.
 Der eigentliche Aufruf der Java-Methode geschieht "uber die Methode \texttt{invoke()} der gefundenen \texttt{Method}-Klasse, die neben
@@ -597,27 +600,27 @@ dem Objekt auf dem die Methode aufgerufen werden soll noch die zu "ubergebenden 
 
 Nun konnten Java-Methodenaufrufe in PHP auf die "Ubergabe der genauen Signatur verzichten, und es konnten auch Methoden aufgerufen
 werden die in "ubergeordneten Klassen definiert wurden:
-
+\clearpage
 \begin{lstlisting}[caption=Verbesserter Aufruf einer Java-Methode]
 $date = $obj->getDate();
 $string = $date->toString();
 \end{lstlisting}
 
 Allerdings brachte diese Art des Methodenaufrufes auch Nachteile mit sich, die zum Teil mit der Reflection-API von Java,
-und zum Teil mit Turpitude selbst zusammenh"angen. So werden beispielsweise Methodenargumente immer gem"a\ss  der Tabelle
-\ref{tab:phptojava} konvertiert, was bei simplen Datentypen wie \texttt{int} und \texttt{float} unter Umst"anden zu Problemen f"uhren
-kann, weil keine passende Methode gefunden wird. Beispielsweise f"uhrt folgender Code:
+und zum Teil mit Turpitude selbst zusammenh"angen. So werden beispielsweise Methodenargumente immer gem"a\ss\ der Tabelle
+\ref{tab:phptojava} konvertiert, was bei primitiven Datentypen wie \texttt{int} und \texttt{float} unter Umst"anden zu Problemen f"uhren
+kann, weil keine passende Methode gefunden wird. Beispielsweise f"uhrt der folgende Code
+zu einem Fehler, da der PHP-Wert (5) in einen java.lang.Long konvertiert wird, die Methode aber einen Integer erwartet.
 
 \begin{lstlisting}[caption=Typkonversionsfehler]
 $date = $obj->setIntval(5);
 \end{lstlisting}
 
-zu einem Fehler, da der PHP-Wert (5) in einen java.lang.Long konvertiert wird, die Methode aber einen Integer erwartet.
 Auch ist es so nur m"oglich "offentliche (\texttt{public}) Methoden aufzurufen,
-bei privaten Methoden wirf \texttt{Method.invoke()} eine Exception.
-In F"allen in denen der Anwender private oder ganz bestimmte Methoden aufrufen will l"a\ss t es sich also leider nicht vermeiden dass 
-der Anwender auf \texttt{findMethod()} und \texttt{javaInvoke()} zur"uckgreiffen muss. In den allermeisten F"allen bringt diese "Anderung 
-dem PHP-Programmierer aber eine erhebliche Vereinfachung, und rechtfertigt die entstehenden Nachteile, zumal ja in speziellen F"allen
+bei privaten Methoden wirft \texttt{Method.invoke()} eine Exception.
+In F"allen in denen der Anwender private oder ganz bestimmte Methoden aufrufen will, l"a\ss t es sich also leider nicht vermeiden, dass 
+der Anwender auf \texttt{findMethod()} und \texttt{javaInvoke()} zur"uckgreifen muss. In den meisten F"allen bringt diese "Anderung 
+dem PHP-Programmierer aber eine erhebliche Vereinfachung, und rechtfertigt die entstehenden Nachteile, zumal in speziellen F"allen
 auf die oben beschriebenen Methoden zur"uckgegriffen werden kann.
 
 \subsection{Java-Attribute, die 2.}
@@ -625,8 +628,8 @@ auf die oben beschriebenen Methoden zur"uckgegriffen werden kann.
 
 Nachdem nun der Aufruf von Java-Methoden deutlich vereinfacht wurde, sollte eine "ahnliche Verbesserung beim Zugriff auf Java-Attribute
 entwickelt werden, sprich der direkte Zugriff ohne den Aufruf einer speziellen Methode und vor allem ohne die Notwendigkeit die
-Signatur des Attributes anzugeben. Weiter oben wurde beschrieben dass PHP-Klassen Callbacks f"ur das Setzen und Auslesen von 
-Attributen besitzen, und diese sollten nun im TurpitudeJavaObject und in der TurpitudeJavaClass implementiert werden. Wie schon
+Signatur des Attributes anzugeben. Weiter oben wurde beschrieben, dass PHP-Klassen Callbacks f"ur das Setzen und Auslesen von 
+Attributen besitzen. Diese sollten nun im TurpitudeJavaObject und in der TurpitudeJavaClass implementiert werden. Wie schon
 im vorherigen Kapitel sollte hierzu die Java-Reflection API zur Hilfe genommen werden. Die Callbacks \texttt{\_\_get} und \texttt{\_\_set}
 haben die selben Parameter die alle Methoden einer Zend-internen Klasse erwarten, und somit musste auch hier zun"achst der Feldname
 und der Feld-Wert aus der Parameter-HashMap ausgelesen und zwischengespeichert werden. Der erste Parameter ist immer der Feldname,
@@ -636,8 +639,8 @@ des in \ref{sec:chap1:impl:12} beschriebenen \texttt{ReflectHelper} auf, \texttt
 die Methode \texttt{getField()} der Klasse des Java-Objektes benutzen um das entsprechende \texttt{java.lang.reflect.Field} des Attributes 
 zu finden, um dann auf diesem die Methode \texttt{get()} beziehungsweise \texttt{set()} aufzurufen. \texttt{getField()} geht nach folgendem
 Algorithmus vor: Wenn die Klasse ein Feld mit dem gesuchten Namen definiert wird dieses zur"uckgegeben, ist dies nicht der Fall und die
-Klasse implementiert mindestens ein Interface werden diese Interfaces nach einem passenden Feld durchsucht. Wird auch hier kein Feld
-gefunden wird der Algorithmus rekursiv auf die Vaterklasse angewandt, hat die Klasse keine Vaterklasse wird ein Fehler erzeugt.
+Klasse implementiert mindestens ein Interface, werden diese Interfaces nach einem passenden Feld durchsucht. Wird auch hier kein Feld
+gefunden, wird der Algorithmus rekursiv auf die Vaterklasse angewandt, hat die Klasse keine Vaterklasse wird ein Fehler erzeugt.
 Die involvierten PHP-Variablen, beim
 schreibenden Zugriff der zu schreibende Wert, beim lesenden Zugriff der ausgelesene Wert, werden wie immer nach den Tabellen
 \ref{tab:phptojava} und \ref{tab:javatophp} konvertiert. Treten beim Zugriff Fehler auf, so wird die Ausf"uhrung des PHP-Codes abgebrochen
@@ -659,20 +662,20 @@ auch hier "uberwiegen nach Meinung des Autors die Vorteile.
 \subsection{Erzeugen von Java-Arrays in PHP}
 \label{sec:chap1:impl:13}
 
-In \ref{sec:chap1:impl:11} wurde beschrieben, dass Arrays die von Java an PHP "ubergeben werden als spezielles Objekt
-mit speziellen Methoden abgebildet werden. Was allerdings noch fehlte war eine M"oglichkeit Java-Arrays in PHP zu erzeugen,
+In \ref{sec:chap1:impl:11} wurde beschrieben, dass Arrays die von Java an PHP "ubergeben werden, als spezielles Objekt
+mit speziellen Methoden abgebildet werden. Was allerdings noch fehlte, war eine M"oglichkeit Java-Arrays in PHP zu erzeugen,
 beispielsweise um sie als Argument an eine Methode zu "ubergeben. Das JNI bietet mit den Funktionen \texttt{New$<$Type$>$Array}
 die M"oglichkeit beliebige Arrays zu erstellen, im Folgenden wird beschrieben wie diese Funktionen durch Turpitude in PHP
 abgebildet und dem Anwender zug"anglich gemacht wurden.
 
-Die Methode um neue Arrays zu erzeugen sollte \texttt{newArray()} hei\ss en, und da sie sich keiner Klasse zuordnen lie\ss  wurde 
-sie dem TurpitudeEnvironment hinzugef"ugt. Sie erwartet zwei Argumente, zum einen den JNI-kodierten Typen der Arrayelemente 
+Die Methode um neue Arrays zu erzeugen sollte \texttt{newArray()} hei\ss en, und da sie sich keiner Klasse zuordnen lie\ss\ wurde 
+sie dem TurpitudeEnvironment hinzugef"ugt. Sie erwartet zwei Argumente, zum einen den JNI-kodierten Typ der Arrayelemente 
 als String, und zum anderen die L"ange, die das zu erzeugende Array haben soll. Intern wird das Erzeugen von der Funktion
 \texttt{turpitude\_env\_method\_newarray()} "ubernommen, die die selben Parameter entgegennimmt wie die meisten PHP-Methoden
 implementierende Funktionen. Innerhalb dieser Funktion werden zun"achst die Anzahl und Typen der Argumente "uberpr"uft, und 
 mit der Funktion \texttt{get\_java\_field\_type()} der Typstring geparst. Anhand des Typs wird entschieden welche JNI-Funktion
 aufgerufen werden soll, wird der Typ nicht erkannt wird ein Laufzeitfehler geworfen. Ein Sonderfall sind Objektarrays, zum einen
-weil hier nocht "uberpr"uft wird ob die Klasse valide ist, und zum anderen weil auch ein Objektarray erzeugt wird wenn es sich beim
+weil hier nicht "uberpr"uft wird ob die Klasse valide ist, und zum anderen weil auch ein Objektarray erzeugt wird wenn es sich beim
 verlangten Typ um ein Array handelt, und somit ein Array von Arrays erstellt werden soll. Trat bis hierhin kein Fehler auf
 wird das Array noch in ein TurpitudeJavaArray verpackt, und an den Anwender zur"uckgegeben, der dann wie gewohnt mit dem Array
 verfahren kann.
@@ -697,24 +700,24 @@ das Objekt genau ist.
 
 Als letztes Feature stand nun noch das Setzen von Parametern aus, die normalerweise "uber die Datei "'php.ini"' gesteuert werden.
 Schnell war klar dass die geeignete Zend-API Funktion dies zu erreichen \texttt{zend\_alter\_ini\_entry()} war. Diese Funktion erwartet
-als Argumente den Namen des INI-Parameters, dessen L"ange, und den zu setzenden Wert und dessen L"ange. Ausserdem erwartet sie zwei
-weitere Parameter, den "'\emph{modify\_type}"' und die "'\emph{stage}"', deren Bedeutung sich zun"achst nicht ohne weiteres erschlo\ss .
+als Argumente den Namen des INI-Parameters, dessen L"ange, und den zu setzenden Wert sowie dessen L"ange. Au\ss erdem erwartet sie zwei
+weitere Parameter, den "'\emph{modify\_type}"' und die "'\emph{stage}"', deren Bedeutung sich zun"achst nicht ohne weiteres erschloss.
 Naive Versuche mittels dieser Funktion Parameter zu setzen waren erfolglos, und da weder die Funktion noch ihre Parameter dokumentiert
-waren konnte abermals nur durch ausf"uhrliches Studium des Zend-Quelltextes ein Erfolg erzielt werden.
+waren, konnte abermals nur durch ausf"uhrliches Studium des Zend-Quelltextes ein Erfolg erzielt werden.
 
 Wie sich herausstellte hat jeder php.ini-Wert eine Bitmaske die anzeigt wann er ver"andert werden darf, und das oben angesprochene Argument
-\emph{stage} wird mit dieser Bitmaske verundet um festzustellen ob eine Ver"anderung zu diesem Zeitpunkt zul"a\ss ig ist.
+\emph{stage} wird mit dieser Bitmaske verundet, um festzustellen ob eine Ver"anderung zu diesem Zeitpunkt zul"a\ss ig ist.
 Die ersten vier Bits der Bitmaske stehen in dieser Reihenfolge f"ur folgende Zeitpunkte: 
 \begin{enumerate}
 \item \texttt{STARTUP} - nach dem Initialisieren des Interpreters
 \item \texttt{SHUTDOWN} - vor dem Herunterfahren des Interpreters
 \item \texttt{ACTIVATE} - nach dem Starten des sog. Requests 
-      \footnote{an dieser Stelle ist wiedereinmal sehr deutlich zu merken wie sehr PHP an den Konzepten der Web- und CGI-Welt h"angt, in der
+      \footnote{an dieser Stelle ist wieder einmal sehr deutlich zu merken wie sehr PHP mit den Konzepten der Web- und CGI-Welt verbunden ist, in der
       PHP oftmals als Modul in einem Webserver l"auft, und jeder Seitenzugriff (Request) unabh"angig behandelt werden muss.}
 \item \texttt{DEACTIVATE} - vor der Beendigung des Requests, aber nach Ausf"uhrung des Skriptes
 \item \texttt{RUNTIME} - zur Laufzeit des PHP-Skriptes
 \end{enumerate}
-Der Paramter \emph{modify\_type} hingegen gibt an wer die "Anderung vornehmen will, und auch hierzu enth"alt jeder php.ini-Wert wieder eine Bitmaske.
+Der Parameter \emph{modify\_type} hingegen gibt an wer die "Anderung vornehmen will, und auch hierzu enth"alt jeder php.ini-Wert wieder eine Bitmaske.
 Die Bedeutung der einzelnen Bits stellt sich wie folgt dar:
 \begin{enumerate}
 \item \texttt{USER} - Diese Werte kann der PHP-Benutzer, sprich das ausgef"uhrte Skript setzen
@@ -722,20 +725,20 @@ Die Bedeutung der einzelnen Bits stellt sich wie folgt dar:
       \footnote{Auch dies ist ein Hinweis auf die CGI-Abstammung von PHP, wo oftmals unterschiedliche Benutzer Skript im gleichen Webserver ausf"uhren,
       und unabh"angig voneinander php.ini-Werte setzen wollen.}
       gesetzt werden.
-\item \texttt{SYSTEM} - Diese Werte d"urfen nur Systemweit ver"andert werden
+\item \texttt{SYSTEM} - Diese Werte d"urfen nur systemweit ver"andert werden
 \end{enumerate}
-Nachdem die Bedeutung der beiden Bitmasken klar war funktionierte das Setzen von php.ini-Werten immernoch nicht, was daran lag, dass die L"angenangabe
-des Parameternames mysteri"oserweise um eins g"o\ss er sein mu\ss  als er wirklich ist. Diese L"osung wurde nur durch Zufall gefunden, und der
+Nachdem die Bedeutung der beiden Bitmasken klar war, funktionierte das Setzen von php.ini-Werten immer noch nicht, was daran lag, dass die L"angenangabe
+des Parameternamens mysteri"oserweise um eins g"o\ss er sein mu\ss\ als er wirklich ist. Diese L"osung wurde nur durch Zufall gefunden, und der
 Grund hierf"ur konnte nicht ermittelt werden.
 
 Nun musste noch ein Weg gefunden werden der es dem Anwender erlaubt diese Werte auf m"oglichst einfache Weise zu setzen, und es wurde beschlossen dieses
-Ziel "uber Java Systemproperties zu erreichen, da diese beim Start der JVM als Kommandozeilenparameter "ubergeben, oder aber vor dem Start der ScriptEngine 
+Ziel "uber Java-Systemproperties zu erreichen, da diese beim Start der JVM als Kommandozeilenparameter "ubergeben, oder aber vor dem Start der ScriptEngine 
 programmatisch gesetzt werden k"onnen. Folglich wurde die C-Implementierung der \texttt{startUp()}-Methode der PHPScriptEngine derart angepasst, dass vor dem 
-Start des Requests eine Java-Methode aufgerufen wird, die aus den Systemproperties diejenigen ausliest,  die mit einem bestimmten Prefix beginnen, welcher 
+Start des Requests eine Java-Methode aufgerufen wird, die aus den Systemproperties diejenigen ausliest,  die mit einem bestimmten Pr"afix beginnen, welcher 
 als statisches Feld \texttt{PropertyPrefix} in der ScriptEngine gespeichert ist.
 Standardm"a\ss ig ist der Prefix \texttt{net.xp\_framework.turpitude.ini}, und die Namen der zu setzenden php.ini-Werte werden mit einem Punkt separiert an diesen
 Pr"afix angeh"angt. Jedes der so gewonnenen Schl"ussel/Wertepaare wird wieder an eine native Methode "ubergeben, die schlie\ss lich \texttt{zend\_alter\_ini\_entry()}
-mit den n"otigen Argumenten aufruft, um den Wert zu setzen. Diese Vorgehensweise mag etwas kompliziert erscheinen, aber dadurch dass die php.ini-Werte vor dem
+mit den n"otigen Argumenten aufruft, um den Wert zu setzen. Diese Vorgehensweise mag etwas kompliziert erscheinen, aber dadurch, dass die php.ini-Werte vor dem
 Start des Requests gesetzt werden, k"onnen alle Werte ver"andert werden, gleich welchen Wert ihr \texttt{modify\_type}-Attribut hat.
 
 

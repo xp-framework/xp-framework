@@ -59,7 +59,7 @@ Anforderung erf"ullt ist.
 \begin{enumerate}
 \item \textbf{ScriptEngine}.
     Die PHP-ScriptEngine muss f"ur den Anwender verf"ugbar sein. Die aktuelle Java-Umgebung muss so konfiguriert sein,
-    dass die PHP-ScriptEngine vom ScriptEngineManager "uber die in \ref{sec:javanscripts:jsr} beschriebenen Auffindungsmechanismen
+    dass die ScriptEngine f"ur PHP vom ScriptEngineManager "uber die in \ref{sec:javanscripts:jsr} beschriebenen Auffindungsmechanismen
     gefunden und instaziiert werden kann. Diese Anforderung ist eigentlich Grundlage des kompletten Systems, streng genommen wird sie
     aber nur von \emph{UC.01} gestellt.
     \textbf{Test}: Durch einfache Ausgabe auf der Konsole soll schnell ermittelbar sein, welche ScriptEngines geladen und einsatzbereit sind.
@@ -101,7 +101,7 @@ Anforderung erf"ullt ist.
     \textbf{Test}: Es soll ein PHP-Skript ausgef"uhrt werden das eine Java-Exception provoziert und auf diese Exception reagiert.
 
 \item \textbf{Weitere Java-Funktionalit"at}. Implizit fordert \emph{UC.03} ebenfalls, dass das System dem PHP-Anwender erlaubt grundlegende
-    Funktionalit"at der Java-Umgebung zu nutzen. Er soll "uberpr"ufen k"onnen, ob ein Java-Objekt identisch mit einem anderen ist
+    Funktionalit"at der Java Laufzeitumgebung zu nutzen. Er soll beispielsweise "uberpr"ufen k"onnen, ob ein Java-Objekt identisch mit einem anderen ist
     (\texttt{equals()}), ob es Instanz einer bestimmten Klasse ist (\texttt{instanceof}), oder ob dieses sicher auf eine andere Klasse zu casten ist.
     \textbf{Test}: Innerhalb eines PHP-Skripts sollen auf einem Java-Objekt jeweils die oben genannten Tests durchgef"uhrt werden.
 
