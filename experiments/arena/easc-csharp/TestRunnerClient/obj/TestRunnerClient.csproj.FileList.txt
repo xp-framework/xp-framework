@@ -8,7 +8,7 @@ obj\Release\TestRunnerClient.exe
 obj\Release\TestRunnerClient.pdb
 bin\Debug\TestRunnerClient.exe
 bin\Debug\TestRunnerClient.pdb
-bin\Debug\EASCLibrary.dll
-bin\Debug\EASCLibrary.pdb
 obj\Debug\TestRunnerClient.exe
 obj\Debug\TestRunnerClient.pdb
+bin\Debug\EASCLibrary.dll
+bin\Debug\EASCLibrary.pdb
