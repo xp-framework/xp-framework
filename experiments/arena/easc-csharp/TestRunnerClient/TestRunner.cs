@@ -4,7 +4,7 @@ using System.Text;
 
 namespace beans.test
 {
-    interface TestRunner
+    public interface TestRunner
     {
         object runTestClass(String name);
     }
