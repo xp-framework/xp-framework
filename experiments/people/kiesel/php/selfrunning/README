@@ -1,0 +1,52 @@
+$Id$
+
+About
+------
+
+This experiment shows how to produce a self-running, self-containing
+.xar file without further dependencies (other than a version of
+PHP5 available).
+
+
+How to create and run a self-running archive
+---------------------------------------------
+
+These are the steps required to produce a self running archive:
+
+1. You need to supply a .xar containing *all* files 
+   by yourself, it will not be generated here.
+
+2. Run the CreateRunner xpcli:
+
+   $ xpcli CreateRunner \
+    --output=target.xar \
+    --xar=/path/to/existing.xar \
+    --main=tld.package.RunningClass
+    
+   --output denotes the new xar
+   --xar    the existing xar to include
+   --main   main class which should be run automatically
+            (this needs to be a special class)
+
+3. Run the new xar
+   
+   $ php target.xar [<runner-class>]
+   
+   By default, the main class picked upon generating the xar
+   will be run, this can be overriden through the <runner-class>
+   parameter.
+   
+   No further files than the xar should be required for
+   running the application.
+
+Status
+-------
+
+Step 1)
+Already available through XP infrastructur
+
+Step 2)
+Currently being implemented in this experiment
+
+Step 3)
+To be implemented
