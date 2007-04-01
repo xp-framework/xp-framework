@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+
+Version 5.3.2, released 2007-04-01
+----------------------------------
+SVN version: 9830
+
 - Added support for XML namespaces to xml.meta Marshaller / Unmarshaller
   (friebe)
 - Fixed peer.mail.store.CclientStore (ext/imap wrapper) implementation 
