@@ -60,7 +60,7 @@
       return (
         $this->getClassName().
         ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
-        "(search= [\n  ".$this->archive->file->getURI()."\n])"
+        "(search= [\n  ".$this->archive->getURI()."\n])"
       );
     }
     
@@ -80,6 +80,7 @@
      * @param   string class fully qualified class name io.File
      * @return  lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
+     * @throws  lang.FormatException in case the class file is malformed
      */
     public function loadClass($class) {
       $name= xp::reflect($class);
@@ -88,8 +89,7 @@
         if (FALSE === $this->providesClass($class)) {
           throw new ClassNotFoundException(sprintf(
             'Class "%s" not found: %s',
-            $class,
-            $e->getMessage()
+            $class
           ));
         }
 
@@ -154,13 +154,11 @@
     public static function instanceFor($path) {
       static $pool= array();
       
-      if (isset($pool[$path])) {
-        return $pool[$path];
+      if (!isset($pool[$path])) {
+        $pool[$path]= new ArchiveClassLoader(new ArchiveReader($path));
       }
       
-      $instance= new ArchiveClassLoader(new ArchiveReader($path));
-      $pool[$path]= $instance;
-      return $instance;
+      return $pool[$path];
     }
   }
 ?>
