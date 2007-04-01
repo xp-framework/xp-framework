@@ -4,6 +4,10 @@ using System.Text;
 
 namespace Net.XpFramework.EASC
 {
+
+    /// <summary>
+    /// Entry point class for the EASC Remoting API
+    /// </summary>
     public class Remote
     {
         XPProtocol proto = null;
@@ -22,7 +26,7 @@ namespace Net.XpFramework.EASC
         /// Entry point method: Gets a remoting instance for a given DSN
         /// </summary>
         /// <param name="dsn"></param>
-        /// <returns></returns>
+        /// <returns>A remoting instance</returns>
         public static Remote ForName(string dsn)
         {
             if (!instances.ContainsKey(dsn))
@@ -32,11 +36,20 @@ namespace Net.XpFramework.EASC
             return instances[dsn];
         }
 
+        /// <summary>
+        /// Look up a remote name and return a proxy to it
+        /// </summary>
+        /// <param name="name">JNDI name</param>
+        /// <returns>A proxy object</returns>
         public object Lookup(string name)
         {
             return this.proto.SendPacket(XPProtocol.REMOTE_MSG_LOOKUP, this.proto.ByteCountedStringOf(name));
         }
 
+        /// <summary>
+        /// Creates a string representation of this object
+        /// </summary>
+        /// <returns></returns>
         override public string ToString()
         {
             return this.GetType().ToString() + "@" + this.proto.ToString();
