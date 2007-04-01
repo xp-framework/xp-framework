@@ -19,6 +19,16 @@ namespace Net.XpFramework.EASC
             this.handler = handler;
         }
 
+        private static Type FindTypeByName(string name)
+        {
+            foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type t = a.GetType(name);
+                if (t != null) return t;
+            }
+            throw new TypeLoadException("Cannot find type " + name);
+        }
+
         /// <summary>
         /// Entry point method
         /// </summary>
@@ -28,12 +38,14 @@ namespace Net.XpFramework.EASC
         /// <returns></returns>
         public static object NewProxyInstance(int oid, string name, XPProtocol handler)
         {
-            Type t = Type.GetType(name);
-            if (null == t)
+            try
             {
-                throw new RemoteException("Cannot find type", new NotImplementedException(name));
+                return new Proxy(oid, handler, FindTypeByName(name)).GetTransparentProxy();
+            } 
+            catch (TypeLoadException e)
+            {
+                throw new RemoteException("Cannot find type", e);
             }
-            return new Proxy(oid, handler, t).GetTransparentProxy();
         }
 
         #region IRemotingTypeInfoImplementation
