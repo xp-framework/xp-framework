@@ -88,7 +88,7 @@
       if (!class_exists($name) && !interface_exists($name)) {
         if (FALSE === $this->providesClass($class)) {
           throw new ClassNotFoundException(sprintf(
-            'Class "%s" not found: %s',
+            'Class "%s" not found',
             $class
           ));
         }
