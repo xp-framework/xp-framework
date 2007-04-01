@@ -7,7 +7,7 @@ using System.IO;
 namespace Net.XpFramework.EASC
 {
     /// <summary>
-    /// Implements the XP EASC protocol
+    /// Implements the XP EASC protocol. Used by the Remote class.
     /// </summary>
     class XPProtocol : IDisposable
     {
@@ -35,20 +35,29 @@ namespace Net.XpFramework.EASC
         /// <summary>
         /// Initialize client/server communication
         /// </summary>
-        /// <param name="proxy"></param>
+        /// <param name="proxy">The Uri object specifying the remote endpoint</param>
         public void initialize(Uri proxy)
         {
             this.sock = new TcpClient();
-            this.sock.Connect(proxy.Host, proxy.Port);
-            this.sock.NoDelay = true;
 
+            try
+            {
+                this.sock.Connect(proxy.Host, proxy.Port);
+                this.sock.NoDelay = true;
+            }
+            catch (SocketException e)
+            {
+                throw new RemoteException("Failed connecting to " + proxy, e);
+            }
+
+            // Set up serializer
             this.serializer = new Serializer();
             this.serializer.mappings['I'] = new RemoteInterfaceMapping();
             this.serializerContext["handler"] = this;
 
+            // Start up socket communication
             this.writer = new BinaryWriter(this.sock.GetStream());
             this.reader = new BinaryReader(this.sock.GetStream());
-            
             this.SendPacket(REMOTE_MSG_INIT, "\x01"); // FIXME: Doesn't support user/password yet
         }
 
@@ -71,7 +80,7 @@ namespace Net.XpFramework.EASC
         }
 
         #region WireFormat
-        protected void write(UInt32 value)
+        protected void Write(UInt32 value)
         {
             byte[] buffer= new byte[4];
             for (int i = 0; i < 4; i++)
@@ -82,7 +91,7 @@ namespace Net.XpFramework.EASC
             this.writer.Write(buffer);
         }
 
-        protected UInt32 readUInt32()
+        protected UInt32 ReadUInt32()
         {
             UInt32 ret = 0;
             byte[] buffer= this.reader.ReadBytes(4);
@@ -93,7 +102,7 @@ namespace Net.XpFramework.EASC
 			return ret;
         }
 
-        protected UInt16 readUInt16()
+        protected UInt16 ReadUInt16()
         {
             UInt32 ret = 0;
             byte[] buffer = this.reader.ReadBytes(2);
@@ -104,14 +113,14 @@ namespace Net.XpFramework.EASC
             return (UInt16)ret;
         }
 
-        protected string readByteCountedString()
+        protected string ReadByteCountedString()
         {
             StringBuilder b= new StringBuilder();
             byte next = 0;
             Encoding encode = Encoding.ASCII;
             do
             {
-                UInt16 length = this.readUInt16();
+                UInt16 length = this.ReadUInt16();
                 next = this.reader.ReadByte();
 
                 byte[] buffer = new byte[length];
@@ -123,26 +132,32 @@ namespace Net.XpFramework.EASC
         }
         #endregion
 
+        /// <summary>
+        /// Send a packet of a given type and return the server's answer in unserialized representation
+        /// </summary>
+        /// <param name="type">One of the REMOTE_MSG_* constants</param>
+        /// <param name="data">The data packet, already serialized</param>
+        /// <returns></returns>
         public object SendPacket(byte type, string data) {
 
             // Write
-            this.write(EASC_MAGIC_NUMBER);
+            this.Write(EASC_MAGIC_NUMBER);
             this.writer.Write((byte)1);           // Major version
             this.writer.Write((byte)0);           // Minor version
             this.writer.Write(type);
             this.writer.Write(false);             // Whether a transaction is active
-            this.write((uint)data.Length);
+            this.Write((uint)data.Length);
             byte[] payload = Encoding.ASCII.GetBytes(data);
             this.writer.Write(payload, 0, payload.Length);
             this.writer.Flush();
 
             // Read answer
-            UInt32 magic = this.readUInt32();
+            UInt32 magic = this.ReadUInt32();
             byte vmajor = this.reader.ReadByte();
             byte vminor = this.reader.ReadByte();
             byte rtype = this.reader.ReadByte();
             bool tran = this.reader.ReadBoolean();
-            UInt32 length = this.readUInt32();
+            UInt32 length = this.ReadUInt32();
 
             if (magic != EASC_MAGIC_NUMBER)
             {
@@ -155,12 +170,12 @@ namespace Net.XpFramework.EASC
             switch (rtype)
             {
                 case REMOTE_MSG_VALUE:
-                    response = this.readByteCountedString();
+                    response = this.ReadByteCountedString();
                     object value = this.serializer.valueOf(new SerializedData(response), this.serializerContext);
                     return value;
 
                 case REMOTE_MSG_EXCEPTION:
-                    response = this.readByteCountedString();
+                    response = this.ReadByteCountedString();
                     object exception = this.serializer.valueOf(new SerializedData(response), this.serializerContext);
                     throw new RemoteException("Exception", (Exception)exception);
 
