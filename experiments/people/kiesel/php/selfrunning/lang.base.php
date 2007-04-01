@@ -223,8 +223,8 @@
         
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
         
-        // Really?
-        if ('CCA' !== $data('id')) return FALSE;
+        // TDB: Should this be really checked?
+        if ('CCA' !== $header['id']) return FALSE;
         
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
