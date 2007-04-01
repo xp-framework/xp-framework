@@ -26,7 +26,6 @@ namespace TestRunnerClient
             } catch (RemoteException e) {
                 Console.WriteLine("*** {0}", e);
             }
-            Console.ReadKey();
         }
     }
 }
