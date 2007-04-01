@@ -8,5 +8,15 @@ else
   file=$2
   shift 2
 fi
+
 D=`dirname $0`
-php5 -dinclude_path="$D:$D/../../../../skeleton/:" $D/../../../../util/bin/xpcli.php Xar $cmd $file -R `pwd` --args="$*"
+INCLUDE_PATH="$D:$D/../../../../skeleton/:."
+XPCLI=$D/../../../../util/bin/xpcli.php
+
+if [ "$OS" = "Windows_NT" ]; then
+	D=`cygpath -w "$D"`
+	INCLUDE_PATH=";$D;`cygpath -w $D/../../../../skeleton`"
+	XPCLI=`cygpath -w $XPCLI`
+fi
+
+php -dinclude_path="$INCLUDE_PATH" "$XPCLI" Xar $cmd "$file" -R `pwd` --args="$*"
