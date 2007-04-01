@@ -13,10 +13,17 @@ How to create and run a self-running archive
 
 These are the steps required to produce a self running archive:
 
-1. You need to supply a .xar containing *all* files 
-   by yourself, it will not be generated here.
+1.* Copy the files from overrides/ that already exist in your
+   public skeleton tree to that tree to overwrite the originals
+   with the version supplied with this experiment.
+ 
+2.* Create a xar file containing all framework classes:
 
-2. Run the CreateRunner xpcli:
+  $ cd xp/trunk/skeleton
+  $ xar cf ../xp-rt-current-`date +%Y%m%d`.xar .
+  $ mv ../xp-rt* ../experiments/people/kiesel/php/selfrunning/
+   
+3. Run the CreateRunner xpcli:
 
    $ xpcli CreateRunner \
     --output=target.xar \
@@ -30,7 +37,7 @@ These are the steps required to produce a self running archive:
 
 3. Run the new xar
    
-   $ php target.xar [<runner-class>]
+   $ php [-dinclude_path=""] target.xar -class [<runner-class>]
    
    By default, the main class picked upon generating the xar
    will be run, this can be overriden through the <runner-class>
@@ -38,15 +45,42 @@ These are the steps required to produce a self running archive:
    
    No further files than the xar should be required for
    running the application.
+   
+   Example:
+   $ php -dinclude_path="" runner.xar -class net.xp_framework.experiments.ShowContents.class.php
+   
+   (This command should output the contents of its own xar file)
 
 Status
 -------
 
 Step 1)
-Already available through XP infrastructur
+Already available through XP infrastructur. This step will not be
+necessary, once this experiment will be merged into the official 
+tree.
 
 Step 2)
-Currently being implemented in this experiment
+Implemented.
 
 Step 3)
-To be implemented
+Implemented, on an experimental base. Currently every class is being
+treated as a xpcli-style Command class.
+For general purpose applications (eg. in a webserver), we'd probably
+not want to use a Command - this is just hardcoded this way for 
+simplicity.
+
+
+Outlook
+--------
+This experiment is the proof-of-concept that creating a self-extracting
+and running .xar archive with the complete XP framework and one or
+even many applications in the single file does work.
+
+What needs to be done to get this into the official distribution?
+* file an RFC for the whole concept
+* decide what the runner.ini should look like and whether we need
+  it at all
+* decide what classes should be supported, possibly build a common
+  infrastructure for all kinds of scripts (scriptlet, command, ...)
+* decide whether the self-running xars should have a different
+  file extension (clickability)

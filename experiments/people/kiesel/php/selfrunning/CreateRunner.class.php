@@ -117,6 +117,22 @@
         );
       }
       
+      // HACK, to be removed later
+      $temp->addFileBytes(
+        'lang/archive/ArchiveSelfRunner.class.php',
+        'lang/archive/',
+        'ArchiveSelfRunner.class.php',
+        FileUtil::getContents(new File('ArchiveSelfRunner.class.php'))
+      );
+      
+      // Hack, to be removed later
+      $temp->addFileBytes(
+        'net/xp_framework/experiments/ShowContents.class.php',
+        'net/xp_framework/experiments/',
+        'ShowContents.class.php',
+        FileUtil::getContents(new File('cmd/ShowContents.class.php'))
+      );
+      
       $this->out->writeLine('===> Creating META-INF directory');
       $temp->addFileBytes(
         'META-INF/runner.ini',
@@ -127,7 +143,7 @@
 ; $Id$
 ;
 
-[run]
+[main]
 class="%s"
 ',
         $this->getClassName(),
