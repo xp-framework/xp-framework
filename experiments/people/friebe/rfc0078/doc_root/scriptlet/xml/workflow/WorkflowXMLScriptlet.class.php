@@ -5,7 +5,9 @@
  */
 
   uses(
-    'scriptlet.xml.XMLScriptlet', 
+    'scriptlet.HttpScriptlet', 
+    'scriptlet.xml.workflow.WorkflowXMLScriptletRequest',
+    'scriptlet.xml.workflow.WorkflowXMLScriptletResponse',
     'scriptlet.xml.workflow.routing.ClassRouter'
   );
 
@@ -14,9 +16,10 @@
    *
    * @purpose  Base class
    */
-  class WorkflowXMLScriptlet extends XMLScriptlet {
-    public
-      $package  = NULL;
+  class WorkflowXMLScriptlet extends HttpScriptlet {
+    protected
+      $processor  = NULL,
+      $package    = NULL;
 
     /**
      * Constructor
@@ -25,8 +28,31 @@
      * @param   string base default ''
      */
     function __construct($package, $base= '') {
-      parent::__construct($base);
       $this->package= rtrim($package, '.');
+      $this->processor= new DomXSLProcessor();
+      $this->processor->setBase($base);
+    }
+
+    /**
+     * Set our own response object
+     *
+     * @return  scriptlet.xml.XMLScriptletResponse
+     * @see     xp://scriptlet.HttpScriptlet#_response
+     */
+    protected function _response() {
+      $response= new WorkflowXMLScriptletResponse();
+      $response->setProcessor($this->processor);
+      return $response;
+    }
+
+    /**
+     * Set our own request object
+     *
+     * @return  scriptlet.xml.XMLScriptletRequest
+     * @see     xp://scriptlet.HttpScriptlet#_request
+     */
+    protected function _request() {
+      return new WorkflowXMLScriptletRequest();
     }
     
     /**
@@ -68,11 +94,7 @@
      * @return  bool
      */
     public function needsSession($request) {
-      return TRUE;
-      ($request->state && (
-        $request->state->hasHandlers() || 
-        $request->state->requiresAuthentication()
-      ));
+      return FALSE;
     }
     
     /**
@@ -168,6 +190,22 @@
       // will  not be called. This, for example, is useful when a state wants 
       // to send a redirect.
       if (FALSE === $r) return FALSE;
+
+      // Define special parameters
+      $response->setParam('state',   $request->getStateName());
+      $response->setParam('page',    $request->getPage());
+      $response->setParam('lang',    $request->getLanguage());
+      $response->setParam('product', $request->getProduct());
+      $response->setParam('sess',    $request->getSessionId());
+      $response->setParam('query',   $request->getQueryString());
+      
+      // Set XSL stylesheet
+      $response->hasStylesheet() || $this->_setStylesheet($request, $response);
+
+      // Add all request parameters to the formvalue node
+      foreach ($request->params as $key => $value) {
+        $response->addFormValue($key, $value);
+      }
       
       // If there is no context, we're finished
       if (!$context) return;
@@ -178,20 +216,35 @@
     }
 
     /**
-     * Process request
+     * Handle all requests. This method is called from <pre>doPost</pre> since
+     * it really makes no difference - one can still find out via the 
+     * <pre>method</pre> attribute of the request object. 
      *
+     * Remember:
+     * When overriding this method, please make sure you include all your 
+     * sourcecode _before_ you call <pre>parent::doGet()</pre>
+     *
+     * @return  bool processed
      * @param   scriptlet.xml.XMLScriptletRequest request 
      * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     * @see     xp://scriptlet.HttpScriptlet#doGet
      */
-    public function processRequest($request, $response) {
-      if (FALSE === $this->processWorkflow($request, $response)) {
-      
-        // The processWorkflow() method indicates no further processing
-        // is to be done. Pass result "up".
-        return FALSE;
-      }
-
-      return parent::processRequest($request, $response);
+    public function doGet($request, $response) {
+      return $this->processWorkflow($request, $response);
+    }
+    
+    /**
+     * Simply call doGet
+     *
+     * @return  bool processed
+     * @param   scriptlet.xml.XMLScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     * @see     xp://scriptlet.HttpScriptlet#doPost
+     */
+    public function doPost($request, $response) {
+      return $this->processWorkflow($request, $response);
     }
   }
 ?>
