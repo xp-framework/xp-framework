@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Thu Mar 29 13:08:32     2007
-@status: draft
+@status: discussion, ends Wed Apr  4 16:04:07     2007
 @category: <infrastructure>
 
 Scope of Change
