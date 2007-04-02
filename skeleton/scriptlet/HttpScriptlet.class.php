@@ -67,7 +67,7 @@
      * Create a request object. Override this method to define
      * your own request object
      *
-     * @return  &scriptlet.HttpScriptletRequest
+     * @return  scriptlet.HttpScriptletRequest
      */
     protected function _request() {
       return new HttpScriptletRequest();
@@ -77,7 +77,7 @@
      * Create a session object. Override this method to define
      * your own session object
      *
-     * @return  &scriptlet.HttpSession
+     * @return  scriptlet.HttpSession
      */
     protected function _session() {
       return new HttpSession();
@@ -87,7 +87,7 @@
      * Create a response object. Override this method to define
      * your own response object
      *
-     * @return  &scriptlet.HttpScriptletResponse
+     * @return  scriptlet.HttpScriptletResponse
      */
     protected function _response() {
       return new HttpScriptletResponse();
@@ -96,7 +96,7 @@
     /**
      * Initialize session
      *
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletRequest request
      */
     public function handleSessionInitialization($request) {
       $request->session->initialize($request->getSessionId());
@@ -109,8 +109,8 @@
      * This function must return TRUE if the scriptlet is supposed to 
      * continue processing the request.
      *
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
     public function handleInvalidSession($request, $response) {
@@ -125,8 +125,8 @@
      * This function must return TRUE if the scriptlet is supposed to 
      * continue processing the request.
      *
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @return  bool continue
      */
     public function handleSessionInitializationError($request, $response) {
@@ -137,7 +137,7 @@
      * Decide whether a session is needed. Returns FALSE in this
      * implementation.
      *
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletRequest request
      * @return  bool
      */
     public function needsSession($request) {
@@ -150,12 +150,12 @@
      * properly and are used very uncommly anyway.
      *
      * If you want to support these methods, override this method - 
-     * make sure you call <pre>parent::_handleMethod($request)</pre>
+     * make sure you call <pre>parent::handleMethod($request)</pre>
      * so that the request object gets set up correctly before any
      * of your source is executed
      *
      * @see     rfc://2616
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletRequest request
      * @return  string class method (one of doGet, doPost, doHead)
      */
     public function handleMethod($request) {
@@ -209,8 +209,8 @@
      * </code>
      *
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      */
     public function doGet($request, $response) {
@@ -221,8 +221,8 @@
      * and handles it.
      *
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      */
     public function doPost($request, $response) {
@@ -243,8 +243,8 @@
      * and recent modification.
      *
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      */
     public function doHead($request, $response) {
@@ -271,8 +271,8 @@
      * </pre>
      *
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request 
-     * @param   &scriptlet.HttpScriptletResponse response 
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      */
     public function doCreateSession($request, $response) {
@@ -312,7 +312,7 @@
     /**
      * Set the request from the environment.
      *
-     * @param   &scriptlet.HttpRequest request
+     * @param   scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
@@ -330,7 +330,7 @@
      * it to on of the do* -methods of the scriptlet. It will also
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
-     * @return  &scriptlet.HttpScriptletResponse the response object
+     * @return  scriptlet.HttpScriptletResponse the response object
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
     public function process() {
