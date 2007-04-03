@@ -1,0 +1,60 @@
+Index: skeleton/rdbms/StatementFormatter.class.php
+===================================================================
+--- skeleton/rdbms/StatementFormatter.class.php	(revision 9841)
++++ skeleton/rdbms/StatementFormatter.class.php	(working copy)
+@@ -40,8 +40,8 @@
+      */
+     public function format($fmt, $args) {
+       static $tokens= 'sdcfu';
++      
+       $statement= '';
+-      
+       $argumentOffset= 0;
+       while (TRUE) {
+ 
+@@ -58,13 +58,19 @@
+           sscanf(substr($fmt, $offset), '%%%d$', $overrideOffset);
+           $type= $fmt{$offset + strlen($overrideOffset) + 2};
+           $fmt= substr($fmt, $offset + strlen($overrideOffset) + 3);
+-          $argument= isset($args[$overrideOffset - 1]) ? $args[$overrideOffset - 1] : NULL;
++          if (!array_key_exists($overrideOffset - 1, $args)) {
++            throw new SQLStateException('Missing argument #'.($overrideOffset - 1).' @offset '.$offset);
++          }
++          $argument= $args[$overrideOffset - 1];
+         } else if (FALSE !== strpos($tokens, $fmt{$offset + 1})) {
+         
+           // Known tokens
+           $type= $fmt{$offset + 1};
+           $fmt= substr($fmt, $offset + 2);
+-          $argument= isset($args[$argumentOffset]) ? $args[$argumentOffset] : NULL;
++          if (!array_key_exists($argumentOffset, $args)) {
++            throw new SQLStateException('Missing argument #'.$argumentOffset.' @offset '.$offset);
++          }
++          $argument= $args[$argumentOffset];
+           $argumentOffset++;
+         } else if ('%' == $fmt{$offset + 1}) {
+         
+Index: ports/classes/net/xp_framework/unittest/rdbms/TokenizerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/TokenizerTest.class.php	(revision 9840)
++++ ports/classes/net/xp_framework/unittest/rdbms/TokenizerTest.class.php	(working copy)
+@@ -214,11 +214,14 @@
+      */
+     #[@test]
+     public function testAccessNonexistant() {
+-      foreach ($this->conn as $key => $value) $this->assertEquals(
+-        'NULL',
+-        $value->prepare('%2$c', NULL),
+-        $key
+-      );
++      foreach ($this->conn as $key => $value) {
++        try {
++          $value->prepare('%2$c', NULL);
++          $this->fail('Expected exception not caught');
++        } catch (SQLStateException $expected) {
++          // OK
++        }
++      }
+     }
+ 
+     /**

@@ -1,0 +1,62 @@
+RFC 0118: Exceptions for missing token values in StatementFormatter
+========================================================================
+$Id$
+
+@authors: friebe, kiesel, george
+@created: Tue Apr  3 15:03:38     2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The DBConnection::query/select/insert/update/delete methods will throw
+an exception in case one of their format args is missing.
+
+
+Rationale
+---------
+Prevent accidentally missing arguments leading to incorrect data being
+written to the database.
+
+
+Functionality
+-------------
+The following used to work:
+
+<?php
+  $db->query('Hello %s');   // Would send "Hello NULL" to the database
+?>
+
+This will now raise an rdbms.SQLStateException.
+
+This is consistent with [v?s]printf(), which will raise a warning and
+return NULL (the PHP way of indicating errors in procedural APIs) when
+arguments referenced in the format string are missing.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower because of isset() -> array_key_exists() changes.
+isset($array[5]) will return FALSE if $array= array(5 => NULL)!
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0118.diff
+  Implementing patch
+
+
+Comments
+--------
+
+<EOF>
