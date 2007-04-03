@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Fixed rdbms.StatementFormatter class when given an array of objects
+  to format, e.g. array(Date::now(), DateUtil::addDays(Date::now(), 1)).
+  In certain situations, this would even cause segmentation faults!
+  (friebe)
 
 Version 5.3.2, released 2007-04-01
 ----------------------------------
