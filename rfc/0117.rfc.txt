@@ -1,0 +1,137 @@
+RFC 0117: New Package class
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Apr  3 11:21:27     2007
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+A new class named "Package" will be added to the lang.reflect package.
+
+
+Rationale
+---------
+- Create a named wrapper for situations in which we classpaths are passed
+  around.
+- Get rid of directory traversal in places where we need a list of all
+  classes in a certain package (e.g., webservices list)
+
+
+Functionality
+-------------
+
+Package API
+~~~~~~~~~~~
+<?php
+  class Package extends Object {
+
+    /**
+     * Gets the fully qualified package name
+     *
+     */  
+    public string getName() { ... }
+    
+
+    /**
+     * Get all classes in this package. Loads classes if not already
+     * loaded.
+     *
+     */
+    public lang.XPClass[] getClasses() { }
+
+    /**
+     * Get the names of classes in this package, not loading them.
+     *
+     */
+    public string[] getClassNames() { }
+    
+    /**
+     * Get a specific class by its name, which may be either locally
+     * qualified (without dots) or fully qualified (with dots).
+     * The class is loaded if this has not already happened.
+     *
+     */
+    public lang.XPClass[] getClass(string $name) { ... }
+
+    /**
+     * Returns a list of subpackages in this package.
+     *
+     */
+    public self[] getPackages() { }
+
+    /**
+     * Get a specific subpackage of this package by its name, which 
+     * may be either locally qualified (without dots) or fully 
+     * qualified (with dots).
+     *
+     */
+    public self getPackage(string $name) { ... }
+    
+    /**
+     * Returns a Package object for a given fully qualified name.
+     *
+     */
+    public static self forName(string $name) { ... }
+    
+    /**
+     * Creates a string representation of this package
+     * 
+     * Example:
+     * <pre>
+     *   lang.reflect.Package<fully.qualified.package.Name>
+     * </pre>
+     */
+    public string toString() { ... }
+
+    /**
+     * Checks whether a given object is equal to this Package instance.
+     * 
+     */
+    public bool equals(Generic $cmp) { ... }
+
+    /**
+     * Creates a hashcode for this package
+     * 
+     */
+    public string hashCode() { ... }
+  }
+?>
+
+Examples
+~~~~~~~~
+Get all classes in a certain package:
+<?php
+  Console::writeLine('Classes in com.1and1.apis.login:');
+  foreach (Package::forName('com.1and1.apis.login')->getClasses() as $class) {
+    Console::writeLine('- ', $class->getName());
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- A getPackage() method will be added to lang.XPClass.
+
+
+Related documents
+-----------------
+- http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Package.html
+
+
+Comments
+--------
+
+<EOF>
