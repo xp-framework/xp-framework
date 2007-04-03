@@ -93,7 +93,7 @@
         'sybase'  => 'select """Hello"", Tom\'s friend said" as strval',
         'mysql'   => 'select "\"Hello\", Tom\'s friend said" as strval',
         'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
-        // TBD: Other built-in rdbms engines
+        // Add other built-in rdbms engines when added to the test!
       );
       
       foreach ($expect as $key => $value) $this->assertEquals(
@@ -138,6 +138,31 @@
         $this->assertEquals(
           'select * from news where news_id in (1, 2, 3)',
           $value->prepare('select * from news where news_id in (%d)', array(1, 2, 3)),
+          $key
+        );
+      }
+    }
+
+    /**
+     * Test array of date token
+     *
+     */
+    #[@test]
+    public function testDateArrayToken() {
+      static $expect= array(
+        'sybase'  => '"1977-12-14 12:00AM", "1977-12-15 12:00AM"',
+        'mysql'   => '"1977-12-14 00:00:00", "1977-12-15 00:00:00"',
+        'pgsql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      $d1= new Date('1977-12-14');
+      $d2= new Date('1977-12-15');
+      
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          'select * from news where news_id in ('.$expect[$key].')',
+          $value->prepare('select * from news where news_id in (%s)', array($d1, $d2)),
           $key
         );
       }
