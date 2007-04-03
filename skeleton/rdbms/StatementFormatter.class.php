@@ -92,11 +92,12 @@
      * @return  string
      */
     public function prepare($type, $var) {
+
       // Type-based conversion
-      if (is('Date', $var)) {
+      if ($var instanceof Date) {
         $type= 's';
         $a= array($var->toString($this->dateFormat));
-      } else if (is('Generic', $var)) {
+      } else if ($var instanceof Generic) {
         $a= array($var->toString());
       } else if (is_array($var)) {
         $a= $var;
@@ -106,13 +107,23 @@
 
       $r= '';
       foreach ($a as $arg) {
-        if (NULL === $arg) { $r.= 'NULL, '; continue; }
+        if (NULL === $arg) { 
+          $r.= 'NULL, '; 
+          continue; 
+        } else if ($arg instanceof Date) {
+          $p= $arg->toString($this->dateFormat);
+        } else if ($arg instanceof Generic) {
+          $p= $arg->toString();
+        } else {
+          $p= $arg;
+        }
+
         switch ($type) {
-          case 's': $r.= $this->escape.strtr($arg, $this->escapeRules).$this->escape; break;
-          case 'd': $r.= $this->numval($arg); break;
-          case 'c': $r.= $arg; break;
-          case 'f': $r.= $this->numval($arg); break;
-          case 'u': $r.= $this->escape.date($this->dateFormat, $arg).$this->escape; break;
+          case 's': $r.= $this->escape.strtr($p, $this->escapeRules).$this->escape; break;
+          case 'd': $r.= $this->numval($p); break;
+          case 'c': $r.= $p; break;
+          case 'f': $r.= $this->numval($p); break;
+          case 'u': $r.= $this->escape.date($this->dateFormat, $p).$this->escape; break;
         }
         $r.= ', ';
       }
