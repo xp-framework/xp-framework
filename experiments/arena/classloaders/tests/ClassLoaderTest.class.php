@@ -15,6 +15,16 @@
    * @purpose  purpose
    */
   class ClassLoaderTest extends TestCase {
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function fileSystemClassLoader() {
+      $cl= XPClass::forName('tests.classes.ClassOne')->getClassLoader();
+      $this->assertClass($cl, 'lang.ClassLoader');
+    }
   
     /**
      * Test
@@ -26,6 +36,16 @@
         XPClass::forName('tests.classes.ClassOne')->getClassLoader(),
         XPClass::forName('tests.classes.ClassTwo')->getClassLoader()
       );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function archiveClassLoader() {
+      $cl= XPClass::forName('tests.classes.ClassThree')->getClassLoader();
+      $this->assertClass($cl, 'lang.archive.ArchiveClassLoader');
     }
 
     /**
