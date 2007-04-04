@@ -23,10 +23,20 @@
      * The path argument is optional and lets you define where to search for
      * classes (it will be prefixed to the class name)
      *
-     * @param   string path default '' classpath
+     * @param   string path default '' file system path
      */
     public function __construct($path= '') {
-      $this->path= $path;
+      $this->path= realpath($path);
+    }
+    
+    /**
+     * Checks whether two class loaders are equal
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->path === $this->path;
     }
 
     /**
@@ -49,7 +59,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return file_get_contents($this->findClass($name));
+      return file_get_contents($this->path.DIRECTORY_SEPARATOR.strtr($name, '.', '/').'.class.php');
     }
     
     /**
