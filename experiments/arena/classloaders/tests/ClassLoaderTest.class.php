@@ -21,10 +21,22 @@
      *
      */
     #[@test]
-    public function twoPublicClasses() {
+    public function twoPublicClassesFromFileSystem() {
       $this->assertEquals(
-        XPClass::forName('util.Binford')->getClassLoader(),
-        XPClass::forName('util.cmd.ParamString')->getClassLoader()
+        XPClass::forName('tests.classes.ClassOne')->getClassLoader(),
+        XPClass::forName('tests.classes.ClassTwo')->getClassLoader()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function twoPublicClassesFromArchive() {
+      $this->assertEquals(
+        XPClass::forName('tests.classes.ClassThree')->getClassLoader(),
+        XPClass::forName('tests.classes.ClassFour')->getClassLoader()
       );
     }
   }
