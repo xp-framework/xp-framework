@@ -7,8 +7,7 @@
   uses(
     'scriptlet.HttpScriptlet', 
     'scriptlet.xml.workflow.WorkflowXMLScriptletRequest',
-    'scriptlet.xml.workflow.WorkflowXMLScriptletResponse',
-    'scriptlet.xml.workflow.routing.ClassRouter'
+    'scriptlet.xml.workflow.WorkflowXMLScriptletResponse'
   );
 
   /**
@@ -28,7 +27,7 @@
      * @param   string base default ''
      */
     function __construct($package, $base= '') {
-      $this->package= rtrim($package, '.');
+      $this->package= $package;
       $this->processor= new DomXSLProcessor();
       $this->processor->setBase($base);
     }
@@ -52,7 +51,7 @@
      * @see     xp://scriptlet.HttpScriptlet#_request
      */
     protected function _request() {
-      return new WorkflowXMLScriptletRequest();
+      return new WorkflowXMLScriptletRequest($this->package);
     }
     
     /**
@@ -64,48 +63,6 @@
      */
     protected function requestFilterFor($request) {
       return NULL;
-    }
-
-    /**
-     * Create the router object. Returns a ClassRouter in this implementation
-     * which resembles the previously hardcoded behaviour.
-     *
-     * @param   scriptlet.xml.XMLScriptletRequest request
-     * @return  scriptlet.xml.workflow.routing.Router
-     */
-    protected function routerFor($request) {
-      return new ClassRouter();
-    }
-    /**
-     * Retrieve context class
-     *
-     * @param   scriptlet.xml.XMLScriptletRequest request
-     * @return  lang.XPClass
-     * @throws  lang.ClassNotFoundException
-     */
-    protected function getContextClass($request) {
-      return XPClass::forName($this->package.'.'.(ucfirst($request->getProduct()).'Context'));
-    }
-
-    /**
-     * Decide whether a session is needed
-     *
-     * @param   scriptlet.xml.XMLScriptletRequest request
-     * @return  bool
-     */
-    public function needsSession($request) {
-      return FALSE;
-    }
-    
-    /**
-     * Decide whether a context is needed. Returns FALSE in this default
-     * implementation.
-     *
-     * @param   scriptlet.xml.XMLScriptletRequest request
-     * @return  bool
-     */
-    protected function wantsContext($request) {
-      return FALSE;
     }
     
     /**
@@ -119,7 +76,7 @@
      * @param   scriptlet.xml.XMLScriptletResponse response 
      * @return  bool
      */
-    protected function processWorkflow($request, $response) {
+    protected final function processWorkflow($request, $response) {
 
       // Request filters (optional)
       if ($filter= $this->requestFilterFor($request)) {
@@ -132,12 +89,12 @@
 
       // Context initialization
       $context= NULL;
-      if ($this->wantsContext($request) && $request->hasSession()) {
+      if ($request->hasSession()) {
       
         // Set up context. The context contains - so to say - the "autoglobals",
         // in other words, the omnipresent data such as, for example, the user
         try {
-          $class= $this->getContextClass($request);
+          $class= $request->area->getContextClass($request);
         } catch (ClassNotFoundException $e) {
           throw new HttpScriptletException($e->getMessage());
         }
@@ -174,7 +131,7 @@
       
       // Routing
       try {
-        $route= $this->routerFor($request)->route($this->package.'.state.', $request, $response, $context);
+        $route= $request->area->getRouter()->route($this->package.'.state.', $request, $response, $context);
         $route->dispatch($request, $response, $context);
       } catch (ClassNotFoundException $e) {
         throw new HttpScriptletException($e->getMessage(), HTTP_METHOD_NOT_ALLOWED);

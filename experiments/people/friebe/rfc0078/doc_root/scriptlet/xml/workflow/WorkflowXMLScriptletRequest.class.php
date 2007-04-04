@@ -3,14 +3,17 @@
  *
  * $Id$
  */
-  uses('scriptlet.HttpScriptletRequest');
+  uses(
+    'scriptlet.HttpScriptletRequest',
+    'lang.reflect.Package'
+  );
   
   /**
    * Wraps XML request
    *
    * The conforming rewrite rule for apache looks like this:
    * <pre>
-   *  RewriteRule ^/xml/* /index.php
+   *  RewriteRule ^/!(image)/* /index.php
    * </pre>
    *
    * @see      xp://scriptlet.HttpScriptletRequest
@@ -18,9 +21,22 @@
    */
   class WorkflowXMLScriptletRequest extends HttpScriptletRequest {
     public
+      $area         = '',
       $product      = '',
       $stateName    = '',
       $language     = '';
+
+    protected
+      $package = NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   string classpath
+     */
+    function __construct($classpath) {
+      $this->package= Package::forName($classpath);
+    }
 
     /**
      * Initialize this request object
@@ -30,8 +46,18 @@
       parent::initialize();
 
       // Parse URL format
-      sscanf($this->getUrl()->getPath(), '/xml/%[^/]/%s', $opt, $this->stateName);
-      sscanf($opt, '%[^.].%[^.].psessionid=%s', $this->product, $this->language, $this->params['psessionid']);
+      sscanf($this->getUrl()->getPath(), '/%[^/]/%s', $opt, $rest);
+      sscanf($opt, '%[^.].%[^.].%[^.].psessionid=%s', $areaname, $this->product, $this->language, $this->params['psessionid']);
+
+      // Try to find area in user package by using the following
+      // convention
+      $area= ($areaname ? ucfirst($areaname) : 'Public').'Area';
+      if ($this->package->providesClass($area)) {
+        $class= $this->package->loadClass($area)->newInstance();
+      } else {
+        $class= XPClass::forName(sprintf('scriptlet.xml.workflow.areas.Default%s', $area));
+      }
+      $this->area= $class->newInstance();
     }
 
     /**
