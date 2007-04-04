@@ -49,8 +49,10 @@
       sscanf($this->getUrl()->getPath(), '/%[^/]/%s', $opt, $rest);
       sscanf($opt, '%[^.].%[^.].%[^.].psessionid=%s', $areaname, $this->product, $this->language, $this->params['psessionid']);
 
-      // Try to find area in user package by using the following
-      // convention
+      // Try to find area:
+      //
+      // 1) User package for {NAME}Area 
+      // 2) Default implementation scriptlet.xml.workflow.areas.Default{NAME}Area
       $area= ($areaname ? ucfirst($areaname) : 'Public').'Area';
       if ($this->package->providesClass($area)) {
         $class= $this->package->loadClass($area)->newInstance();
