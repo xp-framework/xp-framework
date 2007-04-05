@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.ClassNotFoundException');
+
   /**
    * (Insert class' description here)
    *
