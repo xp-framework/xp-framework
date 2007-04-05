@@ -4,14 +4,14 @@
  * $Id$ 
  */
 
-  uses('net.xp_framework.xarwriter.command.AbstractCommand');
+  uses('net.xp_framework.xar.instruction.AbstractInstruction');
 
   /**
-   * Extract command
+   * Extract Instruction
    *
    * @purpose  Extract
    */
-  class ExtractCommand extends AbstractCommand {
+  class ExtractInstruction extends AbstractInstruction {
 
     /**
      * Filters entries

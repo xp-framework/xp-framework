@@ -41,7 +41,7 @@
           default: throw new IllegalArgumentException('Unsupported commandline option "'.$op{$i}.'"');
         }
       }
-      $this->operation= XPClass::forName('net.xp_framework.xarwriter.command.'.ucfirst($operation).'Command');
+      $this->operation= XPClass::forName('net.xp_framework.xar.instruction.'.ucfirst($operation).'Instruction');
     }
 
     /**

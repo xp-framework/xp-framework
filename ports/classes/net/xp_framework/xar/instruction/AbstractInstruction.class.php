@@ -12,11 +12,11 @@
   );
   
   /**
-   * Base command class
+   * Base Instruction class
    *
-   * @purpose  Base command
+   * @purpose  Base Instruction
    */
-  abstract class AbstractCommand extends Object {
+  abstract class AbstractInstruction extends Object {
     protected
       $options    = 0,
       $archive    = NULL,
@@ -36,7 +36,7 @@
     }
     
     /**
-     * Retrieve file arguments from commandline
+     * Retrieve file arguments from Instructionline
      *
      * @return  string[]
      */

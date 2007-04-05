@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp_framework.xarwriter.command.AbstractCommand',
+    'net.xp_framework.xar.instruction.AbstractInstruction',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NegationOfFilter',
@@ -15,11 +15,11 @@
   );
 
   /**
-   * Create command
+   * Create Instruction
    *
    * @purpose  Create
    */
-  class CreateCommand extends AbstractCommand {
+  class CreateInstruction extends AbstractInstruction {
 
     /**
      * Add a single URI
