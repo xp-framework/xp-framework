@@ -61,6 +61,10 @@
      * @return  string class name of class loaded
      */
     public function load($class) {
+      $name= xp::reflect($class);
+      if (class_exists($name) || interface_exists($name)) return $name;
+      
+      // Ask delegates
       foreach (self::$delegates as $delegate) {
         if ($delegate->providesClass($class)) return $delegate->load($class);
       }
