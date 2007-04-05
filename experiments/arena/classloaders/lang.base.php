@@ -22,25 +22,26 @@
     
     // {{{ public void load(string name)
     //     Loads a class
-    function load($str) {
-      if (class_exists($class= xp::reflect($str)) || interface_exists($class)) return;
+    function load($name) {
+      $class= xp::reflect($name);
+      if (class_exists($class) || interface_exists($class)) return;
 
       foreach ($this->paths as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path)) {
-          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.class.php')) {
             continue;
           }
 
           if (FALSE === ($r= include_once($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
+            xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
           }
           
-          xp::$registry['classloader.'.$str]= 'lang.ClassLoader://'.$path;
+          xp::$registry['classloader.'.$name]= 'lang.ClassLoader://'.$path;
 
           break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
+        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
@@ -48,19 +49,19 @@
             continue;
           }
 
-          xp::$registry['classloader.'.$str]= 'lang.archive.ArchiveClassLoader://'.$path;
+          xp::$registry['classloader.'.$name]= 'lang.archive.ArchiveClassLoader://'.$path;
           break;
         }
       }
 
-      if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
-        xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
+      if (!class_exists($class) && !interface_exists($class)) {
+        xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
       }
 
       // Register class name and call static initializer if available and if it has not been
       // done before (through an ArchiveClassLoader)
       if (NULL === xp::registry('class.'.$class)) {
-        xp::$registry['class.'.$class]= $str;
+        xp::$registry['class.'.$class]= $name;
         is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
       }
     }
