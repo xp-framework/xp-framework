@@ -4,20 +4,17 @@
  * $Id$
  */
 
+  uses('lang.Runnable');
+
   /**
    * Base class for all commands
    *
    * @purpose  Abstract base class
    */
-  abstract class Command extends Object {
+  abstract class Command extends Object implements Runnable {
     public
       $out = NULL,
       $err = NULL;
     
-    /**
-     * Run method. Implemented by subclasses.
-     *
-     */
-    abstract function run();
   }
 ?>
