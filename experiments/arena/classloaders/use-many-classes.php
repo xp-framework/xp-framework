@@ -21,4 +21,7 @@
     sizeof(get_declared_classes()),
     microtime(TRUE)- $s
   );
+
+  echo '! ';
+  var_dump(xp::$registry['errors']);
 ?>
