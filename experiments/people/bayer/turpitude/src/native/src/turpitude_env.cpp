@@ -131,12 +131,12 @@ void turpitude_env_method_newarray(int xargc, zval*** xargv, zval* return_value)
 
     jarray arr = NULL;
     switch (type) {
-        case JAVA_OBJECT:
+        case JAVA_OBJECT: {
             jclass cls = turpitude_jenv->FindClass(Z_STRVAL_P(*xargv[0]));
             if (cls == NULL)
                 php_error(E_ERROR, "Unable to find class %s", Z_STRVAL_P(*xargv[0]));
             arr = turpitude_jenv->NewObjectArray(Z_LVAL_P(*xargv[1]), cls, NULL);
-            break;
+            } break;
         case JAVA_BOOLEAN:
             arr = turpitude_jenv->NewBooleanArray(Z_LVAL_P(*xargv[1]));
             break;
