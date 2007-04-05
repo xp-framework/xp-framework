@@ -38,13 +38,6 @@
     public function __construct($archive) {
       $this->archive= $archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
-      
-      // Add this XAR to the include-path (if not already in there), 
-      // so further lookups will succeed.
-      ini_set('include_path', implode(PATH_SEPARATOR, array_unique(array_merge(
-        explode(PATH_SEPARATOR, ini_get('include_path')), 
-        array($this->archive->getURI())
-      ))));
     }
 
     /**
