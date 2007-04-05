@@ -75,13 +75,6 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
-        if (FALSE === $this->providesClass($class)) {
-          throw new ClassNotFoundException(sprintf(
-            'Class "%s" not found',
-            $class
-          ));
-        }
-
         if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').'.class.php')) {
           throw new FormatException('Cannot define class "'.$class.'"');
         }
