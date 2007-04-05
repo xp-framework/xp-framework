@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, george
 @created: Tue Apr  3 15:03:38     2007
-@status: draft
+@status: discussion, ends Tue Apr  10 18:00:00     2007
 @category: rdbms
 
 Scope of Change
