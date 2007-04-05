@@ -4,9 +4,9 @@
 
 BASE?=			../..
 PHP?=			php
-XPINSTALL=		${BASE}/xpi/install.php
-XPFIRSTINSTALL=	${BASE}/xpi/firstinstall.php
-XPT=			${BASE}/xpt/run.php
+XPINSTALL=		${BASE}/technologies/env/bin/install/install.php
+XPFIRSTINSTALL=	${BASE}/technologies/env/bin/install/firstinstall.php
+XPT=			${BASE}/unittest/run.php
 XSLPROC?=		sabcmd
 
 # Default values for wrapper target
