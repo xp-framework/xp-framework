@@ -15,11 +15,6 @@
 
     public $paths;
     
-    function loadClass($name) {
-      $this->load($name);
-      return new XPClass(xp::reflect($name));
-    }
-    
     // {{{ public void load(string name)
     //     Loads a class
     function load($name) {
@@ -38,7 +33,7 @@
             xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
           }
           
-          xp::$registry['classloader.'.$name]= 'lang.ClassLoader://'.$path;
+          xp::$registry['classloader.'.$name]= 'FileSystemClassLoader://'.$path;
 
           break;
         } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
@@ -49,7 +44,7 @@
             continue;
           }
 
-          xp::$registry['classloader.'.$name]= 'lang.archive.ArchiveClassLoader://'.$path;
+          xp::$registry['classloader.'.$name]= 'ArchiveClassLoader://'.$path;
           break;
         }
       }
@@ -530,9 +525,10 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'lang.FormatException',
-    'lang.ClassLoader',
+    'lang.FileSystemClassLoader',
     'lang.archive.ArchiveReader',
-    'lang.archive.ArchiveClassLoader'
+    'lang.archive.ArchiveClassLoader',
+    'lang.ClassLoader'
   );
   // }}}
 ?>

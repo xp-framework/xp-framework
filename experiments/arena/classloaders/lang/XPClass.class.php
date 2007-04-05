@@ -8,7 +8,8 @@
     'lang.reflect.Method',
     'lang.reflect.Field',
     'lang.reflect.Constructor',
-    'lang.reflect.Modifiers'
+    'lang.reflect.Modifiers',
+    'lang.reflect.Package'
   );
 
   define('DETAIL_ARGUMENTS',      1);
@@ -91,6 +92,15 @@
      */
     public function getName() {
       return $this->name;
+    }
+
+    /**
+     * Retrieves the package associated with this class
+     * 
+     * @return  lang.reflect.Package
+     */
+    public function getPackage() {
+      return Package::forName(substr($this->name, 0, strrpos($this->name, '.')));
     }
     
     /**
@@ -408,23 +418,8 @@
      * @return  lang.ClassLoader
      */
     protected static function _classLoaderFor($name) {
-      $key= 'classloader.'.$name;
-
-      // The class loader information can be a string identifying the responsible
-      // classloader for the class. In that case, fetch it's class and get an
-      // instance through the instanceFor() method.
-      if (is_string($s= xp::$registry[$key])) {
-        list($className, $argument)= sscanf($s, '%[^:]://%[^$]');
-        
-        // Replace the "symbolic" representation of the classloader with a reference
-        // to an instance.
-         xp::$registry[$key]= self::forName($className)
-          ->getMethod('instanceFor')
-          ->invoke(NULL, array($argument))
-        ;
-      }
-      
-      return xp::$registry[$key];
+      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $name, $argument);
+      return call_user_func(array($name, 'instanceFor'), $argument);
     }
 
     /**

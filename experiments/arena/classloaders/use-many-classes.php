@@ -26,6 +26,4 @@
     sizeof(get_declared_classes()),
     microtime(TRUE)- $s
   );
-  
-  var_dump(xp::$registry);
 ?>
