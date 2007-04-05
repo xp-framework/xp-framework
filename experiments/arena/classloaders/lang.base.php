@@ -6,22 +6,20 @@
 
   // {{{ final class xp
   final class xp {
-    public static $registry= array(
+    public static $registry  = array(
       'errors'     => array(),
       'sapi'       => array(),
       'class.xp'   => '<xp>',
       'class.null' => '<null>',
     );
 
-    public $paths;
-    
     // {{{ public void load(string name)
     //     Loads a class
     function load($name) {
       $class= xp::reflect($name);
       if (class_exists($class) || interface_exists($class)) return;
 
-      foreach ($this->paths as $path) {
+      foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path)) {
@@ -509,7 +507,7 @@
   // Registry initialization
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
-  xp::$registry['loader']->paths= explode(PATH_SEPARATOR, get_include_path());
+  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'XpXarLoader');
@@ -525,9 +523,6 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'lang.FormatException',
-    'lang.FileSystemClassLoader',
-    'lang.archive.ArchiveReader',
-    'lang.archive.ArchiveClassLoader',
     'lang.ClassLoader'
   );
   // }}}
