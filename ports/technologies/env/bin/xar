@@ -10,13 +10,11 @@ else
 fi
 
 D=`dirname $0`
-INCLUDE_PATH="$D:$D/../../../../skeleton/:."
-XPCLI=$D/../../../../util/bin/xpcli.php
+XPCLI=$D/xpcli.php
 
 if [ "$OS" = "Windows_NT" ]; then
 	D=`cygpath -w "$D"`
-	INCLUDE_PATH=";$D;`cygpath -w $D/../../../../skeleton`"
 	XPCLI=`cygpath -w $XPCLI`
 fi
 
-php -dinclude_path="$INCLUDE_PATH" "$XPCLI" Xar $cmd "$file" -R `pwd` --args="$*"
+php "$XPCLI" net.xp_framework.xar.Xar $cmd "$file" -R `pwd` --args="$*"
