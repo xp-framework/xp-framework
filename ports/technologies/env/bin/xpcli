@@ -1,4 +1,11 @@
 #!/bin/sh
 
-SELF=`dirname "$0"`
-php "$SELF"/xpcli.php "$@"
+XPCLI="`dirname "$0"`"/xpcli.php
+
+# Take care of target replacement on Windows
+if [ "$OS" == "Windows_NT" ]; then
+	XPCLI=`cygpath -w "$XPCLI"`
+fi
+
+# Run command
+${PHP5CLI:-php} "$XPCLI" "$@"

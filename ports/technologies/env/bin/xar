@@ -9,12 +9,4 @@ else
   shift 2
 fi
 
-D=`dirname $0`
-XPCLI=$D/xpcli.php
-
-if [ "$OS" = "Windows_NT" ]; then
-	D=`cygpath -w "$D"`
-	XPCLI=`cygpath -w $XPCLI`
-fi
-
-php "$XPCLI" net.xp_framework.xar.Xar $cmd "$file" -R `pwd` --args="$*"
+xpcli net.xp_framework.xar.Xar $cmd "$file" -R "`pwd`" --args="$@"
