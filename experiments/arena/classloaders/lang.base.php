@@ -51,12 +51,9 @@
         xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
       }
 
-      // Register class name and call static initializer if available and if it has not been
-      // done before (through an ArchiveClassLoader)
-      if (NULL === xp::registry('class.'.$class)) {
-        xp::$registry['class.'.$class]= $name;
-        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-      }
+      // Register class name and call static initializer if available
+      xp::$registry['class.'.$class]= $name;
+      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
     }
     // }}}
 
