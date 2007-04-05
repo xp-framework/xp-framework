@@ -1,5 +1,5 @@
 <?php
-  require($argv[1].'/lang.base.php');
+  require('lang.base.php');
   $s= microtime(TRUE);
   uses(
     'util.Hashmap',
@@ -16,13 +16,8 @@
     'io.collections.iterate.FilteredIOCollectionIterator'
   );
   
-  uses($argv[2]);
-  var_dump(XPClass::forName($argv[2])->getClassLoader());
-  XPClass::forName('util.cmd.ParamString')->getClassLoader();
-  
   printf(
-    "%s: %d classes, %.3f seconds\n",
-    $argv[1], 
+    "- %d classes, %.3f seconds\n",
     sizeof(get_declared_classes()),
     microtime(TRUE)- $s
   );
