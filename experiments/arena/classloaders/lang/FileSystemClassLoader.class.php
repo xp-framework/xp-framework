@@ -64,7 +64,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return file_exists($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').'.class.php');
+      return is_file($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').'.class.php');
     }
 
     /**
