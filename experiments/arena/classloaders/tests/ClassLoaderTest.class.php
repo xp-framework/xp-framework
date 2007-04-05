@@ -17,7 +17,7 @@
   class ClassLoaderTest extends TestCase {
 
     /**
-     * Test
+     * Test "ClassOne" class is loaded from file system
      *
      */
     #[@test]
@@ -27,11 +27,12 @@
     }
   
     /**
-     * Test
+     * Test class loaders are equal for two classes loaded from the
+     * file system.
      *
      */
     #[@test]
-    public function twoPublicClassesFromFileSystem() {
+    public function twoClassesFromFileSystem() {
       $this->assertEquals(
         XPClass::forName('tests.classes.ClassOne')->getClassLoader(),
         XPClass::forName('tests.classes.ClassTwo')->getClassLoader()
@@ -39,7 +40,7 @@
     }
 
     /**
-     * Test
+     * Test "ClassThree" is loaded from the archive in "lib"
      *
      */
     #[@test]
@@ -49,11 +50,12 @@
     }
 
     /**
-     * Test
+     * Test  class loaders are equal for two classes loaded from the
+     * archive in "lib"
      *
      */
     #[@test]
-    public function twoPublicClassesFromArchive() {
+    public function twoClassesFromArchive() {
       $this->assertEquals(
         XPClass::forName('tests.classes.ClassThree')->getClassLoader(),
         XPClass::forName('tests.classes.ClassFour')->getClassLoader()
