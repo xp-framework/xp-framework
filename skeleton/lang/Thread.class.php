@@ -6,6 +6,7 @@
 
   uses(
     'lang.IllegalThreadStateException',
+    'lang.Runnable',
     'lang.SystemException'
   );
 
@@ -16,7 +17,7 @@
    *   uses('lang.Thread');
    *   
    *   class TimerThread extends Thread {
-   *     var
+   *     public
    *       $ticks    = 0,
    *       $timeout  = 0;
    *       
@@ -49,7 +50,7 @@
    *
    * @ext      pcntl
    * @ext      posix
-   * @platform Unix
+   * @see      xp://lang.Runnable
    * @purpose  Base class
    */
   class Thread extends Object {
@@ -57,17 +58,46 @@
       $name     = '',
       $running  = FALSE;
       
-    public
+    protected
+      $target   = NULL;
       $_id      = -1,
       $_pid     = -1;
       
     /**
      * Constructor
      *
-     * @param   string name
+     * Implementation by subclassing:
+     * <code>
+     *   class ComputeThread extends Thread {
+     *     public function run() {
+     *       // ...
+     *     }
+     *   }
+     *
+     *   $thread= new ComputeThread('computr1');
+     *   $thread->start();
+     * </code>
+     * 
+     * Implementation by passing a Runnable: 
+     * <code>
+     *   $thread= new Thread(newinstance('lang.Runnable', array(), '{
+     *     public function run() {
+     *       // ...
+     *     }
+     *   }'));
+     *   $thread->start();
+     * </code>
+     *
+     * @param   mixed arg default NULL
      */
-    public function __construct($name= '') {
-      $this->name= $name;
+    public function __construct($arg= NULL) {
+      if ($arg instanceof Runnable) {
+        $this->target= $arg;
+        $this->name= $arg->getClassName();
+      } else {
+        $this->target= $this;
+        $this->name= $arg ? $arg : $this->getClassName();
+      }
     }
     
     /**
@@ -130,7 +160,7 @@
         $this->running= TRUE;
         $this->_id= getmypid();
         $this->_pid= $parent;
-        $this->run();
+        call_user_func(array($this->target, 'run'));
         exit();
       }
     }
