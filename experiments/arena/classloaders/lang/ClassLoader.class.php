@@ -43,16 +43,32 @@
       return xp::$registry['loader'];
     }
     
+    /**
+     * (Insert method's description here)
+     *
+     * @param   XXX l
+     * @return  XXX
+     */
     public static function registerLoader($l) {
       self::$delegates[]= $l;
       return $l;
     }
     
+    /**
+     * Loads a class
+     *
+     * @param   string class fully qualified class name
+     * @return  string class name of class loaded
+     */
     public function load($class) {
       foreach (self::$delegates as $delegate) {
         if ($delegate->providesClass($class)) return $delegate->load($class);
       }
-      throw new ClassNotFoundException('No classloader provides class "'.$class.'" {'.xp::stringOf(self::$delegates).'}');
+      throw new ClassNotFoundException(sprintf(
+        'No classloader provides class "%s" {%s}',
+        $class,
+        xp::stringOf(self::$delegates)
+      ));
     }
     
     /**
