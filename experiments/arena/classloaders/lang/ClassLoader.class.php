@@ -4,7 +4,12 @@
  * $Id$
  */
  
-  uses('lang.ClassNotFoundException');
+  uses(
+    'lang.ClassNotFoundException',
+    'lang.FileSystemClassLoader',
+    'lang.archive.ArchiveReader',
+    'lang.archive.ArchiveClassLoader'
+  );
   
   /** 
    * Loads classes
@@ -17,12 +22,10 @@
       $delegates  = array();
     
     static function __static() {
-      $paths= xp::$registry['loader']->paths;
-
       xp::$registry['loader']= new self();
       
       // Scan include-path, setting up classloaders for each element
-      foreach ($paths as $element) {
+      foreach (xp::$registry['classpath'] as $element) {
         if (is_dir($element)) {
           FileSystemClassLoader::instanceFor($element);
         } else if (is_file($element)) {
