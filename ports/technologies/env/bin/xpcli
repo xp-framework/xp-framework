@@ -1,0 +1,4 @@
+#!/bin/sh
+
+SELF=`dirname "$0"`
+php "$SELF"/xpcli.php "$@"
