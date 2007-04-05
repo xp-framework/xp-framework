@@ -22,17 +22,12 @@
       foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
-        if (is_dir($path)) {
-          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-            continue;
-          }
-
-          if (FALSE === ($r= include_once($f))) {
+        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+          if (FALSE === ($r= include($f))) {
             xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
           }
           
           xp::$registry['classloader.'.$name]= 'FileSystemClassLoader://'.$path;
-
           break;
         } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
 
