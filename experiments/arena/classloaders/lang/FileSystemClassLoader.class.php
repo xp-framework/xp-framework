@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.ClassNotFoundException');
+  uses('lang.IClassLoader');
   
   /** 
    * Loads a class from the filesystem
@@ -12,7 +12,7 @@
    * @purpose  Load classes
    * @see      xp://lang.XPClass#forName
    */
-  class FileSystemClassLoader extends Object {
+  class FileSystemClassLoader extends Object implements IClassLoader {
     public 
       $path= '';
     

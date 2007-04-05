@@ -3,7 +3,9 @@
  * 
  * $Id: ArchiveClassLoader.class.php 9834 2007-04-01 16:28:26Z kiesel $
  */
- 
+
+  uses('lang.IClassLoader');
+
   /** 
    * Loads XP classes from a XAR (XP Archive)
    * 
@@ -26,7 +28,7 @@
    * @see      xp://lang.archive.Archive
    * @ext      tokenize
    */
-  class ArchiveClassLoader extends Object {
+  class ArchiveClassLoader extends Object implements IClassLoader {
     public
       $archive  = NULL;
     

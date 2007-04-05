@@ -5,7 +5,7 @@
  */
  
   uses(
-    'lang.ClassNotFoundException',
+    'lang.IClassLoader',
     'lang.FileSystemClassLoader',
     'lang.archive.ArchiveReader',
     'lang.archive.ArchiveClassLoader'
@@ -17,7 +17,7 @@
    * @purpose  Load classes
    * @see      xp://lang.XPClass#forName
    */
-  class ClassLoader extends Object {
+  class ClassLoader extends Object implements IClassLoader {
     protected static
       $delegates  = array();
     
