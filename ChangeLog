@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0081 - new lang.Runnable interface
+  (friebe)
 - Fixed rdbms.StatementFormatter class when given an array of objects
   to format, e.g. array(Date::now(), DateUtil::addDays(Date::now(), 1)).
   In certain situations, this would even cause segmentation faults!
