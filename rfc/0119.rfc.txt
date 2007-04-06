@@ -1,0 +1,77 @@
+RFC 0119: Support self-running XARs
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel
+@created: Fri Apr  6 12:31:40     2007
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The framework's core will be enhanced to support running out of
+a XAR file with no further infrastructure required (except a 
+working PHP binary).
+
+Rationale
+---------
+This will faciliate providing single file applications, such as
+desktop (GTK) applications and eg. installers.
+Thinkable is further to have web applications that can be installed
+by copying over a single file into the document root.
+
+Functionality
+-------------
+Self-running xars need to be prepared in a special way:
+. create xar containing all files:
+  + class files
+  + application specific files
+  + meta information for the runner
+. prepend contents of lang.base.php
+  (replacing trailing '?>' with '__halt_compiler();')
+
+The final file can be run by just invoking php on it:
+
+<pre>
+$ php runner.xar
+</pre>
+
+The framework will detect that it is running in single-xar mode
+and start the application that has been denoted as default
+application through the meta information in the XAR.
+
+By passing further commandline options, other applications could
+be run, too.
+
+The meta-information file will be called "META-INF/manifest.ini"
+and should look like this:
+
+<pre>
+  [runnable]
+  main-class="remote.server.impl.ApplicationServer"
+</pre>
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+It is a requirement that this change does not impact speed of
+the framework.
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?people,kiesel,php,selfrunning
+  Prove of concept experiment
+
+- http://xp-framework.net/rfc/0108.rfc.html
+  RFC #0108: Make XAR files runnable by XPCLI
+
+Comments
+--------
+
+<EOF>
