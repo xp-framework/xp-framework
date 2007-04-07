@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Sep  2 18:00:18 CEST 2005
-@status: obsoleted (by RFC #0115)
+@status: draft
 @category: <core>
 
 Scope of Change

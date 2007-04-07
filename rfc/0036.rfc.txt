@@ -4,7 +4,7 @@ $Id$
 
 @authors: hinckel, kiesel
 @created: Thu Aug 25 13:22:10 CEST 2005
-@status: draft
+@status: obsoleted (by RFC #0115)
 @category: <core>
 
 Scope of Change
