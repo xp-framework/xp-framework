@@ -1,34 +1,36 @@
-RFC 0106: Overload array access / foreach iteration in ArrayList
+RFC 0106: Overload array access / foreach in "array" types
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Mon Jan  8 18:35:00     2007
 @status: draft
-@category: lang.types
+@category: lang.types, util.collections
 
 Scope of Change
 ---------------
-The lang.types.ArrayList class will be changed to support array access
+The lang.types.ArrayList class and the relevant classes from 
+util.collections will be changed to support array access
 (read/write) and foreach() iteration.
 
 
 Rationale
 ---------
-Easier access to Arraylist's values.
+Easier / intuitive interface to "array" types.
 
 
 Functionality
 -------------
-The ArrayList class will implement the "magic" interfaces ArrayAccess 
+The relevant classes will implement the "magic" interfaces ArrayAccess 
 and IteratorAggregate (provided with the Zend Engine).
 
-
-ArrayAccess implementation
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+ArrayAccess
+~~~~~~~~~~~
 The ArrayAccess interface requires implementing the following methods:
 offsetGet(), offsetSet(), offsetExists() and offsetUnset().
 
+ArrayList implementation
+~~~~~~~~~~~~~~~~~~~~~~~~
 Because the ArrayList class represents a strictly "numeric" array (a
 list of elements that is zero-indexed and without gaps), we will need
 to take special precautions in offsetSet().
@@ -64,8 +66,6 @@ to take special precautions in offsetSet().
   // ...
 ?>
 
-IteratorAggregate implementation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 We will define an "inner" class for iteration to not introduce new 
 dependencies:
 <?php
@@ -90,6 +90,40 @@ dependencies:
   }
   // ...
 ?>
+
+HashTable implementation
+~~~~~~~~~~~~~~~~~~~~~~~~
+The changes to the util.collection.HashTable class are trivial:
+<?php
+  public function offsetGet($offset) {
+    return $this->get($offset);
+  }
+
+  public function offsetSet($offset, $value) {
+    $this->put($offset, $value);
+  }
+
+  public function offsetExists($offset) {
+    return $this->containsKey($offset);
+  }
+
+  public function offsetUnset($offset) {
+    $this->remove($offset);
+  }
+?>
+
+Examples:
+<?php
+  with ($h= new HashTable()); {
+  
+    // Using the put() method
+    $h->put(new String('stage-url'), new URL('xp://localhost:6448'));
+   
+    // The overloaded equivalent 
+    $h[new String('stage-url')]= new URL('xp://localhost:6448');
+  }
+?>
+
 
 Security considerations
 -----------------------
@@ -117,6 +151,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0106.diff
   Implementing patch (apply in xp/trunk)
 
+- http://experiments.xp-framework.net/?arena,arrayaccess
+  Experiment
+  
 Comments
 --------
 - friebe, Mon Jan  8 19:09:55     2007
