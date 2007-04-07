@@ -48,6 +48,7 @@ n/a
 
 Related documents
 -----------------
+- RFC #0037 (initial but a bit different idea)
 
 Comments
 --------
