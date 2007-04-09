@@ -22,24 +22,24 @@
      */
     public function __construct($arg, $charset= NULL) {
       if (is_int($arg)) {
-        $this->buffer= iconv('UCS-4BE', STR_ENC, pack('N', $arg));
+        $this->buffer= iconv('UCS-4BE', 'UTF-8', pack('N', $arg));
         return;
       }        
 
       if (!$charset) $charset= iconv_get_encoding('input_encoding');
 
       // Convert the input to internal encoding
-      $this->buffer= iconv($charset, STR_ENC, $arg);
+      $this->buffer= iconv($charset, 'UTF-8', $arg);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
         $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
         xp::gc();
-        throw new FormatException($message.($charset == STR_ENC  
+        throw new FormatException($message.($charset == 'UTF-8'  
           ? ' with charset '.$charset
-          : $message.' while converting input from '.$charset.' to '.STR_ENC
+          : $message.' while converting input from '.$charset.' to '.'UTF-8'
         ));
       }
 
-      if (1 != ($l= iconv_strlen($this->buffer, STR_ENC))) {
+      if (1 != ($l= iconv_strlen($this->buffer, 'UTF-8'))) {
         throw new IllegalArgumentException('Given argument is too long ('.$l.')');
       }
     }
@@ -70,7 +70,7 @@
      * @return  string
      */
     public function toString() {
-      return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
+      return iconv('UTF-8', iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
     }
 
     /**
