@@ -86,7 +86,7 @@ Dependencies
 
 Related documents
 -----------------
-- http://xp-framework.net/rfc/contrib/rfc0085.diff
+- http://xp-framework.net/rfc/contrib/rfc0037.diff
   Patch implementing this RFC
 
 - http://experiments.xp-framework.net/?people,friebe,rfc0037
