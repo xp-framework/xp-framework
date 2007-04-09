@@ -180,7 +180,7 @@
      */
     public function equals($cmp) {
       return (
-        is('util.collections.Map', $cmp) && 
+        ($cmp instanceof Map) && 
         ($this->hashCode() === $cmp->hashCode())
       );
     }
