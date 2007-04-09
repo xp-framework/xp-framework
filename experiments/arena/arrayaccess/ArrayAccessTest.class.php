@@ -7,6 +7,7 @@
   uses(
     'lang.types.ArrayList',
     'util.collections.HashTable',
+    'util.collections.Vector',
     'text.String'
   );
 
@@ -261,6 +262,77 @@
       $this->assertTrue(isset($c[new String('hello')]));
       unset($c[new String('hello')]);
       $this->assertFalse(isset($c[new String('hello')]));
+    }
+
+    /**
+     * Tests array access operator is overloaded for reading
+     *
+     */
+    #[@test]
+    public function vectorReadElement() {
+      $v= new Vector();
+      $world= new String('world');
+      $v->add($world);
+      $this->assertEquals($world, $v[0]);
+    }
+
+    /**
+     * Tests array access operator is overloaded for reading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function vectorReadNonExistantElement() {
+      $v= new Vector();
+      $v[0];
+    }
+
+    /**
+     * Tests array access operator is overloaded for adding
+     *
+     */
+    #[@test]
+    public function vectorAddElement() {
+      $v= new Vector();
+      $world= new String('world');
+      $v[]= $world;
+      $this->assertEquals($world, $v[0]);
+    }
+    
+    /**
+     * Tests array access operator is overloaded for reading
+     *
+     */
+    #[@test]
+    public function vectorWriteElement() {
+      $v= new Vector();
+      $world= new String('world');
+      $v[0]= $world;
+      $this->assertEquals($world, $v[0]);
+    }
+
+    /**
+     * Tests array access operator is overloaded for isset()
+     *
+     */
+    #[@test]
+    public function vectorTestElement() {
+      $v= new Vector();
+      $v[]= new String('world');
+      $this->assertTrue(isset($v[0]));
+      $this->assertFalse(isset($v[1]));
+      $this->assertFalse(isset($v[-1]));
+    }
+
+    /**
+     * Tests array access operator is overloaded for unset()
+     *
+     */
+    #[@test]
+    public function vectorRemoveElement() {
+      $v= new Vector();
+      $v[]= new String('world');
+      unset($v[0]);
+      $this->assertFalse(isset($v[0]));
     }
   }
 ?>
