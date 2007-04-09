@@ -14,10 +14,11 @@
    */
   class Vector extends Object implements IList {
     protected static
-      $iterate = NULL;
+      $iterate   = NULL;
 
-    public
-      $values  = array();
+    protected
+      $elements  = array(),
+      $size      = 0;
 
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
@@ -38,6 +39,7 @@
      */
     public function __construct($elements= array()) {
       $this->elements= array_values($elements);
+      $this->size= sizeof($this->elements);
     }
 
     /**
@@ -73,7 +75,7 @@
       } else if (NULL === $offset) {
         $this->add($value);
       } else {
-        throw new IllegalArgumentException('Incorrect type '.$t.' for index');
+        throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
       }
     }
 
@@ -84,7 +86,7 @@
      * @return  bool
      */
     public function offsetExists($offset) {
-      return array_key_exists($offset, $this->elements);
+      return ($offset >= 0 && $offset < $this->size);
     }
 
     /**
@@ -93,7 +95,7 @@
      * @param   int offset
      */
     public function offsetUnset($offset) {
-      unset($this->elements[$offset]);
+      $this->remove($offset);
     }
       
     /**
@@ -102,7 +104,7 @@
      * @return  int
      */
     public function size() {
-      return sizeof($this->elements);
+      return $this->size;
     }
     
     /**
@@ -111,7 +113,7 @@
      * @return  bool
      */
     public function isEmpty() {
-      return empty($this->elements);
+      return 0 == $this->size;
     }
     
     /**
@@ -123,6 +125,7 @@
      */
     public function add(Generic $element) {
       $this->elements[]= $element;
+      $this->size++;
       return $element;
     }
 
@@ -133,8 +136,13 @@
      * @param   int index
      * @param   lang.Generic element
      * @return  lang.Generic the element previously at the specified position.
+     * @throws  lang.IndexOutOfBoundsException
      */
     public function set($index, Generic $element) {
+      if ($index < 0 || $index >= $this->size) {
+        throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+      }
+
       $orig= $this->elements[$index];
       $this->elements[$index]= $element;
       return $orig;
@@ -148,8 +156,8 @@
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
     public function get($index) {
-      if (!array_key_exists($index, $this->elements)) {
-        raise('lang.IndexOutOfBoundsException', 'Index '.$index.' out of bounds');
+      if ($index < 0 || $index >= $this->size) {
+        throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
       }
       return $this->elements[$index];
     }
@@ -163,10 +171,15 @@
      * @return  lang.Generic the element that was removed from the list
      */
     public function remove($index) {
-      $element= $this->elements[$index];
+      if ($index < 0 || $index >= $this->size) {
+        throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+      }
+
+      $orig= $this->elements[$index];
       unset($this->elements[$index]);
       $this->elements= array_values($this->elements);
-      return $element;
+      $this->size--;
+      return $orig;
     }
     
     /**
@@ -176,6 +189,7 @@
      */
     public function clear() {
       $this->elements= array();
+      $this->size= 0;
     }
     
     /**
@@ -194,7 +208,7 @@
      * @return  bool
      */
     public function contains(Generic $element) {
-      for ($i= 0, $s= sizeof($this->elements); $i < $s; $i++) {
+      for ($i= 0, $s= $this->size; $i < $s; $i++) {
         if ($this->elements[$i]->equals($element)) return TRUE;
       }
       return FALSE;
@@ -216,7 +230,7 @@
       //     RETURN_FALSE;
       // }
       // </snip>
-      for ($i= 0, $s= sizeof($this->elements); $i < $s; $i++) {
+      for ($i= 0, $s= $this->size; $i < $s; $i++) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
       return FALSE;
@@ -229,7 +243,7 @@
      * @return  int offset where the element was found or FALSE
      */
     public function lastIndexOf(Generic $element) {
-      for ($i= sizeof($this->elements)- 1; $i > -1; $i--) {
+      for ($i= $this->size- 1; $i > -1; $i--) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
       return FALSE;
@@ -242,7 +256,7 @@
      */
     public function toString() {
       $r= $this->getClassName().'<'.$this->class.">@{\n";
-      for ($i= 0, $s= sizeof($this->elements); $i < $s; $i++) {
+      for ($i= 0; $i < $this->size; $i++) {
         $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->elements[$i]))."\n";
       } 
       return $r.'}';
@@ -255,13 +269,10 @@
      * @return  bool
      */
     public function equals($cmp) {
-      if (
-        !is('IList', $cmp) || 
-        $this->size != $cmp->size
-      ) return FALSE;
+      if (!($cmp instanceof IList) || $this->size != $cmp->size) return FALSE;
       
       // Compare element by element
-      for ($i= 0, $s= sizeof($this->elements); $i < $s; $i++) {
+      for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($cmp->elements[$i])) continue;
         return FALSE;
       }
