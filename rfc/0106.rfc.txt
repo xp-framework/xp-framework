@@ -121,6 +121,12 @@ Examples:
    
     // The overloaded equivalent 
     $h[new String('stage-url')]= new URL('xp://localhost:6448');
+    
+    // Using the get() method
+    $url= $h->get(new String('stage-url'));
+    
+    // The overloaded equivalent 
+    $url= $h[new String('stage-url')];
   }
 ?>
 
@@ -137,8 +143,20 @@ Slightly slower (more methods, extra implementation checks)
 
 Dependencies
 ------------
-n/a
 
+ArrayList vs. Vector
+~~~~~~~~~~~~~~~~~~~~
+lang.types.ArrayList's constructor will be changed to accept varargs
+instead of an array. The classes that use lang.types.ArrayList will 
+be adapted to this change.
+
+A new interface util.collections.IList will be introduced. An 
+implementation will exists in form of the new class 
+util.collections.Vector.
+
+The distinction between those two is that ArrayList is a thin, immutable
+wrapper type without utility functions such as indexOf() or contains(), 
+whereas the Vector class provides a full "list" API. 
 
 Related documents
 -----------------
