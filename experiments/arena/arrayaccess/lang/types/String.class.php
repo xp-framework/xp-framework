@@ -116,6 +116,9 @@
      * @param   int offset
      */
     public function offsetUnset($offset) {
+      if ($offset >= $this->length || $offset < 0) {
+        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+      }
       $this->buffer= (
         iconv_substr($this->buffer, 0, $offset, STR_ENC).
         iconv_substr($this->buffer, $offset+ 1, $this->length, STR_ENC)
