@@ -29,6 +29,15 @@
         public function valid() { return $this->i < sizeof($this->v); }
       }');
     }
+    
+    /**
+     * Constructor
+     *
+     * @param   lang.Generic[] elements default array()
+     */
+    public function __construct($elements= array()) {
+      $this->elements= array_values($elements);
+    }
 
     /**
      * Returns an iterator for use in foreach()
