@@ -25,11 +25,10 @@
      */
     #[@test]
     public function arrayListIsUsableInForeach() {
-      $values= array(1, 2, 3);
-      foreach (new ArrayList($values) as $i => $value) {
-        $this->assertEquals($values[$i], $value);
+      foreach (new ArrayList(0, 1, 2) as $i => $value) {
+        $this->assertEquals($i, $value);
       }
-      $this->assertEquals(sizeof($values)- 1, $i);
+      $this->assertEquals(2, $i);
     }
 
     /**
@@ -38,12 +37,8 @@
      */
     #[@test]
     public function arrayListIsUsableInNestedForeach() {
-      $values= array(
-        new ArrayList(array(1, 2, 3)),
-        new ArrayList(array(4, 5, 6)),
-      );
       $r= '';
-      foreach (new ArrayList($values) as $i => $value) {
+      foreach (new ArrayList(new ArrayList(1, 2, 3), new ArrayList(4, 5, 6)) as $i => $value) {
         foreach ($value as $j => $v) {
          
           $r.= $i.'.'.$j.':'.$v.', ';
@@ -61,7 +56,7 @@
      */
     #[@test]
     public function arrayListReadElement() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $this->assertEquals(1, $c[0]);
       $this->assertEquals(2, $c[1]);
       $this->assertEquals(3, $c[2]);
@@ -83,7 +78,7 @@
      */
     #[@test]
     public function arrayListWriteElement() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $c[0]= 4;
       $this->assertEquals(4, $c[0]);
     }
@@ -107,7 +102,7 @@
     public function arrayListAddBySupplyingNextLargerNumber() {
       $c1= new ArrayList();
       $c1[0]= 4;
-      $c2= new ArrayList(array(1, 2, 3));
+      $c2= new ArrayList(1, 2, 3);
       $c2[3]= 4;
     }
 
@@ -117,7 +112,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function arrayListKeyOfIncorrectType() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $c['foo']= 4;
     }
 
@@ -137,7 +132,7 @@
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
     public function arrayListKeyWhichCreatesGap2() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $c[4]= 4;   // $c[3] would work, appending a new element
     }
 
@@ -157,7 +152,7 @@
      */
     #[@test]
     public function arrayListTestElement() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $this->assertTrue(isset($c[0]));
       $this->assertFalse(isset($c[3]));
       $this->assertFalse(isset($c[-1]));
@@ -169,7 +164,7 @@
      */
     #[@test]
     public function arrayListRemoveElement() {
-      $c= new ArrayList(array(1, 2, 3));
+      $c= new ArrayList(1, 2, 3);
       $this->assertTrue(isset($c[0]));
       unset($c[0]);
       $this->assertFalse(isset($c[0]));
@@ -333,6 +328,19 @@
       $v[]= new String('world');
       unset($v[0]);
       $this->assertFalse(isset($v[0]));
+    }
+
+    /**
+     * Tests Vector is usable in foreach()
+     *
+     */
+    #[@test]
+    public function vectorIsUsableInForeach() {
+      $values= array(new String('hello'), new String('world'));
+      foreach (new Vector($values) as $i => $value) {
+        $this->assertEquals($values[$i], $value);
+      }
+      $this->assertEquals(sizeof($values)- 1, $i);
     }
   }
 ?>
