@@ -31,10 +31,10 @@
     /**
      * Constructor
      *
-     * @param   mixed[] values default array()
+     * @param   mixed* values
      */
-    public function __construct($values= array()) {
-      $this->values= array_values($values);
+    public function __construct() {
+      $this->values= func_get_args();
     }
     
     /**
