@@ -31,31 +31,21 @@
     }
     
     /**
-     * Retrieve current microtime
-     *
-     * @return  float microtime
-     */
-    public function microtime() {
-      list($usec, $sec)= explode(' ', microtime());
-      return (float)$usec + (float)$sec;
-    }
-    
-    /**
      * Add an element to the buffer and return the id of the element 
      * which has been deleted in exchange. Returns NULL for the case 
      * that no element has been deleted (which is the case when the 
      * buffer's size has not yet been exceeded).
      *
      * <code>
-     *   $deleted= &$buf->add($key);
+     *   $deleted= $buf->add($key);
      * </code>
      *
-     * @param   &lang.Object element
-     * @return  &lang.Object victim
+     * @param   lang.Generic element
+     * @return  lang.Generic victim
      */
-    public function add($element) {
+    public function add(Generic $element) {
       $h= $element->hashCode();
-      $this->_access[$h]= $this->microtime();
+      $this->_access[$h]= microtime(TRUE);
       $this->_elements[$h]= $element;
 
       // Check if this buffer's size has been exceeded
@@ -74,10 +64,10 @@
     /**
      * Update an element
      *
-     * @param   &lang.Object element
+     * @param   lang.Generic element
      */
-    public function update($element) {
-      $this->_access[$element->hashCode()]= $this->microtime();
+    public function update(Generic $element) {
+      $this->_access[$element->hashCode()]= microtime(TRUE);
     }
     
     /**
@@ -96,9 +86,9 @@
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
     public function setSize($size) {
-      if ($size <= 0) throw(new IllegalArgumentException(
+      if ($size <= 0) throw new IllegalArgumentException(
         'Size must be greater than zero, '.$size.' given'
-      ));
+      );
 
       $this->size= $size;
     }
