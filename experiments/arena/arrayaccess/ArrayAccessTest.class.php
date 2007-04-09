@@ -197,6 +197,16 @@
     }
 
     /**
+     * Tests array access operator is overloaded for reading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function hashTableReadIllegalElement() {
+      $c= new HashTable();
+      $c['scalar'];
+    }
+
+    /**
      * Tests array access operator is overloaded for writing
      *
      */
@@ -208,6 +218,25 @@
       $this->assertEquals($world, $c->get(new String('hello')));
     }
 
+    /**
+     * Tests array access operator is overloaded for writing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function hashTableWriteIllegalKey() {
+      $c= new HashTable();
+      $c['scalar']= new String('Hello');
+    }
+
+    /**
+     * Tests array access operator is overloaded for writing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function hashTableWriteIllegalValue() {
+      $c= new HashTable();
+      $c[new String('hello')]= 'key';
+    }
 
     /**
      * Tests array access operator is overloaded for isset()
