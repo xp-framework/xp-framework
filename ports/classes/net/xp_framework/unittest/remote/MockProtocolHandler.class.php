@@ -87,5 +87,12 @@
     public function invoke($oid, $method, $args) {
     }
 
+    /**
+     * Set a trace for debugging
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+    }
   } 
 ?>
