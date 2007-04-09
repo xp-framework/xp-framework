@@ -31,69 +31,60 @@ offsetGet(), offsetSet(), offsetExists() and offsetUnset().
 
 ArrayList implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Because the ArrayList class represents a strictly "numeric" array (a
-list of elements that is zero-indexed and without gaps), we will need
-to take special precautions in offsetSet().
+Because ArrayList is immutable in size 
 <?php
   // ...
   public function offsetGet($offset) {
-    if (!array_key_exists($offset, $this->values)) {
+    if ($offset >= $this->length || $offset < 0) {
       raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
     }
     return $this->values[$offset];
   }
 
   public function offsetSet($offset, $value) {
-    if (is_int($offset)) {
-      if ($offset < 0 || $offset > sizeof($this->values)) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
-      }
-      $this->values[$offset]= $value;
-    } else if (NULL === $offset) {
-      $this->values[]= $value;
-    } else {
+    if (!is_int($offset)) {
       throw new IllegalArgumentException('Incorrect type '.$t.' for index');
     }
+
+    if ($offset >= $this->length || $offset < 0) {
+      raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+    }
+    $this->values[$offset]= $value;
   }
 
   public function offsetExists($offset) {
-    return array_key_exists($offset, $this->values);
+    return ($offset >= 0 && $offset < $this->length);
   }
 
   public function offsetUnset($offset) {
-    unset($this->values[$offset]);
+    throw new IllegalArgumentException('Cannot remove from immutable list');
   }
   // ...
 ?>
 
 We will define an "inner" class for iteration to not introduce new 
-dependencies:
+dependencies. The iterator will only be created on-demand:
 <?php
   // ...
-  protected static
-    $iterate = NULL;
-
-  static function __static() {
-    self::$iterate= newinstance('Iterator', array(), '{
+  public function getIterator() {
+    if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
       private $i= 0, $v;
-      public function on($v) { $self= new self(); $self->v= $v; return $self; }
-      public function current() { return $this->v[$this->i]; }
+      public function __construct($v) { $this->v= $v; }
+      public function current() { return $this->v->values[$this->i]; }
       public function key() { return $this->i; }
       public function next() { $this->i++; }
       public function rewind() { $this->i= 0; }
-      public function valid() { return $this->i < sizeof($this->v); }
+      public function valid() { return $this->i < $this->v->length; }
     }');
-  }
-
-  public function getIterator() {
-    return self::$iterate->on($this->values);
+    return $this->iterator;
   }
   // ...
 ?>
 
 HashTable implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~
-The changes to the util.collection.HashTable class are trivial:
+The changes to the util.collection.HashTable class are trivial because 
+they only wrap already existant methods:
 <?php
   public function offsetGet($offset) {
     return $this->get($offset);
@@ -166,8 +157,8 @@ Related documents
 - http://www.php.net/~helly/php/ext/spl/interfaceIteratorAggregate.html
   Zend-Engine internal interface IteratorAggregate
 
-- http://xp-framework.net/rfc/contrib/rfc0106.diff
-  Implementing patch (apply in xp/trunk)
+- http://xp-framework.net/rfc/contrib/rfc0106-remote.diff
+  Patch for remote API (apply in xp/trunk)
 
 - http://experiments.xp-framework.net/?arena,arrayaccess
   Experiment
