@@ -6,6 +6,8 @@
 
   define('STR_ENC', 'UTF-8');
 
+  uses('lang.types.Character');
+
   /**
    * Represents a string
    *
