@@ -28,6 +28,8 @@
     protected function asIntern($arg, $charset= NULL) {
       if ($arg instanceof self) {
         return $arg->buffer;
+      } else if ($arg instanceof Character) {
+        return $arg->getBytes();
       } else if (is_string($arg)) {
         if (!$charset) $charset= iconv_get_encoding('input_encoding');
 
@@ -62,14 +64,11 @@
      * = list[] overloading
      *
      * @param   int offset
-     * @return  mixed
+     * @return  lang.types.Character
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
     public function offsetGet($offset) {
-      if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
-      }
-      return iconv_substr($this->buffer, $offset, 1, STR_ENC);
+      return $this->charAt($offset);
     }
 
     /**
@@ -134,6 +133,20 @@
      */
     public function length() {
       return $this->length;
+    }
+
+    /**
+     * Returns the character at the given position
+     *
+     * @param   int offset
+     * @return  lang.types.Character
+     * @throws  lang.IndexOutOfBoundsException if key does not exist
+     */
+    public function charAt($offset) {
+      if ($offset >= $this->length || $offset < 0) {
+        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+      }
+      return new Character(iconv_substr($this->buffer, $offset, 1, STR_ENC), STR_ENC);
     }
 
     /**
