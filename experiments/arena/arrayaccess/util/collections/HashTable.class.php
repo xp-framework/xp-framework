@@ -63,9 +63,9 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   &lang.Object key
-     * @param   &lang.Object value
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Object key
+     * @param   lang.Object value
+     * @return  lang.Object the previous value associated with the key
      */
     public function put($key, $value) {
       $h= $key->hashCode();
@@ -84,8 +84,8 @@
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the value associated with the key
+     * @param   lang.Object key
+     * @return  lang.Object the value associated with the key
      */
     public function get($key) {
       $h= $key->hashCode();
@@ -99,8 +99,8 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Object key
+     * @return  lang.Object the previous value associated with the key
      */
     public function remove($key) {
       $h= $key->hashCode();
@@ -143,7 +143,7 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   &lang.Object key
+     * @param   lang.Object key
      * @return  bool
      */
     public function containsKey($key) {
@@ -153,7 +153,7 @@
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   &lang.Object value
+     * @param   lang.Object value
      * @return  bool
      */
     public function containsValue($value) {
@@ -175,7 +175,7 @@
     /**
      * Returns true if this map equals another map.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool
      */
     public function equals($cmp) {
@@ -188,7 +188,7 @@
     /**
      * Returns an array of keys
      *
-     * @return  &lang.Object[]
+     * @return  lang.Object[]
      */
     public function keys() {
       $keys= array();
