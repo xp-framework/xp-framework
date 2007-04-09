@@ -208,7 +208,7 @@
      * @return  bool
      */
     public function contains(Generic $element) {
-      for ($i= 0, $s= $this->size; $i < $s; $i++) {
+      for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return TRUE;
       }
       return FALSE;
@@ -221,16 +221,7 @@
      * @return  int offset where the element was found or FALSE
      */
     public function indexOf(Generic $element) {
-    
-      // Note: array_search() does NOT work for objects:
-      //
-      // <snip from="ext/standard/array.c">
-      // if (Z_TYPE_PP(value) == IS_OBJECT) {
-      //     php_error_docref(NULL TSRMLS_CC, E_WARNING, "Wrong datatype for first argument");
-      //     RETURN_FALSE;
-      // }
-      // </snip>
-      for ($i= 0, $s= $this->size; $i < $s; $i++) {
+      for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
       return FALSE;
