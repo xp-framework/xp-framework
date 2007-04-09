@@ -413,11 +413,11 @@
     #[@test]
     public function stringReadChar() {
       $s= new String('Hello');
-      $this->assertEquals('H', $s[0]);
-      $this->assertEquals('e', $s[1]);
-      $this->assertEquals('l', $s[2]);
-      $this->assertEquals('l', $s[3]);
-      $this->assertEquals('o', $s[4]);
+      $this->assertEquals(new Character('H'), $s[0]);
+      $this->assertEquals(new Character('e'), $s[1]);
+      $this->assertEquals(new Character('l'), $s[2]);
+      $this->assertEquals(new Character('l'), $s[3]);
+      $this->assertEquals(new Character('o'), $s[4]);
     }
 
     /**
@@ -447,7 +447,7 @@
     #[@test]
     public function stringReadUtfChar() {
       $s= new String('Übercoder');
-      $this->assertEquals("\xc3\x9c", $s[0]);
+      $this->assertEquals(new Character('Ü'), $s[0]);
     }
 
     /**
