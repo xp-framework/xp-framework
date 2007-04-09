@@ -51,8 +51,8 @@
      */
     #[@test]
     public function euroSymbol() {
-      $c= new Character(0x20A0);    // &#8352; in HTML
-      $this->assertEquals("\xe2\x82\xa0", $c->getBytes());
+      $c= new Character(8364);    // &#8364; in HTML
+      $this->assertEquals("\xe2\x82\xac", $c->getBytes());
     }
   
     /**
