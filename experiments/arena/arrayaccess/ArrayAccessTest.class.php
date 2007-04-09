@@ -337,15 +337,35 @@
     }
     
     /**
-     * Tests array access operator is overloaded for reading
+     * Tests array access operator is overloaded for writing
      *
      */
     #[@test]
     public function vectorWriteElement() {
-      $v= new Vector();
+      $v= new Vector(array(new String('hello')));
       $world= new String('world');
       $v[0]= $world;
       $this->assertEquals($world, $v[0]);
+    }
+
+    /**
+     * Tests array access operator is overloaded for writing
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function vectorWriteElementBeyondBoundsKey() {
+      $v= new Vector();
+      $v[0]= new String('world');
+    }
+
+    /**
+     * Tests array access operator is overloaded for writing
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function vectorWriteElementNegativeKey() {
+      $v= new Vector();
+      $v[-1]= new String('world');
     }
 
     /**
