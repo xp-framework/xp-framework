@@ -14,7 +14,8 @@
       $iterate = NULL;
 
     public
-      $values  =  NULL;
+      $values  = NULL,
+      $length  = 0;
 
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
@@ -35,6 +36,7 @@
      */
     public function __construct() {
       $this->values= func_get_args();
+      $this->length= func_num_args();
     }
     
     /**
@@ -69,16 +71,14 @@
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
     public function offsetSet($offset, $value) {
-      if (is_int($offset)) {
-        if ($offset < 0 || $offset > sizeof($this->values)) {
-          raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
-        }
-        $this->values[$offset]= $value;
-      } else if (NULL === $offset) {
-        $this->values[]= $value;
-      } else {
+      if (!is_int($offset)) {
         throw new IllegalArgumentException('Incorrect type '.$t.' for index');
       }
+      
+      if (!array_key_exists($offset, $this->values)) {
+        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+      }
+      $this->values[$offset]= $value;
     }
 
     /**
@@ -97,7 +97,7 @@
      * @param   int offset
      */
     public function offsetUnset($offset) {
-      unset($this->values[$offset]);
+      throw new IllegalArgumentException('Cannot remove from immutable list');
     }
     
     /**

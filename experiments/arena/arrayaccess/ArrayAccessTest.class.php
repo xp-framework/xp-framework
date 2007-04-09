@@ -87,23 +87,31 @@
      * Tests array access operator is overloaded for adding
      *
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalArgumentException')]
     public function arrayListAddElement() {
       $c= new ArrayList();
       $c[]= 4;
-      $this->assertEquals(4, $c[0]);
     }
 
     /**
      * Tests adding by supplying the next larger number
      *
      */
-    #[@test]
-    public function arrayListAddBySupplyingNextLargerNumber() {
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function arrayListAddToEmptyBySupplyingNextLargerNumber() {
       $c1= new ArrayList();
       $c1[0]= 4;
-      $c2= new ArrayList(1, 2, 3);
-      $c2[3]= 4;
+    }
+
+
+    /**
+     * Tests writing with a key that would create a gap in the array
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function arrayListAddBySupplyingNextLargerNumber2() {
+      $c= new ArrayList(1, 2, 3);
+      $c[4]= 4;
     }
 
     /**
@@ -114,26 +122,6 @@
     public function arrayListKeyOfIncorrectType() {
       $c= new ArrayList(1, 2, 3);
       $c['foo']= 4;
-    }
-
-    /**
-     * Tests writing with a key that would create a gap in the array
-     *
-     */
-    #[@test, @expect('lang.IndexOutOfBoundsException')]
-    public function arrayListKeyWhichCreatesGap() {
-      $c= new ArrayList();
-      $c[1]= 4;
-    }
-
-    /**
-     * Tests writing with a key that would create a gap in the array
-     *
-     */
-    #[@test, @expect('lang.IndexOutOfBoundsException')]
-    public function arrayListKeyWhichCreatesGap2() {
-      $c= new ArrayList(1, 2, 3);
-      $c[4]= 4;   // $c[3] would work, appending a new element
     }
 
     /**
@@ -162,12 +150,24 @@
      * Tests array access operator is overloaded for unset()
      *
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalArgumentException')]
     public function arrayListRemoveElement() {
       $c= new ArrayList(1, 2, 3);
-      $this->assertTrue(isset($c[0]));
       unset($c[0]);
-      $this->assertFalse(isset($c[0]));
+    }
+
+    /**
+     * Tests array access operator is overloaded for unset()
+     *
+     */
+    #[@test]
+    public function arrayListIntactAfterUnset() {
+      $c= new ArrayList(1, 2, 3);
+      try {
+        unset($c[0]);
+      } catch (IllegalArgumentException $expected) { }
+
+      $this->assertEquals(3, $c->length);
     }
 
     /**
