@@ -10,23 +10,29 @@
    * @purpose  Wrapper
    */
   class ArrayList extends Object implements ArrayAccess, IteratorAggregate {
-    protected static
-      $iterate = NULL;
+    protected
+      $iterator = NULL;
 
     public
-      $values  = NULL,
-      $length  = 0;
+      $values   = NULL,
+      $length   = 0;
 
-    static function __static() {
-      self::$iterate= newinstance('Iterator', array(), '{
-        private $i= 0, $v;
-        public function on($v) { $self= new self(); $self->v= $v; return $self; }
-        public function current() { return $this->v[$this->i]; }
-        public function key() { return $this->i; }
-        public function next() { $this->i++; }
-        public function rewind() { $this->i= 0; }
-        public function valid() { return $this->i < sizeof($this->v); }
-      }');
+    /**
+     * Create a new instance of an ArrayList
+     *
+     * @param   mixed arg either mixed[] => values or an int => size
+     * @return  lang.types.ArrayList
+     */
+    public static function newInstance($arg) {
+      if (is_array($arg)) {
+        $self= new self();
+        $self->values= array_values($arg);
+        $self->length= sizeof($self->values);
+      } else {
+        $self= new self();
+        $self->length= (int)$arg;
+      }
+      return $self;
     }
     
     /**
@@ -35,8 +41,9 @@
      * @param   mixed* values
      */
     public function __construct() {
-      $this->values= func_get_args();
-      $this->length= func_num_args();
+      if (0 != ($this->length= func_num_args())) {
+        $this->values= func_get_args();
+      }
     }
     
     /**
@@ -46,7 +53,16 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->values);
+      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
+        private $i= 0, $v;
+        public function __construct($v) { $this->v= $v; }
+        public function current() { return $this->v->values[$this->i]; }
+        public function key() { return $this->i; }
+        public function next() { $this->i++; }
+        public function rewind() { $this->i= 0; }
+        public function valid() { return $this->i < $this->v->length; }
+      }');
+      return $this->iterator;
     }
 
     /**
@@ -75,7 +91,7 @@
         throw new IllegalArgumentException('Incorrect type '.$t.' for index');
       }
       
-      if (!array_key_exists($offset, $this->values)) {
+      if ($offset >= $this->length || $offset < 0) {
         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       $this->values[$offset]= $value;

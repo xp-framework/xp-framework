@@ -32,6 +32,18 @@
     }
 
     /**
+     * Tests ArrayList is usable in for()
+     *
+     */
+    #[@test]
+    public function arrayListIsUsableInFor() {
+      for ($l= new ArrayList(0, 1, 2), $i= 0; $i < $l->length; $i++) {
+        $this->assertEquals($i, $l[$i]);
+      }
+      $this->assertEquals($l->length, $i);
+    }
+
+    /**
      * Tests ArrayList is usable in foreach() - nested
      *
      */
@@ -40,7 +52,6 @@
       $r= '';
       foreach (new ArrayList(new ArrayList(1, 2, 3), new ArrayList(4, 5, 6)) as $i => $value) {
         foreach ($value as $j => $v) {
-         
           $r.= $i.'.'.$j.':'.$v.', ';
         }
       }
@@ -103,13 +114,12 @@
       $c1[0]= 4;
     }
 
-
     /**
-     * Tests writing with a key that would create a gap in the array
+     * Tests writing with a key that would change the array's size
      *
      */
     #[@test, @expect('lang.IndexOutOfBoundsException')]
-    public function arrayListAddBySupplyingNextLargerNumber2() {
+    public function arrayListAddBySupplyingNextLargerNumber() {
       $c= new ArrayList(1, 2, 3);
       $c[4]= 4;
     }
@@ -132,6 +142,39 @@
     public function arrayListNegativeKey() {
       $c= new ArrayList();
       $c[-1]= 4;
+    }
+    
+    /**
+     * Tests arraylist's newInstance(int) method
+     *
+     */
+    #[@test]
+    public function arrayListNewInstanceSize() {
+      $a= ArrayList::newInstance(4);
+      $this->assertEquals(4, $a->length);
+      $a[0]= 1;
+      $a[1]= 2;
+      $a[2]= 3;
+      $a[3]= 4;
+      try {
+        $a[4]= 5;
+        $this->fail('Should not be able to add a fifth element');
+      } catch (IndexOutOfBoundsException $expected) { }
+      $this->assertEquals(4, $a->length);
+    }
+
+    /**
+     * Tests arraylist's newInstance(mixed[]) method
+     *
+     */
+    #[@test]
+    public function arrayListNewInstanceArray() {
+      $a= ArrayList::newInstance(array(1, 2, 3, 4));
+      $this->assertEquals(4, $a->length);
+      $this->assertEquals(1, $a[0]);
+      $this->assertEquals(2, $a[1]);
+      $this->assertEquals(3, $a[2]);
+      $this->assertEquals(4, $a[3]);
     }
 
     /**
