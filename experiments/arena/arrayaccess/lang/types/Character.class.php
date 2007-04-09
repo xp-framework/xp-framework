@@ -5,7 +5,21 @@
  */
 
   /**
-   * Represents a character
+   * Represents a character, which may consist of one or more bytes.
+   *
+   * Examples:
+   * <code>
+   *   $c= new Character(8364);               // The EUR symbol (U+20AC)
+   *   $c= new Character(0x20AC);             // ...same, using hexadecimal
+   *   $c= new Character('Ä', 'ISO-8859-1');  // The German Umlaut A (capital)
+   *
+   *   $s= new String('Übercoder', 'ISO-8859-1');
+   *   $c= $s->charAt(0);                     // The German Umlaut U (capital)
+   *   $c= $s[0];                             // ...same, via [] operator
+   *
+   *   $c= $s->charAt(1);                     // "b"
+   *   $c= $s[1];                             // "b"
+   * </code>
    *
    * @ext      iconv
    * @purpose  Wrapper type
