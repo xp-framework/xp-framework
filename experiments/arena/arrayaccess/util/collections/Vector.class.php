@@ -7,9 +7,10 @@
   uses('util.collections.IList');
 
   /**
-   * (Insert class' description here)
+   * Resizable array list
    *
-   * @purpose  purpose
+   * @see      xp://lang.types.ArrayList
+   * @purpose  IList implementation
    */
   class Vector extends Object implements IList {
     protected static
