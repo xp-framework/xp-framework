@@ -73,7 +73,7 @@
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
     public function offsetGet($offset) {
-      if (!array_key_exists($offset, $this->values)) {
+      if ($offset >= $this->length || $offset < 0) {
         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       return $this->values[$offset];
@@ -104,7 +104,7 @@
      * @return  bool
      */
     public function offsetExists($offset) {
-      return array_key_exists($offset, $this->values);
+      return ($offset >= 0 && $offset < $this->length);
     }
 
     /**
