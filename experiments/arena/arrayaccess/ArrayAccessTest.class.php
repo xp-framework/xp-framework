@@ -5,10 +5,10 @@
  */
 
   uses(
+    'lang.types.String',
     'lang.types.ArrayList',
     'util.collections.HashTable',
-    'util.collections.Vector',
-    'text.String'
+    'util.collections.Vector'
   );
 
   /**
@@ -404,6 +404,136 @@
         $this->assertEquals($values[$i], $value);
       }
       $this->assertEquals(sizeof($values)- 1, $i);
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringReadChar() {
+      $s= new String('Hello');
+      $this->assertEquals('H', $s[0]);
+      $this->assertEquals('e', $s[1]);
+      $this->assertEquals('l', $s[2]);
+      $this->assertEquals('l', $s[3]);
+      $this->assertEquals('o', $s[4]);
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function stringReadBeyondOffset() {
+      $s= new String('Hello');
+      $s[5];
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function stringReadNegativeOffset() {
+      $s= new String('Hello');
+      $s[-1];
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringReadUtfChar() {
+      $s= new String('Übercoder');
+      $this->assertEquals("\xc3\x9c", $s[0]);
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringWriteChar() {
+      $s= new String('Übercoder');
+      $s[0]= 'U';
+      $this->assertEquals(new String('Ubercoder'), $s);
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringWriteUtfChar() {
+      $s= new String('Ubercoder');
+      $s[0]= 'Ü';
+      $this->assertEquals(new String('Übercoder'), $s);
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringWriteMoreThanOneChar() {
+      $s= new String('Hallo');
+      $s[0]= 'Halli H';   // Hoping somehow this would become "Halli Hallo":)
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function stringWriteBeyondOffset() {
+      $s= new String('Hello');
+      $s[5]= 's';
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function stringWriteNegativeOffset() {
+      $s= new String('Hello');
+      $s[-1]= "\x00";
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringAppend() {
+      $s= new String('Hello');
+      $s[]= ' ';   // use concat() instead
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringTestChar() {
+      $s= new String('Übercoder');
+      $this->assertTrue(isset($s[0]));
+      $this->assertTrue(isset($s[$s->length()- 1]));
+      $this->assertFalse(isset($s[$s->length()]));
+      $this->assertFalse(isset($s[-1]));
+    }
+
+    /**
+     * Tests string class array access operator overloading
+     *
+     */
+    #[@test]
+    public function stringRemoveChar() {
+      $s= new String('Übercoder');
+      unset($s[0]);
+      $this->assertEquals(new String('bercoder'), $s);
     }
   }
 ?>
