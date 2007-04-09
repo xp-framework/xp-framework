@@ -20,8 +20,8 @@
     /**
      * = list[] overloading
      *
-     * @param   lang.Object offset
-     * @return  lang.Object
+     * @param   lang.Generic offset
+     * @return  lang.Generic
      */
     public function offsetGet($offset) {
       return $this->get($offset);
@@ -30,8 +30,8 @@
     /**
      * list[]= overloading
      *
-     * @param   lang.Object offset
-     * @param   lang.Object value
+     * @param   lang.Generic offset
+     * @param   lang.Generic value
      */
     public function offsetSet($offset, $value) {
       $this->put($offset, $value);
@@ -40,7 +40,7 @@
     /**
      * isset() overloading
      *
-     * @param   lang.Object offset
+     * @param   lang.Generic offset
      * @return  bool
      */
     public function offsetExists($offset) {
@@ -50,7 +50,7 @@
     /**
      * unset() overloading
      *
-     * @param   lang.Object offset
+     * @param   lang.Generic offset
      */
     public function offsetUnset($offset) {
       $this->remove($offset);
@@ -63,11 +63,11 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   lang.Object key
-     * @param   lang.Object value
-     * @return  lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @param   lang.Generic value
+     * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value) {
+    public function put(Generic $key, Generic $value) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -84,10 +84,10 @@
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   lang.Object key
-     * @return  lang.Object the value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the value associated with the key
      */
-    public function get($key) {
+    public function get(Generic $key) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
@@ -99,10 +99,10 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   lang.Object key
-     * @return  lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the previous value associated with the key
      */
-    public function remove($key) {
+    public function remove(Generic $key) {
       $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -143,20 +143,20 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   lang.Object key
+     * @param   lang.Generic key
      * @return  bool
      */
-    public function containsKey($key) {
+    public function containsKey(Generic $key) {
       return isset($this->_buckets[$key->hashCode()]);
     }
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   lang.Object value
+     * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value) {
+    public function containsValue(Generic $value) {
       foreach (array_keys($this->_buckets) as $key) {
         if ($this->_buckets[$key][1]->equals($value)) return TRUE;
       }
@@ -175,7 +175,7 @@
     /**
      * Returns true if this map equals another map.
      *
-     * @param   lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
@@ -188,7 +188,7 @@
     /**
      * Returns an array of keys
      *
-     * @return  lang.Object[]
+     * @return  lang.Generic[]
      */
     public function keys() {
       $keys= array();
