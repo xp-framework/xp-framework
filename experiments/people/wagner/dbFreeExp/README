@@ -1,0 +1,16 @@
+dba free Criteria experiment
+========================================================================
+$Id$
+
+==========================
+extends class generator
+extends experiment dbConstraints
+extends experiment dbProjection
+extends experiment dbProxy
+extends experiment dbFunc
+
+==========================
+
+
+
+<EOF>
