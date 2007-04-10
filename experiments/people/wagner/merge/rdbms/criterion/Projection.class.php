@@ -11,11 +11,12 @@
   abstract class Projection extends Object {
 
     /**
-     * return the projection part of an SQL statement
+     * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection db
+     * @param   rdbms.DBConnection conn
+     * @param   array types
      * @return  string
      */
-    abstract public function toSQL($db);
+    public function asSql($conn, $types) {}
   }
 ?>

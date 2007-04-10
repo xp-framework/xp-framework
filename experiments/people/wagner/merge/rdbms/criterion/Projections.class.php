@@ -17,10 +17,13 @@
     /**
      * manufactor a new ProjectionList
      *
+     * @param   string[] properties
      * @return  rdbms.criterion.ProjectionList
      */
-    public static function projectionList() {
-      return new ProjectionList();
+    public static function projectionList($properties= array()) {
+      $pl= new ProjectionList();
+      foreach ($properties as $property) $pl->add(new SimpleProjection($property, PROP));
+      return $pl;
     }
     
     /**

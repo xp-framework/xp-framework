@@ -211,9 +211,9 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    private function projections($db, $peer) {
+    private function projections($conn, $peer) {
       if (!$this->isProjection()) return array_keys($peer->types);
-      return $this->projection->toSQL($db);
+      return $this->projection->asSql($conn, $peer->types);
     }
 
     /**

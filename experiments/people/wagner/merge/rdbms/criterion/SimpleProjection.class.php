@@ -28,6 +28,7 @@
      * @param  string fieldname
      * @param  string command form constlist
      * @param  string alias optional
+     * @throws rdbms.SQLStateException
      */
     public function __construct($field, $command, $alias= '') {
       $this->field= $field;
@@ -36,13 +37,19 @@
     }
 
     /**
-     * return the projection part of an SQL statement
+     * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection db
+     * @param   rdbms.DBConnection conn
+     * @param   array types
      * @return  string
+     * @throws  rdbms.SQLStateException
      */
-    public function toSQL($db) {
-      return $db->prepare($this->command.' as %c', $this->field, ((0 == strlen($this->alias)) ? $this->field : $this->alias));
+    public function asSql($conn, $types) {
+      if (!is('rdbms.SQLFunction', $this->field) && !isset($types[$this->field])) throw new SQLStateException('field '.$field.' does not exist');
+      $field= is('rdbms.SQLFunction', $this->field) ?  $this->field->asSql($conn, $types) : $this->field;
+      return (0 == strlen($this->alias))
+      ? $conn->prepare($this->command, $field)
+      : $conn->prepare($this->command.' as %s', $field, $this->alias);
     }
   }
 ?>

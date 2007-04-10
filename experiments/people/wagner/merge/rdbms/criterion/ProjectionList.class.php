@@ -3,7 +3,10 @@
  *
  * $Id$ 
  */
- uses('rdbms.criterion.Projection');
+ uses(
+   'rdbms.criterion.Projection',
+   'rdbms.criterion.SimpleProjection'
+ );
 
   /**
    * belongs to the Criterion API
@@ -26,14 +29,15 @@
     }
 
     /**
-     * return the projection part of an SQL statement
+     * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection db
+     * @param   rdbms.DBConnection conn
+     * @param   array types
      * @return  string
      */
-    public function toSQL($db) {
+    public function asSql($conn, $types) {
       $s= '';
-      foreach ($this->projections as $p) $s.= ','.$p->toSQL($db);
+      foreach ($this->projections as $p) $s.= ','.$p->asSql($conn, $types);
       return substr($s, 1);
     }
 

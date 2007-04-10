@@ -1,4 +1,4 @@
-<document created_at="Thu, 29 Mar 2007 11:55:24 +0200" created_by="ruben">
+<document created_at="Wed, 04 Apr 2007 10:45:30 +0200" created_by="ruben">
   <database database="Ruben_Test_PS">  
     <table name="color">    
       <constraint name="colortype_for_color">      

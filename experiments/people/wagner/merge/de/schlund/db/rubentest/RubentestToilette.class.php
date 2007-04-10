@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table toilette, database Ruben_Test_PS
-   * (Auto-generated on Thu, 29 Mar 2007 11:55:24 +0200 by ruben)
+   * (Auto-generated on Wed, 04 Apr 2007 10:45:30 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */

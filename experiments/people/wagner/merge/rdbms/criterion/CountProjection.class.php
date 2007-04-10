@@ -24,15 +24,19 @@
     }
 
     /**
-     * return the projection part of an SQL statement
+     * Returns the fragment SQL
      *
-     * @param   &rdbms.DBConnection db
+     * @param   rdbms.DBConnection conn
+     * @param   array types
      * @return  string
+     * @throws  rdbms.SQLStateException
      */
-    public function toSQL($db) {
-      $command= ('*' == $this->field)       ? 'count(*)' : $db->prepare('count(%c)', $this->field);
-      $alias=   ('*' == $this->field)       ? 'count'    : $db->prepare('count_%c',  $this->field);
-      $alias=   (0 == strlen($this->alias)) ? $alias     : $db->prepare('%c',        $this->alias);
+    public function asSql($conn, $types) {
+      if (is('rdbms.SQLFunction', $this->field)) throw new SQLStateException('count can not handle SQLFunction');
+      if (('*' != $this->field) && !isset($types[$this->field])) throw new SQLStateException('field '.$field.' does not exist');
+      $command= ('*' == $this->field)       ? 'count(*)' : $conn->prepare('count(%c)', $this->field);
+      $alias=   ('*' == $this->field)       ? 'count'    : $conn->prepare('count_%c',  $this->field);
+      $alias=   (0 == strlen($this->alias)) ? $alias     : $conn->prepare('%c',        $this->alias);
       return $command.' as '.$alias;
     }
   }
