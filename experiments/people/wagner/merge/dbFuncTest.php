@@ -15,8 +15,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLFunctions',
-    'de.schlund.db.rubentest.RubentestJob',
-    'de.schlund.db.methadon.MethadonMessage'
+    'de.schlund.db.rubentest.RubentestJob'
   );
 
   // Params
@@ -31,7 +30,6 @@
   $crit= array();
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('sybase://portalweb:portal@sybintern/?autoconnect=1&log=default'));
 
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::day(SQLFunctions::getdate()), 'dayTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::ascii('"a"'), 'asciiTest'));
@@ -68,11 +66,9 @@
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::tan(45), 'tanTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::soundex("'ogawoga'"), 'soundexTest'));
 
-//  foreach ($crits as $name => $crit) {
-  $crit= array_pop($crits); {
+  foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
     var_dump(RubentestJob::getPeer()->iteratorFor($crit)->next());
-    var_dump(MethadonMessage::getPeer()->iteratorFor($crit)->next());
   }
 
 ?>
