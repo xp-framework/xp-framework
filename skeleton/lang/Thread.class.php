@@ -59,7 +59,7 @@
       $running  = FALSE;
       
     protected
-      $target   = NULL;
+      $target   = NULL,
       $_id      = -1,
       $_pid     = -1;
       
