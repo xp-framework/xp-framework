@@ -46,8 +46,8 @@
     /**
      * (Insert method's description here)
      *
-     * @param   XXX l
-     * @return  XXX
+     * @param   IClassLoader l
+     * @return  IClassLoader
      */
     public static function registerLoader($l) {
       self::$delegates[]= $l;

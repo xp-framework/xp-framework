@@ -92,7 +92,7 @@
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
-        if (FALSE === include(strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           throw new ClassNotFoundException('Class "'.$class.'" not found');
         }
         xp::$registry['class.'.$name]= $class;
