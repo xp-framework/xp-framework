@@ -12,6 +12,8 @@
     'util.log.ColoredConsoleAppender',
     'util.PropertyManager',
     'rdbms.ConnectionManager',
+    'rdbms.criterion.Projections',
+    'rdbms.criterion.Restrictions',
     'de.schlund.db.rubentest.RubentestPerson'
   );
 
@@ -77,5 +79,10 @@
     $l= RubentestPerson::getPeer()->iteratorFor($crit);
     var_dump($l->next());
   }
+
+
+  $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
+  var_dump(RubentestPerson::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count'));
+  var_dump(RubentestPerson::getPeer()->doSelect($crit));
 
 ?>

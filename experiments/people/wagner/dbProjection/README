@@ -11,7 +11,7 @@ and (../)dbConstraint extension
 meaning:
 --------
 
-the resultset of a query can be projected to only some propertys or functions like sum, min, max, avg, count
+the resultset of a query can be projected to only some properties or functions like sum, min, max, avg, count
 
 // projection to the function avg
 // a Record will be retuned
@@ -65,6 +65,13 @@ the resultset of a query can be projected to only some propertys or functions li
 // no projection
 // Person::getPeer()->doSelect($crit['plain'], 1) would return a Person
   $crits['plain']= new Criteria();
+
+// the method Criteria::withProjection can be used to build a temporary
+// Criteria with a projection - e.g. count to test how many results will be
+// in the resultset
+$crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
+if (LIMIT < RubentestPerson::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count'))
+  RubentestPerson::getPeer()->doSelect($crit);
 
 
 <EOF>

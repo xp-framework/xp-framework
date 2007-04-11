@@ -6,7 +6,6 @@
 
   uses(
     'rdbms.criterion.SimpleExpression',
-    'rdbms.criterion.Projections',
     'rdbms.SQLExpression'
   );
   
@@ -140,10 +139,23 @@
     /**
      * Set projection
      *
-     * @param   &rdbms.util.Projection projection
+     * @param   rdbms.util.Projection projection
+     * @return  rdbms.Criteria this object
      */
     public function setProjection(Projection $projection) {
       $this->projection= $projection;
+      return $this;
+    }
+
+    /**
+     * Set projection for a new clone of this object
+     *
+     * @param   rdbms.util.Projection projection
+     * @return  rdbms.Criteria this object
+     */
+    public function withProjection(Projection $projection) {
+      $crit= clone($this);
+      return $crit->setProjection($projection);
     }
 
     /**
