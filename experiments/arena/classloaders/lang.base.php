@@ -29,7 +29,7 @@
           
           xp::$registry['classloader.'.$name]= 'FileSystemClassLoader://'.$path;
           break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/')) {
+        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
