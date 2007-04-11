@@ -68,7 +68,7 @@
      * as delimiter. It only makes sense to call this before any
      * line was read.
      *
-     * @param   string delimiter delimiter to set
+     * @param   char delimiter delimiter to set
      */
     public function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
@@ -79,7 +79,7 @@
      * Strings with special chars e.g. " which is the default escape-delimiter.
      * It only makes sense to call this before any line was read. 
      *
-     * @param   string escape-delimiter escape-delimiter to set
+     * @param   char escape-delimiter escape-delimiter to set
      */
     public function setEscapeDelimiter($escape) {
       $this->escape= $escape{0};
