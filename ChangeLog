@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0118 - Exceptions for missing token values in 
+  StatementFormatter
+  (friebe)
 - Implemented RFC #0081 - new lang.Runnable interface
   (friebe)
 - Fixed rdbms.StatementFormatter class when given an array of objects
