@@ -24,12 +24,12 @@
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           if (FALSE === ($r= include($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
+            xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.get_include_path().')')));
           }
           
           xp::$registry['classloader.'.$name]= 'FileSystemClassLoader://'.$path;
           break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
+        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
@@ -43,7 +43,7 @@
       }
 
       if (!class_exists($class) && !interface_exists($class)) {
-        xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.ini_get('include_path').')')));
+        xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.get_include_path().')')));
       }
 
       // Register class name and call static initializer if available
@@ -147,7 +147,7 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+        foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
           
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
@@ -159,7 +159,7 @@
           }
         }
         
-        xp::error('Cannot open SAPI '.$name.' (include_path='.ini_get('include_path').')');
+        xp::error('Cannot open SAPI '.$name.' (include_path='.get_include_path().')');
       }
       xp::$registry['sapi']= $a;
     }
