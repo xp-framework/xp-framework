@@ -214,11 +214,14 @@
      */
     #[@test]
     public function testAccessNonexistant() {
-      foreach ($this->conn as $key => $value) $this->assertEquals(
-        'NULL',
-        $value->prepare('%2$c', NULL),
-        $key
-      );
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare('%2$c', NULL);
+          $this->fail('Expected exception not caught');
+        } catch (SQLStateException $expected) {
+          // OK
+        }
+      }
     }
 
     /**

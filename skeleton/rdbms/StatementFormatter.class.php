@@ -40,8 +40,8 @@
      */
     public function format($fmt, $args) {
       static $tokens= 'sdcfu';
-      $statement= '';
       
+      $statement= '';
       $argumentOffset= 0;
       while (TRUE) {
 
@@ -58,13 +58,19 @@
           sscanf(substr($fmt, $offset), '%%%d$', $overrideOffset);
           $type= $fmt{$offset + strlen($overrideOffset) + 2};
           $fmt= substr($fmt, $offset + strlen($overrideOffset) + 3);
-          $argument= isset($args[$overrideOffset - 1]) ? $args[$overrideOffset - 1] : NULL;
+          if (!array_key_exists($overrideOffset - 1, $args)) {
+            throw new SQLStateException('Missing argument #'.($overrideOffset - 1).' @offset '.$offset);
+          }
+          $argument= $args[$overrideOffset - 1];
         } else if (FALSE !== strpos($tokens, $fmt{$offset + 1})) {
         
           // Known tokens
           $type= $fmt{$offset + 1};
           $fmt= substr($fmt, $offset + 2);
-          $argument= isset($args[$argumentOffset]) ? $args[$argumentOffset] : NULL;
+          if (!array_key_exists($argumentOffset, $args)) {
+            throw new SQLStateException('Missing argument #'.$argumentOffset.' @offset '.$offset);
+          }
+          $argument= $args[$argumentOffset];
           $argumentOffset++;
         } else if ('%' == $fmt{$offset + 1}) {
         
