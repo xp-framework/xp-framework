@@ -33,10 +33,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Sends and receives commands on the socket
      *
-     * @param   
-     * @return  
+     * @param   string command
+     * @param   string data     
+     * @return  mixed answer
      */
     protected function _cmd($command, $data= NULL) {
       if (!$this->_sock->isConnected()) {
@@ -45,9 +46,17 @@
 
       $this->_sock->write($command."\r\n");
       $data && $this->_sock->write($data."\r\n");
+      
+      $numberofargs= str_word_count($command);
 
-      if (substr($command, 0, 3) == 'get') {
+      if (substr($command, 0, 3) == 'get' && $numberofargs== 2) {
         $answer= $this->_getHelper();
+        $this->_sock->readLine();
+      } else if (substr($command, 0, 3) == 'get' && $numberofargs > 2) {
+        for ($i= 1; $i< $numberofargs; $i++) {
+          $answer[]= $this->_getHelper();
+        }
+        $this->_sock->readLine();
       } else {
         $answer= '';
         while ("\n" != substr($answer, -1) && $buf= $this->_sock->read(0x1000)) {
@@ -61,12 +70,12 @@
     protected function _getHelper() { 
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
-      sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
+      $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        $answer['data']= $this->_sock->readLine($size+ 1);
-      } else if ($type== 'END') {
+        $answer['data']= $this->_sock->readLine();
+      } else if ($type && ($n< 4)) {
         return NULL;
       }
       return $answer;      
@@ -142,9 +151,22 @@
     public function get($key) {
       return $this->_cmd('get '.$key);
     }
+
+    /**
+     * Get an Item from the Memcache
+     *
+     * @param   string key
+     * @return  string
+     */
+    public function getMultiple() {
+      $args= func_get_args();
+      $key= implode(' ', $args);
+      return $this->_cmd('get '.$key);
+    }
     
     /**
      * Delete an item from the memcache
+     * $blockfor sets the time the key will be not available
      *
      * @param   
      * @return  
@@ -163,10 +185,10 @@
     }    
 
     public function run(){
-      var_dump($this->add('test1', '2343', 'END'));
-      var_dump($this->set('test2', '2343', 'END'));
-      var_dump($this->add('test3', '2343', 'END'));
-      var_dump($this->get('test1'));
+      var_dump($this->add('test1', '2343', 'testeintrag1'));
+      var_dump($this->set('test2', '2343', 'testeintrag2'));
+      var_dump($this->add('test3', '2343', 'testeintrag3'));
+      var_dump($this->getMultiple('test1', 'test2', 'test3'));
     }
   }
 ?>
