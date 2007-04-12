@@ -44,12 +44,12 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Register a class loader as a delegate
      *
      * @param   IClassLoader l
-     * @return  IClassLoader
+     * @return  IClassLoader the registered loader
      */
-    public static function registerLoader($l) {
+    public static function registerLoader(IClassLoader $l) {
       self::$delegates[]= $l;
       return $l;
     }
