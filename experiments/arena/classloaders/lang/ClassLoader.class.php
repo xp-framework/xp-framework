@@ -76,22 +76,22 @@
     }
 
     /**
-     * Load the class by the specified name
+     * Find the class by the specified name
      *
-     * @param   string class fully qualified class name io.File
+     * @param   string class fully qualified class name
      * @return  lang.IClassLoader the classloader that provides this class
      */
     public function findClass($class) {
       foreach (self::$delegates as $delegate) {
         if ($delegate->providesClass($class)) return $delegate;
       }
-      return NULL;
+      return xp::null();
     }    
     
     /**
      * Load the class by the specified name
      *
-     * @param   string class fully qualified class name io.File
+     * @param   string class fully qualified class name
      * @return  lang.XPClass
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
