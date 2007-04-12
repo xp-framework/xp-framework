@@ -44,6 +44,7 @@
         throw(new IllegalStateException('Not connected'));
       }    
 
+      // writes command to the socket. Data only if its available.
       $this->_sock->write($command."\r\n");
       $data && $this->_sock->write($data."\r\n");
       
@@ -82,7 +83,7 @@
     }
     
     /**
-     * Checks the Reply of the three store commands add, set, replace
+     * Checks the reply of the three store commands add, set, replace
      *
      * @param   string answer
      * @return  bool
@@ -168,8 +169,9 @@
      * Delete an item from the memcache
      * $blockfor sets the time the key will be not available
      *
-     * @param   
-     * @return  
+     * @param   string key
+     * @param   int blockfor
+     * @return  bool
      */
     public function delete($key, $blockfor) {
       $answer= $this->_cmd('delete '.$key.' '.$blockfor);
@@ -181,14 +183,29 @@
         throw new IllegalStateException($answer);
         return FALSE;
       }        
-      
+    }
+
+    /**
+     * Decreases or increases a value on the server
+     *
+     * @param   string key
+     * @param   int value
+     * @return  bool
+     */
+    public function deincrease($key, $value) {
+      ($value> 0) && $answer= $this->_cmd('incr '.$key.' '.$value);
+      ($value< 0) && $answer= $this->_cmd('decr '.$key.' '.abs($value));
+      if ($answer== "NOT_FOUND\r\n") {
+        return FALSE;
+      } else {
+        return TRUE;
+      }        
     }    
 
     public function run(){
-      var_dump($this->add('test1', '2343', 'testeintrag1'));
-      var_dump($this->set('test2', '2343', 'testeintrag2'));
-      var_dump($this->add('test3', '2343', 'testeintrag3'));
-      var_dump($this->getMultiple('test1', 'test2', 'test3'));
+      var_dump($this->add('zahl', '3', '100'));
+      var_dump($this->deincrease('zahl', -3));
+      var_dump($this->get('zahl'));      
     }
   }
 ?>
