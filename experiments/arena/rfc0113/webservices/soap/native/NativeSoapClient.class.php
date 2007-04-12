@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.URL',
     'xml.QName',
     'util.log.Traceable',
     'webservices.soap.SOAPFaultException',

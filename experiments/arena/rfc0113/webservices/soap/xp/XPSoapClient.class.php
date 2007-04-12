@@ -7,7 +7,7 @@
   uses(
     'xml.QName',
     'util.log.Traceable',
-    'webservices.soap.SOAPMessage',
+    'webservices.soap.xp.SOAPMessage',
     'webservices.soap.xp.SOAPMapping',
     'webservices.soap.transport.SOAPHTTPTransport'
   );
