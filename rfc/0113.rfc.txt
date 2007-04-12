@@ -1,6 +1,6 @@
 RFC 0113: Include PHP5 SOAP extension
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel, rene
 @created: Wed Feb  7 11:39:03 CET 2007

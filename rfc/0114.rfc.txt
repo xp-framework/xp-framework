@@ -1,6 +1,6 @@
 RFC 0114: Generic Workflow API
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe
 @created: Wed Mar 21 14:43:39     2007

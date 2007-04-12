@@ -1,6 +1,6 @@
 RFC 0119: Support self-running XARs
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel
 @created: Fri Apr  6 12:31:40     2007

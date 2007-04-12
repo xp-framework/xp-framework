@@ -1,6 +1,6 @@
 RFC 0083: Define classes through stream wrappers
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel
 @created: Tue Oct 17 11:44:17 CEST 2006
