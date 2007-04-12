@@ -47,10 +47,7 @@
       $data && $this->_sock->write($data."\r\n");
 
       if (substr($command, 0, 3) == 'get') {
-        $answer= '';
-        while ("END\r\n" != substr($answer, -5) && $buf= $this->_sock->readLine()) {
-          $answer.= $buf."\r\n";
-        }
+        $answer= $this->_getHelper();
       } else {
         $answer= '';
         while ("\n" != substr($answer, -1) && $buf= $this->_sock->read(0x1000)) {
@@ -59,6 +56,20 @@
       }
 
       return $answer;
+    }
+    
+    protected function _getHelper() { 
+      // Split the result header and write it to an array
+      $buf= $this->_sock->readLine();
+      sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
+      if ($type== 'VALUE') {
+        $answer['key']= $key;
+        $answer['flags']= $flags;
+        $answer['data']= $this->_sock->readLine($size+ 1);
+      } else if ($type== 'END') {
+        return NULL;
+      }
+      return $answer;      
     }
     
     /**
@@ -153,6 +164,8 @@
 
     public function run(){
       var_dump($this->add('test1', '2343', 'END'));
+      var_dump($this->set('test2', '2343', 'END'));
+      var_dump($this->add('test3', '2343', 'END'));
       var_dump($this->get('test1'));
     }
   }
