@@ -105,6 +105,8 @@ WSDL is only supported by the PHP5-soap-extension and not by the XPSoapClient.
 
 Backwards compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~
+
+A) Programming
 Due to the renaming of the class SOAPClient to XPSoapClient, there will
 be a BC-break.
 
@@ -136,7 +138,7 @@ it will change to:
     $this->client= SoapDriver::getInstance()->forEndpoint(
       $endpoint, 
       'urn:SomeThing', 
-      XP
+      SoapDriver::XP
     ); 
 
     $this->client->registerMapping(
@@ -164,6 +166,20 @@ This is how a standard method call in the client will look:
     );
   }
 </code>
+
+B) Data structures
+While a lot of effort has been dedicated to creating two equivalent (from
+and outside perspective) SOAP implementations, not all details could be
+kept compatible.
+
++ XP's own SOAP implementation turns SOAPStructs into plain PHP arrays,
+  which provide features other programming languages only know for hashmaps.
+
++ PHP's SOAP implementation will deserialize a SOAPStruct as a StdClass object.
+
+This means that when exchanging the implementation, one must take care of
+this incompatibility. Unfortunately, ext/soap provides a way to map that
+SOAPStruct to other classes, there is no way to map it to an plain array.
 
 
 WSDL
