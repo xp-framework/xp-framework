@@ -36,28 +36,37 @@
     protected static
       $instance   = NULL;
       
-    static function __static() {
-      self::$instance= new self();
-    }
-    
     /**
      * Constructor
      *
      */
     public function __construct() {
-      $this->drivers['SOAPXP']= array(
+      $this->drivers[self::XP]= array(
         'fqcn'  => 'webservices.soap.xp.XPSoapClient',
         'wsdl'  => FALSE
       );
       
       if (extension_loaded('soap')) {
-        $this->drivers['SOAPNATIVE']= array(
+        $this->drivers[self::NATIVE]= array(
           'fqcn'  => 'webservices.soap.native.NativeSoapClient',
           'wsdl'  => TRUE
         );
       }
     }
     
+    /**
+     * Retrieve an instance of the class
+     *
+     * @return  object self::$instance
+     */
+    public static function getInstance() {
+      if (NULL === self::$instance) {
+        self::$instance= new self();
+      }
+      
+      return self::$instance;
+    }
+
     /**
      * Registers a new SoapDriver. The new driver must have the 
      * same contructor and 
@@ -78,15 +87,6 @@
     }
     
     /**
-     * Gets an instance of the class
-     *
-     * @return  object self::$instance
-     */
-    public static function getInstance() {
-      return self::$instance;
-    }
-
-    /**
      * Shows available, registred drivers
      *
      * @return  drivers[]
@@ -101,7 +101,7 @@
      * @param   string endpoint, string uri
      * @return  object 
      */
-    public function fromWsdl($endpoint, $preferred= NULL) {
+    public function forWsdl($endpoint, $preferred= NULL) {
       return XPClass::forName($this->drivers[$this->driverName($preferred, TRUE)]['fqcn'])->newInstance($endpoint, '', TRUE);
     }
 
@@ -111,7 +111,7 @@
      * @param   string endpoint, string uri
      * @return  object
      */
-    public function fromEndpoint($endpoint, $uri, $preferred= NULL) {
+    public function forEndpoint($endpoint, $uri, $preferred= NULL) {
       return XPClass::forName($this->drivers[$this->driverName($preferred)]['fqcn'])->newInstance($endpoint, $uri);        
     }
     
