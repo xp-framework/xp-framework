@@ -3,7 +3,10 @@
  *
  * $Id$ 
  */
-  uses('peer.Socket', 'peer.ProtocolException');
+  uses(
+    'peer.Socket',
+    'util.cmd.Command',
+    'peer.ProtocolException');
   /**
    * (Insert class' description here)
    *
@@ -11,7 +14,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class MemcacheProtocol extends Object {
+  class MemcacheProtocol extends Command {
   
     public
       $_sock= NULL,
@@ -41,9 +44,7 @@
       }    
 
       $this->_sock->write($command."\r\n");
-      if ($data) { 
-        $this->_sock->write($data."\r\n");
-      }
+      $data && $this->_sock->write($data."\r\n");
 
       if (substr($command, 0, 3) == 'get') {
         $answer= '';
@@ -61,48 +62,98 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Checks the Reply of the three store commands add, set, replace
      *
-     * @param   
-     * @return  
+     * @param   string answer
+     * @return  bool
+     * @throws  lang.IllegalStateException
      */
-    public function add($key, $flag, $data, $expirein= 3600) {
-      return $this->_cmd('add '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function set($key, $flag, $data, $expirein= 3600) {
-      return $this->_cmd('set '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function replace($key, $flag, $data, $expirein= 3600) {
-      return $this->_cmd('replace '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
+    protected function checkStoreReply($answer) {
+      if ($answer == "STORED\r\n") {
+        return TRUE;
+      } else if ($answer== "NOT_STORED\r\n") {
+        return FALSE;
+      } else {
+        throw new IllegalStateException($answer);
+        return FALSE;
+      }    
     }
     
     /**
-     * (Insert method's description here)
+     * Adds a new entry as long as no entry with the same key
+     * already exists
      *
-     * @param   
-     * @return  
+     * @param   string key, 
+     * @param   int flag, 
+     * @param   string data, 
+     * @param   int key,           
+     * @return  bool
+     */
+    public function add($key, $flag, $data, $expirein= 3600) {
+      $answer= $this->_cmd('add '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
+      return $this->checkStoreReply($answer);
+    }
+
+    /**
+     * Store this data
+     *
+     * @param   string key, 
+     * @param   int flag, 
+     * @param   string data, 
+     * @param   int key,           
+     * @return  bool
+     */
+    public function set($key, $flag, $data, $expirein= 3600) {
+      $answer= $this->_cmd('set '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
+      return $this->checkStoreReply($answer);      
+    }
+
+    /**
+     * Replace an already existing entry
+     *
+     * @param   string key, 
+     * @param   int flag, 
+     * @param   string data, 
+     * @param   int key,           
+     * @return  bool
+     */
+    public function replace($key, $flag, $data, $expirein= 3600) {
+      $answer= $this->_cmd('replace '.$key.' '.$flag.' '.$expirein.' '.strlen($data), $data);
+      return $this->checkStoreReply($answer);
+    }
+    
+    /**
+     * Get an Item from the Memcache
+     *
+     * @param   string key
+     * @return  string
      */
     public function get($key) {
       return $this->_cmd('get '.$key);
     }
-
+    
+    /**
+     * Delete an item from the memcache
+     *
+     * @param   
+     * @return  
+     */
+    public function delete($key, $blockfor) {
+      $answer= $this->_cmd('delete '.$key.' '.$blockfor);
+      if ($answer == "DELETED\r\n") {
+        return TRUE;
+      } else if ($answer== "NOT_FOUND\r\n") {
+        return FALSE;
+      } else {
+        throw new IllegalStateException($answer);
+        return FALSE;
+      }        
+      
+    }    
 
     public function run(){
-      var_dump($this->get('teste'));
+      var_dump($this->add('test1', '2343', 'END'));
+      var_dump($this->get('test1'));
     }
   }
 ?>
