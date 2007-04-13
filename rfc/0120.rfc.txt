@@ -45,6 +45,9 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0120.diff
   Implementing patch
 
+- http://xp-framework.net/rfc/contrib/rfc0120-unittest.diff
+  Unittests for Console class
+
 
 Comments
 --------
