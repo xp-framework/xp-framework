@@ -11,18 +11,54 @@ Scope of Change
 ---------------
 The util.cmd.Console class will support writing to standard error. For
 this to work, a static $err supporting all the write* methods will be 
-added, and to make it consistant, a $out property will also exist.
+added, and to make it consistent, a $out property will also exist.
 
 
 Rationale
 ---------
-Support writing to STDERR.
+Support writing to STDERR / make Console class testable / forwards-
+compatibility with Unicode support.
 
 
 Functionality
 -------------
 All the write* methods will proxy to Console::$out. Console::$out and
-Console::$err will make use of the io.streams API.
+Console::$err will make use of the io.streams.OutputStreamWriter API.
+
+Current (and still valid) functionality
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The following piece of code prints "Hello" and a CRLF to standard output:
+<?php
+  Console::writeLine('Hello');
+?>
+
+Using the streams
+~~~~~~~~~~~~~~~~~
+The following is the equivalent of the above shorthand:
+<?php
+  Console::$out->writeLine('Hello');
+?>
+
+This is the variant that writes to standard *error*, which was previously
+unsupported:
+<?php
+  Console::$err->writeLine('Hello');
+?>
+
+Reassigning the streams
+~~~~~~~~~~~~~~~~~~~~~~~
+The $out and $err properties may be reassigned, for example, to redirect
+output to nirvana:
+
+<?php
+  Console::$out= newinstance('io.streams.OutputStreamWriter', array(), '{
+    public function write() { }
+    public function writef() { }
+    public function writeLine() { }
+    public function writeLinef() { }
+    public function flush() { }
+  }'));
+?>
 
 
 Security considerations
