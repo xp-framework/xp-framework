@@ -5,7 +5,6 @@
  */
   uses(
     'peer.Socket',
-    'util.cmd.Command',
     'peer.ProtocolException');
   /**
    * (Insert class' description here)
@@ -14,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class MemcacheProtocol extends Command {
+  class MemcacheProtocol extends Object {
   
     public
       $_sock= NULL,
@@ -50,15 +49,19 @@
       
       $numberofargs= str_word_count($command);
 
+      // If only one Value is requested
       if (substr($command, 0, 3) == 'get' && $numberofargs== 2) {
         $answer= $this->_getHelper();
         $answer && $this->_sock->readLine();
         
+      //If more than one Value is requested
       } else if (substr($command, 0, 3) == 'get' && $numberofargs > 2) {
         $tempanswer != NULL;
         while ($tempanswer= $this->_getHelper()) {
           $answer[]= $tempanswer;
         }
+
+      // For single-line responses
       } else {
         $answer= '';
         while ("\n" != substr($answer, -1) && $buf= $this->_sock->read(0x1000)) {
@@ -69,6 +72,12 @@
       return $answer;
     }
     
+    /**
+     * Helps getting the multi-line responses
+     * from a get-request
+     *
+     * @return  array
+     */
     protected function _getHelper() { 
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
@@ -206,15 +215,5 @@
         return TRUE;
       }        
     }    
-
-    public function run(){
-      var_dump($this->set('quark', '3', "Megacap"));
-      var_dump($this->set('quark2', '2', "Megacap2"));
-      var_dump($this->set('quark3', '1', "Megacap3"));
-      var_dump($this->getMultiple('quark', 'quark2', 'quark3', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts'));  
-      var_dump($this->getMultiple('quark'));
-      var_dump($this->getMultiple('quark6'));
-      var_dump($this->getMultiple('quark2'));            
-    }
   }
 ?>
