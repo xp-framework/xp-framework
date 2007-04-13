@@ -52,12 +52,13 @@
 
       if (substr($command, 0, 3) == 'get' && $numberofargs== 2) {
         $answer= $this->_getHelper();
-        $this->_sock->readLine();
+        $answer && $this->_sock->readLine();
+        
       } else if (substr($command, 0, 3) == 'get' && $numberofargs > 2) {
-        for ($i= 1; $i< $numberofargs; $i++) {
-          $answer[]= $this->_getHelper();
+        $tempanswer != NULL;
+        while ($tempanswer= $this->_getHelper()) {
+          $answer[]= $tempanswer;
         }
-        $this->_sock->readLine();
       } else {
         $answer= '';
         while ("\n" != substr($answer, -1) && $buf= $this->_sock->read(0x1000)) {
@@ -72,7 +73,6 @@
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
-      $this->out->writeLine($type);
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
@@ -211,8 +211,10 @@
       var_dump($this->set('quark', '3', "Megacap"));
       var_dump($this->set('quark2', '2', "Megacap2"));
       var_dump($this->set('quark3', '1', "Megacap3"));
-      var_dump($this->deincrease('zahl', -3));
-      var_dump($this->getMultiple('quark', 'quark2', 'quark3', 'quark4'));  
+      var_dump($this->getMultiple('quark', 'quark2', 'quark3', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts', 'klappts'));  
+      var_dump($this->getMultiple('quark'));
+      var_dump($this->getMultiple('quark6'));
+      var_dump($this->getMultiple('quark2'));            
     }
   }
 ?>
