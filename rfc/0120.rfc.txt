@@ -1,0 +1,53 @@
+RFC 0120: Console::$out and Console::$err
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Apr 13 16:02:32     2007
+@status: draft
+@category: util.cmd
+
+Scope of Change
+---------------
+The util.cmd.Console class will support writing to standard error. For
+this to work, a static $err supporting all the write* methods will be 
+added, and to make it consistant, a $out property will also exist.
+
+
+Rationale
+---------
+Support writing to STDERR.
+
+
+Functionality
+-------------
+All the write* methods will proxy to Console::$out. Console::$out and
+Console::$err will make use of the io.streams API.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slower.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0120.diff
+  Implementing patch
+
+
+Comments
+--------
+n/a
+
+<EOF>
