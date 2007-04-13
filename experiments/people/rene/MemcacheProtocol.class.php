@@ -72,11 +72,16 @@
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
+      $this->out->writeLine($type);
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        $answer['data']= $this->_sock->readLine();
-      } else if ($type && ($n< 4)) {
+        while (strlen($datatmp)< $size) {
+          $datatmp.= $this->_sock->read($size +1);
+        }
+        $answer['data']= $datatmp;
+        $size && $this->_sock->readLine();
+      } else if ($type== 'END') {
         return NULL;
       }
       return $answer;      
@@ -203,9 +208,11 @@
     }    
 
     public function run(){
-      var_dump($this->add('zahl', '3', '100'));
+      var_dump($this->set('quark', '3', "Megacap"));
+      var_dump($this->set('quark2', '2', "Megacap2"));
+      var_dump($this->set('quark3', '1', "Megacap3"));
       var_dump($this->deincrease('zahl', -3));
-      var_dump($this->get('zahl'));      
+      var_dump($this->getMultiple('quark', 'quark2', 'quark3', 'quark4'));  
     }
   }
 ?>
