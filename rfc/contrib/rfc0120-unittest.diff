@@ -1,8 +1,8 @@
-Index: ConsoleTest.class.php
+Index: ports/classes/net/xp_framework/unittest/util/cmd/ConsoleTest.class.php
 ===================================================================
---- ConsoleTest.class.php	(revision 0)
-+++ ConsoleTest.class.php	(revision 0)
-@@ -0,0 +1,66 @@
+--- ports/classes/net/xp_framework/unittest/util/cmd/ConsoleTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/util/cmd/ConsoleTest.class.php	(revision 0)
+@@ -0,0 +1,165 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -53,9 +53,59 @@ Index: ConsoleTest.class.php
 +     *
 +     */
 +    #[@test]
-+    public function testWrite() {
++    public function write() {
 +      Console::write('.');
 +      $this->assertEquals('.', $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test write() method
++     *
++     */
++    #[@test]
++    public function writeToOut() {
++      Console::$out->write('.');
++      $this->assertEquals('.', $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test write() method
++     *
++     */
++    #[@test]
++    public function writeToErr() {
++      Console::$err->write('.');
++      $this->assertEquals('.', $this->streams[1]->getBytes());
++    }
++
++    /**
++     * Test writef() method
++     *
++     */
++    #[@test]
++    public function writef() {
++      Console::writef('Hello "%s"', 'Timm');
++      $this->assertEquals('Hello "Timm"', $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writef() method
++     *
++     */
++    #[@test]
++    public function writefToOut() {
++      Console::$out->writef('Hello "%s"', 'Timm');
++      $this->assertEquals('Hello "Timm"', $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writef() method
++     *
++     */
++    #[@test]
++    public function writefToErr() {
++      Console::$err->writef('Hello "%s"', 'Timm');
++      $this->assertEquals('Hello "Timm"', $this->streams[1]->getBytes());
 +    }
 +
 +    /**
@@ -63,14 +113,63 @@ Index: ConsoleTest.class.php
 +     *
 +     */
 +    #[@test]
-+    public function testWriteLine() {
++    public function writeLine() {
 +      Console::writeLine('.');
 +      $this->assertEquals(".\n", $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function writeLineToOut() {
++      Console::$out->writeLine('.');
++      $this->assertEquals(".\n", $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function writeLineToErr() {
++      Console::$err->writeLine('.');
++      $this->assertEquals(".\n", $this->streams[1]->getBytes());
++    }
++
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function writeLinef() {
++      Console::writeLinef('Hello %s', 'World');
++      $this->assertEquals("Hello World\n", $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function writeLinefToOut() {
++      Console::$out->writeLinef('Hello %s', 'World');
++      $this->assertEquals("Hello World\n", $this->streams[0]->getBytes());
++    }
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function writeLinefToErr() {
++      Console::$err->writeLinef('Hello %s', 'World');
++      $this->assertEquals("Hello World\n", $this->streams[1]->getBytes());
 +    }
 +  }
 +?>
 
-Property changes on: ConsoleTest.class.php
+Property changes on: ports/classes/net/xp_framework/unittest/util/cmd/ConsoleTest.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
