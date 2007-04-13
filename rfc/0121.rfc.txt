@@ -1,0 +1,52 @@
+RFC 0121: Class loading revamp
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Fri Apr 13 17:40:09     2007
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+There will be one ClassLoader for each element in the include path.
+
+
+Rationale
+---------
+Consistent API.
+
+
+Functionality
+-------------
+TODO
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Almost none, actually, a bit faster!
+
+
+Dependencies
+------------
+This will bump the minor version number (-> 5.4.0)
+
+
+Related documents
+-----------------
+- http://experiments.xp-framework.net/?arena,classloaders
+  The new classloading API
+
+- http://xp-framework.info/xml/xp.en_US/news/view?174
+  XP Blog: "Different XP framework classloading implementations compared"
+
+
+Comments
+--------
+
+<EOF>
