@@ -1,0 +1,77 @@
+Index: ConsoleTest.class.php
+===================================================================
+--- ConsoleTest.class.php	(revision 0)
++++ ConsoleTest.class.php	(revision 0)
+@@ -0,0 +1,66 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'util.cmd.Console',
++    'io.streams.StringWriter', 
++    'io.streams.MemoryOutputStream',
++    'unittest.TestCase'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://util.cmd.Console
++   * @purpose  purpose
++   */
++  class ConsoleTest extends TestCase {
++    protected
++      $original = array(),
++      $streams  = array();
++
++    /**
++     * Sets up test case. Redirects console standard output/error streams
++     * to memory streams
++     *
++     */
++    public function setUp() {
++      $this->original= array(clone Console::$out, clone Console::$err);
++      $this->streams= array(new MemoryOutputStream(), new MemoryOutputStream());
++      Console::$out= new StringWriter($this->streams[0]);
++      Console::$err= new StringWriter($this->streams[1]);
++    }
++    
++    /**
++     * Tear down testcase. Restores original standard output/error streams
++     *
++     */
++    public function tearDown() {
++      Console::$out= $this->original[0];
++      Console::$err= $this->original[1];
++    }
++    
++    /**
++     * Test write() method
++     *
++     */
++    #[@test]
++    public function testWrite() {
++      Console::write('.');
++      $this->assertEquals('.', $this->streams[0]->getBytes());
++    }
++
++    /**
++     * Test writeLine() method
++     *
++     */
++    #[@test]
++    public function testWriteLine() {
++      Console::writeLine('.');
++      $this->assertEquals(".\n", $this->streams[0]->getBytes());
++    }
++  }
++?>
+
+Property changes on: ConsoleTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
