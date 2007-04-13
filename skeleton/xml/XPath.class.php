@@ -30,7 +30,9 @@
    * @purpose  Provide XPath functionality
    */
   class XPath extends Object {
-    
+    public
+      $context= NULL;
+
     /**
      * Helper method
      *
