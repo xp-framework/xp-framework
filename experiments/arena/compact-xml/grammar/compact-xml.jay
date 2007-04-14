@@ -26,7 +26,9 @@ start:
               $$->root->content= $imported->root->content;
             }
             
-            // FIXME: Need recursion, but which element overwrites which one?
+            foreach ($imported->root->children as $child) {
+              $$->root->children[]= $child;
+            }
           }
         } 
 	|	node {
