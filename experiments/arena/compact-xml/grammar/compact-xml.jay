@@ -7,13 +7,47 @@
 %token T_NUMBER 261
 %token T_TEXT 262
 %token T_COMMENT 263
+%token T_IMPORT 264
 
 %% /* Rules */
 
 start:
-		node { 
+		declarations node {
           $$= new Tree(); 
-          $$->root= $1; 
+          $$->root= $2;
+          
+          // Apply imports
+          foreach ($1 as $imported) {
+            foreach ($imported->root->attribute as $k => $v) {
+              if (isset($$->root->attribute[$k])) continue;  // Overridden
+              $$->root->attribute[$k]= $v;
+            }
+            if ($imported->root->content && !$$->root->content) {
+              $$->root->content= $imported->root->content;
+            }
+            
+            // FIXME: Need recursion, but which element overwrites which one?
+          }
+        } 
+	|	node {
+          $$= new Tree(); 
+          $$->root= $1;
+        }
+;
+
+declarations:
+		declarations declaration {
+          $$[]= $2;
+        }
+	|	declaration { 
+          $$= array($1);
+        }
+;
+
+declaration:
+		T_IMPORT T_STRING ';' {
+            $f= new File(dirname($yyLex->fileName).DIRECTORY_SEPARATOR.$2);
+            $$= $this->parse(new CompactXmlLexer(FileUtil::getContents($f), $f->getURI()));
         }
 ;
 

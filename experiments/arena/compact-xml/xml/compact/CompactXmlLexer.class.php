@@ -14,7 +14,9 @@
    */
   class CompactXmlLexer extends AbstractLexer {
     protected static
-      $keywords  = array();
+      $keywords  = array(
+        'import'    => TOKEN_T_IMPORT,
+      );
 
     const 
       DELIMITERS = " ;,=<>(){}#\"\r\n";
