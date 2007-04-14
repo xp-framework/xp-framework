@@ -4,6 +4,10 @@ $Id$
 
 This is a patched version of Jay, a parser generator written in C.
 
+Origin
+------
+http://www.cs.rit.edu/~ats/projects/lp/doc/jay/package-summary.html
+
 Original README
 ---------------
     This version of Berkeley Yacc was taken from the BSD-Lite CD and targeted
