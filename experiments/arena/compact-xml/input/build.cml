@@ -7,6 +7,31 @@ project(name= "MyProject") {
   property(name= "src", location= "src");
   property(name= "build", location= "build");
   property(name= "dist", location= "dist");
+
+  path(id= "classpath.build") {
+    pathelement(path= "${classpath}") {
+      fileset(dir= "${common.libdir}") {
+        include(name="jboss-j2ee.jar");
+      }
+    }
+  }
+  
+  target(name="usage") {
+    echo <
+      Targets:
+      - clean
+        Cleanup workspace
+
+      - compile
+        Compile sources
+
+      - test
+        Runs all tests
+
+      - ejb-jar
+        Packs the jar-file for the EJB deployment
+    >;
+  }
   
   target(name= "init") {
     # Create the time stamp
@@ -17,6 +42,23 @@ project(name= "MyProject") {
   }
   
   target(name= "compile", depends= "init") {
-    javac(srcdir= "${src}", destdir= "${build}");
+    javac(srcdir= "${src}", destdir= "${build}") {
+      classpath(refid="classpath.run");
+    }
+  }
+
+  target(name= "ejb-jar", depends= "compile") {
+    echo <Creating EJB-Jar ${build.dist}/${dist.name}.jar ...>;
+    
+    jar(destfile= "${build.dist}/${dist.name}.jar") {
+      metainf(dir= "${build.dist}/META-INF") {
+        include(name= "ejb-jar.xml");
+        include(name= "jboss.xml");
+      }
+      fileset(dir= "${build.dist}") {
+        include(name="**/*.class");
+        exclude(name="**/*Test*.class");
+      }
+    }
   }
 }
