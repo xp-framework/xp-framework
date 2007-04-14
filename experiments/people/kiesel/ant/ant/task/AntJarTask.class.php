@@ -14,5 +14,14 @@
    * @purpose  purpose
    */
   class AntJarTask extends AntTask {
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function execute(AntEnvironment $env) {
+    
+    }    
   }
 ?>

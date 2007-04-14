@@ -11,7 +11,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntTask extends Object {
+  abstract class AntTask extends Object {
     public
       $id       = NULL,
       $taskname = NULL,
@@ -48,6 +48,40 @@
     #[@xmlmapping(element= '@description')]
     public function setDescription($desc) {
       $this->desc= $desc;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function needsToRun($env) {
+      return TRUE;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    abstract protected function execute(AntEnvironment $env);
+    
+            
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    final public function run(AntEnvironment $env) {
+      if ($this->needsToRun($env)) {
+        $env->out->writeLine('['.$this->getClassName().'] called.');
+        
+        $this->execute($env);
+      }
     }
   }
 ?>

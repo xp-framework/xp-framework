@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'ant.AntProject'
+    'ant.AntProject',
+    'io.streams.MemoryOutputStream'
   );
 
   /**
@@ -29,9 +30,9 @@
                 simple example build file
             </description>
           <!-- set global properties for this build -->
-          <property name="src" location="src"/>
-          <property name="build" location="build"/>
-          <property name="dist"  location="dist"/>
+          <property name="src" value="src"/>
+          <property name="build" value="build"/>
+          <property name="dist"  value="dist"/>
 
           <target name="init">
             <!-- Create the time stamp -->
@@ -64,7 +65,9 @@
         </project>
       ');
       
-      Console::writeLine($project->toString());
+      $writer= new StringWriter(($stream= new MemoryOutputStream()));
+      $project->run($writer, $writer, array('dist'));
+      Console::writeLine($stream->getBytes());
     }
   }
 ?>

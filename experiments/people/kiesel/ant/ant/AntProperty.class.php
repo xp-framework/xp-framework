@@ -44,6 +44,16 @@
      * @param   
      * @return  
      */
+    public function register(AntEnvironment $env) {
+      $env->put($this->name, $this->value);
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function toString() {
       return $this->getClassName().'@('.$this->hashCode().') { '.$this->name.'= '.$this->value.' }';
     }    

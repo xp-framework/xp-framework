@@ -97,7 +97,7 @@
      * @param   
      * @return  
      */
-    public function run(AntProject $project, AntEnvironment $environment) {
+    public function run(AntProject $project, AntEnvironment $env) {
     
       if (!$this->needsToRun()) return;
     
@@ -106,8 +106,9 @@
         $project->runTarget($target);
       }
     
+      $env->out->writeLine('Running target '.$this->name);
       foreach ($this->tasks as $task) {
-        $task->run($environment);
+        $task->run($env);
       }
     }
     

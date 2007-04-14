@@ -34,8 +34,8 @@
      * @param   
      * @return  
      */
-    public function run(AntEnvironment $environment) {
-      $environment->out->writeLine($this->content);
+    public function execute(AntEnvironment $env) {
+      $env->out->writeLine($env->substitute($this->content));
     }    
   }
 ?>

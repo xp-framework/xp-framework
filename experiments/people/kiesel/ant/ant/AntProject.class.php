@@ -112,7 +112,7 @@
      * @return  
      */
     public function runTarget($name) {
-      $this->targets[$target]->run($this, $this->environment);
+      $this->targets[$name]->run($this, $this->environment);
     }
     
     /**
@@ -124,12 +124,14 @@
     public function run($out, $err, $arguments) {
       if (sizeof($arguments) == 0) $arguments= array($this->default);
       
-      $this->environment= new AntEnvironment($out, $err);
-      
       $target= array_shift($arguments);
       if (!isset($this->targets[$target])) {
         throw new IllegalArgumentException('Target ['.$target.'] does not exist.');
       }
+      
+      // Setup environment
+      $this->environment= new AntEnvironment($out, $err);
+      foreach ($this->properties as $p) { $p->register($this->environment); }      
       
       $this->runTarget($target);
     }

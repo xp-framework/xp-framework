@@ -49,5 +49,25 @@
         
       return $this->hashmap[$key];
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function substitute($string) {
+      return preg_replace_callback('#\$\{([^\}]+)\}#', array($this, 'replaceCallback'), $string);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function replaceCallback($matches) {
+      return $this->get($matches[1]);
+    }
   }
 ?>

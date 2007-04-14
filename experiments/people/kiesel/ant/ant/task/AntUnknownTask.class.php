@@ -27,5 +27,15 @@
     public function setType($type) {
       $this->type= $type;
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function execute(AntEnvironment $env) {
+      $env->out->writeLine('Unknown task ['.$this->type.'] invoked.');
+    }    
   }
 ?>
