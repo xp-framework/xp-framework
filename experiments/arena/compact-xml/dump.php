@@ -16,6 +16,6 @@
     FileUtil::getContents($input), 
     $input->getURI()
   ));
-  
+
   echo $r->getSource(INDENT_DEFAULT);
 ?>

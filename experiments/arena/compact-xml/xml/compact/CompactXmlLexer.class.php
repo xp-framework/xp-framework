@@ -19,7 +19,7 @@
       );
 
     const 
-      DELIMITERS = " ;,=<>(){}#\"\r\n";
+      DELIMITERS = " ;,=<>(){}[]#\"\r\n";
       
     /**
      * Constructor

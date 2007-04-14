@@ -1,3 +1,6 @@
 project(default= "dist", basedir= ".") {
 
+  target[:usage](name="usage") {
+    echo <(No usage has been defined yet!)>;
+  }
 }

@@ -16,7 +16,7 @@ project(name= "MyProject") {
     }
   }
   
-  target(name="usage") {
+  target[:usage] {
     echo <
       Targets:
       - clean
