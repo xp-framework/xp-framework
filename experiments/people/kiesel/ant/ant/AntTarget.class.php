@@ -86,11 +86,45 @@
      * @param   
      * @return  
      */
-    public function run(AntEnvironment $environment) {
+    protected function needsToRun() {
+      // TBI
+      return TRUE;
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function run(AntProject $project, AntEnvironment $environment) {
+    
+      if (!$this->needsToRun()) return;
+    
+      // Check dependencies
+      foreach ($this->depends as $target) {
+        $project->runTarget($target);
+      }
+    
       foreach ($this->tasks as $task) {
         $task->run($environment);
       }
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function toString() {
+      $s= $this->getClassName().'@('.$this->hashCode()."){\n";
+      $s.= '  `- name: '.$this->name."\n";
+      $s.= '  `- depends: '.implode(', ', $this->depends)."\n";
+      $s.= '  `- ['.sizeof($this->tasks)."] tasks\n";
+      return $s.'}';
+
+    }    
     
   }
 ?>

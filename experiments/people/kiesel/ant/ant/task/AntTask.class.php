@@ -11,10 +11,11 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntProperty extends Object {
+  class AntTask extends Object {
     public
-      $name     = '',
-      $value    = '';
+      $id       = NULL,
+      $taskname = NULL,
+      $desc     = NULL;
     
     /**
      * (Insert method's description here)
@@ -22,9 +23,9 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= '@name')]
-    public function setName($name) {
-      $this->name= $name;
+    #[@xmlmapping(element= '@id')]
+    public function setId($id) {
+      $this->id= $id;
     }
     
     /**
@@ -33,9 +34,9 @@
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= '@value')]
-    public function setValue($value) {
-      $this->value= $value;
+    #[@xmlmapping(element= '@taskname')]
+    public function setTaskName($taskname) {
+      $this->taskname= $taskname;
     }
     
     /**
@@ -44,8 +45,9 @@
      * @param   
      * @return  
      */
-    public function toString() {
-      return $this->getClassName().'@('.$this->hashCode().') { '.$this->name.'= '.$this->value.' }';
-    }    
+    #[@xmlmapping(element= '@description')]
+    public function setDescription($desc) {
+      $this->desc= $desc;
+    }
   }
 ?>

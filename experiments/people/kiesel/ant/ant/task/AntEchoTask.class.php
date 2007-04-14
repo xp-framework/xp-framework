@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('ant.task.AntTask');
+
   /**
    * (Insert class' description here)
    *
@@ -11,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntEchoTask extends Object {
+  class AntEchoTask extends AntTask {
     public
       $content= '';
 

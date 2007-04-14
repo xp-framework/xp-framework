@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('ant.task.AntTask');
+
   /**
    * (Insert class' description here)
    *
@@ -11,6 +13,6 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntJarTask extends Object {
+  class AntJarTask extends AntTask {
   }
 ?>

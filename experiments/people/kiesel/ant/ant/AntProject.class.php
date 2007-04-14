@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('ant.AntEnvironment');
+  uses(
+    'ant.AntEnvironment',
+    'xml.meta.Unmarshaller'
+  );
 
   /**
    * (Insert class' description here)
@@ -15,9 +18,55 @@
    */
   class AntProject extends Object {
     public
+      $name         = NULL,
+      $basedir      = '.',
+      $description  = NULL,
       $default      = NULL,
       $properties   = array(),
       $targets      = array();
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public static function fromString($xml) {
+      return Unmarshaller::unmarshal($xml, xp::reflect(__CLASS__));
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= '@name')]
+    public function setName($name) {
+      $this->name= $name;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= 'basedir')]
+    public function setBasedir($basedir) {
+      $this->basedir= $basedir;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= '@description|description')]
+    public function setDescription($desc) {
+      $this->description= trim($desc);
+    }    
       
     /**
      * (Insert method's description here)
@@ -54,7 +103,17 @@
     #[@xmlmapping(element= '@default')]
     public function setDefault($default) {
       $this->default= $default;
-    }    
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function runTarget($name) {
+      $this->targets[$target]->run($this, $this->environment);
+    }
     
     /**
      * (Insert method's description here)
@@ -72,7 +131,29 @@
         throw new IllegalArgumentException('Target ['.$target.'] does not exist.');
       }
       
-      $this->targets[$target]->run(clone $this->environment);
+      $this->runTarget($target);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function toString() {
+      $s= $this->getClassName().rtrim(' '.$this->name.' ').'@('.$this->hashCode()."){\n";
+      $s.= '  `- default: '.$this->default."\n";
+      $s.= '  `- description: '.$this->description."\n";
+      $s.= "\n";
+      foreach ($this->properties as $p) {
+        $s.= $p->toString()."\n";
+      }
+      
+      foreach ($this->targets as $t) {
+        $s.= $t->toString()."\n";
+      }
+      
+      return $s.'}';
     }
   }
 ?>

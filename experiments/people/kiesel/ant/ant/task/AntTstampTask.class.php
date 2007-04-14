@@ -13,19 +13,19 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntUnknownTask extends AntTask {
-    public
-      $type     = '';
-
+  class AntTstampTask extends AntTask {
+  
     /**
      * (Insert method's description here)
      *
      * @param   
      * @return  
      */
-    #[@xmlmapping(element= '.', pass= array('name()'))]
-    public function setType($type) {
-      $this->type= $type;
+    public function run(AntEnvironment $env) {
+      $env->put('DSTAMP', Date::now()->toString('Ymd'));
+      $env->put('TSTAMP', Date::now()->toString('hi'));
+      $env->put('TODAY', Date::now()->toString('M d Y'));
     }
+    
   }
 ?>

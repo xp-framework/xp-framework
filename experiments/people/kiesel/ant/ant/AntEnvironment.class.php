@@ -13,13 +13,41 @@
    */
   class AntEnvironment extends Object {
     public
-      $in   = NULL,
       $out  = NULL,
       $err  = NULL;
+      
+    protected
+      $hashmap  = array();
 
     public function __construct($out, $err) {
       $this->out= $out;
       $this->err= $err;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function put($key, $value) {
+      if (isset($this->hashmap[$key]))
+        throw new IllegalArgumentException('Property ['.$key.'] already declared.');
+      
+      $this->hashmap[$key]= $value;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function get($key) {
+      if (!isset($this->hashmap[$key]))
+         throw new IllegalArgumentException('Property ['.$key.'] does not exist.');
+        
+      return $this->hashmap[$key];
     }
   }
 ?>
