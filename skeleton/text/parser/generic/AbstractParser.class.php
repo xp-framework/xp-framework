@@ -126,7 +126,7 @@
         foreach ($this->messages[self::ERROR] as $error) {
           $s.= '- '.$error->toString()."\n";
         }
-        throw new ParseException(sizeof($this->errors).' error(s)', new FormatException($s));
+        throw new ParseException(sizeof($this->messages[self::ERROR]).' error(s)', new FormatException($s));
       }
       
       return $result;
