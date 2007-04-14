@@ -7,7 +7,30 @@
 
 #line 2 "grammar/compact-xml.jay"
   uses('xml.Tree', 'xml.Node', 'xml.Comment');
-#line 11 "-"
+  
+  function merge($imported, &$root) {
+    foreach ($imported as $id => $child) {
+      if (!is_string($id)) continue;                 // Not an ID
+
+      if (!isset($root[$id])) {
+
+        // Not overwritten, copy completely
+        $root[$id]= $child;
+      } else {
+
+        // Merge
+        foreach ($child->attribute as $k => $v) {
+          if (isset($root[$id]->attribute[$k])) continue;  // Overridden
+          $root[$id]->attribute[$k]= $v;
+        }
+        if ($child->content && !$root[$id]->content) {
+          $root[$id]->content= $child->content;
+        }
+      }
+      merge($child->children, $root[$id]->children);
+    }
+  }
+#line 34 "-"
   define('TOKEN_T_WORD',  259);
   define('TOKEN_T_STRING',  260);
   define('TOKEN_T_NUMBER',  261);
@@ -280,7 +303,7 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 15 "grammar/compact-xml.jay"
+    case 1:  #line 38 "grammar/compact-xml.jay"
     {
           $yyVal= new Tree(); 
           $yyVal->root= $yyVals[0+$yyTop];
@@ -295,130 +318,112 @@
               $yyVal->root->content= $imported->root->content;
             }
             
-            foreach ($imported->root->children as $id => $child) {
-              if (!is_string($id)) continue;                 /* Not an ID*/
-              
-              if (!isset($yyVal->root->children[$id])) {
-
-                /* Not overwritten, copy completely*/
-                $yyVal->root->children[$id]= $child;             
-              } else {
-              
-                /* Merge*/
-                foreach ($child->attribute as $k => $v) {
-                  if (isset($yyVal->root->children[$id]->attribute[$k])) continue;  /* Overridden*/
-                  $yyVal->root->children[$id]->attribute[$k]= $v;
-                }
-                if ($imported->root->content && !$yyVal->root->content) {
-                  $yyVal->root->content= $imported->root->content;
-                }
-              }
-            }
+            merge($imported->root->children, $yyVal->root->children);
           }
         } break;
 
-    case 2:  #line 50 "grammar/compact-xml.jay"
+    case 2:  #line 55 "grammar/compact-xml.jay"
     {
           $yyVal= new Tree(); 
           $yyVal->root= $yyVals[0+$yyTop];
         } break;
 
-    case 3:  #line 57 "grammar/compact-xml.jay"
+    case 3:  #line 62 "grammar/compact-xml.jay"
     {
           $yyVal[]= $yyVals[0+$yyTop];
         } break;
 
-    case 4:  #line 60 "grammar/compact-xml.jay"
+    case 4:  #line 65 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[0+$yyTop]);
         } break;
 
-    case 5:  #line 66 "grammar/compact-xml.jay"
+    case 5:  #line 71 "grammar/compact-xml.jay"
     {
           $self= new self();
           $f= new File(dirname($yyLex->fileName).DIRECTORY_SEPARATOR.$yyVals[-1+$yyTop]);
           $yyVal= $self->parse(new CompactXmlLexer(FileUtil::getContents($f), $f->getURI()));
         } break;
 
-    case 6:  #line 74 "grammar/compact-xml.jay"
+    case 6:  #line 79 "grammar/compact-xml.jay"
     {
           $yyVal= new Node($yyVals[-5+$yyTop][0], $yyVals[-1+$yyTop], $yyVals[-3+$yyTop]); 
           $yyVal->children= $yyVals[0+$yyTop];
           $yyVal->id= $yyVals[-5+$yyTop][1];
         } break;
 
-    case 7:  #line 79 "grammar/compact-xml.jay"
+    case 7:  #line 84 "grammar/compact-xml.jay"
     { 
           $yyVal= new Node($yyVals[-2+$yyTop][0], $yyVals[-1+$yyTop]);
           $yyVal->children= $yyVals[0+$yyTop];
           $yyVal->id= $yyVals[-2+$yyTop][1];
         } break;
 
-    case 8:  #line 84 "grammar/compact-xml.jay"
+    case 8:  #line 89 "grammar/compact-xml.jay"
     {
           $yyVal= new Comment($yyVals[0+$yyTop]);
         } break;
 
-    case 9:  #line 90 "grammar/compact-xml.jay"
+    case 9:  #line 95 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[0+$yyTop], NULL);
         } break;
 
-    case 10:  #line 93 "grammar/compact-xml.jay"
+    case 10:  #line 98 "grammar/compact-xml.jay"
     {
 		  $yyVal= array($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]);
         } break;
 
-    case 11:  #line 99 "grammar/compact-xml.jay"
+    case 11:  #line 104 "grammar/compact-xml.jay"
     { 
           $yyVal= array_merge($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); 
         } break;
 
-    case 12:  #line 102 "grammar/compact-xml.jay"
+    case 12:  #line 107 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 13:  #line 108 "grammar/compact-xml.jay"
+    case 13:  #line 113 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); 
         } break;
 
-    case 14:  #line 114 "grammar/compact-xml.jay"
+    case 14:  #line 119 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 15:  #line 117 "grammar/compact-xml.jay"
+    case 15:  #line 122 "grammar/compact-xml.jay"
     { 
           $yyVal= NULL;
         } break;
 
-    case 16:  #line 123 "grammar/compact-xml.jay"
+    case 16:  #line 128 "grammar/compact-xml.jay"
     { 
           $yyVal= $yyVals[-1+$yyTop];
         } break;
 
-    case 17:  #line 126 "grammar/compact-xml.jay"
+    case 17:  #line 131 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
 
-    case 18:  #line 132 "grammar/compact-xml.jay"
+    case 18:  #line 137 "grammar/compact-xml.jay"
     { 
           $yyVals[0+$yyTop]->id ? $yyVal[$yyVals[0+$yyTop]->id]= $yyVals[0+$yyTop] : $yyVal[]= $yyVals[0+$yyTop];
         } break;
 
-    case 19:  #line 135 "grammar/compact-xml.jay"
+    case 19:  #line 140 "grammar/compact-xml.jay"
     { 
           $yyVal= $yyVals[0+$yyTop]->id ? array($yyVals[0+$yyTop]->id => $yyVals[0+$yyTop]) : array($yyVals[0+$yyTop]);
         } break;
 
-    case 20:  #line 138 "grammar/compact-xml.jay"
+    case 20:  #line 143 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
-#line 422 "-"
+#line 427 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

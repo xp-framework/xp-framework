@@ -1,5 +1,28 @@
 %{
   uses('xml.Tree', 'xml.Node', 'xml.Comment');
+  
+  function merge($imported, &$root) {
+    foreach ($imported as $id => $child) {
+      if (!is_string($id)) continue;                 // Not an ID
+
+      if (!isset($root[$id])) {
+
+        // Not overwritten, copy completely
+        $root[$id]= $child;
+      } else {
+
+        // Merge
+        foreach ($child->attribute as $k => $v) {
+          if (isset($root[$id]->attribute[$k])) continue;  // Overridden
+          $root[$id]->attribute[$k]= $v;
+        }
+        if ($child->content && !$root[$id]->content) {
+          $root[$id]->content= $child->content;
+        }
+      }
+      merge($child->children, $root[$id]->children);
+    }
+  }
 %}
 
 %token T_WORD 259
@@ -26,25 +49,7 @@ start:
               $$->root->content= $imported->root->content;
             }
             
-            foreach ($imported->root->children as $id => $child) {
-              if (!is_string($id)) continue;                 // Not an ID
-              
-              if (!isset($$->root->children[$id])) {
-
-                // Not overwritten, copy completely
-                $$->root->children[$id]= $child;             
-              } else {
-              
-                // Merge
-                foreach ($child->attribute as $k => $v) {
-                  if (isset($$->root->children[$id]->attribute[$k])) continue;  // Overridden
-                  $$->root->children[$id]->attribute[$k]= $v;
-                }
-                if ($imported->root->content && !$$->root->content) {
-                  $$->root->content= $imported->root->content;
-                }
-              }
-            }
+            merge($imported->root->children, $$->root->children);
           }
         } 
 	|	node {

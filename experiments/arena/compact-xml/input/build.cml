@@ -33,12 +33,8 @@ project(name= "MyProject") {
     >;
   }
   
-  target(name= "init") {
-    # Create the time stamp
-    tstamp;
-
-    # Create the build directory structure used by compile
-    mkdir(dir="${build}");
+  target[:init] {
+    mkdir[:build](dir="${build}");
   }
   
   target(name= "compile", depends= "init") {
