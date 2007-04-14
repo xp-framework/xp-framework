@@ -16,18 +16,17 @@
    * @purpose   Base class
    */
   abstract class AbstractParser extends Object {
-    public
-      $cat          = NULL,
-      $errors       = array();
+    const ERROR   = 0x0000;
+    const WARNING = 0x0001;
 
-    /**
-     * Adds an error
-     *
-     * @param   text.parser.generic.ParseException error
-     */
-    public function addError($error) {
-      $this->errors[]= $error;
-    }
+    protected
+      $cat          = NULL,
+      $levels       = array(
+        E_ERROR       => self::ERROR,
+        E_PARSE       => self::ERROR,
+        E_WARNING     => self::WARNING,
+      ),
+      $messages     = array();
     
     /**
      * Returns whether errors have occured
@@ -35,16 +34,44 @@
      * @return  bool
      */
     public function hasErrors() {
-      return !empty($this->errors);
+      return !empty($this->messages[self::ERROR]);
     }
 
     /**
-     * Returns whether errors have occured
+     * Returns errors
      *
-     * @return  text.parser.generic.ParseException[]
+     * @return  text.parser.generic.ParserMessage[]
      */
     public function getErrors() {
-      return $this->errors;
+      return $this->messages[self::ERROR];
+    }
+
+    /**
+     * Returns whether warnings have occured
+     *
+     * @return  bool
+     */
+    public function hasWarnings() {
+      return !empty($this->messages[self::WARNING]);
+    }
+
+    /**
+     * Returns warnings
+     *
+     * @return  text.parser.generic.ParserMessage[]
+     */
+    public function getWarnings() {
+      return $this->messages[self::WARNING];
+    }
+
+    /**
+     * Map a level to a type
+     *
+     * @param   int level
+     * @param   int type one of ERROR or WARNING constants
+     */
+    public function mapLevel($level, $type) {
+      $this->levels[$level]= $type;
     }
 
     /**
@@ -55,19 +82,14 @@
      * @param   string[] expected
      */
     public function error($level, $message, $expected= array()) {
-      switch ($level) {
-        case E_PARSE:
-        case E_ERROR:
-        case E_CORE_ERROR:
-        case E_COMPILE_ERROR:
-          $this->addError(new ParserMessage(
-            $level, 
-            $message.($expected ? ', expected '.implode(' or ', $expected) : '')
-          ));
-          // Fall-through intended
+      with ($m= new ParserMessage(
+        $level, 
+        $message,
+        $expected
+      )); {
+        $this->messages[$this->levels[$level]][]= $m;
+        $this->cat && $this->cat->info($m);
       }
-      
-      $this->cat && $this->cat->error($message, $expected ? ', expected '.implode(' or ', $expected) : '');
       return FALSE;
     }
 
@@ -87,8 +109,11 @@
      * @return  mixed result of the last reduction, if any.
      * @throws  text.parser.generic.ParseException if an exception occurs during parsing.
      */
-    public function parse($lexer) {
-      $this->errors= array();
+    public function parse(AbstractLexer $lexer) {
+      $this->messages= array(
+        self::ERROR   => array(),
+        self::WARNING => array(),
+      );
 
       try {
         $result= $this->yyparse($lexer);
@@ -96,9 +121,9 @@
         throw new ParseException($e->getMessage(), $e);
       }
       
-      if (!empty($this->errors)) {
+      if (!empty($this->messages[self::ERROR])) {
         $s= '';
-        foreach ($this->getErrors() as $error) {
+        foreach ($this->messages[self::ERROR] as $error) {
           $s.= '- '.$error->toString()."\n";
         }
         throw new ParseException(sizeof($this->errors).' error(s)', new FormatException($s));
