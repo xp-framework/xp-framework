@@ -11,18 +11,21 @@
    */
   class ParserMessage extends Object {
     public
-      $code    = 0,
-      $message = '';
+      $code     = 0,
+      $message  = '',
+      $expected = array();
 
     /**
      * Constructor
      *
      * @param   int code
      * @param   string message
+     * @param   string[] expected
      */
-    public function __construct($code, $message) {
+    public function __construct($code, $message, $expected) {
       $this->code= $code;
       $this->message= $message;
+      $this->expected= $expected;
     }
   
     /**
@@ -31,7 +34,13 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->code.') {"'.$this->message.'"}';
+      return sprintf(
+        '%s(%d: %s%s)',
+        $this->getClassName(),
+        $this->code,
+        $this->message,
+        $this->expected ? ', expected one of ['.implode(', ', $this->expected).']' : ''
+      );
     }
   }
 ?>
