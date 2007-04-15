@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('ant.task.AntTask');
+  uses(
+    'ant.task.AntTask',
+    'io.Folder'
+  );
 
   /**
    * (Insert class' description here)
@@ -35,7 +38,7 @@
      * @return  
      */
     public function getDir($env) {
-      return $env->substitute($this->dir);
+      return $env->localUri($env->substitute($this->dir));
     }
     
     /**

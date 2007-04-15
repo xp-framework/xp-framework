@@ -60,15 +60,26 @@
       $this->tasks[]= $task;
     }    
     
-    public function taskFromNode($node) {
-      switch ($node) {
+    public function taskFromNode($name) {
+      static $package= array(
+        'mkdir'   => 'file',
+        'copy'    => 'file',
+        'touch'   => 'file',
+        'delete'  => 'file'
+      );
+      
+      switch ($name) {
+        case 'mkdir':
         case 'ear': {
           $node= 'jar';
           break;
         }
       }
       
-      $classname= sprintf('ant.task.Ant%sTask', ucfirst($node));
+      $classname= sprintf('ant.task.%sAnt%sTask', 
+        (isset($package[$name]) ? $package[$name].'.' : ''),
+        ucfirst($name)
+      );
       
       // HACK: if a tasks class does not exist, use the default
       try {
@@ -106,7 +117,7 @@
         $project->runTarget($target);
       }
     
-      $env->out->writeLine('Running target '.$this->name);
+      $env->out->writeLine('===> Running '.$this->name);
       foreach ($this->tasks as $task) {
         $task->run($env);
       }

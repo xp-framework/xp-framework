@@ -69,5 +69,16 @@
     public function replaceCallback($matches) {
       return $this->get($matches[1]);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function localUri($uri) {
+      if ('/' == DIRECTORY_SEPARATOR) return $uri;
+      return strtr($uri, '/', DIRECTORY_SEPARATOR);
+    }
   }
 ?>
