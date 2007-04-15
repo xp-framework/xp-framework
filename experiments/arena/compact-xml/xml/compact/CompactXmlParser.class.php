@@ -284,83 +284,82 @@
 
     case 2:  #line 21 "grammar/compact-xml.jay"
     {
-          $yyVal= new Node($yyVals[-5+$yyTop][0], $yyVals[-1+$yyTop], $yyVals[-3+$yyTop]); 
-          $yyVal->children= $yyVals[0+$yyTop];
-          $yyVal->id= $yyVals[-5+$yyTop][1];
+          $yyVals[-5+$yyTop]->attribute= array_merge($yyVals[-5+$yyTop]->attribute, $yyVals[-3+$yyTop]);
+          $yyVals[-5+$yyTop]->content= $yyVals[-1+$yyTop];
+          $yyVals[-5+$yyTop]->children= $yyVals[0+$yyTop];
         } break;
 
     case 3:  #line 26 "grammar/compact-xml.jay"
     { 
-          $yyVal= new Node($yyVals[-2+$yyTop][0], $yyVals[-1+$yyTop]);
-          $yyVal->children= $yyVals[0+$yyTop];
-          $yyVal->id= $yyVals[-2+$yyTop][1];
+          $yyVals[-2+$yyTop]->content= $yyVals[-1+$yyTop];
+          $yyVals[-2+$yyTop]->children= $yyVals[0+$yyTop];
         } break;
 
-    case 4:  #line 31 "grammar/compact-xml.jay"
+    case 4:  #line 30 "grammar/compact-xml.jay"
     {
           $yyVal= new Comment($yyVals[0+$yyTop]);
         } break;
 
-    case 5:  #line 37 "grammar/compact-xml.jay"
+    case 5:  #line 36 "grammar/compact-xml.jay"
     { 
-          $yyVal= array($yyVals[0+$yyTop], NULL);
+          $yyVal= new Node($yyVals[0+$yyTop]);
         } break;
 
-    case 6:  #line 40 "grammar/compact-xml.jay"
+    case 6:  #line 39 "grammar/compact-xml.jay"
     {
-		  $yyVal= array($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]);
+		  $yyVal= new Node($yyVals[-3+$yyTop], NULL, array('id' => $yyVals[-1+$yyTop]));
         } break;
 
-    case 7:  #line 46 "grammar/compact-xml.jay"
+    case 7:  #line 45 "grammar/compact-xml.jay"
     { 
           $yyVal= array_merge($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); 
         } break;
 
-    case 8:  #line 49 "grammar/compact-xml.jay"
+    case 8:  #line 48 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 9:  #line 55 "grammar/compact-xml.jay"
+    case 9:  #line 54 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); 
         } break;
 
-    case 10:  #line 61 "grammar/compact-xml.jay"
+    case 10:  #line 60 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 11:  #line 64 "grammar/compact-xml.jay"
+    case 11:  #line 63 "grammar/compact-xml.jay"
     { 
           $yyVal= NULL;
         } break;
 
-    case 12:  #line 70 "grammar/compact-xml.jay"
+    case 12:  #line 69 "grammar/compact-xml.jay"
     { 
           $yyVal= $yyVals[-1+$yyTop];
         } break;
 
-    case 13:  #line 73 "grammar/compact-xml.jay"
+    case 13:  #line 72 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
 
-    case 14:  #line 79 "grammar/compact-xml.jay"
+    case 14:  #line 78 "grammar/compact-xml.jay"
     { 
-          $yyVals[0+$yyTop]->id ? $yyVal[$yyVals[0+$yyTop]->id]= $yyVals[0+$yyTop] : $yyVal[]= $yyVals[0+$yyTop];
+          $yyVal[]= $yyVals[0+$yyTop];
         } break;
 
-    case 15:  #line 82 "grammar/compact-xml.jay"
+    case 15:  #line 81 "grammar/compact-xml.jay"
     { 
-          $yyVal= $yyVals[0+$yyTop]->id ? array($yyVals[0+$yyTop]->id => $yyVals[0+$yyTop]) : array($yyVals[0+$yyTop]);
+          $yyVal= array($yyVals[0+$yyTop]);
         } break;
 
-    case 16:  #line 85 "grammar/compact-xml.jay"
+    case 16:  #line 84 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
-#line 364 "-"
+#line 363 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

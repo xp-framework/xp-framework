@@ -6,7 +6,7 @@ project(name= "MyProject", default= "dist", basedir= ".") {
   property(name= "build", location= "build");
   property(name= "dist", location= "dist");
 
-  path(id= "classpath.build") {
+  path[classpath.build] {
     pathelement(path= "${classpath}") {
       fileset(dir= "${common.libdir}") {
         include(name="jboss-j2ee.jar");

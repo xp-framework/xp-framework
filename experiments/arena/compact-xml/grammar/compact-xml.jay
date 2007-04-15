@@ -19,14 +19,13 @@ start:
 
 node:
 		name '(' attributes ')' content body {
-          $$= new Node($1[0], $5, $3); 
-          $$->children= $6;
-          $$->id= $1[1];
+          $1->attribute= array_merge($1->attribute, $3);
+          $1->content= $5;
+          $1->children= $6;
         }
 	|	name content body { 
-          $$= new Node($1[0], $2);
-          $$->children= $3;
-          $$->id= $1[1];
+          $1->content= $2;
+          $1->children= $3;
         }
     |   T_COMMENT {
           $$= new Comment($1);
@@ -35,10 +34,10 @@ node:
 
 name:
 		T_WORD { 
-          $$= array($1, NULL);
+          $$= new Node($1);
         }
 	|	T_WORD '[' T_WORD ']' {
-		  $$= array($1, $3);
+		  $$= new Node($1, NULL, array('id' => $3));
         }
 ;
 
@@ -77,10 +76,10 @@ body:
 
 children:
 		children node { 
-          $2->id ? $$[$2->id]= $2 : $$[]= $2;
+          $$[]= $2;
         }
 	|   node { 
-          $$= $1->id ? array($1->id => $1) : array($1);
+          $$= array($1);
         } 
 	|   /* empty */ { 
           $$= array(); 
