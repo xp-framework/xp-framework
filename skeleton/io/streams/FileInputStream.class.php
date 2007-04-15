@@ -56,7 +56,7 @@
      * Destructor. Ensures file is closed.
      *
      */
-    protected function __destruct() {
+    public function __destruct() {
       $this->close();
     }
   }

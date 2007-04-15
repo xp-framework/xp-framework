@@ -53,7 +53,7 @@
      * Destructor.
      *
      */
-    protected function __destruct() {
+    public function __destruct() {
       unset($this->bytes);
     }
   }
