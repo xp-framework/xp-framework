@@ -7,36 +7,12 @@
 
 #line 2 "grammar/compact-xml.jay"
   uses('xml.Tree', 'xml.Node', 'xml.Comment');
-  
-  function merge($imported, &$root) {
-    foreach ($imported as $id => $child) {
-      if (!is_string($id)) continue;                 // Not an ID
-
-      if (!isset($root[$id])) {
-
-        // Not overwritten, copy completely
-        $root[$id]= $child;
-      } else {
-
-        // Merge
-        foreach ($child->attribute as $k => $v) {
-          if (isset($root[$id]->attribute[$k])) continue;  // Overridden
-          $root[$id]->attribute[$k]= $v;
-        }
-        if ($child->content && !$root[$id]->content) {
-          $root[$id]->content= $child->content;
-        }
-      }
-      merge($child->children, $root[$id]->children);
-    }
-  }
-#line 34 "-"
+#line 11 "-"
   define('TOKEN_T_WORD',  259);
   define('TOKEN_T_STRING',  260);
   define('TOKEN_T_NUMBER',  261);
   define('TOKEN_T_TEXT',  262);
   define('TOKEN_T_COMMENT',  263);
-  define('TOKEN_T_IMPORT',  264);
   define('TOKEN_YY_ERRORCODE', 256);
 
   /**
@@ -46,47 +22,44 @@
    */
   class CompactXmlParser extends AbstractParser {
     protected static $yyLhs= array(-1,
-          0,     0,     1,     1,     3,     2,     2,     2,     4,     4, 
-          5,     5,     8,     6,     6,     7,     7,     9,     9,     9, 
+          0,     1,     1,     1,     2,     2,     3,     3,     6,     4, 
+          4,     5,     5,     7,     7,     7, 
     );
     protected static $yyLen= array(2,
-          2,     1,     2,     1,     3,     6,     3,     1,     1,     4, 
-          3,     1,     3,     1,     0,     3,     1,     2,     1,     0, 
+          1,     6,     3,     1,     1,     4,     3,     1,     3,     1, 
+          0,     3,     1,     2,     1,     0, 
     );
     protected static $yyDefRed= array(0,
-          0,     8,     0,     0,     0,     2,     4,     0,     0,     0, 
-          1,     3,    14,     0,     0,     0,     5,     0,     0,    12, 
-         17,     0,     7,    10,     0,     0,     0,    19,     0,    13, 
-          0,    11,    16,    18,     6, 
+          0,     4,     0,     1,     0,     0,    10,     0,     0,     0, 
+          0,     0,     8,     0,    13,     3,     6,     0,     0,     0, 
+         15,     0,     9,     0,     7,    12,    14,     2, 
     );
-    protected static $yyDgoto= array(4,
-          5,     6,     7,     8,    19,    15,    23,    20,    29, 
+    protected static $yyDgoto= array(3,
+          4,     5,    12,     9,    16,    13,    22, 
     );
-    protected static $yySindex = array(         -254,
-        -83,     0,  -247,     0,  -254,     0,     0,   -39,  -245,   -43, 
-          0,     0,     0,  -242,   -56,   -75,     0,   -41,   -29,     0, 
-          0,  -252,     0,     0,  -239,  -240,  -242,     0,  -123,     0, 
-        -56,     0,     0,     0,     0, 
+    protected static $yySindex = array(         -253,
+        -84,     0,     0,     0,   -39,  -250,     0,  -247,   -56,   -79, 
+        -46,   -33,     0,  -253,     0,     0,     0,  -244,  -245,  -247, 
+          0,  -123,     0,   -56,     0,     0,     0,     0, 
     );
     protected static $yyRindex= array(            0,
-        -40,     0,     0,     0,     0,     0,     0,   -55,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,  -101,     0,     0,     0,   -55,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0, 
+        -40,     0,     0,     0,   -55,     0,     0,     0,     0,     0, 
+          0,     0,     0,  -107,     0,     0,     0,     0,   -55,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0, 
     );
     protected static $yyGindex= array(0,
-          0,     1,    20,     0,     0,     2,    -5,     4,     0, 
+         -9,     0,     0,     1,    -3,     2,     0, 
     );
-    protected static $yyTable = array(9,
-         14,    33,    21,    15,     1,    11,     1,     9,     2,     3, 
-          2,    26,    10,    16,    27,    17,    18,    24,     9,    25, 
-         30,    13,    28,    20,    12,    35,     0,    31,     0,    34, 
-         32,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+    protected static $yyTable = array(5,
+          8,    26,    15,    11,    21,     1,     6,    19,    10,     2, 
+         20,    11,    27,    17,    18,    23,     7,    16,     5,    24, 
+         28,    25,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,    22,    15,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     9,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,    14,    11,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     5,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -100,13 +73,13 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     9,    13, 
+          0,     5,     7, 
     );
     protected static $yyCheck = array(40,
-         40,   125,    59,    59,   259,     5,   259,    91,   263,   264, 
-        263,    41,   260,   259,    44,    59,   259,    93,    59,    61, 
-        260,   262,    22,   125,     5,    31,    -1,    26,    -1,    29, 
-         27,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         40,   125,    59,    59,    14,   259,    91,    41,   259,   263, 
+         44,   259,    22,    93,    61,   260,   262,   125,    59,    19, 
+         24,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,   123,   123,    -1,    -1, 
@@ -127,7 +100,7 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,   262,   262, 
     );
-    protected static $yyFinal= 4;
+    protected static $yyFinal= 3;
     protected static $yyName= array(    
       'end-of-file', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -148,7 +121,7 @@
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
       NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
-      'T_WORD', 'T_STRING', 'T_NUMBER', 'T_TEXT', 'T_COMMENT', 'T_IMPORT', 
+      'T_WORD', 'T_STRING', 'T_NUMBER', 'T_TEXT', 'T_COMMENT', 
     );
 
     protected static $yyTableCount= 0, $yyNameCount= 0;
@@ -303,127 +276,91 @@
             // Actions
             switch ($yyN) {
 
-    case 1:  #line 38 "grammar/compact-xml.jay"
-    {
-          $yyVal= new Tree(); 
-          $yyVal->root= $yyVals[0+$yyTop];
-          
-          /* Apply imports*/
-          foreach ($yyVals[-1+$yyTop] as $imported) {
-            foreach ($imported->root->attribute as $k => $v) {
-              if (isset($yyVal->root->attribute[$k])) continue;  /* Overridden*/
-              $yyVal->root->attribute[$k]= $v;
-            }
-            if ($imported->root->content && !$yyVal->root->content) {
-              $yyVal->root->content= $imported->root->content;
-            }
-            
-            merge($imported->root->children, $yyVal->root->children);
-          }
-        } break;
-
-    case 2:  #line 55 "grammar/compact-xml.jay"
+    case 1:  #line 14 "grammar/compact-xml.jay"
     {
           $yyVal= new Tree(); 
           $yyVal->root= $yyVals[0+$yyTop];
         } break;
 
-    case 3:  #line 62 "grammar/compact-xml.jay"
-    {
-          $yyVal[]= $yyVals[0+$yyTop];
-        } break;
-
-    case 4:  #line 65 "grammar/compact-xml.jay"
-    { 
-          $yyVal= array($yyVals[0+$yyTop]);
-        } break;
-
-    case 5:  #line 71 "grammar/compact-xml.jay"
-    {
-          $self= new self();
-          $f= new File(dirname($yyLex->fileName).DIRECTORY_SEPARATOR.$yyVals[-1+$yyTop]);
-          $yyVal= $self->parse(new CompactXmlLexer(FileUtil::getContents($f), $f->getURI()));
-        } break;
-
-    case 6:  #line 79 "grammar/compact-xml.jay"
+    case 2:  #line 21 "grammar/compact-xml.jay"
     {
           $yyVal= new Node($yyVals[-5+$yyTop][0], $yyVals[-1+$yyTop], $yyVals[-3+$yyTop]); 
           $yyVal->children= $yyVals[0+$yyTop];
           $yyVal->id= $yyVals[-5+$yyTop][1];
         } break;
 
-    case 7:  #line 84 "grammar/compact-xml.jay"
+    case 3:  #line 26 "grammar/compact-xml.jay"
     { 
           $yyVal= new Node($yyVals[-2+$yyTop][0], $yyVals[-1+$yyTop]);
           $yyVal->children= $yyVals[0+$yyTop];
           $yyVal->id= $yyVals[-2+$yyTop][1];
         } break;
 
-    case 8:  #line 89 "grammar/compact-xml.jay"
+    case 4:  #line 31 "grammar/compact-xml.jay"
     {
           $yyVal= new Comment($yyVals[0+$yyTop]);
         } break;
 
-    case 9:  #line 95 "grammar/compact-xml.jay"
+    case 5:  #line 37 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[0+$yyTop], NULL);
         } break;
 
-    case 10:  #line 98 "grammar/compact-xml.jay"
+    case 6:  #line 40 "grammar/compact-xml.jay"
     {
 		  $yyVal= array($yyVals[-3+$yyTop], $yyVals[-1+$yyTop]);
         } break;
 
-    case 11:  #line 104 "grammar/compact-xml.jay"
+    case 7:  #line 46 "grammar/compact-xml.jay"
     { 
           $yyVal= array_merge($yyVals[-2+$yyTop], $yyVals[0+$yyTop]); 
         } break;
 
-    case 12:  #line 107 "grammar/compact-xml.jay"
+    case 8:  #line 49 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 13:  #line 113 "grammar/compact-xml.jay"
+    case 9:  #line 55 "grammar/compact-xml.jay"
     { 
           $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); 
         } break;
 
-    case 14:  #line 119 "grammar/compact-xml.jay"
+    case 10:  #line 61 "grammar/compact-xml.jay"
     { 
           /* $$= $1; */
         } break;
 
-    case 15:  #line 122 "grammar/compact-xml.jay"
+    case 11:  #line 64 "grammar/compact-xml.jay"
     { 
           $yyVal= NULL;
         } break;
 
-    case 16:  #line 128 "grammar/compact-xml.jay"
+    case 12:  #line 70 "grammar/compact-xml.jay"
     { 
           $yyVal= $yyVals[-1+$yyTop];
         } break;
 
-    case 17:  #line 131 "grammar/compact-xml.jay"
+    case 13:  #line 73 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
 
-    case 18:  #line 137 "grammar/compact-xml.jay"
+    case 14:  #line 79 "grammar/compact-xml.jay"
     { 
           $yyVals[0+$yyTop]->id ? $yyVal[$yyVals[0+$yyTop]->id]= $yyVals[0+$yyTop] : $yyVal[]= $yyVals[0+$yyTop];
         } break;
 
-    case 19:  #line 140 "grammar/compact-xml.jay"
+    case 15:  #line 82 "grammar/compact-xml.jay"
     { 
           $yyVal= $yyVals[0+$yyTop]->id ? array($yyVals[0+$yyTop]->id => $yyVals[0+$yyTop]) : array($yyVals[0+$yyTop]);
         } break;
 
-    case 20:  #line 143 "grammar/compact-xml.jay"
+    case 16:  #line 85 "grammar/compact-xml.jay"
     { 
           $yyVal= array(); 
         } break;
-#line 427 "-"
+#line 364 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

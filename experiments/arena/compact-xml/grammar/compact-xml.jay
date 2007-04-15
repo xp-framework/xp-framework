@@ -1,28 +1,5 @@
 %{
   uses('xml.Tree', 'xml.Node', 'xml.Comment');
-  
-  function merge($imported, &$root) {
-    foreach ($imported as $id => $child) {
-      if (!is_string($id)) continue;                 // Not an ID
-
-      if (!isset($root[$id])) {
-
-        // Not overwritten, copy completely
-        $root[$id]= $child;
-      } else {
-
-        // Merge
-        foreach ($child->attribute as $k => $v) {
-          if (isset($root[$id]->attribute[$k])) continue;  // Overridden
-          $root[$id]->attribute[$k]= $v;
-        }
-        if ($child->content && !$root[$id]->content) {
-          $root[$id]->content= $child->content;
-        }
-      }
-      merge($child->children, $root[$id]->children);
-    }
-  }
 %}
 
 %token T_WORD 259
@@ -30,48 +7,13 @@
 %token T_NUMBER 261
 %token T_TEXT 262
 %token T_COMMENT 263
-%token T_IMPORT 264
 
 %% /* Rules */
 
 start:
-		declarations node {
-          $$= new Tree(); 
-          $$->root= $2;
-          
-          // Apply imports
-          foreach ($1 as $imported) {
-            foreach ($imported->root->attribute as $k => $v) {
-              if (isset($$->root->attribute[$k])) continue;  // Overridden
-              $$->root->attribute[$k]= $v;
-            }
-            if ($imported->root->content && !$$->root->content) {
-              $$->root->content= $imported->root->content;
-            }
-            
-            merge($imported->root->children, $$->root->children);
-          }
-        } 
-	|	node {
+	 	node {
           $$= new Tree(); 
           $$->root= $1;
-        }
-;
-
-declarations:
-		declarations declaration {
-          $$[]= $2;
-        }
-	|	declaration { 
-          $$= array($1);
-        }
-;
-
-declaration:
-		T_IMPORT T_STRING ';' {
-          $self= new self();
-          $f= new File(dirname($yyLex->fileName).DIRECTORY_SEPARATOR.$2);
-          $$= $self->parse(new CompactXmlLexer(FileUtil::getContents($f), $f->getURI()));
         }
 ;
 

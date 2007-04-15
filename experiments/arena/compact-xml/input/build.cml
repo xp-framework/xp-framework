@@ -1,6 +1,4 @@
-import "common.cml";
-
-project(name= "MyProject") {
+project(name= "MyProject", default= "dist", basedir= ".") {
   description <Simple example build file>;
   
   # Set global properties for this build
@@ -16,7 +14,7 @@ project(name= "MyProject") {
     }
   }
   
-  target[:usage] {
+  target(name="usage") {
     echo <
       Targets:
       - clean
@@ -33,8 +31,12 @@ project(name= "MyProject") {
     >;
   }
   
-  target[:init] {
-    mkdir[:build](dir="${build}");
+  target(name= "init") {
+    # Create the time stamp
+    tstamp;
+
+    # Create the build directory structure used by compile
+    mkdir(dir="${build}");
   }
   
   target(name= "compile", depends= "init") {

@@ -15,7 +15,6 @@
   class CompactXmlLexer extends AbstractLexer {
     protected static
       $keywords  = array(
-        'import'    => TOKEN_T_IMPORT,
       );
 
     const 
