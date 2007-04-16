@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel, rene
 @created: Wed Feb  7 11:39:03 CET 2007
-@status: discussion, ends Mon Apr 16 12:00:00 CEST 2007
+@status: implemented, Mon Apr 16 18:45:15 CEST 2007
 @category: webservices.soap
 
 Scope of Change

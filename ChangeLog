@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ????
 
+- Implemented RFC #0113 - Include PHP5 SOAP extension
+  (kiesel, rene)
 - Implemented RFC #0118 - Exceptions for missing token values in 
   StatementFormatter
   (friebe)
