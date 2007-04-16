@@ -74,7 +74,7 @@
       
       if (
         ($this->flags & SCRIPTLET_SHOW_XML) &&
-        ($response && $response->document)
+        ($response && isset($response->document))
       ) {
         echo '<xmp>', $response->document->getSource(0), '</xmp>';
       }
