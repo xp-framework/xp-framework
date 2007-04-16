@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('io.collections.iterate.RegexFilter');
+
   /**
    * (Insert class' description here)
    *
@@ -58,6 +60,45 @@
     #[@xmlmapping(element= '@unless')]
     public function setUnless($unless) {
       $this->unless= $unless;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function applies(AntEnvironment $env) {
+      if (NULL !== $this->if) {
+        return $env->exists($this->if);
+      }
+      
+      if (NULL !== $this->unless) {
+        return !$env->exists($this->unless);
+      }
+      
+      // Otherwise always applies
+      return TRUE;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function toFilter() {
+      // Transform name element to regex filter
+      $regex= $this->name;
+      $regex= preg_replace('#\*\*#', '.+', $regex);
+      $regex= preg_replace('#([^*])\*#', '$1[^'.preg_quote(DIRECTORY_SEPARATOR).']+', $regex);
+
+      if ('/' != DIRECTORY_SEPARATOR) {
+        $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $regex);
+      }
+      var_dump($this->name, $regex);
+      
+      return new RegexFilter($regex);
     }
   }
 ?>

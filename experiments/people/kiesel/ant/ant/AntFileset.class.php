@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('ant.AntPatternSet');
+  uses(
+    'ant.AntPatternSet',
+    'io.collections.FileCollection',
+    'io.collections.iterate.FilteredIOCollectionIterator'
+  );
 
   /**
    * (Insert class' description here)
@@ -104,6 +108,30 @@
     #[@xmlmapping(element= 'patternset', class= 'ant.AntPatternSet')]
     public function setPatternSet($set) {
       $this->patternset= $set;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function getDir(AntEnvironment $env) {
+      return $env->localUri($env->substitute($this->dir));
+    }    
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function iteratorFor(AntEnvironment $env) {
+      return new FilteredIOCollectionIterator(
+        new FileCollection($this->getDir($env)),
+        $this->patternset->createFilter($env),
+        TRUE
+      );
     }
   }
 ?>

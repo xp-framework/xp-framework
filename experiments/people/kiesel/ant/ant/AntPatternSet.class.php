@@ -4,6 +4,12 @@
  * $Id$ 
  */
 
+  uses(
+    'io.collections.iterate.AllOfFilter',
+    'io.collections.iterate.AnyOfFilter',
+    'io.collections.iterate.NegationOfFilter'
+  );
+
   /**
    * (Insert class' description here)
    *
@@ -69,11 +75,43 @@
         $pattern= new AntPattern($pattern);
       }
       
-      if (!$pattern instanceof AntPattern) 
+      if (!$pattern instanceof AntPattern) {
         throw new IllegalArgumentException('Expecting AntPattern or string');
+      }
       
       $this->excludes[]= $pattern;
     }
-    
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function createFilter(AntEnvironment $env) {
+      
+      $inc= $exc= array();
+      foreach ($this->includes as $include) {
+        if ($include->applies($env)) {
+          $inc[]= $include->toFilter();
+        }
+      }
+      
+      foreach ($this->excludes as $exclude) {
+        if ($exclude->applies($env)) {
+          $exc[]= $exclude->toFilter();
+        }
+      }
+      
+      if (!sizeof($inc))
+        throw new IllegalStateException('No positive filter has been given.');
+      
+      $filter= array(new AllOfFilter($inc));
+      if (sizeof($exc)) {
+        $filter[]= new NegationOfFilter(new AnyOfFilter($exc));
+      }
+      
+      return new AllOfFilter($filter);
+    }
   }
 ?>

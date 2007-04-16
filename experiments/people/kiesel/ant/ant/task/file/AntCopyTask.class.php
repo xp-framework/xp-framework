@@ -22,7 +22,8 @@
       $flatten          = FALSE,
       $includeEmptyDirs = FALSE,
       $failOnError      = TRUE,
-      $verbose          = FALSE;
+      $verbose          = FALSE,
+      $resources        = NULL;
     
     /**
      * (Insert method's description here)
@@ -85,8 +86,27 @@
      * @param   
      * @return  
      */
+    #[@xmlmapping(element= 'fileset', class= 'ant.AntFileset')]
+    public function setFileSet($fileset) {
+      $this->resource= $fileset;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     protected function execute(AntEnvironment $env) {
+      if (NULL !== $this->resource) {
+        $iter= $this->resource->iteratorFor($env);
+        while ($iter->hasNext()) {
+          $element= $iter->next();
+          // TBI
+        }
+      } else if (NULL !== $this->file) {
       
+      }
     }    
   }
 ?>
