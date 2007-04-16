@@ -4,8 +4,5 @@
  * $Id$
  */
 
-  uses(
-    'webservices.soap.SOAPClient',
-    'webservices.soap.transport.SOAPHTTPTransport'
-  );
+  uses('webservices.soap.SoapDriver');
 ?>

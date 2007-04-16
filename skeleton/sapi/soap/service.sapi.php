@@ -11,10 +11,10 @@
   // {{{ final class sapi新oap新ervice
   class sapi新oap新ervice {
   
-    // {{{ internal string fault(&lang.Throwable exception, string code)
+    // {{{ internal string fault(lang.Throwable exception, string code)
     //     Convert an exception to XML
     static function fault($exception, $code) {
-      $answer= new SOAPMessage();
+      $answer= new XPSoapMessage();
       $answer->create();
 
       foreach ($exception->getStackTrace() as $element) {
