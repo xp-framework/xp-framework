@@ -102,16 +102,11 @@
     /**
      * Send the message
      *
-     * @param   &webservices.soap.SOAPMessage message
-     * @return  &peer.http.HttpResponse
+     * @param   webservices.soap.xp.XPSoapMessage message
+     * @return  peer.http.HttpResponse
      * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
-    public function send($message) {
-    
-      // Sanity checks
-      if (!is('SOAPMessage', $message)) throw(new IllegalArgumentException(
-        'parameter "message" must be a webservices.soap.SOAPMessage'
-      ));
+    public function send(XPSoapMessage $message) {
       if (!$this->_conn->request) throw(new IllegalArgumentException(
         'Factory method failed'
       ));
@@ -150,21 +145,15 @@
 
       // Add more headers
       $this->_conn->request->addHeaders($this->_headers);
-      try {
-        $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= $this->_conn->request->send($this->_conn->getTimeout());
-      } catch (IOException $e) {
-        throw ($e);
-      }
-      
-      return $res;
+      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
+      return $this->_conn->request->send($this->_conn->getTimeout());
     }
    
     /**
      * Retrieve the answer
      *
-     * @param   &peer.http.HttpResponse response
-     * @return  &webservices.soap.SOAPMessage
+     * @param   peer.http.HttpResponse response
+     * @return  webservices.soap.SOAPMessage
      * @throws  io.IOException in case the data cannot be read
      * @throws  xml.XMLFormatException in case the XML is not well-formed
      * @throws  lang.IllegalAccessException in case authorization is required
@@ -172,52 +161,41 @@
      */
     public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
-      
-      try {
-        $code= $response->getStatusCode();
-      } catch (SocketException $e) {
-        throw($e);
-      }
+      $code= $response->getStatusCode();
       
       switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
-          try {
-            $xml= '';
-            while ($buf= $response->readData()) $xml.= $buf;
+          $xml= '';
+          while ($buf= $response->readData()) $xml.= $buf;
 
-            $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= SOAPMessage::fromString($xml)) {
+          $this->cat && $this->cat->debug('<<<', $xml);
+          if ($answer= XPSoapMessage::fromString($xml)) {
 
-              // Check encoding
-              if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-                preg_match('/^([^;]+)(; ?charset=([^;]+))?/i', $content_type, $matches);
-                $type= $matches[1];
-                if (!empty($matches[3])) $answer->setEncoding($matches[3]);
-              }
-
-              $answer->action= $this->action;
+            // Check encoding
+            if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+              preg_match('/^([^;]+)(; ?charset=([^;]+))?/i', $content_type, $matches);
+              $type= $matches[1];
+              if (!empty($matches[3])) $answer->setEncoding($matches[3]);
             }
-          } catch (Exception $e) {
-            throw($e);
+
+            $answer->action= $this->action;
           }
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            throw(new SOAPFaultException($fault));
+            throw new SOAPFaultException($fault);
           }
           
           return $answer;
         
         case HTTP_AUTHORIZATION_REQUIRED:
-          throw(new IllegalAccessException(
+          throw new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
-          ));
+          );
         
         default:
-          throw(new IllegalStateException(
-            'Unexpected return code: '.$response->getStatusCode()
-          ));
+          throw new IllegalStateException('Unexpected return code: '.$response->getStatusCode());
       }
     }
   }

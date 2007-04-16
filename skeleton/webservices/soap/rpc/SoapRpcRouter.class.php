@@ -7,8 +7,8 @@
     'scriptlet.rpc.AbstractRpcRouter',
     'webservices.soap.rpc.SoapRpcRequest',
     'webservices.soap.rpc.SoapRpcResponse',
-    'webservices.soap.SOAPMessage',
-    'webservices.soap.SOAPMapping'
+    'webservices.soap.xp.XPSoapMessage',
+    'webservices.soap.xp.XPSoapMapping'
   );
 
   /**
@@ -55,7 +55,7 @@
      */
     public function __construct($package) {
       parent::__construct($package);
-      $this->mapping= new SOAPMapping();
+      $this->mapping= new XPSoapMapping();
     }
     
     /**
@@ -79,17 +79,17 @@
     /**
      * Create message object.
      *
-     * @return  &webservices.soap.SOAPMessage
+     * @return  &webservices.soap.xp.XPSoapMessage
      */
     protected function _message() {
-      return new SOAPMessage();
+      return new XPSoapMessage();
     }    
 
     /**
      * Calls the handler that the action reflects to
      *
-     * @param   &webservices.xmlrpc.XmlRpcMessage message object (from request)
-     * @return  &mixed result of method call
+     * @param   webservices.xmlrpc.XmlRpcMessage message object (from request)
+     * @return  mixed result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */

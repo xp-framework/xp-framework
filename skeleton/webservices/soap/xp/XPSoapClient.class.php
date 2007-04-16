@@ -5,11 +5,11 @@
  */
 
   uses(
-    'webservices.soap.SOAPMessage',
     'xml.QName',
-    'webservices.soap.Parameter',
-    'webservices.soap.SOAPMapping',
-    'util.log.Traceable'
+    'util.log.Traceable',
+    'webservices.soap.xp.XPSoapMessage',
+    'webservices.soap.xp.XPSoapMapping',
+    'webservices.soap.transport.SOAPHTTPTransport'
   );
   
   /**
@@ -17,7 +17,7 @@
    *
    * Example:
    * <code>
-   *   $s= new SOAPClient(new SOAPHTTPTransport($url), $urn);
+   *   $s= new SOAPClient('http://localhost/soapuri, 'ServerURI');
    *   try {
    *     $return= $s->invoke($methods, $paramaters);
    *   } catch (XPException $e) {
@@ -30,7 +30,7 @@
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
-  class SOAPClient extends Object implements Traceable {
+  class XPSoapClient extends Object implements Traceable {
     public 
       $encoding           = 'iso-8859-1',
       $transport          = NULL,
@@ -42,15 +42,15 @@
     /**
      * Constructor
      *
-     * @param   webservices.soap.transport.SOAPTransport transport a SOAP transport
+     * @param   string url
      * @param   string action Action
      * @param   string targetNamespace default NULL
      */
-    public function __construct($transport, $action, $targetNamespace= NULL) {
-      $this->transport= $transport;
+    public function __construct($url, $action) {
+      $this->transport= new SOAPHTTPTransport($url);
       $this->action= $action;
-      $this->targetNamespace= $targetNamespace;
-      $this->mapping= new SOAPMapping();
+      $this->targetNamespace= NULL;
+      $this->mapping= new XPSoapMapping();
     }
 
     /**
@@ -79,6 +79,26 @@
     public function setTrace($cat) {
       $this->transport->setTrace($cat);
     }
+
+    /**
+     * Dummy function to set WSDL-mode, which is not supported
+     * by the XPSoap-client.
+     *
+     * @throws lang.MethodNotImplementedException  
+     */
+    public function setWsdl() {
+      throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
+    }
+    
+    /**
+     * Dummy function to set the soap version, which is not supported
+     * by the XPSoap-client.
+     *
+     * @throws lang.MethodNotImplementedException  
+     */
+    public function setSoapVersion() {
+      throw new MethodNotImplementedException('XPSoapClient cannot change the soap version');
+    }    
     
     /**
      * Register mapping for a qname to a class object
@@ -86,15 +106,15 @@
      * @param   xml.QName qname
      * @param   lang.XPClass class
      */
-    public function registerMapping($qname, $class) {
+    public function registerMapping(QName $qname, XPClass $class) {
       $this->mapping->registerMapping($qname, $class);
     }
     
     /**
      * Add a header
      *
-     * @param   webservices.soap.SOAPHeader header
-     * @return  webservices.soap.SOAPHeader the header added
+     * @param   webservices.soap.xp.XPSoapHeader header
+     * @return  webservices.soap.xp.XPSoapHeader the header added
      */
     public function addHeader($header) {
       $this->headers[]= $header;
@@ -111,13 +131,13 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
-      if (!is('SOAPTransport', $this->transport)) throw new IllegalArgumentException(
+      if (!$this->transport instanceof SOAPTransport) throw new IllegalArgumentException(
         'Transport must be a webservices.soap.transport.SOAPTransport'
       );
       
       $args= func_get_args();
       
-      $message= new SOAPMessage();
+      $message= new XPSoapMessage();
       $message->setEncoding($this->encoding);
       $message->createCall($this->action, array_shift($args), $this->targetNamespace, $this->headers);
       $message->setMapping($this->mapping);

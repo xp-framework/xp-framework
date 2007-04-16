@@ -6,7 +6,7 @@
  
   uses(
     'scriptlet.rpc.AbstractRpcRequest',
-    'webservices.soap.SOAPMessage'
+    'webservices.soap.xp.XPSoapMessage'
   );
   
   /**
@@ -20,10 +20,10 @@
     /**
      * Retrieve SOAP message from request
      *
-     * @return  &webservices.soap.SOAPMessage message object
+     * @return  webservices.soap.xp.XPSoapMessage message object
      */
     public function getMessage() {
-      $m= SOAPMessage::fromString($this->getData());
+      $m= XPSoapMessage::fromString($this->getData());
       list(
         $class, 
         $method

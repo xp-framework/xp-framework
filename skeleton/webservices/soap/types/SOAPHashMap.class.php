@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.soap.SOAPNode', 'webservices.soap.types.SoapType');
+  uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.types.SoapType');
   
   /**
    * Hashmap type as serialized and recogned by Apache SOAP.
@@ -20,12 +20,12 @@
      * @param   array params
      */
     public function __construct($params) {
-      $this->item= new SOAPNode('hash', NULL, array(
+      $this->item= new XPSoapNode('hash', NULL, array(
         'xmlns:hash'  => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'hash:Map'
       ));
       foreach ($params as $key => $value) {
-        $this->item->addChild(SOAPNode::fromArray(array(
+        $this->item->addChild(XPSoapNode::fromArray(array(
           'key'   => $key,
           'value' => $value
         ), 'item'));

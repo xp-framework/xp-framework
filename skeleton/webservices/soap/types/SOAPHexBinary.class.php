@@ -9,7 +9,7 @@
   /**
    * SOAP Hex binary
    *
-   * @see      xp://webservices.soap.SOAPNode
+   * @see      xp://webservices.soap.xp.XPSoapNode
    * @purpose  Transport hex encoded data
    */
   class SOAPHexBinary extends SoapType {

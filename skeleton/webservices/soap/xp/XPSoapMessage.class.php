@@ -7,11 +7,11 @@
   uses(
     'xml.Tree',
     'xml.Node',
-    'webservices.soap.SOAPNode',
-    'webservices.soap.SOAPHeaderElement',
-    'webservices.soap.SOAPFault',
-    'webservices.soap.SOAPMapping',
     'lang.Collection',
+    'webservices.soap.SOAPFault',
+    'webservices.soap.xp.XPSoapNode',
+    'webservices.soap.xp.XPSoapHeaderElement',
+    'webservices.soap.xp.XPSoapMapping',
     'scriptlet.rpc.AbstractRpcMessage'
   );
   
@@ -48,13 +48,13 @@
    * @test     xp://net.xp_framework.unittest.soap.SoapTest
    * @purpose  Represent SOAP Message
    */
-  class SOAPMessage extends Tree implements AbstractRpcMessage {
+  class XPSoapMessage extends Tree implements AbstractRpcMessage {
     public 
       $body         = NULL,
       $namespace    = 'ctl',
       $encoding     = 'iso-8859-1',
       $mapping      = NULL,
-      $nodeType     = 'SOAPNode',
+      $nodeType     = 'XPSoapNode',
       $action       = '',
       $class        = '',
       $method       = '';
@@ -74,7 +74,7 @@
      * @param   string action
      * @param   string method
      * @param   string targetNamespace default NULL
-     * @param   webservices.soap.SOAPHeader[] headers default array()
+     * @param   webservices.soap.xp.XPSoapHeader[] headers default array()
      */
     public function createCall($action, $method, $targetNamespace= NULL, $headers= array()) {
       $this->action= $action;
@@ -104,7 +104,7 @@
     /**
      * Create a message
      *
-     * @param   webservices.soap.SOAPMessage msg
+     * @param   webservices.soap.xp.XPSoapMessage msg
      */
     public function create($msg= NULL) {
       if ($msg) {
@@ -133,13 +133,13 @@
       
       $this->body= $this->root->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
-      $this->mapping= new SOAPMapping();
+      $this->mapping= new XPSoapMapping();
     }
 
     /**
      * Set Mapping
      *
-     * @param   &webservices.soap.SOAPMapping mapping
+     * @param   &webservices.soap.xp.XPSoapMapping mapping
      */
     public function setMapping($mapping) {
       $this->mapping= $mapping;
@@ -151,7 +151,7 @@
      * @param   array arr
      */
     public function setData($arr) {
-      $node= SOAPNode::fromArray($arr, 'item', $this->mapping);
+      $node= XPSoapNode::fromArray($arr, 'item', $this->mapping);
       $node->namespace= $this->namespace;
       if (empty($node->children)) return;
       
@@ -171,10 +171,10 @@
     /**
      * Deserialize a single node
      *
-     * @param   &xml.Node child
+     * @param   xml.Node child
      * @param   string context default NULL
-     * @param   &webservices.soap.SOAPMapping mapping
-     * @return  &mixed result
+     * @param   webservices.soap.xp.XPSoapMapping mapping
+     * @return  mixed result
      */
     public function unmarshall($child, $context= NULL) {
       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
@@ -245,8 +245,7 @@
             // <item SOAP-ENC:arrayType="xsd:int[4]"/>
             if ('xp' == $ns) {
               try {
-                $c= XPClass::forName($childType);
-                $c && $result= Collection::forClass($c->getName());
+                $result= Collection::forClass(XPClass::forName($childType)->getName());
               } catch (ClassNotFoundException $e) {
                 $result= Collection::forClass('lang.Object');
                 $result->__qname= $childType;
@@ -346,11 +345,11 @@
     /**
      * Recursively unmarshall data
      *
-     * @param   &xml.Node node
+     * @param   xml.Node node
      * @param   bool names default FALSE
      * @param   string context default NULL
      * @param   array mapping
-     * @return  &mixed data
+     * @return  mixed data
      */    
     protected function _recurseData($node, $names= FALSE, $context= NULL) {
       if (empty($node->children)) {
@@ -382,7 +381,7 @@
      * @param   mixed detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= SOAPNode::fromObject(new SOAPFault(
+      $this->root->children[0]->children[0]= XPSoapNode::fromObject(new SOAPFault(
         $faultcode,
         $faultstring,
         $faultactor,
@@ -395,28 +394,28 @@
      * Construct a SOAP message from a string
      *
      * <code>
-     *   $msg= &SOAPMessage::fromString('<SOAP-ENV:Envelope>...</SOAP-ENV:Envelope>');
+     *   $msg= SOAPMessage::fromString('<SOAP-ENV:Envelope>...</SOAP-ENV:Envelope>');
      * </code>
      *
      * @param   string string
-     * @return  &xml.Tree
+     * @return  xml.Tree
      */
     public static function fromString($string) {
-      return parent::fromString($string, 'SOAPMessage');
+      return parent::fromString($string, 'XPSoapMessage');
     }
 
     /**
      * Construct a SOAP message from a file
      *
      * <code>
-     *   $msg= &SOAPMessage::fromFile(new File('foo.soap.xml');
+     *   $msg= SOAPMessage::fromFile(new File('foo.soap.xml');
      * </code>
      *
-     * @param   &io.File file
-     * @return  &xml.Tree
+     * @param   io.File file
+     * @return  xml.Tree
      */ 
     public static function fromFile($file) {
-      return parent::fromFile($file, 'SOAPMessage');
+      return parent::fromFile($file, 'XPSoapMessage');
     }
     
     /**
@@ -438,7 +437,7 @@
      * Retrieve header element or return FALSE if no header
      * exists.
      *
-     * @return  &xml.SOAPNode
+     * @return  xml.SOAPNode
      */
     protected function _headerElement() {
       
@@ -457,7 +456,7 @@
     /**
      * Retrieve body element
      *
-     * @return  &xml.SOAPNode
+     * @return  xml.SOAPNode
      * @throws  lang.FormatException in case the body element could not be found
      */    
     public function _bodyElement() {
@@ -475,7 +474,7 @@
         )) return $this->root->children[$i];
       }
 
-      throw(new FormatException('Could not locate Body element'));
+      throw new FormatException('Could not locate Body element');
     }
 
     /**
@@ -505,8 +504,8 @@
      * Get data
      *
      * @param   string context default 'ENUM'
-     * @param   &webservices.soap.SOAPMapping mapping
-     * @return  &mixed data
+     * @param   webservices.soap.xp.XPSoapMapping mapping
+     * @return  mixed data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
     public function getData($context= 'ENUM') {
@@ -531,7 +530,7 @@
     /**
      * Get headers from envelope.
      *
-     * @return  webservices.soap.SOAPHeaderElement[]
+     * @return  webservices.soap.xp.XPSoapHeaderElement[]
      */
     public function getHeaders() {
       if (!($h= $this->_headerElement())) return NULL;
@@ -539,7 +538,7 @@
       // Go through all children
       $headers= array();
       foreach (array_keys($h->children) as $idx) {
-        $headers[]= SOAPHeaderElement::fromNode(
+        $headers[]= XPSoapHeaderElement::fromNode(
           $h->children[$idx], 
           $this->namespaces,
           $this->encoding

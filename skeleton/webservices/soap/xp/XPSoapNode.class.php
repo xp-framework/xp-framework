@@ -17,14 +17,14 @@
    *
    * @see   xp://xml.Node
    */
-  class SOAPNode extends Node {
+  class XPSoapNode extends Node {
     public 
       $namespace= 'ctl';
     
     /**
      * Get type name by content
      *
-     * @param   &mixed content
+     * @param   mixed content
      * @return  string typename, e.g. "xsd:string"
      */
     protected function _typeName($content) {
@@ -41,8 +41,8 @@
     /**
      * Format content
      *
-     * @param   &mixed content
-     * @return  &mixed content, formatted, if necessary
+     * @param   mixed content
+     * @return  mixed content, formatted, if necessary
      */
     protected function _contentFormat($content) {
       if (is_bool($content)) {
@@ -55,8 +55,8 @@
      * Get content in iso-8859-1 encoding (the default).
      *
      * @param   string encoding
-     * @param   &mixed namespaces
-     * @return  &mixed data
+     * @param   mixed namespaces
+     * @return  mixed data
      */
     public function getContent($encoding, $namespaces) {
       $ret= $this->content;
@@ -114,9 +114,9 @@
     /**
      * Marshaller
      *
-     * @param   &webservices.soap.SOAPNode child
+     * @param   webservices.soap.xp.XPSoapNode child
      * @param   mixed value
-     * @param   &webservices.soap.SOAPMapping mapping
+     * @param   webservices.soap.xp.XPSoapMapping mapping
      */
     protected function _marshall($child, $value, $mapping) {
       static $ns= 0;
@@ -213,9 +213,9 @@
     /**
      * Recurse an array
      *
-     * @param   &xml.Node e element to add array to
+     * @param   xml.Node e element to add array to
      * @param   array a
-     * @param   &webservices.soap.SOAPMapping mapping
+     * @param   webservices.soap.xp.XPSoapMapping mapping
      */
     protected function _recurse($e, $a, $mapping) {
       foreach (array_keys($a) as $field) {
@@ -233,13 +233,13 @@
      *
      * Usage example:
      * <code>
-     *   $n= &Node::fromArray($array, 'elements');
+     *   $n= Node::fromArray($array, 'elements');
      * </code>
      *
      * @param   array arr
      * @param   string name default 'array'
-     * @param   &webservices.soap.SOAPMapping mapping
-     * @return  &xml.Node
+     * @param   webservices.soap.xp.XPSoapMapping mapping
+     * @return  xml.Node
      */
     public static function fromArray($arr, $name= 'array', $mapping) {
       $n= new self($name);
@@ -253,13 +253,13 @@
      *
      * Usage example:
      * <code>
-     *   $n= &Node::fromObject($object);
+     *   $n= Node::fromObject($object);
      * </code>
      *
      * @param   object obj
      * @param   string name default NULL
-     * @param   &webservices.soap.SOAPMapping mapping
-     * @return  &xml.Node
+     * @param   webservices.soap.xp.XPSoapMapping mapping
+     * @return  xml.Node
      */
     public static function fromObject($obj, $name= NULL, $mapping) {
       return self::fromArray(

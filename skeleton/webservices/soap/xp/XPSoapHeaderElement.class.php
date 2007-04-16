@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.SOAPNode', 'webservices.soap.SOAPHeader');
+  uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.xp.XPSoapHeader');
 
   /**
    * Represent a SOAP header element.
@@ -13,7 +13,7 @@
    * @see       http://www.w3.org/TR/2000/NOTE-SOAP-20000508/#_Toc478383497
    * @purpose   Represent SOAP header element.
    */
-  class SOAPHeaderElement extends Object implements SOAPHeader {
+  class XPSoapHeaderElement extends Object implements XPSoapHeader {
     public
       $name=              '',
       $mustUnderstand=    FALSE,
@@ -25,12 +25,12 @@
      * Create a SOAPHeaderElement object out of the XML representation
      * it has in a SOAP message.
      *
-     * @param   &xml.Node node
-     * @param   &array ns current namespaces from SOAP message
-     * @return  &webservices.soap.SOAPHeaderElement
+     * @param   xml.Node node
+     * @param   array ns current namespaces from SOAP message
+     * @return  webservices.soap.xp.XPSoapHeaderElement
      */
     public static function fromNode($node, $ns, $encoding) {
-      $header= new SOAPHeaderElement();
+      $header= new XPSoapHeaderElement();
       $header->name= $node->getName();
       $header->mustUnderstand= (bool)$node->getAttribute($ns[XMLNS_SOAPENV].':mustUnderstand');
       $header->actor= $node->getAttribute($ns[XMLNS_SOAPENV].':actor');
@@ -44,8 +44,8 @@
      * Retrieve XML representation of this header for use in a SOAP
      * message.
      *
-     * @param   &array ns list of namespaces
-     * @return  &xml.Node
+     * @param   array ns list of namespaces
+     * @return  xml.Node
      */
     public function getNode($ns) {
       $attr= array();
@@ -53,7 +53,7 @@
       if ($this->actor) $attr[$ns[XMLNS_SOAPENV].':actor']= $this->actor;
       if ($this->encodingStyle) $attr[$ns[XMLNS_SOAPENV].':encodingStyle']= $this->encodingStyle;
       
-      return new SOAPNode($this->name, $this->value, $attr);
+      return new XPSoapNode($this->name, $this->value, $attr);
     }
 
     /**
@@ -131,7 +131,7 @@
     /**
      * Set Value
      *
-     * @param   &lang.Object value
+     * @param   lang.Object value
      */
     public function setValue($value) {
       $this->value= $value;
@@ -140,7 +140,7 @@
     /**
      * Get Value
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function getValue() {
       return $this->value;
