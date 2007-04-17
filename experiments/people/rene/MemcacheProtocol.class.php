@@ -27,8 +27,9 @@
      * @return  
      */
     public function __construct($server= '172.17.29.45', $port= 11211, $timeout= 3600) {
-      $this->_sock= new Socket($server, $port);
+      $this->_sock= new BSDSocket($server, $port);
       $this->timeout= $timeout;
+      $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
       $this->_sock->connect();
     }
     
@@ -83,12 +84,12 @@
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
-
+      var_dump($buf);
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        $answer['data']= $this->_sock->readBinary($size);
-        $size && $this->_sock->readLine();
+        $answer['data']= rtrim($this->_sock->readBinary($size+ 2));
+        $this->_sock->readLine();
       } else if ($type== 'END') {
         return NULL;
       }
