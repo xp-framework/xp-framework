@@ -4,8 +4,9 @@
  * $Id$ 
  */
   uses(
-    'peer.Socket',
-    'peer.ProtocolException');
+    'peer.BSDSocket',
+    'peer.ProtocolException'
+  );
   /**
    * (Insert class' description here)
    *
@@ -82,20 +83,18 @@
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
+
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        while (strlen($datatmp)< $size) {
-          $datatmp.= $this->_sock->read($size +1);
-        }
-        $answer['data']= $datatmp;
+        $answer['data']= $this->_sock->readBinary($size);
         $size && $this->_sock->readLine();
       } else if ($type== 'END') {
         return NULL;
       }
       return $answer;      
     }
-    
+        
     /**
      * Checks the reply of the three store commands add, set, replace
      *
@@ -113,7 +112,7 @@
         return FALSE;
       }    
     }
-    
+
     /**
      * Adds a new entry as long as no entry with the same key
      * already exists
@@ -168,7 +167,7 @@
     }
 
     /**
-     * Get an Item from the Memcache
+     * Get multiple Items from the Memcache
      *
      * @param   string key
      * @return  string
@@ -187,7 +186,7 @@
      * @param   int blockfor
      * @return  bool
      */
-    public function delete($key, $blockfor) {
+    public function delete($key, $blockfor= 600) {
       $answer= $this->_cmd('delete '.$key.' '.$blockfor);
       if ($answer == "DELETED\r\n") {
         return TRUE;
