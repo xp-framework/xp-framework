@@ -88,7 +88,7 @@
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        $answer['data']= rtrim($this->_sock->readBinary($size+ 2));
+        $answer['data']= substr($this->_sock->readBinary($size+ 2), 0, $size+1);
         $this->_sock->readLine();
       } else if ($type== 'END') {
         return NULL;
