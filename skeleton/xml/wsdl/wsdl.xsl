@@ -542,7 +542,7 @@
         <xsl:with-param name="for" select="wsdl:input/@message"/>
       </xsl:call-template>
       <xsl:text><![CDATA[) {
-      return $this->invoke(
+      return $this->client->invoke(
         ']]></xsl:text>
       <xsl:value-of select="@name"/>
       <xsl:text>',
@@ -582,10 +582,7 @@
  *
  * $Id$ 
  */
-  uses(
-    'webservices.soap.SOAPClient', 
-    'webservices.soap.transport.SOAPHTTPTransport'
-  );
+  uses('webservices.soap.SoapDriver');
   
   /**
 ]]></xsl:text>
@@ -599,7 +596,9 @@
     <xsl:call-template name="class">
       <xsl:with-param name="name" select="concat($prefix, wsdl:service/@name)"/>
     </xsl:call-template>
-    <xsl:text><![CDATA[Client extends SOAPClient {
+    <xsl:text><![CDATA[Client extends Object {
+      protected
+        $client = NULL;
     
     /**
      * Constructor
@@ -611,14 +610,11 @@
     public function __construct($endpoint= ']]></xsl:text>
     <xsl:value-of select="wsdl:service/wsdl:port/soap:address/@location"/>
     <xsl:text><![CDATA[') {
-      parent::__construct(
-        new SOAPHTTPTransport($endpoint),
-        ']]></xsl:text><xsl:value-of select="@targetNamespace"/><xsl:text>'
-      );
+      $this->client= SoapDriver::getInstance()->forEndpoint($endpoint, ']]></xsl:text><xsl:value-of select="@targetNamespace"/><xsl:text>');
 </xsl:text>
     <xsl:for-each select="$types">
       <xsl:text>
-      $this->registerMapping(
+      $this->client->registerMapping(
         new QName('</xsl:text>
       <xsl:value-of select="../@targetNamespace"/>
       <xsl:text>', '</xsl:text>
