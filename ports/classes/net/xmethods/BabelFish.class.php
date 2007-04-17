@@ -4,10 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'webservices.soap.SOAPClient',
-    'webservices.soap.transport.SOAPHTTPTransport'
-  );
+  uses('webservice.soap.SoapDriver');
   
   // Language defines
   define('BABELFISH_LANG_ENGLISH',    'en');
@@ -26,14 +23,14 @@
    * 
    * Example:
    * <code>
-   *   $bf= &new BabelFish();
-   *   try(); {
-   *     $translated= &$bf->translate(
+   *   $bf= new BabelFish();
+   *   try {
+   *     $translated= $bf->translate(
    *       'Babelfish übersetzt den Text', 
    *       BABELFISH_LANG_GERMAN,
    *       BABELFISH_LANG_ENGLISH
    *     );
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit;
    *   }
@@ -44,15 +41,17 @@
    * @see      http://xmethods.net/ve2/ViewListing.po?serviceid=14
    * @purpose  SOAP-Proxy
    */
-  class BabelFish extends SOAPClient {
-
+  class BabelFish extends Object {
+    public
+      $client = NULL;
+      
     /**
      * Constructor
      *
      */
     public function __construct() {
-      parent::__construct(
-        new SOAPHTTPTransport('http://services.xmethods.net:80/perl/soaplite.cgi'),
+      $this->client= SoapDriver::getInstance()->forEndpoint(
+        'http://services.xmethods.net:80/perl/soaplite.cgi',
         'urn:xmethodsBabelFish'
       );
     }
@@ -66,7 +65,7 @@
      * @return  &string Translated text
      */
     public function translate($sourcedata, $src_lang, $target_lang) {
-      $translated= $this->invoke(
+      $translated= $this->client->invoke(
         'BabelFish',
         new Parameter('translationmode', sprintf('%s_%s', $src_lang, $target_lang)),
         new Parameter('sourcedata', $sourcedata)

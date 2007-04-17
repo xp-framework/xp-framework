@@ -3,10 +3,7 @@
  *
  * $Id$ 
  */
-  uses(
-    'webservices.soap.SOAPClient',
-    'webservices.soap.transport.SOAPHTTPTransport'
-  );
+  uses('webservices.soap.SoapDriver');
   
   /**
    * WSDL description of the Google Web APIs.
@@ -19,9 +16,9 @@
    * <code>
    *   uses('com.google.soap.search.GoogleSearchClient');
    *
-   *   $g= &new GoogleSearchClient();
-   *   try(); {
-   *     $r= &$g->doGoogleSearch(
+   *   $g= new GoogleSearchClient();
+   *   try {
+   *     $r= $g->doGoogleSearch(
    *       $license_key,
    *       $query,
    *       0,               // start
@@ -33,7 +30,7 @@
    *       '',              // ie
    *       ''               // oe
    *     );
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException' $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -48,28 +45,27 @@
    * @see      http://www.google.com/apis/reference.html API reference
    * @purpose  Google SOAP service wrapper class
    */  
-  class GoogleSearchClient extends SOAPClient {
-    
+  class GoogleSearchClient extends Object {
+    public
+      $client = NULL;
+      
     /**
      * Constructor
      *
      * @param   string endpoint default 'http://api.google.com/search/beta2'
      */
     public function __construct($endpoint= 'http://api.google.com/search/beta2') {
-      parent::__construct(
-        new SOAPHTTPTransport($endpoint),
-        'urn:GoogleSearch'
-      );
+      $this->client= SoapDriver::getInstance()->forEndpoint($endpoint, 'urn:GoogleSearch');
 
-      $this->registerMapping(
+      $this->client->registerMapping(
         new QName('urn:GoogleSearch', 'GoogleSearchResult'), 
         XPClass::forName('com.google.soap.search.GoogleSearchResult')
       );
-      $this->registerMapping(
+      $this->client->registerMapping(
         new QName('urn:GoogleSearch', 'ResultElement'), 
         XPClass::forName('com.google.soap.search.ResultElement')
       );
-      $this->registerMapping(
+      $this->client->registerMapping(
         new QName('urn:GoogleSearch', 'DirectoryCategory'), 
         XPClass::forName('com.google.soap.search.DirectoryCategory')
       );
@@ -86,7 +82,7 @@
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
     public function doGetCachedPage($key, $url) {
-      return $this->invoke(
+      return $this->client->invoke(
         'doGetCachedPage',
         new Parameter('key', $key),
         new Parameter('url', $url)
@@ -104,7 +100,7 @@
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      */
     public function doSpellingSuggestion($key, $phrase) {
-      return $this->invoke(
+      return $this->client->invoke(
         'doSpellingSuggestion',
         new Parameter('key', $key),
         new Parameter('phrase', $phrase)
@@ -124,14 +120,14 @@
      * @param   string lr
      * @param   string ie
      * @param   string oe
-     * @return  &com.google.soap.search.GoogleSearchResult
+     * @return  com.google.soap.search.GoogleSearchResult
      * @throws  webservices.soap.SOAPFaultException in case a fault occurs
      * @throws  io.IOException in case an I/O error occurs
      * @throws  xml.XMLFormatException in case not-well-formed XML is returned
      * @see     http://www.google.com/apis/reference.html#searchrequest Search Parameters 
      */
     public function doGoogleSearch($key, $q, $start, $maxResults, $filter, $restrict, $safeSearch, $lr, $ie, $oe) {
-      return $this->invoke(
+      return $this->client->invoke(
         'doGoogleSearch',
         new Parameter('key', $key),
         new Parameter('q', $q),

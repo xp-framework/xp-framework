@@ -4,10 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'webservices.soap.SOAPClient',
-    'webservices.soap.transport.SOAPHTTPTransport'
-  );
+  uses('webservices.soap.SoapDriver');
   
   /**
    * GlobalWeather is a new and improved version of our popular AirportWeather 
@@ -19,10 +16,10 @@
    *
    * Example:
    * <code>
-   *   $w= &new GlobalWeather();
-   *   try(); {
-   *     $report= &$w->getWeatherReport('FRA');
-   *   } if (catch('Exception', $e)) {
+   *   $w= new GlobalWeather();
+   *   try {
+   *     $report= $w->getWeatherReport('FRA');
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit;
    *   }
@@ -35,15 +32,17 @@
    * @see      http://www.capescience.com/webservices/globalweather/
    * @see      http://www.w3.org/2000/06/webdata/xslt?xslfile=http://www.capescience.com/simplifiedwsdl.xslt&xmlfile=http://live.capescience.com/wsdl/GlobalWeather.wsdl&transform=Submit
    */
-  class GlobalWeather extends SOAPClient {
-  
+  class GlobalWeather extends Object {
+    public
+      $client = NULL;
+      
     /**
      * Constructor
      *
      */
     public function __construct() {
-      parent::__construct(
-        new SOAPHTTPTransport('http://live.capescience.com/ccx/GlobalWeather'),
+      $this->client= SoapDriver::getInstance()->forEndpoint(
+        'http://live.capescience.com/ccx/GlobalWeather',
         'capeconnect:GlobalWeather:GlobalWeather'
       );
     }
@@ -57,7 +56,7 @@
      * @return  &lang.Object report                                                        
      */
     public function getWeatherReport($code) {
-      return $this->invoke('getWeatherReport', new Parameter('code', $code));
+      return $this->client->invoke('getWeatherReport', new Parameter('code', $code));
     }
   }
 ?>

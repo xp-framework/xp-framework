@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.SOAPClient', 'webservices.soap.transport.SOAPHTTPTransport');
+  uses('webservices.soap.SoapDriver');
 
   /**
    * Standard Round2 Base test client
@@ -12,9 +12,20 @@
    * @see      http://interop.xp-framework.net/
    * @purpose  Perform Round2 base tests
    */
-  class Round2BaseClient extends SOAPClient {
+  class Round2BaseClient extends Object {
     public
-      $_iotrace=  NULL;
+      $client   = NULL,
+      $_iotrace = NULL;
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function __construct($endpoint, $uri) {
+      $this->client= SoapDriver::getInstance()->forEndpoint($endpoint, $uri);
+    }
 
     /**
      * Sets the trace category for input/output trace.
@@ -22,7 +33,7 @@
      * a function has been called and what the deserialized
      * result was.
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setInputOutputTrace($cat) {
       $this->_iotrace= $cat;
@@ -38,13 +49,9 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function identity($method, $argument) {
-      try {
-        $result= $this->invoke($method, $argument);
-      } catch (SOAPFaultException $e) {
-        throw($e);
-      }
+      $result= $this->client->invoke($method, $argument);
       
-      if (is('webservices.soap.Parameter', $argument)) 
+      if ($argument instanceof Parameter)
         $cmp= $argument->value;
       else 
         $cmp= $argument;
@@ -54,7 +61,7 @@
         $this->_iotrace->info('Method', $method, 'returned', xp::typeOf($result), $result, var_export($result, 1));
       }
       
-      if (is('lang.Generic', $cmp) && is('lang.Generic', $result)) {
+      if ($cmp instanceof Generic) {
         return $cmp->equals($result);
       }
       
