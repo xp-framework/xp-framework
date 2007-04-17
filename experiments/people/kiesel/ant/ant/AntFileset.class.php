@@ -129,7 +129,7 @@
     public function iteratorFor(AntEnvironment $env) {
       return new FilteredIOCollectionIterator(
         new FileCollection($this->getDir($env)),
-        $this->patternset->createFilter($env),
+        $this->patternset->createFilter($env, $this->getDir($env)),
         TRUE
       );
     }

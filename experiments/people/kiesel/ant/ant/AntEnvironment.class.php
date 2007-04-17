@@ -17,11 +17,28 @@
       $err  = NULL;
       
     protected
-      $hashmap  = array();
+      $hashmap          = array(),
+      $defaultExcludes  = array();
 
     public function __construct($out, $err) {
       $this->out= $out;
       $this->err= $err;
+      $this->defaultExcludes= array(
+        '**/*~',
+        '**/#*#',
+        '**/.#*',
+        '**/%*%',
+        '**/._*',
+        '**/CVS',
+        '**/CVS/**',
+        '**/.cvsignore',
+        '**/SCCS',
+        '**/SCCS/**',
+        '**/vssver.scc',
+        '**/.svn',
+        '**/.svn/**',
+        '**/.DS_Store'
+      );
     }
     
     /**
@@ -80,5 +97,19 @@
       if ('/' == DIRECTORY_SEPARATOR) return $uri;
       return strtr($uri, '/', DIRECTORY_SEPARATOR);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function getDefaultExcludes() {
+      $patterns= array();
+      foreach ($this->defaultExcludes as $e) {
+        $patterns[]= new AntPattern($e);
+      }
+      return $patterns;
+    }    
   }
 ?>

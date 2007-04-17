@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.collections.iterate.RegexFilter');
+  uses('ant.TopURIMatchesFilter');
 
   /**
    * (Insert class' description here)
@@ -87,18 +87,24 @@
      * @param   
      * @return  
      */
-    public function toFilter() {
-      // Transform name element to regex filter
-      $regex= $this->name;
-      $regex= preg_replace('#\*\*#', '.+', $regex);
-      $regex= preg_replace('#([^*])\*#', '$1[^'.preg_quote(DIRECTORY_SEPARATOR).']+', $regex);
+    public function toFilter($base) {
 
+      // Transform name element to regex filter
       if ('/' != DIRECTORY_SEPARATOR) {
-        $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $regex);
+        $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $this->name);
       }
-      var_dump($this->name, $regex);
+
+      // Transform single * to [^/]* (may match anything but another directory)
+      $regex= preg_replace('#([^*])\*#', '$1[^'.preg_quote(DIRECTORY_SEPARATOR).']*', $regex);
       
-      return new RegexFilter($regex);
+      
+      // Transform ** to .* (may match anything, any directory depth)
+      $regex= str_replace('**', '.*', $regex);
+
+      // Add delimiter and escape delimiter if already contained
+      $regex= '#^'.str_replace('#', '\#', $regex).'$#';
+      
+      return new TopURIMatchesFilter($regex, $base);
     }
   }
 ?>

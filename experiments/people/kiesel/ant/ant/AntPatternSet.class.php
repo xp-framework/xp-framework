@@ -88,18 +88,24 @@
      * @param   
      * @return  
      */
-    public function createFilter(AntEnvironment $env) {
+    public function createFilter(AntEnvironment $env, $basedir) {
       
       $inc= $exc= array();
       foreach ($this->includes as $include) {
         if ($include->applies($env)) {
-          $inc[]= $include->toFilter();
+          $inc[]= $include->toFilter($basedir);
         }
       }
       
       foreach ($this->excludes as $exclude) {
         if ($exclude->applies($env)) {
-          $exc[]= $exclude->toFilter();
+          $exc[]= $exclude->toFilter($basedir);
+        }
+      }
+      
+      foreach ($env->getDefaultExcludes() as $exclude) {
+        if ($exclude->applies($env)) {
+          $exc[]= $exclude->toFilter($basedir);
         }
       }
       
