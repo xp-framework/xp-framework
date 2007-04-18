@@ -67,16 +67,18 @@
      * @param   lang.Generic value
      * @return  lang.Generic the previous value associated with the key
      */
-    public function put(Generic $key, Generic $value) {
-      $h= $key->hashCode();
+    public function put($key, $value) {
+      $k= Type::boxed($key);
+      $v= Type::boxed($value);
+      $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
         $previous= $this->_buckets[$h][1];
       }
 
-      $this->_buckets[$h]= array($key, $value);
-      $this->_hash+= HashProvider::hashOf($h.$value->hashCode());
+      $this->_buckets[$h]= array($k, $v);
+      $this->_hash+= HashProvider::hashOf($h.$v->hashCode());
       return $previous;
     }
 
@@ -87,8 +89,8 @@
      * @param   lang.Generic key
      * @return  lang.Generic the value associated with the key
      */
-    public function get(Generic $key) {
-      $h= $key->hashCode();
+    public function get($key) {
+      $h= Type::boxed($key)->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
@@ -102,8 +104,8 @@
      * @param   lang.Generic key
      * @return  lang.Generic the previous value associated with the key
      */
-    public function remove(Generic $key) {
-      $h= $key->hashCode();
+    public function remove($key) {
+      $h= Type::boxed($key)->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
@@ -146,8 +148,8 @@
      * @param   lang.Generic key
      * @return  bool
      */
-    public function containsKey(Generic $key) {
-      return isset($this->_buckets[$key->hashCode()]);
+    public function containsKey($key) {
+      return isset($this->_buckets[Type::boxed($key)->hashCode()]);
     }
 
     /**
@@ -156,9 +158,10 @@
      * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue(Generic $value) {
+    public function containsValue($value) {
+      $v= Type::boxed($value);
       foreach (array_keys($this->_buckets) as $key) {
-        if ($this->_buckets[$key][1]->equals($value)) return TRUE;
+        if ($this->_buckets[$key][1]->equals($v)) return TRUE;
       }
       return FALSE;
     }

@@ -34,6 +34,15 @@
       }
       return $self;
     }
+
+    /**
+     * Returns a hashcode for this number
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->length.'['.serialize($this->values);
+    }
     
     /**
      * Constructor

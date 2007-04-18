@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Map.class.php 8971 2006-12-27 15:27:10Z friebe $ 
+ * $Id$ 
  */
 
   uses('util.collections.HashProvider');
@@ -26,7 +26,7 @@
      * @param   lang.Generic value
      * @return  lang.Generic the previous value associated with the key
      */
-    public function put(Generic $key, Generic $value);
+    public function put($key, $value);
 
     /**
      * Returns the value to which this map maps the specified key. 
@@ -35,7 +35,7 @@
      * @param   lang.Generic key
      * @return  lang.Generic the value associated with the key
      */
-    public function get(Generic $key);
+    public function get($key);
     
     /**
      * Removes the mapping for this key from this map if it is present.
@@ -45,7 +45,7 @@
      * @param   lang.Generic key
      * @return  lang.Generic the previous value associated with the key
      */
-    public function remove(Generic $key);
+    public function remove($key);
     
     /**
      * Removes all mappings from this map.
@@ -71,7 +71,7 @@
      * @param   lang.Generic key
      * @return  bool
      */
-    public function containsKey(Generic $key);
+    public function containsKey($key);
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
@@ -79,7 +79,7 @@
      * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue(Generic $value);
+    public function containsValue($value);
 
     /**
      * Returns a hashcode for this map

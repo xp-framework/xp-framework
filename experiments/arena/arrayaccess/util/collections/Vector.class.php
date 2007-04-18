@@ -123,8 +123,8 @@
      * @return  lang.Generic the added element
      * @throws  lang.IllegalArgumentException
      */
-    public function add(Generic $element) {
-      $this->elements[]= $element;
+    public function add($element) {
+      $this->elements[]= Type::boxed($element);
       $this->size++;
       return $element;
     }
@@ -138,13 +138,13 @@
      * @return  lang.Generic the element previously at the specified position.
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function set($index, Generic $element) {
+    public function set($index, $element) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
       }
 
       $orig= $this->elements[$index];
-      $this->elements[$index]= $element;
+      $this->elements[$index]= Type::boxed($element);
       return $orig;
     }
         
@@ -207,9 +207,10 @@
      * @param   lang.Generic element
      * @return  bool
      */
-    public function contains(Generic $element) {
+    public function contains($element) {
+      $e= Type::boxed($element);
       for ($i= 0; $i < $this->size; $i++) {
-        if ($this->elements[$i]->equals($element)) return TRUE;
+        if ($this->elements[$i]->equals($e)) return TRUE;
       }
       return FALSE;
     }
@@ -220,9 +221,10 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf(Generic $element) {
+    public function indexOf($element) {
+      $e= Type::boxed($element);
       for ($i= 0; $i < $this->size; $i++) {
-        if ($this->elements[$i]->equals($element)) return $i;
+        if ($this->elements[$i]->equals($e)) return $i;
       }
       return FALSE;
     }
@@ -233,9 +235,10 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function lastIndexOf(Generic $element) {
+    public function lastIndexOf($element) {
+      $e= Type::boxed($element);
       for ($i= $this->size- 1; $i > -1; $i--) {
-        if ($this->elements[$i]->equals($element)) return $i;
+        if ($this->elements[$i]->equals($e)) return $i;
       }
       return FALSE;
     }
