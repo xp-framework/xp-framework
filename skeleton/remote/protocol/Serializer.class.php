@@ -74,37 +74,49 @@
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
     public function representationOf($var, $ctx= array()) {
-      switch (gettype($var)) {
-        case 'NULL':    return 'N;';
-        case 'boolean': return 'b:'.($var ? 1 : 0).';';
-        case 'integer': return 'i:'.$var.';';
-        case 'double':  return 'd:'.$var.';';
-        case 'string':  return 's:'.strlen($var).':"'.$var.'";';
+      switch ($type= xp::typeOf($var)) {
+        case '<null>': case 'NULL': 
+          return 'N;';
+
+        case 'boolean': 
+          return 'b:'.($var ? 1 : 0).';';
+
+        case 'integer': 
+          return 'i:'.$var.';';
+
+        case 'double': 
+          return 'd:'.$var.';';
+
+        case 'string': 
+          return 's:'.strlen($var).':"'.$var.'";';
+
         case 'array':
           $s= 'a:'.sizeof($var).':{';
           foreach (array_keys($var) as $key) {
             $s.= serialize($key).$this->representationOf($var[$key], $ctx);
           }
           return $s.'}';
-        case 'object': {
+
+        case 'resource': 
+          return ''; // Ignore (resources can't be serialized)
+
+        case $var instanceof Generic: {
           if (FALSE !== ($m= $this->mappingFor($var))) {
             return $m->representationOf($this, $var, $ctx);
           }
           
           // Default object serializing
-          $name= xp::typeOf($var);
           $props= get_object_vars($var);
           unset($props['__id']);
-          $s= 'O:'.strlen($name).':"'.$name.'":'.sizeof($props).':{';
+          $s= 'O:'.strlen($type).':"'.$type.'":'.sizeof($props).':{';
           foreach (array_keys($props) as $name) {
             $s.= serialize($name).$this->representationOf($var->{$name}, $ctx);
           }
           return $s.'}';
         }
-        case 'resource': return ''; // Ignore (resources can't be serialized)
-        default: throw(new FormatException(
-          'Cannot serialize unknown type '.xp::typeOf($var)
-        ));
+
+        default: 
+          throw new FormatException('Cannot serialize unknown type '.$type);
       }
     }
     
@@ -115,7 +127,7 @@
      * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
     public function mappingFor($var) {
-      if (!is('lang.Generic', $var)) return FALSE;
+      if (!($var instanceof Generic)) return FALSE;  // Safeguard
       
       // Check the mapping-cache for an entry for this object's class
       if (isset($this->_classMapping[$var->getClassName()])) {
