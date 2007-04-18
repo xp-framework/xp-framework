@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('ant.task.AntTask');
+
   /**
    * (Insert class' description here)
    *
@@ -11,7 +13,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AntProperty extends Object {
+  class AntProperty extends AntTask {
     public
       $name     = '',
       $value    = '';
@@ -44,9 +46,9 @@
      * @param   
      * @return  
      */
-    public function register(AntEnvironment $env) {
-      $env->put($this->name, $this->value);
-    }    
+    protected function execute(AntEnvironment $env) {
+      $env->put($this->name, $env->substitute($this->value));
+    }
     
     /**
      * (Insert method's description here)

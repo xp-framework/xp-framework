@@ -131,7 +131,7 @@
       
       // Setup environment
       $this->environment= new AntEnvironment($out, $err);
-      foreach ($this->properties as $p) { $p->register($this->environment); }      
+      foreach ($this->properties as $p) { $p->run($this->environment); }      
       
       $this->runTarget($target);
     }

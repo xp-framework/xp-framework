@@ -6,6 +6,7 @@
 
   uses(
     'ant.AntPatternSet',
+    'ant.AntFileIterator',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator'
   );
@@ -52,7 +53,7 @@
      */
     #[@xmlmapping(element= '@dir')]
     public function setDir($dir) {
-      $this->dir= realpath($dir);
+      $this->dir= $dir;
     }
 
     /**
@@ -73,7 +74,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'include', class= 'ant.AntPattern')]
-    public function addIncludeRule($include) {
+    public function addIncludePattern($include) {
       $this->patternset->addIncludePattern($include);
     }
     
@@ -84,7 +85,7 @@
      * @return  
      */
     #[@xmlmapping(element= '@includes')]
-    public function addSimpleIncludeRule($includes) {
+    public function addIncludePatternString($includes) {
       $this->patternset->addIncludePattern($includes);
     }
     
@@ -95,7 +96,7 @@
      * @return  
      */
     #[@xmlmapping(element= 'exclude', class= 'ant.AntPattern')]
-    public function addExcludeRule($exclude) {
+    public function addExcludePattern($exclude) {
       $this->patternset->addExcludePattern($exclude);
     }
     
@@ -106,7 +107,7 @@
      * @return  
      */
     #[@xmlmapping(element= '@excludes')]
-    public function addSimpleExcludeRule($excludes) {
+    public function addExcludePatternString($excludes) {
       $this->patternset->addExcludePattern($excludes);
     }
 
@@ -138,11 +139,15 @@
      * @return  
      */
     public function iteratorFor(AntEnvironment $env) {
-      if (NULL == $this->dir) throw new IllegalStateException('No dir given in fileset');
-      return new FilteredIOCollectionIterator(
-        new FileCollection($this->getDir($env)),
-        $this->patternset->createFilter($env, $this->getDir($env)),
-        TRUE
+      if (!($dir= $this->getDir($env))) throw new IllegalStateException('No directory given for fileset');
+      $realdir= realpath($dir);
+      if (!$realdir) throw new IllegalStateException('Direcotry "'.$dir.'" does not exist.');
+      
+      return new AntFileIterator(
+        new FileCollection($realdir),
+        $this->patternset->createFilter($env, $realdir),
+        TRUE,
+        $realdir
       );
     }
   }
