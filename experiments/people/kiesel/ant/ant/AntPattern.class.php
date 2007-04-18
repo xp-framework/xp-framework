@@ -18,6 +18,9 @@
       $name   = NULL,
       $if     = NULL,
       $unless = NULL;
+    
+    protected
+      $directorySeparator=  DIRECTORY_SEPARATOR;
       
     /**
      * (Insert method's description here)
@@ -25,8 +28,19 @@
      * @param   
      * @return  
      */
-    public function __construct($name= NULL) {
+    public function __construct($name= NULL, $ds= DIRECTORY_SEPARATOR) {
       $this->name= $name;
+      $this->directorySeparator= $ds;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function setDirectorySeparator($ds) {
+      $this->directorySeparator= $ds;
     }    
     
     /**
@@ -87,15 +101,20 @@
      * @param   
      * @return  
      */
-    public function toFilter($base) {
+    public function nameToRegex() {
+      
+      // From the ant manual:
+      // if a pattern ends with / or \, then ** is appended. 
+      // For example, mypackage/test/ is interpreted as if it 
+      // were mypackage/test/**.
+      $regex= preg_replace('#([/\\\\])$#', '$1**', $this->name);
       
       // Transform name element to regex filter
-      $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $this->name);
+      $regex= str_replace('/', preg_quote($this->directorySeparator), $regex);
       $regex= str_replace('.', '\\.', $regex);
 
       // Transform single * to [^/]* (may match anything but another directory)
-      $regex= preg_replace('#([^*])\\*#', '$1[^'.preg_quote(preg_quote(DIRECTORY_SEPARATOR)).']*', $regex);
-      
+      $regex= preg_replace('#([^*])\\*([^*]|$)#', '$1[^'.preg_quote(preg_quote($this->directorySeparator)).']*$2', $regex);
       
       // Transform ** to .* (may match anything, any directory depth)
       $regex= str_replace('**', '.*', $regex);
@@ -103,7 +122,17 @@
       // Add delimiter and escape delimiter if already contained
       $regex= '#^'.str_replace('#', '\\#', $regex).'$#';
       
-      return new TopURIMatchesFilter($regex, $base);
+      return $regex;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function toFilter($base) {
+      return new TopURIMatchesFilter($this->nameToRegex(), $base);
     }
   }
 ?>

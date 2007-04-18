@@ -41,6 +41,7 @@
         public function next() { 
           $e= current($this->list); 
           next($this->list); 
+          if (!$e) return NULL;
           return newinstance("io.collections.IOElement", array($e), \'{
             public $name  = "";
             public function __construct($name) {
@@ -52,7 +53,7 @@
             public function lastAccessed() { return Date::now(); }
             public function lastModified() { return Date::now(); }
           }\');
-        }nn
+        }
         public function close() { return TRUE; }
         public function getURI() { return $this->name; }
         public function getSize() { return 0; }
@@ -73,7 +74,7 @@
      */
     protected function asArray($iterator) {
       while ($iterator->hasNext()) {
-        var_dump($iterator->next());
+        // var_dump($iterator->next());
       }
     }
     
@@ -94,7 +95,7 @@
      * Test
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function testStar() {
       $env= new AntEnvironment(new StringWriter(new MemoryOutputStream()), new StringWriter(new MemoryOutputStream()));
       $list= $this->asArray(new FilteredIOCollectionIterator(
@@ -107,5 +108,41 @@
       ));
       var_dump($list);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function asFilter($f) {
+      $p= new AntPattern($f);
+      $p->setDirectorySeparator('/');
+      return $p->nameToRegex();
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function toFilter() {
+      $this->assertEquals('#^.*/[^/]*~$#', $this->asFilter('**/*~'));
+      $this->assertEquals('#^.*/\\#[^/]*\\#$#', $this->asFilter('**/#*#'));
+      $this->assertEquals('#^.*/CVS$#', $this->asFilter('**/CVS'));
+      $this->assertEquals('#^.*/CVS/.*$#', $this->asFilter('**/CVS/**'));
+      $this->assertEquals('#^.*/\\.svn$#', $this->asFilter('**/.svn'));
+      $this->assertEquals('#^.*/\\.svn/.*$#', $this->asFilter('**/.svn/**'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function dirSlashTest() {
+      $this->assertEquals('#^\\.svn/.*$#', $this->asFilter('.svn/'));
+    }
+
   }
 ?>

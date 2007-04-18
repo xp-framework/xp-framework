@@ -19,9 +19,10 @@
    */
   class AntPatternSet extends Object {
     public
-      $id       = NULL,
-      $includes = array(),
-      $excludes = array();
+      $id               = NULL,
+      $includes         = array(),
+      $excludes         = array(),
+      $defaultExcludes  = TRUE;
     
     /**
      * (Insert method's description here)
@@ -44,7 +45,18 @@
     public function setRefId($refid) {
       $this->refid= $refid;
     }    
-    
+
+    /**
+     * Set DefaultExcludes
+     *
+     * @access  public
+     * @param   bool defaultExcludes
+     */
+    #[@xmlmapping(element= '@defaultexcludes')]
+    function setDefaultExcludes($defaultExcludes) {
+      $this->defaultExcludes= ('yes' == $defaultExcludes);
+    }
+
     /**
      * (Insert method's description here)
      *
@@ -103,7 +115,7 @@
         }
       }
       
-      foreach ($env->getDefaultExcludes() as $exclude) {
+      if ($this->defaultExcludes) foreach ($env->getDefaultExcludes() as $exclude) {
         if ($exclude->applies($env)) {
           $exc[]= $exclude->toFilter($basedir);
         }

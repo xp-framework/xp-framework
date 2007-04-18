@@ -32,6 +32,17 @@
     public function __construct() {
       $this->patternset= new AntPatternSet();
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@xmlmapping(element= '@defaultexcludes')]
+    public function setDefaultExcludes($d) {
+      $this->patternset->setDefaultExcludes($d);
+    }
       
     /**
      * (Insert method's description here)
