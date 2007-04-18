@@ -68,13 +68,23 @@
     }
 
     /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return is_file($this->path.DIRECTORY_SEPARATOR.$filename);
+    }
+
+    /**
      * Checks whether this loader can provide the requested package
      *
      * @param   string package
      * @return  bool
      */
     public function providesPackage($package) {
-      return is_dir($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/'));
+      return is_dir($this->path.DIRECTORY_SEPARATOR.strtr($package, '.', '/'));
     }
     
     /**
@@ -117,28 +127,24 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($filename) {
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
+      if (!is_file($this->path.DIRECTORY_SEPARATOR.$filename)) {
+        return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
-    
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      return file_get_contents($this->path.DIRECTORY_SEPARATOR.$filename);
     }
     
     /**
      * Retrieve a stream to the resource
      *
      * @param   string filename name of resource
-     * @return  &io.File
+     * @return  io.File
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($filename) {
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return new File($filename);
+      if (!is_file($this->path.DIRECTORY_SEPARATOR.$filename)) {
+        return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
-    
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      return new File($this->path.DIRECTORY_SEPARATOR.$filename);
     }
 
     /**
