@@ -123,7 +123,7 @@
      * @return  lang.Generic the added element
      * @throws  lang.IllegalArgumentException
      */
-    public function add($element) {
+    public function add(Generic $element) {
       $this->elements[]= Type::boxed($element);
       $this->size++;
       return $element;
@@ -138,7 +138,7 @@
      * @return  lang.Generic the element previously at the specified position.
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function set($index, $element) {
+    public function set($index, Generic $element) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
       }
@@ -207,10 +207,9 @@
      * @param   lang.Generic element
      * @return  bool
      */
-    public function contains($element) {
-      $e= Type::boxed($element);
+    public function contains(Generic $element) {
       for ($i= 0; $i < $this->size; $i++) {
-        if ($this->elements[$i]->equals($e)) return TRUE;
+        if ($this->elements[$i]->equals($element)) return TRUE;
       }
       return FALSE;
     }
@@ -221,10 +220,9 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf($element) {
-      $e= Type::boxed($element);
+    public function indexOf(Generic $element) {
       for ($i= 0; $i < $this->size; $i++) {
-        if ($this->elements[$i]->equals($e)) return $i;
+        if ($this->elements[$i]->equals($element)) return $i;
       }
       return FALSE;
     }
@@ -235,10 +233,9 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function lastIndexOf($element) {
-      $e= Type::boxed($element);
+    public function lastIndexOf(Generic $element) {
       for ($i= $this->size- 1; $i > -1; $i--) {
-        if ($this->elements[$i]->equals($e)) return $i;
+        if ($this->elements[$i]->equals($element)) return $i;
       }
       return FALSE;
     }

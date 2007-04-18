@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.collections.Map');
+  uses('lang.Type', 'util.collections.Map');
 
   /**
    * Hash table consisting of non-null objects as keys and values
@@ -67,9 +67,8 @@
      * @param   lang.Generic value
      * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value) {
+    public function put($key, Generic $value) {
       $k= Type::boxed($key);
-      $v= Type::boxed($value);
       $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -77,8 +76,8 @@
         $previous= $this->_buckets[$h][1];
       }
 
-      $this->_buckets[$h]= array($k, $v);
-      $this->_hash+= HashProvider::hashOf($h.$v->hashCode());
+      $this->_buckets[$h]= array($k, $value);
+      $this->_hash+= HashProvider::hashOf($h.$value->hashCode());
       return $previous;
     }
 
@@ -158,10 +157,9 @@
      * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value) {
-      $v= Type::boxed($value);
+    public function containsValue(Generic $value) {
       foreach (array_keys($this->_buckets) as $key) {
-        if ($this->_buckets[$key][1]->equals($v)) return TRUE;
+        if ($this->_buckets[$key][1]->equals($value)) return TRUE;
       }
       return FALSE;
     }

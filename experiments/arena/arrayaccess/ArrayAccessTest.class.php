@@ -274,7 +274,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableWriteIllegalValue() {
       $c= new HashTable();
-      $c[new String('hello')]= STDIN;
+      $c[new String('hello')]= 'scalar';
     }
 
     /**
