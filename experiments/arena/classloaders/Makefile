@@ -5,4 +5,3 @@ test:
 	php use-many-classes.php
 	php recursion.php
 	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
-	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner net.xp_framework.unittest.reflection.ClassLoaderTest
