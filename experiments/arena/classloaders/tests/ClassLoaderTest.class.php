@@ -191,6 +191,18 @@
     }
 
     /**
+     * Tests findResource() method
+     *
+     */
+    #[@test]
+    public function findResource() {
+      $this->assertClass(
+        ClassLoader::getDefault()->findResource('META-INF/manifest.ini'),
+        'lang.archive.ArchiveClassLoader'
+      );
+    }
+
+    /**
      * Tests getResource() method
      *
      */

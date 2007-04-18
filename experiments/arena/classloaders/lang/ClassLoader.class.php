@@ -102,6 +102,19 @@
     }    
 
     /**
+     * Find the resource by the specified name
+     *
+     * @param   string string name of resource
+     * @return  lang.IClassLoader the classloader that provides this class
+     */
+    public function findResource($class) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($class)) return $delegate;
+      }
+      return xp::null();
+    }    
+
+    /**
      * Loads a resource.
      *
      * @param   string string name of resource
