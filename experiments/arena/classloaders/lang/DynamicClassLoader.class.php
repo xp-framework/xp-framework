@@ -15,16 +15,25 @@
   class DynamicClassLoader extends Object implements IClassLoader {
     protected
       $position = 0,
-      $current  = '',
-      $class    = '';
+      $current  = '';
+
+    public
+      $context  = '';
     
     protected static
-      $instance = NULL,
       $bytes    = array();
     
     static function __static() {
       stream_wrapper_register('dyn', __CLASS__);
-      self::$instance= new self();
+    }
+
+    /**
+     * Constructor. 
+     *
+     * @param   string context
+     */
+    public function __construct($context) {
+      $this->context= $context;
     }
     
     /**
@@ -77,7 +86,7 @@
         }
 
         xp::$registry['class.'.$name]= $class;
-        xp::$registry['classloader.'.$class]= __CLASS__.'://dyn';
+        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->context;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 
@@ -98,11 +107,49 @@
     /**
      * Fetch instance of classloader by path
      *
-     * @param   string path
+     * @param   string path the identifier
      * @return  lang.IClassLoader
      */
     public static function instanceFor($path) {
-      return self::$instance;
+      static $pool= array();
+      
+      if (!isset($pool[$path])) {
+        $pool[$path]= ClassLoader::registerLoader(new self($path));
+      }
+      
+      return $pool[$path];
+    }
+
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return FALSE;
+    }
+
+    /**
+     * Loads a resource.
+     *
+     * @param   string filename name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($filename) {
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string filename name of resource
+     * @return  io.File
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($filename) {
+      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**

@@ -210,5 +210,15 @@
     public function nonExistantResource() {
       ClassLoader::getDefault()->getResource('::DOES-NOT-EXIST::');
     }
+
+    /**
+     * Tests newinstance()
+     *
+     */
+    #[@test]
+    public function newInstance() {
+      $i= newinstance('lang.Object', array(), '{ public function bar() { return TRUE; }}');
+      $this->assertClass($i->getClass()->getClassLoader(), 'lang.DynamicClassLoader');
+    }
   }
 ?>

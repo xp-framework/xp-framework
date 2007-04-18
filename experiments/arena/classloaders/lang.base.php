@@ -458,24 +458,22 @@
     }
 
     $name= $class.'·'.(++$u);
-    xp::$registry['class.'.$name]= $name;
     
+    // Checks whether an interface or a class was given
+    $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
+    if (interface_exists($class)) {
+      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$class.' '.$bytes);
+    } else {
+      $cl->setClassBytes($name, 'class '.$name.' extends Object '.$bytes);
+    }
+
+    $cl->loadClass0($name);
+
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
       $paramstr.= ', $args['.$i.']';
     }
-
-    // Checks whether an interface or a class was given
-    if (interface_exists($class)) {
-      
-      // It's an interface
-      eval('class '.$name.' extends Object implements '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
-      return $instance;
-    }
-    
-    // It's a class
-    eval('class '.$name.' extends '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
-    return $instance;
+    return eval('return new '.$name.'('.substr($paramstr, 2).');');
   }
   // }}}
 

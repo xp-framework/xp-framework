@@ -179,7 +179,7 @@
           }
         }
 
-        with ($dyn= DynamicClassLoader::instanceFor($class)); {
+        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
           $dyn->setClassBytes($class, sprintf(
             'class %s extends %s%s %s',
             $name,
