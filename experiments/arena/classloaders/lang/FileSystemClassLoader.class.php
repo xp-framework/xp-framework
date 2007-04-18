@@ -134,7 +134,6 @@
       return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
 
-    
     /**
      * Fetch instance of classloader by the path to the archive
      *

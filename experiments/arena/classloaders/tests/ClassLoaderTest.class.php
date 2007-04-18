@@ -27,6 +27,20 @@
     }
 
     /**
+     * Helper method
+     *
+     * @param   string name
+     * @param   lang.XPClass class
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function defineClass($name, $parent, $interfaces, $bytes) {
+      if (class_exists(xp::reflect($name))) {
+        $this->fail('Class "'.$name.'" may not exist!');
+      }
+      return ClassLoader::getDefault()->defineClass($name, $parent, $interfaces, $bytes);
+    }
+
+    /**
      * Test "ClassOne" class is loaded from file system
      *
      */
@@ -130,17 +144,13 @@
     }
 
     /**
-     * Tests the defineClass() method
+     * Test defineClass() method with the new signature
      *
      */
     #[@test]
-    public function defineClass() {
+    public function defineRuntimeClass() {
       $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClass';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      
-      $class= ClassLoader::getDefault()->defineClass($name, 'class RuntimeDefinedClass extends Object {
+      $class= $this->defineClass($name, 'lang.Object', NULL, '{
         public static $initializerCalled= FALSE;
         
         static function __static() { 
@@ -152,108 +162,17 @@
     }
     
     /**
-     * Tests the defineClass() method with a package-scope
-     * ClassLoader (the defined class must be in the package
-     * provided by the ClassLoader).
-     *
-     */
-    #[@test]
-    public function defineClassWithPrefix() {
-      $cl= new ClassLoader('net.xp_framework.unittest.reflection.subpackage');
-      $name= 'RuntimeDefinedClass2';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-
-      $class= $cl->defineClass($name, 'class RuntimeDefinedClass2 extends Object {
-        public static $initializerCalled= FALSE;
-        
-        static function __static() { 
-          self::$initializerCalled= TRUE; 
-        }
-      }');
-      $this->assertXPClass($cl->classpath.$name, $class);
-      $this->assertTrue(RuntimeDefinedClass2::$initializerCalled);
-    }
-    
-    /**
-     * Test defineClass() method with the new signature
-     *
-     */
-    #[@test]
-    public function defineClassNG() {
-      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClass3';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      
-      $class= ClassLoader::getDefault()->defineClass($name, 'lang.Object', NULL, '{
-        public static $initializerCalled= FALSE;
-        
-        static function __static() { 
-          self::$initializerCalled= TRUE; 
-        }
-      }');
-      $this->assertXPClass($name, $class);
-      $this->assertTrue(RuntimeDefinedClass3::$initializerCalled);
-    }
-    
-    /**
-     * Test defineClass() method with the new signature and a package-
-     * scope ClassLoader (the defined class must be in the package
-     * provided by the ClassLoader).
-     *
-     */
-    #[@test]
-    public function defineClassNGWithPrefix() {
-      $cl= new ClassLoader('net.xp_framework.unittest.reflection.subpackage');
-      $name= 'RuntimeDefinedClass4';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      
-      $class= $cl->defineClass($name, 'lang.Object', NULL, '{
-        public static $initializerCalled= FALSE;
-        
-        static function __static() { 
-          self::$initializerCalled= TRUE; 
-        }
-      }');
-      $this->assertXPClass($cl->classpath.$name, $class);
-      $this->assertTrue(RuntimeDefinedClass4::$initializerCalled);
-    }
-    
-    /**
      * Tests defineClass() with a given interface
      *
      */
     #[@test]
-    public function defineClassImplements() {
+    public function defineRuntimeClassImplements() {
       $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
-      $class= ClassLoader::getDefault()->defineClass(
-        $name, 
-        'lang.Object',
-        array('util.log.Traceable'),
-        '{ public function setTrace($cat) { } }'
-      );
+      $class= $this->defineClass($name, 'lang.Object', array('util.log.Traceable'), '{
+        public function setTrace($cat) { } 
+      }');
 
-      $this->assertTrue(is('util.log.Traceable', $class->newInstance()));
-      $this->assertFalse(is('util.log.Observer', $class->newInstance()));
-    }
-     
-    
-    /**
-     * Tests the defineClass() method for the situtation where the bytes 
-     * argument failed to actually declare the class.
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function defineIllegalClass() {
-      $name= 'net.xp_framework.unittest.reflection.IllegalClass';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      ClassLoader::getDefault()->defineClass($name, '1;');
+      $this->assertTrue($class->isSubclassOf('util.log.Traceable'));
     }
   }
 ?>
