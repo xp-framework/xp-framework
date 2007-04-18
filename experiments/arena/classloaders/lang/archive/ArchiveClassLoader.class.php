@@ -135,6 +135,26 @@
     public function providesClass($class) {
       return $this->archive->contains(strtr($class, '.', '/').'.class.php');
     }
+
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return $this->archive->contains($filename);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      return $this->archive->contains(strtr($package, '.', '/'));
+    }
     
     /**
      * Fetch instance of classloader by the path to the archive
