@@ -176,5 +176,27 @@
       $this->assertTrue($class->isSubclassOf('util.log.Traceable'));
       $this->assertClass($class->getClassLoader(), 'lang.DynamicClassLoader');
     }
+
+    /**
+     * Tests getResource() method
+     *
+     */
+    #[@test]
+    public function getResource() {
+      $contents= ClassLoader::getDefault()->getResource('META-INF/manifest.ini');
+      $this->assertEquals(
+        "[runnable]\nmain-class=\"remote.server.impl.ApplicationServer\"",
+        trim($contents)
+      );
+    }
+
+    /**
+     * Tests getResource() method
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function nonExistantResource() {
+      ClassLoader::getDefault()->getResource('::DOES-NOT-EXIST::');
+    }
   }
 ?>
