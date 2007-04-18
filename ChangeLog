@@ -4,7 +4,12 @@ $Id$
 
 Version ?.?.?, released ????-??-??
 ----------------------------------
-SVN version: ????
+SVN version: ?????
+
+
+Version 5.4.0, released 2007-04-18
+----------------------------------
+SVN version: 10031
 
 - Implemented RFC #0113 - Include PHP5 SOAP extension
   (kiesel, rene)
