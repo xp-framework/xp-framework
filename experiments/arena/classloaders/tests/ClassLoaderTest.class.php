@@ -159,6 +159,7 @@
       }');
       $this->assertXPClass($name, $class);
       $this->assertTrue(RuntimeDefinedClass::$initializerCalled);
+      $this->assertClass($class->getClassLoader(), 'lang.DynamicClassLoader');
     }
     
     /**
@@ -173,6 +174,7 @@
       }');
 
       $this->assertTrue($class->isSubclassOf('util.log.Traceable'));
+      $this->assertClass($class->getClassLoader(), 'lang.DynamicClassLoader');
     }
   }
 ?>
