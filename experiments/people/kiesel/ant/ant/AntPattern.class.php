@@ -88,21 +88,20 @@
      * @return  
      */
     public function toFilter($base) {
-
+      
       // Transform name element to regex filter
-      if ('/' != DIRECTORY_SEPARATOR) {
-        $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $this->name);
-      }
+      $regex= str_replace('/', preg_quote(DIRECTORY_SEPARATOR), $this->name);
+      $regex= str_replace('.', '\\.', $regex);
 
       // Transform single * to [^/]* (may match anything but another directory)
-      $regex= preg_replace('#([^*])\*#', '$1[^'.preg_quote(DIRECTORY_SEPARATOR).']*', $regex);
+      $regex= preg_replace('#([^*])\\*#', '$1[^'.preg_quote(preg_quote(DIRECTORY_SEPARATOR)).']*', $regex);
       
       
       // Transform ** to .* (may match anything, any directory depth)
       $regex= str_replace('**', '.*', $regex);
 
       // Add delimiter and escape delimiter if already contained
-      $regex= '#^'.str_replace('#', '\#', $regex).'$#';
+      $regex= '#^'.str_replace('#', '\\#', $regex).'$#';
       
       return new TopURIMatchesFilter($regex, $base);
     }

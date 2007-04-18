@@ -102,7 +102,10 @@
         $iter= $this->resource->iteratorFor($env);
         while ($iter->hasNext()) {
           $element= $iter->next();
-          // TBI
+          
+          // DEBUG
+          $uri= substr($element->getURI(), strlen($this->resource->getDir($env))+ 1);
+          var_dump($uri);
         }
       } else if (NULL !== $this->file) {
       

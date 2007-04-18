@@ -37,11 +37,11 @@
      */
     public function accept($element) {
       if (substr($element->getURI(), 0, strlen($this->basedir)) != $this->basedir) {
-        throw new IllegalStateException('Element from wrong base: '.$element->getURI());
-      
+        throw new IllegalStateException('Element from wrong base: '.$element->getURI().' vs. '.$this->basedir);
+      }
+
       $topdir= substr($element->getURI(), strlen($this->basedir)+ 1);
       return (bool)preg_match($this->pattern, $topdir);
-      }
     }
   }
 ?>

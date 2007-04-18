@@ -15,8 +15,8 @@
     <mkdir dir="${build}"/>
     
     <copy toDir="${build}">
-      <fileset>
-        <include name="**/*.xml"/>
+      <fileset dir=".">
+        <include name="**/*.php"/>
         <exclude name="**/*.bak"/>
       </fileset>
     </copy>

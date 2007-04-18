@@ -41,7 +41,7 @@
      */
     #[@xmlmapping(element= '@dir')]
     public function setDir($dir) {
-      $this->dir= $dir;
+      $this->dir= realpath($dir);
     }
 
     /**
@@ -127,6 +127,7 @@
      * @return  
      */
     public function iteratorFor(AntEnvironment $env) {
+      if (NULL == $this->dir) throw new IllegalStateException('No dir given in fileset');
       return new FilteredIOCollectionIterator(
         new FileCollection($this->getDir($env)),
         $this->patternset->createFilter($env, $this->getDir($env)),
