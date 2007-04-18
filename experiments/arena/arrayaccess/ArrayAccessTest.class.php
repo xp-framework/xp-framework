@@ -242,7 +242,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableReadIllegalElement() {
       $c= new HashTable();
-      $c['scalar'];
+      $c[STDIN];
     }
 
     /**
@@ -264,7 +264,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableWriteIllegalKey() {
       $c= new HashTable();
-      $c['scalar']= new String('Hello');
+      $c[STDIN]= new String('Hello');
     }
 
     /**
@@ -274,7 +274,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableWriteIllegalValue() {
       $c= new HashTable();
-      $c[new String('hello')]= 'key';
+      $c[new String('hello')]= STDIN;
     }
 
     /**
