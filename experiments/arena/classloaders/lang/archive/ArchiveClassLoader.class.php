@@ -70,10 +70,17 @@
      * @throws  lang.FormatException in case the class file is malformed
      */
     public function loadClass($class) {
-      return new XPClass($this->load($class));
+      return new XPClass($this->loadClass0($class));
     }
 
-    public function load($class) {
+    /**
+     * Loads a class
+     *
+     * @param   string class fully qualified class name
+     * @return  string class name of class loaded
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass0($class) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {

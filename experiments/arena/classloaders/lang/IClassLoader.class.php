@@ -18,8 +18,9 @@
      *
      * @param   string class fully qualified class name
      * @return  string class name of class loaded
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    public function load($class);
+    public function loadClass0($class);
     
     /**
      * Load the class by the specified name

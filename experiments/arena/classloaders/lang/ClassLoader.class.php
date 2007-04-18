@@ -60,14 +60,15 @@
      *
      * @param   string class fully qualified class name
      * @return  string class name of class loaded
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
-    public function load($class) {
+    public function loadClass0($class) {
       $name= xp::reflect($class);
       if (class_exists($name) || interface_exists($name)) return $name;
       
       // Ask delegates
       foreach (self::$delegates as $delegate) {
-        if ($delegate->providesClass($class)) return $delegate->load($class);
+        if ($delegate->providesClass($class)) return $delegate->loadClass0($class);
       }
       throw new ClassNotFoundException(sprintf(
         'No classloader provides class "%s" {%s}',
@@ -97,7 +98,7 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      return new XPClass($this->load($class));
+      return new XPClass($this->loadClass0($class));
     }    
 
     /**
@@ -137,7 +138,7 @@
           ));
           
           try {
-            $name= $dyn->load($class);
+            $name= $dyn->loadClass0($class);
           } catch (Throwable $e) {
             // Fall through so class bytes get removed in any case
           } finally(); {

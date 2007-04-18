@@ -13,9 +13,9 @@
       'class.null' => '<null>',
     );
 
-    // {{{ public void load(string name)
-    //     Loads a class
-    function load($name) {
+    // {{{ public string loadClass0(string name)
+    //     Loads a class by its fully qualified name
+    function loadClass0($name) {
       $class= xp::reflect($name);
       if (class_exists($class) || interface_exists($class)) return;
 
@@ -49,6 +49,8 @@
       // Register class name and call static initializer if available
       xp::$registry['class.'.$class]= $name;
       is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      
+      return $name;
     }
     // }}}
 
@@ -342,7 +344,7 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
-    foreach (func_get_args() as $str) xp::$registry['loader']->load($str);
+    foreach (func_get_args() as $str) xp::$registry['loader']->loadClass0($str);
   }
   // }}}
   

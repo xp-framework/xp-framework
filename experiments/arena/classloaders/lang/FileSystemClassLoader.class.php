@@ -85,10 +85,17 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      return new XPClass($this->load($class));
+      return new XPClass($this->loadClass0($class));
     }
 
-    public function load($class) {
+    /**
+     * Load the class by the specified name
+     *
+     * @param   string class fully qualified class name io.File
+     * @return  string class name
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass0($class) {
       $name= xp::reflect($class);
 
       if (!class_exists($name) && !interface_exists($name)) {
