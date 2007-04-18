@@ -38,13 +38,23 @@
     }
 
     /**
+     * Checks whether this loader can provide the requested class
+     *
+     * @param   string class
+     * @return  bool
+     */
+    public function providesClass($class) {
+      return isset(self::$bytes[$class]);
+    }
+
+    /**
      * Load class bytes
      *
      * @param   string name fully qualified class name
      * @return  string
      */
     public function loadClassBytes($name) {
-      return self::$bytes[$fqcn];
+      return self::$bytes[$name];
     }
     
     /**
