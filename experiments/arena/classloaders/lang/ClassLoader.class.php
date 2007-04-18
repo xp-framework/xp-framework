@@ -188,14 +188,7 @@
             $bytes
           ));
           
-          try {
-            $name= $dyn->loadClass0($class);
-          } catch (Throwable $e) {
-            // Fall through so class bytes get removed in any case
-          } finally(); {
-            $dyn->removeClassBytes($class);
-            if (@$e) throw $e;
-          }
+          return $dyn->loadClass($class);
         }
       }
       
