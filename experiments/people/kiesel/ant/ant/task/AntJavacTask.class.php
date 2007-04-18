@@ -459,12 +459,12 @@
       $destdir= $this->getDestdir($env);
       while ($iterator->hasNext()) {
         $sourceElement= $iterator->next();
-        $targetfile= new File($destdir.DIRECTORY_SEPARATOR.$sourceElement->relativePart());
-
+        $targetfile= new File($destdir.DIRECTORY_SEPARATOR.str_replace('.java', '.class', $sourceElement->relativePart()));
+        
         // Rebuild when target does not exist or is out of date
         if (
           !$targetfile->exists() ||
-          $sourceElement->lastModified()->isAfter($targetfile->lastModified())
+          $sourceElement->lastModified()->getTime() > $targetfile->lastModified()
         ) {
           $compileable[]= $sourceElement;
           continue;
@@ -483,7 +483,6 @@
       
       $cmdline[]= '@'.$lfile->getURI();
       try {
-        var_dump($cmdline);
         $p= new Process(implode(' ', $cmdline));
         $p->getInputStream()->close();
         
@@ -503,7 +502,7 @@
         $env->err->writeLine($e->toString());
       }
       
-      $lfile->unlock();
+      $lfile->unlink();
     }
   }
 ?>
