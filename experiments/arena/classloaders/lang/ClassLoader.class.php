@@ -102,6 +102,42 @@
     }    
 
     /**
+     * Loads a resource.
+     *
+     * @param   string string name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($string) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($string)) return $delegate->getResource($string);
+      }
+      raise('lang.ElementNotFoundException', sprintf(
+        'No classloader provides resource "%s" {%s}',
+        $string,
+        xp::stringOf(self::$delegates)
+      ));
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string string name of resource
+     * @return  io.Stream
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($string) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($string)) return $delegate->getResourceAsStream($string);
+      }
+      raise('lang.ElementNotFoundException', sprintf(
+        'No classloader provides resource "%s" {%s}',
+        $string,
+        xp::stringOf(self::$delegates)
+      ));
+    }
+
+    /**
      * Define a class with a given name
      *
      * @param   string class fully qualified class name
@@ -122,10 +158,12 @@
           throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.');
         }
         
-        $if= array_map(array('xp', 'reflect'), $interfaces);
-        foreach ($if as $implemented) {
-          if (interface_exists($implemented)) continue;
-          throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
+        if (!empty($interfaces)) {
+          $if= array_map(array('xp', 'reflect'), $interfaces);
+          foreach ($if as $implemented) {
+            if (interface_exists($implemented)) continue;
+            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
+          }
         }
 
         with ($dyn= DynamicClassLoader::instanceFor($class)); {
@@ -143,7 +181,7 @@
             // Fall through so class bytes get removed in any case
           } finally(); {
             $dyn->removeClassBytes($class);
-            if ($e) throw $e;
+            if (@$e) throw $e;
           }
         }
       }
