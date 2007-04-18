@@ -36,16 +36,17 @@
     public function setClassBytes($fqcn, $bytes) {
       self::$bytes[$fqcn]= '<?php '.$bytes.' ?>';
     }
-    
-    /**
-     * Remove class' bytes after loading
-     *
-     * @param   string fqcn
-     */
-    public function removeClassBytes($fqcn) {
-      unset(self::$bytes[$fqcn]);  
-    }
 
+    /**
+     * Load class bytes
+     *
+     * @param   string name fully qualified class name
+     * @return  string
+     */
+    public function loadClassBytes($name) {
+      return self::$bytes[$fqcn];
+    }
+    
     /**
      * Loads a class
      *
