@@ -199,7 +199,7 @@
       $instance->err= new StringWriter(new ConsoleOutputStream(STDERR));
 
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('inject')) {     // Perform injection
+        if ($method->hasAnnotation('inject')) {      // Perform injection
           $inject= $method->getAnnotation('inject');
           switch ($inject['type']) {
             case 'rdbms.DBConnection': {
@@ -229,7 +229,28 @@
             Console::writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
             return 2;
           }
-        } else if ($method->hasAnnotation('arg')) { // Pass arguments
+        } else if ($method->hasAnnotation('args')) { // Pass all arguments
+          $pass= array();
+          foreach (explode(',', $method->getAnnotation('args', 'select')) as $def) {
+            if (is_numeric($def) || '-' == $def{0}) {
+              $pass[]= $p->value($def);
+            } else {
+              sscanf($def, '[%d..%d]', $begin, $end);
+              isset($begin) || $begin= 0;
+              isset($end) || $end= $classparams->count;
+            
+              while ($begin < $end) {
+                $pass[]= $classparams->value($begin++);
+              }
+            }
+          }
+          try {
+            $method->invoke($instance, array($pass));
+          } catch (Throwable $e) {
+            Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            return 2;
+          }
+        } else if ($method->hasAnnotation('arg')) {  // Pass arguments
           $arg= $method->getAnnotation('arg');
           if (isset($arg['position'])) {
             $name= '#'.$arg['position'];
@@ -260,6 +281,13 @@
 
           try {
             $method->invoke($instance, $args);
+          } catch (Throwable $e) {
+            Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            return 2;
+          }
+        } else if ($method->hasAnnotation('args')) { // Pass all arguments
+          try {
+            $method->invoke($instance, array($classparams->list));
           } catch (Throwable $e) {
             Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
             return 2;

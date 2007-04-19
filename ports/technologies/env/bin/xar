@@ -1,12 +1,3 @@
 #!/bin/sh
 
-if [ $# -lt 2 ] ; then
-  cmd='--help'
-  file=''
-else 
-  cmd=$1
-  file=$2
-  shift 2
-fi
-
-xpcli net.xp_framework.xar.Xar $cmd "$file" -R "`pwd`" --args="$@"
+xpcli net.xp_framework.xar.Xar "$@"

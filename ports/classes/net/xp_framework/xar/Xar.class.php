@@ -55,23 +55,23 @@
     }
 
     /**
-     * Set args
-     *
-     * @param   string args
-     */
-    #[@arg]
-    public function setArgs($args) {
-      $this->args= '' == trim($args) ? array() : explode(' ', trim($args));
-    }
-
-    /**
      * Set working directory
      *
      * @param   string dir
      */
     #[@arg(short= 'R')]
-    public function setWorkDirectory($dir) {
+    public function setWorkDirectory($dir= '.') {
       chdir($dir);
+    }
+
+    /**
+     * Set args
+     *
+     * @param   string[] args
+     */
+    #[@args(select= '[2..]')]
+    public function setArgs($args) {
+      $this->args= $args;
     }
     
     /**
