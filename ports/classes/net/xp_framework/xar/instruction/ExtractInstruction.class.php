@@ -60,8 +60,10 @@
           !$f->exists()
         ) {
         
-          // Create folder on demand
-          $dir= new Folder(dirname($entry));
+          // Create folder on demand. Note that inside a XAR, the directory
+          // separator is *ALWAYS* a forward slash, so we need to change
+          // it to whatever the OS we're currently running on uses.
+          $dir= new Folder(str_replace('/', DIRECTORY_SEPARATOR, dirname($entry)));
           if (!$dir->exists()) { $dir->create(); }
           
           FileUtil::setContents($f, $data);
