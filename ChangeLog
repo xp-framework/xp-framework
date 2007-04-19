@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixes bug with io.File when reading from zero-length files
+  (kiesel)
+- add @args annotation for util.cmd.Command scripts (fixes bug #23)
+  (friebe, kiesel)
+- fix extraction of .xar files on Windows (fixes bug #22)
+  (friebe)
 
 Version 5.4.0, released 2007-04-18
 ----------------------------------
