@@ -284,6 +284,7 @@
      * @throws  io.IOException in case of an error
      */
     public function gets($bytes= 4096) {
+      if (0 === $bytes) return '';
       if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
         throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }
@@ -298,6 +299,7 @@
      * @throws  io.IOException in case of an error
      */
     public function read($bytes= 4096) {
+      if (0 === $bytes) return '';
       if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
         throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
       }

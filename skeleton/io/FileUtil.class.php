@@ -19,7 +19,7 @@
      *   $str= FileUtil::getContents(new File('/etc/passwd'));
      * </code>
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @return  string file contents
      * @throws  io.IOException
      * @throws  io.FileNotFoundException
@@ -38,7 +38,7 @@
      *   $bytes_written= FileUtil::setContents(new File('myfile'), 'Hello world');
      * </code>
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @param   string data
      * @return  int filesize
      * @throws  io.IOException
