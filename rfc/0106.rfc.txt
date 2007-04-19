@@ -1,4 +1,4 @@
-RFC 0106: Overload array access / foreach in "array" types
+RFC 0106: Overload array access / foreach in "array" types / type boxing
 ========================================================================
 $Id$
 
@@ -9,9 +9,9 @@ $Id$
 
 Scope of Change
 ---------------
-The lang.types.ArrayList class and the relevant classes from 
-util.collections will be changed to support array access
-(read/write) and foreach() iteration.
+The lang.types.ArrayList class and the relevant classes from util.collections 
+will be changed to support array access (read/write) and foreach() iteration. 
+The classes from the collections API will furthermore support type boxing.
 
 
 Rationale
@@ -29,95 +29,111 @@ ArrayAccess
 The ArrayAccess interface requires implementing the following methods:
 offsetGet(), offsetSet(), offsetExists() and offsetUnset().
 
-ArrayList implementation
-~~~~~~~~~~~~~~~~~~~~~~~~
-Because ArrayList is immutable in size 
+IteratorAggregate
+~~~~~~~~~~~~~~~~~
+The IteratorAggregate interface requires implementing a method called
+getIterator() which must return an Iterator instance.
+
+ArrayList
+~~~~~~~~~
+An ArrayList is an immutable, zero-indexed list of values of any type
+and most closely resembles an array in Java.
 <?php
-  // ...
-  public function offsetGet($offset) {
-    if ($offset >= $this->length || $offset < 0) {
-      raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+  with ($a= new ArrayList(1, 2, 3));  {
+  
+    // Length = 3
+    $l= $a->length;
+  
+    // Element access
+    $one= $a[0];    // $one contains "1"
+    $a[1]+= 1;      // The second list entry (2) will be increased
+    $a[2]= 4;       // The third list entry (3) will be set to 4
+    
+    // ArrayList is immutable in size!
+    $a[-1]= 1;      // Throws an IndexOutOfBoundsException
+    $a[3]= 1;       // - " -
+    $err= $a[4];    // - " -
+    $a[]= 1;        // - " -
+    unset($a[0]);   // Throws an IllegalArgumentException
+    
+    // Keys are integers only!
+    $a['foo']= 1;   // Throws an IllegalArgumentException
+    $f= $a['foo'];  //  - " -
+    
+    // Testing
+    isset($a[0]);   // TRUE
+    isset($a[-1]);  // FALSE
+    isset($a[3]);   // FALSE
+    
+    // foreach-iteration, prints "1 2 3 "
+    foreach (new ArrayList(1, 2, 3) as $value) {
+      echo $value, ' ';
     }
-    return $this->values[$offset];
-  }
-
-  public function offsetSet($offset, $value) {
-    if (!is_int($offset)) {
-      throw new IllegalArgumentException('Incorrect type '.$t.' for index');
-    }
-
-    if ($offset >= $this->length || $offset < 0) {
-      raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
-    }
-    $this->values[$offset]= $value;
-  }
-
-  public function offsetExists($offset) {
-    return ($offset >= 0 && $offset < $this->length);
-  }
-
-  public function offsetUnset($offset) {
-    throw new IllegalArgumentException('Cannot remove from immutable list');
-  }
-  // ...
-?>
-
-We will define an "inner" class for iteration to not introduce new 
-dependencies. The iterator will only be created on-demand:
-<?php
-  // ...
-  public function getIterator() {
-    if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
-      private $i= 0, $v;
-      public function __construct($v) { $this->v= $v; }
-      public function current() { return $this->v->values[$this->i]; }
-      public function key() { return $this->i; }
-      public function next() { $this->i++; }
-      public function rewind() { $this->i= 0; }
-      public function valid() { return $this->i < $this->v->length; }
-    }');
-    return $this->iterator;
-  }
-  // ...
-?>
-
-HashTable implementation
-~~~~~~~~~~~~~~~~~~~~~~~~
-The changes to the util.collection.HashTable class are trivial because 
-they only wrap already existant methods:
-<?php
-  public function offsetGet($offset) {
-    return $this->get($offset);
-  }
-
-  public function offsetSet($offset, $value) {
-    $this->put($offset, $value);
-  }
-
-  public function offsetExists($offset) {
-    return $this->containsKey($offset);
-  }
-
-  public function offsetUnset($offset) {
-    $this->remove($offset);
+    
+    // Constructing an arraylist from an array
+    $a= ArrayList::newInstance(array(1, 2, 3, 4));
+    $four= $a->length;
+    
+    // Constructing an empty arraylist
+    $a= ArrayList::newInstance(4);
+    $four= $a->length;
   }
 ?>
 
-Examples:
+Vector
+~~~~~~
+A Vector is a resizable array of objects.
 <?php
+  uses('util.collections.Vector');
+
+  with ($v= new Vector()); {
+    
+    // The add() method and its overloaded equivalent
+    $v->add(new String('hello'));
+    $v[]= new String('hello');
+
+    // The get() method and its overloaded equivalent
+    $hello= $v->get(0);
+    $hello= $v[0];
+
+    // The set() method and its overloaded equivalent
+    $v->set(0, new String('world'));
+    $v[0]= new String('world');
+    
+    // The remove() method and its overloaded equivalent
+    $v->remove(0);
+    unset($v[0]);
+
+    // foreach-iteration, prints "1 2 3 "
+    foreach (new Vector(array(1, 2, 3)) as $value) {
+      echo $value, ' ';
+    }
+  }
+?>
+
+HashTable
+~~~~~~~~~
+A HashTable is a map where both keys and values are objects.
+<?php
+  uses('util.collections.HashTable');
+
   with ($h= new HashTable()); {
   
-    // Using the put() method
+    // The put() method and its overloaded equivalent
     $h->put(new String('stage-url'), new URL('xp://localhost:6448'));
-   
-    // The overloaded equivalent 
     $h[new String('stage-url')]= new URL('xp://localhost:6448');
     
-    // Using the get() method
-    $url= $h->get(new String('stage-url'));
+    // Primitives in keys are "boxed"
+    $h->put('stage-url', new URL('xp://localhost:6448'));
+    $h['stage-url']= new URL('xp://localhost:6448');
     
-    // The overloaded equivalent 
+    // The get() method and its overloaded equivalent
+    $url= $h->get(new String('stage-url'));
     $url= $h[new String('stage-url')];
+    
+    // Primitives in keys are "boxed"
+    $url= $h->get('stage-url');
+    $url= $h['stage-url'];
   }
 ?>
 
