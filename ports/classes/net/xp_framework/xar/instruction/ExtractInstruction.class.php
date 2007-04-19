@@ -54,11 +54,7 @@
         $f= new File($entry);
         $data= $this->archive->extract($entry);
         
-        // TBD: Overwrite file, if already exists?
-        if (
-          !($this->options & Xar::OPTION_SIMULATE) &&
-          !$f->exists()
-        ) {
+        if (!($this->options & Xar::OPTION_SIMULATE)) {
         
           // Create folder on demand. Note that inside a XAR, the directory
           // separator is *ALWAYS* a forward slash, so we need to change

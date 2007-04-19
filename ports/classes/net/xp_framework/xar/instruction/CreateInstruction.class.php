@@ -50,10 +50,10 @@
         
         // Recursively retrieve all files from directory
         if (is_dir($arg)) {
-          $collection= &new FileCollection($arg);
+          $collection= new FileCollection($arg);
           
           // Fetch all files except 
-          $iterator= &new FilteredIOCollectionIterator(
+          $iterator= new FilteredIOCollectionIterator(
             $collection,
             new AllOfFilter(array(
               new NegationOfFilter(new RegexFilter('#(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
