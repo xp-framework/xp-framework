@@ -4,50 +4,35 @@
  * $Id$ 
  */
 
-  uses(
-    'lang.XPClass',
-    'lang.types.String',
-    'lang.types.Integer',
-    'lang.types.Double',
-    'lang.types.Boolean',
-    'lang.types.ArrayList'
-  );
-
   /**
-   * (Insert class' description here)
+   * Type is the base class for the XPClass and Primitive classes.
    *
-   * @see      reference
-   * @purpose  Base class for all types
+   * @see      xp://lang.XPClass
+   * @see      xp://lang.Primitive
+   * @purpose  Abstract base class
    */
-  class Type extends Object {
-    protected
+  abstract class Type extends Object {
+    public
       $name= '';
-    
-    protected static
-      $STRING,
-      $INTEGER,
-      $DOUBLE,
-      $BOOLEAN,
-      $ARRAYLIST;
-    
-    static function __static() {
-      self::$STRING= new self('string');
-      self::$INTEGER= new self('integer');
-      self::$DOUBLE= new self('double');
-      self::$BOOLEAN= new self('boolean');
-      self::$ARRAYLIST= new self('array');
-    }
-    
+
     /**
      * Constructor
      *
      * @param   string name
      */
-    public function __construct($name, $primitive= TRUE) {
+    public function __construct($name) {
       $this->name= $name;
-      $this->primitive= $primitive;
     }
 
+    /**
+     * Retrieves the fully qualified class name for this class.
+     * 
+     * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
+     */
+    public function getName() {
+      return $this->name;
+    }
+    
     /**
      * Creates a string representation of this object
      *
@@ -58,87 +43,22 @@
     }
 
     /**
-     * Casts a type
+     * Checks whether a given object is equal to this type
      *
-     * @param   mixed in
-     * @return  lang.Generic
+     * @param   lang.Generic cmp
+     * @return  bool
      */
-    public function cast($in) {
-      if ($this->primitive) {
-        $v= self::unboxed($in);
-        return eval('return ('.$this->name.')$v;');
-      } else {
-        $v= self::boxed($in);
-        if (!($v instanceof $this->name)) throw new IllegalArgumentException(
-          'Cannot cast '.xp::typeOf($in).' to '.$this->name
-        );
-        return $v;
-      }
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->name === $this->name;
     }
 
     /**
-     * Boxes a type - that is, turns primitives into Generics
+     * Returns a hashcode for this object
      *
-     * @param   lang.Generic
-     * @return  mixed 
+     * @return  string
      */
-    public static function unboxed($in) {
-      switch (1) {
-        case $in instanceof String: 
-          return $in->getBuffer();
-
-        case $in instanceof Double: 
-          return $in->floatValue();
-        
-        case $in instanceof Integer:
-          return $in->intValue();
-
-        case $in instanceof Boolean:
-          return $in->value;
-        
-        case $in instanceof ArrayList:
-          return $in->values;
-          
-        case $in instanceof Generic:
-          throw new IllegalArgumentException('Cannot box '.xp::typeOf($in));
-        
-        default:
-          return $in;
-      }
-    }
-  
-    /**
-     * Boxes a type - that is, turns primitives into Generics
-     *
-     * @param   mixed in
-     * @return  lang.Generic
-     */
-    public static function boxed($in) {
-      if ($in instanceof Generic) return $in; else switch (gettype($in)) {
-        case 'string': return new String($in);
-        case 'integer': return new Integer($in);
-        case 'double': return new Double($in);
-        case 'boolean': return new Boolean($in);
-        case 'array': return ArrayList::newInstance($in);
-        default: throw new IllegalArgumentException('Cannot box '.xp::typeOf($in));
-      }
-    }
-    
-    /**
-     * Get a type instance for a given name
-     *
-     * @param   string name
-     * @return  lang.Type
-     */
-    public static function forName($name) {
-      switch ($name) {
-        case 'string': return self::$STRING;
-        case 'integer': return self::$INTEGER;
-        case 'double': return self::$DOUBLE;
-        case 'boolean': return self::$BOOLEAN;
-        case 'array': return self::$ARRAYLIST;
-        default: return new self($name, FALSE);
-      }
+    public function hashCode() {
+      return get_class($this).':'.$this->name;
     }
   }
 ?>

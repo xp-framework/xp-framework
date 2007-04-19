@@ -124,7 +124,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function add(Generic $element) {
-      $this->elements[]= Type::boxed($element);
+      $this->elements[]= $element;
       $this->size++;
       return $element;
     }
@@ -144,7 +144,7 @@
       }
 
       $orig= $this->elements[$index];
-      $this->elements[$index]= Type::boxed($element);
+      $this->elements[$index]= $element;
       return $orig;
     }
         

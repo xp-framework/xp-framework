@@ -5,7 +5,7 @@
  */
 
   uses(
-    'lang.Type',
+    'lang.Primitive',
     'lang.types.ArrayList',
     'util.collections.HashTable',
     'util.collections.Vector'
@@ -27,7 +27,7 @@
      */
     protected function assertHashTableOperation($primitive) {
       with (
-        $boxed= Type::boxed($primitive),
+        $boxed= Primitive::boxed($primitive),
         $value= new String($this->name),
         $hash= new HashTable()
       ); {

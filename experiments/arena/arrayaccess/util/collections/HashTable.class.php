@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Type', 'util.collections.Map');
+  uses('lang.Primitive', 'util.collections.Map');
 
   /**
    * Hash table consisting of non-null objects as keys and values
@@ -68,7 +68,7 @@
      * @return  lang.Generic the previous value associated with the key
      */
     public function put($key, Generic $value) {
-      $k= Type::boxed($key);
+      $k= Primitive::boxed($key);
       $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -89,7 +89,7 @@
      * @return  lang.Generic the value associated with the key
      */
     public function get($key) {
-      $h= Type::boxed($key)->hashCode();
+      $h= Primitive::boxed($key)->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
@@ -104,7 +104,7 @@
      * @return  lang.Generic the previous value associated with the key
      */
     public function remove($key) {
-      $h= Type::boxed($key)->hashCode();
+      $h= Primitive::boxed($key)->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
@@ -148,7 +148,7 @@
      * @return  bool
      */
     public function containsKey($key) {
-      return isset($this->_buckets[Type::boxed($key)->hashCode()]);
+      return isset($this->_buckets[Primitive::boxed($key)->hashCode()]);
     }
 
     /**
