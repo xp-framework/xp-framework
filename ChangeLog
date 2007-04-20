@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Properly detect identity columns in rdbms.sybase.SybaseDBAdapter
+  (kiesel)
 - Fixes bug with io.File when reading from zero-length files
   (kiesel)
 - add @args annotation for util.cmd.Command scripts (fixes bug #23)

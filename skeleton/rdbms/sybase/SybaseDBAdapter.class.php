@@ -104,24 +104,24 @@
           c.status,
           c.length, 
           c.prec, 
-          c.scale,
-          s.ident
+          c.scale
         from 
           syscolumns c,
-          systypes s,
           systypes t 
         where 
-          c.id= object_id(%s) 
-          and s.usertype= c.usertype
+          c.id= object_id(%s)
           and t.type = c.type 
           and t.usertype < 100 
           and t.name not in ("sysname", "nchar", "nvarchar")
       ', $table);
       while ($record= $q->next()) {
+        // Known bits of status column:
+        // 0x08 => NULLable
+        // 0x80 => identity column
         $t->addAttribute(new DBTableAttribute(
           $record['name'], 
           $this->map[$record['type']],
-          $record['ident'],
+          ($record['status'] & 0x80),
           ($record['status'] & 8), 
           $record['length'], 
           $record['prec'], 
