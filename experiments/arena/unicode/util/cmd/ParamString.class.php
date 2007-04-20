@@ -25,7 +25,18 @@
      * @param   array list default NULL the argv array. If omitted, $_SERVER['argv'] is used
      */
     public function __construct($list= NULL) {
-      $this->setParams(NULL === $list ? $_SERVER['argv'] : $list);
+      if (NULL === $list) {
+        $list= $_SERVER['argv'];
+        
+        // If input encoding is not UTF-8, encode the arguments
+        if ('UTF-8' != ($ie= iconv_get_encoding('input_encoding'))) {
+          foreach ($list as $i => $value) {
+            $list[$i]= iconv($ie, 'UTF-8', $value);
+          }
+        }
+      }
+
+      $this->setParams($list);
     }
     
     /**

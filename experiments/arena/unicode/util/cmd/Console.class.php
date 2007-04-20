@@ -39,25 +39,14 @@
       $err= NULL;
 
     static function __static() {
-      do {
-        do {
-          if ($ctype= getenv('LC_CTYPE')) break;
-          if ($ctype= setlocale(LC_CTYPE, 0)) break;
-          $charset= iconv_get_encoding('output_encoding');
-          break 2;
-        } while (0);
-          sscanf($ctype, '%[^.].%s', $language, $charset);
-          if (is_numeric($charset)) $charset= 'CP'.$charset;
-      } while (0);
-
       $out= new ConsoleOutputStream(STDOUT);
       $err= new ConsoleOutputStream(STDERR);
       
       // If the console supports UTF-8, no conversion is needed. Otherwise, we
       // need to convert the UTF-8 we use internally to the console's encoding.
-      if (!stristr($charset, 'UTF-8') && !stristr($charset, 'UTF8')) {
-        $out= new DecodingOutputStream($out, $charset.'//IGNORE');
-        $err= new DecodingOutputStream($err, $charset.'//IGNORE');
+      if ('UTF-8' != ($oe= iconv_get_encoding('output_encoding'))) {
+        $out= new DecodingOutputStream($out, $oe.'//IGNORE');
+        $err= new DecodingOutputStream($err, $oe.'//IGNORE');
       }
 
       self::$out= new StringWriter($out);
