@@ -39,6 +39,11 @@ case $COMMAND in
     . "$DIRNAME"/xpsvn-cmd/cmd.tagcommit.sh
     exit $RETCODE;
     ;;
+    
+  tagupdate | tup)
+    . "$DIRNAME"/xpsvn-cmd/cmd.tagupdate.sh
+    exit $RETCODE;
+    ;;
   
   go)
     . "$DIRNAME"/xpsvn-cmd/cmd.go.sh
