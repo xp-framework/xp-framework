@@ -220,9 +220,8 @@
     /**
      * Constructor
      *
-     * @access  public
      */  
-    function __construct() {]]></xsl:text>      
+    public function __construct() {]]></xsl:text>      
     
     <!-- Create registerParamInfo() calls -->
     <xsl:for-each select="param">
@@ -267,14 +266,13 @@
     /**
      * Returns the value of the parameter ]]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[
      *
-     * @access  public
      * @return  ]]></xsl:text>
       <xsl:if test="contains(@type, '.')">&amp;</xsl:if>
       <xsl:value-of select="@type"/>
       <xsl:if test="contains(@occurrence, 'multiple')">[]</xsl:if>
     <xsl:text><![CDATA[
      */
-    function ]]></xsl:text>
+    public function ]]></xsl:text>
     <xsl:if test="contains(@type, '.')">&amp;</xsl:if>
     <xsl:text>get</xsl:text>
     <xsl:call-template name="name">
