@@ -1,9 +1,20 @@
 <?php
   require('lang.base.php');
-  uses('rdbms.DriverManager', 'util.cmd.Console');
+  xp::sapi('cli');
+  uses('rdbms.DriverManager');
 
-  Console::writeLine('Working with ', Console::$out->toString());
+  // {{{ main
+  $p= new ParamString();
+  $c= DriverManager::getConnection(rtrim($p->value(1), '/').'/?autoconnect=1');
+  Console::writeLine('---> Console: ', Console::$out);
+  Console::writeLine('---> Connection: ', $c);
   
-  $c= DriverManager::getConnection('mysql://scriptlet:.sybCx333@php3.de/test?autoconnect=1');
-  Console::writeLine(xp::stringOf($c->query('select tasks, requirements from job where job_id= 1')->next()));
+  if ($p->exists(2)) {
+    $value= $p->value(2);
+    Console::writeLine('Writing ', $value);
+    $c->update('unicode set realname= %s', $value);
+  }
+  
+  Console::writeLine($c->select('* from unicode'));
+  // }}}
 ?>
