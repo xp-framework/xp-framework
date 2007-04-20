@@ -18,6 +18,16 @@
       $list     = array(),
       $count    = 0,
       $string   = '';
+      
+    static function __static() {
+
+      // If input encoding is not UTF-8, encode the arguments
+      if ('UTF-8' != ($ie= iconv_get_encoding('input_encoding'))) {
+        foreach ($_SERVER['argv'] as $i => $value) {
+          $_SERVER['argv'][$i]= iconv($ie, 'UTF-8', $value);
+        }
+      }
+    }
     
     /**
      * Constructor
@@ -25,18 +35,7 @@
      * @param   array list default NULL the argv array. If omitted, $_SERVER['argv'] is used
      */
     public function __construct($list= NULL) {
-      if (NULL === $list) {
-        $list= $_SERVER['argv'];
-        
-        // If input encoding is not UTF-8, encode the arguments
-        if ('UTF-8' != ($ie= iconv_get_encoding('input_encoding'))) {
-          foreach ($list as $i => $value) {
-            $list[$i]= iconv($ie, 'UTF-8', $value);
-          }
-        }
-      }
-
-      $this->setParams($list);
+      $this->setParams(NULL === $list ? $_SERVER['argv'] : $list);
     }
     
     /**
