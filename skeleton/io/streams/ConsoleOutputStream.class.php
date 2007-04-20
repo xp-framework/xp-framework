@@ -31,6 +31,15 @@
     }
 
     /**
+     * Creates a string representation of this output stream
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->descriptor.'>';
+    }
+
+    /**
      * Write a string
      *
      * @param   mixed arg

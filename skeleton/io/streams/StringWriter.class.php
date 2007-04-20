@@ -24,6 +24,15 @@
     public function __construct($out) {
       $this->out= $out;
     }
+
+    /**
+     * Creates a string representation of this writer
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName()."@{\n  ".$this->out->toString()."\n}";
+    }
   
     /**
      * Flush output buffer
