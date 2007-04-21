@@ -4,27 +4,47 @@
  * $Id$ 
  */
 
+  uses('io.streams.StringWriter', 'io.streams.ConsoleOutputStream');
+
   /**
    * Represents system console
    *
+   * Example: Writing to standard output
    * <code>
    *   uses('util.cmd.Console');
    *
    *   Console::writeLine('Hello ', 'a', 'b', 1);   // Hello ab1
    *   Console::writeLinef('Hello %s', 'World');    // Hello World
+   *
+   *   Console::$out->write('.');
+   * </code>
+   *
+   * Example: Writing to standard error
+   * <code>
+   *   uses('util.cmd.Console');
+   *
+   *   Console::$err->writeLine('*** An error occured: ', $e->toString());
    * </code>
    *
    * @see      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpref/html/frlrfSystemConsoleClassTopic.asp
    * @purpose  I/O functions
    */
   class Console extends Object {
+    public static 
+      $out= NULL,
+      $err= NULL;
+
+    static function __static() {
+      self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
+      self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
+    }
 
     /**
      * Flush output buffer
      *
      */
     public static function flush() {
-      fflush(STDOUT);
+      self::$out->flush();
     }
 
     /**
@@ -34,7 +54,7 @@
      */
     public static function write() {
       $a= func_get_args();
-      fwrite(STDOUT, implode('', $a));
+      call_user_func_array(array(self::$out, 'write'), $a);
     }
     
     /**
@@ -44,7 +64,7 @@
      */
     public static function writeLine() {
       $a= func_get_args();
-      fwrite(STDOUT, implode('', $a)."\n");
+      call_user_func_array(array(self::$out, 'writeLine'), $a);
     }
     
     /**
@@ -56,7 +76,7 @@
      */
     public static function writef() {
       $a= func_get_args();
-      fwrite(STDOUT, vsprintf(array_shift($a), $a));
+      call_user_func_array(array(self::$out, 'writef'), $a);
     }
 
     /**
@@ -67,7 +87,7 @@
      */
     public static function writeLinef() {
       $a= func_get_args();
-      fwrite(STDOUT, vsprintf(array_shift($a), $a)."\n");
+      call_user_func_array(array(self::$out, 'writeLinef'), $a);
     }
     
     /**
@@ -78,7 +98,7 @@
      * @return  string
      */    
     public function readLine($prompt= NULL) {
-      $prompt && Console::write($prompt.' ');
+      $prompt && self::$out->write($prompt.' ');
       $r= '';
       while ($bytes= fgets(STDIN, 0x20)) {
         $r.= $bytes;
@@ -94,7 +114,7 @@
      * @return  string
      */    
     public function read($prompt= NULL) {
-      $prompt && Console::write($prompt.' ');
+      $prompt && self::$out->write($prompt.' ');
       return fgetc(STDIN);
     }
   }
