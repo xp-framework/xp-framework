@@ -6,9 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0120 - Console::$out and Console::$err
+  (friebe)
 - Properly detect identity columns in rdbms.sybase.SybaseDBAdapter
   (kiesel)
-- Fixes bug with io.File when reading from zero-length files
+- Fixed bug with io.File when reading from zero-length files
   (kiesel)
 - add @args annotation for util.cmd.Command scripts (fixes bug #23)
   (friebe, kiesel)
