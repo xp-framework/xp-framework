@@ -104,13 +104,29 @@ testing (isset($object[$key])) and removing (unset($object[$key])).
     $url= $h->get('stage-url');
     $url= $h['stage-url'];
   }
+
+  with ($s= new HashSet()); {
+  
+    // The add() method and its overloaded equivalent
+    $s->add(new String('X'));
+    $s[]= new String('X');
+
+    // The contains() method and its overloaded equivalent
+    $s->contains(new String('X'));
+    isset($s[new String('X')]);
+
+    // The remove() method and its overloaded equivalent
+    $s->remove(new String('X'));
+    unset($s[new String('X')]);
+  }
 ?>
 
 
 Iteration
 ~~~~~~~~~
 The IteratorAggregate interface requires implementing a method called
-getIterator() which must return an Iterator instance.
+getIterator() which must return an Iterator instance. This makes a class
+usable inside the foreach statement.
 
 <?php
   // ArrayList foreach-iteration, prints "1 2 3 "
@@ -118,8 +134,15 @@ getIterator() which must return an Iterator instance.
     echo $value, ' ';
   }
 
-  // Vector foreach-iteration, prints "1 2 3 "
-  foreach (new Vector(array(1, 2, 3)) as $value) {
+  // Vector foreach-iteration, prints "1 2 "
+  foreach (new Vector(array(new String('1'), new String('2'))) as $value) {
+    echo $value, ' ';
+  }
+
+  // HashSet foreach-iteration, prints "1 2 "
+  $s= new HashSet();
+  $s->addAll(array(new String('1'), new String('2');
+  foreach ($s as $value) {
     echo $value, ' ';
   }
   
@@ -172,6 +195,11 @@ Examples:
     $vector[]= new Integer(1);
     $vector[]= new Float(1.0);
     $vector[]= new Long(6100);
+  }
+
+  with ($routines= create('HashSet<lang.XPClass>')); {
+    $routines[]= XPClass::forName('lang.reflect.Method');
+    $routines[]= XPClass::forName('lang.reflect.Constructor');
   }
 ?>
 
