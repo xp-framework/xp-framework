@@ -9,7 +9,7 @@
    *
    * @purpose  Interface
    */
-  interface Set {
+  interface Set extends ArrayAccess, IteratorAggregate {
   
     /**
      * Adds an object

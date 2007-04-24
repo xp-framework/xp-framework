@@ -12,12 +12,81 @@
    * @purpose  Interface
    */
   class HashSet extends Object implements Set {
+    protected static
+      $iterate   = NULL;
+
     protected
       $_elements = array(),
       $_hash     = 0;
 
     public
       $__generic = array();
+
+    static function __static() {
+      self::$iterate= newinstance('Iterator', array(), '{
+        private $i= 0, $v;
+        public function on($v) { $self= new self(); $self->v= $v; return $self; }
+        public function current() { return $this->v[$this->i]; }
+        public function key() { return $this->i; }
+        public function next() { $this->i++; }
+        public function rewind() { $this->i= 0; }
+        public function valid() { return $this->i < sizeof($this->v); }
+      }');
+    }
+
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      return self::$iterate->on($this->elements);
+    }
+
+    /**
+     * = list[] overloading
+     *
+     * @param   int offset
+     * @return  lang.Generic
+     */
+    public function offsetGet($offset) {
+      throw new IllegalArgumentException('Unsupported operation');
+    }
+
+    /**
+     * list[]= overloading
+     *
+     * @param   int offset
+     * @param   mixed value
+     * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
+     */
+    public function offsetSet($offset, $value) {
+       if (NULL === $offset) {
+        $this->add($value);
+      } else {
+        throw new IllegalArgumentException('Unsupported operation');
+      }
+    }
+
+    /**
+     * isset() overloading
+     *
+     * @param   int offset
+     * @return  bool
+     */
+    public function offsetExists($offset) {
+      return $this->contains($offset);
+    }
+
+    /**
+     * unset() overloading
+     *
+     * @param   int offset
+     */
+    public function offsetUnset($offset) {
+      $this->remove($offset);
+    }
     
     /**
      * Adds an object

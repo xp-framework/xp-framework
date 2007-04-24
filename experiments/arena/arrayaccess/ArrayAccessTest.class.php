@@ -8,6 +8,7 @@
     'lang.types.String',
     'lang.types.ArrayList',
     'util.collections.HashTable',
+    'util.collections.HashSet',
     'util.collections.Vector'
   );
 
@@ -534,6 +535,75 @@
       $s= new String('Übercoder');
       unset($s[0]);
       $this->assertEquals(new String('bercoder'), $s);
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test]
+    public function hashSetAddElement() {
+      $s= new HashSet();
+      $s[]= new String('X');
+      $this->assertTrue($s->contains(new String('X')));
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function hashSetWriteElement() {
+      $s= new HashSet();
+      $s[0]= new String('X');
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function hashSetReadElement() {
+      $s= new HashSet();
+      $s[]= new String('X');
+      $x= $s[0];
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test]
+    public function hashSetTestElement() {
+      $s= new HashSet();
+      $this->assertFalse(isset($s[new String('X')]));
+      $s[]= new String('X');
+      $this->assertTrue(isset($s[new String('X')]));
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test]
+    public function hashSetRemoveElement() {
+      $s= new HashSet();
+      $s[]= new String('X');
+      unset($s[new String('X')]);
+      $this->assertFalse(isset($s[new String('X')]));
+    }
+
+    /**
+     * Tests hashset array access operator overloading
+     *
+     */
+    #[@test]
+    public function hashSetUsableInForeach() {
+      $s= new HashSet();
+      $s->addAll(array(new String('0'), new String('1'), new String('2')));
+      foreach ($s as $i => $element) {
+        $this->assertEquals(new String($i), $element);
+      }
     }
   }
 ?>
