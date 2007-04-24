@@ -60,7 +60,7 @@
         throw(new NoSuchElementException('No more elements'));
       }
       next($this->_hash);
-      return $this->_key;
+      return $this->_hash[$this->_key];
     }
   } 
 ?>
