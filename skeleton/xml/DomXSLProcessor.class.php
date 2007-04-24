@@ -219,6 +219,8 @@
      */
     protected function _checkErrors() {
       if ($error= libxml_get_last_error()) {
+        libxml_clear_errors();
+        
         throw new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
           $error->code,
           trim($error->message),
