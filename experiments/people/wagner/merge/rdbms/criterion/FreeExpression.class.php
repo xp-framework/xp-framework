@@ -45,7 +45,7 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) {
+    public function asSql($conn, $types, $aliasTable= '') {
       return '('.$this->phrase.')';      
     }
 

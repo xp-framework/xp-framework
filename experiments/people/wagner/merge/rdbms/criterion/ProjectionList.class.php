@@ -35,9 +35,9 @@
      * @param   array types
      * @return  string
      */
-    public function asSql($conn, $types) {
+    public function asSql($conn, $types, $aliasTable= '') {
       $s= '';
-      foreach ($this->projections as $p) $s.= ','.$p->asSql($conn, $types);
+      foreach ($this->projections as $p) $s.= ','.$p->asSql($conn, $types, $aliasTable);
       return substr($s, 1);
     }
 

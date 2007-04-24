@@ -38,14 +38,15 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) { 
+    public function asSql($conn, $types, $aliasTable= '') { 
+      $tablePrefix= ($aliasTable) ? $aliasTable.'.' : '';
       if (!is('rdbms.SQLFunction', $this->field) && !isset($types[$field])) throw new SQLStateException('field '.$field.' does not exist');
-      $field= is('rdbms.SQLFunction', $this->field) ? $this->field->asSql($conn, $types) : $this->field;
-      $lo=    is('rdbms.SQLFunction', $this->lo)    ? $this->lo->asSql($conn, $types)    : $this->lo;
-      $hi=    is('rdbms.SQLFunction', $this->hi)    ? $this->hi->asSql($conn, $types)    : $this->hi;
+      $field= is('rdbms.SQLFunction', $this->field) ? $this->field->asSql($conn, $types, $aliasTable) : $aliasTable.$this->field;
+      $lo=    is('rdbms.SQLFunction', $this->lo)    ? $this->lo->asSql($conn, $types, $aliasTable)    : $this->lo;
+      $hi=    is('rdbms.SQLFunction', $this->hi)    ? $this->hi->asSql($conn, $types, $aliasTable)    : $this->hi;
 
       return $this->field.' between '.$conn->prepare(
-        $types[$field][0].' and '.$types[$field][0],
+        '%c and %c',
         $lo,
         $hi
       );

@@ -17,6 +17,6 @@
      * @param   array types
      * @return  string
      */
-    public function asSql($conn, $types) {}
+    public function asSql($conn, $types, $aliasTable= '') {}
   }
 ?>

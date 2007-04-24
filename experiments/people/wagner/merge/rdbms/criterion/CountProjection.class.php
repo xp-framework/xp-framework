@@ -31,10 +31,11 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) {
+    public function asSql($conn, $types, $aliasTable= '') {
+      $tablePrefix= ($aliasTable) ? $aliasTable.'.' : '';
       if (is('rdbms.SQLFunction', $this->field)) throw new SQLStateException('count can not handle SQLFunction');
       if (('*' != $this->field) && !isset($types[$this->field])) throw new SQLStateException('field '.$field.' does not exist');
-      $command= ('*' == $this->field)       ? 'count(*)' : $conn->prepare('count(%c)', $this->field);
+      $command= ('*' == $this->field)       ? 'count(*)' : $conn->prepare('count(%c)', $tablePrefix.$this->field);
       $alias=   ('*' == $this->field)       ? 'count'    : $conn->prepare('count_%c',  $this->field);
       $alias=   (0 == strlen($this->alias)) ? $alias     : $conn->prepare('%c',        $this->alias);
       return $command.' as '.$alias;
