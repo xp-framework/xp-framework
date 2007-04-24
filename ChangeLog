@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix DomXSLProcessor's error handling by clearing the error stack when
+  error was handled
+  (hinckel)
 - Implemented RFC #0120 - Console::$out and Console::$err
   (friebe)
 - Properly detect identity columns in rdbms.sybase.SybaseDBAdapter
