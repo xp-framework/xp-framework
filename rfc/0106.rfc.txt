@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Jan  8 18:35:00     2007
-@status: draft
+@status: discussion, ends Sat Apr 28 12:00:00     2007
 @category: lang.types, util.collections
 
 Scope of Change
