@@ -13,9 +13,12 @@
    * @purpose  Map interface implementation
    */
   class HashTable extends Object implements Map, ArrayAccess {
+    protected
+      $_buckets  = array(),
+      $_hash     = 0;
+    
     public
-      $_buckets = array(),
-      $_hash    = 0;
+      $__generic = array();
 
     /**
      * = list[] overloading
@@ -69,6 +72,15 @@
      */
     public function put($key, Generic $value) {
       $k= Primitive::boxed($key);
+      
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+        } else if (!$value instanceof $this->__generic[1]) {
+          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+        }
+      }
+      
       $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
@@ -90,6 +102,13 @@
      */
     public function get($key) {
       $h= Primitive::boxed($key)->hashCode();
+
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
+
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
@@ -105,6 +124,13 @@
      */
     public function remove($key) {
       $h= Primitive::boxed($key)->hashCode();
+
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
+
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
@@ -148,6 +174,11 @@
      * @return  bool
      */
     public function containsKey($key) {
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
       return isset($this->_buckets[Primitive::boxed($key)->hashCode()]);
     }
 
@@ -158,6 +189,11 @@
      * @return  bool
      */
     public function containsValue(Generic $value) {
+      if ($this->__generic) {
+        if (!$value instanceof $this->__generic[1]) {
+          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+        }
+      }
       foreach (array_keys($this->_buckets) as $key) {
         if ($this->_buckets[$key][1]->equals($value)) return TRUE;
       }

@@ -20,6 +20,9 @@
       $elements  = array(),
       $size      = 0;
 
+    public
+      $__generic = array();
+
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
         private $i= 0, $v;
@@ -37,8 +40,15 @@
      *
      * @param   lang.Generic[] elements default array()
      */
-    public function __construct($elements= array()) {
-      $this->elements= array_values($elements);
+    public function __construct(array $elements= array()) {
+      foreach ($elements as $element) {
+        if ($this->__generic) {
+          if (!$element instanceof $this->__generic[0]) {
+            throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+          }
+        }
+        $this->elements[]= $element;
+      }
       $this->size= sizeof($this->elements);
     }
 
@@ -124,6 +134,10 @@
      * @throws  lang.IllegalArgumentException
      */
     public function add(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
+
       $this->elements[]= $element;
       $this->size++;
       return $element;
@@ -141,6 +155,10 @@
     public function set($index, Generic $element) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+      }
+
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
 
       $orig= $this->elements[$index];
@@ -198,7 +216,7 @@
      * @return  lang.Generic[]
      */
     public function elements() {
-      return array_values($this->elements);
+      return $this->elements;
     }
     
     /**
@@ -208,6 +226,10 @@
      * @return  bool
      */
     public function contains(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
+
       for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return TRUE;
       }
@@ -221,6 +243,10 @@
      * @return  int offset where the element was found or FALSE
      */
     public function indexOf(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
+
       for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
@@ -234,6 +260,10 @@
      * @return  int offset where the element was found or FALSE
      */
     public function lastIndexOf(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
+
       for ($i= $this->size- 1; $i > -1; $i--) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
