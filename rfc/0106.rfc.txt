@@ -316,10 +316,19 @@ Related documents
 - http://msdn2.microsoft.com/en-us/library/ms379564(VS.80).aspx
   An Introduction to C# Generics
 
+
 Comments
 --------
 - friebe, Mon Jan  8 19:09:55     2007
   The ArrayAccess and IteratorAggregate interfaces are part of the Zend
   Engine, not of SPL!
+
+- friebe, Tue Apr 24 18:06:11     2007
+  Maybe we can add declarative generic syntax as seen in this experiment:
+  http://experiments.xp-framework.net/?people,friebe,generics later on;
+  it can then be decided whether to live with the performance penalty
+  or to if a compilation step should be introduced (which would be a 
+  step into the direction of RFC #0052 and the XP language, see also
+  http://experiments.xp-framework.net/?people,friebe,jay)
 
 <EOF>
