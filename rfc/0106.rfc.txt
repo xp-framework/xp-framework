@@ -143,7 +143,6 @@ Therefore, a new core function "create" is introduced. Here's its prototype:
 <pre>
   lang.Generic create(mixed arg) throws IllegalArgumentException
 </pre>
-
 To create a generic object, the argument passed to create() must be a string
 of the form ClassType "<" ComponentType [ ", " ComponentType ] ">". Class 
 names referenced by ClassType and ComponentType may be qualified or not and
@@ -175,6 +174,29 @@ Examples:
     $vector[]= new Long(6100);
   }
 ?>
+
+
+Supporting generics in classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To add generics support to a class, a public member named "__generic" must
+be introduced. In all methods, the generic types must be verified manually.
+
+Example:
+<?php
+  class SortedList extends Object {
+    public
+      $__generic = array();
+    
+    public function add($element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
+
+      // ...
+    }
+  }
+?>
+
 
 Additional note: create() overloaded
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,6 +276,11 @@ Related documents
 - http://experiments.xp-framework.net/?arena,arrayaccess
   Experiment and unittests
 
+- http://java.sun.com/docs/books/tutorial/java/generics/
+  Generics lesson
+
+- http://msdn2.microsoft.com/en-us/library/ms379564(VS.80).aspx
+  An Introduction to C# Generics
 
 Comments
 --------
