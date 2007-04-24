@@ -110,9 +110,10 @@
      * @param   array types
      * @return  string
      */
-    public function renderFunction($func, $args, $types) {
+    public function renderFunction($func, $args, $types, $aliasTable= '') {
+      $tablePrefix= ($aliasTable) ? $aliasTable.'.' : '';
       $func_i= $func.'_'.count($args);
-      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types).')' : $args[$i];
+      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types, $aliasTable).')' : $tablePrefix.$args[$i];
 
       if (isset(self::$implementation[$func_i])) return call_user_func_array(array($this->conn, 'prepare'), array_merge(array(self::$implementation[$func_i]), $args));
       return $func.'('.implode(', ', $args).')';

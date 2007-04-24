@@ -29,9 +29,10 @@
      * @param   array types
      * @return  string
      */
-    public function renderFunction($func, $args, $types) {
+    public function renderFunction($func, $args, $types, $aliasTable= '') {
+      $tablePrefix= ($aliasTable) ? $aliasTable.'.' : '';
       $func_i= $func.'_'.count($args);
-      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types).')' : $args[$i];
+      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types, $aliasTable).')' : $tablePrefix.$args[$i];
       
       switch ($func) {
         case 'concat': return '('.implode(' + ', $args).')';
@@ -42,5 +43,18 @@
       }
     }
   
+    /**
+     * build join related part of an SQL query
+     *
+     * @param   string[]
+     * @param   string[]
+     * @return  string
+     */
+    public function makeJoinBy(Array $tables, Array $conditions) {
+      if (1 >= count($tables)) return array_pop($tables);
+      $querypart= implode(', ', $tables).' where ';
+      foreach ($conditions as $condition) $querypart.= str_replace('=', '*=', $condition);
+      return $querypart;
+    }
   }
 ?>
