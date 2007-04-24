@@ -1,0 +1,47 @@
+<document created_at="Mon, 23 Apr 2007 18:37:45 +0200" created_by="ruben">
+  <database database="Ruben_Test_PS">  
+    <table name="mmessage">    
+      <constraint name="recipient_of_message">      
+        <reference table="mperson" role="MmessageRecipient">        
+          <key attribute="recipient_id" sourceattribute="person_id"/>
+        </reference>
+      </constraint>
+      <constraint name="author_of_message">      
+        <reference table="mperson" role="MmessageAuthor">        
+          <key attribute="author_id" sourceattribute="person_id"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="mperson"/>
+    <table name="ncolor">    
+      <constraint name="colortype_for_color">      
+        <reference table="ncolortype" role="NcolorColortype">        
+          <key attribute="colortype_id" sourceattribute="colortype_id"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="ncolortype"/>
+    <table name="nmappoint">    
+      <constraint name="texture_for_mappoint">      
+        <reference table="ntexture" role="NmappointTexture">        
+          <key attribute="texture_id" sourceattribute="texture_id"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="nmobileObject">    
+      <constraint name="mappoint_for_mob">      
+        <reference table="nmappoint" role="NmobileObjectCoord_xCoord_y">        
+          <key attribute="coord_x" sourceattribute="coord_x"/>
+          <key attribute="coord_y" sourceattribute="coord_y"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="ntexture">    
+      <constraint name="color_for_texture">      
+        <reference table="ncolor" role="NtextureColor">        
+          <key attribute="color_id" sourceattribute="color_id"/>
+        </reference>
+      </constraint>
+    </table>
+  </database>
+</document>
