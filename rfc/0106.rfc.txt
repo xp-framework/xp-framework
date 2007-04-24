@@ -331,4 +331,11 @@ Comments
   step into the direction of RFC #0052 and the XP language, see also
   http://experiments.xp-framework.net/?people,friebe,jay)
 
+- friebe, Tue Apr 24 19:30:20     2007
+  http://www.php-compiler.net/doku.php?id=core%3aphalanger_for_.net_developers
+  Section 3.3: PHP/CLR language extensions notes Phalanger uses:
+  ClassType "<:" ComponentType [ "," ComponentType ] ":>"
+  for generic syntax (note the extra ":"), for example:
+  $d= new Dictionary<:string, string:>();
+
 <EOF>
