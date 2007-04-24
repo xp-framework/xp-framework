@@ -197,6 +197,12 @@ Example:
   }
 ?>
 
+This poses a higher burden when programming (compared to one being able to
+express this syntactically) but does not introduce a great performance 
+penalty like http://experiments.xp-framework.net/?people,friebe,generics
+does (transforms syntactically defined generic declarations to the notation
+seen above when a class is loaded).
+
 
 Additional note: create() overloaded
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
