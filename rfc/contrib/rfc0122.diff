@@ -1,0 +1,246 @@
+Index: skeleton/scriptlet/xml/workflow/Handler.class.php
+===================================================================
+--- skeleton/scriptlet/xml/workflow/Handler.class.php	(revision 10031)
++++ skeleton/scriptlet/xml/workflow/Handler.class.php	(working copy)
+@@ -11,6 +11,7 @@
+   define('HANDLER_ERRORS',      'errors');
+   define('HANDLER_SUCCESS',     'success');
+   define('HANDLER_RELOADED',    'reloaded');
++  define('HANDLER_CANCELLED',   'cancelled');
+ 
+   // Value storages
+   define('HVAL_PERSISTENT',  0x0000);
+@@ -63,7 +64,7 @@
+     /**
+      * Set Wrapper
+      *
+-     * @param   &scriptlet.xml.workflow.Wrapper wrapper
++     * @param   scriptlet.xml.workflow.Wrapper wrapper
+      */
+     public function setWrapper($wrapper) {
+       $this->wrapper= $wrapper;
+@@ -72,7 +73,7 @@
+     /**
+      * Get Wrapper
+      *
+-     * @return  &scriptlet.xml.workflow.Wrapper
++     * @return  scriptlet.xml.workflow.Wrapper
+      */
+     public function getWrapper() {
+       return $this->wrapper;
+@@ -166,8 +167,8 @@
+      * Get identifier. Returns name in this default implementation.
+      * Overwrite in subclasses.
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
++     * @param   scriptlet.xml.Context context
+      * @return  string
+      */
+     public function identifierFor($request, $context) {
+@@ -200,22 +201,22 @@
+      * default implementation in case the request has a parameter named
+      * __handler whose value contains this handler's name.
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
++     * @param   scriptlet.xml.Context context
+      * @return  bool
+      */
+     public function isActive($request, $context) {
+       return ($request->getParam('__handler') == $this->identifier);
+     }
+-
++    
+     /**
+      * Set up this handler. Called when this handler has not yet been
+      * registered to the session
+      *
+      * Return TRUE to indicate success, FALSE to signal failure.
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
+      * @return  bool
+      */
+     public function setup($request, $context) { 
+@@ -225,29 +226,48 @@
+     /**
+      * Retrieve whether this handler needs data 
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
+      * @return  bool
+      */
+     public function needsData($request, $context) {
+       return TRUE;
+     }  
++    
++    /**
++     * Retrieve whether this handler needs to be cancelled.
++     *
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     * @return  bool
++     */
++    public function needsCancel($request, $context) {
++      return FALSE;
++    }    
+ 
+     /**
+      * Handle error condition
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
+      */
+     public function handleErrorCondition($request, $context) {
+       return FALSE;
+     }
++    
++    /**
++     * Perform cancellation of this handler.
++     *
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
++     */
++    public function handleCancellation($request, $context) { }
+ 
+     /**
+      * Handle submitted data
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.Context context
+      */
+     public function handleSubmittedData($request, $context) {
+       return FALSE;
+@@ -256,9 +276,9 @@
+     /**
+      * Finalize this handler
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.Context context
+      */
+     public function finalize($request, $response, $context) { }
+   }
+Index: skeleton/scriptlet/xml/workflow/AbstractState.class.php
+===================================================================
+--- skeleton/scriptlet/xml/workflow/AbstractState.class.php	(revision 10031)
++++ skeleton/scriptlet/xml/workflow/AbstractState.class.php	(working copy)
+@@ -24,8 +24,8 @@
+     /**
+      * Add a handler
+      *
+-     * @param   &scriptlet.xml.workflow.Handler handler
+-     * @return  &scriptlet.xml.workflow.Handler the added handler
++     * @param   scriptlet.xml.workflow.Handler handler
++     * @return  scriptlet.xml.workflow.Handler the added handler
+      */
+     public function addHandler($handler) {
+       $this->handlers[]= $handler;
+@@ -46,9 +46,9 @@
+      * about the handler's wrapper, if existant and IFormResultAggregate'd)
+      * to the formresult
+      *
+-     * @param   &scriptlet.xml.workflow.Handler handler the handler to add
+-     * @param   &xml.Node node the node to add the handler representation to
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.workflow.Handler handler the handler to add
++     * @param   xml.Node node the node to add the handler representation to
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+      */
+     protected function addHandlerToFormresult($handler, $node, $request) {
+       $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
+@@ -87,9 +87,9 @@
+     /**
+      * Set up this state
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+-     * @param   &scriptlet.xml.workflow.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.workflow.Context context
+      */
+     public function setup($request, $response, $context) {
+       $this->cat && $this->cat->debug($this->getClassName().'::setup');
+@@ -123,18 +123,14 @@
+ 
+             // Set up the handler if necessary
+             if ($setup) {
+-              try {
+-                // In case a wrapper is defined, call its setup() method. This 
+-                // method is not allowed to fail.
+-                if ($this->handlers[$i]->hasWrapper()) {
+-                  $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i], $context);
+-                }
+-
+-                $result= $this->handlers[$i]->setup($request, $context);
+-              } catch (Exception $e) {
+-                throw($e);
++              // In case a wrapper is defined, call its setup() method. This 
++              // method is not allowed to fail.
++              if ($this->handlers[$i]->hasWrapper()) {
++                $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i], $context);
+               }
+ 
++              $result= $this->handlers[$i]->setup($request, $context);
++
+               // In case setup() returns FALSE, it indicates the form can not be 
+               // displayed due to a prerequisite problem. For example, an editor
+               // handler for an article might want to backcheck the article id
+@@ -164,6 +160,20 @@
+ 
+             // If the handler is not active, ask the next handler
+             if (!$this->handlers[$i]->isActive($request, $context)) continue;
++            
++            // If active, ask handler if he wants to be cancelled
++            if ($this->handlers[$i]->needsCancel($request, $context)) {
++            
++              // Perform user-defined cleanup
++              $this->handlers[$i]->handleCancellation($request, $context);
++              $node->setAttribute('status', HANDLER_CANCELLED);
++              
++              // Remove handler from session and call handler's finalize() method
++              $request->session->removeValue($this->handlers[$i]->identifier);
++              $this->handlers[$i]->finalize($request, $response, $context);
++              
++              continue;
++            }
+ 
+             // Check if the handler needs data. In case it does, call the
+             // handleSubmittedData() method
+@@ -216,9 +226,9 @@
+     /**
+      * Process this state. Does nothing in this default implementation.
+      *
+-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+-     * @param   &scriptlet.xml.Context context
++     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
++     * @param   scriptlet.xml.XMLScriptletResponse response 
++     * @param   scriptlet.xml.Context context
+      */
+     public function process($request, $response, $context) {
+     }
+@@ -236,7 +246,7 @@
+     /**
+      * Set a trace for debugging
+      *
+-     * @param   &util.log.LogCategory cat
++     * @param   util.log.LogCategory cat
+      * @see     xp://util.log.Traceable
+      */
+     public function setTrace($cat) { 
