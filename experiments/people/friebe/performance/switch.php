@@ -32,7 +32,7 @@
   
     function run($arg, $times) {
       for ($i= 0; $i < $times; $i++) {
-        switch (xp::typeOf($arg)) {
+        switch (gettype($arg)) {
           case 'integer': $r= 'INTEGER'; break;
           case 'string': $r= 'STRING'; break;
           case 'boolean': $r= 'BOOL'; break;
