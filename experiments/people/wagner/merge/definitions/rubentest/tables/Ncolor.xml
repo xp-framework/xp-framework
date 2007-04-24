@@ -1,0 +1,51 @@
+<document created_at="Mon, 23 Apr 2007 18:37:45 +0200" created_by="ruben">
+  <table
+   name="ncolor"
+   dbhost="localhost"
+   database="Ruben_Test_PS"
+   dbtype="mysql"
+   class="Ncolor"
+   package="de.schlund.db.rubentest"
+  >  
+    <attribute
+     name="color_id"
+     type="DB_ATTRTYPE_INT"
+     identity="true"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="name"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <attribute
+     name="colortype_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <index
+     name="PRIMARY"
+     unique="true"
+     primary="true"
+    >    
+      <key>color_id</key>
+    </index>
+    <index
+     name="colortype_for_color"
+     unique="false"
+     primary="false"
+    >    
+      <key>colortype_id</key>
+    </index>
+    <constraint name="colortype_for_color">    
+      <reference table="ncolortype" role="Colortype">      
+        <key attribute="colortype_id" sourceattribute="colortype_id"/>
+      </reference>
+    </constraint>
+  </table>
+</document>

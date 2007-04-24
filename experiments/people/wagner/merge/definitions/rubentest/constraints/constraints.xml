@@ -1,47 +1,45 @@
-<document created_at="Wed, 04 Apr 2007 10:45:30 +0200" created_by="ruben">
+<document created_at="Mon, 23 Apr 2007 18:37:45 +0200" created_by="ruben">
   <database database="Ruben_Test_PS">  
-    <table name="color">    
+    <table name="mmessage">    
+      <constraint name="recipient_of_message">      
+        <reference table="mperson" role="MmessageRecipient">        
+          <key attribute="recipient_id" sourceattribute="person_id"/>
+        </reference>
+      </constraint>
+      <constraint name="author_of_message">      
+        <reference table="mperson" role="MmessageAuthor">        
+          <key attribute="author_id" sourceattribute="person_id"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="mperson"/>
+    <table name="ncolor">    
       <constraint name="colortype_for_color">      
-        <reference table="colortype" role="ColorColortype">        
+        <reference table="ncolortype" role="NcolorColortype">        
           <key attribute="colortype_id" sourceattribute="colortype_id"/>
         </reference>
       </constraint>
     </table>
-    <table name="colortype"/>
-    <table name="job">    
-      <constraint name="person_for_job">      
-        <reference table="person" role="JobPerson">        
-          <key attribute="person_id" sourceattribute="person_id"/>
-        </reference>
-      </constraint>
-    </table>
-    <table name="mappoint">    
+    <table name="ncolortype"/>
+    <table name="nmappoint">    
       <constraint name="texture_for_mappoint">      
-        <reference table="texture" role="MappointTexture">        
+        <reference table="ntexture" role="NmappointTexture">        
           <key attribute="texture_id" sourceattribute="texture_id"/>
         </reference>
       </constraint>
     </table>
-    <table name="mobileObject">    
+    <table name="nmobileObject">    
       <constraint name="mappoint_for_mob">      
-        <reference table="mappoint" role="MobileObjectCoord_xCoord_y">        
+        <reference table="nmappoint" role="NmobileObjectCoord_xCoord_y">        
           <key attribute="coord_x" sourceattribute="coord_x"/>
           <key attribute="coord_y" sourceattribute="coord_y"/>
         </reference>
       </constraint>
     </table>
-    <table name="person"/>
-    <table name="texture">    
+    <table name="ntexture">    
       <constraint name="color_for_texture">      
-        <reference table="color" role="TextureColor">        
+        <reference table="ncolor" role="NtextureColor">        
           <key attribute="color_id" sourceattribute="color_id"/>
-        </reference>
-      </constraint>
-    </table>
-    <table name="toilette">    
-      <constraint name="person_on_toilette">      
-        <reference table="person" role="ToilettePerson">        
-          <key attribute="person_id" sourceattribute="person_id"/>
         </reference>
       </constraint>
     </table>
