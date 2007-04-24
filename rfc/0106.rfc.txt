@@ -1,4 +1,4 @@
-RFC 0106: Overload array access / foreach in "array" types / type boxing
+RFC 0106: Array access / iteration / type boxing / generics
 ========================================================================
 $Id$
 
@@ -21,28 +21,29 @@ Easier / intuitive interface to "array" types.
 
 Functionality
 -------------
-The relevant classes will implement the "magic" interfaces ArrayAccess 
-and IteratorAggregate (provided with the Zend Engine).
 
-ArrayAccess
-~~~~~~~~~~~
+Class overview
+~~~~~~~~~~~~~~
+<pre>
+* lang.types.ArrayList is an immutable, zero-indexed list of values of any 
+  type and most closely resembles an array in Java.
+
+* util.collections.Vector is a resizable array of objects.
+
+* util.collections.HashTable is a map where both keys and values are 
+  objects.
+</pre>
+
+
+Array access
+~~~~~~~~~~~~
 The ArrayAccess interface requires implementing the following methods:
-offsetGet(), offsetSet(), offsetExists() and offsetUnset().
+offsetGet(), offsetSet(), offsetExists() and offsetUnset(). These 
+overload getting ($value= $object[$key]), setting ($object[$key]= $value)),
+testing (isset($object[$key])) and removing (unset($object[$key])).
 
-IteratorAggregate
-~~~~~~~~~~~~~~~~~
-The IteratorAggregate interface requires implementing a method called
-getIterator() which must return an Iterator instance.
-
-ArrayList
-~~~~~~~~~
-An ArrayList is an immutable, zero-indexed list of values of any type
-and most closely resembles an array in Java.
 <?php
   with ($a= new ArrayList(1, 2, 3));  {
-  
-    // Length = 3
-    $l= $a->length;
   
     // Element access
     $one= $a[0];    // $one contains "1"
@@ -64,28 +65,8 @@ and most closely resembles an array in Java.
     isset($a[0]);   // TRUE
     isset($a[-1]);  // FALSE
     isset($a[3]);   // FALSE
-    
-    // foreach-iteration, prints "1 2 3 "
-    foreach (new ArrayList(1, 2, 3) as $value) {
-      echo $value, ' ';
-    }
-    
-    // Constructing an arraylist from an array
-    $a= ArrayList::newInstance(array(1, 2, 3, 4));
-    $four= $a->length;
-    
-    // Constructing an empty arraylist
-    $a= ArrayList::newInstance(4);
-    $four= $a->length;
   }
-?>
-
-Vector
-~~~~~~
-A Vector is a resizable array of objects.
-<?php
-  uses('util.collections.Vector');
-
+  
   with ($v= new Vector()); {
     
     // The add() method and its overloaded equivalent
@@ -103,20 +84,8 @@ A Vector is a resizable array of objects.
     // The remove() method and its overloaded equivalent
     $v->remove(0);
     unset($v[0]);
-
-    // foreach-iteration, prints "1 2 3 "
-    foreach (new Vector(array(1, 2, 3)) as $value) {
-      echo $value, ' ';
-    }
   }
-?>
-
-HashTable
-~~~~~~~~~
-A HashTable is a map where both keys and values are objects.
-<?php
-  uses('util.collections.HashTable');
-
+  
   with ($h= new HashTable()); {
   
     // The put() method and its overloaded equivalent
@@ -138,6 +107,104 @@ A HashTable is a map where both keys and values are objects.
 ?>
 
 
+Iteration
+~~~~~~~~~
+The IteratorAggregate interface requires implementing a method called
+getIterator() which must return an Iterator instance.
+
+<?php
+  // ArrayList foreach-iteration, prints "1 2 3 "
+  foreach (new ArrayList(1, 2, 3) as $value) {
+    echo $value, ' ';
+  }
+
+  // Vector foreach-iteration, prints "1 2 3 "
+  foreach (new Vector(array(1, 2, 3)) as $value) {
+    echo $value, ' ';
+  }
+  
+  // HashTable foreach-iteration, prints "development production "
+  $h= new HashTable();
+  $h['development']= new URL('xp://localhost:6448');
+  $h['production']= new URL('xp://jboss.example.com:6448');
+  foreach ($h->keys() as $key) {
+    echo $key, ' ';
+  }
+?>
+
+
+Generics
+~~~~~~~~
+To be able to create generics with the "new" keyword, we would need to 
+extend PHP's syntax or change constructor signatures. Both of those have
+obvious downsides.
+
+Therefore, a new core function "create" is introduced. Here's its prototype:
+<pre>
+  lang.Generic create(mixed arg) throws IllegalArgumentException
+</pre>
+
+To create a generic object, the argument passed to create() must be a string
+of the form ClassType "<" ComponentType [ ", " ComponentType ] ">". Class 
+names referenced by ClassType and ComponentType may be qualified or not and
+need to refer to loaded XP classes or interfaces.
+
+Examples:
+<?php
+  with ($hash= create('HashTable<String, String>')); {
+    $hash['key']= new String('value');
+    $hash['key']= new Integer(1);       // Throws an IllegalArgumentException
+    $hash[1]= new String('value');      // - " -
+
+    $value= $hash['key'];
+    $value= $hash[1];                   // Throws an IllegalArgumentException
+  } 
+  
+  with ($func= create('util.collections.HashTable<String, lang.Runnable>')); {
+    $func['hello']= newinstance('lang.Runnable', array(), '{
+      public function run() {
+        Console::writeLine("Hello");
+      }
+    }');
+    $func['hello']->run();
+  }
+  
+  with ($vector= create('Vector<lang.types.Number>')); {
+    $vector[]= new Integer(1);
+    $vector[]= new Float(1.0);
+    $vector[]= new Long(6100);
+  }
+?>
+
+
+Additional note: ArrayList vs. Vector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The distinction between those two is that ArrayList is a thin, immutable
+wrapper type without utility functions such as indexOf() or contains(), 
+whereas the Vector class provides a full "list" API. 
+
+
+Additional note: ArrayList constructor
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lang.types.ArrayList's constructor will be changed to accept varargs
+instead of an array. The classes that use lang.types.ArrayList will 
+be adapted to this change.
+
+To be able to create an ArrayList from an array or from a known size,
+a new method "newInstance" will be added. Usage as follows:
+
+<?php
+  // Constructing an arraylist from an array
+  $a= ArrayList::newInstance(array(1, 2, 3, 4));
+  $four= $a->length;
+
+  // Constructing an empty arraylist
+  $a= ArrayList::newInstance(4);
+  $four= $a->length;
+?>
+
+
+
 Security considerations
 -----------------------
 n/a
@@ -150,20 +217,13 @@ Slightly slower (more methods, extra implementation checks)
 
 Dependencies
 ------------
+- A new interface util.collections.IList will be introduced. An 
+  implementation will exists in form of the new class 
+  util.collections.Vector.
 
-ArrayList vs. Vector
-~~~~~~~~~~~~~~~~~~~~
-lang.types.ArrayList's constructor will be changed to accept varargs
-instead of an array. The classes that use lang.types.ArrayList will 
-be adapted to this change.
+- RFC #0101 - The lang.types.String class will be needed for 
+  boxing to work.
 
-A new interface util.collections.IList will be introduced. An 
-implementation will exists in form of the new class 
-util.collections.Vector.
-
-The distinction between those two is that ArrayList is a thin, immutable
-wrapper type without utility functions such as indexOf() or contains(), 
-whereas the Vector class provides a full "list" API. 
 
 Related documents
 -----------------
@@ -177,8 +237,9 @@ Related documents
   Patch for remote API (apply in xp/trunk)
 
 - http://experiments.xp-framework.net/?arena,arrayaccess
-  Experiment
-  
+  Experiment and unittests
+
+
 Comments
 --------
 - friebe, Mon Jan  8 19:09:55     2007
