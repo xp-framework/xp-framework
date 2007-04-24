@@ -41,8 +41,7 @@
      */
     #[@test]
     public function nullByte() {
-      $c= new Character(0);
-      $this->assertEquals("\x00", $c->getBytes());
+      $this->assertEquals("\x00", create(new Character(0))->getBytes());
     }
 
     /**
@@ -51,8 +50,7 @@
      */
     #[@test]
     public function euroSymbol() {
-      $c= new Character(8364);    // &#8364; in HTML
-      $this->assertEquals("\xe2\x82\xac", $c->getBytes());
+      $this->assertEquals("\xe2\x82\xac", create(new Character(8364))->getBytes()); // &#8364; in HTML
     }
   
     /**
@@ -70,8 +68,7 @@
      */
     #[@test]
     public function usAsciiCharacter() {
-      $str= new Character('H');
-      $this->assertEquals('H', $str->getBytes());
+      $this->assertEquals('H', create(new Character('H'))->getBytes());
     }
 
     /**
@@ -80,8 +77,7 @@
      */
     #[@test]
     public function umlautCharacter() {
-      $str= new Character('�');
-      $this->assertEquals('ä', $str->getBytes());
+      $this->assertEquals('ä', create(new Character('�'))->getBytes());
     }
 
     /**
@@ -102,8 +98,7 @@
      */
     #[@test]
     public function transliteration() {
-      $s= new String('č', 'UTF-8');
-      $this->assertEquals('c', $s->toString());
+      $this->assertEquals('c', create(new String('č', 'UTF-8'))->toString());
     }
   }
 ?>

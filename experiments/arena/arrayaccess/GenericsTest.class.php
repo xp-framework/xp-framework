@@ -29,8 +29,7 @@
      */
     #[@test]
     public function stringStringHash() {
-      $hash= create('HashTable<String, String>');
-      $hash['hello']= new String('World');
+      create('HashTable<String, String>')->put('hello', new String('World'));
     }
 
     /**
@@ -39,8 +38,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalValue() {
-      $hash= create('HashTable<String, String>');
-      $hash['hello']= new Integer(1);
+      create('HashTable<String, String>')->put('hello', new Integer(1));
     }
 
     /**
@@ -49,8 +47,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalKey() {
-      $hash= create('HashTable<String, String>');
-      $hash[1]= new String('World');
+      create('HashTable<String, String>')->put(1, new String('World'));
     }
 
     /**
@@ -59,8 +56,7 @@
      */
     #[@test]
     public function stringVector() {
-      $vector= create('Vector<String>');
-      $vector[]= new String('Hi');
+      create('Vector<String>')->add(new String('Hi'));
     }
 
     /**
@@ -69,8 +65,10 @@
      */
     #[@test]
     public function createStringVector() {
-      $vector= create('Vector<String>', array(new String('one')));
-      $this->assertEquals(new String('one'), $vector[0]);
+      $this->assertEquals(
+        new String('one'), 
+        create('Vector<String>', array(new String('one')))->get(0)
+      );
     }
 
     /**
@@ -79,8 +77,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringVectorIllegalValue() {
-      $vector= create('Vector<String>');
-      $vector[]= new Integer(1);
+      create('Vector<String>')->add(new Integer(1));
     }
 
     /**

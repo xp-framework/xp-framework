@@ -494,9 +494,11 @@
   }
   // }}}
 
-  // {{{ lang.Generic create(string spec)
+  // {{{ lang.Generic create(mixed spec)
   //     Creates a generic object
   function create($spec) {
+    if ($spec instanceof Generic) return $spec;
+
     sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
     $class= xp::reflect($classname);
     

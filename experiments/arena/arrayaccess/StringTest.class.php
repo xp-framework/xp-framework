@@ -84,8 +84,10 @@
      */
     #[@test]
     public function transliteration() {
-      $s= new String('Trenčiansky kraj', 'UTF-8');
-      $this->assertEquals('Trenciansky kraj', $s->toString());
+      $this->assertEquals(
+        'Trenciansky kraj', 
+        create(new String('Trenčiansky kraj', 'UTF-8'))->toString()
+      );
     }
 
     /**
