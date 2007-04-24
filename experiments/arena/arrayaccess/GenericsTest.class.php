@@ -6,6 +6,7 @@
 
   uses(
     'util.collections.HashTable', 
+    'util.collections.HashSet', 
     'util.collections.Vector',
     'util.collections.Stack',
     'util.collections.Queue',
@@ -147,6 +148,24 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringLRUBufferIllegalValue() {
       create('util.collections.LRUBuffer<String>', 1)->add(new Integer(1));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test]
+    public function stringHashSet() {
+      create('util.collections.HashSet<String>')->add(new String('One'));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringHashSetIllegalValue() {
+      create('util.collections.HashSet<String>')->add(new Integer(1));
     }
   }
 ?>
