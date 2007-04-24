@@ -1,0 +1,86 @@
+RFC 0122: Make handlers cancelable
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Tue Apr 24 12:45:56 CEST 2007
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+scriptlet.xml.workflow.Handler will be extended to support cancelling
+an active handler and remove it from the storage.
+
+Rationale
+---------
+Canceling the current handler is a common usecase that has not yet
+been addressed. Several workarounds exist in applications that all
+have backdraws:
+
+#1: Cancel by link to different page:
+Linking to another page does not submit the handler's data, does
+not perform syntax check execution and handleSubmittedData() will
+not be called.
+However, the handler remains active in the session and will be loaded
+from the storage when the user enters the handlers page again.
+
+#2: Cancel through a "cancel" button
+The "cancel" button usually is a normal "submit" button which submits
+the form. The handleSubmittedData() then usually check whether that
+particular button has been clicked and just aborts processing the data
+by returning TRUE.
+However, the handler's wrapper will be executed and with it all syntax
+checks. Thus, handleSubmittedData() and the abort code will only be
+called when all data is valid.
+
+Functionality
+-------------
+scriptlet.xml.workflow.Handler will get two new methods that can be
+used to cancel a handler. The default implementation looks like this:
+
+<code>
+  /**
+   * Retrieve whether this handler needs to be cancelled.
+   *
+   * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+   * @param   scriptlet.xml.Context context
+   * @return  bool
+   */
+  public function needsCancel($request, $context) {
+    return FALSE;
+  }
+  
+  /**
+   * Perform cancellation of this handler.
+   *
+   * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+   * @param   scriptlet.xml.Context context
+   */
+  public function handleCancellation($request, $context) { }
+</code>
+
+The method needsCancel() indicated whether the handler's execution should
+be cancelled and the handler should be removed from the session.
+The handleCancellation() method can be used to perform user-defined cleanup
+operations.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
