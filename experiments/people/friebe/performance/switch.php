@@ -8,7 +8,7 @@
   uses('util.profiling.Timer', 'util.Binford');
   
   // {{{ IfElseStrategy
-  //     if / else if combination
+  //     if / else if combination with is_<type>()
   class IfElseStrategy extends Object {
   
     function run($arg, $times) {
@@ -18,6 +18,28 @@
         } else if (is_string($arg)) {
           $r= 'STRING';
         } else if (is_bool($arg)) {
+          $r= 'BOOL';
+        } else if ($arg instanceof Object) {
+          $r= 'OBJECT';
+        }
+      }
+      return $r;
+    }
+  }
+  // }}}
+
+  // {{{ IfElseStrCmpStrategy
+  //     if / else if combination with gettype() / ===
+  class IfElseStrCmpStrategy extends Object {
+  
+    function run($arg, $times) {
+      for ($i= 0; $i < $times; $i++) {
+        $t= gettype($arg);
+        if ('integer' === $t) {
+          $r= 'INTEGER';
+        } else if ('string' === $t) {
+          $r= 'STRING';
+        } else if ('boolean' === $t) {
           $r= 'BOOL';
         } else if ($arg instanceof Object) {
           $r= 'OBJECT';
@@ -100,7 +122,7 @@ Tests performance of switch/case vs. if/else vs. ternary vs. do/while/break
 Usage:
 $ php switch.php <strategy> [-t times]
   
-  * strategy is one of "switch", "case", "ternary" or "break"
+  * strategy is one of "switch", "ifelse", "ifelsestrcmp", "ternary" or "break"
   
   * times specifies how often to call the function and defaults to 100.000
 __
@@ -112,6 +134,7 @@ __
   $times= $p->value('times', 't', 100000);
   $t= new Timer();
 
+  $total= 0.0;
   foreach (array('More power', -1, FALSE, new Binford(6100)) as $arg) {
     $t->start(); {
       $r= $strategy->run($arg, $times);
@@ -125,6 +148,9 @@ __
       $t->elapsedTime(), 
       $times
     );
+    
+    $total+= $t->elapsedTime();
   }
+  Console::writeLinef('-> Total: %.3f seconds for %d calls', $total, $times);
   // }}}
 ?>
