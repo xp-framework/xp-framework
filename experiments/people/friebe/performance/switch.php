@@ -53,6 +53,24 @@
   }
   // }}}
 
+  // {{{ BreakStrategy
+  //     do / while (0) loop w/ break
+  class BreakStrategy extends Object {
+  
+    function run($arg, $times) {
+      for ($i= 0; $i < $times; $i++) {
+        do {
+          if (is_int($arg) && $r= 'INTEGER') break;
+          if (is_string($arg) && $r= 'STRING') break;
+          if (is_bool($arg) && $r= 'BOOL') break;
+          if ($arg instanceof Object && $r= 'OBJECT') break;
+        } while(0);
+      }
+      return $r;
+    }
+  }
+  // }}}
+
   // {{{ SwitchStrategy
   //     switch/case statement
   class SwitchStrategy extends Object {
@@ -77,12 +95,12 @@
   // Display help
   if ($p->exists('help', '?') || !$p->exists(1)) {
     Console::writeLinef(<<<__
-Tests performance of switch/case vs. elseif vs. ternary
+Tests performance of switch/case vs. if/else vs. ternary vs. do/while/break
 
 Usage:
 $ php switch.php <strategy> [-t times]
   
-  * strategy is one of "switch", "case" or "ternary"
+  * strategy is one of "switch", "case", "ternary" or "break"
   
   * times specifies how often to call the function and defaults to 100.000
 __
