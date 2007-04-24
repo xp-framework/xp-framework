@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table nmobileObject, database Ruben_Test_PS
-   * (Auto-generated on Mon, 23 Apr 2007 18:37:45 +0200 by ruben)
+   * (Auto-generated on Tue, 24 Apr 2007 16:43:57 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */

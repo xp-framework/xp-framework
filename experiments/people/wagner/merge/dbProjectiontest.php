@@ -14,7 +14,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Projections',
     'rdbms.criterion.Restrictions',
-    'de.schlund.db.rubentest.RubentestPerson'
+    'de.schlund.db.rubentest.Mperson'
   );
 
   // Params
@@ -70,19 +70,19 @@
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    $l= RubentestPerson::getPeer()->doSelect($crit, 1);
+    $l= Mperson::getPeer()->doSelect($crit, 1);
     var_dump($l);
   }
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    $l= RubentestPerson::getPeer()->iteratorFor($crit);
+    $l= Mperson::getPeer()->iteratorFor($crit);
     var_dump($l->next());
   }
 
 
   $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
-  var_dump(RubentestPerson::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count'));
-  var_dump(RubentestPerson::getPeer()->doSelect($crit));
+  var_dump(Mperson::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count'));
+  var_dump(Mperson::getPeer()->doSelect($crit));
 
 ?>

@@ -15,7 +15,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLFunctions',
-    'de.schlund.db.rubentest.RubentestJob'
+    'de.schlund.db.rubentest.Nmappoint'
   );
 
   // Params
@@ -68,7 +68,7 @@
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    var_dump(RubentestJob::getPeer()->iteratorFor($crit)->next());
+    var_dump(Nmappoint::getPeer()->iteratorFor($crit)->next());
   }
 
 ?>

@@ -14,7 +14,7 @@
     'xml.Node',
     'rdbms.ConnectionManager',
     'rdbms.criterion.Restrictions',
-    'de.schlund.db.rubentest.RubentestColor'
+    'de.schlund.db.rubentest.Ncolor'
   );
 
   // Params
@@ -29,7 +29,7 @@
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
   
-  $c1= RubentestColor::getPeer()->iteratorFor(new Criteria(
+  $c1= Ncolor::getPeer()->iteratorFor(new Criteria(
     Restrictions::free('name = "lightgreen"')
   ));
   
