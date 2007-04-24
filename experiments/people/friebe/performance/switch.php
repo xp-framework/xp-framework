@@ -8,6 +8,7 @@
   uses('util.profiling.Timer', 'util.Binford');
   
   // {{{ IfElseStrategy
+  //     if / else if combination
   class IfElseStrategy extends Object {
   
     function run($arg, $times) {
@@ -27,7 +28,33 @@
   }
   // }}}
 
+  // {{{ TernaryStrategy
+  //     Ternary operators.
+  class TernaryStrategy extends Object {
+  
+    function run($arg, $times) {
+      for ($i= 0; $i < $times; $i++) {
+        $r= is_int($arg)
+          ? 'INTEGER'
+          : (is_string($arg)
+            ? 'STRING'
+            : (is_bool($arg)
+              ? 'BOOL'
+              : ($arg instanceof Object
+                ? 'OBJECT'
+                : NULL
+              )
+            )
+          )
+        ;
+      }
+      return $r;
+    }
+  }
+  // }}}
+
   // {{{ SwitchStrategy
+  //     switch/case statement
   class SwitchStrategy extends Object {
   
     function run($arg, $times) {
@@ -50,12 +77,12 @@
   // Display help
   if ($p->exists('help', '?') || !$p->exists(1)) {
     Console::writeLinef(<<<__
-Tests performance of switch/case vs. elseif
+Tests performance of switch/case vs. elseif vs. ternary
 
 Usage:
 $ php switch.php <strategy> [-t times]
   
-  * strategy is one of "switch", "case".
+  * strategy is one of "switch", "case" or "ternary"
   
   * times specifies how often to call the function and defaults to 100.000
 __
