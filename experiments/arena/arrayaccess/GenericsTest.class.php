@@ -4,7 +4,13 @@
  * $Id: BoxingTest.class.php 10059 2007-04-19 10:59:14Z friebe $ 
  */
 
-  uses('util.collections.HashTable', 'util.collections.Vector');
+  uses(
+    'util.collections.HashTable', 
+    'util.collections.Vector',
+    'util.collections.Stack',
+    'util.collections.Queue',
+    'util.collections.LRUBuffer'
+  );
 
   /**
    * TestCase
@@ -87,6 +93,60 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createStringVectorWithIllegalValue() {
       create('Vector<String>', array(new Integer(1)));
+    }
+
+    /**
+     * Tests Stack<String>
+     *
+     */
+    #[@test]
+    public function stringStack() {
+      create('util.collections.Stack<String>')->push(new String('One'));
+    }
+
+    /**
+     * Tests Stack<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStackIllegalValue() {
+      create('util.collections.Stack<String>')->push(new Integer(1));
+    }
+
+    /**
+     * Tests Queue<String>
+     *
+     */
+    #[@test]
+    public function stringQueue() {
+      create('util.collections.Queue<String>')->put(new String('One'));
+    }
+
+    /**
+     * Tests Queue<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringQueueIllegalValue() {
+      create('util.collections.Queue<String>')->put(new Integer(1));
+    }
+
+    /**
+     * Tests LRUBuffer<String>
+     *
+     */
+    #[@test]
+    public function stringLRUBuffer() {
+      create('util.collections.LRUBuffer<String>', 1)->add(new String('One'));
+    }
+
+    /**
+     * Tests LRUBuffer<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringLRUBufferIllegalValue() {
+      create('util.collections.LRUBuffer<String>', 1)->add(new Integer(1));
     }
   }
 ?>

@@ -282,6 +282,16 @@
     public function toString() {
       return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
     }
+
+    /**
+     * Returns a string representation of this string. Uses the current
+     * output encoding and transliteration.
+     *
+     * @return  string
+     */
+    public function __toString() {
+      return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
+    }
    
     /**
      * Returns the bytes in internal encoding (UTF-8)
