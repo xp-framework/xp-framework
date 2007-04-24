@@ -285,7 +285,7 @@
     public function executeJoin($conn, $peer, JoinProcessor $jp) {
       $jp->setFetchmode($this->fetchmode);
       $rest= $this->toSQL($conn, $peer->types, 't0');
-      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1';
+      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
 
       return $conn->query(
         'select %c from %c %c',

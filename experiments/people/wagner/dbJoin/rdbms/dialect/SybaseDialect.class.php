@@ -53,7 +53,11 @@
     public function makeJoinBy(Array $tables, Array $conditions) {
       if (1 >= count($tables)) return array_pop($tables);
       $querypart= implode(', ', $tables).' where ';
-      foreach ($conditions as $condition) $querypart.= str_replace('=', '*=', $condition);
+      foreach ($conditions as $relation) {
+        foreach ($relation as $condition) {
+          $querypart.= str_replace('=', '*=', $condition).' and ';
+        }
+      }
       return $querypart;
     }
   }
