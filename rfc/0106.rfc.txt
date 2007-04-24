@@ -11,7 +11,8 @@ Scope of Change
 ---------------
 The lang.types.ArrayList class and the relevant classes from util.collections 
 will be changed to support array access (read/write) and foreach() iteration. 
-The classes from the collections API will furthermore support type boxing.
+The classes from the collections API will furthermore support type boxing
+and provide generic variants of themselves.
 
 
 Rationale
@@ -27,13 +28,12 @@ Class overview
 <pre>
 * lang.types.ArrayList is an immutable, zero-indexed list of values of any 
   type and most closely resembles an array in Java.
-
+ 
 * util.collections.Vector is a resizable array of objects.
-
+ 
 * util.collections.HashTable is a map where both keys and values are 
   objects.
 </pre>
-
 
 Array access
 ~~~~~~~~~~~~
@@ -176,6 +176,21 @@ Examples:
   }
 ?>
 
+Additional note: create() overloaded
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The create() functionality provides an overloaded version of itself:
+When passed a lang.Generic instance, the instance is simply returned.
+
+This serves the purpose of chaining after "new", which is not supported
+by the PHP language:
+<?php
+  echo new Date()->toString();  // Parse error
+?>
+
+The following is the workaround:
+<?php
+  echo create(new Date())->toString();
+?>
 
 Additional note: ArrayList vs. Vector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
