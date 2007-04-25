@@ -96,6 +96,17 @@
     }
 
     /**
+     * Tests array access operator is overloaded for writing
+     *
+     */
+    #[@test]
+    public function arrayListModifyElement() {
+      $c= new ArrayList(1, 2, 3);
+      $c[2]+= 1;    // $c[2]++ does NOT work due to a bug in PHP
+      $this->assertEquals(4, $c[2]);
+    }
+
+    /**
      * Tests array access operator is overloaded for adding
      *
      */
