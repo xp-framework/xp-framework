@@ -53,7 +53,6 @@ usage example
     int(5)
     ["name"]=>
     string(14) "Max Mustermann"
-    ["body"]=>
   }
 </pre>
 
@@ -113,9 +112,11 @@ naming strategy
 
 - The strategy has to implement the abstract object rdbms.util.DBXMLNamingStrategy.
 - To use a self written strategy you can set it by:
+
 <?php
   DBXMLNamingContext::setStrategy(new MyStrategy());
 ?>
+
 - If nothing is set the rdbms.util.DBXMLNamingStrategyDefault will be used.
 
 
