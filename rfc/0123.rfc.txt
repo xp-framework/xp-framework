@@ -1,0 +1,134 @@
+RFC XXXX: 
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: wagner
+@created: Wed Apr 25 17:11:22 CET 2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+
+- Extend the criteria api to aggregate or cut down the
+  querie's resultset.
+- As after a projection the resultset does not fit to
+  the dataSet's types anymore the rdbms.Record will be
+  implemented
+  
+  
+This is not rfc0051.
+
+
+Rationale
+---------
+
+- counting, summing up, etc. - using aggregation
+  functions that are provided by SQL
+- cutting down the resultset, as one do not need the
+  whole table resut
+
+
+Functionality
+-------------
+
+<pre>To use projections the package rdbms.criterion.Projections has to be imported.</pre>
+
+
+Aggregation
+~~~~~~~~~~~
+
+projection to the function avg
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::average("person_id"))
+  );
+?>
+
+projection to the function max
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::max("person_id"))
+  );
+?>
+
+projection to the function min
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::min("person_id"))
+  );
+?>
+
+projection to the function sum
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::sum("person_id"))
+  );
+?>
+
+projection to the function count
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::count())
+  );
+?>
+
+
+Projection
+~~~~~~~~~~~
+
+projection to the property name
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::property("name"))
+  );
+?>
+
+projection to a set of properties
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(
+      Projections::projectionList()
+      ->add(Projections::property("person_id"))
+      ->add(Projections::property("name"))
+    )
+  );
+?>
+
+
+temporary use
+~~~~~~~~~~~~~
+
+the method Criteria::withProjection can be used to build a temporary
+Criteria with a projection - e.g. count to test how many results will be
+in the resultset
+
+<?php
+  $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
+  $amountOfMarys= Person::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count');
+  if (LIMIT >= $amountOfMarys) RubentestPerson::getPeer()->doSelect($crit);
+?>
+
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+PHP version >= 5
+
+Related documents
+-----------------
+
+- xp-lab
+  http://experiments.xp-framework.net/?people,wagner,rfc,0123
+
+
+Comments
+--------
+
+<EOF>
