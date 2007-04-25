@@ -141,7 +141,7 @@ Related documents
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html
 
 - xp-lab
-  http://experiments.xp-framework.net/?people,wagner,dbConstraints
+  http://experiments.xp-framework.net/?people,wagner,rfc,0096
 
 Comments
 --------
