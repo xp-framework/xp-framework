@@ -2,7 +2,6 @@ Array access
 ========================================================================
 $Id$
 
-This demonstrates the usage of the ArrayAccess interface (built-in into
-PHP5). Requires PHP5 to run.
+See RFC #0106, http://xp-framework.net/rfc/0116
 
 <EOF>
