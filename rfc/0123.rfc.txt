@@ -1,4 +1,4 @@
-RFC XXXX: 
+RFC 0123: Use aggregation/projection with criteria
 ========================================================================
 $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
@@ -32,7 +32,9 @@ Rationale
 Functionality
 -------------
 
-<pre>To use projections the package rdbms.criterion.Projections has to be imported.</pre>
+<pre>
+  To use projections the package rdbms.criterion.Projections has to be imported.
+</pre>
 
 
 Aggregation
