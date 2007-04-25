@@ -41,7 +41,7 @@ usage example
     'de.schlund.db.rubentest.Department'
   );
 
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1));
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1'));
   
   $chief= Department::getDepartmentById(1)->getDepartmentChief();
   var_dump($chief);
