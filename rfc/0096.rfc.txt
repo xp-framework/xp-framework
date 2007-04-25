@@ -32,6 +32,22 @@ strategy has to be replaceable.
 With this two problems solved you can generate access methods for each
 of a DataSet's related DataSet.
 
+Advantage
+~~~~~~~~~
+
+former code:
+<?php
+  $chief= Person::getPersonById(Department::getDepartmentById(1)->getChief_id());
+?>
+
+new code:
+<?php
+  $chief= Department::getDepartmentById(1)->getDepartmentChief();
+?>
+
+
+
+
 usage example
 ~~~~~~~~~~~~~
 
