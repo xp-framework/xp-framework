@@ -3,7 +3,7 @@
   <property name="src.dir" value="${basedir}/src"/>
   <property name="build.dir"   value="${basedir}/build"/>
   <!-- <property name="jboss.dir" value="/home/nsn/jboss-4.0.5.GA/"/> -->
-  <property name="jboss.dir" value="/home/nsn/jboss-5.0.0.Beta1/"/> 
+  <property name="jboss.dir" value="${basedir}/lib/jboss"/> 
 
   <target name="all">
     <antcall target="package-ejb" />
@@ -12,7 +12,7 @@
 
   <!-- The build classpath -->
   <path id="build.classpath">
-    <fileset dir="${jboss.dir}/client/">
+    <fileset dir="${jboss.dir}">
       <include name="*.jar"/>
     </fileset>
     <fileset dir="${basedir}/lib/">
@@ -22,16 +22,7 @@
 
   <path id="execute.classpath">
     <pathelement location="${build.dir}/classes"/>
-    <fileset dir="${jboss.dir}client/">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${jboss.dir}lib/">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${jboss.dir}server/default/lib/">
-      <include name="*.jar"/>
-    </fileset>
-    <fileset dir="${jboss.dir}server/default/deployers/jboss-aop-jboss5.deployer/">
+    <fileset dir="${jboss.dir}">
       <include name="*.jar"/>
     </fileset>
     <!--
