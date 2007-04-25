@@ -35,6 +35,7 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   array types
+     * @param   string optional
      * @return  string
      * @throws  rdbms.SQLStateException
      */

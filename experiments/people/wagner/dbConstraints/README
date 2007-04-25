@@ -22,7 +22,7 @@ table view
   | person_id (P) |<------+
   | name          |       |
   +---------------+       |
-                          | person_id = chief_if
+                          | person_id = chief_id
                           |
                           |
                           |   +-------------------+
