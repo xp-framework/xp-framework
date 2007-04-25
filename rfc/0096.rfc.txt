@@ -48,7 +48,7 @@ usage example
 ?>
 
 <pre>
-  object(Person)#75 (15) {
+  object(Person)#75 (2) {
     ["person_id"]=>
     int(5)
     ["name"]=>
@@ -110,7 +110,7 @@ generated classes
 naming strategy
 ~~~~~~~~~~~~~~~
 
-- The strategy has to implement the abstract object rdbms.util.DBXMLNamingStrategy.
+- The strategy has to implement the abstract class rdbms.util.DBXMLNamingStrategy.
 - To use a self written strategy you can set it by:
 
 <?php
@@ -139,6 +139,9 @@ Related documents
   http://java.sun.com/javaee/5/docs/api/javax/persistence/ManyToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html
+
+- xp-lab
+  http://experiments.xp-framework.net/?people,wagner,dbConstraints
 
 Comments
 --------
