@@ -7,9 +7,10 @@
   /**
    * Chained Exception
    *
-   * @purpose  Exception base class
-   * @see      http://mindprod.com/jgloss/chainedexceptions.html
-   * @see      http://www.jguru.com/faq/view.jsp?EID=1026405  
+   * @purpose   Exception base class
+   * @test      xp://net.xp_framework.unittest.util.ChainedExceptionTest
+   * @see       http://mindprod.com/jgloss/chainedexceptions.html
+   * @see       http://www.jguru.com/faq/view.jsp?EID=1026405  
    */
   class ChainedException extends XPException {
     public
@@ -19,7 +20,7 @@
      * Constructor
      *
      * @param   string message
-     * @param   &lang.Throwable cause
+     * @param   lang.Throwable cause
      */
     public function __construct($message, $cause) {
       parent::__construct($message);
@@ -29,7 +30,7 @@
     /**
      * Set cause
      *
-     * @param   &lang.Throwable cause
+     * @param   lang.Throwable cause
      */
     public function setCause($cause) {
       $this->cause= $cause;
@@ -38,7 +39,7 @@
     /**
      * Get cause
      *
-     * @return  &lang.Throwable
+     * @return  lang.Throwable
      */
     public function getCause() {
       return $this->cause;
@@ -70,11 +71,11 @@
 
         // Output uncommon elements only and one line how many common elements exist!
         for ($i= 0; $i < $cc; $i++) {
-          $s.= xp::stringOf($this->cause->trace[$i]); 
+          $s.= xp::stringOf($loop->trace[$i]); 
         }
         if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
         
-        $loop= is('ChainedException', $loop) ? $loop->cause : NULL;
+        $loop= $loop instanceof ChainedException ? $loop->cause : NULL;
       }
       
       return $s;
