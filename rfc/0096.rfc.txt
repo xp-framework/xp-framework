@@ -2,14 +2,16 @@ RFC 0096: Foreign key relations
 ========================================================================
 $Id$
 
-@authors: friebe
+@authors: friebe, wagner
 @created: Sun Dec 17 18:22:48     2006
 @status: draft
 @category: rdbms
 
 Scope of Change
 ---------------
-The DataSet classes will be enhanced to know about foreign keys.
+The DataSet classes will be enhanced to know about
+- foreign keys.
+- foreign keys, they are target of.
 
 
 Rationale
@@ -20,6 +22,102 @@ Rationale
 
 Functionality
 -------------
+
+The DataSet Class Generator has also collect data about foreign keys.
+Therefor the database adapter classes have to be rewritten.
+
+A naming strategy is necessary to avoid collisions. Also, the nameing
+strategy has to be replaceable.
+
+With this two problems solved you can generate access methods for each
+of a DataSet's related DataSet.
+
+usage example
+~~~~~~~~~~~~~
+
+<?php
+  uses(    
+    'rdbms.ConnectionManager',
+    'de.schlund.db.rubentest.Department'
+  );
+
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1));
+  
+  $chief= Department::getDepartmentById(1)->getDepartmentChief();
+  var_dump($chief);
+?>
+
+<pre>
+  object(Person)#75 (15) {
+    ["person_id"]=>
+    int(5)
+    ["name"]=>
+    string(14) "Max Mustermann"
+    ["body"]=>
+  }
+</pre>
+
+table view
+~~~~~~~~~~
+<pre>
+  +---------------+
+  | person        |
+  +---------------+ +
+  | person_id (P) |<------+
+  | name          |       |
+  +---------------+       |
+                          | person_id = chief_id
+                          |
+                          |
+                          |   +-------------------+
+                          | 1 | department        |
+                          +---+-------------------+
+                              | department_id (P) |
+                              | chief_id      (I) |
+                              +-------------------+
+</pre>
+
+
+generated classes
+~~~~~~~~~~~~~~~~~
+<pre>
+  +----------------------------------------+
+  | Person                                 |
+  +----------------------------------------+
+  | + person_id                            |
+  | + name                                 |
+  +----------------------------------------+
+  | int            getPerson_id()          |
+  | string         getName()               |
+  | Person         getPersonById($id)      |
+  | Department[]   getDepartmentList()     |
+  | ResultIterator getDepartmentIterator() |
+  +----------------------------------------+
+
+  +-----------------------------------+
+  | Department                        |
+  +-----------------------------------+
+  | + department_id                   |
+  | + chief_id                        |
+  +-----------------------------------+
+  | int        getDepartment_id()     |
+  | string     getChief_id()          |
+  | Department getDepartmentById($id) |
+  | Person     getDepartmentChief()   |
+  +-----------------------------------+
+</pre>
+
+
+naming strategy
+~~~~~~~~~~~~~~~
+
+- The strategy has to implement the abstract object rdbms.util.DBXMLNamingStrategy.
+- To use a self written strategy you can set it by:
+<?php
+  DBXMLNamingContext::setStrategy(new MyStrategy());
+?>
+- If nothing is set the rdbms.util.DBXMLNamingStrategyDefault will be used.
+
 
 Security considerations
 -----------------------
@@ -32,12 +130,14 @@ Speed impact
 Dependencies
 ------------
 
+PHP-version >= 5.0
+
 Related documents
 -----------------
 - javax.persistence package:
   http://java.sun.com/javaee/5/docs/api/javax/persistence/ManyToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToMany.html
-  http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html  
+  http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html
 
 Comments
 --------
