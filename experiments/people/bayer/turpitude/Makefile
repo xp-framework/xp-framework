@@ -55,6 +55,9 @@ ini: turpitude.jar lib
 exec: jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php
 	
+fatal: jar lib
+	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/hw.php
+	
 classes: $(JSRC)
 	$(JCC) -Xlint:unchecked  -d classes -cp $(CPATH) $(JSRC)
 
