@@ -15,7 +15,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLFunctions',
-    'de.schlund.db.rubentest.RubentestJob'
+    'de.schlund.db.rubentest.Nmappoint'
   );
 
   // Params
@@ -40,7 +40,7 @@
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::concat('"aa"', SQLFunctions::str(SQLFunctions::getdate()), '"cc"'), 'concatTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::str(SQLFunctions::getdate()), 'getdateTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::str(SQLFunctions::dateadd('month', '-4', SQLFunctions::getdate())), 'dateaddTest'));
-  $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::datediff('second', SQLFunctions::dateadd('day', '-4', SQLFunctions::getdate()), SQLFunctions::getdate())), 'datediffTest');
+  $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::datediff('second', SQLFunctions::dateadd('day', '-4', SQLFunctions::getdate()), SQLFunctions::getdate()), 'datediffTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::datename('hour', SQLFunctions::getdate()), 'datenameTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::datepart('hour', new Date()), 'datenameTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::abs(-6), 'absTest'));
@@ -68,7 +68,7 @@
 
   foreach ($crits as $name => $crit) {
     echo "\n$name:\n";
-    var_dump(RubentestJob::getPeer()->iteratorFor($crit)->next());
+    var_dump(Nmappoint::getPeer()->iteratorFor($crit)->next());
   }
 
 ?>
