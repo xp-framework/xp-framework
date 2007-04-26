@@ -238,7 +238,7 @@
           return;
         }
 
-        if (!$this->checkInterceptors($event, $entry, 'onRead')) return;
+        if (!$this->checkInterceptors($event, $entry, 'onCwd')) return;
         $pwd= $this->storage->setBase($event->stream->hashCode(), $params);
       } catch (XPException $e) {
         $this->answer($event->stream, 450, $e->getMessage());
