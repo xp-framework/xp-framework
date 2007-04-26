@@ -43,11 +43,13 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
     char *buffer, *msg;
     int buffer_len, msg_len;
     TSRMLS_FETCH();
-    if (!(EG(error_reporting) & type)) return;
+    //if (!(EG(error_reporting) & type)) return;
+
+    //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
 
     buffer_len = vspprintf(&buffer, PG(log_errors_max_len), format, args);
     msg_len = spprintf(&msg, 
-        PG(log_errors_max_len)+100, 
+        0,
         "Error #%d on line %d of %s: %s", 
         type,
         error_lineno,
@@ -55,7 +57,18 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
         buffer
     );
     //fprintf(stderr, "*** Error #%d on line %d of %s\n    %s\n", type, error_lineno, error_filename ? error_filename : "(Unknown)", buffer);
-    
+
+    if (PG(last_error_message)) {
+        free(PG(last_error_message));
+    }
+    if (PG(last_error_file)) {
+        free(PG(last_error_file));
+    }
+    PG(last_error_type) = type;
+    PG(last_error_message) = strdup(buffer);
+    PG(last_error_file) = strdup(error_filename);
+    PG(last_error_lineno) = error_lineno;
+
     setErrorMsg(msg);
     efree(buffer);
     efree(msg);
@@ -66,6 +79,7 @@ void turpitude_error_cb(int type, const char *error_filename, const uint error_l
             zend_bailout();
             break;
     }
+
 
 }
 
