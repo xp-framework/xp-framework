@@ -36,4 +36,18 @@ static void resetErrorMsg();
 extern std::string LastError;
 extern bool ErrorCBCalled;
 
+inline void set_zend_globals() {
+    zend_error_cb= turpitude_error_cb;
+    zend_uv.html_errors= 0;
+    CG(in_compilation)= 0;
+    CG(interactive)= 0;
+    EG(uninitialized_zval_ptr)= NULL;
+    EG(error_reporting)= E_ALL;
+
+    INIT_ZVAL(EG(uninitialized_zval));
+    EG(uninitialized_zval).refcount++;
+    INIT_ZVAL(EG(error_zval));
+    EG(uninitialized_zval_ptr)=&EG(uninitialized_zval);
+    EG(error_zval_ptr)=&EG(error_zval);
+}
 #endif
