@@ -3,8 +3,8 @@
 ################################################
 #JAVA_HOME = /home/nsn/jdk1.6.0
 JAVA_HOME = /usr/lib/jvm/sun-jdk-1.6
-PHP_HOME = /home/nsn/devel/php/php-5.2.0
-#PHP_HOME = /home/nsn/devel/php/php-hax
+#PHP_HOME = /home/nsn/devel/php/php-5.2.0
+PHP_HOME = /home/nsn/devel/php/php-hax
 ############################################
 PROPS = -Dnet.xp_framework.turpitude.ini.include_path=.:/path/to/xp
 JCC = $(JAVA_HOME)/bin/javac
@@ -56,7 +56,7 @@ exec: jar lib
 	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/object.php
 	
 fatal: jar lib
-	$(LIBPATH) $(JBIN) -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/hw.php
+	$(LIBPATH) $(JBIN) -Dnet.xp_framework.turpitude.ini.magic_quotes_gpc=0 -Dnet.xp_framework.turpitude.ini.include_path=/home/nsn/devel/xp.public/trunk/skeleton -Djava.library.path=. -cp $(CPATH) net.xp_framework.turpitude.samples.ScriptExec ./bin/hw.php
 	
 classes: $(JSRC)
 	$(JCC) -Xlint:unchecked  -d classes -cp $(CPATH) $(JSRC)

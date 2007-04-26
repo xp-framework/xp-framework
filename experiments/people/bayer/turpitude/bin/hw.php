@@ -1,5 +1,6 @@
 <?php
 require('/home/nsn/devel/xp.public/trunk/skeleton/lang.base.php');
+
 /* This class is part of the XP framework
  *
  * $Id: HelloWorldBean.class.php 10120 2007-04-25 15:37:41Z friebe $ 
