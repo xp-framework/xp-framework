@@ -161,7 +161,7 @@
     // {{{ public object __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
-      if (NULL !== @xp::$registry['null']) {
+      if (isset(xp::$registry['null'])) {
         throw new IllegalAccessException('Cannot create new instances of xp::null()');
       }
     }
