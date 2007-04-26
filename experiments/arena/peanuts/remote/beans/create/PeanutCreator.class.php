@@ -74,6 +74,11 @@
         DIRECTORY_SEPARATOR.
         $this->interfaceName.'.java'
       );
+      
+      // Check if directory we want to create the java file in exists
+      $dir= new Folder(dirname($out->getURI()));
+      if (!$dir->exists()) $dir->create();
+
       $this->out->writeLine('---> ', $out);
       
       $out->open(FILE_MODE_WRITE);
@@ -95,6 +100,30 @@
       $out->close();
     }
 
+    #[@create('php wrapper')]
+    public function createBeanWrapper() {
+      $out= new File(
+        $this->outputDir->getURI().
+        strtr($this->packageName, '.', DIRECTORY_SEPARATOR).
+        DIRECTORY_SEPARATOR.
+        $this->className.'.class.php'
+      );
+      // Check if directory we want to create the java file in exists
+      $dir= new Folder(dirname($out->getURI()));
+      if (!$dir->exists()) $dir->create();
+
+      $this->out->writeLine('---> ', $out);
+
+      $out->open(FILE_MODE_WRITE);
+      $out->write("<?php\nrequire('lang.base.php');");
+      $out->write(strtr(
+        $this->beanClass->getClassLoader()->loadClassBytes($this->beanClass->getName()),
+        array('<?php' => '', '?>' => '')
+      ));
+      $out->write("\nreturn new ".$this->className."();\n?>");
+      $out->close();
+    }
+
     #[@create('bean implementation')]
     public function createBeanImplementation() {
       
@@ -110,30 +139,32 @@
         DIRECTORY_SEPARATOR.
         $this->className.'.java'
       );
+
+      // Check if directory we want to create the java file in exists
+      $dir= new Folder(dirname($out->getURI()));
+      if (!$dir->exists()) $dir->create();
+
       $this->out->writeLine('---> ', $out);
 
       $out->open(FILE_MODE_WRITE);
       $out->write("package ".$this->packageName.";\n\n");
       $out->write("import javax.script.*;\n");
+      $out->write("import net.xp_framework.turpitude.PHPObject;\n");
       $out->write("import javax.ejb.".$annotation.";\n\n");
       $out->write("@".$annotation."\n");
       $out->write("public class ".$this->className." implements ".$this->interfaceName." {\n\n");
       
       // The scriptInterface() method
-      $out->write("    protected ".$this->interfaceName." scriptInterface() {\n");
+      $out->write("    protected ".$this->interfaceName." scriptInterface() throws Exception {\n");
       $out->write("        ScriptEngine e = new ScriptEngineManager().getEngineByName(\"turpitude\");\n");
       $out->write("        if (null == e) {\n");
       $out->write("             throw new ScriptException(\"Script engine not found\");\n");
       $out->write("        }\n");
-      $out->write("        CompiledScript script= ((Compilable)e).compile(new StringBuffer()\n");
-      
-      $source= $this->beanClass->getClassLoader()->loadClassBytes($this->beanClass->getName());
-      foreach (explode("\n", $source) as $chunk) {
-        $out->write("           .append(\"".$chunk."\\n\")\n");
-      }
-      
-      $out->write("           .toString()\n        );\n");
-      $out->write("        return ((Invocable)script).getInterface(".$this->interfaceName.".class);\n");
+      $out->write("        CompiledScript script= ((Compilable)e).compile(new java.io.InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(");
+      $out->write('"'.strtr($this->beanClass->getName(), '.', '/').'.class.php"');
+      $out->write(")));\n");
+      $out->write("        PHPObject o= (PHPObject)script.eval();\n");
+      $out->write("        return ((Invocable)script).getInterface(o, ".$this->interfaceName.".class);\n");
       $out->write("    }\n\n");
       
       foreach ($this->remoteMethods as $method) {
