@@ -9,6 +9,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_exe
     zval* retval_ptr = NULL;
     // execute!
     zend_first_try {
+        set_zend_globals();
+
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
@@ -59,6 +61,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
 
     zval* retval_ptr = NULL;
     zend_first_try {
+        set_zend_globals();
+
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
@@ -121,6 +125,8 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPCompiledScript_nat
 
     zval* retval_ptr = NULL;
     zend_first_try {
+        set_zend_globals();
+
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 

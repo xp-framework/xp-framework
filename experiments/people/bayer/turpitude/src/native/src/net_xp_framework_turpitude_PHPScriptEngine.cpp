@@ -60,6 +60,9 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compi
         zend_llist global_vars;
         zend_llist_init(&global_vars, sizeof(char *), NULL, 0);
 
+
+        set_zend_globals();
+/*
         zend_error_cb= turpitude_error_cb;
         zend_uv.html_errors= 0;
         CG(in_compilation)= 0;
@@ -67,6 +70,12 @@ JNIEXPORT jobject JNICALL Java_net_xp_1framework_turpitude_PHPScriptEngine_compi
         EG(uninitialized_zval_ptr)= NULL;
         EG(error_reporting)= E_ALL;
 
+        INIT_ZVAL(EG(uninitialized_zval));
+        EG(uninitialized_zval).refcount++;
+        INIT_ZVAL(EG(error_zval));
+        EG(uninitialized_zval_ptr)=&EG(uninitialized_zval);
+        EG(error_zval_ptr)=&EG(error_zval);
+*/
         LastError = "";
         const char* str= env->GetStringUTFChars(src, 0); 
         {
