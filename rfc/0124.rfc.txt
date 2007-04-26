@@ -1,0 +1,55 @@
+RFC 0124 use sql functions in restrictions:
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: wagner
+@created: Thu Apr 26 12:36:22 CET 2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+
+- Extend the criteria api to use SQL standart functions in
+  a query
+- common function interface for all databases
+
+
+Rationale
+---------
+
+- One wants to use SQL functions, like date functions, in a criteria query
+- Because of database predefined functions are not standardized,
+  different databases provide different signatures for the same function
+
+
+Functionality
+-------------
+
+<pre>
+  To use projections the package rdbms.SQLFunctions has to be imported.
+</pre>
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+PHP version >= 5
+
+
+Related documents
+-----------------
+
+- xp-lab
+  http://experiments.xp-framework.net/?people,wagner,rfc,0124
+
+
+Comments
+--------
+
+<EOF>
