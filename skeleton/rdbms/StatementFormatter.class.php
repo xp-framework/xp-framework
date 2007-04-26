@@ -98,25 +98,14 @@
      * @return  string
      */
     public function prepare($type, $var) {
-
-      // Type-based conversion
-      if ($var instanceof Date) {
-        $type= 's';
-        $a= array($var->toString($this->dateFormat));
-      } else if ($var instanceof Generic) {
-        $a= array($var->toString());
-      } else if (is_array($var)) {
-        $a= $var;
-      } else {
-        $a= array($var);
-      }
-
       $r= '';
-      foreach ($a as $arg) {
+      foreach (is_array($var) ? $var : array($var) as $arg) {
+        // Type-based conversion
         if (NULL === $arg) { 
           $r.= 'NULL, '; 
           continue; 
         } else if ($arg instanceof Date) {
+          $type= 's';
           $p= $arg->toString($this->dateFormat);
         } else if ($arg instanceof Generic) {
           $p= $arg->toString();
