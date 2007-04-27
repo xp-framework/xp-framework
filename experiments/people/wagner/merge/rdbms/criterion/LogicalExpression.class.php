@@ -35,10 +35,11 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   array types
+     * @param   string tablealias
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) { 
+    public function asSql($conn, $types, $aliasTable='') { 
       $sql= '';
       for ($i= 0, $s= sizeof($this->criterions); $i < $s; $i++) {
         $sql.= $this->criterions[$i]->asSql($conn, $types, $aliasTable).' '.$this->op.' ';

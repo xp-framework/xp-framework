@@ -14,7 +14,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Projections',
     'rdbms.criterion.Restrictions',
-    'de.schlund.db.rubentest.RubentestPerson'
+    'de.schlund.db.rubentest.Ncolor'
   );
 
   // Params
@@ -28,6 +28,7 @@
   
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
+  $crit= array();
   
   $crits['count']= new Criteria();
   $crits['count']->setProjection(
@@ -36,22 +37,22 @@
   
   $crits['average']= new Criteria();
   $crits['average']->setProjection(
-    Projections::average("person_id")
+    Projections::average("color_id")
   );
   
   $crits['max']= new Criteria();
   $crits['max']->setProjection(
-    Projections::max("person_id")
+    Projections::max("color_id")
   );
   
   $crits['min']= new Criteria();
   $crits['min']->setProjection(
-    Projections::min("person_id")
+    Projections::min("color_id")
   );
   
   $crits['sum']= new Criteria();
   $crits['sum']->setProjection(
-    Projections::sum("person_id")
+    Projections::sum("color_id")
   );
 
   $crits['property']= new Criteria();
@@ -62,27 +63,26 @@
   $crits['projectionList']= new Criteria();
   $crits['projectionList']->setProjection(
     Projections::projectionList()
-    ->add(Projections::property("person_id", 'id'))
+    ->add(Projections::property("color_id", 'id'))
     ->add(Projections::property("name"))
   );
 
   $crits['plain']= new Criteria();
 
   foreach ($crits as $name => $crit) {
-    echo "\n$name:\n";
-    $l= RubentestPerson::getPeer()->doSelect($crit, 1);
-    var_dump($l);
+    Console::writeLine("\nlist for $name:");
+    $l= Ncolor::getPeer()->doSelect($crit, 1);
+    Console::writeLine(xp::stringOf($l));
+
+    Console::writeLine(xp::stringOf("\niterator for $name:"));
+    $l= Ncolor::getPeer()->iteratorFor($crit);
+    Console::writeLine(xp::stringOf($l->next()));
   }
 
-  foreach ($crits as $name => $crit) {
-    echo "\n$name:\n";
-    $l= RubentestPerson::getPeer()->iteratorFor($crit);
-    var_dump($l->next());
-  }
-
-
-  $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
-  var_dump(RubentestPerson::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count'));
-  var_dump(RubentestPerson::getPeer()->doSelect($crit));
+  $crit= Criteria::newInstance()->add(Restrictions::like("name", "%green"));
+  Console::writeLine(xp::stringOf("\n\nwithProjection count:"));
+  Console::writeLine(xp::stringOf(Ncolor::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count')));
+  Console::writeLine(xp::stringOf("\n\nwithout projection:"));
+  Console::writeLine(xp::stringOf(Ncolor::getPeer()->doSelect($crit)));
 
 ?>
