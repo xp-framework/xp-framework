@@ -89,12 +89,8 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql($conn, $types) {
-      if (!is('rdbms.SQLFunction', $this->field) && !isset($types[$this->field])) throw new SQLStateException('field '.$this->field.' does not exist');
-      $field= is('rdbms.SQLFunction', $this->field) ? $this->field->asSql($conn, $types) : $this->field;
-      $value= is('rdbms.SQLFunction', $this->value) ? $this->value->asSql($conn, $types) : $this->value;
-
-      $type= (NULL === $types[$field]) ? '%c' : $types[$field][0];
-      return $field.' '.$conn->prepare(str_replace('?', $type, $this->op), $value);      
+      if (!isset($types[$this->field])) throw new SQLStateException('field '.$this->field.' does not exist');
+      return $this->field.' '.$conn->prepare(str_replace('?', $types[$this->field][0], $this->op), $this->value);      
     }
 
   } 

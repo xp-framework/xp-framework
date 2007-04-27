@@ -37,7 +37,7 @@
      */
     public function asSql($conn, $types) {
       $s= '';
-      foreach ($this->projections as $p) $s.= ','.$p->asSql($conn, $types);
+      foreach ($this->projections as $p) $s.= ', '.$p->asSql($conn, $types);
       return substr($s, 1);
     }
 

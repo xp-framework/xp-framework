@@ -12,13 +12,14 @@
   class SybaseDialect extends SQLDialect {
     private static
       $implementation= array(
-        'str_1'        => 'convert(varchar, %c)',
-        'cast_2'       => 'convert(%c, %c)',
-        'atan_2'       => 'atn2(%d, %d)',
-        'ceil_1'       => 'ceiling(%d)',
-        'degrees_1'    => 'convert(float, degrees(%c))',
-        'radians_1'    => 'convert(float, radians(%c))',
-        'sign_1'    => 'convert(int, sign(%c))',
+        'str_1'      => 'convert(varchar, %s)',
+        'cast_2'     => 'convert(%s, %c)',
+        'atan_2'     => 'atn2(%d, %d)',
+        'ceil_1'     => 'ceiling(%d)',
+        'datediff_3' => 'timestampdiff(%c, %s, %s)',
+        'degrees_1'  => 'convert(float, degrees(%d))',
+        'radians_1'  => 'convert(float, radians(%d))',
+        'sign_1'     => 'convert(int, sign(%d))',
       );
       
     /**
@@ -26,19 +27,22 @@
      *
      * @param   string func
      * @param   mixed[] function arguments string or rdbms.SQLFunction
-     * @param   array types
      * @return  string
      */
-    public function renderFunction($func, $args, $types) {
+    public function renderFunction($func, $args) {
       $func_i= $func.'_'.count($args);
-      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types).')' : $args[$i];
-      
       switch ($func) {
-        case 'concat': return '('.implode(' + ', $args).')';
+        case 'concat':
+        $fmt= '('.implode(' + ', array_fill(0, count($args), '%s')).')';
+        array_unshift($args, $fmt);
+        return call_user_func_array(array($this->conn, 'prepare'), $args);
 
         default:
-        if (isset(self::$implementation[$func_i])) return call_user_func_array(array($this->conn, 'prepare'), array_merge(array(self::$implementation[$func_i]), $args));
-        return parent::renderFunction($func, $args, $types);
+        if (isset(self::$implementation[$func_i])) {
+          array_unshift($args, self::$implementation[$func_i]);
+          return call_user_func_array(array($this->conn, 'prepare'), $args);
+        }
+        return parent::renderFunction($func, $args);
       }
     }
   

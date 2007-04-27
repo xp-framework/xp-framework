@@ -1,0 +1,32 @@
+<document created_at="Fri, 27 Apr 2007 14:47:15 +0200" created_by="ruben">
+  <table
+   name="ncolortype"
+   dbhost="localhost"
+   database="Ruben_Test_PS"
+   dbtype="mysql"
+   class="Ncolortype"
+   package="de.schlund.db.rubentest"
+  >  
+    <attribute
+     name="colortype_id"
+     type="DB_ATTRTYPE_INT"
+     identity="true"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="name"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <index
+     name="PRIMARY"
+     unique="true"
+     primary="true"
+    >    
+      <key>colortype_id</key>
+    </index>
+  </table>
+</document>

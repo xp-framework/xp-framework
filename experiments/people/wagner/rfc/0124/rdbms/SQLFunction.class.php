@@ -36,8 +36,8 @@
      * @param   array types
      * @return  string
      */
-    public function asSql($conn, $types) {
-      return SQLDialect::getDialect($conn)->renderFunction($this->func, $this->args, $types);
+    public function asSql($conn) {
+      return SQLDialect::getDialect($conn)->renderFunction($this->func, $this->args);
     }
 
     /**

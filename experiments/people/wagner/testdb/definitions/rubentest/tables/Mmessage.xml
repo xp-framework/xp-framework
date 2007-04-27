@@ -1,0 +1,91 @@
+<document created_at="Fri, 27 Apr 2007 14:47:15 +0200" created_by="ruben">
+  <table
+   name="mmessage"
+   dbhost="localhost"
+   database="Ruben_Test_PS"
+   dbtype="mysql"
+   class="Mmessage"
+   package="de.schlund.db.rubentest"
+  >  
+    <attribute
+     name="message_id"
+     type="DB_ATTRTYPE_INT"
+     identity="true"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="title"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <attribute
+     name="body"
+     type="DB_ATTRTYPE_TEXT"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <attribute
+     name="valid_from"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="true"
+    />
+    <attribute
+     name="expire_at"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="false"
+    />
+    <attribute
+     name="recipient_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="author_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <index
+     name="PRIMARY"
+     unique="true"
+     primary="true"
+    >    
+      <key>message_id</key>
+    </index>
+    <index
+     name="recipient_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>recipient_id</key>
+    </index>
+    <index
+     name="author_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>author_id</key>
+    </index>
+    <constraint name="recipient_of_message">    
+      <reference table="mperson" role="Recipient">      
+        <key attribute="recipient_id" sourceattribute="person_id"/>
+      </reference>
+    </constraint>
+    <constraint name="author_of_message">    
+      <reference table="mperson" role="Author">      
+        <key attribute="author_id" sourceattribute="person_id"/>
+      </reference>
+    </constraint>
+  </table>
+</document>

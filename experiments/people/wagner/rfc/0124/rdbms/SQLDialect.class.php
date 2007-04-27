@@ -11,66 +11,96 @@
   /**
    * helps to build functions for different SQL servers
    *
+   * Example: Setting a dialect for a connection
+   * <code>
+   *  SQLDialect::setDialect($myConnection, SQLDialect::MYSQL);
+   * </code>
+   *
+   * Supported dialects:
+   * <ul>
+   *   <li>SQLDialect::MYSQL   - MySQL dialect</li>
+   *   <li>SQLDialect::SYBASE  - Sybase dialect</li>
+   * </ul>
+   *
+   * Other dialects can be registered via SQLDialect::registerDialect():
+   * <code>
+   *   SQLDialect::registerDialect(
+   *     'hql', 
+   *     XPClass::forName('com.example.hql.dialect.HQLDialect')
+   *   );
+   * </code>
+   *
+   * For all "hql://"-connections or any connections that have been
+   * associated with this dialect via setDialect(), the HQLDialect 
+   * class will be used.
+   *
+   * @purpose  Base class for all dialects 
    */
   abstract class SQLDialect extends Object {
+    const MYSQL  = 'mysql';
+    const SYBASE = 'sybase';
+  
     private static
+      $classes= array(
+        self::MYSQL  => 'rdbms.dialect.MysqlDialect',
+        self::SYBASE => 'rdbms.dialect.SybaseDialect',
+      ),
       $instances= array(),
       $implementation= array(
-        'second_1'     => 'second(%c)',
-        'minute_1'     => 'minute(%c)',
-        'hour_1'       => 'hour(%c)',
-        'day_1'        => 'day(%c)',
-        'month_1'      => 'month(%c)',
-        'year_1'       => 'year(%c)',
-        'nullif_2'     => 'nullif(%c, %c)',
-        'substring_3'  => 'substring(%c, %c, %c)',
-        'locate_2'     => 'locate(%c, %c)',
-        'locate_3'     => 'locate(%c, %c, %c)',
-        'trim_2'       => 'trim(%c)',
-        'trim_3'       => 'trim(%c, %c)',
-        'ltrim_2'      => 'trim(%c)',
-        'ltrim_3'      => 'trim(%c, %c)',
-        'rtrim_2'      => 'trim(%c)',
-        'rtrim_3'      => 'trim(%c, %c)',
-        'length_1'     => 'length(%c)',
-        'bit_length_1' => 'bit_length(%c)',
-        'upper_1'      => 'upper(%c)',
-        'lower_1'      => 'lower(%c)',
-        'cast_2'       => 'cast(%c as %c)',
-        'str_1'        => 'str(%c)',
-        'ascii_1'      => 'ascii(%c)',
-        'char_1'       => 'char(%c)',
-        'len_1'        => 'len(%c)',
-        'reverse_1'    => 'reverse(%c)',
-        'space_1'      => 'space(%c)',
-        'soundex_1'    => 'soundex(%c)',
+        'abs_1'        => 'abs(%d)',
+        'acos_1'       => 'acos(%d)',
+        'ascii_1'      => 'ascii(%s)',
+        'asin_1'       => 'asin(%d)',
+        'atan_1'       => 'atan(%d)',
+        'atan_2'       => 'atan2(%d, %d)',
+        'bit_length_1' => 'bit_length(%s)',
+        'cast_2'       => 'cast(%s as %c)',
+        'ceil_1'       => 'ceil(%d)',
+        'char_1'       => 'char(%d)',
+        'cos_1'        => 'cos(%d)',
+        'cot_1'        => 'cot(%d)',
+        'dateadd_3'    => 'dateadd(%c, %d, %s)',
+        'datename_2'   => 'datename(%c, %s)',
+        'datepart_2'   => 'datepart(%c, %s)',
+        'day_1'        => 'day(%s)',
+        'degrees_1'    => 'degrees(%d)',
+        'exp_1'        => 'exp(%d)',
+        'floor_1'      => 'floor(%d)',
         'getdate_0'    => 'getdate()',
-        'dateadd_3'    => 'dateadd(%c, %c, %c)',
-        'datename_2'   => 'datename(%c, %c)',
-        'datepart_2'   => 'datepart(%c, %c)',
-        'abs_1'        => 'abs(%c)',
-        'acos_1'       => 'acos(%c)',
-        'asin_1'       => 'asin(%c)',
-        'atan_1'       => 'atan(%c)',
-        'atan_2'       => 'atan2(%c, %c)',
-        'ceil_1'       => 'ceil(%c)',
-        'cos_1'        => 'cos(%c)',
-        'cot_1'        => 'cot(%c)',
-        'degees_1'     => 'degees(%c)',
-        'exp_1'        => 'exp(%c)',
-        'floor_1'      => 'floor(%c)',
-        'log_1'        => 'log(%c)',
-        'log10_1'      => 'log10(%c)',
+        'hour_1'       => 'hour(%s)',
+        'len_1'        => 'len(%s)',
+        'length_1'     => 'length(%s)',
+        'locate_2'     => 'locate(%s, %s)',
+        'locate_3'     => 'locate(%s, %s, %s)',
+        'log10_1'      => 'log10(%d)',
+        'log_1'        => 'log(%d)',
+        'lower_1'      => 'lower(%s)',
+        'ltrim_2'      => 'trim(%s)',
+        'ltrim_3'      => 'trim(%s, %s)',
+        'minute_1'     => 'minute(%s)',
+        'month_1'      => 'month(%s)',
+        'nullif_2'     => 'nullif(%s, %s)',
         'pi_0'         => 'pi()',
-        'power_2'      => 'power(%c, %c)',
-        'floor_1'      => 'floor(%c)',
-        'radians_1'    => 'radians(%c)',
+        'power_2'      => 'power(%d, %d)',
+        'radians_1'    => 'radians(%d)',
         'rand_0'       => 'rand()',
-        'round_2'      => 'round(%c, %c)',
-        'sign_1'       => 'sign(%c)',
-        'sin_1'        => 'sin(%c)',
-        'sqrt_1'       => 'sqrt(%c)',
-        'tan_1'        => 'tan(%c)',
+        'reverse_1'    => 'reverse(%s)',
+        'round_2'      => 'round(%d, %d)',
+        'rtrim_1'      => 'trim(%s)',
+        'rtrim_2'      => 'trim(%s, %s)',
+        'second_1'     => 'second(%s)',
+        'sign_1'       => 'sign(%d)',
+        'sin_1'        => 'sin(%d)',
+        'soundex_1'    => 'soundex(%s)',
+        'space_1'      => 'space(%d)',
+        'sqrt_1'       => 'sqrt(%s)',
+        'str_1'        => 'str(%c)',
+        'substring_3'  => 'substring(%s, %s, %s)',
+        'tan_1'        => 'tan(%d)',
+        'trim_2'       => 'trim(%s)',
+        'trim_3'       => 'trim(%s, %s)',
+        'upper_1'      => 'upper(%s)',
+        'year_1'       => 'year(%s)',
       );
 
     protected
@@ -86,6 +116,31 @@
     }
 
     /**
+     * Set an SQL dialect for a connection  
+     *
+     * @param   rdbms.DBConnection conn
+     * @param   string name
+     * @throws  lang.ClassNotFoundException if there is no dialect by name "name"
+     */
+    public static function setDialect($conn, $name) {
+      self::$instances[$name]= XPClass::forName(self::$classes[$name])->newInstance($conn);
+    }
+    
+    /**
+     * Register a dialect by name
+     *
+     * @param   string name
+     * @param   lang.XPClass<rdbms.SQLDialect> dialect class
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function registerDialect($name, XPClass $dialectClass) {
+      if (!$dialectClass->isSubclassOf('rdbms.SQLDialect')) {
+        throw new IllegalArgumentException('Given argument must be a subclass of rdbms.SQLDialect');
+      }
+      self::$classes[$name]= $dialect->getName();
+    }
+
+    /**
      * Get an SQL dialect for a connection  
      *
      * @param   rdbms.DBConnection conn
@@ -93,13 +148,8 @@
      */
     public static function getDialect($conn) {
       $scheme= $conn->dsn->url->getScheme();
-      if (!isset($instances[$scheme])) {
-        switch($scheme) {
-          case 'mysql':  $instances[$scheme]= new MysqlDialect($conn); break;
-          case 'sybase': $instances[$scheme]= new SybaseDialect($conn); break;
-        }
-      }
-      return $instances[$scheme];
+      if (!isset(self::$instances[$scheme])) self::setDialect($conn, $scheme);
+      return self::$instances[$scheme];
     }
     
     /**
@@ -107,15 +157,15 @@
      *
      * @param   string func
      * @param   mixed[] function arguments string or rdbms.SQLFunction
-     * @param   array types
      * @return  string
      */
-    public function renderFunction($func, $args, $types) {
-      $func_i= $func.'_'.count($args);
-      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types).')' : $args[$i];
-
-      if (isset(self::$implementation[$func_i])) return call_user_func_array(array($this->conn, 'prepare'), array_merge(array(self::$implementation[$func_i]), $args));
-      return $func.'('.implode(', ', $args).')';
+    public function renderFunction($func, $args) {
+      $func_i= $func.'_'.sizeof($args);
+      if (isset(self::$implementation[$func_i])) {
+        array_unshift($args, self::$implementation[$func_i]);
+        return call_user_func_array(array($this->conn, 'prepare'), $args);
+      }
+      throw new IllegalArgumentException('SQL function "'.$func.'()" not known');
     }
 
   }

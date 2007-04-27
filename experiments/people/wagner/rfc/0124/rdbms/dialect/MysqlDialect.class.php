@@ -12,13 +12,13 @@
   class MysqlDialect extends SQLDialect {
     private static
       $implementation= array(
-        'str_1'        => 'cast(%c as char)',
-        'len_1'        => 'length(%c)',
+        'str_1'        => 'cast(%s as char)',
+        'len_1'        => 'length(%s)',
         'getdate_0'    => 'sysdate()',
-        'dateadd_3'    => 'timestampadd(%c, %c, %c)',
-        'datediff_3'   => 'timestampdiff(%c, %c, %c)',
-        'datename_2'   => 'cast(extract(%c from %c) as char)',
-        'datepart_2'   => 'extract(%c from %c)',
+        'dateadd_3'    => 'timestampadd(%c, %d, %s)',
+        'datediff_3'   => 'timestampdiff(%c, %s, %s)',
+        'datename_2'   => 'cast(extract(%c from %s) as char)',
+        'datepart_2'   => 'extract(%c from %s)',
       );
       
     /**
@@ -26,15 +26,23 @@
      *
      * @param   string func
      * @param   mixed[] function arguments string or rdbms.SQLFunction
-     * @param   array types
      * @return  string
      */
-    public function renderFunction($func, $args, $types) {
+    public function renderFunction($func, $args) {
       $func_i= $func.'_'.count($args);
-      for ($i= 0, $to= count($args); $i < $to; $i++) $args[$i]= is('rdbms.SQLFunction', $args[$i]) ? '('.$args[$i]->asSql($this->conn, $types).')' : $args[$i];
+      switch ($func) {
+        case 'concat':
+        $fmt= 'concat('.implode(', ', array_fill(0, count($args), '%s')).')';
+        array_unshift($args, $fmt);
+        return call_user_func_array(array($this->conn, 'prepare'), $args);
 
-      if (isset(self::$implementation[$func_i])) return call_user_func_array(array($this->conn, 'prepare'), array_merge(array(self::$implementation[$func_i]), $args));
-      return parent::renderFunction($func, $args, $types);
+        default:
+        if (isset(self::$implementation[$func_i])) {
+          array_unshift($args, self::$implementation[$func_i]);
+          return call_user_func_array(array($this->conn, 'prepare'), $args);
+        }
+        return parent::renderFunction($func, $args);
+      }
     }
   
   }
