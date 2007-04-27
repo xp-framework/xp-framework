@@ -10,3 +10,4 @@ performance:
 unittest:
 	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
 	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
+	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
