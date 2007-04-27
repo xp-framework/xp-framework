@@ -1,5 +1,4 @@
 XPCLI="../../../ports/technologies/env/bin/xpcli.php"
-INC=".;./tests/lib/three-and-four.xar;../../../skeleton;../../../ports/classes"
 
 test: performance unittest
 
@@ -8,6 +7,6 @@ performance:
 	php recursion.php
 
 unittest:
-	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
-	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
-	php -dinclude_path=$(INC) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
+	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
+	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
+	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest

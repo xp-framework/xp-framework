@@ -13,6 +13,12 @@
    * @purpose  purpose
    */
   class ClassLoaderTest extends TestCase {
+  
+    static function __static() {
+      ClassLoader::registerLoader(new ArchiveClassLoader(
+        new ArchiveReader(dirname(__FILE__).'/lib/three-and-four.xar')
+      ));
+    }
 
     /**
      * Helper method
