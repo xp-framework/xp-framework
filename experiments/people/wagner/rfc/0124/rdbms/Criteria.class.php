@@ -7,6 +7,7 @@
   uses(
     'rdbms.criterion.SimpleExpression',
     'rdbms.criterion.Projections',
+    'rdbms.join.JoinProcessor',
     'rdbms.SQLExpression'
   );
   
@@ -25,7 +26,8 @@
       $conditions   = array(),
       $orderings    = array(),
       $groupings    = array(),
-      $projection   = NULL;
+      $projection   = NULL,
+      $fetchmode    = array();
 
     /**
      * Constructor
@@ -162,6 +164,17 @@
     }
 
     /**
+     * set the fetchmode for a path
+     *
+     * @param   rdbms.join.FetchMode
+     * @return  rdbms.Criteria this object
+     */
+    public function setFetchMode(FetchMode $fetchmode) {
+      $this->fetchmode[$fetchmode->getPath()]= $fetchmode->getMode();
+      return $this;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string
@@ -182,21 +195,22 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function toSQL($db, $types) {
+    public function toSQL($db, $types, $aliasTable= '') {
       $sql= '';
+      $tablePrefix= ($aliasTable) ? $aliasTable.'.' : '';
       
       // Process conditions
       if (!empty($this->conditions)) {
         $sql.= ' where ';
         foreach ($this->conditions as $condition) {
-          $sql.= $condition->asSql($db, $types).' and ';
+          $sql.= $condition->asSql($db, $types, $aliasTable).' and ';
         }
         $sql= substr($sql, 0, -4);
       }
 
       // Process group by
       if (!empty($this->groupings)) {
-        $sql= rtrim($sql, ' ').$db->prepare(' group by %c', $this->groupings);
+        $sql= rtrim($sql, ' ').$db->prepare(' group by %c', $tablePrefix.$this->groupings);
       }
 
       // Process order by
@@ -206,7 +220,7 @@
           if (!isset($types[$order[0]])) {
             throw(new SQLStateException('Field "'.$order[0].'" unknown'));
           }
-          $sql.= $order[0].' '.$order[1].', ';
+          $sql.= $tablePrefix.$order[0].' '.$order[1].', ';
         }
         $sql= substr($sql, 0, -2);
       }
@@ -237,6 +251,15 @@
     }
 
     /**
+     * test if the expression is a join
+     *
+     * @return  bool
+     */
+    public function isJoin() {
+      return (0 < count(array_keys($this->fetchmode, 'join')));
+    }
+
+    /**
      * Executes an SQL SELECT statement
      *
      * @param   &rdbms.DBConnection conn
@@ -251,6 +274,26 @@
         $this->toSQL($conn, $peer->types)
       );
     }
+    
+    /**
+     * Executes an SQL SELECT statement with more than one table
+     *
+     * @param   &rdbms.DBConnection conn
+     * @param   &rdbms.Peer peer
+     * @return  &rdbms.ResultSet
+     */
+    public function executeJoin($conn, $peer, JoinProcessor $jp) {
+      $jp->setFetchmode($this->fetchmode);
+      $rest= $this->toSQL($conn, $peer->types, 't0');
+      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
 
+      return $conn->query(
+        'select %c from %c %c',
+        implode(', ',    $jp->getAttributes()),
+        $jp->getJoin(),
+        $rest
+      );
+    }
+    
   } 
 ?>

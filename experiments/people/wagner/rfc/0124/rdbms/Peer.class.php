@@ -36,8 +36,9 @@
       $sequence   = NULL,
       $identity   = NULL,
       $primary    = array(),
-      $types      = array();
-    
+      $types      = array(),
+      $constraints= array();
+
     /**
      * Constructor
      *
@@ -111,6 +112,15 @@
     }
 
     /**
+     * Set constraints
+     *
+     * @param   mixed[] constraints
+     */
+    public function setConstraints($constraints) {
+      $this->constraints= $constraints;
+    }
+
+    /**
      * Retrieve an instance by a given identifier
      *
      * @param   string identifier
@@ -178,12 +188,24 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doSelect($criteria, $max= 0) {
-      $builder= $criteria->isprojection() ? 'newRecord' : 'newObject';
-      $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
       $r= array();
+
+      if ($criteria->isJoin()) {
+        $jp= new JoinProcessor($this);
+        $q= $criteria->executeJoin(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this, $jp);
+        $it= $jp->getJoinIterator($q);
+        for ($i= 1; $it->hasNext(); $i++) {
+          if ($max && $i > $max) break;
+          $r[]= $it->next();
+        }
+        return $r;
+      }
+
+      $builder=  $criteria->isProjection() ? 'newRecord'   : 'objectFor';
+      $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
-        $r[]= $this->$builder($record);
+        $r[]= $this->{$builder}($record);
       }
       return $r;
     }
@@ -196,6 +218,13 @@
      * @see     xp://rdbms.ResultIterator
      */
     public function iteratorFor($criteria) {
+
+      if ($criteria->isJoin()) {
+        $jp= new JoinProcessor($this);
+        $q= $criteria->executeJoin(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this, $jp);
+        return $jp->getJoinIterator($q);
+      }
+
       return new ResultIterator(
         $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
         ($criteria->isprojection() ? 'Record' : $this->identifier)
@@ -215,6 +244,7 @@
           'Record not compatible with '.$this->identifier.' class'
         );
       }
+      $record['_isLoaded']= TRUE;
       return $this->newObject($record);
     }
 
@@ -278,7 +308,7 @@
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
         
-        $o= $this->newObject(array_slice($record, 0, sizeof($this->types)));
+        $o= $this->objectFor(array_slice($record, 0, sizeof($this->types)));
         $o->{strtolower($peer->identifier)}= new $peer->identifier(array_slice($record, sizeof($this->types)));
         $r[]= $o;
       }
