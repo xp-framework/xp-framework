@@ -178,40 +178,6 @@
     }
 
     /**
-     * Tests getResource() method
-     *
-     */
-    #[@test]
-    public function getResource() {
-      $contents= ClassLoader::getDefault()->getResource('META-INF/manifest.ini');
-      $this->assertEquals(
-        "[runnable]\nmain-class=\"remote.server.impl.ApplicationServer\"",
-        trim($contents)
-      );
-    }
-
-    /**
-     * Tests findResource() method
-     *
-     */
-    #[@test]
-    public function findResource() {
-      $this->assertClass(
-        ClassLoader::getDefault()->findResource('META-INF/manifest.ini'),
-        'lang.archive.ArchiveClassLoader'
-      );
-    }
-
-    /**
-     * Tests getResource() method
-     *
-     */
-    #[@test, @expect('lang.ElementNotFoundException')]
-    public function nonExistantResource() {
-      ClassLoader::getDefault()->getResource('::DOES-NOT-EXIST::');
-    }
-
-    /**
      * Tests newinstance()
      *
      */
