@@ -11,34 +11,19 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:output
-   method="xml"
-   encoding="utf-8"
-  />
+  <xsl:output method="xml" encoding="utf-8"/>
+  <xsl:include href="layout.inc.xsl"/>
   <xsl:include href="../date.inc.xsl"/>
   
-  <xsl:template match="/">
-    <html>
-      <head>
-        <title>
-          <xsl:value-of select="/formresult/config/title"/> - 
-          <xsl:value-of select="/formresult/current/name"/>
-        </title>
-        <link rel="stylesheet" href="/styles/default.css"/>
-      </head>
-      <body>
-        <xsl:apply-templates select="/formresult/page"/>
-      </body>
-    </html>
+  <xsl:template name="page-body">
+    <xsl:apply-templates select="/formresult/page"/>
   </xsl:template>
-  
+
   <xsl:template match="page">
-    <div id="header">
-      <xsl:call-template name="pager"/>
-    </div>
+    <xsl:call-template name="pager"/>
 
     <div id="picturecontainer">
-      <xsl:apply-templates select="picture"/>
+      <xsl:apply-templates select="pictures/picture"/>
       <div id="picturedescription">
         <div class="description">
           <xsl:apply-templates select="description"/>
@@ -50,8 +35,8 @@
   <xsl:template name="pager">
     <div id="pager">
       <xsl:choose>
-        <xsl:when test="'' != ../prev">
-          <xsl:apply-templates select="../prev"/>
+        <xsl:when test="'' != prev/@id">
+          <a class="navigator" href="{concat('/story/', prev/@id, '/', prev/@title)}">previous</a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="empty-prev"/>
@@ -61,8 +46,8 @@
       |
 
       <xsl:choose>
-        <xsl:when test="'' != ../next">
-          <xsl:apply-templates select="../next"/>
+        <xsl:when test="'' != next/@id">
+          <a class="navigator" href="{concat('/story/', next/@id, '/', next/@title)}">next</a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="empty-next"/>
@@ -72,18 +57,10 @@
   </xsl:template>
   
   <xsl:template match="picture">
-    <div class="picture" style="width: {./@width}px">
-      <img src="{concat('/pages/', ../../current/path, '/', @filename)}"/>
+    <div class="picture" style="width: {dimensions/@width}px">
+      <img src="{concat('/pages/', ../../@id, '/', filename)}"/>
       <xsl:apply-templates select="exif"/>
     </div>
-  </xsl:template>
-  
-  <xsl:template match="prev">
-    <a class="navigator" href="{concat('/story/', id, '-', name)}">Previous</a>
-  </xsl:template>
-  
-  <xsl:template match="next">
-    <a  class="navigator" href="{concat('/story/', id, '-', name)}">Next</a>
   </xsl:template>
   
   <xsl:template match="exif">
@@ -99,10 +76,10 @@
   </xsl:template>
   
   <xsl:template name="empty-prev">
-    <a href="#" class="navigator_disabled">Previous</a>
+    <a href="#" class="navigator_disabled">previous</a>
   </xsl:template>
 
   <xsl:template name="empty-next">
-    <a href="#" class="navigator_disabled">Next</a>
+    <a href="#" class="navigator_disabled">next</a>
   </xsl:template>
 </xsl:stylesheet>

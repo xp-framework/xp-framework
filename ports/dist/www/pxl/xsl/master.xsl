@@ -74,8 +74,8 @@
     <xsl:param name="snippet"/>
     
     <func:result>
-      <xsl:value-of select="$texts[@for= $snippet]"/>
-      <xsl:if test="not($texts[@for= $snippet])">{<xsl:value-of select="$snippet"/>}</xsl:if>
+      <xsl:copy-of select="$texts/text[@for= $snippet]"/>
+      <xsl:if test="not($texts/text[@for= $snippet])">{<xsl:value-of select="$snippet"/>}</xsl:if>
     </func:result>
   </func:function>
 

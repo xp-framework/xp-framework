@@ -11,31 +11,52 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="../master.xsl"/>
+  <xsl:include href="layout.inc.xsl"/>
   <xsl:include href="../wizard.inc.xsl"/>
 
-  <xsl:template match="/">
-    <html>
-      <body>
-      
-        <xsl:copy-of select="func:display_wizard_error('newpagehandler')"/>
-        <xsl:copy-of select="func:display_wizard_success('newpagehandler')"/>
-        <xsl:copy-of select="func:display_wizard_reload('newpagehandler')"/>
-        <form action="{func:link('admin')}" method="POST">
-          <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'newpagehandler']/@id}"/>
+  <xsl:template name="page-body">
+    <script type="text/javascript">
+      <![CDATA[
+      function addTag(tag) {
+        value= document.getElementById("tagtarget").value + " " + tag + " ";
+        value= value.replace(/\s+/g, " ");
+        value= value.replace(/^\s*/g, "");
+        document.getElementById("tagtarget").value= value;
+      }
+      ]]>
+    </script>
+    <xsl:copy-of select="func:display_wizard_error('newpagehandler')"/>
+    <xsl:copy-of select="func:display_wizard_success('newpagehandler')"/>
+    <xsl:copy-of select="func:display_wizard_reload('newpagehandler')"/>
+    
+    <xsl:variable name="state" select="/formresult/handlers/handler[@name= 'newpagehandler']/@status"/>
+    
+    <xsl:if test="$state= 'setup' or $state= 'initialized' or $state= 'errors'">
+      <form action="{func:link('admin')}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'newpagehandler']/@id}"/>
+
+        <table class="form">
+          <xsl:copy-of select="func:wizard_row_input('newpagehandler', 'name')"/>
+          <xsl:copy-of select="func:wizard_row_fileupload('newpagehandler', 'file')"/>
+          <xsl:copy-of select="func:wizard_row_textarea('newpagehandler', 'description', 80, 10)"/>
+          <xsl:copy-of select="func:wizard_row_input('newpagehandler', 'published')"/>
           
-          <table border="0">
+          <tr>
+            <xsl:copy-of select="func:_wizard_row_start('newpagehandler', 'tags')"/>
+            <td>
+              <input type="text" name="tags" id="tagtarget" value="{/formresult/formvalues/param[@name= 'tags']}" size="40"/>
+              &#160;
+              <xsl:for-each select="/formresult/handlers/handler[@name= 'newpagehandler']/values/tags/tag">
+                <a href="javascript:addTag('{normalize-space(.)}');"><xsl:value-of select="."/></a>
+                <xsl:if test="position() != last()">, </xsl:if>
+              </xsl:for-each>
+            </td>
+          </tr>
           
-            <xsl:copy-of select="func:wizard_row_input('newpagehandler', 'name')"/>
-            <xsl:copy-of select="func:wizard_row_fileupload('newpagehandler', 'file')"/>
-            <xsl:copy-of select="func:wizard_row_textarea('newpagehandler', 'description', 80, 10)"/>
-            <xsl:copy-of select="func:wizard_row_checkbox('newpagehandler', 'online')"/>
-            <xsl:copy-of select="func:wizard_row_input('newpagehandler', 'tags')"/>
-            <xsl:copy-of select="func:wizard_row_separator('newpagehandler', 'submit')"/>
-            <xsl:copy-of select="func:wizard_row_submit('newpagehandler', 'submit')"/>
-          </table>
-        </form>
-      </body>
-    </html>
+          <xsl:copy-of select="func:wizard_row_separator('newpagehandler', 'submit')"/>
+          <xsl:copy-of select="func:wizard_row_submit('newpagehandler', 'submit')"/>
+        </table>
+      </form>
+    </xsl:if>
   </xsl:template>
 </xsl:stylesheet>

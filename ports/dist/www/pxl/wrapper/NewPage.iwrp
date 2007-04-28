@@ -13,7 +13,9 @@
   <param name="file" type="string">
     <precheck class="scriptlet.xml.workflow.checkers.FileUploadPrechecker"/>
     <caster class="scriptlet.xml.workflow.casters.ToFileData"/>
-  </param>  
-  <param name="online" type="boolean"/>
+  </param>
+  <param name="published" type="string" occurrence="optional">
+    <caster class="scriptlet.xml.workflow.casters.ToDate"/>
+  </param>
   <param name="tags" type="string" occurrence="optional"/>
 </interface>
