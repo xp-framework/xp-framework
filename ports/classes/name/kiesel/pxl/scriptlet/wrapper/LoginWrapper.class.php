@@ -7,7 +7,7 @@
   uses(
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'
+    'scriptlet.xml.workflow.checkers.RegexpChecker'    
   );
 
   /**
@@ -23,7 +23,7 @@
      * Constructor
      *
      */  
-    public function __construct() {
+    function __construct() {
       $this->registerParamInfo(
         'username',
         OCCURRENCE_UNDEFINED,
@@ -47,7 +47,7 @@
      *
      * @return  string
      */
-    public function getUsername() {
+    function getUsername() {
       return $this->getValue('username');
     }
 
@@ -56,7 +56,7 @@
      *
      * @return  string
      */
-    public function getPassword() {
+    function getPassword() {
       return $this->getValue('password');
     }
 

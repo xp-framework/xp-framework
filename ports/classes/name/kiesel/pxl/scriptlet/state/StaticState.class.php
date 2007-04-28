@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('name.kiesel.pxl.scriptlet.AbstractPxlState');
+  uses(
+    'name.kiesel.pxl.scriptlet.AbstractPxlState',
+    'img.util.ExifData'
+  );
 
   /**
    * (Insert class' description here)
@@ -21,41 +24,89 @@
      * @param   
      * @return  
      */
-    public function process($request, $response) {
-      $pm= PropertyManager::getInstance();
-      $prop= $pm->getProperties('site');
-      
-      $response->addFormResult(Node::fromArray($prop->readSection('site'), 'config'));
-      $c= $this->_getCatalogue();
-      
-      // Position defaults to last entry
-      $position= $c->entries->size()- 1;
+    public function process(&$request, &$response) {
+      parent::process($request, $response);
+      $db= ConnectionManager::getInstance()->getByHost('pxl', 0);
       
       // Find out if we want a specific picture
-      if (
-        NULL !== ($index= $request->getEnvValue('IMAGEINDEX', NULL)) &&
-        intval($index) >= 0 &&
-        intval($index) < $c->entries->size()
-      ) {
+      if (NULL !== ($index= $request->getEnvValue('INDEX', NULL))) {
         $position= $index- 1;
       }
       
-      $entry= $c->entries->get($position);
-      if (!$entry) return;
-      $page= $this->_getPage($entry->getPath());
+      $page= $db->select('
+          page_id,
+          title,
+          description,
+          author_id,
+          lastchange,
+          published
+        from
+          page
+        where published is not null
+          and published < %s
+          %c
+        order by 
+          page_id desc
+        limit 1
+        ',
+        Date::now(),
+        ($request->getEnvValue('INDEX', NULL) ? $db->prepare('and page_id= %d', $request->getEnvValue('INDEX')) : '')
+      );
       
-      $response->addFormResult(Node::fromObject($entry, 'current'));
-      if ($position > 0) {
-        $prev= $c->entries->get($position- 1);
-        $response->addFormResult(Node::fromObject($prev, 'prev'));
+      $page= array_shift($page);
+      if (!$page) throw(new IllegalStateException('No page found.'));
+      
+      // Find previous and next page
+      $left=  $db->select('page_id, title from page where page_id < %d and published < %s', $page['page_id'], Date::now());
+      $right= $db->select('page_id, title from page where page_id > %d and published < %s', $page['page_id'], Date::now());
+      
+      // Load all images from page
+      $pictures= $db->select('
+          picture_id,
+          title,
+          filename
+        from picture as p
+        where page_id= %d
+        ',
+        $page['page_id']
+      );
+      
+      with ($n= $response->addFormResult(new Node('page'))); {
+        $n->setAttribute('title', $page['title']);
+        $n->setAttribute('id', $page['page_id']);
+        
+        sizeof($left) && $n->addChild(new Node('prev', NULL, array(
+          'id'    => $left[0]['page_id'], 
+          'title' => $this->webName($left[0]['title']))
+        ));
+        
+        sizeof($right) && $n->addChild(new Node('next', NULL, array(
+          'id'    => $right[0]['page_id'], 
+          'title' => $this->webName($right[0]['title']))
+        ));
+        
+        $n->addChild(new Node('description', new PCData($page['description'])));
       }
       
-      if ($position < $c->entries->size()- 1) {
-        $next= $c->entries->get($position+ 1);
-        $response->addFormResult(Node::fromObject($next, 'next'));
+      $pnode= $n->addChild(new Node('pictures'));
+      foreach ($pictures as $p) {
+        $tmp= $pnode->addChild(Node::fromArray($p, 'picture'));
+        
+        try {
+          $tmp->addChild(Node::fromObject(
+            ExifData::fromFile(new File($request->getEnvValue('DOCUMENT_ROOT').'/pages/'.$page['page_id'].'/'.$p['filename'])),
+            'exif'
+          ));
+        } catch(ImagingException $ignored) {
+          // ... some images might have no exif data
+        }
+        
+        list($width, $height)= getimagesize($request->getEnvValue('DOCUMENT_ROOT').'/pages/'.$page['page_id'].'/'.$p['filename']);
+        $tmp->addChild(new Node('dimensions', NULL, array(
+          'width'   => $width, 
+          'height'  => $height
+        )));
       }
-      
-      $response->addFormResult($page->toXml());
     }
   }
 ?>

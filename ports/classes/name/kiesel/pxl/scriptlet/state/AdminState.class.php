@@ -45,7 +45,7 @@
      * @return  
      */
     public function process($request, $response, $context) {
-      
+      parent::process($request, $response, $context);
     }
   }
 ?>

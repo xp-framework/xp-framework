@@ -6,11 +6,7 @@
 
   uses(
     'scriptlet.xml.workflow.AbstractState',
-    'util.PropertyManager',
-    'name.kiesel.pxl.Catalogue',
-    'name.kiesel.pxl.Page',
-    'name.kiesel.pxl.Picture',
-    'name.kiesel.pxl.storage.FilesystemContainer'
+    'util.PropertyManager'
   );
 
   /**
@@ -28,35 +24,9 @@
      * @param   
      * @return  
      */
-    protected function _getDataPath($path) {
-      $path= $_SERVER['DOCUMENT_ROOT'].'/pages/'.$path;
-      return realpath($path);
+    protected function webName($string) {
+      return preg_replace('/[^a-zA-Z0-9_\-]/', '_', $string);
     }    
-  
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    protected function _getCatalogue() {
-      if (NULL === $this->catalogue) {
-        $this->catalogue= Catalogue::create(new FilesystemContainer($this->_getDataPath()));
-      }
-      
-      return $this->catalogue;
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    protected function _getPage($path) {
-      $page= Page::create(new FilesystemContainer($this->_getDataPath($path)));
-      return $page;
-    }
     
     /**
      * Setup this state. Redirects to login form in case the state 
@@ -94,6 +64,19 @@
       }
       parent::setup($request, $response, $context);
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    function process($request, $response, $context) {
+      $prop= PropertyManager::getInstance()->getProperties('site');
+      $response->addFormResult(Node::fromArray($prop->readSection('site'), 'config'));
+      
+      return parent::process($request, $response, $context);    
+    }    
     
   }
 ?>

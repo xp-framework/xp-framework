@@ -32,14 +32,36 @@
      * @param   &scriptlet.xml.workflow.Context context
      * @return  boolean
      */
-    public function handleSubmittedData($request, $context) {
-      $pm= PropertyManager::getInstance();
-      $prop= $pm->getProperties('site');
+    public function handleSubmittedData(&$request, &$context) {
+      $prop= PropertyManager::getInstance()->getProperties('site');
+      $db= ConnectionManager::getInstance()->getByHost('pxl', 0);
+
+      $user= $db->select('
+          author_id,
+          username,
+          realname,
+          email,
+          password
+        from
+          author
+        where username= %s
+        ',
+        $this->wrapper->getUsername()
+      );
       
-      $user= $prop->readSection('user::'.$this->wrapper->getUsername());
-      if (md5($this->wrapper->getPassword()) != $user['password'])
+      if (!sizeof($user)) {
+        $this->addError('unknown', 'username');
+        $this->addError('unknown', 'password');
         return FALSE;
+      }
       
+      $user= array_shift($user);
+      if (md5($this->wrapper->getPassword()) != $user['password']) {
+        $this->addError('unknown', 'username');
+        $this->addError('unknown', 'password');
+        return FALSE;
+      }
+
       $context->setUser($user);
       return TRUE;
     }
@@ -55,7 +77,7 @@
       $return= $request->session->getValue('authreturn');
 
       if ($return) {
-        // $request->session->removeValue('authreturn');
+        $request->session->removeValue('authreturn');
         $response->sendRedirect(sprintf('%s://%s%s%s',
           $return['scheme'],
           $return['host'],

@@ -7,7 +7,10 @@
   uses(
     'scriptlet.xml.workflow.Handler',
     'name.kiesel.pxl.scriptlet.wrapper.NewPageWrapper',
-    'name.kiesel.pxl.util.PageCreator'
+    'xml.parser.XMLParser',
+    'text.parser.DateParser',
+    'io.File',
+    'io.Folder'
   );
 
   /**
@@ -34,10 +37,21 @@
      * @return  boolean
      */
     public function setup($request, $context) {
-    
-      // TODO: Add code that is required to initially setup the handler
-      //       Set values with Handler::setFormValue() to make them accessible in the frontend.
+      $db= ConnectionManager::getInstance()->getByHost('pxl', 0);
       
+      // Find next "free" publishing date
+      $lastdate= $db->select('
+        cast(datetime(max(published), "+1 day"), "date") as published from page
+      ');
+      
+      if (sizeof($lastdate) && is('util.Date', $lastdate[0]['published'])) {
+        $this->setFormValue('published', $lastdate[0]['published']->format('%Y-%m-%d'));
+      } else {
+        $this->setFormvalue('published', Date::now()->format('%Y-%m-%d'));
+      }
+      
+      // Load tags
+      $this->setValue('tags', $db->select('distinct tag from tag'));
       return TRUE;
     }
     
@@ -49,34 +63,86 @@
      * @return  boolean
      */
     public function handleSubmittedData($request, $context) {
-    
-      $s= new FilesystemContainer($request->getEnvValue('DOCUMENT_ROOT').'/pages');
-      $filedata= $this->wrapper->getFile();
-      $file= $filedata->getFile();
-      
-      $pc= new PageCreator(
-        $s,
-        $this->wrapper->getName(),
-        array($file->getURI())
-      );
-      $pc->setAuthor($context->user['username']);
-      $pc->setDescription($this->wrapper->getDescription());
-      $pc->addPage();
-      
-      return TRUE;
-    }
-    
-    /**
-     * Finalize this handler
-     *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
-     */
-    public function finalize($request, $response, $context) {
+      $db= ConnectionManager::getInstance()->getByHost('pxl', 0);
+      $transaction= $db->begin(new Transaction('inspix'));
 
-      // TODO: Add code that is executed after success and on every reload of the handler.
-      //       Many handlers don't need this, so remove the complete function.
+      try {
+        $parser= new XMLParser();
+        $parser->parse('<?xml version="1.0" encoding="iso-8859-15"?><document>'.$this->wrapper->getDescription().'</document>');
+      } catch (XMLFormatException $e) {
+        $this->addError('no-xml', 'description');
+        return FALSE;
+      }
+      
+      try {
+        $db->insert('
+          into page (
+            title,
+            description,
+            author_id,
+            lastchange,
+            published,
+            is_published
+          ) values (
+            %s,
+            %s,
+            %d,
+            %s,
+            %s,
+            NULL
+          )',
+          $this->wrapper->getName(),
+          $this->wrapper->getDescription(),
+          $context->user['author_id'],
+          Date::now(),
+          (is('util.Date', $this->wrapper->getPublished()) ? $this->wrapper->getPublished() : NULL)
+        );
+
+        $page= $db->identity();
+
+        // Create the new folder
+        $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').'/pages/'.intval($page));
+        $folder->create(0755);
+
+        // Copy image file to new destination
+        $this->wrapper->getFile()->getFile()->move($folder->getUri().'/'.$this->wrapper->getFile()->getName());
+
+        $db->insert('
+          into picture (
+            page_id,
+            title,
+            filename,
+            author_id
+          ) values (
+            %d,
+            %s,
+            %s, 
+            %d
+          )',
+          $page,
+          $this->wrapper->getName(),
+          $this->wrapper->getFile()->getName(),
+          $context->user['author_id']
+        );
+
+        foreach (array_unique(explode(' ', $this->wrapper->getTags())) as $tag) {
+          strlen($tag) && $db->insert('into tag (page_id, tag) values (%d, %s)', $page, $tag);
+        }
+      } catch(SQLException $e) {
+        $this->addError('database');
+        $transaction->rollback();
+        return FALSE;
+      } catch(IOException $e) {
+        $this->addError('permissions');
+        $transaction->rollback();
+        return FALSE;
+      } catch(XPException $e) {
+        $transaction->rollback();
+        throw ($e);
+      }
+      
+      $transaction->commit();
+      return TRUE;
     }
   }
 ?>

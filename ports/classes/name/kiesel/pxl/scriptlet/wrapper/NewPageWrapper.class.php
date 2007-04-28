@@ -6,8 +6,9 @@
 
   uses(
     'scriptlet.xml.workflow.Wrapper',
+    'scriptlet.xml.workflow.casters.ToDate',
     'scriptlet.xml.workflow.casters.ToFileData',
-    'scriptlet.xml.workflow.checkers.FileUploadPrechecker'
+    'scriptlet.xml.workflow.checkers.FileUploadPrechecker'    
   );
 
   /**
@@ -23,7 +24,7 @@
      * Constructor
      *
      */  
-    public function __construct() {
+    function __construct() {
       $this->registerParamInfo(
         'name',
         OCCURRENCE_UNDEFINED,
@@ -49,10 +50,10 @@
         NULL
       );
       $this->registerParamInfo(
-        'online',
-        OCCURRENCE_UNDEFINED,
+        'published',
+        OCCURRENCE_OPTIONAL,
         NULL,
-        NULL,
+        array('scriptlet.xml.workflow.casters.ToDate'),
         NULL,
         NULL
       );
@@ -71,7 +72,7 @@
      *
      * @return  string
      */
-    public function getName() {
+    function getName() {
       return $this->getValue('name');
     }
 
@@ -80,7 +81,7 @@
      *
      * @return  string
      */
-    public function getDescription() {
+    function getDescription() {
       return $this->getValue('description');
     }
 
@@ -89,17 +90,17 @@
      *
      * @return  string
      */
-    public function getFile() {
+    function getFile() {
       return $this->getValue('file');
     }
 
     /**
-     * Returns the value of the parameter online
+     * Returns the value of the parameter published
      *
-     * @return  boolean
+     * @return  string
      */
-    public function getOnline() {
-      return $this->getValue('online');
+    function getPublished() {
+      return $this->getValue('published');
     }
 
     /**
@@ -107,7 +108,7 @@
      *
      * @return  string
      */
-    public function getTags() {
+    function getTags() {
       return $this->getValue('tags');
     }
 
