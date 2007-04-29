@@ -12,7 +12,8 @@ Scope of Change
 The lang.types.ArrayList class and the relevant classes from util.collections 
 will be changed to support array access (read/write) and foreach() iteration. 
 The classes from the collections API will furthermore support type boxing
-and provide generic variants of themselves.
+and provide generic variants of themselves. The text.String class will be
+deprecated and replaced by lang.types.String and lang.types.Character.
 
 
 Rationale
