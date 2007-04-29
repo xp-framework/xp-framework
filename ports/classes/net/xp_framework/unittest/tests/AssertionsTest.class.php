@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('unittest.TestCase', 'text.String');
+  uses('unittest.TestCase', 'lang.types.String');
 
   /**
    * Test assertion methods
@@ -188,7 +188,7 @@
     }    
 
     /**
-     * Test assertEquals() for text.String objects
+     * Test assertEquals() for lang.types.String objects
      *
      */    
     #[@test]

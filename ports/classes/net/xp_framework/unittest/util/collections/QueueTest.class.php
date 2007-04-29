@@ -7,7 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.collections.Queue',
-    'text.String'
+    'lang.types.String'
   );
 
   /**

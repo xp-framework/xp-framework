@@ -7,7 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.collections.HashSet',
-    'text.String'
+    'lang.types.String'
   );
 
   /**

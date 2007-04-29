@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'text.StringTokenizer'
+    'lang.types.StringTokenizer'
   );
 
   /**
    * Test string tokenizing.
    *
-   * @see      xp://text.StringTokenizer
+   * @see      xp://lang.types.StringTokenizer
    * @purpose  TestCase
    */
   class StringTokenizerTest extends TestCase {

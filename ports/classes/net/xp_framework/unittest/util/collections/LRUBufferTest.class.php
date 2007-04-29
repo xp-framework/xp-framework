@@ -7,7 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.collections.LRUBuffer',
-    'text.String'
+    'lang.types.String'
   );
 
   define('LRUTEST_BUFFER_DEAULT_SIZE',  3);
