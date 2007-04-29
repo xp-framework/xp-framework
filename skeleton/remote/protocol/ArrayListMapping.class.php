@@ -23,11 +23,10 @@
      * @return  &mixed
      */
     public function valueOf($serializer, $serialized, $context= array()) {
-      $a= new ArrayList();
-      $size= $serialized->consumeSize();
+      $a= ArrayList::newInstance($serialized->consumeSize());
       
       $serialized->offset++;  // Opening "{"
-      for ($i= 0; $i < $size; $i++) {
+      for ($i= 0; $i < $a->length; $i++) {
         $a->values[$i]= $serializer->valueOf($serialized, $context);
       }
       $serialized->offset++;  // Closing "}"

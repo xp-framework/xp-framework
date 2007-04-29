@@ -212,7 +212,7 @@
         pack('NN', 0, $oid),
         array(
           new ByteCountedString($method),
-          new ByteCountedString($this->serializer->representationOf(new ArrayList($args)))
+          new ByteCountedString($this->serializer->representationOf(ArrayList::newInstance($args)))
         )
       );
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
