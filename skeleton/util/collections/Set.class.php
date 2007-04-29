@@ -9,31 +9,31 @@
    *
    * @purpose  Interface
    */
-  interface Set {
+  interface Set extends ArrayAccess, IteratorAggregate {
   
     /**
      * Adds an object
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add($object);
+    public function add(Generic $object);
 
     /**
      * Removes an object from this set
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove($object);
+    public function remove(Generic $object);
 
     /**
      * Removes an object from this set
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains($object);
+    public function contains(Generic $object);
 
     /**
      * Returns this set's size
@@ -80,7 +80,7 @@
     /**
      * Returns true if this set equals another set.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp);
