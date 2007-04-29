@@ -332,15 +332,15 @@
       $list= $this->serializer->valueOf(
         new SerializedData('A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}')
       );
-      $this->assertEquals($list, new ArrayList(array(
+      $this->assertEquals($list, new ArrayList(
         array(
           'la'  => 'la',
-          'foo' => new ArrayList(array(
+          'foo' => new ArrayList(
             array('verschachteln' => 'istToll'),
             'barbar'
-          ))
+          )
         ))
-      ));
+      );
     }
     
     /**
