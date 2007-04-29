@@ -22,18 +22,18 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   &lang.Object key
-     * @param   &lang.Object value
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @param   lang.Generic value
+     * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value);
+    public function put($key, Generic $value);
 
     /**
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the value associated with the key
      */
     public function get($key);
     
@@ -42,8 +42,8 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the previous value associated with the key
      */
     public function remove($key);
     
@@ -68,7 +68,7 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   &lang.Object key
+     * @param   lang.Generic key
      * @return  bool
      */
     public function containsKey($key);
@@ -76,10 +76,10 @@
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   &lang.Object value
+     * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value);
+    public function containsValue(Generic $value);
 
     /**
      * Returns a hashcode for this map
@@ -91,7 +91,7 @@
     /**
      * Returns true if this map equals another map.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp);
