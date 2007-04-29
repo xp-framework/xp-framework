@@ -12,17 +12,92 @@
    * @purpose  Interface
    */
   class HashSet extends Object implements Set {
-    public
+    protected static
+      $iterate   = NULL;
+
+    protected
       $_elements = array(),
       $_hash     = 0;
+
+    public
+      $__generic = array();
+
+    static function __static() {
+      self::$iterate= newinstance('Iterator', array(), '{
+        private $i= 0, $v;
+        public function on($v) { $self= new self(); $self->v= $v; return $self; }
+        public function current() { return $this->v[$this->i]; }
+        public function key() { return $this->i; }
+        public function next() { $this->i++; }
+        public function rewind() { $this->i= 0; }
+        public function valid() { return $this->i < sizeof($this->v); }
+      }');
+    }
+
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      return self::$iterate->on($this->elements);
+    }
+
+    /**
+     * = list[] overloading
+     *
+     * @param   int offset
+     * @return  lang.Generic
+     */
+    public function offsetGet($offset) {
+      throw new IllegalArgumentException('Unsupported operation');
+    }
+
+    /**
+     * list[]= overloading
+     *
+     * @param   int offset
+     * @param   mixed value
+     * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
+     */
+    public function offsetSet($offset, $value) {
+       if (NULL === $offset) {
+        $this->add($value);
+      } else {
+        throw new IllegalArgumentException('Unsupported operation');
+      }
+    }
+
+    /**
+     * isset() overloading
+     *
+     * @param   int offset
+     * @return  bool
+     */
+    public function offsetExists($offset) {
+      return $this->contains($offset);
+    }
+
+    /**
+     * unset() overloading
+     *
+     * @param   int offset
+     */
+    public function offsetUnset($offset) {
+      $this->remove($offset);
+    }
     
     /**
      * Adds an object
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add($object) { 
+    public function add(Generic $object) { 
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       $h= $object->hashCode();
       if (isset($this->_elements[$h])) return FALSE;
       
@@ -34,10 +109,13 @@
     /**
      * Removes an object from this set
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove($object) { 
+    public function remove(Generic $object) { 
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       $h= $object->hashCode();
       if (!isset($this->_elements[$h])) return FALSE;
 
@@ -49,10 +127,13 @@
     /**
      * Removes an object from this set
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains($object) { 
+    public function contains(Generic $object) { 
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       return isset($this->_elements[$object->hashCode()]);
     }
 
@@ -86,12 +167,15 @@
     /**
      * Adds an array of objects
      *
-     * @param   lang.Object[] objects
+     * @param   lang.Generic[] objects
      * @return  bool TRUE if this set changed as a result of the call. 
      */
     public function addAll($objects) { 
       $result= FALSE;
       for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
+        if ($this->__generic && !$objects[$i] instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Object #'.$i.' '.xp::stringOf($objects[$i]).' must be of '.$this->__generic[0]);
+        }
         $h= $objects[$i]->hashCode();
         if (isset($this->_elements[$h])) continue;
         
@@ -105,7 +189,7 @@
     /**
      * Returns an array containing all of the elements in this set. 
      *
-     * @return  lang.Object[] objects
+     * @return  lang.Generic[] objects
      */
     public function toArray() { 
       return array_values($this->_elements);
@@ -123,14 +207,11 @@
     /**
      * Returns true if this set equals another set.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
-      return (
-        is('util.collections.Set', $cmp) && 
-        ($this->hashCode() === $cmp->hashCode())
-      );
+      return $cmp instanceof self && $this->hashCode() === $cmp->hashCode();
     }
 
     /**
