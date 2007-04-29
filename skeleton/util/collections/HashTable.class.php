@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.collections.Map');
+  uses('lang.Primitive', 'util.collections.Map');
 
   /**
    * Hash table consisting of non-null objects as keys and values
@@ -12,10 +12,52 @@
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
-  class HashTable extends Object implements Map {
+  class HashTable extends Object implements Map, ArrayAccess {
+    protected
+      $_buckets  = array(),
+      $_hash     = 0;
+    
     public
-      $_buckets = array(),
-      $_hash    = 0;
+      $__generic = array();
+
+    /**
+     * = list[] overloading
+     *
+     * @param   lang.Generic offset
+     * @return  lang.Generic
+     */
+    public function offsetGet($offset) {
+      return $this->get($offset);
+    }
+
+    /**
+     * list[]= overloading
+     *
+     * @param   lang.Generic offset
+     * @param   lang.Generic value
+     */
+    public function offsetSet($offset, $value) {
+      $this->put($offset, $value);
+    }
+
+    /**
+     * isset() overloading
+     *
+     * @param   lang.Generic offset
+     * @return  bool
+     */
+    public function offsetExists($offset) {
+      return $this->containsKey($offset);
+    }
+
+    /**
+     * unset() overloading
+     *
+     * @param   lang.Generic offset
+     */
+    public function offsetUnset($offset) {
+      $this->remove($offset);
+    }
 
     /**
      * Associates the specified value with the specified key in this map.
@@ -24,19 +66,29 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   &lang.Object key
-     * @param   &lang.Object value
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @param   lang.Generic value
+     * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value) {
-      $h= $key->hashCode();
+    public function put($key, Generic $value) {
+      $k= Primitive::boxed($key);
+      
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+        } else if (!$value instanceof $this->__generic[1]) {
+          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+        }
+      }
+      
+      $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
         $previous= $this->_buckets[$h][1];
       }
 
-      $this->_buckets[$h]= array($key, $value);
+      $this->_buckets[$h]= array($k, $value);
       $this->_hash+= HashProvider::hashOf($h.$value->hashCode());
       return $previous;
     }
@@ -45,11 +97,18 @@
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the value associated with the key
      */
     public function get($key) {
-      $h= $key->hashCode();
+      $h= Primitive::boxed($key)->hashCode();
+
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
+
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
@@ -60,11 +119,18 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   &lang.Object key
-     * @return  &lang.Object the previous value associated with the key
+     * @param   lang.Generic key
+     * @return  lang.Generic the previous value associated with the key
      */
     public function remove($key) {
-      $h= $key->hashCode();
+      $h= Primitive::boxed($key)->hashCode();
+
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
+
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
@@ -104,20 +170,30 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   &lang.Object key
+     * @param   lang.Generic key
      * @return  bool
      */
     public function containsKey($key) {
-      return isset($this->_buckets[$key->hashCode()]);
+      if ($this->__generic) {
+        if (!$k instanceof $this->__generic[0]) {
+          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+        }
+      }
+      return isset($this->_buckets[Primitive::boxed($key)->hashCode()]);
     }
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   &lang.Object value
+     * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value) {
+    public function containsValue(Generic $value) {
+      if ($this->__generic) {
+        if (!$value instanceof $this->__generic[1]) {
+          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+        }
+      }
       foreach (array_keys($this->_buckets) as $key) {
         if ($this->_buckets[$key][1]->equals($value)) return TRUE;
       }
@@ -136,12 +212,12 @@
     /**
      * Returns true if this map equals another map.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
       return (
-        is('util.collections.Map', $cmp) && 
+        ($cmp instanceof Map) && 
         ($this->hashCode() === $cmp->hashCode())
       );
     }
@@ -149,7 +225,7 @@
     /**
      * Returns an array of keys
      *
-     * @return  &lang.Object[]
+     * @return  lang.Generic[]
      */
     public function keys() {
       $keys= array();
