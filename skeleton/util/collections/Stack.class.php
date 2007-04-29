@@ -18,7 +18,7 @@
    *   uses('util.collections.Stack', 'text.String');
    *   
    *   // Fill stack
-   *   with ($s= &new Stack()); {
+   *   with ($s= new Stack()); {
    *     $s->push(new String('One'));
    *     $s->push(new String('Two'));
    *     $s->push(new String('Three'));
@@ -37,18 +37,24 @@
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/util/Stack.html 
    */
   class Stack extends Object {
-    public
+    protected
       $_elements = array(),
       $_hash     = 0;
+
+    public
+      $__generic = array();
   
     /**
      * Pushes an item onto the top of the stack. Returns the element that 
      * was added.
      *
-     * @param   &lang.Object object
-     * @return  &lang.Object object
+     * @param   lang.Generic object
+     * @return  lang.Generic object
      */
-    public function push($object) {
+    public function push(Generic $object) {
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       array_unshift($this->_elements, $object);
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
@@ -57,7 +63,7 @@
     /**
      * Gets an item from the top of the stack
      *
-     * @return  &lang.Object
+     * @return  lang.Generic
      * @throws  util.NoSuchElementException
      */    
     public function pop() {
@@ -75,7 +81,7 @@
      *
      * Returns NULL in case the stack is empty.
      *
-     * @return  &lang.Object object
+     * @return  lang.Generic object
      */        
     public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
@@ -104,10 +110,13 @@
      * Sees if an object is in the stack and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  int position
      */
-    public function search($object) {
+    public function search(Generic $object) {
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
     
@@ -115,7 +124,7 @@
      * Retrieves an element by its index.
      *
      * @param   int index
-     * @return  &lang.Object
+     * @return  lang.Generic
      * @throws  lang.IndexOutOfBoundsException
      */
     public function elementAt($index) {
@@ -137,14 +146,11 @@
     /**
      * Returns true if this queue equals another queue.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
-      return (
-        is('util.collections.Stack', $cmp) && 
-        ($this->hashCode() === $cmp->hashCode())
-      );
+      return $cmp instanceof self && $this->hashCode() === $cmp->hashCode();
     }
   }
 ?>

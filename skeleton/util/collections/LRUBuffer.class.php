@@ -13,12 +13,13 @@
    * @purpose  Abstract data type
    */
   class LRUBuffer extends Object {
-    public
-      $size = 0;
-
-    public
+    protected
+      $size      = 0,
       $_access   = array(),
       $_elements = array();
+
+    public
+      $__generic = array();
     
     /**
      * Constructor
@@ -44,6 +45,9 @@
      * @return  lang.Generic victim
      */
     public function add(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
       $h= $element->hashCode();
       $this->_access[$h]= microtime(TRUE);
       $this->_elements[$h]= $element;
@@ -67,6 +71,9 @@
      * @param   lang.Generic element
      */
     public function update(Generic $element) {
+      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+      }
       $this->_access[$element->hashCode()]= microtime(TRUE);
     }
     

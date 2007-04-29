@@ -36,17 +36,23 @@
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
   class Queue extends Object {
-    public
+    protected
       $_elements = array(),
       $_hash     = 0;
+
+    public
+      $__generic = array();
   
     /**
      * Puts an item into the queue. Returns the element that was added.
      *
-     * @param   &lang.Object object
-     * @return  &lang.Object object
+     * @param   lang.Generic object
+     * @return  lang.Generic object
      */
-    public function put($object) {
+    public function put(Generic $object) {
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       $this->_elements[]= $object;
       $this->_hash+= HashProvider::hashOf($object->hashCode());
       return $object;
@@ -55,12 +61,12 @@
     /**
      * Gets an item from the front of the queue.
      *
-     * @return  &lang.Object
+     * @return  lang.Generic
      * @throws  util.NoSuchElementException
      */    
     public function get() {
       if (empty($this->_elements)) {
-        throw(new NoSuchElementException('Queue is empty'));
+        throw new NoSuchElementException('Queue is empty');
       }
 
       $e= $this->_elements[0];
@@ -75,7 +81,7 @@
      *
      * Returns NULL in case the queue is empty.
      *
-     * @return  &lang.Object object
+     * @return  lang.Generic object
      */        
     public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
@@ -104,10 +110,13 @@
      * Sees if an object is in the queue and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @param   &lang.Object object
+     * @param   lang.Generic object
      * @return  int position
      */
-    public function search($object) {
+    public function search(Generic $object) {
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
     }
 
@@ -115,10 +124,13 @@
      * Remove an object from the queue. Returns TRUE in case the element
      * was deleted, FALSE otherwise.
      *
-     * @return  &lang.Object
+     * @return  lang.Generic
      * @return  bool
      */
-    public function remove($object) {
+    public function remove(Generic $object) {
+      if ($this->__generic && !$object instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
+      }
       if (-1 == ($pos= $this->search($object))) return FALSE;
       
       $this->_hash-= HashProvider::hashOf($this->_elements[$pos]->hashCode());
@@ -131,7 +143,7 @@
      * Retrieves an element by its index.
      *
      * @param   int index
-     * @return  &lang.Object
+     * @return  lang.Generic
      * @throws  lang.IndexOutOfBoundsException
      */
     public function elementAt($index) {
@@ -153,7 +165,7 @@
     /**
      * Returns true if this queue equals another queue.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
