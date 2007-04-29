@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0106 - Array access / iteration / type boxing / generics 
+  (friebe)
 - Fix output of stacktraces in util.ChainedException
   (kiesel)
 - Fix DomXSLProcessor's error handling by clearing the error stack when
