@@ -22,6 +22,7 @@
    *  <li>You want an object-oriented API</li>
    * </ul>
    *
+   * @deprecated Use lang.types.String instead!
    * @see      php://strings
    * @purpose  Type wrapper
    */
