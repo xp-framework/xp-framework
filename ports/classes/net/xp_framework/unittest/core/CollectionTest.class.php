@@ -178,8 +178,8 @@
     #[@test]
     public function elementContained() {
       $collection= Collection::forClass(COLLECTION_CLASS_NAME);
-      $e1= $collection->add(new Binford());
-      $e2= $collection->add(new Binford());
+      $e1= $collection->add(new Binford(61));
+      $e2= $collection->add(new Binford(610));
       $this->assertTrue($collection->contains($e1));
       $this->assertTrue($collection->contains($e2));
       $this->assertFalse($collection->contains(new Binford()));
@@ -192,8 +192,8 @@
     #[@test]
     public function elementIndex() {
       $collection= Collection::forClass(COLLECTION_CLASS_NAME);
-      $e1= $collection->add(new Binford());
-      $e2= $collection->add(new Binford());
+      $e1= $collection->add(new Binford(61));
+      $e2= $collection->add(new Binford(610));
       $this->assertEquals(0, $collection->indexOf($e1));
       $this->assertEquals(1, $collection->indexOf($e2));
       $this->assertFalse($collection->indexOf(new Binford()));
