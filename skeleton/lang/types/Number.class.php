@@ -43,6 +43,15 @@
     }
     
     /**
+     * Returns a hashcode for this number
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->value;
+    }
+
+    /**
      * Returns a string representation of this number object
      *
      * @return  string
@@ -58,7 +67,7 @@
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals($cmp) {
-      return is(get_class($this), $cmp) && $this->value === $cmp->value;
+      return $cmp instanceof self && $this->value === $cmp->value;
     }
   }
 ?>
