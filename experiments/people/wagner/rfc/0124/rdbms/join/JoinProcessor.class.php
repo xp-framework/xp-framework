@@ -46,7 +46,7 @@ uses(
      * @return  string[]
      */
     public function getJoin() {
-      $dialect= SQLDialect::getDialect(ConnectionManager::getInstance()->getByHost($this->joinpart->peer->connection, 0));
+      $dialect= $this->joinpart->peer->connection->dialect;
       return $dialect->makeJoinBy($this->getTables(), $this->getJoinConditions());
     }
     

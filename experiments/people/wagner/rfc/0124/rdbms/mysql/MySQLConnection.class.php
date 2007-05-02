@@ -8,7 +8,8 @@
     'rdbms.DBConnection',
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
-    'rdbms.StatementFormatter'
+    'rdbms.StatementFormatter',
+    'rdbms.dialect.MysqlDialect'
   );
 
   /**
@@ -43,12 +44,7 @@
     public function __construct($dsn) { 
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter();
-      $this->formatter->setEscape('"');
-      $this->formatter->setEscapeRules(array(
-        '"'   => '\"',
-        '\\'  => '\\\\'
-      ));
-      $this->formatter->setDateFormat('Y-m-d H:i:s');
+      $this->formatter->setDialect(new MysqlDialect());
     }
 
     /**
@@ -95,7 +91,7 @@
       // (\) as an escape character within strings. With this mode enabled, 
       // backslash becomes any ordinary character like any other. 
       // (Implemented in MySQL 5.0.1)
-      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->setEscapeRules(array(
+      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->dialect->setEscapeRules(array(
         '"'   => '""'
       ));
 
@@ -141,7 +137,7 @@
      */
     public function prepare() {
       $args= func_get_args();
-      return $this->formatter->format($this, array_shift($args), $args);
+      return $this->formatter->format(array_shift($args), $args);
     }
     
     /**

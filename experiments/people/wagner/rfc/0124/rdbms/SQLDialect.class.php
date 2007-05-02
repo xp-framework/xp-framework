@@ -3,48 +3,14 @@
  *
  * $Id$ 
  */
-  uses(
-    'rdbms.dialect.MysqlDialect',
-    'rdbms.dialect.SybaseDialect'
-  );
 
   /**
-   * helps to build functions for different SQL servers
-   *
-   * Example: Setting a dialect for a connection
-   * <code>
-   *  SQLDialect::setDialect($myConnection, SQLDialect::MYSQL);
-   * </code>
-   *
-   * Supported dialects:
-   * <ul>
-   *   <li>SQLDialect::MYSQL   - MySQL dialect</li>
-   *   <li>SQLDialect::SYBASE  - Sybase dialect</li>
-   * </ul>
-   *
-   * Other dialects can be registered via SQLDialect::registerDialect():
-   * <code>
-   *   SQLDialect::registerDialect(
-   *     'hql', 
-   *     XPClass::forName('com.example.hql.dialect.HQLDialect')
-   *   );
-   * </code>
-   *
-   * For all "hql://"-connections or any connections that have been
-   * associated with this dialect via setDialect(), the HQLDialect 
-   * class will be used.
+   * helps to build statments for different SQL servers
    *
    * @purpose  Base class for all dialects 
    */
   abstract class SQLDialect extends Object {
-    const MYSQL  = 'mysql';
-    const SYBASE = 'sybase';
-  
     private static
-      $classes= array(
-        self::MYSQL  => 'rdbms.dialect.MysqlDialect',
-        self::SYBASE => 'rdbms.dialect.SybaseDialect',
-      ),
       $instances= array(),
       $dateparts= array(
         'YEAR'	      => 'YEAR',
@@ -118,68 +84,21 @@
         'year_1'       => 'year(%s)',
       );
 
-    protected
-      $conn= NULL;
+    public
+      $escape       = '',
+      $escapeRules  = array(),
+      $dateFormat   = '';
 
     /**
-     * Get an SQL dialect for a connection  
+     * get a function format string
      *
-     * @param   rdbms.DBConnection conn
-     * @return  rdbms.SQLDialect
-     */
-    public static function getDialect($conn) {
-      $scheme= $conn->dsn->url->getScheme();
-      if (!isset(self::$instances[$scheme])) self::setDialect($conn, $scheme);
-      return self::$instances[$scheme];
-    }
-    
-    /**
-     * Constructor
-     *
-     * @param   rdbms.DBConnection conn
-     */
-    public function __construct($conn) {
-      $this->conn= $conn;
-    }
-
-    /**
-     * Set an SQL dialect for a connection  
-     *
-     * @param   rdbms.DBConnection conn
-     * @param   string name
-     * @throws  lang.ClassNotFoundException if there is no dialect by name "name"
-     */
-    public static function setDialect($conn, $name) {
-      self::$instances[$name]= XPClass::forName(self::$classes[$name])->newInstance($conn);
-    }
-    
-    /**
-     * Register a dialect by name
-     *
-     * @param   string name
-     * @param   lang.XPClass<rdbms.SQLDialect> dialect class
+     * @param   SQLFunction $func
+     * @return  string
      * @throws  lang.IllegalArgumentException
      */
-    public static function registerDialect($name, XPClass $dialectClass) {
-      if (!$dialectClass->isSubclassOf('rdbms.SQLDialect')) {
-        throw new IllegalArgumentException('Given argument must be a subclass of rdbms.SQLDialect');
-      }
-      self::$classes[$name]= $dialect->getName();
-    }
-
-    /**
-     * get an SQL function string
-     *
-     * @param   string func
-     * @param   mixed[] function arguments string or rdbms.SQLFunction
-     * @return  string
-     */
-    protected function renderFunction($func, $args) {
-      $func_i= $func.'_'.sizeof($args);
-      if (isset(self::$implementations[$func_i])) {
-        array_unshift($args, self::$implementations[$func_i]);
-        return call_user_func_array(array($this->conn, 'prepare'), $args);
-      }
+    public function formatFunction(SQLFunction $func) {
+      $func_i= $func->func.'_'.sizeof($func->args);
+      if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
       throw new IllegalArgumentException('SQL function "'.$func.'()" not known');
     }
 
@@ -190,10 +109,57 @@
      * @return  string
      * @throws  lang.IllegalArgumentException
      */
-    protected function datepart($datepart) {
-      if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does noct exist');
+    public function datepart($datepart) {
+      if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does not exist');
       return self::$dateparts[$datepart];
     }
 
+    /**
+     * Set date format
+     *
+     * @param   string format
+     */
+    public function setDateFormat($format) {
+      $this->dateFormat= $format;
+    }
+    
+    /**
+     * Set date format
+     *
+     * @param   array<String,String> rules
+     */
+    public function setEscapeRules($rules) {
+      $this->escapeRules= $rules;
+    }
+    
+    /**
+     * Sets the escaping character.
+     *
+     * @param   string escape
+     */
+    public function setEscape($escape) {
+      $this->escape= $escape;
+    }
+    
+    /**
+     * escape a string
+     *
+     * @param   string
+     * @return  string
+     */
+    public function escapeString($string) {
+      return $this->escape.strtr($string, $this->escapeRules).$this->escape;
+    }
+    
+    /**
+     * formats a string as date
+     *
+     * @param   string
+     * @return  string
+     */
+    public function formatDate($string) {
+      return date($this->dateFormat, $string);
+    }
+    
   }
 ?>

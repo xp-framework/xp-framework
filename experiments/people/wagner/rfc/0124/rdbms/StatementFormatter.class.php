@@ -10,11 +10,7 @@
    * Example usage:
    * <code>
    *   $formatter= &new StatementFormatter();
-   *   $formatter->setEscapeRules(array(
-   *     '"'   => '""',
-   *     '\\'  => '\\\\'
-   *   ));
-   *   $formatter->setDateFormat('Y-m-d h:iA');
+   *   $this->formatter->setDialect(new AnysqlDialect());
    *   $formatter->format('select foo from table where id= %d', 123);
    * </code>
    *
@@ -26,9 +22,7 @@
    */
   class StatementFormatter extends Object {
     public
-      $escape       = '',
-      $escapeRules  = array(),
-      $dateFormat   = '';
+      $dialect      = NULL;
   
   
     /**
@@ -38,7 +32,7 @@
      * @param   mixed[] args
      * @return  string
      */
-    public function format($conn, $fmt, $args) {
+    public function format($fmt, $args) {
       static $tokens= 'tsdcfu';
       
       $statement= '';
@@ -86,19 +80,18 @@
           continue;
         }
         
-        $statement.= $this->prepare($conn, $type, $argument);
+        $statement.= $this->prepare($type, $argument);
       }
     }
     
     /**
      * Prepare a value for insertion with a given type.
      *
-     * @param   rdbms.DBConnection conn
      * @param   string type
      * @param   mixed var
      * @return  string
      */
-    public function prepare(DBConnection $conn, $type, $var) {
+    public function prepare($type, $var) {
       $r= '';
       foreach (is_array($var) ? $var : array($var) as $arg) {
         // Type-based conversion
@@ -107,9 +100,9 @@
           continue; 
         } else if ($arg instanceof Date) {
           $type= 's';
-          $p= $arg->toString($this->dateFormat);
+          $p= $arg->toString($this->dialect->dateFormat);
         } else if ($arg instanceof SQLFunction) {   // TODO: Use interface "SQLChunk"...
-          $r.= $arg->asSql($conn).', ';
+          $r.= $this->format($this->dialect->formatFunction($arg), $arg->args).', ';
           continue;
         } else if ($arg instanceof Generic) {
           $p= $arg->toString();
@@ -118,12 +111,12 @@
         }
 
         switch ($type) {
-          case 't': $r.= SQLDialect::getDialect($conn)->datepart($arg); break;
-          case 's': $r.= $this->escape.strtr($p, $this->escapeRules).$this->escape; break;
+          case 't': $r.= $this->dialect->datepart($p); break;
+          case 's': $r.= $this->dialect->escapeString($p); break;
           case 'd': $r.= $this->numval($p); break;
           case 'c': $r.= $p; break;
           case 'f': $r.= $this->numval($p); break;
-          case 'u': $r.= $this->escape.date($this->dateFormat, $p).$this->escape; break;
+          case 'u': $r.= $this->dialect->escapeString($this->dialect->formatDate($p)); break;
         }
         $r.= ', ';
       }
@@ -132,30 +125,12 @@
     }
     
     /**
-     * Set date format
+     * Sets the SQL dialect.
      *
-     * @param   string format
+     * @param   SQLDialect dialect
      */
-    public function setDateFormat($format) {
-      $this->dateFormat= $format;
-    }
-    
-    /**
-     * Set date format
-     *
-     * @param   array<String,String> rules
-     */
-    public function setEscapeRules($rules) {
-      $this->escapeRules= $rules;
-    }
-    
-    /**
-     * Sets the escaping character.
-     *
-     * @param   string escape
-     */
-    public function setEscape($escape) {
-      $this->escape= $escape;
+    public function setDialect(SQLDialect $dialect) {
+      $this->dialect= $dialect;
     }
     
     /**

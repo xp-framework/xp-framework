@@ -30,17 +30,6 @@
     }
 
     /**
-     * Returns the fragment SQL
-     *
-     * @param   rdbms.DBConnection conn
-     * @param   array types
-     * @return  string
-     */
-    public function asSql($conn) {
-      return SQLDialect::getDialect($conn)->renderFunction($this->func, $this->args);
-    }
-
-    /**
      * Set func
      *
      * @param   string func

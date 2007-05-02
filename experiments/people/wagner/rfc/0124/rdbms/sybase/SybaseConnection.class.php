@@ -8,7 +8,8 @@
     'rdbms.DBConnection',
     'rdbms.sybase.SybaseResultSet',
     'rdbms.Transaction',
-    'rdbms.StatementFormatter'
+    'rdbms.StatementFormatter',
+    'rdbms.dialect.SybaseDialect'
   );
 
   /**
@@ -108,9 +109,7 @@
       
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
-        $formatter->setEscape('"');
-        $formatter->setEscapeRules(array('"'   => '""'));
-        $formatter->setDateFormat('Y-m-d h:iA');
+        $this->formatter->setDialect(new SybaseDialect());
       }
       
       return $formatter->format(array_shift($args), $args);

@@ -14,7 +14,7 @@
       $dateparts= array(
         'MICROSECOND' => FALSE,
       ),
-      $implementation= array(
+      $implementations= array(
         'str_1'      => 'convert(varchar, %s)',
         'cast_2'     => 'convert(%s, %c)',
         'atan_2'     => 'atn2(%d, %d)',
@@ -24,27 +24,27 @@
         'sign_1'     => 'convert(int, sign(%d))',
       );
       
+    public
+      $escape       = '"',
+      $escapeRules  = array('"' => '""'),
+      $dateFormat   = 'Y-m-d h:iA';
+        
     /**
-     * get an SQL function string
+     * get a function format string
      *
-     * @param   string func
-     * @param   mixed[] function arguments string or rdbms.SQLFunction
+     * @param   SQLFunction $func
      * @return  string
+     * @throws  lang.IllegalArgumentException
      */
-    public function renderFunction($func, $args) {
-      $func_i= $func.'_'.count($args);
+    public function formatFunction(SQLFunction $func) {
+      $func_i= $func->func.'_'.count($func->args);
       switch ($func) {
         case 'concat':
-        $fmt= '('.implode(' + ', array_fill(0, count($args), '%s')).')';
-        array_unshift($args, $fmt);
-        return call_user_func_array(array($this->conn, 'prepare'), $args);
+        return '('.implode(' + ', array_fill(0, count($func->args), '%s')).')';
 
         default:
-        if (isset(self::$implementation[$func_i])) {
-          array_unshift($args, self::$implementation[$func_i]);
-          return call_user_func_array(array($this->conn, 'prepare'), $args);
-        }
-        return parent::renderFunction($func, $args);
+        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
+        return parent::formatFunction($func);
       }
     }
   
