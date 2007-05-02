@@ -47,6 +47,8 @@
      * @return  
      */
     protected function execute(AntEnvironment $env) {
+      // Properties may be declared twice, first occurrence wins
+      if ($env->exists($this->name)) return;
       $env->put($this->name, $env->substitute($this->value));
     }
     

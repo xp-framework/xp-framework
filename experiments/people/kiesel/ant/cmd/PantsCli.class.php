@@ -8,7 +8,7 @@
     'io.File',
     'io.FileUtil',
     'util.cmd.Command',
-    'xml.meta.Unmarshaller'
+    'ant.AntProject'
   );
 
   /**
@@ -19,6 +19,8 @@
    * @purpose  purpose
    */
   class PantsCli extends Command {
+    public
+      $project= NULL;
 
     /**
      * (Insert method's description here)
@@ -29,7 +31,10 @@
     #[@arg(short= 'f')]
     public function setBuildfile($file= NULL) {
       if (NULL === $file) $file= 'build.xml';
-      $this->buildXml= FileUtil::getContents(new File($file));
+      $this->project= AntProject::fromString(
+        FileUtil::getContents(new File($file)),
+        realpath($file)
+      );
     }
     
     /**
@@ -37,7 +42,7 @@
      *
      * @param   string args
      */
-    #[@args]
+    #[@args(select= '[0..]')]
     public function setArgs($args) {
       $this->args= $args;
     }    
@@ -49,10 +54,7 @@
      * @return  
      */
     public function run() {
-      $project= Unmarshaller::unmarshal($this->buildXml, 'ant.AntProject');
-      // $this->out->writeLine('===> file structure: '.$project->toString());
-      
-      return $project->run(
+      return $this->project->run(
         $this->out,
         $this->err,
         $this->args

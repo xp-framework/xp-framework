@@ -4,7 +4,11 @@
         simple example build file
     </description>
   <!-- set global properties for this build -->
-  <property name="src" value="src"/>
+  <property name="base" value="/home/ak/devel/xp.private/trunk/java"/>
+  <property name="src" value="${base}/pdfcreator/src"/>
+  <property name="lib" value="${base}/pdfcreator/lib"/>
+  <property name="common.lib" value="${base}/common/lib"/>
+  <property name="common.src" value="${base}/common/src"/>
   <property name="build" value="build"/>
   <property name="dist"  value="dist"/>
 
@@ -25,7 +29,11 @@
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
-    <javac srcdir="${src}" destdir="${build}"/>
+    <javac
+     srcdir="${src}"
+     destdir="${build}"
+     classpath="${lib}/fop.jar:${common.lib}/junit.jar:${common.lib}/jboss-j2ee.jar:${common.lib}/log4j.jar:${common.src}"
+    />
   </target>
 
   <target name="dist" depends="compile"

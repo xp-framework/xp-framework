@@ -18,6 +18,7 @@
    */
   class AntProject extends Object {
     public
+      $filename     = NULL,
       $name         = NULL,
       $basedir      = '.',
       $description  = NULL,
@@ -31,8 +32,10 @@
      * @param   
      * @return  
      */
-    public static function fromString($xml) {
-      return Unmarshaller::unmarshal($xml, xp::reflect(__CLASS__));
+    public static function fromString($xml, $filename) {
+      $project= Unmarshaller::unmarshal($xml, xp::reflect(__CLASS__));
+      $project->filename= $filename;
+      return $project;
     }
     
     /**
@@ -100,6 +103,17 @@
      * @param   
      * @return  
      */
+    #[@xmlmapping(element= 'import', class= 'ant.AntImport')]
+    public function importBuildfile($import) {
+      $this->imports[]= $import;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     #[@xmlmapping(element= '@default')]
     public function setDefault($default) {
       $this->default= $default;
@@ -123,6 +137,27 @@
      */
     public function run($out, $err, $arguments) {
       if (sizeof($arguments) == 0) $arguments= array($this->default);
+      
+      // Resolve imports
+      if (sizeof($this->imports)) {
+        $properties= $this->properties;
+        $this->properties= array();
+        
+        foreach ($this->imports as $import) {
+          $project= $import->resolve(dirname($this->filename));
+          if ($project instanceof self) {
+
+            foreach ($project->targets as $name => $target) {
+              if (!isset($this->targets[$name])) $this->targets[$name]= $target;
+            }
+            
+            $this->properties= array_merge($this->properties, $project->properties);
+            foreach ($project->properties as $p) $this->properties[]= $p;
+          }
+        }
+        
+        $this->properties= array_merge((array)$this->properties, (array)$properties);
+      }
       
       $target= array_shift($arguments);
       if (!isset($this->targets[$target])) {

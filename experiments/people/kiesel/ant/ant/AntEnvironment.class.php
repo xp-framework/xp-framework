@@ -73,6 +73,16 @@
      * @param   
      * @return  
      */
+    public function exists($key) {
+      return isset($this->hashmap[$key]);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
     public function substitute($string) {
       return preg_replace_callback('#\$\{([^\}]+)\}#', array($this, 'replaceCallback'), $string);
     }

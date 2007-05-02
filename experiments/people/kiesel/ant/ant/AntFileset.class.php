@@ -5,6 +5,7 @@
  */
 
   uses(
+    'ant.AntPattern',
     'ant.AntPatternSet',
     'ant.AntFileIterator',
     'io.collections.FileCollection',
