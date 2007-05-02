@@ -56,7 +56,7 @@
           $iterator= new FilteredIOCollectionIterator(
             $collection,
             new AllOfFilter(array(
-              new NegationOfFilter(new RegexFilter('#(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
+              new NegationOfFilter(new RegexFilter('#'.preg_quote(DIRECTORY_SEPARATOR).'(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
               new NegationOfFilter(new CollectionFilter())
             )),
             TRUE
