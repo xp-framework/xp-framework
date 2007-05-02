@@ -11,12 +11,14 @@
    */
   class SybaseDialect extends SQLDialect {
     private static
+      $dateparts= array(
+        'MICROSECOND' => FALSE,
+      ),
       $implementation= array(
         'str_1'      => 'convert(varchar, %s)',
         'cast_2'     => 'convert(%s, %c)',
         'atan_2'     => 'atn2(%d, %d)',
         'ceil_1'     => 'ceiling(%d)',
-        'datediff_3' => 'timestampdiff(%c, %s, %s)',
         'degrees_1'  => 'convert(float, degrees(%d))',
         'radians_1'  => 'convert(float, radians(%d))',
         'sign_1'     => 'convert(int, sign(%d))',
@@ -46,5 +48,19 @@
       }
     }
   
+    /**
+     * get a dialect specific datepart
+     *
+     * @param   string datepart
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    public function datepart($datepart) {
+      $datepart= strToUpper($datepart);
+      if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
+      if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('SYBASE does not support datepart '.$datepart);
+      return self::$dateparts[$datepart];
+    }
+
   }
 ?>

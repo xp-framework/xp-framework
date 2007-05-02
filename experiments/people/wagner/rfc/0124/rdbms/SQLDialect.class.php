@@ -46,7 +46,21 @@
         self::SYBASE => 'rdbms.dialect.SybaseDialect',
       ),
       $instances= array(),
-      $implementation= array(
+      $dateparts= array(
+        'YEAR'	      => 'YEAR',
+        'QUARTER'	  => 'QUARTER',
+        'MONTH'	      => 'MONTH',
+        'DAYOFYEAR'	  => 'DAYOFYEAR',
+        'DAY'	      => 'DAY',
+        'WEEK'	      => 'WEEK',
+        'WEEKDAY'	  => 'WEEKDAY',
+        'HOUR'	      => 'HOUR',
+        'MINUTE'	  => 'MINUTE',
+        'SECOND'	  => 'SECOND',
+        'MILLISECOND' => 'MILLISECOND',
+        'MICROSECOND' => 'MICROSECOND',
+      ),
+      $implementations= array(
         'abs_1'        => 'abs(%d)',
         'acos_1'       => 'acos(%d)',
         'ascii_1'      => 'ascii(%s)',
@@ -59,9 +73,10 @@
         'char_1'       => 'char(%d)',
         'cos_1'        => 'cos(%d)',
         'cot_1'        => 'cot(%d)',
-        'dateadd_3'    => 'dateadd(%c, %d, %s)',
-        'datename_2'   => 'datename(%c, %s)',
-        'datepart_2'   => 'datepart(%c, %s)',
+        'dateadd_3'    => 'dateadd(%t, %d, %s)',
+        'datediff_3'   => 'datediff(%t, %s, %s)',
+        'datename_2'   => 'datename(%t, %s)',
+        'datepart_2'   => 'datepart(%t, %s)',
         'day_1'        => 'day(%s)',
         'degrees_1'    => 'degrees(%d)',
         'exp_1'        => 'exp(%d)',
@@ -107,6 +122,18 @@
       $conn= NULL;
 
     /**
+     * Get an SQL dialect for a connection  
+     *
+     * @param   rdbms.DBConnection conn
+     * @return  rdbms.SQLDialect
+     */
+    public static function getDialect($conn) {
+      $scheme= $conn->dsn->url->getScheme();
+      if (!isset(self::$instances[$scheme])) self::setDialect($conn, $scheme);
+      return self::$instances[$scheme];
+    }
+    
+    /**
      * Constructor
      *
      * @param   rdbms.DBConnection conn
@@ -141,31 +168,31 @@
     }
 
     /**
-     * Get an SQL dialect for a connection  
-     *
-     * @param   rdbms.DBConnection conn
-     * @return  rdbms.SQLDialect
-     */
-    public static function getDialect($conn) {
-      $scheme= $conn->dsn->url->getScheme();
-      if (!isset(self::$instances[$scheme])) self::setDialect($conn, $scheme);
-      return self::$instances[$scheme];
-    }
-    
-    /**
      * get an SQL function string
      *
      * @param   string func
      * @param   mixed[] function arguments string or rdbms.SQLFunction
      * @return  string
      */
-    public function renderFunction($func, $args) {
+    protected function renderFunction($func, $args) {
       $func_i= $func.'_'.sizeof($args);
-      if (isset(self::$implementation[$func_i])) {
-        array_unshift($args, self::$implementation[$func_i]);
+      if (isset(self::$implementations[$func_i])) {
+        array_unshift($args, self::$implementations[$func_i]);
         return call_user_func_array(array($this->conn, 'prepare'), $args);
       }
       throw new IllegalArgumentException('SQL function "'.$func.'()" not known');
+    }
+
+    /**
+     * get a dialect specific datepart
+     *
+     * @param   string datepart
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    protected function datepart($datepart) {
+      if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does noct exist');
+      return self::$dateparts[$datepart];
     }
 
   }
