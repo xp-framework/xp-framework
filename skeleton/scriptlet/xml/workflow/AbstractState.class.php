@@ -24,8 +24,8 @@
     /**
      * Add a handler
      *
-     * @param   &scriptlet.xml.workflow.Handler handler
-     * @return  &scriptlet.xml.workflow.Handler the added handler
+     * @param   scriptlet.xml.workflow.Handler handler
+     * @return  scriptlet.xml.workflow.Handler the added handler
      */
     public function addHandler($handler) {
       $this->handlers[]= $handler;
@@ -46,9 +46,9 @@
      * about the handler's wrapper, if existant and IFormResultAggregate'd)
      * to the formresult
      *
-     * @param   &scriptlet.xml.workflow.Handler handler the handler to add
-     * @param   &xml.Node node the node to add the handler representation to
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.workflow.Handler handler the handler to add
+     * @param   xml.Node node the node to add the handler representation to
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
      */
     protected function addHandlerToFormresult($handler, $node, $request) {
       $node->addChild(Node::fromArray($handler->values[HVAL_PERSISTENT], 'values'));
@@ -87,9 +87,9 @@
     /**
      * Set up this state
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.workflow.Context context
      */
     public function setup($request, $response, $context) {
       $this->cat && $this->cat->debug($this->getClassName().'::setup');
@@ -123,17 +123,13 @@
 
             // Set up the handler if necessary
             if ($setup) {
-              try {
-                // In case a wrapper is defined, call its setup() method. This 
-                // method is not allowed to fail.
-                if ($this->handlers[$i]->hasWrapper()) {
-                  $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i], $context);
-                }
-
-                $result= $this->handlers[$i]->setup($request, $context);
-              } catch (Exception $e) {
-                throw($e);
+              // In case a wrapper is defined, call its setup() method. This 
+              // method is not allowed to fail.
+              if ($this->handlers[$i]->hasWrapper()) {
+                $this->handlers[$i]->wrapper->setup($request, $this->handlers[$i], $context);
               }
+
+              $result= $this->handlers[$i]->setup($request, $context);
 
               // In case setup() returns FALSE, it indicates the form can not be 
               // displayed due to a prerequisite problem. For example, an editor
@@ -164,6 +160,20 @@
 
             // If the handler is not active, ask the next handler
             if (!$this->handlers[$i]->isActive($request, $context)) continue;
+            
+            // If active, ask handler if he wants to be cancelled
+            if ($this->handlers[$i]->needsCancel($request, $context)) {
+            
+              // Perform user-defined cleanup
+              $this->handlers[$i]->handleCancellation($request, $context);
+              $node->setAttribute('status', HANDLER_CANCELLED);
+              
+              // Remove handler from session and call handler's finalize() method
+              $request->session->removeValue($this->handlers[$i]->identifier);
+              $this->handlers[$i]->finalize($request, $response, $context);
+              
+              continue;
+            }
 
             // Check if the handler needs data. In case it does, call the
             // handleSubmittedData() method
@@ -216,9 +226,9 @@
     /**
      * Process this state. Does nothing in this default implementation.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.Context context
      */
     public function process($request, $response, $context) {
     }
@@ -236,7 +246,7 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      * @see     xp://util.log.Traceable
      */
     public function setTrace($cat) { 

@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0122 - Make handlers cancelable
+  (kiesel)
 - Implemented RFC #0106 - Array access / iteration / type boxing / generics 
   (friebe)
 - Fix output of stacktraces in util.ChainedException

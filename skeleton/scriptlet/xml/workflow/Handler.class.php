@@ -11,6 +11,7 @@
   define('HANDLER_ERRORS',      'errors');
   define('HANDLER_SUCCESS',     'success');
   define('HANDLER_RELOADED',    'reloaded');
+  define('HANDLER_CANCELLED',   'cancelled');
 
   // Value storages
   define('HVAL_PERSISTENT',  0x0000);
@@ -63,7 +64,7 @@
     /**
      * Set Wrapper
      *
-     * @param   &scriptlet.xml.workflow.Wrapper wrapper
+     * @param   scriptlet.xml.workflow.Wrapper wrapper
      */
     public function setWrapper($wrapper) {
       $this->wrapper= $wrapper;
@@ -72,7 +73,7 @@
     /**
      * Get Wrapper
      *
-     * @return  &scriptlet.xml.workflow.Wrapper
+     * @return  scriptlet.xml.workflow.Wrapper
      */
     public function getWrapper() {
       return $this->wrapper;
@@ -166,8 +167,8 @@
      * Get identifier. Returns name in this default implementation.
      * Overwrite in subclasses.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.Context context
      * @return  string
      */
     public function identifierFor($request, $context) {
@@ -200,22 +201,22 @@
      * default implementation in case the request has a parameter named
      * __handler whose value contains this handler's name.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.Context context
      * @return  bool
      */
     public function isActive($request, $context) {
       return ($request->getParam('__handler') == $this->identifier);
     }
-
+    
     /**
      * Set up this handler. Called when this handler has not yet been
      * registered to the session
      *
      * Return TRUE to indicate success, FALSE to signal failure.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
      * @return  bool
      */
     public function setup($request, $context) { 
@@ -225,29 +226,48 @@
     /**
      * Retrieve whether this handler needs data 
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
      * @return  bool
      */
     public function needsData($request, $context) {
       return TRUE;
     }  
+    
+    /**
+     * Retrieve whether this handler needs to be cancelled.
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
+     * @return  bool
+     */
+    public function needsCancel($request, $context) {
+      return FALSE;
+    }    
 
     /**
      * Handle error condition
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
      */
     public function handleErrorCondition($request, $context) {
       return FALSE;
     }
+    
+    /**
+     * Perform cancellation of this handler.
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
+     */
+    public function handleCancellation($request, $context) { }
 
     /**
      * Handle submitted data
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
      */
     public function handleSubmittedData($request, $context) {
       return FALSE;
@@ -256,9 +276,9 @@
     /**
      * Finalize this handler
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.Context context
      */
     public function finalize($request, $response, $context) { }
   }
