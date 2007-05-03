@@ -31,7 +31,7 @@
       while ($this->sent < $this->num) {
         Thread::sleep(rand(100, 4000));
         Console::writeLinef('<%s> Sending message #%d @ %s', $this->name, $this->sent, date('r'));
-        $this->queue->putMessage('Hello World ('.date('r').')');
+        $this->queue->putMessage(new IPCMessage('Hello World ('.date('r').')'));
         $this->sent++;     
       }
       
@@ -43,7 +43,7 @@
       );
       
       // Add message to signal receiver we've finished
-      $this->queue->putMessage('__FINISH__');
+      $this->queue->putMessage(new IPCMessage('__FINISH__'));
     }
     // }}}
   }
@@ -83,9 +83,9 @@
           Console::writeLinef(
             '<%s> Receiving message "%s"',
             $this->name, 
-            $message
+            $message->toString()
           );
-          if ($message == '__FINISH__') break 2;
+          if ($message->getMessage() == '__FINISH__') break 2;
         }
       } while (1);
       
