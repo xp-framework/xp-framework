@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.soap.SOAPNode', 'webservices.soap.types.SoapType');
+  uses('webservices.soap.xp.XPSoapNode', 'webservices.soap.types.SoapType');
 
   /**
    * Vector type as serialized and recogned by Apache SOAP.
@@ -23,7 +23,7 @@
      */
     public function __construct($params) {
       $this->_vector= $params;
-      $this->item= new SOAPNode('vec', NULL, array(
+      $this->item= new XPSoapNode('vec', NULL, array(
         'xmlns:vec'   => 'http://xml.apache.org/xml-soap',
         'xsi:type'    => 'vec:Vector'
       ));
