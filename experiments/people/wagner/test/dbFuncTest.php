@@ -62,8 +62,9 @@ do {
   $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::rand(), 'randTest'));
   $crits[]= Criteria::newInstance()->setProjection(Projections::ProjectionList()->add(Projections::Property(SQLFunctions::round(1.50), 'roundtest1'))->add(Projections::Property(SQLFunctions::round(1.49), 'roundtest2'))->add(Projections::Property(SQLFunctions::round(1.49, 1), 'roundtest3')));
   $crits[]= Criteria::newInstance()->setProjection(Projections::ProjectionList()->add(Projections::Property(SQLFunctions::sign(-7), 'signTest1'))->add(Projections::Property(SQLFunctions::sign(0), 'signTest2'))->add(Projections::Property(SQLFunctions::sign(4), 'signTest3')));
-  $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::soundex("ogawoga"), 'soundexTest'));
-  $crits[]= Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(0.1)));
+  $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::soundex("kawabanga"), 'soundexTest'));
+  $crits[]= Criteria::newInstance()->setProjection(Projections::Property(SQLFunctions::cast("345", 'decimal'), 'datatypesTest'));
+  $crits[]= Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(SQLFunctions::asin(SQLFunctions::sin(0.125)))));
 } while (false);
 
   foreach ($crits as $name => $crit) {
