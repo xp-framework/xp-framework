@@ -5,6 +5,7 @@
  */
 
   uses(
+    'webservices.soap.xp.XPSoapMessage',
     'unittest.TestCase',
     'net.xp_framework.unittest.scriptlet.rpc.mock.SoapRpcRouterMock'
   );
@@ -132,7 +133,7 @@
       $response= $this->router->process();
       $this->assertEquals(500, $response->statusCode);
       
-      $message= SOAPMessage::fromString($response->getContent());
+      $message= XPSoapMessage::fromString($response->getContent());
       $fault= $message->getFault();
       $this->assertEquals(403, $fault->getFaultCode());
       $this->assertEquals('This is a intentionally caused exception.', $fault->getFaultString());
@@ -180,7 +181,7 @@
       $response= $this->router->process();
       if (!$this->assertEquals(200, $response->statusCode)) return;
 
-      $msg= SOAPMessage::fromString($response->getContent());
+      $msg= XPSoapMessage::fromString($response->getContent());
       $data= array_shift($msg->getData());
       
       $this->assertEquals('Lalala', $data[0]) &&
