@@ -11,20 +11,40 @@
    */
   abstract class SQLDialect extends Object {
     private static
-      $instances= array(),
       $dateparts= array(
-        'YEAR'	      => 'YEAR',
-        'QUARTER'	  => 'QUARTER',
-        'MONTH'	      => 'MONTH',
-        'DAYOFYEAR'	  => 'DAYOFYEAR',
-        'DAY'	      => 'DAY',
-        'WEEK'	      => 'WEEK',
-        'WEEKDAY'	  => 'WEEKDAY',
-        'HOUR'	      => 'HOUR',
-        'MINUTE'	  => 'MINUTE',
-        'SECOND'	  => 'SECOND',
-        'MILLISECOND' => 'MILLISECOND',
-        'MICROSECOND' => 'MICROSECOND',
+        'day'	      => 'day',
+        'dayofyear'	  => 'dayofyear',
+        'hour'	      => 'hour',
+        'microsecond' => 'microsecond',
+        'millisecond' => 'millisecond',
+        'minute'	  => 'minute',
+        'month'	      => 'month',
+        'quarter'	  => 'quarter',
+        'second'	  => 'second',
+        'week'	      => 'week',
+        'weekday'	  => 'weekday',
+        'year'	      => 'year',
+      ),
+      $datatypes= array(
+        'bigint'	 => 'bigint',
+        'binary'	 => 'binary',
+        'blob'	     => 'blob',
+        'char'	     => 'char',
+        'clob'	     => 'clob',
+        'date'	     => 'date',
+        'datetime'	 => 'datetime',
+        'dec'	     => 'dec',
+        'decimal'	 => 'decimal',
+        'double'	 => 'double',
+        'float'	     => 'float',
+        'int'	     => 'int',
+        'integer'	 => 'integer',
+        'smallint'	 => 'smallint',
+        'text'	     => 'text',
+        'time'	     => 'time',
+        'timestamp'	 => 'timestamp',
+        'varbinary'	 => 'varbinary',
+        'varchar'	 => 'varchar',
       ),
       $implementations= array(
         'abs_1'        => 'abs(%d)',
@@ -34,7 +54,7 @@
         'atan_1'       => 'atan(%d)',
         'atan_2'       => 'atan2(%d, %d)',
         'bit_length_1' => 'bit_length(%s)',
-        'cast_2'       => 'cast(%s as %c)',
+        'cast_2'       => 'cast(%s as %e)',
         'ceil_1'       => 'ceil(%d)',
         'char_1'       => 'char(%d)',
         'cos_1'        => 'cos(%d)',
@@ -74,8 +94,8 @@
         'sin_1'        => 'sin(%d)',
         'soundex_1'    => 'soundex(%s)',
         'space_1'      => 'space(%d)',
-        'sqrt_1'       => 'sqrt(%s)',
-        'str_1'        => 'str(%c)',
+        'sqrt_1'       => 'sqrt(%d)',
+        'str_1'        => 'str(%s)',
         'substring_3'  => 'substring(%s, %s, %s)',
         'tan_1'        => 'tan(%d)',
         'trim_2'       => 'trim(%s)',
@@ -103,6 +123,36 @@
     }
 
     /**
+     * formats a string as date
+     *
+     * @param   string
+     * @return  string
+     */
+    public function formatDate($string) {
+      return date($this->dateFormat, $string);
+    }
+    
+    /**
+     * escape a string
+     *
+     * @param   string
+     * @return  string
+     */
+    public function escapeString($string) {
+      return $this->quoteString(strtr($string, $this->escapeRules));
+    }
+    
+    /**
+     * escape a string
+     *
+     * @param   string
+     * @return  string
+     */
+    public function quoteString($string) {
+      return $this->escape.$string.$this->escape;
+    }
+    
+    /**
      * get a dialect specific datepart
      *
      * @param   string datepart
@@ -110,8 +160,22 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
+      $datepart= strToLower($datepart);
       if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does not exist');
       return self::$dateparts[$datepart];
+    }
+
+    /**
+     * get a dialect specific datatype
+     *
+     * @param   string datatype
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    public function datatype($datatype) {
+      $datatype= strToLower($datatype);
+      if (!array_key_exists($datatype, self::$datatypes)) throw new IllegalArgumentException('datatype '.$datatype.' does not exist');
+      return self::$datatypes[$datatype];
     }
 
     /**
@@ -139,26 +203,6 @@
      */
     public function setEscape($escape) {
       $this->escape= $escape;
-    }
-    
-    /**
-     * escape a string
-     *
-     * @param   string
-     * @return  string
-     */
-    public function escapeString($string) {
-      return $this->escape.strtr($string, $this->escapeRules).$this->escape;
-    }
-    
-    /**
-     * formats a string as date
-     *
-     * @param   string
-     * @return  string
-     */
-    public function formatDate($string) {
-      return date($this->dateFormat, $string);
     }
     
   }

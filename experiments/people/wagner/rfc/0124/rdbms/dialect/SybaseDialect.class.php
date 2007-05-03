@@ -12,7 +12,7 @@
   class SybaseDialect extends SQLDialect {
     private static
       $dateparts= array(
-        'MICROSECOND' => FALSE,
+        'microsecond' => FALSE,
       ),
       $implementations= array(
         'str_1'      => 'convert(varchar, %s)',
@@ -56,7 +56,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
-      $datepart= strToUpper($datepart);
+      $datepart= strToLower($datepart);
       if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
       if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('SYBASE does not support datepart '.$datepart);
       return self::$dateparts[$datepart];

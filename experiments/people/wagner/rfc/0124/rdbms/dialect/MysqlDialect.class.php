@@ -12,9 +12,9 @@
   class MysqlDialect extends SQLDialect {
     private static
       $dateparts= array(
-        'DAYOFYEAR'	  => FALSE,
-        'WEEKDAY'	  => FALSE,
-        'MILLISECOND' => FALSE,
+        'dayofyear'	  => FALSE,
+        'weekday'	  => FALSE,
+        'millisecond' => FALSE,
       ),
       $implementations= array(
         'str_1'        => 'cast(%s as char)',
@@ -61,7 +61,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
-      $datepart= strToUpper($datepart);
+      $datepart= strToLower($datepart);
       if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
       if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('MYSQL does not support datepart '.$datepart);
       return self::$dateparts[$datepart];
