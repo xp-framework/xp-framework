@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.SOAPClient',
+    'webservices.soap.xp.XPSoapClient',
     'unittest.TestCase',
     'net.xp_framework.unittest.soap.SOAPDummyTransport'
   );
@@ -45,7 +45,8 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= new SOAPClient($transport, 'urn://test');
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $client->transport= $transport;
       $client->invoke('irrelevant');
     }
 
@@ -74,7 +75,8 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= new SOAPClient($transport, 'urn://test');
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $client->transport= $transport;
       $client->invoke('irrelevant');
     }
 
@@ -104,7 +106,8 @@
 </SOAP-ENV:Envelope> 
 ');
       
-      $client= new SOAPClient($transport, 'urn://test');
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $client->transport= $transport;
       $this->assertEquals(5, $client->invoke('irrelevant'));
     }
   }

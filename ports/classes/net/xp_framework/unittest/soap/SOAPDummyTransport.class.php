@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('webservices.soap.transport.SOAPTransport');
+  uses(
+    'webservices.soap.transport.SOAPTransport',
+    'webservices.soap.xp.XPSoapMessage'
+  );
 
   /**
    * Dummy class for faked SOAP requests
@@ -20,7 +23,7 @@
     /**
      * Set Request
      *
-     * @param   &webservices.soap.SOAPMessage request
+     * @param   &webservices.soap.xp.XPSoapMessage request
      */
     public function setRequest($request) {
       $this->request= $request;
@@ -65,7 +68,7 @@
     /**
      * Send the message
      *
-     * @param   &webservices.soap.SOAPMessage message
+     * @param   &webservices.soap.xp.XPSoapMessage message
      */
     public function send($message) {
       $this->request= $message; // Intentional copy
@@ -75,10 +78,10 @@
     /**
      * Retrieve the answer
      *
-     * @return  &webservices.soap.SOAPMessage
+     * @return  &webservices.soap.XPSoapMessage
      */
     public function retrieve() {
-      return SOAPMessage::fromString($this->answer);
+      return XPSoapMessage::fromString($this->answer);
     }
   }
 ?>

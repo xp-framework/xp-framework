@@ -6,7 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'webservices.soap.SOAPMessage'
+    'webservices.soap.xp.XPSoapMessage'
   );
 
   /**
@@ -22,7 +22,7 @@
      */
     #[@test]
     public function testSerialization() {
-      $msg= new SOAPMessage();
+      $msg= new XPSoapMessage();
       $msg->createCall('Test', 'testSerialization');
       $this->assertEquals($msg->action, 'Test');
       $this->assertEquals($msg->method, 'testSerialization');
@@ -96,7 +96,7 @@
      */
     #[@test]
     public function testHeader() {
-      $msg= SOAPMessage::fromString('
+      $msg= XpSoapMessage::fromString('
         <SOAP-ENV:Envelope
           xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -119,7 +119,7 @@
       $headers= $msg->getHeaders();
       $this->assertNotEquals(NULL, $msg->getHeaders());
       $this->assertEquals(1, sizeof ($headers));
-      foreach ($headers as $h) { $this->assertSubclass($h, 'webservices.soap.SOAPHeaderElement'); }
+      foreach ($headers as $h) { $this->assertSubclass($h, 'webservices.soap.xp.XPSoapHeaderElement'); }
     }
   }
 ?>
