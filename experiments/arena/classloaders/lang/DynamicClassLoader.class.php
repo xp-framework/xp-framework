@@ -76,8 +76,10 @@
     public function loadClass0($class) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name) && !interface_exists($name)) {
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->context;
         if (!isset(self::$bytes[$class])) {
+          unset(xp::$registry['classloader.'.$class]);
           throw new ClassNotFoundException('Unknown class "'.$class.'"');
         }
 
@@ -86,7 +88,6 @@
         }
 
         xp::$registry['class.'.$name]= $class;
-        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->context;
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 

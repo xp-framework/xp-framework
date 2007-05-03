@@ -17,7 +17,7 @@
     //     Loads a class by its fully qualified name
     function loadClass0($name) {
       $class= xp::reflect($name);
-      if (class_exists($class) || interface_exists($class)) return;
+      if (isset(xp::$registry['classloader.'.$name])) return $class;
 
       foreach (xp::$registry['classpath'] as $path) {
 
@@ -40,10 +40,6 @@
           xp::$registry['classloader.'.$name]= 'ArchiveClassLoader://'.$path;
           break;
         }
-      }
-
-      if (!class_exists($class) && !interface_exists($class)) {
-        xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.get_include_path().')')));
       }
 
       // Register class name and call static initializer if available

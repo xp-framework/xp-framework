@@ -83,13 +83,14 @@
     public function loadClass0($class) {
       $name= xp::reflect($class);
 
-      if (!class_exists($name) && !interface_exists($name)) {
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
         if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').'.class.php')) {
+          unset(xp::$registry['classloader.'.$class]);
           throw new FormatException('Cannot define class "'.$class.'"');
         }
 
         xp::$registry['class.'.$name]= $class;
-        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
         is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       }
 

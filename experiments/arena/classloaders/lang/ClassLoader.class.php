@@ -64,7 +64,7 @@
      */
     public function loadClass0($class) {
       $name= xp::reflect($class);
-      if (class_exists($name) || interface_exists($name)) return $name;
+      if (isset(xp::$registry['classloader.'.$class])) return $name;
       
       // Ask delegates
       foreach (self::$delegates as $delegate) {
@@ -163,7 +163,7 @@
      */
     public function defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
       $name= xp::reflect($class);
-      if (!class_exists($name) && !interface_exists($name)) {
+      if (!isset(xp::$registry['classloader.'.$class])) {
         $super= xp::reflect($parent);
 
         // Test for existance        
