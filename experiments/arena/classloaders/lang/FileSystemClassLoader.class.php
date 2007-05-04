@@ -106,17 +106,19 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      $name= xp::reflect($class);
-
-      if (!isset(xp::$registry['classloader.'.$class])) {
-        xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
-        if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-          unset(xp::$registry['classloader.'.$class]);
-          throw new ClassNotFoundException('Class "'.$class.'" not found');
-        }
-        xp::$registry['class.'.$name]= $class;
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
       }
+
+      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
+      $package= NULL;
+      if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        unset(xp::$registry['classloader.'.$class]);
+        throw new ClassNotFoundException('Class "'.$class.'" not found');
+      }
+      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+      xp::$registry['class.'.$name]= $class;
+      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       return $name;
     }
     

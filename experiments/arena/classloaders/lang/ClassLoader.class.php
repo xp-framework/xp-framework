@@ -63,8 +63,9 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      $name= xp::reflect($class);
-      if (isset(xp::$registry['classloader.'.$class])) return $name;
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
+      }
       
       // Ask delegates
       foreach (self::$delegates as $delegate) {

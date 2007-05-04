@@ -15,21 +15,23 @@
 
     // {{{ public string loadClass0(string name)
     //     Loads a class by its fully qualified name
-    function loadClass0($name) {
-      $class= xp::reflect($name);
-      if (isset(xp::$registry['classloader.'.$name])) return $class;
+    function loadClass0($class) {
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
+      }
 
+      $package= NULL;
       foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
-        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
           if (FALSE === ($r= include($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$name.' (include_path='.get_include_path().')')));
+            xp::error(xp::stringOf(new Error('Cannot include '.$class.' (include_path='.get_include_path().')')));
           }
           
-          xp::$registry['classloader.'.$name]= 'FileSystemClassLoader://'.$path;
+          xp::$registry['classloader.'.$class]= 'FileSystemClassLoader://'.$path;
           break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($name, '.', '/').'.class.php')) {
+        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($class, '.', '/').'.class.php')) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
@@ -37,14 +39,15 @@
             continue;
           }
 
-          xp::$registry['classloader.'.$name]= 'ArchiveClassLoader://'.$path;
+          xp::$registry['classloader.'.$class]= 'ArchiveClassLoader://'.$path;
           break;
         }
       }
 
       // Register class name and call static initializer if available
-      xp::$registry['class.'.$class]= $name;
-      is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
+      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+      xp::$registry['class.'.$name]= $class;
+      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       
       return $name;
     }
