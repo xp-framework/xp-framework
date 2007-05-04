@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.Type',
     'lang.reflect.Method',
     'lang.reflect.Field',
     'lang.reflect.Constructor',
@@ -40,10 +41,9 @@
    * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
    * @purpose  Reflection
    */
-  class XPClass extends Object {
+  class XPClass extends Type {
     public 
       $_objref  = NULL,
-      $name     = '',
       $_reflect = NULL;
       
     /**
@@ -52,48 +52,11 @@
      * @param   mixed ref either a class name or an object
      */
     public function __construct($ref) {
+      parent::__construct(xp::nameOf(is_object($ref) ? get_class($ref) : $ref));
       $this->_objref= $ref;
-      $this->name= xp::nameOf(is_object($ref) ? get_class($ref) : $ref);
       $this->_reflect= new ReflectionClass($ref);
     }
     
-    /**
-     * Returns a hashcode for this object
-     *
-     * @return  string
-     */
-    public function hashCode() {
-      return $this->name;
-    }
-     
-    /**
-     * Return whether an object equals this class
-     *
-     * @param   lang.Object cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      return $cmp instanceof XPClass && $this->getName() == $cmp->getName();
-    }
-    
-    /**
-     * Creates a string representation
-     *
-     * @return  string
-     */
-    public function toString() {
-      return 'lang.XPClass<'.$this->name.'>';
-    }
-    
-    /**
-     * Retrieves the fully qualified class name for this class.
-     * 
-     * @return  string name - e.g. "io.File", "rdbms.mysql.MySQL"
-     */
-    public function getName() {
-      return $this->name;
-    }
-
     /**
      * Retrieves the package associated with this class
      * 
