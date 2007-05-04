@@ -123,6 +123,7 @@ n/a
 
 Dependencies
 ------------
+- RFC #0121
 - A getPackage() method will be added to lang.XPClass.
 
 
