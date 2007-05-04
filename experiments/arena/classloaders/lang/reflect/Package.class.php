@@ -30,8 +30,7 @@
      * @return  bool
      */
     public function providesClass($name) { 
-      if (ClassLoader::getDefault()->providesClass($this->name.$name)) return TRUE;
-      return FALSE;   // No loader provides this class
+      return !is(NULL, ClassLoader::getDefault()->findClass($this->name.'.'.$name));
     }
 
     /**
@@ -68,10 +67,10 @@
         if (substr($name, 0, $p) != $this->name) {
           throw new IllegalArgumentException('Class '.$name.' is not in '.$this->name);
         }
-        $name= substr($name, $p);
+        $name= substr($name, $p+ 1);
       }
 
-      return XPClass::forName($this->name.$name);
+      return XPClass::forName($this->name.'.'.$name);
     }
 
     /**
@@ -100,7 +99,7 @@
      */
     public static function forName($name) { 
       $p= new self();
-      $p->name= rtrim($name, '.').'.';   // Normalize
+      $p->name= rtrim($name, '.');   // Normalize
       return $p;
     }
     
