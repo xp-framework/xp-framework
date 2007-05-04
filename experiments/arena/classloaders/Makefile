@@ -10,3 +10,4 @@ unittest:
 	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
 	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
 	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
+	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.PackageTest
