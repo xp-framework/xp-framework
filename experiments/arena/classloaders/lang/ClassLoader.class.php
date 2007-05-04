@@ -28,9 +28,9 @@
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
         if (is_dir($element)) {
-          FileSystemClassLoader::instanceFor($element);
+          self::registerLoader(FileSystemClassLoader::instanceFor($element));
         } else if (is_file($element)) {
-          ArchiveClassLoader::instanceFor($element);
+          self::registerLoader(ArchiveClassLoader::instanceFor($element));
         }
       }
     }
@@ -104,12 +104,12 @@
     /**
      * Find the resource by the specified name
      *
-     * @param   string string name of resource
-     * @return  lang.IClassLoader the classloader that provides this class
+     * @param   string name resource name
+     * @return  lang.IClassLoader the classloader that provides this resource
      */
-    public function findResource($class) {
+    public function findResource($name) {
       foreach (self::$delegates as $delegate) {
-        if ($delegate->providesResource($class)) return $delegate;
+        if ($delegate->providesResource($name)) return $delegate;
       }
       return xp::null();
     }    
@@ -193,6 +193,20 @@
       }
       
       return new XPClass($name);
+    }
+    
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      $contents= array();
+      foreach (self::$delegates as $delegate) {
+        $contents= array_merge($contents, $delegate->packageContents($package));
+      }
+      return array_unique($contents);
     }
   }
 ?>

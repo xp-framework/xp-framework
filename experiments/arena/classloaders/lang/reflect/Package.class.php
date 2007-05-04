@@ -40,7 +40,7 @@
      * @return  lang.XPClass[]
      */
     public function getClasses() { 
-      // TBI
+      return array_map(array('XPClass', 'forName'), $this->getClassNames());
     }
 
     /**
@@ -49,7 +49,11 @@
      * @return  string
      */
     public function getClassNames() { 
-      // TBI
+      $classes= array();
+      foreach (ClassLoader::getDefault()->packageContents($this->name) as $file) {
+        if ('.class.php' == substr($file, -10)) $classes[]= $this->name.'.'.substr($file, 0, -10);
+      }
+      return $classes;
     }
     
     /**

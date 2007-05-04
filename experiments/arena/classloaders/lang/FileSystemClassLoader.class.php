@@ -66,7 +66,7 @@
     public function providesClass($class) {
       return is_file($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').'.class.php');
     }
-
+    
     /**
      * Checks whether this loader can provide the requested resource
      *
@@ -158,10 +158,27 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= ClassLoader::registerLoader(new self($path));
+        $pool[$path]= new self($path);
       }
       
       return $pool[$path];
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      $contents= array();
+      if ($d= @dir($this->path.DIRECTORY_SEPARATOR.strtr($package, '.', DIRECTORY_SEPARATOR))) {
+        while ($e= $d->read()) {
+          if ('.' != $e{0}) $contents[]= $e.(is_dir($d->path.$e) ? '/' : '');
+        }
+        $d->close();
+      }
+      return $contents;
     }
   }
 ?>

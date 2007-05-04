@@ -115,10 +115,20 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= ClassLoader::registerLoader(new self($path));
+        $pool[$path]= new self($path);
       }
       
       return $pool[$path];
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      return array();
     }
 
     /**

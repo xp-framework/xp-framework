@@ -167,10 +167,29 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= ClassLoader::registerLoader(new self(new ArchiveReader(realpath($path))));
+        $pool[$path]= new self(new ArchiveReader(realpath($path)));
       }
       
       return $pool[$path];
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      $contents= array();
+      for (
+        $cmps= strtr($package, '.', '/'), 
+        $cmpl= strlen($cmps),
+        $this->archive->rewind(); 
+        $e= $this->archive->getEntry(); 
+      ) {
+        if (strncmp($cmps, $e, $cmpl) == 0) $contents[]= substr($e, $cmpl+ 1);
+      }
+      return $contents;
     }
   }
 ?>
