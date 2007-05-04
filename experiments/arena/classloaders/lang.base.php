@@ -473,6 +473,37 @@
   }
   // }}}
 
+  // {{{ lang.Generic create(mixed spec)
+  //     Creates a generic object
+  function create($spec) {
+    if ($spec instanceof Generic) return $spec;
+
+    sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
+    $class= xp::reflect($classname);
+    
+    // Check whether class is generic
+    if (!property_exists($class, '__generic')) {
+      throw new IllegalArgumentException('Class '.$classname.' is not generic');
+    }
+    
+    // Instanciate without invoking the constructor and pass type information. 
+    // This is done so that the constructur can already use generic types.
+    $__id= microtime();
+    $instance= unserialize('O:'.strlen($class).':"'.$class.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
+    foreach (explode(',', $types) as $type) {
+      $instance->__generic[]= xp::reflect(trim($type));
+    }
+    
+    // Call constructor if available
+    if (is_callable(array($instance, '__construct'))) {
+      $a= func_get_args();
+      call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
+    }
+
+    return $instance;
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   
