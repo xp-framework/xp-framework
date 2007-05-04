@@ -14,7 +14,10 @@
    */
   class PackageTest extends TestCase {
     protected static
-      $testClasses= array('ClassOne', 'ClassTwo', 'ClassThree', 'ClassFour');
+      $testClasses= array(
+        'ClassOne', 'ClassTwo', 'RecursionOne', 'RecursionTwo',   // Filesystem
+        'ClassThree', 'ClassFour',                                // XAR
+      );
 
     static function __static() {
       ClassLoader::registerLoader(new ArchiveClassLoader(
@@ -77,6 +80,18 @@
     }
 
     /**
+     * Tests XPClass::getPackage() method
+     *
+     */
+    #[@test]
+    public function classPackage() {
+      $this->assertEquals(
+        Package::forName('tests.classes'),
+        XPClass::forName('tests.classes.ClassOne')->getPackage()
+      );
+    }
+
+    /**
      * Tests providesClass() method
      *
      */
@@ -91,10 +106,10 @@
      */
     #[@test]
     public function getTestClassNames() {
-      $names= Package::forName('tests.classes')->getClasses();
-      $this->assertEquals(sizeof(self::$testClasses), sizeof($names));
-      foreach ($classes as $class) {
-        $this->assertTrue(in_array($names, self::$testClasses), $names);
+      $names= Package::forName('tests.classes')->getClassNames();
+      $this->assertEquals(sizeof(self::$testClasses), sizeof($names), xp::stringOf($names));
+      foreach ($names as $name) {
+        $this->assertTrue(in_array(xp::reflect($name), self::$testClasses), $name);
       }
     }
 
@@ -105,9 +120,9 @@
     #[@test]
     public function getTestClasses() {
       $classes= Package::forName('tests.classes')->getClasses();
-      $this->assertEquals(sizeof(self::$testClasses), sizeof($classes));
+      $this->assertEquals(sizeof(self::$testClasses), sizeof($classes), xp::stringOf($classes));
       foreach ($classes as $class) {
-        $this->assertTrue(in_array($class->getName(), self::$testClasses), $class);
+        $this->assertTrue(in_array(xp::reflect($class->getName()), self::$testClasses), $class->getName());
       }
     }
   }
