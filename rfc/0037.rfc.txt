@@ -81,15 +81,15 @@ the two cases:
 
 Dependencies
 ------------
-- This will change the version number to 5.4.0
+- RFC #0121
 
+<pre>
+Note: This will change the version number to 5.5.0
+</pre>
 
 Related documents
 -----------------
-- http://xp-framework.net/rfc/contrib/rfc0037.diff
-  Patch implementing this RFC
-
-- http://experiments.xp-framework.net/?people,friebe,rfc0037
+- http://experiments.xp-framework.net/?arena,classloaders
   Experiment
 
 Comments
