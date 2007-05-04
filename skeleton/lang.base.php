@@ -318,7 +318,7 @@
         }
 
         // Load using wrapper
-        if (FALSE === include($str)) {
+        if (FALSE === include_once($str)) {
           xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
         }
         $str= substr($str, strrpos($str, '/')+ 1);
@@ -333,6 +333,8 @@
           
           if (FALSE === ($r= include_once($f))) {
             xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
+          } else if (TRUE === $r) {
+            continue 2;   // Already included
           }
           
           break;
@@ -340,8 +342,10 @@
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
-          if (FALSE === ($r= include($fname))) {
+          if (FALSE === ($r= include_once($fname))) {
             continue;
+          } else if (TRUE === $r) {
+            continue 2;   // Already included
           }
           
           xp::$registry['classloader.'.$str]= 'lang.archive.ArchiveClassLoader://'.$path;
