@@ -144,7 +144,7 @@
     /**
      * Set projection
      *
-     * @param   rdbms.util.Projection projection
+     * @param   rdbms.criterion.Projection projection
      * @return  rdbms.Criteria this object
      */
     public function setProjection(Projection $projection) {
@@ -155,7 +155,7 @@
     /**
      * Set projection for a new clone of this object
      *
-     * @param   rdbms.util.Projection projection
+     * @param   rdbms.criterion.Projection projection
      * @return  rdbms.Criteria this object
      */
     public function withProjection(Projection $projection) {

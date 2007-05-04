@@ -14,11 +14,13 @@
     /**
      * constructor
      *
-     * @param  string fieldname optional default is *
+     * @param  rdbms.SQLRenderable field optional default is *
      * @param  string command form constlist
      * @param  string alias optional
+     * @throws lang.IllegalArgumentException
      */
     public function __construct($field= '*', $alias= '') {
+      if (('*' != $field) && !($field instanceof SQLRenderable)) throw new IllegalArgumentException('Argument #1 must be of type SQLRenderable or string "*"');
       $this->field= $field;
       $this->alias= $alias;
     }
@@ -28,14 +30,11 @@
      *
      * @param   rdbms.DBConnection conn
      * @return  string
-     * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn) {
-      if (('*' != $this->field) && !isset($peer->types[$this->field])) throw new SQLStateException('field '.$field.' does not exist');
-      $command= ('*' == $this->field)       ? 'count(*)' : $conn->prepare('count(%c)', $this->field);
-      $alias=   ('*' == $this->field)       ? 'count'    : $conn->prepare('count_%c',  $this->field);
-      $alias=   $conn->prepare('%s', (0 == strlen($this->alias)) ? $alias : $this->alias);
-      return $command.' as '.$alias;
+      $field= ($this->field instanceof SQLRenderable) ? $this->field->asSQL($conn) : '*';
+      $alias= (0 != strlen($this->alias)) ?  $this->alias : (('*' == $field) ? 'count' : 'count_'.$field);
+      return $conn->prepare('count('.$field.') as %s', $alias);
     }
   }
 ?>

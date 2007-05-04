@@ -9,11 +9,11 @@
    * belongs to the Criterion API
    *
    */
-  interface Projection extends SQLRenderable{
-     const AVG=  'avg(%c)';
-     const SUM=  'sum(%c)';
-     const MIN=  'min(%c)';
-     const MAX=  'max(%c)';
-     const PROP= '%c';
+  interface Projection extends SQLRenderable {
+     const AVG=  'avg(%s)';
+     const SUM=  'sum(%s)';
+     const MIN=  'min(%s)';
+     const MAX=  'max(%s)';
+     const PROP= '%s';
   }
 ?>
