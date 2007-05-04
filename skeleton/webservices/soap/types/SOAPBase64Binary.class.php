@@ -9,7 +9,7 @@
   /**
    * SOAP Base64 binary
    *
-   * @see      xp://webservices.soap.SOAPNode
+   * @see      xp://webservices.soap.xp.XPSoapNode
    * @purpose  Transport base64 encoded data
    */
   class SOAPBase64Binary extends SoapType {
