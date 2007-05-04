@@ -160,6 +160,9 @@ None, filters are an optional addition.
 
 Dependencies
 ------------
+- RFC #0117
+  Package class
+
 - RFC #0107
   More information about table fields in rdbms.Peer
 
