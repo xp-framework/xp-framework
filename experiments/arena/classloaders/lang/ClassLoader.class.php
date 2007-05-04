@@ -89,6 +89,19 @@
       }
       return xp::null();
     }    
+
+    /**
+     * Find the package by the specified name
+     *
+     * @param   string package fully qualified package name
+     * @return  lang.IClassLoader the classloader that provides this class
+     */
+    public function findPackage($package) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesPackage($package)) return $delegate;
+      }
+      return xp::null();
+    }    
     
     /**
      * Load the class by the specified name

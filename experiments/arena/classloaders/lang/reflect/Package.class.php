@@ -23,14 +23,23 @@
     }
     
     /**
-     * Get all classes in this package. Loads classes if not already
-     * loaded.
+     * Checks if a specific class is provided by this package
      *
      * @param   string name
      * @return  bool
      */
     public function providesClass($name) { 
       return !is(NULL, ClassLoader::getDefault()->findClass($this->name.'.'.$name));
+    }
+
+    /**
+     * Checks if a specific subpackage is provided by this package
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function providesPackage($name) { 
+      return !is(NULL, ClassLoader::getDefault()->findPackage($this->name.'.'.$name));
     }
 
     /**
@@ -62,7 +71,7 @@
      *
      * @param   string name
      * @return  lang.XPClass
-     * @throws  lang.IllegalArgumentException in case 
+     * @throws  lang.IllegalArgumentException
      */
     public function loadClass($name) { 
     
@@ -80,9 +89,23 @@
     /**
      * Returns a list of subpackages in this package.
      *
+     * @return  lang.reflect.Package[]
      */
-    public function getPackages() { 
-      // TBI
+    public function getPackages() {
+      return array_map(array('Package', 'forName'), $this->getPackageNames());
+    } 
+
+    /**
+     * Returns a list of subpackages in this package.
+     *
+     * @return  string[]
+     */
+    public function getPackageNames() { 
+      $packages= array();
+      foreach (ClassLoader::getDefault()->packageContents($this->name) as $file) {
+        if ('/' == substr($file, -1)) $packages[]= $this->name.'.'.substr($file, 0, -1);
+      }
+      return $packages;
     }
 
     /**
@@ -90,9 +113,21 @@
      * may be either locally qualified (without dots) or fully 
      * qualified (with dots).
      *
+     * @param   string name
+     * @return  lang.reflect.Package
+     * @throws  lang.IllegalArgumentException
      */
     public function getPackage($name) {
-      // TBI
+
+      // Handle fully qualified names
+      if (FALSE !== ($p= strrpos($name, '.'))) {
+        if (substr($name, 0, $p) != $this->name) {
+          throw new IllegalArgumentException('Package '.$name.' is not in '.$this->name);
+        }
+        $name= substr($name, $p+ 1);
+      }
+
+      return self::forName($this->name.'.'.$name);
     }
     
     /**

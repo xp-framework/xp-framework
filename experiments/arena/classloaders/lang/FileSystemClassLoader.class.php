@@ -174,7 +174,7 @@
       $contents= array();
       if ($d= @dir($this->path.DIRECTORY_SEPARATOR.strtr($package, '.', DIRECTORY_SEPARATOR))) {
         while ($e= $d->read()) {
-          if ('.' != $e{0}) $contents[]= $e.(is_dir($d->path.$e) ? '/' : '');
+          if ('.' != $e{0}) $contents[]= $e.(is_dir($d->path.DIRECTORY_SEPARATOR.$e) ? '/' : '');
         }
         $d->close();
       }

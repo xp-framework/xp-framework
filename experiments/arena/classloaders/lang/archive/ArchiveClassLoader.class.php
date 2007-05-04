@@ -187,9 +187,27 @@
         $this->archive->rewind(); 
         $e= $this->archive->getEntry(); 
       ) {
-        if (strncmp($cmps, $e, $cmpl) == 0) $contents[]= substr($e, $cmpl+ 1);
+        if (strncmp($cmps, $e, $cmpl) != 0) continue;
+        $entry= substr($e, $cmpl+ 1);
+        
+        // Check to see if we're getting something in a subpackage. Imagine the 
+        // following structure:
+        //
+        // archive.xar
+        // - tests/ClassOne.class.php
+        // - tests/classes/RecursionTest.class.php
+        // - tests/classes/ng/NextGenerationRecursionTest.class.php
+        //
+        // When this method is invoked with "tests" as name, "ClassOne.class.php"
+        // and "classes/" should be returned (but neither any of the subdirectories
+        // nor their contents)
+        if (FALSE !== ($p= strpos($entry, '/'))) {
+          $entry= substr($entry, 0, $p);
+          if (strstr($entry, '/')) continue;
+        }
+        $contents[$entry]= NULL;
       }
-      return $contents;
+      return array_keys($contents);
     }
   }
 ?>
