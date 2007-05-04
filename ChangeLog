@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.4.1, released 2007-05-04
+----------------------------------
+SVN version: 10196
+
 - Fix bug with recursive uses() calls fatalling
   (friebe)
 - Implemented RFC #0122 - Make handlers cancelable
