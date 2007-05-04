@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mperson, database Ruben_Test_PS
-   * (Auto-generated on Fri, 27 Apr 2007 14:47:15 +0200 by ruben)
+   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -83,6 +83,17 @@
       }
     }
 
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    static public function column($name) {
+      return self::getPeer()->column($name);
+    }
+    
     /**
      * Retrieve associated peer
      *

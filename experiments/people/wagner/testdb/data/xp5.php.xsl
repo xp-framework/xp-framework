@@ -229,6 +229,17 @@
     }
 
     /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    static public function column($name) {
+      return self::getPeer()->column($name);
+    }
+    
+    /**
      * Retrieve associated peer
      *
      * @return  rdbms.Peer
