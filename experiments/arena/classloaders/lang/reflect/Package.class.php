@@ -135,10 +135,15 @@
      *
      * @param   string name
      * @return  lang.reflect.Package
+     * @throws  lang.ElementNotFoundException
      */
     public static function forName($name) { 
       $p= new self();
       $p->name= rtrim($name, '.');   // Normalize
+      
+      if (is(NULL, ClassLoader::getDefault()->findPackage($p->name))) {
+        raise('lang.ElementNotFoundException', 'No classloaders provide '.$name);
+      }
       return $p;
     }
     

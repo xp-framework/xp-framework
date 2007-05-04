@@ -38,6 +38,15 @@
     }
 
     /**
+     * Tests forName() throws an ElementNotFoundException
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function nonExistantPackage() {
+      Package::forName('@@non-existant-package@@');
+    }
+
+    /**
      * Tests all test classes are provided by the "tests.classes" package
      *
      */
