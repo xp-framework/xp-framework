@@ -62,18 +62,22 @@
       DIRECTORY_SEPARATOR.
       strtr($classname, '.', DIRECTORY_SEPARATOR).'.class.php'
     );
-    if ($file->exists()) {
-      Console::writeLine('---> Class ', $classname, ' already exists, skipping');
+    if ('@' == $path) {
+      Console::writeLine('---> Source of ', $classname);
+      Console::writeLine($source);
     } else {
-      Console::writeLine('---> Generating ', $classname);
-      $dir= new Folder($file->getPath());
-      if (!$dir->exists()) $dir->create();
+      if ($file->exists()) {
+        Console::writeLine('---> Class ', $classname, ' already exists, skipping');
+      } else {
+        Console::writeLine('---> Generating ', $classname);
+        $dir= new Folder($file->getPath());
+        if (!$dir->exists()) $dir->create();
 
-      $file->open(FILE_MODE_WRITE);
-      $file->write($source);
-      $file->close();
-    }
-    
+        $file->open(FILE_MODE_WRITE);
+        $file->write($source);
+        $file->close();
+      }
+    }    
     Console::writeLine('     >> ', str_replace(dirname(__FILE__), '.', $file->getURI()));
   }
   // }}}
