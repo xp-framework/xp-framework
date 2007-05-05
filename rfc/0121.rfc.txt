@@ -124,10 +124,12 @@ that as follows:
   // Will not work any longer
   set_include_path(get_include_path().PATH_SEPARATOR.$dir);
   set_include_path(get_include_path().PATH_SEPARATOR.$xar);
+  set_include_path($xar2.PATH_SEPARATOR.get_include_path());
   
   // Refactor to one of the following:
   ClassLoader::registerLoader(new FileSystemClassLoader($dir));
   ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader($xar)));
+  ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader($xar2)), TRUE);
 ?>
 
 
