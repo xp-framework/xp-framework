@@ -48,10 +48,15 @@
      * Register a class loader as a delegate
      *
      * @param   IClassLoader l
+     * @param   bool before default FALSE whether to register this as the first loader
      * @return  IClassLoader the registered loader
      */
-    public static function registerLoader(IClassLoader $l) {
-      self::$delegates[]= $l;
+    public static function registerLoader(IClassLoader $l, $before= FALSE) {
+      if ($before) {
+        array_unshift(self::$delegates, $l);
+      } else {
+        self::$delegates[]= $l;
+      }
       return $l;
     }
     
