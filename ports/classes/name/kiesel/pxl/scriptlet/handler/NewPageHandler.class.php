@@ -75,6 +75,7 @@
       }
       
       try {
+        $seq= $db->select('max(sequence) as seq from page');
         $db->insert('
           into page (
             title,
@@ -82,26 +83,27 @@
             author_id,
             lastchange,
             published,
-            is_published
+            sequence
           ) values (
             %s,
             %s,
             %d,
             %s,
             %s,
-            NULL
+            %d
           )',
           $this->wrapper->getName(),
           $this->wrapper->getDescription(),
           $context->user['author_id'],
           Date::now(),
-          (is('util.Date', $this->wrapper->getPublished()) ? $this->wrapper->getPublished() : NULL)
+          (is('util.Date', $this->wrapper->getPublished()) ? $this->wrapper->getPublished() : NULL),
+          (int)$seq[0]['seq']+ 1
         );
 
         $page= $db->identity();
 
         // Create the new folder
-        $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').'/pages/'.intval($page));
+        $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').DIRECTORY_SEPARATOR.'pages'.DIRECTORY_SEPARATOR.intval($page));
         $folder->create(0755);
 
         // Copy image file to new destination
@@ -110,17 +112,14 @@
         $db->insert('
           into picture (
             page_id,
-            title,
             filename,
             author_id
           ) values (
             %d,
             %s,
-            %s, 
             %d
           )',
           $page,
-          $this->wrapper->getName(),
           $this->wrapper->getFile()->getName(),
           $context->user['author_id']
         );
@@ -129,16 +128,18 @@
           strlen($tag) && $db->insert('into tag (page_id, tag) values (%d, %s)', $page, $tag);
         }
       } catch(SQLException $e) {
+        Logger::getInstance()->getCategory()->error($e);      
         $this->addError('database');
         $transaction->rollback();
         return FALSE;
       } catch(IOException $e) {
+        Logger::getInstance()->getCategory()->error($e);
         $this->addError('permissions');
         $transaction->rollback();
         return FALSE;
       } catch(XPException $e) {
         $transaction->rollback();
-        throw ($e);
+        throw $e;
       }
       
       $transaction->commit();
