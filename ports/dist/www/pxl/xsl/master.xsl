@@ -18,9 +18,10 @@
   <xsl:param name="__product"/>
   <xsl:param name="__sess"/>
   <xsl:param name="__query"/>
-  
-  <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
 
+  <xsl:include href="date.inc.xsl"/>  
+  <xsl:variable name="texts" select="document(concat($__product, '/', $__lang, '/texts.xml'))/texts"/>
+  
   <xsl:output
    method="xml"
    encoding="utf-8"
