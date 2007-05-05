@@ -32,7 +32,7 @@
      *
      * @param   string context
      */
-    public function __construct($context) {
+    public function __construct($context= NULL) {
       $this->context= $context;
     }
     
@@ -54,6 +54,26 @@
      */
     public function providesClass($class) {
       return isset(self::$bytes[$class]);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return FALSE;
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      return FALSE;
     }
 
     /**
@@ -129,16 +149,6 @@
      */
     public function packageContents($package) {
       return array();
-    }
-
-    /**
-     * Checks whether this loader can provide the requested resource
-     *
-     * @param   string filename
-     * @return  bool
-     */
-    public function providesResource($filename) {
-      return FALSE;
     }
 
     /**
