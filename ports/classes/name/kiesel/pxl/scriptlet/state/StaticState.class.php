@@ -6,6 +6,7 @@
 
   uses(
     'name.kiesel.pxl.scriptlet.AbstractPxlState',
+    'name.kiesel.pxl.format.FormatterChain',
     'img.util.ExifData'
   );
 
@@ -47,19 +48,19 @@
           and published < %s
           %c
         order by 
-          page_id desc
+          sequence desc
         limit 1
         ',
         Date::now(),
-        ($request->getEnvValue('INDEX', NULL) ? $db->prepare('and sequence= %d', $request->getEnvValue('INDEX')) : '')
+        ($request->getEnvValue('INDEX', NULL) ? $db->prepare('and page_id= %d', $request->getEnvValue('INDEX')) : '')
       );
       
       $page= current($page);
       if (!$page) throw new IllegalStateException('No page found.');
       
       // Find previous and next page
-      $left=  $db->select('page_id, title, cast(published, "date") as published from page where sequence= %d and published is not null', $page['sequence']- 1, Date::now());
-      $right= $db->select('page_id, title, cast(published, "date") as published from page where sequence= %d and published is not null', $page['sequence']+ 1, Date::now());
+      $left=  $db->select('page_id, sequence, title, cast(published, "date") as published from page where sequence= %d and published < %s', $page['sequence']- 1, Date::now());
+      $right= $db->select('page_id, sequence, title, cast(published, "date") as published from page where sequence= %d and published < %s', $page['sequence']+ 1, Date::now());
       
       // Load all images from page
       $pictures= $db->select('
@@ -93,7 +94,7 @@
         $n->setAttribute('id', $page['page_id']);
 
         sizeof($left) && $n->addChild(new Node('prev', NULL, array(
-          'id'        => $left[0]['sequence'],              
+          'id'        => $left[0]['page_id'],              
           'title'     => $this->webName($left[0]['title']), 
           'published' => $left[0]['published']->toString('Y/m/d')
         )));
@@ -104,7 +105,8 @@
           'published' => $right[0]['published']->toString('Y/m/d')
         )));
         
-        $n->addChild(new Node('description', new PCData($page['description'])));
+        $formatter= new FormatterChain();
+        $n->addChild(new Node('description', new PCData($formatter->apply($page['description']))));
       }
       
       $pnode= $n->addChild(new Node('pictures'));

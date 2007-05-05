@@ -24,7 +24,7 @@
      * Constructor
      *
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'name',
         OCCURRENCE_UNDEFINED,
@@ -43,7 +43,7 @@
       );
       $this->registerParamInfo(
         'file',
-        OCCURRENCE_UNDEFINED,
+        OCCURRENCE_OPTIONAL,
         NULL,
         array('scriptlet.xml.workflow.casters.ToFileData'),
         array('scriptlet.xml.workflow.checkers.FileUploadPrechecker'),
@@ -72,7 +72,7 @@
      *
      * @return  string
      */
-    function getName() {
+    public function getName() {
       return $this->getValue('name');
     }
 
@@ -81,7 +81,7 @@
      *
      * @return  string
      */
-    function getDescription() {
+    public function getDescription() {
       return $this->getValue('description');
     }
 
@@ -90,7 +90,7 @@
      *
      * @return  string
      */
-    function getFile() {
+    public function getFile() {
       return $this->getValue('file');
     }
 
@@ -99,7 +99,7 @@
      *
      * @return  string
      */
-    function getPublished() {
+    public function getPublished() {
       return $this->getValue('published');
     }
 
@@ -108,7 +108,7 @@
      *
      * @return  string
      */
-    function getTags() {
+    public function getTags() {
       return $this->getValue('tags');
     }
 

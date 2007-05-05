@@ -23,7 +23,7 @@
      * Constructor
      *
      */  
-    function __construct() {
+    public function __construct() {
       $this->registerParamInfo(
         'username',
         OCCURRENCE_UNDEFINED,
@@ -47,7 +47,7 @@
      *
      * @return  string
      */
-    function getUsername() {
+    public function getUsername() {
       return $this->getValue('username');
     }
 
@@ -56,7 +56,7 @@
      *
      * @return  string
      */
-    function getPassword() {
+    public function getPassword() {
       return $this->getValue('password');
     }
 

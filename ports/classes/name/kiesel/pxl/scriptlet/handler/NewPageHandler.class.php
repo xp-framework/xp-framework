@@ -30,6 +30,17 @@
     }
     
     /**
+     * Get identifier. 
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.Context context
+     * @return  string
+     */
+    public function identifierFor($request, $context) {
+      return $this->name.'#'.$request->getParam('page', 'new');
+    }
+
+    /**
      * Setup handler.
      *
      * @param   &scriptlet.xml.XMLScriptletRequest request
@@ -39,19 +50,53 @@
     public function setup($request, $context) {
       $db= ConnectionManager::getInstance()->getByHost('pxl', 0);
       
-      // Find next "free" publishing date
-      $lastdate= $db->select('
-        cast(datetime(max(published), "+1 day"), "date") as published from page
-      ');
-      
-      if (sizeof($lastdate) && is('util.Date', $lastdate[0]['published'])) {
-        $this->setFormValue('published', $lastdate[0]['published']->format('%Y-%m-%d'));
+      // Set old values if page parameter has been passed
+      if ($request->hasParam('page')) {
+        $page= $db->select('
+            page_id,
+            title,
+            description,
+            cast(published, "date") published
+          from 
+            page 
+          where page_id= %d
+          ',
+          $request->getParam('page')
+        );
+        $tags= $db->select('tag from tag where page_id= %d', $request->getParam('page'));
+        
+        if (!sizeof($page)) throw new IllegalArgumentException('Given page not found.');
+        $page= current($page);
+        
+        $this->setFormValue('name', $page['title']);
+        $this->setFormvalue('description', $page['description']);
+        if ($page['published'] instanceof Date) {
+          $this->setFormValue('published', $page['published']->format('%Y-%m-%d'));
+        }
+        
+        $tagstring= '';
+        foreach ($tags as $t) { $tagstring.= $t['tag'].' '; }
+        $this->setFormValue('tags', trim($tagstring));
+        
+        $this->setValue('mode', 'update');
+        $this->setValue('page', $page);
       } else {
-        $this->setFormvalue('published', Date::now()->format('%Y-%m-%d'));
+        $this->setValue('mode', 'create');
+
+        // Find next "free" publishing date
+        $lastdate= $db->select('
+          cast(datetime(max(published), "+1 day"), "date") as published from page
+        ');
+
+        if (sizeof($lastdate) && is('util.Date', $lastdate[0]['published'])) {
+          $this->setFormValue('published', $lastdate[0]);
+        } else {
+          $this->setFormvalue('published', Date::now()->format('%Y-%m-%d'));
+        }
       }
       
       // Load tags
-      $this->setValue('tags', $db->select('distinct tag from tag'));
+      $this->setValue('tags', $db->select('tag, count(*) as cnt from tag group by tag'));
       return TRUE;
     }
     
@@ -75,60 +120,90 @@
       }
       
       try {
-        $seq= $db->select('max(sequence) as seq from page');
-        $db->insert('
-          into page (
-            title,
-            description,
-            author_id,
-            lastchange,
-            published,
-            sequence
-          ) values (
-            %s,
-            %s,
-            %d,
-            %s,
-            %s,
-            %d
-          )',
-          $this->wrapper->getName(),
-          $this->wrapper->getDescription(),
-          $context->user['author_id'],
-          Date::now(),
-          (is('util.Date', $this->wrapper->getPublished()) ? $this->wrapper->getPublished() : NULL),
-          (int)$seq[0]['seq']+ 1
-        );
+        if ('create' == $this->getValue('mode')) {
+          $seq= $db->select('max(sequence) as seq from page');
+          $db->insert('
+            into page (
+              title,
+              description,
+              author_id,
+              lastchange,
+              changedby,
+              published,
+              sequence
+            ) values (
+              %s,
+              %s,
+              %d,
+              %s,
+              %s,
+              %s,
+              %d
+            )',
+            $this->wrapper->getName(),
+            $this->wrapper->getDescription(),
+            $context->user['author_id'],
+            Date::now(),
+            $context->user['username'],
+            ($this->wrapper->getPublished() instanceof Date ? $this->wrapper->getPublished() : NULL),
+            (int)$seq[0]['seq']+ 1
+          );
 
-        $page= $db->identity();
+          $page_id= $db->identity();
 
-        // Create the new folder
-        $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').DIRECTORY_SEPARATOR.'pages'.DIRECTORY_SEPARATOR.intval($page));
-        $folder->create(0755);
+          // Create the new folder
+          $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').DIRECTORY_SEPARATOR.'pages'.DIRECTORY_SEPARATOR.intval($page_id));
+          $folder->create(0755);
 
-        // Copy image file to new destination
-        $this->wrapper->getFile()->getFile()->move($folder->getUri().'/'.$this->wrapper->getFile()->getName());
+          // Copy image file to new destination
+          $this->wrapper->getFile()->getFile()->move($folder->getUri().'/'.$this->wrapper->getFile()->getName());
 
-        $db->insert('
-          into picture (
-            page_id,
-            filename,
-            author_id
-          ) values (
-            %d,
-            %s,
-            %d
-          )',
-          $page,
-          $this->wrapper->getFile()->getName(),
-          $context->user['author_id']
-        );
+          $db->insert('
+            into picture (
+              page_id,
+              filename,
+              author_id
+            ) values (
+              %d,
+              %s,
+              %d
+            )',
+            $page_id,
+            $this->wrapper->getFile()->getName(),
+            $context->user['author_id']
+          );
+        } else {
+          $page= $this->getValue('page');
+          $page_id= $page['page_id'];
+          
+          // Update mode
+          $db->update('
+            page
+            set
+              title= %s,
+              description= %s,
+              lastchange= %s,
+              changedby= %s,
+              published= %s
+            where page_id= %d
+            ',
+            $this->wrapper->getName(),
+            $this->wrapper->getDescription(),
+            Date::now(),
+            $context->user['username'],
+            ($this->wrapper->getPublished() instanceof Date ? $this->wrapper->getPublished() : NULL),
+            $page['page_id']
+          );
+          
+          // Remove all tags, so we can re-insert them...
+          $db->delete('from tag where page_id= %d', $page['page_id']);
+        }
 
         foreach (array_unique(explode(' ', $this->wrapper->getTags())) as $tag) {
-          strlen($tag) && $db->insert('into tag (page_id, tag) values (%d, %s)', $page, $tag);
+          strlen($tag) && $db->insert('into tag (page_id, tag) values (%d, %s)', $page_id, $tag);
         }
       } catch(SQLException $e) {
-        Logger::getInstance()->getCategory()->error($e);      
+        Logger::getInstance()->getCategory()->error($e);
         $this->addError('database');
         $transaction->rollback();
         return FALSE;
@@ -144,6 +219,16 @@
       
       $transaction->commit();
       return TRUE;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function finalize($request, $response, $context) {
+      $response->forwardTo('admin/listpage?edit.success=1');
     }
   }
 ?>

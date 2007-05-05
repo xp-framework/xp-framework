@@ -16,7 +16,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class AdminState extends AbstractPxlState {
+  class EditpageAdminState extends AbstractPxlState {
   
     /**
      * (Insert method's description here)
