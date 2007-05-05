@@ -61,6 +61,55 @@ rest of the classloading source in the following:
 * It only supports loading from filesystem and xar archives
 
 
+Bootstrapping
+~~~~~~~~~~~~~
+The bootstrapping process starts after lang.base.php has been processed
+and the core classes are loaded. The core classes are the following:
+<pre>
+  lang.Generic
+  lang.Object
+  lang.StackTraceElement
+  lang.Throwable
+  lang.Error
+  lang.XPException
+  lang.Type
+  lang.reflect.Argument
+  lang.reflect.Routine
+  lang.reflect.Method
+  lang.reflect.Field
+  lang.reflect.Constructor
+  lang.reflect.Modifiers
+  lang.reflect.Package
+  lang.XPClass
+  lang.NullPointerException
+  lang.IllegalAccessException
+  lang.IllegalArgumentException
+  lang.IllegalStateException
+  lang.FormatException
+  lang.ClassNotFoundException
+  lang.IClassLoader
+  lang.FileSystemClassLoader
+  lang.DynamicClassLoader
+  lang.archive.ArchiveReader
+  lang.archive.ArchiveClassLoader
+  lang.ClassLoader
+</pre>
+During the bootstrap process, classes are loaded by xp::loadClass0().
+After that, the lang.ClassLoader (delegating to the registered loaders
+as described above) takes over control by registering loaders as follows:
+<?php
+  foreach (xp::$registry['classpath'] as $element) {
+    if (is_dir($element)) {
+      self::registerLoader(FileSystemClassLoader::instanceFor($element));
+    } else if (is_file($element)) {
+      self::registerLoader(ArchiveClassLoader::instanceFor($element));
+    }
+  }
+?>
+Note: From that point on, uses() will no longer bail but throw 
+lang.ClassNotFoundExceptions.
+
+
 include_path
 ~~~~~~~~~~~~
 PHP's include_path setting is parsed once at startup and is available in
