@@ -9,17 +9,45 @@ $Id$
 
 Scope of Change
 ---------------
-There will be one ClassLoader for each element in the include path.
+- There will be one ClassLoader for each element in the include path.
+- Every class will have a classloader associated with it.
+- The deprecated overloaded variant of ClassLoader::defineClass() will 
+  be removed.
+- uses() wrappers will be removed.
 
 
 Rationale
 ---------
-Consistent API.
+- Consistent API
+- Makes RFC #0037 possible (fully qualified class names)
+- Makes RFC #0117 possible (package reflection)
 
 
 Functionality
 -------------
-TODO
+
+Overview
+~~~~~~~~
+Consider the following include_path (wrapped for better readability)
+<pre>
+  .;
+  C:\cygwin\home\thekid\devel\xp\trunk\skeleton;
+  C:\cygwin\home\thekid\lib\xp-com.a9-5.4.1.xar
+</pre>
+
+This will now create three different classloader instances:
+* FileSystemClassLoader (.)
+* FileSystemClassLoader (C:\cygwin\home\thekid\devel\xp\trunk\skeleton)
+* ArchiveClassLoader (C:\cygwin\home\thekid\lib\xp-com.a9-5.4.1.xar)
+
+The default classloader, which can be retrieved by invoking
+<?php
+  $cl= ClassLoader::getDefault();
+?>
+can be asked for a class by using its loadClass() method. This method
+will ask all registered classloaders (see list from above) for the class
+and will load it from the first class loader whose providesClass() method
+returns TRUE.
 
 
 Security considerations
@@ -29,12 +57,18 @@ n/a
 
 Speed impact
 ------------
-Almost none, actually, a bit faster!
+A bit faster, slightly increased memory usage.
 
 
 Dependencies
 ------------
-This will bump the minor version number (-> 5.4.0)
+Note:
+<pre>
+This will bump the minor version number (-> 5.5.0)
+</pre>
+
+- uses() wrappers deprecation
+- defineClass() old api deprecation
 
 
 Related documents
