@@ -4,13 +4,14 @@ $Id$
 
 @authors: friebe
 @created: Sat May  5 21:31:20     2007
-@status: draft
+@status: discussion, ends Mon May  7 16:00:00     2007
 @category: util.log
 
 Scope of Change
 ---------------
-The util.log.LogCategory::addAppender() method will be changed to
-returns the category itself instead of the added appender.
+A method util.log.LogCategory::withAppender() method will added. It works
+just like addAppender() but returns  the category itself instead of the 
+added appender.
 
 
 Rationale
@@ -35,8 +36,8 @@ Fluent interface example
 ~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   $traceable->setTrace(Logger::getInstance()->getCategory($traceable->getClassName())
-    ->addAppender(new BufferedAppender())
-    ->addAppender(new FileAppender('/var/log/xp/debug.log'))
+    ->withAppender(new BufferedAppender())
+    ->withAppender(new FileAppender('/var/log/xp/debug.log'))
   );
 ?>
 
@@ -48,12 +49,12 @@ n/a
 
 Speed impact
 ------------
-n/a
+One new method in LogAppender() class, almost not noticeable.
 
 
 Dependencies
 ------------
-BC break (though the return value of addAppender() is seldomly used)
+n/a
 
 
 Related documents
