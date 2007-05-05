@@ -10,7 +10,7 @@
   
   <param name="name" type="string"/>
   <param name="description" type="string"/>
-  <param name="file" type="string">
+  <param name="file" type="string" occurrence="optional">
     <precheck class="scriptlet.xml.workflow.checkers.FileUploadPrechecker"/>
     <caster class="scriptlet.xml.workflow.casters.ToFileData"/>
   </param>

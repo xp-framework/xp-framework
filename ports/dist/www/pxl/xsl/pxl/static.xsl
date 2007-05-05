@@ -13,7 +13,6 @@
 >
   <xsl:output method="xml" encoding="utf-8"/>
   <xsl:include href="layout.inc.xsl"/>
-  <xsl:include href="../date.inc.xsl"/>
   
   <xsl:template name="page-body">
     <xsl:apply-templates select="/formresult/page"/>

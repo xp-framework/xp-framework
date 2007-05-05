@@ -37,7 +37,7 @@
           <td>
             <a href="{func:link(concat('admin/listpage?page=', @page_id, '&amp;action=move.up'))}">Up</a> |
             <a href="{func:link(concat('admin/listpage?page=', @page_id, '&amp;action=move.dn'))}">Down</a> |
-            <a href="{func:link(concat('admin/listpage?page=', @page_id, '&amp;action=edit'))}">Edit</a> |
+            <a href="{func:link(concat('admin/editpage?page=', @page_id, '&amp;action=edit'))}">Edit</a> |
             <a href="{func:link(concat('admin/listpage?page=', @page_id, '&amp;action=delete'))}">Delete</a>
           </td>
         </tr>

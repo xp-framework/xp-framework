@@ -11,8 +11,8 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="layout.inc.xsl"/>
-  <xsl:include href="../wizard.inc.xsl"/>
+  <xsl:include href="../layout.inc.xsl"/>
+  <xsl:include href="../../wizard.inc.xsl"/>
 
   <xsl:template name="page-body">
     <script type="text/javascript">
@@ -32,7 +32,7 @@
     <xsl:variable name="state" select="/formresult/handlers/handler[@name= 'newpagehandler']/@status"/>
     
     <xsl:if test="$state= 'setup' or $state= 'initialized' or $state= 'errors'">
-      <form action="{func:link('admin')}" method="POST" enctype="multipart/form-data">
+      <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="__handler" value="{/formresult/handlers/handler[@name= 'newpagehandler']/@id}"/>
 
         <table class="form">
