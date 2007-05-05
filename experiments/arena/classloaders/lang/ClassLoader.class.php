@@ -18,7 +18,7 @@
    * @purpose  Load classes
    * @see      xp://lang.XPClass#forName
    */
-  class ClassLoader extends Object implements IClassLoader {
+  class ClassLoader extends Object {
     protected static
       $delegates  = array();
     
