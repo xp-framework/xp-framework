@@ -159,7 +159,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($filename) {
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -170,7 +170,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($filename) {
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -183,9 +183,11 @@
      * @return  bool
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      list($name)= sscanf($path, 'dyn://%s');
-      $this->current= $name;
-      return isset(self::$bytes[$this->current]);
+      sscanf($path, 'dyn://%[^$]', $this->current);
+      if (!isset(self::$bytes[$this->current])) {
+        raise('lang.ElementNotFoundException', 'Could not load '.$this->current);
+      }
+      return TRUE;
     }
     
     /**
