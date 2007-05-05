@@ -22,9 +22,11 @@
       $appender= NULL;
 
     static function __static() {
-      $cat= Logger::getInstance()->getCategory();
-      self::$appender= $cat->addAppender(new BufferedAppender());
-      ClassLoader::registerLoader(new LoggingClassLoader($cat), TRUE);
+      self::$appender= new BufferedAppender();
+      ClassLoader::registerLoader(
+        new LoggingClassLoader(Logger::getInstance()->getCategory()->withAppender(self::$appender)),
+        TRUE
+      );
     }
 
     /**
