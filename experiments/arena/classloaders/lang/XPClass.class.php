@@ -399,8 +399,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      $cl= self::_classLoaderFor($class);
-      if (!($bytes= $cl->loadClassBytes($class))) return NULL;
+      if (!($bytes= self::_classLoaderFor($class)->loadClassBytes($class))) return NULL;
 
       $details[$class]= array(array(), array());
       $annotations= array();
