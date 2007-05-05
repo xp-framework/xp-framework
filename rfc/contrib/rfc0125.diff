@@ -1,0 +1,43 @@
+Index: LogCategory.class.php
+===================================================================
+--- LogCategory.class.php	(revision 10223)
++++ LogCategory.class.php	(working copy)
+@@ -142,20 +142,35 @@
+      * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
+      * types.
+      *
+-     * @param   &util.log.LogAppender appender The appender object
++     * @param   util.log.LogAppender appender The appender object
+      * @param   int flag default LOGGER_FLAG_ALL
+-     * @return  &util.log.LogAppender the appender added
++     * @return  util.log.LogAppender the appender added
+      */
+     public function addAppender($appender, $flag= LOGGER_FLAG_ALL) {
+       $this->_appenders[$flag][]= $appender;
+       return $appender;
+     }
++
++    /**
++     * Adds an appender for the given log categories and returns this
++     * category - for use in a fluent interface way. Use logical OR to 
++     * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
++     * types.
++     *
++     * @param   util.log.LogAppender appender The appender object
++     * @param   int flag default LOGGER_FLAG_ALL
++     * @return  util.log.LogCategory this category
++     */
++    public function withAppender($appender, $flag= LOGGER_FLAG_ALL) {
++      $this->_appenders[$flag][]= $appender;
++      return $this;
++    }
+     
+     /**
+      * Remove the specified appender from the given log categories. For usage
+      * of log category flags, see addAppender().
+      * 
+-     * @param   &util.log.LogAppender appender
++     * @param   util.log.LogAppender appender
+      * @param   int flag default LOGGER_FLAG_ALL
+      */
+     public function removeAppender($appender, $flag= LOGGER_FLAG_ALL) {
