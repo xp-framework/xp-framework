@@ -26,7 +26,7 @@ Current functionality
 ~~~~~~~~~~~~~~~~~~~~~
 <?php
   $cat= Logger::getInstance()->getCategory($traceable->getClassName());
-  $cat->addAppender(new BufferedAppender());
+  $cat->addAppender(new SmtpAppender('errors@example.com'), LOGGER_FLAG_ERROR);
   $cat->addAppender(new FileAppender('/var/log/xp/debug.log'));
 
   $traceable->setTrace($cat);
@@ -36,7 +36,7 @@ Fluent interface example
 ~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   $traceable->setTrace(Logger::getInstance()->getCategory($traceable->getClassName())
-    ->withAppender(new BufferedAppender())
+    ->withAppender(new SmtpAppender('errors@example.com'), LOGGER_FLAG_ERROR)
     ->withAppender(new FileAppender('/var/log/xp/debug.log'))
   );
 ?>
