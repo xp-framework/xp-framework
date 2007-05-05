@@ -1,0 +1,68 @@
+RFC 0125: Fluent interface for util.log.LogCategory
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat May  5 21:31:20     2007
+@status: draft
+@category: util.log
+
+Scope of Change
+---------------
+The util.log.LogCategory::addAppender() method will be changed to
+returns the category itself instead of the added appender.
+
+
+Rationale
+---------
+Fluent interface.
+
+
+Functionality
+-------------
+
+Current functionality
+~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $cat= Logger::getInstance()->getCategory($traceable->getClassName());
+  $cat->addAppender(new BufferedAppender());
+  $cat->addAppender(new FileAppender('/var/log/xp/debug.log'));
+
+  $traceable->setTrace($cat);
+?>
+
+Fluent interface example
+~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $traceable->setTrace(Logger::getInstance()->getCategory($traceable->getClassName())
+    ->addAppender(new BufferedAppender())
+    ->addAppender(new FileAppender('/var/log/xp/debug.log'))
+  );
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+BC break (though the return value of addAppender() is seldomly used)
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
