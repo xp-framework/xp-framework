@@ -1,14 +1,15 @@
 XPCLI="../../../ports/technologies/env/bin/xpcli.php"
+PHP?=php
 
 test: performance unittest
 
 performance:
-	php use-many-classes.php
-	php recursion.php
+	$(PHP) use-many-classes.php
+	$(PHP) recursion.php
 
 unittest:
-	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
-	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
-	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
-	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.PackageTest
-	php $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.FullyQualifiedTest
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ClassLoaderTest
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.ResourcesTest
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.PackageTest
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.FullyQualifiedTest
