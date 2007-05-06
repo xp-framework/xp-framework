@@ -96,5 +96,27 @@
     public function loadClass0($class) {
       throw new IllegalStateException('Should not be reached');
     }
+
+    /**
+     * Loads a resource.
+     *
+     * @param   string string name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($string) {
+      throw new IllegalStateException('Should not be reached');
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string string name of resource
+     * @return  io.Stream
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($string) {
+      throw new IllegalStateException('Should not be reached');
+    }
   }
 ?>
