@@ -130,20 +130,25 @@
       }
       
       $q= $this->conn->query('pragma index_list(%s)', $table);
-      while ($indexInfo= $q->next()) {
-        $qi= $this->conn->query('pragma index_info(%s)', $indexInfo['name']);
-        
-        $indexCols= $qi->next();
-        
-        // TBI: Are indices over multiple columns possible? Do they
-        // return more than one row here?
+      while ($index= $q->next()) {
         $dbindex= $t->addIndex(new DBIndex(
-          $indexInfo['name'],
-          array($indexCols['name'])
+          $index['name'],
+          array()
         ));
         
-        $dbindex->unique= (bool)$indexInfo['unique'];
-        $dbindex->primary= isset($primaryKey[$indexCols['name']]);
+        $dbindex->unique= (bool)$index['unique'];
+
+        $qi= $this->conn->query('pragma index_info(%s)', $index['name']);
+        while ($column= $qi->next('name')) { $dbindex->keys[]= $column; }
+        
+        // Find out if this index covers exactly the primary key
+        $dbindex->primary= TRUE;
+        foreach ($dbindex->keys as $k) {
+          if (!isset($primaryKey[$k])) {
+            $dbindex->primary= FALSE;
+            break;
+          }
+        }
       }
       
       return $t;
