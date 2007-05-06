@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'util.log.Traceable');
+  uses('unittest.TestCase', 'util.log.Traceable', 'lang.reflect.Proxy');
 
   /**
    * TestCase
@@ -82,6 +82,19 @@
     public function newInstance() {
       $i= newinstance('lang.Object', array(), '{ public function bar() { return TRUE; }}');
       $this->assertClass($i->getClass()->getClassLoader(), 'lang.DynamicClassLoader');
+    }
+
+    /**
+     * Tests Proxy
+     *
+     */
+    #[@test]
+    public function proxyInstance() {
+      $c= Proxy::getProxyClass(
+        ClassLoader::getDefault(), 
+        array(XPClass::forName('util.log.Traceable'))
+      );
+      $this->assertClass($c->getClassLoader(), 'lang.DynamicClassLoader');
     }
   }
 ?>
