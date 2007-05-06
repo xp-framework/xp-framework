@@ -368,7 +368,7 @@
     /**
      * Retrieve the class loader a class was loaded with
      *
-     * @return  lang.ClassLoader
+     * @return  lang.IClassLoader
      */
     public function getClassLoader() {
       return self::_classLoaderFor($this->name);
@@ -378,7 +378,7 @@
      * Fetch a class' classloader by its name
      *
      * @param   string name fqcn of class
-     * @return  lang.ClassLoader
+     * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
       sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $name, $argument);
