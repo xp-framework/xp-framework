@@ -544,11 +544,11 @@
      * string name. Uses the default classloader if none is specified.
      *
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
-     * @param   lang.ClassLoader classloader default NULL
+     * @param   lang.IClassLoader classloader default NULL
      * @return  lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function forName($name, $classloader= NULL) {
+    public static function forName($name, IClassLoader $classloader= NULL) {
       if (NULL === $classloader) {
         $classloader= ClassLoader::getDefault();
       }
