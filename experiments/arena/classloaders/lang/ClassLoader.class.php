@@ -242,13 +242,13 @@
      *
      * @param   string class fully qualified class name
      * @param   string parent either sourcecode of the class or FQCN of parent
-     * @param   string[] interfaces default NULL FQCNs of implemented interfaces
-     * @param   string bytes default NULL inner sourcecode of class (containing {}) 
+     * @param   string[] interfaces FQCNs of implemented interfaces
+     * @param   string bytes inner sourcecode of class (containing {}) 
      * @return  lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */
-    public function defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
+    public function defineClass($class, $parent, $interfaces, $bytes) {
       $name= xp::reflect($class);
       if (!isset(xp::$registry['classloader.'.$class])) {
         $super= xp::reflect($parent);
