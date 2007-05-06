@@ -101,7 +101,7 @@
     /**
      * Helper function that returns this class' methods.
      *
-     * @param   
+     * @param   string[] filter methods to exclude
      * @return  array<string, string>
      */
     protected function _methods($filter= array()) {
