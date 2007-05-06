@@ -1,7 +1,7 @@
 XPCLI="../../../ports/technologies/env/bin/xpcli.php"
 PHP?=php
 
-test: performance unittest
+test: performance unittest exampletests
 
 performance:
 	$(PHP) use-many-classes.php
@@ -13,3 +13,6 @@ unittest:
 	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.RuntimeClassDefinitionTest
 	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.PackageTest
 	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner tests.FullyQualifiedTest
+
+exampletests:
+	$(PHP) $(XPCLI) net.xp_framework.unittest.runner.cli.CliRunner examples.LoggingClassLoaderTest
