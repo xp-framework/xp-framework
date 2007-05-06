@@ -14,11 +14,13 @@ create table page (
   page_id         integer primary key not null,
 
   bz_id           integer references progress(bz_id) not null default 20000,
+  author_id       integer references author(author_id) not null,
+  
   title           varchar(255) not null,
   description     text null,
-  author_id       integer references author(author_id) not null,
+  permalink       varchar(255) null,
 
-  sequence        integer,
+  sequence        integer not null,
   published       datetime null,
 
   lastchange      datetime not null,
@@ -31,6 +33,7 @@ create table picture (
   filename        varchar(255) not null,
   author_id       integer references author(author_id) not null
 );
+
 create table tag (
   page_id         integer references page(page_id) not null,
   tag             varchar(50) not null

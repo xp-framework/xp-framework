@@ -25,27 +25,27 @@
           </xsl:if>
         </title>
         <link rel="stylesheet" href="/styles/default.css"/>
+        <link rel="alternate" type="application/rss+xml" href="/feeds/rss/"/>
       </head>
       <body>
-        <xsl:call-template name="page-header">
-          <xsl:with-param name="extra" select="/formresult/page/@title"/>
-        </xsl:call-template>
-        <div id="content">
-          <xsl:call-template name="page-body"/>
+        <div id="header-background">&#160;</div>
+        <center>
+        <div id="page">
+          <div id="content">
+            <xsl:call-template name="page-body"/>
+          </div>
+        </div>
+        </center>
+        <div id="footer">
+          <xsl:value-of select="concat(/formresult/config/title, ' -  ', /formresult/config/copyright)"/>
+          /
+          <a href="{func:link('admin/listpage')}">admin</a>
+          /
+          <b>not</b> listed on photoblog.org
+          /
+          <a href="http://xp-framework.net/"><img src="/image/powered_by_xp.png" valign="bottom" border="0" title="Powered by XP framework"/></a>
         </div>
       </body>
     </html>
   </xsl:template>
-  
-  <xsl:template name="page-header">
-    <xsl:param name="extra" select="''"/>
-    
-    <div id="header">
-      <a class="title" href="/"><xsl:value-of select="/formresult/config/title"/></a>
-      <xsl:if test="$extra != ''">
-        <div class="title"><xsl:value-of select="$extra"/></div>
-      </xsl:if>
-    </div>
-  </xsl:template>
-  
 </xsl:stylesheet>

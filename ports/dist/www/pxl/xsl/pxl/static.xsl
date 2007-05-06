@@ -17,14 +17,29 @@
   <xsl:template name="page-body">
     <xsl:apply-templates select="/formresult/page"/>
   </xsl:template>
+  
+  <xsl:template name="static-links">
+    <div id="static-links">
+      <a href="{latest/@link}">latest shot</a> /
+      <a href="/static/about">about</a> /
+      <a href="/static/links">links</a> /
+      <a href="#">archives</a> /
+      <a href="/feeds/rss">rss feed</a>
+    </div>
+  </xsl:template>
 
   <xsl:template match="page">
+    <xsl:call-template name="static-links"/>
     <xsl:call-template name="pager"/>
 
     <div id="picturecontainer">
       <xsl:apply-templates select="pictures/picture"/>
       <div id="picturedescription">
-        <div class="description">
+        <div id="page-description">
+          <div id="page-calendar">
+            <div id="page-daymonth"><xsl:value-of select="concat(published/mday, '/', published/mon)"/></div>
+            <div id="page-year"><xsl:value-of select="published/year"/></div>
+          </div>
           <xsl:apply-templates select="description"/>
         </div>
       </div>
@@ -34,8 +49,8 @@
   <xsl:template name="pager">
     <div id="pager">
       <xsl:choose>
-        <xsl:when test="'' != prev/@id">
-          <a class="navigator" href="{concat('/story/', prev/@id, '/', prev/@title)}">previous</a>
+        <xsl:when test="'' != prev/@link">
+          <a class="navigator" href="{prev/@link}">previous</a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="empty-prev"/>
@@ -45,8 +60,8 @@
       |
 
       <xsl:choose>
-        <xsl:when test="'' != next/@id">
-          <a class="navigator" href="{concat('/story/', next/@id, '/', next/@title)}">next</a>
+        <xsl:when test="'' != next/@link">
+          <a class="navigator" href="{next/@link}">next</a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="empty-next"/>
@@ -56,14 +71,23 @@
   </xsl:template>
   
   <xsl:template match="picture">
-    <div class="picture" style="width: {dimensions/@width}px">
-      <img src="{concat('/pages/', ../../@id, '/', filename)}"/>
+    <div class="picture">
+      <xsl:choose>
+        <xsl:when test="'' != ../../prev/@link">
+          <a href="{../../prev/@link}">
+            <img src="{concat('/pages/', ../../@id, '/', filename)}" border="0"/>
+          </a>
+        </xsl:when>
+        <xsl:otherwise>
+          <img src="{concat('/pages/', ../../@id, '/', filename)}"/>
+        </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates select="exif"/>
     </div>
   </xsl:template>
   
   <xsl:template match="exif">
-    <div class="exif">
+    <div id="picture-exif">
       <xsl:value-of select="concat(
         make, ' ', model, ' | ',
         apertureFNumber, ' | ',

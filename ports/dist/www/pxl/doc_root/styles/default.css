@@ -6,37 +6,51 @@ body {
   font-size: 12px;
 }
 
+table {
+  font-size: 10px;
+}
+
+th {
+  text-align: left;
+  vertical-align: left;
+}
+
+tr.row_0 {
+  background-color: red;
+}
+
+tr.row_1 {
+  background-color: blue;
+}
+ 
 a.visited, a.hover, a {
   color: #000099;
   text-decoration: none;
 }
 
-#header {
+#header-background {
   width: 100%;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  border-bottom: 1px solid black;
-  margin-bottom: 10px;
-  background-color: gray;
-  text-align: right;
+  height: 50px;
+  background-image: url(/image/pixl-web20.png);
+  background-repeat: no-repeat;
+  position: relative;
 }
 
-#content {
+#page {
+  width: 800px;
   position: relative;
   padding: 0px;
   margin: 0 auto;
   text-align: left;
-  width: 800px;
+}
+
+#static-links {
+  text-align: left;
+  height: 0px;
 }
 
 #pager {
-  width:800px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#picturecontainer {
-  padding: 3px;
+  text-align: right;
 }
 
 .title {
@@ -45,20 +59,53 @@ a.visited, a.hover, a {
   font-weight: bold;
 }
 
-.picture {
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid #cccccc;
-  padding: 5px;
+#picturecontainer {
+  margin-top: 10px;
 }
 
-.exif {
+#picture-exif {
+  color: #cccccc;
   text-align: right;
   font-size: 10px;
+  margin-bottom: 10px;
 }
 
 #picturedescription {
-  text-align: justify;
+  text-align: left;
+  font-size: 10px;
+}
+
+#page-calendar {
+  position: relative;
+  background: url(/image/calendar.png);
+  height: 50px;
+  width: 50px;
+  float: left;
+  margin-right: 10px;
+}
+
+#page-daymonth {
+  width: 50px;
+  font-family: Arial;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  height: 35px;
+}
+
+#page-year {
+  text-align: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: white;
+}
+
+#footer {
+  width: 100%;
+  text-align: center;
+  vertical-align: baseline;
+  margin-top: 10px;
+  font-size: 10px;  
 }
 
 .navigator {
@@ -69,18 +116,16 @@ a.visited, a.hover, a {
   font-weight: bold;
   color: #cccccc;
   text-decoration: none;
-  
 }
 
-.description {
-  width: 800px;
+#picture-description {
   margin-left: auto;
   margin-right: auto;
 }
 
 table.form {
   border: 0px;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 td.form {

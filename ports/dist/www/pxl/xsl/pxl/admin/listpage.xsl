@@ -42,6 +42,12 @@
           </td>
         </tr>
       </xsl:for-each>
+      <tr>
+        <td colspan="4">&#160;</td>
+        <td>
+          <a href="{func:link('admin/editpage')}">Create new page...</a>
+        </td>
+      </tr>
     </table>
   </xsl:template>
 </xsl:stylesheet>

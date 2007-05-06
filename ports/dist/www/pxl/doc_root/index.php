@@ -4,7 +4,7 @@
  * $Id: index.php 4695 2005-02-20 00:57:14Z friebe $ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development', 'cgi');
+  xp::sapi('scriptlet.production', 'cgi');
   uses(
     'name.kiesel.pxl.scriptlet.PxlScriptlet',
     'util.PropertyManager',

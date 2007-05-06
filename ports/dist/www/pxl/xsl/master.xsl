@@ -44,7 +44,7 @@
         '/xml/', 
         $__product, 
         '.', 
-        $__lang,
+        'en_US',
         $sess,
         '/',
         $target
