@@ -133,7 +133,7 @@
      */
     public function providesResource($filename) {
       foreach (self::$delegates as $delegate) {
-        if ($delegate->providesResource($class)) return TRUE;
+        if ($delegate->providesResource($filename)) return TRUE;
       }
       return FALSE;
     }
@@ -146,7 +146,7 @@
      */
     public function providesPackage($package) {
       foreach (self::$delegates as $delegate) {
-        if ($delegate->providesResource($class)) return TRUE;
+        if ($delegate->providesPackage($package)) return TRUE;
       }
       return FALSE;
     }
