@@ -78,15 +78,15 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
-      if ($this->flags & DB_PERSISTENT) {
+      if (!($this->flags & DB_PERSISTENT)) {
         $this->handle= sqlite_open(
-          $this->dsn->getUser().'.'.$this->dsn->getHost(), 
+          urldecode($this->dsn->getHost()), 
           0666,
           $err
         );
       } else {
         $this->handle= sqlite_popen(
-          $this->dsn->getUser().'.'.$this->dsn->getHost(), 
+          urldecode($this->dsn->getHost()), 
           0666,
           $err
         );
@@ -140,7 +140,7 @@
       
       if (NULL === $formatter) {
         $formatter= new StatementFormatter();
-        $formatter->setEscape('"');
+        $formatter->setEscape("'");
         $formatter->setEscapeRules(array("'" => "''"));
         $formatter->setDateFormat('Y-m-d H:i:s');
       }
