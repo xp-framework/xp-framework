@@ -6,6 +6,8 @@
 
   // {{{ final class xp
   final class xp {
+    const CLASS_FILE_EXT= '.class.php';
+
     public static $registry  = array(
       'errors'     => array(),
       'sapi'       => array(),
@@ -24,18 +26,18 @@
       foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
-        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
           if (FALSE === ($r= include($f))) {
             xp::error(xp::stringOf(new Error('Cannot include '.$class.' (include_path='.get_include_path().')')));
           }
           
           xp::$registry['classloader.'.$class]= 'FileSystemClassLoader://'.$path;
           break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($class, '.', '/').'.class.php')) {
+        } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
-          if (FALSE === ($r= include($fname))) {
+          if (FALSE === ($r= include($f))) {
             continue;
           }
 

@@ -58,7 +58,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return $this->archive->extract(strtr($name, '.', '/').'.class.php');
+      return $this->archive->extract(strtr($name, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -87,7 +87,7 @@
 
       xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
       $package= NULL;
-      if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').'.class.php')) {
+      if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);
         throw new FormatException('Cannot define class "'.$class.'"');
       }
@@ -136,7 +136,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return $this->archive->contains(strtr($class, '.', '/').'.class.php');
+      return $this->archive->contains(strtr($class, '.', '/').xp::CLASS_FILE_EXT);
     }
 
     /**

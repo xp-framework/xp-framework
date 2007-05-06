@@ -60,7 +60,7 @@
     public function getClassNames() { 
       $classes= array();
       foreach (ClassLoader::getDefault()->packageContents($this->name) as $file) {
-        if ('.class.php' == substr($file, -10)) $classes[]= $this->name.'.'.substr($file, 0, -10);
+        if (xp::CLASS_FILE_EXT == substr($file, -10)) $classes[]= $this->name.'.'.substr($file, 0, -10);
       }
       return $classes;
     }

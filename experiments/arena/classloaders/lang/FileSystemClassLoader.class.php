@@ -54,7 +54,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return file_get_contents($this->path.DIRECTORY_SEPARATOR.strtr($name, '.', '/').'.class.php');
+      return file_get_contents($this->path.DIRECTORY_SEPARATOR.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -64,7 +64,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return is_file($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').'.class.php');
+      return is_file($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -112,7 +112,7 @@
 
       xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
       $package= NULL;
-      if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).'.class.php')) {
+      if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Class "'.$class.'" not found');
       }
