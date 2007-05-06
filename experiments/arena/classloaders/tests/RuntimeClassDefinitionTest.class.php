@@ -37,7 +37,7 @@
       if (class_exists(xp::reflect($name))) {
         $this->fail('Class "'.$name.'" may not exist!');
       }
-      return ClassLoader::getDefault()->defineClass($name, $parent, $interfaces, $bytes);
+      return ClassLoader::defineClass($name, $parent, $interfaces, $bytes);
     }
 
     /**

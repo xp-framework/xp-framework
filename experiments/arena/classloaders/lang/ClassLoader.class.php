@@ -88,6 +88,51 @@
       }
       return $l;
     }
+
+    /**
+     * Define a class with a given name
+     *
+     * @param   string class fully qualified class name
+     * @param   string parent either sourcecode of the class or FQCN of parent
+     * @param   string[] interfaces FQCNs of implemented interfaces
+     * @param   string bytes inner sourcecode of class (containing {}) 
+     * @return  lang.XPClass
+     * @throws  lang.FormatException in case the class cannot be defined
+     * @throws  lang.ClassNotFoundException if given parent class does not exist
+     */
+    public static function defineClass($class, $parent, $interfaces, $bytes) {
+      $name= xp::reflect($class);
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        $super= xp::reflect($parent);
+
+        // Test for existance        
+        if (!class_exists($super)) {
+          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.');
+        }
+        
+        if (!empty($interfaces)) {
+          $if= array_map(array('xp', 'reflect'), $interfaces);
+          foreach ($if as $implemented) {
+            if (interface_exists($implemented)) continue;
+            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
+          }
+        }
+
+        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+          $dyn->setClassBytes($class, sprintf(
+            'class %s extends %s%s %s',
+            $name,
+            $super,
+            $interfaces ? ' implements '.implode(', ', $if) : '',
+            $bytes
+          ));
+          
+          return $dyn->loadClass($class);
+        }
+      }
+      
+      return new XPClass($name);
+    }
     
     /**
      * Loads a class
@@ -237,51 +282,6 @@
       ));
     }
 
-    /**
-     * Define a class with a given name
-     *
-     * @param   string class fully qualified class name
-     * @param   string parent either sourcecode of the class or FQCN of parent
-     * @param   string[] interfaces FQCNs of implemented interfaces
-     * @param   string bytes inner sourcecode of class (containing {}) 
-     * @return  lang.XPClass
-     * @throws  lang.FormatException in case the class cannot be defined
-     * @throws  lang.ClassNotFoundException if given parent class does not exist
-     */
-    public function defineClass($class, $parent, $interfaces, $bytes) {
-      $name= xp::reflect($class);
-      if (!isset(xp::$registry['classloader.'.$class])) {
-        $super= xp::reflect($parent);
-
-        // Test for existance        
-        if (!class_exists($super)) {
-          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.');
-        }
-        
-        if (!empty($interfaces)) {
-          $if= array_map(array('xp', 'reflect'), $interfaces);
-          foreach ($if as $implemented) {
-            if (interface_exists($implemented)) continue;
-            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
-          }
-        }
-
-        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
-          $dyn->setClassBytes($class, sprintf(
-            'class %s extends %s%s %s',
-            $name,
-            $super,
-            $interfaces ? ' implements '.implode(', ', $if) : '',
-            $bytes
-          ));
-          
-          return $dyn->loadClass($class);
-        }
-      }
-      
-      return new XPClass($name);
-    }
-    
     /**
      * Get package contents
      *
