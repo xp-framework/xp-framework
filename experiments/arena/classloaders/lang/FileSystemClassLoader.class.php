@@ -130,7 +130,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($filename) {
-      if (!is_file($this->path.DIRECTORY_SEPARATOR.$filename)) {
+      if (!is_file($this->path.DIRECTORY_SEPARATOR.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
       return file_get_contents($this->path.DIRECTORY_SEPARATOR.$filename);
@@ -144,7 +144,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($filename) {
-      if (!is_file($this->path.DIRECTORY_SEPARATOR.$filename)) {
+      if (!is_file($this->path.DIRECTORY_SEPARATOR.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
       return new File($this->path.DIRECTORY_SEPARATOR.$filename);
