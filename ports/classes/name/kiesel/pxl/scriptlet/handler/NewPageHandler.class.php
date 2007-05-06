@@ -39,6 +39,22 @@
     public function identifierFor($request, $context) {
       return $this->name.'#'.$request->getParam('page', 'new');
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function permaLink($page_id, $date, $title) {
+      return sprintf('/story/%d/%04d/%02d/%02d/%s',
+        $page_id,
+        $date->toString('Y'),
+        $date->toString('m'),
+        $date->toString('d'),
+        preg_replace('#[^a-zA-Z0-9\.\-\_]#', '_', $title)
+      );
+    }
 
     /**
      * Setup handler.
@@ -150,6 +166,19 @@
           );
 
           $page_id= $db->identity();
+          
+          // Calculate permalink
+          if ($this->wrapper->getPublished() instanceof Date) {
+            $db->update('
+              page
+              set
+                permalink= %s
+              where page_id= %d
+              ',
+              $this->permalink($page_id, $this->wrapper->getPublished(), $this->wrapper->getName()),
+              $page_id
+            );
+          }
 
           // Create the new folder
           $folder= new Folder($request->getEnvValue('DOCUMENT_ROOT').DIRECTORY_SEPARATOR.'pages'.DIRECTORY_SEPARATOR.intval($page_id));
@@ -184,7 +213,8 @@
               description= %s,
               lastchange= %s,
               changedby= %s,
-              published= %s
+              published= %s,
+              permalink= %s
             where page_id= %d
             ',
             $this->wrapper->getName(),
@@ -192,6 +222,7 @@
             Date::now(),
             $context->user['username'],
             ($this->wrapper->getPublished() instanceof Date ? $this->wrapper->getPublished() : NULL),
+            ($this->wrapper->getPublished() instanceof Date ? $this->permalink($page_id, $this->wrapper->getPublished(), $this->wrapper->getName()) : NULL),
             $page['page_id']
           );
           

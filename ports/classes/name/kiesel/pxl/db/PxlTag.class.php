@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table tag, database main
-   * (Auto-generated on Sun, 06 May 2007 13:35:01 +0200 by Alex)
+   * (Auto-generated on Sun, 06 May 2007 20:53:06 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */

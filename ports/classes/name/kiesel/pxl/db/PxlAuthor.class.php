@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table author, database main
-   * (Auto-generated on Sun, 06 May 2007 13:35:01 +0200 by Alex)
+   * (Auto-generated on Sun, 06 May 2007 20:53:05 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */
@@ -66,18 +66,6 @@
      */
     public static function getByAuthor_id($author_id) {
       $r= self::getPeer()->doSelect(new Criteria(array('author_id', $author_id, EQUAL)));
-      return $r ? $r[0] : NULL;
-    }
-
-    /**
-     * Gets an instance of this object by index "(author autoindex 1)"
-     * 
-     * @param   string username
-     * @return  name.kiesel.pxl.db.PxlAuthor entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public static function getByUsername($username) {
-      $r= self::getPeer()->doSelect(new Criteria(array('username', $username, EQUAL)));
       return $r ? $r[0] : NULL;
     }
 

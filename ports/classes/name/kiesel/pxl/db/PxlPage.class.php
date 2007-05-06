@@ -8,7 +8,7 @@
  
   /**
    * Class wrapper for table page, database main
-   * (Auto-generated on Sun, 06 May 2007 13:35:01 +0200 by Alex)
+   * (Auto-generated on Sun, 06 May 2007 20:53:06 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */
@@ -16,10 +16,11 @@
     public
       $page_id            = 0,
       $bz_id              = 0,
+      $author_id          = 0,
       $title              = '',
       $description        = NULL,
-      $author_id          = 0,
-      $sequence           = NULL,
+      $permalink          = NULL,
+      $sequence           = 0,
       $published          = NULL,
       $lastchange         = NULL,
       $changedby          = NULL;
@@ -33,10 +34,11 @@
         $peer->setTypes(array(
           'page_id'             => array('%d', FieldType::INT, FALSE),
           'bz_id'               => array('%d', FieldType::INT, FALSE),
+          'author_id'           => array('%d', FieldType::INT, FALSE),
           'title'               => array('%s', FieldType::VARCHAR, FALSE),
           'description'         => array('%s', FieldType::TEXT, TRUE),
-          'author_id'           => array('%d', FieldType::INT, FALSE),
-          'sequence'            => array('%d', FieldType::INT, TRUE),
+          'permalink'           => array('%s', FieldType::VARCHAR, TRUE),
+          'sequence'            => array('%d', FieldType::INT, FALSE),
           'published'           => array('%s', FieldType::DATETIME, TRUE),
           'lastchange'          => array('%s', FieldType::DATETIME, FALSE),
           'changedby'           => array('%s', FieldType::VARCHAR, TRUE)
@@ -127,6 +129,25 @@
     }
 
     /**
+     * Retrieves author_id
+     *
+     * @return  int
+     */
+    public function getAuthor_id() {
+      return $this->author_id;
+    }
+      
+    /**
+     * Sets author_id
+     *
+     * @param   int author_id
+     * @return  int the previous value
+     */
+    public function setAuthor_id($author_id) {
+      return $this->_change('author_id', $author_id);
+    }
+
+    /**
      * Retrieves title
      *
      * @return  string
@@ -165,22 +186,22 @@
     }
 
     /**
-     * Retrieves author_id
+     * Retrieves permalink
      *
-     * @return  int
+     * @return  string
      */
-    public function getAuthor_id() {
-      return $this->author_id;
+    public function getPermalink() {
+      return $this->permalink;
     }
       
     /**
-     * Sets author_id
+     * Sets permalink
      *
-     * @param   int author_id
-     * @return  int the previous value
+     * @param   string permalink
+     * @return  string the previous value
      */
-    public function setAuthor_id($author_id) {
-      return $this->_change('author_id', $author_id);
+    public function setPermalink($permalink) {
+      return $this->_change('permalink', $permalink);
     }
 
     /**
