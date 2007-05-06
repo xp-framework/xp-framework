@@ -47,7 +47,7 @@
    * @see      xp://lang.reflect.Package#loadClass
    * @purpose  Class loading
    */
-  class ClassLoader extends Object {
+  class ClassLoader extends Object implements IClassLoader {
     protected static
       $delegates  = array();
     
@@ -110,6 +110,45 @@
         $class,
         xp::stringOf(self::$delegates)
       ));
+    }
+
+    /**
+     * Checks whether this loader can provide the requested class
+     *
+     * @param   string class
+     * @return  bool
+     */
+    public function providesClass($class) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesClass($class)) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($class)) return TRUE;
+      }
+      return FALSE;
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($class)) return TRUE;
+      }
+      return FALSE;
     }
 
     /**
