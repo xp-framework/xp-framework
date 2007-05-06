@@ -62,5 +62,24 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class);
+    
+    /**
+     * Loads a resource.
+     *
+     * @param   string string name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($string);
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string string name of resource
+     * @return  io.Stream
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($string);
+
   }
 ?>
