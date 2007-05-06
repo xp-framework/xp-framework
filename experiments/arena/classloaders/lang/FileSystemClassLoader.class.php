@@ -25,7 +25,7 @@
      * @param   string path default '' file system path
      */
     public function __construct($path= '') {
-      $this->path= realpath($path);
+      $this->path= rtrim(realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -54,7 +54,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return file_get_contents($this->path.DIRECTORY_SEPARATOR.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
+      return file_get_contents($this->path.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -64,7 +64,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return is_file($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
+      return is_file($this->path.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -74,7 +74,7 @@
      * @return  bool
      */
     public function providesResource($filename) {
-      return is_file($this->path.DIRECTORY_SEPARATOR.$filename);
+      return is_file($this->path.$filename);
     }
 
     /**
@@ -84,7 +84,7 @@
      * @return  bool
      */
     public function providesPackage($package) {
-      return is_dir($this->path.DIRECTORY_SEPARATOR.strtr($package, '.', '/'));
+      return is_dir($this->path.strtr($package, '.', '/'));
     }
     
     /**
@@ -112,7 +112,7 @@
 
       xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
       $package= NULL;
-      if (FALSE === include($this->path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
+      if (FALSE === include($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Class "'.$class.'" not found');
       }
@@ -130,10 +130,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($filename) {
-      if (!is_file($this->path.DIRECTORY_SEPARATOR.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
+      if (!is_file($this->path.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
-      return file_get_contents($this->path.DIRECTORY_SEPARATOR.$filename);
+      return file_get_contents($this->path.$filename);
     }
     
     /**
@@ -144,10 +144,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($filename) {
-      if (!is_file($this->path.DIRECTORY_SEPARATOR.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
+      if (!is_file($this->path.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
-      return new File($this->path.DIRECTORY_SEPARATOR.$filename);
+      return new File($this->path.$filename);
     }
 
     /**
@@ -174,7 +174,7 @@
      */
     public function packageContents($package) {
       $contents= array();
-      if ($d= @dir($this->path.DIRECTORY_SEPARATOR.strtr($package, '.', DIRECTORY_SEPARATOR))) {
+      if ($d= @dir($this->path.strtr($package, '.', DIRECTORY_SEPARATOR))) {
         while ($e= $d->read()) {
           if ('.' != $e{0}) $contents[]= $e.(is_dir($d->path.DIRECTORY_SEPARATOR.$e) ? '/' : '');
         }
