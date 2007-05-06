@@ -32,7 +32,7 @@
      * @return  
      */
     public function buildLink($matches) {
-      return sprintf('<a href="%1$s">%1$s</a>', $matches[2]);
+      return sprintf('%s<a href="%2$s">%2$s</a>', $matches[1], $matches[2]);
     }
   }
 ?>
