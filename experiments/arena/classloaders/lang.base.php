@@ -465,7 +465,7 @@
     if (interface_exists($class)) {
       $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$class.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object '.$bytes);
+      $cl->setClassBytes($name, 'class '.$name.' extends '.$class.' '.$bytes);
     }
 
     $cl->loadClass0($name);
