@@ -43,15 +43,15 @@
         // does not define such a parameter.
         //
         // Note: This will only happen when the handler itself is set up.
-        if (isset($definitions['default']) && '' == $request->getParam($name, '')) {
-          $request->params[$name]= $definitions['default'];
+        if (isset($definitions[PARAM_DEFAULT]) && '' == $request->getParam($name, '')) {
+          $request->params[$name]= $definitions[PARAM_DEFAULT];
         }
         
         // If this is a pass-behind value, register it to the handler's 
         // values. "Pass-behind" means this value is retrieved from the 
         // session (where it has been registered to during this call)
         // rather than from the request data (GET / POST / COOKIE).
-        if ($definitions['occurrence'] & OCCURRENCE_PASSBEHIND) {
+        if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_PASSBEHIND) {
           $handler->setValue($name, $request->params[$name]);
         }
       } 
