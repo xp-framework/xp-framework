@@ -10,7 +10,8 @@ $Id$
 Scope of Change
 ---------------
 
-- rdbsm.Column shoul be used instead of rdbms.Property 
+- rdbsm.Column shoul be used instead of rdbms.Property
+- it is recommended to use Columns as arguments for Restrictions
 
 
 Rationale
@@ -37,6 +38,11 @@ new api:
   $idColumn=   Person::column('person_id');
 ?>
 
+restrictions e.g.:
+<?php
+  Restrictions::equal($idColumn, 5);
+  $idColumn->equal(5);
+?>
 
 Security considerations
 -----------------------
