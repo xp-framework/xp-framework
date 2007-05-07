@@ -4,7 +4,7 @@ $Id$
 
 @authors: wagner
 @created: Wed May 07 12:48:22 CET 2007
-@status: draft
+@status: discussion, ends Mon May  7 16:00:00 2007
 @category: rdbms
 
 Scope of Change
@@ -25,7 +25,13 @@ Rationale
 Functionality
 -------------
 
-to get an instance of a column:
+old api:
+<?php
+  $nameColumn= Property::forName('name');
+  $idColumn=   Property::forName('person_id');
+?>
+
+new api:
 <?php
   $nameColumn= Person::column('name');
   $idColumn=   Person::column('person_id');
