@@ -1,0 +1,53 @@
+RFC 0126: rdbms.Property vs. rdbms.Column
+========================================================================
+$Id$
+
+@authors: wagner
+@created: Wed May 07 12:48:22 CET 2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+
+- rdbsm.Column shoul be used instead of rdbms.Property 
+
+
+Rationale
+---------
+
+- rdbms.Column has all methods, to build restrictions, like
+  rdbms.Property.
+- the difference is: The column's factory is the related Peer,
+  a Property does not have any knowege of it's table
+
+
+Functionality
+-------------
+
+to get an instance of a column:
+<?php
+  $nameColumn= Person::column('name');
+  $idColumn=   Person::column('person_id');
+?>
+
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+PHP version >= 5
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
