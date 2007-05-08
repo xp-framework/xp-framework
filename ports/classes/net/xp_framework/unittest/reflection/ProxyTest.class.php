@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'lang.reflect.Proxy',
+    'util.XPIterator',
     'lang.reflect.InvocationHandler'
   );
 
@@ -172,8 +173,7 @@
      */
     #[@test]
     public function allowDoubledInterfaceMethod() {
-      $cl= ClassLoader::getDefault();
-      $newIteratorClass= $cl->defineClass('util.NewIterator', 'interface NewIterator extends XPIterator {}');
+      $newIteratorClass= ClassLoader::defineInterface('util.NewIterator', 'XPIterator');
       
       $this->proxyInstanceFor(array(
         XPClass::forName('util.XPIterator'),
