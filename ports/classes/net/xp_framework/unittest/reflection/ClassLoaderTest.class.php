@@ -4,50 +4,87 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'util.log.Traceable');
+  uses('unittest.TestCase');
 
   /**
-   * Test the XP default classloader
+   * TestCase
    *
-   * @see      xp://lang.ClassLoader
-   * @purpose  Testcase
+   * @see      reference
+   * @purpose  purpose
    */
   class ClassLoaderTest extends TestCase {
-    public
-      $classLoader= NULL;
-    
+  
+    static function __static() {
+      ClassLoader::registerLoader(new ArchiveClassLoader(
+        new ArchiveReader(dirname(__FILE__).'/lib/three-and-four.xar')
+      ));
+    }
+
     /**
      * Helper method
      *
      * @param   string name
-     * @param   &lang.XPClass class
-     * @return  bool
+     * @param   lang.XPClass class
      * @throws  unittest.AssertionFailedError
      */
     protected function assertXPClass($name, $class) {
-      return (
-        $this->assertClass($class, 'lang.XPClass') &&
-        $this->assertEquals($name, $class->getName()) &&
-        $this->assertEquals('lang.XPClass<'.$name.'>', $class->toString())
-      );
+      $this->assertClass($class, 'lang.XPClass');
+      $this->assertEquals($name, $class->getName());
+    }
+
+    /**
+     * Test "ClassOne" class is loaded from file system
+     *
+     */
+    #[@test]
+    public function fileSystemClassLoader() {
+      $cl= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne')->getClassLoader();
+      $this->assertClass($cl, 'lang.FileSystemClassLoader');
     }
   
     /**
-     * Setup method
+     * Test class loaders are equal for two classes loaded from the
+     * file system.
      *
      */
-    public function setUp() {
-      $this->classLoader= ClassLoader::getDefault();
-      $this->assertXPClass('lang.ClassLoader', $this->classLoader->getClass());
+    #[@test]
+    public function twoClassesFromFileSystem() {
+      $this->assertEquals(
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne')->getClassLoader(),
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassTwo')->getClassLoader()
+      );
     }
- 
+
+    /**
+     * Test "ClassThree" is loaded from the archive in "lib"
+     *
+     */
+    #[@test]
+    public function archiveClassLoader() {
+      $cl= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassThree')->getClassLoader();
+      $this->assertClass($cl, 'lang.archive.ArchiveClassLoader');
+    }
+
+    /**
+     * Test  class loaders are equal for two classes loaded from the
+     * archive in "lib"
+     *
+     */
+    #[@test]
+    public function twoClassesFromArchive() {
+      $this->assertEquals(
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassThree')->getClassLoader(),
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassFour')->getClassLoader()
+      );
+    }
+
     /**
      * Loads a class that has been loaded before
      *
      */
     #[@test]
     public function loadClass() {
-      $this->assertXPClass('lang.Object', $this->classLoader->loadClass('lang.Object'));
+      $this->assertXPClass('lang.Object', ClassLoader::getDefault()->loadClass('lang.Object'));
     }
 
     /**
@@ -57,8 +94,8 @@
     #[@test]
     public function findThisClass() {
       $this->assertEquals(
-        $this->getClass()->getClassLoader(), 
-        $this->classLoader->findClass($this->getClassName())
+        $this->getClass()->getClassLoader(),
+        ClassLoader::getDefault()->findClass($this->getClassName())
       );
     }
 
@@ -68,7 +105,7 @@
      */
     #[@test]
     public function findNullClass() {
-      $this->assertEquals(xp::null(), $this->classLoader->findClass(NULL));
+      $this->assertEquals(xp::null(), ClassLoader::getDefault()->findClass(NULL));
     }
 
     /**
@@ -83,7 +120,7 @@
         return $this->fail('Class "'.$name.'" may not exist!');
       }
 
-      $class= $this->classLoader->loadClass($name);
+      $class= ClassLoader::getDefault()->loadClass($name);
       $this->assertXPClass($name, $class);
       $this->assertTrue(LoaderTestClass::initializerCalled());
     }
@@ -95,62 +132,7 @@
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function loadNonExistantClass() {
-      $this->classLoader->loadClass('@@NON-EXISTANT@@');
-    }
-
-    /**
-     * Tests the defineClass() method
-     *
-     */
-    #[@test]
-    public function defineClass() {
-      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClass';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      
-      $class= ClassLoader::defineClass($name, 'Object', array(), '{
-        public static $initializerCalled= FALSE;
-        
-        static function __static() { 
-          self::$initializerCalled= TRUE; 
-        }
-      }');
-      $this->assertXPClass($name, $class);
-      $this->assertTrue(RuntimeDefinedClass::$initializerCalled);
-    }
-
-    /**
-     * Tests defineClass() with a given interface
-     *
-     */
-    #[@test]
-    public function defineClassImplements() {
-      $name= 'net.xp_framework.unittest.reflection.RuntimeDefinedClassWithInterface';
-      $class= $this->classLoader->defineClass(
-        $name, 
-        'lang.Object',
-        array('util.log.Traceable'),
-        '{ public function setTrace($cat) { } }'
-      );
-
-      $this->assertTrue(is('util.log.Traceable', $class->newInstance()));
-      $this->assertFalse(is('util.log.Observer', $class->newInstance()));
-    }
-     
-    
-    /**
-     * Tests the defineClass() method for the situtation when the
-     * parent class does not exist.
-     *
-     */
-    #[@test, @expect('lang.ClassNotFoundException')]
-    public function defineClassWithNonExistantParent() {
-      $name= 'net.xp_framework.unittest.reflection.IllegalClass';
-      if (class_exists(xp::reflect($name))) {
-        return $this->fail('Class "'.$name.'" may not exist!');
-      }
-      $this->classLoader->defineClass($name, 'NON_EXISTANT_PARENT', NULL, '{}');
+      ClassLoader::getDefault()->loadClass('@@NON-EXISTANT@@');
     }
   }
 ?>
