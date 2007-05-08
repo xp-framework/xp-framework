@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Added new text.StreamTokenizer class
+  (friebe)
+- Implemented RFC #0121: Class loading revamp
+  (friebe)
+- Implemented RFC #0117: New Package class
+  (friebe)
+- Implemented RFC #0037: Ability to fully qualify class names
+  (friebe)
+- Implemented RFC #0125: Fluent interface for util.log.LogCategory
+  (friebe)
+
 Version 5.4.1, released 2007-05-04
 ----------------------------------
 SVN version: 10196
