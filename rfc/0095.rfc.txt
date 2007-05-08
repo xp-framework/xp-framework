@@ -23,8 +23,7 @@ Functionality
 Current
 ~~~~~~~
 <?php
-  $class= XPClass::forName('some.annotated.Class');
-  foreach ($class->getMethods() as $m) {
+  foreach (XPClass::forName('some.annotated.Class')->getMethods() as $m) {
     if (!$m->hasAnnotation('inject')) continue;
     
     $value= $m->getAnnotation('inject');
@@ -35,8 +34,8 @@ Current
 New
 ~~~
 <?php
-  $class= XPClass::forName('some.annotated.Class');
-  foreach (Annotation::forName('inject')->decoratedMethods($class) as $m) {
+  $inject= Annotation::forName('inject');
+  foreach ($inject->decoratedMethods(XPClass::forName('some.annotated.Class')) as $m) {
     $value= $inject->annotationValue($m)
     // ...
   }
@@ -78,12 +77,18 @@ n/a
 
 Speed impact
 ------------
+n/a
+
 
 Dependencies
 ------------
+n/a
+
 
 Related documents
 -----------------
+n/a
+
 
 Comments
 --------
