@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'lang.types.StringTokenizer'
+    'text.StringTokenizer'
   );
 
   /**
