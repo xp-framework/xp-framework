@@ -1,0 +1,125 @@
+Index: Peer.class.php
+===================================================================
+--- Peer.class.php	(revision 10284)
++++ Peer.class.php	(working copy)
+@@ -25,6 +25,9 @@
+     protected static 
+       $instance   = array();
+ 
++    protected
++      $conn       = NULL;
++
+     public
+       $identifier = '',
+       $table      = '',
+@@ -64,13 +67,36 @@
+     /**
+      * Set Connection
+      *
+-     * @param   string connection
++     * @param   mixed connection either a name or a DBConnection instance
+      */
+     public function setConnection($connection) {
+-      $this->connection= $connection;
++    
++      // If we are passed a DBConnection, set the conn member directly,
++      // else store the name passed in - we will retrieve the connection
++      // object later. The lazy loading semantics used here have to do with
++      // the fact that this is called from the DataSet class' static 
++      // initializers - when they are run, the connection manager may not
++      // be set up yet!
++      if ($connection instanceof DBConnection) {
++        $this->conn= $connection;
++      } else {
++        $this->connection= $connection;
++      }
+     }
+ 
+     /**
++     * Get Connection
++     *
++     * @return  rdbms.DBConnection
++     */
++    public function getConnection() {
++      if (!isset($this->conn)) {
++        $this->conn= ConnectionManager::getInstance()->getByHost($this->connection, 0);
++      }
++      return $this->conn;
++    }
++
++    /**
+      * Set Identity
+      *
+      * @param   string identity
+@@ -146,7 +172,7 @@
+      * @return  rdbms.Transaction
+      */
+     public function begin($transaction) {
+-      return ConnectionManager::getInstance()->getByHost($this->connection, 0)->begin($transaction);
++      return $this->getConnection()->begin($transaction);
+     }
+     
+     /**
+@@ -160,7 +186,7 @@
+         $this->getClassName(),
+         $this->identifier,
+         $this->table,
+-        $this->connection,
++        $this->getConnection()->toString(),
+         substr(var_export($this->types, 1), 7, -1)
+       );
+     }
+@@ -174,7 +200,7 @@
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public function doSelect($criteria, $max= 0) {
+-      $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
++      $q= $criteria->executeSelect($this->getConnection(), $this);
+       $r= array();
+       for ($i= 1; $record= $q->next(); $i++) {
+         if ($max && $i > $max) break;
+@@ -217,7 +243,7 @@
+      */
+     public function iteratorFor($criteria) {
+       return new ResultIterator(
+-        $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
++        $criteria->executeSelect($this->getConnection(), $this), 
+         $this->identifier
+       );
+     }
+@@ -233,7 +259,7 @@
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public function doJoin($peer, $join, $criteria, $max= 0) {
+-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
++      $db= $this->getConnection();
+ 
+       $columns= $map= $qualified= array();
+       foreach (array_keys($this->types) as $colunn) {
+@@ -278,7 +304,7 @@
+      */
+     public function doInsert($values) {
+       $id= NULL;
+-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
++      $db= $this->getConnection();
+ 
+       // Build the insert command
+       $sql= $db->prepare(
+@@ -309,7 +335,7 @@
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public function doUpdate($values, $criteria) {
+-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
++      $db= $this->getConnection();
+ 
+       // Build the update command
+       $sql= '';
+@@ -334,7 +360,7 @@
+      * @throws  rdbms.SQLException in case an error occurs
+      */  
+     public function doDelete($criteria) {
+-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
++      $db= $this->getConnection();
+ 
+       // Send it
+       return $db->delete(
