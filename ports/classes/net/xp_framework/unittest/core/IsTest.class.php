@@ -61,8 +61,7 @@
      */
     #[@test]
     public function interfaces() {
-      $cl= ClassLoader::getDefault();
-      $cl->defineClass(
+      ClassLoader::defineClass(
         'DestructionCallbackImpl', 
         'lang.Object',
         array('net.xp_framework.unittest.core.DestructionCallback'),
@@ -72,9 +71,11 @@
           }
         }'
       );
-      $cl->defineClass(
+      ClassLoader::defineClass(
         'DestructionCallbackImplEx', 
-        'class DestructionCallbackImplEx extends DestructionCallbackImpl { }'
+        'DestructionCallbackImpl',
+        NULL,
+        '{}'
       );
       
       $this->assertTrue(is('DestructionCallback', new DestructionCallbackImpl()));
