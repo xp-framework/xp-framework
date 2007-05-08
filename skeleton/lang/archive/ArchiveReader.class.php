@@ -125,8 +125,10 @@
       // Load the class only at runtime to keep hardcoded dependencies to
       // external (ie. != "lang.") classes at a minimum to not affect
       // core startup time.
-      $class= XPClass::forName('io.EnclosedStream');
-      $s= $class->newInstance($this->file, $pos, $this->_index[$id][2]);
+      $class= XPClass::forName('io.EncapsedStream');
+      $file= XPClass::forName('io.File')->newInstance($this->file);
+      $file->open(FILE_MODE_READ);
+      $s= $class->newInstance($file, $pos, $this->_index[$id][2]);
       return $s;
     }
     

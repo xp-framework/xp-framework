@@ -3,9 +3,9 @@
  * 
  * $Id$
  */
- 
-  uses('lang.ClassLoader');
-  
+
+  uses('lang.IClassLoader');
+
   /** 
    * Loads XP classes from a XAR (XP Archive)
    * 
@@ -28,7 +28,7 @@
    * @see      xp://lang.archive.Archive
    * @ext      tokenize
    */
-  class ArchiveClassLoader extends ClassLoader {
+  class ArchiveClassLoader extends Object implements IClassLoader {
     public
       $archive  = NULL;
     
@@ -38,17 +38,8 @@
      * @param   lang.archive.Archive archive
      */
     public function __construct($archive) {
-      parent::__construct();
-      
       $this->archive= $archive;
       $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
-      
-      // Add this XAR to the include-path (if not already in there), 
-      // so further lookups will succeed.
-      ini_set('include_path', implode(PATH_SEPARATOR, array_unique(array_merge(
-        explode(PATH_SEPARATOR, ini_get('include_path')), 
-        array($this->archive->getURI())
-      ))));
     }
 
     /**
@@ -57,11 +48,7 @@
      * @return  string
      */
     public function toString() {
-      return (
-        $this->getClassName().
-        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
-        "(search= [\n  ".$this->archive->getURI()."\n])"
-      );
+      return $this->getClassName(). '<'.$this->archive->getURI().'>';
     }
     
     /**
@@ -71,7 +58,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return $this->archive->extract(strtr($name, '.', '/').'.class.php');
+      return $this->archive->extract(strtr($name, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -83,26 +70,33 @@
      * @throws  lang.FormatException in case the class file is malformed
      */
     public function loadClass($class) {
-      $name= xp::reflect($class);
+      return new XPClass($this->loadClass0($class));
+    }
 
-      if (!class_exists($name) && !interface_exists($name)) {
-        if (FALSE === $this->providesClass($class)) {
-          throw new ClassNotFoundException(sprintf(
-            'Class "%s" not found',
-            $class
-          ));
-        }
-
-        if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').'.class.php')) {
-          throw new FormatException('Cannot define class "'.$class.'"');
-        }
-
-        xp::$registry['class.'.$name]= $class;
-        xp::$registry['classloader.'.$class]= $this;
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+    /**
+     * Loads a class
+     *
+     * @param   string class fully qualified class name
+     * @return  string class name of class loaded
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass0($class) {
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
       }
 
-      return new XPClass($name);
+      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
+      $package= NULL;
+      if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
+        unset(xp::$registry['classloader.'.$class]);
+        throw new FormatException('Cannot define class "'.$class.'"');
+      }
+
+      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+      xp::$registry['class.'.$name]= $class;
+      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+
+      return $name;
     }
     
     /**
@@ -142,7 +136,27 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return $this->archive->contains(strtr($class, '.', '/').'.class.php');
+      return $this->archive->contains(strtr($class, '.', '/').xp::CLASS_FILE_EXT);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return $this->archive->contains($filename);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      return $this->archive->contains(strtr($package, '.', '/'));
     }
     
     /**
@@ -155,10 +169,47 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= new ArchiveClassLoader(new ArchiveReader($path));
+        $pool[$path]= new self(new ArchiveReader(realpath($path)));
       }
       
       return $pool[$path];
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      $contents= array();
+      for (
+        $cmps= strtr($package, '.', '/'), 
+        $cmpl= strlen($cmps),
+        $this->archive->rewind(); 
+        $e= $this->archive->getEntry(); 
+      ) {
+        if (strncmp($cmps, $e, $cmpl) != 0) continue;
+        $entry= substr($e, $cmpl+ 1);
+        
+        // Check to see if we're getting something in a subpackage. Imagine the 
+        // following structure:
+        //
+        // archive.xar
+        // - tests/ClassOne.class.php
+        // - tests/classes/RecursionTest.class.php
+        // - tests/classes/ng/NextGenerationRecursionTest.class.php
+        //
+        // When this method is invoked with "tests" as name, "ClassOne.class.php"
+        // and "classes/" should be returned (but neither any of the subdirectories
+        // nor their contents)
+        if (FALSE !== ($p= strpos($entry, '/'))) {
+          $entry= substr($entry, 0, $p);
+          if (strstr($entry, '/')) continue;
+        }
+        $contents[$entry]= NULL;
+      }
+      return array_keys($contents);
     }
   }
 ?>

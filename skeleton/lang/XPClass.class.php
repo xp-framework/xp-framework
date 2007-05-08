@@ -9,7 +9,8 @@
     'lang.reflect.Method',
     'lang.reflect.Field',
     'lang.reflect.Constructor',
-    'lang.reflect.Modifiers'
+    'lang.reflect.Modifiers',
+    'lang.reflect.Package'
   );
 
   define('DETAIL_ARGUMENTS',      1);
@@ -55,7 +56,16 @@
       $this->_objref= $ref;
       $this->_reflect= new ReflectionClass($ref);
     }
-
+    
+    /**
+     * Retrieves the package associated with this class
+     * 
+     * @return  lang.reflect.Package
+     */
+    public function getPackage() {
+      return Package::forName(substr($this->name, 0, strrpos($this->name, '.')));
+    }
+    
     /**
      * Creates a new instance of the class represented by this Class object.
      * The class is instantiated as if by a new expression with an empty argument list.
@@ -91,7 +101,7 @@
     /**
      * Helper function that returns this class' methods.
      *
-     * @param   
+     * @param   string[] filter methods to exclude
      * @return  array<string, string>
      */
     protected function _methods($filter= array()) {
@@ -358,7 +368,7 @@
     /**
      * Retrieve the class loader a class was loaded with
      *
-     * @return  lang.ClassLoader
+     * @return  lang.IClassLoader
      */
     public function getClassLoader() {
       return self::_classLoaderFor($this->name);
@@ -368,30 +378,11 @@
      * Fetch a class' classloader by its name
      *
      * @param   string name fqcn of class
-     * @return  lang.ClassLoader
+     * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      if (!($cl= xp::registry('classloader.'.$name))) {
-        return ClassLoader::getDefault();
-      }
-
-      // The class loader information can be a string identifying the responsible
-      // classloader for the class. In that case, fetch it's class and get an
-      // instance through the instanceFor() method.
-      if (is_string($cl)) {
-        list($className, $argument)= sscanf($cl, '%[^:]://%s');
-        $class= self::forName($className);
-        $method= $class->getMethod('instanceFor');
-
-        $dummy= NULL;
-        $cl= $method->invoke($dummy, array($argument));
-        
-        // Replace the "symbolic" representation of the classloader with a reference
-        // to an instance.
-        xp::$registry['classloader.'.$name]= $cl;
-      }
-      
-      return $cl;
+      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $name, $argument);
+      return call_user_func(array($name, 'instanceFor'), $argument);
     }
 
     /**
@@ -408,8 +399,7 @@
       if (isset($details[$class])) return $details[$class];
 
       // Retrieve class' sourcecode
-      $cl= self::_classLoaderFor($class);
-      if (!($bytes= $cl->loadClassBytes($class))) return NULL;
+      if (!($bytes= self::_classLoaderFor($class)->loadClassBytes($class))) return NULL;
 
       $details[$class]= array(array(), array());
       $annotations= array();
@@ -554,31 +544,14 @@
      * string name. Uses the default classloader if none is specified.
      *
      * @param   string name - e.g. "io.File", "rdbms.mysql.MySQL"
-     * @param   lang.ClassLoader classloader default NULL
+     * @param   lang.IClassLoader classloader default NULL
      * @return  lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function forName($name, $classloader= NULL) {
+    public static function forName($name, IClassLoader $classloader= NULL) {
       if (NULL === $classloader) {
-        $fname= strtr('.', '/', $name).'.class.php';
-
-        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
-          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$fname)) {
-            break;
-          }
-          
-          if (is_file($path)) {
-            $cl= ArchiveClassLoader::instanceFor($path);
-            if ($cl->providesClass($name)) {
-              $classloader= $cl;
-              break;
-            }
-          }
-        }
+        $classloader= ClassLoader::getDefault();
       }
-    
-      // Last-chance fallback
-      if (NULL === $classloader) $classloader= ClassLoader::getDefault();
 
       return $classloader->loadClass($name);
     }

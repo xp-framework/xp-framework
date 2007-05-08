@@ -122,7 +122,9 @@
 
       // Define the generated class
       try {
-        $class= $classloader->defineClass($name, $bytes);
+        $dyn= DynamicClassLoader::instanceFor(__METHOD__);
+        $dyn->setClassBytes($name, $bytes);
+        $class= $dyn->loadClass($name);
       } catch (FormatException $e) {
         throw(new IllegalArgumentException($e->getMessage()));
       }

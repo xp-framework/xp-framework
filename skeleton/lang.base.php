@@ -5,13 +5,55 @@
  */
 
   // {{{ final class xp
-  class xp {
-    public static $registry= array(
+  final class xp {
+    const CLASS_FILE_EXT= '.class.php';
+
+    public static $registry  = array(
       'errors'     => array(),
       'sapi'       => array(),
       'class.xp'   => '<xp>',
       'class.null' => '<null>',
     );
+
+    // {{{ public string loadClass0(string name)
+    //     Loads a class by its fully qualified name
+    function loadClass0($class) {
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
+      }
+
+      $package= NULL;
+      foreach (xp::$registry['classpath'] as $path) {
+
+        // If path is a directory and the included file exists, load it
+        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
+          if (FALSE === ($r= include($f))) {
+            xp::error(xp::stringOf(new Error('Cannot include '.$class.' (include_path='.get_include_path().')')));
+          }
+          
+          xp::$registry['classloader.'.$class]= 'FileSystemClassLoader://'.$path;
+          break;
+        } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
+
+          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
+          // skip to the next include_path part
+          if (FALSE === ($r= include($f))) {
+            continue;
+          }
+
+          xp::$registry['classloader.'.$class]= 'ArchiveClassLoader://'.$path;
+          break;
+        }
+      }
+
+      // Register class name and call static initializer if available
+      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+      xp::$registry['class.'.$name]= $class;
+      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      
+      return $name;
+    }
+    // }}}
 
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
@@ -108,7 +150,7 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path) {
+        foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
           
           if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
@@ -120,7 +162,7 @@
           }
         }
         
-        xp::error('Cannot open SAPI '.$name.' (include_path='.ini_get('include_path').')');
+        xp::error('Cannot open SAPI '.$name.' (include_path='.get_include_path().')');
       }
       xp::$registry['sapi']= $a;
     }
@@ -303,70 +345,10 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
-    $include= explode(PATH_SEPARATOR, ini_get('include_path'));
-
-    foreach (func_get_args() as $str) {
-      if (class_exists($class= xp::reflect($str)) || interface_exists($class)) continue;
-
-      if ($p= strpos($str, '+xp://')) {
-        $type= substr($str, 0, $p);
-        
-        // Load stream wrapper implementation and register it if not done so before
-        if (!class_exists('uwrp·'.$type)) {
-          require('sapi'.DIRECTORY_SEPARATOR.$type.'.uwrp.php');
-          stream_wrapper_register($type.'+xp', 'uwrp·'.$type);
-        }
-
-        // Load using wrapper
-        if (FALSE === include_once($str)) {
-          xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
-        }
-        $str= substr($str, strrpos($str, '/')+ 1);
-        $class= xp::reflect($str);
-      } else foreach ($include as $path) {
-
-        // If path is a directory and the included file exists, load it
-        if (is_dir($path)) {
-          if (!file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($str, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-            continue;
-          }
-          
-          if (FALSE === ($r= include_once($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
-          } else if (TRUE === $r) {
-            continue 2;   // Already included
-          }
-          
-          break;
-        } else if (is_file($path) && file_exists($fname= 'xar://'.$path.'?'.strtr($str, '.', '/').'.class.php')) {
-
-          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
-          // skip to the next include_path part
-          if (FALSE === ($r= include_once($fname))) {
-            continue;
-          } else if (TRUE === $r) {
-            continue 2;   // Already included
-          }
-          
-          xp::$registry['classloader.'.$str]= 'lang.archive.ArchiveClassLoader://'.$path;
-          break;
-        }
-      }
-      
-      if (!class_exists(xp::reflect($str)) && !interface_exists(xp::reflect($str))) {
-        xp::error(xp::stringOf(new Error('Cannot include '.$str.' (include_path='.ini_get('include_path').')')));
-      }
-
-      // Register class name and call static initializer if available and if it has not been
-      // done before (through an ArchiveClassLoader)
-      if (NULL === xp::registry('class.'.$class)) {
-        xp::$registry['class.'.$class]= $str;
-        is_callable(array($class, '__static')) && call_user_func(array($class, '__static'));
-      }
-    }
+    foreach (func_get_args() as $str) xp::$registry['loader']->loadClass0($str);
   }
   // }}}
-
+  
   // {{{ null raise (string classname, string message)
   //     throws an exception by a given class name
   function raise($classname, $message) {
@@ -477,24 +459,22 @@
     }
 
     $name= $class.'·'.(++$u);
-    xp::$registry['class.'.$name]= $name;
     
+    // Checks whether an interface or a class was given
+    $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
+    if (interface_exists($class)) {
+      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$class.' '.$bytes);
+    } else {
+      $cl->setClassBytes($name, 'class '.$name.' extends '.$class.' '.$bytes);
+    }
+
+    $cl->loadClass0($name);
+
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
       $paramstr.= ', $args['.$i.']';
     }
-
-    // Checks whether an interface or a class was given
-    if (interface_exists($class)) {
-      
-      // It's an interface
-      eval('class '.$name.' extends Object implements '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
-      return $instance;
-    }
-    
-    // It's a class
-    eval('class '.$name.' extends '.$class.' '.$bytes.' $instance= new '.$name.'('.substr($paramstr, 2).');');
-    return $instance;
+    return eval('return new '.$name.'('.substr($paramstr, 2).');');
   }
   // }}}
 
@@ -550,6 +530,8 @@
   
   // Registry initialization
   xp::$registry['null']= new null();
+  xp::$registry['loader']= new xp();
+  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'XpXarLoader');
@@ -565,9 +547,7 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'lang.FormatException',
-    'lang.ClassLoader',
-    'lang.archive.ArchiveReader',
-    'lang.archive.ArchiveClassLoader'
+    'lang.ClassLoader'
   );
   // }}}
 ?>

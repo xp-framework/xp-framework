@@ -4,52 +4,64 @@
  * $Id$
  */
  
-  uses('lang.ClassNotFoundException');
+  uses(
+    'lang.IClassLoader',
+    'lang.FileSystemClassLoader',
+    'lang.DynamicClassLoader',
+    'lang.archive.ArchiveReader',
+    'lang.archive.ArchiveClassLoader'
+  );
   
   /** 
-   * Loads a class
+   * Entry point class to loading classes, packages and resources.
+   * Keeps a list of class loaders that load classes from the file
+   * system, xar archives, memory, or various other places. These
+   * loaders are asked for each class loading request, be it via
+   * XPClass::forName(), uses(), requests from the Package class,
+   * or explicit calls to ClassLoader::getDefault()->loadClass().
+   *
+   * Given the following code
+   * <code>
+   *   $class= ClassLoader::getDefault()->loadClass($name);
+   * </code>
+   * ...and the following include_path setting:
+   * <pre>
+   *   ".:/usr/local/lib/xp/xp-rt-5.4.0.xar:/home/classes/"
+   * </pre>
+   * ...the classloader will ask the class loader delegates:
+   * <pre>
+   * - FileSystemClassLoader(.)
+   * - ArchiveClassLoader(/usr/local/lib/xp/xp-rt-5.4.0.xar)
+   * - FileSystemClassLoader(/home/classes/)
+   * </pre>
+   * ...in the stated order. The first delegate to provide the class 
+   * will be asked to load it. In case none of the delegates are able
+   * to provide the class, a ClassNotFoundException will be thrown.
    * 
-   * @purpose  Load classes
-   * @test     xp://net.xp_framework.unittest.reflection.ClassLoaderTest
+   * @test     xp://tests.ClassLoaderTest
+   * @test     xp://tests.ResourcesTest
+   * @test     xp://tests.PackageTest
+   * @test     xp://tests.RuntimeClassDefinitionTest
+   * @test     xp://tests.FullyQualifiedTest
    * @see      xp://lang.XPClass#forName
+   * @see      xp://lang.reflect.Package#loadClass
+   * @purpose  Class loading
    */
-  class ClassLoader extends Object {
-    public 
-      $classpath= '';
-    
-    /**
-     * Constructor. 
-     *
-     * The path argument is optional and lets you define where to search for
-     * classes (it will be prefixed to the class name)
-     *
-     * @param   string path default '' classpath
-     */
-    public function __construct($path= '') {
-      if (!empty($path)) $this->classpath= $path.'.';
-    }
+  final class ClassLoader extends Object implements IClassLoader {
+    protected static
+      $delegates  = array();
 
-    /**
-     * Creates a string representation
-     *
-     * @return  string
-     */
-    public function toString() {
-      return (
-        $this->getClassName().
-        ($this->classpath ? '<'.rtrim($this->classpath, '.').'>' : '').
-        '(search= '.xp::stringOf(explode(PATH_SEPARATOR, ini_get('include_path'))).')'
-      );
-    }
-
-    /**
-     * Load class bytes
-     *
-     * @param   string name fully qualified class name
-     * @return  string
-     */
-    public function loadClassBytes($name) {
-      return file_get_contents($this->findClass($name));
+    static function __static() {
+      xp::$registry['loader']= new self();
+      
+      // Scan include-path, setting up classloaders for each element
+      foreach (xp::$registry['classpath'] as $element) {
+        if (is_dir($element)) {
+          self::registerLoader(FileSystemClassLoader::instanceFor($element));
+        } else if (is_file($element)) {
+          self::registerLoader(ArchiveClassLoader::instanceFor($element));
+        }
+      }
     }
     
     /**
@@ -58,157 +70,266 @@
      * @return  lang.ClassLoader
      */
     public static function getDefault() {
-      static $instance= NULL;
-      
-      if (!$instance) $instance= new ClassLoader();
-      return $instance;
+      return xp::$registry['loader'];
     }
     
     /**
-     * Find a class by the specified name (but do not load it)
+     * Register a class loader as a delegate
      *
-     * @param   string class fully qualified class name io.File
-     * @return  string filename, FALSE if not found
+     * @param   lang.IClassLoader l
+     * @param   bool before default FALSE whether to register this as the first loader
+     * @return  lang.IClassLoader the registered loader
      */
-    public function findClass($class) {
-      if (!$class) return FALSE;    // Border case
-
-      $filename= str_replace('.', DIRECTORY_SEPARATOR, $this->classpath.$class).'.class.php';
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return realpath($dir.DIRECTORY_SEPARATOR.$filename);
+    public static function registerLoader(IClassLoader $l, $before= FALSE) {
+      if ($before) {
+        array_unshift(self::$delegates, $l);
+      } else {
+        self::$delegates[]= $l;
       }
-      return FALSE;
-    }
-    
-    /**
-     * Load the class by the specified name
-     *
-     * @param   string class fully qualified class name io.File
-     * @return  lang.XPClass
-     * @throws  lang.ClassNotFoundException in case the class can not be found
-     */
-    public function loadClass($class) {
-      $name= xp::reflect($class);
-
-      if (!class_exists($name) && !interface_exists($name)) {
-        $qname= $this->classpath.$class;
-        if (FALSE === include(strtr($qname, '.', DIRECTORY_SEPARATOR).'.class.php')) {
-          throw new ClassNotFoundException('Class "'.$qname.'" not found');
-        }
-        xp::$registry['class.'.$name]= $qname;
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
-      }
-
-      return new XPClass($name);
+      return $l;
     }
 
-    /**
-     * Define a class with a given name
-     *
-     * @param   string class fully qualified class name
-     * @param   string bytes sourcecode of the class
-     * @return  lang.XPClass
-     * @throws  lang.FormatException in case the class cannot be defined
-     */
-    protected function _defineClassFromBytes($class, $bytes) {
-      $name= xp::reflect($class);
-
-      if (!class_exists($name) && !interface_exists($name)) {
-        
-        // Load InlineLoader
-        XPClass::forName('lang.InlineLoader');
-        InlineLoader::setClassBytes($class, $bytes);
-        if (FALSE === include('inline://'.$class)) {
-          throw new FormatException('Cannot define class "'.$class.'"');
-        }
-        InlineLoader::removeClassBytes($class);
-        
-        if (!class_exists($name) && !interface_exists($name)) {
-          throw new FormatException('Class "'.$class.'" not defined');
-        }
-        xp::$registry['class.'.$name]= $class;
-        is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
-      }      
-
-      return new XPClass($name);
-    }
-    
     /**
      * Define a class with a given name
      *
      * @param   string class fully qualified class name
      * @param   string parent either sourcecode of the class or FQCN of parent
-     * @param   string[] interfaces default NULL FQCNs of implemented interfaces
-     * @param   string bytes default NULL inner sourcecode of class (containing {}) 
+     * @param   string[] interfaces FQCNs of implemented interfaces
+     * @param   string bytes default "{}" inner sourcecode of class (containing {}) 
      * @return  lang.XPClass
      * @throws  lang.FormatException in case the class cannot be defined
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */
-    public function defineClass($class, $parent, $interfaces= NULL, $bytes= NULL) {
-      
-      // If invoked with less than four arguments, old behaviour will be executed
-      if (NULL === $bytes) {
-        return $this->_defineClassFromBytes($this->classpath.$class, $parent);
-      }
-      
+    public static function defineClass($class, $parent, $interfaces, $bytes= '{}') {
       $name= xp::reflect($class);
-      if (!class_exists($name)) {
-        $qname= $this->classpath.$class;
-        $parentName= xp::reflect($parent);
-        
-        if (!class_exists($parentName)) {
-          throw(new ClassNotFoundException('Parent class '.$parent.' does not exist.'));
-        }
-        
-        $newBytes= 'class '.$name.' extends '.$parentName;
-        if (sizeof($interfaces)) {
-          $newBytes.= ' implements ';
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        $super= xp::reflect($parent);
 
-          $ifaces= array();
-          foreach ($interfaces as $i) { $ifaces[]= xp::reflect($i); }
-          
-          $newBytes.= implode(', ', $ifaces);
+        // Test for existance        
+        if (!class_exists($super)) {
+          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.');
         }
         
-        $newBytes.= ' '.$bytes;
-        
-        return $this->_defineClassFromBytes($qname, $newBytes);
+        if (!empty($interfaces)) {
+          $if= array_map(array('xp', 'reflect'), $interfaces);
+          foreach ($if as $implemented) {
+            if (interface_exists($implemented)) continue;
+            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
+          }
+        }
+
+        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+          $dyn->setClassBytes($class, sprintf(
+            'class %s extends %s%s %s',
+            $name,
+            $super,
+            $interfaces ? ' implements '.implode(', ', $if) : '',
+            $bytes
+          ));
+          
+          return $dyn->loadClass($class);
+        }
       }
       
       return new XPClass($name);
     }
     
     /**
+     * Define an interface with a given name
+     *
+     * @param   string class fully qualified class name
+     * @param   string[] parents FQCNs of parent interfaces
+     * @param   string bytes default "{}" inner sourcecode of class (containing {}) 
+     * @return  lang.XPClass
+     * @throws  lang.FormatException in case the class cannot be defined
+     * @throws  lang.ClassNotFoundException if given parent class does not exist
+     */
+    public static function defineInterface($class, $parents, $bytes= '{}') {
+      $name= xp::reflect($class);
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        if (!empty($parents)) {
+          $if= array_map(array('xp', 'reflect'), $parents);
+          foreach ($if as $super) {
+            if (interface_exists($super)) continue;
+            throw new ClassNotFoundException('Superinterface "'.$super.'" does not exist.');
+          }
+        }
+
+        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+          $dyn->setClassBytes($class, sprintf(
+            'interface %s%s %s',
+            $name,
+            $interfaces ? ' implements '.implode(', ', $if) : '',
+            $bytes
+          ));
+          
+          return $dyn->loadClass($class);
+        }
+      }
+      
+      return new XPClass($name);
+    }
+
+    /**
+     * Loads a class
+     *
+     * @param   string class fully qualified class name
+     * @return  string class name of class loaded
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass0($class) {
+      if (isset(xp::$registry['classloader.'.$class])) {
+        return substr(array_search($class, xp::$registry), 6);
+      }
+      
+      // Ask delegates
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesClass($class)) return $delegate->loadClass0($class);
+      }
+      throw new ClassNotFoundException(sprintf(
+        'No classloader provides class "%s" {%s}',
+        $class,
+        xp::stringOf(self::$delegates)
+      ));
+    }
+
+    /**
+     * Checks whether this loader can provide the requested class
+     *
+     * @param   string class
+     * @return  bool
+     */
+    public function providesClass($class) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesClass($class)) return TRUE;
+      }
+      return FALSE;
+    }
+    
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($filename)) return TRUE;
+      }
+      return FALSE;
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesPackage($package)) return TRUE;
+      }
+      return FALSE;
+    }
+
+    /**
+     * Find the class by the specified name
+     *
+     * @param   string class fully qualified class name
+     * @return  lang.IClassLoader the classloader that provides this class
+     */
+    public function findClass($class) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesClass($class)) return $delegate;
+      }
+      return xp::null();
+    }    
+
+    /**
+     * Find the package by the specified name
+     *
+     * @param   string package fully qualified package name
+     * @return  lang.IClassLoader the classloader that provides this class
+     */
+    public function findPackage($package) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesPackage($package)) return $delegate;
+      }
+      return xp::null();
+    }    
+    
+    /**
+     * Load the class by the specified name
+     *
+     * @param   string class fully qualified class name
+     * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass($class) {
+      return new XPClass($this->loadClass0($class));
+    }    
+
+    /**
+     * Find the resource by the specified name
+     *
+     * @param   string name resource name
+     * @return  lang.IClassLoader the classloader that provides this resource
+     */
+    public function findResource($name) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($name)) return $delegate;
+      }
+      return xp::null();
+    }    
+
+    /**
      * Loads a resource.
      *
-     * @param   string filename name of resource
+     * @param   string string name of resource
      * @return  string
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    public function getResource($filename) {
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return file_get_contents($dir.DIRECTORY_SEPARATOR.$filename);
+    public function getResource($string) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($string)) return $delegate->getResource($string);
       }
-    
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      raise('lang.ElementNotFoundException', sprintf(
+        'No classloader provides resource "%s" {%s}',
+        $string,
+        xp::stringOf(self::$delegates)
+      ));
     }
     
     /**
      * Retrieve a stream to the resource
      *
-     * @param   string filename name of resource
-     * @return  &io.File
+     * @param   string string name of resource
+     * @return  io.Stream
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
-    public function getResourceAsStream($filename) {
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return new File($filename);
+    public function getResourceAsStream($string) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesResource($string)) return $delegate->getResourceAsStream($string);
       }
-    
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      raise('lang.ElementNotFoundException', sprintf(
+        'No classloader provides resource "%s" {%s}',
+        $string,
+        xp::stringOf(self::$delegates)
+      ));
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      $contents= array();
+      foreach (self::$delegates as $delegate) {
+        $contents= array_merge($contents, $delegate->packageContents($package));
+      }
+      return array_unique($contents);
     }
   }
 ?>

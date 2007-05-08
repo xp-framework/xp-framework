@@ -237,9 +237,7 @@
         $this->_index[$id][3]
       );
       
-      $class= XPClass::forName('io.EnclosedStream');
-      $s= $class->newInstance($this->file, $pos, $this->_index[$id][2]);
-      return $s;
+      return new EncapsedStream($this->file, $pos, $this->_index[$id][2]);
     }
     
     /**
