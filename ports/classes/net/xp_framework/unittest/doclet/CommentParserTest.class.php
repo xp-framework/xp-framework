@@ -6,7 +6,7 @@
 
   uses(
     'text.doclet.TagletManager',
-    'util.HashMap',
+    'util.Hashmap',
     'unittest.TestCase'
   );
 
