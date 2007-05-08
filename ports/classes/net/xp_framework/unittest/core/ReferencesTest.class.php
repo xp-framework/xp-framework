@@ -13,51 +13,34 @@
    */
   class ReferencesTest extends TestCase {
 
-    /**
-     * Setup method
-     *
-     */
-    public function setUp() {
-      $cl= ClassLoader::getDefault();
+    static function __static() {
       
       // For singletonInstance test
-      $cl->defineClass(
-        'net.xp_framework.unittest.core.AnonymousSingleton', 
-        'class AnonymousSingleton extends Object {
-           protected static $instance= NULL;
-           
-           static function getInstance() {
-             if (!isset(self::$instance)) self::$instance= new AnonymousSingleton();
-             return self::$instance;
-           }
-        }'
-      );
+      ClassLoader::defineClass('net.xp_framework.unittest.core.AnonymousSingleton', 'lang.Object', array(), '{
+        protected static $instance= NULL;
+
+        static function getInstance() {
+          if (!isset(self::$instance)) self::$instance= new AnonymousSingleton();
+          return self::$instance;
+        }
+      }');
 
       // For returnNewObject and returnNewObjectViaReflection tests
-      $cl->defineClass(
-        'net.xp_framework.unittest.core.AnonymousList', 
-        'class AnonymousList extends Object {
-           function __construct() {
-             ReferencesTest::registry("list", $this);
-           }
-        }'
-      );
-      $cl->defineClass(
-        'net.xp_framework.unittest.core.AnonymousFactory', 
-        'class AnonymousFactory extends Object {
-          static function factory() {
-            return new AnonymousList();
-          }
-        }'
-      );
-      $cl->defineClass(
-        'net.xp_framework.unittest.core.AnonymousNewInstanceFactory', 
-        'class AnonymousNewInstanceFactory extends Object {
-          static function factory() {
-            return XPClass::forName("net.xp_framework.unittest.core.AnonymousList")->newInstance();
-          }
-        }'
-      );
+      ClassLoader::defineClass('net.xp_framework.unittest.core.AnonymousList', 'lang.Object', array(), '{
+        function __construct() {
+          ReferencesTest::registry("list", $this);
+        }
+      }');
+      ClassLoader::defineClass('net.xp_framework.unittest.core.AnonymousFactory', 'lang.Object', array(), '{
+        static function factory() {
+          return new AnonymousList();
+        }
+      }');
+      ClassLoader::defineClass('net.xp_framework.unittest.core.AnonymousNewInstanceFactory', 'lang.Object', array(), '{
+        static function factory() {
+          return XPClass::forName("net.xp_framework.unittest.core.AnonymousList")->newInstance();
+        }
+      }');
     }
 
     /**
