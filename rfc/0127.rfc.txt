@@ -1,0 +1,73 @@
+RFC 0127: rdbms.Peer::getConnection()
+========================================================================
+$Id$
+
+@authors: friebe, gellweiler, kiesel
+@created: Tue May  8 21:50:35     2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+A new method getConnection() will be added to the rdbms.Peer class. This
+method will return the DBConnection instance the peer for a certain 
+dataset works with. The setConnection() method will be overloaded to 
+accept either connection names (as a string) and connection objects
+(as DBConnection instance).
+
+
+Rationale
+---------
+- Remove boilerplate code
+- Consistency
+
+
+Functionality
+-------------
+In cases where the connection object a certain dataset works with needs
+to be retrieved.
+
+Current functionality
+~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $conn= ConnectionManager::getInstance()->getByHost(
+    Author::getPeer()->connection,
+    0
+  );
+?>
+
+New functionality
+~~~~~~~~~~~~~~~~~
+<?php
+  $conn= Author::getPeer()->getConnection();
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+One new method, slowdown for overloading setConnection().
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+- friebe, Tue May  8 21:56:12     2007
+  With the new O/R mapping api extensions currently in development (see
+  RFCs #0051, #0096, #0123, #0124 and #0126), it will become less and less
+  necessary to actually use the connection object itself.
+  
+<EOF>
