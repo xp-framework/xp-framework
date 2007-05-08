@@ -119,7 +119,7 @@
       
       // No arguments given - show our own usage
       if ($params->count <= 1) {
-        Console::writeLine(self::textOf(XPClass::forName(__CLASS__)->getComment()));
+        Console::writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
