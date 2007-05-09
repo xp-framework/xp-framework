@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  uses('rdbm.SQLDialect');
+  uses('rdbms.SQLDialect');
 
   /**
    * helps to build functions for different SQL servers

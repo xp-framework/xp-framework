@@ -8,18 +8,23 @@
 
   /**
    * Class wrapper for table mmessage, database Ruben_Test_PS
-   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
+   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class Mmessage extends DataSet {
-
-    protected
-      $_isLoaded= false,
-      $_loadCrit= NULL,
-      $_cached=   array();
-
+    public
+      $message_id         = 0,
+      $title              = '',
+      $body               = '',
+      $valid_from         = NULL,
+      $expire_at          = NULL,
+      $recipient_id       = 0,
+      $author_id          = 0;
+  
     private
+      $_cached=   array(),
+  
       $cacheRecipient= array(),
       $cacheAuthor= array();
   
@@ -63,31 +68,6 @@
     public function _cacheHasAuthor($key) { return isset($this->cacheAuthor[$key]); }
     public function _cacheAddAuthor($key, $obj) { $this->cacheAuthor[$key]= $obj; }
 
-    function __get($name) {
-      $this->load();
-      return $this->get($name);
-    }
-
-    function __sleep() {
-      $this->load();
-      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
-    }
-
-    /**
-     * force loading this entity from database
-     *
-     */
-    public function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect($this->_loadCrit);
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
-
     /**
      * column factory
      *
@@ -116,11 +96,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByMessage_id($message_id) {
-      return new self(array(
-        'message_id'  => $message_id,
-        '_loadCrit' => new Criteria(array('message_id', $message_id, EQUAL))
-      ));
-    }
+      $r= self::getPeer()->doSelect(new Criteria(array('message_id', $message_id, EQUAL)));
+      return $r ? $r[0] : NULL;    }
 
     /**
      * Gets an instance of this object by index "recipient_id"
@@ -130,10 +107,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByRecipient_id($recipient_id) {
-      $r= self::getPeer()->doSelect(new Criteria(array('recipient_id', $recipient_id, EQUAL)));
-      foreach ($r as $e) $e->_isLoaded= true;
-      return $r;
-    }
+      return self::getPeer()->doSelect(new Criteria(array('recipient_id', $recipient_id, EQUAL)));    }
 
     /**
      * Gets an instance of this object by index "author_id"
@@ -143,10 +117,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByAuthor_id($author_id) {
-      $r= self::getPeer()->doSelect(new Criteria(array('author_id', $author_id, EQUAL)));
-      foreach ($r as $e) $e->_isLoaded= true;
-      return $r;
-    }
+      return self::getPeer()->doSelect(new Criteria(array('author_id', $author_id, EQUAL)));    }
 
     /**
      * Retrieves message_id

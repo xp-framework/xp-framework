@@ -8,18 +8,18 @@
 
   /**
    * Class wrapper for table ncolortype, database Ruben_Test_PS
-   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
+   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class Ncolortype extends DataSet {
-
-    protected
-      $_isLoaded= false,
-      $_loadCrit= NULL,
-      $_cached=   array();
-
+    public
+      $colortype_id       = 0,
+      $name               = '';
+  
     private
+      $_cached=   array(),
+  
       $cacheNcolorColortype= array();
   
     static function __static() { 
@@ -47,31 +47,6 @@
     public function _cacheGetNcolorColortype($key) { return $this->cacheNcolorColortype[$key]; }
     public function _cacheHasNcolorColortype($key) { return isset($this->cacheNcolorColortype[$key]); }
     public function _cacheAddNcolorColortype($key, $obj) { $this->cacheNcolorColortype[$key]= $obj; }
-
-    function __get($name) {
-      $this->load();
-      return $this->get($name);
-    }
-
-    function __sleep() {
-      $this->load();
-      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
-    }
-
-    /**
-     * force loading this entity from database
-     *
-     */
-    public function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect($this->_loadCrit);
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
 
     /**
      * column factory
@@ -101,11 +76,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByColortype_id($colortype_id) {
-      return new self(array(
-        'colortype_id'  => $colortype_id,
-        '_loadCrit' => new Criteria(array('colortype_id', $colortype_id, EQUAL))
-      ));
-    }
+      $r= self::getPeer()->doSelect(new Criteria(array('colortype_id', $colortype_id, EQUAL)));
+      return $r ? $r[0] : NULL;    }
 
     /**
      * Retrieves colortype_id

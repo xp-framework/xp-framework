@@ -8,18 +8,20 @@
 
   /**
    * Class wrapper for table nmobileObject, database Ruben_Test_PS
-   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
+   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class Nmobileobject extends DataSet {
-
-    protected
-      $_isLoaded= false,
-      $_loadCrit= NULL,
-      $_cached=   array();
-
+    public
+      $object_id          = 0,
+      $coord_x            = 0,
+      $coord_y            = 0,
+      $name               = '';
+  
     private
+      $_cached=   array(),
+  
       $cacheCoord_xCoord_y= array();
   
     static function __static() { 
@@ -50,31 +52,6 @@
     public function _cacheHasCoord_xCoord_y($key) { return isset($this->cacheCoord_xCoord_y[$key]); }
     public function _cacheAddCoord_xCoord_y($key, $obj) { $this->cacheCoord_xCoord_y[$key]= $obj; }
 
-    function __get($name) {
-      $this->load();
-      return $this->get($name);
-    }
-
-    function __sleep() {
-      $this->load();
-      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
-    }
-
-    /**
-     * force loading this entity from database
-     *
-     */
-    public function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect($this->_loadCrit);
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
-
     /**
      * column factory
      *
@@ -103,11 +80,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByObject_id($object_id) {
-      return new self(array(
-        'object_id'  => $object_id,
-        '_loadCrit' => new Criteria(array('object_id', $object_id, EQUAL))
-      ));
-    }
+      $r= self::getPeer()->doSelect(new Criteria(array('object_id', $object_id, EQUAL)));
+      return $r ? $r[0] : NULL;    }
 
     /**
      * Gets an instance of this object by index "coords"
@@ -118,13 +92,10 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByCoord_xCoord_y($coord_x, $coord_y) {
-      $r= self::getPeer()->doSelect(new Criteria(
+      return self::getPeer()->doSelect(new Criteria(
         array('coord_x', $coord_x, EQUAL),
         array('coord_y', $coord_y, EQUAL)
-      ));
-      foreach ($r as $e) $e->_isLoaded= true;
-      return $r;
-    }
+      ));    }
 
     /**
      * Retrieves object_id

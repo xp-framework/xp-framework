@@ -8,18 +8,19 @@
 
   /**
    * Class wrapper for table ntexture, database Ruben_Test_PS
-   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
+   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class Ntexture extends DataSet {
-
-    protected
-      $_isLoaded= false,
-      $_loadCrit= NULL,
-      $_cached=   array();
-
+    public
+      $texture_id         = 0,
+      $name               = '',
+      $color_id           = 0;
+  
     private
+      $_cached=   array(),
+  
       $cacheColor= array(),
       $cacheNmappointTexture= array();
   
@@ -59,31 +60,6 @@
     public function _cacheHasNmappointTexture($key) { return isset($this->cacheNmappointTexture[$key]); }
     public function _cacheAddNmappointTexture($key, $obj) { $this->cacheNmappointTexture[$key]= $obj; }
 
-    function __get($name) {
-      $this->load();
-      return $this->get($name);
-    }
-
-    function __sleep() {
-      $this->load();
-      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
-    }
-
-    /**
-     * force loading this entity from database
-     *
-     */
-    public function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect($this->_loadCrit);
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
-
     /**
      * column factory
      *
@@ -112,11 +88,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTexture_id($texture_id) {
-      return new self(array(
-        'texture_id'  => $texture_id,
-        '_loadCrit' => new Criteria(array('texture_id', $texture_id, EQUAL))
-      ));
-    }
+      $r= self::getPeer()->doSelect(new Criteria(array('texture_id', $texture_id, EQUAL)));
+      return $r ? $r[0] : NULL;    }
 
     /**
      * Gets an instance of this object by index "color_for_texture"
@@ -126,10 +99,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByColor_id($color_id) {
-      $r= self::getPeer()->doSelect(new Criteria(array('color_id', $color_id, EQUAL)));
-      foreach ($r as $e) $e->_isLoaded= true;
-      return $r;
-    }
+      return self::getPeer()->doSelect(new Criteria(array('color_id', $color_id, EQUAL)));    }
 
     /**
      * Retrieves texture_id

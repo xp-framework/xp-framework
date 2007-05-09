@@ -8,18 +8,18 @@
 
   /**
    * Class wrapper for table mperson, database Ruben_Test_PS
-   * (Auto-generated on Fri, 04 May 2007 14:22:04 +0200 by ruben)
+   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
   class Mperson extends DataSet {
-
-    protected
-      $_isLoaded= false,
-      $_loadCrit= NULL,
-      $_cached=   array();
-
+    public
+      $person_id          = 0,
+      $name               = '';
+  
     private
+      $_cached=   array(),
+  
       $cacheMmessageRecipient= array(),
       $cacheMmessageAuthor= array();
   
@@ -58,31 +58,6 @@
     public function _cacheHasMmessageAuthor($key) { return isset($this->cacheMmessageAuthor[$key]); }
     public function _cacheAddMmessageAuthor($key, $obj) { $this->cacheMmessageAuthor[$key]= $obj; }
 
-    function __get($name) {
-      $this->load();
-      return $this->get($name);
-    }
-
-    function __sleep() {
-      $this->load();
-      return array_merge(array_keys(self::getPeer()->types), array('_new', '_changed'));
-    }
-
-    /**
-     * force loading this entity from database
-     *
-     */
-    public function load() {
-      if ($this->_isLoaded) return;
-      $this->_isLoaded= true;
-      $e= self::getPeer()->doSelect($this->_loadCrit);
-      if (!$e) return;
-      foreach (array_keys(self::getPeer()->types) as $p) {
-        if (isset($this->{$p})) continue;
-        $this->{$p}= $e[0]->$p;
-      }
-    }
-
     /**
      * column factory
      *
@@ -111,11 +86,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByPerson_id($person_id) {
-      return new self(array(
-        'person_id'  => $person_id,
-        '_loadCrit' => new Criteria(array('person_id', $person_id, EQUAL))
-      ));
-    }
+      $r= self::getPeer()->doSelect(new Criteria(array('person_id', $person_id, EQUAL)));
+      return $r ? $r[0] : NULL;    }
 
     /**
      * Retrieves person_id
