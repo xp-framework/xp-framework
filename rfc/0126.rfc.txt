@@ -12,6 +12,8 @@ Scope of Change
 
 - rdbsm.Column shoul be used instead of rdbms.Property
 - it is recommended to use Columns as arguments for Restrictions
+- it is recommended to use Columns as arguments for rdbms.Creteria::addGroupBy
+- it is recommended to use Columns as arguments for rdbms.Creteria::addOrderBy
 
 
 Rationale
@@ -26,7 +28,7 @@ Rationale
 Functionality
 -------------
 
-old api:
+deprecated api:
 <?php
   $nameColumn= Property::forName('name');
   $idColumn=   Property::forName('person_id');
