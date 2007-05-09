@@ -6,9 +6,10 @@
 
   uses(
     'rdbms.criterion.SimpleExpression',
-    'rdbms.criterion.Projections',
     'rdbms.join.JoinProcessor',
-    'rdbms.SQLExpression'
+    'rdbms.SQLExpression',
+    'rdbms.criterion.Projections',
+    'rdbms.Column'
   );
   
   define('ASCENDING',       'asc');
@@ -67,8 +68,6 @@
      *     ->addOrderBy('created_at', DESCENDING)
      *   ;
      * </code>
-     *
-     * @param   rdbms.Criteria
      */
     public static function newInstance() {
       return new self();
@@ -97,7 +96,7 @@
      * @return  rdbms.Criteria this object
      */
     public function add($criterion, $value= NULL, $comparison= EQUAL) {
-      if (is('rdbms.criterion.Criterion', $criterion)) {
+      if ($criterion instanceof Criterion) {
         $this->conditions[]= $criterion;
       } else {
         $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
@@ -143,12 +142,16 @@
     
     /**
      * Set projection
+     * param can also be a rdbms.Column, a property
+     * projection is then assumed
      *
      * @param   rdbms.criterion.Projection projection
      * @return  rdbms.Criteria this object
      */
-    public function setProjection(Projection $projection) {
-      $this->projection= $projection;
+    public function setProjection($projection) {
+      $this->projection= ($projection instanceof SQLFragment)
+      ? $projection= Projections::property($projection)
+      : $projection;
       return $this;
     }
 
@@ -166,7 +169,7 @@
     /**
      * set the fetchmode for a path
      *
-     * @param   rdbms.join.FetchMode
+     * @param   rdbms.join.FetchMode fetchmode
      * @return  rdbms.Criteria this object
      */
     public function setFetchMode(FetchMode $fetchmode) {
@@ -212,8 +215,8 @@
       if (!empty($this->groupings)) {
         $sql= rtrim($sql, ' ').' group by ';
         foreach ($this->groupings as $grouping) {
-          if (!isset($peer->types[$grouping[0]])) throw(new SQLStateException('Field "'.$grouping[0].'" unknown'));
-          $sql.= $tablePrefix.$grouping[0].' '.$grouping[1].', ';
+          if (!isset($peer->types[$grouping])) throw(new SQLStateException('Field "'.$grouping.'" unknown'));
+          $sql.= $tablePrefix.$grouping.', ';
         }
         $sql= substr($sql, 0, -2);
       }
@@ -227,7 +230,7 @@
         }
         $sql= substr($sql, 0, -2);
       }
-      
+
       return $sql;
     }
     
@@ -259,15 +262,15 @@
      * @return  bool
      */
     public function isJoin() {
-      return (0 < count(array_keys($this->fetchmode, 'join')));
+      return (0 < sizeOf(array_keys($this->fetchmode, 'join')));
     }
 
     /**
      * Executes an SQL SELECT statement
      *
-     * @param   &rdbms.DBConnection conn
-     * @param   &rdbms.Peer peer
-     * @return  &rdbms.ResultSet
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
      */
     public function executeSelect(DBConnection $conn, Peer $peer) {
       return $conn->query(
@@ -281,9 +284,9 @@
     /**
      * Executes an SQL SELECT statement with more than one table
      *
-     * @param   &rdbms.DBConnection conn
-     * @param   &rdbms.Peer peer
-     * @return  &rdbms.ResultSet
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
      */
     public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
       $jp->setFetchmode($this->fetchmode);
@@ -298,5 +301,23 @@
       );
     }
     
+    /**
+     * get a string for a column
+     * can be either a columnname or a Column object
+     *
+     * @param   &rdbms.DBConnection conn
+     * @param   array types
+     * @param   rdbms.Column or string col
+     * @return  string
+     */
+    private function fragment($conn, $types, $col) {
+      if ($col instanceof SQLFragment) {
+        return $col->asSQL($conn);
+      } else {
+        if (!isset($types[$col])) throw(new SQLStateException('Field "'.$col.'" unknown'));
+        return $col;
+      }
+    }
+
   } 
 ?>

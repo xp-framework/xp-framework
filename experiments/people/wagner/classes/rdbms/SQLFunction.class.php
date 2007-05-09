@@ -15,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class SQLFunction extends Object implements SQLFragment{
+  class SQLFunction extends Object implements SQLFragment {
     
     public
       $func= '',

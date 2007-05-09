@@ -26,6 +26,10 @@
     protected function __construct($name) {
       $this->name= $name;
     }
+    
+    public function asColumnOf($peer) {
+      return new Column($peer, $this->name);
+    }
 
     /**
      * Retrieve a property instance by name

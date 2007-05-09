@@ -38,13 +38,17 @@
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql(DBConnection $conn, Peer $peer) {
-      if (!isset($types[$field])) throw new SQLStateException('field '.$field.' does not exist');
-      return $peer->this->field.' between '.$conn->prepare(
-        $types[$this->field][0].' and '.$peer->types[$this->field][0],
-        $this->lo,
-        $this->hi
-      );
+    public function asSql(DBConnection $conn, Peer $peer) { 
+      if ($this->field instanceof Column) {
+        $field= $this->field->asSQL($conn);
+        $type=  $this->field->getType();
+      } else {
+        if (!isset($peer->types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+        $field= $this->field;
+        $type=  $peer->types[$this->field][0];
+      }
+
+      return $field.' between '.$conn->prepare($type.' and '.$type, $this->lo, $this->hi);
     }
   } 
 ?>

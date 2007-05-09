@@ -30,56 +30,69 @@
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
   $crit= array();
   
-  $crits['count']= new Criteria();
-  $crits['count']->setProjection(
+  $crits['count']= Criteria::newInstance()->setProjection(
     Projections::count()
   );
   
-  $crits['average']= new Criteria();
-  $crits['average']->setProjection(
-    Projections::average("color_id")
+  $crits['count1']= Criteria::newInstance()->setProjection(
+    Projections::count(Ncolor::column("color_id"))
   );
   
-  $crits['max']= new Criteria();
-  $crits['max']->setProjection(
-    Projections::max("color_id")
+  $crits['count2']= Criteria::newInstance()->setProjection(
+    Projections::count('*', "counting all")
   );
   
-  $crits['min']= new Criteria();
-  $crits['min']->setProjection(
-    Projections::min("color_id")
+  $crits['count3']= Criteria::newInstance()->setProjection(
+    Projections::count(Ncolor::column("color_id"), "counting all")
   );
   
-  $crits['sum']= new Criteria();
-  $crits['sum']->setProjection(
-    Projections::sum("color_id")
+  $crits['average']= Criteria::newInstance()->setProjection(
+    Projections::average(Ncolor::column("color_id"))
+  );
+  
+  $crits['max']= Criteria::newInstance()->setProjection(
+    Projections::max(Ncolor::column("color_id"))
+  );
+  
+  $crits['min']= Criteria::newInstance()->setProjection(
+    Projections::min(Ncolor::column("color_id"))
+  );
+  
+  $crits['sum']= Criteria::newInstance()->setProjection(
+    Projections::sum(Ncolor::column("color_id"))
   );
 
-  $crits['property']= new Criteria();
-  $crits['property']->setProjection(
-    Projections::property("name")
+  $crits['property']= Criteria::newInstance()->setProjection(
+    Projections::property(Ncolor::column("name"))
   );
   
-  $crits['projectionList']= new Criteria();
-  $crits['projectionList']->setProjection(
+  $crits['column']= Criteria::newInstance()->setProjection(
+    Ncolor::column("name")
+  );
+  
+  $crits['projectionList']= Criteria::newInstance()->setProjection(
     Projections::projectionList()
-    ->add(Projections::property("color_id", 'id'))
-    ->add(Projections::property("name"))
+    ->add(Projections::property(Ncolor::column("color_id"), 'id'))
+    ->add(Projections::property(Ncolor::column("name")))
+  );
+
+  $crits['columnlist']= Criteria::newInstance()->setProjection(
+    Projections::projectionList()
+    ->add(Ncolor::column("color_id"), 'id')
+    ->add(Ncolor::column("name"))
   );
 
   $crits['plain']= new Criteria();
 
   foreach ($crits as $name => $crit) {
     Console::writeLine("\nlist for $name:");
-    $l= Ncolor::getPeer()->doSelect($crit, 1);
-    Console::writeLine(xp::stringOf($l));
+    Console::writeLine(xp::stringOf(Ncolor::getPeer()->doSelect($crit, 1)));
 
     Console::writeLine(xp::stringOf("\niterator for $name:"));
-    $l= Ncolor::getPeer()->iteratorFor($crit);
-    Console::writeLine(xp::stringOf($l->next()));
+    Console::writeLine(xp::stringOf(Ncolor::getPeer()->iteratorFor($crit)->next()));
   }
 
-  $crit= Criteria::newInstance()->add(Restrictions::like("name", "%green"));
+  $crit= Criteria::newInstance()->add(Restrictions::like(Ncolor::column("name"), "%green"));
   Console::writeLine(xp::stringOf("\n\nwithProjection count:"));
   Console::writeLine(xp::stringOf(Ncolor::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count')));
   Console::writeLine(xp::stringOf("\n\nwithout projection:"));

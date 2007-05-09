@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  uses('rdbms.SQLFragment');
+  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
 
   /**
    * represents a table column
@@ -11,10 +11,12 @@
    * 
    * <code>
    *   $col= Nmappoint::column("texture_id"); // where Nmappoint is a generated dataset class
+   *
    *   $criteria= Criteria::newInstance()->add(Restrictions::equal($col, 5);
+   *   $criteria= Criteria::newInstance()->add($col->equal(5));
    * </code>
    */
-  class Column extends Object implements SQLFragment{
+  class Column extends Object implements SQLFragment {
     
     private
       $peer= NULL,
@@ -54,5 +56,116 @@
       return $this->name;
     }
 
+    /**
+     * Apply an "in" constraint to this property
+     *
+     * @param   mixed[] values
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function in($values) {
+      return Restrictions::in($this, $values);
+    }
+
+    /**
+     * Apply an "not in" constraint to this property
+     *
+     * @param   mixed[] values
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function notIn($values) {
+      return Restrictions::notIn($this, $values);
+    }
+
+    /**
+     * Apply a "like" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function like($value) {
+      return Restrictions::like($this, $value);
+    }
+
+    /**
+     * Apply a case-insensitive "like" constraint to this property
+     *
+     * @see     php://sql_regcase
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function ilike($value) {
+      return Restrictions::ilike($this, $value);
+    }
+        
+    /**
+     * Apply an "equal" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function equal($value) {
+      return Restrictions::equal($this, $value);
+    }
+
+    /**
+     * Apply a "not equal" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function notEqual($value) {
+      return Restrictions::notEqual($this, $value);
+    }
+
+    /**
+     * Apply a "less than" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function lessThan($value) {
+      return Restrictions::lessThan($this, $value);
+    }
+
+    /**
+     * Apply a "greater than" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function greaterThan($value) {
+      return Restrictions::greaterThan($this, $value);
+    }
+
+    /**
+     * Apply a "less than or equal to" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function lessThanOrEqualTo($value) {
+      return Restrictions::lessThanOrEqualTo($this, $value);
+    }
+
+    /**
+     * Apply a "greater than or equal to" constraint to this property
+     *
+     * @param   mixed value
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function greaterThanOrEqualTo($value) {
+      return Restrictions::greaterThanOrEqualTo($this, $value);
+    }
+
+    /**
+     * Apply a "between" constraint to this property
+     *
+     * @param   mixed lo
+     * @param   mixed hi
+     * @return  rdbms.criterion.SimpleExpression
+     */
+    public function between($lo, $hi) {
+      return Restrictions::between($this, $lo, $hi);
+    }
   }
 ?>

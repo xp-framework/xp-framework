@@ -4,18 +4,18 @@
  * $Id: SimpleExpression.class.php 9297 2007-01-16 12:02:37Z friebe $ 
  */
 
-  define('IN',              'in (?)');
-  define('NOT_IN',          'not in (?)');
-  define('IS',              'is ?');
-  define('IS_NOT',          'is not ?');
-  define('LIKE',            'like ?');
-  define('EQUAL',           '= ?');
-  define('NOT_EQUAL',       '!= ?');
-  define('LESS_THAN',       '< ?');
-  define('GREATER_THAN',    '> ?');
-  define('LESS_EQUAL',      '<= ?');
-  define('GREATER_EQUAL',   '>= ?');
-  define('BIT_AND',         ' & ? = ?');
+  define('IN',            'in (?)');
+  define('NOT_IN',        'not in (?)');
+  define('IS',            'is ?');
+  define('IS_NOT',        'is not ?');
+  define('LIKE',          'like ?');
+  define('EQUAL',         '= ?');
+  define('NOT_EQUAL',     '!= ?');
+  define('LESS_THAN',     '< ?');
+  define('GREATER_THAN',  '> ?');
+  define('LESS_EQUAL',    '<= ?');
+  define('GREATER_EQUAL', '>= ?');
+  define('BIT_AND',       ' & ? = ?');
 
   uses('rdbms.criterion.Criterion');
 

@@ -19,12 +19,16 @@
 
     /**
      * add projection
+     * param can also be a rdbms.Column, a property
+     * projection is then assumed
      *
      * @param    rdbms.criterion.Projection projections
      * @return   rdbms.criterion.ProjectionList
      */
-    public function add(Projection $projection) {
-      $this->projections[]= $projection;
+    public function add($projection) {
+      $this->projections[]= ($projection instanceof SQLFragment)
+      ? $projection= Projections::property($projection)
+      : $projection;
       return $this;
     }
 
