@@ -38,7 +38,7 @@ public class ByteCountedStringTest {
     
     /**
      * Escapes all ASCII characters with an ordinal value of less than 32
-     * with a backslash.
+     * or more than 127 with a backslash.
      *
      * @static
      * @access  protected
@@ -53,7 +53,7 @@ public class ByteCountedStringTest {
         for (int i= 0; i < length; i++) {
             c= in.charAt(i);
             
-            if (c < 0x20) {
+            if (c < 0x20 || c > 0x7f) {
                 s.append('\\').append((int)c);
             } else {
                 s.append(c);
