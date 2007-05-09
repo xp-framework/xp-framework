@@ -78,7 +78,7 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfUmlautCharPrimitive() throws Exception {
-        assertEquals("s:1:\"Ü\";", representationOf('Ü'));
+        assertEquals("s:1:\"\u00DC\";", representationOf('\u00DC'));
     }
 
     /**
@@ -88,7 +88,7 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void representationOfUmlautCharacter() throws Exception {
-        assertEquals("s:1:\"Ü\";", representationOf(new Character('Ü')));
+        assertEquals("s:1:\"\u00DC\";", representationOf(new Character('\u00DC')));
     }
 
     /**
@@ -285,11 +285,15 @@ public class SerializerTest {
         h.put("key", "value");
         h.put("number", "6100");
         h.put("null", null);
-        
-        assertEquals(
-            "a:3:{s:3:\"key\";s:5:\"value\";s:4:\"null\";N;s:6:\"number\";s:4:\"6100\";}",
-            representationOf(h)
-        );
+
+        // Use complicated way of checking this, the serialization order may
+        // not be the same order we put the keys into the hashmap.
+        String r= representationOf(h);
+        assertTrue(r.startsWith("a:3:{"));
+        assertTrue(r.endsWith("}"));
+        assertTrue(r.contains("s:3:\"key\";s:5:\"value\";"));
+        assertTrue(r.contains("s:4:\"null\";N;"));
+        assertTrue(r.contains("s:6:\"number\";s:4:\"6100\";"));
     }
 
     /**
@@ -303,11 +307,12 @@ public class SerializerTest {
         HashMap<String, Object> h= new HashMap<String, Object>();
         h.put("key", "value");
         h.put("number", 6100);
-        
-        assertEquals(
-            "a:2:{s:3:\"key\";s:5:\"value\";s:6:\"number\";i:6100;}", 
-            representationOf(h)
-        );
+
+        String r= representationOf(h);
+        assertTrue(r.startsWith("a:2:{"));
+        assertTrue(r.endsWith("}"));
+        assertTrue(r.contains("s:3:\"key\";s:5:\"value\";"));
+        assertTrue(r.contains("s:6:\"number\";i:6100;"));
     }
     
     /**
@@ -708,7 +713,9 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfIntegerArray() throws Exception {
-        assertEquals("{1=4, 0=3}", ((HashMap)valueOf("a:2:{i:0;i:3;i:1;i:4;}")).toString());
+        HashMap h= (HashMap)valueOf("a:2:{i:0;i:3;i:1;i:4;}");
+        assertEquals(3, h.get(0));
+        assertEquals(4, h.get(1));
     }
 
     /**
@@ -718,10 +725,9 @@ public class SerializerTest {
      * @throws  java.lang.Exception
      */
     @Test public void valueOfStringArray() throws Exception {
-        assertEquals(
-            "{1=More, 0=Binford}", 
-            ((HashMap)valueOf("a:2:{i:0;s:7:\"Binford\";i:1;s:4:\"More\";}")).toString()
-        );
+        HashMap h= (HashMap)valueOf("a:2:{i:0;s:7:\"Binford\";i:1;s:4:\"More\";}");
+        assertEquals("Binford", h.get(0));
+        assertEquals("More", h.get(1));
     }
     
     /**
