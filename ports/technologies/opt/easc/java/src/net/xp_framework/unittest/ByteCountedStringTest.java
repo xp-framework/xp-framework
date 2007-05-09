@@ -193,12 +193,12 @@ public class ByteCountedStringTest {
      * @throws  java.lang.Exception
      */
     @Test public void writeReturnsUtf8() throws Exception {
-        ByteCountedString bcs= new ByteCountedString("ü");
+        ByteCountedString bcs= new ByteCountedString("\u00FC");
         ByteArrayOutputStream out= new ByteArrayOutputStream();
         bcs.writeTo(new DataOutputStream(out));
         String bytes= out.toString();
         
-        assertString("\u0000\u0002\u0000Ã¼", bytes);
+        assertString("\u0000\u0002\u0000\u00C3\u00BC", bytes);
     }
     
     /**
