@@ -29,7 +29,7 @@
      * @return  bool
      */
     public function providesClass($name) { 
-      return ClassLoader::getDefault()->providesClass($this->name.'.'.$name));
+      return ClassLoader::getDefault()->providesClass($this->name.'.'.$name);
     }
 
     /**
@@ -39,7 +39,7 @@
      * @return  bool
      */
     public function providesPackage($name) { 
-      return ClassLoader::getDefault()->providesPackage($this->name.'.'.$name));
+      return ClassLoader::getDefault()->providesPackage($this->name.'.'.$name);
     }
 
     /**
