@@ -155,11 +155,17 @@ public class ByteCountedStringTest {
         ByteCountedString bcs= new ByteCountedString(s);
         ByteArrayOutputStream out= new ByteArrayOutputStream();
         bcs.writeTo(new DataOutputStream(out));
-        String bytes= out.toString();
 
+        // Length: 65535 + 3 control bytes
+        byte[] bytes= out.toByteArray();
         assertEquals(65538, bcs.length());
-        assertEquals(65538, bytes.length());
-        assertString("\u00FF\u00FF\u0000ccccccc", bytes.substring(0, 10));
+        assertEquals(65538, bytes.length);
+        
+        // First chunk: FF FF 00 'c' ...
+        assertEquals((byte)0x00FF, bytes[0]);
+        assertEquals((byte)0x00FF, bytes[1]);
+        assertEquals((byte)0x0000, bytes[2]);
+        assertEquals((byte)'c', bytes[3]);
     }
 
     /**
@@ -178,12 +184,23 @@ public class ByteCountedStringTest {
         ByteCountedString bcs= new ByteCountedString(s);
         ByteArrayOutputStream out= new ByteArrayOutputStream();
         bcs.writeTo(new DataOutputStream(out));
-        String bytes= out.toString();
 
+        // Length: 65536 + 2 * 3 control bytes
+        byte[] bytes= out.toByteArray();
         assertEquals(65542, bcs.length());
-        assertEquals(65542, bytes.length());    // 65536 + 2 * 3 control bytes
-        assertString("\u00FF\u00FF\u0001ccccccc", bytes.substring(0, 10));
-        assertString("\u0000\u0001\u0000c", bytes.substring(65538, 65542));
+        assertEquals(65542, bytes.length);
+        
+        // First chunk: FF FF 01 'c' ...
+        assertEquals((byte)0x00FF, bytes[0]);
+        assertEquals((byte)0x00FF, bytes[1]);
+        assertEquals((byte)0x0001, bytes[2]);
+        assertEquals((byte)'c', bytes[3]);
+
+        // Second chunk: 00 01 00 'c'
+        assertEquals((byte)0x0000, bytes[65538]);
+        assertEquals((byte)0x0001, bytes[65539]);
+        assertEquals((byte)0x0000, bytes[65540]);
+        assertEquals((byte)'c', bytes[65541]);
     }
 
     /**
@@ -196,9 +213,15 @@ public class ByteCountedStringTest {
         ByteCountedString bcs= new ByteCountedString("\u00FC");
         ByteArrayOutputStream out= new ByteArrayOutputStream();
         bcs.writeTo(new DataOutputStream(out));
-        String bytes= out.toString();
         
-        assertString("\u0000\u0002\u0000\u00C3\u00BC", bytes);
+        byte[] bytes= out.toByteArray();
+
+        // First chunk: 00 02 00 "Atilde" "1/4"
+        assertEquals((byte)0x0000, bytes[0]);
+        assertEquals((byte)0x0002, bytes[1]);
+        assertEquals((byte)0x0000, bytes[2]);
+        assertEquals((byte)0x00C3, bytes[3]);
+        assertEquals((byte)0x00BC, bytes[4]);
     }
     
     /**
