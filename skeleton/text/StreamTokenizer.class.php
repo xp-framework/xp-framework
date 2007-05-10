@@ -24,7 +24,21 @@
   class StreamTokenizer extends Tokenizer {
     protected
       $_stack = array(),
-      $_buf   = '';
+      $_buf   = '',
+      $_src   = NULL;
+
+    /**
+     * Reset this tokenizer
+     *
+     */
+    public function reset() {
+      $this->_stack= array();
+      
+      // TODO: If the source is rewindable, no cloning would be needed.
+      // Maybe we need a Seekable interface?
+      $this->_src= clone $this->source;
+      $this->_buf= '';
+    }
     
     /**
      * Tests if there are more tokens available
@@ -32,7 +46,7 @@
      * @return  bool more tokens
      */
     public function hasMoreTokens() {
-      return !empty($this->_stack) || '' != $this->_buf;
+      return !(empty($this->_stack) && (FALSE === $this->_buf));
     }
     
     /**
@@ -47,10 +61,10 @@
         // Read until we have either find a delimiter or until we have 
         // consumed the entire content.
         do {
-          $this->_buf.= $this->source->read();
+          $this->_buf.= $this->_src->read();
           $offset= strcspn($this->_buf, $delimiters ? $delimiters : $this->delimiters);
           if ($offset != strlen($this->_buf)) break;
-        } while ($this->source->available());
+        } while ($this->_src->available());
 
         if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_buf, 0, $offset);
         if ($this->returnDelims && $offset < strlen($this->_buf)) {

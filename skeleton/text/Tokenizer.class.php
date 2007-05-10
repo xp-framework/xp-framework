@@ -12,12 +12,13 @@
    * @see      php://strtok
    * @purpose  Abstract base class
    */
-  abstract class Tokenizer extends Object {
+  abstract class Tokenizer extends Object implements IteratorAggregate {
     public 
       $delimiters   = '',
       $returnDelims = FALSE;
     
     protected
+      $iterator     = NULL,
       $source       = NULL;
     
     /**
@@ -31,7 +32,33 @@
       $this->delimiters= $delimiters;
       $this->returnDelims= $returnDelims;
       $this->source= $source;
+      $this->reset();
     }
+    
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
+        private $i, $t, $r;
+        public function __construct($r) { $this->r= $r; }
+        public function current() { return $this->r->nextToken(); }
+        public function key() { return $this->i; }
+        public function next() { $this->i++; }
+        public function rewind() { $this->r->reset(); }
+        public function valid() { return $this->r->hasMoreTokens(); }
+      }');
+      return $this->iterator;
+    }
+    
+    /**
+     * Reset this tokenizer
+     *
+     */
+    public abstract function reset();
     
     /**
      * Tests if there are more tokens available

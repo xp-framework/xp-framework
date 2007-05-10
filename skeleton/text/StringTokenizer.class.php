@@ -34,7 +34,17 @@
    */
   class StringTokenizer extends Tokenizer {
     protected
-      $_stack = array();
+      $_stack = array(),
+      $_buf   = '';
+
+    /**
+     * Reset this tokenizer
+     *
+     */
+    public function reset() {
+      $this->_stack= array();
+      $this->_buf= $this->source;
+    }
     
     /**
      * Tests if there are more tokens available
@@ -42,7 +52,7 @@
      * @return  bool more tokens
      */
     public function hasMoreTokens() {
-      return (!empty($this->_stack) || strlen($this->source) > 0);
+      return (!empty($this->_stack) || strlen($this->_buf) > 0);
     }
     
     /**
@@ -53,12 +63,12 @@
      */
     public function nextToken($delimiters= NULL) {
       if (empty($this->_stack)) {
-        $offset= strcspn($this->source, $delimiters ? $delimiters : $this->delimiters);
-        if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->source, 0, $offset);
-        if ($this->returnDelims && $offset < strlen($this->source)) {
-          $this->_stack[]= $this->source{$offset};
+        $offset= strcspn($this->_buf, $delimiters ? $delimiters : $this->delimiters);
+        if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_buf, 0, $offset);
+        if ($this->returnDelims && $offset < strlen($this->_buf)) {
+          $this->_stack[]= $this->_buf{$offset};
         }
-        $this->source= substr($this->source, $offset+ 1);
+        $this->_buf= substr($this->_buf, $offset+ 1);
       }
       return array_shift($this->_stack);
     }
