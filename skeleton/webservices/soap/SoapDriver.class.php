@@ -105,7 +105,9 @@
      * @return  lang.Object
      */
     public function forWsdl($endpoint, $preferred= NULL) {
-      return XPClass::forName($this->drivers[$this->driverName($preferred, TRUE)]['fqcn'])->newInstance($endpoint, '', TRUE);
+      $s= XPClass::forName($this->drivers[$this->driverName($preferred, TRUE)]['fqcn'])->newInstance($endpoint, '');
+      $s->setWsdl($endpoint);
+      return $s;
     }
 
     /**
