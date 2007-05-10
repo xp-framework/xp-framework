@@ -303,10 +303,10 @@
      */
     public function assertClass($var, $name, $error= 'notequal') {
       if (!is('Generic', $var)) {
-        return $this->fail($error, $pattern, $var);
+        return $this->fail($error, $var, $pattern);
       }
       if ($var->getClassName() !== $name) {
-        return $this->fail($error, $name, $var->getClassName());
+        return $this->fail($error, $var->getClassName(), $name);
       }
       return TRUE;
     }
