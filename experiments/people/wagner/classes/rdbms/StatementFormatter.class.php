@@ -112,7 +112,7 @@
         } else if ($arg instanceof Date) {
           $type= 's';
           $p= $arg->toString($this->dialect->dateFormat);
-        } else if ($arg instanceof SQLFragment) {   // TODO: Use interface "SQLChunk"...
+        } else if ($arg instanceof SQLFragment) {
           $r.= $arg->asSql($this->conn).', ';
           continue;
         } else if ($arg instanceof Generic) {

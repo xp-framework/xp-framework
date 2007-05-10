@@ -146,11 +146,12 @@
      * projection is then assumed
      *
      * @param   rdbms.criterion.Projection projection
+     * @param   string optional alias
      * @return  rdbms.Criteria this object
      */
-    public function setProjection($projection) {
+    public function setProjection($projection, $alias= '') {
       $this->projection= ($projection instanceof SQLFragment)
-      ? $projection= Projections::property($projection)
+      ? $projection= Projections::property($projection, $alias)
       : $projection;
       return $this;
     }
@@ -159,11 +160,12 @@
      * Set projection for a new clone of this object
      *
      * @param   rdbms.criterion.Projection projection
+     * @param   string optional alias
      * @return  rdbms.Criteria this object
      */
-    public function withProjection(Projection $projection) {
+    public function withProjection(Projection $projection, $alias= '') {
       $crit= clone($this);
-      return $crit->setProjection($projection);
+      return $crit->setProjection($projection, $alias);
     }
 
     /**
@@ -214,20 +216,14 @@
       // Process group by
       if (!empty($this->groupings)) {
         $sql= rtrim($sql, ' ').' group by ';
-        foreach ($this->groupings as $grouping) {
-          if (!isset($peer->types[$grouping])) throw(new SQLStateException('Field "'.$grouping.'" unknown'));
-          $sql.= $tablePrefix.$grouping.', ';
-        }
+        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $peer->types, $grouping).', ';
         $sql= substr($sql, 0, -2);
       }
 
       // Process order by
       if (!empty($this->orderings)) {
         $sql= rtrim($sql, ' ').' order by ';
-        foreach ($this->orderings as $order) {
-          if (!isset($peer->types[$order[0]])) throw(new SQLStateException('Field "'.$order[0].'" unknown'));
-          $sql.= $tablePrefix.$order[0].' '.$order[1].', ';
-        }
+        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $peer->types, $order[0]).' '.$order[1].', ';
         $sql= substr($sql, 0, -2);
       }
 
@@ -242,7 +238,7 @@
      * @return  string[]
      * @throws  rdbms.SQLStateException
      */
-    private function projections(DBConnection $conn, Peer $peer) {
+    public function projections(DBConnection $conn, Peer $peer) {
       if (!$this->isProjection()) return array_keys($peer->types);
       return $this->projection->asSql($conn);
     }
@@ -305,7 +301,7 @@
      * get a string for a column
      * can be either a columnname or a Column object
      *
-     * @param   &rdbms.DBConnection conn
+     * @param   rdbms.DBConnection conn
      * @param   array types
      * @param   rdbms.Column or string col
      * @return  string

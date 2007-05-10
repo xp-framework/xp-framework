@@ -24,7 +24,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheRecipient= array(),
       $cacheAuthor= array();
   

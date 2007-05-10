@@ -21,7 +21,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheCoord_xCoord_y= array();
   
     static function __static() { 

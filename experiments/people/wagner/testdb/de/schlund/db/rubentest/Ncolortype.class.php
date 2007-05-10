@@ -19,7 +19,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheNcolorColortype= array();
   
     static function __static() { 

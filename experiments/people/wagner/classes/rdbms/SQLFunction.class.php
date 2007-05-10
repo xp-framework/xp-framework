@@ -40,7 +40,9 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn) {
-      return $conn->formatter->format($conn->formatter->dialect->formatFunction($this), $this->args);
+      $args= $this->args;
+      array_unshift($args, $conn->getFormatter()->dialect->formatFunction($this));
+      return (call_user_func_array(array($conn, 'prepare'), $args));
     }
 
     /**

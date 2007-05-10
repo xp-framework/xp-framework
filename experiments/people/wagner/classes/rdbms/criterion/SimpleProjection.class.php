@@ -41,8 +41,8 @@
      */
     public function asSql(DBConnection $conn) {
       return (0 == strlen($this->alias))
-      ? $conn->prepare($this->command, $this->field->asSql($conn))
-      : $conn->prepare($this->command.' as %s', $this->field->asSql($conn), $this->alias);
+      ? $conn->prepare($this->command, $this->field)
+      : $conn->prepare($this->command.' as %s', $this->field, $this->alias);
     }
   }
 ?>

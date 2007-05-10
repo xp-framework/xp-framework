@@ -141,7 +141,7 @@
      * @param   rdbms.DBForeignKeyConstraint constraint
      * @return  rdbms.DBForeignKeyConstraint the added constraint
      */
-    public function addForeignKeyConstraint($constraint) {
+    public function addForeignKeyConstraint(DBForeignKeyConstraint $constraint) {
       $this->fgConstraints[]= $constraint;
       return $constraint;
     }

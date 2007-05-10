@@ -23,11 +23,12 @@
      * projection is then assumed
      *
      * @param    rdbms.criterion.Projection projections
+     * @param  string alias optional
      * @return   rdbms.criterion.ProjectionList
      */
-    public function add($projection) {
+    public function add($projection, $alias= '') {
       $this->projections[]= ($projection instanceof SQLFragment)
-      ? $projection= Projections::property($projection)
+      ? $projection= Projections::property($projection, $alias)
       : $projection;
       return $this;
     }

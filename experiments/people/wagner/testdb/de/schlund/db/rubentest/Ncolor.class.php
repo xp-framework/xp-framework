@@ -20,7 +20,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheColortype= array(),
       $cacheNtextureColor= array();
   

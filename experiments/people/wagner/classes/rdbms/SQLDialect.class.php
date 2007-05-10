@@ -119,7 +119,7 @@
     public function formatFunction(SQLFunction $func) {
       $func_i= $func->func.'_'.sizeof($func->args);
       if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
-      throw new IllegalArgumentException('SQL function "'.$func.'()" not known');
+      throw new IllegalArgumentException('SQL function "'.$func->func.'()" not known');
     }
 
     /**

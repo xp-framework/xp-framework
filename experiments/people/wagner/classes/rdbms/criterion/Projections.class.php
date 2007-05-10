@@ -3,14 +3,19 @@
  *
  * $Id$ 
  */
- uses('rdbms.criterion.CountProjection');
- uses('rdbms.criterion.ProjectionList');
- uses('rdbms.criterion.SimpleProjection');
+ uses(
+   'rdbms.criterion.CountProjection',
+   'rdbms.criterion.ProjectionList',
+   'rdbms.criterion.SimpleProjection'
+ );
 
   /**
    * belongs to the Criterion API
    * projection factory
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest
+   * @see      xp://rdbms.Criteria
+   * @purpose  purpose
    */
   class Projections extends Object {
 

@@ -316,5 +316,14 @@
     public function commit($name) { 
       return $this->query('commit');
     }
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      return $this->formatter;
+    }
   }
 ?>

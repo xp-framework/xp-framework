@@ -146,8 +146,8 @@
   </xsl:for-each>
   <xsl:text>;
   
-    private</xsl:text>
-      $_cached=   array(),
+    private
+      $_cached=   array(),</xsl:text>
   <xsl:for-each select="constraint/reference | document(concat('../', $path, '/../constraints/constraints.xml'))/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:if test="position() != 1"><xsl:text>,</xsl:text></xsl:if><xsl:text>
       $cache</xsl:text><xsl:value-of select="@role" /><xsl:text>= array()</xsl:text>
   </xsl:for-each><xsl:text>;

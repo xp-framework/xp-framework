@@ -19,7 +19,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheMmessageRecipient= array(),
       $cacheMmessageAuthor= array();
   

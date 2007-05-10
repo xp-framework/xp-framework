@@ -38,7 +38,7 @@
      */
     public function formatFunction(SQLFunction $func) {
       $func_i= $func->func.'_'.count($func->args);
-      switch ($func) {
+      switch ($func->func) {
         case 'concat':
         return '('.implode(' + ', array_fill(0, count($func->args), '%s')).')';
 

@@ -33,7 +33,7 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn, Peer $peer) {
-      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $peer, $aliasTable));
+      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $peer));
     }
   } 
 ?>

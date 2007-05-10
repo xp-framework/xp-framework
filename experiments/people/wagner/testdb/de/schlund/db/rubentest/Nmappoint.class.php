@@ -20,7 +20,6 @@
   
     private
       $_cached=   array(),
-  
       $cacheTexture= array(),
       $cacheNmobileObjectCoord_xCoord_y= array();
   

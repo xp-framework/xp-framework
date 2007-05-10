@@ -104,15 +104,8 @@
      * @return  string
      */
     public function prepare() {
-      static $formatter= NULL;
       $args= func_get_args();
-      
-      if (NULL === $formatter) {
-        $formatter= new StatementFormatter();
-        $this->formatter->setDialect(new SybaseDialect());
-      }
-      
-      return $formatter->format(array_shift($args), $args);
+      return $this->getFormatter()->format(array_shift($args), $args);
     }
     
     /**
@@ -205,7 +198,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.sybase.SybaseResultSet or FALSE to indicate failure
+     * @return  rdbms.sybase.SybaseResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
@@ -268,8 +261,8 @@
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.Transaction transaction
-     * @return  &rdbms.Transaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     public function begin($transaction) {
       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
@@ -310,6 +303,17 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
+    }
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      static $formatter= NULL;
+      if (NULL === $formatter) $formatter= new StatementFormatter($this, new SybaseDialect());
+      return $formatter;
     }
   }
 ?>

@@ -6,10 +6,10 @@
   uses('rdbms.SQLFunction', 'rdbms.SQLDialect');
   
   /**
-   * (Insert class' description here)
+   * use sql functions with different databases
    *
-   * @ext      extension
-   * @see      reference
+   * @test     xp://net.xp_framework.unittest.rdbms.SQLFunctionTest
+   * @see      xp://rdbms.Criteria
    * @purpose  purpose
    */
   class SQLFunctions extends Object {
