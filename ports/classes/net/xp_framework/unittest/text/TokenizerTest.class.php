@@ -90,5 +90,59 @@
       $this->assertEquals('World!', $t->nextToken());
       $this->assertFalse($t->hasMoreTokens());
     }
+    
+    /**
+     * Test for loop iteration
+     *
+     */
+    #[@test]
+    public function forIteration() {
+      $r= array();
+      for ($t= $this->tokenizerInstance('A B C', ' '); $t->hasMoreTokens(); ) {
+        $r[]= $t->nextToken();
+      }
+      $this->assertEquals(range('A', 'C'), $r);
+    }
+
+    /**
+     * Test while loop iteration
+     *
+     */
+    #[@test]
+    public function whileIteration() {
+      $r= array();
+      $t= $this->tokenizerInstance('A B C', ' ');
+      while ($t->hasMoreTokens()) {
+        $r[]= $t->nextToken();
+      }
+      $this->assertEquals(range('A', 'C'), $r);
+    }
+
+    /**
+     * Test foreach() overloading
+     *
+     */
+    #[@test]
+    public function foreachIteration() {
+      $r= array();
+      foreach ($this->tokenizerInstance('A B C', ' ') as $token) {
+        $r[]= $token;
+      }
+      $this->assertEquals(range('A', 'C'), $r);
+    }
+
+    /**
+     * Test resetting a tokenizer
+     *
+     */
+    #[@test]
+    public function reset() {
+      $t= $this->tokenizerInstance('A B C', ' ');
+      $this->assertTrue($t->hasMoreTokens());
+      $this->assertEquals('A', $t->nextToken());
+      $t->reset();
+      $this->assertTrue($t->hasMoreTokens());
+      $this->assertEquals('A', $t->nextToken());
+    }
   }
 ?>
