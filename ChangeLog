@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0127: rdbms.Peer::getConnection()
+  (friebe)
 - Added new text.StreamTokenizer class
   (friebe)
 - Implemented RFC #0121: Class loading revamp
