@@ -28,6 +28,29 @@ Rationale
 Functionality
 -------------
 
+In this example the Person.class is an implemantation of rdbms.Dataset.
+The rdbms.Dataset class itselfe does not have the column factory, but peer does.
+So you will give your implemented Dataset class a column method like that:
+
+<?php
+
+  class Person extends Dataset {
+
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    static public function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
+  }
+
+?>
+
+
 deprecated api:
 <?php
   $nameColumn= Property::forName('name');
