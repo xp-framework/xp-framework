@@ -28,7 +28,7 @@
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
           if (FALSE === ($r= include($f))) {
-            xp::error(xp::stringOf(new Error('Cannot include '.$class.' (include_path='.get_include_path().')')));
+            xp::error('Cannot bootstrap class '.$class.' (from file "'.$f.'")');
           }
           
           xp::$registry['classloader.'.$class]= 'FileSystemClassLoader://'.$path;
@@ -44,6 +44,11 @@
           xp::$registry['classloader.'.$class]= 'ArchiveClassLoader://'.$path;
           break;
         }
+      }
+      
+      // Verify the requested class could be loaded
+      if (!isset(xp::$registry['classloader.'.$class])) {
+        xp::error('Cannot bootstrap class '.$class.' (include_path= '.get_include_path().')');
       }
 
       // Register class name and call static initializer if available
