@@ -8,24 +8,24 @@
   );
   
   // {{{ compile
-  $p= &new ParamString();
+  $p= new ParamString();
   $in= $p->value(1);
   
   // "-" means compile STDIN
-  $t= &new Timer();
+  $t= new Timer();
   $t->start();
   if ('-' == $in) {
     $c= '';
     while ($buf= fgets(STDIN, 1024)) {
       $c.= $buf;
     }
-    $lexer= &new FQLLexer($c, '<standard input>');
+    $lexer= new FQLLexer($c, '<standard input>');
   } else {
-    $lexer= &new FQLLexer(file_get_contents($in), $in);
+    $lexer= new FQLLexer(file_get_contents($in), $in);
   }
   
-  $parser= &new FQLParser($lexer);
-  $iterator= &$parser->yyparse($lexer);
+  $parser= new FQLParser($lexer);
+  $iterator= $parser->yyparse($lexer);
   $t->stop();
   Console::writeLinef('%.3f seconds', $t->elapsedTime());
   

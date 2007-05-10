@@ -1,10 +1,21 @@
 <?php
-  uses('text.StringTokenizer');
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses('text.StringTokenizer', 'text.parser.generic.AbstractLexer');
 
   define('FQL_DELIMITERS', " =<>()/'\r\n");
 
-  class FQLLexer extends Object {
-    var
+  /**
+   * FQL Lexer
+   *
+   * @see      xp://text.parser.generic.AbstractParser
+   * @purpose  Abstract base class
+   */
+  class FQLLexer extends AbstractLexer {
+    protected static
       $keywords= array(
         'select'  => TOKEN_T_SELECT,
         'from'    => TOKEN_T_FROM,
@@ -17,26 +28,25 @@
      );
       
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @access  
-     * @param   
-     * @return  
+     * @param   string string
+     * @param   string fileName
      */
     function __construct($string, $fileName) {
-      $this->tokenizer= &new StringTokenizer($string, FQL_DELIMITERS, TRUE);
+      $this->tokenizer= new StringTokenizer($string, FQL_DELIMITERS, TRUE);
       $this->fileName= $fileName;
       $this->line= 0;
     }
   
     /**
-     * (Insert method's description here)
+     * Advance to next token. Return TRUE and set token, value and
+     * position members to indicate we have more tokens, or FALSE
+     * to indicate we've arrived at the end of the tokens.
      *
-     * @access  
-     * @param   
-     * @return  
+     * @return  bool
      */
-    function advance() {
+    public function advance() {
       do {
         $token= $this->tokenizer->nextToken(FQL_DELIMITERS);
         
@@ -54,8 +64,8 @@
           $this->token= TOKEN_T_REGEX;
           $this->value= $this->tokenizer->nextToken('/');
           $this->tokenizer->nextToken('/');
-        } else if (isset($this->keywords[$token])) {
-          $this->token= $this->keywords[$token];
+        } else if (isset(self::$keywords[$token])) {
+          $this->token= self::$keywords[$token];
           $this->value= $token;
         } else if (FALSE !== strpos(FQL_DELIMITERS, $token) && 1 == strlen($token)) {
           $this->token= ord($token);
@@ -69,20 +79,8 @@
         }
         break;
       } while (1);
-      // DEBUG Console::writeLine('FQLLexer::advance(), ', xp::stringOf($this->token), ': ', xp::stringOf($this->value)); 
       
       return $this->tokenizer->hasMoreTokens();
-    }
-
-    /**
-     * (Insert method's description here)
-     *
-     * @access  
-     * @param   
-     * @return  
-     */
-    function parseError(){
-      return sprintf("Error at line %d in file %s", $this->line, $this->fileName);
     }
   }
 ?>

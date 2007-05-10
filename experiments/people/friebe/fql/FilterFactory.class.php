@@ -23,7 +23,7 @@
      * @return  io.collections.iterate.IterationFilter
      * @throws  lang.IllegalArgumentException in case field / operator combination is unknown
      */
-    function &filterFor($field, $operator, $value) {
+    public static function filterFor($field, $operator, $value) {
       static $lookup= array(
         'name='         => 'NameEquals',
         'name~'         => 'NameMatches',
@@ -46,16 +46,10 @@
       
       $key= $field.$operator;
       if (!isset($lookup[$key])) {
-        return throw(new IllegalArgumentException('Unknown filter "'.$key.'"'));
+        throw(new IllegalArgumentException('Unknown filter "'.$key.'"'));
       }
 
-      try(); {
-        $class= &XPClass::forName(sprintf('io.collections.iterate.%sFilter', $lookup[$key]));
-      } if (catch('ClassNotFoundException', $e)) {
-        return throw($e);
-      }
-      
-      $constructor= &$class->getConstructor();
+      $constructor= XPClass::forName(sprintf('io.collections.iterate.%sFilter', $lookup[$key]))->getConstructor();
       $arguments= $constructor->getArguments();
       
       switch ($s= sizeof($arguments)) {
@@ -63,10 +57,10 @@
 
         case 1: switch ($arguments[0]->getType()) {
           case 'util.Date': {
-            try(); {
-              $arg= &Date::fromString($value);
-            } if (catch('IllegalArgumentException', $e)) {
-              return throw(new FormatException('Cannot parse string "'.$value.'", expecting YYYY-MM-DD'));
+            try {
+              $arg= Date::fromString($value);
+            } catch (IllegalArgumentException $e) {
+              throw new FormatException('Cannot parse string "'.$value.'", expecting YYYY-MM-DD');
             }
             break;
           }
@@ -78,7 +72,7 @@
         }
         return $constructor->newInstance($arg);
 
-        default: return throw(new IllegalArgumentException('Too many arguments ('.$s.'): '.$constructor->toString()));
+        default: throw new IllegalArgumentException('Too many arguments ('.$s.'): '.$constructor->toString());
       }
       
       // Unreachable

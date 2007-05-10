@@ -7,7 +7,7 @@
   );
   
   // {{{ compile
-  $p= &new ParamString();
+  $p= new ParamString();
   $in= $p->value(1);
   
   // "-" means compile STDIN
@@ -16,12 +16,12 @@
     while ($buf= fgets(STDIN, 1024)) {
       $c.= $buf;
     }
-    $lexer= &new FQLLexer($c, '<standard input>');
+    $lexer= new FQLLexer($c, '<standard input>');
   } else {
-    $lexer= &new FQLLexer(file_get_contents($in), $in);
+    $lexer= new FQLLexer(file_get_contents($in), $in);
   }
   
-  $parser= &new FQLParser($lexer);
+  $parser= new FQLParser($lexer);
   $nodes= $parser->yyparse($lexer);
   
   if ($parser->hasErrors()) {

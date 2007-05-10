@@ -29,16 +29,16 @@
 start:
 		T_SELECT T_FROM collection where { 
           if ($4) {
-            $$= &new FilteredIOCollectionIterator($3, $4);
+            $$= new FilteredIOCollectionIterator($3, $4);
           } else {
-            $$= &new IOCollectionIterator($3);
+            $$= new IOCollectionIterator($3);
           }
         }
 ;
 
 collection:
         T_WORD '(' T_STRING ')' {
-            $$= &new FileCollection($3);
+            $$= new FileCollection($3);
         }
 ;
 
@@ -56,26 +56,26 @@ restrictions:
           $$= $1;
         }
     |   restriction T_AND restrictions {
-          $$= &new AllOfFilter(array($1, $3));
+          $$= new AllOfFilter(array($1, $3));
         }
     |   restriction T_OR restrictions {
-          $$= &new AnyOfFilter(array($1, $3));
+          $$=  new AnyOfFilter(array($1, $3));
         }
 ;
 
 restriction:
         T_WORD operator criteria {
-          try(); {
-            $$= &FilterFactory::filterFor($1, $2, $3);
-          } if (catch('Exception', $e)) {
+          try {
+            $$= FilterFactory::filterFor($1, $2, $3);
+          } catch (XPException $e) {
             $this->error(E_COMPILE_ERROR, 'In expression "'.$1.' '.$2.'": '.$e->getMessage());
             $$= NULL;
           }
         }
    |    T_WORD matches {
-          try(); {
-            $$= &FilterFactory::filterFor($1, '~', $2);
-          } if (catch('Exception', $e)) {
+          try {
+            $$= FilterFactory::filterFor($1, '~', $2);
+          } catch (XPException $e) {
             $this->error(E_COMPILE_ERROR, 'In expression "'.$1.' '.$2.'": '.$e->getMessage());
             $$= NULL;
           }
