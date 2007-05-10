@@ -11,7 +11,7 @@
   define('MODIFIER_NATIVE', 8);   // See lang.XPClass
   
   // {{{ compile
-  $p= &new ParamString();
+  $p= new ParamString();
   $in= $p->value(1);
   
   // "-" means compile STDIN
@@ -20,18 +20,13 @@
     while ($buf= fgets(STDIN, 1024)) {
       $c.= $buf;
     }
-    $lexer= &new Lexer($c, '<standard input>');
+    $lexer= new Lexer($c, '<standard input>');
   } else {
-    $lexer= &new Lexer(file_get_contents($in), $in);
+    $lexer= new Lexer(file_get_contents($in), $in);
   }
   
-  $parser= &new Parser();
-  try(); {
-    $nodes= $parser->parse($lexer);
-  } if (catch('Exception', $e)) {
-    $e->printStackTrace();
-    exit(-1);
-  }
+  $parser= new Parser();
+  $nodes= $parser->parse($lexer);
   
   // Dump AST
   Console::writeLine(VNode::stringOf($nodes));
