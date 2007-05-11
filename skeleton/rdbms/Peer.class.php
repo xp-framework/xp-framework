@@ -81,6 +81,7 @@
         $this->conn= $connection;
       } else {
         $this->connection= $connection;
+        $this->conn= NULL;
       }
     }
 
