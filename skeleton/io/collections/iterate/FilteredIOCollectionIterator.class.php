@@ -15,18 +15,19 @@
    *   uses(
    *     'io.collections.FileCollection',
    *     'io.collections.iterate.FilteredIOCollectionIterator',
-   *     'io.collections.iterate.RegexFilter'
+   *     'io.collections.iterate.NameMatchesFilter'
    *   );
    *
-   *   $origin= &new FileCollection('/etc');
+   *   $origin= new FileCollection('/etc');
    *   for (
-   *     $i= &new FilteredIOCollectionIterator($origin, new RegexFilter('/\.jpe?g$/i')); 
+   *     $i= new FilteredIOCollectionIterator($origin, new NameMatchesFilter('/\.jpe?g$/i')); 
    *     $i->hasNext(); 
    *   ) {
    *     Console::writeLine('Element ', xp::stringOf($i->next()));
    *   }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.io.collections.IOCollectionIteratorTest
    * @see      xp://io.collections.iterate.IOCollectionIterator
    * @purpose  Iterator
    */
@@ -37,8 +38,8 @@
     /**
      * Constructor
      *
-     * @param   &io.collections.IOCollection collection
-     * @param   &io.collections.iterate.Filter filter
+     * @param   io.collections.IOCollection collection
+     * @param   io.collections.iterate.Filter filter
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
     public function __construct($collection, $filter, $recursive= FALSE) {
@@ -49,7 +50,7 @@
     /**
      * Whether to accept a specific element
      *
-     * @param   &io.collections.IOElement element
+     * @param   io.collections.IOElement element
      * @return  bool
      */
     protected function acceptElement($element) {
