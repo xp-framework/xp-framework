@@ -27,9 +27,10 @@
   );
 
   /**
-   * Unit tests for IOCollectionIterator class
+   * Unit tests for I/O collection iterator classes
    *
    * @see      xp://io.collections.IOCollectionIterator
+   * @see      xp://io.collections.FilteredIOCollectionIterator
    * @purpose  Unit test
    */
   class IOCollectionIteratorTest extends AbstractCollectionTest {
@@ -56,6 +57,30 @@
         $this->assertSubclass($it->next(), 'io.collections.IOElement');
       }
       $this->assertEquals($this->total, $i);
+    }
+
+    /**
+     * Test use within foreach()
+     *
+     */
+    #[@test]
+    public function foreachLoop() {
+      foreach (new IOCollectionIterator($this->fixture) as $i => $e) {
+        $this->assertSubclass($e, 'io.collections.IOElement');
+      }
+      $this->assertEquals($this->sizes[$this->fixture->getURI()]- 1, $i);
+    }
+
+    /**
+     * Test use within foreach()
+     *
+     */
+    #[@test]
+    public function foreachLoopRecursive() {
+      foreach (new IOCollectionIterator($this->fixture, TRUE) as $i => $e) {
+        $this->assertSubclass($e, 'io.collections.IOElement');
+      }
+      $this->assertEquals($this->total- 1, $i);
     }
 
     /**
