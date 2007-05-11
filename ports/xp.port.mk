@@ -7,7 +7,8 @@ PHP?=			php
 XPINSTALL=		${BASE}/technologies/env/bin/install/install.php
 XPFIRSTINSTALL=	${BASE}/technologies/env/bin/install/firstinstall.php
 XPT=			${BASE}/unittest/run.php
-XSLPROC?=		sabcmd
+XSLPROC?=		xsltproc
+XPCLI?=			xpcli
 
 # Default values for wrapper target
 WRAPPER_SRC?=	wrapper
@@ -17,6 +18,11 @@ WRAPPER_DTD?=	$(BASE)/../skeleton/scriptlet/xml/workflow/generator/wrapper.dtd
 
 # Default values for skeleton path
 XPCLASSPATH?=	$(BASE)/classes
+
+# Variables for database class generation
+DBDIR?=			conf/db
+DBBASE?=		${XPCLASSPATH}
+
 
 all:    usage
 
@@ -62,3 +68,18 @@ wrapper:
 			fi \
 		done \
 	fi
+
+database: database.god database.gen
+database.god:
+	@for i in `ls -1 $(DBDIR)`; do \
+	  echo "===> Generating XML files for $$i"; \
+	  $(XPCLI) net.xp_framework.db.generator.DataSetCreator -c $(DBDIR)/$$i/config.ini -O $(DBDIR); \
+	done;
+
+database.gen:
+	@for j in `ls -1 $(DBDIR)`; do \
+	  echo "===> Generating database classes for $$j"; \
+		for i in `find $(DBDIR)/$$j/tables -name *.xml`; do \
+			$(XPCLI) net.xp_framework.db.generator.DataSetCreator -c $(DBDIR)/$$j/config.ini -X $$i -O ${DBBASE}; \
+	        done; \
+	done;
