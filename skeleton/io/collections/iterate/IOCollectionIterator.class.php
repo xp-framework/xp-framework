@@ -15,27 +15,29 @@
    *     'io.collections.iterate.IOCollectionIterator'
    *   );
    *
-   *   $origin= &new FileCollection('/etc');
-   *
-   *   for ($i= &new IOCollectionIterator($origin); $i->hasNext(); ) {
+   *   $origin= new FileCollection('/etc');
+   *   for ($i= new IOCollectionIterator($origin); $i->hasNext(); ) {
    *     Console::writeLine('Element ', xp::stringOf($i->next()));
    *   }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.io.collections.IOCollectionIteratorTest
+   * @see      xp://io.collections.iterate.FilteredIOCollectionIterator
    * @purpose  Iterator
    */
-  class IOCollectionIterator extends Object implements XPIterator {
+  class IOCollectionIterator extends Object implements XPIterator, IteratorAggregate {
     public
       $collections = array(),
       $recursive   = FALSE;
     
-    public
+    protected
+      $iterator    = NULL,
       $_element    = NULL;
     
     /**
      * Constructor
      *
-     * @param   &io.collections.IOCollection collection
+     * @param   io.collections.IOCollection collection
      * @param   bool recursive default FALSE whether to recurse into subdirectories
      */
     public function __construct($collection, $recursive= FALSE) {
@@ -48,11 +50,30 @@
      * Whether to accept a specific element. Always returns TRUE in this
      * implementation - overwrite in subclasses...
      *
-     * @param   &io.collections.IOElement element
+     * @param   io.collections.IOElement element
      * @return  bool
      */
     protected function acceptElement($element) {
       return TRUE;
+    }
+
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
+        private $i, $t, $r;
+        public function __construct($r) { $this->r= $r; }
+        public function current() { return $this->r->next(); }
+        public function key() { return $this->i; }
+        public function next() { $this->i++; }
+        public function rewind() { /* NOOP */ }
+        public function valid() { return $this->r->hasNext(); }
+      }');
+      return $this->iterator;
     }
     
     /**
@@ -77,7 +98,7 @@
         }
 
         // Check whether to recurse into subcollections
-        if ($this->recursive && is('io.collections.IOCollection', $this->_element)) {
+        if ($this->recursive && $this->_element instanceof IOCollection) {
           array_unshift($this->collections, $this->_element);
           $this->collections[0]->open();
         }
@@ -92,12 +113,12 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @return  &io.collections.IOElement
+     * @return  io.collections.IOElement
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {
       if (!$this->hasNext()) {
-        throw(new NoSuchElementException('No more  entries'));
+        throw new NoSuchElementException('No more entries');
       }
       
       $next= $this->_element;
