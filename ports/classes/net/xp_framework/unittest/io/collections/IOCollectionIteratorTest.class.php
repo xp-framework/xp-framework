@@ -41,8 +41,7 @@
     #[@test]
     public function iteration() {
       for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
-        $e= $it->next();
-        $this->assertTrue(is('io.collections.IOElement', $e));
+        $this->assertSubclass($it->next(), 'io.collections.IOElement');
       }
       $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
     }
@@ -54,8 +53,7 @@
     #[@test]
     public function recursiveIteration() {
       for ($it= new IOCollectionIterator($this->fixture, TRUE), $i= 0; $it->hasNext(); $i++) {
-        $e= $it->next();
-        $this->assertTrue(is('io.collections.IOElement', $e));
+        $this->assertSubclass($it->next(), 'io.collections.IOElement');
       }
       $this->assertEquals($this->total, $i);
     }
@@ -74,7 +72,7 @@
         $it->hasNext(); 
       ) {
         $e= $it->next();
-        $this->assertTrue(is('io.collections.IOElement', $e));
+        $this->assertSubclass($e, 'io.collections.IOElement');
         $elements[]= $e->getURI();
       }
       return $elements;
