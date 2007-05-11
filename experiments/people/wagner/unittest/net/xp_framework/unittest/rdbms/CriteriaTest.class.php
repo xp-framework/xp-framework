@@ -209,6 +209,23 @@
     }
 
     /**
+     * Tests string as argument for addorderBy
+     *
+     * @see     xp://rdbms.Criteria#addOrderBy
+     */
+    #[@test]
+    public function addOrderByString() {
+      with ($c= new Criteria()); {
+        $c->addOrderBy("valid_from");
+        $c->addOrderBy("expire_at");
+      }
+      $this->assertSql(
+        'order by valid_from asc, expire_at asc',
+        $c
+      );
+    }
+
+    /**
      * Tests rdbms.Column as argument for addGroupBy
      *
      * @see     xp://rdbms.Criteria#addGroupBy
@@ -218,6 +235,23 @@
       with ($c= new Criteria()); {
         $c->addGroupBy(job::column('valid_from'));
         $c->addGroupBy(job::column('expire_at'));
+      }
+      $this->assertSql(
+        'group by valid_from, expire_at',
+        $c
+      );
+    }
+
+    /**
+     * Tests string as argument for addGroupBy
+     *
+     * @see     xp://rdbms.Criteria#addGroupBy
+     */
+    #[@test]
+    public function addGroupByString() {
+      with ($c= new Criteria()); {
+        $c->addGroupBy("valid_from");
+        $c->addGroupBy("expire_at");
       }
       $this->assertSql(
         'group by valid_from, expire_at',
