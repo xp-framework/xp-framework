@@ -9,7 +9,7 @@
     'rdbms.sybase.SybaseResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter',
-    'rdbms.dialect.SybaseDialect'
+    'rdbms.sybase.SybaseDialect'
   );
 
   /**

@@ -9,7 +9,7 @@
     'rdbms.mysql.MySQLResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter',
-    'rdbms.dialect.MysqlDialect'
+    'rdbms.mysql.MysqlDialect'
   );
 
   /**
