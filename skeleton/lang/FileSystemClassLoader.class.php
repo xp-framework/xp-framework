@@ -54,7 +54,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return file_get_contents($this->path.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
+      return file_get_contents($this->path.strtr($name, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -64,7 +64,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return is_file($this->path.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
+      return is_file($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -84,7 +84,7 @@
      * @return  bool
      */
     public function providesPackage($package) {
-      return is_dir($this->path.strtr($package, '.', '/'));
+      return is_dir($this->path.strtr($package, '.', DIRECTORY_SEPARATOR));
     }
     
     /**
