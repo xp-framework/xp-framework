@@ -43,6 +43,16 @@
     }
 
     /**
+     * Checks if a specific resource is provided by this package
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function providesResource($name) { 
+      return ClassLoader::getDefault()->providesResource(strtr($this->name, '.', '/').'/'.$name);
+    }
+
+    /**
      * Get all classes in this package. Loads classes if not already
      * loaded.
      *
@@ -109,6 +119,20 @@
     }
 
     /**
+     * Returns a list of resources in this package.
+     *
+     * @return  string[]
+     */
+    public function getResources() {
+      $resources= array();
+      foreach (ClassLoader::getDefault()->packageContents($this->name) as $file) {
+        if ('/' == substr($file, -1) || xp::CLASS_FILE_EXT == substr($file, -10)) continue;
+        $resources[]= strtr($this->name, '.', '/').'/'.$file;
+      }
+      return $resources;
+    }
+
+    /**
      * Get a specific subpackage of this package by its name, which 
      * may be either locally qualified (without dots) or fully 
      * qualified (with dots).
@@ -141,10 +165,48 @@
       $p= new self();
       $p->name= rtrim($name, '.');   // Normalize
       
-      if (is(NULL, ClassLoader::getDefault()->findPackage($p->name))) {
+      if (!ClassLoader::getDefault()->providesPackage($p->name)) {
         raise('lang.ElementNotFoundException', 'No classloaders provide '.$name);
       }
       return $p;
+    }
+
+    /**
+     * Loads a resource.
+     *
+     * @param   string filename name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($filename) {
+
+      // Handle fully qualified names
+      if (FALSE !== ($p= strrpos($filename, '/'))) {
+        if (substr($filename, 0, $p) != strtr($this->name, '.', '/')) {
+          throw new IllegalArgumentException('Resource '.$filename.' is not in '.$this->name);
+        }
+        $filename= substr($filename, $p+ 1);
+      }
+      return ClassLoader::getDefault()->getResource(strtr($this->name, '.', '/').'/'.$filename);
+    }
+    
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string filename name of resource
+     * @return  io.File
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($filename) {
+
+      // Handle fully qualified names
+      if (FALSE !== ($p= strrpos($filename, '/'))) {
+        if (substr($filename, 0, $p) != strtr($this->name, '.', '/')) {
+          throw new IllegalArgumentException('Resource '.$filename.' is not in '.$this->name);
+        }
+        $filename= substr($filename, $p+ 1);
+      }
+      return ClassLoader::getDefault()->getResourceAsStream(strtr($this->name, '.', '/').'/'.$filename);
     }
     
     /**
