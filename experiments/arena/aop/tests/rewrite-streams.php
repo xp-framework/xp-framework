@@ -10,21 +10,6 @@
   
   class Aop extends Object {
     public static $pointcuts= array();
-    
-    public static function before($method, $args) {
-      fputs(STDERR, '(aop) before'.$method." >>> ".var_export($args, 1).")\n");
-      call_user_func_array(self::$pointcuts[$method]['before'], $args);
-    }
-
-    public static function after($method, $return) {
-      fputs(STDERR, '(aop) after('.$method." <<< ".var_export($return, 1).")\n");
-      call_user_func(self::$pointcuts[$method]['after'], $return);
-    }
-
-    public static function except($method, $e) {
-      fputs(STDERR, '(aop) except('.$method." *** ".$e->getMessage().")\n");
-      call_user_func(self::$pointcuts[$method]['except'], $e);
-    }
   }
   
   class IOWrapper extends Object {
@@ -61,7 +46,18 @@
         
         $args= '('.$this->f->nextToken('{');
         $this->f->nextToken('{');
-        $t= 'function '.$name.$args.'{ Aop::before(__METHOD__, array'.$args.'); try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { Aop::except(__METHOD__, $e); throw $e; } Aop::after(__METHOD__, $r); return $r; } function ·'.$name.$args.' {';
+        $t= 'function '.$name.$args.'{ ';
+        
+        // @before
+        $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'before\'], array'.$args.');';
+        
+        // @except
+        $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'except\'], $e); throw $e; } ';
+        
+        // @after
+        $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'after\'], $r); return $r;';
+        
+        $t.= '} function ·'.$name.$args.' {';
         
         // DEBUG fputs(STDERR, $t."\n");
       }
@@ -109,6 +105,11 @@
         throw new IllegalArgumentException('Power must either be 611 or 6100'); 
       }
     }
+
+    #[@after('settingPower')]
+    public function logPower() {
+      Console::writeLine('Power successfully set!');
+    }
   }
   
   // Install stream wrapper
@@ -121,7 +122,8 @@
   // Register pointcuts
   $pa= new PowerAspect();
   Aop::$pointcuts['Binford::setPoweredBy']= array(
-    'before' => array($pa, 'checkPower')
+    'before' => array($pa, 'checkPower'),
+    'after'  => array($pa, 'logPower'),
   );
   
   // Load binford class
