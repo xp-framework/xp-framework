@@ -2,8 +2,7 @@
   require('lang.base.php');
   $s= microtime(TRUE);
   uses(
-    'tests.classes.RecursionOne',
-    'tests.classes.RecursionTwo'
+    'webservices.soap.types.SOAPHashMap'
   );
   
   printf(
