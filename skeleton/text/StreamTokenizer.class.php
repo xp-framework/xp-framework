@@ -34,9 +34,16 @@
     public function reset() {
       $this->_stack= array();
       
-      // TODO: If the source is rewindable, no cloning would be needed.
-      // Maybe we need a Seekable interface?
-      $this->_src= clone $this->source;
+      if ($this->_src) {
+        if ($this->_src instanceof Seekable) {
+          $this->_src->seek(0, SEEK_SET);
+        } else {
+          throw new IllegalStateException(
+            'Cannot reset, Source '.xp::stringOf($this->_src).' is not seekable'
+          );
+        }
+      }
+      $this->_src= $this->source;
       $this->_buf= '';
     }
     
@@ -56,7 +63,7 @@
      * @return  string next token
      */
     public function nextToken($delimiters= NULL) {
-      if (empty($this->_stack) || '' != $this->_buf) {
+      if (empty($this->_stack)) {
       
         // Read until we have either find a delimiter or until we have 
         // consumed the entire content.
