@@ -13,14 +13,17 @@
     
     public static function before($method, $args) {
       fputs(STDERR, '(aop) before'.$method." >>> ".var_export($args, 1).")\n");
+      call_user_func_array(self::$pointcuts[$method]['before'], $args);
     }
 
     public static function after($method, $return) {
       fputs(STDERR, '(aop) after('.$method." <<< ".var_export($return, 1).")\n");
+      call_user_func(self::$pointcuts[$method]['after'], $return);
     }
 
     public static function except($method, $e) {
       fputs(STDERR, '(aop) except('.$method." *** ".$e->getMessage().")\n");
+      call_user_func(self::$pointcuts[$method]['except'], $e);
     }
   }
   
@@ -92,6 +95,22 @@
   
   }
   
+  #[@aspect]
+  class PowerAspect extends Object {
+  
+    #[@pointcut]
+    public function settingPower() {
+      return 'Binford::setPoweredBy';
+    }
+  
+    #[@before('settingPower')]
+    public function checkPower($p) {
+      if ($p != 6100 && $p != 611) { 
+        throw new IllegalArgumentException('Power must either be 611 or 6100'); 
+      }
+    }
+  }
+  
   // Install stream wrapper
   $p= new ParamString();
   if (!$p->exists('disable')) {
@@ -100,7 +119,10 @@
   }
     
   // Register pointcuts
-  Aop::$pointcuts['Binford::setPoweredBy']= array();
+  $pa= new PowerAspect();
+  Aop::$pointcuts['Binford::setPoweredBy']= array(
+    'before' => array($pa, 'checkPower')
+  );
   
   // Load binford class
   $t= new Timer();
@@ -109,7 +131,7 @@
   $t->stop();
   
   // Create an instance
-  $bf= create(new Binford(61));
+  $bf= create(new Binford($p->value(1, NULL, 6100)));
   
   Console::writeLinef('%s - took %.3f seconds', $bf->toString(), $t->elapsedTime());
 ?>
