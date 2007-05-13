@@ -7,7 +7,7 @@
   uses('io.streams.InputStream');
 
   /**
-   * InputStream that reads from a file
+   * Buffered InputStream
    *
    * @purpose  InputStream implementation
    */
