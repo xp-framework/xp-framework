@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('io.streams.InputStream');
+  uses('io.streams.InputStream', 'io.streams.Seekable');
 
   /**
    * InputStream that reads from a file
    *
    * @purpose  InputStream implementation
    */
-  class FileInputStream extends Object implements InputStream {
+  class FileInputStream extends Object implements InputStream, Seekable {
     protected
       $file= NULL;
     
@@ -57,7 +57,18 @@
      *
      */
     public function __destruct() {
-      $this->close();
+      $this->file->isOpen() && $this->close();
+    }
+
+    /**
+     * Seek to a given offset
+     *
+     * @param   int offset
+     * @param   int whence default SEEK_SET (one of SEEK_[SET|CUR|END])
+     * @throws  io.IOException in case of error
+     */
+    public function seek($offset, $whence= SEEK_SET) {
+      $this->file->seek($offset, $whence);
     }
   }
 ?>

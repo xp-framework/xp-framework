@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('io.streams.InputStream');
+  uses('io.streams.InputStream', 'io.streams.Seekable');
 
   /**
    * InputStream that reads from a given string.
    *
    * @purpose  InputStream implementation
    */
-  class MemoryInputStream extends Object implements InputStream {
+  class MemoryInputStream extends Object implements InputStream, Seekable {
     protected
       $pos   = 0,
       $bytes = '';
@@ -53,6 +53,21 @@
      *
      */
     public function close() {
+    }
+    
+    /**
+     * Seek to a given offset
+     *
+     * @param   int offset
+     * @param   int whence default SEEK_SET (one of SEEK_[SET|CUR|END])
+     * @throws  io.IOException in case of error
+     */
+    public function seek($offset, $whence= SEEK_SET) {
+      switch ($whence) {
+        case SEEK_SET: $this->pos= $offset; break;
+        case SEEK_CUR: $this->pos+= $offset; break;
+        case SEEK_END: $this->pos= strlen($this->bytes) + $offset; break;
+      }
     }
   }
 ?>
