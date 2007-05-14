@@ -84,6 +84,10 @@ PHP version >= 5
 Related documents
 -----------------
 
+- http://xp-framework.net/rfc/contrib/rfc0126.diff
+  Patch against skeleton/
+
+
 Comments
 --------
 

@@ -1,0 +1,472 @@
+Index: skeleton/rdbms/Peer.class.php
+===================================================================
+--- skeleton/rdbms/Peer.class.php	(Revision 10360)
++++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
+@@ -4,7 +4,11 @@
+  * $Id$ 
+  */
+ 
+-  uses('rdbms.ResultIterator', 'rdbms.ConnectionManager');
++  uses(
++    'rdbms.ResultIterator',
++    'rdbms.ConnectionManager',
++    'rdbms.Column'
++  );
+ 
+   /**
+    * Peer
+@@ -177,6 +181,18 @@
+     }
+     
+     /**
++     * column factory
++     *
++     * @param   string name
++     * @return  rdbms.Column
++     * @throws  lang.IllegalArumentException
++     */
++    public function column($name) {
++      if (!isset($this->types[$name])) throw new SQLStateException('column '.$name.' does not exist');
++      return new Column($this, $name);
++    }
++    
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+Index: skeleton/rdbms/Column.class.php
+===================================================================
+--- skeleton/rdbms/Column.class.php	(Revision 0)
++++ skeleton/rdbms/Column.class.php	(Revision 0)
+@@ -0,0 +1,171 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
++
++  /**
++   * represents a table column
++   * should be build via a dataset's factory Dataset::column(name)
++   * 
++   * <code>
++   *   $col= Nmappoint::column("texture_id"); // where Nmappoint is a generated dataset class
++   *
++   *   $criteria= Criteria::newInstance()->add(Restrictions::equal($col, 5);
++   *   $criteria= Criteria::newInstance()->add($col->equal(5));
++   * </code>
++   */
++  class Column extends Object implements SQLFragment {
++    
++    private
++      $peer= NULL,
++      $type= '',
++      $name= '';
++
++    /**
++     * Constructor
++     *
++     * @param   rdbms.Peer peer
++     * @param   string name
++     */
++    public function __construct($peer, $name) {
++      $this->peer= $peer;
++      $this->name= $name;
++      if (!isset($this->peer->types[$this->name])) throw new SQLStateException('field '.$this->name.' does not exist');
++      $this->type= $this->peer->types[$this->name][0];
++    }
++
++    /**
++     * Get type
++     *
++     * @return  string
++     */
++    public function getType() {
++      return $this->type;
++    }
++
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @return  string
++     * @throws  rdbms.SQLStateException
++     */
++    public function asSql(DBConnection $conn) {
++      return $this->name;
++    }
++
++    /**
++     * Apply an "in" constraint to this property
++     *
++     * @param   mixed[] values
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function in($values) {
++      return Restrictions::in($this, $values);
++    }
++
++    /**
++     * Apply an "not in" constraint to this property
++     *
++     * @param   mixed[] values
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function notIn($values) {
++      return Restrictions::notIn($this, $values);
++    }
++
++    /**
++     * Apply a "like" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function like($value) {
++      return Restrictions::like($this, $value);
++    }
++
++    /**
++     * Apply a case-insensitive "like" constraint to this property
++     *
++     * @see     php://sql_regcase
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function ilike($value) {
++      return Restrictions::ilike($this, $value);
++    }
++        
++    /**
++     * Apply an "equal" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function equal($value) {
++      return Restrictions::equal($this, $value);
++    }
++
++    /**
++     * Apply a "not equal" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function notEqual($value) {
++      return Restrictions::notEqual($this, $value);
++    }
++
++    /**
++     * Apply a "less than" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function lessThan($value) {
++      return Restrictions::lessThan($this, $value);
++    }
++
++    /**
++     * Apply a "greater than" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function greaterThan($value) {
++      return Restrictions::greaterThan($this, $value);
++    }
++
++    /**
++     * Apply a "less than or equal to" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function lessThanOrEqualTo($value) {
++      return Restrictions::lessThanOrEqualTo($this, $value);
++    }
++
++    /**
++     * Apply a "greater than or equal to" constraint to this property
++     *
++     * @param   mixed value
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function greaterThanOrEqualTo($value) {
++      return Restrictions::greaterThanOrEqualTo($this, $value);
++    }
++
++    /**
++     * Apply a "between" constraint to this property
++     *
++     * @param   mixed lo
++     * @param   mixed hi
++     * @return  rdbms.criterion.SimpleExpression
++     */
++    public function between($lo, $hi) {
++      return Restrictions::between($this, $lo, $hi);
++    }
++  }
++?>
+Index: skeleton/rdbms/Criteria.class.php
+===================================================================
+--- skeleton/rdbms/Criteria.class.php	(Revision 10360)
++++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
+@@ -4,7 +4,11 @@
+  * $Id$ 
+  */
+ 
+-  uses('rdbms.criterion.SimpleExpression', 'rdbms.SQLExpression');
++  uses(
++    'rdbms.criterion.SimpleExpression',
++    'rdbms.SQLExpression',
++    'rdbms.Column'
++  );
+   
+   define('ASCENDING',       'asc');
+   define('DESCENDING',      'desc');
+@@ -60,8 +64,6 @@
+      *     ->addOrderBy('created_at', DESCENDING)
+      *   ;
+      * </code>
+-     *
+-     * @param   rdbms.Criteria
+      */
+     public static function newInstance() {
+       return new self();
+@@ -90,7 +92,7 @@
+      * @return  rdbms.Criteria this object
+      */
+     public function add($criterion, $value= NULL, $comparison= EQUAL) {
+-      if (is('rdbms.criterion.Criterion', $criterion)) {
++      if ($criterion instanceof Criterion) {
+         $this->conditions[]= $criterion;
+       } else {
+         $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
+@@ -127,9 +129,11 @@
+      * Add group by
+      *
+      * @param   string column
++     * @return  rdbms.Criteria this object
+      */
+     public function addGroupBy($column) {
+       $this->groupings[]= $column;
++      return $this;
+     }
+     
+     /**
+@@ -148,49 +152,44 @@
+     /**
+      * Export SQL
+      *
+-     * @param   &rdbms.DBConnection db
++     * @param   &rdbms.DBConnection conn
+      * @param   array types
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function toSQL($db, $types) {
++    public function toSQL($conn, $types) {
+       $sql= '';
+       
+       // Process conditions
+       if (!empty($this->conditions)) {
+         $sql.= ' where ';
+-        foreach ($this->conditions as $condition) {
+-          $sql.= $condition->asSql($db, $types).' and ';
+-        }
++        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $types).' and ';
+         $sql= substr($sql, 0, -4);
+       }
+ 
+       // Process group by
+       if (!empty($this->groupings)) {
+-        $sql= rtrim($sql, ' ').$db->prepare(' group by %c', $this->groupings);
++        $sql= rtrim($sql, ' ').' group by ';
++        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $types, $grouping).', ';
++        $sql= substr($sql, 0, -2);
+       }
+ 
+       // Process order by
+       if (!empty($this->orderings)) {
+         $sql= rtrim($sql, ' ').' order by ';
+-        foreach ($this->orderings as $order) {
+-          if (!isset($types[$order[0]])) {
+-            throw(new SQLStateException('Field "'.$order[0].'" unknown'));
+-          }
+-          $sql.= $order[0].' '.$order[1].', ';
+-        }
++        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $types, $order[0]).' '.$order[1].', ';
+         $sql= substr($sql, 0, -2);
+       }
+-      
++
+       return $sql;
+     }
+     
+     /**
+      * Executes an SQL SELECT statement
+      *
+-     * @param   &rdbms.DBConnection conn
+-     * @param   &rdbms.Peer peer
+-     * @return  &rdbms.ResultSet
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.Peer peer
++     * @return  rdbms.ResultSet
+      */
+     public function executeSelect($conn, $peer) {
+       return $conn->query(
+@@ -201,5 +200,23 @@
+       );
+     }
+ 
++    /**
++     * get a string for a column
++     * can be either a columnname or a Column object
++     *
++     * @param   &rdbms.DBConnection conn
++     * @param   array types
++     * @param   rdbms.Column or string col
++     * @return  string
++     */
++    private function fragment($conn, $types, $col) {
++      if ($col instanceof SQLFragment) {
++        return $col->asSQL($conn);
++      } else {
++        if (!isset($types[$col])) throw(new SQLStateException('Field "'.$col.'" unknown'));
++        return $col;
++      }
++    }
++
+   } 
+ ?>
+Index: skeleton/rdbms/SQLRenderable.class.php
+===================================================================
+--- skeleton/rdbms/SQLRenderable.class.php	(Revision 0)
++++ skeleton/rdbms/SQLRenderable.class.php	(Revision 0)
+@@ -0,0 +1,26 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
++ */
++
++  uses('rdbms.SQLStateException');
++
++  /**
++   * Represents a fragment that can be rendered to string
++   *
++   * @see      xp://rdbms.Criteria#add
++   * @purpose  Interface
++   */
++  interface SQLRenderable  {
++  
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @return  string
++     * @throws  rdbms.SQLStateException
++     */
++    public function asSql(DBConnection $conn);
++  }
++?>
+Index: skeleton/rdbms/SQLFragment.class.php
+===================================================================
+--- skeleton/rdbms/SQLFragment.class.php	(Revision 0)
++++ skeleton/rdbms/SQLFragment.class.php	(Revision 0)
+@@ -0,0 +1,16 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
++ */
++
++  uses('rdbms.SQLRenderable');
++
++  /**
++   * Represents a query fragment to be used in a Criteria query
++   *
++   * @see      xp://rdbms.Criteria#add
++   * @purpose  Interface
++   */
++  interface SQLFragment extends SQLRenderable  {}
++?>
+Index: skeleton/rdbms/criterion/BetweenExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10360)
++++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
+@@ -39,15 +39,16 @@
+      * @throws  rdbms.SQLStateException
+      */
+     public function asSql($conn, $types) { 
+-      if (!isset($types[$this->field])) {
+-        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
++      if ($this->field instanceof Column) {
++        $field= $this->field->asSQL($conn);
++        $type=  $this->field->getType();
++      } else {
++        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
++        $field= $this->field;
++        $type=  $types[$this->field][0];
+       }
+ 
+-      return $this->field.' between '.$conn->prepare(
+-        $types[$this->field][0].' and '.$types[$this->field][0],
+-        $this->lo,
+-        $this->hi
+-      );
++      return $field.' between '.$conn->prepare($type.' and '.$type, $this->lo, $this->hi);
+     }
+   } 
+ ?>
+Index: skeleton/rdbms/criterion/SimpleExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10360)
++++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
+@@ -75,7 +75,7 @@
+       return sprintf(
+         '%s({%s %s} %% %s)',
+         $this->getClassName(),
+-        $this->field,
++        xp::stringOf($this->field),
+         $this->op,
+         xp::stringOf($this->value)
+       );
+@@ -90,14 +90,15 @@
+      * @throws  rdbms.SQLStateException
+      */
+     public function asSql($conn, $types) { 
+-      if (!isset($types[$this->field])) {
+-        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
++      if ($this->field instanceof Column) {
++        $field= $this->field->asSQL($conn);
++        $type=  $this->field->getType();
++      } else {
++        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
++        $field= $this->field;
++        $type=  $types[$this->field][0];
+       }
+-
+-      return $this->field.' '.$conn->prepare(
+-        str_replace('?', $types[$this->field][0], $this->op), 
+-        $this->value
+-      );      
++      return $field.' '.$conn->prepare(str_replace('?', $type, $this->op), $this->value);
+     }
+ 
+   } 
+Index: skeleton/rdbms/criterion/Property.class.php
+===================================================================
+--- skeleton/rdbms/criterion/Property.class.php	(Revision 10360)
++++ skeleton/rdbms/criterion/Property.class.php	(Arbeitskopie)
+@@ -10,6 +10,7 @@
+    * Factory for criterion types
+    *
+    * @purpose  Factory
++   * @deprecated
+    */
+   class Property extends Object {
+     protected static 
