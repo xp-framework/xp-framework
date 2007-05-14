@@ -3,6 +3,12 @@
  *
  * $Id$ 
  */
+  uses(
+    'rdbms.join.JoinTable',
+    'rdbms.join.JoinTableAttribute',
+    'rdbms.join.JoinRelation',
+    'util.collections.HashTable'
+  );
 
   /**
    * collect data for join selects
@@ -14,8 +20,7 @@
     protected
       $id=        '',
       $role=      '',
-      $objs=      array(),
-      $relations= array(),
+      $relatives= array(),
       $pkeys=     array(),
       $attrs=     array();
 
@@ -35,31 +40,31 @@
      */
     public function getAttributes() {
       $r= array();
-      foreach (array_keys($this->peer->types) as $attribute) $r[]= $this->id.'.'.$attribute.' as '.$this->id.'_'.$attribute;
-      foreach ($this->relations as $tjp) foreach ($tjp->getAttributes() as $attribute) $r[]= $attribute;
+      foreach ($this->attrs as $attr) $r[]= $attr->toSqlString();
+      foreach ($this->relatives as $tjp) foreach ($tjp->getAttributes() as $attr) $r[]= $attr;
       return $r;
     }
     
     /**
      * get table names for the aggregated peer and all futher join tables
      *
-     * @return  string[]
+     * @return  rdbms.join.JoinTable[]
      */
     public function getTables() {
-      $r= array($this->id => $this->peer->table.' as '.$this->id);
-      foreach ($this->relations as $tjp) foreach ($tjp->getTables() as $id => $table) $r[$id]= $table;
+      $r= array(new JoinTable($this->peer->table, $this->id));
+      foreach ($this->relatives as $tjp) foreach ($tjp->getTables() as $table) $r[]= $table;
       return $r;
     }
     
     /**
      * get conditional statements to join the aggregated peer and its next JoinPart
-     * and for all futher relations
+     * and for all futher relatives
      *
      * @return  string[]
      */
     public function getJoinConditions() {
       $r= array();
-      foreach ($this->relations as $tjp) {
+      foreach ($this->relatives as $tjp) {
         foreach ($this->peer->constraints[$tjp->role]['key'] as $source => $target) $r[$this->id.'#'.$tjp->getId()][]= $this->id.'.'.$source.' = '.$tjp->getId().'.'.$target;
         foreach ($tjp->getJoinConditions() as $id => $joinConditions) $r[$id]= $joinConditions;
       }
@@ -80,7 +85,7 @@
       if (FALSE === $k) return;
       if (!$caller->{$exist_callback}($k)) $caller->{$register_callback}($k, $this->peer->objectFor($this->attributes($record)));
       $obj= $caller->{$get_callback}($k);
-      foreach ($this->relations as $tjp) {
+      foreach ($this->relatives as $tjp) {
         $obj->_cacheMark($this->relNameTo($tjp));
         $tjp->extract($obj, '_cacheAdd'.$this->relNameTo($tjp), '_cacheHas'.$this->relNameTo($tjp), '_cacheGet'.$this->relNameTo($tjp), $record);
       }
@@ -96,12 +101,12 @@
     }
 
     /**
-     * Set relations
+     * Set relatives
      *
-     * @param   lang.Object relations
+     * @param   lang.Object relatives
      */
-    public function addRelation(JoinPart $relations) {
-      $this->relations[]= $relations;
+    public function addRelation(JoinPart $relatives) {
+      $this->relatives[]= $relatives;
     }
 
     /**
@@ -111,8 +116,10 @@
      */
     public function setPeer(Peer $peer) {
       $this->peer= $peer;
-      foreach ($this->peer->primary as $key) $this->pkeys[$this->id.'_'.$key]= '';
-      foreach (array_keys($this->peer->types) as $attr) $this->attrs[$this->id.'_'.$attr]= '';
+      $this->pkeys= array();
+      $this->attrs= array();
+      foreach ($this->peer->primary as $key) $this->pkeys[]= new JoinTableAttribute($this->id, $key);
+      foreach (array_keys($this->peer->types) as $attr) $this->attrs[]= new JoinTableAttribute($this->id, $key);
     }
 
     /**

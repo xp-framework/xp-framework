@@ -204,6 +204,14 @@
     public function setEscape($escape) {
       $this->escape= $escape;
     }
-    
+
+    /**
+     * build join related part of an SQL query
+     *
+     * @param   rdbms.join.JoinRelation[] conditions
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    abstract public function makeJoinBy(Array $conditions);
   }
 ?>

@@ -67,5 +67,31 @@
       return self::$dateparts[$datepart];
     }
 
+    /**
+     * build join related part of an SQL query
+     *
+     * @param   rdbms.join.JoinRelation[] conditions
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    public function makeJoinBy(Array $conditions) {
+      if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
+      $querypart= '';
+      $first= true;
+      foreach ($conditions as $link) {
+        if ($first) {
+          $first= false;
+          $querypart.= sprintf(
+            '%s LEFT OUTER JOIN %s on (%s) ',
+            $link->getSource()->toSqlString(),
+            $link->getTarget()->toSqlString(),
+            implode(' and ', $link->getConditions())
+          );
+        } else {
+          $querypart.= sprintf('LEFT JOIN %s on (%s) ', $link->getTarget()->toSqlString(), implode(' and ', $link->getConditions()));
+        }
+      }
+      return $querypart.'where ';
+    }
   }
 ?>
