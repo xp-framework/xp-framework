@@ -8,6 +8,7 @@
    * helps to build statments for different SQL servers
    *
    * @purpose  Base class for all dialects 
+   * @test     net.xp_framework.unittest.rdbms.SQLDialectTest
    */
   abstract class SQLDialect extends Object {
     private static
