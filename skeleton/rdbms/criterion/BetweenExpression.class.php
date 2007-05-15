@@ -39,15 +39,16 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql($conn, $types) { 
-      if (!isset($types[$this->field])) {
-        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+      if ($this->field instanceof Column) {
+        $field= $this->field->asSQL($conn);
+        $type=  $this->field->getType();
+      } else {
+        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+        $field= $this->field;
+        $type=  $types[$this->field][0];
       }
 
-      return $this->field.' between '.$conn->prepare(
-        $types[$this->field][0].' and '.$types[$this->field][0],
-        $this->lo,
-        $this->hi
-      );
+      return $field.' between '.$conn->prepare($type.' and '.$type, $this->lo, $this->hi);
     }
   } 
 ?>

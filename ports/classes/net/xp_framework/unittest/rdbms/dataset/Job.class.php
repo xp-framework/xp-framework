@@ -34,6 +34,17 @@
     }  
   
     /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
+    
+    /**
      * Retrieve associated peer
      *
      * @return  rdbms.Peer

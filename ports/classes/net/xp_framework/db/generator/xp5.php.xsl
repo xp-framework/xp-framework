@@ -124,6 +124,17 @@
     public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
+
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
   </xsl:text>
 
   <!-- Create a static method for indexes -->

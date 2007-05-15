@@ -75,7 +75,7 @@
       return sprintf(
         '%s({%s %s} %% %s)',
         $this->getClassName(),
-        $this->field,
+        xp::stringOf($this->field),
         $this->op,
         xp::stringOf($this->value)
       );
@@ -90,14 +90,15 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql($conn, $types) { 
-      if (!isset($types[$this->field])) {
-        throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+      if ($this->field instanceof Column) {
+        $field= $this->field->asSQL($conn);
+        $type=  $this->field->getType();
+      } else {
+        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+        $field= $this->field;
+        $type=  $types[$this->field][0];
       }
-
-      return $this->field.' '.$conn->prepare(
-        str_replace('?', $types[$this->field][0], $this->op), 
-        $this->value
-      );      
+      return $field.' '.$conn->prepare(str_replace('?', $type, $this->op), $this->value);
     }
 
   } 

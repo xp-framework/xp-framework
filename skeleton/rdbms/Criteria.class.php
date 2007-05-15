@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.criterion.SimpleExpression', 'rdbms.SQLExpression');
+  uses(
+    'rdbms.criterion.SimpleExpression',
+    'rdbms.SQLExpression',
+    'rdbms.Column'
+  );
   
   define('ASCENDING',       'asc');
   define('DESCENDING',      'desc');
@@ -54,14 +58,12 @@
      *
      * Fluent interface:
      * <code>
-     *   $c= Criteria::newInstance()
+     *   $c= create(new Criteria())
      *     ->add('bz_id', 500, EQUAL)
      *     ->add('author', array(1549, 1552), IN)
      *     ->addOrderBy('created_at', DESCENDING)
      *   ;
      * </code>
-     *
-     * @param   rdbms.Criteria
      */
     public static function newInstance() {
       return new self();
@@ -90,7 +92,7 @@
      * @return  rdbms.Criteria this object
      */
     public function add($criterion, $value= NULL, $comparison= EQUAL) {
-      if (is('rdbms.criterion.Criterion', $criterion)) {
+      if ($criterion instanceof Criterion) {
         $this->conditions[]= $criterion;
       } else {
         $this->conditions[]= new SimpleExpression($criterion, $value, $comparison);        
@@ -127,9 +129,11 @@
      * Add group by
      *
      * @param   string column
+     * @return  rdbms.Criteria this object
      */
     public function addGroupBy($column) {
       $this->groupings[]= $column;
+      return $this;
     }
     
     /**
@@ -148,49 +152,44 @@
     /**
      * Export SQL
      *
-     * @param   &rdbms.DBConnection db
+     * @param   rdbms.DBConnection conn
      * @param   array types
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function toSQL($db, $types) {
+    public function toSQL($conn, $types) {
       $sql= '';
       
       // Process conditions
       if (!empty($this->conditions)) {
         $sql.= ' where ';
-        foreach ($this->conditions as $condition) {
-          $sql.= $condition->asSql($db, $types).' and ';
-        }
+        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $types).' and ';
         $sql= substr($sql, 0, -4);
       }
 
       // Process group by
       if (!empty($this->groupings)) {
-        $sql= rtrim($sql, ' ').$db->prepare(' group by %c', $this->groupings);
+        $sql= rtrim($sql, ' ').' group by ';
+        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $types, $grouping).', ';
+        $sql= substr($sql, 0, -2);
       }
 
       // Process order by
       if (!empty($this->orderings)) {
         $sql= rtrim($sql, ' ').' order by ';
-        foreach ($this->orderings as $order) {
-          if (!isset($types[$order[0]])) {
-            throw(new SQLStateException('Field "'.$order[0].'" unknown'));
-          }
-          $sql.= $order[0].' '.$order[1].', ';
-        }
+        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $types, $order[0]).' '.$order[1].', ';
         $sql= substr($sql, 0, -2);
       }
-      
+
       return $sql;
     }
     
     /**
      * Executes an SQL SELECT statement
      *
-     * @param   &rdbms.DBConnection conn
-     * @param   &rdbms.Peer peer
-     * @return  &rdbms.ResultSet
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
      */
     public function executeSelect($conn, $peer) {
       return $conn->query(
@@ -199,6 +198,24 @@
         $peer->table,
         $this->toSQL($conn, $peer->types)
       );
+    }
+
+    /**
+     * get a string for a column
+     * can be either a columnname or a Column object
+     *
+     * @param   rdbms.DBConnection conn
+     * @param   array types
+     * @param   rdbms.Column or string col
+     * @return  string
+     */
+    private function fragment($conn, $types, $col) {
+      if ($col instanceof SQLFragment) {
+        return $col->asSQL($conn);
+      } else {
+        if (!isset($types[$col])) throw(new SQLStateException('Field "'.$col.'" unknown'));
+        return $col;
+      }
     }
 
   } 

@@ -3,42 +3,58 @@
  *
  * $Id$ 
  */
-
-  uses('rdbms.criterion.Restrictions');
+  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
 
   /**
-   * Factory for criterion types
+   * represents a table column
+   * should be build via a dataset's factory Dataset::column(name)
+   * 
+   * <code>
+   *   $col= Nmappoint::column('texture_id'); // where Nmappoint is a generated dataset class
    *
-   * @purpose  Factory
-   * @deprecated use rdbms.Column instead
+   *   $criteria= create(new Criteria())->add(Restrictions::equal($col, 5);
+   *   $criteria= create(new Criteria())->add($col->equal(5));
+   * </code>
    */
-  class Property extends Object {
-    protected static 
-      $instances = array();
-
-    public 
-      $name      = '';
+  class Column extends Object implements SQLFragment {
+    
+    private
+      $peer= NULL,
+      $type= '',
+      $name= '';
 
     /**
      * Constructor
      *
+     * @param   rdbms.Peer peer
      * @param   string name
+     * @throws  lang.IllegalArgumentException
      */
-    protected function __construct($name) {
+    public function __construct($peer, $name) {
+      $this->peer= $peer;
       $this->name= $name;
+      if (!isset($this->peer->types[$this->name])) throw new IllegalArgumentException('field '.$this->name.' does not exist');
+      $this->type= $this->peer->types[$this->name][0];
     }
 
     /**
-     * Retrieve a property instance by name
+     * Get type
      *
-     * @param   string name
-     * @return  rdbms.criterion.Property
+     * @return  string
      */
-    public static function forName($name) {
-      if (!isset(self::$instances[$name])) {
-        self::$instances[$name]= new self($name);
-      }
-      return self::$instances[$name];
+    public function getType() {
+      return $this->type;
+    }
+
+    /**
+     * Returns the fragment SQL
+     *
+     * @param   rdbms.DBConnection conn
+     * @return  string
+     * @throws  rdbms.SQLStateException
+     */
+    public function asSql(DBConnection $conn) {
+      return $this->name;
     }
 
     /**
@@ -48,7 +64,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function in($values) {
-      return Restrictions::in($this->name, $values);
+      return Restrictions::in($this, $values);
     }
 
     /**
@@ -58,7 +74,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function notIn($values) {
-      return Restrictions::notIn($this->name, $values);
+      return Restrictions::notIn($this, $values);
     }
 
     /**
@@ -68,7 +84,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function like($value) {
-      return Restrictions::like($this->name, $value);
+      return Restrictions::like($this, $value);
     }
 
     /**
@@ -79,7 +95,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function ilike($value) {
-      return Restrictions::ilike($this->name, $value);
+      return Restrictions::ilike($this, $value);
     }
         
     /**
@@ -89,7 +105,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function equal($value) {
-      return Restrictions::equal($this->name, $value);
+      return Restrictions::equal($this, $value);
     }
 
     /**
@@ -99,7 +115,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function notEqual($value) {
-      return Restrictions::notEqual($this->name, $value);
+      return Restrictions::notEqual($this, $value);
     }
 
     /**
@@ -109,7 +125,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function lessThan($value) {
-      return Restrictions::lessThan($this->name, $value);
+      return Restrictions::lessThan($this, $value);
     }
 
     /**
@@ -119,7 +135,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function greaterThan($value) {
-      return Restrictions::greaterThan($this->name, $value);
+      return Restrictions::greaterThan($this, $value);
     }
 
     /**
@@ -129,7 +145,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function lessThanOrEqualTo($value) {
-      return Restrictions::lessThanOrEqualTo($this->name, $value);
+      return Restrictions::lessThanOrEqualTo($this, $value);
     }
 
     /**
@@ -139,7 +155,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function greaterThanOrEqualTo($value) {
-      return Restrictions::greaterThanOrEqualTo($this->name, $value);
+      return Restrictions::greaterThanOrEqualTo($this, $value);
     }
 
     /**
@@ -150,7 +166,7 @@
      * @return  rdbms.criterion.SimpleExpression
      */
     public function between($lo, $hi) {
-      return Restrictions::between($this->name, $lo, $hi);
+      return Restrictions::between($this, $lo, $hi);
     }
   }
 ?>

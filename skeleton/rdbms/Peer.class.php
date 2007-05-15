@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.ResultIterator', 'rdbms.ConnectionManager');
+  uses(
+    'rdbms.ResultIterator',
+    'rdbms.ConnectionManager',
+    'rdbms.Column'
+  );
 
   /**
    * Peer
@@ -174,6 +178,18 @@
      */
     public function begin($transaction) {
       return $this->getConnection()->begin($transaction);
+    }
+    
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArgumentException
+     */
+    public function column($name) {
+      if (!isset($this->types[$name])) throw new IllegalArgumentException('column '.$name.' does not exist');
+      return new Column($this, $name);
     }
     
     /**
