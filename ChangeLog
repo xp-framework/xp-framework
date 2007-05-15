@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0126: rdbms.Column API
+  (wagner)
 - Added support for foreach() iteration to I/O collection iterator classes
   (friebe)
 - Fix bug when class could not be found in bootstrapping
