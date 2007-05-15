@@ -30,11 +30,11 @@
     /**
      * Constructor
      *
-     * @param   &array hash
+     * @param   array hash
      * @see     xp://util.Hashmap#iterator
      */
     public function __construct($hash) {
-      $this->_hash= $hash;
+      $this->_hash= is_null($hash) ? array() : $hash;
       reset($this->_hash);
     }
   
@@ -52,7 +52,7 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @return  &mixed
+     * @return  mixed
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {
