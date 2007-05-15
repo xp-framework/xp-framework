@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix possible endless loop in util.HashmapIterator class
+  (wagner)
 - Implemented RFC #0126: rdbms.Column API
   (wagner)
 - Added support for foreach() iteration to I/O collection iterator classes
