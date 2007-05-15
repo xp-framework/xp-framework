@@ -9,31 +9,27 @@ $Id$
 
 Scope of Change
 ---------------
-
-- rdbms.Column shoul be used instead of rdbms.Property
-- it is recommended to use Columns as arguments for Restrictions
-- it is recommended to use Columns as arguments for rdbms.Criteria::addGroupBy
-- it is recommended to use Columns as arguments for rdbms.Criteria::addOrderBy
+- rdbms.Column should be used instead of rdbms.Property
+- it is recommended to use Columns as arguments for Restrictions, 
+  rdbms.Criteria::addGroupBy and rdbms.Criteria::addOrderBy
 
 
 Rationale
 ---------
-
-- rdbms.Column has all methods, to build restrictions, like
-  rdbms.Property.
-- the difference is: The column's factory is the related Peer,
-  a Property does not have any knowlege of it's table
+- rdbms.Column has all methods, to build restrictions, like rdbms.Property.
+- the difference is: The column's factory is the related Peer, a Property 
+  does not have any knowlege of it's table
 
 
 Functionality
 -------------
-
 In this example the Person.class is an implementation of rdbms.Dataset.
-The rdbms.Dataset class itself does not have the column factory, but peer does.
+The rdbms.Dataset class itself does not have the column factory, but Peer does.
 So you will give your implemented Dataset class a column method like that:
 
+Example
+~~~~~~~
 <?php
-
   class Person extends Dataset {
 
     /**
@@ -47,11 +43,11 @@ So you will give your implemented Dataset class a column method like that:
       return Peer::forName(__CLASS__)->column($name);
     }
   }
-
 ?>
 
-
-deprecated api:
+Property vs. Column
+~~~~~~~~~~~~~~~~~~~
+deprecated api
 <?php
   $nameColumn= Property::forName('name');
   $idColumn=   Property::forName('person_id');
@@ -69,12 +65,14 @@ restrictions e.g.:
   $idColumn->equal(5);
 ?>
 
+
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
-
 - One hand:   Because of type checks, the usage of this revision may be a bit slower
 - Other hnad: Because existency checks will be done when creating a Column, sql
               queries will become a bit faster.
@@ -82,22 +80,19 @@ Speed impact
 
 Dependencies
 ------------
+Note:
+<pre>
+  To use this API, the database classes have to be regenerated!
+</pre>
 
 - new interfaces
     rdbms.SQLFragment
     rdbms.SQLRenderable
 - deprecates rdbms.Property
-- regenerate
-  <pre>
-    
-    To use this API, the database classes have to be regenerated!
-    
-  </pre>
 
 
 Related documents
 -----------------
-
 - http://xp-framework.net/rfc/contrib/rfc0126/skeleton.diff
   Patch against skeleton/
 - http://xp-framework.net/rfc/contrib/rfc0126/ports.diff
@@ -106,5 +101,6 @@ Related documents
 
 Comments
 --------
+n/a
 
 <EOF>
