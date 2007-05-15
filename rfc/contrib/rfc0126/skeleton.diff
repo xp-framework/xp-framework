@@ -1,6 +1,6 @@
 Index: skeleton/rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(Revision 10360)
+--- skeleton/rdbms/Peer.class.php	(Revision 10364)
 +++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
 @@ -4,7 +4,11 @@
   * $Id$ 
@@ -23,10 +23,10 @@ Index: skeleton/rdbms/Peer.class.php
 +     *
 +     * @param   string name
 +     * @return  rdbms.Column
-+     * @throws  lang.IllegalArumentException
++     * @throws  lang.IllegalArgumentException
 +     */
 +    public function column($name) {
-+      if (!isset($this->types[$name])) throw new SQLStateException('column '.$name.' does not exist');
++      if (!isset($this->types[$name])) throw new IllegalArgumentException('column '.$name.' does not exist');
 +      return new Column($this, $name);
 +    }
 +    
@@ -38,7 +38,7 @@ Index: skeleton/rdbms/Column.class.php
 ===================================================================
 --- skeleton/rdbms/Column.class.php	(Revision 0)
 +++ skeleton/rdbms/Column.class.php	(Revision 0)
-@@ -0,0 +1,171 @@
+@@ -0,0 +1,172 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -51,10 +51,10 @@ Index: skeleton/rdbms/Column.class.php
 +   * should be build via a dataset's factory Dataset::column(name)
 +   * 
 +   * <code>
-+   *   $col= Nmappoint::column("texture_id"); // where Nmappoint is a generated dataset class
++   *   $col= Nmappoint::column('texture_id'); // where Nmappoint is a generated dataset class
 +   *
-+   *   $criteria= Criteria::newInstance()->add(Restrictions::equal($col, 5);
-+   *   $criteria= Criteria::newInstance()->add($col->equal(5));
++   *   $criteria= create(new Criteria())->add(Restrictions::equal($col, 5);
++   *   $criteria= create(new Criteria())->add($col->equal(5));
 +   * </code>
 +   */
 +  class Column extends Object implements SQLFragment {
@@ -69,11 +69,12 @@ Index: skeleton/rdbms/Column.class.php
 +     *
 +     * @param   rdbms.Peer peer
 +     * @param   string name
++     * @throws  lang.IllegalArgumentException
 +     */
 +    public function __construct($peer, $name) {
 +      $this->peer= $peer;
 +      $this->name= $name;
-+      if (!isset($this->peer->types[$this->name])) throw new SQLStateException('field '.$this->name.' does not exist');
++      if (!isset($this->peer->types[$this->name])) throw new IllegalArgumentException('field '.$this->name.' does not exist');
 +      $this->type= $this->peer->types[$this->name][0];
 +    }
 +
@@ -212,7 +213,7 @@ Index: skeleton/rdbms/Column.class.php
 +?>
 Index: skeleton/rdbms/Criteria.class.php
 ===================================================================
---- skeleton/rdbms/Criteria.class.php	(Revision 10360)
+--- skeleton/rdbms/Criteria.class.php	(Revision 10364)
 +++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
 @@ -4,7 +4,11 @@
   * $Id$ 
@@ -227,7 +228,14 @@ Index: skeleton/rdbms/Criteria.class.php
    
    define('ASCENDING',       'asc');
    define('DESCENDING',      'desc');
-@@ -60,8 +64,6 @@
+@@ -54,14 +58,12 @@
+      *
+      * Fluent interface:
+      * <code>
+-     *   $c= Criteria::newInstance()
++     *   $c= create(new Criteria())
+      *     ->add('bz_id', 500, EQUAL)
+      *     ->add('author', array(1549, 1552), IN)
       *     ->addOrderBy('created_at', DESCENDING)
       *   ;
       * </code>
@@ -262,7 +270,7 @@ Index: skeleton/rdbms/Criteria.class.php
       * Export SQL
       *
 -     * @param   &rdbms.DBConnection db
-+     * @param   &rdbms.DBConnection conn
++     * @param   rdbms.DBConnection conn
       * @param   array types
       * @return  string
       * @throws  rdbms.SQLStateException
@@ -326,7 +334,7 @@ Index: skeleton/rdbms/Criteria.class.php
 +     * get a string for a column
 +     * can be either a columnname or a Column object
 +     *
-+     * @param   &rdbms.DBConnection conn
++     * @param   rdbms.DBConnection conn
 +     * @param   array types
 +     * @param   rdbms.Column or string col
 +     * @return  string
@@ -342,6 +350,27 @@ Index: skeleton/rdbms/Criteria.class.php
 +
    } 
  ?>
+Index: skeleton/rdbms/SQLFragment.class.php
+===================================================================
+--- skeleton/rdbms/SQLFragment.class.php	(Revision 0)
++++ skeleton/rdbms/SQLFragment.class.php	(Revision 0)
+@@ -0,0 +1,16 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
++ */
++
++  uses('rdbms.SQLRenderable');
++
++  /**
++   * Represents a query fragment to be used in a Criteria query
++   *
++   * @see      xp://rdbms.Criteria#add
++   * @purpose  Interface
++   */
++  interface SQLFragment extends SQLRenderable  {}
++?>
 Index: skeleton/rdbms/SQLRenderable.class.php
 ===================================================================
 --- skeleton/rdbms/SQLRenderable.class.php	(Revision 0)
@@ -373,30 +402,9 @@ Index: skeleton/rdbms/SQLRenderable.class.php
 +    public function asSql(DBConnection $conn);
 +  }
 +?>
-Index: skeleton/rdbms/SQLFragment.class.php
-===================================================================
---- skeleton/rdbms/SQLFragment.class.php	(Revision 0)
-+++ skeleton/rdbms/SQLFragment.class.php	(Revision 0)
-@@ -0,0 +1,16 @@
-+<?php
-+/* This class is part of the XP framework
-+ *
-+ * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
-+ */
-+
-+  uses('rdbms.SQLRenderable');
-+
-+  /**
-+   * Represents a query fragment to be used in a Criteria query
-+   *
-+   * @see      xp://rdbms.Criteria#add
-+   * @purpose  Interface
-+   */
-+  interface SQLFragment extends SQLRenderable  {}
-+?>
 Index: skeleton/rdbms/criterion/BetweenExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10360)
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10364)
 +++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
 @@ -39,15 +39,16 @@
       * @throws  rdbms.SQLStateException
@@ -424,7 +432,7 @@ Index: skeleton/rdbms/criterion/BetweenExpression.class.php
  ?>
 Index: skeleton/rdbms/criterion/SimpleExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10360)
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10364)
 +++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
 @@ -75,7 +75,7 @@
        return sprintf(
@@ -460,13 +468,13 @@ Index: skeleton/rdbms/criterion/SimpleExpression.class.php
    } 
 Index: skeleton/rdbms/criterion/Property.class.php
 ===================================================================
---- skeleton/rdbms/criterion/Property.class.php	(Revision 10360)
+--- skeleton/rdbms/criterion/Property.class.php	(Revision 10364)
 +++ skeleton/rdbms/criterion/Property.class.php	(Arbeitskopie)
 @@ -10,6 +10,7 @@
     * Factory for criterion types
     *
     * @purpose  Factory
-+   * @deprecated
++   * @deprecated use rdbms.Column instead
     */
    class Property extends Object {
      protected static 

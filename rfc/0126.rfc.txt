@@ -10,10 +10,10 @@ $Id$
 Scope of Change
 ---------------
 
-- rdbsm.Column shoul be used instead of rdbms.Property
+- rdbms.Column shoul be used instead of rdbms.Property
 - it is recommended to use Columns as arguments for Restrictions
-- it is recommended to use Columns as arguments for rdbms.Creteria::addGroupBy
-- it is recommended to use Columns as arguments for rdbms.Creteria::addOrderBy
+- it is recommended to use Columns as arguments for rdbms.Criteria::addGroupBy
+- it is recommended to use Columns as arguments for rdbms.Criteria::addOrderBy
 
 
 Rationale
@@ -22,14 +22,14 @@ Rationale
 - rdbms.Column has all methods, to build restrictions, like
   rdbms.Property.
 - the difference is: The column's factory is the related Peer,
-  a Property does not have any knowege of it's table
+  a Property does not have any knowlege of it's table
 
 
 Functionality
 -------------
 
-In this example the Person.class is an implemantation of rdbms.Dataset.
-The rdbms.Dataset class itselfe does not have the column factory, but peer does.
+In this example the Person.class is an implementation of rdbms.Dataset.
+The rdbms.Dataset class itself does not have the column factory, but peer does.
 So you will give your implemented Dataset class a column method like that:
 
 <?php
@@ -43,7 +43,7 @@ So you will give your implemented Dataset class a column method like that:
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
+    public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
     }
   }
@@ -75,17 +75,33 @@ Security considerations
 Speed impact
 ------------
 
+- One hand:   Because of type checks, the usage of this revision may be a bit slower
+- Other hnad: Because existency checks will be done when creating a Column, sql
+              queries will become a bit faster.
+
+
 Dependencies
 ------------
 
-PHP version >= 5
+- new interfaces
+    rdbms.SQLFragment
+    rdbms.SQLRenderable
+- deprecates rdbms.Property
+- regenerate
+  <pre>
+    
+    To use this API, the database classes have to be regenerated!
+    
+  </pre>
 
 
 Related documents
 -----------------
 
-- http://xp-framework.net/rfc/contrib/rfc0126.diff
+- http://xp-framework.net/rfc/contrib/rfc0126/skeleton.diff
   Patch against skeleton/
+- http://xp-framework.net/rfc/contrib/rfc0126/ports.diff
+  Patch against ports/
 
 
 Comments
