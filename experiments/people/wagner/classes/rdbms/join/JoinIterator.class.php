@@ -3,13 +3,16 @@
  *
  * $Id$ 
  */
-uses('util.XPIterator');
+  uses(
+    'rdbms.join.JoinExtractable',
+    'util.XPIterator'
+  );
 
   /**
    * (Insert class' description here)
    *
    */
-  class JoinIterator  extends Object implements XPIterator {
+  class JoinIterator  extends Object implements XPIterator, JoinExtractable {
     private
       $resultObj= NULL,
       $record= array(),
@@ -18,6 +21,12 @@ uses('util.XPIterator');
       $jp= NULL,
       $rs= NULL;
 
+    /**
+     * Constructor
+     *
+     * @param   rdbms.join.JoinProcessor jp
+     * @param   rdbms.ResultSet rs
+     */
     public function __construct(JoinProcessor $jp, ResultSet $rs) {
       $this->jp= $jp;
       $this->rs= $rs;
@@ -44,7 +53,7 @@ uses('util.XPIterator');
     public function next() {
       if (!$this->record) throw new NoSuchElementException('No more elements');
       do {
-        $this->jp->joinpart->extract($this, 'setObj', 'hasObj', 'getObj', $this->record);
+        $this->jp->joinpart->extract($this, $this->record, 'start');
         if (!is_null($this->resultObj)) {
           $r= $this->resultObj;
           $this->resultObj= NULL;
@@ -57,10 +66,10 @@ uses('util.XPIterator');
     /**
      * set "in construct" result object
      *
-     * @param   string uniqie key
+     * @param   string unique key
      * @param   lang.Object
      */
-    public function setObj($key, $obj) {
+    public function setCachedObj($role, $key, $obj) {
       $this->resultObj= $this->obj;
       $this->obj= $obj;
       $this->obj_key= $key;
@@ -69,10 +78,11 @@ uses('util.XPIterator');
     /**
      * get an object from the found objects
      *
-     * @param   string uniqie key
+     * @param   string role
+     * @param   string unique key
      * @throws  util.NoSuchElementException
      */
-    public function getObj($key) {
+    public function getCachedObj($role, $key) {
       if ($this->obj_key && $this->obj_key != $key) throw new NoSuchElementException('object under construct does not exist - maybe you should sort your query');
       return $this->obj;
     }
@@ -80,10 +90,18 @@ uses('util.XPIterator');
     /**
      * test an object for existance in the found objects
      *
-     * @param   string uniqie key
+     * @param   string role
+     * @param   string unique key
      */
-    public function hasObj($key) {
+    public function hasCachedObj($role, $key) {
       return ($this->obj_key == $key);
     }
+
+    /**
+     * mark a role as chached
+     *
+     * @param   string role
+     */
+    public function markAsCached($role) {}
   }
 ?>

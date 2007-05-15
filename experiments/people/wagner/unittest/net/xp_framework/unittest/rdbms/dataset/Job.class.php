@@ -4,19 +4,26 @@
  * $Id: Job.class.php 9512 2007-02-27 17:36:28Z friebe $
  */
  
-  uses('rdbms.DataSet');
+  uses(
+    'rdbms.join.JoinExtractable',
+    'rdbms.DataSet'
+  );
  
   /**
    * Class wrapper for table job, database JOBS
    *
    * @purpose  Datasource accessor
    */
-  class Job extends DataSet {
+  class Job extends DataSet implements JoinExtractable {
     public
       $job_id             = 0,
       $title              = '',
       $valid_from         = NULL,
       $expire_at          = NULL;
+
+    private
+      $cache              = array(),
+      $cached             = array();
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -30,9 +37,22 @@
           'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
           'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
         ));
+        $peer->setConstraints(array(
+          'JobPerson' => array(
+            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
+            'key'       => array(
+              'job_id' => 'job_id',
+            ),
+          ),
+        ));
       }
     }  
   
+    public function setCachedObj($role, $key, $obj) { $this->chache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key) { return $this->chache[$role][$key]; }
+    public function hasCachedObj($role, $key) { return isset($this->chache[$role][$key]); }
+    public function markAsCached($role) { $this->cached[$role]= TRUE; }
+
     /**
      * column factory
      *

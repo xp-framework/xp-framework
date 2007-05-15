@@ -291,8 +291,8 @@
 
       return $conn->query(
         'select %c from %c %c',
-        implode(', ',    $jp->getAttributes()),
-        $jp->getJoin(),
+        $jp->getAttributeString(),
+        $jp->getJoinString(),
         $rest
       );
     }

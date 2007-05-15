@@ -23,18 +23,17 @@ uses(
     /**
      * Constructor
      *
-     * @param   rdbms.Peer $peer
+     * @param   rdbms.Peer peer
      */
     public function __construct(Peer $peer) {
-      $this->joinpart= new JoinPart('t'.$this->uid++);
-      $this->joinpart->setPeer($peer);
+      $this->joinpart= new JoinPart('t'.$this->uid++, $peer);
     }
     
     /**
      * set array with fetchmodes
      * the path is stored as array keys
      *
-     * @param   rdbms.join.FetchMode[]
+     * @param   rdbms.join.FetchMode[] fetchmodes
      */
     public function setFetchMode(Array $fetchmodes) {
       $this->transformFetchmode($fetchmodes, $this->joinpart);
@@ -43,11 +42,11 @@ uses(
     /**
      * get join tables with join conditions
      *
-     * @return  string[]
+     * @return  string
      */
-    public function getJoin() {
+    public function getJoinString() {
       $dialect= ConnectionManager::getInstance()->getByHost($this->joinpart->peer->connection, 0)->formatter->dialect;
-      return $dialect->makeJoinBy($this->getTables(), $this->getJoinConditions());
+      return $dialect->makeJoinBy($this->getJoinRelations());
     }
     
     /**
@@ -55,8 +54,8 @@ uses(
      *
      * @return  string[]
      */
-    public function getAttributes() {
-      return $this->joinpart->getAttributes();
+    public function getAttributeString() {
+      return implode(', ', $jp->getAttributes());
     }
     
     /**
@@ -70,15 +69,6 @@ uses(
     }
 
     /**
-     * get joined tables
-     *
-     * @return  string[]
-     */
-    private function getTables() {
-      return $this->joinpart->getTables();
-    }
-    
-    /**
      * get join conditions
      *
      * @return  string[]
@@ -91,8 +81,8 @@ uses(
      * go through the fetechmode array and transform it to a tree
      * collect JoinPart objects
      *
-     * @param   rdbms.join.FetchMode[]
-     * @param   JoinPart joinPart for the first table
+     * @param   rdbms.join.FetchMode[] fetchmodes
+     * @param   JoinPart sjp joinPart for the first table
      * @throws  lang.IllegalArgumentException
      */
     private function transformFetchmode(Array $fetchmodes, JoinPart $sjp) {
@@ -101,16 +91,16 @@ uses(
         if (0 == strlen($path))   continue;
         list($role, $n_path)= explode('.', $path, 2);
 
-        if (
-          (!$class= $sjp->peer->constraints[$role]['classname'])
-          || (!$sjp->peer->constraints[$role]['key'])
-        ) throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->constraints)));
-          
-        $jp= new JoinPart('t'.$this->uid++);
-        $jp->setRole($role);
-        $jp->setPeer(XPClass::forName($class)->getMethod('getPeer')->invoke());
+        if ((!$class= $sjp->peer->constraints[$role]['classname']) || (!$sjp->peer->constraints[$role]['key'])) {
+          throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->constraints)));
+        }
+        
+        $jp= new JoinPart('t'.$this->uid++, XPClass::forName($class)->getMethod('getPeer')->invoke());
+        $sjp->addRelative(
+          $jp,
+          $role
+        );
 
-        $sjp->addRelation($jp);
         $this->transformFetchmode(array($n_path => $fetchmode), $jp);
       }
     }

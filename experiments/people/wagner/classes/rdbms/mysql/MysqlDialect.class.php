@@ -77,10 +77,10 @@
     public function makeJoinBy(Array $conditions) {
       if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
       $querypart= '';
-      $first= true;
+      $first= TRUE;
       foreach ($conditions as $link) {
         if ($first) {
-          $first= false;
+          $first= FALSE;
           $querypart.= sprintf(
             '%s LEFT OUTER JOIN %s on (%s) ',
             $link->getSource()->toSqlString(),
