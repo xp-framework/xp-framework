@@ -43,6 +43,9 @@
       $version  = NSCA_VERSION_2,
       $service  = NULL;
     
+    protected static
+      $instance   = NULL;
+    
     /**
      * Get instance of this class.
      *
@@ -83,7 +86,7 @@
      * @param   int status status of service (one of NSCA_OK, NSCA_WARN, NSCA_ERROR, NSCA_UNKNOWN)
      * @param   string message default ''
      */
-    public function send($status, $message= '') {
+    public function emit($status, $message= '') {
       try {
         $this->send($status, $message);
       } catch (IOException $ignore) {
@@ -91,14 +94,13 @@
     }
     
     /**
-     * Sends a heartbeat to nagios.
+     * Sends a heartbeat to nagios
      *
      * @param   int status status of service (one of NSCA_OK, NSCA_WARN, NSCA_ERROR, NSCA_UNKNOWN)
      * @param   string message default ''
      * @throws  io.IOException in case 
      */
-    public function sendRaw($status, $message= '') {
-      $this->send($status, $message);
+    public function send($status, $message= '') {
       $nsca= new NscaClient(
         $this->server,
         $this->port,
