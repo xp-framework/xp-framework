@@ -12,6 +12,7 @@
   interface SQLExpression {
     
     public function isProjection();
+    public function isJoin();
     public function executeSelect(DBConnection $conn, Peer $peer);
   }
 ?>

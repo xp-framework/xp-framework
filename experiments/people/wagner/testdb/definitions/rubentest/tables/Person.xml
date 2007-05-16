@@ -1,14 +1,14 @@
 <document created_at="Wed, 16 May 2007 14:44:35 +0200" created_by="ruben">
   <table
-   name="ntexture"
+   name="person"
    dbhost="localhost"
    database="Ruben_Test_PS"
    dbtype="mysql"
-   class="Ntexture"
+   class="Person"
    package="de.schlund.db.rubentest"
   >  
     <attribute
-     name="texture_id"
+     name="person_id"
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
@@ -22,7 +22,14 @@
      nullable="false"
     />
     <attribute
-     name="color_id"
+     name="job_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="department_id"
      type="DB_ATTRTYPE_INT"
      identity="false"
      typename="int"
@@ -33,18 +40,30 @@
      unique="true"
      primary="true"
     >    
-      <key>texture_id</key>
+      <key>person_id</key>
     </index>
     <index
-     name="color_for_texture"
+     name="job"
      unique="false"
      primary="false"
     >    
-      <key>color_id</key>
+      <key>job_id</key>
     </index>
-    <constraint name="color_for_texture">    
-      <reference table="ncolor" role="Color">      
-        <key attribute="color_id" sourceattribute="color_id"/>
+    <index
+     name="department"
+     unique="false"
+     primary="false"
+    >    
+      <key>department_id</key>
+    </index>
+    <constraint name="department_of_person">    
+      <reference table="department" role="Department">      
+        <key attribute="department_id" sourceattribute="department_id"/>
+      </reference>
+    </constraint>
+    <constraint name="job_of_person">    
+      <reference table="job" role="Job">      
+        <key attribute="job_id" sourceattribute="job_id"/>
       </reference>
     </constraint>
   </table>

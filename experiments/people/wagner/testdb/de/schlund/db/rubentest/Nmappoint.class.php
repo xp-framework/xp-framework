@@ -4,25 +4,27 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table nmappoint, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Nmappoint extends DataSet {
+  class Nmappoint extends DataSet implements JoinExtractable {
     public
       $coord_x            = 0,
       $coord_y            = 0,
       $texture_id         = 0;
   
     private
-      $_cached=   array(),
-      $cacheTexture= array(),
-      $cacheNmobileObjectCoord_xCoord_y= array();
-  
+      $cache= array(
+        'Texture' => array(),
+        'NmobileObjectCoord_xCoord_y' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.nmappoint');
@@ -50,13 +52,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetTexture($key) { return $this->cacheTexture[$key]; }
-    public function _cacheHasTexture($key) { return isset($this->cacheTexture[$key]); }
-    public function _cacheAddTexture($key, $obj) { $this->cacheTexture[$key]= $obj; }
-    public function _cacheGetNmobileObjectCoord_xCoord_y($key) { return $this->cacheNmobileObjectCoord_xCoord_y[$key]; }
-    public function _cacheHasNmobileObjectCoord_xCoord_y($key) { return isset($this->cacheNmobileObjectCoord_xCoord_y[$key]); }
-    public function _cacheAddNmobileObjectCoord_xCoord_y($key, $obj) { $this->cacheNmobileObjectCoord_xCoord_y[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -67,15 +75,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -168,8 +167,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getTexture() {
-      $r= ($this->_cached['Texture']) ?
-        array_values($this->cacheTexture) :
+      $r= ($this->cached['Texture']) ?
+        array_values($this->cache['Texture']) :
         XPClass::forName('de.schlund.db.rubentest.Ntexture')
           ->getMethod('getPeer')
           ->invoke()
@@ -187,7 +186,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNmobileObjectCoord_xCoord_yList() {
-      if ($this->_cached['NmobileObjectCoord_xCoord_y']) return array_values($this->cacheNmobileObjectCoord_xCoord_y);
+      if ($this->cached['NmobileObjectCoord_xCoord_y']) return array_values($this->cache['NmobileObjectCoord_xCoord_y']);
       return XPClass::forName('de.schlund.db.rubentest.Nmobileobject')
         ->getMethod('getPeer')
         ->invoke()
@@ -205,7 +204,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNmobileObjectCoord_xCoord_yIterator() {
-      if ($this->_cached['NmobileObjectCoord_xCoord_y']) return new HashmapIterator($this->cacheNmobileObjectCoord_xCoord_y);
+      if ($this->cached['NmobileObjectCoord_xCoord_y']) return new HashmapIterator($this->cache['NmobileObjectCoord_xCoord_y']);
       return XPClass::forName('de.schlund.db.rubentest.Nmobileobject')
         ->getMethod('getPeer')
         ->invoke()

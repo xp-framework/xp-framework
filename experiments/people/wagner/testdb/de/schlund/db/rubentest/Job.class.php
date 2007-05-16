@@ -7,7 +7,7 @@
   uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
-   * Class wrapper for table job, database JOBS
+   * Class wrapper for table job, database Ruben_Test_PS
    * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
@@ -39,7 +39,7 @@
         ));
         $peer->setConstraints(array(
           'PersonJob' => array(
-            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
+            'classname' => 'de.schlund.db.rubentest.Person',
             'key'       => array(
               'job_id' => 'job_id',
             ),
@@ -77,7 +77,7 @@
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int job_id
-     * @return  net.xp_framework.unittest.rdbms.dataset.Job entitiy object
+     * @return  de.schlund.db.rubentest.Job entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByJob_id($job_id) {
@@ -164,12 +164,12 @@
      * Retrieves an array of all Person entities referencing
      * this entity by job_id=>job_id
      *
-     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entities
+     * @return  de.schlund.db.rubentest.Person[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getPersonJobList() {
       if ($this->cached['PersonJob']) return array_values($this->cache['PersonJob']);
-      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
+      return XPClass::forName('de.schlund.db.rubentest.Person')
         ->getMethod('getPeer')
         ->invoke()
         ->doSelect(new Criteria(
@@ -181,12 +181,12 @@
      * Retrieves an iterator for all Person entities referencing
      * this entity by job_id=>job_id
      *
-     * @return  rdbms.ResultIterator<net.xp_framework.unittest.rdbms.dataset.Person>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Person>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getPersonJobIterator() {
       if ($this->cached['PersonJob']) return new HashmapIterator($this->cache['PersonJob']);
-      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
+      return XPClass::forName('de.schlund.db.rubentest.Person')
         ->getMethod('getPeer')
         ->invoke()
         ->iteratorFor(new Criteria(

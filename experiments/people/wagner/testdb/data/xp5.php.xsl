@@ -110,7 +110,7 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');&#10;</xsl:text>
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');&#10;</xsl:text>
     <xsl:apply-templates/>
   <xsl:text>?></xsl:text>
   </xsl:template>
@@ -128,7 +128,7 @@
    *
    * @purpose  Datasource accessor
    */
-  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {
+  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet implements JoinExtractable {
     public&#10;</xsl:text>
 
   <!-- Attributes -->
@@ -147,11 +147,16 @@
   <xsl:text>;
   
     private
-      $_cached=   array(),</xsl:text>
-  <xsl:for-each select="constraint/reference | document(concat('../', $path, '/../constraints/constraints.xml'))/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:if test="position() != 1"><xsl:text>,</xsl:text></xsl:if><xsl:text>
-      $cache</xsl:text><xsl:value-of select="@role" /><xsl:text>= array()</xsl:text>
-  </xsl:for-each><xsl:text>;
-  
+      $cache= array(</xsl:text>
+  <xsl:for-each select="constraint/reference"><xsl:text>
+        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
+  </xsl:for-each>
+  <xsl:for-each select="document(concat('../', $path, '/../constraints/constraints.xml'))/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
+        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
+  </xsl:for-each><xsl:text>
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('</xsl:text><xsl:value-of select="my:separator(@database, @name, @dbtype)"/><xsl:text>');
@@ -208,12 +213,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }</xsl:text>
-  <xsl:for-each select="constraint/reference | document(concat('../', $path, '/../constraints/constraints.xml'))/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
-    public function _cacheGet</xsl:text><xsl:value-of select="@role" /><xsl:text>($key) { return $this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>[$key]; }
-    public function _cacheHas</xsl:text><xsl:value-of select="@role" /><xsl:text>($key) { return isset($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>[$key]); }
-    public function _cacheAdd</xsl:text><xsl:value-of select="@role" /><xsl:text>($key, $obj) { $this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>[$key]= $obj; }</xsl:text>
-  </xsl:for-each><xsl:text>
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -224,15 +236,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   </xsl:text>
 
@@ -362,8 +365,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
-      $r= ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
-        array_values($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>) :
+      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
           ->getMethod('getPeer')
           ->invoke()
@@ -387,7 +390,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
-      if ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>);
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke()
@@ -408,7 +411,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
-      if ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>);
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke()
@@ -440,8 +443,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
-      $r= ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
-        array_values($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>) :
+      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
           ->getMethod('getPeer')
           ->invoke()
@@ -464,7 +467,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
-      if ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>);
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke()
@@ -485,7 +488,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
-      if ($this->_cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache</xsl:text><xsl:value-of select="@role" /><xsl:text>);
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke()

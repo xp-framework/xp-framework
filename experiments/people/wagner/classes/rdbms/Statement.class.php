@@ -58,13 +58,22 @@
     }
 
     /**
+     * test if the Expression is a join
+     *
+     * @return  bool
+     */
+    public function isJoin() {
+      return false;
+    }
+
+    /**
      * Executes an SQL SELECT statement
      *
-     * @param   &rdbms.DBConnection conn
-     * @param   &rdbms.Peer peer
-     * @return  &rdbms.ResultSet
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
      */
-    public function executeSelect($conn, $peer) {
+    public function executeSelect(DBConnection $conn, Peer $peer) {
       $this->arguments[0]= preg_replace(
         '/object\(([^\)]+)\)/i', 
         '$1.'.implode(', $1.', array_keys($peer->types)),

@@ -4,15 +4,15 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table mmessage, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Mmessage extends DataSet {
+  class Mmessage extends DataSet implements JoinExtractable {
     public
       $message_id         = 0,
       $title              = '',
@@ -23,10 +23,12 @@
       $author_id          = 0;
   
     private
-      $_cached=   array(),
-      $cacheRecipient= array(),
-      $cacheAuthor= array();
-  
+      $cache= array(
+        'Recipient' => array(),
+        'Author' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.mmessage');
@@ -59,13 +61,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetRecipient($key) { return $this->cacheRecipient[$key]; }
-    public function _cacheHasRecipient($key) { return isset($this->cacheRecipient[$key]); }
-    public function _cacheAddRecipient($key, $obj) { $this->cacheRecipient[$key]= $obj; }
-    public function _cacheGetAuthor($key) { return $this->cacheAuthor[$key]; }
-    public function _cacheHasAuthor($key) { return isset($this->cacheAuthor[$key]); }
-    public function _cacheAddAuthor($key, $obj) { $this->cacheAuthor[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -76,15 +84,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -259,8 +258,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getRecipient() {
-      $r= ($this->_cached['Recipient']) ?
-        array_values($this->cacheRecipient) :
+      $r= ($this->cached['Recipient']) ?
+        array_values($this->cache['Recipient']) :
         XPClass::forName('de.schlund.db.rubentest.Mperson')
           ->getMethod('getPeer')
           ->invoke()
@@ -278,8 +277,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getAuthor() {
-      $r= ($this->_cached['Author']) ?
-        array_values($this->cacheAuthor) :
+      $r= ($this->cached['Author']) ?
+        array_values($this->cache['Author']) :
         XPClass::forName('de.schlund.db.rubentest.Mperson')
           ->getMethod('getPeer')
           ->invoke()

@@ -4,25 +4,27 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table ncolor, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Ncolor extends DataSet {
+  class Ncolor extends DataSet implements JoinExtractable {
     public
       $color_id           = 0,
       $name               = '',
       $colortype_id       = 0;
   
     private
-      $_cached=   array(),
-      $cacheColortype= array(),
-      $cacheNtextureColor= array();
-  
+      $cache= array(
+        'Colortype' => array(),
+        'NtextureColor' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.ncolor');
@@ -51,13 +53,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetColortype($key) { return $this->cacheColortype[$key]; }
-    public function _cacheHasColortype($key) { return isset($this->cacheColortype[$key]); }
-    public function _cacheAddColortype($key, $obj) { $this->cacheColortype[$key]= $obj; }
-    public function _cacheGetNtextureColor($key) { return $this->cacheNtextureColor[$key]; }
-    public function _cacheHasNtextureColor($key) { return isset($this->cacheNtextureColor[$key]); }
-    public function _cacheAddNtextureColor($key, $obj) { $this->cacheNtextureColor[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -68,15 +76,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -165,8 +164,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getColortype() {
-      $r= ($this->_cached['Colortype']) ?
-        array_values($this->cacheColortype) :
+      $r= ($this->cached['Colortype']) ?
+        array_values($this->cache['Colortype']) :
         XPClass::forName('de.schlund.db.rubentest.Ncolortype')
           ->getMethod('getPeer')
           ->invoke()
@@ -184,7 +183,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNtextureColorList() {
-      if ($this->_cached['NtextureColor']) return array_values($this->cacheNtextureColor);
+      if ($this->cached['NtextureColor']) return array_values($this->cache['NtextureColor']);
       return XPClass::forName('de.schlund.db.rubentest.Ntexture')
         ->getMethod('getPeer')
         ->invoke()
@@ -201,7 +200,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNtextureColorIterator() {
-      if ($this->_cached['NtextureColor']) return new HashmapIterator($this->cacheNtextureColor);
+      if ($this->cached['NtextureColor']) return new HashmapIterator($this->cache['NtextureColor']);
       return XPClass::forName('de.schlund.db.rubentest.Ntexture')
         ->getMethod('getPeer')
         ->invoke()

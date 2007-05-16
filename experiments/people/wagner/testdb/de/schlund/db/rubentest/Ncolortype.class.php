@@ -4,23 +4,25 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table ncolortype, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Ncolortype extends DataSet {
+  class Ncolortype extends DataSet implements JoinExtractable {
     public
       $colortype_id       = 0,
       $name               = '';
   
     private
-      $_cached=   array(),
-      $cacheNcolorColortype= array();
-  
+      $cache= array(
+        'NcolorColortype' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.ncolortype');
@@ -42,10 +44,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetNcolorColortype($key) { return $this->cacheNcolorColortype[$key]; }
-    public function _cacheHasNcolorColortype($key) { return isset($this->cacheNcolorColortype[$key]); }
-    public function _cacheAddNcolorColortype($key, $obj) { $this->cacheNcolorColortype[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -56,15 +67,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -124,7 +126,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNcolorColortypeList() {
-      if ($this->_cached['NcolorColortype']) return array_values($this->cacheNcolorColortype);
+      if ($this->cached['NcolorColortype']) return array_values($this->cache['NcolorColortype']);
       return XPClass::forName('de.schlund.db.rubentest.Ncolor')
         ->getMethod('getPeer')
         ->invoke()
@@ -141,7 +143,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNcolorColortypeIterator() {
-      if ($this->_cached['NcolorColortype']) return new HashmapIterator($this->cacheNcolorColortype);
+      if ($this->cached['NcolorColortype']) return new HashmapIterator($this->cache['NcolorColortype']);
       return XPClass::forName('de.schlund.db.rubentest.Ncolor')
         ->getMethod('getPeer')
         ->invoke()

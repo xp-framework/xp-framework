@@ -1,32 +1,46 @@
 <document created_at="Wed, 16 May 2007 14:44:35 +0200" created_by="ruben">
   <table
-   name="ncolortype"
+   name="job"
    dbhost="localhost"
    database="Ruben_Test_PS"
    dbtype="mysql"
-   class="Ncolortype"
+   class="Job"
    package="de.schlund.db.rubentest"
   >  
     <attribute
-     name="colortype_id"
+     name="job_id"
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
      nullable="false"
     />
     <attribute
-     name="name"
+     name="title"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
      nullable="false"
+    />
+    <attribute
+     name="valid_from"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="false"
+    />
+    <attribute
+     name="expire_at"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="true"
     />
     <index
      name="PRIMARY"
      unique="true"
      primary="true"
     >    
-      <key>colortype_id</key>
+      <key>job_id</key>
     </index>
   </table>
 </document>

@@ -1,30 +1,16 @@
 <document created_at="Wed, 16 May 2007 14:44:35 +0200" created_by="ruben">
   <table
-   name="nmobileObject"
+   name="department"
    dbhost="localhost"
    database="Ruben_Test_PS"
    dbtype="mysql"
-   class="Nmobileobject"
+   class="Department"
    package="de.schlund.db.rubentest"
   >  
     <attribute
-     name="object_id"
+     name="department_id"
      type="DB_ATTRTYPE_INT"
      identity="true"
-     typename="int"
-     nullable="false"
-    />
-    <attribute
-     name="coord_x"
-     type="DB_ATTRTYPE_INT"
-     identity="false"
-     typename="int"
-     nullable="false"
-    />
-    <attribute
-     name="coord_y"
-     type="DB_ATTRTYPE_INT"
-     identity="false"
      typename="int"
      nullable="false"
     />
@@ -35,25 +21,30 @@
      typename="string"
      nullable="false"
     />
+    <attribute
+     name="chief_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
     <index
      name="PRIMARY"
      unique="true"
      primary="true"
     >    
-      <key>object_id</key>
+      <key>department_id</key>
     </index>
     <index
-     name="coords"
+     name="chief"
      unique="false"
      primary="false"
     >    
-      <key>coord_x</key>
-      <key>coord_y</key>
+      <key>chief_id</key>
     </index>
-    <constraint name="mappoint_for_mob">    
-      <reference table="nmappoint" role="Coord_xCoord_y">      
-        <key attribute="coord_x" sourceattribute="coord_x"/>
-        <key attribute="coord_y" sourceattribute="coord_y"/>
+    <constraint name="chief_of_department">    
+      <reference table="person" role="Chief">      
+        <key attribute="chief_id" sourceattribute="person_id"/>
       </reference>
     </constraint>
   </table>

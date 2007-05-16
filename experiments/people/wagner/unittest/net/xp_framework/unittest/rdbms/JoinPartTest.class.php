@@ -15,9 +15,9 @@
   );
 
   /**
-   * Test criteria class
+   * Test JoinPart class
    *
-   * Note we're relying on the connection to be a sybase connection -
+   * Note: We're relying on the connection to be a mysql connection -
    * otherwise, quoting and date representation may change and make
    * this testcase fail.
    *
@@ -37,7 +37,7 @@
      */
     public function __construct($name) {
       parent::__construct($name);
-      $this->conn= DriverManager::getConnection('mysql://localhost:1999/');
+      $this->conn= DriverManager::getConnection('mysql://localhost:3306/');
     }
     
     /**
@@ -99,7 +99,7 @@
       $jobpart=    new JoinPart('j', Job::getPeer());
       $personpart= new JoinPart('p', Person::getPeer());
 
-      $jobpart->addRelative($personpart, 'JobPerson');
+      $jobpart->addRelative($personpart, 'PersonJob');
 
       $this->assertArray($jobpart->getJoinRelations());
       $j_p= current($jobpart->getJoinRelations());
@@ -124,9 +124,9 @@
       $toDepartment= new JoinPart('d', Department::getPeer());
       $toChief=      new JoinPart('c', Person::getPeer());
 
-      $toJob->addRelative($toPerson, 'JobPerson');
+      $toJob->addRelative($toPerson, 'PersonJob');
       $toPerson->addRelative($toDepartment, 'Department');
-      $toDepartment->addRelative($toChief, 'DepartmentChief');
+      $toDepartment->addRelative($toChief, 'Chief');
 
       $this->assertEquals(
         $this->conn->getFormatter()->dialect->makeJoinBy($toJob->getJoinRelations()),

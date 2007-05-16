@@ -285,7 +285,7 @@
      * @return  rdbms.ResultSet
      */
     public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
-      $jp->setFetchmode($this->fetchmode);
+      $jp->setFetchmodes($this->fetchmode);
       $rest= $this->toSQL($conn, $peer, 't0');
       $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
 

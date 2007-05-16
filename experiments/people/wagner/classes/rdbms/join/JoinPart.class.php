@@ -13,10 +13,13 @@
   /**
    * collect data for join selects
    *
+   * @test .xp_framework.unittest.rdbms.JoinPartTest
    */
   class JoinPart extends Object {
+    public
+      $peer=      NULL;
+
     protected
-      $peer=      NULL,
       $table=     NULL,
       $id=        '',
       $role=      '',

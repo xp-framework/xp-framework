@@ -4,15 +4,15 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table nmobileObject, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Nmobileobject extends DataSet {
+  class Nmobileobject extends DataSet implements JoinExtractable {
     public
       $object_id          = 0,
       $coord_x            = 0,
@@ -20,9 +20,11 @@
       $name               = '';
   
     private
-      $_cached=   array(),
-      $cacheCoord_xCoord_y= array();
-  
+      $cache= array(
+        'Coord_xCoord_y' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.nmobileObject');
@@ -46,10 +48,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetCoord_xCoord_y($key) { return $this->cacheCoord_xCoord_y[$key]; }
-    public function _cacheHasCoord_xCoord_y($key) { return isset($this->cacheCoord_xCoord_y[$key]); }
-    public function _cacheAddCoord_xCoord_y($key, $obj) { $this->cacheCoord_xCoord_y[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -60,15 +71,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -180,8 +182,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getCoord_xCoord_y() {
-      $r= ($this->_cached['Coord_xCoord_y']) ?
-        array_values($this->cacheCoord_xCoord_y) :
+      $r= ($this->cached['Coord_xCoord_y']) ?
+        array_values($this->cache['Coord_xCoord_y']) :
         XPClass::forName('de.schlund.db.rubentest.Nmappoint')
           ->getMethod('getPeer')
           ->invoke()

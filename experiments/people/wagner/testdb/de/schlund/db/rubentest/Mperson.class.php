@@ -4,24 +4,26 @@
  * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table mperson, database Ruben_Test_PS
-   * (Auto-generated on Wed, 09 May 2007 14:59:38 +0200 by ruben)
+   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Mperson extends DataSet {
+  class Mperson extends DataSet implements JoinExtractable {
     public
       $person_id          = 0,
       $name               = '';
   
     private
-      $_cached=   array(),
-      $cacheMmessageRecipient= array(),
-      $cacheMmessageAuthor= array();
-  
+      $cache= array(
+        'MmessageRecipient' => array(),
+        'MmessageAuthor' => array(),
+      ),
+      $cached= array();
+
     static function __static() { 
       with ($peer= self::getPeer()); {
         $peer->setTable('Ruben_Test_PS.mperson');
@@ -49,13 +51,19 @@
       }
     }  
 
-    public function _cacheMark($role) { $this->_cached[$role]= TRUE; }
-    public function _cacheGetMmessageRecipient($key) { return $this->cacheMmessageRecipient[$key]; }
-    public function _cacheHasMmessageRecipient($key) { return isset($this->cacheMmessageRecipient[$key]); }
-    public function _cacheAddMmessageRecipient($key, $obj) { $this->cacheMmessageRecipient[$key]= $obj; }
-    public function _cacheGetMmessageAuthor($key) { return $this->cacheMmessageAuthor[$key]; }
-    public function _cacheHasMmessageAuthor($key) { return isset($this->cacheMmessageAuthor[$key]); }
-    public function _cacheAddMmessageAuthor($key, $obj) { $this->cacheMmessageAuthor[$key]= $obj; }
+    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
+    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
+    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
+    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+    
+    /**
+     * Retrieve associated peer
+     *
+     * @return  rdbms.Peer
+     */
+    public static function getPeer() {
+      return Peer::forName(__CLASS__);
+    }
 
     /**
      * column factory
@@ -66,15 +74,6 @@
      */
     static public function column($name) {
       return self::getPeer()->column($name);
-    }
-    
-    /**
-     * Retrieve associated peer
-     *
-     * @return  rdbms.Peer
-     */
-    public static function getPeer() {
-      return Peer::forName(__CLASS__);
     }
   
     /**
@@ -134,7 +133,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMmessageRecipientList() {
-      if ($this->_cached['MmessageRecipient']) return array_values($this->cacheMmessageRecipient);
+      if ($this->cached['MmessageRecipient']) return array_values($this->cache['MmessageRecipient']);
       return XPClass::forName('de.schlund.db.rubentest.Mmessage')
         ->getMethod('getPeer')
         ->invoke()
@@ -151,7 +150,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMmessageRecipientIterator() {
-      if ($this->_cached['MmessageRecipient']) return new HashmapIterator($this->cacheMmessageRecipient);
+      if ($this->cached['MmessageRecipient']) return new HashmapIterator($this->cache['MmessageRecipient']);
       return XPClass::forName('de.schlund.db.rubentest.Mmessage')
         ->getMethod('getPeer')
         ->invoke()
@@ -168,7 +167,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMmessageAuthorList() {
-      if ($this->_cached['MmessageAuthor']) return array_values($this->cacheMmessageAuthor);
+      if ($this->cached['MmessageAuthor']) return array_values($this->cache['MmessageAuthor']);
       return XPClass::forName('de.schlund.db.rubentest.Mmessage')
         ->getMethod('getPeer')
         ->invoke()
@@ -185,7 +184,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getMmessageAuthorIterator() {
-      if ($this->_cached['MmessageAuthor']) return new HashmapIterator($this->cacheMmessageAuthor);
+      if ($this->cached['MmessageAuthor']) return new HashmapIterator($this->cache['MmessageAuthor']);
       return XPClass::forName('de.schlund.db.rubentest.Mmessage')
         ->getMethod('getPeer')
         ->invoke()

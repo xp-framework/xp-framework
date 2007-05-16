@@ -147,4 +147,57 @@ ALTER TABLE `ncolor`
 -- --------------------------------------------------------
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `job`;
+CREATE TABLE `job` (
+  `job_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `valid_from` DATETIME NOT NULL,
+  `expire_at` DATETIME,
+  PRIMARY KEY (`job_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `person`;
+CREATE TABLE `person` (
+  `person_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `job_id` int(11) NOT NULL,
+  `department_id` int(11) NOT NULL,
+  PRIMARY KEY (`person_id`),
+  KEY `job` (`job_id`),
+  KEY `department` (`department_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `department`;
+CREATE TABLE `department` (
+  `department_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `chief_id` int(11) NOT NULL,
+  PRIMARY KEY (`department_id`),
+  KEY `chief` (`chief_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+ALTER TABLE `person`
+  ADD CONSTRAINT `job_of_person` FOREIGN KEY (`job_id`) REFERENCES `job` (`job_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE `person`
+  ADD CONSTRAINT `department_of_person` FOREIGN KEY (`department_id`) REFERENCES `department` (`department_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+ALTER TABLE `department`
+  ADD CONSTRAINT `chief_of_department` FOREIGN KEY (`chief_id`) REFERENCES `person` (`person_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+-- --------------------------------------------------------
+
 SET FOREIGN_KEY_CHECKS=1;

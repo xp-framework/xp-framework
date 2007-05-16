@@ -70,10 +70,33 @@
     /**
      * Set Connection
      *
-     * @param   string connection
+     * @param   mixed connection either a name or a DBConnection instance
      */
     public function setConnection($connection) {
-      $this->connection= $connection;
+      // If we are passed a DBConnection, set the conn member directly,
+      // else store the name passed in - we will retrieve the connection
+      // object later. The lazy loading semantics used here have to do with
+      // the fact that this is called from the DataSet class' static 
+      // initializers - when they are run, the connection manager may not
+      // be set up yet!
+      if ($connection instanceof DBConnection) {
+        $this->conn= $connection;
+      } else {
+        $this->connection= $connection;
+        $this->conn= NULL;
+      }
+    }
+
+    /**
+     * Get Connection
+     *
+     * @return  rdbms.DBConnection
+     */
+    public function getConnection() {
+      if (!isset($this->conn)) {
+        $this->conn= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+      }
+      return $this->conn;
     }
 
     /**
@@ -161,7 +184,7 @@
      * @return  rdbms.Transaction
      */
     public function begin($transaction) {
-      return ConnectionManager::getInstance()->getByHost($this->connection, 0)->begin($transaction);
+      return $this->getConnection()->begin($transaction);
     }
     
     /**
@@ -205,7 +228,7 @@
 
       if ($criteria->isJoin()) {
         $jp= new JoinProcessor($this);
-        $q= $criteria->executeJoin(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this, $jp);
+        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
         $it= $jp->getJoinIterator($q);
         for ($i= 1; $it->hasNext(); $i++) {
           if ($max && $i > $max) break;
@@ -215,7 +238,7 @@
       }
 
       $builder=  $criteria->isProjection() ? 'newRecord'   : 'objectFor';
-      $q= $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this);
+      $q= $criteria->executeSelect($this->getConnection(), $this);
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
         $r[]= $this->{$builder}($record);
@@ -234,12 +257,12 @@
 
       if ($criteria->isJoin()) {
         $jp= new JoinProcessor($this);
-        $q= $criteria->executeJoin(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this, $jp);
+        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
         return $jp->getJoinIterator($q);
       }
 
       return new ResultIterator(
-        $criteria->executeSelect(ConnectionManager::getInstance()->getByHost($this->connection, 0), $this), 
+        $criteria->executeSelect($this->getConnection(), $this), 
         ($criteria->isprojection() ? 'Record' : $this->identifier)
       );
     }
@@ -292,7 +315,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doJoin($peer, $join, $criteria, $max= 0) {
-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+      $db= $this->getConnection();
 
       $columns= $map= $qualified= array();
       foreach (array_keys($this->types) as $colunn) {
@@ -337,7 +360,7 @@
      */
     public function doInsert($values) {
       $id= NULL;
-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+      $db= $this->getConnection();
 
       // Build the insert command
       $sql= $db->prepare(
@@ -368,7 +391,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doUpdate($values, $criteria) {
-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+      $db= $this->getConnection();
 
       // Build the update command
       $sql= '';
@@ -393,7 +416,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */  
     public function doDelete($criteria) {
-      $db= ConnectionManager::getInstance()->getByHost($this->connection, 0);
+      $db= $this->getConnection();
 
       // Send it
       return $db->delete(

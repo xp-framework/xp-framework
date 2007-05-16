@@ -3,20 +3,22 @@
  *
  * $Id$ 
  */
-uses(
-  'rdbms.SQLDialect',
-  'rdbms.join.JoinIterator',
-  'rdbms.join.JoinPart',
-  'rdbms.join.FetchMode'
-);
+  uses(
+    'rdbms.SQLDialect',
+    'rdbms.join.JoinIterator',
+    'rdbms.join.JoinPart',
+    'rdbms.join.FetchMode'
+  );
 
   /**
    * collect data to do join selects
    *
+   * @test net.xp_framework.unittest.rdbms.JoinProcessorTest
    */
   class JoinProcessor extends Object {
     private
       $uid=  0;
+
     public
       $joinpart=   NULL;
     
@@ -30,23 +32,13 @@ uses(
     }
     
     /**
-     * set array with fetchmodes
-     * the path is stored as array keys
-     *
-     * @param   rdbms.join.FetchMode[] fetchmodes
-     */
-    public function setFetchMode(Array $fetchmodes) {
-      $this->transformFetchmode($fetchmodes, $this->joinpart);
-    }
-
-    /**
      * get join tables with join conditions
      *
      * @return  string
      */
     public function getJoinString() {
-      $dialect= ConnectionManager::getInstance()->getByHost($this->joinpart->peer->connection, 0)->formatter->dialect;
-      return $dialect->makeJoinBy($this->getJoinRelations());
+      $dialect= $this->joinpart->peer->getConnection()->getFormatter()->dialect;
+      return $dialect->makeJoinBy($this->joinpart->getJoinRelations());
     }
     
     /**
@@ -55,7 +47,7 @@ uses(
      * @return  string[]
      */
     public function getAttributeString() {
-      return implode(', ', $jp->getAttributes());
+      return implode(', ', $this->joinpart->getAttributes());
     }
     
     /**
@@ -69,12 +61,15 @@ uses(
     }
 
     /**
-     * get join conditions
+     * set array with fetchmodes
+     * the path is stored as array keys
      *
-     * @return  string[]
+     * @param   rdbms.join.FetchMode[] fetchmodes
+     * @throws  lang.IllegalArgumentException
      */
-    private function getJoinConditions() {
-      return $this->joinpart->getJoinConditions();
+    public function setFetchModes(Array $fetchmodes) {
+      if (0 == sizeOf(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
+      $this->transformFetchmode($fetchmodes, $this->joinpart);
     }
 
     /**
@@ -94,12 +89,9 @@ uses(
         if ((!$class= $sjp->peer->constraints[$role]['classname']) || (!$sjp->peer->constraints[$role]['key'])) {
           throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->constraints)));
         }
-        
+
         $jp= new JoinPart('t'.$this->uid++, XPClass::forName($class)->getMethod('getPeer')->invoke());
-        $sjp->addRelative(
-          $jp,
-          $role
-        );
+        $sjp->addRelative($jp, $role);
 
         $this->transformFetchmode(array($n_path => $fetchmode), $jp);
       }
