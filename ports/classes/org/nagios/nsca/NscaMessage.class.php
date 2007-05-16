@@ -31,7 +31,6 @@
      * @param   string information
      */ 
     public function __construct($host, $service, $status, $information) {
-      
       $this->host= $host;
       $this->service= $service;
       $this->status= $status;

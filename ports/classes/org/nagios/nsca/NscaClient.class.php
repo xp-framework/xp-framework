@@ -24,8 +24,8 @@
    * <code>
    *   uses('org.nagios.nsca.NscaClient');
    *   
-   *   $c= &new NscaClient('nagios.example.com');
-   *   try(); {
+   *   $c= new NscaClient('nagios.example.com');
+   *   try {
    *     $c->connect();
    *     $c->send(new NscaMessage(
    *       'soap1.example.com', 
@@ -40,7 +40,7 @@
    *       'No answer on port 80 after 2 seconds'
    *     ));
    *     $c->close();
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException, $e) {
    *     $e->printStackTrace();
    *   }
    *
@@ -55,7 +55,8 @@
   class NscaClient extends Object {
     public
       $version      = 0,
-      $cryptmethod  = 0;
+      $cryptmethod  = 0,
+      $timeout      = 10;
       
     public
       $_xorkey      = '',
@@ -118,12 +119,33 @@
     }
 
     /**
+     * Set read Timeout
+     *
+     * @access  public
+     * @param   int timeout
+     */
+    function setTimeout($timeout) {
+      $this->timeout= $timeout;
+    }
+
+    /**
+     * Get Timeout
+     *
+     * @access  public
+     * @return  int
+     */
+    function getTimeout() {
+      return $this->timeout;
+    }
+
+    /**
      * Connects to the NSCA server
      *
      * @return  bool
      */
     public function connect() {
       if (!$this->sock->connect()) return FALSE;
+      $this->sock->setTimeout($this->getTimeout());
 
       // Get 128bit xor key and 4bit timestamp
       $this->_xorkey= $this->sock->readBinary(0x0080);
@@ -213,28 +235,29 @@
           );
        
         default:
-          throw(new MethodNotImplementedException(
+          throw new MethodNotImplementedException(
             'Encryption method '.$this->cryptmethod.' not supported'
-          ));
+          );
       }
     }
   
     /**
      * Send a NSCA message to the server
      *
-     * @param   &org.nagios.nsca.NscaMessage message
+     * @param   org.nagios.nsca.NscaMessage message
      * @return  bool
      * @throws  lang.IllegalStateException
      */
     public function send($message) {
       if (!$this->sock->isConnected()) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       
       // Calculate CRC32 checksum, then build the final packet with the sig
       // and encrypt it using defined crypt method
-      $crc= CRC32::fromString($this->pack(0, $message));      
-      $data= $this->encrypt($this->pack($crc->getValue(), $message));
+      $data= $this->encrypt(
+        $this->pack(CRC32::fromString($this->pack(0, $message))->getValue(), $message)
+      );
       
       // Finally, send data to the socket
       return $this->sock->write($data);
