@@ -86,8 +86,8 @@
         if (0 == strlen($path))   continue;
         list($role, $n_path)= explode('.', $path, 2);
 
-        if ((!$class= $sjp->peer->constraints[$role]['classname']) || (!$sjp->peer->constraints[$role]['key'])) {
-          throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->constraints)));
+        if ((!$class= $sjp->peer->relations[$role]['classname']) || (!$sjp->peer->relations[$role]['key'])) {
+          throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->relations)));
         }
 
         $jp= new JoinPart('t'.$this->uid++, XPClass::forName($class)->getMethod('getPeer')->invoke());

@@ -7,7 +7,7 @@
   uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
 
   /**
-   * Class wrapper for table person, database JOBS
+   * Class wrapper for table person, database Ruben_Test_PS
    * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
    *
    * @purpose  Datasource accessor
@@ -29,31 +29,31 @@
 
     static function __static() { 
       with ($peer= self::getPeer()); {
-        $peer->setTable('JOBS.Person');
-        $peer->setConnection('jobs');
+        $peer->setTable('Ruben_Test_PS.person');
+        $peer->setConnection('localhost');
         $peer->setIdentity('person_id');
         $peer->setPrimary(array('person_id'));
         $peer->setTypes(array(
-          'person_id'     => array('%d', FieldType::NUMERIC, FALSE),
-          'name'          => array('%s', FieldType::VARCHAR, FALSE),
-          'job_id'        => array('%d', FieldType::NUMERIC, FALSE),
-          'department_id' => array('%d', FieldType::NUMERIC, FALSE),
+          'person_id'           => array('%d', FieldType::INT, FALSE),
+          'name'                => array('%s', FieldType::VARCHAR, FALSE),
+          'job_id'              => array('%d', FieldType::INT, FALSE),
+          'department_id'       => array('%d', FieldType::INT, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Department' => array(
-            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Department',
+            'classname' => 'de.schlund.db.rubentest.Department',
             'key'       => array(
               'department_id' => 'department_id',
             ),
           ),
           'Job' => array(
-            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Job',
+            'classname' => 'de.schlund.db.rubentest.Job',
             'key'       => array(
               'job_id' => 'job_id',
             ),
           ),
           'DepartmentChief' => array(
-            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Department',
+            'classname' => 'de.schlund.db.rubentest.Department',
             'key'       => array(
               'person_id' => 'chief_id',
             ),
@@ -91,7 +91,7 @@
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int person_id
-     * @return  net.xp_framework.unittest.rdbms.dataset.Person entitiy object
+     * @return  de.schlund.db.rubentest.Person entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByPerson_id($person_id) {
@@ -102,7 +102,7 @@
      * Gets an instance of this object by index "job"
      * 
      * @param   int job_id
-     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entity objects
+     * @return  de.schlund.db.rubentest.Person[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByJob_id($job_id) {
@@ -112,7 +112,7 @@
      * Gets an instance of this object by index "department"
      * 
      * @param   int department_id
-     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entity objects
+     * @return  de.schlund.db.rubentest.Person[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByDepartment_id($department_id) {
@@ -198,13 +198,13 @@
      * Retrieves the Department entity
      * referenced by department_id=>department_id
      *
-     * @return  net.xp_framework.unittest.rdbms.dataset.Department entity
+     * @return  de.schlund.db.rubentest.Department entity
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getDepartment() {
       $r= ($this->cached['Department']) ?
         array_values($this->cache['Department']) :
-        XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
+        XPClass::forName('de.schlund.db.rubentest.Department')
           ->getMethod('getPeer')
           ->invoke()
           ->doSelect(new Criteria(
@@ -217,13 +217,13 @@
      * Retrieves the Job entity
      * referenced by job_id=>job_id
      *
-     * @return  net.xp_framework.unittest.rdbms.dataset.Job entity
+     * @return  de.schlund.db.rubentest.Job entity
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getJob() {
       $r= ($this->cached['Job']) ?
         array_values($this->cache['Job']) :
-        XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Job')
+        XPClass::forName('de.schlund.db.rubentest.Job')
           ->getMethod('getPeer')
           ->invoke()
           ->doSelect(new Criteria(
@@ -236,12 +236,12 @@
      * Retrieves an array of all Department entities referencing
      * this entity by chief_id=>person_id
      *
-     * @return  net.xp_framework.unittest.rdbms.dataset.Department[] entities
+     * @return  de.schlund.db.rubentest.Department[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getDepartmentChiefList() {
       if ($this->cached['DepartmentChief']) return array_values($this->cache['DepartmentChief']);
-      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
+      return XPClass::forName('de.schlund.db.rubentest.Department')
         ->getMethod('getPeer')
         ->invoke()
         ->doSelect(new Criteria(
@@ -253,12 +253,12 @@
      * Retrieves an iterator for all Department entities referencing
      * this entity by chief_id=>person_id
      *
-     * @return  rdbms.ResultIterator<net.xp_framework.unittest.rdbms.dataset.Department>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Department>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getDepartmentChiefIterator() {
       if ($this->cached['DepartmentChief']) return new HashmapIterator($this->cache['DepartmentChief']);
-      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
+      return XPClass::forName('de.schlund.db.rubentest.Department')
         ->getMethod('getPeer')
         ->invoke()
         ->iteratorFor(new Criteria(

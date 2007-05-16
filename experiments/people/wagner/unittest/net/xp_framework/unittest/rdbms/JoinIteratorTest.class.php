@@ -164,7 +164,7 @@
             't0_valid_from'    => new Date(),
             't0_expire_at'     => '',
             't1_person_id'     => '12',
-            't1_name'          => 'Friebe',
+            't1_name'          => 'Müller',
             't1_job_id'        => '11',
             't1_department_id' => '31',
           ),
@@ -193,27 +193,32 @@
       $jp= new JoinProcessor(Job::getPeer());
       $jp->setFetchModes(array('PersonJob' => 'join'));
       $ji= new JoinIterator($jp, $rs);
+
+      $this->assertTrue($ji->hasNext());
+      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
+      $this->assertArray($job->getPersonJobList());
+      $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
+
+      $this->assertTrue($pji->hasNext());
+      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
+      $this->assertTrue($pji->hasNext());
+      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
+      $this->assertFalse($pji->hasNext());
+
       $this->assertTrue($ji->hasNext());
       $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertArray($job->getPersonJobList());
       $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
       $this->assertTrue($pji->hasNext());
       $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
-      $this->assertTrue($pji->hasNext());
-      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
       $this->assertFalse($pji->hasNext());
-      $this->assertTrue($ji->hasNext());
-      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
-      $this->assertArray($job->getPersonJobList());
-      $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
-      $this->assertTrue($pji->hasNext());
-      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
-      $this->assertFalse($pji->hasNext());
+
       $this->assertTrue($ji->hasNext());
       $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertArray($job->getPersonJobList());
       $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
       $this->assertFalse($pji->hasNext());
+
       $this->assertFalse($ji->hasNext());
     }
   }

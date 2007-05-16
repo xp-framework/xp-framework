@@ -36,7 +36,7 @@
           'name'                => array('%s', FieldType::VARCHAR, FALSE),
           'color_id'            => array('%d', FieldType::INT, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Color' => array(
             'classname' => 'de.schlund.db.rubentest.Ncolor',
             'key'       => array(

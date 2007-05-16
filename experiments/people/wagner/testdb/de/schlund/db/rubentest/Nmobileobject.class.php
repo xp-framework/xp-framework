@@ -37,7 +37,7 @@
           'coord_y'             => array('%d', FieldType::INT, FALSE),
           'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Coord_xCoord_y' => array(
             'classname' => 'de.schlund.db.rubentest.Nmappoint',
             'key'       => array(

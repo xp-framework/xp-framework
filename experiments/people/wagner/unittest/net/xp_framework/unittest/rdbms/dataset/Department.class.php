@@ -36,7 +36,7 @@
           'name'          => array('%s', FieldType::VARCHAR, FALSE),
           'chief_id'      => array('%d', FieldType::NUMERIC, FALSE),
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Chief' => array(
             'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
             'key'       => array(

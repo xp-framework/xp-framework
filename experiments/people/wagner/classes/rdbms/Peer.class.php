@@ -38,7 +38,7 @@
       $identity   = NULL,
       $primary    = array(),
       $types      = array(),
-      $constraints= array();
+      $relations  = array();
 
     /**
      * Constructor
@@ -136,12 +136,12 @@
     }
 
     /**
-     * Set constraints
+     * Set relations
      *
-     * @param   mixed[] constraints
+     * @param   mixed[] relations
      */
-    public function setConstraints($constraints) {
-      $this->constraints= $constraints;
+    public function setRelations($relations) {
+      $this->relations= $relations;
     }
 
     /**

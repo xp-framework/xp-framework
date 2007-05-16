@@ -34,7 +34,7 @@
           'person_id'           => array('%d', FieldType::INT, FALSE),
           'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'MmessageRecipient' => array(
             'classname' => 'de.schlund.db.rubentest.Mmessage',
             'key'       => array(

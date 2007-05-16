@@ -74,7 +74,7 @@
       $r= array();
       foreach ($this->relatives as $tjp) {
         $conditions= array();
-        foreach ($this->peer->constraints[$tjp->role]['key'] as $source => $target) $conditions[]= $this->id.'.'.$source.' = '.$tjp->id.'.'.$target;
+        foreach ($this->peer->relations[$tjp->role]['key'] as $source => $target) $conditions[]= $this->id.'.'.$source.' = '.$tjp->id.'.'.$target;
         $rel= new JoinRelation($this->table, $tjp->getTable());
         $rel->setConditions($conditions);
         $r[]= $rel;

@@ -39,7 +39,7 @@
           'job_id'        => array('%d', FieldType::NUMERIC, FALSE),
           'department_id' => array('%d', FieldType::NUMERIC, FALSE),
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Department' => array(
             'classname' => 'net.xp_framework.unittest.rdbms.dataset.Department',
             'key'       => array(

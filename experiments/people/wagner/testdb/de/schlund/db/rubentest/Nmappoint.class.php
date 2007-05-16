@@ -35,7 +35,7 @@
           'coord_y'             => array('%d', FieldType::INT, FALSE),
           'texture_id'          => array('%d', FieldType::INT, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Texture' => array(
             'classname' => 'de.schlund.db.rubentest.Ntexture',
             'key'       => array(

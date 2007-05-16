@@ -27,17 +27,17 @@
 
     static function __static() { 
       with ($peer= self::getPeer()); {
-        $peer->setTable('JOBS.job');
-        $peer->setConnection('jobs');
+        $peer->setTable('Ruben_Test_PS.job');
+        $peer->setConnection('localhost');
         $peer->setIdentity('job_id');
         $peer->setPrimary(array('job_id'));
         $peer->setTypes(array(
-          'job_id'      => array('%d', FieldType::NUMERIC, FALSE),
-          'title'       => array('%s', FieldType::VARCHAR, FALSE),
-          'valid_from'  => array('%s', FieldType::DATETIME, TRUE),
-          'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
+          'job_id'              => array('%d', FieldType::INT, FALSE),
+          'title'               => array('%s', FieldType::VARCHAR, FALSE),
+          'valid_from'          => array('%s', FieldType::DATETIME, FALSE),
+          'expire_at'           => array('%s', FieldType::DATETIME, TRUE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'PersonJob' => array(
             'classname' => 'de.schlund.db.rubentest.Person',
             'key'       => array(

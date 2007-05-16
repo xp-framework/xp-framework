@@ -192,7 +192,7 @@
   </xsl:for-each>
   <xsl:text>
         ));
-        $peer->setConstraints(array(</xsl:text>
+        $peer->setRelations(array(</xsl:text>
   <xsl:for-each select="constraint/reference"><xsl:text>
           '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
             'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>',

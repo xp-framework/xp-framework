@@ -37,7 +37,7 @@
           'valid_from'  => array('%s', FieldType::DATETIME, TRUE),
           'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'PersonJob' => array(
             'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
             'key'       => array(

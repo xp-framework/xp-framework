@@ -44,7 +44,7 @@
           'recipient_id'        => array('%d', FieldType::INT, FALSE),
           'author_id'           => array('%d', FieldType::INT, FALSE)
         ));
-        $peer->setConstraints(array(
+        $peer->setRelations(array(
           'Recipient' => array(
             'classname' => 'de.schlund.db.rubentest.Mperson',
             'key'       => array(
