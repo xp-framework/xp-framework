@@ -1,0 +1,91 @@
+RFC 0128: webservices.xmlrpc handling of NULL
+========================================================================
+$Id$
+
+@authors: gellweiler
+@created: We May 16 15:36:16 CEST 2007
+@status: discussion, ends Mo May  21 12:00:00     2007
+@category: webservices.xmlrpc
+
+Scope of Change
+---------------
+The XmlRpcDecoder and XmlRpcEncoder classes will provide functionality
+to handle NULL values.
+
+
+Rationale
+---------
+- Prevent thrown exceptions when trying to encode/decode NULL.
+
+
+Functionality
+-------------
+In cases where the encoder/decoder gets a value containing NULL an
+exception is thrown. Although the xml-rpc specification does not cover
+handling of NULL, there is an extension[1] solving this problem.
+According to this extension NULL will be encoded as <nil/>.
+
+
+Example structure
+~~~~~~~~~~~~~~~~~~
+<struct>
+  <member>
+    <name>lowerBound</name>
+    <value><int>18</int></value>
+  </member>
+  <member>
+    <name>upperBound</name>
+    <value><nil/></value>
+  </member>
+</struct>
+
+Changes in webservices.xmlrpc.XmlRpcDecoder
+~~~~~~~~~~~~~~~~~
+<?php
+  switch ($node->children[0]->getName()) {
+    [...]
+    case 'nil':
+      $n= NULL;
+      return $n;
+    [...]
+  }
+?> 
+
+Changes in webservices.xmlrpc.XmlRpcEncoder
+~~~~~~~~~~~~~~~~~
+ <?php
+  switch (xp::typeOf($data)) {
+    [...]
+    case 'NULL':
+      $value->addChild(new Node('nil'));
+      break;
+    [...]
+  }
+?> 
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://ontosys.com/xml-rpc/extensions.php 
+  [1] XML-RPC nil extension
+
+
+Comments
+--------
+  
+<EOF>
