@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'net.xp_framework.unittest.rdbms.mock.MockResultSet');
+  uses(
+    'rdbms.Transaction',
+    'rdbms.DBConnection', 
+    'net.xp_framework.unittest.rdbms.mock.MockResultSet'
+  );
 
   /**
    * Mock database connection
