@@ -1,6 +1,6 @@
 RFC 0124 use sql functions in restrictions:
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: wagner
 @created: Thu Apr 26 12:36:22 CET 2007
@@ -21,14 +21,34 @@ Rationale
 - One wants to use SQL functions, like date functions, in a criteria query
 - Because of database predefined functions are not standardized,
   different databases provide different signatures for the same function
+- To render the functions for differen dialects the class rdbms.DBConnctions
+  needs to extedet by  the method rdbms.DBConnctions::getFormatter()
 
 
 Functionality
 -------------
 
 <pre>
-  To use projections the package rdbms.SQLFunctions has to be imported.
+  To use functions the package rdbms.SQLFunctions has to be imported.
 </pre>
+
+
+usage
+~~~~~
+
+- Functions can be created with the static rdbms.SQLFunctions factory
+<?php SQLFunctions::acos(0.125); ?>
+
+- Functions can be nested
+<?php SQLFunctions::acos(SQLFunctions::cos(0.125)); ?>
+
+
+- functions can be either used as a projection part or a restriction's value
+<?php Criteria::newInstance()->setProjection(SQLFunctions::rand()); ?>
+<?php Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(0.3))); ?>
+
+
+
 
 Security considerations
 -----------------------
@@ -39,7 +59,8 @@ Speed impact
 Dependencies
 ------------
 
-PHP version >= 5
+RFC 0123
+RFC 0126
 
 
 Related documents
