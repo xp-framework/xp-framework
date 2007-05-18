@@ -5,7 +5,8 @@
  */
   uses(
     'peer.BSDSocket',
-    'peer.ProtocolException'
+    'peer.ProtocolException',
+    'util.log.Traceable'
   );
   /**
    * (Insert class' description here)
@@ -17,8 +18,11 @@
   class MemcacheProtocol extends Object {
   
     public
-      $_sock= NULL,
-      $timeout= 0;
+      $_sock      = NULL,
+      $timeout    = 0;
+    
+    protected
+      $cat        = NULL;
   
     /**
      * (Insert method's description here)
@@ -32,6 +36,15 @@
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
       $this->_sock->connect();
     }
+
+    /**
+     * Set a trace for debugging
+     *
+     * @param   &util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
     
     /**
      * Sends and receives commands on the socket
@@ -43,13 +56,17 @@
     protected function _cmd($command, $data= NULL) {
       if (!$this->_sock->isConnected()) {
         throw(new IllegalStateException('Not connected'));
-      }    
+      }
 
       // writes command to the socket. Data only if its available.
+      $this->cat && $this->cat->debug('>>>', $command);
       $this->_sock->write($command."\r\n");
+      $data && $this->cat && $this->cat->debug('>>>', $data);
       $data && $this->_sock->write($data."\r\n");
       
       $numberofargs= str_word_count($command);
+      
+      $this->cat->debug(substr($command, 0, 3));
 
       // If only one Value is requested
       if (substr($command, 0, 3) == 'get' && $numberofargs== 2) {
@@ -58,7 +75,6 @@
         
       //If more than one Value is requested
       } else if (substr($command, 0, 3) == 'get' && $numberofargs > 2) {
-        $tempanswer != NULL;
         while ($tempanswer= $this->_getHelper()) {
           $answer[]= $tempanswer;
         }
@@ -70,6 +86,8 @@
           $answer.= $buf;
         }
       }
+      
+      $this->cat && $this->cat->debug('<<<', $answer);
 
       return $answer;
     }
@@ -83,6 +101,8 @@
     protected function _getHelper() { 
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
+      $this->cat && $this->cat->debug('<<<', $buf);
+
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
       
       if ($type== 'VALUE') {
@@ -113,7 +133,7 @@
       } else if ($answer== "NOT_STORED\r\n") {
         return FALSE;
       } else {
-        throw new IllegalStateException($answer);
+        throw new IllegalStateException('Illegal answer: '. $answer);
       }    
     }
 
