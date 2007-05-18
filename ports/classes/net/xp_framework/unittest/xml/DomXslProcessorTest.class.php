@@ -119,5 +119,39 @@
       $this->processor->run();
     }
     
+    /**
+     * Test error handling
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function malformedXML() {
+      $this->processor->setXMLBuf('@@MALFORMED@@');
+    }
+    
+    /**
+     * Test error handling
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function malformedXSL() {
+      $this->processor->setXSLBuf('@@MALFORMED@@');
+    }
+    
+    /**
+     * Test that errors in libxml error stack are caught at first
+     * possible point - in the constructor. Make process bail out as
+     * early as possible to make error trackdown more easy.
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function preventErrorLeaking() {
+    
+      // Fill up error stack artificially
+      $doc= new DOMDocument();
+      $doc->loadXML('@@MALFORMED@@');
+      
+      // Should give an exception
+      $this->processorInstance();
+    }
   }
 ?>
