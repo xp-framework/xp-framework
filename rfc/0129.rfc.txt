@@ -1,0 +1,116 @@
+RFC 0129: Criteria and Joins
+========================================================================
+$Id$
+
+@authors: wagner
+@created: fri May 18 10:25:35     2007
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+Extend the existing Criteria API for the possibility to join over multiple tables.
+
+
+Rationale
+---------
+- make joins over multiple tables
+- the result is an object tree
+- Dataset related datasets are prefetched with a single query
+
+
+Functionality
+-------------
+The join result can be accessed like relations in rfc0096, but the database will only be queried once.
+<?php
+  $crit= Criteria::newInstance()
+    ->setFetchMode(Fetchmode::join('Author'))
+    ->setFetchMode(Fetchmode::join('Recipient'))
+    ->setFetchMode(Fetchmode::join('Recipient.MmessageAuthor'))
+  ;
+  foreach (Mmessage::getPeer()->doSelect($crit) as $Message) {
+    Console::writeLine('==> '.xp::stringOf($Message));
+    Console::writeLine('Author =====> '.xp::stringOf($Message->getAuthor()));
+    Console::writeLine('Recipient ==> '.xp::stringOf($Message->getRecipient()));
+    Console::writeLine('Author of ==> '.xp::stringOf($Message->getRecipient()->getMmessageAuthorList()));
+  }
+?>
+
+result:
+<pre>
+  ==> de.schlund.db.rubentest.Mmessage@(0.96254200 1179486060){
+    [message_id      PK,I] 2
+    [title               ] 'foo'
+    [body                ] 'foo'
+    [valid_from          ] NULL
+    [expire_at           ] Mon, 05 Mar 2007 12:15:50 +0100
+    [recipient_id        ] 2
+    [author_id           ] 1
+  }
+  Author =====> de.schlund.db.rubentest.Mperson@(0.96282200 1179486060){
+    [person_id       PK,I] 1
+    [name                ] 'Peter'
+  }
+  Recipient ==> de.schlund.db.rubentest.Mperson@(0.96295000 1179486060){
+    [person_id       PK,I] 2
+    [name                ] 'Paul'
+  }
+  Author of ==> [
+    0 => de.schlund.db.rubentest.Mmessage@(0.41309200 1179486585){
+      [message_id      PK,I] 1
+      [title               ] 'bar'
+      [body                ] 'bar'
+      [valid_from          ] NULL
+      [expire_at           ] Mon, 05 Mar 2007 12:11:58 +0100
+      [recipient_id        ] 1
+      [author_id           ] 2
+    }
+    2 => de.schlund.db.rubentest.Mmessage@(0.41354300 1179486585){
+      [message_id      PK,I] 3
+      [title               ] 'buzz'
+      [body                ] 'buzz'
+      [valid_from          ] NULL
+      [expire_at           ] Mon, 05 Mar 2007 12:15:50 +0100
+      [recipient_id        ] 3
+      [author_id           ] 2
+    }
+  ]
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- May be a bit slower than joins via rdbms.Statement, because joins are generated in realtime.
+- faster than fetching relations like defined in rfc0096 because only one query is be used
+
+
+Dependencies
+------------
+Note:
+<pre>
+  To use this API, the database classes have to be regenerated!
+</pre>
+
+- new interfacee rdbms.join.JoinExtractable
+- Naming Strategy of rfc0096
+- SQLDialect of rfc0124
+- deprecates the method rdbms.Peer::doJoin
+
+
+Related documents
+-----------------
+- rfc0096 http://xp-framework.net/rfc/0096.rfc.html
+- rfc0124 http://xp-framework.net/rfc/0124.rfc.html
+- xp-lab
+  http://experiments.xp-framework.net/?people,wagner,rfc,0129
+
+
+Comments
+--------
+
+<EOF>
