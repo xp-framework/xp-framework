@@ -30,7 +30,7 @@
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
   ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
 
-  $crit= Criteria::newInstance()->setFetchMode(Fetchmode::join('NcolorColortype.NtextureColor'));
+  $crit= Criteria::newInstance()->setFetchmode(Fetchmode::join('NcolorColortype.NtextureColor'));
   foreach (Ncolortype::getPeer()->doSelect($crit) as $ColorColortype) {
     Console::writeLine('==> '.xp::stringOf($ColorColortype));
     foreach ($ColorColortype->getNcolorColortypeList() as $Color) {

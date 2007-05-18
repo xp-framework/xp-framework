@@ -9,6 +9,8 @@
     'rdbms.criterion.Restrictions',
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
+    'net.xp_framework.unittest.rdbms.dataset.Department',
+    'net.xp_framework.unittest.rdbms.dataset.Person',
     'unittest.TestCase'
   );
 
@@ -160,7 +162,7 @@
     #[@test]
     public function addReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL), 
+        create(new Criteria())->add('job_id', 1, EQUAL), 
         'rdbms.Criteria'
       );
     }
@@ -173,7 +175,7 @@
     #[@test]
     public function addOrderByReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
+        create(new Criteria())->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
         'rdbms.Criteria'
       );
     }
@@ -186,7 +188,7 @@
     #[@test]
     public function addGroupByReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
+        create(new Criteria())->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
         'rdbms.Criteria'
       );
     }
@@ -276,7 +278,7 @@
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function addGroupByNonExistantColumnString() {
-      Criteria::newInstance()->addGroupBy('not_existant')->toSQL($this->conn, $this->peer);
+      create(new Criteria())->addGroupBy('not_existant')->toSQL($this->conn, $this->peer);
     }
 
     /**
@@ -284,9 +286,9 @@
      *
      * @see     xp://rdbms.Criteria#addGroupBy
      */
-    #[@test, @expect('rdbms.SQLStateException')]
-    public function addOrderByNonExistantColumnString() {
-      Criteria::newInstance()->addOrderBy('not_existant')->toSQL($this->conn, $this->peer);
+    #[@test]
+    public function fetchModeChaining() {
+      $this->assertClass(create(new Criteria())->setFetchmode(Fetchmode::join('PersonJob')), 'rdbms.Criteria');
     }
 
   }

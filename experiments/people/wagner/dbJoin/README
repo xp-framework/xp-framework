@@ -13,7 +13,7 @@ extends experiment dbProxy
 
 Restrictions:
 
-This Join API is to join over tables by constraints only.
+This Join API is to join over tables by relations only.
 So, the database has to be prepared.
 
 When joins are used, projections will be ignored.
@@ -115,7 +115,7 @@ style reason there is no memory advantage.
 
 
 
-Trying to join over an undefined constraint would throw an IllegalArgumentException.
+Trying to join over an undefined relation would throw an IllegalArgumentException.
 
   $crit= Criteria::newInstance()->setFetchMode(Fetchmode::join('RubentestBla'));
   "Exception lang.IllegalArgumentException (RubentestBla: no such role for RubentestColortype - try one of ColorColortype)"

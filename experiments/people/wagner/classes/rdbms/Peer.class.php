@@ -250,8 +250,8 @@
      * Returns an iterator for a select statement
      *
      * @param   rdbms.SQLExpressin criteria or statement
-     * @return  rdbms.ResultIterator
-     * @see     xp://rdbms.ResultIterator
+     * @return  lang.XPIterator
+     * @see     xp://lang.XPIterator
      */
     public function iteratorFor($criteria) {
 
@@ -307,6 +307,7 @@
     /**
      * Retrieve a number of objects from the database
      *
+     * @deprecated
      * @param   rdbms.Peer peer
      * @param   rdbms.Criteria join
      * @param   rdbms.Criteria criteria
