@@ -46,6 +46,14 @@
       $_base        = '';
       
     /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      $this->_checkErrors();
+    }
+          
+    /**
      * Set base directory
      *
      * @param   string dir
@@ -80,12 +88,12 @@
      * @throws  io.FileNotFoundException
      */
     public function setXSLFile($file) {
-      if (!file_exists($this->_base.$file)) {
-        throw(new FileNotFoundException($this->_base.$file.' not found'));
-      }
+      if (!file_exists($this->_base.$file))
+        throw new FileNotFoundException($this->_base.$file.' not found');
       
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
+      $this->_checkErrors();
     }
     
     /**
@@ -97,6 +105,7 @@
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->loadXML($xsl);
       strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
+      $this->_checkErrors();
     }
 
     /**
@@ -111,6 +120,7 @@
       
       $this->document= new DOMDocument();
       $this->document->load($file);
+      $this->_checkErrors();
     }
     
     /**
@@ -121,6 +131,7 @@
     public function setXMLBuf($xml) {
       $this->document= new DOMDocument();
       $this->document->loadXML($xml);
+      $this->_checkErrors();
     }
 
     /**
