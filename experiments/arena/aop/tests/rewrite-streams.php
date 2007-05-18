@@ -2,48 +2,39 @@
   require('lang.base.php');
   xp::sapi('cli');
   uses(
+    'util.invoke.aop.Aspects',
     'util.invoke.aop.Weaver',
     'util.profiling.Timer'
   );
   
   class Aop extends Object {
     public static $pointcuts= array();
-  }
-  
-  #[@aspect]
-  class PowerAspect extends Object {
-  
-    #[@pointcut]
-    public function settingPower() {
-      return 'Binford::setPoweredBy';
-    }
-  
-    #[@before('settingPower')]
-    public function checkPower($p) {
-      if ($p != 6100 && $p != 611) { 
-        throw new IllegalArgumentException('Power must either be 611 or 6100'); 
+    
+    public static function register(Generic $aspect) {
+      foreach ($aspect->getClass()->getMethods() as $m) {
+        if ($m->hasAnnotation('pointcut')) {
+          sscanf($m->getAnnotation('pointcut'), '%[^:]::%s', $classname, $method);
+          self::$pointcuts[$classname][$method]= array();
+          $p[$m->getName()]= &self::$pointcuts[$classname][$method];
+        } else if ($m->hasAnnotation('before')) {
+          $p[$m->getAnnotation('before')]['before']= array($aspect, $m->getName());
+        } else if ($m->hasAnnotation('after')) {
+          $p[$m->getAnnotation('after')]['after']= array($aspect, $m->getName());
+        } else if ($m->hasAnnotation('throwing')) {
+          $p[$m->getAnnotation('throwing')]['throwing']= array($aspect, $m->getName());
+        }
       }
-    }
-
-    #[@after('settingPower')]
-    public function logPower() {
-      Console::writeLine('Power successfully set!');
     }
   }
   
   // Install stream wrapper
   $p= new ParamString();
   if (!$p->exists('disable')) {
+    XPClass::forName('aspects.PowerAspect');
     ClassLoader::$transform= 'weave://%2$s|%1$s';
   }
-    
-  // Register pointcuts
-  $pa= new PowerAspect();
-  Aop::$pointcuts['util.Binford']= array('setPoweredBy' => array(
-    'before' => array($pa, 'checkPower'),
-    'after'  => array($pa, 'logPower'),
-  ));
   
+  // Register fqcns.xar
   ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader(
     dirname(__FILE__).DIRECTORY_SEPARATOR.'fqcns.xar'
   )));

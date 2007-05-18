@@ -12,6 +12,7 @@
   class Weaver extends Object {
     private 
       $f     = NULL,
+      $pc    = NULL,
       $class = NULL;
     
     
@@ -31,8 +32,8 @@
     function stream_open($path, $mode, $options, $opened_path) {
       sscanf($path, 'weave://%[^|]|%[^$]', $this->class, $uri);
       $this->f= fopen($uri, $mode);
-      if (!isset(Aop::$pointcuts[$this->class])) {
-        $this->class= NULL;   // Disable
+      if (isset(Aspects::$pointcuts[$this->class])) {
+        $this->pc= Aspects::$pointcuts[$this->class];
       }
       return TRUE;
     }
@@ -46,7 +47,7 @@
     function stream_read($count) {
       if (FALSE === ($t= fgetcsv($this->f, 200, ' ', "\0"))) return FALSE;
 
-      if ($this->class) {
+      if ($this->pc) {
       
         // Search for "function" keyword
         if ($p= array_search('function', $t)) {
@@ -54,25 +55,25 @@
           
           // DEBUG fputs(STDERR, "NAME = # $this->class::$name::$args:: #\n");
           
-          if (isset(Aop::$pointcuts[$this->class][$name])) {
+          if (isset($this->pc[$name])) {
             $r= 'function '.$name.$args.' { ';
-            $inv= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\']';
+            $inv= 'call_user_func_array(Aspects::$pointcuts[\''.$this->class.'\'][\''.$name.'\']';
 
             // @before
-            isset(Aop::$pointcuts[$this->class][$name]['before'])
-              ? $r.= $inv.'[\'before\'], array'.$args.');'
+            isset($this->pc[$name][BEFORE])
+              ? $r.= $inv.'['.BEFORE.'], array'.$args.');'
               : TRUE
             ;
 
             // @except
-            isset(Aop::$pointcuts[$this->class][$name]['except'])
-              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'[\''.$name.'\'][\'except\'], $e); throw $e; } '
+            isset($this->pc[$name][THROWING])
+              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], $e); throw $e; } '
               : $r.= '$r= $this->·'.$name.$args.';';
             ;
 
             // @after
-            isset(Aop::$pointcuts[$this->class][$name]['after'])
-              ?  $r.= $inv.'[\'after\'], $r);'
+            isset($this->pc[$name][AFTER])
+              ?  $r.= $inv.'['.AFTER.'], $r);'
               : TRUE
             ;
 
