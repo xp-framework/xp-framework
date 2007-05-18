@@ -1,6 +1,6 @@
 RFC 0123: Use aggregation/projection with criteria
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: wagner
 @created: Wed Apr 25 17:11:22 CET 2007
@@ -12,10 +12,9 @@ Scope of Change
 
 - Extend the criteria api to aggregate or cut down the
   querie's resultset.
-- As after a projection the resultset does not fit to
-  the dataSet's types anymore the rdbms.Record will be
+- After a projection, the resultset does not fit to
+  the dataSet's types anymore, the rdbms.Record will be
   implemented
-  
   
 This is not rfc0051.
 
@@ -27,6 +26,12 @@ Rationale
   functions that are provided by SQL
 - cutting down the resultset, as one do not need the
   whole table resut
+- to give a table column as Parameter to the projection,
+  the rdbms.Column class was implemented
+  All DataSets are extendet to have a column factory
+- Criteria::setProjection, Criteria::withProjection and ProjectionList::add can also
+  handle rdbms.SQLFragment (leke function or column) as parameter, a Property Projection
+  is assuemed then
 
 
 Functionality
@@ -36,6 +41,15 @@ Functionality
   To use projections the package rdbms.criterion.Projections has to be imported.
 </pre>
 
+Column class
+~~~~~~~~~~~~
+
+to get an instance of a column:
+<?php
+  $nameColumn= Person::column('name');
+  $idColumn=   Person::column('person_id');
+?>
+
 
 Aggregation
 ~~~~~~~~~~~
@@ -43,28 +57,28 @@ Aggregation
 projection to the function avg
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
-    ->setProjection(Projections::average("person_id"))
+    ->setProjection(Projections::average($idColumn))
   );
 ?>
 
 projection to the function max
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
-    ->setProjection(Projections::max("person_id"))
+    ->setProjection(Projections::max($idColumn))
   );
 ?>
 
 projection to the function min
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
-    ->setProjection(Projections::min("person_id"))
+    ->setProjection(Projections::min($idColumn))
   );
 ?>
 
 projection to the function sum
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
-    ->setProjection(Projections::sum("person_id"))
+    ->setProjection(Projections::sum($idColumn))
   );
 ?>
 
@@ -82,7 +96,13 @@ Projection
 projection to the property name
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
-    ->setProjection(Projections::property("name"))
+    ->setProjection(Projections::property($nameColumn))
+  );
+?>
+is th same as:
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection($nameColumn)
   );
 ?>
 
@@ -91,11 +111,35 @@ projection to a set of properties
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(
       Projections::projectionList()
-      ->add(Projections::property("person_id"))
-      ->add(Projections::property("name"))
+      ->add(Projections::property($idColumn))
+      ->add(Projections::property($nameColumn))
     )
   );
 ?>
+is th same as:
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(
+      Projections::projectionList()
+      ->add($idColumn)
+      ->add($nameColumn)
+    )
+  );
+?>
+
+projection to the property name with the alias surname
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection(Projections::property($nameColumn), "surname")
+  );
+?>
+is th same as:
+<?php
+  Person::getPeer()->doSelect(Criteria::newInstance()
+    ->setProjection($nameColumn, "surname")
+  );
+?>
+
 
 
 temporary use
@@ -108,7 +152,7 @@ in the resultset
 <?php
   $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
   $amountOfMarys= Person::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count');
-  if (LIMIT >= $amountOfMarys) RubentestPerson::getPeer()->doSelect($crit);
+  if (LIMIT >= $amountOfMarys) Person::getPeer()->doSelect($crit);
 ?>
 
 
@@ -121,7 +165,8 @@ Speed impact
 Dependencies
 ------------
 
-PHP version >= 5
+RFC 0126
+
 
 Related documents
 -----------------
