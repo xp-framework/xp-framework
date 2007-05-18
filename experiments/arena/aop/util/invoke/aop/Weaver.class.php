@@ -60,7 +60,7 @@
           $name= $this->f->nextToken('(');
           $this->f->nextToken('(');
           // DEBUG fputs(STDERR, "NAME = # $this->class::$name #\n");
-          if (!isset(Aop::$pointcuts[$this->class.'::'.$name])) {
+          if (!isset(Aop::$pointcuts[$this->class][$name])) {
             return $t.$ws.$name.'(';
           }
 
@@ -69,13 +69,13 @@
           $t= 'function '.$name.$args.'{ ';
 
           // @before
-          $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'before\'], array'.$args.');';
+          $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'before\'], array'.$args.');';
 
           // @except
-          $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'except\'], $e); throw $e; } ';
+          $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'except\'], $e); throw $e; } ';
 
           // @after
-          $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'after\'], $r); return $r;';
+          $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'after\'], $r); return $r;';
 
           $t.= '} function ·'.$name.$args.' {';
 

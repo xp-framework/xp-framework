@@ -39,11 +39,10 @@
     
   // Register pointcuts
   $pa= new PowerAspect();
-  Aop::$pointcuts['util.Binford']= TRUE;
-  Aop::$pointcuts['util.Binford::setPoweredBy']= array(
+  Aop::$pointcuts['util.Binford']= array('setPoweredBy' => array(
     'before' => array($pa, 'checkPower'),
     'after'  => array($pa, 'logPower'),
-  );
+  ));
   
   ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader(
     dirname(__FILE__).DIRECTORY_SEPARATOR.'fqcns.xar'
