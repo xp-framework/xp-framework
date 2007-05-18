@@ -7,7 +7,7 @@
     'rdbms.SQLDialect',
     'rdbms.join.JoinIterator',
     'rdbms.join.JoinPart',
-    'rdbms.join.FetchMode'
+    'rdbms.join.Fetchmode'
   );
 
   /**
@@ -64,10 +64,10 @@
      * set array with fetchmodes
      * the path is stored as array keys
      *
-     * @param   rdbms.join.FetchMode[] fetchmodes
+     * @param   rdbms.join.Fetchmode[] fetchmodes
      * @throws  lang.IllegalArgumentException
      */
-    public function setFetchModes(Array $fetchmodes) {
+    public function setFetchmodes(Array $fetchmodes) {
       if (0 == sizeOf(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
       $this->transformFetchmode($fetchmodes, $this->joinpart);
     }
@@ -76,7 +76,7 @@
      * go through the fetechmode array and transform it to a tree
      * collect JoinPart objects
      *
-     * @param   rdbms.join.FetchMode[] fetchmodes
+     * @param   rdbms.join.Fetchmode[] fetchmodes
      * @param   JoinPart sjp joinPart for the first table
      * @throws  lang.IllegalArgumentException
      */

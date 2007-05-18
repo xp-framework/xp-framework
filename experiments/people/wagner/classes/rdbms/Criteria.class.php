@@ -9,7 +9,8 @@
     'rdbms.join.JoinProcessor',
     'rdbms.SQLExpression',
     'rdbms.criterion.Projections',
-    'rdbms.Column'
+    'rdbms.Column',
+    'rdbms.join.Fetchmode'
   );
   
   define('ASCENDING',       'asc');
@@ -171,10 +172,10 @@
     /**
      * set the fetchmode for a path
      *
-     * @param   rdbms.join.FetchMode fetchmode
+     * @param   rdbms.join.Fetchmode fetchmode
      * @return  rdbms.Criteria this object
      */
-    public function setFetchMode(FetchMode $fetchmode) {
+    public function setFetchmode(Fetchmode $fetchmode) {
       $this->fetchmode[$fetchmode->getPath()]= $fetchmode->getMode();
       return $this;
     }

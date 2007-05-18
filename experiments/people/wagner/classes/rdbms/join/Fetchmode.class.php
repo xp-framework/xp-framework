@@ -8,7 +8,7 @@
    * define join select
    *
    */
-  class FetchMode extends Object {
+  class Fetchmode extends Object {
 
     private
       $path= '',
