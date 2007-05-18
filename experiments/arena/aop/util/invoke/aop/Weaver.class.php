@@ -7,6 +7,7 @@
   uses(
     'text.StreamTokenizer', 
     'io.streams.FileInputStream', 
+    'util.invoke.aop.ChunkTokenizer',
     'io.File'
   );
 
@@ -35,8 +36,13 @@
      * @return  bool
      */
     function stream_open($path, $mode, $options, $opened_path) {
-      sscanf($path, 'weave://%[^|]|%[^$]', $classname, $uri);
-      $this->f= new StreamTokenizer(new FileInputStream(new File($uri)), " \r\n\t", TRUE);
+      sscanf($path, 'weave://%[^|]|%[^$]', $this->class, $uri);
+      if (isset(Aop::$pointcuts[$this->class])) {
+        $this->f= new StreamTokenizer(new FileInputStream(new File($uri)), " \r\n\t", TRUE);
+      } else {
+        $this->f= new ChunkTokenizer(fopen($uri, $mode));
+        $this->class= NULL;   // Disable
+      }
       return TRUE;
     }
     
@@ -48,40 +54,34 @@
      */
     function stream_read($count) {
       $t= $this->f->nextToken();
+      if ($this->class) {
+        if ('function' === $t) {
+          $ws= $this->f->nextToken();
+          $name= $this->f->nextToken('(');
+          $this->f->nextToken('(');
+          // DEBUG fputs(STDERR, "NAME = # $this->class::$name #\n");
+          if (!isset(Aop::$pointcuts[$this->class.'::'.$name])) {
+            return $t.$ws.$name.'(';
+          }
 
-      if ('class' === $t) {         // FIXME: Check strings or comments
-        $ws= $this->f->nextToken();
-        $this->class= $this->f->nextToken(' {');
-        return $t.$ws.$this->class;
-      }
-      
-      if ($this->class && 'function' === $t) {
-        $ws= $this->f->nextToken();
-        $name= $this->f->nextToken('(');
-        $this->f->nextToken('(');
-        // DEBUG fputs(STDERR, "NAME = # $this->class::$name #\n");
-        if (!isset(Aop::$pointcuts[$this->class.'::'.$name])) {
-          return $t.$ws.$name.'(';
+          $args= '('.$this->f->nextToken('{');
+          $this->f->nextToken('{');
+          $t= 'function '.$name.$args.'{ ';
+
+          // @before
+          $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'before\'], array'.$args.');';
+
+          // @except
+          $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'except\'], $e); throw $e; } ';
+
+          // @after
+          $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'after\'], $r); return $r;';
+
+          $t.= '} function ·'.$name.$args.' {';
+
+          // DEBUG fputs(STDERR, $t."\n");
         }
-        
-        $args= '('.$this->f->nextToken('{');
-        $this->f->nextToken('{');
-        $t= 'function '.$name.$args.'{ ';
-        
-        // @before
-        $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'before\'], array'.$args.');';
-        
-        // @except
-        $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'except\'], $e); throw $e; } ';
-        
-        // @after
-        $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'::'.$name.'\'][\'after\'], $r); return $r;';
-        
-        $t.= '} function ·'.$name.$args.' {';
-        
-        // DEBUG fputs(STDERR, $t."\n");
       }
-
       return $t;
     }
     

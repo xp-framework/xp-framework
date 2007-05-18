@@ -39,8 +39,8 @@
     
   // Register pointcuts
   $pa= new PowerAspect();
-  Aop::$pointcuts['Binford']= TRUE;
-  Aop::$pointcuts['Binford::setPoweredBy']= array(
+  Aop::$pointcuts['util.Binford']= TRUE;
+  Aop::$pointcuts['util.Binford::setPoweredBy']= array(
     'before' => array($pa, 'checkPower'),
     'after'  => array($pa, 'logPower'),
   );
