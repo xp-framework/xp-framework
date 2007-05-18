@@ -104,7 +104,7 @@
         throw new ClassNotFoundException('Unknown class "'.$class.'"');
       }
       $package= NULL;
-      if (FALSE === include(ClassLoader::$transform.'dyn://'.$class)) {
+      if (FALSE === include(sprintf(ClassLoader::$transform, 'dyn://'.$class, $class))) {
         throw new FormatException('Cannot define class "'.$class.'"');
       }
 

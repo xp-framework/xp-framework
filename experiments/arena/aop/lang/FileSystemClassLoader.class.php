@@ -112,7 +112,7 @@
 
       xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
       $package= NULL;
-      if (FALSE === include(ClassLoader::$transform.$this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
+      if (FALSE === include(sprintf(ClassLoader::$transform, $this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT, $class))) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Class "'.$class.'" not found');
       }

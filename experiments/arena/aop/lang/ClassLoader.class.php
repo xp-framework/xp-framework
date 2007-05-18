@@ -49,7 +49,7 @@
    */
   final class ClassLoader extends Object implements IClassLoader {
     public static
-      $transform  = '';
+      $transform  = '%s';
 
     protected static
       $delegates  = array();

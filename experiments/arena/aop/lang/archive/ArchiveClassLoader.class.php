@@ -87,7 +87,7 @@
 
       xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
       $package= NULL;
-      if (FALSE === include(ClassLoader::$transform.'xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
+      if (FALSE === include(sprintf(ClassLoader::$transform, 'xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT, $class))) {
         unset(xp::$registry['classloader.'.$class]);
         throw new FormatException('Cannot define class "'.$class.'"');
       }

@@ -34,7 +34,7 @@
   // Install stream wrapper
   $p= new ParamString();
   if (!$p->exists('disable')) {
-    ClassLoader::$transform= 'weave://';
+    ClassLoader::$transform= 'weave://%2$s|%1$s';
   }
     
   // Register pointcuts

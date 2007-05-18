@@ -28,15 +28,15 @@
     /**
      * Stream wrapper open() implementation
      *
-     * @param   string path
+     * @param   string path "weave://" classname "|" uri
      * @param   string mode
      * @param   int options
      * @param   string opened_path
      * @return  bool
      */
     function stream_open($path, $mode, $options, $opened_path) {
-      fputs(STDERR, "$path\n");
-      $this->f= new StreamTokenizer(new FileInputStream(new File(substr($path, 8))), " \r\n\t", TRUE);
+      sscanf($path, 'weave://%[^|]|%[^$]', $classname, $uri);
+      $this->f= new StreamTokenizer(new FileInputStream(new File($uri)), " \r\n\t", TRUE);
       return TRUE;
     }
     
