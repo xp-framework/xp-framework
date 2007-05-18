@@ -26,7 +26,7 @@
      * @param   
      * @return  
      */
-    public function __construct($server= '172.17.29.45', $port= 11211, $timeout= 3600) {
+    public function __construct($server= '172.17.29.2', $port= 11211, $timeout= 3600) {
       $this->_sock= new BSDSocket($server, $port);
       $this->timeout= $timeout;
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
@@ -84,11 +84,15 @@
       // Split the result header and write it to an array
       $buf= $this->_sock->readLine();
       $n= sscanf($buf, '%s %s %d %d', $type, $key, $flags, $size);
-      var_dump($buf);
+      
       if ($type== 'VALUE') {
         $answer['key']= $key;
         $answer['flags']= $flags;
-        $answer['data']= substr($this->_sock->readBinary($size+ 2), 0, $size+1);
+        while (strlen($datatmp)< $size) {
+          $datatmp.= $this->_sock->read(1024);
+        }
+        $answer['data']= $datatmp;
+        $this->_sock->readLine();
         $this->_sock->readLine();
       } else if ($type== 'END') {
         return NULL;
@@ -104,13 +108,12 @@
      * @throws  lang.IllegalStateException
      */
     protected function checkStoreReply($answer) {
-      if ($answer == "STORED\r\n") {
+     if ($answer == "STORED\r\n") {
         return TRUE;
       } else if ($answer== "NOT_STORED\r\n") {
         return FALSE;
       } else {
         throw new IllegalStateException($answer);
-        return FALSE;
       }    
     }
 
