@@ -4,13 +4,6 @@
  * $Id$ 
  */
 
-  uses(
-    'text.StreamTokenizer', 
-    'io.streams.FileInputStream', 
-    'util.invoke.aop.ChunkTokenizer',
-    'io.File'
-  );
-
   /**
    * Weave interceptors into sourcecode
    *
@@ -37,10 +30,8 @@
      */
     function stream_open($path, $mode, $options, $opened_path) {
       sscanf($path, 'weave://%[^|]|%[^$]', $this->class, $uri);
-      if (isset(Aop::$pointcuts[$this->class])) {
-        $this->f= new StreamTokenizer(new FileInputStream(new File($uri)), " \r\n\t", TRUE);
-      } else {
-        $this->f= new ChunkTokenizer(fopen($uri, $mode));
+      $this->f= fopen($uri, $mode);
+      if (!isset(Aop::$pointcuts[$this->class])) {
         $this->class= NULL;   // Disable
       }
       return TRUE;
@@ -53,36 +44,49 @@
      * @return  string
      */
     function stream_read($count) {
-      $t= $this->f->nextToken();
+      if (FALSE === ($t= fgetcsv($this->f, 200, ' ', "\0"))) return FALSE;
+
       if ($this->class) {
-        if ('function' === $t) {
-          $ws= $this->f->nextToken();
-          $name= $this->f->nextToken('(');
-          $this->f->nextToken('(');
-          // DEBUG fputs(STDERR, "NAME = # $this->class::$name #\n");
-          if (!isset(Aop::$pointcuts[$this->class][$name])) {
-            return $t.$ws.$name.'(';
+      
+        // Search for "function" keyword
+        if ($p= array_search('function', $t)) {
+          sscanf(implode('', array_slice($t, $p+ 1)), '%[^(]%[^{]', $name, $args);
+          
+          // DEBUG fputs(STDERR, "NAME = # $this->class::$name::$args:: #\n");
+          
+          if (isset(Aop::$pointcuts[$this->class][$name])) {
+            $r= 'function '.$name.$args.' { ';
+            $inv= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\']';
+
+            // @before
+            isset(Aop::$pointcuts[$this->class][$name]['before'])
+              ? $r.= $inv.'[\'before\'], array'.$args.');'
+              : TRUE
+            ;
+
+            // @except
+            isset(Aop::$pointcuts[$this->class][$name]['except'])
+              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'[\''.$name.'\'][\'except\'], $e); throw $e; } '
+              : $r.= '$r= $this->·'.$name.$args.';';
+            ;
+
+            // @after
+            isset(Aop::$pointcuts[$this->class][$name]['after'])
+              ?  $r.= $inv.'[\'after\'], $r);'
+              : TRUE
+            ;
+
+            $r.= ' return $r; } function';
+
+            $t[$p]= $r;
+            $t[$p+ 1]= '·'.$t[$p+ 1];
           }
-
-          $args= '('.$this->f->nextToken('{');
-          $this->f->nextToken('{');
-          $t= 'function '.$name.$args.'{ ';
-
-          // @before
-          $t.= 'call_user_func_array(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'before\'], array'.$args.');';
-
-          // @except
-          $t.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { call_user_func(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'except\'], $e); throw $e; } ';
-
-          // @after
-          $t.= 'call_user_func(Aop::$pointcuts[\''.$this->class.'\'][\''.$name.'\'][\'after\'], $r); return $r;';
-
-          $t.= '} function ·'.$name.$args.' {';
-
-          // DEBUG fputs(STDERR, $t."\n");
         }
+        
+        // DEBUG fputs(STDERR, implode(' ', $t)."\n");
       }
-      return $t;
+      
+      return implode(' ', $t)."\n";
     }
     
     /**
@@ -91,7 +95,7 @@
      * @return  bool
      */
     function stream_eof() {
-      return $this->f->hasMoreTokens();
+      return feof($this->f);
     }
   }
 ?>
