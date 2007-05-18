@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix fatal error when ext/soap is enabled (name clash for class SoapFault)
+  (kiesel)
+- Prevent error leaks from libxml in DomXslProcessor class
+  (kiesel)
 - Fix possible endless loop in util.HashmapIterator class
   (wagner)
 - Implemented RFC #0126: rdbms.Column API
