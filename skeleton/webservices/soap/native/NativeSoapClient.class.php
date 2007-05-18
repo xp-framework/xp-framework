@@ -8,7 +8,7 @@
     'peer.URL',
     'xml.QName',
     'util.log.Traceable',
-    'webservices.soap.SOAPFault',
+    'webservices.soap.xp.XPSoapFault',
     'webservices.soap.SOAPFaultException'
   );
 
@@ -252,8 +252,8 @@
         $client->__getLastResponse()
       );
       
-      if (is_soap_fault($result)) throw new SoapFaultException(
-        new SOAPFault($result->faultcode, $result->faultstring)
+      if (is_soap_fault($result)) throw new SOAPFaultException(
+        new XPSoapFault($result->faultcode, $result->faultstring)
       );
       
       return $result;

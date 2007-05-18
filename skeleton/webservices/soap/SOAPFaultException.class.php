@@ -16,7 +16,7 @@
     /**
      * Constructor
      *
-     * @param   &webservices.soap.SOAPFault fault
+     * @param   webservices.soap.CommonSoapFault fault
      */
     public function __construct($fault) {
       parent::__construct($fault->faultstring);

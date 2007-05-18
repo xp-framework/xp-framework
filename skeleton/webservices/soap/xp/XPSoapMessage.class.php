@@ -8,7 +8,7 @@
     'xml.Tree',
     'xml.Node',
     'lang.Collection',
-    'webservices.soap.SOAPFault',
+    'webservices.soap.CommonSoapFault',
     'webservices.soap.xp.XPSoapNode',
     'webservices.soap.xp.XPSoapHeaderElement',
     'webservices.soap.xp.XPSoapMapping',
@@ -381,7 +381,7 @@
      * @param   mixed detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= XPSoapNode::fromObject(new SOAPFault(
+      $this->root->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
         $faultcode,
         $faultstring,
         $faultactor,
@@ -480,7 +480,7 @@
     /**
      * Get fault
      *
-     * @return  &webservices.soap.SOAPFault or NULL if none exists
+     * @return  &webservices.soap.CommonSoapFault or NULL if none exists
      */
     public function getFault() {
       if ($body= $this->_bodyElement()) {
@@ -491,7 +491,7 @@
 
         $return= $this->_recurseData($body->children[0], TRUE, 'OBJECT', array());
         // DEBUG Console::writeLine('RETURN >>> ', var_export($return, 1), '***'); // DEBUG
-        return new SOAPFault(
+        return new CommonSoapFault(
           isset($return['faultcode'])   ? $return['faultcode']    : '',
           isset($return['faultstring']) ? $return['faultstring']  : '',
           isset($return['faultactor'])  ? $return['faultactor']   : '',

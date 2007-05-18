@@ -11,7 +11,7 @@
    *
    * @purpose  XML subtree
    */
-  class SOAPFault extends XML {
+  class CommonSoapFault extends XML {
     public 
       $faultcode    = '', 
       $faultstring  = '', 
