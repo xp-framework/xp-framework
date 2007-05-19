@@ -56,24 +56,32 @@
           // DEBUG fputs(STDERR, "NAME = # $this->class::$name::$args:: #\n");
           
           if (isset($this->pc[$name])) {
+            $pc= $name;
+          } else if (isset($this->pc['*'])) {
+            $pc= '*';
+          } else {
+            $pc= NULL;
+          }
+          
+          if ($pc) {
             $r= 'function '.$name.$args.' { ';
-            $inv= 'call_user_func_array(Aspects::$pointcuts[\''.$this->class.'\'][\''.$name.'\']';
+            $inv= 'call_user_func(Aspects::$pointcuts[\''.$this->class.'\'][\''.$pc.'\']';
 
             // @before
-            isset($this->pc[$name][BEFORE])
-              ? $r.= $inv.'['.BEFORE.'], array'.$args.');'
+            isset($this->pc[$pc][BEFORE]) 
+              ? $r.= $inv.'['.BEFORE.'], __METHOD__, array'.$args.');'
               : TRUE
             ;
 
             // @except
-            isset($this->pc[$name][THROWING])
-              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], $e); throw $e; } '
+            isset($this->pc[$pc][THROWING])
+              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], __METHOD__, $e); throw $e; } '
               : $r.= '$r= $this->·'.$name.$args.';';
             ;
 
             // @after
-            isset($this->pc[$name][AFTER])
-              ?  $r.= $inv.'['.AFTER.'], $r);'
+            isset($this->pc[$pc][AFTER])
+              ?  $r.= $inv.'['.AFTER.'], __METHOD__, $r);'
               : TRUE
             ;
 
