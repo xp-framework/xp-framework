@@ -7,6 +7,7 @@
   define('BEFORE',   0x0001);
   define('THROWING', 0x0002);
   define('AFTER',    0x0004);
+  define('AROUND',   0x0008);
 
   /**
    * Aspects registry
@@ -33,6 +34,8 @@
           sscanf($m->getAnnotation('pointcut'), '%[^:]::%s', $classname, $method);
           @self::$pointcuts[$classname][$method]= array();
           $p[$m->getName()]= &self::$pointcuts[$classname][$method];
+        } else if ($m->hasAnnotation('around')) {
+          $p[$m->getAnnotation('around')][AROUND]= array($aspect, $m->getName());
         } else if ($m->hasAnnotation('before')) {
           $p[$m->getAnnotation('before')][BEFORE]= array($aspect, $m->getName());
         } else if ($m->hasAnnotation('after')) {

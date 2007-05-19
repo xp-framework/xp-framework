@@ -56,9 +56,18 @@
      * Log power was set
      *
      */
-    #[@before('methodInvoked')]
-    public function logCall($j) {
-      Console::writeLine('Method ', $j, ' invoked');
+    #[@around('methodInvoked')]
+    public function logCall($j, $args) {
+      Console::writeLine('Intercepted method call to ', $j[0]->getClassName(), '::', substr($j[1], 1), '(', implode(', ', array_map(array('xp', 'stringOf'), $args)), ')');
+      $s= microtime(TRUE);
+      try {
+        $r= call_user_func_array($j, $args);
+      } catch (Throwable $e) {
+        Console::writeLine('  ** ', $e->compoundMessage(), ', took ', sprintf('%.3f', (microtime(TRUE)- $s) * 1000), ' milliseconds');
+        throw $e;
+      }
+      Console::writeLine('  => ', $r, ', took ', sprintf('%.3f', (microtime(TRUE)- $s) * 1000), ' milliseconds');
+      return $r;
     }
   }
 ?>

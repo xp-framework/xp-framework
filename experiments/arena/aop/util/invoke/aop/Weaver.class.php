@@ -51,7 +51,7 @@
       
         // Search for "function" keyword
         if ($p= array_search('function', $t)) {
-          sscanf(implode('', array_slice($t, $p+ 1)), '%[^(]%[^{]', $name, $args);
+          sscanf(implode('', array_slice($t, $p+ 1)), '%[^(]%[^{]', $name, $decl);
           
           // DEBUG fputs(STDERR, "NAME = # $this->class::$name::$args:: #\n");
           
@@ -64,29 +64,35 @@
           }
           
           if ($pc) {
-            $r= 'function '.$name.$args.' { ';
+            $args= preg_replace('#=([^,\)]+)#', '', $decl);
+            $r= 'function '.$name.$decl.' { ';
             $inv= 'call_user_func(Aspects::$pointcuts[\''.$this->class.'\'][\''.$pc.'\']';
+            
+            if (isset($this->pc[$pc][AROUND])) {
+              $r.= 'return '.$inv.'['.AROUND.'], array($this, \'·'.$name.'\'), array'.$args.'); } function';
+            
+            } else {
 
-            // @before
-            isset($this->pc[$pc][BEFORE]) 
-              ? $r.= $inv.'['.BEFORE.'], __METHOD__, array'.$args.');'
-              : TRUE
-            ;
+              // @before
+              isset($this->pc[$pc][BEFORE]) 
+                ? $r.= $inv.'['.BEFORE.'], __METHOD__, array'.$args.');'
+                : TRUE
+              ;
 
-            // @except
-            isset($this->pc[$pc][THROWING])
-              ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], __METHOD__, $e); throw $e; } '
-              : $r.= '$r= $this->·'.$name.$args.';';
-            ;
+              // @except
+              isset($this->pc[$pc][THROWING])
+                ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], __METHOD__, $e); throw $e; } '
+                : $r.= '$r= $this->·'.$name.$args.';';
+              ;
 
-            // @after
-            isset($this->pc[$pc][AFTER])
-              ?  $r.= $inv.'['.AFTER.'], __METHOD__, $r);'
-              : TRUE
-            ;
+              // @after
+              isset($this->pc[$pc][AFTER])
+                ?  $r.= $inv.'['.AFTER.'], __METHOD__, $r);'
+                : TRUE
+              ;
 
-            $r.= ' return $r; } function';
-
+              $r.= ' return $r; } function';
+            }
             $t[$p]= $r;
             $t[$p+ 1]= '·'.$t[$p+ 1];
           }

@@ -7,26 +7,6 @@
     'util.profiling.Timer'
   );
   
-  class Aop extends Object {
-    public static $pointcuts= array();
-    
-    public static function register(Generic $aspect) {
-      foreach ($aspect->getClass()->getMethods() as $m) {
-        if ($m->hasAnnotation('pointcut')) {
-          sscanf($m->getAnnotation('pointcut'), '%[^:]::%s', $classname, $method);
-          self::$pointcuts[$classname][$method]= array();
-          $p[$m->getName()]= &self::$pointcuts[$classname][$method];
-        } else if ($m->hasAnnotation('before')) {
-          $p[$m->getAnnotation('before')]['before']= array($aspect, $m->getName());
-        } else if ($m->hasAnnotation('after')) {
-          $p[$m->getAnnotation('after')]['after']= array($aspect, $m->getName());
-        } else if ($m->hasAnnotation('throwing')) {
-          $p[$m->getAnnotation('throwing')]['throwing']= array($aspect, $m->getName());
-        }
-      }
-    }
-  }
-  
   // Install stream wrapper
   $p= new ParamString();
   if (!$p->exists('disable')) {
