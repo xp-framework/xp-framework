@@ -25,7 +25,7 @@
   
 
     /**
-     * Aditionally, intercept calls to any of the Binford class' methods
+     * Additionally, intercept calls to any of the Binford class' methods
      *
      */
     #[@pointcut('util.Binford::*')]
