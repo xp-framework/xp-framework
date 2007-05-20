@@ -31,10 +31,11 @@
     /**
      * Proceed with invocation
      *
+     * @param   mixed[] args default NULL
      * @return  mixed
      */
-    public function proceed() {
-      return call_user_func_array(array($this->instance, '·'.$this->method), $this->args);
+    public function proceed($args= NULL) {
+      return call_user_func_array(array($this->instance, '·'.$this->method), $args ? $args : $this->args);
     }
     
     /**
