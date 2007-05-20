@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.invoke.aop.JoinPoint');
+
   /**
    * Weave interceptors into sourcecode
    *
@@ -69,25 +71,25 @@
             $inv= 'call_user_func(Aspects::$pointcuts[\''.$this->class.'\'][\''.$pc.'\']';
             
             if (isset($this->pc[$pc][AROUND])) {
-              $r.= 'return '.$inv.'['.AROUND.'], array($this, \'·'.$name.'\'), array'.$args.'); } function';
+              $r.= 'return '.$inv.'['.AROUND.'], new JoinPoint($this, \''.$name.'\', array'.$args.')); } function';
             
             } else {
 
               // @before
               isset($this->pc[$pc][BEFORE]) 
-                ? $r.= $inv.'['.BEFORE.'], __METHOD__, array'.$args.');'
+                ? $r.= $inv.'['.BEFORE.'], new JoinPoint($this, \''.$name.'\', array'.$args.'));'
                 : TRUE
               ;
 
               // @except
               isset($this->pc[$pc][THROWING])
-                ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], __METHOD__, $e); throw $e; } '
+                ? $r.= 'try { $r= $this->·'.$name.$args.'; } catch (Exception $e) { '.$inv.'['.THROWING.'], new JoinPoint($this, \''.$name.'\', array'.$args.'), $e); throw $e; } '
                 : $r.= '$r= $this->·'.$name.$args.';';
               ;
 
               // @after
               isset($this->pc[$pc][AFTER])
-                ?  $r.= $inv.'['.AFTER.'], __METHOD__, $r);'
+                ?  $r.= $inv.'['.AFTER.'], new JoinPoint($this, \''.$name.'\', array'.$args.'), $r);'
                 : TRUE
               ;
 
