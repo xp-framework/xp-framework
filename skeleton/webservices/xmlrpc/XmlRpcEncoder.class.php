@@ -19,7 +19,7 @@
      * Encode given data into XML-RPC format
      *
      * @param   mixed data
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function encode($data) {
       return $this->_marshall($data);
@@ -36,12 +36,11 @@
      * XP objects are encoded as structs, having their FQDN stored in the member
      * __xp_class.
      *
-     * @param   &xml.Node node
+     * @param   xml.Node node
      * @param   mixed data
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
     protected function _marshall($data) {
-      Logger::getInstance()->getCategory()->error($data, xp::typeOf($data));
       $value= new Node('value');
       
       if (is('Generic', $data)) {
@@ -54,8 +53,6 @@
         $data= (array)$data;
         $data['__xp_class']= $cname;
       }
-      
-      
       
       switch (xp::typeOf($data)) {
         case 'integer':

@@ -19,19 +19,18 @@
      * Decode XML node-set into the data structures
      * they represent
      *
-     * @param   &xml.Node node
-     * @return  &mixed
+     * @param   xml.Node node
+     * @return  mixed
      */
     public function decode($node) {
       return $this->_unmarshall($node);
     }
-  
-    
+      
     /**
      * Recursively deserialize data for the given node.
      *
-     * @param   &xml.Node node
-     * @return  &mixed
+     * @param   xml.Node node
+     * @return  mixed
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException
@@ -39,8 +38,6 @@
     protected function _unmarshall($node) {
       if (!is('xml.Node', $node->children[0]))
         throw(new XMLFormatException('Tried to access nonexistant node.'));
-        
- Console::writeLine($node->children[0]->getName());
         
       switch ($node->children[0]->getName()) {
         case 'struct':
