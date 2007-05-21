@@ -40,6 +40,8 @@
       if (!is('xml.Node', $node->children[0]))
         throw(new XMLFormatException('Tried to access nonexistant node.'));
         
+ Console::writeLine($node->children[0]->getName());
+        
       switch ($node->children[0]->getName()) {
         case 'struct':
           $ret= array();
@@ -98,6 +100,10 @@
         case 'dateTime.iso8601':
           $d= Date::fromString($node->children[0]->getContent());
           return $d;
+        
+        case 'nil':
+          $n= NULL;
+          return $n;
           
         default:
           throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));

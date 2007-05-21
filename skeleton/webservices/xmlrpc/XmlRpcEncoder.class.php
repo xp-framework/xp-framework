@@ -41,6 +41,7 @@
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
     protected function _marshall($data) {
+      Logger::getInstance()->getCategory()->error($data, xp::typeOf($data));
       $value= new Node('value');
       
       if (is('Generic', $data)) {
@@ -53,6 +54,8 @@
         $data= (array)$data;
         $data['__xp_class']= $cname;
       }
+      
+      
       
       switch (xp::typeOf($data)) {
         case 'integer':
@@ -80,6 +83,10 @@
         
         case 'string':
           $value->addChild(new Node('string', $data));
+          break;
+          
+        case 'NULL':
+          $value->addChild(new Node('nil'));
           break;
         
         default:
