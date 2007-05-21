@@ -6,6 +6,13 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.5.0, released 2007-05-21
+----------------------------------
+SVN version: 10411
+
+- Implemented RFC #0128: webservices.xmlrpc handling of NULL
+  (gellweiler)
 - Fix fatal error when ext/soap is enabled (name clash for class SoapFault)
   (kiesel)
 - Prevent error leaks from libxml in DomXslProcessor class
