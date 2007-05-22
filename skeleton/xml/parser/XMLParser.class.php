@@ -78,6 +78,7 @@
     public function parse($data, $source= NULL) {
       if ($parser = xml_parser_create($this->encoding)) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
+        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, 'ISO-8859-1');
 
         // Register callback
         if ($this->callback) {
@@ -93,19 +94,20 @@
           $line= xml_get_current_line_number($parser);
           $column= xml_get_current_column_number($parser);
           xml_parser_free($parser);
-          throw(new XMLFormatException(
+          libxml_clear_errors();
+          throw new XMLFormatException(
             xml_error_string($type),
             $type,
             $source,
             $line,
             $column
-          ));
+          );
         }
         xml_parser_free($parser);
         return TRUE;
       }
 
-      throw(new NullPointerException('Could not create parser'));
+      throw new NullPointerException('Could not create parser');
     }
   }
 ?>
