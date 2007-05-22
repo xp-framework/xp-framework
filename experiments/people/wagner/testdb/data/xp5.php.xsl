@@ -234,8 +234,8 @@
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
-      return self::getPeer()->column($name);
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
     }
   </xsl:text>
 
@@ -266,8 +266,6 @@
     <xsl:if test="position() != last()">, </xsl:if>
     </xsl:for-each>
     <xsl:text>) {&#10;</xsl:text>
-
-
       <xsl:choose>
 
         <xsl:when test="count(key) = 1">
