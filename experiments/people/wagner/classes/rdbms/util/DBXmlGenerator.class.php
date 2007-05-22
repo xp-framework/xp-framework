@@ -5,10 +5,10 @@
  */
 
   uses(
-    'lang.System',
     'rdbms.DBTable',
+    'xml.Tree',
+    'lang.System',
     'rdbms.util.DBXMLNamingContext',
-    'xml.Tree'
   );
   
   /**
