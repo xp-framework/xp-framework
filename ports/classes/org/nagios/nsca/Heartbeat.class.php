@@ -71,7 +71,7 @@
       $this->port=    $url->getPort(5667);
       $this->version= $url->getParam('version', NSCA_VERSION_2);
       $this->service= trim($url->getPath(), '/');
-      $this->host=    $url->getParam('hostname', System::getProperty('host.name').$url->getParam('domain', ''));
+      $this->host=    $url->getParam('hostname', System::getProperty('host.name').rtrim('.'.$url->getParam('domain', ''), '.'));
     }
     
     /**
