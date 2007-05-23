@@ -32,6 +32,11 @@ usage:
 	@echo "  make firstinstall.<installtarget>    - Prepare installation"
 	@echo "  make install.<installtarget>         - Install <installtarget>"
 	@echo "  make wrapper                         - Regenerate wrappers"
+	@echo ""
+	@echo "  make database                        - Regenerate database classes"
+	@echo "       database.god                    - Generate XML structure from database (subtarget of database)"
+	@echo "       database.gen                    - Generate PHP source from XML files (subtarget of database)"
+	@echo "       Database config must be available in {project}/conf/db/*/config.ini"
 
 install.%:
 	@echo "-------------------------------------------------------"
