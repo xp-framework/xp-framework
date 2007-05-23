@@ -248,7 +248,7 @@
       if (self::GENERATE_SRC == $this->mode && empty($xsl)) {
       
         // Defaulting to xp5.php.xsl
-        $this->xsl= ClassLoader::getDefault()->getResource(strtr($this->getClass()->getPackage()->getName(),'.', '/').'/xp5.php.xsl');
+        $this->xsl= $this->getClass()->getPackage()->getResource('xp5.php.xsl');
       } else {
         $this->xsl= FileUtil::getContents(new File($xsl));
       }
