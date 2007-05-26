@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jun 23 16:19:11 CEST 2006
-@status: draft
+@status: discussion, ends Mon May 28 18:00:00     2007
 @category: peer.ldap
 
 Scope of Change
@@ -54,10 +54,10 @@ n/a
 
 Related documents
 -----------------
-- http://xp-framework.net/downloads/rfc0060.patch
+- http://xp-framework.net/rfc/contrib/rfc0060.diff
   Patch implementing this RFC
 
-- http://xp-framework.net/downloads/rfc0060-unittests.patch
+- http://xp-framework.net/rfc/contrib/rfc0060-unittests.diff
   Unittests patch for new functionality
 
 
@@ -70,4 +70,7 @@ Comments
   How about instanceOf()? Or would this be just another reason keeping
   us from migrating to PHP5 (keywords can't be method names...)?
 
+- friebe, Sat May 26 13:26:07     2007
+  Updated patch to PHP5. Using isA()...
+  
 <EOF>
