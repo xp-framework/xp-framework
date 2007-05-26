@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jul 15 18:04:00 CEST 2005
-@status: discussion, ends at Tue Jul 19 09:52:19 CEST 2005
+@status: discussion, ends Mon May 28 18:00:00     2007
 @category: scriptlet.xml.workflow.checkers
 
 Scope of Change
@@ -12,11 +12,13 @@ Scope of Change
 The IntegerRangeChecker class will be deprecated. Its functionality will
 be implemented in a new class, NumberRangeChecker.
 
+
 Rationale
 ---------
 The IntegerRangeChecker can basically also check floats, whereas the name
 suggests otherwise. Implemeting a FloatRangeChecker would simply be a
 copy of the IntegerRangeChecker class - duplicated code.
+
 
 Functionality
 -------------
@@ -27,25 +29,33 @@ Functionality
 * svn add
 * svn commit
 
+
 Security considerations
 -----------------------
 n/a
+
 
 Speed impact
 ------------
 n/a
 
+
 Dependencies
 ------------
 n/a
+
 
 Related documents
 -----------------
 n/a
 
+
 Comments
 --------
 - friebe, Mon Jul 18 09:52:00 CEST 2005
   Maybe RangeChecker is a better name?
-  
+
+- friebe, Sat May 26 13:55:07     2007
+  Staying with NumberRangeChecker
+
 <EOF>
