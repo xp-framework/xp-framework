@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Mar 14 16:30:51 CET 2004
-@status: draft
+@status: obsoleted (by RFC #0052)
 @category: <core>
 
 Scope of Change
@@ -379,5 +379,8 @@ Related documents
 
 Comments
 --------
+- friebe, Sun May 27 12:46:09     2007
+  Maintaining patches to the PHP core has proven to be a quite tedious
+  task which is not worth the effort.
 
 <EOF>
