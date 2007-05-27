@@ -22,7 +22,33 @@ Rationale
 
 Functionality
 -------------
-na
+
+Current
+~~~~~~~
+<?php
+  $dialog= new DialogType();
+ 
+  // Marshaller returns XML as a string
+  $xml= Marshaller::marshal($dialog);
+ 
+  // ...which can be parsed into a Tree using the following:
+  $tree= Tree::fromString($xml);
+?>
+
+
+New functionality
+~~~~~~~~~~~~~~~~~
+<?php
+  $dialog= new DialogType();
+ 
+  // XmlBinding is the entry point
+  $m= XmlBinding::newInstance('de.thekid.dialog')->createMarshaller();
+ 
+  // The marshal() method is overloaded
+  $tree= $m->marshal($dialog, new Tree());
+  $xml= $m->marshal($dialog);
+?>
+
 
 Security considerations
 -----------------------
@@ -31,7 +57,7 @@ n/a
 
 Speed impact
 ------------
-Faster.
+n/a
 
 
 Dependencies
@@ -41,7 +67,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://java.sun.com/webservices/docs/1.5/api/javax/xml/bind/package-summary.html
+  Package javax.xml.bind 
 
 
 Comments
