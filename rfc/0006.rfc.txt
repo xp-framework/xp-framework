@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 19:51:54 CET 2003
-@status: draft
+@status: rejected, see comments
 @category: io
 
 Scope of Change
@@ -84,5 +84,11 @@ Comments
 
 - friebe, Sun Nov 16 21:28:15 CET 2003
   How to implement versioning? Specialized serializer?
+
+- friebe, Sun May 27 12:32:08     2007
+  Rejected, this tries to prevent users from serializing a File
+  or SybaseConnection instance; which really doesn't happen very
+  often, and if it does, it should be quite clear why it doesn't
+  work as expected.
 
 <EOF>

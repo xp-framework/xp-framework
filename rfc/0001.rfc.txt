@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 18:45:43 CET 2003
-@status: draft
+@status: rejected, see comments
 @category: <core>
 
 Scope of Change
@@ -47,5 +47,11 @@ Comments
   
 - friebe, Sun Nov 16 18:58:57 CET 2003
   Make in() work on strings
+
+- friebe, Sun May 27 12:35:26     2007
+  Rejected, this hasn't been an issue. The problems with weird
+  argument order can be conquered by: a) remembering b) looking
+  up the corresponding function in the manual or completely
+  avoided by using the util.collections classes.
 
 <EOF>
