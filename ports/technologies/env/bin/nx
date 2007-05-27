@@ -1,20 +1,22 @@
 #!/bin/sh
 
-export PHP_INCLUDE_PATH=`php -r 'echo ini_get("include_path");'`
-CMD=
+SELF=$(realpath $0)
+BASE=$(dirname "$SELF")
+. $BASE/common.inc.sh
 
-for PARAM in $@; do
-  if [ -f $PARAM ]; then
+CMD=
+for PARAM in "$@"; do
+  if [ -f "$PARAM" ]; then
     CMD=$CMD" $PARAM"
   elif [ -f `echo $PARAM | cut -d : -f 1` ]; then
     CMD=$CMD" -line `echo $PARAM | cut -d : -f 2` `echo $PARAM | cut -d : -f 1`"
   else
-    IFS=':'
+    IFS=$_XP_PATH_SEPARATOR
     FOUND=0
-    for DIR in $PHP_INCLUDE_PATH; do 
+    for DIR in $_XP_INCLUDE_PATH; do 
       FILE=`echo $PARAM | tr . /`
       if [ -f "$DIR/$FILE.class.php" ]; then
-        CMD=$CMD" $DIR/$FILE.class.php" 
+        CMD=$CMD" "$(unixpath "$DIR/$FILE.class.php")
         FOUND=1
         break
       fi
