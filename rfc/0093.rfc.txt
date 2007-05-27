@@ -33,6 +33,9 @@ Current
  
   // ...which can be parsed into a Tree using the following:
   $tree= Tree::fromString($xml);
+
+  // Unmarshalling
+  $dialog= Unmarshaller::unmarshal($xml, 'de.thekid.dialog.DialogType');
 ?>
 
 
@@ -47,6 +50,11 @@ New functionality
   // The marshal() method is overloaded
   $tree= $m->marshal($dialog, new Tree());
   $xml= $m->marshal($dialog);
+  
+  // Unmarshalling
+  $u= XmlBinding::newInstance('de.thekid.dialog')->createUnmarshaller();
+  $dialog= $u->unmarshal($xml, 'DialogType');
+  $dialog= $u->unmarshal($tree, 'DialogType');
 ?>
 
 
