@@ -15,6 +15,19 @@
    * @purpose  Unit Test
    */
   class SoapTest extends TestCase {
+  
+    /**
+     * Assertion helper
+     *
+     * @param   string messageSource
+     * @param   string fragment
+     * @param   string message default 'notcontained'
+     */
+    protected function assertContains($messageSource, $fragment, $message= 'notcontained') {
+      if (!strstr($messageSource, $fragment)) {
+        $this->fail($message.': Message source does not contain sought fragment', $messageSource, $fragment);
+      }
+    }
       
     /**
      * Test serialization
