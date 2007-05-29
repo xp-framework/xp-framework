@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jul 15 18:04:00 CEST 2005
-@status: discussion, ends Mon May 28 18:00:00     2007
+@status: implemented, Tue May 29 12:57:37     2007
 @category: scriptlet.xml.workflow.checkers
 
 Scope of Change
