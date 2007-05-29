@@ -57,62 +57,6 @@
     }
     
     /**
-     * Assert that a value's type is boolean
-     *
-     * @param   mixed var
-     * @param   string error default 'notbool'
-     * @return  bool
-     */
-    public function assertBoolean($var, $error= 'notbool') {
-      if (!is_bool($var)) {
-        return $this->fail($error, 'bool', xp::typeOf($var));
-      }
-      return TRUE;
-    }
-    
-    /**
-     * Assert that a value's type is float
-     *
-     * @param   mixed var
-     * @param   string error default 'notfloat'
-     * @return  bool
-     */
-    public function assertFloat($var, $error= 'notfloat') {
-      if (!is_float($var)) {
-        return $this->fail($error, 'float', xp::typeOf($var));
-      }
-      return TRUE;
-    }
-    
-    /**
-     * Assert that a value's type is integer
-     *
-     * @param   mixed var
-     * @param   string error default 'notinteger'
-     * @return  bool
-     */
-    public function assertInteger($var, $error= 'notinteger') {
-      if (!is_int($var)) {
-        return $this->fail($error, 'int', xp::typeOf($var));
-      }
-      return TRUE;
-    }
-
-    /**
-     * Assert that a value's type is string
-     *
-     * @param   mixed var
-     * @param   string error default 'notstring'
-     * @return  bool
-     */
-    public function assertString($var, $error= 'notstring') {
-      if (!is_string($var)) {
-        return $this->fail($error, 'string', xp::typeOf($var));
-      }
-      return TRUE;
-    }
-
-    /**
      * Assert that a value's type is null
      *
      * @param   mixed var
@@ -263,37 +207,6 @@
     }
     
     /**
-     * Assert that a value matches a given pattern
-     *
-     * @param   mixed var
-     * @param   string pattern
-     * @param   string error default 'nomatches'
-     * @return  bool
-     * @see     php://preg_match
-     */
-    public function assertMatches($var, $pattern, $error= 'nomatches') {
-      if (!preg_match($pattern, $var)) {
-        return $this->fail($error, $pattern, $var);
-      }
-      return TRUE;
-    }
-
-    /**
-     * Assert that a string contains a substring
-     *
-     * @param   mixed var
-     * @param   string needle
-     * @param   string error default 'notcontained'
-     * @return  bool
-     */
-    public function assertContains($var, $needle, $error= 'notcontained') {
-      if (!strstr($var, $needle)) {
-        return $this->fail($error, $pattern, $var);
-      }
-      return TRUE;
-    }
-    
-    /**
      * Assert that a given object is of a specified class
      *
      * @param   lang.Generic var
@@ -325,28 +238,6 @@
       }
       if (!is($name, $var)) {
         return $this->fail($error, $name, $var->getClassName());
-      }
-      return TRUE;
-    }
-    
-    /**
-     * Assert that a value is contained in a list
-     *
-     * @param   array list
-     * @param   mixed var
-     * @param   string error default 'notinlist'
-     * @return  bool
-     */
-    public function assertIn($list, $var, $error= 'notinlist') {
-      if (is('Generic', $var)) {
-        $result= array_filter($list, array($var, 'equals'));
-        $contained= !empty($result);
-      } else {
-        $contained= in_array($var, $list, TRUE);
-      }
-      
-      if (!$contained) {
-        return $this->fail($error, $list, $var);
       }
       return TRUE;
     }
