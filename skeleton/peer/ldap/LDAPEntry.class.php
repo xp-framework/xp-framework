@@ -122,6 +122,18 @@
     }
     
     /**
+     * Retrieve whether this entry is of a given object class.
+     *
+     * Note: The given objectClass is treated case-sensitive!
+     *
+     * @param   string objectClass
+     * @return  bool
+     */
+    public function isA($objectClass) {
+      return in_array($objectClass, $this->attributes['objectclass']);
+    }
+
+    /**
      * Retrieve a string representation of this object
      *
      * @return  string
