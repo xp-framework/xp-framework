@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0063: Unit test API cleanup
+  (friebe)
 - Implemented RFC #0031: RFC 0031: Replace IntegerRangeChecker with 
   NumberRangeChecker
   (friebe)
