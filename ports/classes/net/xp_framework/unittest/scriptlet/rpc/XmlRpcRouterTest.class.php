@@ -42,7 +42,7 @@
       $this->router->init();
       $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
-      $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
       
       $msg= XmlRpcResponseMessage::fromString($response->getContent());
       $this->assertEquals('net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler', $msg->getData());
@@ -191,7 +191,7 @@
       
       $this->router->init();
       $response= $this->router->process();
-      $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
       $this->assertEquals(200, $response->statusCode);
       
       $msg= XmlRpcResponseMessage::fromString($response->getContent());
