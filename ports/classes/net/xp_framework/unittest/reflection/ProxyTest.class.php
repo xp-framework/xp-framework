@@ -118,8 +118,8 @@
       $class= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
       $interfaces= $class->getInterfaces();
       $this->assertEquals(3, sizeof($interfaces));
-      $this->assertIn($interfaces, $this->iteratorClass);
-      $this->assertIn($interfaces, $this->observerClass);
+      $this->assertTrue(in_array($this->iteratorClass, $interfaces));
+      $this->assertTrue(in_array($this->observerClass, $interfaces));
     }
 
     /**
