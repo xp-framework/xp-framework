@@ -43,7 +43,7 @@
         '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
         $response->getContent()
       );
-      $this->assertIn($response->headers, 'Content-type: application/json; charset=iso-8859-1');
+      $this->assertTrue(in_array('Content-type: application/json; charset=iso-8859-1', $response->headers));
     }
     
     /**
@@ -141,7 +141,7 @@
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.checkMultipleParameters", "params" : [ "Lalala", 1, [ 12, "Egypt", false, -31 ], { "lowerBound" : 18, "upperBound" : 139 } ], "id" : 12 }');
       $this->router->init();
       $response= $this->router->process();
-      $this->assertIn($response->headers, 'Content-type: application/json; charset=iso-8859-1');
+      $this->assertTrue(in_array('Content-type: application/json; charset=iso-8859-1', $response->headers));
       $this->assertEquals(200, $response->statusCode);
       
       $msg= JsonResponseMessage::fromString($response->getContent());
