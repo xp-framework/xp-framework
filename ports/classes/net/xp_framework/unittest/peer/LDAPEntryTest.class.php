@@ -127,5 +127,23 @@
       $this->assertEquals('thekid', $cmp->getAttribute('uid', 0));
       $this->assertEquals($this->dn, $cmp->getAttribute('aliasedobjectname', 0));
     }
+
+    /**
+     * Tests isA()
+     *
+     */
+    #[@test]
+    public function isInetOrgPerson() {
+      $this->assertTrue($this->entry->isA('inetOrgPerson'));
+    }
+
+    /**
+     * Tests isA()
+     *
+     */
+    #[@test]
+    public function isNotAliasObject() {
+      $this->assertFalse($this->entry->isA('alias'));
+    }
   }
 ?>
