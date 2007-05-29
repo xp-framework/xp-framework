@@ -22,11 +22,11 @@
      */
     public function setUp() {
       if (!extension_loaded('openssl')) {
-        throw(new PrerequisitesNotMetError(
+        throw new PrerequisitesNotMetError(
           PREREQUISITE_LIBRARYMISSING, 
           $cause= NULL, 
           array('openssl')
-        ));
+        );
       }
     }
     
@@ -66,8 +66,8 @@ EOC
 
       $subject= $x509->getSubjectDN();
       $issuer= $x509->getIssuerDN();
-      $this->assertMatches($subject->getName(), $esubject, 'subject');
-      $this->assertMatches($issuer->getName(), $eissuer, 'issuer');
+      $this->assertTrue((bool)preg_match($esubject, $subject->getName()), 'subject');
+      $this->assertTrue((bool)preg_match($eissuer, $issuer->getName()), 'issuer');
       $this->assertEquals($x509->getHash(), $ehash, 'hash');
     }
   }

@@ -146,7 +146,7 @@
     #[@test]
     public function resourceArgument() {
       $fd= fopen('php://stdin', 'r');
-      $this->assertMatches(xp::stringOf($fd), '/resource\(type= stream, id= [0-9]+\)/');
+      $this->assertTrue((bool)preg_match('/resource\(type= stream, id= [0-9]+\)/', xp::stringOf($fd)));
       fclose($fd);
     }
 
