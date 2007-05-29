@@ -15,6 +15,8 @@
    *   <li>toolarge - if the given value exceeds the upper boundary</li>
    * </ul>
    *
+   * @deprecated Use NumberRangeChecker instead
+   * @see      xp://scriptlet.xml.workflow.checkers.NumberRangeChecker
    * @purpose  Checker
    */
   class IntegerRangeChecker extends ParamChecker {
