@@ -63,7 +63,7 @@
         '(objectClass=*)'
       );
       $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
-      $this->assertInteger($res->numEntries());
+      $this->assertNotEquals(0, $res->numEntries());
       $entry= $res->getFirstEntry();
       $this->assertClass($entry, 'peer.ldap.LDAPEntry');
       return $entry;
