@@ -56,7 +56,7 @@
       $this->router->init();
       $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
-      $this->assertIn($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
+      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
     }
 
     /**
