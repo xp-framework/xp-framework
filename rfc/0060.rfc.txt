@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Jun 23 16:19:11 CEST 2006
-@status: discussion, ends Mon May 28 18:00:00     2007
+@status: implemented, Tue May 29 12:52:45     2007
 @category: peer.ldap
 
 Scope of Change
