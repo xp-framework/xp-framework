@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0060: RFC 0060: LDAPEntry::isA()
+  (friebe)
 
 Version 5.5.0, released 2007-05-21
 ----------------------------------
