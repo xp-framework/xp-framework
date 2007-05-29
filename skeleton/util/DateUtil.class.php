@@ -22,11 +22,11 @@
      * Returns a Date object which represents the date at
      * the given date at midnight.
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function getMidnight($date) {
-      $d= new Date(Date::mktime (
+      $d= new Date(Date::mktime(
         0,
         0,
         0,
@@ -40,11 +40,11 @@
     /**
      * Gets the last day of the month
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function getLastOfMonth($date) {
-      $d= new Date(Date::mktime (
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -58,11 +58,11 @@
     /**
      * Gets the first day of the month
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function getFirstOfMonth($date) {
-      $d= new Date(Date::mktime (
+      $d= new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -72,16 +72,44 @@
       ));
       return $d;
     }
-    
+
+    /**
+     * Gets the first day of the week
+     *
+     * @param   util.Date date
+     * @return  util.Date
+     */
+    public static function getBeginningOfWeek($date) {
+      return DateUtil::addDays(DateUtil::getMidnight($date), -$date->getDayOfWeek());
+    }
+
+    /**
+     * Gets the last day of the week
+     *
+     * @param   util.Date date
+     * @return  util.Date
+     */
+    public static function getEndOfWeek($date) {
+      $date= new Date(Date::mktime(
+        23,
+        59,
+        59,
+        $date->getMonth(),
+        $date->getDay(),
+        $date->getYear()
+      ));
+      return DateUtil::addDays($date, 6 - $date->wday);
+    }
+
     /**
      * Adds a positive or negative amount of months
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addMonths($date, $count= 1) {
-      $d= new Date(Date::mktime(
+      return new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -89,15 +117,14 @@
         $date->getDay(),
         $date->getYear()
       ));
-      return $d;
     }
 
     /**
      * Adds a positive or negative amount of weeks
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addWeeks($date, $count= 1) {
       return DateUtil::addDays($date, $count * 7);
@@ -106,12 +133,12 @@
     /**
      * Adds a positive or negative amount of days
      *
-     * @param   &util.Date date 
+     * @param   util.Date date 
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addDays($date, $count= 1) {
-      $d= new Date(Date::mktime(
+      return  new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
@@ -119,18 +146,17 @@
         $date->getDay() + $count,
         $date->getYear()
       ));
-      return $d;
     }
     
     /**
      * Adds a positive or negative amount of hours
      *
-     * @param   &util.Date date 
+     * @param   util.Date date 
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addHours($date, $count= 1) {
-      $d= new Date(Date::mktime(
+      return new Date(Date::mktime(
         $date->getHours() + $count,
         $date->getMinutes(),
         $date->getSeconds(),
@@ -138,18 +164,17 @@
         $date->getDay(),
         $date->getYear()
       ));
-      return $d;
     }
     
     /**
      * Adds a positive or negative amount of minutes
      *
-     * @param   &util.Date date 
+     * @param   util.Date date 
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addMinutes($date, $count= 1) {
-      $d= new Date(Date::mktime(
+      return new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes() + $count,
         $date->getSeconds(),
@@ -157,18 +182,17 @@
         $date->getDay(),
         $date->getYear()
       ));
-      return $d;
     }
 
     /**
      * Adds a positive or negative amount of seconds
      *
-     * @param   &util.Date date 
+     * @param   util.Date date 
      * @param   int count default 1
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function addSeconds($date, $count= 1) {
-      $d= new Date(Date::mktime(
+      return new Date(Date::mktime(
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds() + $count,
@@ -176,20 +200,18 @@
         $date->getDay(),
         $date->getYear()
       ));
-      return $d;
     }
 
     /**
      * returns a TimeSpan representing the difference 
      * between the two given Date objects
      *
-     * @param   &util.Date d1
-     * @param   &util.Date d2
-     * @return  &util.TimeSpan
+     * @param   util.Date d1
+     * @param   util.Date d2
+     * @return  util.TimeSpan
      */
     public static function timeSpanBetween($d1, $d2) {
-      $t= new TimeSpan($d1->getTime()-$d2->getTime());
-      return $t;
+      return new TimeSpan($d1->getTime()-$d2->getTime());
     }
 
     /**
@@ -203,8 +225,8 @@
      *   usort($datelist, array('DateUtil', 'compare'))
      * </code>
      *
-     * @param   &util.Date a
-     * @param   &util.Date b
+     * @param   util.Date a
+     * @param   util.Date b
      * @return  int
      */
     public static function compare($a, $b) {
