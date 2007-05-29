@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0031: RFC 0031: Replace IntegerRangeChecker with 
+  NumberRangeChecker
+  (friebe)
 - Implemented RFC #0060: RFC 0060: LDAPEntry::isA()
   (friebe)
 
