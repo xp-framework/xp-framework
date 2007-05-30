@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixed bug #20 - util.collections.DJBX33AHashImplementation broken on 
+  64 bit systems (resolved by using MD5HashImplementation)
+  (friebe)
 - Implemented RFC #0063: Unit test API cleanup
   (friebe)
 - Implemented RFC #0031: RFC 0031: Replace IntegerRangeChecker with 
