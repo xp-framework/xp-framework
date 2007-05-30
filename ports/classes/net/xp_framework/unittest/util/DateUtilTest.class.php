@@ -152,5 +152,21 @@
       $this->assertEquals(new Date('1980-05-28'), $list[1], 'offset 1') &&
       $this->assertEquals(new Date('2002-02-21'), $list[2], 'offset 2');
     }
+    
+    /**
+     * Tests the compare method
+     *
+     */
+    #[@test]
+    public function testBeginAndEndOfWeek() {
+      $this->assertEquals(
+        new Date(Date::mktime(0, 0, 0, 1, 14, 2007)),
+        DateUtil::getBeginningOfWeek(new Date('2007-1-18'))
+      );
+      $this->assertEquals(
+        new Date(Date::mktime(23, 59, 59, 1, 20, 2007)),
+        DateUtil::getEndOfWeek(new Date('2007-1-18'))
+      );
+    }
   }
 ?>
