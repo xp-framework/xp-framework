@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.collections.DJBX33AHashImplementation');
+  uses('util.collections.MD5HashImplementation');
 
   /**
    * Provides hashing functionality for maps.
@@ -14,13 +14,14 @@
    *   $hashCode= HashProvider::hashOf($string);
    * </code>
    *
-   * Uses DJBX33A as default hashing implementation. To change the hashing
+   * Uses MD5 as default hashing implementation. To change the hashing
    * implementation to be used, use the following:
    * <code>
    *   HashProvider::getInstance()->setImplementation(new MyHashImplementation());
    * </code>
    * 
    * @see      xp://util.collections.DJBX33AHashImplementation
+   * @see      xp://util.collections.MD5HashImplementation
    * @see      xp://util.collections.Map
    * @purpose  Hashing
    */
