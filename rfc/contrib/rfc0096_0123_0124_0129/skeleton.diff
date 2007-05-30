@@ -1,0 +1,4311 @@
+Index: skeleton/rdbms/DBAdapter.class.php
+===================================================================
+--- skeleton/rdbms/DBAdapter.class.php	(Revision 10453)
++++ skeleton/rdbms/DBAdapter.class.php	(Arbeitskopie)
+@@ -29,17 +29,18 @@
+      * Get a table in the current database
+      *
+      * @param   string name
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable
+      */    
+-    public abstract function getTable($name);
++    public abstract function getTable($name, $database= NULL);
+ 
+     /**
+-     * Get all tables in the specified database
++     * Get tables by database
+      *
+-     * @param   string database
+-     * @return  rdbms.DBTable[]
+-     */    
+-    public abstract function getTables($database);
++     * @param   string database default NULL if omitted, uses current database
++     * @return  rdbms.DBTable[] array of DBTable objects
++     */
++    public abstract function getTables($database= NULL);
+     
+     /**
+      * Get databaases
+Index: skeleton/rdbms/SQLFunctions.class.php
+===================================================================
+--- skeleton/rdbms/SQLFunctions.class.php	(Revision 0)
++++ skeleton/rdbms/SQLFunctions.class.php	(Revision 0)
+@@ -0,0 +1,595 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.SQLFunction', 'rdbms.SQLDialect');
++  
++  /**
++   * use sql functions with different databases
++   *
++   * @test     xp://net.xp_framework.unittest.rdbms.SQLFunctionTest
++   * @see      xp://rdbms.Criteria
++   * @purpose  purpose
++   */
++  class SQLFunctions extends Object {
++
++    /**
++     * return a substring from col1, that start at
++     * position given by col2 and is col3 chars long
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function substring($col1, $col1, $col2) {
++      return new SQLFunction('substring', $col1, $col2);
++    }
++
++    /**
++     * Returns the starting position of the first occurrence of col1
++     * within col2. If the optional col3 is specified, it
++     * indicates the character position in col2 at which the
++     * search is to begin. If col1 is not found within col2, the value 0 is returned.
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction optional
++     * @return  rdbms.SQLFunction
++     */
++    public static function locate() {
++      $f= new SQLFunction('locate');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * cut off leading and trailing chars given ba col2
++     * if col2 is omitted, whitespaces are cutted off
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction optional
++     * @return  rdbms.SQLFunction
++     */
++    public static function trim() {
++      $f= new SQLFunction('trim');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * cut off leading chars given ba col2
++     * if col2 is omitted, whitespaces are cutted off
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction optional
++     * @return  rdbms.SQLFunction
++     */
++    public static function ltrim() {
++      $f= new SQLFunction('ltrim');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * cut off trailing chars given ba col2
++     * if col2 is omitted, whitespaces are cutted off
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction optional
++     * @return  rdbms.SQLFunction
++     */
++    public static function rtrim() {
++      $f= new SQLFunction('rtrim');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * get the length of col1
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function length($col) {
++      return new SQLFunction('length', $col);
++    }
++
++    /**
++     * get the length of col1 in bit
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function bitLength($col) {
++      return new SQLFunction('bit_length', $col);
++    }
++
++    /**
++     * get col1 in upper case
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function upper($col) {
++      return new SQLFunction('upper', $col);
++    }
++
++    /**
++     * get col1 in lower case
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function lower($col) {
++      return new SQLFunction('lower', $col);
++    }
++
++    /**
++     * get the ascii value for a char
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function ascii($col1) {
++      return new SQLFunction('ascii', $col1);
++    }
++
++    /**
++     * get the char for an ascii value
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function char($col1) {
++      return new SQLFunction('char', $col1);
++    }
++
++    /**
++     * get the length of a string
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function len($col1) {
++      return new SQLFunction('len', $col1);
++    }
++
++    /**
++     * turn a string backwards
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function reverse($col1) {
++      return new SQLFunction('reverse', $col1);
++    }
++
++    /**
++     * get col1 whitespaces
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function space($col1) {
++      return new SQLFunction('space', $col1);
++    }
++
++    /**
++     * concatinates all parameters
++     * two arguments or more
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function concat() {
++      $f= new SQLFunction('concat');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * Returns a four-character soundex code for
++     * character strings
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function soundex($val) {
++      return new SQLFunction('soundex', $val);
++    }
++
++    /**
++     * extract seconds from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function second($col) {
++      return new SQLFunction('second', $col);
++    }
++
++    /**
++     * extract minutes from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function minute($col) {
++      return new SQLFunction('minute', $col);
++    }
++
++    /**
++     * extract hours from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function hour($col) {
++      return new SQLFunction('hour', $col);
++    }
++
++    /**
++     * extract days from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function day($col) {
++      return new SQLFunction('day', $col);
++    }
++
++    /**
++     * extract months from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function month($col) {
++      return new SQLFunction('month', $col);
++    }
++
++    /**
++     * extract years from a date field
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function year($col) {
++      return new SQLFunction('year', $col);
++    }
++
++    /**
++     * get the current date
++     *
++     * @return  rdbms.SQLFunction
++     */
++    public static function getdate() {
++      return new SQLFunction('getdate');
++    }
++
++    /**
++     * add the $offset to a certain $datepart of $date
++     * e.g. dateadd(month, 4, getdate()) will return a date 4 months in the future
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function dateadd($datepart, $offset, $date) {
++      return new SQLFunction('dateadd', $datepart, $offset, $date);
++    }
++
++    /**
++     * get the difference of date1 and date2 in "type"
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function datediff($type, $date1, $date2) {
++      return new SQLFunction('datediff', $type, $date1, $date2);
++    }
++
++    /**
++     * produces the specified datepart of
++     * the specified date as a character string.
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function datename($type, $date) {
++      return new SQLFunction('datename', $type, $date);
++    }
++
++    /**
++     * produces the specified datepart of
++     * the specified date as an integer
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function datepart($type, $date) {
++      return new SQLFunction('datepart', $type, $date);
++    }
++
++    /**
++     * get the absolut amount of col1
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function abs($col) {
++      return new SQLFunction('abs', $col);
++    }
++
++    /**
++     * get the angle (in radians) whose cosine
++     * is the specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function acos($col) {
++      return new SQLFunction('acos', $col);
++    }
++
++    /**
++     * get the angle (in radians) whose sine
++     * is the specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function asin($col) {
++      return new SQLFunction('asin', $col);
++    }
++
++    /**
++     * get the angle (in radians) whose tangent
++     * is the specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function atan() {
++      $f= new SQLFunction('atan');
++      $f->args= func_get_args();
++      return $f;
++    }
++
++    /**
++     * get the smallest integer greater than or
++     * equal to the specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function ceil($val) {
++      return new SQLFunction('ceil', $val);
++    }
++
++    /**
++     * Returns the cosine of the specified angle
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function cos($val) {
++      return new SQLFunction('cos', $val);
++    }
++
++    /**
++     * Returns the cotangent of the specified angle
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function cot($val) {
++      return new SQLFunction('cot', $val);
++    }
++
++    /**
++     * Converts radians to degrees.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function degrees($val) {
++      return new SQLFunction('degrees', $val);
++    }
++
++    /**
++     * Returns the exponential value of the
++     * specified value..
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function exp($val) {
++      return new SQLFunction('exp', $val);
++    }
++
++    /**
++     * Returns the largest integer less than or equal
++     * to the specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function floor($val) {
++      return new SQLFunction('floor', $val);
++    }
++
++    /**
++     * Returns the natural logarithm of the
++     * specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function log($val) {
++      return new SQLFunction('log', $val);
++    }
++
++    /**
++     * Returns the base 10 logarithm of the
++     * specified value.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function log10($val) {
++      return new SQLFunction('log10', $val);
++    }
++
++    /**
++     * Returns PI
++     * 
++     * @return  rdbms.SQLFunction
++     */
++    public static function pi() {
++      return new SQLFunction('pi');
++    }
++
++    /**
++     * return $val in the power of $power
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function power($val, $power) {
++      return new SQLFunction('power', $val, $power);
++    }
++
++    /**
++     * Converts degrees to radians. Results are of
++     * the same type as numeric.
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function radians($val) {
++      return new SQLFunction('radians', $val);
++    }
++
++    /**
++     * Returns a random float value between 0 and 1
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function rand() {
++      return new SQLFunction('rand');
++    }
++
++    /**
++     * Rounds the numeric so that it has integer
++     * significant digits. A positive integer
++     * determines the number of significant digits
++     * 
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction optional default 0
++     * @return  rdbms.SQLFunction
++     */
++    public static function round($val, $precision= 0) {
++      return new SQLFunction('round', $val, $precision);
++    }
++
++    /**
++     * Returns the positive (+1), zero (0), or
++     * negative (-1).
++     * 
++     * @param   mixed string or rdbms.SQLFunction optional default 0
++     * @return  rdbms.SQLFunction
++     */
++    public static function sign($val) {
++      return new SQLFunction('sign', $val);
++    }
++
++    /**
++     * Returns the sine of the specified angle
++     * 
++     * @param   mixed string or rdbms.SQLFunction optional default 0
++     * @return  rdbms.SQLFunction
++     */
++    public static function sin($val) {
++      return new SQLFunction('sin', $val);
++    }
++
++    /**
++     * get the square root of col1
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function sqrt($col) {
++      return new SQLFunction('sqrt', $col);
++    }
++
++    /**
++     * Returns the tangent of the specified angle
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function tan($col) {
++      return new SQLFunction('tan', $col);
++    }
++
++    /**
++     * cast col1 to the datatype col2
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function cast($col1, $col2) {
++      return new SQLFunction('cast', $col1, $col2);
++    }
++
++    /**
++     * cast col1 to string
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function str($col) {
++      return new SQLFunction('str', $col);
++    }
++
++    /**
++     * get the first argument, that is not NULL
++     * two arguments or more
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function coalesce() {
++      $f= new SQLFunction('coalesce');
++      $f->args=func_get_args();
++      return $f;
++    }
++
++    /**
++     * return null if col1 equals col2, else col1
++     *
++     * @param   mixed string or rdbms.SQLFunction
++     * @param   mixed string or rdbms.SQLFunction
++     * @return  rdbms.SQLFunction
++     */
++    public static function nullif($col1, $col2) {
++      return new SQLFunction('nullif', $col1, $col2);
++    }
++
++  }
++?>
+Index: skeleton/rdbms/DBConstraint.class.php
+===================================================================
+--- skeleton/rdbms/DBConstraint.class.php	(Revision 0)
++++ skeleton/rdbms/DBConstraint.class.php	(Revision 0)
+@@ -0,0 +1,33 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Represents a database constaint
++   */
++  abstract class DBConstraint extends Object {
++
++    public 
++      $name= '';
++
++    /**
++     * Set name
++     *
++     * @param   string name
++     */
++    public function setName($name) {
++      $this->name= $name;
++    }
++
++    /**
++     * Get name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++  }
++?>
+Index: skeleton/rdbms/Peer.class.php
+===================================================================
+--- skeleton/rdbms/Peer.class.php	(Revision 10453)
++++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
+@@ -7,7 +7,8 @@
+   uses(
+     'rdbms.ResultIterator',
+     'rdbms.ConnectionManager',
+-    'rdbms.Column'
++    'rdbms.Column',
++    'rdbms.Record'
+   );
+ 
+   /**
+@@ -29,9 +30,6 @@
+     protected static 
+       $instance   = array();
+ 
+-    protected
+-      $conn       = NULL;
+-
+     public
+       $identifier = '',
+       $table      = '',
+@@ -39,8 +37,9 @@
+       $sequence   = NULL,
+       $identity   = NULL,
+       $primary    = array(),
+-      $types      = array();
+-    
++      $types      = array(),
++      $relations  = array();
++
+     /**
+      * Constructor
+      *
+@@ -74,7 +73,6 @@
+      * @param   mixed connection either a name or a DBConnection instance
+      */
+     public function setConnection($connection) {
+-    
+       // If we are passed a DBConnection, set the conn member directly,
+       // else store the name passed in - we will retrieve the connection
+       // object later. The lazy loading semantics used here have to do with
+@@ -138,6 +136,15 @@
+     }
+ 
+     /**
++     * Set relations
++     *
++     * @param   mixed[] relations
++     */
++    public function setRelations($relations) {
++      $this->relations= $relations;
++    }
++
++    /**
+      * Retrieve an instance by a given identifier
+      *
+      * @param   string identifier
+@@ -181,6 +188,22 @@
+     }
+     
+     /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      return sprintf(
++        '%s@(%s accessing %s on connection "%s"){%s}', 
++        $this->getClassName(),
++        $this->identifier,
++        $this->table,
++        $this->connection,
++        substr(var_export($this->types, 1), 7, -1)
++      );
++    }
++    
++    /**
+      * column factory
+      *
+      * @param   string name
+@@ -188,45 +211,76 @@
+      * @throws  lang.IllegalArgumentException
+      */
+     public function column($name) {
+-      if (!isset($this->types[$name])) throw new IllegalArgumentException('column '.$name.' does not exist');
+       return new Column($this, $name);
+     }
+     
+     /**
+-     * Creates a string representation of this object
++     * get related peeer by relation path array
+      *
+-     * @return  string
++     * @param   string[] path
++     * @return  rdbms.Peer
++     * @throws  lang.IllegalArgumentException
+      */
+-    public function toString() {
+-      return sprintf(
+-        '%s@(%s accessing %s on connection "%s"){%s}', 
+-        $this->getClassName(),
+-        $this->identifier,
+-        $this->table,
+-        $this->getConnection()->toString(),
+-        substr(var_export($this->types, 1), 7, -1)
+-      );
++    public function getRelatedPeer(Array $path) {
++      if (0 == sizeof($path)) return $this;
++      $name= array_shift($path);
++      if (!isset($this->relations[$name])) throw new IllegalArgumentException('relation '.$name.' does not exist for '.$this->identifier);
++      return XPClass::forName($this->relations[$name]['classname'])->getMethod('getPeer')->invoke(NULL)->getRelatedPeer($path);
+     }
+     
+     /**
+      * Retrieve a number of objects from the database
+      *
+-     * @param   rdbms.Criteria criteria
++     * @param   rdbms.SQLExpressin criteria or statement
+      * @param   int max default 0
+-     * @return  rdbms.DataSet[]
++     * @return  rdbms.Record[]
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public function doSelect($criteria, $max= 0) {
++      $r= array();
++
++      if ($criteria->isJoin()) {
++        $jp= new JoinProcessor($this);
++        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
++        $it= $jp->getJoinIterator($q);
++        for ($i= 1; $it->hasNext(); $i++) {
++          if ($max && $i > $max) break;
++          $r[]= $it->next();
++        }
++        return $r;
++      }
++
++      $builder=  $criteria->isProjection() ? 'newRecord'   : 'objectFor';
+       $q= $criteria->executeSelect($this->getConnection(), $this);
+-      $r= array();
+       for ($i= 1; $record= $q->next(); $i++) {
+         if ($max && $i > $max) break;
+-        $r[]= new $this->identifier($record);
++        $r[]= $this->{$builder}($record);
+       }
+       return $r;
+     }
+ 
+     /**
++     * Returns an iterator for a select statement
++     *
++     * @param   rdbms.SQLExpressin criteria or statement
++     * @return  lang.XPIterator
++     * @see     xp://lang.XPIterator
++     */
++    public function iteratorFor($criteria) {
++
++      if ($criteria->isJoin()) {
++        $jp= new JoinProcessor($this);
++        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
++        return $jp->getJoinIterator($q);
++      }
++
++      return new ResultIterator(
++        $criteria->executeSelect($this->getConnection(), $this), 
++        ($criteria->isprojection() ? 'Record' : $this->identifier)
++      );
++    }
++
++    /**
+      * Returns a DataSet object for given associative array
+      *
+      * @param   array record
+@@ -239,40 +293,38 @@
+           'Record not compatible with '.$this->identifier.' class'
+         );
+       }
+-      return new $this->identifier($record);
++      return $this->newObject($record);
+     }
+ 
+     /**
+      * Returns a new DataSet object.
+      *
++     * @param   array record optional
+      * @return  rdbms.DataSet
+      */    
+-    public function newObject() {
+-      return new $this->identifier();
++    public function newObject($record= array()) {
++      return new $this->identifier($record);
+     }
+     
+     /**
+-     * Returns an iterator for a select statement
++     * Returns a new Record object.
+      *
+-     * @param   rdbms.Criteria criteria
+-     * @return  rdbms.ResultIterator
+-     * @see     xp://rdbms.ResultIterator
+-     */
+-    public function iteratorFor($criteria) {
+-      return new ResultIterator(
+-        $criteria->executeSelect($this->getConnection(), $this), 
+-        $this->identifier
+-      );
++     * @param   array record optional
++     * @return  rdbms.Record
++     */    
++    public function newRecord($record= array()) {
++      return new Record($record);
+     }
+-
++    
+     /**
+      * Retrieve a number of objects from the database
+      *
++     * @deprecated
+      * @param   rdbms.Peer peer
+      * @param   rdbms.Criteria join
+      * @param   rdbms.Criteria criteria
+      * @param   int max default 0
+-     * @return  rdbms.DataSet[]
++     * @return  rdbms.Record[]
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public function doJoin($peer, $join, $criteria, $max= 0) {
+@@ -305,7 +357,7 @@
+       for ($i= 1; $record= $q->next(); $i++) {
+         if ($max && $i > $max) break;
+         
+-        $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
++        $o= $this->objectFor(array_slice($record, 0, sizeof($this->types)));
+         $o->{strtolower($peer->identifier)}= new $peer->identifier(array_slice($record, sizeof($this->types)));
+         $r[]= $o;
+       }
+Index: skeleton/rdbms/sybase/SybaseConnection.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10453)
++++ skeleton/rdbms/sybase/SybaseConnection.class.php	(Arbeitskopie)
+@@ -8,7 +8,8 @@
+     'rdbms.DBConnection',
+     'rdbms.sybase.SybaseResultSet',
+     'rdbms.Transaction',
+-    'rdbms.StatementFormatter'
++    'rdbms.StatementFormatter',
++    'rdbms.sybase.SybaseDialect'
+   );
+ 
+   /**
+@@ -103,17 +104,8 @@
+      * @return  string
+      */
+     public function prepare() {
+-      static $formatter= NULL;
+       $args= func_get_args();
+-      
+-      if (NULL === $formatter) {
+-        $formatter= new StatementFormatter();
+-        $formatter->setEscape('"');
+-        $formatter->setEscapeRules(array('"'   => '""'));
+-        $formatter->setDateFormat('Y-m-d h:iA');
+-      }
+-      
+-      return $formatter->format(array_shift($args), $args);
++      return $this->getFormatter()->format(array_shift($args), $args);
+     }
+     
+     /**
+@@ -206,7 +198,7 @@
+      * Execute any statement
+      *
+      * @param   mixed* args
+-     * @return  &rdbms.sybase.SybaseResultSet or FALSE to indicate failure
++     * @return  rdbms.sybase.SybaseResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+     public function query() { 
+@@ -269,8 +261,8 @@
+     /**
+      * Begin a transaction
+      *
+-     * @param   &rdbms.Transaction transaction
+-     * @return  &rdbms.Transaction
++     * @param   rdbms.Transaction transaction
++     * @return  rdbms.Transaction
+      */
+     public function begin($transaction) {
+       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
+@@ -312,5 +304,16 @@
+     public function commit($name) { 
+       return $this->query('commit transaction xp_%c', $name);
+     }
++    
++    /**
++     * get SQL formatter
++     *
++     * @return  rdbms.StatemantFormatter
++     */
++    public function getFormatter() {
++      static $formatter= NULL;
++      if (NULL === $formatter) $formatter= new StatementFormatter($this, new SybaseDialect());
++      return $formatter;
++    }
+   }
+ ?>
+Index: skeleton/rdbms/sybase/SybaseDialect.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseDialect.class.php	(Revision 0)
++++ skeleton/rdbms/sybase/SybaseDialect.class.php	(Revision 0)
+@@ -0,0 +1,84 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.SQLDialect');
++
++  /**
++   * helps to build functions for different SQL servers
++   *
++   */
++  class SybaseDialect extends SQLDialect {
++    private static
++      $dateparts= array(
++        'microsecond' => FALSE,
++      ),
++      $implementations= array(
++        'str_1'      => 'convert(varchar, %s)',
++        'cast_2'     => 'convert(%s, %c)',
++        'atan_2'     => 'atn2(%d, %d)',
++        'ceil_1'     => 'ceiling(%d)',
++        'degrees_1'  => 'convert(float, degrees(%d))',
++        'radians_1'  => 'convert(float, radians(%d))',
++        'sign_1'     => 'convert(int, sign(%d))',
++      );
++      
++    public
++      $escape       = '"',
++      $escapeRules  = array('"' => '""'),
++      $dateFormat   = 'Y-m-d h:iA';
++        
++    /**
++     * get a function format string
++     *
++     * @param   SQLFunction func
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function formatFunction(SQLFunction $func) {
++      $func_i= $func->func.'_'.sizeOf($func->args);
++      switch ($func->func) {
++        case 'concat':
++        return '('.implode(' + ', array_fill(0, sizeOf($func->args), '%s')).')';
++
++        default:
++        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
++        return parent::formatFunction($func);
++      }
++    }
++  
++    /**
++     * get a dialect specific datepart
++     *
++     * @param   string datepart
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function datepart($datepart) {
++      $datepart= strToLower($datepart);
++      if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
++      if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('SYBASE does not support datepart '.$datepart);
++      return self::$dateparts[$datepart];
++    }
++
++    /**
++     * build join related part of an SQL query
++     *
++     * @param   rdbms.join.JoinRelation[] conditions
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function makeJoinBy(Array $conditions) {
++      if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
++      $tableString.= sprintf('%s', current($conditions)->getSource()->toSqlString());
++      $conditionString= '';
++
++      foreach ($conditions as $link) {
++        $tableString.= sprintf(', %s', $link->getTarget()->toSqlString());
++        foreach ($link->getConditions() as $condition) $conditionString.= str_replace('=', '*=', $condition).' and ';
++      }
++      return $tableString.' where '.$conditionString;
++    }
++  }
++?>
+Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10453)
++++ skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Arbeitskopie)
+@@ -91,9 +91,10 @@
+      * Get indexes for a given table. Expects a temporary table to exist.
+      *
+      * @param   string table thee table's name
+-     * @return  &rdbms.DBTable
++     * @param   string database default NULL if omitted, uses current database
++     * @return  rdbms.DBTable
+      */    
+-    protected function dbTableObjectFor($table) {
++    protected function dbTableObjectFor($table, $database= NULL) {
+       $t= new DBTable($table);
+       
+       // Get the table's attributes
+@@ -109,11 +110,11 @@
+           syscolumns c,
+           systypes t 
+         where 
+-          c.id= object_id(%s)
+-          and t.type = c.type 
++          c.id= object_id(%s) 
++          and s.usertype= c.usertype
+           and t.usertype < 100 
+           and t.name not in ("sysname", "nchar", "nvarchar")
+-      ', $table);
++      ', $this->qualifiedTablename($table, $database));
+       while ($record= $q->next()) {
+         // Known bits of status column:
+         // 0x08 => NULLable
+@@ -121,7 +122,7 @@
+         $t->addAttribute(new DBTableAttribute(
+           $record['name'], 
+           $this->map[$record['type']],
+-          ($record['status'] & 0x80),
++          ($record['status'] & 0x80), 
+           ($record['status'] & 8), 
+           $record['length'], 
+           $record['prec'], 
+@@ -183,7 +184,7 @@
+         end
+ 
+         select * from #indexes', 
+-        $table
++        $this->qualifiedTablename($table, $database)
+       );
+       
+       $keys= NULL;
+@@ -199,6 +200,15 @@
+         if ($record['status'] & 2048) $index->primary= TRUE;
+       }
+       
++      // Get foreign key constraints
++      // in mysql the only way is to parse the creat statement
++      $sp_helpconstraint= $this->conn->query('sp_helpconstraint %s, detail', $this->qualifiedTablename($table, $database));
++      while ($db_constraint= $sp_helpconstraint->next()) {
++        if ('referential constraint' != $db_constraint['type']) continue;
++        if (0 !== strpos($db_constraint['definition'], $table.' ')) continue;
++        $t->addForeignKeyConstraint($this->parseForeignKey($db_constraint));
++      }
++
+       return $t;
+     }
+     
+@@ -213,11 +223,12 @@
+     /**
+      * Get tables by database
+      *
+-     * @param   string database
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable[] array of DBTable objects
+      */
+-    public function getTables($database) {
++    public function getTables($database= NULL) {
+       $t= array();
++      $database= $this->database($database);
+       try {
+         $this->prepareTemporaryIndexesTable();
+         
+@@ -240,7 +251,7 @@
+           $database
+         );
+         if ($q) while ($record= $q->next()) {
+-          $t[]= $this->dbTableObjectFor($record['name']);
++          $t[]= $this->dbTableObjectFor($record['name'], $database);
+         }
+         
+       } catch (SQLException $e) {
+@@ -257,12 +268,13 @@
+      * Get table by name
+      *
+      * @param   string table
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable a DBTable object
+      */
+-    public function getTable($table) {
++    public function getTable($table, $database= NULL) {
+       try {
+         $this->prepareTemporaryIndexesTable();
+-        $t= $this->dbTableObjectFor($table);
++        $t= $this->dbTableObjectFor($table, $database);
+       } catch (SQLException $e) {
+         delete($t);
+       } finally(); {
+@@ -272,5 +284,132 @@
+       
+       return $t;
+     }
++
++    /**
++     * Get full table name with database if possible
++     *
++     * @param   string table
++     * @param   string database default NULL if omitted, uses current database
++     * @return  string full table name
++     */
++    private function qualifiedTablename($table, $database= NULL) {
++      $database= $this->database($database);
++      if (NULL !== $database) return $database.'..'.$table;
++      return $table;
++    }
++
++    /**
++     * Get the current database
++     *
++     * @param   string database default NULL if omitted, uses current database
++     * @return  string full table name
++     */
++    private function database($database= NULL) {
++      if (NULL !== $database) return $database;
++      return $this->conn->query('select db_name() as db')->next('db');
++    }
++
++    /**
++     * get the foreign key object from a db result array
++     *
++     * @param   string[] dbresult array
++     * @return  rdbms.DBForeignKeyConstraint
++     */
++    private function parseForeignKey($db_constraint) {
++      $cstring= $db_constraint['definition'];
++      $bracestrings= $this->subBracerString($cstring);
++      $strings= explode(' ', $cstring);
++      $attributes= array();
++      foreach ($bracestrings as $bracestring) $attributes[]= $this->extractParams($bracestring);
++
++      $constraint= new DBForeignKeyConstraint();
++      $constraint->setSource($strings[5]);
++      $constraint->setName($db_constraint['name']);
++      $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
++      return $constraint;
++    }
++
++    /**
++     * cut bracered strings out of strings
++     *
++     * @param   string parsestring
++     * @return  string[] inner bracers
++     */
++    private function subBracerString(&$string) {
++      $rstring= '';
++      $braceredString= array();
++      $pos= 0;
++      while ($pos < strlen($string)) {
++        switch ($string{$pos}) {
++          case '(':
++          $braceredString[]= $this->parseBracerString($string, $pos);
++          break;
++          
++          default:
++          $rstring.= $string{$pos};
++        }
++        $pos++;
++      }
++      $string= $rstring;
++      return $braceredString;
++    }
++
++    /**
++     * get the text inner bracers
++     *
++     * @param   string parsestring
++     * @param   &int position where the bracered string begins
++     * @return  string inner bracers
++     */
++    private function parseBracerString($string, &$pos) {
++      $braceredString= '';
++      while ($pos++ < strlen($string)) {
++        switch ($string{$pos}) {
++          case ')':
++          return $braceredString;
++          break;
++          
++          case '(':
++          $braceredString.= $string{$pos};
++          $braceredString.= $this->parseBracerString($string, $pos).')';
++          break;
++          
++          default:
++          $braceredString.= $string{$pos};
++        }
++      }
++      return $braceredString;
++    }
++
++    /**
++     * get the single params in a paramstring
++     *
++     * @param   string paramstring
++     * @return  string[] paramstrings
++     */
++    private function extractParams($string) {
++      $paramArray= array();
++      $paramString= '';
++      $pos= 0;
++      while ($pos < strlen($string)) {
++        switch ($string{$pos}) {
++          case ',':
++          $paramArray[]= trim($paramString);
++          $paramString= '';
++          break;
++          
++          case '(':
++          $paramString.= $string{$pos};
++          $paramString.= $this->parseBracerString($string, $pos).')';
++          break;
++
++          default:
++          $paramString.= $string{$pos};
++        }
++        $pos++;
++      }
++      $paramArray[]= trim($paramString);
++      return $paramArray;
++    }
+   }
+ ?>
+Index: skeleton/rdbms/Column.class.php
+===================================================================
+--- skeleton/rdbms/Column.class.php	(Revision 10453)
++++ skeleton/rdbms/Column.class.php	(Arbeitskopie)
+@@ -3,7 +3,11 @@
+  *
+  * $Id$ 
+  */
+-  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
++  uses(
++    'rdbms.SQLFragment',
++    'rdbms.criterion.Restrictions',
++    'rdbms.join.JoinProcessor'
++  );
+ 
+   /**
+    * represents a table column
+@@ -21,7 +25,8 @@
+     private
+       $peer= NULL,
+       $type= '',
+-      $name= '';
++      $name= '',
++      $path= '';
+ 
+     /**
+      * Constructor
+@@ -31,8 +36,10 @@
+      * @throws  lang.IllegalArgumentException
+      */
+     public function __construct($peer, $name) {
+-      $this->peer= $peer;
+-      $this->name= $name;
++      $path= explode(JoinProcessor::SEPERATOR, $name);
++      $this->name= array_pop($path);
++      $this->path= $path;
++      $this->peer= $peer->getRelatedPeer($path);
+       if (!isset($this->peer->types[$this->name])) throw new IllegalArgumentException('field '.$this->name.' does not exist');
+       $this->type= $this->peer->types[$this->name][0];
+     }
+@@ -47,6 +54,15 @@
+     }
+ 
+     /**
++     * Get name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++
++    /**
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+@@ -54,6 +70,7 @@
+      * @throws  rdbms.SQLStateException
+      */
+     public function asSql(DBConnection $conn) {
++      if (JoinProcessor::isJoinContext()) return JoinProcessor::pathToKey($this->path).'.'.$this->name;
+       return $this->name;
+     }
+ 
+Index: skeleton/rdbms/Criteria.class.php
+===================================================================
+--- skeleton/rdbms/Criteria.class.php	(Revision 10453)
++++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
+@@ -6,8 +6,11 @@
+ 
+   uses(
+     'rdbms.criterion.SimpleExpression',
++    'rdbms.join.JoinProcessor',
+     'rdbms.SQLExpression',
+-    'rdbms.Column'
++    'rdbms.Column',
++    'rdbms.criterion.Projections',
++    'rdbms.join.Fetchmode'
+   );
+   
+   define('ASCENDING',       'asc');
+@@ -24,8 +27,10 @@
+     public 
+       $conditions   = array(),
+       $orderings    = array(),
+-      $groupings    = array();
+-    
++      $groupings    = array(),
++      $projection   = NULL,
++      $fetchmode    = array();
++
+     /**
+      * Constructor
+      *
+@@ -137,6 +142,45 @@
+     }
+     
+     /**
++     * Set projection
++     * param can also be a rdbms.Column, a property
++     * projection is then assumed
++     *
++     * @param   rdbms.criterion.Projection projection
++     * @param   string optional alias
++     * @return  rdbms.Criteria this object
++     */
++    public function setProjection($projection, $alias= '') {
++      $this->projection= ($projection instanceof SQLFragment)
++      ? $projection= Projections::property($projection, $alias)
++      : $projection;
++      return $this;
++    }
++
++    /**
++     * Set projection for a new clone of this object
++     *
++     * @param   rdbms.criterion.Projection projection
++     * @param   string optional alias
++     * @return  rdbms.Criteria this object
++     */
++    public function withProjection(Projection $projection, $alias= '') {
++      $crit= clone($this);
++      return $crit->setProjection($projection, $alias);
++    }
++
++    /**
++     * set the fetchmode for a path
++     *
++     * @param   rdbms.join.Fetchmode fetchmode
++     * @return  rdbms.Criteria this object
++     */
++    public function setFetchmode(Fetchmode $fetchmode) {
++      $this->fetchmode[$fetchmode->getPath()]= $fetchmode->getMode();
++      return $this;
++    }
++
++    /**
+      * Creates a string representation
+      *
+      * @return  string
+@@ -152,32 +196,32 @@
+     /**
+      * Export SQL
+      *
+-     * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.DBConnection db
++     * @param   rdbms.Peer peer
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function toSQL($conn, $types) {
++    public function toSQL(DBConnection $conn, Peer $peer) {
+       $sql= '';
+       
+       // Process conditions
+       if (!empty($this->conditions)) {
+         $sql.= ' where ';
+-        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $types).' and ';
++        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $peer).' and ';
+         $sql= substr($sql, 0, -4);
+       }
+-
++      
+       // Process group by
+-      if (!empty($this->groupings)) {
++      if (!empty($this->groupings) and !$this->isJoin()) {
+         $sql= rtrim($sql, ' ').' group by ';
+-        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $types, $grouping).', ';
++        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $peer->types, $grouping).', ';
+         $sql= substr($sql, 0, -2);
+       }
+ 
+       // Process order by
+-      if (!empty($this->orderings)) {
++      if (!empty($this->orderings) and !$this->isJoin()) {
+         $sql= rtrim($sql, ' ').' order by ';
+-        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $types, $order[0]).' '.$order[1].', ';
++        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $peer->types, $order[0]).' '.$order[1].', ';
+         $sql= substr($sql, 0, -2);
+       }
+ 
+@@ -185,21 +229,74 @@
+     }
+     
+     /**
++     * get the projection part of a select statement
++     *
++     * @param   &rdbms.DBConnection db
++     * @param   &rdbms.Peer peer
++     * @return  string[]
++     * @throws  rdbms.SQLStateException
++     */
++    public function projections(DBConnection $conn, Peer $peer) {
++      if (!$this->isProjection()) return array_keys($peer->types);
++      return $this->projection->asSql($conn);
++    }
++
++    /**
++     * test if the expression is a projection
++     *
++     * @return  bool
++     */
++    public function isProjection() {
++      return (NULL !== $this->projection);
++    }
++
++    /**
++     * test if the expression is a join
++     *
++     * @return  bool
++     */
++    public function isJoin() {
++      return (0 < sizeOf(array_keys($this->fetchmode, 'join')));
++    }
++
++    /**
+      * Executes an SQL SELECT statement
+      *
+      * @param   rdbms.DBConnection conn
+      * @param   rdbms.Peer peer
+      * @return  rdbms.ResultSet
+      */
+-    public function executeSelect($conn, $peer) {
++    public function executeSelect(DBConnection $conn, Peer $peer) {
+       return $conn->query(
+         'select %c from %c%c', 
+-        array_keys($peer->types),
++        $this->projections($conn, $peer),
+         $peer->table,
+-        $this->toSQL($conn, $peer->types)
++        $this->toSQL($conn, $peer)
+       );
+     }
++    
++    /**
++     * Executes an SQL SELECT statement with more than one table
++     *
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.Peer peer
++     * @return  rdbms.ResultSet
++     */
++    public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
++      $jp->setFetchmodes($this->fetchmode);
++      $jp->enterJoinContext();
++      $rest= $this->toSQL($conn, $peer);
++      $jp->leaveJoinContext();
++      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
+ 
++      return $conn->query(
++        'select %c from %c %c',
++        $jp->getAttributeString(),
++        $jp->getJoinString(),
++        $rest
++      );
++    }
++    
+     /**
+      * get a string for a column
+      * can be either a columnname or a Column object
+Index: skeleton/rdbms/DBConnection.class.php
+===================================================================
+--- skeleton/rdbms/DBConnection.class.php	(Revision 10453)
++++ skeleton/rdbms/DBConnection.class.php	(Arbeitskopie)
+@@ -23,7 +23,7 @@
+    *
+    * @purpose  Base class for database connections
+    */
+-  class DBConnection extends Observable {
++  abstract class DBConnection extends Observable {
+     public 
+       $handle  = NULL,
+       $dsn     = NULL,
+@@ -127,7 +127,7 @@
+      *
+      * @return  bool success
+      */
+-    public function close() { }
++    abstract public function close();
+     
+     /**
+      * Select database
+@@ -135,7 +135,7 @@
+      * @param   string db name of database to select
+      * @return  bool success
+      */
+-    public function selectdb($db) { }
++    abstract public function selectdb($db);
+ 
+     /**
+      * Prepare an SQL statement
+@@ -143,7 +143,7 @@
+      * @param   mixed* args
+      * @return  string
+      */
+-    public function prepare() { }
++    abstract public function prepare();
+     
+     /**
+      * Execute an insert statement
+@@ -151,15 +151,15 @@
+      * @param   mixed* args
+      * @return  bool success
+      */
+-    public function insert() { }
++    abstract public function insert();
+     
+     /**
+      * Retrieve identity
+      *
+      * @return  mixed identity value
+      */
+-    public function identity() { }
+-    
++    abstract public function identity();
++
+     /**
+      * Execute an update statement
+      *
+@@ -188,17 +188,17 @@
+      * Execute any statement
+      *
+      * @param   mixed* args
+-     * @return  &rdbms.ResultSet
++     * @return  rdbms.ResultSet
+      */
+     public function query() { }
+     
+     /**
+      * Begin a transaction
+      *
+-     * @param   &rdbms.DBTransaction transaction
+-     * @return  &rdbms.DBTransaction
++     * @param   rdbms.DBTransaction transaction
++     * @return  rdbms.DBTransaction
+      */
+-    public function begin($transaction) { }
++    abstract public function begin($transaction);
+     
+     /**
+      * Retrieve transaction state
+@@ -214,7 +214,7 @@
+      * @param   string name
+      * @return  bool success
+      */
+-    public function rollback($name) { }
++    abstract public function rollback($name);
+     
+     /**
+      * Commit a transaction
+@@ -222,6 +222,13 @@
+      * @param   string name
+      * @return  bool success
+      */
+-    public function commit($name) { }
++    abstract public function commit($name);
++    
++    /**
++     * get SQL formatter
++     *
++     * @return  rdbms.StatemantFormatter
++     */
++    abstract public function getFormatter();
+   }
+ ?>
+Index: skeleton/rdbms/join/JoinPart.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinPart.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinPart.class.php	(Revision 0)
+@@ -0,0 +1,143 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.join.JoinTable',
++    'rdbms.join.JoinTableAttribute',
++    'rdbms.join.JoinRelation',
++    'util.collections.HashTable'
++  );
++
++  /**
++   * collect data for join selects
++   *
++   * @test .xp_framework.unittest.rdbms.JoinPartTest
++   */
++  class JoinPart extends Object {
++    public
++      $peer=      NULL;
++
++    protected
++      $table=     NULL,
++      $id=        '',
++      $role=      '',
++      $relatives= array(),
++      $pkeys=     array(),
++      $attrs=     array();
++
++    /**
++     * Constructor
++     *
++     * @param   string id
++     * @param   rdbms.Peer peer
++     */
++    public function __construct($id, Peer $peer) {
++      $this->id= $id;
++      $this->peer= $peer;
++      $this->pkeys= array();
++      $this->attrs= array();
++      foreach ($this->peer->primary as $key) $this->pkeys[$key]= new JoinTableAttribute($this->id, $key);
++      foreach (array_keys($this->peer->types) as $attr) $this->attrs[$attr]= new JoinTableAttribute($this->id, $attr);
++      $this->table= new JoinTable($this->peer->table, $this->id);
++    }
++
++    /**
++     * get column names for the aggregated peer and all futher join tables
++     *
++     * @return  string[]
++     */
++    public function getAttributes() {
++      $r= array();
++      foreach ($this->attrs as $attr) $r[]= $attr->toSqlString();
++      foreach ($this->relatives as $tjp) foreach ($tjp->getAttributes() as $attr) $r[]= $attr;
++      return $r;
++    }
++    
++    /**
++     * get table names for the aggregated peer and all futher join tables
++     *
++     * @return  rdbms.join.JoinTable
++     */
++    public function getTable() {
++      return $this->table;
++    }
++    
++    /**
++     * get conditional statements to join the aggregated peer and its next JoinPart
++     * and for all futher relatives
++     *
++     * @return  rdbms.join.JoinRelation[]
++     */
++    public function getJoinRelations() {
++      $r= array();
++      foreach ($this->relatives as $tjp) {
++        $conditions= array();
++        foreach ($this->peer->relations[$tjp->role]['key'] as $source => $target) $conditions[]= $this->id.'.'.$source.' = '.$tjp->id.'.'.$target;
++        $rel= new JoinRelation($this->table, $tjp->getTable());
++        $rel->setConditions($conditions);
++        $r[]= $rel;
++        foreach ($tjp->getJoinRelations() as $joinConditions) $r[]= $joinConditions;
++      }
++      return $r;
++    }
++    
++    /**
++     * build an object of a single database row for the aggregated peer
++     *
++     * @param   rdbms.join.JoinExtractable caller
++     * @param   string[] record
++     * @param   string role
++     */
++    public function extract(JoinExtractable $caller, Array $record, $role) {
++      $key= $this->key($record);
++      if (FALSE === $key) return;
++      if (!$caller->hasCachedObj($role, $key)) $caller->setCachedObj($role, $key, $this->peer->objectFor($this->attributes($record)));
++      $obj= $caller->getCachedObj($role, $key);
++      foreach ($this->relatives as $tjp) {
++        $obj->markAsCached($tjp->role);
++        $tjp->extract($obj, $record, $tjp->role);
++      }
++    }
++    
++    /**
++     * Set relatives
++     *
++     * @param   lang.Object relatives
++     * @param   string role
++     */
++    public function addRelative(JoinPart $relatives, $role) {
++      $relatives->role= $role;
++      $this->relatives[$role]= $relatives;
++    }
++
++    /**
++     * form a key from a record
++     *
++     * @param   string[] record
++     * @return  string
++     */
++    private function key(Array $record) {
++      $key= '';
++      foreach ($this->pkeys as $pKey) {
++        if (!isset($record[$pKey->getAlias()])) return FALSE;
++        $key.= '#'.$record[$pKey->getAlias()];
++      }
++      return $key;
++    }
++    
++    /**
++     * get all property values for the aggregated peer from a database row
++     *
++     * @param   string[] record
++     * @return  string[]
++     */
++    private function attributes(Array $record) {
++      $recordchunk= array();
++      foreach ($this->attrs as $attr) $recordchunk[$attr->getAlias()]= $record[$attr->getAlias()];
++      return array_combine(array_keys($this->peer->types), $recordchunk);
++    }
++    
++  }
++?>
+Index: skeleton/rdbms/join/JoinTable.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinTable.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinTable.class.php	(Revision 0)
+@@ -0,0 +1,72 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * groups table data for joins
++   *
++   */
++  class JoinTable extends Object {
++    private
++      $alias= '',
++      $name=  '';
++
++    /**
++     * Constructor
++     *
++     * @param   string name
++     * @param   string alias
++     */
++    public function __construct($name, $alias) {
++      $this->alias= $alias;
++      $this->name=  $name;
++    }
++
++    /**
++     * get sql string
++     *
++     * @return  string
++     */
++    public function toSqlString() {
++      return sprintf('%s as %s', $this->name, $this->alias);
++    }
++
++    /**
++     * Set alias
++     *
++     * @param   string alias
++     */
++    public function setAlias($alias) {
++      $this->alias= $alias;
++    }
++
++    /**
++     * Get alias
++     *
++     * @return  string
++     */
++    public function getAlias() {
++      return $this->alias;
++    }
++
++    /**
++     * Set name
++     *
++     * @param   string name
++     */
++    public function setName($name) {
++      $this->name= $name;
++    }
++
++    /**
++     * Get name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++  }
++?>
+Index: skeleton/rdbms/join/JoinIterator.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinIterator.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinIterator.class.php	(Revision 0)
+@@ -0,0 +1,107 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.join.JoinExtractable',
++    'util.XPIterator'
++  );
++
++  /**
++   * (Insert class' description here)
++   *
++   */
++  class JoinIterator  extends Object implements XPIterator, JoinExtractable {
++    private
++      $resultObj= NULL,
++      $record= array(),
++      $obj= NULL,
++      $obj_key= '',
++      $jp= NULL,
++      $rs= NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   rdbms.join.JoinProcessor jp
++     * @param   rdbms.ResultSet rs
++     */
++    public function __construct(JoinProcessor $jp, ResultSet $rs) {
++      $this->jp= $jp;
++      $this->rs= $rs;
++      $this->record= $this->rs->next();
++    }
++
++    /**
++     * Returns true if the iteration has more elements. (In other words, 
++     * returns true if next would return an element rather than throwing 
++     * an exception.)
++     *
++     * @return  bool
++     */
++    public function hasNext() {
++      return (FALSE !== $this->record);
++    }
++    
++    /**
++     * Returns the next element in the iteration.
++     *
++     * @return  mixed
++     * @throws  util.NoSuchElementException when there are no more elements
++     */
++    public function next() {
++      if (!$this->record) throw new NoSuchElementException('No more elements');
++      do {
++        $this->jp->joinpart->extract($this, $this->record, 'start');
++        if (!is_null($this->resultObj)) {
++          $r= $this->resultObj;
++          $this->resultObj= NULL;
++          return $r;
++        }
++      } while ($this->record= $this->rs->next());
++      return $this->obj;
++    }
++
++    /**
++     * set "in construct" result object
++     *
++     * @param   string unique key
++     * @param   lang.Object
++     */
++    public function setCachedObj($role, $key, $obj) {
++      $this->resultObj= $this->obj;
++      $this->obj= $obj;
++      $this->obj_key= $key;
++    }
++
++    /**
++     * get an object from the found objects
++     *
++     * @param   string role
++     * @param   string unique key
++     * @throws  util.NoSuchElementException
++     */
++    public function getCachedObj($role, $key) {
++      if ($this->obj_key && $this->obj_key != $key) throw new NoSuchElementException('object under construct does not exist - maybe you should sort your query');
++      return $this->obj;
++    }
++
++    /**
++     * test an object for existance in the found objects
++     *
++     * @param   string role
++     * @param   string unique key
++     */
++    public function hasCachedObj($role, $key) {
++      return ($this->obj_key == $key);
++    }
++
++    /**
++     * mark a role as chached
++     *
++     * @param   string role
++     */
++    public function markAsCached($role) {}
++  }
++?>
+Index: skeleton/rdbms/join/JoinTableAttribute.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinTableAttribute.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinTableAttribute.class.php	(Revision 0)
+@@ -0,0 +1,92 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * groups table data for joins
++   *
++   */
++  class JoinTableAttribute extends Object {
++    private
++      $alias= '',
++      $name= '',
++      $tableName=  '';
++
++    /**
++     * Constructor
++     *
++     * @param   string tableName
++     * @param   string name
++     */
++    public function __construct($tableName, $name) {
++      $this->tableName= $tableName;
++      $this->name= $name;
++      $this->alias= sprintf('%s_%s', $this->tableName, $this->name);;
++    }
++
++    /**
++     * get sql string
++     *
++     * @return  string
++     */
++    public function toSqlString() {
++      return sprintf('%s.%s as %s', $this->tableName, $this->name, $this->alias);
++    }
++
++    /**
++     * Set alias
++     *
++     * @param   string alias
++     */
++    public function setAlias($alias) {
++      $this->alias= $alias;
++    }
++
++    /**
++     * Get alias
++     *
++     * @return  string
++     */
++    public function getAlias() {
++      return $this->alias;
++    }
++
++    /**
++     * Set tableName
++     *
++     * @param   string tableName
++     */
++    public function setTableName($tableName) {
++      $this->tableName= $tableName;
++    }
++
++    /**
++     * Get tableName
++     *
++     * @return  string
++     */
++    public function getTableName() {
++      return $this->tableName;
++    }
++
++    /**
++     * Set name
++     *
++     * @param   string name
++     */
++    public function setName($name) {
++      $this->name= $name;
++    }
++
++    /**
++     * Get name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++  }
++?>
+Index: skeleton/rdbms/join/JoinRelation.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinRelation.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinRelation.class.php	(Revision 0)
+@@ -0,0 +1,85 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.join.JoinTable');
++
++  /**
++   * groups table data for joins
++   *
++   */
++  class JoinRelation extends Object {
++    private
++      $source= NULL,
++      $target= NULL,
++      $conditions= array();
++
++    /**
++     * Constructor
++     *
++     * @param   string name
++     * @param   string alias
++     * @param   string[] optional conditions
++     */
++    public function __construct(JoinTable $source, JoinTable $target, $conditions= array()) {
++      $this->source= $source;
++      $this->target= $target;
++      $this->conditions= $conditions;
++    }
++
++   /**
++     * Set source
++     *
++     * @param   rdbms.join.JoinTable
++     */
++    public function setSource(JoinTable $source) {
++      $this->source= $source;
++    }
++
++    /**
++     * Get source
++     *
++     * @return  rdbms.join.JoinTable
++     */
++    public function getSource() {
++      return $this->source;
++    }
++
++    /**
++     * Set target
++     *
++     * @param   rdbms.join.JoinTable
++     */
++    public function setTarget(JoinTable $target) {
++      $this->target= $target;
++    }
++
++    /**
++     * Get target
++     *
++     * @return  rdbms.join.JoinTable
++     */
++    public function getTarget() {
++      return $this->target;
++    }
++
++    /**
++     * Set conditions
++     *
++     * @param   string[] conditions
++     */
++    public function setConditions($conditions) {
++      $this->conditions= $conditions;
++    }
++
++    /**
++     * Get conditions
++     *
++     * @return  string[]
++     */
++    public function getConditions() {
++      return $this->conditions;
++    }
++  }
++?>
+Index: skeleton/rdbms/join/JoinExtractable.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinExtractable.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinExtractable.class.php	(Revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('util.XPIterator');
++
++  /**
++   * interface for joins
++   *
++   */
++  interface JoinExtractable {
++
++    /**
++     * set "in construct" result object
++     *
++     * @param   string unique key
++     * @param   lang.Object
++     */
++    public function setCachedObj($role, $key, $obj);
++
++    /**
++     * get an object from the found objects
++     *
++     * @param   string role
++     * @param   string unique key
++     * @throws  util.NoSuchElementException
++     */
++    public function getCachedObj($role, $key);
++
++    /**
++     * test an object for existance in the found objects
++     *
++     * @param   string role
++     * @param   string unique key
++     */
++    public function hasCachedObj($role, $key);
++
++    /**
++     * mark a role as chached
++     *
++     * @param   string role
++     */
++    public function markAsCached($role);
++  }
++?>
+Index: skeleton/rdbms/join/Fetchmode.class.php
+===================================================================
+--- skeleton/rdbms/join/Fetchmode.class.php	(Revision 0)
++++ skeleton/rdbms/join/Fetchmode.class.php	(Revision 0)
+@@ -0,0 +1,65 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * define join select
++   *
++   */
++  class Fetchmode extends Object {
++
++    private
++      $path= '',
++      $mode= '';
++
++    /**
++     * Constructor
++     *
++     * @param   string
++     * @param   string
++     */
++    public function __construct($path, $mode) {
++      $this->mode= $mode;
++      $this->path= $path;
++    }
++
++    /**
++     * Get path
++     *
++     * @return  string
++     */
++    public function getPath() {
++      return $this->path;
++    }
++
++    /**
++     * Get mode
++     *
++     * @return  string
++     */
++    public function getMode() {
++      return $this->mode;
++    }
++
++    /**
++     * make join for path
++     *
++     * @param   string
++     */
++    public static function select($path) {
++      return new self($path, 'select');
++    }
++    
++    /**
++     * make select for path
++     *
++     * @param   string
++     */
++    public static function join($path) {
++      return new self($path, 'join');
++    }
++    
++  }
++?>
+Index: skeleton/rdbms/join/JoinProcessor.class.php
+===================================================================
+--- skeleton/rdbms/join/JoinProcessor.class.php	(Revision 0)
++++ skeleton/rdbms/join/JoinProcessor.class.php	(Revision 0)
+@@ -0,0 +1,147 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.SQLDialect',
++    'rdbms.join.JoinIterator',
++    'rdbms.join.JoinPart',
++    'rdbms.join.Fetchmode'
++  );
++
++  /**
++   * collect data to do join selects
++   *
++   * @test net.xp_framework.unittest.rdbms.JoinProcessorTest
++   */
++  class JoinProcessor extends Object {
++    const SEPERATOR= '->';
++    const FIRST= 'start';
++  
++    private
++      $joinparts=   array();
++    
++    private static
++      $isJoinContext= 0;
++    
++    public
++      $joinpart=   NULL;
++    
++    /**
++     * Constructor
++     *
++     * @param   rdbms.Peer peer
++     */
++    public function __construct(Peer $peer) {
++      $this->joinpart= new JoinPart(JoinProcessor::FIRST, $peer);
++    }
++    
++    /**
++     * get join tables with join conditions
++     *
++     * @return  string
++     */
++    public function getJoinString() {
++      $dialect= $this->joinpart->peer->getConnection()->getFormatter()->dialect;
++      return $dialect->makeJoinBy($this->joinpart->getJoinRelations());
++    }
++    
++    /**
++     * get all attributs of a join
++     *
++     * @return  string[]
++     */
++    public function getAttributeString() {
++      return implode(', ', $this->joinpart->getAttributes());
++    }
++    
++    /**
++     * transform a record to its related objects
++     *
++     * @param   rdbms.ResultSet rs
++     * @return  rdbms.join.JoinIterator
++     */
++    public function getJoinIterator(ResultSet $rs) {
++      return new JoinIterator($this, $rs);
++    }
++
++    /**
++     * set array with fetchmodes
++     * the path is stored as array keys
++     *
++     * @param   rdbms.join.Fetchmode[] fetchmodes
++     * @throws  lang.IllegalArgumentException
++     */
++    public function setFetchmodes(Array $fetchmodes) {
++      if (0 == sizeOf(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
++      foreach ($fetchmodes as $path => $fetchmode) {
++        if ('join' != $fetchmode) continue;
++        $this->transformFetchmode(explode(self::SEPERATOR, $path), $this->joinpart);
++      }
++    }
++
++    /**
++     * get the key for a path
++     *
++     * @param   string[] path
++     * @return  string
++     */
++    public static function pathToKey(Array $path) {
++      if (0 == sizeof($path)) return  self::FIRST;
++      return implode('_', $path);
++    }
++
++    /**
++     * test if join context is set
++     * hack is necessary, because of the first tables elements in a join
++     *
++     * @return  boolean
++     */
++    public static function isJoinContext() {
++      return (bool)self::$isJoinContext;
++    }
++
++    /**
++     * switch joinContext
++     *
++     */
++    public function leaveJoinContext() {
++      self::$isJoinContext++;
++    }
++
++    /**
++     * switch joinContext
++     *
++     */
++    public function enterJoinContext() {
++      self::$isJoinContext--;
++    }
++
++    /**
++     * go through the fetechmode array and transform it to a tree
++     * collect JoinPart objects
++     *
++     * @param   string[] path
++     * @param   rdbms.join.JoinPart current joinpart
++     * @param   string[] curpath
++     * @throws  lang.IllegalArgumentException
++     */
++    private function transformFetchmode(Array $path, JoinPart $sjp, $curpath= array()) {
++      if (0 == sizeof($path)) return;
++      $role= array_shift($path);
++
++      if (!isset($sjp->peer->relations[$role])) {
++        throw new IllegalArgumentException($role.': no such role for '.$sjp->peer->identifier.' - try one of '.implode(', ', array_keys($sjp->peer->relations)));
++      }
++      
++      $curpath[]= $role;
++      $key= self::pathToKey($curpath);
++      if (!isset($this->joinparts[$key])) $this->joinparts[$key]= new JoinPart($key, XPClass::forName($sjp->peer->relations[$role]['classname'])->getMethod('getPeer')->invoke(NULL));
++      $sjp->addRelative($this->joinparts[$key], $role);
++
++      $this->transformFetchmode($path, $this->joinparts[$key], $curpath);
++    }
++    
++  }
++?>
+Index: skeleton/rdbms/SQLFunction.class.php
+===================================================================
+--- skeleton/rdbms/SQLFunction.class.php	(Revision 0)
++++ skeleton/rdbms/SQLFunction.class.php	(Revision 0)
+@@ -0,0 +1,85 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.SQLDialect',
++    'rdbms.SQLFragment'
++  );
++
++  /**
++   * (Insert class' description here)
++   *
++   * @ext      extension
++   * @see      reference
++   * @purpose  purpose
++   */
++  class SQLFunction extends Object implements SQLFragment {
++    
++    public
++      $func= '',
++      $args= array();
++
++    /**
++     * Constructor
++     *
++     * @param   string function
++     */
++    public function __construct() {
++      $args= func_get_args();
++      $this->func= array_shift($args);
++      $this->args= $args;
++    }
++
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @return  string
++     * @throws  rdbms.SQLStateException
++     */
++    public function asSql(DBConnection $conn) {
++      $args= $this->args;
++      array_unshift($args, $conn->getFormatter()->dialect->formatFunction($this));
++      return (call_user_func_array(array($conn, 'prepare'), $args));
++    }
++
++    /**
++     * Set func
++     *
++     * @param   string func
++     */
++    public function setFunc($func) {
++      $this->func= $func;
++    }
++
++    /**
++     * Get func
++     *
++     * @return  string
++     */
++    public function getFunc() {
++      return $this->func;
++    }
++
++    /**
++     * Set args
++     *
++     * @param   mixed[] args
++     */
++    public function setArgs($args) {
++      $this->args= $args;
++    }
++
++    /**
++     * Get args
++     *
++     * @return  mixed[]
++     */
++    public function getArgs() {
++      return $this->args;
++    }
++
++  }
++?>
+Index: skeleton/rdbms/Record.class.php
+===================================================================
+--- skeleton/rdbms/Record.class.php	(Revision 0)
++++ skeleton/rdbms/Record.class.php	(Revision 0)
+@@ -0,0 +1,46 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: DataSet.class.php 9288 2007-01-15 21:03:00Z friebe $ 
++ */
++
++  /**
++   * A Record saves key value pairs
++   */
++  class Record extends Object {
++    
++    /**
++     * Constructor. Supports the array syntax, where an associative
++     * array is passed to the constructor, the keys being the member
++     * variables and the values the member's values.
++     *
++     * @param   array params default NULL
++     */
++    public function __construct($params= array()) {
++      foreach (array_keys($params) as $key) {
++        $k= substr(strrchr('#'.$key, '#'), 1);
++        $this->{$k}= $params[$key];
++      }
++    }
++    
++    /**
++     * Sets a field's value by the field's name and returns the previous value.
++     *
++     * @param   string field name
++     * @param   mixed value
++     * @return  mixed previous value
++     */
++    public function set($field, $value) {
++      $this->{$k}= $value;
++    }
++
++    /**
++     * Gets a field's value by the field's name
++     *
++     * @param   string field name
++     */
++    public function get($field) {
++      return $this->{$field};
++    }
++  }
++?>
+Index: skeleton/rdbms/SQLExpression.class.php
+===================================================================
+--- skeleton/rdbms/SQLExpression.class.php	(Revision 10453)
++++ skeleton/rdbms/SQLExpression.class.php	(Arbeitskopie)
+@@ -10,6 +10,28 @@
+    * @purpose  Interface
+    */
+   interface SQLExpression {
+-  
++    
++    /**
++     * test if the expression is a projection
++     *
++     * @return  bool
++     */
++    public function isProjection();
++
++    /**
++     * test if the expression is a join
++     *
++     * @return  bool
++     */
++    public function isJoin();
++
++    /**
++     * Executes an SQL SELECT statement
++     *
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.Peer peer
++     * @return  rdbms.ResultSet
++     */
++    public function executeSelect(DBConnection $conn, Peer $peer);
+   }
+ ?>
+Index: skeleton/rdbms/SQLDialect.class.php
+===================================================================
+--- skeleton/rdbms/SQLDialect.class.php	(Revision 0)
++++ skeleton/rdbms/SQLDialect.class.php	(Revision 0)
+@@ -0,0 +1,218 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * helps to build statments for different SQL servers
++   *
++   * @purpose  Base class for all dialects 
++   * @test     net.xp_framework.unittest.rdbms.SQLDialectTest
++   */
++  abstract class SQLDialect extends Object {
++    private static
++      $dateparts= array(
++        'day'	      => 'day',
++        'dayofyear'	  => 'dayofyear',
++        'hour'	      => 'hour',
++        'microsecond' => 'microsecond',
++        'millisecond' => 'millisecond',
++        'minute'	  => 'minute',
++        'month'	      => 'month',
++        'quarter'	  => 'quarter',
++        'second'	  => 'second',
++        'week'	      => 'week',
++        'weekday'	  => 'weekday',
++        'year'	      => 'year',
++      ),
++      $datatypes= array(
++        'bigint'	 => 'bigint',
++        'binary'	 => 'binary',
++        'blob'	     => 'blob',
++        'char'	     => 'char',
++        'clob'	     => 'clob',
++        'date'	     => 'date',
++        'datetime'	 => 'datetime',
++        'dec'	     => 'dec',
++        'decimal'	 => 'decimal',
++        'double'	 => 'double',
++        'float'	     => 'float',
++        'int'	     => 'int',
++        'integer'	 => 'integer',
++        'smallint'	 => 'smallint',
++        'text'	     => 'text',
++        'time'	     => 'time',
++        'timestamp'	 => 'timestamp',
++        'varbinary'	 => 'varbinary',
++        'varchar'	 => 'varchar',
++      ),
++      $implementations= array(
++        'abs_1'        => 'abs(%d)',
++        'acos_1'       => 'acos(%d)',
++        'ascii_1'      => 'ascii(%s)',
++        'asin_1'       => 'asin(%d)',
++        'atan_1'       => 'atan(%d)',
++        'atan_2'       => 'atan2(%d, %d)',
++        'bit_length_1' => 'bit_length(%s)',
++        'cast_2'       => 'cast(%s as %e)',
++        'ceil_1'       => 'ceil(%d)',
++        'char_1'       => 'char(%d)',
++        'cos_1'        => 'cos(%d)',
++        'cot_1'        => 'cot(%d)',
++        'dateadd_3'    => 'dateadd(%t, %d, %s)',
++        'datediff_3'   => 'datediff(%t, %s, %s)',
++        'datename_2'   => 'datename(%t, %s)',
++        'datepart_2'   => 'datepart(%t, %s)',
++        'day_1'        => 'day(%s)',
++        'degrees_1'    => 'degrees(%d)',
++        'exp_1'        => 'exp(%d)',
++        'floor_1'      => 'floor(%d)',
++        'getdate_0'    => 'getdate()',
++        'hour_1'       => 'hour(%s)',
++        'len_1'        => 'len(%s)',
++        'length_1'     => 'length(%s)',
++        'locate_2'     => 'locate(%s, %s)',
++        'locate_3'     => 'locate(%s, %s, %s)',
++        'log10_1'      => 'log10(%d)',
++        'log_1'        => 'log(%d)',
++        'lower_1'      => 'lower(%s)',
++        'ltrim_2'      => 'trim(%s)',
++        'ltrim_3'      => 'trim(%s, %s)',
++        'minute_1'     => 'minute(%s)',
++        'month_1'      => 'month(%s)',
++        'nullif_2'     => 'nullif(%s, %s)',
++        'pi_0'         => 'pi()',
++        'power_2'      => 'power(%d, %d)',
++        'radians_1'    => 'radians(%d)',
++        'rand_0'       => 'rand()',
++        'reverse_1'    => 'reverse(%s)',
++        'round_2'      => 'round(%d, %d)',
++        'rtrim_1'      => 'trim(%s)',
++        'rtrim_2'      => 'trim(%s, %s)',
++        'second_1'     => 'second(%s)',
++        'sign_1'       => 'sign(%d)',
++        'sin_1'        => 'sin(%d)',
++        'soundex_1'    => 'soundex(%s)',
++        'space_1'      => 'space(%d)',
++        'sqrt_1'       => 'sqrt(%d)',
++        'str_1'        => 'str(%s)',
++        'substring_3'  => 'substring(%s, %s, %s)',
++        'tan_1'        => 'tan(%d)',
++        'trim_2'       => 'trim(%s)',
++        'trim_3'       => 'trim(%s, %s)',
++        'upper_1'      => 'upper(%s)',
++        'year_1'       => 'year(%s)',
++      );
++
++    public
++      $escape       = '',
++      $escapeRules  = array(),
++      $dateFormat   = '';
++
++    /**
++     * get a function format string
++     *
++     * @param   SQLFunction $func
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function formatFunction(SQLFunction $func) {
++      $func_i= $func->func.'_'.sizeof($func->args);
++      if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
++      throw new IllegalArgumentException('SQL function "'.$func->func.'()" not known');
++    }
++
++    /**
++     * formats a string as date
++     *
++     * @param   string
++     * @return  string
++     */
++    public function formatDate($string) {
++      return date($this->dateFormat, $string);
++    }
++    
++    /**
++     * escape a string
++     *
++     * @param   string
++     * @return  string
++     */
++    public function escapeString($string) {
++      return $this->quoteString(strtr($string, $this->escapeRules));
++    }
++    
++    /**
++     * escape a string
++     *
++     * @param   string
++     * @return  string
++     */
++    public function quoteString($string) {
++      return $this->escape.$string.$this->escape;
++    }
++    
++    /**
++     * get a dialect specific datepart
++     *
++     * @param   string datepart
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function datepart($datepart) {
++      $datepart= strToLower($datepart);
++      if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does not exist');
++      return self::$dateparts[$datepart];
++    }
++
++    /**
++     * get a dialect specific datatype
++     *
++     * @param   string datatype
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function datatype($datatype) {
++      $datatype= strToLower($datatype);
++      if (!array_key_exists($datatype, self::$datatypes)) throw new IllegalArgumentException('datatype '.$datatype.' does not exist');
++      return self::$datatypes[$datatype];
++    }
++
++    /**
++     * Set date format
++     *
++     * @param   string format
++     */
++    public function setDateFormat($format) {
++      $this->dateFormat= $format;
++    }
++    
++    /**
++     * Set date format
++     *
++     * @param   array<String,String> rules
++     */
++    public function setEscapeRules($rules) {
++      $this->escapeRules= $rules;
++    }
++    
++    /**
++     * Sets the escaping character.
++     *
++     * @param   string escape
++     */
++    public function setEscape($escape) {
++      $this->escape= $escape;
++    }
++
++    /**
++     * build join related part of an SQL query
++     *
++     * @param   rdbms.join.JoinRelation[] conditions
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    abstract public function makeJoinBy(Array $conditions);
++  }
++?>
+Index: skeleton/rdbms/StatementFormatter.class.php
+===================================================================
+--- skeleton/rdbms/StatementFormatter.class.php	(Revision 10453)
++++ skeleton/rdbms/StatementFormatter.class.php	(Arbeitskopie)
+@@ -10,11 +10,7 @@
+    * Example usage:
+    * <code>
+    *   $formatter= &new StatementFormatter();
+-   *   $formatter->setEscapeRules(array(
+-   *     '"'   => '""',
+-   *     '\\'  => '\\\\'
+-   *   ));
+-   *   $formatter->setDateFormat('Y-m-d h:iA');
++   *   $this->formatter->setDialect(new AnysqlDialect());
+    *   $formatter->format('select foo from table where id= %d', 123);
+    * </code>
+    *
+@@ -26,10 +22,19 @@
+    */
+   class StatementFormatter extends Object {
+     public
+-      $escape       = '',
+-      $escapeRules  = array(),
+-      $dateFormat   = '';
++      $dialect= NULL,
++      $conn=    NULL;
+   
++    /**
++     * constructor
++     *
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.SQLDialect dialect
++     */
++    function __construct(DBConnection $conn, SQLDialect $dialect) {
++      $this->dialect= $dialect;
++      $this->conn=    $conn;
++    }
+   
+     /**
+      * Embed the given arguments into the format string.
+@@ -39,7 +44,7 @@
+      * @return  string
+      */
+     public function format($fmt, $args) {
+-      static $tokens= 'sdcfu';
++      static $tokens= 'cdefstu';
+       
+       $statement= '';
+       $argumentOffset= 0;
+@@ -101,12 +106,15 @@
+       $r= '';
+       foreach (is_array($var) ? $var : array($var) as $arg) {
+         // Type-based conversion
+-        if (NULL === $arg) { 
++        if (NULL === $arg) {
+           $r.= 'NULL, '; 
+           continue; 
+         } else if ($arg instanceof Date) {
+           $type= 's';
+-          $p= $arg->toString($this->dateFormat);
++          $p= $arg->toString($this->dialect->dateFormat);
++        } else if ($arg instanceof SQLFragment) {
++          $r.= $arg->asSql($this->conn).', ';
++          continue;
+         } else if ($arg instanceof Generic) {
+           $p= $arg->toString();
+         } else {
+@@ -114,11 +122,13 @@
+         }
+ 
+         switch ($type) {
+-          case 's': $r.= $this->escape.strtr($p, $this->escapeRules).$this->escape; break;
+-          case 'd': $r.= $this->numval($p); break;
+           case 'c': $r.= $p; break;
++          case 'd': $r.= $this->numval($p); break;
++          case 'e': $r.= $this->dialect->datatype($p); break;
+           case 'f': $r.= $this->numval($p); break;
+-          case 'u': $r.= $this->escape.date($this->dateFormat, $p).$this->escape; break;
++          case 's': $r.= $this->dialect->escapeString($p); break;
++          case 't': $r.= $this->dialect->datepart($p); break;
++          case 'u': $r.= $this->dialect->quoteString($this->dialect->formatDate($p)); break;
+         }
+         $r.= ', ';
+       }
+@@ -127,33 +137,15 @@
+     }
+     
+     /**
+-     * Set date format
++     * Sets the SQL dialect.
+      *
+-     * @param   string format
++     * @param   SQLDialect dialect
+      */
+-    public function setDateFormat($format) {
+-      $this->dateFormat= $format;
++    public function setDialect(SQLDialect $dialect) {
++      $this->dialect= $dialect;
+     }
+     
+     /**
+-     * Set date format
+-     *
+-     * @param   array<String,String> rules
+-     */
+-    public function setEscapeRules($rules) {
+-      $this->escapeRules= $rules;
+-    }
+-    
+-    /**
+-     * Sets the escaping character.
+-     *
+-     * @param   string escape
+-     */
+-    public function setEscape($escape) {
+-      $this->escape= $escape;
+-    }
+-    
+-    /**
+      * Format a number
+      *
+      * @param   mixed arg
+Index: skeleton/rdbms/DBTable.class.php
+===================================================================
+--- skeleton/rdbms/DBTable.class.php	(Revision 10453)
++++ skeleton/rdbms/DBTable.class.php	(Arbeitskopie)
+@@ -4,7 +4,11 @@
+  * $Id$
+  */
+ 
+-  uses('rdbms.DBTableAttribute', 'rdbms.DBIndex');
++  uses(
++    'rdbms.DBTableAttribute',
++    'rdbms.DBIndex',
++    'rdbms.DBForeignKeyConstraint'
++  );
+ 
+   /** 
+    * Represents a database table
+@@ -12,10 +16,10 @@
+    */  
+   class DBTable extends Object {
+     public 
+-      $name=        '',
+-      $attributes=  array(),
+-      $indexes=     array(),
+-      $constraints= array();
++      $name=          '',
++      $attributes=    array(),
++      $indexes=       array(),
++      $fgConstraints= array();
+ 
+     /**
+      * Constructor
+@@ -31,10 +35,11 @@
+      *
+      * @param   rdbms.DBAdapter an adapter
+      * @param   string name
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable a table object
+      */
+-    public static function getByName($adapter, $name) {
+-      return $adapter->getTable($name);
++    public static function getByName($adapter, $name, $database= NULL) {
++      return $adapter->getTable($name, $database);
+     }
+ 
+     /**
+@@ -129,5 +134,35 @@
+       }
+       return FALSE;
+     }
++
++    /**
++     * Add a constraint
++     *
++     * @param   rdbms.DBForeignKeyConstraint constraint
++     * @return  rdbms.DBForeignKeyConstraint the added constraint
++     */
++    public function addForeignKeyConstraint(DBForeignKeyConstraint $constraint) {
++      $this->fgConstraints[]= $constraint;
++      return $constraint;
++    }
++
++    /**
++     * Get first constraint - Iterator function
++     *
++     * @return  rdbms.DBForeignKeyConstraint a constraint
++     */
++    public function getFirstForeignKeyConstraint() {
++      reset($this->fgConstraints);
++      return current($this->fgConstraints);
++    }
++
++    /**
++     * Get next constraint - Iterator function
++     *
++     * @return  rdbms.DBForeignKeyConstraint a constraint or FALSE to indicate there are none left
++     */
++    public function getNextForeignKeyConstraint() {
++      return next($this->fgConstraints);
++    }
+   }
+ ?>
+Index: skeleton/rdbms/Statement.class.php
+===================================================================
+--- skeleton/rdbms/Statement.class.php	(Revision 10453)
++++ skeleton/rdbms/Statement.class.php	(Arbeitskopie)
+@@ -49,13 +49,31 @@
+     }
+         
+     /**
++     * test if the Expression is a projection
++     *
++     * @return  bool
++     */
++    public function isProjection() {
++      return false;
++    }
++
++    /**
++     * test if the Expression is a join
++     *
++     * @return  bool
++     */
++    public function isJoin() {
++      return false;
++    }
++
++    /**
+      * Executes an SQL SELECT statement
+      *
+-     * @param   &rdbms.DBConnection conn
+-     * @param   &rdbms.Peer peer
+-     * @return  &rdbms.ResultSet
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.Peer peer
++     * @return  rdbms.ResultSet
+      */
+-    public function executeSelect($conn, $peer) {
++    public function executeSelect(DBConnection $conn, Peer $peer) {
+       $this->arguments[0]= preg_replace(
+         '/object\(([^\)]+)\)/i', 
+         '$1.'.implode(', $1.', array_keys($peer->types)),
+Index: skeleton/rdbms/criterion/CountProjection.class.php
+===================================================================
+--- skeleton/rdbms/criterion/CountProjection.class.php	(Revision 0)
++++ skeleton/rdbms/criterion/CountProjection.class.php	(Revision 0)
+@@ -0,0 +1,40 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++ uses('rdbms.criterion.SimpleProjection');
++
++  /**
++   * belongs to the Criterion API
++   *
++   */
++  class CountProjection extends SimpleProjection {
++    
++    /**
++     * constructor
++     *
++     * @param  rdbms.SQLRenderable field optional default is *
++     * @param  string command form constlist
++     * @param  string alias optional
++     * @throws lang.IllegalArgumentException
++     */
++    public function __construct($field= '*', $alias= '') {
++      if (('*' != $field) && !($field instanceof SQLRenderable)) throw new IllegalArgumentException('Argument #1 must be of type SQLRenderable or string "*"');
++      $this->field= $field;
++      $this->alias= $alias;
++    }
++
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @return  string
++     */
++    public function asSql(DBConnection $conn) {
++      $field= ($this->field instanceof SQLRenderable) ? $this->field->asSQL($conn) : '*';
++      $alias= (0 != strlen($this->alias)) ?  $this->alias : (('*' == $field) ? 'count' : 'count_'.$field);
++      return $conn->prepare('count('.$field.') as %s', $alias);
++    }
++  }
++?>
+Index: skeleton/rdbms/criterion/SimpleProjection.class.php
+===================================================================
+--- skeleton/rdbms/criterion/SimpleProjection.class.php	(Revision 0)
++++ skeleton/rdbms/criterion/SimpleProjection.class.php	(Revision 0)
+@@ -0,0 +1,48 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('rdbms.criterion.Projection');
++
++  /**
++   * belongs to the Criterion API
++   *
++   */
++  class SimpleProjection extends Object implements Projection {
++  
++    protected
++      $field= '',
++      $command= '',
++      $alias= '';
++
++    /**
++     * constructor
++     *
++     * @param  rdbms.SQLRenderable field
++     * @param  string command from Projection::constlist
++     * @param  string alias optional
++     * @throws lang.IllegalArgumentException
++     */
++    public function __construct(SQLRenderable $field, $command, $alias= '') {
++      $this->field= $field;
++      $this->command= $command;
++      $this->alias= $alias;
++    }
++
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @param   rdbms.Peer peer
++     * @return  string
++     * @throws  rdbms.SQLStateException
++     */
++    public function asSql(DBConnection $conn) {
++      return (0 == strlen($this->alias))
++      ? $conn->prepare($this->command, $this->field)
++      : $conn->prepare($this->command.' as %s', $this->field, $this->alias);
++    }
++  }
++?>
+Index: skeleton/rdbms/criterion/ProjectionList.class.php
+===================================================================
+--- skeleton/rdbms/criterion/ProjectionList.class.php	(Revision 0)
++++ skeleton/rdbms/criterion/ProjectionList.class.php	(Revision 0)
+@@ -0,0 +1,51 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++ uses(
++   'rdbms.criterion.Projection',
++   'rdbms.criterion.SimpleProjection'
++ );
++
++  /**
++   * belongs to the Criterion API
++   *
++   */
++  class ProjectionList extends Object implements Projection {
++
++    protected
++      $projections= array();
++
++    /**
++     * add projection
++     * param can also be a rdbms.Column, a property
++     * projection is then assumed
++     *
++     * @param    rdbms.criterion.Projection projections
++     * @param    string alias optional
++     * @param    string aliasTable
++     * @return   rdbms.criterion.ProjectionList
++     */
++    public function add($projection, $alias= '') {
++      $this->projections[]= ($projection instanceof SQLFragment)
++      ? $projection= Projections::property($projection, $alias)
++      : $projection;
++      return $this;
++    }
++
++    /**
++     * Returns the fragment SQL
++     *
++     * @param   rdbms.DBConnection conn
++     * @return  string
++     * @throws  rdbms.SQLStateException
++     */
++    public function asSql(DBConnection $conn) {
++      $s= '';
++      foreach ($this->projections as $p) $s.= ', '.$p->asSql($conn);
++      return substr($s, 1);
++    }
++
++  }
++?>
+Index: skeleton/rdbms/criterion/BetweenExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10453)
++++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
+@@ -34,21 +34,13 @@
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.Peer peer
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function asSql($conn, $types) { 
+-      if ($this->field instanceof Column) {
+-        $field= $this->field->asSQL($conn);
+-        $type=  $this->field->getType();
+-      } else {
+-        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+-        $field= $this->field;
+-        $type=  $types[$this->field][0];
+-      }
+-
+-      return $field.' between '.$conn->prepare($type.' and '.$type, $this->lo, $this->hi);
++    public function asSql(DBConnection $conn, Peer $peer) { 
++      $col= ($this->field instanceof Column) ? $this->field : $peer->column($this->field);
++      return $col->asSQL($conn).' between '.$conn->prepare($col->getType().' and '.$col->getType(), $this->lo, $this->hi);
+     }
+   } 
+ ?>
+Index: skeleton/rdbms/criterion/SimpleExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10453)
++++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
+@@ -56,14 +56,13 @@
+         NOT_EQUAL => IS_NOT
+       );
+ 
+-      $this->field= $field;
+-      $this->value= $value;
+-
+       // Automatically convert '= NULL' to 'is NULL', former is not valid ANSI-SQL
+       if (NULL === $value && isset($nullMapping[$op])) {
+         $op= $nullMapping[$op];
+       }
+       $this->op= $op;
++      $this->field= $field;
++      $this->value= $value;
+     }
+     
+     /**
+@@ -85,20 +84,12 @@
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.Peer peer
+      * @return  string
+-     * @throws  rdbms.SQLStateException
+      */
+-    public function asSql($conn, $types) { 
+-      if ($this->field instanceof Column) {
+-        $field= $this->field->asSQL($conn);
+-        $type=  $this->field->getType();
+-      } else {
+-        if (!isset($types[$this->field])) throw(new SQLStateException('Field "'.$this->field.'" unknown'));
+-        $field= $this->field;
+-        $type=  $types[$this->field][0];
+-      }
+-      return $field.' '.$conn->prepare(str_replace('?', $type, $this->op), $this->value);
++    public function asSql(DBConnection $conn, Peer $peer) {
++      $col= ($this->field instanceof Column) ? $this->field : $peer->column($this->field);
++      return $col->asSQL($conn).' '.$conn->prepare(str_replace('?', $col->getType(), $this->op), $this->value);
+     }
+ 
+   } 
+Index: skeleton/rdbms/criterion/LogicalExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10453)
++++ skeleton/rdbms/criterion/LogicalExpression.class.php	(Arbeitskopie)
+@@ -34,14 +34,14 @@
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.Peer peer
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function asSql($conn, $types) { 
++    public function asSql(DBConnection $conn, Peer $peer) {
+       $sql= '';
+       for ($i= 0, $s= sizeof($this->criterions); $i < $s; $i++) {
+-        $sql.= $this->criterions[$i]->asSql($conn, $types).' '.$this->op.' ';
++        $sql.= $this->criterions[$i]->asSql($conn, $peer).' '.$this->op.' ';
+       }
+       return '('.substr($sql, 0, (-1 * strlen($this->op)) - 2).')';
+     }
+Index: skeleton/rdbms/criterion/Projection.class.php
+===================================================================
+--- skeleton/rdbms/criterion/Projection.class.php	(Revision 0)
++++ skeleton/rdbms/criterion/Projection.class.php	(Revision 0)
+@@ -0,0 +1,19 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.SQLRenderable');
++
++  /**
++   * belongs to the Criterion API
++   *
++   */
++  interface Projection extends SQLRenderable {
++     const AVG=  'avg(%s)';
++     const SUM=  'sum(%s)';
++     const MIN=  'min(%s)';
++     const MAX=  'max(%s)';
++     const PROP= '%s';
++  }
++?>
+Index: skeleton/rdbms/criterion/Criterion.class.php
+===================================================================
+--- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10453)
++++ skeleton/rdbms/criterion/Criterion.class.php	(Arbeitskopie)
+@@ -4,8 +4,6 @@
+  * $Id$ 
+  */
+ 
+-  uses('rdbms.SQLStateException');
+-
+   /**
+    * Represents a query criterion to be used in a Criteria query
+    *
+@@ -13,15 +11,14 @@
+    * @purpose  Interface
+    */
+   interface Criterion {
+-  
+     /**
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.Peer peer
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function asSql($conn, $types);
++    public function asSql(DBConnection $conn, Peer $peer);
+   }
+ ?>
+Index: skeleton/rdbms/criterion/Projections.class.php
+===================================================================
+--- skeleton/rdbms/criterion/Projections.class.php	(Revision 0)
++++ skeleton/rdbms/criterion/Projections.class.php	(Revision 0)
+@@ -0,0 +1,101 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++ uses(
++   'rdbms.criterion.CountProjection',
++   'rdbms.criterion.ProjectionList',
++   'rdbms.criterion.SimpleProjection'
++ );
++
++  /**
++   * belongs to the Criterion API
++   * projection factory
++   *
++   * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest
++   * @see      xp://rdbms.Criteria
++   * @purpose  purpose
++   */
++  class Projections extends Object {
++
++    /**
++     * manufactor a new ProjectionList
++     *
++     * @param   string[] properties
++     * @return  rdbms.criterion.ProjectionList
++     */
++    public static function projectionList($properties= array()) {
++      $pl= new ProjectionList();
++      foreach ($properties as $property) $pl->add(new SimpleProjection($property, Projection::PROP));
++      return $pl;
++    }
++    
++    /**
++     * manufactor a new CountProjection
++     *
++     * @param  string fieldname optional default is *
++     * @param  string alias optional
++     * @return  rdbms.criterion.CountProjection
++     */
++    public static function count($field= '*', $alias= '') {
++      return new CountProjection($field, $alias);
++    }
++    
++    /**
++     * manufactor a new PropertyProjection
++     *
++     * @param  string fieldname
++     * @param  string alias optional
++     * @return  rdbms.criterion.PropertyProjection
++     */
++    public static function property($field, $alias= '') {
++      return new SimpleProjection($field, Projection::PROP, $alias);
++    }
++    
++    /**
++     * manufactor a new AverageProjection
++     *
++     * @param  string fieldname
++     * @param  string alias optional
++     * @return  rdbms.criterion.AverageProjection
++     */
++    public static function average($field, $alias= '') {
++      return new SimpleProjection($field, Projection::AVG, $alias);
++    }
++    
++    /**
++     * manufactor a new SumProjection
++     *
++     * @param  string fieldname
++     * @param  string alias optional
++     * @return  rdbms.criterion.SumProjection
++     */
++    public static function sum($field, $alias= '') {
++      return new SimpleProjection($field, Projection::SUM, $alias);
++    }
++    
++    /**
++     * manufactor a new MaxProjection
++     *
++     * @param  string fieldname
++     * @param  string alias optional
++     * @return  rdbms.criterion.MaxProjection
++     */
++    public static function max($field, $alias= '') {
++      return new SimpleProjection($field, Projection::MAX, $alias);
++    }
++    
++    /**
++     * manufactor a new MinProjection
++     *
++     * @param  string fieldname
++     * @param  string alias optional
++     * @return  rdbms.criterion.MinProjection
++     */
++    public static function min($field, $alias= '') {
++      return new SimpleProjection($field, Projection::MIN, $alias);
++    }
++    
++  }
++?>
+Index: skeleton/rdbms/criterion/NegationExpression.class.php
+===================================================================
+--- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10453)
++++ skeleton/rdbms/criterion/NegationExpression.class.php	(Arbeitskopie)
+@@ -28,12 +28,12 @@
+      * Returns the fragment SQL
+      *
+      * @param   rdbms.DBConnection conn
+-     * @param   array types
++     * @param   rdbms.Peer peer
+      * @return  string
+      * @throws  rdbms.SQLStateException
+      */
+-    public function asSql($conn, $types) { 
+-      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $types));
++    public function asSql(DBConnection $conn, Peer $peer) {
++      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $peer));
+     }
+   } 
+ ?>
+Index: skeleton/rdbms/mysql/MySQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10453)
++++ skeleton/rdbms/mysql/MySQLConnection.class.php	(Arbeitskopie)
+@@ -8,7 +8,8 @@
+     'rdbms.DBConnection',
+     'rdbms.mysql.MySQLResultSet',
+     'rdbms.Transaction',
+-    'rdbms.StatementFormatter'
++    'rdbms.StatementFormatter',
++    'rdbms.mysql.MysqlDialect'
+   );
+ 
+   /**
+@@ -42,13 +43,7 @@
+      */
+     public function __construct($dsn) { 
+       parent::__construct($dsn);
+-      $this->formatter= new StatementFormatter();
+-      $this->formatter->setEscape('"');
+-      $this->formatter->setEscapeRules(array(
+-        '"'   => '\"',
+-        '\\'  => '\\\\'
+-      ));
+-      $this->formatter->setDateFormat('Y-m-d H:i:s');
++      $this->formatter= new StatementFormatter($this, new MysqlDialect());
+     }
+ 
+     /**
+@@ -95,7 +90,7 @@
+       // (\) as an escape character within strings. With this mode enabled, 
+       // backslash becomes any ordinary character like any other. 
+       // (Implemented in MySQL 5.0.1)
+-      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->setEscapeRules(array(
++      isset($modes['NO_BACKSLASH_ESCAPES']) && $this->formatter->dialect->setEscapeRules(array(
+         '"'   => '""'
+       ));
+ 
+@@ -136,6 +131,7 @@
+     /**
+      * Prepare an SQL statement
+      *
++     * @param   string fmt
+      * @param   mixed* args
+      * @return  string
+      */
+@@ -320,5 +316,14 @@
+     public function commit($name) { 
+       return $this->query('commit');
+     }
++    
++    /**
++     * get SQL formatter
++     *
++     * @return  rdbms.StatemantFormatter
++     */
++    public function getFormatter() {
++      return $this->formatter;
++    }
+   }
+ ?>
+Index: skeleton/rdbms/mysql/MysqlDialect.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MysqlDialect.class.php	(Revision 0)
++++ skeleton/rdbms/mysql/MysqlDialect.class.php	(Revision 0)
+@@ -0,0 +1,97 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.SQLDialect');
++
++  /**
++   * helps to build functions for different SQL servers
++   *
++   */
++  class MysqlDialect extends SQLDialect {
++    private static
++      $dateparts= array(
++        'dayofyear'	  => FALSE,
++        'weekday'	  => FALSE,
++        'millisecond' => FALSE,
++      ),
++      $implementations= array(
++        'str_1'        => 'cast(%s as char)',
++        'len_1'        => 'length(%s)',
++        'getdate_0'    => 'sysdate()',
++        'dateadd_3'    => 'timestampadd(%t, %d, %s)',
++        'datediff_3'   => 'timestampdiff(%t, %s, %s)',
++        'datename_2'   => 'cast(extract(%t from %s) as char)',
++        'datepart_2'   => 'extract(%t from %s)',
++      );
++
++    public
++      $escape       = '"',
++      $escapeRules  = array(
++        '"'   => '\"',
++        '\\'  => '\\\\'
++      ),
++      $dateFormat   = 'Y-m-d H:i:s';
++        
++    /**
++     * get a function format string
++     *
++     * @param   SQLFunction $func
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function formatFunction(SQLFunction $func) {
++      $func_i= $func->func.'_'.count($func->args);
++      switch ($func->func) {
++        case 'concat':
++        return 'concat('.implode(', ', array_fill(0, count($func->args), '%s')).')';
++
++        default:
++        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
++        return parent::formatFunction($func);
++      }
++    }
++  
++    /**
++     * get a dialect specific datepart
++     *
++     * @param   string datepart
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function datepart($datepart) {
++      $datepart= strToLower($datepart);
++      if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
++      if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('MYSQL does not support datepart '.$datepart);
++      return self::$dateparts[$datepart];
++    }
++
++    /**
++     * build join related part of an SQL query
++     *
++     * @param   rdbms.join.JoinRelation[] conditions
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public function makeJoinBy(Array $conditions) {
++      if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
++      $querypart= '';
++      $first= TRUE;
++      foreach ($conditions as $link) {
++        if ($first) {
++          $first= FALSE;
++          $querypart.= sprintf(
++            '%s LEFT OUTER JOIN %s on (%s) ',
++            $link->getSource()->toSqlString(),
++            $link->getTarget()->toSqlString(),
++            implode(' and ', $link->getConditions())
++          );
++        } else {
++          $querypart.= sprintf('LEFT JOIN %s on (%s) ', $link->getTarget()->toSqlString(), implode(' and ', $link->getConditions()));
++        }
++      }
++      return $querypart.'where ';
++    }
++  }
++?>
+Index: skeleton/rdbms/mysql/MySQLDBAdapter.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10453)
++++ skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Arbeitskopie)
+@@ -49,8 +49,8 @@
+       $dbs= array();
+       try {
+         $q= $this->conn->query('show databases');
+-        while ($name= $q->next('name')) {
+-          $dbs[]= $name;
++        while ($name= $q->next()) {
++          $dbs[]= $name[key($name)];
+         }
+       } catch (SQLException $e) {
+         throw($e);
+@@ -62,15 +62,19 @@
+     /**
+      * Get tables by database
+      *
+-     * @param   string database
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable[] array of DBTable objects
+      */
+-    public function getTables($database) {
++    public function getTables($database= NULL) {
+       $t= array();
++      $database= $this->database($database);
+       try {
+-        $q= $this->conn->query('show tables');
++        $q= $this->conn->query(
++          'show tables from %c', 
++          $database
++        );
+         while ($table= $q->next()) {
+-          $t[]= $this->getTable($table[key($table)]);
++          $t[]= $this->getTable($table[key($table)], $database);
+         }
+       } catch (SQLException $e) {
+         throw($e);
+@@ -83,9 +87,10 @@
+      * Get table by name
+      *
+      * @param   string table
++     * @param   string database default NULL if omitted, uses current database
+      * @return  rdbms.DBTable a DBTable object
+      */
+-    public function getTable($table) {
++    public function getTable($table, $database= NULL) {
+       $t= new DBTable($table);
+       try {
+       
+@@ -103,7 +108,7 @@
+         // | changedby   | varchar(16)  |      |     |                     |                |
+         // +-------------+--------------+------+-----+---------------------+----------------+
+         // 8 rows in set (0.00 sec)
+-        $q= $this->conn->query('describe %c', $table);
++        $q= $this->conn->query('describe %c', $this->qualifiedTablename($table, $database));
+         while ($record= $q->next()) {
+           preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
+ 
+@@ -111,7 +116,7 @@
+             $record['Field'], 
+             $this->map[$regs[1]],
+             strstr($record['Extra'], 'auto_increment'),
+-            !empty($record['Null']),
++            !(empty($record['Null']) || ('NO' == $record['Null'])),
+             $regs[3], 
+             0, 
+             0
+@@ -127,7 +132,7 @@
+         // | contract |          1 | contract_id   |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+         // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
+         // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+-        $q= $this->conn->query('show keys from %c', $table);
++        $q= $this->conn->query('show keys from %c', $this->qualifiedTablename($table, $database));
+         while ($record= $q->next()) {
+           if ($record['Key_name'] != $key) {
+             $index= $t->addIndex(new DBIndex(
+@@ -140,11 +145,189 @@
+           $index->primary= ('PRIMARY' == $record['Key_name']);
+           $index->keys[]= $record['Column_name'];
+         }
++        
++        // Get foreign key constraints
++        // in mysql the only way is to parse the creat statement
++        $createTableString= $this->conn->query('show create table %c', $this->qualifiedTablename($table, $database))->next('Create Table');
++        for ($i= 0; $i < strlen($createTableString); $i++) {
++          switch ($createTableString{$i}) {
++            case '`':
++            $this->parseQuoteString($createTableString, $i);
++            break;
++
++            case '(':
++            $tableConstraints= $this->filterConstraints($this->extractParams($this->parseBracerString($createTableString, $i)));
++            foreach ($tableConstraints as $tableConstraint) {
++              if (strstr($tableConstraint, 'FOREIGN KEY') === false) continue;
++              $t->addForeignKeyConstraint($this->parseForeignKeyString($tableConstraint));
++            }
++            break;
++          }
++        }
++
+       } catch (SQLException $e) {
+         throw($e);
+       }
+-      
+       return $t;
+     }
++
++    /**
++     * Get full table name with database if possible
++     *
++     * @param   string table
++     * @param   string database default NULL if omitted, uses current database
++     * @return  string full table name
++     */
++    private function qualifiedTablename($table, $database= NULL) {
++      $database= $this->database($database);
++      if (NULL !== $database) return $database.'.'.$table;
++      return $table;
++    }
++
++    /**
++     * Get the current database
++     *
++     * @param   string database default NULL if omitted, uses current database
++     * @return  string full table name
++     */
++    private function database($database= NULL) {
++      if (NULL !== $database) return $database;
++      return $this->conn->query('select database() as db')->next('db');
++    }
++
++    /**
++     * get the foreign key object from a string
++     *
++     * @param   string parsestring
++     * @return  rdbms.DBForeignKeyConstraint
++     */
++    private function parseForeignKeyString($string) {
++      $constraint=   new DBForeignKeyConstraint();
++      $quotstrings=  array();
++      $bracestrings= array();
++      $attributes=   array();
++      $pos= 10;
++      while ($pos++ < strlen($string)) {
++        switch ($string{$pos}) {
++          case '`':
++          $quotstrings[]= $this->parseQuoteString($string, $pos);
++          break;
++
++          case '(':
++          $bracestrings[]= $this->parseBracerString($string, $pos);
++          break;
++        }
++      }
++      foreach ($bracestrings as $bracestring) {
++        $params= $this->extractParams($bracestring);
++        foreach ($params as $i => $param) $params[$i]= substr($param, 1, -1);
++        $attributes[]= $params;
++      }
++      $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
++      $constraint->setName($quotstrings[0]);
++      $constraint->setSource($quotstrings[1]);
++      return $constraint;
++    }
++
++    /**
++     * get the text inner a quotation
++     *
++     * @param   string parsestring
++     * @param   &int position where the quoted string begins
++     * @return  string inner quotation
++     */
++    private function parseQuoteString($string, &$pos) {
++      $quotedString= '';
++      while ($pos++ < strlen($string)) {
++        switch ($string{$pos}) {
++          case '`':
++          return $quotedString;
++          
++          default:
++          $quotedString.= $string{$pos};
++        }
++      }
++      return $quotedString;
++    }
++
++    /**
++     * get the text inner bracers
++     *
++     * @param   string parsestring
++     * @param   &int position where the bracered string begins
++     * @return  string inner bracers
++     */
++    private function parseBracerString($string, &$pos) {
++      $braceredString= '';
++      while ($pos++ < strlen($string)) {
++        switch ($string{$pos}) {
++          case ')':
++          return $braceredString;
++          break;
++          
++          case '(':
++          $braceredString.= $string{$pos};
++          $braceredString.= $this->parseBracerString($string, $pos).')';
++          break;
++          
++          case '`':
++          $braceredString.= $string{$pos};
++          $braceredString.= $this->parseQuoteString($string, $pos).'`';
++          break;
++          
++          default:
++          $braceredString.= $string{$pos};
++        }
++      }
++      return $braceredString;
++    }
++
++    /**
++     * get the single params in a paramstring
++     *
++     * @param   string paramstring
++     * @return  string[] paramstrings
++     */
++    private function extractParams($string) {
++      $paramArray= array();
++      $paramString= '';
++      $pos= 0;
++      while ($pos < strlen($string)) {
++        switch ($string{$pos}) {
++          case ',':
++          $paramArray[]= trim($paramString);
++          $paramString= '';
++          break;
++          
++          case '(':
++          $paramString.= $string{$pos};
++          $paramString.= $this->parseBracerString($string, $pos).')';
++          break;
++          
++          case '`':
++          $paramString.= $string{$pos};
++          $paramString.= $this->parseQuoteString($string, $pos).'`';
++          break;
++          
++          default:
++          $paramString.= $string{$pos};
++        }
++        $pos++;
++      }
++      $paramArray[]= trim($paramString);
++      return $paramArray;
++    }
++
++    /**
++     * filter the contraint parameters in a create table paramter string array
++     *
++     * @param   string[] array with parameter strings
++     * @return  string[] constraint strings
++     */
++    private function filterConstraints($params) {
++      $constraintArray= array();
++      foreach ($params as $param) if ('CONSTRAINT' == substr($param, 0, 10)) $constraintArray[]= $param;
++      return $constraintArray;
++    }
+   }
+ ?>
+Index: skeleton/rdbms/DBForeignKeyConstraint.class.php
+===================================================================
+--- skeleton/rdbms/DBForeignKeyConstraint.class.php	(Revision 0)
++++ skeleton/rdbms/DBForeignKeyConstraint.class.php	(Revision 0)
+@@ -0,0 +1,66 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses ('rdbms.DBConstraint');
++
++  /**
++   * Represents a database foreign key constraint
++   *
++   * @see      rdbms.DBConstraint
++   */
++  class DBForeignKeyConstraint extends DBConstraint {
++    public
++      $keys=   array(),
++      $source= '';
++
++    /**
++     * Set keys
++     *
++     * @param    string attribute in the current table
++     * @param    string attribute in the referenced table
++     */
++    public function addKey($attribute, $sourceAttribute) {
++      $this->keys[$attribute]= $sourceAttribute;
++    }
++
++    /**
++     * Set keys
++     *
++     * @param   string[] keys
++     */
++    public function setKeys($keys) {
++      $this->keys= $keys;
++    }
++
++    /**
++     * Get keys
++     *
++     * @return  string[]
++     */
++    public function getKeys() {
++      return $this->keys;
++    }
++
++    /**
++     * Set source
++     *
++     * @param   string source
++     */
++    public function setSource($source) {
++      $this->source= $source;
++    }
++
++    /**
++     * Get source
++     *
++     * @return  string
++     */
++    public function getSource() {
++      return $this->source;
++    }
++
++  }
++?>
+Index: skeleton/rdbms/util/DBXMLNamingContext.class.php
+===================================================================
+--- skeleton/rdbms/util/DBXMLNamingContext.class.php	(Revision 0)
++++ skeleton/rdbms/util/DBXMLNamingContext.class.php	(Revision 0)
+@@ -0,0 +1,52 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++uses('rdbms.util.DBXMLNamingStrategyDefault');
++
++  /**
++   * Generate Names for database generated classes
++   *
++   */
++  class DBXMLNamingContext extends Object {
++  
++    protected static $strategy= NULL;
++    
++    function __static() {
++      self::setStrategy(new DBXMLNamingStrategyDefault());
++    }
++    
++    /**
++     * set strategy
++     *
++     * @param   rdbms.DBXMLNameingStrategy s
++     */
++    static function setStrategy(DBXMLNamingStrategy $s) {
++      self::$strategy= $s;
++    }
++
++    /**
++     * assemble th name of a foreign key constraint
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    static function foreignKeyConstraintName(DBTable $t, DBConstraint $c) {
++      return self::$strategy->foreignKeyConstraintName($t, $c);
++    }
++
++    /**
++     * assemble the name of a referencing foreign Key constraint
++     * (current entity at the tip)
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    static function referencingForeignKeyConstraintName(DBTable $t, DBConstraint $c) {
++      return self::$strategy->referencingForeignKeyConstraintName($t, $c);
++    }
++  }
++?>
+Index: skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php
+===================================================================
+--- skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php	(Revision 0)
++++ skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php	(Revision 0)
+@@ -0,0 +1,42 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++uses('rdbms.util.DBXMLNamingStrategy');
++
++  /**
++   * Generate Names for database generated classes
++   *
++   */
++  class DBXMLNamingStrategyDefault extends DBXMLNamingStrategy {
++    
++    /**
++     * assemble th name of a foreign key constraint
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    function foreignKeyConstraintName($t, $c) {
++      $role= '';
++      foreach (array_keys($c->getKeys()) as $attribute) $role.= ucfirst('_id' == substr($attribute, -3) ? substr($attribute, 0, -3) : $attribute);
++      return $role;
++    }
++
++    /**
++     * assemble the name of a referencing foreign Key constraint
++     * (current entity at the tip)
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    function referencingForeignKeyConstraintName($t, $c) {
++      $role= self::foreignKeyConstraintName($t, $c);
++      return trim(((ucfirst($t->name) == $role) ? $role : ucfirst($t->name).$role));
++    }
++
++  }
++?>
+Index: skeleton/rdbms/util/DBXmlGenerator.class.php
+===================================================================
+--- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10453)
++++ skeleton/rdbms/util/DBXmlGenerator.class.php	(Arbeitskopie)
+@@ -7,7 +7,8 @@
+   uses(
+     'rdbms.DBTable',
+     'xml.Tree',
+-    'lang.System'
++    'lang.System',
++    'rdbms.util.DBXMLNamingContext'
+   );
+   
+   /**
+@@ -69,6 +70,24 @@
+         }
+       } while ($index= $table->getNextIndex());
+       
++      // constraints
++      if ($constraint= $table->getFirstForeignKeyConstraint()) do {
++        $cn= $t->addChild(new Node('constraint', NULL, array(
++          'name' => trim($constraint->getName()),
++        )));
++        $fgn= $cn->addChild(new Node('reference', NULL, array(
++          'table' => $constraint->getSource(),
++          'role'  => DBXMLNamingContext::foreignKeyConstraintName($table, $constraint),
++        )));
++        foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
++          $fgn->addChild(new Node('key', NULL, array(
++            'attribute'       => $attribute,
++            'sourceattribute' => $sourceattribute
++          )));
++        }
++        
++      } while ($constraint= $table->getNextForeignKeyConstraint());
++      
+       return $g;
+     }
+ 
+Index: skeleton/rdbms/util/DBConstraintXmlGenerator.class.php
+===================================================================
+--- skeleton/rdbms/util/DBConstraintXmlGenerator.class.php	(Revision 0)
++++ skeleton/rdbms/util/DBConstraintXmlGenerator.class.php	(Revision 0)
+@@ -0,0 +1,82 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'lang.System',
++    'rdbms.DBTable',
++    'rdbms.util.DBXMLNamingContext',
++    'xml.Tree'
++  );
++  
++  /**
++   * Generate the relation map of a database
++   *
++   * @see   xp://rdbms.DBTable
++   */
++  class DBConstraintXmlGenerator extends Object {
++    public
++      $doc= NULL;
++      
++    /**
++     * Constructor
++     *
++     */
++    public function __construct() {
++      $this->doc= new Tree();
++    }
++
++    /**
++     * Create XML map
++     *
++     * @param   rdbms.DBAdapter and adapter
++     * @param   string database
++     * @return  rdbms.util.DBConstraintXmlGenerator object
++     */    
++    public static function createFromDatabase($adapter, $database) {
++      $g= new self();
++      $g->doc->root->setAttribute('created_at', date('r'));
++      $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
++      
++      $d= $g->doc->root->addChild(new Node('database', NULL, array(
++        'database' => $database
++      )));
++      
++      foreach (DBTable::getByDatabase($adapter, $database) as $t) {
++        $tn= $d->addChild(new Node('table', NULL, array(
++          'name' => $t->name,
++        )));
++
++        if ($constraint= $t->getFirstForeignKeyConstraint()) do {
++          $cn= $tn->addChild(new Node('constraint', NULL, array(
++            'name' => trim($constraint->getName()),
++          )));
++          $fgn= $cn->addChild(new Node('reference', NULL, array(
++            'table' => $constraint->getSource(),
++            'role'  => DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint),
++          )));
++          foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
++            $fgn->addChild(new Node('key', NULL, array(
++              'attribute'       => $attribute,
++              'sourceattribute' => $sourceattribute,
++            )));
++          }
++
++        } while ($constraint= $t->getNextForeignKeyConstraint());
++      }
++      
++      return $g;
++    }
++
++    /**
++     * Get XML source
++     *
++     * @return  string xml representation
++     */    
++    public function getSource() {
++      return $this->doc->getSource(FALSE);
++    }
++  }
++?>
+Index: skeleton/rdbms/util/DBXMLNamingStrategy.class.php
+===================================================================
+--- skeleton/rdbms/util/DBXMLNamingStrategy.class.php	(Revision 0)
++++ skeleton/rdbms/util/DBXMLNamingStrategy.class.php	(Revision 0)
+@@ -0,0 +1,32 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Generate Names for database generated classes
++   *
++   */
++  abstract class DBXMLNamingStrategy extends Object {
++    
++    /**
++     * assemble th name of a foreign key constraint
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    abstract function foreignKeyConstraintName($t, $c);
++
++    /**
++     * assemble the name of a referencing foreign Key constraint
++     * (current entity at the tip)
++     *
++     * @param   rdbms.DBTable t referencing table
++     * @param   rdbms.DBConstraint c
++     * @return  string
++     */
++    abstract function referencingForeignKeyConstraintName($t, $c);
++  }
++?>

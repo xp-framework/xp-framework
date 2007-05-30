@@ -4,12 +4,11 @@ $Id$
 
 @authors: wagner
 @created: Thu Apr 26 12:36:22 CET 2007
-@status: draft
+@status: discussion mon jun 11 10:25:35     2007
 @category: rdbms
 
 Scope of Change
 ---------------
-
 - Extend the criteria api to use SQL standart functions in
   a query
 - common function interface for all databases
@@ -17,17 +16,18 @@ Scope of Change
 
 Rationale
 ---------
-
 - One wants to use SQL functions, like date functions, in a criteria query
 - Because of database predefined functions are not standardized,
   different databases provide different signatures for the same function
 - To render the functions for differen dialects the class rdbms.DBConnctions
   needs to extedet by  the method rdbms.DBConnctions::getFormatter()
+- The rdbms.StatementFormatter needs to know two new tokens
+    - %e is a datatype identifier
+    - %u is a datepart identifier
 
 
 Functionality
 -------------
-
 <pre>
   To use functions the package rdbms.SQLFunctions has to be imported.
 </pre>
@@ -35,7 +35,6 @@ Functionality
 
 usage
 ~~~~~
-
 - Functions can be created with the static rdbms.SQLFunctions factory
 <?php SQLFunctions::acos(0.125); ?>
 
@@ -48,26 +47,34 @@ usage
 <?php Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(0.3))); ?>
 
 
-
-
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+May be slows the criteria rendering process
+
 
 Dependencies
 ------------
-
-RFC 0123
-RFC 0126
-
+- RFC 0123
+  http://xp-framework.net/rfc/0123.rfc.html
+- RFC 0126
+  http://xp-framework.net/rfc/0126.rfc.html
+- added the parameter of type SQLDialect tothe rdbms.StatementFormatter's constructor
 
 Related documents
 -----------------
-
 - xp-lab
+  http://experiments.xp-framework.net/?people,wagner,rfc,0123
   http://experiments.xp-framework.net/?people,wagner,rfc,0124
+  http://experiments.xp-framework.net/?people,wagner,rfc,0126
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/skeleton.diff
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against ports
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/ports.diff
 
 
 Comments

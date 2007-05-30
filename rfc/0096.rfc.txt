@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, wagner
 @created: Sun Dec 17 18:22:48     2006
-@status: draft
+@status: discussion mon jun 11 10:25:35     2007
 @category: rdbms
 
 Scope of Change
@@ -125,7 +125,6 @@ generated classes
 
 naming strategy
 ~~~~~~~~~~~~~~~
-
 - The strategy has to implement the abstract class rdbms.util.DBXMLNamingStrategy.
 - To use a self written strategy you can set it by:
 
@@ -143,11 +142,16 @@ n/a
 
 Speed impact
 ------------
+This extension has no influence to the former functionality and runspeed
+
 
 Dependencies
 ------------
+Note:
+<pre>
+  To use this API, the database classes have to be regenerated!
+</pre>
 
-PHP-version >= 5.0
 
 Related documents
 -----------------
@@ -155,9 +159,13 @@ Related documents
   http://java.sun.com/javaee/5/docs/api/javax/persistence/ManyToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToMany.html
   http://java.sun.com/javaee/5/docs/api/javax/persistence/OneToOne.html
-
 - xp-lab
   http://experiments.xp-framework.net/?people,wagner,rfc,0096
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/skeleton.diff
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against ports
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/ports.diff
+
 
 Comments
 --------

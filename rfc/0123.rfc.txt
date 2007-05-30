@@ -4,12 +4,11 @@ $Id$
 
 @authors: wagner
 @created: Wed Apr 25 17:11:22 CET 2007
-@status: draft
+@status: discussion mon jun 11 10:25:35     2007
 @category: rdbms
 
 Scope of Change
 ---------------
-
 - Extend the criteria api to aggregate or cut down the
   querie's resultset.
 - After a projection, the resultset does not fit to
@@ -21,7 +20,6 @@ This is not rfc0051.
 
 Rationale
 ---------
-
 - counting, summing up, etc. - using aggregation
   functions that are provided by SQL
 - cutting down the resultset, as one do not need the
@@ -36,14 +34,13 @@ Rationale
 
 Functionality
 -------------
-
 <pre>
   To use projections the package rdbms.criterion.Projections has to be imported.
 </pre>
 
+
 Column class
 ~~~~~~~~~~~~
-
 to get an instance of a column:
 <?php
   $nameColumn= Person::column('name');
@@ -53,7 +50,6 @@ to get an instance of a column:
 
 Aggregation
 ~~~~~~~~~~~
-
 projection to the function avg
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
@@ -92,7 +88,6 @@ projection to the function count
 
 Projection
 ~~~~~~~~~~~
-
 projection to the property name
 <?php
   Person::getPeer()->doSelect(Criteria::newInstance()
@@ -144,7 +139,6 @@ is th same as:
 
 temporary use
 ~~~~~~~~~~~~~
-
 the method Criteria::withProjection can be used to build a temporary
 Criteria with a projection - e.g. count to test how many results will be
 in the resultset
@@ -158,21 +152,30 @@ in the resultset
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+May be slows the criteria rendering process
+
 
 Dependencies
 ------------
-
-RFC 0126
+- RFC 0126
+  http://xp-framework.net/rfc/0126.rfc.html
+- method isProjection() was added to the interface rdbms.SQLExpression 
 
 
 Related documents
 -----------------
-
 - xp-lab
   http://experiments.xp-framework.net/?people,wagner,rfc,0123
+  http://experiments.xp-framework.net/?people,wagner,rfc,0126
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/skeleton.diff
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against ports
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/ports.diff
 
 
 Comments

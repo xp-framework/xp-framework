@@ -1,0 +1,2879 @@
+Index: ports/classes/net/xp_framework/unittest/rdbms/SQLDialectTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/SQLDialectTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/SQLDialectTest.class.php	(Revision 0)
+@@ -0,0 +1,220 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: DBXmlGeneratorTest.class.php 9200 2007-01-08 21:55:03Z friebe $ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.Date',
++    'rdbms.ConnectionManager',
++    'rdbms.SQLFunction',
++    'rdbms.criterion.Restrictions',
++    'rdbms.SQLDialect',
++    'rdbms.join.JoinTable',
++    'rdbms.join.JoinRelation',
++    'net.xp_framework.unittest.rdbms.dataset.Job'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      rdbms.criterion.Projections
++   * @purpose  Unit Tests
++   */
++  class SQLDialectTest extends TestCase {
++    const SYBASE= 'sybase';
++    const MYSQL=  'mysql';
++  
++    public
++      $conn=         array(),
++      $dialectClass= array(),
++      $peer=         NULL;
++      
++    /**
++     * Sets up a Database Object for the test
++     *
++     */
++    public function setUp() {
++      $this->conn[self::MYSQL]=  DriverManager::getConnection('mysql://localhost:3306/');
++      $this->dialectClass[self::MYSQL]=  'rdbms.mysql.MysqlDialect';
++
++      $this->conn[self::SYBASE]= DriverManager::getConnection('sybase://localhost:1999/');
++      $this->dialectClass[self::SYBASE]= 'rdbms.sybase.SybaseDialect';
++
++      $this->peer= Job::getPeer();
++    }
++    
++    /**
++     * helper function to test input to makeJoinBy
++     *
++     * @param util.collections.HashTable[] conditions
++     * @param string[] asserts
++     */
++    private function assertJoin(Array $conditions, Array $asserts) {
++      foreach (array_keys($this->conn) as $connName) {
++        $dialect= $this->conn[$connName]->getFormatter()->dialect;
++        if (!array_key_exists($connName, $asserts)) throw new AssertionFailedError('test for '.$connName.' does not exist in test');
++        $this->assertEquals($asserts[$connName], $dialect->makeJoinBy($conditions));
++      }
++    }
++    
++    /**
++     * test formatter for connection
++     *
++     */
++    #[@test]
++    function getFormatterTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $this->assertClass(
++          $this->conn[$connName]->getFormatter(),
++          'rdbms.StatementFormatter'
++        );
++      }
++    }
++
++    /**
++     * test dialect interface for formatter
++     *
++     */
++    #[@test]
++    function dialectInterfaceTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $this->assertTrue($this->conn[$connName]->getFormatter()->dialect instanceof SQLDialect);
++      }
++    }
++
++    /**
++     * test dialect for formatter
++     *
++     */
++    #[@test]
++    function dialectTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $this->assertClass($this->conn[$connName]->getFormatter()->dialect, $this->dialectClass[$connName]);
++      }
++    }
++
++    /**
++     * test function formatter
++     *
++     */
++    #[@test]
++    function functionTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $dialect= $this->conn[$connName]->getFormatter()->dialect;
++        $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi')));
++        try {
++          $dialect->formatFunction(new SQLFunction('foo', 1,2,3,4,5));
++          throw new AssertionFailedError('formatFunction should throw an IllegalArgumentException when calling $dialect->formatFunction(new SQLFunction("foo", 1,2,3,4,5))');
++        } catch (IllegalArgumentException $e) {
++          $this->assertClass($e, 'lang.IllegalArgumentException');
++        }
++      }
++    }
++
++    /**
++     * test function formatter
++     *
++     */
++    #[@test]
++    function datepartTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $dialect= $this->conn[$connName]->getFormatter()->dialect;
++        $this->assertEquals('month', $dialect->datepart('month'));
++        try {
++          $dialect->datepart('month_foo_bar_buz');
++          throw new AssertionFailedError('datepart should throw an IllegalArgumentException when calling $dialect->datepart("month_foo_bar_buz")');
++        } catch (IllegalArgumentException $e) {
++          $this->assertClass($e, 'lang.IllegalArgumentException');
++        }
++      }
++    }
++
++    /**
++     * test datatype formatter
++     *
++     */
++    #[@test]
++    function datatypeTest() {
++      foreach (array_keys($this->conn) as $connName) {
++        $dialect= $this->conn[$connName]->getFormatter()->dialect;
++        $this->assertEquals('int', $dialect->datatype('int'));
++        try {
++          $dialect->datatype('int_foo_bar_buz');
++          throw new AssertionFailedError('datatype should throw an IllegalArgumentException when calling $dialect->datatype("int_foo_bar_buz")');
++        } catch (IllegalArgumentException $e) {
++          $this->assertClass($e, 'lang.IllegalArgumentException');
++        }
++      }
++    }
++
++    /**
++     * test join formatter
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    function joinMinimumTest() {
++      $asserts= array(
++        self::MYSQL  => '',
++        self::SYBASE => '',
++      );
++
++      $this->assertJoin(
++        array(),
++        $asserts
++      );
++    }
++
++    /**
++     * test join formatter
++     *
++     */
++    #[@test]
++    function joinTwoTablesTest() {
++      $asserts= array(
++        self::MYSQL  => 'table0 as t0 LEFT OUTER JOIN table1 as t1 on (t0.id1_1 = t0.id1_1 and t0.id1_2 = t0.id1_2) where ',
++        self::SYBASE => 'table0 as t0, table1 as t1 where t0.id1_1 *= t0.id1_1 and t0.id1_2 *= t0.id1_2 and ',
++      );
++
++      $t0= new JoinTable('table0', 't0');
++      $t1= new JoinTable('table1', 't1');
++
++      $conditions= array(
++        create(new JoinRelation($t0, $t1, array('t0.id1_1 = t0.id1_1', 't0.id1_2 = t0.id1_2')))
++      );
++      
++      $this->assertJoin(
++        $conditions,
++        $asserts
++      );
++    }
++
++    /**
++     * test join formatter
++     *
++     */
++    #[@test]
++    function joinThreeTablesTest() {
++      $asserts= array(
++        self::MYSQL  => 'table0 as t0 LEFT OUTER JOIN table1 as t1 on (t0.id1_1 = t0.id1_1 and t0.id1_2 = t0.id1_2) LEFT JOIN table2 as t2 on (t1.id2_1 = t2.id2_1) where ',
++        self::SYBASE => 'table0 as t0, table1 as t1, table2 as t2 where t0.id1_1 *= t0.id1_1 and t0.id1_2 *= t0.id1_2 and t1.id2_1 *= t2.id2_1 and ',
++      );
++
++      $t0= new JoinTable('table0', 't0');
++      $t1= new JoinTable('table1', 't1');
++      $t2= new JoinTable('table2', 't2');
++
++      $conditions= array(
++        create(new JoinRelation($t0, $t1, array('t0.id1_1 = t0.id1_1', 't0.id1_2 = t0.id1_2'))),
++        create(new JoinRelation($t1, $t2, array('t1.id2_1 = t2.id2_1'))),
++      );
++      
++      $this->assertJoin(
++        $conditions,
++        $asserts
++      );
++    }
++
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(Revision 10453)
++++ ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(Arbeitskopie)
+@@ -514,5 +514,69 @@
+       // Make next query return empty results (not fail)
+       $this->setResults(new MockResultSet());
+     }
++
++    /**
++     * Tests column
++     *
++     */
++    #[@test]
++    public function column() {
++      $this->assertClass(Job::column('job_id'), 'rdbms.Column');
++    }
++
++    /**
++     * Tests column exeption
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function nonExistantColumn() {
++      Job::column('non_existant');
++    }
++
++    /**
++     * Tests column of relatives
++     *
++     */
++    #[@test]
++    public function relativeColumn() {
++      $this->assertClass(Job::column('PersonJob->person_id'), 'rdbms.Column');
++    }
++
++    /**
++     * Tests column of relatives exeption
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function nonExistantRelativeColumn() {
++      Job::column('PersonJob->non_existant');
++    }
++
++    /**
++     * Tests column of relatives
++     *
++     */
++    #[@test]
++    public function farRelativeColumn() {
++      $this->assertClass(Job::column('PersonJob->Department->department_id'), 'rdbms.Column');
++    }
++
++    /**
++     * Tests column of relatives exeption
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function nonExistantfarRelativeColumn() {
++      Job::column('PersonJob->Department->non_existant');
++    }
++
++    /**
++     * Tests relation exeption
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function nonExistantRelative() {
++      Job::column('NonExistant->person_id');
++    }
++
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/JoinPartTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/JoinPartTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/JoinPartTest.class.php	(Revision 0)
+@@ -0,0 +1,195 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: CriteriaTest.class.php 9319 2007-01-17 15:07:44Z friebe $ 
++ */
++ 
++  uses(
++    'rdbms.Criteria',
++    'rdbms.DriverManager',
++    'unittest.TestCase',
++    'rdbms.join.JoinPart',
++    'net.xp_framework.unittest.rdbms.dataset.Job',
++    'net.xp_framework.unittest.rdbms.dataset.Person',
++    'net.xp_framework.unittest.rdbms.dataset.Department'
++  );
++
++  /**
++   * Test JoinPart class
++   *
++   * Note: We're relying on the connection to be a mysql connection -
++   * otherwise, quoting and date representation may change and make
++   * this testcase fail.
++   *
++   * @see      xp://rdbms.Criteria
++   * @purpose  Unit Test
++   */
++  class JoinPartTest extends TestCase {
++      
++    public
++      $conn = NULL,
++      $peer = NULL;
++      
++    /**
++     * Constructor
++     *
++     * @param   string name
++     */
++    public function __construct($name) {
++      parent::__construct($name);
++      $this->conn= DriverManager::getConnection('mysql://localhost:3306/');
++    }
++    
++    /**
++     * test an Array
++     *
++     * @param   mixed[] testArray
++     * @param   mixed[] assertArray
++     */
++    private function assertArrayElements($testArray, $assertArray) {
++      $this->assertEquals(sizeOf($assertArray), sizeOf($testArray));
++      foreach ($testArray as $testKey => $testValue) $this->assertEquals($assertArray[$testKey], $testValue);
++    }
++
++    
++    /**
++     * Tests for correct formatted attribute
++     *
++     * @see     xp://rdbms.join.JoinPart#getAttributes
++     */
++    #[@test]
++    public function getAttributesTest() {
++      $joinpart= new JoinPart('job', Job::getPeer());
++      $this->assertArrayElements(
++        $joinpart->getAttributes(),
++        array(
++          'job.job_id as job_job_id',
++          'job.title as job_title',
++          'job.valid_from as job_valid_from',
++          'job.expire_at as job_expire_at' ,
++        )
++      );
++    }
++
++    /**
++     * Tests correct formatting for tables
++     *
++     * @see     xp://rdbms.join.JoinPart#getTable
++     */
++    #[@test]
++    public function getTableTest() {
++      $joinpart= new JoinPart('job', Job::getPeer());
++      $this->assertClass(
++        $joinpart->getTable(),
++        'rdbms.join.JoinTable'
++      );
++      $this->assertEquals(
++        $joinpart->getTable()->toSqlString(),
++        'JOBS.job as job'
++      );
++    }
++
++    /**
++     * Tests production of JoinRelations
++     *
++     * @see     xp://rdbms.join.JoinPart#getJoinRelations
++     */
++    #[@test]
++    public function getJoinRelationsTest() {
++      $jobpart=    new JoinPart('j', Job::getPeer());
++      $personpart= new JoinPart('p', Person::getPeer());
++
++      $jobpart->addRelative($personpart, 'PersonJob');
++
++      $this->assertArray($jobpart->getJoinRelations());
++      $j_p= current($jobpart->getJoinRelations());
++      $this->assertClass($j_p, 'rdbms.join.JoinRelation');
++      $this->assertClass($j_p->getSource(), 'rdbms.join.JoinTable');
++      $this->assertClass($j_p->getTarget(), 'rdbms.join.JoinTable');
++      $this->assertArrayElements(
++        $j_p->getConditions(),
++        array('j.job_id = p.job_id')
++      );
++    }
++
++    /**
++     * Tests production of JoinRelations
++     *
++     * @see     xp://rdbms.join.JoinPart#getJoinRelations
++     */
++    #[@test]
++    public function getComplexJoinRelationsTest() {
++      $toJob=        new JoinPart('j', Job::getPeer());
++      $toPerson=     new JoinPart('p', Person::getPeer());
++      $toDepartment= new JoinPart('d', Department::getPeer());
++      $toChief=      new JoinPart('c', Person::getPeer());
++
++      $toJob->addRelative($toPerson, 'PersonJob');
++      $toPerson->addRelative($toDepartment, 'Department');
++      $toDepartment->addRelative($toChief, 'Chief');
++
++      $this->assertEquals(
++        $this->conn->getFormatter()->dialect->makeJoinBy($toJob->getJoinRelations()),
++        'JOBS.job as j LEFT OUTER JOIN JOBS.Person as p on (j.job_id = p.job_id) LEFT JOIN JOBS.Department as d on (p.department_id = d.department_id) LEFT JOIN JOBS.Person as c on (d.chief_id = c.person_id) where '
++      );
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinPart#extract
++     */
++    #[@test]
++    public function extractTest() {
++      $toJob=        new JoinPart('j', Job::getPeer());
++      $toPerson=     new JoinPart('p', Person::getPeer());
++      $toDepartment= new JoinPart('d', Department::getPeer());
++      $toChief=      new JoinPart('c', Person::getPeer());
++
++      $toJob->addRelative($toPerson, 'JobPerson');
++      $toPerson->addRelative($toDepartment, 'Department');
++      $toDepartment->addRelative($toChief, 'DepartmentChief');
++
++      $job= Job::getPeer()->objectFor(
++        array(
++          'job_id'     => '21',
++          'title'      => 'clean the toilette',
++          'valid_from' => new Date(),
++          'expire_at'  => '',
++        )
++      );
++      $toPerson->extract(
++        $job,
++        array(
++          'p_person_id'     => '11',
++          'p_name'          => 'Schultz',
++          'p_job_id'        => '21',
++          'p_department_id' => '31',
++          'd_department_id' => '31',
++          'd_name'          => 'iDev',
++          'd_chief_id'      => '12',
++          'c_person_id'     => '12',
++          'c_name'          => 'Friebe',
++          'c_job_id'        => '22',
++          'c_department_id' => '31',
++        ),
++        'JobPerson'
++      );
++      
++      $this->assertClass(
++        $job->getCachedObj('JobPerson', '#11'),
++        'net.xp_framework.unittest.rdbms.dataset.Person'
++      );
++      $this->assertClass(
++        $job->getCachedObj('JobPerson', '#11')->getCachedObj('Department', '#31'),
++        'net.xp_framework.unittest.rdbms.dataset.Department'
++      );
++      $this->assertClass(
++        $job->getCachedObj('JobPerson', '#11')->getCachedObj('Department', '#31')->getCachedObj('DepartmentChief', '#12'),
++        'net.xp_framework.unittest.rdbms.dataset.Person'
++      );
++
++    }
++
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Person.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Person.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Person.class.php	(Revision 0)
+@@ -0,0 +1,269 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
++ */
++ 
++  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
++
++  /**
++   * Class wrapper for table person, database JOBS
++   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
++   *
++   * @purpose  Datasource accessor
++   */
++  class Person extends DataSet implements JoinExtractable {
++    public
++      $person_id          = 0,
++      $name               = '',
++      $job_id             = 0,
++      $department_id      = 0;
++  
++    private
++      $cache= array(
++        'Department' => array(),
++        'Job' => array(),
++        'DepartmentChief' => array(),
++      ),
++      $cached= array();
++
++    static function __static() { 
++      with ($peer= self::getPeer()); {
++        $peer->setTable('JOBS.Person');
++        $peer->setConnection('jobs');
++        $peer->setIdentity('person_id');
++        $peer->setPrimary(array('person_id'));
++        $peer->setTypes(array(
++          'person_id'     => array('%d', FieldType::NUMERIC, FALSE),
++          'name'          => array('%s', FieldType::VARCHAR, FALSE),
++          'job_id'        => array('%d', FieldType::NUMERIC, FALSE),
++          'department_id' => array('%d', FieldType::NUMERIC, FALSE),
++        ));
++        $peer->setRelations(array(
++          'Department' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Department',
++            'key'       => array(
++              'department_id' => 'department_id',
++            ),
++          ),
++          'Job' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Job',
++            'key'       => array(
++              'job_id' => 'job_id',
++            ),
++          ),
++          'DepartmentChief' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Department',
++            'key'       => array(
++              'person_id' => 'chief_id',
++            ),
++          ),
++        ));
++      }
++    }  
++
++    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
++    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
++    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
++    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
++    
++    /**
++     * Retrieve associated peer
++     *
++     * @return  rdbms.Peer
++     */
++    public static function getPeer() {
++      return Peer::forName(__CLASS__);
++    }
++
++    /**
++     * column factory
++     *
++     * @param   string name
++     * @return  rdbms.Column
++     * @throws  lang.IllegalArumentException
++     */
++    static public function column($name) {
++      return self::getPeer()->column($name);
++    }
++  
++    /**
++     * Gets an instance of this object by index "PRIMARY"
++     * 
++     * @param   int person_id
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person entitiy object
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public static function getByPerson_id($person_id) {
++      $r= self::getPeer()->doSelect(new Criteria(array('person_id', $person_id, EQUAL)));
++      return $r ? $r[0] : NULL;    }
++
++    /**
++     * Gets an instance of this object by index "job"
++     * 
++     * @param   int job_id
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entity objects
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public static function getByJob_id($job_id) {
++      return self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL)));    }
++
++    /**
++     * Gets an instance of this object by index "department"
++     * 
++     * @param   int department_id
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entity objects
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public static function getByDepartment_id($department_id) {
++      return self::getPeer()->doSelect(new Criteria(array('department_id', $department_id, EQUAL)));    }
++
++    /**
++     * Retrieves person_id
++     *
++     * @return  int
++     */
++    public function getPerson_id() {
++      return $this->person_id;
++    }
++      
++    /**
++     * Sets person_id
++     *
++     * @param   int person_id
++     * @return  int the previous value
++     */
++    public function setPerson_id($person_id) {
++      return $this->_change('person_id', $person_id);
++    }
++
++    /**
++     * Retrieves name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++      
++    /**
++     * Sets name
++     *
++     * @param   string name
++     * @return  string the previous value
++     */
++    public function setName($name) {
++      return $this->_change('name', $name);
++    }
++
++    /**
++     * Retrieves job_id
++     *
++     * @return  int
++     */
++    public function getJob_id() {
++      return $this->job_id;
++    }
++      
++    /**
++     * Sets job_id
++     *
++     * @param   int job_id
++     * @return  int the previous value
++     */
++    public function setJob_id($job_id) {
++      return $this->_change('job_id', $job_id);
++    }
++
++    /**
++     * Retrieves department_id
++     *
++     * @return  int
++     */
++    public function getDepartment_id() {
++      return $this->department_id;
++    }
++      
++    /**
++     * Sets department_id
++     *
++     * @param   int department_id
++     * @return  int the previous value
++     */
++    public function setDepartment_id($department_id) {
++      return $this->_change('department_id', $department_id);
++    }
++
++    /**
++     * Retrieves the Department entity
++     * referenced by department_id=>department_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Department entity
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getDepartment() {
++      $r= ($this->cached['Department']) ?
++        array_values($this->cache['Department']) :
++        XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
++          ->getMethod('getPeer')
++          ->invoke()
++          ->doSelect(new Criteria(
++          array('department_id', $this->getDepartment_id(), EQUAL)
++      ));
++      return $r ? $r[0] : NULL;
++    }
++
++    /**
++     * Retrieves the Job entity
++     * referenced by job_id=>job_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Job entity
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getJob() {
++      $r= ($this->cached['Job']) ?
++        array_values($this->cache['Job']) :
++        XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Job')
++          ->getMethod('getPeer')
++          ->invoke()
++          ->doSelect(new Criteria(
++          array('job_id', $this->getJob_id(), EQUAL)
++      ));
++      return $r ? $r[0] : NULL;
++    }
++
++    /**
++     * Retrieves an array of all Department entities referencing
++     * this entity by chief_id=>person_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Department[] entities
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getDepartmentChiefList() {
++      if ($this->cached['DepartmentChief']) return array_values($this->cache['DepartmentChief']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->doSelect(new Criteria(
++          array('chief_id', $this->getPerson_id(), EQUAL)
++      ));
++    }
++
++    /**
++     * Retrieves an iterator for all Department entities referencing
++     * this entity by chief_id=>person_id
++     *
++     * @return  rdbms.ResultIterator<net.xp_framework.unittest.rdbms.dataset.Department>
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getDepartmentChiefIterator() {
++      if ($this->cached['DepartmentChief']) return new HashmapIterator($this->cache['DepartmentChief']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Department')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->iteratorFor(new Criteria(
++          array('chief_id', $this->getPerson_id(), EQUAL)
++      ));
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(Revision 10453)
++++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(Arbeitskopie)
+@@ -4,19 +4,26 @@
+  * $Id$
+  */
+  
+-  uses('rdbms.DataSet');
+- 
++  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
++
+   /**
+    * Class wrapper for table job, database JOBS
++   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
+    *
+    * @purpose  Datasource accessor
+    */
+-  class Job extends DataSet {
++  class Job extends DataSet implements JoinExtractable {
+     public
+       $job_id             = 0,
+       $title              = '',
+       $valid_from         = NULL,
+       $expire_at          = NULL;
++  
++    private
++      $cache= array(
++        'PersonJob' => array(),
++      ),
++      $cached= array();
+ 
+     static function __static() { 
+       with ($peer= self::getPeer()); {
+@@ -27,22 +34,24 @@
+         $peer->setTypes(array(
+           'job_id'      => array('%d', FieldType::NUMERIC, FALSE),
+           'title'       => array('%s', FieldType::VARCHAR, FALSE),
+-          'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
++          'valid_from'  => array('%s', FieldType::DATETIME, TRUE),
+           'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
+         ));
++        $peer->setRelations(array(
++          'PersonJob' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
++            'key'       => array(
++              'job_id' => 'job_id',
++            ),
++          ),
++        ));
+       }
+     }  
+-  
+-    /**
+-     * column factory
+-     *
+-     * @param   string name
+-     * @return  rdbms.Column
+-     * @throws  lang.IllegalArgumentException
+-     */
+-    public static function column($name) {
+-      return Peer::forName(__CLASS__)->column($name);
+-    }
++
++    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
++    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
++    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
++    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
+     
+     /**
+      * Retrieve associated peer
+@@ -52,18 +61,28 @@
+     public static function getPeer() {
+       return Peer::forName(__CLASS__);
+     }
++
++    /**
++     * column factory
++     *
++     * @param   string name
++     * @return  rdbms.Column
++     * @throws  lang.IllegalArumentException
++     */
++    static public function column($name) {
++      return self::getPeer()->column($name);
++    }
+   
+     /**
+      * Gets an instance of this object by index "PRIMARY"
+-     *
++     * 
+      * @param   int job_id
+-     * @return  net.xp_framework.unittest.rdbms.dataset.Job object
++     * @return  net.xp_framework.unittest.rdbms.dataset.Job entitiy object
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public static function getByJob_id($job_id) {
+       $r= self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL)));
+-      return $r ? $r[0] : NULL;
+-    }
++      return $r ? $r[0] : NULL;    }
+ 
+     /**
+      * Retrieves job_id
+@@ -140,5 +159,39 @@
+     public function setExpire_at($expire_at) {
+       return $this->_change('expire_at', $expire_at);
+     }
++
++    /**
++     * Retrieves an array of all Person entities referencing
++     * this entity by job_id=>job_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entities
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getPersonJobList() {
++      if ($this->cached['PersonJob']) return array_values($this->cache['PersonJob']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->doSelect(new Criteria(
++          array('job_id', $this->getJob_id(), EQUAL)
++      ));
++    }
++
++    /**
++     * Retrieves an iterator for all Person entities referencing
++     * this entity by job_id=>job_id
++     *
++     * @return  rdbms.ResultIterator<net.xp_framework.unittest.rdbms.dataset.Person>
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getPersonJobIterator() {
++      if ($this->cached['PersonJob']) return new HashmapIterator($this->cache['PersonJob']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->iteratorFor(new Criteria(
++          array('job_id', $this->getJob_id(), EQUAL)
++      ));
++    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Department.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Department.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Department.class.php	(Revision 0)
+@@ -0,0 +1,212 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
++ */
++ 
++  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
++
++  /**
++   * Class wrapper for table department, database JOBS
++   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
++   *
++   * @purpose  Datasource accessor
++   */
++  class Department extends DataSet implements JoinExtractable {
++    public
++      $department_id      = 0,
++      $name               = '',
++      $chief_id           = 0;
++  
++    private
++      $cache= array(
++        'Chief' => array(),
++        'PersonDepartment' => array(),
++      ),
++      $cached= array();
++
++    static function __static() { 
++      with ($peer= self::getPeer()); {
++        $peer->setTable('JOBS.Department');
++        $peer->setConnection('jobs');
++        $peer->setIdentity('department_id');
++        $peer->setPrimary(array('department_id'));
++        $peer->setTypes(array(
++          'department_id' => array('%d', FieldType::NUMERIC, FALSE),
++          'name'          => array('%s', FieldType::VARCHAR, FALSE),
++          'chief_id'      => array('%d', FieldType::NUMERIC, FALSE),
++        ));
++        $peer->setRelations(array(
++          'Chief' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
++            'key'       => array(
++              'chief_id' => 'person_id',
++            ),
++          ),
++          'PersonDepartment' => array(
++            'classname' => 'net.xp_framework.unittest.rdbms.dataset.Person',
++            'key'       => array(
++              'department_id' => 'department_id',
++            ),
++          ),
++        ));
++      }
++    }  
++
++    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
++    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
++    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
++    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
++    
++    /**
++     * Retrieve associated peer
++     *
++     * @return  rdbms.Peer
++     */
++    public static function getPeer() {
++      return Peer::forName(__CLASS__);
++    }
++
++    /**
++     * column factory
++     *
++     * @param   string name
++     * @return  rdbms.Column
++     * @throws  lang.IllegalArumentException
++     */
++    static public function column($name) {
++      return self::getPeer()->column($name);
++    }
++  
++    /**
++     * Gets an instance of this object by index "PRIMARY"
++     * 
++     * @param   int department_id
++     * @return  net.xp_framework.unittest.rdbms.dataset.Department entitiy object
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public static function getByDepartment_id($department_id) {
++      $r= self::getPeer()->doSelect(new Criteria(array('department_id', $department_id, EQUAL)));
++      return $r ? $r[0] : NULL;    }
++
++    /**
++     * Gets an instance of this object by index "chief"
++     * 
++     * @param   int chief_id
++     * @return  net.xp_framework.unittest.rdbms.dataset.Department[] entity objects
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public static function getByChief_id($chief_id) {
++      return self::getPeer()->doSelect(new Criteria(array('chief_id', $chief_id, EQUAL)));    }
++
++    /**
++     * Retrieves department_id
++     *
++     * @return  int
++     */
++    public function getDepartment_id() {
++      return $this->department_id;
++    }
++      
++    /**
++     * Sets department_id
++     *
++     * @param   int department_id
++     * @return  int the previous value
++     */
++    public function setDepartment_id($department_id) {
++      return $this->_change('department_id', $department_id);
++    }
++
++    /**
++     * Retrieves name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++      
++    /**
++     * Sets name
++     *
++     * @param   string name
++     * @return  string the previous value
++     */
++    public function setName($name) {
++      return $this->_change('name', $name);
++    }
++
++    /**
++     * Retrieves chief_id
++     *
++     * @return  int
++     */
++    public function getChief_id() {
++      return $this->chief_id;
++    }
++      
++    /**
++     * Sets chief_id
++     *
++     * @param   int chief_id
++     * @return  int the previous value
++     */
++    public function setChief_id($chief_id) {
++      return $this->_change('chief_id', $chief_id);
++    }
++
++    /**
++     * Retrieves the Person entity
++     * referenced by person_id=>chief_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person entity
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getChief() {
++      $r= ($this->cached['Chief']) ?
++        array_values($this->cache['Chief']) :
++        XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
++          ->getMethod('getPeer')
++          ->invoke()
++          ->doSelect(new Criteria(
++          array('person_id', $this->getChief_id(), EQUAL)
++      ));
++      return $r ? $r[0] : NULL;
++    }
++
++    /**
++     * Retrieves an array of all Person entities referencing
++     * this entity by department_id=>department_id
++     *
++     * @return  net.xp_framework.unittest.rdbms.dataset.Person[] entities
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getPersonDepartmentList() {
++      if ($this->cached['PersonDepartment']) return array_values($this->cache['PersonDepartment']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->doSelect(new Criteria(
++          array('department_id', $this->getDepartment_id(), EQUAL)
++      ));
++    }
++
++    /**
++     * Retrieves an iterator for all Person entities referencing
++     * this entity by department_id=>department_id
++     *
++     * @return  rdbms.ResultIterator<net.xp_framework.unittest.rdbms.dataset.Person>
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function getPersonDepartmentIterator() {
++      if ($this->cached['PersonDepartment']) return new HashmapIterator($this->cache['PersonDepartment']);
++      return XPClass::forName('net.xp_framework.unittest.rdbms.dataset.Person')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->iteratorFor(new Criteria(
++          array('department_id', $this->getDepartment_id(), EQUAL)
++      ));
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/JoinProcessorTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/JoinProcessorTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/JoinProcessorTest.class.php	(Revision 0)
+@@ -0,0 +1,112 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: CriteriaTest.class.php 9319 2007-01-17 15:07:44Z friebe $ 
++ */
++ 
++  uses(
++    'rdbms.Criteria',
++    'rdbms.DriverManager',
++    'unittest.TestCase',
++    'rdbms.join.JoinProcessor',
++    'net.xp_framework.unittest.rdbms.dataset.Job'
++  );
++
++  /**
++   * Test JoinProcessor class
++   *
++   * Note: We're relying on the connection to be a mysql connection -
++   * otherwise, quoting and date representation may change and make
++   * this testcase fail.
++   *
++   * @see      xp://rdbms.join.JoinProcessor
++   * @purpose  Unit Test
++   */
++  class JoinProcessorTest extends TestCase {
++  
++    /**
++     * Constructor
++     *
++     * @param   string name
++     */
++    public function __construct($name) {
++      parent::__construct($name);
++      ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://localhost:3306/'), 'jobs');
++    }
++    
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#getAttributeString
++     */
++    #[@test]
++    public function getAttributeStringTest() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
++      $this->assertEquals(
++        $jp->getAttributeString(),
++        JoinProcessor::FIRST.'.job_id as '.JoinProcessor::FIRST.'_job_id, '
++        .JoinProcessor::FIRST.'.title as '.JoinProcessor::FIRST.'_title, '
++        .JoinProcessor::FIRST.'.valid_from as '.JoinProcessor::FIRST.'_valid_from, '
++        .JoinProcessor::FIRST.'.expire_at as '.JoinProcessor::FIRST.'_expire_at, '
++        .JoinProcessor::pathToKey(array('PersonJob')).'.person_id as '.JoinProcessor::pathToKey(array('PersonJob')).'_person_id, '
++        .JoinProcessor::pathToKey(array('PersonJob')).'.name as '.JoinProcessor::pathToKey(array('PersonJob')).'_name, '
++        .JoinProcessor::pathToKey(array('PersonJob')).'.job_id as '.JoinProcessor::pathToKey(array('PersonJob')).'_job_id, '
++        .JoinProcessor::pathToKey(array('PersonJob')).'.department_id as '.JoinProcessor::pathToKey(array('PersonJob')).'_department_id, '
++        .JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.department_id as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'_department_id, '
++        .JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.name as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'_name, '
++        .JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.chief_id as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'_chief_id'
++      );
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#getJoinString
++     */
++    #[@test]
++    public function getJoinStringTest() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('PersonJob' => 'join'));
++      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
++      $this->assertEquals(
++        $jp->getJoinString(),
++        'JOBS.job as '.JoinProcessor::FIRST.' LEFT OUTER JOIN JOBS.Person as '.JoinProcessor::pathToKey(array('PersonJob')).' on ('.JoinProcessor::FIRST.'.job_id = '.JoinProcessor::pathToKey(array('PersonJob')).'.job_id) LEFT JOIN JOBS.Department as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).' on ('.JoinProcessor::pathToKey(array('PersonJob')).'.department_id = '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.department_id) where '
++      );
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function emptyModeTest() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array());
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function noJoinModeTest() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('JobPerson.Department' => 'select'));
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function noSuchRoleTest() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('UnknowenRole' => 'join'));
++    }
++
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Revision 10453)
++++ ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Arbeitskopie)
+@@ -414,5 +414,12 @@
+      */
+     public function commit($name) { }
+   
++    /**
++     * gte formatter
++     *
++     * @return  rdbms.StatementFormatter
++     */
++    public function getFormatter() { }
++  
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php	(Revision 10453)
++++ ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php	(Arbeitskopie)
+@@ -9,6 +9,8 @@
+     'rdbms.criterion.Restrictions',
+     'rdbms.DriverManager',
+     'net.xp_framework.unittest.rdbms.dataset.Job',
++    'net.xp_framework.unittest.rdbms.dataset.Department',
++    'net.xp_framework.unittest.rdbms.dataset.Person',
+     'unittest.TestCase'
+   );
+ 
+@@ -47,7 +49,7 @@
+      * @throws  unittest.AssertionFailedError
+      */
+     protected function assertSql($sql, $criteria) {
+-      $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
++      $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer), ' '));
+     }
+       
+     /**
+@@ -74,10 +76,10 @@
+      * existant field
+      *
+      */
+-    #[@test, @expect('rdbms.SQLStateException')]
++    #[@test, @expect('lang.IllegalArgumentException')]
+     public function nonExistantFieldCausesException() {
+       $criteria= new Criteria(array('non-existant-field', 1, EQUAL));
+-      $criteria->toSQL($this->conn, $this->peer->types);
++      $criteria->toSQL($this->conn, $this->peer);
+     }
+ 
+     /**
+@@ -160,7 +162,7 @@
+     #[@test]
+     public function addReturnsThis() {
+       $this->assertClass(
+-        Criteria::newInstance()->add('job_id', 1, EQUAL), 
++        create(new Criteria())->add('job_id', 1, EQUAL), 
+         'rdbms.Criteria'
+       );
+     }
+@@ -173,7 +175,7 @@
+     #[@test]
+     public function addOrderByReturnsThis() {
+       $this->assertClass(
+-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
++        create(new Criteria())->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
+         'rdbms.Criteria'
+       );
+     }
+@@ -186,7 +188,7 @@
+     #[@test]
+     public function addGroupByReturnsThis() {
+       $this->assertClass(
+-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
++        create(new Criteria())->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
+         'rdbms.Criteria'
+       );
+     }
+@@ -209,6 +211,23 @@
+     }
+ 
+     /**
++     * Tests string as argument for addorderBy
++     *
++     * @see     xp://rdbms.Criteria#addOrderBy
++     */
++    #[@test]
++    public function addOrderByString() {
++      with ($c= new Criteria()); {
++        $c->addOrderBy("valid_from");
++        $c->addOrderBy("expire_at");
++      }
++      $this->assertSql(
++        'order by valid_from asc, expire_at asc',
++        $c
++      );
++    }
++
++    /**
+      * Tests rdbms.Column as argument for addGroupBy
+      *
+      * @see     xp://rdbms.Criteria#addGroupBy
+@@ -226,8 +245,26 @@
+     }
+ 
+     /**
++     * Tests string as argument for addGroupBy
++     *
++     * @see     xp://rdbms.Criteria#addGroupBy
++     */
++    #[@test]
++    public function addGroupByString() {
++      with ($c= new Criteria()); {
++        $c->addGroupBy("valid_from");
++        $c->addGroupBy("expire_at");
++      }
++      $this->assertSql(
++        'group by valid_from, expire_at',
++        $c
++      );
++    }
++
++    /**
+      * Tests exception for nonexistant column
+      *
++     * @see     xp://rdbms.Criteria#addGroupBy
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function createNonExistantColumn() {
+@@ -241,18 +278,71 @@
+      */
+     #[@test, @expect('rdbms.SQLStateException')]
+     public function addGroupByNonExistantColumnString() {
+-      Criteria::newInstance()->addGroupBy('not_existant')->toSQL($this->conn, $this->peer->types);
++      create(new Criteria())->addGroupBy('not_existant')->toSQL($this->conn, $this->peer);
+     }
+ 
+     /**
+-     * Tests exception for nonexistant column
++     * expect Criteria as result of setFetchmode
+      *
+-     * @see     xp://rdbms.Criteria#addOrderBy
++     * @see     xp://rdbms.Criteria#addGroupBy
+      */
+-    #[@test, @expect('rdbms.SQLStateException')]
+-    public function addOrderByNonExistantColumnString() {
+-      Criteria::newInstance()->addOrderBy('not_existant')->toSQL($this->conn, $this->peer->types);
++    #[@test]
++    public function fetchModeChaining() {
++      $this->assertClass(create(new Criteria())->setFetchmode(Fetchmode::join('PersonJob')), 'rdbms.Criteria');
+     }
+ 
++    /**
++     * Tests method isJoin
++     *
++     * @see     xp://rdbms.Criteria#toSQL
++     */
++    #[@test]
++    public function testIsJoin() {
++      $crit= new Criteria();
++      $this->assertFalse($crit->isJoin());
++      $this->assertTrue($crit->setFetchmode(Fetchmode::join('PersonJob'))->isJoin());
++      $crit->fetchmode= array();
++      $this->assertFalse($crit->isJoin());
++      $this->assertFalse($crit->setFetchmode(Fetchmode::select('PersonJob'))->isJoin());
++    }
++
++    /**
++     * Tests contitions when criteria is a join
++     *
++     * @see     xp://rdbms.Criteria#toSQL
++     */
++    #[@test]
++    public function testJoinWithoutCondition() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
++      $this->assertEquals(
++        '',
++        create(new Criteria())
++        ->setFetchmode(Fetchmode::join('PersonJob'))
++        ->toSQL($this->conn, $this->peer)
++      );
++    }
++
++    /**
++     * Tests contitions when criteria is a join
++     *
++     * @see     xp://rdbms.Criteria#toSQL
++     */
++    #[@test]
++    public function testJoinWithCondition() {
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
++      $jp->enterJoinContext();
++      $this->assertEquals(
++        ' where PersonJob_Department.department_id = 5 and start.job_id = 2 ',
++        create(new Criteria())
++        ->setFetchmode(Fetchmode::join('PersonJob'))
++        ->add(Job::column('PersonJob->Department->department_id')->equal(5))
++        ->add(Job::column('job_id')->equal(2))
++        ->toSQL($this->conn, $this->peer)
++      );
++      $jp->leaveJoinContext();
++    }
++
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/SQLFunctionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/SQLFunctionTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/SQLFunctionTest.class.php	(Revision 0)
+@@ -0,0 +1,352 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: DBXmlGeneratorTest.class.php 9200 2007-01-08 21:55:03Z friebe $ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.Date',
++    'rdbms.ConnectionManager',
++    'rdbms.criterion.Restrictions',
++    'rdbms.SQLFunctions',
++    'net.xp_framework.unittest.rdbms.dataset.Job'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      rdbms.SQLFunction
++   * @purpose  Unit Tests
++   */
++  class SQLFunctionTest extends TestCase {
++    public
++      $syconn = NULL,
++      $myconn = NULL,
++      $peer   = NULL;
++      
++    /**
++     * Sets up a Database Object for the test
++     *
++     */
++    public function setUp() {
++      $this->syconn= DriverManager::getConnection('sybase://localhost:1999/');
++      $this->myconn= DriverManager::getConnection('mysql://localhost:3306/');
++      $this->peer= Job::getPeer();
++    }
++    
++    /**
++     * Helper method that will call toSQL() on the passed criteria and
++     * compare the resulting string to the expected string.
++     *
++     * @param   string mysql
++     * @param   string sysql
++     * @param   rdbms.Criteria criteria
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertSql($mysql, $sysql, $criteria) {
++      $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->toSQL($this->myconn, $this->peer), ' '));
++      $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->toSQL($this->syconn, $this->peer), ' '));
++    }
++    
++    /**
++     * Helper method that will call projection() on the passed criteria and
++     * compare the resulting string to the expected string.
++     *
++     * @param   string mysql
++     * @param   string sysql
++     * @param   rdbms.Criteria criteria
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertProjection($mysql, $sysql, $criteria) {
++      $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->projections($this->myconn, $this->peer), ' '));
++      $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->projections($this->syconn, $this->peer), ' '));
++    }
++    
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function columnTest() {
++      $this->assertEquals(
++        'job_id',
++        Job::column('job_id')->getName()
++      );
++    }
++
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function projectionTest() {
++      $this->assertProjection(
++        'day(valid_from)',
++        'day(valid_from)',
++        create(new Criteria())->setProjection(SQLFunctions::day(Job::column('valid_from')))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function prepareProjectionTest() {
++      $this->assertEquals(
++        '- datepart(hour, valid_from) -',
++        $this->syconn->prepare('- %s -', SQLFunctions::datepart('hour', Job::column('valid_from')))
++      );
++      $this->assertEquals(
++        '- extract(hour from valid_from) -',
++        $this->myconn->prepare('- %s -', SQLFunctions::datepart('hour', Job::column('valid_from')))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function stringFunctionTest() {
++      $this->assertProjection(
++        'ascii("a") as "asciiTest"',
++        'ascii("a") as "asciiTest"',
++        create(new Criteria())->setProjection(SQLFunctions::ascii("a"), 'asciiTest')
++      );
++      $this->assertProjection(
++        'char(97)',
++        'char(97)',
++        create(new Criteria())->setProjection(SQLFunctions::char('97'))
++      );
++      $this->assertProjection(
++        'length("aaaaaaa")',
++        'len("aaaaaaa")',
++        create(new Criteria())->setProjection(SQLFunctions::len("aaaaaaa"))
++      );
++      $this->assertProjection(
++        'reverse("abcdefg")',
++        'reverse("abcdefg")',
++        create(new Criteria())->setProjection(SQLFunctions::reverse("abcdefg"))
++      );
++      $this->assertProjection(
++        'space(4)',
++        'space(4)',
++        create(new Criteria())->setProjection(SQLFunctions::space(4))
++      );
++      $this->assertProjection(
++        'soundex("kawabanga")',
++        'soundex("kawabanga")',
++        create(new Criteria())->setProjection(SQLFunctions::soundex("kawabanga"))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function concatStringTest() {
++      $this->assertProjection(
++        'concat("aa", cast(sysdate() as char), "cc") as "concatTest"',
++        '("aa" + convert(varchar, getdate()) + "cc") as "concatTest"',
++        create(new Criteria())->setProjection(SQLFunctions::concat('aa', SQLFunctions::str(SQLFunctions::getdate()), 'cc'), 'concatTest')
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function dateFunctionTest() {
++      $date= new Date();
++      $myDate= $date->toString($this->myconn->getFormatter()->dialect->dateFormat);
++      $syDate= $date->toString($this->syconn->getFormatter()->dialect->dateFormat);
++      $this->assertProjection(
++        'cast(sysdate() as char)',
++        'convert(varchar, getdate())',
++        create(new Criteria())->setProjection(SQLFunctions::str(SQLFunctions::getdate()))
++      );
++      $this->assertProjection(
++        'cast(timestampadd(month, -4, sysdate()) as char)',
++        'convert(varchar, dateadd(month, -4, getdate()))',
++        create(new Criteria())->setProjection(SQLFunctions::str(SQLFunctions::dateadd('month', '-4', SQLFunctions::getdate())))
++      );
++      $this->assertProjection(
++        'timestampdiff(second, timestampadd(day, -4, sysdate()), sysdate())',
++        'datediff(second, dateadd(day, -4, getdate()), getdate())',
++        create(new Criteria())->setProjection(SQLFunctions::datediff('second', SQLFunctions::dateadd('day', '-4', SQLFunctions::getdate()), SQLFunctions::getdate()))
++      );
++      $this->assertProjection(
++        'cast(extract(hour from sysdate()) as char)',
++        'datename(hour, getdate())',
++        create(new Criteria())->setProjection(SQLFunctions::datename('hour', SQLFunctions::getdate()))
++      );
++      $this->assertProjection(
++        'extract(hour from "'.$myDate.'")',
++        'datepart(hour, "'.$syDate.'")',
++        create(new Criteria())->setProjection(SQLFunctions::datepart('hour', $date))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function mathArithFunctionTest() {
++      $this->assertProjection(
++        'abs(-6)',
++        'abs(-6)',
++        create(new Criteria())->setProjection(SQLFunctions::abs(-6))
++      );
++      $this->assertProjection(
++        'ceil(5.1)',
++        'ceiling(5.1)',
++        create(new Criteria())->setProjection(SQLFunctions::ceil(5.1))
++      );
++      $this->assertProjection(
++        'floor(5.7)',
++        'floor(5.7)',
++        create(new Criteria())->setProjection(SQLFunctions::floor(5.7))
++      );
++      $this->assertProjection(
++        'exp(log(1))',
++        'exp(log(1))',
++        create(new Criteria())->setProjection(SQLFunctions::exp(SQLFunctions::log(1)))
++      );
++      $this->assertProjection(
++        'log10(power(10, 5))',
++        'log10(power(10, 5))',
++        create(new Criteria())->setProjection(SQLFunctions::log10(SQLFunctions::power(10, 5)))
++      );
++      $this->assertProjection(
++        'power(10, log10(5))',
++        'power(10, log10(5))',
++        create(new Criteria())->setProjection(SQLFunctions::power(10, SQLFunctions::log10(5)))
++      );
++      $this->assertProjection(
++        'round(1.5, 0) as "roundtest1", round(1.49, 0) as "roundtest2", round(1.49, 1) as "roundtest3"',
++        'round(1.5, 0) as "roundtest1", round(1.49, 0) as "roundtest2", round(1.49, 1) as "roundtest3"',
++        create(new Criteria())->setProjection(Projections::ProjectionList()
++          ->add(SQLFunctions::round(1.50),    'roundtest1')
++          ->add(SQLFunctions::round(1.49),    'roundtest2')
++          ->add(SQLFunctions::round(1.49, 1), 'roundtest3')
++        )
++      );
++      $this->assertProjection(
++        'sign(-7) as "signTest1", sign(0) as "signTest2", sign(4) as "signTest3"',
++        'convert(int, sign(-7)) as "signTest1", convert(int, sign(0)) as "signTest2", convert(int, sign(4)) as "signTest3"',
++        create(new Criteria())->setProjection(Projections::ProjectionList()
++          ->add(SQLFunctions::sign(-7), 'signTest1')
++          ->add(SQLFunctions::sign(0),  'signTest2')
++          ->add(SQLFunctions::sign(4),  'signTest3')
++        )
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function mathTrigFunctionTest() {
++      $this->assertProjection(
++        'cot(45)',
++        'cot(45)',
++        create(new Criteria())->setProjection(SQLFunctions::cot(45))
++      );
++      $this->assertProjection(
++        'pi()',
++        'pi()',
++        create(new Criteria())->setProjection(SQLFunctions::pi())
++      );
++      $this->assertProjection(
++        'acos(cos(0.125))',
++        'acos(cos(0.125))',
++        create(new Criteria())->setProjection(SQLFunctions::acos(SQLFunctions::cos(0.125)))
++      );
++      $this->assertProjection(
++        'asin(sin(0.125))',
++        'asin(sin(0.125))',
++        create(new Criteria())->setProjection(SQLFunctions::asin(SQLFunctions::sin(0.125)))
++      );
++      $this->assertProjection(
++        'atan(tan(0.125))',
++        'atan(tan(0.125))',
++        create(new Criteria())->setProjection(SQLFunctions::atan(SQLFunctions::tan(0.125)))
++      );
++      $this->assertProjection(
++        'atan2(tan(0.125), 0)',
++        'atn2(tan(0.125), 0)',
++        create(new Criteria())->setProjection(SQLFunctions::atan(SQLFunctions::tan(0.125), 0))
++      );
++      $this->assertProjection(
++        'degrees(pi())',
++        'convert(float, degrees(pi()))',
++        create(new Criteria())->setProjection(SQLFunctions::degrees(SQLFunctions::pi()))
++      );
++      $this->assertProjection(
++        'radians(degrees(90))',
++        'convert(float, radians(convert(float, degrees(90))))',
++        create(new Criteria())->setProjection(SQLFunctions::radians(SQLFunctions::degrees(90)))
++      );
++      $this->assertProjection(
++        'radians(degrees(90))',
++        'convert(float, radians(convert(float, degrees(90))))',
++        create(new Criteria())->setProjection(SQLFunctions::radians(SQLFunctions::degrees(90)))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function randFunctionTest() {
++      $this->assertProjection(
++        'rand()',
++        'rand()',
++        create(new Criteria())->setProjection(SQLFunctions::rand())
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function castFunctionTest() {
++      $this->assertProjection(
++        'cast("345" as decimal)',
++        'convert("345", decimal)',
++        create(new Criteria())->setProjection(SQLFunctions::cast("345", 'decimal'))
++      );
++      $this->assertProjection(
++        'cast(job_id as char)',
++        'convert(job_id, char)',
++        create(new Criteria())->setProjection(SQLFunctions::cast(Job::column("job_id"), 'char'))
++      );
++    }
++      
++    /**
++     * test the function set
++     *
++     */
++    #[@test]
++    function restrictionTest() {
++      $this->assertSQL(
++        'where job_id = ceil(asin(sin(0.125)))',
++        'where job_id = ceiling(asin(sin(0.125)))',
++        create(new Criteria())->add(Restrictions::equal("job_id", SQLFunctions::ceil(SQLFunctions::asin(SQLFunctions::sin(0.125)))))
++      );
++      $this->assertSQL(
++        'where job_id = ceil(asin(sin(0.125)))',
++        'where job_id = ceiling(asin(sin(0.125)))',
++        create(new Criteria())->add(Restrictions::equal(Job::column("job_id"), SQLFunctions::ceil(SQLFunctions::asin(SQLFunctions::sin(0.125)))))
++      );
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/JoinIteratorTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/JoinIteratorTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/JoinIteratorTest.class.php	(Revision 0)
+@@ -0,0 +1,225 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: CriteriaTest.class.php 9319 2007-01-17 15:07:44Z friebe $ 
++ */
++ 
++  uses(
++    'rdbms.Criteria',
++    'rdbms.DriverManager',
++    'unittest.TestCase',
++    'rdbms.join.JoinProcessor',
++    'rdbms.join.JoinIterator',
++    'net.xp_framework.unittest.rdbms.dataset.Job',
++    'net.xp_framework.unittest.rdbms.mock.MockResultSet'
++  );
++
++  /**
++   * Test JoinProcessor class
++   *
++   * Note: We're relying on the connection to be a mysql connection -
++   * otherwise, quoting and date representation may change and make
++   * this testcase fail.
++   *
++   * @see      xp://rdbms.join.JoinIterator
++   * @purpose  Unit Test
++   */
++  class JoinIteratorTest extends TestCase {
++    
++    /**
++     * Constructor
++     *
++     * @param   string name
++     */
++    public function __construct($name) {
++      parent::__construct($name);
++      ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://localhost:3306/'), 'jobs');
++    }
++    
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test, @expect('util.NoSuchElementException')]
++    public function emptyResultNextTest() {
++      create(new JoinIterator(new JoinProcessor(Job::getPeer()), new MockResultSet()))->next();
++    }
++    
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test]
++    public function emptyResultHasNextTest() {
++      $this->assertFalse(create(new JoinIterator(new JoinProcessor(Job::getPeer()), new MockResultSet()))->hasNext());
++    }
++    
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test]
++    public function resultHasNextTest() {
++      $rs= new MockResultSet(
++        array(
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            't1_person_id'     => '11',
++            't1_name'          => 'Schultz',
++            't1_job_id'        => '21',
++            't1_department_id' => '31',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            't1_person_id'     => '12',
++            't1_name'          => 'Friebe',
++            't1_job_id'        => '11',
++            't1_department_id' => '31',
++          ),
++        )
++      );
++      $ji= new JoinIterator(new JoinProcessor(Job::getPeer()), $rs);
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertFalse($ji->hasNext());
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test]
++    public function multipleResultTest() {
++      $rs= new MockResultSet(
++        array(
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '12',
++            JoinProcessor::FIRST.'_title'         => 'second job',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '13',
++            JoinProcessor::FIRST.'_title'         => 'third job',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++          ),
++        )
++      );
++      $jp= new JoinProcessor(Job::getPeer());
++      $ji= new JoinIterator($jp, $rs);
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertFalse($ji->hasNext());
++    }
++
++    /**
++     * Tests extraction from record
++     *
++     * @see     xp://rdbms.join.JoinProcessor#setFetchModes
++     */
++    #[@test]
++    public function multipleJoinResultTest() {
++      $rs= new MockResultSet(
++        array(
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            JoinProcessor::pathToKey(array('PersonJob')).'_person_id'     => '11',
++            JoinProcessor::pathToKey(array('PersonJob')).'_name'          => 'Schultz',
++            JoinProcessor::pathToKey(array('PersonJob')).'_job_id'        => '21',
++            JoinProcessor::pathToKey(array('PersonJob')).'_department_id' => '31',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '11',
++            JoinProcessor::FIRST.'_title'         => 'clean toilette',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            JoinProcessor::pathToKey(array('PersonJob')).'_person_id'     => '12',
++            JoinProcessor::pathToKey(array('PersonJob')).'_name'          => 'Müller',
++            JoinProcessor::pathToKey(array('PersonJob')).'_job_id'        => '11',
++            JoinProcessor::pathToKey(array('PersonJob')).'_department_id' => '31',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '12',
++            JoinProcessor::FIRST.'_title'         => 'second job',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            JoinProcessor::pathToKey(array('PersonJob')).'_person_id'     => '11',
++            JoinProcessor::pathToKey(array('PersonJob')).'_name'          => 'Schultz',
++            JoinProcessor::pathToKey(array('PersonJob')).'_job_id'        => '21',
++            JoinProcessor::pathToKey(array('PersonJob')).'_department_id' => '31',
++          ),
++          array(
++            JoinProcessor::FIRST.'_job_id'        => '13',
++            JoinProcessor::FIRST.'_title'         => 'third job',
++            JoinProcessor::FIRST.'_valid_from'    => new Date(),
++            JoinProcessor::FIRST.'_expire_at'     => '',
++            JoinProcessor::pathToKey(array('PersonJob')).'_person_id'     => NULL,
++            JoinProcessor::pathToKey(array('PersonJob')).'_name'          => NULL,
++            JoinProcessor::pathToKey(array('PersonJob')).'_job_id'        => NULL,
++            JoinProcessor::pathToKey(array('PersonJob')).'_department_id' => NULL,
++          ),
++        )
++      );
++      $jp= new JoinProcessor(Job::getPeer());
++      $jp->setFetchModes(array('PersonJob' => 'join'));
++      $ji= new JoinIterator($jp, $rs);
++
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertArray($job->getPersonJobList());
++      $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
++
++      $this->assertTrue($pji->hasNext());
++      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
++      $this->assertTrue($pji->hasNext());
++      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
++      $this->assertFalse($pji->hasNext());
++
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertArray($job->getPersonJobList());
++      $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
++      $this->assertTrue($pji->hasNext());
++      $this->assertClass($pji->next(), 'net.xp_framework.unittest.rdbms.dataset.Person');
++      $this->assertFalse($pji->hasNext());
++
++      $this->assertTrue($ji->hasNext());
++      $this->assertClass($job= $ji->next(), 'net.xp_framework.unittest.rdbms.dataset.Job');
++      $this->assertArray($job->getPersonJobList());
++      $this->assertClass($pji= $job->getPersonJobIterator(), 'util.HashmapIterator');
++      $this->assertFalse($pji->hasNext());
++
++      $this->assertFalse($ji->hasNext());
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/rdbms/ProjectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/rdbms/ProjectionTest.class.php	(Revision 0)
++++ ports/classes/net/xp_framework/unittest/rdbms/ProjectionTest.class.php	(Revision 0)
+@@ -0,0 +1,247 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: DBXmlGeneratorTest.class.php 9200 2007-01-08 21:55:03Z friebe $ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.Date',
++    'rdbms.ConnectionManager',
++    'rdbms.criterion.Restrictions',
++    'rdbms.criterion.Projections',
++    'net.xp_framework.unittest.rdbms.dataset.Job'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      rdbms.criterion.Projections
++   * @purpose  Unit Tests
++   */
++  class ProjectionTest extends TestCase {
++    public
++      $syconn = NULL,
++      $myconn = NULL,
++      $peer   = NULL;
++      
++    /**
++     * Sets up a Database Object for the test
++     *
++     */
++    public function setUp() {
++      $this->syconn= DriverManager::getConnection('sybase://localhost:1999/');
++      $this->myconn= DriverManager::getConnection('mysql://localhost:3306/');
++      $this->peer= Job::getPeer();
++    }
++    
++    /**
++     * Helper method that will call toSQL() on the passed criteria and
++     * compare the resulting string to the expected string.
++     *
++     * @param   string mysql
++     * @param   string sysql
++     * @param   rdbms.Criteria criteria
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertSql($mysql, $sysql, $criteria) {
++      $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->toSQL($this->myconn, $this->peer), ' '));
++      $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->toSQL($this->syconn, $this->peer), ' '));
++    }
++    
++    /**
++     * Helper method that will call projection() on the passed criteria and
++     * compare the resulting string to the expected string.
++     *
++     * @param   string mysql
++     * @param   string sysql
++     * @param   rdbms.Criteria criteria
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertProjection($mysql, $sysql, $criteria) {
++      $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->projections($this->myconn, $this->peer), ' '));
++      $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->projections($this->syconn, $this->peer), ' '));
++    }
++    
++    /**
++     * test the count projection
++     *
++     */
++    #[@test]
++    function countTest() {
++      $this->assertProjection(
++        'count(*) as "count"',
++        'count(*) as "count"',
++        create(new Criteria())->setProjection(Projections::count())
++      );
++    }
++
++    /**
++     * test the count projection with a parameter
++     *
++     */
++    #[@test]
++    function countColumnTest() {
++      $this->assertProjection(
++        'count(job_id) as "count_job_id"',
++        'count(job_id) as "count_job_id"',
++        create(new Criteria())->setProjection(Projections::count(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the count projection with a parameter and an alias
++     *
++     */
++    #[@test]
++    function countColumnAliasTest() {
++      $this->assertProjection(
++        'count(job_id) as "counting all"',
++        'count(job_id) as "counting all"',
++        create(new Criteria())->setProjection(Projections::count(Job::column("job_id"), "counting all"))
++      );
++    }
++
++    /**
++     * test the count projection with an alias
++     *
++     */
++    #[@test]
++    function countAliasTest() {
++      $this->assertProjection(
++        'count(*) as "counting all"',
++        'count(*) as "counting all"',
++        create(new Criteria())->setProjection(Projections::count('*', "counting all"))
++      );
++    }
++
++    /**
++     * test the average projection
++     *
++     */
++    #[@test]
++    function avgTest() {
++      $this->assertProjection(
++        'avg(job_id)',
++        'avg(job_id)',
++        create(new Criteria())->setProjection(Projections::average(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the sum projection
++     *
++     */
++    #[@test]
++    function sumTest() {
++      $this->assertProjection(
++        'sum(job_id)',
++        'sum(job_id)',
++        create(new Criteria())->setProjection(Projections::sum(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the min projection
++     *
++     */
++    #[@test]
++    function minTest() {
++      $this->assertProjection(
++        'min(job_id)',
++        'min(job_id)',
++        create(new Criteria())->setProjection(Projections::min(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the max projection
++     *
++     */
++    #[@test]
++    function maxTest() {
++      $this->assertProjection(
++        'max(job_id)',
++        'max(job_id)',
++        create(new Criteria())->setProjection(Projections::max(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the property projection
++     *
++     */
++    #[@test]
++    function propertyTest() {
++      $this->assertProjection(
++        'job_id',
++        'job_id',
++        create(new Criteria())->setProjection(Projections::property(Job::column("job_id")))
++      );
++    }
++
++    /**
++     * test the projection list projection
++     *
++     */
++    #[@test]
++    function propertyListTest() {
++      $this->assertProjection(
++        'job_id, title',
++        'job_id, title',
++        create(new Criteria())->setProjection(Projections::projectionList()
++          ->add(Projections::property(Job::column("job_id")))
++          ->add(Projections::property(Job::column("title")))
++      ));
++      $this->assertClass(
++        Projections::projectionList()->add(Projections::property(Job::column("job_id"))),
++        'rdbms.criterion.ProjectionList'
++      );
++    }
++
++    /**
++     * test the projection list projection with aliases
++     *
++     */
++    #[@test]
++    function propertyListAliasTest() {
++      $this->assertProjection(
++        'job_id as "id", title',
++        'job_id as "id", title',
++        create(new Criteria())->setProjection(Projections::projectionList()
++          ->add(Projections::property(Job::column("job_id"), "id"))
++          ->add(Projections::property(Job::column("title")))
++      ));
++    }
++
++    /**
++     * test to set and unset projections
++     *
++     */
++    #[@test]
++    function setProjectionTest() {
++      $crit= new Criteria();
++      $this->assertFalse($crit->isProjection());
++      $crit->setProjection(Projections::property(Job::column("job_id")));
++      $this->assertTrue($crit->isProjection());
++      $crit->setProjection(NULL);
++      $this->assertFalse($crit->isProjection());
++    }
++
++    /**
++     * test temporarly set projections
++     *
++     */
++    #[@test]
++    function withProjectionTest() {
++      $crit= new Criteria();
++      $this->assertClass(
++        $crit->withProjection(Projections::property(Job::column("job_id"))),
++        'rdbms.Criteria'
++      );
++      $this->assertFalse($crit->isProjection());
++      $this->assertTrue($crit->withProjection(Projections::property(Job::column("job_id")))->isProjection());
++    }
++
++  }
++?>
+Index: ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php
+===================================================================
+--- ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php	(Revision 10453)
++++ ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php	(Arbeitskopie)
+@@ -6,11 +6,13 @@
+ 
+   uses(
+     'io.File',
++    'io.FileUtil',
+     'io.Folder',
+-    'io.FileUtil',
+     'rdbms.DSN',
+     'rdbms.DBTable',
+     'rdbms.DriverManager',
++    'rdbms.util.DBConstraintXmlGenerator', 
++    'rdbms.util.DBXMLNamingContext',
+     'rdbms.util.DBXmlGenerator', 
+     'util.log.Logger',
+     'util.log.FileAppender',
+@@ -36,8 +38,8 @@
+   class DataSetCreator extends Command {
+     public static $adapters= array(
+       'mysql'   => 'rdbms.mysql.MySQLDBAdapter',
++      'sqlite'  => 'rdbms.sqlite.SQLiteDBAdapter',
+       'sybase'  => 'rdbms.sybase.SybaseDBAdapter',
+-      'sqlite'  => 'rdbms.sqlite.SQLiteDBAdapter'
+     );
+     
+     const GENERATE_XML= 'generateTables';
+@@ -46,6 +48,7 @@
+     protected 
+       $mode= self::GENERATE_XML,
+       $xmltarget,
++      $reltarget,
+       $dsntemp,
+       $prefix,
+       $prefixRemove,
+@@ -118,7 +121,9 @@
+ 
+       // Create new Folder Object and new Folder(s) if necessary
+       $fold= new Folder($this->xmltarget);
++      $relfold= new Folder($this->reltarget);
+       $fold->exists() || $fold->create(0755);
++      $relfold->exists() || $relfold->create(0755);
+ 
+       $tables= DBTable::getByDatabase($adapter, $adapter->conn->dsn->getDatabase());
+       foreach ($tables as $t) {
+@@ -140,7 +145,6 @@
+             $this->prefixRemove
+           );
+           $filename= ucfirst($t->name);
+-
+           // Create table node...
+           with ($node= $gen->doc->root->children[0]); {
+             $node->setAttribute('dbtype', $adapter->conn->dsn->getDriver());
+@@ -158,6 +162,14 @@
+           );
+         }
+       }
++      
++      $f= new File($relfold->getURI().'constraints.xml');
++      $written= FileUtil::setContents($f, DBConstraintXmlGenerator::createFromDatabase($adapter, $adapter->conn->dsn->getDatabase())->getSource());
++      $this->out->writeLinef(
++        '===> Output written to %s (%.2f kB)', 
++        $f->getURI(),
++        $written / 1024
++      );
+     }
+     
+     /**
+@@ -165,7 +177,7 @@
+      *
+      */
+     public function xsltproc() {
+-      $this->package= str_replace('.', DIRECTORY_SEPARATOR, $this->package);    
++      $directory= str_replace('.', DIRECTORY_SEPARATOR, $this->package);    
+ 
+       preg_match('/[0-9a-z_-]+\.xml/i', $this->xmlfile, $matches);
+       $name= strtolower(str_replace('.xml', '', $matches[0]));
+@@ -180,9 +192,16 @@
+       }
+       
+       $proc->setXMLFile($this->xmlfile);
++      $proc->setParam('definitionpath', realpath(dirname($this->xmlfile)));
++      $proc->setParam('constraintfile', realpath(dirname(dirname($this->xmlfile))).'/constraints/constraints.xml');
++      $proc->setParam('package',        $this->package);
++      $proc->setParam('prefix',         $this->prefix);
++      $proc->setParam('incprefix',      implode(',', $this->incprefix));
++      $proc->setParam('exprefix',       implode(',', $this->exprefix));
++      $proc->setParam('prefixRemove',   $this->prefixRemove);
+       $proc->run();
+ 
+-      $fold= new Folder($this->outputdir.DIRECTORY_SEPARATOR.$this->package);
++      $fold= new Folder($this->outputdir.DIRECTORY_SEPARATOR.$directory);
+       $fold->exists() || $fold->create(0755);
+       
+       $filename= $this->prefixedClassName($name, $this->prefix, $this->incprefix, $this->exprefix, $this->prefixRemove);
+@@ -205,6 +224,7 @@
+       }
+ 
+       $this->xmltarget    = str_replace('config.ini', 'tables', $ini->getFilename());
++      $this->reltarget    = str_replace('config.ini', 'constraints', $ini->getFilename());
+       $this->dsntemp      = $ini->readString('connection', 'dsn');
+       $this->prefix       = $ini->readString('prefix', 'value');
+       $this->prefixRemove = $ini->readString('prefix', 'remove');
+@@ -214,7 +234,7 @@
+       $this->package      = $ini->readString('mapping', 'package');
+       $this->overrides    = $ini->readSection('overrides', FALSE);
+       $this->inifile      = $ini->getFilename();
+-      $this->ignore       = $ini->readArray('ignore', 'tables');  
++      $this->ignore       = $ini->readArray('ignore', 'tables');
+       if (!empty($this->incprefix) && !empty($this->exprefix)) {
+         throw new IllegalArgumentException(
+           '==> exclude-prefix AND include-prefix are set. This is invalid <=='."\n".
+@@ -246,7 +266,6 @@
+     #[@arg(name= 'xslsheet', short= 'S')]
+     public function setStylesheet($xsl= NULL) {
+       if (self::GENERATE_SRC == $this->mode && empty($xsl)) {
+-      
+         // Defaulting to xp5.php.xsl
+         $this->xsl= $this->getClass()->getPackage()->getResource('xp5.php.xsl');
+       } else {
+Index: ports/classes/net/xp_framework/db/generator/xp5.php.xsl
+===================================================================
+--- ports/classes/net/xp_framework/db/generator/xp5.php.xsl	(Revision 10453)
++++ ports/classes/net/xp_framework/db/generator/xp5.php.xsl	(Arbeitskopie)
+@@ -1,41 +1,118 @@
+ <?xml version="1.0" encoding="iso-8859-1"?>
+-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
++<xsl:stylesheet
++  version="1.0"
++  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
++  xmlns:exslt="http://exslt.org/common"
++  xmlns:func="http://exslt.org/functions"
++  xmlns:string="http://exslt.org/strings"
++  xmlns:my="http://no-sense.de/my"
++  extension-element-prefixes="func exslt string"
++>
+   <xsl:output method="text" omit-xml-declaration="yes"/>
+   
++  <xsl:param name="definitionpath" />
++  <xsl:param name="constraintfile" />
++  <xsl:param name="package" />
++  <xsl:param name="prefix" />
++  <xsl:param name="incprefix" />
++  <xsl:param name="exprefix" />
++  <xsl:param name="prefixRemove" />
++
+   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
+   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
++  <xsl:variable name="this" select="/document" />
+   
+-  <xsl:template name="separator">
++  <func:function name="my:ucfirst">
++    <xsl:param name="string" />
++    <func:result select="concat(
++      translate(substring($string, 1, 1), $lcletters, $ucletters),
++      translate(substring($string, 2), $ucletters, $lcletters)
++    )"/>
++  </func:function>
++
++  <func:function name="my:constraintSingleTest">
++    <xsl:param name="keyset" />
++    <xsl:param name="sourceIndexSet" />
++    <xsl:choose>
++      <xsl:when test="count(exslt:node-set($keyset)) = 0"><func:result select="false()" /></xsl:when>
++      <xsl:when test="count(exslt:node-set($sourceIndexSet)) = 0"><func:result select="false()" /></xsl:when>
++      <xsl:when test="my:keysetSingleTest($keyset, exslt:node-set($sourceIndexSet)[1]/key)"><func:result select="true()" /></xsl:when>
++      <xsl:otherwise><func:result select="my:constraintSingleTest($keyset, exslt:node-set($sourceIndexSet)[position() != 1])" /></xsl:otherwise>
++    </xsl:choose>
++  </func:function>
++
++  <func:function name="my:keysetSingleTest">
++    <xsl:param name="keyset" />
++    <xsl:param name="sourceKeyset" />
++    <xsl:choose>
++      <xsl:when test="boolean(count(exslt:node-set($keyset)) = 0) and boolean(count(exslt:node-set($sourceKeyset)) = 0)"><func:result select="true()" /></xsl:when>
++      <xsl:when test="count(exslt:node-set($keyset)) = 0"><func:result select="false()" /></xsl:when>
++      <xsl:when test="count(exslt:node-set($sourceKeyset)) = 0"><func:result select="false()" /></xsl:when>
++      <xsl:otherwise>
++        <xsl:variable name="testkey" select="exslt:node-set($keyset)[1]/@sourceattribute" />
++        <xsl:choose>
++          <xsl:when test="count(exslt:node-set($keyset)[@sourceattribute = $testkey]) != count(exslt:node-set($sourceKeyset)[text() = $testkey])"><func:result select="false()" /></xsl:when>
++          <xsl:otherwise>
++            <func:result select="my:keysetSingleTest(exslt:node-set($keyset)[@sourceattribute != $testkey], exslt:node-set($sourceKeyset)[text() != $testkey])" />
++          </xsl:otherwise>
++        </xsl:choose>
++      </xsl:otherwise>
++    </xsl:choose>
++  </func:function>
++
++  <func:function name="my:prefixedClassName">
++    <xsl:param name="tname" />
++    <xsl:param name="prefix"  select="$prefix" />
++    <xsl:param name="include" select="$incprefix" />
++    <xsl:param name="exclude" select="$exprefix" />
++    <xsl:param name="remove"  select="$prefixRemove" />
++    <xsl:variable name="includeSet" select="string:tokenize($include, ',')" />
++    <xsl:variable name="excludeSet" select="string:tokenize($exclude, ',')" />
++    <xsl:variable name="excludetest" select="boolean(count($includeSet) = 0) and not(count($excludeSet) = 0) and not($excludeSet/*[name() = $tname])" />
++    <xsl:variable name="includetest" select="not(count($includeSet) = 0) and boolean(count($excludeSet) = 0) and boolean($includeSet/*[name() = $tname])" />
++    <xsl:variable name="p">
++      <xsl:choose>
++        <xsl:when test="$includetest or $excludetest"><xsl:value-of select="$prefix" /></xsl:when>
++        <xsl:otherwise><xsl:value-of select="''" /></xsl:otherwise>
++      </xsl:choose>
++    </xsl:variable>
++    <xsl:variable name="r">
++      <xsl:choose>
++        <xsl:when test="$includetest or $excludetest"><xsl:value-of select="$remove" /></xsl:when>
++        <xsl:otherwise><xsl:value-of select="''" /></xsl:otherwise>
++      </xsl:choose>
++    </xsl:variable>
++    <xsl:choose>
++      <xsl:when test="$r = substring($tname, 1, string-length($r))">
++        <func:result select="concat($p, my:ucfirst(substring($tname, string-length($r) + 1)))" />
++      </xsl:when>
++      <xsl:otherwise>
++        <func:result select="concat($p, my:ucfirst($tname))" />
++      </xsl:otherwise>
++    </xsl:choose>
++  </func:function>
++  
++  <func:function name="my:separator">
+     <xsl:param name="database"/>
+     <xsl:param name="table"/>
+     <xsl:param name="dbtype"/>
+-    
+     <xsl:choose>
+-      <xsl:when test="$dbtype = 'pgsql'"><xsl:value-of select="$table"/></xsl:when>
+-      <xsl:when test="$dbtype = 'mysql'"><xsl:value-of select="concat($database, '.', $table)"/></xsl:when>
+-      <xsl:when test="$dbtype = 'sybase'"><xsl:value-of select="concat($database, '..', $table)"/></xsl:when>
++      <xsl:when test="$dbtype = 'pgsql'"><func:result select="$table"/></xsl:when>
++      <xsl:when test="$dbtype = 'mysql'"><func:result select="concat($database, '.', $table)"/></xsl:when>
++      <xsl:when test="$dbtype = 'sybase'"><func:result select="concat($database, '..', $table)"/></xsl:when>
+     </xsl:choose>
+-  </xsl:template>
++  </func:function>
+   
+-  <xsl:template name="prettyname">
+-    <xsl:param name="string"/>
+-  
+-    <xsl:value-of select="concat(
+-      translate(substring($string, 1, 1), $lcletters, $ucletters),
+-      translate(substring($string, 2), $ucletters, $lcletters)
+-    )"/>
+-  </xsl:template>
+-  
+   <xsl:template match="/">
++
+     <xsl:text>&lt;?php
+ /* This class is part of the XP framework
+  *
+  * $Id$
+  */
+  
+-  uses('rdbms.DataSet');
+- </xsl:text>
+-      <xsl:apply-templates/>
++  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');&#10;</xsl:text>
++    <xsl:apply-templates/>
+   <xsl:text>?></xsl:text>
+   </xsl:template>
+   
+@@ -52,8 +129,9 @@
+    *
+    * @purpose  Datasource accessor
+    */
+-  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {&#10;    public&#10;</xsl:text>
+-  
++  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet implements JoinExtractable {
++    public&#10;</xsl:text>
++
+   <!-- Attributes -->
+   <xsl:for-each select="attribute">
+     <xsl:value-of select="concat('      $', @name, substring('                                ', 0, 20 - string-length(@name)))"/>
+@@ -67,17 +145,22 @@
+     </xsl:choose>
+     <xsl:if test="position() != last()">,&#10;</xsl:if>
+   </xsl:for-each>
+-  <xsl:text>;&#10;</xsl:text>
++  <xsl:text>;
+   
+-  <!-- Create static initializer -->
+-  <xsl:text>
++    private
++      $cache= array(</xsl:text>
++  <xsl:for-each select="constraint/reference"><xsl:text>
++        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
++  </xsl:for-each>
++  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
++        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
++  </xsl:for-each><xsl:text>
++      ),
++      $cached= array();
++
+     static function __static() { 
+       with ($peer= self::getPeer()); {
+-        $peer->setTable('</xsl:text><xsl:call-template name="separator">
+-          <xsl:with-param name="database" select="@database"/>
+-          <xsl:with-param name="table" select="@name"/>
+-          <xsl:with-param name="dbtype" select="@dbtype"/>
+-        </xsl:call-template><xsl:text>');
++        $peer->setTable('</xsl:text><xsl:value-of select="my:separator(@database, @name, @dbtype)"/><xsl:text>');
+         $peer->setConnection('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>');</xsl:text>
+         <xsl:if test="attribute[@identity= 'true']">
+           <xsl:text>&#10;        $peer->setIdentity('</xsl:text><xsl:value-of select="attribute[@identity= 'true']/@name"/><xsl:text>');</xsl:text>
+@@ -110,12 +193,32 @@
+   </xsl:for-each>
+   <xsl:text>
+         ));
++        $peer->setRelations(array(</xsl:text>
++  <xsl:for-each select="constraint/reference"><xsl:text>
++          '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
++            'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>',
++            'key'       => array(
++              </xsl:text><xsl:for-each select="key"><xsl:text>'</xsl:text><xsl:value-of select="@attribute" /><xsl:text>' => '</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>',</xsl:text></xsl:for-each><xsl:text>
++            ),
++          ),</xsl:text>
++  </xsl:for-each>
++  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
++          '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
++            'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>',
++            'key'       => array(
++              </xsl:text><xsl:for-each select="key">'<xsl:value-of select="@sourceattribute" /><xsl:text>' => '</xsl:text><xsl:value-of select="@attribute" /><xsl:text>',</xsl:text></xsl:for-each><xsl:text>
++            ),
++          ),</xsl:text>
++  </xsl:for-each><xsl:text>
++        ));
+       }
+     }  
+-  </xsl:text>
+ 
+-  <!-- Create getPeer() method -->
+-  <xsl:text>
++    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
++    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
++    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
++    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
++    
+     /**
+      * Retrieve associated peer
+      *
+@@ -151,19 +254,13 @@
+     </xsl:for-each>
+     <xsl:text>
+      * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
+-    <xsl:choose>
+-      <xsl:when test="not(@unique= 'true')">[] entities</xsl:when>
+-      <xsl:otherwise> entity</xsl:otherwise>
+-    </xsl:choose>
++      <xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if>
++      <xsl:if test="@unique= 'true'"> entitiy object</xsl:if>
+     <xsl:text>
+      * @throws  rdbms.SQLException in case an error occurs
+      */
+     public static function getBy</xsl:text>
+-    <xsl:for-each select="key">
+-      <xsl:call-template name="prettyname">
+-        <xsl:with-param name="string" select="text()"/>
+-      </xsl:call-template>
+-    </xsl:for-each>
++    <xsl:for-each select="key"><xsl:value-of select="my:ucfirst(text())" /></xsl:for-each>
+     <xsl:text>(</xsl:text>
+     <xsl:for-each select="key">
+       <xsl:value-of select="concat('$', text())"/>
+@@ -171,8 +268,8 @@
+     </xsl:for-each>
+     <xsl:text>) {&#10;</xsl:text>
+       <xsl:choose>
++
+         <xsl:when test="count(key) = 1">
+-        
+           <!-- Single key -->
+           <xsl:choose>
+             <xsl:when test="@unique = 'true'">
+@@ -191,6 +288,7 @@
+             </xsl:otherwise>
+           </xsl:choose>
+         </xsl:when>
++
+         <xsl:otherwise>
+         
+           <!-- Multiple keys -->
+@@ -222,9 +320,9 @@
+           </xsl:choose>
+         </xsl:otherwise>
+       </xsl:choose>
+-    <xsl:text>&#10;    }&#10;</xsl:text>
++    <xsl:text>    }&#10;</xsl:text>
+   </xsl:for-each>
+-  
++
+   <!-- Create getters and setters -->
+     <xsl:for-each select="attribute">
+       <xsl:text>
+@@ -233,12 +331,7 @@
+      *
+      * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text>
+      */
+-    public function </xsl:text>
+-    <xsl:text>get</xsl:text>
+-    <xsl:call-template name="prettyname">
+-    <xsl:with-param name="string" select="@name"/>
+-    </xsl:call-template>
+-      <xsl:text>() {
++    public function get</xsl:text><xsl:value-of select="my:ucfirst(@name)" /><xsl:text>() {
+       return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
+     }
+       </xsl:text>
+@@ -250,15 +343,165 @@
+      * @param   </xsl:text><xsl:value-of select="concat(@typename, ' ', @name)"/><xsl:text>
+      * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text> the previous value
+      */
+-    public function </xsl:text><xsl:text>set</xsl:text>
+-    <xsl:call-template name="prettyname">
+-    <xsl:with-param name="string" select="@name"/>
+-    </xsl:call-template>
+-      <xsl:text>(</xsl:text>$<xsl:value-of select="@name"/><xsl:text>) {
++    public function set</xsl:text><xsl:value-of select="my:ucfirst(@name)" /><xsl:text>(</xsl:text>$<xsl:value-of select="@name"/><xsl:text>) {
+       return $this->_change('</xsl:text><xsl:value-of select="@name"/><xsl:text>', $</xsl:text><xsl:value-of select="@name"/><xsl:text>);
+     }&#10;</xsl:text>
+   </xsl:for-each>
++
++  <!-- create referenced object getters -->
++  <xsl:for-each select="constraint/reference">
++    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:ucfirst(@table), '.xml'))/document" />
++    <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencedTable/table/index[@unique = 'true'])" />
++    <xsl:choose>
++      <!-- case referenced fields are unique -->
++      <xsl:when test="$isSingle">
++        <xsl:text>
++    /**
++     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entity
++     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text> entity
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
++      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
++        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
++        XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
++          ->getMethod('getPeer')
++          ->invoke()
++          ->doSelect(new Criteria(&#10;</xsl:text>
++          <xsl:for-each select="key">
++            <xsl:text>          array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
++            <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++            <xsl:text>&#10;</xsl:text>
++          </xsl:for-each>
++        <xsl:text>      ));
++      return $r ? $r[0] : NULL;&#10;    }&#10;</xsl:text>
++      </xsl:when>
++      <!-- case referenced fields are not unique -->
++      <xsl:otherwise>
++        <xsl:text>
++    /**
++     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
++     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>[] entities
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
++      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
++      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->doSelect(new Criteria(&#10;</xsl:text>
++        <xsl:for-each select="key">
++          <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
++          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++          <xsl:text>&#10;</xsl:text>
++        </xsl:for-each>
++      <xsl:text>      ));
++    }
++
++    /**
++     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
++     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
++      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
++      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->iteratorFor(new Criteria(&#10;</xsl:text>
++        <xsl:for-each select="key">
++          <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
++          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++          <xsl:text>&#10;</xsl:text>
++        </xsl:for-each>
++      <xsl:text>      ));&#10;    }&#10;</xsl:text>
++      </xsl:otherwise>
++    </xsl:choose>
++  </xsl:for-each>
+   
++
++  <!-- create referencing object getters -->
++  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]">
++    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:ucfirst(../../@name), '.xml'))/document" />
++    <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencingTable/table/index[@unique = 'true'])" />
++    <xsl:choose>
++      <xsl:when test="$isSingle">
++
++        <xsl:text>
++    /**
++     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entity referencing
++     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text> entity
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
++      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
++        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
++        XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
++          ->getMethod('getPeer')
++          ->invoke()
++          ->doSelect(new Criteria(&#10;</xsl:text>
++          <xsl:for-each select="key">
++            <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
++            <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++            <xsl:text>&#10;</xsl:text>
++          </xsl:for-each>
++        <xsl:text>      ));
++      return $r ? $r[0] : NULL;&#10;    }&#10;</xsl:text>
++      </xsl:when>
++      <xsl:otherwise>
++        <xsl:text>
++    /**
++     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
++     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>[] entities
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
++      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
++      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->doSelect(new Criteria(&#10;</xsl:text>
++        <xsl:for-each select="key">
++          <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
++          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++          <xsl:text>&#10;</xsl:text>
++        </xsl:for-each>
++      <xsl:text>      ));
++    }
++
++    /**
++     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
++     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
++     *
++     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>>
++     * @throws  rdbms.SQLException in case an error occurs
++     */
++    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
++      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
++      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
++        ->getMethod('getPeer')
++        ->invoke()
++        ->iteratorFor(new Criteria(&#10;</xsl:text>
++        <xsl:for-each select="key">
++          <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
++          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
++          <xsl:text>&#10;</xsl:text>
++        </xsl:for-each>
++      <xsl:text>      ));&#10;    }&#10;</xsl:text>
++      </xsl:otherwise>
++    </xsl:choose>
++  </xsl:for-each>
++  
+     <!-- Closing curly brace -->  
+     <xsl:text>  }</xsl:text>
+   </xsl:template>

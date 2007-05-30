@@ -4,7 +4,7 @@ $Id$
 
 @authors: wagner
 @created: fri May 18 10:25:35     2007
-@status: draft
+@status: discussion mon jun 11 10:25:35     2007
 @category: rdbms
 
 Scope of Change
@@ -17,6 +17,7 @@ Rationale
 - make joins over multiple tables
 - the result is an object tree
 - Dataset related datasets are prefetched with a single query
+- grouping, sortorder and projections will be ignored when tables are joined
 
 
 Functionality
@@ -26,7 +27,7 @@ The join result can be accessed like relations in rfc0096, but the database will
   $crit= Criteria::newInstance()
     ->setFetchMode(Fetchmode::join('Author'))
     ->setFetchMode(Fetchmode::join('Recipient'))
-    ->setFetchMode(Fetchmode::join('Recipient.MmessageAuthor'))
+    ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
   ;
   foreach (Mmessage::getPeer()->doSelect($crit) as $Message) {
     Console::writeLine('==> '.xp::stringOf($Message));
@@ -78,6 +79,33 @@ result:
 </pre>
 
 
+Restrictions with joins
+~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $crit= Criteria::newInstance()
+    ->setFetchMode(Fetchmode::join('Author'))
+    ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor->Author'))
+  ;
+
+  // fetch only Mmessages where the author id is 3
+  Mmessage::getPeer()->doSelect(
+    clone($crit)->add(Mmessage::column('author_id')->equal(3))
+  )
+  
+  // fetch only Mmessages where the authors name is Peter
+  Mmessage::getPeer()->doSelect(
+    clone($crit)->add(Mmessage::column('Author->name')->equal('Peter'))
+  )
+  
+  // fetch only Mmessages with Recipients who wrote Messages to Peter
+  Mmessage::getPeer()->doSelect(
+    clone($crit)->add(Mmessage::column('Recipient->MmessageAuthor->Recipient->name')->equal('Peter'))
+  )
+?>
+
+It is mandatory to use the whole path, relative to the first table of the join, to address a field
+
+
 Security considerations
 -----------------------
 n/a
@@ -86,7 +114,7 @@ n/a
 Speed impact
 ------------
 - May be a bit slower than joins via rdbms.Statement, because joins are generated in realtime.
-- faster than fetching relations like defined in rfc0096 because only one query is be used
+- faster than fetching relations like defined in rfc0096 because only one query will be used
 
 
 Dependencies
@@ -96,6 +124,9 @@ Note:
   To use this API, the database classes have to be regenerated!
 </pre>
 
+- method isJoin was added to the interface rdbms.SQLExpression 
+- method rdbms.DBConnection::getFormatter has to be added
+- second parameter of the interface rdbms.criterion.Criterion has been changed from array to peer
 - new interfacee rdbms.join.JoinExtractable
 - Naming Strategy of rfc0096
 - SQLDialect of rfc0124
@@ -108,6 +139,10 @@ Related documents
 - rfc0124 http://xp-framework.net/rfc/0124.rfc.html
 - xp-lab
   http://experiments.xp-framework.net/?people,wagner,rfc,0129
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/skeleton.diff
+- Joint patch for RFC0096, RFC0123, RFC0124 and RFC0129 against ports
+  http://xp-framework.net/rfc/contrib/rfc0096_0123_0124_0129/ports.diff
 
 
 Comments
