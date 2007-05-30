@@ -154,7 +154,8 @@
     }
     
     /**
-     * Tests the compare method
+     * Tests the getBeginningOfWeek and
+     * getEndOfWeek methods.
      *
      */
     #[@test]
