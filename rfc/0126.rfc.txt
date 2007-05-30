@@ -27,6 +27,7 @@ In this example the Person.class is an implementation of rdbms.Dataset.
 The rdbms.Dataset class itself does not have the column factory, but Peer does.
 So you will give your implemented Dataset class a column method like that:
 
+
 Example
 ~~~~~~~
 <?php
@@ -44,6 +45,7 @@ Example
     }
   }
 ?>
+
 
 Property vs. Column
 ~~~~~~~~~~~~~~~~~~~
@@ -93,10 +95,10 @@ Note:
 
 Related documents
 -----------------
-- http://xp-framework.net/rfc/contrib/rfc0126/skeleton.diff
-  Patch against skeleton/
-- http://xp-framework.net/rfc/contrib/rfc0126/ports.diff
-  Patch against ports/
+- Patch against skeleton/
+  http://xp-framework.net/rfc/contrib/rfc0126/skeleton.diff
+- Patch against ports/
+  http://xp-framework.net/rfc/contrib/rfc0126/ports.diff
 
 
 Comments
