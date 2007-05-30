@@ -34,7 +34,7 @@
 
     static function __static() {
       self::$instance= new self();
-      self::$instance->setImplementation(new DJBX33AHashImplementation());
+      self::$instance->setImplementation(new MD5HashImplementation());
     }
 
     /**
