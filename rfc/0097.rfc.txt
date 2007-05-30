@@ -64,4 +64,10 @@ Comments
   Staying with MethodInvocationException, InvocationException is already
   a class in the remote package.
 
+- friebe, Wed May 30 15:11:05     2007
+  This exception would be a ChainedException (cause member) but this
+  class is in the "util" package - thus this RFC would introduce a
+  lang -> util dependency... maybe ChainedException should be part of
+  "lang"?
+
 <EOF>
