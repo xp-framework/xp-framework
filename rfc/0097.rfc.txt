@@ -54,9 +54,14 @@ Related documents
 - http://msdn2.microsoft.com/en-us/library/system.reflection.targetinvocationexception.aspx
   .NET calls this "TargetInvocationException"
 
+
 Comments
 --------
 - friebe, Mon Jan  8 19:28:42     2007
   Maybe InvocationException (withoud "Method") would be better?
+
+- friebe, Wed May 30 15:09:01     2007
+  Staying with MethodInvocationException, InvocationException is already
+  a class in the remote package.
 
 <EOF>
