@@ -1,6 +1,6 @@
 Index: skeleton/rdbms/DBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/DBAdapter.class.php	(Revision 10453)
+--- skeleton/rdbms/DBAdapter.class.php	(Revision 10461)
 +++ skeleton/rdbms/DBAdapter.class.php	(Arbeitskopie)
 @@ -29,17 +29,18 @@
       * Get a table in the current database
@@ -667,7 +667,7 @@ Index: skeleton/rdbms/DBConstraint.class.php
 +?>
 Index: skeleton/rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(Revision 10453)
+--- skeleton/rdbms/Peer.class.php	(Revision 10461)
 +++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(
@@ -906,7 +906,7 @@ Index: skeleton/rdbms/Peer.class.php
        }
 Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10453)
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10461)
 +++ skeleton/rdbms/sybase/SybaseConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -937,6 +937,15 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
      }
      
      /**
+@@ -121,7 +113,7 @@
+      *
+      * @return  mixed identity value
+      */
+-    public function identity() { 
++    public function identity($field= NULL) {
+       if (!($r= $this->query('select @@identity as i'))) {
+         return FALSE;
+       }
 @@ -206,7 +198,7 @@
       * Execute any statement
       *
@@ -1018,10 +1027,10 @@ Index: skeleton/rdbms/sybase/SybaseDialect.class.php
 +     * @throws  lang.IllegalArgumentException
 +     */
 +    public function formatFunction(SQLFunction $func) {
-+      $func_i= $func->func.'_'.sizeOf($func->args);
++      $func_i= $func->func.'_'.sizeof($func->args);
 +      switch ($func->func) {
 +        case 'concat':
-+        return '('.implode(' + ', array_fill(0, sizeOf($func->args), '%s')).')';
++        return '('.implode(' + ', array_fill(0, sizeof($func->args), '%s')).')';
 +
 +        default:
 +        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
@@ -1051,7 +1060,7 @@ Index: skeleton/rdbms/sybase/SybaseDialect.class.php
 +     * @throws  lang.IllegalArgumentException
 +     */
 +    public function makeJoinBy(Array $conditions) {
-+      if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
++      if (0 == sizeof($conditions)) throw new IllegalArgumentException('conditions can not be empty');
 +      $tableString.= sprintf('%s', current($conditions)->getSource()->toSqlString());
 +      $conditionString= '';
 +
@@ -1065,7 +1074,7 @@ Index: skeleton/rdbms/sybase/SybaseDialect.class.php
 +?>
 Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10453)
+--- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10461)
 +++ skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Arbeitskopie)
 @@ -91,9 +91,10 @@
       * Get indexes for a given table. Expects a temporary table to exist.
@@ -1304,7 +1313,7 @@ Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
  ?>
 Index: skeleton/rdbms/Column.class.php
 ===================================================================
---- skeleton/rdbms/Column.class.php	(Revision 10453)
+--- skeleton/rdbms/Column.class.php	(Revision 10461)
 +++ skeleton/rdbms/Column.class.php	(Arbeitskopie)
 @@ -3,7 +3,11 @@
   *
@@ -1368,7 +1377,7 @@ Index: skeleton/rdbms/Column.class.php
  
 Index: skeleton/rdbms/Criteria.class.php
 ===================================================================
---- skeleton/rdbms/Criteria.class.php	(Revision 10453)
+--- skeleton/rdbms/Criteria.class.php	(Revision 10461)
 +++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
 @@ -6,8 +6,11 @@
  
@@ -1515,7 +1524,7 @@ Index: skeleton/rdbms/Criteria.class.php
 +     * @return  bool
 +     */
 +    public function isJoin() {
-+      return (0 < sizeOf(array_keys($this->fetchmode, 'join')));
++      return (0 < sizeof(array_keys($this->fetchmode, 'join')));
 +    }
 +
 +    /**
@@ -1564,7 +1573,7 @@ Index: skeleton/rdbms/Criteria.class.php
       * can be either a columnname or a Column object
 Index: skeleton/rdbms/DBConnection.class.php
 ===================================================================
---- skeleton/rdbms/DBConnection.class.php	(Revision 10453)
+--- skeleton/rdbms/DBConnection.class.php	(Revision 10461)
 +++ skeleton/rdbms/DBConnection.class.php	(Arbeitskopie)
 @@ -23,7 +23,7 @@
     *
@@ -1616,7 +1625,7 @@ Index: skeleton/rdbms/DBConnection.class.php
       */
 -    public function identity() { }
 -    
-+    abstract public function identity();
++    abstract public function identity($field= NULL);
 +
      /**
       * Execute an update statement
@@ -1896,7 +1905,7 @@ Index: skeleton/rdbms/join/JoinIterator.class.php
 ===================================================================
 --- skeleton/rdbms/join/JoinIterator.class.php	(Revision 0)
 +++ skeleton/rdbms/join/JoinIterator.class.php	(Revision 0)
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,109 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1908,7 +1917,8 @@ Index: skeleton/rdbms/join/JoinIterator.class.php
 +  );
 +
 +  /**
-+   * (Insert class' description here)
++   * class of the join api
++   * iterator for join results
 +   *
 +   */
 +  class JoinIterator  extends Object implements XPIterator, JoinExtractable {
@@ -1965,8 +1975,9 @@ Index: skeleton/rdbms/join/JoinIterator.class.php
 +    /**
 +     * set "in construct" result object
 +     *
++     * @param   string role
 +     * @param   string unique key
-+     * @param   lang.Object
++     * @param   lang.Object obj
 +     */
 +    public function setCachedObj($role, $key, $obj) {
 +      $this->resultObj= $this->obj;
@@ -2139,7 +2150,7 @@ Index: skeleton/rdbms/join/JoinRelation.class.php
 +   /**
 +     * Set source
 +     *
-+     * @param   rdbms.join.JoinTable
++     * @param   rdbms.join.JoinTable source
 +     */
 +    public function setSource(JoinTable $source) {
 +      $this->source= $source;
@@ -2157,7 +2168,7 @@ Index: skeleton/rdbms/join/JoinRelation.class.php
 +    /**
 +     * Set target
 +     *
-+     * @param   rdbms.join.JoinTable
++     * @param   rdbms.join.JoinTable target
 +     */
 +    public function setTarget(JoinTable $target) {
 +      $this->target= $target;
@@ -2195,7 +2206,7 @@ Index: skeleton/rdbms/join/JoinExtractable.class.php
 ===================================================================
 --- skeleton/rdbms/join/JoinExtractable.class.php	(Revision 0)
 +++ skeleton/rdbms/join/JoinExtractable.class.php	(Revision 0)
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,47 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -2212,8 +2223,9 @@ Index: skeleton/rdbms/join/JoinExtractable.class.php
 +    /**
 +     * set "in construct" result object
 +     *
++     * @param   string role
 +     * @param   string unique key
-+     * @param   lang.Object
++     * @param   lang.Object obj
 +     */
 +    public function setCachedObj($role, $key, $obj);
 +
@@ -2266,8 +2278,8 @@ Index: skeleton/rdbms/join/Fetchmode.class.php
 +    /**
 +     * Constructor
 +     *
-+     * @param   string
-+     * @param   string
++     * @param   string path
++     * @param   string mode
 +     */
 +    public function __construct($path, $mode) {
 +      $this->mode= $mode;
@@ -2295,7 +2307,7 @@ Index: skeleton/rdbms/join/Fetchmode.class.php
 +    /**
 +     * make join for path
 +     *
-+     * @param   string
++     * @param   string path
 +     */
 +    public static function select($path) {
 +      return new self($path, 'select');
@@ -2304,7 +2316,7 @@ Index: skeleton/rdbms/join/Fetchmode.class.php
 +    /**
 +     * make select for path
 +     *
-+     * @param   string
++     * @param   string path
 +     */
 +    public static function join($path) {
 +      return new self($path, 'join');
@@ -2393,7 +2405,7 @@ Index: skeleton/rdbms/join/JoinProcessor.class.php
 +     * @throws  lang.IllegalArgumentException
 +     */
 +    public function setFetchmodes(Array $fetchmodes) {
-+      if (0 == sizeOf(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
++      if (0 == sizeof(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
 +      foreach ($fetchmodes as $path => $fetchmode) {
 +        if ('join' != $fetchmode) continue;
 +        $this->transformFetchmode(explode(self::SEPERATOR, $path), $this->joinpart);
@@ -2480,7 +2492,7 @@ Index: skeleton/rdbms/SQLFunction.class.php
 +  );
 +
 +  /**
-+   * (Insert class' description here)
++   * represents an SQL standard procedure
 +   *
 +   * @ext      extension
 +   * @see      reference
@@ -2607,7 +2619,7 @@ Index: skeleton/rdbms/Record.class.php
 +?>
 Index: skeleton/rdbms/SQLExpression.class.php
 ===================================================================
---- skeleton/rdbms/SQLExpression.class.php	(Revision 10453)
+--- skeleton/rdbms/SQLExpression.class.php	(Revision 10461)
 +++ skeleton/rdbms/SQLExpression.class.php	(Arbeitskopie)
 @@ -10,6 +10,28 @@
     * @purpose  Interface
@@ -2659,39 +2671,39 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +  abstract class SQLDialect extends Object {
 +    private static
 +      $dateparts= array(
-+        'day'	      => 'day',
-+        'dayofyear'	  => 'dayofyear',
-+        'hour'	      => 'hour',
++        'day'         => 'day',
++        'dayofyear'   => 'dayofyear',
++        'hour'        => 'hour',
 +        'microsecond' => 'microsecond',
 +        'millisecond' => 'millisecond',
-+        'minute'	  => 'minute',
-+        'month'	      => 'month',
-+        'quarter'	  => 'quarter',
-+        'second'	  => 'second',
-+        'week'	      => 'week',
-+        'weekday'	  => 'weekday',
-+        'year'	      => 'year',
++        'minute'      => 'minute',
++        'month'       => 'month',
++        'quarter'     => 'quarter',
++        'second'      => 'second',
++        'week'        => 'week',
++        'weekday'     => 'weekday',
++        'year'        => 'year',
 +      ),
 +      $datatypes= array(
-+        'bigint'	 => 'bigint',
-+        'binary'	 => 'binary',
-+        'blob'	     => 'blob',
-+        'char'	     => 'char',
-+        'clob'	     => 'clob',
-+        'date'	     => 'date',
-+        'datetime'	 => 'datetime',
-+        'dec'	     => 'dec',
-+        'decimal'	 => 'decimal',
-+        'double'	 => 'double',
-+        'float'	     => 'float',
-+        'int'	     => 'int',
-+        'integer'	 => 'integer',
-+        'smallint'	 => 'smallint',
-+        'text'	     => 'text',
-+        'time'	     => 'time',
-+        'timestamp'	 => 'timestamp',
-+        'varbinary'	 => 'varbinary',
-+        'varchar'	 => 'varchar',
++        'bigint'     => 'bigint',
++        'binary'     => 'binary',
++        'blob'       => 'blob',
++        'char'       => 'char',
++        'clob'       => 'clob',
++        'date'       => 'date',
++        'datetime'   => 'datetime',
++        'dec'        => 'dec',
++        'decimal'    => 'decimal',
++        'double'     => 'double',
++        'float'      => 'float',
++        'int'        => 'int',
++        'integer'    => 'integer',
++        'smallint'   => 'smallint',
++        'text'       => 'text',
++        'time'       => 'time',
++        'timestamp'  => 'timestamp',
++        'varbinary'  => 'varbinary',
++        'varchar'    => 'varchar',
 +      ),
 +      $implementations= array(
 +        'abs_1'        => 'abs(%d)',
@@ -2759,7 +2771,7 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +    /**
 +     * get a function format string
 +     *
-+     * @param   SQLFunction $func
++     * @param   SQLFunction func
 +     * @return  string
 +     * @throws  lang.IllegalArgumentException
 +     */
@@ -2772,27 +2784,27 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +    /**
 +     * formats a string as date
 +     *
-+     * @param   string
++     * @param   string datestring
 +     * @return  string
 +     */
-+    public function formatDate($string) {
-+      return date($this->dateFormat, $string);
++    public function formatDate($datestring) {
++      return date($this->dateFormat, $datestring);
 +    }
 +    
 +    /**
 +     * escape a string
 +     *
-+     * @param   string
++     * @param   string escapeString
 +     * @return  string
 +     */
-+    public function escapeString($string) {
-+      return $this->quoteString(strtr($string, $this->escapeRules));
++    public function escapeString($escapeString) {
++      return $this->quoteString(strtr($escapeString, $this->escapeRules));
 +    }
 +    
 +    /**
 +     * escape a string
 +     *
-+     * @param   string
++     * @param   string quoteString
 +     * @return  string
 +     */
 +    public function quoteString($string) {
@@ -2837,7 +2849,7 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +    /**
 +     * Set date format
 +     *
-+     * @param   array<String,String> rules
++     * @param   string[] rules
 +     */
 +    public function setEscapeRules($rules) {
 +      $this->escapeRules= $rules;
@@ -2864,7 +2876,7 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +?>
 Index: skeleton/rdbms/StatementFormatter.class.php
 ===================================================================
---- skeleton/rdbms/StatementFormatter.class.php	(Revision 10453)
+--- skeleton/rdbms/StatementFormatter.class.php	(Revision 10461)
 +++ skeleton/rdbms/StatementFormatter.class.php	(Arbeitskopie)
 @@ -10,11 +10,7 @@
     * Example usage:
@@ -2984,9 +2996,42 @@ Index: skeleton/rdbms/StatementFormatter.class.php
       * Format a number
       *
       * @param   mixed arg
+Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Revision 10461)
++++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Arbeitskopie)
+@@ -104,7 +104,7 @@
+      *
+      * @return  mixed identity value
+      */
+-    public function identity($field) {
++    public function identity($field= NULL) {
+       $q= $this->query('select currval(%s) as id', $field);
+       $id= $q ? $q->next('id') : NULL;
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
+@@ -185,7 +185,7 @@
+      * Execute any statement
+      *
+      * @param   mixed* args
+-     * @return  &rdbms.pgsql.PostgreSQLResultSet or FALSE to indicate failure
++     * @return  rdbms.pgsql.PostgreSQLResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+     public function query() { 
+@@ -230,8 +230,8 @@
+     /**
+      * Begin a transaction
+      *
+-     * @param   &rdbms.Transaction transaction
+-     * @return  &rdbms.Transaction
++     * @param   rdbms.Transaction transaction
++     * @return  rdbms.Transaction
+      */
+     public function begin($transaction) {
+       if (FALSE === $this->query('begin transaction')) {
 Index: skeleton/rdbms/DBTable.class.php
 ===================================================================
---- skeleton/rdbms/DBTable.class.php	(Revision 10453)
+--- skeleton/rdbms/DBTable.class.php	(Revision 10461)
 +++ skeleton/rdbms/DBTable.class.php	(Arbeitskopie)
 @@ -4,7 +4,11 @@
   * $Id$
@@ -3068,7 +3113,7 @@ Index: skeleton/rdbms/DBTable.class.php
  ?>
 Index: skeleton/rdbms/Statement.class.php
 ===================================================================
---- skeleton/rdbms/Statement.class.php	(Revision 10453)
+--- skeleton/rdbms/Statement.class.php	(Revision 10461)
 +++ skeleton/rdbms/Statement.class.php	(Arbeitskopie)
 @@ -49,13 +49,31 @@
      }
@@ -3079,7 +3124,7 @@ Index: skeleton/rdbms/Statement.class.php
 +     * @return  bool
 +     */
 +    public function isProjection() {
-+      return false;
++      return FALSE;
 +    }
 +
 +    /**
@@ -3088,7 +3133,7 @@ Index: skeleton/rdbms/Statement.class.php
 +     * @return  bool
 +     */
 +    public function isJoin() {
-+      return false;
++      return FALSE;
 +    }
 +
 +    /**
@@ -3116,7 +3161,7 @@ Index: skeleton/rdbms/criterion/CountProjection.class.php
 + *
 + * $Id$ 
 + */
-+ uses('rdbms.criterion.SimpleProjection');
++  uses('rdbms.criterion.SimpleProjection');
 +
 +  /**
 +   * belongs to the Criterion API
@@ -3214,10 +3259,10 @@ Index: skeleton/rdbms/criterion/ProjectionList.class.php
 + *
 + * $Id$ 
 + */
-+ uses(
-+   'rdbms.criterion.Projection',
-+   'rdbms.criterion.SimpleProjection'
-+ );
++  uses(
++    'rdbms.criterion.Projection',
++    'rdbms.criterion.SimpleProjection'
++  );
 +
 +  /**
 +   * belongs to the Criterion API
@@ -3262,7 +3307,7 @@ Index: skeleton/rdbms/criterion/ProjectionList.class.php
 +?>
 Index: skeleton/rdbms/criterion/BetweenExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10453)
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10461)
 +++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
 @@ -34,21 +34,13 @@
       * Returns the fragment SQL
@@ -3292,7 +3337,7 @@ Index: skeleton/rdbms/criterion/BetweenExpression.class.php
  ?>
 Index: skeleton/rdbms/criterion/SimpleExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10453)
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10461)
 +++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
 @@ -56,14 +56,13 @@
          NOT_EQUAL => IS_NOT
@@ -3338,7 +3383,7 @@ Index: skeleton/rdbms/criterion/SimpleExpression.class.php
    } 
 Index: skeleton/rdbms/criterion/LogicalExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10453)
+--- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10461)
 +++ skeleton/rdbms/criterion/LogicalExpression.class.php	(Arbeitskopie)
 @@ -34,14 +34,14 @@
       * Returns the fragment SQL
@@ -3375,16 +3420,16 @@ Index: skeleton/rdbms/criterion/Projection.class.php
 +   *
 +   */
 +  interface Projection extends SQLRenderable {
-+     const AVG=  'avg(%s)';
-+     const SUM=  'sum(%s)';
-+     const MIN=  'min(%s)';
-+     const MAX=  'max(%s)';
-+     const PROP= '%s';
++    const AVG=  'avg(%s)';
++    const SUM=  'sum(%s)';
++    const MIN=  'min(%s)';
++    const MAX=  'max(%s)';
++    const PROP= '%s';
 +  }
 +?>
 Index: skeleton/rdbms/criterion/Criterion.class.php
 ===================================================================
---- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10453)
+--- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10461)
 +++ skeleton/rdbms/criterion/Criterion.class.php	(Arbeitskopie)
 @@ -4,8 +4,6 @@
   * $Id$ 
@@ -3423,11 +3468,11 @@ Index: skeleton/rdbms/criterion/Projections.class.php
 + *
 + * $Id$ 
 + */
-+ uses(
-+   'rdbms.criterion.CountProjection',
-+   'rdbms.criterion.ProjectionList',
-+   'rdbms.criterion.SimpleProjection'
-+ );
++  uses(
++    'rdbms.criterion.CountProjection',
++    'rdbms.criterion.ProjectionList',
++    'rdbms.criterion.SimpleProjection'
++  );
 +
 +  /**
 +   * belongs to the Criterion API
@@ -3521,7 +3566,7 @@ Index: skeleton/rdbms/criterion/Projections.class.php
 +?>
 Index: skeleton/rdbms/criterion/NegationExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10453)
+--- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10461)
 +++ skeleton/rdbms/criterion/NegationExpression.class.php	(Arbeitskopie)
 @@ -28,12 +28,12 @@
       * Returns the fragment SQL
@@ -3539,9 +3584,42 @@ Index: skeleton/rdbms/criterion/NegationExpression.class.php
      }
    } 
  ?>
+Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
+===================================================================
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Revision 10461)
++++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Arbeitskopie)
+@@ -152,7 +152,7 @@
+      *
+      * @return  mixed identity value
+      */
+-    public function identity() { 
++    public function identity($field= NULL) {
+       $i= sqlite_last_insert_rowid($this->handle);
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+       return $i;
+@@ -233,7 +233,7 @@
+      * Execute any statement
+      *
+      * @param   mixed* args
+-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
++     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+     public function query() { 
+@@ -283,8 +283,8 @@
+     /**
+      * Begin a transaction
+      *
+-     * @param   &rdbms.Transaction transaction
+-     * @return  &rdbms.Transaction
++     * @param   rdbms.Transaction transaction
++     * @return  rdbms.Transaction
+      */
+     public function begin($transaction) {
+       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
 Index: skeleton/rdbms/mysql/MySQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10453)
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10461)
 +++ skeleton/rdbms/mysql/MySQLConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -3585,6 +3663,35 @@ Index: skeleton/rdbms/mysql/MySQLConnection.class.php
       * @param   mixed* args
       * @return  string
       */
+@@ -149,7 +145,7 @@
+      *
+      * @return  mixed identity value
+      */
+-    public function identity() { 
++    public function identity($field= NULL) {
+       $i= mysql_insert_id($this->handle);
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+       return $i;
+@@ -230,7 +226,7 @@
+      * Execute any statement
+      *
+      * @param   mixed* args
+-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
++     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+     public function query() { 
+@@ -292,8 +288,8 @@
+     /**
+      * Begin a transaction
+      *
+-     * @param   &rdbms.Transaction transaction
+-     * @return  &rdbms.Transaction
++     * @param   rdbms.Transaction transaction
++     * @return  rdbms.Transaction
+      */
+     public function begin($transaction) {
+       if (!$this->query('begin')) return FALSE;
 @@ -320,5 +316,14 @@
      public function commit($name) { 
        return $this->query('commit');
@@ -3619,8 +3726,8 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +  class MysqlDialect extends SQLDialect {
 +    private static
 +      $dateparts= array(
-+        'dayofyear'	  => FALSE,
-+        'weekday'	  => FALSE,
++        'dayofyear'   => FALSE,
++        'weekday'     => FALSE,
 +        'millisecond' => FALSE,
 +      ),
 +      $implementations= array(
@@ -3644,15 +3751,15 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +    /**
 +     * get a function format string
 +     *
-+     * @param   SQLFunction $func
++     * @param   SQLFunction func
 +     * @return  string
 +     * @throws  lang.IllegalArgumentException
 +     */
 +    public function formatFunction(SQLFunction $func) {
-+      $func_i= $func->func.'_'.count($func->args);
++      $func_i= $func->func.'_'.sizeof($func->args);
 +      switch ($func->func) {
 +        case 'concat':
-+        return 'concat('.implode(', ', array_fill(0, count($func->args), '%s')).')';
++        return 'concat('.implode(', ', array_fill(0, sizeof($func->args), '%s')).')';
 +
 +        default:
 +        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
@@ -3682,7 +3789,7 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +     * @throws  lang.IllegalArgumentException
 +     */
 +    public function makeJoinBy(Array $conditions) {
-+      if (0 == sizeOf($conditions)) throw new IllegalArgumentException('conditions can not be empty');
++      if (0 == sizeof($conditions)) throw new IllegalArgumentException('conditions can not be empty');
 +      $querypart= '';
 +      $first= TRUE;
 +      foreach ($conditions as $link) {
@@ -3704,7 +3811,7 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +?>
 Index: skeleton/rdbms/mysql/MySQLDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10453)
+--- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10461)
 +++ skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Arbeitskopie)
 @@ -49,8 +49,8 @@
        $dbs= array();
@@ -3797,7 +3904,7 @@ Index: skeleton/rdbms/mysql/MySQLDBAdapter.class.php
 +            case '(':
 +            $tableConstraints= $this->filterConstraints($this->extractParams($this->parseBracerString($createTableString, $i)));
 +            foreach ($tableConstraints as $tableConstraint) {
-+              if (strstr($tableConstraint, 'FOREIGN KEY') === false) continue;
++              if (strstr($tableConstraint, 'FOREIGN KEY') === FALSE) continue;
 +              $t->addForeignKeyConstraint($this->parseForeignKeyString($tableConstraint));
 +            }
 +            break;
@@ -4148,7 +4255,7 @@ Index: skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php
 +?>
 Index: skeleton/rdbms/util/DBXmlGenerator.class.php
 ===================================================================
---- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10453)
+--- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10461)
 +++ skeleton/rdbms/util/DBXmlGenerator.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(
