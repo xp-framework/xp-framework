@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixed bug #9 - peer.mail.InternetAddress not correctly encoding addresses
+  (friebe)
 - Fixed bug #8 - HttpRequest ignores QUERY_STRING
   (friebe)
 - Fixed bug #14 - create empty Folder returns TRUE
