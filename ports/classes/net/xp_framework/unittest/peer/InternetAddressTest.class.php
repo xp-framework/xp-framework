@@ -22,7 +22,9 @@
      */
     #[@test]
     public function createAddress() {
-      $i= new InternetAddress('kiesel@example.com');
+      $address= new InternetAddress('kiesel@example.com');
+      $this->assertEquals('kiesel', $address->localpart);
+      $this->assertEquals('example.com', $address->domain);
     }
     
     /**
@@ -44,15 +46,41 @@
         $this->assertEquals('example.com', $address->domain);
       }
     }
-    
+
     /**
-     * Test toString
+     * Test escaping
      *
      */
     #[@test]
-    public function testToString() {
-      $address= new InternetAddress('kiesel@example.com', 'Alex Kiesel');
-      $this->assertEquals('=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>', $address->toString());
+    public function colonIsEscaped() {
+      $this->assertEquals(
+        '=?iso-8859-1?Q?I=3A=3ADev?= <idev@example.com>',
+        create(new InternetAddress('idev@example.com', 'I::Dev'))->toString()
+      );
+    }
+
+    /**
+     * Test escaping
+     *
+     */
+    #[@test]
+    public function umlautsAreEscaped() {
+      $this->assertEquals(
+        '=?iso-8859-1?Q?M=FCcke?= <muecke@example.com>',
+        create(new InternetAddress('muecke@example.com', 'Mücke'))->toString()
+      );
+    }
+    
+    /**
+     * Test escaping
+     *
+     */
+    #[@test]
+    public function spaceIsEscaped() {
+      $this->assertEquals(
+        '=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>', 
+        create(new InternetAddress('kiesel@example.com', 'Alex Kiesel'))->toString()
+      );
     }
   }
 ?>
