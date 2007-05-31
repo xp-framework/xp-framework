@@ -30,13 +30,18 @@
      *
      * This is why "64" is added to the first array in this function.
      *
+     * Note: The colon (":") needs to encoded because colons are of
+     * special meaning to Exim.
+     *
+     * This is why "58" is added to the first array in this function.
+     *
      * @return  int[]
      */
     public static function getCharsToEncode() {
       static $characters = NULL;
       
       if (!isset($characters)) {
-        $characters= array_merge(array(64, 61, 46, 44), range(0, 31), range(127, 255));
+        $characters= array_merge(array(64, 58, 61, 46, 44), range(0, 31), range(127, 255));
       }
       
       return $characters;
