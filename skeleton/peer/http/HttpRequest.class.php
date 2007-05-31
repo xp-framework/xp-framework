@@ -17,6 +17,7 @@
    * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the 
    * HttpConnection class)
    *
+   * @test     xp://net.xp_framework.unittest.peer.HttpRequestTest
    * @see      xp://peer.http.HttpConnection
    * @see      rfc://2616
    * @purpose  HTTP request
@@ -59,13 +60,17 @@
      * @param   mixed p either a string, a PostData object or an associative array
      */
     public function setParameters($p) {
-      if (is('RequestData', $p)) {
+      if ($p instanceof RequestData) {
         $this->parameters= $p;
+        return;
       } else if (is_string($p)) {
-        parse_str($p, $this->parameters); 
-      } else {
-        $this->parameters= array_merge($this->url->getParams(), (array)$p);
+        parse_str($p, $out); 
+        $params= $out;
+      } else if (is_array($p)) {
+        $params= $p;
       }
+      
+      $this->parameters= array_diff($params, $this->url->getParams());
     }
     
     /**
@@ -96,10 +101,10 @@
      */
     public function getRequestString() {
       if (is('RequestData', $this->parameters)) {
-        $query= "\0".$this->parameters->getData();
+        $query= '&'.$this->parameters->getData();
       } else {
         $query= '';
-        if (is_array($this->parameters)) foreach ($this->parameters as $k => $v) {
+        foreach ($this->parameters as $k => $v) {
           $query.= '&'.$k.'='.urlencode($v);
         }
       }
@@ -110,7 +115,11 @@
       switch ($this->method) {
         case HTTP_HEAD:
         case HTTP_GET:
-          $target.= empty($query) ? '' : '?'.substr($query, 1);
+          if (NULL !== $this->url->getQuery()) {
+            $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
+          } else {
+            $target.= empty($query) ? '' : '?'.substr($query, 1);
+          }
           $body= '';
           break;
           
