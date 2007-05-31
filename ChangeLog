@@ -11,10 +11,9 @@ SVN version: ?????
   (friebe)
 - Implemented RFC #0063: Unit test API cleanup
   (friebe)
-- Implemented RFC #0031: RFC 0031: Replace IntegerRangeChecker with 
-  NumberRangeChecker
+- Implemented RFC #0031: Replace IntegerRangeChecker with NumberRangeChecker
   (friebe)
-- Implemented RFC #0060: RFC 0060: LDAPEntry::isA()
+- Implemented RFC #0060: LDAPEntry::isA()
   (friebe)
 
 Version 5.5.0, released 2007-05-21
