@@ -203,5 +203,10 @@ namespace Net.XpFramework.EASC
             }
         }
         #endregion
+
+        public override string ToString()
+        {
+            return this.GetType() + "<" + this.sock.ToString() + ">";
+        }
     }
 }
