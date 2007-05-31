@@ -64,17 +64,17 @@
      * @param   string uri the complete path name
      */
     public function setURI($uri) {
-      $this->uri= realpath($uri);
-      
-      // Bug in real_path if file is not existant
-      if ('' == $this->uri && $uri!= $this->uri) $this->uri= $uri;
+      if (FALSE === ($this->uri= realpath($uri))) {
+
+        // realpath returns FALSE if the URI does not exist
+        $this->uri= $uri;
+      }
       
       // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined to)
       // if necessary
-      if (DIRECTORY_SEPARATOR != substr($this->uri, -1 * strlen(DIRECTORY_SEPARATOR))) {
-        $this->uri.= DIRECTORY_SEPARATOR;
-      }
-      
+      $this->uri= rtrim($this->uri, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+
+      // Calculate path and name
       $this->path= dirname($uri);
       $this->dirname= basename($uri);
     }
@@ -96,18 +96,20 @@
      * @throws  io.IOException in case of an error
      */
     public function create($permissions= 0700) {
+      if ('' == (string)$this->uri) {
+        throw new IOException('Cannot create folder with empty name');
+      }
+      
+      // Border-case: Folder already exists
       if (is_dir($this->uri)) return TRUE;
+
       $i= 0;
       $umask= umask(000);
       while (FALSE !== ($i= strpos($this->uri, DIRECTORY_SEPARATOR, $i))) {
         if (is_dir($d= substr($this->uri, 0, ++$i))) continue;
         if (FALSE === mkdir($d, $permissions)) {
           umask($umask);
-          throw(new IOException(sprintf(
-            'mkdir("%s", %d) failed',
-            $d,
-            $permissions
-          )));
+          throw new IOException(sprintf('mkdir("%s", %d) failed', $d, $permissions));
         }
       }
       umask($umask);
@@ -125,7 +127,7 @@
       if (NULL === $uri) $uri= $this->uri; // We also use this recursively
       
       if (FALSE === ($d= dir($uri))) {
-        throw(new IOException('Directory '.$uri.' does not exist'));
+        throw new IOException('Directory '.$uri.' does not exist');
       }
       
       while (FALSE !== ($e= $d->read())) {
@@ -137,17 +139,11 @@
         } else {
           $ret= $this->unlink($fn.DIRECTORY_SEPARATOR);
         }
-        if (FALSE === $ret) throw(new IOException(sprintf(
-          'unlink of "%s" failed',
-          $fn
-        )));
+        if (FALSE === $ret) throw new IOException(sprintf('unlink of "%s" failed', $fn));
       }
       $d->close();
 
-      if (FALSE === rmdir($uri)) throw(new IOException(sprintf(
-        'unlink of "%s" failed',
-        $uri
-      )));
+      if (FALSE === rmdir($uri)) throw new IOException(sprintf('unlink of "%s" failed', $uri));
       
       return TRUE;
     }
@@ -164,10 +160,10 @@
      */
     public function move($target) {
       if (is_resource($this->_hdir)) {
-        throw(new IllegalStateException('Directory still open'));
+        throw new IllegalStateException('Directory still open');
       }
       if (FALSE === rename($this->uri, $target)) {
-        throw(new IOException('Cannot move directory '.$this->uri.' to '.$target));
+        throw new IOException('Cannot move directory '.$this->uri.' to '.$target);
       }
       return TRUE;
     }
@@ -193,7 +189,7 @@
         // Not open yet, try to open
         if (!is_object($this->_hdir= dir($this->uri))) {
           $this->_hdir= FALSE;
-          throw(new IOException('Cannot open directory "'.$this->uri.'"'));
+          throw new IOException('Cannot open directory "'.$this->uri.'"');
         }
       }
       
@@ -210,7 +206,7 @@
      */
     public function rewind() {
       if (FALSE === $this->_hdir)
-        throw (new IOException ('Cannot rewind non-open folder.'));
+        throw new IOException ('Cannot rewind non-open folder.');
       
       rewinddir ($this->_hdir->handle);
     }
@@ -223,7 +219,7 @@
      */
     public function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw new IOException('Cannot get mtime for '.$this->uri);
       }
       return $mtime;
     }
@@ -244,7 +240,7 @@
      */
     public function lastAccessed() {
       if (FALSE === ($atime= fileatime($this->uri))) {
-        throw(new IOException('Cannot get atime for '.$this->uri));
+        throw new IOException('Cannot get atime for '.$this->uri);
       }
       return $atime;
     }
@@ -257,7 +253,7 @@
      */
     public function lastModified() {
       if (FALSE === ($mtime= filemtime($this->uri))) {
-        throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw new IOException('Cannot get mtime for '.$this->uri);
       }
       return $mtime;
     }
