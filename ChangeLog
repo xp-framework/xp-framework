@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixed bug #14 - create empty Folder returns TRUE
+  (friebe)
 - Fixed bug #20 - util.collections.DJBX33AHashImplementation broken on 
   64 bit systems (resolved by using MD5HashImplementation)
   (friebe)
