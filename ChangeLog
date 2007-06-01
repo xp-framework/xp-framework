@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.5.1, released 2007-06-01
+----------------------------------
+SVN version: 10476
+
 - Fixed bug #9 - peer.mail.InternetAddress not correctly encoding addresses
   (friebe)
 - Fixed bug #8 - HttpRequest ignores QUERY_STRING
