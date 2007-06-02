@@ -418,7 +418,7 @@
                 }
               } while (++$i < $s);
 
-              $field->constantValue= $t[1];
+              $field->constantValue= $src;
               $state= ST_CLASS_VAR;
               break;
            
