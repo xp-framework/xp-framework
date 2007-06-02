@@ -192,7 +192,13 @@
             $brackets++;
             break;
 
+          case ST_FUNCTION_ARGS.T_STRING:   // Type hint
+            $arguments[$offset]->type= $t[1];
+            $skip= TRUE;
+            break;
+
           case ST_FUNCTION_ARGS.T_VARIABLE:
+            $skip= FALSE;
             $type= ($arguments[$offset]->type
               ? $this->names->forType($arguments[$offset]->type, TRUE).' '
               : ''
@@ -201,6 +207,35 @@
             $offset++;
             break;
 
+          case ST_FUNCTION_ARGS.'=':
+            array_unshift($states, ST_ARGUMENT_VALUE);
+            break;
+
+          case ST_ARGUMENT_VALUE.',':
+            array_shift($states);
+            break;
+
+          case ST_ARGUMENT_VALUE.T_ARRAY:
+            $brackets= 0;
+            $src= '';
+            do {
+              $t= $tokens[$i];
+              $src.= is_array($t) ? $t[1] : $t;
+              if ('(' == $t[0]) {
+                $brackets++;
+              } else {
+                if (')' == $t[0] and --$brackets <= 0) break;
+              }
+            } while (++$i < $s);
+
+            $t= $src;
+            break;
+
+          case ST_ARGUMENT_VALUE.')':
+            array_shift($states);
+            array_shift($states);
+            break;
+            
           case ST_FUNCTION_ARGS.')':
             $brackets--;
             if (0 == $brackets) {
@@ -219,6 +254,10 @@
 
             array_unshift($states, ST_FUNCTION_BODY);
             $brackets= 1;
+            break;
+
+          case ST_FUNCTION.';':   // Method without body
+            array_shift($states);
             break;
 
           case ST_FUNCTION_BODY.'{':
