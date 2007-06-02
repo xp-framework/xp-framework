@@ -24,8 +24,7 @@
      */ 
     public function tagFrom($holder, $kind, $text) {
       sscanf($text, '%[^:]://%s %[^$]', $scheme, $urn, $comment);
-      return new SeeTag($kind, $comment, $scheme, $urn);
+      return new SeeTag($kind, (string)$comment, $scheme, $urn);
     }
-
   } 
 ?>
