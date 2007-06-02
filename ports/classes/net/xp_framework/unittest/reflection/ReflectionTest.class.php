@@ -109,6 +109,31 @@
     }
 
     /**
+     * Tests constructor incovation
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test]
+    public function constructorInvocation() {
+      $instance= $this->class->getConstructor()->newInstance('1977-14-12');
+      $this->assertEquals($this->class, $instance->getClass());
+      $this->assertEquals(new Date('1977-14-12'), $instance->getDate());
+    }
+
+    /**
+     * Tests abstract constructor incovation throws an exception
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function abstractConstructorInvocation() {
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')
+        ->getConstructor()
+        ->newInstance()
+      ;
+    }
+
+    /**
      * Tests the field reflection
      *
      * @see     xp://lang.XPClass#getFields
