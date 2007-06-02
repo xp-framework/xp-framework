@@ -13,6 +13,12 @@
   abstract class AbstractTestClass extends Object {
     protected
       $inherited= NULL;
+
+    /**
+     * Child classes must have a constructor
+     *
+     */
+    abstract public function __construct();
     
     /**
      * Retrieve date
