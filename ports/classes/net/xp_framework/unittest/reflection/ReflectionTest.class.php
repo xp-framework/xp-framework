@@ -416,7 +416,30 @@
     public function invokeSetTraceOnWrongObject() {
       $this->class->getMethod('setTrace')->invoke(new Object(), array(NULL));
     }
-    
+
+    /**
+     * Tests invoking static TestClass::initializerCalled
+     *
+     * @see     xp://lang.reflect.Method#invoke
+     */
+    #[@test]
+    public function invokeStaticMethod() {
+      $this->assertTrue($this->class->getMethod('initializerCalled')->invoke(NULL));
+    }
+
+    /**
+     * Tests invoking TestClass::setDate() - returns nothing
+     *
+     * @see     xp://lang.reflect.Method#invoke
+     */
+    #[@test]
+    public function invokeMethodWithoutReturn() {
+      $i= $this->class->newInstance();
+      $d= new Date();
+      $this->assertNull($this->class->getMethod('setDate')->invoke($i, array($d)));
+      $this->assertEquals($d, $i->getDate());
+    }
+
     /**
      * Tests annotations
      *
