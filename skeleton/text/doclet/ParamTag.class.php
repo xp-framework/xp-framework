@@ -9,7 +9,7 @@
   /**
    * Represents an @param documentation tag
    *
-   * @see      xp://Tag
+   * @see      xp://text.doclet.TagTag
    * @purpose  Tag
    */
   class ParamTag extends Tag {
