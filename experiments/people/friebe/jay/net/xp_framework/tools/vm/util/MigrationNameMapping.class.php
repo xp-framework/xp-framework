@@ -21,7 +21,7 @@
     function __construct() {
       foreach (get_declared_classes() as $name) {
         $r= new ReflectionClass($name);
-        if ($r->isInternal()) $this->mapping[$name]= 'php.'.$name;
+        if ($r->isInternal()) $this->mapping[strtolower($name)]= 'php.'.$name;
       }
     }
   }
