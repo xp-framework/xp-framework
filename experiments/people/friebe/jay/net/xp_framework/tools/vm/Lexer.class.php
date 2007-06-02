@@ -1,7 +1,9 @@
 <?php
   define('LEXER_PACKAGE_SEPARATOR', '.');
+  
+  uses('text.parser.generic.AbstractLexer');
 
-  class Lexer extends Object {
+  class Lexer extends AbstractLexer {
     var 
       $tokens,
       $position,
