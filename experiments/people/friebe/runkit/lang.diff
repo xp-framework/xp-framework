@@ -1,0 +1,87 @@
+Index: skeleton/lang/reflect/Routine.class.php
+===================================================================
+--- skeleton/lang/reflect/Routine.class.php	(revision 10476)
++++ skeleton/lang/reflect/Routine.class.php	(working copy)
+@@ -26,7 +26,8 @@
+       $name     = '';
+     
+     protected
+-      $_reflect = NULL;
++      $_reflect    = NULL,
++      $_accessible = FALSE;
+ 
+     /**
+      * Constructor
+@@ -271,6 +272,35 @@
+     }
+     
+     /**
++     * Mark this as being accessible
++     *
++     * @return  lang.reflect.Routine self
++     */
++    public function setAccessible() {
++      if ($this->_reflect->isPublic()) return $this; // Border case
++
++      $this->_accessible= TRUE;
++
++      // Hack to invoke private or protected methods
++      if (!method_exists($this->_ref, '__')) {
++        if (!extension_loaded('runkit')) {
++          throw new IllegalStateException(sprintf(
++            'Cannot make %s::%s accessible (runtime method injection not enabled)',
++            $this->_ref,
++            $this->name
++          ));
++        }
++        runkit_method_add(
++          $this->_ref, 
++          '__', 
++          '$r, $m, $a', 
++          'return call_user_func_array(array($r, $m), $a);', 0x101
++        );
++      }
++      return $this;
++    }
++    
++    /**
+      * Retrieve string representation. Examples:
+      *
+      * <pre>
+Index: skeleton/lang/reflect/Method.class.php
+===================================================================
+--- skeleton/lang/reflect/Method.class.php	(revision 10476)
++++ skeleton/lang/reflect/Method.class.php	(working copy)
+@@ -46,19 +46,22 @@
+      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
+      */
+     public function invoke($obj, $args= array()) {
+-      if (NULL !== $obj) {
+-        if (!is(xp::nameOf($this->_ref), $obj)) {
+-          throw new IllegalArgumentException(sprintf(
+-            'Passed argument is not a %s class (%s)',
+-            xp::nameOf($this->_ref),
+-            xp::typeOf($obj)
+-          ));
+-        }
++      if (NULL !== $obj && !($obj instanceof $this->_ref)) {
++        throw new IllegalArgumentException(sprintf(
++          'Passed argument is not a %s class (%s)',
++          xp::nameOf($this->_ref),
++          xp::typeOf($obj)
++        ));
+       }
+ 
+       try {
+-        if (!is_array($args)) $args= (array)$args;
+-        return $this->_reflect->invokeArgs($obj, $args);
++        if ($this->_reflect->isPublic()) {
++          return $this->_reflect->invokeArgs($obj, (array)$args);
++        } else if (!$this->_accessible) {
++          throw new IllegalAccessException($this->_ref.'::'.$this->name.' is not accessible');
++        }
++        
++        return call_user_func(array($this->_ref, '__'), $obj ? $obj : $this->_ref, $this->name, (array)$args);
+       } catch (ReflectionException $e) {
+         throw new XPException($e->getMessage());
+       }
