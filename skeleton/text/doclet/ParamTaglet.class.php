@@ -9,6 +9,7 @@
   /**
    * A taglet that represents the param tag. 
    *
+   * @test     xp://net.xp_framework.unittest.doclet.ParamTagletTest
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */

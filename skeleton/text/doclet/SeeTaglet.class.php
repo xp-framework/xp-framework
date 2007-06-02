@@ -9,6 +9,7 @@
   /**
    * A taglet that represents the see tag. 
    *
+   * @test     xp://net.xp_framework.unittest.doclet.SeeTagletTest
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */

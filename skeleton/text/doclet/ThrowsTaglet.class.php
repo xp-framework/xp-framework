@@ -9,6 +9,7 @@
   /**
    * A taglet that represents the throws tag. 
    *
+   * @test     xp://net.xp_framework.unittest.doclet.ThrowsTagletTest
    * @see      xp://text.doclet.TagletManager
    * @purpose  Taglet
    */
