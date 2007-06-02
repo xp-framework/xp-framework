@@ -27,8 +27,8 @@ generator:
 generate: generator net/xp_framework/tools/vm/Parser.class.php 
 
 test: generate .environment
-	$(PHP) ../../../../util/tests/run.php unittest.ini
-	$(PHP) ../../../../util/tests/run.php php5-emit/unittest.ini
+	$(PHP) ../../../../ports/unittest/run.php unittest.ini
+	$(PHP) ../../../../ports/unittest/run.php php5-emit/unittest.ini
 
 xp-test: generate .environment
 	@for i in `ls -1 php5-emit/xp-test/*.ini` ; do ./xp unittest.xp $$i ; done
