@@ -44,6 +44,7 @@
      * @param   mixed[] args default array()
      * @return  mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
+     * @throws  lang.IllegalAccessException in case the method is not 
      */
     public function invoke($obj, $args= array()) {
       if (NULL !== $obj) {
@@ -55,10 +56,20 @@
           ));
         }
       }
+      
+      // Check modifers
+      $m= $this->_reflect->getModifiers();
+      if (!($m & MODIFIER_PUBLIC) || $m & MODIFIER_ABSTRACT) {
+        throw new IllegalAccessException(sprintf(
+          'Cannot invoke %s %s::%s',
+          Modifiers::stringOf($this->getModifiers()),
+          $this->_ref,
+          $this->name
+        ));
+      }
 
       try {
-        if (!is_array($args)) $args= (array)$args;
-        return $this->_reflect->invokeArgs($obj, $args);
+        return $this->_reflect->invokeArgs($obj, (array)$args);
       } catch (ReflectionException $e) {
         throw new XPException($e->getMessage());
       }
