@@ -440,7 +440,7 @@
   
   // {{{ proto mixed ref(mixed object)
   //     Creates a "reference" to an object
-  function &ref(&$object) {
+  function ref(&$object) {
     return array(&$object);
   }
   // }}}
