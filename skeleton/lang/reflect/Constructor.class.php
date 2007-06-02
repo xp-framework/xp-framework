@@ -38,8 +38,20 @@
      *
      * @param   mixed* args
      * @return  lang.Object
+     * @throws  lang.IllegalAccessException in case the constructor is not public or if it is abstract
      */
     public function newInstance() {
+
+      // Check modifers
+      $m= $this->_reflect->getModifiers();
+      if (!($m & MODIFIER_PUBLIC) || $m & MODIFIER_ABSTRACT) {
+        throw new IllegalAccessException(sprintf(
+          'Cannot invoke %s constructor of class %s',
+          Modifiers::stringOf($this->getModifiers()),
+          $this->_ref
+        ));
+      }
+
       $paramstr= '';
       $args= func_get_args();
       for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
