@@ -1,4 +1,0 @@
-package xp~lang {
-  class Exception extends xp~lang~Throwable {
-  }
-}

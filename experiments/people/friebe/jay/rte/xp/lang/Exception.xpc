@@ -1,1 +1,0 @@
-a:1:{i:0;O:22:"packagedeclarationnode":3:{s:4:"__id";s:21:"0.24264500 1148936367";s:4:"name";s:7:"xp~lang";s:10:"statements";a:1:{i:0;O:20:"classdeclarationnode":7:{s:4:"__id";s:21:"0.24193400 1148936367";s:4:"name";s:9:"Exception";s:7:"extends";s:17:"xp~lang~Throwable";s:10:"implements";N;s:10:"statements";a:0:{}s:9:"modifiers";i:0;s:11:"annotations";N;}}}}
