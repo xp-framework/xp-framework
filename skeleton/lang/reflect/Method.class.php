@@ -44,17 +44,15 @@
      * @param   mixed[] args default array()
      * @return  mixed
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
-     * @throws  lang.IllegalAccessException in case the method is not 
+     * @throws  lang.IllegalAccessException in case the method is not public or if it is abstract
      */
     public function invoke($obj, $args= array()) {
-      if (NULL !== $obj) {
-        if (!is(xp::nameOf($this->_ref), $obj)) {
-          throw new IllegalArgumentException(sprintf(
-            'Passed argument is not a %s class (%s)',
-            xp::nameOf($this->_ref),
-            xp::typeOf($obj)
-          ));
-        }
+      if (NULL !== $obj && !($obj instanceof $this->_ref)) {
+        throw new IllegalArgumentException(sprintf(
+          'Passed argument is not a %s class (%s)',
+          xp::nameOf($this->_ref),
+          xp::typeOf($obj)
+        ));
       }
       
       // Check modifers
@@ -71,6 +69,8 @@
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
       } catch (ReflectionException $e) {
+
+        // This should never occur, we checked everything beforehand...
         throw new XPException($e->getMessage());
       }
     }
