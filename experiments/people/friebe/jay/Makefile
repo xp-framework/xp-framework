@@ -17,14 +17,11 @@ usage:
 	@echo "- $(MAKE) test"
 	@echo "  Runs all tests from unittest.ini and php5-emit/unittest.ini"
 
-net/xp_framework/tools/vm/Parser.class.php: parser_generator/XP2.jay
+net/xp_framework/tools/vm/Parser.class.php: grammar/XP2.jay
 	@echo "===> Generating Parser class from XP2.jay"
-	sh generate_parser.sh
+	../../../../ports/technologies/opt/jay/generate.sh grammar/XP2.jay php5 "" > net/xp_framework/tools/vm/Parser.class.php
 
-generator:
-	cd parser_generator && $(MAKE)
-
-generate: generator net/xp_framework/tools/vm/Parser.class.php 
+generate: net/xp_framework/tools/vm/Parser.class.php 
 
 test: generate .environment
 	$(PHP) ../../../../ports/unittest/run.php unittest.ini
