@@ -584,7 +584,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	Ada:.ada .ad .ads .adb .a:::::::\n\
 	Fortran:.f .f77 .for:::::::\n\
 	Pascal:.pas .p .int:::::::\n\
-	Yacc:.y::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
+	Yacc:.y .jay::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	Perl:.pl .pm .p5 .PL:"^[ \\t]*#[ \\t]*!.*perl":Auto:None:::".,/\\\\`'!$@#%^&*()-=+{}[]"":;<>?~|":\n\
 	Python:.py:"^#!.*python":Auto:None:::"!""#$%&'()*+,-./:;<=>?@[\\\\]^`{|}~":\n\
 	Tcl:.tcl .tk .itcl .itk::Smart:None::::\n\
