@@ -129,7 +129,7 @@
     #[@test]
     public function iteratorMethods() {
       $expected= array(
-        'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', '__clone',  // lang.Object
+        'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', // lang.Object
         'getproxyclass', 'newproxyinstance',                          // lang.reflect.Proxy
         'hasnext', 'next'                                             // util.XPIterator
       );
