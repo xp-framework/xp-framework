@@ -35,7 +35,7 @@
      * @param   string value
      */
     public function addMapping($key, $value) {
-      $this->mapping[$key]= $value;
+      $this->mapping[strtolower($key)]= $value;
     }
 
     /**
@@ -46,11 +46,12 @@
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
     public function getMapping($key) {
-      if (!isset($this->mapping[$key])) {
+      $lookup= strtolower($key);
+      if (!isset($this->mapping[$lookup])) {
         throw new IllegalArgumentException('Mapping for "'.$key.'" not found');
       }
       
-      return $this->mapping[$key];
+      return $this->mapping[$lookup];
     }
     
     /**
@@ -70,18 +71,25 @@
      * @throws  lang.IllegalArgumentException in case not mapping can be found
      */
     public function qualifiedNameOf($short) {
-      $mapped= $this->getMapping($short);
+      if (strstr($short, '.')) {
+        $q= $short;
+      } else {
+        $q= $this->getMapping($short);
+      }
+      if (!$this->current) return $q;
 
-      if ($this->current) {
-        $current= $this->current->qualifiedName();
-        if ($current == $mapped) {
-          return 'self';
-        } else if (substr($current, 0, strrpos($current, '.')) == substr($mapped, 0, strrpos($mapped, '.'))) {
-          return substr($mapped, strrpos($mapped, '.')+ 1);
-        }
+      $current= $this->current->qualifiedName();
+      if ($current === $q) {
+
+        // If this class is the same as the current, use "self" keyword        
+        return 'self';
+      } else if (substr($current, 0, strrpos($current, '.')) == substr($q, 0, strrpos($q, '.'))) {
+
+        // If this class is in the same package as the current omit package name
+        return substr($q, strrpos($q, '.')+ 1);
       }
       
-      return $mapped;
+      return $q;
     }
 
     /**
@@ -91,14 +99,8 @@
      * @return  string
      */
     public function packagedNameOf($q) {
-      if (strstr($q, '.')) {
-        $packaged= strtr($q, '.', $this->namespaceSeparator);
-      } else {
-        $packaged= $q;
-      }
-      return $packaged;
+      return strtr($q, '.', $this->namespaceSeparator);
     }
-    
     
     /**
      * Retrieves type name
@@ -114,12 +116,13 @@
         'boolean'       => 'bool',
       );
       static $builtin= array(
-        'int'     => TRUE,
-        'float'   => TRUE,
-        'bool'    => TRUE,
-        'string'  => TRUE,
-        'array'   => TRUE,
-        'mixed'   => TRUE
+        'int'      => TRUE,
+        'float'    => TRUE,
+        'bool'     => TRUE,
+        'string'   => TRUE,
+        'array'    => TRUE,
+        'mixed'    => TRUE,
+        'resource' => TRUE
       );
 
       $va= ('*' == substr($type, -1) && $arg) ? '...' : '';
@@ -134,13 +137,8 @@
       if (isset($map[$lookup])) $type= $map[$lookup];
       
       if (!isset($builtin[$type])) {    // User-defined
-        if (strstr($type, '.')) {
-          $type= $this->packagedNameOf($type);
-        } else {
-          $type= $this->packagedNameOf($this->qualifiedNameOf($type));
-        }
+        $type= $this->packagedNameOf($this->qualifiedNameOf($type));
       }
-      
       return $type.$va.$array;
     }
   }
