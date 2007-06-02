@@ -101,16 +101,17 @@
     /**
      * Helper function that returns this class' methods.
      *
-     * @param   string[] filter methods to exclude
-     * @return  array<string, string>
+     * @param   string filter
+     * @return  string[] method names
      */
-    protected function _methods($filter= array()) {
+    protected function _methods($filter) {
       $r= array();
       foreach ($this->_reflect->getMethods() as $m) {
-        in_array($name= strtolower($m->getName()), $filter) || $r[$name]= $m->getName();
+        $n= $m->getName();
+        preg_match($filter, $n) && $r[]= $n;
       }
       return $r;
-   }
+    }
     
     /**
      * Gets class methods for this class
@@ -119,7 +120,7 @@
      */
     public function getMethods() {
       $m= array();
-      foreach ($this->_methods(array('__construct', '__destruct')) as $method) {
+      foreach ($this->_methods('/^[^__]/') as $method) {
         $m[]= new Method($this->_objref, $method);
       }
       return $m;
@@ -151,7 +152,7 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return in_array(strtolower($method), array_keys($this->_methods(array('__construct', '__destruct'))));
+      return (bool)$this->_methods('/^'.$method.'$/i');
     }
     
     /**
@@ -160,7 +161,7 @@
      * @return  bool
      */
     public function hasConstructor() {
-      return in_array('__construct', array_keys($this->_methods()));
+      return (bool)$this->_methods('/^__construct$/');
     }
     
     /**
