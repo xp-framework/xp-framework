@@ -28,14 +28,14 @@
      *
      * Example (passing arguments)
      * <code>
-     *   $method= XPClass::forName('text.String')->getMethod('matches');
+     *   $method= XPClass::forName('lang.types.String')->getMethod('concat');
      *
-     *   var_dump($method->invoke(new String('Hello'), array('/^H/')));
+     *   var_dump($method->invoke(new String('Hello'), array('World')));
      * </code>
      *
      * Example (static invokation):
      * <code>
-     *   $method= XPClass::forName'util.log.Logger')->getMethod('getInstance');
+     *   $method= XPClass::forName('util.log.Logger')->getMethod('getInstance');
      *
      *   var_dump($method->invoke($obj= NULL));
      * </code>
