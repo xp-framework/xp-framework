@@ -165,7 +165,7 @@
      *
      * @return  string
      */
-    function hashCode() {
+    public function hashCode() {
       return $this->__id;
     }
     
@@ -175,7 +175,7 @@
      * @param   lang.Object cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
-    function equals($cmp) {
+    public function equals($cmp) {
       return $this === $cmp;
     }
     
@@ -185,7 +185,7 @@
      * 
      * @return  string fully qualified class name
      */
-    function getClassName() {
+    public function getClassName() {
       return xp::nameOf(get_class($this));
     }
 
@@ -195,7 +195,7 @@
      * @return  lang.XPClass runtime class
      * @see     xp://lang.XPClass
      */
-    function getClass() {
+    public function getClass() {
       return new XPClass($this);
     }
   }
