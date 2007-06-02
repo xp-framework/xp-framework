@@ -428,6 +428,39 @@
     }
 
     /**
+     * Tests invoking private TestClass::defaultMap
+     *
+     * @see     xp://lang.reflect.Method#invoke
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function invokePrivateMethod() {
+      $this->class->getMethod('defaultMap')->invoke($this->class->newInstance());
+    }
+
+    /**
+     * Tests invoking protected TestClass::clearMap
+     *
+     * @see     xp://lang.reflect.Method#invoke
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function invokeProtectedMethod() {
+      $this->class->getMethod('clearMap')->invoke($this->class->newInstance());
+    }
+
+    /**
+     * Tests invoking abstract method
+     *
+     * @see     xp://lang.reflect.Method#invoke
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function invokeAbstractMethod() {
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')
+        ->getMethod('getDate')
+        ->invoke($this->class->newInstance())
+      ;
+    }
+
+    /**
      * Tests invoking TestClass::setDate() - returns nothing
      *
      * @see     xp://lang.reflect.Method#invoke
