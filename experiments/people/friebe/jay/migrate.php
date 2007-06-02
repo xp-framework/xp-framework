@@ -93,6 +93,7 @@ __;
         try {
           $out= $this->rewriter->rewrite($tokens, $debug);
         } catch (Throwable $e) {
+          Console::writeLine('*** ', $this->current);
           $e->printStackTrace();
           continue;
         }
