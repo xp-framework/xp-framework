@@ -23,9 +23,8 @@
      * @return  text.doclet.Tag
      */ 
     public function tagFrom($holder, $kind, $text) {
-      list($type, $name, $text)= explode(' ', $text, 3);
-      return new ParamTag($type, $name, $text);
+      preg_match('/([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(.*)/', $text, $matches);
+      return new ParamTag($matches[1], $matches[2], $matches[3]);
     }
-
   } 
 ?>
