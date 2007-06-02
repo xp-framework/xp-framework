@@ -29,7 +29,7 @@
     /**
      * Create a return tag for a given text
      *
-     * @Return   string text
+     * @param   string text
      * @return  text.doclet.ReturnTag
      */
     protected function makeReturn($text) {
