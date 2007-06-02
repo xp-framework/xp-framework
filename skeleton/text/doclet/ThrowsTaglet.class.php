@@ -23,8 +23,8 @@
      * @return  text.doclet.Tag
      */ 
     public function tagFrom($holder, $kind, $text) {
-      list($class, $condition)= explode(' ', $text);
-      return new ThrowsTag($holder->root->classNamed($class), $condition);
+      sscanf($text, '%s %[^$]', $class, $condition);
+      return new ThrowsTag($holder->root->classNamed($class), (string)$condition);
     }
   } 
 ?>
