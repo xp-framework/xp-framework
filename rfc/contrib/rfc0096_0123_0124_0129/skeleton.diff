@@ -1,6 +1,6 @@
 Index: skeleton/rdbms/DBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/DBAdapter.class.php	(Revision 10461)
+--- skeleton/rdbms/DBAdapter.class.php	(Revision 10517)
 +++ skeleton/rdbms/DBAdapter.class.php	(Arbeitskopie)
 @@ -29,17 +29,18 @@
       * Get a table in the current database
@@ -667,7 +667,7 @@ Index: skeleton/rdbms/DBConstraint.class.php
 +?>
 Index: skeleton/rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(Revision 10461)
+--- skeleton/rdbms/Peer.class.php	(Revision 10517)
 +++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(
@@ -906,7 +906,7 @@ Index: skeleton/rdbms/Peer.class.php
        }
 Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10461)
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10517)
 +++ skeleton/rdbms/sybase/SybaseConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -918,7 +918,17 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
    );
  
    /**
-@@ -103,17 +104,8 @@
+@@ -21,6 +22,9 @@
+    * @purpose  Database connection
+    */
+   class SybaseConnection extends DBConnection {
++  
++    private
++      $formatter= NULL;
+ 
+     /**
+      * Set Timeout
+@@ -103,17 +107,8 @@
       * @return  string
       */
      public function prepare() {
@@ -937,7 +947,7 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
      }
      
      /**
-@@ -121,7 +113,7 @@
+@@ -121,7 +116,7 @@
       *
       * @return  mixed identity value
       */
@@ -946,7 +956,7 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
        if (!($r= $this->query('select @@identity as i'))) {
          return FALSE;
        }
-@@ -206,7 +198,7 @@
+@@ -206,7 +201,7 @@
       * Execute any statement
       *
       * @param   mixed* args
@@ -955,7 +965,7 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
       * @throws  rdbms.SQLException
       */
      public function query() { 
-@@ -269,8 +261,8 @@
+@@ -269,8 +264,8 @@
      /**
       * Begin a transaction
       *
@@ -966,7 +976,7 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
       */
      public function begin($transaction) {
        if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
-@@ -312,5 +304,16 @@
+@@ -312,5 +307,15 @@
      public function commit($name) { 
        return $this->query('commit transaction xp_%c', $name);
      }
@@ -977,9 +987,8 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 +     * @return  rdbms.StatemantFormatter
 +     */
 +    public function getFormatter() {
-+      static $formatter= NULL;
-+      if (NULL === $formatter) $formatter= new StatementFormatter($this, new SybaseDialect());
-+      return $formatter;
++      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SybaseDialect());
++      return $this->formatter;
 +    }
    }
  ?>
@@ -1074,7 +1083,7 @@ Index: skeleton/rdbms/sybase/SybaseDialect.class.php
 +?>
 Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10461)
+--- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10517)
 +++ skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Arbeitskopie)
 @@ -91,9 +91,10 @@
       * Get indexes for a given table. Expects a temporary table to exist.
@@ -1313,7 +1322,7 @@ Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
  ?>
 Index: skeleton/rdbms/Column.class.php
 ===================================================================
---- skeleton/rdbms/Column.class.php	(Revision 10461)
+--- skeleton/rdbms/Column.class.php	(Revision 10517)
 +++ skeleton/rdbms/Column.class.php	(Arbeitskopie)
 @@ -3,7 +3,11 @@
   *
@@ -1377,7 +1386,7 @@ Index: skeleton/rdbms/Column.class.php
  
 Index: skeleton/rdbms/Criteria.class.php
 ===================================================================
---- skeleton/rdbms/Criteria.class.php	(Revision 10461)
+--- skeleton/rdbms/Criteria.class.php	(Revision 10517)
 +++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
 @@ -6,8 +6,11 @@
  
@@ -1573,7 +1582,7 @@ Index: skeleton/rdbms/Criteria.class.php
       * can be either a columnname or a Column object
 Index: skeleton/rdbms/DBConnection.class.php
 ===================================================================
---- skeleton/rdbms/DBConnection.class.php	(Revision 10461)
+--- skeleton/rdbms/DBConnection.class.php	(Revision 10517)
 +++ skeleton/rdbms/DBConnection.class.php	(Arbeitskopie)
 @@ -23,7 +23,7 @@
     *
@@ -2619,7 +2628,7 @@ Index: skeleton/rdbms/Record.class.php
 +?>
 Index: skeleton/rdbms/SQLExpression.class.php
 ===================================================================
---- skeleton/rdbms/SQLExpression.class.php	(Revision 10461)
+--- skeleton/rdbms/SQLExpression.class.php	(Revision 10517)
 +++ skeleton/rdbms/SQLExpression.class.php	(Arbeitskopie)
 @@ -10,6 +10,28 @@
     * @purpose  Interface
@@ -2876,7 +2885,7 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +?>
 Index: skeleton/rdbms/StatementFormatter.class.php
 ===================================================================
---- skeleton/rdbms/StatementFormatter.class.php	(Revision 10461)
+--- skeleton/rdbms/StatementFormatter.class.php	(Revision 10517)
 +++ skeleton/rdbms/StatementFormatter.class.php	(Arbeitskopie)
 @@ -10,11 +10,7 @@
     * Example usage:
@@ -2998,9 +3007,48 @@ Index: skeleton/rdbms/StatementFormatter.class.php
       * @param   mixed arg
 Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Revision 10461)
+--- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Revision 10517)
 +++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Arbeitskopie)
-@@ -104,7 +104,7 @@
+@@ -7,7 +7,9 @@
+   uses(
+     'rdbms.DBConnection',
+     'rdbms.Transaction',
+-    'rdbms.pgsql.PostgreSQLResultSet'
++    'rdbms.StatementFormatter',
++    'rdbms.pgsql.PostgreSQLResultSet',
++    'rdbms.pgsql.PostgreSQLDialect'
+   );
+ 
+   /**
+@@ -19,6 +21,9 @@
+    * @purpose  Database connection
+    */
+   class PostgreSQLConnection extends DBConnection {
++  
++     private
++       $formatter= NULL;
+ 
+     /**
+      * Connect
+@@ -87,16 +92,8 @@
+      * @return  string
+      */
+     public function prepare() {
+-      static $formatter= NULL;
+       $args= func_get_args();
+-      
+-      if (NULL === $formatter) {
+-        $formatter= new StatementFormatter();
+-        $formatter->setEscape("'");
+-        $formatter->setEscapeRules(array('\''  => '\'\''));
+-        $formatter->setDateFormat('Y-m-d H:i:s');
+-      }
+-      return $formatter->format(array_shift($args), $args);
++      return $this->getFormatter()->format(array_shift($args), $args);
+     }
+     
+     /**
+@@ -104,7 +101,7 @@
       *
       * @return  mixed identity value
       */
@@ -3009,7 +3057,7 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
        $q= $this->query('select currval(%s) as id', $field);
        $id= $q ? $q->next('id') : NULL;
        $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
-@@ -185,7 +185,7 @@
+@@ -185,7 +182,7 @@
       * Execute any statement
       *
       * @param   mixed* args
@@ -3018,7 +3066,7 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
       * @throws  rdbms.SQLException
       */
      public function query() { 
-@@ -230,8 +230,8 @@
+@@ -230,8 +227,8 @@
      /**
       * Begin a transaction
       *
@@ -3029,9 +3077,25 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
       */
      public function begin($transaction) {
        if (FALSE === $this->query('begin transaction')) {
+@@ -270,5 +267,15 @@
+     public function commit($name) { 
+       return $this->query('commit transaction');
+     }
++
++    /**
++     * get SQL formatter
++     *
++     * @return  rdbms.StatemantFormatter
++     */
++    public function getFormatter() {
++      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new PostgreSQLDialect());
++      return $this->formatter;
++    }
+   }
+ ?>
 Index: skeleton/rdbms/DBTable.class.php
 ===================================================================
---- skeleton/rdbms/DBTable.class.php	(Revision 10461)
+--- skeleton/rdbms/DBTable.class.php	(Revision 10517)
 +++ skeleton/rdbms/DBTable.class.php	(Arbeitskopie)
 @@ -4,7 +4,11 @@
   * $Id$
@@ -3113,7 +3177,7 @@ Index: skeleton/rdbms/DBTable.class.php
  ?>
 Index: skeleton/rdbms/Statement.class.php
 ===================================================================
---- skeleton/rdbms/Statement.class.php	(Revision 10461)
+--- skeleton/rdbms/Statement.class.php	(Revision 10517)
 +++ skeleton/rdbms/Statement.class.php	(Arbeitskopie)
 @@ -49,13 +49,31 @@
      }
@@ -3307,7 +3371,7 @@ Index: skeleton/rdbms/criterion/ProjectionList.class.php
 +?>
 Index: skeleton/rdbms/criterion/BetweenExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10461)
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10517)
 +++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
 @@ -34,21 +34,13 @@
       * Returns the fragment SQL
@@ -3337,7 +3401,7 @@ Index: skeleton/rdbms/criterion/BetweenExpression.class.php
  ?>
 Index: skeleton/rdbms/criterion/SimpleExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10461)
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10517)
 +++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
 @@ -56,14 +56,13 @@
          NOT_EQUAL => IS_NOT
@@ -3383,7 +3447,7 @@ Index: skeleton/rdbms/criterion/SimpleExpression.class.php
    } 
 Index: skeleton/rdbms/criterion/LogicalExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10461)
+--- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10517)
 +++ skeleton/rdbms/criterion/LogicalExpression.class.php	(Arbeitskopie)
 @@ -34,14 +34,14 @@
       * Returns the fragment SQL
@@ -3429,7 +3493,7 @@ Index: skeleton/rdbms/criterion/Projection.class.php
 +?>
 Index: skeleton/rdbms/criterion/Criterion.class.php
 ===================================================================
---- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10461)
+--- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10517)
 +++ skeleton/rdbms/criterion/Criterion.class.php	(Arbeitskopie)
 @@ -4,8 +4,6 @@
   * $Id$ 
@@ -3566,7 +3630,7 @@ Index: skeleton/rdbms/criterion/Projections.class.php
 +?>
 Index: skeleton/rdbms/criterion/NegationExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10461)
+--- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10517)
 +++ skeleton/rdbms/criterion/NegationExpression.class.php	(Arbeitskopie)
 @@ -28,12 +28,12 @@
       * Returns the fragment SQL
@@ -3586,9 +3650,45 @@ Index: skeleton/rdbms/criterion/NegationExpression.class.php
  ?>
 Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
 ===================================================================
---- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Revision 10461)
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Revision 10517)
 +++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Arbeitskopie)
-@@ -152,7 +152,7 @@
+@@ -6,6 +6,7 @@
+ 
+   uses(
+     'rdbms.DBConnection',
++    'rdbms.sqlite.SQLiteDialect',
+     'rdbms.sqlite.SQLiteResultSet',
+     'rdbms.Transaction',
+     'rdbms.StatementFormatter'
+@@ -50,6 +51,9 @@
+    */
+   class SQLiteConnection extends DBConnection {
+   
++     private
++       $formatter= NULL;
++
+     /**
+      * Callback function to cast data
+      *
+@@ -135,16 +139,8 @@
+      * @return  string
+      */
+     public function prepare() {
+-      static $formatter= NULL;
+       $args= func_get_args();
+-      
+-      if (NULL === $formatter) {
+-        $formatter= new StatementFormatter();
+-        $formatter->setEscape("'");
+-        $formatter->setEscapeRules(array("'" => "''"));
+-        $formatter->setDateFormat('Y-m-d H:i:s');
+-      }
+-      return $formatter->format(array_shift($args), $args);
++      return $this->getFormatter()->format(array_shift($args), $args);
+     }
+     
+     /**
+@@ -152,7 +148,7 @@
       *
       * @return  mixed identity value
       */
@@ -3597,7 +3697,7 @@ Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
        $i= sqlite_last_insert_rowid($this->handle);
        $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
        return $i;
-@@ -233,7 +233,7 @@
+@@ -233,7 +229,7 @@
       * Execute any statement
       *
       * @param   mixed* args
@@ -3606,7 +3706,7 @@ Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
       * @throws  rdbms.SQLException
       */
      public function query() { 
-@@ -283,8 +283,8 @@
+@@ -283,8 +279,8 @@
      /**
       * Begin a transaction
       *
@@ -3617,9 +3717,25 @@ Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
       */
      public function begin($transaction) {
        if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
+@@ -326,5 +322,15 @@
+     public function commit($name) { 
+       return $this->query('commit transaction xp_%c', $name);
+     }
++
++    /**
++     * get SQL formatter
++     *
++     * @return  rdbms.StatemantFormatter
++     */
++    public function getFormatter() {
++      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SQLiteDialect());
++      return $this->formatter;
++    }
+   }
+ ?>
 Index: skeleton/rdbms/mysql/MySQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10461)
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10517)
 +++ skeleton/rdbms/mysql/MySQLConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -3811,7 +3927,7 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +?>
 Index: skeleton/rdbms/mysql/MySQLDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10461)
+--- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10517)
 +++ skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Arbeitskopie)
 @@ -49,8 +49,8 @@
        $dbs= array();
@@ -4255,7 +4371,7 @@ Index: skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php
 +?>
 Index: skeleton/rdbms/util/DBXmlGenerator.class.php
 ===================================================================
---- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10461)
+--- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10517)
 +++ skeleton/rdbms/util/DBXmlGenerator.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(

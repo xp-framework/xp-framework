@@ -225,7 +225,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/SQLDialectTest.class.php
 +?>
 Index: ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(Revision 10461)
+--- ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(Revision 10517)
 +++ ports/classes/net/xp_framework/unittest/rdbms/DataSetTest.class.php	(Arbeitskopie)
 @@ -48,7 +48,7 @@
      /**
@@ -782,7 +782,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Person.class.php
 +?>
 Index: ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(Revision 10461)
+--- ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(Revision 10517)
 +++ ports/classes/net/xp_framework/unittest/rdbms/dataset/Job.class.php	(Arbeitskopie)
 @@ -4,19 +4,26 @@
   * $Id$
@@ -1260,7 +1260,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/JoinProcessorTest.class.php
 +?>
 Index: ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Revision 10461)
+--- ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Revision 10517)
 +++ ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Arbeitskopie)
 @@ -414,5 +414,12 @@
       */
@@ -1277,7 +1277,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.p
  ?>
 Index: ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php	(Revision 10461)
+--- ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php	(Revision 10517)
 +++ ports/classes/net/xp_framework/unittest/rdbms/CriteriaTest.class.php	(Arbeitskopie)
 @@ -9,6 +9,8 @@
      'rdbms.criterion.Restrictions',
@@ -2307,7 +2307,7 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/ProjectionTest.class.php
 +?>
 Index: ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php
 ===================================================================
---- ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php	(Revision 10461)
+--- ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php	(Revision 10517)
 +++ ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php	(Arbeitskopie)
 @@ -6,11 +6,13 @@
  
@@ -2429,7 +2429,7 @@ Index: ports/classes/net/xp_framework/db/generator/DataSetCreator.class.php
        } else {
 Index: ports/classes/net/xp_framework/db/generator/xp5.php.xsl
 ===================================================================
---- ports/classes/net/xp_framework/db/generator/xp5.php.xsl	(Revision 10461)
+--- ports/classes/net/xp_framework/db/generator/xp5.php.xsl	(Revision 10517)
 +++ ports/classes/net/xp_framework/db/generator/xp5.php.xsl	(Arbeitskopie)
 @@ -1,41 +1,118 @@
  <?xml version="1.0" encoding="iso-8859-1"?>
