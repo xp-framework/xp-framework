@@ -19,7 +19,7 @@
      *
      */
     function __construct() {
-      foreach (get_declared_classes() as $name) {
+      foreach (array_merge(get_declared_classes(), get_declared_interfaces()) as $name) {
         $r= new ReflectionClass($name);
         if ($r->isInternal()) $this->mapping[strtolower($name)]= 'php.'.$name;
       }
