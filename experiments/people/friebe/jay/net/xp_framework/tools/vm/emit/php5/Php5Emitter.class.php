@@ -1921,7 +1921,7 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emitStaticInitializer($node) { 
-      $this->bytes.= 'static function __static {';
+      $this->bytes.= 'static function __static() {';
       $this->emitAll($node->block);
       $this->bytes.= '}';
     }
