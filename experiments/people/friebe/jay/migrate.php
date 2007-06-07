@@ -99,7 +99,7 @@ __;
         }
         
         if ($output) {
-          $target= new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), NS_SEPARATOR, DIRECTORY_SEPARATOR).'.xp');
+          $target= new File($base->getURI().strtr($this->names->packagedNameOf($this->current->qualifiedName()), NS_SEPARATOR, DIRECTORY_SEPARATOR).'.class.xp');
           $f= new Folder($target->getPath());
           $f->exists() || $f->create();
           FileUtil::setContents($target, $out);
