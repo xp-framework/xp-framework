@@ -16,7 +16,7 @@
     /**
      * Tests $a instanceof Type
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfName() {
       $nodes= $this->parse('class String { } $a instanceof String;');
@@ -31,7 +31,7 @@
     /**
      * Tests $a instanceof $type
      *
-      */
+     */
     #[@test]
     public function expressionInstanceOfName() {
       $nodes= $this->parse('class String { } get_class($a) instanceof String;');
@@ -46,7 +46,7 @@
     /**
      * Tests $a instanceof $type
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfVariable() {
       $nodes= $this->parse('class String { } $a instanceof $name;');
@@ -61,7 +61,7 @@
     /**
      * Tests $a instanceof $string->type
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfMember() {
       $nodes= $this->parse('class String { } $a instanceof $string->type;');
@@ -79,7 +79,7 @@
     /**
      * Tests $a instanceof $string->type->name
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfMemberChain() {
       $nodes= $this->parse('class String { } $a instanceof $string->type->name;');
@@ -102,7 +102,7 @@
     /**
      * Tests $a instanceof $types[0]
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfArray() {
       $nodes= $this->parse('class String { } $a instanceof $types[0];');
@@ -120,7 +120,7 @@
     /**
      * Tests $a instanceof $types["name"]
      *
-      */
+     */
     #[@test]
     public function variableInstanceOfHashLookup() {
       $nodes= $this->parse('class String { } $a instanceof $types["name"];');
@@ -132,6 +132,23 @@
       $this->assertNode('Variable', $nodes[1]->type->expression);
       $this->assertEquals('$types', $nodes[1]->type->expression->name);
       $this->assertEquals('"name"', $nodes[1]->type->offset);
+    }
+
+    /**
+     * Tests $a instanceof String::$class
+     *
+     */
+    #[@test]
+    public function variableInstanceOfStaticMember() {
+      $nodes= $this->parse('class String { } $a instanceof String::$class;');
+      $this->assertEquals(2, sizeof($nodes));
+      $this->assertNode('InstanceOf', $nodes[1]);
+      $this->assertNode('Variable', $nodes[1]->object);
+      $this->assertEquals('$a', $nodes[1]->object->name);
+      $this->assertNode('StaticMember', $nodes[1]->type);
+      $this->assertEquals('String', $nodes[1]->type->class);
+      $this->assertNode('Variable', $nodes[1]->type->member);
+      $this->assertEquals('$class', $nodes[1]->type->member->name);
     }
   }
 ?>
