@@ -127,7 +127,7 @@
           }
  
           public static function main(){
-            xp::create(new main·Test())->sayHello(array(0 => \'Timm\', 1 => \'Alex\', )); 
+            create(new main·Test())->sayHello(array(0 => \'Timm\', 1 => \'Alex\', )); 
           }
        };'),
         $this->emit('class Test {
