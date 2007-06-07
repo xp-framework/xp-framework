@@ -11,11 +11,11 @@
   );
 
   /**
-   * Tests AST parser
+   * Base class for all parser tests
    *
    * @purpose  Unit Test
    */
-  class ParserTest extends TestCase {
+  abstract class ParserTest extends TestCase {
 
     /**
      * Parses a given string source into an AST
@@ -24,20 +24,18 @@
      * @return  net.xp_framework.tools.vm.VNode[]
      */
     protected function parse($source) {
-      $parser= new Parser();
-      return $parser->yyparse(new Lexer($source, '(string)'));
+      return create(new Parser())->parse(new Lexer($source, '(string)'));
     }
-
+    
     /**
-     * Tests parsing a simple "Hello, World!" script
+     * Assertion helper
      *
-      */
-    #[@test]
-    public function helloWorld() {
-      $nodes= $this->parse('echo "Hello World!\n";');
-      $this->assertEquals(1, sizeof($nodes));
-      $this->assertClass($nodes[0], 'net.xp_framework.tools.vm.nodes.EchoNode');
-      $this->assertEquals('"Hello World!\n"', $nodes[0]->args[0]);
+     * @param   string type unqualified node type
+     * @param   net.xp_framework.tools.vm.VNode node
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertNode($type, $node) {
+      $this->assertClass($node, 'net.xp_framework.tools.vm.nodes.'.$type.'Node');
     }
   }
 ?>
