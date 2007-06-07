@@ -273,7 +273,7 @@
         return array($node->type);
       } else if ($node instanceof ArrayAccessNode) {
         $t= $this->typeOf($node->expression);
-        return $t[0];
+        return is_array($t) ? $t[0] : $t;         // $list[0] vs. $string{0}
       } else if ($node instanceof ExpressionCastNode) {
         return $this->typeName($node->type);
       } else if (is_int($node) || $node instanceof LongNumberNode) {
