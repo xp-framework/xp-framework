@@ -16,7 +16,7 @@
     /**
      * Tests parsing a simple "Hello, World!" script
      *
-      */
+     */
     #[@test]
     public function helloWorld() {
       $nodes= $this->parse('echo "Hello World!\n";');
@@ -28,7 +28,7 @@
     /**
      * Tests parsing an echo statement with multiple args
      *
-      */
+     */
     #[@test]
     public function multipleArgs() {
       $nodes= $this->parse('echo 1, 2, 3;');
