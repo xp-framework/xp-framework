@@ -1252,7 +1252,7 @@
         $this->bytes= $b.str_replace('\'', '\\\'', $this->bytes).'}\'';
         $node->instanciation->chain || $this->bytes.= ')';
       } else {
-        $node->instanciation->chain && $this->bytes.= 'xp::create(';
+        $node->instanciation->chain && $this->bytes.= 'create(';
         
         if (isset($this->context['overloaded'][$this->qualifiedName($node->class->name).'::__construct'])) {
           $ctor= '__construct';
