@@ -1008,9 +1008,11 @@ fully_qualified_class_name:
 
 class_name_reference:
 		fully_qualified_class_name			  { $$= new ClassReferenceNode($1, NULL); $$->position= $yyLex->position; }
+	|	base_variable T_OBJECT_OPERATOR object_property variable_properties {
+          $$= new ObjectReferenceNode($1, $3, $4); $$->position= $yyLex->position;
+        }
 	|	base_variable { /* $$= $1; */ }
 //	|	fully_qualified_class_name '<' T_STRING '>'     { $$= new ClassReferenceNode($1, $3); $$->position= $yyLex->position; }
-
 ;
 
 ctor_arguments:
