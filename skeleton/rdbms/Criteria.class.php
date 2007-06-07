@@ -201,12 +201,11 @@
     }
 
     /**
-     * get a string for a column
-     * can be either a columnname or a Column object
+     * Get a string for a column
      *
      * @param   rdbms.DBConnection conn
      * @param   array types
-     * @param   rdbms.Column or string col
+     * @param   mixed col either an rdbms.Column object or a string containing the column's name
      * @return  string
      */
     private function fragment($conn, $types, $col) {
@@ -217,6 +216,5 @@
         return $col;
       }
     }
-
   } 
 ?>
