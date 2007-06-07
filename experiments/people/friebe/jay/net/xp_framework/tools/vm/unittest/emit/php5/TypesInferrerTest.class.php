@@ -63,6 +63,7 @@
         $chained_i= new Test()->integer;
         
         $s= "";
+        $b= $s{0};
         $chained_s= new Test()->now->toString();
         
         $t= new Test();
@@ -81,6 +82,16 @@
     #[@test]
     public function typeOfNew() {
       $this->assertEquals('lang·Object', $this->emitter->typeOf(new NewNode(new ClassReferenceNode('lang.Object'))));
+    }
+
+    /**
+     * Tests type of NewNode
+     *
+     * @see     xp://net.xp_framework.tools.vm.nodes.NewNode
+     */
+    #[@test]
+    public function typeOfStringOffset() {
+      $this->assertEquals('string', $this->emitter->typeOf(new VariableNode('$b')));
     }
 
     /**
