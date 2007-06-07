@@ -29,7 +29,7 @@
   }
   
   $lexer= new Lexer(file_get_contents($in), $in);
-  $out= new File($p->value('out', 'o', str_replace('.xp', '.php5', $in)));
+  $out= new File($p->value('out', 'o', str_replace('.xp', '.php', $in)));
   
   $parser= new Parser();
   $nodes= $parser->parse($lexer);
