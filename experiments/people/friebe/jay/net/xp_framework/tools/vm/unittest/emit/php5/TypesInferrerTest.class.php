@@ -41,6 +41,7 @@
         class Test {
           public int $integer= 1;
           public Now $now= NULL;
+          private php.ReflectionClass $r= NULL;
           
           public __construct() {
             $this->now= new Now();
@@ -48,6 +49,11 @@
           
           public Now getNow() {
             return $this->now;
+          }
+          
+          public string isSubclassOf(string $name) {
+            $this->r= new php.ReflectionClass($this);
+            return $this->r->isSubclassOf(new php.ReflectionClass($name));
           }
         }
         
@@ -61,9 +67,9 @@
         
         $t= new Test();
         $chained_n= $t->getNow()->toString();
-      '), '<setUp>'));
+      ', __FILE__), '<setUp>'));
       if ($this->emitter->hasErrors()) {
-        throw new PrerequisitesNotMetError('Fixture source contains errors '.xp::stringOf($this->emitter->getErrors()));
+        throw new PrerequisitesNotMetError('Fixture source contains errors '.xp::stringOf($this->emitter->getErrors()), 'parse');
       }
     }
     
