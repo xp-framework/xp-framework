@@ -61,6 +61,7 @@
       $this->context['overloaded']= array();
       $this->context['annotations']= array();
       $this->context['default']= array();
+      $this->context['operators']= array();
       $this->context['class']= $this->context['method']= '<main>';
       
       // Builtin classes
@@ -111,6 +112,7 @@
       if (is_array($type)) return $this->typeName($type[0]).'[]';
       if (in_array($type, $primitives)) return $type;
       if ('mixed' == $type) return NULL;
+      if ('array' == $type) return 'mixed[]';
       if ('self' == $type) return $this->context['class'];
       if ('parent' == $type) return $this->context['classes'][$this->context['class']][0];
       
