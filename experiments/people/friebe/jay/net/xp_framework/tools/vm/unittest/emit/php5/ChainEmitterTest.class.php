@@ -34,7 +34,7 @@
     #[@test]
     public function chainedMethodCallsAfterConstructor() {
       $this->assertSourcecodeEquals(
-        'echo xp::create(new lang·Object())->getClass()->getName();',
+        'echo create(new lang·Object())->getClass()->getName();',
         $this->emit('echo new lang.Object()->getClass()->getName();')
       );
     }
@@ -46,7 +46,7 @@
     #[@test]
     public function chainedArrayOffsetAfterMethodCall() {
       $this->assertSourcecodeEquals(
-        'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0];',
+        'echo xp::wraparray(create(new lang·Object())->getClass()->getName())->backing[0];',
         $this->emit('echo new lang.Object()->getClass()->getName()[0];')
       );
     }
@@ -58,7 +58,7 @@
     #[@test]
     public function chainedArrayOffsetsAfterMethodCall() {
       $this->assertSourcecodeEquals(
-        'echo xp::wraparray(xp::create(new lang·Object())->getClass()->getName())->backing[0][0];',
+        'echo xp::wraparray(create(new lang·Object())->getClass()->getName())->backing[0][0];',
         $this->emit('echo new lang.Object()->getClass()->getName()[0][0];')
       );
     }
@@ -110,7 +110,7 @@
           }
         }; 
 
-        echo date(\'r\', xp::create(new main·News())->date->stamp->intValue());
+        echo date(\'r\', create(new main·News())->date->stamp->intValue());
         '),
         $this->emit('class Long {
           public int $number;
