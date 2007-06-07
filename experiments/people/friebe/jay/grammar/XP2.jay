@@ -661,7 +661,7 @@ return_type_name:
           $$= array($1); 
         }
     |   T_VOID      { 
-          $$= NULL; 
+          $$= 'void'; 
         }
 ;
 
