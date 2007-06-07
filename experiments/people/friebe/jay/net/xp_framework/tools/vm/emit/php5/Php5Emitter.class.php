@@ -376,14 +376,22 @@
       // Check inheritance
       if (isset($this->context['classes'][$ntype]) && isset($this->context['classes'][$type])) {
         $parent= $ntype;
-        while ($parent= $this->context['classes'][$parent][0]) {
+        do {
           if ($parent === $type) return $parent;
-        }
+          if (
+            isset($this->context['classes'][$parent][1]) && 
+            isset($this->context['classes'][$parent][1][$type])
+          ) return $type;
+        } while ($parent= $this->context['classes'][$parent][0]);
         
         $parent= $type;
-        while ($parent= $this->context['classes'][$parent][0]) {
+        do {
           if ($parent === $ntype) return $parent;
-        }
+          if (
+            isset($this->context['classes'][$parent][1]) && 
+            isset($this->context['classes'][$parent][1][$ntype])
+          ) return $type;
+        } while ($parent= $this->context['classes'][$parent][0]);
       }
       
       // Every check failed, raise an error
@@ -821,6 +829,7 @@
       
       // Interfaces
       if ($node->interfaces) {
+        $this->context['classes'][$this->context['class']][1]= array();
         $this->bytes.= ' implements ';
         foreach ($node->interfaces as $name) {
           $interface= $this->qualifiedName($name);
@@ -833,6 +842,8 @@
 
             $this->addError(new CompileError(1001, 'Interface '.$interface.' implemented by '.$node->name.' does not exist'));
           }
+          
+          $this->context['classes'][$this->context['class']][1][$interface]= TRUE;
           $this->bytes.= $interface.', ';
         }
         $this->bytes= substr($this->bytes, 0, -2);
