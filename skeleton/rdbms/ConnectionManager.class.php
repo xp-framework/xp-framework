@@ -125,7 +125,7 @@
      *
      * @param   string hostName
      * @param   int num default -1 offset, -1 for all
-     * @return  &rdbms.DBConnection
+     * @return  mixed
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
     public function getByHost($hostName, $num= -1) {
