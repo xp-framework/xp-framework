@@ -14,7 +14,10 @@ try {
   exit(-1);
 }
 
-Console::writeLine($class->toString(), ' extends ', $class->getParentClass()->toString(), ' {');
+$parent= $class->getParentClass();
+Console::write($class->toString());
+$parent && Console::write('extends ', $parent->toString());
+Console::writeLine(' {');
 foreach ($class->getFields() as $field) {
   Console::writeLine('  ', $field->toString());
 }
@@ -25,3 +28,4 @@ foreach ($class->getMethods() as $method) {
   Console::writeLine('  ', $method->toString());
 }
 Console::writeLine('}');
+// }}}
