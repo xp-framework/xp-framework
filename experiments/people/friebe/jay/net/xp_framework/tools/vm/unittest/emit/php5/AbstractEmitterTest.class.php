@@ -84,7 +84,7 @@
     protected function assertSourcecodeEquals($expected, $emitted) {
       if (!is_string($emitted)) return;
 
-      $expected= $this->normalizeSourcecode("<?php\n ".$expected.' ?>');
+      $expected= $this->normalizeSourcecode("<?php\n ".$expected).' ?>';
       $emitted= $this->normalizeSourcecode($emitted);
       $this->assertEquals($expected, $emitted);
     }
