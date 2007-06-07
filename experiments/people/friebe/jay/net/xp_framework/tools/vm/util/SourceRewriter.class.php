@@ -155,6 +155,10 @@
             break;
 
           case ST_FUNCTION.T_STRING:
+            if ('__static' == $t[1]) {
+              array_unshift($states, ST_STATIC_INITIALIZER);
+              break;
+            }
             $skip= FALSE;
             $abstract= FALSE;
             foreach ($this->names->current->methods as $method) {
@@ -179,6 +183,12 @@
 
             $method= NULL;
             throw new IllegalStateException('Cannot find method '.$t[1].'()');
+            break;
+          
+          case ST_STATIC_INITIALIZER.'{':
+            $skip= FALSE;
+            array_shift($states);
+            array_unshift($states, ST_FUNCTION_BODY);
             break;
 
           case ST_FUNCTION.'(':
