@@ -347,6 +347,19 @@
   }
   // }}}
 
+  // {{{ internal void __except(Exception $e)
+  //     Uncaught exceptions callback
+  function __except($e) {
+    if ($e instanceof lang·SystemExit) {
+      exit($e->message);
+    } else if ($e instanceof lang·XPException) {
+      echo $e->toString();
+      exit(0x7f);
+    }
+    echo 'Unhandled ', $e;
+  }
+  // }}}
+
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
@@ -532,7 +545,8 @@
 
   // Hooks
   set_error_handler('__error');
-  
+  set_exception_handler('__except');  
+
   // Registry initialization
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
