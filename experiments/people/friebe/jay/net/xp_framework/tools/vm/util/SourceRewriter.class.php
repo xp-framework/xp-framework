@@ -9,6 +9,7 @@
   define('ST_LOOKING_FOR_CLASS',          'looking:class');
   define('ST_FUNCTION_ARGS',              'function-args');
   define('ST_USES_LIST',                  'uses-list');
+  define('ST_STATIC_INITIALIZER',         'static-initializer');
   
   /**
    * Rewrites sourececode
@@ -173,7 +174,12 @@
                 if (empty($return)) {
                   $type= 'void ';
                 } else {
-                  $type= $this->names->forType($return[0]->type).' ';
+                  try {
+                    $type= $this->names->forType($return[0]->type).' ';
+                  } catch (IllegalArgumentException $e) {
+                    Console::writeLine('In method '.$method->name.'() returning '.xp::stringOf($return[0]).' -> '.$e->getMessage());
+                    $type= 'mixed ';
+                  }
                 }
               }
 
@@ -189,6 +195,7 @@
             $skip= FALSE;
             array_shift($states);
             array_unshift($states, ST_FUNCTION_BODY);
+            $brackets= 1;
             break;
 
           case ST_FUNCTION.'(':
