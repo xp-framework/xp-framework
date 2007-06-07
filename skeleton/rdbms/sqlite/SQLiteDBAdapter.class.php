@@ -47,8 +47,7 @@
     /**
      * Retrieve list of all databases
      *
-     * @param   
-     * @return  
+     * @return  string[]
      */
     public function getDatabases() {
       $dbs= array();
@@ -62,8 +61,8 @@
     /**
      * Retrive list of all tables
      *
-     * @param   
-     * @return  
+     * @param   string database
+     * @return  string[]
      */
     public function getTables($database) {
       $t= array();
