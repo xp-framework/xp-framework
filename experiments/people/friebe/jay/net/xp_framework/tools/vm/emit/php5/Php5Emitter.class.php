@@ -59,7 +59,6 @@
       $this->context['uses']= array();
       $this->context['types']= array();
       $this->context['overloaded']= array();
-      $this->context['annotations']= array();
       $this->context['default']= array();
       $this->context['operators']= array();
       $this->context['class']= $this->context['method']= '<main>';
@@ -448,16 +447,39 @@
      * @param   net.xp_framework.tools.vm.AnnotationNode[] parameters
      */
     public function emitAnnotations($annotations) {
-      $list= array();
+      $source= '';
       foreach ($annotations as $annotation) {
         
         // TODO: Generic compile-time-only annotations concept!
         if ('overloaded' == $annotation->type) continue;
 
-        $list[$annotation->type]= $annotation->value;
+        $source.= '@'.$annotation->type;
+        if ($annotation->value instanceof ConstantReferenceNode && 'NULL' === $annotation->value->name) {
+
+          // [@test]
+        } else if ($annotation->value instanceof ArrayDeclarationNode) {
+
+          // [@webservice(name= "XX", public= TRUE, roles= array("guest", "any"))]
+          $source.= '(';
+          foreach ($annotation->value->elements as $key => $value) {
+            $source.= trim($key, '\'"').'= ';
+
+            $b= $this->bytes;
+            $this->bytes= '';
+            $this->emit($value);
+            $source.= $this->bytes;
+            $this->bytes= $b;
+          }
+          $source.= ')';
+        } else if (is_string($annotation->value)) {
+
+          // [@example('Calculator'))]
+          $source.= '('.$annotation->value.')';
+        }
+        $source.= ', ';
       }
       
-      $list && $this->context['annotations'][$this->context['class']][$this->context['method']]= $list;
+      if ('' != $source) $this->bytes.= "\n#[".rtrim($source, ', ')."]\n";
     }
     
     /**
@@ -809,7 +831,6 @@
       $this->setContextClass($class);
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
       $this->context['operators'][$this->context['class']]= array();
-      $this->context['annotations'][$this->context['class']]= array();
 
       $this->emitAnnotations($node->annotations);
       
@@ -905,21 +926,6 @@
       // Check interface implementations
       foreach ($node->interfaces as $interface) {
         $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
-      }
-
-      // Annotations list
-      if (!empty($this->context['annotations'][$this->context['class']])) {
-        $this->bytes.= 'function __'.$this->context['class']."meta() { return array(\n";
-        foreach ($this->context['annotations'][$this->context['class']] as $scope => $list) {
-          $this->bytes.= "'".$scope."' => array(\n";
-          foreach ($list as $key => $value) {
-            $this->bytes.= "'".$key."' => ";
-            $this->emit($value);
-            $this->bytes.= ",\n";
-          }
-          $this->bytes.= "),\n";
-        }
-        $this->bytes.= ');}';
       }
 
       $this->setContextClass('<main>');
