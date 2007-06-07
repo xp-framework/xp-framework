@@ -65,7 +65,7 @@
     /**
      * Get the names of classes in this package, not loading them.
      *
-     * @return  string
+     * @return  string[]
      */
     public function getClassNames() { 
       $classes= array();
@@ -236,6 +236,7 @@
     /**
      * Creates a hashcode for this package
      * 
+     * @return  string
      */
     public function hashCode() {
       return 'P['.$this->name;

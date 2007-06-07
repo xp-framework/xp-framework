@@ -53,7 +53,7 @@
     /**
      * Returns whether this argument is passed by reference
      *
-     * @return  string
+     * @return  bool
      */
     #[@deprecated]
     public function isPassedByReference() {
