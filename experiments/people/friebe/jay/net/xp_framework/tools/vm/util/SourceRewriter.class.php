@@ -102,7 +102,7 @@
 
             sort($used);
             $uses= '';
-            foreach ($used as $classname) {
+            foreach (array_unique($used) as $classname) {
               $uses.= '  import '.$classname.";\n";
             }
             $out= rtrim($out)."\npackage ".$this->names->packagedNameOf($package)." {\n".$uses."\n  ";
@@ -116,7 +116,7 @@
 
               sort($used);
               $uses= '';
-              foreach ($used as $classname) {
+              foreach (array_unique($used) as $classname) {
                 $uses.= '  import '.$classname.";\n";
               }
               $out= rtrim($out)."\npackage ".$this->names->packagedNameOf($package)." {\n".$uses."\n  ";
@@ -295,7 +295,9 @@
 
           case ST_CLASS.T_EXTENDS:
             if ('Object' == $tokens[$i+ 2][1]) {    // Look ahead
-              $skip= TRUE;
+              $i+= 3;   // [1] = extends, [2] = WS, [3] = Object
+              $t= '';
+              break;
             }
             array_unshift($states, ST_LOOKING_FOR_CLASS);
             break;
