@@ -101,5 +101,17 @@
       $this->assertEquals('util.collection.HashTable<lang.types.Number, lang.types.String>', $t->type);
       $this->assertEquals('', $t->text);
     }
+    
+    /**
+     * Test generic return with fully qualified class names
+     *
+     */
+    #[@test]
+    public function bracketsDoNotConfuseGenerics() {
+      $t= $this->makeReturn('int equal: 0, date before $this: < 0, date after $this: >');
+      $this->assertEquals('int', $t->type);
+      $this->assertEquals('equal: 0, date before $this: < 0, date after $this: >', $t->text);
+    }
+    
   }
 ?>
