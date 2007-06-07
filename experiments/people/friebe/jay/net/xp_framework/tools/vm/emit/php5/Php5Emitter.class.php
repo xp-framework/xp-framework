@@ -87,9 +87,9 @@
 
         $d= dir($node.$pdir);
         while ($file= $d->read()) {
-          if (2 != sscanf($file, '%[^.].%s', $classname, $ext) || 'xp' != $ext) continue;
+          if (2 != sscanf($file, '%[^.].%s', $classname, $ext) || 'class.xp' != $ext) continue;
           
-          $use && $this->context['uses'][$package.'·'.$classname]= $d->path.DIRECTORY_SEPARATOR.$file;
+          $use && $this->context['uses'][$package.'.'.$classname]= $d->path.DIRECTORY_SEPARATOR.$file;
           $this->context['imports'][$this->context['package']][$classname]= $package.'·'.$classname;
           $imported++;
         }
