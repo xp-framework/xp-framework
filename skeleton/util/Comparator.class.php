@@ -18,8 +18,8 @@
      * zero, or a positive integer as the first argument is less than, 
      * equal to, or greater than the second.
      *
-     * @param   &mixed a
-     * @param   &mixed b
+     * @param   mixed a
+     * @param   mixed b
      * @return  int
      */
     public function compare($a, $b);
