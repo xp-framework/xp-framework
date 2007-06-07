@@ -60,6 +60,7 @@
     'net.xp_framework.tools.vm.nodes.PreDecNode',
     'net.xp_framework.tools.vm.nodes.ReturnNode',
     'net.xp_framework.tools.vm.nodes.SilencedExpressionNode',
+    'net.xp_framework.tools.vm.nodes.StaticInitializerNode',
     'net.xp_framework.tools.vm.nodes.StaticMemberNode',
     'net.xp_framework.tools.vm.nodes.StaticVariableNode',
     'net.xp_framework.tools.vm.nodes.StaticVariableListNode',
@@ -609,6 +610,9 @@ class_statement_list:
 class_statement:
 		non_empty_member_modifiers optional_class_type class_variable_declaration ';' {
           $$= new MemberDeclarationListNode($1, $2, $3); $$->position= $yyLex->position; 
+        }
+    |   T_STATIC '{' inner_statement_list '}' {
+          $$= new StaticInitializerNode($3);
         }
 	|	class_constant_declaration ';' {
           $$= PNode::create('ClassConstantDeclarationList', array($1, $2)); 
