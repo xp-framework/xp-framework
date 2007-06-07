@@ -247,9 +247,8 @@
      * @return  bool
      */
     public function isSubclassOf($name) {
-      // Catch bordercase (ZE bug?)
-      if ($name == $this->name) return FALSE;
-      return $this->_reflect->isSubclassOf(new ReflectionClass(xp::reflect($name)));
+      if ($name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
+      return $this->_reflect->isSubclassOf(XPClass::forName($name)->_reflect);
     }
     
     /**
