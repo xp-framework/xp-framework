@@ -33,6 +33,19 @@
         '~' => 'concat',
         '%' => 'modulo',
       );
+    
+    protected static 
+      $builtin= array();
+    
+    static function __static() {
+      foreach (get_declared_classes() as $name) {
+        $r= new ReflectionClass($name);
+        if ($r->isInternal()) {
+          self::$builtin[$name]= array();
+        }
+      }
+      self::$builtin['lang·Object']= array();
+    }
       
     /**
      * Constructor
@@ -51,14 +64,7 @@
       $this->context['class']= $this->context['method']= '<main>';
       
       // Builtin classes
-      $this->context['classes']= array(
-        'lang·Object'    => array(
-          'toString'        => TRUE,
-          'getClassName'    => TRUE,
-        ),
-      );
-      $this->context['types']['lang·Object::getClassName']= 'string';
-      $this->context['types']['lang·Object::toString']= 'string';
+      $this->context['classes']= self::$builtin;
       
       // Auto-import lang.*
       if (!$langImported) $langImported= $this->importAllOf('lang', FALSE);
@@ -104,6 +110,7 @@
 
       if (is_array($type)) return $this->typeName($type[0]).'[]';
       if (in_array($type, $primitives)) return $type;
+      if ('mixed' == $type) return NULL;
       if ('self' == $type) return $this->context['class'];
       if ('parent' == $type) return $this->context['classes'][$this->context['class']][0];
       
@@ -251,7 +258,17 @@
           ? $this->qualifiedName($node->class) 
           : $this->typeOf($node->class)
         );
-        return $this->context['types'][$ctype.'::$'.$node->member->name];
+        if (!$node->chain) return $this->context['types'][$ctype.'::$'.$node->member->name];
+
+        $cclass= $this->context['class'];   // Backup
+        $this->setContextClass($this->context['types'][$ctype.'::$'.$node->member->name]);
+        foreach ($node->chain as $chain) {
+          $this->setContextClass($this->typeOf($chain));
+        }
+        $type= $this->context['class'];
+        $this->setContextClass($cclass);    // Restore
+        
+        return $type;
       } else if ($node instanceof ArrayDeclarationNode) {
         return array($node->type);
       } else if ($node instanceof ArrayAccessNode) {
@@ -701,7 +718,7 @@
           explode(PATH_SEPARATOR, CLASSPATH),
           array(dirname($this->getFilename()))
         ) as $node) {
-          $in= $node.DIRECTORY_SEPARATOR.$filename.'.xp';
+          $in= $node.DIRECTORY_SEPARATOR.$filename.'.class.xp';
           if (!file_exists($in)) continue;
           
           $t= new Timer();
@@ -735,7 +752,7 @@
           }
 
           // XXX TODO XXX Error handling
-          FileUtil::setContents(new File(str_replace('.xp', '.php5', $in)), $emitter->getResult());
+          // FileUtil::setContents(new File(str_replace('.xp', '.php', $in)), $emitter->getResult());
 
           // XXX TODO Merge not only classes but rest, too...
           foreach (array_keys($emitter->context['classes']) as $merge) {
@@ -754,7 +771,7 @@
          
           $this->context['uses'][strtr($q, array(
             'main'  => dirname($this->getFilename()),
-            '·'     => DIRECTORY_SEPARATOR
+            '·'     => '.'    // NAMESPACE_SEPARATOR_IN_USES_STATEMENTS
           ))]= $in;
           return $this->context['classes'][$q];
         }
@@ -777,7 +794,8 @@
      */
     public function emitClassDeclaration($node) {
       $this->context['properties']= array();
-      $this->setContextClass($this->qualifiedName($node->name, FALSE));
+      $class= $this->qualifiedName($node->name, FALSE);
+      $this->setContextClass($class);
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
       $this->context['operators'][$this->context['class']]= array();
       $this->context['annotations'][$this->context['class']]= array();
@@ -787,7 +805,7 @@
       $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
       $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
 
-      $this->bytes.= 'class '.$this->context['class'].' extends '.$extends;
+      $this->bytes.= 'class '.$this->context['class'].('lang·Object' == $class ? '' : ' extends '.$extends);
 
       // Copy members from parent class
       if (NULL === ($parent= $this->lookupClass($extends))) {
@@ -973,7 +991,7 @@
         $type= $this->typeOf($node->class);
         $this->bytes.= '->';
       } else {                            // Chains
-        $type= $this->context['class'];
+        $type= $this->context['class'];   
         $this->bytes.= '->';
       }
 
@@ -1048,7 +1066,7 @@
       if (!$node->chain) return;
       
       $cclass= $this->context['class'];   // backup
-      $node->class && $this->setContextClass($this->typeOf($node->class));
+      $node->class && $this->setContextClass($this->typeOf($node->member));
       foreach ($node->chain as $chain) {
         $this->emit($chain);
         $this->setContextClass($this->typeOf($chain));
@@ -1376,7 +1394,7 @@
       
       // Check for void methods
       // The main block may contain returns with arbitrary type
-      if ('<main>' !== $this->context['method'] && NULL === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
+      if ('<main>' !== $this->context['method'] && 'void' === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
         $this->addError(new CompileError(3002, sprintf(
           'Method %s() declared void but returns %s type',
           $this->context['class'].'::'.$this->context['method'],
@@ -1385,7 +1403,10 @@
         return;
       }
 
-      $this->checkedType($node->value, $this->context['types'][$this->context['class'].'::'.$this->context['method']]);
+      $this->checkedType(
+        $node->value, 
+        $this->context['types'][$this->context['class'].'::'.$this->context['method']]
+      );
       $this->emit($node->value);
     }
 
@@ -1892,6 +1913,17 @@
     public function emitClone($node) { 
       $this->bytes.= 'clone ';
       $this->emit($node->expression);
+    }
+
+    /**
+     * Emits static initializer block
+     *
+     * @param   net.xp_framework.tools.vm.VNode node
+     */
+    public function emitStaticInitializer($node) { 
+      $this->bytes.= 'static function __static {';
+      $this->emitAll($node->block);
+      $this->bytes.= '}';
     }
   }
 ?>
