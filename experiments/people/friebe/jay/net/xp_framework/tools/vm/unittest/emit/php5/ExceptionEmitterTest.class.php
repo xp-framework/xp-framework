@@ -14,13 +14,13 @@
   class ExceptionEmitterTest extends AbstractEmitterTest {
 
     /**
-     * Tests throw gets wrapped by xp::exception()
+     * Tests simple throw expression
      *
      */
     #[@test]
-    public function throwGetsWrapped() {
+    public function simpleThrow() {
       $this->assertSourcecodeEquals(
-        'throw xp::exception(new lang·IllegalArgumentException(\'Blam!\'));',
+        'throw new lang·IllegalArgumentException(\'Blam!\');',
         $this->emit('throw new lang.IllegalArgumentException("Blam!");')
       );
     }
@@ -34,12 +34,9 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
-          $e= $__e->cause; 
+        } catch (lang·Exception $e) { 
           $e->printStackTrace();
-        } else { 
-          throw $__e; 
-        } };'),
+        };'),
         $this->emit('try {
           echo 1;
         } catch (lang.Exception $e) {
@@ -57,13 +54,9 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
-          $e= $__e->cause; 
+        } catch (lang·Exception $e) { 
           $e->printStackTrace();
-        } else { 
-          echo 2; 
-          throw $__e; 
-        } }
+        }
         echo 2; ;'),
         $this->emit('try {
           echo 1;
@@ -103,15 +96,11 @@
           $f= new main·FileReader($file); 
           try { 
             $f->open(); 
-          } catch (XPException $__e) { if ($__e->cause instanceof lang·Exception) { 
-            $e= $__e->cause; 
+          } catch (lang·Exception $e) { 
             $e->printStackTrace();
             $f->close(); 
             return FALSE;
-          } else { 
-            $f->close(); 
-            throw $__e; 
-          } }
+          }
           $f->close(); ; 
           return TRUE; 
         };'),
@@ -154,7 +143,7 @@
     #[@test]
     public function systemExit() {
       $this->assertSourcecodeEquals(
-        'throw xp::exception(new lang·SystemExit(1));',
+        'throw new lang·SystemExit(1);',
         $this->emit('exit(1);')
       );
     }
@@ -173,7 +162,7 @@
     }
 
     /**
-     * Tests try/catch block
+     * Tests try/catch+ block
      *
      */
     #[@test]
@@ -181,21 +170,104 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (XPException $__e) { if ($__e->cause instanceof lang·IllegalArgumentException) { 
-          $e= $__e->cause; 
+        } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
-        } else if ($__e->cause instanceof lang·Exception) { 
-          $e= $__e->cause; 
-          $e->printStackTrace(); 
-        } else { 
-          throw $__e; 
-        } };'),
+        } catch (lang·Exception $e) { 
+          $e->printStackTrace();
+        };'),
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
         } catch (lang.Exception $e) {
           $e->printStackTrace();
+        }')
+      );
+    }
+
+
+    /**
+     * Tests try/catch+/finally block
+     *
+     */
+    #[@test]
+    public function multipleCatchesWithFinally() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'try { 
+          echo 1; 
+        } catch (lang·IllegalArgumentException $e) { 
+          $e->printStackTrace();
+        } catch (lang·Exception $e) { 
+          $e->printStackTrace();
+        }
+        echo 2; ;
+        '),
+        $this->emit('try {
+          echo 1;
+        } catch (lang.IllegalArgumentException $e) {
+          $e->printStackTrace();
+        } catch (lang.Exception $e) {
+          $e->printStackTrace();
+        } finally {
+          echo 2;
+        }')
+      );
+    }
+
+    /**
+     * Tests try/catch+/finally block
+     *
+     */
+    #[@test]
+    public function multipleCatchesWithFinallyRethrow() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'try { 
+          echo 1; 
+        } catch (lang·IllegalArgumentException $e) { 
+          $e->printStackTrace();
+        } catch (lang·Exception $e) { 
+          echo 2; 
+          throw $e;
+        }
+        echo 2; ;
+        '),
+        $this->emit('try {
+          echo 1;
+        } catch (lang.IllegalArgumentException $e) {
+          $e->printStackTrace();
+        } catch (lang.Exception $e) {
+          throw $e;
+        } finally {
+          echo 2;
+        }')
+      );
+    }
+
+    /**
+     * Tests try/catch+/finally block
+     *
+     */
+    #[@test]
+    public function multipleCatchesWithFinallyReturn() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'try { 
+          echo 1; 
+        } catch (lang·IllegalArgumentException $e) { 
+          $e->printStackTrace();
+        } catch (lang·Exception $e) { 
+          echo 2; 
+          return -1;
+        }
+        echo 2; ;
+        '),
+        $this->emit('try {
+          echo 1;
+        } catch (lang.IllegalArgumentException $e) {
+          $e->printStackTrace();
+        } catch (lang.Exception $e) {
+          return -1;
+        } finally {
+          echo 2;
         }')
       );
     }
