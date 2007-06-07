@@ -92,7 +92,7 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceof Generic && !isset($protect[$arg->hashCode()])) {
+      } else if ($arg instanceof lang·Generic && !isset($protect[$arg->hashCode()])) {
         $protect[$arg->hashCode()]= TRUE;
         $s= $arg->toString();
         unset($protect[$arg->hashCode()]);
