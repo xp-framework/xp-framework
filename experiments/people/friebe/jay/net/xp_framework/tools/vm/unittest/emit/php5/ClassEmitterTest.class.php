@@ -32,7 +32,7 @@
     #[@test]
     public function classInPackage() {
       $this->assertSourcecodeEquals(
-        'class de·thekid·Test extends lang·Object{};',
+        '$package= \'de.thekid\'; class de·thekid·Test extends lang·Object{};',
         $this->emit('package de.thekid { class Test { } }')
       );
     }

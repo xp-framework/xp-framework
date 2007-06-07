@@ -32,7 +32,7 @@
     #[@test]
     public function interfaceInPackage() {
       $this->assertSourcecodeEquals(
-        'interface de·thekid·Traceable{};',
+        '$package= \'de.thekid\'; interface de·thekid·Traceable{};',
         $this->emit('package de.thekid { interface Traceable { } }')
       );
     }
@@ -44,7 +44,7 @@
     #[@test]
     public function interfaceDeclarationsAreOmitted() {
       $this->assertSourcecodeEquals(
-        'interface de·thekid·Traceable{};',
+        '$package= \'de.thekid\'; interface de·thekid·Traceable{};',
         $this->emit('package de.thekid { interface Traceable { public void setTrace($cat); } }')
       );
     }
