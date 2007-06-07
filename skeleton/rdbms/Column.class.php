@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
+  uses('rdbms.SQLFragment', 'rdbms.DBConnection', 'rdbms.criterion.Restrictions');
 
   /**
    * represents a table column
