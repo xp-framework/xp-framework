@@ -209,7 +209,8 @@
             $brackets++;
             break;
 
-          case ST_FUNCTION_ARGS.T_STRING:   // Type hint
+          case ST_FUNCTION_ARGS.T_STRING:   // Class type hint
+          case ST_FUNCTION_ARGS.T_ARRAY:    // Array type hint
             $arguments[$offset]->type= $t[1];
             $skip= TRUE;
             break;
