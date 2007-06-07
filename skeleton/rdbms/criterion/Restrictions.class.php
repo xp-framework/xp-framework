@@ -24,7 +24,7 @@
      *
      * @param   string field
      * @param   mixed[] values
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function in($field, $values) {
       return new SimpleExpression($field, $values, IN);
@@ -35,7 +35,7 @@
      *
      * @param   string field
      * @param   mixed[] values
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function notIn($field, $values) {
       return new SimpleExpression($field, $values, NOT_IN);
@@ -46,7 +46,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function like($field, $value) {
       return new SimpleExpression($field, $value, LIKE);
@@ -58,7 +58,7 @@
      * @see     php://sql_regcase
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function ilike($field, $value) {
       return new SimpleExpression($field, sql_regcase($value), LIKE);
@@ -69,7 +69,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function equal($field, $value) {
       return new SimpleExpression($field, $value, EQUAL);
@@ -80,7 +80,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function notEqual($field, $value) {
       return new SimpleExpression($field, $value, NOT_EQUAL);
@@ -91,7 +91,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function lessThan($field, $value) {
       return new SimpleExpression($field, $value, LESS_THAN);
@@ -102,7 +102,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function greaterThan($field, $value) {
       return new SimpleExpression($field, $value, GREATER_THAN);
@@ -113,7 +113,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function lessThanOrEqualTo($field, $value) {
       return new SimpleExpression($field, $value, LESS_EQUAL);
@@ -124,7 +124,7 @@
      *
      * @param   string field
      * @param   mixed value
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function greaterThanOrEqualTo($field, $value) {
       return new SimpleExpression($field, $value, GREATER_EQUAL);
@@ -136,7 +136,7 @@
      * @param   string field
      * @param   mixed lo
      * @param   mixed hi
-     * @return  rdbms.criterion.SimpleExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function between($field, $lo, $hi) {
       return new BetweenExpression($field, $lo, $hi);
@@ -148,7 +148,7 @@
      * @param   rdbms.criterion.Criterion first
      * @param   rdbms.criterion.Criterion second
      * @param   rdbms.criterion.Criterion*
-     * @return  rdbms.criterion.LogicalExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function anyOf($first, $second) {
       $args= array($first, $second);
@@ -164,7 +164,7 @@
      * @param   rdbms.criterion.Criterion first
      * @param   rdbms.criterion.Criterion second
      * @param   rdbms.criterion.Criterion*
-     * @return  rdbms.criterion.LogicalExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function allOf($first, $second) {
       $args= array($first, $second);
@@ -178,7 +178,7 @@
      * Return the negation of an expression
      *
      * @param   rdbms.criterion.Criterion expression
-     * @return  rdbms.criterion.NegationExpression
+     * @return  rdbms.criterion.Criterion
      */
     public static function not($expression) {
       return new NegationExpression($expression);
