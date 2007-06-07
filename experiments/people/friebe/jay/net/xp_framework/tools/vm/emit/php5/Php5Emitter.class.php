@@ -540,7 +540,7 @@
      */
     public function emitPackageDeclaration($node) { 
       $this->context['package']= $node->name.PACKAGE_SEPARATOR;
-      $this->bytes.= '$package= \''.$node->name.'\';';
+      $this->bytes.= '$package= \''.$node->name.'\'; ';
       foreach ($node->statements as $node) {
         $this->emit($node);
       }
