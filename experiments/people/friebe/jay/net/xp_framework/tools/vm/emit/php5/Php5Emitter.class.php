@@ -540,6 +540,7 @@
      */
     public function emitPackageDeclaration($node) { 
       $this->context['package']= $node->name.PACKAGE_SEPARATOR;
+      $this->bytes.= '$package= \''.$node->name.'\';';
       foreach ($node->statements as $node) {
         $this->emit($node);
       }
@@ -865,7 +866,7 @@
           public function __get($name) {
             if (!isset(self::$__properties[$name])) die(\'Read of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][0]) {
-              throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
+              throw new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\');
             } else if (\'$\' == self::$__properties[$name][0][0]) {
               return $this->{substr(self::$__properties[$name][0], 1)};
             } else {
@@ -876,7 +877,7 @@
           public function __set($name, $value) {
             if (!isset(self::$__properties[$name])) die(\'Write of non-existant property "\'.$name.\'"\');
             if (NULL === self::$__properties[$name][1]) {
-              throw xp::exception(new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\'));
+              throw new lang·IllegalAccessException(\'Cannot access property "\'.$name.\'"\');
             } else if (\'$\' == self::$__properties[$name][1][0]) {
               $this->{substr(self::$__properties[$name][1], 1)}= $value;
             } else {
@@ -939,13 +940,13 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emitExitFunctionCall($node) {
-      $this->bytes.= 'throw xp::exception(new lang·SystemExit(';
+      $this->bytes.= 'throw new lang·SystemExit(';
       switch (sizeof($node->arguments)) {
         case 0: break;
         case 1: $this->emit($node->arguments[0]); break;
         default: $this->addError(new CompileError(4000, 'Wrong number of arguments to exit()'));
       }
-      $this->bytes.= '))';
+      $this->bytes.= ')';
     }
     
     public function emitMemberName($name) {
@@ -1217,7 +1218,7 @@
     }
 
     /**
-     * Emits News
+     * Emits New nodes
      *
      * @param   net.xp_framework.tools.vm.VNode node
      */
@@ -1234,7 +1235,7 @@
       }
 
       if ($node->instanciation->declaration) {
-        $this->bytes.= 'xp::instance(\''.$this->qualifiedName($node->class->name).'\', array(';
+        $this->bytes.= 'newinstance(\''.$this->qualifiedName($node->class->name).'\', array(';
         foreach ($node->instanciation->arguments as $arg) {
           $this->emit($arg);
           $this->bytes.= ', ';
@@ -1341,11 +1342,10 @@
       $this->bytes.= "try {\n  ";
       $this->emitAll($node->statements);      
 
-      // Catch-all XPExceptions
-      $this->bytes.= '} catch (XPException $__e) { ';
-      $this->bytes.= 'if ($__e->cause instanceof '.$this->qualifiedName($node->firstCatch->class).') { ';
-      $this->bytes.= $node->firstCatch->variable.'= $__e->cause; ';
+      // First catch
+      $this->bytes.= '} catch ('.$this->qualifiedName($node->firstCatch->class).' '.$node->firstCatch->variable.') { ';
       
+      // Emit statements in catch block, injecting finally wherever necessary
       foreach ($node->firstCatch->statements as $stmt) {
         if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
           $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
@@ -1355,16 +1355,22 @@
         $this->bytes.= ';';
       }
       
+      // Additional catches
       foreach ($node->firstCatch->catches as $catch) {
-        $this->bytes.= '} else if ($__e->cause instanceof '.$this->qualifiedName($catch->class).') { ';
-        $this->bytes.= $catch->variable.'= $__e->cause; ';
-        $this->emitAll($catch->statements);
+        $this->bytes.= '} catch ('.$this->qualifiedName($catch->class).' '.$catch->variable.') { ';
+
+        // Emit statements in catch block, injecting finally wherever necessary
+        foreach ($catch->statements as $stmt) {
+          if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
+            $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
+          }
+
+          $this->emit($stmt);
+          $this->bytes.= ';';
+        }
       }
       
-      // Rethrow unhandled exceptions
-      $this->bytes.= '} else { ';
-      $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
-      $this->bytes.= ' throw $__e; } }';
+      $this->bytes.= '}';
       
       $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
     }
@@ -1560,9 +1566,9 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emitThrow($node) {       
-      $this->bytes.= 'throw xp::exception(';
+      $this->bytes.= 'throw ';
       $this->emit($node->value);
-      $this->bytes.= ')';
+      $this->bytes.= '';
     }
 
     /**
