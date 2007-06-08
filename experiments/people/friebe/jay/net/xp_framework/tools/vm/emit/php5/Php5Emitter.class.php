@@ -441,13 +441,38 @@
     }
 
     /**
-     * Emits a list of annotations
+     * Emits meta information - everything PHP does not offer builtin:
+     * <ul>
+     *   <li>Return type</li>
+     *   <li>Parameter types (including primitives)</li>
+     *   <li>Thrown exception</li>
+     *   <li>Annotations</li>
+     * </ul>
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.AnnotationNode[] parameters
+     * @param   string return
+     * @param   net.xp_framework.tools.vm.ParameterNode[] params
+     * @param   string[] throws
      */
-    public function emitAnnotations($annotations) {
-      $source= '';
+    protected function emitMetaInformation($annotations, $return, $params, $throws) {
+      $source= $meta= '';
+      
+      // Meta information
+      if ($return) {
+        $meta.= "\n * @return  ".$return;
+      }
+
+      if ($params) foreach ($params as $param) {
+        $meta.= "\n * @param   ".$param->type.' '.substr($param->name, 1);
+      }
+      
+      if ($throws) foreach ($throws as $thrown) {
+        $meta.= "\n * @throws  ".$thrown;
+      }
+      
+      if ('' != $meta) $this->bytes.= "\n/**".$meta."\n */\n";
+      
+      // Annotations
       foreach ($annotations as $annotation) {
         
         // TODO: Generic compile-time-only annotations concept!
@@ -481,7 +506,7 @@
       
       if ('' != $source) $this->bytes.= "\n#[".rtrim($source, ', ')."]\n";
     }
-    
+
     /**
      * Emits a single node
      *
@@ -658,8 +683,10 @@
       $this->context['method']= $method;
       $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
       
-      $this->emitAnnotations($node->annotations);
+      // Meta-Information: annotations, types, exceptions
+      $this->emitMetaInformation($node->annotations, $node->returns, $node->parameters, $node->thrown);
 
+      // Method declaration
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       
       // Method arguments
@@ -692,6 +719,7 @@
       $this->context['method']= $method;
       $this->setType($this->context['class'].'::'.$method, $this->context['class']);
       
+      $this->emitMetaInformation($node->annotations, NULL, $node->parameters, $node->thrown);
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       $embed= $this->emitParameters($node->parameters);
       $this->bytes.= ')';
@@ -832,7 +860,7 @@
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
       $this->context['operators'][$this->context['class']]= array();
 
-      $this->emitAnnotations($node->annotations);
+      $this->emitMetaInformation($node->annotations, NULL, NULL, NULL);
       
       $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
       $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
