@@ -82,7 +82,7 @@
     /**
      * Get URI
      *
-     * @return uri of this folder
+     * @return  string uri of this folder
      */    
     public function getURI() {
       return $this->uri;
