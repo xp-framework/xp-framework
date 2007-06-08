@@ -923,9 +923,11 @@
 
       $this->bytes.= '}';
       
-      // Check interface implementations
-      foreach ($node->interfaces as $interface) {
-        $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
+      // Check interface implementations if this class is not abstract
+      if (!($node->modifiers & MODIFIER_ABSTRACT)) {
+        foreach ($node->interfaces as $interface) {
+          $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
+        }
       }
 
       $this->setContextClass('<main>');
