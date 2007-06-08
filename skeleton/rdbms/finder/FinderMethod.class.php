@@ -29,7 +29,7 @@
      * @param   rdbms.finder.Finder finder
      * @param   lang.reflect.Method method
      */
-    function __construct($finder, $method) {
+    public function __construct($finder, $method) {
       $this->finder= $finder;
       $this->method= $method;
     }
@@ -39,7 +39,7 @@
      *
      * @return  string kind one of ENTITY | COLLECTION
      */
-    function getKind() {
+    public function getKind() {
       return current($this->method->getAnnotation('finder'));
     }
  
@@ -48,7 +48,7 @@
      *
      * @return  string method name
      */
-    function getName() {
+    public function getName() {
       return $this->method->getName();
     }
    
@@ -57,7 +57,7 @@
      *
      * @return  string
      */
-    function toString() {
+    public function toString() {
       return sprintf(
         '%s(%s %s::%s())',
         $this->getClassName(),
@@ -73,7 +73,7 @@
      * @param   mixed[] args default array()
      * @return  mixed
      */
-    function invoke($args= array()) {
+    public function invoke($args= array()) {
       try {
         return $this->method->invoke($this->finder, $args);
       } catch (Throwable $e) {
