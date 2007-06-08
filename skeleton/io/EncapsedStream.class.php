@@ -97,9 +97,7 @@
      * @return  bool
      */
     public function truncate() {
-      throw(new MethodNotImplementedException(
-        'Truncation not supported.'
-      ));
+      raise('lang.MethodNotImplementedException', 'Truncation not supported');
     }
     
     /**
@@ -159,7 +157,7 @@
      * @return  int number of bytes written
      */
     public function write($string) {
-      throw(new MethodNotImplementedException('Writing not supported.'));
+      raise('lang.MethodNotImplementedException', 'Writing not supported');
     }    
 
     /**
@@ -169,7 +167,7 @@
      * @return  int number of bytes written
      */
     public function writeLine($string) {
-      throw(new MethodNotImplementedException('Writing not supported.'));
+      raise('lang.MethodNotImplementedException', 'Writing not supported');
     }
     
     /**
