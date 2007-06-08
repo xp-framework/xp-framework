@@ -64,6 +64,9 @@
      *     ->addOrderBy('created_at', DESCENDING)
      *   ;
      * </code>
+     *
+     * @deprecated Use create() core functionality instead
+     * @return  rdbms.Criteria
      */
     public static function newInstance() {
       return new self();
