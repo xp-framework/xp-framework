@@ -36,7 +36,7 @@
     /**
      * Returns the value of this number as a float.
      *
-     * @return  int
+     * @return  float
      */
     public function floatValue() {
       return (float)$this->value;
