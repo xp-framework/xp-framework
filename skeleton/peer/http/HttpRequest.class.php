@@ -90,7 +90,7 @@
      */
     public function addHeaders($headers) {
       foreach ($headers as $key => $header) {
-        $this->headers[is('Header', $header) ? $header->getName() : $key] = $header;
+        $this->headers[$header instanceof Header ? $header->getName() : $key] = $header;
       }
     }
     
@@ -100,7 +100,7 @@
      * @return  string
      */
     public function getRequestString() {
-      if (is('RequestData', $this->parameters)) {
+      if ($this->parameters instanceof RequestData) {
         $query= '&'.$this->parameters->getData();
       } else {
         $query= '';
