@@ -38,7 +38,7 @@
       $builtin= array();
     
     static function __static() {
-      foreach (get_declared_classes() as $name) {
+      foreach (array_merge(get_declared_classes(), get_declared_interfaces()) as $name) {
         $r= new ReflectionClass($name);
         if ($r->isInternal()) {
           self::$builtin[$name]= array();
