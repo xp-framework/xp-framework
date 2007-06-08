@@ -217,7 +217,7 @@
     /**
      * Stream wrapper method stream_stat
      *
-     * @return  <string,string>
+     * @return  array<string, string>
      */
     public function stream_stat() {
       return array(
@@ -229,7 +229,7 @@
      * Stream wrapper method url_stat
      *
      * @param   string path
-     * @return  <string,string>
+     * @return  array<string, string>
      */
     public function url_stat($path) {
       list($name)= sscanf($path, 'dyn://%s');
