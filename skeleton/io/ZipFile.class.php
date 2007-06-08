@@ -54,7 +54,7 @@
     /**
      * Read one char
      *
-     * @return  char the character read
+     * @return  string the character read
      * @throws  io.IOException in case of an error
      */
     public function readChar() {

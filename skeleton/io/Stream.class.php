@@ -117,7 +117,7 @@
     /**
      * Read one char
      *
-     * @return  char the character read
+     * @return  string the character read
      */
     public function readChar() {
       return substr($this->buffer, $this->offset++, 1);

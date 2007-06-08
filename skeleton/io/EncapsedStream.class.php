@@ -118,7 +118,7 @@
     /**
      * Read one char
      *
-     * @return  char the character read
+     * @return  string the character read
      */
     public function readChar() {
       $this->_prepare();
