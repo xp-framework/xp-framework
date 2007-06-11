@@ -28,12 +28,12 @@
      * Returns the fragment SQL
      *
      * @param   rdbms.DBConnection conn
-     * @param   array types
+     * @param   rdbms.Peer peer
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) { 
-      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $types));
+    public function asSql(DBConnection $conn, Peer $peer) {
+      return $conn->prepare('not (%c)', $this->criterion->asSql($conn, $peer));
     }
   } 
 ?>

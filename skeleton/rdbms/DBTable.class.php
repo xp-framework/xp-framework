@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('rdbms.DBTableAttribute', 'rdbms.DBIndex');
+  uses(
+    'rdbms.DBTableAttribute',
+    'rdbms.DBIndex',
+    'rdbms.DBForeignKeyConstraint'
+  );
 
   /** 
    * Represents a database table
@@ -12,10 +16,10 @@
    */  
   class DBTable extends Object {
     public 
-      $name=        '',
-      $attributes=  array(),
-      $indexes=     array(),
-      $constraints= array();
+      $name=          '',
+      $attributes=    array(),
+      $indexes=       array(),
+      $fgConstraints= array();
 
     /**
      * Constructor
@@ -31,10 +35,11 @@
      *
      * @param   rdbms.DBAdapter an adapter
      * @param   string name
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable a table object
      */
-    public static function getByName($adapter, $name) {
-      return $adapter->getTable($name);
+    public static function getByName($adapter, $name, $database= NULL) {
+      return $adapter->getTable($name, $database);
     }
 
     /**
@@ -128,6 +133,36 @@
         if ($name == $this->attributes[$i]->name) return TRUE;
       }
       return FALSE;
+    }
+
+    /**
+     * Add a constraint
+     *
+     * @param   rdbms.DBForeignKeyConstraint constraint
+     * @return  rdbms.DBForeignKeyConstraint the added constraint
+     */
+    public function addForeignKeyConstraint(DBForeignKeyConstraint $constraint) {
+      $this->fgConstraints[]= $constraint;
+      return $constraint;
+    }
+
+    /**
+     * Get first constraint - Iterator function
+     *
+     * @return  rdbms.DBForeignKeyConstraint a constraint
+     */
+    public function getFirstForeignKeyConstraint() {
+      reset($this->fgConstraints);
+      return current($this->fgConstraints);
+    }
+
+    /**
+     * Get next constraint - Iterator function
+     *
+     * @return  rdbms.DBForeignKeyConstraint a constraint or FALSE to indicate there are none left
+     */
+    public function getNextForeignKeyConstraint() {
+      return next($this->fgConstraints);
     }
   }
 ?>

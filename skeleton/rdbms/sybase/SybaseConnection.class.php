@@ -8,7 +8,8 @@
     'rdbms.DBConnection',
     'rdbms.sybase.SybaseResultSet',
     'rdbms.Transaction',
-    'rdbms.StatementFormatter'
+    'rdbms.StatementFormatter',
+    'rdbms.sybase.SybaseDialect'
   );
 
   /**
@@ -21,6 +22,9 @@
    * @purpose  Database connection
    */
   class SybaseConnection extends DBConnection {
+  
+    private
+      $formatter= NULL;
 
     /**
      * Set Timeout
@@ -103,17 +107,8 @@
      * @return  string
      */
     public function prepare() {
-      static $formatter= NULL;
       $args= func_get_args();
-      
-      if (NULL === $formatter) {
-        $formatter= new StatementFormatter();
-        $formatter->setEscape('"');
-        $formatter->setEscapeRules(array('"'   => '""'));
-        $formatter->setDateFormat('Y-m-d h:iA');
-      }
-      
-      return $formatter->format(array_shift($args), $args);
+      return $this->getFormatter()->format(array_shift($args), $args);
     }
     
     /**
@@ -121,7 +116,7 @@
      *
      * @return  mixed identity value
      */
-    public function identity() { 
+    public function identity($field= NULL) {
       if (!($r= $this->query('select @@identity as i'))) {
         return FALSE;
       }
@@ -311,6 +306,16 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
+    }
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SybaseDialect());
+      return $this->formatter;
     }
   }
 ?>

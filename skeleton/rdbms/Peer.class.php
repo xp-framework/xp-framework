@@ -7,7 +7,8 @@
   uses(
     'rdbms.ResultIterator',
     'rdbms.ConnectionManager',
-    'rdbms.Column'
+    'rdbms.Column',
+    'rdbms.Record'
   );
 
   /**
@@ -29,9 +30,6 @@
     protected static 
       $instance   = array();
 
-    protected
-      $conn       = NULL;
-
     public
       $identifier = '',
       $table      = '',
@@ -39,8 +37,9 @@
       $sequence   = NULL,
       $identity   = NULL,
       $primary    = array(),
-      $types      = array();
-    
+      $types      = array(),
+      $relations  = array();
+
     /**
      * Constructor
      *
@@ -74,7 +73,6 @@
      * @param   mixed connection either a name or a DBConnection instance
      */
     public function setConnection($connection) {
-    
       // If we are passed a DBConnection, set the conn member directly,
       // else store the name passed in - we will retrieve the connection
       // object later. The lazy loading semantics used here have to do with
@@ -138,6 +136,15 @@
     }
 
     /**
+     * Set relations
+     *
+     * @param   mixed[] relations
+     */
+    public function setRelations($relations) {
+      $this->relations= $relations;
+    }
+
+    /**
      * Retrieve an instance by a given identifier
      *
      * @param   string identifier
@@ -181,18 +188,6 @@
     }
     
     /**
-     * column factory
-     *
-     * @param   string name
-     * @return  rdbms.Column
-     * @throws  lang.IllegalArgumentException
-     */
-    public function column($name) {
-      if (!isset($this->types[$name])) throw new IllegalArgumentException('column '.$name.' does not exist');
-      return new Column($this, $name);
-    }
-    
-    /**
      * Creates a string representation of this object
      *
      * @return  string
@@ -203,27 +198,86 @@
         $this->getClassName(),
         $this->identifier,
         $this->table,
-        $this->getConnection()->toString(),
+        $this->connection,
         substr(var_export($this->types, 1), 7, -1)
       );
     }
     
     /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArgumentException
+     */
+    public function column($name) {
+      return new Column($this, $name);
+    }
+    
+    /**
+     * get related peeer by relation path array
+     *
+     * @param   string[] path
+     * @return  rdbms.Peer
+     * @throws  lang.IllegalArgumentException
+     */
+    public function getRelatedPeer(Array $path) {
+      if (0 == sizeof($path)) return $this;
+      $name= array_shift($path);
+      if (!isset($this->relations[$name])) throw new IllegalArgumentException('relation '.$name.' does not exist for '.$this->identifier);
+      return XPClass::forName($this->relations[$name]['classname'])->getMethod('getPeer')->invoke(NULL)->getRelatedPeer($path);
+    }
+    
+    /**
      * Retrieve a number of objects from the database
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpressin criteria or statement
      * @param   int max default 0
-     * @return  rdbms.DataSet[]
+     * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doSelect($criteria, $max= 0) {
-      $q= $criteria->executeSelect($this->getConnection(), $this);
       $r= array();
+
+      if ($criteria->isJoin()) {
+        $jp= new JoinProcessor($this);
+        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
+        $it= $jp->getJoinIterator($q);
+        for ($i= 1; $it->hasNext(); $i++) {
+          if ($max && $i > $max) break;
+          $r[]= $it->next();
+        }
+        return $r;
+      }
+
+      $builder=  $criteria->isProjection() ? 'newRecord'   : 'objectFor';
+      $q= $criteria->executeSelect($this->getConnection(), $this);
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
-        $r[]= new $this->identifier($record);
+        $r[]= $this->{$builder}($record);
       }
       return $r;
+    }
+
+    /**
+     * Returns an iterator for a select statement
+     *
+     * @param   rdbms.SQLExpressin criteria or statement
+     * @return  lang.XPIterator
+     * @see     xp://lang.XPIterator
+     */
+    public function iteratorFor($criteria) {
+
+      if ($criteria->isJoin()) {
+        $jp= new JoinProcessor($this);
+        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
+        return $jp->getJoinIterator($q);
+      }
+
+      return new ResultIterator(
+        $criteria->executeSelect($this->getConnection(), $this), 
+        ($criteria->isprojection() ? 'Record' : $this->identifier)
+      );
     }
 
     /**
@@ -239,40 +293,38 @@
           'Record not compatible with '.$this->identifier.' class'
         );
       }
-      return new $this->identifier($record);
+      return $this->newObject($record);
     }
 
     /**
      * Returns a new DataSet object.
      *
+     * @param   array record optional
      * @return  rdbms.DataSet
      */    
-    public function newObject() {
-      return new $this->identifier();
+    public function newObject($record= array()) {
+      return new $this->identifier($record);
     }
     
     /**
-     * Returns an iterator for a select statement
+     * Returns a new Record object.
      *
-     * @param   rdbms.Criteria criteria
-     * @return  rdbms.ResultIterator
-     * @see     xp://rdbms.ResultIterator
-     */
-    public function iteratorFor($criteria) {
-      return new ResultIterator(
-        $criteria->executeSelect($this->getConnection(), $this), 
-        $this->identifier
-      );
+     * @param   array record optional
+     * @return  rdbms.Record
+     */    
+    public function newRecord($record= array()) {
+      return new Record($record);
     }
-
+    
     /**
      * Retrieve a number of objects from the database
      *
+     * @deprecated
      * @param   rdbms.Peer peer
      * @param   rdbms.Criteria join
      * @param   rdbms.Criteria criteria
      * @param   int max default 0
-     * @return  rdbms.DataSet[]
+     * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doJoin($peer, $join, $criteria, $max= 0) {
@@ -305,7 +357,7 @@
       for ($i= 1; $record= $q->next(); $i++) {
         if ($max && $i > $max) break;
         
-        $o= new $this->identifier(array_slice($record, 0, sizeof($this->types)));
+        $o= $this->objectFor(array_slice($record, 0, sizeof($this->types)));
         $o->{strtolower($peer->identifier)}= new $peer->identifier(array_slice($record, sizeof($this->types)));
         $r[]= $o;
       }

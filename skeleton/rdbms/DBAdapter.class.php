@@ -29,17 +29,18 @@
      * Get a table in the current database
      *
      * @param   string name
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable
      */    
-    public abstract function getTable($name);
+    public abstract function getTable($name, $database= NULL);
 
     /**
-     * Get all tables in the specified database
+     * Get tables by database
      *
-     * @param   string database
-     * @return  rdbms.DBTable[]
-     */    
-    public abstract function getTables($database);
+     * @param   string database default NULL if omitted, uses current database
+     * @return  rdbms.DBTable[] array of DBTable objects
+     */
+    public abstract function getTables($database= NULL);
     
     /**
      * Get databaases

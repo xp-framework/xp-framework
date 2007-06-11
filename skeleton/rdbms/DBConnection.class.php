@@ -23,7 +23,7 @@
    *
    * @purpose  Base class for database connections
    */
-  class DBConnection extends Observable {
+  abstract class DBConnection extends Observable {
     public 
       $handle  = NULL,
       $dsn     = NULL,
@@ -127,7 +127,7 @@
      *
      * @return  bool success
      */
-    public function close() { }
+    abstract public function close();
     
     /**
      * Select database
@@ -135,7 +135,7 @@
      * @param   string db name of database to select
      * @return  bool success
      */
-    public function selectdb($db) { }
+    abstract public function selectdb($db);
 
     /**
      * Prepare an SQL statement
@@ -143,7 +143,7 @@
      * @param   mixed* args
      * @return  string
      */
-    public function prepare() { }
+    abstract public function prepare();
     
     /**
      * Execute an insert statement
@@ -151,15 +151,15 @@
      * @param   mixed* args
      * @return  bool success
      */
-    public function insert() { }
+    abstract public function insert();
     
     /**
      * Retrieve identity
      *
      * @return  mixed identity value
      */
-    public function identity() { }
-    
+    abstract public function identity($field= NULL);
+
     /**
      * Execute an update statement
      *
@@ -198,7 +198,7 @@
      * @param   rdbms.DBTransaction transaction
      * @return  rdbms.DBTransaction
      */
-    public function begin($transaction) { }
+    abstract public function begin($transaction);
     
     /**
      * Retrieve transaction state
@@ -214,7 +214,7 @@
      * @param   string name
      * @return  bool success
      */
-    public function rollback($name) { }
+    abstract public function rollback($name);
     
     /**
      * Commit a transaction
@@ -222,6 +222,13 @@
      * @param   string name
      * @return  bool success
      */
-    public function commit($name) { }
+    abstract public function commit($name);
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    abstract public function getFormatter();
   }
 ?>

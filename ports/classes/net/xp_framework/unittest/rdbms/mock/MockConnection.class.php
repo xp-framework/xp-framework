@@ -273,7 +273,7 @@
      *
      * @return  mixed identity value
      */
-    public function identity() { 
+    public function identity($field= NULL) {
       return $this->identityValue;
     }
     
@@ -414,5 +414,13 @@
      */
     public function commit($name) { }
   
+    
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() { }
+    
   }
 ?>

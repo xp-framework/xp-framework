@@ -3,7 +3,11 @@
  *
  * $Id$ 
  */
-  uses('rdbms.SQLFragment', 'rdbms.DBConnection', 'rdbms.criterion.Restrictions');
+  uses(
+    'rdbms.SQLFragment',
+    'rdbms.criterion.Restrictions',
+    'rdbms.join.JoinProcessor'
+  );
 
   /**
    * represents a table column
@@ -21,7 +25,8 @@
     private
       $peer= NULL,
       $type= '',
-      $name= '';
+      $name= '',
+      $path= '';
 
     /**
      * Constructor
@@ -31,8 +36,10 @@
      * @throws  lang.IllegalArgumentException
      */
     public function __construct($peer, $name) {
-      $this->peer= $peer;
-      $this->name= $name;
+      $path= explode(JoinProcessor::SEPERATOR, $name);
+      $this->name= array_pop($path);
+      $this->path= $path;
+      $this->peer= $peer->getRelatedPeer($path);
       if (!isset($this->peer->types[$this->name])) throw new IllegalArgumentException('field '.$this->name.' does not exist');
       $this->type= $this->peer->types[$this->name][0];
     }
@@ -47,6 +54,15 @@
     }
 
     /**
+     * Get name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return $this->name;
+    }
+
+    /**
      * Returns the fragment SQL
      *
      * @param   rdbms.DBConnection conn
@@ -54,6 +70,7 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn) {
+      if (JoinProcessor::isJoinContext()) return JoinProcessor::pathToKey($this->path).'.'.$this->name;
       return $this->name;
     }
 

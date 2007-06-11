@@ -9,6 +9,8 @@
     'rdbms.criterion.Restrictions',
     'rdbms.DriverManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
+    'net.xp_framework.unittest.rdbms.dataset.Department',
+    'net.xp_framework.unittest.rdbms.dataset.Person',
     'unittest.TestCase'
   );
 
@@ -47,7 +49,7 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function assertSql($sql, $criteria) {
-      $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer->types), ' '));
+      $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer), ' '));
     }
       
     /**
@@ -74,10 +76,10 @@
      * existant field
      *
      */
-    #[@test, @expect('rdbms.SQLStateException')]
+    #[@test, @expect('lang.IllegalArgumentException')]
     public function nonExistantFieldCausesException() {
       $criteria= new Criteria(array('non-existant-field', 1, EQUAL));
-      $criteria->toSQL($this->conn, $this->peer->types);
+      $criteria->toSQL($this->conn, $this->peer);
     }
 
     /**
@@ -160,7 +162,7 @@
     #[@test]
     public function addReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL), 
+        create(new Criteria())->add('job_id', 1, EQUAL), 
         'rdbms.Criteria'
       );
     }
@@ -173,7 +175,7 @@
     #[@test]
     public function addOrderByReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
+        create(new Criteria())->add('job_id', 1, EQUAL)->addOrderBy('valid_from', DESCENDING), 
         'rdbms.Criteria'
       );
     }
@@ -186,7 +188,7 @@
     #[@test]
     public function addGroupByReturnsThis() {
       $this->assertClass(
-        Criteria::newInstance()->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
+        create(new Criteria())->add('job_id', 1, EQUAL)->addGroupBy('valid_from'), 
         'rdbms.Criteria'
       );
     }
@@ -201,6 +203,23 @@
       with ($c= new Criteria()); {
         $c->addOrderBy(job::column('valid_from'));
         $c->addOrderBy(job::column('expire_at'));
+      }
+      $this->assertSql(
+        'order by valid_from asc, expire_at asc',
+        $c
+      );
+    }
+
+    /**
+     * Tests string as argument for addorderBy
+     *
+     * @see     xp://rdbms.Criteria#addOrderBy
+     */
+    #[@test]
+    public function addOrderByString() {
+      with ($c= new Criteria()); {
+        $c->addOrderBy("valid_from");
+        $c->addOrderBy("expire_at");
       }
       $this->assertSql(
         'order by valid_from asc, expire_at asc',
@@ -226,8 +245,26 @@
     }
 
     /**
+     * Tests string as argument for addGroupBy
+     *
+     * @see     xp://rdbms.Criteria#addGroupBy
+     */
+    #[@test]
+    public function addGroupByString() {
+      with ($c= new Criteria()); {
+        $c->addGroupBy("valid_from");
+        $c->addGroupBy("expire_at");
+      }
+      $this->assertSql(
+        'group by valid_from, expire_at',
+        $c
+      );
+    }
+
+    /**
      * Tests exception for nonexistant column
      *
+     * @see     xp://rdbms.Criteria#addGroupBy
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createNonExistantColumn() {
@@ -241,17 +278,70 @@
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function addGroupByNonExistantColumnString() {
-      Criteria::newInstance()->addGroupBy('not_existant')->toSQL($this->conn, $this->peer->types);
+      create(new Criteria())->addGroupBy('not_existant')->toSQL($this->conn, $this->peer);
     }
 
     /**
-     * Tests exception for nonexistant column
+     * expect Criteria as result of setFetchmode
      *
-     * @see     xp://rdbms.Criteria#addOrderBy
+     * @see     xp://rdbms.Criteria#addGroupBy
      */
-    #[@test, @expect('rdbms.SQLStateException')]
-    public function addOrderByNonExistantColumnString() {
-      Criteria::newInstance()->addOrderBy('not_existant')->toSQL($this->conn, $this->peer->types);
+    #[@test]
+    public function fetchModeChaining() {
+      $this->assertClass(create(new Criteria())->setFetchmode(Fetchmode::join('PersonJob')), 'rdbms.Criteria');
+    }
+
+    /**
+     * Tests method isJoin
+     *
+     * @see     xp://rdbms.Criteria#toSQL
+     */
+    #[@test]
+    public function testIsJoin() {
+      $crit= new Criteria();
+      $this->assertFalse($crit->isJoin());
+      $this->assertTrue($crit->setFetchmode(Fetchmode::join('PersonJob'))->isJoin());
+      $crit->fetchmode= array();
+      $this->assertFalse($crit->isJoin());
+      $this->assertFalse($crit->setFetchmode(Fetchmode::select('PersonJob'))->isJoin());
+    }
+
+    /**
+     * Tests contitions when criteria is a join
+     *
+     * @see     xp://rdbms.Criteria#toSQL
+     */
+    #[@test]
+    public function testJoinWithoutCondition() {
+      $jp= new JoinProcessor(Job::getPeer());
+      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
+      $this->assertEquals(
+        '',
+        create(new Criteria())
+        ->setFetchmode(Fetchmode::join('PersonJob'))
+        ->toSQL($this->conn, $this->peer)
+      );
+    }
+
+    /**
+     * Tests contitions when criteria is a join
+     *
+     * @see     xp://rdbms.Criteria#toSQL
+     */
+    #[@test]
+    public function testJoinWithCondition() {
+      $jp= new JoinProcessor(Job::getPeer());
+      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
+      $jp->enterJoinContext();
+      $this->assertEquals(
+        ' where PersonJob_Department.department_id = 5 and start.job_id = 2 ',
+        create(new Criteria())
+        ->setFetchmode(Fetchmode::join('PersonJob'))
+        ->add(Job::column('PersonJob->Department->department_id')->equal(5))
+        ->add(Job::column('job_id')->equal(2))
+        ->toSQL($this->conn, $this->peer)
+      );
+      $jp->leaveJoinContext();
     }
 
   }

@@ -7,7 +7,8 @@
   uses(
     'rdbms.DBTable',
     'xml.Tree',
-    'lang.System'
+    'lang.System',
+    'rdbms.util.DBXMLNamingContext'
   );
   
   /**
@@ -68,6 +69,24 @@
           $n->addChild(new Node('key', $key));
         }
       } while ($index= $table->getNextIndex());
+      
+      // constraints
+      if ($constraint= $table->getFirstForeignKeyConstraint()) do {
+        $cn= $t->addChild(new Node('constraint', NULL, array(
+          'name' => trim($constraint->getName()),
+        )));
+        $fgn= $cn->addChild(new Node('reference', NULL, array(
+          'table' => $constraint->getSource(),
+          'role'  => DBXMLNamingContext::foreignKeyConstraintName($table, $constraint),
+        )));
+        foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
+          $fgn->addChild(new Node('key', NULL, array(
+            'attribute'       => $attribute,
+            'sourceattribute' => $sourceattribute
+          )));
+        }
+        
+      } while ($constraint= $table->getNextForeignKeyConstraint());
       
       return $g;
     }

@@ -8,7 +8,8 @@
     'rdbms.ConnectionManager',
     'rdbms.Peer',
     'rdbms.Criteria',
-    'rdbms.FieldType'
+    'rdbms.FieldType',
+    'rdbms.join.JoinExtractable'
   );
 
   /**
@@ -81,11 +82,15 @@
    * @see      xp://rdbms.ConnectionManager
    * @purpose  Base class
    */
-  abstract class DataSet extends Object {
+  abstract class DataSet extends Object implements JoinExtractable {
     public
       $_new         = TRUE,
       $_changed     = array();
     
+    protected
+      $cache= array(),
+      $cached= array();
+
     /**
      * Constructor. Supports the array syntax, where an associative
      * array is passed to the constructor, the keys being the member
@@ -110,6 +115,53 @@
      */
     public static function getPeer() { }
 
+    /**
+     * implements JoinExtractable
+     * add object to cache
+     *
+     * @param   string role name of relation
+     * @param   string key unique ojbect key
+     * @param   lang.object obj 
+     */
+    public function setCachedObj($role, $key, $obj) {
+      $this->cache[$role][$key]= $obj;
+    }
+
+    /**
+     * implements JoinExtractable
+     * get cached object
+     *
+     * @param   string role name of relation
+     * @param   string key unique ojbect key
+     * @return  lang.object obj 
+     */
+    public function getCachedObj($role, $key) {
+      return $this->cache[$role][$key];
+    }
+
+    /**
+     * implements JoinExtractable
+     * test if obect with key ist cached
+     *
+     * @param   string role name of relation
+     * @param   string key unique ojbect key
+     * @return  bool
+     */
+    public function hasCachedObj($role, $key) {
+      return isset($this->cache[$role][$key]);
+    }
+
+    /**
+     * implements JoinExtractable
+     * mark role as cached
+     *
+     * @param   string role name of relation
+     * @return  bool
+     */
+    public function markAsCached($role) {
+      $this->cached[$role]= TRUE;
+    }
+    
     /**
      * Changes a value by a specified key and returns the previous value.
      *

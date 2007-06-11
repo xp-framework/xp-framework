@@ -4,12 +4,12 @@ $Id$
 
 @authors: wagner
 @created: Thu Apr 26 12:36:22 CET 2007
-@status: discussion mon jun 11 10:25:35     2007
+@status: implemented mon jun 11 10:25:35     2007
 @category: rdbms
 
 Scope of Change
 ---------------
-- Extend the criteria api to use SQL standart functions in
+- Extend the criteria api to use SQL standard functions in
   a query
 - common function interface for all databases
 

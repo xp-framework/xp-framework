@@ -1,41 +1,118 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:exslt="http://exslt.org/common"
+  xmlns:func="http://exslt.org/functions"
+  xmlns:string="http://exslt.org/strings"
+  xmlns:my="http://no-sense.de/my"
+  extension-element-prefixes="func exslt string"
+>
   <xsl:output method="text" omit-xml-declaration="yes"/>
   
+  <xsl:param name="definitionpath" />
+  <xsl:param name="constraintfile" />
+  <xsl:param name="package" />
+  <xsl:param name="prefix" />
+  <xsl:param name="incprefix" />
+  <xsl:param name="exprefix" />
+  <xsl:param name="prefixRemove" />
+
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
+  <xsl:variable name="this" select="/document" />
   
-  <xsl:template name="separator">
-    <xsl:param name="database"/>
-    <xsl:param name="table"/>
-    <xsl:param name="dbtype"/>
-    
-    <xsl:choose>
-      <xsl:when test="$dbtype = 'pgsql'"><xsl:value-of select="$table"/></xsl:when>
-      <xsl:when test="$dbtype = 'mysql'"><xsl:value-of select="concat($database, '.', $table)"/></xsl:when>
-      <xsl:when test="$dbtype = 'sybase'"><xsl:value-of select="concat($database, '..', $table)"/></xsl:when>
-    </xsl:choose>
-  </xsl:template>
-  
-  <xsl:template name="prettyname">
-    <xsl:param name="string"/>
-  
-    <xsl:value-of select="concat(
+  <func:function name="my:ucfirst">
+    <xsl:param name="string" />
+    <func:result select="concat(
       translate(substring($string, 1, 1), $lcletters, $ucletters),
       translate(substring($string, 2), $ucletters, $lcletters)
     )"/>
-  </xsl:template>
+  </func:function>
+
+  <func:function name="my:constraintSingleTest">
+    <xsl:param name="keyset" />
+    <xsl:param name="sourceIndexSet" />
+    <xsl:choose>
+      <xsl:when test="count(exslt:node-set($keyset)) = 0"><func:result select="false()" /></xsl:when>
+      <xsl:when test="count(exslt:node-set($sourceIndexSet)) = 0"><func:result select="false()" /></xsl:when>
+      <xsl:when test="my:keysetSingleTest($keyset, exslt:node-set($sourceIndexSet)[1]/key)"><func:result select="true()" /></xsl:when>
+      <xsl:otherwise><func:result select="my:constraintSingleTest($keyset, exslt:node-set($sourceIndexSet)[position() != 1])" /></xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+
+  <func:function name="my:keysetSingleTest">
+    <xsl:param name="keyset" />
+    <xsl:param name="sourceKeyset" />
+    <xsl:choose>
+      <xsl:when test="boolean(count(exslt:node-set($keyset)) = 0) and boolean(count(exslt:node-set($sourceKeyset)) = 0)"><func:result select="true()" /></xsl:when>
+      <xsl:when test="count(exslt:node-set($keyset)) = 0"><func:result select="false()" /></xsl:when>
+      <xsl:when test="count(exslt:node-set($sourceKeyset)) = 0"><func:result select="false()" /></xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="testkey" select="exslt:node-set($keyset)[1]/@sourceattribute" />
+        <xsl:choose>
+          <xsl:when test="count(exslt:node-set($keyset)[@sourceattribute = $testkey]) != count(exslt:node-set($sourceKeyset)[text() = $testkey])"><func:result select="false()" /></xsl:when>
+          <xsl:otherwise>
+            <func:result select="my:keysetSingleTest(exslt:node-set($keyset)[@sourceattribute != $testkey], exslt:node-set($sourceKeyset)[text() != $testkey])" />
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+
+  <func:function name="my:prefixedClassName">
+    <xsl:param name="tname" />
+    <xsl:param name="prefix"  select="$prefix" />
+    <xsl:param name="include" select="$incprefix" />
+    <xsl:param name="exclude" select="$exprefix" />
+    <xsl:param name="remove"  select="$prefixRemove" />
+    <xsl:variable name="includeSet" select="string:tokenize($include, ',')" />
+    <xsl:variable name="excludeSet" select="string:tokenize($exclude, ',')" />
+    <xsl:variable name="excludetest" select="boolean(count($includeSet) = 0) and not(count($excludeSet) = 0) and not($excludeSet/*[name() = $tname])" />
+    <xsl:variable name="includetest" select="not(count($includeSet) = 0) and boolean(count($excludeSet) = 0) and boolean($includeSet/*[name() = $tname])" />
+    <xsl:variable name="p">
+      <xsl:choose>
+        <xsl:when test="$includetest or $excludetest"><xsl:value-of select="$prefix" /></xsl:when>
+        <xsl:otherwise><xsl:value-of select="''" /></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="r">
+      <xsl:choose>
+        <xsl:when test="$includetest or $excludetest"><xsl:value-of select="$remove" /></xsl:when>
+        <xsl:otherwise><xsl:value-of select="''" /></xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:choose>
+      <xsl:when test="$r = substring($tname, 1, string-length($r))">
+        <func:result select="concat($p, my:ucfirst(substring($tname, string-length($r) + 1)))" />
+      </xsl:when>
+      <xsl:otherwise>
+        <func:result select="concat($p, my:ucfirst($tname))" />
+      </xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+  
+  <func:function name="my:separator">
+    <xsl:param name="database"/>
+    <xsl:param name="table"/>
+    <xsl:param name="dbtype"/>
+    <xsl:choose>
+      <xsl:when test="$dbtype = 'pgsql'"><func:result select="$table"/></xsl:when>
+      <xsl:when test="$dbtype = 'mysql'"><func:result select="concat($database, '.', $table)"/></xsl:when>
+      <xsl:when test="$dbtype = 'sybase'"><func:result select="concat($database, '..', $table)"/></xsl:when>
+    </xsl:choose>
+  </func:function>
   
   <xsl:template match="/">
+
     <xsl:text>&lt;?php
 /* This class is part of the XP framework
  *
  * $Id$
  */
  
-  uses('rdbms.DataSet');
- </xsl:text>
-      <xsl:apply-templates/>
+  uses('rdbms.DataSet', 'util.HashmapIterator');&#10;</xsl:text>
+    <xsl:apply-templates/>
   <xsl:text>?></xsl:text>
   </xsl:template>
   
@@ -52,8 +129,9 @@
    *
    * @purpose  Datasource accessor
    */
-  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {&#10;    public&#10;</xsl:text>
-  
+  class </xsl:text><xsl:value-of select="@class"/><xsl:text> extends DataSet {
+    public&#10;</xsl:text>
+
   <!-- Attributes -->
   <xsl:for-each select="attribute">
     <xsl:value-of select="concat('      $', @name, substring('                                ', 0, 20 - string-length(@name)))"/>
@@ -67,17 +145,21 @@
     </xsl:choose>
     <xsl:if test="position() != last()">,&#10;</xsl:if>
   </xsl:for-each>
-  <xsl:text>;&#10;</xsl:text>
+  <xsl:text>;
   
-  <!-- Create static initializer -->
-  <xsl:text>
+    protected
+      $cache= array(</xsl:text>
+  <xsl:for-each select="constraint/reference"><xsl:text>
+        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
+  </xsl:for-each>
+  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
+        '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
+  </xsl:for-each><xsl:text>
+      );
+
     static function __static() { 
       with ($peer= self::getPeer()); {
-        $peer->setTable('</xsl:text><xsl:call-template name="separator">
-          <xsl:with-param name="database" select="@database"/>
-          <xsl:with-param name="table" select="@name"/>
-          <xsl:with-param name="dbtype" select="@dbtype"/>
-        </xsl:call-template><xsl:text>');
+        $peer->setTable('</xsl:text><xsl:value-of select="my:separator(@database, @name, @dbtype)"/><xsl:text>');
         $peer->setConnection('</xsl:text><xsl:value-of select="@dbhost"/><xsl:text>');</xsl:text>
         <xsl:if test="attribute[@identity= 'true']">
           <xsl:text>&#10;        $peer->setIdentity('</xsl:text><xsl:value-of select="attribute[@identity= 'true']/@name"/><xsl:text>');</xsl:text>
@@ -110,12 +192,27 @@
   </xsl:for-each>
   <xsl:text>
         ));
+        $peer->setRelations(array(</xsl:text>
+  <xsl:for-each select="constraint/reference"><xsl:text>
+          '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
+            'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>',
+            'key'       => array(
+              </xsl:text><xsl:for-each select="key"><xsl:text>'</xsl:text><xsl:value-of select="@attribute" /><xsl:text>' => '</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>',</xsl:text></xsl:for-each><xsl:text>
+            ),
+          ),</xsl:text>
+  </xsl:for-each>
+  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
+          '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
+            'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>',
+            'key'       => array(
+              </xsl:text><xsl:for-each select="key">'<xsl:value-of select="@sourceattribute" /><xsl:text>' => '</xsl:text><xsl:value-of select="@attribute" /><xsl:text>',</xsl:text></xsl:for-each><xsl:text>
+            ),
+          ),</xsl:text>
+  </xsl:for-each><xsl:text>
+        ));
       }
     }  
-  </xsl:text>
 
-  <!-- Create getPeer() method -->
-  <xsl:text>
     /**
      * Retrieve associated peer
      *
@@ -151,19 +248,13 @@
     </xsl:for-each>
     <xsl:text>
      * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
-    <xsl:choose>
-      <xsl:when test="not(@unique= 'true')">[] entities</xsl:when>
-      <xsl:otherwise> entity</xsl:otherwise>
-    </xsl:choose>
+      <xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if>
+      <xsl:if test="@unique= 'true'"> entitiy object</xsl:if>
     <xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getBy</xsl:text>
-    <xsl:for-each select="key">
-      <xsl:call-template name="prettyname">
-        <xsl:with-param name="string" select="text()"/>
-      </xsl:call-template>
-    </xsl:for-each>
+    <xsl:for-each select="key"><xsl:value-of select="my:ucfirst(text())" /></xsl:for-each>
     <xsl:text>(</xsl:text>
     <xsl:for-each select="key">
       <xsl:value-of select="concat('$', text())"/>
@@ -171,8 +262,8 @@
     </xsl:for-each>
     <xsl:text>) {&#10;</xsl:text>
       <xsl:choose>
+
         <xsl:when test="count(key) = 1">
-        
           <!-- Single key -->
           <xsl:choose>
             <xsl:when test="@unique = 'true'">
@@ -191,6 +282,7 @@
             </xsl:otherwise>
           </xsl:choose>
         </xsl:when>
+
         <xsl:otherwise>
         
           <!-- Multiple keys -->
@@ -222,9 +314,9 @@
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-    <xsl:text>&#10;    }&#10;</xsl:text>
+    <xsl:text>    }&#10;</xsl:text>
   </xsl:for-each>
-  
+
   <!-- Create getters and setters -->
     <xsl:for-each select="attribute">
       <xsl:text>
@@ -233,12 +325,7 @@
      *
      * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text>
      */
-    public function </xsl:text>
-    <xsl:text>get</xsl:text>
-    <xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="@name"/>
-    </xsl:call-template>
-      <xsl:text>() {
+    public function get</xsl:text><xsl:value-of select="my:ucfirst(@name)" /><xsl:text>() {
       return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
     }
       </xsl:text>
@@ -250,13 +337,163 @@
      * @param   </xsl:text><xsl:value-of select="concat(@typename, ' ', @name)"/><xsl:text>
      * @return  </xsl:text><xsl:value-of select="@typename"/><xsl:text> the previous value
      */
-    public function </xsl:text><xsl:text>set</xsl:text>
-    <xsl:call-template name="prettyname">
-    <xsl:with-param name="string" select="@name"/>
-    </xsl:call-template>
-      <xsl:text>(</xsl:text>$<xsl:value-of select="@name"/><xsl:text>) {
+    public function set</xsl:text><xsl:value-of select="my:ucfirst(@name)" /><xsl:text>(</xsl:text>$<xsl:value-of select="@name"/><xsl:text>) {
       return $this->_change('</xsl:text><xsl:value-of select="@name"/><xsl:text>', $</xsl:text><xsl:value-of select="@name"/><xsl:text>);
     }&#10;</xsl:text>
+  </xsl:for-each>
+
+  <!-- create referenced object getters -->
+  <xsl:for-each select="constraint/reference">
+    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:ucfirst(@table), '.xml'))/document" />
+    <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencedTable/table/index[@unique = 'true'])" />
+    <xsl:choose>
+      <!-- case referenced fields are unique -->
+      <xsl:when test="$isSingle">
+        <xsl:text>
+    /**
+     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entity
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text> entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
+      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
+        XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
+          ->getMethod('getPeer')
+          ->invoke()
+          ->doSelect(new Criteria(&#10;</xsl:text>
+          <xsl:for-each select="key">
+            <xsl:text>          array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+            <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+            <xsl:text>&#10;</xsl:text>
+          </xsl:for-each>
+        <xsl:text>      ));
+      return $r ? $r[0] : NULL;&#10;    }&#10;</xsl:text>
+      </xsl:when>
+      <!-- case referenced fields are not unique -->
+      <xsl:otherwise>
+        <xsl:text>
+    /**
+     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(&#10;</xsl:text>
+        <xsl:for-each select="key">
+          <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+          <xsl:text>&#10;</xsl:text>
+        </xsl:for-each>
+      <xsl:text>      ));
+    }
+
+    /**
+     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(@table)"/><xsl:text> entities
+     * referenced by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@sourceattribute" />=><xsl:value-of select="@attribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))"/><xsl:text>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(@table))" /><xsl:text>')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(&#10;</xsl:text>
+        <xsl:for-each select="key">
+          <xsl:text>        array('</xsl:text><xsl:value-of select="@sourceattribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@attribute)" /><xsl:text>(), EQUAL)</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+          <xsl:text>&#10;</xsl:text>
+        </xsl:for-each>
+      <xsl:text>      ));&#10;    }&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:for-each>
+  
+
+  <!-- create referencing object getters -->
+  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]">
+    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:ucfirst(../../@name), '.xml'))/document" />
+    <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencingTable/table/index[@unique = 'true'])" />
+    <xsl:choose>
+      <xsl:when test="$isSingle">
+
+        <xsl:text>
+    /**
+     * Retrieves the </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entity referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text> entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
+      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+        array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
+        XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
+          ->getMethod('getPeer')
+          ->invoke()
+          ->doSelect(new Criteria(&#10;</xsl:text>
+          <xsl:for-each select="key">
+            <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
+            <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+            <xsl:text>&#10;</xsl:text>
+          </xsl:for-each>
+        <xsl:text>      ));
+      return $r ? $r[0] : NULL;&#10;    }&#10;</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>
+    /**
+     * Retrieves an array of all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  </xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(&#10;</xsl:text>
+        <xsl:for-each select="key">
+          <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+          <xsl:text>&#10;</xsl:text>
+        </xsl:for-each>
+      <xsl:text>      ));
+    }
+
+    /**
+     * Retrieves an iterator for all </xsl:text><xsl:value-of select="my:ucfirst(../../@name)"/><xsl:text> entities referencing
+     * this entity by </xsl:text><xsl:for-each select="key"><xsl:value-of select="@attribute" />=><xsl:value-of select="@sourceattribute" /><xsl:if test="position() != last()"><xsl:text>, </xsl:text></xsl:if></xsl:for-each><xsl:text>
+     *
+     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))"/><xsl:text>>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
+      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      return XPClass::forName('</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(&#10;</xsl:text>
+        <xsl:for-each select="key">
+          <xsl:text>          array('</xsl:text><xsl:value-of select="@attribute" /><xsl:text>', $this->get</xsl:text><xsl:value-of select="my:ucfirst(@sourceattribute)" /><xsl:text>(), EQUAL)</xsl:text>
+          <xsl:if test="position() != last()"><xsl:text>,</xsl:text></xsl:if>
+          <xsl:text>&#10;</xsl:text>
+        </xsl:for-each>
+      <xsl:text>      ));&#10;    }&#10;</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:for-each>
   
     <!-- Closing curly brace -->  

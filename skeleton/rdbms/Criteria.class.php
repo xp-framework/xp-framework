@@ -6,8 +6,11 @@
 
   uses(
     'rdbms.criterion.SimpleExpression',
+    'rdbms.join.JoinProcessor',
     'rdbms.SQLExpression',
-    'rdbms.Column'
+    'rdbms.Column',
+    'rdbms.criterion.Projections',
+    'rdbms.join.Fetchmode'
   );
   
   define('ASCENDING',       'asc');
@@ -24,8 +27,10 @@
     public 
       $conditions   = array(),
       $orderings    = array(),
-      $groupings    = array();
-    
+      $groupings    = array(),
+      $projection   = NULL,
+      $fetchmode    = array();
+
     /**
      * Constructor
      *
@@ -140,6 +145,45 @@
     }
     
     /**
+     * Set projection
+     * param can also be a rdbms.Column, a property
+     * projection is then assumed
+     *
+     * @param   rdbms.criterion.Projection projection
+     * @param   string optional alias
+     * @return  rdbms.Criteria this object
+     */
+    public function setProjection($projection, $alias= '') {
+      $this->projection= ($projection instanceof SQLFragment)
+      ? $projection= Projections::property($projection, $alias)
+      : $projection;
+      return $this;
+    }
+
+    /**
+     * Set projection for a new clone of this object
+     *
+     * @param   rdbms.criterion.Projection projection
+     * @param   string optional alias
+     * @return  rdbms.Criteria this object
+     */
+    public function withProjection(Projection $projection, $alias= '') {
+      $crit= clone($this);
+      return $crit->setProjection($projection, $alias);
+    }
+
+    /**
+     * set the fetchmode for a path
+     *
+     * @param   rdbms.join.Fetchmode fetchmode
+     * @return  rdbms.Criteria this object
+     */
+    public function setFetchmode(Fetchmode $fetchmode) {
+      $this->fetchmode[$fetchmode->getPath()]= $fetchmode->getMode();
+      return $this;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string
@@ -155,32 +199,32 @@
     /**
      * Export SQL
      *
-     * @param   rdbms.DBConnection conn
-     * @param   array types
+     * @param   rdbms.DBConnection db
+     * @param   rdbms.Peer peer
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function toSQL($conn, $types) {
+    public function toSQL(DBConnection $conn, Peer $peer) {
       $sql= '';
       
       // Process conditions
       if (!empty($this->conditions)) {
         $sql.= ' where ';
-        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $types).' and ';
+        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $peer).' and ';
         $sql= substr($sql, 0, -4);
       }
-
+      
       // Process group by
-      if (!empty($this->groupings)) {
+      if (!empty($this->groupings) and !$this->isJoin()) {
         $sql= rtrim($sql, ' ').' group by ';
-        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $types, $grouping).', ';
+        foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $peer->types, $grouping).', ';
         $sql= substr($sql, 0, -2);
       }
 
       // Process order by
-      if (!empty($this->orderings)) {
+      if (!empty($this->orderings) and !$this->isJoin()) {
         $sql= rtrim($sql, ' ').' order by ';
-        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $types, $order[0]).' '.$order[1].', ';
+        foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $peer->types, $order[0]).' '.$order[1].', ';
         $sql= substr($sql, 0, -2);
       }
 
@@ -188,21 +232,74 @@
     }
     
     /**
+     * get the projection part of a select statement
+     *
+     * @param   &rdbms.DBConnection db
+     * @param   &rdbms.Peer peer
+     * @return  string[]
+     * @throws  rdbms.SQLStateException
+     */
+    public function projections(DBConnection $conn, Peer $peer) {
+      if (!$this->isProjection()) return array_keys($peer->types);
+      return $this->projection->asSql($conn);
+    }
+
+    /**
+     * test if the expression is a projection
+     *
+     * @return  bool
+     */
+    public function isProjection() {
+      return (NULL !== $this->projection);
+    }
+
+    /**
+     * test if the expression is a join
+     *
+     * @return  bool
+     */
+    public function isJoin() {
+      return (0 < sizeof(array_keys($this->fetchmode, 'join')));
+    }
+
+    /**
      * Executes an SQL SELECT statement
      *
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
      * @return  rdbms.ResultSet
      */
-    public function executeSelect($conn, $peer) {
+    public function executeSelect(DBConnection $conn, Peer $peer) {
       return $conn->query(
         'select %c from %c%c', 
-        array_keys($peer->types),
+        $this->projections($conn, $peer),
         $peer->table,
-        $this->toSQL($conn, $peer->types)
+        $this->toSQL($conn, $peer)
       );
     }
+    
+    /**
+     * Executes an SQL SELECT statement with more than one table
+     *
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
+     */
+    public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
+      $jp->setFetchmodes($this->fetchmode);
+      $jp->enterJoinContext();
+      $rest= $this->toSQL($conn, $peer);
+      $jp->leaveJoinContext();
+      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
 
+      return $conn->query(
+        'select %c from %c %c',
+        $jp->getAttributeString(),
+        $jp->getJoinString(),
+        $rest
+      );
+    }
+    
     /**
      * Get a string for a column
      *

@@ -7,7 +7,9 @@
   uses(
     'rdbms.DBConnection',
     'rdbms.Transaction',
-    'rdbms.pgsql.PostgreSQLResultSet'
+    'rdbms.StatementFormatter',
+    'rdbms.pgsql.PostgreSQLResultSet',
+    'rdbms.pgsql.PostgreSQLDialect'
   );
 
   /**
@@ -19,6 +21,9 @@
    * @purpose  Database connection
    */
   class PostgreSQLConnection extends DBConnection {
+  
+     private
+       $formatter= NULL;
 
     /**
      * Connect
@@ -87,16 +92,8 @@
      * @return  string
      */
     public function prepare() {
-      static $formatter= NULL;
       $args= func_get_args();
-      
-      if (NULL === $formatter) {
-        $formatter= new StatementFormatter();
-        $formatter->setEscape("'");
-        $formatter->setEscapeRules(array('\''  => '\'\''));
-        $formatter->setDateFormat('Y-m-d H:i:s');
-      }
-      return $formatter->format(array_shift($args), $args);
+      return $this->getFormatter()->format(array_shift($args), $args);
     }
     
     /**
@@ -104,7 +101,7 @@
      *
      * @return  mixed identity value
      */
-    public function identity($field) {
+    public function identity($field= NULL) {
       $q= $this->query('select currval(%s) as id', $field);
       $id= $q ? $q->next('id') : NULL;
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
@@ -269,6 +266,16 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction');
+    }
+
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new PostgreSQLDialect());
+      return $this->formatter;
     }
   }
 ?>

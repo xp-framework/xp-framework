@@ -91,9 +91,10 @@
      * Get indexes for a given table. Expects a temporary table to exist.
      *
      * @param   string table thee table's name
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable
      */    
-    protected function dbTableObjectFor($table) {
+    protected function dbTableObjectFor($table, $database= NULL) {
       $t= new DBTable($table);
       
       // Get the table's attributes
@@ -109,11 +110,11 @@
           syscolumns c,
           systypes t 
         where 
-          c.id= object_id(%s)
-          and t.type = c.type 
+          c.id= object_id(%s) 
+          and s.usertype= c.usertype
           and t.usertype < 100 
           and t.name not in ("sysname", "nchar", "nvarchar")
-      ', $table);
+      ', $this->qualifiedTablename($table, $database));
       while ($record= $q->next()) {
         // Known bits of status column:
         // 0x08 => NULLable
@@ -121,7 +122,7 @@
         $t->addAttribute(new DBTableAttribute(
           $record['name'], 
           $this->map[$record['type']],
-          ($record['status'] & 0x80),
+          ($record['status'] & 0x80), 
           ($record['status'] & 8), 
           $record['length'], 
           $record['prec'], 
@@ -183,7 +184,7 @@
         end
 
         select * from #indexes', 
-        $table
+        $this->qualifiedTablename($table, $database)
       );
       
       $keys= NULL;
@@ -199,6 +200,15 @@
         if ($record['status'] & 2048) $index->primary= TRUE;
       }
       
+      // Get foreign key constraints
+      // in mysql the only way is to parse the creat statement
+      $sp_helpconstraint= $this->conn->query('sp_helpconstraint %s, detail', $this->qualifiedTablename($table, $database));
+      while ($db_constraint= $sp_helpconstraint->next()) {
+        if ('referential constraint' != $db_constraint['type']) continue;
+        if (0 !== strpos($db_constraint['definition'], $table.' ')) continue;
+        $t->addForeignKeyConstraint($this->parseForeignKey($db_constraint));
+      }
+
       return $t;
     }
     
@@ -213,11 +223,12 @@
     /**
      * Get tables by database
      *
-     * @param   string database
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable[] array of DBTable objects
      */
-    public function getTables($database) {
+    public function getTables($database= NULL) {
       $t= array();
+      $database= $this->database($database);
       try {
         $this->prepareTemporaryIndexesTable();
         
@@ -240,7 +251,7 @@
           $database
         );
         if ($q) while ($record= $q->next()) {
-          $t[]= $this->dbTableObjectFor($record['name']);
+          $t[]= $this->dbTableObjectFor($record['name'], $database);
         }
         
       } catch (SQLException $e) {
@@ -257,12 +268,13 @@
      * Get table by name
      *
      * @param   string table
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable a DBTable object
      */
-    public function getTable($table) {
+    public function getTable($table, $database= NULL) {
       try {
         $this->prepareTemporaryIndexesTable();
-        $t= $this->dbTableObjectFor($table);
+        $t= $this->dbTableObjectFor($table, $database);
       } catch (SQLException $e) {
         delete($t);
       } finally(); {
@@ -271,6 +283,133 @@
       }
       
       return $t;
+    }
+
+    /**
+     * Get full table name with database if possible
+     *
+     * @param   string table
+     * @param   string database default NULL if omitted, uses current database
+     * @return  string full table name
+     */
+    private function qualifiedTablename($table, $database= NULL) {
+      $database= $this->database($database);
+      if (NULL !== $database) return $database.'..'.$table;
+      return $table;
+    }
+
+    /**
+     * Get the current database
+     *
+     * @param   string database default NULL if omitted, uses current database
+     * @return  string full table name
+     */
+    private function database($database= NULL) {
+      if (NULL !== $database) return $database;
+      return $this->conn->query('select db_name() as db')->next('db');
+    }
+
+    /**
+     * get the foreign key object from a db result array
+     *
+     * @param   string[] dbresult array
+     * @return  rdbms.DBForeignKeyConstraint
+     */
+    private function parseForeignKey($db_constraint) {
+      $cstring= $db_constraint['definition'];
+      $bracestrings= $this->subBracerString($cstring);
+      $strings= explode(' ', $cstring);
+      $attributes= array();
+      foreach ($bracestrings as $bracestring) $attributes[]= $this->extractParams($bracestring);
+
+      $constraint= new DBForeignKeyConstraint();
+      $constraint->setSource($strings[5]);
+      $constraint->setName($db_constraint['name']);
+      $constraint->setKeys(array_combine($attributes[0], $attributes[1]));
+      return $constraint;
+    }
+
+    /**
+     * cut bracered strings out of strings
+     *
+     * @param   string parsestring
+     * @return  string[] inner bracers
+     */
+    private function subBracerString(&$string) {
+      $rstring= '';
+      $braceredString= array();
+      $pos= 0;
+      while ($pos < strlen($string)) {
+        switch ($string{$pos}) {
+          case '(':
+          $braceredString[]= $this->parseBracerString($string, $pos);
+          break;
+          
+          default:
+          $rstring.= $string{$pos};
+        }
+        $pos++;
+      }
+      $string= $rstring;
+      return $braceredString;
+    }
+
+    /**
+     * get the text inner bracers
+     *
+     * @param   string parsestring
+     * @param   &int position where the bracered string begins
+     * @return  string inner bracers
+     */
+    private function parseBracerString($string, &$pos) {
+      $braceredString= '';
+      while ($pos++ < strlen($string)) {
+        switch ($string{$pos}) {
+          case ')':
+          return $braceredString;
+          break;
+          
+          case '(':
+          $braceredString.= $string{$pos};
+          $braceredString.= $this->parseBracerString($string, $pos).')';
+          break;
+          
+          default:
+          $braceredString.= $string{$pos};
+        }
+      }
+      return $braceredString;
+    }
+
+    /**
+     * get the single params in a paramstring
+     *
+     * @param   string paramstring
+     * @return  string[] paramstrings
+     */
+    private function extractParams($string) {
+      $paramArray= array();
+      $paramString= '';
+      $pos= 0;
+      while ($pos < strlen($string)) {
+        switch ($string{$pos}) {
+          case ',':
+          $paramArray[]= trim($paramString);
+          $paramString= '';
+          break;
+          
+          case '(':
+          $paramString.= $string{$pos};
+          $paramString.= $this->parseBracerString($string, $pos).')';
+          break;
+
+          default:
+          $paramString.= $string{$pos};
+        }
+        $pos++;
+      }
+      $paramArray[]= trim($paramString);
+      return $paramArray;
     }
   }
 ?>

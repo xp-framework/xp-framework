@@ -6,6 +6,7 @@
 
   uses(
     'rdbms.DBConnection',
+    'rdbms.sqlite.SQLiteDialect',
     'rdbms.sqlite.SQLiteResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter'
@@ -50,6 +51,9 @@
    */
   class SQLiteConnection extends DBConnection {
   
+     private
+       $formatter= NULL;
+
     /**
      * Callback function to cast data
      *
@@ -135,16 +139,8 @@
      * @return  string
      */
     public function prepare() {
-      static $formatter= NULL;
       $args= func_get_args();
-      
-      if (NULL === $formatter) {
-        $formatter= new StatementFormatter();
-        $formatter->setEscape("'");
-        $formatter->setEscapeRules(array("'" => "''"));
-        $formatter->setDateFormat('Y-m-d H:i:s');
-      }
-      return $formatter->format(array_shift($args), $args);
+      return $this->getFormatter()->format(array_shift($args), $args);
     }
     
     /**
@@ -152,7 +148,7 @@
      *
      * @return  mixed identity value
      */
-    public function identity() { 
+    public function identity($field= NULL) {
       $i= sqlite_last_insert_rowid($this->handle);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
@@ -325,6 +321,16 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
+    }
+
+    /**
+     * get SQL formatter
+     *
+     * @return  rdbms.StatemantFormatter
+     */
+    public function getFormatter() {
+      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SQLiteDialect());
+      return $this->formatter;
     }
   }
 ?>

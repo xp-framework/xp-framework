@@ -48,7 +48,7 @@
     /**
      * Helper methods
      *
-     * @return  &net.xp_framework.unittest.rdbms.mock.MockConnection
+     * @return  net.xp_framework.unittest.rdbms.mock.MockConnection
      */
     protected function getConnection() {
       return ConnectionManager::getInstance()->getByHost('jobs', 0);
@@ -514,5 +514,69 @@
       // Make next query return empty results (not fail)
       $this->setResults(new MockResultSet());
     }
+
+    /**
+     * Tests column
+     *
+     */
+    #[@test]
+    public function column() {
+      $this->assertClass(Job::column('job_id'), 'rdbms.Column');
+    }
+
+    /**
+     * Tests column exeption
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nonExistantColumn() {
+      Job::column('non_existant');
+    }
+
+    /**
+     * Tests column of relatives
+     *
+     */
+    #[@test]
+    public function relativeColumn() {
+      $this->assertClass(Job::column('PersonJob->person_id'), 'rdbms.Column');
+    }
+
+    /**
+     * Tests column of relatives exeption
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nonExistantRelativeColumn() {
+      Job::column('PersonJob->non_existant');
+    }
+
+    /**
+     * Tests column of relatives
+     *
+     */
+    #[@test]
+    public function farRelativeColumn() {
+      $this->assertClass(Job::column('PersonJob->Department->department_id'), 'rdbms.Column');
+    }
+
+    /**
+     * Tests column of relatives exeption
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nonExistantfarRelativeColumn() {
+      Job::column('PersonJob->Department->non_existant');
+    }
+
+    /**
+     * Tests relation exeption
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nonExistantRelative() {
+      Job::column('NonExistant->person_id');
+    }
+
   }
 ?>

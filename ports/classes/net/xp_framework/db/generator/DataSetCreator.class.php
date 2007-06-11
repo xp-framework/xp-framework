@@ -6,11 +6,13 @@
 
   uses(
     'io.File',
-    'io.Folder',
     'io.FileUtil',
+    'io.Folder',
     'rdbms.DSN',
     'rdbms.DBTable',
     'rdbms.DriverManager',
+    'rdbms.util.DBConstraintXmlGenerator', 
+    'rdbms.util.DBXMLNamingContext',
     'rdbms.util.DBXmlGenerator', 
     'util.log.Logger',
     'util.log.FileAppender',
@@ -36,8 +38,8 @@
   class DataSetCreator extends Command {
     public static $adapters= array(
       'mysql'   => 'rdbms.mysql.MySQLDBAdapter',
+      'sqlite'  => 'rdbms.sqlite.SQLiteDBAdapter',
       'sybase'  => 'rdbms.sybase.SybaseDBAdapter',
-      'sqlite'  => 'rdbms.sqlite.SQLiteDBAdapter'
     );
     
     const GENERATE_XML= 'generateTables';
@@ -46,6 +48,7 @@
     protected 
       $mode= self::GENERATE_XML,
       $xmltarget,
+      $reltarget,
       $dsntemp,
       $prefix,
       $prefixRemove,
@@ -118,7 +121,9 @@
 
       // Create new Folder Object and new Folder(s) if necessary
       $fold= new Folder($this->xmltarget);
+      $relfold= new Folder($this->reltarget);
       $fold->exists() || $fold->create(0755);
+      $relfold->exists() || $relfold->create(0755);
 
       $tables= DBTable::getByDatabase($adapter, $adapter->conn->dsn->getDatabase());
       foreach ($tables as $t) {
@@ -140,7 +145,6 @@
             $this->prefixRemove
           );
           $filename= ucfirst($t->name);
-
           // Create table node...
           with ($node= $gen->doc->root->children[0]); {
             $node->setAttribute('dbtype', $adapter->conn->dsn->getDriver());
@@ -158,6 +162,14 @@
           );
         }
       }
+      
+      $f= new File($relfold->getURI().'constraints.xml');
+      $written= FileUtil::setContents($f, DBConstraintXmlGenerator::createFromDatabase($adapter, $adapter->conn->dsn->getDatabase())->getSource());
+      $this->out->writeLinef(
+        '===> Output written to %s (%.2f kB)', 
+        $f->getURI(),
+        $written / 1024
+      );
     }
     
     /**
@@ -165,7 +177,7 @@
      *
      */
     public function xsltproc() {
-      $this->package= str_replace('.', DIRECTORY_SEPARATOR, $this->package);    
+      $directory= str_replace('.', DIRECTORY_SEPARATOR, $this->package);    
 
       preg_match('/[0-9a-z_-]+\.xml/i', $this->xmlfile, $matches);
       $name= strtolower(str_replace('.xml', '', $matches[0]));
@@ -180,9 +192,16 @@
       }
       
       $proc->setXMLFile($this->xmlfile);
+      $proc->setParam('definitionpath', realpath(dirname($this->xmlfile)));
+      $proc->setParam('constraintfile', realpath(dirname(dirname($this->xmlfile))).'/constraints/constraints.xml');
+      $proc->setParam('package',        $this->package);
+      $proc->setParam('prefix',         $this->prefix);
+      $proc->setParam('incprefix',      implode(',', $this->incprefix));
+      $proc->setParam('exprefix',       implode(',', $this->exprefix));
+      $proc->setParam('prefixRemove',   $this->prefixRemove);
       $proc->run();
 
-      $fold= new Folder($this->outputdir.DIRECTORY_SEPARATOR.$this->package);
+      $fold= new Folder($this->outputdir.DIRECTORY_SEPARATOR.$directory);
       $fold->exists() || $fold->create(0755);
       
       $filename= $this->prefixedClassName($name, $this->prefix, $this->incprefix, $this->exprefix, $this->prefixRemove);
@@ -205,6 +224,7 @@
       }
 
       $this->xmltarget    = str_replace('config.ini', 'tables', $ini->getFilename());
+      $this->reltarget    = str_replace('config.ini', 'constraints', $ini->getFilename());
       $this->dsntemp      = $ini->readString('connection', 'dsn');
       $this->prefix       = $ini->readString('prefix', 'value');
       $this->prefixRemove = $ini->readString('prefix', 'remove');
@@ -214,7 +234,7 @@
       $this->package      = $ini->readString('mapping', 'package');
       $this->overrides    = $ini->readSection('overrides', FALSE);
       $this->inifile      = $ini->getFilename();
-      $this->ignore       = $ini->readArray('ignore', 'tables');  
+      $this->ignore       = $ini->readArray('ignore', 'tables');
       if (!empty($this->incprefix) && !empty($this->exprefix)) {
         throw new IllegalArgumentException(
           '==> exclude-prefix AND include-prefix are set. This is invalid <=='."\n".
@@ -246,7 +266,6 @@
     #[@arg(name= 'xslsheet', short= 'S')]
     public function setStylesheet($xsl= NULL) {
       if (self::GENERATE_SRC == $this->mode && empty($xsl)) {
-      
         // Defaulting to xp5.php.xsl
         $this->xsl= $this->getClass()->getPackage()->getResource('xp5.php.xsl');
       } else {

@@ -125,9 +125,11 @@ Note:
 </pre>
 
 - method isJoin was added to the interface rdbms.SQLExpression 
-- method rdbms.DBConnection::getFormatter has to be added
+- abstract method rdbms.DBConnection::getFormatter has to be added
+- abstract method rdbms.DBConnection::identity has parameter $field now
 - second parameter of the interface rdbms.criterion.Criterion has been changed from array to peer
 - new interfacee rdbms.join.JoinExtractable
+- rdbms.DataSet implements interface rdbms.join.JoinExtractable
 - Naming Strategy of rfc0096
 - SQLDialect of rfc0124
 - deprecates the method rdbms.Peer::doJoin

@@ -34,14 +34,14 @@
      * Returns the fragment SQL
      *
      * @param   rdbms.DBConnection conn
-     * @param   array types
+     * @param   rdbms.Peer peer
      * @return  string
      * @throws  rdbms.SQLStateException
      */
-    public function asSql($conn, $types) { 
+    public function asSql(DBConnection $conn, Peer $peer) {
       $sql= '';
       for ($i= 0, $s= sizeof($this->criterions); $i < $s; $i++) {
-        $sql.= $this->criterions[$i]->asSql($conn, $types).' '.$this->op.' ';
+        $sql.= $this->criterions[$i]->asSql($conn, $peer).' '.$this->op.' ';
       }
       return '('.substr($sql, 0, (-1 * strlen($this->op)) - 2).')';
     }
