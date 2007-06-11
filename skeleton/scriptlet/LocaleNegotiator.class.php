@@ -77,7 +77,7 @@
      *
      * @param   string[] supported
      * @param   string default default NULL
-     * @return  &util.Locale
+     * @return  util.Locale
      */
     public function getLocale($supported, $default= NULL) {
       $chosen= FALSE;

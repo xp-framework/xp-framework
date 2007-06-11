@@ -160,7 +160,7 @@
      * Create a RDF from a string
      *
      * @param   string str
-     * @return  &xml.rdf.RDFNewsfeed
+     * @return  xml.rdf.RDFNewsfeed
      */
     public static function fromString($str) {
       return parent::fromString($str, __CLASS__);
@@ -169,8 +169,8 @@
     /**
      * Create a RDF from a file
      *
-     * @param   &io.File file
-     * @return  &xml.rdf.RDFNewsfeed
+     * @param   io.File file
+     * @return  xml.rdf.RDFNewsfeed
      */
     public static function fromFile($file) {
       return parent::fromFile($file, __CLASS__);

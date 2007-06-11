@@ -28,7 +28,7 @@
      * printf(">>> ConnectionListener::connected() @%d\n", getmypid());
      * </code>
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function connected($event) {
     }
@@ -48,7 +48,7 @@
      *   }                                                      
      * </code>
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function data($event) { 
     }
@@ -61,7 +61,7 @@
      * printf(">>> ConnectionListener::disconnected() @%d\n", getmypid());
      * </code>
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function disconnected($event) { 
     }
@@ -75,7 +75,7 @@
      * $event->data->printStackTrace();
      * </code>
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function error($event) { 
     }

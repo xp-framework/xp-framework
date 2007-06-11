@@ -25,7 +25,7 @@
     /**
      * Helper method
      *
-     * @param   &xml.Node starting node
+     * @param   xml.Node starting node
      * @param   string name
      * @param   int max default -1
      * @return  xml.Node[]
@@ -50,7 +50,7 @@
     /**
      * Helper method
      *
-     * @param   &xml.Node starting node
+     * @param   xml.Node starting node
      * @param   string attribute
      * @param   string name
      * @param   int max
@@ -103,7 +103,7 @@
      * Returns an object reference to the identified element.
      *
      * @param   string id
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getElementById($id) {
       return $this->_getElementsByAttribute($this->root, 'id', $id, 1);
@@ -113,7 +113,7 @@
      * Creates an element of the type specified.
      *
      * @param   string name
-     * @return  &xml.Node node
+     * @return  xml.Node node
      */
     public function createElement($name) {
       return new $this->nodeType($name);
@@ -123,7 +123,7 @@
      * This is a convenience method that allows direct access to the 
      * child node that is the root element of the document.
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getDocumentElement() {
       return $this->root;
@@ -133,7 +133,7 @@
      * Construct a document from a string
      *
      * @param   string string
-     * @return  &xml.dom.Document
+     * @return  xml.dom.Document
      */
     public static function fromString($string) {
       return parent::fromString($string, __CLASS__);
@@ -143,8 +143,8 @@
     /**
      * Construct a document from a file
      *
-     * @param   &xml.File file
-     * @return  &xml.dom.Document
+     * @param   xml.File file
+     * @return  xml.dom.Document
      */
     public static function fromFile($file) {
       return parent::fromFile($file, __CLASS__);

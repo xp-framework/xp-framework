@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int format default IMG_GD2_RAW one of the IMG_GD2_* constants
      */
     public function __construct($stream, $format= IMG_GD2_RAW) {

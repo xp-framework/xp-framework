@@ -34,7 +34,7 @@
     /**
      * Constructor
      *
-     * @param   &util.cmd.ParamString p
+     * @param   util.cmd.ParamString p
      */
     public function __construct($p) {
       parent::__construct($p, dirname(__FILE__).'/gtkui.glade', 'mainwindow');
@@ -123,7 +123,7 @@
      *
      * @param   string id
      * @param   string result
-     * @param   &mixed data
+     * @param   mixed data
      */
     public function updateTest($id, $result, $data) {
       $content= $this->hierarchy->node_get_pixtext($this->node[$id], 0);
@@ -141,8 +141,8 @@
     /**
      * Callback for when a row is selected in the hierarchy ctree
      *
-     * @param   &php.GtkWidget widget the ctree
-     * @param   &php.GtkNode node the selected node
+     * @param   php.GtkWidget widget the ctree
+     * @param   php.GtkNode node the selected node
      */
     public function onSelectTest($widget, $node) {
     
@@ -200,7 +200,7 @@
     /**
      * Callback
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onClearClicked($widget) {
       $this->hierarchy->clear();
@@ -215,7 +215,7 @@
     /**
      * Callback
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onRunClicked($widget) {
       $numtests= $this->suite->numTests();
@@ -252,7 +252,7 @@
     /**
      * Adds tests from a section
      *
-     * @param   &util.Properties config
+     * @param   util.Properties config
      * @param   string section
      */
     public function addTestsFromSection($config, $section) {
@@ -362,7 +362,7 @@
     /**
      * Callback
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onSelectClicked($widget) {
       do {

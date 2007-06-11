@@ -88,7 +88,7 @@
      * an object of that mailbox.
      *
      * @param   string foldername
-     * @return  &peer.mail.MailFolder folder;
+     * @return  peer.mail.MailFolder folder;
      */    
     public function getFolder($name) {
       $f= new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
@@ -104,7 +104,7 @@
     /**
      * Returns a list of all subfolders in current folder.
      *
-     * @return  &array* folders array of peer.mail.MailFolder objects
+     * @return  array* folders array of peer.mail.MailFolder objects
      */
     public function getFolders() {
       $f= array();
@@ -125,7 +125,7 @@
     /**
      * Opens a folder.
      *
-     * @param   &peer.mail.MailFolder folder
+     * @param   peer.mail.MailFolder folder
      * @param   boolean readonly default FALSE
      * @return  boolean success
      * @throws  lang.IllegalAccessException if another folder is still open
@@ -161,7 +161,7 @@
     /**
      * Closes an open folder.
      *
-     * @param   &peer.mail.MailFolder folder
+     * @param   peer.mail.MailFolder folder
      * @return  boolean success
      * @throws  lang.IllegalArgumentException if folder is not opened folder
      */    
@@ -182,7 +182,7 @@
      * Gets the count of messages with speciefied attribute
      * or all messages when no attribute was specified
      *
-     * @param   &peer.mail.Mailfolder f
+     * @param   peer.mail.Mailfolder f
      * @param   int attr default 0xFFFF
      * @return  int count
      */    
@@ -210,7 +210,7 @@
      * Returns the URI to a specific message in a Maildir. This is the
      * absolute path to that file.
      *
-     * @param   &peer.mail.MailFolder folder
+     * @param   peer.mail.MailFolder folder
      * @param   int number
      * @return  string uri
      */    
@@ -253,7 +253,7 @@
      * MIME-Information and returns the created Message object.
      *
      * @param   string filename
-     * @return  &peer.mail.Message
+     * @return  peer.mail.Message
      * @throws  io.IOException if file cannot be read
      */    
     protected function _readMessageRaw($filename) {
@@ -285,7 +285,7 @@
      * Returns an array of messages specified by the numbers in the
      * argument
      *
-     * @param   &peer.mail.MailFolder folder
+     * @param   peer.mail.MailFolder folder
      * @param   mixed* msgnums
      * @return  array messages
      */    

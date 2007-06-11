@@ -40,8 +40,8 @@
      * Add a pie slice to the data
      *
      * @param   string key
-     * @param   &img.graph.PieSlice a slice object
-     * @return  &img.graph.PieSlice the slice object put in
+     * @param   img.graph.PieSlice a slice object
+     * @return  img.graph.PieSlice the slice object put in
      */
     public function add($slice) {
       $this->slices[]= $slice;
@@ -51,7 +51,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

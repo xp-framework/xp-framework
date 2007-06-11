@@ -72,8 +72,8 @@
      * Register an image loader for a specified scheme
      *
      * @param   string scheme
-     * @param   &peer.mail.util.ImageLoader loader
-     * @return  &peer.mail.util.ImageLoader
+     * @param   peer.mail.util.ImageLoader loader
+     * @return  peer.mail.util.ImageLoader
      */
     public function registerLoader($scheme, $loader) {
       $this->_loaders[$scheme]= $loader;
@@ -83,7 +83,7 @@
     /**
      * Loads an image from a given URL
      *
-     * @param   &peer.URL source
+     * @param   peer.URL source
      * @return  string content id
      * @throws  lang.MethodNotImplementedException in case no loader is present
      * @throws  lang.Throwable

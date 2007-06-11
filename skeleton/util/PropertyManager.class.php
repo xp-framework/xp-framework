@@ -44,7 +44,7 @@
     /**
      * Retrieve this property manager's instance
      * 
-     * @return  &util.PropertyManager
+     * @return  util.PropertyManager
      */
     public static function getInstance() {
       return self::$instance;
@@ -63,7 +63,7 @@
      * Register a certain property object to a specified name
      *
      * @param   string name
-     * @param   &util.Properties properties
+     * @param   util.Properties properties
      */
     public function register($name, $properties) {
       $this->_prop[$this->_path.$name]= $properties;
@@ -86,7 +86,7 @@
      * Return properties by name
      *
      * @param   string name
-     * @return  &util.Properties
+     * @return  util.Properties
      */
     public function getProperties($name) {
       if (!isset($this->_prop[$this->_path.$name])) {

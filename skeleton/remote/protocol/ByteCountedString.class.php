@@ -53,7 +53,7 @@
     /**
      * Write to a given stream using a specified chunk size
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int chunksize default BCS_DEFAULT_CHUNK_SIZE
      */
     public function writeTo($stream, $chunksize= BCS_DEFAULT_CHUNK_SIZE) {
@@ -73,7 +73,7 @@
     /**
      * Read a specified number of bytes from a given stream
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int length
      * @return  string
      */
@@ -89,7 +89,7 @@
     /**
      * Read from a stream
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @return  string
      */
     public static function readFrom($stream) {

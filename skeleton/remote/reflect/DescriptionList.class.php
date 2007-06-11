@@ -36,7 +36,7 @@
      * Retrieve a single bean
      *
      * @param   string name
-     * @return  &remote.reflect.BeanDescription or NULL if nothing is found
+     * @return  remote.reflect.BeanDescription or NULL if nothing is found
      */
     public function bean($name) {
       if (!isset($this->beans[$name])) {

@@ -18,7 +18,7 @@
      * Create message from string representation
      *
      * @param   string string
-     * @return  &webservices.json.rpc.JsonRequestMessage
+     * @return  webservices.json.rpc.JsonRequestMessage
      */
     public static function fromString($string) {
       $decoder= JsonFactory::create();

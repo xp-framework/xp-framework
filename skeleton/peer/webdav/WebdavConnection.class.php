@@ -30,7 +30,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function propfind($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_PROPFIND, $arg, $headers);
@@ -41,7 +41,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function proppatch($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_PROPPATCH, new RequestData($arg), $headers);
@@ -52,7 +52,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function mkcol($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_MKCOL, $arg, $headers);
@@ -63,7 +63,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function lock($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_LOCK, $arg, $headers);
@@ -74,7 +74,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function unlock($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_UNLOCK, $arg, $headers);
@@ -85,7 +85,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function copy($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_COPY, $arg, $headers);
@@ -96,7 +96,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function move($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_MOVE, $arg, $headers);
@@ -107,7 +107,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function delete($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_DELETE, $arg, $headers);
@@ -118,7 +118,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function version($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_VERSION, $arg, $headers);
@@ -129,7 +129,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function report($arg= NULL, $headers= array()) {
       return $this->request(WEBDAV_METHOD_REPORT, $arg, $headers);

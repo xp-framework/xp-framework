@@ -33,8 +33,8 @@
     /**
      * Handle exception from scriptlet
      *
-     * @param   &scriptlet.xml.XMLScriptletResponse response
-     * @param   &lang.XPException e
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   lang.XPException e
      */
     public function except($response, $e) {
       $class= $this->getClass();
@@ -53,7 +53,7 @@
     /**
      * Run the given scriptlet
      *
-     * @param   &scriptlet.HttpScriptlet scriptlet
+     * @param   scriptlet.HttpScriptlet scriptlet
      */
     public function run($scriptlet) {
       try {

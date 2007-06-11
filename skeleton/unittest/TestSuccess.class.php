@@ -18,8 +18,8 @@
     /**
      * Constructor
      *
-     * @param   &unittest.TestCase test
-     * @param   &mixed result
+     * @param   unittest.TestCase test
+     * @param   mixed result
      * @param   float elapsed
      */
     public function __construct($test, $elapsed) {

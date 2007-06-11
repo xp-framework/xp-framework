@@ -44,7 +44,7 @@
      * check whether the result matches the argument.
      *
      * @param   string method
-     * @param   &webservices.soap.Parameter argument
+     * @param   webservices.soap.Parameter argument
      * @return  boolean
      * @throws  webservices.soap.SOAPFaultException
      */

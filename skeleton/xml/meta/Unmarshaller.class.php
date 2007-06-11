@@ -33,7 +33,7 @@
     /**
      * Retrieve content of a DomElement
      *
-     * @param   &php.DomElement element
+     * @param   php.DomElement element
      * @return  string
      */
     protected static function contentOf($element) {
@@ -59,10 +59,10 @@
     /**
      * Recursively unmarshal
      *
-     * @param   &xml.XPath xpath
-     * @param   &php.DomElement context
+     * @param   xml.XPath xpath
+     * @param   php.DomElement context
      * @param   string classname
-     * @return  &lang.Object
+     * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
@@ -154,7 +154,7 @@
      *
      * @param   string xml
      * @param   string classname
-     * @return  &lang.Object
+     * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
      */

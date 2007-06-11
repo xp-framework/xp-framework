@@ -17,7 +17,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -26,14 +26,14 @@
     /**
      * Send the message
      *
-     * @param   &webservices.soap.SOAPMessage message
+     * @param   webservices.soap.SOAPMessage message
      */
     public function send($message) { }
    
     /**
      * Retrieve the answer
      *
-     * @return  &webservices.soap.SOAPMessage
+     * @return  webservices.soap.SOAPMessage
      */
     public function retrieve($response) { }
   }

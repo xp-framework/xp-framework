@@ -26,7 +26,7 @@
     /**
      * Get Fault
      *
-     * @return  &webservices.soap.SOAPFault
+     * @return  webservices.soap.SOAPFault
      */
     public function getFault() {
       return $this->fault;

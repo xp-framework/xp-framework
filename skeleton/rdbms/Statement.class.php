@@ -51,9 +51,9 @@
     /**
      * Executes an SQL SELECT statement
      *
-     * @param   &rdbms.DBConnection conn
-     * @param   &rdbms.Peer peer
-     * @return  &rdbms.ResultSet
+     * @param   rdbms.DBConnection conn
+     * @param   rdbms.Peer peer
+     * @return  rdbms.ResultSet
      */
     public function executeSelect($conn, $peer) {
       $this->arguments[0]= preg_replace(

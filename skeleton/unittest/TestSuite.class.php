@@ -112,8 +112,8 @@
     /**
      * Run a single test
      *
-     * @param   &unittest.TestCase test
-     * @return  &unittest.TestResult
+     * @param   unittest.TestCase test
+     * @return  unittest.TestResult
      */
     public function runTest($test) {
       $result= new TestResult();

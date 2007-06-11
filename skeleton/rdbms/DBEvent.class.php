@@ -44,7 +44,7 @@
     /**
      * Set Arg
      *
-     * @param   &lang.Object arg
+     * @param   lang.Object arg
      */
     public function setArgument($arg) {
       $this->arg= $arg;
@@ -53,7 +53,7 @@
     /**
      * Get Arg
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function getArgument() {
       return $this->arg;

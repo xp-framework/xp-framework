@@ -41,8 +41,8 @@
     /**
      * Read from a file
      *
-     * @param   &io.File file
-     * @return  &img.util.ExifData
+     * @param   io.File file
+     * @return  img.util.ExifData
      * @throws  img.ImagingException in case extracting data fails
      */
     public static function fromFile($file) {
@@ -255,7 +255,7 @@
     /**
      * Set DateTime
      *
-     * @param   &util.Date dateTime
+     * @param   util.Date dateTime
      */
     public function setDateTime($dateTime) {
       $this->dateTime= $dateTime;
@@ -264,7 +264,7 @@
     /**
      * Get DateTime
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getDateTime() {
       return $this->dateTime;
@@ -529,7 +529,7 @@
     /**
      * Get Thumbnail
      *
-     * @return  &img.Image  
+     * @return  img.Image  
      */
     public function getThumbnail() {
       $s= new Stream();

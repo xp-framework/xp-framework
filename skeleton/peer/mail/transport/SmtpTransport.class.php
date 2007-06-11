@@ -256,7 +256,7 @@
     /**
      * Send a message
      *
-     * @param   &peer.mail.Message message the Message object to send
+     * @param   peer.mail.Message message the Message object to send
      * @return  bool TRUE in case of success
      * @throws  peer.mail.transport.TransportException to indicate an error occured
      */

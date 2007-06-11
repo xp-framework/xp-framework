@@ -33,7 +33,7 @@
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @param   &lang.Object expr
+     * @param   lang.Object expr
      * @return  bool
      */
     public function equals($expr) {

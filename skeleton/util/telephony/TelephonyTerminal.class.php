@@ -16,7 +16,7 @@
     /**
      * Constructor
      *
-     * @param   &util.telephony.TelephonyAddress address
+     * @param   util.telephony.TelephonyAddress address
      */
     public function __construct($address) {
       

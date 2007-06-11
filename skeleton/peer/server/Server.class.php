@@ -69,8 +69,8 @@
      * Add a connection listener. Provided for BC reasons.
      *
      * @deprecated Use setProtocol() instead!
-     * @param   &peer.server.ConnectionListener listener
-     * @return  &peer.server.ConnectionListener the added listener
+     * @param   peer.server.ConnectionListener listener
+     * @return  peer.server.ConnectionListener the added listener
      */
     public function addListener($listener) {
       if (!$this->protocol) {
@@ -86,8 +86,8 @@
     /**
      * Sets this server's protocol
      *
-     * @param   &peer.server.ServerProtocol protocol
-     * @return  &peer.server.ServerProtocol protocol
+     * @param   peer.server.ServerProtocol protocol
+     * @return  peer.server.ServerProtocol protocol
      */
     public function setProtocol($protocol) {
       $protocol->server= $this;

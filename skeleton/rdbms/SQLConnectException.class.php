@@ -19,7 +19,7 @@
      * Constructor
      *
      * @param   string message
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($message, $dsn) {
       parent::__construct($message);
@@ -29,7 +29,7 @@
     /**
      * Get DSN used for connect
      *
-     * @return  &rdbms.DSN
+     * @return  rdbms.DSN
      */
     public function getDsn() {
       return $this->dsn;

@@ -23,7 +23,7 @@
     /**
      * Add a connection listener
      *
-     * @param   &peer.server.ConnectionListener listener
+     * @param   peer.server.ConnectionListener listener
      */
     public function addListener($listener) {      
       $this->listeners[]= $listener;
@@ -39,7 +39,7 @@
     /**
      * Notify listeners
      *
-     * @param   &peer.server.ConnectionEvent event
+     * @param   peer.server.ConnectionEvent event
      */
     public function notify($event) {
       for ($i= 0, $s= sizeof($this->listeners); $i < $s; $i++) {
@@ -50,7 +50,7 @@
     /**
      * Handle client connect
      *
-     * @param   &peer.Socket
+     * @param   peer.Socket
      */
     public function handleConnect($socket) {
       $this->notify(new ConnectionEvent(EVENT_CONNECTED, $socket));
@@ -59,7 +59,7 @@
     /**
      * Handle client disconnect
      *
-     * @param   &peer.Socket
+     * @param   peer.Socket
      */
     public function handleDisconnect($socket) {
        $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
@@ -68,7 +68,7 @@
     /**
      * Handle client data
      *
-     * @param   &peer.Socket
+     * @param   peer.Socket
      * @return  mixed
      */
     public function handleData($socket) { 
@@ -84,8 +84,8 @@
     /**
      * Handle I/O error
      *
-     * @param   &peer.Socket
-     * @param   &lang.XPException e
+     * @param   peer.Socket
+     * @param   lang.XPException e
      */
     public function handleError($socket, $e) {
       $this->notify(new ConnectionEvent(EVENT_ERROR, $socket, $e));

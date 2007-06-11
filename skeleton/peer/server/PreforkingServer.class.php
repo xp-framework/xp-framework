@@ -74,7 +74,7 @@
     /**
      * Terminate child processes
      *
-     * @param   &array children
+     * @param   array children
      * @param   int signal
      */
     protected function _killChildren(&$children, $signal= SIGHUP) {

@@ -54,7 +54,7 @@
     /**
      * Constructor
      *
-     * @param   &peer.irc.IRCUser user
+     * @param   peer.irc.IRCUser user
      * @param   string server
      * @param   int port default 6667
      */
@@ -67,8 +67,8 @@
      * Adds a listener
      *
      * @see     xp://peer.irc.IRCConnectionListener
-     * @param   &peer.irc.IRCConnectionListener listener
-     * @return  &peer.irc.IRCConnectionListener the listener added
+     * @param   peer.irc.IRCConnectionListener listener
+     * @return  peer.irc.IRCConnectionListener the listener added
      */
     public function addListener($listener) {
       $this->listeners[]= $listener;
@@ -78,7 +78,7 @@
     /**
      * Set a logger category for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;

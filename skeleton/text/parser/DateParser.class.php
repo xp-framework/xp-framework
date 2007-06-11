@@ -47,7 +47,7 @@
      * Parse a date
      *
      * @param   string s
-     * @return  &util.Date
+     * @return  util.Date
      * @throws  lang.FormatException in case the date could not be parsed
      */
     public static function parse($s) {

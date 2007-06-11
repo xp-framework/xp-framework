@@ -35,7 +35,7 @@
     /**
      * Constructor
      *
-     * @param   &scriptlet.HttpSession storage
+     * @param   scriptlet.HttpSession storage
      * @param   string name default 'semaphore'
      */
     public function __construct($storage, $name= 'semaphore') {

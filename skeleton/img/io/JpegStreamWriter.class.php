@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int quality default 75
      */
     public function __construct($stream, $quality= 75) {

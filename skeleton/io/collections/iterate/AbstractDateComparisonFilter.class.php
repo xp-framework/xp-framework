@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function __construct($date) {
       $this->date= $date;
@@ -27,7 +27,7 @@
     /**
      * Accepts an element
      *
-     * @param   &io.collections.IOElement element
+     * @param   io.collections.IOElement element
      * @return  bool
      */
     public function accept($element) { }

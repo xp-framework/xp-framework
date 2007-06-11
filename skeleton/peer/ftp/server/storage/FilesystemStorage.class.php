@@ -120,7 +120,7 @@
      *
      * @param   string uri
      * @param   int type one of the ST_* constants
-     * @return  &peer.ftp.server.storage.StorageEntry
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function create($clientId, $uri, $type) {
       $path= $this->realname($clientId, $uri);
@@ -146,7 +146,7 @@
      * or NULL in case it nothing is found.
      *
      * @param   string uri
-     * @return  &peer.ftp.server.storage.StorageEntry
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function lookup($clientId, $uri) {
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;

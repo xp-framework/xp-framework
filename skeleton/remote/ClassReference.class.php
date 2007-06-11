@@ -36,7 +36,7 @@
      * Retrieved referenced class name
      *
      * @param   lang.ClassLoader cl default NULL
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     public function referencedClass($cl= NULL) {
       return XPClass::forName($this->classname, $cl);

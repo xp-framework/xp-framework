@@ -15,7 +15,7 @@
     /**
      * Load an image
      *
-     * @param   &peer.URL source
+     * @param   peer.URL source
      * @return  string[2] data and contenttype
      */
     public function load($source);

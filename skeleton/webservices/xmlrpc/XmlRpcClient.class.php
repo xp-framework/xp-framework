@@ -43,7 +43,7 @@
     /**
      * Constructor.
      *
-     * @param   &webservices.xmlrpc.transport.XmlRpcTransport transport
+     * @param   webservices.xmlrpc.transport.XmlRpcTransport transport
      */
     public function __construct($transport) {
       $this->transport= $transport;
@@ -52,7 +52,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->transport->setTrace($cat);

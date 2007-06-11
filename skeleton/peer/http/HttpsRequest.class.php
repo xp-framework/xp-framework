@@ -18,7 +18,7 @@
     /**
      * Send request
      *
-     * @return  &peer.http.HttpsResponse response object
+     * @return  peer.http.HttpsResponse response object
      */
     public function send($timeout= 60) {
       $curl= curl_init($this->url->getURL());

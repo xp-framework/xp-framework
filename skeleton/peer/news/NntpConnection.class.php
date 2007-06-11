@@ -47,7 +47,7 @@
     /**
      * Constructor
      *
-     * @param   &peer.URL url
+     * @param   peer.URL url
      */
     public function __construct($url) {
       $this->url= $url;
@@ -60,7 +60,7 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -228,7 +228,7 @@
     /**
      * Get groups
      *
-     * @return  &peer.news.Newsgroup[]
+     * @return  peer.news.Newsgroup[]
      */
     public function getGroups() {
       $status= $this->_sendcmd('LIST');
@@ -247,7 +247,7 @@
      * Get Article
      *
      * @param   mixed Id eighter a messageId or an articleId
-     * @return  &peer.news.Article
+     * @return  peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
     public function getArticle($id= NULL) {
@@ -336,7 +336,7 @@
     /**
      * Retrieve next article
      *
-     * @return  &peer.news.Article
+     * @return  peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
     public function getNextArticle() {
@@ -350,7 +350,7 @@
     /**
      * Retrieve last article
      *
-     * @return  &peer.news.Article
+     * @return  peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
     public function getLastArticle() {
@@ -383,7 +383,7 @@
      * Get a list of articles in a given range
      *
      * @param   string range default NULL
-     * @return  &int[] articleId
+     * @return  int[] articleId
      */
     public function getOverview($range= NULL) {
       $status= $this->_sendcmd('XOVER', $range);
@@ -400,7 +400,7 @@
      * Get all articles which are newer
      * than the given date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @param   string newsgroup
      * @return  array messageId
      */ 
@@ -422,7 +422,7 @@
      * Get all groups which are newer
      * than the given date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @return  array &peer.news.Newsgroup
      */
     public function newGroups($date) {

@@ -104,7 +104,7 @@
     /**
      * Gets the notBefore date from the validity period of the certificate.
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getNotBefore() {
       return new Date($this->_info['validFrom_time_t']);
@@ -113,7 +113,7 @@
     /**
      * Gets the notAfter date from the validity period of the certificate.
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getNotAfter() {
       return new Date($this->_info['validTo_time_t']);
@@ -122,7 +122,7 @@
     /**
      * Gets the issuer DN (distinguished name)
      *
-     * @return  &security.Principal
+     * @return  security.Principal
      */
     public function getIssuerDN() {
       return new Principal($this->_info['issuer']);
@@ -131,7 +131,7 @@
     /**
      * Gets the subject DN (distinguished name)
      *
-     * @return  &security.Principal
+     * @return  security.Principal
      */
     public function getSubjectDN() {
       return new Principal($this->_info['subject']);
@@ -197,7 +197,7 @@
      * Create a X.509 Certificate from a string
      *
      * @param   string str
-     * @return  &security.cert.X509Certificate
+     * @return  security.cert.X509Certificate
      * @throws  security.cert.CertificateException
      */
     public static function fromString($str) {
@@ -219,7 +219,7 @@
      * Check whether the given private key corresponds
      * to this certificate.
      *
-     * @param   &security.crypto.PrivateKey privatekey
+     * @param   security.crypto.PrivateKey privatekey
      * @return  bool
      */
     public function checkPrivateKey($privatekey) {
@@ -230,7 +230,7 @@
      * Retrieve the public key associated with this
      * certificate
      *
-     * @return  &security.crypto.PublicKey
+     * @return  security.crypto.PublicKey
      */
     public function getPublicKey() {
       return PublicKey::fromString($this->export());

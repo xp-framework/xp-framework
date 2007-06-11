@@ -27,7 +27,7 @@
      * </pre>
      *
      * @param   peer.URL u
-     * @param   &array attr
+     * @param   array attr
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */

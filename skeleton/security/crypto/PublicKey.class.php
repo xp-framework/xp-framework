@@ -17,7 +17,7 @@
      * Create from certificate string representation.
      *
      * @param   string string
-     * @return  &security.crypto.PublicKey
+     * @return  security.crypto.PublicKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
     public static function fromString($string) {

@@ -30,7 +30,7 @@
     /**
      * Constructor
      *
-     * @param   &img.Color col color
+     * @param   img.Color col color
      * @param   int x1 x coordinate of starting point
      * @param   int y1 y coordinate of starting point
      * @param   int x2 x coordinate of ending point
@@ -48,7 +48,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

@@ -47,7 +47,7 @@
     /**
      * Gets an instance
      *
-     * @return  &rdbms.DriverManager
+     * @return  rdbms.DriverManager
      */
     public static function getInstance() {
       return self::$instance;
@@ -64,7 +64,7 @@
      * </code>
      *
      * @param   string name identifier
-     * @param   &lang.XPClass class
+     * @param   lang.XPClass class
      */
     public static function register($name, $class) {
       self::$instance->drivers[$name]= $class;
@@ -74,7 +74,7 @@
      * Get a connection by a DSN string
      *
      * @param   string str
-     * @return  &rdbms.DBConnection
+     * @return  rdbms.DBConnection
      * @throws  rdbms.DriverNotSupportedException
      */
     public static function getConnection($str) {

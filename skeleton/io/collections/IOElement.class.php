@@ -30,21 +30,21 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function createdAt();
 
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastAccessed();
 
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastModified();
 

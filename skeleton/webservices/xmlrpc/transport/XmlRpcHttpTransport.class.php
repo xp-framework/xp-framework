@@ -43,8 +43,8 @@
     /**
      * Send XML-RPC message
      *
-     * @param   &webservices.xmlrpc.XmlRpcMessage message
-     * @return  &scriptlet.HttpScriptletResponse
+     * @param   webservices.xmlrpc.XmlRpcMessage message
+     * @return  scriptlet.HttpScriptletResponse
      */
     public function send($message) {
       
@@ -74,8 +74,8 @@
     /**
      * Retrieve a XML-RPC message.
      *
-     * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &webservices.xmlrpc.XmlRpcMessage
+     * @param   scriptlet.HttpScriptletResponse response
+     * @return  webservices.xmlrpc.XmlRpcMessage
      */
     public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());

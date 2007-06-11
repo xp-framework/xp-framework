@@ -104,8 +104,8 @@
     /**
      * Add a Mime Part
      *
-     * @param   &peer.mail.MimePart part
-     * @return  &peer.mail.MimePart the part added
+     * @param   peer.mail.MimePart part
+     * @return  peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
     public function addPart($part) {
@@ -176,8 +176,8 @@
     /**
      * Private helper method
      *
-     * @param   &peer.mail.MimePart[] parts
-     * @param   &array p structure parts as retrieved from cclient lib
+     * @param   peer.mail.MimePart[] parts
+     * @param   array p structure parts as retrieved from cclient lib
      * @param   string id default '' part id
      */
     protected function _recurseparts($parts, $p, $id= '') {
@@ -244,7 +244,7 @@
      * Get a part
      *
      * @param   int id default -1
-     * @return  &peer.mail.MimePart part
+     * @return  peer.mail.MimePart part
      */
     public function getPart($id= -1) {
       $this->_parts();

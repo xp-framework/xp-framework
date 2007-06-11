@@ -282,7 +282,7 @@
      * Method to render bar charts
      *
      * @param   img.chart.BarChart bc
-     * @return  &img.Image
+     * @return  img.Image
      */
     public function renderBarChart($bc) {
  
@@ -407,7 +407,7 @@
      * Method to render line charts
      *
      * @param   img.chart.LineChart bc
-     * @return  &img.Image
+     * @return  img.Image
      */
     public function renderLineChart($lc) {
  
@@ -533,7 +533,7 @@
      * Method to render pie charts
      *
      * @param   img.chart.PieChart bc
-     * @return  &img.Image
+     * @return  img.Image
      */
     public function renderPieChart($pc) {
  
@@ -606,8 +606,8 @@
     /**
      * Renders a chart
      *
-     * @param   &img.chart.Chart chart
-     * @return  &img.Image
+     * @param   img.chart.Chart chart
+     * @return  img.Image
      * @throws  lang.IllegalArgumentException if chart is not renderable
      */
     public function render($chart) { 

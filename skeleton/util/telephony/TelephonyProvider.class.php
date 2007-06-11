@@ -63,9 +63,9 @@
     /**
      * Set a LogCategory for tracing communication
      *
-     * @param   &util.log.LogCategory cat a LogCategory object to which communication
+     * @param   util.log.LogCategory cat a LogCategory object to which communication
      *          information will be passed to or NULL to stop tracing
-     * @return  &util.log.LogCategory
+     * @return  util.log.LogCategory
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     public function setTrace($cat) {
@@ -104,7 +104,7 @@
      * Retrieve an address
      *
      * @param   string number
-     * @return  &util.telephony.TelephonyAddress 
+     * @return  util.telephony.TelephonyAddress 
      */
     public function getAddress($number) { 
       return new TelephonyAddress($number);
@@ -113,24 +113,24 @@
     /**
      * Create a call
      *
-     * @param   &util.telephony.TelephonyTerminal terminal
-     * @param   &util.telephony.TelephonyAddress destination
-     * @return  &util.telephony.TelephonyCall a call object
+     * @param   util.telephony.TelephonyTerminal terminal
+     * @param   util.telephony.TelephonyAddress destination
+     * @return  util.telephony.TelephonyCall a call object
      */
     public function createCall($terminal, $destination) { }
     
     /**
      * Get terminal
      *
-     * @param   &util.telephony.TelephonyAddress address
-     * @return  &util.telephony.TelephonyTerminal
+     * @param   util.telephony.TelephonyAddress address
+     * @return  util.telephony.TelephonyTerminal
      */
     public function getTerminal($address) { }
     
     /**
      * Release terminal
      *
-     * @param   &util.telephony.TelephonyTerminal terminal
+     * @param   util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
     public function releaseTerminal($terminal) { }

@@ -16,15 +16,15 @@
     /**
      * Marshal command to a specified node
      *
-     * @param   &xml.Node node
+     * @param   xml.Node node
      */
     public function marshalTo($node);
 
     /**
      * Unmarshal return value from a specified node
      *
-     * @param   &xml.Node node
-     * @return  &lang.Object
+     * @param   xml.Node node
+     * @return  lang.Object
      */
     public function unmarshalFrom($node);
   }

@@ -39,7 +39,7 @@
     /**
      * Sets the message class which will retrieve the answer
      *
-     * @param   &lang.XPClass c
+     * @param   lang.XPClass c
      */
     public function setMessageClass($c) {
       $this->messageClass= $c;
@@ -48,8 +48,8 @@
     /**
      * Send RPC message
      *
-     * @param   &scriptlet.rpc.AbstractRpcMessage message
-     * @return  &scriptlet.HttpScriptletResponse
+     * @param   scriptlet.rpc.AbstractRpcMessage message
+     * @return  scriptlet.HttpScriptletResponse
      */
     public function send($message) {
       
@@ -79,8 +79,8 @@
     /**
      * Retrieve a RPC message.
      *
-     * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @param   scriptlet.HttpScriptletResponse response
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());

@@ -23,7 +23,7 @@
      * Constructor
      *
      * @see     php://imagetruecolortopalette
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   bool dither default FALSE indicates if the image should be dithered
      * @param   int ncolors default 256 maximum # of colors retained in the palette
      */

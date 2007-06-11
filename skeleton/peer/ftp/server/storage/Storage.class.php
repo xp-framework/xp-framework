@@ -38,7 +38,7 @@
      *
      * @param   int clientId
      * @param   string uri
-     * @return  &peer.ftp.server.storage.StorageEntry
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function lookup($clientId, $uri);
 
@@ -48,7 +48,7 @@
      * @param   string clientId
      * @param   string uri
      * @param   int type one of the ST_* constants
-     * @return  &peer.ftp.server.storage.StorageEntry
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function createEntry($clientId, $uri, $type);
     
@@ -58,7 +58,7 @@
      * @param   int clientId
      * @param   string uri
      * @param   int type one of the ST_* constants
-     * @return  &peer.ftp.server.storage.StorageEntry
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function create($clientId, $uri, $type);
   

@@ -37,7 +37,7 @@
      * @param   int key
      * @param   int maxAquire default 1
      * @param   int permissions default 0666
-     * @return  &io.sys.Semaphore a semaphore
+     * @return  io.sys.Semaphore a semaphore
      * @throws  io.IOException
      */
     public static function get($key, $maxAquire= 1, $permissions= 0666) {

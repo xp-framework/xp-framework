@@ -31,7 +31,7 @@
     /**
      * Decode entries (recursively, if needed)
      *
-     * @param   &mixed v
+     * @param   mixed v
      * @return  string decoded entry
      */
     protected function _decode($v) {
@@ -46,8 +46,8 @@
      * Creates an LDAP from the raw return data of PHP's ldap_* functions
      * Also performs decoding on the attributes.
      *
-     * @param   &mixed data return value from ldap_* functions
-     * @return  &peer.ldap.LDAPEntry object
+     * @param   mixed data return value from ldap_* functions
+     * @return  peer.ldap.LDAPEntry object
      */
     public static function fromData($data) {
       $e= new LDAPEntry($data['dn']);

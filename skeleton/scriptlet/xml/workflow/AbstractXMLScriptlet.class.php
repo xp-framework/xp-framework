@@ -32,7 +32,7 @@
     /**
      * Create the request object
      *
-     * @return  &scriptlet.xml.workflow.WorkflowScriptletRequest
+     * @return  scriptlet.xml.workflow.WorkflowScriptletRequest
      */
     protected function _request() {
       return new WorkflowScriptletRequest($this->package);
@@ -41,8 +41,8 @@
     /**
      * Retrieve context class
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @return  &lang.XPClass
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @return  lang.XPClass
      * @throws  lang.ClassNotFoundException
      */
     public function getContextClass($request) {
@@ -52,7 +52,7 @@
     /**
      * Decide whether a session is needed
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
     public function needsSession($request) {
@@ -66,7 +66,7 @@
      * Decide whether a context is needed. Returns FALSE in this default
      * implementation.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @return  bool
      */
     public function wantsContext($request) {
@@ -80,8 +80,8 @@
      * Return FALSE from this method to indicate no further 
      * processing is to be done
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
      * @return  bool
      */
     public function processWorkflow($request, $response) {
@@ -166,8 +166,8 @@
     /**
      * Process request
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.XMLScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
      */
     public function processRequest($request, $response) {
       if (FALSE === $this->processWorkflow($request, $response)) {

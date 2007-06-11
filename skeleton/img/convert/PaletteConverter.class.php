@@ -34,7 +34,7 @@
      * Convert an image. Returns TRUE when successfull, FALSE if image is
      * not a truecolor image.
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */

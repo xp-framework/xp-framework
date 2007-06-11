@@ -22,7 +22,7 @@
      * other action having taken place (e.g., maintenance, reload config,
      * ...)
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string data
      */
     public function onPings($connection, $data) { }
@@ -32,7 +32,7 @@
      * established. This method is called *after* a connecting was
      * successful.
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   int port
      */
@@ -44,7 +44,7 @@
      * dropped; thus making it possible to say goodbye. You cannot do
      * anything to prevent disconnection, though.
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   int port
      */
@@ -53,7 +53,7 @@
     /**
      * Callback for server message MOTDSTART (375)
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
@@ -63,7 +63,7 @@
     /**
      * Callback for server message MOTD (372)
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
@@ -73,7 +73,7 @@
     /**
      * Callback for server message REPLY_ENDOFMOTD (376)
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   string target whom the message is for
      * @param   string data
@@ -83,7 +83,7 @@
     /**
      * Callback for all other server messages
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string server
      * @param   int code one of the IRC_* constants from peer.irc.IRCConstants
      * @param   string target whom the message is for
@@ -101,7 +101,7 @@
      *   $connection->join($channel);
      * </code>
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick sending the invitation
      * @param   string who who is invited
      * @param   string channel invitation is for
@@ -118,7 +118,7 @@
      *   }
      * </code>
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string channel the channel the user was kicked from
      * @param   string nick that initiated the kick
      * @param   string who who was kicked
@@ -129,7 +129,7 @@
     /**
      * Callback for quits
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string channel the channel the user quit from
      * @param   string nick who quit
      * @param   string reason what reason the user supplied for quitting
@@ -139,7 +139,7 @@
     /**
      * Callback for nick changes
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick the old nick
      * @param   string new the new nick
      */
@@ -157,7 +157,7 @@
      *   $connection->sendMessage($nick, 'Welcome!');
      * </code>
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string channel which channel was joined
      * @param   string nick who joined
      */
@@ -166,7 +166,7 @@
     /**
      * Callback for parts
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string channel which channel was part
      * @param   string nick who part
      * @param   string message the part message, if any
@@ -176,7 +176,7 @@
     /**
      * Callback for mode changes
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick who initiated the mode change
      * @param   string target what the mode setting is for (e.g. +k #channel, +i user)
      * @param   string mode the mode including a + or - as its first letter
@@ -197,7 +197,7 @@
      *   }
      * </code>
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
@@ -207,7 +207,7 @@
     /**
      * Callback for topic changes
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick who changed the topic
      * @param   string channel what channel the topic was changed for
      * @param   string topic the new topic
@@ -217,7 +217,7 @@
     /**
      * Callback for notices
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick
      * @param   string target
      * @param   string message
@@ -233,7 +233,7 @@
      *   $connection->sendAction($target, 'imitates %s and %s, too', $nick, $params);
      * </code>
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick who initiated the action
      * @param   string target where action was initiated
      * @param   string action what actually happened (e.g. "looks around")
@@ -243,7 +243,7 @@
     /**
      * Callback for CTCP VERSION
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting version
      * @param   string target where version was requested
      * @param   string params additional parameters
@@ -253,7 +253,7 @@
     /**
      * Callback for CTCP USERINFO
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting user information
      * @param   string target where user information was requested
      * @param   string params additional parameters
@@ -263,7 +263,7 @@
     /**
      * Callback for CTCP CLIENTINFO
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting client information
      * @param   string target where client information was requested
      * @param   string params additional parameters
@@ -273,7 +273,7 @@
     /**
      * Callback for CTCP PING
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting ping
      * @param   string target where ping was requested
      * @param   string params additional parameters
@@ -283,7 +283,7 @@
     /**
      * Callback for CTCP TIME
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting time
      * @param   string target where time was requested
      * @param   string params additional parameters
@@ -293,7 +293,7 @@
     /**
      * Callback for CTCP FINGER
      *
-     * @param   &peer.irc.IRCConnection connection
+     * @param   peer.irc.IRCConnection connection
      * @param   string nick nick requesting finger information
      * @param   string target where finger information was requested
      * @param   string params additional parameters

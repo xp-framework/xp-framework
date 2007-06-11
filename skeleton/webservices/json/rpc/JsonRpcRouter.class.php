@@ -23,7 +23,7 @@
     /**
      * Create a request object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcRequest
+     * @return  scriptlet.rpc.AbstractRpcRequest
      */
     protected function _request() {
       return new JsonRpcRequest();
@@ -32,7 +32,7 @@
     /**
      * Create a response object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcResponse
+     * @return  scriptlet.rpc.AbstractRpcResponse
      */
     protected function _response() {
       return new JsonRpcResponse();
@@ -41,7 +41,7 @@
     /**
      * Create a message object.
      *
-     * @return  &scriptlet.rpc.AbstractRpcMessage
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
     protected function _message() {
       return new JsonResponseMessage();

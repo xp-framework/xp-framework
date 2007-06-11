@@ -120,7 +120,7 @@
      * Get a category
      *
      * @param   string name default LOG_DEFINES_DEFAULT
-     * @return  &util.log.LogCategory
+     * @return  util.log.LogCategory
      */ 
     public function getCategory($name= LOG_DEFINES_DEFAULT) {
       if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
@@ -130,7 +130,7 @@
     /**
      * Configure this logger
      *
-     * @param   &util.Properties prop instance of a Properties object
+     * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
       $class= array();
@@ -205,7 +205,7 @@
     /**
      * Returns an instance of this class
      *
-     * @return  &util.log.Logger a logger object
+     * @return  util.log.Logger a logger object
      */
     public static function getInstance() {
       return self::$instance;

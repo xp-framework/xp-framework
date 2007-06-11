@@ -390,7 +390,7 @@
      * Retrieve a script by its name
      *
      * @param   string name
-     * @return  &peer.sieve.SieveScript script
+     * @return  peer.sieve.SieveScript script
      */
     public function getScript($name) {
       $this->_sendcmd('GETSCRIPT "%s"', $name);
@@ -424,7 +424,7 @@
     /**
      * Upload a script to the server
      *
-     * @param   &peer.sieve.SieveScript script
+     * @param   peer.sieve.SieveScript script
      * @return  bool success
      */
     public function putScript($script) {
@@ -460,7 +460,7 @@
     /**
      * Check whether there is enough space for a script to be uploaded
      *
-     * @param   &peer.sieve.SieveScript script
+     * @param   peer.sieve.SieveScript script
      * @return  bool success
      */
     public function hasSpaceFor($script) {
@@ -486,7 +486,7 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) { 
       $this->cat= $cat;

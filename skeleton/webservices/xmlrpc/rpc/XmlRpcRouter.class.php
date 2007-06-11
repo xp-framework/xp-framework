@@ -52,7 +52,7 @@
     /**
      * Create a request object.
      *
-     * @return  &webservices.xmlrpc.rpc.XmlRpcRequest
+     * @return  webservices.xmlrpc.rpc.XmlRpcRequest
      */
     protected function _request() {
       return new XmlRpcRequest();
@@ -61,7 +61,7 @@
     /**
      * Create a response object.
      *
-     * @return  &webservices.xmlrpc.rpc.XmlRpcResponse
+     * @return  webservices.xmlrpc.rpc.XmlRpcResponse
      */
     protected function _response() {
       return new XmlRpcResponse();
@@ -70,7 +70,7 @@
     /**
      * Create a message object.
      *
-     * @return  &webservices.xmlrpc.XmlRpcResponseMessage
+     * @return  webservices.xmlrpc.XmlRpcResponseMessage
      */
     protected function _message() {
       return new XmlRpcResponseMessage();

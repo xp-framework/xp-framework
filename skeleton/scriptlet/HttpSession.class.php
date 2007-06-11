@@ -165,7 +165,7 @@
      *
      * @param   string name
      * @param   mixed default default NULL 
-     * @return  &mixed value
+     * @return  mixed value
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function getValue($name, $default= NULL) {
@@ -199,7 +199,7 @@
     /**
      * Return an array of all names registered in this session
      *
-     * @return  &string[] names
+     * @return  string[] names
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function getValueNames() {

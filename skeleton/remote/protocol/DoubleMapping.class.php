@@ -17,11 +17,11 @@
     /**
      * Returns a value for the given serialized string
      *
-     * @param   &server.protocol.Serializer serializer
+     * @param   server.protocol.Serializer serializer
      * @param   string serialized
-     * @param   &int length
+     * @param   int length
      * @param   array<string, mixed> context default array()
-     * @return  &mixed
+     * @return  mixed
      */
     public function valueOf($serializer, $serialized, $context= array()) {
       // No implementation
@@ -30,8 +30,8 @@
     /**
      * Returns an on-the-wire representation of the given value
      *
-     * @param   &server.protocol.Serializer serializer
-     * @param   &lang.Object value
+     * @param   server.protocol.Serializer serializer
+     * @param   lang.Object value
      * @param   array<string, mixed> context default array()
      * @return  string
      */
@@ -42,7 +42,7 @@
     /**
      * Return XPClass object of class supported by this mapping
      *
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     public function handledClass() {
       return XPClass::forName('lang.types.Double');

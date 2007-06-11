@@ -80,8 +80,8 @@
     /**
      * Invoke a command
      *
-     * @param   &webservices.uddi.UDDICommand
-     * @return  &lang.Object
+     * @param   webservices.uddi.UDDICommand
+     * @return  lang.Object
      * @throws  lang.IllegalArgumentException in case an illegal command was passed
      * @throws  io.IOException in case the HTTP request failed
      * @throws  webservices.soap.SOAPFaultException in case a SOAP fault was returned
@@ -158,7 +158,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;

@@ -17,7 +17,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.ArrayFormat
+     * @return  text.format.ArrayFormat
      */
     public function getInstance() {
       return parent::getInstance('ArrayFormat');
@@ -27,7 +27,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      */
     public function apply($fmt, $argument) {

@@ -145,7 +145,7 @@
     /**
      * Set Date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setDate($date) {
       $this->date= $date;
@@ -154,7 +154,7 @@
     /**
      * Get Date
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getDate() {
       return $this->date;

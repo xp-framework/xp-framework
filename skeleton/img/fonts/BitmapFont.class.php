@@ -27,8 +27,8 @@
     /**
      * Draw function
      *
-     * @param   &resource hdl an image resource
-     * @param   &img.Color col
+     * @param   resource hdl an image resource
+     * @param   img.Color col
      * @param   string text
      * @param   int x
      * @param   int y

@@ -18,7 +18,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -27,16 +27,16 @@
     /**
      * Send WDDX message
      *
-     * @param   &webservices.wddx.WddxMessage message
-     * @return  &scriptlet.HttpScriptletResponse
+     * @param   webservices.wddx.WddxMessage message
+     * @return  scriptlet.HttpScriptletResponse
      */
     public function send($message) { }
     
     /**
      * Retrieve a WDDX message.
      *
-     * @param   &scriptlet.HttpScriptletResponse response
-     * @return  &webservices.wddx.WddxMessage
+     * @param   scriptlet.HttpScriptletResponse response
+     * @return  webservices.wddx.WddxMessage
      */
     public function retrieve($response) { }
   } 

@@ -17,7 +17,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.ChoiceFormat
+     * @return  text.format.ChoiceFormat
      */
     public function getInstance() {
       return parent::getInstance('ChoiceFormat');
@@ -27,7 +27,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      * @throws  lang.FormatException
      */

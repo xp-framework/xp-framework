@@ -54,8 +54,8 @@
     /**
      * Add a series of data
      *
-     * @param   &img.graph.Series series
-     * @return  &img.graph.Series
+     * @param   img.graph.Series series
+     * @return  img.graph.Series
      */
     public function add($series) {
       $this->series[]= $series;
@@ -65,7 +65,7 @@
     /**
      * Sets chart's background color
      *
-     * @param   &img.Color color
+     * @param   img.Color color
      */
     public function setBackgroundColor($color) {
       $this->setColor('background', $color);
@@ -75,7 +75,7 @@
      * Set a color for a specified key
      *
      * @param   string key
-     * @param   &img.Color color
+     * @param   img.Color color
      */
     public function setColor($key, $color) {
       $this->colors[$key]= $color;
@@ -85,7 +85,7 @@
      * Returns a color by a name
      *
      * @param   string key
-     * @return  &img.Color
+     * @return  img.Color
      */
     public function getColor($key) {
       if (!isset($this->colors[$key])) return new Color($this->theme[$key]);

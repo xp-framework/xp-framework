@@ -41,7 +41,7 @@
     /**
      * Constructor
      *
-     * @param   &img.Color col color
+     * @param   img.Color col color
      * @param   int[] points
      * @param   bool fill default FALSE
      */ 
@@ -55,7 +55,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

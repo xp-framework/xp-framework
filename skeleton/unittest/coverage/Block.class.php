@@ -36,7 +36,7 @@
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @param   &lang.Object block
+     * @param   lang.Object block
      * @return  bool
      */
     public function equals($block) {

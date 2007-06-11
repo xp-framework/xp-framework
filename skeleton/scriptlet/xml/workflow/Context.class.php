@@ -36,7 +36,7 @@
      *
      * Does nothing in this default implementation.
      *
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
@@ -47,7 +47,7 @@
      *
      * Does nothing in this default implementation.
      *
-     * @param   &scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletRequest request
      * @throws  lang.IllegalStateException to indicate an error
      * @throws  lang.IllegalAccessException to indicate an error
      */
@@ -71,7 +71,7 @@
     /**
      * Insert formresult nodes.
      *
-     * @param   &scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function insertStatus($response) { }
   }

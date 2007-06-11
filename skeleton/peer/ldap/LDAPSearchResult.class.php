@@ -42,7 +42,7 @@
     /**
      * Gets first entry
      *
-     * @return  &mixed entry or FALSE if there is no such entry
+     * @return  mixed entry or FALSE if there is no such entry
      */
     public function getFirstEntry() {
       return $this->getEntry($this->_offset= 0);
@@ -52,7 +52,7 @@
      * Get a search entry by offset
      *
      * @param   int offset
-     * @return  &mixed entry or FALSE if none exists by this offset
+     * @return  mixed entry or FALSE if none exists by this offset
      * @throws  lang.IllegalStateException in case no search has been performed before
      */
     public function getEntry($offset) {
@@ -72,7 +72,7 @@
      *   }
      * </code>
      *
-     * @return  &mixed entry or FALSE if there are none more
+     * @return  mixed entry or FALSE if there are none more
      */
     public function getNextEntry() {
       return $this->getEntry(++$this->_offset);

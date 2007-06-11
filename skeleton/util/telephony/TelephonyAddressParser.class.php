@@ -296,7 +296,7 @@
      * neccessary.
      *
      * @param   string phonenumber
-     * @return  &TelephonyAddress obj
+     * @return  TelephonyAddress obj
      * @throws  lang.FormatException if number is malformed
      * @throws  lang.IllegalStateException in case no default number has been set
      */

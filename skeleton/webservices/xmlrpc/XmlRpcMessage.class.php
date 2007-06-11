@@ -54,7 +54,7 @@
      * </code>
      *
      * @param   string string
-     * @return  &webservices.xmlrpc.XmlRpcMessage
+     * @return  webservices.xmlrpc.XmlRpcMessage
      */
     public static function fromString($string) { }
     
@@ -84,7 +84,7 @@
     /**
      * Set the data for the message.
      *
-     * @param   &mixed arr
+     * @param   mixed arr
      */
     public function setData($arr) {
       $encoder= new XmlRpcEncoder();
@@ -109,7 +109,7 @@
     /**
      * Return the data from the message.
      *
-     * @return  &mixed
+     * @return  mixed
      */
     public function getData() {
       $ret= array();
@@ -149,7 +149,7 @@
     /**
      * Retrieve the fault if there is one.
      *
-     * @return  &webservices.xmlrpc.XmlRpcFault or NULL if no fault exists
+     * @return  webservices.xmlrpc.XmlRpcFault or NULL if no fault exists
      */
     public function getFault() {
 

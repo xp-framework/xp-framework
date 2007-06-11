@@ -24,7 +24,7 @@
     /**
      * Constructor
      *
-     * @param   &io.File file
+     * @param   io.File file
      */
     public function __construct($file) {
       $this->_file= $file;

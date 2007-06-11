@@ -69,7 +69,7 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @param   &mixed var
+     * @param   mixed var
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
@@ -123,8 +123,8 @@
     /**
      * Fetch best fitted mapper for the given object
      *
-     * @param   &lang.Object var
-     * @return  &mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
+     * @param   lang.Object var
+     * @return  mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
     public function mappingFor($var) {
       if (!($var instanceof Generic)) return FALSE;  // Safeguard
@@ -171,8 +171,8 @@
      * Register or retrieve a mapping for a token
      *
      * @param   string token
-     * @param   &remote.protocol.SerializerMapping mapping
-     * @return  &remote.protocol.SerializerMapping mapping
+     * @param   remote.protocol.SerializerMapping mapping
+     * @return  remote.protocol.SerializerMapping mapping
      * @throws  lang.IllegalArgumentException if the given argument is not a SerializerMapping
      */
     public function mapping($token, $mapping) {
@@ -215,9 +215,9 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @param   &remote.protocol.SerializedData serialized
+     * @param   remote.protocol.SerializedData serialized
      * @param   array context default array()
-     * @return  &mixed
+     * @return  mixed
      * @throws  lang.ClassNotFoundException if a class cannot be found
      * @throws  lang.FormatException if an error is encountered in the format 
      */  

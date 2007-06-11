@@ -26,7 +26,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.Format
+     * @return  text.format.Format
      */
     public function getInstance($name) {
       static $instance= array();
@@ -39,7 +39,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      * @throws  lang.IllegalAccessException
      */

@@ -54,7 +54,7 @@
     /**
      * Indicates whether the compared binary equals this one.
      *
-     * @param   &webservices.soap.types.SOAPBase64Binary cmp
+     * @param   webservices.soap.types.SOAPBase64Binary cmp
      * @return  bool TRUE if both binaries are equal
      */
     public function equals($cmp) {

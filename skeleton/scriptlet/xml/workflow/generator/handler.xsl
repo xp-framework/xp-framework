@@ -66,8 +66,8 @@
      * Retrieve identifier.
      *
      * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  string
      */
     function identifierFor(&$request, &$context) {
@@ -82,8 +82,8 @@
      * Setup handler.
      *
      * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  boolean
      */
     function setup(&$request, &$context) {
@@ -98,8 +98,8 @@
      * Handle submitted data.
      *
      * @access  public
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  boolean
      */
     function handleSubmittedData(&$request, &$context) {
@@ -114,9 +114,9 @@
      * Finalize this handler
      *
      * @access  public
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.Context context
      */
     function finalize(&$request, &$response, &$context) {
 

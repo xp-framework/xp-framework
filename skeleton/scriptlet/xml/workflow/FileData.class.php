@@ -33,7 +33,7 @@
     /**
      * Set File
      *
-     * @param   &io.File file
+     * @param   io.File file
      */
     public function setFile($file) {
       $this->file= $file;
@@ -42,7 +42,7 @@
     /**
      * Get File
      *
-     * @return  &io.File
+     * @return  io.File
      */
     public function getFile() {
       return $this->file;

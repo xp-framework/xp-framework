@@ -26,7 +26,7 @@
     /**
      * Constructor
      *
-     * @param   &lang.Object stream
+     * @param   lang.Object stream
      */
     public function __construct($stream) {
       $this->stream= $stream;

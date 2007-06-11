@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &util.Properties users
+     * @param   util.Properties users
      */    
     public function __construct($prop) {
       $this->users= $prop;

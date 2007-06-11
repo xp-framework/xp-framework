@@ -22,7 +22,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
@@ -31,16 +31,16 @@
     /**
      * Send XML-RPC message
      *
-     * @param   &webservices.xmlrpc.XmlRpcMessage message
-     * @return  &scriptlet.HttpScriptletResponse
+     * @param   webservices.xmlrpc.XmlRpcMessage message
+     * @return  scriptlet.HttpScriptletResponse
      */
     public function send($message) { }
     
     /**
      * Retrieve a XML-RPC message.
      *
-     * @param   &webservices.xmlrpc.XmlRpcResponse response
-     * @return  &webservices.xmlrpc.XmlRpcMessage
+     * @param   webservices.xmlrpc.XmlRpcResponse response
+     * @return  webservices.xmlrpc.XmlRpcMessage
      */
     public function retrieve($response) { }    
 

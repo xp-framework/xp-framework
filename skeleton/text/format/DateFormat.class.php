@@ -18,7 +18,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.DateFormat
+     * @return  text.format.DateFormat
      */
     public function getInstance() {
       return parent::getInstance('DateFormat');
@@ -28,7 +28,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      * @throws  lang.FormatException
      */

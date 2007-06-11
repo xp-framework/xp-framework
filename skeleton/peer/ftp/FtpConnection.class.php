@@ -155,7 +155,7 @@
      * Get a directory object
      *
      * @param   string dir default NULL directory name, defaults to working directory
-     * @return  &peer.ftp.FtpDir
+     * @return  peer.ftp.FtpDir
      * @throws  peer.SocketException
      */
     public function getDir($dir= NULL) {
@@ -173,7 +173,7 @@
     /**
      * Set working directory
      *
-     * @param   &peer.ftp.FtpDir f
+     * @param   peer.ftp.FtpDir f
      * @throws  peer.SocketException
      * @return  bool success
      */
@@ -187,7 +187,7 @@
     /**
      * Create a directory
      *
-     * @param   &peer.ftp.FtpDir f
+     * @param   peer.ftp.FtpDir f
      * @return  bool success
      */
     public function makeDir($f) {
@@ -197,7 +197,7 @@
     /**
      * Upload a file
      *
-     * @param   &mixed arg either a filename or an open File object
+     * @param   mixed arg either a filename or an open File object
      * @param   string remote default NULL remote filename, will default to basename of arg
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
@@ -227,7 +227,7 @@
      * Download a file
      *
      * @param   string remote remote filename
-     * @param   &mixed arg either a filename or an open File object
+     * @param   mixed arg either a filename or an open File object
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
      * @throws  peer.SocketException

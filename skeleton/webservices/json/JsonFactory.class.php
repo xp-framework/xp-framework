@@ -21,7 +21,7 @@
     /**
      * Create an instance of a decoder
      *
-     * @return  &webservices.json.IJsonDecoder
+     * @return  webservices.json.IJsonDecoder
      */
     public static function create() {
       $n= new JsonDecoder();

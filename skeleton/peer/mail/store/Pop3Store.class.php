@@ -24,8 +24,8 @@
      * </pre>
      *
      * @param   peer.URL
-     * @param   &array attr
-     * @param   &int port
+     * @param   array attr
+     * @param   int port
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */

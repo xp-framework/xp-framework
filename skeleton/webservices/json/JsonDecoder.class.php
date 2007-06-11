@@ -185,7 +185,7 @@
     /**
      * Decode string into object structure
      *
-     * @return  &stdclass
+     * @return  stdclass
      */
     protected function _decodeObject() {
       $array= array();

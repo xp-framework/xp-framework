@@ -22,8 +22,8 @@
      * Retrieve a new instance 
      *
      * @param   string oid
-     * @param   &ProtocolHandler handler
-     * @return  &RemoteInvocationHandler
+     * @param   ProtocolHandler handler
+     * @return  RemoteInvocationHandler
      */
     public static function newInstance($oid, $handler) {
       with ($i= new RemoteInvocationHandler()); {

@@ -61,7 +61,7 @@
     /**
      * Get default locale
      *
-     * @return  &util.Locale
+     * @return  util.Locale
      */
     public static function getDefault() {
       return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
@@ -73,7 +73,7 @@
     /**
      * Set default locale for this script
      *
-     * @param   &util.Locale locale
+     * @param   util.Locale locale
      * @throws  lang.IllegalArgumentException in case the locale is not available
      */
     public static function setDefault($locale) {

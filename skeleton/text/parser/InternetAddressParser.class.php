@@ -31,7 +31,7 @@
      *
      * </code>
      *
-     * @return  &InternetAddress[]
+     * @return  InternetAddress[]
      * @throws  lang.FormatException in case the string is malformed
      */
     public function parse($str) {

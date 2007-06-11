@@ -38,7 +38,7 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($dsn) { 
       parent::__construct($dsn);
@@ -230,7 +230,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
@@ -292,8 +292,8 @@
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.Transaction transaction
-     * @return  &rdbms.Transaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     public function begin($transaction) {
       if (!$this->query('begin')) return FALSE;

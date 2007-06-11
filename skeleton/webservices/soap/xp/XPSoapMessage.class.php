@@ -139,7 +139,7 @@
     /**
      * Set Mapping
      *
-     * @param   &webservices.soap.xp.XPSoapMapping mapping
+     * @param   webservices.soap.xp.XPSoapMapping mapping
      */
     public function setMapping($mapping) {
       $this->mapping= $mapping;
@@ -424,7 +424,7 @@
      * register the new namespace alias in the namespaces
      * list.
      *
-     * @param   &xml.SOAPNode node
+     * @param   xml.SOAPNode node
      */
     protected function _retrieveNamespaces($node) {
       foreach ($node->attribute as $key => $val) {
@@ -480,7 +480,7 @@
     /**
      * Get fault
      *
-     * @return  &webservices.soap.CommonSoapFault or NULL if none exists
+     * @return  webservices.soap.CommonSoapFault or NULL if none exists
      */
     public function getFault() {
       if ($body= $this->_bodyElement()) {

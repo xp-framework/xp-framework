@@ -21,8 +21,8 @@
     /**
      * Factory method
      *
-     * @param   &peer.URL an url object
-     * @return  &lang.Object a request object
+     * @param   peer.URL an url object
+     * @return  lang.Object a request object
      * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
     public static function factory($url) {

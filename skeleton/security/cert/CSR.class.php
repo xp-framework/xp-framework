@@ -49,8 +49,8 @@
     /**
      * Constructor
      *
-     * @param   &security.Principal principal
-     * @param   &security.KeyPair keypair
+     * @param   security.Principal principal
+     * @param   security.KeyPair keypair
      */
     public function __construct($principal, $keypair) {
       $this->_res= openssl_csr_new(array(
@@ -82,10 +82,10 @@
     /**
      * Sign this CSR
      *
-     * @param   &security.KeyPair keypair
+     * @param   security.KeyPair keypair
      * @param   int days default 365
      * @param   mixed cacert default NULL
-     * @return  &security.cert.X509Certificate
+     * @return  security.cert.X509Certificate
      */
     public function sign($keypair, $days= 365, $cacert= NULL) {
       if (FALSE === ($x509= openssl_csr_sign($this->_res, $cacert, $keypair->_res, $days))) {

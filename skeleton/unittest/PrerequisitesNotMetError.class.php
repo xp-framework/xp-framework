@@ -21,7 +21,7 @@
      * Constructor
      *
      * @param   string message
-     * @param   &lang.XPException cause 
+     * @param   lang.XPException cause 
      * @param   array prerequisites default array()
      * @param   string code
      */

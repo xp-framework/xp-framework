@@ -38,7 +38,7 @@
     /**
      * Set the recipient the message was destined for
      *
-     * @param   &peer.mail.InternetAddress r
+     * @param   peer.mail.InternetAddress r
      */
     public function setFailedRecipient($r) {
       $this->failed= $r;
@@ -47,7 +47,7 @@
     /**
      * Get the recipient the message was destined for
      *
-     * @return  &peer.mail.InternetAddress
+     * @return  peer.mail.InternetAddress
      */
     public function getFailedRecipient() {
       return $this->failed;

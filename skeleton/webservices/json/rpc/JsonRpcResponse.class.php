@@ -16,7 +16,7 @@
     /**
      * Sets JSON message
      *
-     * @param   &webservices.json.rpc.JsonRpcMessage msg
+     * @param   webservices.json.rpc.JsonRpcMessage msg
      */
     public function setMessage($msg) {
       $this->message= $msg;

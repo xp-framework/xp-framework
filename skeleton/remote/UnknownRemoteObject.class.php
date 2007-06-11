@@ -70,7 +70,7 @@
      * Member get interceptor
      *
      * @param   string name
-     * @param   &mixed value
+     * @param   mixed value
      * @return  bool TRUE on success
      */
     public function __get($name) {
@@ -83,7 +83,7 @@
      *
      * @param   string name
      * @param   mixed[] args
-     * @param   &mixed return
+     * @param   mixed return
      * @return  bool TRUE on success
      * @throws  lang.IllegalAccessException
      */

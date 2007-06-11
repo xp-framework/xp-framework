@@ -88,7 +88,7 @@
     /**
      * Compares two strings lexicographically.
      *
-     * @param   &text.String string
+     * @param   text.String string
      * @param   bool cs default TRUE whether to compare case-sensitively
      * @return  int
      * @see     php://strcmp for case-sensitive comparison
@@ -113,7 +113,7 @@
     /**
      * Returns true if this string equals another string
      *
-     * @param   &lang.Object value
+     * @param   lang.Object value
      * @return  bool
      */
     public function equals($cmp) {
@@ -140,7 +140,7 @@
      * Compares two strings lexicographically using a "natural order" 
      * algorithm
      *
-     * @param   &text.String string
+     * @param   text.String string
      * @param   bool cs default TRUE whether to compare case-sensitively
      * @return  int
      * @see     php://strnatcmp for case-sensitive comparison
@@ -244,7 +244,7 @@
      *
      * @param   string substr
      * @param   bool cs default TRUE whether to check case-sensitively
-     * @return  &text.String or NULL if substr is not found
+     * @return  text.String or NULL if substr is not found
      * @see     php://strstr
      */
     public function substringAfter($substr, $cs= TRUE) {
@@ -261,7 +261,7 @@
      *
      * @param   int begin
      * @param   int end default -1
-     * @return  &text.String
+     * @return  text.String
      * @see     php://substr
      */
     public function substring($begin, $end= -1) {
@@ -284,8 +284,8 @@
      * Concatenates the specified string to the end of this string
      * and returns a new string containing the result.
      *
-     * @param   &text.String string
-     * @return  &text.String a new string
+     * @param   text.String string
+     * @return  text.String a new string
      */
     public function concat($string) {
       return new String($this->buffer.$string->buffer);
@@ -295,7 +295,7 @@
      * Concatenates the specified string to the end of this string,
      * changing this string.
      *
-     * @param   &text.String string
+     * @param   text.String string
      */
     public function append($string) {
       $this->buffer.= $string->buffer;
@@ -359,7 +359,7 @@
      *
      * @param   string separator
      * @param   int limit default 0
-     * @return  &text.String[]
+     * @return  text.String[]
      * @see     php://explode
      */
     public function explode($separator, $limit= 0) {
@@ -381,7 +381,7 @@
      *
      * @param   string separator
      * @param   int limit default 0
-     * @return  &text.String[]
+     * @return  text.String[]
      * @see     php://preg_split
      */
     public function split($separator, $limit= 0) {
@@ -470,7 +470,7 @@
      * the rules of the current locale.
      *
      * @see     php://strtoupper
-     * @return  &text.String this string
+     * @return  text.String this string
      */
     public function toUpperCase() {
       $this->buffer= strtoupper($this->buffer);
@@ -482,7 +482,7 @@
      * the rules of the current locale.
      *
      * @see     php://strtolower
-     * @return  &text.String this string
+     * @return  text.String this string
      */
     public function toLowerCase() {
       $this->buffer= strtolower($this->buffer);
@@ -536,7 +536,7 @@
      * </code>
      *
      * @param   string delim default ''
-     * @return  &text.String string
+     * @return  text.String string
      */
     public static function fromArray($arr, $delim= '') {
       return new String(implode($delim, $arr));
@@ -547,7 +547,7 @@
      * toString() method on objects and implode() on arrays.
      *
      * @param   mixed arg
-     * @return  &text.String string
+     * @return  text.String string
      */
     public static function valueOf($arg) {
       if (is('Generic', $arg)) {

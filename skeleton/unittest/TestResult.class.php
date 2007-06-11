@@ -25,7 +25,7 @@
     /**
      * Mark a test as succeeded
      *
-     * @param   &unittest.TestCase test
+     * @param   unittest.TestCase test
      * @param   float elapsed
      */
     public function setSucceeded($test, $elapsed) {
@@ -35,7 +35,7 @@
     /**
      * Mark a test as failed
      *
-     * @param   &unittest.TestCase test
+     * @param   unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */
@@ -46,7 +46,7 @@
     /**
      * Mark a test as been skipped
      *
-     * @param   &unittest.TestCase test
+     * @param   unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
      */

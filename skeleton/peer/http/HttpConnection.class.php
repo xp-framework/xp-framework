@@ -63,7 +63,7 @@
     /**
      * Create the request object
      *
-     * @param   &peer.URL object
+     * @param   peer.URL object
      */
     protected function _createRequest($url) {
       $this->request= HttpRequestFactory::factory($url);
@@ -111,7 +111,7 @@
      * @param   string method request method, e.g. HTTP_GET
      * @param   mixed arg
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @throws  io.IOException
      * @throws  lang.IllegalAccessException
      */
@@ -138,7 +138,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function get($arg= NULL, $headers= array()) {
       return $this->request(HTTP_GET, $arg, $headers);
@@ -149,7 +149,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function head($arg= NULL, $headers= array()) {
       return $this->request(HTTP_HEAD, $arg, $headers);
@@ -160,7 +160,7 @@
      *
      * @param   mixed arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function post($arg= NULL, $headers= array()) {
       return $this->request(HTTP_POST, $arg, $headers);
@@ -171,7 +171,7 @@
      *
      * @param   string arg default NULL
      * @param   array headers default array()
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function put($arg= NULL, $headers= array()) {
       return $this->request(HTTP_PUT, new RequestData($arg), $headers);

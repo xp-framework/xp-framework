@@ -67,7 +67,7 @@
      * Retrieve the business item at a specified position
      *
      * @param   int pos the position, starting from 0 to numItems() - 1
-     * @return  &webservices.uddi.Business or NULL if there is no such item
+     * @return  webservices.uddi.Business or NULL if there is no such item
      */
     public function itemAt($pos) {
       if (isset($this->items[$pos])) return $this->items[$pos]; else return NULL;

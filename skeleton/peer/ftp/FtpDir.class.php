@@ -29,7 +29,7 @@
     /**
      * Get entries (iterative function)
      *
-     * @return  &peer.ftp.FtpEntry FALSE to indicate EOL
+     * @return  peer.ftp.FtpEntry FALSE to indicate EOL
      */
     public function getEntry() {
       if (NULL === $this->entries) {

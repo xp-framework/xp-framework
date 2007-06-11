@@ -22,21 +22,21 @@
     /**
      * Handle client connect
      *
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      */
     public function handleConnect($socket);
 
     /**
      * Handle client disconnect
      *
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      */
     public function handleDisconnect($socket);
   
     /**
      * Handle client data
      *
-     * @param   &peer.Socket socket
+     * @param   peer.Socket socket
      * @return  mixed
      */
     public function handleData($socket);
@@ -44,8 +44,8 @@
     /**
      * Handle I/O error
      *
-     * @param   &peer.Socket socket
-     * @param   &lang.XPException e
+     * @param   peer.Socket socket
+     * @param   lang.XPException e
      */
     public function handleError($socket, $e);
   

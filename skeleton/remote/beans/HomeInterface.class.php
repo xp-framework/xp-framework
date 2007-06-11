@@ -16,7 +16,7 @@
     /**
      * Create method
      *
-     * @return  &remote.beans.Bean
+     * @return  remote.beans.Bean
      */
     public function create();
   }

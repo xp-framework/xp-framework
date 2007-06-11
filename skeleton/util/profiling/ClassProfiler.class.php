@@ -31,7 +31,7 @@
     /**
      * Attach a profilee
      *
-     * @param   &Object obj
+     * @param   Object obj
      */    
     public function attachProfilee($obj) {
       $this->_profilee= $obj;
@@ -42,7 +42,7 @@
      *
      * @param   string method
      * @param   mixed params
-     * @param   &mixed return
+     * @param   mixed return
      * @return  boolean success
      */    
     public function __call($method, $params) {
@@ -68,7 +68,7 @@
      * Get a property
      *
      * @param   string propname
-     * @param   &mixed propvalue
+     * @param   mixed propvalue
      * @return  boolean success
      */
     public function __get($propname) {
@@ -83,7 +83,7 @@
      * Set a property
      *
      * @param   string propname
-     * @param   &mixed propvalue
+     * @param   mixed propvalue
      * @return  bool success
      */
     public function __set($propname, $propvalue) {

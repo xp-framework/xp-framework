@@ -47,7 +47,7 @@
     /**
      * Set Processor
      *
-     * @param   &xml.IXSLProcessor processor
+     * @param   xml.IXSLProcessor processor
      */
     public function setProcessor($processor) {
       $this->processor= $processor;
@@ -56,7 +56,7 @@
     /**
      * Get Processor
      *
-     * @return  &xml.IXSLProcessor processor
+     * @return  xml.IXSLProcessor processor
      */
     public function getProcessor() {
       return $this->processor;
@@ -122,7 +122,7 @@
      * </xmp>     
      *
      * @param   string name name
-     * @param   &mixed val
+     * @param   mixed val
      */
     public function addFormValue($name, $val) {
       if (!is_array($val)) $val= array($val);
@@ -181,7 +181,7 @@
      * nodes besides formvalues and formerrors
      *
      * @param   xml.Node node
-     * @return  &xml.Node added node
+     * @return  xml.Node added node
      * @throws  lang.IllegalArgumentException
      */
     public function addFormResult($node) {

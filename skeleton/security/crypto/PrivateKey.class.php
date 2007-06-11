@@ -18,7 +18,7 @@
      *
      * @param   string str
      * @param   string passphrase default NULL
-     * @return  &security.crypto.PrivateKey
+     * @return  security.crypto.PrivateKey
      * @throws  security.crypto.CryptoException if the operation fails
      */
     public static function fromString($str, $passphrase= NULL) {

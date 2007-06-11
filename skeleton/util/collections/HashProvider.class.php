@@ -47,7 +47,7 @@
     /**
      * Retrieve sole instance of this object
      *
-     * @return  &util.collections.HashProvider
+     * @return  util.collections.HashProvider
      */
     public static function getInstance() {
       return self::$instance;
@@ -66,7 +66,7 @@
     /**
      * Set hashing implementation
      * 
-     * @param   &util.collections.HashImplementation impl
+     * @param   util.collections.HashImplementation impl
      * @throws  lang.IllegalArgumentException when impl is not a HashImplementation
      */
     public function setImplementation($impl) {
@@ -81,7 +81,7 @@
     /**
      * Get hashing implementation
      * 
-     * @return  &util.collections.HashImplementation
+     * @return  util.collections.HashImplementation
      */
     public function getImplementation() {
       return $this->impl;

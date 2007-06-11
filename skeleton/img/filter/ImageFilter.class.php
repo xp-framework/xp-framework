@@ -17,7 +17,7 @@
     /**
      * Apply this filter on a given image. Note: This changes the given image!
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */

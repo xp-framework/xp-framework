@@ -43,7 +43,7 @@
     /**
      * Retrieve response
      *
-     * @return  &scriptlet.HttpScriptletResponse response object
+     * @return  scriptlet.HttpScriptletResponse response object
      */
     public function getResponse() {
       return $this->response;

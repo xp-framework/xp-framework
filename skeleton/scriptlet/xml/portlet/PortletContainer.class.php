@@ -20,7 +20,7 @@
      *
      * @param   string classname
      * @param   string layout
-     * @return  &xml.portlet.Portlet
+     * @return  xml.portlet.Portlet
      */
     public function addPortlet($classname, $layout= NULL) {
       try {
@@ -39,9 +39,9 @@
     /**
      * Process container
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.XMLScriptletResponse response 
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.Context context
      */
     public function process($request, $response, $context) {
       $rundata= new Rundata();

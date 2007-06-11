@@ -49,7 +49,7 @@
      * method in child classes!
      *
      * @param   string str
-     * @return  &security.checksum.Checksum
+     * @return  security.checksum.Checksum
      */
     public static function fromString($str) { }
 
@@ -57,8 +57,8 @@
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
-     * @param   &io.File file
-     * @return  &security.checksum.Checksum
+     * @param   io.File file
+     * @return  security.checksum.Checksum
      */
     public static function fromFile($file) { }
     
@@ -74,7 +74,7 @@
     /**
      * Verify this checksum against another checksum
      *
-     * @param   &security.checksum.Checksum sum
+     * @param   security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
     public function verify($sum) {

@@ -21,7 +21,7 @@
      * @param   int w width
      * @param   int h height
      * @param   int type default IMG_PALETTE either IMG_PALETTE or IMG_TRUECOLOR
-     * @return  &img.graph.Graph
+     * @return  img.graph.Graph
      * @throws  img.ImagingException in case the image could not be created
      */
     public static function create($w, $h, $type= IMG_PALETTE) {

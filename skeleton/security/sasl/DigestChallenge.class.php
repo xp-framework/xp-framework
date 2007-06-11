@@ -48,7 +48,7 @@
      * </pre>
      *
      * @param   string s
-     * @return  &security.sasl.DigestChallenge
+     * @return  security.sasl.DigestChallenge
      * @throws  lang.FormatException
      */
     public static function fromString($s) {
@@ -116,7 +116,7 @@
      * @param   string user
      * @param   string pass
      * @param   string authzid default NULL
-     * @return  &security.sasl.DigestResponse
+     * @return  security.sasl.DigestResponse
      * @throws  lang.FormatException
      */
     public function responseFor($qop, $user, $pass, $authzid= NULL) {

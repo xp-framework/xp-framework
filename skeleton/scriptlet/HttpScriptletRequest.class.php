@@ -35,7 +35,7 @@
     /**
      * Retrieves the session or NULL if none exists
      *
-     * @return  &scriptlet.HttpSession session object
+     * @return  scriptlet.HttpSession session object
      */
     public function getSession() {
       return $this->session;
@@ -53,7 +53,7 @@
     /**
      * Sets session
      *
-     * @param   &scriptlet.HttpSession session
+     * @param   scriptlet.HttpSession session
      */
     public function setSession($s) {
       $this->session= $s;
@@ -106,7 +106,7 @@
      * Retrieve cookie by it's name
      *
      * @param   mixed default default NULL the default value if cookie is non-existant
-     * @return  &peer.http.Cookie
+     * @return  peer.http.Cookie
      */
     public function getCookie($name, $default= NULL) {
       if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
@@ -199,7 +199,7 @@
     /**
      * Sets request parameters
      *
-     * @param   &array params
+     * @param   array params
      */
     public function setParams($params) {
       $this->params= $params;
@@ -217,7 +217,7 @@
     /**
      * Sets request data.
      *
-     * @param   &string data
+     * @param   string data
      * @see     xp://scriptlet.HttpScriptlet#_handleMethod
      */
     public function setData($data) {
@@ -232,7 +232,7 @@
      * This is especially useful for the SOAP implementation where the
      * entire request body resembles the SOAP message (no parameters).
      *
-     * @return  &string data
+     * @return  string data
      */
     public function getData() {
       if (NULL === $this->data) {

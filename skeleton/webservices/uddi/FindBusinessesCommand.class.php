@@ -42,7 +42,7 @@
     /**
      * Marshal command to a specified node
      *
-     * @param   &xml.Node node
+     * @param   xml.Node node
      * @see     xp://webservices.uddi.UDDICommand#marshalTo
      */
     public function marshalTo($node) {
@@ -68,8 +68,8 @@
     /**
      * Unmarshal return value from a specified node
      *
-     * @param   &xml.Node node
-     * @return  &webservices.uddi.BusinessList
+     * @param   xml.Node node
+     * @return  webservices.uddi.BusinessList
      * @see     xp://webservices.uddi.UDDICommand#unmarshalFrom
      * @throws  lang.FormatException in case of an unexpected response
      */

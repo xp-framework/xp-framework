@@ -55,7 +55,7 @@
      * twice with the same dsn will result in the same instance.
      *
      * @param   string dsn
-     * @return  &remote.Remote
+     * @return  remote.Remote
      * @throws  remote.RemoteException in case of setup failure
      */
     public static function forName($dsn) {
@@ -92,7 +92,7 @@
      * Look up an object by its name
      *
      * @param   string name
-     * @return  &lang.Object
+     * @return  lang.Object
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
@@ -103,8 +103,8 @@
     /**
      * Begin a transaction
      *
-     * @param   &remote.UserTransaction tran
-     * @return  &remote.UserTransaction
+     * @param   remote.UserTransaction tran
+     * @return  remote.UserTransaction
      */
     public function begin($tran) {
       $this->_handler->begin($tran);

@@ -23,7 +23,7 @@
      * </code>
      *
      * @param   resource handle one of STDIN | STDOUT | STDERR
-     * @return  &io.File
+     * @return  io.File
      */
     public static function get($handle) {
       static $f= array();

@@ -22,8 +22,8 @@
      * - mbox:///usr/home/foo/Mail
      * </pre>
      *
-     * @param   &peer.URL u
-     * @param   &array attr
+     * @param   peer.URL u
+     * @param   array attr
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
@@ -45,7 +45,7 @@
      * Get a folder. Note: Results from this method are cached.
      *
      * @param   string name
-     * @return  &peer.mail.MailFolder
+     * @return  peer.mail.MailFolder
      * @throws  peer.mail.MessagingException
      */  
     public function getFolder() {

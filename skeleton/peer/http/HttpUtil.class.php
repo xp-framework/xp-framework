@@ -38,7 +38,7 @@
      * Fetch an URL's content. Follows redirects up until the defined 
      * constant REDIRECT_LIMIT times.
      *
-     * @param   &peer.http.HttpConnection connection
+     * @param   peer.http.HttpConnection connection
      * @param   array params default array()
      * @param   array headers default array()
      * @return  string

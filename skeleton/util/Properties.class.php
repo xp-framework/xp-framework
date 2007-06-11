@@ -47,8 +47,8 @@
     /**
      * Create a property file from an io.File object
      *
-     * @param   &io.File file
-     * @return  &util.Properties
+     * @param   io.File file
+     * @return  util.Properties
      */
     public static function fromFile($file) {
       return new Properties($file->getURI());
@@ -58,7 +58,7 @@
      * Create a property file from a string
      *
      * @param   string str
-     * @return  &util.Properties
+     * @return  util.Properties
      */
     public static function fromString($str) {
       with ($prop= new Properties(NULL)); {
@@ -261,7 +261,7 @@
      * @param   string section
      * @param   string key
      * @param   util.Hashmap default default NULL what to return in case the section or key does not exist
-     * @return  &util.Hashmap
+     * @return  util.Hashmap
      */
     public function readHash($section, $key, $default= NULL) {
       $this->_load();

@@ -46,7 +46,7 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function createdAt() {
       return new Date(filectime($this->uri));
@@ -55,7 +55,7 @@
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastAccessed() {
       return new Date(fileatime($this->uri));
@@ -64,7 +64,7 @@
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastModified() {
       return new Date(filemtime($this->uri));

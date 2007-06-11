@@ -78,7 +78,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.MessageFormat
+     * @return  text.format.MessageFormat
      */
     public function getInstance() {
       return parent::getInstance('MessageFormat');
@@ -88,8 +88,8 @@
      * Set a format handler for a special type
      *
      * @param   string alias
-     * @param   &text.format.PrintfFormat formatter
-     * @return  &text.format.PrintfFormat formatter
+     * @param   text.format.PrintfFormat formatter
+     * @return  text.format.PrintfFormat formatter
      * @throws  lang.IllegalArgumentException 
      */
     public function setFormatter($alias, $formatter) {
@@ -114,7 +114,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      */
     public function apply($fmt, $argument) {

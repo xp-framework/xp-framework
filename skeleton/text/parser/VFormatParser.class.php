@@ -103,7 +103,7 @@
     /**
      * Parse a stream
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @return  bool success
      * @throws  lang.FormatException
      */

@@ -23,7 +23,7 @@
     /**
      * Constructor
      *
-     * @param   &peer.ldap.LDAPClient lc
+     * @param   peer.ldap.LDAPClient lc
      * @param   string basedn
      */
     public function __construct($lc, $basedn) {

@@ -49,7 +49,7 @@
     /**
      * Create a new checksum from a file object
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @param   string key default NULL
      * @return  security.checksum.HMAC_MD5
      */

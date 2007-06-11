@@ -61,7 +61,7 @@
     /**
      * Create a request object.
      *
-     * @return  &webservices.soap.rpc.SoapRpcRequest
+     * @return  webservices.soap.rpc.SoapRpcRequest
      */
     protected function _request() {
       return new SoapRpcRequest();
@@ -70,7 +70,7 @@
     /**
      * Create a response object.
      *
-     * @return  &webservices.soap.rpc.SoapRpcResponse
+     * @return  webservices.soap.rpc.SoapRpcResponse
      */
     protected function _response() {
       return new SoapRpcResponse();
@@ -79,7 +79,7 @@
     /**
      * Create message object.
      *
-     * @return  &webservices.soap.xp.XPSoapMessage
+     * @return  webservices.soap.xp.XPSoapMessage
      */
     protected function _message() {
       return new XPSoapMessage();

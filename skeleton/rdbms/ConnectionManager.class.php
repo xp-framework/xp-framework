@@ -36,7 +36,7 @@
     /**
      * Return the ConnectionManager's instance
      * 
-     * @return  &rdbms.ConnectionManager
+     * @return  rdbms.ConnectionManager
      */
     public static function getInstance() {
       return self::$instance;
@@ -54,7 +54,7 @@
      * dsn="sybase://timm:binford@gurke/CAFFEINE?autoconnect=1"
      * </pre>
      *
-     * @param   &util.Properties properties
+     * @param   util.Properties properties
      * @return  bool
      * @throws  rdbms.DriverNotSupportedException
      */
@@ -87,8 +87,8 @@
     /**
      * Register a connection
      *
-     * @param   &rdbms.DBConnection conn A connection object
-     * @return  &rdbms.DBConnection The connection object registered
+     * @param   rdbms.DBConnection conn A connection object
+     * @return  rdbms.DBConnection The connection object registered
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
@@ -108,7 +108,7 @@
      *
      * @param   string host
      * @param   string user
-     * @return  &rdbms.DBConnection
+     * @return  rdbms.DBConnection
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
     public function get($host, $user) {

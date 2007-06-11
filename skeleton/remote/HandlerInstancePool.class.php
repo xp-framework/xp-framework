@@ -46,7 +46,7 @@
     /**
      * Retrieve the HandlerInstancePool instance
      *
-     * @return  &remote.HandlerInstancePool
+     * @return  remote.HandlerInstancePool
      */
     public static function getInstance() {
       static $instance= NULL;
@@ -58,9 +58,9 @@
     /**
      * Pool a handler instance
      *
-     * @param   &peer.URL url
-     * @param   &remote.protocol.ProtocolHandler instance
-     * @return  &remote.protocol.ProtocolHandler the pooled instance
+     * @param   peer.URL url
+     * @param   remote.protocol.ProtocolHandler instance
+     * @return  remote.protocol.ProtocolHandler the pooled instance
      */
     public function pool($url, $instance) {
       $this->pool->put($url, $instance);
@@ -71,7 +71,7 @@
      * Acquire a handler instance
      *
      * @param   string key
-     * @return  &remote.protocol.ProtocolHandler
+     * @return  remote.protocol.ProtocolHandler
      * @throws  remote.protocol.UnknownProtocolException
      */
     public function acquire($key, $initialize= FALSE) {

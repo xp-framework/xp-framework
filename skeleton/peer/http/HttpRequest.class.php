@@ -35,7 +35,7 @@
     /**
      * Constructor
      *
-     * @param   &peer.URL url object
+     * @param   peer.URL url object
      */
     public function __construct($url) {
       $this->url= $url;
@@ -155,7 +155,7 @@
     /**
      * Send request
      *
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      */
     public function send($timeout= 60, $connecttimeout= 2.0) {
       $s= new Socket($this->url->getHost(), $this->url->getPort(80));

@@ -39,7 +39,7 @@
      * Proxy method to get values
      *
      * @param   string name
-     * @param   &mixed value
+     * @param   mixed value
      * @return  boolean 
      */    
     public function __get($name) {
@@ -54,7 +54,7 @@
      * Proxy method to set values
      *
      * @param   string name
-     * @param   &mixed value
+     * @param   mixed value
      */    
     public function __set($name, $value) {
       $this->_stream->{$name}= $value;
@@ -65,7 +65,7 @@
      *
      * @param   string method
      * @param   array params
-     * @param   &mixed return
+     * @param   mixed return
      * @return  boolean
      */    
     public function __call($method, $params) {

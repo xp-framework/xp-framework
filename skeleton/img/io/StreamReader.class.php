@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      */
     public function __construct($stream) {
       $this->stream= deref($stream);

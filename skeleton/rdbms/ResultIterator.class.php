@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.ResultSet rs
+     * @param   rdbms.ResultSet rs
      * @param   string identifier
      * @see     xp://rdbms.Peer#iteratorFor
      */
@@ -52,7 +52,7 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @return  &rdbms.DataSet
+     * @return  rdbms.DataSet
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {

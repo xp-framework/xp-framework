@@ -16,7 +16,7 @@
      * of a specified position. The resulting string is copied to the 
      * parameter "string" and also returned as result.
      *
-     * @param   &string string
+     * @param   string string
      * @param   int pos
      * @param   int len default 1
      * @return  string
@@ -31,7 +31,7 @@
      * resulting string is copied to the parameter "string" and also 
      * returned as result.
      *
-     * @param   &string string
+     * @param   string string
      * @param   int pos
      * @param   char char
      * @return  string

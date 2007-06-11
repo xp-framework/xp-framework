@@ -66,7 +66,7 @@
      * Get a Connection
      *
      * @param   string uri
-     * @return  &peer.webdav.WebdavConnection
+     * @return  peer.webdav.WebdavConnection
      */
     public function getConnection($uri= NULL) {
       $url= new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
@@ -86,7 +86,7 @@
      * Do a Head Request to check if file exists
      *
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function exists($uri) {    
@@ -105,7 +105,7 @@
      * @param   string uri, filename or directory
      * @param   string xml, The XML of the Propfind Request (e.g. to select properties)  
      * @param   int depth, default 1
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function read($uri= NULL, $xml= NULL, $depth= '1') {     
@@ -126,9 +126,9 @@
     /**
      * Do a Put on Webdav server
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function put($file, $uri= NULL) {  
@@ -157,7 +157,7 @@
      * Do a Get on Webdav server
      *
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function get($uri= NULL) {    
@@ -175,7 +175,7 @@
      *
      * @param   string xml, The XML Representation of the Properties
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function proppatch($xml, $uri= NULL) {          
@@ -192,7 +192,7 @@
      * Do a MkCol Request
      *
      * @param   string uri, The uri of the new collection
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function mkcol($uri) {        
@@ -212,7 +212,7 @@
      * @param   string destination
      * @param   bool overwrite, default FALSE
      * @param   mixed depth, default Infinity
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
@@ -238,7 +238,7 @@
      * @param   string source
      * @param   string destination
      * @param   bool overwrite, default FALSE
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function move($source, $destination, $overwrite= FALSE) {   
@@ -262,7 +262,7 @@
      *
      * @param   string uri The uri of the collection or file
      * @param   string xml, The XML of the lockrequest
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function lock($uri, $xml) {    
@@ -287,7 +287,7 @@
      *
      * @param   string uri, filename or directory
      * @param   string locktoken
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function unlock($uri, $locktoken) {    
@@ -309,7 +309,7 @@
      * Do a Delete Request
      *
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function delete($uri) {    
@@ -326,7 +326,7 @@
      * Activate VersionControl on a file
      *
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function version($uri) {    
@@ -343,7 +343,7 @@
      * Do a Report Request
      *
      * @param   string uri, filename or directory
-     * @return  &peer.http.HttpResponse response object
+     * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */
     public function report($uri) {    

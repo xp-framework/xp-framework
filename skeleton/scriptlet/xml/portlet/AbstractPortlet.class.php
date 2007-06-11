@@ -66,7 +66,7 @@
     /**
      * Initialize portlet
      *
-     * @param   &util.Properties properties
+     * @param   util.Properties properties
      */
     public function init($properties) { 
       $this->properties= $properties;
@@ -76,8 +76,8 @@
      * Set an attribut by name
      *
      * @param   string name
-     * @param   &mixed value
-     * @param   &scriptlet.xml.portlet.RunData rundata
+     * @param   mixed value
+     * @param   scriptlet.xml.portlet.RunData rundata
      */
     public function setAttribute($name, $value, $rundata) {
       $this->attributes[$name]= $value;
@@ -89,8 +89,8 @@
      *
      * @param   string name
      * @param   mixed default
-     * @param   &scriptlet.xml.portlet.RunData rundata
-     * @return  &mixed
+     * @param   scriptlet.xml.portlet.RunData rundata
+     * @return  mixed
      */
     public function getAttribute($name, $default, $rundata) {
       if (!array_key_exists($name, $this->attributes)) return $default;
@@ -101,8 +101,8 @@
     /**
      * Retrieve portlet content as Node object
      *
-     * @param   &scriptlet.xml.portlet.RunData rundata
-     * @return  &xml.Node
+     * @param   scriptlet.xml.portlet.RunData rundata
+     * @return  xml.Node
      */
     public function getContent($rundata) { }
 

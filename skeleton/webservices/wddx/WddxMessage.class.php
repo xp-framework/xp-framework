@@ -29,7 +29,7 @@
      * Create a WddxMessage object from an XML document.
      *
      * @param   string string
-     * @return  &webservices.wddx.WddxMessage
+     * @return  webservices.wddx.WddxMessage
      */
     public static function fromString($string) {
       return parent::fromString($string, 'WddxMessage');
@@ -48,7 +48,7 @@
     /**
      * Set data for the message
      *
-     * @param   &mixed[] arr
+     * @param   mixed[] arr
      */
     public function setData($arr) {
       $d= $this->root->addChild(new Node('data'));
@@ -60,8 +60,8 @@
     /**
      * Marshall method to serialize data into the Wddx message.
      *
-     * @param   &xml.Node node
-     * @param   &mixed data
+     * @param   xml.Node node
+     * @param   mixed data
      * @throws  lang.IllegalArgumentException if passed data could not be serialized
      */
     protected function _marshall($node, $data) {
@@ -117,7 +117,7 @@
     /**
      * Retrieve data from wddx message.
      *
-     * @return  &mixed[]
+     * @return  mixed[]
      * @throws  lang.IllegalStateException if no payload data could be found in the message
      */
     public function getData() {
@@ -144,8 +144,8 @@
     /**
      * Umarshall method for deserialize data from wddx message
      *
-     * @param   &xml.Node node
-     * @return  &mixed[]
+     * @param   xml.Node node
+     * @return  mixed[]
      * @throws  lang.IllegalArgumentException if document is not well-formed
      */
     protected function _unmarshall($node) {

@@ -18,7 +18,7 @@
     /**
      * Lazy initialization callback
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function initialize() { }
 

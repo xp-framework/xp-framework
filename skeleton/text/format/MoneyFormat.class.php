@@ -18,7 +18,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.MoneyFormat
+     * @return  text.format.MoneyFormat
      */
     public function getInstance() {
       return parent::getInstance('MoneyFormat');
@@ -28,7 +28,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      */
     public function apply($fmt, $argument) {

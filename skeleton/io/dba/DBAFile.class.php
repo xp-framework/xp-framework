@@ -119,7 +119,7 @@
     /**
      * Returns an iterator over the keys of this DBA file
      *
-     * @return  &io.dba.DBAIterator
+     * @return  io.dba.DBAIterator
      * @see     xp://io.dba.DBAIterator
      */
     public function iterator() {

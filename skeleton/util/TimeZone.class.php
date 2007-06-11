@@ -118,7 +118,7 @@
      * Returns a TimeZone object by a time zone name.
      *
      * @param   string abbrev
-     * @return  &util.TimeZone
+     * @return  util.TimeZone
      * @throws  lang.IllegalArgumentException if timezone is unknown
      */    
     public static function getByName($abbrev) {
@@ -135,7 +135,7 @@
     /**
      * Get a timezone object for the machines local timezone.
      *
-     * @return  &util.TimeZone
+     * @return  util.TimeZone
      */
     public static function getLocal() {
       return TimeZone::getByName(date('T'));
@@ -155,9 +155,9 @@
      * Converts a date from one timezone to a date of this
      * timezone.
      *
-     * @param   &util.Date date
-     * @param   &util.TimeZone tz
-     * @return  &util.Date
+     * @param   util.Date date
+     * @param   util.TimeZone tz
+     * @return  util.Date
      */
     public function convertDate($date, $tz) {
       return new Date($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
@@ -167,8 +167,8 @@
      * Converts a date in the machines local timezone to a date in this
      * timezone.
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */    
     public function convertLocalDate($date) {
       return $this->convertDate($date, TimeZone::getLocal());

@@ -233,7 +233,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
@@ -283,8 +283,8 @@
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.Transaction transaction
-     * @return  &rdbms.Transaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     public function begin($transaction) {
       if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {

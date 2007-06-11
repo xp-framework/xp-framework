@@ -72,7 +72,7 @@
      * Get a value from cache by key
      *
      * @param   string key
-     * @return  &mixed value or NULL to indicate the value doesn't exist
+     * @return  mixed value or NULL to indicate the value doesn't exist
      */    
     public function get($key) {
       if (isset($this->data[$key])) return $this->data[$key]; else return NULL;
@@ -82,7 +82,7 @@
      * Insert into / update in cache
      *
      * @param   string key
-     * @param   &mixed val
+     * @param   mixed val
      */
     public function put($key, $val) {
       $this->data[$key]= $val;

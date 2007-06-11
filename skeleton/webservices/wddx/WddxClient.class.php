@@ -37,7 +37,7 @@
     /**
      * Constructor.
      *
-     * @param   &webservices.wddx.transport.WddxTransport transport
+     * @param   webservices.wddx.transport.WddxTransport transport
      */
     public function __construct($transport) {
       $this->transport= $transport;
@@ -46,7 +46,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->transport->setTrace($cat);

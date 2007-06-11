@@ -19,7 +19,7 @@
     /**
      * Constructor
      *
-     * @param   &Object conn database connection
+     * @param   Object conn database connection
      */
     public function __construct($conn) {
       $this->map= array(
@@ -91,7 +91,7 @@
      * Get indexes for a given table. Expects a temporary table to exist.
      *
      * @param   string table thee table's name
-     * @return  &rdbms.DBTable
+     * @return  rdbms.DBTable
      */    
     protected function dbTableObjectFor($table) {
       $t= new DBTable($table);

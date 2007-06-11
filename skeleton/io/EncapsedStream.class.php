@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream super parent stream
+     * @param   io.Stream super parent stream
      * @param   int offset offset where encapsed stream starts in parent stream
      * @param   int size
      * @throws  lang.IllegalStateException when stream is not yet opened

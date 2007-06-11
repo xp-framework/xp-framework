@@ -19,7 +19,7 @@
      * Parse raw listing entry.
      *
      * @param   string raw a single line
-     * @return  &peer.ftp.FtpEntry
+     * @return  peer.ftp.FtpEntry
      */
     public function entryFrom($raw) {
       preg_match(

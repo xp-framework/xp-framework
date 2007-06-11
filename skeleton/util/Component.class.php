@@ -16,28 +16,28 @@
      * Takes a Visitor as argument and calls its 'visit()' method with the
      * instance of this object ($this) as argument
      *
-     * @param   &util.Visitor Visitor
+     * @param   util.Visitor Visitor
      */
     public function accept($Visitor);
 
     /**
      * Adds the given component to the children
      *
-     * @param   &util.Component Component
+     * @param   util.Component Component
      */
     public function addChild($Component);
 
     /**
      * Removes the given component from the children
      *
-     * @param   &util.Component Component
+     * @param   util.Component Component
      */
     public function remChild($Component);
 
     /**
      * Returns an array with all children
      *
-     * @return  &util.Component[]
+     * @return  util.Component[]
      */
     public function getChildren();
 

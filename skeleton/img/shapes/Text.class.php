@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   &fonts.Font col color
+     * @param   fonts.Font col color
      * @param   string text
      * @param   int x
      * @param   int y
@@ -38,7 +38,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

@@ -39,7 +39,7 @@
      * Create a key from its string representation
      *
      * @param   string string
-     * @return  &security.crypto.CryptoKey
+     * @return  security.crypto.CryptoKey
      */
     public static function fromString($string) { }
     

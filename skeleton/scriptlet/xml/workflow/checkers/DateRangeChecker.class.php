@@ -50,7 +50,7 @@
      *
      * @param   string input
      * @param   bool lower whether this is the lower boundary
-     * @return  &util.Date
+     * @return  util.Date
      */
     protected function parseDate($input, $lower) {
       switch ($input) {

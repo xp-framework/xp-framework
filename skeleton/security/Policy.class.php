@@ -40,8 +40,8 @@
     /**
      * Add a permission
      *
-     * @param   &security.Permission p
-     * @return  &security.Permission the added permission
+     * @param   security.Permission p
+     * @return  security.Permission the added permission
      */
     public function addPermission($p) {
       $this->permissions[]= $p;
@@ -65,8 +65,8 @@
      * </code>
      *
      * @see     http://java.sun.com/j2se/1.4.1/docs/guide/security/PolicyFiles.html
-     * @param   &io.Stream stream
-     * @return  &security.Policy policy
+     * @param   io.Stream stream
+     * @return  security.Policy policy
      */
     public static function fromFile($stream) {
       static $errors= array(

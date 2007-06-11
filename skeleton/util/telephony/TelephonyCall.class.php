@@ -16,8 +16,8 @@
     /**
      * Constructor
      *
-     * @param   &util.telephony.TelephonyAddress origin
-     * @param   &util.telephony.TelephonyAddress destination
+     * @param   util.telephony.TelephonyAddress origin
+     * @param   util.telephony.TelephonyAddress destination
      */
     public function __construct($origin, $destination) {
       $this->origin= $origin;

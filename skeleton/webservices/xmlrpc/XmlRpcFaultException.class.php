@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   &webservices.xmlrpc.XmlRpcFault fault
+     * @param   webservices.xmlrpc.XmlRpcFault fault
      */
     public function __construct($fault) {
       parent::__construct($fault->faultString);
@@ -28,7 +28,7 @@
     /**
      * Get Fault
      *
-     * @return  &webservices.xmlrpc.XmlRpcFault
+     * @return  webservices.xmlrpc.XmlRpcFault
      */
     public function getFault() {
       return $this->fault;

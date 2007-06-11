@@ -21,7 +21,7 @@
      * Constructor
      *
      * @param   string type
-     * @param   &peer.Socket stream
+     * @param   peer.Socket stream
      * @param   mixed data default NULL
      */
     public function __construct($type, $stream, $data= NULL) {

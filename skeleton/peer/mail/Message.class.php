@@ -266,7 +266,7 @@
     /**
      * Retrieve message date
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getDate() {
       return $this->date;
@@ -276,7 +276,7 @@
      * Add recipient
      *
      * @param   string type one of the constants TO, CC, BCC
-     * @param   &peer.mail.InternetAddress adr address to add
+     * @param   peer.mail.InternetAddress adr address to add
      */
     public function addRecipient($type, $adr) {
       $this->{$type}[]= $adr;
@@ -286,7 +286,7 @@
      * Add recipients
      *
      * @param   string type one of the constants TO, CC, BCC
-     * @param   &peer.mail.InternetAddress[] adr addresses to add
+     * @param   peer.mail.InternetAddress[] adr addresses to add
      */
     public function addRecipients($type, $adr) {
       $this->{$type}= array_merge($this->{$type}, $adr);
@@ -296,7 +296,7 @@
      * Get recipients
      *
      * @param   string type one of the constants TO, CC, BCC
-     * @return  &peer.mail.InternetAddress[] adr recipients of type
+     * @return  peer.mail.InternetAddress[] adr recipients of type
      */
     public function getRecipients($type) {
       return $this->{$type};
@@ -311,7 +311,7 @@
      * </code>
      *
      * @param   string type one of the constants TO, CC, BCC
-     * @return  &peer.mail.InternetAddress[] adr recipients of type
+     * @return  peer.mail.InternetAddress[] adr recipients of type
      */
     public function getRecipient($type) {
       static $ofs= array();
@@ -328,7 +328,7 @@
     /**
      * Set from
      *
-     * @param   &peer.mail.InternetAddress[] adr addresses to add
+     * @param   peer.mail.InternetAddress[] adr addresses to add
      */
     public function setFrom($adr) {
       $this->from= $adr;
@@ -337,7 +337,7 @@
     /**
      * Get recipients
      *
-     * @return  &peer.mail.InternetAddress[] adr addresses to add
+     * @return  peer.mail.InternetAddress[] adr addresses to add
      */
     public function getFrom() {
       return $this->from;
@@ -589,7 +589,7 @@
      * Build representation of address list
      *
      * @param   string t header token
-     * @param   &peer.mail.InternetAddress[] addrs
+     * @param   peer.mail.InternetAddress[] addrs
      * @return  string
      */
     protected function _astr($t, $addrs) {

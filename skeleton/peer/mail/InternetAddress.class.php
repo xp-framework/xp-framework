@@ -48,7 +48,7 @@
     /**
      * Retrieve whether another object is equal to this
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Object cmp
      * @return  bool
      */
     public function equals($cmp) {
@@ -72,7 +72,7 @@
      * </pre>
      *
      * @param   string str
-     * @return  &peer.mail.InternetAddress address object
+     * @return  peer.mail.InternetAddress address object
      * @throws  lang.FormatException in case the string could not be parsed into an address
      */
     public static function fromString($str) {

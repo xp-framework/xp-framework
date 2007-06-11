@@ -16,7 +16,7 @@
     /**
      * Configure
      *
-     * @param   &util.Properties properties
+     * @param   util.Properties properties
      * @return  bool
      */
     public function configure($properties);

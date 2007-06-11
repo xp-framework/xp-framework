@@ -30,7 +30,7 @@
     /**
      * Constructor
      *
-     * @param   &img.Color col color
+     * @param   img.Color col color
      * @param   int x1 x coordinate of upper left corner
      * @param   int y1 y coordinate of upper left corner
      * @param   int x2 x coordinate of bottom right corner
@@ -50,7 +50,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

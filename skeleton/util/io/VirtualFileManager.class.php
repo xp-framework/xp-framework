@@ -25,7 +25,7 @@
     /**
      * Gets the instance of the VirtualFileManager
      *
-     * @return  &io.VirtualFileManager
+     * @return  io.VirtualFileManager
      */
     public function getInstance() {
       static $instance= NULL;
@@ -38,7 +38,7 @@
      * Adds a file
      *
      * @param   string path
-     * @param   &string data
+     * @param   string data
      */
     public function addFile($path, $data) {
       $stream= new Stream();
@@ -53,7 +53,7 @@
      * Retrieves a file
      *
      * @param   string path
-     * @return  &io.Stream file
+     * @return  io.Stream file
      */
     public function getFile($path) {
       if (isset ($this->fileMap[$path]))

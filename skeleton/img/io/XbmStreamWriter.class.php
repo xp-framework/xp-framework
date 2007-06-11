@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      * @param   int foreground default 0
      */
     public function __construct($stream, $foreground= 0) {

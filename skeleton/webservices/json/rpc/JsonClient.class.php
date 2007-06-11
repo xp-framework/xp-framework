@@ -22,7 +22,7 @@
     /**
      * Constructor.
      *
-     * @param   &scriptlet.rpc.transport.GenericHttpTransport transport
+     * @param   scriptlet.rpc.transport.GenericHttpTransport transport
      */
     public function __construct($transport) {
       $this->transport= $transport;
@@ -31,7 +31,7 @@
     /**
      * Set trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->transport->setTrace($cat);

@@ -49,7 +49,7 @@
     /**
      * Send a message
      *
-     * @param   &peer.mail.Message message the Message object to send
+     * @param   peer.mail.Message message the Message object to send
      * @return  bool success
      */
     public function send($message) { 

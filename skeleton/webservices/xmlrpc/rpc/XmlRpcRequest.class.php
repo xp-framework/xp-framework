@@ -20,7 +20,7 @@
     /**
      * Retrieve XML-RPC message from request
      *
-     * @return  &webservices.xmlrpc.XmlRpcMessage message object
+     * @return  webservices.xmlrpc.XmlRpcMessage message object
      */
     public function getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());

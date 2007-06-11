@@ -66,7 +66,7 @@
      * Create a header from a string
      *
      * @param   string str
-     * @return  &peer.Header header object
+     * @return  peer.Header header object
      */
     public static function fromString($str) {
       list($k, $v)= explode(': ', $str, 2);

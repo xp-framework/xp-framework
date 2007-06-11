@@ -25,8 +25,8 @@
     /**
      * Retrieve an ImageInfo object from a file
      *
-     * @param   &io.File file
-     * @return  &img.util.ImageInfo
+     * @param   io.File file
+     * @return  img.util.ImageInfo
      * @throws  img.ImagingException in case extracting information from image file fails
      */
     public static function fromFile($file) {

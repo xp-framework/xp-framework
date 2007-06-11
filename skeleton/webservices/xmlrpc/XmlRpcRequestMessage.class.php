@@ -33,7 +33,7 @@
      * </code>
      *
      * @param   string string
-     * @return  &webservices.xmlrpc.XmlRpcMessage
+     * @return  webservices.xmlrpc.XmlRpcMessage
      */
     public static function fromString($string) {
       $msg= new XmlRpcRequestMessage();
@@ -49,7 +49,7 @@
     /**
      * Set the data for the message.
      *
-     * @param   &mixed arr
+     * @param   mixed arr
      */
     public function setData($arr) {
       $encoder= new XmlRpcEncoder();
@@ -64,7 +64,7 @@
     /**
      * Return the data from the message.
      *
-     * @return  &mixed
+     * @return  mixed
      */
     public function getData() {
       $ret= array();

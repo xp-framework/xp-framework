@@ -26,7 +26,7 @@
      * ----=_Alternative_10424693873e22d20b43b490.00112051
      * </pre>
      *
-     * @param   &peer.mail.MimePart* parts
+     * @param   peer.mail.MimePart* parts
      */
     public function __construct() {
       parent::__construct();
@@ -74,8 +74,8 @@
     /**
      * Add a Mime Part
      *
-     * @param   &peer.mail.MimePart part
-     * @return  &peer.mail.MimePart the part added
+     * @param   peer.mail.MimePart part
+     * @return  peer.mail.MimePart the part added
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
     public function addPart($part) {
@@ -92,7 +92,7 @@
      * Get a part
      *
      * @param   int id default -1
-     * @return  &peer.mail.MimePart part
+     * @return  peer.mail.MimePart part
      */
     public function getPart($id= -1) {
 

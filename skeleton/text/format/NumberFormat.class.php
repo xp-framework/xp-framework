@@ -19,7 +19,7 @@
     /**
      * Get an instance
      *
-     * @return  &text.format.NumberFormat
+     * @return  text.format.NumberFormat
      */
     public function getInstance() {
       return parent::getInstance('NumberFormat');
@@ -29,7 +29,7 @@
      * Apply format to argument
      *
      * @param   mixed fmt
-     * @param   &mixed argument
+     * @param   mixed argument
      * @return  string
      * @throws  lang.FormatException
      */

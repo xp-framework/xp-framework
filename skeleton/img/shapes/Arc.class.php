@@ -33,7 +33,7 @@
     /**
      * Constructor
      *
-     * @param   &img.Color col color
+     * @param   img.Color col color
      * @param   int cx x center of circle
      * @param   int cy y center of circle
      * @param   int w width
@@ -60,7 +60,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

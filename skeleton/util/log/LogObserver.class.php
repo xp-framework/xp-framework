@@ -20,7 +20,7 @@
      * Retrieve instance bound to log category.
      *
      * @param   string arg
-     * @return  &util.log.LogObserver
+     * @return  util.log.LogObserver
      */
     public static function instanceFor($arg) {
       static $inst= array();
@@ -37,7 +37,7 @@
     /**
      * Update method
      *
-     * @param   &util.Observable obs
+     * @param   util.Observable obs
      * @param   mixed arg default NULL
      */
     public function update($obs, $arg= NULL) {

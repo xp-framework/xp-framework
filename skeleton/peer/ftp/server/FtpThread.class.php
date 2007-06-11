@@ -41,7 +41,7 @@
     /**
      * Set server
      *
-     * @param   &peer.server.Server server
+     * @param   peer.server.Server server
      */
     public function setServer($server) {
       $this->server= $server;
@@ -50,7 +50,7 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) { 
       $this->cat= $cat;
@@ -59,7 +59,7 @@
     /**
      * Set an AuthenticationHandler
      *
-     * @param   &lang.reflect.InvokationHandler handler
+     * @param   lang.reflect.InvokationHandler handler
      */
     public function setAuthenticatorHandler($handler) {
       $this->authenticatorHandler= $handler;
@@ -69,7 +69,7 @@
     /**
      * Set a StorageHandler
      *
-     * @param   &lang.reflect.InvokationHandler handler
+     * @param   lang.reflect.InvokationHandler handler
      */
     public function setStorageHandler($handler) {
       $this->storageHandler= $handler;
@@ -97,7 +97,7 @@
     /**
      * Retrieve an instance of this thread
      *
-     * @return  &peer.ftp.server.FtpThread
+     * @return  peer.ftp.server.FtpThread
      */
     public static function getInstance() {
       static $instance= NULL;

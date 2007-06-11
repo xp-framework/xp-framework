@@ -64,7 +64,7 @@
      * Add an import
      *
      * @param   string import
-     * @return  &xml.Node the added node
+     * @return  xml.Node the added node
      */
     public function addImport($import) {
       with ($n= $this->root->addChild(new Node('xsl:import'))); {
@@ -77,7 +77,7 @@
      * Add an include
      *
      * @param   string include
-     * @return  &xml.Node the added node
+     * @return  xml.Node the added node
      */
     public function addInclude($include) {
       with ($n= $this->root->addChild(new Node('xsl:include'))); {
@@ -90,7 +90,7 @@
      * Add a parameter
      *
      * @param   string import
-     * @return  &xml.Node the added node
+     * @return  xml.Node the added node
      */
     public function addParam($name) {
       with ($n= $this->root->addChild(new Node('xsl:param'))); {
@@ -103,7 +103,7 @@
      * Add a variable
      *
      * @param   string import
-     * @return  &xml.Node the added node
+     * @return  xml.Node the added node
      */
     public function addVariable($name) {
       with ($n= $this->root->addChild(new Node('xsl:variable'))); {
@@ -116,7 +116,7 @@
      * Construct a stylesheet from a string
      *
      * @param   string string
-     * @return  &xml.Stylesheet
+     * @return  xml.Stylesheet
      */
     public static function fromString($string) {
       return parent::fromString($string, __CLASS__);
@@ -126,8 +126,8 @@
     /**
      * Construct a stylesheet from a file
      *
-     * @param   &xml.File file
-     * @return  &xml.Stylesheet
+     * @param   xml.File file
+     * @return  xml.Stylesheet
      */
     public static function fromFile($file) {
       return parent::fromFile($file, __CLASS__);

@@ -75,7 +75,7 @@
      *   X-Binford: 6100 (more power)
      * </pre>
      *
-     * @return  &peer.Header
+     * @return  peer.Header
      */
     public function getHeader() {
       return new Header('X-Binford', $this->poweredBy.' (more power)');

@@ -101,7 +101,7 @@
      *   $response->setCookie(new Cookie('lastvisit', date('Y-m-d')));
      * </code>
      *
-     * @param   &scriptlet.Cookie cookie
+     * @param   scriptlet.Cookie cookie
      */
     public function setCookie($cookie) {
       $this->headers[]= 'Set-Cookie: '.$cookie->getHeaderValue();

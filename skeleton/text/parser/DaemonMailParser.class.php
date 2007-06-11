@@ -92,7 +92,7 @@
      * </pre>
      *
      * @param   string str
-     * @param   &text.parser.DaemonMessage daemonmessage
+     * @param   text.parser.DaemonMessage daemonmessage
      */
     protected function _parseDeliveryStatus($str, $daemonmessage) {
       $l= strtok(chop($str), "\n");
@@ -139,7 +139,7 @@
     /**
      * Parse a stream
      *
-     * @param   &peer.mail.Message message
+     * @param   peer.mail.Message message
      * @return  bool success
      * @throws  lang.FormatException
      * @throws  lang.IllegalArgumentException

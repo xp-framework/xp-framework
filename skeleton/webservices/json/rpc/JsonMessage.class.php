@@ -27,7 +27,7 @@
      * Create message from string representation
      *
      * @param   string string
-     * @return  &webservices.json.rpc.JsonMessage
+     * @return  webservices.json.rpc.JsonMessage
      */
     public static function fromString($string) { }
     
@@ -86,14 +86,14 @@
     /**
      * Set Data
      *
-     * @param   &lang.Object data
+     * @param   lang.Object data
      */
     public function setData($data) { }
 
     /**
      * Get Data
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function getData() {
       return $this->data;
@@ -147,7 +147,7 @@
     /**
      * Get fault
      *
-     * @return  &scriptlet.rpc.RpcFault
+     * @return  scriptlet.rpc.RpcFault
      */
     public function getFault() {
       if (empty($this->data['error'])) return NULL;

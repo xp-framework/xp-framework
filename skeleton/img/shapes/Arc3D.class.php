@@ -28,7 +28,7 @@
     /**
      * Constructor
      *
-     * @param   &img.Color[] col colors, the first for the "lid", the second for the shadow
+     * @param   img.Color[] col colors, the first for the "lid", the second for the shadow
      * @param   int cx x center of circle
      * @param   int cy y center of circle
      * @param   int w width
@@ -51,7 +51,7 @@
     /**
      * Draws this object onto an image
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  mixed
      */
     public function draw($image) {

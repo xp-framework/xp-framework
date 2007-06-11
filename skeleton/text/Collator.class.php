@@ -30,8 +30,8 @@
     /**
      * Gets the Collator for the desired locale.
      *
-     * @param   &util.Locale locale
-     * @return  &text.Collator
+     * @param   util.Locale locale
+     * @return  text.Collator
      */
     public static function getInstance($locale) {
       $id= $locale->hashCode();
@@ -46,8 +46,8 @@
      * zero, or a positive integer as the first argument is less than, 
      * equal to, or greater than the second.
      *
-     * @param   &string a
-     * @param   &string b
+     * @param   string a
+     * @param   string b
      * @return  int
      */
     public function compare($a, $b) {

@@ -31,7 +31,7 @@
     /**
      * Send a message
      *
-     * @param   &peer.mail.Message message the Message object to send
+     * @param   peer.mail.Message message the Message object to send
      * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
     public function send($message) { }
@@ -39,9 +39,9 @@
     /**
      * Set a LogCategory for tracing communication
      *
-     * @param   &util.log.LogCategory cat a LogCategory object to which communication
+     * @param   util.log.LogCategory cat a LogCategory object to which communication
      *          information will be passed to or NULL to stop tracing
-     * @return  &util.log.LogCategory
+     * @return  util.log.LogCategory
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     public function setTrace($cat) {

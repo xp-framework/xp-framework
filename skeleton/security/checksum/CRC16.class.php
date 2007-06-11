@@ -18,7 +18,7 @@
      * Create a new checksum from a string
      *
      * @param   string str
-     * @return  &security.checksum.CRC16
+     * @return  security.checksum.CRC16
      */
     public static function fromString($str) {
       $sum= 0xFFFF;
@@ -37,8 +37,8 @@
     /**
      * Create a new checksum from a file object
      *
-     * @param   &io.File file
-     * @return  &security.checksum.CRC16
+     * @param   io.File file
+     * @return  security.checksum.CRC16
      */
     public static function fromFile($file) {
       try {

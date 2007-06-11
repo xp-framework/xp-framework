@@ -16,7 +16,7 @@
     /**
      * Accepts an element
      *
-     * @param   &io.collections.IOElement element
+     * @param   io.collections.IOElement element
      * @return  bool
      */
     public function accept($element) { 

@@ -42,7 +42,7 @@
     /**
      * Set callback
      *
-     * @param   &xml.parser.ParserCallback callback
+     * @param   xml.parser.ParserCallback callback
      */
     public function setCallback($callback) {
       $this->callback= $callback;

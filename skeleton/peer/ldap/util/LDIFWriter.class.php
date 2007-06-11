@@ -47,7 +47,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      */
     public function __construct($stream) {
       $this->stream= $stream;
@@ -67,7 +67,7 @@
     /**
      * Write an entry
      *
-     * @param   &peer.ldap.LDAPEntry entry
+     * @param   peer.ldap.LDAPEntry entry
      * @throws  lang.IllegalArgumentException in case the parameter is not an LDAPEntry object
      */
     public function write($entry) {

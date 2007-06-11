@@ -140,7 +140,7 @@
      * Extract a string out of packed data
      *
      * @param   string data
-     * @param   &int offset
+     * @param   int offset
      * @return  string
      */
     public function readString($data, &$offset) {

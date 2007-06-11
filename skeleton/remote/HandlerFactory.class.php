@@ -39,7 +39,7 @@
     /**
      * Retrieve the HandlerFactory instance
      * 
-     * @return  &remote.HandlerFactory
+     * @return  remote.HandlerFactory
      */
     public static function getInstance() {
       return self::$instance;
@@ -49,8 +49,8 @@
      * Registers protocol handler for a specified type
      *
      * @param   string type
-     * @param   &lang.XPClass<remote.protocol.ProtocolHandler> handler class
-     * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
+     * @param   lang.XPClass<remote.protocol.ProtocolHandler> handler class
+     * @return  lang.XPClass<remote.protocol.ProtocolHandler>
      */
     public function register($type, $handler) {
       $this->handlers[$type]= $handler;
@@ -61,7 +61,7 @@
      * Retrieve a handler for a given scheme
      *
      * @param   string type
-     * @return  &lang.XPClass<remote.protocol.ProtocolHandler>
+     * @return  lang.XPClass<remote.protocol.ProtocolHandler>
      * @throws  remote.protocol.UnknownProtocolException
      */
     public static function handlerFor($type) {

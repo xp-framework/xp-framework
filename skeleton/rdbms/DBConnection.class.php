@@ -33,7 +33,7 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($dsn) { 
       $this->dsn= $dsn;
@@ -188,15 +188,15 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.ResultSet
+     * @return  rdbms.ResultSet
      */
     public function query() { }
     
     /**
      * Begin a transaction
      *
-     * @param   &rdbms.DBTransaction transaction
-     * @return  &rdbms.DBTransaction
+     * @param   rdbms.DBTransaction transaction
+     * @return  rdbms.DBTransaction
      */
     public function begin($transaction) { }
     

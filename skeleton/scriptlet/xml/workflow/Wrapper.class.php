@@ -32,9 +32,9 @@
      * Set up this handler. Called when the handler has not yet been
      * registered to the session.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.workflow.Handler handler
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.workflow.Handler handler
+     * @param   scriptlet.xml.workflow.Context context
      */
     public function setup($request, $handler, $context) {
       foreach ($this->paraminfo as $name => $definitions) {
@@ -61,7 +61,7 @@
      * Retrieve a checker instance
      *
      * @param   array defines
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     public function checkerInstanceFor($defines) {
       static $class= array();
@@ -187,8 +187,8 @@
     /**
      * Load request values from request data
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request 
-     * @param   &scriptlet.xml.workflow.Handler handler
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.workflow.Handler handler
      */
     public function load($request, $handler) { 
       foreach ($this->paraminfo as $name => $definitions) {

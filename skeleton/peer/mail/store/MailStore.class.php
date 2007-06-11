@@ -79,21 +79,21 @@
      * Get a folder
      *
      * @param   string name
-     * @return  &peer.mail.MailFolder
+     * @return  peer.mail.MailFolder
      */
     public function getFolder($name) { }
     
     /**
      * Get all folders
      *
-     * @return  &peer.mail.MailFolder[]
+     * @return  peer.mail.MailFolder[]
      */
     public function getFolders() { }
 
     /**
      * Open a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   bool readonly default FALSE
      * @return  bool success
      */
@@ -102,7 +102,7 @@
     /**
      * Close a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @return  bool success
      */
     public function closeFolder($f) { }
@@ -110,16 +110,16 @@
     /**
      * Get messages in a folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   mixed* msgnums
-     * @return  &peer.mail.Message[]
+     * @return  peer.mail.Message[]
      */
     public function getMessages($f) { }
 
     /**
      * Get number of messages in this folder
      *
-     * @param   &peer.mail.MailFolder f
+     * @param   peer.mail.MailFolder f
      * @param   string attr one of "message", "recent" or "unseen"
      * @return  int
      */

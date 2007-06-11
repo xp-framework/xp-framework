@@ -19,8 +19,8 @@
     /**
      * Constructor
      *
-     * @param   &unittest.TestCase test
-     * @param   &mixed reason
+     * @param   unittest.TestCase test
+     * @param   mixed reason
      * @param   float elapsed
      */
     public function __construct($test, $reason, $elapsed) {

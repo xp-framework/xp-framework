@@ -36,7 +36,7 @@
     /**
      * Convert an image.
      *
-     * @param   &img.Image image
+     * @param   img.Image image
      * @return  bool
      * @throws  img.ImagingException
      */
