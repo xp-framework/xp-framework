@@ -1,6 +1,6 @@
 Index: skeleton/rdbms/DBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/DBAdapter.class.php	(Revision 10517)
+--- skeleton/rdbms/DBAdapter.class.php	(Revision 10592)
 +++ skeleton/rdbms/DBAdapter.class.php	(Arbeitskopie)
 @@ -29,17 +29,18 @@
       * Get a table in the current database
@@ -667,7 +667,7 @@ Index: skeleton/rdbms/DBConstraint.class.php
 +?>
 Index: skeleton/rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(Revision 10517)
+--- skeleton/rdbms/Peer.class.php	(Revision 10592)
 +++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(
@@ -906,7 +906,7 @@ Index: skeleton/rdbms/Peer.class.php
        }
 Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10517)
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(Revision 10592)
 +++ skeleton/rdbms/sybase/SybaseConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -1083,7 +1083,7 @@ Index: skeleton/rdbms/sybase/SybaseDialect.class.php
 +?>
 Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10517)
+--- skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Revision 10592)
 +++ skeleton/rdbms/sybase/SybaseDBAdapter.class.php	(Arbeitskopie)
 @@ -91,9 +91,10 @@
       * Get indexes for a given table. Expects a temporary table to exist.
@@ -1322,13 +1322,13 @@ Index: skeleton/rdbms/sybase/SybaseDBAdapter.class.php
  ?>
 Index: skeleton/rdbms/Column.class.php
 ===================================================================
---- skeleton/rdbms/Column.class.php	(Revision 10517)
+--- skeleton/rdbms/Column.class.php	(Revision 10592)
 +++ skeleton/rdbms/Column.class.php	(Arbeitskopie)
 @@ -3,7 +3,11 @@
   *
   * $Id$ 
   */
--  uses('rdbms.SQLFragment', 'rdbms.criterion.Restrictions');
+-  uses('rdbms.SQLFragment', 'rdbms.DBConnection', 'rdbms.criterion.Restrictions');
 +  uses(
 +    'rdbms.SQLFragment',
 +    'rdbms.criterion.Restrictions',
@@ -1386,7 +1386,7 @@ Index: skeleton/rdbms/Column.class.php
  
 Index: skeleton/rdbms/Criteria.class.php
 ===================================================================
---- skeleton/rdbms/Criteria.class.php	(Revision 10517)
+--- skeleton/rdbms/Criteria.class.php	(Revision 10592)
 +++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
 @@ -6,8 +6,11 @@
  
@@ -1414,7 +1414,7 @@ Index: skeleton/rdbms/Criteria.class.php
      /**
       * Constructor
       *
-@@ -137,6 +142,45 @@
+@@ -140,6 +145,45 @@
      }
      
      /**
@@ -1460,7 +1460,7 @@ Index: skeleton/rdbms/Criteria.class.php
       * Creates a string representation
       *
       * @return  string
-@@ -152,32 +196,32 @@
+@@ -155,32 +199,32 @@
      /**
       * Export SQL
       *
@@ -1502,7 +1502,7 @@ Index: skeleton/rdbms/Criteria.class.php
          $sql= substr($sql, 0, -2);
        }
  
-@@ -185,21 +229,74 @@
+@@ -188,21 +232,74 @@
      }
      
      /**
@@ -1578,11 +1578,11 @@ Index: skeleton/rdbms/Criteria.class.php
 +    }
 +    
      /**
-      * get a string for a column
-      * can be either a columnname or a Column object
+      * Get a string for a column
+      *
 Index: skeleton/rdbms/DBConnection.class.php
 ===================================================================
---- skeleton/rdbms/DBConnection.class.php	(Revision 10517)
+--- skeleton/rdbms/DBConnection.class.php	(Revision 10592)
 +++ skeleton/rdbms/DBConnection.class.php	(Arbeitskopie)
 @@ -23,7 +23,7 @@
     *
@@ -2628,7 +2628,7 @@ Index: skeleton/rdbms/Record.class.php
 +?>
 Index: skeleton/rdbms/SQLExpression.class.php
 ===================================================================
---- skeleton/rdbms/SQLExpression.class.php	(Revision 10517)
+--- skeleton/rdbms/SQLExpression.class.php	(Revision 10592)
 +++ skeleton/rdbms/SQLExpression.class.php	(Arbeitskopie)
 @@ -10,6 +10,28 @@
     * @purpose  Interface
@@ -2660,6 +2660,91 @@ Index: skeleton/rdbms/SQLExpression.class.php
 +    public function executeSelect(DBConnection $conn, Peer $peer);
    }
  ?>
+Index: skeleton/rdbms/DataSet.class.php
+===================================================================
+--- skeleton/rdbms/DataSet.class.php	(Revision 10592)
++++ skeleton/rdbms/DataSet.class.php	(Arbeitskopie)
+@@ -8,7 +8,8 @@
+     'rdbms.ConnectionManager',
+     'rdbms.Peer',
+     'rdbms.Criteria',
+-    'rdbms.FieldType'
++    'rdbms.FieldType',
++    'rdbms.join.JoinExtractable'
+   );
+ 
+   /**
+@@ -81,11 +82,15 @@
+    * @see      xp://rdbms.ConnectionManager
+    * @purpose  Base class
+    */
+-  abstract class DataSet extends Object {
++  abstract class DataSet extends Object implements JoinExtractable {
+     public
+       $_new         = TRUE,
+       $_changed     = array();
+     
++    protected
++      $cache= array(),
++      $cached= array();
++
+     /**
+      * Constructor. Supports the array syntax, where an associative
+      * array is passed to the constructor, the keys being the member
+@@ -111,6 +116,53 @@
+     public static function getPeer() { }
+ 
+     /**
++     * implements JoinExtractable
++     * add object to cache
++     *
++     * @param   string role name of relation
++     * @param   string key unique ojbect key
++     * @param   lang.object obj 
++     */
++    public function setCachedObj($role, $key, $obj) {
++      $this->cache[$role][$key]= $obj;
++    }
++
++    /**
++     * implements JoinExtractable
++     * get cached object
++     *
++     * @param   string role name of relation
++     * @param   string key unique ojbect key
++     * @return  lang.object obj 
++     */
++    public function getCachedObj($role, $key) {
++      return $this->cache[$role][$key];
++    }
++
++    /**
++     * implements JoinExtractable
++     * test if obect with key ist cached
++     *
++     * @param   string role name of relation
++     * @param   string key unique ojbect key
++     * @return  bool
++     */
++    public function hasCachedObj($role, $key) {
++      return isset($this->cache[$role][$key]);
++    }
++
++    /**
++     * implements JoinExtractable
++     * mark role as cached
++     *
++     * @param   string role name of relation
++     * @return  bool
++     */
++    public function markAsCached($role) {
++      $this->cached[$role]= TRUE;
++    }
++    
++    /**
+      * Changes a value by a specified key and returns the previous value.
+      *
+      * @param   string key
 Index: skeleton/rdbms/SQLDialect.class.php
 ===================================================================
 --- skeleton/rdbms/SQLDialect.class.php	(Revision 0)
@@ -2885,7 +2970,7 @@ Index: skeleton/rdbms/SQLDialect.class.php
 +?>
 Index: skeleton/rdbms/StatementFormatter.class.php
 ===================================================================
---- skeleton/rdbms/StatementFormatter.class.php	(Revision 10517)
+--- skeleton/rdbms/StatementFormatter.class.php	(Revision 10592)
 +++ skeleton/rdbms/StatementFormatter.class.php	(Arbeitskopie)
 @@ -10,11 +10,7 @@
     * Example usage:
@@ -3007,7 +3092,7 @@ Index: skeleton/rdbms/StatementFormatter.class.php
       * @param   mixed arg
 Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Revision 10517)
+--- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Revision 10592)
 +++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(Arbeitskopie)
 @@ -7,7 +7,9 @@
    uses(
@@ -3095,7 +3180,7 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
  ?>
 Index: skeleton/rdbms/DBTable.class.php
 ===================================================================
---- skeleton/rdbms/DBTable.class.php	(Revision 10517)
+--- skeleton/rdbms/DBTable.class.php	(Revision 10592)
 +++ skeleton/rdbms/DBTable.class.php	(Arbeitskopie)
 @@ -4,7 +4,11 @@
   * $Id$
@@ -3177,7 +3262,7 @@ Index: skeleton/rdbms/DBTable.class.php
  ?>
 Index: skeleton/rdbms/Statement.class.php
 ===================================================================
---- skeleton/rdbms/Statement.class.php	(Revision 10517)
+--- skeleton/rdbms/Statement.class.php	(Revision 10592)
 +++ skeleton/rdbms/Statement.class.php	(Arbeitskopie)
 @@ -49,13 +49,31 @@
      }
@@ -3371,7 +3456,7 @@ Index: skeleton/rdbms/criterion/ProjectionList.class.php
 +?>
 Index: skeleton/rdbms/criterion/BetweenExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10517)
+--- skeleton/rdbms/criterion/BetweenExpression.class.php	(Revision 10592)
 +++ skeleton/rdbms/criterion/BetweenExpression.class.php	(Arbeitskopie)
 @@ -34,21 +34,13 @@
       * Returns the fragment SQL
@@ -3401,7 +3486,7 @@ Index: skeleton/rdbms/criterion/BetweenExpression.class.php
  ?>
 Index: skeleton/rdbms/criterion/SimpleExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10517)
+--- skeleton/rdbms/criterion/SimpleExpression.class.php	(Revision 10592)
 +++ skeleton/rdbms/criterion/SimpleExpression.class.php	(Arbeitskopie)
 @@ -56,14 +56,13 @@
          NOT_EQUAL => IS_NOT
@@ -3447,7 +3532,7 @@ Index: skeleton/rdbms/criterion/SimpleExpression.class.php
    } 
 Index: skeleton/rdbms/criterion/LogicalExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10517)
+--- skeleton/rdbms/criterion/LogicalExpression.class.php	(Revision 10592)
 +++ skeleton/rdbms/criterion/LogicalExpression.class.php	(Arbeitskopie)
 @@ -34,14 +34,14 @@
       * Returns the fragment SQL
@@ -3493,7 +3578,7 @@ Index: skeleton/rdbms/criterion/Projection.class.php
 +?>
 Index: skeleton/rdbms/criterion/Criterion.class.php
 ===================================================================
---- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10517)
+--- skeleton/rdbms/criterion/Criterion.class.php	(Revision 10592)
 +++ skeleton/rdbms/criterion/Criterion.class.php	(Arbeitskopie)
 @@ -4,8 +4,6 @@
   * $Id$ 
@@ -3630,7 +3715,7 @@ Index: skeleton/rdbms/criterion/Projections.class.php
 +?>
 Index: skeleton/rdbms/criterion/NegationExpression.class.php
 ===================================================================
---- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10517)
+--- skeleton/rdbms/criterion/NegationExpression.class.php	(Revision 10592)
 +++ skeleton/rdbms/criterion/NegationExpression.class.php	(Arbeitskopie)
 @@ -28,12 +28,12 @@
       * Returns the fragment SQL
@@ -3650,7 +3735,7 @@ Index: skeleton/rdbms/criterion/NegationExpression.class.php
  ?>
 Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
 ===================================================================
---- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Revision 10517)
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Revision 10592)
 +++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(Arbeitskopie)
 @@ -6,6 +6,7 @@
  
@@ -3735,7 +3820,7 @@ Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
  ?>
 Index: skeleton/rdbms/mysql/MySQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10517)
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(Revision 10592)
 +++ skeleton/rdbms/mysql/MySQLConnection.class.php	(Arbeitskopie)
 @@ -8,7 +8,8 @@
      'rdbms.DBConnection',
@@ -3927,7 +4012,7 @@ Index: skeleton/rdbms/mysql/MysqlDialect.class.php
 +?>
 Index: skeleton/rdbms/mysql/MySQLDBAdapter.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10517)
+--- skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Revision 10592)
 +++ skeleton/rdbms/mysql/MySQLDBAdapter.class.php	(Arbeitskopie)
 @@ -49,8 +49,8 @@
        $dbs= array();
@@ -4285,7 +4370,7 @@ Index: skeleton/rdbms/util/DBXMLNamingContext.class.php
 +  
 +    protected static $strategy= NULL;
 +    
-+    function __static() {
++    static function __static() {
 +      self::setStrategy(new DBXMLNamingStrategyDefault());
 +    }
 +    
@@ -4371,7 +4456,7 @@ Index: skeleton/rdbms/util/DBXMLNamingStrategyDefault.class.php
 +?>
 Index: skeleton/rdbms/util/DBXmlGenerator.class.php
 ===================================================================
---- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10517)
+--- skeleton/rdbms/util/DBXmlGenerator.class.php	(Revision 10592)
 +++ skeleton/rdbms/util/DBXmlGenerator.class.php	(Arbeitskopie)
 @@ -7,7 +7,8 @@
    uses(
