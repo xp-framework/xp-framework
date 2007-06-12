@@ -62,8 +62,8 @@
      * @param   peer.Socket
      */
     public function handleDisconnect($socket) {
-       $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
-     }
+      $this->notify(new ConnectionEvent(EVENT_DISCONNECTED, $socket));
+    }
   
     /**
      * Handle client data
