@@ -20,6 +20,8 @@
       'Accept-Language'  => @$_ENV['HTTP_ACCEPT_LANGUAGE'],
       'Connection'       => @$_ENV['HTTP_KEEP_ALIVE'],
       'Cookie'           => substr($cookie, 1),
+      'Content-Length'   => @$_ENV['CONTENT_LENGTH'],
+      'Content-Type'     => @$_ENV['CONTENT_TYPE'],
       'Host'             => @$_ENV['HTTP_HOST'],
       'Referer'          => @$_ENV['HTTP_REFERER'],
       'User-Agent'       => @$_ENV['HTTP_USER_AGENT'],
