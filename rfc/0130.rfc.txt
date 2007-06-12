@@ -1,4 +1,4 @@
-RFC 0130: 
+RFC 0130: util.HashmapIterator returns values instead of keys
 ========================================================================
 $Id$
 
