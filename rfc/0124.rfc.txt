@@ -4,7 +4,7 @@ $Id$
 
 @authors: wagner
 @created: Thu Apr 26 12:36:22 CET 2007
-@status: implemented mon jun 11 10:25:35     2007
+@status: implemented, mon jun 11 10:25:35 CET 2007
 @category: rdbms
 
 Scope of Change
