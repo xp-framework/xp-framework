@@ -1,0 +1,30 @@
+Index: util/Hashmap.class.php
+===================================================================
+--- util/Hashmap.class.php	(Revision 10599)
++++ util/Hashmap.class.php	(Arbeitskopie)
+@@ -49,7 +49,7 @@
+     }
+ 
+     /**
+-     * Returns an iterator over the keys of this hashmap
++     * Returns an iterator over the values of this hashmap
+      *
+      * @return  util.HashmapIterator
+      * @see     xp://util.HashmapIterator
+@@ -59,6 +59,16 @@
+     }
+         
+     /**
++     * Returns an iterator over the keys of this hashmap
++     *
++     * @return  util.HashmapIterator
++     * @see     xp://util.HashmapIterator
++     */
++    public function keyIterator() {
++      return new HashmapIterator(array_keys($this->_hash));
++    }
++        
++    /**
+      * Sort this hashmap
+      *
+      * The flags parameter may be used to influence the sorting

@@ -1,0 +1,54 @@
+RFC 0130: 
+========================================================================
+$Id$
+
+@authors: wagner
+@created: thu Jun 12 12:34:54 CET 2007
+@status: discussion mo Jun 18 12:00:00 CET 2007
+@category: util
+
+Scope of Change
+---------------
+- util.HashmapIterator::next return values not keys
+- util.Hashmap is extended by a method util.Hashmap::keyIterator, which returns a util.HashmapIterator to loop over keys
+
+
+Rationale
+---------
+<pre>
+  BC break
+</pre>
+- this change will provide the ability to substitude Instances of different classes that implement the interface util.XPIterator
+
+
+Functionality
+-------------
+to migrate just replace the factory util.Hashmap::iterator by util.Hashmap::keyIterator
+
+
+Security considerations
+-----------------------
+na
+
+
+Speed impact
+------------
+na
+
+
+Dependencies
+------------
+na
+
+
+Related documents
+-----------------
+- Patch against skeleton:
+  http://xp-framework.net/rfc/contrib/rfc0130.diff
+
+
+
+Comments
+--------
+
+<EOF>
