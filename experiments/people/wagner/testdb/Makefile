@@ -1,6 +1,6 @@
 XSLTPROC = xsltproc
-XSLSS = data/xp5.php.xsl
-GEN = de.schlund.db.cmd.DataSetCreator
+XSLSS = ''
+GEN = net.xp_framework.db.generator.DataSetCreator
 DIR = definitions
 PHP = xpcli
 DIRS = $(shell ls -1 $(DIR))
