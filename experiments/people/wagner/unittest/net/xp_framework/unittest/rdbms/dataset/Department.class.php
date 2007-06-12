@@ -18,12 +18,11 @@
       $name               = '',
       $chief_id           = 0;
   
-    private
+    protected
       $cache= array(
         'Chief' => array(),
         'PersonDepartment' => array(),
-      ),
-      $cached= array();
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -53,11 +52,6 @@
       }
     }  
 
-    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
-    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
-    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
-    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
-    
     /**
      * Retrieve associated peer
      *

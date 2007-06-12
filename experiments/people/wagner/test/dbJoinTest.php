@@ -28,9 +28,9 @@
   }
   
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/Ruben_Test_PS?autoconnect=1&log=default'));
 
-  $crit= Criteria::newInstance()->setFetchmode(Fetchmode::join('NcolorColortype.NtextureColor'));
+  $crit= Criteria::newInstance()->setFetchmode(Fetchmode::join('NcolorColortype->NtextureColor'));
   foreach (Ncolortype::getPeer()->doSelect($crit) as $ColorColortype) {
     Console::writeLine('==> '.xp::stringOf($ColorColortype));
     foreach ($ColorColortype->getNcolorColortypeList() as $Color) {
@@ -43,7 +43,7 @@
   $crit= Criteria::newInstance()
     ->setFetchMode(Fetchmode::join('Author'))
     ->setFetchMode(Fetchmode::join('Recipient'))
-    ->setFetchMode(Fetchmode::join('Recipient.MmessageAuthor'))
+    ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
   ;
   foreach (Mmessage::getPeer()->doSelect($crit) as $Message) {
     Console::writeLine('==> '.xp::stringOf($Message));
@@ -55,7 +55,7 @@
 
   $crit= Criteria::newInstance()
     ->setFetchMode(Fetchmode::join('Author'))
-    ->setFetchMode(Fetchmode::join('Recipient.MmessageAuthor'))
+    ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
   ;
   $it= Mmessage::getPeer()->iteratorFor($crit);
 

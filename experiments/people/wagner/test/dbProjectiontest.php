@@ -27,7 +27,7 @@
   }
   
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/Ruben_Test_PS?autoconnect=1&log=default'));
   $crit= array();
   
   $crits['count']= Criteria::newInstance()->setProjection(
