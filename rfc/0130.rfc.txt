@@ -16,16 +16,13 @@ Scope of Change
 
 Rationale
 ---------
-<pre>
-  BC break
-</pre>
-- this change will provide the ability to substitute instances of 
-  different classes that implement the interface util.XPIterator
+This change will provide the ability to substitute instances of 
+different classes that implement the interface util.XPIterator
 
 
 Functionality
 -------------
-to migrate just replace the factory util.Hashmap::iterator by 
+To migrate just replace the factory util.Hashmap::iterator by 
 util.Hashmap::keyIterator
 
 
@@ -41,7 +38,9 @@ n/a
 
 Dependencies
 ------------
-n/a
+<pre>
+  BC break
+</pre>
 
 
 Related documents
