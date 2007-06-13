@@ -45,10 +45,20 @@
       return 'utf-8';
     }
     
+    /**
+     * Callback method without xslmethod annotation
+     *
+     * @return  string
+     */
     public function nonXslMethod() {
       return '@@ILLEGAL@@';
     }
     
+    /**
+     * Callback method
+     *
+     * @return  string
+     */
     #[@xslmethod]
     public function XslMethod() {
       return '@@SUCCESS@@';
@@ -138,20 +148,79 @@
     }
     
     /**
-     * Test that errors in libxml error stack are caught at first
-     * possible point - in the constructor. Make process bail out as
-     * early as possible to make error trackdown more easy.
+     * Test that errors in libxml error stack do not affect XSL processor
+     * instances created before the error occurs
      *
      */
-    #[@test, @expect('xml.TransformerException')]
-    public function preventErrorLeaking() {
+    #[@test]
+    public function errorStackDoesNotAffectProcessorCreatedBefore() {
+      $i= $this->processorInstance();
     
       // Fill up error stack artificially
       $doc= new DOMDocument();
       $doc->loadXML('@@MALFORMED@@');
       
-      // Should give an exception
-      $this->processorInstance();
+      // Should work
+      $i->setXMLBuf('<document/>');
+      $i->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="xml" encoding="utf-8"/>
+          <xsl:template match="/">
+            <b>Hello</b>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $i->run();
+      $this->assertXmlEquals('<b>Hello</b>', $i->output());
+    }
+
+    /**
+     * Test that errors in libxml error stack do not affect XSL processor
+     * instances created after the error occurs
+     *
+     */
+    #[@test]
+    public function errorStackDoesNotAffectProcessorCreatedAfter() {
+    
+      // Fill up error stack artificially
+      $doc= new DOMDocument();
+      $doc->loadXML('@@MALFORMED@@');
+      
+      // Should work
+      $i= $this->processorInstance();
+      $i->setXMLBuf('<document/>');
+      $i->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="xml" encoding="utf-8"/>
+          <xsl:template match="/">
+            <b>Hello</b>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $i->run();
+      $this->assertXmlEquals('<b>Hello</b>', $i->output());
+    }
+
+    /**
+     * Test that cleared errors in libxml error stack do not affect 
+     * errors occurring within a transformation
+     *
+     */
+    #[@test]
+    public function errorStackDoesNotAffectErrorHandling() {
+    
+      // Fill up error stack artificially
+      $doc= new DOMDocument();
+      $doc->loadXML('@@MALFORMED@@');
+      
+      // Should work
+      $i= $this->processorInstance();
+      try {
+        $i->setXMLBuf('<document>&nbsp;</document>');
+        $this->fail('Malformed XML did not trigger exception');
+      } catch (TransformerException $e) {
+        $this->assertTrue((bool)strstr($e->getMessage(), "Entity 'nbsp' not defined"));
+      }
     }
   }
 ?>
