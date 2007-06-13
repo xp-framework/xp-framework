@@ -32,6 +32,7 @@
    *
    * @purpose  Transform XML/XSLT using PHPs XSLT functions
    * @ext      xslt
+   * @test     xp://net.xp_framework.unittest.xml.DomXslProcessorTest
    */
   class DomXSLProcessor extends Object implements IXSLProcessor {
     public 
@@ -45,14 +46,6 @@
       $_instances   = array(),
       $_base        = '';
       
-    /**
-     * Constructor
-     *
-     */
-    public function __construct() {
-      $this->_checkErrors();
-    }
-          
     /**
      * Set base directory
      *
@@ -90,10 +83,13 @@
     public function setXSLFile($file) {
       if (!file_exists($this->_base.$file))
         throw new FileNotFoundException($this->_base.$file.' not found');
-      
+
+      libxml_get_last_error() && libxml_clear_errors();
+
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
-      $this->_checkErrors();
+
+      $this->_checkErrors($file);
     }
     
     /**
@@ -102,10 +98,13 @@
      * @param   string xsl the XSL as a string
      */
     public function setXSLBuf($xsl) {
+      libxml_get_last_error() && libxml_clear_errors();
+
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->loadXML($xsl);
       strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
-      $this->_checkErrors();
+
+      $this->_checkErrors($xsl);
     }
 
     /**
@@ -118,9 +117,12 @@
         throw(new FileNotFoundException($this->_base.$file.' not found'));
       }
       
+      libxml_get_last_error() && libxml_clear_errors();
+
       $this->document= new DOMDocument();
       $this->document->load($file);
-      $this->_checkErrors();
+
+      $this->_checkErrors($file);
     }
     
     /**
@@ -129,9 +131,12 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml) {
+      libxml_get_last_error() && libxml_clear_errors();
+
       $this->document= new DOMDocument();
       $this->document->loadXML($xml);
-      $this->_checkErrors();
+
+      $this->_checkErrors($xml);
     }
 
     /**
@@ -190,7 +195,7 @@
      * @throws  xml.TransformerException
      */
     public function run() {
-      $this->_checkErrors();
+      libxml_get_last_error() && libxml_clear_errors();
       
       $this->processor= new XSLTProcessor();
       $this->processor->importStyleSheet($this->stylesheet);
@@ -203,19 +208,13 @@
           $cb->registerInstance($name, $instance);
         }
       }
-
       $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
       
       // Start transformation
-      $result= $this->processor->transformToXML($this->document);
-      $this->output= $result;
+      $this->output= $this->processor->transformToXML($this->document);
 
-      if (FALSE === $this->output) {
-        $this->_checkErrors();
-        
-        // Fallthrough
-        throw new TransformerException('Unknown transformation error occurred.');
-      }
+      // Check for errors
+      $this->_checkErrors('<transformation>');
 
       // Perform cleanup when necessary (free singleton for further use)
       sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
@@ -226,16 +225,17 @@
     /**
      * Check for XML/XSLT errors and throw exceptions accordingly
      *
+     * @param   string source
      * @throws  xml.TransformerException in case an XML error has occurred
      */
-    protected function _checkErrors() {
+    protected function _checkErrors($source= NULL) {
       if ($error= libxml_get_last_error()) {
         libxml_clear_errors();
         
         throw new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
           $error->code,
           trim($error->message),
-          (strlen($error->file) ? $error->file : '<buffer>' ),
+          strlen($error->file) ? $error->file : xp::stringOf($source),
           $error->line,
           $error->column
         ));
@@ -248,7 +248,7 @@
      * @return  string
      */
     public function output() {
-      return $this->output;
+      return (string)$this->output;
     }
   }
 ?>
