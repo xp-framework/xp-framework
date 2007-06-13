@@ -6,10 +6,16 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-- Implemented RFC #0096 - DataSet classes will be enhanced to know about foreign keys
-- Implemented RFC #0123 - aggregate or cut down the querie's resultset
+- Made TransformerException's message more verbose in DomXSLProcessor 
+  (friebe, gellweiler, clang)
+- Implemented RFC #0096 - DataSet classes will be enhanced to know about 
+  foreign keys (wagner)
+- Implemented RFC #0123 - aggregate or cut down the query's resultset
+  (wagner)
 - Implemented RFC #0124 - SQL standard functions
+  (wagner)
 - Implemented RFC #0129 - join over multiple tables
+  (wagner)
 
 Version 5.5.1, released 2007-06-01
 ----------------------------------
