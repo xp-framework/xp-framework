@@ -329,5 +329,37 @@
         $this->map->toArray()
       );
     }
+
+    /**
+     * Tests iteration
+     *
+     */
+    #[@test]
+    public function valueIteration() {
+      $this->map->put('one', 1);
+      $this->map->put('two', 2);
+      $this->map->put('three', 3);
+      for ($it= $this->map->iterator(), $i= 1; $it->hasNext(); ) {
+        $this->assertEquals($i, $it->next());
+        $i++;
+      }
+      $this->assertEquals(4, $i);
+    }    
+
+    /**
+     * Tests iteration
+     *
+     */
+    #[@test]
+    public function keyIteration() {
+      $this->map->put(1, 'one');
+      $this->map->put(2, 'two');
+      $this->map->put(3, 'three');
+      for ($it= $this->map->keyIterator(), $i= 1; $it->hasNext(); ) {
+        $this->assertEquals($i, $it->next());
+        $i++;
+      }
+      $this->assertEquals(4, $i);
+    }    
   }
 ?>
