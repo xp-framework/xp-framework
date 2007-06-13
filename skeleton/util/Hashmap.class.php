@@ -49,13 +49,23 @@
     }
 
     /**
-     * Returns an iterator over the keys of this hashmap
+     * Returns an iterator over the values of this hashmap
      *
      * @return  util.HashmapIterator
      * @see     xp://util.HashmapIterator
      */
     public function iterator() {
       return new HashmapIterator($this->_hash);
+    }
+        
+    /**
+     * Returns an iterator over the keys of this hashmap
+     *
+     * @return  util.HashmapIterator
+     * @see     xp://util.HashmapIterator
+     */
+    public function keyIterator() {
+      return new HashmapIterator(array_keys($this->_hash));
     }
         
     /**
