@@ -317,54 +317,6 @@
     }
     
     /**
-     * Retrieve a number of objects from the database
-     *
-     * @deprecated
-     * @param   rdbms.Peer peer
-     * @param   rdbms.Criteria join
-     * @param   rdbms.Criteria criteria
-     * @param   int max default 0
-     * @return  rdbms.Record[]
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function doJoin($peer, $join, $criteria, $max= 0) {
-      $db= $this->getConnection();
-
-      $columns= $map= $qualified= array();
-      foreach (array_keys($this->types) as $colunn) {
-        $columns[]= $this->identifier.'.'.$colunn;
-        $map[$colunn]= $map[$this->identifier.'.'.$colunn]= array('%c', $this->types[$colunn][1], $this->types[$colunn][2]);
-        $qualified[$this->identifier.'.'.$colunn]= $this->types[$colunn][0];
-      }
-      foreach (array_keys($peer->types) as $colunn) {
-        $columns[]= $peer->identifier.'.'.$colunn.' as "'.$peer->identifier.'#'.$colunn.'"';
-        $qualified[$peer->identifier.'.'.$colunn]= $peer->types[$colunn][0];
-      }
-
-      $where= $criteria->toSQL($db, array_merge($this->types, $peer->types, $qualified));
-      $q= $db->query(
-        'select %c from %c %c, %c %c%c%c',
-        $columns,
-        $this->table,
-        $this->identifier,
-        $peer->table,
-        $peer->identifier,
-        $join->toSQL($db, $map),
-        $where ? ' and '.substr($where, 7) : ''
-      );
-      
-      $r= array();
-      for ($i= 1; $record= $q->next(); $i++) {
-        if ($max && $i > $max) break;
-        
-        $o= $this->objectFor(array_slice($record, 0, sizeof($this->types)));
-        $o->{strtolower($peer->identifier)}= new $peer->identifier(array_slice($record, sizeof($this->types)));
-        $r[]= $o;
-      }
-      return $r;
-    }
-    
-    /**
      * Inserts this object into the database
      *
      * @param   array values
@@ -417,7 +369,7 @@
         '%c set %c%c',
         $this->table,
         substr($sql, 0, -2),
-        $criteria->toSQL($db, $this->types)
+        $criteria->toSQL($db, $this)
       );
     }
 
@@ -435,7 +387,7 @@
       return $db->delete(
         'from %c%c',
         $this->table,
-        $criteria->toSQL($db, $this->types)
+        $criteria->toSQL($db, $this)
       );
     }
   }
