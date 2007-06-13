@@ -521,7 +521,9 @@
      */
     #[@test]
     public function column() {
-      $this->assertClass(Job::column('job_id'), 'rdbms.Column');
+      $c= Job::column('job_id');
+      $this->assertClass($c, 'rdbms.Column');
+      $this->assertEquals('job_id', $c->getName());
     }
 
     /**
@@ -578,5 +580,42 @@
       Job::column('NonExistant->person_id');
     }
 
+
+    /**
+     * Tests doUpdate()
+     *
+     */
+    #[@test]
+    public function doUpdate() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(
+          'job_id'      => 654,
+          'title'       => 'Java Unit tester',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $job= Job::getByJob_id(654);
+      $job->setTitle('PHP Unit tester');
+      $job->doUpdate(new Criteria(array('job_id', $job->getJob_id(), EQUAL)));
+    }
+
+    /**
+     * Tests doDelete()
+     *
+     */
+    #[@test]
+    public function doDelete() {
+      $this->setResults(new MockResultSet(array(
+        0 => array(
+          'job_id'      => 654,
+          'title'       => 'Java Unit tester',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $job= Job::getByJob_id(654);
+      $job->doDelete(new Criteria(array('job_id', $job->getJob_id(), EQUAL)));
+    }
   }
 ?>
