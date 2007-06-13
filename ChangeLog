@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0130 - util.HashmapIterator returns values instead of keys
+  (friebe)
 - Made TransformerException's message more verbose in DomXSLProcessor 
   (friebe, gellweiler, clang)
 - Implemented RFC #0096 - DataSet classes will be enhanced to know about 
