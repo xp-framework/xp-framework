@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixed bug in io.sys.IPCQueue::removeQueue() which lead to the queue 
+  not being removed
+  (friebe)
 - Implemented RFC #0130 - util.HashmapIterator returns values instead of keys
   (friebe)
 - Made TransformerException's message more verbose in DomXSLProcessor 
