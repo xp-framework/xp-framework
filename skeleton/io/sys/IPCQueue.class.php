@@ -23,9 +23,6 @@
    *
    * Usage example [with threads]
    * <code>
-   *   require('lang.base.php');
-   *   xp::sapi('cli');
-   *
    *   uses(
    *     'io.sys.IPCQueue',
    *     'io.sys.Ftok', 
@@ -33,16 +30,17 @@
    *   );
    *
    *   class senderThread extends Thread {
-   *     var
+   *     protected 
+   *       $queue= NULL,
    *       $num  = 0;
    *
-   *     function __construct($num) {
+   *     public function __construct($num) {
    *       $this->num= $num;
-   *       $this->queue= &new IPCQueue(8925638);
+   *       $this->queue= new IPCQueue(8925638);
    *       parent::__construct('sender.'.$this->num);
    *     }
    *
-   *     function run() {
+   *     public function run() {
    *       while ($this->sent < $this->num) {
    *         Thread::sleep(1000);
    *         $this->queue->putMessage(new IPCMessage('hello world'));
@@ -56,14 +54,16 @@
    *     }
    *   }
    *
-   *   class receiverThread extends Thread {
+   *   class ReceiverThread extends Thread {
+   *     protected 
+   *       $queue= NULL;
    *
-   *     function __construct($name) {
-   *       $this->queue= &new IPCQueue(8925638);
+   *     public function __construct($name) {
+   *       $this->queue= new IPCQueue(8925638);
    *       parent::__construct('receiver');
    *     }
    *
-   *     function run() {
+   *     public function run() {
    *
    *       while (0 == $this->queue->getQuantity()) {
    *         Console::writeLinef('<%s> Sleeping...', $this->name);
@@ -74,7 +74,7 @@
    *
    *         Console::writeLinef(
    *           "<%s> receiving message:\n -> %s\n",
-   *           $this->name, $message->getMessage()
+   *           $this->name, $message->getMessage()->toString()
    *         );
    *         Thread::sleep(1000);
    *       }
@@ -88,9 +88,9 @@
    *     }
    *   }
    *
-   *   $t[0]= &new senderThread(2);
+   *   $t[0]= new senderThread(2);
    *   $t[0]->start();
-   *   $t[1]= &new receiverThread();
+   *   $t[1]= new receiverThread();
    *   $t[1]->start();
    *   var_dump($t[0]->join(), $t[1]->join());
    * </code>
@@ -124,7 +124,7 @@
      */
     public function putMessage($msg, $serialize= TRUE, $blocking= TRUE) {
       if (!msg_send($this->id, $msg->getType(), $msg->getMessage(), $serialize, $blocking, $err)) {
-        throw(new IOException('Message could not be send. Errorcode '.$err));
+        throw new IOException('Message could not be send. Errorcode '.$err);
       }
     }
     
@@ -136,7 +136,7 @@
      * @param   int maxsize default IPC_MSG_MAXSIZE
      * @param   bool serialize default TRUE
      * @throws  io.IOException
-     * @return  string message 
+     * @return  io.sys.IPCMessage or NULL if no message is available
      */    
     public function getMessage($desiredType= 0, $flags= 0, $maxSize= IPC_MSG_MAXSIZE, $serialize= TRUE) {
     
@@ -145,13 +145,13 @@
       
       // is a message in queue ?
       if (0 == $this->stat['msg_qnum'] && ($flags & MSG_IPC_NOWAIT)) {
-        return FALSE;
+        return NULL;
       }
       
       // t.b.d. handle message flags and message types
       // see http://de3.php.net/manual/en/function.msg-receive.php
       if (!msg_receive($this->id, $desiredType, $msgType, $maxSize, $msg, $serialize, $flags, $err)) {
-        throw(new IOException('Message could not be received. Errorcode '.$err));
+        throw new IOException('Message could not be received. Errorcode '.$err);
       }
       return new IPCMessage($msg, $msgType);
     }
@@ -168,9 +168,9 @@
       $this->stat= msg_stat_queue($this->id);
       
       if (0 !== $this->stat['msg_qnum']) {
-        throw(new IOException('Queue cannot be removed. There are unreceived messages.'));
+        throw new IOException('Queue cannot be removed. There are unreceived messages.');
       }
-      msg_remove_queue($this->key);
+      msg_remove_queue($this->id);
     }
     
     /**
@@ -281,6 +281,5 @@
     public function getKey() {
       return $this->key;
     }
-    
   }
 ?>
