@@ -25,7 +25,6 @@
       'Host'             => @$_ENV['HTTP_HOST'],
       'Referer'          => @$_ENV['HTTP_REFERER'],
       'User-Agent'       => @$_ENV['HTTP_USER_AGENT'],
-      'SOAPAction'       => @$_ENV['HTTP_SOAPACTION'],
     );
     
     // Provide them in standard naming (remove HTTP_ at the beginning)
