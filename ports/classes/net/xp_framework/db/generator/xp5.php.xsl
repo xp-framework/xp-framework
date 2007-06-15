@@ -314,7 +314,7 @@
           </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
-    <xsl:text>    }&#10;</xsl:text>
+    <xsl:text>&#10;    }&#10;</xsl:text>
   </xsl:for-each>
 
   <!-- Create getters and setters -->
