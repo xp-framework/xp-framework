@@ -40,6 +40,15 @@
      * @throws  img.ImagingException
      */
     public function applyOn($image) { 
+
+      // Use builtin function (exists as of 5.1.0)
+      if (function_exists('imageconvolution')) return imageconvolution(
+        $image->handle, 
+        $this->kernel->getMatrix(), 
+        $this->divisor, 
+        $this->offset
+      );
+
       $clone= clone $image;
 
       // Create local variables for faster access
