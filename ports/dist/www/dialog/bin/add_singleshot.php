@@ -15,7 +15,7 @@
     'de.thekid.dialog.SingleShot',
     'de.thekid.dialog.io.ShotProcessor',
     'de.thekid.dialog.io.IndexCreator',
-    'img.filter.SharpenFilter'
+    'img.filter.ConvolveFilter'
   );
 
   define('ENTRIES_PER_PAGE',  5);
@@ -70,7 +70,11 @@ __
 
   // Set up processor
   $processor= new ShotProcessor();
-  $processor->addFilter(new SharpenFilter());
+  $processor->addFilter(new ConvolveFilter(
+    new Kernel('[[-1, -1, -1], [-1, 16, -1], [-1, -1, -1]]'),
+    8,
+    0
+  ));
   $processor->setOutputFolder($destination);
   
   // Check if debugging output is wanted

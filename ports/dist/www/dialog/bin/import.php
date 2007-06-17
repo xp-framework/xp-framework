@@ -19,7 +19,7 @@
     'de.thekid.dialog.io.IndexCreator',
     'de.thekid.dialog.GroupByHourStrategy',
     'de.thekid.dialog.GroupByDayStrategy',
-    'img.filter.SharpenFilter'
+    'img.filter.ConvolveFilter'
   );
   
   define('DESCRIPTION_FILE',  'description.txt');
@@ -87,7 +87,11 @@ __
   
   // Set up processor
   $processor= new ImageProcessor();
-  $processor->addFilter(new SharpenFilter());
+  $processor->addFilter(new ConvolveFilter(
+    new Kernel('[[-1, -1, -1], [-1, 16, -1], [-1, -1, -1]]'),
+    8,
+    0
+  ));
   $processor->setOutputFolder($destination);
   
   // Check if debugging output is wanted
