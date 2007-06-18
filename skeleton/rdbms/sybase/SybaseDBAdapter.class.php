@@ -111,7 +111,6 @@
           systypes t 
         where 
           c.id= object_id(%s) 
-          and s.usertype= c.usertype
           and t.usertype < 100 
           and t.name not in ("sysname", "nchar", "nvarchar")
       ', $this->qualifiedTablename($table, $database));
