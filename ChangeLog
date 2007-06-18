@@ -6,13 +6,16 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-- Improved performance of img.filter.ConvolveFilter - use builtin
-  imageconvolution() function if available
 
 Version 5.5.2, released 2007-06-15
 ----------------------------------
-SVN version: 10621
+SVN version: 10632
 
+- Fixed DomXSLProcessor's error handling only to throw exceptions for
+  LIBXML_ERR_FATAL level
+  (friebe, gellweiler)
+- Improved performance of img.filter.ConvolveFilter - use builtin
+  imageconvolution() function if available
 - Fixed bug in io.sys.IPCQueue::removeQueue() which lead to the queue 
   not being removed
   (friebe)
