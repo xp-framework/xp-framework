@@ -110,7 +110,8 @@
           syscolumns c,
           systypes t 
         where 
-          c.id= object_id(%s) 
+          c.id= object_id(%s)
+          and t.type = c.type
           and t.usertype < 100 
           and t.name not in ("sysname", "nchar", "nvarchar")
       ', $this->qualifiedTablename($table, $database));
