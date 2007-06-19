@@ -265,12 +265,12 @@
      */
     #[@arg(name= 'xslsheet', short= 'S')]
     public function setStylesheet($xsl= NULL) {
-      if (self::GENERATE_SRC == $this->mode && empty($xsl)) {
-        // Defaulting to xp5.php.xsl
-        $this->xsl= $this->getClass()->getPackage()->getResource('xp5.php.xsl');
-      } else {
-        $this->xsl= FileUtil::getContents(new File($xsl));
-      }
+      if (self::GENERATE_SRC != $this->mode) return;
+      
+      // Set XSL file (default to xp5.php.xsl if not specified)
+      $this->xsl= empty($xsl)
+        ? $this->getClass()->getPackage()->getResource('xp5.php.xsl')
+        : FileUtil::getContents(new File($xsl));
     }
 
     /**
