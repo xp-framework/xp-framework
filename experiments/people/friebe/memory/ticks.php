@@ -15,7 +15,7 @@
       $limit-= ($limit / 10);   // Reserve 10%
     }
     
-    $usage= memory_get_usage();
+    $usage= memory_get_usage(TRUE);
     // Console::writeLinef('%.3f, %.3f', $limit / 1024, $usage / 1024);
     if ($usage >= $limit) {
       throw new OutOfMemoryError(sprintf(
