@@ -12,11 +12,11 @@
         case 'k': case 'K': $limit*= 1024; break;
         case 'M': case 'M': $limit*= 1048576; break;
       }
-      $limit-= 102400;    // Reserve 100k
+      $limit-= ($limit / 10);   // Reserve 10%
     }
     
     $usage= memory_get_usage();
-    Console::writeLinef('%.3f, %.3f', $limit / 1024, $usage / 1024);
+    // Console::writeLinef('%.3f, %.3f', $limit / 1024, $usage / 1024);
     if ($usage >= $limit) {
       throw new OutOfMemoryError(sprintf(
         'Memory limit exceeded: %.3f k/%.3f k',
