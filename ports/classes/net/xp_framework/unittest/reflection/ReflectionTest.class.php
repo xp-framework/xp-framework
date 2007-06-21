@@ -115,9 +115,9 @@
      */
     #[@test]
     public function constructorInvocation() {
-      $instance= $this->class->getConstructor()->newInstance('1977-14-12');
+      $instance= $this->class->getConstructor()->newInstance('1977-12-14');
       $this->assertEquals($this->class, $instance->getClass());
-      $this->assertEquals(new Date('1977-14-12'), $instance->getDate());
+      $this->assertEquals(new Date('1977-12-14'), $instance->getDate());
     }
 
     /**
