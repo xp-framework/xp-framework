@@ -97,9 +97,9 @@
     <xsl:param name="table"/>
     <xsl:param name="dbtype"/>
     <xsl:choose>
-      <xsl:when test="$dbtype = 'pgsql'"><func:result select="$table"/></xsl:when>
       <xsl:when test="$dbtype = 'mysql'"><func:result select="concat($database, '.', $table)"/></xsl:when>
       <xsl:when test="$dbtype = 'sybase'"><func:result select="concat($database, '..', $table)"/></xsl:when>
+      <xsl:otherwise><func:result select="$table"/></xsl:otherwise>
     </xsl:choose>
   </func:function>
   

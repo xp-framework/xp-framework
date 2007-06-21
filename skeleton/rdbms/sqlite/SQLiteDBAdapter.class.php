@@ -61,10 +61,10 @@
     /**
      * Retrive list of all tables
      *
-     * @param   string database
-     * @return  string[]
+     * @param   string database default NULL if omitted, uses current database
+     * @return  rdbms.DBTable[] array of DBTable objects
      */
-    public function getTables($database) {
+    public function getTables($database= NULL) {
       $t= array();
       $q= $this->conn->query('select tbl_name from sqlite_master where type= "table"');
       while ($table= $q->next('tbl_name')) {
@@ -82,10 +82,10 @@
      */
     protected function typeOf($desc) {
       if (2 == sscanf($desc, '%[^(](%d)', $type, $length)) {
-        return $type;
+        return strtolower($type);
       }
       
-      return $desc;
+      return strtolower($desc);
     }
     
     /**
@@ -106,9 +106,10 @@
      * Get table information by name
      *
      * @param   string table
+     * @param   string database default NULL if omitted, uses current database
      * @return  rdbms.DBTable
      */
-    public function getTable($table) {
+    public function getTable($table, $database= NULL) {
       $t= new DBTable($table);
 
       $primaryKey= array();

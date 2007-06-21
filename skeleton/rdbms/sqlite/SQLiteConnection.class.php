@@ -55,23 +55,6 @@
        $formatter= NULL;
 
     /**
-     * Callback function to cast data
-     *
-     * @param   mixed s
-     * @param   mixed type
-     * @return  mixed
-     */
-    protected function _cast($s, $type) {
-      static $identifiers= array(
-        'date'  => "\2",
-        'int'   => "\3",
-        'float' => "\4",
-      );
-      
-      return is_null($s) ? NULL : $identifiers[strtolower($type)].$s;
-    }
-
-    /**
      * Connect
      *
      * @param   bool reconnect default FALSE
@@ -100,9 +83,9 @@
         throw(new SQLConnectException($err, $this->dsn));
       }
       
+      $this->getFormatter()->dialect->registerCallbackFunctions($this->handle);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
-      sqlite_create_function($this->handle, 'cast', array($this, '_cast'), 2);
       return TRUE;
     }
     
@@ -229,7 +212,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @return  rdbms.sqlite.SQLiteResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
