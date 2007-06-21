@@ -121,18 +121,18 @@
       if (is_null($this->criteria)) $this->criteria= new Criteria();
       switch ($this->mode) {
         case self::INSERT:
-        $this->criteria->isJoin throw new IllegalStateException("can't insert into joins");
+        if ($this->criteria->isJoin) throw new IllegalStateException("can't insert into joins");
         return $this->peer->doInsert($values);
 
         case self::UPDATE:
-        $this->criteria->isJoin throw new IllegalStateException("can't update into joins");
+        if ($this->criteria->isJoin) throw new IllegalStateException("can't update into joins");
         return $this->peer->doUpdate($values, $this->criteria);
 
         case self::SELECT:
         return $this->peer->doSelect($this->criteria, $values);
 
         case self::DELETE:
-        $this->criteria->isJoin throw new IllegalStateException("can't delete from joins");
+        if($this->criteria->isJoin) throw new IllegalStateException("can't delete from joins");
         return $this->peer->doDelete($this->criteria);
       }
     }
