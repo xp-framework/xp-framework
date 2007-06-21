@@ -23,8 +23,10 @@
      * @param   mixed string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
-    public static function substring($col1, $col1, $col2) {
-      return new SQLFunction('substring', $col1, $col2);
+    public static function substring() {
+      $f= new SQLFunction('substring');
+      $f->args=func_get_args();
+      return $f;
     }
 
     /**
