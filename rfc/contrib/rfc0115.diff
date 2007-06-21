@@ -1,7 +1,22 @@
-Index: ../skeleton/util/Date.class.php
+Index: skeleton/scriptlet/xml/workflow/casters/ToDate.class.php
 ===================================================================
---- ../skeleton/util/Date.class.php	(revision 9775)
-+++ ../skeleton/util/Date.class.php	(working copy)
+--- skeleton/scriptlet/xml/workflow/casters/ToDate.class.php	(revision 10641)
++++ skeleton/scriptlet/xml/workflow/casters/ToDate.class.php	(working copy)
+@@ -24,9 +24,7 @@
+       $return= array();
+       foreach ($value as $k => $v) {
+         try {
+-          $date= DateParser::parse($v);
+-        } catch (FormatException $e) {
+-          return $e->getMessage();
++          $date= new Date($v);
+         } catch (IllegalArgumentException $e) {
+           return $e->getMessage();
+         }
+Index: skeleton/util/Date.class.php
+===================================================================
+--- skeleton/util/Date.class.php	(revision 10641)
++++ skeleton/util/Date.class.php	(working copy)
 @@ -25,9 +25,12 @@
     * @purpose  Represent a date
     */
@@ -16,7 +31,7 @@ Index: ../skeleton/util/Date.class.php
      public
        $seconds  = 0,
        $minutes  = 0,
-@@ -40,13 +43,20 @@
+@@ -40,41 +43,43 @@
        $weekday  = '',
        $month    = '';
  
@@ -35,30 +50,6 @@ Index: ../skeleton/util/Date.class.php
       */
 -    public function __construct($in= NULL) {
 +    public function __construct($in= NULL, $gmtOffset= NULL) {
-       if (is_string($in)) {
-         $this->_utime(self::_strtotime($in));
-       } else if (is_int($in) || is_float($in)) {
-@@ -55,23 +65,21 @@
-         $this->_utime(time());
-       } else {
-         $this->_utime(time());
--        throw(new IllegalArgumentException(
-+        throw new IllegalArgumentException(
-           'Given argument is neither a timestamp nor a well-formed timestring'
--        ));
-+        );
-       }
--    }
--    
--    /**
--     * Get local time zones' offset from GMT (Greenwich main time). 
--     * Caches the result.
--     *
--     * @return  int offset in seconds
--     */
--    protected function _getGMTOffset() {
--      static $o;
-+
 +      if (is_string($gmtOffset)) {
 +        sscanf($gmtOffset, '%3d%2d', $h, $m);
 +        $this->_gmtofs= $h * 3600 + $m * 60;
@@ -67,49 +58,156 @@ Index: ../skeleton/util/Date.class.php
 +      } else {
 +        $this->_gmtofs= (int)date('Z');
 +      }
-       
--      if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
--      return $o;
-+      if ($this->_gmtofs === '7200') throw new Error('FICKL');
++
+       if (is_string($in)) {
+-        $this->_utime(self::_strtotime($in));
++        $this->parse($in, $gmtOffset);
+       } else if (is_int($in) || is_float($in)) {
+         $this->_utime($in);
+       } else if (is_null($in)) {
+         $this->_utime(time());
+       } else {
+-        $this->_utime(time());
+-        throw(new IllegalArgumentException(
++        throw new IllegalArgumentException(
+           'Given argument is neither a timestamp nor a well-formed timestring'
+-        ));
++        );
+       }
      }
      
      /**
-@@ -106,9 +114,6 @@
-         'Dec' => 12
-       );
+-     * Get local time zones' offset from GMT (Greenwich main time). 
+-     * Caches the result.
+-     *
+-     * @return  int offset in seconds
+-     */
+-    protected function _getGMTOffset() {
+-      static $o;
+-      
+-      if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
+-      return $o;
+-    }
+-    
+-    /**
+      * Returns whether a year is a leap year
+      *
+      * @param   int year
+@@ -85,51 +90,54 @@
+     }
+     
+     /**
+-     * Overflow-safe replacement for PHP's strtotime() function.
++     * Wrapper around PHP's date_parse() function
+      *
+      * @param   string in
+-     * @return  int
++     * @see     php://date_parse
++     * @param   mixed usetz
++     * @throws  lang.IllegalArgumentException in case the date is unparseable
+      */
+-    protected static function _strtotime($in) {
+-      static $month_names= array(
+-        'Jan' => 1,
+-        'Feb' => 2,
+-        'Mar' => 3,
+-        'Apr' => 4,
+-        'May' => 5,
+-        'Jun' => 6,
+-        'Jul' => 7,
+-        'Aug' => 8,
+-        'Sep' => 9,
+-        'Oct' => 10,
+-        'Nov' => 11,
+-        'Dec' => 12
+-      );
++    protected function parse($in, $supplied) {
        
 -      // Try to use builtin function strtotime()
 -      if (-1 != ($stamp= strtotime($in)) && FALSE !== $stamp) return $stamp;
 -      
-       // European date format (dd.mm.yyyy hh:mm:ss). At least two values
-       // need to be found
-       if (2 < sscanf($in, '%d.%d.%d %d:%d:%d', $d, $m, $y, $h, $i, $s)) {
-@@ -127,9 +132,7 @@
-         return self::mktime($h, $i, 0, $month_names[$n], $d, $y);
+-      // European date format (dd.mm.yyyy hh:mm:ss). At least two values
+-      // need to be found
+-      if (2 < sscanf($in, '%d.%d.%d %d:%d:%d', $d, $m, $y, $h, $i, $s)) {
+-        return self::mktime($h, $i, $s, $m, $d, $y);
++      // If parsing fails generically, throw an exception
++      if (!($r= date_parse($in))) {
++        throw new IllegalArgumentException('Cannot parse "'.$in.'"');
+       }
+ 
+-      // "2006-05-04 11:59:00"
+-      if (2 < sscanf($in, '%4d-%02d-%02d %02d:%02d:%02d', $y, $m, $d, $h, $i, $s)) {
+-        return self::mktime($h, $i, $s, $m, $d, $y);
++      // Check for warnins and errors
++      if (0 != $r['warning_count']+ $r['error_count']) {
++        if (0 === @$r['zone_type']) {
++          // date_parse("1969-12-31 00:00AM") e.g. causes this and sets 
++          // errors => [
++          //   XX => "The timezone could not be found in the database"
++          // ]
++          // Ignore this case
++        } else {
++          throw new IllegalArgumentException('Cannot parse "'.$in.'": '.xp::stringOf($r));
++        }
+       }
+       
+-      // "Dec 31 2070 11:59PM"
+-      if (2 < sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M', $n, $d, $y, $h, $i, $m)) {
+-        ($m == 'A' && $h == 12) && $h= 0;
+-        ($m == 'A') || ($m == 'P' && $h == 12) || $h+= 12;
+-        return self::mktime($h, $i, 0, $month_names[$n], $d, $y);
++      // If no timezone was given to constructor and the in string contains a
++      // timezone, use that. If timezones collide (e.g. when a Date is created
++      // via something like new Date('10.01.2000 13:14 +200', '+0300'))), throw
++      // an exception.
++      if (isset($r['zone'])) {
++        $ofs= $r['zone'] * -60;
++        if (NULL === $supplied) {
++          $this->_gmtofs= $ofs;
++        } else if ($this->_gmtofs != $ofs) {
++          throw new IllegalArgumentException('Colliding timezones in '.$in.' and '.$supplied);
++        }
        }
        
 -      // FIXME: Support more formats
 -      
 -      throw(new IllegalArgumentException('Cannot parse "'.$in.'"'));
-+      throw new IllegalArgumentException('Cannot parse "'.$in.'"');
++      $this->_utime(self::mktime(
++        $r['hour'],
++        $r['minute'],
++        $r['second'],
++        $r['month'],
++        $r['day'],
++        $r['year']
++      ));
      }
      
      /**
-@@ -152,13 +155,6 @@
+@@ -151,19 +159,16 @@
+         array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
          array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
        );
-     
+-    
 -      // Use builtin?
 -      if (1971 < $year && $year < 2038) {
 -        return mktime($hour, $minute, $second, $month, $day, $year, $is_dst);
 -      }
 -      
 -      $gmt= 0;  // FIXME
--
+ 
        // Check for month overflow and advance into next year
        if ($month > 12) {
          $y= floor($month / 12);
-@@ -181,7 +177,7 @@
+         $year+= $y;
+         $month-= $y * 12;
++      } else if ($month < 1) {
++        $y= floor($month / 12)+ 1;
++        $year-= $y;
++        $month+= $y * 12;
+       }
+ 
+       $days= 0;
+@@ -181,7 +186,7 @@
          $days+= $day- 1;
          
          // Calculate stamp
@@ -118,7 +216,7 @@ Index: ../skeleton/util/Date.class.php
        } else {
        
          // Add number of years times number of days per year to days
-@@ -197,7 +193,7 @@
+@@ -197,7 +202,7 @@
          $days+= $month_table[$leap][intval($month)]- $day;
          
          // Calculate stamp
@@ -127,7 +225,7 @@ Index: ../skeleton/util/Date.class.php
          
          // Gregorian correction
          if ($stamp < -12220185600) {
-@@ -211,24 +207,16 @@
+@@ -211,24 +216,16 @@
      }
      
      /**
@@ -155,7 +253,7 @@ Index: ../skeleton/util/Date.class.php
        $gc= 0;
        if ($stamp < 0) {
  
-@@ -241,12 +229,12 @@
+@@ -241,12 +238,12 @@
            $leap= self::_isLeapYear($year);
            $stamp+= $leap ? 31622400 : 31536000;
            if ($stamp >= 0) {
@@ -170,7 +268,7 @@ Index: ../skeleton/util/Date.class.php
  
          // Look for month
          $stamp= $last;
-@@ -254,22 +242,22 @@
+@@ -254,22 +251,22 @@
            $last= $stamp;
            $stamp+= $month_table[$leap][$month] * 86400;
            if ($stamp >= 0) {
@@ -199,7 +297,7 @@ Index: ../skeleton/util/Date.class.php
        } else {
  
          // Look for year
-@@ -277,41 +265,41 @@
+@@ -277,41 +274,41 @@
            $last= $stamp;
  
            $leap= self::_isLeapYear($year);
@@ -254,7 +352,7 @@ Index: ../skeleton/util/Date.class.php
        
        // Figure out day of week
        if ($month > 2) $month-= 2; else {
-@@ -320,50 +308,50 @@
+@@ -320,50 +317,50 @@
        }
        $d= (
          floor((13 * $month - 1) / 5) + 
@@ -319,7 +417,7 @@ Index: ../skeleton/util/Date.class.php
      }
      
      /**
-@@ -372,15 +360,14 @@
+@@ -372,15 +369,14 @@
       * @param   int utime Unix-Timestamp
       */
      protected function _utime($utime) {
@@ -338,7 +436,7 @@ Index: ../skeleton/util/Date.class.php
       * @return  int equal: 0, date before $this: < 0, date after $this: > 0
       */
      public function compareTo($date) {
-@@ -390,7 +377,7 @@
+@@ -390,7 +386,7 @@
      /**
       * Checks whether this date is before a given date
       *
@@ -347,7 +445,7 @@ Index: ../skeleton/util/Date.class.php
       * @return  bool
       */
      public function isBefore($date) {
-@@ -400,7 +387,7 @@
+@@ -400,7 +396,7 @@
      /**
       * Checks whether this date is after a given date
       *
@@ -356,7 +454,7 @@ Index: ../skeleton/util/Date.class.php
       * @return  bool
       */
      public function isAfter($date) {
-@@ -413,7 +400,7 @@
+@@ -413,7 +409,7 @@
       * @return  int Unix-Timestamp
       */
      public function getTime() {
@@ -365,7 +463,7 @@ Index: ../skeleton/util/Date.class.php
      }
  
      /**
-@@ -487,6 +474,15 @@
+@@ -487,6 +483,15 @@
      public function getDayOfWeek() {
        return $this->wday;
      }
@@ -381,7 +479,7 @@ Index: ../skeleton/util/Date.class.php
      
      /**
       * Create a string representation
-@@ -496,15 +492,7 @@
+@@ -496,15 +501,7 @@
       * @return  string the formatted date
       */
      public function toString($format= 'r') {
@@ -397,7 +495,7 @@ Index: ../skeleton/util/Date.class.php
        for ($i= 0, $s= strlen($format); $i < $s; $i++) {
          switch ($format{$i}) {
            case 'a': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
-@@ -518,13 +506,13 @@
+@@ -518,13 +515,13 @@
                $this->hours,
                $this->minutes,
                $this->seconds,
@@ -415,7 +513,7 @@ Index: ../skeleton/util/Date.class.php
            case 'F': $return.= $this->month; break;
            case 'g': $return.= $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours); break;
            case 'G': $return.= $this->hours; break;
-@@ -536,33 +524,43 @@
+@@ -536,33 +533,43 @@
            case 'l': $return.= $this->weekday; break;
            case 'L': $return.= (int)$this->leap; break;
            case 'm': $return.= sprintf('%02d', $this->mon); break;
@@ -468,7 +566,7 @@ Index: ../skeleton/util/Date.class.php
            case '\\': if ($i++ >= $s) break;
            default: $return.= $format{$i}; break;
          }
-@@ -578,25 +576,31 @@
+@@ -578,25 +585,31 @@
       * @return  string the formatted date
       */
      public function format($format= '%c') {
@@ -510,10 +608,10 @@ Index: ../skeleton/util/Date.class.php
            case 'H': $return.= sprintf('%02d', $this->hours); break;
            case 'I': $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
            case 'j': $return.= sprintf('%03d', $this->yday + 1); break;
-Index: ../skeleton/util/Calendar.class.php
+Index: skeleton/util/Calendar.class.php
 ===================================================================
---- ../skeleton/util/Calendar.class.php	(revision 9775)
-+++ ../skeleton/util/Calendar.class.php	(working copy)
+--- skeleton/util/Calendar.class.php	(revision 10641)
++++ skeleton/util/Calendar.class.php	(working copy)
 @@ -29,19 +29,18 @@
       *
       * @param   int year default -1 Year, defaults to current year
@@ -649,7 +747,14 @@ Index: ../skeleton/util/Calendar.class.php
          $y--;
        } while ($w < 1);
  
-@@ -184,13 +188,12 @@
+@@ -178,26 +182,25 @@
+      * Get first of advent for given year
+      *
+      * @param   int year default -1 year, defaults to this year
+-     * @return  &util.Date for date of the first of advent
++     * @return  util.Date for date of the first of advent
+      * @see     http://www.salesianer.de/util/kalfaq.html
+      */
      public static function advent($year= -1) {
        if (-1 == $year) $year= date('Y');
       
@@ -665,6 +770,14 @@ Index: ../skeleton/util/Calendar.class.php
      }
      
      /**
+      * Get easter date for given year
+      *
+      * @param   int year default -1 Year, defaults to this year
+-     * @return  &util.Date date for Easter date
++     * @return  util.Date date for Easter date
+      * @see     http://www.koenigsmuenster.de/rsk/epakte.htm
+      * @see     http://www.salesianer.de/util/kalfaq.html
+      * @see     php://easter-date#user_contrib
 @@ -214,8 +217,7 @@
        $m = 3 + (int)(($l + 40) / 44);
        $d = $l + 28 - 31 * ((int)($m / 4));
@@ -675,10 +788,38 @@ Index: ../skeleton/util/Calendar.class.php
      }
      
      /**
-Index: ../ports/classes/net/xp_framework/unittest/DateTest.class.php
+Index: ports/classes/net/xp_framework/unittest/peer/LDAPQueryTest.class.php
 ===================================================================
---- ../ports/classes/net/xp_framework/unittest/DateTest.class.php	(revision 9775)
-+++ ../ports/classes/net/xp_framework/unittest/DateTest.class.php	(working copy)
+--- ports/classes/net/xp_framework/unittest/peer/LDAPQueryTest.class.php	(revision 10641)
++++ ports/classes/net/xp_framework/unittest/peer/LDAPQueryTest.class.php	(working copy)
+@@ -62,8 +62,8 @@
+     #[@test]
+     public function testDateToken() {
+       $q= new LDAPQuery();
+-      
+-      $d= new Date(328336200);
++      $d= new Date('1980-05-28 06:30', '+0200');
++
+       $this->assertEquals($q->prepare('%s', $d), '198005280630Z+0200');
+       $this->assertEquals($q->prepare('%d', $d), '198005280630Z+0200');
+     }
+Index: ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php	(revision 10641)
++++ ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php	(working copy)
+@@ -147,7 +147,7 @@
+      */
+     #[@test]
+     public function representationOfDate() {
+-      $this->assertEquals('T:1122644265;', $this->serializer->representationOf(new Date(1122644265)));
++      $this->assertEquals('T:1122644265;', $this->serializer->representationOf(new Date(1122644265, '+0000')));
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/DateTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/DateTest.class.php	(revision 10641)
++++ ports/classes/net/xp_framework/unittest/DateTest.class.php	(working copy)
 @@ -7,6 +7,7 @@
    uses(
      'unittest.TestCase',
