@@ -11,12 +11,27 @@
    */
   class PostgreSQLDialect extends SQLDialect {
     private static
-      $dateparts= array(),
-      $implementations= array();
+      $dateparts= array(
+        'dayofweek' => 'dow',
+        'dayofyear' => 'doy',
+      ),
+      $implementations= array(
+        'rand_0'       => 'random()',
+        'trim_1'       => "trim(both ' ' from %s)",
+        'trim_2'       => 'trim(both %2s from %1s)',
+        'rtrim_1'      => 'rtrim(%s)',
+        'rtrim_2'      => 'rtrim(%s, %s)',
+        'ltrim_1'      => 'ltrim(%s)',
+        'ltrim_2'      => 'ltrim(%s, %s)',
+        'substring_3'  => 'substring(%s from %s for %s)',
+        'substring_2'  => 'substring(%s from %s)',
+      );
 
     public
       $escape       = "'",
-      $escapeRules  = array('\''  => '\'\''),
+      $escapeRules  = array("'"  => "''"),
+      $escapeT      = '"',
+      $escapeTRules = array('"'  => '""'),
       $dateFormat   = 'Y-m-d H:i:s';
         
     /**
@@ -30,7 +45,7 @@
       $func_i= $func->func.'_'.sizeof($func->args);
       switch ($func->func) {
         case 'concat':
-        return 'concat('.implode(', ', array_fill(0, sizeof($func->args), '%s')).')';
+        return '('.implode(' || ', array_fill(0, sizeof($func->args), '%s')).')';
 
         default:
         if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];

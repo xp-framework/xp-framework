@@ -13,6 +13,8 @@
     public
       $escape       = "'",
       $escapeRules  = array("'"  => "''"),
+      $escapeT      = "'",
+      $escapeRulesT = array("'"  => "''"),
       $dateFormat   = 'Y-m-d H:i:s';
         
     private static

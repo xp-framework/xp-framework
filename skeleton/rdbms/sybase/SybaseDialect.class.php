@@ -27,6 +27,8 @@
     public
       $escape       = '"',
       $escapeRules  = array('"' => '""'),
+      $escapeT      = '"',
+      $escapeTRules = array('"' => '""'),
       $dateFormat   = 'Y-m-d h:iA';
         
     /**

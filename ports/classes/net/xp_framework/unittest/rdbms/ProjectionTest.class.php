@@ -32,6 +32,7 @@
     public function setUp() {
       $this->syconn= DriverManager::getConnection('sybase://localhost:1999/');
       $this->myconn= DriverManager::getConnection('mysql://localhost:3306/');
+      $this->pgconn= DriverManager::getConnection('pgsql://localhost:5432/');
       $this->sqconn= DriverManager::getConnection('sqlite://tmpdir/tmpdb');
       $this->peer= Job::getPeer();
     }
@@ -42,13 +43,15 @@
      *
      * @param   string mysql
      * @param   string sysql
+     * @param   string pgsql
      * @param   string sqlite
      * @param   rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
-    protected function assertSql($mysql, $sysql, $sqlite, $criteria) {
+    protected function assertSql($mysql, $sysql, $pgsql, $sqlite, $criteria) {
       $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->toSQL($this->myconn, $this->peer), ' '));
       $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->toSQL($this->syconn, $this->peer), ' '));
+      $this->assertEquals("pgsql: ".$pgsql, "pgsql: ".trim($criteria->toSQL($this->pgconn, $this->peer), ' '));
       $this->assertEquals("sqlite: ".$sqlite, "sqlite: ".trim($criteria->toSQL($this->sqconn, $this->peer), ' '));
     }
     
@@ -58,13 +61,15 @@
      *
      * @param   string mysql
      * @param   string sysql
+     * @param   string pgsql
      * @param   string sqlite
      * @param   rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
-    protected function assertProjection($mysql, $sysql, $sqlite, $criteria) {
+    protected function assertProjection($mysql, $sysql, $pgsql, $sqlite, $criteria) {
       $this->assertEquals("mysql: ".$mysql,  "mysql: ".trim($criteria->projections($this->myconn, $this->peer), ' '));
       $this->assertEquals("sybase: ".$sysql, "sybase: ".trim($criteria->projections($this->syconn, $this->peer), ' '));
+      $this->assertEquals("pgsql: ".$pgsql, "pgsql: ".trim($criteria->projections($this->pgconn, $this->peer), ' '));
       $this->assertEquals("sqlite: ".$sqlite, "sqlite: ".trim($criteria->projections($this->sqconn, $this->peer), ' '));
     }
     
@@ -75,6 +80,7 @@
     #[@test]
     function countTest() {
       $this->assertProjection(
+        'count(*) as `count`',
         'count(*) as "count"',
         'count(*) as "count"',
         'count(*) as \'count\'',
@@ -89,6 +95,7 @@
     #[@test]
     function countColumnTest() {
       $this->assertProjection(
+        'count(job_id) as `count_job_id`',
         'count(job_id) as "count_job_id"',
         'count(job_id) as "count_job_id"',
         'count(job_id) as \'count_job_id\'',
@@ -103,6 +110,7 @@
     #[@test]
     function countColumnAliasTest() {
       $this->assertProjection(
+        'count(job_id) as `counting all`',
         'count(job_id) as "counting all"',
         'count(job_id) as "counting all"',
         'count(job_id) as \'counting all\'',
@@ -117,6 +125,7 @@
     #[@test]
     function countAliasTest() {
       $this->assertProjection(
+        'count(*) as `counting all`',
         'count(*) as "counting all"',
         'count(*) as "counting all"',
         'count(*) as \'counting all\'',
@@ -134,6 +143,7 @@
         'avg(job_id)',
         'avg(job_id)',
         'avg(job_id)',
+        'avg(job_id)',
         create(new Criteria())->setProjection(Projections::average(Job::column("job_id")))
       );
     }
@@ -145,6 +155,7 @@
     #[@test]
     function sumTest() {
       $this->assertProjection(
+        'sum(job_id)',
         'sum(job_id)',
         'sum(job_id)',
         'sum(job_id)',
@@ -162,6 +173,7 @@
         'min(job_id)',
         'min(job_id)',
         'min(job_id)',
+        'min(job_id)',
         create(new Criteria())->setProjection(Projections::min(Job::column("job_id")))
       );
     }
@@ -173,6 +185,7 @@
     #[@test]
     function maxTest() {
       $this->assertProjection(
+        'max(job_id)',
         'max(job_id)',
         'max(job_id)',
         'max(job_id)',
@@ -190,6 +203,7 @@
         'job_id',
         'job_id',
         'job_id',
+        'job_id',
         create(new Criteria())->setProjection(Projections::property(Job::column("job_id")))
       );
     }
@@ -201,6 +215,7 @@
     #[@test]
     function propertyListTest() {
       $this->assertProjection(
+        'job_id, title',
         'job_id, title',
         'job_id, title',
         'job_id, title',
@@ -221,6 +236,7 @@
     #[@test]
     function propertyListAliasTest() {
       $this->assertProjection(
+        'job_id as `id`, title',
         'job_id as "id", title',
         'job_id as "id", title',
         'job_id as \'id\', title',

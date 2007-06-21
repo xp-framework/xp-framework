@@ -34,7 +34,7 @@
     public function asSql(DBConnection $conn) {
       $field= ($this->field instanceof SQLRenderable) ? $this->field->asSQL($conn) : '*';
       $alias= (0 != strlen($this->alias)) ?  $this->alias : (('*' == $field) ? 'count' : 'count_'.$field);
-      return $conn->prepare('count('.$field.') as %s', $alias);
+      return $conn->prepare('count('.$field.') as %l', $alias);
     }
   }
 ?>

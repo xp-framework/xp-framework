@@ -39,6 +39,7 @@
     public static $adapters= array(
       'mysql'   => 'rdbms.mysql.MySQLDBAdapter',
       'sqlite'  => 'rdbms.sqlite.SQLiteDBAdapter',
+      'pgsql'   => 'rdbms.pgsql.PostgreSQLDBAdapter',
       'sybase'  => 'rdbms.sybase.SybaseDBAdapter',
     );
     
@@ -184,7 +185,7 @@
       $proc= new DomXSLProcessor();
       
       // Using override XSL-File
-      if (array_key_exists($name, $this->overrides)) {
+      if (is_array($this->overrides) && array_key_exists($name, $this->overrides)) {
         $proc->setXSLFile(str_replace('config.ini', $this->overrides[$name], $this->inifile));
         $this->out->writeLinef('!!! Using override xslfile: %s', $this->overrides[$name]);
       } else {

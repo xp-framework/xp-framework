@@ -6,7 +6,7 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-- Implemented projections an funtions for sqlite
+- Implemented sql function and projections for postgreSQL and sqllite
   (wagner)
 
 Version 5.5.2, released 2007-06-15

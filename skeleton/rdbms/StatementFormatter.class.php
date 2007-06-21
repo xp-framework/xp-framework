@@ -44,7 +44,7 @@
      * @return  string
      */
     public function format($fmt, $args) {
-      static $tokens= 'cdefstu';
+      static $tokens= 'cdefstul';
       
       $statement= '';
       $argumentOffset= 0;
@@ -122,13 +122,14 @@
         }
 
         switch ($type) {
-          case 'c': $r.= $p; break;
-          case 'd': $r.= $this->numval($p); break;
-          case 'e': $r.= $this->dialect->datatype($p); break;
-          case 'f': $r.= $this->numval($p); break;
-          case 's': $r.= $this->dialect->escapeString($p); break;
-          case 't': $r.= $this->dialect->datepart($p); break;
-          case 'u': $r.= $this->dialect->quoteString($this->dialect->formatDate($p)); break;
+          case 'c': $r.= $p; break; // plain source code
+          case 'd': $r.= $this->numval($p); break; // digits
+          case 'e': $r.= $this->dialect->datatype($p); break; // datatype name
+          case 'f': $r.= $this->numval($p); break; // digit
+          case 's': $r.= $this->dialect->escapeString($p); break; // string
+          case 't': $r.= $this->dialect->datepart($p); break; // datepart name
+          case 'u': $r.= $this->dialect->quoteString($this->dialect->formatDate($p)); break; // date
+          case 'l': $r.= $this->dialect->escapeLabelString($p); break; // label
         }
         $r.= ', ';
       }

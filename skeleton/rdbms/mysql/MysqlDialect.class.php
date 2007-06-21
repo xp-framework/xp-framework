@@ -32,6 +32,8 @@
         '"'   => '\"',
         '\\'  => '\\\\'
       ),
+      $escapeT      = '`',
+      $escapeTRules = array('`'   => '``'),
       $dateFormat   = 'Y-m-d H:i:s';
         
     /**

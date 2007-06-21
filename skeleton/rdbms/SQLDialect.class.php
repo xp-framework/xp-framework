@@ -107,6 +107,8 @@
       );
 
     public
+      $escapeT      = '',
+      $escapeTRules = array(),
       $escape       = '',
       $escapeRules  = array(),
       $dateFormat   = '';
@@ -132,6 +134,26 @@
      */
     public function formatDate($datestring) {
       return date($this->dateFormat, $datestring);
+    }
+    
+    /**
+     * escape a lable string
+     *
+     * @param   string escapeString
+     * @return  string
+     */
+    public function escapeLabelString($escapeString) {
+      return $this->quoteLabelString(strtr($escapeString, $this->escapeTRules));
+    }
+    
+    /**
+     * escape a lable string
+     *
+     * @param   string quoteString
+     * @return  string
+     */
+    public function quoteLabelString($string) {
+      return $this->escapeT.$string.$this->escapeT;
     }
     
     /**
