@@ -16,6 +16,8 @@
    * @purpose  Unit Test
    */
   class DateUtilTest extends TestCase {
+    protected
+      $fixture= NULL;
 
     /**
      * Sets up this test
