@@ -1,29 +1,28 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
+ * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
  */
  
-  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table job, database Ruben_Test_PS
-   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
+   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Job extends DataSet implements JoinExtractable {
+  class Job extends DataSet {
     public
       $job_id             = 0,
       $title              = '',
       $valid_from         = NULL,
       $expire_at          = NULL;
   
-    private
+    protected
       $cache= array(
         'PersonJob' => array(),
-      ),
-      $cached= array();
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -48,11 +47,6 @@
       }
     }  
 
-    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
-    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
-    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
-    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
-    
     /**
      * Retrieve associated peer
      *
@@ -69,8 +63,8 @@
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
-      return self::getPeer()->column($name);
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
     }
   
     /**
@@ -82,7 +76,8 @@
      */
     public static function getByJob_id($job_id) {
       $r= self::getPeer()->doSelect(new Criteria(array('job_id', $job_id, EQUAL)));
-      return $r ? $r[0] : NULL;    }
+      return $r ? $r[0] : NULL;
+    }
 
     /**
      * Retrieves job_id

@@ -15,7 +15,8 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLFunctions',
-    'de.schlund.db.rubentest.Nmappoint'
+    'de.schlund.db.rubensqtest.Nmappoint'
+//    'de.schlund.db.rubentest.Nmappoint'
   );
 
   // Params
@@ -28,9 +29,10 @@
   }
   
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('sqlite://%2Fhome%2Fruben%2Fhtdocs%2Fadmin%2FSQLite%2Fdb%2FRuben_Test_PS.db/Ruben_Test_PS?autoconnect=1&log=default'));
+//  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1&log=default'));
 
-$crits= array();
+  $crits= array();
 do {
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::day(SQLFunctions::getdate()), 'dayTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::ascii("a"), 'asciiTest');
@@ -41,7 +43,7 @@ do {
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::concat('aa', SQLFunctions::str(SQLFunctions::getdate()), 'cc'), 'concatTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::str(SQLFunctions::getdate()), 'getdateTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::str(SQLFunctions::dateadd('month', '-4', SQLFunctions::getdate())), 'dateaddTest');
-  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::datediff('second', SQLFunctions::dateadd('day', '-4', SQLFunctions::getdate()), SQLFunctions::getdate()), 'datediffTest');
+//  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::datediff('second', SQLFunctions::dateadd('day', '-4', SQLFunctions::getdate()), SQLFunctions::getdate()), 'datediffTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::datename('hour', SQLFunctions::getdate()), 'datenameTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::datepart('hour', new Date()), 'datenameTest');
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::abs(-6), 'absTest');
@@ -67,6 +69,10 @@ do {
   $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::cast(Nmappoint::column("texture_id"), 'char'), 'datatypesTest');
   $crits[]= Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(SQLFunctions::asin(SQLFunctions::sin(0.125)))));
   $crits[]= Criteria::newInstance()->add(Restrictions::equal(Nmappoint::column("texture_id"), SQLFunctions::ceil(SQLFunctions::asin(SQLFunctions::sin(0.125)))));
+  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::locate("foobar", "bar"));
+  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::locate(NULL, "bar"));
+  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::locate("foobarfoo", "foo", 4));
+  $crits[]= Criteria::newInstance()->setProjection(SQLFunctions::substring("foobarfoo", 2, 4));
 } while (false);
 
   foreach ($crits as $name => $crit) {

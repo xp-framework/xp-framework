@@ -1,28 +1,27 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
+ * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
  */
  
-  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table mperson, database Ruben_Test_PS
-   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
+   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Mperson extends DataSet implements JoinExtractable {
+  class Mperson extends DataSet {
     public
       $person_id          = 0,
       $name               = '';
   
-    private
+    protected
       $cache= array(
-        'MmessageRecipient' => array(),
         'MmessageAuthor' => array(),
-      ),
-      $cached= array();
+        'MmessageRecipient' => array(),
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -35,27 +34,22 @@
           'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
         $peer->setRelations(array(
-          'MmessageRecipient' => array(
-            'classname' => 'de.schlund.db.rubentest.Mmessage',
-            'key'       => array(
-              'person_id' => 'recipient_id',
-            ),
-          ),
           'MmessageAuthor' => array(
             'classname' => 'de.schlund.db.rubentest.Mmessage',
             'key'       => array(
               'person_id' => 'author_id',
             ),
           ),
+          'MmessageRecipient' => array(
+            'classname' => 'de.schlund.db.rubentest.Mmessage',
+            'key'       => array(
+              'person_id' => 'recipient_id',
+            ),
+          ),
         ));
       }
     }  
 
-    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
-    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
-    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
-    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
-    
     /**
      * Retrieve associated peer
      *
@@ -72,8 +66,8 @@
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
-      return self::getPeer()->column($name);
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
     }
   
     /**
@@ -85,7 +79,8 @@
      */
     public static function getByPerson_id($person_id) {
       $r= self::getPeer()->doSelect(new Criteria(array('person_id', $person_id, EQUAL)));
-      return $r ? $r[0] : NULL;    }
+      return $r ? $r[0] : NULL;
+    }
 
     /**
      * Retrieves person_id
@@ -127,40 +122,6 @@
 
     /**
      * Retrieves an array of all Mmessage entities referencing
-     * this entity by recipient_id=>person_id
-     *
-     * @return  de.schlund.db.rubentest.Mmessage[] entities
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getMmessageRecipientList() {
-      if ($this->cached['MmessageRecipient']) return array_values($this->cache['MmessageRecipient']);
-      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
-        ->getMethod('getPeer')
-        ->invoke()
-        ->doSelect(new Criteria(
-          array('recipient_id', $this->getPerson_id(), EQUAL)
-      ));
-    }
-
-    /**
-     * Retrieves an iterator for all Mmessage entities referencing
-     * this entity by recipient_id=>person_id
-     *
-     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Mmessage>
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getMmessageRecipientIterator() {
-      if ($this->cached['MmessageRecipient']) return new HashmapIterator($this->cache['MmessageRecipient']);
-      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
-        ->getMethod('getPeer')
-        ->invoke()
-        ->iteratorFor(new Criteria(
-          array('recipient_id', $this->getPerson_id(), EQUAL)
-      ));
-    }
-
-    /**
-     * Retrieves an array of all Mmessage entities referencing
      * this entity by author_id=>person_id
      *
      * @return  de.schlund.db.rubentest.Mmessage[] entities
@@ -190,6 +151,40 @@
         ->invoke()
         ->iteratorFor(new Criteria(
           array('author_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of all Mmessage entities referencing
+     * this entity by recipient_id=>person_id
+     *
+     * @return  de.schlund.db.rubentest.Mmessage[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMmessageRecipientList() {
+      if ($this->cached['MmessageRecipient']) return array_values($this->cache['MmessageRecipient']);
+      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('recipient_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Mmessage entities referencing
+     * this entity by recipient_id=>person_id
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Mmessage>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMmessageRecipientIterator() {
+      if ($this->cached['MmessageRecipient']) return new HashmapIterator($this->cache['MmessageRecipient']);
+      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('recipient_id', $this->getPerson_id(), EQUAL)
       ));
     }
   }

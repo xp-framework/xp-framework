@@ -1,18 +1,18 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
+ * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
  */
  
-  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table mmessage, database Ruben_Test_PS
-   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
+   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Mmessage extends DataSet implements JoinExtractable {
+  class Mmessage extends DataSet {
     public
       $message_id         = 0,
       $title              = '',
@@ -22,12 +22,11 @@
       $recipient_id       = 0,
       $author_id          = 0;
   
-    private
+    protected
       $cache= array(
-        'Recipient' => array(),
         'Author' => array(),
-      ),
-      $cached= array();
+        'Recipient' => array(),
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -45,27 +44,22 @@
           'author_id'           => array('%d', FieldType::INT, FALSE)
         ));
         $peer->setRelations(array(
-          'Recipient' => array(
-            'classname' => 'de.schlund.db.rubentest.Mperson',
-            'key'       => array(
-              'recipient_id' => 'person_id',
-            ),
-          ),
           'Author' => array(
             'classname' => 'de.schlund.db.rubentest.Mperson',
             'key'       => array(
               'author_id' => 'person_id',
             ),
           ),
+          'Recipient' => array(
+            'classname' => 'de.schlund.db.rubentest.Mperson',
+            'key'       => array(
+              'recipient_id' => 'person_id',
+            ),
+          ),
         ));
       }
     }  
 
-    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
-    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
-    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
-    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
-    
     /**
      * Retrieve associated peer
      *
@@ -82,8 +76,8 @@
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
-      return self::getPeer()->column($name);
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
     }
   
     /**
@@ -95,7 +89,8 @@
      */
     public static function getByMessage_id($message_id) {
       $r= self::getPeer()->doSelect(new Criteria(array('message_id', $message_id, EQUAL)));
-      return $r ? $r[0] : NULL;    }
+      return $r ? $r[0] : NULL;
+    }
 
     /**
      * Gets an instance of this object by index "recipient_id"
@@ -105,7 +100,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByRecipient_id($recipient_id) {
-      return self::getPeer()->doSelect(new Criteria(array('recipient_id', $recipient_id, EQUAL)));    }
+      return self::getPeer()->doSelect(new Criteria(array('recipient_id', $recipient_id, EQUAL)));
+    }
 
     /**
      * Gets an instance of this object by index "author_id"
@@ -115,7 +111,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByAuthor_id($author_id) {
-      return self::getPeer()->doSelect(new Criteria(array('author_id', $author_id, EQUAL)));    }
+      return self::getPeer()->doSelect(new Criteria(array('author_id', $author_id, EQUAL)));
+    }
 
     /**
      * Retrieves message_id
@@ -252,25 +249,6 @@
 
     /**
      * Retrieves the Mperson entity
-     * referenced by person_id=>recipient_id
-     *
-     * @return  de.schlund.db.rubentest.Mperson entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getRecipient() {
-      $r= ($this->cached['Recipient']) ?
-        array_values($this->cache['Recipient']) :
-        XPClass::forName('de.schlund.db.rubentest.Mperson')
-          ->getMethod('getPeer')
-          ->invoke()
-          ->doSelect(new Criteria(
-          array('person_id', $this->getRecipient_id(), EQUAL)
-      ));
-      return $r ? $r[0] : NULL;
-    }
-
-    /**
-     * Retrieves the Mperson entity
      * referenced by person_id=>author_id
      *
      * @return  de.schlund.db.rubentest.Mperson entity
@@ -284,6 +262,25 @@
           ->invoke()
           ->doSelect(new Criteria(
           array('person_id', $this->getAuthor_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
+    }
+
+    /**
+     * Retrieves the Mperson entity
+     * referenced by person_id=>recipient_id
+     *
+     * @return  de.schlund.db.rubentest.Mperson entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getRecipient() {
+      $r= ($this->cached['Recipient']) ?
+        array_values($this->cache['Recipient']) :
+        XPClass::forName('de.schlund.db.rubentest.Mperson')
+          ->getMethod('getPeer')
+          ->invoke()
+          ->doSelect(new Criteria(
+          array('person_id', $this->getRecipient_id(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }

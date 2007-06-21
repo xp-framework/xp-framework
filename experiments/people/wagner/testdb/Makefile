@@ -1,10 +1,8 @@
-XSLTPROC = xsltproc
-XSLSS = ''
-GEN = net.xp_framework.db.generator.DataSetCreator
-DIR = definitions
-PHP = xpcli
-DIRS = $(shell ls -1 $(DIR))
-OUTPUT = .
+XSLSS?=		
+CMD?=		net.xp_framework.db.generator.DataSetCreator
+XPCLI?=		xpcli
+DIRS=		$(shell ls -1 definitions/$(DIR))
+OUTPUT?=	../../skeleton/
 
 #Generation of Database
 help:
@@ -29,27 +27,35 @@ help:
 god:
 	-for i in $(DIRS); do \
 	  echo $$i; \
-	  $(PHP) $(GEN) -c definitions/$$i/config.ini -O $(DIR); \
+	  $(XPCLI) ${CMD} -c definitions/$$i/config.ini -O $(DIR); \
 	done;
 
 php:
+	XSL=""; \
+	if [ -n "$(XSLSS)" ]; then \
+      XSL="-S $(XSLSS)"; \
+    fi; \
 	for j in $(DIRS); do \
-		for i in `find $(DIR)/$$j/tables -name *.xml`; do \
+		for i in `find definitions/$$j -name *.xml`; do \
 			echo $$i; \
-			$(PHP) $(GEN) -c definitions/$$j/config.ini -X $$i -O $(OUTPUT) -S $(XSLSS) ; \
-	        done; \
+			$(XPCLI) ${CMD} -c definitions/$$j/config.ini -X $$i -O $(OUTPUT) $$XSL; \
+	    done; \
 	done;
 
 altgod:
 	-for i in $(DIRS); do \
-	  $(PHP) $(GEN) -c $$i/config.ini -O $(DIR); \
+	  $(XPCLI) ${CMD} -c $$i/config.ini -O $(DIR); \
 	done;
 
 
 altphp:
+	XSL=""; \
+	if [ -n "$(XSLSS)" ]; then \
+      XSL="-S $(XSLSS)"; \
+    fi; \
 	for j in $(DIRS); do \
 		for i in `find $$j -name *.xml`; do \
-			$(PHP) $(GEN) -c $$j/config.ini -X $$i -O $(OUTPUT); -S $(XSLSS)\
+			$(XPCLI) ${CMD} -c $$j/config.ini -X $$i -O $(OUTPUT) $$XSL; \
 		done; \
 	done;
 

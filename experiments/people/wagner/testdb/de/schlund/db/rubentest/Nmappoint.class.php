@@ -1,29 +1,28 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 52481 2007-01-16 11:26:17Z rdoebele $
+ * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
  */
  
-  uses('rdbms.DataSet', 'rdbms.join.JoinExtractable', 'util.HashmapIterator');
+  uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table nmappoint, database Ruben_Test_PS
-   * (Auto-generated on Wed, 16 May 2007 14:44:35 +0200 by ruben)
+   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
-  class Nmappoint extends DataSet implements JoinExtractable {
+  class Nmappoint extends DataSet {
     public
       $coord_x            = 0,
       $coord_y            = 0,
       $texture_id         = 0;
   
-    private
+    protected
       $cache= array(
         'Texture' => array(),
         'NmobileObjectCoord_xCoord_y' => array(),
-      ),
-      $cached= array();
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -52,11 +51,6 @@
       }
     }  
 
-    public function setCachedObj($role, $key, $obj) { $this->cache[$role][$key]= $obj; }
-    public function getCachedObj($role, $key)       { return $this->cache[$role][$key]; }
-    public function hasCachedObj($role, $key)       { return isset($this->cache[$role][$key]); }
-    public function markAsCached($role)             { $this->cached[$role]= TRUE; }
-    
     /**
      * Retrieve associated peer
      *
@@ -73,8 +67,8 @@
      * @return  rdbms.Column
      * @throws  lang.IllegalArumentException
      */
-    static public function column($name) {
-      return self::getPeer()->column($name);
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
     }
   
     /**
@@ -90,7 +84,8 @@
         array('coord_x', $coord_x, EQUAL),
         array('coord_y', $coord_y, EQUAL)
       ));
-      return $r ? $r[0] : NULL;    }
+      return $r ? $r[0] : NULL;
+    }
 
     /**
      * Gets an instance of this object by index "texture_for_mappoint"
@@ -100,7 +95,8 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTexture_id($texture_id) {
-      return self::getPeer()->doSelect(new Criteria(array('texture_id', $texture_id, EQUAL)));    }
+      return self::getPeer()->doSelect(new Criteria(array('texture_id', $texture_id, EQUAL)));
+    }
 
     /**
      * Retrieves coord_x

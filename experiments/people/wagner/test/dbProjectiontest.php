@@ -14,7 +14,7 @@
     'rdbms.ConnectionManager',
     'rdbms.criterion.Projections',
     'rdbms.criterion.Restrictions',
-    'de.schlund.db.rubentest.Ncolor'
+    'de.schlund.db.rubensqtest.Ncolor'
   );
 
   // Params
@@ -27,7 +27,7 @@
   }
   
   Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/Ruben_Test_PS?autoconnect=1&log=default'));
+  ConnectionManager::getInstance()->register(DriverManager::getConnection('sqlite://%2Fhome%2Fruben%2Fhtdocs%2Fadmin%2FSQLite%2Fdb%2FRuben_Test_PS.db/Ruben_Test_PS?autoconnect=1&log=default'));
   $crit= array();
   
   $crits['count']= Criteria::newInstance()->setProjection(
