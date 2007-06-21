@@ -18,36 +18,70 @@
   class DateUtilTest extends TestCase {
 
     /**
+     * Sets up this test
+     *
+     */
+    public function setUp() {
+      $this->fixture= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
+    }
+
+    /**
      * Test simple add operations on a usual date.
      *
      */
     #[@test]
-    public function testSimpleAddition() {
-      $date= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
-      
+    public function addSeconds() {
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 30, 1, 1, 2000)),
-        DateUtil::addSeconds($date, 19)
+        DateUtil::addSeconds($this->fixture, 19)
       );
+    }
       
+    /**
+     * Test simple add operations on a usual date.
+     *
+     */
+    #[@test]
+    public function addMinutes() {
       $this->assertEquals(
         new Date(Date::mktime(12, 44, 11, 1, 1, 2000)),
-        DateUtil::addMinutes($date, 29)
+        DateUtil::addMinutes($this->fixture, 29)
       );
+    }
       
+    /**
+     * Test simple add operations on a usual date.
+     *
+     */
+    #[@test]
+    public function addHours() {
       $this->assertEquals(
         new Date(Date::mktime(13, 15, 11, 1, 1, 2000)),
-        DateUtil::addHours($date, 1)
+        DateUtil::addHours($this->fixture, 1)
       );
+    }
       
+    /**
+     * Test simple add operations on a usual date.
+     *
+     */
+    #[@test]
+    public function addDays() {
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 11, 1, 2, 2000)),
-        DateUtil::addDays($date, 1)
+        DateUtil::addDays($this->fixture, 1)
       );
+    }
       
+    /**
+     * Test simple add operations on a usual date.
+     *
+     */
+    #[@test]
+    public function addMonths() {
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 11, 2, 1, 2000)),
-        DateUtil::addMonths($date, 1)
+        DateUtil::addMonths($this->fixture, 1)
       );
     }
     
@@ -56,32 +90,58 @@
      *
      */
     #[@test]
-    public function testSimpleSubstraction() {
-      $date= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
-      
+    public function addNegativeSeconds() {
       $this->assertEquals(
         new Date(Date::mktime(12, 14, 52, 1, 1, 2000)),
-        DateUtil::addSeconds($date, -19)
+        DateUtil::addSeconds($this->fixture, -19)
       );
+    }
       
+    /**
+     * Test basic add operations with negative values.
+     *
+     */
+    #[@test]
+    public function addNegativeMinutes() {
       $this->assertEquals(
         new Date(Date::mktime(11, 46, 11, 1, 1, 2000)),
-        DateUtil::addMinutes($date, -29)
+        DateUtil::addMinutes($this->fixture, -29)
       );
+    }
       
+    /**
+     * Test basic add operations with negative values.
+     *
+     */
+    #[@test]
+    public function addNegativeHours() {
       $this->assertEquals(
         new Date(Date::mktime(11, 15, 11, 1, 1, 2000)),
-        DateUtil::addHours($date, -1)
+        DateUtil::addHours($this->fixture, -1)
       );
+    }
       
+    /**
+     * Test basic add operations with negative values.
+     *
+     */
+    #[@test]
+    public function addNegativeDays() {
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 11, 12, 31, 1999)),
-        DateUtil::addDays($date, -1)
+        DateUtil::addDays($this->fixture, -1)
       );
+    }
       
+    /**
+     * Test basic add operations with negative values.
+     *
+     */
+    #[@test]
+    public function addNegativeMonths() {
       $this->assertEquals(
         new Date(Date::mktime(12, 15, 11, 12, 1, 1999)),
-        DateUtil::addMonths($date, -1)
+        DateUtil::addMonths($this->fixture, -1)
       );
     }
     
