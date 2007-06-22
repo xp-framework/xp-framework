@@ -59,6 +59,7 @@
       $package,
       $xmlfile,
       $outputdir,
+      $naming= NULL,
       $ignore;
     
     /**
@@ -119,6 +120,8 @@
     public function generateTables() {
       $adapter= $this->getAdapter($this->dsntemp);
       $adapter->conn->connect();
+
+      if (!empty($this->naming)) DBXMLNamingContext::setStrategy(XPClass::forName($this->naming)->newInstance());
 
       // Create new Folder Object and new Folder(s) if necessary
       $fold= new Folder($this->xmltarget);
@@ -233,6 +236,7 @@
       $this->exprefix     = $ini->readArray ('prefix', 'exclude');
       $this->connection   = $ini->readString('connection', 'name');
       $this->package      = $ini->readString('mapping', 'package');
+      $this->naming       = $ini->readString('mapping', 'naming');
       $this->overrides    = $ini->readSection('overrides', FALSE);
       $this->inifile      = $ini->getFilename();
       $this->ignore       = $ini->readArray('ignore', 'tables');
