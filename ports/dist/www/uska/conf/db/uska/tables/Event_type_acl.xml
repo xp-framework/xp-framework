@@ -1,0 +1,63 @@
+<document created_at="Sat, 23 Jun 2007 16:52:12 +0200" created_by="Alex">
+  <table
+   name="event_type_acl"
+   dbhost="uska"
+   database="uska"
+   dbtype="mysql"
+   class="Event_type_acl"
+   package="de.uska.db"
+  >  
+    <attribute
+     name="player_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="event_type_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="lastchange"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="false"
+    />
+    <attribute
+     name="changedby"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <index
+     name="player_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>player_id</key>
+    </index>
+    <index
+     name="event_type_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>event_type_id</key>
+    </index>
+    <constraint name="event_type_acl_ibfk_1">    
+      <reference table="player" role="Player">      
+        <key attribute="player_id" sourceattribute="player_id"/>
+      </reference>
+    </constraint>
+    <constraint name="event_type_acl_ibfk_2">    
+      <reference table="event" role="Event_type">      
+        <key attribute="event_type_id" sourceattribute="event_type_id"/>
+      </reference>
+    </constraint>
+  </table>
+</document>

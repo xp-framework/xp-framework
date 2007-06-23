@@ -1,0 +1,32 @@
+<document created_at="Sat, 23 Jun 2007 16:52:13 +0200" created_by="Alex">
+  <table
+   name="team"
+   dbhost="uska"
+   database="uska"
+   dbtype="mysql"
+   class="Team"
+   package="de.uska.db"
+  >  
+    <attribute
+     name="team_id"
+     type="DB_ATTRTYPE_INT"
+     identity="true"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="name"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <index
+     name="PRIMARY"
+     unique="true"
+     primary="true"
+    >    
+      <key>team_id</key>
+    </index>
+  </table>
+</document>

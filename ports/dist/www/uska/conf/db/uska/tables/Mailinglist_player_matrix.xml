@@ -1,0 +1,64 @@
+<document created_at="Sat, 23 Jun 2007 16:52:13 +0200" created_by="Alex">
+  <table
+   name="mailinglist_player_matrix"
+   dbhost="uska"
+   database="uska"
+   dbtype="mysql"
+   class="Mailinglist_player_matrix"
+   package="de.uska.db"
+  >  
+    <attribute
+     name="player_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="mailinglist_id"
+     type="DB_ATTRTYPE_INT"
+     identity="false"
+     typename="int"
+     nullable="false"
+    />
+    <attribute
+     name="lastchange"
+     type="DB_ATTRTYPE_DATETIME"
+     identity="false"
+     typename="util.Date"
+     nullable="false"
+    />
+    <attribute
+     name="changedby"
+     type="DB_ATTRTYPE_VARCHAR"
+     identity="false"
+     typename="string"
+     nullable="false"
+    />
+    <index
+     name="player_id"
+     unique="true"
+     primary="false"
+    >    
+      <key>player_id</key>
+      <key>mailinglist_id</key>
+    </index>
+    <index
+     name="mailinglist_id"
+     unique="false"
+     primary="false"
+    >    
+      <key>mailinglist_id</key>
+    </index>
+    <constraint name="mailinglist_player_matrix_ibfk_1">    
+      <reference table="player" role="Player">      
+        <key attribute="player_id" sourceattribute="player_id"/>
+      </reference>
+    </constraint>
+    <constraint name="mailinglist_player_matrix_ibfk_2">    
+      <reference table="mailinglist" role="Mailinglist">      
+        <key attribute="mailinglist_id" sourceattribute="mailinglist_id"/>
+      </reference>
+    </constraint>
+  </table>
+</document>
