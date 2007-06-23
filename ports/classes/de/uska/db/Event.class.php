@@ -4,11 +4,11 @@
  * $Id$
  */
  
-  uses('rdbms.DataSet');
- 
+  uses('rdbms.DataSet', 'util.HashmapIterator');
+
   /**
    * Class wrapper for table event, database uska
-   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
+   * (Auto-generated on Sat, 23 Jun 2007 16:52:12 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */
@@ -26,6 +26,12 @@
       $event_type_id      = 0,
       $changedby          = '',
       $lastchange         = NULL;
+  
+    protected
+      $cache= array(
+        'Team' => array(),
+        'Event_type' => array(),
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -47,9 +53,23 @@
           'changedby'           => array('%s', FieldType::VARCHAR, FALSE),
           'lastchange'          => array('%s', FieldType::DATETIME, FALSE)
         ));
+        $peer->setRelations(array(
+          'Team' => array(
+            'classname' => 'de.uska.db.Team',
+            'key'       => array(
+              'team_id' => 'team_id',
+            ),
+          ),
+          'Event_type' => array(
+            'classname' => 'de.uska.db.Event_type',
+            'key'       => array(
+              'event_type_id' => 'event_type_id',
+            ),
+          ),
+        ));
       }
     }  
-  
+
     /**
      * Retrieve associated peer
      *
@@ -58,23 +78,35 @@
     public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
+
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int event_id
-     * @return  de.uska.db.Event object
+     * @return  de.uska.db.Event entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByEvent_id($event_id) {
-      return current(self::getPeer()->doSelect(new Criteria(array('event_id', $event_id, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('event_id', $event_id, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**
      * Gets an instance of this object by index "target_date"
      * 
      * @param   util.Date target_date
-     * @return  de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTarget_date($target_date) {
@@ -85,7 +117,7 @@
      * Gets an instance of this object by index "team_id"
      * 
      * @param   int team_id
-     * @return  de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTeam_id($team_id) {
@@ -96,7 +128,7 @@
      * Gets an instance of this object by index "event_type_id"
      * 
      * @param   int event_type_id
-     * @return  de.uska.db.Event[] object
+     * @return  de.uska.db.Event[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByEvent_type_id($event_type_id) {
@@ -329,6 +361,74 @@
      */
     public function setLastchange($lastchange) {
       return $this->_change('lastchange', $lastchange);
+    }
+
+    /**
+     * Retrieves an array of all Team entities
+     * referenced by team_id=>team_id
+     *
+     * @return  de.uska.db.Team[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTeamList() {
+      if ($this->cached['Team']) return array_values($this->cache['Team']);
+      return XPClass::forName('de.uska.db.Team')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+        array('team_id', $this->getTeam_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Team entities
+     * referenced by team_id=>team_id
+     *
+     * @return  rdbms.ResultIterator<de.uska.db.Team
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTeamIterator() {
+      if ($this->cached['Team']) return new HashmapIterator($this->cache['Team']);
+      return XPClass::forName('de.uska.db.Team')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+        array('team_id', $this->getTeam_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of all Event_type entities
+     * referenced by event_type_id=>event_type_id
+     *
+     * @return  de.uska.db.Event_type[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getEvent_typeList() {
+      if ($this->cached['Event_type']) return array_values($this->cache['Event_type']);
+      return XPClass::forName('de.uska.db.Event_type')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+        array('event_type_id', $this->getEvent_type_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Event_type entities
+     * referenced by event_type_id=>event_type_id
+     *
+     * @return  rdbms.ResultIterator<de.uska.db.Event_type
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getEvent_typeIterator() {
+      if ($this->cached['Event_type']) return new HashmapIterator($this->cache['Event_type']);
+      return XPClass::forName('de.uska.db.Event_type')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+        array('event_type_id', $this->getEvent_type_id(), EQUAL)
+      ));
     }
   }
 ?>

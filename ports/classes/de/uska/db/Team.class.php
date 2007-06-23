@@ -4,11 +4,11 @@
  * $Id$
  */
  
-  uses('rdbms.DataSet');
- 
+  uses('rdbms.DataSet', 'util.HashmapIterator');
+
   /**
    * Class wrapper for table team, database uska
-   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
+   * (Auto-generated on Sat, 23 Jun 2007 16:52:13 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */
@@ -16,6 +16,10 @@
     public
       $team_id            = 0,
       $name               = '';
+  
+    protected
+      $cache= array(
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -27,9 +31,11 @@
           'team_id'             => array('%d', FieldType::INT, FALSE),
           'name'                => array('%s', FieldType::VARCHAR, FALSE)
         ));
+        $peer->setRelations(array(
+        ));
       }
     }  
-  
+
     /**
      * Retrieve associated peer
      *
@@ -38,16 +44,28 @@
     public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
+
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int team_id
-     * @return  de.uska.db.Team object
+     * @return  de.uska.db.Team entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTeam_id($team_id) {
-      return current(self::getPeer()->doSelect(new Criteria(array('team_id', $team_id, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('team_id', $team_id, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**

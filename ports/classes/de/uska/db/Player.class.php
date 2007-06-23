@@ -4,11 +4,11 @@
  * $Id$
  */
  
-  uses('rdbms.DataSet');
- 
+  uses('rdbms.DataSet', 'util.HashmapIterator');
+
   /**
    * Class wrapper for table player, database uska
-   * (Auto-generated on Wed, 14 Mar 2007 22:22:17 +0100 by ak)
+   * (Auto-generated on Sat, 23 Jun 2007 16:52:13 +0200 by Alex)
    *
    * @purpose  Datasource accessor
    */
@@ -27,6 +27,13 @@
       $changedby          = '',
       $team_id            = 0,
       $bz_id              = 0;
+  
+    protected
+      $cache= array(
+        'Created_by' => array(),
+        'Team' => array(),
+        'Bz' => array(),
+      );
 
     static function __static() { 
       with ($peer= self::getPeer()); {
@@ -49,9 +56,29 @@
           'team_id'             => array('%d', FieldType::INT, FALSE),
           'bz_id'               => array('%d', FieldType::INT, FALSE)
         ));
+        $peer->setRelations(array(
+          'Created_by' => array(
+            'classname' => 'de.uska.db.Player',
+            'key'       => array(
+              'created_by' => 'player_id',
+            ),
+          ),
+          'Team' => array(
+            'classname' => 'de.uska.db.Team',
+            'key'       => array(
+              'team_id' => 'team_id',
+            ),
+          ),
+          'Bz' => array(
+            'classname' => 'de.uska.db.Progress',
+            'key'       => array(
+              'bz_id' => 'bz_id',
+            ),
+          ),
+        ));
       }
     }  
-  
+
     /**
      * Retrieve associated peer
      *
@@ -60,45 +87,59 @@
     public static function getPeer() {
       return Peer::forName(__CLASS__);
     }
+
+    /**
+     * column factory
+     *
+     * @param   string name
+     * @return  rdbms.Column
+     * @throws  lang.IllegalArumentException
+     */
+    public static function column($name) {
+      return Peer::forName(__CLASS__)->column($name);
+    }
   
     /**
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int player_id
-     * @return  de.uska.db.Player object
+     * @return  de.uska.db.Player entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByPlayer_id($player_id) {
-      return current(self::getPeer()->doSelect(new Criteria(array('player_id', $player_id, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('player_id', $player_id, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**
      * Gets an instance of this object by index "username"
      * 
      * @param   string username
-     * @return  de.uska.db.Player object
+     * @return  de.uska.db.Player entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByUsername($username) {
-      return current(self::getPeer()->doSelect(new Criteria(array('username', $username, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('username', $username, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**
      * Gets an instance of this object by index "email"
      * 
      * @param   string email
-     * @return  de.uska.db.Player object
+     * @return  de.uska.db.Player entitiy object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByEmail($email) {
-      return current(self::getPeer()->doSelect(new Criteria(array('email', $email, EQUAL))));
+      $r= self::getPeer()->doSelect(new Criteria(array('email', $email, EQUAL)));
+      return $r ? $r[0] : NULL;
     }
 
     /**
      * Gets an instance of this object by index "created_by"
      * 
      * @param   int created_by
-     * @return  de.uska.db.Player[] object
+     * @return  de.uska.db.Player[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByCreated_by($created_by) {
@@ -109,7 +150,7 @@
      * Gets an instance of this object by index "team_id"
      * 
      * @param   int team_id
-     * @return  de.uska.db.Player[] object
+     * @return  de.uska.db.Player[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByTeam_id($team_id) {
@@ -120,7 +161,7 @@
      * Gets an instance of this object by index "bz_id"
      * 
      * @param   int bz_id
-     * @return  de.uska.db.Player[] object
+     * @return  de.uska.db.Player[] entity objects
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByBz_id($bz_id) {
@@ -372,6 +413,108 @@
      */
     public function setBz_id($bz_id) {
       return $this->_change('bz_id', $bz_id);
+    }
+
+    /**
+     * Retrieves an array of all Player entities
+     * referenced by player_id=>created_by
+     *
+     * @return  de.uska.db.Player[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getCreated_byList() {
+      if ($this->cached['Created_by']) return array_values($this->cache['Created_by']);
+      return XPClass::forName('de.uska.db.Player')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+        array('player_id', $this->getCreated_by(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Player entities
+     * referenced by player_id=>created_by
+     *
+     * @return  rdbms.ResultIterator<de.uska.db.Player
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getCreated_byIterator() {
+      if ($this->cached['Created_by']) return new HashmapIterator($this->cache['Created_by']);
+      return XPClass::forName('de.uska.db.Player')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+        array('player_id', $this->getCreated_by(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of all Team entities
+     * referenced by team_id=>team_id
+     *
+     * @return  de.uska.db.Team[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTeamList() {
+      if ($this->cached['Team']) return array_values($this->cache['Team']);
+      return XPClass::forName('de.uska.db.Team')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+        array('team_id', $this->getTeam_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Team entities
+     * referenced by team_id=>team_id
+     *
+     * @return  rdbms.ResultIterator<de.uska.db.Team
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getTeamIterator() {
+      if ($this->cached['Team']) return new HashmapIterator($this->cache['Team']);
+      return XPClass::forName('de.uska.db.Team')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+        array('team_id', $this->getTeam_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of all Progress entities
+     * referenced by bz_id=>bz_id
+     *
+     * @return  de.uska.db.Progress[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getBzList() {
+      if ($this->cached['Bz']) return array_values($this->cache['Bz']);
+      return XPClass::forName('de.uska.db.Progress')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+        array('bz_id', $this->getBz_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Progress entities
+     * referenced by bz_id=>bz_id
+     *
+     * @return  rdbms.ResultIterator<de.uska.db.Progress
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getBzIterator() {
+      if ($this->cached['Bz']) return new HashmapIterator($this->cache['Bz']);
+      return XPClass::forName('de.uska.db.Progress')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+        array('bz_id', $this->getBz_id(), EQUAL)
+      ));
     }
   }
 ?>
