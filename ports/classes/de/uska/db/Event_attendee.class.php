@@ -32,7 +32,7 @@
       with ($peer= self::getPeer()); {
         $peer->setTable('uska.event_attendee');
         $peer->setConnection('uska');
-        $peer->setPrimary(array(''));
+        $peer->setPrimary(array('event_id', 'player_id'));
         $peer->setTypes(array(
           'event_id'            => array('%d', FieldType::INT, FALSE),
           'player_id'           => array('%d', FieldType::INT, FALSE),
