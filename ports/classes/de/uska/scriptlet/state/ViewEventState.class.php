@@ -30,10 +30,8 @@
     public function process($request, $response, $context) {
       parent::process($request, $response, $context);
       
-      $eventid= intval($request->getQueryString());
-      if (!$eventid) return FALSE;
-      
-      $event= Event::getByEvent_id($eventid);
+      $event= Event::getByEvent_id(intval($request->getQueryString()));
+      if (!$event) return FALSE;
 
       $event && $query= $this->db->query('
         select
@@ -78,20 +76,17 @@
       
       // Convert event object into array, so we can add it without
       // the description member (which needs markup processing)
-      $eventarr= (array)$event;
+      $eventarr= (array)get_object_vars($event);
       unset($eventarr['description']);
-      $deadline= $event->getDeadline();
-      $target= $event->getTarget_date();
-      $attendeesCount= 0;
       
+      $attendeesCount= 0;
       $n= new Node('attendeeinfo');
       while ($query && $record= $query->next()) {
         $t= $n->addChild(new Node('player', NULL, $record));
         
         // For guests, select creator
         if (2 == $record['player_type_id']) {
-          $creator= Player::getByPlayer_id($record['created_by']);
-          $t->addChild(Node::fromObject($creator, 'creator'));
+          $t->addChild(Node::fromObject(Player::getByPlayer_id($record['created_by']), 'creator'));
         }
         
         // Count attendees
@@ -100,8 +95,8 @@
       
       // Check whether this event is still subscribeable
       $eventarr['subscribeable']= (int)
-        ((!$deadline || $deadline->isAfter(Date::now())) && 
-        $target->isAfter(Date::now()) &&
+        ((!$event->getDeadline() || $event->getDeadline()->isAfter(Date::now())) && 
+        $event->getTarget_date()->isAfter(Date::now()) &&
         (!$event->getMax_Attendees() || $attendeesCount < $event->getMax_attendees())
       );
       

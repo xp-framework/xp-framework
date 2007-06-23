@@ -29,24 +29,25 @@
     /**
      * Get identifier.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.Context context
      * @return  string
      */
     public function identifierFor($request, $context) {
-      return $this->name.'.'.$request->getParam('event_id', 'new');
+      return $this->name.'.'.$request->getParam('event_id', '');
     }
 
     /**
      * Setup handler
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  boolean
      */
     public function setup($request, $context) {
+      
       if (
-        $request->hasParam('event_id', 'new') && ($event= Event::getByEvent_id($request->getParam('event_id')))
+        $request->hasParam('event_id') && ($event= Event::getByEvent_id($request->getParam('event_id')))
       ) {
         $this->setFormValue('event_id', $event->getEvent_id());
         $this->setFormValue('event_type', $event->getEvent_type_id());
@@ -83,23 +84,15 @@
       }
       
       // Select teams
-      $pm= PropertyManager::getInstance();
-      $prop= $pm->getProperties('product');
-      $cm= ConnectionManager::getInstance();
-      
-      try {
-        $db= $cm->getByHost('uska', 0);
-        $teams= $db->select('
-            team_id,
-            name
-          from
-            team
-          where team_id in (%d)',
-          $prop->readArray($request->getProduct(), 'teams')
-        );
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $prop= PropertyManager::getInstance()->getProperties('product');
+      $teams= ConnectionManager::getInstance()->getByHost('uska', 0)->select('
+          team_id,
+          name
+        from
+          team
+        where team_id in (%d)',
+        $prop->readArray($request->getProduct(), 'teams')
+      );
       
       $this->setValue('teams', $teams);
 
@@ -109,19 +102,15 @@
     /**
      * Handle submitted data. Either create an event or update an existing one.
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  boolean
      */
     public function handleSubmittedData($request, $context) {
       $sane= TRUE;
       switch ($this->getValue('mode')) {
         case 'update':
-          try {
-            $event= Event::getByEvent_id($this->wrapper->getEvent_id());
-          } catch (SQLException $e) {
-            throw($e);
-          }
+          $event= Event::getByEvent_id($this->wrapper->getEvent_id());
           break;
         
         case 'create':
@@ -195,21 +184,17 @@
       // Some check failed, bail out...
       if (!$sane) return FALSE;
       
-      try {
-        switch ($this->getValue('mode')) {
-          case 'update': {
-            $event->update();
-            break;
-          }
-          
-          case 'create':
-          default: {
-            $event->insert();
-            break;
-          }
+      switch ($this->getValue('mode')) {
+        case 'update': {
+          $event->update();
+          break;
         }
-      } catch (SQLException $e) {
-        throw($e);
+
+        case 'create':
+        default: {
+          $event->insert();
+          break;
+        }
       }
       
       return TRUE;

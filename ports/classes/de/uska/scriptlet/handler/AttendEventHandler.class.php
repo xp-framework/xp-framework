@@ -9,7 +9,7 @@
     'de.uska.scriptlet.wrapper.AttendEventWrapper',
     'de.uska.db.Player',
     'de.uska.db.Event',
-    'de.uska.db.EventAttendee'
+    'de.uska.db.Event_attendee'
   );
   
   /**
@@ -31,8 +31,8 @@
     /**
      * Retrieve identifier.
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  string
      */
     public function identifierFor($request, $context) {
@@ -42,14 +42,13 @@
     /**
      * Setup handler
      *
-     * @param   &scriptlet.xml.XMLScriptletRequest request
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.workflow.Context context
      * @return  boolean
      */
     public function setup($request, $context) {
       $this->setFormValue('offers_seats', 0);
       if ($request->hasParam('guest')) $this->setValue('mode', 'addguest');
-      
 
       $player_id= $context->user->getPlayer_id();
       if (
@@ -61,14 +60,14 @@
       }
       
       // Check if we're updating or inserting later
-      $attendee= EventAttendee::getByEvent_idPlayer_id($request->getParam('event_id'), $player_id);
+      $attendee= Event_attendee::getByEvent_idPlayer_id($request->getParam('event_id'), $player_id);
       if ($player_id == $context->user->getPlayer_id()) {
         $player= $context->user;
       } else {
         $player= Player::getByPlayer_id($player_id);
       }
       
-      if ($attendee) {
+      if ($attendee instanceof Event_attendee) {
         $this->setFormValue('attend', $attendee->getAttend());
         $this->setFormValue('offers_seats', $attendee->getOffers_seats());
         $this->setFormValue('needs_seat', $attendee->getNeeds_driver());
@@ -153,9 +152,9 @@
         }
         
         $newAttend= FALSE;
-        $eventattend= EventAttendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
-        if (!is('de.uska.db.EventAttendee', $eventattend)) {
-          $eventattend= new EventAttendee();
+        $eventattend= Event_attendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
+        if (!is('de.uska.db.Event_attendee', $eventattend)) {
+          $eventattend= new Event_attendee();
           $eventattend->setEvent_id($this->wrapper->getEvent_id());
           $eventattend->setPlayer_id($attendee);
           $newAttend= TRUE;
