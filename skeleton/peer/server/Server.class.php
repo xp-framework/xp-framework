@@ -147,9 +147,21 @@
         // find some, loop over the returned sockets. In case the select() call
         // fails, break out of the loop and terminate the server - this really 
         // should not happen!
-        if (FALSE === socket_select($read, $null, $null, NULL)) {
-          throw(new SocketException('Call to select() failed'));
-        }
+        do {
+          $socketSelectInterrupted = FALSE;
+          if (FALSE === socket_select($read, $null, $null, NULL)) {
+          
+            // If socket_select has been interrupted by a signal, it will return FALSE,
+            // but no actual error occurred - so check for "real" errors before throwing
+            // an exception. If no error has occurred, skip over to the socket_select again.
+            if (0 !== socket_last_error($this->socket->_sock)) {
+              throw new SocketException('Call to select() failed');
+            } else {
+              $socketSelectInterrupted = TRUE;
+            }
+          }
+        // if socket_select was interrupted by signal, retry socket_select
+        } while ($socketSelectInterrupted);
 
         foreach ($read as $i => $handle) {
 
