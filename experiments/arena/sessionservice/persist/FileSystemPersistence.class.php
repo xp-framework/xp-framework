@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
+  uses('persist.SessionPersistence', 'io.File', 'io.FileUtil');
+
   /**
    * (Insert class' description here)
    *
-   * @purpose  purpose
+   * @purpose  SessionPersistence implementation
    */
-  class FileSystemPersistence extends Object {
+  class FileSystemPersistence extends Object implements SessionPersistence {
     protected
       $dir= '';
       
@@ -28,14 +30,20 @@
      * @param   int timeout
      * @return  string session id
      */
-    #[@command(name= 'session_create', args= array('%d'))]
-    public function create($timeout) {
-      static $i;
-      $i++;
+    public function create($identifier, $timeout) {
+      static $id= 0;
+      
+      $id++;
+      $this->s[$identifier.$id]= array();
+      return $identifier.$id;
+    }
+    
+    public function load($id) {
+      $this->s[$id]= (array)unserialize(FileUtil::getContents(new File($this->dir.$id.'.sess')));
+    }
 
-      $id= 'ac111d0f'.$i.$timeout;
-      $this->s[$id]= array();
-      return $id;
+    public function save($id) {
+      FileUtil::setContents(new File($this->dir.$id.'.sess'), serialize($this->s[$id]));
     }
 
     /**
@@ -43,7 +51,15 @@
      *
      * @param   string session id
      */
-    #[@command(name= 'session_isvalid', args= array('%s'))]
+    public function reset($id) {
+      $this->s[$id]= array();
+    }
+
+    /**
+     * Check whether a given session is valid
+     *
+     * @param   string session id
+     */
     public function valid($id) {
       return isset($this->s[$id]);
     }
@@ -53,9 +69,9 @@
      *
      * @param   string session id
      */
-    #[@command(name= 'session_terminate', args= array('%s'))]
     public function terminate($id) {
       unset($this->s[$id]);
+      unlink($this->dir.$id.'.sess');
       return TRUE;
     }
 
@@ -65,10 +81,8 @@
      * @param   string session id
      * @param   string area
      */
-    #[@command(name= 'session_keys', args= array('%s %s'))]
-    public function keys($id, $area) {
-      if (!($keys= array_keys($this->s[$id][$area]))) return NULL;
-      return urlencode(implode(' ', $keys));
+    public function keys($id) {
+      return array_keys($this->s[$id]);
     }
 
     /**
@@ -78,9 +92,19 @@
      * @param   string area
      * @param   string key
      */
-    #[@command(name= 'var_read', args= array('%s %s %s'))]
-    public function read($id, $area, $key) {
-      return $this->s[$id][$area][$key];
+    public function read($id, $key) {
+      return $this->s[$id][$key];
+    }
+
+    /**
+     * Read a value
+     *
+     * @param   string id session id
+     * @param   string area
+     * @param   string key
+     */
+    public function exists($id, $key) {
+      return isset($this->s[$id]);
     }
 
     /**
@@ -91,9 +115,8 @@
      * @param   string key
      * @param   string value
      */
-    #[@command(name= 'var_write', args= array("%s %s %s %[^\n]"))]
-    public function write($id, $area, $key, $value) {
-      $this->s[$id][$area][$key]= $value;
+    public function write($id, $key, $value) {
+      $this->s[$id][$key]= $value;
       return TRUE;
     }
 
@@ -104,9 +127,8 @@
      * @param   string area
      * @param   string key
      */
-    #[@command(name= 'var_delete', args= array('%s %s %s'))]
-    public function delete($id, $area, $key, $value) {
-      unset($this->s[$id][$area][$key]);
+    public function delete($id, $key, $value) {
+      unset($this->s[$id][$key]);
       return TRUE;
     }
 
@@ -115,7 +137,6 @@
      *
      * @param   string id session id
      */
-    #[@command(name= 'session_lock', args= array('%s'))]
     public function lock($id) {
       $this->l[$id]= TRUE;
       return TRUE;
@@ -126,7 +147,6 @@
      *
      * @param   string id session id
      */
-    #[@command(name= 'session_unlock', args= array('%s'))]
     public function unlock($id) {
       unset($this->l[$id]);
       return TRUE;
@@ -138,7 +158,6 @@
      * @param   string id session id
      * @param   string uid user id
      */
-    #[@command(name= 'session_associate', args= array('%s %s'))]
     public function associate($id, $uid) {
       return TRUE;
     }

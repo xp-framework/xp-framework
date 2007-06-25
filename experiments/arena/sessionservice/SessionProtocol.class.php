@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.server.ServerProtocol');
+  uses(
+    'peer.server.ServerProtocol', 
+    'remote.protocol.Serializer',
+    'session.RemoteSessionConstants'
+  );
 
   /**
    * HTTP protocol implementation
@@ -12,14 +16,31 @@
    * @purpose  Protocol
    */
   class SessionProtocol extends Object implements ServerProtocol {
+    protected static $types= array(
+      RemoteSessionConstants::INIT    => 'initializeSession',
+      RemoteSessionConstants::CREATE  => 'createSession',
+      RemoteSessionConstants::VALID   => 'sessionIsValid',
+      RemoteSessionConstants::KILL    => 'destroySession',
+      RemoteSessionConstants::RESET   => 'resetSession',
 
+      RemoteSessionConstants::EXISTS  => 'sessionValueExists',
+      RemoteSessionConstants::WRITE   => 'writeToSession',
+      RemoteSessionConstants::READ    => 'readFromSession',
+      RemoteSessionConstants::DELETE  => 'deleteFromSession',
+      RemoteSessionConstants::KEYS    => 'sessionKeys',
+    );
+    
     /**
      * Initialize Protocol
      *
      * @return  bool
      */
     public function initialize() {
-      // Intentionally empty
+      $this->serializer= new Serializer();
+
+      // Encode our host IP into the identifier
+      $ip= $this->server->socket->host;
+      $this->identifier= implode('', array_map('dechex', explode('.', $ip)));
     }
 
     /**
@@ -45,17 +66,75 @@
      *
      * @param   persist.SessionPersistence persist
      */
-    public function setPersistence($persist) {
-      $this->persist= array('@@' => $persist);
-      foreach ($persist->getClass()->getMethods() as $method) {
-        if (!$method->hasAnnotation('command')) continue;
-        
-        $a= $method->getAnnotation('command');
-        $this->persist[$a['name']]= array($method, $a['args']);
-      }
-      $persist->server= $this->server;
+    public function setPersistence(SessionPersistence $persist) {
+      $this->persist= $persist;
     }
-  
+
+    /**
+     * Read a specified number of bytes
+     *
+     * @param   int num
+     * @return  string 
+     */
+    protected function readBytes(Socket $s, $num) {
+      $return= '';
+      while (strlen($return) < $num) {
+        if (0 == strlen($buf= $s->readBinary($num - strlen($return)))) return;
+        $return.= $buf;
+      }
+      return $return;
+    }
+    
+    public function createSession($timeout) {
+      $id= $this->persist->create($this->identifier, $timeout);
+      $this->persist->save($id);
+      return $id;
+    }
+
+    public function initializeSession($id) {
+      $this->persist->load($id);
+      return TRUE;
+    }
+
+    public function destroySession($id) {
+      $this->persist->terminate($id);
+      return TRUE;
+    }
+
+    public function resetSession($id) {
+      $this->persist->reset($id);
+      $this->persist->save($id);
+      return TRUE;
+    }
+
+    public function sessionIsValid($id) {
+      return $this->persist->valid($id);
+    }
+ 
+    public function sessionValueExists($id, $name) {
+      return $this->persist->exists($id, $name);
+    }
+
+    public function readFromSession($id, $name) {
+      return $this->persist->read($id, $name);
+    }
+
+    public function writeToSession($id, $name, $value) {
+      $this->persist->write($id, $name, $value);
+      $this->persist->save($id);
+      return TRUE;
+    }
+
+    public function deleteFromSession($id, $name) {
+      $this->persist->delete($id, $name);
+      $this->persist->save($id);
+      return TRUE;
+    }
+
+    public function sessionKeys($id) {
+      return $this->persist->keys($id);
+    }
+ 
     /**
      * Handle client data
      *
@@ -64,46 +143,45 @@
      */
     public function handleData($socket) {
       try {
-        while (FALSE === ($p= strpos($input, "\n"))) {
-          if (NULL === ($buf= $socket->readBinary(1024))) {
-            // EOF
-            return $socket->close();
-          }
-          $input.= $buf;
-        }
+        $header= unpack(
+          'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
+          $this->readBytes($socket, 12)
+        );
       } catch (IOException $e) {
         // Ignore Console::$err->writeLine($e);
         return $socket->close();
       }
       
-      Console::writeLine('>>> ', addcslashes($input, "\0..\17"));
-      $command= substr($input, 0, $p= strpos($input, ' '));
-      if (!isset($this->persist[$command])) {
-        Console::$err->writeLine('*** Unknown command `', $command, '`');
-        $socket->write("+OK\n"); // -ERR command `".$command."` not understood\n");
-        return;
+      if (!$header['length']) {
+        return $socket->close();
       }
 
-      // Invoke correct handler
-      $args= sscanf(substr($input, $p+ 1), $this->persist[$command][1][0]);
+      $args= $this->serializer->valueOf(new SerializedData($this->readBytes($socket, $header['length'])));      
       try {
-        $return= $this->persist[$command][0]->invoke(
-          $this->persist['@@'], 
+        $return= call_user_func_array(
+          array($this, self::$types[$header['type']]), 
           $args
         );
+        $type= RemoteSessionConstants::OK;
       } catch (Throwable $e) {
-        Console::$err->writeLine('*** Handling ', $command, '~', $e);
-        $socket->write("-ERR ".$e->getMessage()."\n");
-        return;
+        $return= $e;
+        $type= RemoteSessionConstants::ERROR;
       }
+
+      $data= $this->serializer->representationOf($return);
+      $length= strlen($data);
       
-      Console::writeLine('<<< ', addcslashes($return, "\0..\17"));
-      
-      if (NULL === $return) {
-        $socket->write("-NOKEY\n");
-      } else {
-        $socket->write("+OK ".$return."\n");
-      }
+      $packet= pack(
+        'Nc4Na*', 
+        0x3c872748, 
+        1,    // vmajor
+        0,    // vminor
+        $type,
+        FALSE,
+        $length,
+        $data
+      );
+      $socket->write($packet);
     }
 
     /**
