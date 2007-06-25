@@ -54,7 +54,8 @@
     // {{{ internal void except(Exception e)
     //     Exception handler
     static function except($e) {
-      self::fault(
+      header('HTTP/1.1 500 Internal Server Error');
+      echo self::fault(
         $e instanceof XPException ? $e : new XPException($e->getMessage()), 
         HTTP_INTERNAL_SERVER_ERROR
       );

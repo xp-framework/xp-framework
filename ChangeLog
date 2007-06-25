@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fixed exception handler in SAPI soap.service
+  (kiesel)
 - Implemented sql function and projections for postgreSQL and sqllite
   (wagner)
 
