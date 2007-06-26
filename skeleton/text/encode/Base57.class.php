@@ -28,12 +28,15 @@
     public static function encode($number) {
       static $chars= BASE57_CHARTABLE;
 
+      $prec= ini_set('precision', 20);
+
       $length= ceil(log($number, exp(1)) / log(57, exp(1)));
       for ($out= '', $i= 0; $i < $length; $i++) {
         $out= $chars{bcmod($number, 57)}.$out;
         $number= bcdiv($number, 57, 0);
       }
       
+      ini_set('precision', $prec);
       return $out;      
     }
     
@@ -45,11 +48,15 @@
      */
     public static function decode($str) { 
       static $chars= BASE57_CHARTABLE;
+
+      $prec= ini_set('precision', 20);
       
       $number= 0;
       for ($i= 0, $s= strlen($str); $i < $s; $i++) {
         $number= bcadd(bcmul($number, 57), strpos($chars, $str{$i}));
       }
+
+      ini_set('precision', $prec);
       return $number;
     }
   }
