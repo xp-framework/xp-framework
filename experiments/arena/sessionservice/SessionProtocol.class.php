@@ -6,7 +6,7 @@
 
   uses(
     'peer.server.ServerProtocol', 
-    'remote.protocol.Serializer',
+    'remote.protocol.ByteCountedString',
     'session.RemoteSessionConstants'
   );
 
@@ -36,7 +36,6 @@
      * @return  bool
      */
     public function initialize() {
-      $this->serializer= new Serializer();
 
       // Encode our host IP into the identifier
       $ip= $this->server->socket->host;
@@ -85,54 +84,54 @@
       return $return;
     }
     
-    public function createSession($timeout) {
+    protected function createSession($timeout) {
       $id= $this->persist->create($this->identifier, $timeout);
       $this->persist->save($id);
-      return $id;
+      return array(RemoteSessionConstants::STATUS, $id);
     }
 
-    public function initializeSession($id) {
+    protected function initializeSession($id) {
       $this->persist->load($id);
-      return TRUE;
+      return array(RemoteSessionConstants::STATUS, TRUE);
     }
 
-    public function destroySession($id) {
+    protected function destroySession($id) {
       $this->persist->terminate($id);
-      return TRUE;
+      return array(RemoteSessionConstants::STATUS, TRUE);
     }
 
-    public function resetSession($id) {
+    protected function resetSession($id) {
       $this->persist->reset($id);
       $this->persist->save($id);
-      return TRUE;
+      return array(RemoteSessionConstants::STATUS, TRUE);
     }
 
-    public function sessionIsValid($id) {
-      return $this->persist->valid($id);
+    protected function sessionIsValid($id) {
+      return array(RemoteSessionConstants::STATUS, $this->persist->valid($id));
     }
  
-    public function sessionValueExists($id, $name) {
-      return $this->persist->exists($id, $name);
+    protected function sessionValueExists($id, $name) {
+      return array(RemoteSessionConstants::STATUS, $this->persist->exists($id, $name));
     }
 
-    public function readFromSession($id, $name) {
-      return $this->persist->read($id, $name);
+    protected function readFromSession($id, $name) {
+      return array(RemoteSessionConstants::VALUE, NULL, new ByteCountedString($this->persist->read($id, $name)));   // FIXME: FALSE for -NOKEY
     }
 
-    public function writeToSession($id, $name, $value) {
+    protected function writeToSession($id, $name, $value) {
       $this->persist->write($id, $name, $value);
       $this->persist->save($id);
-      return TRUE;
+      return array(RemoteSessionConstants::STATUS, TRUE);
     }
 
-    public function deleteFromSession($id, $name) {
+    protected function deleteFromSession($id, $name) {
       $this->persist->delete($id, $name);
       $this->persist->save($id);
-      return TRUE;
+      return array(RemoteSessionConstants::STATUS, TRUE);
     }
 
-    public function sessionKeys($id) {
-      return $this->persist->keys($id);
+    protected function sessionKeys($id) {
+      return array(RemoteSessionConstants::STATUS, $this->persist->keys($id));
     }
  
     /**
@@ -144,7 +143,7 @@
     public function handleData($socket) {
       try {
         $header= unpack(
-          'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
+          'Nmagic/cvmajor/cvminor/ctype/cbytes/Nlength', 
           $this->readBytes($socket, 12)
         );
       } catch (IOException $e) {
@@ -156,32 +155,34 @@
         return $socket->close();
       }
 
-      $args= $this->serializer->valueOf(new SerializedData($this->readBytes($socket, $header['length'])));      
+      $args= unserialize($this->readBytes($socket, $header['length']));
+      if ($header['bytes']) {
+        $args[]= ByteCountedString::readFrom($socket);
+      }
       try {
         $return= call_user_func_array(
           array($this, self::$types[$header['type']]), 
           $args
         );
-        $type= RemoteSessionConstants::OK;
+        $type= $return[0];
+        $data= serialize($return[1]);
       } catch (Throwable $e) {
-        $return= $e;
+        $data= serialize($e);
         $type= RemoteSessionConstants::ERROR;
       }
 
-      $data= $this->serializer->representationOf($return);
-      $length= strlen($data);
-      
       $packet= pack(
         'Nc4Na*', 
         0x3c872748, 
         1,    // vmajor
         0,    // vminor
         $type,
-        FALSE,
-        $length,
+        isset($return[2]),
+        strlen($data),
         $data
       );
       $socket->write($packet);
+      $return[2] && $return[2]->writeTo($socket);
     }
 
     /**

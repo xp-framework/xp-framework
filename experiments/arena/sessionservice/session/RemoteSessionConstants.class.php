@@ -28,8 +28,9 @@
     const KEYS    = 0x0014;
     
     // Responses
-    const OK      = 0x0020;
-    const ERROR   = 0x0021;
+    const ERROR   = 0x0020;
+    const STATUS  = 0x0021;
+    const VALUE   = 0x0022;
 
   }
 ?>

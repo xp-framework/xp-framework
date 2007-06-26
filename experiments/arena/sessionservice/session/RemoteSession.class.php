@@ -29,20 +29,11 @@
      * @param   int timeout time in seconds until session is auto-destroyed
      */
     public function __construct($server= '172.17.29.15', $port= 2001, $timeout= 86400) {
-      $this->conn= $this->connectionTo($server, $port, $timeout);
+      $this->conn= new SessionConnection();
+      $this->remote= $server;
+      $this->port= $port;
       $this->timeout= $timeout;
       parent::__construct();
-    }
-
-    /**
-     * Create conncol handler member.
-     *
-     * @param   string server
-     * @param   int port
-     * @return  SessionConnection
-     */
-    protected function connectionTo($server, $port) {
-      return new SessionConnection($server, $port);
     }
 
     /**
@@ -52,11 +43,12 @@
      * @return  bool
      */
     public function initialize($id) {
-      $this->conn->connect();
       if (NULL === $id) {
+        $this->conn->connectTo($this->remote, $this->port);
         $this->id= $this->conn->command(RemoteSessionConstants::CREATE, array($this->timeout));
         $this->isNew= TRUE;
       } else {
+        $this->conn->connectTo(implode('.', sscanf($id, '%2x%2x%2x%2x')), $this->port);
         $this->conn->command(RemoteSessionConstants::INIT, array($id));
         $this->id= $id;
         $this->isNew= FALSE;
@@ -112,7 +104,11 @@
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function putValue($name, $value, $stor= HANNAH_TMP) {
-      $this->conn->command(RemoteSessionConstants::WRITE, array($this->id, $name, $value));
+      $this->conn->command(
+        RemoteSessionConstants::WRITE, 
+        array($this->id, $name), 
+        new ByteCountedString(serialize($value))
+      );
     }
     
     /**

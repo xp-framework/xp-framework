@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('remote.protocol.Serializer', 'peer.BSDSocket');
+  uses('peer.BSDSocket', 'remote.protocol.ByteCountedString');
 
   /**
    * (Insert class' description here)
@@ -15,10 +15,15 @@
     protected
       $s= NULL;
 
-    public function __construct($host, $port) {
-      $this->socket= new BSDSocket($host, $port);
+    /**
+     * Session connections
+     *
+     * @param   string host
+     * @param   int port
+     */
+    public function __construct() {
+      $this->socket= new BSDSocket('0.0.0.0', 0);
       $this->socket->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
-      $this->serializer= new Serializer();
     }
 
     /**
@@ -36,12 +41,26 @@
       return $return;
     }
 
-    public function connect($id= NULL) {
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function connectTo($host, $port) {
+      $this->socket->host= $host;
+      $this->socket->port= $port;
       $this->socket->connect();
     }
   
-    public function command($type, $args= array()) {
-      $data= $this->serializer->representationOf($args);
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    public function command($type, $args= array(), ByteCountedString $bytes= NULL) {
+      $data= serialize($args);
       $length= strlen($data);
       // Console::writeLine('>>> ', $type, $args);
 
@@ -52,25 +71,29 @@
         1,    // vmajor
         0,    // vminor
         $type,
-        FALSE,
+        NULL !== $bytes,
         $length,
         $data
       );
       $this->socket->write($packet);
+      $bytes && $bytes->writeTo($this->socket);
       
       // Read response
       $header= unpack(
-        'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
+        'Nmagic/cvmajor/cvminor/ctype/cbytes/Nlength', 
         $this->readBytes(12)
       );
 
       // Check response
-      if (RemoteSessionConstants::OK === $header['type']) {
+      if (RemoteSessionConstants::STATUS === $header['type']) {
         $data= $this->readBytes($header['length']);
-        return $this->serializer->valueOf(new SerializedData($data));
+        return unserialize($data);
+      } else if (RemoteSessionConstants::VALUE  === $header['type']) {
+        $this->readBytes($header['length']);    // Discard
+        return unserialize(ByteCountedString::readFrom($this->socket));
       } else if (RemoteSessionConstants::ERROR == $header['type']) {
         $data= $this->readBytes($header['length']);
-        throw $this->serializer->valueOf(new SerializedData($data));
+        throw unserialize($data);
       }
       
       Console::writeLine('??? ', $header);
