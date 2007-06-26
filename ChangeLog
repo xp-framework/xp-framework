@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Protect Base57 encoding and decoding against possibly inccorrect results 
+  if EG(precision) is too small
+  (friebe)
 - Make socket_select() work properly when interrupted by signals
   (sperber)
 - Fixed exception handler in SAPI soap.service
