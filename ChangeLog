@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.5.3, released 2007-06-26
+----------------------------------
+SVN version: 10665
+
 - Protect Base57 encoding and decoding against possibly inccorrect results 
   if EG(precision) is too small
   (friebe)
