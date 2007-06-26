@@ -68,7 +68,7 @@
      */
     #[@test]
     public function testReattach() {
-      $this->session->initialize();
+      $this->session->initialize(NULL);
       
       $copy= new HttpSession();
       $copy->initialize($this->session->getId());
@@ -114,7 +114,7 @@
       $fixture= new Object();
       $hash= $fixture->hashCode();
       $this->session->putValue('foo', $fixture);
-      $this->assertClass($fixture, 'lang.Object') &&
+      $this->assertClass($fixture, 'lang.Object');
       $this->assertEquals($hash, $fixture->hashCode());
     }
     
@@ -130,6 +130,50 @@
       
       $this->session->reset();
       $this->assertEquals(0, sizeof($this->session->getValueNames()));
+    }
+
+    /**
+     * Test round trip
+     *
+     */
+    #[@test]
+    public function stringRoundtrip() {
+      $this->session->initialize(NULL);
+      $this->session->putValue('foo', 'FOO');
+      $this->assertEquals('FOO', $this->session->getValue('foo'));
+    }
+
+    /**
+     * Test round trip
+     *
+     */
+    #[@test]
+    public function intRoundtrip() {
+      $this->session->initialize(NULL);
+      $this->session->putValue('foo', 1);
+      $this->assertEquals(1, $this->session->getValue('foo'));
+    }
+
+    /**
+     * Test round trip
+     *
+     */
+    #[@test]
+    public function arrayRoundtrip() {
+      $this->session->initialize(NULL);
+      $this->session->putValue('foo', array(1, 2, 3));
+      $this->assertEquals(array(1, 2, 3), $this->session->getValue('foo'));
+    }
+
+    /**
+     * Test round trip
+     *
+     */
+    #[@test]
+    public function objectRoundtrip() {
+      $this->session->initialize(NULL);
+      $this->session->putValue('foo', new Date('1977-12-14'));
+      $this->assertEquals(new Date('1977-12-14'), $this->session->getValue('foo'));
     }
     
     /**
@@ -152,5 +196,4 @@
       $this->session->putValue('foo', $f= 3);
     }
   }
-
 ?>
