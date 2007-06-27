@@ -27,7 +27,7 @@
      */
     public static function projectionList($properties= array()) {
       $pl= new ProjectionList();
-      foreach ($properties as $property) $pl->add(new SimpleProjection($property, Projection::PROP));
+      foreach ($properties as $property) $pl->add($property);
       return $pl;
     }
     

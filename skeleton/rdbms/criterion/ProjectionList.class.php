@@ -5,7 +5,7 @@
  */
   uses(
     'rdbms.criterion.Projection',
-    'rdbms.criterion.SimpleProjection'
+    'rdbms.criterion.Projections'
   );
 
   /**
@@ -29,8 +29,8 @@
      */
     public function add($projection, $alias= '') {
       $this->projections[]= ($projection instanceof SQLFragment)
-      ? $projection= Projections::property($projection, $alias)
-      : $projection;
+      ? $projection
+      : $projection= Projections::property($projection, $alias);
       return $this;
     }
 
