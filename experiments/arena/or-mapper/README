@@ -1,0 +1,57 @@
+O/R-Mapper experiment
+========================================================================
+$Id$
+
+SQL
+---
+create database test;
+
+use test;
+
+create table person (
+  person_id int(10) unsigned not null auto_increment, 
+  firstname varchar(255) not null, 
+  lastname varchar(255) not null, 
+  email varchar(255) not null, 
+  lastchange datetime not null, 
+  changedby varchar(255) not null, 
+  bz_id int(6) unsigned not null default 500, 
+  primary key (person_id)
+) engine=InnoDB;
+
+create table account (
+  account_id int(10) unsigned not null auto_increment, 
+  person_id int(10) unsigned not null, 
+  username varchar(32) not null, 
+  password varchar(255) not null, 
+  lastchange datetime not null, 
+  changedby varchar(255) not null, 
+  bz_id int(6) unsigned not null default 500, 
+  primary key (account_id)
+) engine=InnoDB;
+
+alter table account 
+  add foreign key FK_accountperson (person_id) 
+  references person (person_id)
+;
+
+grant select, insert, update, delete on person to test identified by "1fef9bc";
+grant select, insert, update, delete on account to test;
+flush privileges;
+
+Create XML definitions
+----------------------
+$ xpcli net.xp_framework.db.generator.DataSetCreator -c definitions/config.ini
+
+Create PHP classes
+------------------
+$ for i in `find definitions/tables -name '*.xml'`; do \
+    xpcli net.xp_framework.db.generator.DataSetCreator -c definitions/config.ini -X $i \
+  done
+
+Create entities
+---------------
+$ xpcli net.xp_forge.examples.CreatePerson -f Timm -l Friebe -e friebe@example.com
+$ xpcli net.xp_forge.examples.CreateAccount -i 1 -u timm -p 1,tzUjyHgz
+
+<EOF>
