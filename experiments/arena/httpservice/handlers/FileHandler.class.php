@@ -36,18 +36,27 @@
      */
     public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
       $url= parse_url($query);
-      $f= new File($this->docroot.strtr(
+      $absolutePath= $this->docroot.strtr(
         preg_replace('#\.\./?#', '/', urldecode($url['path'])), 
         '/', 
         DIRECTORY_SEPARATOR
-      ));
+      );
+
+      // Ensure what is trying to be accessed is a file
+      if (!is_file($absolutePath)) {
+        $this->sendErrorMessage($socket, 403, 'Forbidden', $url['path'].': Not a file');
+        return;
+      }
+      
+      $f= new File($absolutePath);
       $lastModified= $f->lastModified();
 
       // Implement If-Modified-Since/304 Not modified
       if (isset($headers['if-modified-since'])) {
         $d= strtotime($headers['if-modified-since']);
         if ($lastModified <= $d) {
-          return $this->sendHeader($socket, 304, 'Not modified', array());
+          $this->sendHeader($socket, 304, 'Not modified', array());
+          return;
         }
       }
       
