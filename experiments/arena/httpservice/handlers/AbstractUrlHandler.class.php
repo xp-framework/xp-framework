@@ -21,6 +21,9 @@
      */
     protected function sendHeader(Socket $socket, $sc, $message, array $headers) {
       $socket->write('HTTP/1.1 '.$sc.' '.$message."\r\n");
+      $socket->write('Date: '.gmdate('D, d M Y H:i:s T')."\r\n");
+      $socket->write('Server: XP/PHP '.phpversion()."\r\n");
+      $socket->write("Connection: close\r\n");
       foreach ($headers as $key => $value) {
         $socket->write($key.': '.$value."\r\n");
       }

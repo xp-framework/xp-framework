@@ -41,6 +41,16 @@
         '/', 
         DIRECTORY_SEPARATOR
       ));
+      $lastModified= $f->lastModified();
+
+      // Implement If-Modified-Since/304 Not modified
+      if (isset($headers['if-modified-since'])) {
+        $d= strtotime($headers['if-modified-since']);
+        if ($lastModified <= $d) {
+          return $this->sendHeader($socket, 304, 'Not modified', array());
+        }
+      }
+      
       try {
         $f->open(FILE_MODE_READ);
       } catch (FileNotFoundException $e) {
@@ -54,6 +64,7 @@
 
       // Send OK header
       $this->sendHeader($socket, 200, 'OK', array(
+        'Last-Modified'   => gmdate('D, d M Y H:i:s T', $lastModified),
         'Content-Type'    => MimeType::getByFileName($f->getFilename()),
         'Content-Length'  => $f->size(),
       ));
