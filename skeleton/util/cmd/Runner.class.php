@@ -35,6 +35,14 @@
    * @purpose  Runner
    */
   class Runner extends Object {
+    private static
+      $out    = NULL,
+      $err    = NULL;
+    
+    static function __static() {
+      self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
+      self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
+    }
   
     /**
      * Converts api-doc "markup" to plain text w/ ASCII "art"
@@ -60,8 +68,8 @@
 
       // Description
       if (NULL !== ($comment= $class->getComment())) {
-        Console::writeLine(self::textOf($comment));
-        Console::writeLine(str_repeat('=', 72));
+        self::$err->writeLine(self::textOf($comment));
+        self::$err->writeLine(str_repeat('=', 72));
       }
 
       foreach ($class->getMethods() as $method) {
@@ -92,19 +100,19 @@
 
       // Usage
       asort($positional);
-      Console::write('Usage: $ xpcli ', $class->getName(), ' ');
+      self::$err->write('Usage: $ xpcli ', $class->getName(), ' ');
       foreach ($positional as $name) {
-        Console::write('<', $name, '> ');
+        self::$err->write('<', $name, '> ');
       }
       foreach ($extra as $name => $optional) {
-        Console::write(($optional ? '[' : ''), '--', $name, ($optional ? '] ' : ' '));
+        self::$err->write(($optional ? '[' : ''), '--', $name, ($optional ? '] ' : ' '));
       }
-      Console::writeLine();
+      self::$err->writeLine();
 
       // Argument details
-      Console::writeLine('Arguments:');
+      self::$err->writeLine('Arguments:');
       foreach ($details as $which => $comment) {
-        Console::writeLine('* ', $which, "\n  ", $comment, "\n");
+        self::$err->writeLine('* ', $which, "\n  ", $comment, "\n");
       }
     }
   
@@ -119,7 +127,7 @@
       
       // No arguments given - show our own usage
       if ($params->count <= 1) {
-        Console::writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
+        self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
@@ -168,15 +176,15 @@
 
       // Sanity check
       if (!$classname) {
-        Console::writeLine('*** Missing classname');
+        self::$err->writeLine('*** Missing classname');
         return 1;
       }
       try {
         $class= XPClass::forName($classname);
       } catch (ClassNotFoundException $e) {
-        Console::writeLine('*** ', $e->getMessage());
+        self::$err->writeLine('*** ', $e->getMessage());
         return 1;
-      }  
+      }
 
       // Usage
       if ($classparams->exists('help', '?')) {
@@ -195,8 +203,8 @@
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
 
       $instance= $class->newInstance();
-      $instance->out= new StringWriter(new ConsoleOutputStream(STDOUT));
-      $instance->err= new StringWriter(new ConsoleOutputStream(STDERR));
+      $instance->out= self::$out;
+      $instance->err= self::$err;
 
       foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('inject')) {      // Perform injection
@@ -218,7 +226,7 @@
             }
 
             default: {
-              Console::writeLine('*** Unknown injection type "'.$inject['type'].'"');
+              self::$err->writeLine('*** Unknown injection type "'.$inject['type'].'"');
               return 2;
             }
           }
@@ -226,7 +234,7 @@
           try {
             $method->invoke($instance, $args);
           } catch (Throwable $e) {
-            Console::writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
+            self::$err->writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
             return 2;
           }
         } else if ($method->hasAnnotation('args')) { // Pass all arguments
@@ -247,7 +255,7 @@
           try {
             $method->invoke($instance, array($pass));
           } catch (Throwable $e) {
-            Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
             return 2;
           }
         } else if ($method->hasAnnotation('arg')) {  // Pass arguments
@@ -270,7 +278,7 @@
           } else if (!$classparams->exists($select, $short)) {
             list($first, )= $method->getArguments();
             if (!$first->isOptional()) {
-              Console::writeLine('*** Argument '.$name.' does not exist!');
+              self::$err->writeLine('*** Argument '.$name.' does not exist!');
               return 2;
             }
 
@@ -282,14 +290,14 @@
           try {
             $method->invoke($instance, $args);
           } catch (Throwable $e) {
-            Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
             return 2;
           }
         } else if ($method->hasAnnotation('args')) { // Pass all arguments
           try {
             $method->invoke($instance, array($classparams->list));
           } catch (Throwable $e) {
-            Console::writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
             return 2;
           }
         }
