@@ -13,7 +13,9 @@
    */
   class HttpService extends Command {
     protected 
-      $model= NULL;
+      $model= NULL,
+      $ip   = '',
+      $port = 0;
 
     protected static 
       $models= array(
@@ -41,6 +43,28 @@
       $this->model= Package::forName('peer.server')->loadClass(self::$models[$model]);
       $this->out->writeLine('---> Using server model ', $this->model->getName());
     }
+
+    /**
+     * Set bind IP - defaults to: 127.0.0.1 (localhost)
+     *
+     * @param   string ip default '127.0.0.1'
+     */
+    #[@arg]
+    public function setIp($ip= '127.0.0.1') {
+      $this->ip= $ip;
+    }
+
+    /**
+     * Set bind port - defaults to 80 (HTTP). You may encounter problems
+     * on Un*x systems if you are not logged on as root, use 8080 or 8081
+     * instead in this case.
+     *
+     * @param   int port default 80
+     */
+    #[@arg]
+    public function setPort($port= 80) {
+      $this->port= $port;
+    }
     
     /**
      * Runs this server. Terminate by pressing ^C in the shell you start
@@ -48,7 +72,8 @@
      *
      */
     public function run() {
-      $server= $this->model->newInstance('127.0.0.1', 80);
+      $this->out->writeLine('---> Binding ', $this->ip, ':', $this->port);
+      $server= $this->model->newInstance($this->ip, $this->port);
       with ($protocol= $server->setProtocol(new HttpProtocol())); {
         $protocol->setUrlHandler('/.*/', new FileHandler(realpath('../../people/friebe/xp-redesign/')));
       }
