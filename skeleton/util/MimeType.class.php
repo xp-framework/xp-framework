@@ -65,6 +65,7 @@
   define('MIME_IMAGE_X_XWINDOWDUMP',            'image/x-xwindowdump');
   define('MIME_TEXT_HTML',                      'text/html');
   define('MIME_TEXT_PLAIN',                     'text/plain');
+  define('MIME_TEXT_CSS',                       'text/css');
   define('MIME_TEXT_XML',                       'text/xml');
   define('MIME_TEXT_RICHTEXT',                  'text/richtext');
   define('MIME_TEXT_TAB_SEPARATED_VALUES',      'text/tab-separated-values');
@@ -176,6 +177,7 @@
         '.txt'     => MIME_TEXT_PLAIN,
         '.ini'     => MIME_TEXT_PLAIN,
         '.conf'    => MIME_TEXT_PLAIN,
+        '.css'     => MIME_TEXT_CSS,
         '.xml'     => MIME_TEXT_XML,
         '.xsl'     => MIME_TEXT_XML,
         '.rdf'     => MIME_TEXT_XML,
