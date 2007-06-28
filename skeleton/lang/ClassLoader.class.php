@@ -38,11 +38,11 @@
    * will be asked to load it. In case none of the delegates are able
    * to provide the class, a ClassNotFoundException will be thrown.
    * 
-   * @test     xp://tests.ClassLoaderTest
-   * @test     xp://tests.ResourcesTest
-   * @test     xp://tests.PackageTest
-   * @test     xp://tests.RuntimeClassDefinitionTest
-   * @test     xp://tests.FullyQualifiedTest
+   * @test     xp://net.xp_framework.unittest.reflection.ClassLoaderTest
+   * @test     xp://net.xp_framework.unittest.reflection.ResourcesTest
+   * @test     xp://net.xp_framework.unittest.reflection.PackageTest
+   * @test     xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
+   * @test     xp://net.xp_framework.unittest.reflection.FullyQualifiedTest
    * @see      xp://lang.XPClass#forName
    * @see      xp://lang.reflect.Package#loadClass
    * @purpose  Class loading
