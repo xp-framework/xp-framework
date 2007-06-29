@@ -184,7 +184,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
-      $datepart= strToLower($datepart);
+      $datepart= strtolower($datepart);
       if (!array_key_exists($datepart, self::$dateparts)) throw new IllegalArgumentException('datepart '.$datepart.' does not exist');
       return self::$dateparts[$datepart];
     }
@@ -197,7 +197,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datatype($datatype) {
-      $datatype= strToLower($datatype);
+      $datatype= strtolower($datatype);
       if (!array_key_exists($datatype, self::$datatypes)) throw new IllegalArgumentException('datatype '.$datatype.' does not exist');
       return self::$datatypes[$datatype];
     }
