@@ -17,6 +17,9 @@
   <xsl:param name="incprefix" />
   <xsl:param name="exprefix" />
   <xsl:param name="prefixRemove" />
+  
+  <xsl:variable name="absdefinitionpath" select="concat('file://', string:encode-uri($definitionpath, false()))"/>
+  <xsl:variable name="absconstraintfile" select="concat('file://', string:encode-uri($constraintfile, false()))"/>
 
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
@@ -152,7 +155,7 @@
   <xsl:for-each select="constraint/reference"><xsl:text>
         '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
   </xsl:for-each>
-  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
+  <xsl:for-each select="document($absconstraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
         '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
   </xsl:for-each><xsl:text>
       );
@@ -201,7 +204,7 @@
             ),
           ),</xsl:text>
   </xsl:for-each>
-  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
+  <xsl:for-each select="document($absconstraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]"><xsl:text>
           '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(
             'classname' => '</xsl:text><xsl:value-of select="concat($package, '.', my:prefixedClassName(../../@name))" /><xsl:text>',
             'key'       => array(
@@ -344,7 +347,7 @@
 
   <!-- create referenced object getters -->
   <xsl:for-each select="constraint/reference">
-    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:ucfirst(@table), '.xml'))/document" />
+    <xsl:variable name="referencedTable" select="document(concat($absdefinitionpath, '/', my:ucfirst(@table), '.xml'))/document" />
     <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencedTable/table/index[@unique = 'true'])" />
     <xsl:choose>
       <!-- case referenced fields are unique -->
@@ -421,8 +424,8 @@
   
 
   <!-- create referencing object getters -->
-  <xsl:for-each select="document($constraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]">
-    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:ucfirst(../../@name), '.xml'))/document" />
+  <xsl:for-each select="document($absconstraintfile)/document/database[@database = $this/table/@database]/table/constraint/reference[@table = $this/table/@name]">
+    <xsl:variable name="referencingTable" select="document(concat($absdefinitionpath, '/', my:ucfirst(../../@name), '.xml'))/document" />
     <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencingTable/table/index[@unique = 'true'])" />
     <xsl:choose>
       <xsl:when test="$isSingle">
