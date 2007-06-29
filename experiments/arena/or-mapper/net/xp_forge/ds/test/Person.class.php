@@ -24,6 +24,7 @@
   
     protected
       $cache= array(
+        'AccountPerson' => array(),
       );
 
     static function __static() { 
@@ -42,6 +43,12 @@
           'bz_id'               => array('%d', FieldType::INT, FALSE)
         ));
         $peer->setRelations(array(
+          'AccountPerson' => array(
+            'classname' => 'net.xp_forge.ds.test.Account',
+            'key'       => array(
+              'person_id' => 'person_id',
+            ),
+          ),
         ));
       }
     }  
@@ -60,7 +67,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
@@ -209,6 +216,40 @@
      */
     public function setBz_id($bz_id) {
       return $this->_change('bz_id', $bz_id);
+    }
+
+    /**
+     * Retrieves an array of all Account entities referencing
+     * this entity by person_id=>person_id
+     *
+     * @return  net.xp_forge.ds.test.Account[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getAccountPersonList() {
+      if ($this->cached['AccountPerson']) return array_values($this->cache['AccountPerson']);
+      return XPClass::forName('net.xp_forge.ds.test.Account')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('person_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Account entities referencing
+     * this entity by person_id=>person_id
+     *
+     * @return  rdbms.ResultIterator<net.xp_forge.ds.test.Account>
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getAccountPersonIterator() {
+      if ($this->cached['AccountPerson']) return new HashmapIterator($this->cache['AccountPerson']);
+      return XPClass::forName('net.xp_forge.ds.test.Account')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('person_id', $this->getPerson_id(), EQUAL)
+      ));
     }
   }
 ?>
