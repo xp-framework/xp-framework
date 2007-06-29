@@ -37,6 +37,15 @@
         $this->criteria->add(Account::column('username')->like($criteria));
       }
     }
+
+    /**
+     * Set whether to join
+     *
+     */
+    #[@arg]
+    public function setJoin() {
+      $this->criteria->setFetchmode(Fetchmode::join('Person'));
+    }
     
     /**
      * Runs this command
@@ -44,8 +53,16 @@
      */
     public function run() {
       $this->out->writeLine('===> Selecting by ', $this->criteria);
-      $rows= Account::getPeer()->doSelect($this->criteria);
-      $this->out->writeLine($rows);
+      foreach (Account::getPeer()->doSelect($this->criteria) as $account) {
+        $this->out->writeLinef(
+          '---> Account %d w/ username %s belongs to person %s %s <%s>',
+          $account->getAccount_id(),
+          $account->getUsername(),
+          $account->getPerson()->getFirstname(),
+          $account->getPerson()->getLastname(),
+          $account->getPerson()->getEmail()
+        );
+      }
     }
   }
 ?>
