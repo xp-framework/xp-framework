@@ -9,27 +9,27 @@
   );
 
   /**
-   * represents an SQL standard procedure
+   * Represents an SQL standard procedure
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  SQL Fragment implementation
    */
   class SQLFunction extends Object implements SQLFragment {
-    
     public
-      $func= '',
-      $args= array();
+      $func = '',
+      $type = '%s',
+      $args = array();
 
     /**
      * Constructor
      *
      * @param   string function
+     * @param   string type one of the %-tokens
+     * @param   mixed[] arguments
      */
-    public function __construct() {
-      $args= func_get_args();
-      $this->func= array_shift($args);
-      $this->args= $args;
+    public function __construct($function, $type, $arguments= array()) {
+      $this->func= $function;
+      $this->type= $type;
+      $this->args= $arguments;
     }
 
     /**
@@ -42,7 +42,7 @@
     public function asSql(DBConnection $conn) {
       $args= $this->args;
       array_unshift($args, $conn->getFormatter()->dialect->formatFunction($this));
-      return (call_user_func_array(array($conn, 'prepare'), $args));
+      return call_user_func_array(array($conn, 'prepare'), $args);
     }
 
     /**
@@ -81,5 +81,22 @@
       return $this->args;
     }
 
+    /**
+     * Return type this function evaluates to
+     *
+     * @return  string
+     */
+    public function getType() {
+      return $this->type; 
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->type.' '.$this->func.' ('.xp::stringOf($this->args).')>';
+    }
   }
 ?>

@@ -26,7 +26,7 @@
    */
   class SimpleExpression extends Object implements Criterion {
     public
-      $field  = '',
+      $lhs    = NULL,
       $value  = NULL,
       $op     = '';
 
@@ -46,11 +46,11 @@
      *   <li>GREATER_EQUAL</li>
      * </ul>
      *
-     * @param   string field
+     * @param   mixed lhs either a string or an SQLFragment
      * @param   mixed value
      * @param   string op default EQUAL
      */
-    public function __construct($field, $value, $op= EQUAL) {
+    public function __construct($lhs, $value, $op= EQUAL) {
       static $nullMapping= array(
         EQUAL     => IS,
         NOT_EQUAL => IS_NOT
@@ -61,7 +61,7 @@
         $op= $nullMapping[$op];
       }
       $this->op= $op;
-      $this->field= $field;
+      $this->lhs= $lhs;
       $this->value= $value;
     }
     
@@ -74,7 +74,7 @@
       return sprintf(
         '%s({%s %s} %% %s)',
         $this->getClassName(),
-        xp::stringOf($this->field),
+        xp::stringOf($this->lhs),
         $this->op,
         xp::stringOf($this->value)
       );
@@ -88,9 +88,13 @@
      * @return  string
      */
     public function asSql(DBConnection $conn, Peer $peer) {
-      $col= ($this->field instanceof Column) ? $this->field : $peer->column($this->field);
-      return $col->asSQL($conn).' '.$conn->prepare(str_replace('?', $col->getType(), $this->op), $this->value);
+      $lhs= ($this->lhs instanceof SQLFragment) ? $this->lhs : $peer->column($this->lhs);
+      
+      return $conn->prepare(
+        '%c '.str_replace('?', $lhs->getType(), $this->op), 
+        $lhs, 
+        $this->value
+      );
     }
-
   } 
 ?>

@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
+ * $Id$
  */
 
   uses('rdbms.SQLRenderable');
@@ -9,8 +9,17 @@
   /**
    * Represents a query fragment to be used in a Criteria query
    *
-   * @see      xp://rdbms.Criteria#add
    * @purpose  Interface
    */
-  interface SQLFragment extends SQLRenderable  {}
+  interface SQLFragment extends SQLRenderable {
+  
+    /**
+     * Get the type this fragment evaluates to. Returns one of the %-tokens
+     * to be used in prepare() (e.g. %s, %c, %u, ...)
+     *
+     * @return  string
+     */
+    public function getType();
+
+  }
 ?>
