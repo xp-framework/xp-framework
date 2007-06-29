@@ -227,7 +227,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
