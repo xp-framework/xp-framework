@@ -28,7 +28,7 @@
      * @return   rdbms.criterion.ProjectionList
      */
     public function add($projection, $alias= '') {
-      $this->projections[]= ($projection instanceof SQLFragment)
+      $this->projections[]= ($projection instanceof Projection)
       ? $projection
       : $projection= Projections::property($projection, $alias);
       return $this;
