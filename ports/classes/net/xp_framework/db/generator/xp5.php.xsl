@@ -29,7 +29,7 @@
     <xsl:param name="string" />
     <func:result select="concat(
       translate(substring($string, 1, 1), $lcletters, $ucletters),
-      translate(substring($string, 2), $ucletters, $lcletters)
+      substring($string, 2)
     )"/>
   </func:function>
 
