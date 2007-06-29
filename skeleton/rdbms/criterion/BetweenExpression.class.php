@@ -13,19 +13,19 @@
    */
   class BetweenExpression extends Object implements Criterion {
     public
-      $field  = '',
+      $lhs    = '',
       $lo     = NULL,
       $hi     = NULL;
 
     /**
      * Constructor
      *
-     * @param   string field
+     * @param   mixed lhs either a string or an SQLFragment
      * @param   mixed lo
      * @param   mixed hi
      */
-    public function __construct($field, $lo, $hi) {
-      $this->field= $field;
+    public function __construct($lhs, $lo, $hi) {
+      $this->lhs= $lhs;
       $this->lo= $lo;
       $this->hi= $hi;
     }
@@ -39,8 +39,14 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn, Peer $peer) { 
-      $col= ($this->field instanceof Column) ? $this->field : $peer->column($this->field);
-      return $col->asSQL($conn).' between '.$conn->prepare($col->getType().' and '.$col->getType(), $this->lo, $this->hi);
+      $lhs= ($this->lhs instanceof SQLFragment) ? $this->lhs : $peer->column($this->lhs);
+
+      return $conn->prepare(
+        '%c between '.$lhs->getType().' and '.$lhs->getType(), 
+        $lhs,
+        $this->lo,
+        $this->hi
+      );
     }
   } 
 ?>
