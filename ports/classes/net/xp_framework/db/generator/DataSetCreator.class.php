@@ -205,6 +205,11 @@
       $proc->setParam('prefixRemove',   $this->prefixRemove);
       $proc->run();
 
+      // Dump any errors (warnings e.g.)
+      if ($e= xp::registry('errors')) {
+        $this->out->writeLine(xp::stringOf($e));
+      }
+
       $fold= new Folder($this->outputdir.DIRECTORY_SEPARATOR.$directory);
       $fold->exists() || $fold->create(0755);
       
