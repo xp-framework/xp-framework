@@ -1,18 +1,20 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Criterion.class.php 9172 2007-01-08 11:43:06Z friebe $ 
+ * $Id$
  */
 
   uses('rdbms.SQLStateException');
 
   /**
-   * Represents a fragment that can be rendered to string
+   * Represents a fragment that can be rendered to string. Base interface
+   * for SQLFragment and Projection interfaces.
    *
-   * @see      xp://rdbms.Criteria#add
+   * @see      xp://rdbms.SQLFragment
+   * @see      xp://rdbms.criterion.Projection
    * @purpose  Interface
    */
-  interface SQLRenderable  {
+  interface SQLRenderable {
   
     /**
      * Returns the fragment SQL
