@@ -63,6 +63,15 @@
     }
 
     /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->type.' '.$this->peer->identifier.'.'.$this->name.'>';
+    }
+
+    /**
      * Returns the fragment SQL
      *
      * @param   rdbms.DBConnection conn
