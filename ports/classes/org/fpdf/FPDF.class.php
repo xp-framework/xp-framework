@@ -67,6 +67,7 @@
   
   uses(
     'org.fpdf.FPDFFont',
+    'org.fpdf.LzwDecompressor',
     'lang.IllegalArgumentException',
     'lang.MethodNotImplementedException'
   );
@@ -125,7 +126,7 @@
       $LayoutMode,                    // layout display mode
       $info               = array();  // Information (creator, author, title, ...)
     
-    public
+    protected
       $_hooks             = array();
 
     /**
@@ -168,16 +169,19 @@
       
       // Set compression to TRUE if gzcompress() exists
       $this->setCompression(function_exists('gzcompress'));
+
+      // Initialize hooks
+      $this->_hooks[PFDF_EVENT_ENDPAGE]= array();
     }
     
     /**
      * Add a hook
      *
      * @param   string event one of the PFDF_EVENT_* constants
-     * @param   &org.fpdf.FPDFHook hook
-     * @return  &org.fpdf.FPDFHook the hook added
+     * @param   org.fpdf.FPDFHook hook
+     * @return  org.fpdf.FPDFHook the hook added
      */
-    public function addHook($event, $hook) {
+    public function addHook($event, FPDFHook $hook) {
       if (!isset($this->_hooks[$event])) $this->_hooks[$event]= array();
 
       $this->_hooks[$event][]= $hook;
@@ -187,7 +191,7 @@
     /**
      * Load fonts
      *
-     * @param   &util.Properties prop
+     * @param   util.Properties prop
      */
     public function loadFonts($prop) {
       $section= $prop->getFirstSection();
@@ -1173,6 +1177,14 @@
             }
             break;
           
+          case 'gif':
+            try {
+              $info= $this->_parsegif($file);
+            } catch (IllegalArgumentException $e) {
+              throw($e);
+            }
+            break;
+
           case 'png':
             try {
               $info= $this->_parsepng($file);
@@ -1692,6 +1704,139 @@
         'bpc'   => $bpc,
         'f'     => 'DCTDecode',
         'data'  => $data
+      );
+    }
+    
+    /**
+     * Extract info from a GIF file
+     *
+     * @param   string file
+     * @throws  lang.IllegalArgumentException in case the file is corrupt
+     */
+    protected function _parsegif($file) {
+      $f= fopen($file, 'rb');
+      if (!$f) {
+        throw(new IllegalArgumentException('Cannot open image file: '.$file));
+      }
+      
+      // Check signature
+      $version= fread($f, 6);
+      if ($version != 'GIF87a' && $version != 'GIF89a') {
+        throw(new IllegalArgumentException('Not a GIF file: '.$file));
+      }
+      
+      // File header
+      $dim= unpack('vw/vh', fread($f, 4));
+
+      $b= ord(fread($f, 1));
+      $table= (bool)($b & 0x80);
+      $colorres= ($b & 0x70) >> 4;
+      $sorted= (bool)($b & 0x08);
+      $tablesize= 2 << ($b & 0x07);
+
+      $bgcolor= ord(fread($f, 1));
+      $pixelratio= ord(fread($f, 1));
+      
+      // Read colortable
+      if ($table) {
+        $colortable= array();
+        for ($i= 0; $i < $tablesize; $i++) {
+          $rgb= fread($f, 3);
+          $colortable[]= (ord($rgb{2}) << 16) + (ord($rgb{1}) << 8) + ord($rgb{0});
+        }
+      }
+      
+      // Images
+      $trans= $user= $delay= FALSE;
+      $ntrans= 0;
+      $comment= NULL;
+      while (TRUE) {
+        $b= ord(fread($f, 1));
+        if (0x21 == $b) {                 // Extension
+          $e= ord(fread($f, 1));
+
+          if (0xF9 == $e) {               // Extension: Graphic Control
+            $c= ord(fread($f, 1));
+            $disp= ($c & 0x1C) >> 2;
+            $user= (bool)($c & 0x02);
+            $trans= (bool)($c & 0x01);
+            $delay= unpack('n', fread($f, 2));
+            $ntrans= ord(fread($f, 1));
+          } else if (0xFE == $e) {        // Extension: Comment
+            $c= ord(fread($f, 1));
+            $comment= fread($f, $c);
+          } else if (0x01 == $e) {        // Extension: Plain text
+            // noop
+          } else if (0xFF == $e) {        // Extension: Application
+            // noop
+          }
+        } else if (0x2C == $b) {          // Image
+          $idim= unpack('vl/vt/vw/vh', fread($f, 8));
+
+          $m= ord(fread($f, 1));
+          $itable= (bool)($m & 0x80);
+          $interlace= (bool)($m & 0x40);
+          $isorted= (bool)($m & 0x20);
+          $itablesize= 2 << ($m & 0x07);
+
+          // Read colortable
+          if ($itable) {
+            $icolortable= array();
+            for ($i= 0; $i < $itablesize; $i++) {
+              $rgb= fread($f, 3);
+              $icolortable[]= (ord($rgb{2}) << 16) + (ord($rgb{1}) << 8) + ord($rgb{0});
+            }
+          }
+          
+          // Decompress
+          $data= create(new LzwDecompressor())->deCompress($f);
+          break;
+        } else if (0x3B == $b) {  // EOF
+          break;
+        }
+      }
+;
+      fclose($f);
+
+      if ($table) {
+        $colors= $tablesize;
+        for ($pal= '', $i= 0; $i < $colors; $i++) {
+          $pal .=
+            chr(($colortable[$i] & 0x000000FF)).        // R
+            chr(($colortable[$i] & 0x0000FF00) >>  8).  // G
+            chr(($colortable[$i] & 0x00FF0000) >> 16)   // B
+          ;
+        }
+        $colspace= 'Indexed';
+      } else if ($itable) {
+        $colors= $itablesize;
+        for ($pal= '', $i= 0; $i < $colors; $i++) {
+          $pal .=
+            chr(($icolortable[$i] & 0x000000FF)).        // R
+            chr(($icolortable[$i] & 0x0000FF00) >>  8).  // G
+            chr(($icolortable[$i] & 0x00FF0000) >> 16)   // B
+          ;
+        }
+        $colspace= 'Indexed';
+      } else {
+        $colors= 0;
+        $pal= '';
+        $colspace= 'DeviceGray';
+      }
+
+      if ($colspace == 'Indexed' && empty($pal)) {
+        throw new IllegalArgumentException('Missing palette in '.$file);
+      }
+
+      return array(
+        'w'     => $dim['w'],
+        'h'     => $dim['h'],
+        'cs'    => $colspace,
+        'f'     => 'FlateDecode',
+        'bpc'   => 8,
+        'pal'   => $pal,
+        'trns'  => $trans && ($colors > 0) ? array($ntrans) : '',
+        'data'  => gzcompress($data)
       );
     }
 
