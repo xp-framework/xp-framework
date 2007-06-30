@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Added GIF support to org.fpdf.FPDF class' putImage() method
+  (friebe)
 - make util.cmd.Runner output errors and usage to STDERR
   (kiesel)
 
