@@ -22,19 +22,7 @@
       $MAX_LZW_BITS = 0x1000;
     
     private
-      $fresh, 
       $codeSize, 
-      $setCodeSize, 
-      $maxCode, 
-      $maxCodeSize, 
-      $firstCode, 
-      $oldCode,
-      $clearCode, 
-      $endCode, 
-      $next, 
-      $vals, 
-      $stack, 
-      $sp, 
       $buf, 
       $curBit, 
       $lastBit, 
@@ -51,121 +39,121 @@
     public function deCompress($fh) {
       $decompressed= '';
 
-      $this->setCodeSize= ord(fread($fh, 1));
-      $this->codeSize= $this->setCodeSize+ 1;
-      $this->clearCode= 1 << $this->setCodeSize;
-      $this->endCode= $this->clearCode+ 1;
-      $this->maxCode= $this->clearCode+ 2;
-      $this->maxCodeSize= $this->clearCode << 1;
+      $setCodeSize= ord(fread($fh, 1));
+      $this->codeSize= $setCodeSize+ 1;
+      $clearCode= 1 << $setCodeSize;
+      $endCode= $clearCode+ 1;
+      $maxCode= $clearCode+ 2;
+      $maxCodeSize= $clearCode << 1;
       $this->buf= range(0, 279);
-      $this->stack= range(0, self::$MAX_LZW_BITS);
+      $stack= range(0, self::$MAX_LZW_BITS);
       $this->curBit= 0;
       $this->lastBit= 0;
       $this->lastByte= 2;
-      $this->sp= 0;
+      $sp= 0;
       $this->done= FALSE;
-      $this->fresh= TRUE;
+      $fresh= TRUE;
       
       // Fill next with zeros, vals with i until clearcode is reached, the rest 
       // with zeros
-      $this->next= array_fill(0, self::$MAX_LZW_BITS- 1, 0);
-      $this->vals= array_merge(
-        range(0, $this->clearCode- 1),
-        array_fill($this->clearCode, self::$MAX_LZW_BITS- 1- $this->clearCode, 0)
+      $next= array_fill(0, self::$MAX_LZW_BITS- 1, 0);
+      $vals= array_merge(
+        range(0, $clearCode- 1),
+        array_fill($clearCode, self::$MAX_LZW_BITS- 1- $clearCode, 0)
       );
 
       do {
-        if ($this->fresh) {
-          $this->fresh= FALSE;
+        if ($fresh) {
+          $fresh= FALSE;
           do {
-            $this->firstCode= $this->getCode($fh);
-            $this->oldCode= $this->firstCode;
-          } while($this->firstCode == $this->clearCode);
+            $firstCode= $this->getCode($fh);
+            $old= $firstCode;
+          } while($firstCode == $clearCode);
 
-          if (($iIndex= $this->firstCode) < 0) break;
-          $decompressed.= chr($iIndex);
+          if (($index= $firstCode) < 0) break;
+          $decompressed.= chr($index);
           continue;
-        } else if ($this->sp > 0) {
-          $this->sp--;
+        } else if ($sp > 0) {
+          $sp--;
 
-          if (($iIndex= $this->stack[$this->sp]) < 0) break; 
-          $decompressed.= chr($iIndex);
+          if (($index= $stack[$sp]) < 0) break; 
+          $decompressed.= chr($index);
           continue;
         }
 
         while (($code= $this->getCode($fh)) >= 0) {
-          if ($code == $this->clearCode) {
+          if ($code == $clearCode) {
 
             // Encountered clearing code, reset next, vals and codes
-            $this->next= array_fill(0, self::$MAX_LZW_BITS- 1, 0);
-            $this->vals= array_merge(
-              range(0, $this->clearCode- 1),
-              array_fill($this->clearCode, self::$MAX_LZW_BITS- 1- $this->clearCode, 0)
+            $next= array_fill(0, self::$MAX_LZW_BITS- 1, 0);
+            $vals= array_merge(
+              range(0, $clearCode- 1),
+              array_fill($clearCode, self::$MAX_LZW_BITS- 1- $clearCode, 0)
             );
 
-            $this->codeSize= $this->setCodeSize + 1;
-            $this->maxCodeSize= $this->clearCode << 1;
-            $this->maxCode= $this->clearCode + 2;
-            $this->sp= 0;
-            $this->oldCode= $this->firstCode= $this->getCode($fh);
+            $this->codeSize= $setCodeSize + 1;
+            $maxCodeSize= $clearCode << 1;
+            $maxCode= $clearCode + 2;
+            $sp= 0;
+            $old= $firstCode= $this->getCode($fh);
 
-            if (($iIndex= $this->firstCode) < 0) break;
-            $decompressed.= chr($iIndex);
+            if (($index= $firstCode) < 0) break 2;
+            $decompressed.= chr($index);
             continue 2;
-          } else if ($code == $this->endCode) {
+          } else if ($code == $endCode) {
           
             // Encountered endcode, finished!
             return $decompressed;
-          } else if ($code >= $this->maxCode) {
+          } else if ($code >= $maxCode) {
           
             // Begin stacking...
             $in= $code;
-            $this->stack[$this->sp]= $this->firstCode;
-            $this->sp++;
-            $code = $this->oldCode;
+            $stack[$sp]= $firstCode;
+            $sp++;
+            $code= $old;
           } else {
             $in= $code;
           }
 
-          while ($code >= $this->clearCode) {
-            $this->stack[$this->sp]= $this->vals[$code];
-            $this->sp++;
+          while ($code >= $clearCode) {
+            $stack[$sp]= $vals[$code];
+            $sp++;
 
-            if ($code == $this->next[$code]) {
+            if ($code == $next[$code]) {
               throw new IllegalStateException('Circular table entry encountered');
             }
-            $code= $this->next[$code];
+            $code= $next[$code];
           }
 
-          $this->firstCode= $this->vals[$code];
-          $this->stack[$this->sp]= $this->firstCode;
-          $this->sp++;
+          $firstCode= $vals[$code];
+          $stack[$sp]= $firstCode;
+          $sp++;
 
-          if (($code= $this->maxCode) < self::$MAX_LZW_BITS) {
-            $this->next[$code]= $this->oldCode;
-            $this->vals[$code]= $this->firstCode;
-            $this->maxCode++;
+          if (($code= $maxCode) < self::$MAX_LZW_BITS) {
+            $next[$code]= $old;
+            $vals[$code]= $firstCode;
+            $maxCode++;
 
-            if (($this->maxCode >= $this->maxCodeSize) && ($this->maxCodeSize < self::$MAX_LZW_BITS)) {
-              $this->maxCodeSize*= 2;
+            if (($maxCode >= $maxCodeSize) && ($maxCodeSize < self::$MAX_LZW_BITS)) {
+              $maxCodeSize*= 2;
               $this->codeSize++;
             }
           }
 
-          $this->oldCode= $in;
-          if ($this->sp > 0) {
-            $this->sp--;
-            if (($iIndex= $this->stack[$this->sp]) < 0) break; 
-            $decompressed.= chr($iIndex);
+          $old= $in;
+          if ($sp > 0) {
+            $sp--;
+            if (($index= $stack[$sp]) < 0) break; 
+            $decompressed.= chr($index);
             continue 2;
           }
         }
 
-        if (($iIndex= $code) < 0) break;
-        $decompressed.= chr($iIndex);
+        if (($index= $code) < 0) break;
+        $decompressed.= chr($index);
       } while (TRUE);
 
-      throw new IllegalStateException('End code not found');
+      throw new IllegalStateException('End code not found: '.$index);
     }
 
     /**
