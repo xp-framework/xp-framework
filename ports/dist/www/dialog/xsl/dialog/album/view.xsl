@@ -102,20 +102,20 @@
 
       <table border="0" class="chapter">
         <tr>
-          <xsl:for-each select="images/image[position() &lt; 5]">
+          <xsl:for-each select="images/image[position() &lt; 6]">
             <td>
               <a href="{func:link(concat('image/view?', ../../../../@name, ',i,', $chapter, ',', position()- 1))}">
                 <img width="150" height="113" border="0" src="/albums/{../../../../@name}/thumb.{name}"/>
               </a>
             </td>
           </xsl:for-each>
-          <xsl:if test="$total &gt; 4">
+          <xsl:if test="$total &gt; 5">
             <td>
               <a 
-               title="Show image #5" 
+               title="Show image #6" 
                class="pager" 
                id="true"
-               href="{func:link(concat('image/view?', /formresult/album/@name, ',i,', $chapter, ',', 4))}"
+               href="{func:link(concat('image/view?', /formresult/album/@name, ',i,', $chapter, ',', 5))}"
               >
                 <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
               </a>

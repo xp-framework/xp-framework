@@ -70,6 +70,7 @@ __
 
   // Set up processor
   $processor= new ShotProcessor();
+  $processor->detailDimensions= array(619, 347);
   $processor->addFilter(new ConvolveFilter(
     new Kernel('[[-1, -1, -1], [-1, 16, -1], [-1, -1, -1]]'),
     8,

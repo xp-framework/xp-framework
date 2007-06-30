@@ -58,7 +58,7 @@
     </center>
     
     <!-- Selected image -->
-    <table width="100%" border="0">
+    <table width="800" border="0">
       <tr>
         <td id="image" align="center">
           <img border="0" src="/shots/{/formresult/selected/@mode}.{/formresult/selected/fileName}"/>

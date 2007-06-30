@@ -24,7 +24,7 @@
   
   define('DESCRIPTION_FILE',  'description.txt');
   define('HIGHLIGHTS_FOLDER', 'highlights');
-  define('HIGHLIGHTS_MAX',    4);
+  define('HIGHLIGHTS_MAX',    5);
   define('ENTRIES_PER_PAGE',  5);
   define('FOLDER_FILTER',     '/\.jpe?g$/i');
 
@@ -87,6 +87,7 @@ __
   
   // Set up processor
   $processor= new ImageProcessor();
+  $processor->fullDimensions= array(800, 600);
   $processor->addFilter(new ConvolveFilter(
     new Kernel('[[-1, -1, -1], [-1, 16, -1], [-1, -1, -1]]'),
     8,

@@ -66,7 +66,7 @@
               <td width="60" class="gutter" id="gutter1">&#160;</td>
               <td width="60" class="gutter" id="gutter2">&#160;</td>
               <td width="60" class="gutter" id="gutter3">&#160;</td>
-              <td width="530" class="gutter" valign="bottom" align="right">
+              <td width="690" class="gutter" valign="bottom" align="right">
                 <a class="nav" id="active" href="{func:link('static')}">
                   <xsl:value-of select="/formresult/config/title"/>: Home
                 </a>

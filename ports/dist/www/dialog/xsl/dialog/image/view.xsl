@@ -73,7 +73,7 @@
     </center>
     
     <!-- Selected image -->
-    <table width="100%" border="0">
+    <table border="0" width="800">
       <tr>
         <td id="image" align="center">
           <a>

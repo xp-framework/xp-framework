@@ -123,8 +123,8 @@
     </p>
     <table border="0">
       <tr>
-        <td rowspan="2">
-          <img class="singleshot" border="0" src="/shots/detail.{@filename}" width="459" height="230"/>
+        <td rowspan="3">
+          <img class="singleshot" border="0" src="/shots/detail.{@filename}" width="619" height="347"/>
         </td>
         <td valign="top">
           <a href="{func:link(concat('shot/view?', @name, ',0'))}">
@@ -133,10 +133,15 @@
         </td>
       </tr>
       <tr>
-        <td valign="bottom">
+        <td valign="top">
           <a href="{func:link(concat('shot/view?', @name, ',1'))}">
             <img class="singleshot_thumb" border="0" src="/shots/thumb.gray.{@filename}" width="150" height="113"/>
           </a>
+        </td>
+      </tr>
+      <tr>
+        <td valign="bottom">
+          <img src="/image/blank.gif" width="150" height="113"/>
         </td>
       </tr>
     </table>

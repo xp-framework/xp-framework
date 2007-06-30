@@ -24,7 +24,7 @@
     <xsl:param name="chapter"/>
     <xsl:param name="images"/>
     <xsl:param name="i" select="1"/>
-    <xsl:param name="max" select="4"/>
+    <xsl:param name="max" select="5"/>
     
     <func:result>
       <tr>
