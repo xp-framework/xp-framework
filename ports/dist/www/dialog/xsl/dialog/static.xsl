@@ -174,7 +174,7 @@
       <xsl:for-each select="entry[@type='de.thekid.dialog.Album']">
         <tr>
           <td width="160" valign="top">
-            <img width="150" height="113" border="0" src="/albums/{@name}/thumb.{./highlights/highlight[1]/name}"/>
+            <a href="{func:link(concat('image/view?', @name, ',h,0,0'))}"><img width="150" height="113" border="0" src="/albums/{@name}/thumb.{./highlights/highlight[1]/name}"/></a>
           </td>
           <td width="466" valign="top">
             <h3>
