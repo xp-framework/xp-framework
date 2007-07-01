@@ -1,0 +1,149 @@
+Index: handlers/ScriptletHandler.class.php
+===================================================================
+--- handlers/ScriptletHandler.class.php	(revision 0)
++++ handlers/ScriptletHandler.class.php	(revision 0)
+@@ -0,0 +1,97 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('handlers.AbstractUrlHandler');
++
++  /**
++   * File handler
++   *
++   * @see      HttpProtocol
++   * @purpose  Handler for HttpProtocol
++   */
++  class ScriptletHandler extends AbstractUrlHandler {
++    protected 
++      $scriptlet= NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   string scriptlet class name
++     */
++    public function __construct($docroot, $scriptlet, array $args= array()) {
++      putenv('DOCUMENT_ROOT='.$docroot);
++      
++      XPClass::forName($scriptlet);
++      $this->scriptlet= newinstance($scriptlet, $args, '{
++        public $currentRequest= NULL;
++
++        protected function _setupRequest($request) { /* NOOP */ }
++        
++        public function newRequest() {
++          $this->currentRequest= parent::_request();
++        }
++        
++        protected function _request() {
++          return $this->currentRequest;
++        }
++      }');
++    }
++
++    /**
++     * Handle a single request
++     *
++     * @param   string method request method
++     * @param   string query query string
++     * @param   array<string, string> headers request headers
++     * @param   string data post data
++     * @param   peer.Socket socket
++     */
++    public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
++    
++      // Rewriterule implementation
++      sscanf($query, '/xml/%[^.].%[^/]/%[^?]', $product, $language, $state);
++      putenv('PRODUCT='.$product);
++      putenv('LANGUAGE='.$language);
++      putenv('STATE='.$state);
++
++      // Request handling
++      $url= parse_url($query);
++      $this->scriptlet->newRequest();
++      $this->scriptlet->currentRequest->headers= $headers;
++      $this->scriptlet->currentRequest->method= $method;
++      $this->scriptlet->currentRequest->setParams(parse_str($url["query"]));
++      $this->scriptlet->currentRequest->setURI(new URL("http://".$headers["host"].$query));
++      putenv('QUERY_STRING='.$url["query"]);
++
++      // Process
++      try {
++        $response= $this->scriptlet->process();
++      } catch (Throwable $e) {
++        Console::$err->writeLine($query, '~', $e);
++        $this->sendErrorMessage($socket, 500, 'Internal server error', $e->getMessage());
++        return;
++      }
++
++      // Send headers
++      $content= $response->getContent();
++      $socket->write('HTTP/1.1 '.$response->statusCode.' No message yet'."\r\n");
++      $socket->write('Date: '.gmdate('D, d M Y H:i:s T')."\r\n");
++      $socket->write('Server: XP/PHP '.phpversion()."\r\n");
++      $socket->write("Connection: close\r\n");
++      $socket->write('Content-Length: '.strlen($content)."\r\n");
++      $ctype= FALSE;
++      foreach ($response->headers as $header) {
++        if (!$ctype && stristr($header, 'Content-type: ')) $ctype= TRUE;
++        $socket->write(strtr($header, array("\r" => '', "\n" => "\n\t"))."\r\n");
++      }
++      $ctype || $socket->write("Content-Type: text/html\r\n");
++      
++      // Send content
++      $socket->write("\r\n");
++      $socket->write($content);
++    }
++  }
++?>
+Index: HttpService.class.php
+===================================================================
+--- HttpService.class.php	(revision 10697)
++++ HttpService.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('util.cmd.Command', 'HttpProtocol', 'handlers.FileHandler');
++  uses('util.cmd.Command', 'HttpProtocol', 'handlers.FileHandler', 'handlers.ScriptletHandler', 'util.PropertyManager');
+ 
+   /**
+    * HTTP server runner
+@@ -75,7 +75,17 @@
+       $this->out->writeLine('---> Binding ', $this->ip, ':', $this->port);
+       $server= $this->model->newInstance($this->ip, $this->port);
+       with ($protocol= $server->setProtocol(new HttpProtocol())); {
+-        $protocol->setUrlHandler('/.*/', new FileHandler(realpath('../../people/friebe/xp-redesign/')));
++      
++        PropertyManager::getInstance()->configure(realpath('../../../ports/dist/www/dialog/etc/'));
++        $protocol->setUrlHandler('/xml/', new ScriptletHandler(
++          realpath('../../../ports/dist/www/dialog/doc_root/'),
++          'de.thekid.dialog.scriptlet.WebsiteScriptlet', array(
++            'de.thekid.dialog.scriptlet',
++            realpath('../../../ports/dist/www/dialog/xsl')
++          )
++        ));
++        
++        $protocol->setUrlHandler('/.*/', new FileHandler(realpath('../../../ports/dist/www/dialog/doc_root/')));
+       }
+       $server->init();
+       $this->out->writeLine('===> Server started');
+Index: HttpProtocol.class.php
+===================================================================
+--- HttpProtocol.class.php	(revision 10697)
++++ HttpProtocol.class.php	(working copy)
+@@ -77,7 +77,9 @@
+       $offset= strpos($header, "\r\n")+ 2;
+       
+       // Parse rest
+-      $headers= array();
++      $headers= array(
++        'REQUEST_METHOD' => strtoupper($method)
++      );
+       if ($t= strtok(substr($header, $offset, $p- $offset), "\r\n")) do {
+         sscanf($t, "%[^:]: %[^\n]", $name, $value);
+         $headers[$name]= $headers[strtolower($name)]= $value;
