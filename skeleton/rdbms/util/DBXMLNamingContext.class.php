@@ -20,7 +20,7 @@ uses('rdbms.util.DBXMLNamingStrategyDefault');
     /**
      * set strategy
      *
-     * @param   rdbms.DBXMLNameingStrategy s
+     * @param   rdbms.DBXMLNamingStrategy s
      */
     static function setStrategy(DBXMLNamingStrategy $s) {
       self::$strategy= $s;
