@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix fatal error in XPClass::newInstance() when class represented is
+  abstract or an interface - now throws lang.IllegalAccessExceptions
+  (friebe)
+- Changed EASC protocol representation of Enums (BC-break-free)
+  (friebe)
 - Added GIF support to org.fpdf.FPDF class' putImage() method
   (friebe)
 - make util.cmd.Runner output errors and usage to STDERR
