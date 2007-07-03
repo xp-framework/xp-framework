@@ -1,0 +1,145 @@
+RFC 0132: Enum support
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Jul  3 21:12:43     2007
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+There will be a defined way to write enums.
+
+
+Rationale
+---------
+Interaction with programming languages with enums, via EASC, for example.
+
+
+Functionality
+-------------
+
+Core
+~~~~
+A new class, lang.Enum will be added:
+<?php
+  /**
+   * Enumeration
+   *
+   * @purpose  Abstract base class   
+   */
+  abstract class Enum extends Object {
+    public
+      $name     = '';
+    
+    private
+      $ordinal  = 0;
+  
+    /**
+     * Constructor
+     *
+     * @param   int ordinal default 0
+     * @param   string name default ''
+     */
+    protected function __construct($ordinal= 0, $name= '') {
+      $this->ordinal= $ordinal;
+      $this->name= $name;
+    }
+  
+    /**
+     * Returns the enumeration member uniquely identified by 
+     *
+     * @param   string class fully qualified class name
+     * @param   string name enumeration member
+     * @return  lang.Enum
+     */
+    public static function valueOf($class, $name) {
+      // ...
+    }
+    
+    /**
+     * Returns all values
+     *
+     * @return  lang.Enum[]
+     */
+    public abstract function values();
+  }
+?>
+
+The XPClass class will support an isEnum() method 
+
+<?php
+  /**
+   * Determines if this XPClass object represents an enum type.
+   *
+   * @return  bool
+   */
+  public function isEnum() {
+    // ...
+  }
+?>
+
+
+Defining an enum
+~~~~~~~~~~~~~~~~
+<?php
+  class TransactionTypeDescription extends Enum {
+    public static
+      $NOT_SUPPORTED,
+      $REQUIRED,
+      $SUPPORTS,
+      $REQUIRES_NEW,
+      $MANDATORY,
+      $NEVER,
+      $UNKNOWN;
+
+    static function __static() {
+      self::$NOT_SUPPORTED= new self(0, 'NOT_SUPPORTED');
+      self::$REQUIRED= new self(1, 'REQUIRED');
+      self::$SUPPORTS= new self(2, 'SUPPORTS');
+      self::$REQUIRES_NEW= new self(3, 'REQUIRES_NEW');
+      self::$MANDATORY= new self(4, 'MANDATORY');
+      self::$NEVER= new self(5, 'NEVER');
+      self::$UNKNOWN= new self(6, 'UNKNOWN');
+    }
+    
+    public function values() {
+      return array(
+        self::$NOT_SUPPORTED,
+        self::$REQUIRED,
+        self::$SUPPORTS,
+        self::$REQUIRES_NEW,
+        self::$MANDATORY,
+        self::$NEVER,
+        self::$UNKNOWN
+      );
+    }
+  }
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+This will increase the minor version
+
+
+Related documents
+-----------------
+- RFC #0009: Typesafe enumerations (PHP5)
+  Enum support in PHP5 with patched Zend Engine
+
+
+Comments
+--------
+
+<EOF>
