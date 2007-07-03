@@ -33,7 +33,7 @@ A new class, lang.Enum will be added:
     public
       $name     = '';
     
-    private
+    protected
       $ordinal  = 0;
   
     /**
