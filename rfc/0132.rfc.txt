@@ -278,6 +278,9 @@ Related documents
 - RFC #0009: Typesafe enumerations (PHP5)
   Enum support in PHP5 with patched Zend Engine
 
+- http://experiments.xp-framework.net/?arena,enum
+  Experiments and demos
+
 
 Comments
 --------
