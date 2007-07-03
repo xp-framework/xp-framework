@@ -59,14 +59,29 @@ A new class, lang.Enum will be added:
     }
     
     /**
-     * Returns all values
+     * Create a string representation of this enum
      *
+     * @return  string
+     */
+    public function toString() {
+      return $this->name;
+    }
+    
+    /**
+     * Returns all members for a given enum.
+     *
+     * @param   string class
      * @return  lang.Enum[]
      */
-    public abstract function values();
+    protected static function membersOf($class) {
+      $c= new ReflectionClass($class);
+      return array_values($c->getStaticProperties());
+    }
   }
 ?>
 
+Reflection
+~~~~~~~~~~
 The XPClass class will support an isEnum() method 
 
 <?php
@@ -83,8 +98,23 @@ The XPClass class will support an isEnum() method
 
 Defining an enum
 ~~~~~~~~~~~~~~~~
+To create an enum type, the following is necessary:
+
+* Create public static members with the enum names
+  Unfortunately, it is not possible to use class constants because these
+  can only be initialized to scalars or constant arrays in PHP.
+
+* Define a static initializer and initialize them
+  PHP does not allow initializing member variables to objects.
+
+* Implement the values() method with the boilerplate shown below.
+  It cannot be enforced that a static values() method should exist, as
+  adding public static abstract function values(); to the base class
+  will raise an E_STRICT "Static function Enum::values() should not 
+  be abstract"
+
 <?php
-  class TransactionTypeDescription extends Enum {
+  class TransactionType extends Enum {
     public static
       $NOT_SUPPORTED,
       $REQUIRED,
@@ -104,19 +134,70 @@ Defining an enum
       self::$UNKNOWN= new self(6, 'UNKNOWN');
     }
     
-    public function values() {
-      return array(
-        self::$NOT_SUPPORTED,
-        self::$REQUIRED,
-        self::$SUPPORTS,
-        self::$REQUIRES_NEW,
-        self::$MANDATORY,
-        self::$NEVER,
-        self::$UNKNOWN
-      );
+    public static function values() {
+      return parent::membersOf(__CLASS__);
     }
   }
 ?>
+
+Usage: Enum values
+~~~~~~~~~~~~~~~~~~
+Enum values can be accessed by the following syntax:
+<?php
+  $transactionType= TransactionType::$MANDATORY;
+?>
+
+Note:
+<pre>
+  Because class members cannot be final in PHP enum members can actually 
+  be modified at run-time. It is not possible to use class constants for
+  the afforementioned reasons.
+</pre>
+
+
+Usage: Type-safety
+~~~~~~~~~~~~~~~~~~
+Because enums are essentially classes, they can be used as type hints:
+<?php
+  class MethodWrapper extends Object {
+  
+    public function setTransactionType(TransactionType $t) {
+      $this->transactionType= $t;
+    }
+  }
+?>
+
+Usage: Printing
+~~~~~~~~~~~~~~~
+The following will print "MANDATORY" to the console:
+<?php
+  Console::writeLine(TransactionType::$MANDATORY);
+?>
+
+Usage: Using enums in switch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $transactionType= TransactionType::$MANDATORY;
+
+  // ...later on:
+  switch ($transactionType) {
+    case TransactionType::$MANDATORY: {
+      // ...
+      break;
+    }
+    
+    case TransactionType::$NEVER: {
+      // ...
+      break;
+    }
+  }
+?>
+
+Note:
+<pre>
+  Nothing special, really. PHP supports this as-is.
+</pre>
+
 
 Security considerations
 -----------------------
