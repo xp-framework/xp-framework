@@ -469,7 +469,7 @@ public class SerializerTest {
      */
     @Test public void representationOfEnums() throws Exception {
         assertEquals(
-            "i:6;",
+            "O:56:\"net.xp_framework.easc.reflect.TransactionTypeDescription\":1:{s:4:\"name\";s:7:\"UNKNOWN\";}",
             representationOf(TransactionTypeDescription.UNKNOWN)
         );
     }
@@ -547,7 +547,7 @@ public class SerializerTest {
         description.setTransactionType(TransactionTypeDescription.UNKNOWN);
         
         assertEquals(
-            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";c:s;s:14:\"parameterTypes\";A:0:{}s:5:\"roles\";A:1:{s:4:\"mock\";}s:15:\"transactionType\";i:6;}",
+            "O:47:\"net.xp_framework.easc.reflect.MethodDescription\":5:{s:4:\"name\";s:10:\"helloWorld\";s:10:\"returnType\";c:s;s:14:\"parameterTypes\";A:0:{}s:5:\"roles\";A:1:{s:4:\"mock\";}s:15:\"transactionType\";O:56:\"net.xp_framework.easc.reflect.TransactionTypeDescription\":1:{s:4:\"name\";s:7:\"UNKNOWN\";}}",
             representationOf(description)
         );
     }
@@ -835,6 +835,20 @@ public class SerializerTest {
         Object result= valueOf("O:38:\"net.xp_framework.unittest.EMailAddress\":1:{s:4:\"data\";s:15:\"foo@example.com\";}");
         assertEquals(
             new EMailAddress("foo", "example.com"), 
+            result
+        );
+    }
+
+    /**
+     * Tests deserialization of an enum
+     *
+     * @access  public
+     * @throws  java.lang.Exception
+     */
+    @Test public void valueOfOEnum() throws Exception {
+        Object result= valueOf("O:56:\"net.xp_framework.easc.reflect.TransactionTypeDescription\":1:{s:4:\"name\";s:7:\"UNKNOWN\";}");
+        assertEquals(
+            TransactionTypeDescription.UNKNOWN,
             result
         );
     }
