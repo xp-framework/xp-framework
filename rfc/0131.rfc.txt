@@ -30,13 +30,13 @@ Functionality
   - rdbms.query.InsertQuery
   - rdbms.query.UpdateQuery
   - rdbms.query.DeleteQuery
-- uml diagram:
-[[img:uml.png]]
 - Rdbms.Criteria needs to be extended by a method getSelectQueryString(),
   which will fetch the sql statement as string.
 - The method rdbms.Criteria::executeJoin() will be removed.
 - The class rdbms.Query will be moved into the package rdbms.query.Query.
 - The class rdbms.Query will be declared abstract.
+- uml diagram:
+[[img:uml.png]]
 
 
 Security considerations
@@ -61,7 +61,7 @@ Related documents
 - patch against ports
   http://xp-framework.net/rfc/contrib/rfc0131/ports.diff
 - uml diagram as dia file
-  http://xp-framework.net/rfc/media/0130.dia
+  http://xp-framework.net/rfc/media/0130/uml.dia
 
 
 Comments
