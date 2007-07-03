@@ -182,7 +182,7 @@ __
       writeTo(
         $path, 
         $classwrapper->getName(), 
-        processClass($classwrapper, 'xp', $showXml)
+        processClass($classwrapper, $language, $showXml)
       );
     } catch (Throwable $e) {
       $e->printStackTrace();
