@@ -243,13 +243,27 @@ public class Serializer {
                 } catch (ClassNotFoundException e) {
                     throw new SerializationException(context.classLoader + ": " + e.getMessage());
                 }
+
+                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
+                offset+= parsed+ 2 + objectlength.length() + 2;
+                
+                // Check to see if it is an enum and use Enum.valueOf() to instantiate
+                if (c.isEnum()) {
+                    if (!"1".equals(objectlength)) {
+                      throw new SerializationException("Enums should be serialized as class:1:name");
+                    }
+                    Serializer.valueOf(serialized.substring(offset), length, context, null);    // "name"
+                    offset+= length.value;
+                    instance= Enum.valueOf(c, (String)Serializer.valueOf(serialized.substring(offset), length, context, String.class));
+                    offset+= length.value;
+                    length.value= offset + 1;
+
+                    return instance;
+                }
                 
                 // Instanciate
                 Constructor ctor= Serializer.getSerializableConstructor(c);
                 instance= (null == ctor) ? c.newInstance() : ctor.newInstance();
-                
-                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
-                offset+= parsed+ 2 + objectlength.length() + 2;
                 
                 // Set field values
                 for (int i= 0; i < Integer.parseInt(objectlength); i++) {
@@ -741,7 +755,21 @@ public class Serializer {
     
     @Handler('i') protected static String representationOf(Enum e, SerializerContext context) throws Exception {
         if (null == e) return "N;";
-        return "i:" + e.ordinal() + ";";
+        
+        Class c= e.getClass();
+        String n= e.name();
+        return new StringBuffer()
+            .append("O:")
+            .append(c.getName().length())
+            .append(":\"")
+            .append(c.getName())
+            .append("\":1:{s:4:\"name\";s:")
+            .append(n.length())
+            .append(":\"")
+            .append(n)
+            .append("\";}")
+            .toString()
+        ;
     }
 
     /**
