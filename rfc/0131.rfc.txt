@@ -24,6 +24,10 @@ Functionality
 <pre>
   intercept and except will not work on mysql databases
 </pre>
+
+- new interfaces
+  - rdbms.query.QueryExecutable
+  - rdbms.query.SelectQueryExecutable
 - the api provides the following classes:
   - rdbms.query.SetOperation
   - rdbms.query.SelectQuery
@@ -66,6 +70,7 @@ Related documents
 
 Comments
 --------
-
+wagner (Di  3 Jul 2007 18:00:41 CEST): 
+Changed inheritances to interfaces for clearer structure
 
 <EOF>

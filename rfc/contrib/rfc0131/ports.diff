@@ -1,7 +1,7 @@
-Index: ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php
+Index: classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Revision 10701)
-+++ ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Arbeitskopie)
+--- classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Revision 10701)
++++ classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.php	(Arbeitskopie)
 @@ -214,10 +214,13 @@
          }
  
@@ -12,16 +12,24 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/mock/MockConnection.class.p
            $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
 -        } elseif (is('Generic', $args[$ofs])) {
 +        } else if ($args[$ofs] instanceof SQLFragment) {
-+          $sql.= $args[$ofs]->asSql($this);
++          $sql.= $args[$ofs]->asSql($this).substr($tok, 1 + $mod);
 +          continue;
 +        } else if ($args[$ofs] instanceof Generic) {
            $a= array($args[$ofs]->toString());
          } elseif (is_array($args[$ofs])) {
            $a= $args[$ofs];
-Index: ports/classes/net/xp_framework/unittest/rdbms/QueryTest.class.php
+@@ -238,6 +241,7 @@
+         }
+         $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
+       }
++
+       return substr($sql, 1);
+     }
+ 
+Index: classes/net/xp_framework/unittest/rdbms/QueryTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/rdbms/QueryTest.class.php	(Revision 10701)
-+++ ports/classes/net/xp_framework/unittest/rdbms/QueryTest.class.php	(Arbeitskopie)
+--- classes/net/xp_framework/unittest/rdbms/QueryTest.class.php	(Revision 10701)
++++ classes/net/xp_framework/unittest/rdbms/QueryTest.class.php	(Arbeitskopie)
 @@ -6,10 +6,15 @@
   
    uses(
@@ -215,9 +223,9 @@ Index: ports/classes/net/xp_framework/unittest/rdbms/QueryTest.class.php
 +     */
 +    #[@test]
 +    public function nesting() {
-+      $so= SetOperation::union($this->qa, SetOperation::union($this->qb, $this->qa));
++      $so= SetOperation::union(SetOperation::union($this->qb, $this->qa), SetOperation::union($this->qb, $this->qa));
 +      $this->assertEquals(
-+        $this->qas.' union '.$this->qbs.' union '.$this->qas,
++        $this->qbs.' union '.$this->qas.' union '.$this->qbs.' union '.$this->qas,
 +        $so->getQueryString()
 +      );
 +    }

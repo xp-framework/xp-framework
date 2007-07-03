@@ -1,7 +1,7 @@
-Index: skeleton/rdbms/Peer.class.php
+Index: rdbms/Peer.class.php
 ===================================================================
---- skeleton/rdbms/Peer.class.php	(Revision 10701)
-+++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
+--- rdbms/Peer.class.php	(Revision 10701)
++++ rdbms/Peer.class.php	(Arbeitskopie)
 @@ -241,7 +241,7 @@
  
        if ($criteria->isJoin()) {
@@ -20,10 +20,10 @@ Index: skeleton/rdbms/Peer.class.php
          return $jp->getJoinIterator($q);
        }
  
-Index: skeleton/rdbms/Criteria.class.php
+Index: rdbms/Criteria.class.php
 ===================================================================
---- skeleton/rdbms/Criteria.class.php	(Revision 10701)
-+++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
+--- rdbms/Criteria.class.php	(Revision 10701)
++++ rdbms/Criteria.class.php	(Arbeitskopie)
 @@ -267,36 +267,33 @@
       *
       * @param   rdbms.DBConnection conn
@@ -77,10 +77,10 @@ Index: skeleton/rdbms/Criteria.class.php
        );
      }
      
-Index: skeleton/rdbms/Query.class.php
+Index: rdbms/Query.class.php
 ===================================================================
---- skeleton/rdbms/Query.class.php	(Revision 10701)
-+++ skeleton/rdbms/Query.class.php	(Arbeitskopie)
+--- rdbms/Query.class.php	(Revision 10701)
++++ rdbms/Query.class.php	(Arbeitskopie)
 @@ -1,141 +0,0 @@
 -<?php
 -/* This class is part of the XP framework
@@ -223,11 +223,17 @@ Index: skeleton/rdbms/Query.class.php
 -    
 -  }
 -?>
-Index: skeleton/rdbms/query/Query.class.php
+Index: rdbms/query/Query.class.php
 ===================================================================
---- skeleton/rdbms/query/Query.class.php	(Revision 0)
-+++ skeleton/rdbms/query/Query.class.php	(Arbeitskopie)
-@@ -11,51 +11,42 @@
+--- rdbms/query/Query.class.php	(Revision 0)
++++ rdbms/query/Query.class.php	(Arbeitskopie)
+@@ -6,56 +6,39 @@
+   uses(
+     'lang.IllegalArgumentException',
+     'lang.IllegalStateException',
++    'rdbms.query.QueryExecutable',
+     'rdbms.Criteria'
+   );
  
    /**
     * store complete queries with criteria, method and peer
@@ -249,20 +255,17 @@ Index: skeleton/rdbms/query/Query.class.php
 -      $mode    = '',
 -      $criteria= NULL,
 -      $peer    = NULL;
-+  abstract class Query extends Object {
++  abstract class Query extends Object implements QueryExecutable {
 +    protected
 +      $criteria=     NULL,
 +      $peer=         NULL;
      
      /**
 -     * set mode
-+     * execute query
++     * Constructor
       *
 -     * @param  string mode 
 -     * @throws lang.IllegalArgumentException
-+     * @param  mixed[] values
-+     * @return mixed
-+     * @throws lang.IllegalStateException
       */
 -    public function setMode($mode) {
 -      if (!in_array($mode, array(
@@ -272,23 +275,21 @@ Index: skeleton/rdbms/query/Query.class.php
 -        self::DELETE,
 -      ))) throw new IllegalArgumentException('mode must be in self::INSERT, self::UPDATE, self::SELECT or self::DELETE');
 -      $this->mode= $mode;
--    }
-+    abstract public function execute($values= NULL);
-     
-     /**
--     * get mode
-+     * Constructor
-      *
--     * @param  string mode 
-      */
--    public function getMode() {
--      return $this->mode;
 +    public function __construct() {
 +      $this->criteria= new Criteria();
      }
 -    
 +
      /**
+-     * get mode
+-     *
+-     * @param  string mode 
+-     */
+-    public function getMode() {
+-      return $this->mode;
+-    }
+-    
+-    /**
       * set criteria
       *
       * @param  rdbms.Criteria criteria
@@ -298,7 +299,7 @@ Index: skeleton/rdbms/query/Query.class.php
        $this->criteria= $criteria;
      }
      
-@@ -73,7 +64,7 @@
+@@ -73,7 +56,7 @@
       *
       * @param  rdbms.Peer peer
       */
@@ -307,7 +308,7 @@ Index: skeleton/rdbms/query/Query.class.php
        $this->peer= $peer;
      }
      
-@@ -98,44 +89,14 @@
+@@ -98,44 +81,14 @@
      /**
       * make copy with added restriction restriction
       *
@@ -353,18 +354,19 @@ Index: skeleton/rdbms/query/Query.class.php
 -    
    }
  ?>
-Index: skeleton/rdbms/query/SelectQuery.class.php
+Index: rdbms/query/SelectQuery.class.php
 ===================================================================
---- skeleton/rdbms/query/SelectQuery.class.php	(Revision 0)
-+++ skeleton/rdbms/query/SelectQuery.class.php	(Revision 0)
-@@ -0,0 +1,64 @@
+--- rdbms/query/SelectQuery.class.php	(Revision 0)
++++ rdbms/query/SelectQuery.class.php	(Revision 0)
+@@ -0,0 +1,65 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
 +  uses(
-+    'rdbms.query.Query'
++    'rdbms.query.Query',
++    'rdbms.query.SelectQueryExecutable'
 +  );
 +
 +  /**
@@ -372,7 +374,7 @@ Index: skeleton/rdbms/query/SelectQuery.class.php
 +   *
 +   * @purpose  rdbms
 +   */
-+  class SelectQuery extends Query {
++  class SelectQuery extends Query implements SelectQueryExecutable {
 +
 +    /**
 +     * get sql query as string
@@ -423,15 +425,112 @@ Index: skeleton/rdbms/query/SelectQuery.class.php
 +  }
 +?>
 
-Eigenschaftsänderungen: skeleton/rdbms/query/SelectQuery.class.php
+Eigenschaftsänderungen: rdbms/query/SelectQuery.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
 
-Index: skeleton/rdbms/query/DeleteQuery.class.php
+Index: rdbms/query/QueryExecutable.class.php
 ===================================================================
---- skeleton/rdbms/query/DeleteQuery.class.php	(Revision 0)
-+++ skeleton/rdbms/query/DeleteQuery.class.php	(Revision 0)
+--- rdbms/query/QueryExecutable.class.php	(Revision 0)
++++ rdbms/query/QueryExecutable.class.php	(Revision 0)
+@@ -0,0 +1,32 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * interface for all query classes
++   *
++   * @see      xp:rdbms.query.Query
++   * @purpose  rdbms.query
++   */
++  interface QueryExecutable {
++    
++    /**
++     * execute query
++     *
++     * @param  mixed[] values
++     * @return mixed
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL);
++    
++    /**
++     * get connection for peer
++     *
++     * @return rdbms.DBConnection
++     */
++    public function getConnection();
++
++  }
++?>
+
+Eigenschaftsänderungen: rdbms/query/QueryExecutable.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: rdbms/query/SelectQueryExecutable.class.php
+===================================================================
+--- rdbms/query/SelectQueryExecutable.class.php	(Revision 0)
++++ rdbms/query/SelectQueryExecutable.class.php	(Revision 0)
+@@ -0,0 +1,43 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.query.QueryExecutable');
++
++  /**
++   * interface for all query classes that select rows
++   *
++   * @see      xp://rdbms.query.Query
++   * @see      xp://rdbms.query.SelectQuery
++   * @purpose  rdbms.query
++   */
++  interface SelectQueryExecutable extends QueryExecutable {
++    
++    /**
++     * get sql query as string
++     *
++     * @return string
++     */
++    public function getQueryString();
++    
++    /**
++     * Retrieve a number of objects from the database
++     *
++     * @param   int max default 0
++     * @return  rdbms.Record[]
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchArray($max= 0);
++
++    /**
++     * Returns an iterator for the select statement
++     *
++     * @return  lang.XPIterator
++     * @see     xp://lang.XPIterator
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchIterator();
++
++  }
++?>
+
+Eigenschaftsänderungen: rdbms/query/SelectQueryExecutable.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: rdbms/query/DeleteQuery.class.php
+===================================================================
+--- rdbms/query/DeleteQuery.class.php	(Revision 0)
++++ rdbms/query/DeleteQuery.class.php	(Revision 0)
 @@ -0,0 +1,31 @@
 +<?php
 +/* This class is part of the XP framework
@@ -465,15 +564,15 @@ Index: skeleton/rdbms/query/DeleteQuery.class.php
 +  }
 +?>
 
-Eigenschaftsänderungen: skeleton/rdbms/query/DeleteQuery.class.php
+Eigenschaftsänderungen: rdbms/query/DeleteQuery.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
 
-Index: skeleton/rdbms/query/UpdateQuery.class.php
+Index: rdbms/query/UpdateQuery.class.php
 ===================================================================
---- skeleton/rdbms/query/UpdateQuery.class.php	(Revision 0)
-+++ skeleton/rdbms/query/UpdateQuery.class.php	(Revision 0)
+--- rdbms/query/UpdateQuery.class.php	(Revision 0)
++++ rdbms/query/UpdateQuery.class.php	(Revision 0)
 @@ -0,0 +1,31 @@
 +<?php
 +/* This class is part of the XP framework
@@ -507,15 +606,15 @@ Index: skeleton/rdbms/query/UpdateQuery.class.php
 +  }
 +?>
 
-Eigenschaftsänderungen: skeleton/rdbms/query/UpdateQuery.class.php
+Eigenschaftsänderungen: rdbms/query/UpdateQuery.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
 
-Index: skeleton/rdbms/query/InsertQuery.class.php
+Index: rdbms/query/InsertQuery.class.php
 ===================================================================
---- skeleton/rdbms/query/InsertQuery.class.php	(Revision 0)
-+++ skeleton/rdbms/query/InsertQuery.class.php	(Revision 0)
+--- rdbms/query/InsertQuery.class.php	(Revision 0)
++++ rdbms/query/InsertQuery.class.php	(Revision 0)
 @@ -0,0 +1,31 @@
 +<?php
 +/* This class is part of the XP framework
@@ -549,16 +648,16 @@ Index: skeleton/rdbms/query/InsertQuery.class.php
 +  }
 +?>
 
-Eigenschaftsänderungen: skeleton/rdbms/query/InsertQuery.class.php
+Eigenschaftsänderungen: rdbms/query/InsertQuery.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
 
-Index: skeleton/rdbms/query/SetOperation.class.php
+Index: rdbms/query/SetOperation.class.php
 ===================================================================
---- skeleton/rdbms/query/SetOperation.class.php	(Revision 0)
-+++ skeleton/rdbms/query/SetOperation.class.php	(Revision 0)
-@@ -0,0 +1,134 @@
+--- rdbms/query/SetOperation.class.php	(Revision 0)
++++ rdbms/query/SetOperation.class.php	(Revision 0)
+@@ -0,0 +1,143 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -572,7 +671,7 @@ Index: skeleton/rdbms/query/SetOperation.class.php
 +   * @see      xp://rdbms.query.SelectQuery
 +   * @purpose  rdbms
 +   */
-+  class SetOperation extends SelectQuery {
++  class SetOperation extends Object implements SelectQueryExecutable {
 +    const UNION=         'union';
 +    const UNION_ALL=     'union_all';
 +    const INTERCEPT=     'intercept';
@@ -591,19 +690,19 @@ Index: skeleton/rdbms/query/SetOperation.class.php
 +      );
 +   
 +    private
-+      $arg1      = NULL,
-+      $arg2      = NULL,
-+      $mode      = NULL;
++      $arg1 = NULL,
++      $arg2 = NULL,
++      $mode = NULL;
 +    
 +    /**
 +     * Constructor
 +     *
 +     * @param   string mode one of SetOperation::UNION, SetOperation::UNION_ALL, SetOperation::INTERCEPT, SetOperation::INTERCEPT_ALL, SetOperation::EXCEPT or SetOperation::EXCEPT_ALL
-+     * @param   rdbms.query.SelectQuery arg1
-+     * @param   rdbms.query.SelectQuery arg2
++     * @param   rdbms.query.SelectQueryExecutable arg1
++     * @param   rdbms.query.SelectQueryExecutable arg2
 +     * @throws  lang.IllegalArgumentException
 +     */
-+    public function __construct($mode, SelectQuery $arg1, SelectQuery $arg2) {
++    public function __construct($mode, SelectQueryExecutable $arg1, SelectQueryExecutable $arg2) {
 +      $this->mode= $mode;
 +      $this->arg1= $arg1;
 +      $this->arg2= $arg2;
@@ -616,6 +715,15 @@ Index: skeleton/rdbms/query/SetOperation.class.php
 +     */
 +    public function getQueryString() {
 +      return sprintf(self::$sql[$this->mode], $this->arg1->getQueryString(), $this->arg2->getQueryString());
++    }
++    
++    /**
++     * get connection
++     *
++     * @return rdbms.DBConnection
++     */
++    public function getConnection() {
++      return $this->arg1->getConnection();
 +    }
 +    
 +    /**
@@ -659,42 +767,42 @@ Index: skeleton/rdbms/query/SetOperation.class.php
 +    /**
 +     * factory for a union set operation
 +     *
-+     * @param   rdbms.query.SelectQuery arg1
-+     * @param   rdbms.query.SelectQuery arg2
++     * @param   rdbms.query.SelectQueryExecutable arg1
++     * @param   rdbms.query.SelectQueryExecutable arg2
 +     * @param   boll all true for all defaults to false
 +     * @return  rdbms.query.SetOperation
 +     */
-+    public static function union(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++    public static function union(SelectQueryExecutable $arg1, SelectQueryExecutable $arg2, $all= false) {
 +      return new self(($all ? self::UNION_ALL : self::UNION), $arg1, $arg2);
 +    }
 +    
 +    /**
 +     * factory for an intercept set operation
 +     *
-+     * @param   rdbms.query.SelectQuery arg1
-+     * @param   rdbms.query.SelectQuery arg2
++     * @param   rdbms.query.SelectQueryExecutable arg1
++     * @param   rdbms.query.SelectQueryExecutable arg2
 +     * @param   boll all true for all defaults to false
 +     * @return  rdbms.query.SetOperation
 +     */
-+    public static function intercept(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++    public static function intercept(SelectQueryExecutable $arg1, SelectQueryExecutable $arg2, $all= false) {
 +      return new self(($all ? self::INTERCEPT_ALL : self::INTERCEPT), $arg1, $arg2);
 +    }
 +    
 +    /**
 +     * factory for an except set operation
 +     *
-+     * @param   rdbms.query.SelectQuery arg1
-+     * @param   rdbms.query.SelectQuery arg2
++     * @param   rdbms.query.SelectQueryExecutable arg1
++     * @param   rdbms.query.SelectQueryExecutable arg2
 +     * @param   boll all true for all defaults to false
 +     * @return  rdbms.query.SetOperation
 +     */
-+    public static function except(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++    public static function except(SelectQueryExecutable $arg1, SelectQueryExecutable $arg2, $all= false) {
 +      return new self(($all ? self::EXCEPT_ALL : self::EXCEPT), $arg1, $arg2);
 +    }
 +  }
 +?>
 
-Eigenschaftsänderungen: skeleton/rdbms/query/SetOperation.class.php
+Eigenschaftsänderungen: rdbms/query/SetOperation.class.php
 ___________________________________________________________________
 Name: svn:keywords
    + Id
