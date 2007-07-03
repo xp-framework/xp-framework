@@ -42,6 +42,11 @@
      */
     public function newInstance() {
 
+      // Check whether class is abstract
+      if ($this->_reflect->getDeclaringClass()->isAbstract()) {
+        throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_ref);
+      }
+
       // Check modifers
       $m= $this->_reflect->getModifiers();
       if (!($m & MODIFIER_PUBLIC) || $m & MODIFIER_ABSTRACT) {

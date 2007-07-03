@@ -90,12 +90,22 @@
      *
      * @param   mixed* args
      * @return  lang.Object 
+     * @throws  lang.IllegalAccessException in case this class cannot be instantiated
      */
     public function newInstance() {
-      if (!$this->hasConstructor()) return $this->_reflect->newInstance();
-
-      $args= func_get_args();
-      return $this->_reflect->newInstanceArgs($args);
+      if ($this->_reflect->isInterface()) {
+        throw new IllegalAccessException('Cannot instantiate interfaces');
+      } else if ($this->_reflect->isAbstract()) {
+        throw new IllegalAccessException('Cannot instantiate abstract classes');
+      }
+      
+      try {
+        if (!$this->hasConstructor()) return $this->_reflect->newInstance();
+        $args= func_get_args();
+        return $this->_reflect->newInstanceArgs($args);
+      } catch (ReflectionException $e) {
+        throw new IllegalAccessException($e->getMessage());
+      }
     }
     
     /**
