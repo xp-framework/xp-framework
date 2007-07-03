@@ -1,0 +1,71 @@
+RFC 0131: Query class and operation
+========================================================================
+$Id$
+
+@authors: wagner
+@created: Di  3 Jul 2007 13:26:05 CEST
+@status: discussion (ends: Mo  9 Jul 2007 13:26:26 CEST)
+@category: rdbms
+
+Scope of Change
+---------------
+Extends the rdbms critertia api
+- Query class that stores complete querys
+- set operations like union, intercept and except
+
+Rationale
+---------
+- Store complete queries.
+- Provide a tool to represent set operations in criteria / OO world.
+
+
+Functionality
+-------------
+<pre>
+  intercept and except will not work on mysql databases
+</pre>
+- the api provides the following classes:
+  - rdbms.query.SetOperation
+  - rdbms.query.SelectQuery
+  - rdbms.query.InsertQuery
+  - rdbms.query.UpdateQuery
+  - rdbms.query.DeleteQuery
+- uml diagram:
+[[img:uml.png]]
+- Rdbms.Criteria needs to be extended by a method getSelectQueryString(),
+  which will fetch the sql statement as string.
+- The method rdbms.Criteria::executeJoin() will be removed.
+- The class rdbms.Query will be moved into the package rdbms.query.Query.
+- The class rdbms.Query will be declared abstract.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+criteria api
+
+
+Related documents
+-----------------
+- patch against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0131/skeleton.diff
+- patch against ports
+  http://xp-framework.net/rfc/contrib/rfc0131/ports.diff
+- uml diagram as dia file
+  http://xp-framework.net/rfc/media/0130.dia
+
+
+Comments
+--------
+
+
+<EOF>

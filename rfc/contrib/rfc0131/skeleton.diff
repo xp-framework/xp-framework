@@ -1,0 +1,701 @@
+Index: skeleton/rdbms/Peer.class.php
+===================================================================
+--- skeleton/rdbms/Peer.class.php	(Revision 10701)
++++ skeleton/rdbms/Peer.class.php	(Arbeitskopie)
+@@ -241,7 +241,7 @@
+ 
+       if ($criteria->isJoin()) {
+         $jp= new JoinProcessor($this);
+-        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
++        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
+         $it= $jp->getJoinIterator($q);
+         for ($i= 1; $it->hasNext(); $i++) {
+           if ($max && $i > $max) break;
+@@ -270,7 +270,7 @@
+ 
+       if ($criteria->isJoin()) {
+         $jp= new JoinProcessor($this);
+-        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
++        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
+         return $jp->getJoinIterator($q);
+       }
+ 
+Index: skeleton/rdbms/Criteria.class.php
+===================================================================
+--- skeleton/rdbms/Criteria.class.php	(Revision 10701)
++++ skeleton/rdbms/Criteria.class.php	(Arbeitskopie)
+@@ -267,36 +267,33 @@
+      *
+      * @param   rdbms.DBConnection conn
+      * @param   rdbms.Peer peer
++     * @param   rdbms.join.Joinprocessor jp optional
+      * @return  rdbms.ResultSet
+      */
+-    public function executeSelect(DBConnection $conn, Peer $peer) {
+-      return $conn->query(
+-        'select %c from %c%c', 
+-        $this->projections($conn, $peer),
+-        $peer->table,
+-        $this->toSQL($conn, $peer)
+-      );
++    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL) {
++      return $conn->query($this->getQueryString($conn, $peer, $jp));
+     }
+     
+     /**
+-     * Executes an SQL SELECT statement with more than one table
++     * get the SELECT query
+      *
+      * @param   rdbms.DBConnection conn
+      * @param   rdbms.Peer peer
+      * @return  rdbms.ResultSet
+      */
+-    public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
+-      $jp->setFetchmodes($this->fetchmode);
+-      $jp->enterJoinContext();
+-      $rest= $this->toSQL($conn, $peer);
+-      $jp->leaveJoinContext();
+-      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
+-
+-      return $conn->query(
++    public function getSelectQueryString(DBConnection $conn, Peer $peer, $jp= NULL) {
++      $isJoin= $this->isJoin();
++      $restriction= $this->toSQL($conn, $peer);
++      if ($isJoin) {
++        $restriction= (strlen($restriction) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
++        $jp->setFetchmodes($this->fetchmode);
++      }
++      
++      return $conn->prepare(
+         'select %c from %c %c',
+-        $jp->getAttributeString(),
+-        $jp->getJoinString(),
+-        $rest
++        (($isJoin) ? $jp->getAttributeString() : $this->projections($conn, $peer)),
++        (($isJoin) ? $jp->getJoinString() : $peer->table),
++        $restriction
+       );
+     }
+     
+Index: skeleton/rdbms/Query.class.php
+===================================================================
+--- skeleton/rdbms/Query.class.php	(Revision 10701)
++++ skeleton/rdbms/Query.class.php	(Arbeitskopie)
+@@ -1,141 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$ 
+- */
+-  uses(
+-    'lang.IllegalArgumentException',
+-    'lang.IllegalStateException',
+-    'rdbms.Criteria'
+-  );
+-
+-  /**
+-   * store complete queries with criteria, method and peer
+-   *
+-   * @purpose  rdbms
+-   */
+-  class Query extends Object {
+-    const INSERT= 'insert';
+-    const UPDATE= 'update';
+-    const SELECT= 'select';
+-    const DELETE= 'delete';
+-   
+-    private
+-      $mode    = '',
+-      $criteria= NULL,
+-      $peer    = NULL;
+-    
+-    /**
+-     * set mode
+-     *
+-     * @param  string mode 
+-     * @throws lang.IllegalArgumentException
+-     */
+-    public function setMode($mode) {
+-      if (!in_array($mode, array(
+-        self::INSERT,
+-        self::UPDATE,
+-        self::SELECT,
+-        self::DELETE,
+-      ))) throw new IllegalArgumentException('mode must be in self::INSERT, self::UPDATE, self::SELECT or self::DELETE');
+-      $this->mode= $mode;
+-    }
+-    
+-    /**
+-     * get mode
+-     *
+-     * @param  string mode 
+-     */
+-    public function getMode() {
+-      return $this->mode;
+-    }
+-    
+-    /**
+-     * set criteria
+-     *
+-     * @param  rdbms.Criteria criteria
+-     */
+-    public function setCriteria($criteria) {
+-      $this->criteria= $criteria;
+-    }
+-    
+-    /**
+-     * get criteria
+-     *
+-     * @return  rdbms.Criteria
+-     */
+-    public function getCriteria() {
+-      return $this->criteria;
+-    }
+-    
+-    /**
+-     * set peer
+-     *
+-     * @param  rdbms.Peer peer
+-     */
+-    public function setPeer($peer) {
+-      $this->peer= $peer;
+-    }
+-    
+-    /**
+-     * get peer
+-     *
+-     * @return rdbms.Peer
+-     */
+-    public function getPeer() {
+-      return $this->peer;
+-    }
+-    
+-    /**
+-     * get connection for peer
+-     *
+-     * @return rdbms.DBConnection
+-     */
+-    public function getConnection() {
+-      return $this->peer->getConnection();
+-    }
+-    
+-    /**
+-     * make copy with added restriction restriction
+-     *
+-     * @param  rdbms.Criteria criterion
+-     * @return rdbms.Query
+-     */
+-    public function withRestriction(Criterion $criterion) {
+-      $q= clone($this);
+-      if (is_null($q->getCriteria())) $q->setCriteria(new Criteria());
+-      $q->getCriteria()->add($criterion);
+-      return $q;
+-    }
+-    
+-    /**
+-     * execute query
+-     *
+-     * @param  mixed[] values
+-     * @return mixed
+-     * @throws lang.IllegalStateException
+-     */
+-    public function execute($values) {
+-      if (strlen($this->mode) == 0) throw new IllegalStateException('no mode set');
+-      if (is_null($this->peer))     throw new IllegalStateException('no peer set');
+-      if (is_null($this->criteria)) $this->criteria= new Criteria();
+-      switch ($this->mode) {
+-        case self::INSERT:
+-        if ($this->criteria->isJoin) throw new IllegalStateException("can't insert into joins");
+-        return $this->peer->doInsert($values);
+-
+-        case self::UPDATE:
+-        if ($this->criteria->isJoin) throw new IllegalStateException("can't update into joins");
+-        return $this->peer->doUpdate($values, $this->criteria);
+-
+-        case self::SELECT:
+-        return $this->peer->doSelect($this->criteria, $values);
+-
+-        case self::DELETE:
+-        if($this->criteria->isJoin) throw new IllegalStateException("can't delete from joins");
+-        return $this->peer->doDelete($this->criteria);
+-      }
+-    }
+-    
+-  }
+-?>
+Index: skeleton/rdbms/query/Query.class.php
+===================================================================
+--- skeleton/rdbms/query/Query.class.php	(Revision 0)
++++ skeleton/rdbms/query/Query.class.php	(Arbeitskopie)
+@@ -11,51 +11,42 @@
+ 
+   /**
+    * store complete queries with criteria, method and peer
++   * base class for SelectQuery, DeleteQuery, InsertQuery and UpdateQuery
+    *
++   * @see      xp://rdbms.query.SelectQuery
++   * @see      xp://rdbms.query.DeleteQuery
++   * @see      xp://rdbms.query.InsertQuery
++   * @see      xp://rdbms.query.UpdateQuery
+    * @purpose  rdbms
+    */
+-  class Query extends Object {
+-    const INSERT= 'insert';
+-    const UPDATE= 'update';
+-    const SELECT= 'select';
+-    const DELETE= 'delete';
+-   
+-    private
+-      $mode    = '',
+-      $criteria= NULL,
+-      $peer    = NULL;
++  abstract class Query extends Object {
++    protected
++      $criteria=     NULL,
++      $peer=         NULL;
+     
+     /**
+-     * set mode
++     * execute query
+      *
+-     * @param  string mode 
+-     * @throws lang.IllegalArgumentException
++     * @param  mixed[] values
++     * @return mixed
++     * @throws lang.IllegalStateException
+      */
+-    public function setMode($mode) {
+-      if (!in_array($mode, array(
+-        self::INSERT,
+-        self::UPDATE,
+-        self::SELECT,
+-        self::DELETE,
+-      ))) throw new IllegalArgumentException('mode must be in self::INSERT, self::UPDATE, self::SELECT or self::DELETE');
+-      $this->mode= $mode;
+-    }
++    abstract public function execute($values= NULL);
+     
+     /**
+-     * get mode
++     * Constructor
+      *
+-     * @param  string mode 
+      */
+-    public function getMode() {
+-      return $this->mode;
++    public function __construct() {
++      $this->criteria= new Criteria();
+     }
+-    
++
+     /**
+      * set criteria
+      *
+      * @param  rdbms.Criteria criteria
+      */
+-    public function setCriteria($criteria) {
++    public function setCriteria(Criteria $criteria) {
+       $this->criteria= $criteria;
+     }
+     
+@@ -73,7 +64,7 @@
+      *
+      * @param  rdbms.Peer peer
+      */
+-    public function setPeer($peer) {
++    public function setPeer(Peer $peer) {
+       $this->peer= $peer;
+     }
+     
+@@ -98,44 +89,14 @@
+     /**
+      * make copy with added restriction restriction
+      *
+-     * @param  rdbms.Criteria criterion
++     * @param  rdbms.criteria.Criterion criterion
+      * @return rdbms.Query
+      */
+     public function withRestriction(Criterion $criterion) {
+       $q= clone($this);
+-      if (is_null($q->getCriteria())) $q->setCriteria(new Criteria());
+       $q->getCriteria()->add($criterion);
+       return $q;
+     }
+     
+-    /**
+-     * execute query
+-     *
+-     * @param  mixed[] values
+-     * @return mixed
+-     * @throws lang.IllegalStateException
+-     */
+-    public function execute($values) {
+-      if (strlen($this->mode) == 0) throw new IllegalStateException('no mode set');
+-      if (is_null($this->peer))     throw new IllegalStateException('no peer set');
+-      if (is_null($this->criteria)) $this->criteria= new Criteria();
+-      switch ($this->mode) {
+-        case self::INSERT:
+-        if ($this->criteria->isJoin) throw new IllegalStateException("can't insert into joins");
+-        return $this->peer->doInsert($values);
+-
+-        case self::UPDATE:
+-        if ($this->criteria->isJoin) throw new IllegalStateException("can't update into joins");
+-        return $this->peer->doUpdate($values, $this->criteria);
+-
+-        case self::SELECT:
+-        return $this->peer->doSelect($this->criteria, $values);
+-
+-        case self::DELETE:
+-        if($this->criteria->isJoin) throw new IllegalStateException("can't delete from joins");
+-        return $this->peer->doDelete($this->criteria);
+-      }
+-    }
+-    
+   }
+ ?>
+Index: skeleton/rdbms/query/SelectQuery.class.php
+===================================================================
+--- skeleton/rdbms/query/SelectQuery.class.php	(Revision 0)
++++ skeleton/rdbms/query/SelectQuery.class.php	(Revision 0)
+@@ -0,0 +1,64 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.query.Query'
++  );
++
++  /**
++   * store complete queries with criteria, method and peer
++   *
++   * @purpose  rdbms
++   */
++  class SelectQuery extends Query {
++
++    /**
++     * get sql query as string
++     *
++     * @return string
++     */
++    public function getQueryString() {
++      $jp= new JoinProcessor($this->peer);
++      return $this->criteria->getSelectQueryString($this->peer->getConnection(), $this->peer, $jp);
++    }
++    
++    /**
++     * execute query without set operation
++     *
++     * @param  int max default 0
++     * @return rdbms.ResultSet 
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL) {
++      if (is_null($this->peer)) throw new IllegalStateException('no peer set');
++      return $this->peer->doSelect($this->criteria, $values);
++    }
++    
++    /**
++     * Retrieve a number of objects from the database
++     *
++     * @param   int max default 0
++     * @return  rdbms.Record[]
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchArray($max= 0) {
++      if (is_null($this->peer)) throw new IllegalStateException('no peer set');
++      return $this->peer->doSelect($this->criteria);
++    }
++
++    /**
++     * Returns an iterator for the select statement
++     *
++     * @return  lang.XPIterator
++     * @see     xp://lang.XPIterator
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchIterator() {
++      if (is_null($this->peer)) throw new IllegalStateException('no peer set');
++      return $this->peer->iteratorFor($this->criteria);
++    }
++
++  }
++?>
+
+Eigenschaftsänderungen: skeleton/rdbms/query/SelectQuery.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/query/DeleteQuery.class.php
+===================================================================
+--- skeleton/rdbms/query/DeleteQuery.class.php	(Revision 0)
++++ skeleton/rdbms/query/DeleteQuery.class.php	(Revision 0)
+@@ -0,0 +1,31 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.query.Query'
++  );
++
++  /**
++   * store complete queries with criteria, method and peer
++   *
++   * @purpose  rdbms
++   */
++  class DeleteQuery extends Query {
++
++    /**
++     * execute query without set operation
++     *
++     * @param  mixed[] values
++     * @return int number of affected rows
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL) {
++      if (is_null($this->peer))   throw new IllegalStateException('no peer set');
++      if($this->criteria->isJoin) throw new IllegalStateException("can't delete from joins");
++      return $this->peer->doDelete($this->criteria);
++    }
++    
++  }
++?>
+
+Eigenschaftsänderungen: skeleton/rdbms/query/DeleteQuery.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/query/UpdateQuery.class.php
+===================================================================
+--- skeleton/rdbms/query/UpdateQuery.class.php	(Revision 0)
++++ skeleton/rdbms/query/UpdateQuery.class.php	(Revision 0)
+@@ -0,0 +1,31 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.query.Query'
++  );
++
++  /**
++   * store complete queries with criteria, method and peer
++   *
++   * @purpose  rdbms
++   */
++  class UpdateQuery extends Query {
++
++    /**
++     * execute query without set operation
++     *
++     * @param  mixed[] values
++     * @return int number of affected rows
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL) {
++      if (is_null($this->peer))    throw new IllegalStateException('no peer set');
++      if ($this->criteria->isJoin) throw new IllegalStateException("can't update into joins");
++      return $this->peer->doUpdate($values, $this->criteria);
++    }
++    
++  }
++?>
+
+Eigenschaftsänderungen: skeleton/rdbms/query/UpdateQuery.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/query/InsertQuery.class.php
+===================================================================
+--- skeleton/rdbms/query/InsertQuery.class.php	(Revision 0)
++++ skeleton/rdbms/query/InsertQuery.class.php	(Revision 0)
+@@ -0,0 +1,31 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses(
++    'rdbms.query.Query'
++  );
++
++  /**
++   * store complete queries with criteria, method and peer
++   *
++   * @purpose  rdbms
++   */
++  class InsertQuery extends Query {
++
++    /**
++     * execute query without set operation
++     *
++     * @param  mixed[] values
++     * @return mixed identity value or NULL if not applicable
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL) {
++      if (is_null($this->peer))     throw new IllegalStateException('no peer set');
++      if ($this->criteria->isJoin) throw new IllegalStateException("can't insert into joins");
++      return $this->peer->doInsert($values);
++    }
++    
++  }
++?>
+
+Eigenschaftsänderungen: skeleton/rdbms/query/InsertQuery.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/query/SetOperation.class.php
+===================================================================
+--- skeleton/rdbms/query/SetOperation.class.php	(Revision 0)
++++ skeleton/rdbms/query/SetOperation.class.php	(Revision 0)
+@@ -0,0 +1,134 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++  uses('rdbms.query.SelectQuery', 'lang.IllegalArgumentException', 'rdbms.Record');
++
++  /**
++   * class for sql set operations union, intercept and except
++   *
++   * @see      xp://rdbms.query.SelectQuery
++   * @purpose  rdbms
++   */
++  class SetOperation extends SelectQuery {
++    const UNION=         'union';
++    const UNION_ALL=     'union_all';
++    const INTERCEPT=     'intercept';
++    const INTERCEPT_ALL= 'intercept_all';
++    const EXCEPT=        'except';
++    const EXCEPT_ALL=    'except_all';
++
++    static private
++      $sql= array(
++        self::UNION         => '%s union %s',
++        self::UNION_ALL     => '%s union all %s',
++        self::INTERCEPT     => '%s intercept %s',
++        self::INTERCEPT_ALL => '%s intercept all %s',
++        self::EXCEPT        => '%s except %s',
++        self::EXCEPT_ALL    => '%s exCept all %s',
++      );
++   
++    private
++      $arg1      = NULL,
++      $arg2      = NULL,
++      $mode      = NULL;
++    
++    /**
++     * Constructor
++     *
++     * @param   string mode one of SetOperation::UNION, SetOperation::UNION_ALL, SetOperation::INTERCEPT, SetOperation::INTERCEPT_ALL, SetOperation::EXCEPT or SetOperation::EXCEPT_ALL
++     * @param   rdbms.query.SelectQuery arg1
++     * @param   rdbms.query.SelectQuery arg2
++     * @throws  lang.IllegalArgumentException
++     */
++    public function __construct($mode, SelectQuery $arg1, SelectQuery $arg2) {
++      $this->mode= $mode;
++      $this->arg1= $arg1;
++      $this->arg2= $arg2;
++    }
++
++    /**
++     * get sql query as string
++     *
++     * @return string
++     */
++    public function getQueryString() {
++      return sprintf(self::$sql[$this->mode], $this->arg1->getQueryString(), $this->arg2->getQueryString());
++    }
++    
++    /**
++     * execute query
++     *
++     * @param  mixed[] values
++     * @return rdbms.ResultSet
++     * @throws lang.IllegalStateException
++     */
++    public function execute($values= NULL) {
++      return $this->arg1->getConnection()->query($this->getQueryString());
++    }
++    
++    /**
++     * Retrieve a number of objects from the database
++     *
++     * @param   int max default 0
++     * @return  rdbms.Record[]
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchArray($max= 0) {
++      $q= $this->execute();
++      for ($i= 1; $record= $q->next(); $i++) {
++        if ($max && $i > $max) break;
++        $r[]= new Record($record);
++      }
++      return $r;
++    }
++
++    /**
++     * Returns an iterator for the select statement
++     *
++     * @return  rdbms.ResultIterator
++     * @see     xp://lang.XPIterator
++     * @throws  lang.IllegalStateException
++     */
++    public function fetchIterator() {
++      return new ResultIterator($this->execute(), 'Record');
++    }
++
++    /**
++     * factory for a union set operation
++     *
++     * @param   rdbms.query.SelectQuery arg1
++     * @param   rdbms.query.SelectQuery arg2
++     * @param   boll all true for all defaults to false
++     * @return  rdbms.query.SetOperation
++     */
++    public static function union(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++      return new self(($all ? self::UNION_ALL : self::UNION), $arg1, $arg2);
++    }
++    
++    /**
++     * factory for an intercept set operation
++     *
++     * @param   rdbms.query.SelectQuery arg1
++     * @param   rdbms.query.SelectQuery arg2
++     * @param   boll all true for all defaults to false
++     * @return  rdbms.query.SetOperation
++     */
++    public static function intercept(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++      return new self(($all ? self::INTERCEPT_ALL : self::INTERCEPT), $arg1, $arg2);
++    }
++    
++    /**
++     * factory for an except set operation
++     *
++     * @param   rdbms.query.SelectQuery arg1
++     * @param   rdbms.query.SelectQuery arg2
++     * @param   boll all true for all defaults to false
++     * @return  rdbms.query.SetOperation
++     */
++    public static function except(SelectQuery $arg1, SelectQuery $arg2, $all= false) {
++      return new self(($all ? self::EXCEPT_ALL : self::EXCEPT), $arg1, $arg2);
++    }
++  }
++?>
+
+Eigenschaftsänderungen: skeleton/rdbms/query/SetOperation.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
