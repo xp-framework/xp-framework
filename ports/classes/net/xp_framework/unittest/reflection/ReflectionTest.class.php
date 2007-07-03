@@ -134,6 +134,16 @@
     }
 
     /**
+     * Tests abstract constructor incovation throws an exception
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function newInstanceForAbstractClass() {
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')->newInstance();
+    }
+
+    /**
      * Tests the field reflection
      *
      * @see     xp://lang.XPClass#getFields
