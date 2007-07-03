@@ -4,15 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.collections.HashSet');
-
-  define('TX_NOT_SUPPORTED',  0);
-  define('TX_REQUIRED',       1);
-  define('TX_SUPPORTS',       2);
-  define('TX_REQUIRES_NEW',   3);
-  define('TX_MANDATORY',      4);
-  define('TX_NEVER',          5);
-  define('TX_UNKNOWN',        6);
+  uses('util.collections.HashSet', 'remote.reflect.TransactionTypeDescription');
 
   /**
    * Describes an EJB's method
@@ -26,7 +18,7 @@
       $returnType       = '',
       $parameterTypes   = NULL,
       $roles            = NULL,
-      $transactionType  = 0;
+      $transactionType  = NULL;
 
     /**
      * Set Name
@@ -103,18 +95,34 @@
     /**
      * Set TransactionType
      *
-     * @param   int transactionType
+     * @param   remote.reflect.TransactionTypeDescription transactionType
      */
-    public function setTransactionType($transactionType) {
+    public function setTransactionType(TransactionTypeDescription $transactionType) {
       $this->transactionType= $transactionType;
     }
 
     /**
      * Get TransactionType
      *
-     * @return  int
+     * @return  remote.reflect.TransactionTypeDescription
      */
     public function getTransactionType() {
+
+      // BC: Older versions of xp-easc serialized enums to their ordinal value,
+      // setting the transactionType member to that int directly.
+      if (!$this->transactionType instanceof TransactionTypeDescription) {
+        static $bcMap= array(
+          0 => 'NOT_SUPPORTED',
+          1 => 'REQUIRED',
+          2 => 'SUPPORTS',
+          3 => 'REQUIRES_NEW',
+          4 => 'MANDATORY',
+          5 => 'NEVER',
+          6 => 'UNKNOWN'
+        );
+        
+        return TransactionTypeDescription::valueOf($bcMap[$this->transactionType]);
+      }
       return $this->transactionType;
     }
     
@@ -125,7 +133,7 @@
      * @return  string
      */
     protected function typeString($arg) {
-      return NULL === $arg ? 'void' : (is('ClassReference', $arg) ? $arg->referencedName() : $arg);
+      return NULL === $arg ? 'void' : ($arg instanceof ClassReference ? $arg->referencedName() : $arg);
     }
 
     /**
@@ -135,9 +143,10 @@
      */
     public function classSet() {
       $set= new HashSet(); 
-      if (is('ClassReference', $this->returnType)) $set->add($this->returnType);
+      if ($this->returnType instanceof ClassReference) $set->add($this->returnType);
+
       for ($i= 0, $s= sizeof($this->parameterTypes->values); $i < $s; $i++) {
-        if (!is('ClassReference', $this->parameterTypes->values[$i])) continue;
+        if (!($this->parameterTypes->values[$i] instanceof ClassReference)) continue;
         $set->add($this->parameterTypes->values[$i]);
       }
       return $set->toArray();
@@ -149,20 +158,10 @@
      * @return  string
      */
     public function toString() {
-      static $transactionTypes= array(
-        TX_NOT_SUPPORTED   => 'NOT_SUPPORTED',
-        TX_REQUIRED        => 'REQUIRED',
-        TX_SUPPORTS        => 'SUPPORTS',
-        TX_REQUIRES_NEW    => 'REQUIRES_NEW',
-        TX_MANDATORY       => 'MANDATORY',
-        TX_NEVER           => 'NEVER',
-        TX_UNKNOWN         => 'UNKNOWN'
-      );
-
       return sprintf(
         '%s@{ @Transaction(type= %s) %s%s %s(%s) }',
         $this->getClassName(),
-        $transactionTypes[$this->transactionType],
+        $this->getTransactionType()->name,
         $this->roles->values ? '@Security(roles= ['.implode(', ', $this->roles->values).']) ' : '',
         $this->typeString($this->returnType),
         $this->name,
