@@ -198,6 +198,65 @@ Note:
   Nothing special, really. PHP supports this as-is.
 </pre>
 
+Usage: Enum values
+~~~~~~~~~~~~~~~~~~
+The following will print all transaction type values to the console:
+<?php
+  foreach (TransactionType::values() as $type) {
+    Console::writeLine('- ', $type);
+  }
+?>
+
+
+Example: Coin
+~~~~~~~~~~~~~
+<?php
+  // Definition
+  class Coin extends Enum {
+    public static
+      $penny,
+      $nickel,
+      $dime,
+      $quarter;
+    
+    static function __static() {
+      self::$penny= new self(1, 'penny');
+      self::$nickel= new self(2, 'nickel');
+      self::$dime= new self(10, 'dime');
+      self::$quarter= new self(25, 'quarter');
+    }
+
+    public static function values() {
+      return parent::membersOf(__CLASS__);
+    }
+
+    public function value() {
+      return $this->ordinal;
+    }
+
+    public function color() {
+      switch ($this) {
+        case self::$penny: return 'copper';
+        case self::$nickel: return 'nickel';
+        case self::$dime: case self::$quarter: return 'silver';
+      }
+    }
+  }
+  
+  // Usage
+  foreach (Coin::values() as $coin) {
+    echo $coin->name, ': ', $coin->value(), '¢ (', $coin->color(), ")\n";
+  }
+?>
+
+The above example prints out the following:
+<pre>
+  penny: 1¢ (copper)
+  nickel: 5¢ (nickel)
+  dime: 10¢ (silver)
+  quarter: 25¢ (silver)
+</pre>
+
 
 Security considerations
 -----------------------
