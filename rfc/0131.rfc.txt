@@ -39,7 +39,10 @@ Functionality
 - The method rdbms.Criteria::executeJoin() will be removed.
 - The class rdbms.Query will be moved into the package rdbms.query.Query.
 - The class rdbms.Query will be declared abstract.
-- uml diagram:
+
+
+UML diagram
+~~~~~~~~~~~
 [[img:uml.png]]
 
 
@@ -70,7 +73,12 @@ Related documents
 
 Comments
 --------
-wagner (Di  3 Jul 2007 18:00:41 CEST): 
-Changed inheritances to interfaces for clearer structure
+- wagner (Di  3 Jul 2007 18:00:41 CEST): 
+  Changed inheritances to interfaces for clearer structure
+
+- friebe, Tue Jul  3 21:06:40     2007
+  API seems to be limited to two QueryExecutables, but SQL supports
+  select ... union all select ... union all select ... [etc.]
+  for example.
 
 <EOF>
