@@ -81,4 +81,12 @@ Comments
   select ... union all select ... union all select ... [etc.]
   for example.
 
+- wagner (Mi  4 Jul 2007 08:49:59 CEST)
+  SetOperation::union, SetOperation::intercept and SetOperation::except accept
+  two rdbms.query.SelectQueryExecutables as arguments. So you can realise the
+  SQL code above like:
+  <?php
+    SetOperation::union($selctQueryA, SetOperation::union($selectQueryB, SetOperation::union($selectQueryC, ... [etc.], TRUE), TRUE), TRUE);
+  ?>
+
 <EOF>
