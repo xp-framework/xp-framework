@@ -77,7 +77,7 @@ code examples
   
   Console::writeLine('QueryA: '.$selectQueryA->getQueryString());
   Console::writeLine('QueryB: '.$selectQueryB->getQueryString());
-  Console::writeLine('QueryA &cup; QueryB: '.SetOperation::union($selectQueryB, $selectQueryB)->getQueryString());
+  Console::writeLine('QueryA &cup; QueryB: '.SetOperation::union($selectQueryA, $selectQueryB)->getQueryString());
 
 ?>
 
