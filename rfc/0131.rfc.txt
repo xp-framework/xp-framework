@@ -40,10 +40,53 @@ Functionality
 - The class rdbms.Query will be moved into the package rdbms.query.Query.
 - The class rdbms.Query will be declared abstract.
 
-
 UML diagram
 ~~~~~~~~~~~
 [[img:uml.png]]
+
+code examples
+~~~~~~~~~~~~~
+<?php
+
+  uses(
+    'rdbms.query.SelectQuery',
+    'rdbms.query.SetOperation',
+    'rdbms.Criteria',
+    'net.xp_framework.unittest.rdbms.dataset.Job',
+  );
+
+  $selectQueryA= new SelectQuery();
+  $selectQueryA->setPeer(Job::getPeer());
+  $selectQueryA->setCriteria(
+    create(new Criteria(Job::column('job_id')->equal(5)))->setProjection(
+      Projections::ProjectionList()
+      ->add(Job::column('job_id'))
+      ->add(Job::column('title'))
+    )
+  );
+
+  $selectQueryB= new SelectQuery();
+  $selectQueryB->setPeer(Person::getPeer());
+  $selectQueryB->setCriteria(
+    create(new Criteria())->setProjection(
+      Projections::ProjectionList()
+      ->add(Person::column('job_id'))
+      ->add(Person::column('name'))
+    )
+  );
+  
+  Console::writeLine('QueryA: '.$selectQueryA->getQueryString());
+  Console::writeLine('QueryB: '.$selectQueryB->getQueryString());
+  Console::writeLine('QueryA &cup; QueryB: '.SetOperation::union($selectQueryB, $selectQueryB)->getQueryString());
+
+?>
+
+Would print:
+<pre>
+  QueryA: select  job_id, title from JOBS.job  where job_id = 5
+  QueryB: select  job_id, name from JOBS.Person
+  QueryA &cup; QueryB: select  job_id, title from JOBS.job  where job_id = 5 union select  job_id, name from JOBS.Person
+</pre>
 
 
 Security considerations
