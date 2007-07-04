@@ -3,7 +3,7 @@
  *
  * $Id$ 
  */
-  uses('rdbms.SQLFunction', 'rdbms.SQLDialect');
+  uses('rdbms.SQLFunction', 'rdbms.SQLDialect', 'lang.IllegalArgumentException');
   
   /**
    * use sql functions with different databases
@@ -542,14 +542,38 @@
     }
 
     /**
-     * cast col1 to the datatype col2
+     * cast col1 to the datatype typename
      *
      * @param   mixed col1 string or rdbms.SQLFunction
-     * @param   mixed col2 string or rdbms.SQLFunction
+     * @param   string typename
      * @return  rdbms.SQLFunction
+     * @throws  lang.IllegalArgumentException
      */
-    public static function cast($col1, $col2) {
-      return new SQLFunction('cast', '%c', array($col1, $col2));      // FIXME: Map type according to col2
+    public static function cast($col1, $typename) {
+      $typename= (strpos($typename, '(') === false) ? $typename : substr($typename, 0, strpos($typename, '('));
+      static $datatypes= array(
+        'bigint'     => '%d',
+        'binary'     => '%s',
+        'blob'       => '%s',
+        'char'       => '%s',
+        'clob'       => '%s',
+        'date'       => '%s',
+        'datetime'   => '%s',
+        'dec'        => '%f',
+        'decimal'    => '%f',
+        'double'     => '%f',
+        'float'      => '%f',
+        'int'        => '%d',
+        'integer'    => '%d',
+        'smallint'   => '%d',
+        'text'       => '%s',
+        'time'       => '%s',
+        'timestamp'  => '%s',
+        'varbinary'  => '%s',
+        'varchar'    => '%s',
+      );
+      if (!isset($datatypes[$typename])) throw new IllegalArgumentException($typename.': unknowen typename');
+      return new SQLFunction('cast', $datatypes[$typename], array($col1, $typename));
     }
 
     /**
@@ -571,8 +595,7 @@
      */
     public static function coalesce() {
       $args= func_get_args();
-      $type= '%c';    // FIXME: Map according to args[0]
-      return new SQLFunction('coalesce', $type, $args);
+      return new SQLFunction('coalesce', self::getTypeToken($args[0]), $args);
     }
 
     /**
@@ -583,7 +606,21 @@
      * @return  rdbms.SQLFunction
      */
     public static function nullif($col1, $col2) {
-      return new SQLFunction('nullif', '%c', array($col1, $col2));    // FIXME: Map type according to col1
+      return new SQLFunction('nullif', self::getTypeToken($col1), array($col1, $col2));
+    }
+    
+    /**
+     * get the type token for a value
+     *
+     * @param   mixed obj
+     * @return  string typetoken for prepare
+     * @throws  lang.IllegalArgumentException
+     */
+    private static function getTypeToken($obj) {
+      if (is_numeric($obj))            return '%f';
+      if (is_string($obj))             return '%s';
+      if ($obj instanceof SQLFragment) return $obj->getType();
+      throw new IllegalArgumentException('argument is from illegal type');
     }
   }
 ?>
