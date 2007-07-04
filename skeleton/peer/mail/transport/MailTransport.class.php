@@ -92,7 +92,7 @@
         $this->parameters
       )) {
         throw(new TransportException(
-          'Could not send mail to '.$message->to[0], 
+          'Could not send mail to '.xp::stringOf($message->to[0]), 
           new IOException('Call to mail() failed')
         ));
       }
