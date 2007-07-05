@@ -281,6 +281,9 @@ Related documents
 - http://experiments.xp-framework.net/?arena,enum
   Experiments and demos
 
+- http://xp-framework.info/xml/xp.en_US/news/view?199
+  EASC and enums
+  
 
 Comments
 --------
