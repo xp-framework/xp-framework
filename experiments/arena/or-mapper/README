@@ -54,4 +54,21 @@ Create entities
 $ xpcli net.xp_forge.examples.CreatePerson -f Timm -l Friebe -e friebe@example.com
 $ xpcli net.xp_forge.examples.CreateAccount -i 1 -u timm -p 1,tzUjyHgz
 
+$ xpcli.php net.xp_forge.examples.CreatePerson -f Alex -l Kiesel -e kiesel@example.com
+$ xpcli net.xp_forge.examples.CreateAccount -i 2 -u alex -p 2,37haMhJ
+
+Select them
+-----------
+* By ID
+  $ xpcli net.xp_forge.examples.SelectAccount 2
+
+* By username
+  $ xpcli net.xp_forge.examples.SelectAccount timm
+
+* By date
+  $ xpcli net.xp_forge.examples.SelectAccount @2007-07-05
+
+Add "-v" after the criteria argument to see the generated SQL
+Add "-j" to use joining
+
 <EOF>
