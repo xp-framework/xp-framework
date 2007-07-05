@@ -12,6 +12,8 @@
    * @purpose  Example
    */
   class PersonStatistics extends net·xp_forge·examples·AbstractExampleCommand {
+    protected
+      $criteria= NULL;
 
     /**
      * Set field to aggregate by
