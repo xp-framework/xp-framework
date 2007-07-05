@@ -57,8 +57,16 @@ $ xpcli net.xp_forge.examples.CreateAccount -i 1 -u timm -p 1,tzUjyHgz
 $ xpcli.php net.xp_forge.examples.CreatePerson -f Alex -l Kiesel -e kiesel@example.com
 $ xpcli net.xp_forge.examples.CreateAccount -i 2 -u alex -p 2,37haMhJ
 
-Select them
------------
+Examples
+--------
+Add "-v" to the end of the command line to see the generated SQL
+Add "-j" to use joining
+
+
+Selecting accounts
+------------------
+Prints accounts and people they belong to:
+
 * By ID
   $ xpcli net.xp_forge.examples.SelectAccount 2
 
@@ -68,7 +76,23 @@ Select them
 * By date
   $ xpcli net.xp_forge.examples.SelectAccount @2007-07-05
 
-Add "-v" after the criteria argument to see the generated SQL
-Add "-j" to use joining
+
+Person statistics
+-----------------
+Statistical aggregation (field, count(*) group by field)
+
+* By bz_id
+  $ xpcli net.xp_forge.examples.PersonStatistics bz_id
+
+* By lastname
+  $ xpcli net.xp_forge.examples.PersonStatistics lastname
+
+
+Counting
+--------
+count(*)
+
+* Count all entries
+  $ xpcli net.xp_forge.examples.CountPerson
 
 <EOF>
