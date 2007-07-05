@@ -14,9 +14,9 @@
   class PersonStatistics extends net·xp_forge·examples·AbstractExampleCommand {
 
     /**
-     * Set criteria
+     * Set field to aggregate by
      *
-     * @param   string criteria default 'bz_id'
+     * @param   string field default 'bz_id'
      */
     #[@arg(position= 0)]
     public function setField($field= 'bz_id') {
@@ -27,7 +27,6 @@
         ->addGroupBy($field)
       ;
     }
-
 
     /**
      * Runs this command
