@@ -64,5 +64,13 @@
      */
     public function close() { }
 
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() { 
+      return $this->getClassName().'('.$this->handle.')@'.xp::stringOf($this->fields);
+    }
   }
 ?>
