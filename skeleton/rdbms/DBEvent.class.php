@@ -65,7 +65,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->name.') {'.var_export($this->arg, TRUE).'}';
+      return $this->getClassName().'('.$this->name.') {'.xp::stringOf($this->arg).'}';
     }
   }
 ?>
