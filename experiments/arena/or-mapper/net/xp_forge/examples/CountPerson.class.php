@@ -4,13 +4,10 @@
  * $Id$ 
  */
 
-  uses(
-    'net.xp_forge.examples.AbstractExampleCommand',
-    'rdbms.SQLFunctions'
-  );
+  uses('net.xp_forge.examples.AbstractExampleCommand');
 
   /**
-   * Selects an account
+   * Projections::count() demo
    *
    * @purpose  Example
    */
