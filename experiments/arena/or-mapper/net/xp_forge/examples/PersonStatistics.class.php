@@ -22,8 +22,9 @@
     public function setField($field= 'bz_id') {
       $this->criteria= create(new Criteria())
         ->setProjection(Projections::projectionList(array(
-          Projections::property(Person::column($field)), Projections::count())
-        ))
+          Projections::property(Person::column($field)), 
+          Projections::count()
+        )))
         ->addGroupBy($field)
       ;
     }
