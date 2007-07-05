@@ -95,4 +95,13 @@ count(*)
 * Count all entries
   $ xpcli net.xp_forge.examples.CountPerson
 
+
+Minimum and maximum values
+--------------------------
+min/max functions
+
+* Displays smallest and largest ID values in account table
+  $ xpcli net.xp_forge.examples.AccountIDs
+
+
 <EOF>
