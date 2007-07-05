@@ -18,9 +18,15 @@
      *
      */
     public function run() {
-      $this->out->writeLine(Person::getPeer()
+      $c= Person::getPeer()
         ->iteratorFor(create(new Criteria())->setProjection(Projections::count()))
         ->next()
+        ->get('count')
+      ;
+
+      $this->out->writeLinef(
+        '===> The person table contains %s',
+        0 == $c ? 'no entries' : (1 == $c ? 'one entry' : $c.' entries')
       );
     }
   }
