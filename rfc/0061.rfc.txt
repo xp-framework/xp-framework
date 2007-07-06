@@ -9,34 +9,32 @@ $Id$
 
 Scope of Change
 ---------------
-Several places in the scriptlet-API will be changed to use
-scriptlet.HttpScriptletRequest::getEnvValue() instead of a
-direct getenv() call.
-
-Several places in the scriptlet-API will be changed to use
-scriptlet.HttpScriptletRequest::getParam()/hasParam() methods
-instead of accessing $_REQUEST/$_GET/$_POST/... directly.
-
-The following is the list of restricted methods/variables:
+Usage of the following methods or variables through direct
+access at any time is deprecated:
 . $_GET
 . $_POST
 . $_REQUEST
 . $_COOKIE
+. $_FILES
 . getenv()
 . putenv()
 . getallheaders()
 . header()
+. echo / print
+
+They should exclusively be accessed by the XP core
+and any XP framework output layer (-> scriptlet package).
 
 Rationale
 ---------
-In order to setup a scriptlet engine within a scriptlet-controlled
-environment, access to the "outer" environment must be prevented. By
-overriding the getEnvValue()/getParam()/...-methods this can be done.
-The raw access cannot be overriden.
+Encapsulating any access to the environment and output allows for
+easier replacement of the executing "container". This simplifies
+unit testing and eg. using different server APIs (eg. Apache module,
+CGI, self written webserver).
 
-It's clear that there is no way of really intercepting access and 
-calls to the raw data; so this document states the fact, it's for-
-bidden, no further control is being done.
+Note: it is clear that there is no way of really intercepting access 
+and calls to the raw data; so this document expresses just a not
+controllable policy.
 
 Violating the rule leads to undefined application behaviour by
 definition.
@@ -51,7 +49,7 @@ n/a
 
 Speed impact
 ------------
-Slightly slower due to an additional method call. Negligible.
+Slightly slower due to an additional method call.
 
 Dependencies
 ------------
@@ -59,8 +57,6 @@ n/a
 
 Related documents
 -----------------
-- http://xp-framework.net/rfc/contrib/rfc0061.diff
-  Patch for scriptlet API to make conformant to this RFC
 
 Comments
 --------
