@@ -1,0 +1,28 @@
+Enum experiment - RFC #0132 showcase
+========================================================================
+$Id$
+
+
+Examples: Operation enum
+------------------------
+Evaluates an operation given two numbers.
+
+$ xpcli examples.operation.Evaluate 2 6
+2 plus 6 = 8.0
+2 minus 6 = -4.0
+2 times 6 = 12.0
+2 divided_by 6 = 0.3
+
+
+Examples: Coins
+---------------
+Shows US$ coins
+
+$ xpcli examples.coin.Values
+penny: 1¢ (copper)
+nickel: 2¢ (nickel)
+dime: 10¢ (silver)
+quarter: 25¢ (silver)
+
+
+<EOF>
