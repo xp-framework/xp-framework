@@ -43,7 +43,7 @@
     public function run() {
       foreach (Operation::values() as $op) {
         $this->out->writeLinef(
-          '%d %s %s = %.1f', 
+          '%s %s %s = %.1f', 
           $this->x, 
           $op->name, 
           $this->y, 
