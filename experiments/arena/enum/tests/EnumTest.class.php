@@ -49,6 +49,7 @@
      */
     #[@test]
     public function areEnums() {
+      $this->assertFalse(XPClass::forName('lang.Object')->isEnum());
       $this->assertTrue(XPClass::forName('examples.coin.Coin')->isEnum());
       $this->assertTrue(XPClass::forName('examples.operation.Operation')->isEnum());
     }
