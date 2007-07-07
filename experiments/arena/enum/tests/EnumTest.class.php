@@ -31,6 +31,19 @@
     }
 
     /**
+     * Asserts given modifiers do not contain abstract
+     *
+     * @param   int modifiers
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertNotAbstract($modifiers) {
+      $this->assertFalse(
+        Modifiers::isAbstract($modifiers), 
+        implode(' | ', Modifiers::namesOf($modifiers))
+      );
+    }
+
+    /**
      * Test XPClass::isEnum()
      *
      */
@@ -56,6 +69,43 @@
     #[@test]
     public function operationEnumIsAbstract() {
       $this->assertAbstract(XPClass::forName('examples.operation.Operation')->getModifiers());
+    }
+
+    /**
+     * Test Coin enum is not abstract
+     *
+     */
+    #[@test]
+    public function coinEnumIsNotAbstract() {
+      $this->assertNotAbstract(XPClass::forName('examples.coin.Coin')->getModifiers());
+    }
+
+    /**
+     * Test coin members are of the class as their container
+     *
+     */
+    #[@test]
+    public function coinMemberAreSameClass() {
+      $this->assertClass(Coin::$penny, 'examples.coin.Coin');
+    }
+
+    /**
+     * Test operation members are subclasses as their container's class
+     *
+     */
+    #[@test]
+    public function operationMembersAreSubclasses() {
+      $this->assertSubclass(Operation::$plus, 'examples.operation.Operation');
+    }
+
+    /**
+     * Test enum members' classes are not abstract
+     *
+     */
+    #[@test]
+    public function enumMembersAreNotAbstract() {
+      $this->assertNotAbstract(Coin::$penny->getClass()->getModifiers());
+      $this->assertNotAbstract(Operation::$plus->getClass()->getModifiers());
     }
 
     /**
