@@ -25,4 +25,8 @@ dime: 10¢ (silver)
 quarter: 25¢ (silver)
 
 
+Unittests
+---------
+$ unittest tests.EnumTest
+
 <EOF>
