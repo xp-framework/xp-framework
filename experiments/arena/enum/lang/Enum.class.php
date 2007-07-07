@@ -25,14 +25,13 @@
     /**
      * Returns the enumeration member uniquely identified by 
      *
-     * @param   string class fully qualified class name
+     * @param   lang.XPClass class class object
      * @param   string name enumeration member
      * @return  lang.Enum
      */
-    public static function valueOf($class, $name) {
+    public static function valueOf(XPClass $class, $name) {
       try {
-        $c= new ReflectionClass($class);
-        return $c->getStaticPropertyValue($name);
+        return $class->_reflect->getStaticPropertyValue($name);
       } catch (ReflectionException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }
