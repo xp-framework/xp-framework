@@ -39,6 +39,15 @@
     }
     
     /**
+     * Clone interceptor - ensures enums cannot be cloned
+     *
+     * @throws  lang.CloneNotSupportedException'  
+     */
+    public final function __clone() {
+      raise('lang.CloneNotSupportedException', 'Enums cannot be cloned');
+    }
+    
+    /**
      * Create a string representation of this enum
      *
      * @return  string
