@@ -25,6 +25,11 @@
       self::$quarter= new self(25, 'quarter');
     }
 
+    /**
+     * Returns all enum members
+     *
+     * @return  lang.Enum[]
+     */
     public static function values() {
       return parent::membersOf(__CLASS__);
     }
