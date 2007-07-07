@@ -17,7 +17,7 @@
      * @param   int ordinal default 0
      * @param   string name default ''
      */
-    protected function __construct($ordinal= 0, $name= '') {
+    public function __construct($ordinal= 0, $name= '') {
       $this->ordinal= $ordinal;
       $this->name= $name;
     }
