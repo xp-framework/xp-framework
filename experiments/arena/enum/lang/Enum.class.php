@@ -28,6 +28,7 @@
      * @param   lang.XPClass class class object
      * @param   string name enumeration member
      * @return  lang.Enum
+     * @throws  lang.IllegalArgumentException in case the enum member does not exist
      */
     public static function valueOf(XPClass $class, $name) {
       try {
