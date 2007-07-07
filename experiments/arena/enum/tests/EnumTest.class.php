@@ -16,7 +16,48 @@
    * @see      xp://lang.Enum
    */
   class EnumTest extends TestCase {
-  
+
+    /**
+     * Asserts given modifiers contain abstract
+     *
+     * @param   int modifiers
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertAbstract($modifiers) {
+      $this->assertTrue(
+        Modifiers::isAbstract($modifiers), 
+        implode(' | ', Modifiers::namesOf($modifiers))
+      );
+    }
+
+    /**
+     * Test XPClass::isEnum()
+     *
+     */
+    #[@test]
+    public function areEnums() {
+      $this->assertTrue(XPClass::forName('examples.coin.Coin')->isEnum());
+      $this->assertTrue(XPClass::forName('examples.operation.Operation')->isEnum());
+    }
+
+    /**
+     * Test enum base class is abstract
+     *
+     */
+    #[@test]
+    public function enumBaseClassIsAbstract() {
+      $this->assertAbstract(XPClass::forName('lang.Enum')->getModifiers());
+    }
+
+    /**
+     * Test Operation enum is abstract
+     *
+     */
+    #[@test]
+    public function operationEnumIsAbstract() {
+      $this->assertAbstract(XPClass::forName('examples.operation.Operation')->getModifiers());
+    }
+
     /**
      * Test Coin::values() method
      *
@@ -101,6 +142,42 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function valueOfNonExistant() {
       Enum::valueOf(XPClass::forName('examples.coin.Coin'), '@@DOES_NOT_EXIST@@');
+    }
+
+    /**
+     * Test Operation::$plus
+     *
+     */
+    #[@test]
+    public function plusOperation() {
+      $this->assertEquals(2, Operation::$plus->evaluate(1, 1));
+    }
+
+    /**
+     * Test Operation::$minus
+     *
+     */
+    #[@test]
+    public function minusOperation() {
+      $this->assertEquals(0, Operation::$minus->evaluate(1, 1));
+    }
+
+    /**
+     * Test Operation::$times
+     *
+     */
+    #[@test]
+    public function timesOperation() {
+      $this->assertEquals(21, Operation::$times->evaluate(7, 3));
+    }
+
+    /**
+     * Test Operation::$divided_by
+     *
+     */
+    #[@test]
+    public function dividedByOperation() {
+      $this->assertEquals(5, Operation::$divided_by->evaluate(10, 2));
     }
   }
 ?>
