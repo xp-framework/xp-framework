@@ -324,6 +324,24 @@
     }
 
     /**
+     * Retrieves this class' modifiers
+     *
+     * @see     xp://lang.reflect.Modifiers
+     * @return  int
+     */
+    public function getModifiers() {
+      $r= MODIFIER_PUBLIC;
+
+      // Map PHP reflection modifiers to generic form
+      $m= $this->_reflect->getModifiers();
+      $m & ReflectionClass::IS_EXPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ReflectionClass::IS_IMPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ReflectionClass::IS_FINAL && $r |= MODIFIER_ABSTRACT;
+      
+      return $r;
+    }
+
+    /**
      * Check whether an annotation exists
      *
      * @param   string name
