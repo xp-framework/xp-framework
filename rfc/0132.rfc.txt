@@ -50,11 +50,12 @@ A new class, lang.Enum will be added:
     /**
      * Returns the enumeration member uniquely identified by 
      *
-     * @param   string class fully qualified class name
+     * @param   lang.XPClass
      * @param   string name enumeration member
      * @return  lang.Enum
+     * @throws  lang.IllegalArgumentException
      */
-    public static function valueOf($class, $name) {
+    public static function valueOf(XPClass $class, $name) {
       // ...
     }
     
