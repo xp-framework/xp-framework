@@ -336,7 +336,7 @@
       $m= $this->_reflect->getModifiers();
       $m & ReflectionClass::IS_EXPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
       $m & ReflectionClass::IS_IMPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
-      $m & ReflectionClass::IS_FINAL && $r |= MODIFIER_ABSTRACT;
+      $m & ReflectionClass::IS_FINAL && $r |= MODIFIER_FINAL;
       
       return $r;
     }
