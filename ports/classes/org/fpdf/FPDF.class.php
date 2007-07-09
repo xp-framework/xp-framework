@@ -1795,7 +1795,7 @@
           break;
         }
       }
-;
+
       fclose($f);
 
       if ($table) {
