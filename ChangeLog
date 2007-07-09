@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.5.4, released 2007-07-09
+----------------------------------
+SVN version: 10764
+
 - Unbreak peer.irc-API with PHP5
   (kiesel)
 - Fix fatal error in XPClass::newInstance() when class represented is
