@@ -252,7 +252,7 @@
     <xsl:text>
      * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
       <xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if>
-      <xsl:if test="@unique= 'true'"> entitiy object</xsl:if>
+      <xsl:if test="@unique= 'true'"> entity object</xsl:if>
     <xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
