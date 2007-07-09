@@ -112,7 +112,7 @@
         } else if ($arg instanceof Date) {
           $type= 's';
           $p= $arg->toString($this->dialect->dateFormat);
-        } else if ($arg instanceof SQLFragment) {
+        } else if ($arg instanceof SQLRenderable) {
           $r.= $arg->asSql($this->conn).', ';
           continue;
         } else if ($arg instanceof Generic) {

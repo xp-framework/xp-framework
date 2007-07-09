@@ -6,8 +6,10 @@
   uses('rdbms.SQLRenderable');
 
   /**
-   * belongs to the Criterion API
-   *
+   * interface for all Prjections - 
+   * Projections are built with thee static factory class rdbms.criterion.Projections
+   * 
+   * @see xp://rdbms.criterion.Projections
    */
   interface Projection extends SQLRenderable {
     const AVG=  'avg(%s)';

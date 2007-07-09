@@ -7,11 +7,16 @@
   uses('rdbms.criterion.Projection');
 
   /**
-   * belongs to the Criterion API
+   * belongs to the Criterion projection API
+   * simple base class 
+   * Do not use, use factory rdbms.criterion.Projections instead
    *
+   * @see     xp://rdbms.criterion.Projections
+   * @see     xp://rdbms.criterion.CountProjection
+   * @see     xp://rdbms.criterion.ProjectionList
+   * @purpose rdbms.criterion
    */
   class SimpleProjection extends Object implements Projection {
-  
     protected
       $field= '',
       $command= '',
@@ -23,7 +28,6 @@
      * @param  rdbms.SQLRenderable field
      * @param  string command from Projection::constlist
      * @param  string alias optional
-     * @throws lang.IllegalArgumentException
      */
     public function __construct(SQLRenderable $field, $command, $alias= '') {
       $this->field= $field;

@@ -147,27 +147,29 @@
     /**
      * Set projection
      * param can also be a rdbms.Column, a property
+     * If the first parameter is omitted or NULL given the projection will be cleared
      * projection is then assumed
      *
-     * @param   rdbms.criterion.Projection projection
+     * @param   rdbms.SQLRenderable projection optional
      * @param   string optional alias
      * @return  rdbms.Criteria this object
      */
-    public function setProjection($projection, $alias= '') {
-      $this->projection= ($projection instanceof SQLFragment)
-      ? $projection= Projections::property($projection, $alias)
-      : $projection;
+    public function setProjection(SQLRenderable $projection= NULL, $alias= '') {
+      $this->projection= (is_null($projection) || ($projection instanceof Projection))
+        ? $projection
+        : $projection= Projections::property($projection, $alias)
+      ;
       return $this;
     }
 
     /**
      * Set projection for a new clone of this object
      *
-     * @param   rdbms.criterion.Projection projection
+     * @param   rdbms.SQLRenderable projection
      * @param   string optional alias
      * @return  rdbms.Criteria this object
      */
-    public function withProjection(Projection $projection, $alias= '') {
+    public function withProjection(SQLRenderable $projection, $alias= '') {
       $crit= clone($this);
       return $crit->setProjection($projection, $alias);
     }

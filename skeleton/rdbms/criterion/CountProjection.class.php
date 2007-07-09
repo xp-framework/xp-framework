@@ -3,19 +3,35 @@
  *
  * $Id$ 
  */
-  uses('rdbms.criterion.SimpleProjection');
+  uses(
+    'rdbms.criterion.SimpleProjection',
+    'lang.IllegalArgumentException'
+  );
 
   /**
    * belongs to the Criterion API
+   * Should be built with the static factory rdbms.criterion.Projections
+   * <?php
+   *   // count all rows of the table Person
+   *   // sql: select count * from person;
+   *   // the following lines are equal
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count('*')));
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count()));
    *
+   *   // count all rows, where column "name" not NULL
+   *   // sql: select count name from person;
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Person::column('name')));
+   * ?>
+   *
+   * @see     xp://rdbms.criterion.Projections
+   * @purpose rdbms.criterion
    */
   class CountProjection extends SimpleProjection {
     
     /**
      * constructor
      *
-     * @param  rdbms.SQLRenderable field optional default is *
-     * @param  string command form constlist
+     * @param  mixed string('*') or rdbms.SQLRenderable field optional default is string('*')
      * @param  string alias optional
      * @throws lang.IllegalArgumentException
      */
@@ -26,7 +42,7 @@
     }
 
     /**
-     * Returns the fragment SQL
+     * Returns the fragment SQL as string
      *
      * @param   rdbms.DBConnection conn
      * @return  string

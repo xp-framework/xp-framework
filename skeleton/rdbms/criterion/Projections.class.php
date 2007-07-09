@@ -10,11 +10,47 @@
   );
 
   /**
-   * belongs to the Criterion API
-   * projection factory
+   * This is the projection factory.
+   * With the projection API a result set of an SQL query can be cut down to a
+   * subset of result rows or aggregated (like sum, max, min, avg, count).
+   * The projection represents the select part of a query (select <<projection>> from ...)
+   * 
+   * By default criteria projects the result to all rows of a table. This can be changed by
+   * using the rdbms.criteria::setProjection() method.
+   *
+   * exaple:
+   * <?php
+   *   // cut the result down to 2 atributes of a result set
+   *   // for further examples with ProjectionList see rdbms.criterion.ProjectionList API doc
+   *   // sql: select name, surname from person;
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *     Projections::projectionList()
+   *     ->add(Projections::property(Person::column('name')))
+   *     ->add(Projections::property(Person::column('surname')))
+   *   ));
+   *
+   *   // just count a result
+   *   // for further examples with ProjectionList see rdbms.criterion.CountProjection API doc
+   *   // sql: select count(*) from person where ...
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count('*'))->add(...)...);
+   *   
+   *   // aggregated result set
+   *   // sql: select avg(age) from person
+   *   // sql: select min(age) from person
+   *   // sql: select max(age) from person
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::avg(Person::column('age'))));
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::min(Person::column('age'))));
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::max(Person::column('age'))));
+   *   
+   *   // every projection, except the ProjectionList, can be aliased in the second parameter
+   *   // sql: select max(age) as `oldest` from person
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::max(Person::column('age'), 'oldest')));
+   * ?>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest
    * @see      xp://rdbms.Criteria
+   * @see      xp://rdbms.criterion.ProjectionList
+   * @see      xp://rdbms.criterion.CountProjection
    * @purpose  purpose
    */
   class Projections extends Object {
@@ -22,7 +58,7 @@
     /**
      * manufactor a new ProjectionList
      *
-     * @param   string[] properties
+     * @param    properties
      * @return  rdbms.criterion.ProjectionList
      */
     public static function projectionList($properties= array()) {
@@ -34,8 +70,8 @@
     /**
      * manufactor a new CountProjection
      *
-     * @param  string fieldname optional default is *
-     * @param  string alias optional
+     * @param   string fieldname optional default is *
+     * @param   string alias optional
      * @return  rdbms.criterion.CountProjection
      */
     public static function count($field= '*', $alias= '') {

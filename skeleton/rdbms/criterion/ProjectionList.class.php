@@ -10,32 +10,60 @@
 
   /**
    * belongs to the Criterion API
+   * strore a List of projections
+   * Do not use this class, use the factory rdbms.criterion.Projections instead
+   * <?php
+   *   // select only the fields name and surname from the table Person
+   *   // sql: select name, surname from person;
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *     Projections::projectionList()
+   *     ->add(Person::column('name'))
+   *     ->add(Person::column('surname'))
+   *   ));
+   *   // is short for
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *     Projections::projectionList()
+   *     ->add(Projections::property(Person::column('name')))
+   *     ->add(Projections::property(Person::column('surname')))
+   *   ));
+   *   
+   *   // you can define aliases an use functions
+   *   // sql: select concat(name, surname) as name from person;
+   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *     SQLFunctions::concat(
+   *       Person::column('name'), ' ', Person::column('surname')
+   *     ),
+   *     'name'
+   *   ));
+   * ?>
    *
+   * @test    xp://net.xp_framework.unittest.rdbms.ProjectionListTest
+   * @see     xp://rdbms.criterion.Projections
+   * @purpose rdbms.criterion
    */
   class ProjectionList extends Object implements Projection {
-
     protected
       $projections= array();
 
     /**
-     * add projection
-     * param can also be a rdbms.Column, a property
-     * projection is then assumed
+     * Add a new row to the result set.
+     * Param can also be a rdbms.Column, a property
+     * projection will be assumed then.
      *
-     * @param    rdbms.criterion.Projection projections
+     * @param    rdbms.SQLRenderable projection
      * @param    string alias optional
-     * @param    string aliasTable
      * @return   rdbms.criterion.ProjectionList
      */
-    public function add($projection, $alias= '') {
+    public function add(SQLRenderable $projection, $alias= '') {
       $this->projections[]= ($projection instanceof Projection)
-      ? $projection
-      : $projection= Projections::property($projection, $alias);
+        ? $projection
+        : $projection= Projections::property($projection, $alias)
+      ;
       return $this;
     }
 
     /**
-     * Returns the fragment SQL
+     * Returns the fragment SQL string
      *
      * @param   rdbms.DBConnection conn
      * @return  string
