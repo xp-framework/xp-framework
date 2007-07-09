@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Unbreak peer.irc-API with PHP5
+  (kiesel)
 - Fix fatal error in XPClass::newInstance() when class represented is
   abstract or an interface - now throws lang.IllegalAccessExceptions
   (friebe)

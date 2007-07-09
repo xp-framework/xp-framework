@@ -113,7 +113,7 @@
           'Calling %s::%s(<self>, %s)', 
           $this->listeners[$i]->getClassName(), 
           $function, 
-          var_export(array_slice($a, 1), 1)
+          xp::stringOf(array_slice($a, 1))
         );
         call_user_func_array(array($this->listeners[$i], $function), $a);
       }
@@ -291,7 +291,8 @@
      * @return  bool success TRUE in case the command could be sent
      */
     public function sendMessage() {
-      $dest= array_shift($a= func_get_args());
+      $a= func_get_args();
+      $dest= array_shift($a);
       return $this->writeln('PRIVMSG %s :%s', $dest, vsprintf(array_shift($a), $a));
     }
 
@@ -304,7 +305,8 @@
      * @return  bool success TRUE in case the command could be sent
      */
     public function sendAction() {
-      $dest= array_shift($a= func_get_args());
+      $a= func_get_args();
+      $dest= array_shift($a);
       return $this->writeln("PRIVMSG %s :\1ACTION %s\1", $dest, vsprintf(array_shift($a), $a));
     }
     
@@ -317,24 +319,20 @@
      */
     public function run() {
       if (!$this->sock->isConnected()) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       
       // Register with the server
-      try {
-        $this->writeln(
-          'USER %s %s %s :%s', 
-          $this->user->getUsername(),
-          $this->user->getHostname(),
-          $this->sock->host,
-          $this->user->getRealname()
-        );
+      $this->writeln(
+        'USER %s %s %s :%s', 
+        $this->user->getUsername(),
+        $this->user->getHostname(),
+        $this->sock->host,
+        $this->user->getRealname()
+      );
 
-        // Set nickname
-        $this->setNick($this->user->getNick());
-      } catch (IOException $e) {
-        throw($e);
-      }
+      // Set nickname
+      $this->setNick($this->user->getNick());
       
       // Loop while socket is not disconnected
       $messages= array();
@@ -377,13 +375,7 @@
      * @return  string or FALSE to indicate failure
      */    
     public function readln() {
-      xp::gc();
-      try {
-        $r= $this->sock->readLine(0x2000);
-      } catch (IOException $e) {
-        $this->cat && $this->cat->warn($e);
-        return FALSE;
-      }
+      $r= $this->sock->readLine(0x2000);
       $this->cat && $this->cat->infof(
         '<<< %s %3d: %s', 
         gettype($r), 
@@ -408,7 +400,10 @@
      * @return  bool success
      */
     public function writeln() {
-      $cmd= vsprintf(array_shift($a= func_get_args()), $a);
+      $a= func_get_args();
+      $str= array_shift($a);
+      $cmd= vsprintf($str, $a);
+      
       $this->cat && $this->cat->infof(
         '>>> %s %3d: %s', 
         gettype($cmd), 
