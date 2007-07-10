@@ -56,25 +56,6 @@
     }
     
     /**
-     * Normalize sourcecode, e.g. replace all whitespace tokens by a 
-     * single space, trim others.
-     *
-     * @param   string source the sourcecode to normalize
-     * @return  string the normalized sourcecode
-     */
-    protected function normalizeSourcecode($source) {
-      $tokens= token_get_all($source);
-      $return= '';
-      foreach ($tokens as $token) {
-        $return.= (is_array($token) 
-          ? T_WHITESPACE == $token[0] ? ' ' : trim($token[1])
-          : $token
-        );
-      }
-      return $return;
-    }
-    
-    /**
      * Helper method that asserts two sourcecodes are equal
      *
      * @param   string expected Expected code w/o prologue and epilogue
@@ -82,11 +63,52 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function assertSourcecodeEquals($expected, $emitted) {
-      if (!is_string($emitted)) return;
+      $tx= token_get_all('<?php '.$expected.' ?>');
+      $te= token_get_all($emitted);
+      
+      for ($ea= $xa= array(), $offset= 1, $e= NULL, $i= 1, $s= sizeof($tx); $i < $s; $i++) {
+        if (is_array($tx[$i])) {
+          $ea[]= is_array($te[$i+ $offset]) ? token_name($te[$i+ $offset][0]).':'.addcslashes($te[$i+ $offset][1], "\0..\17") : 'T_NONE:'.$te[$i+ $offset];
+          $xa[]= token_name($tx[$i][0]).':'.addcslashes($tx[$i][1], "\0..\17");
+          
+          if (T_WHITESPACE === $tx[$i][0]) {
+          
+            // For whitespace, ignore any amount
+            if (T_WHITESPACE === $te[$i+ $offset][0]) continue;
+            
+            // If emitted does not have whitespace but expected does, ignore
+            $offset--;
+          } else if (T_DOC_COMMENT == $tx[$i][0]) {
 
-      $expected= $this->normalizeSourcecode("<?php\n ".$expected).' ?>';
-      $emitted= $this->normalizeSourcecode($emitted);
-      $this->assertEquals($expected, $emitted);
+            // Normalize doc comments
+            $nx= preg_replace('/\n\s+\*/', '*', $tx[$i][1]);
+            $ne= preg_replace('/\n\s+\*/', '*', $te[$i+ $offset][1]);
+            
+            if ($nx === $ne) continue;
+            $e= $nx;
+            $h= $ne;
+            break;
+          } else { 
+          
+            // Compare values
+            if ($tx[$i][1] === $te[$i+ $offset][1]) continue;
+            $e= $tx[$i][1];
+            $h= $te[$i+ $offset][1];
+            break;
+          }
+        } else {
+          $ea[]= is_array($te[$i+ $offset]) ? token_name($te[$i+ $offset][0]).':'.addcslashes($te[$i+ $offset][1], "\0..\17") : 'T_NONE:'.$te[$i+ $offset];
+          $xa[]= 'T_NONE:'.$tx[$i];
+        
+          // Compare tokens
+          if ($tx[$i] === $te[$i+ $offset]) continue;
+          $e= $tx[$i];
+          $h= is_array($te[$i+ $offset]) ? token_name($te[$i+ $offset][0]) : $te[$i+ $offset];
+          break;
+        }
+      }
+      
+      $e && $this->fail('Want '.$e.', have '.$h, array_slice($ea, -5, 5, TRUE), array_slice($xa, -5, 5, TRUE));
     }
   }
 ?>
