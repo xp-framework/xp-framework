@@ -22,7 +22,7 @@
      */
     public function process($request, $response, $context) {
       if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $name, $type, $chapter, $id)) {
-        throw(new IllegalAccessException('Malformed query string'));
+        throw new IllegalAccessException('Malformed query string');
       }
       
       if ($album= $this->getAlbumFor($name)) {
@@ -53,12 +53,24 @@
           case 'h': {
             $selected= $response->addFormResult(Node::fromObject($album->highlightAt($id), 'selected'));
             if ($id < $album->numHighlights() - 1) {
-              $next= sprintf('h,0,%d', $id+ 1);
+              $next= array(
+                'type'    => 'h',
+                'chapter' => 0,
+                'number'  => $id + 1
+              );
             } else if (($album->numChapters() > 0) && ($album->chapters[0]->numImages() > 0)) {
-              $next= 'i,0,0';
+              $next= array(
+                'type'    => 'i',
+                'chapter' => 0,
+                'number'  => 0
+              );
             }
             if ($id > 0) {
-              $prev= sprintf('h,0,%d', $id- 1);
+              $prev= array(
+                'type'    => 'h',
+                'chapter' => 0,
+                'number'  => $id- 1
+              );
             }
             break;
           }
@@ -66,14 +78,30 @@
           case 'i': {
             $selected= $response->addFormResult(Node::fromObject($album->chapters[$chapter]->imageAt($id), 'selected'));
             if ($id < $album->chapters[$chapter]->numImages() - 1) {
-              $next= sprintf('i,%d,%d', $chapter, $id+ 1);
+              $next= array(
+                'type'    => 'i',
+                'chapter' => $chapter,
+                'number'  => $id + 1
+              );
             } elseif ($chapter < $album->numChapters() - 1) {
-              $next= sprintf('i,%d,0', $chapter+ 1);
+              $next= array(
+                'type'    => 'i',
+                'chapter' => $chapter+ 1,
+                'number'  => 0
+              );
             }
             if ($id > 0) {
-              $prev= sprintf('i,%d,%d', $chapter, $id- 1);
+              $prev= array(
+                'type'    => 'i',
+                'chapter' => $chapter,
+                'number'  => $id- 1
+              );
             } elseif ($chapter > 0) {
-              $prev= sprintf('i,%d,%d', $chapter- 1, $album->chapters[$chapter- 1]->numImages()- 1);
+              $prev= array(
+                'type'    => 'i',
+                'chapter' => $chapter- 1,
+                'number'  => $album->chapters[$chapter- 1]->numImages()- 1
+              );
             } else {
               $prev= sprintf('h,0,%d', $album->numHighlights()- 1);
             }
@@ -83,8 +111,8 @@
 
         $selected->setAttribute('type', $type);
         $selected->setAttribute('chapter', $chapter);
-        $next && $selected->setAttribute('next', $name.','.$next);
-        $prev && $selected->setAttribute('prev', $name.','.$prev);
+        $next && $selected->addChild(Node::fromArray($next, 'next'));
+        $prev && $selected->addChild(Node::fromArray($prev, 'prev'));
 
         // Check if an album is inside a collection
         if (FALSE === ($p= strpos($name, '/'))) return; 
