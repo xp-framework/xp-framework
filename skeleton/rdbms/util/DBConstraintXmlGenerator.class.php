@@ -8,6 +8,7 @@
     'lang.System',
     'rdbms.DBTable',
     'rdbms.util.DBXMLNamingContext',
+    'util.log.Traceable',
     'xml.Tree'
   );
   
@@ -16,7 +17,10 @@
    *
    * @see   xp://rdbms.DBTable
    */
-  class DBConstraintXmlGenerator extends Object {
+  class DBConstraintXmlGenerator extends Object implements Traceable {
+    protected
+      $cat= NULL;
+
     public
       $doc= NULL;
       
@@ -40,22 +44,38 @@
       $g->doc->root->setAttribute('created_at', date('r'));
       $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
       
-      $d= $g->doc->root->addChild(new Node('database', NULL, array(
+      $g->doc->root->addChild(new Node('database', NULL, array(
         'database' => $database
       )));
       
-      foreach (DBTable::getByDatabase($adapter, $database) as $t) {
-        $tn= $d->addChild(new Node('table', NULL, array(
+      $g->tables= DBTable::getByDatabase($adapter, $database);
+      return $g;
+    }
+
+    /**
+     * Get XML source
+     *
+     * @return  string xml representation
+     */    
+    public function getSource() {
+      foreach ($this->tables as $t) {
+        $rolenameList= array();
+        $tn= $this->doc->root->children[0]->addChild(new Node('table', NULL, array(
           'name' => $t->name,
         )));
 
         if ($constraint= $t->getFirstForeignKeyConstraint()) do {
+          $rolename= DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint);
+          if ($rolenameList[$rolename]) {
+            $this->cat && $this->cat->warn($rolename, 'is a double role name');
+          }
+          $rolenameList[$rolename]= true;
           $cn= $tn->addChild(new Node('constraint', NULL, array(
             'name' => trim($constraint->getName()),
           )));
           $fgn= $cn->addChild(new Node('reference', NULL, array(
             'table' => $constraint->getSource(),
-            'role'  => DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint),
+            'role'  => $rolename,
           )));
           foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
             $fgn->addChild(new Node('key', NULL, array(
@@ -66,17 +86,16 @@
 
         } while ($constraint= $t->getNextForeignKeyConstraint());
       }
-      
-      return $g;
+      return $this->doc->getSource(FALSE);
     }
 
     /**
-     * Get XML source
+     * Set a trace for debugging
      *
-     * @return  string xml representation
-     */    
-    public function getSource() {
-      return $this->doc->getSource(FALSE);
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   }
 ?>

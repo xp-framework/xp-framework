@@ -27,7 +27,7 @@ help:
 god:
 	-for i in $(DIRS); do \
 	  echo $$i; \
-	  $(XPCLI) ${CMD} -c definitions/$$i/config.ini -O $(DIR); \
+	  $(XPCLI) ${CMD} -v -c definitions/$$i/config.ini -O $(DIR); \
 	done;
 
 php:
@@ -36,7 +36,7 @@ php:
       XSL="-S $(XSLSS)"; \
     fi; \
 	for j in $(DIRS); do \
-		for i in `find definitions/$$j -name *.xml`; do \
+		for i in `find definitions/$$j/tables -name *.xml`; do \
 			echo $$i; \
 			$(XPCLI) ${CMD} -c definitions/$$j/config.ini -X $$i -O $(OUTPUT) $$XSL; \
 	    done; \

@@ -133,6 +133,7 @@
         // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
         // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
         $q= $this->conn->query('show keys from %c', $this->qualifiedTablename($table, $database));
+        $key= NULL;
         while ($record= $q->next()) {
           if ($record['Key_name'] != $key) {
             $index= $t->addIndex(new DBIndex(
@@ -207,7 +208,7 @@
       $bracestrings= array();
       $attributes=   array();
       $pos= 10;
-      while ($pos++ < strlen($string)) {
+      while (++$pos < strlen($string)) {
         switch ($string{$pos}) {
           case '`':
           $quotstrings[]= $this->parseQuoteString($string, $pos);

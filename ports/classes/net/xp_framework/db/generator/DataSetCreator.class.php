@@ -19,6 +19,7 @@
     'util.Properties',
     'util.cmd.Command',
     'util.cmd.ParamString',
+    'util.log.ColoredConsoleAppender',
     'xml.DomXSLProcessor'
   );
 
@@ -167,8 +168,11 @@
         }
       }
       
+      $cg= DBConstraintXmlGenerator::createFromDatabase($adapter, $adapter->conn->dsn->getDatabase());
+      $cg->setTrace(Logger::getInstance()->getCategory());
+      
       $f= new File($relfold->getURI().'constraints.xml');
-      $written= FileUtil::setContents($f, DBConstraintXmlGenerator::createFromDatabase($adapter, $adapter->conn->dsn->getDatabase())->getSource());
+      $written= FileUtil::setContents($f, $cg->getSource());
       $this->out->writeLinef(
         '===> Output written to %s (%.2f kB)', 
         $f->getURI(),
@@ -291,6 +295,15 @@
     #[@arg(name= 'output', short= 'O')]
     public function setOutputdir($out= ".") {
       $this->outputdir=rtrim($out, '/');
+    }
+    
+    /**
+     * Sets whether to be verbose
+     *
+     */
+    #[@arg]
+    public function setVerbose() {
+      Logger::getInstance()->getCategory()->addAppender(new ColoredConsoleAppender());
     }
 
     /**
