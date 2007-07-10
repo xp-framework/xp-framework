@@ -1,9 +1,9 @@
 uses(
   'net.xp_framework.unittest.runner.gtk.UnitTestUI',
-  'xp.util.cmd.ParamString'
+  'util.cmd.ParamString'
 );
 
-$app= new net.xp_framework.unittest.runner.gtk.UnitTestUI(new xp.util.cmd.ParamString());
+$app= new net.xp_framework.unittest.runner.gtk.UnitTestUI(new util.cmd.ParamString());
 $app->init();
 $app->run();
 $app->done();
