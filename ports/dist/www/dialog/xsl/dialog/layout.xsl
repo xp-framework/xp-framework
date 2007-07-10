@@ -12,6 +12,7 @@
  extension-element-prefixes="func"
 >
   <xsl:include href="../master.xsl"/>
+  <xsl:include href="links.inc.xsl"/>
   
   <!--
    ! Template that matches on the root node
@@ -22,8 +23,7 @@
     <html>
       <head>
         <title>
-          <xsl:value-of select="$__state"/> - 
-          <xsl:value-of select="/formresult/config/title"/>
+          <xsl:call-template name="page-title"/>
         </title>
         <link rel="stylesheet" href="/{/formresult/config/style}.css"/>
         <link rel="alternate" type="application/rss+xml" title="RSS - {/formresult/config/title}" href="/rss/"/>
@@ -67,7 +67,7 @@
               <td width="60" class="gutter" id="gutter2">&#160;</td>
               <td width="60" class="gutter" id="gutter3">&#160;</td>
               <td width="690" class="gutter" valign="bottom" align="right">
-                <a class="nav" id="active" href="{func:link('static')}">
+                <a class="nav" id="active" href="{func:linkPage(0)}">
                   <xsl:value-of select="/formresult/config/title"/>: Home
                 </a>
               </td>
@@ -97,4 +97,8 @@
     </html>
   </xsl:template>
 
+  <xsl:template name="page-title">
+    <xsl:value-of select="$__state"/> - 
+    <xsl:value-of select="/formresult/config/title"/>
+  </xsl:template>
 </xsl:stylesheet>

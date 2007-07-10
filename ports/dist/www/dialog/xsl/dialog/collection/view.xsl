@@ -21,7 +21,7 @@
   <xsl:template match="entry[@type = 'de.thekid.dialog.Album']">
     <h2>
       <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>: 
-      <a href="{func:link(concat('album/view?', @name))}">
+      <a href="{func:linkAlbum(@name)}">
         <xsl:value-of select="@title"/>
       </a>
     </h2>
@@ -35,7 +35,7 @@
       <tr>
         <xsl:for-each select="highlights/highlight">
           <td>
-            <a href="{func:link(concat('image/view?', ../../@name, ',h,0,', position()- 1))}">
+            <a href="{func:linkImage(../../@name, 0, 'h', position()- 1)}">
               <img width="150" height="113" border="0" src="/albums/{../../@name}/thumb.{name}"/>
             </a>
           </td>
@@ -44,7 +44,7 @@
     </table>
     <p>
       This album contains <xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters -
-      <a href="{func:link(concat('album/view?', @name))}">See more</a>
+      <a href="{func:linkAlbum(@name)}">See more</a>
     </p>
     <br/><br clear="all"/>
   </xsl:template>
@@ -65,7 +65,7 @@
     </h2>
     <p align="justify">
       <xsl:copy-of select="description"/>
-      - <a href="{func:link(concat('album/view?', @album))}">Go to album</a>
+      - <a href="{func:linkAlbum(@album)}">Go to album</a>
       <br clear="all"/>
     </p>
     <br/><br clear="all"/>
@@ -95,14 +95,14 @@
           <img class="singleshot" border="0" src="/shots/detail.{@filename}" width="459" height="230"/>
         </td>
         <td valign="top">
-          <a href="{func:link(concat('shot/view?', @name, ',0'))}">
+          <a href="{func:linkShot(@name, 0)}">
             <img class="singleshot_thumb" border="0" src="/shots/thumb.color.{@filename}" width="150" height="113"/>
           </a>
         </td>
       </tr>
       <tr>
         <td valign="bottom">
-          <a href="{func:link(concat('shot/view?', @name, ',1'))}">
+          <a href="{func:linkShot(@name, 1)}">
             <img class="singleshot_thumb" border="0" src="/shots/thumb.gray.{@filename}" width="150" height="113"/>
           </a>
         </td>
@@ -140,7 +140,7 @@
           <td width="466" valign="top">
             <h3>
               <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>:
-              <a href="{func:link(concat('album/view?', @name))}">
+              <a href="{func:linkAlbum(@name)}">
                 <xsl:value-of select="@title"/>
               </a>
               (<xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters)
@@ -165,15 +165,15 @@
    !-->
   <xsl:template name="content">
     <h3>
-      <a href="{func:link('static')}">Home</a>
+      <a href="{func:linkPage(0)}">Home</a>
       <xsl:if test="/formresult/collection/@page &gt; 0">
         &#xbb;
-        <a href="{func:link(concat('static?page', /formresult/collection/@page))}">
+        <a href="{func:linkPage(/formresult/collection/@page)}">
           Page #<xsl:value-of select="/formresult/collection/@page"/>
         </a>
       </xsl:if>
       &#xbb;
-      <a href="{func:link(concat('collection/view?', /formresult/collection/@name))}">
+      <a href="{func:linkCollection(/formresult/collection/@name)}">
         <xsl:value-of select="/formresult/collection/@title"/> Collection
       </a>
     </h3>

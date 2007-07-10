@@ -11,8 +11,21 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="../layout.xsl"/>
+  <xsl:import href="../layout.xsl"/>
   
+  <!--
+   ! Template for page title
+   !
+   ! @see       ../layout.xsl
+   !-->
+  <xsl:template name="page-title">
+    <xsl:value-of select="concat(
+      'Chapter #', /formresult/chapter/@id, ' of ',
+      /formresult/album/@title, ' @ ', 
+      /formresult/config/title
+    )"/>
+  </xsl:template>
+
   <!--
    ! Function that draws the images of a chapter
    !
@@ -30,7 +43,7 @@
       <tr>
         <xsl:for-each select="exsl:node-set($images)/image[position() &gt;= $i and position() &lt; $i + $max]">
           <td>
-            <a href="{func:link(concat('image/view?', $album, ',i,', $chapter, ',', $i - 2 + position()))}">
+            <a href="{func:linkImage($album, $chapter, 'i', $i - 2 + position())}">
               <img width="150" height="113" border="0" src="/albums/{$album}/thumb.{name}"/>
             </a>
           </td>
@@ -50,27 +63,27 @@
    !-->
   <xsl:template name="content">
     <h3>
-      <a href="{func:link('static')}">Home</a> &#xbb;
+      <a href="{func:linkPage(0)}">Home</a> &#xbb;
       
       <xsl:if test="/formresult/album/@page &gt; 0">
-        <a href="{func:link(concat('static?page', /formresult/album/@page))}">
+        <a href="{func:linkPage(/formresult/album/@page)}">
           Page #<xsl:value-of select="/formresult/album/@page"/>
         </a>
         &#xbb;
       </xsl:if>
 
       <xsl:if test="/formresult/album/collection">
-        <a href="{func:link(concat('collection/view?', /formresult/album/collection/@name))}">
+        <a href="{func:linkCollection(/formresult/album/collection/@name)}">
           <xsl:value-of select="/formresult/album/collection/@title"/> Collection
         </a>
          &#xbb;
       </xsl:if>
  
-      <a href="{func:link(concat('album/view?', /formresult/album/@name))}">
+      <a href="{func:linkAlbum(/formresult/album/@name)}">
         <xsl:value-of select="/formresult/album/@title"/>
       </a>
       &#xbb; 
-      <a href="{func:link(concat('chapter/view?', /formresult/album/@name, ',', /formresult/chapter/@id - 1))}">
+      <a href="{func:linkChapter(/formresult/album/@name, /formresult/chapter/@id - 1)}">
         Chapter #<xsl:value-of select="/formresult/chapter/@id"/>
       </a>
     </h3>
@@ -101,21 +114,19 @@
     <center>
       <a title="Previous image" class="pager{/formresult/chapter/@previous != ''}" id="previous">
         <xsl:if test="/formresult/chapter/@previous != ''">
-          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-            'chapter/view?', 
-            /formresult/album/@name, ',',
+          <xsl:attribute name="href"><xsl:value-of select="func:linkChapter(
+            /formresult/album/@name, 
             /formresult/chapter/@previous
-          ))"/></xsl:attribute>
+          )"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
       <a title="Next image" class="pager{/formresult/chapter/@next != ''}" id="next">
         <xsl:if test="/formresult/chapter/@next != ''">
-          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-            'chapter/view?', 
-            /formresult/album/@name, ',',
+          <xsl:attribute name="href"><xsl:value-of select="func:linkChapter(
+            /formresult/album/@name,
             /formresult/chapter/@next
-          ))"/></xsl:attribute>
+          )"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
       </a>

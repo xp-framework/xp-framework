@@ -11,7 +11,20 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="../layout.xsl"/>
+  <xsl:import href="../layout.xsl"/>
+  
+  <!--
+   ! Template for page title
+   !
+   ! @see       ../layout.xsl
+   !-->
+  <xsl:template name="page-title">
+    <xsl:value-of select="concat(
+      'Shot ', /formresult/selected/name,
+      ' (', /formresult/selected/@mode, ') @ ',
+      /formresult/config/title
+    )"/>
+  </xsl:template>
   
   <!--
    ! Template for content
@@ -21,10 +34,10 @@
    !-->
   <xsl:template name="content">
     <h3>
-      <a href="{func:link('static')}">Home</a> &#xbb; 
+      <a href="{func:linkPage(0)}">Home</a> &#xbb; 
 
       <xsl:if test="/formresult/selected/@page &gt; 0">
-        <a href="{func:link(concat('static?page', /formresult/selected/@page))}">
+        <a href="{func:linkPage(/formresult/selected/@page)}">
           Page #<xsl:value-of select="/formresult/selected/@page"/>
         </a>
         &#xbb;
@@ -37,21 +50,19 @@
     <center>
       <a title="Color version" class="pager{/formresult/selected/@mode = 'gray'}" id="previous">
         <xsl:if test="/formresult/selected/@mode = 'gray'">
-          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-            'shot/view?', 
+          <xsl:attribute name="href"><xsl:value-of select="func:linkShot(
             /formresult/selected/name, 
-            ',0'
-          ))"/></xsl:attribute>
+            0
+          )"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
       </a>
       <a title="Black and white version" class="pager{/formresult/selected/@mode = 'color'}" id="next">
         <xsl:if test="/formresult/selected/@mode = 'color'">
-          <xsl:attribute name="href"><xsl:value-of select="func:link(concat(
-            'shot/view?', 
+          <xsl:attribute name="href"><xsl:value-of select="func:linkShot(
             /formresult/selected/name, 
-            ',1'
-          ))"/></xsl:attribute>
+            1
+          )"/></xsl:attribute>
         </xsl:if>
         <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
       </a>
