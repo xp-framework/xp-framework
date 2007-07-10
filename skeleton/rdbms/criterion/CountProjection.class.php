@@ -15,12 +15,12 @@
    *   // count all rows of the table Person
    *   // sql: select count * from person;
    *   // the following lines are equal
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count('*')));
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count()));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::count('*')));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::count()));
    *
    *   // count all rows, where column "name" not NULL
    *   // sql: select count name from person;
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Person::column('name')));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Person::column('name')));
    * ?>
    *
    * @see     xp://rdbms.criterion.Projections

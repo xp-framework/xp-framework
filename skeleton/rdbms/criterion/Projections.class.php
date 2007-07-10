@@ -23,7 +23,7 @@
    *   // cut the result down to 2 atributes of a result set
    *   // for further examples with ProjectionList see rdbms.criterion.ProjectionList API doc
    *   // sql: select name, surname from person;
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::projectionList()
    *     ->add(Projections::property(Person::column('name')))
    *     ->add(Projections::property(Person::column('surname')))
@@ -32,19 +32,19 @@
    *   // just count a result
    *   // for further examples with ProjectionList see rdbms.criterion.CountProjection API doc
    *   // sql: select count(*) from person where ...
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::count('*'))->add(...)...);
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::count('*'))->add(...)...);
    *   
    *   // aggregated result set
    *   // sql: select avg(age) from person
    *   // sql: select min(age) from person
    *   // sql: select max(age) from person
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::avg(Person::column('age'))));
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::min(Person::column('age'))));
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::max(Person::column('age'))));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::avg(Person::column('age'))));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::min(Person::column('age'))));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age'))));
    *   
    *   // every projection, except the ProjectionList, can be aliased in the second parameter
    *   // sql: select max(age) as `oldest` from person
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(Projections::max(Person::column('age'), 'oldest')));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age'), 'oldest')));
    * ?>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest

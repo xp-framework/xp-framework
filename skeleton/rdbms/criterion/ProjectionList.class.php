@@ -15,13 +15,13 @@
    * <?php
    *   // select only the fields name and surname from the table Person
    *   // sql: select name, surname from person;
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::projectionList()
    *     ->add(Person::column('name'))
    *     ->add(Person::column('surname'))
    *   ));
    *   // is short for
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::projectionList()
    *     ->add(Projections::property(Person::column('name')))
    *     ->add(Projections::property(Person::column('surname')))
@@ -29,7 +29,7 @@
    *   
    *   // you can define aliases an use functions
    *   // sql: select concat(name, surname) as name from person;
-   *   Person::getPeer()->doSelect(create(new Criteria)->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     SQLFunctions::concat(
    *       Person::column('name'), ' ', Person::column('surname')
    *     ),
