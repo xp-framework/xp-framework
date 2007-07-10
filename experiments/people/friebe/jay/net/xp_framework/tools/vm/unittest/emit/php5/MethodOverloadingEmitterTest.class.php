@@ -21,23 +21,34 @@
     #[@test]
     public function overloadedMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Date extends lang·Object{
+        'class main·Date extends lang·Object{
           protected $stamp= 0;
 
+          /**
+           * @return  bool
+           * @param   string value
+           */
           public function isBeforestring($value){
             return $this->stamp<strtotime($value); 
           }
 
+          /**
+           * @return  bool
+           * @param   Date value
+           */
           public function isBeforemain·Date($value){
             return $this->stamp<$value->stamp; 
           }
 
+          /**
+           * @return  void
+           */
           public static function main(){
             $d= new main·Date(); 
             var_dump($d->isBeforemain·Date(new main·Date(1))); 
             var_dump($d->isBeforestring(\'1977-12-14\')); 
           }
-        };'),
+        };',
         $this->emit('class Date {
           protected int $stamp= 0;
           
@@ -65,22 +76,31 @@
     #[@test]
     public function overloadedConstructor() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Date extends lang·Object{
+        'class main·Date extends lang·Object{
           protected $stamp= 0;
 
+          /**
+           * @param   string in
+           */
           public function __constructstring($in){
             $this->stamp= strtotime($in); 
           }
 
+          /**
+           * @param   int in
+           */
           public function __constructint($in){
             $this->stamp= $in; 
           }
 
+          /**
+           * @return  void
+           */
           public static function main(){
             xp::spawn(\'main·Date\', \'__constructint\', array(1)); 
             xp::spawn(\'main·Date\', \'__constructstring\', array(\'1977-12-14\')); 
           }
-        };'),
+        };',
         $this->emit('class main·Date {
           protected int $stamp= 0;
 

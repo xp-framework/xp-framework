@@ -21,11 +21,14 @@
     #[@test]
     public function methodWithoutArguments() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           */
           public function sayHello(){
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello() {
             echo "Hello";
@@ -41,10 +44,13 @@
     #[@test]
     public function emptyMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           */
           public function sayHello(){
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello() {
           }
@@ -59,9 +65,12 @@
     #[@test]
     public function abstractMethod() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'abstract class main·Test extends lang·Object{
+        'abstract class main·Test extends lang·Object{
+          /**
+           * @return  void
+           */
           public abstract function sayHello();
-        };'),
+        };',
         $this->emit('abstract class Test {
           public abstract void sayHello();
         }')
@@ -75,11 +84,15 @@
     #[@test]
     public function methodWithOneStringArgument() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           * @param   string name
+           */
           public function sayHello($name){
             echo \'Hello\', $name; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello(string $name) {
             echo "Hello", $name;
@@ -95,13 +108,17 @@
     #[@test]
     public function methodWithOneStringArrayArgument() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           * @param   Array names
+           */
           public function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
             }; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello(string[] $names) {
             foreach ($names as $name) {
@@ -119,17 +136,24 @@
     #[@test]
     public function methodCall() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           * @param   Array names
+           */
           public function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
             }; 
           }
  
+          /**
+           * @return  void
+           */
           public static function main(){
             create(new main·Test())->sayHello(array(0 => \'Timm\', 1 => \'Alex\', )); 
           }
-       };'),
+       };',
         $this->emit('class Test {
           public void sayHello(string[] $names) {
             foreach ($names as $name) {
@@ -151,17 +175,24 @@
     #[@test]
     public function staticMethodCall() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           * @param   Array names
+           */
           public static function sayHello($names){
             foreach ($names as $name) {
               echo \'Hello\', $name, \' \'; 
             }; 
           }
  
+          /**
+           * @return  void
+           */
           public static function main(){
             main·Test::sayHello(array(0 => \'Timm\', 1 => \'Alex\', )); 
           }
-       };'),
+       };',
         $this->emit('class Test {
           public static void sayHello(string[] $names) {
             foreach ($names as $name) {
@@ -183,12 +214,15 @@
     #[@test]
     public function methodWithStaticVariable() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           */
           public function sayHello(){
             static $cache= array(); 
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello() {
             static $cache= array();
@@ -206,12 +240,16 @@
     #[@test]
     public function methodWithVarArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  void
+           * @param   string names
+           */
           public function sayHello(){
             $__a= func_get_args(); $names= array_slice($__a, 0);
             echo \'Hello \', implode(\', \', $names); 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public void sayHello(string... $names) {
             echo "Hello ", implode(", ", $names);
@@ -227,12 +265,17 @@
     #[@test]
     public function methodWithArgsAndVarArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{
+        'class main·Test extends lang·Object{
+          /**
+           * @return  string
+           * @param   string format
+           * @param   mixed args
+           */
           public function sprintf($format){
             $__a= func_get_args(); $args= array_slice($__a, 1);
             return vsprintf($format, $args); 
           }
-        };'),
+        };',
         $this->emit('class Test {
           public string sprintf(string $format, mixed... $args) {
             return vsprintf($format, $args); 
@@ -261,13 +304,19 @@
     #[@test]
     public function methodWithDefaultArgs() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·XPClass extends lang·Object{
+        'class main·XPClass extends lang·Object{
+          /**
+           * @return  XPClass
+           * @param    name
+           * @param    cl
+           * @throws  ClassNotFoundException
+           */
           public static function forName($name, $cl= NULL){
             if (NULL==$cl){ $cl= main·ClassLoader::getDefault(); }; 
             return $cl->loadClass($name); 
           }
         }; 
-        var_dump(main·XPClass::forName(\'Test\', NULL));'),
+        var_dump(main·XPClass::forName(\'Test\', NULL));',
         $this->emit('class XPClass {
           public static XPClass forName($name, $cl= NULL) throws ClassNotFoundException {
             if (NULL == $cl) $cl= ClassLoader::getDefault();

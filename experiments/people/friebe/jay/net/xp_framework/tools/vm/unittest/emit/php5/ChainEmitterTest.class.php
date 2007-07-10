@@ -82,13 +82,19 @@
     #[@test]
     public function chainedMethodsAndMembers() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Long extends lang·Object{
+        'class main·Long extends lang·Object{
           public $number= NULL;
 
+          /**
+           * @param   int initial
+           */
           public function __construct($initial= 0){
             $this->number= $initial; 
           }
 
+          /**
+           * @return  int
+           */
           public function intValue(){
             return $this->number; 
           }
@@ -111,7 +117,7 @@
         }; 
 
         echo date(\'r\', create(new main·News())->date->stamp->intValue());
-        '),
+        ',
         $this->emit('class Long {
           public int $number;
 

@@ -64,8 +64,18 @@
      */
     #[@test]
     public function implementedInterface() {
-      $this->assertSourcecodeEquals(
-        'interface main·A{}; class main·Test extends lang·Object implements main·A{public function a(){echo \'A\'; }};',
+      $this->assertSourcecodeEquals('
+        interface main·A { };
+         
+        class main·Test extends lang·Object implements main·A{
+
+          /**
+           * @return  void
+           */
+          public function a() {
+            echo \'A\'; 
+          }
+        };',
         $this->emit('interface A { public void a(); } class Test implements A { public void a() { echo \'A\'; } }')
       );
     }

@@ -20,17 +20,20 @@
     #[@test]
     public function concatOperator() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·String extends lang·Object{
+        'class main·String extends lang·Object{
           protected $buffer= NULL;
 
           function __operatorconcat($a, $b) {
             return new main·String($a->buffer.$b); 
           }
 
+          /**
+           * @return  void
+           */
           public static function main(){
             echo main·String::__operatorconcat(new main·String(\'Hello\'), \'!\'); 
           }
-        };'),
+        };',
         $this->emit('class String { 
           protected $buffer;
 
@@ -52,7 +55,7 @@
     #[@test]
     public function binaryOperators() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Integer extends lang·Object{
+        'class main·Integer extends lang·Object{
           protected $value= NULL;
 
           function __operatorplus($a, $b) {
@@ -71,10 +74,13 @@
             return new main·Integer($a->value/$b->value); 
           }
           
+          /**
+           * @return  void
+           */
           public static function main(){
             echo main·Integer::__operatorplus(new main·Integer(1), new main·Integer(2)); 
           }
-        };'),
+        };',
         $this->emit('class Integer {
           protected $value;
 

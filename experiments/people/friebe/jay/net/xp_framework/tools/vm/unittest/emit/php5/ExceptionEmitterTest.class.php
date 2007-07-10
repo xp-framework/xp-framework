@@ -75,18 +75,27 @@
     #[@test]
     public function finallyAfterCatchWithReturn() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·FileReader extends lang·Object{
+        'class main·FileReader extends lang·Object{
           protected $_f= NULL;
           protected $file= NULL;
           
+          /**
+           * @param    file
+           */
           public function __construct($file){
             $this->file= $file; 
           }
           
+          /**
+           * @return  void
+           */
           public function open(){
             $this->_f= fopen($this->file, \'r\'); 
           }
           
+          /**
+           * @return  void
+           */
           public function close(){
             fclose($this->_f); 
           }
@@ -103,7 +112,7 @@
           }
           $f->close(); ; 
           return TRUE; 
-        };'),
+        };',
         $this->emit('class FileReader {
           protected resource $_f;
           protected string $file;

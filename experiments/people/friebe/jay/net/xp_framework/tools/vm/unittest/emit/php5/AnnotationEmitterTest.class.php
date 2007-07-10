@@ -20,12 +20,15 @@
     #[@test]
     public function classWithWebserviceAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', '#[@webservice]
+        '#[@webservice]
         class main·Test extends lang·Object{
+          /**
+           * @return  void
+           */
           public function sayHello(){
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('[@webservice] class Test {
           public void sayHello() {
             echo "Hello";
@@ -41,12 +44,15 @@
     #[@test]
     public function methodWithTestAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{ 
+        'class main·Test extends lang·Object{ 
+          /**
+           * @return  void
+           */
           #[@test]
           public function sayHello(){
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           [@test] public void sayHello() {
             echo "Hello";
@@ -62,12 +68,15 @@
     #[@test]
     public function methodWithKeyValueAnnotation() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{ 
+        'class main·Test extends lang·Object{ 
+          /**
+           * @return  void
+           */
           #[@security(roles= array(0 => \'admin\', 1 => \'user\', ))]
           public function sayHello(){
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           [@security(roles= array("admin", "user"))] public void sayHello() {
             echo "Hello";
@@ -83,12 +92,15 @@
     #[@test]
     public function methodWithTestAndIgnoreAnnotations() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'class main·Test extends lang·Object{ 
+        'class main·Test extends lang·Object{ 
+          /**
+           * @return  void
+           */
           #[@test, @ignore]
           public function sayHello(){
             echo \'Hello\'; 
           }
-        };'),
+        };',
         $this->emit('class Test {
           [@test, @ignore] public void sayHello() {
             echo "Hello";
