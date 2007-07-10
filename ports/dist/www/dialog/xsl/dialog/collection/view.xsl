@@ -11,7 +11,20 @@
  xmlns:func="http://exslt.org/functions"
  extension-element-prefixes="func"
 >
-  <xsl:include href="../layout.xsl"/>
+  <xsl:import href="../layout.xsl"/>
+  
+  <!--
+   ! Template for page title
+   !
+   ! @see       ../layout.xsl
+   !-->
+  <xsl:template name="page-title">
+    <xsl:value-of select="concat(
+      'Collection: ', 
+      /formresult/collection/@title, ' @ ', 
+      /formresult/config/title
+    )"/>
+  </xsl:template>
   
   <!--
    ! Template for albums
