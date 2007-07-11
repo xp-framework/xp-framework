@@ -241,7 +241,7 @@
 
       if ($criteria->isJoin()) {
         $jp= new JoinProcessor($this);
-        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
+        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
         $it= $jp->getJoinIterator($q);
         for ($i= 1; $it->hasNext(); $i++) {
           if ($max && $i > $max) break;
@@ -270,7 +270,7 @@
 
       if ($criteria->isJoin()) {
         $jp= new JoinProcessor($this);
-        $q= $criteria->executeJoin($this->getConnection(), $this, $jp);
+        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
         return $jp->getJoinIterator($q);
       }
 

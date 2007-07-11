@@ -269,36 +269,33 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
+     * @param   rdbms.join.Joinprocessor jp optional
      * @return  rdbms.ResultSet
      */
-    public function executeSelect(DBConnection $conn, Peer $peer) {
-      return $conn->query(
-        'select %c from %c%c', 
-        $this->projections($conn, $peer),
-        $peer->table,
-        $this->toSQL($conn, $peer)
-      );
+    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL) {
+      return $conn->query($this->getQueryString($conn, $peer, $jp));
     }
     
     /**
-     * Executes an SQL SELECT statement with more than one table
+     * get the SELECT query
      *
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
      * @return  rdbms.ResultSet
      */
-    public function executeJoin(DBConnection $conn, Peer $peer, JoinProcessor $jp) {
-      $jp->setFetchmodes($this->fetchmode);
-      $jp->enterJoinContext();
-      $rest= $this->toSQL($conn, $peer);
-      $jp->leaveJoinContext();
-      $rest= (strlen($rest) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
-
-      return $conn->query(
+    public function getSelectQueryString(DBConnection $conn, Peer $peer, $jp= NULL) {
+      $isJoin= $this->isJoin();
+      $restriction= $this->toSQL($conn, $peer);
+      if ($isJoin) {
+        $restriction= (strlen($restriction) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
+        $jp->setFetchmodes($this->fetchmode);
+      }
+      
+      return $conn->prepare(
         'select %c from %c %c',
-        $jp->getAttributeString(),
-        $jp->getJoinString(),
-        $rest
+        (($isJoin) ? $jp->getAttributeString() : $this->projections($conn, $peer)),
+        (($isJoin) ? $jp->getJoinString() : $peer->table),
+        $restriction
       );
     }
     

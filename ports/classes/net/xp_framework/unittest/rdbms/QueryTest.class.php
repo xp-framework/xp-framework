@@ -6,10 +6,14 @@
  
   uses(
     'unittest.TestCase',
-    'rdbms.Query',
+    'rdbms.query.SelectQuery',
+    'rdbms.query.UpdateQuery',
+    'rdbms.query.DeleteQuery',
+    'rdbms.query.SetOperation',
     'rdbms.Criteria',
     'net.xp_framework.unittest.rdbms.mock.MockConnection',
-    'net.xp_framework.unittest.rdbms.dataset.Job'
+    'net.xp_framework.unittest.rdbms.dataset.Job',
+    'net.xp_framework.unittest.rdbms.dataset.Person'
   );
 
   define('MOCK_CONNECTION_CLASS', 'net.xp_framework.unittest.rdbms.mock.MockConnection');
@@ -21,6 +25,13 @@
    * @purpose  Unit Test
    */
   class QueryTest extends TestCase {
+
+    private
+      $qa= NULL,
+      $qb= NULL,
+      $qas= 'select  job_id, title from JOBS.job  where job_id = 5',
+      $qbs= 'select  job_id, name from JOBS.Person',
+      $qu= NULL;
       
     /**
      * Static initializer
@@ -39,6 +50,26 @@
         DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 
         'jobs'
       );
+      $this->qa= new SelectQuery();
+      $this->qa->setPeer(Job::getPeer());
+      $this->qa->setCriteria(
+        create(new Criteria(Job::column('job_id')->equal(5)))->setProjection(
+          Projections::ProjectionList()
+          ->add(Job::column('job_id'))
+          ->add(Job::column('title'))
+        )
+      );
+
+      $this->qb= new SelectQuery();
+      $this->qb->setPeer(Person::getPeer());
+      $this->qb->setCriteria(
+        create(new Criteria())->setProjection(
+          Projections::ProjectionList()
+          ->add(Person::column('job_id'))
+          ->add(Person::column('name'))
+        )
+      );
+
     }
     
     /**
@@ -47,18 +78,7 @@
      */
     #[@test]
     public function newQuery() {
-      $this->assertTrue(class_exists('Query'));
-    }
-    
-    /**
-     * set and store mode
-     *
-     */
-    #[@test]
-    public function setMode() {
-      $q= new Query();
-      $q->setMode(Query::INSERT);
-      $this->assertEquals(Query::INSERT, $q->getMode());
+      $this->assertTrue(class_exists('SelectQuery'));
     }
     
     /**
@@ -67,7 +87,7 @@
      */
     #[@test]
     public function setCriteria() {
-      $q= new Query();
+      $q= new SelectQuery();
       $c= new Criteria();
       $q->setCriteria($c);
       $this->assertEquals($c, $q->getCriteria());
@@ -79,7 +99,7 @@
      */
     #[@test]
     public function setPeer() {
-      $q= new Query();
+      $q= new SelectQuery();
       $q->setPeer(Job::getPeer());
       $this->assertEquals(Job::getPeer(), $q->getPeer());
     }
@@ -90,27 +110,10 @@
      */
     #[@test]
     public function getConnection() {
-      $q= new Query();
+      $q= new SelectQuery();
+      $this->assertNull($q->getConnection());
       $q->setPeer(Job::getPeer());
       $this->assertClass($q->getConnection(), 'net.xp_framework.unittest.rdbms.mock.MockConnection');
-    }
-    
-    /**
-     * set invalid mode
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function setInvalidMode() {
-      create(new Query())->setMode('BAD_MODE');
-    }
-    
-    /**
-     * set invalid mode
-     *
-     */
-    #[@test, @expect('lang.IllegalStateException')]
-    public function executeWithoutMode() {
-      create(new Query())->execute();
     }
     
     /**
@@ -119,7 +122,79 @@
      */
     #[@test]
     public function executeWithRestriction() {
-      $this->assertClass(create(new Query())->withRestriction(Job::column('job_id')->equal(5)), 'rdbms.Query');
+      $this->assertClass(create(new SelectQuery())->withRestriction(Job::column('job_id')->equal(5)), 'rdbms.query.SelectQuery');
+    }
+    
+    /**
+     * test query string without set operation
+     *
+     */
+    #[@test]
+    public function getSingleQueryString() {
+      $this->assertEquals($this->qas, $this->qa->getQueryString());
+      $this->assertEquals($this->qbs, $this->qb->getQueryString());
+    }
+    
+    /**
+     * test query string with set operation
+     *
+     */
+    #[@test]
+    public function getQueryString() {
+      $so= new SetOperation(SetOperation::UNION, $this->qa, $this->qb);
+      $this->assertEquals(
+        $this->qas.' union '.$this->qbs,
+        $so->getQueryString()
+      );
+    }
+    
+    /**
+     * test query string with set operation
+     *
+     */
+    #[@test]
+    public function factory() {
+      $so= SetOperation::union($this->qa, $this->qb);
+      $this->assertEquals(
+        $this->qas.' union '.$this->qbs,
+        $so->getQueryString()
+      );
+      $so= SetOperation::except($this->qa, $this->qb);
+      $this->assertEquals(
+        $this->qas.' except '.$this->qbs,
+        $so->getQueryString()
+      );
+      $so= SetOperation::intercept($this->qa, $this->qb);
+      $this->assertEquals(
+        $this->qas.' intercept '.$this->qbs,
+        $so->getQueryString()
+      );
+    }
+    
+    /**
+     * test query string with set operation
+     *
+     */
+    #[@test]
+    public function all() {
+      $so= SetOperation::union($this->qa, $this->qb, TRUE);
+      $this->assertEquals(
+        $this->qas.' union all '.$this->qbs,
+        $so->getQueryString()
+      );
+    }
+    
+    /**
+     * test query string with set operation
+     *
+     */
+    #[@test]
+    public function nesting() {
+      $so= SetOperation::union(SetOperation::union($this->qb, $this->qa), SetOperation::union($this->qb, $this->qa));
+      $this->assertEquals(
+        $this->qbs.' union '.$this->qas.' union '.$this->qbs.' union '.$this->qas,
+        $so->getQueryString()
+      );
     }
     
   }

@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #131 - SetOperation and Query
+  (wagner)
+
 Version 5.5.4, released 2007-07-09
 ----------------------------------
 SVN version: 10764
