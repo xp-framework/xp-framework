@@ -270,7 +270,7 @@
 
     /**
      * add the $offset to a certain $datepart of $date
-     * e.g. dateadd(month, 4, getdate()) will return a date 4 months in the future
+     * e.g. dateadd('month', 4, getdate()) will return a date 4 months in the future
      *
      * @param   mixed datepart string or rdbms.SQLFunction
      * @param   mixed offset string or rdbms.SQLFunction
