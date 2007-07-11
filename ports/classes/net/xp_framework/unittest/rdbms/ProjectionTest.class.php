@@ -23,6 +23,8 @@
     public
       $syconn = NULL,
       $myconn = NULL,
+      $pgconn = NULL,
+      $sqconn = NULL,
       $peer   = NULL;
       
     /**
@@ -242,7 +244,7 @@
         'job_id as \'id\', title',
         create(new Criteria())->setProjection(Projections::projectionList()
           ->add(Projections::property(Job::column("job_id"), "id"))
-          ->add(Projections::property(Job::column("title")))
+          ->add(Job::column("title"))
       ));
     }
 
@@ -257,6 +259,10 @@
       $crit->setProjection(Projections::property(Job::column("job_id")));
       $this->assertTrue($crit->isProjection());
       $crit->setProjection(NULL);
+      $this->assertFalse($crit->isProjection());
+      $crit->setProjection(Job::column("job_id"));
+      $this->assertTrue($crit->isProjection());
+      $crit->setProjection();
       $this->assertFalse($crit->isProjection());
     }
 

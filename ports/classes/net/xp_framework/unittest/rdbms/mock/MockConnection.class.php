@@ -214,10 +214,13 @@
         }
 
         // Type-based conversion
-        if (is('Date', $args[$ofs])) {
+        if ($args[$ofs] instanceof Date) {
           $tok{$mod}= 's';
           $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } elseif (is('Generic', $args[$ofs])) {
+        } else if ($args[$ofs] instanceof SQLRenderable) {
+          $sql.= $args[$ofs]->asSql($this).substr($tok, 1 + $mod);
+          continue;
+        } else if ($args[$ofs] instanceof Generic) {
           $a= array($args[$ofs]->toString());
         } elseif (is_array($args[$ofs])) {
           $a= $args[$ofs];
@@ -238,6 +241,7 @@
         }
         $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
       }
+
       return substr($sql, 1);
     }
 
