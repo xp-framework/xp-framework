@@ -31,7 +31,6 @@ Functionality
 - the api provides the following classes:
   - rdbms.query.SetOperation
   - rdbms.query.SelectQuery
-  - rdbms.query.InsertQuery
   - rdbms.query.UpdateQuery
   - rdbms.query.DeleteQuery
 - Rdbms.Criteria needs to be extended by a method getSelectQueryString(),
