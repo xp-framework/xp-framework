@@ -124,6 +124,25 @@
     <func:result select="my:distinctRole($datasetnode/table/constraint/reference)" />
   </func:function>
   
+  <func:function name="my:sameKeys">
+    <xsl:param name="keySet1" />
+    <xsl:param name="keySet2" />
+    <xsl:choose>
+      <xsl:when test="count($keySet1) != count($keySet2)"><func:result select="false()" /></xsl:when>
+      <xsl:when test="count($keySet1) = 0"><func:result select="true()" /></xsl:when>
+      <xsl:when test="$keySet1[1]/text() != $keySet2[1]/text()"><func:result select="false()" /></xsl:when>
+      <xsl:otherwise><func:result select="my:sameKeys($keySet1[position() != 1], $keySet2[position() != 1])" /></xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+
+  <func:function name="my:distinctIndex">
+    <xsl:param name="indexSet" />
+    <xsl:choose>
+      <xsl:when test="count( $indexSet[not(my:sameKeys(key, $indexSet[1]/key))] ) &lt; 1"><func:result select="$indexSet[1]" /></xsl:when>
+      <xsl:otherwise><func:result select="$indexSet[1] | my:distinctIndex( $indexSet[not(my:sameKeys(key, $indexSet[1]/key))] )" /></xsl:otherwise>
+    </xsl:choose>
+  </func:function>
+
   <xsl:template match="/">
 
     <xsl:text>&lt;?php
@@ -254,22 +273,13 @@
   </xsl:text>
 
   <!-- Create a static method for indexes -->
-  <xsl:for-each select="index[@name != '' and string-length (key/text()) != 0]">
+  <xsl:for-each select="my:distinctIndex(index[@name != '' and string-length (key/text()) != 0])">
     <xsl:text>
     /**
      * Gets an instance of this object by index "</xsl:text><xsl:value-of select="@name"/><xsl:text>"
-     * </xsl:text>
-    <xsl:for-each select="key">
-      <xsl:variable name="key" select="text()"/>
-    <xsl:text>
-     * @param   </xsl:text>
-      <xsl:value-of select="concat(../../attribute[@name= $key]/@typename, ' ', $key)"/>
-    </xsl:for-each>
-    <xsl:text>
-     * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/>
-      <xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if>
-      <xsl:if test="@unique= 'true'"> entity object</xsl:if>
-    <xsl:text>
+     * </xsl:text><xsl:for-each select="key"><xsl:variable name="key" select="text()"/><xsl:text>
+     * @param   </xsl:text><xsl:value-of select="concat(../../attribute[@name= $key]/@typename, ' ', $key)"/></xsl:for-each><xsl:text>
+     * @return  </xsl:text><xsl:value-of select="concat(../@package, '.', ../@class)"/><xsl:if test="not(@unique= 'true')">[] entity objects</xsl:if><xsl:if test="@unique= 'true'"> entity object</xsl:if><xsl:text>
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getBy</xsl:text>

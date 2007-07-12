@@ -140,6 +140,7 @@
             $this->connection,          
             $adapter->conn->dsn->getDatabase()
           ); 
+          $gen->setTrace(Logger::getInstance()->getCategory());
 
           // Determine whether filename needs prefix
           $classname= $this->prefixedClassName(
