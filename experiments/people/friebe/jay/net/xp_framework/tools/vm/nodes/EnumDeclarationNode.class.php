@@ -14,6 +14,7 @@
   class EnumDeclarationNode extends VNode {
     public
       $name, 
+      $members,
       $statements, 
       $annotations;
       
@@ -21,13 +22,15 @@
      * Constructor
      *
      * @param   string name
-     * @param   mixed[] statements
+     * @param   mixed[] members
      * @param   mixed annotations
+     * @param   mixed[] statements
      */
-    public function __construct($name, $statements, $annotations) {
+    public function __construct($name, $members, $annotations, $statements) {
       $this->name= $name;
-      $this->statements= $statements;
+      $this->members= $members;
       $this->annotations= $annotations;
+      $this->statements= $statements;
     }  
   }
 ?>
