@@ -622,5 +622,94 @@
       if ($obj instanceof SQLFragment) return $obj->getType();
       throw new IllegalArgumentException('argument is from illegal type');
     }
+
+    /**
+     * sum two didits up
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function add($col1, $col2) {
+      return new SQLFunction('add', '%f', array($col1, $col2));
+    }
+    
+    /**
+     * sbtrakt the second parameter from the first
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function sub($col1, $col2) {
+      return new SQLFunction('sub', '%f', array($col1, $col2));
+    }
+    
+    /**
+     * multiplies two digits
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function mul($col1, $col2) {
+      return new SQLFunction('mul', '%f', array($col1, $col2));
+    }
+    
+    /**
+     * division
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function div($col1, $col2) {
+      return new SQLFunction('div', '%f', array($col1, $col2));
+    }
+    
+    /**
+     * bitwise and
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function bitAnd($col1, $col2) {
+      return new SQLFunction('bitAnd', '%d', array($col1, $col2));
+    }
+    
+    /**
+     * bitwise or
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function bitOr($col1, $col2) {
+      return new SQLFunction('bitOr', '%F', array($col1, $col2));
+    }
+    
+    /**
+     * bitwise not
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function bitNot($col1) {
+      return new SQLFunction('bitNot', '%d', array($col1));
+    }
+    
+    /**
+     * bitwise XOr
+     *
+     * @param   mixed string or rdbms.SQLFunction
+     * @param   mixed string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function bitXor($col1, $col2) {
+      return new SQLFunction('bitXor', '%d', array($col1, $col2));
+    }
+    
+
   }
 ?>

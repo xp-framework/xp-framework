@@ -104,6 +104,14 @@
         'trim_3'       => 'trim(%s, %s)',
         'upper_1'      => 'upper(%s)',
         'year_1'       => 'year(%s)',
+        'add_2'        => '%f + %f',
+        'sub_2'        => '%f - %f',
+        'mul_2'        => '%f * %f',
+        'div_2'        => '%f % %f',
+        'bitAnd_2'     => '%d & %d',
+        'bitOr_2'      => '%d | %d',
+        'bitNot_1'     => '~%d',
+        'bitXor_2'     => '%d ^ %d'
       );
 
     public
