@@ -1,18 +1,4 @@
-enum Coin {
-  penny(1), nickel(2), dime(10), quarter(25);
-  
-  public int value() {
-    return $this->ordinal;
-  }
-
-  public string color() {
-    switch ($this) {
-      case self::$penny: return 'copper';
-      case self::$nickel: return 'nickel';
-      case self::$dime: case self::$quarter: return 'silver';
-    }
-  }
-}
+import net.xp_forge.examples.enum.coin.Coin;
 
 foreach (Coin::values() as $coin) {
   echo $coin->name, ': ', $coin->value(), '¢ (', $coin->color(), ')', "\n";
