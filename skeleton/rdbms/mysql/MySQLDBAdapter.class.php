@@ -5,7 +5,7 @@
  */
 
   uses('rdbms.DBAdapter');
-  
+
   /**
    * Adapter for MySQL
    *
@@ -35,11 +35,12 @@
         'text'       => DB_ATTRTYPE_TEXT,
         'enum'       => DB_ATTRTYPE_ENUM,
         'decimal'    => DB_ATTRTYPE_DECIMAL,
-        'float'      => DB_ATTRTYPE_FLOAT
+        'float'      => DB_ATTRTYPE_FLOAT,
+        'blob'       => DB_ATTRTYPE_TEXT
       );
       parent::__construct($conn);
     }
-    
+
     /**
      * Get databases
      *
@@ -55,10 +56,10 @@
       } catch (SQLException $e) {
         throw($e);
       }
-      
+
       return $dbs;
     }
-    
+
     /**
      * Get tables by database
      *
@@ -70,7 +71,7 @@
       $database= $this->database($database);
       try {
         $q= $this->conn->query(
-          'show tables from %c', 
+          'show tables from %c',
           $database
         );
         while ($table= $q->next()) {
@@ -79,10 +80,10 @@
       } catch (SQLException $e) {
         throw($e);
       }
-      
+
       return $t;
     }
-    
+
     /**
      * Get table by name
      *
@@ -93,7 +94,7 @@
     public function getTable($table, $database= NULL) {
       $t= new DBTable($table);
       try {
-      
+
         // Get the table's attributes
         // +-------------+--------------+------+-----+---------------------+----------------+
         // | Field       | Type         | Null | Key | Default             | Extra          |
@@ -113,16 +114,16 @@
           preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
 
           $t->addAttribute(new DBTableAttribute(
-            $record['Field'], 
+            $record['Field'],
             $this->map[$regs[1]],
             strstr($record['Extra'], 'auto_increment'),
             !(empty($record['Null']) || ('NO' == $record['Null'])),
-            $regs[3], 
-            0, 
+            $regs[3],
+            0,
             0
           ));
         }
-        
+
         // Get keys
         // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
         // | Table    | Non_unique | Key_name      | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Comment |
@@ -146,7 +147,7 @@
           $index->primary= ('PRIMARY' == $record['Key_name']);
           $index->keys[]= $record['Column_name'];
         }
-        
+
         // Get foreign key constraints
         // in mysql the only way is to parse the creat statement
         $createTableString= $this->conn->query('show create table %c', $this->qualifiedTablename($table, $database))->next('Create Table');
@@ -243,7 +244,7 @@
         switch ($string{$pos}) {
           case '`':
           return $quotedString;
-          
+
           default:
           $quotedString.= $string{$pos};
         }
@@ -265,17 +266,17 @@
           case ')':
           return $braceredString;
           break;
-          
+
           case '(':
           $braceredString.= $string{$pos};
           $braceredString.= $this->parseBracerString($string, $pos).')';
           break;
-          
+
           case '`':
           $braceredString.= $string{$pos};
           $braceredString.= $this->parseQuoteString($string, $pos).'`';
           break;
-          
+
           default:
           $braceredString.= $string{$pos};
         }
@@ -299,17 +300,17 @@
           $paramArray[]= trim($paramString);
           $paramString= '';
           break;
-          
+
           case '(':
           $paramString.= $string{$pos};
           $paramString.= $this->parseBracerString($string, $pos).')';
           break;
-          
+
           case '`':
           $paramString.= $string{$pos};
           $paramString.= $this->parseQuoteString($string, $pos).'`';
           break;
-          
+
           default:
           $paramString.= $string{$pos};
         }
