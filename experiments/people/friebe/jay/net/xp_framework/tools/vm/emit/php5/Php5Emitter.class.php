@@ -1980,5 +1980,51 @@
       $this->emitAll($node->block);
       $this->bytes.= '}';
     }
+
+    /**
+     * Emits enums
+     *
+     * @param   net.xp_framework.tools.vm.VNode node
+     */
+    public function emitEnumDeclaration($node) { 
+      $class= $this->qualifiedName($node->name, FALSE);
+      $this->setContextClass($class);
+      $this->emitMetaInformation($node->annotations, NULL, NULL, NULL);
+      $this->context['uses']['lang.Enum']= TRUE;
+      
+      $this->bytes.= 'class '.$class.' extends lang·Enum { public static ';
+
+      // Create static members
+      $list= '';
+      foreach ($node->members as $member) {
+        $list.= '$'.$member->name.',';
+      }
+      $this->bytes.= substr($list, 0, -1).";\n";
+      
+      // Create static initializer
+      $this->bytes.= 'static function __static() {';
+      foreach ($node->members as $i => $member) {
+        $ordinal= $member->value ? $member->value : $i;
+        $this->bytes.= '  '.$class.'::$'.$member->name.'= new '.$class.'(';
+        
+        $member->value ? $this->emit($member->value) : $this->bytes.= $i;
+        $this->bytes.= ', \''.$member->name."');\n";
+      }
+      $this->bytes.= '}';
+      
+      // Create static values method
+      $this->bytes.= 'public static function values() { return array(';
+      foreach ($node->members as $i => $member) {
+        $this->bytes.= '  '.$class.'::$'.$member->name.', ';
+      }
+      $this->bytes.= '); }';
+
+      // More
+      foreach ($node->statements as $stmt) {
+        $this->emit($stmt);
+      }
+      
+      $this->bytes.= '} '.$class.'::__static();';
+    }
   }
 ?>
