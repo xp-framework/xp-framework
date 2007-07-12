@@ -469,13 +469,13 @@ interface_list:
 
 enum_declaration_statement:
 		optional_annotation_list T_ENUM name_and_keywords '{' enum_inner_statement_list '}' {
-          $$= new EnumDeclarationNode($3, $5, $1); $$->position= $yyLex->position;
+          $$= new EnumDeclarationNode($3, $5[0], $1, $5[1]); $$->position= $yyLex->position;
         }
 ;
 
 enum_inner_statement_list:
-		enum_declaration_list
-	| 	enum_declaration_list ';' class_statement_list
+		enum_declaration_list { $$= array($1, NULL); }
+	| 	enum_declaration_list ';' class_statement_list { $$= array($1, $3); }
 ;
 
 enum_declaration_list:
@@ -489,13 +489,13 @@ enum_declaration_list:
 
 enum_declaration_list_member:
 		T_STRING {
-          $$= PNode::create('EnumMember', array($1, NULL));
+          $$= new EnumMemberNode($1, NULL); $$->position= $yyLex->position;
         }
 	|	T_STRING '(' static_scalar ')' {
-          $$= PNode::create('EnumMember', array($1, $3));
+          $$= new EnumMemberNode($1, $3); $$->position= $yyLex->position;
         }
 	|	T_STRING '{' method_declaration '}' {
-          $$= PNode::create('EnumMethod', array($1, $3));
+          $$= new EnumMemberNode($1, $3); $$->position= $yyLex->position;
         }
 ;
 
