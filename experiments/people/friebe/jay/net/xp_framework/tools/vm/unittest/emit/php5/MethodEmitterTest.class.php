@@ -303,27 +303,23 @@
      */
     #[@test]
     public function methodWithDefaultArgs() {
-      $this->assertSourcecodeEquals(
-        'class main·XPClass extends lang·Object{
+      $this->assertSourcecodeEquals('
+        class main·XPClass extends lang·Object {
           /**
            * @return  XPClass
            * @param    name
            * @param    cl
-           * @throws  ClassNotFoundException
            */
           public static function forName($name, $cl= NULL){
-            if (NULL==$cl){ $cl= main·ClassLoader::getDefault(); }; 
-            return $cl->loadClass($name); 
           }
-        }; 
-        var_dump(main·XPClass::forName(\'Test\', NULL));',
-        $this->emit('class XPClass {
-          public static XPClass forName($name, $cl= NULL) throws ClassNotFoundException {
-            if (NULL == $cl) $cl= ClassLoader::getDefault();
-            return $cl->loadClass($name);
+        };',
+        $this->emit('
+          class XPClass {
+            public static XPClass forName($name, $cl= NULL) {
+              // TBI
+            }
           }
-        }
-        var_dump(XPClass::forName("Test"));')
+        ')
       );
     }
   }
