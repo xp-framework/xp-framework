@@ -9,7 +9,7 @@
    *
    * Example usage:
    * <code>
-   *   $formatter= &new StatementFormatter();
+   *   $formatter= new StatementFormatter();
    *   $this->formatter->setDialect(new AnysqlDialect());
    *   $formatter->format('select foo from table where id= %d', 123);
    * </code>
@@ -31,7 +31,7 @@
      * @param   rdbms.DBConnection conn
      * @param   rdbms.SQLDialect dialect
      */
-    function __construct(DBConnection $conn, SQLDialect $dialect) {
+    public function __construct(DBConnection $conn, SQLDialect $dialect) {
       $this->dialect= $dialect;
       $this->conn=    $conn;
     }
