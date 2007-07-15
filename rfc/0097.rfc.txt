@@ -70,4 +70,10 @@ Comments
   lang -> util dependency... maybe ChainedException should be part of
   "lang"?
 
+- kiesel, Sun Jul 15 17:21:31     2007
+  ChainedException is used in so many places, that I think making
+  it a part of the lang package (and thus even more "core" than in
+  util package) is a good idea.
+
+
 <EOF>
