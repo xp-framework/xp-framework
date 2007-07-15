@@ -1,0 +1,48 @@
+Index: util/cmd/Runner.class.php
+===================================================================
+--- util/cmd/Runner.class.php	(revision 10793)
++++ util/cmd/Runner.class.php	(working copy)
+@@ -178,13 +178,37 @@
+       if (!$classname) {
+         self::$err->writeLine('*** Missing classname');
+         return 1;
++      } else if (strstr($classname, xp::CLASS_FILE_EXT)) {
++        $file= new File($classname);
++        if (!$file->exists()) {
++          self::$err->writeLine('Cannot load class from non-existant file ', $classname);
++          return 1;
++        }
++        $uri= $file->getURI();
++        $path= dirname($uri);
++        $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
++        $class= NULL;
++        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
++          if (isset($paths[$path])) {
++            $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
++            break;
++          }
++
++          $path= substr($path, 0, $pos); 
++        }
++
++        if (!$class) {
++          self::$err->writeLine('Cannot load class from ', $file);
++          return 1;
++        }
++      } else {
++        try {
++          $class= XPClass::forName($classname);
++        } catch (ClassNotFoundException $e) {
++          self::$err->writeLine('*** ', $e->getMessage());
++          return 1;
++        }
+       }
+-      try {
+-        $class= XPClass::forName($classname);
+-      } catch (ClassNotFoundException $e) {
+-        self::$err->writeLine('*** ', $e->getMessage());
+-        return 1;
+-      }
+ 
+       // Usage
+       if ($classparams->exists('help', '?')) {
