@@ -25,6 +25,20 @@ The util.cmd.Runner class will check for the first argument containing
 the string ".class.php" (or actually, whatever xp::CLASS_FILE_EXT 
 constant is defined for), and then try to find the class in the classpath.
 
+To run a Command class, you can use the following:
+<pre>
+  # Use class name
+  $ xpcli fully.qualified.ClassName
+
+  # Use filename
+  $ xpcli fully/qualified/ClassName.class.php
+</pre>
+
+Note
+~~~~
+Using filenames only works if classes are found in the classpath, 
+otherwise there is no way to infer the classname from the file's name!
+
 
 Security considerations
 -----------------------
@@ -33,7 +47,7 @@ n/a
 
 Speed impact
 ------------
-- Slighlty slower: One strstr() check for ".class.php" for every case
+- Slightly slower: One strstr() check for ".class.php" for every case
 
 
 Dependencies
