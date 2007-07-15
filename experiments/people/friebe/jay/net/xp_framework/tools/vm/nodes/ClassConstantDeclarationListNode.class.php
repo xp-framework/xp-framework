@@ -13,18 +13,15 @@
    */ 
   class ClassConstantDeclarationListNode extends VNode {
     public
-      $arg0,
-      $arg1;
+      $list;
       
     /**
      * Constructor
      *
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed list
      */
-    public function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    public function __construct($list) {
+      $this->list= $list;
     }  
   }
 ?>

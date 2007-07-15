@@ -615,7 +615,7 @@ class_statement:
           $$= new StaticInitializerNode($3);
         }
 	|	class_constant_declaration ';' {
-          $$= PNode::create('ClassConstantDeclarationList', array($1, $2)); 
+          $$= new ClassConstantDeclarationList($1); 
         }
 	|	non_empty_member_modifiers T_OPERATOR operator_token '(' parameter_list ')' throws method_body {
           $$= new OperatorDeclarationNode($3, $5, $8, $1, NULL, $7); $$->position= $yyLex->position;
@@ -784,10 +784,10 @@ get_or_set:
 
 class_constant_declaration:
 		class_constant_declaration ',' T_STRING '=' static_scalar {
-          $$[]= PNode::create('ClassConstantDeclaration', array($2, $3));
+          $$[]= new ClassConstantDeclaration($2, $3);
         }
 	|	T_CONST T_STRING '=' static_scalar	{
-          $$= array(PNode::create('ClassConstantDeclaration', array($2, $3)));
+          $$= array(new ClassConstantDeclaration($2, $3));
         }
 ;
 

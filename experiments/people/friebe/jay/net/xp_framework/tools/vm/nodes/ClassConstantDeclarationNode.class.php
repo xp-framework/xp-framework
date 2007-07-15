@@ -13,18 +13,18 @@
    */ 
   class ClassConstantDeclarationNode extends VNode {
     public
-      $arg0,
-      $arg1;
+      $name,
+      $value;
       
     /**
      * Constructor
      *
-     * @param   mixed arg0
-     * @param   mixed arg1
+     * @param   mixed name
+     * @param   mixed value
      */
-    public function __construct($arg0, $arg1) {
-      $this->arg0= $arg0;
-      $this->arg1= $arg1;
+    public function __construct($name, $value) {
+      $this->name= $name;
+      $this->value= $value;
     }  
   }
 ?>
