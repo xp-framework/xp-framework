@@ -53,15 +53,18 @@
      */
     public function __construct() {
       static $langImported= FALSE;
-      
+
+      // Per-file
       $this->context['package']= DEFAULT_PACKAGE;
+      $this->context['class']= $this->context['method']= '<main>';
       $this->context['imports']= array();
       $this->context['uses']= array();
+
+      // Global
       $this->context['types']= array();
       $this->context['overloaded']= array();
       $this->context['default']= array();
       $this->context['operators']= array();
-      $this->context['class']= $this->context['method']= '<main>';
       
       // Builtin classes
       $this->context['classes']= self::$builtin;
@@ -73,7 +76,6 @@
     /**
      * Import all files in a given package
      *
-     * @access  protected
      * @param   string package
      * @param   bool use default TRUE whether to add these classes to uses()
      * @return  int how many files where imported
@@ -101,7 +103,6 @@
     /**
      * Retrieves qualified type name for a given type.
      *
-     * @access  protected
      * @param   string type
      * @return  string
      */
@@ -121,7 +122,6 @@
     /**
      * Retrieves qualified class name for a given class name.
      *
-     * @access  protected
      * @param   string class
      * @param   bool imports default TRUE whether to look for qualified names in imports
      * @return  string
@@ -141,7 +141,6 @@
     /**
      * Retrieves prefixed class name for a given class name. Handles imports
      *
-     * @access  protected
      * @param   string class
      * @param   bool imports default TRUE whether to look for qualified names in imports
      * @return  string
@@ -157,7 +156,6 @@
     /**
      * Sets type for a given hash
      *
-     * @access  protected
      * @param   string hash
      * @return  mixed type
      */
@@ -169,7 +167,6 @@
     /**
      * Sets context class
      *
-     * @access  protected
      * @param   string hash
      * @return  mixed type
      */
@@ -181,7 +178,6 @@
     /**
      * Retrieves scope for a given node
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.VNode node
      * @return  string
      */
@@ -214,7 +210,6 @@
     /**
      * Retrieves type for a given node
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.VNode node
      * @return  string
      */
@@ -302,7 +297,6 @@
     /**
      * Checks whether a given node has an annotation by the specified name
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.VNode node
      * @param   string name
      * @return  bool
@@ -317,7 +311,6 @@
     /**
      * Returns a method name. Handles overloaded methods
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.VNode node
      * @return  string name
      */
@@ -335,7 +328,6 @@
     /**
      * Checks whether a class implements an interface
      *
-     * @access  protected
      * @param   string class
      * @param   string interface
      */
@@ -356,7 +348,6 @@
     /**
      * Checks whether a given node is of a given type
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.VNode node
      * @param   string type
      * @return  string type
@@ -403,7 +394,6 @@
     /**
      * Emits a list of parameters
      *
-     * @access  protected
      * @param   net.xp_framework.tools.vm.ParameterNode[] parameters
      * @return  string source source to embed inside method declaration
      */
@@ -765,7 +755,6 @@
     /**
      * Lookup a class by its qualified name
      *
-     * @access  protected
      * @param   string q qualified name
      * @return  array or NULL if the class wasn't found
      */
