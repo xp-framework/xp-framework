@@ -28,10 +28,10 @@ The filter interface
     /**
      * Returns whether to accept the given object.
      *
-     * @param   lang.Object subject
+     * @param   lang.Generic subject
      * @return  bool
      */
-    function accept($subject) { }
+    function accept($subject);
   
   }
 ?>

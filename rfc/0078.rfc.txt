@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Oct 12 11:43:43 CEST 2006
-@status: draft
+@status: discussion, ends Mon Jul 30 18:00:00     2007
 @category: scriptlet.xml.workflow
 
 Scope of Change
@@ -168,6 +168,9 @@ Dependencies
 
 - RFC #0099
   Finder API
+
+- RFC #0061
+  No access on raw environment variables
 
 Related documents
 -----------------
