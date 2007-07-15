@@ -25,6 +25,7 @@
     public
       $bytes        = '',
       $context      = array(),
+      $current      = array(),
       $overloadable = array(
         '*' => 'times',
         '+' => 'plus',
@@ -44,6 +45,8 @@
           self::$builtin[$name]= array();
         }
       }
+      self::$builtin['xp']= array();
+      self::$builtin['null']= array();
       self::$builtin['lang·Object']= array();
     }
       
@@ -52,25 +55,26 @@
      *
      */
     public function __construct() {
-      static $langImported= FALSE;
 
       // Per-file
-      $this->context['package']= DEFAULT_PACKAGE;
-      $this->context['class']= $this->context['method']= '<main>';
-      $this->context['imports']= array();
-      $this->context['uses']= array();
+      $this->current['package']= DEFAULT_PACKAGE;
+      $this->current['class']= $this->current['method']= '<main>';
+      $this->current['uses']= array();
+      $this->current['imports']= array();
 
       // Global
-      $this->context['types']= array();
+      $this->context['types']= array(
+        'xp::nameOf'   => 'string',
+        'xp::nameOf@0' => 'mixed',
+        'xp::typeOf'   => 'string',
+      );
       $this->context['overloaded']= array();
       $this->context['default']= array();
       $this->context['operators']= array();
-      
-      // Builtin classes
-      $this->context['classes']= self::$builtin;
+      $this->context['classes']= array();
       
       // Auto-import lang.*
-      if (!$langImported) $langImported= $this->importAllOf('lang', FALSE);
+      $this->importAllOf('lang', FALSE);
     }
     
     /**
@@ -91,8 +95,8 @@
         while ($file= $d->read()) {
           if (2 != sscanf($file, '%[^.].%s', $classname, $ext) || 'class.xp' != $ext) continue;
           
-          $use && $this->context['uses'][$package.'.'.$classname]= $d->path.DIRECTORY_SEPARATOR.$file;
-          $this->context['imports'][$this->context['package']][$classname]= $package.'·'.$classname;
+          $use && $this->addUses($package.'.'.$classname);
+          $this->current['imports'][$this->current['package']][$classname]= $package.'·'.$classname;
           $imported++;
         }
         $d->close();
@@ -113,8 +117,8 @@
       if (in_array($type, $primitives)) return $type;
       if ('mixed' == $type) return NULL;
       if ('array' == $type) return 'mixed[]';
-      if ('self' == $type) return $this->context['class'];
-      if ('parent' == $type) return $this->context['classes'][$this->context['class']][0];
+      if ('self' == $type) return $this->current['class'];
+      if ('parent' == $type) return $this->context['classes'][$this->current['class']][0];
       
       return $this->qualifiedName($type);
     }
@@ -130,8 +134,8 @@
       static $special= array('xp', 'null');
 
       if (in_array($class, $special)) return $class;
-      if ('self' == $class) return $this->context['class'];
-      if ('parent' == $class) return $this->context['classes'][$this->context['class']][0];
+      if ('self' == $class) return $this->current['class'];
+      if ('parent' == $class) return $this->context['classes'][$this->current['class']][0];
       if ('php.' == substr($class, 0, 4)) return substr($class, 4);
       if (strstr($class, '·')) return $class; // Already qualified!
 
@@ -146,11 +150,11 @@
      * @return  string
      */
     public function prefixedClassnameFor($class, $imports= TRUE) {
-      if ($imports && isset($this->context['imports'][$this->context['package']][$class])) {
-        return $this->context['imports'][$this->context['package']][$class];
+      if ($imports && isset($this->current['imports'][$this->current['package']][$class])) {
+        return $this->current['imports'][$this->current['package']][$class];
       }
 
-      return $this->context['package'].$class;
+      return $this->current['package'].$class;
     }
 
     /**
@@ -171,7 +175,7 @@
      * @return  mixed type
      */
     public function setContextClass($name) {
-      $this->context['class']= $name;
+      $this->current['class']= $name;
       // DEBUG Console::writeLine('* {contextclass= ', $name, '} *');
     }
  
@@ -185,7 +189,7 @@
     
       // $x
       if ($node instanceof VariableNode) {
-        return $this->context['class'].'::'.$this->context['method'].$node->name;
+        return $this->current['class'].'::'.$this->current['method'].$node->name;
       }
 
       // $a->buffer (typeOf($node) = class, "buffer" == $node->name)
@@ -217,31 +221,31 @@
       if ($node instanceof NewNode) {
         if (!$node->instanciation->chain) return $this->qualifiedName($node->class->name);
         
-        $cclass= $this->context['class'];   // Backup
+        $cclass= $this->current['class'];   // Backup
         $this->setContextClass($this->qualifiedName($node->class->name));
         foreach ($node->instanciation->chain as $chain) {
           $this->setContextClass($this->typeOf($chain));
         }
-        $type= $this->context['class'];
+        $type= $this->current['class'];
         $this->setContextClass($cclass);    // Restore
         return $type;
       } else if ($node instanceof VariableNode) {
-        if ('$this' == $node->name) return $this->context['class'];
-        return $this->context['types'][$this->context['class'].'::'.$this->context['method'].$node->name];
+        if ('$this' == $node->name) return $this->current['class'];
+        return $this->context['types'][$this->current['class'].'::'.$this->current['method'].$node->name];
       } else if ($node instanceof MethodCallNode) {
-        $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
+        $ctype= NULL === $node->class ? $this->current['class'] : (is_string($node->class) 
           ? $this->qualifiedName($node->class) 
           : $this->typeOf($node->class)
         );
         
         if (!$node->chain) return $this->context['types'][$ctype.'::'.$node->method->name];
         
-        $cclass= $this->context['class'];   // Backup
+        $cclass= $this->current['class'];   // Backup
         $this->setContextClass($this->context['types'][$ctype.'::'.$node->method->name]);
         foreach ($node->chain as $chain) {
           $this->setContextClass($this->typeOf($chain));
         }
-        $type= $this->context['class'];
+        $type= $this->current['class'];
         $this->setContextClass($cclass);    // Restore
         return $type;
       } else if ($node instanceof ParameterNode) {
@@ -252,18 +256,18 @@
         // TODO: Check operator overloading
         return $type;
       } else if ($node instanceof ObjectReferenceNode) {
-        $ctype= NULL === $node->class ? $this->context['class'] : (is_string($node->class) 
+        $ctype= NULL === $node->class ? $this->current['class'] : (is_string($node->class) 
           ? $this->qualifiedName($node->class) 
           : $this->typeOf($node->class)
         );
         if (!$node->chain) return $this->context['types'][$ctype.'::$'.$node->member->name];
 
-        $cclass= $this->context['class'];   // Backup
+        $cclass= $this->current['class'];   // Backup
         $this->setContextClass($this->context['types'][$ctype.'::$'.$node->member->name]);
         foreach ($node->chain as $chain) {
           $this->setContextClass($this->typeOf($chain));
         }
-        $type= $this->context['class'];
+        $type= $this->current['class'];
         $this->setContextClass($cclass);    // Restore
         
         return $type;
@@ -317,7 +321,7 @@
     public function methodName($node) {
       if (!$this->hasAnnotation($node, 'overloaded')) return $node->name;
 
-      $this->context['overloaded'][$this->context['class'].'::'.$node->name]= TRUE;
+      $this->context['overloaded'][$this->current['class'].'::'.$node->name]= TRUE;
       $name= $node->name;
       foreach ($node->parameters as $param) {
         $name.= $this->typeOf($param);
@@ -353,8 +357,8 @@
      * @return  string type
      */
     public function checkedType($node, $type) {
+
       // Console::writeLine($node->toString().'.TYPE('.$this->typeOf($node).') =? ', $type);
-      
       // NULL indicates unknown, so no checks performed!
       if (NULL === $type || NULL === ($ntype= $this->typeName($this->typeOf($node)))) return $type;  
       
@@ -387,7 +391,7 @@
       }
       
       // Every check failed, raise an error
-      $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
+      // $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
       return NULL;
     }
     
@@ -399,21 +403,21 @@
      */
     public function emitParameters($parameters) {
       $embed= '';
-      $this->context['default'][$this->context['class'].'::'.$this->context['method']]= array();
+      $this->context['default'][$this->current['class'].'::'.$this->current['method']]= array();
       foreach ($parameters as $i => $param) {
       
         // Vararg or not vararg
         if ($param->vararg) {
           $embed.= '$__a= func_get_args(); '.$param->name.'= array_slice($__a, '.$i.');';
-          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $this->typeName(array($param->type)));
-          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, $this->typeName($param->type).'*');
+          $this->setType($this->current['class'].'::'.$this->current['method'].$param->name, $this->typeName(array($param->type)));
+          $this->setType($this->current['class'].'::'.$this->current['method'].'@'.$i, $this->typeName($param->type).'*');
           
           if ($i != sizeof($parameters) - 1) {
             return $this->addError(new CompileError(1210, 'Vararags parameters must be the last parameter'));
           }
         } else {
-          $this->setType($this->context['class'].'::'.$this->context['method'].'@'.$i, $this->typeName($param->type));
-          $this->setType($this->context['class'].'::'.$this->context['method'].$param->name, $this->typeName($param->type));
+          $this->setType($this->current['class'].'::'.$this->current['method'].'@'.$i, $this->typeName($param->type));
+          $this->setType($this->current['class'].'::'.$this->current['method'].$param->name, $this->typeName($param->type));
           $this->bytes.= $param->name;
         }
         
@@ -421,7 +425,7 @@
         if ($param->default) {
           $this->bytes.= '= ';
           $this->emit($param->default);
-          $this->context['default'][$this->context['class'].'::'.$this->context['method']][$i]= $param->default;
+          $this->context['default'][$this->current['class'].'::'.$this->current['method']][$i]= $param->default;
         }
         $this->bytes.= ', ';
       }
@@ -549,8 +553,9 @@
      */
     public function getResult() { 
       $src= "<?php\n  ";
-      if (!empty($this->context['uses'])) {
-        $src.= 'uses(\''.implode('\', \'', array_keys($this->context['uses'])).'\');';
+      if (!empty($this->current['uses'])) {
+        $src.= 'uses(\''.implode('\', \'', array_keys($this->current['uses'])).'\');';
+        $this->cat && $this->cat->debug(basename($this->filename).' uses '.implode(', ', array_keys($this->current['uses'])));
       }
       
       return $src.$this->bytes."\n?>";
@@ -588,14 +593,14 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emitPackageDeclaration($node) { 
-      $this->context['package']= $node->name.PACKAGE_SEPARATOR;
+      $this->current['package']= $node->name.PACKAGE_SEPARATOR;
       $this->bytes.= '$package= \''.$node->name.'\'; ';
       foreach ($node->statements as $node) {
         $this->emit($node);
       }
       
-      unset($this->context['imports'][$this->context['package']]);
-      $this->context['package']= DEFAULT_PACKAGE;
+      unset($this->current['imports'][$this->current['package']]);
+      $this->current['package']= DEFAULT_PACKAGE;
     }
     
     /**
@@ -671,9 +676,9 @@
      */
     public function emitMethodDeclaration($node) {
       $method= $this->methodName($node);
-      $this->setType($this->context['class'].'::'.$method, $this->typeName($node->returns));
-      $this->context['method']= $method;
-      $this->context['classes'][$this->context['class']][$method]= TRUE; // XXX DECL?
+      $this->setType($this->current['class'].'::'.$method, $this->typeName($node->returns));
+      $this->current['method']= $method;
+      $this->context['classes'][$this->current['class']][$method]= TRUE; // XXX DECL?
       
       // Meta-Information: annotations, types, exceptions
       $this->emitMetaInformation($node->annotations, $node->returns, $node->parameters, $node->thrown);
@@ -688,7 +693,7 @@
       // Method body
       if (NULL === $node->statements) {
         if ($node->modifiers & MODIFIER_NATIVE) {
-          $this->emitNativeSourceFor($this->context['class'], $method, $node->parameters);
+          $this->emitNativeSourceFor($this->current['class'], $method, $node->parameters);
         } else {
           $this->bytes.= ';';   // TODO: May only be true if in interface or if abstract
         }
@@ -698,7 +703,7 @@
         $this->bytes.= '}';
       }
 
-      $this->context['method']= '<main>';
+      $this->current['method']= '<main>';
     }
 
     /**
@@ -708,8 +713,8 @@
      */
     public function emitConstructorDeclaration($node) { 
       $method= $this->methodName($node);
-      $this->context['method']= $method;
-      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
+      $this->current['method']= $method;
+      $this->setType($this->current['class'].'::'.$method, $this->current['class']);
       
       $this->emitMetaInformation($node->annotations, NULL, $node->parameters, $node->thrown);
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
@@ -724,7 +729,7 @@
         $this->bytes.= ';';
       }
 
-      $this->context['method']= '<main>';
+      $this->current['method']= '<main>';
     }
 
     /**
@@ -734,8 +739,8 @@
      */
     public function emitDestructorDeclaration($node) { 
       $method= '__destruct';
-      $this->context['method']= $method;
-      $this->setType($this->context['class'].'::'.$method, $this->context['class']);
+      $this->current['method']= $method;
+      $this->setType($this->current['class'].'::'.$method, $this->current['class']);
       
       $this->bytes.= implode(' ', Modifiers::namesOf($node->modifiers)).' function '.$method.'(';
       $embed= $this->emitParameters($node->parameters);
@@ -749,7 +754,27 @@
         $this->bytes.= ';';
       }
 
-      $this->context['method']= '<main>';
+      $this->current['method']= '<main>';
+    }
+    
+    protected function addUses($q) {
+      static $bootstrap= array(
+        'lang·Object' => TRUE,
+        'lang·Error' => TRUE,
+        'lang·XPException' => TRUE,
+        'lang·SystemExit' => TRUE,
+        'lang·XPClass' => TRUE,
+        'lang·NullPointerException' => TRUE,
+        'lang·IllegalAccessException' => TRUE,
+        'lang·IllegalArgumentException' => TRUE,
+        'lang·IllegalStateException' => TRUE,
+        'lang·FormatException' => TRUE,
+        'lang·ClassLoader' => TRUE,
+      );
+      isset($bootstrap[$q]) || $this->current['uses'][strtr($q, array(
+        'main'  => dirname($this->getFilename()),
+        '·'     => '.'    // NAMESPACE_SEPARATOR_IN_USES_STATEMENTS
+      ))]= TRUE;
     }
     
     /**
@@ -759,7 +784,9 @@
      * @return  array or NULL if the class wasn't found
      */
     public function lookupClass($q) {
-      if (!isset($this->context['classes'][$q])) {
+      if (isset(self::$builtin[$q])) {
+        return self::$builtin[$q];
+      } else if (!isset($this->context['classes'][$q])) {
       
         // Search classpath
         $filename= strtr($q, array(
@@ -773,8 +800,11 @@
           $in= $node.DIRECTORY_SEPARATOR.$filename.'.class.xp';
           if (!file_exists($in)) continue;
           
+          // Initialize
+          $this->context['classes'][$q]= array();
+          
           $t= new Timer();
-          $this->cat && $this->cat->info('Compiling', $q);
+          $this->cat && $this->cat->info('Compiling', $q, 'for', basename($this->filename));
           
           // Found the file, tokenize, parse and emit it.
           $t->start();
@@ -787,44 +817,43 @@
           $t->stop();          
           $parse= $t->elapsedTime();
           
-          // XXX TODO XXX Error handling
-          $t->start();
-          $emitter= new Php5Emitter();
-          $emitter->setTrace($this->cat);
-          $emitter->setFilename($in);
-          $emitter->context['classes']= $this->context['classes'];
-          $emitter->emitAll($nodes);
+          // Backup
+          $f= $this->filename;
+          $p= $this->position;
+          $c= $this->current;
+          $b= $this->bytes;
           
+          // Re-init
+          $this->bytes= '';
+          $this->filename= $in;
+          $this->position= array(0, 0);
+          $this->current['package']= DEFAULT_PACKAGE;
+          $this->current['class']= $this->current['method']= '<main>';
+          $this->current['uses']= array();
+          $this->current['imports']= array();
+          
+          $t->start();
+          $this->emitAll($nodes);
           $t->stop();   
           $emit= $t->elapsedTime();
+          FileUtil::setContents(new File(str_replace('.xp', '.php', $in)), $this->getResult());
           
-          if ($emitter->hasErrors()) foreach ($emitter->getErrors() as $err) {
-            $this->addError($err);
-            return NULL;
-          }
-
-          // XXX TODO XXX Error handling
-          // FileUtil::setContents(new File(str_replace('.xp', '.php', $in)), $emitter->getResult());
-
-          // XXX TODO Merge not only classes but rest, too...
-          foreach (array_keys($emitter->context['classes']) as $merge) {
-            $this->context['classes'][$merge]= $emitter->context['classes'][$merge];
-            $this->context['operators'][$merge]= $emitter->context['operators'][$merge];
-          }
-
           // Remember we compiled this from an external file
-          $this->cat && $this->cat->infof(
+          $this->cat && $this->cat->debugf(
             'Emit<%s>: Compiled %s (parse: %.3f seconds, emit: %.3f seconds)',
             $this->getFilename(),
             $q,
             $parse,
             $emit
           );
+
+          // Restore
+          $this->filename= $f;
+          $this->position= $p;
+          $this->current= $c;
+          $this->bytes= $b;
          
-          $this->context['uses'][strtr($q, array(
-            'main'  => dirname($this->getFilename()),
-            '·'     => '.'    // NAMESPACE_SEPARATOR_IN_USES_STATEMENTS
-          ))]= $in;
+          $this->addUses($q);
           return $this->context['classes'][$q];
         }
       
@@ -836,6 +865,7 @@
         return NULL;
       }
       
+      $this->addUses($q);
       return $this->context['classes'][$q];
     }
        
@@ -849,27 +879,27 @@
       $class= $this->qualifiedName($node->name, FALSE);
       $this->setContextClass($class);
       $extends= $this->qualifiedName($node->extends ? $node->extends : 'lang.Object');
-      $this->context['operators'][$this->context['class']]= array();
+      $this->context['operators'][$this->current['class']]= array();
 
       $this->emitMetaInformation($node->annotations, NULL, NULL, NULL);
       
       $node->modifiers & MODIFIER_ABSTRACT && $this->bytes.= 'abstract ';
       $node->modifiers & MODIFIER_FINAL && $this->bytes.= 'final ';
 
-      $this->bytes.= 'class '.$this->context['class'].('lang·Object' == $class ? '' : ' extends '.$extends);
+      $this->bytes.= 'class '.$this->current['class'].('lang·Object' == $class ? '' : ' extends '.$extends);
 
       // Copy members from parent class
       if (NULL === ($parent= $this->lookupClass($extends))) {
         $this->addError(new CompileError(1000, 'Parent class of '.$node->name.' ('.$extends.') does not exist'));
       }
-      $this->context['classes'][$this->context['class']]= $parent;
+      $this->context['classes'][$this->current['class']]= $parent;
       
       // Add inheritance chain
-      $this->context['classes'][$this->context['class']][0]= $extends;
+      $this->context['classes'][$this->current['class']][0]= $extends;
       
       // Interfaces
       if ($node->interfaces) {
-        $this->context['classes'][$this->context['class']][1]= array();
+        $this->context['classes'][$this->current['class']][1]= array();
         $this->bytes.= ' implements ';
         foreach ($node->interfaces as $name) {
           $interface= $this->qualifiedName($name);
@@ -883,7 +913,7 @@
             $this->addError(new CompileError(1001, 'Interface '.$interface.' implemented by '.$node->name.' does not exist'));
           }
           
-          $this->context['classes'][$this->context['class']][1][$interface]= TRUE;
+          $this->context['classes'][$this->current['class']][1][$interface]= TRUE;
           $this->bytes.= $interface.', ';
         }
         $this->bytes= substr($this->bytes, 0, -2);
@@ -892,7 +922,7 @@
       // Copy types from parent class. Might be overwritten later on
       foreach ($this->context['types'] as $k => $type) {
         if (0 === strpos($k, $extends)) {
-          $n= $this->context['class'].substr($k, strlen($extends));
+          $n= $this->current['class'].substr($k, strlen($extends));
           $this->setType($n, $type);
         }
       }
@@ -945,7 +975,7 @@
       // Check interface implementations if this class is not abstract
       if (!($node->modifiers & MODIFIER_ABSTRACT)) {
         foreach ($node->interfaces as $interface) {
-          $this->checkImplementation($this->context['class'], $this->qualifiedName($interface));
+          $this->checkImplementation($this->current['class'], $this->qualifiedName($interface));
         }
       }
 
@@ -1025,17 +1055,16 @@
      */
     public function emitMethodCall($node) {
       if (is_string($node->class)) {      // Static
-        if (NULL === $this->lookupClass($q= $this->qualifiedName($node->class))) {
-          $this->addError(new CompileError(7000, 'In method call: '.$node->class.' does not exist'));
+        if (NULL === $this->lookupClass($type= $this->qualifiedName($node->class))) {
+          $this->addError(new CompileError(7000, 'In method call: Class "'.$node->class.'" does not exist'));
         }
-        $this->bytes.= $q.'::';
-        $type= $this->qualifiedName($node->class);
+        $this->bytes.= $type.'::';
       } else if ($node->class) {          // Instance
         $this->emit($node->class);    
         $type= $this->typeOf($node->class);
         $this->bytes.= '->';
       } else {                            // Chains
-        $type= $this->context['class'];   
+        $type= $this->current['class'];   
         $this->bytes.= '->';
       }
 
@@ -1078,7 +1107,7 @@
       // Chain: $x->getClass()->getName()
       if (!$node->chain) return;
       
-      $cclass= $this->context['class'];   // backup
+      $cclass= $this->current['class'];   // backup
       $this->setContextClass($this->context['types'][$type.'::'.$node->method->name]);
       foreach ($node->chain as $chain) {
         $this->emit($chain);
@@ -1109,8 +1138,8 @@
 
       if (!$node->chain) return;
       
-      $cclass= $this->context['class'];   // backup
-      $node->class && $this->setContextClass($this->typeOf($node->member));
+      $cclass= $this->current['class'];   // backup
+      $node->class && $this->setContextClass($this->typeOf($node->class));
       foreach ($node->chain as $chain) {
         $this->emit($chain);
         $this->setContextClass($this->typeOf($chain));
@@ -1224,7 +1253,7 @@
           array($node->variable, $node->expression)
         );
 
-        $this->setType($this->context['class'].'::'.$this->context['method'].$node->variable->name, $this->typeOf($m));
+        $this->setType($this->current['class'].'::'.$this->current['method'].$node->variable->name, $this->typeOf($m));
         return $this->emit($m);
       }
 
@@ -1327,7 +1356,7 @@
       if ($node->instanciation->chain) {
         $this->bytes.= ')';
         
-        $cclass= $this->context['class'];   // backup
+        $cclass= $this->current['class'];   // backup
         $this->setContextClass($this->qualifiedName($node->class->name));
         foreach ($node->instanciation->chain as $chain) {
           $this->emit($chain);
@@ -1368,7 +1397,7 @@
       }
 
       // Register import
-      $this->context['imports'][$this->context['package']][$destination]= $source;
+      $this->current['imports'][$this->current['package']][$destination]= $source;
     }
 
     /**
@@ -1457,10 +1486,10 @@
       
       // Check for void methods
       // The main block may contain returns with arbitrary type
-      if ('<main>' !== $this->context['method'] && 'void' === $this->context['types'][$this->context['class'].'::'.$this->context['method']]) {
+      if ('<main>' !== $this->current['method'] && 'void' === $this->context['types'][$this->current['class'].'::'.$this->current['method']]) {
         $this->addError(new CompileError(3002, sprintf(
           'Method %s() declared void but returns %s type',
-          $this->context['class'].'::'.$this->context['method'],
+          $this->current['class'].'::'.$this->current['method'],
           $this->typeOf($node->value)
         )));
         return;
@@ -1468,7 +1497,7 @@
 
       $this->checkedType(
         $node->value, 
-        $this->context['types'][$this->context['class'].'::'.$this->context['method']]
+        $this->context['types'][$this->current['class'].'::'.$this->current['method']]
       );
       $this->emit($node->value);
     }
@@ -1569,7 +1598,7 @@
 
       $members= FALSE;
       foreach ($node->members as $member) {
-        $this->setType($this->context['class'].'::'.$member->name, $this->typeName($node->type));
+        $this->setType($this->current['class'].'::'.$member->name, $this->typeName($node->type));
         if ($member instanceof PropertyDeclarationNode) {
           $this->context['properties'][]= $member;
         } else {
@@ -1589,18 +1618,18 @@
      */
     public function emitOperatorDeclaration($node) {       
       $method= '__operator'.$this->overloadable[$node->name];
-      $this->context['method']= $method;
+      $this->current['method']= $method;
 
       if ('__compare' == $node->name) {   // <=> overloads all comparision operators
         foreach (array('==', '!=', '<=', '>=', '<', '>') as $op) {
-          $this->context['operators'][$this->context['class']][$op]= 1;
+          $this->context['operators'][$this->current['class']][$op]= 1;
         }
         $type= 'int';   // Returns -1, 0 or 1
       } else {
-        $this->context['operators'][$this->context['class']][$node->name]= TRUE;
-        $type= $this->context['class'];
+        $this->context['operators'][$this->current['class']][$node->name]= TRUE;
+        $type= $this->current['class'];
       }
-      $this->setType($this->context['class'].'::'.$method, $type);
+      $this->setType($this->current['class'].'::'.$method, $type);
 
       $this->bytes.= 'function '.$method.'(';
       foreach ($node->parameters as $param) {
@@ -1655,8 +1684,8 @@
      */
     public function emitInterfaceDeclaration($node) {
       $this->setContextClass($this->qualifiedName($node->name, FALSE));
-      $this->context['classes'][$this->context['class']]= array();
-      $this->bytes.= 'interface '.$this->context['class'];
+      $this->context['classes'][$this->current['class']]= array();
+      $this->bytes.= 'interface '.$this->current['class'];
 
       // Handle interface inheritance
       if ($node->extends) {
@@ -1673,7 +1702,7 @@
             $this->addError(new CompileError(1001, 'Interface '.$extends.' does not exist'));
           }
 
-          $this->context['classes'][$this->context['class']]= $this->context['classes'][$extends];
+          $this->context['classes'][$this->current['class']]= $this->context['classes'][$extends];
           $this->bytes.= $extends.', ';
         }
         $this->bytes= substr($this->bytes, 0, -2);
@@ -1682,7 +1711,7 @@
       $this->bytes.= '{';
       foreach ($node->statements as $stmt) {
         if ($stmt instanceof MethodDeclarationNode) {
-          $this->context['classes'][$this->context['class']][$this->methodName($stmt)]= TRUE; // XXX DECL?
+          $this->context['classes'][$this->current['class']][$this->methodName($stmt)]= TRUE; // XXX DECL?
         }
       }
       $this->bytes.= '}';
@@ -2002,7 +2031,7 @@
       $class= $this->qualifiedName($node->name, FALSE);
       $this->setContextClass($class);
       $this->emitMetaInformation($node->annotations, NULL, NULL, NULL);
-      $this->context['uses']['lang.Enum']= TRUE;
+      $this->addUses('lang·Enum');
       
       $this->bytes.= 'class '.$class.' extends lang·Enum { public static ';
 
