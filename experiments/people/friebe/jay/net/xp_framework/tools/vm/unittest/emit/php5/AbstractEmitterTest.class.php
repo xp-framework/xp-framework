@@ -18,6 +18,19 @@
    * @purpose  Unit Test
    */
   class AbstractEmitterTest extends TestCase {
+    protected
+      $declaredClasses= array();
+
+    /**
+     * Declare a class
+     *
+     * @param   string name
+     */
+    protected function declareClass($name, $parent= NULL) {
+      $qualified= strtr($name, '.', '·');
+      $this->declaredClasses[$qualified]= array();
+      $parent && $this->declaredClasses[$qualified][0]= strtr($parent, '.', '·');
+    }
 
     /**
      * Parses a given string source into an AST and returns the emitted PHP5 
@@ -41,6 +54,10 @@
       }
       
       $emitter= new Php5Emitter();
+      foreach ($this->declaredClasses as $class => $decl) {
+        $emitter->context['classes'][$class]= $decl;
+      }
+
       $emitter->emitAll($nodes);
       
       if ($emitter->hasErrors()) {
