@@ -41,11 +41,11 @@
     #[@test]
     public function tryCatchBlock() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+        'try { 
           echo 1; 
         } catch (lang·XPException $e) { 
           $e->printStackTrace();
-        };'),
+        };',
         $this->emit('try {
           echo 1;
         } catch (lang.XPException $e) {
@@ -84,12 +84,12 @@
     #[@test]
     public function tryCatchFinallyBlock() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+        'try { 
           echo 1; 
         } catch (lang·XPException $e) { 
           $e->printStackTrace();
         }
-        echo 2; ;'),
+        echo 2; ;',
         $this->emit('try {
           echo 1;
         } catch (lang.XPException $e) {
@@ -209,13 +209,13 @@
     #[@test]
     public function multipleCatches() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+        'try { 
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
         } catch (lang·XPException $e) { 
           $e->printStackTrace();
-        };'),
+        };',
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
@@ -234,7 +234,7 @@
     #[@test]
     public function multipleCatchesWithFinally() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+        'try { 
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
@@ -242,7 +242,7 @@
           $e->printStackTrace();
         }
         echo 2; ;
-        '),
+        ',
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
@@ -262,7 +262,7 @@
     #[@test]
     public function multipleCatchesWithFinallyRethrow() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+        'try { 
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
@@ -271,7 +271,7 @@
           throw $e;
         }
         echo 2; ;
-        '),
+        ',
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
@@ -291,7 +291,7 @@
     #[@test]
     public function multipleCatchesWithFinallyReturn() {
       $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
+         'try { 
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
@@ -300,7 +300,7 @@
           return -1;
         }
         echo 2; ;
-        '),
+        ',
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
