@@ -391,7 +391,7 @@
       }
       
       // Every check failed, raise an error
-      // $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
+      $this->addError(new CompileError(3001, 'Type mismatch: '.xp::stringOf($node).'`s type ('.xp::stringOf($ntype).') != '.xp::stringOf($type)));
       return NULL;
     }
     
@@ -557,7 +557,6 @@
         $src.= 'uses(\''.implode('\', \'', array_keys($this->current['uses'])).'\');';
         $this->cat && $this->cat->debug(basename($this->filename).' uses '.implode(', ', array_keys($this->current['uses'])));
       }
-      
       return $src.$this->bytes."\n?>";
     }
 
@@ -771,10 +770,10 @@
         'lang·FormatException' => TRUE,
         'lang·ClassLoader' => TRUE,
       );
-      isset($bootstrap[$q]) || $this->current['uses'][strtr($q, array(
-        'main'  => dirname($this->getFilename()),
-        '·'     => '.'    // NAMESPACE_SEPARATOR_IN_USES_STATEMENTS
-      ))]= TRUE;
+      
+      // Do not use bootstrap classes and classes in main namespace
+      if (isset($bootstrap[$q]) || 0 == strncmp('main·', $q, 5)) return;
+      $this->current['uses'][strtr($q, '·', '.')]= TRUE;
     }
     
     /**
@@ -836,7 +835,7 @@
           $this->emitAll($nodes);
           $t->stop();   
           $emit= $t->elapsedTime();
-          FileUtil::setContents(new File(str_replace('.xp', '.php', $in)), $this->getResult());
+          // FileUtil::setContents(new File(str_replace('.xp', '.php', $in)), $this->getResult());
           
           // Remember we compiled this from an external file
           $this->cat && $this->cat->debugf(
@@ -1139,7 +1138,7 @@
       if (!$node->chain) return;
       
       $cclass= $this->current['class'];   // backup
-      $node->class && $this->setContextClass($this->typeOf($node->class));
+      $node->class && $this->setContextClass($this->typeOf($node->member));
       foreach ($node->chain as $chain) {
         $this->emit($chain);
         $this->setContextClass($this->typeOf($chain));
