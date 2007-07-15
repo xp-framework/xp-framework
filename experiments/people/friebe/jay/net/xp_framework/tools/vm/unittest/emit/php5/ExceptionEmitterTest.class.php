@@ -14,6 +14,15 @@
   class ExceptionEmitterTest extends AbstractEmitterTest {
 
     /**
+     * Sets up this test
+     *
+     */
+    public function setUp() {
+      $this->declareClass('lang.XPException', 'lang.Object');
+      $this->declareClass('lang.IllegalArgumentException', 'lang.XPException');
+    }
+
+    /**
      * Tests simple throw expression
      *
      */
@@ -34,13 +43,37 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           $e->printStackTrace();
         };'),
         $this->emit('try {
           echo 1;
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           $e->printStackTrace();
+        }')
+      );
+    }
+
+    /**
+     * Tests try/finally block
+     *
+     */
+    #[@test, @ignore('Not yet implemented')]
+    public function tryFinallyBlock() {
+      $this->assertSourcecodeEquals(
+        preg_replace('/\n\s*/', '', 'try { 
+          $fd= fopen(\'test.txt\', \'r\');
+          fgets($fd, 1024);
+        } catch (lang·XPException $e) { 
+          fclose($fd);
+          throw $e;
+        }
+        fclose($fd);'),
+        $this->emit('try {
+          $fd= fopen("test.txt", "r");
+          fgets($fd, 1024);
+        } finally {
+          fclose($fd);
         }')
       );
     }
@@ -54,13 +87,13 @@
       $this->assertSourcecodeEquals(
         preg_replace('/\n\s*/', '', 'try { 
           echo 1; 
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           $e->printStackTrace();
         }
         echo 2; ;'),
         $this->emit('try {
           echo 1;
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           $e->printStackTrace();
         } finally {
           echo 2;
@@ -105,7 +138,7 @@
           $f= new main·FileReader($file); 
           try { 
             $f->open(); 
-          } catch (lang·Exception $e) { 
+          } catch (lang·XPException $e) { 
             $e->printStackTrace();
             $f->close(); 
             return FALSE;
@@ -134,7 +167,7 @@
           $f= new FileReader($file);
           try {
             $f->open();
-          } catch (lang.Exception $e) {
+          } catch (lang.XPException $e) {
             $e->printStackTrace();
             return FALSE;
           } finally {
@@ -181,14 +214,14 @@
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           $e->printStackTrace();
         };'),
         $this->emit('try {
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           $e->printStackTrace();
         }')
       );
@@ -206,7 +239,7 @@
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           $e->printStackTrace();
         }
         echo 2; ;
@@ -215,7 +248,7 @@
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           $e->printStackTrace();
         } finally {
           echo 2;
@@ -234,7 +267,7 @@
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           echo 2; 
           throw $e;
         }
@@ -244,7 +277,7 @@
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           throw $e;
         } finally {
           echo 2;
@@ -263,7 +296,7 @@
           echo 1; 
         } catch (lang·IllegalArgumentException $e) { 
           $e->printStackTrace();
-        } catch (lang·Exception $e) { 
+        } catch (lang·XPException $e) { 
           echo 2; 
           return -1;
         }
@@ -273,7 +306,7 @@
           echo 1;
         } catch (lang.IllegalArgumentException $e) {
           $e->printStackTrace();
-        } catch (lang.Exception $e) {
+        } catch (lang.XPException $e) {
           return -1;
         } finally {
           echo 2;
