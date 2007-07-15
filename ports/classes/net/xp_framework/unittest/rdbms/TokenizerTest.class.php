@@ -229,7 +229,7 @@
      *
      */
     #[@test]
-    public function testPercentWithinString() {
+    public function percentSignInPrepareString() {
       static $expect= array(
         'sybase'  => 'insert into table values ("value", "str%&ing", "value")',
         'mysql'   => 'insert into table values ("value", "str%&ing", "value")',
@@ -242,6 +242,27 @@
         $key
       );
     }
+
+    /**
+     * Tests percent char in values
+     *
+     */
+    #[@test]
+    public function percentSignInValues() {
+      static $expect= array(
+        'sybase'  => 'select "%20"',
+        'mysql'   => 'select "%20"',
+        'pgsql'   => "select '%20'"
+      );
+
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals(
+          $expect[$key],
+          $value->prepare('select %s', '%20'),
+          $key
+        );
+      }
+    } 
     
     /**
      * Test huge numbers in %d token
@@ -350,7 +371,7 @@
       }
     }
  
-     /**
+    /**
      * Tests plus ("+") in %d token
      *
      */
