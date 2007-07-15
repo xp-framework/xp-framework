@@ -2037,7 +2037,7 @@
       
       // Create static values method
       $this->bytes.= 'public static function values() { return array(';
-      foreach ($node->members as $i => $member) {
+      foreach ($node->members as $member) {
         $this->bytes.= '  '.$class.'::$'.$member->name.', ';
       }
       $this->bytes.= '); }';
@@ -2047,7 +2047,7 @@
         $this->emit($stmt);
       }
       
-      $this->bytes.= '} '.$class.'::__static();';
+      $this->bytes.= '}';
     }
   }
 ?>
