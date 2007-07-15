@@ -13,14 +13,14 @@ public function value(){return $this->ordinal;
 /**
  * @return  string
  */
-public function color(){switch ($this) {case self::$penny: return 'copper';
+public function color(){switch ($this) {case net·xp_forge·examples·enum·coin·Coin::$penny: return 'copper';
   ;
-  case self::$nickel: return 'nickel';
+  case net·xp_forge·examples·enum·coin·Coin::$nickel: return 'nickel';
   ;
-  case self::$dime: ;
-  case self::$quarter: return 'silver';
+  case net·xp_forge·examples·enum·coin·Coin::$dime: ;
+  case net·xp_forge·examples·enum·coin·Coin::$quarter: return 'silver';
   ;
   };
-  }} net·xp_forge·examples·enum·coin·Coin::__static();;
+  }};
   
 ?>
