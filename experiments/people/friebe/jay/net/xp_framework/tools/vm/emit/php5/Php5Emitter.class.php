@@ -127,9 +127,11 @@
      * @return  string
      */
     public function qualifiedName($class, $imports= TRUE) {
-      static $special= array('parent', 'self', 'xp', 'null');
+      static $special= array('xp', 'null');
 
       if (in_array($class, $special)) return $class;
+      if ('self' == $class) return $this->context['class'];
+      if ('parent' == $class) return $this->context['classes'][$this->context['class']][0];
       if ('php.' == substr($class, 0, 4)) return substr($class, 4);
       if (strstr($class, '·')) return $class; // Already qualified!
 
@@ -1034,7 +1036,10 @@
      */
     public function emitMethodCall($node) {
       if (is_string($node->class)) {      // Static
-        $this->bytes.= $this->qualifiedName($node->class).'::';
+        if (NULL === $this->lookupClass($q= $this->qualifiedName($node->class))) {
+          $this->addError(new CompileError(7000, 'In method call: '.$node->class.' does not exist'));
+        }
+        $this->bytes.= $q.'::';
         $type= $this->qualifiedName($node->class);
       } else if ($node->class) {          // Instance
         $this->emit($node->class);    
@@ -1281,6 +1286,10 @@
           $node->instanciation->chain[$i]->first= TRUE;
           break;
         }
+      }
+
+      if (NULL === $this->lookupClass($this->qualifiedName($node->class->name))) {
+        $this->addError(new CompileError(7000, 'In new: '.$node->class->name.' does not exist'));
       }
 
       if ($node->instanciation->declaration) {
@@ -1903,7 +1912,11 @@
      * @param   net.xp_framework.tools.vm.VNode node
      */
     public function emitStaticMember($node) {
-      $this->bytes.= $this->qualifiedName($node->class).'::';
+      if (NULL === $this->lookupClass($q= $this->qualifiedName($node->class))) {
+        $this->addError(new CompileError(7000, 'In static member: '.$node->class.' does not exist'));
+      }
+
+      $this->bytes.= $q.'::';
       $this->emit($node->member);
     }
 
