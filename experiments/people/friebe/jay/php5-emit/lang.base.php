@@ -27,21 +27,22 @@
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
+          xp::$registry['classloader.'.$class]= 'lang·FileSystemClassLoader://'.$path;
           if (FALSE === ($r= include($f))) {
             xp::error('Cannot bootstrap class '.$class.' (from file "'.$f.'")');
           }
           
-          xp::$registry['classloader.'.$class]= 'lang·FileSystemClassLoader://'.$path;
           break;
         } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
+          xp::$registry['classloader.'.$class]= 'lang·archive·ArchiveClassLoader://'.$path;
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part
           if (FALSE === ($r= include($f))) {
+            unset(xp::$registry['classloader.'.$class]);
             continue;
           }
 
-          xp::$registry['classloader.'.$class]= 'lang·archive·ArchiveClassLoader://'.$path;
           break;
         }
       }
