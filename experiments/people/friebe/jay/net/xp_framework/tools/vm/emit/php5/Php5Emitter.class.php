@@ -1400,25 +1400,13 @@
       $this->bytes.= "try {\n  ";
       $this->emitAll($node->statements);      
 
-      // First catch
-      $this->bytes.= '} catch ('.$this->qualifiedName($node->firstCatch->class).' '.$node->firstCatch->variable.') { ';
-      
-      // Emit statements in catch block, injecting finally wherever necessary
-      foreach ($node->firstCatch->statements as $stmt) {
-        if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
-          $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
-        }
-      
-        $this->emit($stmt);
-        $this->bytes.= ';';
-      }
-      
-      // Additional catches
-      foreach ($node->firstCatch->catches as $catch) {
-        $this->bytes.= '} catch ('.$this->qualifiedName($catch->class).' '.$catch->variable.') { ';
+      if ($node->firstCatch) {
+
+        // First catch
+        $this->bytes.= '} catch ('.$this->qualifiedName($node->firstCatch->class).' '.$node->firstCatch->variable.') { ';
 
         // Emit statements in catch block, injecting finally wherever necessary
-        foreach ($catch->statements as $stmt) {
+        foreach ($node->firstCatch->statements as $stmt) {
           if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
             $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
           }
@@ -1426,9 +1414,31 @@
           $this->emit($stmt);
           $this->bytes.= ';';
         }
+
+        // Additional catches
+        foreach ($node->firstCatch->catches as $catch) {
+          $this->bytes.= '} catch ('.$this->qualifiedName($catch->class).' '.$catch->variable.') { ';
+
+          // Emit statements in catch block, injecting finally wherever necessary
+          foreach ($catch->statements as $stmt) {
+            if ($stmt instanceof ReturnNode || $stmt instanceof ThrowNode) {
+              $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
+            }
+
+            $this->emit($stmt);
+            $this->bytes.= ';';
+          }
+        }
+
+        $this->bytes.= '}';
+      } else {
+        
+        // Try/finally (without catch)
+        $this->bytes.= '} catch (Exception $__e) { ';
+        $this->emitAll($node->finallyBlock->statements);
+        $this->bytes.= 'throw $__e;';
+        $this->bytes.= '}';
       }
-      
-      $this->bytes.= '}';
       
       $node->finallyBlock && $this->emitAll($node->finallyBlock->statements);
     }

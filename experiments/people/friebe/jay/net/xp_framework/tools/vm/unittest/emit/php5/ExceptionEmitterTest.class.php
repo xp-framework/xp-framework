@@ -58,22 +58,21 @@
      * Tests try/finally block
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
     public function tryFinallyBlock() {
-      $this->assertSourcecodeEquals(
-        preg_replace('/\n\s*/', '', 'try { 
-          $fd= fopen(\'test.txt\', \'r\');
-          fgets($fd, 1024);
-        } catch (lang·XPException $e) { 
-          fclose($fd);
-          throw $e;
+      $this->assertSourcecodeEquals('
+        try { 
+          $f= open(); 
+        } catch (Exception $__e) { 
+          close($f);
+          throw $__e;
         }
-        fclose($fd);'),
+        close($f);
+        ;',
         $this->emit('try {
-          $fd= fopen("test.txt", "r");
-          fgets($fd, 1024);
+          $f= open();
         } finally {
-          fclose($fd);
+          close($f);
         }')
       );
     }

@@ -321,6 +321,9 @@ statement:
 	|	T_TRY '{' inner_statement_list '}' T_CATCH '(' fully_qualified_class_name T_VARIABLE ')' '{' inner_statement_list '}' additional_catches optional_finally {
           $$= new TryNode($3, new CatchNode($7, $8, $11, $13), $14); $$->position= $yyLex->position;
         }
+	|	T_TRY '{' inner_statement_list '}' T_FINALLY '{' inner_statement_list '}' {
+          $$= new TryNode($3, NULL, new FinallyNode($7)); $$->position= $yyLex->position;
+        }
 	|	T_THROW expr ';' { 
           $$= new ThrowNode($2); $$->position= $yyLex->position;
         }
