@@ -1,0 +1,52 @@
+RFC 0133: Add support for filenames as argument for XPCLI
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Jul 15 21:14:43     2007
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+As with the "unittest" command, the xpcli-Runner will also accept 
+filenames as class names.
+
+
+Rationale
+---------
+* Use of tab-completion
+* Consistency with "unittest"
+
+
+Functionality
+-------------
+The util.cmd.Runner class will check for the first argument containing
+the string ".class.php" (or actually, whatever xp::CLASS_FILE_EXT 
+constant is defined for), and then try to find the class in the classpath.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- Slighlty slower: One strstr() check for ".class.php" for every case
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
