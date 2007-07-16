@@ -6,7 +6,12 @@
   uses('rdbms.join.JoinTable');
 
   /**
-   * groups table data for joins
+   * Represents a relation between two tables
+   * Helper (bean) class for JoinPart and JoinProcessor
+   *
+   * @see     xp://rdbms.join.JoinPart
+   * @see     xp://rdbms.join.JoinPRocessor
+   * @purpose rdbms.join
    *
    */
   class JoinRelation extends Object {

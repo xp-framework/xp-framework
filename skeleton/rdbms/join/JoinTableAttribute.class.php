@@ -5,8 +5,11 @@
  */
 
   /**
-   * groups table data for joins
+   * represents a column of a table in a join context
+   * This is just a helper class for JoinPart
    *
+   * @see     xp://rdbms.join.JoinPart
+   * @purpose rdbms.join
    */
   class JoinTableAttribute extends Object {
     private

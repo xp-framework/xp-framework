@@ -5,8 +5,12 @@
  */
 
   /**
-   * define join select
-   *
+   * define join select.
+   * Do not instanciate with new, use factory methodth
+   * join or select instead.
+   * 
+   * @purpose rdbms.join
+   * @see     rdbms.Criteria#setFetchmode
    */
   class Fetchmode extends Object {
 

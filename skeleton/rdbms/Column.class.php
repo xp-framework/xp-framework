@@ -36,7 +36,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function __construct($peer, $name) {
-      $path= explode(JoinProcessor::SEPERATOR, $name);
+      $path= explode(JoinProcessor::SEPARATOR, $name);
       $this->name= array_pop($path);
       $this->path= $path;
       $this->peer= $peer->getRelatedPeer($path);

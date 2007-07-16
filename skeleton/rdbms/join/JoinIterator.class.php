@@ -12,8 +12,12 @@
    * class of the join api
    * iterator for join results
    *
+   * @see     xp://rdbms.join.JoinProcessor
+   * @see     xp://rdbms.Criteria#getSelectQueryString
+   * @see     xp://rdbms.Peer#iteratorFor
+   * @purpose rdbms.join
    */
-  class JoinIterator  extends Object implements XPIterator, JoinExtractable {
+  class JoinIterator extends Object implements XPIterator, JoinExtractable {
     private
       $resultObj= NULL,
       $record= array(),

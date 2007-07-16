@@ -11,12 +11,17 @@
   );
 
   /**
-   * collect data to do join selects
+   * Collect data to do join selects.
+   * The JoinProcessor takes as input a start peer (__construct) an a list of
+   * fetchmodes (setFetchmodes). With this information it calculates
+   * the attribute, location and criteria parts of a query.
    *
    * @test net.xp_framework.unittest.rdbms.JoinProcessorTest
+   * @see     xp://rdbms.join.Fetchmode
+   * @purpose rdbms.join
    */
   class JoinProcessor extends Object {
-    const SEPERATOR= '->';
+    const SEPARATOR= '->';
     const FIRST= 'start';
   
     private
@@ -30,6 +35,7 @@
     
     /**
      * Constructor
+     * 
      *
      * @param   rdbms.Peer peer
      */
@@ -77,7 +83,7 @@
       if (0 == sizeof(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
       foreach ($fetchmodes as $path => $fetchmode) {
         if ('join' != $fetchmode) continue;
-        $this->transformFetchmode(explode(self::SEPERATOR, $path), $this->joinpart);
+        $this->transformFetchmode(explode(self::SEPARATOR, $path), $this->joinpart);
       }
     }
 

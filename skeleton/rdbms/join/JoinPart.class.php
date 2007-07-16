@@ -11,9 +11,16 @@
   );
 
   /**
-   * collect data for join selects
+   * Helper class for rdbms.join.JoinProcessor.
+   * A JoinPart contains a JoinTable and multiple JoinTableAttributes.
+   * You can link a JoinPart to an other JoinPart by self::addRelative().
+   * Wit self::getJoinRelations can fetch all conditions to do a join with all relatives.
    *
-   * @test .xp_framework.unittest.rdbms.JoinPartTest
+   * @test .  xp_framework.unittest.rdbms.JoinPartTest
+   * @see     xp://rdbms.join.JoinProcessor
+   * @see     xp://rdbms.join.JoinTable
+   * @see     xp://rdbms.join.JoinTableAttributes
+   * @purpose rdbms.join
    */
   class JoinPart extends Object {
     public
@@ -29,6 +36,7 @@
 
     /**
      * Constructor
+     * id is also used as alias.
      *
      * @param   string id
      * @param   rdbms.Peer peer
@@ -44,7 +52,7 @@
     }
 
     /**
-     * get column names for the aggregated peer and all futher join tables
+     * get column names for the aggregated peer and all futher joined tables (relatives)
      *
      * @return  string[]
      */
@@ -56,7 +64,7 @@
     }
     
     /**
-     * get table names for the aggregated peer and all futher join tables
+     * get table names for the aggregated peer and all futher joined tables (relatives)
      *
      * @return  rdbms.join.JoinTable
      */
@@ -102,7 +110,7 @@
     }
     
     /**
-     * Set relatives
+     * add relatives
      *
      * @param   lang.Object relatives
      * @param   string role

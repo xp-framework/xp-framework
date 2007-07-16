@@ -6,8 +6,12 @@
   uses('util.XPIterator');
 
   /**
-   * interface for joins
+   * Interface for joins
+   * Classes, that implement this interface can be filled with objects
+   * by a JoinProcessor
    *
+   * @purpose rdbms.join
+   * @see     xp://rdbms.join.JoinPart#extract
    */
   interface JoinExtractable {
 
@@ -21,7 +25,7 @@
     public function setCachedObj($role, $key, $obj);
 
     /**
-     * get an object from the found objects
+     * get an object from "found objects"
      *
      * @param   string role
      * @param   string unique key
@@ -30,7 +34,7 @@
     public function getCachedObj($role, $key);
 
     /**
-     * test an object for existance in the found objects
+     * test an object for existance in "found objects"
      *
      * @param   string role
      * @param   string unique key
