@@ -33,6 +33,18 @@
     }
     
     /**
+     * Helper method
+     *
+     * @param   string expected
+     * @param   util.Date date
+     * @param   string error default 'datenotequal'
+     * @return  bool
+     */
+    public function assertDateEquals($expected, $date, $error= 'datenotequal') {
+      return $this->assertEquals($expected, $date->toString(DATE_ATOM), $error);
+    }
+    
+    /**
      * Test date class
      *
      * @see     xp://util.Date
@@ -47,18 +59,6 @@
     }
     
     /**
-     * Helper method
-     *
-     * @param   &util.Date d
-     * @param   string str
-     * @param   string error default 'datenotequal'
-     * @return  bool
-     */
-    public function assertDateEquals($d, $str, $error= 'datenotequal') {
-      return $this->assertEquals($d->format('%Y-%m-%d %H:%M:%S'), $str, $error);
-    }
-    
-    /**
      * Test dates before beginning of Unix epoch (sometimes using PHP
      * builtin strtotime, depending on machine) and dates even
      * earlier.
@@ -66,12 +66,8 @@
      */
     #[@test]
     public function testPreUnixEpoch() {
-      $date= Date::fromString('Dec 31 1969 00:00AM');
-      $this->assertDateEquals($date, '1969-12-31 00:00:00', 'preunix');
-
-      $date= Date::fromString('Jan 01 1500 00:00AM');
-      $this->assertDateEquals($date, '1500-01-01 00:00:00', 'midage');
-      return $date;
+      $this->assertDateEquals('1969-12-31T00:00:00+00:00', Date::fromString('Dec 31 1969 00:00AM'));
+      $this->assertDateEquals('1500-01-01T00:00:00+00:00', Date::fromString('Jan 01 1500 00:00AM'));
     }
 
     /**
@@ -84,30 +80,16 @@
     public function testAnteAndPostMeridiem() {
     
       // Test with default strtotime() implementation
-      $date= Date::fromString('May 28 1980 1:00AM');
-      $this->assertEquals($date->getHours(), 1, '1:00AM != 1h');
-      
-      $date= Date::fromString('May 28 1980 12:00AM');
-      $this->assertEquals($date->getHours(), 0, '12:00AM != 0h');
-      
-      $date= Date::fromString('May 28 1980 1:00PM');
-      $this->assertEquals($date->getHours(), 13, '1:00PM != 13h');
-
-      $date= Date::fromString('May 28 1980 12:00PM');
-      $this->assertEquals($date->getHours(), 12, '12:00PM != 12h');
+      $this->assertEquals(1, Date::fromString('May 28 1980 1:00AM')->getHours(), '1:00AM != 1h');
+      $this->assertEquals(0, Date::fromString('May 28 1980 12:00AM')->getHours(), '12:00AM != 0h');
+      $this->assertEquals(13, Date::fromString('May 28 1980 1:00PM')->getHours(), '1:00PM != 13h');
+      $this->assertEquals(12, Date::fromString('May 28 1980 12:00PM')->getHours(), '12:00PM != 12h');
 
       // Test with homegrown strtotime-replacement
-      $date= Date::fromString('May 28 1580 1:00AM');
-      $this->assertEquals((int)$date->getHours(), 1, '1:00AM != 1h');
-      
-      $date= Date::fromString('May 28 1580 12:00AM');
-      $this->assertEquals((int)$date->getHours(), 0, '12:00AM != 0h');
-      
-      $date= Date::fromString('May 28 1580 1:00PM');
-      $this->assertEquals((int)$date->getHours(), 13, '1:00PM != 13h');
-
-      $date= Date::fromString('May 28 1580 12:00PM');
-      $this->assertEquals((int)$date->getHours(), 12, '12:00PM != 12h');
+      $this->assertEquals(1, (int)Date::fromString('May 28 1580 1:00AM')->getHours(), '1:00AM != 1h');
+      $this->assertEquals(0, (int)Date::fromString('May 28 1580 12:00AM')->getHours(), '12:00AM != 0h');
+      $this->assertEquals(13, (int)Date::fromString('May 28 1580 1:00PM')->getHours(), '1:00PM != 13h');
+      $this->assertEquals(12, (int)Date::fromString('May 28 1580 12:00PM')->getHours(), '12:00PM != 12h');
     }
     
     /**
@@ -118,8 +100,7 @@
     public function testMktime() {
       
       // Test with a date before 1971
-      $stamp= Date::mktime(0, 0, 0, '08', '02', 1968);
-      $this->assertEquals($stamp, -44668800, 'Wrong timestamp');
+      $this->assertEquals(Date::mktime(0, 0, 0, '08', '02', 1968), -44668800, 'Wrong timestamp');
     }
     
     /**
@@ -130,14 +111,9 @@
      */    
     #[@test]
     public function pre1970() {
-      $d= Date::fromString('01.02.1969');
-      $this->assertDateEquals($d, '1969-02-01 00:00:00');
-      
-      $d= Date::fromString('1969-02-01');
-      $this->assertDateEquals($d, '1969-02-01 00:00:00');
-      
-      $d= Date::fromString('1969-02-01 00:00AM');
-      $this->assertDateEquals($d, '1969-02-01 00:00:00');
+      $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('01.02.1969'));
+      $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01'));
+      $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01 00:00AM'));
     }    
   }
 ?>
