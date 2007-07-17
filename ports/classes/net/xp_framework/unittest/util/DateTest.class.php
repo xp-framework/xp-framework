@@ -6,8 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'util.Date',
-    'util.Calendar'
+    'util.Date'
   );
 
   /**
@@ -57,67 +56,6 @@
      */
     public function assertDateEquals($d, $str, $error= 'datenotequal') {
       return $this->assertEquals($d->format('%Y-%m-%d %H:%M:%S'), $str, $error);
-    }
-    
-    /**
-     * Test calendar class
-     *
-     * @see     xp://util.Calendar
-     */
-    #[@test]
-    public function testCalendarBasic() {
-      $this->assertDateEquals(Calendar::midnight($this->refDate), '1977-12-14 00:00:00', 'midnight');
-      $this->assertDateEquals(Calendar::monthBegin($this->refDate), '1977-12-01 00:00:00', 'monthbegin');
-      $this->assertDateEquals(Calendar::monthEnd($this->refDate), '1977-12-31 23:59:59', 'monthend');
-      $this->assertEquals(Calendar::week($this->refDate), 50, 'week');
-    }
-    
-    /**
-     * Test calendar class (easter day calculation)
-     *
-     * @see     xp://util.Calendar
-     */
-    #[@test]
-    public function testCalendarEaster() {
-      $easter= Calendar::easter(2003);
-      $this->assertDateEquals($easter, '2003-04-20 00:00:00', 'easter');
-      return $easter;
-    }
-    
-    /**
-     * Test calendar class (first of advent calculation)
-     *
-     * @see     xp://util.Calendar
-     */
-    #[@test]
-    public function testCalendarAdvent() {
-      $advent= Calendar::advent(2003);
-      $this->assertDateEquals($advent, '2003-11-30 00:00:00', 'advent');
-      return $advent;
-    }
-    
-    /**
-     * Test calendar class (DST / daylight savings times)
-     *
-     * @see     xp://util.Calendar
-     */
-    #[@test]
-    public function testCalendarDSTBegin() {
-      $begin= Calendar::dstBegin(2003);
-      $this->assertDateEquals($begin, '2003-03-30 00:00:00', 'dstbegin');
-      return $begin;
-    }
-
-    /**
-     * Test calendar class (DST / daylight savings times)
-     *
-     * @see     xp://util.Calendar
-     */
-    #[@test]
-    public function testCalendarDSTEnd() {
-      $end= Calendar::dstEnd(2003);
-      $this->assertDateEquals($end, '2003-10-26 00:00:00', 'dstend');
-      return $end;
     }
     
     /**
