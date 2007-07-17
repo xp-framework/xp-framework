@@ -387,5 +387,64 @@
       
       return $res;
     }
+
+    /**
+     * Add an attribute to an entry
+     *
+     * @param   peer.ldap.LDAPEntry entry
+     * @param   string name
+     * @param   mixed value
+     * @return  bool
+     */
+    public function addAttribute(LDAPEntry $entry, $name, $value) {
+      if (FALSE == ($res= ldap_mod_add(
+        $this->_hdl,
+        $entry->getDN(),
+        array($name => $value)
+      ))) {
+        throw(new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+      }
+      
+      return $res;
+    }
+
+    /**
+     * Delete an attribute from an entry
+     *
+     * @param   peer.ldap.LDAPEntry entry
+     * @param   string name
+     * @return  bool
+     */
+    public function deleteAttribute(LDAPEntry $entry, $name) {
+      if (FALSE == ($res= ldap_mod_del(
+        $this->_hdl,
+        $entry->getDN(),
+        $name
+      ))) {
+        throw(new LDAPException('Delete attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+      }
+      
+      return $res;
+    }
+
+    /**
+     * Add an attribute to an entry
+     *
+     * @param   peer.ldap.LDAPEntry entry
+     * @param   string name
+     * @param   mixed value
+     * @return  bool
+     */
+    public function replaceAttribute(LDAPEntry $entry, $name, $value) {
+      if (FALSE == ($res= ldap_mod_replace(
+        $this->_hdl,
+        $entry->getDN(),
+        array($name => $value)
+      ))) {
+        throw(new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+      }
+      
+      return $res;
+    }
   }
 ?>
