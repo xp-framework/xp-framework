@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Added methods to LDAPClient to perform entry
+  modifications at the attribute level.
+  (gelli)
 - Implemented RFC #131 - SetOperation and Query
   (wagner)
 
