@@ -8,7 +8,10 @@
     'unittest.TestCase',
     'rdbms.DriverManager',
     'rdbms.ConnectionManager',
+    'rdbms.DBObserver',
     'util.Date',
+    'util.collections.Vector',
+    'lang.types.String',
     'util.DateUtil',
     'rdbms.Statement',
     'net.xp_framework.unittest.rdbms.mock.MockConnection',
@@ -616,6 +619,35 @@
       )));
       $job= Job::getByJob_id(654);
       $job->doDelete(new Criteria(array('job_id', $job->getJob_id(), EQUAL)));
+    }
+
+    /**
+     * Tests percent signs don't get messed up during dataset processing
+     * Round-trip test.
+     *
+     */
+    #[@test]
+    public function percentSign() {
+      $observer= $this->getConnection()->addObserver(newinstance('rdbms.DBObserver', array(create('Vector<lang.types.String>')), '{
+        public $statements;
+        public function __construct($statements) {
+          $this->statements= $statements;
+        }
+        public static function instanceFor($arg) { }
+        public function update($observable, $event= NULL) {
+          if ($event instanceof DBEvent && "query" == $event->getName()) {
+            $this->statements[]= new String($event->getArgument());
+          }
+        }
+      }'));
+      $j= new Job();
+      $j->setTitle('Percent%20Sign');
+      $j->insert();
+      
+      $this->assertEquals(
+        new String('insert into JOBS.job (title) values ("Percent%20Sign")'),
+        $observer->statements[0]
+      );
     }
   }
 ?>
