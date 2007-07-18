@@ -7,11 +7,13 @@
   uses(
     'rdbms.Transaction',
     'rdbms.DBConnection', 
+    'rdbms.StatementFormatter',
+    'rdbms.sybase.SybaseDialect',
     'net.xp_framework.unittest.rdbms.mock.MockResultSet'
   );
 
   /**
-   * Mock database connection
+   * Mock database connection. Uses the SYBASE dialect!
    *
    * @see      xp://rdbms.DBConnection
    * @purpose  Mock object
@@ -27,6 +29,9 @@
 
     public
       $_connected       = FALSE;
+
+    private
+      $formatter= NULL;
 
     /**
      * Constructor
@@ -191,63 +196,6 @@
     }
 
     /**
-     * Protected helper methid
-     *
-     * @param   array args
-     * @return  string
-     */
-    protected function _prepare($args) {
-      $sql= $args[0];
-      if (sizeof($args) <= 1) return $sql;
-
-      $i= 0;
-      
-      // This fixes strtok for cases where '%' is the first character
-      $sql= $tok= strtok(' '.$sql, '%');
-      while (++$i && $tok= strtok('%')) {
-      
-        // Support %1$s syntax
-        if (is_numeric($tok{0})) {
-          sscanf($tok, '%d$', $ofs);
-          $mod= strlen($ofs) + 1;
-        } else {
-          $ofs= $i;
-          $mod= 0;
-        }
-
-        // Type-based conversion
-        if ($args[$ofs] instanceof Date) {
-          $tok{$mod}= 's';
-          $a= array($args[$ofs]->toString('Y-m-d H:i:s'));
-        } else if ($args[$ofs] instanceof SQLRenderable) {
-          $sql.= $args[$ofs]->asSql($this).substr($tok, 1 + $mod);
-          continue;
-        } else if ($args[$ofs] instanceof Generic) {
-          $a= array($args[$ofs]->toString());
-        } elseif (is_array($args[$ofs])) {
-          $a= $args[$ofs];
-        } else {
-          $a= array($args[$ofs]);
-        }
-        
-        foreach ($a as $arg) {
-          switch ($tok{0 + $mod}) {
-            case 'd': $r= is_null($arg) ? 'NULL' : sprintf('%.0f', $arg); break;
-            case 'f': $r= is_null($arg) ? 'NULL' : floatval($arg); break;
-            case 'c': $r= is_null($arg) ? 'NULL' : $arg; break;
-            case 's': $r= is_null($arg) ? 'NULL' : '"'.strtr($arg, array('"' => '\"', '\\' => '\\\\')).'"'; break;
-            case 'u': $r= is_null($arg) ? 'NULL' : '"'.date('Y-m-d H:i:s', $arg).'"'; break;
-            default: $r= '%'; $mod= -1; $i--; continue;
-          }
-          $sql.= $r.', ';
-        }
-        $sql= rtrim($sql, ', ').substr($tok, 1 + $mod);
-      }
-
-      return substr($sql, 1);
-    }
-
-    /**
      * Prepare an SQL statement
      *
      * @param   mixed* args
@@ -255,7 +203,7 @@
      */
     public function prepare() { 
       $args= func_get_args();
-      return $this->_prepare($args);    
+      return $this->getFormatter()->format(array_shift($args), $args);
     }
     
     /**
@@ -343,7 +291,7 @@
      */
     public function query() { 
       $args= func_get_args();
-      $sql= $this->_prepare($args);
+      $sql= call_user_func_array(array($this, 'prepare'), $args);
 
       if (!$this->_connected) {
         if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
@@ -426,13 +374,14 @@
      */
     public function commit($name) { }
   
-    
     /**
      * get SQL formatter
      *
      * @return  rdbms.StatemantFormatter
      */
-    public function getFormatter() { }
-    
+    public function getFormatter() {
+      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SybaseDialect());
+      return $this->formatter;
+    }
   }
 ?>
