@@ -164,7 +164,9 @@
         $this->_connected= FALSE;
         throw new SQLConnectException($this->connectError, $this->dsn);
       }
+
       $this->_connected= TRUE;
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return TRUE;
     }
 
@@ -278,6 +280,7 @@
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $this->identityValue));
       return $this->identityValue;
     }
     
@@ -328,6 +331,7 @@
       
       $rows= array();
       while ($row= $r->next()) $rows[]= $row;
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, sizeof ($rows)));
       return $rows;
     }
     
@@ -353,13 +357,17 @@
         if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
       }
 
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+
       switch (sizeof($this->queryError)) {
         case 0: {
           if ($this->currentResultSet >= sizeof($this->resultSets)) {
             return new MockResultSet();   // Empty
           }
           
-          return $this->resultSets[$this->currentResultSet++];
+          $resultset= $this->resultSets[$this->currentResultSet++];
+          $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+          return $resultset;
         }
 
         case 1: {   // letServerDisconnect() sets this
