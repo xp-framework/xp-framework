@@ -69,10 +69,12 @@
      * Add an observer
      *
      * @param   util.Observer observer a class implementing the util.Observer interface
+     * @return  util.Observer the added observer
      * @throws  lang.IllegalArgumentException in case the argument is not an observer
      */
     public function addObserver(Observer $observer) {
       $this->_obs[]= $observer;
+      return $observer;
     }
     
     /**
