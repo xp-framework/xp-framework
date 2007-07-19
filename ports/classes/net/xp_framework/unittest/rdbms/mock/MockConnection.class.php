@@ -8,12 +8,12 @@
     'rdbms.Transaction',
     'rdbms.DBConnection', 
     'rdbms.StatementFormatter',
-    'rdbms.sybase.SybaseDialect',
-    'net.xp_framework.unittest.rdbms.mock.MockResultSet'
+    'net.xp_framework.unittest.rdbms.mock.MockResultSet',
+    'net.xp_framework.unittest.rdbms.mock.MockDialect'
   );
 
   /**
-   * Mock database connection. Uses the SYBASE dialect!
+   * Mock database connection.
    *
    * @see      xp://rdbms.DBConnection
    * @purpose  Mock object
@@ -380,7 +380,7 @@
      * @return  rdbms.StatemantFormatter
      */
     public function getFormatter() {
-      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SybaseDialect());
+      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new MockDialect());
       return $this->formatter;
     }
   }
