@@ -1,14 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
+ * $Id$
  */
  
   uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table nmappoint, database Ruben_Test_PS
-   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
+   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -42,7 +42,7 @@
             ),
           ),
           'NmobileObjectCoord_xCoord_y' => array(
-            'classname' => 'de.schlund.db.rubentest.Nmobileobject',
+            'classname' => 'de.schlund.db.rubentest.NmobileObject',
             'key'       => array(
               'coord_x' => 'coord_x','coord_y' => 'coord_y',
             ),
@@ -65,7 +65,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
@@ -76,7 +76,7 @@
      * 
      * @param   int coord_x
      * @param   int coord_y
-     * @return  de.schlund.db.rubentest.Nmappoint entitiy object
+     * @return  de.schlund.db.rubentest.Nmappoint entity object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByCoord_xCoord_y($coord_x, $coord_y) {
@@ -175,15 +175,15 @@
     }
 
     /**
-     * Retrieves an array of all Nmobileobject entities referencing
+     * Retrieves an array of all NmobileObject entities referencing
      * this entity by coord_x=>coord_x, coord_y=>coord_y
      *
-     * @return  de.schlund.db.rubentest.Nmobileobject[] entities
+     * @return  de.schlund.db.rubentest.NmobileObject[] entities
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNmobileObjectCoord_xCoord_yList() {
       if ($this->cached['NmobileObjectCoord_xCoord_y']) return array_values($this->cache['NmobileObjectCoord_xCoord_y']);
-      return XPClass::forName('de.schlund.db.rubentest.Nmobileobject')
+      return XPClass::forName('de.schlund.db.rubentest.NmobileObject')
         ->getMethod('getPeer')
         ->invoke()
         ->doSelect(new Criteria(
@@ -193,15 +193,15 @@
     }
 
     /**
-     * Retrieves an iterator for all Nmobileobject entities referencing
+     * Retrieves an iterator for all NmobileObject entities referencing
      * this entity by coord_x=>coord_x, coord_y=>coord_y
      *
-     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Nmobileobject>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.NmobileObject
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNmobileObjectCoord_xCoord_yIterator() {
       if ($this->cached['NmobileObjectCoord_xCoord_y']) return new HashmapIterator($this->cache['NmobileObjectCoord_xCoord_y']);
-      return XPClass::forName('de.schlund.db.rubentest.Nmobileobject')
+      return XPClass::forName('de.schlund.db.rubentest.NmobileObject')
         ->getMethod('getPeer')
         ->invoke()
         ->iteratorFor(new Criteria(

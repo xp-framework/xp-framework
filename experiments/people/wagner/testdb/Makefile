@@ -2,7 +2,7 @@ XSLSS?=
 CMD?=		net.xp_framework.db.generator.DataSetCreator
 XPCLI?=		xpcli
 DIRS=		$(shell ls -1 definitions/$(DIR))
-OUTPUT?=	../../skeleton/
+OUTPUT?=	../
 
 #Generation of Database
 help:

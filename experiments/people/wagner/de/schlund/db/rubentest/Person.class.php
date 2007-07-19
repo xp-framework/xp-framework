@@ -1,14 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
+ * $Id$
  */
  
   uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table person, database Ruben_Test_PS
-   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
+   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -22,7 +22,6 @@
     protected
       $cache= array(
         'Department' => array(),
-        'Job' => array(),
         'DepartmentChief' => array(),
       );
 
@@ -43,12 +42,6 @@
             'classname' => 'de.schlund.db.rubentest.Department',
             'key'       => array(
               'department_id' => 'department_id',
-            ),
-          ),
-          'Job' => array(
-            'classname' => 'de.schlund.db.rubentest.Job',
-            'key'       => array(
-              'job_id' => 'job_id',
             ),
           ),
           'DepartmentChief' => array(
@@ -75,7 +68,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
@@ -85,7 +78,7 @@
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int person_id
-     * @return  de.schlund.db.rubentest.Person entitiy object
+     * @return  de.schlund.db.rubentest.Person entity object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByPerson_id($person_id) {
@@ -211,25 +204,6 @@
     }
 
     /**
-     * Retrieves the Job entity
-     * referenced by job_id=>job_id
-     *
-     * @return  de.schlund.db.rubentest.Job entity
-     * @throws  rdbms.SQLException in case an error occurs
-     */
-    public function getJob() {
-      $r= ($this->cached['Job']) ?
-        array_values($this->cache['Job']) :
-        XPClass::forName('de.schlund.db.rubentest.Job')
-          ->getMethod('getPeer')
-          ->invoke()
-          ->doSelect(new Criteria(
-          array('job_id', $this->getJob_id(), EQUAL)
-      ));
-      return $r ? $r[0] : NULL;
-    }
-
-    /**
      * Retrieves an array of all Department entities referencing
      * this entity by chief_id=>person_id
      *
@@ -250,7 +224,7 @@
      * Retrieves an iterator for all Department entities referencing
      * this entity by chief_id=>person_id
      *
-     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Department>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Department
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getDepartmentChiefIterator() {

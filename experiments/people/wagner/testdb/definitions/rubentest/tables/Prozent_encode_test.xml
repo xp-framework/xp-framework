@@ -1,31 +1,24 @@
 <document created_at="Thu, 19 Jul 2007 12:49:17 +0200" created_by="ruben">
   <table
-   name="department"
+   name="prozent_encode_test"
    dbhost="localhost"
    database="Ruben_Test_PS"
    dbtype="mysql"
-   class="Department"
+   class="Prozent_encode_test"
    package="de.schlund.db.rubentest"
   >  
     <attribute
-     name="department_id"
+     name="id"
      type="DB_ATTRTYPE_INT"
      identity="true"
      typename="int"
      nullable="false"
     />
     <attribute
-     name="name"
+     name="userload"
      type="DB_ATTRTYPE_VARCHAR"
      identity="false"
      typename="string"
-     nullable="false"
-    />
-    <attribute
-     name="chief_id"
-     type="DB_ATTRTYPE_INT"
-     identity="false"
-     typename="int"
      nullable="false"
     />
     <index
@@ -33,19 +26,14 @@
      unique="true"
      primary="true"
     >    
-      <key>department_id</key>
+      <key>id</key>
     </index>
     <index
-     name="chief"
+     name="userload"
      unique="false"
      primary="false"
     >    
-      <key>chief_id</key>
+      <key>userload</key>
     </index>
-    <constraint name="chief_of_department">    
-      <reference table="person" role="Chief">      
-        <key attribute="chief_id" sourceattribute="person_id"/>
-      </reference>
-    </constraint>
   </table>
 </document>

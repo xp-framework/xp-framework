@@ -1,14 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: xp5.php.xsl 10625 2007-06-15 15:04:07Z friebe $
+ * $Id$
  */
  
   uses('rdbms.DataSet', 'util.HashmapIterator');
 
   /**
    * Class wrapper for table ncolortype, database Ruben_Test_PS
-   * (Auto-generated on Wed, 20 Jun 2007 08:56:00 +0200 by ruben)
+   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -57,7 +57,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     public static function column($name) {
       return Peer::forName(__CLASS__)->column($name);
@@ -67,7 +67,7 @@
      * Gets an instance of this object by index "PRIMARY"
      * 
      * @param   int colortype_id
-     * @return  de.schlund.db.rubentest.Ncolortype entitiy object
+     * @return  de.schlund.db.rubentest.Ncolortype entity object
      * @throws  rdbms.SQLException in case an error occurs
      */
     public static function getByColortype_id($colortype_id) {
@@ -134,7 +134,7 @@
      * Retrieves an iterator for all Ncolor entities referencing
      * this entity by colortype_id=>colortype_id
      *
-     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Ncolor>
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Ncolor
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function getNcolorColortypeIterator() {
