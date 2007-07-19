@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix deserialization of objects of XP types
+  (kiesel)
 
 Version 5.5.5, released 2007-07-19
 ----------------------------------
