@@ -26,33 +26,27 @@
     switch (strtolower($init)) {
       case 'null':
         $type= 'lang.Object';
-        $ref= TRUE;
         break;
         
       case "''":
         $type= 'string';
-        $ref= FALSE;
         break;
 
       case '0':
         $type= 'int';
-        $ref= FALSE;
         break;
 
       case '0.0':
         $type= 'float';
-        $ref= FALSE;
         break;
 
       case 'false':
       case 'true':
         $type= 'bool';
-        $ref= FALSE;
         break;
 
       case 'array()':
         $type= 'mixed[]';
-        $ref= FALSE;
         break;
 
       case 1 == preg_match('#([^\[]+)\[\]#', $init, $matches):
@@ -96,7 +90,6 @@ __
         
       default:
         $type= 'mixed';
-        $ref= FALSE;
         break;
     }
     
@@ -104,24 +97,24 @@ __
     /**
      * Set %2\$s
      *
-     * @param   %4\$s%3\$s %2\$s
+     * @param   %3\$s %2\$s
      */
-    public function set%1\$s(%4\$s\$%2\$s) {
-      \$this->%2\$s= %4\$s\$%2\$s;
+    public function set%1\$s(\$%2\$s) {
+      \$this->%2\$s= \$%2\$s;
     }
 
     /**
      * Get %2\$s
      *
-     * @return  %4\$s%3\$s
+     * @return  %3\$s
      */
-    public function %4\$sget%1\$s() {
+    public function get%1\$s() {
       return \$this->%2\$s;
     }
 
 
 __
-    , ucfirst(substr($var, 1)), substr($var, 1), $type, $ref ? '&' : '');    
+    , ucfirst(substr($var, 1)), substr($var, 1), $type);    
   } while ($t= strtok("\r\n"));
   
   // }}}
