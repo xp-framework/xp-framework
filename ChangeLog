@@ -6,8 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-- Added methods to LDAPClient to perform entry
-  modifications at the attribute level.
+
+Version 5.5.5, released 2007-07-19
+----------------------------------
+SVN version: 10833
+
+- Fixed Dataset::insert() if object values contain % signs.
+  (wagner)
+- Made rdbms.DBConnection::addObserver() return the observer added
+  (friebe)
+- Added methods to LDAPClient to perform entry modifications at the 
+  attribute level.
   (gelli)
 - Implemented RFC #131 - SetOperation and Query
   (wagner)
