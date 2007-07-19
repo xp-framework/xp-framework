@@ -288,7 +288,7 @@ nedit.macroCommands: \
 	Create XP class@PHP:Shift+Alt+C::: {\n\
 		create_xp_class()\n\
 	}\n\
-	Create XP CLI script@PHP:Shift+Alt+F::: {\n\
+	Create XP CLI class@PHP:Shift+Alt+F::: {\n\
 		create_xp_cli()\n\
 	}\n\
 	Create XP testcase@PHP:Shift+Alt+R::: {\n\

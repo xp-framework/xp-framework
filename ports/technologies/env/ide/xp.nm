@@ -83,7 +83,7 @@ define create_xp_class {
 define create_xp_cli {
   include_file( getenv("HOME") "/.nedit/templates/xpcli.tmpl")
   set_language_mode("PHP")
-  goto_line_number(24)
+  goto_line_number(68)
 }
 
 define create_xp_testcase {
