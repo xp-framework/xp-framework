@@ -243,7 +243,7 @@
             // Arrays of other types
             // ~~~~~~~~~~~~~~~~~~~~~
             // <item SOAP-ENC:arrayType="xsd:int[4]"/>
-            if ('xp' == $ns) {
+            if ($this->namespaces[XMLNS_XP] == $ns) {
               try {
                 $result= Collection::forClass(XPClass::forName($childType)->getName());
               } catch (ClassNotFoundException $e) {
@@ -306,7 +306,7 @@
             // <item xmlns:xp="http://xp-framework.net/xmlns/xp" xsi:type="xp:de.schlund.db.irc.IrcChannel"/>        
             //
             // For other objects, check SOAPMapping registry
-            if ('xp' == $regs[1]) {
+            if ($this->namespaces[XMLNS_XP] == $regs[1]) {
               try {
                 $xpclass= XPClass::forName($regs[2]);
               } catch (ClassNotFoundException $e) {
