@@ -95,7 +95,7 @@
     static function __static() {
       self::$instance= new self();
       self::$instance->defaultIdentifier= getmypid();
-      self::$instance->defaultFormat= '[%1$s %2$s %3$5s]';
+      self::$instance->defaultFormat= '[%1$s %2$5s %3$5s]';
       self::$instance->defaultDateformat= 'H:i:s';
       self::$instance->defaultFlags= LOGGER_FLAG_ALL;
       self::$instance->defaultAppenders= array();
