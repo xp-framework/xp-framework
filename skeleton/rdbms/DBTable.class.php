@@ -56,7 +56,7 @@
     /**
      * Get first attribute - Iterator function
      *
-     * @return  rdbms.DBAttribute an attribute
+     * @return  rdbms.DBTableAttribute an attribute
      * @see     getNextAttribute
      */
     public function getFirstAttribute() {
@@ -75,7 +75,7 @@
      *   } while ($attr= $table->getNextAttribute());
      * </code>
      *
-     * @return  rdbms.DBAttribute an attribute or FALSE if none more exist
+     * @return  rdbms.DBTableAttribute an attribute or FALSE if none more exist
      */
     public function getNextAttribute() {
       return next($this->attributes);
@@ -84,8 +84,8 @@
     /**
      * Add an attribute
      *
-     * @param   rdbms.DBAttribute attr the attribute to add
-     * @return  rdbms.DBAttribute the added attribute
+     * @param   rdbms.DBTableAttribute attr the attribute to add
+     * @return  rdbms.DBTableAttribute the added attribute
      */
     public function addAttribute($attr) {
       $this->attributes[]= $attr;
