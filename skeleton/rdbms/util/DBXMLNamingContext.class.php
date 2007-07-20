@@ -11,7 +11,7 @@ uses('rdbms.util.DBXMLNamingStrategyDefault');
    */
   class DBXMLNamingContext extends Object {
   
-    protected static $strategy= NULL;
+    private static $strategy= NULL;
     
     static function __static() {
       self::setStrategy(new DBXMLNamingStrategyDefault());
