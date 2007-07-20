@@ -109,7 +109,7 @@
   <func:function name="my:distinctRole">
     <xsl:param name="nodeset" />
     <xsl:choose>
-      <xsl:when test="count($nodeset[@role != $nodeset[1]/@role]) &lt;= 1"><func:result select="$nodeset[@role = $nodeset[1]/@role][1]" /></xsl:when>
+      <xsl:when test="count($nodeset[@role != $nodeset[1]/@role]) &lt; 1"><func:result select="$nodeset[1]" /></xsl:when>
       <xsl:otherwise><func:result select="$nodeset[@role = $nodeset[1]/@role][1] | my:distinctRole($nodeset[@role != $nodeset[1]/@role])" /></xsl:otherwise>
     </xsl:choose>
   </func:function>
