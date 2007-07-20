@@ -13,7 +13,7 @@
     /**
      * assemble th name of a foreign key constraint
      *
-     * @param   rdbms.DBTable t referencing table
+     * @param   rdbms.DBTable t referenced table
      * @param   rdbms.DBConstraint c
      * @return  string
      */
