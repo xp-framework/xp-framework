@@ -59,23 +59,23 @@
      */    
     public function getSource() {
       foreach ($this->tables as $t) {
-        $rolenameList= array();
+        $constKeyList= array();
         $tn= $this->doc->root->children[0]->addChild(new Node('table', NULL, array(
           'name' => $t->name,
         )));
 
         if ($constraint= $t->getFirstForeignKeyConstraint()) do {
-          $rolename= DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint);
-          if ($rolenameList[$rolename]) {
-            $this->cat && $this->cat->warn($rolename, 'is a double role name');
+          if ($constKeyList[$this->constraintKey($constraint)]) {
+            $this->cat && $this->cat->warn($t->name, 'has a double constraint'."\n".xp::stringOf($constraint));
+            continue;
           }
-          $rolenameList[$rolename]= true;
+          $constKeyList[$this->constraintKey($constraint)]= true;
           $cn= $tn->addChild(new Node('constraint', NULL, array(
             'name' => trim($constraint->getName()),
           )));
           $fgn= $cn->addChild(new Node('reference', NULL, array(
             'table' => $constraint->getSource(),
-            'role'  => $rolename,
+            'role'  => DBXMLNamingContext::referencingForeignKeyConstraintName($t, $constraint),
           )));
           foreach ($constraint->getKeys() as $attribute => $sourceattribute) {
             $fgn->addChild(new Node('key', NULL, array(
@@ -96,6 +96,16 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+    }
+    
+    /**
+     * descriptive key for constraint
+     *
+     * @param   rdbms.DBForeignKeyConstraint
+     * @return  string
+     */
+    private function constraintKey($c) {
+      return $c->source.'#'.implode('|', array_keys($c->keys)).'#'.implode('|', array_values($c->keys));
     }
   }
 ?>

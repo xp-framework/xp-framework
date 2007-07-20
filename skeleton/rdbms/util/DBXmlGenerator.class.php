@@ -93,7 +93,13 @@
         } while ($index= $this->table->getNextIndex());
 
         // constraints
+        $constKeyList= array();
         if ($constraint= $this->table->getFirstForeignKeyConstraint()) do {
+          if ($constKeyList[$this->constraintKey($constraint)]) {
+            $this->cat && $this->cat->warn($this->table->name, 'has a double constraint'."\n".xp::stringOf($constraint));
+            continue;
+          }
+          $constKeyList[$this->constraintKey($constraint)]= true;
           $cn= $t->addChild(new Node('constraint', NULL, array(
             'name' => trim($constraint->getName()),
           )));
@@ -121,6 +127,16 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+    }
+
+    /**
+     * descriptive key for constraint
+     *
+     * @param   rdbms.DBForeignKeyConstraint
+     * @return  string
+     */
+    private function constraintKey($c) {
+      return $c->source.'#'.implode('|', array_keys($c->keys)).'#'.implode('|', array_values($c->keys));
     }
   }
 ?>
