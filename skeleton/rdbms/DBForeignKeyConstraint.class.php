@@ -62,5 +62,18 @@
       return $this->source;
     }
 
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName()."@{\n";
+      foreach ($this->keys as $target => $source) {
+        $s.= '  '.$target.' => '.$this->source.'.'.$source."\n";
+      }
+      return $s.'}';
+    }
+    
   }
 ?>
