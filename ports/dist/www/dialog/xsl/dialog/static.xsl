@@ -216,7 +216,7 @@
       <xsl:if test="/formresult/pager/@offset &gt; 0">
         &#xbb;
         <a href="{func:linkPage(/formresult/pager/@offset)}">
-          Page #<xsl:value-of select="/formresult/pager/@offset"/>
+          Page #<xsl:value-of select="/formresult/pager/@offset+ 1"/>
         </a>
       </xsl:if>
     </h3>

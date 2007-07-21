@@ -91,7 +91,7 @@
               <xsl:attribute name="href"><xsl:value-of select="func:linkImage(
                 /formresult/album/@name,
                 /formresult/selected/next/chapter,
-                /formresult/selected/next/type
+                /formresult/selected/next/type,
                 /formresult/selected/next/number
               )"/></xsl:attribute>
             </xsl:if>
