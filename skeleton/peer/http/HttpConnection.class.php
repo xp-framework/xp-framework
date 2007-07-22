@@ -55,9 +55,7 @@
      * @param   mixed url a string or a peer.URL object
      */
     public function __construct($url) {
-      if (!is('URL', $url)) $url= new URL($url);
-      $this->_createRequest($url);
-      
+      $this->_createRequest($url instanceof URL ? $url : new URL($url));
     }
     
     /**
@@ -106,6 +104,21 @@
     }
     
     /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(->URL{%s}, timeout: [read= %.2f, connect= %.2f])',
+        $this->getClassName(),
+        $this->request->url->getUrl(),
+        $this->_timeout,
+        $this->_ctimeout
+      );
+    }
+    
+    /**
      * Perform any request
      *
      * @param   string method request method, e.g. HTTP_GET
@@ -113,24 +126,13 @@
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      * @throws  io.IOException
-     * @throws  lang.IllegalAccessException
      */
     public function request($method, $arg, $headers= array()) {
-      if (!$this->request) throw(new IllegalAccessException(
-        'No request object returned from HttpRequestFactory::factory'
-      ));
-      
       $this->request->setMethod($method);
       $this->request->setParameters($arg);
       $this->request->addHeaders($headers);
       
-      try {
-        $this->response= $this->request->send($this->_timeout, $this->_ctimeout);
-      } catch (Exception $e) {
-        throw($e);
-      }
-      
-      return $this->response;
+      return $this->request->send($this->_timeout, $this->_ctimeout);
     }
 
     /**
@@ -167,7 +169,7 @@
     }
     
     /**
-     * Perform a Put request
+     * Perform a PUT request
      *
      * @param   string arg default NULL
      * @param   array headers default array()
