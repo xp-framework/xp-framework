@@ -79,7 +79,7 @@
         $e->setIsoSpeedRatings($info['ISOSpeedRatings']);
         
         // Find date and time
-        foreach (array('DateTime', 'DateTimeOriginal') as $key) {
+        foreach (array('DateTimeOriginal', 'DateTime') as $key) {
           if (!isset($info[$key])) continue;
 
           $t= sscanf($info[$key], '%4d:%2d:%2d %2d:%2d:%2d');
