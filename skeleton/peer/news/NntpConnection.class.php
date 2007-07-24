@@ -408,7 +408,7 @@
       $status= $this->_sendcmd(
         'NEWNEWS',
         $newsgroup,
-        $date->format('%y%m%d %H%M%S')
+        $date->toString('ymd His')
       );
       if (!NntpReply::isPositiveCompletion($status))
         throw(new IOException('Could not get new articles'));
@@ -428,10 +428,10 @@
     public function newGroups($date) {
       $status= $this->_sendcmd(
         'NEWGROUPS',
-        $date->format('%y%m%d %H%M%S')
+        $date->toString('ymd His')
       );
       if (!NntpReply::isPositiveCompletion($status))
-        throw(new IOException('Could not get new groups'));
+        throw new IOException('Could not get new groups');
         
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
