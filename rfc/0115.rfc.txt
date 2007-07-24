@@ -115,6 +115,10 @@ Related documents
 -----------------
 - RFC #0036 (initial but a bit different idea)
 
+- http://xp-framework.net/rfc/contrib/rfc0115_2.diff
+  Patch implementing this RFC
+  
+
 Comments
 --------
 - kiesel, Tue Jul 24 23:31:15     2007
@@ -132,5 +136,17 @@ Comments
   
   to make XP independent of "TZ" environment variable?
 
+- kiesel, Tue Jul 24 23:40:50     2007
+  Should a new DateException be introduced which can be used
+  in util.Date, util.DateUtil, util.Calendar and util.TimeSpan?
+
+- kiesel, Tue Jul 24 23:41:51     2007
+  The date object supports modifications to an existing object. XP's
+  util.Date was immutable, and changes to it are only supported through
+  util.DateUtil - by creating a new object.
+  
+  Should util.Date be made mutable and introduce new methods to
+  change its state? Should util.DateUtil be marked as deprecated,
+  if so?
 
 <EOF>
