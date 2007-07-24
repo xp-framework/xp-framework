@@ -334,7 +334,7 @@
       if ($expected) {
         $e= new AssertionFailedError(
           'Expected exception not caught',
-          ($e ? $e->getClassName() : NULL),
+          (isset($e) && $e instanceof XPException ? $e->getClassName() : NULL),
           $method->getAnnotation('expect')
         );
         $result->setFailed($this, $e, $timer->elapsedTime());
