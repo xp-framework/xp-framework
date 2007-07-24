@@ -56,9 +56,9 @@
       switch ($input) {
         case '__NOW__': 
           if ($lower) {
-            $r= DateUtil::getMidnight(new Date('now'));
+            $r= DateUtil::getMidnight(Date::now());
           } else {
-            $r= DateUtil::getMidnight(new Date('tomorrow'));
+            $r= DateUtil::getMidnight(DateUtil::addDays(Date::now(), 1));
           }
           break;
 
