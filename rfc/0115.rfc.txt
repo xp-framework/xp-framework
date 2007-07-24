@@ -2,7 +2,7 @@ RFC 0115: Make Date objects represent an instance in time
 ========================================================================
 $Id$
 
-@authors: friebe
+@authors: friebe, kiesel
 @created: Wed Mar 28 16:33:54     2007
 @status: draft
 @category: util
@@ -13,10 +13,53 @@ The Date class will be changed to also hold the timezone offset, thus
 making it a representation of an instance in time rather than a certain
 date and time.
 
+Also, internally it will be backed by the new DateTime and related
+classes provided by PHP5. As part of that, all public members of
+util.Date will be removed.
+
+Accessing separate values of the object will be possible through
+the public get*()-methods.
+
+The serialization format of util.Date will change completely due to
+the internal change - deserialization of objects stored in the old
+format will be supported to maintain external backwards compatibility.
+
+The method format() will be removed. The toString() method can
+output a Date object in any requested (and known) timezone.
+
 
 Rationale
 ---------
+
+Addition of timezone
+~~~~~~~~~~~~~~~~~~~~
 Problems with timezone conversions.
+
+Backing by PHP5's DateTime
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Many lines with complex date calculations can be removed which
+should make util.Date less error prone - provided that DateTime
+is in use in the PHP community and therefore error tested.
+
+Also, timezone calculations require a timezone database, which
+would be extremely tedious to maintain itself. DateTime, in
+contrary to utilDate, makes use of either a timezone database
+provided by PHP, or the operating system.
+
+Because it slows down speed of util.Date to update the public
+member variables every time the backing object is been modified,
+the public members will be removed alltogether.
+
+Removing of format() method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The format() method relies internally on PHP's strftime() method, which
+is locale-dependant, inconsistently supported by different operating
+systems and does not support formatting timestamps outside the
+traditional unix timestamp range, eg. before 1970 or after 2038.
+
+A replacement implementation exists in util.Date to fix the range
+problem, but it does not fully support all formatters and is
+error-prone.
 
 
 Functionality
@@ -29,6 +72,28 @@ This statement is now true:
     new Date('31.12.1999 23:00:00', '+0000')    // London
   );
 ?>
+
+A date object can be output in a specified timezone:
+<?php
+  echo create(new Date("2007-07-24 22:00:00 Europe/Berlin"))->toString("r", "Australia/Sydney")."\n";
+?>
+
+will output:
+
+<pre>
+Wed, 25 Jul 2007 06:00:00 +1000
+</pre>
+
+Serialization format of an util.Date object will be done using a fully formatted
+date string:
+<?php
+  echo serialize(new Date("2007-07-24 22:00:00 Europe/Berlin"));
+?>
+
+will output:
+<pre>
+O:4:"Date":1:{s:5:"value";s:24:"2007-07-24T22:00:00+0200";}
+</pre>
 
 
 Security considerations
@@ -43,7 +108,7 @@ n/a
 
 Dependencies
 ------------
-n/a
+- PHP 5.2.0 (which is XP-core default requirement)
 
 
 Related documents
@@ -52,5 +117,20 @@ Related documents
 
 Comments
 --------
+- kiesel, Tue Jul 24 23:31:15     2007
+  The default order of how PHP gets the default timezone is:
+    - the timezone set using the date_default_timezone_set() function (if any)
+    - the TZ environment variable (if non empty)
+    - the date.timezone ini option (if set)
+    - "magical" guess (if the operating system supports it)
+    - if none of the above options succeeds, return UTC
+  
+  Should lang.base.php contain:
+  <code>
+    date_default_timezone_set(ini_get("date.timezone"))
+  </code>
+  
+  to make XP independent of "TZ" environment variable?
+
 
 <EOF>
