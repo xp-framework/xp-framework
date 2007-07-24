@@ -1,7 +1,7 @@
-Index: util/cmd/Runner.class.php
+Index: Runner.class.php
 ===================================================================
---- util/cmd/Runner.class.php	(revision 10793)
-+++ util/cmd/Runner.class.php	(working copy)
+--- Runner.class.php	(revision 10852)
++++ Runner.class.php	(working copy)
 @@ -178,13 +178,37 @@
        if (!$classname) {
          self::$err->writeLine('*** Missing classname');
@@ -46,3 +46,33 @@ Index: util/cmd/Runner.class.php
  
        // Usage
        if ($classparams->exists('help', '?')) {
+@@ -255,13 +279,13 @@
+           try {
+             $method->invoke($instance, array($pass));
+           } catch (Throwable $e) {
+-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
++            self::$err->writeLine('*** Error for arguments '.$begin.'..'.$end.': '.$e->getMessage());
+             return 2;
+           }
+         } else if ($method->hasAnnotation('arg')) {  // Pass arguments
+           $arg= $method->getAnnotation('arg');
+           if (isset($arg['position'])) {
+-            $name= '#'.$arg['position'];
++            $name= '#'.($arg['position']+ 1);
+             $select= intval($arg['position']);
+             $short= NULL;
+           } else if (isset($arg['name'])) {
+@@ -293,13 +317,6 @@
+             self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+             return 2;
+           }
+-        } else if ($method->hasAnnotation('args')) { // Pass all arguments
+-          try {
+-            $method->invoke($instance, array($classparams->list));
+-          } catch (Throwable $e) {
+-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+-            return 2;
+-          }
+         }
+       }
+ 
