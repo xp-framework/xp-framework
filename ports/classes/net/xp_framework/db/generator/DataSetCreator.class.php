@@ -31,6 +31,7 @@
    *   <li>mysql</li>
    *   <li>sybase</li>
    *   <li>sqlite</li>
+   *   <li>pgsql</li>
    * </ul>
    *
    * @test     xp://net.xp_framework.unittest.cmd.DataSetCreatorTest
