@@ -1,4 +1,4 @@
-<document created_at="Fri, 20 Jul 2007 13:42:05 +0200" created_by="ruben">
+<document created_at="Tue, 24 Jul 2007 12:23:26 +0200" created_by="ruben">
   <database database="Ruben_Test_PS">  
     <table name="department">    
       <constraint name="chief_of_department">      

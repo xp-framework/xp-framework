@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mperson, database Ruben_Test_PS
-   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
+   * (Auto-generated on Tue, 24 Jul 2007 12:23:26 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -20,6 +20,7 @@
     protected
       $cache= array(
         'MmessageAuthor' => array(),
+        'MmessageRecipient' => array(),
       );
 
     static function __static() { 
@@ -37,6 +38,12 @@
             'classname' => 'de.schlund.db.rubentest.Mmessage',
             'key'       => array(
               'person_id' => 'author_id',
+            ),
+          ),
+          'MmessageRecipient' => array(
+            'classname' => 'de.schlund.db.rubentest.Mmessage',
+            'key'       => array(
+              'person_id' => 'recipient_id',
             ),
           ),
         ));
@@ -144,6 +151,40 @@
         ->invoke()
         ->iteratorFor(new Criteria(
           array('author_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an array of all Mmessage entities referencing
+     * this entity by recipient_id=>person_id
+     *
+     * @return  de.schlund.db.rubentest.Mmessage[] entities
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMmessageRecipientList() {
+      if ($this->cached['MmessageRecipient']) return array_values($this->cache['MmessageRecipient']);
+      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->doSelect(new Criteria(
+          array('recipient_id', $this->getPerson_id(), EQUAL)
+      ));
+    }
+
+    /**
+     * Retrieves an iterator for all Mmessage entities referencing
+     * this entity by recipient_id=>person_id
+     *
+     * @return  rdbms.ResultIterator<de.schlund.db.rubentest.Mmessage
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getMmessageRecipientIterator() {
+      if ($this->cached['MmessageRecipient']) return new HashmapIterator($this->cache['MmessageRecipient']);
+      return XPClass::forName('de.schlund.db.rubentest.Mmessage')
+        ->getMethod('getPeer')
+        ->invoke()
+        ->iteratorFor(new Criteria(
+          array('recipient_id', $this->getPerson_id(), EQUAL)
       ));
     }
   }

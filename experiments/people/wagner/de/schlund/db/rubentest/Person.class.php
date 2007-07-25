@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table person, database Ruben_Test_PS
-   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
+   * (Auto-generated on Tue, 24 Jul 2007 12:23:26 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -22,6 +22,7 @@
     protected
       $cache= array(
         'Department' => array(),
+        'Job' => array(),
         'DepartmentChief' => array(),
       );
 
@@ -42,6 +43,12 @@
             'classname' => 'de.schlund.db.rubentest.Department',
             'key'       => array(
               'department_id' => 'department_id',
+            ),
+          ),
+          'Job' => array(
+            'classname' => 'de.schlund.db.rubentest.Job',
+            'key'       => array(
+              'job_id' => 'job_id',
             ),
           ),
           'DepartmentChief' => array(
@@ -199,6 +206,25 @@
           ->invoke()
           ->doSelect(new Criteria(
           array('department_id', $this->getDepartment_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
+    }
+
+    /**
+     * Retrieves the Job entity
+     * referenced by job_id=>job_id
+     *
+     * @return  de.schlund.db.rubentest.Job entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getJob() {
+      $r= ($this->cached['Job']) ?
+        array_values($this->cache['Job']) :
+        XPClass::forName('de.schlund.db.rubentest.Job')
+          ->getMethod('getPeer')
+          ->invoke()
+          ->doSelect(new Criteria(
+          array('job_id', $this->getJob_id(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }

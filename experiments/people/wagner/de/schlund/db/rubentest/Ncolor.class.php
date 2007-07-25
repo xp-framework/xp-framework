@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table ncolor, database Ruben_Test_PS
-   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
+   * (Auto-generated on Tue, 24 Jul 2007 12:23:26 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */

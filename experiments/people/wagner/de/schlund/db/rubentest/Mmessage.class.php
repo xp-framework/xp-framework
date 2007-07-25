@@ -8,7 +8,7 @@
 
   /**
    * Class wrapper for table mmessage, database Ruben_Test_PS
-   * (Auto-generated on Thu, 19 Jul 2007 12:49:17 +0200 by ruben)
+   * (Auto-generated on Tue, 24 Jul 2007 12:23:26 +0200 by ruben)
    *
    * @purpose  Datasource accessor
    */
@@ -25,6 +25,7 @@
     protected
       $cache= array(
         'Author' => array(),
+        'Recipient' => array(),
       );
 
     static function __static() { 
@@ -47,6 +48,12 @@
             'classname' => 'de.schlund.db.rubentest.Mperson',
             'key'       => array(
               'author_id' => 'person_id',
+            ),
+          ),
+          'Recipient' => array(
+            'classname' => 'de.schlund.db.rubentest.Mperson',
+            'key'       => array(
+              'recipient_id' => 'person_id',
             ),
           ),
         ));
@@ -255,6 +262,25 @@
           ->invoke()
           ->doSelect(new Criteria(
           array('person_id', $this->getAuthor_id(), EQUAL)
+      ));
+      return $r ? $r[0] : NULL;
+    }
+
+    /**
+     * Retrieves the Mperson entity
+     * referenced by person_id=>recipient_id
+     *
+     * @return  de.schlund.db.rubentest.Mperson entity
+     * @throws  rdbms.SQLException in case an error occurs
+     */
+    public function getRecipient() {
+      $r= ($this->cached['Recipient']) ?
+        array_values($this->cache['Recipient']) :
+        XPClass::forName('de.schlund.db.rubentest.Mperson')
+          ->getMethod('getPeer')
+          ->invoke()
+          ->doSelect(new Criteria(
+          array('person_id', $this->getRecipient_id(), EQUAL)
       ));
       return $r ? $r[0] : NULL;
     }
