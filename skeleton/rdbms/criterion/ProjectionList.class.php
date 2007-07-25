@@ -55,10 +55,10 @@
      * @return   rdbms.criterion.ProjectionList
      */
     public function add(SQLRenderable $projection, $alias= '') {
-      $this->projections[]= ($projection instanceof Projection)
-        ? $projection
-        : $projection= Projections::property($projection, $alias)
-      ;
+      $this->projections[]= array(
+        'alias'      => (empty($alias) && ($projection instanceof CountProjection) ? 'count' : $alias),
+        'projection' => ($projection instanceof Projection) ? $projection : $projection= Projections::property($projection)
+      );
       return $this;
     }
 
@@ -71,7 +71,12 @@
      */
     public function asSql(DBConnection $conn) {
       $s= '';
-      foreach ($this->projections as $p) $s.= ', '.$p->asSql($conn);
+      foreach ($this->projections as $e) {
+        $s.= (0 != strlen($e['alias']))
+          ? $conn->prepare(', %c as %l', $e['projection']->asSql($conn), $e['alias'])
+          : $conn->prepare(', %c', $e['projection']->asSql($conn))
+        ;
+      }
       return substr($s, 1);
     }
 

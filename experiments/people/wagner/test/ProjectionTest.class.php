@@ -28,11 +28,11 @@
       if ($this->showSource) $this->logger->debug('$crit'."= create(new Criteria())->add(Restrictions::like(Ncolor::column('name'), '%green'))");
       $crit= Criteria::newInstance()->add(Restrictions::like(Ncolor::column('name'), '%green'));
 
-      Console::writeLine(xp::stringOf('\n\nwithProjection count:'));
+      Console::writeLine(xp::stringOf("\n\n".'withProjection count:'));
       if ($this->showSource) $this->logger->debug("Ncolor::getPeer()->iteratorFor(".'$crit'."->withProjection(Projections::count()))->next()->get('count')");
       Console::writeLine(xp::stringOf(Ncolor::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count')));
 
-      Console::writeLine(xp::stringOf('\n\nwithout projection:'));
+      Console::writeLine(xp::stringOf("\n\n".'without projection:'));
       if ($this->showSource) $this->logger->debug("Ncolor::getPeer()->doSelect(".'$crit'.")");
       Console::writeLine(xp::stringOf(Ncolor::getPeer()->doSelect($crit)));
     }
@@ -67,7 +67,8 @@
       )";
 
       $crits['count3']= "create(new Criteria())->setProjection(
-        Projections::count(Ncolor::column('color_id'), 'counting all')
+        Projections::count(Ncolor::column('color_id')),
+        'counting all'
       )";
 
       $crits['average']= "create(new Criteria())->setProjection(
@@ -96,7 +97,7 @@
 
       $crits['projectionList']= "create(new Criteria())->setProjection(
         Projections::projectionList()
-        ->add(Projections::property(Ncolor::column('color_id'), 'id'))
+        ->add(Projections::property(Ncolor::column('color_id')), 'id')
         ->add(Projections::property(Ncolor::column('name')))
       )";
 

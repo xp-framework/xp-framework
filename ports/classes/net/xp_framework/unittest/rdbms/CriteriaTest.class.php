@@ -8,6 +8,7 @@
     'rdbms.Criteria',
     'rdbms.criterion.Restrictions',
     'rdbms.DriverManager',
+    'rdbms.ConnectionManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
     'net.xp_framework.unittest.rdbms.dataset.Department',
     'net.xp_framework.unittest.rdbms.dataset.Person',
@@ -37,6 +38,7 @@
     public function __construct($name) {
       parent::__construct($name);
       $this->conn= DriverManager::getConnection('sybase://localhost:1999/');
+      ConnectionManager::getInstance()->register($this->conn, 'jobs');
       $this->peer= Job::getPeer();
     }
     
@@ -315,12 +317,14 @@
     public function testJoinWithoutCondition() {
       $jp= new JoinProcessor(Job::getPeer());
       $jp->setFetchModes(array('PersonJob->Department' => 'join'));
+      $jp->enterJoinContext();
       $this->assertEquals(
-        '',
+        '1 = 1',
         create(new Criteria())
         ->setFetchmode(Fetchmode::join('PersonJob'))
         ->toSQL($this->conn, $this->peer)
       );
+      $jp->leaveJoinContext();
     }
 
     /**
@@ -334,12 +338,34 @@
       $jp->setFetchModes(array('PersonJob->Department' => 'join'));
       $jp->enterJoinContext();
       $this->assertEquals(
-        ' where PersonJob_Department.department_id = 5 and start.job_id = 2 ',
+        'PersonJob_Department.department_id = 5 and start.job_id = 2',
         create(new Criteria())
         ->setFetchmode(Fetchmode::join('PersonJob'))
         ->add(Job::column('PersonJob->Department->department_id')->equal(5))
         ->add(Job::column('job_id')->equal(2))
         ->toSQL($this->conn, $this->peer)
+      );
+      $jp->leaveJoinContext();
+    }
+
+    /**
+     * test joins and projection
+     *
+     */
+    #[@test]
+    public function testJoinWithProjection() {
+      $jp= new JoinProcessor(Job::getPeer());
+      $jp->setFetchModes(array('PersonJob->Department' => 'join'));
+      $jp->enterJoinContext();
+      $this->assertEquals(
+        'select  PersonJob.job_id, PersonJob_Department.department_id from JOBS.job as start, JOBS.Person as PersonJob, JOBS.Department as PersonJob_Department where start.job_id *= PersonJob.job_id and PersonJob.department_id *= PersonJob_Department.department_id and  1 = 1',
+        create(new Criteria())
+        ->setFetchmode(Fetchmode::join('PersonJob'))
+        ->setProjection(Projections::ProjectionList()
+          ->add(Job::column('PersonJob->job_id'))
+          ->add(Job::column('PersonJob->Department->department_id'))
+        )
+        ->getSelectQueryString($this->conn, $this->peer, $jp)
       );
       $jp->leaveJoinContext();
     }

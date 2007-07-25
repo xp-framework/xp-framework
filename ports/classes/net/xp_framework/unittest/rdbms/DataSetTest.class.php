@@ -649,5 +649,43 @@
         $observer->statements[0]
       );
     }
+
+    /**
+     * Test the max parameter with Peer::doSelect
+     *
+     */
+    #[@test]
+    public function testDoSelectMax() {
+      for ($i= 0; $i < 4; $i++) {
+        $this->setResults(new MockResultSet(array(
+          0 => array(
+            'job_id'      => 654,
+            'title'       => 'Java Unit tester',
+            'valid_from'  => Date::now(),
+            'expire_at'   => NULL
+          ),
+          1 => array(
+            'job_id'      => 655,
+            'title'       => 'Java Unit tester 1',
+            'valid_from'  => Date::now(),
+            'expire_at'   => NULL
+          ),
+          2 => array(
+            'job_id'      => 656,
+            'title'       => 'Java Unit tester 2',
+            'valid_from'  => Date::now(),
+            'expire_at'   => NULL
+          ),
+          3 => array(
+            'job_id'      => 657,
+            'title'       => 'Java Unit tester 3',
+            'valid_from'  => Date::now(),
+            'expire_at'   => NULL
+          ),
+        )));
+        $this->assertEquals($i ? $i : 4, count(Job::getPeer()->doSelect(new Criteria(), $i)));
+      }
+    }
+
   }
 ?>

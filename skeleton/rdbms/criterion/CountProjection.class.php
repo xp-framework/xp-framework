@@ -11,6 +11,7 @@
   /**
    * belongs to the Criterion API
    * Should be built with the static factory rdbms.criterion.Projections
+   *
    * <?php
    *   // count all rows of the table Person
    *   // sql: select count * from person;
@@ -19,8 +20,8 @@
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::count()));
    *
    *   // count all rows, where column "name" not NULL
-   *   // sql: select count name from person;
-   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Person::column('name')));
+   *   // sql: select count(name) from person;
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::count(Person::column('name'))));
    * ?>
    *
    * @see     xp://rdbms.criterion.Projections
@@ -32,13 +33,11 @@
      * constructor
      *
      * @param  mixed string('*') or rdbms.SQLRenderable field optional default is string('*')
-     * @param  string alias optional
      * @throws lang.IllegalArgumentException
      */
-    public function __construct($field= '*', $alias= '') {
+    public function __construct($field= '*') {
       if (('*' != $field) && !($field instanceof SQLRenderable)) throw new IllegalArgumentException('Argument #1 must be of type SQLRenderable or string "*"');
       $this->field= $field;
-      $this->alias= $alias;
     }
 
     /**
@@ -49,8 +48,7 @@
      */
     public function asSql(DBConnection $conn) {
       $field= ($this->field instanceof SQLRenderable) ? $this->field->asSQL($conn) : '*';
-      $alias= (0 != strlen($this->alias)) ?  $this->alias : (('*' == $field) ? 'count' : 'count_'.$field);
-      return $conn->prepare('count('.$field.') as %l', $alias);
+      return $conn->prepare('count('.$field.')');
     }
   }
 ?>

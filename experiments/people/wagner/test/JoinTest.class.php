@@ -37,6 +37,8 @@
         Console::writeLine('=====================================================================================');
       }
 
+//------------------------------------------------------------------------------------------------------------------------------
+      
       $crit= Criteria::newInstance()
         ->setFetchMode(Fetchmode::join('Author'))
         ->setFetchMode(Fetchmode::join('Recipient'))
@@ -49,6 +51,8 @@
         Console::writeLine('Author of ==> '.xp::stringOf($Message->getRecipient()->getMmessageAuthorList()));
         Console::writeLine('=====================================================================================');
       }
+
+//------------------------------------------------------------------------------------------------------------------------------
 
       $crit= Criteria::newInstance()
         ->setFetchMode(Fetchmode::join('Author'))
@@ -68,7 +72,45 @@
         Console::writeLine('=====================================================================================');
       }
 
-      $it->next();
+//------------------------------------------------------------------------------------------------------------------------------
+
+      try {
+        $it->next();
+      } catch (NoSuchElementException $e) {
+        Console::writeLine('NoSuchElementException catched -> OK');
+        Console::writeLine('=====================================================================================');
+      }
+
+//------------------------------------------------------------------------------------------------------------------------------
+      
+      $crit= Criteria::newInstance()
+        ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
+        ->setProjection(Projections::ProjectionList()
+          ->add(Mmessage::column('Recipient->name'))
+          ->add(Mmessage::column('Recipient->MmessageAuthor->author_id'))
+        )
+      ;
+      
+      foreach (Mmessage::getPeer()->doSelect($crit) as $Message) {
+        Console::writeLine(xp::stringOf($Message));
+      }
+      Console::writeLine('=====================================================================================');
+
+//------------------------------------------------------------------------------------------------------------------------------
+      
+      $crit= Criteria::newInstance()
+        ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
+        ->setProjection(Projections::count(Mmessage::column('Recipient->name')))
+        ->addGroupBy(Mmessage::column('Recipient->name'))
+        ->addOrderBy(Projections::count(Mmessage::column('Recipient->name')));
+      ;
+      $it= Mmessage::getPeer()->iteratorFor($crit);
+      
+      while ($it->hasNext()) {
+        $Message= $it->next();
+        Console::writeLine(xp::stringOf($Message));
+      }
+
     }
 
     /**

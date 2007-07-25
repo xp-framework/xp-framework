@@ -155,9 +155,9 @@
      * @return  rdbms.Criteria this object
      */
     public function setProjection(SQLRenderable $projection= NULL, $alias= '') {
-      $this->projection= (is_null($projection) || ($projection instanceof Projection))
+      $this->projection= (is_null($projection) || ($projection instanceof ProjectionList))
         ? $projection
-        : $projection= Projections::property($projection, $alias)
+        : $projection= Projections::ProjectionList()->add($projection, $alias)
       ;
       return $this;
     }
@@ -208,42 +208,65 @@
      */
     public function toSQL(DBConnection $conn, Peer $peer) {
       $sql= '';
-      
+
       // Process conditions
-      if (!empty($this->conditions)) {
-        $sql.= ' where ';
-        foreach ($this->conditions as $condition) $sql.= $condition->asSql($conn, $peer).' and ';
-        $sql= substr($sql, 0, -4);
+      if ($this->isJoin()) {
+        $sql= (empty($this->conditions) ? '1 = 1' : $this->conditions($conn, $peer));
+      } else {
+        $sql= (empty($this->conditions) ? '' : ' where '.$this->conditions($conn, $peer));
       }
-      
+
       // Process group by
-      if (!empty($this->groupings) and !$this->isJoin()) {
-        $sql= rtrim($sql, ' ').' group by ';
+      if (!empty($this->groupings)) {
+        $sql.= ' group by ';
         foreach ($this->groupings as $grouping) $sql.= $this->fragment($conn, $peer->types, $grouping).', ';
         $sql= substr($sql, 0, -2);
       }
 
       // Process order by
-      if (!empty($this->orderings) and !$this->isJoin()) {
-        $sql= rtrim($sql, ' ').' order by ';
+      if (!empty($this->orderings)) {
+        $sql.= ' order by ';
         foreach ($this->orderings as $order) $sql.= $this->fragment($conn, $peer->types, $order[0]).' '.$order[1].', ';
         $sql= substr($sql, 0, -2);
       }
 
       return $sql;
     }
-    
+
+    /**
+     * get conditions as string
+     *
+     * @param   rdbms.DBConnection db
+     * @param   rdbms.Peer peer
+     * @return  string
+     */
+    private function conditions(DBConnection $conn, Peer $peer) {
+      $cond= '';
+      foreach ($this->conditions as $condition) $cond.= $condition->asSql($conn, $peer).' and ';
+      return substr($cond, 0, -5);
+    }
+
     /**
      * get the projection part of a select statement
      *
-     * @param   &rdbms.DBConnection db
-     * @param   &rdbms.Peer peer
+     * @param   rdbms.DBConnection db
+     * @param   rdbms.Peer peer
+     * @param   rdbms.join.Joinprocessor jp optional
      * @return  string[]
      * @throws  rdbms.SQLStateException
      */
-    public function projections(DBConnection $conn, Peer $peer) {
-      if (!$this->isProjection()) return array_keys($peer->types);
-      return $this->projection->asSql($conn);
+    public function projections(DBConnection $conn, Peer $peer, $jp= NULL) {
+      $result= '';
+      if ($this->isProjection()) {
+        if ($this->isJoin()) $jp->enterJoinContext();
+        $result= $this->projection->asSql($conn);
+        if ($this->isJoin()) $jp->leaveJoinContext();
+      } else if ($this->isJoin()) {
+        $result= $jp->getAttributeString();
+      } else {
+        $result= array_keys($peer->types);
+      }
+      return $result;
     }
 
     /**
@@ -281,21 +304,16 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
+     * @param   rdbms.join.Joinprocessor jp optional
      * @return  rdbms.ResultSet
      */
     public function getSelectQueryString(DBConnection $conn, Peer $peer, $jp= NULL) {
-      $isJoin= $this->isJoin();
-      $restriction= $this->toSQL($conn, $peer);
-      if ($isJoin) {
-        $restriction= (strlen($restriction) > 0) ? ' ('.substr($rest, 7).')' : '1 = 1';
-        $jp->setFetchmodes($this->fetchmode);
-      }
-      
+      if ($this->isJoin()) $jp->setFetchmodes($this->fetchmode);
       return $conn->prepare(
         'select %c from %c %c',
-        (($isJoin) ? $jp->getAttributeString() : $this->projections($conn, $peer)),
-        (($isJoin) ? $jp->getJoinString() : $peer->table),
-        $restriction
+        $this->projections($conn, $peer, $jp),
+        (($this->isJoin()) ? $jp->getJoinString() : $peer->table),
+        $this->toSQL($conn, $peer, $jp)
       );
     }
     
@@ -308,7 +326,7 @@
      * @return  string
      */
     private function fragment($conn, $types, $col) {
-      if ($col instanceof SQLFragment) {
+      if ($col instanceof SQLRenderAble) {
         return $col->asSQL($conn);
       } else {
         if (!isset($types[$col])) throw(new SQLStateException('Field "'.$col.'" unknown'));

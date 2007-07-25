@@ -238,23 +238,8 @@
      */
     public function doSelect($criteria, $max= 0) {
       $r= array();
-
-      if ($criteria->isJoin()) {
-        $jp= new JoinProcessor($this);
-        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
-        $it= $jp->getJoinIterator($q);
-        for ($i= 1; $it->hasNext(); $i++) {
-          if ($max && $i > $max) break;
-          $r[]= $it->next();
-        }
-        return $r;
-      }
-
-      $builder=  $criteria->isProjection() ? 'newRecord'   : 'objectFor';
-      $q= $criteria->executeSelect($this->getConnection(), $this);
-      for ($i= 1; $record= $q->next(); $i++) {
-        if ($max && $i > $max) break;
-        $r[]= $this->{$builder}($record);
+      for ($i= 1, $it= $this->iteratorFor($criteria); $it->hasNext() && (!$max || $i <= $max); $i++) {
+        $r[]= $it->next();
       }
       return $r;
     }
@@ -267,17 +252,13 @@
      * @see     xp://lang.XPIterator
      */
     public function iteratorFor($criteria) {
+      $jp= $criteria->isJoin() ? new JoinProcessor($this) : NULL;
+      $rs= $criteria->executeSelect($this->getConnection(), $this, $jp);
 
-      if ($criteria->isJoin()) {
-        $jp= new JoinProcessor($this);
-        $q= $criteria->executeSelect($this->getConnection(), $this, $jp);
-        return $jp->getJoinIterator($q);
-      }
-
-      return new ResultIterator(
-        $criteria->executeSelect($this->getConnection(), $this), 
-        ($criteria->isprojection() ? 'Record' : $this->identifier)
-      );
+      // if this is a projection, it does no matter if it's a join or not
+      if ($criteria->isProjection()) return new ResultIterator($rs, 'Record');
+      if ($criteria->isJoin())       return $jp->getJoinIterator($rs);
+      return new ResultIterator($rs, $this->identifier);
     }
 
     /**

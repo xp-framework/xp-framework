@@ -58,7 +58,7 @@
     public function next() {
       if (!$this->record) throw new NoSuchElementException('No more elements');
       do {
-        $this->jp->joinpart->extract($this, $this->record, 'start');
+        $this->jp->joinpart->extract($this, $this->record, JoinProcessor::FIRST);
         if (!is_null($this->resultObj)) {
           $r= $this->resultObj;
           $this->resultObj= NULL;

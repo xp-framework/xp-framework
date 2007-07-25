@@ -19,8 +19,7 @@
   class SimpleProjection extends Object implements Projection {
     protected
       $field= '',
-      $command= '',
-      $alias= '';
+      $command= '';
 
     /**
      * constructor
@@ -29,10 +28,9 @@
      * @param  string command from Projection::constlist
      * @param  string alias optional
      */
-    public function __construct(SQLRenderable $field, $command, $alias= '') {
+    public function __construct(SQLRenderable $field, $command) {
       $this->field= $field;
       $this->command= $command;
-      $this->alias= $alias;
     }
 
     /**
@@ -44,9 +42,7 @@
      * @throws  rdbms.SQLStateException
      */
     public function asSql(DBConnection $conn) {
-      return (0 == strlen($this->alias))
-      ? $conn->prepare($this->command, $this->field)
-      : $conn->prepare($this->command.' as %l', $this->field, $this->alias);
+      return $conn->prepare($this->command, $this->field);
     }
   }
 ?>

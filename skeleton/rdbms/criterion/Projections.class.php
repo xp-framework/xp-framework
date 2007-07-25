@@ -42,9 +42,9 @@
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::min(Person::column('age'))));
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age'))));
    *   
-   *   // every projection, except the ProjectionList, can be aliased in the second parameter
+   *   // ProjectionList::add and Criteria::setprojection, can handle a second parameter as an ailias
    *   // sql: select max(age) as `oldest` from person
-   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age'), 'oldest')));
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age')), 'oldest'));
    * ?>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest
@@ -58,7 +58,7 @@
     /**
      * manufactor a new ProjectionList
      *
-     * @param    properties
+     * @param   array<rdbms.SQLRenderable> properties
      * @return  rdbms.criterion.ProjectionList
      */
     public static function projectionList($properties= array()) {
@@ -71,18 +71,16 @@
      * manufactor a new CountProjection
      *
      * @param   string fieldname optional default is *
-     * @param   string alias optional
      * @return  rdbms.criterion.CountProjection
      */
-    public static function count($field= '*', $alias= '') {
-      return new CountProjection($field, $alias);
+    public static function count($field= '*') {
+      return new CountProjection($field);
     }
     
     /**
      * manufactor a new PropertyProjection
      *
      * @param  string fieldname
-     * @param  string alias optional
      * @return  rdbms.criterion.PropertyProjection
      */
     public static function property($field, $alias= '') {
@@ -93,45 +91,40 @@
      * manufactor a new AverageProjection
      *
      * @param  string fieldname
-     * @param  string alias optional
      * @return  rdbms.criterion.AverageProjection
      */
-    public static function average($field, $alias= '') {
-      return new SimpleProjection($field, Projection::AVG, $alias);
+    public static function average($field) {
+      return new SimpleProjection($field, Projection::AVG);
     }
     
     /**
      * manufactor a new SumProjection
      *
      * @param  string fieldname
-     * @param  string alias optional
      * @return  rdbms.criterion.SumProjection
      */
-    public static function sum($field, $alias= '') {
-      return new SimpleProjection($field, Projection::SUM, $alias);
+    public static function sum($field) {
+      return new SimpleProjection($field, Projection::SUM);
     }
     
     /**
      * manufactor a new MaxProjection
      *
      * @param  string fieldname
-     * @param  string alias optional
      * @return  rdbms.criterion.MaxProjection
      */
-    public static function max($field, $alias= '') {
-      return new SimpleProjection($field, Projection::MAX, $alias);
+    public static function max($field) {
+      return new SimpleProjection($field, Projection::MAX);
     }
     
     /**
      * manufactor a new MinProjection
      *
      * @param  string fieldname
-     * @param  string alias optional
      * @return  rdbms.criterion.MinProjection
      */
-    public static function min($field, $alias= '') {
-      return new SimpleProjection($field, Projection::MIN, $alias);
+    public static function min($field) {
+      return new SimpleProjection($field, Projection::MIN);
     }
-    
   }
 ?>
