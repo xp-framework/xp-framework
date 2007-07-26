@@ -48,7 +48,9 @@ Dependencies
 
 Related documents
 -----------------
-
+- http://xp-framework.net/rfc/contrib/rfc0134.diff
+  Patch implementing this RFC
+  
 Comments
 --------
 
