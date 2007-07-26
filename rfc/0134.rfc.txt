@@ -1,0 +1,55 @@
+RFC 0134: Support for DOM API
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Thu Jul 26 14:36:21 CEST 2007
+@status: draft
+@category: xml
+
+Scope of Change
+---------------
+XML related and XSL related classes include support to construct a
+DOM tree.
+
+Rationale
+---------
+PHPs way to handle XML documents is the DOM API. While the XP Framework
+encapsulates XML access, XML documents must be converted to something PHP
+understands to process it.
+
+At the moment, the XML in memory is converted into an XML string to be
+passed to PHP. PHP then parses the XML into a DOM document and processes
+it.
+
+These two steps can be folded into one, when XP supports creating a
+DOMDocument object from its xml.Tree and xml.Node objects. This saves
+both space and processing time.
+
+Functionality
+-------------
+xml.Tree can be converted into a DOMDocument with its getDomTree() method
+that internally uses xml.Node::getDomNode() and other interacting classes
+getDomNode() method.
+
+xml.DomXSLProcessor can take a DOMDocument both as XSL template document
+or XML document and perform its translation on that.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+A speed increase is expected.
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
