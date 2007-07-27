@@ -225,15 +225,16 @@
      */
     public function getSource($indent= INDENT_WRAPPED, $inset= '') {
       $xml= $inset.'<'.$this->name;
+      
       switch (gettype($this->content)) {
         case 'string': 
           $content= htmlspecialchars($this->content); 
           break;
 
         case 'object':
-          if (is('PCData', $this->content)) {
+          if ($this->content instanceof PCData) {
             $content= $this->content->pcdata;
-          } else if (is('CData', $this->content)) {
+          } else if ($this->content instanceof CData) {
             $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
           }
           break;
