@@ -7,8 +7,9 @@
   uses(
     'util.cmd.Command',
     'xml.Tree',
-    'xml.DomXSLProcessor',
+    'xml.DomBackedTree',
     'xml.Node',
+    'xml.DomXSLProcessor',
     'util.profiling.Timer'
   );
 
@@ -50,6 +51,38 @@
     public function domDocument($processor, $tree) {
       $processor->setXMLDocument($tree->getDomTree());
     }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @return  xml.Tree tree
+     */
+    public function xpTree() {
+      $tree= new Tree();
+      $nodes= $tree->addChild(new Node('nodes'));
+      for ($i= 0; $i < 10000; $i++) {
+        $nodes->addChild(new Node('node', NULL, array(
+          'id' => $i
+        )));
+      }
+      return $tree;
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @return  xml.Tree tree
+     */
+    public function domTree() {
+      $tree= new DomBackedTree();
+      $nodes= $tree->addChild(new DomBackedNode('nodes'));
+      for ($i= 0; $i < 10000; $i++) {
+        $nodes->addChild(new DomBackedNode('node', NULL, array(
+          'id' => $i
+        )));
+      }
+      return $tree;
+    }
     
     /**
      * (Insert method's description here)
@@ -62,11 +95,21 @@
     }
 
     /**
+     * (Insert method's description here)
+     *
+     * @param   string m
+     */
+    #[@arg]
+    public function setImplementation($i) {
+      $this->tree= $this->getClass()->getMethod($i);
+    }
+
+    /**
      * Main runner method
      *
      */
     public function run() {
-      $this->out->writeLine('---> ', $this->method);
+      $this->out->writeLine('---> ', $this->method, ' via ', $this->tree);
       $t= new Timer();
 
       $processor= new DomXSLProcessor();
@@ -74,13 +117,7 @@
       
       // Compose tree
       with ($t->start()); {
-        $tree= new Tree();
-        $nodes= $tree->addChild(new Node('nodes'));
-        for ($i= 0; $i < 10000; $i++) {
-          $nodes->addChild(new Node('node', NULL, array(
-            'id' => $i
-          )));
-        }
+        $tree= $this->tree->invoke($this);
         $t->stop();
         $this->out->writeLinef('    >> Create tree: %.3f seconds', $t->elapsedTime());
       }
