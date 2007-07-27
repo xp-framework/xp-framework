@@ -1,0 +1,21 @@
+xml.Node / xml.Tree implementation performance tests
+========================================================================
+$Id$
+
+
+The current aproach
+-------------------
+$ xpcli Performance -m treeSource -i xpTree
+$ xpcli Performance -m noIndentTreeSource -i xpTree
+
+
+RFC #0134 - Alex' patch
+-----------------------
+$ xpcli Performance -m domDocument -i xpTree
+
+Dom-Backend Node/Tree
+---------------------
+$ xpcli Performance -m treeSource -i domTree
+$ xpcli Performance -m domDocument -i domTree
+
+<EOF>
