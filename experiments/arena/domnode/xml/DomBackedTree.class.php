@@ -64,7 +64,8 @@
      */   
     public function addChild(DomBackedNode $child) {
       try {
-        $child->backing= $this->root->appendChild(new DOMElement($child->transient[0], (string)$child->transient[1]));
+        $child->backing= $this->root->appendChild(new DOMElement($child->transient[0]));
+        $child->backing->appendChild(new DOMText($child->transient[1]));
         foreach ($child->transient[2] as $key => $val) {
           $child->backing->setAttribute($key, $val);
         }

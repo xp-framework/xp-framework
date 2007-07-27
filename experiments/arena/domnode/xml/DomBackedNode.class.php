@@ -178,7 +178,8 @@
      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
      */
     public function addChild(DomBackedNode $child) {
-      $child->backing= $this->backing->appendChild(new DOMElement($child->transient[0], (string)$child->transient[1]));
+      $child->backing= $this->backing->appendChild(new DOMElement($child->transient[0]));
+      $child->backing->appendChild(new DOMText($child->transient[1]));
       foreach ($child->transient[2] as $key => $val) {
         $child->backing->setAttribute($key, $val);
       }
