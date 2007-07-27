@@ -100,6 +100,11 @@
       }
       
       $this->out->writeLine('---> Done, output= ', $processor->output());
+      $this->out->writeLinef(
+        '===> Memory usage: %.3f / peak: %.3f', 
+        memory_get_usage() / 1024,
+        memory_get_peak_usage() / 1024
+      );
     }
   }
 ?>
