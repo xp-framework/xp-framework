@@ -10,7 +10,8 @@
   );
 
   /**
-   * Profile enums
+   * Profile enums. See http://xp-framework.info/xml/xp.en_US/news/view?207
+   * for details.
    *
    * @purpose  Profiling
    */
