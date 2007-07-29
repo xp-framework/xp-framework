@@ -5,32 +5,47 @@
  */
   uses(
     'util.cmd.Command',
-    'strategies.PublicCallStrategy',
-    'strategies.PrivateCallStrategy',
-    'strategies.ProtectedCallStrategy',
-    'util.profiling.Timer'
+    'util.profiling.Timer',
+    'lang.Enum'
   );
 
   /**
-   * Test method calls
+   * Profile enums
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Profiling
    */
   class Profiler extends Command {
     protected
-      $strategy = NULL,
+      $fixture = NULL,
       $times    = 0;
 
     /**
-     * Set strategy to use (one of public, private, protected)
+     * Set what to profile. There are two possible ways:
+     * <ol>
+     *   <li>ClassName::MemberName - Only this member will be run</li>
+     *   <li>ClassName - All members will be run in order of declaration</li>
+     * </ol>
      *
-     * @param   string name 
+     * @param   string name
      */
     #[@arg(position= 0)]
-    public function setStrategy($name) {
-      $this->strategy= XPClass::forName('strategies.'.ucfirst($name).'CallStrategy')->newInstance();
+    public function setFixture($name) {
+      $r= sscanf($name, '%[^:]::%s', $classname, $member);
+      if (!$classname) {
+        throw new IllegalArgumentException('Could not parse "'.$name.'"');
+      }
+      
+      // Load class and ensure it's a profileable enum
+      $class= XPClass::forName($classname);
+      if (!$class->isEnum() || !$class->isSubclassOf('Profileable')) {
+        throw new IllegalArgumentException($class->toString().' is not a profileable enum');
+      }
+
+      if ($member) {
+        $this->fixture= array(Enum::valueOf($class, $member));
+      } else {
+        $this->fixture= Enum::valuesOf($class);
+      }
     }
 
     /**
@@ -49,16 +64,19 @@
      */
     public function run() {
       $t= new Timer();
-      with ($t->start()); {
-        $this->strategy->run($this->times);
-        $t->stop();
+      
+      foreach ($this->fixture as $member) {
+        with ($t->start()); {
+          $member->run($this->times);
+          $t->stop();
 
-        $this->out->writeLinef(
-          '%s: %.3f seconds for %d calls', 
-          $this->strategy->getClassName(), 
-          $t->elapsedTime(), 
-          $this->times
-        );
+          $this->out->writeLinef(
+            '%s: %.3f seconds for %d calls', 
+            $member->name(), 
+            $t->elapsedTime(), 
+            $this->times
+          );
+        }
       }
     }
   }
