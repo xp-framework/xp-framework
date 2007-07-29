@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Jul 15 21:14:43     2007
-@status: draft
+@status: discussion, ends Mon Jul 30 18:00:00     2007
 @category: <infrastructure>
 
 Scope of Change
@@ -60,7 +60,14 @@ Related documents
 - http://xp-framework.net/rfc/contrib/rfc0133.diff
   Implementing patch
 
+
 Comments
 --------
+- friebe, Sun Jul 29 15:49:00     2007
+  Implementing patch also contains a couple of bugfixes:
+  * Markup from method apidocs not correctly textified 
+  * Duplicate @args-check removal
+  * Positional args numbering off by one in error message
+  * @args selection not respected in error message
 
 <EOF>
