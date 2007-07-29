@@ -36,7 +36,7 @@
      * @throws  lang.IllegalArgumentException in case the enum member does not exist or when the given class is not an enum
      */
     public static function valueOf(XPClass $class, $name) {
-      if (!$class->isSubclassOf('lang.Enum')) {
+      if (!$class->isEnum()) {
         throw new IllegalArgumentException('Argument class must be lang.XPClass<? extends lang.Enum>');
       }
       try {
@@ -54,7 +54,7 @@
      * @throws  lang.IllegalArgumentException in case the given class is not an enum
      */
     public static function valuesOf(XPClass $class) {
-      if (!$class->isSubclassOf('lang.Enum')) {
+      if (!$class->isEnum()) {
         throw new IllegalArgumentException('Argument class must be lang.XPClass<? extends lang.Enum>');
       }
       try {
