@@ -284,7 +284,10 @@ Related documents
 
 - http://xp-framework.info/xml/xp.en_US/news/view?199
   EASC and enums
-  
+
+- http://xp-framework.info/xml/xp.en_US/news/view?207  
+  Enum usecases: Profiling
+
 
 Comments
 --------
