@@ -14,7 +14,7 @@
    *
    * @purpose  Profiling
    */
-  class Profiler extends Command {
+  class Profile extends Command {
     protected
       $fixture = NULL,
       $times    = 0;
