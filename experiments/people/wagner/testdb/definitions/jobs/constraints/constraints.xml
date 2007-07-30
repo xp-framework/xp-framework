@@ -1,0 +1,24 @@
+<document created_at="Mon, 30 Jul 2007 11:49:41 +0200" created_by="ruben">
+  <database database="JOBS">  
+    <table name="department">    
+      <constraint name="chief_of_department">      
+        <reference table="person" role="DepartmentChief">        
+          <key attribute="chief_id" sourceattribute="person_id"/>
+        </reference>
+      </constraint>
+    </table>
+    <table name="job"/>
+    <table name="person">    
+      <constraint name="department_of_person">      
+        <reference table="department" role="PersonDepartment">        
+          <key attribute="department_id" sourceattribute="department_id"/>
+        </reference>
+      </constraint>
+      <constraint name="job_of_person">      
+        <reference table="job" role="PersonJob">        
+          <key attribute="job_id" sourceattribute="job_id"/>
+        </reference>
+      </constraint>
+    </table>
+  </database>
+</document>

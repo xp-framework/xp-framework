@@ -36,11 +36,17 @@ php:
       XSL="-S $(XSLSS)"; \
     fi; \
 	for j in $(DIRS); do \
-		for i in `find definitions/$$j/tables -name *.xml`; do \
-			echo $$i; \
-			$(XPCLI) ${CMD} -c definitions/$$j/config.ini -X $$i -O $(OUTPUT) $$XSL; \
-	    done; \
-	done;
+      if [ $$j = jobs ]; then \
+          TARGETDIR=$(HOME)/Work/xp.public/trunk/ports/classes/; \
+          echo $$TARGETDIR; \
+      else \
+          TARGETDIR=$(OUTPUT); \
+      fi; \
+      for i in `find definitions/$$j/tables -name *.xml`; do \
+          echo $$i; \
+          $(XPCLI) ${CMD} -c definitions/$$j/config.ini -X $$i -O $$TARGETDIR $$XSL; \
+      done; \
+    done;
 
 altgod:
 	-for i in $(DIRS); do \
