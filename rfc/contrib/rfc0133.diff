@@ -116,6 +116,18 @@ Index: Runner.class.php
        }
  
        // Usage
+@@ -245,9 +307,9 @@
+             } else {
+               sscanf($def, '[%d..%d]', $begin, $end);
+               isset($begin) || $begin= 0;
+-              isset($end) || $end= $classparams->count;
++              isset($end) || $end= $classparams->count- 1;
+             
+-              while ($begin < $end) {
++              while ($begin <= $end) {
+                 $pass[]= $classparams->value($begin++);
+               }
+             }
 @@ -255,13 +317,13 @@
            try {
              $method->invoke($instance, array($pass));
