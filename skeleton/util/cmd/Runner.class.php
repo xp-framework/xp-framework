@@ -56,7 +56,7 @@
         '#<pre>#', '#</pre>#', '#<li>#',
       ), array(
         $line, $line, '* ',
-      ), $markup));
+      ), trim($markup)));
     }
     
     /**
@@ -72,12 +72,13 @@
         self::$err->writeLine(str_repeat('=', 72));
       }
 
+      $extra= $details= $positional= array();
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('arg')) continue;
 
         $arg= $method->getAnnotation('arg');
         $name= strtolower(preg_replace('/^set/', '', $method->getName()));;
-        $comment= trim($method->getComment());
+        $comment= self::textOf($method->getComment());
 
         if (0 == $method->numArguments()) {
           $optional= TRUE;
@@ -123,8 +124,39 @@
      * @return  int
      */
     public static function main(array $args) {
-      $params= new ParamString($args);
-      
+      return create(new self())->run(new ParamString($args));
+    }
+    
+    /**
+     * Reassigns standard output stream
+     *
+     * @param   io.streams.OutputStream out
+     * @return  io.streams.OutputStream the given output stream
+     */
+    public function setOut(OutputStream $out) {
+      self::$out= new StringWriter($out);
+      return $out;
+    }
+
+    /**
+     * Reassigns standard error stream
+     *
+     * @param   io.streams.OutputStream error
+     * @return  io.streams.OutputStream the given output stream
+     */
+    public function setErr(OutputStream $err) {
+      self::$err= new StringWriter($err);
+      return $err;
+    }
+    
+    /**
+     * Main method
+     *
+     * @param   util.cmd.ParamString params
+     * @return  int
+     */
+    public function run(ParamString $params) {
+
       // No arguments given - show our own usage
       if ($params->count <= 1) {
         self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
@@ -178,12 +210,42 @@
       if (!$classname) {
         self::$err->writeLine('*** Missing classname');
         return 1;
+      } else if (strstr($classname, xp::CLASS_FILE_EXT)) {
+        $file= new File($classname);
+        if (!$file->exists()) {
+          self::$err->writeLine('*** Cannot load class from non-existant file ', $classname);
+          return 1;
+        }
+        $uri= $file->getURI();
+        $path= dirname($uri);
+        $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
+        $class= NULL;
+        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
+          if (isset($paths[$path])) {
+            $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
+            break;
+          }
+
+          $path= substr($path, 0, $pos); 
+        }
+
+        if (!$class) {
+          self::$err->writeLine('*** Cannot load class from ', $file);
+          return 1;
+        }
+      } else {
+        try {
+          $class= XPClass::forName($classname);
+        } catch (ClassNotFoundException $e) {
+          self::$err->writeLine('*** ', $e->getMessage());
+          return 1;
+        }
       }
-      try {
-        $class= XPClass::forName($classname);
-      } catch (ClassNotFoundException $e) {
-        self::$err->writeLine('*** ', $e->getMessage());
-        return 1;
+      
+      // Check whether class is runnable
+      if (!$class->isSubclassOf('lang.Runnable')) {
+          self::$err->writeLine('*** ', $class->getName(), ' is not runnable');
+          return 1;
       }
 
       // Usage
@@ -239,15 +301,15 @@
           }
         } else if ($method->hasAnnotation('args')) { // Pass all arguments
           $pass= array();
-          foreach (explode(',', $method->getAnnotation('args', 'select')) as $def) {
+          foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {
             if (is_numeric($def) || '-' == $def{0}) {
-              $pass[]= $p->value($def);
+              $pass[]= $classparams->value((int)$def);
             } else {
               sscanf($def, '[%d..%d]', $begin, $end);
               isset($begin) || $begin= 0;
-              isset($end) || $end= $classparams->count;
+              isset($end) || $end= $classparams->count- 1;
             
-              while ($begin < $end) {
+              while ($begin <= $end) {
                 $pass[]= $classparams->value($begin++);
               }
             }
@@ -255,13 +317,13 @@
           try {
             $method->invoke($instance, array($pass));
           } catch (Throwable $e) {
-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+            self::$err->writeLine('*** Error for arguments '.$begin.'..'.$end.': '.$e->getMessage());
             return 2;
           }
         } else if ($method->hasAnnotation('arg')) {  // Pass arguments
           $arg= $method->getAnnotation('arg');
           if (isset($arg['position'])) {
-            $name= '#'.$arg['position'];
+            $name= '#'.($arg['position']+ 1);
             $select= intval($arg['position']);
             $short= NULL;
           } else if (isset($arg['name'])) {
@@ -289,13 +351,6 @@
 
           try {
             $method->invoke($instance, $args);
-          } catch (Throwable $e) {
-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
-            return 2;
-          }
-        } else if ($method->hasAnnotation('args')) { // Pass all arguments
-          try {
-            $method->invoke($instance, array($classparams->list));
           } catch (Throwable $e) {
             self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
             return 2;
