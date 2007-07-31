@@ -31,6 +31,7 @@
    * 
    * </pre>
    *
+   * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
    * @see      xp://util.cmd.Command
    * @purpose  Runner
    */
