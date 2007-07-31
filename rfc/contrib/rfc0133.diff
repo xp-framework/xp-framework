@@ -116,7 +116,15 @@ Index: Runner.class.php
        }
  
        // Usage
-@@ -245,9 +307,9 @@
+@@ -239,15 +301,15 @@
+           }
+         } else if ($method->hasAnnotation('args')) { // Pass all arguments
+           $pass= array();
+-          foreach (explode(',', $method->getAnnotation('args', 'select')) as $def) {
++          foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {
+             if (is_numeric($def) || '-' == $def{0}) {
+-              $pass[]= $p->value($def);
++              $pass[]= $classparams->value((int)$def);
              } else {
                sscanf($def, '[%d..%d]', $begin, $end);
                isset($begin) || $begin= 0;
