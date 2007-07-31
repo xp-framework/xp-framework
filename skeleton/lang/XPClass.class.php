@@ -289,6 +289,15 @@
     public function isInterface() {
       return $this->_reflect->isInterface();
     }
+
+    /**
+     * Determines if this XPClass object represents an interface type.
+     *
+     * @return  bool
+     */
+    public function isEnum() {
+      return $this->_reflect->isSubclassOf('Enum');
+    }
     
     /**
      * Retrieve interfaces this class implements
@@ -312,6 +321,24 @@
     public function getComment() {
       if (!($details= self::detailsForClass($this->name))) return NULL;
       return $details['class'][DETAIL_COMMENT];
+    }
+
+    /**
+     * Retrieves this class' modifiers
+     *
+     * @see     xp://lang.reflect.Modifiers
+     * @return  int
+     */
+    public function getModifiers() {
+      $r= MODIFIER_PUBLIC;
+
+      // Map PHP reflection modifiers to generic form
+      $m= $this->_reflect->getModifiers();
+      $m & ReflectionClass::IS_EXPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ReflectionClass::IS_IMPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ReflectionClass::IS_FINAL && $r |= MODIFIER_FINAL;
+      
+      return $r;
     }
 
     /**
