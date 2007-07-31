@@ -561,6 +561,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
 	}\n\
 	XP:1:0{\n\
+		package_statement:"package ([^ ]+)":::Keyword::\n\
 		keywords:"<(isset|const|with|not|enum|instanceof|namespace|package|import|interface|package|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|throws|define|array|var|global|list|function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|const|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword::\n\
 		classkeywords:"<(public|private|protected|native|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|this)>":::Text Escape::\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_\\r/\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg::\n\
@@ -569,13 +570,25 @@ nedit.highlightPatterns: C:1:0{\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment::\n\
 		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
-		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param)":::Plain:doccomment:\n\
+		doccommenttag:"@(throws|see|return|param)":::Plain:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2::\n\
 		inlinecomment:"//	":"$"::Comment::\n\
 		number:"<-?[0-9]+>":::Preprocessor1::\n\
 		double quote strings:"""":""""::String::\n\
 		dq string esc chars:"\\\\(.|\\n)":::Plain:double quote strings:\n\
 		sq string esc chars:"\\\\(.|\\n)":::String:single quote strings:\n\
+		package_name:"\\1":""::Preprocessor:package_statement:C\n\
+	}\n\
+	CompactXML:1:0{\n\
+		SingleNode:"[a-zA-Z:.\\[\\]][a-zA-Z]+\\s*;":::Text Escape::D\n\
+		UnAttributedNode:"[a-zA-Z:.\\[\\]]+\\s*\\{":::Text Escape::D\n\
+		TextNode:"[a-zA-Z:.\\[\\]][a-zA-Z]+\\s*\\<":"\\>;"::Text Escape::D\n\
+		Attributes:"[a-zA-Z]+\\s*=\\s*((""[^""]+"")|([^ ,\\)]+))":::String2:Node:D\n\
+		Strings:"\\1":""::String:Attributes:DC\n\
+		Comment:"#([^\\r\\n]+)":::Comment::\n\
+		Node:"[a-zA-Z:.\\[\\]]+\\s*\\(":"\\);|\\)\\s*\\{"::Text Escape::D\n\
+		Text:"[^>]+":::Text Arg:TextNode:D\n\
+		Declaration:"(import) (""[^""]+"");":::Keyword::D\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
@@ -609,7 +622,8 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	XML:.xml .xsl .dtd:"\\<(?i\\?xml|!doctype)"::None:::"<>/=""'()+*?|":\n\
 	Ini-Files:.ini:::None::::\n\
 	Unified diff:.diff:"Index:"::::::\n\
-	ChangeLog:ChangeLog:::::::
+	ChangeLog:ChangeLog:::::::\n\
+	CompactXML:.cml:::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
