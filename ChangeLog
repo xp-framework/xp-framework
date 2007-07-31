@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0133 - Add support for filenames as argument for XPCLI
+  (friebe)
 - Fix deserialization of objects of XP types
   (kiesel)
 
