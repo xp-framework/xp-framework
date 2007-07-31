@@ -5,6 +5,7 @@
  */
 
   uses(
+    'util.cmd.ParamString',
     'io.streams.StringWriter', 
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
