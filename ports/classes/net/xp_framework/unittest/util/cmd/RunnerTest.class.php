@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'util.cmd.Command',
     'util.cmd.Runner',
     'io.streams.MemoryOutputStream'
   );
