@@ -19,11 +19,10 @@
   class SoapClientTest extends TestCase {
   
     /**
-     * Ensures an IllegalArgumentException is thrown in case we have 
-     * multiple output arguments
+     * Test a array is returned when multiple returns
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test]
     public function testMultipleOutputArguments() {
       $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
@@ -47,9 +46,8 @@
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
       $client->transport= $transport;
-      $client->invoke('irrelevant');
+      $this->assertEquals(array(NULL, NULL), $client->invoke('irrelevant'));
     }
-
   
     /**
      * Ensures no exception is thrown in case we have 
