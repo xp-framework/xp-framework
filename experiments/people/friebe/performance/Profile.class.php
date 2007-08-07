@@ -72,10 +72,11 @@
           $t->stop();
 
           $this->out->writeLinef(
-            '%s: %.3f seconds for %d calls', 
+            '%s: %.3f seconds for %d calls (%.0f / second)', 
             $member->name(), 
             $t->elapsedTime(), 
-            $this->times
+            $this->times,
+            $this->times * (1/ $t->elapsedTime())
           );
         }
       }
