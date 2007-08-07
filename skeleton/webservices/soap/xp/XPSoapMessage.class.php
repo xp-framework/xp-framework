@@ -364,10 +364,25 @@
       
       $results= array();
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
-        $results[$names ? array_pop(explode(':', $node->children[$i]->name)) : $i]= $this->unmarshall(
-          $node->children[$i], 
-          $context
-        );
+        $key= $i;
+        if ($names) {
+          $key= substr($node->children[$i]->name, intval(strpos($node->children[$i]->name, ':')));
+        }
+        // More than one result, so store it in array
+        if (isset($results[$key])) {
+          // 0 isn't allowed as node-name, so we only check for [0] here
+          if (!isset($results[$key][0])) $results[$key]= array($results[$key]);
+
+          $results[$key][]= $this->unmarshall(
+            $node->children[$i], 
+            $context
+          );
+        } else {
+          $results[$key]= $this->unmarshall(
+            $node->children[$i], 
+            $context
+          );
+        }
       }
       return $results;
     }
