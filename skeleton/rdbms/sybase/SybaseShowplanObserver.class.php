@@ -15,7 +15,7 @@
    */
   class SybaseShowplanObserver extends Object implements DBObserver {
     protected
-      $messages     = array();
+      $messages     = array(),
       $queries      = array();
     
     protected static
