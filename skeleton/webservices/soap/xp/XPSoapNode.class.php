@@ -151,7 +151,7 @@
       }
       
       if (is('Date', $value)) {       // Date
-        $value= new SOAPDateTime($value->_utime);
+        $value= new SOAPDateTime($value->getTime());
         // Fallthrough intended
       }
       
