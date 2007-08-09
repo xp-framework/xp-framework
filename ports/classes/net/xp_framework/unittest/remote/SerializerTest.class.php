@@ -376,6 +376,8 @@
     public function bestMapping() {
       $fooClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.FooClass', 'lang.Object');
       $barClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BarClass', 'FooClass');
+      $bazClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazClass', 'BarClass');
+      $bazookaClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazookaClass', 'BazClass');
       
       // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
       $this->serializer->mapping('FOO', newinstance('remote.protocol.SerializerMapping', array(), '{
@@ -385,6 +387,7 @@
       }'));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new BarClass()));
+      $this->assertEquals('FOO:', $this->serializer->representationOf(new BazClass()));
       
       // Add more concrete mapping for BAR. Foo must still be serialized with FOO, but the BarClass-object
       // has a better matching mapping.
@@ -395,6 +398,8 @@
       }'));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
       $this->assertEquals('BAR:', $this->serializer->representationOf(new BarClass()));
+      $this->assertEquals('BAR:', $this->serializer->representationOf(new BazClass()));
+      $this->assertEquals('BAR:', $this->serializer->representationOf(new BazookaClass()));
     }
   }
 ?>
