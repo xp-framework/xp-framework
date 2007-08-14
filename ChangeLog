@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Fix remote.protocol.Serializer bug in best mapping finding
+  algorithm
+  (Frank Kleine, kiesel)
 - Implemented RFC #0132 - Enum support
   (friebe)
 - Implemented RFC #0133 - Add support for filenames as argument for XPCLI
