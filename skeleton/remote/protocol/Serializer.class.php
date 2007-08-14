@@ -128,7 +128,7 @@
      */
     public function mappingFor($var) {
       if (!($var instanceof Generic)) return FALSE;  // Safeguard
-      
+
       // Check the mapping-cache for an entry for this object's class
       if (isset($this->_classMapping[$var->getClassName()])) {
         return $this->_classMapping[$var->getClassName()];
@@ -140,13 +140,13 @@
       foreach (array_keys($this->mappings) as $token) {
         $class= $this->mappings[$token]->handledClass();
         if (!is($class->getName(), $var)) continue;
-
-        $distance= 0;
+        
+        $distance= 0; $objectClass= $var->getClass();
         do {
-
+        
           // Check for direct match
-          if ($class->getName() != $var->getClassName()) $distance++;
-        } while (0 < $distance && NULL !== ($class= $class->getParentclass()));
+          if ($class->getName() != $objectClass->getName()) $distance++;
+        } while (0 < $distance && NULL !== ($objectClass= $objectClass->getParentClass()));
 
         // Register distance to object's class in cinfo
         $cinfo[$distance]= $this->mappings[$token];
@@ -160,8 +160,6 @@
       ksort($cinfo, SORT_NUMERIC);
       
       // First class is best class
-      $handlerClass= $cinfo[key($cinfo)];
-
       // Remember this, so we can take shortcut next time
       $this->_classMapping[$var->getClassName()]= $cinfo[key($cinfo)];
       return $this->_classMapping[$var->getClassName()];
