@@ -76,6 +76,9 @@ Prints accounts and people they belong to:
 * By date
   $ xpcli net.xp_forge.examples.SelectAccount @2007-07-05
 
+* By SQL statement
+  $ xpcli net.xp_forge.examples.SelectAccount '$select object(a) from account a'
+
 
 Person statistics
 -----------------
