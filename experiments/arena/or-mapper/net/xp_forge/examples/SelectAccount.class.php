@@ -6,6 +6,7 @@
 
   uses(
     'net.xp_forge.examples.AbstractExampleCommand',
+    'rdbms.Statement',
     'rdbms.SQLFunctions'
   );
 
@@ -33,6 +34,8 @@
           SQLFunctions::datediff('day', Account::column('lastchange'), Date::fromString(substr($criteria, 1))),
           0
         ));
+      } else if ('$' == $criteria{0}) {
+        $this->criteria= new Statement(substr($criteria, 1));
       } else if (is_string($criteria)) {
         $this->criteria->add(Account::column('username')->like($criteria));
       }
