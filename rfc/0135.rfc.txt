@@ -1,0 +1,52 @@
+RFC 0135: Default callbacks for XSLT
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Tue Aug 14 21:36:40     2007
+@status: draft
+@category: xml
+
+Scope of Change
+---------------
+Since RFC #0104 xml.DomXSLProcessor supports PHP callbacks from
+within an XSL transformation.
+
+Default callbacks which will be always available will be added
+to provide some basic callbacks.
+
+Rationale
+---------
+Eg. string- and date-based operations and calculations cannot be
+easily handled in XSL code; until now, programmers usually work
+around that problem by appending pre-generated values into the
+XML tree which bloat the data.
+
+Functionality
+-------------
+Some standard functions will be provided by classes in the
+to be introduced xml.xslt package.
+
+The symbolic instance names will be in the "namespace" xp. The
+string handling class registers as "xp.string", the date handling
+class as "xp.date".
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Slightly slower, as two more classes will need to be loaded each
+time DomXSLProcessor is in use.
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
