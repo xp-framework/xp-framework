@@ -84,6 +84,17 @@
     }
     
     /**
+     * Returns the ordinal of this enumeration constant (its position in 
+     * its enum declaration, where the initial constant is assigned an 
+     * ordinal of zero).
+     *
+     * @return  int
+     */
+    public function ordinal() {
+      return $this->ordinal;
+    }
+
+    /**
      * Create a string representation of this enum
      *
      * @return  string
