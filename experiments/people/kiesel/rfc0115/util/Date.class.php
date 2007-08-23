@@ -77,10 +77,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve handle of underlying DateTime object.
      *
-     * @param   
-     * @return  
+     * @return  php.DateTime
      */
     public function getHandle() {
       return clone $this->date;
@@ -328,10 +327,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve timezone object associated with this date
      *
-     * @param   
-     * @return  
+     * @return  util.TimeZone
      */
     public function getTimeZone() {
       return new TimeZone(date_timezone_get($this->date));

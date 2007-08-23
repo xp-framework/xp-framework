@@ -5,11 +5,10 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Represent a timezone transition.
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://util.TimeZone
+   * @purpose  Reflection on timezone transitions
    */
   class TimeZoneTransition extends Object {
     protected
@@ -20,10 +19,10 @@
       $abbr   = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   util.TimeZone tz
+     * @param   util.Date date
      */
     public function __construct(TimeZone $tz, Date $date) {
       $this->tz= $tz;
@@ -31,10 +30,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve the next timezone transition for the timezone tz
+     * after date date.
      *
-     * @param   
-     * @return  
+     * @param   util.TimeZone tz
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
+     * @throws  lang.IllegalArgumentException if timezone has no transitions
      */
     public static function nextTransition(TimeZone $tz, Date $date) {
       $t= new self($tz, $date);
@@ -43,10 +45,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve the previous timezone transition for the timezone tz
+     * before date date.
      *
-     * @param   
-     * @return  
+     * @param   util.TimeZone tz
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
+     * @throws  lang.IllegalArgumentException if timezone has no transitions
      */
     public static function previousTransition(TimeZone $tz, Date $date) {
       $t= new self($tz, $date);
@@ -55,10 +60,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Seek to the next timezone transition
      *
-     * @param   
-     * @return  
+     * @throws  lang.IllegalArgumentException if timezone has no transitions
      */
     public function next() {
       $ts= $this->date->getTime();
@@ -74,10 +78,9 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Seek to the next timezone transition
      *
-     * @param   
-     * @return  
+     * @throws  lang.IllegalArgumentException if timezone has no transitions
      */
     public function previous() {
       $ts= $this->date->getTime();

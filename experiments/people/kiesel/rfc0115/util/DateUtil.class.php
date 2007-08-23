@@ -200,20 +200,25 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Move a date to a given timezone. Does not modify the date's
+     * actual value.
      *
-     * @param   
-     * @return  
+     * @param   util.Date date
+     * @param   util.TimeZone tz
+     * @return  util.Date
      */
     public static function moveToTimezone(Date $date, TimeZone $tz) {
       return $tz->convertDate($date);
     }
     
     /**
-     * (Insert method's description here)
+     * Set a given timezone for the passed date. Really modifies
+     * the date as just the timezone is exchanged, no further
+     * modifications are done.
      *
-     * @param   
-     * @return  
+     * @param   util.Date date
+     * @param   util.TimeZone tz
+     * @return  util.Date
      */
     public static function setTimezone(Date $date, TimeZone $tz) {
       return Date::create(
@@ -228,7 +233,7 @@
     }    
 
     /**
-     * returns a TimeSpan representing the difference 
+     * Returns a TimeSpan representing the difference 
      * between the two given Date objects
      *
      * @param   util.Date d1

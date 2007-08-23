@@ -10,14 +10,17 @@
    * Time zone
    *
    * <code>
-   *   $tz= &TimeZone::getByTimeZone('CST');
+   *   $tz= new TimeZone('Europe/Berlin');
    *   printf("Offset is %s\n", $tz->getOffset());  // -0600
    * </code>
    *
-   * @see      http://greenwichmeanTime.com/info/Timezone.htm
-   * @see      http://www.worldtimezone.com/wtz-names/timezonenames.html
-   * @see      http://scienceworld.wolfram.com/astronomy/TimeZone.html
-   * @purpose  Time zone calculation
+   * @ext       datetime
+   * @see       php://datetime
+   * @see       php://timezones
+   * @see       http://greenwichmeanTime.com/info/Timezone.htm
+   * @see       http://www.worldtimezone.com/wtz-names/timezonenames.html
+   * @see       http://scienceworld.wolfram.com/astronomy/TimeZone.html
+   * @purpose   Time zone calculation
    */
   class TimeZone extends Object {
     protected
@@ -28,6 +31,7 @@
      *
      * @param   string offset
      * @param   string timezone name default ''
+     * @throws  lang.IllegalArgumentException if timezone is unknown
      */
     public function __construct($tz) {
       switch (TRUE) {
@@ -48,15 +52,14 @@
           return;
         }
         
-        default: throw new IllegalArgumentException('Invalid timezone identifier given.');
+        default: throw new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
       }
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve handle of underlying DateTimeZone object
      *
-     * @param   
-     * @return  
+     * @return  php.DateTimeZone
      */
     public function getHandle() {
       return clone $this->tz;
@@ -76,8 +79,7 @@
      *
      * @param   string abbrev
      * @return  util.TimeZone
-     * @throws  lang.IllegalArgumentException if timezone is unknown
-     */    
+     */
     public static function getByName($abbrev) {
       return new self($abbrev);
     }
@@ -112,7 +114,7 @@
      */
     public function hasDst() {
       return (bool)sizeof(timezone_transitions_get($this->tz));
-    }    
+    }
 
     /**
      * Retrieves the timezone offset to GMT. Because a timezone
@@ -155,10 +157,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve date of the next timezone transition at the given
+     * date for this timezone.
      *
-     * @param   
-     * @return  
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
      */
     public function previousTransition(Date $date) {
       return XPClass::forName('util.TimeZoneTransition')
@@ -168,10 +171,11 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve date of the previous timezone transition at the given
+     * date for this timezone.
      *
-     * @param   
-     * @return  
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
      */
     public function nextTransition(Date $date) {
       return XPClass::forName('util.TimeZoneTransition')
