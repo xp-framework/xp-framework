@@ -101,7 +101,7 @@
      * @return  lang.Generic the value associated with the key
      */
     public function get($key) {
-      $h= Primitive::boxed($key)->hashCode();
+      $k= Primitive::boxed($key);
 
       if ($this->__generic) {
         if (!$k instanceof $this->__generic[0]) {
@@ -109,6 +109,7 @@
         }
       }
 
+      $h= $key->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
