@@ -112,6 +112,7 @@
     #[@test]
     public function previousTransition() {
       $transition= $this->fixture->previousTransition(new Date('2007-08-23'));
+      
       $this->assertEquals(TRUE, $transition->isDst());
       $this->assertEquals('CEST', $transition->abbr());
       $this->assertEquals(new Date('2007-03-25 02:00:00 Europe/Berlin'), $transition->getDate());

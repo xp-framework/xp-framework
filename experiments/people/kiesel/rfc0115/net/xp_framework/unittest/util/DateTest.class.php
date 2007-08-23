@@ -168,8 +168,7 @@
     }
     
     /**
-     * Test date parsing in different formats in
-     * pre 1970 epoch.
+     * Test date parsing in different formats in pre 1970 epoch.
      *
      * @see     bug://13
      */    
