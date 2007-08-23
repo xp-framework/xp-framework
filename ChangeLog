@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Added new packaged remote.mappings for specialized Java classes
+  (strobel)
 - Fix remote.protocol.Serializer bug in best mapping finding
   algorithm
   (Frank Kleine, kiesel)
