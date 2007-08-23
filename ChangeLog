@@ -15,6 +15,12 @@ SVN version: ?????
   (friebe)
 - Fix deserialization of objects of XP types
   (kiesel)
+- Fixed util.collections.HashTable::get() if used with generucs
+  (gellweiler, friebe)
+- Fixed "Record is not compatible with DataSet" when using rdbms.Statement
+  as criteria with doSelect() / iteratorFor()
+  (wagner)
+
 
 Version 5.5.5, released 2007-07-19
 ----------------------------------
