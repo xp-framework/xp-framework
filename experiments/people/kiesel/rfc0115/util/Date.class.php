@@ -38,33 +38,30 @@
      * @param   string timezone default NULL string of timezone
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
-    public function __construct($in= NULL, $timezone= NULL) {
+    public function __construct($in= NULL, TimeZone $timezone= NULL) {
     
       switch (TRUE) {
-        
         case $in instanceof DateTime: {
           $this->date= $in;
           return;
         }
         
         // Specially mark timestamps for parsing (we assume here that strings
-        // containing only digits are timestamps
+        // containing only digits are timestamps)
         case is_numeric($in): $in= '@'.$in;
+          $timezone= NULL;
           // Break missing intentionally
 
         default: {
-          $tz= NULL;
-          if (
-            NULL !== $timezone &&
-            FALSE === ($tz= timezone_open($timezone))
-          ) throw new IllegalArgumentException('No such timezone: '.$timezone);
-          
           switch (TRUE) {
-            case $tz instanceof DateTimeZone:
-              $this->date= date_create($in, $tz); break;
+            case $timezone instanceof TimeZone: {
+              $this->date= date_create($in, $timezone->getHandle());
+              break;
+            }
             
-            default:
+            default: {
               $this->date= date_create($in); break;
+            }
           }
           
           if (FALSE === $this->date)
@@ -131,13 +128,10 @@
      * @param   string tz default NULL
      * @return  util.Date
      */
-    public static function create($year, $month, $day, $hour, $minute, $second, $tz= NULL) {
+    public static function create($year, $month, $day, $hour, $minute, $second, TimeZone $tz= NULL) {
       $date= date_create();
       if ($tz) {
-        if (FALSE === ($timezone= timezone_open($tz)))
-          throw new IllegalArgumentException('Given timezone is not valid: "'.$tz.'"');
-
-        date_timezone_set($date, $timezone);
+        date_timezone_set($date, $tz->getHandle());
       }
       date_date_set($date, $year, $month, $day);
       date_time_set($date, $hour, $minute, $second);
@@ -158,7 +152,7 @@
      * @return  util.Date
      */
     #[@deprecated]
-    public static function mktime($hour, $minute, $second, $month, $day, $year, $tz= NULL) {
+    public static function mktime($hour, $minute, $second, $month, $day, $year, TimeZone $tz= NULL) {
       return self::create($year, $month, $day, $hour, $minute, $second, $tz)->getTime();
     }
     
@@ -169,7 +163,7 @@
      * @return  bool TRUE if dates are equal
      */
     public function equals($cmp) {
-      return ($cmp instanceof Date) && ($this->getTime() === $cmp->getTime());
+      return ($cmp instanceof self) && ($this->getTime() === $cmp->getTime());
     }
     
     /**
@@ -343,14 +337,11 @@
      * @return  string the formatted date
      * @throws	lang.IllegalArgumentException in case a timezone string could not be parsed
      */
-    public function toString($format= self::DEFAULT_FORMAT, $outtz= NULL) {
+    public function toString($format= self::DEFAULT_FORMAT, TimeZone $outtz= NULL) {
       if (NULL === $outtz) return date_format($this->date, $format);
-      
-      if (FALSE === ($tz= timezone_open($outtz)))
-        throw new IllegalArgumentException('No such timezone: "'.$outtz.'"');
 
       $origtz= date_timezone_get($this->date);
-      date_timezone_set($this->date, $tz);
+      date_timezone_set($this->date, $tz->getHandle());
       $formatted= date_format($this->date, $format);
       date_timezone_set($this->date, $origtz);
       

@@ -228,7 +228,7 @@
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $tz->getName()
+        $tz
       );
     }    
 

@@ -25,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= Date::create(2000, 1, 1, 12, 15, 11, 'Europe/Berlin');
+      $this->fixture= Date::create(2000, 1, 1, 12, 15, 11, new TimeZone('Europe/Berlin'));
     }
 
     /**
@@ -251,10 +251,15 @@
      */
     #[@test]
     public function testSetTimezone() {
+      try {
       $this->assertEquals(
         Date::create(2000, 1, 1, 17, 15, 11),
         DateUtil::setTimeZone($this->fixture, new TimeZone('America/New_York'))
       );
+      } catch (IllegalArgumentException $e) {
+      
+        $e->printStackTrace();
+      }
     }
     
     

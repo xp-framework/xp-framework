@@ -6,7 +6,8 @@
  
   uses(
     'unittest.TestCase',
-    'util.Date'
+    'util.Date',
+    'util.TimeZone'
   );
 
   /**
@@ -42,6 +43,70 @@
      */
     public function assertDateEquals($expected, $date, $error= 'datenotequal') {
       return $this->assertEquals($expected, $date->toString(DATE_ATOM), $error);
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseWithoutTz() {
+      $this->assertEquals(TRUE, new Date('2007-01-01 01:00:00 Europe/Berlin') instanceof Date);
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorUnixtimestampWithoutTz() {
+      $this->assertDateEquals('2007-08-23T12:35:47+00:00', new Date(1187872547));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorUnixtimestampWithTz() {
+      $this->assertDateEquals('2007-08-23T12:35:47+00:00', new Date(1187872547, new TimeZone('Europe/Berlin')));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseTz() {
+      $date= new Date('2007-01-01 01:00:00 Europe/Berlin');
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+      
+      $date= new Date('2007-01-01 01:00:00 Europe/Berlin', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+
+      $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+02:00', $date);
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseNoTz() {
+      $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
+      
+      $date= new Date('2007-01-01 01:00:00');
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('GMT', $date->getTimeZone()->getName());
     }
     
     /**

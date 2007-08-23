@@ -121,5 +121,34 @@
     public function testCalendarDSTEnd() {
       $this->assertDateEquals('2003-10-26T01:00:00+00:00', Calendar::dstEnd(2003), 'dstend');
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function inDst() {
+      $this->assertEquals(TRUE, Calendar::inDST(new Date('2007-08-24', new TimeZone('Europe/Berlin'))));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function notInDst() {
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-01-24', new TimeZone('Europe/Berlin'))));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function haveNoDst() {
+      // Asia/Singapre does not have DST
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-01-24', new TimeZone('Asia/Singapore'))));
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-08-24', new TimeZone('Asia/Singapore'))));
+    }
   }
 ?>

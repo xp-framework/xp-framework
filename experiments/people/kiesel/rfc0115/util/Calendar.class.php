@@ -88,11 +88,8 @@
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  bool
      */
-    public static function inDst($date, $method= CAL_DST_EU) {
-      return (
-        $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
-        $date->isBefore(Calendar::dstEnd($date->getYear()))
-      );
+    public static function inDst(Date $date) {
+      return (bool)$date->toString('I');
     }
   
     /**
@@ -141,7 +138,8 @@
         $date->getDay(),
         0,
         0,
-        0
+        0,
+        $date->getTimeZone()
       );
     }
     
@@ -159,7 +157,8 @@
         1,
         0,
         0,
-        0
+        0,
+        $date->getTimeZone()
       );
     }
 
@@ -177,7 +176,8 @@
         0,
         23,
         59,
-        59
+        59,
+        $date->getTimeZone()
       );
     }
 
