@@ -16,8 +16,13 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://util.collections.HashTable 
+   * @see      xp://util.collections.HashSet 
+   * @see      xp://util.collections.Vector
+   * @see      xp://util.collections.Stack
+   * @see      xp://util.collections.Queue
+   * @see      xp://util.collections.LRUBuffer
+   * @purpose  Unittest
    */
   class GenericsTest extends TestCase {
 
