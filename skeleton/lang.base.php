@@ -488,7 +488,7 @@
   function create($spec) {
     if ($spec instanceof Generic) return $spec;
 
-    sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
+    sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
     $class= xp::reflect($classname);
     
     // Check whether class is generic
