@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'util.DateMath', 'util.DateInterval');
 
   /**
    * XSL callbacks for Date operations
