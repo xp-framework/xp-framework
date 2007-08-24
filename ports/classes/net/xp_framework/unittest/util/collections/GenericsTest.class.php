@@ -67,6 +67,18 @@
      * Tests HashTable<String, String>
      *
      */
+    #[@test]
+    public function testStringStringHash() {
+      with ($h= create('new HashTable<String, String>')); {
+        $h->put('hello', new String('World'));
+        $this->assertTrue($h->containsKey('hello'));
+      }
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalValue() {
       create('new HashTable<String, String>')->put('hello', new Integer(1));
