@@ -6,6 +6,9 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Deprecated create('Class<GenericsSpec>') in favor of 
+  create('new Class<GenericsSpec>')
+  (friebe)
 - Added new packaged remote.mappings for specialized Java classes
   (strobel)
 - Fix remote.protocol.Serializer bug in best mapping finding
@@ -17,7 +20,8 @@ SVN version: ?????
   (friebe)
 - Fix deserialization of objects of XP types
   (kiesel)
-- Fixed util.collections.HashTable::get() if used with generucs
+- Fixed util.collections.HashTable::get(), ::remove() and ::containsKey()
+  if used with generics / primitives
   (gellweiler, friebe)
 - Fixed "Record is not compatible with DataSet" when using rdbms.Statement
   as criteria with doSelect() / iteratorFor()
