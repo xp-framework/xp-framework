@@ -43,6 +43,30 @@
      * Tests HashTable<String, String>
      *
      */
+    #[@test]
+    public function getFromStringStringHash() {
+      with ($h= create('new HashTable<String, String>')); {
+        $h->put('hello', new String('World'));
+        $this->assertEquals(new String('World'), $h->get('hello'));
+      }
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
+    #[@test]
+    public function removeFromStringStringHash() {
+      with ($h= create('new HashTable<String, String>')); {
+        $h->put('hello', new String('World'));
+        $this->assertEquals(new String('World'), $h->remove('hello'));
+      }
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalValue() {
       create('new HashTable<String, String>')->put('hello', new Integer(1));
