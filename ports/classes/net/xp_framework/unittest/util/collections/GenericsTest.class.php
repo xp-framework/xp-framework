@@ -27,7 +27,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nonGenericPassedToCreate() {
-      create('Object<String>');
+      create('new Object<String>');
     }
   
     /**
@@ -36,7 +36,7 @@
      */
     #[@test]
     public function stringStringHash() {
-      create('HashTable<String, String>')->put('hello', new String('World'));
+      create('new HashTable<String, String>')->put('hello', new String('World'));
     }
 
     /**
@@ -45,7 +45,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalValue() {
-      create('HashTable<String, String>')->put('hello', new Integer(1));
+      create('new HashTable<String, String>')->put('hello', new Integer(1));
     }
 
     /**
@@ -54,7 +54,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashIllegalKey() {
-      create('HashTable<String, String>')->put(1, new String('World'));
+      create('new HashTable<String, String>')->put(1, new String('World'));
     }
 
     /**
@@ -63,7 +63,7 @@
      */
     #[@test]
     public function stringVector() {
-      create('Vector<String>')->add(new String('Hi'));
+      create('new Vector<String>')->add(new String('Hi'));
     }
 
     /**
@@ -74,7 +74,7 @@
     public function createStringVector() {
       $this->assertEquals(
         new String('one'), 
-        create('Vector<String>', array(new String('one')))->get(0)
+        create('new Vector<String>', array(new String('one')))->get(0)
       );
     }
 
@@ -84,7 +84,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringVectorIllegalValue() {
-      create('Vector<String>')->add(new Integer(1));
+      create('new Vector<String>')->add(new Integer(1));
     }
 
     /**
@@ -93,7 +93,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createStringVectorWithIllegalValue() {
-      create('Vector<String>', array(new Integer(1)));
+      create('new Vector<String>', array(new Integer(1)));
     }
 
     /**
@@ -102,7 +102,7 @@
      */
     #[@test]
     public function stringStack() {
-      create('util.collections.Stack<String>')->push(new String('One'));
+      create('new util.collections.Stack<String>')->push(new String('One'));
     }
 
     /**
@@ -111,7 +111,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStackIllegalValue() {
-      create('util.collections.Stack<String>')->push(new Integer(1));
+      create('new util.collections.Stack<String>')->push(new Integer(1));
     }
 
     /**
@@ -120,7 +120,7 @@
      */
     #[@test]
     public function stringQueue() {
-      create('util.collections.Queue<String>')->put(new String('One'));
+      create('new util.collections.Queue<String>')->put(new String('One'));
     }
 
     /**
@@ -129,7 +129,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringQueueIllegalValue() {
-      create('util.collections.Queue<String>')->put(new Integer(1));
+      create('new util.collections.Queue<String>')->put(new Integer(1));
     }
 
     /**
@@ -138,7 +138,7 @@
      */
     #[@test]
     public function stringLRUBuffer() {
-      create('util.collections.LRUBuffer<String>', 1)->add(new String('One'));
+      create('new util.collections.LRUBuffer<String>', 1)->add(new String('One'));
     }
 
     /**
@@ -147,7 +147,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringLRUBufferIllegalValue() {
-      create('util.collections.LRUBuffer<String>', 1)->add(new Integer(1));
+      create('new util.collections.LRUBuffer<String>', 1)->add(new Integer(1));
     }
 
     /**
@@ -156,7 +156,7 @@
      */
     #[@test]
     public function stringHashSet() {
-      create('util.collections.HashSet<String>')->add(new String('One'));
+      create('new util.collections.HashSet<String>')->add(new String('One'));
     }
 
     /**
@@ -165,7 +165,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringHashSetIllegalValue() {
-      create('util.collections.HashSet<String>')->add(new Integer(1));
+      create('new util.collections.HashSet<String>')->add(new Integer(1));
     }
   }
 ?>
