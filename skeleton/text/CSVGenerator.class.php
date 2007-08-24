@@ -141,7 +141,7 @@
       $cols= array_keys ($data);
       
       if ($this->_hasHeader())
-        $cols= array_keys ($this->colName);
+        $cols= array_values ($this->colName);
     
       foreach ($cols as $idx => $colName) {
         if (isset ($data[$colName]))
