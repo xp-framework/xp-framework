@@ -109,7 +109,7 @@
 
       if ($this->__generic) {
         if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
         }
       }
 
@@ -132,7 +132,7 @@
 
       if ($this->__generic) {
         if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
         }
       }
 
