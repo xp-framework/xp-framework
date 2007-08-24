@@ -9,6 +9,10 @@
   /**
    * Hash table consisting of non-null objects as keys and values
    *
+   * @test     xp://net.xp_framework.unittest.util.collections.HashTableTest
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+   * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
+   * @test     xp://net.xp_framework.unittest.util.collections.BoxingTest
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
