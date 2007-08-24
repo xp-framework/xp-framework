@@ -15,7 +15,8 @@
       $date     = NULL;
     
     const
-      DEFAULT_FORMAT  = 'Y-m-d H:i:sO';
+      DEFAULT_FORMAT    = 'Y-m-d H:i:sO',
+      SERIALIZE_FORMAT  = 'Y-m-d H:i:sO';
 
     /**
      * Constructor. Creates a new date object through either a
@@ -39,7 +40,6 @@
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
     public function __construct($in= NULL, TimeZone $timezone= NULL) {
-    
       switch (TRUE) {
         case $in instanceof DateTime: {
           $this->date= $in;
@@ -88,7 +88,7 @@
      * @return  array
      */
     public function __sleep() {
-      $this->value= $this->date->format(self::DEFAULT_FORMAT);
+      $this->value= $this->toString(self::SERIALIZE_FORMAT, new TimeZone('GMT'));
       return array('value', '__id');
     }
     
@@ -335,13 +335,12 @@
      * @see     php://date
      * @param   string format default Date::DEFAULT_FORMAT format-string
      * @return  string the formatted date
-     * @throws	lang.IllegalArgumentException in case a timezone string could not be parsed
      */
     public function toString($format= self::DEFAULT_FORMAT, TimeZone $outtz= NULL) {
       if (NULL === $outtz) return date_format($this->date, $format);
 
       $origtz= date_timezone_get($this->date);
-      date_timezone_set($this->date, $tz->getHandle());
+      date_timezone_set($this->date, $outtz->getHandle());
       $formatted= date_format($this->date, $format);
       date_timezone_set($this->date, $origtz);
       

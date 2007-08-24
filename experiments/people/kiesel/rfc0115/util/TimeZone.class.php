@@ -164,6 +164,7 @@
      * @return  util.TimeZoneTransition
      */
     public function previousTransition(Date $date) {
+      // Include util.TimeZoneTransition as a `lightweight` dependency
       return XPClass::forName('util.TimeZoneTransition')
         ->getMethod('previousTransition')
         ->invoke(NULL, array($this, $date))
@@ -178,10 +179,30 @@
      * @return  util.TimeZoneTransition
      */
     public function nextTransition(Date $date) {
+      // Include util.TimeZoneTransition as a `lightweight` dependency
       return XPClass::forName('util.TimeZoneTransition')
         ->getMethod('nextTransition')
         ->invoke(NULL, array($this, $date))
       ;
     }
+    
+    /**
+     * Indicates whether the timezome to compare equals this timezone.
+     *
+     * @param   util.TimeZone cmp
+     * @return  bool TRUE if timezones are equal
+     */
+    public function equals($cmp) {
+      return ($cmp instanceof self) && ($cmp->getName() == $this->getName());
+    }
+    
+    /**
+     * Create a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().' ("'.$this->getName().'" / '.$this->getOffset().')';
+    }    
   }
 ?>

@@ -141,12 +141,11 @@
     }
 
     /**
-     * Test
+     * Test Asia/Singapore does not have DST
      *
      */
     #[@test]
     public function haveNoDst() {
-      // Asia/Singapre does not have DST
       $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-01-24', new TimeZone('Asia/Singapore'))));
       $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-08-24', new TimeZone('Asia/Singapore'))));
     }

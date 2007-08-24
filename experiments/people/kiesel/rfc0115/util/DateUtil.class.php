@@ -32,7 +32,8 @@
         $date->getDay(),
         0,
         0,
-        0
+        0,
+        $date->getTimeZone()
       );
     }
     
@@ -49,7 +50,8 @@
         0,
         $date->getHours(),
         $date->getMinutes(),
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
     
@@ -66,7 +68,8 @@
         1,
         $date->getHours(),
         $date->getMinutes(),
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
 
@@ -93,7 +96,8 @@
         $date->getDay(),
         23,
         59,
-        59
+        59,
+        $date->getTimeZone()
       );
       return DateUtil::addDays($date, 6- $date->getDayOfWeek());
     }
@@ -112,7 +116,8 @@
         $date->getDay(),
         $date->getHours(),
         $date->getMinutes(),
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
 
@@ -141,7 +146,8 @@
         $date->getDay() + $count,
         $date->getHours(),
         $date->getMinutes(),
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
     
@@ -159,7 +165,8 @@
         $date->getDay(),
         $date->getHours() + $count,
         $date->getMinutes(),
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
     
@@ -177,7 +184,8 @@
         $date->getDay(),
         $date->getHours(),
         $date->getMinutes() + $count,
-        $date->getSeconds()
+        $date->getSeconds(),
+        $date->getTimeZone()
       );
     }
 
@@ -195,7 +203,8 @@
         $date->getDay(),
         $date->getHours(),
         $date->getMinutes(),
-        $date->getSeconds() + $count
+        $date->getSeconds() + $count,
+        $date->getTimeZone()
       );
     }
     

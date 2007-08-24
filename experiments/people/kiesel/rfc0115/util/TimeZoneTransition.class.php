@@ -140,5 +140,21 @@
     public function abbr() {
       return $this->abbr;
     }
+    
+    /**
+     * Create string representation of transition
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'('.$this->hashCode().")@{\n";
+      $s.= '  transition at: '.$this->date->toString()."\n";
+      $s.= sprintf('  transition to: %s (%s), %s',
+        $this->offset,
+        $this->abbr,
+        ($this->isDst ? 'DST' : 'non-DST')
+      );
+      return $s."\n}";
+    }
   }
 ?>
