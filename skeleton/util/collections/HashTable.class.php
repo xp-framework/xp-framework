@@ -128,7 +128,7 @@
      * @return  lang.Generic the previous value associated with the key
      */
     public function remove($key) {
-      $h= Primitive::boxed($key)->hashCode();
+      $k= Primitive::boxed($key);
 
       if ($this->__generic) {
         if (!$k instanceof $this->__generic[0]) {
@@ -136,6 +136,7 @@
         }
       }
 
+      $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
