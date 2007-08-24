@@ -109,7 +109,7 @@
         }
       }
 
-      $h= $key->hashCode();
+      $h= $k->hashCode();
       if (!isset($this->_buckets[$h])) return NULL; 
 
       return $this->_buckets[$h][1];
