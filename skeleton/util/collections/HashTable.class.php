@@ -180,12 +180,13 @@
      * @return  bool
      */
     public function containsKey($key) {
+      $k= Primitive::boxed($key);
       if ($this->__generic) {
         if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf(Primitive::boxed($key)).' must be of '.$this->__generic[0]);
+          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
         }
       }
-      return isset($this->_buckets[Primitive::boxed($key)->hashCode()]);
+      return isset($this->_buckets[$k->hashCode()]);
     }
 
     /**
