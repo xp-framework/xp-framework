@@ -38,7 +38,7 @@
      */
     #[@test]
     public function createWithShortNames() {
-      $h= create('HashTable<String, String>');
+      $h= create('new HashTable<String, String>');
       $this->assertEquals(array('String', 'String'), $h->__generic);
     }
 
@@ -48,7 +48,7 @@
      */
     #[@test]
     public function createWithQualifiedNames() {
-      $h= create('util.collections.HashTable<lang.types.String, lang.types.String>');
+      $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
       $this->assertEquals(array('String', 'String'), $h->__generic);
     }
 
@@ -58,7 +58,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createWithNonGeneric() {
-      create('lang.Object<String>');
+      create('new lang.Object<String>');
     }
   }
 ?>
