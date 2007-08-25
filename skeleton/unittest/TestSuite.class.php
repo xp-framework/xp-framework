@@ -60,17 +60,17 @@
       }
 
       $ignored= array();
-      for ($methods= $class->getMethods(), $i= 0, $s= sizeof($methods); $i < $s; $i++) {
-        if (!$methods[$i]->hasAnnotation('test')) continue;
+      foreach ($class->getMethods() as $m) {
+        if (!$m->hasAnnotation('test')) continue;
 
-        if ($methods[$i]->hasAnnotation('ignore')) {
-          $ignored[]= $methods[$i];
+        if ($m->hasAnnotation('ignore')) {
+          $ignored[]= $m;
           continue;
         }
 
         // Add test method
         $this->addTest(call_user_func_array(array($class, 'newInstance'), array_merge(
-          (array)$methods[$i]->getName(TRUE),
+          (array)$m->getName(TRUE),
           $arguments
         )));
       }
