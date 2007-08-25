@@ -71,14 +71,15 @@
     }
     
     /**
-     * Assert that a value is an array
+     * Assert that a value is an array. This is TRUE if the given value 
+     * is either an array type itself or the wrapper type lang.types.ArrayList
      *
      * @param   mixed var
      * @param   string error default 'notarray'
      * @return  bool
      */
     public function assertArray($var, $error= 'notarray') {
-      if (!is_array($var)) {
+      if (!is_array($var) && !is('lang.types.ArrayList', $var)) {
         return $this->fail($error, 'array', xp::typeOf($var));
       }
       return TRUE;
