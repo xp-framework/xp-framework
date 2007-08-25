@@ -69,15 +69,15 @@
         }
         
         // Implement all the interface's methods
-        for ($i= 0, $methods= $if->getMethods(), $s= sizeof($methods); $i < $s; $i++) {
+        foreach ($if->getMethods() as $m) {
         
           // Check for already declared methods, do not redeclare them
-          if (isset($added[$methods[$i]->getName()])) continue;
-          $added[$methods[$i]->getName()]= TRUE;
+          if (isset($added[$m->getName()])) continue;
+          $added[$m->getName()]= TRUE;
 
           // Build signature and argument list
-          if ($methods[$i]->hasAnnotation('overloaded')) {
-            $signatures= $methods[$i]->getAnnotation('overloaded', 'signatures');
+          if ($m->hasAnnotation('overloaded')) {
+            $signatures= $m->getAnnotation('overloaded', 'signatures');
             $max= 0;
             $cases= array();
             foreach ($signatures as $signature) {
@@ -87,21 +87,21 @@
               
               $cases[$args]= (
                 'case '.$args.': '.
-                'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.
+                'return $this->_h->invoke($this, \''.$m->getName(TRUE).'\', array('.
                 ($args ? '$_'.implode(', $_', range(0, $args- 1)) : '').'));'
               );
             }
 
             // Create method
             $bytes.= (
-              'function '.$methods[$i]->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
+              'function '.$m->getName().'($_'.implode('= NULL, $_', range(0, $max)).'= NULL) { '.
               'switch (func_num_args()) {'.implode("\n", $cases).
               ' default: throw new IllegalArgumentException(\'Illegal number of arguments\'); }'.
               '}'."\n"
             );
           } else {
             $signature= $args= '';
-            foreach ($methods[$i]->getArguments() as $argument) {
+            foreach ($m->getArguments() as $argument) {
               $signature.= ', $'.$argument->getName();
               $args.= ', $'.$argument->getName();
               $argument->isOptional() && $signature.= '= '.$argument->getDefault();
@@ -111,8 +111,8 @@
 
             // Create method
             $bytes.= (
-              'function '.$methods[$i]->getName().'('.$signature.') { '.
-              'return $this->_h->invoke($this, \''.$methods[$i]->getName(TRUE).'\', array('.$args.')); '.
+              'function '.$m->getName().'('.$signature.') { '.
+              'return $this->_h->invoke($this, \''.$m->getName(TRUE).'\', array('.$args.')); '.
               '}'."\n"
             );
           }
