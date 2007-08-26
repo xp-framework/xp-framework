@@ -141,7 +141,7 @@
      * method does not exist.
      *
      * @param   string name
-     * @return  lang.Method
+     * @return  lang.reflect.Method
      * @see     xp://lang.reflect.Method
      */
     public function getMethod($name) {
