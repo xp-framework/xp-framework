@@ -46,6 +46,40 @@
  * control. They are complemented with the System class which provides
  * information about the underlying operating system.
  *
+ * Chained exceptions
+ * ==================
+ * Not all exceptions in the framework have a cause. Exceptions that 
+ * choose to have a cause may extend the lang.ChainedException class.
+ *
+ * Example (abbreviated):
+ * <code>
+ *   class FinderException extends ChainedException { }
+ *
+ *   class NewsFinder extends Finder {
+ *     public function findByPK($pk) {
+ *       try {
+ *         $r= $this->conn->query('select * from news where news_id= %d', $pk)->next();
+ *       } catch (SQLException $e) {
+ *         throw new FinderException('Error while finding news id #'.$pk, $e);
+ *       }
+ *       if (FALSE === $r) {
+ *         throw new FinderException(
+ *           'News id #'.$pk.' does not exist', 
+ *           new ElementNotFoundException($pk)
+ *         );
+ *       }
+ *       return $r;
+ *     }
+ *   }
+ *
+ *   $news= new NewsFinder();
+ *   try {
+ *     $news->findByPK(10250);
+ *   } catch (FinderException $e) {
+ *     Console::writeLine('*** ', $e->getMessage(), ' caused by: ', $e->getCause()->toString());
+ *   }
+ * </code>
+ *
  * Classes loaded per default
  * ==========================
  * These classes are guaranteed to be loaded at any given time:

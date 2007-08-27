@@ -79,40 +79,6 @@
  * Implementing classes can be found in the rdbms and io.collections 
  * packages, for example.
  *
- * Chained exceptions
- * ==================
- * Not all exceptions in the framework have a cause. Exceptions that 
- * choose to have a cause may extend the util.ChainedException class.
- *
- * Example (abbreviated):
- * <code>
- *   class FinderException extends ChainedException { }
- *
- *   class NewsFinder extends Finder {
- *     public function findByPK($pk) {
- *       try {
- *         $r= $this->conn->query('select * from news where news_id= %d', $pk)->next();
- *       } catch (SQLException $e) {
- *         throw new FinderException('Error while finding news id #'.$pk, $e);
- *       }
- *       if (FALSE === $r) {
- *         throw new FinderException(
- *           'News id #'.$pk.' does not exist', 
- *           new ElementNotFoundException($pk)
- *         );
- *       }
- *       return $r;
- *     }
- *   }
- *
- *   $news= new NewsFinder();
- *   try {
- *     $news->findByPK(10250);
- *   } catch (FinderException $e) {
- *     Console::writeLine('*** ', $e->getMessage(), ' caused by: ', $e->getCause()->toString());
- *   }
- * </code>
- *
  * Design patterns
  * ===============
  * The util package contains the following design pattern implementations:
@@ -124,7 +90,6 @@
  * @see      xp://util.Date
  * @see      xp://util.Properties
  * @see      xp://util.XPIterator
- * @see      xp://util.ChainedException
  * @see      http://xp-framework.net/rfc/0086
  * @see      xp://util.Observer
  * @see      xp://util.Visitor
