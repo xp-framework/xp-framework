@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.reflect.Argument');
+  uses('lang.reflect.Argument', 'lang.reflect.TargetInvocationException');
 
   /**
    * Base class for methods and constructors. Note that the methods provided

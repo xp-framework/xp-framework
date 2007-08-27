@@ -68,10 +68,12 @@
 
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
+      } catch (Throwable $e) {
+        throw new TargetInvocationException($this->_ref.'::'.$this->name, $e);
       } catch (ReflectionException $e) {
 
         // This should never occur, we checked everything beforehand...
-        throw new XPException($e->getMessage());
+        throw new TargetInvocationException($this->_ref.'::'.$this->name, new XPException($e->getMessage()));
       }
     }
   }

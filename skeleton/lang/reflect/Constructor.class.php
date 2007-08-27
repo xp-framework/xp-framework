@@ -63,7 +63,11 @@
         $paramstr.= ', $args['.$i.']';
       }
       
-      return eval('return new '.$this->_ref.'('.substr($paramstr, 2).');');
+      try {
+        return eval('return new '.$this->_ref.'('.substr($paramstr, 2).');');
+      } catch (Throwable $e) {
+        throw new TargetInvocationException($this->_ref.'::<init>', $e);
+      }
     }
 
     /**
