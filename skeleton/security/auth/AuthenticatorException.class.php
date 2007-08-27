@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
 
   /**
    * Indicates authentication failed unexpectedly, probably due to 
@@ -12,7 +12,7 @@
    * LDAP server used in the LdapAuthenticator may be unavailable.
    *
    * @see      xp://security.auth.Authenticator
-   * @see      xp://util.ChainedException
+   * @see      xp://lang.ChainedException
    * @purpose  Exception
    */
   class AuthenticatorException extends ChainedException {

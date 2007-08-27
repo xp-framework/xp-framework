@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
 
   /**
    * Indicates an exception occured while using the Finder API. All
@@ -12,7 +12,7 @@
    * a subclass of it. The causing exception is available via the 
    * getCause() method.
    *
-   * @see      xp://util.ChainedException
+   * @see      xp://lang.ChainedException
    * @purpose  Chained exception
    */
   class FinderException extends ChainedException {

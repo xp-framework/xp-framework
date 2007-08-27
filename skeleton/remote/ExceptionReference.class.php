@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
 
   /**
    * Holds a reference to an exception

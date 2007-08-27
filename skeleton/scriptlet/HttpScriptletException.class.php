@@ -5,7 +5,7 @@
  */
 
   uses(
-    'util.ChainedException',
+    'lang.ChainedException',
     'scriptlet.HttpScriptletResponse'
   );
 

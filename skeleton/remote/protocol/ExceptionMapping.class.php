@@ -6,7 +6,7 @@
 
   uses(
     'remote.protocol.SerializerMapping',
-    'util.ChainedException'
+    'lang.ChainedException'
   );
 
   /**

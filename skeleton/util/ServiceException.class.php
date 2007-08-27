@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
 
   /**
    * Indicates a certain fault occurred. Service methods may throw

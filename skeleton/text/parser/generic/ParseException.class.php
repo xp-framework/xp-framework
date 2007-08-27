@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
   
   /**
    * Indicates an error occured during parsing

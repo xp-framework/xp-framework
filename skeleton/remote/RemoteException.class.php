@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.ChainedException');
+  uses('lang.ChainedException');
 
   /**
    * Indicates an exception occured on the server
