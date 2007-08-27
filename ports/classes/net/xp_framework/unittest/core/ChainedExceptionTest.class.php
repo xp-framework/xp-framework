@@ -6,7 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'util.ChainedException'
+    'lang.ChainedException'
   );
 
   /**
