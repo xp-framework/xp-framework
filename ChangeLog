@@ -6,6 +6,8 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+- Implemented RFC #0097 - TargetInvocationException
+  (friebe)
 - Fixed duplicate redirect in scriptlet API when used with sessions
   (friebe)
 - Deprecated create('Class<GenericsSpec>') in favor of 
