@@ -1,4 +1,4 @@
-RFC 0097: MethodInvocationException
+RFC 0097: TargetInvocationException
 ========================================================================
 $Id$
 
@@ -10,7 +10,7 @@ $Id$
 Scope of Change
 ---------------
 lang.reflect.Routine will be changed to rethrow any exception as 
-MethodInvocationException (which is a chained exception).
+TargetInvocationException (which is a chained exception).
 
 
 Rationale
@@ -23,7 +23,7 @@ Functionality
 <?php
   try {
     $r= $class->getMethod('doSelect')->invoke($class->newInstance(), $args);
-  } catch (MethodInvocationException $e) {
+  } catch (TargetInvocationException $e) {
     Console::writeLine($m->getName(), ' invocation failed, cause: ', $e->cause->toString());
   }
 ?>
@@ -75,5 +75,7 @@ Comments
   it a part of the lang package (and thus even more "core" than in
   util package) is a good idea.
 
+- friebe, Mon Aug 27 19:22:15     2007
+  lang.reflect.TargetInvocationException -> lang.ChainedException
 
 <EOF>
