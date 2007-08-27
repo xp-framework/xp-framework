@@ -123,25 +123,15 @@
       // Get product, language and statename from the environment if 
       // necessary. Their default values are "site" (product), 
       // "en_US" (language) and "static" (statename).
-      if (!$product= $request->getProduct()) {
-        $product= $request->getEnvValue('DEF_PROD', 'site');
-      }
-      if (!$language= $request->getLanguage()) {
-        $language= $request->getEnvValue('DEF_LANG', 'en_US');
-      }
-      if (!$stateName= $request->getStateName()) {
-        $stateName= $request->getEnvValue('DEF_STATE', 'static');
-      }
-      
       // Send redirect
       $response->sendRedirect(sprintf(
         '%s://%s/xml/%s.%s%s/%s%s%s', 
         $uri->getScheme(),
         $uri->getHost(),
-        $product,
-        $language,
+        $request->getProduct(), 
+        $request->getLanguage(), 
         empty($sessionId) ? '' : '.psessionid='.$sessionId,
-        $stateName,
+        $request->getStateName(), 
         $uri->getQuery() ? '?'.$uri->getQuery() : '',
         $uri->getFragment() ? '#'.$uri->getFragment() : ''
       ));

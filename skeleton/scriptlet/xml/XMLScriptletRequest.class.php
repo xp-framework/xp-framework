@@ -41,9 +41,9 @@
      */
     public function initialize() {
       parent::initialize();
-      $this->product= $this->getEnvValue('PRODUCT');
-      $this->stateName= $this->getEnvValue('STATE');
-      $this->language= $this->getEnvValue('LANGUAGE');
+      $this->product= $this->getEnvValue('PRODUCT', $this->getEnvValue('DEF_PROD', 'site'));
+      $this->stateName= $this->getEnvValue('STATE', $this->getEnvValue('DEF_STATE', 'static'));
+      $this->language= $this->getEnvValue('LANGUAGE', $this->getEnvValue('DEF_LANG', 'en_US'));
       $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
     }
 
