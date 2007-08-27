@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Sun Dec 17 18:14:43     2006
 @status: discussion, ends Mon Aug 27 18:00:00     2007
-@category: lang, lang.reflect, lang.types, util.invoke
+@category: util.invoke
 
 Scope of Change
 ---------------
@@ -22,7 +22,7 @@ Functionality
 
 Current
 ~~~~~~~
-XPClass::getMethod() returns an array of lang.reflect.Method objects. To
+XPClass::getMethods() returns an array of lang.reflect.Method objects. To
 select only those decorated with an @inject annotation, the standard loop
 and filter approach is used:
 
@@ -37,15 +37,66 @@ and filter approach is used:
 
 New
 ~~~
-XPClass::getMethod() returns a lang.types.ArrayList containing all the
-lang.reflect.Method objects. The ArrayList class provides a filter method
-to which we pass a filter created by the util.invoke.Members class.
+The new util.invoke.Methods class provides static methods to factor selectors.
 <?php
-  foreach (XPClass::forName('some.annotated.Class')->getMethods()->filter(
-    Members::decoratedWith('inject')
-  ) as $m) {
+  // Find all methods with @inject annotation in some.annotated.Class
+  foreach (Methods::annotatedWith('inject')->of(XPClass::forName('some.annotated.Class')) as $m) {
     $value= $m->getAnnotation('inject');
     // ...
+  }
+
+  foreach (Methods::findAll()->annotatedWith('inject')->in(XPClass::forName('some.annotated.Class')) as $m) {
+    $value= $m->getAnnotation('inject');
+    // ...
+  }
+
+// XXX  
+  foreach (Methods::where(Member::isAnnotatedWith('inject'))->of(XPClass::forName('some.annotated.Class')) as $m) {
+  
+  }
+
+  foreach (Methods::findAll()->where(Member::isAnnotatedWith('inject'))->in(XPClass::forName('some.annotated.Class')) as $m) {
+    $value= $m->getAnnotation('inject');
+    // ...
+  }
+
+  // Find all protected methods with @handle annotation in some.annotated.Class
+
+// XXX  
+  foreach (Methods::all(
+    Member::isAccessible(MODIFIER_PROTECTED),
+    Member::isAnnotatedWith('handle')
+  )->of(XPClass::forName('some.annotated.Class')) as $m) {
+  
+  }
+
+  foreach (Methods::findAll()->whereAnyOf(
+    Member::isAccessible(MODIFIER_PROTECTED),
+    Member::isAnnotatedWith('handle')
+  )->in(XPClass::forName('some.annotated.Class')) as $m) {
+    $value= $m->getAnnotation('handle');
+    // ...
+  }
+
+  // Find all methods with @inject or @arg annotation in some.annotated.Class
+
+// XXX  
+  foreach (Methods::any(
+    Member::isAnnotatedWith('inject'), 
+    Member::isAnnotatedWith('arg')
+  )->of(XPClass::forName('some.annotated.Class')) as $m) {
+  
+  }
+  
+  foreach (Methods::findAll()->whereEitherOf(
+    Member::isAnnotatedWith('inject'),
+    Member::isAnnotatedWith('arg')
+  )->in(XPClass::forName('some.annotated.Class')) as $m) {
+    if ($m->hasAnnotation('inject')) {
+      // ...
+    } else if ($m->hasAnnotation('arg')) {
+      // ...
+    }
   }
 ?>
 
