@@ -8,7 +8,7 @@
    * Chained Exception
    *
    * @purpose   Exception base class
-   * @test      xp://net.xp_framework.unittest.util.ChainedExceptionTest
+   * @test      xp://net.xp_framework.unittest.core.ChainedExceptionTest
    * @see       http://mindprod.com/jgloss/chainedexceptions.html
    * @see       http://www.jguru.com/faq/view.jsp?EID=1026405  
    */
