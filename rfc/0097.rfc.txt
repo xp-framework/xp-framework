@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Dec 17 18:25:48     2006
-@status: discussion, ends Mon Jul 30 18:00:00     2007
+@status: implemented, Mon Aug 27 19:02:11     2007
 @category: lang.reflect
 
 Scope of Change
@@ -40,7 +40,7 @@ Slightly slower
 
 Dependencies
 ------------
-- New class lang.reflect.MethodInvocationException
+- New class lang.reflect.TargetInvocationException
 
 
 Related documents
