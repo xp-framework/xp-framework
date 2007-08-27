@@ -102,6 +102,18 @@
     }
     
     /**
+     * Test
+     *
+     */
+    #[@test]
+    public function diffDayInForeignTimezone() {
+      $this->assertEquals(
+        1,
+        DateMath::diff(DateInterval::$DAY, new Date('2007-08-27 23:59:59 Australia/Sydney'), new Date('2007-08-28 00:00:00 Australia/Sydney'))
+      );
+    }    
+    
+    /**
      * diff over one year
      *
      */

@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'util.TimeZone', 'util.DateInterval');
+  uses(
+    'util.Date', 
+    'util.DateUtil',
+    'util.TimeZone',
+    'util.DateInterval'
+  );
 
   /**
    * Date math functions
@@ -32,9 +37,11 @@
      */
     public static function diff(DateInterval $interval, Date $date1, Date $date2) {
     
-      // Move both dates to GMT
-      $date1= create(new TimeZone('GMT'))->convertDate($date1);
-      $date2= create(new TimeZone('GMT'))->convertDate($date2);
+      // Convert date2 to same timezone as date1, then "cut off" tz
+      // $date1= create(new TimeZone('GMT'))->convertDate($date1);
+      $date2= $date1->getTimeZone()->convertDate($date2);
+      $date1= DateUtil::setTimeZone($date1, new TimeZone('GMT'));
+      $date2= DateUtil::setTimeZone($date2, new TimeZone('GMT'));
       
       switch ($interval) {
         case DateInterval::$YEAR: {
