@@ -6,22 +6,31 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Generics create() syntax changes
+  http://xp-framework.info/xml/xp.en_US/news/view?208
+  (friebe)
+- util.ChainedException is now lang.ChainedException
+  http://xp-framework.info/xml/xp.en_US/news/view?209
+  (friebe)
+
+RFCs
+~~~~
 - Implemented RFC #0097 - TargetInvocationException
   (friebe)
-- Fixed duplicate redirect in scriptlet API when used with sessions
-  (friebe)
-- Deprecated create('Class<GenericsSpec>') in favor of 
-  create('new Class<GenericsSpec>')
-  (friebe)
-- Added new packaged remote.mappings for specialized Java classes
-  (strobel)
-- Fix remote.protocol.Serializer bug in best mapping finding
-  algorithm
-  (Frank Kleine, kiesel)
 - Implemented RFC #0132 - Enum support
   (friebe)
 - Implemented RFC #0133 - Add support for filenames as argument for XPCLI
   (friebe)
+  
+Bugfixes
+~~~~~~~~~
+- Fixed duplicate redirect in scriptlet API when used with sessions
+  (friebe)
+- Fix remote.protocol.Serializer bug in best mapping finding
+  algorithm
+  (Frank Kleine, kiesel)
 - Fix deserialization of objects of XP types
   (kiesel)
 - Fixed util.collections.HashTable::get(), ::remove() and ::containsKey()
@@ -30,6 +39,11 @@ SVN version: ?????
 - Fixed "Record is not compatible with DataSet" when using rdbms.Statement
   as criteria with doSelect() / iteratorFor()
   (wagner)
+
+Features
+~~~~~~~~
+- Added new packaged remote.mappings for specialized Java classes
+  (strobel)
 
 
 Version 5.5.5, released 2007-07-19
