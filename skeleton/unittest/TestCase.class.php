@@ -309,8 +309,9 @@
       // Run test
       try {
         $method->invoke($this, NULL);
-      } catch (Exception $e) {
+      } catch (TargetInvocationException $t) {
         $timer->stop();
+        $e= $t->getCause();
 
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
