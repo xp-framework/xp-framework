@@ -433,11 +433,13 @@
 
     /**
      * Tests invoking the setTrace() method which will always throw an 
-     * IllegalStateException.
+     * IllegalStateException (which will be rewrapped as cause inside a
+     * TargetInvocationException
      *
+     * @see     xp://lang.reflect.TargetInvocationException
      * @see     xp://lang.reflect.Method#invoke
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
     public function invokeSetTrace() {
       $this->class->getMethod('setTrace')->invoke($this->class->newInstance(), array(NULL));
     }
