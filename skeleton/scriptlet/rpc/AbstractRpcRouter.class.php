@@ -113,26 +113,36 @@
         // Call handler
         $return= $this->callReflectHandler($msg);
 
-      } catch (ServiceException $e) {
-      
-        // Server methods may throw a ServerFaultException to have more
-        // conveniant control over the faultcode which is returned to the client.
+      } catch (TargetInvocationException $e) {
+        $hasFault= TRUE;
+        
+        if ($e->getCause() instanceof ServiceException) {
+          $cause= $e->getCause();
+          
+          // Server methods may throw a ServiceException to have more
+          // conveniant control over the faultcode which is returned to the client.
+          $answer->setFault(
+            $cause->getFaultcode(),
+            $cause->getMessage(),
+            $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
+            $this->formatStackTrace($e->getStackTrace())
+          );
+        } else {
+          $answer->setFault(
+            HTTP_INTERNAL_SERVER_ERROR,
+            $e->getMessage(),
+            $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
+            $this->formatStackTrace($e->getStackTrace())
+          );
+        }
+      } catch (XPException $e) {
         $answer->setFault(
-          $e->getFaultcode(),
+          HTTP_INTERNAL_SERVER_ERROR,
           $e->getMessage(),
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
           $this->formatStackTrace($e->getStackTrace())
         );
-        $hasFault= TRUE;
         
-      } catch (XPException $e) {
-      
-        $answer->setFault(
-          HTTP_INTERNAL_SERVER_ERROR,
-          $e->message,
-          $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-          $this->formatStackTrace($e->getStackTrace())
-        );
         $hasFault= TRUE;
       }
       
@@ -159,24 +169,20 @@
       }
 
       // Create message from request data
-      try {
-        $class= XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
+      $class= XPClass::forName($this->package.'.'.ucfirst($msg->getHandlerClass()).'Handler');
 
       // Check if method can be handled
       if (!$class->hasMethod($msg->getMethod())) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           $class->getName().' cannot handle method '.$msg->getMethod()
-        ));
+        );
       }
 
       with ($method= $class->getMethod($msg->getMethod())); {
 
         // Check if this method is a webmethod
         if (!$method->hasAnnotation('webmethod')) {
-          throw(new IllegalAccessException('Cannot access non-web method '.$msg->getMethod()));
+          throw new IllegalAccessException('Cannot access non-web method '.$msg->getMethod());
         }
         
         // Create instance and invoke method
