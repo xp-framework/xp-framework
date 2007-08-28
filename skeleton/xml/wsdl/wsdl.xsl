@@ -582,7 +582,10 @@
  *
  * $Id$ 
  */
-  uses('webservices.soap.SoapDriver');
+  uses(
+    'webservices.soap.SoapDriver',
+    'webservices.soap.Parameter'
+  );
   
   /**
 ]]></xsl:text>
