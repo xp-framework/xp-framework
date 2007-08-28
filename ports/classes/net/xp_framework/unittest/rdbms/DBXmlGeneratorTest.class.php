@@ -20,33 +20,24 @@
    * @purpose  Unit Tests
    */
   class DBXmlGeneratorTest extends TestCase {
+    protected
+      $xpath= NULL;
 
     /**
      * Sets up a Database Object for the test
      *
-     * @param   
-     * @return  
      */
     public function setUp() {
-      $fixture= $this->generate($this->newTable('deviceinfo', array(
-        'deviceinfo_id' => array(DB_ATTRTYPE_INT => 255), 
-        'serial_number' => array(DB_ATTRTYPE_INT => 16),
-        'text' => array(DB_ATTRTYPE_TEXT => 255))));    
-      $this->xpath= new XPath($fixture);
-    }
-    
-    /**
-     * Helper method which creates XML from a DB Table
-     *
-     * @param   object t
-     * @return  an xml Object
-     */
-    public function generate($t) {
-      return DBXmlGenerator::createFromTable(
-        $t, 
+      $generated= DBXmlGenerator::createFromTable(
+        $this->newTable('deviceinfo', array(
+          'deviceinfo_id' => array(DB_ATTRTYPE_INT, 255), 
+          'serial_number' => array(DB_ATTRTYPE_INT, 16),
+          'text'          => array(DB_ATTRTYPE_TEXT, 255)
+        )),
         'localhost',
         'FOOBAR'
-      )->doc;
+      );
+      $this->xpath= new XPath($generated->getSource());
     }
 
     /**
@@ -57,15 +48,13 @@
      */
     public function newTable($name, $attr) {
       $t= new DBTable($name);
-      foreach ($attr as $key => $temp) {
-        foreach ($temp as $type => $length){
-        } 
+      foreach ($attr as $key => $definitions) {
         $t->attributes[]= new DBTableAttribute(
           $key,
-          $type,
+          $definitions[0],    // Type
           TRUE,
           FALSE,
-          $length
+          $definitions[1]     // Length
         );
       }
       $t->indexes[]= new DBIndex(
