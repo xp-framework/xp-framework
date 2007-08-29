@@ -47,6 +47,15 @@
       $_base        = '';
       
     /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      $this->registerInstance('xp.date', new XSLDateCallback());
+      $this->registerInstance('xp.string', new XSLStringCallback());
+    }
+
+    /**
      * Set base directory
      *
      * @param   string dir
