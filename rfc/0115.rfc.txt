@@ -42,40 +42,38 @@ should make util.Date less error prone - provided that DateTime
 is in use in the PHP community and therefore error tested.
 
 Also, timezone calculations require a timezone database, which
-would be extremely tedious to maintain itself. DateTime, in
-contrary to utilDate, makes use of either a timezone database
+would be extremely tedious to maintain ourselves. DateTime, in
+contrary to util.Date, makes use of either a timezone database
 provided by PHP, or the operating system.
 
 Because it slows down speed of util.Date to update the public
-member variables every time the backing object is been modified,
+member variables every time the backing object has been modified,
 the public members will be removed alltogether.
 
 Removing of format() method
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The format() method relies internally on PHP's strftime() method, which
-is locale-dependant, inconsistently supported by different operating
+is locale-dependant, inconsistently supportted by different operating
 systems and does not support formatting timestamps outside the
 traditional unix timestamp range, eg. before 1970 or after 2038.
 
 A replacement implementation exists in util.Date to fix the range
-problem, but it does not fully support all formatters and is
+problem, but it does not fully support all format tokens and is
 error-prone.
 
 
 Functionality
 -------------
-
 This statement is now true:
 <?php
-  $this->assertEquals(
-    new Date('01.01.2000 00:00:00', '+0100'),   // Berlin
-    new Date('31.12.1999 23:00:00', '+0000')    // London
-  );
+  create(    new Date('01.01.2000 00:00:00', new TimeZone('Europe/Berlin')))   // Berlin
+    ->equals(new Date('31.12.1999 23:00:00', new TimeZone('Europe/London')))   // London
+  ;
 ?>
 
 A date object can be output in a specified timezone:
 <?php
-  echo create(new Date("2007-07-24 22:00:00 Europe/Berlin"))->toString("r", "Australia/Sydney")."\n";
+  echo create(new Date("2007-07-24 22:00:00 Europe/Berlin"))->toString("r", new TimeZone("Australia/Sydney"))."\n";
 ?>
 
 will output:
@@ -85,14 +83,14 @@ Wed, 25 Jul 2007 06:00:00 +1000
 </pre>
 
 Serialization format of an util.Date object will be done using a fully formatted
-date string:
+date string, and will always store the date in GMT.
 <?php
   echo serialize(new Date("2007-07-24 22:00:00 Europe/Berlin"));
 ?>
 
 will output:
 <pre>
-O:4:"Date":1:{s:5:"value";s:24:"2007-07-24T22:00:00+0200";}
+O:4:"Date":2:{s:5:"value";s:24:"2007-07-24 20:00:00+0000";s:4:"__id";N;}
 </pre>
 
 
@@ -115,8 +113,8 @@ Related documents
 -----------------
 - RFC #0036 (initial but a bit different idea)
 
-- http://xp-framework.net/rfc/contrib/rfc0115_2.diff
-  Patch implementing this RFC
+- http://experiments.xp-framework.net/?people,kiesel,rfc0115
+  Classes implementing this RFC
   
 
 Comments
@@ -148,5 +146,11 @@ Comments
   Should util.Date be made mutable and introduce new methods to
   change its state? Should util.DateUtil be marked as deprecated,
   if so?
+
+- kiesel, Wed Aug 29 10:45:38 CEST 2007
+  Dates should remain immutable.
+  
+- kiesel, Wed Aug 29 10:45:57 CEST 2007
+  No new exception will be introduces at this point.
 
 <EOF>
