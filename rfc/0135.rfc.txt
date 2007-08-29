@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Tue Aug 14 21:36:40     2007
-@status: draft
+@status: discussion
 @category: xml
 
 Scope of Change
@@ -42,11 +42,20 @@ time DomXSLProcessor is in use.
 
 Dependencies
 ------------
+- RFC #0115
+  by xml.xslt.XSLDateCallback, but only in parts
 
 Related documents
 -----------------
 
 Comments
 --------
+- kiesel, Wed Aug 29 10:02:50 CEST 2007
+  As this RFC has been announced to be part of XP 5.6.0, all changes
+  that do not depend on RFC #0115, have been committed and the status
+  changed to discussion.
+  As soon as RFC #0115 has been implemented, the remaining parts of
+  this RFC will be committed, too, and the status be set to
+  implemented.
 
 <EOF>
