@@ -46,8 +46,16 @@
       $this->peer= $peer;
       $this->pkeys= array();
       $this->attrs= array();
-      foreach ($this->peer->primary as $key) $this->pkeys[$key]= new JoinTableAttribute($this->id, $key);
-      foreach (array_keys($this->peer->types) as $attr) $this->attrs[$attr]= new JoinTableAttribute($this->id, $attr);
+
+      foreach (array_keys($peer->types) as $attr) $this->attrs[$attr]= new JoinTableAttribute($this->id, $attr);
+
+      foreach ($peer->primary as $key) {
+        if (empty($key)) continue;
+        $this->pkeys[$key]= new JoinTableAttribute($this->id, $key);
+      }
+      if (empty($this->pkeys)) $this->pkeys[$peer->identity]= new JoinTableAttribute($this->id, $peer->identity);
+      if (empty($this->pkeys)) $this->pkeys= $this->attrs;
+
       $this->table= new JoinTable($this->peer->table, $this->id);
     }
 
