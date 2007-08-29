@@ -71,8 +71,8 @@
     <xsl:param name="remove"  select="$prefixRemove" />
     <xsl:variable name="includeSet" select="string:tokenize($include, ',')" />
     <xsl:variable name="excludeSet" select="string:tokenize($exclude, ',')" />
-    <xsl:variable name="excludetest" select="boolean(count($includeSet) = 0) and not(count($excludeSet) = 0) and not($excludeSet/*[name() = $tname])" />
-    <xsl:variable name="includetest" select="not(count($includeSet) = 0) and boolean(count($excludeSet) = 0) and boolean($includeSet/*[name() = $tname])" />
+    <xsl:variable name="excludetest" select="boolean(count($includeSet) = 0) and not(count($excludeSet) = 0) and not($excludeSet[text() = $tname])" />
+    <xsl:variable name="includetest" select="not(count($includeSet) = 0) and boolean(count($excludeSet) = 0) and boolean($includeSet[text() = $tname])" />
     <xsl:variable name="p">
       <xsl:choose>
         <xsl:when test="$includetest or $excludetest"><xsl:value-of select="$prefix" /></xsl:when>
@@ -514,7 +514,7 @@
      * Retrieves an iterator for all </xsl:text><xsl:value-of select="$classname"/><xsl:text> entities referencing
      * this entity by </xsl:text><xsl:value-of select="$keys4apidoc" /><xsl:text>
      *
-     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="$fullclassname"/><xsl:text>
+     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="$fullclassname"/><xsl:text>&gt;
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
