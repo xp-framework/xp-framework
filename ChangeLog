@@ -23,6 +23,8 @@ RFCs
   (friebe)
 - Implemented RFC #0133 - Add support for filenames as argument for XPCLI
   (friebe)
+- Implemented RFC #0135 - Default callbacks for XSLT
+  (kiesel)
   
 Bugfixes
 ~~~~~~~~~
