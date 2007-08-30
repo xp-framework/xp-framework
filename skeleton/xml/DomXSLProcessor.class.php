@@ -8,7 +8,9 @@
     'xml.TransformerException',
     'io.FileNotFoundException',
     'xml.IXSLProcessor',
-    'xml.XSLCallback'
+    'xml.XSLCallback',
+    'xml.xslt.XSLDateCallback',
+    'xml.xslt.XSLStringCallback'
   );
   
   /**
