@@ -222,5 +222,31 @@
         $this->assertTrue((bool)strstr($e->getMessage(), "Entity 'nbsp' not defined"));
       }
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function defaultCallbacks() {
+
+      // Should work
+      $this->processor->setXMLBuf('<document><string>lower string</string></document>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0"
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+         xmlns:php="http://php.net/xsl"
+         exclude-result-prefixes="php"
+        >
+          <xsl:output method="xml" encoding="utf-8"/>
+          <xsl:template match="/document">
+            <i><xsl:value-of select="php:function(\'XSLCallback::invoke\', \'xp.string\', \'strtoupper\', string(string))"/></i>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertXmlEquals('<i>LOWER STRING</i>', $this->processor->output());
+    }
+    
   }
 ?>
