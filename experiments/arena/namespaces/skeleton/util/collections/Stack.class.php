@@ -53,7 +53,7 @@
      * @param   lang.Generic object
      * @return  lang.Generic object
      */
-    public function push(lang::Generic $object) {
+    public function push( $object) {
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -115,7 +115,7 @@
      * @param   lang.Generic object
      * @return  int position
      */
-    public function search(lang::Generic $object) {
+    public function search( $object) {
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }

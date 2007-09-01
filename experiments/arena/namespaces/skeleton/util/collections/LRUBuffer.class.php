@@ -46,7 +46,7 @@
      * @param   lang.Generic element
      * @return  lang.Generic victim
      */
-    public function add(lang::Generic $element) {
+    public function add( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
@@ -72,7 +72,7 @@
      *
      * @param   lang.Generic element
      */
-    public function update(lang::Generic $element) {
+    public function update( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }

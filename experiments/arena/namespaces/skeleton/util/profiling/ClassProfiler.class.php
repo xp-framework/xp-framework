@@ -131,7 +131,7 @@
     public function toString() {
       $vals= array_unique(array_merge(array_keys ($this->timer), array_keys ($this->calls)));
       $t= sprintf ("Profiling information for class %s\n", 
-        (is('Generic', $this->_profilee) 
+        (::is('Generic', $this->_profilee) 
           ? $this->_profilee->getClassName() 
           : get_class ($this->_profilee)
       ));

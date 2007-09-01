@@ -32,7 +32,7 @@
     public function getInstance() {
       static $instance= NULL;
       
-      if (NULL === $instance) $instance= new ();
+      if (NULL === $instance) $instance= new VirtualFileManager();
       return $instance;
     }
     

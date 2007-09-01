@@ -19,7 +19,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add(lang::Generic $object);
+    public function add( $object);
 
     /**
      * Removes an object from this set
@@ -27,7 +27,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove(lang::Generic $object);
+    public function remove( $object);
 
     /**
      * Removes an object from this set
@@ -35,7 +35,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains(lang::Generic $object);
+    public function contains( $object);
 
     /**
      * Returns this set's size

@@ -28,7 +28,7 @@
      * @param   lang.Generic value
      * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value);
+    public function put($key,  $value);
 
     /**
      * Returns the value to which this map maps the specified key. 
@@ -81,7 +81,7 @@
      * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value);
+    public function containsValue( $value);
 
     /**
      * Returns a hashcode for this map

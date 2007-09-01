@@ -73,8 +73,8 @@
      */
     public static function inDst($date, $method= CAL_DST_EU) {
       return (
-        $date->isAfter(::dstBegin($date->getYear(), $method)) &&
-        $date->isBefore(::dstEnd($date->getYear()))
+        $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
+        $date->isBefore(Calendar::dstEnd($date->getYear()))
       );
     }
   
@@ -169,7 +169,7 @@
       $d= $date->getTime();
       $y= $date->year + 1;
       do {
-        $w= ::caldiff($d, $y);
+        $w= Calendar::caldiff($d, $y);
         $y--;
       } while ($w < 1);
 

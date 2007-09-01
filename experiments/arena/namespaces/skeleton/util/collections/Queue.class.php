@@ -51,7 +51,7 @@
      * @param   lang.Generic object
      * @return  lang.Generic object
      */
-    public function put(lang::Generic $object) {
+    public function put( $object) {
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -115,7 +115,7 @@
      * @param   lang.Generic object
      * @return  int position
      */
-    public function search(lang::Generic $object) {
+    public function search( $object) {
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -129,7 +129,7 @@
      * @return  lang.Generic
      * @return  bool
      */
-    public function remove(lang::Generic $object) {
+    public function remove( $object) {
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -172,7 +172,7 @@
      */
     public function equals($cmp) {
       return (
-        is('util.collections.Queue', $cmp) && 
+        ::is('util.collections.Queue', $cmp) && 
         ($this->hashCode() === $cmp->hashCode())
       );
     }

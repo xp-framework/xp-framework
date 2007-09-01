@@ -68,7 +68,7 @@
      *
      * @param   lang.XPClass class
      */
-    public static function showUsage(lang::XPClass $class) {
+    public static function showUsage( $class) {
 
       // Description
       if (NULL !== ($comment= $class->getComment())) {
@@ -128,7 +128,7 @@
      * @return  int
      */
     public static function main(array $args) {
-      return create(new self())->run(new ParamString($args));
+      return ::create(new self())->run(new ParamString($args));
     }
     
     /**
@@ -137,7 +137,7 @@
      * @param   io.streams.OutputStream out
      * @return  io.streams.OutputStream the given output stream
      */
-    public function setOut(io::streams::OutputStream $out) {
+    public function setOut( $out) {
       self::$out= new io::streams::StringWriter($out);
       return $out;
     }
@@ -148,7 +148,7 @@
      * @param   io.streams.OutputStream error
      * @return  io.streams.OutputStream the given output stream
      */
-    public function setErr(io::streams::OutputStream $err) {
+    public function setErr( $err) {
       self::$err= new io::streams::StringWriter($err);
       return $err;
     }
@@ -159,7 +159,7 @@
      * @param   util.cmd.ParamString params
      * @return  int
      */
-    public function run(ParamString $params) {
+    public function run( $params) {
 
       // No arguments given - show our own usage
       if ($params->count <= 1) {

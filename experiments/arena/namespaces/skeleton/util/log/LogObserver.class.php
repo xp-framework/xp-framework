@@ -29,7 +29,7 @@
       
       if (!isset ($inst[$arg])) {
         $log= Logger::getInstance();
-        $inst[$arg]= new ();
+        $inst[$arg]= new LogObserver();
         $inst[$arg]->cat= $log->getCategory($arg);
       }
       

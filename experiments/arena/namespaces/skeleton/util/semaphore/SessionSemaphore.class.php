@@ -41,7 +41,7 @@
      * @param   string name default 'semaphore'
      */
     public function __construct($storage, $name= 'semaphore') {
-      if (!is('scriptlet.HttpSession', $storage))
+      if (!::is('scriptlet.HttpSession', $storage))
         throw(new lang::IllegalArgumentException('Given argument is not a HttpSession'));
       
       parent::__construct($storage, 'xp-'.$name);

@@ -71,7 +71,7 @@
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     public function setTrace($cat) {
-      if (NULL !== $cat && !is('LogCategory', $cat)) {
+      if (NULL !== $cat && !::is('LogCategory', $cat)) {
         throw(new lang::IllegalArgumentException('Argument passed is not a LogCategory'));
       }
       

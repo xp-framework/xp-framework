@@ -185,7 +185,7 @@
      * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
     public function merge($map, $recursive= FALSE) {
-      if (is('Hashmap', $map)) {
+      if (::is('Hashmap', $map)) {
         $h= $map->_hash;
       } else if (is_array($map)) {
         $h= $map;
@@ -314,7 +314,7 @@
      * @return  boolean
      */
     public function equals($cmp) {
-      return is('util.Hashmap', $cmp) && ($this->_hash === $cmp->_hash);
+      return ::is('util.Hashmap', $cmp) && ($this->_hash === $cmp->_hash);
     }
     
     /**

@@ -76,7 +76,7 @@
      * @param   lang.Generic value
      * @return  lang.Generic the previous value associated with the key
      */
-    public function put($key, $value) {
+    public function put($key,  $value) {
       $k= lang::Primitive::boxed($key);
       
       if ($this->__generic) {
@@ -197,7 +197,7 @@
      * @param   lang.Generic value
      * @return  bool
      */
-    public function containsValue($value) {
+    public function containsValue( $value) {
       if ($this->__generic) {
         if (!$value instanceof $this->__generic[1]) {
           throw new lang::IllegalArgumentException('Value '.::xp::stringOf($value).' must be of '.$this->__generic[1]);

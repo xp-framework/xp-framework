@@ -82,7 +82,7 @@
      * @return  util.Date
      */
     public static function getBeginningOfWeek($date) {
-      return ::addDays(::getMidnight($date), -$date->getDayOfWeek());
+      return DateUtil::addDays(DateUtil::getMidnight($date), -$date->getDayOfWeek());
     }
 
     /**
@@ -100,7 +100,7 @@
         $date->getDay(),
         $date->getYear()
       ));
-      return ::addDays($date, 6 - $date->wday);
+      return DateUtil::addDays($date, 6 - $date->wday);
     }
 
     /**
@@ -129,7 +129,7 @@
      * @return  util.Date
      */
     public static function addWeeks($date, $count= 1) {
-      return ::addDays($date, $count * 7);
+      return DateUtil::addDays($date, $count * 7);
     }
     
     /**

@@ -25,7 +25,7 @@
       $__generic = array();
 
     static function __static() {
-      self::$iterate= newinstance('Iterator', array(), '{
+      self::$iterate= ::newinstance('Iterator', array(), '{
         private $i= 0, $v;
         public function on($v) { $self= new self(); $self->v= $v; return $self; }
         public function current() { return $this->v[$this->i]; }
@@ -96,7 +96,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add(lang::Generic $object) { 
+    public function add( $object) { 
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -114,7 +114,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove(lang::Generic $object) { 
+    public function remove( $object) { 
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }
@@ -132,7 +132,7 @@
      * @param   lang.Generic object
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains(lang::Generic $object) { 
+    public function contains( $object) { 
       if ($this->__generic && !$object instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Object '.::xp::stringOf($object).' must be of '.$this->__generic[0]);
       }

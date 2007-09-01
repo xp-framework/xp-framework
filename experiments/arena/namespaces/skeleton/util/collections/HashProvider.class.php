@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: HashProvider.class.php 10594 2007-06-11 10:04:54Z friebe $ 
+ * $Id: HashProvider.class.php 10998 2007-09-01 14:12:03Z friebe $ 
  */
 
   namespace util::collections;
@@ -71,12 +71,7 @@
      * @param   util.collections.HashImplementation impl
      * @throws  lang.IllegalArgumentException when impl is not a HashImplementation
      */
-    public function setImplementation($impl) {
-      if (!::is('util.collections.HashImplementation', $impl)) {
-        throw(new lang::IllegalArgumentException(
-          'Implementation is not a HashImplementation, '.::xp::typeOf($impl).' given'
-        ));
-      }
+    public function setImplementation( $impl) {
       $this->impl= $impl;
     }
 

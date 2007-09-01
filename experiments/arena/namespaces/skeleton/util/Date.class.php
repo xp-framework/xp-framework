@@ -340,7 +340,7 @@
      * @return  bool TRUE if dates are equal
      */
     public function equals($cmp) {
-      return is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
+      return ::is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
     }    
     
     /**

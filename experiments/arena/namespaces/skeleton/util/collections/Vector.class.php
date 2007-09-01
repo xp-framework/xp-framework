@@ -26,7 +26,7 @@
       $__generic = array();
 
     static function __static() {
-      self::$iterate= newinstance('Iterator', array(), '{
+      self::$iterate= ::newinstance('Iterator', array(), '{
         private $i= 0, $v;
         public function on($v) { $self= new self(); $self->v= $v; return $self; }
         public function current() { return $this->v[$this->i]; }
@@ -135,7 +135,7 @@
      * @return  lang.Generic the added element
      * @throws  lang.IllegalArgumentException
      */
-    public function add(lang::Generic $element) {
+    public function add( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
@@ -154,7 +154,7 @@
      * @return  lang.Generic the element previously at the specified position.
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function set($index, lang::Generic $element) {
+    public function set($index,  $element) {
       if ($index < 0 || $index >= $this->size) {
         throw new lang::IndexOutOfBoundsException('Offset '.$index.' out of bounds');
       }
@@ -227,7 +227,7 @@
      * @param   lang.Generic element
      * @return  bool
      */
-    public function contains(lang::Generic $element) {
+    public function contains( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
@@ -244,7 +244,7 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf(lang::Generic $element) {
+    public function indexOf( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
@@ -261,7 +261,7 @@
      * @param   lang.Generic element
      * @return  int offset where the element was found or FALSE
      */
-    public function lastIndexOf(lang::Generic $element) {
+    public function lastIndexOf( $element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
         throw new lang::IllegalArgumentException('Element '.::xp::stringOf($element).' must be of '.$this->__generic[0]);
       }

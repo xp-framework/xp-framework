@@ -36,7 +36,7 @@
     }
     
     public function annotatedWith($annnotation) {
-      $this->filter= newinstance('lang.Object', array($annnotation), '{
+      $this->filter= ::newinstance('lang.Object', array($annnotation), '{
         public function __construct($annotation) {
           $this->annotation= $annotation;
         }
@@ -63,7 +63,7 @@
       return $this;   // X and X
     }
 
-    public function in(lang::XPClass $class) {
+    public function in( $class) {
       $filtered= array();
       foreach ($class->getMethods() as $method) {
         $this->filter->accept($method) && $filtered[]= $method;

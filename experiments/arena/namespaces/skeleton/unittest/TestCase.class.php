@@ -148,7 +148,7 @@
         return TRUE;
       } 
       
-      return ::is('Generic', $a) ? $a->equals($b) : $a === $b;
+      return $a instanceof lang::Generic ? $a->equals($b) : $a === $b;
     }
 
     /**

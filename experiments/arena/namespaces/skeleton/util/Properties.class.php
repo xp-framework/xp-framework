@@ -63,7 +63,7 @@
      * @return  util.Properties
      */
     public static function fromString($str) {
-      with ($prop= new Properties(NULL)); {
+      ::with ($prop= new Properties(NULL)); {
         $section= NULL;
         $prop->_data= array();
         if ($t= strtok($str, "\r\n")) do {
@@ -157,7 +157,7 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
-            if (is('Hashmap', $val)) {
+            if (::is('Hashmap', $val)) {
               $str= '';
               foreach ($val->keys() as $k) {
                 $str.= '|'.$k.':'.$val->get($v);
@@ -443,7 +443,7 @@
     public function writeHash($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      if (is('Hashmap', $value)) {
+      if (::is('Hashmap', $value)) {
         $this->_data[$section][$key]= $value;
       } else {
         $this->_data[$section][$key]= new Hashmap($value);

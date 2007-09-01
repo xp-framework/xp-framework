@@ -66,7 +66,7 @@
      * @return  util.Locale
      */
     public static function getDefault() {
-      return new (('C' == ($locale= setlocale(LC_ALL, NULL)) 
+      return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
       ));
