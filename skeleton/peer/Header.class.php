@@ -70,7 +70,7 @@
      */
     public static function fromString($str) {
       list($k, $v)= explode(': ', $str, 2);
-      return new Header($k, $v);
+      return new self($k, $v);
     }
   }
 ?>
