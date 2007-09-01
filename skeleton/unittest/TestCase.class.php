@@ -234,8 +234,8 @@
      * @return  bool
      */
     public function assertSubclass($var, $name, $error= 'notsubclass') {
-      if (!is('Generic', $var)) {
-        return $this->fail($error, $pattern, $var);
+      if (!($var instanceof Generic)) {
+        return $this->fail($error, $var, $error);
       }
       if (!is($name, $var)) {
         return $this->fail($error, $name, $var->getClassName());
