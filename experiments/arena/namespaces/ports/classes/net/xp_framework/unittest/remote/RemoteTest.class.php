@@ -1,0 +1,174 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id: RemoteTest.class.php 9563 2007-03-07 13:13:00Z friebe $
+ */
+
+  namespace net::xp_framework::unittest::remote;
+
+  ::uses(
+    'unittest.TestCase',
+    'net.xp_framework.unittest.remote.MockProtocolHandler',
+    'net.xp_framework.unittest.remote.Person',
+    'remote.Remote',
+    'remote.HandlerInstancePool',
+    'remote.HandlerFactory'
+  );
+
+  define('REMOTE_SPEC_ONE',   'mock://remote.host1');
+  define('REMOTE_SPEC_TWO',   'mock://remote.host2');
+  define('REMOTE_SPEC_THREE', 'mock://remote.host3');
+  define('REMOTE_SPEC_OTHER', 'mock://other.host');
+
+  /**
+   * Unit test for Remote (entry-point) class
+   *
+   * @see      xp://remote.Remote
+   * @purpose  TestCase
+   */
+  class RemoteTest extends unittest::TestCase {
+    public
+      $handler= array();
+
+    static function __static() {
+      remote::HandlerFactory::getInstance()->register(
+        'mock', 
+        lang::XPClass::forName('net.xp_framework.unittest.remote.MockProtocolHandler')
+      );
+    }
+    
+    /**
+     * Setup method
+     *
+     */
+    public function setUp() {
+      $pool= remote::HandlerInstancePool::getInstance();
+      
+      foreach (array(
+        REMOTE_SPEC_ONE     => TRUE,    // Cluster machine #1
+        REMOTE_SPEC_TWO     => FALSE,   // Cluster machine #2
+        REMOTE_SPEC_THREE   => FALSE,   // Cluster machine #3
+        REMOTE_SPEC_OTHER   => TRUE     // Other machine
+      ) as $spec => $avail) {
+        $this->handler[$spec]= $pool->acquire($spec);
+        $this->handler[$spec]->server['available']= $avail;
+      }
+    }
+    
+    /**
+     * Test handler member is an array of MockProtocolHandlers
+     *
+     */
+    #[@test]
+    public function mockHandler() {
+      foreach ($this->handler as $handler) {
+        $this->assertClass($handler, 'net.xp_framework.unittest.remote.MockProtocolHandler');
+      }
+    }
+    
+    /**
+     * Test forName() returns a Remote instance.
+     *
+     */
+    #[@test]
+    public function forNameSucceeds() {
+      remote::Remote::forName(REMOTE_SPEC_ONE);
+    }
+
+    /**
+     * Test forName() method throws a RemoteException in case connecting
+     * to the remote side fails
+     *
+     */
+    #[@test, @expect('remote.RemoteException')]
+    public function forNameFailsToConnect() {
+      remote::Remote::forName(REMOTE_SPEC_TWO);
+    }
+
+    /**
+     * Test forName() method succeeds for a cluster with one machine 
+     * down and one running (either way around)
+     *
+     */
+    #[@test]
+    public function forNameSucceedsForCluster() {
+      remote::Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_ONE);
+      remote::Remote::forName(REMOTE_SPEC_ONE.','.REMOTE_SPEC_TWO);
+    }
+
+    /**
+     * Test forName() method succeeds for a cluster with all machines
+     * down.
+     *
+     */
+    #[@test, @expect('remote.RemoteException')]
+    public function forNameFailsToConnectCluster() {
+      remote::Remote::forName(REMOTE_SPEC_TWO.','.REMOTE_SPEC_THREE);
+      remote::Remote::forName(REMOTE_SPEC_THREE.','.REMOTE_SPEC_TWO);
+    }
+
+    /**
+     * Test forName() returns the same Remote instance when invoked
+     * twice with the same DSN.
+     *
+     */
+    #[@test]
+    public function forNameSameInstance() {
+      $this->assertTrue(remote::Remote::forName(REMOTE_SPEC_ONE) === remote::Remote::forName(REMOTE_SPEC_ONE), 'a != a');
+      $this->assertTrue(remote::Remote::forName(REMOTE_SPEC_ONE) !== remote::Remote::forName(REMOTE_SPEC_OTHER), 'a == b');
+    }
+
+    /**
+     * Test forName() method throws a RemoteException in case the
+     * protocol is unknown.
+     *
+     */
+    #[@test, @expect('remote.RemoteException')]
+    public function forNameFailsForUnknownProtocol() {
+      remote::Remote::forName('unknown://irrelevant');
+    }
+
+    /**
+     * Test forName() with and without parameters in DSN string to return
+     * always the same handler object (required to make transactions work)
+     *
+     * @access public
+     */
+    #[@test]
+    public function forNameEqualsWithDifferentQueryString() {
+      $remote1= remote::Remote::forName(REMOTE_SPEC_ONE);
+      
+      // HACK: Reset initialization status to FALSE otherwise it will be
+      // initialized again and we get "Already initialized" exception
+      $this->handler[REMOTE_SPEC_ONE]->server['initialized']= FALSE;
+      
+      $remote2= remote::Remote::forName(REMOTE_SPEC_ONE.'?log=default');
+      $this->assertEquals($remote1->_handler, $remote2->_handler);
+    }
+ 
+    /**
+     * Test lookup() method
+     *
+     */
+    #[@test]
+    public function lookup() {
+      $r= remote::Remote::forName(REMOTE_SPEC_ONE);
+      
+      // Bind a person object
+      $person= new Person();
+      $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= $person;
+
+      // Lookup the person object
+      $this->assertEquals($person, $r->lookup('xp/demo/Person'));
+    }
+
+    /**
+     * Test lookup() method
+     *
+     */
+    #[@test, @expect('remote.NameNotFoundException')]
+    public function lookupNonExistantName() {
+      remote::Remote::forName(REMOTE_SPEC_ONE)->lookup('does/not/Exist');
+    }
+  }
+?>
