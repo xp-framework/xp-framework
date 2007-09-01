@@ -298,7 +298,7 @@
      * @return  bool
      */
     public function isEnum() {
-      return $this->_reflect->isSubclassOf('Enum');
+      return $this->_reflect->isSubclassOf('lang::Enum');
     }
     
     /**
