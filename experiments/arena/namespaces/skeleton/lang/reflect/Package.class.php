@@ -61,7 +61,7 @@
      * @return  lang.XPClass[]
      */
     public function getClasses() { 
-      return array_map(array('XPClass', 'forName'), $this->getClassNames());
+      return array_map(array('lang::XPClass', 'forName'), $this->getClassNames());
     }
 
     /**
@@ -104,7 +104,7 @@
      * @return  lang.reflect.Package[]
      */
     public function getPackages() {
-      return array_map(array('Package', 'forName'), $this->getPackageNames());
+      return array_map(array('lang::reflect::Package', 'forName'), $this->getPackageNames());
     } 
 
     /**
@@ -128,7 +128,7 @@
     public function getResources() {
       $resources= array();
       foreach (lang::ClassLoader::getDefault()->packageContents($this->name) as $file) {
-        if ('/' == substr($file, -1) || ::xp::CLASS_FILE_EXT == substr($file, -10)) continue;
+        if ('/' == substr($file, -1) || CLASS_FILE_EXT == substr($file, -10)) continue;
         $resources[]= strtr($this->name, '.', '/').'/'.$file;
       }
       return $resources;
