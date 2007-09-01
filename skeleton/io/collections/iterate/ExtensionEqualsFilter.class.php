@@ -40,7 +40,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'("'.$this->compare.'")';
+      return $this->getClassName().'("'.$this->extension.'")';
     }
   
   } 
