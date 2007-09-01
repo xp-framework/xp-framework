@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: TestCase.class.php 10969 2007-08-27 17:01:44Z friebe $ 
+ * $Id: TestCase.class.php 11002 2007-09-01 15:39:54Z friebe $ 
  */
 
   namespace unittest;
@@ -218,8 +218,8 @@
      * @return  bool
      */
     public function assertClass($var, $name, $error= 'notequal') {
-      if (!::is('Generic', $var)) {
-        return $this->fail($error, $var, $pattern);
+      if (!($var instanceof lang::Generic)) {
+        return $this->fail($error, $var, $error);
       }
       if ($var->getClassName() !== $name) {
         return $this->fail($error, $var->getClassName(), $name);
