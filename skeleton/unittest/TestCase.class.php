@@ -216,8 +216,8 @@
      * @return  bool
      */
     public function assertClass($var, $name, $error= 'notequal') {
-      if (!is('Generic', $var)) {
-        return $this->fail($error, $var, $pattern);
+      if (!($var instanceof Generic)) {
+        return $this->fail($error, $var, $error);
       }
       if ($var->getClassName() !== $name) {
         return $this->fail($error, $var->getClassName(), $name);
