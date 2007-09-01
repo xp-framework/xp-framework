@@ -146,7 +146,7 @@
         return TRUE;
       } 
       
-      return is('Generic', $a) ? $a->equals($b) : $a === $b;
+      return $a instanceof Generic ? $a->equals($b) : $a === $b;
     }
 
     /**
