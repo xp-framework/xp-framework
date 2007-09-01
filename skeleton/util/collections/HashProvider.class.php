@@ -69,12 +69,7 @@
      * @param   util.collections.HashImplementation impl
      * @throws  lang.IllegalArgumentException when impl is not a HashImplementation
      */
-    public function setImplementation($impl) {
-      if (!is('util.collections.HashImplementation', $impl)) {
-        throw(new IllegalArgumentException(
-          'Implementation is not a HashImplementation, '.xp::typeOf($impl).' given'
-        ));
-      }
+    public function setImplementation(HashImplementation $impl) {
       $this->impl= $impl;
     }
 
