@@ -1,0 +1,52 @@
+RFC 0136: Embrace PHP namespaces
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Sun Sep  2 17:18:35     2007
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Adapt to PHP namespaces once they're released officially.
+
+
+Rationale
+---------
+Once and for all remove the need to prefix classes.
+
+
+Functionality
+-------------
+All XP classes will be namespaced.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- PHP with namespaces support (current plans: 5.3)
+- RFC #0037 - will be deprecated
+
+
+Related documents
+-----------------
+- http://xp-framework.info/xml/xp.en_US/news/view?206
+  Namespaces briefing
+
+- http://experiments.xp-framework.net/?arena,namespaces
+  Sneak preview
+
+Comments
+--------
+
+<EOF>
