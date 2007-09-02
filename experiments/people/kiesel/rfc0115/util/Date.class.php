@@ -7,7 +7,7 @@
   /**
    * The class Date represents a specific instant in time.
    *
-   * @test     xp://net.xp_framework.unittest.DateTest
+   * @test     xp://net.xp_framework.unittest.util.DateTest
    * @purpose  Represent a date
    */
   class Date extends Object {
@@ -345,6 +345,57 @@
       date_timezone_set($this->date, $origtz);
       
       return $formatted;
+    }
+    
+    /**
+     * Format a date by the given strftime()-like format string
+     *
+     * @see     php://strftime
+     * @param   string format
+     * @return  string
+     * @throws  lang.IllegalArgumentException if unsupported token has been given
+     */
+    public function format($format) {
+      return preg_replace_callback('#%([a-zA-Z])#', array($this, 'formatCallback'), $format);
+    }
+    
+    /**
+     * Format callback function. Do not use directly
+     *
+     * @param   string[] matches
+     * @return  string
+     * @throws  lang.IllegalArgumentException if unsupported token has been given
+     */
+    public function formatCallback($matches) {
+      static $map= array(
+        'd' => 'd',
+        'm' => 'm',
+        'Y' => 'Y',
+        'H' => 'H',
+        'i' => 'i',
+        'S' => 's',
+        'w' => 'w',
+        'G' => 'o',
+        'D' => 'm/d/Y',
+        'T' => 'H:i:s',
+        'Z' => 'e',
+        'G' => 'o',
+        'V' => 'W'
+      );
+      static $rep= array(
+        't' => "\t",
+        'n' => "\n",
+      );
+      
+      if (isset($map[$matches[1]])) return $this->toString($map[$matches[1]]);
+      if (isset($rep[$matches[1]])) return $rep[$matches[1]];
+      
+      // Other tokens that are actually supported by strftime() have been
+      // left out intentionally, because either they are
+      // a) hard to implement and never / seldom used in the framework
+      // b) locale-dependent, this should not be supported in any
+      //    way by the framework.
+      throw new IllegalArgumentException('Illegal date format token: "'.$matches[1].'"');
     }
   }
 ?>

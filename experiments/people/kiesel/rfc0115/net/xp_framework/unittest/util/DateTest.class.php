@@ -218,5 +218,25 @@
       $this->assertEquals('Europe/Athens', $original->getTimezoneName());
       $this->assertEquals(3 * 3600, $original->getOffsetToGMT());
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function supportedFormatTokens() {
+      $this->assertEquals('1977', $this->refDate->format('%Y'));
+      $this->assertEquals('12/14/1977 11:55:00', $this->refDate->format('%D %T'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unsupportedFormatToken() {
+      $this->refDate->format('%b');
+    }
+    
   }
 ?>
