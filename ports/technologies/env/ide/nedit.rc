@@ -291,7 +291,7 @@ nedit.macroCommands: \
 	Create XP CLI class@PHP:Shift+Alt+F::: {\n\
 		create_xp_cli()\n\
 	}\n\
-	Create XP testcase@PHP:Shift+Alt+R::: {\n\
+	Create XP testcase@PHP:Shift+Alt+T::: {\n\
 		create_xp_testcase()\n\
 	}\n\
 	Create XP testmethod@PHP:Alt+T::: {\n\
@@ -518,7 +518,7 @@ nedit.highlightPatterns: C:1:0{\n\
 	PHP:1:0{\n\
 		phptags:"\\<\\?php":"\\?\\>"::Plain::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment:phptags:\n\
-		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param)":::Text Key1:doccomment:\n\
+		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param|test)":::Text Key1:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2:phptags:\n\
 		inlinecomment:"//":"$"::Comment:phptags:\n\
 		double quote strings:"""":""""::String:phptags:\n\
@@ -534,7 +534,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		classname:"([A-Za-z_·:]+)?(::)([A-Za-z_]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
 		knownconstants:"(NULL|FALSE|TRUE)":::KnownConstant:phptags:\n\
-		constants:"(<[A-Z_]+>)":::Ada Attributes:phptags:\n\
+		constants:"(<[A-Z_0-9]+>)":::Ada Attributes:phptags:\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment:phptags:\n\
 	}\n\
 	CSS:Default\n\
