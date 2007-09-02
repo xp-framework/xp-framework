@@ -93,6 +93,64 @@ What can be seen:
 </pre>
 
 
+uses() vs. import
+~~~~~~~~~~~~~~~~~
+We figured the following would be rather ugly:
+<?php
+  uses('com.oneandone.qf.QfId');
+ 
+  import com::oneandone::qf::QfId;
+ 
+  $id= new QfId();
+?>
+...because from looking at this, somehow the import seems to happen twice. 
+In reality though, uses() loads classes by their fully qualified 
+name by means which boil down to include.
+
+We basically came up with the following alternatives:
+<pre>
+1) Add special syntax to uses() such as com.oneandone.qf.QfId:QfId or 
+   prefixing class names with "+" for importing
+2) Rely on autoloading
+3) Don't change anything and use the above
+</pre>
+
+From these, the second sounds promising - given that autoload isn't as
+slow as everybody's saying (this will need to be profiled) - it's 
+also the sexiest. Here's an idea:
+
+QfId.class.php
+<?php
+  namespace com::oneandone::qf;
+ 
+  class QfId extends lang::Object {
+    protected $value= 0;
+ 
+    public function __construct($value) {
+      $this->value= $value;
+    }
+ 
+    public function equals(lang::Generic $cmp) {
+      return $cmp instanceof self && $cmp->value === $this->value;
+    }
+  }
+?>
+
+QfIdTest.class.php
+<?php
+  namespace com::oneandone::qf::tests;
+
+  import com::oneandone::qf::QfId;
+
+  class QfIdTest extends unittest::TestCase {
+ 
+    #[@test]
+    public function equality() {
+      $this->assertEquals(new QfId(0), new QfId(0));
+    }
+  }
+?>
+
 Security considerations
 -----------------------
 n/a
@@ -125,5 +183,10 @@ Related documents
 
 Comments
 --------
+- friebe, Sun Sep  2 20:34:58     2007
+  The migrated version currently does not contain import statements but 
+  instead ::uses() and only fully qualified names for foreign packages. 
+  The reason for this is that an __autoload() / import constellation 
+  has some weird side effetcs that need to be investigated.
 
 <EOF>
