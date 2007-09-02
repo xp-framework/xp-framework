@@ -45,4 +45,8 @@ Comments
   This simplifies retrieving @test tags for unittests, which
   is why I came to this.
 
+- friebe, Sun Sep  2 20:52:12     2007
+  Maybe @test should be made an annotation in this case? These
+  are already retrievable by reflection at runtime...
+
 <EOF>
