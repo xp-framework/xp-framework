@@ -101,7 +101,7 @@
       $date= new Date('2007-01-01 00:00 Australia/Sydney');
       $this->assertEquals(
         new Date('2006-12-31 14:00:00 Europe/Berlin'),
-        $this->fixture->convertDate($date)
+        $this->fixture->translate($date)
       );
     }
     

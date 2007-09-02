@@ -14,18 +14,12 @@
   /**
    * Date math functions
    *
-   * @ext      ext/date
-   * @see      reference
-   * @purpose  purpose
+   * @ext       ext/date
+   * @test      xp://net.xp_framework.unittest.util.DateMathTest
+   * @see       xp://util.Date
+   * @purpose   Date calculations
    */
   class DateMath extends Object {
-    const
-      YEAR    = 'year',
-      MONTH   = 'month',
-      DAY     = 'day',
-      HOURS   = 'hours',
-      MINUTES = 'minutes',
-      SECONDS = 'seconds';
 
     /**
      * Diff two date objects. Only full units are returned.
@@ -39,7 +33,7 @@
     
       // Convert date2 to same timezone as date1, then "cut off" tz
       // $date1= create(new TimeZone('GMT'))->convertDate($date1);
-      $date2= $date1->getTimeZone()->convertDate($date2);
+      $date2= $date1->getTimeZone()->translate($date2);
       $date1= DateUtil::setTimeZone($date1, new TimeZone('GMT'));
       $date2= DateUtil::setTimeZone($date2, new TimeZone('GMT'));
       

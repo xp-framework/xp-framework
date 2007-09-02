@@ -17,9 +17,6 @@
    * @ext       datetime
    * @see       php://datetime
    * @see       php://timezones
-   * @see       http://greenwichmeanTime.com/info/Timezone.htm
-   * @see       http://www.worldtimezone.com/wtz-names/timezonenames.html
-   * @see       http://scienceworld.wolfram.com/astronomy/TimeZone.html
    * @purpose   Time zone calculation
    */
   class TimeZone extends Object {
@@ -36,23 +33,22 @@
     public function __construct($tz) {
       switch (TRUE) {
         case is_string($tz): {
-          if (FALSE === ($this->tz= timezone_open($tz)))
-            throw new IllegalArgumentException('Unknown timezone: "'.$tz.'"');
-          return;
+          $this->tz= timezone_open($tz); 
+          break;
         }
         
         case is_null($tz): {
-          if (FALSE === ($this->tz= timezone_open(date_default_timezone_get())))
-            throw new IllegalArgumentException('Unknown timezone: "'.$tz.'"');
-          return;
+          $this->tz= timezone_open(date_default_timezone_get()); 
+          break;
         }
         
         case $tz instanceof DateTimeZone: {
           $this->tz= $tz;
-          return;
         }
-        
-        default: throw new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
+      }
+      
+      if (!$this->tz instanceof DateTimeZone) {
+        throw new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
       }
     }
     
@@ -132,30 +128,18 @@
     }
     
     /**
-     * Converts a date from one timezone to a date of this
-     * timezone.
+     * Translates a date from one timezone to a date of this timezone.
+     * The value of the date is not changed by this operation.
      *
      * @param   util.Date date
-     * @param   util.TimeZone tz
      * @return  util.Date
      */
-    public function convertDate(Date $date) {
+    public function translate(Date $date) {
       $handle= clone $date->getHandle();
       date_timezone_set($handle, $this->tz);
       return new Date($handle);
     }
 
-    /**
-     * Converts a date in the machines local timezone to a date in this
-     * timezone.
-     *
-     * @param   util.Date date
-     * @return  util.Date
-     */    
-    public function convertLocalDate(Date $date) {
-      return $this->convertDate($date, TimeZone::getLocal());
-    }
-    
     /**
      * Retrieve date of the next timezone transition at the given
      * date for this timezone.

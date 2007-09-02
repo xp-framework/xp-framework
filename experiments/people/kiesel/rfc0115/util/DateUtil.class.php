@@ -217,7 +217,7 @@
      * @return  util.Date
      */
     public static function moveToTimezone(Date $date, TimeZone $tz) {
-      return $tz->convertDate($date);
+      return $tz->translate($date);
     }
     
     /**

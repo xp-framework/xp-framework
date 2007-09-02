@@ -20,7 +20,7 @@
   /**
    * Calendar class
    *
-   * @test     xp://net.xp_framework.unittest.DateTest
+   * @test     xp://net.xp_framework.unittest.util.CalendarTest
    * @purpose  Utility functions for date calculations
    */
   class Calendar extends Object {
