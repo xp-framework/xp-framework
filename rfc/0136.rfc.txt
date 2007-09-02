@@ -85,7 +85,11 @@ What can be seen:
   with double colons (XPClass[util.Date] = Class[util::Date]).
 * Classes from the same package are unqualified (IOCollection), while
   classes from foreign packages (IOException, Date, Object) are written
-  using their fully qualified names)
+  using their fully qualified names.
+* The Object class is used in its fully qualified form. An auto-import
+  for all classes in the "lang" package as known from the Java programming
+  language is not available due to the generic way namespaces are
+  implemented in the PHP language!
 </pre>
 
 
