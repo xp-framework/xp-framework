@@ -88,7 +88,7 @@
       }
       
       if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+        ::raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       
       $char= $this->asIntern($value);
@@ -120,7 +120,7 @@
      */
     public function offsetUnset($offset) {
       if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+        ::raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       $this->buffer= (
         iconv_substr($this->buffer, 0, $offset, STR_ENC).
@@ -148,7 +148,7 @@
      */
     public function charAt($offset) {
       if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+        ::raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       return new Character(iconv_substr($this->buffer, $offset, 1, STR_ENC), STR_ENC);
     }

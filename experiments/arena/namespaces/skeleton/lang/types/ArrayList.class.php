@@ -64,7 +64,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
+      if (!$this->iterator) $this->iterator= ::newinstance('Iterator', array($this), '{
         private $i= 0, $v;
         public function __construct($v) { $this->v= $v; }
         public function current() { return $this->v->values[$this->i]; }
@@ -85,7 +85,7 @@
      */
     public function offsetGet($offset) {
       if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+        ::raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       return $this->values[$offset];
     }
@@ -103,7 +103,7 @@
       }
       
       if ($offset >= $this->length || $offset < 0) {
-        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+        ::raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       $this->values[$offset]= $value;
     }
@@ -146,7 +146,7 @@
             if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
             break;
 
-          case is('Generic', $a1[$k]):
+          case ::is('Generic', $a1[$k]):
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 

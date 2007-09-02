@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  * 
- * $Id: FileSystemClassLoader.class.php 10346 2007-05-12 14:05:57Z friebe $
+ * $Id: FileSystemClassLoader.class.php 11024 2007-09-02 19:15:49Z friebe $
  */
 
   namespace lang;
@@ -112,7 +112,7 @@
         return substr(array_search($class, ::xp::$registry), 6);
       }
 
-      ::xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
+      ::xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$this->path;
       $package= NULL;
       if (FALSE === include($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).CLASS_FILE_EXT)) {
         unset(::xp::$registry['classloader.'.$class]);
@@ -133,7 +133,7 @@
      */
     public function getResource($filename) {
       if (!is_file($this->path.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
-        return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+        return ::raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
       return file_get_contents($this->path.$filename);
     }
@@ -147,7 +147,7 @@
      */
     public function getResourceAsStream($filename) {
       if (!is_file($this->path.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
-        return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+        return ::raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
       return new io::File($this->path.$filename);
     }

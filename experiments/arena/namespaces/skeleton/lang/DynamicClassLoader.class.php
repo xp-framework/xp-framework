@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: DynamicClassLoader.class.php 10584 2007-06-08 16:09:40Z friebe $
+ * $Id: DynamicClassLoader.class.php 11024 2007-09-02 19:15:49Z friebe $
  */
 
   namespace lang;
@@ -100,7 +100,7 @@
         return substr(array_search($class, ::xp::$registry), 6);
       }
 
-      ::xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->context;
+      ::xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
       if (!isset(self::$bytes[$class])) {
         unset(::xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Unknown class "'.$class.'"');
@@ -161,7 +161,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($filename) {
-      raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      ::raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -172,7 +172,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($filename) {
-      raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
+      ::raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
     }
     
     /**
@@ -187,7 +187,7 @@
     public function stream_open($path, $mode, $options, $opened_path) {
       sscanf($path, 'dyn://%[^$]', $this->current);
       if (!isset(self::$bytes[$this->current])) {
-        raise('lang.ElementNotFoundException', 'Could not load '.$this->current);
+        ::raise('lang.ElementNotFoundException', 'Could not load '.$this->current);
       }
       return TRUE;
     }

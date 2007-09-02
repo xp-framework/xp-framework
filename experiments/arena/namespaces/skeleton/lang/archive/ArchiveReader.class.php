@@ -152,7 +152,7 @@
             
           // Check header integrity
           if ('CCA' !== $data['id']) throw(new lang::FormatException(sprintf(
-            'Header malformed: "CCA" expected, have "%s" @ '.$this->file, 
+            'Header malformed: "CCA" expected, have "%s"', 
             substr($header, 0, 3)
           )));
           

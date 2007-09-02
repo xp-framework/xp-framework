@@ -61,7 +61,7 @@
      * @return  lang.XPClass[]
      */
     public function getClasses() { 
-      return array_map(array('lang::XPClass', 'forName'), $this->getClassNames());
+      return array_map(array(::xp::reflect('lang.XPClass'), 'forName'), $this->getClassNames());
     }
 
     /**
@@ -104,7 +104,7 @@
      * @return  lang.reflect.Package[]
      */
     public function getPackages() {
-      return array_map(array('lang::reflect::Package', 'forName'), $this->getPackageNames());
+      return array_map(array(::xp::reflect('lang.reflect.Package'), 'forName'), $this->getPackageNames());
     } 
 
     /**

@@ -82,7 +82,7 @@
      * @param   bool before default FALSE whether to register this as the first loader
      * @return  lang.IClassLoader the registered loader
      */
-    public static function registerLoader($l, $before= FALSE) {
+    public static function registerLoader( $l, $before= FALSE) {
       if ($before) {
         array_unshift(self::$delegates, $l);
       } else {
@@ -92,7 +92,7 @@
     }
 
     /**
-     * Define a class ::with a given name
+     * Define a class with a given name
      *
      * @param   string class fully qualified class name
      * @param   string parent either sourcecode of the class or FQCN of parent
@@ -144,7 +144,7 @@
     }
     
     /**
-     * Define an interface ::with a given name
+     * Define an interface with a given name
      *
      * @param   string class fully qualified class name
      * @param   string[] parents FQCNs of parent interfaces

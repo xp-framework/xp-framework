@@ -100,7 +100,7 @@
      */
     public function add($element) {
       if (!::is($this->_name, $element)) {
-        throw(new lang::IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           ::xp::typeOf($element)
@@ -119,7 +119,7 @@
      */
     public function prepend($element) {
       if (!::is($this->_name, $element)) {
-        throw(new lang::IllegalArgumentException(sprintf(
+        throw(new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           ::xp::typeOf($element)
@@ -140,7 +140,7 @@
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!::is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          throw(new lang::IllegalArgumentException(sprintf(
+          throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,
@@ -162,7 +162,7 @@
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!::is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          throw(new lang::IllegalArgumentException(sprintf(
+          throw(new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,

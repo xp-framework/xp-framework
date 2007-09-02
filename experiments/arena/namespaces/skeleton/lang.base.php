@@ -33,7 +33,7 @@
             xp::error('Cannot bootstrap class '.$class.' (from file "'.$f.'")');
           }
           
-          xp::$registry['classloader.'.$class]= 'lang::FileSystemClassLoader://'.$path;
+          xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$path;
           break;
         } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').CLASS_FILE_EXT)) {
 
@@ -43,7 +43,7 @@
             continue;
           }
 
-          xp::$registry['classloader.'.$class]= 'lang::ArchiveClassLoader://'.$path;
+          xp::$registry['classloader.'.$class]= 'lang.ArchiveClassLoader://'.$path;
           break;
         }
       }

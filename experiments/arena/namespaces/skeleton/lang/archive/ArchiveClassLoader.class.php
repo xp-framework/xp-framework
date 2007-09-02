@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  * 
- * $Id: ArchiveClassLoader.class.php 10285 2007-05-08 15:24:18Z friebe $
+ * $Id: ArchiveClassLoader.class.php 11024 2007-09-02 19:15:49Z friebe $
  */
 
   namespace lang::archive;
@@ -87,7 +87,7 @@
         return substr(array_search($class, ::xp::$registry), 6);
       }
 
-      ::xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
+      ::xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.$this->archive->getURI();
       $package= NULL;
       if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').CLASS_FILE_EXT)) {
         unset(::xp::$registry['classloader.'.$class]);
@@ -113,7 +113,7 @@
         return $r;
       }
 
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
+      return ::raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**
@@ -128,7 +128,7 @@
         return $s;
       }
     
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
+      return ::raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**

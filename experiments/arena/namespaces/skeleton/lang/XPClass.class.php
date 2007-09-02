@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: XPClass.class.php 10960 2007-08-26 12:37:35Z friebe $
+ * $Id: XPClass.class.php 11024 2007-09-02 19:15:49Z friebe $
  */
 
   namespace lang;
@@ -298,7 +298,7 @@
      * @return  bool
      */
     public function isEnum() {
-      return $this->_reflect->isSubclassOf('lang::Enum');
+      return $this->_reflect->isSubclassOf(::xp::reflect('lang.Enum'));
     }
     
     /**
@@ -373,7 +373,7 @@
       if (!$details || !($key 
         ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
         : array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
-      )) return raise(
+      )) return ::raise(
         'lang.ElementNotFoundException', 
         'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
       );
@@ -420,8 +420,8 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      list($name, $argument)= explode('://', ::xp::$registry['classloader.'.$name], 2);
-      return call_user_func(array($name, 'instanceFor'), $argument);
+      sscanf(::xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $cl, $argument);
+      return call_user_func(array(::xp::reflect($cl), 'instanceFor'), $argument);
     }
 
     /**
@@ -587,7 +587,7 @@
      * @return  lang.XPClass class object
      * @throws  lang.ClassNotFoundException when there is no such class
      */
-    public static function forName($name, IClassLoader $classloader= NULL) {
+    public static function forName($name,  $classloader= NULL) {
       if (NULL === $classloader) {
         $classloader= ClassLoader::getDefault();
       }
