@@ -6,6 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+
+RFCs
+~~~~
+
+Bugfixes
+~~~~~~~~~
+
+Features
+~~~~~~~~
+- Made forward-compatible changes to core classes to ease migration to
+  XP6 (which makes use of PHP namespaces, see RFC #0136)
+  (friebe)
 
 Version 5.6.0, released 2007-08-29
 ----------------------------------
