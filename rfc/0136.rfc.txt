@@ -21,6 +21,73 @@ Functionality
 -------------
 All XP classes will be namespaced.
 
+Syntax example #1
+~~~~~~~~~~~~~~~~~
+This is an abbreviated version of the lang.Enum class:
+<?php
+  namespace lang;
+  
+  class Enum extends Object {
+
+    public static function valueOf(XPClass $class, $name) {
+      if (!$class->isEnum()) {
+        throw new IllegalArgumentException('Argument class must be lang.XPClass<? extends lang.Enum>');
+      }
+      try {
+        return array_values($class->_reflect->getStaticProperties());
+      } catch (::ReflectionException $e) {
+        throw new IllegalArgumentException($e->getMessage());
+      }
+    }
+
+    public final function __clone() {
+      ::raise('lang.CloneNotSupportedException', 'Enums cannot be cloned');
+    }
+  }
+?>
+What can be seen:
+<pre>
+* The namespace declaration comes at the top of the file. It is indented
+  to the same level the class declaration starts at.
+* Classes from the lang package (Object, XPClass, IllegalArgumentException)
+  are not fully qualified
+* The ReflectionException class (builtin) is without namespace and 
+  therefore explicitely referenced that way (though that would not be
+  necessary in this case!)
+* The raise() core functionality is also referenced as being in the 
+  global namespace. This is absolutely necessary - the implicit import
+  of builtin classes and functions does not work here!
+</pre>
+
+Syntax example #2
+~~~~~~~~~~~~~~~~~
+<?php
+  namespace io::collections;
+
+  class FileCollection extends lang::Object implements IOCollection {
+
+    public function open() { 
+      if (!($this->_hd= opendir($this->uri))) {
+        throw new io::IOException('Could not open '.$this->uri);
+      }
+    }
+
+    public function createdAt() {
+      return new util::Date(filectime($this->uri));
+    }
+  }
+?>
+What can be seen:
+<pre>
+* XP packages map to PHP namespaces by replacing the dots (.) with
+  double colons (Package[io.collections] = Namespace[io::collections])
+* XP class names map to PHP namespaced names by replacing the dot (.) 
+  with double colons (XPClass[util.Date] = Class[util::Date]).
+* Classes from the same package are unqualified (IOCollection), while
+  classes from foreign packages (IOException, Date, Object) are written
+  using their fully qualified names)
+</pre>
+
 
 Security considerations
 -----------------------
@@ -35,7 +102,12 @@ n/a
 Dependencies
 ------------
 - PHP with namespaces support (current plans: 5.3)
+
 - RFC #0037 - will be deprecated
+
+- Increase major version number (that would make it XP6.0.0)
+
+- XP5 branch
 
 
 Related documents
@@ -45,6 +117,7 @@ Related documents
 
 - http://experiments.xp-framework.net/?arena,namespaces
   Sneak preview
+
 
 Comments
 --------
