@@ -17,7 +17,40 @@
   );
 
   /**
-   * Converts to XP6
+   * Converts XP5 sourcecode to XP6
+   *
+   * Subjectives
+   * -----------
+   * <ul>
+   *   <li>Insert namespace declaration at the beginning of each file</li>
+   *   <li>Fully qualify class names</li>
+   *   <li>Fully qualify core functionality (newinstance, create, raise, ...)</li>
+   * </ul>
+   *
+   * Examples
+   * -----------
+   * Convert all classes in the unittest package:
+   * <pre>
+   * $ xpcli convert.ToXp6 
+   *   -b ../../../skeleton/ 
+   *   -o ../../../skeleton/unittest/ 
+   *   -t skeleton/
+   * </pre>
+   *
+   * Convert all classes in the net.xp_framework.unittest package in ports:
+   * <pre>
+   * $ xpcli convert.ToXp6 
+   *   -b ../../../ports/classes/ 
+   *   -o ../../../ports/classes/net/xp_framework/unittest/ 
+   *   -t ports/classes/
+   * </pre>
+   *
+   * Known issues
+   * ------------
+   * <ul>
+   *   <li>Code inside newinstance() is not transformed</li>
+   *   <li>Manual touches in lang package is needed</li>
+   * </ul>
    *
    * @purpose  Command
    */
