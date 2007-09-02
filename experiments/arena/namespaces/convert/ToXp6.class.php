@@ -27,6 +27,28 @@
       $baseUriLength = 0,
       $nameMap       = NULL;
 
+    // XP tokens
+    const
+      T_USES          = 0xF001,
+      T_NEWINSTANCE   = 0xF002,
+      T_IS            = 0xF003,
+      T_CREATE        = 0xF004,
+      T_RAISE         = 0xF005,
+      T_FINALLY       = 0xF006,
+      T_DELETE        = 0xF007,
+      T_WITH          = 0xF008,
+      T_REF           = 0xF009,
+      T_DEREF         = 0xF00A;  
+    
+    // States
+    const
+      ST_INITIAL      = 0x0001,
+      ST_DECL         = 0x0002,
+      ST_FUNC         = 0x0003,
+      ST_INTF         = 0x0004,
+      ST_CLASS        = 0x0005,
+      ST_USES         = 0x0006;
+
     /**
      * Set origin directory
      *
@@ -70,16 +92,16 @@
      */
     protected function tokenOf($t) {
       static $map= array(
-        'uses'          => T_USES,
-        'newinstance'   => T_NEWINSTANCE,
-        'is'            => T_IS,
-        'create'        => T_CREATE,
-        'raise'         => T_RAISE,
-        'finally'       => T_FINALLY,
-        'delete'        => T_DELETE,
-        'with'          => T_WITH,
-        'ref'           => T_REF,
-        'deref'         => T_DEREF,
+        'uses'          => self::T_USES,
+        'newinstance'   => self::T_NEWINSTANCE,
+        'is'            => self::T_IS,
+        'create'        => self::T_CREATE,
+        'raise'         => self::T_RAISE,
+        'finally'       => self::T_FINALLY,
+        'delete'        => self::T_DELETE,
+        'with'          => self::T_WITH,
+        'ref'           => self::T_REF,
+        'deref'         => self::T_DEREF,
       );
 
       $normalized= is_array($t) ? $t : array($t, $t);
@@ -128,7 +150,7 @@
 
       // Tokenize file
       $t= token_get_all(file_get_contents($e->getUri()));
-      $state= array(ST_INITIAL);
+      $state= array(self::ST_INITIAL);
       $out= '';
       for ($i= 0, $s= sizeof($t); $i < $s; $i++) {
         $token= $this->tokenOf($t[$i]);
@@ -136,71 +158,72 @@
         switch ($state[0].$token[0]) {
         
           // Insert namespace declaration after "This class is part of..." file comment
-          case ST_INITIAL.T_COMMENT: {
+          case self::ST_INITIAL.T_COMMENT: {
             $out.= $token[1]."\n\n  namespace ".str_replace('.', '::', $namespace).';';
-            array_unshift($state, ST_DECL);
+            array_unshift($state, self::ST_DECL);
             break;
           }
           
           // Remember loaded classes in uses() for use as mapping
-          case ST_DECL.T_USES: {
+          case self::ST_DECL.self::T_USES: {
             $out.= '::'.$token[1];
-            array_unshift($state, ST_USES);
+            array_unshift($state, self::ST_USES);
             break;
           }
           
-          case ST_USES.T_CONSTANT_ENCAPSED_STRING: {
+          case self::ST_USES.T_CONSTANT_ENCAPSED_STRING: {
             $name= trim($token[1], "'");
             $this->nameMap[xp::reflect($name)]= new String(str_replace('.', '::', $name));
             $out.= $token[1];
             break;
           }
           
-          case ST_USES.')': {
+          case self::ST_USES.')': {
             $out.= $token[1];
             array_shift($state);
             break;
           }
           
           // instanceof X, extends X, new X, catch(X $var)
-          case ST_DECL.T_INSTANCEOF: case ST_DECL.T_EXTENDS: case ST_DECL.T_NEW: case ST_DECL.T_CATCH: {
+          case self::ST_DECL.T_INSTANCEOF: case self::ST_DECL.T_EXTENDS: 
+          case self::ST_DECL.T_NEW: case self::ST_DECL.T_CATCH: {
             $out.= $token[1];
-            array_unshift($state, ST_CLASS);
+            array_unshift($state, self::ST_CLASS);
             break;
           }
           
-          case ST_CLASS.T_STRING: {
+          case self::ST_CLASS.T_STRING: {
             $out.= $this->mapName($token[1], $namespace);
             array_shift($state);
             break;
           }
 
-          case ST_CLASS.T_VARIABLE: {
+          case self::ST_CLASS.T_VARIABLE: {
             $out.= $token[1];
             array_shift($state);
             break;
           }
 
           // implements X, Y
-          case ST_DECL.T_IMPLEMENTS: {
+          case self::ST_DECL.T_IMPLEMENTS: {
             $out.= $token[1];
-            array_unshift($state, ST_INTF);
+            array_unshift($state, self::ST_INTF);
             break;
           }
           
-          case ST_INTF.T_STRING: {
+          case self::ST_INTF.T_STRING: {
             $out.= $this->mapName($token[1], $namespace);
             break;
           }
           
-          case ST_INTF.'{': {
+          case self::ST_INTF.'{': {
             $out.= $token[1];
             array_shift($state);
             break;
           }
           
           // X::y(), X::$y, X::const
-          case ST_DECL.T_STRING: {
+          case self::ST_DECL.T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON == $next[0]) {
               $out.= $this->mapName($token[1], $namespace);
@@ -211,20 +234,20 @@
           }
           
           // function name(X $var, Y $type)
-          case ST_DECL.T_FUNCTION: {
+          case self::ST_DECL.T_FUNCTION: {
             $out.= $token[1];
-            array_unshift($state, ST_FUNC);
+            array_unshift($state, self::ST_FUNC);
             $brackets= 0;
             break;
           }
           
-          case ST_FUNC.'(': {
+          case self::ST_FUNC.'(': {
             $out.= $token[1];
             $brackets++;
             break;
           }
 
-          case ST_FUNC.')': {
+          case self::ST_FUNC.')': {
             $out.= $token[1];
             $brackets--;
             if (0 == $brackets) {
@@ -233,7 +256,7 @@
             break;
           }
           
-          case ST_FUNC.T_STRING: {
+          case self::ST_FUNC.T_STRING: {
             $var= $this->tokenOf($t[$i+ 2]);
             if ($brackets >= 1 && T_VARIABLE == $var[0]) {
               $out.= ''; // Workaround for bug: Remove typehints! $this->mapName($token[1], $namespace);
@@ -244,10 +267,11 @@
           }
           
           // XP "keywords" - prefix with "::"
-          case ST_DECL.T_NEWINSTANCE: case ST_DECL.T_IS: case ST_DECL.T_CREATE:
-          case ST_DECL.T_RAISE: case ST_DECL.T_FINALLY:
-          case ST_DECL.T_DELETE: case ST_DECL.T_WITH:
-          case ST_DECL.T_REF: case ST_DECL.T_DEREF: {
+          case self::ST_DECL.self::T_NEWINSTANCE: case self::ST_DECL.self::T_CREATE:
+          case self::ST_DECL.self::T_RAISE: case self::ST_DECL.self::T_FINALLY:
+          case self::ST_DECL.self::T_DELETE: case self::ST_DECL.self::T_WITH: 
+          case self::ST_DECL.self::T_IS: 
+          case self::ST_DECL.self::T_REF: case self::ST_DECL.self::T_DEREF: {
             $out.= '::'.$token[1];
             break;
           }
