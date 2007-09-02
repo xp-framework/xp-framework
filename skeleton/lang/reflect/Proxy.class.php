@@ -52,7 +52,7 @@
       
       // Create proxy class' name, using a unique identifier and a prefix
       $name= PROXY_PREFIX.($num++);
-      $bytes= 'class '.$name.' extends Proxy implements ';
+      $bytes= 'class '.$name.' extends '.xp::reflect('lang.reflect.Proxy').' implements ';
       $added= array();
       
       for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
