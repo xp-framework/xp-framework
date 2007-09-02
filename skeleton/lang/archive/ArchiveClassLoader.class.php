@@ -85,7 +85,7 @@
         return substr(array_search($class, xp::$registry), 6);
       }
 
-      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->archive->getURI();
+      xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.$this->archive->getURI();
       $package= NULL;
       if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);

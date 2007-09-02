@@ -110,7 +110,7 @@
         return substr(array_search($class, xp::$registry), 6);
       }
 
-      xp::$registry['classloader.'.$class]= __CLASS__.'://'.$this->path;
+      xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$this->path;
       $package= NULL;
       if (FALSE === include($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);

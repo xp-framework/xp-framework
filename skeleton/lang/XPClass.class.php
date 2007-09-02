@@ -296,7 +296,7 @@
      * @return  bool
      */
     public function isEnum() {
-      return $this->_reflect->isSubclassOf('Enum');
+      return $this->_reflect->isSubclassOf(xp::reflect('lang.Enum'));
     }
     
     /**
@@ -418,8 +418,8 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $name, $argument);
-      return call_user_func(array($name, 'instanceFor'), $argument);
+      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $cl, $argument);
+      return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
     }
 
     /**
