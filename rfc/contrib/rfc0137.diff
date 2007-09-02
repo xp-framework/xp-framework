@@ -1,0 +1,110 @@
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 11010)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -19,6 +19,7 @@
+   define('DETAIL_COMMENT',        4);
+   define('DETAIL_ANNOTATIONS',    5);
+   define('DETAIL_NAME',           6);
++  define('DETAIL_TAGS',           7);
+  
+   /**
+    * Represents classes. Every instance of an XP class has an method
+@@ -322,6 +323,23 @@
+       if (!($details= self::detailsForClass($this->name))) return NULL;
+       return $details['class'][DETAIL_COMMENT];
+     }
++    
++    /**
++     * Retrieves the tags for this class. If no tags with the given
++     * name exist, an empty array will be returned.
++     *
++     * @param   string tag
++     * @return  string[]
++     */
++    public function getTagsByName($tag) {
++      $result= array();
++      $details= self::detailsForClass($this->name);
++      foreach (explode("\n", $details['class'][DETAIL_TAGS]) as $tagline) {
++        if (0 != strncasecmp('@'.$tag, $tagline, strlen($tag)+ 1)) continue;
++        $result[]= trim(substr($tagline, strlen($tag)+ 1));
++      }
++      return $result;
++    }
+ 
+     /**
+      * Retrieves this class' modifiers
+@@ -476,6 +494,10 @@
+                 4,                              // "/**\n"
+                 strpos($comment, '* @')- 2      // position of first details token
+               ))),
++              DETAIL_TAGS         => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
++                $comment,
++                strpos($comment, '* @')- 3      // position of first details token
++              ))),
+               DETAIL_ANNOTATIONS  => $annotations
+             );
+             $annotations= array();
+Index: ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(revision 11010)
++++ ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(working copy)
+@@ -568,5 +568,45 @@
+     public function genericReturnValue() {
+       $this->assertEquals('array<string, lang.Object>', $this->class->getMethod('getMap')->getReturnType());
+     }
++    
++    /**
++     * Test retrieving class comment
++     *
++     */
++    #[@test]
++    public function comment() {
++      $this->assertEquals('Test class', $this->class->getComment());
++    }
++    
++    /**
++     * Test retrieving @tagname style tags
++     *
++     */
++    #[@test]
++    public function retrievingSingleTag() {
++      $this->assertEquals(
++        array('xp://net.xp_framework.unittest.reflection.ReflectionTest'),
++        $this->class->getTagsByName('see')
++      );
++    }
++      
++    /**
++     * Test retrieving nonexisting tag
++     *
++     */
++    #[@test]
++    public function retrieveNonexistantTag() {
++      $this->assertEquals(array(), $this->class->getTagsByName('test'));
++    }
++
++    /**
++     * Test retrieving tag that occurs twice
++     *
++     */
++    #[@test]
++    public function retrieveNonUniqueTag() {
++      $this->assertEquals(array('bar', 'baz'), $this->class->getTagsByName('foo'));
++    }
++
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/reflection/TestClass.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/TestClass.class.php	(revision 11010)
++++ ports/classes/net/xp_framework/unittest/reflection/TestClass.class.php	(working copy)
+@@ -14,6 +14,8 @@
+    * Test class
+    *
+    * @see      xp://net.xp_framework.unittest.reflection.ReflectionTest
++   * @foo      bar
++   * @foo      baz
+    * @purpose  Test class
+    */
+   #[@test('Annotation')]

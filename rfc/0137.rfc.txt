@@ -1,0 +1,48 @@
+RFC 0137: Retrieve class tags through reflection
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Sun Sep  2 20:26:42     2007
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The various @-style apidoc tags through XP's reflection
+API.
+
+Rationale
+---------
+Contains some additional information. In some rare situations
+one might want to access those.
+
+Functionality
+-------------
+A new method getTagByName() will be added to lang.XPClass.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Slightly slower as an additional array element must be
+created and one further preg_match() call is executed upon
+retrieving class details.
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0137.diff
+  Patch implementing this rfc
+
+Comments
+--------
+- kiesel, Sun Sep  2 20:29:31     2007
+  This simplifies retrieving @test tags for unittests, which
+  is why I came to this.
+
+<EOF>
