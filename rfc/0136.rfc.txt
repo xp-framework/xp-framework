@@ -180,6 +180,8 @@ Related documents
 - http://experiments.xp-framework.net/?arena,namespaces
   Sneak preview
 
+- http://xp-framework.net/downloads/php5-namespaces/
+  Backported Diff and 5.2.4 w/ namespaces Windows releases
 
 Comments
 --------
@@ -188,5 +190,12 @@ Comments
   instead ::uses() and only fully qualified names for foreign packages. 
   The reason for this is that an __autoload() / import constellation 
   has some weird side effetcs that need to be investigated.
+
+- friebe, Sun Sep  2 20:41:02     2007
+  Windows builds from above will need the Microsoft Visual C++ 2005 SP1 
+  Redistributable Package to work (as they are built using VC++ 2005
+  Express). You can find them at:
+  http://www.microsoft.com/downloads/details.aspx?familyid=200B2FD9-AE1A-4A14-984D-389C36F85647
+
 
 <EOF>
