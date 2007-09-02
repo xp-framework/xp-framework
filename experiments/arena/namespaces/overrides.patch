@@ -1,0 +1,40 @@
+Index: skeleton/lang/ClassLoader.class.php
+===================================================================
+--- skeleton/lang/ClassLoader.class.php	(revision 11011)
++++ skeleton/lang/ClassLoader.class.php	(working copy)
+@@ -120,9 +120,16 @@
+           }
+         }
+ 
++        $p= strrpos($name, '::');
++        $ns= '';
++        if (FALSE !== $p) {
++          $ns= 'namespace '.substr($name, 0, $p).'; ';
++          $name= substr($name, $p+ 2);
++        }
+         ::with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+           $dyn->setClassBytes($class, sprintf(
++            '%sclass %s extends %s%s %s',
++            $ns,
+-            'class %s extends %s%s %s',
+             $name,
+             $super,
+             $interfaces ? ' implements '.implode(', ', $if) : '',
+@@ -164,9 +157,16 @@
+           }
+         }
+ 
++        $p= strrpos($name, '::');
++        $ns= '';
++        if (FALSE !== $p) {
++          $ns= 'namespace '.substr($name, 0, $p).'; ';
++          $name= substr($name, $p+ 2);
++        }
+         ::with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+           $dyn->setClassBytes($class, sprintf(
++            '%sinterface %s%s %s',
++            $ns,
+-            'interface %s%s %s',
+             $name,
+             $interfaces ? ' implements '.implode(', ', $if) : '',
+             $bytes
