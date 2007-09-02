@@ -342,7 +342,7 @@
     if (0 == error_reporting() || is_null($file)) return;
 
     if (E_RECOVERABLE_ERROR == $code) {
-      // throw new lang::IllegalArgumentException($msg.' @ '.$file.':'.$line);
+      throw new lang::IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       @xp::$registry['errors'][$file][$line][$msg]++;
     }
