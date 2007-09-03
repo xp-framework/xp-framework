@@ -181,7 +181,7 @@ Related documents
   Sneak preview
 
 - http://xp-framework.net/downloads/php5-namespaces/
-  Backported Diff and 5.2.4 w/ namespaces Windows releases
+  Backported Diff and 5.2.5 w/ namespaces Windows releases
 
 Comments
 --------
