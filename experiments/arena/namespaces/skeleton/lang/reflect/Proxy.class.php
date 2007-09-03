@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Proxy.class.php 10956 2007-08-25 15:06:18Z friebe $ 
+ * $Id: Proxy.class.php 11027 2007-09-02 19:30:51Z friebe $ 
  */
 
   namespace lang::reflect;

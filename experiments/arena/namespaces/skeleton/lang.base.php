@@ -4,8 +4,6 @@
  * $Id: lang.base.php 10940 2007-08-24 10:45:43Z friebe $
  */
 
-  define('CLASS_FILE_EXT', '.class.php');   // Workaround for "Invalid opcode"
-
   // {{{ final class xp
   final class xp {
     const CLASS_FILE_EXT= '.class.php';
@@ -28,14 +26,14 @@
       foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
-        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).CLASS_FILE_EXT)) {
+        if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
           if (FALSE === ($r= include($f))) {
             xp::error('Cannot bootstrap class '.$class.' (from file "'.$f.'")');
           }
           
           xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$path;
           break;
-        } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').CLASS_FILE_EXT)) {
+        } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
 
           // To to load via bootstrap class loader, if the file cannot provide the class-to-load
           // skip to the next include_path part

@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Package.class.php 10532 2007-06-07 14:43:54Z friebe $ 
+ * $Id: Package.class.php 11027 2007-09-02 19:30:51Z friebe $ 
  */
 
   namespace lang::reflect;
@@ -72,7 +72,7 @@
     public function getClassNames() { 
       $classes= array();
       foreach (lang::ClassLoader::getDefault()->packageContents($this->name) as $file) {
-        if (CLASS_FILE_EXT == substr($file, -10)) $classes[]= $this->name.'.'.substr($file, 0, -10);
+        if (::xp::CLASS_FILE_EXT == substr($file, -10)) $classes[]= $this->name.'.'.substr($file, 0, -10);
       }
       return $classes;
     }
@@ -128,7 +128,7 @@
     public function getResources() {
       $resources= array();
       foreach (lang::ClassLoader::getDefault()->packageContents($this->name) as $file) {
-        if ('/' == substr($file, -1) || CLASS_FILE_EXT == substr($file, -10)) continue;
+        if ('/' == substr($file, -1) || ::xp::CLASS_FILE_EXT == substr($file, -10)) continue;
         $resources[]= strtr($this->name, '.', '/').'/'.$file;
       }
       return $resources;

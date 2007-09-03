@@ -259,16 +259,7 @@
           case self::ST_DECL.T_STRING: {
             $next= $this->tokenOf($t[$i+ 1]);
             if (T_DOUBLE_COLON == $next[0]) {
-              $what= $this->tokenOf($t[$i+ 2]);
-              if ('ReflectionClass' == $token[1]) {
-                $out.= eval('return ReflectionClass::'.$what[1].';');
-                $i+= 2;
-              } else if ('xpCLASS_FILE_EXT' == $token[1].$what[1]) {
-                $out.= $what[1];
-                $i+= 2;
-              } else {
-                $out.= $this->mapName($token[1], $namespace);
-              }
+              $out.= $this->mapName($token[1], $namespace);
             } else {
               $out.= $token[1];
             }

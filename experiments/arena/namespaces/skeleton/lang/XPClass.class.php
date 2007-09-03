@@ -336,9 +336,9 @@
 
       // Map PHP reflection modifiers to generic form
       $m= $this->_reflect->getModifiers();
-      $m & 32 && $r |= MODIFIER_ABSTRACT;
-      $m & 16 && $r |= MODIFIER_ABSTRACT;
-      $m & 64 && $r |= MODIFIER_FINAL;
+      $m & ::ReflectionClass::IS_EXPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ::ReflectionClass::IS_IMPLICIT_ABSTRACT && $r |= MODIFIER_ABSTRACT;
+      $m & ::ReflectionClass::IS_FINAL && $r |= MODIFIER_FINAL;
       
       return $r;
     }
