@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Wed Mar 28 16:33:54     2007
-@status: draft
+@status: discussion, ends Tue Sep  11 17:18:10 CEST 2007
 @category: util
 
 Scope of Change
@@ -24,8 +24,9 @@ The serialization format of util.Date will change completely due to
 the internal change - deserialization of objects stored in the old
 format will be supported to maintain external backwards compatibility.
 
-The method format() will be removed. The toString() method can
-output a Date object in any requested (and known) timezone.
+The method format() will not support any locale-dependent format
+tokens any more. The toString() method can output a Date object 
+in any requested (and known) timezone.
 
 
 Rationale
@@ -50,17 +51,14 @@ Because it slows down speed of util.Date to update the public
 member variables every time the backing object has been modified,
 the public members will be removed alltogether.
 
-Removing of format() method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The format() method relies internally on PHP's strftime() method, which
-is locale-dependant, inconsistently supportted by different operating
-systems and does not support formatting timestamps outside the
-traditional unix timestamp range, eg. before 1970 or after 2038.
+Removing of format() method's locale support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Locale support comes from the OS's ability to support those locales,
+and as such a feature is obviously heavily OS-dependent and XP's
+philosophy is to be as OS independent as possible, any locale
+format tokens will be unsupported and throw an exception.
 
-A replacement implementation exists in util.Date to fix the range
-problem, but it does not fully support all format tokens and is
-error-prone.
-
+Other tokens are still supported.
 
 Functionality
 -------------
@@ -152,5 +150,8 @@ Comments
   
 - kiesel, Wed Aug 29 10:45:57 CEST 2007
   No new exception will be introduces at this point.
+
+- kiesel, Tue Sep  4 17:17:41 CEST 2007
+  lang.base.php will not be changed during this RFC.
 
 <EOF>
