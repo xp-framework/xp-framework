@@ -187,7 +187,7 @@
      * @return  util.Date
      */
     #[@deprecated]
-    public static function fromString($str, $tz= NULL) {
+    public static function fromString($str, TimeZone $tz= NULL) {
       return new self($str, $tz);
     }
     
@@ -300,15 +300,6 @@
      */
     public function getDayOfWeek() {
       return (int)$this->date->format('w');
-    }
-    
-    /**
-     * Get name of timezone
-     *
-     * @return  string
-     */
-    public function getTimezoneName() {
-      return $this->date->format('e');
     }
     
     /**
