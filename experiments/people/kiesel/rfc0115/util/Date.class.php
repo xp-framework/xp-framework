@@ -303,15 +303,6 @@
     }
     
     /**
-     * Retrieve timezone offset to UTC / GMT in seconds.
-     *
-     * @return  int
-     */
-    public function getOffsetToGMT() {
-      return (int)$this->date->format('Z');
-    }
-    
-    /**
      * Get name of timezone
      *
      * @return  string

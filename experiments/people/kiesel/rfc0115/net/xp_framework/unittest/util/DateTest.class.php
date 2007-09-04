@@ -216,7 +216,7 @@
       $original= Date::fromString('2007-07-18T09:42:08 Europe/Athens');
 
       $this->assertEquals('Europe/Athens', $original->getTimezoneName());
-      $this->assertEquals(3 * 3600, $original->getOffsetToGMT());
+      $this->assertEquals(3 * 3600, $original->getTimeZone()->getOffsetInSeconds());
     }
     
     /**
