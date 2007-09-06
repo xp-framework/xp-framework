@@ -207,6 +207,21 @@
     }
 
     /**
+     * Tests iteration via foreach()
+     *
+     */
+    #[@test]
+    public function iteration() {
+      $this->set->add(new String('1'));
+      $this->set->add(new String('2'));
+      $this->set->add(new String('3'));
+      
+      foreach ($this->set as $i => $value) {
+        $this->assertEquals(new String($i+ 1), $value);
+      }
+    }
+
+    /**
      * Tests toString() method
      *
      */
