@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: HashSet.class.php 10166 2007-04-29 17:07:07Z friebe $
+ * $Id: HashSet.class.php 11045 2007-09-06 15:55:33Z friebe $
  */
 
   namespace util::collections;
@@ -11,7 +11,8 @@
   /**
    * A set of objects
    *
-   * @purpose  Interface
+   * @test     xp://net.xp_framework.unittest.util.collections.HashSetTest
+   * @purpose  Set implemenentation
    */
   class HashSet extends lang::Object implements Set {
     protected static
@@ -43,7 +44,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->elements);
+      return self::$iterate->on(array_values($this->_elements));
     }
 
     /**

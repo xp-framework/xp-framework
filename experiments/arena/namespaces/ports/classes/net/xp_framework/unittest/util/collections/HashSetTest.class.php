@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: HashSetTest.class.php 10175 2007-04-29 17:13:09Z friebe $
+ * $Id: HashSetTest.class.php 11046 2007-09-06 15:55:59Z friebe $
  */
 
   namespace net::xp_framework::unittest::util::collections;
@@ -206,6 +206,21 @@
     #[@test]
     public function toArrayOnEmptySet() {
       $this->assertEquals(array(), $this->set->toArray());
+    }
+
+    /**
+     * Tests iteration via foreach()
+     *
+     */
+    #[@test]
+    public function iteration() {
+      $this->set->add(new lang::types::String('1'));
+      $this->set->add(new lang::types::String('2'));
+      $this->set->add(new lang::types::String('3'));
+      
+      foreach ($this->set as $i => $value) {
+        $this->assertEquals(new lang::types::String($i+ 1), $value);
+      }
     }
 
     /**
