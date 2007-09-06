@@ -49,7 +49,10 @@
     #[@test]
     public function createWithQualifiedNames() {
       $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
-      $this->assertEquals(array('String', 'String'), $h->__generic);
+      $this->assertEquals(
+        array(xp::reflect('lang.types.String'), xp::reflect('lang.types.String')), 
+        $h->__generic
+      );
     }
 
     /**
