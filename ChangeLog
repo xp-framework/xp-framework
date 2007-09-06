@@ -13,7 +13,9 @@ RFCs
 ~~~~
 
 Bugfixes
-~~~~~~~~~
+~~~~~~~~
+- Fixed util.collections.HashSet iteration via foreach()
+  (friebe)
 
 Features
 ~~~~~~~~
