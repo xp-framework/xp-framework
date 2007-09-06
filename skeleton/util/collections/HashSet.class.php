@@ -9,7 +9,7 @@
   /**
    * A set of objects
    *
-   * @purpose  Interface
+   * @purpose  Set implemenentation
    */
   class HashSet extends Object implements Set {
     protected static
@@ -41,7 +41,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->elements);
+      return self::$iterate->on($this->_elements);
     }
 
     /**
