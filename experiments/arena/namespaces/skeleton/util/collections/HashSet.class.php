@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: HashSet.class.php 11045 2007-09-06 15:55:33Z friebe $
+ * $Id: HashSet.class.php 11049 2007-09-06 16:14:42Z friebe $
  */
 
   namespace util::collections;
@@ -29,10 +29,10 @@
       self::$iterate= ::newinstance('Iterator', array(), '{
         private $i= 0, $v;
         public function on($v) { $self= new self(); $self->v= $v; return $self; }
-        public function current() { return $this->v[$this->i]; }
+        public function current() { return current($this->v); }
         public function key() { return $this->i; }
-        public function next() { $this->i++; }
-        public function rewind() { $this->i= 0; }
+        public function next() { next($this->v); $this->i++; }
+        public function rewind() { reset($this->v); $this->i= 0; }
         public function valid() { return $this->i < sizeof($this->v); }
       }');
     }
@@ -44,7 +44,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on(array_values($this->_elements));
+      return self::$iterate->on($this->_elements);
     }
 
     /**
