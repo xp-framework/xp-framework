@@ -297,7 +297,7 @@
      */
     public function equals($collection) {
       if (
-        !is('Collection', $collection) || 
+        !$collection instanceof self ||
         $this->size != $collection->size
       ) return FALSE;
       
