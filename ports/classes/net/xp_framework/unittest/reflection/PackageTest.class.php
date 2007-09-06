@@ -121,10 +121,14 @@
      */
     #[@test]
     public function getTestClassNames() {
-      $names= Package::forName('net.xp_framework.unittest.reflection.classes')->getClassNames();
+      $base= 'net.xp_framework.unittest.reflection.classes';
+      $names= Package::forName($base)->getClassNames();
       $this->assertEquals(sizeof(self::$testClasses), sizeof($names), xp::stringOf($names));
       foreach ($names as $name) {
-        $this->assertTrue(in_array(xp::reflect($name), self::$testClasses), $name);
+        $this->assertTrue(
+          in_array(substr($name, strlen($base)+ 1), self::$testClasses), 
+          $name
+        );
       }
     }
 
@@ -134,10 +138,14 @@
      */
     #[@test]
     public function getTestClasses() {
-      $classes= Package::forName('net.xp_framework.unittest.reflection.classes')->getClasses();
+      $base= 'net.xp_framework.unittest.reflection.classes';
+      $classes= Package::forName($base)->getClasses();
       $this->assertEquals(sizeof(self::$testClasses), sizeof($classes), xp::stringOf($classes));
       foreach ($classes as $class) {
-        $this->assertTrue(in_array(xp::reflect($class->getName()), self::$testClasses), $class->getName());
+        $this->assertTrue(
+          in_array(substr($class->getName(), strlen($base)+ 1), self::$testClasses), 
+          $class->getName()
+        );
       }
     }
 
@@ -147,10 +155,14 @@
      */
     #[@test]
     public function getPackageNames() {
-      $names= Package::forName('net.xp_framework.unittest.reflection')->getPackageNames();
+      $base= 'net.xp_framework.unittest.reflection';
+      $names= Package::forName($base)->getPackageNames();
       $this->assertEquals(sizeof(self::$testPackages), sizeof($names), xp::stringOf($names));
       foreach ($names as $name) {
-        $this->assertTrue(in_array(xp::reflect($name), self::$testPackages), $name);
+        $this->assertTrue(
+          in_array(substr($name, strlen($base)+ 1), self::$testPackages), 
+          $name
+        );
       }
     }
 
@@ -160,10 +172,14 @@
      */
     #[@test]
     public function getPackages() {
-      $packages= Package::forName('net.xp_framework.unittest.reflection')->getPackages();
+      $base= 'net.xp_framework.unittest.reflection';
+      $packages= Package::forName($base)->getPackages();
       $this->assertEquals(sizeof(self::$testPackages), sizeof($packages), xp::stringOf($packages));
       foreach ($packages as $package) {
-        $this->assertTrue(in_array(xp::reflect($package->getName()), self::$testPackages), $package->getName());
+        $this->assertTrue(
+          in_array(substr($package->getName(), strlen($base)+ 1), self::$testPackages), 
+          $package->getName()
+        );
       }
     }
 
