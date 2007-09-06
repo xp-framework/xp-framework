@@ -9,6 +9,7 @@
   /**
    * A set of objects
    *
+   * @test     xp://net.xp_framework.unittest.util.collections.HashSetTest
    * @purpose  Set implemenentation
    */
   class HashSet extends Object implements Set {
@@ -41,7 +42,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->_elements);
+      return self::$iterate->on(array_values($this->_elements));
     }
 
     /**
