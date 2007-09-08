@@ -1,0 +1,411 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id: HttpScriptlet.class.php 9836 2007-04-02 16:39:10Z friebe $
+ */
+
+  uses(
+    'peer.URL',
+    'peer.http.HttpConstants',
+    'scriptlet.HttpScriptletRequest',
+    'scriptlet.HttpScriptletResponse',
+    'scriptlet.HttpScriptletException',
+    'scriptlet.HttpSessionInvalidException',
+    'scriptlet.HttpSession',
+    'scriptlet.sapi.WebserverAPI'
+  );
+  
+  /**
+   * Scriptlets are the counterpart to Java's Servlets - as one might
+   * have guessed from their name. Scriptlets, in comparison to Java
+   * servlets, are terminated at the end of a request, their resources
+   * freed and (non-persistent) connections, files etc. closed. 
+   * Scriptlets are not a 1:1 implementation of Servlets though one
+   * might find a lot of similarities!
+   * 
+   * This class is the base class for your application and really does
+   * nothing except for providing you whith a simple way of creating
+   * dynamic web pages. 
+   *
+   * For the beginning, in your class extending this one, simply override
+   * the <pre>doGet()</pre> method and put any source there to be executed 
+   * on a HTTP GET request.
+   *
+   * Example:
+   * <code>
+   *   uses('scriptlet.HttpScriptlet');
+   * 
+   *   class MyScriptlet extends HttpScriptlet {
+   *     function doGet(&$request, &$response) {
+   *       $response->write('Hello World');
+   *     }
+   *   }
+   * </code>
+   *
+   * <code>
+   *   uses('foo.bar.MyScriptlet');
+   *
+   *   $s= &new MyScriptlet();
+   *   try(); {
+   *     $s->init();
+   *     $response= &$s->process();
+   *   } if (catch('HttpScriptletException', $e)) {
+   *     // Retrieve standard "Internal Server Error"-Document
+   *     $response= &$e->getResponse(); 
+   *   }
+   * 
+   *   $response->sendHeaders();
+   *   $response->sendContent();
+   * 
+   *   $s->finalize();
+   * </code>
+   */
+  class HttpScriptlet extends Object {
+    public
+      $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
+    
+    /**
+     * Create a request object. Override this method to define
+     * your own request object
+     *
+     * @return  scriptlet.HttpScriptletRequest
+     */
+    protected function _request() {
+      return new HttpScriptletRequest();
+    }
+    
+    /**
+     * Create a session object. Override this method to define
+     * your own session object
+     *
+     * @return  scriptlet.HttpSession
+     */
+    protected function _session() {
+      return new HttpSession();
+    }
+    
+    /**
+     * Create a response object. Override this method to define
+     * your own response object
+     *
+     * @return  scriptlet.HttpScriptletResponse
+     */
+    protected function _response() {
+      return new HttpScriptletResponse();
+    }
+    
+    /**
+     * Initialize session
+     *
+     * @param   scriptlet.HttpScriptletRequest request
+     */
+    public function handleSessionInitialization($request) {
+      $request->session->initialize($request->getSessionId());
+    }
+
+    /**
+     * Handle the case when we find the given session invalid. By default, 
+     * we create a new session and therefore gracefully handle this case.
+     *
+     * This function must return TRUE if the scriptlet is supposed to 
+     * continue processing the request.
+     *
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @return  bool continue
+     */
+    public function handleInvalidSession($request, $response) {
+      return $request->session->initialize(NULL);
+    }
+
+    /**
+     * Handle the case when session initialization fails. By default, we 
+     * just return an error for this, a derived class may choose to 
+     * gracefully handle this case.
+     *
+     * This function must return TRUE if the scriptlet is supposed to 
+     * continue processing the request.
+     *
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @return  bool continue
+     */
+    public function handleSessionInitializationError($request, $response) {
+      return FALSE;
+    }
+    
+    /**
+     * Decide whether a session is needed. Returns FALSE in this
+     * implementation.
+     *
+     * @param   scriptlet.HttpScriptletRequest request
+     * @return  bool
+     */
+    public function needsSession($request) {
+      return FALSE;
+    }
+    
+    /**
+     * Handles the different HTTP methods. Supports GET, POST and
+     * HEAD - other HTTP methods pose security risks if not handled
+     * properly and are used very uncommly anyway.
+     *
+     * If you want to support these methods, override this method - 
+     * make sure you call <pre>parent::handleMethod($request)</pre>
+     * so that the request object gets set up correctly before any
+     * of your source is executed
+     *
+     * @see     rfc://2616
+     * @param   scriptlet.HttpScriptletRequest request
+     * @return  string class method (one of doGet, doPost, doHead)
+     */
+    public function handleMethod($request) {
+      switch ($request->method) {
+        case HTTP_POST:
+        
+          // FIXME
+          if (!empty($_FILES)) {
+            $request->params= array_merge($request->params, $_FILES);
+          }
+          $m= 'doPost';
+          break;
+          
+        case HTTP_GET:
+          $m= 'doGet';
+          break;
+          
+        case HTTP_HEAD:
+          $m= 'doHead';
+          break;
+          
+        default:
+          $m= NULL;
+      }
+      
+      return $m;
+    }
+    
+    /**
+     * Receives an HTTP GET request from the <pre>process()</pre> method
+     * and handles it.
+     *
+     * When overriding this method, request parameters are read and acted
+     * upon and the response object is used to set headers and add
+     * output. The request objects contains a session object if one was
+     * requested via <pre>needsSession()</pre>. Return FALSE to indicate no
+     * farther processing is needed - the response object's method 
+     * <pre>process</pre> will not be called.
+     * 
+     * Example:
+     * <code>
+     *   function doGet(&$request, &$response) {
+     *     if (NULL === ($name= $request->getParam('name'))) {
+     *       // Display a form where name is entered
+     *       // ...
+     *       return;
+     *     }
+     *     $response->write('Hello '.$name);
+     *   }
+     * </code>
+     *
+     * @return  bool processed
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     */
+    public function doGet($request, $response) {
+    }
+    
+    /**
+     * Receives an HTTP POST request from the <pre>process()</pre> method
+     * and handles it.
+     *
+     * @return  bool processed
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     */
+    public function doPost($request, $response) {
+    }
+    
+    /**
+     * Receives an HTTP HEAD request from the <pre>process()</pre> method
+     * and handles it.
+     *
+     * Remember:
+     * The HEAD method is identical to GET except that the server MUST NOT
+     * return a message-body in the response. The metainformation contained
+     * in the HTTP headers in response to a HEAD request SHOULD be identical
+     * to the information sent in response to a GET request. This method can
+     * be used for obtaining metainformation about the entity implied by the
+     * request without transferring the entity-body itself. This method is
+     * often used for testing hypertext links for validity, accessibility,
+     * and recent modification.
+     *
+     * @return  bool processed
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     */
+    public function doHead($request, $response) {
+    }
+    
+    /**
+     * Creates a session. This method will only be called if 
+     * <pre>needsSession()</pre> return TRUE and no session
+     * is available or the session is unvalid.
+     *
+     * The member variable <pre>sessionURIFormat</pre> is used
+     * to sprintf() the new URI:
+     * <pre>
+     * Ord Fill            Example
+     * --- --------------- --------------------
+     *   1 scheme          http
+     *   2 host            host.foo.bar
+     *   3 path            /foo/bar/index.html
+     *   4 dirname(path)   /foo/bar/
+     *   5 basename(path)  index.html
+     *   6 query           a=b&b=c
+     *   7 session id      cb7978876218bb7
+     *   8 fraction        #test
+     * </pre>
+     *
+     * @return  bool processed
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
+     * @throws  lang.XPException to indicate failure
+     */
+    public function doCreateSession($request, $response) {
+      $uri= $request->getURL();
+      $response->sendRedirect(sprintf(
+        $this->sessionURIFormat,
+        $uri->getScheme(),
+        $uri->getHost(),
+        $uri->getPath(),
+        dirname($uri->getPath()),
+        basename($uri->getPath()),
+        $uri->getQuery(),
+        $request->session->getId(),
+        $uri->getFragment()
+      ));
+      return FALSE;
+    }
+    
+    /**
+     * Initialize the scriptlet. This method is called before any 
+     * method processing is done.
+     *
+     * In this method, you can set up "global" requirements such as a 
+     * configuration manager.
+     *
+     */
+    public function init() { }
+    
+    /**
+     * Finalize the scriptlet. This method is called after all response
+     * headers and data has been sent and allows you to handle things such
+     * as cleaning up resources or closing database connections.
+     *
+     */
+    public function finalize() { }
+    
+    /**
+     * This method is called to process any request and dispatches
+     * it to on of the do* -methods of the scriptlet. It will also
+     * call the <pre>doCreateSession()</pre> method if necessary.
+     *
+     * @return  scriptlet.HttpScriptletResponse the response object
+     * @throws  scriptlet.HttpScriptletException indicating fatal errors
+     */
+    public function process($api= NULL) {
+      // Keep BC!
+      if (!$api) $api= new WebserverAPI();
+      
+      if (!$api instanceof ServerAPI) throw new IllegalArgumentException('No ServerAPI given');
+    
+      $request= $this->_request();
+      $request->setEnvironment($api->getEnvironment());
+
+      // Check if this method can be handled. In case it can't, throw a
+      // HttpScriptletException with the HTTP status code 501 ("Method not
+      // implemented"). The request object will already have all headers
+      // and the request method set when this method is called.
+      if (!($method= $this->handleMethod($request))) {
+        throw new HttpScriptletException(
+          'HTTP method "'.$request->method.'" not supported',
+          HTTP_METHOD_NOT_IMPLEMENTED
+        );
+      }
+
+      // Call the request's initialization method
+      $request->initialize();
+
+      // Check if a session is present. This is either the case when a session
+      // is already in the URL or if the scriptlet explicetly states it needs 
+      // one (by returning TRUE from needsSession()).
+      if ($this->needsSession($request) || $request->getSessionId()) {
+        $request->setSession($this->_session());
+        try {
+          $this->handleSessionInitialization($request);
+        } catch (XPException $e) {
+        
+          // Check if session initialization errors can be handled gracefully
+          // (default: no). If not, throw a HttpSessionInvalidException with
+          // the HTTP status code 503 ("Service temporarily unavailable").
+          if (!$this->handleSessionInitializationError($request, $response)) {
+            throw(new HttpSessionInvalidException(
+              'Session initialization failed: '.$e->getMessage(),
+              HTTP_SERVICE_TEMPORARILY_UNAVAILABLE
+            ));
+          }
+          
+          // Fall through, otherwise
+        }
+
+        // Check if invalid sessions can be handled gracefully (default: no).
+        // If not, throw a HttpSessionInvalidException with the HTTP status
+        // code 400 ("Bad request").
+        if (!$request->session->isValid()) {
+          if (!$this->handleInvalidSession($request, $response)) {
+            throw new HttpSessionInvalidException(
+              'Session is invalid',
+              HTTP_BAD_REQUEST
+            );
+          }
+
+          // Fall through, otherwise
+        }
+        
+        // Call doCreateSession() in case the session is new
+        if ($request->session->isNew()) $method= 'doCreateSession';
+      }
+
+      // Call method handler and, in case the method handler returns anything
+      // else than FALSE, the response processor. Exceptions thrown from any of
+      // the two methods will result in a HttpScriptletException with the HTTP
+      // status code 500 ("Internal Server Error") being thrown.
+      $response= $this->_response();
+      $response->setApi($api);
+      try {
+        $r= call_user_func_array(
+          array($this, $method), 
+          array($request, $response)
+        );
+        if (FALSE !== $r && !is(NULL, $r)) {
+          $response->process();
+        }
+      } catch (HttpScriptletException $e) {
+        throw $e;
+      } catch (XPException $e) {
+        throw new HttpScriptletException(
+          'Request processing failed ['.$method.']: '.$e->getMessage(),
+          HTTP_INTERNAL_SERVER_ERROR,
+          $e
+        );
+      }
+      
+      // Return it
+      return $response;
+    }
+  }
+?>
