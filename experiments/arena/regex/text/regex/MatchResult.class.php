@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.IndexOutOfBoundsException');
+
   /**
    * Represents a match result
    *
@@ -45,12 +47,25 @@
     }
 
     /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->length.') '.xp::stringOf($this->matches);
+    }
+
+    /**
      * Returns the matched group with the specified group offset
      *
      * @param   int offset
      * @return  string[]
+     * @throws  lang.IndexOutOfBoundsException in case a group with the given offset does not exist
      */
     public function group($offset) {
+      if (!isset($this->matches[$offset])) {
+        throw new IndexOutOfBoundsException('No such group '.$offset);
+      }
       return $this->matches[$offset];
     }
   }
