@@ -35,6 +35,10 @@
       self::UNGREEDY         => 'U',
       self::UTF8             => 'u',
     );
+    
+    protected
+      $regex    = '',
+      $utf8     = FALSE;
   
     /**
      * Constructor
@@ -48,8 +52,10 @@
       foreach (self::$flags as $bit => $str) {
         if ($bit == $flags & $bit) $modifiers.= $str;
       }
-    
-      $this->regex= '°'.str_replace('°', '\°', $regex).'°'.$modifiers;
+      $this->utf8= (bool)($flags & self::UTF8);
+      $this->regex= '/'.str_replace('/', '\/', $regex).'/'.$modifiers;
+
+      // Compile and test pattern
       $n= preg_match($this->regex, '');
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
         throw new FormatException('Pattern "'.$regex.'" not well-formed');
@@ -66,6 +72,25 @@
     }
 
     /**
+     * Returns whether a given object is equal to this
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->regex === $this->regex;
+    }
+
+    /**
+     * Returns a hashcode for this pattern
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'R'.$this->regex;
+    }
+
+    /**
      * Returns how many times a given input is matched.
      *
      * @param   string input
@@ -73,9 +98,13 @@
      * @throws  lang.FormatException
      */  
     public function matches($input) {
-      $n= preg_match_all($this->regex, $input, $m);
+      if ($input instanceof String) {
+        $n= preg_match_all($this->regex, $this->utf8 ? $input->getBytes() : utf8_decode($input->getBytes()), $m);
+      } else {
+        $n= preg_match_all($this->regex, (string)$input, $m);
+      }
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
-        throw new FormatException('Pattern "'.$this->regex.'" not well-formed');
+        throw new FormatException('Pattern "'.$this->regex.'" matching error');
       }
       return new MatchResult($n, $m);
     }
