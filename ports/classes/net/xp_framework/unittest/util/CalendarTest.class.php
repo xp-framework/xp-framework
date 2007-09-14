@@ -20,6 +20,9 @@
       $nowDate  = NULL,
       $refDate  = NULL;
     
+    protected
+      $oldtz    = NULL;
+    
     /**
      * Set up this test
      *
@@ -84,7 +87,29 @@
      */
     #[@test]
     public function testCalendarDSTBegin() {
-      $this->assertDateEquals('2003-03-30T00:00:00+00:00', Calendar::dstBegin(2003), 'dstbegin');
+      $this->assertDateEquals('2003-03-30T01:00:00+00:00', Calendar::dstBegin(2003), 'dstbegin');
+    }
+    
+    /**
+     * Test calendar class (DST / daylight savings times), make sure $method argument is obsolete
+     * when passing a Date object with timezone information
+     *
+     * @see     xp://util.Calendar
+     */
+    #[@test]
+    public function testCalendarDSTBeginByDate() {
+      $this->assertDateEquals('2003-03-30T01:00:00+00:00', Calendar::dstBegin(new Date('2003-11-11 22:22:22 Europe/Berlin'), CAL_DST_EU), 'dstbegin');
+      $this->assertDateEquals('2003-03-30T01:00:00+00:00', Calendar::dstBegin(new Date('2003-11-11 22:22:22 Europe/Berlin'), CAL_DST_US), 'dstbegin');
+    }
+
+    /**
+     * Test calendar class (DST / daylight savings times)
+     *
+     * @see     xp://util.Calendar
+     */
+    #[@test]
+    public function testCalendarDSTBeginUS() {
+      $this->assertDateEquals('2003-04-06T07:00:00+00:00', Calendar::dstBegin(2003, CAL_DST_US), 'dstbegin');
     }
 
     /**
@@ -94,7 +119,35 @@
      */
     #[@test]
     public function testCalendarDSTEnd() {
-      $this->assertDateEquals('2003-10-26T00:00:00+00:00', Calendar::dstEnd(2003), 'dstend');
+      $this->assertDateEquals('2003-10-26T01:00:00+00:00', Calendar::dstEnd(2003), 'dstend');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function inDst() {
+      $this->assertEquals(TRUE, Calendar::inDST(new Date('2007-08-24', new TimeZone('Europe/Berlin'))));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function notInDst() {
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-01-24', new TimeZone('Europe/Berlin'))));
+    }
+
+    /**
+     * Test Asia/Singapore does not have DST
+     *
+     */
+    #[@test]
+    public function haveNoDst() {
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-01-24', new TimeZone('Asia/Singapore'))));
+      $this->assertEquals(FALSE, Calendar::inDST(new Date('2007-08-24', new TimeZone('Asia/Singapore'))));
     }
   }
 ?>

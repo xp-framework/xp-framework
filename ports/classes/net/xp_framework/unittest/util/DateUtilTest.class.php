@@ -6,7 +6,8 @@
  
   uses(
     'unittest.TestCase',
-    'util.DateUtil'
+    'util.DateUtil',
+    'util.TimeZone'
   );
 
   /**
@@ -24,7 +25,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new Date(Date::mktime(12, 15, 11, 1, 1, 2000));
+      $this->fixture= Date::create(2000, 1, 1, 12, 15, 11, new TimeZone('Europe/Berlin'));
     }
 
     /**
@@ -34,7 +35,7 @@
     #[@test]
     public function addSeconds() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 15, 30, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 12, 15, 30, new TimeZone('Europe/Berlin')),
         DateUtil::addSeconds($this->fixture, 19)
       );
     }
@@ -46,7 +47,7 @@
     #[@test]
     public function addMinutes() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 44, 11, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 12, 44, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addMinutes($this->fixture, 29)
       );
     }
@@ -58,7 +59,7 @@
     #[@test]
     public function addHours() {
       $this->assertEquals(
-        new Date(Date::mktime(13, 15, 11, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 13, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addHours($this->fixture, 1)
       );
     }
@@ -70,7 +71,7 @@
     #[@test]
     public function addDays() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 15, 11, 1, 2, 2000)),
+        Date::create(2000, 1, 2, 12, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addDays($this->fixture, 1)
       );
     }
@@ -82,7 +83,7 @@
     #[@test]
     public function addMonths() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 15, 11, 2, 1, 2000)),
+        Date::create(2000, 2, 1, 12, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addMonths($this->fixture, 1)
       );
     }
@@ -94,7 +95,7 @@
     #[@test]
     public function addNegativeSeconds() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 14, 52, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 12, 14, 52, new TimeZone('Europe/Berlin')),
         DateUtil::addSeconds($this->fixture, -19)
       );
     }
@@ -106,7 +107,7 @@
     #[@test]
     public function addNegativeMinutes() {
       $this->assertEquals(
-        new Date(Date::mktime(11, 46, 11, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 11, 46, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addMinutes($this->fixture, -29)
       );
     }
@@ -118,7 +119,7 @@
     #[@test]
     public function addNegativeHours() {
       $this->assertEquals(
-        new Date(Date::mktime(11, 15, 11, 1, 1, 2000)),
+        Date::create(2000, 1, 1, 11, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addHours($this->fixture, -1)
       );
     }
@@ -130,7 +131,7 @@
     #[@test]
     public function addNegativeDays() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 15, 11, 12, 31, 1999)),
+        Date::create(1999, 12, 31, 12, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addDays($this->fixture, -1)
       );
     }
@@ -142,7 +143,7 @@
     #[@test]
     public function addNegativeMonths() {
       $this->assertEquals(
-        new Date(Date::mktime(12, 15, 11, 12, 1, 1999)),
+        Date::create(1999, 12, 1, 12, 15, 11, new TimeZone('Europe/Berlin')),
         DateUtil::addMonths($this->fixture, -1)
       );
     }
@@ -153,15 +154,15 @@
      */
     #[@test]
     public function testLeapYear() {
-      $date= new Date(Date::mktime(0, 0, 0, 2, 1, 2000));
+      $date= Date::create(2000, 2, 1, 0, 0, 0);
       
       $this->assertEquals(
-        new Date(Date::mktime(0, 0, 0, 3, 1, 2000)),
+        Date::create(2000, 3, 1, 0, 0, 0),
         DateUtil::addMonths($date, 1)
       );
       
       $this->assertEquals(
-        new Date(Date::mktime(0, 0, 0, 3, 2, 2000)),
+        Date::create(2000, 3, 2, 0, 0, 0),
         DateUtil::addDays($date, 30)
       );
     }
@@ -172,15 +173,15 @@
      */
     #[@test]
     public function testNonLeapYear() {
-      $date= new Date(Date::mktime(0, 0, 0, 2, 1, 1999));
+      $date= Date::create(1999, 2, 1, 0, 0, 0, new TimeZone('Europe/Berlin'));
       
       $this->assertEquals(
-        new Date(Date::mktime(0, 0, 0, 3, 1, 1999)),
+        Date::create(1999, 3, 1, 0, 0, 0, new TimeZone('Europe/Berlin')),
         DateUtil::addMonths($date, 1)
       );
       
       $this->assertEquals(
-        new Date(Date::mktime(0, 0, 0, 3, 3, 1999)),
+        Date::create(1999, 3, 3, 0, 0, 0, new TimeZone('Europe/Berlin')),
         DateUtil::addDays($date, 30)
       );
     }
@@ -223,13 +224,44 @@
     #[@test]
     public function testBeginAndEndOfWeek() {
       $this->assertEquals(
-        new Date(Date::mktime(0, 0, 0, 1, 14, 2007)),
+        Date::create(2007, 1, 14, 0, 0, 0),
         DateUtil::getBeginningOfWeek(new Date('2007-1-18'))
       );
       $this->assertEquals(
-        new Date(Date::mktime(23, 59, 59, 1, 20, 2007)),
+        Date::create(2007, 1, 20, 23, 59, 59),
         DateUtil::getEndOfWeek(new Date('2007-1-18'))
       );
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function testMoveToTimezone() {
+      $copy= clone $this->fixture;
+      $tz= new TimeZone('Australia/Sydney');
+      
+      $this->assertEquals($this->fixture, DateUtil::moveToTimeZone($copy, $tz));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function testSetTimezone() {
+      try {
+      $this->assertEquals(
+        Date::create(2000, 1, 1, 17, 15, 11),
+        DateUtil::setTimeZone($this->fixture, new TimeZone('America/New_York'))
+      );
+      } catch (IllegalArgumentException $e) {
+      
+        $e->printStackTrace();
+      }
+    }
+    
+    
   }
 ?>

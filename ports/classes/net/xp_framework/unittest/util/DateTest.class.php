@@ -6,7 +6,8 @@
  
   uses(
     'unittest.TestCase',
-    'util.Date'
+    'util.Date',
+    'util.TimeZone'
   );
 
   /**
@@ -45,6 +46,70 @@
     }
     
     /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseWithoutTz() {
+      $this->assertEquals(TRUE, new Date('2007-01-01 01:00:00 Europe/Berlin') instanceof Date);
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorUnixtimestampWithoutTz() {
+      $this->assertDateEquals('2007-08-23T12:35:47+00:00', new Date(1187872547));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorUnixtimestampWithTz() {
+      $this->assertDateEquals('2007-08-23T12:35:47+00:00', new Date(1187872547, new TimeZone('Europe/Berlin')));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseTz() {
+      $date= new Date('2007-01-01 01:00:00 Europe/Berlin');
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+      
+      $date= new Date('2007-01-01 01:00:00 Europe/Berlin', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+
+      $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
+      $this->assertDateEquals('2007-01-01T01:00:00+02:00', $date);
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function constructorParseNoTz() {
+      $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
+      
+      $date= new Date('2007-01-01 01:00:00');
+      $this->assertEquals(TRUE, $date instanceof Date);
+      $this->assertEquals('GMT', $date->getTimeZone()->getName());
+    }
+    
+    /**
      * Test date class
      *
      * @see     xp://util.Date
@@ -53,7 +118,6 @@
     public function testDate() {
       $this->assertEquals($this->nowDate->getTime(), $this->nowTime);
       $this->assertEquals($this->nowDate->toString('r'), date('r', $this->nowTime));
-      $this->assertEquals($this->nowDate->format('%c'), strftime('%c', $this->nowTime));
       $this->assertTrue($this->nowDate->isAfter(Date::fromString('yesterday')));
       $this->assertTrue($this->nowDate->isBefore(Date::fromString('tomorrow')));
     }
@@ -86,10 +150,10 @@
       $this->assertEquals(12, Date::fromString('May 28 1980 12:00PM')->getHours(), '12:00PM != 12h');
 
       // Test with homegrown strtotime-replacement
-      $this->assertEquals(1, (int)Date::fromString('May 28 1580 1:00AM')->getHours(), '1:00AM != 1h');
-      $this->assertEquals(0, (int)Date::fromString('May 28 1580 12:00AM')->getHours(), '12:00AM != 0h');
-      $this->assertEquals(13, (int)Date::fromString('May 28 1580 1:00PM')->getHours(), '1:00PM != 13h');
-      $this->assertEquals(12, (int)Date::fromString('May 28 1580 12:00PM')->getHours(), '12:00PM != 12h');
+      $this->assertEquals(1, Date::fromString('May 28 1580 1:00AM')->getHours(), '1:00AM != 1h');
+      $this->assertEquals(0, Date::fromString('May 28 1580 12:00AM')->getHours(), '12:00AM != 0h');
+      $this->assertEquals(13, Date::fromString('May 28 1580 1:00PM')->getHours(), '1:00PM != 13h');
+      $this->assertEquals(12, Date::fromString('May 28 1580 12:00PM')->getHours(), '12:00PM != 12h');
     }
     
     /**
@@ -100,12 +164,11 @@
     public function testMktime() {
       
       // Test with a date before 1971
-      $this->assertEquals(Date::mktime(0, 0, 0, '08', '02', 1968), -44668800, 'Wrong timestamp');
+      $this->assertEquals(-44668800, Date::mktime(0, 0, 0, '08', '02', 1968), 'Wrong timestamp');
     }
     
     /**
-     * Test date parsing in different formats in
-     * pre 1970 epoch.
+     * Test date parsing in different formats in pre 1970 epoch.
      *
      * @see     bug://13
      */    
@@ -114,6 +177,66 @@
       $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('01.02.1969'));
       $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01'));
       $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01 00:00AM'));
-    }    
+    }
+    
+    /**
+     * Test serialization of util.Date
+     *
+     */
+    #[@test]
+    public function serialization() {
+      $original= Date::fromString('2007-07-18T09:42:08 Europe/Athens');
+      $copy= unserialize(serialize($original));
+      $this->assertEquals($original, $copy);
+    }
+
+    /**
+     * Test serialization of util.Date from old - or legacy -
+     * date string representation.
+     *
+     */
+    #[@test]
+    public function serializationOfLegacyDates() {
+      $serialized= 'O:4:"Date":12:{s:6:"_utime";i:1185310311;s:7:"seconds";i:51;s:7:"minutes";i:51;s:5:"hours";i:22;s:4:"mday";i:24;s:4:"wday";i:2;s:3:"mon";i:7;s:4:"year";i:2007;s:4:"yday";i:204;s:7:"weekday";s:7:"Tuesday";s:5:"month";s:4:"July";s:4:"__id";N;}';
+
+      $date= unserialize($serialized);
+      $this->assertDateEquals('2007-07-24T20:51:51+00:00', $date);
+
+      // Only __id may be set, all the other "old" public members
+      // should have been removed here
+      $this->assertEquals(1, sizeof(get_object_vars($date)));
+    }
+
+    /**
+     * Test timezone functionality
+     *
+     */
+    #[@test]
+    public function handlingOfTimezone() {
+      $original= Date::fromString('2007-07-18T09:42:08 Europe/Athens');
+
+      $this->assertEquals('Europe/Athens', $original->getTimeZone()->getName());
+      $this->assertEquals(3 * 3600, $original->getTimeZone()->getOffsetInSeconds());
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function supportedFormatTokens() {
+      $this->assertEquals('1977', $this->refDate->format('%Y'));
+      $this->assertEquals('12/14/1977 11:55:00', $this->refDate->format('%D %T'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unsupportedFormatToken() {
+      $this->refDate->format('%b');
+    }
+    
   }
 ?>
