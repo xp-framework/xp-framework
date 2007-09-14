@@ -11,6 +11,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0115 - Make Date objects represent an instance in time
+  (kiesel, friebe)
 
 Bugfixes
 ~~~~~~~~
