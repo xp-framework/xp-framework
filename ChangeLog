@@ -13,6 +13,8 @@ RFCs
 ~~~~
 - Implemented RFC #0115 - Make Date objects represent an instance in time
   (kiesel, friebe)
+- Implemented RFC #0135 - Default callbacks for XSLT (2nd part)
+  (kiesel)
 
 Bugfixes
 ~~~~~~~~
