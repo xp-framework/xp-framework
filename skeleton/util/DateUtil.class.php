@@ -13,7 +13,7 @@
    * DateUtil is a helper class to handle Date objects and 
    * calculate date- and timestamps.
    *
-   * @test    xp://util.DateUtil
+   * @test    xp://net.xp_framework.unittest.util.DateUtilTest
    * @purpose Utils to calculate with Date objects
    */
   class DateUtil extends Object {
@@ -25,16 +25,16 @@
      * @param   util.Date date
      * @return  util.Date
      */
-    public static function getMidnight($date) {
-      $d= new Date(Date::mktime(
-        0,
-        0,
-        0,
+    public static function getMidnight(Date $date) {
+      return Date::create(
+        $date->getYear(),
         $date->getMonth(),
         $date->getDay(),
-        $date->getYear()
-      ));
-      return $d;
+        0,
+        0,
+        0,
+        $date->getTimeZone()
+      );
     }
     
     /**
@@ -43,16 +43,16 @@
      * @param   util.Date date
      * @return  util.Date
      */
-    public static function getLastOfMonth($date) {
-      $d= new Date(Date::mktime(
+    public static function getLastOfMonth(Date $date) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth() + 1,
+        0,
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth() + 1,
-        0,
-        $date->getYear()
-      ));
-      return $d;
+        $date->getTimeZone()
+      );
     }
     
     /**
@@ -61,16 +61,16 @@
      * @param   util.Date date
      * @return  util.Date
      */
-    public static function getFirstOfMonth($date) {
-      $d= new Date(Date::mktime(
+    public static function getFirstOfMonth(Date $date) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        1,
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth(),
-        1,
-        $date->getYear()
-      ));
-      return $d;
+        $date->getTimeZone()
+      );
     }
 
     /**
@@ -79,7 +79,7 @@
      * @param   util.Date date
      * @return  util.Date
      */
-    public static function getBeginningOfWeek($date) {
+    public static function getBeginningOfWeek(Date $date) {
       return DateUtil::addDays(DateUtil::getMidnight($date), -$date->getDayOfWeek());
     }
 
@@ -89,16 +89,17 @@
      * @param   util.Date date
      * @return  util.Date
      */
-    public static function getEndOfWeek($date) {
-      $date= new Date(Date::mktime(
+    public static function getEndOfWeek(Date $date) {
+      $date= Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay(),
         23,
         59,
         59,
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
-      return DateUtil::addDays($date, 6 - $date->wday);
+        $date->getTimeZone()
+      );
+      return DateUtil::addDays($date, 6- $date->getDayOfWeek());
     }
 
     /**
@@ -108,15 +109,16 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addMonths($date, $count= 1) {
-      return new Date(Date::mktime(
+    public static function addMonths(Date $date, $count= 1) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth() + $count,
+        $date->getDay(),
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth() + $count,
-        $date->getDay(),
-        $date->getYear()
-      ));
+        $date->getTimeZone()
+      );
     }
 
     /**
@@ -126,7 +128,7 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addWeeks($date, $count= 1) {
+    public static function addWeeks(Date $date, $count= 1) {
       return DateUtil::addDays($date, $count * 7);
     }
     
@@ -137,15 +139,16 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addDays($date, $count= 1) {
-      return  new Date(Date::mktime(
+    public static function addDays(Date $date, $count= 1) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay() + $count,
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay() + $count,
-        $date->getYear()
-      ));
+        $date->getTimeZone()
+      );
     }
     
     /**
@@ -155,15 +158,16 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addHours($date, $count= 1) {
-      return new Date(Date::mktime(
+    public static function addHours(Date $date, $count= 1) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay(),
         $date->getHours() + $count,
         $date->getMinutes(),
         $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
+        $date->getTimeZone()
+      );
     }
     
     /**
@@ -173,15 +177,16 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addMinutes($date, $count= 1) {
-      return new Date(Date::mktime(
+    public static function addMinutes(Date $date, $count= 1) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay(),
         $date->getHours(),
         $date->getMinutes() + $count,
         $date->getSeconds(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getYear()
-      ));
+        $date->getTimeZone()
+      );
     }
 
     /**
@@ -191,27 +196,61 @@
      * @param   int count default 1
      * @return  util.Date
      */
-    public static function addSeconds($date, $count= 1) {
-      return new Date(Date::mktime(
+    public static function addSeconds(Date $date, $count= 1) {
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay(),
         $date->getHours(),
         $date->getMinutes(),
         $date->getSeconds() + $count,
+        $date->getTimeZone()
+      );
+    }
+    
+    /**
+     * Move a date to a given timezone. Does not modify the date's
+     * actual value.
+     *
+     * @param   util.Date date
+     * @param   util.TimeZone tz
+     * @return  util.Date
+     */
+    public static function moveToTimezone(Date $date, TimeZone $tz) {
+      return $tz->translate($date);
+    }
+    
+    /**
+     * Set a given timezone for the passed date. Really modifies
+     * the date as just the timezone is exchanged, no further
+     * modifications are done.
+     *
+     * @param   util.Date date
+     * @param   util.TimeZone tz
+     * @return  util.Date
+     */
+    public static function setTimezone(Date $date, TimeZone $tz) {
+      return Date::create(
+        $date->getYear(),
         $date->getMonth(),
         $date->getDay(),
-        $date->getYear()
-      ));
-    }
+        $date->getHours(),
+        $date->getMinutes(),
+        $date->getSeconds(),
+        $tz
+      );
+    }    
 
     /**
-     * returns a TimeSpan representing the difference 
+     * Returns a TimeSpan representing the difference 
      * between the two given Date objects
      *
      * @param   util.Date d1
      * @param   util.Date d2
      * @return  util.TimeSpan
      */
-    public static function timeSpanBetween($d1, $d2) {
-      return new TimeSpan($d1->getTime()-$d2->getTime());
+    public static function timeSpanBetween(Date $d1, Date $d2) {
+      return new TimeSpan($d1->getTime()- $d2->getTime());
     }
 
     /**
@@ -229,9 +268,8 @@
      * @param   util.Date b
      * @return  int
      */
-    public static function compare($a, $b) {
+    public static function compare(Date $a, Date $b) {
       return $b->compareTo($a);
     }
-
   } 
 ?>

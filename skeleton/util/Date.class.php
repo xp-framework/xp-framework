@@ -7,344 +7,169 @@
   /**
    * The class Date represents a specific instant in time.
    *
-   * Public member variables:
-   * <pre>
-   * seconds    - Seconds
-   * minutes    - Minutes
-   * hours      - Hours (0 .. 24)
-   * mday       - Day of the month
-   * wday       - Day of the week (0 = Sunday, .. , 6 = Saturday)
-   * mon        - Month
-   * year       - Year
-   * yday       - Day of the year
-   * weekday    - Day of the week name, long, e.g. "Friday"
-   * month      - Month name, long, e.g. "January"
-   * </pre>
-   *
-   * @test     xp://net.xp_framework.unittest.DateTest
+   * @test     xp://net.xp_framework.unittest.util.DateTest
    * @purpose  Represent a date
    */
   class Date extends Object {
-    public
-      $_utime   = 0;
-      
-    public
-      $seconds  = 0,
-      $minutes  = 0,
-      $hours    = 0,
-      $mday     = 0,
-      $wday     = 0,
-      $mon      = 0,
-      $year     = 0,
-      $yday     = 0,
-      $weekday  = '',
-      $month    = '';
+    protected
+      $date     = NULL;
+    
+    const
+      DEFAULT_FORMAT    = 'Y-m-d H:i:sO',
+      SERIALIZE_FORMAT  = 'Y-m-d H:i:sO';
 
     /**
-     * Constructor
+     * Constructor. Creates a new date object through either a
+     * <ul>
+     *   <li>integer - interpreted as timestamp</li>
+     *   <li>string - parsed into a date</li>
+     *   <li>php.DateTime object - will be used as is</li>
+     *   <li>NULL - creates a date representing the current instance</li>
+     *  </ul>
      *
-     * @param   mixed in default NULL either a string or a Unix timestamp, defaulting to now
+     * Timezone assignment works through these rules:
+     * . If the time is given as string and contains a parseable timezone identifier
+     *   that one is used.
+     * . If no timezone could be determined, the timezone given by the
+     *   second parameter is used
+     * . If no timezone has been given as second parameter, the system's default
+     *   timezone is used.
+     *
+     * @param   mixed in default NULL either a string or a Unix timestamp or DateTime object, defaulting to now
+     * @param   string timezone default NULL string of timezone
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
-    public function __construct($in= NULL) {
-      if (is_string($in)) {
-        $this->_utime(self::_strtotime($in));
-      } else if (is_int($in) || is_float($in)) {
-        $this->_utime($in);
-      } else if (is_null($in)) {
-        $this->_utime(time());
-      } else {
-        $this->_utime(time());
-        throw(new IllegalArgumentException(
-          'Given argument is neither a timestamp nor a well-formed timestring'
-        ));
-      }
-    }
-    
-    /**
-     * Get local time zones' offset from GMT (Greenwich main time). 
-     * Caches the result.
-     *
-     * @return  int offset in seconds
-     */
-    protected function _getGMTOffset() {
-      static $o;
-      
-      if (!isset($o)) $o= mktime(0, 0, 0, 1, 2, 1970, 0)- gmmktime(0, 0, 0, 1, 2, 1970, 0);
-      return $o;
-    }
-    
-    /**
-     * Returns whether a year is a leap year
-     *
-     * @param   int year
-     * @return  bool TRUE if the given year is a leap year
-     */
-    protected static function _isLeapYear($year) {
-      return $year % 400 == 0 || ($year > 1582 && $year % 100 == 0 ? FALSE : $year % 4 == 0);
-    }
-    
-    /**
-     * Overflow-safe replacement for PHP's strtotime() function.
-     *
-     * @param   string in
-     * @return  int
-     */
-    protected static function _strtotime($in) {
-      static $month_names= array(
-        'Jan' => 1,
-        'Feb' => 2,
-        'Mar' => 3,
-        'Apr' => 4,
-        'May' => 5,
-        'Jun' => 6,
-        'Jul' => 7,
-        'Aug' => 8,
-        'Sep' => 9,
-        'Oct' => 10,
-        'Nov' => 11,
-        'Dec' => 12
-      );
-      
-      // Try to use builtin function strtotime()
-      if (-1 != ($stamp= strtotime($in)) && FALSE !== $stamp) return $stamp;
-      
-      // European date format (dd.mm.yyyy hh:mm:ss). At least two values
-      // need to be found
-      if (2 < sscanf($in, '%d.%d.%d %d:%d:%d', $d, $m, $y, $h, $i, $s)) {
-        return self::mktime($h, $i, $s, $m, $d, $y);
-      }
-
-      // "2006-05-04 11:59:00"
-      if (2 < sscanf($in, '%4d-%02d-%02d %02d:%02d:%02d', $y, $m, $d, $h, $i, $s)) {
-        return self::mktime($h, $i, $s, $m, $d, $y);
-      }
-      
-      // "Dec 31 2070 11:59PM"
-      if (2 < sscanf($in, '%3s %02d %04d %02d:%02d%[AP]M', $n, $d, $y, $h, $i, $m)) {
-        ($m == 'A' && $h == 12) && $h= 0;
-        ($m == 'A') || ($m == 'P' && $h == 12) || $h+= 12;
-        return self::mktime($h, $i, 0, $month_names[$n], $d, $y);
-      }
-      
-      // FIXME: Support more formats
-      
-      throw(new IllegalArgumentException('Cannot parse "'.$in.'"'));
-    }
-    
-    /**
-     * Overflow-safe replacement for PHP's mktime() function. Uses the builtin
-     * function in case the year is between 1971 and 2037.
-     *
-     * @see     php://mktime
-     * @param   int hour default 0
-     * @param   int minute default 0
-     * @param   int second default 0
-     * @param   int month default 0
-     * @param   int day default 0
-     * @param   int year default 0
-     * @param   int is_dst default -1
-     * @return  int stamp
-     */
-    public static function mktime($hour= 0, $minute= 0, $second= 0, $month= 0, $day= 0, $year= 0, $is_dst= -1) {
-      static $month_table= array(
-        array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
-        array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
-      );
-    
-      // Use builtin?
-      if (1971 < $year && $year < 2038) {
-        return mktime($hour, $minute, $second, $month, $day, $year, $is_dst);
-      }
-      
-      $gmt= 0;  // FIXME
-
-      // Check for month overflow and advance into next year
-      if ($month > 12) {
-        $y= floor($month / 12);
-        $year+= $y;
-        $month-= $y * 12;
-      }
-
-      $days= 0;
-      if ($year >= 1970) {
-
-        // Add number of years times number of days per year to days
-        for ($y= 1970; $y < $year; $y++) {
-          $days+= self::_isLeapYear($y) ? 366 : 365;
+    public function __construct($in= NULL, TimeZone $timezone= NULL) {
+      switch (TRUE) {
+        case $in instanceof DateTime: {
+          $this->date= $in;
+          return;
         }
         
-        // Add number of days per month
-        $days+= array_sum(array_slice($month_table[self::_isLeapYear($year)], 1, $month- 1));
-        
-        // Add day
-        $days+= $day- 1;
-        
-        // Calculate stamp
-        $stamp= $days * 86400 + $hour * 3600 + $minute * 60 + $second + $gmt;
-      } else {
-      
-        // Add number of years times number of days per year to days
-        for ($y= 1969; $y > $year; $y--) {
-          $days+= self::_isLeapYear($y) ? 366 : 365;
-        }
-        $leap= self::_isLeapYear($year);
-        
-        // Add number of days per month
-        $days+= array_sum(array_slice($month_table[$leap], $month + 1, 12));
-        
-        // Subtract day
-        $days+= $month_table[$leap][intval($month)]- $day;
-        
-        // Calculate stamp
-        $stamp= - ($days * 86400 + (86400 - ($hour * 3600 + $minute * 60 + $second)) - $gmt);
-        
-        // Gregorian correction
-        if ($stamp < -12220185600) {
-          $stamp+= 864000; 
-        } else if ($stamp < -12219321600) {
-          $stamp = -12219321600;
-        }
-      } 
+        // Specially mark timestamps for parsing (we assume here that strings
+        // containing only digits are timestamps)
+        case is_numeric($in): $in= '@'.$in;
+          $timezone= NULL;
+          // Break missing intentionally
 
-      return $stamp;
+        default: {
+          switch (TRUE) {
+            case $timezone instanceof TimeZone: {
+              $this->date= date_create($in, $timezone->getHandle());
+              break;
+            }
+            
+            default: {
+              $this->date= date_create($in); break;
+            }
+          }
+          
+          if (FALSE === $this->date)
+            throw new IllegalArgumentException(
+              'Given argument is neither a timestamp nor a well-formed timestring: "'.$in.'"'
+            );
+          return;
+        }
+      }
     }
     
     /**
-     * Overflow-safe replacement for PHP's getdate() function. Uses the
-     * builtin function when 0 <= stamp <= LONG_MAX, the userland 
-     * implementation otherwise.
+     * Retrieve handle of underlying DateTime object.
      *
-     * @see     php://getdate
-     * @param   int stamp
+     * @return  php.DateTime
+     */
+    public function getHandle() {
+      return clone $this->date;
+    }
+    
+    /**
+     * Sleep method.
+     *
      * @return  array
      */
-    protected static function _getdate($stamp, $isGMT= FALSE) {
-      static $month_table= array(
-        array(NULL, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
-        array(NULL, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31) // Leap years
-      );
+    public function __sleep() {
+      $this->value= $this->toString(self::SERIALIZE_FORMAT, new TimeZone('GMT'));
+      return array('value', '__id');
+    }
+    
+    /**
+     * Wakup method - reconstructs object after deserialization.
+     *
+     */
+    public function __wakeup() {
       
-      // Use builtin?
-      if ($stamp >= 0 && $stamp <= LONG_MAX) return getdate($stamp);
-      
-      $result= array(); 
-      $gc= 0;
-      if ($stamp < 0) {
-
-        // Oct 15, 1582 or earlier
-        if ($stamp < -12219321600) $stamp-= 864000;
-      
-        // Look for year
-        for ($year= 1970; --$year >= 0; ) {
-          $last= $stamp;
-          $leap= self::_isLeapYear($year);
-          $stamp+= $leap ? 31622400 : 31536000;
-          if ($stamp >= 0) {
-            $result['year']= $year;
-            break;
-          }
-        }
-        $seconds= 31536000 + (86400 * $leap) + $last;
-        $result['leap']= $leap;
-
-        // Look for month
-        $stamp= $last;
-        for ($month= 13; --$month > 0; ) {
-          $last= $stamp;
-          $stamp+= $month_table[$leap][$month] * 86400;
-          if ($stamp >= 0) {
-            $result['mon']= $month;
-            $result['ndays']= $month_table[$leap][$month];
-            break;
-          }
-        }
-
-        // Figure out day
-        $stamp= $last;
-        $result['mday']= $result['ndays']+ ceil(($stamp+ 1) / 86400);
-
-        // Figure out hour
-        $stamp+= ($result['ndays']- $result['mday']+ 1) * 86400;
-        $result['hours']= floor($stamp / 3600);
-        
-        // Gregorian correction value
-        $gc= ($result['year'] < 1582 || ($result['year'] == 1582 && $result['mon'] == 10 && $result['mday'] < 15)) ? 3 : 0;
-      } else {
-
-        // Look for year
-        for ($year= 1970; ; $year++) {
-          $last= $stamp;
-
-          $leap= self::_isLeapYear($year);
-          if (0 >= ($stamp-= $leap ? 31622400 : 31536000)) {
-            $result['year']= $year;
-            break;
-          }
-        }
-        $seconds= $last;
-        $result['leap']= $leap;
-        
-        // Look for month
-        $stamp= $last;
-        for ($month= 1; $month <= 12; $month++) {
-          $last= $stamp;
-          if (0 >= ($stamp-= $month_table[$leap][$month] * 86400)) {
-            $result['mon']= $month;
-            $result['ndays']= $month_table[$leap][$month];
-            break;
-          }
-        }
-
-        // Figure out day
-        $stamp= $last;
-        $result['mday']= ceil(($stamp+ 1) / 86400);
-        
-        // Figure out hour
-        $stamp-= ($result['mday']- 1) * 86400;
-        $result['hours']= floor($stamp / 3600);
+      // First check for new serialization format
+      if (isset($this->value)) {
+        $this->date= date_create($this->value);
+        return;
       }
-      
-      // Figure out minutes and seconds
-      $stamp-= $result['hours'] * 3600;
-      $result['minutes']= floor($stamp / 60);
-      $result['seconds']= $stamp - $result['minutes'] * 60;
-      
-      // Figure out day of year
-      $result['yday']= floor($seconds / 86400);
-      
-      // Figure out day of week
-      if ($month > 2) $month-= 2; else {
-        $year--;
-        $month+= 10;
+
+      // Check for legacy serialization format
+      if (isset($this->_utime)) {
+        $this->date= date_create('@'.$this->_utime);
+        unset($this->_utime, $this->seconds, $this->minutes, $this->hours, $this->mday,
+          $this->wday, $this->mon, $this->year, $this->yday, $this->weekday, $this->month
+        );
+        return;
       }
-      $d= (
-        floor((13 * $month - 1) / 5) + 
-        $result['mday'] + ($year % 100) +
-        floor(($year % 100) / 4) +
-        floor(($year / 100) / 4) - 2 *
-        floor($year / 100) + 77
-      );
-      $result['wday']= (($d - 7 * floor($d / 7))) + $gc;
-      $result['weekday']= gmdate('l', 86400 * (3 + $result['wday']));
-      $result['month']= gmdate('F', mktime(0, 0, 0, $result['mon'], 2, 1971));
-      return $result;
+    }
+    
+    /**
+     * Construct a date object out of it's time values If a timezone string
+     * the date will be set into that zone - defaulting to the system's
+     * default timezone of none is given.
+     *
+     * @param   int year
+     * @param   int month
+     * @param   int day
+     * @param   int hour
+     * @param   int minute
+     * @param   int second
+     * @param   string tz default NULL
+     * @return  util.Date
+     */
+    public static function create($year, $month, $day, $hour, $minute, $second, TimeZone $tz= NULL) {
+      $date= date_create();
+      if ($tz) {
+        date_timezone_set($date, $tz->getHandle());
+      }
+      date_date_set($date, $year, $month, $day);
+      date_time_set($date, $hour, $minute, $second);
+      
+      return new self($date);
+    }
+    
+    /**
+     * Create a timestamp for a date given by it's values.
+     *
+     * @param   int year
+     * @param   int month
+     * @param   int day
+     * @param   int hour
+     * @param   int minute
+     * @param   int second
+     * @param   string tz default NULL
+     * @return  util.Date
+     */
+    #[@deprecated]
+    public static function mktime($hour, $minute, $second, $month, $day, $year, TimeZone $tz= NULL) {
+      return self::create($year, $month, $day, $hour, $minute, $second, $tz)->getTime();
     }
     
     /**
      * Indicates whether the date to compare equals this date.
      *
-     * @param   &util.Date cmp
+     * @param   util.Date cmp
      * @return  bool TRUE if dates are equal
      */
     public function equals($cmp) {
-      return is('util.Date', $cmp) && ($this->getTime() === $cmp->getTime());
-    }    
+      return ($cmp instanceof self) && ($this->getTime() === $cmp->getTime());
+    }
     
     /**
      * Static method to get current date/time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function now() {
       return new self(NULL);
@@ -354,56 +179,45 @@
      * Create a date from a string
      *
      * <code>
-     *   $d= Date::fromString('yesterday');
      *   $d= Date::fromString('2003-02-01');
      * </code>
      *
-     * @see     php://strtotime
+     * @see     php://date_create
      * @param   string str
-     * @return  &util.Date
+     * @return  util.Date
      */
-    public static function fromString($str) {
-      return new self($str);
-    }
-    
-    /**
-     * Private helper function which sets all of the public member variables
-     *
-     * @param   int utime Unix-Timestamp
-     */
-    protected function _utime($utime) {
-      foreach ($this->_getdate($this->_utime= $utime) as $key => $val) {
-        is_string($key) && $this->{$key}= $val;
-      }
+    #[@deprecated]
+    public static function fromString($str, TimeZone $tz= NULL) {
+      return new self($str, $tz);
     }
     
     /**
      * Compare this date to another date
      *
-     * @param   &util.Date date A date object
+     * @param   util.Date date A date object
      * @return  int equal: 0, date before $this: < 0, date after $this: > 0
      */
-    public function compareTo($date) {
+    public function compareTo(Date $date) {
       return $date->getTime()- $this->getTime();
     }
     
     /**
      * Checks whether this date is before a given date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @return  bool
      */
-    public function isBefore($date) {
+    public function isBefore(Date $date) {
       return $this->getTime() < $date->getTime();
     }
 
     /**
      * Checks whether this date is after a given date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @return  bool
      */
-    public function isAfter($date) {
+    public function isAfter(Date $date) {
       return $this->getTime() > $date->getTime();
     }
     
@@ -413,7 +227,7 @@
      * @return  int Unix-Timestamp
      */
     public function getTime() {
-      return $this->_utime;
+      return (int)$this->date->format('U');
     }
 
     /**
@@ -422,7 +236,7 @@
      * @return  int
      */
     public function getSeconds() {
-      return $this->seconds;
+      return (int)$this->date->format('s');
     }
 
     /**
@@ -431,7 +245,7 @@
      * @return  int
      */
     public function getMinutes() {
-      return $this->minutes;
+      return (int)$this->date->format('i');
     }
 
     /**
@@ -440,7 +254,7 @@
      * @return  int
      */
     public function getHours() {
-      return $this->hours;
+      return (int)$this->date->format('G');
     }
 
     /**
@@ -449,7 +263,7 @@
      * @return  int
      */
     public function getDay() {
-      return $this->mday;
+      return (int)$this->date->format('d');
     }
 
     /**
@@ -458,7 +272,7 @@
      * @return  int
      */
     public function getMonth() {
-      return $this->mon;
+      return (int)$this->date->format('m');
     }
 
     /**
@@ -467,7 +281,7 @@
      * @return  int
      */
     public function getYear() {
-      return $this->year;
+      return (int)$this->date->format('Y');
     }
 
     /**
@@ -476,7 +290,7 @@
      * @return  int
      */
     public function getDayOfYear() {
-      return $this->yday;
+      return (int)$this->date->format('z');
     }
 
     /**
@@ -485,185 +299,85 @@
      * @return  int
      */
     public function getDayOfWeek() {
-      return $this->wday;
+      return (int)$this->date->format('w');
     }
+    
+    /**
+     * Retrieve timezone object associated with this date
+     *
+     * @return  util.TimeZone
+     */
+    public function getTimeZone() {
+      return new TimeZone(date_timezone_get($this->date));
+    }    
     
     /**
      * Create a string representation
      *
      * @see     php://date
-     * @param   string format default 'r' format-string
+     * @param   string format default Date::DEFAULT_FORMAT format-string
      * @return  string the formatted date
      */
-    public function toString($format= 'r') {
-      static $daynames= array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-      static $monthnames= array(NULL, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-      static $suffix= array('th', 'st', 'nd', 'rd', 'th');
+    public function toString($format= self::DEFAULT_FORMAT, TimeZone $outtz= NULL) {
+      if (NULL === $outtz) return date_format($this->date, $format);
 
-      // Use builtin?
-      if (1971 < $this->year && $this->year < 2038) return date($format, $this->_utime);
+      $origtz= date_timezone_get($this->date);
+      date_timezone_set($this->date, $outtz->getHandle());
+      $formatted= date_format($this->date, $format);
+      date_timezone_set($this->date, $origtz);
       
-      $return= '';
-      $gmt= self::_getGMTOffset();
-      for ($i= 0, $s= strlen($format); $i < $s; $i++) {
-        switch ($format{$i}) {
-          case 'a': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
-          case 'A': $return.= $this->hours > 12 ? 'PM' : 'AM'; break;
-          case 'B': $return.= date('B', mktime($this->hours, $this->minutes, $this->seconds)); break;
-          case 'c': $return.= sprintf(
-              '%04d-%02d-%02dT%02d:%02d:%02d%s%2d:%2d', 
-              $this->year,
-              $this->mon,
-              $this->mday,
-              $this->hours,
-              $this->minutes,
-              $this->seconds,
-              $gmt < 0 ? '+' : '-',
-              abs($gmt) / 36,
-              abs($gmt) / 18
-            );
-            break;
-          case 'd': $return.= sprintf('%02d', $this->mday); break;
-          case 'D': $return.= $daynames[$this->wday]; break;
-          case 'F': $return.= $this->month; break;
-          case 'g': $return.= $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours); break;
-          case 'G': $return.= $this->hours; break;
-          case 'h': $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
-          case 'H': $return.= sprintf('%02d', $this->hours); break;
-          case 'i': $return.= sprintf('%02d', $this->minutes); break;
-          case 'I': $return.= '???IS_DST???'; break;        // FIXME
-          case 'j': $return.= $this->mday; break;
-          case 'l': $return.= $this->weekday; break;
-          case 'L': $return.= (int)$this->leap; break;
-          case 'm': $return.= sprintf('%02d', $this->mon); break;
-          case 'M': $return.= $monthnames[$this->mon]; break;
-          case 'n': $return.= $this->mon; break;
-          case 'O': $return.= sprintf('%s%04d', $gmt < 0 ? '+' : '-', abs($gmt) / 36); break;
-          case 'r': $return.= sprintf(
-              '%3s, %02d %3s %04s %02d:%02d:%02d %s%04d',
-              $daynames[$this->wday],
-              $this->mday,
-              $monthnames[$this->mon],
-              $this->year,
-              $this->hours,
-              $this->minutes,
-              $this->seconds,
-              $gmt < 0 ? '+' : '-',
-              abs($gmt) / 36
-            );
-            break;
-          case 's': $return.= sprintf('%02d', $this->seconds); break;
-          case 'S': $return.= $suffix[max($this->mday % 10, 4)]; break;
-          case 't': $return.= $this->ndays; break;
-          case 'T': $return.= date('T'); break;
-          case 'U': $return.= $this->_utime; break;
-          case 'w': $return.= $this->wday; break;
-          case 'W': $return.= sprintf('%d', ($this->yday + 7 - ($this->wday ? $this->wday - 1 : 6)) / 7); break;
-          case 'Y': $return.= sprintf('%04d', $this->year); break;
-          case 'y': $return.= sprintf('%02d', $this->year % 100); break;
-          case 'z': $return.= $this->yday; break;
-          case 'Z': $return.= $gmt * 86400; break;
-          case '\\': if ($i++ >= $s) break;
-          default: $return.= $format{$i}; break;
-        }
-      }
-      return $return;
+      return $formatted;
     }
-
+    
     /**
-     * Format date
+     * Format a date by the given strftime()-like format string
      *
      * @see     php://strftime
-     * @param   string format default '%c' format-string
-     * @return  string the formatted date
+     * @param   string format
+     * @return  string
+     * @throws  lang.IllegalArgumentException if unsupported token has been given
      */
-    public function format($format= '%c') {
-
-      // Use builtin?
-      if (1971 < $this->year && $this->year < 2038) return strftime($format, $this->_utime);
-     
-      $return= '';
-      if ($token= strtok($format, '%')) do {
-        switch ($token{0}) {
-          case 'a': $return.= strftime('%a', 86400 * (3 + $result['wday'])); break;
-          case 'A': $return.= strftime('%A', 86400 * (3 + $result['wday'])); break;
-          case 'b': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
-          case 'B': $return.= strftime('%B', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
-          case 'c': $return.= '???PREFERRED???'; break;         // FIXME
-          case 'C': $return.= sprintf('%02d', $this->year % 100); break;
-          case 'd': $return.= sprintf('%02d', $this->mday); break;
-          case 'D': $return.= sprintf('%02d/%02d/%02d', $this->mon, $this->mday, $this->year % 100); break;
-          case 'e': $return.= $this->mday; break;
-          // case 'g' moved to 'V'
-          // case 'G' moved to 'V'
-          case 'h': $return.= strftime('%b', mktime(0, 0, 0, $result['mon'], 2, 1971)); break;
-          case 'H': $return.= sprintf('%02d', $this->hours); break;
-          case 'I': $return.= sprintf('%02d', $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours)); break;
-          case 'j': $return.= sprintf('%03d', $this->yday + 1); break;
-          case 'm': $return.= sprintf('%02d', $this->mon); break;
-          case 'M': $return.= sprintf('%02d', $this->minutes); break;
-          case 'n': $return.= "\n"; break;
-          case 'p': $return.= $this->hours > 12 ? 'pm' : 'am'; break;
-          case 'r': $return.= sprintf(
-              '%02d:%02d:%02d %s',
-              $this->hours == 0 ? 12 : ($this->hours > 12 ? $this->hours - 12 : $this->hours),
-              $this->minutes,
-              $this->seconds,
-              $this->hours > 12 ? 'PM' : 'AM'
-            ); 
-            break;
-          case 'R': $return.= sprintf('%02d:%02d', $this->hours, $this->minutes); break;
-          case 'S': $return.= sprintf('%02d', $this->seconds); break;
-          case 't': $return.= "\t"; break;
-          case 'T': $return.= sprintf('%02d:%02d:%02d', $this->hours, $this->minutes, $this->seconds); break;
-          case 'u': $return.= ($this->wday + 6) % 7; break;
-          case 'U': $return.= sprintf('%02d', ($this->yday + 7 - $this->wday) / 7); break;
-          case 'g':
-          case 'G':
-          case 'V': {
-          
-            // Algorithm from FreeBSD 5.4's /usr/src/lib/libc/stdtime/strftime.c (rev 1.40.2.1)
-            $year= $this->year;
-            $yday= $this->yday;
-            $wday= $this->wday;
-            for (;;) {
-              $len= (self::_isLeapYear($year) ? 366 : 365);
-              
-              // What day does the ISO year begin on?
-              $bot= (($yday + 11 - $wday) % 7) - 3;
-              
-              // What day does the next ISO year begin on?
-              $top= $bot - ($len % 7);
-              if ($top < -3) $top += 7;
-              
-              $top += $len;
-              if ($yday >= $top) { $year++; $w= 1; break; }
-              if ($yday >= $bot) { $w= 1 + (($yday - $bot) / 7); break; }
-              --$year;
-              $yday+= (self::_isLeapYear($year) ? 366 : 365);
-            }
-            
-            switch ($token{0}) {
-              case 'g': $return.= sprintf('%02d', $year % 100); break;
-              case 'G': $return.= $year; break;
-              case 'V': $return.= sprintf('%02d', $w); break;
-            }
-            
-            break;
-          }
-          case 'W': $return.= sprintf('%02d', ($this->yday + 7 - ($this->wday ? $this->wday - 1 : 6)) / 7); break;
-          case 'w': $return.= $this->wday; break;
-          case 'x': $return.= '???PREFERRED???'; break;         // FIXME
-          case 'X': $return.= '???PREFERRED???'; break;         // FIXME
-          case 'y': $return.= sprintf('%02d', $this->year % 100); break;
-          case 'Y': $return.= sprintf('%04d', $this->year); break;
-          case 'Z': $return.= strftime('%Z'); break;
-          default: $return.= $token{1}; break;
-        }
-        $return.= substr($token, 1);
-      } while ($token= strtok('%'));
-
-      return $return;
+    public function format($format) {
+      return preg_replace_callback('#%([a-zA-Z])#', array($this, 'formatCallback'), $format);
+    }
+    
+    /**
+     * Format callback function. Do not use directly
+     *
+     * @param   string[] matches
+     * @return  string
+     * @throws  lang.IllegalArgumentException if unsupported token has been given
+     */
+    public function formatCallback($matches) {
+      static $map= array(
+        'd' => 'd',
+        'm' => 'm',
+        'Y' => 'Y',
+        'H' => 'H',
+        'i' => 'i',
+        'S' => 's',
+        'w' => 'w',
+        'G' => 'o',
+        'D' => 'm/d/Y',
+        'T' => 'H:i:s',
+        'Z' => 'e',
+        'G' => 'o',
+        'V' => 'W'
+      );
+      static $rep= array(
+        't' => "\t",
+        'n' => "\n",
+      );
+      
+      if (isset($map[$matches[1]])) return $this->toString($map[$matches[1]]);
+      if (isset($rep[$matches[1]])) return $rep[$matches[1]];
+      
+      // Other tokens that are actually supported by strftime() have been
+      // left out intentionally, because either they are
+      // a) hard to implement and never / seldom used in the framework
+      // b) locale-dependent, this should not be supported in any
+      //    way by the framework.
+      throw new IllegalArgumentException('Illegal date format token: "'.$matches[1].'"');
     }
   }
 ?>

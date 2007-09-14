@@ -10,29 +10,55 @@
    * Time zone
    *
    * <code>
-   *   $tz= &TimeZone::getByTimeZone('CST');
+   *   $tz= new TimeZone('Europe/Berlin');
    *   printf("Offset is %s\n", $tz->getOffset());  // -0600
    * </code>
    *
-   * @see      http://greenwichmeanTime.com/info/Timezone.htm
-   * @see      http://www.worldtimezone.com/wtz-names/timezonenames.html
-   * @see      http://scienceworld.wolfram.com/astronomy/TimeZone.html
-   * @purpose  Time zone calculation
+   * @ext       datetime
+   * @see       php://datetime
+   * @see       php://timezones
+   * @purpose   Time zone calculation
    */
   class TimeZone extends Object {
-    public 
-      $offset=  '',
-      $tz=      '';
+    protected
+      $tz       = NULL;
 
     /**
      * Constructor.
      *
      * @param   string offset
      * @param   string timezone name default ''
+     * @throws  lang.IllegalArgumentException if timezone is unknown
      */
-    public function __construct($offset, $tz= '') {
-      $this->offset= $offset;
-      $this->tz= $tz;
+    public function __construct($tz) {
+      switch (TRUE) {
+        case is_string($tz): {
+          $this->tz= timezone_open($tz); 
+          break;
+        }
+        
+        case is_null($tz): {
+          $this->tz= timezone_open(date_default_timezone_get()); 
+          break;
+        }
+        
+        case $tz instanceof DateTimeZone: {
+          $this->tz= $tz;
+        }
+      }
+      
+      if (!$this->tz instanceof DateTimeZone) {
+        throw new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
+      }
+    }
+    
+    /**
+     * Retrieve handle of underlying DateTimeZone object
+     *
+     * @return  php.DateTimeZone
+     */
+    public function getHandle() {
+      return clone $this->tz;
     }
 
     /**
@@ -41,95 +67,17 @@
      * @return  string name
      */
     public function getName() {
-      return $this->tz;
+      return timezone_name_get($this->tz);
     }
-
+    
     /**
-     * Retrieves the offset of the timezone
-     *
-     * @return  string offset
-     */    
-    public function getOffset() {
-      return $this->offset;
-    }
-
-    /**
-     * Get the offset string by timezone name
-     *
-     * @param   string string
-     * @return  string
-     */
-    public static function getOffsetByTimeZoneString($string) {
-      static $tz= array (
-        // East of Greenwich
-        'IDLE'=> '+1200',             // International Date Line East
-        'NZST'=> '+1200',             // New Zealand Standard
-        'GST' => '+1000',             // Guam Standard
-        'JST' => '+0900',             // Japan Standard Time
-        'CCT' => '+0800',             // China coast Time
-        'BT'  => '+0300',             // Baghdad
-        'EET' => '+0200',             // Eastern European Time
-        'CET' => '+0100',             // Central European Time
-        
-        // Greenwich
-        'Z'   => '+0000',             // Zulu time
-        'GMT' => '+0000',             // Greenwich mean Time
-        'UT'  => '+0000',             // Universal
-        'UTC' => '+0000',             // Universal Co-ordinated
-        'WET' => '+0000',             // Western Europe
-
-        // West of Greenwich
-        'WAT' => '-0100',             // West Africa
-        'AT'  => '-0200',             // Azores
-        'AST' => '-0400',             // Atlantic Standard
-        'EST' => '-0500',             // Eastern Standard Time
-        'CST' => '-0600',             // Central Standard Time
-        'MST' => '-0700',             // Mountain Standard Time
-        'PST' => '-0800',             // Pacific Standard Time
-        'YST' => '-0900',             // Yukon Standard
-        'AHST'=> '-1000',             // Alaska-Hawaii Standard
-        'NT'  => '-1100',             // Nome
-        'IDLE'=> '-1200',             // International Date Line West
-        
-        // Summer time
-        'BST' => '+0100',             // British Summer Time
-        'CEST'=> '+0200',             // Central European Summer Time
-        'MEST'=> '+0200',             // Middle European Summer Time
-        'MESZ'=> '+0200',             // Middle European Summer Time
-        'EEST'=> '+0300',             // Eastern European Summer Time
-        'SST' => '+0200',             // Swedish Summer
-        'FST' => '+0200',             // French Summer
-        'ADT' => '-0300',             // Atlantic Daylight
-        'EDT' => '-0400',             // Eastern Daylight
-        'CDT' => '-0500',             // Central Daylight
-        'MDT' => '-0600',             // Mountain Daylight
-        'PDT' => '-0700',             // Pacific Daylight
-        'YDT' => '-0800',             // Yukon Daylight
-        'HDT' => '-0900',             // Hawaii Daylight
-      );
-
-      if (!isset ($tz[$string]))
-        return FALSE;
-      
-      return $tz[$string];
-    }
-
-    /**
-     * Returns a TimeZone object by a time zone name.
+     * Returns a TimeZone object by a time zone abbreviation.
      *
      * @param   string abbrev
      * @return  util.TimeZone
-     * @throws  lang.IllegalArgumentException if timezone is unknown
-     */    
+     */
     public static function getByName($abbrev) {
-      if (FALSE === ($offset= TimeZone::getOffsetByTimeZoneString($abbrev))) {
-        throw (new IllegalArgumentException (
-          'Unknown time zone abbreviation: '.$abbrev
-        ));
-      }
-      
-      $tz= new TimeZone($offset, $abbrev);
-      return $tz;
+      return new self($abbrev);
     }
     
     /**
@@ -138,40 +86,107 @@
      * @return  util.TimeZone
      */
     public static function getLocal() {
-      return TimeZone::getByName(date('T'));
+      return new self(NULL);
     }
 
     /**
-     * Retrieves the timezone offset to UTC/GMT
+     * Retrieves the offset of the timezone
      *
-     * @return  int offset
+     * @return  string offset
      */    
-    public function getOffsetInSeconds() {
-      list($s, $h, $m)= sscanf ($this->offset, '%c%2d%2d');
-      return (('+' == $s ? 1 : -1) * ((3600 * $h) + (60 * $m)));
+    public function getOffset($date= NULL) {
+      $offset= $this->getOffsetInSeconds($date);
+      
+      $h= intval(abs($offset) / 3600);
+      $m= (abs($offset)- ($h * 3600)) / 60;
+      
+      return sprintf('%s%02d%02d', ($offset < 0 ? '-' : '+'), $h, $m);
     }
     
     /**
-     * Converts a date from one timezone to a date of this
-     * timezone.
+     * Retrieve whether the timezone does have DST/non-DST mode
      *
-     * @param   util.Date date
-     * @param   util.TimeZone tz
-     * @return  util.Date
+     * @return  bool
      */
-    public function convertDate($date, $tz) {
-      return new Date($date->getTime() + ($this->getOffsetInSeconds() - $tz->getOffsetInSeconds()));
+    public function hasDst() {
+      return (bool)sizeof(timezone_transitions_get($this->tz));
     }
 
     /**
-     * Converts a date in the machines local timezone to a date in this
-     * timezone.
+     * Retrieves the timezone offset to GMT. Because a timezone
+     * may have different offsets when its in DST or non-DST mode,
+     * a date object must be given which is used to determine whether
+     * DST or non-DST offset should be returned.
+     *
+     * If no date is passed, current time is assumed.
+     *
+     * @param   util.Date date default NULL
+     * @return  int offset
+     */    
+    public function getOffsetInSeconds($date= NULL) {
+      return timezone_offset_get($this->tz, date_create($date instanceof Date ? $date->toString() : 'now'));
+    }
+    
+    /**
+     * Translates a date from one timezone to a date of this timezone.
+     * The value of the date is not changed by this operation.
      *
      * @param   util.Date date
      * @return  util.Date
-     */    
-    public function convertLocalDate($date) {
-      return $this->convertDate($date, TimeZone::getLocal());
+     */
+    public function translate(Date $date) {
+      $handle= clone $date->getHandle();
+      date_timezone_set($handle, $this->tz);
+      return new Date($handle);
     }
+
+    /**
+     * Retrieve date of the next timezone transition at the given
+     * date for this timezone.
+     *
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
+     */
+    public function previousTransition(Date $date) {
+      // Include util.TimeZoneTransition as a `lightweight` dependency
+      return XPClass::forName('util.TimeZoneTransition')
+        ->getMethod('previousTransition')
+        ->invoke(NULL, array($this, $date))
+      ;
+    }
+    
+    /**
+     * Retrieve date of the previous timezone transition at the given
+     * date for this timezone.
+     *
+     * @param   util.Date date
+     * @return  util.TimeZoneTransition
+     */
+    public function nextTransition(Date $date) {
+      // Include util.TimeZoneTransition as a `lightweight` dependency
+      return XPClass::forName('util.TimeZoneTransition')
+        ->getMethod('nextTransition')
+        ->invoke(NULL, array($this, $date))
+      ;
+    }
+    
+    /**
+     * Indicates whether the timezome to compare equals this timezone.
+     *
+     * @param   util.TimeZone cmp
+     * @return  bool TRUE if timezones are equal
+     */
+    public function equals($cmp) {
+      return ($cmp instanceof self) && ($cmp->getName() == $this->getName());
+    }
+    
+    /**
+     * Create a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().' ("'.$this->getName().'" / '.$this->getOffset().')';
+    }    
   }
 ?>

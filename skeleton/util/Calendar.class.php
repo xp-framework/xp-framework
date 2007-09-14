@@ -11,12 +11,16 @@
   define('CAL_DST_EU',      0x0000);
   define('CAL_DST_US',      0x0001);
   
-  uses('util.Date');
+  uses(
+    'util.Date', 
+    'util.TimeZone', 
+    'util.TimeZoneTransition'
+  );
   
   /**
    * Calendar class
    *
-   * @test     xp://net.xp_framework.unittest.DateTest
+   * @test     xp://net.xp_framework.unittest.util.CalendarTest
    * @purpose  Utility functions for date calculations
    */
   class Calendar extends Object {
@@ -27,21 +31,36 @@
      * This is the last Sunday of March for Europe, the first Sunday of 
      * April in the U.S.
      *
-     * @param   int year default -1 Year, defaults to current year
+     * @param   mixed year default -1 Year, defaults to current year
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function dstBegin($year= -1, $method= CAL_DST_EU) {
-      if (-1 == $year) $year= date('Y');
-      $i= 0;
-      $ofs= ($method == CAL_DST_US) ? 1 : -1;
-      do {
-        $w= date('w', $m= mktime(0, 0, 0, 4, $i, $year));
-        $i+= $ofs;
-      } while ($w > 0);
-
-      $d= new Date($m);
-      return $d;
+      switch (TRUE) {
+        case $year instanceof Date: {
+          $tz= $year->getTimeZone();
+          $date= Date::create($year->getYear(), 1, 1, 0, 0, 0);
+          break;
+        }
+        
+        default: {
+          switch ($method) {
+            default:
+            case CAL_DST_EU: $tz= new TimeZone('Europe/Berlin'); break;
+            case CAL_DST_US: $tz= new TimeZone('America/New_York'); break;
+          }
+          
+          $date= ($year == -1
+            ? Date::now()
+            : Date::create($year, 1, 1, 0, 0, 0)
+          );
+          break;
+        }
+      }
+      
+      $transition= TimeZoneTransition::nextTransition($tz, $date);
+      while (!$transition->isDst()) { $transition->next(); }
+      return $transition->getDate();
     }
   
     /**
@@ -49,31 +68,28 @@
      * This is the last Sunday of October
      *
      * @param   int year default -1 Year, defaults to current year
-     * @return  &util.Date
+     * @return  util.Date
      */
     public static function dstEnd($year= -1) {
-      if (-1 == $year) $year= date('Y');
-      $i= 0;
-      do {
-        $w= date('w', $m= mktime(0, 0, 0, 11, $i--, $year));
-      } while ($w > 0);
+      $date= ($year == -1
+        ? Date::now()
+        : Date::create($year, 1, 1, 0, 0, 0)
+      );
 
-      $d= new Date($m);
-      return $d;
+      $transition= TimeZoneTransition::nextTransition(new TimeZone('Europe/Berlin'), $date);
+      while ($transition->isDst()) { $transition->next(); }
+      return $transition->getDate();
     }
     
     /**
      * Retrieve whether a given date object is in daylight savings time.
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  bool
      */
-    public static function inDst($date, $method= CAL_DST_EU) {
-      return (
-        $date->isAfter(Calendar::dstBegin($date->getYear(), $method)) &&
-        $date->isBefore(Calendar::dstEnd($date->getYear()))
-      );
+    public static function inDst(Date $date) {
+      return (bool)$date->toString('I');
     }
   
     /**
@@ -87,12 +103,12 @@
      *   $holidays[gmmktime(...)]= TRUE;
      * </code>
      *
-     * @param   &util.Date start
-     * @param   &util.Date end
+     * @param   util.Date start
+     * @param   util.Date end
      * @param   array holidays default array() holidays to be included in calculation
      * @return  int number of workdays
      */
-    public function workdays($start, $end, $holidays= array()) {
+    public static function workdays($start, $end, $holidays= array()) {
       $s= $start->getTime();
       $e= $end->getTime();
 
@@ -112,36 +128,57 @@
     /**
      * Return midnight of a given date
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function midnight($date) {
-      $d= new Date(mktime(0, 0, 0, $date->mon, $date->mday, $date->year));
-      return $d;
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        $date->getDay(),
+        0,
+        0,
+        0,
+        $date->getTimeZone()
+      );
     }
     
     /**
      * Return beginning of month for a given date. E.g., given a date
      * 2003-06-08, the function will return 2003-06-01 00:00:00.
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function monthBegin($date) {
-      $d= new Date(mktime(0, 0, 0, $date->mon, 1, $date->year));
-      return $d;
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth(),
+        1,
+        0,
+        0,
+        0,
+        $date->getTimeZone()
+      );
     }
 
     /**
      * Return end of month for a given date. E.g., given a date
      * 2003-06-08, the function will return 2003-06-30 23:59:59.
      *
-     * @param   &util.Date date
-     * @return  &util.Date
+     * @param   util.Date date
+     * @return  util.Date
      */
     public static function monthEnd($date) {
-      $d= new Date(mktime(23, 59, 59, $date->mon+ 1, 0, $date->year));
-      return $d;
+      return Date::create(
+        $date->getYear(),
+        $date->getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        $date->getTimeZone()
+      );
     }
 
     /**
@@ -151,7 +188,7 @@
      * @param   int year
      * @return  int
      */
-    public static function caldiff($stamp, $year) {
+    protected static function caldiff($stamp, $year) {
       $d4= mktime(0, 0, 0, 1, 4, $year);
       return floor(1.05 + ($stamp- $d4) / CAL_SEC_WEEK+ ((date('w', $d4)+ 6) % 7) / 7);
     }
@@ -159,13 +196,13 @@
     /**
      * Returns calendar week for a day
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @return  int calendar week
      * @see     http://www.salesianer.de/util/kalwoch.html 
      */
     public static function week($date) {
       $d= $date->getTime();
-      $y= $date->year + 1;
+      $y= $date->getYear() + 1;
       do {
         $w= Calendar::caldiff($d, $y);
         $y--;
@@ -178,7 +215,7 @@
      * Get first of advent for given year
      *
      * @param   int year default -1 year, defaults to this year
-     * @return  &util.Date for date of the first of advent
+     * @return  util.Date for date of the first of advent
      * @see     http://www.salesianer.de/util/kalfaq.html
      */
     public static function advent($year= -1) {
@@ -189,15 +226,14 @@
         $s+= CAL_SEC_DAY;
       }
       
-      $d= new Date($s);
-      return $d;
+      return new Date($s);
     }
     
     /**
      * Get easter date for given year
      *
      * @param   int year default -1 Year, defaults to this year
-     * @return  &util.Date date for Easter date
+     * @return  util.Date date for Easter date
      * @see     http://www.koenigsmuenster.de/rsk/epakte.htm
      * @see     http://www.salesianer.de/util/kalfaq.html
      * @see     php://easter-date#user_contrib
@@ -214,8 +250,7 @@
       $m = 3 + (int)(($l + 40) / 44);
       $d = $l + 28 - 31 * ((int)($m / 4));
 
-      $d= new Date(mktime(0, 0, 0, $m, $d, $year));
-      return $d;
+      return Date::create($year, $m, $d, 0, 0, 0);
     }
     
     /**
