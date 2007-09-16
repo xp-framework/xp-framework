@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.TimeZone');
+
   /**
    * The class Date represents a specific instant in time.
    *
