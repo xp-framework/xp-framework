@@ -161,11 +161,7 @@
 
     <xsl:text>/**
    * Class wrapper for table </xsl:text><xsl:value-of select="@name"/>, database <xsl:value-of select="./@database"/><xsl:text>
-   * (Auto-generated on </xsl:text><xsl:value-of select="concat(
-     ../@created_at, 
-   ' by ', 
-   ../@created_by
-   )"/><xsl:text>)
+   * (This class was auto-generated, so please do not change manually)
    *
    * @purpose  Datasource accessor
    */
@@ -404,7 +400,7 @@
         array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
           ->getMethod('getPeer')
-          ->invoke()
+          ->invoke(NULL)
           ->doSelect(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
@@ -424,7 +420,7 @@
       if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
-        ->invoke()
+        ->invoke(NULL)
         ->doSelect(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
@@ -441,7 +437,7 @@
       if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
-        ->invoke()
+        ->invoke(NULL)
         ->iteratorFor(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
@@ -484,7 +480,7 @@
         array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
           ->getMethod('getPeer')
-          ->invoke()
+          ->invoke(NULL)
           ->doSelect(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
@@ -504,7 +500,7 @@
       if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
-        ->invoke()
+        ->invoke(NULL)
         ->doSelect(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
@@ -521,7 +517,7 @@
       if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
-        ->invoke()
+        ->invoke(NULL)
         ->iteratorFor(new Criteria(&#10;</xsl:text>
           <xsl:value-of select="$keys4criteria" /><xsl:text>
       ));
