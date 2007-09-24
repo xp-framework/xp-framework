@@ -141,7 +141,7 @@
       $cols= array_keys ($data);
       
       if ($this->_hasHeader())
-        $cols= array_values ($this->colName);
+        $cols= array_keys ($this->colName);
     
       foreach ($cols as $idx => $colName) {
         if (isset ($data[$colName]))
@@ -154,8 +154,5 @@
       $this->stream->write($this->lineDelim);
       $this->delimWritten= TRUE;
     }
-  
-  
   }
-
 ?>
