@@ -66,7 +66,8 @@ public class Runner {
                     new URL[] { classfile.getCanonicalFile().toURI().toURL() } 
                 );
             } catch (Exception e) {
-                err.println("*** Class does not exist: " + e.getMessage());
+                err.println("*** Compilation failed");
+                e.printStackTrace(err);
                 return 1;
             }
             
@@ -82,7 +83,7 @@ public class Runner {
         try {
             clazz= Class.forName(classname, true, cl);
         } catch (ClassNotFoundException e) {
-            err.println("*** Class does not exist: " + e.getMessage());
+            err.println("*** Class " + classname + " does not exist: " + e.getMessage());
             return 1;
         }
         
