@@ -6,8 +6,14 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.6.1, released 2007-09-25
+----------------------------------
+SVN version: 11068
+
 Heads up!
 ~~~~~~~~~
+- The serialization format of util.Date has changed along with
+  RFC #0115 (see below).
 
 RFCs
 ~~~~
@@ -20,6 +26,8 @@ Bugfixes
 ~~~~~~~~
 - Fixed util.collections.HashSet iteration via foreach()
   (friebe)
+- Reverted bugfix in text.CSVGenerator
+  (kiesel)
 
 Features
 ~~~~~~~~
