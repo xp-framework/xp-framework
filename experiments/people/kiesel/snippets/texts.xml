@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<texts>
-  <group name="common">
-    <text name="domain">
-      <de_DE>Domainname</de_DE>
-      <en_UK>Domain name</en_UK>
-    </text>
-  </group>
-</texts>

@@ -16,6 +16,15 @@
     <xsl:value-of select="func:get_text('common#domain')"/>
   </xsl:template>
   
+  <xsl:variable name="texts">
+    <group name="common">
+      <text name="domain">
+        <de_DE>Domainname</de_DE>
+        <en_UK>Domain name</en_UK>
+      </text>
+    </group>
+  </xsl:variable>
+
   <func:function name="func:get_text">
     <xsl:param name="name"/>
     
@@ -23,7 +32,7 @@
     <xsl:variable name="snippet" select="substring-after($name, '#')"/>
 
     <func:result>
-      <xsl:copy-of select="document('texts.xml')/texts/group[@name= $group]/text[@name= $snippet]/*[name() = $__lang]"/>
+      <xsl:copy-of select="exsl:node-set($texts)/group[@name= $group]/text[@name= $snippet]/*[name() = $__lang]"/>
     </func:result>
   </func:function>
 </xsl:stylesheet>
