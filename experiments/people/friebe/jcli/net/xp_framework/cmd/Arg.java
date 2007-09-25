@@ -10,4 +10,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Arg {
     int position() default -1;
     String name()  default "";
+    char option() default 0;
 }

@@ -121,18 +121,21 @@ public class ParamString {
         
         // Default usage (eg.: '--with-foo=bar')
         String element= this.list.get(pos);
-        if (pos < this.count && element.substring(0, longOption.length()+ 2).equals("--" + longOption)) {
+        if (element.substring(0, longOption.length()+ 2).equals("--" + longOption)) {
 
             // Usage with value (eg.: '--with-foo=bar')
-            if ('=' == element.charAt(longOption.length()+ 3)) {
+            if ('=' == element.charAt(longOption.length()+ 2)) {
                 return element.substring(longOption.length()+ 3, element.length());
             }
 
             // Usage as switch (eg.: '--enable-foo')
             return null;
         }
-        
-        return null;
+
+        // Usage in short (eg.: '-v' or '-f /foo/bar')
+        // If the found element is a new parameter, the searched one is used as
+        // flag, so just return TRUE, otherwise return the value.
+        return element;
     }
 
     /**

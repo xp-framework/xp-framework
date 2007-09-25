@@ -117,6 +117,7 @@ public class Runner {
             if (m.isAnnotationPresent(Arg.class)) {   // Pass arguments
                 Arg a= m.getAnnotation(Arg.class);
                 String longName;
+                char shortName= 0;
                 boolean exists;
                 boolean positional= false;
                 Object[] args= null;
@@ -126,10 +127,12 @@ public class Runner {
                     exists= classparams.exists(a.position());
                     positional= true;
                 } else if (!("".equals(a.name()))) {
-                    longName= a.name();
+                    longName= a.name(); 
+                    shortName= a.option() == 0 ? longName.charAt(0) : a.option();
                     exists= classparams.exists(longName);
                 } else {
                     longName= m.getName().replaceFirst("^set", "").toLowerCase();
+                    shortName= a.option() == 0 ? longName.charAt(0) : a.option();
                     exists= classparams.exists(longName);
                 }
                 
@@ -143,7 +146,7 @@ public class Runner {
                 } else {
                     args= new Object[] { positional
                         ? classparams.value(a.position())
-                        : classparams.value(longName) 
+                        : classparams.value(longName, shortName) 
                     };
                 }
                 
