@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('util.log.Traceable');
+  uses(
+    'util.log.Traceable',
+    'peer.ProtocolException',
+    'org.cyrus.CyrusException'
+  );
 
   /**
    * Cyrus admin connection class. Used to perform 
@@ -38,7 +42,7 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
-    }    
+    }
     
     /**
      * Connect to server
@@ -72,7 +76,8 @@
      * @param   bool discard default FALSE
      * @param   bool error default TRUE
      * @return  string[]
-     * @throws  lang.FormatException in case "NO" occurs
+     * @throws  org.cyrus.CyrusException in case "NO" occurs
+     * @throws  peer.ProtocolException in case "BAD" occurs
      */
     protected function _response() {
       $lines= array();
@@ -81,8 +86,8 @@
         $this->cat && $this->cat->debug('<<<', $line);
         
         if (preg_match('#^\S OK#', $line)) break;
-        if (preg_match('#^\S NO#', $line)) throw new FormatException('Negative response: '.$line);
-        if (preg_match('#^\S BAD#', $line)) throw new FormatException('Negative response: '.$line);
+        if (preg_match('#^\S NO#', $line)) throw new CyrusException('Negative response: '.$line);
+        if (preg_match('#^\S BAD#', $line)) throw new ProtocolException('Protocol error: '.$line);
         
         $lines[]= $line;
       } while (!$this->_sock->eof());
@@ -191,7 +196,7 @@
         $user,
         $storage,
         $quota
-      ) != 3) throw new FormatException('Cannot parse quota response');
+      ) != 3) throw new ProtocolException('Cannot parse quota response');
       return $quota;
     }
     
