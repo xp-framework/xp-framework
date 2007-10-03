@@ -36,7 +36,8 @@
       $exposureProgram  = 0,
       $whitebalance     = 0,
       $meteringMode     = 0,
-      $isoSpeedRatings  = 0;
+      $isoSpeedRatings  = 0,
+      $focalLength      = 0;
 
     /**
      * Read from a file
@@ -77,6 +78,11 @@
         $e->setMeteringMode($info['MeteringMode']);
         $e->setWhiteBalance($info['WhiteBalance']);
         $e->setIsoSpeedRatings($info['ISOSpeedRatings']);
+        
+        // Extract focal length. Some models store "80" as "80/1", rip off
+        // the divisor "1" in this case.
+        sscanf($info['FocalLength'], '%d/%d', $n, $frac);
+        $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
         
         // Find date and time
         foreach (array('DateTimeOriginal', 'DateTime') as $key) {
@@ -527,6 +533,24 @@
     }
 
     /**
+     * Set FocalLength
+     *
+     * @param   int FocalLength
+     */
+    public function setFocalLength($focallength) {
+      $this->focalLength= $focallength;
+    }
+
+    /**
+     * Get FocalLength
+     *
+     * @return  int
+     */
+    public function getFocalLength() {
+      return $this->focalLength;
+    }
+
+    /**
      * Get Thumbnail
      *
      * @return  img.Image  
@@ -560,6 +584,7 @@
         "  [meteringMode    ] %s (%s)\n".
         "  [whitebalance    ] %s\n".
         "  [isoSpeedRatings ] %s\n".
+        "  [focalLength     ] %s\n".
         "}",
         $this->getClassName(),
         $this->width,
@@ -583,7 +608,8 @@
         $this->meteringMode,
         $this->getMeteringModeString(),
         $this->whitebalance,
-        $this->isoSpeedRatings
+        $this->isoSpeedRatings,
+        $this->focalLength
       );
     }
   }
