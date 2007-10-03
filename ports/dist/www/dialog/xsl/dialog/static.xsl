@@ -21,7 +21,7 @@
    !-->
   <xsl:template name="page-title">
     <xsl:value-of select="concat(
-      'Page #', /formresult/pager/@offset + 1, ' @ ', 
+      'Page #', /formresult/pager/@offset, ' @ ', 
       /formresult/config/title
     )"/>
   </xsl:template>
@@ -213,7 +213,7 @@
       <xsl:if test="/formresult/pager/@offset &gt; 0">
         &#xbb;
         <a href="{func:linkPage(/formresult/pager/@offset)}">
-          Page #<xsl:value-of select="/formresult/pager/@offset+ 1"/>
+          Page #<xsl:value-of select="/formresult/pager/@offset"/>
         </a>
       </xsl:if>
     </h3>
