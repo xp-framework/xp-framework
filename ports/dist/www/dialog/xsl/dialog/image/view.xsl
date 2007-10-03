@@ -44,6 +44,13 @@
         &#xbb;
       </xsl:if>
 
+      <xsl:if test="/formresult/album/collection">
+        <a href="{func:linkCollection(/formresult/album/collection/@name)}">
+          <xsl:value-of select="/formresult/album/collection/@title"/> Collection
+        </a>
+         &#xbb;
+      </xsl:if>
+
       <a href="{func:linkAlbum(/formresult/album/@name)}">
         <xsl:value-of select="/formresult/album/@title"/>
       </a> 
