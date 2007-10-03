@@ -6,6 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+
+RFCs
+~~~~
+
+Bugfixes
+~~~~~~~~
+
+Features
+~~~~~~~~
+- Extract FocalLength from EXIF data in img.util.ExifData class
+  (friebe)
+
 Version 5.6.1, released 2007-09-25
 ----------------------------------
 SVN version: 11068
