@@ -56,7 +56,7 @@
   <xsl:template match="entry[@type = 'de.thekid.dialog.Album']">
     <div class="datebox">
       <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'd')"/></h2> 
-      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(date/value), 'M Y')"/>
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'M Y')"/>
     </div>
     <h2>
       <a href="{func:linkAlbum(@name)}">
