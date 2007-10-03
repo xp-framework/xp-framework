@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:import href="../layout.xsl"/>
@@ -96,12 +97,7 @@
       <h2><xsl:value-of select="/formresult/chapter/@id"/></h2> 
     </div>
     <h2>
-      <xsl:value-of select="concat(
-        exsl:node-set($oldest)/exifData/dateTime/weekday, ', ',
-        exsl:node-set($oldest)/exifData/dateTime/mday, ' ',
-        exsl:node-set($oldest)/exifData/dateTime/month, ' ',
-        exsl:node-set($oldest)/exifData/dateTime/hours, ':00'
-      )"/>
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(exsl:node-set($oldest)/exifData/dateTime/value), 'D, d M H:00')"/>
     </h2>
     <p>
       This chapter contains

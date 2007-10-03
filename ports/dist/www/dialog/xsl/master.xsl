@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
@@ -27,15 +28,20 @@
    !-->
   <func:function name="func:datetime">
     <xsl:param name="date"/>
-    
+    <xsl:variable name="str" select="string($date/value)"/>
+   
     <func:result>
-      <xsl:value-of select="concat(
-        exsl:node-set($date)/year, '-',
-        format-number(exsl:node-set($date)/mon, '00'), '-',
-        format-number(exsl:node-set($date)/mday, '00'), ' ',
-        format-number(exsl:node-set($date)/hours, '00'), ':',
-        format-number(exsl:node-set($date)/minutes, '00')
-      )"/>
+      <xsl:choose>
+        <xsl:when test="'' = $str">
+          <!-- Intentionally empty -->
+        </xsl:when>
+        <xsl:when test="$__lang = 'en_US'">
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', $str, 'Y-m-d h:iA')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', $str, 'd.m.Y H:i')"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </func:result>
   </func:function>
 

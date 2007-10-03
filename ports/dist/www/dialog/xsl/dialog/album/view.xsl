@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:import href="../layout.xsl"/>
@@ -56,9 +57,8 @@
     <br clear="all"/>
 
     <div class="datebox">
-      <h2><xsl:value-of select="/formresult/album/created/mday"/></h2> 
-      <xsl:value-of select="substring(/formresult/album/created/month, 1, 3)"/>&#160;
-      <xsl:value-of select="/formresult/album/created/year"/>
+      <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/album/created/value), 'd')"/></h2> 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/album/created/value), 'M Y')"/>
     </div>
     <h2>
       <xsl:value-of select="/formresult/album/@title"/>
@@ -96,12 +96,7 @@
       </div>
       <h2>
         <a href="{func:linkChapter(../../@name, $chapter)}">
-          <xsl:value-of select="concat(
-            exsl:node-set($oldest)/exifData/dateTime/weekday, ', ',
-            exsl:node-set($oldest)/exifData/dateTime/mday, ' ',
-            exsl:node-set($oldest)/exifData/dateTime/month, ' ',
-            exsl:node-set($oldest)/exifData/dateTime/hours, ':00'
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(exsl:node-set($oldest)/exifData/dateTime/value), 'D, d M H:00')"/>
         </a>
       </h2>
       <p>

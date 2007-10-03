@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:import href="../layout.xsl"/>
@@ -78,25 +79,30 @@
     </table>
     
     <p>
-      Originally taken on <xsl:value-of select="func:datetime(/formresult/selected/image/exifData/dateTime)"/>
+      Originally taken on <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/selected/image/exifData/dateTime), 'D, d M H:i')"/>
       with <xsl:value-of select="/formresult/selected/image/exifData/make"/>'s
       <xsl:value-of select="/formresult/selected/image/exifData/model"/>.
 
       (<small>
-        <xsl:if test="/formresult/selected/image/exifData/apertureFNumber != ''">
-          <xsl:value-of select="/formresult/selected/image/exifData/apertureFNumber"/>
-        </xsl:if>
-        <xsl:if test="/formresult/selected/image/exifData/exposureTime != ''">
-          <xsl:text>, </xsl:text>
-          <xsl:value-of select="/formresult/selected/image/exifData/exposureTime"/> sec.
-        </xsl:if>
-        <xsl:if test="/formresult/selected/image/exifData/isoSpeedRatings != ''">
-          <xsl:text>, ISO </xsl:text>
-          <xsl:value-of select="/formresult/selected/image/exifData/isoSpeedRatings"/>
-        </xsl:if>
-        <xsl:if test="(/formresult/selected/image/exifData/flash mod 8) = 1">
-          <xsl:text>, flash fired</xsl:text>
-        </xsl:if>
+      <xsl:if test="/formresult/selected/image/exifData/apertureFNumber != ''">
+        <xsl:value-of select="/formresult/selected/image/exifData/apertureFNumber"/>
+      </xsl:if>
+      <xsl:if test="/formresult/selected/image/exifData/exposureTime != ''">
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="/formresult/selected/image/exifData/exposureTime"/> sec.
+      </xsl:if>  
+      <xsl:if test="/formresult/selected/image/exifData/isoSpeedRatings != ''">
+        <xsl:text>, ISO </xsl:text>
+        <xsl:value-of select="/formresult/selected/image/exifData/isoSpeedRatings"/>
+      </xsl:if>  
+      <xsl:if test="/formresult/selected/image/exifData/focalLength != '0'">
+        <xsl:text>, focal length: </xsl:text>
+        <xsl:value-of select="/formresult/selected/image/exifData/focalLength"/>
+        <xsl:text> mm</xsl:text>
+      </xsl:if>
+      <xsl:if test="(/formresult/selected/image/exifData/flash mod 8) = 1">
+        <xsl:text>, flash fired</xsl:text>
+      </xsl:if>
       </small>)
     </p>
     

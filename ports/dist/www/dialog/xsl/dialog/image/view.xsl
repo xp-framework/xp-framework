@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:import href="../layout.xsl"/>
@@ -102,7 +103,7 @@
     </table>
     
     <p>
-      Originally taken on <xsl:value-of select="func:datetime(/formresult/selected/exifData/dateTime)"/>
+      Originally taken on <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/selected/exifData/dateTime), 'D, d M H:i')"/>
       with <xsl:value-of select="/formresult/selected/exifData/make"/>'s
       <xsl:value-of select="/formresult/selected/exifData/model"/>.
 
@@ -118,6 +119,11 @@
         <xsl:text>, ISO </xsl:text>
         <xsl:value-of select="/formresult/selected/exifData/isoSpeedRatings"/>
       </xsl:if>  
+      <xsl:if test="/formresult/selected/exifData/focalLength != '0'">
+        <xsl:text>, focal length: </xsl:text>
+        <xsl:value-of select="/formresult/selected/exifData/focalLength"/>
+        <xsl:text> mm</xsl:text>
+      </xsl:if>
       <xsl:if test="(/formresult/selected/exifData/flash mod 8) = 1">
         <xsl:text>, flash fired</xsl:text>
       </xsl:if>
