@@ -80,15 +80,17 @@
               </td>
             </tr>
           </table>
-
+          
           <!-- footer -->
           <table border="0" cellspacing="0" cellpadding="2" class="footer">
             <tr>
               <td><small>&#169; <xsl:value-of select="/formresult/config/copyright"/></small></td>
               <td align="right">
-                <a href="http://xp-framework.net/">
-                  <img border="0" src="/image/powered_by_xp.png" width="80" height="15" alt="XP powered"/>
-                </a>
+                <xsl:for-each select="/formresult/links/link">
+                  <a href="{@href}">
+                    <img border="0" src="/image/{@id}.png" hspace="1" width="80" height="15" alt="{@id}"/>
+                  </a>
+                </xsl:for-each>
               </td>
             </tr>
           </table>
