@@ -31,12 +31,7 @@
      * @return  string[]
      */
     public function getIndexPage($i= 0) {
-      try {
-        $index= unserialize(FileUtil::getContents(new File($this->dataLocation.'page_'.$i.'.idx')));
-      } catch (IOException $e) {
-        throw($e);
-      }
-      return $index;
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.'page_'.$i.'.idx')));
     }
     
     /**
@@ -46,12 +41,7 @@
      * @return  int
      */
     public function getDisplayPageFor($name) {
-      try {
-        $page= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.idx')));
-      } catch (IOException $e) {
-        throw($e);
-      }
-      return $page;
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.idx')));
     }
     
     /**
@@ -59,22 +49,18 @@
      *
      * @param   string name
      * @param   string expect expected type
-     * @return  &de.thekid.dialog.IEntry
+     * @return  de.thekid.dialog.IEntry
      * @throws  lang.IllegalArgumentException if found entry is not of expected type
      */
     protected function _getEntryFor($name, $expect) {
-      try {
-        $entry= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $entry= unserialize(FileUtil::getContents(new File($this->dataLocation.$name.'.dat')));
 
       // Check expectancy
-      if (!is($expect, $entry)) throw(new IllegalArgumentException(sprintf(
+      if (!is($expect, $entry)) throw new IllegalArgumentException(sprintf(
         'Entry of type %s found, %s expected',
         xp::typeOf($entry),
         $expect
-      )));
+      ));
 
       return $entry;
     }
@@ -83,7 +69,7 @@
      * Returns entry for a specified name
      *
      * @param   string name
-     * @return  &de.thekid.dialog.IEntry
+     * @return  de.thekid.dialog.IEntry
      */
     public function getEntryFor($name) {
       return $this->_getEntryFor($name, 'de.thekid.dialog.IEntry');
@@ -93,7 +79,7 @@
      * Returns album for a specified name
      *
      * @param   string name
-     * @return  &de.thekid.dialog.Album
+     * @return  de.thekid.dialog.Album
      * @throws  lang.IllegalArgumentException if it is not an album
      */
     public function getAlbumFor($name) {
@@ -103,16 +89,15 @@
     /**
      * Set up this state
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
-     * @param   &scriptlet.xml.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
      */
     public function setup($request, $response, $context) {
       parent::setup($request, $response, $context);
       
-      // Read configuration
-      $pm= PropertyManager::getInstance();
-      with ($prop= $pm->getProperties($request->getProduct())); {
+      // Read configuration and add relevant sections to formresult
+      with ($prop= PropertyManager::getInstance()->getProperties($request->getProduct())); {
         $this->dataLocation= $prop->readString(
           'data',
           'location',
@@ -120,6 +105,10 @@
         );
         
         $response->addFormresult(Node::fromArray($prop->readSection('general'), 'config'));
+        $links= $response->addFormresult(new Node('links'));
+        foreach ($prop->readSection('links') as $name => $url) {
+          $links->addChild(new Node('link', NULL, array('id' => $name, 'href' => $url)));
+        }
       }
     }  
   }
