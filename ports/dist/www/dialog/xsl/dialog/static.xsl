@@ -20,10 +20,16 @@
    ! @see       ../layout.xsl
    !-->
   <xsl:template name="page-title">
-    <xsl:value-of select="concat(
-      'Page #', /formresult/pager/@offset, ' @ ', 
-      /formresult/config/title
-    )"/>
+    <xsl:choose>
+      <xsl:when test="/formresult/pager/@offset &gt; 0">
+        <xsl:value-of select="concat('Page #', /formresult/pager/@offset)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Home</xsl:text>       
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:text> @ </xsl:text>
+    <xsl:value-of select="/formresult/config/title"/>
   </xsl:template>
 
   <!--
