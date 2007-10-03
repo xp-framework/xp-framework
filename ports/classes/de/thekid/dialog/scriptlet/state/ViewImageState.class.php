@@ -16,9 +16,9 @@
     /**
      * Process this state.
      *
-     * @param   &scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   &scriptlet.xml.XMLScriptletResponse response
-     * @param   &scriptlet.xml.workflow.Context context
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.workflow.Context context
      */
     public function process($request, $response, $context) {
       if (4 != sscanf($request->getQueryString(), '%[^,],%1s,%d,%d', $name, $type, $chapter, $id)) {
@@ -103,7 +103,11 @@
                 'number'  => $album->chapters[$chapter- 1]->numImages()- 1
               );
             } else {
-              $prev= sprintf('h,0,%d', $album->numHighlights()- 1);
+              $prev= array(
+                'type'    => 'h',
+                'chapter' => 0,
+                'number'  => $album->numHighlights()- 1
+              );
             }
             break;
           }
