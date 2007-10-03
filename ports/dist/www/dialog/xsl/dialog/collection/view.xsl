@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
   <xsl:import href="../layout.xsl"/>
@@ -33,7 +34,7 @@
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.Album']">
     <h2>
-      <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>: 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'd M')"/>:
       <a href="{func:linkAlbum(@name)}">
         <xsl:value-of select="@title"/>
       </a>
@@ -69,6 +70,10 @@
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.Update']">
     <div class="datebox">
+      <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(date/value), 'd')"/></h2> 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(date/value), 'M Y')"/>
+    </div>
+    <div class="datebox">
       <h2><xsl:value-of select="date/mday"/></h2> 
       <xsl:value-of select="substring(date/month, 1, 3)"/>&#160;
       <xsl:value-of select="date/year"/>
@@ -91,9 +96,8 @@
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.SingleShot']">
     <div class="datebox">
-      <h2><xsl:value-of select="date/mday"/></h2> 
-      <xsl:value-of select="substring(date/month, 1, 3)"/>&#160;
-      <xsl:value-of select="date/year"/>
+      <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(date/value), 'd')"/></h2> 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(date/value), 'M Y')"/>
     </div>
     <h2>
       Featured image: <xsl:value-of select="@title"/>
@@ -131,9 +135,8 @@
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.EntryCollection']">
     <div class="datebox">
-      <h2><xsl:value-of select="created/mday"/></h2>
-      <xsl:value-of select="substring(created/month, 1, 3)"/>&#160;
-      <xsl:value-of select="created/year"/>
+      <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'd')"/></h2> 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'M Y')"/>
     </div>
     <h2>
       Collection: <xsl:value-of select="@title"/>
@@ -152,7 +155,7 @@
           </td>
           <td width="466" valign="top">
             <h3>
-              <xsl:value-of select="concat(created/mday, ' ', substring(created/month, 1, 3))"/>:
+              <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(created/value), 'd M')"/>:
               <a href="{func:linkAlbum(@name)}">
                 <xsl:value-of select="@title"/>
               </a>
@@ -191,11 +194,10 @@
       </a>
     </h3>
     <br clear="all"/>
-    
+
     <div class="datebox">
-      <h2><xsl:value-of select="/formresult/collection/created/mday"/></h2>
-      <xsl:value-of select="substring(/formresult/collection/created/month, 1, 3)"/>&#160;
-      <xsl:value-of select="/formresult/collection/created/year"/>
+      <h2><xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/collection/created/value), 'd')"/></h2> 
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/collection/created/value), 'M Y')"/>
     </div>
     <h2>
       Collection: <xsl:value-of select="/formresult/collection/@title"/>
