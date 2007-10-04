@@ -16,16 +16,20 @@
     public
       $dn=          '',
       $attributes=  array();
+    
+    protected
+      $_ans=        array();
       
     /**
      * Constructor
      *
      * @param   string dn default NULL "distinct name"
+     * @param   mixed[] attrs
      */
     public function __construct($dn= NULL, $attrs= array()) {
       $this->dn= $dn;
-      $this->attributes= $attrs;
-      
+      $this->attributes= array_change_key_case($attrs, CASE_LOWER);
+      $this->_ans= array_combine(array_keys($this->attributes), array_keys($attrs));
     }
 
     /**
@@ -46,21 +50,24 @@
      * Creates an LDAP from the raw return data of PHP's ldap_* functions
      * Also performs decoding on the attributes.
      *
-     * @param   mixed data return value from ldap_* functions
+     * @param   resource handle ldap connection
+     * @param   resource res ldap result resource
      * @return  peer.ldap.LDAPEntry object
      */
-    public static function fromData($data) {
-      $e= new LDAPEntry($data['dn']);
-      unset($data['dn']);
-      foreach (array_keys($data) as $key) {
+    public static function fromData($handle, $res) {
+      $data= ldap_get_attributes($handle, $res);
+      $e= new LDAPEntry(ldap_get_dn($handle, $res));
+
+      foreach ($data as $key => $value) {
         if ('count' == $key || is_int($key)) continue;
+        $e->_ans[strtolower($key)]= $key;
         
-        if (is_array($data[$key])) {
-          $e->attributes[$key]= array_map(array($e, '_decode'), $data[$key]);
+        if (is_array($value)) {
+          $e->attributes[strtolower($key)]= array_map(array($e, '_decode'), $value);
         } else {
-          $e->attributes[$key]= $e->_decode($data[$key]);
+          $e->attributes[strtolower($key)]= $e->_decode($value);
         }
-        unset($e->attributes[$key]['count']);
+        unset($e->attributes[strtolower($key)]['count']);
       }
 
       return $e;
@@ -91,7 +98,8 @@
      * @param   mixed value
      */
     public function setAttribute($key, $value) {
-      $this->attributes[$key]= (array)$value;
+      $this->_ans[strtolower($key)]= $key;
+      $this->attributes[strtolower($key)]= (array)$value;
     }
     
     /**
@@ -107,8 +115,8 @@
      */
     public function getAttribute($key, $idx= -1) {
       return (($idx >= 0)
-        ? (isset($this->attributes[$key][$idx]) ? $this->attributes[$key][$idx] : NULL)
-        : (isset($this->attributes[$key]) ? $this->attributes[$key] : NULL)
+        ? (isset($this->attributes[strtolower($key)][$idx]) ? $this->attributes[strtolower($key)][$idx] : NULL)
+        : (isset($this->attributes[strtolower($key)]) ? $this->attributes[strtolower($key)] : NULL)
       );
     }
     
@@ -141,7 +149,7 @@
     public function toString() {
       $s= sprintf("%s@DN(%s){\n", $this->getClassName(), $this->getDN());
       foreach ($this->attributes as $name => $attr) {
-        $s.= sprintf("  [%-20s] %s\n", $name, implode(', ', $attr));
+        $s.= sprintf("  [%-20s] %s\n", $this->_ans[$name], implode(', ', $attr));
       }
       return $s."}\n";
     }
