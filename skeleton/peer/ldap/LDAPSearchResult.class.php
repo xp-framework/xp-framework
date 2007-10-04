@@ -9,25 +9,28 @@
   /**
    * Wraps ldap search results
    *
-   * @see php://ldap_get_entries
+   * @see      php://ldap_get_entries
+   * @test     xp://net.xp_framework.unittest.peer.LDAPResultTest
    */
   class LDAPSearchResult extends Object {
     public
-      $data= NULL,
-      $size= 0;
-      
-    public
-      $_offset= -1;
-  
+      $size= NULL;
+
+    protected
+      $_hdl= NULL,
+      $_res= NULL,
+      $_id= NULL;
+
     /**
      * Constructor
      *
-     * @param   array result returnvalue of ldap_get_entries()
+     * @param   resource hdl ldap connection
+     * @param   resource res ldap result resource
      */
     public function __construct($hdl, $res) {
-      $this->data= ldap_get_entries($hdl, $res);
-      $this->size= $this->data['count'];
-      ldap_free_result($res);
+      $this->_hdl= $hdl;
+      $this->_res= $res;
+      $this->size= ldap_count_entries($this->_hdl, $this->_res);
     }
     
     /**
@@ -45,29 +48,30 @@
      * @return  mixed entry or FALSE if there is no such entry
      */
     public function getFirstEntry() {
-      return $this->getEntry($this->_offset= 0);
+      return $this->getEntry(ldap_first_entry($this->_hdl, $this->_res));
     }
     
     /**
-     * Get a search entry by offset
+     * Get a search entry by resource
      *
-     * @param   int offset
+     * @param   int id
      * @return  mixed entry or FALSE if none exists by this offset
      * @throws  lang.IllegalStateException in case no search has been performed before
      */
-    public function getEntry($offset) {
-      if (NULL == $this->data) {
+    public function getEntry($id) {
+      if (NULL == $this->size) {
         throw(new IllegalStateException('Please perform a search first'));
       }
-      
-      if (!isset($this->data[$offset])) return FALSE;
-      return LDAPEntry::fromData($this->data[$offset]);
+
+      $this->_id= $id;
+      if (FALSE === $id) return FALSE;
+      return LDAPEntry::fromData($this->_hdl, $this->_id);
     }
     
     /**
      * Gets next entry - ideal for loops such as:
      * <code>
-     *   while ($entry= &$l->getNextEntry()) {
+     *   while ($entry= $l->getNextEntry()) {
      *     // doit
      *   }
      * </code>
@@ -75,8 +79,17 @@
      * @return  mixed entry or FALSE if there are none more
      */
     public function getNextEntry() {
-      return $this->getEntry(++$this->_offset);
+      if (NULL === $this->_id) return $this->getFirstEntry();
+      return $this->getEntry(ldap_next_entry($this->_hdl, $this->_id));
     }
 
+    /**
+     * Close resultset and free result memory
+     *
+     * @return  bool success
+     */
+    public function close() {
+      return ldap_free_result($this->_res);
+    }
   }
 ?>
