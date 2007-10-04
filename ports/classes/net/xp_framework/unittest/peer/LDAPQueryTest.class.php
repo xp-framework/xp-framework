@@ -63,7 +63,8 @@
     public function testDateToken() {
       $q= new LDAPQuery();
       
-      $d= new Date(328336200);
+      $d= new Date('1980-05-28 06:30:00 Europe/Berlin');
+
       $this->assertEquals($q->prepare('%s', $d), '198005280630Z+0200');
       $this->assertEquals($q->prepare('%d', $d), '198005280630Z+0200');
     }
