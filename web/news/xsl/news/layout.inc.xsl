@@ -20,7 +20,7 @@
     <div id="search">
       <form action="/search">
         <label for="query"><u>S</u>earch XP website for </label>
-        <input name="query" accesskey="s" type="text"/>
+        <input name="query" accesskey="s" type="text">&#160;</input>
       </form>
     </div>
     <div id="top">&#160;
@@ -29,7 +29,7 @@
       <ul>
         <li id="select"><a href="#">&#160;</a></li>
         <li><a href="home.html">Home</a></li>
-        <li id="active"><a href="#">News</a></li>
+        <li id="active"><a href="{xp:link('overview')}">News</a></li>
         <li><a href="docs.html">Documentation</a></li>
         <li><a href="download.html">Download</a></li>
         <li><a href="dev.html">Developers</a></li>

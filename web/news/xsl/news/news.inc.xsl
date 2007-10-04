@@ -9,7 +9,10 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
+ xmlns:xp="http://xp-framework.net/xsl"
  extension-element-prefixes="func"
+ remote-result-prefixes="func php exsl xsl"
 >
 
   <!--
@@ -46,7 +49,7 @@
    ! @purpose  Text markup
    !-->  
   <xsl:template match="blogentry">
-    <a title="Link to entry {@id}" href="{func:link(concat('news/view?', @id))}">
+    <a title="Link to entry {@id}" href="{xp:link(concat('news/view?', @id))}">
       <xsl:text>entry #</xsl:text><xsl:value-of select="@id"/>
     </a>
   </xsl:template>
@@ -57,7 +60,7 @@
    ! @purpose  Text markup
    !-->  
   <xsl:template match="blogcategory">
-    <a title="Link to category {@id}" href="{func:link(concat('news/bycategory?', @id))}">
+    <a title="Link to category {@id}" href="{xp:link(concat('news/bycategory?', @id))}">
       <xsl:text>category #</xsl:text><xsl:value-of select="@id"/>
     </a>
   </xsl:template>

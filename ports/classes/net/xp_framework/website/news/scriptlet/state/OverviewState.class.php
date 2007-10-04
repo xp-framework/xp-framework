@@ -52,9 +52,10 @@
           and matrix.categoryid = category.categoryid
         order by
           timestamp desc
-        limit 20
+        limit %2$d, 10
         ',
-        $this->getParentCategory()
+        $this->getParentCategory(),
+        $request->getParam('o', 0)
       );
     }
   }

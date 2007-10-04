@@ -41,7 +41,7 @@ h3 a {
   padding-right: 20px;
 }
 
-p {
+p, td {
   font: 13px "Lucida Grande", "Trebuchet MS", arial;
   margin: 0;
   padding: 0;

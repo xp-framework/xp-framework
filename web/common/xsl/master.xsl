@@ -88,7 +88,7 @@
    !
    ! @param  string target
    !-->
-  <func:function name="func:link">
+  <func:function name="xp:link">
     <xsl:param name="target"/>
 
     <func:result>

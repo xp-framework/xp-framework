@@ -29,8 +29,8 @@
     /**
      * Sets the responses XSL stylesheet
      *
-     * @param   scriptlet.scriptlet.XMLScriptletRequest request
-     * @param   scriptlet.scriptlet.XMLScriptletResponse response
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
      */
     protected function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(

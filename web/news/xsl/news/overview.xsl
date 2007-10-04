@@ -25,9 +25,9 @@
           <h1>framework news</h1>
     
           <xsl:for-each select="/formresult/entries/entry">
-            <h2><a href="view/?{@id}"><xsl:value-of select="title"/></a></h2>
+            <h2><a href="{xp:link(concat('view?', @id))}"><xsl:value-of select="title"/></a></h2>
             <em>
-              <xsl:value-of select="category"/>, 
+              <xsl:for-each select="category"><xsl:value-of select="."/>, </xsl:for-each>
               <xsl:value-of select="xp:date(date)"/> 
               (<xsl:value-of select="num_comments"/> comments)
             </em>
@@ -37,20 +37,24 @@
           </xsl:for-each>
         </td>
         <td id="context">
-          <h3>
-            <img align="right" src="/common/image/feed.png"/>
-            Subscribe
-          </h3>
-          You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
-          <br clear="all"/>
-          
-          <h3>Categories</h3>
-          <xsl:for-each select="/formresult/categories/category">
-            <a href="bycategory/{@id}"><xsl:value-of select="."/></a><br/>
-           </xsl:for-each>
+          <xsl:call-template name="context"/>
         </td>
       </tr>
     </table>
+  </xsl:template>
+  
+  <xsl:template name="context">
+    <h3>
+      <img align="right" src="/common/image/feed.png"/>
+      Subscribe
+    </h3>
+    You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
+    <br clear="all"/>
+    
+    <h3>Categories</h3>
+    <xsl:for-each select="/formresult/categories/category">
+      <a href="{xp:link(concat('bycategory?', @id))}"><xsl:value-of select="."/></a><br/>
+     </xsl:for-each> 
   </xsl:template>
 
 </xsl:stylesheet>
