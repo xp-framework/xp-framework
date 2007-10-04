@@ -98,37 +98,6 @@
     }
 
     /**
-     * Tests static fromData() method
-     *
-     */
-    #[@test]
-    public function fromData() {
-      $cmp= LDAPEntry::fromData($data= array(
-        'objectclass' => array(
-          'count' => 3,
-          0 => 'top',
-          1 => 'alias',
-          2 => 'extensibleObject',
-        ),
-        0 => 'objectclass',
-        'uid' => array(
-          'count' => 1,
-          0 => 'thekid',
-        ),
-        1 => 'uid',
-        'aliasedobjectname' => array(
-          'count' => 1,
-          0 => $this->dn,
-        ),
-        2 => 'aliasedobjectname',
-        'count' => 3,
-      ));
-      $this->assertEquals(array('top', 'alias', 'extensibleObject'), $cmp->getAttribute('objectclass'));
-      $this->assertEquals('thekid', $cmp->getAttribute('uid', 0));
-      $this->assertEquals($this->dn, $cmp->getAttribute('aliasedobjectname', 0));
-    }
-
-    /**
      * Tests isA()
      *
      */
