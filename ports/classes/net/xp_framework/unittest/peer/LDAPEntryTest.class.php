@@ -21,13 +21,13 @@
       $attributes = array(
         'cn'          => array('Friebe, Timm J.'),
         'sn'          => array('Friebe'),
-        'givenname'   => array('Timm'),
+        'givenName'   => array('Timm'),
         'uid'         => array('friebe'),
-        'displayname' => array('Friebe, Timm'),
+        'displayName' => array('Friebe, Timm'),
         'mail'        => array('friebe@example.com'),
         'o'           => array('XP-Framework'),
         'ou'          => array('People'),
-        'objectclass' => array('top', 'person', 'inetOrgPerson', 'organizationalPerson')
+        'objectClass' => array('top', 'person', 'inetOrgPerson', 'organizationalPerson')
       ),
       $entry      = NULL;
 
@@ -92,7 +92,7 @@
     #[@test]
     public function objectClassAttribute() {
       $this->assertEquals(
-        $this->attributes['objectclass'], 
+        $this->attributes['objectClass'],
         $this->entry->getAttribute('objectclass')
       );
     }
@@ -114,5 +114,18 @@
     public function isNotAliasObject() {
       $this->assertFalse($this->entry->isA('alias'));
     }
+    
+    /**
+     * Test adding additional attributes
+     *
+     */
+    #[@test]
+    public function addAttributeTest() {
+      $this->entry->setAttribute('newAttribute', 'newValue');
+      
+      $this->assertEquals('newValue', $this->entry->getAttribute('newattribute', 0));
+      $this->assertEquals('newValue', $this->entry->getAttribute('newAttribute', 0));
+    }
+    
   }
 ?>
