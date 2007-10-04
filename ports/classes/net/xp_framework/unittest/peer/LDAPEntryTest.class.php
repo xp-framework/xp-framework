@@ -54,7 +54,7 @@
      */
     #[@test]
     public function getAttributes() {
-      $this->assertEquals($this->attributes, $this->entry->getAttributes());
+      $this->assertEquals(array_change_key_case($this->attributes, CASE_LOWER), $this->entry->getAttributes());
     }
 
     /**
