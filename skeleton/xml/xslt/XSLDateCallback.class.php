@@ -40,7 +40,7 @@
     #[@xslmethod]
     public function diff($type, $strdate1, $strdate2) {
       return DateMath::diff(
-        Enum::valueOf(XPClass::forName('util.DateInterval'), $type),
+        Enum::valueOf(XPClass::forName('util.DateInterval'), strtoupper($type)),
         new Date($strdate1),
         new Date($strdate2)
       );
