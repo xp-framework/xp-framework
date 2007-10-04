@@ -32,18 +32,18 @@
   
   // {{{ function urlFor($item)
   function urlFor($item) {
-    $base= sprintf('http://%s/xml/%s.%s', $_SERVER['HTTP_HOST'], $_SERVER['DEF_PROD'], $_SERVER['DEF_LANG']);
+    $base= sprintf('http://%s', $_SERVER['HTTP_HOST']);
     switch (get_class($item)) {
-      case 'album':
-        return sprintf('%s/album/view?%s', $base, $item->getName());
+      case 'Album':
+        return sprintf('%s/album/%s', $base, $item->getName());
         
-      case 'update': 
-        return sprintf('%s/album/view?%s', $base, $item->getAlbumName());      
+      case 'Update': 
+        return sprintf('%s/album/%s', $base, $item->getAlbumName());      
         
-      case 'singleshot':
-        return sprintf('%s/shot/view?%s,0', $base, $item->getName());
+      case 'SingleShot':
+        return sprintf('%s/shot/%s/0', $base, $item->getName());
       
-      case 'entrycollection':
+      case 'EntryCollection':
         return urlFor($item->entryAt(0));
     }
   }
@@ -54,7 +54,7 @@
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
-      $item->getDescription(),
+      $item->getDescription().'<br/><img border="1" src="/albums/'.$item->getName().'/thumb.'.$item->highlightAt(0)->getName().'"/>',
       $item->getCreatedAt()
     );
   }
@@ -76,7 +76,7 @@
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
-      $item->getDescription(),
+      $item->getDescription().'<br/><img border="1" src="/shots/thumb.color.'.$item->getName().'.jpg"/>',
       $item->getDate()
     );
   }
@@ -87,7 +87,7 @@
     $rdf->addItem(
       $item->getTitle(),
       urlFor($item),
-      $item->getDescription(),
+      $item->getDescription().'<br/><img border="1" src="/albums/'.$item->entryAt(0)->getName().'/thumb.'.$item->entryAt(0)->highlightAt(0)->getName().'"/>',
       $item->getCreatedAt()
     );
   }
@@ -128,7 +128,7 @@
     $prop->readString('general', 'copyright', '')
   );
   
-  foreach (array_reverse($entries) as $name) {
+  foreach ($entries as $name) {
     $entry= getEntryFor($name);
 
     switch (get_class($entry)) {
