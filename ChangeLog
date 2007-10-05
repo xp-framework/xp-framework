@@ -14,11 +14,24 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-
+ - Fixed a bug which prevented Dataset objects from joins to 
+   build correctly
+   (doebele)
+ 
 Features
 ~~~~~~~~
 - Extract FocalLength from EXIF data in img.util.ExifData class
   (friebe)
+- Implemented peer.ldap.LDAPSearchResult in a way that will read
+  incrementally instead of fetching everything when constructed
+  (gellweiler)
+- Ports: Added focal length from EXIF data to serialized album data
+  in Dialog.
+  (friebe)
+- Ensured dateinterval type argument to DateMath::diff() is passed in 
+  uppercase in XSL date callback
+  (gellweiler)
+
 
 Version 5.6.1, released 2007-09-25
 ----------------------------------
