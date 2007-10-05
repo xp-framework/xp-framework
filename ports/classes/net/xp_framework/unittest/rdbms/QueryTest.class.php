@@ -30,7 +30,7 @@
       $qa= NULL,
       $qb= NULL,
       $qas= 'select  job_id, title from JOBS.job  where job_id = 5',
-      $qbs= 'select  job_id, name from JOBS.Person',
+      $qbs= 'select  job_id, name from JOBS.Person ',
       $qu= NULL;
       
     /**
