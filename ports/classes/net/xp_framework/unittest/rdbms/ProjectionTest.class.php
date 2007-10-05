@@ -101,7 +101,7 @@
         'count(job_id) as "count_job_id"',
         'count(job_id) as "count_job_id"',
         'count(job_id) as \'count_job_id\'',
-        create(new Criteria())->setProjection(Projections::count(Job::column("job_id")))
+        create(new Criteria())->setProjection(Projections::count(Job::column("job_id")), 'count_job_id')
       );
     }
 
@@ -116,7 +116,7 @@
         'count(job_id) as "counting all"',
         'count(job_id) as "counting all"',
         'count(job_id) as \'counting all\'',
-        create(new Criteria())->setProjection(Projections::count(Job::column("job_id"), "counting all"))
+        create(new Criteria())->setProjection(Projections::count(Job::column("job_id")), "counting all")
       );
     }
 
@@ -131,7 +131,7 @@
         'count(*) as "counting all"',
         'count(*) as "counting all"',
         'count(*) as \'counting all\'',
-        create(new Criteria())->setProjection(Projections::count('*', "counting all"))
+        create(new Criteria())->setProjection(Projections::count('*'), "counting all")
       );
     }
 
@@ -243,7 +243,7 @@
         'job_id as "id", title',
         'job_id as \'id\', title',
         create(new Criteria())->setProjection(Projections::projectionList()
-          ->add(Projections::property(Job::column("job_id"), "id"))
+          ->add(Projections::property(Job::column("job_id")), "id")
           ->add(Job::column("title"))
       ));
     }
