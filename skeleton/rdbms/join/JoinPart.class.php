@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
   uses(
     'rdbms.join.JoinTable',
@@ -53,7 +53,7 @@
         if (empty($key)) continue;
         $this->pkeys[$key]= new JoinTableAttribute($this->id, $key);
       }
-      if (empty($this->pkeys)) $this->pkeys[$peer->identity]= new JoinTableAttribute($this->id, $peer->identity);
+      if (empty($this->pkeys) && !empty($peer->identity)) $this->pkeys[$peer->identity]= new JoinTableAttribute($this->id, $peer->identity);
       if (empty($this->pkeys)) $this->pkeys= $this->attrs;
 
       $this->table= new JoinTable($this->peer->table, $this->id);
@@ -70,7 +70,7 @@
       foreach ($this->relatives as $tjp) foreach ($tjp->getAttributes() as $attr) $r[]= $attr;
       return $r;
     }
-    
+
     /**
      * get table names for the aggregated peer and all futher joined tables (relatives)
      *
@@ -79,7 +79,7 @@
     public function getTable() {
       return $this->table;
     }
-    
+
     /**
      * get conditional statements to join the aggregated peer and its next JoinPart
      * and for all futher relatives
@@ -98,7 +98,7 @@
       }
       return $r;
     }
-    
+
     /**
      * build an object of a single database row for the aggregated peer
      *
@@ -116,7 +116,7 @@
         $tjp->extract($obj, $record, $tjp->role);
       }
     }
-    
+
     /**
      * add relatives
      *
@@ -142,7 +142,7 @@
       }
       return $key;
     }
-    
+
     /**
      * get all property values for the aggregated peer from a database row
      *
@@ -154,6 +154,6 @@
       foreach ($this->attrs as $attr) $recordchunk[$attr->getAlias()]= $record[$attr->getAlias()];
       return array_combine(array_keys($this->peer->types), $recordchunk);
     }
-    
+
   }
 ?>
