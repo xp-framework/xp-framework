@@ -12,7 +12,7 @@
  xmlns:php="http://php.net/xsl"
  xmlns:xp="http://xp-framework.net/xsl"
  extension-element-prefixes="func"
- remote-result-prefixes="func php exsl xsl"
+ exclude-result-prefixes="func php exsl xsl xp"
 >
   <xsl:include href="layout.inc.xsl"/>
   <xsl:include href="news.inc.xsl"/>
@@ -28,6 +28,10 @@
         </td>
        </tr>
      </table>
+  </xsl:template>
+  
+  <xsl:template name="html-title">
+    <xsl:value-of select="/formresult/entry/title"/> - XP Framework News
   </xsl:template>
   
   <xsl:template match="entry">

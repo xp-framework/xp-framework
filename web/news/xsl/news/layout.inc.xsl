@@ -12,7 +12,7 @@
  xmlns:php="http://php.net/xsl"
  xmlns:xp="http://xp-framework.net/xsl"
  extension-element-prefixes="func"
- remote-result-prefixes="func php exsl xsl"
+ exclude-result-prefixes="func php exsl xsl xp"
 >
   <xsl:include href="../../../common/xsl/layout.inc.xsl"/>
 

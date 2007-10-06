@@ -12,11 +12,16 @@
  xmlns:php="http://php.net/xsl"
  xmlns:xp="http://xp-framework.net/xsl"
  extension-element-prefixes="func"
- remote-result-prefixes="func php exsl xsl"
+ exclude-result-prefixes="func php exsl xsl xp"
 >
 
   <xsl:include href="layout.inc.xsl"/>
   <xsl:include href="news.inc.xsl"/>
+  
+  <xsl:template name="html-head">
+    <link rel="shortcut icon" href="/common/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for XP Framework news" href="/rss/"/>
+  </xsl:template>
   
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10">
@@ -35,6 +40,8 @@
             <xsl:if test="extended_length != 0"><br/>(<a href="view?{@id}">more</a>)</xsl:if>
             <br/><br clear="all"/>
           </xsl:for-each>
+          
+          <xsl:call-template name="pager"/>
         </td>
         <td id="context">
           <xsl:call-template name="context"/>
@@ -45,7 +52,9 @@
   
   <xsl:template name="context">
     <h3>
-      <img align="right" src="/common/image/feed.png"/>
+      <a href="/rss">
+        <img align="right" src="/common/image/feed.png" border="0"/>
+      </a>
       Subscribe
     </h3>
     You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
@@ -55,6 +64,9 @@
     <xsl:for-each select="/formresult/categories/category">
       <a href="{xp:link(concat('bycategory?', @id))}"><xsl:value-of select="."/></a><br/>
      </xsl:for-each> 
+  </xsl:template>
+  
+  <xsl:template name="pager">
   </xsl:template>
 
 </xsl:stylesheet>

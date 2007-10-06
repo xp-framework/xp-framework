@@ -12,9 +12,9 @@
  xmlns:php="http://php.net/xsl"
  xmlns:xp="http://xp-framework.net/xsl"
  extension-element-prefixes="func"
- remote-result-prefixes="func php exsl xsl"
+ exclude-result-prefixes="func php exsl xsl xp"
 >
-  <xsl:output method="xml" encoding="utf-8" indent="no"/>
+  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
   <xsl:param name="__page"/>
   <xsl:param name="__frame"/>
   <xsl:param name="__state"/>
