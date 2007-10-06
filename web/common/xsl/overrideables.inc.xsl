@@ -15,4 +15,5 @@
  remote-result-prefixes="func php exsl xsl"
 >
   <xsl:template name="html-head"/>
+  <xsl:template name="html-title">XP Framework</xsl:template>
 </xsl:stylesheet>

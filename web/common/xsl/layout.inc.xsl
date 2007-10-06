@@ -28,7 +28,7 @@
   
   <xsl:template name="generate-page-head">
     <head>
-      <title>XP Framework</title>
+      <title><xsl:call-template name="html-title"/></title>
       <link rel="stylesheet" type="text/css" href="/style/style.css"/>
       <xsl:call-template name="html-head"/>
     </head>
