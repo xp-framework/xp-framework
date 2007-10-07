@@ -68,12 +68,7 @@
       for ($i= new FilteredFolderIterator($this->folder, '/\.dat$/'); $i->hasNext(); ) {
         $entry= $i->next();
         $file= new File($entry);
-        try {
-          $data= unserialize(FileUtil::getContents($file));
-        } catch (IOException $e) {
-          $e->printStackTrace();
-          exit(-1);
-        }
+        $data= unserialize(FileUtil::getContents($file));
 
         $date= $data->getDate();
         $this->cat && $this->cat->debugf(
@@ -96,18 +91,14 @@
           $i+ $this->entriesPerPage
         );
 
-        try {
-          FileUtil::setContents(
-            new File($this->folder->getURI().'page_'.($i / $this->entriesPerPage).'.idx'), 
-            serialize(array(
-              'total'   => $s, 
-              'perpage' => $this->entriesPerPage,
-              'entries' => array_slice($entries, $i, $this->entriesPerPage)
-            ))
-          );
-        } catch (IOException $e) {
-          throw($e);
-        }
+        FileUtil::setContents(
+          new File($this->folder->getURI().'page_'.($i / $this->entriesPerPage).'.idx'), 
+          serialize(array(
+            'total'   => $s, 
+            'perpage' => $this->entriesPerPage,
+            'entries' => array_slice($entries, $i, $this->entriesPerPage)
+          ))
+        );
       }
       
       // ...by album name, for album -> page lookup
@@ -119,15 +110,33 @@
           $page
         );
         
-        try {
-          FileUtil::setContents(
-            new File($this->folder->getURI().$entries[$key].'.idx'), 
-            serialize($page)
-          );
-        } catch (IOException $e) {
-          throw($e);
-        }
+        FileUtil::setContents(
+          new File($this->folder->getURI().$entries[$key].'.idx'), 
+          serialize($page)
+        );
       }
+      
+      // ...by years
+      $bydate= array();
+      foreach (array_keys($entries) as $key) {
+        sscanf($key, '%4d%2d', $year, $month);
+        @$bydate[$year][$month][]= $entries[$key];
+      }
+      foreach ($bydate as $year => $bymonth) {
+        $this->cat && $this->cat->debugf(
+          '---> For %s: %s',
+          $year,
+          xp::stringOf($bymonth)
+        );
+        FileUtil::setContents(
+          new File($this->folder->getURI().'bydate_'.$year.'.idx'), 
+          serialize($bymonth)
+        );
+      }
+      FileUtil::setContents(
+        new File($this->folder->getURI().'bydate.idx'), 
+        serialize(array_keys($bydate))
+      );
       
       return TRUE;
     }
