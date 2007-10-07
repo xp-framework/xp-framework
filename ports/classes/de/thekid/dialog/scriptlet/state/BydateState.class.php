@@ -131,12 +131,11 @@
       $node= $response->addFormResult(new Node('entries'));
       $nodes= array();
       foreach ($index as $month => $entries) {
-        if (!isset($nodes[$month])) {
-          $nodes[$m]= $node->addChild(new Node('month', NULL, array(
-            'num'  => $month,
-            'year' => $year
-          )));
-        }
+        $nodes[$m]= $node->addChild(new Node('month', NULL, array(
+          'num'  => $month,
+          'year' => $year
+        )));
+
         foreach ($entries as $name) {
           $entry= $this->getEntryFor($name);
           if (!isset($this->nodeHandlers[$entry->getClassName()])) {
