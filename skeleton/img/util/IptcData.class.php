@@ -17,28 +17,28 @@
    *
    * @ext      iptc
    * @purpose  Utility
-   * @see     http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
+   * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
    */
   class IptcData extends Object {
-    public
-      $title           = '',
-      $urgency         = '',
-      $category        = '',
-      $keywords        = '',
-      $dateCreated     = '',
-      $author          = '',
-      $authorPosition  = '',
-      $city            = '',
-      $state           = '',
-      $country         = '',
-      $headline        = '',
-      $credit          = '',
-      $source          = '',
-      $copyrightNotice = '',
-      $caption         = '',
-      $writer          = '',
+    protected
+      $title                         = '',
+      $urgency                       = '',
+      $category                      = '',
+      $keywords                      = array(), 
+      $dateCreated                   = NULL, 
+      $author                        = '', 
+      $authorPosition                = '', 
+      $city                          = '', 
+      $state                         = '', 
+      $country                       = '', 
+      $headline                      = '', 
+      $credit                        = '', 
+      $source                        = '', 
+      $copyrightNotice               = '', 
+      $caption                       = '', 
+      $writer                        = '', 
       $specialInstructions           = '',
-      $supplementalCategories        = '',
+      $supplementalCategories        = array(),
       $originalTransmissionReference = '';
 
     /**
@@ -51,32 +51,39 @@
     public static function fromFile($file) {
       getimagesize($file->getURI(), $info);
       if (!($info['APP13'])) {
-        throw(new ImagingException(
+        throw new ImagingException(
           'Cannot get IPTC information from '.$file->getURI()
-        ));
+        );
       }
       $iptc= iptcparse($info['APP13']);
       
-      with ($i= new IptcData()); {
+      // Parse creation date
+      if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
+        $created= Date::create($year, $month, $day, 0, 0, 0);
+      } else {
+        $created= NULL;
+      }
+
+      with ($i= new self()); {
         $i->setTitle($iptc['2#005'][0]);
         $i->setUrgency($iptc['2#010'][0]);
         $i->setCategory($iptc['2#015'][0]);
-        $i->setKeywords($iptc['2#025'][0]);
-        $i->setDateCreated($iptc['2#055'][0]);
+        $i->setSupplementalCategories($iptc['2#020']);
+        $i->setKeywords($iptc['2#025']);
+        $i->setSpecialInstructions($iptc['2#040'][0]);
+        $i->setDateCreated($created);
         $i->setAuthor($iptc['2#080'][0]);
         $i->setAuthorPosition($iptc['2#085'][0]);
         $i->setCity($iptc['2#090'][0]);
         $i->setState($iptc['2#095'][0]);
         $i->setCountry($iptc['2#101'][0]);
+        $i->setOriginalTransmissionReference($iptc['2#103'][0]);   
         $i->setHeadline($iptc['2#105'][0]);
         $i->setCredit($iptc['2#110'][0]);
         $i->setSource($iptc['2#115'][0]);
         $i->setCopyrightNotice($iptc['2#116'][0]);
         $i->setCaption($iptc['2#120'][0]);
         $i->setWriter($iptc['2#122'][0]);
-        $i->setSupplementalCategories($iptc['2#20'][0]);
-        $i->setSpecialInstructions($iptc['2#040'][0]);
-        $i->setOriginalTransmissionReference($iptc['2#103'][0]);   
       }
       return $i;
     }
@@ -141,7 +148,7 @@
     /**
      * Set Keywords
      *
-     * @param   string keywords
+     * @param   string[] keywords
      */
     public function setKeywords($keywords) {
       $this->keywords= $keywords;
@@ -150,7 +157,7 @@
     /**
      * Get Keywords
      *
-     * @return  string
+     * @return  string[]
      */
     public function getKeywords() {
       return $this->keywords;
@@ -160,16 +167,16 @@
     /**
      * Set DateCreated
      *
-     * @param   string dateCreated
+     * @param   util.Date dateCreated
      */
-    public function setDateCreated($dateCreated) {
+    public function setDateCreated(Date $dateCreated) {
       $this->dateCreated= $dateCreated;
     }
 
     /**
      * Get DateCreated
      *
-     * @return  string
+     * @return  util.Date
      */
     public function getDateCreated() {
       return $this->dateCreated;
@@ -388,7 +395,7 @@
     /**
      * Set SupplementalCategories
      *
-     * @param   string supplementalCategories
+     * @param   string[] supplementalCategories
      */
     public function setSupplementalCategories($supplementalCategories) {
       $this->supplementalCategories= $supplementalCategories;
@@ -397,7 +404,7 @@
     /**
      * Get SupplementalCategories
      *
-     * @return  string
+     * @return  string[]
      */
     public function getSupplementalCategories() {
       return $this->supplementalCategories;
@@ -471,8 +478,8 @@
         $this->title,
         $this->urgency,
         $this->category,
-        $this->keywords,
-        $this->dateCreated,
+        xp::stringOf($this->keywords, '  '),
+        xp::stringOf($this->dateCreated),
         $this->author,
         $this->authorPosition,
         $this->city,
@@ -484,7 +491,7 @@
         $this->copyrightNotice,
         $this->caption,
         $this->writer,
-        $this->supplementalCategories,
+        xp::stringOf($this->supplementalCategories, '  '),
         $this->specialInstructions,
         $this->originalTransmissionReference
       );
