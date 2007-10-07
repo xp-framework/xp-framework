@@ -33,6 +33,25 @@
     public function getIndexPage($i= 0) {
       return unserialize(FileUtil::getContents(new File($this->dataLocation.'page_'.$i.'.idx')));
     }
+
+    /**
+     * Returns index for a given year
+     *
+     * @param   int y year
+     * @return  array<int, string[]>
+     */
+    public function getIndexYear($y) {
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.'bydate_'.$y.'.idx')));
+    }
+
+    /**
+     * Returns index for all years
+     *
+     * @return  int[]
+     */
+    public function getIndexYears() {
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.'bydate.idx')));
+    }
     
     /**
      * Retrieves which page a given element is on
