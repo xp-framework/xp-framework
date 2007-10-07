@@ -28,6 +28,9 @@ Features
 - Ports: Added focal length from EXIF data to serialized album data
   in Dialog.
   (friebe)
+- Ports: Added bydate view in Dialog which shows an overview of all
+  entries made in a certain year
+  (friebe)
 - Ensured dateinterval type argument to DateMath::diff() is passed in 
   uppercase in XSL date callback
   (gellweiler)
