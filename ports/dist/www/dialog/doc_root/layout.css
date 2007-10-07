@@ -61,16 +61,21 @@ tr#header {
 }
 
 /* Navigation */
-a.nav {
-  color: #e9e7ff;
-  font: 12px Arial;
-  border: 1px solid; 
-  padding: 2px 10px 2px 10px;
-  margin-right: 4px;
-  position: relative;
-  top: 1px;
+.gutter#menu {
+  vertical-align: bottom;
+  text-align: right;
+  padding: 0px;
 }
-#active {
+.gutter#menu a {
+  font: 12px Arial;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 4px 10px 4px 10px;
+  margin: 0px;
+  height: 28px;
+  border-bottom: 1px solid; 
+}
+.gutter#menu a#active {
   border-bottom: 1px solid;
 }
 
@@ -110,6 +115,19 @@ table.chapter img {
 td#image img {
   border: 6px solid;
 }
+table.bydate_list {
+  border: none;
+}
+table.bydate_list td#day {
+  width: 40px;
+}
+table.bydate_list td#content {
+  padding-bottom: 1em;
+}
+table.bydate_list td#content p {
+  margin: 0px;
+}
+
 
 /* Paging elements */
 a.pager img {
