@@ -66,9 +66,11 @@
               <td width="60" class="gutter" id="gutter1">&#160;</td>
               <td width="60" class="gutter" id="gutter2">&#160;</td>
               <td width="60" class="gutter" id="gutter3">&#160;</td>
-              <td width="690" class="gutter" valign="bottom" align="right">
-                <a class="nav" id="active" href="{func:linkPage(0)}">
-                  <xsl:value-of select="/formresult/config/title"/>: Home
+              <td width="690" class="gutter" id="menu">
+                <a id="active" href="{func:linkPage(0)}">
+                  Home
+                </a><a href="{func:link('bydate')}">
+                  By Date
                 </a>
               </td>
             </tr>
