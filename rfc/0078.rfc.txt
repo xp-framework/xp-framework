@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Oct 12 11:43:43 CEST 2006
-@status: discussion, ends Mon Jul 30 18:00:00     2007
+@status: draft
 @category: scriptlet.xml.workflow
 
 Scope of Change
@@ -192,5 +192,9 @@ Filters
 
 Comments
 --------
+- friebe, Wed Oct 10 21:46:14     2007
+  Reset to draft - this depends on RFC #0061 which is also still
+  a draft.
+
 
 <EOF>
