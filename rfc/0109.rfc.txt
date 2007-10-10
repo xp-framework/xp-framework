@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Feb 26 10:54:08 CET 2007
-@status: discussion, ends Mon Jul 30 18:00:00     2007
+@status: draft
 @category: invoke
 
 Scope of Change
@@ -229,5 +229,7 @@ Related documents
 
 Comments
 --------
+- friebe, Wed Oct 10 21:46:14     2007
+  Reset to draft - this needs some more thought
 
 <EOF>
