@@ -1,0 +1,47 @@
+RFC 0138: Additional interceptor callbacks in peer.ftp.server
+========================================================================
+$Id$
+
+@authors: gellweiler
+@created: Wed Oct 10 13:14:39 CEST 2007
+@status: discussion, ends Fri Oct 12 12:00:00 CEST 2007
+@category: peer.ftp.server.interceptor
+
+Scope of Change
+---------------
+The StorageActionInterceptor will receive one additional event
+check after an entry is completely stored.
+
+Rationale
+---------
+In some situations one might trigger additional actions after a
+file was uploaded to the server.
+
+Functionality
+-------------
+A new method onStored() will be added to the
+peer.ftp.server.interceptor.StorageActionInterceptor Interface and
+all implementing classes. This method will be called in 
+peer.ftp.server.FtpConnectionListener after an entry was successfully
+stored.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a 
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0138.diff
+  Patch implementing this rfc
+
+Comments
+--------
+<EOF>
