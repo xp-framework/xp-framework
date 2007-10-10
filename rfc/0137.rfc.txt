@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sun Sep  2 20:26:42     2007
-@status: discussion, ends Mon Sep  3 18:00:00     2007
+@status: draft
 @category: <core>
 
 Scope of Change
@@ -48,5 +48,11 @@ Comments
 - friebe, Sun Sep  2 20:52:12     2007
   Maybe @test should be made an annotation in this case? These
   are already retrievable by reflection at runtime...
+
+- friebe, Wed Oct 10 21:38:58     2007
+  Reset to draft, I don't really like the idea of using apidoc
+  tags at runtime - as said, this is what annotations already
+  provide. Something like @tests(testone.name, testtwo.name)
+  also doesn't really make me happy, though...
 
 <EOF>
