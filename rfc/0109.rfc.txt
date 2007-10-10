@@ -5,11 +5,11 @@ $Id$
 @authors: friebe
 @created: Mon Feb 26 10:54:08 CET 2007
 @status: discussion, ends Mon Jul 30 18:00:00     2007
-@category: util
+@category: invoke
 
 Scope of Change
 ---------------
-A new package util.invoke will be added.
+A new package invoke will be added.
 
 
 Rationale
@@ -95,7 +95,7 @@ Example: Logging:
 
 2) Lazy initialization
 ~~~~~~~~~~~~~~~~~~~~~~
-The util.AbstractDeferredInvokationHandler class will be moved to util.invoke
+The util.AbstractDeferredInvokationHandler class will be moved to invoke
 and be renamed to AbstractDeferredInvocationHandler (invocation is spelled with
 a "c", while invoke is spelled with a "k").
 
@@ -134,7 +134,7 @@ Finding out a method's caller:
 
 This will print somthing like:
 <pre>
-  [15:55:19 29540 debug] Called from util.invoke.Invocation@{
+  [15:55:19 29540 debug] Called from invoke.Invocation@{
     [instance  ] com.example.banking.MonetaryTransaction{}
     [class     ] lang.XPClass<com.example.banking.MonetaryTransaction>
     [method    ] public transfer($origin, $destination, $amount)
@@ -216,7 +216,7 @@ Related documents
   Other InvocationChain implementations
 
 - RFC #0029: util.AbstractDeferredInvokationHandler
-  This will be deprecated and moved to util.invoke
+  This will be deprecated and moved to invoke
 
 - http://javaspecialists.co.za/archive/newsletter.do?issue=005&locale=en_US
   Dynamic Proxies - Short Tutorial

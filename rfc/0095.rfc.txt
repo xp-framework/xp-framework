@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Sun Dec 17 18:14:43     2006
 @status: discussion, ends Mon Aug 27 18:00:00     2007
-@category: util.invoke
+@category: invoke
 
 Scope of Change
 ---------------
@@ -37,7 +37,7 @@ and filter approach is used:
 
 New
 ~~~
-The new util.invoke.Methods class provides static methods to factor selectors.
+The new invoke.Methods class provides static methods to factor selectors.
 <?php
   // Find all methods with @inject annotation in some.annotated.Class
   foreach (Methods::annotatedWith('inject')->of(XPClass::forName('some.annotated.Class')) as $m) {
@@ -113,7 +113,7 @@ n/a
 
 Dependencies
 ------------
-- RFC #0109 - for the util.invoke package
+- RFC #0109 - for the invoke package
 
 
 Related documents
