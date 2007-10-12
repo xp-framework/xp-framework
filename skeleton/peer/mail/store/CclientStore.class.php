@@ -51,12 +51,12 @@
      * @throws  lang.IllegalArgumentException in case scheme is not recognized
      * @throws  peer.mail.MessagingException
      */
-    public function connect($dsn) { 
-      $attr= array();
+    public function connect($dsn) {
       $flags= OP_HALFOPEN;
 
       // Parse DSN
       $u= new URL($dsn);
+      $attr= $u->getParams();
       
       // DSN supported?
       if (FALSE === $this->_supports($u, $attr)) return FALSE;
@@ -73,15 +73,25 @@
       );
       
       // Connect
-      if (FALSE === ($conn= imap_open($mbx, @$u->getUser(), @$u->getPassword(), $flags))) {
-        throw(new MessagingException(
+      if (FALSE === ($conn= $this->_connect($mbx, @$u->getUser(), @$u->getPassword(), $flags))) {
+        throw new MessagingException(
           'Connect to "'.$u->getUser().'@'.$mbx.'" failed',
           $this->_errors()
-        ));
+        );
       }
       
       $this->_hdl= array($conn, $mbx);
       return TRUE;
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function _connect($mbx, $user, $pass, $flags) {
+      return imap_open($mbx, $user, $pass, $flags);
     }
     
     /**

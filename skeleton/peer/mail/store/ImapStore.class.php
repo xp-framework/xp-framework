@@ -11,7 +11,8 @@
    *
    * @ext      imap
    * @see      php://imap
-   * @purpose  Wrap
+   * @purpose  Imap connector
+   * @test     xp://net.xp_framework.unittest.peer.ImapStoreTest
    */
   class ImapStore extends CclientStore {
 
