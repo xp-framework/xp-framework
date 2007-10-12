@@ -85,10 +85,13 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Connect method
      *
-     * @param   
-     * @return  
+     * @param   string mbx
+     * @param   string user
+     * @param   string pass
+     * @param   int flags
+     * @return  mixed resource or FALSE on failure
      */
     protected function _connect($mbx, $user, $pass, $flags) {
       return imap_open($mbx, $user, $pass, $flags);
