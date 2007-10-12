@@ -23,6 +23,9 @@ Bugfixes
  - Fixed bug in parsing of keywords and supplementalCategories in 
    img.util.IptcData which would return only the first element
   (friebe)
+ - Fixed bug in peer.mail.store.ImapStore where one could not disable
+   checking the validity of a certificate
+   (doebele, kiesel)
  
 Features
 ~~~~~~~~
