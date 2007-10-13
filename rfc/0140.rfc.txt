@@ -18,7 +18,8 @@ The peer.ftp API will be enhanced in the following ways:
   which is basically the same as peer.ftp.FtpConnection::makeDir()
   but will throw an exception if directory creation fails and return 
   the created directory instead of a boolean value.
-
+* There will be two methods on peer.ftp.FtpEntry to up- and download 
+  entries which will work using the io.streams API
 
 Rationale
 ---------
@@ -123,6 +124,64 @@ Retrieving a single entry
   
   // New functionality {{{
   $entry= $c->getDir('admin')->getEntry($name);
+  // }}}
+?>
+
+Downloading entries
+~~~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality {{{
+  try {
+    $c->get('/'.$filename, $local);
+  } catch (IOException $e) {
+    // - Remote file did not exist
+    // - Local file not writeable
+    // - Other socket error
+  }
+  // }}}
+  
+  // New functionality {{{
+  try {
+    $c->rootDir()->getEntry($filename)->downloadTo(new FileOutputStream(new File($local)));
+  } catch (FileNotFoundException $e) {
+    // Remote file not found
+  } catch (SocketException $e) {
+    // Socket error
+  } catch (IOException $e) {
+    // Local file not writeable
+  }
+  // }}}
+?>
+
+Uploading entries
+~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality {{{
+  try {
+    $c->put($local, '/'.$filename);
+  } catch (IOException $e) {
+    // - Remote file did not writeable
+    // - Local file did not exist
+    // - Other socket error
+  }
+  // }}}
+  
+  // New functionality {{{
+  try {
+    $c->rootDir()->getEntry($filename)->uploadFrom(new FileInputStream(new File($local)));
+  } catch (FileNotFoundException $e) {
+    // Local file not found
+  } catch (SocketException $e) {
+    // Socket error
+  } catch (IOException $e) {
+    // Remote file not writeable
+  }
   // }}}
 ?>
 
