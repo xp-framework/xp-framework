@@ -35,24 +35,30 @@ Checking for entry existance
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
-  // Current functionality #1
+  // Current functionality #1 {{{
   if (-1 == ftp_size($c->handle, '/'.$filename)) {
     // $filename does not exist
   }
+  // }}}
   
-  // Current functionality #2
+  // Current functionality #2 {{{
+  if (!($dir= $c->getDir('/'))) {
+    throw new FileNotFoundException('Dir does not exist');
+  }
   $exists= FALSE;
   while ($e= $dir->getEntry()) {
-    if ($e->getName() == $name) {
+    if ($e->getName() == $filename) {
       $exists= TRUE;
       break;
     }
   }
+  // }}}
   
-  // New functionality
+  // New functionality {{{
   if (!$c->getDir('/')->hasEntry($filename)) {
     // $filename does not exist
   }
+  // }}}
 ?>
 
 Retrieving the root directory
@@ -61,11 +67,13 @@ Retrieving the root directory
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
-  // Current functionality
+  // Current functionality {{{
   $root= $c->getDir('/');
+  // }}}
   
-  // New functionality
+  // New functionality {{{
   $root= $c->rootDir();
+  // }}}
 ?>
 
 
@@ -75,18 +83,20 @@ Exceptions for makeDir()
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
-  // Current functionality
+  // Current functionality {{{
   if (FALSE === $c->makeDir(new FtpDir('/admin'))) {
     // Failed creating directory "admin"
   }
   $dir= $c->getDir('/admin');
+  // }}}
   
-  // New functionality
+  // New functionality {{{
   try {
     $dir= $c->rootDir()->makeDir(new FtpDir('admin'));
   } catch (IOException $e) {
     // Failed creating directory "admin"
   }
+  // }}}
 ?>
 
 Retrieving a single entry
@@ -95,7 +105,7 @@ Retrieving a single entry
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
-  // Current functionality
+  // Current functionality {{{
   if (!($dir= $c->getDir('admin'))) {
     throw new FileNotFoundException('Admin dir does not exist');
   }
@@ -109,10 +119,11 @@ Retrieving a single entry
   if (!$entry) {
     throw new FileNotFoundException('File not found');
   }
+  // }}}
   
-  
-  // New functionality
+  // New functionality {{{
   $entry= $c->getDir('admin')->getEntry($name);
+  // }}}
 ?>
 
 
