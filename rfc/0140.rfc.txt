@@ -11,9 +11,13 @@ Scope of Change
 ---------------
 The peer.ftp API will be enhanced in the following ways:
 * There will be a new method peer.ftp.FtpDir::hasEntry()
-* The peer.ftp.FtpConnection::makeDir() method will throw an exception
-  if directory creation fails and return the created directory instead
-  of a boolean value.
+* The peer.ftp.FtpDir::getEntry() method will be overloaded for
+  two purposes: 1) iteration (as current) 2) getting a single entry (new)
+* There will be a new method peer.ftp.FtpConnection::rootDir()
+* There will be a new method peer.ftp.FtpDir::makeDir() method 
+  which is basically the same as peer.ftp.FtpConnection::makeDir()
+  but will throw an exception if directory creation fails and return 
+  the created directory instead of a boolean value.
 
 
 Rationale
@@ -25,15 +29,24 @@ Rationale
 Functionality
 -------------
 
-Making use of peer.ftp.FtpDir::hasEntry()
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Checking for entry existance
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
-  // Current functionality
+  // Current functionality #1
   if (-1 == ftp_size($c->handle, '/'.$filename)) {
     // $filename does not exist
+  }
+  
+  // Current functionality #2
+  $exists= FALSE;
+  while ($e= $dir->getEntry()) {
+    if ($e->getName() == $name) {
+      $exists= TRUE;
+      break;
+    }
   }
   
   // New functionality
@@ -42,6 +55,20 @@ Making use of peer.ftp.FtpDir::hasEntry()
   }
 ?>
 
+Retrieving the root directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality
+  $root= $c->getDir('/');
+  
+  // New functionality
+  $root= $c->rootDir();
+?>
+
+
 Exceptions for makeDir()
 ~~~~~~~~~~~~~~~~~~~~~~~~
 <?php
@@ -49,17 +76,43 @@ Exceptions for makeDir()
   $c->connect();
 
   // Current functionality
-  if (FALSE === $c->makeDir(new FtpDir('admin'))) {
+  if (FALSE === $c->makeDir(new FtpDir('/admin'))) {
     // Failed creating directory "admin"
   }
-  $dir= $c->getDir('admin');
+  $dir= $c->getDir('/admin');
   
   // New functionality
   try {
-    $dir= $c->makeDir(new FtpDir('admin'));
+    $dir= $c->rootDir()->makeDir(new FtpDir('admin'));
   } catch (IOException $e) {
     // Failed creating directory "admin"
   }
+?>
+
+Retrieving a single entry
+~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality
+  if (!($dir= $c->getDir('admin'))) {
+    throw new FileNotFoundException('Admin dir does not exist');
+  }
+  $entry= NULL;
+  while ($e= $dir->getEntry()) {
+    if ($e->getName() == $name) {
+      $entry= $e;
+      break;
+    }
+  }
+  if (!$entry) {
+    throw new FileNotFoundException('File not found');
+  }
+  
+  
+  // New functionality
+  $entry= $c->getDir('admin')->getEntry($name);
 ?>
 
 
@@ -75,7 +128,8 @@ n/a
 
 Dependencies
 ------------
-- BC break for makeDir() method
+- peer.ftp.FtpConnection::makeDir() will be deprecated by
+  peer.ftp.FtpDir::makeDir()
 
 
 Related documents
