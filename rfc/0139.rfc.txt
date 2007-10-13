@@ -24,27 +24,72 @@ Rationale
 Functionality
 -------------
 
-Skeleton
-~~~~~~~~
+Skeleton (xp repository)
+~~~~~~~~~~~~~~~~~~~~~~~~
 <pre>
 * Core classes
 * APIs
+* Contents:
+  lang.base.php
+  gui/
+  img/
+  io/
+  lang/
+  peer/
+  rdbms/
+  remote/
+  sapi/
+  scriptlet/
+  security/
+  text/
+  unittest/
+  util/
+  webservices/
+  xml/
 </pre>
 
-Ports
-~~~~~
+Ports (xp repository)
+~~~~~~~~~~~~~~~~~~~~~
 <pre>
 * Additional classes
 * APIs
+* Contents:
+  classes/
+    ch/
+    com/
+    de/
+    name/
+    net/
+    org/
+    us/
+  technologies/
+    env/
+    opt/
+  unittest/
 </pre>
 
-XPForge
-~~~~~~~
+XPForge (xpforge repository)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <pre>
 * Applications written using skeleton, ports and own classes
 * Concrete implementations
+* Contents:
+  projects/
+    www/
+  experiments/
+    people/
+    arena/
 </pre>
 
+Releases & config (xpadmin repository)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+* Configuration for xp-framework homepage
+* Releases
+* Contents:
+  releases/
+  config/
+</pre>
 
 Security considerations
 -----------------------
