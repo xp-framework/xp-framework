@@ -1,0 +1,72 @@
+RFC 0139: XPForge SVN
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Oct 13 15:27:57     2007
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+A new SVN repository named "xpforge" will be created. It will contain
+projects and tools written using the XP framework and ports.
+
+
+Rationale
+---------
+* Separate ports (additional non-core packages) from real applications
+  (such as dialog).
+* Provide an infrastructure for release-cycles separate from core and
+  ports.
+
+
+Functionality
+-------------
+
+Skeleton
+~~~~~~~~
+<pre>
+* Core classes
+* APIs
+</pre>
+
+Ports
+~~~~~
+<pre>
+* Additional classes
+* APIs
+</pre>
+
+XPForge
+~~~~~~~
+<pre>
+* Applications written using skeleton, ports and own classes
+* Concrete implementations
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
