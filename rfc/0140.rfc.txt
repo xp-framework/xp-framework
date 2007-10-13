@@ -166,7 +166,7 @@ Uploading entries
   try {
     $c->put($local, '/'.$filename);
   } catch (IOException $e) {
-    // - Remote file did not writeable
+    // - Remote file not writeable
     // - Local file did not exist
     // - Other socket error
   }
