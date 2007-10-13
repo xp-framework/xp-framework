@@ -1,0 +1,85 @@
+RFC 0140: FTP API enhancements
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Oct 13 16:53:48     2007
+@status: draft
+@category: peer.ftp
+
+Scope of Change
+---------------
+The peer.ftp API will be enhanced in the following ways:
+* There will be a new method peer.ftp.FtpDir::hasEntry()
+* The peer.ftp.FtpConnection::makeDir() method will throw an exception
+  if directory creation fails.
+
+
+Rationale
+---------
+* Prevent having to use raw FTP functions
+* Consistency
+
+
+Functionality
+-------------
+
+Making use of peer.ftp.FtpDir::hasEntry()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality
+  if (-1 == ftp_size($c->handle, '/'.$filename)) {
+    // $filename does not exist
+  }
+  
+  // New functionality
+  if (!$c->getDir('/')->hasEntry($filename)) {
+    // $filename does not exist
+  }
+?>
+
+Exceptions for makeDir()
+~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality
+  if (FALSE === $c->makeDir('admin')) {
+    // Failed creating directory "admin"
+  }
+  
+  // New functionality
+  try {
+    $c->makeDir('admin');
+  } catch (IOException $e) {
+    // Failed creating directory "admin"
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- BC break for makeDir() method
+
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
