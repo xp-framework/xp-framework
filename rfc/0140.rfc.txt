@@ -12,7 +12,8 @@ Scope of Change
 The peer.ftp API will be enhanced in the following ways:
 * There will be a new method peer.ftp.FtpDir::hasEntry()
 * The peer.ftp.FtpConnection::makeDir() method will throw an exception
-  if directory creation fails.
+  if directory creation fails and return the created directory instead
+  of a boolean value.
 
 
 Rationale
@@ -48,13 +49,14 @@ Exceptions for makeDir()
   $c->connect();
 
   // Current functionality
-  if (FALSE === $c->makeDir('admin')) {
+  if (FALSE === $c->makeDir(new FtpDir('admin'))) {
     // Failed creating directory "admin"
   }
+  $dir= $c->getDir('admin');
   
   // New functionality
   try {
-    $c->makeDir('admin');
+    $dir= $c->makeDir(new FtpDir('admin'));
   } catch (IOException $e) {
     // Failed creating directory "admin"
   }
