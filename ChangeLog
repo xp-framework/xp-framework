@@ -17,15 +17,18 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
- - Fixed a bug which prevented Dataset objects from joins to 
-   build correctly
-   (doebele)
- - Fixed bug in parsing of keywords and supplementalCategories in 
-   img.util.IptcData which would return only the first element
+- Ensured file is only then closed in io.streams.FileOutputStream's 
+  destructor if it's still open
   (friebe)
- - Fixed bug in peer.mail.store.ImapStore where one could not disable
-   checking the validity of a certificate
-   (doebele, kiesel)
+- Fixed a bug which prevented Dataset objects from joins to 
+  build correctly
+  (doebele)
+- Fixed bug in parsing of keywords and supplementalCategories in 
+  img.util.IptcData which would return only the first element
+ (friebe)
+- Fixed bug in peer.mail.store.ImapStore where one could not disable
+  checking the validity of a certificate
+  (doebele, kiesel)
  
 Features
 ~~~~~~~~
