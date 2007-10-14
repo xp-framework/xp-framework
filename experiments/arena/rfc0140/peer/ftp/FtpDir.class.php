@@ -51,7 +51,7 @@
      */
     public function delete() {
       if (FALSE === ftp_rmdir($this->connection->handle, $this->name)) {
-        throw new IOException('Could not delete directory "'.$name.'"');
+        throw new IOException('Could not delete directory "'.$this->name.'"');
       }
     }
     
