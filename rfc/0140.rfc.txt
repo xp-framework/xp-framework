@@ -14,8 +14,9 @@ The peer.ftp API will be enhanced in the following ways:
 * The peer.ftp.FtpEntry class will be abstract and there will be a 
   new class peer.ftp.FtpFile extending it.
 * There will be several new methods in peer.ftp.FtpDir
-* There will be new methods in peer.ftp.FtpEntry to up- and download 
-  entries which will work using the io.streams API
+* There will be several new methods in peer.ftp.FtpEntry
+* There will methods in peer.ftp.FtpFile to up- and download which 
+  will work using the io.streams API
 
 
 Rationale
@@ -66,6 +67,54 @@ peer.ftp.FtpConnection:
     public function rootDir() {
       // ...
     }
+  
+    /* ... */
+  }
+?>
+
+peer.ftp.FtpEntry:
+<?php
+  abstract class FtpEntry {
+    /* ... */
+
+    /**
+     * Checks whether this entry exists.
+     *
+     * @return  bool TRUE if the file exists, FALSE otherwise
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function exists() {
+      // ...
+    }
+
+    /**
+     * Rename this entry
+     *
+     * @param   string to the new name
+     * @throws  io.IOException if an entry by the new name already exists
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function rename($to) {
+      // ...
+    }
+
+    /**
+     * Change this entry's permissions
+     *
+     * @param   int to the new permissions
+     * @throws  io.IOException if an entry by the new name already exists
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function changePermissions($to) {
+      // ...
+    }
+
+    /**
+     * Delete this entry
+     *
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public abstract function delete();
   
     /* ... */
   }
