@@ -64,7 +64,7 @@
      */
     #[@test]
     public function iteration() {
-      $names= array('secret', 'wetter.html', '.htaccess');
+      $names= array('/secret/', '/wetter.html', '/.htaccess');
       $classes= array('peer.ftp.FtpDir', 'peer.ftp.FtpFile', 'peer.ftp.FtpFile');
       $offset= 0;
 
@@ -81,7 +81,7 @@
      */
     #[@test]
     public function asArray() {
-      $names= array('secret', 'wetter.html', '.htaccess');
+      $names= array('/secret/', '/wetter.html', '/.htaccess');
       $classes= array('peer.ftp.FtpDir', 'peer.ftp.FtpFile', 'peer.ftp.FtpFile');
       $offset= 0;
 
@@ -152,7 +152,7 @@
      */
     #[@test]
     public function directoryWithOneFile() {
-      $this->assertEquals(array('peer.ftp.FtpFile(wetter.html)'), $this->iterationOn(array(
+      $this->assertEquals(array('peer.ftp.FtpFile(/wetter.html)'), $this->iterationOn(array(
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 .',
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 ..',
         '-rw-r--r--   1 p159995  ftpusers       82 Oct 31  2006 wetter.html'
@@ -165,7 +165,7 @@
      */
     #[@test]
     public function directoryWithOneDir() {
-      $this->assertEquals(array('peer.ftp.FtpDir(secret)'), $this->iterationOn(array(
+      $this->assertEquals(array('peer.ftp.FtpDir(/secret/)'), $this->iterationOn(array(
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 .',
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 ..',
         'drwxr-xr-x   2 p159995  ftpusers     4096 Mar  9  2007 secret'
@@ -178,7 +178,7 @@
      */
     #[@test]
     public function directoryWithDirsAndFiles() {
-      $this->assertEquals(array('peer.ftp.FtpDir(secret)', 'peer.ftp.FtpFile(wetter.html)', 'peer.ftp.FtpFile(.htaccess)'), $this->iterationOn(array(
+      $this->assertEquals(array('peer.ftp.FtpDir(/secret/)', 'peer.ftp.FtpFile(/wetter.html)', 'peer.ftp.FtpFile(/.htaccess)'), $this->iterationOn(array(
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 .',
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 ..',
         'drwxr-xr-x   2 p159995  ftpusers     4096 Mar  9  2007 secret',
@@ -193,7 +193,7 @@
      */
     #[@test]
     public function dotDirectoriesAtEnd() {
-      $this->assertEquals(array('peer.ftp.FtpDir(secret)'), $this->iterationOn(array(
+      $this->assertEquals(array('peer.ftp.FtpDir(/secret/)'), $this->iterationOn(array(
         'drwxr-xr-x   2 p159995  ftpusers     4096 Mar  9  2007 secret',
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 .',
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 ..'
@@ -206,7 +206,7 @@
      */
     #[@test]
     public function dotDirectoriesMixedWithRegularResults() {
-      $this->assertEquals(array('peer.ftp.FtpDir(secret)', 'peer.ftp.FtpFile(wetter.html)', 'peer.ftp.FtpFile(.htaccess)'), $this->iterationOn(array(
+      $this->assertEquals(array('peer.ftp.FtpDir(/secret/)', 'peer.ftp.FtpFile(/wetter.html)', 'peer.ftp.FtpFile(/.htaccess)'), $this->iterationOn(array(
         'drwx---r-t  36 p159995  ftpusers     4096 May 14 17:44 .',
         'drwxr-xr-x   2 p159995  ftpusers     4096 Mar  9  2007 secret',
         '-rw-r--r--   1 p159995  ftpusers       82 Oct 31  2006 wetter.html',

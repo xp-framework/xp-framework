@@ -20,9 +20,10 @@
      *
      * @param   string raw a single line
      * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw, FtpConnection $conn= NULL) {
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/') {
       sscanf(
         $raw, 
         '%s %d %s %s %d %s %d %[^ ] %[^$]',
@@ -38,9 +39,9 @@
       );
       
       if ('d' == $permissions{0}) {
-        $e= new FtpDir($filename, $conn);
+        $e= new FtpDir($base.$filename, $conn);
       } else {
-        $e= new FtpFile($filename, $conn);
+        $e= new FtpFile($base.$filename, $conn);
       }
 
       $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));

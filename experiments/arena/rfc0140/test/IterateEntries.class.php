@@ -13,14 +13,29 @@
    * @purpose  Command
    */
   class IterateEntries extends AbstractFtpTestCommand {
+    protected
+      $dir = '';
+    
+    /**
+     * Set directory to list
+     *
+     * @param   string dir default "/"
+     */
+    #[@arg(position= 1)]
+    public function setDir($dir= '/') {
+      $this->dir= $dir;
+    }
     
     /**
      * Main runner method
      *
      */
     public function run() {
-      foreach ($this->conn->rootDir()->entries() as $entry) {
-        $this->out->writeLine('* ', $entry);
+      with ($dir= $this->conn->rootDir()->getDir($this->dir)); {
+        $this->out->writeLine('== ', $dir->getName(), ' ==');
+        foreach ($dir->entries() as $entry) {
+          $this->out->writeLine('* ', $entry);
+        }
       }
     }
   }

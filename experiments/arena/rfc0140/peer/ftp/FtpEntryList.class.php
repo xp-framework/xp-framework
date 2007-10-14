@@ -15,17 +15,20 @@
   class FtpEntryList extends Object implements IteratorAggregate {
     protected
       $connection   = NULL,
-      $list         = array();
+      $list         = array(),
+      $base         = '';
 
     /**
      * Constructor
      *
      * @param   string[] list
      * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      */
-    public function __construct(array $list, FtpConnection $connection) {
+    public function __construct(array $list, FtpConnection $connection, $base= '/') {
       $this->list= $list;
       $this->connection= $connection;
+      $this->base= $base;
     }
     
     /**
@@ -35,7 +38,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return new FtpListIterator($this->list, $this->connection);
+      return new FtpListIterator($this->list, $this->connection, $this->base);
     }
 
     /**
@@ -63,10 +66,10 @@
      * @throws  lang.FormatException in case an entry cannot be parsed
      */
     public function asArray() {
-      static $dotdirs= array('.', '..');
+      $dotdirs= array($this->base.'./', $this->base.'../');
 
       for ($i= 0, $r= array(), $s= sizeof($this->list); $i < $s; $i++) {
-        $e= $this->connection->parser->entryFrom($this->list[$i], $this->connection);
+        $e= $this->connection->parser->entryFrom($this->list[$i], $this->connection, $this->base);
         in_array($e->getName(), $dotdirs) || $r[]= $e;
       }
       return $r;

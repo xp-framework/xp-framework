@@ -33,9 +33,10 @@
      *
      * @param   string raw a single line
      * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw, FtpConnection $conn= NULL);
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/');
   
   }
 ?>

@@ -17,17 +17,20 @@
       $i= 0, 
       $v= array(), 
       $c= NULL, 
-      $e= NULL;
+      $e= NULL,
+      $b= '';
 
     /**
      * Constructor
      *
      * @param   string[] v
      * @param   peer.ftp.FtpConnection c
+     * @param   string base default "/"
      */
-    public function __construct($v, FtpConnection $c) { 
+    public function __construct($v, FtpConnection $c, $base= '/') { 
       $this->v= $v; 
       $this->c= $c; 
+      $this->b= $base;
     }
 
     /**
@@ -70,12 +73,11 @@
      * @return  bool
      */
     public function valid() { 
-      static $dotdirs= array('.', '..');
-
+      $dotdirs= array($this->b.'./', $this->b.'../');
       do {
         if ($this->i >= sizeof($this->v)) return FALSE;
 
-        $this->e= $this->c->parser->entryFrom($this->v[$this->i], $this->c);
+        $this->e= $this->c->parser->entryFrom($this->v[$this->i], $this->c, $this->b);
         $this->i++; 
       } while (in_array($this->e->getName(), $dotdirs));
 

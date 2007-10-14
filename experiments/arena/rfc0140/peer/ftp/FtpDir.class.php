@@ -41,7 +41,7 @@
         throw new IOException('Cannot list "'.$this->name.'"');
       }
         
-      return new FtpEntryList($list, $this->connection);
+      return new FtpEntryList($list, $this->connection, $this->name);
     }
 
     /**
