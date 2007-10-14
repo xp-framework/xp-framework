@@ -15,6 +15,7 @@ The peer.ftp API will be enhanced in the following ways:
 * The peer.ftp.FtpEntry class will be abstract and there will be a 
   new class peer.ftp.FtpFile extending it.
 * There will be several new methods in peer.ftp.FtpDir
+* There will be a new class peer.ftp.FtpEntryList
 * There will be several new methods in peer.ftp.FtpEntry
 * There will methods in peer.ftp.FtpFile to up- and download which 
   will work using the io.streams API
@@ -47,6 +48,51 @@ New layout:
   
   class FtpDir extends FtpEntry {
     // Directory specific - getDir(), makeDir(), getFile(), hasFile(), ...
+  }
+?>
+
+FtpEntryList class
+~~~~~~~~~~~~~~~~~~
+<?php
+  class FtpEntryList extends Object implements IteratorAggregate {
+
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      // ...
+    }
+
+    /**
+     * Returns the number of elements in this list.
+     *
+     * @return  int
+     */
+    public function size() {
+      // ...
+    }
+
+    /**
+     * Tests if this list has no elements.
+     *
+     * @return  bool
+     */
+    public function isEmpty() {
+      // ...
+    }
+  
+    /**
+     * Returns all elements in this list as an array.
+     *
+     * @return  peer.ftp.FtpEntry[] an array of all entries
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function asArray() {
+      // ...
+    }
   }
 ?>
 
@@ -144,6 +190,16 @@ peer.ftp.FtpDir:
 <?php
   class FtpDir extends FtpEntry {
     /* ... */
+
+    /**
+     * Returns a list of entries
+     *
+     * @return  peer.ftp.FtpEntryList
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function entries() {
+      // ...
+    }
 
     /**
      * Checks whether a file by the given name exists in this
@@ -407,6 +463,44 @@ Uploading entries:
   // }}}
 ?>
 
+Retrieving all entries into an array:
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality {{{
+  $root= $c->getDir('/');
+  $entries= array();
+  while ($entry= $root->getEntry()) {
+    $entries[]= $entry;
+  }
+  // }}}
+  
+  // New functionality {{{
+  $entries= $c->rootDir()->entries()->asArray();
+  // }}}
+?>
+
+Entry iteration:
+<?php
+  $c= new FtpConnection('ftp://user:pass@example.com');
+  $c->connect();
+
+  // Current functionality {{{
+  $root= $c->getDir('/');
+  $entries= array();
+  while ($entry= $root->getEntry()) {
+    // ... Handle entry
+  }
+  // }}}
+  
+  // New functionality {{{
+  foreach ($c->rootDir()->entries() as $entry) {
+    // ... Handle entry
+  }
+  // }}}
+?>
+
 Security considerations
 -----------------------
 n/a
@@ -423,7 +517,9 @@ Dependencies
   peer.ftp.FtpDir::newDir()  which is basically the same as the old one
   but will throw an exception if directory creation fails and return 
   the created directory instead of a boolean value.
-
+- peer.ftp.FtpDir::getEntry() (iteration only) will be deprecated by the 
+  peer.ftp.FtpDir::entries() method which returns a FtpEntryList instance
+  (a more flexible approach).
 
 Related documents
 -----------------
