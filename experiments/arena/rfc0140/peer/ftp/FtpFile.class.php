@@ -75,6 +75,7 @@
      *
      * @param   io.streams.InputStream in
      * @param   int mode default FTP_ASCII
+     * @return  peer.ftp.FtpFile this file
      * @throws  peer.SocketException in case of an I/O error
      */
     public function uploadFrom(InputStream $in, $mode= FTP_ASCII) {
@@ -85,7 +86,7 @@
         $mode
       );
       fclose($sw);
-      if (TRUE === $r) return;
+      if (TRUE === $r) return $this;
 
       throw new SocketException(sprintf(
         'Could not put %s to %s using mode %s',
