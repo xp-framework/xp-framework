@@ -40,7 +40,7 @@
      * Checks whether this entry exists.
      *
      * @return  bool TRUE if the file exists, FALSE otherwise
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public function exists() {
       return ftp_size($this->connection->handle, $this->name) != -1;
@@ -50,12 +50,11 @@
      * Rename this entry
      *
      * @param   string to the new name
-     * @throws  io.IOException if an entry by the new name already exists
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public function rename($to) {
       if (!ftp_rename($this->connection->handle, $this->name, $to)) {
-        throw new SocketException('Could not rename '.$this->name.' to '.$to);
+        throw new IOException('Could not rename '.$this->name.' to '.$to);
       }
     }
 
@@ -63,19 +62,18 @@
      * Change this entry's permissions
      *
      * @param   int to the new permissions
-     * @throws  io.IOException if an entry by the new name already exists
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public function changePermissions($to) {
       if (!ftp_chmod($this->connection->handle, $this->name, $to)) {
-        throw new SocketException('Could not rename '.$this->name.' to '.$to);
+        throw new IOException('Could not change '.$this->name.'\'s permissions to '.$to);
       }
     }
 
     /**
      * Delete this entry
      *
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public abstract function delete();
 
