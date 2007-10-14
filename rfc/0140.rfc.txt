@@ -521,8 +521,11 @@ Dependencies
   peer.ftp.FtpDir::entries() method which returns a FtpEntryList instance
   (a more flexible approach).
 
+
 Related documents
 -----------------
+- http://experiments.xp-framework.net/?arena,rfc0140
+  The new API
 
 Comments
 --------
