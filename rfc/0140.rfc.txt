@@ -531,7 +531,11 @@ Related documents
 - http://experiments.xp-framework.net/?arena,rfc0140
   The new API
 
+
 Comments
 --------
+- friebe, Sun Oct 14 19:26:33     2007
+  Should the old methods be removed instantly (breaking BC) or should
+  they be available but deprecated?
 
 <EOF>
