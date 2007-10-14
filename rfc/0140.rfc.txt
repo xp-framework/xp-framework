@@ -285,8 +285,8 @@ peer.ftp.FtpDir:
      *
      * @param   string name
      * @return  peer.ftp.FtpDir the created instance
-     * @throws  io.IOException in case the directory already exists
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the directory already exists
+     * @throws  io.IOException in case the directory could not be created
      */
     public function newDir($name) {
       // ...
@@ -296,12 +296,14 @@ peer.ftp.FtpDir:
      * Returns an FtpDir instance representing a subdirectory in this
      * directory.
      *
-     * Note: Same as getDir() but does not throw exceptions if the file
-     * does not exist but will return an FtpDir in any case.
+     * Note: Same as getDir() but does not throw exceptions if the 
+     * directory does not exist but will create it and thus return an 
+     * FtpDir in any case.
      *
      * @param   string name
      * @return  peer.ftp.FtpDir the instance
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the directory exists and is a file
+     * @throws  io.IOException in case the directory could not be created
      */
     public function dir($name) {
       // ...
@@ -339,7 +341,7 @@ Checking for entry existance:
   // }}}
   
   // New functionality {{{
-  if (!$c->getDir('/')->hasFile($filename)) {
+  if (!$c->rootDir()->hasFile($filename)) {
     // $filename does not exist
   }
   // }}}
@@ -375,6 +377,8 @@ Exceptions for makeDir():
   // New functionality {{{
   try {
     $dir= $c->rootDir()->newDir('admin');
+  } catch (IllegalStateException $e) {
+    // Directory "admin" already exists
   } catch (IOException $e) {
     // Failed creating directory "admin"
   }
@@ -403,7 +407,7 @@ Retrieving a single entry:
   // }}}
   
   // New functionality {{{
-  $entry= $c->getDir('admin')->getFile($name);
+  $entry= $c->rootDir()->getDir('admin')->getFile($name);
   // }}}
 ?>
 
