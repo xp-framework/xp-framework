@@ -10,28 +10,186 @@ $Id$
 Scope of Change
 ---------------
 The peer.ftp API will be enhanced in the following ways:
-* There will be a new method peer.ftp.FtpDir::hasEntry()
-* The peer.ftp.FtpDir::getEntry() method will be overloaded for
-  two purposes: 1) iteration (as current) 2) getting a single entry (new)
 * There will be a new method peer.ftp.FtpConnection::rootDir()
-* There will be a new method peer.ftp.FtpDir::makeDir() method 
-  which is basically the same as peer.ftp.FtpConnection::makeDir()
-  but will throw an exception if directory creation fails and return 
-  the created directory instead of a boolean value.
-* There will be two methods on peer.ftp.FtpEntry to up- and download 
+* The peer.ftp.FtpEntry class will be abstract and there will be a 
+  new class peer.ftp.FtpFile extending it.
+* There will be several new methods in peer.ftp.FtpDir
+* There will be new methods in peer.ftp.FtpEntry to up- and download 
   entries which will work using the io.streams API
+
 
 Rationale
 ---------
-* Prevent having to use raw FTP functions
-* Consistency
+Prevent having to use raw FTP functions, make common use-cases easier.
 
 
 Functionality
 -------------
 
-Checking for entry existance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FtpEntry base class
+~~~~~~~~~~~~~~~~~~~
+At the moment, an FtpEntry represents a file, and an FtpDir (which extends
+FtpEntry) represents a directory. This poses several limitations on what
+can be in the FtpEntry class and makes it harder to distinguish them from
+each other.
+
+New layout:
+<?php
+  abstract class FtpEntry extends Object {
+    // Common functionality like name, size, permissions, owner, ...
+  }
+  
+  class FtpFile extends FtpEntry { 
+    // File specific functionality - up & downloads
+  }
+  
+  class FtpDir extends FtpEntry {
+    // Directory specific - getDir(), makeDir(), getFile(), hasFile(), ...
+  }
+?>
+
+New methods
+~~~~~~~~~~~
+
+peer.ftp.FtpConnection:
+<?php
+  class FtpConnection extends Object {
+    /* ... */
+
+    /**
+     * Returns an FtpDir instance representing this connection's
+     * root directory
+     *
+     * @return  peer.ftp.FtpDir the instance
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function rootDir() {
+      // ...
+    }
+  
+    /* ... */
+  }
+?>
+
+peer.ftp.FtpDir:
+<?php
+  class FtpDir extends FtpEntry {
+    /* ... */
+
+    /**
+     * Checks whether a file by the given name exists in this
+     * directory.
+     *
+     * @param   string name
+     * @return  bool TRUE if the file exists, FALSE otherwise
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function hasFile($name) {
+      // ...
+    }
+
+    /**
+     * Returns an FtpFile instance representing a file in this
+     * directory.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpFile the instance
+     * @throws  io.FileNotFoundException in case the file was not found
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function getFile($name) {
+      // ...
+    }
+
+    /**
+     * Creates a file in this directory and returns an FtpFile instance
+     * representing it.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpFile the instance
+     * @throws  io.IOException in case the file already exists
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function newFile($name) {
+      // ...
+    }
+
+    /**
+     * Returns an FtpFile instance representing a file in this
+     * directory.
+     *
+     * Note: Same as getFile() but does not throw exceptions if the file
+     * does not exist but will return an FtpFile in any case.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpFile the instance
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function file($name) {
+      // ...
+    }
+
+    /**
+     * Checks whether a subdirectory by the given name exists in this
+     * directory.
+     *
+     * @param   string name
+     * @return  bool TRUE if the file exists, FALSE otherwise
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function hasDir($name) {
+      // ...
+    }
+
+    /**
+     * Returns an FtpDir instance representing a subdirectory in this
+     * directory.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpDir the instance
+     * @throws  io.FileNotFoundException in case the file was not found
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function getDir($name) {
+      // ...
+    }
+
+    /**
+     * Creates a subdirectory in this directory and returns an FtpDir 
+     * instance representing it.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpDir the created instance
+     * @throws  io.IOException in case the directory already exists
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function newDir($name) {
+      // ...
+    }
+
+    /**
+     * Returns an FtpDir instance representing a subdirectory in this
+     * directory.
+     *
+     * Note: Same as getDir() but does not throw exceptions if the file
+     * does not exist but will return an FtpDir in any case.
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpDir the instance
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function dir($name) {
+      // ...
+    }
+  
+    /* ... */
+  }
+?>
+
+Examples
+~~~~~~~~
+
+Checking for entry existance:
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -48,7 +206,7 @@ Checking for entry existance
   }
   $exists= FALSE;
   while ($e= $dir->getEntry()) {
-    if ($e->getName() == $filename) {
+    if (!($e instanceof FtpDir) && $e->getName() == $filename) {
       $exists= TRUE;
       break;
     }
@@ -56,14 +214,13 @@ Checking for entry existance
   // }}}
   
   // New functionality {{{
-  if (!$c->getDir('/')->hasEntry($filename)) {
+  if (!$c->getDir('/')->hasFile($filename)) {
     // $filename does not exist
   }
   // }}}
 ?>
 
-Retrieving the root directory
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Retrieving the root directory:
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -78,8 +235,7 @@ Retrieving the root directory
 ?>
 
 
-Exceptions for makeDir()
-~~~~~~~~~~~~~~~~~~~~~~~~
+Exceptions for makeDir():
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -93,15 +249,14 @@ Exceptions for makeDir()
   
   // New functionality {{{
   try {
-    $dir= $c->rootDir()->makeDir(new FtpDir('admin'));
+    $dir= $c->rootDir()->newDir('admin');
   } catch (IOException $e) {
     // Failed creating directory "admin"
   }
   // }}}
 ?>
 
-Retrieving a single entry
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Retrieving a single entry:
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -112,7 +267,7 @@ Retrieving a single entry
   }
   $entry= NULL;
   while ($e= $dir->getEntry()) {
-    if ($e->getName() == $name) {
+    if (!($e instanceof FtpDir) && $e->getName() == $name) {
       $entry= $e;
       break;
     }
@@ -123,12 +278,11 @@ Retrieving a single entry
   // }}}
   
   // New functionality {{{
-  $entry= $c->getDir('admin')->getEntry($name);
+  $entry= $c->getDir('admin')->getFile($name);
   // }}}
 ?>
 
-Downloading entries
-~~~~~~~~~~~~~~~~~~~
+Downloading entries:
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -145,7 +299,7 @@ Downloading entries
   
   // New functionality {{{
   try {
-    $c->rootDir()->getEntry($filename)->downloadTo(new FileOutputStream(new File($local)));
+    $c->rootDir()->getFile($filename)->downloadTo(new FileOutputStream(new File($local)));
   } catch (FileNotFoundException $e) {
     // Remote file not found
   } catch (SocketException $e) {
@@ -156,8 +310,7 @@ Downloading entries
   // }}}
 ?>
 
-Uploading entries
-~~~~~~~~~~~~~~~~~
+Uploading entries:
 <?php
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
@@ -174,7 +327,7 @@ Uploading entries
   
   // New functionality {{{
   try {
-    $c->rootDir()->getEntry($filename)->uploadFrom(new FileInputStream(new File($local)));
+    $c->rootDir()->file($filename)->uploadFrom(new FileInputStream(new File($local)));
   } catch (FileNotFoundException $e) {
     // Local file not found
   } catch (SocketException $e) {
@@ -184,7 +337,6 @@ Uploading entries
   }
   // }}}
 ?>
-
 
 Security considerations
 -----------------------
@@ -199,7 +351,9 @@ n/a
 Dependencies
 ------------
 - peer.ftp.FtpConnection::makeDir() will be deprecated by
-  peer.ftp.FtpDir::makeDir()
+  peer.ftp.FtpDir::newDir()  which is basically the same as the old one
+  but will throw an exception if directory creation fails and return 
+  the created directory instead of a boolean value.
 
 
 Related documents
