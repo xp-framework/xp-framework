@@ -42,6 +42,15 @@
     }
 
     /**
+     * Creates a string representation of this file
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->file->toString().'>';
+    }
+
+    /**
      * Close this buffer.
      *
      */
