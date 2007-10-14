@@ -11,6 +11,7 @@ Scope of Change
 ---------------
 The peer.ftp API will be enhanced in the following ways:
 * There will be a new method peer.ftp.FtpConnection::rootDir()
+* There will be a new method peer.ftp.FtpConnection::sendCommand()
 * The peer.ftp.FtpEntry class will be abstract and there will be a 
   new class peer.ftp.FtpFile extending it.
 * There will be several new methods in peer.ftp.FtpDir
@@ -65,6 +66,25 @@ peer.ftp.FtpConnection:
      * @throws  peer.SocketException in case of an I/O error
      */
     public function rootDir() {
+      // ...
+    }
+
+    /**
+     * Sends a raw command to the FTP server and returns the server's
+     * response (unparsed) as an array of strings.
+     *
+     * Accepts a command which will be handled as format-string for
+     * further arbitrary arguments, e.g.:
+     * <code>
+     *   $c->sendCommand('CLNT %s', $clientName);
+     * </code>
+     *
+     * @param   string command
+     * @param   string* args
+     * @return  string[] result
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function sendCommand($command) {
       // ...
     }
   
