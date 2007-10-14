@@ -63,7 +63,7 @@
      *
      */
     public function __destruct() {
-      $this->close();
+      $this->file->isOpen() && $this->close();
     }
   }
 ?>
