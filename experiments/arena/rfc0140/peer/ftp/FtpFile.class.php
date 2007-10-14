@@ -48,6 +48,7 @@
         }
 
         function stream_close() {
+          self::$streams[$this->id]->close();
           unset(self::$streams[$this->id]);
         }
 
