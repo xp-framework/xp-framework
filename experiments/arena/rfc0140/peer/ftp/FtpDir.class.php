@@ -4,7 +4,13 @@
  * $Id$
  */
 
-  uses('peer.ftp.FtpEntry', 'peer.ftp.FtpEntryList', 'io.FileNotFoundException');
+  uses(
+    'peer.ftp.FtpEntry', 
+    'peer.ftp.FtpEntryList', 
+    'io.FileNotFoundException',
+    'io.IOException',
+    'peer.ProtocolException'
+  );
 
   /**
    * FTP directory
@@ -28,35 +34,24 @@
      * Returns a list of entries
      *
      * @return  peer.ftp.FtpEntryList
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public function entries() {
       if (FALSE === ($list= ftp_rawlist($this->connection->handle, $this->name))) {
-        throw new SocketException('Cannot list '.$this->name);
+        throw new IOException('Cannot list "'.$this->name.'"');
       }
         
       return new FtpEntryList($list, $this->connection);
     }
 
     /**
-     * Create this entry
-     *
-     * @throws  peer.SocketException in case of an I/O error
-     */
-    public function create() {
-      if (FALSE === ftp_mkdir($this->connection)) {
-        throw new SocketException('Could not create directory "'.$name.'"');
-      }
-    }
-
-    /**
      * Delete this entry
      *
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.IOException in case of an I/O error
      */
     public function delete() {
       if (FALSE === ftp_rmdir($this->connection->handle, $this->name)) {
-        throw new SocketException('Could not delete directory "'.$name.'"');
+        throw new IOException('Could not delete directory "'.$name.'"');
       }
     }
     
@@ -65,13 +60,14 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpEntry entry or NULL if nothing was found
+     * @throws  peer.ProtocolException in case listing fails
      */
-    public function findEntry($name) {
+    protected function findEntry($name) {
       if (!($f= ftp_rawlist($this->connection->handle, '-d '.$this->name.$name))) return NULL;
 
       // Ensure we only get one result
       if (1 != ($s= sizeof($f))) {
-        throw new FormatException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
+        throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
       }
 
       return $this->connection->parser->entryFrom($f[0], $this->connection);
@@ -83,7 +79,7 @@
      *
      * @param   string name
      * @return  bool TRUE if the file exists, FALSE otherwise
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the file exists but is a directory
      */
     public function hasFile($name) {
       if (!($e= $this->findEntry($name))) {
@@ -101,7 +97,7 @@
      * @param   string name
      * @return  peer.ftp.FtpFile the instance
      * @throws  io.FileNotFoundException in case the file was not found
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the file exists but is a directory
      */
     public function getFile($name) {
       if (!($e= $this->findEntry($name))) {
@@ -118,12 +114,11 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpFile the instance
-     * @throws  io.IOException in case the file already exists
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the file already exists
      */
     public function newFile($name) {
       if ($e= $this->findEntry($name)) {
-        throw new IOException('File "'.$name.'" already exists ('.$e->toString().')');
+        throw new IllegalStateException('File "'.$name.'" already exists ('.$e->toString().')');
       }
       return new FtpFile($name, $this->connection);
     }
@@ -137,7 +132,7 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpFile the instance
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the file is a directory
      */
     public function file($name) {
       if (!($e= $this->findEntry($name))) {
@@ -154,7 +149,7 @@
      *
      * @param   string name
      * @return  bool TRUE if the file exists, FALSE otherwise
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the directory is a file
      */
     public function hasDir($name) {
       if (!($e= $this->findEntry($name))) {
@@ -171,8 +166,8 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpDir the instance
-     * @throws  io.FileNotFoundException in case the file was not found
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  io.FileNotFoundException in case the directory was not found
+     * @throws  lang.IllegalStateException in case the directory exists but is a file
      */
     public function getDir($name) {
       if (!($e= $this->findEntry($name))) {
@@ -182,6 +177,26 @@
       }
       return $e;
     }
+    
+    /**
+     * Create a new directory
+     *
+     * @param   string name
+     * @throws  io.IOException if directory cannot be created
+     * @throws  peer.ProtocolException in case the created directory cannot be located or is a file
+     */
+    protected function makeDir($name) {
+      if (FALSE === ftp_mkdir($this->connection->handle, $this->name.$name)) {
+        throw new IOException('Could not create directory "'.$name.'"');
+      }
+      
+      if (!($created= $this->findEntry($name))) {
+        throw new ProtocolException('MKDIR "'.$name.'" succeeded but could not find created directory afterwards');
+      } else if (!$created instanceof FtpDir) {
+        throw new ProtocolException('MKDIR "'.$name.'" succeeded but directory listing reveals a file');
+      }
+      return $created;
+    }
 
     /**
      * Creates a subdirectory in this directory and returns an FtpDir 
@@ -189,31 +204,33 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpDir the created instance
-     * @throws  io.IOException in case the directory already exists
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the directory already exists
+     * @throws  io.IOException in case the directory could not be created
      */
     public function newDir($name) {
       if ($e= $this->findEntry($name)) {
         throw new IllegalStateException('Directory "'.$name.'" already exists ('.$e->toString().')');
       }
-      
-      return new FtpDir($name, $this->connection);
+
+      return $this->makeDir($name);
     }
 
     /**
      * Returns an FtpDir instance representing a subdirectory in this
      * directory.
      *
-     * Note: Same as getDir() but does not throw exceptions if the file
-     * does not exist but will return an FtpDir in any case.
+     * Note: Same as getDir() but does not throw exceptions if the 
+     * directory does not exist but will create it and thus return an 
+     * FtpDir in any case.
      *
      * @param   string name
      * @return  peer.ftp.FtpDir the instance
-     * @throws  peer.SocketException in case of an I/O error
+     * @throws  lang.IllegalStateException in case the directory exists and is a file
+     * @throws  io.IOException in case the directory could not be created
      */
     public function dir($name) {
       if (!($e= $this->findEntry($name))) {
-        return new FtpDir($name, $this->connection);
+        return $this->makeDir($name);
       } else if ($e instanceof FtpFile) {
         throw new IllegalStateException('Directory "'.$name.'" is a file');
       }
