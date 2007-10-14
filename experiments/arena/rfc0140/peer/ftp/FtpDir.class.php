@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.ftp.FtpEntry', 'peer.ftp.FtpEntryList');
+  uses('peer.ftp.FtpEntry', 'peer.ftp.FtpEntryList', 'io.FileNotFoundException');
 
   /**
    * FTP directory
@@ -13,6 +13,16 @@
    * @purpose  FtpEntry implementation
    */
   class FtpDir extends FtpEntry {
+
+    /**
+     * Constructor
+     *
+     * @param   string name
+     * @param   peer.ftp.FtpConnection connection
+     */
+    public function __construct($name, FtpConnection $connection) {
+      parent::__construct(rtrim($name, '/').'/', $connection);
+    }
 
     /**
      * Returns a list of entries
@@ -29,12 +39,42 @@
     }
 
     /**
+     * Create this entry
+     *
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function create() {
+      if (FALSE === ftp_mkdir($this->connection)) {
+        throw new SocketException('Could not create directory "'.$name.'"');
+      }
+    }
+
+    /**
      * Delete this entry
      *
      * @throws  peer.SocketException in case of an I/O error
      */
     public function delete() {
-      return ftp_rmdir($this->connection->handle, $this->name);
+      if (FALSE === ftp_rmdir($this->connection->handle, $this->name)) {
+        throw new SocketException('Could not delete directory "'.$name.'"');
+      }
+    }
+    
+    /**
+     * Find an entry
+     *
+     * @param   string name
+     * @return  peer.ftp.FtpEntry entry or NULL if nothing was found
+     */
+    public function findEntry($name) {
+      if (!($f= ftp_rawlist($this->connection->handle, '-d '.$this->name.$name))) return NULL;
+
+      // Ensure we only get one result
+      if (1 != ($s= sizeof($f))) {
+        throw new FormatException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
+      }
+
+      return $this->connection->parser->entryFrom($f[0], $this->connection);
     }
 
     /**
@@ -46,7 +86,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function hasFile($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        return FALSE;
+      } else if ($e instanceof FtpDir) {
+        throw new IllegalStateException('File "'.$name.'" is a directory');
+      }
+      return TRUE;
     }
 
     /**
@@ -59,7 +104,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function getFile($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        throw new FileNotFoundException('File "'.$name.'" not found');
+      } else if ($e instanceof FtpDir) {
+        throw new IllegalStateException('File "'.$name.'" is a directory');
+      }
+      return $e;
     }
 
     /**
@@ -72,7 +122,10 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function newFile($name) {
-      // ...
+      if ($e= $this->findEntry($name)) {
+        throw new IOException('File "'.$name.'" already exists ('.$e->toString().')');
+      }
+      return new FtpFile($name, $this->connection);
     }
 
     /**
@@ -87,7 +140,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function file($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        return new FtpFile($name, $this->connection);
+      } else if ($e instanceof FtpDir) {
+        throw new IllegalStateException('File "'.$name.'" is a directory');
+      }
+      return $e;
     }
 
     /**
@@ -99,7 +157,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function hasDir($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        return FALSE;
+      } else if ($e instanceof FtpFile) {
+        throw new IllegalStateException('Directory "'.$name.'" is a file');
+      }
+      return TRUE;
     }
 
     /**
@@ -112,7 +175,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function getDir($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        throw new FileNotFoundException('Directory "'.$name.'" not found');
+      } else if ($e instanceof FtpFile) {
+        throw new IllegalStateException('Directory "'.$name.'" is a file');
+      }
+      return $e;
     }
 
     /**
@@ -125,7 +193,11 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function newDir($name) {
-      // ...
+      if ($e= $this->findEntry($name)) {
+        throw new IllegalStateException('Directory "'.$name.'" already exists ('.$e->toString().')');
+      }
+      
+      return new FtpDir($name, $this->connection);
     }
 
     /**
@@ -140,7 +212,12 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function dir($name) {
-      // ...
+      if (!($e= $this->findEntry($name))) {
+        return new FtpDir($name, $this->connection);
+      } else if ($e instanceof FtpFile) {
+        throw new IllegalStateException('Directory "'.$name.'" is a file');
+      }
+      return $e;
     }
   }
 ?>
