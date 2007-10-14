@@ -78,7 +78,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->size.' entries)@'.xp::stringOf($this->list);
+      return $this->getClassName().'('.$this->size().' entries)@'.xp::stringOf($this->list);
     }
   }
 ?>
