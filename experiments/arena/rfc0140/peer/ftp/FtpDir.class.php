@@ -27,7 +27,8 @@
      * @param   peer.ftp.FtpConnection connection
      */
     public function __construct($name, FtpConnection $connection) {
-      parent::__construct('/'.trim($name, '/').'/', $connection);
+      $normalized= '/'.trim($name, '/').'/';
+      parent::__construct('//' === $normalized ? '/' : $normalized, $connection);
     }
 
     /**
