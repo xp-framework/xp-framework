@@ -196,5 +196,150 @@
       }
       return $response;
     }
+
+    /**
+     * Get a directory object
+     *
+     * @deprecated Use FtpDir::getDir() instead!
+     * @param   string dir default NULL directory name, defaults to working directory
+     * @return  peer.ftp.FtpDir
+     * @throws  peer.SocketException
+     */
+    public function getDir($dir= NULL) {
+      if (NULL === $dir) {
+        if (FALSE === ($dir= ftp_pwd($this->handle))) {
+          throw(new SocketException('Cannot retrieve current directory'));
+        }
+      }
+        
+      $f= new FtpDir($dir);
+      $f->connection= $this;
+      return $f;
+    }
+    
+    /**
+     * Set working directory
+     *
+     * @deprecated Without replacement...
+     * @param   peer.ftp.FtpDir f
+     * @throws  peer.SocketException
+     * @return  bool success
+     */
+    public function setDir($f) {
+      if (FALSE === ftp_chdir($this->handle, $f->name)) {
+        throw(new SocketException('Cannot change directory to '.$f->name));
+      }
+      return TRUE;
+    }
+
+    /**
+     * Create a directory
+     *
+     * @deprecated Use FtpDir::newDir() instead!
+     * @param   peer.ftp.FtpDir f
+     * @return  bool success
+     */
+    public function makeDir($f) {
+      return ftp_mkdir($this->handle, $f->name);
+    }
+    
+    /**
+     * Upload a file
+     *
+     * @deprecated Use FtpFile::uploadFrom() instead!
+     * @param   mixed arg either a filename or an open File object
+     * @param   string remote default NULL remote filename, will default to basename of arg
+     * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
+     * @return  bool success
+     * @throws  peer.SocketException
+     */
+    public function put($arg, $remote= NULL, $mode= FTP_ASCII) {
+      if (is('File', $arg)) {
+        $local= $arg->_fd;
+        if (empty($remote)) $remote= basename ($arg->getUri());
+        $f= 'ftp_fput';
+      } else {
+        $local= $arg;
+        if (empty($remote)) $remote= basename($arg);
+        $f= 'ftp_put';
+      }
+      if (FALSE === $f($this->handle, $remote, $local, $mode)) {
+        throw(new SocketException(sprintf(
+          'Could not put %s to %s using mode %s',
+          $local, $remote, $mode
+        )));
+      }
+      
+      return TRUE;
+    }
+
+    /**
+     * Download a file
+     *
+     * @deprecated Use FtpFile::downloadTo() instead!
+     * @param   string remote remote filename
+     * @param   mixed arg either a filename or an open File object
+     * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
+     * @return  bool success
+     * @throws  peer.SocketException
+     */
+    public function get($remote, $arg, $mode= FTP_ASCII) {
+      if (is('File', $arg)) {
+        $local= $arg->_fd;
+        $f= 'ftp_fget';
+      } else {
+        $origin= $arg;
+        $f= 'ftp_get';
+      }
+      if (FALSE === $f($this->handle, $local, $remote, $mode)) {
+        throw(new SocketException(sprintf(
+          'Could not get %s to %s using mode %s',
+          $remote, $local, $mode
+        )));
+      }
+      
+      return TRUE;
+    }
+    
+    /**
+     * Deletes a file.
+     *
+     * @deprecated Use FtpEntry::delete() instead!
+     * @param   string filename
+     * @return  bool success
+     */
+    public function delete($remote) {
+      return ftp_delete ($this->handle, $remote);
+    }    
+
+    /**
+     * Renames a file in this directory.
+     *
+     * @deprecated Use FtpEntry::rename() instead!
+     * @param   string source
+     * @param   string target
+     * @return  bool success
+     */
+    public function rename($src, $target) {
+      return ftp_rename (
+        $this->handle, 
+        $src, 
+        $target
+      );
+    }
+    
+    /**
+     * Sends a raw command directly to the FTP-Server.
+     *
+     * Please note, that the function does not parse whether the 
+     * command was successful or not.
+     *
+     * @deprecated Use sendCommand() instead!
+     * @param   string command
+     * @return  array ServerResponse
+     */
+    public function quote($command) {
+      return ftp_raw($this->handle, $command);
+    }
   }
 ?>
