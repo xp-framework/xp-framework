@@ -17,6 +17,7 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Add support for field type tinytext rdbms.MySQLDBAdapter.
 - Ensured file is only then closed in io.streams.FileOutputStream's 
   destructor if it's still open
   (friebe)
