@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Oct 13 16:53:48     2007
-@status: draft
+@status: discussion, ends Wed Oct 18 12:00:00     2007
 @category: peer.ftp
 
 Scope of Change
@@ -517,13 +517,17 @@ n/a
 
 Dependencies
 ------------
-- peer.ftp.FtpConnection::makeDir() will be deprecated by
-  peer.ftp.FtpDir::newDir()  which is basically the same as the old one
-  but will throw an exception if directory creation fails and return 
-  the created directory instead of a boolean value.
-- peer.ftp.FtpDir::getEntry() (iteration only) will be deprecated by the 
-  peer.ftp.FtpDir::entries() method which returns a FtpEntryList instance
-  (a more flexible approach).
+Deprecated methods in peer.ftp.FtpConnection:
+<pre>
+  public peer.ftp.FtpDir getDir([string $dir= NULL]) throws peer.SocketException
+  public bool setDir(peer.ftp.FtpDir $f) throws peer.SocketException
+  public bool makeDir(peer.ftp.FtpDir $f)
+  public bool put(mixed $arg, [string $remote= NULL], [string $mode= 0]) throws peer.SocketException
+  public bool get(string $remote, mixed $arg, [string $mode= 0]) throws peer.SocketException
+  public bool delete(string $remote)
+  public bool rename(string $src, string $target)
+  public array quote(string $command)
+</pre>
 
 
 Related documents
