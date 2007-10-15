@@ -542,4 +542,8 @@ Comments
   Should the old methods be removed instantly (breaking BC) or should
   they be available but deprecated?
 
+- friebe, Mon Oct 15 22:02:46     2007
+  Decided to add methods from old API as deprecated methods. They will
+  be removed in a future release!
+  
 <EOF>
