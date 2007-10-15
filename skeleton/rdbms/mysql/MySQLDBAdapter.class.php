@@ -31,6 +31,7 @@
         'date'       => DB_ATTRTYPE_DATE,
         'datetime'   => DB_ATTRTYPE_DATETIME,
         'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
+        'tynytext'   => DB_ATTRTYPE_TEXT,
         'mediumtext' => DB_ATTRTYPE_TEXT,
         'text'       => DB_ATTRTYPE_TEXT,
         'enum'       => DB_ATTRTYPE_ENUM,
