@@ -109,7 +109,7 @@
       while (!$this->terminate && $requests < $this->maxrequests) {
         try {
           do {
-            $m= $this->socket->accept();
+            $m= @$this->socket->accept();
             usleep(1);
             if ($this->terminate || $this->restart) return;
           } while (FALSE === $m);
