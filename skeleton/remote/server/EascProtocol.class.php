@@ -175,9 +175,13 @@
      * @return  mixed
      */
     public function handleData($socket) {
+
+      // Check if socket on eof
+      if (NULL === ($bytes= $this->readBytes($socket, 12))) return;
+
       $header= unpack(
         'Nmagic/cvmajor/cvminor/ctype/ctran/Nlength', 
-        $this->readBytes($socket, 12)
+        $bytes
       );
 
       if (0x3c872747 != $header['magic']) {
