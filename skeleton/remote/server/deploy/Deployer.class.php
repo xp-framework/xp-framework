@@ -48,8 +48,6 @@
 
       $impl= $cl->loadClass($deployment->getImplementation());
       $interface= $cl->loadClass($deployment->getInterface());
-      
-      $this->cat->warn($interface);
 
       $directoryName= $deployment->getDirectoryName();
 
