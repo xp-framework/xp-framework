@@ -34,7 +34,7 @@ public class TransactionDelegate implements Delegate {
         switch (this.operation) {
             case 1: {
                 ctx.transaction= (UserTransaction)((new InitialContext()).lookup("UserTransaction"));
-                // System.out.println("Beginning " + ctx.transaction);
+                // DEBUG System.out.println("Beginning " + ctx.transaction);
                 ctx.transaction.begin();
                 break;
             }
@@ -43,12 +43,12 @@ public class TransactionDelegate implements Delegate {
                 break;
             }
             case 3: {
-                // System.out.println("Committing " + ctx.transaction);
+                // DEBUG System.out.println("Committing " + ctx.transaction);
                 ctx.transaction.commit();
                 break;
             }
             case 4: {
-                // System.out.println("Rolling back " + ctx.transaction);
+                // DEBUG System.out.println("Rolling back " + ctx.transaction);
                 ctx.transaction.rollback();
                 break;
             }

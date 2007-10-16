@@ -78,7 +78,7 @@ public class ServerThread extends Thread {
                 // Remove candidates
                 if (candidates.isEmpty()) continue;
                 
-                System.out.println("[EASC] Removing references " + candidates);
+                // DEBUG System.out.println("[EASC] Removing references " + candidates);
                 for (Integer hashCode: candidates) {
                     this.list.remove(hashCode);
                 }
