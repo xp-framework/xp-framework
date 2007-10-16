@@ -25,7 +25,7 @@
   class Deployer extends Object implements Traceable {
     protected
       $cat      = NULL;
-  
+
     /**
      * Deploy
      *
@@ -41,15 +41,15 @@
 
       $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
 
-      // Put bean's xar file into include_path - uses() within the beans will be able to resolve
-      // references to other classes inside the xar.
-      // This is a necessary HACK atm.
+      // Register beans classloader. This classloader must be put at the beginning
+      // to prevent loading of the home interface not implmenenting BeanInterface
       $cl= $deployment->getClassLoader();
-      $org= ini_get('include_path');
-      ini_set('include_path', $org.PATH_SEPARATOR.$cl->archive->file->getURI());
+      ClassLoader::getDefault()->registerLoader($cl, TRUE);
 
       $impl= $cl->loadClass($deployment->getImplementation());
       $interface= $cl->loadClass($deployment->getInterface());
+      
+      $this->cat->warn($interface);
 
       $directoryName= $deployment->getDirectoryName();
 
@@ -74,7 +74,6 @@
       
       $this->cat && $this->cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
 
-      // Leave xar in include_path - classes might load some dependencies at runtime
       return $beanContainer;
     }
     
