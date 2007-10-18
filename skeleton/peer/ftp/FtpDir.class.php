@@ -19,6 +19,9 @@
    * @purpose  FtpEntry implementation
    */
   class FtpDir extends FtpEntry {
+    public
+      $entries  = NULL,
+      $_offset  = 0;
 
     /**
      * Constructor
@@ -236,6 +239,54 @@
         throw new IllegalStateException('Directory "'.$name.'" is a file');
       }
       return $e;
+    }
+
+    /**
+     * Get entries (iterative function)
+     *
+     * @deprecated Use entries() instead!   
+     * @return  peer.ftp.FtpEntry FALSE to indicate EOL
+     * @throws  peer.SocketException in case the directory could not be read
+     */
+    public function getEntry() {
+      if (NULL === $this->entries) {
+        // Retrieve entries
+        if (FALSE === ($list= ftp_rawlist($this->connection->handle, $this->name))) {
+          throw new SocketException('Cannot list '.$this->name);
+        }
+        
+        $this->entries= $list;
+        $this->_offset= 0;
+        if (empty($this->entries)) return FALSE;
+      } else if (0 == $this->_offset) {
+        $this->entries= NULL;
+      }
+      
+      // Get rid of directory self-reference "." and parent directory 
+      // reference, ".."
+      do {        
+        try {
+          $entry= $this->connection->parser->entryFrom($this->entries[$this->_offset]);
+        } catch (XPException $e) {
+          throw new SocketException(sprintf(
+            'During listing of #%d (%s): %s',
+            $this->_offset,
+            $this->entries[$this->_offset],
+            $e->getMessage()
+          ));
+          return FALSE;
+        }
+        
+        // If we reach max, reset offset to 0 and break out of this loop
+        if (++$this->_offset >= sizeof($this->entries)) {
+          $this->_offset= 0;
+          break;
+        }
+      } while ('.' == $entry->getName() || '..' == $entry->getName());
+
+      // Inject connection and return
+      $entry->connection= $this->connection;
+      return $entry;
     }
   }
 ?>
