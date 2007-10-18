@@ -19,9 +19,11 @@
      * Parse raw listing entry.
      *
      * @param   string raw a single line
+     * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw) {
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/') {
       preg_match(
         '/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +(<DIR>)?([0-9]+)? +(.+)/',
         $raw,
@@ -29,9 +31,9 @@
       );
 
       if ($result[7]) {
-        $e= new FtpDir($result[9]);
+        $e= new FtpDir($base.$result[9], $conn);
       } else {
-        $e= new FtpEntry($result[9]);
+        $e= new FtpFile($base.$result[9], $conn);
       }
 
       $e->setPermissions(0);
@@ -50,6 +52,5 @@
       )));
       return $e;
     }
-  
   } 
 ?>

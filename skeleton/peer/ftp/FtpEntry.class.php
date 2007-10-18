@@ -3,35 +3,79 @@
  *
  * $Id$ 
  */
-
+ 
   uses('util.Date');
 
   /**
-   * Represent an FTP entry
+   * Base class for all FTP entries
    *
-   * @see      xp://peer.ftp.FtpDir#getEntry
+   * @see      xp://peer.ftp.FtpDir
+   * @see      xp://peer.ftp.FtpFile
    * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
-   * @purpose  Base class
+   * @purpose  Abstract base class
    */
-  class FtpEntry extends Object {
-    public
+  abstract class FtpEntry extends Object {
+    protected
+      $connection   = NULL,
       $name         = '',
       $permissions  = 0,
       $numlinks     = 0,
       $user         = '',
       $group        = '',
       $size         = 0,
-      $date         = NULL,
-      $connection   = NULL;
-      
+      $date         = NULL;
+    
     /**
      * Constructor
      *
      * @param   string name
+     * @param   peer.ftp.FtpConnection connection
      */
-    public function __construct($name) {
+    public function __construct($name, FtpConnection $connection) {
       $this->name= $name;
+      $this->connection= $connection;
     }
+
+    /**
+     * Checks whether this entry exists.
+     *
+     * @return  bool TRUE if the file exists, FALSE otherwise
+     * @throws  io.IOException in case of an I/O error
+     */
+    public function exists() {
+      return ftp_size($this->connection->handle, $this->name) != -1;
+    }
+
+    /**
+     * Rename this entry
+     *
+     * @param   string to the new name
+     * @throws  io.IOException in case of an I/O error
+     */
+    public function rename($to) {
+      if (!ftp_rename($this->connection->handle, $this->name, $to)) {
+        throw new IOException('Could not rename '.$this->name.' to '.$to);
+      }
+    }
+
+    /**
+     * Change this entry's permissions
+     *
+     * @param   int to the new permissions
+     * @throws  io.IOException in case of an I/O error
+     */
+    public function changePermissions($to) {
+      if (!ftp_chmod($this->connection->handle, $this->name, $to)) {
+        throw new IOException('Could not change '.$this->name.'\'s permissions to '.$to);
+      }
+    }
+
+    /**
+     * Delete this entry
+     *
+     * @throws  io.IOException in case of an I/O error
+     */
+    public abstract function delete();
 
     /**
      * Set Permissions. Takes either a string or an integer as argument.
@@ -57,7 +101,7 @@
       } else if (is_int($perm)) {
         $this->permissions= $perm;
       } else {
-        throw(new IllegalArgumentException('Expect: string(9) / int, have "'.$perm.'"'));
+        throw new IllegalArgumentException('Expected either a string(9) or int, have '.xp::stringOf($perm));
       }
     }
 
@@ -147,7 +191,7 @@
      *
      * @param   util.Date date
      */
-    public function setDate($date) {
+    public function setDate(Date $date) {
       $this->date= $date;
     }
 

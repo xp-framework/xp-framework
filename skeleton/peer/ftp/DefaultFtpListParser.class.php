@@ -19,9 +19,11 @@
      * Parse raw listing entry.
      *
      * @param   string raw a single line
+     * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw) {
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/') {
       sscanf(
         $raw, 
         '%s %d %s %s %d %s %d %[^ ] %[^$]',
@@ -37,9 +39,9 @@
       );
       
       if ('d' == $permissions{0}) {
-        $e= new FtpDir($filename);
+        $e= new FtpDir($base.$filename, $conn);
       } else {
-        $e= new FtpEntry($filename);
+        $e= new FtpFile($base.$filename, $conn);
       }
 
       $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
@@ -59,6 +61,5 @@
       $e->setDate($d);
       return $e;
     }
-  
   } 
 ?>

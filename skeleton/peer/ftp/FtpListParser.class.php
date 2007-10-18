@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.ftp.FtpFile', 'peer.ftp.FtpDir');
+
   /**
    * Parses output from a FTP LIST command.
    *
@@ -30,9 +32,11 @@
      * Parse raw listing entry.
      *
      * @param   string raw a single line
+     * @param   peer.ftp.FtpConnection connection
+     * @param   string base default "/"
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw);
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/');
   
   }
 ?>
