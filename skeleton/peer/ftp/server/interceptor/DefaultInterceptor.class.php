@@ -35,7 +35,18 @@
     public function onCreate($session, $entry) {
       return TRUE;
     }
-  
+
+    /**
+     * Invoked when an entry has been stored
+     * 
+     * @param  peer.ftp.server.FtpSession
+     * @param  peer.ftp.server.storage.StorageEntry
+     * @return bool
+     */
+    public function onStored($session, $entry) {
+      return TRUE;
+    }
+
     /**
      * Invoked when an entry is deleted
      * 

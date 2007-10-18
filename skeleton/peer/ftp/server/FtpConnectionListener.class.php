@@ -703,6 +703,13 @@
         $socket->close();
         if ($e) return;
       }
+      
+      // Post check interception
+      if (!$this->checkInterceptors($event, $entry, 'onStored')) {
+        $entry->delete();
+        return;
+      }
+
       $this->answer($event->stream, 226, 'Transfer complete');
     }
 
