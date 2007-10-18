@@ -4,7 +4,7 @@ $Id$
 
 @authors: gellweiler
 @created: Wed Oct 10 13:14:39 CEST 2007
-@status: discussion, ends Fri Oct 12 12:00:00 CEST 2007
+@status: implemented, Thu Oct 18 10:05:38     2007
 @category: peer.ftp.server.interceptor
 
 Scope of Change
