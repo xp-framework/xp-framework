@@ -6,17 +6,12 @@
  
   uses(
     'util.log.Logger',
-    'util.log.FileAppender',
     'gui.WidgetNotFoundException'
   );
  
   /**
    * Base application class. Extend this class in order to create
    * an application. 
-   *
-   * This class has a member variable "cat" which references a
-   * log category with an appender to STDERR and may be used to
-   * print debugging information.
    *
    * @ext      gtk
    * @see      php-gtk://GtkWindow
@@ -38,11 +33,7 @@
 
       // Set up logger
       $l= Logger::getInstance();
-      $this->cat= $l->getCategory(get_class($this));
-      $this->cat->identifier= get_class($this);
-      if (empty($this->cat->_appenders)) {
-        $this->cat->addAppender(new FileAppender('php://stderr'));
-      }
+      $this->cat= $l->getCategory();
       
       // Parse rc file if one is set
       if (!empty($this->rcfile)) Gtk::rc_parse($this->rcfile);
@@ -55,8 +46,6 @@
       $this->window->connect('destroy', array($this, 'destroy'));
 
       $this->param= $p;
-
-      
     }
     
     /**
