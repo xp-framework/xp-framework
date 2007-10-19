@@ -72,7 +72,7 @@
      * @param   &array container
      * @param   string name
      */
-    protected function _load($container, $name) {
+    protected function _load(&$container, $name) {
       list(
         $container['p:'.$name],
         $container['m:'.$name]
