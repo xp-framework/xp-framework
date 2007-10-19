@@ -238,5 +238,22 @@
       $this->refDate->format('%b');
     }
     
+    /**
+     * Test representation of string is working deterministicly.
+     *
+     * There currently is a strange problem related to deserialization
+     * from timestamp.
+     *
+     */
+    #[@test, @ignore('Broken, must be investigated.')]
+    public function testTimestamp() {
+      date_default_timezone_set('Europe/Berlin');
+      
+      $d1= new Date('1980-05-28 06:30:00 Europe/Berlin');
+      $d2= new Date(328336200);
+      
+      $this->assertEquals($d1, $d2);
+      $this->assertEquals($d2, new Date($d2->toString()));
+    }
   }
 ?>
