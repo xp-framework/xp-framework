@@ -14,6 +14,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0142: I/O Streams to PHP streams wrapper
+  (friebe)
 - Implemented RFC #0140: FTP API enhancements
   (friebe)
 - Implemented RFC #0138: Additional interceptor callbacks in 
