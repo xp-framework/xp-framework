@@ -38,20 +38,15 @@
     }
 
     /**
-     * Starts this transfer
+     * Initiate a transfer
      *
      * @param   int mode
-     * @return  peer.ftp.FtpTransfer this
-     */
-    public function start($mode) {
+     */    
+    protected function initiate($mode) {
       $this->h= $this->remote->getConnection()->handle;
       $this->f= Streams::writeableFd($this->out);
       $this->s= $this->remote->getSize();
       $this->r= ftp_nb_fget($this->h, $this->f, $this->remote->getName(), $mode);
-
-      // Notify listener
-      $this->listener && $this->listener->started($this);
-      return $this;
     }
     
     /**

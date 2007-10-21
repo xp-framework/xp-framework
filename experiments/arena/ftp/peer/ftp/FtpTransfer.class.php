@@ -68,13 +68,6 @@
       return $this->aborted;
     }
 
-    /**
-     * Starts this transfer
-     *
-     * @param   int mode
-     * @return  peer.ftp.FtpTransfer this
-     */
-    public abstract function start($mode);
 
     /**
      * Retrieves this transfer's total size
@@ -93,7 +86,28 @@
     public function transferred() {
       return ftell($this->f);
     }
+
+    /**
+     * Initiate a transfer
+     *
+     * @param   int mode
+     */    
+    protected abstract function initiate($mode);
     
+    /**
+     * Starts this transfer
+     *
+     * @param   int mode
+     * @return  peer.ftp.FtpTransfer this
+     */
+    public function start($mode) {
+      $this->initiate($mode);
+
+      // Notify listener
+      $this->listener && $this->listener->started($this);
+      return $this;
+    }
+
     /**
      * Returns whether this transfer is complete
      *

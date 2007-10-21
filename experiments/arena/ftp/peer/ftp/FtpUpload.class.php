@@ -38,12 +38,11 @@
     }
 
     /**
-     * Starts this transfer
+     * Initiate a transfer
      *
      * @param   int mode
-     * @return  peer.ftp.FtpTransfer this
-     */
-    public function start($mode) {
+     */    
+    protected function initiate($mode) {
       $this->h= $this->remote->getConnection()->handle;
       $this->f= Streams::readableFd($this->in);
       $this->s= fstat($this->f);
