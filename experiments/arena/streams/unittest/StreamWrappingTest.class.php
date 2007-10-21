@@ -36,6 +36,41 @@
     }
 
     /**
+     * Test end of file
+     *
+     */
+    #[@test]
+    public function endOfFile() {
+      $fd= Streams::readableFd(new MemoryInputStream(str_repeat('x', 10)));
+      $this->assertFalse(feof($fd), 'May not be at EOF directly after opening');
+
+      fread($fd, 5);
+      $this->assertFalse(feof($fd), 'May not be at EOF after reading only half of the bytes');
+
+      fread($fd, 5);
+      $this->assertTrue(feof($fd), 'Must be at EOF after having read all of the bytes');
+
+      fclose($fd);
+    }
+
+    /**
+     * Test stat method
+     *
+     */
+    #[@test]
+    public function stat() {
+      $fd= Streams::readableFd(new MemoryInputStream(str_repeat('x', 10)));
+      $stat= fstat($fd);
+      $this->assertEquals(10, $stat['size']);
+
+      fread($fd, 5);
+      $stat= fstat($fd);
+      $this->assertEquals(10, $stat['size']);
+      
+      fclose($fd);
+    }
+
+    /**
      * Test writeableFd() method
      *
      */
