@@ -128,7 +128,7 @@ With listeners
 <?php
   $listener= newinstance('peer.ftp.FtpTransferListener', array(), '{
     public function started(FtpTransfer $transfer) {
-      Console::write("Started ", $transfer, "\n  [");
+      Console::write($transfer, "\n  [");
     }
     
     public function transferred(FtpTransfer $transfer, $bytes, $size) {
@@ -166,11 +166,11 @@ With listeners
 Output
 ~~~~~~
 <pre>
-Started peer.ftp.FtpUpload@(io.streams.FileInputStream<io.File(uri= .\php.exe, mode= rb)> -> /php.exe)
+peer.ftp.FtpUpload@(io.streams.FileInputStream<io.File(uri= .\php.exe, mode= rb)> -> /php.exe)
   [.......] 
 Completed
-
-Started peer.ftp.FtpDownload@(/php.exe -> io.streams.FileOutputStream<io.File(uri= .\php.exe, mode= wb)>) 
+ 
+peer.ftp.FtpDownload@(/php.exe -> io.streams.FileOutputStream<io.File(uri= .\php.exe, mode= wb)>) 
   [...................] 
 Completed
 </pre>
