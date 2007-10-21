@@ -20,6 +20,51 @@ To be able to redraw the application UI and/or update a progressbar.
 Functionality
 -------------
 
+Current functionality
+~~~~~~~~~~~~~~~~~~~~~
+<?php
+  // Uploading
+  $c->rootDir()->file($filename)->uploadFrom(new FileInputStream(new File($local)));
+ 
+  // Downloading
+  $c->rootDir()->getFile($filename)->downloadTo(new FileOutputStream(new File($local)));
+?>
+Both of these methods are blocking, that is, they will not return until
+the transfer has been completed.
+
+Transfer class
+~~~~~~~~~~~~~~
+<?php
+  class FtpTransfer extends Object {
+
+    /**
+     * Returns the origin of this transfer
+     *
+     * @return  string
+     */
+    public function origin() {
+      // ...
+    }
+    
+    /**
+     * Returns the target of this transfer
+     *
+     * @return  string
+     */
+    public function target() {
+      // ...
+    }
+    
+    /**
+     * Aborts this transfer
+     *
+     */
+    public function abort() {
+      // ...
+    }
+  }
+?>
+
 Listener interface
 ~~~~~~~~~~~~~~~~~~
 There will be a new interface, peer.ftp.FtpTransferListener:
@@ -29,36 +74,81 @@ There will be a new interface, peer.ftp.FtpTransferListener:
     /**
      * Called when a transfer is started
      *
+     * @param   peer.ftp.FtpTransfer transfer
      */
-    public function started();
+    public function started(FtpTransfer $transfer);
 
     /**
      * Called while transferring
      *
+     * @param   peer.ftp.FtpTransfer transfer
      * @param   int bytes
      */
-    public function transferred($bytes);
+    public function transferred(FtpTransfer $transfer, $bytes);
 
     /**
      * Called when a transfer has been completed.
      *
+     * @param   peer.ftp.FtpTransfer transfer
      */
-    public function completed();
+    public function completed(FtpTransfer $transfer);
 
     /**
      * Called when a transfer has been aborted
      *
+     * @param   peer.ftp.FtpTransfer transfer
      */
-    public function aborted();
+    public function aborted(FtpTransfer $transfer);
 
     /**
      * Called when a transfer fails
      *
+     * @param   peer.ftp.FtpTransfer transfer
+     * @param   lang.XPException cause
      */
-    public function failed();
+    public function failed(FtpTransfer $transfer, XPException $cause);
   
   }
 ?>
+
+With listeners
+~~~~~~~~~~~~~~
+<?php
+  $listener= newinstance('peer.ftp.FtpTransferListener', array(), '{
+    public function started(FtpTransfer $transfer) {
+      Console::write("Started ", $transfer, " [");
+    }
+    
+    public function transferred(FtpTransfer $transfer, $bytes) {
+      Console::write(".");
+    }
+
+    public function completed(FtpTransfer $transfer) {
+      Console::writeLine("] completed");
+    }
+    
+    public function aborted(FtpTransfer $transfer) {
+      Console::writeLine("] aborted");
+    }
+
+    public function failed(FtpTransfer $transfer, XPException $cause) {
+      Console::writeLine("] failed (", $cause->compoundMessage(), ")");
+    }
+  }');
+  
+  // Uploading
+  $c->rootDir()->file($filename)->uploadFrom(
+    new FileInputStream(new File($local)),
+    $listener
+  );
+ 
+  // Downloading
+  $c->rootDir()->getFile($filename)->downloadTo(
+    new FileOutputStream(new File($local)),
+    $listener
+  );
+?>
+
 
 Security considerations
 -----------------------
@@ -77,9 +167,12 @@ n/a
 
 Related documents
 -----------------
+n/a
 
 
 Comments
 --------
+n/a
+
 
 <EOF>
