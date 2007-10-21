@@ -25,7 +25,7 @@ Usage (reading from a MemoryInputStream)
 <?php
   $m= new MemoryInputStream('Hello World');
   
-  $fd= Streams::forReading($m);
+  $fd= Streams::readableFd($m);
   $helloWorld= fread($fd, 1024);
   fclose($fd);
 ?>
@@ -35,82 +35,38 @@ Usage (writing to a MemoryOutputStream)
 <?php
   $m= new MemoryOutputStream();
   
-  $fd= Streams::forWriting($m);
+  $fd= Streams::writeableFd($m);
   fwrite($fd, 'Hello World');
   fclose($fd);
   
   $helloWorld= $m->getBytes();
 ?>
 
-Implementation
-~~~~~~~~~~~~~~
-<?php
-  class Streams extends Object {
-    private static 
-      $streams = array();
-
-    private 
-      $id      = NULL;
-
-    public static function wrap($s) { 
-      self::$streams[$s->hashCode()]= $s;
-      return "iostr://".$s->hashCode(); 
-    }
-
-    public static function forReading(InputStream $s) { 
-      return fopen(self::wrap($s), 'rb');
-    }
-
-    public static function forWriting(OutputStream $s) { 
-      return fopen(self::wrap($s), 'wb');
-    }
-
-    public function stream_open($path, $mode, $options, $opened_path) {
-      sscanf($path, "iostr://%[^$]", $this->id);
-      if (!isset(self::$streams[$this->id])) {
-        throw new FileNotFoundException("No such iostr ".$this->id);
-      }
-      return TRUE;
-    }
-
-    public function stream_read($count) {
-      return self::$streams[$this->id]->read($count);
-    }
-
-    public function stream_eof() {
-      return 0 === self::$streams[$this->id]->available();
-    }
-
-    public function stream_write($data) {
-      self::$streams[$this->id]->write($data);
-      return strlen($data);
-    }
-
-    public function stream_close() {
-      self::$streams[$this->id]->close();
-      unset(self::$streams[$this->id]);
-    }
-
-    public function stream_stat() {
-      return array("size" => self::$streams[$this->id]->available());
-    }
-  }
-?>
-
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
+n/a
+
 
 Dependencies
 ------------
+n/a
+
 
 Related documents
 -----------------
+- http://experiments.xp-framework.net/?arena,streams
+  Experiment
+
 
 Comments
 --------
+n/a
+
 
 <EOF>
