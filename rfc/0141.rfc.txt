@@ -1,0 +1,85 @@
+RFC 0141: FTP Transfer listening
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Oct 21 12:23:12     2007
+@status: draft
+@category: peer.ftp
+
+Scope of Change
+---------------
+There will be a way to monitor FTP transfers.
+
+
+Rationale
+---------
+To be able to redraw the application UI and/or update a progressbar.
+
+
+Functionality
+-------------
+
+Listener interface
+~~~~~~~~~~~~~~~~~~
+There will be a new interface, peer.ftp.FtpTransferListener:
+<?php
+  interface FtpTransferListener {
+  
+    /**
+     * Called when a transfer is started
+     *
+     */
+    public function started();
+
+    /**
+     * Called while transferring
+     *
+     * @param   int bytes
+     */
+    public function transferred($bytes);
+
+    /**
+     * Called when a transfer has been completed.
+     *
+     */
+    public function completed();
+
+    /**
+     * Called when a transfer has been aborted
+     *
+     */
+    public function aborted();
+
+    /**
+     * Called when a transfer fails
+     *
+     */
+    public function failed();
+  
+  }
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+
+
+Comments
+--------
+
+<EOF>
