@@ -49,11 +49,30 @@ The FtpTransfer base class is declared as follows:
   abstract class FtpTransfer extends Object {
 
     /**
+     * Sets the remote file
+     *
+     * @param   peer.ftp.FtpFile remote
+     */
+    public function setRemote(FtpFile $remote) {
+      // ...
+    }
+
+    /**
      * Returns the remote file
      *
      * @return  peer.ftp.FtpFile
      */
-    public function remote() {
+    public function getRemote() {
+      // ...
+    }
+
+    /**
+     * Returns the remote file
+     *
+     * @return  peer.ftp.FtpTransferListener l
+     * @return  peer.ftp.FtpTransfer this transfer object
+     */
+    public function withListener(FtpTransferListener $l= NULL) {
       // ...
     }
 
@@ -71,6 +90,54 @@ The FtpTransfer base class is declared as follows:
      * @return  bool
      */
     public function aborted() {
+      // ...
+    }
+
+    /**
+     * Retrieves this transfer's total size
+     *
+     * @param   int size
+     */
+    public function size() {
+      // ...
+    }
+
+    /**
+     * Retrieves how many bytes have already been transferred
+     *
+     * @param   int size
+     */
+    public function transferred() {
+      // ...
+    }
+    
+    
+    /**
+     * Starts this transfer
+     *
+     * @param   int mode
+     * @return  peer.ftp.FtpTransfer this
+     */
+    public function start($mode) {
+      // ...
+    }
+
+    /**
+     * Returns whether this transfer is complete
+     *
+     * @return  bool TRUE if this transfer is complete, FALSE otherwiese
+     */
+    public function complete() {
+      // ...
+    }
+
+    /**
+     * Continues this transfer
+     *
+     * @throws  peer.SocketException in case this transfer fails
+     * @throws  lang.IllegalStateException in case start() has not been called before
+     */
+    public function perform() {
       // ...
     }
   }
@@ -93,10 +160,8 @@ There will be a new interface, peer.ftp.FtpTransferListener:
      * Called while transferring
      *
      * @param   peer.ftp.FtpTransfer transfer
-     * @param   int bytes the number of bytes that has been transferred
-     * @param   int size the total size of bytes that needs to be transferred
      */
-    public function transferred(FtpTransfer $transfer, $bytes, $size);
+    public function transferred(FtpTransfer $transfer);
 
     /**
      * Called when a transfer has been completed.
