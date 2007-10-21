@@ -43,60 +43,34 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function uploadFrom(InputStream $in, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      $sw= Streams::readableFd($in);
       if ($listener) {
-        $stat= fstat($sw);
-        $size= isset($stat['size']) ? $stat['size'] : -1;
-        $transfer= new FtpUpload($this, $in);
-        $r= ftp_nb_fput(
-          $this->connection->handle, 
-          $this->name,
-          $sw,
-          $mode
-        );
-        $listener->started($transfer);
-        while (FTP_MOREDATA === $r) {
-          if ($transfer->aborted()) {
-            $r= -1;
-            break;
-          }
-          $r= ftp_nb_continue($this->connection->handle);
-          $listener->transferred($transfer, ftell($sw), $size);
+        $transfer= create(new FtpUpload($this, $in))->withListener($listener)->start($mode);
+        while (!$transfer->complete()) {
+          $transfer->perform();
         }
-        fclose($sw);
-        if (FTP_FINISHED === $r) {            // Transfer finished normally
-          $listener->completed($transfer);
-          return $this;
-        } else if (-1 === $r) {               // Aborted
-          $e= new SocketException(sprintf(
+        
+        if ($transfer->aborted()) {
+          throw new SocketException(sprintf(
             'Transfer from %s to %s (mode %s) was aborted',
             $in->toString(), $this->name, $mode
           ));
-          $listener->aborted($transfer);
-        } else {                              // Failed
-          $e= new SocketException(sprintf(
-            'Could not put %s to %s using mode %s',
-            $in->toString(), $this->name, $mode
-          ));          
-          $listener->failed($transfer, $e);
         }
       } else {
         $r= ftp_fput(
           $this->connection->handle, 
           $this->name, 
-          $sw, 
+          $sw= Streams::readableFd($in), 
           $mode
         );
         fclose($sw);
-        if (TRUE === $r) return $this;
-
-        $e= new SocketException(sprintf(
-          'Could not put %s to %s using mode %s',
-          $in->toString(), $this->name, $mode
-        ));          
+        if (TRUE !== $r) {
+          throw new SocketException(sprintf(
+            'Could not put %s to %s using mode %s',
+            $in->toString(), $this->name, $mode
+          ));
+        }
       }
-
-      throw $e;
+      return $this;
     }
     
     /**
@@ -124,59 +98,34 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function downloadTo(OutputStream $out, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      $sw= Streams::writeableFd($out);
       if ($listener) {
-        $size= $this->size;
-        $transfer= new FtpDownload($this, $out);
-        $r= ftp_nb_fget(
-          $this->connection->handle, 
-          $sw,
-          $this->name,
-          $mode
-        );
-        $listener->started($transfer);
-        while (FTP_MOREDATA === $r) {
-          if ($transfer->aborted()) {
-            $r= -1;
-            break;
-          }
-          $r= ftp_nb_continue($this->connection->handle);
-          $listener->transferred($transfer, ftell($sw), $size);
+        $transfer= create(new FtpDownload($this, $out))->withListener($listener)->start($mode);
+        while (!$transfer->complete()) {
+          $transfer->perform();
         }
-        fclose($sw);
-        if (FTP_FINISHED === $r) {            // Transfer finished normally
-          $listener->completed($transfer);
-          return $this;
-        } else if (-1 === $r) {               // Aborted
-          $e= new SocketException(sprintf(
+        
+        if ($transfer->aborted()) {
+          throw new SocketException(sprintf(
             'Transfer from %s to %s (mode %s) was aborted',
-            $this->name, $out->toString(), $mode
+            $in->toString(), $this->name, $mode
           ));
-          $listener->aborted($transfer);
-        } else {                              // Failed
-          $e= new SocketException(sprintf(
-            'Could not put %s to %s using mode %s',
-            $this->name, $out->toString(), $mode
-          ));          
-          $listener->failed($transfer, $e);
         }
       } else {
         $r= ftp_fget(
           $this->connection->handle, 
-          $sw,
+          $sw= Streams::writeableFd($out),
           $this->name, 
           $mode
         );
         fclose($sw);
-        if (TRUE === $r) return $out;
-
-        $e= new SocketException(sprintf(
-          'Could not get %s to %s using mode %s',
-          $this->name, $out->toString(), $mode
-        ));         
+        if (TRUE !== $r) {
+          throw new SocketException(sprintf(
+            'Could not get %s to %s using mode %s',
+            $this->name, $out->toString(), $mode
+          )); 
+        }
       }
-
-      throw $e;
+      return $out;
     }
   }
 ?>
