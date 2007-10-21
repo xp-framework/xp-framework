@@ -71,7 +71,7 @@
       </a>
     </h2>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
 
@@ -108,7 +108,7 @@
       Updated: <xsl:value-of select="@title"/>
     </h2>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       - <a href="{func:linkAlbum(@album)}">Go to album</a>
       <br clear="all"/>
     </p>
@@ -129,7 +129,7 @@
       Featured image: <xsl:value-of select="@title"/>
     </h2>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
     <table border="0">
@@ -175,7 +175,7 @@
       </a>
     </h2>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
 
@@ -197,7 +197,7 @@
               (<xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters)
             </h3>
             <p align="justify">
-              <xsl:copy-of select="description"/>
+              <xsl:apply-templates select="description"/>
               <br clear="all"/>
             </p>
           </td>

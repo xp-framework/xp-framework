@@ -82,4 +82,7 @@
     </xsl:copy> 
   </xsl:template>
   
+  <xsl:template match="description">
+    <xsl:apply-templates/>
+  </xsl:template>  
 </xsl:stylesheet>

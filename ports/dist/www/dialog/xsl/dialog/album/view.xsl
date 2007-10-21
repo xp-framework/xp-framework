@@ -65,7 +65,7 @@
       <xsl:value-of select="/formresult/album/@title"/>
     </h2>
     <p align="justify">
-      <xsl:copy-of select="/formresult/album/description"/>
+      <xsl:apply-templates select="/formresult/album/description"/>
       <br clear="all"/>
     </p>
     

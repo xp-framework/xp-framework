@@ -62,7 +62,7 @@
       (<xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters)
     </h3>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
   </xsl:template>
@@ -80,7 +80,7 @@
       (Update)
     </h3>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
   </xsl:template>
@@ -98,7 +98,7 @@
       (Featured image)
     </h3>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
   </xsl:template>
@@ -116,7 +116,7 @@
       (Collection of <xsl:value-of select="@num_entries"/>)
     </h3>
     <p align="justify">
-      <xsl:copy-of select="description"/>
+      <xsl:apply-templates select="description"/>
       <br clear="all"/>
     </p>
   </xsl:template>
