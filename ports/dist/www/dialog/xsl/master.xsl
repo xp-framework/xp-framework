@@ -11,6 +11,7 @@
  xmlns:func="http://exslt.org/functions"
  xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
+ exclude-result-prefixes="exsl func php"
 >
   <xsl:output method="html" encoding="iso-8859-1" indent="no"/>
   <xsl:param name="__page"/>

@@ -9,7 +9,9 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
+ exclude-result-prefixes="exsl func php"
 >
   <xsl:include href="../master.xsl"/>
   <xsl:include href="links.inc.xsl"/>

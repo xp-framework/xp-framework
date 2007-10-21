@@ -11,6 +11,7 @@
  xmlns:func="http://exslt.org/functions"
  xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
+ exclude-result-prefixes="exsl func php"
 >
   <xsl:import href="layout.xsl"/>
   
