@@ -89,6 +89,8 @@
     public function uploadFrom(InputStream $in, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
       $sw= fopen(self::$sw->wrap($in), 'rb');
       if ($listener) {
+        $stat= fstat($sw);
+        $size= isset($stat['size']) ? $stat['size'] : -1;
         $transfer= new FtpUpload($this, $in);
         $r= ftp_nb_fput(
           $this->connection->handle, 
@@ -103,13 +105,13 @@
             break;
           }
           $r= ftp_nb_continue($this->connection->handle);
-          $listener->transferred($transfer, -1);
+          $listener->transferred($transfer, ftell($sw), $size);
         }
         fclose($sw);
         if (FTP_FINISHED === $r) {            // Transfer finished normally
           $listener->completed($transfer);
           return $this;
-        } else if (-1 === $r) {            // Aborted
+        } else if (-1 === $r) {               // Aborted
           $e= new SocketException(sprintf(
             'Transfer from %s to %s (mode %s) was aborted',
             $in->toString(), $this->name, $mode
@@ -153,6 +155,7 @@
     public function downloadTo(OutputStream $out, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
       $sw= fopen(self::$sw->wrap($out), 'wb');
       if ($listener) {
+        $size= $this->size;
         $transfer= new FtpDownload($this, $out);
         $r= ftp_nb_fget(
           $this->connection->handle, 
@@ -167,7 +170,7 @@
             break;
           }
           $r= ftp_nb_continue($this->connection->handle);
-          $listener->transferred($transfer, -1);
+          $listener->transferred($transfer, ftell($sw), $size);
         }
         fclose($sw);
         if (FTP_FINISHED === $r) {            // Transfer finished normally

@@ -38,7 +38,7 @@
           $this->out->write("Started ", $transfer, " [");
         }
 
-        public function transferred(FtpTransfer $transfer, $bytes) {
+        public function transferred(FtpTransfer $transfer, $bytes, $size) {
           $this->out->write(".");
         }
 

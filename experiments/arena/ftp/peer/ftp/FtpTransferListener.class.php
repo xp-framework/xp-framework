@@ -25,9 +25,10 @@
      * Called while transferring
      *
      * @param   peer.ftp.FtpTransfer transfer
-     * @param   int bytes
+     * @param   int bytes the number of bytes that has been transferred
+     * @param   int size the total size of bytes that needs to be transferred
      */
-    public function transferred(FtpTransfer $transfer, $bytes);
+    public function transferred(FtpTransfer $transfer, $bytes, $size);
 
     /**
      * Called when a transfer has been completed.
