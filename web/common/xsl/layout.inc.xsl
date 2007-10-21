@@ -18,6 +18,16 @@
   <xsl:include href="master.xsl"/>
   <xsl:include href="date.inc.xsl"/>
   
+  <xsl:variable name="sitemap">
+    <root>
+      <item name="home" href="http://planet-xp.net">Home</item>
+      <item name="news" href="http://news.xp-framework.net/">News</item>
+      <item name="download" href="http://xp-framework.net/download/">Download</item>
+      <!-- <item name="docs" href="http://docs.xp-framework.net/">Docs</item> -->
+      <!-- <item name="dev" href="http://developer.xp-framework.net/">Deveopers</item> -->
+    </root>
+  </xsl:variable>
+  
   <xsl:template match="/">
     <html>
       <xsl:call-template name="generate-page-head"/>
@@ -48,5 +58,31 @@
       
       © 2001-<xsl:value-of select="xp:dateformat(/formresult/@serial, 'Y')"/> the XP team
     </div>    
+  </xsl:template>
+  
+  <xsl:template name="top-navigation">
+    <div id="search">
+      <!-- FIXME: Create search -->
+      <form action="#">
+        <label for="query"><u>S</u>earch XP website for </label>
+        <input name="query" accesskey="s" type="text">&#160;</input>
+      </form>
+    </div>
+    <div id="top">&#160;
+    </div>
+    <div id="menu">
+      <ul>
+        <li id="select"><a href="#">&#160;</a></li>
+        <xsl:for-each select="exsl:node-set($sitemap)/root/item">
+          <li>
+            <xsl:if test="@name = exsl:node-set($navigation)/area/@name"><xsl:attribute name="id">active</xsl:attribute></xsl:if>
+           </li>
+           <a href="{@href}"><xsl:value-of select="."/></a>
+        </xsl:for-each>
+        <!-- FIXME: Do not hardcode domain names -->
+      </ul>
+      <!-- For Mozilla to calculate height correctly -->
+      &#160;
+    </div>
   </xsl:template>
 </xsl:stylesheet>
