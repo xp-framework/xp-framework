@@ -532,7 +532,7 @@ Deprecated methods in peer.ftp.FtpConnection:
 
 Related documents
 -----------------
-- http://experiments.xp-framework.net/?arena,rfc0140
+- http://experiments.xp-framework.net/?arena,ftp
   The new API
 
 
