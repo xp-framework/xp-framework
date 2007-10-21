@@ -17,7 +17,12 @@
   <func:function name="func:linkPage">
     <xsl:param name="no"/>
     
-    <func:result><xsl:value-of select="concat('/page/', $no)"/></func:result>
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="$no = 0">/</xsl:when>
+        <xsl:otherwise><xsl:value-of select="concat('/page/', $no)"/></xsl:otherwise>
+      </xsl:choose>
+    </func:result>
   </func:function>
   
   <func:function name="func:linkAlbum">
