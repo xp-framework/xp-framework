@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Oct 21 16:10:32     2007
-@status: discussion, ends Sun Oct 21 18:00:00     2007
+@status: implemented, Sun Oct 21 22:34:54     2007
 @category: io.streams
 
 Scope of Change
