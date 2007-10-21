@@ -65,9 +65,7 @@
           <!-- main content -->
           <table border="0" cellspacing="0" class="main">
             <tr id="header">
-              <td width="60" class="gutter" id="gutter1">&#160;</td>
-              <td width="60" class="gutter" id="gutter2">&#160;</td>
-              <td width="60" class="gutter" id="gutter3">&#160;</td>
+              <xsl:call-template name="gutter"/>
               <td width="690" class="gutter" id="menu">
                 <a id="active" href="{func:linkPage(0)}">
                   Home
@@ -101,6 +99,19 @@
         </center>
       </body>
     </html>
+  </xsl:template>
+  
+  <xsl:template name="gutter">
+    <xsl:param name="current" select="0"/>
+    <xsl:param name="max" select="/formresult/config/gutters"/>
+    
+    <xsl:if test="$current &lt; $max">
+      <td width="60" class="gutter" id="gutter{$current+ 1}">&#160;</td>
+      <xsl:call-template name="gutter">
+        <xsl:with-param name="current" select="$current+ 1"/>
+        <xsl:with-param name="max" select="$max"/>
+      </xsl:call-template>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="page-title">
