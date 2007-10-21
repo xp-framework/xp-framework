@@ -47,10 +47,6 @@
       $this->f= Streams::readableFd($this->in);
       $this->s= fstat($this->f);
       $this->r= ftp_nb_fput($this->h, $this->remote->getName(), $this->f, $mode);
-
-      // Notify listener
-      $this->listener && $this->listener->started($this);
-      return $this;
     }
     
     /**
