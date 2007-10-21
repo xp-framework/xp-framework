@@ -42,8 +42,13 @@
      *
      * @return  int
      */
-    public function getParentCategory() {
+    public function getParentCategory($request) {
       return 0;
+    }
+    
+    public function getOffset($request) {
+      if (2 != sscanf($request->getQueryString(), '%d,%d', $category, $offset)) return 0;
+      return $offset;
     }
     
     /**
@@ -53,49 +58,18 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function process($request, $response) {
-
-      // Retrieve date information
-      $contextDate= $this->getContextMonth($request);
-      $month= $response->addFormResult(new Node('month', NULL, array(
-        'num'   => $contextDate->getMonth(),    // Month number, e.g. 4 = April
-        'year'  => $contextDate->getYear(),     // Year
-        'days'  => $contextDate->toString('t'), // Number of days in the given month
-        'start' => (date('w', mktime(            // Week day of the 1st of the given month
-          0, 0, 0, $contextDate->getMonth(), 1, $contextDate->getYear()
-        )) + 6) % 7
-      )));
-
       $db= ConnectionManager::getInstance()->getByHost('news', 0);
 
       // Add all categories to the formresult
       $n= $response->addFormResult(new Node('categories'));
       $q= $db->query(
         'select categoryid, category_name from serendipity_category where parentid= %d',
-      $this->getParentCategory()
+        $this->getParentCategory($request)
       );
+      $response->addFormResult(new Node('current-category', NULL, array('id' => $this->getParentCategory($request))));
       while ($record= $q->next()) {
         $n->addChild(new Node('category', $record['category_name'], array(
           'id' => $record['categoryid']
-        )));
-      }
-
-      // Fill in all days for which an entry exists
-      $q= $db->query('
-          select 
-            dayofmonth(from_unixtime(entry.timestamp)) as day, 
-            count(*) as numentries
-          from 
-            serendipity_entries entry 
-          where 
-            year(from_unixtime(entry.timestamp)) = %d 
-            and month(from_unixtime(entry.timestamp)) = %d 
-          group by day',
-      $contextDate->getYear(),
-      $contextDate->getMonth()
-      );
-      while ($record= $q->next()) {
-        $month->addChild(new Node('entries', $record['numentries'], array(
-            'day' => $record['day']
         )));
       }
 
@@ -124,6 +98,13 @@
           array('id' => $record['category_id'])
         ));
       }
+      
+      // Add pager element
+      $p= $response->addFormResult(new Node('pager', NULL, array(
+        'offset'  => $this->getOffset($request),
+        'next'    => $this->getOffset($request)+ 10,
+        'prev'	  => max(0, $this->getOffset($request)- 10)
+      )));
       
       return TRUE;
     }
