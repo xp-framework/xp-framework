@@ -128,7 +128,7 @@ With listeners
 <?php
   $listener= newinstance('peer.ftp.FtpTransferListener', array(), '{
     public function started(FtpTransfer $transfer) {
-      Console::write("Started ", $transfer, " [");
+      Console::write("Started ", $transfer, "\n  [");
     }
     
     public function transferred(FtpTransfer $transfer, $bytes, $size) {
@@ -136,15 +136,15 @@ With listeners
     }
 
     public function completed(FtpTransfer $transfer) {
-      Console::writeLine("] completed");
+      Console::writeLine("]\nCompleted");
     }
     
     public function aborted(FtpTransfer $transfer) {
-      Console::writeLine("] aborted");
+      Console::writeLine("]\nAborted");
     }
 
     public function failed(FtpTransfer $transfer, XPException $cause) {
-      Console::writeLine("] failed (", $cause->compoundMessage(), ")");
+      Console::writeLine("]\nFailed (", $cause->compoundMessage(), ")");
     }
   }');
   
@@ -163,6 +163,17 @@ With listeners
   );
 ?>
 
+Output
+~~~~~~
+<pre>
+Started peer.ftp.FtpUpload@(io.streams.FileInputStream<io.File(uri= .\php.exe, mode= rb)> -> /php.exe)
+  [.......] 
+Completed
+
+Started peer.ftp.FtpDownload@(/php.exe -> io.streams.FileOutputStream<io.File(uri= .\php.exe, mode= wb)>) 
+  [...................] 
+Completed
+</pre>
 
 Security considerations
 -----------------------
