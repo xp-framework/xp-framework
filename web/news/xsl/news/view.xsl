@@ -16,7 +16,12 @@
 >
   <xsl:include href="layout.inc.xsl"/>
   <xsl:include href="news.inc.xsl"/>
-  
+
+  <xsl:template name="html-head">
+    <link rel="shortcut icon" href="/common/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for XP Framework news" href="/rss/"/>
+  </xsl:template>
+ 
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
@@ -39,7 +44,9 @@
     <em>
       at <xsl:value-of select="xp:date(date)"/>
       in <xsl:for-each select="categories/category">
-        <xsl:value-of select="@name"/><xsl:if test="position() != last()">, </xsl:if>
+        <a href="{xp:link(concat('bycategory?', @id))}">
+          <xsl:value-of select="@name"/><xsl:if test="position() != last()">, </xsl:if>
+        </a>
       </xsl:for-each>
       by <xsl:value-of select="author"/> 
       (<xsl:value-of select="num_comments"/> comments)

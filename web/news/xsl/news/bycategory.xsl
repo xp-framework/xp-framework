@@ -20,7 +20,7 @@
   
   <xsl:template name="html-head">
     <link rel="shortcut icon" href="/common/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed for XP Framework news" href="/rss/"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS Feed for XP Framework news" href="{concat('/rss/?c=', /formresult/current-category/@id)}"/>
   </xsl:template>
   
   <xsl:template name="content">
@@ -41,7 +41,7 @@
             <br/><br clear="all"/>
           </xsl:for-each>
           
-          <xsl:call-template name="pager"/>
+          <xsl:apply-templates select="/formresult/pager"/>
         </td>
         <td id="context">
           <xsl:call-template name="context"/>
@@ -51,23 +51,26 @@
   </xsl:template>
   
   <xsl:template name="context">
+    <xsl:apply-templates select="feed"/>
+    <xsl:apply-templates select="/formresult/categories"/>
+  </xsl:template>
+  
+  <xsl:template match="feed">
+    <xsl:variable name="feed" select="'/rss/'"/>
     <h3>
-      <a href="/rss">
+      <a href="{$feed}">
         <img align="right" src="/common/image/feed.png" border="0"/>
       </a>
       Subscribe
     </h3>
-    You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
+    You can subscribe to the XP framework's news by using <a href="{$feed}">RSS syndication</a>.
     <br clear="all"/>
-    
+  </xsl:template>
+  
+  <xsl:template match="categories">
     <h3>Categories</h3>
-    <xsl:for-each select="/formresult/categories/category">
+    <xsl:for-each select="category">
       <a href="{xp:link(concat('bycategory?', @id))}"><xsl:value-of select="."/></a><br/>
      </xsl:for-each> 
   </xsl:template>
-  
-  <xsl:template name="pager">
-    <xsl:apply-templates select="/formresult/pager"/>
-  </xsl:template>
-
 </xsl:stylesheet>

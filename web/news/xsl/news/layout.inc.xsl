@@ -18,7 +18,8 @@
 
   <xsl:template name="top-navigation">
     <div id="search">
-      <form action="/search">
+      <!-- FIXME: Create search -->
+      <form action="#">
         <label for="query"><u>S</u>earch XP website for </label>
         <input name="query" accesskey="s" type="text">&#160;</input>
       </form>
@@ -27,15 +28,24 @@
     </div>
     <div id="menu">
       <ul>
+        <!-- FIXME: Do not hardcode domain names -->
         <li id="select"><a href="#">&#160;</a></li>
-        <li><a href="home.html">Home</a></li>
-        <li id="active"><a href="{xp:link('overview')}">News</a></li>
-        <li><a href="docs.html">Documentation</a></li>
-        <li><a href="download.html">Download</a></li>
-        <li><a href="dev.html">Developers</a></li>
+        <li><a href="http://planet-xp.net/">Home</a></li>
+        <li id="active"><a href="http://news.xp-framework.net/">News</a></li>
+        <!--  <li><a href="docs.html">Documentation</a></li> -->
+        <li><a href="http://xp-framework.net/download/">Download</a></li>
+        <!--  <li><a href="dev.html">Developers</a></li> -->
       </ul>
       <!-- For Mozilla to calculate height correctly -->
       &#160;
+    </div>
+  </xsl:template>
+  
+  <xsl:template match="pager">
+    <div style="text-align: center;">
+      <a href="{xp:link(concat($__state, '?', /formresult/current-category/@id, ',', @prev))}">&lt;&lt;&lt;</a>
+      |
+      <a href="{xp:link(concat($__state, '?', /formresult/current-category/@id, ',', @next))}">&gt;&gt;&gt;</a>
     </div>
   </xsl:template>
 </xsl:stylesheet>
