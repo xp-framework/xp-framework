@@ -35,6 +35,15 @@
       $this->name= $name;
       $this->connection= $connection;
     }
+    
+    /**
+     * Get connection
+     *
+     * @return  peer.ftp.FtpConnection 
+     */
+    public function getConnection() {
+      return $this->connection;
+    }
 
     /**
      * Checks whether this entry exists.

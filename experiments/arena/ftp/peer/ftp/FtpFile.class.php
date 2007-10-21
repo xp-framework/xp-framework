@@ -9,6 +9,7 @@
     'peer.ftp.FtpTransferListener',
     'peer.ftp.FtpUpload',
     'peer.ftp.FtpDownload',
+    'io.streams.Streams',
     'io.streams.InputStream', 
     'io.streams.OutputStream'
   );
@@ -20,51 +21,6 @@
    * @purpose  FtpEntry implementation
    */
   class FtpFile extends FtpEntry {
-    private static 
-      $sw= NULL;
-    
-    static function __static() {
-      self::$sw= newinstance('lang.Object', array(), '{
-        private static $streams= array();
-        private $id= NULL;
-        
-        public function wrap($s) { 
-          self::$streams[$s->hashCode()]= $s;
-          return "iostr://".$s->hashCode(); 
-        }
-        
-        function stream_open($path, $mode, $options, $opened_path) {
-          sscanf($path, "iostr://%[^$]", $this->id);
-          if (!isset(self::$streams[$this->id])) {
-            throw new FileNotFoundException("No such iostr ".$this->id);
-          }
-          return TRUE;
-        }
-        
-        function stream_read($count) {
-          return self::$streams[$this->id]->read($count);
-        }
-
-        function stream_eof() {
-          return 0 === self::$streams[$this->id]->available();
-        }
-        
-        function stream_write($data) {
-          self::$streams[$this->id]->write($data);
-          return strlen($data);
-        }
-
-        function stream_close() {
-          self::$streams[$this->id]->close();
-          unset(self::$streams[$this->id]);
-        }
-
-        public function stream_stat() {
-          return array("size" => self::$streams[$this->id]->available());
-        }
-      }');
-      stream_wrapper_register('iostr', get_class(self::$sw));
-    }
 
     /**
      * Delete this entry
@@ -87,7 +43,7 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function uploadFrom(InputStream $in, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      $sw= fopen(self::$sw->wrap($in), 'rb');
+      $sw= Streams::readableFd($in);
       if ($listener) {
         $stat= fstat($sw);
         $size= isset($stat['size']) ? $stat['size'] : -1;
@@ -142,6 +98,21 @@
 
       throw $e;
     }
+    
+    /**
+     * Starts a transfer
+     *
+     * @see     xp://peer.ftp.FtpDownload#to
+     * @see     xp://peer.ftp.FtpUpload#from
+     * @param   peer.ftp.FtpTransfer transfer
+     * @param   int mode default FTP_ASCII
+     * @return  peer.ftp.FtpTransfer 
+     */
+    public function start(FtpTransfer $transfer, $mode= FTP_ASCII) {
+      $transfer->setRemote($this);
+      $transfer->start($mode);
+      return $transfer;
+    }
 
     /**
      * Upload to this file from an input stream
@@ -153,7 +124,7 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function downloadTo(OutputStream $out, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      $sw= fopen(self::$sw->wrap($out), 'wb');
+      $sw= Streams::writeableFd($out);
       if ($listener) {
         $size= $this->size;
         $transfer= new FtpDownload($this, $out);
@@ -176,7 +147,7 @@
         if (FTP_FINISHED === $r) {            // Transfer finished normally
           $listener->completed($transfer);
           return $this;
-        } else if (-1 === $r) {            // Aborted
+        } else if (-1 === $r) {               // Aborted
           $e= new SocketException(sprintf(
             'Transfer from %s to %s (mode %s) was aborted',
             $this->name, $out->toString(), $mode

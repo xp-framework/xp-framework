@@ -20,11 +20,35 @@
      * Constructor
      *
      * @param   peer.ftp.FtpFile remote
-     * @param   io.streams.OutputStream in
+     * @param   io.streams.OutputStream out
      */
-    public function __construct(FtpFile $remote, OutputStream $out) {
+    public function __construct(FtpFile $remote= NULL, OutputStream $out) {
       $this->remote= $remote;
       $this->out= $out;
+    }
+    
+    /**
+     * Creates a new FtpDownload instance without a remote file
+     *
+     * @see     xp://peer.ftp.FtpFile#start
+     * @param   io.streams.OutputStream out
+     */
+    public static function to(OutputStream $out) {
+      return new self(NULL, $out);
+    }
+
+    /**
+     * Starts this transfer
+     *
+     */
+    public function start($mode) {
+      $this->h= $this->remote->getConnection()->handle;
+      $this->r= ftp_nb_fget(
+        $this->h, 
+        $this->f= Streams::writeableFd($this->out),
+        $this->remote->getName(),
+        $mode
+      );
     }
     
     /**
@@ -42,7 +66,12 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'@('.$this->remote->getName().' -> '.$this->out->toString().')';
+      return sprintf(
+        '%s@(%s -> %s)',
+        $this->getClassName(),
+        $this->remote ? $this->remote->getName() : '(null)',
+        $this->out->toString()
+      );
     }
   }
 ?>
