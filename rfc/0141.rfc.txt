@@ -32,34 +32,45 @@ Current functionality
 Both of these methods are blocking, that is, they will not return until
 the transfer has been completed.
 
-Transfer class
-~~~~~~~~~~~~~~
+Transfer classes
+~~~~~~~~~~~~~~~~
+There will be transfer classes representing up- and downloads:
+<pre>
+lang.Object
+|
+`-+ peer.ftp.FtpTransfer
+  |
+  |-+ peer.ftp.FtpUpload
+  |
+  `-+ peer.ftp.FtpDownload
+</pre>
+The FtpTransfer base class is declared as follows:
 <?php
-  class FtpTransfer extends Object {
+  abstract class FtpTransfer extends Object {
 
     /**
-     * Returns the origin of this transfer
+     * Returns the remote file
      *
-     * @return  string
+     * @return  peer.ftp.FtpFile
      */
-    public function origin() {
+    public function remote() {
       // ...
     }
-    
-    /**
-     * Returns the target of this transfer
-     *
-     * @return  string
-     */
-    public function target() {
-      // ...
-    }
-    
+
     /**
      * Aborts this transfer
      *
      */
     public function abort() {
+      // ...
+    }
+ 
+    /**
+     * Returns whether this transfer has been aborted
+     *
+     * @return  bool
+     */
+    public function aborted() {
       // ...
     }
   }
