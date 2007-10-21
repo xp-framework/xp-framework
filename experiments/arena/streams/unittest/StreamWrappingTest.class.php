@@ -36,7 +36,7 @@
     }
 
     /**
-     * Test end of file
+     * Test feof callbacks
      *
      */
     #[@test]
@@ -54,7 +54,7 @@
     }
 
     /**
-     * Test stat method
+     * Test fstat callbacks
      *
      */
     #[@test]
@@ -66,6 +66,42 @@
       fread($fd, 5);
       $stat= fstat($fd);
       $this->assertEquals(10, $stat['size']);
+      
+      fclose($fd);
+    }
+
+    /**
+     * Test ftell callbacks
+     *
+     */
+    #[@test]
+    public function tellFromReadable() {
+      $fd= Streams::readableFd(new MemoryInputStream(str_repeat('x', 10)));
+      $this->assertEquals(0, ftell($fd));
+
+      fread($fd, 5);
+      $this->assertEquals(5, ftell($fd));
+
+      fread($fd, 5);
+      $this->assertEquals(10, ftell($fd));
+      
+      fclose($fd);
+    }
+
+    /**
+     * Test ftell callbacks
+     *
+     */
+    #[@test]
+    public function tellFromWriteable() {
+      $fd= Streams::writeableFd(new MemoryOutputStream());
+      $this->assertEquals(0, ftell($fd));
+
+      fwrite($fd, str_repeat('x', 5));
+      $this->assertEquals(5, ftell($fd));
+
+      fwrite($fd, str_repeat('x', 5));
+      $this->assertEquals(10, ftell($fd));
       
       fclose($fd);
     }
