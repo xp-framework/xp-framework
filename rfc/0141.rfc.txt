@@ -139,12 +139,14 @@ With listeners
   // Uploading
   $c->rootDir()->file($filename)->uploadFrom(
     new FileInputStream(new File($local)),
+    FTP_BINARY,
     $listener
   );
  
   // Downloading
   $c->rootDir()->getFile($filename)->downloadTo(
     new FileOutputStream(new File($local)),
+    FTP_BINARY,
     $listener
   );
 ?>
