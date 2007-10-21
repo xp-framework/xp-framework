@@ -5,7 +5,7 @@
  */
 
   uses(
-    'test.AbstractFtpTestCommand',
+    'test.TransferFile',
     'io.File',
     'io.streams.FileOutputStream'
   );
@@ -17,15 +17,12 @@
    * @see      xp://peer.ftp.FtpFile#downloadTo
    * @purpose  Command
    */
-  class DownloadFile extends AbstractFtpTestCommand {
-    protected
-      $local  = NULL,
-      $remote = '';
+  class DownloadFile extends TransferFile {
     
     /**
-     * Set file to upload
+     * Set file to download
      *
-     * @param   string local local filename
+     * @param   string remote remote filename
      */
     #[@arg(position= 1)]
     public function setFile($remote) {
@@ -42,7 +39,7 @@
       $this->out->writeLine($this->conn
         ->rootDir()
         ->file($this->remote)
-        ->downloadTo($this->local, FTP_BINARY)
+        ->downloadTo($this->local, FTP_BINARY, $this->listener)
       );
     }
   }

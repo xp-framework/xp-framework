@@ -5,7 +5,7 @@
  */
 
   uses(
-    'test.AbstractFtpTestCommand',
+    'test.TransferFile',
     'io.File',
     'io.streams.FileInputStream'
   );
@@ -16,10 +16,11 @@
    * @see      xp://peer.ftp.FtpFile#uploadFrom
    * @purpose  Command
    */
-  class UploadFile extends AbstractFtpTestCommand {
+  class UploadFile extends TransferFile {
     protected
-      $local  = NULL,
-      $remote = '';
+      $local    = NULL,
+      $listener = NULL,
+      $remote   = '';
     
     /**
      * Set file to upload
@@ -32,7 +33,7 @@
       $this->remote= $f->getFileName();
       $this->local= new FileInputStream($f);
     }
-    
+
     /**
      * Main runner method
      *
@@ -42,7 +43,7 @@
       $this->out->writeLine($this->conn
         ->rootDir()
         ->file($this->remote)
-        ->uploadFrom($this->local, FTP_BINARY)
+        ->uploadFrom($this->local, FTP_BINARY, $this->listener)
       );
     }
   }
