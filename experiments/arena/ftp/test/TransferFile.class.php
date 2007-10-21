@@ -28,7 +28,7 @@
       with ($file= $this->conn->rootDir()->file($this->getClassName().'.tmp')); {
       
         // First upload from a MemoryInputStream
-        $upload= $file->start(FtpUpload::from(new MemoryInputStream('Test file')));
+        $upload= $file->start(FtpUpload::from(new MemoryInputStream('Test file'))->withListener($this->listener));
         $this->out->writeLine($upload);
         while (!$upload->complete()) {
           $upload->perform();
@@ -36,7 +36,7 @@
         $this->out->writeLine('Done');
 
         // Then download and print to console
-        $download= $file->start(FtpDownload::to(new MemoryOutputStream()));      
+        $download= $file->start(FtpDownload::to(new MemoryOutputStream())->withListener($this->listener));      
         $this->out->writeLine($download);
         while (!$download->complete()) {
           $download->perform();
