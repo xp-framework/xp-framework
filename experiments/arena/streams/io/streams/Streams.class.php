@@ -17,11 +17,18 @@
       $streams = array();
 
     protected 
+      $length  = 0,
       $id      = NULL;
       
     static function __static() {
       stream_wrapper_register('iostr+r', get_class(newinstance(__CLASS__, array(), '{
         static function __static() { }
+
+        public function stream_open($path, $mode, $options, $opened_path) {
+          parent::stream_open($path, $mode, $options, $opened_path);
+          $this->length= parent::$streams[$this->id]->available();
+          return TRUE;
+        }
 
         public function stream_write($data) {
           throw new IOException("Cannot write to readable stream");
@@ -34,15 +41,9 @@
         public function stream_eof() {
           return 0 === parent::$streams[$this->id]->available();
         }
-
-        public function stream_stat() {
-          return array("size" => parent::$streams[$this->id]->available());
-        }
-
       }')));
       stream_wrapper_register('iostr+w', get_class(newinstance(__CLASS__, array(), '{
         static function __static() { }
-        private $length= 0;
 
         public function stream_write($data) {
           parent::$streams[$this->id]->write($data);
@@ -57,10 +58,6 @@
 
         public function stream_eof() {
           return FALSE;
-        }
-
-        public function stream_stat() {
-          return array("size" => $this->length);
         }
       }')));
     }
@@ -121,6 +118,15 @@
     }
 
     /**
+     * Callback for fstat
+     *
+     * @return  array<string, mixed> stat
+     */
+    public function stream_stat() {
+      return array('size' => $this->length);
+    }
+
+    /**
      * Callback for fwrite
      *
      * @param   string data
@@ -142,12 +148,5 @@
      * @return  bool eof
      */
     public abstract function stream_eof();
-
-    /**
-     * Callback for fstat
-     *
-     * @return  array<string, mixed> stat
-     */
-    public abstract function stream_stat();
   }
 ?>
