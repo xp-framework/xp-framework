@@ -5,7 +5,7 @@
  */
 
   uses(
-    'test.TransferFile',
+    'test.AbstractTransferCommand',
     'io.File',
     'io.streams.FileOutputStream'
   );
@@ -17,7 +17,7 @@
    * @see      xp://peer.ftp.FtpFile#downloadTo
    * @purpose  Command
    */
-  class DownloadFile extends TransferFile {
+  class DownloadFile extends AbstractTransferCommand {
     
     /**
      * Set file to download

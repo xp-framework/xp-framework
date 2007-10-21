@@ -5,7 +5,7 @@
  */
 
   uses(
-    'test.TransferFile',
+    'test.AbstractTransferCommand',
     'io.File',
     'io.streams.FileInputStream'
   );
@@ -16,7 +16,7 @@
    * @see      xp://peer.ftp.FtpFile#uploadFrom
    * @purpose  Command
    */
-  class UploadFile extends TransferFile {
+  class UploadFile extends AbstractTransferCommand {
     protected
       $local    = NULL,
       $listener = NULL,

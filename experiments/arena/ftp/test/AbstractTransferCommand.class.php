@@ -14,7 +14,7 @@
    *
    * @purpose  Command
    */
-  abstract class TransferFile extends AbstractFtpTestCommand {
+  abstract class AbstractTransferCommand extends AbstractFtpTestCommand {
     protected
       $local    = NULL,
       $listener = NULL,
