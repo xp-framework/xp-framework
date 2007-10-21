@@ -9,6 +9,7 @@
   /**
    * Wraps I/O streams into PHP streams
    *
+   * @test     xp://net.xp_framework.unittest.io.StreamWrappingTest
    * @see      php://streams
    * @purpose  Utility
    */
