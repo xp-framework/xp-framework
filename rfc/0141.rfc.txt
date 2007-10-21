@@ -47,7 +47,7 @@ lang.Object
 The FtpTransfer base class is declared as follows:
 <?php
   abstract class FtpTransfer extends Object {
-
+ 
     /**
      * Sets the remote file
      *
@@ -56,7 +56,7 @@ The FtpTransfer base class is declared as follows:
     public function setRemote(FtpFile $remote) {
       // ...
     }
-
+ 
     /**
      * Returns the remote file
      *
@@ -65,7 +65,7 @@ The FtpTransfer base class is declared as follows:
     public function getRemote() {
       // ...
     }
-
+ 
     /**
      * Returns the remote file
      *
@@ -75,7 +75,7 @@ The FtpTransfer base class is declared as follows:
     public function withListener(FtpTransferListener $l= NULL) {
       // ...
     }
-
+ 
     /**
      * Aborts this transfer
      *
@@ -92,7 +92,7 @@ The FtpTransfer base class is declared as follows:
     public function aborted() {
       // ...
     }
-
+ 
     /**
      * Retrieves this transfer's total size
      *
@@ -101,7 +101,7 @@ The FtpTransfer base class is declared as follows:
     public function size() {
       // ...
     }
-
+ 
     /**
      * Retrieves how many bytes have already been transferred
      *
@@ -110,8 +110,7 @@ The FtpTransfer base class is declared as follows:
     public function transferred() {
       // ...
     }
-    
-    
+ 
     /**
      * Starts this transfer
      *
@@ -121,7 +120,7 @@ The FtpTransfer base class is declared as follows:
     public function start($mode) {
       // ...
     }
-
+ 
     /**
      * Returns whether this transfer is complete
      *
@@ -130,7 +129,7 @@ The FtpTransfer base class is declared as follows:
     public function complete() {
       // ...
     }
-
+ 
     /**
      * Continues this transfer
      *
