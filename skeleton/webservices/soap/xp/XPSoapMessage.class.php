@@ -368,15 +368,20 @@
         if ($names) {
           $key= substr($node->children[$i]->name, intval(strpos($node->children[$i]->name, ':')));
         }
-        // More than one result, so store it in array
+        
+        // In case a value for the current key already exists, treat result
+        // as array and convert them before (if neccessary)
         if (isset($results[$key])) {
-          // 0 isn't allowed as node-name, so we only check for [0] here
-          if (!isset($results[$key][0])) $results[$key]= array($results[$key]);
+
+          // Convert result to array in case it's not an array already
+          if (!is_array($results[$key])) $results[$key]= array($results[$key]);
 
           $results[$key][]= $this->unmarshall(
             $node->children[$i], 
             $context
           );
+
+        // Assign value directly to key
         } else {
           $results[$key]= $this->unmarshall(
             $node->children[$i], 

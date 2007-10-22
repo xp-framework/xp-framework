@@ -108,5 +108,79 @@
       $client->transport= $transport;
       $this->assertEquals(5, $client->invoke('irrelevant'));
     }
+
+    /**
+     * Check for correct array handling in root node
+     *
+     */
+    #[@test]
+    public function testRootArrayResult() {
+      $transport= new SOAPDummyTransport();
+      $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:si="http://soapinterop.org/xsd"
+ SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:ctl="ctl"
+>
+  <SOAP-ENV:Body>  
+    <ctl:irrelevant>
+      <item xsi:type="xsi:array">
+        <string>first value</string>
+        <string>second value</string>
+      </item>
+    </ctl:irrelevant>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+');
+      
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $client->transport= $transport;
+      $this->assertEquals(array('first value', 'second value'), $client->invoke('irrelevant'));
+    }
+
+    /**
+     * Check for correct array handling in sub nodes
+     *
+     */
+    #[@test]
+    public function testDeepArrayResult() {
+          $transport= new SOAPDummyTransport();
+      $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:si="http://soapinterop.org/xsd"
+ SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:ctl="ctl"
+>
+  <SOAP-ENV:Body>  
+    <ctl:irrelevant>
+      <item>
+        <scalar>some string</scalar>
+        <array>
+          <string>first value</string>
+          <string>second value</string>
+        </array>
+      </item>
+    </ctl:irrelevant>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+');
+      
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $client->transport= $transport;
+      $this->assertEquals(array(
+        'scalar' => 'some string',
+        'array' => array(
+          'string' => array('first value', 'second value')
+        )
+      ), $client->invoke('irrelevant'));
+    }
   }
 ?>
