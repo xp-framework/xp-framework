@@ -24,8 +24,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Add support for field type tinytext rdbms.MySQLDBAdapter.
-  (wagner)
+- Add support for field type tinytext, mediumblob and bit to
+  rdbms.MySQLDBAdapter
+  (wagner, hinckel)
 - Ensured file is only then closed in io.streams.FileOutputStream's 
   destructor if it's still open
   (friebe)

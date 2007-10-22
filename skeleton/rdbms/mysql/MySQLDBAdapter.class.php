@@ -28,6 +28,7 @@
         'mediumint'  => DB_ATTRTYPE_SMALLINT,
         'smallint'   => DB_ATTRTYPE_SMALLINT,
         'tinyint'    => DB_ATTRTYPE_TINYINT,
+        'bit'        => DB_ATTRTYPE_TINYINT,
         'date'       => DB_ATTRTYPE_DATE,
         'datetime'   => DB_ATTRTYPE_DATETIME,
         'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
@@ -37,7 +38,8 @@
         'enum'       => DB_ATTRTYPE_ENUM,
         'decimal'    => DB_ATTRTYPE_DECIMAL,
         'float'      => DB_ATTRTYPE_FLOAT,
-        'blob'       => DB_ATTRTYPE_TEXT
+        'blob'       => DB_ATTRTYPE_TEXT,
+        'mediumblob' => DB_ATTRTYPE_TEXT
       );
       parent::__construct($conn);
     }
