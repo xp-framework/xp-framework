@@ -127,7 +127,7 @@
      * @param   int hour
      * @param   int minute
      * @param   int second
-     * @param   string tz default NULL
+     * @param   util.TimeZone tz default NULL
      * @return  util.Date
      */
     public static function create($year, $month, $day, $hour, $minute, $second, TimeZone $tz= NULL) {
@@ -150,7 +150,7 @@
      * @param   int hour
      * @param   int minute
      * @param   int second
-     * @param   string tz default NULL
+     * @param   util.TimeZone tz default NULL
      * @return  util.Date
      */
     #[@deprecated]
@@ -186,6 +186,7 @@
      *
      * @see     php://date_create
      * @param   string str
+     * @param   util.TimeZone tz
      * @return  util.Date
      */
     #[@deprecated]
@@ -318,6 +319,7 @@
      *
      * @see     php://date
      * @param   string format default Date::DEFAULT_FORMAT format-string
+     * @param   util.TimeZone tz The timezone
      * @return  string the formatted date
      */
     public function toString($format= self::DEFAULT_FORMAT, TimeZone $outtz= NULL) {
