@@ -24,7 +24,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Add support for field type tinytext, mediumblob and bit to
+- Fixed xp::sapi() when using XAR-releases on Windows
+  (friebe)
+- Added support for field type tinytext, mediumblob and bit to
   rdbms.MySQLDBAdapter
   (wagner, hinckel)
 - Ensured file is only then closed in io.streams.FileOutputStream's 
