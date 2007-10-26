@@ -155,15 +155,14 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+        foreach (xp::$registry['classpath'] as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
-          
-          if (is_dir($path) && file_exists($path.DIRECTORY_SEPARATOR.$filename)) {
-            require_once($path.DIRECTORY_SEPARATOR.$filename);
-            continue(2);
-          } else if (is_file($path) && file_exists('xar://'.$path.'?'.$filename)) {
-            require_once('xar://'.$path.'?'.$filename);
-            continue(2);
+          if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.$filename)) {
+            require_once($f);
+            continue 2;
+          } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($filename, DIRECTORY_SEPARATOR, '/'))) {
+            require_once($f);
+            continue 2;
           }
         }
         
