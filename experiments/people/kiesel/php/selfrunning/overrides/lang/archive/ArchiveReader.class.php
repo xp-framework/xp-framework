@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: ArchiveReader.class.php 9090 2007-01-03 13:57:55Z friebe $ 
+ * $Id: ArchiveReader.class.php 10285 2007-05-08 15:24:18Z friebe $ 
  */
 
   define('ARCHIVE_READ',             0x0000);
@@ -23,7 +23,9 @@
       $version  = 1;
     
     public
-      $_index   = array();
+      $_hdl     = NULL,
+      $_index   = array(),
+      $offset   = 0;
 
     /**
      * Constructor.
@@ -51,7 +53,7 @@
      */
     public function contains($id) {
       return isset($this->_index[$id]);
-    }
+    }    
     
     /**
      * Get entry (iterative use)
@@ -77,8 +79,7 @@
      *
      */
     public function rewind() {
-      $current= XpXarloader::acquire($this->file);
-      reset($current['index']);
+      reset($this->_index);
     }
     
     /**
@@ -91,8 +92,17 @@
       if (!$this->contains($id)) {
         return FALSE;
       }
+
+      // Calculate starting position      
+      $pos= (
+        ARCHIVE_HEADER_SIZE + 
+        sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
+        $this->_index[$id][3]
+      );
       
-      return file_get_contents('xar://'.$this->file.'?'.$id);
+      fseek($this->_hdl, $pos, SEEK_SET);
+      $data= fread($this->_hdl, $this->_index[$id][2]);
+      return $data;
     }
     
     /**
@@ -106,7 +116,19 @@
         return FALSE;
       }
 
-      return XPClass::forName('io.File')->newInstance('xar://'.$this->file.'?'.$id);
+      // Calculate starting position      
+      $pos= (
+        ARCHIVE_HEADER_SIZE + 
+        sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
+        $this->_index[$id][3]
+      );
+      
+      // Load the class only at runtime to keep hardcoded dependencies to
+      // external (ie. != "lang.") classes at a minimum to not affect
+      // core startup time.
+      $file= XPClass::forName('io.File')->newInstance($this->file);
+      $file->open(FILE_MODE_READ);
+      return XPClass::forName('io.EncapsedStream')->newInstance($file, $pos, $this->_index[$id][2]);
     }
     
     /**
@@ -121,11 +143,44 @@
     public function open($mode) {
       switch ($mode) {
         case ARCHIVE_READ:      // Load
-          if (FALSE === ($current= XpXarLoader::acquire($this->file))) {
-            throw new FormatException('Unable to open archive file "'.$this->file.'"';
+          $this->_hdl= fopen($this->file, 'rb');
+          
+          if (
+            isset(xp::$registry['self-contained']) &&
+            $this->file == xp::$registry['self-contained'][0]
+          ) {
+            $this->offset= xp::$registry['self-contained'][1];
+            fseek($this->_hdl, $this->offset);
           }
           
-          $this->_index= $current['index'];
+          $header= fread($this->_hdl, ARCHIVE_HEADER_SIZE);
+          $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
+            
+          // Check header integrity
+          if ('CCA' !== $data['id']) throw(new FormatException(sprintf(
+            'Header malformed: "CCA" expected, have "%s"', 
+            substr($header, 0, 3)
+          )));
+          
+          // Copy information
+          $this->version = $data['version'];
+          
+          // Read index
+          for ($i= 0; $i < $data['indexsize']; $i++) {
+            $entry= unpack(
+              'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+              fread($this->_hdl, ARCHIVE_INDEX_ENTRY_SIZE)
+            );
+            $this->_index[$entry['id']]= array(
+              $entry['filename'],
+              $entry['path'],
+              $entry['size'],
+              $entry['offset']+ $this->offset,
+              NULL              // Will not be read, use extract()
+            );
+          }
+          
+          return TRUE;
       }
       
       return FALSE;
@@ -137,7 +192,7 @@
      * @return  bool success
      */
     public function close() {
-      return TRUE;
+      return fclose($this->_hdl);
     }
     
     /**
@@ -146,7 +201,7 @@
      * @return  bool TRUE when the archive file is open
      */
     public function isOpen() {
-      return (bool)sizeof($this->_index);
+      return is_resource($this->_hdl);
     }
     
     /**
@@ -159,7 +214,8 @@
         '%s(version= %s, index size= %d) { %s }',
         $this->getClassName(),
         $this->version,
-        sizeof($this->_index)
+        sizeof($this->_index),
+        xp::stringOf($this->_hdl)
       );
     }
   }

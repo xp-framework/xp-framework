@@ -122,7 +122,7 @@
         'lang/archive/ArchiveSelfRunner.class.php',
         'lang/archive/',
         'ArchiveSelfRunner.class.php',
-        FileUtil::getContents(new File('ArchiveSelfRunner.class.php'))
+        FileUtil::getContents(new File('overrides/lang/archive/ArchiveSelfRunner.class.php'))
       );
       
       // Hack, to be removed later
