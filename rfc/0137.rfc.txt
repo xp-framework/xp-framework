@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sun Sep  2 20:26:42     2007
-@status: draft
+@status: rejected, see comments
 @category: <core>
 
 Scope of Change
@@ -55,4 +55,7 @@ Comments
   provide. Something like @tests(testone.name, testtwo.name)
   also doesn't really make me happy, though...
 
+- kiesel, Sat Oct 27 18:50:42     2007
+  Set status to rejected, this test-related information must be
+  retrieved some other way.
 <EOF>
