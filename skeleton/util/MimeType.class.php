@@ -7,6 +7,7 @@
   // Definitions of well-known MIME types
   define('MIME_APPLICATION_ANDREW_INSET',       'application/andrew-inset');
   define('MIME_APPLICATION_EXCEL',              'application/excel');
+  define('MIME_APPLICATION_MSWORD',             'application/msword');
   define('MIME_APPLICATION_OCTET_STREAM',       'application/octet-stream');
   define('MIME_APPLICATION_ODA',                'application/oda');
   define('MIME_APPLICATION_PDF',                'application/pdf');
@@ -97,6 +98,7 @@
       static $map= array(
         '.ez'      => MIME_APPLICATION_ANDREW_INSET,
         '.xls'     => MIME_APPLICATION_EXCEL,
+        '.doc'     => MIME_APPLICATION_MSWORD,
         '.bin'     => MIME_APPLICATION_OCTET_STREAM,
         '.oda'     => MIME_APPLICATION_ODA,
         '.pdf'     => MIME_APPLICATION_PDF,
