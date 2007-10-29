@@ -84,6 +84,7 @@
   /**
    * MIME Type
    *
+   * @see http://www.stalkpire.de/mime-types-liste.aspx
    */
   class MimeType extends Object {
   
