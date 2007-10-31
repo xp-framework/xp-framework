@@ -32,6 +32,10 @@ Bugfixes
 - Ensured file is only then closed in io.streams.FileOutputStream's 
   destructor if it's still open
   (friebe)
+- scriptlet.xml.workflow.casters.ToDate now uses the constructor of 
+  the util.Date object for parsing the date string instead of 
+  text.parser.DateParser. The DateParser led to erroneous results.
+  (doebele)
 - Fixed a bug which prevented Dataset objects from joins to 
   build correctly
   (doebele)
