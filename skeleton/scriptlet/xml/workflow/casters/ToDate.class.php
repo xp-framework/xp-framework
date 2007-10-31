@@ -1,18 +1,18 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
-  uses('scriptlet.xml.workflow.casters.ParamCaster', 'text.parser.DateParser');
-  
+  uses('scriptlet.xml.workflow.casters.ParamCaster', 'util.Date');
+
   /**
    * Casts given values to date objects
    *
    * @purpose  Caster
    */
   class ToDate extends ParamCaster {
-  
+
     /**
      * Cast a given value
      *
@@ -24,13 +24,11 @@
       $return= array();
       foreach ($value as $k => $v) {
         try {
-          $date= DateParser::parse($v);
-        } catch (FormatException $e) {
-          return $e->getMessage();
+          $date= new Date($v);
         } catch (IllegalArgumentException $e) {
           return $e->getMessage();
         }
-        
+
         $return[$k]= $date;
       }
 
