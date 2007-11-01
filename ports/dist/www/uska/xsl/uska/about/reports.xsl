@@ -60,7 +60,7 @@
     <h1>Spielberichte</h1>    
     <xsl:for-each select="exsl:node-set($entries)">
       <xsl:variable name="pos" select="position()"/>
-      <xsl:if test="$pos = 1 or exsl:node-set($entries[$pos - 1])/date/yday != ./date/yday">
+      <xsl:if test="$pos = 1 or func:date($entries[$pos - 1]/date) != func:date(date)">
         <h2 class="date">
           <xsl:copy-of select="func:smartdate(date)"/>
         </h2>

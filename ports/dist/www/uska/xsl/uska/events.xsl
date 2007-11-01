@@ -26,7 +26,6 @@
         <item href="{func:link('events?training,0,2')}">Trainings Mädels</item>
         <item href="{func:link('events?training,0,1')}">Trainings Jungs</item>
         <item href="{func:link('events?tournament')}">Turniere</item>
-        <item href="{func:link('events?enbw')}">Enbw-Liga</item>
         <item href="{func:link('events?misc')}">Sonstiges</item>
       </xsl:with-param>
     </xsl:call-template>
@@ -48,7 +47,7 @@
     <xsl:for-each select="$events/event">
       <xsl:variable name="pos" select="position()"/>
       
-      <xsl:if test="$pos = 1 or ($events/event[$pos - 1]/target_date/year != target_date/year or $events/event[$pos - 1]/target_date/yday != target_date/yday)">
+      <xsl:if test="$pos = 1 or (func:date($events/event[$pos - 1]/target_date) != func:date(target_date))">
         <h3><xsl:value-of select="func:date(target_date)"/></h3>
       </xsl:if>
       

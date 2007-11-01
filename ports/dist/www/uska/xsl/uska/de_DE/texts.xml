@@ -63,6 +63,7 @@
   <text for="attendee#status-">-</text>
   <text for="attendee#status-0">kommt nicht</text>
   <text for="attendee#status-1">ist dabei</text>
+  <text for="attendee#status-2">weiss noch nicht</text>
   <text for="attendee#offers_seats">Pl‰tze zum Mitfahren</text>
   <text for="attendee#needs_driver">braucht Fahrer</text>
   <text for="attendee#attendees">Teilnehmer</text>
@@ -73,6 +74,7 @@
   <text for="attendeventhandler#attend">Nehme teil</text>
   <text for="attendeventhandler-attend#yes">Ja, na klar</text>
   <text for="attendeventhandler-attend#no">Nein, besser nicht</text>
+  <text for="attendeventhandler-attend#unknown">Weiﬂ noch nicht</text>
   <text for="attendeventhandler#needs_seat">Brauche Mitfahrgelegenheit</text>
   <text for="attendeventhandler#offers_seats">Habe soviele Pl‰tze frei</text>
   <text for="attendeventhandler#form-success">Deine Teilnahmedaten wurden gespeichert.</text>

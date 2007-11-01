@@ -58,7 +58,7 @@
       <xsl:value-of select="func:get_text(concat('event#guests_allowed-', allow_guests))"/>
       <br/><br/>
         
-      <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> at <xsl:value-of select="func:datetime(lastchange)"/></small>
+      <small><xsl:value-of select="func:get_text('event#createdby')"/>&#160;<xsl:value-of select="changedby"/> am <xsl:value-of select="func:datetime(lastchange)"/></small>
     </p>
     
     <table>
@@ -67,7 +67,7 @@
         <th>Teilnahme</th>
         <th>Fahrerinfo</th>
       </tr>
-      <xsl:for-each select="attendeeinfo/player">
+      <xsl:for-each select="attendeeinfo/player[@attend!= '' or (/formresult/user/player_id= @player_id)]">
         <tr class="list_{position() mod 2}">
           <td>
             <xsl:value-of select="concat(@firstname, ' ', @lastname)"/>
@@ -107,5 +107,13 @@
         </td>
       </tr>
     </table>
+    
+    <br/><br/>
+    <p><small>Noch keine Teilnahme-Informationen gibt es von den folgenden Spielern:
+    <i><xsl:for-each select="attendeeinfo/player[@attend= '']">
+      <xsl:value-of select="concat(@firstname, ' ', @lastname)"/>
+      <xsl:if test="position() != last()">, </xsl:if>
+    </xsl:for-each>.
+    </i></small></p>
   </xsl:template>
 </xsl:stylesheet>

@@ -9,6 +9,7 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
 >
 
@@ -23,22 +24,14 @@
     
     <func:result>
       <xsl:choose>
-        <xsl:when test="not(exsl:node-set($date)/_utime)">
+        <xsl:when test="not(exsl:node-set($date)/value)">
           <!-- Intentionally empty -->
         </xsl:when>
         <xsl:when test="$__lang = 'en_US'">
-          <xsl:value-of select="concat(
-            exsl:node-set($date)/year, '-',
-            format-number(exsl:node-set($date)/mon, '00'), '-',
-            format-number(exsl:node-set($date)/mday, '00')
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'Y-m-d')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(
-            format-number(exsl:node-set($date)/mday, '00'), '.',
-            format-number(exsl:node-set($date)/mon, '00'), '.',
-            exsl:node-set($date)/year
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'd.m.Y')"/>
         </xsl:otherwise>
       </xsl:choose>
     </func:result>
@@ -55,20 +48,14 @@
     
     <func:result>
       <xsl:choose>
-        <xsl:when test="not(exsl:node-set($date)/_utime)">
+        <xsl:when test="not(exsl:node-set($date)/value)">
           <!-- Intentionally empty -->
         </xsl:when>
         <xsl:when test="$__lang = 'en_US'">
-          <xsl:value-of select="concat(
-            format-number(exsl:node-set($date)/mon, '00'), '-',
-            format-number(exsl:node-set($date)/mday, '00')
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'm-d')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(
-            format-number(exsl:node-set($date)/mday, '00'), '.',
-            format-number(exsl:node-set($date)/mon, '00'), '.'
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'm.d.')"/>
         </xsl:otherwise>
       </xsl:choose>
     </func:result>
@@ -85,39 +72,14 @@
     
     <func:result>
       <xsl:choose>
-        <xsl:when test="not(exsl:node-set($date)/_utime)">
+        <xsl:when test="not(exsl:node-set($date)/value)">
           <!-- Intentionally empty -->
         </xsl:when>
         <xsl:when test="$__lang = 'en_US'">
-          <xsl:choose>
-            <xsl:when test="exsl:node-set($date)/hours = 0">
-              <xsl:value-of select="concat(
-                '12:',
-                format-number(exsl:node-set($date)/minutes, '00'),
-                ' AM'
-              )"/>
-            </xsl:when>
-            <xsl:when test="exsl:node-set($date)/hours &lt; 13">
-              <xsl:value-of select="concat(
-                format-number(exsl:node-set($date)/hours, '00'), ':',
-                format-number(exsl:node-set($date)/minutes, '00'), 
-                ' AM'
-              )"/>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="concat(
-                format-number(exsl:node-set($date)/hours - 12, '00'), ':',
-                format-number(exsl:node-set($date)/minutes, '00'),
-                ' PM'
-              )"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'g:i A')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(
-            format-number(exsl:node-set($date)/hours, '00'), ':',
-            format-number(exsl:node-set($date)/minutes, '00')
-          )"/>
+          <xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string($date/value), 'H:i')"/>
         </xsl:otherwise>
       </xsl:choose>
     </func:result>
@@ -133,7 +95,7 @@
     <xsl:param name="date"/>
     
     <func:result>
-      <xsl:if test="exsl:node-set($date)/_utime">
+      <xsl:if test="exsl:node-set($date)/value">
         <xsl:value-of select="concat(func:date($date), ' ', func:time($date))"/>
       </xsl:if>
     </func:result>

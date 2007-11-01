@@ -9,7 +9,9 @@
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:func="http://exslt.org/functions"
+ xmlns:php="http://php.net/xsl"
  extension-element-prefixes="func"
+ exclude-result-prefixes="func php exsl"
 >
   <xsl:include href="../master.xsl"/>
   
@@ -69,6 +71,7 @@
         <link rel="stylesheet" href="/styles/common.css"/>
       </head>
       <body>
+        <center>
         <div id="container">
           <!-- Header -->
           <div id="header">
@@ -120,11 +123,12 @@
           <!-- Footer -->
           <div id="footer"> 
             <div id="footer_text">
-              (c) Copyright USKA 2007 | 
+              (c) Copyright USKA 2005-<xsl:value-of select="php:function('XSLCallback::invoke', 'xp.date', 'format', string(/formresult/@serial), 'Y')"/> | 
               <a href="/deref/?http://xp-framework.net/"><img src="/image/powered_by_xp.png" width="80" height="15" border="0" align="top"/></a>
             </div>
           </div>
         </div>
+        </center>
       </body>
     </html>
   </xsl:template>

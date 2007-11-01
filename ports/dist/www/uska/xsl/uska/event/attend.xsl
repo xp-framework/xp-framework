@@ -46,6 +46,7 @@
           <xsl:variable name="attend">
             <option id="1">yes</option>
             <option id="0">no</option>
+            <option id="2">unknown</option>
           </xsl:variable>
           <xsl:copy-of select="func:wizard_row_select('attendeventhandler', 'attend', $attend)"/>
 
