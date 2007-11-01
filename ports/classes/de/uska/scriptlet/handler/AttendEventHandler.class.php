@@ -192,7 +192,7 @@
       
       if (
         $count['attendees'] > $event->getMax_attendees() &&
-        !$this->context->hasPermission('create_event')
+        !$context->hasPermission('create_event')
       ) {
         $this->addError('too_many_attendees', '*');
         $transaction->rollback();
