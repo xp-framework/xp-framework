@@ -8,10 +8,15 @@
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToBoolean',
     'scriptlet.xml.workflow.casters.ToDate',
+    'scriptlet.xml.workflow.casters.ToDate',
+    'scriptlet.xml.workflow.casters.ToInteger',
     'scriptlet.xml.workflow.casters.ToInteger',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
     'scriptlet.xml.workflow.checkers.LengthChecker',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'
+    'scriptlet.xml.workflow.checkers.LengthChecker',
+    'scriptlet.xml.workflow.checkers.RegexpChecker',
+    'scriptlet.xml.workflow.checkers.RegexpChecker'    
   );
 
   /**

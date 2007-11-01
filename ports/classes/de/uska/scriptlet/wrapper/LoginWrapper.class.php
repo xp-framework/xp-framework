@@ -7,7 +7,9 @@
   uses(
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.checkers.RegexpChecker',
+    'scriptlet.xml.workflow.checkers.RegexpChecker'    
   );
 
   /**

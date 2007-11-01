@@ -8,8 +8,13 @@
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToEmailAddress',
     'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
+    'scriptlet.xml.workflow.casters.ToTrimmedString',
     'scriptlet.xml.workflow.checkers.LengthChecker',
-    'scriptlet.xml.workflow.checkers.RegexpChecker'
+    'scriptlet.xml.workflow.checkers.LengthChecker',
+    'scriptlet.xml.workflow.checkers.LengthChecker',
+    'scriptlet.xml.workflow.checkers.RegexpChecker'    
   );
 
   /**

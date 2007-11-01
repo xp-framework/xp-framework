@@ -7,7 +7,8 @@
   uses(
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.casters.ToBoolean',
-    'scriptlet.xml.workflow.checkers.IntegerRangeChecker'
+    'scriptlet.xml.workflow.checkers.IntegerRangeChecker',
+    'scriptlet.xml.workflow.checkers.IntegerRangeChecker'    
   );
 
   /**
@@ -62,7 +63,7 @@
         NULL,
         NULL,
         NULL,
-        array('scriptlet.xml.workflow.checkers.IntegerRangeChecker', 0, 1)
+        array('scriptlet.xml.workflow.checkers.IntegerRangeChecker', 0, 2)
       );
       $this->registerParamInfo(
         'needs_seat',
