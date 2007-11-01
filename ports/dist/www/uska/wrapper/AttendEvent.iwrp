@@ -19,7 +19,7 @@
   <param name="attend" type="int">
     <postcheck class="scriptlet.xml.workflow.checkers.IntegerRangeChecker">
       <cparam xsi:type="xsd:int">0</cparam>
-      <cparam xsi:type="xsd:int">1</cparam>
+      <cparam xsi:type="xsd:int">2</cparam>
     </postcheck>
   </param>
   
