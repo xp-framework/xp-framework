@@ -151,26 +151,19 @@
           $attendee= $player->getPlayer_id();
         }
         
-        $newAttend= FALSE;
         $eventattend= Event_attendee::getByEvent_idPlayer_id($this->wrapper->getEvent_id(), $attendee);
-        if (!is('de.uska.db.Event_attendee', $eventattend)) {
+        if (!$eventattend instanceof Event_attendee) {
           $eventattend= new Event_attendee();
           $eventattend->setEvent_id($this->wrapper->getEvent_id());
           $eventattend->setPlayer_id($attendee);
-          $newAttend= TRUE;
         }
         
         $eventattend->setAttend($this->wrapper->getAttend());
         $eventattend->setOffers_seats($this->wrapper->getOffers_seats());
-        $eventattend->setNeeds_driver($this->wrapper->getNeeds_seat());
+        $eventattend->setNeeds_driver((int)$this->wrapper->getNeeds_seat());
         $eventattend->setChangedby($context->user->getUsername());
         $eventattend->setLastchange(Date::now());
-        
-        if ($newAttend) {
-          $eventattend->insert();
-        } else {
-          $eventattend->update();
-        }
+        $eventattend->save();
         
         // Check on current number of attendees
         $event= Event::getByEvent_id($this->wrapper->getEvent_id());
