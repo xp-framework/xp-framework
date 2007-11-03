@@ -2,7 +2,16 @@ Index: ExifData.class.php
 ===================================================================
 --- ExifData.class.php	(revision 11247)
 +++ ExifData.class.php	(working copy)
-@@ -15,10 +15,21 @@
+@@ -9,16 +9,29 @@
+     'img.ImagingException',
+     'img.Image',
+     'img.io.StreamReader',
+-    'io.Stream'
++    'io.Stream',
++    'img.util.MetadataException', 
++    'lang.ElementNotFoundException'
+   );
+ 
    /**
     * Reads the EXIF headers from JPEG or TIFF
     *
@@ -24,7 +33,7 @@ Index: ExifData.class.php
      public
        $height           = 0,
        $width            = 0,
-@@ -39,18 +50,32 @@
+@@ -39,18 +52,32 @@
        $isoSpeedRatings  = 0,
        $focalLength      = 0;
  
