@@ -1,0 +1,91 @@
+RFC 0143: MetadataException
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Nov  3 16:23:29     2007
+@status: draft
+@category: img.util
+
+Scope of Change
+---------------
+A new exception img.util.MetadataException will be introduced.
+
+
+Rationale
+---------
+Be able to distinguish the cases when data cannot be read for I/O errors
+and when data is not existant or malformed.
+
+
+Functionality
+-------------
+
+Inheritance tree
+~~~~~~~~~~~~~~~~
+<pre>
++ lang.Throwable
+|
+`-- + lang.XPException
+    |
+    `-- + lang.ChainedException
+        |
+        `-- img.util.MetadataException
+</pre>
+
+Basic usage
+~~~~~~~~~~~
+<?php
+  try {
+    $iptcData= IptcData::fromFile($in);
+  } catch (MetadataException $e) {
+    // IPTC data non-existant or malformed
+  } catch (ImagingException $e) {
+    // File cannot be read, unknown file format
+  }
+?>
+
+Extended usage
+~~~~~~~~~~~~~~
+<?php
+  try {
+    $iptcData= IptcData::fromFile($in);
+  } catch (MetadataException $e) {
+    if ($e->getCause() instanceof ElementNotFoundException) {
+      // No IPTC data found
+    } else if ($e->getCause() instanceof FormatException) {
+      // IPTC data malformed
+    } else {
+      // Other cause
+    }
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+- img.util.ExifData::fromFile() will be slightly slower due to additional
+  checks being performed before actually extracting the data
+
+
+Dependencies
+------------
+- New class img.util.MetadataException 
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
