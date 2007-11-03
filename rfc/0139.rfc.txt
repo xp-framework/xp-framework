@@ -113,5 +113,8 @@ n/a
 
 Comments
 --------
+- friebe, Sat Nov  3 14:07:56     2007
+  Checkout-Command is: 
+  $ svn co svn+ssh://$(USER)@php3.de/home/svn/xpforge xp.forge
 
 <EOF>
