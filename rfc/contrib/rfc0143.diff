@@ -74,7 +74,7 @@ Index: IptcData.class.php
 ===================================================================
 --- IptcData.class.php	(revision 11247)
 +++ IptcData.class.php	(working copy)
-@@ -4,22 +4,32 @@
+@@ -4,23 +4,34 @@
   * $Id$ 
   */
  
@@ -102,16 +102,19 @@ Index: IptcData.class.php
     * @ext      iptc
     * @purpose  Utility
 +   * @see      php://iptcparse
++   * @see      http://photothumb.com/IPTCExt/
     * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
     */
    class IptcData extends Object {
+-    protected
 +    public static
 +      $EMPTY= NULL;
 +
-     protected
++    public
        $title                         = '',
        $urgency                       = '',
-@@ -41,21 +51,36 @@
+       $category                      = '',
+@@ -41,21 +52,36 @@
        $supplementalCategories        = array(),
        $originalTransmissionReference = '';
  
@@ -154,6 +157,62 @@ Index: IptcData.class.php
        
        // Parse creation date
        if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
+@@ -65,25 +91,25 @@
+       }
+ 
+       with ($i= new self()); {
+-        $i->setTitle($iptc['2#005'][0]);
+-        $i->setUrgency($iptc['2#010'][0]);
+-        $i->setCategory($iptc['2#015'][0]);
+-        $i->setSupplementalCategories($iptc['2#020']);
+-        $i->setKeywords($iptc['2#025']);
+-        $i->setSpecialInstructions($iptc['2#040'][0]);
++        $i->setTitle(@$iptc['2#005'][0]);
++        $i->setUrgency(@$iptc['2#010'][0]);
++        $i->setCategory(@$iptc['2#015'][0]);
++        $i->setSupplementalCategories(@$iptc['2#020']);
++        $i->setKeywords(@$iptc['2#025']);
++        $i->setSpecialInstructions(@$iptc['2#040'][0]);
+         $i->setDateCreated($created);
+-        $i->setAuthor($iptc['2#080'][0]);
+-        $i->setAuthorPosition($iptc['2#085'][0]);
+-        $i->setCity($iptc['2#090'][0]);
+-        $i->setState($iptc['2#095'][0]);
+-        $i->setCountry($iptc['2#101'][0]);
+-        $i->setOriginalTransmissionReference($iptc['2#103'][0]);   
+-        $i->setHeadline($iptc['2#105'][0]);
+-        $i->setCredit($iptc['2#110'][0]);
+-        $i->setSource($iptc['2#115'][0]);
+-        $i->setCopyrightNotice($iptc['2#116'][0]);
+-        $i->setCaption($iptc['2#120'][0]);
+-        $i->setWriter($iptc['2#122'][0]);
++        $i->setAuthor(@$iptc['2#080'][0]);
++        $i->setAuthorPosition(@$iptc['2#085'][0]);
++        $i->setCity(@$iptc['2#090'][0]);
++        $i->setState(@$iptc['2#095'][0]);
++        $i->setCountry(@$iptc['2#101'][0]);
++        $i->setOriginalTransmissionReference(@$iptc['2#103'][0]);   
++        $i->setHeadline(@$iptc['2#105'][0]);
++        $i->setCredit(@$iptc['2#110'][0]);
++        $i->setSource(@$iptc['2#115'][0]);
++        $i->setCopyrightNotice(@$iptc['2#116'][0]);
++        $i->setCaption(@$iptc['2#120'][0]);
++        $i->setWriter(@$iptc['2#122'][0]);
+       }
+       return $i;
+     }
+@@ -167,9 +193,9 @@
+     /**
+      * Set DateCreated
+      *
+-     * @param   util.Date dateCreated
++     * @param   util.Date dateCreated default NULL
+      */
+-    public function setDateCreated(Date $dateCreated) {
++    public function setDateCreated(Date $dateCreated= NULL) {
+       $this->dateCreated= $dateCreated;
+     }
+ 
 Index: MetadataException.class.php
 ===================================================================
 --- MetadataException.class.php	(revision 0)
