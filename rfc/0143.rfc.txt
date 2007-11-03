@@ -80,8 +80,9 @@ Dependencies
 
 Related documents
 -----------------
-n/a
-
+- http://xp-framework.net/rfc/contrib/rfc0143.diff
+  Implementing patch
+  
 
 Comments
 --------

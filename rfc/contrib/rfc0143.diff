@@ -1,0 +1,169 @@
+Index: ExifData.class.php
+===================================================================
+--- ExifData.class.php	(revision 11247)
++++ ExifData.class.php	(working copy)
+@@ -15,10 +15,21 @@
+   /**
+    * Reads the EXIF headers from JPEG or TIFF
+    *
++   * <code>
++   *   uses('img.util.ExifData', 'io.File');
++   *
++   *   // Use empty Exif data as default value when no Exif data is found
++   *   echo ExifData::fromFile(new File($filename), ExifData::$EMPTY)->toString();
++   * </code>
++   *
++   * @see      php://exif_read_data
+    * @ext      exif
+    * @purpose  Utility
+    */
+   class ExifData extends Object {
++    public static
++      $EMPTY= NULL;
++
+     public
+       $height           = 0,
+       $width            = 0,
+@@ -39,18 +50,32 @@
+       $isoSpeedRatings  = 0,
+       $focalLength      = 0;
+ 
++    static function __static() {
++      self::$EMPTY= new self();
++    }
++
+     /**
+      * Read from a file
+      *
+      * @param   io.File file
++     * @param   mixed default default FALSE what should be returned in case no data is found
+      * @return  img.util.ExifData
++     * @throws  img.MetadataException in case reading meta data fails
+      * @throws  img.ImagingException in case extracting data fails
+      */
+-    public static function fromFile($file) {
++    public static function fromFile(File $file, $default= FALSE) {
++      if (FALSE === getimagesize($file->getURI(), $info)) {
++        throw new ImagingException('Cannot read EXIF information from '.$file->getURI());
++      }
++      if (!isset($info['APP1'])) {
++        if (FALSE !== $default) return $default;
++        throw new MetadataException(
++          'Cannot get EXIF information from '.$file->getURI(), 
++          new ElementNotFoundException('No APP1 marker')
++        );
++      }
+       if (!($info= exif_read_data($file->getURI()))) {
+-        throw(new ImagingException(
+-          'Cannot get EXIF information from '.$file->getURI()
+-        ));
++        throw new ImagingException('Cannot get EXIF information from '.$file->getURI());
+       }
+       
+       // Calculate orientation from dimensions if not available
+Index: IptcData.class.php
+===================================================================
+--- IptcData.class.php	(revision 11247)
++++ IptcData.class.php	(working copy)
+@@ -4,22 +4,32 @@
+  * $Id$ 
+  */
+ 
+-  uses('util.Date', 'img.ImagingException');
++  uses(
++    'util.Date', 
++    'img.ImagingException', 
++    'img.util.MetadataException', 
++    'lang.ElementNotFoundException'
++  );
+ 
+   /**
+-   * Reads the IPTC headers from Photoshop-files, JPEG or TIFF
++   * Reads the IPTC headers from Photoshop-files, JPEGs or TIFFs
+    *
+    * <code>
+    *   uses('img.util.IptcData', 'io.File');
+-   *   $i= IptcData::fromFile(new File($filename));
+-   *   echo $i->toString();
++   *
++   *   // Use empty iptc data as default value when no iptc data is found
++   *   echo IptcData::fromFile(new File($filename), IptcData::$EMPTY)->toString();
+    * </code>
+    *
+    * @ext      iptc
+    * @purpose  Utility
++   * @see      php://iptcparse
+    * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
+    */
+   class IptcData extends Object {
++    public static
++      $EMPTY= NULL;
++
+     protected
+       $title                         = '',
+       $urgency                       = '',
+@@ -41,21 +51,36 @@
+       $supplementalCategories        = array(),
+       $originalTransmissionReference = '';
+ 
++    static function __static() {
++      self::$EMPTY= new self();
++    }
++
+     /**
+      * Read from a file
+      *
+      * @param   io.File file
++     * @param   mixed default default FALSE what should be returned in case no data is found
+      * @return  img.util.IptcData
++     * @throws  img.MetadataException in case reading meta data fails
+      * @throws  img.ImagingException in case extracting data fails
+      */
+-    public static function fromFile($file) {
+-      getimagesize($file->getURI(), $info);
+-      if (!($info['APP13'])) {
+-        throw new ImagingException(
+-          'Cannot get IPTC information from '.$file->getURI()
++    public static function fromFile(File $file, $default= FALSE) {
++      if (FALSE === getimagesize($file->getURI(), $info)) {
++        throw new ImagingException('Cannot read IPTC information from '.$file->getURI());
++      }
++      if (!isset($info['APP13'])) {
++        if (FALSE !== $default) return $default;
++        throw new MetadataException(
++          'Cannot get IPTC information from '.$file->getURI(), 
++          new ElementNotFoundException('No APP13 marker')
+         );
+       }
+-      $iptc= iptcparse($info['APP13']);
++      if (!($iptc= iptcparse($info['APP13']))) {
++        throw new MetadataException(
++          'Cannot extract IPTC information from '.$file->getURI(),
++          new FormatException('Cannot parse APP13 marker')
++        );
++      }
+       
+       // Parse creation date
+       if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
+Index: MetadataException.class.php
+===================================================================
+--- MetadataException.class.php	(revision 0)
++++ MetadataException.class.php	(revision 0)
+@@ -0,0 +1,17 @@
++<?php
++/* This class is part of the XP framework
++ * 
++ * $Id$
++ */
++ 
++  /**
++   * Indicates an error occured while processing meta data
++   *
++   * @see     xp://img.util.IptcData#fromFile
++   * @see     xp://lang.ChainedException
++   * @purpose Exception
++   */
++  class MetadataException extends ChainedException {
++  
++  }
++?>
