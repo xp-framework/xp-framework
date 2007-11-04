@@ -9,6 +9,7 @@
     'io.FileUtil',
     'io.File',
     'de.thekid.dialog.Album',
+    'de.thekid.dialog.Topic',
     'de.thekid.dialog.Update',
     'de.thekid.dialog.SingleShot',
     'de.thekid.dialog.EntryCollection',
@@ -42,6 +43,16 @@
      */
     public function getIndexYear($y) {
       return unserialize(FileUtil::getContents(new File($this->dataLocation.'bydate_'.$y.'.idx')));
+    }
+
+    /**
+     * Returns index for a given year
+     *
+     * @param   int y year
+     * @return  array<int, string[]>
+     */
+    public function getIndexTopics($y) {
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.'topics.idx')));
     }
 
     /**
