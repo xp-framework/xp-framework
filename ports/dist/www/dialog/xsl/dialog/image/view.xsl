@@ -21,8 +21,16 @@
    ! @see       ../layout.xsl
    !-->
   <xsl:template name="page-title">
+    <xsl:choose>
+      <xsl:when test="/formresult/selected/iptcData/title">
+        <xsl:value-of select="/formresult/selected/iptcData/title"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat('Image ', /formresult/selected/name)"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="concat(
-      'Image ', /formresult/selected/name,' / ',
+      ' / ',
       /formresult/album/@title, ' @ ', 
       /formresult/config/title
     )"/>
@@ -62,7 +70,15 @@
         </a>
         &#xbb;
       </xsl:if>
-      <xsl:value-of select="/formresult/selected/name"/>
+      
+      <xsl:choose>
+        <xsl:when test="/formresult/selected/iptcData/title">
+          <xsl:value-of select="/formresult/selected/iptcData/title"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/formresult/selected/name"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </h3>
 
     <br clear="all"/> 
