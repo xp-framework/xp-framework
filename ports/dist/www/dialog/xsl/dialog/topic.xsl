@@ -75,17 +75,9 @@
    ! @purpose  Specialized entry template
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.Album']">
-    <h2>
-      Originally from: <a href="{func:linkAlbum(@name)}"><xsl:value-of select="@title"/></a>
-    </h2>
-    <p>
-      <xsl:variable name="total" select="count(image)"/>
-      <xsl:choose>
-        <xsl:when test="$total = 1">One image</xsl:when>
-        <xsl:otherwise><xsl:value-of select="$total"/> images</xsl:otherwise>
-      </xsl:choose>
-      from this album of <xsl:value-of select="@num_images"/> images in <xsl:value-of select="@num_chapters"/> chapters.
-    </p>
+    <a title="Album of {@num_images} images in {@num_chapters} chapters" href="{func:linkAlbum(@name)}">
+      <xsl:value-of select="@title"/>
+    </a>
   </xsl:template>
   
   <!--
@@ -105,12 +97,9 @@
    ! @purpose  Specialized entry template
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.SingleShot']">
-    <h2>
-      Originally from: <a href="{func:linkShot(@name, 0)}"><xsl:value-of select="@title"/></a>
-    </h2>
-    <p>
-      A featured image.
-    </p>
+    <a title="Featured image" href="{func:linkShot(@name, 0)}">
+      <xsl:value-of select="@title"/>
+    </a>
   </xsl:template>
 
   <!--
@@ -119,17 +108,9 @@
    ! @purpose  Specialized entry template
    !-->
   <xsl:template match="entry[@type = 'de.thekid.dialog.EntryCollection']">
-    <h2>
-      Originally from: <a href="{func:linkCollection(@name)}"><xsl:value-of select="@title"/></a>
-    </h2>
-    <p>
-      <xsl:variable name="total" select="count(image)"/>
-      <xsl:choose>
-        <xsl:when test="$total = 1">One image</xsl:when>
-        <xsl:otherwise><xsl:value-of select="$total"/> images</xsl:otherwise>
-      </xsl:choose>
-      from this collection of <xsl:value-of select="@num_entries"/> images in <xsl:value-of select="@num_chapters"/> chapters.
-    </p>
+    <a title="Collection of {@num_entries}" href="{func:linkCollection(@name)}">
+      <xsl:value-of select="@title"/>
+    </a>
   </xsl:template>
 
   <!--
@@ -152,11 +133,25 @@
     </h3>
     <br clear="all"/>
 
-    <xsl:for-each select="/formresult/topic/origins/entry">
+    <xsl:for-each select="/formresult/topic/year">
       <div class="datebox">
         <h2><xsl:value-of select="position()"/></h2> 
       </div>
-      <xsl:apply-templates select="."/>
+      <h2>
+        <xsl:value-of select="@num"/> - 
+        <xsl:variable name="total" select="count(image)"/>
+        <xsl:choose>
+          <xsl:when test="$total = 1">1 image</xsl:when>
+          <xsl:otherwise><xsl:value-of select="$total"/> images</xsl:otherwise>
+        </xsl:choose>
+      </h2>
+      <p>
+        Images originate from 
+        <xsl:for-each select="entry">
+          <xsl:apply-templates select="."/>
+          <xsl:if test="position() &lt; last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
       <table class="highlights" border="0">
         <tr>
           <xsl:copy-of select="func:highlights(exsl:node-set(image))"/>
