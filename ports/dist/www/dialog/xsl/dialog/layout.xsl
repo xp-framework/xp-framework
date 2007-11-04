@@ -71,6 +71,8 @@
                   Home
                 </a><a href="{func:link('bydate')}">
                   By Date
+                </a><a href="{func:link('bytopic')}">
+                  By Topic
                 </a>
               </td>
             </tr>
