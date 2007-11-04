@@ -26,6 +26,28 @@
     <xsl:value-of select="/formresult/config/title"/>
   </xsl:template>
 
+  <!--
+   ! Template for pager
+   !
+   ! @purpose  Links to previous and next
+   !-->
+  <xsl:template name="pager">
+    <center>
+      <a title="Newer entries" class="pager{/formresult/pager/@offset &gt; 0}" id="previous">
+        <xsl:if test="/formresult/pager/@offset &gt; 0">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat('bytopic?page', /formresult/pager/@offset - 1))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xab;" src="/image/prev.gif" border="0" width="19" height="15"/>
+      </a>
+      <a title="Older entries" class="pager{(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total}" id="next">
+        <xsl:if test="(/formresult/pager/@offset + 1) * /formresult/pager/@perpage &lt; /formresult/pager/@total">
+          <xsl:attribute name="href"><xsl:value-of select="func:link(concat('bytopic?page', /formresult/pager/@offset + 1))"/></xsl:attribute>
+        </xsl:if>
+        <img alt="&#xbb;" src="/image/next.gif" border="0" width="19" height="15"/>
+      </a>
+    </center>
+  </xsl:template>
+
   <xsl:template match="image[@origin-class = 'de.thekid.dialog.Album']">
     <img width="150" height="113" border="0" src="/albums/{@origin-name}/thumb.{name}"/>
   </xsl:template>
@@ -120,8 +142,16 @@
       <a href="{func:link('bytopic')}">
         By Topic
       </a>
+      <xsl:if test="/formresult/pager/@offset &gt; 0">
+        &#xbb;
+        <a href="{func:linkPage(/formresult/pager/@offset)}">
+          Page #<xsl:value-of select="/formresult/pager/@offset"/>
+        </a>
+      </xsl:if>
     </h3>
     <br clear="all"/>
+
+    <xsl:call-template name="pager"/>
     
     <xsl:for-each select="/formresult/topics/topic">
       <h2><a href="{func:link(concat('topic?', @name))}"><xsl:value-of select="@title"/></a></h2>
@@ -148,6 +178,8 @@
 
       <br/><br clear="all"/>
     </xsl:for-each>
+
+    <xsl:call-template name="pager"/>
     <br clear="all"/>
   </xsl:template>
   
