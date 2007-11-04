@@ -141,8 +141,9 @@
           throw(new FormatException('Index contains unknown element "'.$entry->getClassName().'"'));
         }
 
-        $child= $node->addChild($this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry)));
-        $child->setAttribute('type', $entry->getClassName());
+        if ($child= $this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry))) {
+          $node->addChild($child)->setAttribute('type', $entry->getClassName());
+        }
       }
     }
   }
