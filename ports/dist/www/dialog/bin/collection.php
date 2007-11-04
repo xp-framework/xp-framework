@@ -14,6 +14,7 @@
     'util.log.ConsoleAppender', 
     'de.thekid.dialog.EntryCollection',
     'de.thekid.dialog.Album',
+    'de.thekid.dialog.Topic',
     'de.thekid.dialog.io.FilteredFolderIterator',
     'de.thekid.dialog.io.ImageProcessor',
     'de.thekid.dialog.io.IndexCreator',
@@ -180,6 +181,26 @@ __
           $highlight->exifData->dateTime= $album->getDate();
         }
 
+        if ($iptc= $highlight->getIptcData()) {
+          foreach ($iptc->getKeywords() as $keyword) {
+            $normalized= strtolower(preg_replace('/[^a-z0-9-]/i', '_', $keyword));
+            if (!isset($topics[$normalized])) {
+              $topic= new File(DATA_FOLDER.'topics/'.$normalized.'.dat');
+              if ($topic->exists()) {
+                $topics[$normalized]= unserialize(FileUtil::getContents($topic));
+                Console::writeLine('     >> Found existing topic for ', $keyword);
+              } else {
+                Console::writeLine('     >> Creating new topic for ', $keyword);
+                $topics[$normalized]= new Topic();
+                $topics[$normalized]->setName($normalized);
+                $topics[$normalized]->setTitle($keyword);
+                $topics[$normalized]->setCreatedAt($album->getCreatedAt());
+              }
+            }
+            $topics[$normalized]->addImage($highlight, $album->getName());
+          }
+        }
+
         $album->addHighlight($highlight);
         Console::writeLine('     >> Added highlight ', $highlight->getName(), ' to album ', $albumname);
       }
@@ -198,6 +219,26 @@ __
 
       if (!$image->exifData->dateTime) {
         $image->exifData->dateTime= $album->getDate();
+      }
+
+      if ($iptc= $image->getIptcData()) {
+        foreach ($iptc->getKeywords() as $keyword) {
+          $normalized= strtolower(preg_replace('/[^a-z0-9-]/i', '_', $keyword));
+          if (!isset($topics[$normalized])) {
+            $topic= new File(DATA_FOLDER.'topics/'.$normalized.'.dat');
+            if ($topic->exists()) {
+              $topics[$normalized]= unserialize(FileUtil::getContents($topic));
+              Console::writeLine('     >> Found existing topic for ', $keyword);
+            } else {
+              Console::writeLine('     >> Creating new topic for ', $keyword);
+              $topics[$normalized]= new Topic();
+              $topics[$normalized]->setName($normalized);
+              $topics[$normalized]->setTitle($keyword);
+              $topics[$normalized]->setCreatedAt($album->getCreatedAt());
+            }
+          }
+          $topics[$normalized]->addImage($image, $album->getName());
+        }
       }
 
       $images[]= $image;
@@ -256,6 +297,9 @@ __
   Console::writeLine('---> Saving collection to ', $serialized->getURI());
   try {
     FileUtil::setContents($serialized, serialize($collection));
+    foreach ($topics as $normalized => $t) {
+      FileUtil::setContents(new File(DATA_FOLDER.'topics/'.$normalized.'.dat'), serialize($t));
+    }
   } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
@@ -266,6 +310,22 @@ __
   $index->setEntriesPerPage(ENTRIES_PER_PAGE);
   $index->setTrace($cat);
   $index->regenerate();
+
+  // Generate topics
+  for ($i= new FilteredFolderIterator(new Folder(DATA_FOLDER.'topics'), '/\.dat$/'); $i->hasNext(); ) {
+    $entry= $i->next();
+    $entries[basename($entry)]= 'topics/'.basename($entry, '.dat');
+  }
+  ksort($entries);
+  try {
+    FileUtil::setContents(
+      new File(DATA_FOLDER.'topics.idx'), 
+      serialize($entries)
+    );
+  } catch (IOException $e) {
+    $e->printStackTrace();
+    exit(-1);
+  }
   
   Console::writeLine('===> Finished at ', date('r'));
   // }}}
