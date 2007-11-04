@@ -112,7 +112,7 @@
       $t->addChild(Node::fromObject($topic->getCreatedAt(), 'created'));
 
       // Add origins
-      $o= $t->addChild(new Node('origins'));
+      $origins= array();
       foreach ($topic->origins() as $name) {
         $entry= $this->getEntryFor($name);
         if (!isset($this->nodeHandlers[$entry->getClassName()])) {
@@ -120,11 +120,14 @@
         }
 
         if ($child= $this->nodeHandlers[$entry->getClassName()]->invoke($this, array($entry))) {
-          $e= $o->addChild($child);
-          $e->setAttribute('type', $entry->getClassName());
+          $y= $entry->getDate()->toString('Y');
+          if (!isset($origins[$y])) {
+            $origins[$y]= new Node('year', NULL, array('num' => $y));
+          }
+          $origins[$y]->addChild($child)->setAttribute('type', $entry->getClassName());
           
           foreach ($topic->imagesFrom($name) as $image) {
-            $i= $e->addChild(new Node('image', NULL, array(
+            $i= $origins[$y]->addChild(new Node('image', NULL, array(
               'name'          => $image->getName(),
               'origin-name'   => $name,
               'origin-class'  => $entry->getClassName()
@@ -135,6 +138,10 @@
             }
           }
         }
+      }
+      krsort($origins);
+      foreach ($origins as $byYear) {
+        $t->addChild($byYear);
       }
     }
   }
