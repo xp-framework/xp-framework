@@ -133,5 +133,14 @@
       return $this->image;
     }
 
+    /**
+     * Find an image
+     *
+     * @return  array
+     */
+    public function imageUrn($name) {
+      if ($this->image->getName() === $name) return array('id' => 0);
+      return NULL;
+    }
   } 
 ?>

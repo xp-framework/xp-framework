@@ -133,6 +133,17 @@
     public function numEntries() {
       return sizeof($this->entries);
     }
-  
+
+    /**
+     * Find an image
+     *
+     * @return  array
+     */
+    public function imageUrn($name) {
+      for ($i= 0, $s= sizeof($this->entries); $i < $s; $i++) {
+        if (NULL !== ($urn= $this->entries->imageUrn($name))) return $urn;
+      }
+      return NULL;
+    }
   } 
 ?>

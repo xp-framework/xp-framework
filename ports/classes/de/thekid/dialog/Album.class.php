@@ -183,6 +183,28 @@
       }
       return $r;
     }
+
+    /**
+     * Find an image
+     *
+     * @return  array
+     */
+    public function imageUrn($name) {
+      for ($i= 0, $s= sizeof($this->highlights); $i < $s; $i++) {
+        if ($name === $this->highlights[$i]->getName()) {
+          return array('type' => 'h', 'chapter' => 0, 'id' => $i);
+        }
+      }
+      
+      for ($i= 0, $s= sizeof($this->chapters); $i < $s; $i++) {
+        for ($j= 0, $t= sizeof($this->chapters[$i]->images); $j < $t; $j++) {
+          if ($name === $this->chapters[$i]->images[$j]->getName()) {
+            return array('type' => 'i', 'chapter' => $i, 'id' => $j);
+          }
+        }
+      }
+      return NULL;
+    }
     
     /**
      * Retrieve a string representation
