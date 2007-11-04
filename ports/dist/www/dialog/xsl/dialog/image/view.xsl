@@ -22,7 +22,7 @@
    !-->
   <xsl:template name="page-title">
     <xsl:choose>
-      <xsl:when test="/formresult/selected/iptcData/title">
+      <xsl:when test="/formresult/selected/iptcData/title != ''">
         <xsl:value-of select="/formresult/selected/iptcData/title"/>
       </xsl:when>
       <xsl:otherwise>
@@ -72,7 +72,7 @@
       </xsl:if>
       
       <xsl:choose>
-        <xsl:when test="/formresult/selected/iptcData/title">
+        <xsl:when test="/formresult/selected/iptcData/title  != ''">
           <xsl:value-of select="/formresult/selected/iptcData/title"/>
         </xsl:when>
         <xsl:otherwise>
