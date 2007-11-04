@@ -46,13 +46,13 @@
     }
 
     /**
-     * Returns index for a given year
+     * Returns topics
      *
-     * @param   int y year
+     * @param   int i default 0 page number
      * @return  array<int, string[]>
      */
-    public function getIndexTopics($y) {
-      return unserialize(FileUtil::getContents(new File($this->dataLocation.'topics.idx')));
+    public function getIndexTopics($i= 0) {
+      return unserialize(FileUtil::getContents(new File($this->dataLocation.'topics_'.$i.'.idx')));
     }
 
     /**

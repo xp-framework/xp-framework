@@ -102,9 +102,18 @@
      * @param   scriptlet.xml.workflow.Context context
      */
     public function process($request, $response, $context) {
-      $node= $response->addFormResult(new Node('topics'));
+      sscanf($request->getQueryString(), 'page%d', $page);
+      $index= $this->getIndexTopics((int)$page);
 
-      foreach ($this->getIndexTopics() as $name) {
+      // Add paging information
+      $response->addFormResult(new Node('pager', NULL, array(
+        'offset'  => (int)$page,
+        'total'   => $index['total'],
+        'perpage' => $index['perpage']
+      )));
+
+      $node= $response->addFormResult(new Node('topics'));
+      foreach ($index['entries'] as $name) {
         $topic= $this->getEntryFor($name);
         $t= $node->addChild(new Node('topic', NULL, array(
           'name'       => $topic->getName(),
