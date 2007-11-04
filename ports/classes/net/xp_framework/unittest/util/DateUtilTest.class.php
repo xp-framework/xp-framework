@@ -234,7 +234,8 @@
     }
     
     /**
-     * Test
+     * Test that a date's value is preserved when moving the
+     * date to another timezone.
      *
      */
     #[@test]
@@ -246,22 +247,16 @@
     }
     
     /**
-     * Test
+     * Test that a date's single "digit" values remain unaltered when
+     * forcibly setting the timezone to another.
      *
      */
     #[@test]
     public function testSetTimezone() {
-      try {
       $this->assertEquals(
-        Date::create(2000, 1, 1, 17, 15, 11),
+        Date::create(2000, 1, 1, 17, 15, 11, new TimeZone('GMT')),
         DateUtil::setTimeZone($this->fixture, new TimeZone('America/New_York'))
       );
-      } catch (IllegalArgumentException $e) {
-      
-        $e->printStackTrace();
-      }
     }
-    
-    
   }
 ?>
