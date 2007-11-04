@@ -10,6 +10,7 @@
     'io.File',
     'io.Folder',
     'img.util.ExifData',
+    'img.util.IptcData',
     'img.Image',
     'img.Color',
     'img.io.StreamReader',
@@ -19,7 +20,7 @@
 
   /**
    * Processes images, creating the "full" and thumbnail versions of
-   * specified files and extracting their EXIF data.
+   * specified files and extracting their EXIF and IPTC data.
    *
    * @purpose  Utility class
    */
@@ -35,7 +36,7 @@
     /**
      * Set outputFolder
      *
-     * @param   &io.Folder outputFolder
+     * @param   io.Folder outputFolder
      */
     public function setOutputFolder($outputFolder) {
       $this->outputFolder= $outputFolder;
@@ -45,8 +46,8 @@
      * Add a filter. The filters will be applied in the order added on 
      * an image after processing it.
      *
-     * @param   &img.filter.ImageFilter filter
-     * @return  &img.filter.ImageFilter filter
+     * @param   img.filter.ImageFilter filter
+     * @return  img.filter.ImageFilter filter
      */
     public function addFilter($filter) {
       $this->filters[]= $filter;
@@ -56,7 +57,7 @@
     /**
      * Get outputFolder
      *
-     * @return  &io.Folder
+     * @return  io.Folder
      */
     public function getOutputFolder() {
       return $this->outputFolder;
@@ -83,10 +84,10 @@
     /**
      * Resample a given image to given dimensions.
      *
-     * @param   &img.Image origin
+     * @param   img.Image origin
      * @param   bool horizontal
      * @param   int[2] dimensions (0 = X, 1 = Y)
-     * @return  &img.Image
+     * @return  img.Image
      */
     public function resampleTo($origin, $horizontal, $dimensions) {
     
@@ -125,10 +126,10 @@
      * image into the given dimensions, adding a border with the specified
      * color if necessary.
      *
-     * @param   &img.Image origin
+     * @param   img.Image origin
      * @param   int[2] dimensions (0 = X, 1 = Y)
-     * @param   &img.Color color
-     * @return  &img.Image
+     * @param   img.Color color
+     * @return  img.Image
      */
     public function resampleToFixed($origin, $dimensions, $color) {
       $this->cat && $this->cat->debug('Resampling image to fixed', implode('x', $dimensions));
@@ -148,9 +149,9 @@
     /**
      * Helper method to create thumbnail from origin image.
      *
-     * @param   &img.Image origin
-     * @param   &img.util.ExifData exifData
-     * @return  &img.Image
+     * @param   img.Image origin
+     * @param   img.util.ExifData exifData
+     * @return  img.Image
      */
     public function thumbImageFor($origin, $exifData) {
       return $this->resampleToFixed($origin, $this->thumbDimensions, new Color('#ffffff'));
@@ -159,9 +160,9 @@
     /**
      * Helper method to create "full" image from origin image.
      *
-     * @param   &img.Image origin
-     * @param   &img.util.ExifData exifData
-     * @return  &img.Image
+     * @param   img.Image origin
+     * @param   img.util.ExifData exifData
+     * @return  img.Image
      */
     public function fullImageFor($origin, $exifData) {
       return $this->resampleTo($origin, $exifData->isHorizontal(), $this->fullDimensions);
@@ -170,7 +171,7 @@
     /**
      * Retrieve a list of targets to be transformed
      *
-     * @param   &io.File in
+     * @param   io.File in
      * @return  de.thekid.dialog.io.ProcessorTarget[]
      */
     public function targetsFor($in) {
@@ -184,20 +185,28 @@
      * Returns an album image for a given filename
      *
      * @param   string filename
-     * @return  &de.thekid.dialog.AlbumImage
+     * @return  de.thekid.dialog.AlbumImage
      * @throws  img.ImagingException in case of an error
      */
     public function albumImageFor($filename) {
       with ($image= new AlbumImage(basename($filename))); {
         $in= new File($filename);
 
-        // Read the image's EXIF data
-        $this->cat && $this->cat->debug('Extracting EXIF data from', $filename);        
+        // Read the image's meta data
+        $this->cat && $this->cat->debug('Extracting EXIF metadata from', $filename);        
         try {
-          $image->exifData= ExifData::fromFile($in);
-        } catch (ImagingException $e) {
+          $image->setExifData(ExifData::fromFile($in));
+        } catch (XPException $e) {
           $this->cat && $this->cat->error($e);
-          throw($e);
+          throw $e;
+        }
+
+        $this->cat && $this->cat->debug('Extracting IPTC metadata from', $filename);        
+        try {
+          $image->setIptcData(IptcData::fromFile($in, NULL));
+        } catch (XPException $e) {
+          $this->cat && $this->cat->error($e);
+          throw $e;
         }
 
         // Go over targets
@@ -247,7 +256,7 @@
             $this->cat && $this->cat->error($e);
             delete($transformed);
             delete($origin);
-            throw($e);
+            throw $e;
           }
 
           delete($transformed);
@@ -262,11 +271,10 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
     }
-
   } 
 ?>
