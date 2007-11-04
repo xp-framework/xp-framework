@@ -318,10 +318,16 @@ __
   }
   ksort($entries);
   try {
-    FileUtil::setContents(
-      new File(DATA_FOLDER.'topics.idx'), 
-      serialize($entries)
-    );
+    for ($i= 0, $s= sizeof($entries); $i < $s; $i+= ENTRIES_PER_PAGE) {
+      FileUtil::setContents(
+        new File(DATA_FOLDER.'topics_'.($i / ENTRIES_PER_PAGE).'.idx'), 
+        serialize(array(
+          'total'   => $s, 
+          'perpage' => ENTRIES_PER_PAGE,
+          'entries' => array_slice($entries, $i, ENTRIES_PER_PAGE)
+        ))
+      );
+    }
   } catch (IOException $e) {
     $e->printStackTrace();
     exit(-1);
