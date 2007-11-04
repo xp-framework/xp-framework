@@ -4,15 +4,14 @@
  * $Id$ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development');
+  xp::sapi('scriptlet.production');
   uses(
     'de.thekid.dialog.scriptlet.WebsiteScriptlet',
     'util.PropertyManager'
   );
   
   // {{{ main
-  $pm= &PropertyManager::getInstance();
-  $pm->configure('../etc/');
+  PropertyManager::getInstance()->configure('../etc/');
 
   scriptlet::run(new WebsiteScriptlet(
     'de.thekid.dialog.scriptlet', 
