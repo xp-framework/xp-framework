@@ -26,7 +26,21 @@
       $r= new HttpRequest(new URL('http://example.com'));
       $r->setMethod(HTTP_GET);
       $this->assertEquals(
-        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP GET
+     *
+     */
+    #[@test]
+    public function portIncluded() {
+      $r= new HttpRequest(new URL('http://example.com:8080'));
+      $r->setMethod(HTTP_GET);
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com:8080\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -40,7 +54,7 @@
       $r= new HttpRequest(new URL('http://example.com/path/to/images/index.html'));
       $r->setMethod(HTTP_GET);
       $this->assertEquals(
-        "GET /path/to/images/index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /path/to/images/index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -54,7 +68,7 @@
       $r= new HttpRequest(new URL('http://user:pass@example.com/'));
       $r->setMethod(HTTP_GET);
       $this->assertEquals(
-        "GET / HTTP/1.1\r\nConnection: close\r\nAuthorization: Basic dXNlcjpwYXNz\r\nHost: example.com:80\r\n\r\n",
+        "GET / HTTP/1.1\r\nConnection: close\r\nAuthorization: Basic dXNlcjpwYXNz\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -68,7 +82,7 @@
       $r= new HttpRequest(new URL('http://example.com/index.html'));
       $r->setMethod(HTTP_GET);
       $this->assertEquals(
-        "GET /index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -82,7 +96,7 @@
       $r= new HttpRequest(new URL('http://example.com/?a=b'));
       $r->setMethod(HTTP_GET);
       $this->assertEquals(
-        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -97,7 +111,7 @@
       $r->setMethod(HTTP_GET);
       $r->setParameters(array('a' => 'b'));
       $this->assertEquals(
-        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -112,7 +126,7 @@
       $r->setMethod(HTTP_GET);
       $r->setParameters('a=b');
       $this->assertEquals(
-        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -128,7 +142,7 @@
       $r->setMethod(HTTP_GET);
       $r->setParameters(array('a' => 'b'));
       $this->assertEquals(
-        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
@@ -145,7 +159,7 @@
       $r->setMethod(HTTP_GET);
       $r->setParameters('a=b');
       $this->assertEquals(
-        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }
