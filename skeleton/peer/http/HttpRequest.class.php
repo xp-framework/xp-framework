@@ -42,7 +42,8 @@
       if ($url->getUser() && $url->getPassword()) {
         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
       }
-      $this->headers['Host']= $this->url->getHost().':'.$this->url->getPort(80);
+      $port= $this->url->getPort(-1);
+      $this->headers['Host']= $this->url->getHost().(-1 == $port ? '' : ':'.$port);
     }
     
     /**
