@@ -48,6 +48,9 @@ Bugfixes
 - Fixed bug in peer.mail.store.ImapStore where one could not disable
   checking the validity of a certificate
   (doebele, kiesel)
+- Fixed assumption of port numbers in peer.http.HttpRequest when no 
+  port number is given.
+  (friebe, gelli)
  
 Features
 ~~~~~~~~
