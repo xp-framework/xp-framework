@@ -24,6 +24,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fix XPSoapMessage::_recurseData() to return array keys without ":" in
+  case a namespace is included in node name
+  (hinckel)
 - Fixed xp::sapi() when using XAR-releases on Windows
   (friebe)
 - Added support for field type tinytext, mediumblob and bit to
