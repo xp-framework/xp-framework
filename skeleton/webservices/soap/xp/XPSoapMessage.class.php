@@ -366,7 +366,8 @@
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $key= $i;
         if ($names) {
-          $key= substr($node->children[$i]->name, intval(strpos($node->children[$i]->name, ':')));
+          $pos= strpos($node->children[$i]->name, ':');
+          $key= substr($node->children[$i]->name, $pos !== FALSE ? $pos + 1 : 0);
         }
         
         // In case a value for the current key already exists, treat result
