@@ -149,7 +149,7 @@
      */
     #[@test]
     public function testRootArrayResultWithNS() {
-          $transport= new SOAPDummyTransport();
+      $transport= new SOAPDummyTransport();
       $transport->setAnswer('<?xml version="1.0" encoding="iso-8859-1"?>
 <SOAP-ENV:Envelope
  xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
