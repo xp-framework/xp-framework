@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Oct 21 12:23:12     2007
-@status: discussion, ends Mon Nov  5 18:18:18     2007
+@status: implemented, Tue Nov  6 10:46:46     2007
 @category: peer.ftp
 
 Scope of Change
