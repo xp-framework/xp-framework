@@ -11,9 +11,15 @@ Heads up!
 - Changed img.util.IptcData::setDateCreated() to accept and 
   img.util.IptcData::getDateCreated() to return util.Date instances
   (friebe)
+- The directories "experiments", "ports/dist" and several project-
+  specific classes from ports/classes have been moved to the XPForge
+  repository - http://xp-framework.info/xml/xp.en_US/news/view?217
+  (friebe)
 
 RFCs
 ~~~~
+- Implemented RFC #0139: XPForge SVN
+  (friebe, kiesel)
 - Implemented RFC #0141: FTP Transfer listening
   (friebe)
 - Implemented RFC #0142: I/O Streams to PHP streams wrapper
@@ -61,12 +67,6 @@ Features
 - Implemented peer.ldap.LDAPSearchResult in a way that will read
   incrementally instead of fetching everything when constructed
   (gellweiler)
-- Ports: Added focal length from EXIF data to serialized album data
-  in Dialog.
-  (friebe)
-- Ports: Added bydate view in Dialog which shows an overview of all
-  entries made in a certain year
-  (friebe)
 - Ensured dateinterval type argument to DateMath::diff() is passed in 
   uppercase in XSL date callback
   (gellweiler)
