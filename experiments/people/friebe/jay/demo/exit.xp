@@ -1,5 +1,0 @@
-try {
-  exit();
-} catch (lang.SystemExit $e) {
-  echo "Sourcecode tried to exit\n";
-}

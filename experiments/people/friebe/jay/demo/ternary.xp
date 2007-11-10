@@ -1,4 +1,0 @@
-echo $argc > 1
-  ? 'You passed the argument "'~$argv[1]~'"' 
-  : 'You did not pass any argument'
-;

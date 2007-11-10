@@ -1,9 +1,0 @@
-$damnLargeNumberWithDamnLargeName = 15;
-for ($a = 0, $i = 010; $i++ <= $damnLargeNumberWithDamnLargeName; $i++) {
-  echo "Yes, not
-    /* this is a common compiler \"
-    trap that people like to test against */
-    And so i gave it a try \"
-    ";
-  echo $i, "\n";
-}

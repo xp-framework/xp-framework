@@ -1,8 +1,0 @@
-connections {
-  connection[newsdb] {
-    dsn <mysql://news:foo@newsdb.example.com/?autoconnect=1>; 
-  }
-  connection[customerdb] { 
-    dsn <sybase://cdb:foo@OPIUM/?autoconnect=1>; 
-  }
-}

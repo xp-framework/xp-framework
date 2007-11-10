@@ -1,5 +1,0 @@
-import net.xp_forge.examples.enum.coin.Coin;
-
-foreach (Coin::values() as $coin) {
-  echo $coin->name, ': ', $coin->value(), '¢ (', $coin->color(), ')', "\n";
-}

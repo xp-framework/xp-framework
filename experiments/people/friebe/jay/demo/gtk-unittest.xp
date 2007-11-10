@@ -1,9 +1,0 @@
-uses(
-  'net.xp_framework.unittest.runner.gtk.UnitTestUI',
-  'util.cmd.ParamString'
-);
-
-$app= new net.xp_framework.unittest.runner.gtk.UnitTestUI(new util.cmd.ParamString());
-$app->init();
-$app->run();
-$app->done();

@@ -1,7 +1,0 @@
-$s= xp::null();
-try {
-  $s->invoke();
-} catch (lang.NullPointerException $e) {
-  echo 'Caught ', $e->toString(), "\n";
-}
-echo 'Alive', "\n";
