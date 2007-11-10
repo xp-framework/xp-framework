@@ -50,9 +50,10 @@
         
         // Specially mark timestamps for parsing (we assume here that strings
         // containing only digits are timestamps)
-        case is_numeric($in): $in= '@'.$in;
-          $timezone= NULL;
-          // Break missing intentionally
+        case is_numeric($in): {
+          $this->date= date_create('@'.$in);
+          return;
+        }
 
         default: {
           switch (TRUE) {
@@ -90,7 +91,7 @@
      * @return  array
      */
     public function __sleep() {
-      $this->value= $this->toString(self::SERIALIZE_FORMAT, new TimeZone('GMT'));
+      $this->value= date_format($this->date, self::SERIALIZE_FORMAT);
       return array('value', '__id');
     }
     
@@ -306,59 +307,78 @@
     }
     
     /**
+     * Get timezone offset to UTC in "+MMSS" notation
+     *
+     * @return  string
+     */
+    public function getOffset() {
+      return $this->date->format('O');
+    }
+    
+    /**
+     * Get timezone offset to UTC in seconds
+     *
+     * @return  int
+     */
+    public function getOffsetInSeconds() {
+      return (int)$this->date->format('Z');
+    }
+    
+    /**
      * Retrieve timezone object associated with this date
      *
      * @return  util.TimeZone
      */
     public function getTimeZone() {
       return new TimeZone(date_timezone_get($this->date));
-    }    
+    }
     
     /**
      * Create a string representation
      *
      * @see     php://date
      * @param   string format default Date::DEFAULT_FORMAT format-string
-     * @param   util.TimeZone tz The timezone
+     * @param   util.TimeZone outtz default NULL
      * @return  string the formatted date
      */
     public function toString($format= self::DEFAULT_FORMAT, TimeZone $outtz= NULL) {
       if (NULL === $outtz) return date_format($this->date, $format);
 
-      $origtz= date_timezone_get($this->date);
-      date_timezone_set($this->date, $outtz->getHandle());
-      $formatted= date_format($this->date, $format);
-      date_timezone_set($this->date, $origtz);
-      
-      return $formatted;
+      return date_format($outtz->translate($this)->date, $format);
     }
     
     /**
-     * Format a date by the given strftime()-like format string
+     * Format a date by the given strftime()-like format string.
+     *
+     * These format tokens are not supported intentionally:
+     * %a, %A, %b, %B, %c, %h, %p, %U, %x, %X
      *
      * @see     php://strftime
      * @param   string format
+     * @param   util.TimeZone outtz default NULL
      * @return  string
      * @throws  lang.IllegalArgumentException if unsupported token has been given
      */
-    public function format($format) {
-      return preg_replace_callback('#%([a-zA-Z])#', array($this, 'formatCallback'), $format);
+    public function format($format, TimeZone $outtz= NULL) {
+      return preg_replace_callback(
+        '#%([a-zA-Z%])#', 
+        array(($outtz === NULL ? $this : $outtz->translate($this)), 'formatCallback'), $format
+      );
     }
     
     /**
-     * Format callback function. Do not use directly
+     * Format callback function.
      *
      * @param   string[] matches
      * @return  string
      * @throws  lang.IllegalArgumentException if unsupported token has been given
      */
-    public function formatCallback($matches) {
+    protected function formatCallback($matches) {
       static $map= array(
         'd' => 'd',
         'm' => 'm',
         'Y' => 'Y',
         'H' => 'H',
-        'i' => 'i',
         'S' => 's',
         'w' => 'w',
         'G' => 'o',
@@ -367,14 +387,30 @@
         'z' => 'O',
         'Z' => 'e',
         'G' => 'o',
-        'V' => 'W'
+        'V' => 'W',
+        'C' => 'y',
+        'e' => 'j',
+        'G' => 'o',
+        'H' => 'H',
+        'I' => 'h',
+        'j' => 'z',
+        'M' => 'i',
+        'r' => 'h:i:sa',
+        'R' => 'H:i:s',
+        'u' => 'N',
+        'V' => 'W',
+        'W' => 'W',
+        'w' => 'w',
+        'y' => 'y',
+        'Z' => 'O'
       );
       static $rep= array(
         't' => "\t",
         'n' => "\n",
+        '%' => '%'
       );
       
-      if (isset($map[$matches[1]])) return $this->toString($map[$matches[1]]);
+      if (isset($map[$matches[1]])) return date_format($this->date, $map[$matches[1]]);
       if (isset($rep[$matches[1]])) return $rep[$matches[1]];
       
       // Other tokens that are actually supported by strftime() have been
