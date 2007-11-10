@@ -117,4 +117,8 @@ Comments
   Checkout-Command is: 
   $ svn co svn+ssh://$(USER)@php3.de/home/svn/xpforge xp.forge
 
+- friebe, Sat Nov 10 17:12:33     2007
+  Agreement with Alex: Classes needed in projects will reside in 
+  projects/{category}/{name}/classes
+  
 <EOF>
