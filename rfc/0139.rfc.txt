@@ -120,5 +120,21 @@ Comments
 - friebe, Sat Nov 10 17:12:33     2007
   Agreement with Alex: Classes needed in projects will reside in 
   projects/{category}/{name}/classes
+
+- friebe, Sat Nov 10 17:14:21     2007
+  Projects currently in xp.forge: 
+  * irc/krokerdil - Krokerdil IRC bot
+  * www/dialog    - Dialog photoblog
+  * www/pxl       - PXL photoblog
+  * www/uska      - USKA website
+  
+- friebe, Sat Nov 10 17:15:56     2007
+  The rest of the original ports/dist-stuff has been removed 
+  because of its obsolete nature!
+
+- friebe, Sat Nov 10 17:16:10     2007
+  The database generator from dist/databases will need to be added
+  to xp/technologies somewhere - it is part of the O/R mapper API
+  and thus belongs to the core technologies.
   
 <EOF>
