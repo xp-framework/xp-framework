@@ -136,5 +136,21 @@ Comments
   The database generator from dist/databases will need to be added
   to xp/technologies somewhere - it is part of the O/R mapper API
   and thus belongs to the core technologies.
+
+- friebe, Sat Nov 10 17:34:20     2007
+  Removed in commit #11285:
+  /home/svn/xp/trunk/experiments
   
+  Removed in commit #11288:
+  /home/svn/xp/trunk/ports/classes/de/document-root/
+  /home/svn/xp/trunk/ports/classes/de/thekid/
+  /home/svn/xp/trunk/ports/classes/de/uska/
+  /home/svn/xp/trunk/ports/classes/name/
+
+  Removed in commit #11289:
+  /home/svn/xp/trunk/ports/dist/desktop/
+  /home/svn/xp/trunk/ports/dist/messaging/
+  /home/svn/xp/trunk/ports/dist/soap/
+  /home/svn/xp/trunk/ports/dist/www/  
+
 <EOF>
