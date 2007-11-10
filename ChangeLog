@@ -62,6 +62,12 @@ Bugfixes
  
 Features
 ~~~~~~~~
+- text.parser.DateParser makes use of parser capabilities of php.DateTime
+  (kiesel)
+- util.Date objects preserve GMT offset after deserialization
+  (kiesel, friebe, hinckel)
+- added getOffset(), getOffsetInSeconds() methods to util.Date
+  (kiesel)
 - Extract FocalLength from EXIF data in img.util.ExifData class
   (friebe)
 - Implemented peer.ldap.LDAPSearchResult in a way that will read
