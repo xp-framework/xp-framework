@@ -44,7 +44,7 @@
      * @return  bool
      */
     public function assertDateEquals($expected, $date, $error= 'datenotequal') {
-      return $this->assertEquals($expected, $date->toString(DATE_ATOM), $error);
+      return $this->assertEquals(new Date($expected), $date, $error);
     }
     
     /**

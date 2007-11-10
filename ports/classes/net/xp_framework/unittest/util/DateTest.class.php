@@ -42,7 +42,10 @@
      * @return  bool
      */
     public function assertDateEquals($expected, $date, $error= 'datenotequal') {
-      return $this->assertEquals($expected, $date->toString(DATE_ATOM), $error);
+      return 
+        date_format(date_create($expected), 'U') ===
+        date_format($date->getHandle(), 'U')
+      ;
     }
     
     /**
@@ -79,19 +82,28 @@
     #[@test]
     public function constructorParseTz() {
       $date= new Date('2007-01-01 01:00:00 Europe/Berlin');
-      $this->assertEquals(TRUE, $date instanceof Date);
       $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
-      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+      $this->assertDateEquals('2007-01-01T00:00:00+00:00', $date);
       
       $date= new Date('2007-01-01 01:00:00 Europe/Berlin', new TimeZone('Europe/Athens'));
-      $this->assertEquals(TRUE, $date instanceof Date);
       $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
-      $this->assertDateEquals('2007-01-01T01:00:00+01:00', $date);
+      $this->assertDateEquals('2007-01-01T00:00:00+00:00', $date);
 
       $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
-      $this->assertEquals(TRUE, $date instanceof Date);
       $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
-      $this->assertDateEquals('2007-01-01T01:00:00+02:00', $date);
+      $this->assertDateEquals('2006-12-31T23:00:00+00:00', $date);
+    }
+    
+    /**
+     * Check that a timezone is not reported erroneously if it actually
+     * could not be parsed out of a string.
+     *
+     */
+    #[@test]
+    public function noDiscreteTimeZone() {
+      $date= new Date('2007-11-04 14:32:00+1000');
+      var_dump($date->getTimeZone()->getName());
+      $this->assertEquals('+1100', $date->getTimeZone()->getOffset());
     }
     
     /**
@@ -101,11 +113,9 @@
     #[@test]
     public function constructorParseNoTz() {
       $date= new Date('2007-01-01 01:00:00', new TimeZone('Europe/Athens'));
-      $this->assertEquals(TRUE, $date instanceof Date);
       $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
       
       $date= new Date('2007-01-01 01:00:00');
-      $this->assertEquals(TRUE, $date instanceof Date);
       $this->assertEquals('GMT', $date->getTimeZone()->getName());
     }
     
@@ -123,33 +133,67 @@
     }
     
     /**
-     * Test dates before beginning of Unix epoch (sometimes using PHP
-     * builtin strtotime, depending on machine) and dates even
-     * earlier.
-     *
+     * Test dates before beginning of Unix epoch.
      */
     #[@test]
-    public function testPreUnixEpoch() {
-      $this->assertDateEquals('1969-12-31T00:00:00+00:00', Date::fromString('Dec 31 1969 00:00AM'));
-      $this->assertDateEquals('1500-01-01T00:00:00+00:00', Date::fromString('Jan 01 1500 00:00AM'));
+    public function preUnixEpoch() {
+      $this->assertDateEquals('1969-12-31T00:00:00+00:00', Date::fromString('31.12.1969 00:00 GMT'));
+    }
+
+    /**
+     * Test dates before the year 1582 are 11 days off.
+     *
+     * Quoting Wikipedia:
+     * The last day of the Julian calendar was Thursday October 4, 1582 and 
+     * this was followed by the first day of the Gregorian calendar, Friday 
+     * October 15, 1582 (the cycle of weekdays was not affected).
+     *
+     * @see   http://en.wikipedia.org/wiki/Gregorian_calendar
+     */
+    #[@test]
+    public function pre1582() {
+      $this->assertDateEquals('1499-12-21T00:00:00+00:00', Date::fromString('01.01.1500 00:00 GMT'));
+    }
+
+    /**
+     * Test dates before the year 1752 are 11 days off.
+     *
+     * Quoting Wikipedia:
+     * The Kingdom of Great Britain and thereby the rest of the British 
+     * Empire (including the eastern part of what is now the United States) 
+     * adopted the Gregorian calendar in 1752 under the provisions of 
+     * the Calendar Act 1750; by which time it was necessary to correct 
+     * by eleven days (Wednesday, September 2, 1752 being followed by 
+     * Thursday, September 14, 1752) to account for February 29, 1700 
+     * (Julian). 
+     *
+     * @see   http://en.wikipedia.org/wiki/Gregorian_calendar
+     */
+    #[@test]
+    public function calendarAct1750() {
+      $this->assertDateEquals('1753-01-01T00:00:00+00:00', Date::fromString('01.01.1753 00:00 GMT'));
+      $this->assertDateEquals('1751-12-21T00:00:00+00:00', Date::fromString('01.01.1752 00:00 GMT'));
     }
 
     /**
      * Test setting of correct hours when date was given trough
-     * the AM/PM format. Test against PHP's strtotime() and the
-     * homegrown replacement.
+     * the AM/PM format.
      *
      */
     #[@test]
-    public function testAnteAndPostMeridiem() {
-    
-      // Test with default strtotime() implementation
+    public function anteAndPostMeridiem() {
       $this->assertEquals(1, Date::fromString('May 28 1980 1:00AM')->getHours(), '1:00AM != 1h');
       $this->assertEquals(0, Date::fromString('May 28 1980 12:00AM')->getHours(), '12:00AM != 0h');
       $this->assertEquals(13, Date::fromString('May 28 1980 1:00PM')->getHours(), '1:00PM != 13h');
       $this->assertEquals(12, Date::fromString('May 28 1980 12:00PM')->getHours(), '12:00PM != 12h');
-
-      // Test with homegrown strtotime-replacement
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function anteAndPostMeridiemInMidage() {
       $this->assertEquals(1, Date::fromString('May 28 1580 1:00AM')->getHours(), '1:00AM != 1h');
       $this->assertEquals(0, Date::fromString('May 28 1580 12:00AM')->getHours(), '12:00AM != 0h');
       $this->assertEquals(13, Date::fromString('May 28 1580 1:00PM')->getHours(), '1:00PM != 13h');
@@ -161,10 +205,10 @@
      *
      */    
     #[@test]
-    public function testMktime() {
+    public function dateCreate() {
       
       // Test with a date before 1971
-      $this->assertEquals(-44668800, Date::mktime(0, 0, 0, '08', '02', 1968), 'Wrong timestamp');
+      $this->assertEquals(-44668800, Date::create(1968, 8, 2, 0, 0, 0)->getTime());
     }
     
     /**
@@ -189,6 +233,22 @@
       $copy= unserialize(serialize($original));
       $this->assertEquals($original, $copy);
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function timeZoneSerialization() {
+      date_default_timezone_set('Europe/Athens');
+      $date= new Date('2007-10-20 21:45:33 Europe/Berlin');
+      $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      
+      $copy= unserialize(serialize($date));
+      var_dump(serialize($date));
+      $this->assertEquals('Europe/Berlin', $copy->getTimeZone()->getName());
+    }
+    
 
     /**
      * Test serialization of util.Date from old - or legacy -
@@ -204,7 +264,7 @@
 
       // Only __id may be set, all the other "old" public members
       // should have been removed here
-      $this->assertEquals(1, sizeof(get_object_vars($date)));
+      $this->assertEquals(2, sizeof(get_object_vars($date)));
     }
 
     /**
@@ -213,20 +273,48 @@
      */
     #[@test]
     public function handlingOfTimezone() {
-      $original= Date::fromString('2007-07-18T09:42:08 Europe/Athens');
+      $date= new Date('2007-07-18T09:42:08 Europe/Athens');
 
-      $this->assertEquals('Europe/Athens', $original->getTimeZone()->getName());
-      $this->assertEquals(3 * 3600, $original->getTimeZone()->getOffsetInSeconds());
+      $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
+      $this->assertEquals(3 * 3600, $date->getTimeZone()->getOffsetInSeconds($date));
     }
     
     /**
-     * Test
+     * Test format() tokens
      *
      */
     #[@test]
     public function supportedFormatTokens() {
-      $this->assertEquals('1977', $this->refDate->format('%Y'));
-      $this->assertEquals('12/14/1977 11:55:00', $this->refDate->format('%D %T'));
+      $tests= array(
+        '%Y' => '1977',
+        '%D %T' => '12/14/1977 11:55:00',
+        '%C'    => '77',
+        '%e'    => '14',
+        '%G'    => '1977',
+        '%H'    => '11',
+        '%I'    => '11',
+        '%j'    => '347',
+        '%m'    => '12',
+        '%M'    => '55',
+        '%n'    => "\n",
+        '%r'    => '11:55:00am',
+        '%R'    => '11:55:00',
+        '%S'    => '00',
+        '%t'    => "\t",
+        '%u'    => '3',
+        '%V'    => '50',
+        '%W'    => '50',
+        '%w'    => '3',
+        '%y'    => '77',
+        '%Z'    => '+0000',
+        '%z'    => '+0000',
+        '%%'    => '%'
+        
+      );
+      
+      foreach ($tests as $input => $expect) {
+        $this->assertEquals($expect, $this->refDate->format($input));
+      }
     }
     
     /**
@@ -245,7 +333,7 @@
      * from timestamp.
      *
      */
-    #[@test, @ignore('Broken, must be investigated.')]
+    #[@test]
     public function testTimestamp() {
       date_default_timezone_set('Europe/Berlin');
       
