@@ -102,8 +102,8 @@
     #[@test]
     public function noDiscreteTimeZone() {
       $date= new Date('2007-11-04 14:32:00+1000');
-      var_dump($date->getTimeZone()->getName());
-      $this->assertEquals('+1100', $date->getTimeZone()->getOffset());
+      $this->assertEquals('+1000', $date->getOffset());
+      $this->assertEquals(36000, $date->getOffsetInSeconds());
     }
     
     /**
@@ -241,12 +241,12 @@
     #[@test]
     public function timeZoneSerialization() {
       date_default_timezone_set('Europe/Athens');
-      $date= new Date('2007-10-20 21:45:33 Europe/Berlin');
+      $date= new Date('2007-11-20 21:45:33 Europe/Berlin');
       $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
+      $this->assertEquals('+0100', $date->getTimeZone()->getOffset());
       
       $copy= unserialize(serialize($date));
-      var_dump(serialize($date));
-      $this->assertEquals('Europe/Berlin', $copy->getTimeZone()->getName());
+      $this->assertEquals('+0100', $copy->getOffset());
     }
     
 
@@ -264,7 +264,7 @@
 
       // Only __id may be set, all the other "old" public members
       // should have been removed here
-      $this->assertEquals(2, sizeof(get_object_vars($date)));
+      $this->assertEquals(1, sizeof(get_object_vars($date)));
     }
 
     /**
@@ -309,7 +309,6 @@
         '%Z'    => '+0000',
         '%z'    => '+0000',
         '%%'    => '%'
-        
       );
       
       foreach ($tests as $input => $expect) {
@@ -342,6 +341,42 @@
       
       $this->assertEquals($d1, $d2);
       $this->assertEquals($d2, new Date($d2->toString()));
+    }
+    
+    /**
+     * Test PHP Bug #42910 - timezone should not fallback to default
+     * timezone if it actually is unknown.
+     *
+     * Ignored, until bug fixed in upstream
+     */
+    #[@test, @ignore, @expect('lang.IllegalStateException')]
+    public function emptyTimeZoneNameIfUnknown() {
+    
+      // Specific timezone id unknown, can be Europe/Paris, Europe/Berlin, ...
+      $date= new Date('1980-05-28 06:30:00+0200');
+      $this->assertNotEquals('GMT', $date->getTimeZone()->getName());
+    }
+    
+    /**
+     * Test toString() behaviour
+     *
+     */
+    #[@test]
+    public function toStringOutput() {
+      $date= new Date('2007-11-10 20:15+0100');
+      $this->assertEquals('2007-11-10 20:15:00+0100', $date->toString());
+      $this->assertEquals('2007-11-10 19:15:00+0000', $date->toString(Date::DEFAULT_FORMAT, new TimeZone(NULL)));
+    }
+    
+    /**
+     * Test toString() preserves same timezone after serialization
+     *
+     */
+    #[@test]
+    public function toStringOutputPreserved() {
+      $date= unserialize(serialize(new Date('2007-11-10 20:15+0100')));
+      $this->assertEquals('2007-11-10 20:15:00+0100', $date->toString());
+      $this->assertEquals('2007-11-10 19:15:00+0000', $date->toString(Date::DEFAULT_FORMAT, new TimeZone(NULL)));
     }
   }
 ?>
