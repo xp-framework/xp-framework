@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'util.TimeZone');
+  uses('util.Date', 'lang.FormatException');
 
   /**
    * Parses dates
@@ -12,13 +12,13 @@
    * <code>
    *   uses('text.parser.DateParser');
    *
-   *   $d= &DateParser::parse('13.02');
+   *   $d= DateParser::parse('13.02');
    *   echo $d->toString();
    *    
-   *   $d= &DateParser::parse('200401190957+0100');
+   *   $d= DateParser::parse('200401190957+0100');
    *   echo $d->toString();
    *
-   *   $d= &DateParser::parse('20040414101045Z');
+   *   $d= DateParser::parse('20040414101045Z');
    *   echo $d->toString();
    *
    * </code>
@@ -28,20 +28,6 @@
    * @purpose  Parser
    */
   class DateParser extends Object {
-
-    /**
-     * Get "fully qualified" year. For one and two digit years, returns
-     * the current century *plus* the given number.
-     *
-     * @param   int year
-     * @return  int
-     */
-    public static function yearFor($year) {
-      if (strlen((int)$year) <= 2) {
-        return (int)floor(date('Y') / 100) * 100 + $year;
-      }
-      return $year;
-    }
 
     /**
      * Parse a date
@@ -55,62 +41,13 @@
       
         // Border case
         throw(new FormatException('Cannot parse empty string'));
-      } else if (preg_match('/^([0-9]+)\.([0-9]+)(\.([0-9]+))? ?([0-9]+)?:?([0-9]+)?:?([0-9]+)?/', $s, $matches)) {
-      
-        // German date format
-        $stamp= Date::mktime(
-          isset($matches[5]) ? intval($matches[5]) : 0, 
-          isset($matches[6]) ? intval($matches[6]) : 0, 
-          isset($matches[7]) ? intval($matches[7]) : 0, 
-          intval($matches[2]), 
-          intval($matches[1]), 
-          isset($matches[4]) ? DateParser::yearFor($matches[4]) : intval(date('Y'))
-        );
-      } else if (preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})?(Z|([+-]\d{4}))?$/', $s, $matches)) {
-      
-        // Generalized date format
-        $stamp= Date::mktime(
-          intval($matches[4]),
-          intval($matches[5]),
-          (isset($matches[6]) ? intval($matches[6]) : 0),
-          intval($matches[2]),
-          intval($matches[3]),
-          DateParser::yearFor($matches[1])
-        );
-        
-        // If a timezone information has been given, try to convert timestamp into local time
-        if (!empty($matches[7])) {
-          try {
-            if (
-              ($tz= new TimeZone($matches[7])) &&
-              ($lc= TimeZone::getLocal())
-            ) {
-            
-              $date= $lc->convertDate(new Date($stamp), $tz);
-              $stamp= $date->getTime();
-            }
-          } catch (IllegalArgumentException $e) {
-          
-            // Ignore, do not modify timestamp...
-          }
-        }
-      } else {
-      
-        // FIXME: strtotime() returns -1 on failure, but also for the date
-        // Jan 01 1970 00:59:59 (in case the underlying OS supports negative
-        // timestamps). Unfortunately, no warnings are issued whatsoever, so
-        // there is no way to find out if this is the case or if the function 
-        // actually failed.
-        //
-        // I would consider this a bug in PHP (the function should return FALSE
-        // or at least raise a warning), but for now, we will have to live 
-        // with it.
-        if (FALSE === ($stamp= strtotime(strtolower($s)))) {
-          throw(new FormatException('Could not parse "'.$s.'"'));
-        }
       }
       
-      return new Date($stamp);
+      try {
+        return new Date($stamp);
+      } catch (IllegalArgumentException $e) {
+        throw new FormatException($e->getMessage());
+      }
     }
   }
 ?>
