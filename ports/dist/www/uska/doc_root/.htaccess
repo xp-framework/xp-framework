@@ -1,8 +1,0 @@
-RewriteEngine On
-RewriteRule xml/([a-zA-Z]+)[.:;]([a-zA-Z_]+)([.:;]psessionid=([0-9A-Za-z]+))?/([a-zA-Z/]+)$ /index.php [E=PRODUCT:$1,E=LANGUAGE:$2,E=SESS:$4,E=STATE:$5,PT]
-
-DirectoryIndex index.php index.html
-
-SetEnv DEF_PROD uska
-SetEnv DEF_LANG de_DE
-SetEnv DEF_STATE news

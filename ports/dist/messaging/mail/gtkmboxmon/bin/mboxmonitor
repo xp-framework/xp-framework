@@ -1,4 +1,0 @@
-#!/bin/sh
-
-cd `dirname $0`
-gtkphp de.thekid.gui.gtk.MBoxMonitor $*
