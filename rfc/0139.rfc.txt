@@ -153,4 +153,11 @@ Comments
   /home/svn/xp/trunk/ports/dist/soap/
   /home/svn/xp/trunk/ports/dist/www/  
 
+- friebe, Sat Nov 10 17:46:21     2007
+  The database generator is now in 
+  ports/classes/net/xp_framework/db/generator/
+
+- friebe, Sat Nov 10 17:47:35     2007
+  /home/svn/xp/trunk/ports/dist/ removed in commit #11291
+
 <EOF>
