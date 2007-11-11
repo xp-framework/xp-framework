@@ -47,7 +47,8 @@
     }
     
     public function getOffset($request) {
-      if (1 != sscanf($request->getQueryString(), '%d', $offset)) return 0;
+      if (0 == strlen($request->getQueryString())) return 0;
+      if (1 != sscanf($request->getQueryString(), '%d', &$offset)) throw new IllegalStateException('Query string broken: "'.$request->getQueryString().'"');
       return $offset;
     }
     
@@ -113,11 +114,14 @@
       }
       
       // Add pager element
-      $p= $response->addFormResult(new Node('pager', NULL, array(
+      $pager= array(
         'offset'  => $this->getOffset($request),
-        'next'    => $this->getOffset($request)+ 10,
-        'prev'	  => max(0, $this->getOffset($request)- 10)
-      )));
+        'prev'    => max(0, $this->getOffset($request)- 10)
+      );
+      if (sizeof($entry)) {
+        $pager['next']= $this->getOffset($request)+ 10;
+      }
+      $response->addFormResult(new Node('pager', NULL, $pager));
       
       return TRUE;
     }

@@ -25,9 +25,19 @@
 
   <xsl:template match="pager">
     <div style="text-align: center;">
-      <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @prev)}">&lt;&lt;&lt;</a>
+      <xsl:choose>
+        <xsl:when test="@offset &gt; 0">
+          <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @prev)}">&lt;&lt;&lt;</a>
+        </xsl:when>
+        <xsl:otherwise>&lt;&lt;&lt;</xsl:otherwise>
+      </xsl:choose>
       |
-      <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @next)}">&gt;&gt;&gt;</a>
+      <xsl:choose>
+        <xsl:when test="@next">
+          <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @next)}">&gt;&gt;&gt;</a>
+        </xsl:when>
+        <xsl:otherwise>&gt;&gt;&gt;</xsl:otherwise>
+      </xsl:choose>
     </div>
   </xsl:template>
 </xsl:stylesheet>

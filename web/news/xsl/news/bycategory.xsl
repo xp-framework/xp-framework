@@ -38,7 +38,7 @@
               (<xsl:value-of select="num_comments"/> comments)
             </em>
             <p><xsl:apply-templates select="body"/></p>
-            <xsl:if test="extended_length != 0"><br/>(<a href="view?{@id}">more</a>)</xsl:if>
+            <xsl:if test="extended_length != 0"><br/>(<a href="{xp:linkArticle(@id, @link, date)}">more</a>)</xsl:if>
             <br/><br clear="all"/>
           </xsl:for-each>
           
