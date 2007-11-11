@@ -1,65 +1,63 @@
-RFC 0143: MetadataException
+RFC 0143: Image metadata API enhancements
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Sat Nov  3 16:23:29     2007
-@status: draft
+@status: discussion, ends Sun Nov 11 17:22:01     2007
 @category: img.util
 
 Scope of Change
 ---------------
-A new exception img.util.MetadataException will be introduced.
+* The fromFile() methods will throw different exceptions for different 
+  cases of errors instead of only an ImagingException. 
+* There will be an optional default argument to the IptcData::fromFile() 
+  and ExifData::fromFile() methods which will be returned in case no meta
+  data can be found.
+* There will be a public EMPTY field in the ExifData and IptcData classes
+  which will represent empty instances of the respective class.
 
 
 Rationale
 ---------
-Be able to distinguish the cases when data cannot be read for I/O errors
-and when data is not existant or malformed.
+* Be able to distinguish the cases when data cannot be read for I/O errors
+  and when data is not existant or malformed.
+* Make handling of "no metadata found"-situations easier.
 
 
 Functionality
 -------------
 
-Inheritance tree
-~~~~~~~~~~~~~~~~
-<pre>
-+ lang.Throwable
-|
-`-- + lang.XPException
-    |
-    `-- + lang.ChainedException
-        |
-        `-- img.util.MetadataException
-</pre>
-
-Basic usage
-~~~~~~~~~~~
+Exceptions
+~~~~~~~~~~
 <?php
   try {
     $iptcData= IptcData::fromFile($in);
-  } catch (MetadataException $e) {
-    // IPTC data non-existant or malformed
   } catch (ImagingException $e) {
     // File cannot be read, unknown file format
+  } catch (ElementNotFoundException $e) {
+    // IPTC data non-existant
+  } catch (FormatException $e) {
+    // IPTC data malformed
   }
 ?>
 
-Extended usage
-~~~~~~~~~~~~~~
+Optional default argument
+~~~~~~~~~~~~~~~~~~~~~~~~~
+In case no meta data can be found and a default argument is given this will
+be returned instead of throwing an ElementNotFoundException.
+
 <?php
-  try {
-    $iptcData= IptcData::fromFile($in);
-  } catch (MetadataException $e) {
-    if ($e->getCause() instanceof ElementNotFoundException) {
-      // No IPTC data found
-    } else if ($e->getCause() instanceof FormatException) {
-      // IPTC data malformed
-    } else {
-      // Other cause
-    }
-  }
+  // Return the null pointer
+  $iptcData= IptcData::fromFile($in, xp::null());
+  
+  // Use NULL to indicate nothing was found
+  $iptcData= IptcData::fromFile($in, NULL);
+
+  // Use empty meta data
+  $iptcData= IptcData::fromFile($in, IptcData::$EMPTY);
 ?>
+
 
 
 Security considerations
@@ -75,7 +73,6 @@ Speed impact
 
 Dependencies
 ------------
-- New class img.util.MetadataException 
 
 
 Related documents
