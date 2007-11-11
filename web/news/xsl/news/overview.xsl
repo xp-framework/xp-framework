@@ -28,6 +28,7 @@
       <tr>
         <td id="content">
           <h1>framework news</h1>
+          <xsl:call-template name="pager"/>
     
           <xsl:for-each select="/formresult/entries/entry">
             <h2><a href="{xp:linkArticle(@id, @link, date)}"><xsl:value-of select="title"/></a></h2>

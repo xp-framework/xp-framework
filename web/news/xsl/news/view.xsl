@@ -69,7 +69,7 @@
       <img align="right" src="/common/image/feed.png"/>
       Subscribe
     </h3>
-    You can subscribe to the XP framework's news by using <a href="/rss/?c={/formresult/entry/categories/category/@id}">RSS syndication</a>.
+    You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
     <br clear="all"/>
   </xsl:template>
 </xsl:stylesheet>
