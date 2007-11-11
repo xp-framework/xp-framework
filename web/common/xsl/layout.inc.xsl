@@ -17,16 +17,8 @@
   <xsl:import href="overrideables.inc.xsl"/>
   <xsl:include href="master.xsl"/>
   <xsl:include href="date.inc.xsl"/>
-  
-  <xsl:variable name="sitemap">
-    <root>
-      <item name="home" href="http://planet-xp.net">Home</item>
-      <item name="news" href="http://news.xp-framework.net/">News</item>
-      <item name="download" href="http://xp-framework.net/download/">Download</item>
-      <!-- <item name="docs" href="http://docs.xp-framework.net/">Docs</item> -->
-      <!-- <item name="dev" href="http://developer.xp-framework.net/">Deveopers</item> -->
-    </root>
-  </xsl:variable>
+    
+  <xsl:variable name="sitemap" select="document('sitemap.xml')"/>
   
   <xsl:template match="/">
     <html>
@@ -57,7 +49,7 @@
       <br/>
       
       © 2001-<xsl:value-of select="xp:dateformat(/formresult/@serial, 'Y')"/> the XP team
-    </div>    
+    </div>
   </xsl:template>
   
   <xsl:template name="top-navigation">
@@ -79,7 +71,6 @@
            </li>
            <a href="{@href}"><xsl:value-of select="."/></a>
         </xsl:for-each>
-        <!-- FIXME: Do not hardcode domain names -->
       </ul>
       <!-- For Mozilla to calculate height correctly -->
       &#160;

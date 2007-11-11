@@ -62,7 +62,7 @@
     
     <h3>Categories</h3>
     <xsl:for-each select="/formresult/categories/category">
-      <a href="{xp:link(concat('bycategory?', @id))}"><xsl:value-of select="."/></a><br/>
+      <a href="{xp:linkCategory(@id, @link)}"><xsl:value-of select="."/></a><br/>
      </xsl:for-each> 
   </xsl:template>
   

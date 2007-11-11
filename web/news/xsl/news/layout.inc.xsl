@@ -15,15 +15,17 @@
  exclude-result-prefixes="func php exsl xsl xp"
 >
   <xsl:include href="../../../common/xsl/layout.inc.xsl"/>
+  <xsl:include href="links.inc.xsl"/>
+  
   <xsl:variable name="navigation">
     <area name="news"/>
   </xsl:variable>
 
   <xsl:template match="pager">
     <div style="text-align: center;">
-      <a href="{xp:link(concat($__state, '?', /formresult/current-category/@id, ',', @prev))}">&lt;&lt;&lt;</a>
+      <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @prev)}">&lt;&lt;&lt;</a>
       |
-      <a href="{xp:link(concat($__state, '?', /formresult/current-category/@id, ',', @next))}">&gt;&gt;&gt;</a>
+      <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @next)}">&gt;&gt;&gt;</a>
     </div>
   </xsl:template>
 </xsl:stylesheet>

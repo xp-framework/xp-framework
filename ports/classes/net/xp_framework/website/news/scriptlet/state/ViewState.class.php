@@ -18,6 +18,10 @@
    */
   class ViewState extends AbstractState {
 
+    protected function getArticleId($request) {
+      return $request->getEnvValue('ARTID');
+    }
+  
     /**
      * Process this state.
      *
@@ -41,12 +45,12 @@
           entry.id= %d
           and isdraft = "false"
         ',
-        $request->getQueryString()
+        $this->getArticleId($request)
       );
       
       // Check if we found an entry
       if (!($record= $q->next())) {
-        $response->addFormError('entry', 'notfound', '*', $request->getQueryString());
+        $response->addFormError('entry', 'notfound', '*', $this->getArticleId($request));
         return;
       }
       

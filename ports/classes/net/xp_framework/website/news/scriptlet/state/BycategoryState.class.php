@@ -19,11 +19,7 @@
      * @return  int
      */
     public function getParentCategory($request) {
-      if (1 != sscanf($request->getQueryString(), '%d', $category)) {
-        return 8;
-      }
-        
-      return $category;
+      return $request->getEnvValue('CATID', 8);        
     }
     
     /**

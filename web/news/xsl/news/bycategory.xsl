@@ -27,10 +27,11 @@
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
         <td id="content">
-          <h1>framework news</h1>
+          <h1><xsl:value-of select="/formresult/current-category"/></h1>
+          <xsl:apply-templates select="/formresult/pager"/>
     
           <xsl:for-each select="/formresult/entries/entry">
-            <h2><a href="{xp:link(concat('view?', @id))}"><xsl:value-of select="title"/></a></h2>
+            <h2><a href="{xp:linkArticle(@id, @link, date)}"><xsl:value-of select="title"/></a></h2>
             <em>
               <xsl:for-each select="category"><xsl:value-of select="."/>, </xsl:for-each>
               <xsl:value-of select="xp:date(date)"/> 
@@ -51,12 +52,13 @@
   </xsl:template>
   
   <xsl:template name="context">
-    <xsl:apply-templates select="feed"/>
+    <xsl:apply-templates select="context-feed"/>
     <xsl:apply-templates select="/formresult/categories"/>
   </xsl:template>
   
-  <xsl:template match="feed">
-    <xsl:variable name="feed" select="'/rss/'"/>
+  <xsl:template name="context-feed">
+    <xsl:variable name="feed">/rss/<xsl:if test="/formresult/current-category">?c=<xsl:value-of select="/formresult/current-category/@id"/></xsl:if>
+    </xsl:variable>
     <h3>
       <a href="{$feed}">
         <img align="right" src="/common/image/feed.png" border="0"/>
@@ -70,7 +72,7 @@
   <xsl:template match="categories">
     <h3>Categories</h3>
     <xsl:for-each select="category">
-      <a href="{xp:link(concat('bycategory?', @id))}"><xsl:value-of select="."/></a><br/>
+      <a href="{concat(xp:linkCategory(@id, @link))}"><xsl:value-of select="."/></a><br/>
      </xsl:for-each> 
   </xsl:template>
 </xsl:stylesheet>

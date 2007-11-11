@@ -51,6 +51,10 @@
       return $offset;
     }
     
+    protected function sanitizeHref($name) {
+      return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $name);
+    }
+    
     /**
      * Process this state.
      *
@@ -66,12 +70,21 @@
         'select categoryid, category_name from serendipity_category where parentid= %d',
         $this->getParentCategory($request)
       );
-      $response->addFormResult(new Node('current-category', NULL, array('id' => $this->getParentCategory($request))));
       while ($record= $q->next()) {
         $n->addChild(new Node('category', $record['category_name'], array(
-          'id' => $record['categoryid']
+          'id'   => $record['categoryid'],
+          'link' => $this->sanitizeHref($record['category_name'])
         )));
       }
+      
+      $self= $db->query('select categoryid, category_name from serendipity_category where categoryid= %d', $this->getParentCategory($request));
+      if (($record= $self->next())) {
+        $response->addFormResult(new Node('current-category', $record['category_name'], array(
+          'id' => $record['categoryid'],
+          'link'  => $this->sanitizeHref($record['category_name'])
+        )));
+      }
+            
 
       // Call the getEntries() method (which is overridden by subclasses
       // and returns the corresponding entries). For perfomance reasons, it
@@ -82,7 +95,7 @@
       $n= $response->addFormResult(new Node('entries'));
       while ($record= $q->next()) {
         if (!isset($entry[$record['id']])) {
-          $entry[$record['id']]= $n->addChild(new Node('entry', NULL, array('id' => $record['id'])));
+          $entry[$record['id']]= $n->addChild(new Node('entry', NULL, array('id' => $record['id'], 'link' => $this->sanitizeHref($record['title']))));
           $entry[$record['id']]->addChild(new Node('title', $record['title']));
           $entry[$record['id']]->addChild(new Node('author', $record['author']));
           $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));
