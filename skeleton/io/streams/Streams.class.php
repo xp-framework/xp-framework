@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.IOException', 'io.File', 'io.FileNotFoundException');
+  uses('io.IOException', 'io.FileNotFoundException');
 
   /**
    * Wraps I/O streams into PHP streams
@@ -75,20 +75,6 @@
     }
 
     /**
-     * Open an input stream as file
-     *
-     * @param   io.streams.InputStream s
-     * @param   bool open default TRUE whether to open the file
-     * @return  resource
-     */
-    public static function readableFile(InputStream $s, $open= TRUE) { 
-      self::$streams[$s->hashCode()]= $s;
-      $f= new File('iostr+r://'.$s->hashCode());
-      $open && $f->open(FILE_MODE_READ);
-      return $f;
-    }
-
-    /**
      * Open an output stream for writing
      *
      * @param   io.streams.OutputStream s
@@ -97,20 +83,6 @@
     public static function writeableFd(OutputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
       return fopen('iostr+w://'.$s->hashCode(), 'wb');
-    }
-
-    /**
-     * Open an input stream as file
-     *
-     * @param   io.streams.OutputStream s
-     * @param   bool open default TRUE whether to open the file
-     * @return  resource
-     */
-    public static function writeableFile(OutputStream $s, $open= TRUE) { 
-      self::$streams[$s->hashCode()]= $s;
-      $f= new File('iostr+w://'.$s->hashCode());
-      $open && $f->open(FILE_MODE_WRITE);
-      return $f;
     }
 
     /**
@@ -143,6 +115,7 @@
       if (!isset(self::$streams[$this->id])) return FALSE;
 
       self::$streams[$this->id]->close();
+      unset(self::$streams[$this->id]);
       return TRUE;
     }
 
