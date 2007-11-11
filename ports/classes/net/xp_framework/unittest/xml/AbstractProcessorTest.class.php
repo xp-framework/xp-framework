@@ -132,6 +132,138 @@
     }
 
     /**
+     * Tests a transformation w/ ISO-8859-1 XSL without output encoding
+     * results in the default processor charset.
+     *
+     */
+    #[@test]
+    public function iso88591XslWithoutOutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="iso-8859-1"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text"/>
+          <xsl:template match="/">
+            <xsl:text>Hällo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals($this->processorCharset(), $this->processor->outputEncoding());
+      $this->assertEquals(
+        iconv('iso-8859-1', $this->processorCharset(), 'Hällo'), 
+        $this->processor->output()
+      );
+    }
+
+    /**
+     * Tests a transformation w/ ISO-8859-1 XSL with utf-8 output encoding
+     * results in UTF-8 output.
+     *
+     */
+    #[@test]
+    public function iso88591XslWithUtf8OutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="iso-8859-1"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text" encoding="utf-8"/>
+          <xsl:template match="/">
+            <xsl:text>Hällo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('utf-8', $this->processor->outputEncoding());
+      $this->assertEquals('HÃ¤llo', $this->processor->output());
+    }
+
+    /**
+     * Tests a transformation w/ UTF-8 XSL without output encoding
+     * results in the default processor charset.
+     *
+     */
+    #[@test]
+    public function utf8XslWithoutOutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="utf-8"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text"/>
+          <xsl:template match="/">
+            <xsl:text>HÃ¤llo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals($this->processorCharset(), $this->processor->outputEncoding());
+      $this->assertEquals(
+        iconv('iso-8859-1', $this->processorCharset(), 'Hällo'), 
+        $this->processor->output()
+      );
+    }
+
+    /**
+     * Tests a transformation w/ UTF-8 XSL with utf-8 output encoding
+     * results in UTF-8 output.
+     *
+     */
+    #[@test]
+    public function utf8XslWithUtf8OutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="utf-8"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text" encoding="utf-8"/>
+          <xsl:template match="/">
+            <xsl:text>HÃ¤llo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('utf-8', $this->processor->outputEncoding());
+      $this->assertEquals('HÃ¤llo', $this->processor->output());
+    }
+
+    /**
+     * Tests a transformation w/ UTF-8 XSL with iso-8859-1 output encoding
+     * results in iso-8859-1 output.
+     *
+     */
+    #[@test]
+    public function utf8XslWithIso88591OutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="utf-8"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text" encoding="iso-8859-1"/>
+          <xsl:template match="/">
+            <xsl:text>HÃ¤llo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
+      $this->assertEquals('Hällo', $this->processor->output());
+    }
+
+    /**
+     * Tests a transformation w/ ISO-8859-1 XSL with iso-8859-1 output encoding
+     * results in iso-8859-1 output.
+     *
+     */
+    #[@test]
+    public function iso88591XslWithIso88591OutputEncoding() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('<?xml version="1.0" encoding="iso-8859-1"?>
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text" encoding="iso-8859-1"/>
+          <xsl:template match="/">
+            <xsl:text>Hällo</xsl:text>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
+      $this->assertEquals('Hällo', $this->processor->output());
+    }
+
+    /**
      * Tests a transformation
      *
      */
