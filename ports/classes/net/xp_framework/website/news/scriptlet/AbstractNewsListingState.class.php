@@ -47,7 +47,7 @@
     }
     
     public function getOffset($request) {
-      if (2 != sscanf($request->getQueryString(), '%d,%d', $category, $offset)) return 0;
+      if (1 != sscanf($request->getQueryString(), '%d', $offset)) return 0;
       return $offset;
     }
     
